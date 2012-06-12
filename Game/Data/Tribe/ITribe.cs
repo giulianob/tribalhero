@@ -10,9 +10,9 @@ namespace Game.Data.Tribe
 {
     public interface ITribe : ILockable, IPersistableObject
     {
-        uint Id { get; }
+        uint Id { get; set; }
 
-        IPlayer Owner { get; }
+        IPlayer Owner { get; set; }
 
         string Name { get; set; }
 
@@ -53,6 +53,8 @@ namespace Game.Data.Tribe
         Error CreateAssignment(ICity city, ITroopStub stub, uint x, uint y, ICity targetCity, DateTime time, AttackMode mode, string description, bool isAttack, out int id);
 
         Error JoinAssignment(int id, ICity city, ITroopStub stub);
+
+        Error Transfer(uint newOwnerPlayerId);
 
         void RemoveAssignment(Assignment assignment);
 

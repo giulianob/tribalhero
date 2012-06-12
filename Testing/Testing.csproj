@@ -107,6 +107,7 @@
     <Compile Include="Formulas\WeaponExportTest.cs" />
     <Compile Include="Formulas\MoveTimeTotalTest.cs" />
     <Compile Include="Lock\CallbackLockTest.cs" />
+    <Compile Include="MapMath\SimpleGameObjectTest.cs" />
     <Compile Include="MapMath\ForeachTest.cs" />
     <Compile Include="MapMath\RadiusTest.cs" />
     <Compile Include="Misc\XmlSerializerTest.cs" />

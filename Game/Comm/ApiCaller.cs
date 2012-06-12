@@ -19,7 +19,7 @@ namespace Game.Comm
             get
             {
                 if (Success || Data == null)
-                    return string.Empty;
+                    return "An error occurred";
                 
                 return String.Join(", ", Data.errorMessage);
             }
@@ -116,6 +116,15 @@ namespace Game.Comm
             return MakeCall("player", "ban", parms);
         }
 
+        public static ApiResponse PlayerInfo(string name)
+        {
+            var parms = new List<KeyValuePair<string, string>>
+                        {
+                                new KeyValuePair<string, string>("name", name),                                
+                        };
+            return MakeCall("player", "info", parms);
+        }
+
         public static ApiResponse RenamePlayer(string name, string newName)
         {
             var parms = new List<KeyValuePair<string, string>>
@@ -133,7 +142,7 @@ namespace Game.Comm
                                 new KeyValuePair<string, string>("name", name),                                
                                 new KeyValuePair<string, string>("rights", ((int)rights).ToString(CultureInfo.InvariantCulture)),      
                         };
-            return MakeCall("player", "set_rights ", parms);
+            return MakeCall("player", "set_rights", parms);
         }
 
         public static ApiResponse SetPassword(string name, string password)
@@ -143,7 +152,7 @@ namespace Game.Comm
                                 new KeyValuePair<string, string>("name", name),                                
                                 new KeyValuePair<string, string>("password", password),      
                         };
-            return MakeCall("player", "set_password ", parms);
+            return MakeCall("player", "set_password", parms);
         }
 
         public static ApiResponse PlayerUnmute(string playerName)
@@ -152,7 +161,7 @@ namespace Game.Comm
                         {
                                 new KeyValuePair<string, string>("name", playerName)                               
                         };
-            return MakeCall("player", "unmute ", parms);
+            return MakeCall("player", "unmute", parms);
         }
 
         public static ApiResponse PlayerMute(string playerName)
@@ -161,7 +170,7 @@ namespace Game.Comm
                         {
                                 new KeyValuePair<string, string>("name", playerName)                               
                         };
-            return MakeCall("player", "mute ", parms);
+            return MakeCall("player", "mute", parms);
         }
     }
 }

@@ -43,7 +43,7 @@ namespace Launcher
             
             Config.LoadConfigFile(settingsFile);
             Factory.CompileConfigFiles();            
-            var kernel = Engine.CreateDefaultKernel();
+            Engine.CreateDefaultKernel();
             Factory.InitAll();
             Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);            
 

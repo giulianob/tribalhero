@@ -40,6 +40,7 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.TribesmanConfirm, Confirm);
             processor.RegisterCommand(Command.TribesmanLeave, Leave);
             processor.RegisterCommand(Command.TribesmanContribute, Contribute);
+            processor.RegisterCommand(Command.TribeTransfer, Transfer);
         }
 
         public void SetRank(Session session, Packet packet)
@@ -78,6 +79,55 @@ namespace Game.Comm.ProcessorCommands
                     ReplySuccess(session, packet);
                 else
                     ReplyError(session, packet, error);
+            }
+        }
+
+        public void Transfer(Session session, Packet packet)
+        {
+            string newOwnerName;
+
+            try
+            {
+                newOwnerName = packet.GetString();
+            }
+            catch (Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            if (session.Player.Tribesman == null)
+            {
+                ReplyError(session, packet, Error.TribeIsNull);
+                return;
+            }
+
+            uint newOwnerPlayerId;
+            if (!World.Current.FindPlayerId(newOwnerName, out newOwnerPlayerId))
+            {
+                ReplyError(session, packet, Error.PlayerNotFound);
+                return;
+            }
+
+            Dictionary<uint, IPlayer> players;
+            using (Concurrency.Current.Lock(out players, newOwnerPlayerId, session.Player.Tribesman.Tribe.Owner.PlayerId))
+            {
+                if (players == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                ITribe tribe = session.Player.Tribesman.Tribe;
+                if (!tribe.IsOwner(session.Player))
+                {
+                    ReplyError(session, packet, Error.TribesmanNotAuthorized);
+                    return;
+                }
+
+                var result = tribe.Transfer(newOwnerPlayerId);
+
+                ReplyWithResult(session, packet, result);                
             }
         }
 
@@ -168,7 +218,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                if (!World.Current.Tribes.TryGetValue(tribeRequestId, out tribe))
+                if (!World.Current.TryGetObjects(tribeRequestId, out tribe))
                 {
                     ReplyError(session, packet, Error.TribeNotFound);
                     return;

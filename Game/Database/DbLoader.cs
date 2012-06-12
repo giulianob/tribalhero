@@ -60,7 +60,7 @@ namespace Game.Database
                     dbManager.Query("UPDATE `players` SET `online` = @online", new[] { new DbColumn("online", false, DbType.Boolean) });
 
                     // Load sys vars
-                    LoadSystemVariables(dbManager);
+                    LoadSystemVariables();
 
                     // Calculate how long server was down
                     TimeSpan downTime = now.Subtract((DateTime)Global.SystemVariables["System.time"].Value);
@@ -68,25 +68,25 @@ namespace Game.Database
                     
                     Global.Logger.Info(string.Format("Server was down for {0}", downTime));
 
-                    LoadReportIds(dbManager);
-                    LoadMarket(dbManager);
-                    LoadPlayers(dbManager);
-                    LoadCities(dbManager, downTime);
-                    LoadTribes(dbManager);
-                    LoadTribesmen(dbManager);
-                    LoadUnitTemplates(dbManager);
-                    LoadStructures(dbManager);
-                    LoadStructureProperties(dbManager);
-                    LoadTechnologies(dbManager);
-                    LoadForests(dbManager, downTime);
-                    LoadTroopStubs(dbManager);
-                    LoadTroopStubTemplates(dbManager);
-                    LoadTroops(dbManager);
-                    LoadBattleManagers(dbManager);
-                    LoadActions(dbManager, downTime);
-                    LoadActionReferences(dbManager);
-                    LoadActionNotifications(dbManager);
-                    LoadAssignments(dbManager,downTime);
+                    LoadReportIds();
+                    LoadMarket();
+                    LoadPlayers();
+                    LoadCities(downTime);
+                    LoadTribes();
+                    LoadTribesmen();
+                    LoadUnitTemplates();
+                    LoadStructures();
+                    LoadStructureProperties();
+                    LoadTechnologies();
+                    LoadForests(downTime);
+                    LoadTroopStubs();
+                    LoadTroopStubTemplates();
+                    LoadTroops();
+                    LoadBattleManagers();
+                    LoadActions(downTime);
+                    LoadActionReferences();
+                    LoadActionNotifications();
+                    LoadAssignments(downTime);
 
                     World.Current.AfterDbLoaded();
 
@@ -110,7 +110,7 @@ namespace Game.Database
             return true;
         }
 
-        private uint GetMaxId(IDbManager dbManager, string table)
+        private uint GetMaxId(string table)
         {
             using (var reader = dbManager.ReaderQuery(string.Format("SELECT max(`id`) FROM `{0}`", table)))
             {
@@ -122,14 +122,14 @@ namespace Game.Database
             }
         }
 
-        private void LoadReportIds(IDbManager dbManager)
+        private void LoadReportIds()
         {
-            BattleReport.BattleIdGenerator.Set(GetMaxId(dbManager, SqlBattleReportWriter.BATTLE_DB));
-            BattleReport.ReportIdGenerator.Set(GetMaxId(dbManager, SqlBattleReportWriter.BATTLE_REPORTS_DB));
-            BattleReport.BattleTroopIdGenerator.Set(GetMaxId(dbManager, SqlBattleReportWriter.BATTLE_REPORT_TROOPS_DB));
+            BattleReport.BattleIdGenerator.Set(GetMaxId(SqlBattleReportWriter.BATTLE_DB));
+            BattleReport.ReportIdGenerator.Set(GetMaxId(SqlBattleReportWriter.BATTLE_REPORTS_DB));
+            BattleReport.BattleTroopIdGenerator.Set(GetMaxId(SqlBattleReportWriter.BATTLE_REPORT_TROOPS_DB));
         }
 
-        private void LoadTribes(IDbManager dbManager) 
+        private void LoadTribes() 
         {
             #region Tribes
 
@@ -139,28 +139,31 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     var resource = new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"], 0);
-                    var tribe = tribeFactory.CreateTribe(World.Current.Players[(uint)reader["player_id"]],
+                    var tribe = tribeFactory.CreateTribe(World.Current.Players[(uint)reader["owner_player_id"]],
                                                          (string)reader["name"],
                                                          (string)reader["desc"],
                                                          (byte)reader["level"],
                                                          (int)reader["attack_point"],
                                                          (int)reader["defense_point"],
                                                          resource);
+                    tribe.Id = (uint)reader["id"];
                     tribe.DbPersisted = true;
 
-                    World.Current.Tribes.Add(tribe.Id, tribe);
+                    World.Current.DbLoaderAdd(tribe);
                 }
             }
             #endregion
         }
 
-        private void LoadTribesmen(IDbManager dbManager) {
+        private void LoadTribesmen() {
             #region Tribes
 
             Global.Logger.Info("Loading tribesmen...");
             using (var reader = dbManager.Select(Tribesman.DB_TABLE)) {
-                while (reader.Read()) {
-                    ITribe tribe = World.Current.Tribes[(uint)reader["tribe_id"]];
+                while (reader.Read())
+                {
+                    ITribe tribe;
+                    World.Current.TryGetObjects((uint)reader["tribe_id"], out tribe);
                     var contribution = new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"], 0);
                     var tribesman = new Tribesman(tribe, World.Current.Players[(uint)reader["player_id"]], DateTime.SpecifyKind((DateTime)reader["join_date"], DateTimeKind.Utc), contribution, (byte)reader["rank"])
                                     {DbPersisted = true};
@@ -170,7 +173,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadAssignments(IDbManager dbManager, TimeSpan downTime)
+        private void LoadAssignments(TimeSpan downTime)
         {
             #region Assignments
 
@@ -181,7 +184,9 @@ namespace Game.Database
             {
                 while (reader.Read())
                 {
-                    ITribe tribe = World.Current.Tribes[(uint)reader["tribe_id"]];
+                    ITribe tribe;
+                    World.Current.TryGetObjects((uint)reader["tribe_id"], out tribe);
+
                     ICity city;
                     if (!World.Current.TryGetObjects((uint)reader["city_id"], out city))
                         throw new Exception("City not found");
@@ -225,7 +230,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadSystemVariables(IDbManager dbManager)
+        private void LoadSystemVariables()
         {
             #region System variables
 
@@ -251,7 +256,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadMarket(IDbManager dbManager)
+        private void LoadMarket()
         {
             #region Market
 
@@ -284,7 +289,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadPlayers(IDbManager dbManager)
+        private void LoadPlayers()
         {
             #region Players
 
@@ -306,7 +311,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadCities(IDbManager dbManager, TimeSpan downTime)
+        private void LoadCities(TimeSpan downTime)
         {
             #region Cities
 
@@ -368,7 +373,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadUnitTemplates(IDbManager dbManager)
+        private void LoadUnitTemplates()
         {
             #region Unit Template
 
@@ -395,7 +400,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadForests(IDbManager dbManager, TimeSpan downTime)
+        private void LoadForests(TimeSpan downTime)
         {
             Global.Logger.Info("Loading forests...");
             using (var reader = dbManager.Select(Forest.DB_TABLE))
@@ -451,7 +456,7 @@ namespace Game.Database
             }
         }
 
-        private void LoadStructures(IDbManager dbManager)
+        private void LoadStructures()
         {
             #region Structures
 
@@ -488,7 +493,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadStructureProperties(IDbManager dbManager)
+        private void LoadStructureProperties()
         {
             #region Structure Properties
 
@@ -521,7 +526,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadTechnologies(IDbManager dbManager)
+        private void LoadTechnologies()
         {
             #region Technologies
 
@@ -571,7 +576,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadTroopStubs(IDbManager dbManager)
+        private void LoadTroopStubs()
         {
             #region Troop Stubs
 
@@ -629,7 +634,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadTroopStubTemplates(IDbManager dbManager)
+        private void LoadTroopStubTemplates()
         {
             #region Troop Stub's Templates
 
@@ -670,7 +675,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadTroops(IDbManager dbManager)
+        private void LoadTroops()
         {
             #region Troops
 
@@ -715,7 +720,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadBattleManagers(IDbManager dbManager)
+        private void LoadBattleManagers()
         {
             #region Battle Managers
 
@@ -876,7 +881,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadActions(IDbManager dbManager, TimeSpan downTime)
+        private void LoadActions(TimeSpan downTime)
         {
             #region Active Actions
 
@@ -1055,7 +1060,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadActionReferences(IDbManager dbManager)
+        private void LoadActionReferences()
         {
             #region Action References
 
@@ -1090,7 +1095,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadActionNotifications(IDbManager dbManager)
+        private void LoadActionNotifications()
         {
             #region Action Notifications
 

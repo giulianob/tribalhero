@@ -2,14 +2,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Xml;
 using System.Xml.XPath;
+using Game;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Map;
-using System.Linq;
+using Game.Setup;
+using NDesk.Options;
+using Ninject;
+
 #endregion
 
 namespace MapGenerator
@@ -21,14 +26,14 @@ namespace MapGenerator
         private const ushort CITY_TILE = 209;        
         private static readonly Random random = new Random();
         private static StreamWriter sw;
-        private static List<Location> locations = new List<Location>();
+        private static readonly List<Location> locations = new List<Location>();
 
         private static int width = 3400;
         private static int height = 6200;
         private static int region_width = 34;
         private static int region_height = 62;
-        private static readonly int region_column = width/region_width;
-        private static readonly int region_row = height/region_height;
+        private static readonly int regionColumn = width/region_width;
+        private static readonly int regionRow = height/region_height;
         private static int numberOfTiles = 10;
         private static int numberOfFarm = 2;
         private static int numberOfWoodland = 2;
@@ -37,13 +42,13 @@ namespace MapGenerator
 
         private static bool AreaClear(uint ox, uint oy, uint x, uint y, object custom)
         {
-            var map = custom as ushort[];
+            var map = (ushort[])custom;
             while (map[y*region_width + x] == FARM_TILE || map[y*region_width + x] == WOODLAND_TILE)
                 map[y*region_width + x] = (ushort)random.Next(1, numberOfTiles);
             return true;
         }
 
-        public static int distance(uint x, uint y, uint x_1, uint y_1)
+        public static int DistanceBetween(uint x, uint y, uint x1, uint y1)
         {
             /***********************************************************
              *   1,1  |  2,1  |  3,1  |  4,1  |
@@ -53,14 +58,12 @@ namespace MapGenerator
              * 
              * *********************************************************/
             uint offset = 0;
-            if (y%2 == 1 && y_1%2 == 0 && x_1 <= x)
+            if (y%2 == 1 && y1%2 == 0 && x1 <= x)
                 offset = 1;
-            if (y%2 == 0 && y_1%2 == 1 && x_1 >= x)
+            if (y%2 == 0 && y1%2 == 1 && x1 >= x)
                 offset = 1;
-            var dist = (int)((x_1 > x ? x_1 - x : x - x_1) + (y_1 > y ? y_1 - y : y - y_1)/2 + offset);
-            double real = Math.Sqrt(Math.Pow(x - x_1, 2) + Math.Pow(y - y_1, 2));
-
-            return dist;
+            
+            return (int)((x1 > x ? x1 - x : x - x1) + (y1 > y ? y1 - y : y - y1)/2 + offset);
         }
 
         private static void GenerateResource(Vector2D cityLocation, ushort[] map)
@@ -74,8 +77,10 @@ namespace MapGenerator
                 do
                 {
                     TileLocator.Current.RandomPoint(cityLocation.X, cityLocation.Y, (byte)(Formula.Current.GetInitialCityRadius() - 1), false, out x, out y);
-                } while (SimpleGameObject.TileDistance(x, y, cityLocation.X, cityLocation.Y) <= 1 ||
-                         map[y*region_width + x] == FARM_TILE || map[y*region_width + x] == WOODLAND_TILE);
+                } while (map[y*region_width + x] == FARM_TILE || map[y*region_width + x] == WOODLAND_TILE ||
+                         SimpleGameObject.TileDistance(x, y, cityLocation.X, cityLocation.Y) <= 1 ||
+                         !SimpleGameObject.IsPerpendicular(x, y, cityLocation.X, cityLocation.Y));
+
                 map[y*region_width + x] = FARM_TILE;
             }
 
@@ -85,7 +90,8 @@ namespace MapGenerator
                 {
                     TileLocator.Current.RandomPoint(cityLocation.X, cityLocation.Y, (byte)(Formula.Current.GetInitialCityRadius() - 1), false, out x, out y);
                 } while (SimpleGameObject.TileDistance(x, y, cityLocation.X, cityLocation.Y) <= 1 ||
-                         map[y*region_width + x] == FARM_TILE || map[y*region_width + x] == WOODLAND_TILE);
+                         map[y * region_width + x] == FARM_TILE || map[y * region_width + x] == WOODLAND_TILE ||
+                         !SimpleGameObject.IsPerpendicular(x, y, cityLocation.X, cityLocation.Y));
                 map[y*region_width + x] = WOODLAND_TILE;
             }
         }
@@ -110,6 +116,8 @@ namespace MapGenerator
                     //load tile info
                     while (nodeIter.MoveNext())
                     {
+                        Debug.Assert(nodeIter.Current != null, "nodeIter.Current != null");
+
                         byte[] zippedMap = Convert.FromBase64String(nodeIter.Current.Value);
                         using (var gzip = new GZipStream(new MemoryStream(zippedMap), CompressionMode.Decompress))
                         {
@@ -120,7 +128,7 @@ namespace MapGenerator
                             for (int i = 0; i < tmpMap.Length; i += sizeof(int))
                             {
                                 var tileId = (ushort)(BitConverter.ToInt32(tmpMap, i) - 1);
-                                region.map[cnt++] = tileId;
+                                region.Map[cnt++] = tileId;
                             }
                         }
 
@@ -132,12 +140,12 @@ namespace MapGenerator
                     {
                         for (uint x = 0; x < region_width; ++x)
                         {
-                            ushort tileId = region.map[y*region_width + x];
+                            ushort tileId = region.Map[y*region_width + x];
 
                             if (tileId != CITY_TILE)
                                 continue;
 
-                            region.cityLocations.Add(new Vector2D(x, y));
+                            region.CityLocations.Add(new Vector2D(x, y));
                         }
                     }
 
@@ -151,9 +159,9 @@ namespace MapGenerator
             Region region = regions[random.Next(regions.Count)];
 
             var map = new ushort[region_width*region_height];
-            Buffer.BlockCopy(region.map, 0, map, 0, region.map.Length*sizeof(ushort));
+            Buffer.BlockCopy(region.Map, 0, map, 0, region.Map.Length*sizeof(ushort));
 
-            foreach (var cityLocation in region.cityLocations)
+            foreach (var cityLocation in region.CityLocations)
             {
                 locations.Add(new Location(xOffset + cityLocation.X, yOffset + cityLocation.Y, (uint)SimpleGameObject.TileDistance(xOffset + cityLocation.X, yOffset + cityLocation.Y, (uint)width / 2, (uint)height / 2)));
                 GenerateResource(cityLocation, map);
@@ -164,9 +172,9 @@ namespace MapGenerator
 
         private class Location
         {
-            public uint X { get; set; }
-            public uint Y { get; set; }
-            public uint Distance { get; set; }
+            public uint X { get; private set; }
+            public uint Y { get; private set; }
+            public uint Distance { get; private set; }
 
             public Location(uint x, uint y, uint distance)
 
@@ -177,8 +185,32 @@ namespace MapGenerator
             }
         }
 
-        private static void Main(string[] args)
+        private static void Main()
         {
+            bool help = false;
+            string settingsFile = string.Empty;
+
+            try
+            {
+                var p = new OptionSet { { "?|help|h", v => help = true }, { "settings=", v => settingsFile = v }, };
+                p.Parse(Environment.GetCommandLineArgs());
+            }
+            catch (Exception e)
+            {
+                Console.Out.WriteLine(e.Message);
+                Environment.Exit(0);
+            }
+
+            if (help)
+            {
+                Console.Out.WriteLine("Usage: mapgenerator [--settings=settings.ini]");
+                Environment.Exit(0);
+            }
+
+            Config.LoadConfigFile(settingsFile);
+            Factory.CompileConfigFiles();       
+            Engine.CreateDefaultKernel();
+
             LoadRegions();
 
             if (regions.Count == 0)
@@ -189,9 +221,9 @@ namespace MapGenerator
 
             using (var bw = new BinaryWriter(File.Open("map.dat", FileMode.Create, FileAccess.Write)))
             {
-                for (int row = 0; row < region_row; ++row)
+                for (int row = 0; row < regionRow; ++row)
                 {
-                    for (int col = 0; col < region_column; ++col)
+                    for (int col = 0; col < regionColumn; ++col)
                     {
                         var xOffset = (uint)(col*region_width);
                         var yOffset = (uint)(row*region_height);
@@ -223,8 +255,8 @@ namespace MapGenerator
 
         private class Region
         {
-            public readonly List<Vector2D> cityLocations = new List<Vector2D>();
-            public readonly ushort[] map = new ushort[region_width*region_height];
+            public readonly List<Vector2D> CityLocations = new List<Vector2D>();
+            public readonly ushort[] Map = new ushort[region_width*region_height];
         }
 
         #endregion
@@ -233,39 +265,15 @@ namespace MapGenerator
 
         private struct Vector2D
         {
-            private uint x;
-
-            private uint y;
-
-            public Vector2D(uint x, uint y)
+            public Vector2D(uint x, uint y) : this()
             {
-                this.x = x;
-                this.y = y;
+                X = x;
+                Y = y;
             }
 
-            public uint X
-            {
-                get
-                {
-                    return x;
-                }
-                set
-                {
-                    x = value;
-                }
-            }
+            public uint X { get; private set; }
 
-            public uint Y
-            {
-                get
-                {
-                    return y;
-                }
-                set
-                {
-                    y = value;
-                }
-            }
+            public uint Y { get; private set; }
         }
 
         #endregion

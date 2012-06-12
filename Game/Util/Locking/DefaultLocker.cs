@@ -172,7 +172,7 @@ namespace Game.Util.Locking
 
         private IMultiObjectLock TryGetTribe(uint tribeId, out ITribe tribe)
         {
-            if (!World.Current.Tribes.TryGetValue(tribeId, out tribe))
+            if (!World.Current.TryGetObjects(tribeId, out tribe))
                 return null;
 
             try {
@@ -194,13 +194,7 @@ namespace Game.Util.Locking
             if (lck == null)
                 return null;
 
-            if (!city.TryGetStructure(objectId, out obj))
-            {
-                city = null;
-                obj = null;
-                lck.UnlockAll();
-                return null;
-            }
+            city.TryGetStructure(objectId, out obj);
 
             return lck;
         }

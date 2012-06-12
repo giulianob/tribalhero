@@ -14,11 +14,11 @@ TUTORIAL_WAIT_FOR_FARM,Your farm is currently building. Wait until it's done the
 TUTORIAL_CLICK_FARM,Farms require laborers to produce crop. Click on the Farm.
 TUTORIAL_CLICK_FARM_ASSIGN_LABORERS,Click Assign Laborers then choose the number of laborers to place in the farm.
 ,
-TUTORIAL_CLICK_TOWNCENTER_TO_BUILD_LUMBERMILL,A Lumbermill needs to be built in order to gather wood. Click on the Town Center.
+TUTORIAL_CLICK_TOWNCENTER_TO_BUILD_LUMBERMILL,A Lumbermill needs to be built in order to gather wood. \nClick on the Town Center.
 TUTORIAL_CLICK_BUILD_LUMBERMILL,Click on Build Lumbermill.
 ,
 TUTORIAL_WAITING_FOR_LUMBERMILL,Your lumbermill is currently being built.
 TUTORIAL_FIND_FOREST,Lumbermills gather wood from the Forests scattered throughout the world. Use the minimap to find a level 1 forest. Forests are represented by a small green circle on the minimap.
 TUTORIAL_CLICK_GATHER_WOOD,Click on Gather Lumber to assign laborers to this forest.
 ,
-TUTORIAL_END,"You now have a small city producing some of the basic resources. From here you can increase your resource production by upgrading your Lumbermill and Farm, or grow your city by upgrading your Town Center. If you have any questions, visit our wiki at tribalhero.wikia.com. Click on the globe next to your city name to return to your city."
+TUTORIAL_END,"You now have a small city producing some of the basic resources. From here you can increase your resource production by upgrading your Lumbermill and Farm, or grow your city by upgrading your Town Center. If you have any questions, visit our wiki at tribalhero.wikia.com.\nClick on the globe next to your city name to return to your city."

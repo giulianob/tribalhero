@@ -181,10 +181,12 @@ package src.Util {
 		public static function niceTime(time: int, conj: Boolean = true): String
 		{
 			if (time < 60) {
-				if (conj)
-				return "less than a minute";
-				else
-				return "1 minute";
+				if (conj) {
+					return "less than a minute";
+				}
+				else {
+					return "1 minute";
+				}
 			}
 
 			var hours: int = int(time / (60 * 60));

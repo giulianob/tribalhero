@@ -1,6 +1,7 @@
 ﻿package src.Comm.Commands {
 	import flash.geom.Point;
 	import src.Comm.*;
+	import src.Constants;
 	import src.Global;
 	import src.UI.Dialog.PlayerProfileDialog;
 	import src.Util.Util;
@@ -78,8 +79,8 @@
 				case Commands.TECHNOLOGY_UPGRADED:
 					onReceiveTechnologyChanged(e.packet);
 				break;
-				case Commands.CITY_ATTACK_DEFENSE_POINT_UPDATE:
-					onReceiveDefenseAttackPoint(e.packet);
+				case Commands.CITY_POINTS_UPDATE:
+					onReceiveCityPointsUpdate(e.packet);
 				break;
 				case Commands.CITY_BATTLE_ENDED:
 				case Commands.CITY_BATTLE_STARTED:
@@ -87,18 +88,19 @@
 				break;
 			}
 		}
-		
+
 		public function onCityNewUpdate(packet: Packet) : void {
 			var newCity: City = mapComm.General.readCity(packet);			
 			Global.gameContainer.addCityToUI(newCity);
 			Global.gameContainer.selectCity(newCity.id);
 		}
 
-		public function onReceiveDefenseAttackPoint(packet: Packet): void {
+		public function onReceiveCityPointsUpdate(packet: Packet): void {
 			var cityId: int = packet.readUInt();
 			var attackPoint: int = packet.readInt();
 			var defensePoint: int = packet.readInt();
 			var cityValue: int = packet.readUShort();
+			var ap: Number = packet.readFloat();
 
 			var city: City = Global.map.cities.get(cityId);
 
@@ -106,6 +108,9 @@
 				city.attackPoint = attackPoint;
 				city.defensePoint = defensePoint;
 				city.value = cityValue;
+				city.ap = ap;
+				
+				BuiltInMessages.showApStatus(city);
 			}
 		}
 

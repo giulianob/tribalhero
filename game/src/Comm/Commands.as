@@ -78,7 +78,7 @@ package src.Comm {
 		public static const CITY_LOCATE_BY_NAME: int = 464;
 		public static const CITY_RADIUS_UPDATE: int = 465;
 		public static const CITY_LOCATE: int = 466;
-		public static const CITY_ATTACK_DEFENSE_POINT_UPDATE: int = 467;
+		public static const CITY_POINTS_UPDATE: int = 467;
 		public static const CITY_HIDE_NEW_UNITS_UPDATE: int = 468;
 		public static const CITY_BATTLE_STARTED: int = 490;
 		public static const CITY_BATTLE_ENDED: int = 491;

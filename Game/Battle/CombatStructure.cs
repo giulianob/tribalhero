@@ -235,6 +235,10 @@ namespace Game.Battle
 
         public override void CalculateDamage(decimal dmg, out decimal actualDmg)
         {
+            if (City.AlignmentPoint >= 90m)
+            {
+                dmg *= .1m;
+            }
             actualDmg = Math.Min(Hp, dmg);
         }
 
@@ -249,7 +253,9 @@ namespace Game.Battle
             Structure.EndUpdate();
 
             if (hp == 0)
+            {
                 attackPoints = formula.GetStructureKilledAttackPoint(type, lvl);
+            }
 
             returning = null;
         }

@@ -146,6 +146,15 @@ namespace Game.Logic.Formulas
             var resource = new Resource();
             foreach (var structure in city.Where(x => objectTypeFactory.IsStructureType("Basement", x)))
                 resource.Add(rateCrop[structure.Lvl], rateGold[structure.Lvl], rateIron[structure.Lvl], rateWood[structure.Lvl], 0);
+            if(city.AlignmentPoint>=75m)
+            {
+                double pct = .75;
+                return new Resource((int)Math.Max(city.Resource.Crop.Limit*pct, resource.Crop),
+                                    (int)Math.Max(city.Resource.Gold.Limit*pct, resource.Gold),
+                                    (int)Math.Max(city.Resource.Iron.Limit*pct, resource.Iron),
+                                    (int)Math.Max(city.Resource.Wood.Limit*pct, resource.Wood),
+                                    (int)Math.Max(city.Resource.Labor.Limit*pct, resource.Labor));
+            }
             return resource;
         }
 

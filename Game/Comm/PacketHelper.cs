@@ -310,6 +310,7 @@ namespace Game.Comm
             packet.AddInt32(city.AttackPoint);
             packet.AddInt32(city.DefensePoint);
             packet.AddUInt16(city.Value);
+            packet.AddFloat((float)city.AlignmentPoint);
             packet.AddByte(city.Battle != null ? (byte)1 : (byte)0);
             packet.AddByte(city.HideNewUnits ? (byte)1 : (byte)0);
 

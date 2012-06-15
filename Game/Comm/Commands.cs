@@ -115,7 +115,7 @@ namespace Game.Comm
         CityLocateByName = 464,
         CityRadiusUpdate = 465,
         CityLocate = 466,
-        CityAttackDefensePointUpdate = 467,
+        CityPointUpdate = 467,
         CityHideNewUnitsUpdate = 468,
 
         CityBattleStarted = 490,

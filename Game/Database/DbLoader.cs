@@ -351,6 +351,7 @@ namespace Game.Database
                                        DefensePoint = (int)reader["defense_point"],
                                        HideNewUnits = (bool)reader["hide_new_units"],
                                        Value = (ushort)reader["value"],
+                                       AlignmentPoint =  (decimal)reader["alignment_point"],
                                        Deleted = (City.DeletedState)reader["deleted"]
                                };
 

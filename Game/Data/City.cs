@@ -40,6 +40,7 @@ namespace Game.Data
 
         private readonly Dictionary<uint, IStructure> structures = new Dictionary<uint, IStructure>();
         private readonly Dictionary<uint, ITroopObject> troopobjects = new Dictionary<uint, ITroopObject>();
+        private decimal alignmentPoint;
         private int attackPoint;
         private IBattleManager battle;
         private int defensePoint;
@@ -283,7 +284,7 @@ namespace Game.Data
             {
                 CheckUpdateMode();
                 attackPoint = value;
-                DefenseAttackPointUpdate();
+                PointUpdate();
             }
         }
 
@@ -300,7 +301,21 @@ namespace Game.Data
             {
                 CheckUpdateMode();
                 defensePoint = value;
-                DefenseAttackPointUpdate();
+                PointUpdate();
+            }
+        }
+
+        public decimal AlignmentPoint
+        {
+            get
+            {
+                return alignmentPoint;
+            }
+            set
+            {
+                CheckUpdateMode();
+                alignmentPoint = value;
+                PointUpdate();
             }
         }
 
@@ -318,10 +333,12 @@ namespace Game.Data
                 if (Global.FireEvents && id > 0)
                 {
                     World.Current.GetCityRegion(X, Y).MarkAsDirty();
-                    DefenseAttackPointUpdate();
+                    PointUpdate();
                 }
             }
         }
+
+
 
         #endregion
 
@@ -671,17 +688,18 @@ namespace Game.Data
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
-        public void DefenseAttackPointUpdate()
+        public void PointUpdate()
         {
             if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
-            var packet = new Packet(Command.CityAttackDefensePointUpdate);
+            var packet = new Packet(Command.CityPointUpdate);
 
             packet.AddUInt32(Id);
             packet.AddInt32(attackPoint);
             packet.AddInt32(defensePoint);
             packet.AddUInt16(value);
+            packet.AddFloat((float)alignmentPoint);
 
             Global.Channel.Post("/CITY/" + id, packet);
         }
@@ -1025,7 +1043,7 @@ namespace Game.Data
                 return new[]
                        {
                                new DbColumn("player_id", Owner.PlayerId, DbType.UInt32), new DbColumn("name", Name, DbType.String, 32),
-                               new DbColumn("value", Value, DbType.UInt16),
+                               new DbColumn("value", Value, DbType.UInt16), new DbColumn("alignment_point", AlignmentPoint, DbType.Decimal),
                                new DbColumn("radius", Radius, DbType.Byte), new DbColumn("hide_new_units", HideNewUnits, DbType.Boolean),
                                new DbColumn("loot_stolen", LootStolen, DbType.UInt32), new DbColumn("attack_point", AttackPoint, DbType.Int32),
                                new DbColumn("defense_point", DefensePoint, DbType.Int32), new DbColumn("gold", Resource.Gold.RawValue, DbType.Int32),

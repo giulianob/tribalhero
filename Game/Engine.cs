@@ -12,6 +12,7 @@ using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
+using Game.Module.Remover;
 using Game.Setup;
 using Game.Util.Locking;
 using Ninject;
@@ -143,6 +144,9 @@ _________ _______ _________ ______   _______  _
             // Start thrift server
             ThreadPool.QueueUserWorkItem(o => thriftServer.Serve());
 
+            // Schedule player deletions
+            ThreadPool.QueueUserWorkItem(o => new PlayersRemover(new CityRemoverFactory(), new NewbieIdleSelector()).Start());
+
             State = EngineState.Started;
 
             return true;
@@ -153,6 +157,7 @@ _________ _______ _________ ______   _______  _
             Ioc.Kernel = new StandardKernel(new NinjectSettings { LoadExtensions = true }, new GameModule());
             
             // Instantiate singletons here for now until all classes are properly being injected
+            SystemVariablesUpdater.Current = Ioc.Kernel.Get<SystemVariablesUpdater>();
             RadiusLocator.Current = Ioc.Kernel.Get<RadiusLocator>();
             TileLocator.Current = Ioc.Kernel.Get<TileLocator>();
             ReverseTileLocator.Current = Ioc.Kernel.Get<ReverseTileLocator>();
@@ -180,7 +185,7 @@ _________ _______ _________ ______   _______  _
 
             State = EngineState.Stopping;
 
-            SystemVariablesUpdater.Pause();
+            SystemVariablesUpdater.Current.Pause();
             logger.Info("Stopping TCP server...");
             server.Stop();
             logger.Info("Stopping policy server...");

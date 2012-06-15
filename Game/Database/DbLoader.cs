@@ -44,7 +44,7 @@ namespace Game.Database
 
         public bool LoadFromDatabase()
         {
-            SystemVariablesUpdater.Pause();
+            SystemVariablesUpdater.Current.Pause();
             Scheduler.Current.Pause();
             Global.FireEvents = false;
 
@@ -104,7 +104,7 @@ namespace Game.Database
 
             Global.Logger.Info("Database loading finished");
 
-            SystemVariablesUpdater.Resume();
+            SystemVariablesUpdater.Current.Resume();
             Global.FireEvents = true;
             Scheduler.Current.Resume();
             return true;

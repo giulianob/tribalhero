@@ -20,6 +20,30 @@
 		{
 			return get([city.id, 1]);
 		}
+		
+		public function getUnitTotalsByStatus(): * {
+			var onTheMove: int = getDefaultTroop().get(Formation.InBattle).getIndividualUnitCount();
+			var idle: int = getDefaultTroop().get(Formation.Normal).getIndividualUnitCount() + getDefaultTroop().get(Formation.Garrison).getIndividualUnitCount();
+			
+			for each(var stub: TroopStub in each()) {
+				// Skip other peoples stubs or the default one since its handled above
+				if (stub.cityId != city.id || stub.id == 1) continue;
+				
+				var unitCount: int = stub.getIndividualUnitCount();
+				
+				switch (stub.state) {
+					case TroopStub.IDLE:
+					case TroopStub.STATIONED:
+						idle += unitCount;
+						break;
+					default:
+						onTheMove += unitCount;
+						break;
+				}
+			}	
+			
+			return { idle: idle, onTheMove: onTheMove };
+		}
 
 		public function getIndividualUnitCount(type: int = -1, minLevel: int = 1): int {
 

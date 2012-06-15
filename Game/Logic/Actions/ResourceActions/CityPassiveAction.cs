@@ -97,6 +97,7 @@ namespace Game.Logic.Actions
             Upkeep();
             WeaponExport();
             FastIncome();
+            AlignmentPoint();
         }
 
         public override void Callback(object custom)
@@ -251,5 +252,21 @@ namespace Game.Logic.Actions
                     city.Resource.Gold.Add(gold);
                 };
         }
+
+        private void AlignmentPoint()
+        {
+            PostFirstLoop += city =>
+            {
+                if (Math.Abs(city.AlignmentPoint - 50m) < .125m)
+                {
+                    city.AlignmentPoint = 50m;
+                }
+                else
+                {
+                    city.AlignmentPoint += city.AlignmentPoint > 50m ? -.125m : +.125m;
+                }
+            };
+        }
+
     }
 }

@@ -104,6 +104,8 @@ namespace Game.Data
 
         ushort Value { get; set; }
 
+        decimal AlignmentPoint { get; set; }
+
         bool IsUpdating { get; }
 
         City.DeletedState Deleted { get; set; }
@@ -167,7 +169,7 @@ namespace Game.Data
 
         void RadiusUpdateEvent();
 
-        void DefenseAttackPointUpdate();
+        void PointUpdate();
 
         void HideNewUnitsUpdate();
 

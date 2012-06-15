@@ -77,8 +77,36 @@ namespace Game.Logic.Actions
                 throw new Exception();
             }
 
+            city.Battle.EnterRound += BattleEnterRound;
             city.Battle.ActionAttacked += BattleActionAttacked;
             city.Battle.UnitRemoved += BattleUnitRemoved;
+        }
+
+        void BattleEnterRound(uint battleId, CombatList atk, CombatList def, uint round)
+        {
+            decimal atkUpkeep = atk.Upkeep;
+            decimal defUpkeep = def.Upkeep;
+
+            if (atkUpkeep <= defUpkeep)
+                return;
+
+            decimal points = Math.Max(atkUpkeep/defUpkeep - 1, 3)/20;
+            
+            foreach(ITroopStub stub in atk.Select(co=> co.TroopStub).Distinct())
+            {
+                stub.City.BeginUpdate();
+                stub.City.AlignmentPoint += (stub.Upkeep/atkUpkeep*points);
+                stub.City.EndUpdate();
+            }
+
+            ICity city;
+            if (!gameObjectLocator.TryGetObjects(cityId, out city))
+            {
+                throw new Exception("City is missing");
+            }
+            city.BeginUpdate();
+            city.AlignmentPoint += points;
+            city.EndUpdate();
         }
 
         public override ActionType Type

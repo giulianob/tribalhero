@@ -567,7 +567,7 @@ namespace CSVToXML {
                         writer.WriteStartElement("trans-unit");
                         writer.WriteAttributeString("resname", obj[0]);
                         writer.WriteStartElement("source");
-                        writer.WriteString(obj[1]);
+                        writer.WriteString(obj[1].Replace("\\n", "\n"));
                         writer.WriteEndElement();
                         writer.WriteEndElement();
                     }

@@ -1,19 +1,20 @@
 package src.Objects.Process 
 {
+	import fl.lang.Locale;
 	import flash.events.Event;
 	import org.aswing.JButton;
+	import org.aswing.JOptionPane;
 	import src.Global;
 	import src.Objects.GameObject;
 	import src.UI.Cursors.GroundAttackCursor;
 	import src.UI.Dialog.AttackTroopDialog;
+	import src.UI.Dialog.InfoDialog;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
-	/**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
+
 	public class AttackSendProcess implements IProcess
 	{		
-		private var attackDialog: AttackTroopDialog;
+		private var attackDialog: AttackTroopDialog;		
+		private var target: GameObject;
 		
 		public function AttackSendProcess() 
 		{
@@ -43,16 +44,35 @@ package src.Objects.Process
 		}
 		
 		public function onChoseTarget(sender: GroundAttackCursor): void {			
+			this.target = sender.getTargetObject();
 			
-			var target: GameObject = sender.getTargetObject();
-			
+			Global.mapComm.City.isCityUnderAPBonus(target.cityId, onGotAPStatus);
+		}
+		
+		public function onGotAPStatus(hasBonuses: Boolean): void {
+			if (!hasBonuses) {
+				onAttackAccepted();
+			}
+			else {
+				InfoDialog.showMessageDialog(Locale.loadString("STR_MESSAGE"), Locale.loadString("SEND_ATTACK_AP_BONUS"), function (result: int): void {
+					if (result == JOptionPane.YES) {
+						onAttackAccepted();
+					}
+					else {
+						onAttackFail();
+					}
+				}, null, true, false, JOptionPane.YES | JOptionPane.NO);
+			}
+		}
+		
+		public function onAttackAccepted(): void {				
 			Global.mapComm.Troop.troopAttack(Global.gameContainer.selectedCity.id, target.cityId, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);
 
 			Global.gameContainer.setOverlaySprite(null);
 			Global.gameContainer.setSidebar(null);
 		}
 		
-		public function onAttackFail(custom: *):void {
+		public function onAttackFail(custom: * = null):void {
 			onChoseUnits(attackDialog);
 		}
 		

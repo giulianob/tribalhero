@@ -12,7 +12,7 @@ namespace Testing.Actions
         {
             get
             {
-                
+                yield return new object[]{};
             }
         }
             

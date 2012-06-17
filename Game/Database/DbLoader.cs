@@ -343,7 +343,12 @@ namespace Game.Database
                                                     (int)reader["labor"],
                                                     laborRealizeTime,
                                                     (int)reader["labor_production_rate"]);
-                    var city = new City(World.Current.Players[(uint)reader["player_id"]], (string)reader["name"], resource, (byte)reader["radius"], null)
+                    var city = new City(World.Current.Players[(uint)reader["player_id"]],
+                                        (string)reader["name"],
+                                        resource,
+                                        (byte)reader["radius"],
+                                        null,
+                                        (decimal)reader["alignment_point"])
                                {
                                        DbPersisted = true,
                                        LootStolen = (uint)reader["loot_stolen"],
@@ -351,7 +356,6 @@ namespace Game.Database
                                        DefensePoint = (int)reader["defense_point"],
                                        HideNewUnits = (bool)reader["hide_new_units"],
                                        Value = (ushort)reader["value"],
-                                       AlignmentPoint =  (decimal)reader["alignment_point"],
                                        Deleted = (City.DeletedState)reader["deleted"]
                                };
 

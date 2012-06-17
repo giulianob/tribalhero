@@ -107,7 +107,7 @@ namespace Game.Setup
         public static int actions_free_cancel_interval_in_sec = 60;
         public static bool actions_ignore_requirements;
 
-        public static int idle_days = 14;
+        public static int idle_days = 3;
 
         public static Random Random { get; private set; }
 

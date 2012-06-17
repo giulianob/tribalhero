@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Logic;
@@ -11,7 +7,6 @@ using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Xunit;
 using FluentAssertions;

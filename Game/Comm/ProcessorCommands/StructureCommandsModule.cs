@@ -45,6 +45,38 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.ActionCancel, CancelAction);
             processor.RegisterCommand(Command.TechUpgrade, TechnologyUpgrade);
             processor.RegisterCommand(Command.CityUsernameGet, GetCityUsername);
+            processor.RegisterCommand(Command.CityHasApBonus, GetCityHasApBonus);
+        }
+
+        private void GetCityHasApBonus(Session session, Packet packet)
+        {
+            ICity city;
+
+            uint cityId;
+
+            try
+            {
+                cityId = packet.GetUInt32();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            using (Concurrency.Current.Lock(cityId, out city))
+            {
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.ObjectNotFound);
+                    return;
+                }
+
+                var reply = new Packet(packet);
+                reply.AddByte((byte)(city.AlignmentPoint >= 0.75m ? 1 : 0));
+
+                session.Write(reply);
+            }
         }
 
         private void StructureInfo(Session session, Packet packet)

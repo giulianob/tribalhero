@@ -117,6 +117,7 @@ namespace Game.Comm
         CityLocate = 466,
         CityPointUpdate = 467,
         CityHideNewUnitsUpdate = 468,
+        CityHasApBonus = 469,
 
         CityBattleStarted = 490,
         CityBattleEnded = 491,

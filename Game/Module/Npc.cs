@@ -301,8 +301,8 @@ namespace Game.Module
                     city.Troops.Add(defaultTroop);
 
                     Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
-
-                    city.Worker.DoPassive(city, new CityPassiveAction(city.Id), false);
+                    throw new Exception("NPC isnt working right now due ot line below");
+                    //city.Worker.DoPassive(city, new CityPassiveAction(city.Id), false);
 
                     //TileLocator.Current.foreach_object(structure.X, structure.Y, (byte) (city.Radius - 1), false, BuildBasicStructures, city);
                 }

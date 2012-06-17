@@ -157,38 +157,31 @@ namespace Game.Logic
         {
             try
             {
-                if (WorkerObject.City == null)
-                    throw new NullReferenceException();
+                if (WorkerObject == null || WorkerObject.City == null)
+                    return false;
             }
             catch
             {
-                return false; //structure is dead
+                return false; //Structure is dead
             }
 
             return !IsDone;
         }
 
-        public double CalculateTime(int seconds, bool instantAction = true)
+        public double CalculateTime(double seconds)
         {
-            return CalculateTime((double)seconds, instantAction);
-        }
+            if (!Config.server_production && System.Diagnostics.Debugger.IsAttached)
+            {
+                string customTime;
+                string key = "actions_" + Type.ToString().ToUnderscore();
+                if (Config.ExtraProperties.TryGetValue(key, out customTime))
+                    return double.Parse(customTime);
 
-        public double CalculateTime(double seconds, bool instantAction = true)
-        {            
-#if DEBUG            
-            string customTime;
-            string key = "actions_" + Type.ToString().ToUnderscore();
-            if (Config.ExtraProperties.TryGetValue(key, out customTime))            
-                return double.Parse(customTime);            
+                if (Config.actions_instant_time)
+                    return 1;
+            }
 
-            if (!instantAction)
-                return seconds * Config.seconds_per_unit;
-
-            return Config.actions_instant_time ? 1 : seconds * Config.seconds_per_unit;
-#else
             return seconds * Config.seconds_per_unit;
-#endif
-
         }
 
 

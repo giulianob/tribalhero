@@ -90,7 +90,7 @@ namespace Game.Logic.Actions
             if (atkUpkeep <= defUpkeep)
                 return;
 
-            decimal points = Math.Max(atkUpkeep/defUpkeep - 1, 3)/20;
+            decimal points = Math.Min(atkUpkeep/defUpkeep - 1, 3)/20;
             
             foreach(ITroopStub stub in atk.Select(co=> co.TroopStub).Distinct())
             {

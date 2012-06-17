@@ -22,6 +22,13 @@ namespace Game.Comm.ProcessorCommands
 {
     class LoginCommandsModule : CommandModule
     {
+        private readonly IActionFactory actionFactory;
+
+        public LoginCommandsModule(IActionFactory actionFactory)
+        {
+            this.actionFactory = actionFactory;
+        }
+
         private readonly object loginLock = new object();
 
         public override void RegisterCommands(Processor processor)
@@ -236,7 +243,7 @@ namespace Game.Comm.ProcessorCommands
 
                 //Restart any city actions that may have been stopped due to inactivity
                 foreach (var city in player.GetCityList().Where(city => city.Worker.PassiveActions.Values.All(x => x.Type != ActionType.CityPassive)))
-                    city.Worker.DoPassive(city, new CityPassiveAction(city.Id), false);
+                    city.Worker.DoPassive(city, actionFactory.CreateCityPassiveAction(city.Id), false);
             }
         }
 
@@ -284,7 +291,7 @@ namespace Game.Comm.ProcessorCommands
 
                 Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
 
-                city.Worker.DoPassive(city, new CityPassiveAction(city.Id), false);
+                city.Worker.DoPassive(city, actionFactory.CreateCityPassiveAction(city.Id), false);
 
                 var reply = new Packet(packet);
                 reply.Option |= (ushort)Packet.Options.Compressed;

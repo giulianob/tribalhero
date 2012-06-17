@@ -8,7 +8,7 @@ namespace Testing.Actions
 {
     public class BattlePassiveActionTest
     {
-        public static IEnumerable<object[]> ShouldGiveApWhenEnterRound
+        public static IEnumerable<object[]> ShouldGiveApWhenEnterRoundData
         {
             get
             {

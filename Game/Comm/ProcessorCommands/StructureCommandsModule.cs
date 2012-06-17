@@ -73,7 +73,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var reply = new Packet(packet);
-                reply.AddByte((byte)(city.AlignmentPoint >= 0.75m ? 1 : 0));
+                reply.AddByte((byte)(city.AlignmentPoint >= 75m ? 1 : 0));
 
                 session.Write(reply);
             }

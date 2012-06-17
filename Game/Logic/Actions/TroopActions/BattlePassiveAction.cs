@@ -54,6 +54,7 @@ namespace Game.Logic.Actions
                 throw new Exception("Did not find city that was supposed to be having a battle");
             }
 
+            city.Battle.EnterRound += BattleEnterRound;
             city.Battle.ActionAttacked += BattleActionAttacked;
             city.Battle.UnitRemoved += BattleUnitRemoved;
         }
@@ -156,6 +157,7 @@ namespace Game.Logic.Actions
                 // Delete the battle
                 city.Battle.ActionAttacked -= BattleActionAttacked;
                 city.Battle.UnitRemoved -= BattleUnitRemoved;
+                city.Battle.EnterRound -= BattleEnterRound;
                 dbManager.Delete(city.Battle);
                 city.Battle = null;
 

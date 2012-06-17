@@ -187,5 +187,10 @@ namespace Game.Logic.Formulas
         {
             return 4;
         }
+
+        public virtual decimal GetInitialAp()
+        {
+            return 50m;
+        }
     }
 }

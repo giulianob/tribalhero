@@ -286,7 +286,7 @@ namespace Game.Module
                         break;
                     }
 
-                    var city = new City(npc, string.Format("{0} {1}", npc.Name, npc.GetCityCount() + 1), Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), structure);
+                    var city = new City(npc, string.Format("{0} {1}", npc.Name, npc.GetCityCount() + 1), Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), structure, 0);
                     npc.Add(city);
 
                     World.Current.Add(city);

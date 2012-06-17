@@ -26,6 +26,8 @@ namespace Game.Data
 
         DateTime ChatLastMessage { get; set; }
 
+        bool IsIdle { get; }
+
         int ChatFloodCount { get; set; }
 
         string Description { get; set; }

@@ -34,7 +34,7 @@ namespace Game.Logic.Procedures
                 return false;
             }
 
-            city = new City(player, cityName, Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), mainBuilding);
+            city = new City(player, cityName, Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), mainBuilding, Formula.Current.GetInitialAp());
             player.Add(city);
 
             World.Current.Add(city);

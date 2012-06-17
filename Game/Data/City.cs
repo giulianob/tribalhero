@@ -309,10 +309,15 @@ namespace Game.Data
         {
             get
             {
-                return alignmentPoint;
+                return Owner.IsIdle ? 50 : alignmentPoint;
             }
             set
             {
+                if (Owner.IsIdle)
+                {
+                    value = 50;
+                }
+
                 CheckUpdateMode();
                 alignmentPoint = value;
                 PointUpdate();
@@ -344,16 +349,18 @@ namespace Game.Data
 
         #region Constructors
 
-        public City(IPlayer owner, string name, Resource resource, byte radius, IStructure mainBuilding)
-            : this(owner, name, new LazyResource(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor), radius, mainBuilding)
+        public City(IPlayer owner, string name, Resource resource, byte radius, IStructure mainBuilding, decimal ap)
+            : this(owner, name, new LazyResource(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor), radius, mainBuilding, ap)
         {
         }
 
-        public City(IPlayer owner, string name, LazyResource resource, byte radius, IStructure mainBuilding)
+        public City(IPlayer owner, string name, LazyResource resource, byte radius, IStructure mainBuilding, decimal ap)
         {
             Owner = owner;
             this.name = name;
             this.radius = radius;
+
+            AlignmentPoint = ap;
             Resource = resource;
 
             Worker = new ActionWorker(this);

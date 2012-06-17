@@ -58,6 +58,14 @@ namespace Game.Data
 
         public int ChatFloodCount { get; set; }
 
+        public bool IsIdle
+        {
+            get
+            {
+                return Session == null && SystemClock.Now.Subtract(LastLogin).TotalDays > Config.idle_days;
+            }
+        }
+
         private string description = string.Empty;
         public string Description
         {

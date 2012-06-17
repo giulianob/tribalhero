@@ -16,6 +16,8 @@ namespace Game.Logic.Actions
 {
     public class CityPassiveAction : ScheduledPassiveAction
     {
+        public const int PLAYER_IDLE_DAYS = 2;
+
         private readonly ObjectTypeFactory objectTypeFactory;
 
         private readonly ILocker locker;
@@ -176,7 +178,7 @@ namespace Game.Logic.Actions
 
             PostFirstLoop += city =>
                 {
-                    if (city.Owner.Session == null && SystemClock.Now.Subtract(city.Owner.LastLogin).TotalDays > 2)
+                    if (city.Owner.IsIdle)
                         return;
 
                     laborTimeRemains += INTERVAL_IN_SECONDS;
@@ -272,13 +274,13 @@ namespace Game.Logic.Actions
         {
             PostFirstLoop += city =>
             {
-                if (Math.Abs(city.AlignmentPoint - 50m) <= .125m)
+                if (Math.Abs(city.AlignmentPoint - 50m) < 0.125m)
                 {
                     city.AlignmentPoint = 50m;
                 }
                 else
                 {
-                    city.AlignmentPoint += city.AlignmentPoint > 50m ? -.125m : +.125m;
+                    city.AlignmentPoint += city.AlignmentPoint > 50m ? -0.125m : 0.125m;
                 }
             };
         }

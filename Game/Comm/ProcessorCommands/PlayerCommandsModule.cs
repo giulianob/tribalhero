@@ -133,6 +133,8 @@ namespace Game.Comm.ProcessorCommands
                 {
                     reply.AddUInt32(city.Id);
                     reply.AddString(city.Name);
+                    reply.AddUInt32(city.X);
+                    reply.AddUInt32(city.Y);
                 }
             }
 

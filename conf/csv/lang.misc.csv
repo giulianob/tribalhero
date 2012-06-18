@@ -74,4 +74,7 @@ MSG_TRIBE_NO_ALERTS,Tribe: no more invasion alert or pending assignment
 MSG_AP_RESOURCE_BONUS,{0} Alignment Point Bonus: Only resources over 75% of your resource cap can be looted
 MSG_AP_STRUCTURE_DEFENSE_BONUS,{0} Alignment Point Bonus: Damage to structures decreased by 90%
 ,
+PLAYER_PROFILE_DIALOG_CITY_DISTANCE,{0} - About {1} away
+PLAYER_PROFILE_DIALOG_CITY_DISTANCE_FOOTER,*Based on an average speed troop on an attack mission
+,
 SEND_ATTACK_AP_BONUS,The city you are attacking currently has alignment point bonuses since they have been attacked a lot lately. You may receive less loot than usual and this city's defenses may be temporarily increased.\n\nAre you sure you want to still attack?

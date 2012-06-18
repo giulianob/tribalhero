@@ -312,7 +312,7 @@
 			profileData.cities = [];
 			var citiesCount:int = packet.readUByte();
 			for (i = 0; i < citiesCount; i++)
-				profileData.cities.push({id: packet.readUInt(), name: packet.readString()});
+				profileData.cities.push({id: packet.readUInt(), name: packet.readString(), x: packet.readUInt(), y: packet.readUInt()});
 			
 			if (custom.callback)
 				custom.callback(profileData);

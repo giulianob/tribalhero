@@ -9,9 +9,12 @@
 	import org.aswing.ext.*;
 	import org.aswing.geom.*;
 	import src.*;
+	import src.Map.City;
+	import src.Objects.Effects.Formula;
 	import src.UI.*;
 	import src.UI.Components.*;
 	import src.UI.LookAndFeel.*;
+	import src.Util.Util;
 	
 	public class PlayerProfileDialog extends GameJPanel
 	{
@@ -164,8 +167,23 @@
 			for each (var city: * in profileData.cities) {
 				var pnlCity: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 5, false));
 				var lblCityName: CityLabel = new CityLabel(city.id, city.name);
-				GameLookAndFeel.changeClass(lblCityName, "darkHeader");					
+				GameLookAndFeel.changeClass(lblCityName, "darkHeader");
 				lblCityName.setPreferredWidth(125);
+				
+				// Build the list of "City1 - About 10 min away"
+				var distanceMsg: String = "";
+				
+				for each (var myCity: City in Global.map.cities.each()) {
+					var distance: int = myCity.MainBuilding.distance(city.x, city.y);
+					var timeAwayInSeconds: int = Formula.moveTimeTotal(myCity, 12, distance, true);
+		
+					distanceMsg += StringUtil.substitute(Locale.loadString("PLAYER_PROFILE_DIALOG_CITY_DISTANCE") + "\n", myCity.name, Util.niceTime(timeAwayInSeconds));
+				}
+				
+				var cityDistanceTooltip: SimpleTooltip = new SimpleTooltip(lblCityName, distanceMsg);
+				var footerDistanceTooltipLabel: MultilineLabel = new MultilineLabel(Locale.loadString("PLAYER_PROFILE_DIALOG_CITY_DISTANCE_FOOTER"), 0, 20);
+				GameLookAndFeel.changeClass(footerDistanceTooltipLabel, "Tooltip.italicsText");
+				cityDistanceTooltip.append(footerDistanceTooltipLabel);				
 				
 				var pnlCityRanking: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 0, false));
 				for each (rank in profileData.ranks) {

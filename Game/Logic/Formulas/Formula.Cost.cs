@@ -135,8 +135,9 @@ namespace Game.Logic.Formulas
         ///   Gets amount of resources that are hidden
         /// </summary>
         /// <param name = "city"></param>
+        /// <param name= "checkAlignmentPointBonus"></param>
         /// <returns></returns>
-        public virtual Resource HiddenResource(ICity city)
+        public virtual Resource HiddenResource(ICity city, bool checkAlignmentPointBonus=false)
         {
             int[] rateCrop = {0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100};
             int[] rateWood = {0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100};
@@ -146,7 +147,7 @@ namespace Game.Logic.Formulas
             var resource = new Resource();
             foreach (var structure in city.Where(x => objectTypeFactory.IsStructureType("Basement", x)))
                 resource.Add(rateCrop[structure.Lvl], rateGold[structure.Lvl], rateIron[structure.Lvl], rateWood[structure.Lvl], 0);
-            if(city.AlignmentPoint>=75m)
+            if (checkAlignmentPointBonus && city.AlignmentPoint >= 75m)
             {
                 double pct = .75;
                 return new Resource((int)Math.Max(city.Resource.Crop.Limit*pct, resource.Crop),

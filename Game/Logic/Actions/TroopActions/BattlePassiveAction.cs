@@ -83,31 +83,39 @@ namespace Game.Logic.Actions
             city.Battle.UnitRemoved += BattleUnitRemoved;
         }
 
-        void BattleEnterRound(uint battleId, CombatList atk, CombatList def, uint round)
+        void AddAlignmentPoint(CombatList atk, CombatList def, uint numOfRounds)
         {
-            decimal atkUpkeep = atk.Upkeep;
-            decimal defUpkeep = def.Upkeep;
-
-            if (atkUpkeep <= defUpkeep)
-                return;
-
-            decimal points = Math.Min(atkUpkeep/defUpkeep - 1, 3)/20;
-            
-            foreach(ITroopStub stub in atk.Select(co=> co.TroopStub).Distinct())
-            {
-                stub.City.BeginUpdate();
-                stub.City.AlignmentPoint += (stub.Upkeep/atkUpkeep*points);
-                stub.City.EndUpdate();
-            }
-
             ICity city;
             if (!gameObjectLocator.TryGetObjects(cityId, out city))
             {
                 throw new Exception("City is missing");
             }
+
+            decimal atkUpkeep = atk.Upkeep;
+            decimal defUpkeep = def.Upkeep + city.Troops.Upkeep;
+            defUpkeep -= city.DefaultTroop[FormationType.InBattle].Sum(kvp => kvp.Value * city.Template[kvp.Key].Upkeep);
+
+            if (atkUpkeep <= defUpkeep)
+                return;
+
+            decimal points = Math.Min(atkUpkeep/defUpkeep - 1, Config.ap_max_per_battle)*numOfRounds/20;
+
+            foreach (ITroopStub stub in atk.Select(co => co.TroopStub).Distinct())
+            {
+                stub.City.BeginUpdate();
+                stub.City.AlignmentPoint -= (stub.Upkeep / atkUpkeep * points);
+                stub.City.EndUpdate();
+            }
+
+
             city.BeginUpdate();
             city.AlignmentPoint += points;
             city.EndUpdate();
+        }
+
+        void BattleEnterRound(uint battleId, CombatList atk, CombatList def, uint round)
+        {
+            AddAlignmentPoint(atk, def, 1);
         }
 
         public override ActionType Type
@@ -268,6 +276,7 @@ namespace Game.Logic.Actions
             // Keep track of our buildings destroyed HP
             if (obj.ClassType == BattleClass.Structure && obj.City.Id == cityId) {
                 destroyedHp += (uint)obj.Stats.MaxHp;
+                AddAlignmentPoint(obj.Battle.Attacker, obj.Battle.Defender, Config.battle_stamina_destroyed_deduction);
             }
         }
 

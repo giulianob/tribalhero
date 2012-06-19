@@ -274,13 +274,13 @@ namespace Game.Logic.Actions
         {
             PostFirstLoop += city =>
             {
-                if (Math.Abs(city.AlignmentPoint - 50m) < 0.125m)
+                if (Math.Abs(city.AlignmentPoint - 50m) < (Config.ap_deduction_per_hour / 2))
                 {
                     city.AlignmentPoint = 50m;
                 }
                 else
                 {
-                    city.AlignmentPoint += city.AlignmentPoint > 50m ? -0.125m : 0.125m;
+                    city.AlignmentPoint += city.AlignmentPoint > 50m ? -(Config.ap_deduction_per_hour/2) : (Config.ap_deduction_per_hour/2);
                 }
             };
         }

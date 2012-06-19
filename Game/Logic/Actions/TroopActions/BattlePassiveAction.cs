@@ -98,12 +98,12 @@ namespace Game.Logic.Actions
             if (atkUpkeep <= defUpkeep)
                 return;
 
-            decimal points = Math.Min(atkUpkeep/defUpkeep - 1, 5)*numOfRounds/20;
+            decimal points = Math.Min(atkUpkeep/defUpkeep - 1, Config.ap_max_per_battle)*numOfRounds/20;
 
             foreach (ITroopStub stub in atk.Select(co => co.TroopStub).Distinct())
             {
                 stub.City.BeginUpdate();
-                stub.City.AlignmentPoint += (stub.Upkeep / atkUpkeep * points);
+                stub.City.AlignmentPoint -= (stub.Upkeep / atkUpkeep * points);
                 stub.City.EndUpdate();
             }
 

@@ -85,20 +85,23 @@ namespace Game.Logic.Actions
 
         void AddAlignmentPoint(CombatList atk, CombatList def, uint numOfRounds)
         {
+            decimal atkUpkeep = atk.Upkeep;
+            if(atkUpkeep==0)
+                return;
+
             ICity city;
             if (!gameObjectLocator.TryGetObjects(cityId, out city))
             {
                 throw new Exception("City is missing");
             }
 
-            decimal atkUpkeep = atk.Upkeep;
             decimal defUpkeep = def.Upkeep + city.Troops.Upkeep;
             defUpkeep -= city.DefaultTroop[FormationType.InBattle].Sum(kvp => kvp.Value * city.Template[kvp.Key].Upkeep);
 
             if (atkUpkeep <= defUpkeep)
                 return;
 
-            decimal points = Math.Min(atkUpkeep/defUpkeep - 1, Config.ap_max_per_battle)*numOfRounds/20;
+            decimal points = Math.Min(defUpkeep == 0 ? Config.ap_max_per_battle : (atkUpkeep/defUpkeep - 1), Config.ap_max_per_battle)*numOfRounds/20;
 
             foreach (ITroopStub stub in atk.Select(co => co.TroopStub).Distinct())
             {

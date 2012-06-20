@@ -45,7 +45,7 @@ namespace Game.Data
         /// <summary>
         ///   Troop manager which manages all troop stubs in city
         /// </summary>
-        TroopManager Troops { get; }
+        ITroopManager Troops { get; }
 
         /// <summary>
         ///   Technology manager for city

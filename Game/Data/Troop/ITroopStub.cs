@@ -14,7 +14,7 @@ namespace Game.Data.Troop
 
         TroopTemplate Template { get; }
 
-        TroopManager TroopManager { get; set; }
+        ITroopManager TroopManager { get; set; }
 
         TroopState State { get; set; }
 
@@ -92,5 +92,7 @@ namespace Game.Data.Troop
         /// <param name="formations"></param>
         /// <returns></returns>
         List<Unit> ToUnitList(params FormationType[] formations);
+
+        int UpkeepForFormation(FormationType inBattle);
     }
 }

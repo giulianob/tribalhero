@@ -83,40 +83,39 @@ namespace Game.Logic.Actions
             city.Battle.UnitRemoved += BattleUnitRemoved;
         }
 
-        void AddAlignmentPoint(CombatList atk, CombatList def, uint numOfRounds)
+        private void AddAlignmentPoint(ICombatList atk, ICombatList def, uint numOfRounds)
         {
-            decimal atkUpkeep = atk.Upkeep;
-            if(atkUpkeep==0)
-                return;
-
             ICity city;
             if (!gameObjectLocator.TryGetObjects(cityId, out city))
             {
                 throw new Exception("City is missing");
             }
 
-            decimal defUpkeep = def.Upkeep + city.Troops.Upkeep;
-            defUpkeep -= city.DefaultTroop[FormationType.InBattle].Sum(kvp => kvp.Value * city.Template[kvp.Key].Upkeep);
+            // Subtract the "In Battle" formation of the local troop since that's already
+            // included in our defenders
+            decimal defUpkeep = def.Upkeep + city.Troops.Upkeep - city.DefaultTroop.UpkeepForFormation(FormationType.InBattle);
+            decimal atkUpkeep = atk.Upkeep;
 
-            if (atkUpkeep <= defUpkeep)
+            if (atkUpkeep == 0 || atkUpkeep <= defUpkeep)
+            {
                 return;
+            }
 
-            decimal points = Math.Min(defUpkeep == 0 ? Config.ap_max_per_battle : (atkUpkeep/defUpkeep - 1), Config.ap_max_per_battle)*numOfRounds/20;
+            decimal points = Math.Min(defUpkeep == 0 ? Config.ap_max_per_battle : (atkUpkeep/defUpkeep - 1), Config.ap_max_per_battle)*numOfRounds/20m;
 
             foreach (ITroopStub stub in atk.Select(co => co.TroopStub).Distinct())
             {
                 stub.City.BeginUpdate();
-                stub.City.AlignmentPoint -= (stub.Upkeep / atkUpkeep * points);
+                stub.City.AlignmentPoint -= stub.Upkeep / atkUpkeep * points;
                 stub.City.EndUpdate();
             }
-
 
             city.BeginUpdate();
             city.AlignmentPoint += points;
             city.EndUpdate();
         }
 
-        void BattleEnterRound(uint battleId, CombatList atk, CombatList def, uint round)
+        public void BattleEnterRound(uint battleId, ICombatList atk, ICombatList def, uint round)
         {
             AddAlignmentPoint(atk, def, 1);
         }
@@ -247,7 +246,7 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        private void BattleActionAttacked(uint battleId, CombatObject source, CombatObject target, decimal damage)
+        public void BattleActionAttacked(uint battleId, CombatObject source, CombatObject target, decimal damage)
         {
             var combatUnit = target as ICombatUnit;
 
@@ -274,7 +273,7 @@ namespace Game.Logic.Actions
             }
         }
 
-        private void BattleUnitRemoved(uint battleId, CombatObject obj)
+        public void BattleUnitRemoved(uint battleId, CombatObject obj)
         {
             // Keep track of our buildings destroyed HP
             if (obj.ClassType == BattleClass.Structure && obj.City.Id == cityId) {

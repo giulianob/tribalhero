@@ -1,6 +1,7 @@
 ﻿#region
 
 using Game.Data;
+using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Setup;
 using System.Linq;
@@ -31,6 +32,11 @@ namespace Game.Logic.Procedures
             }
             else
                 city.Resource.SetLimits(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue);
+        }
+
+        public int UpkeepForCity(City city, ITroopManager troops)
+        {
+            return (int)(troops.Upkeep + city.DefaultTroop.UpkeepForFormation(FormationType.Garrison)*0.25);
         }
     }
 }

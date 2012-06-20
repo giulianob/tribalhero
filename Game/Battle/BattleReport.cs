@@ -185,7 +185,7 @@ namespace Game.Battle
         /// <param name="list"></param>
         /// <param name="isAttacker"></param>
         /// <param name="state"></param>
-        public void WriteReportObjects(List<CombatObject> list, bool isAttacker, ReportState state)
+        public void WriteReportObjects(IList<CombatObject> list, bool isAttacker, ReportState state)
         {
             WriteBeginReport();
 

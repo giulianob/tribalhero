@@ -11,8 +11,8 @@ namespace Game.Comm.Channel
 {
     public interface IBattleChannel
     {
-        void BattleEnterRound(uint battleId, CombatList atk, CombatList def, uint round);
-        void BattleExitBattle(uint battleId, CombatList atk, CombatList def);
+        void BattleEnterRound(uint battleId, ICombatList atk, ICombatList def, uint round);
+        void BattleExitBattle(uint battleId, ICombatList atk, ICombatList def);
         void BattleReinforceDefender(uint battleId, IEnumerable<CombatObject> list);
         void BattleReinforceAttacker(uint battleId, IEnumerable<CombatObject> list);
         void BattleSkippedAttacker(uint battleId, CombatObject source);
@@ -38,14 +38,14 @@ namespace Game.Comm.Channel
             return packet;
         }
 
-        public void BattleEnterRound(uint battleId, CombatList atk, CombatList def, uint round)
+        public void BattleEnterRound(uint battleId, ICombatList atk, ICombatList def, uint round)
         {
             var packet = CreatePacket(battleId, Command.BattleNewRound);            
             packet.AddUInt32(round);
             Global.Channel.Post(channelName, packet);
         }
 
-        public void BattleExitBattle(uint battleId, CombatList atk, CombatList def)
+        public void BattleExitBattle(uint battleId, ICombatList atk, ICombatList def)
         {
             var packet = CreatePacket(battleId, Command.BattleEnded);
             Global.Channel.Post(channelName, packet);

@@ -263,7 +263,7 @@ namespace Game.Comm
             }
         }
 
-        internal static void AddToPacket(List<CombatObject> list, Packet packet)
+        internal static void AddToPacket(IList<CombatObject> list, Packet packet)
         {
             packet.AddUInt16((ushort)list.Count);
             foreach (var obj in list)
@@ -382,7 +382,7 @@ namespace Game.Comm
             packet.AddString(assignment.Description);
             packet.AddByte((byte)(assignment.IsAttack?1:0));
             packet.AddInt32(assignment.TroopCount);
-            foreach (var assignmentTroop in (IEnumerable<Assignment.AssignmentTroop>)assignment)
+            foreach (var assignmentTroop in assignment)
             {
                 packet.AddUInt32(assignmentTroop.Stub.City.Owner.PlayerId);
                 packet.AddUInt32(assignmentTroop.Stub.City.Id);

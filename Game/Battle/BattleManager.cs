@@ -128,7 +128,7 @@ namespace Game.Battle
             }
         }
 
-        public CombatList Attacker
+        public ICombatList Attacker
         {
             get
             {
@@ -136,7 +136,7 @@ namespace Game.Battle
             }
         }
 
-        public CombatList Defender
+        public ICombatList Defender
         {
             get
             {
@@ -912,10 +912,10 @@ namespace Game.Battle
 
         #region Events
         public delegate void OnAttack(uint battleId, CombatObject source, CombatObject target, decimal damage);
-        public delegate void OnBattle(uint battleId, CombatList atk, CombatList def);
+        public delegate void OnBattle(uint battleId, ICombatList atk, ICombatList def);
         public delegate void OnReinforce(uint battleId, IEnumerable<CombatObject> list);
-        public delegate void OnRound(uint battleId, CombatList atk, CombatList def, uint round);
-        public delegate void OnTurn(uint battleId, CombatList atk, CombatList def, int turn);
+        public delegate void OnRound(uint battleId, ICombatList atk, ICombatList def, uint round);
+        public delegate void OnTurn(uint battleId, ICombatList atk, ICombatList def, int turn);
         public delegate void OnUnitUpdate(uint battleId, CombatObject obj);
 
         public event OnBattle EnterBattle;
@@ -945,19 +945,19 @@ namespace Game.Battle
                 ExitBattle(BattleId, atk, def);
         }
 
-        private void EventEnterRound(CombatList atk, CombatList def, uint round)
+        private void EventEnterRound(ICombatList atk, ICombatList def, uint round)
         {
             if (EnterRound != null)
                 EnterRound(BattleId, atk, def, round);
         }
 
-        private void EventEnterTurn(CombatList atk, CombatList def, int turn)
+        private void EventEnterTurn(ICombatList atk, ICombatList def, int turn)
         {
             if (EnterTurn != null)
                 EnterTurn(BattleId, atk, def, turn);
         }
 
-        private void EventExitTurn(CombatList atk, CombatList def, int turn)
+        private void EventExitTurn(ICombatList atk, ICombatList def, int turn)
         {
             if (ExitTurn != null)
                 ExitTurn(BattleId, atk, def, turn);

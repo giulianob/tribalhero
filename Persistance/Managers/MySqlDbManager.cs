@@ -40,7 +40,7 @@ namespace Persistance.Managers
 
         public MySqlDbManager(ILogger logger, string hostname, string username, string password, string database, int timeout, bool verbose)
         {
-            connectionString = string.Format("Database={0};Host={1};User Id={2};Password={3};Connection Timeout={4}", database, hostname, username, password, timeout);
+            connectionString = string.Format("Database={0};Host={1};User Id={2};Password={3};Connection Timeout={4};Default Command Timeout={4};", database, hostname, username, password, timeout);
             this.logger = logger;
             this.verbose = verbose;
         }

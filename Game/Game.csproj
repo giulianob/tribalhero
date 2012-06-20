@@ -200,6 +200,7 @@
     <Compile Include="Data\Tribe\ITribesman.cs" />
     <Compile Include="Data\Tribe\Tribe.cs" />
     <Compile Include="Data\Tribe\Tribesman.cs" />
+    <Compile Include="Data\Troop\ITroopManager.cs" />
     <Compile Include="Data\Troop\ITroopObject.cs" />
     <Compile Include="Data\Troop\ITroopStub.cs" />
     <Compile Include="Data\Troop\Unit.cs" />

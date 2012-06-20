@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
@@ -12,7 +13,20 @@ using Persistance;
 
 namespace Game.Battle
 {
-    public class CombatList : PersistableList<CombatObject>
+    public interface ICombatList : IListOfPersistableObjects<CombatObject>
+    {
+        int Id { get; set; }
+
+        int Upkeep { get; }
+
+        int Capacity { get; set; }
+
+        bool HasInRange(CombatObject attacker);
+
+        CombatList.BestTargetResult GetBestTargets(CombatObject attacker, out IList<CombatObject> result, int maxCount);
+    }
+
+    public class CombatList : ListOfPersistableObjects<CombatObject>, ICombatList
     {
         private readonly RadiusLocator radiusLocator;
         private readonly BattleFormulas battleFormulas;

@@ -132,7 +132,7 @@ namespace Game.Logic.Actions
             StateChange(ActionState.Completed);
         }
 
-        private void BattleExitBattle(uint battleId, CombatList atk, CombatList def)
+        private void BattleExitBattle(uint battleId, ICombatList atk, ICombatList def)
         {
             ICity city;
             ITroopStub stub;

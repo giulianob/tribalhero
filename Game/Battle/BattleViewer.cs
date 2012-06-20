@@ -25,7 +25,7 @@ namespace Game.Battle
             battle.EnterRound += BattleEnterRound;
         }
 
-        void BattleEnterRound(uint battleId, CombatList atk, CombatList def, uint round)
+        void BattleEnterRound(uint battleId, ICombatList atk, ICombatList def, uint round)
         {
             Append("Round[" + round + "] Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
@@ -75,22 +75,22 @@ namespace Game.Battle
             Append("**************************************\n");
         }
 
-        private void BattleExitTurn(uint battleId, CombatList atk, CombatList def, int turn)
+        private void BattleExitTurn(uint battleId, ICombatList atk, ICombatList def, int turn)
         {
             Append("Turn[" + turn + "] Ended with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        private void BattleEnterTurn(uint battleId, CombatList atk, CombatList def, int turn)
+        private void BattleEnterTurn(uint battleId, ICombatList atk, ICombatList def, int turn)
         {
             Append("Turn[" + turn + "] Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        private void BattleExitBattle(uint battleId, CombatList atk, CombatList def)
+        private void BattleExitBattle(uint battleId, ICombatList atk, ICombatList def)
         {
             Append("Battle Ended with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        private void BattleEnterBattle(uint battleId, CombatList atk, CombatList def)
+        private void BattleEnterBattle(uint battleId, ICombatList atk, ICombatList def)
         {
             Append("Battle Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }

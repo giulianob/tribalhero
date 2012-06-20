@@ -159,7 +159,7 @@ namespace Game.Data
         /// <summary>
         ///   Troop manager which manages all troop stubs in city
         /// </summary>
-        public TroopManager Troops { get; private set; }
+        public ITroopManager Troops { get; private set; }
 
         /// <summary>
         ///   Technology manager for city
@@ -319,7 +319,7 @@ namespace Game.Data
                 }
 
                 CheckUpdateMode();
-                alignmentPoint = value;
+                alignmentPoint = Math.Min(100m, Math.Max(0m, value));
                 PointUpdate();
             }
         }
@@ -901,7 +901,7 @@ namespace Game.Data
             bool doUpdate = IsUpdating;
             if (!doUpdate)
                 BeginUpdate();
-            Resource.Crop.Upkeep = Troops.Upkeep;
+            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, Troops);
             if (!doUpdate)
                 EndUpdate();
 
@@ -918,8 +918,8 @@ namespace Game.Data
 
             bool doUpdate = IsUpdating;
             if (!doUpdate)
-                BeginUpdate();
-            Resource.Crop.Upkeep = Troops.Upkeep;
+                BeginUpdate();            
+            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, Troops);
             if (!doUpdate)
                 EndUpdate();
 
@@ -937,7 +937,7 @@ namespace Game.Data
             bool doUpdate = IsUpdating;
             if (!doUpdate)
                 BeginUpdate();
-            Resource.Crop.Upkeep = Troops.Upkeep;
+            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, Troops);
             if (!doUpdate)
                 EndUpdate();
 

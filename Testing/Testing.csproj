@@ -106,6 +106,7 @@
     <Compile Include="Database\DbLoaderActionFactoryTest.cs" />
     <Compile Include="Formulas\CityValueTest.cs" />
     <Compile Include="Formulas\NewCityResourceTest.cs" />
+    <Compile Include="Formulas\ResourceFormulaTest.cs" />
     <Compile Include="Formulas\WeaponExportTest.cs" />
     <Compile Include="Formulas\MoveTimeTotalTest.cs" />
     <Compile Include="Lock\CallbackLockTest.cs" />

@@ -179,6 +179,8 @@
     <Compile Include="Data\ICity.cs" />
     <Compile Include="Data\IGameObject.cs" />
     <Compile Include="Data\IHasLevel.cs" />
+    <Compile Include="Data\ILazyResource.cs" />
+    <Compile Include="Data\ILazyValue.cs" />
     <Compile Include="Data\IPlayer.cs" />
     <Compile Include="Data\ISimpleGameObject.cs" />
     <Compile Include="Data\IStructure.cs" />

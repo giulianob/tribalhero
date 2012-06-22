@@ -4,7 +4,7 @@ using Game.Util;
 
 namespace Game.Data
 {
-    public class LazyValue
+    public class LazyValue : ILazyValue
     {
         #region Delegates
 

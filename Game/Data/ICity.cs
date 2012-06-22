@@ -65,7 +65,7 @@ namespace Game.Data
         /// <summary>
         ///   Resource available in the city
         /// </summary>
-        LazyResource Resource { get; }
+        ILazyResource Resource { get; }
 
         /// <summary>
         ///   Amount of loot this city has stolen from other players

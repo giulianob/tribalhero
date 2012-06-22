@@ -189,7 +189,7 @@ namespace Game.Data
         /// <summary>
         ///   Resource available in the city
         /// </summary>
-        public LazyResource Resource { get; private set; }
+        public ILazyResource Resource { get; private set; }
 
         /// <summary>
         ///   Amount of loot this city has stolen from other players

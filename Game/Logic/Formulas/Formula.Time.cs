@@ -53,7 +53,7 @@ namespace Game.Logic.Formulas
 
         public virtual int BuildTime(int baseValue, ICity city, ITechnologyManager em)
         {
-            IStructure university = city.FirstOrDefault(structure => objectTypeFactory.IsStructureType("University", structure));
+            IStructure university = city.FirstOrDefault(structure => ObjectTypeFactory.IsStructureType("University", structure));
             return (int)(baseValue*(100 - (university == null ? 0 : university.Stats.Labor)*0.25)/100);
         }
 

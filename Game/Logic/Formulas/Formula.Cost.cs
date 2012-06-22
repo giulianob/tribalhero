@@ -6,7 +6,6 @@ using System.Linq;
 using Game.Data;
 using Game.Setup;
 using Game.Data.Tribe;
-using Ninject;
 
 #endregion
 
@@ -24,9 +23,9 @@ namespace Game.Logic.Formulas
         public virtual Resource StructureCost(ICity city, uint type, byte lvl)
         {
             if (city.Battle == null)
-                return structureFactory.GetCost((int)type, lvl);
+                return StructureFactory.GetCost((int)type, lvl);
 
-            return structureFactory.GetCost((int)type, lvl) * Config.battle_cost_penalty;
+            return StructureFactory.GetCost((int)type, lvl) * Config.battle_cost_penalty;
         }
 
         /// <summary>
@@ -39,9 +38,9 @@ namespace Game.Logic.Formulas
         public virtual Resource UnitTrainCost(ICity city, ushort type, byte lvl)
         {
             if (city.Battle == null)
-                return unitFactory.GetCost(type, lvl);
+                return UnitFactory.GetCost(type, lvl);
 
-            return unitFactory.GetCost(type, lvl) * Config.battle_cost_penalty;
+            return UnitFactory.GetCost(type, lvl) * Config.battle_cost_penalty;
         }
 
         /// <summary>
@@ -54,9 +53,9 @@ namespace Game.Logic.Formulas
         public virtual Resource UnitUpgradeCost(ICity city, ushort type, byte lvl)
         {
             if (city.Battle == null)
-                return unitFactory.GetUpgradeCost(type, lvl);
+                return UnitFactory.GetUpgradeCost(type, lvl);
 
-            return unitFactory.GetUpgradeCost(type, lvl) * Config.battle_cost_penalty;
+            return UnitFactory.GetUpgradeCost(type, lvl) * Config.battle_cost_penalty;
         }
 
         /// <summary>
@@ -77,9 +76,7 @@ namespace Game.Logic.Formulas
         /// <returns></returns>
         public virtual Resource RepairCost(ICity city, ushort repairPower)
         {
-            int lumber = repairPower;
-            foreach (var effect in city.Technologies.GetEffects(EffectCode.RepairSaving, EffectInheritance.All))
-                lumber -= repairPower*(int)effect.Value[0]/100;
+            int lumber = city.Technologies.GetEffects(EffectCode.RepairSaving).Aggregate<Effect, int>(repairPower, (current, effect) => current - repairPower*(int)effect.Value[0]/100);
 
             return new Resource(0, 0, 0, lumber, 0);
         }
@@ -145,16 +142,19 @@ namespace Game.Logic.Formulas
             int[] rateIron = {0, 0, 0, 0, 0, 0, 0, 0, 200, 360, 660};
 
             var resource = new Resource();
-            foreach (var structure in city.Where(x => objectTypeFactory.IsStructureType("Basement", x)))
+            foreach (var structure in city.Where(x => ObjectTypeFactory.IsStructureType("Basement", x)))
+            {
                 resource.Add(rateCrop[structure.Lvl], rateGold[structure.Lvl], rateIron[structure.Lvl], rateWood[structure.Lvl], 0);
+            }
+
             if (checkAlignmentPointBonus && city.AlignmentPoint >= 75m)
             {
-                double pct = .75;
+                const double pct = .75;
                 return new Resource((int)Math.Max(city.Resource.Crop.Limit*pct, resource.Crop),
                                     (int)Math.Max(city.Resource.Gold.Limit*pct, resource.Gold),
                                     (int)Math.Max(city.Resource.Iron.Limit*pct, resource.Iron),
                                     (int)Math.Max(city.Resource.Wood.Limit*pct, resource.Wood),
-                                    (int)Math.Max(city.Resource.Labor.Limit*pct, resource.Labor));
+                                    0);
             }
             return resource;
         }
@@ -181,7 +181,7 @@ namespace Game.Logic.Formulas
 
         public virtual ushort CalculateCityValue(ICity city)
         {
-            return (ushort)city.Where(structure => !objectTypeFactory.IsStructureType("NoInfluencePoint", structure)).Sum(x => x.Lvl);
+            return (ushort)city.Where(structure => !ObjectTypeFactory.IsStructureType("NoInfluencePoint", structure)).Sum(x => x.Lvl);
         }
 
         public virtual int GetWeaponExportLaborProduce(int weaponExport, int labor)

@@ -6,7 +6,7 @@ using System;
 
 namespace Game.Data
 {
-    public class LazyResource
+    public class LazyResource : ILazyResource
     {
         private bool isDirty;
         private bool isUpdating;
@@ -46,11 +46,11 @@ namespace Game.Data
             SetEvents();
         }
 
-        public LazyValue Crop { get; private set; }
-        public LazyValue Wood { get; private set; }
-        public LazyValue Iron { get; private set; }
-        public LazyValue Gold { get; private set; }
-        public LazyValue Labor { get; private set; }
+        public ILazyValue Crop { get; private set; }
+        public ILazyValue Wood { get; private set; }
+        public ILazyValue Iron { get; private set; }
+        public ILazyValue Gold { get; private set; }
+        public ILazyValue Labor { get; private set; }
         public event LazyValue.OnResourcesUpdate ResourcesUpdate;
 
         private void SetEvents()

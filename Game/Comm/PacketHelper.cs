@@ -107,7 +107,7 @@ namespace Game.Comm
                 packet.AddUInt32((uint)resource.Labor);
         }
 
-        public static void AddToPacket(LazyValue value, Packet packet)
+        public static void AddToPacket(ILazyValue value, Packet packet)
         {
             packet.AddInt32(value.RawValue);
             packet.AddInt32(value.Rate);
@@ -116,7 +116,7 @@ namespace Game.Comm
             packet.AddUInt32(UnixDateTime.DateTimeToUnix(value.LastRealizeTime.ToUniversalTime()));
         }
 
-        public static void AddToPacket(LazyResource resource, Packet packet)
+        public static void AddToPacket(ILazyResource resource, Packet packet)
         {
             packet.AddInt32(resource.Crop.RawValue);
             packet.AddInt32(resource.Crop.Rate);

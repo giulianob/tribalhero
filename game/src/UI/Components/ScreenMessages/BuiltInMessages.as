@@ -46,12 +46,12 @@ package src.UI.Components.ScreenMessages
 		public static function showApStatus(city: City) : void {
 			Global.gameContainer.screenMessage.removeMessage("/AP_STATUS/RESOURCE_CAP");
 			if (city.ap >= 75) {
-				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/AP_STATUS/RESOURCE_CAP", Locale.loadString("MSG_AP_RESOURCE_BONUS"), new AssetIcon(new ICON_STAR)));
+				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/AP_STATUS/RESOURCE_CAP", StringUtil.substitute(Locale.loadString("MSG_AP_RESOURCE_BONUS"), city.name), new AssetIcon(new ICON_STAR)));
 			}
 			
 			Global.gameContainer.screenMessage.removeMessage("/AP_STATUS/STRUCTURE_DEFENSE");
 			if (city.ap >= 90) {
-				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/AP_STATUS/STRUCTURE_DEFENSE", Locale.loadString("MSG_AP_STRUCTURE_DEFENSE_BONUS"), new AssetIcon(new ICON_STAR)));
+				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/AP_STATUS/STRUCTURE_DEFENSE", StringUtil.substitute(Locale.loadString("MSG_AP_STRUCTURE_DEFENSE_BONUS"), city.name), new AssetIcon(new ICON_STAR)));
 			}
 		}		
 		

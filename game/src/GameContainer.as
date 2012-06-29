@@ -174,9 +174,9 @@
 			cmdLineHolder = new Sprite();				
 			minimapHolder = new Sprite();
 			
-			addChild(cmdLineHolder);					
-			addChild(sidebarHolder);
+			addChild(cmdLineHolder);								
 			addChild(minimapHolder);				
+			addChild(sidebarHolder);
 			
 			// Bar bg			
 			var barBgClass: Class = UIManager.getDefaults().get("GameMenu.bar");

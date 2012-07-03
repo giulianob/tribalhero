@@ -28,6 +28,10 @@
 			layout0.setGap(5);
 			ui.setLayout(layout0);
 
+			append(label);
+		}
+		
+		public function append(label: Component): void {
 			ui.append(label);
 		}
 		

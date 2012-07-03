@@ -148,7 +148,7 @@ namespace Game.Logic.Actions
             ICity city;
             IStructure structure;
 
-            endTime = SystemClock.Now.AddSeconds(CalculateTime(ts.TotalSeconds, false));
+            endTime = SystemClock.Now.AddSeconds(CalculateTime(ts.TotalSeconds));
             BeginTime = SystemClock.Now;
 
             if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))

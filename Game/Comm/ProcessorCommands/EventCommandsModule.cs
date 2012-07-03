@@ -1,10 +1,8 @@
 #region
 
 using Game.Data;
-using Game.Database;
-using Game.Setup;
+using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 using Persistance;
 
 #endregion
@@ -13,6 +11,13 @@ namespace Game.Comm.ProcessorCommands
 {
     class EventCommandsModule : CommandModule
     {
+        private readonly IDbManager dbManager;
+
+        public EventCommandsModule(IDbManager dbManager)
+        {
+            this.dbManager = dbManager;
+        }
+
         public override void RegisterCommands(Processor processor)
         {
             processor.RegisterEvent(Command.OnDisconnect, EventOnDisconnect);
@@ -38,7 +43,8 @@ namespace Game.Comm.ProcessorCommands
 
                 session.Player.Session = null;
                 session.Player.SessionId = string.Empty;
-                DbPersistance.Current.Save(session.Player);
+                session.Player.LastLogin = SystemClock.Now;
+                dbManager.Save(session.Player);
             }
         }
     }

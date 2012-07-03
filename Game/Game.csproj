@@ -44,6 +44,7 @@
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -172,15 +173,19 @@
     <Compile Include="Database\DbLoader.cs" />
     <Compile Include="Database\DbLoaderActionFactory.cs" />
     <Compile Include="Database\Persistance.cs" />
+    <Compile Include="Data\AggressiveLazyValue.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />
     <Compile Include="Data\ICity.cs" />
     <Compile Include="Data\IGameObject.cs" />
     <Compile Include="Data\IHasLevel.cs" />
+    <Compile Include="Data\ILazyResource.cs" />
+    <Compile Include="Data\ILazyValue.cs" />
     <Compile Include="Data\IPlayer.cs" />
     <Compile Include="Data\ISimpleGameObject.cs" />
     <Compile Include="Data\IStructure.cs" />
     <Compile Include="Data\ITechnologyManager.cs" />
+    <Compile Include="Data\LazyValue.cs" />
     <Compile Include="Data\PlayerRights.cs" />
     <Compile Include="Data\Stats\TroopStats.cs" />
     <Compile Include="Data\Effect.cs" />
@@ -197,6 +202,7 @@
     <Compile Include="Data\Tribe\ITribesman.cs" />
     <Compile Include="Data\Tribe\Tribe.cs" />
     <Compile Include="Data\Tribe\Tribesman.cs" />
+    <Compile Include="Data\Troop\ITroopManager.cs" />
     <Compile Include="Data\Troop\ITroopObject.cs" />
     <Compile Include="Data\Troop\ITroopStub.cs" />
     <Compile Include="Data\Troop\Unit.cs" />
@@ -269,6 +275,7 @@
     <Compile Include="Map\ReverseTileLocator.cs" />
     <Compile Include="Map\RoadPathFinder.cs" />
     <Compile Include="Map\TileLocator.cs" />
+    <Compile Include="Logic\IGameTask.cs" />
     <Compile Include="Module\Remover\CityRemover.cs" />
     <Compile Include="Module\Remover\ActivePlayerSelector.cs" />
     <Compile Include="Module\Remover\NewbieIdleSelector.cs" />

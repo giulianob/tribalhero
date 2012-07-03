@@ -45,7 +45,7 @@ namespace Game.Data
         /// <summary>
         ///   Troop manager which manages all troop stubs in city
         /// </summary>
-        TroopManager Troops { get; }
+        ITroopManager Troops { get; }
 
         /// <summary>
         ///   Technology manager for city
@@ -65,7 +65,7 @@ namespace Game.Data
         /// <summary>
         ///   Resource available in the city
         /// </summary>
-        LazyResource Resource { get; }
+        ILazyResource Resource { get; }
 
         /// <summary>
         ///   Amount of loot this city has stolen from other players
@@ -103,6 +103,8 @@ namespace Game.Data
         int DefensePoint { get; set; }
 
         ushort Value { get; set; }
+
+        decimal AlignmentPoint { get; set; }
 
         bool IsUpdating { get; }
 
@@ -167,7 +169,7 @@ namespace Game.Data
 
         void RadiusUpdateEvent();
 
-        void DefenseAttackPointUpdate();
+        void PointUpdate();
 
         void HideNewUnitsUpdate();
 

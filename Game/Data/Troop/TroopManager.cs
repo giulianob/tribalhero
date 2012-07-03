@@ -11,7 +11,7 @@ using Game.Util.Locking;
 
 namespace Game.Data.Troop
 {
-    public class TroopManager : IEnumerable<ITroopStub>
+    public class TroopManager : ITroopManager
     {
         #region Event
 
@@ -283,7 +283,7 @@ namespace Game.Data.Troop
         ///   Returns all foreign troops that are stationed in this city.
         /// </summary>
         /// <returns></returns>
-        internal IEnumerable<ITroopStub> StationedHere()
+        public IEnumerable<ITroopStub> StationedHere()
         {
             return this.Where(stub => stub.StationedCity == City);
         }
@@ -292,7 +292,7 @@ namespace Game.Data.Troop
         ///   Only returns troops that belong to this city. Won't return troops that are stationed here but will return troops that may be stationed outside of the city.
         /// </summary>
         /// <returns></returns>
-        internal IEnumerable<ITroopStub> MyStubs()
+        public IEnumerable<ITroopStub> MyStubs()
         {
             return this.Where(stub => stub.City == City);
         }

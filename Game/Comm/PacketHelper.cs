@@ -107,7 +107,7 @@ namespace Game.Comm
                 packet.AddUInt32((uint)resource.Labor);
         }
 
-        public static void AddToPacket(LazyValue value, Packet packet)
+        public static void AddToPacket(ILazyValue value, Packet packet)
         {
             packet.AddInt32(value.RawValue);
             packet.AddInt32(value.Rate);
@@ -116,7 +116,7 @@ namespace Game.Comm
             packet.AddUInt32(UnixDateTime.DateTimeToUnix(value.LastRealizeTime.ToUniversalTime()));
         }
 
-        public static void AddToPacket(LazyResource resource, Packet packet)
+        public static void AddToPacket(ILazyResource resource, Packet packet)
         {
             packet.AddInt32(resource.Crop.RawValue);
             packet.AddInt32(resource.Crop.Rate);
@@ -263,7 +263,7 @@ namespace Game.Comm
             }
         }
 
-        internal static void AddToPacket(List<CombatObject> list, Packet packet)
+        internal static void AddToPacket(IList<CombatObject> list, Packet packet)
         {
             packet.AddUInt16((ushort)list.Count);
             foreach (var obj in list)
@@ -310,6 +310,7 @@ namespace Game.Comm
             packet.AddInt32(city.AttackPoint);
             packet.AddInt32(city.DefensePoint);
             packet.AddUInt16(city.Value);
+            packet.AddFloat((float)city.AlignmentPoint);
             packet.AddByte(city.Battle != null ? (byte)1 : (byte)0);
             packet.AddByte(city.HideNewUnits ? (byte)1 : (byte)0);
 
@@ -381,7 +382,7 @@ namespace Game.Comm
             packet.AddString(assignment.Description);
             packet.AddByte((byte)(assignment.IsAttack?1:0));
             packet.AddInt32(assignment.TroopCount);
-            foreach (var assignmentTroop in (IEnumerable<Assignment.AssignmentTroop>)assignment)
+            foreach (var assignmentTroop in assignment)
             {
                 packet.AddUInt32(assignmentTroop.Stub.City.Owner.PlayerId);
                 packet.AddUInt32(assignmentTroop.Stub.City.Id);

@@ -1,8 +1,9 @@
 using System;
+using Game.Module;
 
 namespace Game.Logic
 {
-    public interface IScheduler
+    public interface IScheduler : IGameTask
     {
         /// <summary>
         /// Returns whether the scheduler is currently paused
@@ -18,16 +19,6 @@ namespace Game.Logic
         /// <param name="schedulerDelta"></param>
         /// <param name="outNextFire"></param>
         void Probe(out DateTime outLastProbe, out int outActionsFired, out int schedulerSize, out int schedulerDelta, out DateTime outNextFire);
-
-        /// <summary>
-        /// Pauses the scheduler from running anymore actions.
-        /// </summary>
-        void Pause();
-
-        /// <summary>
-        /// Resumes the battle.
-        /// </summary>
-        void Resume();
 
         /// <summary>
         /// Puts the action on the scheduler

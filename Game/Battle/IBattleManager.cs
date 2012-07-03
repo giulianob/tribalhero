@@ -13,8 +13,8 @@ namespace Game.Battle
         uint Round { get; set; }
         uint Turn { get; set; }
         ICity City { get; set; }
-        CombatList Attacker { get; }
-        CombatList Defender { get; }
+        ICombatList Attacker { get; }
+        ICombatList Defender { get; }
         IBattleReport BattleReport { get; }
         ReportedObjects ReportedObjects { get; }
         ReportedTroops ReportedTroops { get; }

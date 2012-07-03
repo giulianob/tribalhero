@@ -22,12 +22,15 @@ namespace Game.Logic.Actions {
         readonly uint cityId;
         readonly string cityName;
 
-        public CityCreatePassiveAction(uint cityId, uint x, uint y, string cityName)
+        private readonly IActionFactory actionFactory;
+
+        public CityCreatePassiveAction(uint cityId, uint x, uint y, string cityName, IActionFactory actionFactory)
         {
             this.cityId = cityId;
             this.x = x;
             this.y = y;
             this.cityName = cityName;
+            this.actionFactory = actionFactory;
         }
 
         public CityCreatePassiveAction(uint id,
@@ -36,9 +39,11 @@ namespace Game.Logic.Actions {
                                     DateTime endTime,
                                     bool isVisible, 
                                     string nlsDescription,
-                                    Dictionary<string, string> properties)
+                                    Dictionary<string, string> properties,
+                                    IActionFactory actionFactory)
             : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
+            this.actionFactory = actionFactory;
             newCityId = uint.Parse(properties["new_city_id"]);
             newStructureId = uint.Parse(properties["new_structure_id"]);
         }
@@ -121,7 +126,7 @@ namespace Game.Logic.Actions {
                 structure.Y = y;
 
                 // Creating New City
-                newCity = new City(city.Owner, cityName, Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), structure);
+                newCity = new City(city.Owner, cityName, Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), structure, Formula.Current.GetInitialAp());
                 city.Owner.Add(newCity);
 
                 World.Current.SetTileType(x, y, 0, true);
@@ -211,7 +216,7 @@ namespace Game.Logic.Actions {
                 Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 
-                newCity.Worker.DoPassive(newCity, new CityPassiveAction(newCity.Id), false);
+                newCity.Worker.DoPassive(newCity, actionFactory.CreateCityPassiveAction(newCity.Id), false);
                 StateChange(ActionState.Completed);
             }
 

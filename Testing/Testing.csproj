@@ -89,6 +89,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\BattlePassiveActionTest.cs" />
+    <Compile Include="Actions\CityPassiveActionTest.cs" />
     <Compile Include="Actions\TribeContributeActiveActionTest.cs" />
     <Compile Include="Balancing\TestUserBattles.cs" />
     <Compile Include="Balancing\TestSwordsman.cs" />
@@ -104,6 +106,7 @@
     <Compile Include="Database\DbLoaderActionFactoryTest.cs" />
     <Compile Include="Formulas\CityValueTest.cs" />
     <Compile Include="Formulas\NewCityResourceTest.cs" />
+    <Compile Include="Formulas\ResourceFormulaTest.cs" />
     <Compile Include="Formulas\WeaponExportTest.cs" />
     <Compile Include="Formulas\MoveTimeTotalTest.cs" />
     <Compile Include="Lock\CallbackLockTest.cs" />

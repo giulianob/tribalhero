@@ -61,7 +61,7 @@ namespace Game.Data.Troop
         private ITroopObject troopObject;
         public TroopTemplate Template { get; private set; }
 
-        public TroopManager TroopManager { get; set; }
+        public ITroopManager TroopManager { get; set; }
 
         public Formation this[FormationType type]
         {
@@ -230,15 +230,22 @@ namespace Game.Data.Troop
                 int count = 0;
                 lock (objLock)
                 {
-                    foreach (var formation in data.Values)
-                    {
-                        foreach (var kvp in formation)
-                            count += (int)((kvp.Value * City.Template[kvp.Key].Upkeep) * (formation.Type == FormationType.Garrison ? 1.25 : 1));
-                    }
+                    count += data.Values.Sum(formation => UpkeepForFormation(formation.Type));
                 }
 
                 return count;
             }
+        }
+
+        public int UpkeepForFormation(FormationType type)
+        {
+            Formation formation;
+            if (!TryGetValue(type, out formation))
+            {
+                return 0;
+            }
+
+            return formation.Sum(kvp => kvp.Value*City.Template[kvp.Key].Upkeep);
         }
 
         public int Carry

@@ -11,6 +11,7 @@ using Game.Comm;
 using Game.Data;
 using Game.Database;
 using Game.Map;
+using Game.Module;
 using Game.Setup;
 using Game.Util;
 using Ninject;
@@ -20,16 +21,18 @@ using Persistance;
 
 namespace Game.Logic
 {
-    public class SystemVariablesUpdater
+    public class SystemVariablesUpdater : IGameTask
     {
-        private static Timer timer;
-        private static readonly object objLock = new object();
+        public static SystemVariablesUpdater Current { get; set; }
 
-        private static DateTime lastUpdateScheduler = DateTime.MinValue;
+        private Timer timer;
+        private readonly object objLock = new object();
 
-        private static DateTime systemStartTime = DateTime.MinValue;
+        private DateTime lastUpdateScheduler = DateTime.MinValue;
 
-        public static void Resume()
+        private DateTime systemStartTime = DateTime.MinValue;
+
+        public void Resume()
         {
             if (timer == null)
                 timer = new Timer(Callback, null, Timeout.Infinite, Timeout.Infinite);
@@ -37,13 +40,13 @@ namespace Game.Logic
             timer.Change(1000, 1000);
         }
 
-        public static void Pause()
+        public void Pause()
         {
             if (timer != null)
                 timer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
-        public static void Callback(object obj)
+        public void Callback(object obj)
         {
             lock (objLock)
             {

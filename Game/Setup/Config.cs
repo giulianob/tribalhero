@@ -74,6 +74,8 @@ namespace Game.Setup
         public static int resource_wood_ratio = 1;
         public static int resource_gold_ratio = 2;
         public static int resource_iron_ratio = 5;
+        public static decimal ap_deduction_per_hour = .25m;
+        public static decimal ap_max_per_battle = 4;
 
         public static bool troop_starve = true;
 
@@ -107,7 +109,7 @@ namespace Game.Setup
         public static int actions_free_cancel_interval_in_sec = 60;
         public static bool actions_ignore_requirements;
 
-        public static int idle_days = 14;
+        public static int idle_days = 3;
 
         public static Random Random { get; private set; }
 
@@ -181,6 +183,9 @@ namespace Game.Setup
                                 break;
                             case "System.Int32[]":
                                 field.SetValue(null, (new JsonReader()).Read<int[]>(value));
+                                break;
+                            case "System.Decimal":
+                                field.SetValue(null, decimal.Parse(value));
                                 break;
                             default:
                                 field.SetValue(null, value);

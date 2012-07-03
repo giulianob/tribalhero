@@ -264,7 +264,7 @@ namespace Game.Logic.Actions
             battle.BattleReport.SetLootedResources(stub.City.Id, stub.TroopId, battle.BattleId, looted, actual);
         }
 
-        private void BattleExitTurn(uint battleId, CombatList atk, CombatList def, int turn)
+        private void BattleExitTurn(uint battleId, ICombatList atk, ICombatList def, int turn)
         {
             ICity city;            
             ITroopStub stub;
@@ -335,7 +335,7 @@ namespace Game.Logic.Actions
             }
         }
 
-        private void BattleExitBattle(uint battleId, CombatList atk, CombatList def)
+        private void BattleExitBattle(uint battleId, ICombatList atk, ICombatList def)
         {
             ICity city;
             ICity targetCity;
@@ -357,7 +357,7 @@ namespace Game.Logic.Actions
             StateChange(ActionState.Completed);
         }
 
-        private void BattleEnterRound(uint battleId, CombatList atk, CombatList def, uint round)
+        private void BattleEnterRound(uint battleId, ICombatList atk, ICombatList def, uint round)
         {
             ICity city;
             ITroopStub stub;

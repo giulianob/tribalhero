@@ -40,6 +40,7 @@ namespace Game.Data
 
         private readonly Dictionary<uint, IStructure> structures = new Dictionary<uint, IStructure>();
         private readonly Dictionary<uint, ITroopObject> troopobjects = new Dictionary<uint, ITroopObject>();
+        private decimal alignmentPoint;
         private int attackPoint;
         private IBattleManager battle;
         private int defensePoint;
@@ -158,7 +159,7 @@ namespace Game.Data
         /// <summary>
         ///   Troop manager which manages all troop stubs in city
         /// </summary>
-        public TroopManager Troops { get; private set; }
+        public ITroopManager Troops { get; private set; }
 
         /// <summary>
         ///   Technology manager for city
@@ -188,7 +189,7 @@ namespace Game.Data
         /// <summary>
         ///   Resource available in the city
         /// </summary>
-        public LazyResource Resource { get; private set; }
+        public ILazyResource Resource { get; private set; }
 
         /// <summary>
         ///   Amount of loot this city has stolen from other players
@@ -283,7 +284,7 @@ namespace Game.Data
             {
                 CheckUpdateMode();
                 attackPoint = value;
-                DefenseAttackPointUpdate();
+                PointUpdate();
             }
         }
 
@@ -300,7 +301,26 @@ namespace Game.Data
             {
                 CheckUpdateMode();
                 defensePoint = value;
-                DefenseAttackPointUpdate();
+                PointUpdate();
+            }
+        }
+
+        public decimal AlignmentPoint
+        {
+            get
+            {
+                return Owner.IsIdle ? 50 : alignmentPoint;
+            }
+            set
+            {
+                if (Owner.IsIdle)
+                {
+                    value = 50;
+                }
+
+                CheckUpdateMode();
+                alignmentPoint = Math.Min(100m, Math.Max(0m, value));
+                PointUpdate();
             }
         }
 
@@ -318,25 +338,29 @@ namespace Game.Data
                 if (Global.FireEvents && id > 0)
                 {
                     World.Current.GetCityRegion(X, Y).MarkAsDirty();
-                    DefenseAttackPointUpdate();
+                    PointUpdate();
                 }
             }
         }
+
+
 
         #endregion
 
         #region Constructors
 
-        public City(IPlayer owner, string name, Resource resource, byte radius, IStructure mainBuilding)
-            : this(owner, name, new LazyResource(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor), radius, mainBuilding)
+        public City(IPlayer owner, string name, Resource resource, byte radius, IStructure mainBuilding, decimal ap)
+            : this(owner, name, new LazyResource(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor), radius, mainBuilding, ap)
         {
         }
 
-        public City(IPlayer owner, string name, LazyResource resource, byte radius, IStructure mainBuilding)
+        public City(IPlayer owner, string name, LazyResource resource, byte radius, IStructure mainBuilding, decimal ap)
         {
             Owner = owner;
             this.name = name;
             this.radius = radius;
+
+            AlignmentPoint = ap;
             Resource = resource;
 
             Worker = new ActionWorker(this);
@@ -671,17 +695,18 @@ namespace Game.Data
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
-        public void DefenseAttackPointUpdate()
+        public void PointUpdate()
         {
             if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
-            var packet = new Packet(Command.CityAttackDefensePointUpdate);
+            var packet = new Packet(Command.CityPointUpdate);
 
             packet.AddUInt32(Id);
             packet.AddInt32(attackPoint);
             packet.AddInt32(defensePoint);
             packet.AddUInt16(value);
+            packet.AddFloat((float)alignmentPoint);
 
             Global.Channel.Post("/CITY/" + id, packet);
         }
@@ -876,7 +901,7 @@ namespace Game.Data
             bool doUpdate = IsUpdating;
             if (!doUpdate)
                 BeginUpdate();
-            Resource.Crop.Upkeep = Troops.Upkeep;
+            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, Troops);
             if (!doUpdate)
                 EndUpdate();
 
@@ -893,8 +918,8 @@ namespace Game.Data
 
             bool doUpdate = IsUpdating;
             if (!doUpdate)
-                BeginUpdate();
-            Resource.Crop.Upkeep = Troops.Upkeep;
+                BeginUpdate();            
+            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, Troops);
             if (!doUpdate)
                 EndUpdate();
 
@@ -912,7 +937,7 @@ namespace Game.Data
             bool doUpdate = IsUpdating;
             if (!doUpdate)
                 BeginUpdate();
-            Resource.Crop.Upkeep = Troops.Upkeep;
+            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, Troops);
             if (!doUpdate)
                 EndUpdate();
 
@@ -1025,7 +1050,7 @@ namespace Game.Data
                 return new[]
                        {
                                new DbColumn("player_id", Owner.PlayerId, DbType.UInt32), new DbColumn("name", Name, DbType.String, 32),
-                               new DbColumn("value", Value, DbType.UInt16),
+                               new DbColumn("value", Value, DbType.UInt16), new DbColumn("alignment_point", AlignmentPoint, DbType.Decimal),
                                new DbColumn("radius", Radius, DbType.Byte), new DbColumn("hide_new_units", HideNewUnits, DbType.Boolean),
                                new DbColumn("loot_stolen", LootStolen, DbType.UInt32), new DbColumn("attack_point", AttackPoint, DbType.Int32),
                                new DbColumn("defense_point", DefensePoint, DbType.Int32), new DbColumn("gold", Resource.Gold.RawValue, DbType.Int32),

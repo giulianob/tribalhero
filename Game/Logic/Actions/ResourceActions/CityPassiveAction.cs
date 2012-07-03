@@ -16,6 +16,15 @@ namespace Game.Logic.Actions
 {
     public class CityPassiveAction : ScheduledPassiveAction
     {
+        public const int PLAYER_IDLE_DAYS = 2;
+
+        private readonly ObjectTypeFactory objectTypeFactory;
+
+        private readonly ILocker locker;
+
+        private readonly Formula formula;
+
+        private readonly IActionFactory actionFactory;
 
         private delegate void Init(ICity city);
         private delegate void PostLoop(ICity city);
@@ -33,16 +42,24 @@ namespace Game.Logic.Actions
         private int laborTimeRemains;
         private bool everyOther;
 
-        public CityPassiveAction(uint cityId)
+        public CityPassiveAction(uint cityId, ObjectTypeFactory objectTypeFactory, ILocker locker, Formula formula, IActionFactory actionFactory)
         {
             this.cityId = cityId;
+            this.objectTypeFactory = objectTypeFactory;
+            this.locker = locker;
+            this.formula = formula;
+            this.actionFactory = actionFactory;
 
             CreateSubscriptions();
         }
 
-        public CityPassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription, Dictionary<string, string> properties)
+        public CityPassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription, Dictionary<string, string> properties, ObjectTypeFactory objectTypeFactory, ILocker locker, Formula formula, IActionFactory actionFactory)
             : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
+            this.objectTypeFactory = objectTypeFactory;
+            this.locker = locker;
+            this.formula = formula;
+            this.actionFactory = actionFactory;
             cityId = uint.Parse(properties["city_id"]);
             laborTimeRemains = int.Parse(properties["labor_time_remains"]);
 
@@ -72,8 +89,8 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            beginTime = DateTime.UtcNow;
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(INTERVAL_IN_SECONDS));
+            beginTime = SystemClock.Now;
+            endTime = SystemClock.Now.AddSeconds(CalculateTime(INTERVAL_IN_SECONDS));
             return Error.Ok;
         }
 
@@ -84,7 +101,7 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 StateChange(ActionState.Failed);
             }
@@ -97,12 +114,13 @@ namespace Game.Logic.Actions
             Upkeep();
             WeaponExport();
             FastIncome();
+            AlignmentPoint();
         }
 
         public override void Callback(object custom)
         {            
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (!IsValid())
                     return;
@@ -134,12 +152,12 @@ namespace Game.Logic.Actions
                 city.EndUpdate();
 
                 // Stop city action if player has not login for more than a week
-                if (city.Owner.Session != null && DateTime.UtcNow.Subtract(city.Owner.LastLogin).TotalDays > 7)
+                if (city.Owner.Session != null && SystemClock.Now.Subtract(city.Owner.LastLogin).TotalDays > 7)
                     StateChange(ActionState.Completed);
                 else
                 {
-                    beginTime = DateTime.UtcNow;
-                    endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : INTERVAL_IN_SECONDS * Config.seconds_per_unit);
+                    beginTime = SystemClock.Now;
+                    endTime = SystemClock.Now.AddSeconds(CalculateTime(INTERVAL_IN_SECONDS));
                     StateChange(ActionState.Fired);
                 }
             }
@@ -160,11 +178,11 @@ namespace Game.Logic.Actions
 
             PostFirstLoop += city =>
                 {
-                    if (city.Owner.Session == null && DateTime.UtcNow.Subtract(city.Owner.LastLogin).TotalDays > 2)
+                    if (city.Owner.IsIdle)
                         return;
 
                     laborTimeRemains += INTERVAL_IN_SECONDS;
-                    int laborRate = Formula.Current.GetLaborRate(laborTotal, city);
+                    int laborRate = formula.GetLaborRate(laborTotal, city);
                     int laborProduction = laborTimeRemains/laborRate;
                     if (laborProduction <= 0)
                         return;
@@ -182,8 +200,8 @@ namespace Game.Logic.Actions
 
             FirstLoop += (city, structure) =>
                 {
-                    if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("RepairBuilding", structure))
-                        repairPower += Formula.Current.RepairRate(structure);
+                    if (objectTypeFactory.IsStructureType("RepairBuilding", structure))
+                        repairPower += formula.RepairRate(structure);
                 };
 
             SecondLoop += (city, structure) =>
@@ -191,7 +209,7 @@ namespace Game.Logic.Actions
                     if (repairPower <= 0)
                         return;
 
-                    if (structure.Stats.Base.Battle.MaxHp <= structure.Stats.Hp || Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("NonRepairable", structure) ||
+                    if (structure.Stats.Base.Battle.MaxHp <= structure.Stats.Hp || objectTypeFactory.IsStructureType("NonRepairable", structure) ||
                         structure.State.Type == ObjectState.Battle)
                         return;
 
@@ -219,7 +237,7 @@ namespace Game.Logic.Actions
 
                     if (!city.Resource.HasEnough(upkeepCost))
                     {
-                        city.Worker.DoPassive(city, new StarvePassiveAction(city.Id), false);
+                        city.Worker.DoPassive(city, actionFactory.CreateStarvePassiveAction(city.Id), false);
                     }
 
                     city.Resource.Subtract(upkeepCost);
@@ -231,7 +249,7 @@ namespace Game.Logic.Actions
         {
            PostFirstLoop += city =>
             {
-                if (!Config.resource_fast_income)
+                if (!Config.resource_fast_income || Config.server_production)
                     return;
 
                 var resource = new Resource(15000, city.Resource.Gold.Value < 99999 ? 99999 : 0, 15000, 15000, 0);
@@ -245,11 +263,27 @@ namespace Game.Logic.Actions
             PostFirstLoop += city =>
                 {
                     var weaponExportMax = city.Technologies.GetEffects(EffectCode.WeaponExport).DefaultIfEmpty().Max(x =>x==null?0:(int)x.Value[0]);
-                    int gold = Formula.Current.GetWeaponExportLaborProduce(weaponExportMax, city.Resource.Labor.Value);
+                    int gold = formula.GetWeaponExportLaborProduce(weaponExportMax, city.Resource.Labor.Value);
                     if (gold <= 0)
                         return;
                     city.Resource.Gold.Add(gold);
                 };
         }
+
+        private void AlignmentPoint()
+        {
+            PostFirstLoop += city =>
+            {
+                if (Math.Abs(city.AlignmentPoint - 50m) < (Config.ap_deduction_per_hour / 2))
+                {
+                    city.AlignmentPoint = 50m;
+                }
+                else
+                {
+                    city.AlignmentPoint += city.AlignmentPoint > 50m ? -(Config.ap_deduction_per_hour/2) : (Config.ap_deduction_per_hour/2);
+                }
+            };
+        }
+
     }
 }

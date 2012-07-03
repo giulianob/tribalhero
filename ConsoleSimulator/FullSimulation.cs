@@ -213,7 +213,7 @@ namespace ConsoleSimulator
             }
         }
 
-        private void bm_ExitBattle(uint battleId, CombatList atk, CombatList def)
+        private void bm_ExitBattle(uint battleId, ICombatList atk, ICombatList def)
         {
             if (def.Count > 0)
             {
@@ -237,7 +237,7 @@ namespace ConsoleSimulator
             }
         }
 
-        private void bm_ExitBattle2(uint battleId, CombatList atk, CombatList def)
+        private void bm_ExitBattle2(uint battleId, ICombatList atk, ICombatList def)
         {
             if (atk.Count > 0)
             {

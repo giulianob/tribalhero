@@ -44,7 +44,7 @@ namespace Game.Database
 
         public bool LoadFromDatabase()
         {
-            SystemVariablesUpdater.Pause();
+            SystemVariablesUpdater.Current.Pause();
             Scheduler.Current.Pause();
             Global.FireEvents = false;
 
@@ -104,7 +104,7 @@ namespace Game.Database
 
             Global.Logger.Info("Database loading finished");
 
-            SystemVariablesUpdater.Resume();
+            SystemVariablesUpdater.Current.Resume();
             Global.FireEvents = true;
             Scheduler.Current.Resume();
             return true;
@@ -343,7 +343,12 @@ namespace Game.Database
                                                     (int)reader["labor"],
                                                     laborRealizeTime,
                                                     (int)reader["labor_production_rate"]);
-                    var city = new City(World.Current.Players[(uint)reader["player_id"]], (string)reader["name"], resource, (byte)reader["radius"], null)
+                    var city = new City(World.Current.Players[(uint)reader["player_id"]],
+                                        (string)reader["name"],
+                                        resource,
+                                        (byte)reader["radius"],
+                                        null,
+                                        (decimal)reader["alignment_point"])
                                {
                                        DbPersisted = true,
                                        LootStolen = (uint)reader["loot_stolen"],

@@ -5,7 +5,6 @@ using Game.Data;
 using Game.Logic.Actions;
 using Game.Setup;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -13,6 +12,16 @@ namespace Game.Comm.ProcessorCommands
 {
     class MiscCommandsModule : CommandModule
     {
+        private readonly IActionFactory actionFactory;
+
+        private readonly StructureFactory structureFactory;
+
+        public MiscCommandsModule(IActionFactory actionFactory, StructureFactory structureFactory)
+        {
+            this.actionFactory = actionFactory;
+            this.structureFactory = structureFactory;
+        }
+
         public override void RegisterCommands(Processor processor)
         {
             processor.RegisterCommand(Command.CityCreate, CreateCity);
@@ -43,7 +52,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var cityCreateAction = new CityCreatePassiveAction(cityId, x, y, cityName);
+                var cityCreateAction = actionFactory.CreateCityCreatePassiveAction(cityId, x, y, cityName);
                 Error ret = city.Worker.DoPassive(city[1], cityCreateAction, true);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
@@ -79,8 +88,8 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var gatherAction = new ResourceGatherActiveAction(cityId, objectId);
-                Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(obj), obj, gatherAction, obj.Technologies);
+                var gatherAction = actionFactory.CreateResourceGatherActiveAction(cityId, objectId);
+                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(obj), obj, gatherAction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else

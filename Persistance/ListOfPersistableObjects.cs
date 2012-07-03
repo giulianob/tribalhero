@@ -1,17 +1,19 @@
 #region
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 #endregion
 
 namespace Persistance
 {
-    abstract public class PersistableList<T> : List<T> where T : IPersistableObject
+    abstract public class ListOfPersistableObjects<T> : List<T>, IListOfPersistableObjects<T> where T : IPersistableObject
     {
         protected IDbManager manager;
 
-        protected PersistableList(IDbManager manager)
+        protected ListOfPersistableObjects(IDbManager manager)
         {
             this.manager = manager;
         }

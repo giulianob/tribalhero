@@ -5,6 +5,7 @@
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import org.aswing.AssetPane;
+	import org.aswing.Component;
 	import src.UI.Tooltips.TextTooltip;
 	
 	/**
@@ -38,6 +39,10 @@
 		public function setText(tooltip: String) : void {
 			this.tooltip.hide();
 			this.tooltip = new TextTooltip(tooltip);
+		}
+		
+		public function append(label: Component): void {
+			this.tooltip.append(label);
 		}
 		
 		private function onRollOver(e: Event):void {

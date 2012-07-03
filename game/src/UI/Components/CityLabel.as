@@ -12,7 +12,7 @@
 	{
 		public var cityId: int;
 
-		public function CityLabel(cityId: int, cityName: String = null)
+		public function CityLabel(cityId: int, cityName: String = null, showTooltip: Boolean = true)
 		{
 			super("-");
 			
@@ -27,7 +27,9 @@
 			else
 				Global.map.usernames.cities.getUsername(cityId, onReceiveUsername);
 
-			new SimpleTooltip(this, "Go to city");
+			if (showTooltip) {
+				new SimpleTooltip(this, "Go to city");
+			}
 			
 			addEventListener(MouseEvent.MOUSE_DOWN, function(e: MouseEvent) : void {
 				goToCity();

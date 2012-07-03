@@ -181,10 +181,12 @@ package src.Util {
 		public static function niceTime(time: int, conj: Boolean = true): String
 		{
 			if (time < 60) {
-				if (conj)
-				return "less than a minute";
-				else
-				return "1 minute";
+				if (conj) {
+					return "less than a minute";
+				}
+				else {
+					return "1 minute";
+				}
 			}
 
 			var hours: int = int(time / (60 * 60));
@@ -261,6 +263,10 @@ package src.Util {
 		public static function roundNumber(number: Number, digit: int = 1) : Number {
 			return Math.round(number * Math.pow(10, digit)) / Math.pow(10, digit);
 		}
+		
+		public static function truncateNumber(number: Number, digit: int = 1) : Number {
+			return int(number * Math.pow(10, digit)) / Math.pow(10, digit);
+		}		
 
 	}
 

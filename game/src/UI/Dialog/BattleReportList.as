@@ -41,7 +41,7 @@
 					remoteReports.loadPage(0);
 				});				
 				Global.mapComm.BattleReport.markAllAsRead(loader);
-				
+				localReports.refreshOnClose = true;
 			});
 			
 			btnAdminSearch.addActionListener(onAdminCitySearch);

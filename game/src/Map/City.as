@@ -29,6 +29,7 @@ package src.Map {
 		public var attackPoint: int = 0;
 		public var defensePoint: int = 0;
 		public var value: int = 0;
+		public var ap: Number = 0;
 		
 		public var hideNewUnits: Boolean;
 
@@ -50,10 +51,11 @@ package src.Map {
 			return objects.get(1);
 		}
 
-		public function City(id: int, name: String, radius: int, resources: LazyResources, attackPoint: int, defensePoint: int, value: int, inBattle: Boolean, hideNewUnits : Boolean) {
+		public function City(id: int, name: String, radius: int, resources: LazyResources, attackPoint: int, defensePoint: int, value: int, inBattle: Boolean, hideNewUnits : Boolean, ap: Number) {
 			this.id = id;
 			this.resources = resources;
 			this.radius = radius;
+			this.ap = ap;
 			this.name = name;
 			this.attackPoint = attackPoint;
 			this.defensePoint = defensePoint;

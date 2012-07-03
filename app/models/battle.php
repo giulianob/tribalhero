@@ -321,7 +321,7 @@ class Battle extends AppModel {
 
         // Find tribes that participated in the battle
         $tribesParticipated = $this->BattleReport->BattleReportTroop->BattleReportObject->find('all', array(
-            'fields' => array('DISTINCT(Tribe.player_id)', 'Tribe.name'),
+            'fields' => array('DISTINCT(Tribe.id)', 'Tribe.name'),
             'link' => array(
                 'BattleReportTroop' => array('type' => 'INNER', 'fields' => array('BattleReportTroop.is_attacker'),
                     'BattleReport' => array('type' => 'INNER', 'fields' => array(),
@@ -340,10 +340,10 @@ class Battle extends AppModel {
         $outcome['defenderTribes'] = array();
         foreach ($tribesParticipated as $tribeParticipated) {
             if ($tribeParticipated['BattleReportTroop']['is_attacker']) {
-                $outcome['attackerTribes'][] = array('id' => $tribeParticipated['Tribe']['player_id'], 'name' => $tribeParticipated['Tribe']['name']);
+                $outcome['attackerTribes'][] = array('id' => $tribeParticipated['Tribe']['id'], 'name' => $tribeParticipated['Tribe']['name']);
             }
             else {
-                $outcome['defenderTribes'][] = array('id' => $tribeParticipated['Tribe']['player_id'], 'name' => $tribeParticipated['Tribe']['name']);
+                $outcome['defenderTribes'][] = array('id' => $tribeParticipated['Tribe']['id'], 'name' => $tribeParticipated['Tribe']['name']);
             }
         }
 

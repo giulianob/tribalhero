@@ -10,7 +10,7 @@ ATTACK_POINTS_DESC,Attack Points\n\nAttack points are acquired when you attack a
 INFLUENCE_POINTS_DESC,Influence Points\n\nYour total influence points is the sum of all building levels in all of your cities.
 NEW_CITY_DESC,Build a new city here. Requires Ox Wagons and Influence Points. Your total influence points is the sum of all building levels in all of your cities.  All Ox Wagons will be consumed to build the new city.
 UNITS_DESC,Units\n\nStatus of your military units. You can get more information about your units in the 'Unit Movement' screen.
-AP_POINTS_DESC,Alignment Rating\n\nShows how aggressive or defensive the city has lately been. Alignment points go down when you defeat other enemies and goes up when your city is under signifant attacks. Bonuses are given when this number reaches certain thresholds.
+AP_POINTS_DESC,Alignment Rating\n\nShows how aggressive or defensive the city has lately been. Alignment rating goes down when you defeat other enemies and goes up when your city is under significant attacks. Bonuses are given when this number reaches certain thresholds.
 ,
 FARMING_LABEL,Farming
 TIME_LEFT_LABEL,Time Left

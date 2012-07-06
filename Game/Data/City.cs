@@ -1114,6 +1114,9 @@ namespace Game.Data
                 bw.Write(Lvl);
                 bw.Write(Owner.PlayerId);
                 bw.Write(value);
+                bw.Write((float)alignmentPoint);
+                bw.Write(Owner.Tribesman == null ? 0 : Owner.Tribesman.Tribe.Id);
+                bw.Write((byte)(Formula.Current.IsNewbieProtected(Owner)?1:0));
                 ms.Position = 0;
                 return ms.ToArray();
             }

@@ -263,6 +263,10 @@ package src.Util {
 		public static function roundNumber(number: Number, digit: int = 1) : Number {
 			return Math.round(number * Math.pow(10, digit)) / Math.pow(10, digit);
 		}
+		
+		public static function truncateNumber(number: Number, digit: int = 1) : Number {
+			return int(number * Math.pow(10, digit)) / Math.pow(10, digit);
+		}		
 
 	}
 

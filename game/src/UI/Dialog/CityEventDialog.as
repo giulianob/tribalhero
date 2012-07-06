@@ -185,7 +185,8 @@
 				lblWood.setText(resourceLabelText(city.resources.wood));
 				lblCrop.setText(resourceLabelText(city.resources.crop));
 				lblIron.setText(resourceLabelText(city.resources.iron));
-				lblApPoints.setText(StringUtil.substitute(Locale.loadString("CITY_OVERVIEW_AP_POINTS_LABEL"), city.ap.toFixed(1)));
+				// Divide and multiply by 10 to truncate to 1 decimal place w/o rounding
+				lblApPoints.setText(StringUtil.substitute(Locale.loadString("CITY_OVERVIEW_AP_POINTS_LABEL"), Util.truncateNumber(city.ap)));
 				lblLabor.setText(simpleLabelText(StringUtil.substitute(Locale.loadString("CITY_OVERVIEW_LABORERS_LABEL"), city.resources.labor.getValue(), city.getBusyLaborCount()), false, false));
 				lblUpkeep.setText(simpleLabelText(city.resources.crop.getUpkeep().toString(), true, true));
 				lblUpkeepMsg.setVisible(city.resources.crop.getRate() < city.resources.crop.getUpkeep());

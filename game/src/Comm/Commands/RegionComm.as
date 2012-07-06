@@ -159,29 +159,29 @@
 					var objY: int = packet.readUShort() + int(id / Constants.miniMapRegionW) * Constants.cityRegionTileH;
 					var objGroupId: int = packet.readUInt();
 					var objId: int = packet.readUInt();
+					var extraProps : Object = new Object();
 					
 					var coord: Point = MapUtil.getMiniMapScreenCoord(objX, objY);
 					
 					// City objects
-					if (objType == ObjectFactory.TYPE_CITY) {									
-						var objLvl: int = packet.readUByte();	
-						var objPlayerId: int = packet.readUInt();
-						var objCityValue: int = packet.readUShort();
-
-						newRegion.addCityObject(objLvl, objPlayerId, objGroupId, objId, objCityValue, coord.x, coord.y);
+					if (objType == ObjectFactory.TYPE_CITY) {
+						extraProps.level = packet.readUByte();	
+						extraProps.playerId = packet.readUInt();
+						extraProps.value = packet.readUShort();
+						extraProps.alignment = packet.readFloat();
+						extraProps.tribeId = packet.readUInt();
+						extraProps.isNewbie = packet.readByte();
 					}
 					// Forest objects
 					else if (objType == ObjectFactory.TYPE_FOREST) {
-						objLvl = packet.readUByte();
-						
-						newRegion.addForestObject(objLvl, objGroupId, objId, coord.x, coord.y);
+						extraProps.level = packet.readUByte();
 					}
 					// Troop objects
 					else if (objType == ObjectFactory.TYPE_TROOP_OBJ) {
-						var objTroopId: int = packet.readUByte();
-						
-						newRegion.addTroopObject(objTroopId, objPlayerId, objGroupId, objId, coord.x, coord.y);	
+						extraProps.troopId = packet.readUByte();
+						extraProps.tribeId = packet.readUInt();
 					}
+					newRegion.addRegionObject(objType, objGroupId, objId, coord.x, coord.y, extraProps);
 				}
 			}
 

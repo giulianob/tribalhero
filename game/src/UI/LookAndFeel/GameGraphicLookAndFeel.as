@@ -1089,6 +1089,24 @@ package src.UI.LookAndFeel
 			];
 			table.putDefaults(comDefaults);
 
+			// *** Button in GameJBox
+			comDefaults = [
+			"Class.GameJBoxButton", [
+				"Button.background", new ASColorUIResource(0x839DAD), //this is just for calculate disabled color
+				"Button.foreground", new ASColorUIResource(0xffffff),
+				"Button.textFilters", new ArrayUIResource([]),
+				"Button.opaque", false,
+				"Button.defaultImage", Chat_tab_selectedImage,
+				"Button.pressedImage", Chat_tab_selectedImage,
+				"Button.disabledImage", Chat_tab_rolloverImage,
+				"Button.rolloverImage", Chat_tab_rolloverImage,
+				//"Button.DefaultButton.defaultImage", Chat_tab_defaultImage,
+				"Button.bg", SkinButtonBackground,
+				"Button.margin", new InsetsUIResource(5, 8, 5, 8), //modify this to fit the image border margin
+				"Button.textShiftOffset", 0
+			]];
+			table.putDefaults(comDefaults);
+
 			// *** ToggleButton
 			comDefaults = [
 			"ToggleButton.background", new ASColorUIResource(0x839DAD), //this is just for calculate disabled color

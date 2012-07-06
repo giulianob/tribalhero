@@ -170,7 +170,7 @@
 			sidebarHolder = new Sprite();
 			sidebarHolder.x = Constants.screenW - GameJSidebar.WIDTH - 15;
 			sidebarHolder.y = 60;			
-												
+			
 			cmdLineHolder = new Sprite();				
 			minimapHolder = new Sprite();
 			
@@ -359,6 +359,8 @@
 				minimapTools.btnZoomIn.visible = false;
 				minimapTools.btnZoomOut.visible = false;
 				message.showMessage("Double click to go anywhere\nPress Escape to close this map");
+				miniMap.showLegend();
+				
 			}
 			else {
 				screenMessage.setVisible(true);
@@ -372,6 +374,7 @@
 				minimapTools.btnZoomIn.visible = true;
 				minimapTools.btnZoomOut.visible = true;
 				message.hide();
+				miniMap.hideLegend();
 			}
 
 			minimapZoomed = zoom;

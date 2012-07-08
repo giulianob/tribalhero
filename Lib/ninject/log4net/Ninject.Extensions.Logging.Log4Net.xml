@@ -20,6 +20,12 @@
             </summary>
             <param name="type">The type to create a logger for.</param>
         </member>
+        <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.Debug(System.String)">
+            <summary>
+            Logs the specified message with Debug severity.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
         <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.Debug(System.String,System.Object[])">
             <summary>
             Logs the specified message with Debug severity.
@@ -34,6 +40,12 @@
             <param name="exception">The exception to log.</param>
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
+        </member>
+        <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.Info(System.String)">
+            <summary>
+            Logs the specified message with Info severity.
+            </summary>
+            <param name="message">The message.</param>
         </member>
         <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.Info(System.String,System.Object[])">
             <summary>
@@ -50,6 +62,12 @@
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
         </member>
+        <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.Trace(System.String)">
+            <summary>
+            Logs the specified message with Trace severity.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
         <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.Trace(System.String,System.Object[])">
             <summary>
             Logs the specified message with Trace severity.
@@ -64,6 +82,12 @@
             <param name="exception">The exception to log.</param>
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
+        </member>
+        <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.Warn(System.String)">
+            <summary>
+            Logs the specified message with Warn severity.
+            </summary>
+            <param name="message">The message.</param>
         </member>
         <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.Warn(System.String,System.Object[])">
             <summary>
@@ -80,6 +104,12 @@
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
         </member>
+        <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.Error(System.String)">
+            <summary>
+            Logs the specified message with Error severity.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
         <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.Error(System.String,System.Object[])">
             <summary>
             Logs the specified message with Error severity.
@@ -94,6 +124,12 @@
             <param name="exception">The exception to log.</param>
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
+        </member>
+        <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.Fatal(System.String)">
+            <summary>
+            Logs the specified message with Fatal severity.
+            </summary>
+            <param name="message">The message.</param>
         </member>
         <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.Fatal(System.String,System.Object[])">
             <summary>

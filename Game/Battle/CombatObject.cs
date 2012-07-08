@@ -17,6 +17,14 @@ namespace Game.Battle
     {
         protected readonly uint BattleId;
 
+        /// <summary>
+        /// Parameterless constructor for mocking only
+        /// </summary>
+        [Obsolete("Used for testing only", true)]
+        protected CombatObject()
+        {            
+        }
+
         protected CombatObject(uint battleId)
         {
             MinDmgDealt = ushort.MaxValue;

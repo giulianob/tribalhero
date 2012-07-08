@@ -18,11 +18,13 @@ namespace Testing.Formulas
             city.Setup(m => m.GetEnumerator()).Returns(() => new List<IStructure> {
                                                                      new Mock<IStructure>().Object
                                                              }.GetEnumerator());
-            
+            var unitFactory = new Mock<UnitFactory>();
+            var structureFactory = new Mock<StructureFactory>();
+
             var objectTypeFactory = new Mock<ObjectTypeFactory>();
             objectTypeFactory.Setup(m => m.IsStructureType("Basement", It.IsAny<IStructure>())).Returns(false);
 
-            var formula = new Formula {ObjectTypeFactory = objectTypeFactory.Object};
+            var formula = new Formula(objectTypeFactory.Object, unitFactory.Object, structureFactory.Object);
 
             formula.HiddenResource(city.Object).CompareTo(new Resource(0, 0, 0, 0, 0)).Should().Be(0);
             formula.HiddenResource(city.Object, true).CompareTo(new Resource(0, 0, 0, 0, 0)).Should().Be(0);
@@ -76,7 +78,10 @@ namespace Testing.Formulas
             var objectTypeFactory = new Mock<ObjectTypeFactory>();
             objectTypeFactory.Setup(m => m.IsStructureType("Basement", It.IsAny<IStructure>())).Returns(true);
 
-            var formula = new Formula {ObjectTypeFactory = objectTypeFactory.Object};
+            var unitFactory = new Mock<UnitFactory>();
+            var structureFactory = new Mock<StructureFactory>();
+
+            var formula = new Formula(objectTypeFactory.Object, unitFactory.Object, structureFactory.Object);
 
             var hiddenResources = formula.HiddenResource(city.Object, checkApBonus);
             

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Persistance
@@ -7,5 +8,7 @@ namespace Persistance
         void Add(T item, bool save);
 
         bool Remove(T item, bool save);
+
+        int RemoveAll(Predicate<T> match);
     }
 }

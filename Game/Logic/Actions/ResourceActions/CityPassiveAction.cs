@@ -183,6 +183,9 @@ namespace Game.Logic.Actions
 
                     laborTimeRemains += INTERVAL_IN_SECONDS;
                     int laborRate = formula.GetLaborRate(laborTotal, city);
+                    if (laborRate <= 0)
+                        return;
+
                     int laborProduction = laborTimeRemains/laborRate;
                     if (laborProduction <= 0)
                         return;

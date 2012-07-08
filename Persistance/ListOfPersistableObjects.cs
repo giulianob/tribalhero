@@ -56,6 +56,7 @@ namespace Persistance
 
         public new int RemoveAll(Predicate<T> match)
         {
+            // We implement our own RemoveAll because it needs to call RemoveAt which removes the item from the db as well
             int count = 0;
             for (int i = Count - 1; i >= 0; i--)
             {

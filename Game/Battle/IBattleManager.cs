@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Game.Comm;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Util.Locking;
@@ -14,12 +13,10 @@ namespace Game.Battle
         uint Round { get; set; }
         uint Turn { get; set; }
         ICity City { get; set; }
-        ICombatList Attacker { get; }
+        ICombatList Attackers { get; }
         ICombatList Defender { get; }
         IBattleReport BattleReport { get; }
         IEnumerable<ILockable> LockList { get; }
-        void Subscribe(Session session);
-        void Unsubscribe(Session session);
         CombatObject GetCombatObject(uint id);
         bool CanWatchBattle(IPlayer player, out int roundsLeft);
         void DbLoaderAddToLocal(CombatStructure structure, uint id);
@@ -30,7 +27,6 @@ namespace Game.Battle
         void AddToAttack(IEnumerable<ITroopStub> objects);
         void AddToDefense(IEnumerable<ITroopStub> objects);
         void RemoveFromAttack(IEnumerable<ITroopStub> objects, ReportState state);
-        void RemoveFromLocal(IEnumerable<IStructure> objects, ReportState state);
         void RemoveFromDefense(IEnumerable<ITroopStub> objects, ReportState state);
         void RefreshBattleOrder();
         bool ExecuteTurn();

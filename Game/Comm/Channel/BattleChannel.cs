@@ -9,25 +9,25 @@ using System.Linq;
 
 namespace Game.Comm.Channel
 {
-    public interface IBattleChannel
+    public class BattleChannel
     {
-        void BattleEnterRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round);
-        void BattleExitBattle(IBattleManager battle, ICombatList atk, ICombatList def);
-        void BattleReinforceDefender(IBattleManager battle, IEnumerable<CombatObject> list);
-        void BattleReinforceAttacker(IBattleManager battle, IEnumerable<CombatObject> list);
-        void BattleSkippedAttacker(IBattleManager battle, CombatObject source);
-        void BattleActionAttacked(IBattleManager battle, CombatObject source, CombatObject target, decimal damage);
-        void BattleWithdrawDefender(IBattleManager battle, IEnumerable<CombatObject> list);
-        void BattleWithdrawAtacker(IBattleManager battle, IEnumerable<CombatObject> list);
-    }
+        private readonly ICity city;
 
-    public class BattleChannel : IBattleChannel
-    {
         private readonly string channelName;
 
-        public BattleChannel(ICity city)
+        public BattleChannel(IBattleManager battleManager, ICity city)
         {
+            this.city = city;
             channelName = "/BATTLE/" + city.Id;
+
+            battleManager.ActionAttacked += BattleActionAttacked;
+            battleManager.SkippedAttacker += BattleSkippedAttacker;
+            battleManager.ReinforceAttacker += BattleReinforceAttacker;
+            battleManager.ReinforceDefender += BattleReinforceDefender;
+            battleManager.ExitBattle += BattleExitBattle;
+            battleManager.EnterRound += BattleEnterRound;
+            battleManager.WithdrawAttacker += BattleWithdrawAtacker;
+            battleManager.WithdrawDefender += BattleWithdrawDefender;
         }
 
         private Packet CreatePacket(IBattleManager battle, Command command)
@@ -38,20 +38,23 @@ namespace Game.Comm.Channel
             return packet;
         }
 
-        public void BattleEnterRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round)
+        private void BattleEnterRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round)
         {
             var packet = CreatePacket(battle, Command.BattleNewRound);            
             packet.AddUInt32(round);
             Global.Channel.Post(channelName, packet);
         }
 
-        public void BattleExitBattle(IBattleManager battle, ICombatList atk, ICombatList def)
+        private void BattleExitBattle(IBattleManager battle, ICombatList atk, ICombatList def)
         {
             var packet = CreatePacket(battle, Command.BattleEnded);
             Global.Channel.Post(channelName, packet);
+
+            // Unsubscribe everyone from this channel
+            Global.Channel.Unsubscribe("/BATTLE/" + city.Id);
         }
 
-        public void BattleReinforceDefender(IBattleManager battle, IEnumerable<CombatObject> list)
+        private void BattleReinforceDefender(IBattleManager battle, IEnumerable<CombatObject> list)
         {
             var combatObjectList = new List<CombatObject>(list);
             var packet = CreatePacket(battle, Command.BattleReinforceDefender);
@@ -59,7 +62,7 @@ namespace Game.Comm.Channel
             Global.Channel.Post(channelName, packet);
         }
 
-        public void BattleReinforceAttacker(IBattleManager battle, IEnumerable<CombatObject> list)
+        private void BattleReinforceAttacker(IBattleManager battle, IEnumerable<CombatObject> list)
         {
             var combatObjectList = new List<CombatObject>(list);
             var packet = CreatePacket(battle, Command.BattleReinforceAttacker);
@@ -67,14 +70,14 @@ namespace Game.Comm.Channel
             Global.Channel.Post(channelName, packet);
         }
 
-        public void BattleSkippedAttacker(IBattleManager battle, CombatObject source)
+        private void BattleSkippedAttacker(IBattleManager battle, CombatObject source)
         {
             var packet = CreatePacket(battle, Command.BattleSkipped);
             packet.AddUInt32(source.Id);
             Global.Channel.Post(channelName, packet);
         }
 
-        public void BattleActionAttacked(IBattleManager battle, CombatObject source, CombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battle, CombatObject source, CombatObject target, decimal damage)
         {
             var packet = CreatePacket(battle, Command.BattleAttack);
             packet.AddUInt32(source.Id);
@@ -83,7 +86,7 @@ namespace Game.Comm.Channel
             Global.Channel.Post(channelName, packet);
         }
 
-        public void BattleWithdrawDefender(IBattleManager battle, IEnumerable<CombatObject> list)
+        private void BattleWithdrawDefender(IBattleManager battle, IEnumerable<CombatObject> list)
         {
             var combatObjectList = new List<CombatObject>(list);
             var combatObject = combatObjectList.First();
@@ -93,7 +96,7 @@ namespace Game.Comm.Channel
             Global.Channel.Post(channelName, packet);
         }
 
-        public void BattleWithdrawAtacker(IBattleManager battle, IEnumerable<CombatObject> list)
+        private void BattleWithdrawAtacker(IBattleManager battle, IEnumerable<CombatObject> list)
         {
             var combatObjectList = new List<CombatObject>(list);
             var combatObject = combatObjectList.First();

@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
@@ -22,6 +23,7 @@ namespace Game.Logic.Formulas
 
         public StructureFactory StructureFactory { get; set; }
 
+        [Obsolete("Used for testing only", true)]
         public Formula()
         {
         }

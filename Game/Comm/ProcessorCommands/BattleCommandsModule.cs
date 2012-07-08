@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Map;
 using Game.Setup;
+using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -63,13 +63,24 @@ namespace Game.Comm.ProcessorCommands
                     session.Write(packet);
                     return;
                 }
-
+               
                 var reply = new Packet(packet);
                 reply.AddUInt32(city.Battle.BattleId);
                 reply.AddUInt32(city.Battle.Round);
-                PacketHelper.AddToPacket(city.Battle.Attacker, reply);
+                PacketHelper.AddToPacket(city.Battle.Attackers, reply);
                 PacketHelper.AddToPacket(city.Battle.Defender, reply);
-                city.Battle.Subscribe(session);
+
+                // TODO: This used to be in the battle manager but it doesnt belong there
+                //  so I put it in here for now but it should not be here either. Need to make some other place
+                //  that takes care of the battle channel stuff
+                try
+                {
+                    Global.Channel.Subscribe(session, "/BATTLE/" + city.Id);
+                }
+                catch (DuplicateSubscriptionException)
+                {
+                }
+                
                 session.Write(reply);
             }
         }
@@ -96,7 +107,8 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                city.Battle.Unsubscribe(session);
+                // TODO: See comment for subscribe. Applies here too.
+                Global.Channel.Unsubscribe(session, "/BATTLE/" + city.Id);
             }
 
             ReplySuccess(session, packet);

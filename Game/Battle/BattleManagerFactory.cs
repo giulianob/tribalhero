@@ -1,9 +1,7 @@
-﻿using System;
-using Game.Comm.Channel;
+﻿using Game.Comm.Channel;
 using Game.Data;
 using Game.Setup;
 using Ninject;
-using Ninject.Parameters;
 using Persistance;
 
 namespace Game.Battle
@@ -18,16 +16,16 @@ namespace Game.Battle
         }
 
         public IBattleManager CreateBattleManager(uint battleId, ICity city)
-        {
-            var channel = new BattleChannel(city);
+        {            
             var bm = new BattleManager(battleId,
                                        city,
                                        kernel.Get<IDbManager>(),
-                                       channel,
                                        kernel.Get<IBattleReport>(),
                                        kernel.Get<ICombatListFactory>(),
                                        kernel.Get<ICombatUnitFactory>(),
                                        kernel.Get<ObjectTypeFactory>());
+
+            var battleChannel = new BattleChannel(bm, city);
 
             bm.BattleReport.Battle = bm;
             return bm;            

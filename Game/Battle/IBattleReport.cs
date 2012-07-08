@@ -15,7 +15,7 @@ namespace Game.Battle
         void CreateBattleReport();
         void CompleteBattle();
         void WriteReportObject(CombatObject combatObject, bool isAttacker, ReportState state);
-        void WriteReportObjects(IList<CombatObject> list, bool isAttacker, ReportState state);
+        void WriteReportObjects(IEnumerable<CombatObject> list, bool isAttacker, ReportState state);
         void CompleteReport(ReportState state);
         void SetLootedResources(uint cityId, byte troopId, uint battleId, Resource lootResource, Resource bonusResource);
     }

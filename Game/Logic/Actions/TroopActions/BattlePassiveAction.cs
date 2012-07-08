@@ -158,7 +158,7 @@ namespace Game.Logic.Actions
                 {
                     // Battle continues, just save it and reschedule
                     dbManager.Save(city.Battle);
-                    endTime = SystemClock.Now.AddSeconds(formula.GetBattleInterval(city.Battle.Defender.Count + city.Battle.Attacker.Count));
+                    endTime = SystemClock.Now.AddSeconds(formula.GetBattleInterval(city.Battle.Defender.Count + city.Battle.Attackers.Count));
                     StateChange(ActionState.Fired);
                     return;
                 }
@@ -246,7 +246,7 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        public void BattleActionAttacked(IBattleManager battleManager, CombatObject source, CombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battleManager, CombatObject source, CombatObject target, decimal damage)
         {
             var combatUnit = target as ICombatUnit;
 
@@ -287,7 +287,7 @@ namespace Game.Logic.Actions
             }
 
             destroyedHp += (uint)obj.Stats.MaxHp;
-            AddAlignmentPoint(battle.Attacker, battle.Defender, Config.battle_stamina_destroyed_deduction);
+            AddAlignmentPoint(battle.Attackers, battle.Defender, Config.battle_stamina_destroyed_deduction);
         }
 
         public override void UserCancelled()

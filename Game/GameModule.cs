@@ -104,8 +104,6 @@ namespace Game
 
             #region Battle
 
-            Bind<IBattleChannel>().To<BattleChannel>();
-
             Bind<ICity>().To<ICity>();
 
             Bind<IBattleReport>().To<BattleReport>();

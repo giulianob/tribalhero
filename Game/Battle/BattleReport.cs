@@ -23,15 +23,11 @@ namespace Game.Battle
         /// </summary>
         public IBattleManager Battle
         {
-            get
-            {
-                return battle;
-            }
             set
             {
                 battle = value;
-                ReportedObjects = new ReportedObjects(battle.City);
-                ReportedTroops = new ReportedTroops(battle.City);
+                ReportedObjects = new ReportedObjects(battle.BattleId);
+                ReportedTroops = new ReportedTroops(battle.BattleId);
             }
         }
 
@@ -69,13 +65,13 @@ namespace Game.Battle
         /// Starts the battle report if it hasn't yet.
         /// This will snap all of the current troops.
         /// </summary>
-        public void WriteBeginReport()
+        private void WriteBeginReport()
         {
             if (ReportStarted)
                 return;
 
             uint newReportId;
-            battleReportWriter.SnapReport(out newReportId, Battle.BattleId);
+            battleReportWriter.SnapReport(out newReportId, battle.BattleId);
 
             ReportId = newReportId;
             ReportStarted = true;
@@ -86,7 +82,7 @@ namespace Game.Battle
         /// </summary>
         public void CreateBattleReport()
         {
-            battleReportWriter.SnapBattle(Battle.BattleId, Battle.City.Id);
+            battleReportWriter.SnapBattle(battle.BattleId, battle.City.Id);
             WriteBeginReport();
             ReportFlag = true;
             CompleteReport(ReportState.Entering);
@@ -100,7 +96,7 @@ namespace Game.Battle
             WriteBeginReport();
             ReportFlag = true;
             CompleteReport(ReportState.Exiting);
-            battleReportWriter.SnapBattleEnd(Battle.BattleId);
+            battleReportWriter.SnapBattleEnd(battle.BattleId);
         }
 
         /// <summary>
@@ -142,7 +138,7 @@ namespace Game.Battle
 
                 // Log any troops that are entering the battle to the view table so they are able to see this report
                 // Notice that we don't log the local troop. This is because they can automatically see all of the battles that take place in their cities by using the battles table                    
-                if (Battle.City != combatObject.City)
+                if (battle.City != combatObject.City)
                 {
                     switch(state)
                     {
@@ -152,7 +148,7 @@ namespace Game.Battle
                             {
                                 battleReportWriter.SnapBattleReportView(combatObject.City.Id,
                                                                         combatObject.TroopStub.TroopId,
-                                                                        Battle.BattleId,
+                                                                        battle.BattleId,
                                                                         combatObject.GroupId,
                                                                         isAttacker,
                                                                         ReportId);
@@ -163,7 +159,7 @@ namespace Game.Battle
                         case ReportState.Dying:
                         case ReportState.OutOfStamina:
                         case ReportState.Retreating:
-                            battleReportWriter.SnapBattleReportViewExit(Battle.BattleId, combatObject.GroupId, ReportId);
+                            battleReportWriter.SnapBattleReportViewExit(battle.BattleId, combatObject.GroupId, ReportId);
                             break;
                     }
                 }
@@ -184,7 +180,7 @@ namespace Game.Battle
         /// <param name="list"></param>
         /// <param name="isAttacker"></param>
         /// <param name="state"></param>
-        public void WriteReportObjects(IList<CombatObject> list, bool isAttacker, ReportState state)
+        public void WriteReportObjects(IEnumerable<CombatObject> list, bool isAttacker, ReportState state)
         {
             WriteBeginReport();
 
@@ -207,9 +203,9 @@ namespace Game.Battle
                 return;
             }
 
-            WriteReportObjects(Battle.Attacker, true, state);
-            WriteReportObjects(Battle.Defender, false, state);
-            battleReportWriter.SnapEndReport(ReportId, Battle.BattleId, Battle.Round, Battle.Turn);
+            WriteReportObjects(battle.Attackers, true, state);
+            WriteReportObjects(battle.Defender, false, state);
+            battleReportWriter.SnapEndReport(ReportId, battle.BattleId, battle.Round, battle.Turn);
             ReportedObjects.Clear();
             ReportedTroops.Clear();
             ReportStarted = false;

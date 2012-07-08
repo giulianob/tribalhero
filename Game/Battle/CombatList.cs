@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
@@ -125,16 +124,6 @@ namespace Game.Battle
         {
             base.Add(item, save);
             item.CombatList = this;
-        }
-
-        public bool Contains(ITroopStub obj)
-        {
-            return this.Any(currObj => currObj.CompareTo(obj) == 0);
-        }
-
-        public bool Contains(IStructure obj)
-        {
-            return this.Any(currObj => currObj.CompareTo(obj) == 0);
         }
 
         #region Nested type: CombatScoreItem

@@ -14,8 +14,6 @@ namespace Game.Battle
 {
     public interface ICombatList : IListOfPersistableObjects<CombatObject>
     {
-        int Id { get; set; }
-
         int Upkeep { get; }
 
         int Capacity { get; set; }

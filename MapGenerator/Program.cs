@@ -13,7 +13,6 @@ using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using NDesk.Options;
-using Ninject;
 
 #endregion
 

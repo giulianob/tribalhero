@@ -101,7 +101,7 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        private void BattleActionAttacked(uint battleId, CombatObject source, CombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battle, CombatObject source, CombatObject target, decimal damage)
         {
             if (target.City.Id != cityId)
                 return;
@@ -132,7 +132,7 @@ namespace Game.Logic.Actions
             StateChange(ActionState.Completed);
         }
 
-        private void BattleExitBattle(uint battleId, ICombatList atk, ICombatList def)
+        private void BattleExitBattle(IBattleManager battle, ICombatList atk, ICombatList def)
         {
             ICity city;
             ITroopStub stub;

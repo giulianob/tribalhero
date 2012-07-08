@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,13 +11,11 @@ using Game.Comm.Protocol;
 using Game.Comm.Thrift;
 using Game.Data;
 using Game.Data.Tribe;
-using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
-using Game.Module;
 using Game.Setup;
 using Game.Util.Locking;
 using Ninject;
@@ -107,12 +104,7 @@ namespace Game
 
             #region Battle
 
-            Bind<IBattleChannel>()
-                .To<BattleChannel>()
-                .WhenInjectedInto<BattleManager>()
-                .WithConstructorArgument("city", ctx => ctx.Request.ParentRequest.Parameters.OfType<ConstructorArgument>()
-                    .First(p => p.Name == "owner")
-                    .GetValue(ctx, ctx.Request.Target));
+            Bind<IBattleChannel>().To<BattleChannel>();
 
             Bind<ICity>().To<ICity>();
 

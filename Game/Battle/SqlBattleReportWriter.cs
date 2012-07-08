@@ -21,10 +21,8 @@ namespace Game.Battle
             this.dbManager = dbManager;
         }
 
-        public void SnapBattle(out uint battleId, uint cityId)
+        public void SnapBattle(uint battleId, uint cityId)
         {
-            battleId = (uint)BattleReport.BattleIdGenerator.GetNext();
-
             dbManager.Query(string.Format(@"INSERT INTO `{0}` VALUES (@id, @city_id, UTC_TIMESTAMP(), NULL, '0')", BATTLE_DB),
                             new[] { new DbColumn("id", battleId, DbType.UInt32), new DbColumn("city_id", cityId, DbType.UInt32) });
         }

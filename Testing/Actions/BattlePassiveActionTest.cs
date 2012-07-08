@@ -45,6 +45,8 @@ namespace Testing.Actions
             var dbManager = new Mock<IDbManager>();
             var battleManager = new Mock<IBattleManager>();
 
+            battleManager.SetupGet(p => p.BattleId).Returns(1);
+
             // Local city
             var defaultStub = new Mock<ITroopStub>();
             defaultStub.SetupGet(p => p.Upkeep).Returns(125);
@@ -93,7 +95,7 @@ namespace Testing.Actions
                                                                  dbManager.Object,
                                                                  formula.Object);
 
-            action.BattleEnterRound(1, attackers.Object, defenders.Object, 1);
+            action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
             localCity.Object.AlignmentPoint.Should().Be(50m);
             attacker1.City.AlignmentPoint.Should().Be(30m);
@@ -112,6 +114,8 @@ namespace Testing.Actions
             var gameObjectLocator = new Mock<IGameObjectLocator>();
             var dbManager = new Mock<IDbManager>();
             var battleManager = new Mock<IBattleManager>();
+
+            battleManager.SetupGet(p => p.BattleId).Returns(1);
 
             // Local city
             var defaultStub = new Mock<ITroopStub>();
@@ -161,7 +165,7 @@ namespace Testing.Actions
                                                                  dbManager.Object,
                                                                  formula.Object);
 
-            action.BattleEnterRound(1, attackers.Object, defenders.Object, 1);
+            action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
             localCity.Object.AlignmentPoint.Should().Be(50m);
             attacker1.City.AlignmentPoint.Should().Be(30m);
@@ -228,7 +232,7 @@ namespace Testing.Actions
                                                  dbManager.Object,
                                                  formula.Object);
 
-            action.BattleEnterRound(1, attackers.Object, defenders.Object, 1);
+            action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
             localCity.Object.AlignmentPoint.Should().Be(50.05m);
             attacker1.City.AlignmentPoint.Should().Be(29.983333333333333333333333333m);
@@ -295,7 +299,7 @@ namespace Testing.Actions
                                                  dbManager.Object,
                                                  formula.Object);
 
-            action.BattleEnterRound(1, attackers.Object, defenders.Object, 1);
+            action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
             localCity.Object.AlignmentPoint.Should().Be(50.2m);
             attacker1.City.AlignmentPoint.Should().Be(29.981818181818181818181818182m);
@@ -362,7 +366,7 @@ namespace Testing.Actions
                                                  dbManager.Object,
                                                  formula.Object);
 
-            action.BattleEnterRound(1, attackers.Object, defenders.Object, 1);
+            action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
             localCity.Object.AlignmentPoint.Should().Be(50.2m);
             attacker1.City.AlignmentPoint.Should().Be(29.981818181818181818181818182m);

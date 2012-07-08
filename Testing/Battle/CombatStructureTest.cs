@@ -3,6 +3,7 @@ using FluentAssertions;
 using Game.Battle;
 using Game.Data;
 using Game.Data.Stats;
+using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Moq;
 using Xunit.Extensions;
@@ -27,22 +28,23 @@ namespace Testing.Battle
         {
             Mock<StructureStats> structureStats = new Mock<StructureStats>();
             Mock<IStructure> structure = new Mock<IStructure>();
-            Mock<IBattleManager> battleManager = new Mock<IBattleManager>();
             Mock<BattleStats> battleStats = new Mock<BattleStats>();
             Mock<Formula> formula = new Mock<Formula>();
             Mock<BattleFormulas> battleFormula = new Mock<BattleFormulas>();
+            Mock<IActionFactory> actionFactory = new Mock<IActionFactory>();
             
             structureStats.SetupAllProperties();
             structure.SetupGet(p => p.Stats).Returns(structureStats.Object);
 
-            CombatStructure combatStructure = new CombatStructure(battleManager.Object,
+            CombatStructure combatStructure = new CombatStructure(1,
                                                                   structure.Object,
                                                                   battleStats.Object,
                                                                   hp,
                                                                   1,
                                                                   1,
                                                                   formula.Object,
-                                                                  battleFormula.Object);
+                                                                  battleFormula.Object,
+                                                                  actionFactory.Object);
             Resource returning;
             int attackPoints;
             combatStructure.TakeDamage(dmg, out returning, out attackPoints);
@@ -72,23 +74,24 @@ namespace Testing.Battle
         {
             Mock<StructureStats> structureStats = new Mock<StructureStats>();
             Mock<IStructure> structure = new Mock<IStructure>();
-            Mock<IBattleManager> battleManager = new Mock<IBattleManager>();
             Mock<BattleStats> battleStats = new Mock<BattleStats>();
             Mock<Formula> formula = new Mock<Formula>();
             Mock<BattleFormulas> battleFormula = new Mock<BattleFormulas>();
+            Mock<IActionFactory> actionFactory = new Mock<IActionFactory>();
 
             structureStats.SetupAllProperties();
             structure.SetupGet(p => p.Stats).Returns(structureStats.Object);
             formula.Setup(m => m.GetStructureKilledAttackPoint(100, 2)).Returns(10);
 
-            CombatStructure combatStructure = new CombatStructure(battleManager.Object,
+            CombatStructure combatStructure = new CombatStructure(1,
                                                                   structure.Object,
                                                                   battleStats.Object,
                                                                   hp,
                                                                   100,
                                                                   2,
                                                                   formula.Object,
-                                                                  battleFormula.Object);
+                                                                  battleFormula.Object,
+                                                                  actionFactory.Object);
             Resource returning;
             int attackPoints;
             combatStructure.TakeDamage(dmg, out returning, out attackPoints);

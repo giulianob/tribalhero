@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Battle;
-using Game.Comm.Channel;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Database;
@@ -14,8 +13,6 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Ninject;
-using Ninject.Parameters;
-using Persistance;
 
 #endregion
 
@@ -156,7 +153,7 @@ namespace Game.Logic.Actions
             }
             // otherwise, the battle has to be created
             else
-            {
+            {                
                 targetCity.Battle = battleManagerFactory.CreateBattleManager(targetCity);
 
                 var ba = actionFactory.CreateBattlePassiveAction(targetCityId);
@@ -188,7 +185,7 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        private void BattleWithdrawAttacker(uint battleId, IEnumerable<CombatObject> list)
+        private void BattleWithdrawAttacker(IBattleManager battle, IEnumerable<CombatObject> list)
         {
             ITroopStub stub;
             ICity targetCity;
@@ -214,7 +211,7 @@ namespace Game.Logic.Actions
         /// <summary>
         /// Takes care of finishing this action up if all our units are killed
         /// </summary>
-        private void BattleUnitRemoved(uint battleId, CombatObject co)
+        private void BattleUnitRemoved(IBattleManager battle, CombatObject co)
         {
             ITroopStub stub;
             ICity targetCity;
@@ -264,7 +261,7 @@ namespace Game.Logic.Actions
             battle.BattleReport.SetLootedResources(stub.City.Id, stub.TroopId, battle.BattleId, looted, actual);
         }
 
-        private void BattleExitTurn(uint battleId, ICombatList atk, ICombatList def, int turn)
+        private void BattleExitTurn(IBattleManager battle, ICombatList atk, ICombatList def, int turn)
         {
             ICity city;            
             ITroopStub stub;
@@ -283,7 +280,7 @@ namespace Game.Logic.Actions
             }
         }
 
-        private void BattleActionAttacked(uint battleId, CombatObject source, CombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battle, CombatObject source, CombatObject target, decimal damage)
         {
             ICity city;
             ICity targetCity;
@@ -335,7 +332,7 @@ namespace Game.Logic.Actions
             }
         }
 
-        private void BattleExitBattle(uint battleId, ICombatList atk, ICombatList def)
+        private void BattleExitBattle(IBattleManager battle, ICombatList atk, ICombatList def)
         {
             ICity city;
             ICity targetCity;
@@ -357,7 +354,7 @@ namespace Game.Logic.Actions
             StateChange(ActionState.Completed);
         }
 
-        private void BattleEnterRound(uint battleId, ICombatList atk, ICombatList def, uint round)
+        private void BattleEnterRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round)
         {
             ICity city;
             ITroopStub stub;

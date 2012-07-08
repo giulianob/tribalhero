@@ -4,6 +4,7 @@ namespace Game.Battle
 {
     public interface IBattleManagerFactory
     {
-        IBattleManager CreateBattleManager(ICity owner);
+        IBattleManager CreateBattleManager(uint battleId, ICity city);
+        IBattleManager CreateBattleManager(ICity city);
     }
 }

@@ -4,6 +4,9 @@ using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Data;
 using System.Linq;
+using Game.Logic.Actions;
+using Game.Logic.Formulas;
+using Game.Setup;
 using Ninject;
 using Ninject.Parameters;
 
@@ -22,19 +25,18 @@ namespace Game.Battle
 
         public CombatStructure CreateStructureCombatUnit(IBattleManager battleManager, IStructure structure)
         {
-            return kernel.Get<CombatStructure>(new ConstructorArgument("owner", battleManager),
-                                               new ConstructorArgument("structure", structure),
-                                               new ConstructorArgument("stats", BattleFormulas.Current.LoadStats(structure)));
+            return new CombatStructure(battleManager.BattleId, structure, kernel.Get<BattleFormulas>().LoadStats(structure), kernel.Get<Formula>(), kernel.Get<BattleFormulas>(), kernel.Get<IActionFactory>());
         }
 
-        public AttackCombatUnit[] CreateAttackCombatUnit(IBattleManager owner, ITroopObject troop, FormationType formation, ushort type, ushort count)
+        public AttackCombatUnit[] CreateAttackCombatUnit(IBattleManager battleManager, ITroopObject troop, FormationType formation, ushort type, ushort count)
         {
             BaseUnitStats template = troop.City.Template[type];
             BattleStats stats = troop.Stub.Template[type];
-            var groupSize = (from effect in troop.City.Technologies.GetEffects(EffectCode.UnitStatMod, EffectInheritance.All)
-                         where ((string)effect.Value[0]).ToLower()=="groupsize" &&
-                               BattleFormulas.Current.UnitStatModCheck(stats.Base, TroopBattleGroup.Attack, (string)effect.Value[3])
-                         select (int)effect.Value[2]).DefaultIfEmpty<int>(0).Max() + stats.Base.GroupSize;
+            var groupSize = (from effect in troop.City.Technologies.GetEffects(EffectCode.UnitStatMod)
+                             where
+                                     ((string)effect.Value[0]).ToLower() == "groupsize" &&
+                                     BattleFormulas.Current.UnitStatModCheck(stats.Base, TroopBattleGroup.Attack, (string)effect.Value[3])
+                             select (int)effect.Value[2]).DefaultIfEmpty<int>(0).Max() + stats.Base.GroupSize;
             
             var units = new AttackCombatUnit[(count - 1) / groupSize + 1];
 
@@ -43,12 +45,13 @@ namespace Game.Battle
             {
                 ushort size = (ushort)(groupSize > count ? count : groupSize);
 
-                AttackCombatUnit newUnit = kernel.Get<AttackCombatUnit>(new ConstructorArgument("owner", owner),
-                                                                        new ConstructorArgument("stub", troop.Stub),
-                                                                        new ConstructorArgument("formation", formation),
-                                                                        new ConstructorArgument("type", type),
-                                                                        new ConstructorArgument("lvl", template.Lvl),
-                                                                        new ConstructorArgument("count", size));
+                AttackCombatUnit newUnit = new AttackCombatUnit(battleManager.BattleId,
+                                                                troop.Stub,
+                                                                formation,
+                                                                type,
+                                                                template.Lvl,
+                                                                size,
+                                                                kernel.Get<UnitFactory>());                    
 
                 units[i++] = newUnit;
                 count -= size;
@@ -56,11 +59,11 @@ namespace Game.Battle
             return units;
         }
 
-        public DefenseCombatUnit[] CreateDefenseCombatUnit(IBattleManager owner, ITroopStub stub, FormationType formation, ushort type, ushort count)
+        public DefenseCombatUnit[] CreateDefenseCombatUnit(IBattleManager battleManager, ITroopStub stub, FormationType formation, ushort type, ushort count)
         {
             BaseUnitStats template = stub.City.Template[type];
             BattleStats stats = stub.Template[type];
-            var groupSize = (from effect in stub.City.Technologies.GetEffects(EffectCode.UnitStatMod, EffectInheritance.All)
+            var groupSize = (from effect in stub.City.Technologies.GetEffects(EffectCode.UnitStatMod)
                         where ((string)effect.Value[0]).ToLower()=="groupsize" &&
                             BattleFormulas.Current.UnitStatModCheck(stats.Base, TroopBattleGroup.Defense, (string)effect.Value[3])
                         select (int)effect.Value[2]).DefaultIfEmpty().Max()+stats.Base.GroupSize;
@@ -70,12 +73,12 @@ namespace Game.Battle
             do
             {
                 ushort size = (ushort)(groupSize > count ? count : groupSize);
-                DefenseCombatUnit newUnit = kernel.Get<DefenseCombatUnit>(new ConstructorArgument("owner", owner),
-                                                                          new ConstructorArgument("stub", stub),
-                                                                          new ConstructorArgument("formation", formation),
-                                                                          new ConstructorArgument("type", type),
-                                                                          new ConstructorArgument("lvl", template.Lvl),
-                                                                          new ConstructorArgument("count", size));                
+                DefenseCombatUnit newUnit = new DefenseCombatUnit(battleManager.BattleId,
+                                                                stub,
+                                                                formation,
+                                                                type,
+                                                                template.Lvl,
+                                                                size);
                 units[i++] = newUnit;
                 count -= size;
             } while (count > 0);

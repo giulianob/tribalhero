@@ -22,6 +22,8 @@ namespace Game.Data
             NewCityStartTile = 10000001,
 
             Forest = 10000002,
+
+            Stronghold = 10000003,
         }
 
         protected uint objectId;

@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using Game.Data;
 using Game.Util;
+using Persistance;
 
 #endregion
 
@@ -85,9 +86,7 @@ namespace Game.Battle
         /// </summary>
         public void CreateBattleReport()
         {
-            uint battleId;
-            battleReportWriter.SnapBattle(out battleId, Battle.City.Id);
-            Battle.BattleId = battleId;
+            battleReportWriter.SnapBattle(Battle.BattleId, Battle.City.Id);
             WriteBeginReport();
             ReportFlag = true;
             CompleteReport(ReportState.Entering);
@@ -220,6 +219,14 @@ namespace Game.Battle
         public void SetLootedResources(uint cityId, byte troopId, uint battleId, Resource lootResource, Resource bonusResource)
         {
             battleReportWriter.SnapLootedResources(cityId, troopId, battleId, lootResource, bonusResource);
+        }
+
+        public IEnumerable<DbDependency> DbDependencies
+        {
+            get
+            {
+                return new[] {new DbDependency("ReportedObjects", true, true), new DbDependency("ReportedTroops", true, true)};
+            }        
         }
     }
 }

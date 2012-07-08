@@ -1,24 +1,27 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Database;
+using Game.Util.Locking;
 using Persistance;
 
 #endregion
 
 namespace Game.Battle
 {
-    public abstract class CombatObject : IComparable<object>, IPersistableObject
+    public abstract class CombatObject : IComparable<object>, IPersistableObject, ILockable
     {
-        protected IBattleManager battleManager;
+        protected readonly uint BattleId;
 
-        protected CombatObject()
+        protected CombatObject(uint battleId)
         {
             MinDmgDealt = ushort.MaxValue;
             MinDmgRecv = ushort.MaxValue;
+            BattleId = battleId;
         }
 
         #region Properties
@@ -46,15 +49,7 @@ namespace Game.Battle
 
         public uint GroupId { get; set; }
 
-        public bool Disposed { get; set; }
-
-        public IBattleManager Battle
-        {
-            get
-            {
-                return battleManager;
-            }
-        }
+        public bool Disposed { get; private set; }
 
         #endregion
 
@@ -87,8 +82,6 @@ namespace Game.Battle
         public abstract ICity City { get; }
 
         public abstract byte Lvl { get; }
-
-        public abstract short Stamina { get; }
 
         #endregion
 
@@ -125,7 +118,7 @@ namespace Game.Battle
 
         public abstract DbColumn[] DbPrimaryKey { get; }
 
-        public abstract DbDependency[] DbDependencies { get; }
+        public abstract IEnumerable<DbDependency> DbDependencies { get; }
 
         public abstract DbColumn[] DbColumns { get; }
 
@@ -150,5 +143,21 @@ namespace Game.Battle
             RoundsParticipated++;
         }
         #endregion
+
+        public int Hash
+        {
+            get
+            {
+                return City.Hash;
+            }
+        }
+
+        public object Lock
+        {
+            get
+            {
+                return City.Lock;
+            }
+        }
     }
 }

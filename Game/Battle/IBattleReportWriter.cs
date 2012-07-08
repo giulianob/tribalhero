@@ -5,7 +5,7 @@ namespace Game.Battle
 {
     public interface IBattleReportWriter
     {
-        void SnapBattle(out uint battleId, uint cityId);
+        void SnapBattle(uint battleId, uint cityId);
 
         void SnapBattleEnd(uint battleId);
 

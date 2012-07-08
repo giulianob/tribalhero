@@ -2,13 +2,14 @@ using System.Collections.Generic;
 using Game.Comm;
 using Game.Data;
 using Game.Data.Troop;
+using Game.Util.Locking;
 using Persistance;
 
 namespace Game.Battle
 {
     public interface IBattleManager : IPersistableObject
     {
-        uint BattleId { get; set; }
+        uint BattleId { get; }
         bool BattleStarted { get; set; }
         uint Round { get; set; }
         uint Turn { get; set; }
@@ -16,9 +17,7 @@ namespace Game.Battle
         ICombatList Attacker { get; }
         ICombatList Defender { get; }
         IBattleReport BattleReport { get; }
-        ReportedObjects ReportedObjects { get; }
-        ReportedTroops ReportedTroops { get; }
-        ICity[] LockList { get; }
+        IEnumerable<ILockable> LockList { get; }
         void Subscribe(Session session);
         void Unsubscribe(Session session);
         CombatObject GetCombatObject(uint id);
@@ -34,8 +33,8 @@ namespace Game.Battle
         void RemoveFromLocal(IEnumerable<IStructure> objects, ReportState state);
         void RemoveFromDefense(IEnumerable<ITroopStub> objects, ReportState state);
         void RefreshBattleOrder();
-        bool GroupIsDead(CombatObject co, CombatList combatList);
         bool ExecuteTurn();
+
         event BattleManager.OnBattle EnterBattle;
         event BattleManager.OnBattle ExitBattle;
         event BattleManager.OnRound EnterRound;

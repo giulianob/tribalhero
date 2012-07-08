@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using Game.Data;
 using Game.Data.Stats;
@@ -27,29 +28,34 @@ namespace Game.Battle
         private readonly ITroopStub troopStub;
         private ushort count;
 
-        public AttackCombatUnit(IBattleManager owner, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count)
+        private readonly UnitFactory unitFactory;
+
+        public AttackCombatUnit(uint battleId, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, UnitFactory unitFactory) : base(battleId)
         {
             troopStub = stub;
             this.formation = formation;
             this.type = type;
             this.count = count;
-            battleManager = owner;
+            this.unitFactory = unitFactory;
             this.lvl = lvl;
 
             stats = stub.Template[type];
             LeftOverHp = stats.MaxHp;
         }
 
-        // Used by the db loader
-        public AttackCombatUnit(IBattleManager owner,
+        /// <summary>
+        /// DB loader constructor
+        /// </summary>
+        public AttackCombatUnit(uint battleId,
                                 ITroopStub stub,
                                 FormationType formation,
                                 ushort type,
                                 byte lvl,
                                 ushort count,
                                 decimal leftOverHp,
-                                Resource loot)
-            : this(owner, stub, formation, type, lvl, count)
+                                Resource loot, 
+                                UnitFactory unitFactory)
+            : this(battleId, stub, formation, type, lvl, count, unitFactory)
         {
             LeftOverHp = leftOverHp;
 
@@ -94,7 +100,7 @@ namespace Game.Battle
         {
             get
             {
-                return Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Upkeep * count;
+                return unitFactory.GetUnitStats(type, lvl).Upkeep * count;
             }
         }
 
@@ -106,7 +112,7 @@ namespace Game.Battle
             }
         }
 
-        public override short Stamina
+        public virtual short Stamina
         {
             get
             {
@@ -166,11 +172,11 @@ namespace Game.Battle
         {
             get
             {
-                return new[] { new DbColumn("id", Id, DbType.UInt32), new DbColumn("city_id", battleManager.City.Id, DbType.UInt32) };
+                return new[] { new DbColumn("id", Id, DbType.UInt32) };
             }
         }
 
-        public override DbDependency[] DbDependencies
+        public override IEnumerable<DbDependency> DbDependencies
         {
             get
             {
@@ -196,6 +202,7 @@ namespace Game.Battle
                                new DbColumn("hits_received", HitRecv, DbType.UInt16), new DbColumn("loot_crop", loot.Crop, DbType.UInt32),
                                new DbColumn("loot_wood", loot.Wood, DbType.UInt32), new DbColumn("loot_iron", loot.Iron, DbType.UInt32),
                                new DbColumn("loot_gold", loot.Gold, DbType.UInt32), new DbColumn("loot_labor", loot.Labor, DbType.UInt32),
+                               new DbColumn("battle_id", BattleId, DbType.UInt32)
                        };
             }
         }

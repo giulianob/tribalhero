@@ -41,7 +41,7 @@ namespace Game.Battle
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {
@@ -57,7 +57,7 @@ namespace Game.Battle
             }
         }
 
-        public DbColumn[] DbListColumns
+        public IEnumerable<DbColumn> DbListColumns
         {
             get
             {
@@ -112,7 +112,7 @@ namespace Game.Battle
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {
@@ -128,7 +128,7 @@ namespace Game.Battle
             }
         }
 
-        public DbColumn[] DbListColumns
+        public IEnumerable<DbColumn> DbListColumns
         {
             get
             {

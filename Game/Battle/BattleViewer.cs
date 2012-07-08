@@ -10,11 +10,8 @@ namespace Game.Battle
 {
     public class BattleViewer
     {
-        private IBattleManager battle;
-
         public BattleViewer(IBattleManager battle)
         {
-            this.battle = battle;
             battle.EnterBattle += BattleEnterBattle;
             battle.ExitBattle += BattleExitBattle;
             battle.EnterTurn += BattleEnterTurn;
@@ -25,13 +22,12 @@ namespace Game.Battle
             battle.EnterRound += BattleEnterRound;
         }
 
-        void BattleEnterRound(uint battleId, ICombatList atk, ICombatList def, uint round)
+        void BattleEnterRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round)
         {
             Append("Round[" + round + "] Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-
-        protected virtual void Append(string str)
+        private void Append(string str)
         {
             Global.Logger.Info(str);
         }
@@ -53,11 +49,11 @@ namespace Game.Battle
             else if (co is CombatStructure)
             {
                 var cs = co as CombatStructure;
-                Append("Team[Def] List[" + co.CombatList.Id + "] Structure[" + co.Id + "] Type[" + Ioc.Kernel.Get<StructureFactory>().GetName(cs.Structure.Type,(byte)cs.Structure.Lvl) + "] HP[" + cs.Hp + "]");
+                Append("Team[Def] List[" + co.CombatList.Id + "] Structure[" + co.Id + "] Type[" + Ioc.Kernel.Get<StructureFactory>().GetName(cs.Structure.Type, cs.Structure.Lvl) + "] HP[" + cs.Hp + "]");
             }
         }
 
-        private void BattleActionAttacked(uint battleId, CombatObject source, CombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battle, CombatObject source, CombatObject target, decimal damage)
         {
             Append("**************************************");
             Append("Attacker: ");
@@ -67,7 +63,7 @@ namespace Game.Battle
             Append("**************************************\n");
         }
 
-        private void BattleUnitRemoved(uint battleId, CombatObject obj)
+        private void BattleUnitRemoved(IBattleManager battle, CombatObject obj)
         {
             Append("**************************************");
             Append("Removing: ");
@@ -75,27 +71,27 @@ namespace Game.Battle
             Append("**************************************\n");
         }
 
-        private void BattleExitTurn(uint battleId, ICombatList atk, ICombatList def, int turn)
+        private void BattleExitTurn(IBattleManager battle, ICombatList atk, ICombatList def, int turn)
         {
             Append("Turn[" + turn + "] Ended with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        private void BattleEnterTurn(uint battleId, ICombatList atk, ICombatList def, int turn)
+        private void BattleEnterTurn(IBattleManager battle, ICombatList atk, ICombatList def, int turn)
         {
             Append("Turn[" + turn + "] Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        private void BattleExitBattle(uint battleId, ICombatList atk, ICombatList def)
+        private void BattleExitBattle(IBattleManager battle, ICombatList atk, ICombatList def)
         {
             Append("Battle Ended with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        private void BattleEnterBattle(uint battleId, ICombatList atk, ICombatList def)
+        private void BattleEnterBattle(IBattleManager battle, ICombatList atk, ICombatList def)
         {
             Append("Battle Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        void BattleSkippedAttacker(uint battleId, CombatObject obj)
+        void BattleSkippedAttacker(IBattleManager battle, CombatObject obj)
         {
             Append("**************************************");
             Append("Skipping: ");

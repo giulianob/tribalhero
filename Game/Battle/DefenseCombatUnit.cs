@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Game.Data;
@@ -26,26 +27,25 @@ namespace Game.Battle
         private ushort count;
         private readonly ITroopStub troopStub;
 
-        public DefenseCombatUnit(IBattleManager owner, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count)
+        public DefenseCombatUnit(uint battleId, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count) : base(battleId)
         {
             troopStub = stub;
             this.formation = formation;
             this.type = type;
             this.count = count;
-            battleManager = owner;
             this.lvl = lvl;
 
             stats = stub.Template[type];
-            LeftOverHp = stats.MaxHp;
+            leftOverHp = stats.MaxHp;
         }
 
-        public DefenseCombatUnit(IBattleManager owner, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, decimal leftOverHp)
-                : this(owner, stub, formation, type, lvl, count)
+        public DefenseCombatUnit(uint battleId, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, decimal leftOverHp)
+                : this(battleId, stub, formation, type, lvl, count)
         {
-            LeftOverHp = leftOverHp;
+            this.leftOverHp = leftOverHp;
         }
 
-        public decimal LeftOverHp { set; get; }
+        private decimal leftOverHp;
 
         public override BattleClass ClassType
         {
@@ -95,7 +95,7 @@ namespace Game.Battle
             }
         }
 
-        public override short Stamina
+        public virtual short Stamina
         {
             get
             {
@@ -139,7 +139,7 @@ namespace Game.Battle
         {
             get
             {
-                return Math.Max(0, stats.MaxHp*(count - 1) + LeftOverHp);
+                return Math.Max(0, stats.MaxHp*(count - 1) + leftOverHp);
             }
         }
 
@@ -155,11 +155,11 @@ namespace Game.Battle
         {
             get
             {
-                return new[] { new DbColumn("id", Id, DbType.UInt32), new DbColumn("city_id", battleManager.City.Id, DbType.UInt32) };
+                return new[] { new DbColumn("id", Id, DbType.UInt32) };
             }
         }
 
-        public override DbDependency[] DbDependencies
+        public override IEnumerable<DbDependency> DbDependencies
         {
             get
             {
@@ -177,12 +177,12 @@ namespace Game.Battle
                                new DbColumn("group_id", GroupId, DbType.UInt32), new DbColumn("formation_type", (byte)formation, DbType.Byte),
                                new DbColumn("level", lvl, DbType.Byte), new DbColumn("count", count, DbType.UInt16), new DbColumn("type", type, DbType.UInt16),
                                new DbColumn("is_local", true, DbType.Boolean), new DbColumn("troop_stub_city_id", TroopStub.City.Id, DbType.UInt32),
-                               new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.Byte), new DbColumn("left_over_hp", LeftOverHp, DbType.Decimal),
+                               new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.Byte), new DbColumn("left_over_hp", leftOverHp, DbType.Decimal),
                                new DbColumn("damage_min_dealt", MinDmgDealt, DbType.UInt16), new DbColumn("damage_max_dealt", MaxDmgDealt, DbType.UInt16),
                                new DbColumn("damage_min_received", MinDmgRecv, DbType.UInt16), new DbColumn("damage_max_received", MaxDmgRecv, DbType.UInt16),
                                new DbColumn("damage_dealt", DmgDealt, DbType.Decimal), new DbColumn("damage_received", DmgRecv, DbType.Decimal),
                                new DbColumn("hits_dealt", HitDealt, DbType.UInt16), new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
-                               new DbColumn("hits_received", HitRecv, DbType.UInt16),
+                               new DbColumn("hits_received", HitRecv, DbType.UInt16), new DbColumn("battle_id", BattleId, DbType.UInt32)
                        };
             }
         }
@@ -276,15 +276,15 @@ namespace Game.Battle
             attackPoints = 0;
 
             ushort dead = 0;
-            if (dmg >= LeftOverHp)
+            if (dmg >= leftOverHp)
             {
-                dmg -= LeftOverHp;
-                LeftOverHp = stats.MaxHp;
+                dmg -= leftOverHp;
+                leftOverHp = stats.MaxHp;
                 dead++;
             }
 
             dead += (ushort)(dmg/stats.MaxHp);
-            LeftOverHp -= dmg%stats.MaxHp;
+            leftOverHp -= dmg%stats.MaxHp;
 
             if (dead > 0)
             {

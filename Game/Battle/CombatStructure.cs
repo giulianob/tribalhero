@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using Game.Data;
 using Game.Data.Stats;
@@ -21,27 +22,37 @@ namespace Game.Battle
         private readonly BattleStats stats;
         private readonly Formula formula;
         private readonly BattleFormulas battleFormula;
-        private readonly ushort type;
-        private decimal hp; //need to keep a copy track of the hp for reporting
 
-        public CombatStructure(IBattleManager owner, IStructure structure, BattleStats stats, Formula formula, BattleFormulas battleFormula)
+        private readonly IActionFactory actionFactory;
+
+        private readonly ushort type;
+
+        /// <summary>
+        /// Since the structure HP can change from the outside.
+        /// We Need to keep a copy track of the hp that will be used for the battle. This creates some discrepancy
+        /// between the structure's HP on the outside world and in the battle but that's okay.
+        /// </summary>
+        private decimal hp; 
+
+        public CombatStructure(uint battleId, IStructure structure, BattleStats stats, Formula formula, BattleFormulas battleFormula, IActionFactory actionFactory) : base(battleId)
         {
-            battleManager = owner;
             this.stats = stats;
             this.formula = formula;
             this.battleFormula = battleFormula;
+            this.actionFactory = actionFactory;
             Structure = structure;
             type = structure.Type;
             lvl = structure.Lvl;
             hp = structure.Stats.Hp;
         }
 
-        public CombatStructure(IBattleManager owner, IStructure structure, BattleStats stats, decimal hp, ushort type, byte lvl, Formula formula, BattleFormulas battleFormula)
+        public CombatStructure(uint battleId, IStructure structure, BattleStats stats, decimal hp, ushort type, byte lvl, Formula formula, BattleFormulas battleFormula, IActionFactory actionFactory)
+            : base(battleId)
         {
-            battleManager = owner;
             Structure = structure;
             this.formula = formula;
             this.battleFormula = battleFormula;
+            this.actionFactory = actionFactory;
             this.stats = stats;
             this.hp = hp;
             this.type = type;
@@ -162,7 +173,7 @@ namespace Game.Battle
             }
         }
 
-        public override short Stamina
+        public virtual short Stamina
         {
             get
             {
@@ -182,11 +193,11 @@ namespace Game.Battle
         {
             get
             {
-                return new[] {new DbColumn("id", Id, DbType.UInt32), new DbColumn("city_id", battleManager.City.Id, DbType.UInt32)};
+                return new[] {new DbColumn("id", Id, DbType.UInt32)};
             }
         }
 
-        public override DbDependency[] DbDependencies
+        public override IEnumerable<DbDependency> DbDependencies
         {
             get
             {
@@ -208,7 +219,7 @@ namespace Game.Battle
                                new DbColumn("attack", stats.Atk, DbType.Decimal), new DbColumn("splash", stats.Splash, DbType.Byte),
                                new DbColumn("range", stats.Rng, DbType.Byte), new DbColumn("stealth", stats.Stl, DbType.Byte), new DbColumn("speed", stats.Spd, DbType.Byte),
                                new DbColumn("hits_dealt", HitDealt, DbType.UInt16), new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
-                               new DbColumn("hits_received", HitRecv, DbType.UInt16),
+                               new DbColumn("hits_received", HitRecv, DbType.UInt16), new DbColumn("battle_id", BattleId, DbType.UInt32)
                        };
             }
         }
@@ -264,29 +275,31 @@ namespace Game.Battle
         {
             base.CleanUp();
 
-            // Remove structure if our combat object died
-            if (hp <= 0)
+            // Remove structure from the world if our combat object died
+            if (hp > 0)
             {
-                ICity city = Structure.City;
+                return;
+            }
 
-                World.Current.LockRegion(Structure.X, Structure.Y);
-                if (Structure.Lvl > 1)
-                {
-                    Structure.BeginUpdate();
-                    Structure.State = GameObjectState.NormalState();
-                    Structure.EndUpdate();
+            ICity city = Structure.City;
 
-                    Structure.City.Worker.DoPassive(Structure.City, new StructureDowngradePassiveAction(Structure.City.Id, Structure.ObjectId), false);
-                }
-                else
-                {
-                    Structure.BeginUpdate();
-                    World.Current.Remove(Structure);
-                    city.ScheduleRemove(Structure, true);
-                    Structure.EndUpdate();
-                }
-                World.Current.UnlockRegion(Structure.X, Structure.Y);
-            }           
+            World.Current.LockRegion(Structure.X, Structure.Y);
+            if (Structure.Lvl > 1)
+            {
+                Structure.BeginUpdate();
+                Structure.State = GameObjectState.NormalState();
+                Structure.EndUpdate();
+
+                Structure.City.Worker.DoPassive(Structure.City, actionFactory.CreateStructureDowngradePassiveAction(Structure.City.Id, Structure.ObjectId), false);
+            }
+            else
+            {
+                Structure.BeginUpdate();
+                World.Current.Remove(Structure);
+                city.ScheduleRemove(Structure, true);
+                Structure.EndUpdate();
+            }
+            World.Current.UnlockRegion(Structure.X, Structure.Y);
         }
 
         public override void ExitBattle()

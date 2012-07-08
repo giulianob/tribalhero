@@ -115,7 +115,7 @@ namespace Game.Logic.Actions
             city.EndUpdate();
         }
 
-        public void BattleEnterRound(uint battleId, ICombatList atk, ICombatList def, uint round)
+        public void BattleEnterRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round)
         {
             AddAlignmentPoint(atk, def, 1);
         }
@@ -246,7 +246,7 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        public void BattleActionAttacked(uint battleId, CombatObject source, CombatObject target, decimal damage)
+        public void BattleActionAttacked(IBattleManager battleManager, CombatObject source, CombatObject target, decimal damage)
         {
             var combatUnit = target as ICombatUnit;
 
@@ -273,13 +273,21 @@ namespace Game.Logic.Actions
             }
         }
 
-        public void BattleUnitRemoved(uint battleId, CombatObject obj)
-        {
+        /// <summary>
+        /// Gives alignment points when a structure is destroyed.
+        /// </summary>
+        /// <param name="battle"></param>
+        /// <param name="obj"></param>
+        private void BattleUnitRemoved(IBattleManager battle, CombatObject obj)
+        {            
             // Keep track of our buildings destroyed HP
-            if (obj.ClassType == BattleClass.Structure && obj.City.Id == cityId) {
-                destroyedHp += (uint)obj.Stats.MaxHp;
-                AddAlignmentPoint(obj.Battle.Attacker, obj.Battle.Defender, Config.battle_stamina_destroyed_deduction);
+            if (obj.ClassType != BattleClass.Structure || obj.City.Id != cityId)
+            {
+                return;
             }
+
+            destroyedHp += (uint)obj.Stats.MaxHp;
+            AddAlignmentPoint(battle.Attacker, battle.Defender, Config.battle_stamina_destroyed_deduction);
         }
 
         public override void UserCancelled()

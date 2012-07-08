@@ -11,14 +11,11 @@ namespace Game.Comm.Channel
 {
     public class BattleChannel
     {
-        private readonly ICity city;
-
         private readonly string channelName;
 
-        public BattleChannel(IBattleManager battleManager, ICity city)
+        public BattleChannel(IBattleManager battleManager)
         {
-            this.city = city;
-            channelName = "/BATTLE/" + city.Id;
+            channelName = "/BATTLE/" + battleManager.BattleId;
 
             battleManager.ActionAttacked += BattleActionAttacked;
             battleManager.SkippedAttacker += BattleSkippedAttacker;
@@ -51,7 +48,7 @@ namespace Game.Comm.Channel
             Global.Channel.Post(channelName, packet);
 
             // Unsubscribe everyone from this channel
-            Global.Channel.Unsubscribe("/BATTLE/" + city.Id);
+            Global.Channel.Unsubscribe("/BATTLE/" + battle.BattleId);
         }
 
         private void BattleReinforceDefender(IBattleManager battle, IEnumerable<CombatObject> list)

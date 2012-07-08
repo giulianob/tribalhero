@@ -735,11 +735,17 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     ICity city;
-                    if (!World.Current.TryGetObjects((uint)reader["city_id"], out city))
+                    //TODO: Change to understand the different owner types
+                    if (!World.Current.TryGetObjects((uint)reader["owner_id"], out city))
                         throw new Exception("City not found");
-
-                    var bm = battleManagerFactory.CreateBattleManager((uint)reader["battle_id"], city);
+                    
+                    var bm = battleManagerFactory.CreateBattleManager((uint)reader["battle_id"],
+                                                                      new BattleLocation((string)reader["location_type"], (uint)reader["location_id"]),
+                                                                      new BattleOwner((string)reader["owner_type"], (uint)reader["owner_id"]),
+                                                                      city);
                     city.Battle = bm;
+
+
                     bm.DbPersisted = true;
                     bm.BattleStarted = (bool)reader["battle_started"];
                     bm.Round = (uint)reader["round"];

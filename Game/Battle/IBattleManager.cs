@@ -12,7 +12,9 @@ namespace Game.Battle
         bool BattleStarted { get; set; }
         uint Round { get; set; }
         uint Turn { get; set; }
-        ICity City { get; set; }
+        ICity City { get; }
+        BattleLocation Location { get; }
+        BattleOwner Owner { get; }
         ICombatList Attackers { get; }
         ICombatList Defender { get; }
         IBattleReport BattleReport { get; }

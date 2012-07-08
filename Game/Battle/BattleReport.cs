@@ -82,7 +82,7 @@ namespace Game.Battle
         /// </summary>
         public void CreateBattleReport()
         {
-            battleReportWriter.SnapBattle(battle.BattleId, battle.City.Id);
+            battleReportWriter.SnapBattle(battle.BattleId, battle.Owner, battle.Location);
             WriteBeginReport();
             ReportFlag = true;
             CompleteReport(ReportState.Entering);
@@ -137,12 +137,12 @@ namespace Game.Battle
                 battleReportWriter.SnapTroopState(combatTroopId, combatObject.TroopStub, state);
 
                 // Log any troops that are entering the battle to the view table so they are able to see this report
-                // Notice that we don't log the local troop. This is because they can automatically see all of the battles that take place in their cities by using the battles table                    
-                if (battle.City != combatObject.City)
+                // Notice that we don't log the local troop. This is because they can automatically see all of the battles that take place in their cities by using the battles table.
+                if (combatObject.GroupId == 1)
                 {
                     switch(state)
                     {
-                            // When entering, we log the initial report id
+                        // When entering, we log the initial report id
                         case ReportState.Entering:
                             if (!troopAlreadySnapped)
                             {
@@ -154,7 +154,7 @@ namespace Game.Battle
                                                                         ReportId);
                             }
                             break;
-                            // When exiting, we log the end report id
+                        // When exiting, we log the end report id
                         case ReportState.Exiting:
                         case ReportState.Dying:
                         case ReportState.OutOfStamina:

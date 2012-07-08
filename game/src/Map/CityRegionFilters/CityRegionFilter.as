@@ -61,7 +61,7 @@ package src.Map.CityRegionFilters
 			var img: DisplayObject = ObjectFactory.getIcon("MINIMAP_TROOP_ICON");
 			obj.sprite = img;
 			if (Constants.tribeId > 0 && obj.extraProps.tribeId == Constants.tribeId) {
-				obj.transform.colorTransform = new ColorTransform(0, 0, 0, 1, 0, 0, 255);
+				obj.transform.colorTransform = new ColorTransform(0, 0, 0, 1, 255, 255, 0);
 			}
 			obj.addChild(img);
 		}

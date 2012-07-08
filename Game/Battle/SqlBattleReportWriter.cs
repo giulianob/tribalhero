@@ -21,10 +21,17 @@ namespace Game.Battle
             this.dbManager = dbManager;
         }
 
-        public void SnapBattle(uint battleId, uint cityId)
+        public void SnapBattle(uint battleId, BattleOwner owner, BattleLocation location)
         {
-            dbManager.Query(string.Format(@"INSERT INTO `{0}` VALUES (@id, @city_id, UTC_TIMESTAMP(), NULL, '0')", BATTLE_DB),
-                            new[] { new DbColumn("id", battleId, DbType.UInt32), new DbColumn("city_id", cityId, DbType.UInt32) });
+            dbManager.Query(string.Format(@"INSERT INTO `{0}` VALUES (@id, @owner_type, @owner_id, @location_type, @location_id, UTC_TIMESTAMP(), NULL, '0')", BATTLE_DB),
+                            new[]
+                            {
+                                    new DbColumn("id", battleId, DbType.UInt32), 
+                                    new DbColumn("owner_type", owner.Type.ToString(), DbType.String, 15),
+                                    new DbColumn("owner_id", owner.Id, DbType.UInt32),
+                                    new DbColumn("location_type", location.Type.ToString(), DbType.String, 15),
+                                    new DbColumn("location_id", location.Id, DbType.UInt32)
+                            });
         }
 
         public void SnapBattleEnd(uint battleId)

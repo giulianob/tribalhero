@@ -153,8 +153,8 @@ namespace Game.Logic.Actions
             }
             // otherwise, the battle has to be created
             else
-            {                
-                targetCity.Battle = battleManagerFactory.CreateBattleManager(targetCity);
+            {
+                targetCity.Battle = battleManagerFactory.CreateBattleManager(new BattleLocation(BattleLocationType.City, targetCity.Id), new BattleOwner(BattleOwnerType.City, targetCity.Id), targetCity);
 
                 var ba = actionFactory.CreateBattlePassiveAction(targetCityId);
 

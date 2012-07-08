@@ -15,9 +15,11 @@ namespace Game.Battle
             this.kernel = kernel;
         }
 
-        public IBattleManager CreateBattleManager(uint battleId, ICity city)
-        {            
+        public IBattleManager CreateBattleManager(uint battleId, BattleLocation location, BattleOwner owner, ICity city)
+        {
             var bm = new BattleManager(battleId,
+                                       location,
+                                       owner,
                                        city,
                                        kernel.Get<IDbManager>(),
                                        kernel.Get<IBattleReport>(),
@@ -25,16 +27,16 @@ namespace Game.Battle
                                        kernel.Get<ICombatUnitFactory>(),
                                        kernel.Get<ObjectTypeFactory>());
 
-            var battleChannel = new BattleChannel(bm, city);
+            new BattleChannel(bm);
 
             bm.BattleReport.Battle = bm;
             return bm;            
         }
 
-        public IBattleManager CreateBattleManager(ICity city)
+        public IBattleManager CreateBattleManager(BattleLocation location, BattleOwner owner, ICity city)
         {
             var battleId = (uint)BattleReport.BattleIdGenerator.GetNext();
-            return CreateBattleManager(battleId, city);
+            return CreateBattleManager(battleId, location, owner, city);
         }
     }
 }

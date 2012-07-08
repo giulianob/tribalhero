@@ -78,7 +78,7 @@ namespace ConsoleSimulator
                     defender.AddToLocal(type, lvl, defCount, FormationType.Normal);
                     attacker.AddToAttack((ushort)(kvp.Key/100), kvp.Value.Lvl, atkCount, FormationType.Normal);
                     sw.Write("{0},{1},{2},{3},", kvp.Value.Name, kvp.Key/100, kvp.Value.Lvl, atkCount);
-                    var bm = Ioc.Kernel.Get<IBattleManagerFactory>().CreateBattleManager(defender.City); 
+                    var bm = Ioc.Kernel.Get<IBattleManagerFactory>().CreateBattleManager(new BattleLocation(BattleLocationType.City, defender.City.Id), new BattleOwner(BattleOwnerType.City, defender.City.Id), defender.City); 
 
                     bm.ExitBattle += BmExitBattle;
                     bm.UnitRemoved += BmUnitRemoved;
@@ -146,7 +146,7 @@ namespace ConsoleSimulator
                     defender.AddToLocal((ushort)(kvp.Key/100), kvp.Value.Lvl, defCount, FormationType.Normal);
                     attacker.AddToAttack(type, lvl, atkCount, FormationType.Normal);
                     sw.Write("{0},{1},{2},{3},", kvp.Value.Name, kvp.Key/100, kvp.Value.Lvl, defCount);
-                    var bm = Ioc.Kernel.Get<IBattleManagerFactory>().CreateBattleManager(defender.City);
+                    var bm = Ioc.Kernel.Get<IBattleManagerFactory>().CreateBattleManager(new BattleLocation(BattleLocationType.City, defender.City.Id), new BattleOwner(BattleOwnerType.City, defender.City.Id), defender.City); 
 
                     bm.ExitBattle += BmExitBattle2;
                     bm.UnitRemoved += BmUnitRemoved2;

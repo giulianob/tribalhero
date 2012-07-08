@@ -148,6 +148,7 @@ namespace Game.Logic.Actions
                 {
                     var toBeLocked = new List<ILockable>();
                     toBeLocked.AddRange(city.Battle.LockList);
+                    toBeLocked.Add(city);
                     toBeLocked.AddRange(city.Troops.StationedHere().Select(stub => stub.City));
                     return toBeLocked.ToArray();
                 };

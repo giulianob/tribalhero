@@ -58,7 +58,8 @@ class Report extends AppModel {
 			'Battle.read' => true
 				),
 				array(
-					'Battle.city_id' => $cityIds,
+                    'Battle.owner_type' => 'City',
+					'Battle.owner_id' => $cityIds,
 					'NOT' => array(
 						'Battle.ended' => null
 				))
@@ -95,7 +96,8 @@ class Report extends AppModel {
                     ),
                     array(
                         'Battle.id' => $id,
-                        'Battle.city_id' => $cityIds,
+                        'Battle.owner_type' => 'City',
+                        'Battle.owner_id' => $cityIds,
                         'NOT' => array(
                             'Battle.ended' => null
                     ))

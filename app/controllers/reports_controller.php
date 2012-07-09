@@ -6,7 +6,7 @@
  */
 class ReportsController extends AppController {
 
-    var $uses = array('Report', 'Battle');
+    var $uses = array('Report', 'Battle', 'City');
     var $helpers = array('TimeAdv', 'Time');
     var $allowedFromGame = array('index_local', 'view_snapshot', 'view_report', 'view_more_events', 'index_remote', 'mark_all_as_read');
 
@@ -26,7 +26,7 @@ class ReportsController extends AppController {
                 $playerId = $player['Player']['id'];
         }
 
-        return array_keys($this->Battle->City->find('list', array('conditions' => array(
+        return array_keys($this->City->find('list', array('conditions' => array(
                                 'player_id' => $playerId
                                 ))));
     }
@@ -42,6 +42,12 @@ class ReportsController extends AppController {
         );
 
         $reports = $this->paginate('Battle');
+
+        // Resolve the name of the battle location
+        foreach ($reports as $k => $report) {
+            $report['Battle']['location_name'] = $this->Battle->getLocationName($report['Battle']['location_type'], $report['Battle']['location_id']);
+            $reports[$k] = $report;
+        }
 
         $this->set('battle_reports', $reports);
     }
@@ -157,6 +163,12 @@ class ReportsController extends AppController {
         );
 
         $reports = $this->paginate($this->Battle->BattleReportView);
+
+        // Resolve the name of the battle location
+        foreach ($reports as $k => $report) {
+            $report['Battle']['location_name'] = $this->Battle->getLocationName($report['Battle']['location_type'], $report['Battle']['location_id']);
+            $reports[$k] = $report;
+        }
 
         $this->set('battle_reports', $reports);
     }

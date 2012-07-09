@@ -9,12 +9,40 @@ class Battle extends AppModel {
 
     var $name = 'Battle';
     var $belongsTo = array(
-        'City'
     );
     var $hasMany = array(
         'BattleReport' => array('dependent' => true, 'conditions' => 'BattleReport.ready = 1'),
         'BattleReportView' => array('dependent' => true)
     );
+    var $locationCache = array();
+
+    /**
+     * Resolves the owner/location type and id to its name.
+     * @param $type
+     * @param $id
+     * @return string
+     */
+    function getLocationName($type, $id) {
+        if (isset($this->locationCache[$type . $id])) {
+            return $this->locationCache[$type . $id];
+        }
+
+        $name = '';
+        switch (strtolower($type)) {
+            case 'city':
+                /** @var $cityModel City */
+                $cityModel = & ClassRegistry::init('City');
+                $city = $cityModel->findById($id);
+                if ($city) {
+                    $name = $city['City']['name'];
+                }
+                break;
+        }
+
+        $this->locationCache[$type . $id] = $name;
+
+        return $name;
+    }
 
     /**
      * Returns the important battle events for the given battle
@@ -356,36 +384,31 @@ class Battle extends AppModel {
     /**
      * Lists all of the invasion reports for a list of cities
      * @param array $cities List of cities to find reports on
-     * @param bool $returnOptions Whether to return the conditions or perform the find
      * @return array List of reports
      */
-    function listInvasionReports($cities, $returnOptions = false) {
+    function listInvasionReports($cities) {
         $options = array(
             'fields' => array(
-                'City.name',
                 'Battle.created',
                 'Battle.id',
-                'Battle.read'
+                'Battle.read',
+                'Battle.location_type',
+                'Battle.location_id',
             ),
             'conditions' => array(
                 'NOT' => array('Battle.ended' => null)
             ),
             'link' => array(
-                'City' => array(
-                    'fields' => array('name')
-                )
             ),
             'order' => 'Battle.ended DESC'
         );
 
         if (!is_null($cities)) {
-            $options['conditions']['Battle.city_id'] = $cities;
+            $options['conditions']['Battle.owner_type'] = 'City';
+            $options['conditions']['Battle.owner_id'] = $cities;
         }
 
-        if ($returnOptions)
-            return $options;
-
-        return $this->find('all', $options);
+        return $options;
     }
 
     /**
@@ -412,7 +435,8 @@ class Battle extends AppModel {
         );
 
         if (!is_null($cities)) {
-            $options['conditions']['Battle.city_id'] = $cities;
+            $options['conditions']['Battle.owner_type'] = 'City';
+            $options['conditions']['Battle.owner_id'] = $cities;
         }
 
         $report = $this->find('first', $options);
@@ -461,10 +485,9 @@ class Battle extends AppModel {
     /**
      * Lists all of the attack reports for a list of cities
      * @param array $cities List of cities to find reports on
-     * @param bool $returnOptions Whether to return the conditions or perform the find
      * @return array List of reports
      */
-    function listAttackReports($cities, $returnOptions = false) {
+    function listAttackReports($cities) {
         $options = array(
             'joins' => array(
                 array(
@@ -475,15 +498,6 @@ class Battle extends AppModel {
                     'conditions' => array(
                         'BattleReportView.battle_id = Battle.id',
                         'Battle.ended IS NOT NULL',
-                    )
-                ),
-                array(
-                    'table' => 'cities',
-                    'alias' => 'City',
-                    'type' => 'INNER',
-                    'foreignKey' => false,
-                    'conditions' => array(
-                        'Battle.city_id = City.id'
                     )
                 ),
                 array(
@@ -504,7 +518,8 @@ class Battle extends AppModel {
                 'BattleReportView.troop_stub_id',
                 'BattleReportView.read',
                 'TroopCity.name',
-                'City.name'
+                'Battle.location_type',
+                'Battle.location_id',
             ),
             'conditions' => array(
             )
@@ -514,10 +529,7 @@ class Battle extends AppModel {
             $options['conditions']['BattleReportView.city_id'] = $cities;
         }
 
-        if ($returnOptions)
-            return $options;
-
-        return $this->BattleReportView->find('all', $options);
+        return $options;
     }
 
     /**

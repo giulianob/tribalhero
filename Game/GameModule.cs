@@ -111,6 +111,8 @@ namespace Game
             Bind<IBattleManagerFactory>().To<BattleManagerFactory>();
 
             Bind<IBattleReportWriter>().To<SqlBattleReportWriter>();
+
+            Bind<IRewardStrategyFactory>().ToFactory();
             
             #endregion
 

@@ -20,7 +20,7 @@ namespace Game.Battle
             var bm = new BattleManager(battleId,
                                        location,
                                        owner,
-                                       city,
+                                       kernel.Get<IRewardStrategyFactory>().CreateCityRewardStrategy(city),
                                        kernel.Get<IDbManager>(),
                                        kernel.Get<IBattleReport>(),
                                        kernel.Get<ICombatListFactory>(),

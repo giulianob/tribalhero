@@ -75,7 +75,7 @@ namespace Game.Comm.ProcessorCommands
                 //  that takes care of the battle channel stuff
                 try
                 {
-                    Global.Channel.Subscribe(session, "/BATTLE/" + city.Id);
+                    Global.Channel.Subscribe(session, "/BATTLE/" + city.Battle.BattleId);
                 }
                 catch (DuplicateSubscriptionException)
                 {

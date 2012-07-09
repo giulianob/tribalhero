@@ -4,11 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Threading;
 using Game.Data;
-using Game.Data.Tribe;
 using Game.Data.Troop;
-using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -29,45 +26,43 @@ namespace Game.Battle
         private readonly LargeIdGenerator groupIdGen;
         private readonly LargeIdGenerator idGen;
 
+        private readonly IRewardStrategy rewardStrategy;
+
         private readonly IDbManager dbManager;
 
         private BattleOrder battleOrder = new BattleOrder(0);
 
-        public BattleManager(uint battleId, BattleLocation location, BattleOwner owner, ICity tempCity, IDbManager dbManager, IBattleReport battleReport, ICombatListFactory combatListFactory, ICombatUnitFactory combatUnitFactory, ObjectTypeFactory objectTypeFactory)
+        public BattleManager(uint battleId, BattleLocation location, BattleOwner owner, IRewardStrategy rewardStrategy, IDbManager dbManager, IBattleReport battleReport, ICombatListFactory combatListFactory, ICombatUnitFactory combatUnitFactory, ObjectTypeFactory objectTypeFactory)
         {
-            Attackers = combatListFactory.CreateCombatList();
-            Defender = combatListFactory.CreateCombatList();
-
             groupIdGen = new LargeIdGenerator(ushort.MaxValue);
             idGen = new LargeIdGenerator(ushort.MaxValue);
+            // Group id 1 is always reserved for local troop
+            groupIdGen.Set(1);
 
             BattleId = battleId;
             Location = location;
-            Owner = owner;
-            City = tempCity;
+            Owner = owner;            
             BattleReport = battleReport;
+            Attackers = combatListFactory.CreateCombatList();
+            Defender = combatListFactory.CreateCombatList();
 
+            this.rewardStrategy = rewardStrategy;
             this.dbManager = dbManager;
             this.combatUnitFactory = combatUnitFactory;
             this.objectTypeFactory = objectTypeFactory;
-
-            // Group id 1 is reserved for local troop
-            groupIdGen.Set(1);
         }
 
         public uint BattleId { get; private set; }
 
-        public BattleLocation Location { get; set; }
+        public BattleLocation Location { get; private set; }
 
-        public BattleOwner Owner { get; set; }
+        public BattleOwner Owner { get; private set; }
 
         public bool BattleStarted { get; set; }
 
         public uint Round { get; set; }
 
         public uint Turn { get; set; }
-
-        public ICity City { get; set; }
 
         public ICombatList Attackers { get; private set; }
 
@@ -156,32 +151,45 @@ namespace Game.Battle
 
             lock (battleLock)
             {
-                if (player == City.Owner)
+                if (Owner.IsOwner(player))
+                {
                     return true;
+                }
 
                 int defendersRoundsLeft = int.MaxValue;
                 int attackersRoundsLeft = int.MaxValue;
 
+                // Check if player has a defender that is over the minimum battle rounds
                 var playersDefenders = Defender.Where(co => co.City.Owner == player).ToList();
                 if (playersDefenders.Any()) {
                     defendersRoundsLeft = playersDefenders.Min(co => Config.battle_min_rounds - co.RoundsParticipated);
                     if (defendersRoundsLeft < 0)
+                    {
                         return true;
+                    }
                 }
 
+                // Check if player has an attacker that is over the minimum battle rounds
                 var playersAttackers = Attackers.Where(co => co.City.Owner == player).ToList();
                 if (playersAttackers.Any())
                 {
                     attackersRoundsLeft = playersAttackers.Min(co => Config.battle_min_rounds - co.RoundsParticipated);
                     if (attackersRoundsLeft < 0)
+                    {
                         return true;
+                    }
                 }
 
+                // Calculate how many rounds until player can see the battle
                 roundsLeft = Math.Min(attackersRoundsLeft, defendersRoundsLeft);
                 if (roundsLeft == int.MaxValue)
+                {
                     roundsLeft = 0;
+                }
                 else
+                {
                     roundsLeft++;
+                }
 
                 return false;
             }
@@ -648,7 +656,7 @@ namespace Game.Battle
 
             decimal dmg = BattleFormulas.Current.GetDamage(attacker, defender, attacker.CombatList == Defender);
             decimal actualDmg;
-            Resource lostResource;
+            Resource defenderDroppedLoot;
             int attackPoints;
 
             #region Miss Chance
@@ -670,7 +678,7 @@ namespace Game.Battle
             #endregion
 
             defender.CalculateDamage(dmg, out actualDmg);
-            defender.TakeDamage(actualDmg, out lostResource, out attackPoints);
+            defender.TakeDamage(actualDmg, out defenderDroppedLoot, out attackPoints);
 
             attacker.DmgDealt += actualDmg;
             attacker.MaxDmgDealt = (ushort)Math.Max(attacker.MaxDmgDealt, actualDmg);
@@ -687,72 +695,33 @@ namespace Game.Battle
 
             #region Loot and Attack Points
 
+            // NOTE: In the following rewardStrategy calls we are in passing in whatever the existing implementations
+            // of reward startegy need. If some specific implementation needs more info then add more params or change it to
+            // take the entire BattleManager as a param.
             if (attacker.CombatList == Attackers)
             {
                 // Only give loot if we are attacking the first target in the list
+                Resource loot = new Resource();
                 if (attackIndex == 0)
-                {
-                    Resource loot=null;
-                    City.BeginUpdate();
+                {                    
                     if (Round >= Config.battle_loot_begin_round)
                     {
-                        loot = BattleFormulas.Current.GetRewardResource(attacker, defender);
-                        City.Resource.Subtract(loot, Formula.Current.HiddenResource(City,true), out loot);
-                    } 
-                    attacker.ReceiveReward(attackPoints, loot ?? new Resource() );
-                    City.EndUpdate();
+                        rewardStrategy.RemoveLoot(attacker, defender, out loot);
+                    }                     
                 }
-                else
+
+                if (attackPoints > 0 || (loot != null && !loot.Empty))
                 {
-                    City.BeginUpdate();
-                    attacker.ReceiveReward(attackPoints, new Resource());
-                    City.EndUpdate();
+                    rewardStrategy.GiveAttackerRewards(attacker, attackPoints, loot ?? new Resource());
                 }
             }
             else
-            {
-                // Give back any lost resources if the attacker dropped them
-                if (lostResource != null && !lostResource.Empty)
+            {                
+                // Give defender rewards if there are any
+                if (attackPoints > 0 || (defenderDroppedLoot != null && !defenderDroppedLoot.Empty))
                 {
-                    City.BeginUpdate();
-                    City.Resource.Add(lostResource);
+                    rewardStrategy.GiveDefendersRewards(Defender, attackPoints, defenderDroppedLoot ?? new Resource());
                 }
-
-                // If the defender killed someone then give the city defense points
-                if (attackPoints > 0)
-                {
-                    // Give anyone stationed defense points as well
-                    // DONT convert this to LINQ because I'm not sure how it might affect the list inside of the loop that keeps changing
-                    var uniqueCities = new HashSet<ICity>();
-
-                    foreach (var co in Defender)
-                    {
-                        if (!uniqueCities.Add(co.City))
-                        {
-                            continue;
-                        }
-
-                        if (!co.City.IsUpdating)
-                        {
-                            co.City.BeginUpdate();
-                        }
-
-                        co.City.DefensePoint += attackPoints;
-                        co.City.EndUpdate();                        
-                    }
-
-                    var tribes = new List<ITribe>(uniqueCities.Where(w=>w.Owner.Tribesman!=null).Select(s => s.Owner.Tribesman.Tribe).Distinct());
-                    ThreadPool.QueueUserWorkItem(delegate {
-                        foreach (var tribe in tribes) {
-                            using (Concurrency.Current.Lock(tribe)) {
-                                tribe.DefensePoint += attackPoints;
-                            }
-                        }
-                    });
-                }
-
-                if (City.IsUpdating)
-                    City.EndUpdate();
             }
 
             #endregion

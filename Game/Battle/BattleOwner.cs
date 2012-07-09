@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.Data;
 
 namespace Game.Battle
 {
@@ -22,6 +23,17 @@ namespace Game.Battle
         {
             Type = type;
             Id = id;
+        }
+
+        public bool IsOwner(IPlayer player)
+        {
+            switch (Type)
+            {
+                case BattleOwnerType.City:
+                    return player.GetCity(Id) != null;
+            }
+
+            return false;
         }
     }
 }

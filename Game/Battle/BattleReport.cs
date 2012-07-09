@@ -138,7 +138,7 @@ namespace Game.Battle
 
                 // Log any troops that are entering the battle to the view table so they are able to see this report
                 // Notice that we don't log the local troop. This is because they can automatically see all of the battles that take place in their cities by using the battles table.
-                if (combatObject.GroupId == 1)
+                if (combatObject.GroupId != 1)
                 {
                     switch(state)
                     {

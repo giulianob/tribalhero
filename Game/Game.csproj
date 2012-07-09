@@ -112,6 +112,7 @@
     <Compile Include="Battle\BattleClass.cs" />
     <Compile Include="Battle\BattleLocation.cs" />
     <Compile Include="Battle\BattleManagerFactory.cs" />
+    <Compile Include="Battle\CityRewardStrategy.cs" />
     <Compile Include="Battle\CombatListFactory.cs" />
     <Compile Include="Battle\CombatObjectFactory.cs" />
     <Compile Include="Battle\BattleOwner.cs" />
@@ -119,7 +120,9 @@
     <Compile Include="Battle\IBattleManagerFactory.cs" />
     <Compile Include="Battle\IBattleReport.cs" />
     <Compile Include="Battle\IBattleReportWriter.cs" />
+    <Compile Include="Battle\IRewardStrategy.cs" />
     <Compile Include="Battle\ICombatUnitFactory.cs" />
+    <Compile Include="Battle\IRewardStrategyFactory.cs" />
     <Compile Include="Battle\ReportState.cs" />
     <Compile Include="Battle\SqlBattleReportWriter.cs" />
     <Compile Include="Comm\Channel\BattleChannel.cs" />

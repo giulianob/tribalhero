@@ -42,9 +42,9 @@ namespace Testing.Battle
                                                                   hp,
                                                                   1,
                                                                   1,
-                                                                  formula.Object,
-                                                                  battleFormula.Object,
-                                                                  actionFactory.Object);
+                                                                  formula.Object,                                                                  
+                                                                  actionFactory.Object,
+                                                                  battleFormula.Object);
             Resource returning;
             int attackPoints;
             combatStructure.TakeDamage(dmg, out returning, out attackPoints);
@@ -89,9 +89,9 @@ namespace Testing.Battle
                                                                   hp,
                                                                   100,
                                                                   2,
-                                                                  formula.Object,
-                                                                  battleFormula.Object,
-                                                                  actionFactory.Object);
+                                                                  formula.Object,                                                                  
+                                                                  actionFactory.Object,
+                                                                  battleFormula.Object);
             Resource returning;
             int attackPoints;
             combatStructure.TakeDamage(dmg, out returning, out attackPoints);

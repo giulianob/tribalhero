@@ -31,20 +31,30 @@ namespace Game.Battle
             this.unitFactory = unitFactory;
         }
 
-        public virtual int MissChance(int attackersUpkeep, int defendersUpkeep)
+        public virtual decimal GetDmgWithMissChance(int attackersUpkeep, int defendersUpkeep, decimal dmg)
         {
             double delta = Math.Max(0, (double)attackersUpkeep / defendersUpkeep);
             double effectiveness = attackersUpkeep > 200 ? 1 : (double)attackersUpkeep / 200;
-         
-            if (delta < 1) return (int)(0 * effectiveness);
-            if (delta < 1.25) return (int)(10 * effectiveness);
-            if (delta < 1.5) return (int)(17 * effectiveness);
-            if (delta < 2) return (int)(22 * effectiveness);
-            if (delta < 3.5) return (int)(30 * effectiveness);
-            if (delta < 5) return (int)(40 * effectiveness);
-            if (delta < 7) return (int)(48 * effectiveness);
-            if (delta < 10) return (int)(55 * effectiveness);
-            return (int)(60 * effectiveness);
+
+            int missChance;
+            if (delta < 1) missChance = (int)(0 * effectiveness);
+            else if (delta < 1.25) missChance = (int)(10 * effectiveness);
+            else if (delta < 1.5) missChance = (int)(17 * effectiveness);
+            else if (delta < 2) missChance = (int)(22 * effectiveness);
+            else if (delta < 3.5) missChance = (int)(30 * effectiveness);
+            else if (delta < 5) missChance = (int)(40 * effectiveness);
+            else if (delta < 7) missChance = (int)(48 * effectiveness);
+            else if (delta < 10) missChance = (int)(55 * effectiveness);
+            else missChance = (int)(60 * effectiveness);
+
+            var rand = (int)(Config.Random.NextDouble()*100);
+
+            if (missChance <= 0 || rand > missChance)
+            {
+                return dmg;
+            }
+
+            return dmg/2m;
         }
 
         public virtual int GetUnitsPerStructure(IStructure structure)
@@ -53,7 +63,7 @@ namespace Game.Battle
             return units[structure.Lvl];
         }
 
-        public virtual decimal GetDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk)
+        public virtual decimal GetAttackerDmgToDefender(CombatObject attacker, CombatObject target, bool useDefAsAtk)
         {
             decimal atk = attacker.Stats.Atk;
             decimal rawDmg = (atk * attacker.Count);
@@ -117,25 +127,36 @@ namespace Game.Battle
             }
         }
 
-        private int GetLootPerRound(ICity city) {
+        public virtual int GetLootPerRoundForCity(ICity city)
+        {
             double roundsRequired = Math.Max(5, Config.battle_loot_till_full - city.Technologies.GetEffects(EffectCode.LootLoadMod).DefaultIfEmpty().Sum(x => x == null ? 0 : (int)x.Value[0]));
-            return (int)Math.Ceiling(100 / roundsRequired);
+            return (int)Math.Ceiling(100 / roundsRequired);            
         }
 
         public virtual Resource GetRewardResource(CombatObject attacker, CombatObject defender)
         {
-            int totalCarry = attacker.Stats.Carry*attacker.Count;  // calculate total carry, if 10 units with 10 carry, which should be 100
-            int count = Math.Max(1, totalCarry* GetLootPerRound(attacker.City) / 100); // if carry is 100 and % is 5, then count = 5;
-            var spaceLeft = new Resource(totalCarry / Config.resource_crop_ratio,
-                                         totalCarry / Config.resource_gold_ratio,
-                                         totalCarry / Config.resource_iron_ratio,
-                                         totalCarry / Config.resource_wood_ratio,
-                                         totalCarry / Config.resource_labor_ratio); // spaceleft is the maxcarry.
-            spaceLeft.Subtract(attacker.Loot); // maxcarry - current resource is the empty space left.
-            return new Resource(Math.Min(count / Config.resource_crop_ratio, spaceLeft.Crop),  // returning lesser value between the count and the empty space.
-                                Math.Min(count / Config.resource_gold_ratio, spaceLeft.Gold),
-                                Math.Min(count / Config.resource_iron_ratio, spaceLeft.Iron),
-                                Math.Min(count / Config.resource_wood_ratio, spaceLeft.Wood),
+            // calculate total carry, if 10 units with 10 carry, which should be 100
+            int totalCarry = attacker.Stats.Carry*attacker.Count;
+
+            // if carry is 100 and % is 5, then count = 5;
+            int lootPerRound = attacker.LootPerRound();
+            int count = Math.Max(1, totalCarry*lootPerRound/100);
+
+            // spaceleft is the maxcarry.
+            var spaceLeft = new Resource(totalCarry/Config.resource_crop_ratio,
+                                         totalCarry/Config.resource_gold_ratio,
+                                         totalCarry/Config.resource_iron_ratio,
+                                         totalCarry/Config.resource_wood_ratio,
+                                         totalCarry/Config.resource_labor_ratio);
+
+            // maxcarry minus current resource is the empty space left.
+            spaceLeft.Subtract(attacker.Loot);
+
+            // returning lesser value between the count and the empty space.
+            return new Resource(Math.Min(count/Config.resource_crop_ratio, spaceLeft.Crop),                                
+                                Math.Min(count/Config.resource_gold_ratio, spaceLeft.Gold),
+                                Math.Min(count/Config.resource_iron_ratio, spaceLeft.Iron),
+                                Math.Min(count/Config.resource_wood_ratio, spaceLeft.Wood),
                                 0);
         }
 
@@ -282,6 +303,23 @@ namespace Game.Battle
         public virtual int GetNumberOfHits(CombatObject currentAttacker)
         {
             return currentAttacker.Stats.Splash == 0 ? 1 : currentAttacker.Stats.Splash;
+        }
+
+        public virtual decimal SplashReduction(CombatObject defender, decimal dmg, int attackIndex)
+        {
+            // Splash damage reduction doesnt apply to the first attack
+            if (attackIndex <= 0)
+            {
+                return dmg;
+            }
+
+            var splashEffects = defender.City.Technologies.GetEffects(EffectCode.SplashReduction, EffectInheritance.SelfAll);
+            decimal reduction =
+                    splashEffects.Where(effect => UnitStatModCheck(defender.Stats.Base, TroopBattleGroup.Defense, (string)effect.Value[1])).DefaultIfEmpty().Max
+                            (x => x == null ? 0 : (int)x.Value[0]);
+
+            reduction = (100 - reduction)/100;
+            return reduction*dmg;
         }
     }
 }

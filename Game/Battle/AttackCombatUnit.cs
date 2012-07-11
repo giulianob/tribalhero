@@ -30,7 +30,7 @@ namespace Game.Battle
 
         private readonly UnitFactory unitFactory;
 
-        public AttackCombatUnit(uint battleId, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, UnitFactory unitFactory) : base(battleId)
+        public AttackCombatUnit(uint battleId, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, UnitFactory unitFactory, BattleFormulas battleFormulas) : base(battleId, battleFormulas)
         {
             troopStub = stub;
             this.formation = formation;
@@ -54,8 +54,9 @@ namespace Game.Battle
                                 ushort count,
                                 decimal leftOverHp,
                                 Resource loot, 
-                                UnitFactory unitFactory)
-            : this(battleId, stub, formation, type, lvl, count, unitFactory)
+                                UnitFactory unitFactory,
+                                BattleFormulas battleFormulas)
+            : this(battleId, stub, formation, type, lvl, count, unitFactory, battleFormulas)
         {
             LeftOverHp = leftOverHp;
 
@@ -207,6 +208,11 @@ namespace Game.Battle
             }
         }
 
+        public override int LootPerRound()
+        {
+            return battleFormulas.GetLootPerRoundForCity(City);
+        }
+
         #region ICombatUnit Members
 
         public override ITroopStub TroopStub
@@ -274,20 +280,24 @@ namespace Game.Battle
             y = TroopStub.TroopObject.Y;
         }
 
-        public override void CalculateDamage(decimal dmg, out decimal actualDmg)
+        public override void CalcActualDmgToBeTaken(ICombatList attackers, ICombatList defenders, decimal baseDmg, int attackIndex, out decimal actualDmg)
         {
+            // Miss chance
+            actualDmg = battleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg);
+
+            // Splash dmg reduction
+            actualDmg = battleFormulas.SplashReduction(this, actualDmg, attackIndex);
+
             // if hp is less than 20% of the original total HP(entire group), lastStand kicks in.
-            if (Hp < (Hp + DmgRecv) / 5)
+            if (Hp < (Hp + DmgRecv) / 5m)
             {
                 var percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand)
-                    .Where(tech => BattleFormulas.Current.UnitStatModCheck(Stats.Base, TroopBattleGroup.Attack, (string)tech.Value[1]))
+                    .Where(tech => battleFormulas.UnitStatModCheck(Stats.Base, TroopBattleGroup.Attack, (string)tech.Value[1]))
                     .DefaultIfEmpty()
                     .Max(x => x == null ? 0 : (int)x.Value[0]);
 
-                dmg = dmg * (100 - percent) / 100;
+                actualDmg = actualDmg * (100 - percent) / 100m;
             }
-
-            actualDmg = Math.Min(Hp, dmg);
         }
 
         public override void TakeDamage(decimal dmg, out Resource returning, out int attackPoints)

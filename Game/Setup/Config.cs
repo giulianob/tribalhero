@@ -110,8 +110,17 @@ namespace Game.Setup
         public static bool actions_ignore_requirements;
 
         public static int idle_days = 3;
+        
+        [ThreadStatic]
+        private static Random random;
 
-        public static Random Random { get; private set; }
+        public static Random Random
+        {
+            get
+            {
+                return random ?? (random = new Random());
+            }
+        }
 
         private static Dictionary<string, string> extraProperties = new Dictionary<string, string>();
 
@@ -133,8 +142,6 @@ namespace Game.Setup
 
             XmlConfigurator.Configure();
             ILog logger = LogManager.GetLogger(typeof(Config));
-
-            Random = new Random();
 
             string key = string.Empty;
 

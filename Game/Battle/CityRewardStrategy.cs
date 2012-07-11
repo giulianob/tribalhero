@@ -45,6 +45,8 @@ namespace Game.Battle
 
         public void GiveDefendersRewards(IEnumerable<CombatObject> defenders, int attackPoints, Resource loot)
         {
+            var cityObjectDefenders = defenders.OfType<CombatObject>();
+
             // Any loot being added to the defender is loot dropped by the attacker
             if (!loot.Empty)
             {
@@ -59,7 +61,7 @@ namespace Game.Battle
             {
                 var uniqueCities = new HashSet<ICity>();
 
-                foreach (var defendingCity in defenders.Select(co => co.City).Distinct())
+                foreach (var defendingCity in cityObjectDefenders.Select(co => co.City).Distinct())
                 {
                     defendingCity.BeginUpdate();
                     defendingCity.DefensePoint += attackPoints;

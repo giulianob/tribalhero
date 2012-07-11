@@ -17,6 +17,8 @@ namespace Game.Battle
     {
         protected readonly uint BattleId;
 
+        protected readonly BattleFormulas battleFormulas;
+
         /// <summary>
         /// Parameterless constructor for mocking only
         /// </summary>
@@ -25,11 +27,12 @@ namespace Game.Battle
         {            
         }
 
-        protected CombatObject(uint battleId)
+        protected CombatObject(uint battleId, BattleFormulas battleFormulas)
         {
             MinDmgDealt = ushort.MaxValue;
             MinDmgRecv = ushort.MaxValue;
             BattleId = battleId;
+            this.battleFormulas = battleFormulas;
         }
 
         #region Properties
@@ -99,13 +102,15 @@ namespace Game.Battle
 
         public abstract void TakeDamage(decimal dmg, out Resource returning, out int attackPoints);
 
-        public abstract void CalculateDamage(decimal dmg, out decimal actualDmg);
+        public abstract void CalcActualDmgToBeTaken(ICombatList attackers, ICombatList defenders, decimal baseDmg, int attackIndex, out decimal actualDmg);
 
         public abstract bool InRange(CombatObject obj);
 
         public abstract void Location(out uint x, out uint y);
 
         public abstract void ReceiveReward(int reward, Resource resource);
+
+        public abstract int LootPerRound();
 
         #endregion
 
@@ -149,6 +154,11 @@ namespace Game.Battle
         {
             LastRound++;
             RoundsParticipated++;
+        }
+
+        public bool BelongsTo(IPlayer player)
+        {
+            return City.Owner == player;
         }
         #endregion
 

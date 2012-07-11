@@ -27,7 +27,7 @@ namespace Game.Battle
         private ushort count;
         private readonly ITroopStub troopStub;
 
-        public DefenseCombatUnit(uint battleId, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count) : base(battleId)
+        public DefenseCombatUnit(uint battleId, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, BattleFormulas battleFormulas) : base(battleId, battleFormulas)
         {
             troopStub = stub;
             this.formation = formation;
@@ -39,8 +39,8 @@ namespace Game.Battle
             leftOverHp = stats.MaxHp;
         }
 
-        public DefenseCombatUnit(uint battleId, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, decimal leftOverHp)
-                : this(battleId, stub, formation, type, lvl, count)
+        public DefenseCombatUnit(uint battleId, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, decimal leftOverHp, BattleFormulas battleFormulas)
+                : this(battleId, stub, formation, type, lvl, count, battleFormulas)
         {
             this.leftOverHp = leftOverHp;
         }
@@ -187,6 +187,11 @@ namespace Game.Battle
             }
         }
 
+        public override int LootPerRound()
+        {
+            return 0;
+        }
+
         #region ICombatUnit Members
 
         public override ITroopStub TroopStub
@@ -255,8 +260,14 @@ namespace Game.Battle
             throw new Exception("Why is a defense combat unit receiving rewards dammit?");
         }
 
-        public override void CalculateDamage(decimal dmg, out decimal actualDmg)
-        {            
+        public override void CalcActualDmgToBeTaken(ICombatList attackers, ICombatList defenders, decimal baseDmg, int attackIndex, out decimal actualDmg)
+        {
+            // Miss chance
+            actualDmg = battleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg);
+
+            // Splash dmg reduction
+            actualDmg = battleFormulas.SplashReduction(this, actualDmg, attackIndex);
+
             // if hp is less than 20% of the original total HP(entire group), lastStand kicks in.
             if (Hp < (Hp + DmgRecv) / 5)
             {
@@ -265,10 +276,8 @@ namespace Game.Battle
                     .DefaultIfEmpty()
                     .Max(x => x == null ? 0 : (int)x.Value[0]);
 
-                dmg = dmg * (100 - percent) / 100;
+                actualDmg = actualDmg * (100 - percent) / 100;
             }
-
-            actualDmg = Math.Min(Hp, dmg);
         }
 
         public override void TakeDamage(decimal dmg, out Resource returning, out int attackPoints)

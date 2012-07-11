@@ -16,6 +16,7 @@ namespace Game.Setup
     {
         private readonly Dictionary<string, List<ushort>> dict = new Dictionary<string, List<ushort>>();
 
+        [Obsolete("Testing only", true)]
         public ObjectTypeFactory()
         {
         }

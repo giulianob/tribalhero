@@ -784,8 +784,8 @@ namespace Game.Database
                                                                       (ushort)listReader["type"],
                                                                       (byte)listReader["level"],
                                                                       Ioc.Kernel.Get<Formula>(),
-                                                                      Ioc.Kernel.Get<BattleFormulas>(),
-                                                                      Ioc.Kernel.Get<IActionFactory>())
+                                                                      Ioc.Kernel.Get<IActionFactory>(),
+                                                                      Ioc.Kernel.Get<BattleFormulas>())
                                                   {
                                                           GroupId = (uint)listReader["group_id"],
                                                           DmgDealt = (decimal)listReader["damage_dealt"],
@@ -818,7 +818,8 @@ namespace Game.Database
                                                                   (ushort)listReader["type"],
                                                                   (byte)listReader["level"],
                                                                   (ushort)listReader["count"],
-                                                                  (decimal)listReader["left_over_hp"]);
+                                                                  (decimal)listReader["left_over_hp"],
+                                                                  Ioc.Kernel.Get<BattleFormulas>());
                             }
                             else
                             {
@@ -834,7 +835,8 @@ namespace Game.Database
                                                                               (int)listReader["loot_iron"],
                                                                               (int)listReader["loot_wood"],
                                                                               (int)listReader["loot_labor"]),
-                                                                 Ioc.Kernel.Get<UnitFactory>());
+                                                                 Ioc.Kernel.Get<UnitFactory>(),
+                                                                 Ioc.Kernel.Get<BattleFormulas>());
                             }
 
                             combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];

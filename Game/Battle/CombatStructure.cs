@@ -21,7 +21,6 @@ namespace Game.Battle
         private readonly byte lvl;
         private readonly BattleStats stats;
         private readonly Formula formula;
-        private readonly BattleFormulas battleFormula;
 
         private readonly IActionFactory actionFactory;
 
@@ -34,11 +33,10 @@ namespace Game.Battle
         /// </summary>
         private decimal hp; 
 
-        public CombatStructure(uint battleId, IStructure structure, BattleStats stats, Formula formula, BattleFormulas battleFormula, IActionFactory actionFactory) : base(battleId)
+        public CombatStructure(uint battleId, IStructure structure, BattleStats stats, Formula formula, IActionFactory actionFactory, BattleFormulas battleFormulas) : base(battleId, battleFormulas)
         {
             this.stats = stats;
             this.formula = formula;
-            this.battleFormula = battleFormula;
             this.actionFactory = actionFactory;
             Structure = structure;
             type = structure.Type;
@@ -46,12 +44,11 @@ namespace Game.Battle
             hp = structure.Stats.Hp;
         }
 
-        public CombatStructure(uint battleId, IStructure structure, BattleStats stats, decimal hp, ushort type, byte lvl, Formula formula, BattleFormulas battleFormula, IActionFactory actionFactory)
-            : base(battleId)
+        public CombatStructure(uint battleId, IStructure structure, BattleStats stats, decimal hp, ushort type, byte lvl, Formula formula, IActionFactory actionFactory, BattleFormulas battleFormulas)
+            : base(battleId, battleFormulas)
         {
             Structure = structure;
-            this.formula = formula;
-            this.battleFormula = battleFormula;
+            this.formula = formula;            
             this.actionFactory = actionFactory;
             this.stats = stats;
             this.hp = hp;
@@ -169,7 +166,7 @@ namespace Game.Battle
         {
             get
             {
-                return battleFormula.GetUnitsPerStructure(Structure) / 5;
+                return battleFormulas.GetUnitsPerStructure(Structure) / 5;
             }
         }
 
@@ -244,13 +241,19 @@ namespace Game.Battle
             y = Structure.Y;
         }
 
-        public override void CalculateDamage(decimal dmg, out decimal actualDmg)
+        public override void CalcActualDmgToBeTaken(ICombatList attackers, ICombatList defenders, decimal baseDmg, int attackIndex, out decimal actualDmg)
         {
+            // Miss chance
+            actualDmg = battleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg);
+
+            // Splash dmg reduction
+            actualDmg = battleFormulas.SplashReduction(this, actualDmg, attackIndex);
+
+            // AP Bonuses
             if (City.AlignmentPoint >= 90m)
             {
-                dmg *= .1m;
+                actualDmg *= .1m;
             }
-            actualDmg = Math.Min(Hp, dmg);
         }
 
         public override void TakeDamage(decimal dmg, out Resource returning, out int attackPoints)
@@ -300,6 +303,11 @@ namespace Game.Battle
                 Structure.EndUpdate();
             }
             World.Current.UnlockRegion(Structure.X, Structure.Y);
+        }
+
+        public override int LootPerRound()
+        {
+            return 0;
         }
 
         public override void ExitBattle()

@@ -25,12 +25,13 @@ namespace Game.Battle
                                        kernel.Get<IBattleReport>(),
                                        kernel.Get<ICombatListFactory>(),
                                        kernel.Get<ICombatUnitFactory>(),
-                                       kernel.Get<ObjectTypeFactory>());
+                                       kernel.Get<ObjectTypeFactory>(),
+                                       kernel.Get<BattleFormulas>());
 
             new BattleChannel(bm);
 
             bm.BattleReport.Battle = bm;
-            return bm;            
+            return bm;
         }
 
         public IBattleManager CreateBattleManager(BattleLocation location, BattleOwner owner, ICity city)

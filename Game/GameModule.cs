@@ -1,10 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Game.Battle;
 using Game.Comm;
-using Game.Comm.Channel;
 using Game.Comm.CmdLine_Commands;
 using Game.Comm.ProcessorCommands;
 using Game.Comm.Protocol;
@@ -22,7 +20,6 @@ using Ninject;
 using Ninject.Extensions.Factory;
 using Ninject.Extensions.Logging.Log4net.Infrastructure;
 using Ninject.Modules;
-using Ninject.Parameters;
 using Persistance;
 using Persistance.Managers;
 using Thrift.Server;
@@ -104,7 +101,7 @@ namespace Game
 
             #region Battle
 
-            Bind<ICity>().To<ICity>();
+            Bind<ICity>().To<City>();
 
             Bind<IBattleReport>().To<BattleReport>();
 

@@ -23,6 +23,9 @@ namespace Game.Battle
 
         private readonly ICombatUnitFactory combatUnitFactory;
         private readonly ObjectTypeFactory objectTypeFactory;
+
+        private readonly BattleFormulas battleFormulas;
+
         private readonly LargeIdGenerator groupIdGen;
         private readonly LargeIdGenerator idGen;
 
@@ -32,7 +35,7 @@ namespace Game.Battle
 
         private BattleOrder battleOrder = new BattleOrder(0);
 
-        public BattleManager(uint battleId, BattleLocation location, BattleOwner owner, IRewardStrategy rewardStrategy, IDbManager dbManager, IBattleReport battleReport, ICombatListFactory combatListFactory, ICombatUnitFactory combatUnitFactory, ObjectTypeFactory objectTypeFactory)
+        public BattleManager(uint battleId, BattleLocation location, BattleOwner owner, IRewardStrategy rewardStrategy, IDbManager dbManager, IBattleReport battleReport, ICombatListFactory combatListFactory, ICombatUnitFactory combatUnitFactory, ObjectTypeFactory objectTypeFactory, BattleFormulas battleFormulas)
         {
             groupIdGen = new LargeIdGenerator(ushort.MaxValue);
             idGen = new LargeIdGenerator(ushort.MaxValue);
@@ -41,7 +44,7 @@ namespace Game.Battle
 
             BattleId = battleId;
             Location = location;
-            Owner = owner;            
+            Owner = owner;
             BattleReport = battleReport;
             Attackers = combatListFactory.CreateCombatList();
             Defender = combatListFactory.CreateCombatList();
@@ -50,6 +53,7 @@ namespace Game.Battle
             this.dbManager = dbManager;
             this.combatUnitFactory = combatUnitFactory;
             this.objectTypeFactory = objectTypeFactory;
+            this.battleFormulas = battleFormulas;
         }
 
         public uint BattleId { get; private set; }
@@ -160,7 +164,7 @@ namespace Game.Battle
                 int attackersRoundsLeft = int.MaxValue;
 
                 // Check if player has a defender that is over the minimum battle rounds
-                var playersDefenders = Defender.Where(co => co.City.Owner == player).ToList();
+                var playersDefenders = Defender.Where(co => co.BelongsTo(player)).ToList();
                 if (playersDefenders.Any()) {
                     defendersRoundsLeft = playersDefenders.Min(co => Config.battle_min_rounds - co.RoundsParticipated);
                     if (defendersRoundsLeft < 0)
@@ -170,7 +174,7 @@ namespace Game.Battle
                 }
 
                 // Check if player has an attacker that is over the minimum battle rounds
-                var playersAttackers = Attackers.Where(co => co.City.Owner == player).ToList();
+                var playersAttackers = Attackers.Where(co => co.BelongsTo(player)).ToList();
                 if (playersAttackers.Any())
                 {
                     attackersRoundsLeft = playersAttackers.Min(co => Config.battle_min_rounds - co.RoundsParticipated);
@@ -188,6 +192,7 @@ namespace Game.Battle
                 }
                 else
                 {
+                    // Increase by 1 since here 0 roundsLeft actually means 1 round left in normal terms
                     roundsLeft++;
                 }
 
@@ -397,7 +402,9 @@ namespace Game.Battle
 
                 // Tell objects to exit from battle
                 foreach (var co in list.Where(co => !co.IsDead))
+                {
                     co.ExitBattle();
+                }
 
                 // Send exit events
                 if (combatList == Attackers)
@@ -410,10 +417,9 @@ namespace Game.Battle
                 }
 
                 // Clean up objects
-                foreach (var co in list)
+                foreach (var co in list.Where(co => !co.Disposed))
                 {
-                    if (!co.Disposed)
-                        co.CleanUp();
+                    co.CleanUp();
                 }
 
                 // Refresh battle order
@@ -571,9 +577,9 @@ namespace Game.Battle
                     CombatList.BestTargetResult targetResult;
 
                     if (currentAttacker.CombatList == Attackers)
-                        targetResult = Defender.GetBestTargets(currentAttacker, out currentDefenders, BattleFormulas.Current.GetNumberOfHits(currentAttacker));
+                        targetResult = Defender.GetBestTargets(currentAttacker, out currentDefenders, battleFormulas.GetNumberOfHits(currentAttacker));
                     else if (currentAttacker.CombatList == Defender)
-                        targetResult = Attackers.GetBestTargets(currentAttacker, out currentDefenders, BattleFormulas.Current.GetNumberOfHits(currentAttacker));
+                        targetResult = Attackers.GetBestTargets(currentAttacker, out currentDefenders, battleFormulas.GetNumberOfHits(currentAttacker));
                     else
                         throw new Exception("How can this happen");
 
@@ -654,30 +660,14 @@ namespace Game.Battle
         {
             #region Damage
 
-            decimal dmg = BattleFormulas.Current.GetDamage(attacker, defender, attacker.CombatList == Defender);
+            decimal dmg = battleFormulas.GetAttackerDmgToDefender(attacker, defender, attacker.CombatList == Defender);            
+
             decimal actualDmg;
+            defender.CalcActualDmgToBeTaken(attacker.CombatList, defender.CombatList, dmg, attackIndex, out actualDmg);
+            actualDmg = Math.Min(defender.Hp, actualDmg);
+
             Resource defenderDroppedLoot;
             int attackPoints;
-
-            #region Miss Chance
-            var missChance = BattleFormulas.Current.MissChance(attacker.CombatList.Sum(x => x.Upkeep), defender.CombatList.Sum(x => x.Upkeep));
-            if (missChance > 0) {
-                var rand = (int)(Config.Random.NextDouble() * 100);
-                if (rand <= missChance)
-                    dmg /= 2;
-            }
-            #endregion
-
-            #region Splash Damage Reduction
-            if (attackIndex > 0)
-            {
-                decimal reduction = defender.City.Technologies.GetEffects(EffectCode.SplashReduction, EffectInheritance.SelfAll).Where(effect => BattleFormulas.Current.UnitStatModCheck(defender.Stats.Base, TroopBattleGroup.Defense, (string)effect.Value[1])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
-                reduction = (100 - reduction)/100;
-                dmg = reduction*dmg;
-            }
-            #endregion
-
-            defender.CalculateDamage(dmg, out actualDmg);
             defender.TakeDamage(actualDmg, out defenderDroppedLoot, out attackPoints);
 
             attacker.DmgDealt += actualDmg;
@@ -690,7 +680,6 @@ namespace Game.Battle
             defender.MaxDmgRecv = (ushort)Math.Max(defender.MaxDmgRecv, actualDmg);
             defender.MinDmgRecv = (ushort)Math.Min(defender.MinDmgRecv, actualDmg);
             ++defender.HitRecv;
-
             #endregion
 
             #region Loot and Attack Points

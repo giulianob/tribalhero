@@ -1,6 +1,6 @@
-﻿using Game.Data;
+using Game.Data;
 
-namespace Game.Battle
+namespace Game.Battle.RewardStrategies
 {
     public interface IRewardStrategyFactory
     {

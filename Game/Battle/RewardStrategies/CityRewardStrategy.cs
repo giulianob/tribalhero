@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Logic.Formulas;
 using Game.Util.Locking;
 
-namespace Game.Battle
+namespace Game.Battle.RewardStrategies
 {
     public class CityRewardStrategy : IRewardStrategy
     {

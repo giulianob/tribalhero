@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using FluentAssertions;
 using Game.Battle;
+using Game.Battle.CombatObjects;
 using Game.Data.Stats;
 using Game.Map;
 using Moq;

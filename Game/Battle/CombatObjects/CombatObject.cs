@@ -11,7 +11,7 @@ using Persistance;
 
 #endregion
 
-namespace Game.Battle
+namespace Game.Battle.CombatObjects
 {
     public abstract class CombatObject : IComparable<object>, IPersistableObject, ILockable
     {

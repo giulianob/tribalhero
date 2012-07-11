@@ -112,29 +112,34 @@
     <Compile Include="Battle\BattleClass.cs" />
     <Compile Include="Battle\BattleLocation.cs" />
     <Compile Include="Battle\BattleManagerFactory.cs" />
-    <Compile Include="Battle\CityRewardStrategy.cs" />
     <Compile Include="Battle\CombatListFactory.cs" />
-    <Compile Include="Battle\CombatObjectFactory.cs" />
     <Compile Include="Battle\BattleOwner.cs" />
+    <Compile Include="Battle\CombatObjects\AttackCombatUnit.cs" />
+    <Compile Include="Battle\CombatObjects\CityCombatObject.cs" />
+    <Compile Include="Battle\CombatObjects\CombatObject.cs" />
+    <Compile Include="Battle\CombatObjects\CombatObjectFactory.cs" />
+    <Compile Include="Battle\CombatObjects\CombatStructure.cs" />
+    <Compile Include="Battle\CombatObjects\CombatUnitFactory.cs" />
+    <Compile Include="Battle\CombatObjects\DefenseCombatUnit.cs" />
+    <Compile Include="Battle\CombatObjects\ICombatUnit.cs" />
+    <Compile Include="Battle\CombatObjects\ICombatUnitFactory.cs" />
     <Compile Include="Battle\IBattleManager.cs" />
     <Compile Include="Battle\IBattleManagerFactory.cs" />
-    <Compile Include="Battle\IBattleReport.cs" />
-    <Compile Include="Battle\IBattleReportWriter.cs" />
-    <Compile Include="Battle\IRewardStrategy.cs" />
-    <Compile Include="Battle\ICombatUnitFactory.cs" />
-    <Compile Include="Battle\IRewardStrategyFactory.cs" />
-    <Compile Include="Battle\ReportState.cs" />
-    <Compile Include="Battle\SqlBattleReportWriter.cs" />
+    <Compile Include="Battle\Reporting\BattleReport.cs" />
+    <Compile Include="Battle\Reporting\IBattleReport.cs" />
+    <Compile Include="Battle\Reporting\IBattleReportWriter.cs" />
+    <Compile Include="Battle\Reporting\ReportedObjects.cs" />
+    <Compile Include="Battle\Reporting\ReportState.cs" />
+    <Compile Include="Battle\Reporting\SqlBattleReportWriter.cs" />
+    <Compile Include="Battle\RewardStrategies\CityRewardStrategy.cs" />
+    <Compile Include="Battle\RewardStrategies\IRewardStrategy.cs" />
+    <Compile Include="Battle\RewardStrategies\IRewardStrategyFactory.cs" />
     <Compile Include="Comm\Channel\BattleChannel.cs" />
     <Compile Include="Battle\BattleFormulas.cs" />
     <Compile Include="Battle\BattleManager.cs" />
     <Compile Include="Battle\BattleOrder.cs" />
     <Compile Include="Battle\BattleViewer.cs" />
     <Compile Include="Battle\CombatList.cs" />
-    <Compile Include="Battle\CombatObject.cs" />
-    <Compile Include="Battle\CombatStructure.cs" />
-    <Compile Include="Battle\AttackCombatUnit.cs" />
-    <Compile Include="Battle\CombatUnitFactory.cs" />
     <Compile Include="Comm\ApiCaller.cs" />
     <Compile Include="Comm\CmdLine Commands\AssignmentCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\CityCommandLineModule.cs" />
@@ -326,13 +331,7 @@
     <Compile Include="Util\XMLSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Battle\BattleReport.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Battle\StatsModCalculator.cs" />
-    <Compile Include="Battle\ICombatUnit.cs" />
-    <Compile Include="Battle\DefenseCombatUnit.cs" />
-    <Compile Include="Battle\ReportedObjects.cs" />
     <Compile Include="Comm\ProcessorCommands\MarketCommandsModule.cs" />
     <Compile Include="Data\GameObject.cs" />
     <Compile Include="Data\ForestManager.cs" />

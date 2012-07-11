@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;

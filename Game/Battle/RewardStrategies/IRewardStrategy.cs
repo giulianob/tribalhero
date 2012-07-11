@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using Game.Battle.CombatObjects;
 using Game.Data;
 
-namespace Game.Battle
+namespace Game.Battle.RewardStrategies
 {
     public interface IRewardStrategy
     {

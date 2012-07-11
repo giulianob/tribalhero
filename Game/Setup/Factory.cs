@@ -2,6 +2,7 @@
 
 using System.IO;
 using Game.Battle;
+using Game.Battle.CombatObjects;
 using Game.Data;
 using Ninject;
 

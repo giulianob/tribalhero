@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Game.Battle;
+using Game.Battle.Reporting;
 using Game.Comm.Channel;
 using Game.Data.Troop;
 using Game.Logic.Procedures;

@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using Game.Battle;
+using Game.Battle.CombatObjects;
 using Game.Data;
 using System.Linq;
 

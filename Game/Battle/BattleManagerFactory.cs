@@ -1,4 +1,7 @@
-﻿using Game.Comm.Channel;
+﻿using Game.Battle.CombatObjects;
+using Game.Battle.Reporting;
+using Game.Battle.RewardStrategies;
+using Game.Comm.Channel;
 using Game.Data;
 using Game.Setup;
 using Ninject;

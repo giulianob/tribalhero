@@ -1,13 +1,14 @@
 #region
 
 using System.Collections.Generic;
+using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Util;
 using Persistance;
 
 #endregion
 
-namespace Game.Battle
+namespace Game.Battle.Reporting
 {
     public class BattleReport : IBattleReport
     {

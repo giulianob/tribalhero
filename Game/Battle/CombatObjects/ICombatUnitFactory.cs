@@ -1,7 +1,7 @@
 using Game.Data;
 using Game.Data.Troop;
 
-namespace Game.Battle
+namespace Game.Battle.CombatObjects
 {
     public interface ICombatUnitFactory
     {

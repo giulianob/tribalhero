@@ -13,9 +13,9 @@ using Persistance;
 
 #endregion
 
-namespace Game.Battle
+namespace Game.Battle.CombatObjects
 {
-    public class CombatStructure : CombatObject
+    public class CombatStructure : CityCombatObject
     {
         public const string DB_TABLE = "combat_structures";
         private readonly byte lvl;

@@ -2,6 +2,9 @@
 using System.IO;
 using System.Text;
 using Game.Battle;
+using Game.Battle.CombatObjects;
+using Game.Battle.Reporting;
+using Game.Battle.RewardStrategies;
 using Game.Comm;
 using Game.Comm.CmdLine_Commands;
 using Game.Comm.ProcessorCommands;

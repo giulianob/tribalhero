@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Game.Battle.CombatObjects;
+using Game.Battle.Reporting;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Util.Locking;

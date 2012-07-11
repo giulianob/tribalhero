@@ -5,7 +5,7 @@ using Game.Data.Troop;
 
 #endregion
 
-namespace Game.Battle
+namespace Game.Battle.CombatObjects
 {
     public interface ICombatUnit
     {

@@ -1,9 +1,9 @@
 #region
 
+using System.Linq;
+using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
-using Game.Data;
-using System.Linq;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Setup;
@@ -11,7 +11,7 @@ using Ninject;
 
 #endregion
 
-namespace Game.Battle
+namespace Game.Battle.CombatObjects
 {
     public class CombatUnitFactory : ICombatUnitFactory
     {

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Map;

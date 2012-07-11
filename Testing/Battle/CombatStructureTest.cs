@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
 using Game.Battle;
+using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Logic.Actions;

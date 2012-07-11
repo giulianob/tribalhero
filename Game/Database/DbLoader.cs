@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using Game.Battle;
+using Game.Battle.CombatObjects;
+using Game.Battle.Reporting;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Tribe;

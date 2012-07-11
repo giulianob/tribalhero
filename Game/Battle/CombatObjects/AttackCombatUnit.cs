@@ -3,21 +3,20 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
-using System.Linq;
-using Ninject;
 using Persistance;
 
 #endregion
 
-namespace Game.Battle
+namespace Game.Battle.CombatObjects
 {
-    public class AttackCombatUnit : CombatObject, ICombatUnit
+    public class AttackCombatUnit : CityCombatObject, ICombatUnit
     {
         public const string DB_TABLE = "combat_units";
         private readonly FormationType formation;

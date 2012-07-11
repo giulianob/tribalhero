@@ -1,7 +1,8 @@
+using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Troop;
 
-namespace Game.Battle
+namespace Game.Battle.Reporting
 {
     public interface IBattleReportWriter
     {

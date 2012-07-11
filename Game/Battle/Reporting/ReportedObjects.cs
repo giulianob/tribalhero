@@ -3,12 +3,13 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Game.Battle.CombatObjects;
 using Game.Data.Troop;
 using Persistance;
 
 #endregion
 
-namespace Game.Battle
+namespace Game.Battle.Reporting
 {
     public class ReportedTroops : Dictionary<ITroopStub, uint>, IPersistableList
     {

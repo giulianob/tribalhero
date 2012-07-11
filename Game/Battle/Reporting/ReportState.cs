@@ -1,4 +1,4 @@
-namespace Game.Battle
+namespace Game.Battle.Reporting
 {
     /// <summary>
     /// Different states available when a troop gets snapshotted in the battle report.

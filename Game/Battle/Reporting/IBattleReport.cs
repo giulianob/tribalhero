@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using Game.Battle.CombatObjects;
 using Game.Data;
 using Persistance;
 
-namespace Game.Battle
+namespace Game.Battle.Reporting
 {
     public interface IBattleReport : IPersistable
     {

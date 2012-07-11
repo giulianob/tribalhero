@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Battle;
+using Game.Battle.CombatObjects;
+using Game.Battle.Reporting;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Database;

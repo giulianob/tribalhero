@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Data;
+using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Troop;
 using Persistance;
 
-namespace Game.Battle
+namespace Game.Battle.Reporting
 {
     public class SqlBattleReportWriter : IBattleReportWriter
     {

@@ -14,9 +14,9 @@ using Persistance;
 
 #endregion
 
-namespace Game.Battle
+namespace Game.Battle.CombatObjects
 {
-    public class DefenseCombatUnit : CombatObject, ICombatUnit
+    public class DefenseCombatUnit : CityCombatObject, ICombatUnit
     {
         public const string DB_TABLE = "combat_units";
         private readonly FormationType formation;

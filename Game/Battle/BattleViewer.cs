@@ -1,5 +1,6 @@
 #region
 
+using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Setup;
 using Ninject;

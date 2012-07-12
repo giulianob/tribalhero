@@ -105,12 +105,12 @@ namespace Game.Logic.Actions
 
         private void BattleActionAttacked(IBattleManager battle, CombatObject source, CombatObject target, decimal damage)
         {
-            if (target.City.Id != cityId)
-                return;
-
             var unit = target as AttackCombatUnit;
-            if (unit == null)
+
+            if (unit == null || unit.City.Id != cityId)
+            {
                 return;
+            }
 
             ICity city;
             ITroopStub stub;

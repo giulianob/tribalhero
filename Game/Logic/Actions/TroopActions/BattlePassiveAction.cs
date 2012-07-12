@@ -284,7 +284,8 @@ namespace Game.Logic.Actions
         private void BattleUnitRemoved(IBattleManager battle, CombatObject obj)
         {            
             // Keep track of our buildings destroyed HP
-            if (obj.ClassType != BattleClass.Structure || obj.City.Id != cityId)
+            var cityCombatObj = obj as CityCombatObject;
+            if (obj.ClassType != BattleClass.Structure || cityCombatObj == null || cityCombatObj.City.Id != cityId)
             {
                 return;
             }

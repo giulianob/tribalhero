@@ -76,8 +76,6 @@ namespace Game.Battle.CombatObjects
 
         public abstract Resource Loot { get; }
 
-        public abstract Resource GroupLoot { get; }
-
         public abstract ITroopStub TroopStub { get; }
 
         public abstract BattleClass ClassType { get; }
@@ -88,11 +86,11 @@ namespace Game.Battle.CombatObjects
 
         public abstract uint Visibility { get; }
 
-        public abstract uint PlayerId { get; }
-
-        public abstract ICity City { get; }
-
         public abstract byte Lvl { get; }
+
+        public abstract int Hash { get; }
+
+        public abstract object Lock { get; }
 
         #endregion
 
@@ -111,6 +109,8 @@ namespace Game.Battle.CombatObjects
         public abstract void ReceiveReward(int reward, Resource resource);
 
         public abstract int LootPerRound();
+
+        public abstract bool BelongsTo(IPlayer player);
 
         #endregion
 
@@ -156,26 +156,6 @@ namespace Game.Battle.CombatObjects
             RoundsParticipated++;
         }
 
-        public bool BelongsTo(IPlayer player)
-        {
-            return City.Owner == player;
-        }
         #endregion
-
-        public int Hash
-        {
-            get
-            {
-                return City.Hash;
-            }
-        }
-
-        public object Lock
-        {
-            get
-            {
-                return City.Lock;
-            }
-        }
     }
 }

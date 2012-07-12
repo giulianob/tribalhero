@@ -306,7 +306,7 @@ namespace Game.Battle
             return currentAttacker.Stats.Splash == 0 ? 1 : currentAttacker.Stats.Splash;
         }
 
-        public virtual decimal SplashReduction(CombatObject defender, decimal dmg, int attackIndex)
+        public virtual decimal SplashReduction(CityCombatObject defender, decimal dmg, int attackIndex)
         {
             // Splash damage reduction doesnt apply to the first attack
             if (attackIndex <= 0)

@@ -46,7 +46,7 @@ namespace Game.Battle.RewardStrategies
 
         public void GiveDefendersRewards(IEnumerable<CombatObject> defenders, int attackPoints, Resource loot)
         {
-            var cityObjectDefenders = defenders.OfType<CombatObject>();
+            var cityObjectDefenders = defenders.OfType<CityCombatObject>();
 
             // Any loot being added to the defender is loot dropped by the attacker
             if (!loot.Empty)

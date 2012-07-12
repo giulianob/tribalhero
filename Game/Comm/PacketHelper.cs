@@ -268,9 +268,18 @@ namespace Game.Comm
         {
             packet.AddUInt16((ushort)list.Count);
             foreach (var obj in list)
-            {
-                packet.AddUInt32(obj.PlayerId);
-                packet.AddUInt32(obj.City.Id);
+            {         
+                //TODO: Implement diff types on client
+                if (obj is CityCombatObject)
+                {
+                    //packet.AddByte(1);
+                    packet.AddUInt32(((CityCombatObject)obj).PlayerId);
+                    packet.AddUInt32(((CityCombatObject)obj).City.Id);
+                }
+                else
+                {
+                    //packet.AddByte(0);
+                }
                 packet.AddUInt32(obj.Id);
                 packet.AddByte((byte)obj.ClassType);
                 if (obj.ClassType == BattleClass.Unit)

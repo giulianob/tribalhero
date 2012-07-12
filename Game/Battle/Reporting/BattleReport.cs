@@ -113,6 +113,9 @@ namespace Game.Battle.Reporting
             // Start the report incase it hasn't yet
             WriteBeginReport();
 
+            // TODO: This is currently not very efficient since this logic can run several times for the same group
+            // We should really add the idea of groups into the battle so it can call this only once per group
+
             // Check if we've already snapped this troop
             bool troopAlreadySnapped = ReportedTroops.TryGetValue(combatObject.TroopStub, out combatTroopId);
 
@@ -120,34 +123,33 @@ namespace Game.Battle.Reporting
             {
                 // Snap the troop
                 combatTroopId = battleReportWriter.SnapTroop(ReportId,
-                                             state,
-                                             combatObject.City.Id,
-                                             combatObject.TroopStub.TroopId,
-                                             combatObject.GroupId,
-                                             isAttacker,
-                                             combatObject.GroupLoot);
+                                                             state,
+                                                             combatObject.City.Id,
+                                                             combatObject.TroopStub.TroopId,
+                                                             combatObject.GroupId,
+                                                             isAttacker,
+                                                             combatObject.GroupLoot);
 
                 ReportedTroops[combatObject.TroopStub] = combatTroopId;
             }
 
             // Update the state if it's not Staying (Staying is the default state basically.. anything else overrides it)
-            // TODO: This is currently not very efficient since this logic can run several times for the same group
-            // We should really add the idea of groups into the battle so it can call this only once per group
             if (state != ReportState.Staying)
             {
                 battleReportWriter.SnapTroopState(combatTroopId, combatObject.TroopStub, state);
 
                 // Log any troops that are entering the battle to the view table so they are able to see this report
                 // Notice that we don't log the local troop. This is because they can automatically see all of the battles that take place in their cities by using the battles table.
-                if (combatObject.GroupId != 1)
+                if (combatObject.GroupId != 1 && combatObject is CityCombatObject)
                 {
+                    var cityCombatObject = (CityCombatObject)combatObject;
                     switch(state)
                     {
                         // When entering, we log the initial report id
                         case ReportState.Entering:
                             if (!troopAlreadySnapped)
                             {
-                                battleReportWriter.SnapBattleReportView(combatObject.City.Id,
+                                battleReportWriter.SnapBattleReportView(cityCombatObject.City.Id,
                                                                         combatObject.TroopStub.TroopId,
                                                                         battle.BattleId,
                                                                         combatObject.GroupId,

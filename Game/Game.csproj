@@ -192,6 +192,15 @@
     <Compile Include="Data\Global.cs" />
     <Compile Include="Data\Player.cs" />
     <Compile Include="Data\Resource.cs" />
+    <Compile Include="Data\Stronghold\IStronghold.cs" />
+    <Compile Include="Data\Stronghold\IStrongholdActivationCondition.cs" />
+    <Compile Include="Data\Stronghold\IStrongholdFactory.cs" />
+    <Compile Include="Data\Stronghold\IStrongholdConfigurator.cs" />
+    <Compile Include="Data\Stronghold\IStrongholdManager.cs" />
+    <Compile Include="Data\Stronghold\Stronghold.cs" />
+    <Compile Include="Data\Stronghold\StrongholdActivationCondition.cs" />
+    <Compile Include="Data\Stronghold\StrongholdConfigurator.cs" />
+    <Compile Include="Data\Stronghold\StrongholdManager.cs" />
     <Compile Include="Data\Structure.cs" />
     <Compile Include="Data\Technology.cs" />
     <Compile Include="Data\TechnologyManager.cs" />
@@ -266,6 +275,7 @@
     <Compile Include="Logic\ThreadedScheduler.cs" />
     <Compile Include="Data\ICityRegionObject.cs" />
     <Compile Include="Map\IGameObjectLocator.cs" />
+    <Compile Include="Map\IWorld.cs" />
     <Compile Include="Map\Location.cs" />
     <Compile Include="Map\MapMath.cs" />
     <Compile Include="Map\ObjectLink.cs" />
@@ -284,6 +294,7 @@
     <Compile Include="Module\Remover\IPlayerSelector.cs" />
     <Compile Include="Module\Remover\PlayersRemover.cs" />
     <Compile Include="Module\Market.cs" />
+    <Compile Include="Data\Stronghold\StrongholdActivationChecker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Map\Region.cs" />
     <Compile Include="Map\World.cs" />
@@ -317,6 +328,7 @@
     <Compile Include="Util\Locking\TransactionalMultiObjectLock.cs" />
     <Compile Include="Util\MathParser.cs" />
     <Compile Include="Util\Locking\DefaultMultiObjectLock.cs" />
+    <Compile Include="Util\NameGenerator.cs" />
     <Compile Include="Util\UnixDateTime.cs" />
     <Compile Include="Util\XMLSerializer.cs" />
   </ItemGroup>

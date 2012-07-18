@@ -11,6 +11,7 @@ using Game.Comm.ProcessorCommands;
 using Game.Comm.Protocol;
 using Game.Comm.Thrift;
 using Game.Data;
+using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Database;
 using Game.Logic;
@@ -20,6 +21,7 @@ using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
 using Game.Setup;
+using Game.Util;
 using Game.Util.Locking;
 using Ninject;
 using Ninject.Extensions.Factory;
@@ -172,7 +174,7 @@ namespace Game
 
             // Bind IGameObjectLocator to the World binding
             Bind<IGameObjectLocator>().ToMethod(c => c.Kernel.Get<World>());
-
+            Bind<IWorld>().ToMethod(c => c.Kernel.Get<World>());
             #endregion
 
             #region Misc. Factories
@@ -183,6 +185,22 @@ namespace Game
             Bind<IAssignmentFactory>().ToFactory();
             Bind<IActionFactory>().ToFactory();
             Bind<ITribeFactory>().ToFactory();
+            Bind<IStrongholdFactory>().ToFactory();
+
+            #endregion
+
+            #region Stronghold
+
+            Bind<IStrongholdManager>().ToMethod(
+                                                c =>
+                                                new StrongholdManager(new IdGenerator(5000),
+                                                                      new StrongholdConfigurator(),
+                                                                      c.Kernel.Get<IStrongholdFactory>(),
+                                                                      c.Kernel.Get<IWorld>())).InSingletonScope();
+            Bind<IStronghold>().To<Stronghold>();
+            Bind<IStrongholdActivationCondition>().To<StrongholdActivationCondition>();
+            Bind<StrongholdActivationChecker>().ToSelf().InSingletonScope();
+
 
             #endregion
         }

@@ -68,6 +68,7 @@
 			
 			var objPlayerId: int;
 			var objLvl: int;
+			var objTribeId: uint;
 			switch(ObjectFactory.getClassType(objType)) {
 				case ObjectFactory.TYPE_STRUCTURE:
 					objPlayerId = packet.readUInt();
@@ -78,6 +79,10 @@
 					break;
 				case ObjectFactory.TYPE_TROOP_OBJ:
 					objPlayerId = packet.readUInt();
+					break;
+				case ObjectFactory.TYPE_STRONGHOLD:
+					objLvl = packet.readUByte();
+					objTribeId = 0;
 					break;
 			} 							
 			
@@ -93,6 +98,8 @@
 					return ForestFactory.getInstance(objType, objState, coord.x, coord.y, objGroupId, objId, objLvl);
 				case ObjectFactory.TYPE_TROOP_OBJ:
 					return TroopFactory.getInstance(objType, objState, coord.x, coord.y, objPlayerId, objGroupId, objId);
+				case ObjectFactory.TYPE_STRONGHOLD:
+					return StrongholdFactory.getInstance(objType, objState, coord.x, coord.y, objGroupId, objId, objLvl, objTribeId);
 			}
 			
 			return null;

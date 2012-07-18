@@ -28,6 +28,7 @@
 		public static const TYPE_UNIT: int = 3;
 		public static const TYPE_STRUCTURE: int = 4;
 		public static const TYPE_NEW_CITY_PLACEHOLDER: int = 5;
+		public static const TYPE_STRONGHOLD: int = 6;
 
 		private static var objectTypes: BinaryList;
 
@@ -83,6 +84,8 @@
 				return TYPE_FOREST;
 			else if (type == 201)
 				return TYPE_NEW_CITY_PLACEHOLDER;
+			else if (type == 300)
+				return TYPE_STRONGHOLD;
 			else
 				return TYPE_UNIT;
 		}

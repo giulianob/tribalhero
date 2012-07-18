@@ -181,6 +181,11 @@
 						extraProps.troopId = packet.readUByte();
 						extraProps.tribeId = packet.readUInt();
 					}
+					// Stronghold objects
+					else if (objType == ObjectFactory.TYPE_STRONGHOLD) {
+						extraProps.level = packet.readUByte();
+						extraProps.tribeId = packet.readUInt();
+					}
 					newRegion.addRegionObject(objType, objGroupId, objId, coord.x, coord.y, extraProps);
 				}
 			}

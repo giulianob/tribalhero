@@ -43,6 +43,9 @@ package src.Map.CityRegionFilters
 				case ObjectFactory.TYPE_CITY:
 					applyCity(obj);
 					break;
+				case ObjectFactory.TYPE_STRONGHOLD:
+					applyStronghold(obj);
+					break;
 			}
 		}
 		public function applyForest(obj: CityRegionObject) : void {
@@ -90,6 +93,18 @@ package src.Map.CityRegionFilters
 				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[difficultyIdx].r, DEFAULT_COLORS[difficultyIdx].g, DEFAULT_COLORS[difficultyIdx].b);
 				obj.addChild(img);
 			}
+		}
+		public function applyStronghold(obj: CityRegionObject) : void {
+			var img: DisplayObject = ObjectFactory.getIcon("MINIMAP_FOREST_ICON");
+			obj.sprite = img;
+			obj.sprite.transform.colorTransform = new ColorTransform(0, 0, 0, 1, 255, 255, 0);
+			obj.addChild(img);
+			
+			var icon: MINIMAP_FOREST_ICON = obj.sprite as MINIMAP_FOREST_ICON;
+			icon.lvlText.mouseEnabled = false;
+			icon.useHandCursor = true;
+			icon.lvlText.text = obj.extraProps.level.toString();
+			obj.alpha = 0.5;
 		}
 		
 		public function applyLegend(legend: CityRegionLegend) : void {

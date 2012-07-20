@@ -15,14 +15,13 @@ namespace Game.Data.Stronghold
         Neutral,
         Occupied
     }
-    public interface IStronghold : IHasLevel, ICityRegionObject, ILockable
+    public interface IStronghold : IHasLevel, ICityRegionObject, ILockable, ISimpleGameObject
     {
         uint Id { get; }
         string Name { get; }
         ushort Radius { get; }
-        StrongholdState StrongholdState { set; get; }
+        StrongholdState StrongholdState { get; set; }
         LazyValue Gate { get; }
-        ITribe Tribe { set;  get; }
-        ITroopManager TroopManager { get; }
+        ITribe Tribe { get; set; }
     }
 }

@@ -137,7 +137,8 @@ namespace Game
                                                     c.Kernel.Get<PlayerCommandLineModule>(),
                                                     c.Kernel.Get<CityCommandLineModule>(),
                                                     c.Kernel.Get<ResourcesCommandLineModule>(),
-                                                    c.Kernel.Get<TribeCommandLineModule>());
+                                                    c.Kernel.Get<TribeCommandLineModule>(),
+                                                    c.Kernel.Get<StrongholdCommandLineModule>());
                 }).InSingletonScope();
             Bind<Processor>().ToMethod(
                                        c =>
@@ -154,6 +155,7 @@ namespace Game
                                                      c.Kernel.Get<StructureCommandsModule>(),
                                                      c.Kernel.Get<TribeCommandsModule>(),
                                                      c.Kernel.Get<TribesmanCommandsModule>(),
+                                                     c.Kernel.Get<StrongholdCommandsModule>(),
                                                      c.Kernel.Get<TroopCommandsModule>())).InSingletonScope();
 
             #endregion

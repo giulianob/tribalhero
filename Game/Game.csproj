@@ -112,6 +112,11 @@
     <Compile Include="Battle\BattleClass.cs" />
     <Compile Include="Battle\BattleLocation.cs" />
     <Compile Include="Battle\BattleManagerFactory.cs" />
+    <Compile Include="Battle\CombatGroups\CityOffensiveCombatGroup.cs" />
+    <Compile Include="Battle\CombatGroups\CityDefensiveCombatGroup.cs" />
+    <Compile Include="Battle\CombatGroups\CombatGroup.cs" />
+    <Compile Include="Battle\CombatGroups\ICombatGroupFactory.cs" />
+    <Compile Include="Battle\CombatGroups\IReportView.cs" />
     <Compile Include="Battle\CombatListFactory.cs" />
     <Compile Include="Battle\BattleOwner.cs" />
     <Compile Include="Battle\CombatObjects\AttackCombatUnit.cs" />
@@ -125,6 +130,7 @@
     <Compile Include="Battle\CombatObjects\ICombatUnitFactory.cs" />
     <Compile Include="Battle\IBattleManager.cs" />
     <Compile Include="Battle\IBattleManagerFactory.cs" />
+    <Compile Include="Battle\ICombatList.cs" />
     <Compile Include="Battle\Reporting\BattleReport.cs" />
     <Compile Include="Battle\Reporting\IBattleReport.cs" />
     <Compile Include="Battle\Reporting\IBattleReportWriter.cs" />
@@ -288,6 +294,8 @@
     <Compile Include="Logic\IGameTask.cs" />
     <Compile Include="Module\Remover\CityRemover.cs" />
     <Compile Include="Module\Remover\ActivePlayerSelector.cs" />
+    <Compile Include="Module\Remover\IPlayerSelectorFactory.cs" />
+    <Compile Include="Module\Remover\IPlayersRemoverFactory.cs" />
     <Compile Include="Module\Remover\NewbieIdleSelector.cs" />
     <Compile Include="Module\Remover\ICityRemover.cs" />
     <Compile Include="Module\Remover\ICityRemoverFactory.cs" />
@@ -377,7 +385,7 @@
     <Compile Include="Logic\Formulas\Formula.Troop.cs" />
     <Compile Include="Logic\Formulas\Formula.Time.cs" />
     <Compile Include="Logic\NotificationManager.cs" />
-    <Compile Include="Logic\Procedures\Procedure.Battle.cs" />
+    <Compile Include="Logic\Procedures\BattleProcedure.cs" />
     <Compile Include="Logic\Procedures\Procedure.Ranking.cs" />
     <Compile Include="Logic\Procedures\Procedure.OnActionCallback.cs" />
     <Compile Include="Logic\Procedures\Procedure.RandomizeResource.cs" />
@@ -431,6 +439,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Tribe\Assignment.AssignmentTroop.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

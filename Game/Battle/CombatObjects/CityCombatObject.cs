@@ -11,12 +11,7 @@ namespace Game.Battle.CombatObjects
 
         public abstract uint PlayerId { get; }
 
-        public abstract ICity City { get; }
-
-        public override bool BelongsTo(IPlayer player)
-        {
-            return City.Owner == player;
-        }
+        public abstract ICity City { get; }        
 
         public override int Hash
         {
@@ -32,8 +27,6 @@ namespace Game.Battle.CombatObjects
             {
                 return City.Lock;
             }
-        }
-
-        public abstract Resource GroupLoot { get; }
+        }        
     }
 }

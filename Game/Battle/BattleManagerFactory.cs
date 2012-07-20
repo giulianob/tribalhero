@@ -1,9 +1,7 @@
-﻿using Game.Battle.CombatObjects;
-using Game.Battle.Reporting;
+﻿using Game.Battle.Reporting;
 using Game.Battle.RewardStrategies;
 using Game.Comm.Channel;
 using Game.Data;
-using Game.Setup;
 using Ninject;
 using Persistance;
 
@@ -27,8 +25,6 @@ namespace Game.Battle
                                        kernel.Get<IDbManager>(),
                                        kernel.Get<IBattleReport>(),
                                        kernel.Get<ICombatListFactory>(),
-                                       kernel.Get<ICombatUnitFactory>(),
-                                       kernel.Get<ObjectTypeFactory>(),
                                        kernel.Get<BattleFormulas>());
 
             new BattleChannel(bm);

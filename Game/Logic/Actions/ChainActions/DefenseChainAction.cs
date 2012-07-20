@@ -23,17 +23,21 @@ namespace Game.Logic.Actions
         private readonly uint targetCityId;
         private readonly AttackMode mode;
 
-        public DefenseChainAction(uint cityId, byte stubId, uint targetCityId, AttackMode mode)
+        private readonly BattleProcedure battleProcedure;
+
+        public DefenseChainAction(uint cityId, byte stubId, uint targetCityId, AttackMode mode, BattleProcedure battleProcedure)
         {
             this.cityId = cityId;
             this.stubId = stubId;
             this.targetCityId = targetCityId;
             this.mode = mode;
+            this.battleProcedure = battleProcedure;
         }
 
-        public DefenseChainAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, Dictionary<string, string> properties)
+        public DefenseChainAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, Dictionary<string, string> properties, BattleProcedure battleProcedure)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
+            this.battleProcedure = battleProcedure;
             cityId = uint.Parse(properties["city_id"]);
             stubId = byte.Parse(properties["troop_stub_id"]);
             targetCityId = uint.Parse(properties["target_city_id"]);
@@ -127,7 +131,7 @@ namespace Game.Logic.Actions
                         stub.State = TroopState.BattleStationed;
                         stub.EndUpdate();
 
-                        targetCity.Battle.AddToDefense(new List<ITroopStub> { stub });
+                        battleProcedure.AddReinforcementToBattle(targetCity.Battle, stub);
                     }
 
                     StateChange(ActionState.Completed);

@@ -218,14 +218,6 @@ namespace Game.Battle.CombatObjects
             }
         }
 
-        public override Resource GroupLoot
-        {
-            get
-            {
-                return new Resource();
-            }
-        }
-
         public override Resource Loot
         {
             get
@@ -248,6 +240,11 @@ namespace Game.Battle.CombatObjects
                 x = City.X;
                 y = City.Y;
             }
+            else if (TroopStub.StationedCity != null)
+            {
+                x = troopStub.StationedCity.X;
+                y = troopStub.StationedCity.Y;
+            }
             else
             {
                 x = TroopStub.TroopObject.X;
@@ -263,10 +260,10 @@ namespace Game.Battle.CombatObjects
         public override void CalcActualDmgToBeTaken(ICombatList attackers, ICombatList defenders, decimal baseDmg, int attackIndex, out decimal actualDmg)
         {
             // Miss chance
-            actualDmg = battleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg);
+            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg);
 
             // Splash dmg reduction
-            actualDmg = battleFormulas.SplashReduction(this, actualDmg, attackIndex);
+            actualDmg = BattleFormulas.SplashReduction(this, actualDmg, attackIndex);
 
             // if hp is less than 20% of the original total HP(entire group), lastStand kicks in.
             if (Hp < (Hp + DmgRecv) / 5)

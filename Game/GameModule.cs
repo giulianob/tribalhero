@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using Game.Battle;
+using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
 using Game.Battle.RewardStrategies;
@@ -17,6 +18,8 @@ using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
+using Game.Module;
+using Game.Module.Remover;
 using Game.Setup;
 using Game.Util.Locking;
 using Ninject;
@@ -113,6 +116,12 @@ namespace Game
             Bind<IBattleReportWriter>().To<SqlBattleReportWriter>();
 
             Bind<IRewardStrategyFactory>().ToFactory();
+
+            Bind<ICombatGroupFactory>().ToFactory();
+
+            Bind<ICombatUnitFactory>().ToMethod(c => new CombatUnitFactory(c.Kernel));
+
+            Bind<ICombatListFactory>().ToFactory();
             
             #endregion
 
@@ -168,13 +177,14 @@ namespace Game
             #endregion
 
             #region Misc. Factories
-
-            Bind<ICombatUnitFactory>().ToMethod(c => new CombatUnitFactory(c.Kernel));
+            
             Bind<IProtocolFactory>().ToFactory();
-            Bind<ICombatListFactory>().ToFactory();
             Bind<IAssignmentFactory>().ToFactory();
             Bind<IActionFactory>().ToFactory();
             Bind<ITribeFactory>().ToFactory();
+            Bind<IPlayersRemoverFactory>().ToFactory();
+            Bind<IPlayerSelectorFactory>().ToFactory();
+            Bind<ICityRemoverFactory>().ToFactory();
 
             #endregion
         }

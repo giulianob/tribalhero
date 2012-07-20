@@ -7,7 +7,6 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Actions;
-using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util.Locking;
@@ -198,7 +197,7 @@ namespace Game.Comm.ProcessorCommands
                 if (!city.TryGetStructure(objectId, out barrack))
                     ReplyError(session, packet, Error.Unexpected);
 
-                var upgradeAction = new UnitUpgradeActiveAction(cityId, objectId, type);
+                var upgradeAction = actionFactory.CreateUnitUpgradeActiveAction(cityId, objectId, type);
                 Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(barrack), barrack, upgradeAction, barrack.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
@@ -241,7 +240,7 @@ namespace Game.Comm.ProcessorCommands
                 if (!city.TryGetStructure(objectId, out barrack))
                     ReplyError(session, packet, Error.Unexpected);
 
-                var trainAction = new UnitTrainActiveAction(cityId, objectId, type, count);
+                var trainAction = actionFactory.CreateUnitTrainActiveAction(cityId, objectId, type, count);
                 Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(barrack), barrack, trainAction, barrack.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
@@ -368,7 +367,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var da = new DefenseChainAction(cityId, stub.TroopId, targetCityId, mode);
+                var da = actionFactory.CreateDefenseChainAction(cityId, stub.TroopId, targetCityId, mode);
                 Error ret = city.Worker.DoPassive(city, da, true);
                 if (ret != 0)
                 {
@@ -436,7 +435,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var ra = new RetreatChainAction(cityId, troopId);
+                var ra = actionFactory.CreateRetreatChainAction(cityId, troopId);
 
                 Error ret = city.Worker.DoPassive(city, ra, true);
                 ReplyWithResult(session, packet, ret);

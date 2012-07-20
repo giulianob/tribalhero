@@ -38,19 +38,19 @@ namespace Game.Battle
             if (co is AttackCombatUnit)
             {
                 var unit = co as AttackCombatUnit;
-                Append("Team[Atk] List[" + co.CombatList.Id + "] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" + Ioc.Kernel.Get<UnitFactory>().GetName(unit.Type, 1) +
+                Append("Team[Atk] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" + Ioc.Kernel.Get<UnitFactory>().GetName(unit.Type, 1) +
                        "] HP[" + unit.Hp + "]");
             }
             else if(co is DefenseCombatUnit)
             {
                 var unit = co as DefenseCombatUnit;
-                Append("Team[Def] List[" + co.CombatList.Id + "] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" + Ioc.Kernel.Get<UnitFactory>().GetName(unit.Type, 1) +
+                Append("Team[Def] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" + Ioc.Kernel.Get<UnitFactory>().GetName(unit.Type, 1) +
                        "] HP[" + unit.Hp + "]");
             } 
             else if (co is CombatStructure)
             {
                 var cs = co as CombatStructure;
-                Append("Team[Def] List[" + co.CombatList.Id + "] Structure[" + co.Id + "] Type[" + Ioc.Kernel.Get<StructureFactory>().GetName(cs.Structure.Type, cs.Structure.Lvl) + "] HP[" + cs.Hp + "]");
+                Append("Team[Def] Structure[" + co.Id + "] Type[" + Ioc.Kernel.Get<StructureFactory>().GetName(cs.Structure.Type, cs.Structure.Lvl) + "] HP[" + cs.Hp + "]");
             }
         }
 

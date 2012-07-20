@@ -1,3 +1,4 @@
+using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Troop;
@@ -14,9 +15,9 @@ namespace Game.Battle.Reporting
 
         void SnapEndReport(uint reportId, uint battleId, uint round, uint turn);
 
-        void SnapTroopState(uint reportTroopId, ITroopStub stub, ReportState state);
+        void SnapGroupState(uint reportTroopId, CombatGroup group, ReportState state);
 
-        uint SnapTroop(uint reportId, ReportState state, uint cityId, byte troopId, uint objectId, bool isAttacker, Resource loot);
+        uint SnapGroup(uint reportId, CombatGroup group, ReportState state, bool isAttacker);
 
         void SnapBattleReportView(uint cityId, byte troopId, uint battleId, uint groupId, bool isAttacker, uint enterBattleReportId);
 

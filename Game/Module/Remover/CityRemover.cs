@@ -8,7 +8,6 @@ using Game.Data.Troop;
 using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
-using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
@@ -16,28 +15,19 @@ using Persistance;
 
 namespace Game.Module
 {
-    class CityRemoverFactory : ICityRemoverFactory
-    {
-
-        #region ICityRemoverFactory Members
-
-        public ICityRemover CreateCityRemover(ICity city) {
-            return new CityRemover(city.Id);
-        }
-
-        #endregion
-    }
-
-    class CityRemover : ICityRemover, ISchedule
+    public class CityRemover : ICityRemover, ISchedule
     {
         private const double SHORT_RETRY = 5;
         private const double LONG_RETRY = 90;
 
         private readonly uint cityId;
 
-        public CityRemover(uint cityId)
+        private readonly IActionFactory actionFactory;
+
+        public CityRemover(uint cityId, IActionFactory actionFactory)
         {
             this.cityId = cityId;
+            this.actionFactory = actionFactory;
         }
 
         public bool Start(bool force = false)
@@ -84,9 +74,9 @@ namespace Game.Module
                             ToArray();
         }
 
-        private static Error RemoveForeignTroop(ITroopStub stub)
+        private Error RemoveForeignTroop(ITroopStub stub)
         {
-            var ra = new RetreatChainAction(stub.City.Id, stub.TroopId);
+            var ra = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
             return stub.City.Worker.DoPassive(stub.City, ra, true);
         }
 

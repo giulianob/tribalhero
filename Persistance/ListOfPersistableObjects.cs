@@ -3,41 +3,67 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 #endregion
 
 namespace Persistance
 {
-    abstract public class ListOfPersistableObjects<T> : List<T>, IListOfPersistableObjects<T> where T : IPersistableObject
+    abstract public class ListOfPersistableObjects<T> : IListOfPersistableObjects<T> where T : IPersistableObject
     {
-        protected IDbManager manager;
+        private readonly IDbManager manager;
+
+        /// <summary>
+        /// Do not modify the backing list from subclasses directly!
+        /// </summary>
+        protected readonly List<T> BackingList; 
 
         protected ListOfPersistableObjects(IDbManager manager)
         {
+            BackingList = new List<T>();
             this.manager = manager;
         }
 
-        public new void Add(T item)
+        public void Add(T item)
         {
             Add(item, true);
         }
 
         public void Add(T item, bool save)
         {
-            base.Add(item);
+            BackingList.Add(item);
             if (save)
                 manager.Save(item);
         }
 
-        public new bool Remove(T item)
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            BackingList.CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(T item)
         {
             return Remove(item, true);
         }
 
+        public int Count
+        {
+            get
+            {
+                return BackingList.Count;
+            }
+        }
+
+        public bool IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public bool Remove(T item, bool save)
         {
-            if (base.Remove(item))
+            if (BackingList.Remove(item))
             {
                 if (save)
                     manager.Delete(item);
@@ -48,13 +74,38 @@ namespace Persistance
             return false;
         }
 
-        public new void RemoveAt(int index)
+        public int IndexOf(T item)
         {
-            manager.Delete(this[index]);
-            base.RemoveAt(index);
+            return BackingList.IndexOf(item);
         }
 
-        public new int RemoveAll(Predicate<T> match)
+        public void Insert(int index, T item)
+        {
+            BackingList.Insert(index, item);
+            manager.Save(item);
+        }
+
+        public void RemoveAt(int index)
+        {
+            manager.Delete(this[index]);
+            BackingList.RemoveAt(index);
+        }
+
+        public T this[int index]
+        {
+            get
+            {
+                return BackingList[index];
+            }
+            set
+            {
+                manager.Delete(BackingList[index]);
+                BackingList[index] = value;
+                manager.Save(value);
+            }
+        }
+
+        public int RemoveAll(Predicate<T> match)
         {
             // We implement our own RemoveAll because it needs to call RemoveAt which removes the item from the db as well
             int count = 0;
@@ -70,12 +121,27 @@ namespace Persistance
             return count;
         }
 
-        public new void Clear()
+        public void Clear()
         {
-            foreach (T item in this)
-                manager.Delete(item);
+            for (int i = Count - 1; i >= 0; i--)
+            {
+                RemoveAt(i);
+            }
+        }
 
-            base.Clear();
+        public bool Contains(T item)
+        {
+            return BackingList.Contains(item);
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return BackingList.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

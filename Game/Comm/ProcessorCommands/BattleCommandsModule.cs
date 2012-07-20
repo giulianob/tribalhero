@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
 using Game.Map;
 using Game.Setup;
@@ -67,8 +68,8 @@ namespace Game.Comm.ProcessorCommands
                 var reply = new Packet(packet);
                 reply.AddUInt32(city.Battle.BattleId);
                 reply.AddUInt32(city.Battle.Round);
-                PacketHelper.AddToPacket(city.Battle.Attackers, reply);
-                PacketHelper.AddToPacket(city.Battle.Defender, reply);
+                PacketHelper.AddToPacket(city.Battle.Attackers.AllCombatObjects().ToList(), reply);
+                PacketHelper.AddToPacket(city.Battle.Defenders.AllCombatObjects().ToList(), reply);
 
                 // TODO: This used to be in the battle manager but it doesnt belong there
                 //  so I put it in here for now but it should not be here either. Need to make some other place

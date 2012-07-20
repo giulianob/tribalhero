@@ -9,7 +9,6 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -17,18 +16,22 @@ namespace Game.Logic.Actions
 {
     public class RetreatChainAction : ChainAction
     {
+        private readonly IActionFactory actionFactory;
+
         private readonly uint cityId;
         private readonly byte stubId;
 
-        public RetreatChainAction(uint cityId, byte stubId)
+        public RetreatChainAction(uint cityId, byte stubId, IActionFactory actionFactory)
         {
             this.cityId = cityId;
             this.stubId = stubId;
+            this.actionFactory = actionFactory;
         }
 
-        public RetreatChainAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, Dictionary<string, string> properties)
+        public RetreatChainAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, Dictionary<string, string> properties, IActionFactory actionFactory)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
+            this.actionFactory = actionFactory;
             cityId = uint.Parse(properties["city_id"]);
             stubId = byte.Parse(properties["troop_stub_id"]);
         }
@@ -104,7 +107,7 @@ namespace Game.Logic.Actions
                     }
                     else
                     {
-                        var eda = new EngageDefensePassiveAction(cityId, stubId);
+                        var eda = actionFactory.CreateEngageDefensePassiveAction(cityId, stubId);
                         ExecuteChainAndWait(eda, AfterEngageDefense);
                     }
                 }

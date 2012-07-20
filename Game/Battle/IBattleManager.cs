@@ -1,8 +1,8 @@
 using System.Collections.Generic;
+using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
 using Game.Data;
-using Game.Data.Troop;
 using Game.Util.Locking;
 using Persistance;
 
@@ -17,22 +17,18 @@ namespace Game.Battle
         BattleLocation Location { get; }
         BattleOwner Owner { get; }
         ICombatList Attackers { get; }
-        ICombatList Defender { get; }
+        ICombatList Defenders { get; }
         IBattleReport BattleReport { get; }
         IEnumerable<ILockable> LockList { get; }
+        BattleManager.BattleSide NextToAttack { set; }
+
         CombatObject GetCombatObject(uint id);
+        CombatGroup GetCombatGroup(uint id);
         bool CanWatchBattle(IPlayer player, out int roundsLeft);
-        void DbLoaderAddToLocal(CombatStructure structure, uint id);
-        void DbLoaderAddToCombatList(CombatObject obj, uint id, bool isLocal);
-        void AddToLocal(IEnumerable<ITroopStub> objects, ReportState state);
-        void AddToLocal(IEnumerable<IStructure> objects);
-        void AddToAttack(ITroopStub stub);
-        void AddToAttack(IEnumerable<ITroopStub> objects);
-        void AddToDefense(IEnumerable<ITroopStub> objects);
-        void RemoveFromAttack(IEnumerable<ITroopStub> objects, ReportState state);
-        void RemoveFromDefense(IEnumerable<ITroopStub> objects, ReportState state);
-        void RefreshBattleOrder();
-        bool ExecuteTurn();
+        void DbLoaderAddToCombatList(CombatGroup group, BattleManager.BattleSide side);
+        void Add(CombatGroup combatGroup, BattleManager.BattleSide battleSide);
+        void Remove(CombatGroup group, BattleManager.BattleSide side, ReportState state);
+        bool ExecuteTurn();        
 
         event BattleManager.OnBattle EnterBattle;
         event BattleManager.OnBattle ExitBattle;
@@ -48,5 +44,7 @@ namespace Game.Battle
         event BattleManager.OnUnitUpdate UnitUpdated;
         event BattleManager.OnUnitUpdate SkippedAttacker;
         event BattleManager.OnAttack ActionAttacked;
+
+        uint GetNextGroupId();
     }
 }

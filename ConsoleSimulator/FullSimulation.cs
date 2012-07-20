@@ -220,7 +220,7 @@ namespace ConsoleSimulator
             {
                 if (sw != null)
                 {
-                    WriteResult(def[0]);
+                    WriteResult(def[0][0]);
                     WriteResultEnd(deadObject.Count);
                 }
             }
@@ -244,7 +244,7 @@ namespace ConsoleSimulator
             {
                 if (sw != null)
                 {
-                    WriteResult(atk[0]);
+                    WriteResult(atk[0][0]);
                     WriteResultEnd(deadObject.Count);
                 }
             }

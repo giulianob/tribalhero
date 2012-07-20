@@ -367,7 +367,7 @@ namespace Game.Database
                     {
                         case City.DeletedState.Deleting:
                             city.Owner.Add(city);
-                            CityRemover cr = new CityRemover(city.Id);
+                            CityRemover cr = Ioc.Kernel.Get<ICityRemoverFactory>().CreateCityRemover(city.Id);
                             cr.Start(true);
                             break;
                         case City.DeletedState.NotDeleted:
@@ -752,8 +752,8 @@ namespace Game.Database
                     bm.BattleStarted = (bool)reader["battle_started"];
                     bm.Round = (uint)reader["round"];
                     bm.Turn = (uint)reader["round"];
+                    bm.NextToAttack = (BattleManager.BattleSide)reader["next_to_attack"];
 
-                    bm.BattleReport.ReportFlag = (bool)reader["report_flag"];
                     bm.BattleReport.ReportStarted = (bool)reader["report_started"];
                     bm.BattleReport.ReportId = (uint)reader["report_id"];
 
@@ -796,8 +796,9 @@ namespace Game.Database
                                                           RoundsParticipated = (int)listReader["rounds_participated"],
                                                           DbPersisted = true
                                                   };
+                            //(uint)listReader["id"]
 
-                            bm.DbLoaderAddToLocal(combatStructure, (uint)listReader["id"]);
+                            //bm.DbLoaderAddToCombatList(combatStructure, BattleManager.BattleSide.Defense);
                         }
                     }
 
@@ -855,42 +856,18 @@ namespace Game.Database
                             combatObj.RoundsParticipated = (int)listReader["rounds_participated"];
                             combatObj.DbPersisted = true;
 
-                            bm.DbLoaderAddToCombatList(combatObj, (uint)listReader["id"], (bool)listReader["is_local"]);
+                            //bm.DbLoaderAddToCombatList(combatObj, (uint)listReader["id"], (bool)listReader["is_local"]);
                         }
                     }
 
-                    bm.BattleReport.ReportedTroops.DbPersisted = true;
-                    using (DbDataReader listReader = dbManager.SelectList(bm.BattleReport.ReportedTroops))
+                    bm.BattleReport.ReportedGroups.DbPersisted = true;
+                    using (DbDataReader listReader = dbManager.SelectList(bm.BattleReport.ReportedGroups))
                     {
                         while (listReader.Read())
                         {
-                            ICity troopStubCity;
-                            if (!World.Current.TryGetObjects((uint)listReader["troop_stub_city_id"], out troopStubCity))
-                                throw new Exception("City not found");
-
-                            ITroopStub troopStub;
-                            if (!troopStubCity.Troops.TryGetStub((byte)listReader["troop_stub_id"], out troopStub))
-                                continue;
-
-                            bm.BattleReport.ReportedTroops[troopStub] = (uint)listReader["combat_troop_id"];
+                            bm.BattleReport.ReportedGroups[bm.GetCombatGroup((uint)reader["group_id"])] = (uint)listReader["combat_troop_id"];
                         }
                     }
-
-                    bm.BattleReport.ReportedObjects.DbPersisted = true;
-                    using (DbDataReader listReader = dbManager.SelectList(bm.BattleReport.ReportedObjects))
-                    {
-                        while (listReader.Read())
-                        {
-                            CombatObject co = bm.GetCombatObject((uint)listReader["combat_object_id"]);
-
-                            if (co == null)
-                                continue;
-
-                            bm.BattleReport.ReportedObjects.Add(co);
-                        }
-                    }
-
-                    bm.RefreshBattleOrder();
                 }
             }
 

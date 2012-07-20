@@ -17,7 +17,7 @@ namespace Game.Battle.CombatObjects
     {
         protected readonly uint BattleId;
 
-        protected readonly BattleFormulas battleFormulas;
+        protected readonly BattleFormulas BattleFormulas;
 
         /// <summary>
         /// Parameterless constructor for mocking only
@@ -32,7 +32,7 @@ namespace Game.Battle.CombatObjects
             MinDmgDealt = ushort.MaxValue;
             MinDmgRecv = ushort.MaxValue;
             BattleId = battleId;
-            this.battleFormulas = battleFormulas;
+            BattleFormulas = battleFormulas;
         }
 
         #region Properties
@@ -49,8 +49,6 @@ namespace Game.Battle.CombatObjects
 
         public decimal DmgRecv { get; set; }
         public decimal DmgDealt { get; set; }        
-
-        public CombatList CombatList { get; set; }
 
         public int RoundsParticipated { get; set; }
 
@@ -109,8 +107,6 @@ namespace Game.Battle.CombatObjects
         public abstract void ReceiveReward(int reward, Resource resource);
 
         public abstract int LootPerRound();
-
-        public abstract bool BelongsTo(IPlayer player);
 
         #endregion
 

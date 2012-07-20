@@ -209,7 +209,7 @@ namespace Game.Battle.CombatObjects
 
         public override int LootPerRound()
         {
-            return battleFormulas.GetLootPerRoundForCity(City);
+            return BattleFormulas.GetLootPerRoundForCity(City);
         }
 
         #region ICombatUnit Members
@@ -219,14 +219,6 @@ namespace Game.Battle.CombatObjects
             get
             {
                 return troopStub;
-            }
-        }
-
-        public override Resource GroupLoot
-        {
-            get
-            {
-                return troopStub.TroopObject.Stats.Loot;
             }
         }
 
@@ -282,16 +274,16 @@ namespace Game.Battle.CombatObjects
         public override void CalcActualDmgToBeTaken(ICombatList attackers, ICombatList defenders, decimal baseDmg, int attackIndex, out decimal actualDmg)
         {
             // Miss chance
-            actualDmg = battleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg);
+            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg);
 
             // Splash dmg reduction
-            actualDmg = battleFormulas.SplashReduction(this, actualDmg, attackIndex);
+            actualDmg = BattleFormulas.SplashReduction(this, actualDmg, attackIndex);
 
             // if hp is less than 20% of the original total HP(entire group), lastStand kicks in.
             if (Hp < (Hp + DmgRecv) / 5m)
             {
                 var percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand)
-                    .Where(tech => battleFormulas.UnitStatModCheck(Stats.Base, TroopBattleGroup.Attack, (string)tech.Value[1]))
+                    .Where(tech => BattleFormulas.UnitStatModCheck(Stats.Base, TroopBattleGroup.Attack, (string)tech.Value[1]))
                     .DefaultIfEmpty()
                     .Max(x => x == null ? 0 : (int)x.Value[0]);
 

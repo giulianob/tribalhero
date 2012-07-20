@@ -1,7 +1,7 @@
 #region
 
 using System.Collections.Generic;
-using Game.Battle.CombatObjects;
+using Game.Battle.CombatGroups;
 using Game.Data;
 using Game.Util;
 using Persistance;
@@ -27,8 +27,7 @@ namespace Game.Battle.Reporting
             set
             {
                 battle = value;
-                ReportedObjects = new ReportedObjects(battle.BattleId);
-                ReportedTroops = new ReportedTroops(battle.BattleId);
+                ReportedGroups = new ReportedGroups(battle.BattleId);
             }
         }
 
@@ -38,24 +37,14 @@ namespace Game.Battle.Reporting
         public bool ReportStarted { get; set; }
 
         /// <summary>
-        /// Not sure what this report flag is actually doing at the moment. I think it may be removed and only ReportStarted may be used.
-        /// </summary>
-        public bool ReportFlag { get; set; }
-
-        /// <summary>
         /// Id of the current report. This will change as each new snapshot is taken.
         /// </summary>
         public uint ReportId { get; set; }
 
         /// <summary>
-        /// Persistable list of the objects that have been reported for this snapshot.
-        /// </summary>
-        public ReportedObjects ReportedObjects { get; private set; }
-
-        /// <summary>
         /// Persistable list of troops that have been reported for this snapshot.
         /// </summary>
-        public ReportedTroops ReportedTroops { get; private set; }
+        public ReportedGroups ReportedGroups { get; private set; }
 
         public BattleReport(IBattleReportWriter battleReportWriter)
         {
@@ -85,7 +74,6 @@ namespace Game.Battle.Reporting
         {
             battleReportWriter.SnapBattle(battle.BattleId, battle.Owner, battle.Location);
             WriteBeginReport();
-            ReportFlag = true;
             CompleteReport(ReportState.Entering);
         }
 
@@ -95,64 +83,57 @@ namespace Game.Battle.Reporting
         public void CompleteBattle()
         {
             WriteBeginReport();
-            ReportFlag = true;
             CompleteReport(ReportState.Exiting);
             battleReportWriter.SnapBattleEnd(battle.BattleId);
-        }
+        }      
 
         /// <summary>
-        /// Writes the specified combat object (if it hasn't yet) to the report
+        /// Writes a report group
         /// </summary>
-        /// <param name="combatObject"></param>
-        /// <param name="isAttacker"></param>
-        /// <param name="state"></param>
-        public void WriteReportObject(CombatObject combatObject, bool isAttacker, ReportState state)
+        public void WriteReportGroup(CombatGroup group, bool isAttacker, ReportState state)
         {
-            uint combatTroopId;
-
-            // Start the report incase it hasn't yet
             WriteBeginReport();
 
-            // TODO: This is currently not very efficient since this logic can run several times for the same group
-            // We should really add the idea of groups into the battle so it can call this only once per group
-
-            // Check if we've already snapped this troop
-            bool troopAlreadySnapped = ReportedTroops.TryGetValue(combatObject.TroopStub, out combatTroopId);
-
-            if (!troopAlreadySnapped)
+            // Holds the id of the group for the current battle report
+            uint reportedGroupId;
+            
+            bool alreadySnapped = ReportedGroups.TryGetValue(group, out reportedGroupId);
+            
+            if (!alreadySnapped)
             {
                 // Snap the troop
-                combatTroopId = battleReportWriter.SnapTroop(ReportId,
-                                                             state,
-                                                             combatObject.City.Id,
-                                                             combatObject.TroopStub.TroopId,
-                                                             combatObject.GroupId,
-                                                             isAttacker,
-                                                             combatObject.GroupLoot);
+                reportedGroupId = battleReportWriter.SnapGroup(ReportId,
+                                                                group,
+                                                                state,                                                                
+                                                                isAttacker);
 
-                ReportedTroops[combatObject.TroopStub] = combatTroopId;
+                ReportedGroups[group] = reportedGroupId;
+            }                
+            else
+            {
+                battleReportWriter.SnapGroupState(reportedGroupId, group, state);
             }
 
             // Update the state if it's not Staying (Staying is the default state basically.. anything else overrides it)
             if (state != ReportState.Staying)
-            {
-                battleReportWriter.SnapTroopState(combatTroopId, combatObject.TroopStub, state);
+            {                
 
                 // Log any troops that are entering the battle to the view table so they are able to see this report
                 // Notice that we don't log the local troop. This is because they can automatically see all of the battles that take place in their cities by using the battles table.
-                if (combatObject.GroupId != 1 && combatObject is CityCombatObject)
+                // TODO: Should not really depend on an interface to decide this behavior and should not expect local troop to be group with id 1. Could do it by adding a method to 
+                // the group to return whether it should log a report view and use the owner type/id pattern to log the owner.
+                if (group.Id != 1 && group is IReportView)
                 {
-                    var cityCombatObject = (CityCombatObject)combatObject;
                     switch(state)
                     {
-                        // When entering, we log the initial report id
+                        // When entering, we log the initial report id.
                         case ReportState.Entering:
-                            if (!troopAlreadySnapped)
+                            if (!alreadySnapped)
                             {
-                                battleReportWriter.SnapBattleReportView(cityCombatObject.City.Id,
-                                                                        combatObject.TroopStub.TroopId,
+                                battleReportWriter.SnapBattleReportView(((IReportView)group).City.Id,
+                                                                        group.TroopId,
                                                                         battle.BattleId,
-                                                                        combatObject.GroupId,
+                                                                        group.Id,
                                                                         isAttacker,
                                                                         ReportId);
                             }
@@ -162,36 +143,26 @@ namespace Game.Battle.Reporting
                         case ReportState.Dying:
                         case ReportState.OutOfStamina:
                         case ReportState.Retreating:
-                            battleReportWriter.SnapBattleReportViewExit(battle.BattleId, combatObject.GroupId, ReportId);
+                            battleReportWriter.SnapBattleReportViewExit(battle.BattleId, group.Id, ReportId);
                             break;
                     }
                 }
             }
 
-            // Check if we've already snapped the combat object
-            if (!ReportedObjects.Contains(combatObject))
-            {
-                // Snap the combat objects
-                battleReportWriter.SnapCombatObject(combatTroopId, combatObject);
-                ReportedObjects.Add(combatObject);
+            foreach (var combatObject in group)
+            {                
+                battleReportWriter.SnapCombatObject(reportedGroupId, combatObject);
             }
         }
 
         /// <summary>
-        /// Writes a list of combat objects
+        /// Writes all of the specified groups
         /// </summary>
-        /// <param name="list"></param>
-        /// <param name="isAttacker"></param>
-        /// <param name="state"></param>
-        public void WriteReportObjects(IEnumerable<CombatObject> list, bool isAttacker, ReportState state)
+        public void WriteReportGroups(IEnumerable<CombatGroup> groups, bool isAttacker, ReportState state)
         {
-            WriteBeginReport();
-
-            ReportFlag = true;
-
-            foreach (var co in list)
+            foreach (var group in groups)
             {
-                WriteReportObject(co, isAttacker, state);
+                WriteReportGroup(group, isAttacker, state);
             }
         }
 
@@ -201,18 +172,16 @@ namespace Game.Battle.Reporting
         /// <param name="state"></param>
         public void CompleteReport(ReportState state)
         {
-            if (!ReportStarted || !ReportFlag)
+            if (!ReportStarted)
             {
                 return;
             }
 
-            WriteReportObjects(battle.Attackers, true, state);
-            WriteReportObjects(battle.Defender, false, state);
+            WriteReportGroups(battle.Attackers, true, state);
+            WriteReportGroups(battle.Defenders, false, state);
             battleReportWriter.SnapEndReport(ReportId, battle.BattleId, battle.Round, battle.Turn);
-            ReportedObjects.Clear();
-            ReportedTroops.Clear();
+            ReportedGroups.Clear();
             ReportStarted = false;
-            ReportFlag = false;
         }
 
         public void SetLootedResources(uint cityId, byte troopId, uint battleId, Resource lootResource, Resource bonusResource)

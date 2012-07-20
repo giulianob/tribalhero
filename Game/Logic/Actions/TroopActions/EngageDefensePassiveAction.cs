@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using Game.Battle;
 using Game.Battle.CombatObjects;
-using Game.Battle.Reporting;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Procedures;
@@ -20,17 +19,22 @@ namespace Game.Logic.Actions
     {
         private readonly uint cityId;
         private readonly byte stubId;
+
+        private readonly BattleProcedure battleProcedure;
+
         private decimal originalHp;
         private decimal remainingHp;
 
-        public EngageDefensePassiveAction(uint cityId, byte stubId)
+        public EngageDefensePassiveAction(uint cityId, byte stubId, BattleProcedure battleProcedure)
         {
             this.cityId = cityId;
             this.stubId = stubId;
+            this.battleProcedure = battleProcedure;
         }
 
-        public EngageDefensePassiveAction(uint id, bool isVisible, IDictionary<string, string> properties) : base(id, isVisible)
+        public EngageDefensePassiveAction(uint id, bool isVisible, IDictionary<string, string> properties, BattleProcedure battleProcedure) : base(id, isVisible)
         {
+            this.battleProcedure = battleProcedure;
             cityId = uint.Parse(properties["troop_city_id"]);
             stubId = byte.Parse(properties["troop_id"]);
             originalHp = decimal.Parse(properties["original_hp"]);
@@ -83,12 +87,10 @@ namespace Game.Logic.Actions
                 return Error.Ok;
             }
 
-            var list = new List<ITroopStub> {stub};
             originalHp = remainingHp = stub.TotalHp;
 
             city.Battle.ActionAttacked += BattleActionAttacked;
-            city.Battle.ExitBattle += BattleExitBattle;
-            city.Battle.AddToDefense(list);
+            city.Battle.ExitBattle += BattleExitBattle;            
 
             stub.TroopObject.BeginUpdate();
             stub.TroopObject.State = GameObjectState.BattleState(cityId);
@@ -97,8 +99,9 @@ namespace Game.Logic.Actions
             stub.TroopObject.Stub.State = TroopState.Battle;
             stub.TroopObject.Stub.EndUpdate();
 
-            // Add any units in local troop to battle
-            Procedure.Current.AddLocalToBattle(city.Battle, city, ReportState.Reinforced);
+            // Add units to battle
+            battleProcedure.AddReinforcementToBattle(city.Battle, stub);
+            battleProcedure.AddLocalUnitsToBattle(city.Battle, city);
 
             return Error.Ok;
         }

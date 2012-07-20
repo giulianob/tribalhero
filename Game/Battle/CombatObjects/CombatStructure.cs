@@ -138,14 +138,6 @@ namespace Game.Battle.CombatObjects
             }
         }
 
-        public override Resource GroupLoot
-        {
-            get
-            {
-                return new Resource();
-            }
-        }
-
         public override Resource Loot
         {
             get
@@ -166,7 +158,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return battleFormulas.GetUnitsPerStructure(Structure) / 5;
+                return BattleFormulas.GetUnitsPerStructure(Structure) / 5;
             }
         }
 
@@ -244,10 +236,10 @@ namespace Game.Battle.CombatObjects
         public override void CalcActualDmgToBeTaken(ICombatList attackers, ICombatList defenders, decimal baseDmg, int attackIndex, out decimal actualDmg)
         {
             // Miss chance
-            actualDmg = battleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg);
+            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg);
 
             // Splash dmg reduction
-            actualDmg = battleFormulas.SplashReduction(this, actualDmg, attackIndex);
+            actualDmg = BattleFormulas.SplashReduction(this, actualDmg, attackIndex);
 
             // AP Bonuses
             if (City.AlignmentPoint >= 90m)

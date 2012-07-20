@@ -1,25 +1,23 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
 using Game.Data;
 using Game.Logic;
-using Game.Setup;
-using Game.Util;
 using Game.Util.Locking;
-using Ninject;
-using Persistance;
 
 namespace Game.Module {
     public class PlayersRemover : ISchedule {
         double intervalInHours;
-        bool started = false;
-        ICityRemoverFactory iCityRemoverFactory;
-        IPlayerSelector iPlayerSelector;
+        
+        bool started;
 
-        public PlayersRemover(ICityRemoverFactory iCityRemoverFactory, IPlayerSelector iPlayerSelector)
+        private readonly ICityRemoverFactory cityRemoverFactory;
+
+        private readonly IPlayerSelector playerSelector;
+
+        public PlayersRemover(IPlayerSelector playerSelector, ICityRemoverFactory cityRemoverFactory)
         {
-            this.iCityRemoverFactory = iCityRemoverFactory;
-            this.iPlayerSelector = iPlayerSelector;
+            this.cityRemoverFactory = cityRemoverFactory;
+            this.playerSelector = playerSelector;
         }
 
         public void Start(double intervalInHours = 24) {
@@ -34,12 +32,12 @@ namespace Game.Module {
         }
 
         public int DeletePlayers() {
-            var list = iPlayerSelector.GetPlayerIds();
+            var list = playerSelector.GetPlayerIds();
             int count = 0;
             foreach (var id in list) {
                 IPlayer player;
                 using (Concurrency.Current.Lock(id, out player)) {
-                    count += player.GetCityList().Count(city => iCityRemoverFactory.CreateCityRemover(city).Start());
+                    count += player.GetCityList().Count(city => cityRemoverFactory.CreateCityRemover(city.Id).Start());
                 }
             }
             return count;

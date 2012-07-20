@@ -24,13 +24,16 @@ namespace Game.Logic.Actions {
 
         private readonly IActionFactory actionFactory;
 
-        public CityCreatePassiveAction(uint cityId, uint x, uint y, string cityName, IActionFactory actionFactory)
+        private readonly ICityRemoverFactory cityRemoverFactory;
+
+        public CityCreatePassiveAction(uint cityId, uint x, uint y, string cityName, IActionFactory actionFactory, ICityRemoverFactory cityRemoverFactory)
         {
             this.cityId = cityId;
             this.x = x;
             this.y = y;
             this.cityName = cityName;
             this.actionFactory = actionFactory;
+            this.cityRemoverFactory = cityRemoverFactory;
         }
 
         public CityCreatePassiveAction(uint id,
@@ -185,7 +188,7 @@ namespace Game.Logic.Actions {
             ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
-                CityRemover remover = new CityRemover(newCityId);
+                CityRemover remover = cityRemoverFactory.CreateCityRemover(newCityId);
                 remover.Start();
 
                 StateChange(ActionState.Failed);

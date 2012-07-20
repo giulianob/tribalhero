@@ -18,6 +18,7 @@
 		public var Ranking: RankingComm;
 		public var Messaging: MessagingComm;
 		public var Tribe: TribeComm;
+		public var Stronghold: StrongholdComm;
 		public var MessageBoard: MessageBoardComm;
 
 		public var session: Session;

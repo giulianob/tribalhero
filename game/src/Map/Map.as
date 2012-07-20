@@ -7,6 +7,7 @@
 	import flash.utils.*;
 	import src.Objects.NewCityPlaceholder;
 	import src.Objects.SimpleObject;
+	import src.Objects.Stronghold.Stronghold;
 	import src.UI.Sidebars.NewCityPlaceholder.NewCityPlaceholderSidebar;
 	import src.Util.Util;
 	import flash.ui.Keyboard;
@@ -21,6 +22,7 @@
 	import src.UI.Sidebars.ForestInfo.ForestInfoSidebar;
 	import src.UI.Sidebars.ObjectInfo.ObjectInfoSidebar;
 	import src.UI.Sidebars.TroopInfo.TroopInfoSidebar;
+	import src.UI.Sidebars.StrongholdInfo.StrongholdInfoSidebar;
 
 	import src.Constants;
 
@@ -346,6 +348,8 @@
 				sidebar = new TroopInfoSidebar(obj as TroopObject);			
 			else if (obj is Forest)
 				sidebar = new ForestInfoSidebar(obj as Forest);
+			else if (obj is Stronghold)
+				sidebar = new StrongholdInfoSidebar(obj as Stronghold);
 			else if (obj is NewCityPlaceholder)
 				sidebar = new NewCityPlaceholderSidebar(obj as NewCityPlaceholder);
 

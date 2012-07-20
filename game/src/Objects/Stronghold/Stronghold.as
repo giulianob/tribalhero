@@ -12,8 +12,12 @@ package src.Objects.Stronghold
 	{
 		public var level: int;
 		public var tribeId: int;
+		public var strongholdName: String;
+		public var id: int;
+		
 		public function Stronghold(type: int, state: GameObjectState, objX: int, objY: int, groupId: int, objectId: int, level: int, tribeId: int) {
 			super(type, state, objX, objY, groupId, objectId);
+			this.id = objectId;
 			this.level = level;
 			this.tribeId = tribeId;
 		}

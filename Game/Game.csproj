@@ -133,6 +133,7 @@
     <Compile Include="Comm\ApiCaller.cs" />
     <Compile Include="Comm\CmdLine Commands\AssignmentCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\CityCommandLineModule.cs" />
+    <Compile Include="Comm\CmdLine Commands\StrongholdCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\TribeCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\PlayerCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\ResourcesCommandLineModule.cs" />
@@ -149,6 +150,7 @@
     <Compile Include="Comm\ProcessorCommands\BattleCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\AssignmentCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\ChatCommandsModule.cs" />
+    <Compile Include="Comm\ProcessorCommands\StrongholdCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\TribesmanCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\TribeCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\CommandLineCommandsModule.cs" />

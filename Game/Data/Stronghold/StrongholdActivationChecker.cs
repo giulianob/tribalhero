@@ -37,14 +37,7 @@ namespace Game.Data.Stronghold
         {
             foreach (IStronghold stronghold in strongholdManager.Where(s => s.StrongholdState == StrongholdState.Inactive).Where(stronghold => strongholdActivationCondition.ShouldActivate(stronghold)))
             {
-                stronghold.StrongholdState = StrongholdState.Neutral;
-                ISimpleGameObject simpleGameObject = stronghold as ISimpleGameObject;
-                if (simpleGameObject != null)
-                {
-                    simpleGameObject.BeginUpdate();
-                    world.Add(simpleGameObject);
-                    simpleGameObject.EndUpdate();
-                }
+                strongholdManager.Activate(stronghold);
             }
         }
     }

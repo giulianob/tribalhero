@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Game.Data.Tribe;
 using Game.Map;
 using Game.Util;
 
@@ -10,11 +9,11 @@ namespace Game.Data.Stronghold
 {
     class StrongholdManager : IStrongholdManager
     {
-        private List<IStronghold> strongholds = new List<IStronghold>();
+        private readonly ConcurrentDictionary<uint, IStronghold> strongholds = new ConcurrentDictionary<uint, IStronghold>();
 
-        private IStrongholdFactory strongholdFactory;
-        private IStrongholdConfigurator strongholdConfigurator;
-        private IdGenerator idGenerator;
+        private readonly IStrongholdFactory strongholdFactory;
+        private readonly IStrongholdConfigurator strongholdConfigurator;
+        private readonly IdGenerator idGenerator;
         private IWorld world;
 
         public StrongholdManager(IdGenerator idGenerator,
@@ -38,7 +37,12 @@ namespace Game.Data.Stronghold
 
         public void Add(IStronghold stronghold)
         {
-            strongholds.Add(stronghold);
+            strongholds.AddOrUpdate(stronghold.Id, stronghold, (id, old) => stronghold);
+        }
+
+        public bool TryGetValue(uint id, out IStronghold stronghold)
+        {
+            return strongholds.TryGetValue(id, out stronghold);
         }
 
         public void Generate(int count)
@@ -51,15 +55,33 @@ namespace Game.Data.Stronghold
 
                 if (!strongholdConfigurator.Next(out name, out level, out x, out y))
                     break;
-                strongholds.Add(strongholdFactory.CreateStronghold((uint)idGenerator.GetNext(), name, level, x, y));
+                IStronghold stronghold = strongholdFactory.CreateStronghold((uint)idGenerator.GetNext(), name, level, x, y);
+                Add(stronghold);
             }
+        }
+
+        public void Activate(IStronghold stronghold)
+        {
+            stronghold.StrongholdState = StrongholdState.Neutral;
+            stronghold.BeginUpdate();
+            world.Add(stronghold);
+            stronghold.EndUpdate();
+        }
+
+        public void TransferTo(IStronghold stronghold, ITribe tribe)
+        {
+            stronghold.BeginUpdate();
+            stronghold.StrongholdState = tribe == null ? StrongholdState.Neutral : StrongholdState.Occupied;
+            ++stronghold.Lvl;
+            stronghold.Tribe = tribe;
+            stronghold.EndUpdate();
         }
 
         #region Implementation of IEnumerable
 
         public IEnumerator<IStronghold> GetEnumerator()
         {
-            return strongholds.GetEnumerator();
+            return strongholds.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

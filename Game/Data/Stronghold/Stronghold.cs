@@ -20,8 +20,33 @@ namespace Game.Data.Stronghold
         public ushort Radius { get; private set; }
         public StrongholdState StrongholdState { get; set; }
         public LazyValue Gate { get; private set; }
-        public ITribe Tribe { get; set; }
-        public ITroopManager TroopManager { get; private set; }
+
+        private ITribe tribe;
+        public ITribe Tribe
+        {
+            get
+            {
+                return tribe;
+            }
+            set
+            {
+                StrongholdState = value!=null ? StrongholdState.Occupied : StrongholdState.Neutral;
+                tribe = value;
+            }
+        }
+
+        public void Activate()
+        {
+            BeginUpdate();
+      //      world.Add(simpleGameObject);
+            EndUpdate();
+
+        }
+
+        public void TransferTo(ITribe tribe)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 
@@ -93,8 +118,21 @@ namespace Game.Data.Stronghold
 
         #region Implementation of ILockable
 
-        public int Hash { get; private set; }
-        public object Lock { get; private set; }
+        public int Hash
+        {
+            get
+            {
+                return (int)Id;
+            }
+        }
+
+        public object Lock
+        {
+            get
+            {
+                return this;
+            }
+        }
 
         #endregion
 

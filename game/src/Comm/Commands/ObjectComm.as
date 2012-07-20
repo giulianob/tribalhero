@@ -233,6 +233,37 @@
 			custom[0](id, username, custom[1]);
 		}
 		
+		public function getStrongholdUsername(id: int, callback: Function, custom: * = null) : void
+		{
+			if (id <= 0) {
+				callback(id, "System", custom);
+				return;
+			}
+			
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.STRONGHOLD_USERNAME_GET;
+			packet.writeUByte(1); //just doing 1 username now
+			packet.writeUInt(id);
+
+			var pass: Array = new Array();
+			pass.push(callback);
+			pass.push(custom);
+			pass.push(id);
+
+			session.write(packet, onReceivePlayerUsername, pass);
+		
+		}
+
+		public function onReceiveStrongholdUsername(packet: Packet, custom: *):void
+		{
+			packet.readUByte(); //just doing 1 username now
+
+			var id: int = packet.readUInt();
+			var username: String = packet.readString();
+
+			custom[0](id, username, custom[1]);
+		}
+		
 		public function getPlayerUsername(id: int, callback: Function, custom: * = null) : void
 		{
 			if (id <= 0) {

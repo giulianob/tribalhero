@@ -22,6 +22,7 @@ package src.Comm {
 		public static const CITY_USERNAME_GET: int = 13;
 		public static const PLAYER_NAME_FROM_CITY_NAME: int = 14;
 		public static const TRIBE_USERNAME_GET: int = 15;
+		public static const STRONGHOLD_USERNAME_GET: int = 16;
 		
 		public static const PLAYER_PROFILE: int = 20;
 		public static const PLAYER_DESCRIPTION_SET: int = 21;
@@ -142,6 +143,8 @@ package src.Comm {
 		public static const TRIBE_ASSIGNMENT_JOIN: int = 1023;
 		public static const TRIBE_UPDATE_NOTIFICATIONS: int = 1031;
 		public static const TRIBE_UPDATE_CHANNEL: int = 1051;
+		
+		public static const STRONGHOLD_INFO: int = 1101;
 		
 	}
 	

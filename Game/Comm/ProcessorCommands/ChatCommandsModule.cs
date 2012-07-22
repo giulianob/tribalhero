@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Game.Data;
+using Game.Module;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -10,13 +11,6 @@ namespace Game.Comm.ProcessorCommands
     class ChatCommandsModule : CommandModule
     {
         private readonly StreamWriter writer;
-
-        enum ChatType
-        {
-            Global = 0,
-            Tribe = 1,
-            Offtopic = 2,
-        }
 
         public ChatCommandsModule(StreamWriter writer)
         {
@@ -30,12 +24,12 @@ namespace Game.Comm.ProcessorCommands
 
         public void Chat(Session session, Packet packet)
         {
-            ChatType type;
+            Chat.ChatType type;
             string message;
 
             try
             {
-                type = (ChatType)packet.GetByte();
+                type = (Chat.ChatType)packet.GetByte();
                 message = packet.GetString().Trim();
             }
             catch (Exception)
@@ -58,7 +52,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 switch (type)
                 {
-                    case ChatType.Tribe:
+                    case Module.Chat.ChatType.Tribe:
                         if (session.Player.Tribesman == null)
                         {
                             ReplyError(session, packet, Error.TribesmanNotPartOfTribe);
@@ -67,8 +61,8 @@ namespace Game.Comm.ProcessorCommands
                         channel = string.Format("/TRIBE/{0}", session.Player.Tribesman.Tribe.Id);
                         break;
 
-                    case ChatType.Global:
-                    case ChatType.Offtopic:
+                    case Module.Chat.ChatType.Global:
+                    case Module.Chat.ChatType.Offtopic:
                         // If player is muted then dont let him talk in global
                         if (session.Player.Muted)
                         {

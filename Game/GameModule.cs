@@ -52,7 +52,7 @@ namespace Game
                     writer.AutoFlush = true;
                     return new ChatCommandsModule(writer);
                 });
-
+            Bind<Chat>().ToMethod(c => new Chat(Global.Channel));
             #endregion
 
             #region Tribe Objects
@@ -198,7 +198,8 @@ namespace Game
                                                 new StrongholdManager(new IdGenerator(5000),
                                                                       new StrongholdConfigurator(),
                                                                       c.Kernel.Get<IStrongholdFactory>(),
-                                                                      c.Kernel.Get<IWorld>())).InSingletonScope();
+                                                                      c.Kernel.Get<IWorld>(),
+                                                                      c.Kernel.Get<Chat>())).InSingletonScope();
             Bind<IStronghold>().To<Stronghold>();
             Bind<IStrongholdActivationCondition>().To<StrongholdActivationCondition>();
             Bind<StrongholdActivationChecker>().ToSelf().InSingletonScope();

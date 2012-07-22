@@ -4,6 +4,8 @@ namespace Game.Comm
     {
         Invalid = 1,
 
+        SystemChat = 6, 
+
         CmdLine = 7,
 
         MessageBox = 8,

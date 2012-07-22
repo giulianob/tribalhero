@@ -25,9 +25,9 @@ package src.UI.Dialog
 		
 		public const CHANNELS: Array = [{name: "CHAT_CHANNEL_GLOBAL"}, {name: "CHAT_CHANNEL_TRIBE"}, {name: "CHAT_CHANNEL_OFFTOPIC"}];
 		
-		public const TYPE_GLOBAL:int = 0;
-		public const TYPE_TRIBE:int = 1;
-		public const TYPE_OFFTOPIC:int = 2;
+		public static const TYPE_GLOBAL:int = 0;
+		public static const TYPE_TRIBE:int = 1;
+		public static const TYPE_OFFTOPIC:int = 2;
 		
 		private var pnlContent:JPanel;
 		private var txtConsole:JTextArea;

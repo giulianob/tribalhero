@@ -11,6 +11,8 @@ package src.Comm {
 		
 		public static const INVALID: int = 1;
 		
+		public static const SYSTEM_CHAT: int = 6;
+		
 		public static const CMD_LINE: int = 7;
 		
 		public static const MESSAGE_BOX: int = 8;
@@ -144,7 +146,8 @@ package src.Comm {
 		public static const TRIBE_UPDATE_NOTIFICATIONS: int = 1031;
 		public static const TRIBE_UPDATE_CHANNEL: int = 1051;
 		
-		public static const STRONGHOLD_INFO: int = 1101;
+		public static const STRONGHOLD_INFO: int = 1101
+		public static const STRONGHOLD_PUBLIC_INFO: int = 1102;
 		
 	}
 	

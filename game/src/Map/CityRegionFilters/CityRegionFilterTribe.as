@@ -31,7 +31,7 @@ package src.Map.CityRegionFilters
 			if (Global.map.cities.get(obj.groupId)) {
 				obj.transform.colorTransform = new ColorTransform();
 			} else if(Constants.tribeId>0 && Constants.tribeId == obj.extraProps.tribeId) {
-				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, 0, 0, 255);
+				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[3].r, DEFAULT_COLORS[3].g, DEFAULT_COLORS[3].b);
 			} else {
 				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[0].r, DEFAULT_COLORS[0].g, DEFAULT_COLORS[0].b);
 			}
@@ -43,7 +43,7 @@ package src.Map.CityRegionFilters
 			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_CITY"));
 			
 			icon = new DOT_SPRITE;
-			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, 0, 0, 255);
+			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[3].r, DEFAULT_COLORS[3].g, DEFAULT_COLORS[3].b);
 			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_TRIBE_SELF"));
 			
 			icon = new DOT_SPRITE;

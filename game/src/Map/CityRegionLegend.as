@@ -78,6 +78,8 @@ package src.Map
 		public function add(icon: DisplayObject, desc: String) : void
 		{
 			var legendLabel: JLabel = new JLabel(desc, new AssetIcon(icon), AsWingConstants.LEFT);
+			legendLabel.mouseEnabled = false;
+			legendLabel.mouseEnabled = false;
 			GameLookAndFeel.changeClass(legendLabel, "Tooltip.text Label.small");
 			legendPanel.appendAll(legendLabel);
 		}

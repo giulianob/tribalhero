@@ -88,7 +88,7 @@
 			}
 
 			custom[1](packet);
-		}
+		}	
 
 		public function onLogin(packet: Packet): Boolean
 		{
@@ -309,6 +309,24 @@
 			
 			autocompleteLoader.load("/players/autocomplete", [ { key: "name", value: name }], true, false);
 		}				
+		
+		public function viewProfileByType(type:String, id:int, callback:Function = null):void
+		{
+			var packet:Packet = new Packet();
+			packet.cmd = Commands.PROFILE_BY_TYPE;
+			packet.writeString(type);
+			packet.writeUInt(id);
+			
+			mapComm.showLoading();
+			
+			switch (type.toLowerCase()) {
+				case 'city':
+					session.write(packet, mapComm.City.onReceivePlayerProfile, { callback: callback } );
+					break;
+				default:
+					throw new Error("Unknown owner type while getting profile");
+			}			
+		}		
 	}
 }
 

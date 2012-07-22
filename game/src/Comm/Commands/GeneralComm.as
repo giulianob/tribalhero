@@ -5,6 +5,7 @@
 	import src.Comm.*;
 	import src.Constants;
 	import src.Global;
+	import src.UI.Dialog.CmdLineViewer;
 	import src.Util.Util;
 	import src.Map.*;
 	import src.Objects.*;
@@ -40,10 +41,14 @@
 			{
 				case Commands.MESSAGE_BOX:
 					onMessageBox(e.packet);
-				break;
+					break;
 				case Commands.CHAT:
 					onChatMessage(e.packet);
-				break;				
+					break;
+				case Commands.SYSTEM_CHAT:
+					onChatSystemMessage(e.packet);
+					break;
+				
 			}
 		}				
 		
@@ -61,7 +66,15 @@
 			
 			Global.gameContainer.cmdLine.logChat(type, playerId, playerName, message);					
 		}
-
+		
+		private function onChatSystemMessage(packet: Packet): void
+		{
+			var message: String = packet.readString();		
+			
+			Global.gameContainer.cmdLine.log(CmdLineViewer.TYPE_GLOBAL, message);					
+			Global.gameContainer.cmdLine.log(CmdLineViewer.TYPE_TRIBE, message);					
+		}
+		
 		public function queryXML(callback: Function, custom: * ):void
 		{
 			var packet: Packet = new Packet();

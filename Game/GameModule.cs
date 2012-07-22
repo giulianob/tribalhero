@@ -72,6 +72,7 @@ namespace Game
             #region Formulas
 
             Bind<Formula>().ToSelf().InSingletonScope();
+            Bind<BattleFormulas>().ToSelf().InSingletonScope();
 
             #endregion
 
@@ -164,6 +165,7 @@ namespace Game
             Bind<TileLocator>().ToMethod(c => new TileLocator(new Random().Next)).InSingletonScope();
             Bind<ReverseTileLocator>().ToMethod(c => new ReverseTileLocator(new Random().Next)).InSingletonScope();
             Bind<Procedure>().ToSelf().InSingletonScope();
+            Bind<BattleProcedure>().ToSelf().InSingletonScope();
 
             #endregion
 

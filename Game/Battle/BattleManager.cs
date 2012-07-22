@@ -227,7 +227,6 @@ namespace Game.Battle
                 Attackers.Add(group, false);
             }
             
-            idGen.Set((int)group.Max(combatObject => combatObject.Id));
             groupIdGen.Set((int)group.Id);
         }
 
@@ -240,6 +239,18 @@ namespace Game.Battle
             return (uint)groupIdGen.GetNext();
         }
 
+        public uint GetNextCombatObjectId()
+        {
+            return (uint)idGen.GetNext();
+        }
+
+        public void DbFinishedLoading()
+        {
+            uint maxId = Math.Max(Attackers.SelectMany(group => group).DefaultIfEmpty().Max(combatObject => combatObject == null ? 0 : combatObject.Id),
+                                  Defenders.SelectMany(group => group).DefaultIfEmpty().Max(combatObject => combatObject == null ? 0 : combatObject.Id));
+            idGen.Set(maxId);
+        }
+
         public void Add(CombatGroup combatGroup, BattleSide battleSide)
         {
             AddToCombatList(combatGroup, battleSide == BattleSide.Attack, battleSide == BattleSide.Attack ? Attackers : Defenders, ReportState.Entering);
@@ -249,12 +260,12 @@ namespace Game.Battle
         {
             lock (battleLock)
             {
+                combatList.Add(group);
+
                 if (!BattleStarted)
                 {
                     return;
-                }
-
-                combatList.Add(group);
+                }                
 
                 BattleReport.WriteReportGroup(group, isAttacker, state);
 
@@ -326,8 +337,8 @@ namespace Game.Battle
                 return false;
             }
 
-            //Check to see if there are still units in the local troop
-            if (Defenders.AllCombatObjects().Any(combatObj => !combatObj.IsDead))
+            //Check to see if all units in the defense is dead
+            if (Defenders.AllCombatObjects().All(combatObj => combatObj.IsDead))
             {
                 return false;
             }
@@ -411,8 +422,9 @@ namespace Game.Battle
                     {
                         if (
                                 !battleOrder.NextObject(Round,
-                                                        NextToAttack == BattleSide.Defense ? Defenders.ToList() : Attackers.ToList(),
-                                                        NextToAttack == BattleSide.Defense ? Attackers.ToList() : Defenders.ToList(),
+                                                        Attackers.ToList(),
+                                                        Defenders.ToList(),
+                                                        NextToAttack,
                                                         out attackerObject,
                                                         out attackerGroup,
                                                         out sideAttacking) && !battleJustStarted)
@@ -432,18 +444,16 @@ namespace Game.Battle
                     while (!Attackers.AllCombatObjects().Contains(attackerObject) && !Defenders.AllCombatObjects().Contains(attackerObject));
 
                     // Save the offensive/defensive side relative to the attacker to make it easier in this function to know
-                    // which side is attacking
-                    offensiveCombatList = sideAttacking == BattleSide.Attack ? Attackers : Defenders;
+                    // which side is attacking.
                     defensiveCombatList = sideAttacking == BattleSide.Attack ? Defenders : Attackers;
-
-                    // Modify the attacker so we know who is the side currently attacking and next round we pick the other side
+                    offensiveCombatList = sideAttacking == BattleSide.Attack ? Attackers : Defenders;
                     NextToAttack = sideAttacking;
 
                     #endregion
 
                     #region Find Target(s)
 
-                    CombatList.BestTargetResult targetResult = offensiveCombatList.GetBestTargets(attackerObject, out currentDefenders, battleFormulas.GetNumberOfHits(attackerObject));
+                    CombatList.BestTargetResult targetResult = defensiveCombatList.GetBestTargets(attackerObject, out currentDefenders, battleFormulas.GetNumberOfHits(attackerObject));
 
                     if (currentDefenders.Count == 0 || attackerObject.Stats.Atk == 0)
                     {

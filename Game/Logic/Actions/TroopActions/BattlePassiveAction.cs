@@ -102,7 +102,7 @@ namespace Game.Logic.Actions
             city.Battle.UnitRemoved += BattleUnitRemoved;
         }
 
-        private void AddAlignmentPoint(ICombatList atk, ICombatList def, uint numOfRounds)
+        private void AddAlignmentPoint(ICombatList attackers, ICombatList defenders, uint numberOfRounds)
         {
             ICity city;
             if (!gameObjectLocator.TryGetObjects(cityId, out city))
@@ -112,17 +112,17 @@ namespace Game.Logic.Actions
 
             // Subtract the "In Battle" formation of the local troop since that's already
             // included in our defenders
-            decimal defUpkeep = def.Upkeep + city.Troops.Upkeep - city.DefaultTroop.UpkeepForFormation(FormationType.InBattle);
-            decimal atkUpkeep = atk.Upkeep;
+            decimal defUpkeep = defenders.Upkeep + city.Troops.Upkeep - city.DefaultTroop.UpkeepForFormation(FormationType.InBattle);
+            decimal atkUpkeep = attackers.Upkeep;
 
             if (atkUpkeep == 0 || atkUpkeep <= defUpkeep)
             {
                 return;
             }
-
-            decimal points = Math.Min(defUpkeep == 0 ? Config.ap_max_per_battle : (atkUpkeep/defUpkeep - 1), Config.ap_max_per_battle)*numOfRounds/20m;
-
-            foreach (ITroopStub stub in atk.OfType<CityOffensiveCombatGroup>().Select(offensiveCombatGroup => offensiveCombatGroup.TroopObject.Stub))
+            
+            decimal points = Math.Min(defUpkeep == 0 ? Config.ap_max_per_battle : (atkUpkeep/defUpkeep - 1), Config.ap_max_per_battle)*numberOfRounds/20m;
+            
+            foreach (ITroopStub stub in attackers.Where(p => p is CityOffensiveCombatGroup).Select(offensiveCombatGroup => ((CityOffensiveCombatGroup)offensiveCombatGroup).TroopObject.Stub))
             {
                 stub.City.BeginUpdate();
                 stub.City.AlignmentPoint -= stub.Upkeep/atkUpkeep*points;
@@ -134,9 +134,9 @@ namespace Game.Logic.Actions
             city.EndUpdate();
         }
 
-        public void BattleEnterRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round)
+        public void BattleEnterRound(IBattleManager battle, ICombatList attackers, ICombatList defenders, uint round)
         {
-            AddAlignmentPoint(atk, def, 1);
+            AddAlignmentPoint(attackers, defenders, 1);
         }
 
         public override ActionType Type

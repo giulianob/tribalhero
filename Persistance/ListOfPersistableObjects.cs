@@ -17,6 +17,12 @@ namespace Persistance
         /// </summary>
         protected readonly List<T> BackingList; 
 
+        [Obsolete("For testing only", true)]
+        protected ListOfPersistableObjects()
+        {
+            
+        }
+
         protected ListOfPersistableObjects(IDbManager manager)
         {
             BackingList = new List<T>();
@@ -134,7 +140,7 @@ namespace Persistance
             return BackingList.Contains(item);
         }
 
-        public IEnumerator<T> GetEnumerator()
+        public virtual IEnumerator<T> GetEnumerator()
         {
             return BackingList.GetEnumerator();
         }

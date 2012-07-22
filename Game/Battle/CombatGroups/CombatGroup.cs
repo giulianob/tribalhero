@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +11,14 @@ namespace Game.Battle.CombatGroups
 {
     public abstract class CombatGroup : ListOfPersistableObjects<CombatObject>, IPersistableObject, ILockable
     {
+        protected readonly uint battleId;
+
         public delegate void CombatGroupChanged(CombatGroup combatGroup, CombatObject combatObject);
 
         public event CombatGroupChanged CombatObjectAdded = delegate { };
         public event CombatGroupChanged CombatObjectRemoved = delegate { };
 
-        public abstract uint Id { get; }
+        public uint Id { get; protected set; }
 
         public abstract byte TroopId { get; }
 
@@ -23,21 +26,31 @@ namespace Game.Battle.CombatGroups
 
         public abstract BattleOwner Owner { get; }
 
-        protected CombatGroup(IDbManager manager)
+        [Obsolete("For testing only", true)]
+        protected CombatGroup()
+        {
+            
+        }
+
+        protected CombatGroup(uint battleId, uint id, IDbManager manager)
                 : base(manager)
         {
+            Id = id;
+            this.battleId = battleId;
         }
 
         public new void Add(CombatObject item, bool save)
-        {
+        {            
             base.Add(item, save);
+            item.GroupId = Id;
             CombatObjectAdded(this, item);
         }
 
         public new void RemoveAt(int index)
-        {
-            var combatObject = this[index];
+        {            
+            var combatObject = this[index];            
             base.RemoveAt(index);            
+            combatObject.GroupId = 0;
             CombatObjectRemoved(this, combatObject);            
         }
 

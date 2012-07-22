@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
+﻿using System.Collections.Generic;
 using FluentAssertions;
 using Game.Battle;
+using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Data.Stats;
 using Game.Map;
@@ -17,6 +14,7 @@ namespace Testing.Battle
     public class CombatListTest
     {
         #region GetBestTargets
+
         /// <summary>
         /// Given combat list is empty
         /// When GetBestTargets is called
@@ -33,7 +31,7 @@ namespace Testing.Battle
 
             CombatList list = new CombatList(manager.Object, radiusLocator.Object, battleFormulas.Object);
 
-            IList<CombatObject> result;
+            IList<CombatList.Target> result;
             CombatList.BestTargetResult targetResult = list.GetBestTargets(combatObject.Object, out result, 1);
 
             result.Should().BeEmpty();
@@ -59,25 +57,30 @@ namespace Testing.Battle
             Mock<CombatObject> defender = new Mock<CombatObject>();
 
             attackerStats.SetupGet(p => p.Stl).Returns(1);
-            
+
             attacker.Setup(m => m.InRange(defender.Object)).Returns(true);
             attacker.SetupGet(p => p.Visibility).Returns(1);
             attacker.SetupGet(p => p.IsDead).Returns(false);
 
             defenderStats.SetupGet(p => p.Stl).Returns(2);
-            
-            defender.Setup(m => m.InRange(attacker.Object)).Returns(true);            
-            defender.SetupGet(p => p.IsDead).Returns(false);            
+
+            defender.Setup(m => m.InRange(attacker.Object)).Returns(true);
+            defender.SetupGet(p => p.IsDead).Returns(false);
             defender.SetupGet(p => p.Stats).Returns(defenderStats.Object);
 
-            CombatList list = new CombatList(manager.Object, radiusLocator.Object, battleFormulas.Object) {{defender.Object, false}};
+            Mock<CombatGroup> combatGroup = new Mock<CombatGroup>();
+            combatGroup.Setup(p => p.GetEnumerator()).Returns(() => new List<CombatObject> {defender.Object}.GetEnumerator());
 
-            IList<CombatObject> result;
+            CombatList list = new CombatList(manager.Object, radiusLocator.Object, battleFormulas.Object) {{combatGroup.Object, false}};
+
+            IList<CombatList.Target> result;
             CombatList.BestTargetResult targetResult = list.GetBestTargets(attacker.Object, out result, 1);
 
-            result.Should().HaveCount(1).And.BeEquivalentTo(defender.Object);
+            result.Should().HaveCount(1);
+            result[0].CombatObject.Should().Be(defender.Object);
             targetResult.Should().Be(CombatList.BestTargetResult.Ok);
         }
+
         #endregion
     }
 }

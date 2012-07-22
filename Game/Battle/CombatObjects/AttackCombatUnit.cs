@@ -29,7 +29,7 @@ namespace Game.Battle.CombatObjects
 
         private readonly UnitFactory unitFactory;
 
-        public AttackCombatUnit(uint battleId, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, UnitFactory unitFactory, BattleFormulas battleFormulas) : base(battleId, battleFormulas)
+        public AttackCombatUnit(uint id, uint battleId, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, UnitFactory unitFactory, BattleFormulas battleFormulas) : base(id, battleId, battleFormulas)
         {
             troopStub = stub;
             this.formation = formation;
@@ -45,7 +45,8 @@ namespace Game.Battle.CombatObjects
         /// <summary>
         /// DB loader constructor
         /// </summary>
-        public AttackCombatUnit(uint battleId,
+        public AttackCombatUnit(uint id, 
+                                uint battleId,
                                 ITroopStub stub,
                                 FormationType formation,
                                 ushort type,
@@ -55,7 +56,7 @@ namespace Game.Battle.CombatObjects
                                 Resource loot, 
                                 UnitFactory unitFactory,
                                 BattleFormulas battleFormulas)
-            : this(battleId, stub, formation, type, lvl, count, unitFactory, battleFormulas)
+            : this(id, battleId, stub, formation, type, lvl, count, unitFactory, battleFormulas)
         {
             LeftOverHp = leftOverHp;
 

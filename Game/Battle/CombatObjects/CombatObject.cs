@@ -27,8 +27,9 @@ namespace Game.Battle.CombatObjects
         {            
         }
 
-        protected CombatObject(uint battleId, BattleFormulas battleFormulas)
+        protected CombatObject(uint id, uint battleId, BattleFormulas battleFormulas)
         {
+            Id = id;
             MinDmgDealt = ushort.MaxValue;
             MinDmgRecv = ushort.MaxValue;
             BattleId = battleId;
@@ -54,7 +55,7 @@ namespace Game.Battle.CombatObjects
 
         public uint LastRound { get; set; }
 
-        public uint Id { get; set; }
+        public uint Id { get; private set; }
 
         public uint GroupId { get; set; }
 

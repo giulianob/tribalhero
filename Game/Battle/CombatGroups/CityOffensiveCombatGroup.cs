@@ -12,16 +12,6 @@ namespace Game.Battle.CombatGroups
 
         private readonly BattleOwner owner;
 
-        private readonly uint id;
-
-        public override uint Id
-        {
-            get
-            {
-                return id;
-            }
-        }
-
         public override byte TroopId
         {
             get
@@ -46,11 +36,10 @@ namespace Game.Battle.CombatGroups
             }
         }
 
-        public CityOffensiveCombatGroup(uint id, ITroopObject troopObject, IDbManager dbManager) : base(dbManager)
+        public CityOffensiveCombatGroup(uint battleId, uint id, ITroopObject troopObject, IDbManager dbManager) : base(battleId, id, dbManager)
         {
             owner = new BattleOwner(BattleOwnerType.City, troopObject.City.Id);
             TroopObject = troopObject;
-            this.id = id;
         }
 
         #region Persistance
@@ -79,7 +68,7 @@ namespace Game.Battle.CombatGroups
         {
             get
             {
-                return new[] {new DbColumn("id", Id, DbType.UInt32)};
+                return new[] {new DbColumn("battle_id", battleId, DbType.UInt32), new DbColumn("id", Id, DbType.UInt32)};
             }
         }
 
@@ -87,7 +76,7 @@ namespace Game.Battle.CombatGroups
         {
             get
             {
-                return new[] {new DbColumn("troop_stub_id", TroopObject.Stub.TroopId, DbType.UInt32), new DbColumn("city_id", TroopObject.City.Id, DbType.UInt32)};
+                return new[] {new DbColumn("troop_object_id", TroopObject.ObjectId, DbType.UInt32), new DbColumn("city_id", TroopObject.City.Id, DbType.UInt32)};
             }
         }
 

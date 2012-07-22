@@ -1,5 +1,6 @@
 package src
 {
+	import src.Map.CityRegionLegend;
 	public class Constants
 	{
 		public static var version: int;
@@ -114,7 +115,12 @@ package src
 		public static const miniMapLargeScreenH: int = 550;
 
 		public static const miniMapLargeScreenX: Function = function(width: int) : int {
-			return (screenW / 2) - (width / 2);
+			var x : int = ((screenW - 0) / 2) - ((width +0) / 2);
+			if (x < CityRegionLegend.LEGEND_WIDTH) {
+				var delta : int = CityRegionLegend.LEGEND_WIDTH - x;
+				return x - delta;
+			}
+			return x;
 		}
 		public static const miniMapLargeScreenY: Function = function(height: int) : int {
 			return (screenH / 2) - (height / 2) + 30;

@@ -6,6 +6,7 @@
 	import flash.text.TextField;
 	import src.*;
 	import src.Map.*;
+	import src.Map.CityRegionFilters.CityRegionFilter;
 	import src.Objects.Factories.*;
 	import src.UI.Tooltips.*;
 	import src.Util.BinaryList.*;
@@ -13,22 +14,17 @@
 	public class CityRegion extends Sprite
 	{
 		public static const DOT_SPRITE: String = "DOT_SPRITE_BLACK";
-		public static const DOT_SPRITE_OWN: String = "DOT_SPRITE";		
-		public static const DIFFICULTY_COLORS: Array = [
-		{ r: 200, g: 200, b: 200 },
-		{ r: 0, g: 156, b: 20 },
-		{ r: 255, g: 223, b: 0},
-		{ r: 255, g: 169, b: 0 },
-		{ r: 210, g: 0, b: 0 }
-		];
+
 		public var id: int;
 		private var globalX: int;
 		private var globalY: int;
 		private var objects: Array = new Array();
+		private var filter: CityRegionFilter;
 
-		public function CityRegion(id: int)
+		public function CityRegion(id: int, filter: CityRegionFilter)
 		{
 			this.id = id;
+			this.filter = filter;
 
 			globalX = (id % Constants.miniMapRegionW) * Constants.cityRegionW;
 			globalY = int(id / Constants.miniMapRegionW) * (Constants.cityRegionH / 2);
@@ -42,6 +38,13 @@
 				graphics.endFill();
 			}
 		}
+		
+		public function setFilter(filter:CityRegionFilter): void
+		{
+			this.filter = filter;
+			for each(var obj: * in objects)
+				filter.apply(obj);
+		}
 
 		public function disposeData():void
 		{
@@ -51,110 +54,26 @@
 			objects = new Array();
 		}
 		
-		private function createRegionObject(sprite: String, type: int, groupId: int, objectId: int, objX: int, objY: int) : CityRegionObject {		
+		public function addRegionObject(type: int, groupId: int, objectId: int, objX: int, objY: int, extraProps: *) : CityRegionObject {		
 			var coord: Point = MapUtil.getMiniMapScreenCoord(objX, objY);
 
 			var regionObject: CityRegionObject = new CityRegionObject(type, groupId, objectId);
 			regionObject.setX(objX);
 			regionObject.setY(objY);
-			var img: DisplayObject = ObjectFactory.getIcon(sprite);
-			regionObject.sprite = img;
-			regionObject.addChild(img);
+			regionObject.extraProps = extraProps;
 
 			Global.gameContainer.miniMap.objContainer.addObject(regionObject);
-			
+					
+			regionObject.addEventListener(MouseEvent.MOUSE_OVER, onObjectMouseOver);
+			filter.apply(regionObject);
+			objects.push(regionObject);
 			return regionObject;
 		}
-		
-		public function addCityObject(level: int, playerId: int, cityId: int, objectId: int, objCityValue: int, objX: int, objY : int) : CityRegionObject
-		{
-			var gameObj: CityRegionObject;
-			
-			// If it's our city, we just show a special flag
-			if (Global.map.cities.get(cityId)) {
-				gameObj = createRegionObject(DOT_SPRITE_OWN, ObjectFactory.TYPE_CITY, cityId, objectId, objX, objY);
 				
-				if (!gameObj) 
-					return null;
-			}
-			else {
-				gameObj = createRegionObject(DOT_SPRITE, ObjectFactory.TYPE_CITY, cityId, objectId, objX, objY);
-				if (!gameObj)
-					return null;
-				
-				// Apply the difficulty transformation to the tile				
-				var percDiff: Number = Number(objCityValue) / Math.max(1.0, Number(Global.gameContainer.selectedCity.value));
-				var difficultyIdx: int;
-				if (percDiff <= 0.2) difficultyIdx = 0;
-				else if (percDiff <= 0.75) difficultyIdx = 1;
-				else if (percDiff <= 1.5) difficultyIdx = 2;
-				else if (percDiff <= 1.9) difficultyIdx = 3;
-				else difficultyIdx = 4;
-
-				gameObj.transform.colorTransform = new ColorTransform(1, 1, 1, 1, DIFFICULTY_COLORS[difficultyIdx].r, DIFFICULTY_COLORS[difficultyIdx].g, DIFFICULTY_COLORS[difficultyIdx].b);
-			}
-			
-			gameObj.addEventListener(MouseEvent.MOUSE_OVER, onCityObjectMouseOver);
-
-			gameObj.extraProps.value = objCityValue;
-			gameObj.extraProps.playerId = playerId;
-			gameObj.extraProps.level = level;
-			
-			objects.push(gameObj);
-
-			return gameObj;
-		}
-		
-		public function addForestObject(level: int, groupId: int, objectId: int, objX: int, objY : int) : CityRegionObject
-		{
-			//add object to map and objects list
-			var gameObj: CityRegionObject = createRegionObject("MINIMAP_FOREST_ICON", ObjectFactory.TYPE_FOREST, groupId, objectId, objX, objY);
-
-			if (!gameObj)
-				return null;
-				
-			var icon: MINIMAP_FOREST_ICON = gameObj.sprite as MINIMAP_FOREST_ICON;
-			
-			icon.lvlText.mouseEnabled = false;
-			icon.useHandCursor = true;
-			icon.lvlText.text = level.toString();
-			gameObj.alpha = 0.5;
-			gameObj.addEventListener(MouseEvent.MOUSE_OVER, onForestObjectMouseOver);
-			
-			gameObj.extraProps.level = level;
-			
-			objects.push(gameObj);
-
-			return gameObj;
-		}
-		
-		public function addTroopObject(objTroopId: int, playerId: int, cityId: int, objectId: int, objX: int, objY : int, resort: Boolean = true) : CityRegionObject
-		{
-			//add object to map and objects list
-			var gameObj: CityRegionObject = createRegionObject("MINIMAP_TROOP_ICON", ObjectFactory.TYPE_TROOP_OBJ, cityId, objectId, objX, objY);
-			if (!gameObj)
-				return null;
-				
-			gameObj.addEventListener(MouseEvent.MOUSE_OVER, onTroopObjectMouseOver);
-
-			gameObj.extraProps.troopId = objTroopId;
-			objects.push(gameObj);
-
-			return gameObj;
-		}		
-	
-		public function onCityObjectMouseOver(e: MouseEvent) : void {
+		public function onObjectMouseOver(e: MouseEvent) : void {
 			new MinimapInfoTooltip(e.target is CityRegionObject ? e.target as CityRegionObject : e.target.parent);
 		}
 		
-		public function onForestObjectMouseOver(e: MouseEvent) : void {
-			new MinimapInfoTooltip(e.target is CityRegionObject ? e.target as CityRegionObject : e.target.parent);
-		}		
-		
-		public function onTroopObjectMouseOver(e: MouseEvent) : void {
-			new MinimapInfoTooltip(e.target is CityRegionObject ? e.target as CityRegionObject : e.target.parent);
-		}				
-
 		public function moveWithCamera(camera: Camera):void
 		{
 			x = globalX - camera.miniMapX - int(Constants.miniMapTileW / 2);

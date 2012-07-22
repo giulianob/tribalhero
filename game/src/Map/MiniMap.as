@@ -1,6 +1,7 @@
 ﻿package src.Map
 {
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import mx.messaging.ConsumerMessageDispatcher;
@@ -8,6 +9,7 @@
 	import org.aswing.graphics.Graphics2D;
 	import org.aswing.graphics.SolidBrush;
 	import src.Constants;
+	import src.Map.CityRegionFilters.*;
 	import src.Util.Util;
 	import src.Global;
 	import src.Objects.ObjectContainer;
@@ -23,6 +25,8 @@
 
 		private var regionSpace: Sprite;
 		private var regions: CityRegionList;
+		private var filter: CityRegionFilter = new CityRegionFilter();
+		private var legend: CityRegionLegend = new CityRegionLegend();
 		private var pendingRegions: Array = new Array();
 
 		public var objContainer: ObjectContainer;
@@ -67,6 +71,12 @@
 			mask = mapMask;
 
 			resize(width, height);
+			
+			legend.addOnClickListener(onChangeFilter);
+			
+			addEventListener(Event.REMOVED_FROM_STAGE, function(e: Event): void {
+				legend.hide();
+			});
 		}
 
 		public function redraw() : void {
@@ -92,6 +102,52 @@
 			mapMask.graphics.clear();
 			g = new Graphics2D(mapMask.graphics);
 			g.fillRoundRect(new SolidBrush(ASColor.BLACK), 0, 0, this.miniMapWidth, this.miniMapHeight, 10);			
+		}
+		
+		public function setFilter(name:String) : Boolean {
+			if (name == "Default") {
+				filter = new CityRegionFilter();
+			} else if (name == "Alignment") {
+				filter = new CityRegionFilterAlignment();
+			} else if (name == "Distance") {
+				filter = new CityRegionFilterDistance();
+			} else if (name == "Tribe") {
+				filter = new CityRegionFilterTribe();
+			} else if (name == "Newbie") {
+				filter = new CityRegionFilterNewbie();
+			} else {
+				return false;
+			}
+			for each(var region:CityRegion in regions.each()) {
+				region.setFilter(filter);
+			}
+			showLegend();
+			return true;
+		}
+		
+		public function onChangeFilter(e:Event): void {
+			if (filter.getName() == "Default") {
+				setFilter("Alignment");
+			} else if (filter.getName() == "Alignment") {
+				setFilter("Distance");
+			} else if (filter.getName() == "Distance") {
+				setFilter("Tribe");
+			} else if (filter.getName() == "Tribe") {
+				setFilter("Newbie");
+			} else if (filter.getName() == "Newbie") {
+				setFilter("Default");
+			}
+			redraw();
+		}
+		
+		public function showLegend() : void {
+			legend.removeAll();
+			filter.applyLegend(legend);
+			legend.show(this.x + this.miniMapWidth, this.y);
+		}
+		
+		public function hideLegend() : void {
+			legend.hide();
 		}
 
 		private function onNavigate(e: MouseEvent) : void {
@@ -135,7 +191,7 @@
 			if (Constants.debug >= 2)
 			Util.log("Adding region: " + id);
 
-			var newRegion: CityRegion = new CityRegion(id);
+			var newRegion: CityRegion = new CityRegion(id,filter);
 
 			for (var i:int = pendingRegions.length - 1; i >= 0; i--)
 			{

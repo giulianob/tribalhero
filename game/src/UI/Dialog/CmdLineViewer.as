@@ -431,7 +431,7 @@ package src.UI.Dialog
 			txtCommand = new JTextField();
 			txtCommand.setBackgroundDecorator(null);
 			txtCommand.setConstraints("Center");
-			txtCommand.setMaxChars(450);
+			txtCommand.setMaxChars(Constants.admin ? 3000 : 450);
 			
 			var lblCommandCursor:JLabel = new JLabel(">");
 			lblCommandCursor.setConstraints("West");

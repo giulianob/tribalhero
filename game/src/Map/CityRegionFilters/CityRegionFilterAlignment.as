@@ -29,14 +29,20 @@ package src.Map.CityRegionFilters
 			
 			var alignment: Number = obj.extraProps.alignment;
 			var alignmentIdx: int;
-			if (alignment <= 20) alignmentIdx = 0;
-			else if (alignment <= 40) alignmentIdx = 1;
-			else if (alignment <= 60) alignmentIdx = 2;
-			else if (alignment <= 80) alignmentIdx = 3;
-			else alignmentIdx = 4;
-
-			obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[alignmentIdx].r, DEFAULT_COLORS[alignmentIdx].g, DEFAULT_COLORS[alignmentIdx].b);
-			obj.addChild(img);
+			if (Global.map.cities.get(obj.groupId)) {
+				obj.transform.colorTransform = new ColorTransform();
+				obj.addChild(img);				
+			}
+			else {
+				if (alignment <= 20) alignmentIdx = 0;			
+				else if (alignment <= 40) alignmentIdx = 1;
+				else if (alignment <= 60) alignmentIdx = 2;
+				else if (alignment <= 80) alignmentIdx = 3;
+				else alignmentIdx = 4;
+				
+				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[alignmentIdx].r, DEFAULT_COLORS[alignmentIdx].g, DEFAULT_COLORS[alignmentIdx].b);
+				obj.addChild(img);				
+			}
 		}
 		
 		override public function applyLegend(legend: CityRegionLegend) : void {

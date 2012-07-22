@@ -31,9 +31,9 @@ package src.Map.CityRegionFilters
 			if (Global.map.cities.get(obj.groupId)) {
 				obj.transform.colorTransform = new ColorTransform();
 			} else if(obj.extraProps.isNewbie) {
-				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, 0, 0, 255);
-			} else {
 				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[3].r, DEFAULT_COLORS[3].g, DEFAULT_COLORS[3].b);
+			} else {
+				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[0].r, DEFAULT_COLORS[0].g, DEFAULT_COLORS[0].b);
 			}
 			obj.addChild(img);
 		}

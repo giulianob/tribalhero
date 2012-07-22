@@ -128,12 +128,9 @@ class Battle extends AppModel {
 
             // Find important battle events
             $importantTroops = $this->BattleReport->BattleReportTroop->find('all', array(
-                'fields' => array('BattleReportTroop.id', 'BattleReportTroop.state', 'BattleReportTroop.group_id', 'BattleReportTroop.is_attacker'),
+                'fields' => array('BattleReportTroop.id', 'BattleReportTroop.state', 'BattleReportTroop.group_id', 'BattleReportTroop.is_attacker', 'BattleReportTroop.owner_id', 'BattleReportTroop.owner_type', 'BattleReportTroop.name'),
                 'order' => array('BattleReportTroop.group_id' => 'ASC'),
                 'link' => array(
-                    'City' => array('fields' => array('id', 'name'), 'type' => 'INNER',
-                        'Player' => array('fields' => array('id', 'name'), 'type' => 'INNER')
-                    )
                 ),
                 'conditions' => array('BattleReportTroop.battle_report_id' => $report['BattleReport']['id'], 'NOT' => array('BattleReportTroop.state' => TROOP_STATE_STAYING))));
 
@@ -152,13 +149,11 @@ class Battle extends AppModel {
                     'state' => $importantTroop['BattleReportTroop']['state'],
                     'groupId' => $importantTroop['BattleReportTroop']['group_id'],
                     'isAttacker' => $importantTroop['BattleReportTroop']['is_attacker'] == true,
-                    'city' => array(
-                        'id' => $importantTroop['City']['id'],
-                        'name' => $importantTroop['City']['name']
-                    ),
-                    'player' => array(
-                        'id' => $importantTroop['Player']['id'],
-                        'name' => $importantTroop['Player']['name']
+                    'name' => $importantTroop['BattleReportTroop']['name'],
+                    'owner' => array(
+                        'id' => $importantTroop['BattleReportTroop']['owner_id'],
+                        'type' => $importantTroop['BattleReportTroop']['owner_type'],
+                        'name' => $this->getLocationName($importantTroop['BattleReportTroop']['owner_type'], $importantTroop['BattleReportTroop']['owner_id'])
                     ),
                     'units' => array(),
                 );
@@ -352,10 +347,12 @@ class Battle extends AppModel {
             'fields' => array('DISTINCT(Tribe.id)', 'Tribe.name'),
             'link' => array(
                 'BattleReportTroop' => array('type' => 'INNER', 'fields' => array('BattleReportTroop.is_attacker'),
+                    'conditions' => array('BattleReportTroop.owner_type' => 'City'),
                     'BattleReport' => array('type' => 'INNER', 'fields' => array(),
                         'conditions' => array('BattleReport.battle_id' => $battleId),
                     ),
-                    'City' => array('type' => 'INNER', 'fields' => array(),
+                    'City' => array('type' => 'INNER', 'fields' => array(), 'table' => 'cities',
+                        'conditions' => array('exactly' => array('BattleReportTroop.owner_id' => 'City.id')),
                         'Player' => array('type' => 'INNER', 'fields' => array(),
                             'Tribesman' => array('type' => 'INNER', 'fields' => array(),
                                 'Tribe' => array('type' => 'INNER', 'fields' => array()),

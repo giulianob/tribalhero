@@ -33,7 +33,7 @@ namespace Game.Battle.CombatObjects
         /// </summary>
         private decimal hp; 
 
-        public CombatStructure(uint battleId, IStructure structure, BattleStats stats, Formula formula, IActionFactory actionFactory, BattleFormulas battleFormulas) : base(battleId, battleFormulas)
+        public CombatStructure(uint id, uint battleId, IStructure structure, BattleStats stats, Formula formula, IActionFactory actionFactory, BattleFormulas battleFormulas) : base(id, battleId, battleFormulas)
         {
             this.stats = stats;
             this.formula = formula;
@@ -44,8 +44,8 @@ namespace Game.Battle.CombatObjects
             hp = structure.Stats.Hp;
         }
 
-        public CombatStructure(uint battleId, IStructure structure, BattleStats stats, decimal hp, ushort type, byte lvl, Formula formula, IActionFactory actionFactory, BattleFormulas battleFormulas)
-            : base(battleId, battleFormulas)
+        public CombatStructure(uint id, uint battleId, IStructure structure, BattleStats stats, decimal hp, ushort type, byte lvl, Formula formula, IActionFactory actionFactory, BattleFormulas battleFormulas)
+            : base(id, battleId, battleFormulas)
         {
             Structure = structure;
             this.formula = formula;            

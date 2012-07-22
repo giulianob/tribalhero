@@ -46,5 +46,9 @@ namespace Game.Battle
         event BattleManager.OnAttack ActionAttacked;
 
         uint GetNextGroupId();
+
+        uint GetNextCombatObjectId();
+
+        void DbFinishedLoading();
     }
 }

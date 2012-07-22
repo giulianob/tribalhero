@@ -28,6 +28,12 @@ namespace Game.Logic.Procedures
 
         private readonly IActionFactory actionFactory;
 
+        [Obsolete("For testing only", true)]
+        protected BattleProcedure()
+        {
+            
+        }
+
         public BattleProcedure(ICombatUnitFactory combatUnitFactory, ICombatGroupFactory combatGroupFactory, RadiusLocator radiusLocator, IBattleManagerFactory battleManagerFactory, IActionFactory actionFactory)
         {
             this.combatUnitFactory = combatUnitFactory;
@@ -118,7 +124,7 @@ namespace Game.Logic.Procedures
         
         public virtual uint AddAttackerToBattle(IBattleManager battleManager, ITroopObject troopObject)
         {
-            var defensiveGroup = combatGroupFactory.CreateCityOffensiveCombatGroup(battleManager, battleManager.GetNextGroupId(), troopObject);
+            var defensiveGroup = combatGroupFactory.CreateCityOffensiveCombatGroup(battleManager.BattleId, battleManager.GetNextGroupId(), troopObject);
             foreach (var kvp in troopObject.Stub.SelectMany(formation => formation))
             {
                 combatUnitFactory.CreateAttackCombatUnit(battleManager, troopObject, FormationType.Defense, kvp.Key, kvp.Value).ToList().ForEach(defensiveGroup.Add);
@@ -130,7 +136,7 @@ namespace Game.Logic.Procedures
 
         public virtual void AddReinforcementToBattle(IBattleManager battleManager, ITroopStub stub)
         {
-            var defensiveGroup = combatGroupFactory.CreateCityDefensiveCombatGroup(battleManager, battleManager.GetNextGroupId(), stub);
+            var defensiveGroup = combatGroupFactory.CreateCityDefensiveCombatGroup(battleManager.BattleId, battleManager.GetNextGroupId(), stub);
             foreach (var kvp in stub.SelectMany(formation => formation))
             {
                 combatUnitFactory.CreateDefenseCombatUnit(battleManager, stub, FormationType.Defense, kvp.Key, kvp.Value).ToList().ForEach(defensiveGroup.Add);
@@ -143,7 +149,7 @@ namespace Game.Logic.Procedures
             var combatGroup = battleManager.GetCombatGroup(1);
             if (combatGroup == null)
             {                     
-                combatGroup = combatGroupFactory.CreateCityDefensiveCombatGroup(battleManager, 1, city.DefaultTroop);
+                combatGroup = combatGroupFactory.CreateCityDefensiveCombatGroup(battleManager.BattleId, 1, city.DefaultTroop);
                 battleManager.Add(combatGroup, BattleManager.BattleSide.Defense);
             }
 

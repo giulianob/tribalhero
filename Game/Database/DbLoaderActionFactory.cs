@@ -67,10 +67,16 @@ namespace Game.Database
                     kernel.Get(type,
                                new ConstructorArgument("id", id),
                                new ConstructorArgument("isVisible", isVisible),
-                               new ConstructorArgument("properties", properties));            
+                               new ConstructorArgument("properties", properties));
         }
 
-        public ChainAction CreateChainAction(Type type, uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, IDictionary<string, string> properties)
+        public ChainAction CreateChainAction(Type type,
+                                             uint id,
+                                             string chainCallback,
+                                             PassiveAction current,
+                                             ActionState chainState,
+                                             bool isVisible,
+                                             IDictionary<string, string> properties)
         {
             return
                     (ChainAction)

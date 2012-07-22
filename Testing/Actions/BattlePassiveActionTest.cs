@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Game.Battle;
+using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Troop;
@@ -26,11 +30,24 @@ namespace Testing.Actions
             return stub.Object;
         }
 
+        private ITroopObject MockTroopObject(ITroopStub troopStub)
+        {
+            var troopObject = new Mock<ITroopObject>();
+            troopObject.SetupGet(p => p.Stub).Returns(troopStub);
+            troopObject.SetupGet(p => p.City).Returns(troopStub.City);
+            return troopObject.Object;
+        }
+
         private CombatObject MockCombatObject(ITroopStub stub)
         {
             var co = new Mock<CombatObject>();
             co.SetupGet(p => p.TroopStub).Returns(stub);
             return co.Object;
+        }
+
+        private CityOffensiveCombatGroup CreateCityOffensiveCombatGroup(ITroopObject troopObject)
+        {
+            return new CityOffensiveCombatGroup(1, 1, troopObject, new Mock<IDbManager>().Object);            
         }
 
         [Fact]
@@ -39,7 +56,7 @@ namespace Testing.Actions
             Config.ap_max_per_battle = 4;
 
             var actionFactory = new Mock<IActionFactory>();
-            var procedure = new Mock<Procedure>();
+            var battleProcedure = new Mock<BattleProcedure>();
             var formula = new Mock<Formula>();
             var locker = new Mock<ILocker>();
             var gameObjectLocator = new Mock<IGameObjectLocator>();
@@ -58,25 +75,24 @@ namespace Testing.Actions
             defenders.SetupGet(p => p.Upkeep).Returns(1000);
 
             // Attacker Stubs
-            var attacker1 = MockStub(101);
-            var attacker2 = MockStub(74);
+            var attackerStub1 = MockStub(101);
+            var attackerStub2 = MockStub(74);
+
+            // Attacker Troop objects
+            var attackerTroop1 = MockTroopObject(attackerStub1);
+            var attackerTroop2 = MockTroopObject(attackerStub2);
+
+            // Setup groups
+            var attackerGroup1 = CreateCityOffensiveCombatGroup(attackerTroop1);
+            var attackerGroup2 = CreateCityOffensiveCombatGroup(attackerTroop2);
 
             var attackers = new Mock<ICombatList>();
             attackers.SetupGet(p => p.Upkeep).Returns(150);
-            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<CombatObject>
-                                                                  {
-                                                                      // Simulate multiple CO for the same stub
-                                                                          MockCombatObject(attacker1),
-                                                                          MockCombatObject(attacker2),
-                                                                          MockCombatObject(attacker1),
-                                                                          MockCombatObject(attacker1),
-                                                                          MockCombatObject(attacker2),
-                                                                  }.GetEnumerator());
-
+            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<CombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
 
             // Local city + troops
             var localTroops = new Mock<ITroopManager>();
-            localTroops.Setup(p => p.GetEnumerator()).Returns(() => new List<ITroopStub> { defaultStub.Object }.GetEnumerator());
+            localTroops.Setup(p => p.GetEnumerator()).Returns(() => new List<ITroopStub> {defaultStub.Object}.GetEnumerator());
             var localCity = new Mock<ICity>();
             localCity.SetupGet(p => p.DefaultTroop).Returns(defaultStub.Object);
             localCity.SetupGet(p => p.Troops).Returns(localTroops.Object);
@@ -87,20 +103,19 @@ namespace Testing.Actions
             // ReSharper restore RedundantAssignment
             gameObjectLocator.Setup(p => p.TryGetObjects(1, out localCityObj)).Returns(true);
 
-
             var action = new BattlePassiveAction(1,
-                                                                 actionFactory.Object,
-                                                                 procedure.Object,
-                                                                 locker.Object,
-                                                                 gameObjectLocator.Object,
-                                                                 dbManager.Object,
-                                                                 formula.Object);
+                                                 actionFactory.Object,
+                                                 battleProcedure.Object,
+                                                 locker.Object,
+                                                 gameObjectLocator.Object,
+                                                 dbManager.Object,
+                                                 formula.Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
             localCity.Object.AlignmentPoint.Should().Be(50m);
-            attacker1.City.AlignmentPoint.Should().Be(30m);
-            attacker2.City.AlignmentPoint.Should().Be(30m);
+            attackerStub1.City.AlignmentPoint.Should().Be(30m);
+            attackerStub2.City.AlignmentPoint.Should().Be(30m);
         }
 
         [Fact]
@@ -109,7 +124,7 @@ namespace Testing.Actions
             Config.ap_max_per_battle = 4;
 
             var actionFactory = new Mock<IActionFactory>();
-            var procedure = new Mock<Procedure>();
+            var battleProcedure = new Mock<BattleProcedure>();
             var formula = new Mock<Formula>();
             var locker = new Mock<ILocker>();
             var gameObjectLocator = new Mock<IGameObjectLocator>();
@@ -128,21 +143,86 @@ namespace Testing.Actions
             defenders.SetupGet(p => p.Upkeep).Returns(175);
 
             // Attacker Stubs
-            var attacker1 = MockStub(101);
-            var attacker2 = MockStub(74);
-            
+            var attackerStub1 = MockStub(101);
+            var attackerStub2 = MockStub(74);
+
+            // Attacker Troop objects
+            var attackerTroop1 = MockTroopObject(attackerStub1);
+            var attackerTroop2 = MockTroopObject(attackerStub2);
+
+            // Setup groups
+            var attackerGroup1 = CreateCityOffensiveCombatGroup(attackerTroop1);
+            var attackerGroup2 = CreateCityOffensiveCombatGroup(attackerTroop2);
+
             var attackers = new Mock<ICombatList>();
             attackers.SetupGet(p => p.Upkeep).Returns(150);
-            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<CombatObject>
-                                                                  {
-                                                                      // Simulate multiple CO for the same stub
-                                                                          MockCombatObject(attacker1),
-                                                                          MockCombatObject(attacker2),
-                                                                          MockCombatObject(attacker1),
-                                                                          MockCombatObject(attacker1),
-                                                                          MockCombatObject(attacker2),
-                                                                  }.GetEnumerator());
+            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<CombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
 
+            // Local city + troops
+            var localTroops = new Mock<ITroopManager>();
+            localTroops.Setup(p => p.GetEnumerator()).Returns(() => new List<ITroopStub> {defaultStub.Object}.GetEnumerator());
+            var localCity = new Mock<ICity>();
+            localCity.SetupGet(p => p.DefaultTroop).Returns(defaultStub.Object);
+            localCity.SetupGet(p => p.Troops).Returns(localTroops.Object);
+            localCity.SetupProperty(p => p.AlignmentPoint, 50m);
+            localCity.SetupGet(p => p.Battle).Returns(battleManager.Object);
+            // ReSharper disable RedundantAssignment
+            ICity localCityObj = localCity.Object;
+            // ReSharper restore RedundantAssignment
+            gameObjectLocator.Setup(p => p.TryGetObjects(1, out localCityObj)).Returns(true);
+
+            var action = new BattlePassiveAction(1,
+                                                 actionFactory.Object,
+                                                 battleProcedure.Object,
+                                                 locker.Object,
+                                                 gameObjectLocator.Object,
+                                                 dbManager.Object,
+                                                 formula.Object);
+
+            action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
+
+            localCity.Object.AlignmentPoint.Should().Be(50m);
+            attackerStub1.City.AlignmentPoint.Should().Be(30m);
+            attackerStub2.City.AlignmentPoint.Should().Be(30m);
+        }
+
+        [Fact]
+        public void WhenAttackerTwiceAsStrongShouldGiveAp()
+        {
+            Config.ap_max_per_battle = 4;
+
+            var actionFactory = new Mock<IActionFactory>();
+            var battleProcedure = new Mock<BattleProcedure>();
+            var formula = new Mock<Formula>();
+            var locker = new Mock<ILocker>();
+            var gameObjectLocator = new Mock<IGameObjectLocator>();
+            var dbManager = new Mock<IDbManager>();
+            var battleManager = new Mock<IBattleManager>();
+
+            // Local city
+            var defaultStub = new Mock<ITroopStub>();
+            defaultStub.SetupGet(p => p.Upkeep).Returns(125);
+            defaultStub.Setup(p => p.UpkeepForFormation(FormationType.InBattle)).Returns(25);
+
+            // Defender Stubs                       
+            var defenders = new Mock<ICombatList>();
+            defenders.SetupGet(p => p.Upkeep).Returns(175);
+
+            // Attacker Stubs
+            var attackerStub1 = MockStub(100);
+            var attackerStub2 = MockStub(200);
+
+            // Attacker Troop objects
+            var attackerTroop1 = MockTroopObject(attackerStub1);
+            var attackerTroop2 = MockTroopObject(attackerStub2);
+
+            // Setup groups
+            var attackerGroup1 = CreateCityOffensiveCombatGroup(attackerTroop1);
+            var attackerGroup2 = CreateCityOffensiveCombatGroup(attackerTroop2);
+
+            var attackers = new Mock<ICombatList>();            
+            attackers.SetupGet(p => p.Upkeep).Returns(300);            
+            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<CombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
             
             // Local city + troops
             var localTroops = new Mock<ITroopManager>();
@@ -152,74 +232,6 @@ namespace Testing.Actions
             localCity.SetupGet(p => p.Troops).Returns(localTroops.Object);
             localCity.SetupProperty(p => p.AlignmentPoint, 50m);
             localCity.SetupGet(p => p.Battle).Returns(battleManager.Object);
-// ReSharper disable RedundantAssignment
-            ICity localCityObj = localCity.Object;
-// ReSharper restore RedundantAssignment
-            gameObjectLocator.Setup(p => p.TryGetObjects(1, out localCityObj)).Returns(true);
-            
-
-            var action = new BattlePassiveAction(1,
-                                                                 actionFactory.Object,
-                                                                 procedure.Object,
-                                                                 locker.Object,
-                                                                 gameObjectLocator.Object,
-                                                                 dbManager.Object,
-                                                                 formula.Object);
-
-            action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
-
-            localCity.Object.AlignmentPoint.Should().Be(50m);
-            attacker1.City.AlignmentPoint.Should().Be(30m);
-            attacker2.City.AlignmentPoint.Should().Be(30m);
-        }
-
-        [Fact]
-        public void WhenAttackerTwiceAsStrongShouldGiveAp()
-        {
-            Config.ap_max_per_battle = 4;
-
-            var actionFactory = new Mock<IActionFactory>();
-            var procedure = new Mock<Procedure>();
-            var formula = new Mock<Formula>();
-            var locker = new Mock<ILocker>();
-            var gameObjectLocator = new Mock<IGameObjectLocator>();
-            var dbManager = new Mock<IDbManager>();
-            var battleManager = new Mock<IBattleManager>();
-
-            // Local city
-            var defaultStub = new Mock<ITroopStub>();
-            defaultStub.SetupGet(p => p.Upkeep).Returns(125);
-            defaultStub.Setup(p => p.UpkeepForFormation(FormationType.InBattle)).Returns(25);
-
-            // Defender Stubs                       
-            var defenders = new Mock<ICombatList>();
-            defenders.SetupGet(p => p.Upkeep).Returns(175);
-
-            // Attacker Stubs
-            var attacker1 = MockStub(100);
-            var attacker2 = MockStub(200);
-
-            var attackers = new Mock<ICombatList>();
-            attackers.SetupGet(p => p.Upkeep).Returns(300);
-            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<CombatObject>
-                                                                  {
-                                                                      // Simulate multiple CO for the same stub
-                                                                          MockCombatObject(attacker1),
-                                                                          MockCombatObject(attacker2),
-                                                                          MockCombatObject(attacker1),
-                                                                          MockCombatObject(attacker1),
-                                                                          MockCombatObject(attacker2),
-                                                                  }.GetEnumerator());
-
-
-            // Local city + troops
-            var localTroops = new Mock<ITroopManager>();
-            localTroops.Setup(p => p.GetEnumerator()).Returns(() => new List<ITroopStub> { defaultStub.Object }.GetEnumerator());
-            var localCity = new Mock<ICity>();
-            localCity.SetupGet(p => p.DefaultTroop).Returns(defaultStub.Object);
-            localCity.SetupGet(p => p.Troops).Returns(localTroops.Object);
-            localCity.SetupProperty(p => p.AlignmentPoint, 50m);
-            localCity.SetupGet(p => p.Battle).Returns(battleManager.Object);
             // ReSharper disable RedundantAssignment
             ICity localCityObj = localCity.Object;
             // ReSharper restore RedundantAssignment
@@ -227,7 +239,7 @@ namespace Testing.Actions
 
             var action = new BattlePassiveAction(1,
                                                  actionFactory.Object,
-                                                 procedure.Object,
+                                                 battleProcedure.Object,
                                                  locker.Object,
                                                  gameObjectLocator.Object,
                                                  dbManager.Object,
@@ -236,8 +248,8 @@ namespace Testing.Actions
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
             localCity.Object.AlignmentPoint.Should().Be(50.05m);
-            attacker1.City.AlignmentPoint.Should().Be(29.983333333333333333333333333m);
-            attacker2.City.AlignmentPoint.Should().Be(29.966666666666666666666666667m);
+            attackerStub1.City.AlignmentPoint.Should().Be(29.983333333333333333333333333m);
+            attackerStub2.City.AlignmentPoint.Should().Be(29.966666666666666666666666667m);
         }
 
         [Fact]
@@ -246,7 +258,7 @@ namespace Testing.Actions
             Config.ap_max_per_battle = 4;
 
             var actionFactory = new Mock<IActionFactory>();
-            var procedure = new Mock<Procedure>();
+            var battleProcedure = new Mock<BattleProcedure>();
             var formula = new Mock<Formula>();
             var locker = new Mock<ILocker>();
             var gameObjectLocator = new Mock<IGameObjectLocator>();
@@ -263,25 +275,28 @@ namespace Testing.Actions
             defenders.SetupGet(p => p.Upkeep).Returns(175);
 
             // Attacker Stubs
-            var attacker1 = MockStub(100);
-            var attacker2 = MockStub(1000);
+            var attackerStub1 = MockStub(100);
+            var attackerStub2 = MockStub(1000);
+
+            // Attacker Troop objects
+            var attackerTroop1 = MockTroopObject(attackerStub1);
+            var attackerTroop2 = MockTroopObject(attackerStub2);
+
+            // Setup groups
+            var attackerGroup1 = CreateCityOffensiveCombatGroup(attackerTroop1);
+            var attackerGroup2 = CreateCityOffensiveCombatGroup(attackerTroop2);
 
             var attackers = new Mock<ICombatList>();
             attackers.SetupGet(p => p.Upkeep).Returns(1100);
-            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<CombatObject>
-                                                                  {
-                                                                      // Simulate multiple CO for the same stub
-                                                                          MockCombatObject(attacker1),
-                                                                          MockCombatObject(attacker2),
-                                                                          MockCombatObject(attacker1),
-                                                                          MockCombatObject(attacker1),
-                                                                          MockCombatObject(attacker2),
-                                                                  }.GetEnumerator());
-
+            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<CombatGroup>
+            {
+                    attackerGroup1,
+                    attackerGroup2
+            }.GetEnumerator());
 
             // Local city + troops
             var localTroops = new Mock<ITroopManager>();
-            localTroops.Setup(p => p.GetEnumerator()).Returns(() => new List<ITroopStub> { defaultStub.Object }.GetEnumerator());
+            localTroops.Setup(p => p.GetEnumerator()).Returns(() => new List<ITroopStub> {defaultStub.Object}.GetEnumerator());
             var localCity = new Mock<ICity>();
             localCity.SetupGet(p => p.DefaultTroop).Returns(defaultStub.Object);
             localCity.SetupGet(p => p.Troops).Returns(localTroops.Object);
@@ -294,7 +309,7 @@ namespace Testing.Actions
 
             var action = new BattlePassiveAction(1,
                                                  actionFactory.Object,
-                                                 procedure.Object,
+                                                 battleProcedure.Object,
                                                  locker.Object,
                                                  gameObjectLocator.Object,
                                                  dbManager.Object,
@@ -303,8 +318,8 @@ namespace Testing.Actions
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
             localCity.Object.AlignmentPoint.Should().Be(50.2m);
-            attacker1.City.AlignmentPoint.Should().Be(29.981818181818181818181818182m);
-            attacker2.City.AlignmentPoint.Should().Be(29.818181818181818181818181818m);
+            attackerStub1.City.AlignmentPoint.Should().Be(29.981818181818181818181818182m);
+            attackerStub2.City.AlignmentPoint.Should().Be(29.818181818181818181818181818m);
         }
 
         [Fact]
@@ -313,7 +328,7 @@ namespace Testing.Actions
             Config.ap_max_per_battle = 4;
 
             var actionFactory = new Mock<IActionFactory>();
-            var procedure = new Mock<Procedure>();
+            var battleProcedure = new Mock<BattleProcedure>();
             var formula = new Mock<Formula>();
             var locker = new Mock<ILocker>();
             var gameObjectLocator = new Mock<IGameObjectLocator>();
@@ -330,25 +345,28 @@ namespace Testing.Actions
             defenders.SetupGet(p => p.Upkeep).Returns(0);
 
             // Attacker Stubs
-            var attacker1 = MockStub(100);
-            var attacker2 = MockStub(1000);
+            var attackerStub1 = MockStub(100);
+            var attackerStub2 = MockStub(1000);
+
+            // Attacker Troop objects
+            var attackerTroop1 = MockTroopObject(attackerStub1);
+            var attackerTroop2 = MockTroopObject(attackerStub2);
+
+            // Setup groups
+            var attackerGroup1 = CreateCityOffensiveCombatGroup(attackerTroop1);
+            var attackerGroup2 = CreateCityOffensiveCombatGroup(attackerTroop2);
 
             var attackers = new Mock<ICombatList>();
             attackers.SetupGet(p => p.Upkeep).Returns(1100);
-            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<CombatObject>
-                                                                  {
-                                                                      // Simulate multiple CO for the same stub
-                                                                          MockCombatObject(attacker1),
-                                                                          MockCombatObject(attacker2),
-                                                                          MockCombatObject(attacker1),
-                                                                          MockCombatObject(attacker1),
-                                                                          MockCombatObject(attacker2),
-                                                                  }.GetEnumerator());
-
+            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<CombatGroup>
+            {
+                    attackerGroup1,
+                    attackerGroup2
+            }.GetEnumerator());
 
             // Local city + troops
             var localTroops = new Mock<ITroopManager>();
-            localTroops.Setup(p => p.GetEnumerator()).Returns(() => new List<ITroopStub> { defaultStub.Object }.GetEnumerator());
+            localTroops.Setup(p => p.GetEnumerator()).Returns(() => new List<ITroopStub> {defaultStub.Object}.GetEnumerator());
             var localCity = new Mock<ICity>();
             localCity.SetupGet(p => p.DefaultTroop).Returns(defaultStub.Object);
             localCity.SetupGet(p => p.Troops).Returns(localTroops.Object);
@@ -361,7 +379,7 @@ namespace Testing.Actions
 
             var action = new BattlePassiveAction(1,
                                                  actionFactory.Object,
-                                                 procedure.Object,
+                                                 battleProcedure.Object,
                                                  locker.Object,
                                                  gameObjectLocator.Object,
                                                  dbManager.Object,
@@ -370,9 +388,8 @@ namespace Testing.Actions
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
             localCity.Object.AlignmentPoint.Should().Be(50.2m);
-            attacker1.City.AlignmentPoint.Should().Be(29.981818181818181818181818182m);
-            attacker2.City.AlignmentPoint.Should().Be(29.818181818181818181818181818m);
+            attackerStub1.City.AlignmentPoint.Should().Be(29.981818181818181818181818182m);
+            attackerStub2.City.AlignmentPoint.Should().Be(29.818181818181818181818181818m);
         }
-
     }
 }

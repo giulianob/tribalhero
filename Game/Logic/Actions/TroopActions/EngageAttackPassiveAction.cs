@@ -32,7 +32,7 @@ namespace Game.Logic.Actions
 
         private readonly StructureFactory structureFactory;
 
-        private readonly IDbManager dbPersistance;
+        private readonly IDbManager dbManager;
 
         private readonly Resource bonus;
 
@@ -59,7 +59,7 @@ namespace Game.Logic.Actions
                                          BattleProcedure battleProcedure,
                                          Formula formula,
                                          StructureFactory structureFactory,
-                                         IDbManager dbPersistance)
+                                         IDbManager dbManager)
         {
             this.cityId = cityId;
             this.stubId = stubId;
@@ -70,7 +70,7 @@ namespace Game.Logic.Actions
             this.battleProcedure = battleProcedure;
             this.formula = formula;
             this.structureFactory = structureFactory;
-            this.dbPersistance = dbPersistance;
+            this.dbManager = dbManager;
 
             bonus = new Resource();
         }
@@ -83,7 +83,7 @@ namespace Game.Logic.Actions
                                          BattleProcedure battleProcedure,
                                          Formula formula,
                                          StructureFactory structureFactory,
-                                         IDbManager dbPersistance)
+                                         IDbManager dbManager)
                 : base(id, isVisible)
         {
             this.battleFormula = battleFormula;
@@ -91,7 +91,7 @@ namespace Game.Logic.Actions
             this.battleProcedure = battleProcedure;
             this.formula = formula;
             this.structureFactory = structureFactory;
-            this.dbPersistance = dbPersistance;
+            this.dbManager = dbManager;
 
             cityId = uint.Parse(properties["troop_city_id"]);
             stubId = byte.Parse(properties["troop_id"]);
@@ -349,7 +349,7 @@ namespace Game.Logic.Actions
                             bonus.Labor += (int)value;
                         }
 
-                        dbPersistance.Save(this);
+                        dbManager.Save(this);
                     }
 
                     ReduceStamina(stub, battleFormula.GetStaminaStructureDestroyed(stub.TroopObject.Stats.Stamina, target as CombatStructure));

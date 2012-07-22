@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Globalization;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Data;
@@ -92,8 +93,8 @@ namespace Game.Battle.Reporting
             dbManager.Query(
                             string.Format(
                                           @"INSERT INTO `{0}` 
-                                            (`id`, `battle_report_id`, `owner_type`, `owner_id`, `group_id`, `troop_stub_id`, `state`, `is_attacker`, `gold`, `crop`, `iron`, `wood`) VALUES
-                                            (@id, @report_id, @owner_type, @owner_id, @object_id, @troop_id, @state, @is_attacker, @gold, @crop, @iron, @wood)",
+                                            (`id`, `battle_report_id`, `owner_type`, `owner_id`, `group_id`, `name`, `state`, `is_attacker`, `gold`, `crop`, `iron`, `wood`) VALUES
+                                            (@id, @report_id, @owner_type, @owner_id, @group_id, @name, @state, @is_attacker, @gold, @crop, @iron, @wood)",
                                           BATTLE_REPORT_TROOPS_DB),
                             new[]
                             {
@@ -102,7 +103,7 @@ namespace Game.Battle.Reporting
                                     new DbColumn("owner_type", group.Owner.Type.ToString(), DbType.String, 15), 
                                     new DbColumn("owner_id", group.Owner.Id, DbType.UInt32),
                                     new DbColumn("group_id", group.Id, DbType.UInt32), 
-                                    new DbColumn("troop_id", group.TroopId, DbType.Byte),
+                                    new DbColumn("name", group.TroopId == 1 ? "[LOCAL]" : group.TroopId.ToString(CultureInfo.InvariantCulture), DbType.String, 32),
                                     new DbColumn("state", state, DbType.Byte), 
                                     new DbColumn("is_attacker", isAttacker, DbType.Boolean),
                                     new DbColumn("gold", loot.Gold, DbType.Int32),

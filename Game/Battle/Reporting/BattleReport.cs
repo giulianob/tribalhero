@@ -193,7 +193,7 @@ namespace Game.Battle.Reporting
         {
             get
             {
-                return new[] {new DbDependency("ReportedObjects", true, true), new DbDependency("ReportedTroops", true, true)};
+                return new[] {new DbDependency("ReportedGroups", true, true)};
             }        
         }
     }

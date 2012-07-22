@@ -27,7 +27,7 @@ namespace Game.Battle.CombatObjects
         private ushort count;
         private readonly ITroopStub troopStub;
 
-        public DefenseCombatUnit(uint battleId, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, BattleFormulas battleFormulas) : base(battleId, battleFormulas)
+        public DefenseCombatUnit(uint id, uint battleId, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, BattleFormulas battleFormulas) : base(id, battleId, battleFormulas)
         {
             troopStub = stub;
             this.formation = formation;
@@ -39,8 +39,8 @@ namespace Game.Battle.CombatObjects
             leftOverHp = stats.MaxHp;
         }
 
-        public DefenseCombatUnit(uint battleId, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, decimal leftOverHp, BattleFormulas battleFormulas)
-                : this(battleId, stub, formation, type, lvl, count, battleFormulas)
+        public DefenseCombatUnit(uint id, uint battleId, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, decimal leftOverHp, BattleFormulas battleFormulas)
+                : this(id, battleId, stub, formation, type, lvl, count, battleFormulas)
         {
             this.leftOverHp = leftOverHp;
         }

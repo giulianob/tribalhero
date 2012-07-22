@@ -21,14 +21,19 @@ namespace Game.Battle
         /// If primary group has no one able to attack, it will look into the secondary group instead.
         /// </summary>
         /// <returns>True if got an object from the current round. False if had to look into next round.</returns>
-        public bool NextObject(uint round, List<CombatGroup> attacker, List<CombatGroup> defender, out CombatObject outCombatObject, out CombatGroup outCombatGroup, out BattleManager.BattleSide foundInGroup)
+        public bool NextObject(uint round, List<CombatGroup> attacker, List<CombatGroup> defender, BattleManager.BattleSide sideAttacking, out CombatObject outCombatObject, out CombatGroup outCombatGroup, out BattleManager.BattleSide foundInGroup)
         {
-            // Look into attacker
+            var offensiveCombatList = sideAttacking == BattleManager.BattleSide.Attack ? attacker : defender;
+            var defensiveCombatList = sideAttacking == BattleManager.BattleSide.Attack ? defender : attacker;
+            var offensiveSide = sideAttacking;
+            var defensiveSide = sideAttacking == BattleManager.BattleSide.Attack ? BattleManager.BattleSide.Defense : BattleManager.BattleSide.Attack;
+
+            // Look into offenside combat list first
             CombatObject outCombatObjectAttacker;
             CombatGroup outCombatGroupAttacker;
-            if (NextObjectFromList(round, attacker, out outCombatObjectAttacker, out outCombatGroupAttacker))
+            if (NextObjectFromList(round, offensiveCombatList, out outCombatObjectAttacker, out outCombatGroupAttacker))
             {
-                foundInGroup = BattleManager.BattleSide.Attack;
+                foundInGroup = offensiveSide;
                 outCombatGroup = outCombatGroupAttacker;
                 outCombatObject = outCombatObjectAttacker;
                 return true;
@@ -37,9 +42,9 @@ namespace Game.Battle
             // Couldnt find in the attacker so look in defense
             CombatObject outCombatObjectDefender;
             CombatGroup outCombatGroupDefender;
-            if (NextObjectFromList(round, attacker, out outCombatObjectDefender, out outCombatGroupDefender))
+            if (NextObjectFromList(round, defensiveCombatList, out outCombatObjectDefender, out outCombatGroupDefender))
             {
-                foundInGroup = BattleManager.BattleSide.Defense;
+                foundInGroup = defensiveSide;
                 outCombatGroup = outCombatGroupDefender;
                 outCombatObject = outCombatObjectDefender;
                 return true;
@@ -49,13 +54,13 @@ namespace Game.Battle
             // then we return that, otherwise go to the defender
             if (outCombatObjectAttacker != null)
             {
-                foundInGroup = BattleManager.BattleSide.Attack;
+                foundInGroup = offensiveSide;
                 outCombatGroup = outCombatGroupAttacker;
                 outCombatObject = outCombatObjectAttacker;                
             }
             else if (outCombatObjectDefender != null)
             {
-                foundInGroup = BattleManager.BattleSide.Defense;
+                foundInGroup = defensiveSide;
                 outCombatGroup = outCombatGroupDefender;
                 outCombatObject = outCombatObjectDefender;
             }

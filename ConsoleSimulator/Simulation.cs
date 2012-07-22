@@ -3,15 +3,20 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Game.Battle;
+using Game.Battle.CombatGroups;
+using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
 using Game.Comm.Channel;
+using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using Ninject;
+using Persistance;
 
 #endregion
 
@@ -38,10 +43,20 @@ namespace ConsoleSimulator
             using (Concurrency.Current.Lock(Defender.Local)) {
                 Defender.Local.BeginUpdate();
                 Defender.Local.AddFormation(FormationType.InBattle);
-                Defender.Local.Template.LoadStats(TroopBattleGroup.Local);
-                bm.AddToLocal(new List<ITroopStub> { Defender.Local }, ReportState.Entering);
-                bm.AddToLocal(Defender.City);
-                Procedure.Current.MoveUnitFormation(Defender.Local, FormationType.Normal, FormationType.InBattle);
+                Defender.Local.Template.LoadStats(TroopBattleGroup.Local);                
+                var localGroup = new CityDefensiveCombatGroup(bm.BattleId, 1, Defender.Local, Ioc.Kernel.Get<IDbManager>());
+                var combatUnitFactory = Ioc.Kernel.Get<ICombatUnitFactory>();
+                foreach (var kvp in Defender.Local[FormationType.Normal])
+                {
+                    combatUnitFactory.CreateDefenseCombatUnit(bm, Defender.Local, FormationType.InBattle, kvp.Key, kvp.Value).ToList().ForEach(localGroup.Add);
+                }
+
+                foreach (IStructure structure in Defender.City)
+                {
+                    localGroup.Add(combatUnitFactory.CreateStructureCombatUnit(bm, structure));
+                }
+                
+                Ioc.Kernel.Get<BattleProcedure>().MoveUnitFormation(Defender.Local, FormationType.Normal, FormationType.InBattle));
                 Defender.Local.EndUpdate();
             }
 
@@ -50,6 +65,7 @@ namespace ConsoleSimulator
                 Attacker.AttackStub.BeginUpdate();
                 Attacker.AttackStub.Template.LoadStats(TroopBattleGroup.Attack);
                 Attacker.AttackStub.EndUpdate();
+                var attackGroup = new CityOffensiveCombatGroup(1, 2, )
                 bm.AddToAttack(Attacker.AttackStub);
             }
         }

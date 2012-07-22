@@ -17,10 +17,10 @@ namespace Testing.Battle
         {
             get
             {
-                yield return new object[] { 10.5m, 0.5m, 10m };
-                yield return new object[] { 10.4m, 0.3m, 10.1m };
-                yield return new object[] { 10.5m, 0.25m, 10.25m };
-                yield return new object[] { 10.4m, 10m, 0.4m };
+                yield return new object[] {10.5m, 0.5m, 10m};
+                yield return new object[] {10.4m, 0.3m, 10.1m};
+                yield return new object[] {10.5m, 0.25m, 10.25m};
+                yield return new object[] {10.4m, 10m, 0.4m};
             }
         }
 
@@ -33,17 +33,18 @@ namespace Testing.Battle
             Mock<Formula> formula = new Mock<Formula>();
             Mock<BattleFormulas> battleFormula = new Mock<BattleFormulas>();
             Mock<IActionFactory> actionFactory = new Mock<IActionFactory>();
-            
+
             structureStats.SetupAllProperties();
             structure.SetupGet(p => p.Stats).Returns(structureStats.Object);
 
             CombatStructure combatStructure = new CombatStructure(1,
+                                                                  1,
                                                                   structure.Object,
                                                                   battleStats.Object,
                                                                   hp,
                                                                   1,
                                                                   1,
-                                                                  formula.Object,                                                                  
+                                                                  formula.Object,
                                                                   actionFactory.Object,
                                                                   battleFormula.Object);
             Resource returning;
@@ -64,9 +65,9 @@ namespace Testing.Battle
         {
             get
             {
-                yield return new object[] { 10.5m, 10.5m, 0m };
-                yield return new object[] { 0.3m, 30.4m, 0m };
-                yield return new object[] { 300.3m, 1000.4m, 0m };
+                yield return new object[] {10.5m, 10.5m, 0m};
+                yield return new object[] {0.3m, 30.4m, 0m};
+                yield return new object[] {300.3m, 1000.4m, 0m};
             }
         }
 
@@ -85,12 +86,13 @@ namespace Testing.Battle
             formula.Setup(m => m.GetStructureKilledAttackPoint(100, 2)).Returns(10);
 
             CombatStructure combatStructure = new CombatStructure(1,
+                                                                  1,
                                                                   structure.Object,
                                                                   battleStats.Object,
                                                                   hp,
                                                                   100,
                                                                   2,
-                                                                  formula.Object,                                                                  
+                                                                  formula.Object,
                                                                   actionFactory.Object,
                                                                   battleFormula.Object);
             Resource returning;
@@ -101,7 +103,7 @@ namespace Testing.Battle
             attackPoints.Should().Be(10);
 
             combatStructure.Hp.Should().Be(expectedHp);
-            structureStats.Object.Hp.Should().Be(expectedHp);            
+            structureStats.Object.Hp.Should().Be(expectedHp);
             structure.Verify(m => m.BeginUpdate(), Times.Once());
             structure.Verify(m => m.EndUpdate(), Times.Once());
         }

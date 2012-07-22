@@ -24,7 +24,8 @@ namespace Game.Battle.CombatObjects
 
         public CombatStructure CreateStructureCombatUnit(IBattleManager battleManager, IStructure structure)
         {
-            return new CombatStructure(battleManager.BattleId,
+            return new CombatStructure(battleManager.GetNextCombatObjectId(),
+                                       battleManager.BattleId,
                                        structure,
                                        kernel.Get<BattleFormulas>().LoadStats(structure),
                                        kernel.Get<Formula>(),
@@ -49,7 +50,8 @@ namespace Game.Battle.CombatObjects
             {
                 ushort size = (ushort)(groupSize > count ? count : groupSize);
 
-                AttackCombatUnit newUnit = new AttackCombatUnit(battleManager.BattleId,
+                AttackCombatUnit newUnit = new AttackCombatUnit(battleManager.GetNextCombatObjectId(),
+                                                                battleManager.BattleId,
                                                                 troop.Stub,
                                                                 formation,
                                                                 type,
@@ -81,7 +83,8 @@ namespace Game.Battle.CombatObjects
             do
             {
                 ushort size = (ushort)(groupSize > count ? count : groupSize);
-                DefenseCombatUnit newUnit = new DefenseCombatUnit(battleManager.BattleId,
+                DefenseCombatUnit newUnit = new DefenseCombatUnit(battleManager.GetNextCombatObjectId(),
+                                                                  battleManager.BattleId,
                                                                   stub,
                                                                   formation,
                                                                   type,

@@ -127,7 +127,7 @@ namespace Game.Logic.Procedures
             var defensiveGroup = combatGroupFactory.CreateCityOffensiveCombatGroup(battleManager.BattleId, battleManager.GetNextGroupId(), troopObject);
             foreach (var kvp in troopObject.Stub.SelectMany(formation => formation))
             {
-                combatUnitFactory.CreateAttackCombatUnit(battleManager, troopObject, FormationType.Defense, kvp.Key, kvp.Value).ToList().ForEach(defensiveGroup.Add);
+                combatUnitFactory.CreateAttackCombatUnit(battleManager, troopObject, FormationType.Attack, kvp.Key, kvp.Value).ToList().ForEach(defensiveGroup.Add);
             }
             battleManager.Add(defensiveGroup, BattleManager.BattleSide.Attack);
 

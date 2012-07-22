@@ -1,4 +1,6 @@
 Key,EN
+LOCAL_TROOP,Local
+,
 TROOP_STATE_IDLE,Idle
 TROOP_STATE_BATTLE,In Battle
 TROOP_STATE_STATIONED,Stationed
@@ -32,7 +34,7 @@ GLADIATOR_UNIT,Gladiator
 1_ARCHER_UNIT_DESC,"Archer is strong against all except machine units, structures, and their damage splashes among multiple targets; however they have relatively low health compare to the damage they deal. It is wise to protect them with other units. When using Archer, be very careful of enemy unit with high range (such as Cavalry, Knight) they can reach Archer from the beginning of the battle."
 1_PIKEMAN_UNIT,Hoplite
 1_PIKEMAN_PLURAL_UNIT,Hoplites
-1_PIKEMAN_UNIT_DESC,"Hoplite is a very special trained unit to take down mounted units such as Cavalry and Knight. They are not very well equiped against anyone else so do not expect to win a battle with just Hoplites."
+1_PIKEMAN_UNIT_DESC,Hoplite is a very special trained unit to take down mounted units such as Cavalry and Knight. They are not very well equiped against anyone else so do not expect to win a battle with just Hoplites.
 1_GLADIATOR_UNIT,Gladiator
 1_GLADIATOR_PLURAL_UNIT,Gladiators
 1_GLADIATOR_UNIT_DESC,"Gladiator, the fearless warrior is the one of the good siege units in a tribe. They are very good against Helepolis and Tower. Their quickness allow them to reach enemies deep in the formation; and with decent damage, none can hold long before they are beheaded."

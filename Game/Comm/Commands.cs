@@ -19,6 +19,7 @@ namespace Game.Comm
         TribeNameGet = 15,
         PlayerProfile = 20,
         PlayerDescriptionSet = 21,
+        ProfileByType = 22,
 
         #endregion
 

@@ -22,9 +22,10 @@ package src.Comm {
 		public static const CITY_USERNAME_GET: int = 13;
 		public static const PLAYER_NAME_FROM_CITY_NAME: int = 14;
 		public static const TRIBE_USERNAME_GET: int = 15;
-		
+						
 		public static const PLAYER_PROFILE: int = 20;
 		public static const PLAYER_DESCRIPTION_SET: int = 21;
+		public static const PROFILE_BY_TYPE: int = 22;
 		
 		public static const ACTION_CANCEL: int = 51;
 		public static const ACTION_COMPLETE: int = 52;

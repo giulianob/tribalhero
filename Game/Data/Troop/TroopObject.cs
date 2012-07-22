@@ -160,7 +160,8 @@ namespace Game.Data.Troop
             using (var ms = new MemoryStream())
             {
                 var bw = new BinaryWriter(ms);
-                bw.Write(Stub.TroopId);                
+                bw.Write(Stub.TroopId);
+                bw.Write(Stub.City.Owner.Tribesman == null ? 0 : Stub.City.Owner.Tribesman.Tribe.Id);
                 ms.Position = 0;
                 return ms.ToArray();
             }

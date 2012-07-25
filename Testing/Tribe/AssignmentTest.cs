@@ -91,9 +91,9 @@ namespace Testing.Tribe
         {
             get
             {
-                yield return new object[] { new[] { 300, 150, 200 }, targetTime.AddMinutes(-5) };
-                yield return new object[] { new[] { 150, 300, 250 }, targetTime.AddMinutes(-5) };
-                yield return new object[] { new[] { 150, 300, 360 }, targetTime.AddMinutes(-6) };
+                yield return new object[] {new[] {300, 150, 200}, targetTime.AddMinutes(-5)};
+                yield return new object[] {new[] {150, 300, 250}, targetTime.AddMinutes(-5)};
+                yield return new object[] {new[] {150, 300, 360}, targetTime.AddMinutes(-6)};
             }
         }
 
@@ -179,7 +179,7 @@ namespace Testing.Tribe
 
             SystemClock.SetClock(startTime);
 
-            gameObjectLocator.Setup(m => m.GetObjects(TARGET_X, TARGET_Y)).Returns(new List<ISimpleGameObject> { targetStructure.Object });
+            gameObjectLocator.Setup(m => m.GetObjects(TARGET_X, TARGET_Y)).Returns(new List<ISimpleGameObject> {targetStructure.Object});
 
             targetStructure.SetupGet(p => p.City).Returns(targetCity.Object);
 
@@ -245,7 +245,7 @@ namespace Testing.Tribe
             Mock<IStructure> targetStructure = new Mock<IStructure>();
             Mock<IActionWorker> actionWorker = new Mock<IActionWorker>();
 
-            gameObjectLocator.Setup(m => m.GetObjects(TARGET_X, TARGET_Y)).Returns(new List<ISimpleGameObject> { targetStructure.Object });
+            gameObjectLocator.Setup(m => m.GetObjects(TARGET_X, TARGET_Y)).Returns(new List<ISimpleGameObject> {targetStructure.Object});
 
             targetStructure.SetupGet(p => p.City).Returns(targetCity.Object);
 
@@ -284,7 +284,7 @@ namespace Testing.Tribe
 
             // Dispatch first troop
             assignment.Callback(null);
-            actionFactory.Verify(m => m.CreateDefenseChainAction(20, stub.Object.TroopId,100, AttackMode.Strong));
+            actionFactory.Verify(m => m.CreateDefenseChainAction(20, 2, 100, AttackMode.Strong));
         }
 
         private Mock<ITroopStub> CreateStub(out Mock<ICity> stubCity)

@@ -437,13 +437,6 @@ namespace Game.Data
                 if (troopobjects.ContainsKey(objId))
                     return false;
 
-                if (troop.Stub != null)
-                {
-                    troop.Stub.BeginUpdate();
-                    troop.Stub.TroopObject = troop;
-                    troop.Stub.EndUpdate();
-                }
-
                 troop.City = this;
 
                 troopobjects.Add(objId, troop);
@@ -593,13 +586,6 @@ namespace Game.Data
                 DbPersistance.Current.Delete(obj);
 
                 obj.City = null;
-
-                if (obj.Stub != null)
-                {
-                    obj.Stub.BeginUpdate();
-                    obj.Stub.TroopObject = null;
-                    obj.Stub.EndUpdate();
-                }
 
                 ObjRemoveEvent(obj);
             }

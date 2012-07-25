@@ -58,7 +58,7 @@ namespace Game.Data.Troop
         private ICity stationedCity;
         private ushort stationedRetreatCount;
         private byte troopId;
-        private ITroopObject troopObject;
+        //private ITroopObject troopObject;
         public TroopTemplate Template { get; private set; }
 
         public ITroopManager TroopManager { get; set; }
@@ -124,19 +124,6 @@ namespace Game.Data.Troop
             {
                 CheckUpdateMode();
                 stationedRetreatCount = value;
-            }
-        }
-
-        public ITroopObject TroopObject
-        {
-            get
-            {
-                return troopObject;
-            }
-            set
-            {
-                CheckUpdateMode(false);
-                troopObject = value;
             }
         }
 

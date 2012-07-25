@@ -8,6 +8,7 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Setup;
 using Ninject;
 using Persistance;
@@ -18,16 +19,29 @@ namespace Game.Battle.CombatObjects
 {
     public class DefenseCombatUnit : CityCombatObject, ICombatUnit
     {
-        public const string DB_TABLE = "combat_units";
+        public const string DB_TABLE = "defense_combat_units";
+
         private readonly FormationType formation;
 
         private readonly byte lvl;
+
         private readonly BattleStats stats;
+
         private readonly ushort type;
+
         private ushort count;
+
         private readonly ITroopStub troopStub;
 
-        public DefenseCombatUnit(uint id, uint battleId, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, BattleFormulas battleFormulas) : base(id, battleId, battleFormulas)
+        public DefenseCombatUnit(uint id,
+                                 uint battleId,
+                                 ITroopStub stub,
+                                 FormationType formation,
+                                 ushort type,
+                                 byte lvl,
+                                 ushort count,
+                                 BattleFormulas battleFormulas)
+                : base(id, battleId, battleFormulas)
         {
             troopStub = stub;
             this.formation = formation;
@@ -39,7 +53,15 @@ namespace Game.Battle.CombatObjects
             leftOverHp = stats.MaxHp;
         }
 
-        public DefenseCombatUnit(uint id, uint battleId, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, decimal leftOverHp, BattleFormulas battleFormulas)
+        public DefenseCombatUnit(uint id,
+                                 uint battleId,
+                                 ITroopStub stub,
+                                 FormationType formation,
+                                 ushort type,
+                                 byte lvl,
+                                 ushort count,
+                                 decimal leftOverHp,
+                                 BattleFormulas battleFormulas)
                 : this(id, battleId, stub, formation, type, lvl, count, battleFormulas)
         {
             this.leftOverHp = leftOverHp;
@@ -91,7 +113,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Upkeep * count;
+                return Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Upkeep*count;
             }
         }
 
@@ -155,7 +177,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return new[] { new DbColumn("id", Id, DbType.UInt32) };
+                return new[] { new DbColumn("battle_id", BattleId, DbType.UInt32), new DbColumn("id", Id, DbType.UInt32)};
             }
         }
 
@@ -163,7 +185,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return new DbDependency[] { };
+                return new DbDependency[] {};
             }
         }
 
@@ -172,18 +194,17 @@ namespace Game.Battle.CombatObjects
             get
             {
                 return new[]
-                       {
-                               new DbColumn("last_round", LastRound, DbType.UInt32), new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
-                               new DbColumn("group_id", GroupId, DbType.UInt32), new DbColumn("formation_type", (byte)formation, DbType.Byte),
-                               new DbColumn("level", lvl, DbType.Byte), new DbColumn("count", count, DbType.UInt16), new DbColumn("type", type, DbType.UInt16),
-                               new DbColumn("is_local", true, DbType.Boolean), new DbColumn("troop_stub_city_id", TroopStub.City.Id, DbType.UInt32),
-                               new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.Byte), new DbColumn("left_over_hp", leftOverHp, DbType.Decimal),
-                               new DbColumn("damage_min_dealt", MinDmgDealt, DbType.UInt16), new DbColumn("damage_max_dealt", MaxDmgDealt, DbType.UInt16),
-                               new DbColumn("damage_min_received", MinDmgRecv, DbType.UInt16), new DbColumn("damage_max_received", MaxDmgRecv, DbType.UInt16),
-                               new DbColumn("damage_dealt", DmgDealt, DbType.Decimal), new DbColumn("damage_received", DmgRecv, DbType.Decimal),
-                               new DbColumn("hits_dealt", HitDealt, DbType.UInt16), new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
-                               new DbColumn("hits_received", HitRecv, DbType.UInt16), new DbColumn("battle_id", BattleId, DbType.UInt32)
-                       };
+                {
+                        new DbColumn("last_round", LastRound, DbType.UInt32), new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
+                        new DbColumn("group_id", GroupId, DbType.UInt32), new DbColumn("formation_type", (byte)formation, DbType.Byte),
+                        new DbColumn("level", lvl, DbType.Byte), new DbColumn("count", count, DbType.UInt16), new DbColumn("type", type, DbType.UInt16),
+                        new DbColumn("troop_stub_city_id", TroopStub.City.Id, DbType.UInt32), new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.Byte),
+                        new DbColumn("left_over_hp", leftOverHp, DbType.Decimal), new DbColumn("damage_min_dealt", MinDmgDealt, DbType.UInt16),
+                        new DbColumn("damage_max_dealt", MaxDmgDealt, DbType.UInt16), new DbColumn("damage_min_received", MinDmgRecv, DbType.UInt16),
+                        new DbColumn("damage_max_received", MaxDmgRecv, DbType.UInt16), new DbColumn("damage_dealt", DmgDealt, DbType.Decimal),
+                        new DbColumn("damage_received", DmgRecv, DbType.Decimal), new DbColumn("hits_dealt", HitDealt, DbType.UInt16),
+                        new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32), new DbColumn("hits_received", HitRecv, DbType.UInt16)
+                };
             }
         }
 
@@ -233,23 +254,19 @@ namespace Game.Battle.CombatObjects
             return true;
         }
 
-        public override void Location(out uint x, out uint y)
+        public override Location Location()
         {
-            if (TroopStub.TroopObject == null)
+            if (TroopStub.StationedCity != null)
             {
-                x = City.X;
-                y = City.Y;
+                return new Location(troopStub.StationedCity.X, troopStub.StationedCity.Y);
             }
-            else if (TroopStub.StationedCity != null)
-            {
-                x = troopStub.StationedCity.X;
-                y = troopStub.StationedCity.Y;
-            }
-            else
-            {
-                x = TroopStub.TroopObject.X;
-                y = TroopStub.TroopObject.Y;
-            }
+
+            return new Location(City.X, City.Y);
+        }
+
+        public override byte AttackRadius()
+        {
+            return byte.MaxValue;
         }
 
         public override void ReceiveReward(int reward, Resource resource)
@@ -266,14 +283,17 @@ namespace Game.Battle.CombatObjects
             actualDmg = BattleFormulas.SplashReduction(this, actualDmg, attackIndex);
 
             // if hp is less than 20% of the original total HP(entire group), lastStand kicks in.
-            if (Hp < (Hp + DmgRecv) / 5)
+            if (Hp < (Hp + DmgRecv)/5)
             {
-                var percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand)
-                    .Where(tech => BattleFormulas.Current.UnitStatModCheck(Stats.Base, TroopBattleGroup.Attack, (string)tech.Value[1]))
-                    .DefaultIfEmpty()
-                    .Max(x => x == null ? 0 : (int)x.Value[0]);
+                var percent =
+                        TroopStub.City.Technologies.GetEffects(EffectCode.LastStand).Where(
+                                                                                           tech =>
+                                                                                           BattleFormulas.Current.UnitStatModCheck(Stats.Base,
+                                                                                                                                   TroopBattleGroup.Attack,
+                                                                                                                                   (string)tech.Value[1])).
+                                DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
 
-                actualDmg = actualDmg * (100 - percent) / 100;
+                actualDmg = actualDmg*(100 - percent)/100;
             }
         }
 
@@ -295,7 +315,9 @@ namespace Game.Battle.CombatObjects
             if (dead > 0)
             {
                 if (dead > count)
+                {
                     dead = count;
+                }
 
                 count -= dead;
 
@@ -317,7 +339,9 @@ namespace Game.Battle.CombatObjects
         public override int CompareTo(object other)
         {
             if (other is ITroopStub)
+            {
                 return other == TroopStub ? 0 : 1;
+            }
 
             return -1;
         }

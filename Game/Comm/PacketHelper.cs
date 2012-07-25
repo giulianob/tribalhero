@@ -196,6 +196,8 @@ namespace Game.Comm
 
         internal static void AddToPacket(ITroopStub stub, Packet packet)
         {
+            ITroopObject troopObject = stub.City.TroopObjects.FirstOrDefault(troopObj => troopObj.Stub == stub);
+
             packet.AddUInt32(stub.City.Owner.PlayerId);
             packet.AddUInt32(stub.City.Id);
 
@@ -224,16 +226,19 @@ namespace Game.Comm
             {
                 case TroopState.Moving:
                 case TroopState.ReturningHome:
-                    packet.AddUInt32(stub.TroopObject.ObjectId);
-                    packet.AddUInt32(stub.TroopObject.X);
-                    packet.AddUInt32(stub.TroopObject.Y);
+                    packet.AddUInt32(troopObject.ObjectId);
+                    packet.AddUInt32(troopObject.X);
+                    packet.AddUInt32(troopObject.Y);
                     break;
                 case TroopState.Battle:
-                    if (stub.TroopObject != null)
+                    // If the stub is in battle, determine whether there is a troop object attached to it or not.
+                    // If there is we send the troop objs location otherwise we assume that the troop stub is 
+                    // in their city
+                    if (troopObject != null)
                     {
-                        packet.AddUInt32(stub.TroopObject.ObjectId);
-                        packet.AddUInt32(stub.TroopObject.X);
-                        packet.AddUInt32(stub.TroopObject.Y);
+                        packet.AddUInt32(troopObject.ObjectId);
+                        packet.AddUInt32(troopObject.X);
+                        packet.AddUInt32(troopObject.Y);
                     }
                     else
                     {
@@ -371,7 +376,9 @@ namespace Game.Comm
             //City Troops
             packet.AddByte(city.Troops.Size);
             foreach (var stub in city.Troops)
+            {
                 AddToPacket(stub, packet);
+            }
 
             //Unit Template
             AddToPacket(city.Template, packet);

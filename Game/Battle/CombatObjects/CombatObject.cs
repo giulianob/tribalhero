@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Database;
+using Game.Map;
 using Game.Util.Locking;
 using Persistance;
 
@@ -103,7 +104,9 @@ namespace Game.Battle.CombatObjects
 
         public abstract bool InRange(CombatObject obj);
 
-        public abstract void Location(out uint x, out uint y);
+        public abstract Location Location();
+
+        public abstract byte AttackRadius();
 
         public abstract void ReceiveReward(int reward, Resource resource);
 

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Battle.CombatObjects;
@@ -11,7 +10,7 @@ namespace Game.Battle.CombatGroups
 {
     public abstract class CombatGroup : ListOfPersistableObjects<CombatObject>, IPersistableObject, ILockable
     {
-        protected readonly uint battleId;
+        protected readonly uint BattleId;
 
         public delegate void CombatGroupChanged(CombatGroup combatGroup, CombatObject combatObject);
 
@@ -36,7 +35,7 @@ namespace Game.Battle.CombatGroups
                 : base(manager)
         {
             Id = id;
-            this.battleId = battleId;
+            BattleId = battleId;
         }
 
         public new void Add(CombatObject item, bool save)

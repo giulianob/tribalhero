@@ -862,34 +862,19 @@ namespace Game.Database
                         }
                     }
 
-                    // Load both AttackCombatUnit and DefenseCombatUnit (saved to same table)
-                    using (DbDataReader listReader = DbManager.SelectList(DefenseCombatUnit.DB_TABLE, new DbColumn("battle_id", bm.BattleId, DbType.UInt32)))
+                    // Load attack combat units
+                    using (DbDataReader listReader = DbManager.SelectList(AttackCombatUnit.DB_TABLE, new DbColumn("battle_id", bm.BattleId, DbType.UInt32)))
                     {
                         while (listReader.Read())
                         {
                             ICity troopStubCity;
                             if (!World.Current.TryGetObjects((uint)listReader["troop_stub_city_id"], out troopStubCity))
                                 throw new Exception("City not found");
-                            ITroopStub troopStub = troopStubCity.Troops[(byte)listReader["troop_stub_id"]];
+                            ITroopObject troopObject = (ITroopObject)troopStubCity[(uint)listReader["troop_object_id"]];
 
-                            CombatObject combatObj;
-                            if ((bool)listReader["is_local"])
-                            {
-                                combatObj = new DefenseCombatUnit((uint)listReader["id"], 
-                                                                  bm.BattleId,
-                                                                  troopStub,
-                                                                  (FormationType)((byte)listReader["formation_type"]),
-                                                                  (ushort)listReader["type"],
-                                                                  (byte)listReader["level"],
-                                                                  (ushort)listReader["count"],
-                                                                  (decimal)listReader["left_over_hp"],
-                                                                  Ioc.Kernel.Get<BattleFormulas>());
-                            }
-                            else
-                            {
-                                combatObj = new AttackCombatUnit((uint)listReader["id"], 
+                            CombatObject combatObj = new AttackCombatUnit((uint)listReader["id"], 
                                                                  bm.BattleId,
-                                                                 troopStub,
+                                                                 troopObject,
                                                                  (FormationType)((byte)listReader["formation_type"]),
                                                                  (ushort)listReader["type"],
                                                                  (byte)listReader["level"],
@@ -901,8 +886,46 @@ namespace Game.Database
                                                                               (int)listReader["loot_wood"],
                                                                               (int)listReader["loot_labor"]),
                                                                  Ioc.Kernel.Get<UnitFactory>(),
-                                                                 Ioc.Kernel.Get<BattleFormulas>());
-                            }
+                                                                 Ioc.Kernel.Get<BattleFormulas>());                            
+
+                            combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
+                            combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
+                            combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
+                            combatObj.MinDmgDealt = (ushort)listReader["damage_max_received"];
+                            combatObj.HitDealt = (ushort)listReader["hits_dealt"];
+                            combatObj.HitDealtByUnit = (uint)listReader["hits_dealt_by_unit"];
+                            combatObj.HitRecv = (ushort)listReader["hits_received"];
+                            combatObj.GroupId = (uint)listReader["group_id"];
+                            combatObj.DmgDealt = (decimal)listReader["damage_dealt"];
+                            combatObj.DmgRecv = (decimal)listReader["damage_received"];
+                            combatObj.LastRound = (uint)listReader["last_round"];
+                            combatObj.RoundsParticipated = (int)listReader["rounds_participated"];
+                            combatObj.DbPersisted = true;
+
+                            bm.GetCombatGroup((uint)listReader["group_id"]).Add(combatObj, false);
+                        }
+                    }
+
+                    // Load defense combat units
+                    using (DbDataReader listReader = DbManager.SelectList(DefenseCombatUnit.DB_TABLE, new DbColumn("battle_id", bm.BattleId, DbType.UInt32)))
+                    {
+                        while (listReader.Read())
+                        {
+                            ICity troopStubCity;
+                            if (!World.Current.TryGetObjects((uint)listReader["troop_stub_city_id"], out troopStubCity))
+                                throw new Exception("City not found");
+
+                            ITroopStub troopStub = troopStubCity.Troops[(byte)listReader["troop_stub_id"]];
+
+                            CombatObject combatObj = new DefenseCombatUnit((uint)listReader["id"], 
+                                                                  bm.BattleId,
+                                                                  troopStub,
+                                                                  (FormationType)((byte)listReader["formation_type"]),
+                                                                  (ushort)listReader["type"],
+                                                                  (byte)listReader["level"],
+                                                                  (ushort)listReader["count"],
+                                                                  (decimal)listReader["left_over_hp"],
+                                                                  Ioc.Kernel.Get<BattleFormulas>());       
 
                             combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                             combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];

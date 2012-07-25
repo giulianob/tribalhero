@@ -26,8 +26,6 @@ namespace Game.Data.Troop
 
         ushort StationedRetreatCount { get; set; }
 
-        ITroopObject TroopObject { get; set; }
-
         byte TroopId { get; set; }
 
         byte FormationCount { get; }

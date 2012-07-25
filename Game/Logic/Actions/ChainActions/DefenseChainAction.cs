@@ -19,16 +19,16 @@ namespace Game.Logic.Actions
     public class DefenseChainAction : ChainAction
     {
         private readonly uint cityId;
-        private readonly byte stubId;
+        private readonly uint troopObjectId;
         private readonly uint targetCityId;
         private readonly AttackMode mode;
 
         private readonly BattleProcedure battleProcedure;
 
-        public DefenseChainAction(uint cityId, byte stubId, uint targetCityId, AttackMode mode, BattleProcedure battleProcedure)
+        public DefenseChainAction(uint cityId, uint troopObjectId, uint targetCityId, AttackMode mode, BattleProcedure battleProcedure)
         {
             this.cityId = cityId;
-            this.stubId = stubId;
+            this.troopObjectId = troopObjectId;
             this.targetCityId = targetCityId;
             this.mode = mode;
             this.battleProcedure = battleProcedure;
@@ -39,7 +39,7 @@ namespace Game.Logic.Actions
         {
             this.battleProcedure = battleProcedure;
             cityId = uint.Parse(properties["city_id"]);
-            stubId = byte.Parse(properties["troop_stub_id"]);
+            troopObjectId = uint.Parse(properties["troop_object_id"]);
             targetCityId = uint.Parse(properties["target_city_id"]);
         }
 
@@ -59,7 +59,7 @@ namespace Game.Logic.Actions
                         XmlSerializer.Serialize(new[]
                                                 {
                                                         new XmlKvPair("city_id", cityId), new XmlKvPair("target_city_id", targetCityId),
-                                                        new XmlKvPair("troop_stub_id", stubId)
+                                                        new XmlKvPair("troop_object_id", troopObjectId)
                                                 });
             }
         }
@@ -67,8 +67,8 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city;
-            ITroopStub stub;
-            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
+            ITroopObject troopObject;
+            if (!World.Current.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
                 return Error.ObjectNotFound;
 
             int currentReinforcements = city.Worker.PassiveActions.Values.Count(action => action is DefenseChainAction);
@@ -90,15 +90,15 @@ namespace Game.Logic.Actions
                 return Error.CityInBattle;
 
             //Load the units stats into the stub
-            stub.BeginUpdate();
-            stub.Template.LoadStats(TroopBattleGroup.Defense);
-            stub.StationedRetreatCount = (ushort)Formula.Current.GetAttackModeTolerance(stub.TotalCount, mode);
-            stub.EndUpdate();
+            troopObject.Stub.BeginUpdate();
+            troopObject.Stub.Template.LoadStats(TroopBattleGroup.Defense);
+            troopObject.Stub.StationedRetreatCount = (ushort)Formula.Current.GetAttackModeTolerance(troopObject.Stub.TotalCount, mode);
+            troopObject.Stub.EndUpdate();
 
-            city.Worker.References.Add(stub.TroopObject, this);
-            city.Worker.Notifications.Add(stub.TroopObject, this, targetCity);
+            city.Worker.References.Add(troopObject, this);
+            city.Worker.Notifications.Add(troopObject, this, targetCity);
 
-            var tma = new TroopMovePassiveAction(cityId, stub.TroopObject.ObjectId, targetCity.X, targetCity.Y, false, false);
+            var tma = new TroopMovePassiveAction(cityId, troopObject.ObjectId, targetCity.X, targetCity.Y, false, false);
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
 
@@ -113,25 +113,29 @@ namespace Game.Logic.Actions
 
                 using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
                 {
+                    if (cities == null)
+                    {
+                        throw new Exception("Cities missing");
+                    }
                     ICity city = cities[cityId];
                     ICity targetCity = cities[targetCityId];
 
-                    ITroopStub stub;
-                    if (!city.Troops.TryGetStub(stubId, out stub))
+                    ITroopObject troopObject;
+                    if (!city.TryGetTroop(troopObjectId, out troopObject))
                         throw new Exception();
 
-                    city.Worker.References.Remove(stub.TroopObject, this);
+                    city.Worker.References.Remove(troopObject, this);
                     city.Worker.Notifications.Remove(this);
 
-                    Procedure.Current.TroopObjectStation(stub.TroopObject, targetCity);
+                    Procedure.Current.TroopObjectStation(troopObject, targetCity);
 
                     if (targetCity.Battle != null)
                     {
-                        stub.BeginUpdate();
-                        stub.State = TroopState.BattleStationed;
-                        stub.EndUpdate();
+                        troopObject.Stub.BeginUpdate();
+                        troopObject.Stub.State = TroopState.BattleStationed;
+                        troopObject.Stub.EndUpdate();
 
-                        battleProcedure.AddReinforcementToBattle(targetCity.Battle, stub);
+                        battleProcedure.AddReinforcementToBattle(targetCity.Battle, troopObject.Stub);
                     }
 
                     StateChange(ActionState.Completed);

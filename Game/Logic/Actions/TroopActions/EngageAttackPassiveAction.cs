@@ -355,7 +355,7 @@ namespace Game.Logic.Actions
                     ReduceStamina(stub, battleFormula.GetStaminaStructureDestroyed(stub.TroopObject.Stats.Stamina, target as CombatStructure));
                 }
             }
-                    // Check if the unit being attacked belongs to us
+            // Check if the unit being attacked belongs to us
             else if (unit.TroopStub == stub && unit.TroopStub.TroopObject == stub.TroopObject)
             {
                 // Check to see if player should retreat

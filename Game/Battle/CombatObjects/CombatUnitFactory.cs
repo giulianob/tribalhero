@@ -52,7 +52,7 @@ namespace Game.Battle.CombatObjects
 
                 AttackCombatUnit newUnit = new AttackCombatUnit(battleManager.GetNextCombatObjectId(),
                                                                 battleManager.BattleId,
-                                                                troop.Stub,
+                                                                troop,
                                                                 formation,
                                                                 type,
                                                                 template.Lvl,

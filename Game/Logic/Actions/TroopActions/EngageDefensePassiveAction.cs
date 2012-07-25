@@ -18,17 +18,17 @@ namespace Game.Logic.Actions
     public class EngageDefensePassiveAction : PassiveAction
     {
         private readonly uint cityId;
-        private readonly byte stubId;
+        private readonly uint troopObjectId;
 
         private readonly BattleProcedure battleProcedure;
 
         private decimal originalHp;
         private decimal remainingHp;
 
-        public EngageDefensePassiveAction(uint cityId, byte stubId, BattleProcedure battleProcedure)
+        public EngageDefensePassiveAction(uint cityId, uint troopObjectId, BattleProcedure battleProcedure)
         {
             this.cityId = cityId;
-            this.stubId = stubId;
+            this.troopObjectId = troopObjectId;
             this.battleProcedure = battleProcedure;
         }
 
@@ -36,7 +36,7 @@ namespace Game.Logic.Actions
         {
             this.battleProcedure = battleProcedure;
             cityId = uint.Parse(properties["troop_city_id"]);
-            stubId = byte.Parse(properties["troop_id"]);
+            troopObjectId = uint.Parse(properties["troop_object_id"]);
             originalHp = decimal.Parse(properties["original_hp"]);
             remainingHp = decimal.Parse(properties["remaining_hp"]);
 
@@ -63,7 +63,7 @@ namespace Game.Logic.Actions
                 return
                         XmlSerializer.Serialize(new[]
                                                 {
-                                                        new XmlKvPair("troop_city_id", cityId), new XmlKvPair("troop_id", stubId),
+                                                        new XmlKvPair("troop_city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId),
                                                         new XmlKvPair("original_hp", originalHp), new XmlKvPair("remaining_hp", remainingHp)
                                                 });
             }
@@ -77,8 +77,9 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city;
-            ITroopStub stub;
-            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
+
+            ITroopObject troopObject;
+            if (!World.Current.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
                 return Error.ObjectNotFound;
 
             if (city.Battle == null)
@@ -87,20 +88,20 @@ namespace Game.Logic.Actions
                 return Error.Ok;
             }
 
-            originalHp = remainingHp = stub.TotalHp;
+            originalHp = remainingHp = troopObject.Stub.TotalHp;
 
             city.Battle.ActionAttacked += BattleActionAttacked;
             city.Battle.ExitBattle += BattleExitBattle;            
 
-            stub.TroopObject.BeginUpdate();
-            stub.TroopObject.State = GameObjectState.BattleState(cityId);
-            stub.TroopObject.EndUpdate();
-            stub.TroopObject.Stub.BeginUpdate();
-            stub.TroopObject.Stub.State = TroopState.Battle;
-            stub.TroopObject.Stub.EndUpdate();
+            troopObject.BeginUpdate();
+            troopObject.State = GameObjectState.BattleState(cityId);
+            troopObject.EndUpdate();
+            troopObject.Stub.BeginUpdate();
+            troopObject.Stub.State = TroopState.Battle;
+            troopObject.Stub.EndUpdate();
 
             // Add units to battle
-            battleProcedure.AddReinforcementToBattle(city.Battle, stub);
+            battleProcedure.AddReinforcementToBattle(city.Battle, troopObject.Stub);
             battleProcedure.AddLocalUnitsToBattle(city.Battle, city);
 
             return Error.Ok;
@@ -116,11 +117,11 @@ namespace Game.Logic.Actions
             }
 
             ICity city;
-            ITroopStub stub;
-            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
+            ITroopObject troopObject;
+            if (!World.Current.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
                 throw new Exception();
 
-            if (unit.TroopStub != stub)
+            if (unit.TroopStub != troopObject.Stub)
                 return;
 
             remainingHp -= damage;
@@ -130,29 +131,29 @@ namespace Game.Logic.Actions
             city.Battle.ActionAttacked -= BattleActionAttacked;
             city.Battle.ExitBattle -= BattleExitBattle;
 
-            stub.TroopObject.BeginUpdate();
-            stub.TroopObject.State = GameObjectState.NormalState();
-            stub.TroopObject.Stub.State = TroopState.Idle;
-            stub.TroopObject.EndUpdate();
+            troopObject.BeginUpdate();
+            troopObject.State = GameObjectState.NormalState();
+            troopObject.Stub.State = TroopState.Idle;
+            troopObject.EndUpdate();
             StateChange(ActionState.Completed);
         }
 
         private void BattleExitBattle(IBattleManager battle, ICombatList atk, ICombatList def)
         {
             ICity city;
-            ITroopStub stub;
-            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
+            ITroopObject troopObject;
+            if (!World.Current.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
                 throw new Exception();
 
             city.Battle.ActionAttacked -= BattleActionAttacked;
             city.Battle.ExitBattle -= BattleExitBattle;
 
-            stub.TroopObject.BeginUpdate();
-            stub.BeginUpdate();
-            stub.TroopObject.State = GameObjectState.NormalState();
-            stub.State = TroopState.Idle;
-            stub.EndUpdate();
-            stub.TroopObject.EndUpdate();
+            troopObject.BeginUpdate();
+            troopObject.Stub.BeginUpdate();
+            troopObject.State = GameObjectState.NormalState();
+            troopObject.Stub.State = TroopState.Idle;
+            troopObject.Stub.EndUpdate();
+            troopObject.EndUpdate();
 
             StateChange(ActionState.Completed);
         }

@@ -70,8 +70,7 @@ namespace Game.Battle
 
             uint lowestRow = objsInRange.Min(target => target.CombatObject.Stats.Stl);
 
-            uint x1, y1;
-            attacker.Location(out x1, out y1);
+            var attackerLocation = attacker.Location();
 
             Target bestTarget = null;
             int bestTargetScore = 0;
@@ -84,11 +83,10 @@ namespace Game.Battle
 
                 int score = 0;
 
-                uint x2, y2;
-                target.CombatObject.Location(out x2, out y2);
+                Location defenderLocation = target.CombatObject.Location();
 
                 // Distance 0 gives 60% higher chance to hit, distance 1 gives 20%
-                score += Math.Max(3 - radiusLocator.RadiusDistance(x1, y1, x2, y2)*2, 0);
+                score += Math.Max(3 - radiusLocator.RadiusDistance(attackerLocation.X, attackerLocation.Y, defenderLocation.X, defenderLocation.Y)*2, 0);
 
                 // Have to compare armor and weapon type here to give some sort of score
                 score += ((int)(battleFormulas.GetDmgModifier(attacker, target.CombatObject)*10));
@@ -114,6 +112,14 @@ namespace Game.Battle
         public IEnumerable<CombatObject> AllCombatObjects()
         {
             return BackingList.SelectMany(group => group.Select(combatObject => combatObject));
+        }
+
+        public new void RemoveAt(int index)
+        {
+            // Clear the group to delete all its contents from the db then remove it from our list
+            //TODO: This is ugly and should be automatic w/ the DbDependencies or some other way
+            this[index].Clear();
+            base.RemoveAt(index);
         }
 
         #region Nested type: CombatScoreItem

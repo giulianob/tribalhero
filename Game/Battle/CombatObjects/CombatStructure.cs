@@ -182,7 +182,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return new[] {new DbColumn("id", Id, DbType.UInt32)};
+                return new[] { new DbColumn("battle_id", BattleId, DbType.UInt32), new DbColumn("id", Id, DbType.UInt32)};
             }
         }
 
@@ -208,7 +208,7 @@ namespace Game.Battle.CombatObjects
                                new DbColumn("attack", stats.Atk, DbType.Decimal), new DbColumn("splash", stats.Splash, DbType.Byte),
                                new DbColumn("range", stats.Rng, DbType.Byte), new DbColumn("stealth", stats.Stl, DbType.Byte), new DbColumn("speed", stats.Spd, DbType.Byte),
                                new DbColumn("hits_dealt", HitDealt, DbType.UInt16), new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
-                               new DbColumn("hits_received", HitRecv, DbType.UInt16), new DbColumn("battle_id", BattleId, DbType.UInt32)
+                               new DbColumn("hits_received", HitRecv, DbType.UInt16)
                        };
             }
         }
@@ -217,9 +217,8 @@ namespace Game.Battle.CombatObjects
         {
             if (obj is AttackCombatUnit)
             {
-                ITroopObject troop = (obj as AttackCombatUnit).TroopStub.TroopObject;
-                return RadiusLocator.Current.IsOverlapping(new Location(troop.X, troop.Y),
-                                                           troop.Stats.AttackRadius,
+                return RadiusLocator.Current.IsOverlapping(obj.Location(),
+                                                           obj.AttackRadius(),
                                                            new Location(Structure.X, Structure.Y),
                                                            Structure.Stats.Base.Radius);
             }
@@ -227,10 +226,13 @@ namespace Game.Battle.CombatObjects
             throw new Exception(string.Format("Why is a structure trying to kill a unit of type {0}?", obj.GetType().FullName));
         }
 
+        public override Location Location() {
+            return new Location(Structure.X, Structure.Y);
+        }
 
-        public override void Location(out uint x, out uint y) {
-            x = Structure.X;
-            y = Structure.Y;
+        public override byte AttackRadius()
+        {
+            return Structure.Stats.Base.Radius;
         }
 
         public override void CalcActualDmgToBeTaken(ICombatList attackers, ICombatList defenders, decimal baseDmg, int attackIndex, out decimal actualDmg)

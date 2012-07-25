@@ -301,17 +301,18 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 // Create troop object                
-                if (!Procedure.Current.TroopObjectCreateFromCity(city, stub, city.X, city.Y))
+                ITroopObject troopObject;
+                if (!Procedure.Current.TroopObjectCreateFromCity(city, stub, city.X, city.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.TroopChanged);
                     return;
                 }
 
-                var aa = actionFactory.CreateAttackChainAction(cityId, stub.TroopId, targetCityId, targetObjectId, mode);
+                var aa = actionFactory.CreateAttackChainAction(cityId, troopObject.ObjectId, targetCityId, targetObjectId, mode);
                 Error ret = city.Worker.DoPassive(city, aa, true);
                 if (ret != 0)
                 {
-                    Procedure.Current.TroopObjectDelete(stub.TroopObject, true);
+                    Procedure.Current.TroopObjectDelete(troopObject, true);
                     ReplyError(session, packet, ret);
                 }
                 else
@@ -361,17 +362,18 @@ namespace Game.Comm.ProcessorCommands
             {
                 ICity city = cities[cityId];
 
-                if (!Procedure.Current.TroopObjectCreateFromCity(city, stub, city.X, city.Y))
+                ITroopObject troopObject;
+                if (!Procedure.Current.TroopObjectCreateFromCity(city, stub, city.X, city.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.ObjectNotFound);
                     return;
                 }
 
-                var da = actionFactory.CreateDefenseChainAction(cityId, stub.TroopId, targetCityId, mode);
+                var da = actionFactory.CreateDefenseChainAction(cityId, troopObject.ObjectId, targetCityId, mode);
                 Error ret = city.Worker.DoPassive(city, da, true);
                 if (ret != 0)
                 {
-                    Procedure.Current.TroopObjectDelete(stub.TroopObject, true);
+                    Procedure.Current.TroopObjectDelete(troopObject, true);
                     ReplyError(session, packet, ret);
                 }
                 else

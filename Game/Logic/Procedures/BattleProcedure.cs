@@ -45,12 +45,11 @@ namespace Game.Logic.Procedures
 
         public virtual void JoinOrCreateBattle(ICity targetCity, ITroopObject attackerTroopObject, out uint groupId)
         {
-            var stub = attackerTroopObject.Stub;
             // If battle already exists, then we just join it in also bringing any new units
             if (targetCity.Battle != null)
             {
                 AddLocalUnitsToBattle(targetCity.Battle, targetCity);
-                AddLocalStructuresToBattle(targetCity.Battle, targetCity, stub);
+                AddLocalStructuresToBattle(targetCity.Battle, targetCity, attackerTroopObject);
                 groupId = AddAttackerToBattle(targetCity.Battle, attackerTroopObject);
             }
             // Otherwise, the battle has to be created
@@ -62,7 +61,7 @@ namespace Game.Logic.Procedures
 
                 var battlePassiveAction = actionFactory.CreateBattlePassiveAction(targetCity.City.Id);
 
-                AddLocalStructuresToBattle(targetCity.Battle, targetCity, stub);
+                AddLocalStructuresToBattle(targetCity.Battle, targetCity, attackerTroopObject);
                 groupId = AddAttackerToBattle(targetCity.Battle, attackerTroopObject);
 
                 Error result = targetCity.Worker.DoPassive(targetCity, battlePassiveAction, false);
@@ -92,10 +91,10 @@ namespace Game.Logic.Procedures
             stub[source].Clear();
         }
 
-        public virtual void AddLocalStructuresToBattle(IBattleManager battleManager, ICity targetCity, ITroopStub attackerStub)
+        public virtual void AddLocalStructuresToBattle(IBattleManager battleManager, ICity targetCity, ITroopObject attackerTroopObject)
         {
             var localGroup = GetOrCreateLocalGroup(targetCity.Battle, targetCity);
-            foreach (IStructure structure in GetStructuresInRadius(targetCity, attackerStub.TroopObject))
+            foreach (IStructure structure in GetStructuresInRadius(targetCity, attackerTroopObject))
             {
                 localGroup.Add(combatUnitFactory.CreateStructureCombatUnit(battleManager, structure));
             }

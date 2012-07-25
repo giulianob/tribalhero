@@ -61,6 +61,9 @@ namespace Game.Database
             {
                 try
                 {
+                    // Check Schema
+                    CheckSchemaVersion();
+
                     // Set all players to offline
                     DbManager.Query("UPDATE `players` SET `online` = @online", new[] { new DbColumn("online", false, DbType.Boolean) });
 
@@ -113,6 +116,20 @@ namespace Game.Database
             Global.FireEvents = true;
             Scheduler.Current.Resume();
             return true;
+        }
+
+        private void CheckSchemaVersion()
+        {
+            using (var reader = DbManager.ReaderQuery(@"SELECT max(`version`) as max_version FROM `schema_migrations`"))
+            {
+                reader.Read();
+                string currentDbVersion = (string)reader["max_version"];
+
+                if (currentDbVersion != Config.database_schema_version)
+                {
+                    throw new Exception(string.Format("Expected schema to be version {0} but found version {1}. Execute 'SELECT max(version) FROM `schema_migrations`' to get the latest version and update the config.", Config.database_schema_version, currentDbVersion));
+                }
+            }
         }
 
         private uint GetMaxId(string table)
@@ -741,7 +758,7 @@ namespace Game.Database
                 {
                     // Load battle manager
                     ICity city;
-                    //TODO: Change to understand the different owner types
+                    // TODO: Change to understand the different owner types
                     if (!World.Current.TryGetObjects((uint)reader["owner_id"], out city))
                         throw new Exception("City not found");
                     

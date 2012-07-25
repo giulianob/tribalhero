@@ -27,7 +27,7 @@ namespace ConsoleSimulator
         public Group Attacker{ get; private set; }
         public Group Defender{ get; private set; }
         public uint CurrentRound { get; private set; }
-        private IBattleManager bm;
+        private IBattleManager battleManager;
         private BattleViewer bv;
 
         public Simulation(Group attack, Group defense)
@@ -37,36 +37,44 @@ namespace ConsoleSimulator
             CurrentRound = 0;
             TurnIntervalInSecond = 0;
 
-            bm = Ioc.Kernel.Get<IBattleManagerFactory>().CreateBattleManager(new BattleLocation(BattleLocationType.City, Defender.City.Id), new BattleOwner(BattleOwnerType.City, Defender.City.Id), Defender.City); 
-            bm.BattleReport.Battle = bm;
-            bv = new BattleViewer(bm);
+            battleManager = Ioc.Kernel.Get<IBattleManagerFactory>().CreateBattleManager(new BattleLocation(BattleLocationType.City, Defender.City.Id), new BattleOwner(BattleOwnerType.City, Defender.City.Id), Defender.City); 
+            battleManager.BattleReport.Battle = battleManager;
+            bv = new BattleViewer(battleManager);
+            
+            // Add local to battle
             using (Concurrency.Current.Lock(Defender.Local)) {
                 Defender.Local.BeginUpdate();
                 Defender.Local.AddFormation(FormationType.InBattle);
                 Defender.Local.Template.LoadStats(TroopBattleGroup.Local);                
-                var localGroup = new CityDefensiveCombatGroup(bm.BattleId, 1, Defender.Local, Ioc.Kernel.Get<IDbManager>());
+                var localGroup = new CityDefensiveCombatGroup(battleManager.BattleId, 1, Defender.Local, Ioc.Kernel.Get<IDbManager>());
                 var combatUnitFactory = Ioc.Kernel.Get<ICombatUnitFactory>();
                 foreach (var kvp in Defender.Local[FormationType.Normal])
                 {
-                    combatUnitFactory.CreateDefenseCombatUnit(bm, Defender.Local, FormationType.InBattle, kvp.Key, kvp.Value).ToList().ForEach(localGroup.Add);
+                    combatUnitFactory.CreateDefenseCombatUnit(battleManager, Defender.Local, FormationType.InBattle, kvp.Key, kvp.Value).ToList().ForEach(localGroup.Add);
                 }
 
                 foreach (IStructure structure in Defender.City)
                 {
-                    localGroup.Add(combatUnitFactory.CreateStructureCombatUnit(bm, structure));
+                    localGroup.Add(combatUnitFactory.CreateStructureCombatUnit(battleManager, structure));
                 }
-                
-                Ioc.Kernel.Get<BattleProcedure>().MoveUnitFormation(Defender.Local, FormationType.Normal, FormationType.InBattle));
+                battleManager.Add(localGroup, BattleManager.BattleSide.Defense);
+                Ioc.Kernel.Get<BattleProcedure>().MoveUnitFormation(Defender.Local, FormationType.Normal, FormationType.InBattle);
                 Defender.Local.EndUpdate();
             }
 
+            // Add attack stub to battle
             using (Concurrency.Current.Lock(Attacker.AttackStub))
             {
                 Attacker.AttackStub.BeginUpdate();
                 Attacker.AttackStub.Template.LoadStats(TroopBattleGroup.Attack);
                 Attacker.AttackStub.EndUpdate();
-                var attackGroup = new CityOffensiveCombatGroup(1, 2, )
-                bm.AddToAttack(Attacker.AttackStub);
+                var attackGroup = new CityDefensiveCombatGroup(battleManager.BattleId, 2, Attacker.AttackStub, Ioc.Kernel.Get<IDbManager>());
+                var combatUnitFactory = Ioc.Kernel.Get<ICombatUnitFactory>();
+                foreach (var kvp in Attacker.AttackStub[FormationType.Normal])
+                {
+                    combatUnitFactory.CreateAttackCombatUnit(battleManager, Attacker.TroopObject, FormationType.InBattle, kvp.Key, kvp.Value).ToList().ForEach(attackGroup.Add);
+                }
+                battleManager.Add(attackGroup, BattleManager.BattleSide.Attack);
             }
         }
 
@@ -81,9 +89,9 @@ namespace ConsoleSimulator
         {
             using (Concurrency.Current.Lock(Attacker.AttackStub, Defender.Local))
             {
-                while (bm.ExecuteTurn()) {
-                    CurrentRound = bm.Round;
-                    if ((CurrentRound = bm.Round) >= round) return;
+                while (battleManager.ExecuteTurn()) {
+                    CurrentRound = battleManager.Round;
+                    if ((CurrentRound = battleManager.Round) >= round) return;
                     System.Threading.Thread.Sleep(new TimeSpan(0, 0, 0, TurnIntervalInSecond));
                 }
             }

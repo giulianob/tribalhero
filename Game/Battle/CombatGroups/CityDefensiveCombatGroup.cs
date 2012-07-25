@@ -68,7 +68,7 @@ namespace Game.Battle.CombatGroups
         {
             get
             {
-                return new[] {new DbColumn("battle_id", battleId, DbType.UInt32), new DbColumn("id", Id, DbType.UInt32)};
+                return new[] {new DbColumn("battle_id", BattleId, DbType.UInt32), new DbColumn("id", Id, DbType.UInt32)};
             }
         }
 

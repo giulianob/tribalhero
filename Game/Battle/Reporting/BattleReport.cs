@@ -90,7 +90,7 @@ namespace Game.Battle.Reporting
         /// <summary>
         /// Writes a report group
         /// </summary>
-        public void WriteReportGroup(CombatGroup group, bool isAttacker, ReportState state)
+        public void WriteReportGroup(ICombatGroup group, bool isAttacker, ReportState state)
         {
             WriteBeginReport();
 
@@ -158,7 +158,7 @@ namespace Game.Battle.Reporting
         /// <summary>
         /// Writes all of the specified groups
         /// </summary>
-        public void WriteReportGroups(IEnumerable<CombatGroup> groups, bool isAttacker, ReportState state)
+        public void WriteReportGroups(IEnumerable<ICombatGroup> groups, bool isAttacker, ReportState state)
         {
             foreach (var group in groups)
             {

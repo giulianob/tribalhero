@@ -213,7 +213,7 @@ namespace Game.Battle.CombatObjects
             }
         }
 
-        public override bool InRange(CombatObject obj)
+        public override bool InRange(ICombatObject obj)
         {
             if (obj is AttackCombatUnit)
             {

@@ -68,7 +68,7 @@ namespace Game.Battle.Reporting
                             });
         }
 
-        public void SnapGroupState(uint reportTroopId, CombatGroup group, ReportState state)
+        public void SnapGroupState(uint reportTroopId, ICombatGroup group, ReportState state)
         {
             // If there's a troop object we also want to update its loot
             Resource loot = group.GroupLoot;
@@ -84,7 +84,7 @@ namespace Game.Battle.Reporting
                             });
         }
 
-        public uint SnapGroup(uint reportId, CombatGroup group, ReportState state, bool isAttacker)
+        public uint SnapGroup(uint reportId, ICombatGroup group, ReportState state, bool isAttacker)
         {
             Resource loot = group.GroupLoot;
 
@@ -128,13 +128,11 @@ namespace Game.Battle.Reporting
                             });
         }
 
-        public void SnapCombatObject(uint troopId, CombatObject co)
+        public void SnapCombatObject(uint troopId, ICombatObject co)
         {
-            var unit = co as ICombatUnit;
-
             dbManager.Query(
                             string.Format(
-                                          @"INSERT INTO `{0}` VALUES ('', @object_id, @troop_id, @type, @lvl, @hp, @count, @dmg_recv, @dmg_dealt, @formation, @hit_dealt, @hit_dealt_by_unit, @hit_recv)",
+                                          @"INSERT INTO `{0}` VALUES ('', @object_id, @troop_id, @type, @lvl, @hp, @count, @dmg_recv, @dmg_dealt, @hit_dealt, @hit_dealt_by_unit, @hit_recv)",
                                           BATTLE_REPORT_OBJECTS_DB),
                             new[]
                             {
@@ -142,7 +140,6 @@ namespace Game.Battle.Reporting
                                     new DbColumn("type", co.Type, DbType.UInt16), new DbColumn("lvl", co.Lvl, DbType.Byte), new DbColumn("hp", co.Hp, DbType.Decimal),
                                     new DbColumn("count", co.Count, DbType.UInt16), new DbColumn("dmg_recv", co.DmgRecv, DbType.Decimal),
                                     new DbColumn("dmg_dealt", co.DmgDealt, DbType.Decimal),
-                                    new DbColumn("formation", (byte)(unit == null ? FormationType.Structure : unit.Formation), DbType.Byte),
                                     new DbColumn("hit_dealt", co.HitDealt, DbType.UInt16), new DbColumn("hit_dealt_by_unit", co.HitDealtByUnit, DbType.UInt32),
                                     new DbColumn("hit_recv", co.HitRecv, DbType.UInt16),
                             });

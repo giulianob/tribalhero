@@ -115,6 +115,7 @@
     <Compile Include="Battle\CombatGroups\CityOffensiveCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\CityDefensiveCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\CombatGroup.cs" />
+    <Compile Include="Battle\CombatGroups\ICombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\ICombatGroupFactory.cs" />
     <Compile Include="Battle\CombatGroups\IReportView.cs" />
     <Compile Include="Battle\CombatListFactory.cs" />
@@ -126,7 +127,7 @@
     <Compile Include="Battle\CombatObjects\CombatStructure.cs" />
     <Compile Include="Battle\CombatObjects\CombatUnitFactory.cs" />
     <Compile Include="Battle\CombatObjects\DefenseCombatUnit.cs" />
-    <Compile Include="Battle\CombatObjects\ICombatUnit.cs" />
+    <Compile Include="Battle\CombatObjects\ICombatObject.cs" />
     <Compile Include="Battle\CombatObjects\ICombatUnitFactory.cs" />
     <Compile Include="Battle\IBattleManager.cs" />
     <Compile Include="Battle\IBattleManagerFactory.cs" />

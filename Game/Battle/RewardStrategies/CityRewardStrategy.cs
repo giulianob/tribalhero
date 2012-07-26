@@ -24,7 +24,7 @@ namespace Game.Battle.RewardStrategies
             this.formula = formula;
         }
 
-        public void RemoveLoot(CombatObject attacker, CombatObject defender, out Resource actualLoot)
+        public void RemoveLoot(ICombatObject attacker, ICombatObject defender, out Resource actualLoot)
         {
             var loot = battleFormulas.GetRewardResource(attacker, defender);
             city.BeginUpdate();
@@ -39,12 +39,12 @@ namespace Game.Battle.RewardStrategies
             city.EndUpdate();
         }
 
-        public void GiveAttackerRewards(CombatObject attacker, int attackPoints, Resource loot)
+        public void GiveAttackerRewards(ICombatObject attacker, int attackPoints, Resource loot)
         {
             attacker.ReceiveReward(attackPoints, loot);
         }
 
-        public void GiveDefendersRewards(IEnumerable<CombatObject> defenders, int attackPoints, Resource loot)
+        public void GiveDefendersRewards(IEnumerable<ICombatObject> defenders, int attackPoints, Resource loot)
         {
             var cityObjectDefenders = defenders.OfType<CityCombatObject>();
 

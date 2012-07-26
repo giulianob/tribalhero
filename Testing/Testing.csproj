@@ -100,6 +100,7 @@
     <Compile Include="Balancing\TestCavalry.cs" />
     <Compile Include="Balancing\TestOutnumber.cs" />
     <Compile Include="Balancing\TestArcher.cs" />
+    <Compile Include="Battle\CombatGroupTest.cs" />
     <Compile Include="Battle\CombatListTest.cs" />
     <Compile Include="Battle\CombatStructureTest.cs" />
     <Compile Include="Battle\StatsModCalculator.cs" />

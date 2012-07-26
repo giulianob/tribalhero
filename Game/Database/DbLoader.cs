@@ -872,7 +872,7 @@ namespace Game.Database
                                 throw new Exception("City not found");
                             ITroopObject troopObject = (ITroopObject)troopStubCity[(uint)listReader["troop_object_id"]];
 
-                            CombatObject combatObj = new AttackCombatUnit((uint)listReader["id"], 
+                            ICombatObject combatObj = new AttackCombatUnit((uint)listReader["id"], 
                                                                  bm.BattleId,
                                                                  troopObject,
                                                                  (FormationType)((byte)listReader["formation_type"]),
@@ -917,7 +917,7 @@ namespace Game.Database
 
                             ITroopStub troopStub = troopStubCity.Troops[(byte)listReader["troop_stub_id"]];
 
-                            CombatObject combatObj = new DefenseCombatUnit((uint)listReader["id"], 
+                            ICombatObject combatObj = new DefenseCombatUnit((uint)listReader["id"], 
                                                                   bm.BattleId,
                                                                   troopStub,
                                                                   (FormationType)((byte)listReader["formation_type"]),

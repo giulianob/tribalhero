@@ -27,7 +27,7 @@ namespace Testing.Battle
             Mock<IDbManager> manager = new Mock<IDbManager>();
             Mock<RadiusLocator> radiusLocator = new Mock<RadiusLocator>();
             Mock<BattleFormulas> battleFormulas = new Mock<BattleFormulas>();
-            Mock<CombatObject> combatObject = new Mock<CombatObject>();
+            Mock<ICombatObject> combatObject = new Mock<ICombatObject>();
 
             CombatList list = new CombatList(manager.Object, radiusLocator.Object, battleFormulas.Object);
 
@@ -52,9 +52,9 @@ namespace Testing.Battle
             Mock<RadiusLocator> radiusLocator = new Mock<RadiusLocator>();
             Mock<BattleFormulas> battleFormulas = new Mock<BattleFormulas>();
             Mock<BattleStats> attackerStats = new Mock<BattleStats>();
-            Mock<CombatObject> attacker = new Mock<CombatObject>();
+            Mock<ICombatObject> attacker = new Mock<ICombatObject>();
             Mock<BattleStats> defenderStats = new Mock<BattleStats>();
-            Mock<CombatObject> defender = new Mock<CombatObject>();
+            Mock<ICombatObject> defender = new Mock<ICombatObject>();
 
             attackerStats.SetupGet(p => p.Stl).Returns(1);
 
@@ -70,8 +70,8 @@ namespace Testing.Battle
             defender.SetupGet(p => p.IsDead).Returns(false);
             defender.SetupGet(p => p.Stats).Returns(defenderStats.Object);
 
-            Mock<CombatGroup> combatGroup = new Mock<CombatGroup>();
-            combatGroup.Setup(p => p.GetEnumerator()).Returns(() => new List<CombatObject> {defender.Object}.GetEnumerator());
+            Mock<ICombatGroup> combatGroup = new Mock<ICombatGroup>();
+            combatGroup.Setup(p => p.GetEnumerator()).Returns(() => new List<ICombatObject> {defender.Object}.GetEnumerator());
 
             CombatList list = new CombatList(manager.Object, radiusLocator.Object, battleFormulas.Object) {{combatGroup.Object, false}};
 
@@ -93,7 +93,7 @@ namespace Testing.Battle
             Mock<IDbManager> manager = new Mock<IDbManager>();
             Mock<RadiusLocator> radiusLocator = new Mock<RadiusLocator>();
             Mock<BattleFormulas> battleFormulas = new Mock<BattleFormulas>();
-            Mock<CombatGroup> combatGroup = new Mock<CombatGroup>();
+            Mock<ICombatGroup> combatGroup = new Mock<ICombatGroup>();
             
             CombatList list = new CombatList(manager.Object, radiusLocator.Object, battleFormulas.Object) {{combatGroup.Object, false}};
 

@@ -176,8 +176,12 @@ namespace Testing.Tribe
             Mock<ITroopStub> newStub = CreateStub(out newCity);
             Mock<IStructure> targetStructure = new Mock<IStructure>();
             Mock<IActionWorker> actionWorker = new Mock<IActionWorker>();
+            Mock<ITroopObject> troopObject = new Mock<ITroopObject>();
 
             SystemClock.SetClock(startTime);
+
+
+            troopObject.SetupGet(p => p.ObjectId).Returns(95);
 
             gameObjectLocator.Setup(m => m.GetObjects(TARGET_X, TARGET_Y)).Returns(new List<ISimpleGameObject> {targetStructure.Object});
 
@@ -188,6 +192,11 @@ namespace Testing.Tribe
             actionWorker.Setup(m => m.DoPassive(It.IsAny<ICity>(), It.IsAny<PassiveAction>(), true)).Returns(Error.Ok);
 
             stubCity.SetupGet(p => p.Worker).Returns(actionWorker.Object);
+
+            // ReSharper disable RedundantAssignment
+            ITroopObject outTroopObject = troopObject.Object;
+            // ReSharper restore RedundantAssignment
+            procedure.Setup(m => m.TroopObjectCreate(stubCity.Object, stub.Object, out outTroopObject));
 
             Queue<int> moveTimes = new Queue<int>();
             moveTimes.Enqueue(300);
@@ -208,8 +217,7 @@ namespace Testing.Tribe
                                                    scheduler.Object,
                                                    procedure.Object,
                                                    tileLocator.Object,
-                                                   actionFactory.Object);
-            assignment.Add(stub.Object);
+                                                   actionFactory.Object) {stub.Object};
 
             SystemClock.SetClock(targetTime.AddSeconds(-90));
 
@@ -244,6 +252,9 @@ namespace Testing.Tribe
             Mock<IActionFactory> actionFactory = new Mock<IActionFactory>();
             Mock<IStructure> targetStructure = new Mock<IStructure>();
             Mock<IActionWorker> actionWorker = new Mock<IActionWorker>();
+            Mock<ITroopObject> troopObject = new Mock<ITroopObject>();
+
+            troopObject.SetupGet(p => p.ObjectId).Returns(99);
 
             gameObjectLocator.Setup(m => m.GetObjects(TARGET_X, TARGET_Y)).Returns(new List<ISimpleGameObject> {targetStructure.Object});
 
@@ -259,7 +270,12 @@ namespace Testing.Tribe
             SystemClock.SetClock(startTime);
 
             // troop should be dispatched a minute later
-            formula.Setup(m => m.MoveTimeTotal(stub.Object, It.IsAny<int>(), true)).Returns(300);
+            formula.Setup(m => m.MoveTimeTotal(stub.Object, It.IsAny<int>(), true)).Returns(300);            
+
+            // ReSharper disable RedundantAssignment
+            ITroopObject outTroopObject = troopObject.Object;
+            // ReSharper restore RedundantAssignment
+            procedure.Setup(m => m.TroopObjectCreate(stubCity.Object, stub.Object, out outTroopObject));
 
             Assignment assignment = new Assignment(tribe.Object,
                                                    TARGET_X,
@@ -275,8 +291,7 @@ namespace Testing.Tribe
                                                    scheduler.Object,
                                                    procedure.Object,
                                                    tileLocator.Object,
-                                                   actionFactory.Object);
-            assignment.Add(stub.Object);
+                                                   actionFactory.Object) {stub.Object};
             assignment.Reschedule();
             assignment.Time.Should().Be(targetTime.AddMinutes(-5));
 
@@ -284,7 +299,7 @@ namespace Testing.Tribe
 
             // Dispatch first troop
             assignment.Callback(null);
-            actionFactory.Verify(m => m.CreateDefenseChainAction(20, 2, 100, AttackMode.Strong));
+            actionFactory.Verify(m => m.CreateDefenseChainAction(20, 99, 100, AttackMode.Strong));
         }
 
         private Mock<ITroopStub> CreateStub(out Mock<ICity> stubCity)

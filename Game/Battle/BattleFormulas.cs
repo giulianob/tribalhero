@@ -64,7 +64,7 @@ namespace Game.Battle
             return units[structure.Lvl];
         }
 
-        public virtual decimal GetAttackerDmgToDefender(CombatObject attacker, CombatObject target, bool useDefAsAtk)
+        public virtual decimal GetAttackerDmgToDefender(ICombatObject attacker, ICombatObject target, bool useDefAsAtk)
         {
             decimal atk = attacker.Stats.Atk;
             decimal rawDmg = (atk * attacker.Count);
@@ -74,7 +74,7 @@ namespace Game.Battle
             return rawDmg > ushort.MaxValue ? ushort.MaxValue : rawDmg;
         }
 
-        public virtual double GetDmgModifier(CombatObject attacker, CombatObject target) {
+        public virtual double GetDmgModifier(ICombatObject attacker, ICombatObject target) {
             switch(attacker.Stats.Base.Weapon)
             {
                 case WeaponType.Tower:
@@ -134,7 +134,7 @@ namespace Game.Battle
             return (int)Math.Ceiling(100 / roundsRequired);            
         }
 
-        public virtual Resource GetRewardResource(CombatObject attacker, CombatObject defender)
+        public virtual Resource GetRewardResource(ICombatObject attacker, ICombatObject defender)
         {
             // calculate total carry, if 10 units with 10 carry, which should be 100
             int totalCarry = attacker.Stats.Carry*attacker.Count;
@@ -301,7 +301,7 @@ namespace Game.Battle
             return new Resource(troop.Stats.Loot)*(troopsLostPercentage)*(1f+(Config.Random.Next(max)/100f));
         }
 
-        public virtual int GetNumberOfHits(CombatObject currentAttacker)
+        public virtual int GetNumberOfHits(ICombatObject currentAttacker)
         {
             return currentAttacker.Stats.Splash == 0 ? 1 : currentAttacker.Stats.Splash;
         }

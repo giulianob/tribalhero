@@ -15,7 +15,7 @@ namespace Game.Battle
     /// <summary>
     /// A list of combat objects and manages targetting.
     /// </summary>
-    public class CombatList : PersistableObjectList<CombatGroup>, ICombatList
+    public class CombatList : PersistableObjectList<ICombatGroup>, ICombatList
     {
         private readonly RadiusLocator radiusLocator;
 
@@ -48,12 +48,12 @@ namespace Game.Battle
             }
         }
 
-        public bool HasInRange(CombatObject attacker)
+        public bool HasInRange(ICombatObject attacker)
         {
             return AllCombatObjects().Any(obj => (obj.InRange(attacker) && attacker.InRange(obj)) && !obj.IsDead);
         }
 
-        public BestTargetResult GetBestTargets(CombatObject attacker, out IList<Target> result, int maxCount)
+        public BestTargetResult GetBestTargets(ICombatObject attacker, out IList<Target> result, int maxCount)
         {
             result = new List<Target>();
 
@@ -110,12 +110,12 @@ namespace Game.Battle
             return BestTargetResult.Ok;
         }
 
-        public IEnumerable<CombatObject> AllCombatObjects()
+        public IEnumerable<ICombatObject> AllCombatObjects()
         {
             return BackingList.SelectMany(group => group.Select(combatObject => combatObject));
         }
 
-        private void GroupRemoved(PersistableObjectList<CombatGroup> list, CombatGroup item)
+        private void GroupRemoved(PersistableObjectList<ICombatGroup> list, ICombatGroup item)
         {
             item.Clear();
         }
@@ -135,9 +135,9 @@ namespace Game.Battle
 
         public class Target
         {
-            public CombatObject CombatObject { get; set; }
+            public ICombatObject CombatObject { get; set; }
 
-            public CombatGroup Group { get; set; }
+            public ICombatGroup Group { get; set; }
         }
 
         #endregion

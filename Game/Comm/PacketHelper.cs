@@ -269,12 +269,12 @@ namespace Game.Comm
             }
         }
 
-        internal static void AddToPacket(IList<CombatObject> list, Packet packet)
+        internal static void AddToPacket(IList<ICombatObject> list, Packet packet)
         {
             packet.AddUInt16((ushort)list.Count);
             foreach (var obj in list)
             {         
-                //TODO: Implement diff types on client
+                // TODO: Implement diff types on client
                 if (obj is CityCombatObject)
                 {
                     //packet.AddByte(1);
@@ -287,10 +287,7 @@ namespace Game.Comm
                 }
                 packet.AddUInt32(obj.Id);
                 packet.AddByte((byte)obj.ClassType);
-                if (obj.ClassType == BattleClass.Unit)
-                    packet.AddByte(((ICombatUnit)obj).TroopStub.TroopId);
-                else
-                    packet.AddByte(1);
+                packet.AddByte(obj.TroopStub.TroopId);
                 packet.AddUInt16(obj.Type);
                 packet.AddByte(obj.Lvl);
                 packet.AddFloat((float)obj.Hp);

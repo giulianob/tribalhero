@@ -14,8 +14,8 @@ namespace Game.Battle.Reporting
         ReportedGroups ReportedGroups { get; }
         void CreateBattleReport();
         void CompleteBattle();
-        void WriteReportGroup(CombatGroup group, bool isAttacker, ReportState state);
-        void WriteReportGroups(IEnumerable<CombatGroup> groups, bool isAttacker, ReportState state);
+        void WriteReportGroup(ICombatGroup group, bool isAttacker, ReportState state);
+        void WriteReportGroups(IEnumerable<ICombatGroup> groups, bool isAttacker, ReportState state);
         void CompleteReport(ReportState state);
         void SetLootedResources(uint cityId, byte troopId, uint battleId, Resource lootResource, Resource bonusResource);
     }

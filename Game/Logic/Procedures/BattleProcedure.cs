@@ -145,7 +145,7 @@ namespace Game.Logic.Procedures
             battleManager.Add(defensiveGroup, BattleManager.BattleSide.Defense);
         }
 
-        private CombatGroup GetOrCreateLocalGroup(IBattleManager battleManager, ICity city)
+        private ICombatGroup GetOrCreateLocalGroup(IBattleManager battleManager, ICity city)
         {
             var combatGroup = battleManager.GetCombatGroup(1);
             if (combatGroup == null)

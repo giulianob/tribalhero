@@ -43,7 +43,7 @@ namespace ConsoleSimulator
 
         private readonly QuantityUnit unit;
 
-        private CombatObject deadObject;
+        private ICombatObject deadObject;
 
         private StreamWriter sw;
 
@@ -236,7 +236,7 @@ namespace ConsoleSimulator
             }
         }
 
-        private void WriteResult(CombatObject obj)
+        private void WriteResult(ICombatObject obj)
         {
             sw.Write("{0},{1},{2},{3},{4},{5},{6},{7},{8}",
                      obj.DmgDealt,
@@ -255,7 +255,7 @@ namespace ConsoleSimulator
             sw.WriteLine(",{0}", enemyCount);
         }
 
-        private void BmUnitRemoved(IBattleManager battle, CombatObject obj)
+        private void BmUnitRemoved(IBattleManager battle, ICombatObject obj)
         {
             deadObject = obj;
             if (obj is DefenseCombatUnit)
@@ -283,7 +283,7 @@ namespace ConsoleSimulator
             }
         }
 
-        private void BmUnitRemoved2(IBattleManager battle, CombatObject obj)
+        private void BmUnitRemoved2(IBattleManager battle, ICombatObject obj)
         {
             deadObject = obj;
             if (obj is AttackCombatUnit)

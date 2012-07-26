@@ -43,7 +43,7 @@ namespace Testing.Battle
         /// And object is in range
         /// When GetBestTargets is called
         /// Then the result should be CombatList.BestTargetResult.Ok
-        /// And out combatList should be empty
+        /// And out combatList should have the defender
         /// </summary>
         [Fact]
         public void TestInRange()
@@ -59,12 +59,14 @@ namespace Testing.Battle
             attackerStats.SetupGet(p => p.Stl).Returns(1);
 
             attacker.Setup(m => m.InRange(defender.Object)).Returns(true);
+            attacker.Setup(m => m.Location()).Returns(new Location(0, 0));
             attacker.SetupGet(p => p.Visibility).Returns(1);
             attacker.SetupGet(p => p.IsDead).Returns(false);
 
             defenderStats.SetupGet(p => p.Stl).Returns(2);
 
             defender.Setup(m => m.InRange(attacker.Object)).Returns(true);
+            defender.Setup(m => m.Location()).Returns(new Location(0, 0));
             defender.SetupGet(p => p.IsDead).Returns(false);
             defender.SetupGet(p => p.Stats).Returns(defenderStats.Object);
 
@@ -79,6 +81,25 @@ namespace Testing.Battle
             result.Should().HaveCount(1);
             result[0].CombatObject.Should().Be(defender.Object);
             targetResult.Should().Be(CombatList.BestTargetResult.Ok);
+        }
+        
+        /// <summary>
+        /// When a group is removed
+        /// Then the group should be cleared
+        /// </summary>
+        [Fact]
+        public void TestGroupIsClearedWhenRemoved()
+        {
+            Mock<IDbManager> manager = new Mock<IDbManager>();
+            Mock<RadiusLocator> radiusLocator = new Mock<RadiusLocator>();
+            Mock<BattleFormulas> battleFormulas = new Mock<BattleFormulas>();
+            Mock<CombatGroup> combatGroup = new Mock<CombatGroup>();
+            
+            CombatList list = new CombatList(manager.Object, radiusLocator.Object, battleFormulas.Object) {{combatGroup.Object, false}};
+
+            list.Remove(combatGroup.Object);           
+
+            combatGroup.Verify(m => m.Clear(), Times.Once());
         }
 
         #endregion

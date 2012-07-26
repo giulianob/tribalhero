@@ -104,7 +104,7 @@
     <Compile Include="IPersistable.cs" />
     <Compile Include="Managers\MySqlDbManager.cs" />
     <Compile Include="Managers\MySqlDbTransaction.cs" />
-    <Compile Include="ListOfPersistableObjects.cs" />
+    <Compile Include="PersistableObjectList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

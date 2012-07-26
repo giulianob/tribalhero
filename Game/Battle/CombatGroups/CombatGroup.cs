@@ -8,16 +8,11 @@ using Persistance;
 
 namespace Game.Battle.CombatGroups
 {
-    public abstract class CombatGroup : ListOfPersistableObjects<CombatObject>, IPersistableObject, ILockable
+    public abstract class CombatGroup : PersistableObjectList<CombatObject>, IPersistableObject, ILockable
     {
         protected readonly uint BattleId;
 
-        public delegate void CombatGroupChanged(CombatGroup combatGroup, CombatObject combatObject);
-
-        public event CombatGroupChanged CombatObjectAdded = delegate { };
-        public event CombatGroupChanged CombatObjectRemoved = delegate { };
-
-        public uint Id { get; protected set; }
+        public uint Id { get; private set; }
 
         public abstract byte TroopId { get; }
 
@@ -34,23 +29,20 @@ namespace Game.Battle.CombatGroups
         protected CombatGroup(uint battleId, uint id, IDbManager manager)
                 : base(manager)
         {
+            ItemRemoved += ObjectRemoved;
+            ItemAdded += ObjectAdded;
             Id = id;
             BattleId = battleId;
         }
 
-        public new void Add(CombatObject item, bool save)
-        {            
-            base.Add(item, save);
-            item.GroupId = Id;
-            CombatObjectAdded(this, item);
+        private void ObjectAdded(PersistableObjectList<CombatObject> persistableObjectList, CombatObject combatObject)
+        {
+            combatObject.GroupId = Id;
         }
 
-        public new void RemoveAt(int index)
-        {            
-            var combatObject = this[index];            
-            base.RemoveAt(index);            
+        private void ObjectRemoved(PersistableObjectList<CombatObject> persistableObjectList, CombatObject combatObject)
+        {
             combatObject.GroupId = 0;
-            CombatObjectRemoved(this, combatObject);            
         }
 
         public bool IsDead()

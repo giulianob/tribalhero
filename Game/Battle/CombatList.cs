@@ -15,7 +15,7 @@ namespace Game.Battle
     /// <summary>
     /// A list of combat objects and manages targetting.
     /// </summary>
-    public class CombatList : ListOfPersistableObjects<CombatGroup>, ICombatList
+    public class CombatList : PersistableObjectList<CombatGroup>, ICombatList
     {
         private readonly RadiusLocator radiusLocator;
 
@@ -35,6 +35,7 @@ namespace Game.Battle
         public CombatList(IDbManager manager, RadiusLocator radiusLocator, BattleFormulas battleFormulas)
                 : base(manager)
         {
+            ItemRemoved += GroupRemoved;
             this.radiusLocator = radiusLocator;
             this.battleFormulas = battleFormulas;
         }
@@ -114,12 +115,9 @@ namespace Game.Battle
             return BackingList.SelectMany(group => group.Select(combatObject => combatObject));
         }
 
-        public new void RemoveAt(int index)
+        private void GroupRemoved(PersistableObjectList<CombatGroup> list, CombatGroup item)
         {
-            // Clear the group to delete all its contents from the db then remove it from our list
-            //TODO: This is ugly and should be automatic w/ the DbDependencies or some other way
-            this[index].Clear();
-            base.RemoveAt(index);
+            item.Clear();
         }
 
         #region Nested type: CombatScoreItem

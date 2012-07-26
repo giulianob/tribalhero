@@ -107,6 +107,8 @@ namespace Game.Logic.Procedures
                 return;
             }
 
+            // Move to in battle formation
+            var unitsToJoinBattle = city.DefaultTroop[FormationType.Normal].ToList();
             city.DefaultTroop.BeginUpdate();
             city.DefaultTroop.State = TroopState.Battle;
             city.DefaultTroop.Template.LoadStats(TroopBattleGroup.Local);
@@ -115,7 +117,7 @@ namespace Game.Logic.Procedures
 
             // Add to local group
             var combatGroup = GetOrCreateLocalGroup(battleManager, city);
-            foreach (var kvp in city.DefaultTroop[FormationType.Normal])
+            foreach (var kvp in unitsToJoinBattle)
             {
                 combatUnitFactory.CreateDefenseCombatUnit(battleManager, city.DefaultTroop, FormationType.InBattle, kvp.Key, kvp.Value).ToList().ForEach(combatGroup.Add);
             }

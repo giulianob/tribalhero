@@ -8,8 +8,13 @@ using System.Collections.Generic;
 
 namespace Persistance
 {
-    abstract public class ListOfPersistableObjects<T> : IListOfPersistableObjects<T> where T : IPersistableObject
+    abstract public class PersistableObjectList<T> : IListOfPersistableObjects<T> where T : IPersistableObject
     {
+        public delegate void ListChanged(PersistableObjectList<T> list, T item);
+
+        public event ListChanged ItemAdded = delegate { };
+        public event ListChanged ItemRemoved = delegate { };
+
         private readonly IDbManager manager;
 
         /// <summary>
@@ -18,12 +23,12 @@ namespace Persistance
         protected readonly List<T> BackingList; 
 
         [Obsolete("For testing only", true)]
-        protected ListOfPersistableObjects()
+        protected PersistableObjectList()
         {
             
         }
 
-        protected ListOfPersistableObjects(IDbManager manager)
+        protected PersistableObjectList(IDbManager manager)
         {
             BackingList = new List<T>();
             this.manager = manager;
@@ -37,8 +42,11 @@ namespace Persistance
         public void Add(T item, bool save)
         {
             BackingList.Add(item);
+            ItemAdded(this, item);
             if (save)
+            {
                 manager.Save(item);
+            }
         }
 
         public void CopyTo(T[] array, int arrayIndex)
@@ -71,8 +79,12 @@ namespace Persistance
         {
             if (BackingList.Remove(item))
             {
+                ItemRemoved(this, item);
+
                 if (save)
+                {
                     manager.Delete(item);
+                }
 
                 return true;
             }
@@ -88,12 +100,15 @@ namespace Persistance
         public void Insert(int index, T item)
         {
             BackingList.Insert(index, item);
+            ItemAdded(this, item);
             manager.Save(item);
         }
 
         public void RemoveAt(int index)
         {
+            var item = this[index];
             manager.Delete(this[index]);
+            ItemRemoved(this, item);
             BackingList.RemoveAt(index);
         }
 
@@ -106,7 +121,9 @@ namespace Persistance
             set
             {
                 manager.Delete(BackingList[index]);
+                ItemRemoved(this, BackingList[index]);
                 BackingList[index] = value;
+                ItemAdded(this, value);
                 manager.Save(value);
             }
         }

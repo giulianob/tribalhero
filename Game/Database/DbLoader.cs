@@ -926,7 +926,6 @@ namespace Game.Database
                                                                   (ushort)listReader["count"],
                                                                   (decimal)listReader["left_over_hp"],
                                                                   Ioc.Kernel.Get<BattleFormulas>());       
-
                             combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                             combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
                             combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];

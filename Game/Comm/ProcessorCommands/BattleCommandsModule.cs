@@ -109,7 +109,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 // TODO: See comment for subscribe. Applies here too.
-                Global.Channel.Unsubscribe(session, "/BATTLE/" + city.Id);
+                Global.Channel.Unsubscribe(session, "/BATTLE/" + city.Battle.BattleId);
             }
 
             ReplySuccess(session, packet);

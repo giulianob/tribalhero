@@ -10,7 +10,7 @@ using Persistance;
 
 namespace Game.Battle.Reporting
 {
-    public class ReportedGroups : Dictionary<CombatGroup, uint>, IPersistableList
+    public class ReportedGroups : Dictionary<ICombatGroup, uint>, IPersistableList
     {
         public const string DB_TABLE = "reported_groups";
 

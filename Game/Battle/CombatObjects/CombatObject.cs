@@ -14,7 +14,7 @@ using Persistance;
 
 namespace Game.Battle.CombatObjects
 {
-    public abstract class CombatObject : IComparable<object>, IPersistableObject, ILockable
+    public abstract class CombatObject : ICombatObject
     {
         protected readonly uint BattleId;
 
@@ -102,7 +102,7 @@ namespace Game.Battle.CombatObjects
 
         public abstract void CalcActualDmgToBeTaken(ICombatList attackers, ICombatList defenders, decimal baseDmg, int attackIndex, out decimal actualDmg);
 
-        public abstract bool InRange(CombatObject obj);
+        public abstract bool InRange(ICombatObject obj);
 
         public abstract Location Location();
 
@@ -145,7 +145,7 @@ namespace Game.Battle.CombatObjects
             DbPersistance.Current.Delete(this);
         }
 
-        public bool CanSee(CombatObject obj, uint lowestSteath)
+        public bool CanSee(ICombatObject obj, uint lowestSteath)
         {
             return Visibility >= obj.Stats.Stl || lowestSteath >= obj.Stats.Stl;
         }

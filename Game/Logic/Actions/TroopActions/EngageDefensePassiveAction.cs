@@ -107,7 +107,7 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        private void BattleActionAttacked(IBattleManager battle, CombatObject source, CombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatObject source, ICombatObject target, decimal damage)
         {
             var unit = target as AttackCombatUnit;
 

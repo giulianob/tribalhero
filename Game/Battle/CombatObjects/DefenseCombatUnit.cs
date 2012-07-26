@@ -17,7 +17,7 @@ using Persistance;
 
 namespace Game.Battle.CombatObjects
 {
-    public class DefenseCombatUnit : CityCombatObject, ICombatUnit
+    public class DefenseCombatUnit : CityCombatObject
     {
         public const string DB_TABLE = "defense_combat_units";
 
@@ -249,7 +249,7 @@ namespace Game.Battle.CombatObjects
 
         #endregion
 
-        public override bool InRange(CombatObject obj)
+        public override bool InRange(ICombatObject obj)
         {
             return true;
         }

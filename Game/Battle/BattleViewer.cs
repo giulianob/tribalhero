@@ -33,7 +33,7 @@ namespace Game.Battle
             Global.Logger.Info(str);
         }
 
-        private void PrintCombatobject(CombatObject co)
+        private void PrintCombatobject(ICombatObject co)
         {
             if (co is AttackCombatUnit)
             {
@@ -54,7 +54,7 @@ namespace Game.Battle
             }
         }
 
-        private void BattleActionAttacked(IBattleManager battle, CombatObject source, CombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatObject source, ICombatObject target, decimal damage)
         {
             Append("**************************************");
             Append("Attacker: ");
@@ -64,7 +64,7 @@ namespace Game.Battle
             Append("**************************************\n");
         }
 
-        private void BattleUnitRemoved(IBattleManager battle, CombatObject obj)
+        private void BattleUnitRemoved(IBattleManager battle, ICombatObject obj)
         {
             Append("**************************************");
             Append("Removing: ");
@@ -92,7 +92,7 @@ namespace Game.Battle
             Append("Battle Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        void BattleSkippedAttacker(IBattleManager battle, CombatObject obj)
+        void BattleSkippedAttacker(IBattleManager battle, ICombatObject obj)
         {
             Append("**************************************");
             Append("Skipping: ");

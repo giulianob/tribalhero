@@ -38,9 +38,9 @@ namespace Testing.Actions
             return troopObject.Object;
         }
 
-        private CombatObject MockCombatObject(ITroopStub stub)
+        private ICombatObject MockCombatObject(ITroopStub stub)
         {
-            var co = new Mock<CombatObject>();
+            var co = new Mock<ICombatObject>();
             co.SetupGet(p => p.TroopStub).Returns(stub);
             return co.Object;
         }
@@ -88,7 +88,7 @@ namespace Testing.Actions
 
             var attackers = new Mock<ICombatList>();
             attackers.SetupGet(p => p.Upkeep).Returns(150);
-            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<CombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
+            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<ICombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
 
             // Local city + troops
             var localTroops = new Mock<ITroopManager>();
@@ -156,7 +156,7 @@ namespace Testing.Actions
 
             var attackers = new Mock<ICombatList>();
             attackers.SetupGet(p => p.Upkeep).Returns(150);
-            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<CombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
+            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<ICombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
 
             // Local city + troops
             var localTroops = new Mock<ITroopManager>();
@@ -222,7 +222,7 @@ namespace Testing.Actions
 
             var attackers = new Mock<ICombatList>();            
             attackers.SetupGet(p => p.Upkeep).Returns(300);            
-            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<CombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
+            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<ICombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
             
             // Local city + troops
             var localTroops = new Mock<ITroopManager>();
@@ -288,7 +288,7 @@ namespace Testing.Actions
 
             var attackers = new Mock<ICombatList>();
             attackers.SetupGet(p => p.Upkeep).Returns(1100);
-            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<CombatGroup>
+            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<ICombatGroup>
             {
                     attackerGroup1,
                     attackerGroup2
@@ -358,7 +358,7 @@ namespace Testing.Actions
 
             var attackers = new Mock<ICombatList>();
             attackers.SetupGet(p => p.Upkeep).Returns(1100);
-            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<CombatGroup>
+            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<ICombatGroup>
             {
                     attackerGroup1,
                     attackerGroup2

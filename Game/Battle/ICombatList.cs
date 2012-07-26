@@ -5,14 +5,14 @@ using Persistance;
 
 namespace Game.Battle
 {
-    public interface ICombatList : IListOfPersistableObjects<CombatGroup>
+    public interface ICombatList : IListOfPersistableObjects<ICombatGroup>
     {
         int Upkeep { get; }
 
-        bool HasInRange(CombatObject attacker);
+        bool HasInRange(ICombatObject attacker);
 
-        CombatList.BestTargetResult GetBestTargets(CombatObject attacker, out IList<CombatList.Target> result, int maxCount);
+        CombatList.BestTargetResult GetBestTargets(ICombatObject attacker, out IList<CombatList.Target> result, int maxCount);
 
-        IEnumerable<CombatObject> AllCombatObjects();
+        IEnumerable<ICombatObject> AllCombatObjects();
     }
 }

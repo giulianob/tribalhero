@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Battle.CombatObjects;
 using Game.Data;
-using Game.Util.Locking;
 using Persistance;
 
 namespace Game.Battle.CombatGroups
 {
-    public abstract class CombatGroup : PersistableObjectList<CombatObject>, IPersistableObject, ILockable
+    public abstract class CombatGroup : PersistableObjectList<ICombatObject>, ICombatGroup
     {
         protected readonly uint BattleId;
 
@@ -35,12 +34,12 @@ namespace Game.Battle.CombatGroups
             BattleId = battleId;
         }
 
-        private void ObjectAdded(PersistableObjectList<CombatObject> persistableObjectList, CombatObject combatObject)
+        private void ObjectAdded(PersistableObjectList<ICombatObject> persistableObjectList, ICombatObject combatObject)
         {
             combatObject.GroupId = Id;
         }
 
-        private void ObjectRemoved(PersistableObjectList<CombatObject> persistableObjectList, CombatObject combatObject)
+        private void ObjectRemoved(PersistableObjectList<ICombatObject> persistableObjectList, ICombatObject combatObject)
         {
             combatObject.GroupId = 0;
         }

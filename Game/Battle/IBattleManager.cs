@@ -22,12 +22,12 @@ namespace Game.Battle
         IEnumerable<ILockable> LockList { get; }
         BattleManager.BattleSide NextToAttack { set; }
 
-        CombatObject GetCombatObject(uint id);
-        CombatGroup GetCombatGroup(uint id);
+        ICombatObject GetCombatObject(uint id);
+        ICombatGroup GetCombatGroup(uint id);
         bool CanWatchBattle(IPlayer player, out int roundsLeft);
-        void DbLoaderAddToCombatList(CombatGroup group, BattleManager.BattleSide side);
-        void Add(CombatGroup combatGroup, BattleManager.BattleSide battleSide);
-        void Remove(CombatGroup group, BattleManager.BattleSide side, ReportState state);
+        void DbLoaderAddToCombatList(ICombatGroup group, BattleManager.BattleSide side);
+        void Add(ICombatGroup combatGroup, BattleManager.BattleSide battleSide);
+        void Remove(ICombatGroup group, BattleManager.BattleSide side, ReportState state);
         bool ExecuteTurn();        
 
         event BattleManager.OnBattle EnterBattle;

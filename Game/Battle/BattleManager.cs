@@ -157,7 +157,7 @@ namespace Game.Battle
 
         #endregion
 
-        public CombatObject GetCombatObject(uint id)
+        public ICombatObject GetCombatObject(uint id)
         {
             return Attackers.AllCombatObjects().FirstOrDefault(co => co.Id == id) ?? Defenders.AllCombatObjects().FirstOrDefault(co => co.Id == id);
         }
@@ -216,7 +216,7 @@ namespace Game.Battle
 
         #region Database Loader
 
-        public void DbLoaderAddToCombatList(CombatGroup group, BattleSide side)
+        public void DbLoaderAddToCombatList(ICombatGroup group, BattleSide side)
         {
             if (side == BattleSide.Defense)
             {
@@ -251,12 +251,12 @@ namespace Game.Battle
             idGen.Set(maxId);
         }
 
-        public void Add(CombatGroup combatGroup, BattleSide battleSide)
+        public void Add(ICombatGroup combatGroup, BattleSide battleSide)
         {
             AddToCombatList(combatGroup, battleSide == BattleSide.Attack, battleSide == BattleSide.Attack ? Attackers : Defenders, ReportState.Entering);
         }
 
-        private void AddToCombatList(CombatGroup group, bool isAttacker, ICombatList combatList, ReportState state)
+        private void AddToCombatList(ICombatGroup group, bool isAttacker, ICombatList combatList, ReportState state)
         {
             lock (battleLock)
             {
@@ -279,7 +279,7 @@ namespace Game.Battle
             }
         }
 
-        public void Remove(CombatGroup group, BattleSide side, ReportState state)
+        public void Remove(ICombatGroup group, BattleSide side, ReportState state)
         {
             lock (battleLock)
             {
@@ -409,8 +409,8 @@ namespace Game.Battle
                 #region Targeting
 
                 IList<CombatList.Target> currentDefenders;
-                CombatObject attackerObject;                
-                CombatGroup attackerGroup;
+                ICombatObject attackerObject;                
+                ICombatGroup attackerGroup;
 
                 do
                 {
@@ -434,11 +434,13 @@ namespace Game.Battle
                             EnterRound(this, Attackers, Defenders, Round);
                         }
 
-                        if (attackerObject == null || Defenders.Count == 0 || Attackers.Count == 0)
+                        if (attackerObject != null && Defenders.Count != 0 && Attackers.Count != 0)
                         {
-                            BattleEnded(true);
-                            return false;
-                        }                        
+                            continue;
+                        }
+
+                        BattleEnded(true);
+                        return false;
                     }
                     // Since the EventEnterRound can remove the object from battle, we need to make sure he's still here before we proceed
                     while (!Attackers.AllCombatObjects().Contains(attackerObject) && !Defenders.AllCombatObjects().Contains(attackerObject));
@@ -532,7 +534,7 @@ namespace Game.Battle
             }
         }
 
-        public CombatGroup GetCombatGroup(uint id)
+        public ICombatGroup GetCombatGroup(uint id)
         {
             return Attackers.FirstOrDefault(group => group.Id == id) ?? Defenders.FirstOrDefault(group => group.Id == id);
         }
@@ -542,7 +544,7 @@ namespace Game.Battle
             NextToAttack = NextToAttack == BattleSide.Attack ? BattleSide.Defense : BattleSide.Attack;
         }
 
-        private bool AttackTarget(ICombatList offensiveCombatList, ICombatList defensiveCombatList, CombatObject attacker, CombatList.Target target, int attackIndex)
+        private bool AttackTarget(ICombatList offensiveCombatList, ICombatList defensiveCombatList, ICombatObject attacker, CombatList.Target target, int attackIndex)
         {
             #region Damage
 
@@ -622,7 +624,7 @@ namespace Game.Battle
                     target.Group.Remove(target.CombatObject);
                 }                                
                 
-                ActionAttacked(this, attacker, target.CombatObject, actualDmg);
+                ActionAttacked(this, NextToAttack, attacker, target.CombatObject, actualDmg);
 
                 UnitRemoved(this, target.CombatObject);
 
@@ -633,7 +635,7 @@ namespace Game.Battle
             }
             else
             {
-                ActionAttacked(this, attacker, target.CombatObject, actualDmg);
+                ActionAttacked(this, NextToAttack, attacker, target.CombatObject, actualDmg);
 
                 if (!target.CombatObject.Disposed)
                 {
@@ -650,17 +652,17 @@ namespace Game.Battle
 
         #region Events
 
-        public delegate void OnAttack(IBattleManager battle, CombatObject source, CombatObject target, decimal damage);
+        public delegate void OnAttack(IBattleManager battle, BattleSide attackingSide, ICombatObject source, ICombatObject target, decimal damage);
 
         public delegate void OnBattle(IBattleManager battle, ICombatList atk, ICombatList def);
 
-        public delegate void OnReinforce(IBattleManager battle, IEnumerable<CombatObject> list);
+        public delegate void OnReinforce(IBattleManager battle, IEnumerable<ICombatObject> list);
 
         public delegate void OnRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round);
 
         public delegate void OnTurn(IBattleManager battle, ICombatList atk, ICombatList def, int turn);
 
-        public delegate void OnUnitUpdate(IBattleManager battle, CombatObject obj);
+        public delegate void OnUnitUpdate(IBattleManager battle, ICombatObject obj);
 
         public event OnBattle EnterBattle = delegate { };
 

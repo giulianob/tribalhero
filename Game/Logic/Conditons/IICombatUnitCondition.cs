@@ -9,6 +9,6 @@ namespace Game.Logic.Conditons
 {
     public interface IICombatUnitCondition
     {
-        bool Check(ICombatUnit obj);
+        bool Check(ICombatObject obj);
     }
 }

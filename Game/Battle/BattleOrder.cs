@@ -21,7 +21,7 @@ namespace Game.Battle
         /// If primary group has no one able to attack, it will look into the secondary group instead.
         /// </summary>
         /// <returns>True if got an object from the current round. False if had to look into next round.</returns>
-        public bool NextObject(uint round, List<CombatGroup> attacker, List<CombatGroup> defender, BattleManager.BattleSide sideAttacking, out CombatObject outCombatObject, out CombatGroup outCombatGroup, out BattleManager.BattleSide foundInGroup)
+        public bool NextObject(uint round, List<ICombatGroup> attacker, List<ICombatGroup> defender, BattleManager.BattleSide sideAttacking, out ICombatObject outCombatObject, out ICombatGroup outCombatGroup, out BattleManager.BattleSide foundInGroup)
         {
             var offensiveCombatList = sideAttacking == BattleManager.BattleSide.Attack ? attacker : defender;
             var defensiveCombatList = sideAttacking == BattleManager.BattleSide.Attack ? defender : attacker;
@@ -29,8 +29,8 @@ namespace Game.Battle
             var defensiveSide = sideAttacking == BattleManager.BattleSide.Attack ? BattleManager.BattleSide.Defense : BattleManager.BattleSide.Attack;
 
             // Look into offenside combat list first
-            CombatObject outCombatObjectAttacker;
-            CombatGroup outCombatGroupAttacker;
+            ICombatObject outCombatObjectAttacker;
+            ICombatGroup outCombatGroupAttacker;
             if (NextObjectFromList(round, offensiveCombatList, out outCombatObjectAttacker, out outCombatGroupAttacker))
             {
                 foundInGroup = offensiveSide;
@@ -40,8 +40,8 @@ namespace Game.Battle
             }
 
             // Couldnt find in the attacker so look in defense
-            CombatObject outCombatObjectDefender;
-            CombatGroup outCombatGroupDefender;
+            ICombatObject outCombatObjectDefender;
+            ICombatGroup outCombatGroupDefender;
             if (NextObjectFromList(round, defensiveCombatList, out outCombatObjectDefender, out outCombatGroupDefender))
             {
                 foundInGroup = defensiveSide;
@@ -76,10 +76,10 @@ namespace Game.Battle
             return false;
         }
 
-        private bool NextObjectFromList(uint round, List<CombatGroup> combatGroups, out CombatObject outObj, out CombatGroup outGroup)
+        private bool NextObjectFromList(uint round, List<ICombatGroup> combatGroups, out ICombatObject outObj, out ICombatGroup outGroup)
         {
             // Find any objects that are still in the current round
-            foreach (CombatGroup combatGroup in combatGroups)
+            foreach (ICombatGroup combatGroup in combatGroups)
             {
                 outObj = combatGroup.FirstOrDefault(obj => obj.LastRound == round);
 
@@ -95,7 +95,7 @@ namespace Game.Battle
             }
 
             // No object in the current round, get the first one for the next round
-            foreach (CombatGroup combatGroup in combatGroups)
+            foreach (ICombatGroup combatGroup in combatGroups)
             {
                 outObj = combatGroup.FirstOrDefault(obj => obj.LastRound == round + 1);
 

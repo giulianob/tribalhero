@@ -191,7 +191,7 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        private void BattleWithdrawAttacker(IBattleManager battle, IEnumerable<CombatObject> list)
+        private void BattleWithdrawAttacker(IBattleManager battle, IEnumerable<ICombatObject> list)
         {            
             ICity targetCity;
             ICity city;
@@ -221,7 +221,7 @@ namespace Game.Logic.Actions
         /// <summary>
         /// Takes care of finishing this action up if all our units are killed
         /// </summary>
-        private void BattleUnitRemoved(IBattleManager battle, CombatObject combatobject)
+        private void BattleUnitRemoved(IBattleManager battle, ICombatObject combatobject)
         {
             ICity targetCity;
             ICity city;
@@ -296,7 +296,7 @@ namespace Game.Logic.Actions
                     throw new ArgumentException();
                 }
 
-                CombatGroup combatGroup = targetCity.Battle.GetCombatGroup(groupId);
+                ICombatGroup combatGroup = targetCity.Battle.GetCombatGroup(groupId);
                 if (combatGroup == null)
                 {
                     throw new Exception("Cannot find group to be removed");
@@ -305,7 +305,7 @@ namespace Game.Logic.Actions
             }
         }
 
-        private void BattleActionAttacked(IBattleManager battle, CombatObject source, CombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatObject source, ICombatObject target, decimal damage)
         {
             ICity city;
             ICity targetCity;
@@ -368,7 +368,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                CombatGroup combatGroup = targetCity.Battle.GetCombatGroup(groupId);
+                ICombatGroup combatGroup = targetCity.Battle.GetCombatGroup(groupId);
                 if (combatGroup == null)
                 {
                     throw new Exception("Cannot find group to be removed");
@@ -381,7 +381,6 @@ namespace Game.Logic.Actions
         {
             ICity city;
             ICity targetCity;
-            ITroopStub stub;
 
             ITroopObject troopObject;
             if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) || !gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
@@ -430,7 +429,7 @@ namespace Game.Logic.Actions
 
             if (troopObject.Stats.Stamina == 0)
             {
-                CombatGroup combatGroup = targetCity.Battle.GetCombatGroup(groupId);
+                ICombatGroup combatGroup = targetCity.Battle.GetCombatGroup(groupId);
                 if (combatGroup == null)
                 {
                     throw new Exception("Cannot find group to be removed");

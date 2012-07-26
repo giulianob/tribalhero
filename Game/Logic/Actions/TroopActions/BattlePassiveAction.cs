@@ -263,10 +263,8 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        private void BattleActionAttacked(IBattleManager battleManager, CombatObject source, CombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battleManager, BattleManager.BattleSide attackingSide,  ICombatObject source, ICombatObject target, decimal damage)
         {
-            var combatUnit = target as ICombatUnit;
-
             ICity city;
             if (!gameObjectLocator.TryGetObjects(cityId, out city))
             {
@@ -274,13 +272,13 @@ namespace Game.Logic.Actions
             }
 
             // Check if we should retreat a unit
-            if (combatUnit == null || combatUnit.IsAttacker || target.TroopStub.StationedCity != city || target.TroopStub.TotalCount <= 0 ||
+            if (target.ClassType != BattleClass.Unit || attackingSide != BattleManager.BattleSide.Defense || target.TroopStub.StationedCity != city || target.TroopStub.TotalCount <= 0 ||
                 target.TroopStub.TotalCount > target.TroopStub.StationedRetreatCount)
             {
                 return;
             }
 
-            ITroopStub stub = combatUnit.TroopStub;
+            ITroopStub stub = target.TroopStub;
 
             // TODO: Should keep track of groups and not look it up this way
             var group = city.Battle.Defenders.OfType<CityDefensiveCombatGroup>().First(combatGroup => combatGroup.TroopStub == stub);
@@ -305,9 +303,10 @@ namespace Game.Logic.Actions
         /// </summary>
         /// <param name="battle"></param>
         /// <param name="obj"></param>
-        private void BattleUnitRemoved(IBattleManager battle, CombatObject obj)
+        private void BattleUnitRemoved(IBattleManager battle, ICombatObject obj)
         {
             // Keep track of our buildings destroyed HP
+            //TODO: Shouldn't know about CityCombatObject here.. It should know by the group instead
             var cityCombatObj = obj as CityCombatObject;
             if (obj.ClassType != BattleClass.Structure || cityCombatObj == null || cityCombatObj.City.Id != cityId)
             {

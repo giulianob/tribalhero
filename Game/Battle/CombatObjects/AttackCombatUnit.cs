@@ -16,7 +16,7 @@ using Persistance;
 
 namespace Game.Battle.CombatObjects
 {
-    public class AttackCombatUnit : CityCombatObject, ICombatUnit
+    public class AttackCombatUnit : CityCombatObject
     {
         public const string DB_TABLE = "attack_combat_units";
 
@@ -264,7 +264,7 @@ namespace Game.Battle.CombatObjects
 
         #endregion
 
-        public override bool InRange(CombatObject obj)
+        public override bool InRange(ICombatObject obj)
         {
             if (obj is AttackCombatUnit || obj is DefenseCombatUnit) //all units can attack other units
             {

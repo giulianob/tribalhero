@@ -94,7 +94,7 @@ namespace ConsoleSimulator
                                                                                         defender.City);
 
                     battleManager.ExitBattle += BmExitBattle;
-                    battleManager.UnitRemoved += BmUnitRemoved;
+                    battleManager.UnitKilled += BattleUnitKilled;
                     using (Concurrency.Current.Lock(defender.Local))
                     {
                         defender.Local.BeginUpdate();
@@ -139,7 +139,7 @@ namespace ConsoleSimulator
                         }
                     }
                     battleManager.ExitBattle -= BmExitBattle;
-                    battleManager.UnitRemoved -= BmUnitRemoved;
+                    battleManager.UnitKilled -= BattleUnitKilled;
                 }
                 sw.WriteLine();
             }
@@ -183,7 +183,7 @@ namespace ConsoleSimulator
                                                                                         defender.City);
 
                     battleManager.ExitBattle += BmExitBattle2;
-                    battleManager.UnitRemoved += BmUnitRemoved2;
+                    battleManager.UnitKilled += BmUnitRemoved2;
 
                     using (Concurrency.Current.Lock(defender.Local))
                     {
@@ -230,7 +230,7 @@ namespace ConsoleSimulator
                     }
 
                     battleManager.ExitBattle -= BmExitBattle2;
-                    battleManager.UnitRemoved -= BmUnitRemoved2;
+                    battleManager.UnitKilled -= BmUnitRemoved2;
                 }
                 sw.WriteLine();
             }
@@ -255,7 +255,7 @@ namespace ConsoleSimulator
             sw.WriteLine(",{0}", enemyCount);
         }
 
-        private void BmUnitRemoved(IBattleManager battle, ICombatObject obj)
+        private void BattleUnitKilled(IBattleManager battle, ICombatObject obj)
         {
             deadObject = obj;
             if (obj is DefenseCombatUnit)

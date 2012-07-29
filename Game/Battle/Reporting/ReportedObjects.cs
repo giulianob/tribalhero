@@ -73,7 +73,7 @@ namespace Game.Battle.Reporting
                                 new[]
                                 {
                                         new DbColumn("combat_troop_id", reportedObject.Value, DbType.UInt32),
-                                        new DbColumn("troop_stub_city_id", reportedObject.Key.Id, DbType.UInt32)
+                                        new DbColumn("group_id", reportedObject.Key.Id, DbType.UInt32)
                                 });
         }
 

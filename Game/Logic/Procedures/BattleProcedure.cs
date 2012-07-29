@@ -2,15 +2,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Battle;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Troop;
-using System.Linq;
 using Game.Logic.Actions;
 using Game.Map;
 using Game.Setup;
+using Game.Util;
 
 #endregion
 
@@ -28,22 +29,29 @@ namespace Game.Logic.Procedures
 
         private readonly IActionFactory actionFactory;
 
+        private readonly ObjectTypeFactory objectTypeFactory;
+
         [Obsolete("For testing only", true)]
         protected BattleProcedure()
         {
-            
         }
 
-        public BattleProcedure(ICombatUnitFactory combatUnitFactory, ICombatGroupFactory combatGroupFactory, RadiusLocator radiusLocator, IBattleManagerFactory battleManagerFactory, IActionFactory actionFactory)
+        public BattleProcedure(ICombatUnitFactory combatUnitFactory,
+                               ICombatGroupFactory combatGroupFactory,
+                               RadiusLocator radiusLocator,
+                               IBattleManagerFactory battleManagerFactory,
+                               IActionFactory actionFactory,
+                               ObjectTypeFactory objectTypeFactory)
         {
             this.combatUnitFactory = combatUnitFactory;
             this.combatGroupFactory = combatGroupFactory;
             this.radiusLocator = radiusLocator;
             this.battleManagerFactory = battleManagerFactory;
             this.actionFactory = actionFactory;
+            this.objectTypeFactory = objectTypeFactory;
         }
 
-        public virtual void JoinOrCreateBattle(ICity targetCity, ITroopObject attackerTroopObject, out uint groupId)
+        public virtual void JoinOrCreateBattle(ICity targetCity, ITroopObject attackerTroopObject, out uint groupId, out uint battleId)
         {
             // If battle already exists, then we just join it in also bringing any new units
             if (targetCity.Battle != null)
@@ -69,7 +77,9 @@ namespace Game.Logic.Procedures
                 {
                     throw new Exception(string.Format("Failed to start a battle due to error {0}", result));
                 }
-            }            
+            }
+
+            battleId = targetCity.Battle.BattleId;
         }
 
         private IEnumerable<IStructure> GetStructuresInRadius(IEnumerable<IStructure> structures, ITroopObject troopObject)
@@ -85,21 +95,77 @@ namespace Game.Logic.Procedures
                                                                  structure.Stats.Base.Radius));
         }
 
+        public virtual bool IsNewbieProtected(IPlayer player)
+        {
+            return SystemClock.Now.Subtract(player.Created).TotalSeconds < Config.newbie_protection;
+        }
+
+        public virtual Error CanCityBeAttacked(ICity attackerCity, ICity targetCity)
+        {
+            // Can't attack tribes mate
+            if (attackerCity.Owner.Tribesman != null && targetCity.Owner.Tribesman != null &&
+                attackerCity.Owner.Tribesman.Tribe == targetCity.Owner.Tribesman.Tribe)
+            {
+                return Error.AssignmentCantAttackFriend;
+            }
+
+            // Can't attack if target is under newbie protection
+            if (IsNewbieProtected(targetCity.Owner))
+            {
+                return Error.PlayerNewbieProtection;
+            }
+
+            // Can't attack cities that are being deleted
+            if (targetCity.Deleted != City.DeletedState.NotDeleted)
+            {
+                return Error.ObjectNotAttackable;
+            }
+
+            return Error.Ok;
+        }
+
+        public virtual Error CanStructureBeAttacked(IStructure structure)
+        {
+            // Can't attack structures that are being built
+            if (structure.Lvl == 0)
+            {
+                return Error.ObjectNotAttackable;
+            }
+
+            // Can't attack structures that are marked as Unattackable
+            if (objectTypeFactory.IsStructureType("Unattackable", structure))
+            {
+                return Error.ObjectNotAttackable;
+            }
+
+            // Can't attack understroyabled structure that are level 1
+            if ((objectTypeFactory.IsStructureType("Undestroyable", structure) && structure.Lvl <= 1))
+            {
+                return Error.StructureUndestroyable;
+            }
+
+            return Error.Ok;
+        }
+
         public virtual void MoveUnitFormation(ITroopStub stub, FormationType source, FormationType target)
         {
             stub[target].Add(stub[source]);
             stub[source].Clear();
         }
 
-        public virtual void AddLocalStructuresToBattle(IBattleManager battleManager, ICity targetCity, ITroopObject attackerTroopObject)
+        protected virtual void AddLocalStructuresToBattle(IBattleManager battleManager, ICity targetCity, ITroopObject attackerTroopObject)
         {
             var localGroup = GetOrCreateLocalGroup(targetCity.Battle, targetCity);
-            foreach (IStructure structure in GetStructuresInRadius(targetCity, attackerTroopObject))
+            foreach (IStructure structure in GetStructuresInRadius(targetCity, attackerTroopObject).Where(structure => !structure.IsBlocked && structure.Stats.Hp > 0 && structure.State.Type == ObjectState.Normal))
             {
+                structure.BeginUpdate();
+                structure.State = GameObjectState.BattleState(battleManager.BattleId);
+                structure.EndUpdate();
+
                 localGroup.Add(combatUnitFactory.CreateStructureCombatUnit(battleManager, structure));
             }
         }
-        
+
         public virtual void AddLocalUnitsToBattle(IBattleManager battleManager, ICity city)
         {
             if (city.DefaultTroop[FormationType.Normal].Count == 0)
@@ -112,24 +178,25 @@ namespace Game.Logic.Procedures
             city.DefaultTroop.BeginUpdate();
             city.DefaultTroop.State = TroopState.Battle;
             city.DefaultTroop.Template.LoadStats(TroopBattleGroup.Local);
-            MoveUnitFormation(city.DefaultTroop, FormationType.Normal, FormationType.InBattle);            
+            MoveUnitFormation(city.DefaultTroop, FormationType.Normal, FormationType.InBattle);
             city.DefaultTroop.EndUpdate();
 
             // Add to local group
             var combatGroup = GetOrCreateLocalGroup(battleManager, city);
-            foreach (var kvp in unitsToJoinBattle)
+            foreach (var defenseCombatUnits in unitsToJoinBattle.Select(kvp => combatUnitFactory.CreateDefenseCombatUnit(battleManager, city.DefaultTroop, FormationType.InBattle, kvp.Key, kvp.Value)))
             {
-                combatUnitFactory.CreateDefenseCombatUnit(battleManager, city.DefaultTroop, FormationType.InBattle, kvp.Key, kvp.Value).ToList().ForEach(combatGroup.Add);
+                defenseCombatUnits.ToList().ForEach(combatGroup.Add);
             }
         }
-        
-        public virtual uint AddAttackerToBattle(IBattleManager battleManager, ITroopObject troopObject)
+
+        protected virtual uint AddAttackerToBattle(IBattleManager battleManager, ITroopObject troopObject)
         {
             var defensiveGroup = combatGroupFactory.CreateCityOffensiveCombatGroup(battleManager.BattleId, battleManager.GetNextGroupId(), troopObject);
-            foreach (var kvp in troopObject.Stub.SelectMany(formation => formation))
+            foreach (var attackCombatUnits in troopObject.Stub.SelectMany(formation => formation).Select(kvp => combatUnitFactory.CreateAttackCombatUnit(battleManager, troopObject, FormationType.Attack, kvp.Key, kvp.Value)))
             {
-                combatUnitFactory.CreateAttackCombatUnit(battleManager, troopObject, FormationType.Attack, kvp.Key, kvp.Value).ToList().ForEach(defensiveGroup.Add);
+                attackCombatUnits.ToList().ForEach(defensiveGroup.Add);
             }
+
             battleManager.Add(defensiveGroup, BattleManager.BattleSide.Attack);
 
             return defensiveGroup.Id;
@@ -149,7 +216,7 @@ namespace Game.Logic.Procedures
         {
             var combatGroup = battleManager.GetCombatGroup(1);
             if (combatGroup == null)
-            {                     
+            {
                 combatGroup = combatGroupFactory.CreateCityDefensiveCombatGroup(battleManager.BattleId, 1, city.DefaultTroop);
                 battleManager.Add(combatGroup, BattleManager.BattleSide.Defense);
             }
@@ -170,13 +237,18 @@ namespace Game.Logic.Procedures
             int healPercent = Math.Min(100, city.Technologies.GetEffects(EffectCode.SenseOfUrgency).Sum(x => (int)x.Value[0]));
 
             if (healPercent == 0)
+            {
                 return;
+            }
 
-            ushort restore = (ushort)(maxHp * (healPercent / 100f));
+            ushort restore = (ushort)(maxHp*(healPercent/100f));
 
-            foreach (IStructure structure in city) {
+            foreach (IStructure structure in city)
+            {
                 if (structure.State.Type == ObjectState.Battle || structure.Stats.Hp == structure.Stats.Base.Battle.MaxHp)
+                {
                     continue;
+                }
 
                 structure.BeginUpdate();
                 structure.Stats.Hp += restore;

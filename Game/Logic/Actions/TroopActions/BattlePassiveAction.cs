@@ -63,7 +63,7 @@ namespace Game.Logic.Actions
 
             city.Battle.EnterRound += BattleEnterRound;
             city.Battle.ActionAttacked += BattleActionAttacked;
-            city.Battle.UnitRemoved += BattleUnitRemoved;
+            city.Battle.UnitKilled += BattleUnitKilled;
         }
 
         public BattlePassiveAction(uint id,
@@ -99,7 +99,7 @@ namespace Game.Logic.Actions
 
             city.Battle.EnterRound += BattleEnterRound;
             city.Battle.ActionAttacked += BattleActionAttacked;
-            city.Battle.UnitRemoved += BattleUnitRemoved;
+            city.Battle.UnitKilled += BattleUnitKilled;
         }
 
         private void AddAlignmentPoint(ICombatList attackers, ICombatList defenders, uint numberOfRounds)
@@ -186,8 +186,9 @@ namespace Game.Logic.Actions
                 // Battle has ended
                 // Delete the battle
                 city.Battle.ActionAttacked -= BattleActionAttacked;
-                city.Battle.UnitRemoved -= BattleUnitRemoved;
+                city.Battle.UnitKilled -= BattleUnitKilled;
                 city.Battle.EnterRound -= BattleEnterRound;
+                World.Current.Remove(city.Battle);
                 dbManager.Delete(city.Battle);
                 city.Battle = null;
 
@@ -242,6 +243,7 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
+            World.Current.Add(city.Battle);
             dbManager.Save(city.Battle);
 
             //Add local troop
@@ -303,7 +305,7 @@ namespace Game.Logic.Actions
         /// </summary>
         /// <param name="battle"></param>
         /// <param name="obj"></param>
-        private void BattleUnitRemoved(IBattleManager battle, ICombatObject obj)
+        private void BattleUnitKilled(IBattleManager battle, ICombatObject obj)
         {
             // Keep track of our buildings destroyed HP
             //TODO: Shouldn't know about CityCombatObject here.. It should know by the group instead

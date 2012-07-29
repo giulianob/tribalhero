@@ -94,9 +94,7 @@ namespace Game.Battle.CombatObjects
 
         #endregion
 
-        #region Abstract Methods
-
-        public abstract void ExitBattle();
+        #region Abstract Methods        
 
         public abstract void TakeDamage(decimal dmg, out Resource returning, out int attackPoints);
 
@@ -138,10 +136,9 @@ namespace Game.Battle.CombatObjects
         #endregion
 
         #region Public Methods
-        public virtual void CleanUp()
+        public virtual void ExitBattle()
         {
             Disposed = true;
-
             DbPersistance.Current.Delete(this);
         }
 

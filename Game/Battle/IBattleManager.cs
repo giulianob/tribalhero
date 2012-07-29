@@ -33,15 +33,12 @@ namespace Game.Battle
         event BattleManager.OnBattle EnterBattle;
         event BattleManager.OnBattle ExitBattle;
         event BattleManager.OnRound EnterRound;
-        event BattleManager.OnTurn EnterTurn;
         event BattleManager.OnTurn ExitTurn;
         event BattleManager.OnReinforce ReinforceAttacker;
         event BattleManager.OnReinforce ReinforceDefender;
-        event BattleManager.OnReinforce WithdrawAttacker;
-        event BattleManager.OnReinforce WithdrawDefender;
-        event BattleManager.OnUnitUpdate UnitAdded;
-        event BattleManager.OnUnitUpdate UnitRemoved;
-        event BattleManager.OnUnitUpdate UnitUpdated;
+        event BattleManager.OnWithdraw WithdrawAttacker;
+        event BattleManager.OnWithdraw WithdrawDefender;
+        event BattleManager.OnUnitUpdate UnitKilled;
         event BattleManager.OnUnitUpdate SkippedAttacker;
         event BattleManager.OnAttack ActionAttacked;
 

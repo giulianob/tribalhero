@@ -332,10 +332,6 @@ namespace Game.Battle.CombatObjects
             returning = null;
         }
 
-        public override void ExitBattle()
-        {
-        }
-
         public override int CompareTo(object other)
         {
             if (other is ITroopStub)

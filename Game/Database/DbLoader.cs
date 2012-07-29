@@ -762,24 +762,24 @@ namespace Game.Database
                     if (!World.Current.TryGetObjects((uint)reader["owner_id"], out city))
                         throw new Exception("City not found");
                     
-                    var bm = BattleManagerFactory.CreateBattleManager((uint)reader["battle_id"],
+                    var battleManager = BattleManagerFactory.CreateBattleManager((uint)reader["battle_id"],
                                                                       new BattleLocation((string)reader["location_type"], (uint)reader["location_id"]),
                                                                       new BattleOwner((string)reader["owner_type"], (uint)reader["owner_id"]),
                                                                       city);
-                    city.Battle = bm;
+                    city.Battle = battleManager;
 
 
-                    bm.DbPersisted = true;
-                    bm.BattleStarted = (bool)reader["battle_started"];
-                    bm.Round = (uint)reader["round"];
-                    bm.Turn = (uint)reader["round"];
-                    bm.NextToAttack = (BattleManager.BattleSide)((byte)reader["next_to_attack"]);
+                    battleManager.DbPersisted = true;
+                    battleManager.BattleStarted = (bool)reader["battle_started"];
+                    battleManager.Round = (uint)reader["round"];
+                    battleManager.Turn = (uint)reader["round"];
+                    battleManager.NextToAttack = (BattleManager.BattleSide)((byte)reader["next_to_attack"]);
 
-                    bm.BattleReport.ReportStarted = (bool)reader["report_started"];
-                    bm.BattleReport.ReportId = (uint)reader["report_id"];
+                    battleManager.BattleReport.ReportStarted = (bool)reader["report_started"];
+                    battleManager.BattleReport.ReportId = (uint)reader["report_id"];
 
                     // Load combat groups
-                    using (DbDataReader listReader = DbManager.SelectList(CityOffensiveCombatGroup.DB_TABLE, new DbColumn("battle_id", bm.BattleId, DbType.UInt32)))
+                    using (DbDataReader listReader = DbManager.SelectList(CityOffensiveCombatGroup.DB_TABLE, new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
                     {
                         while (listReader.Read())
                         {
@@ -793,11 +793,12 @@ namespace Game.Database
                             var cityOffensiveCombatGroup = CombatGroupFactory.CreateCityOffensiveCombatGroup((uint)listReader["battle_id"],
                                                                                                              (uint)listReader["id"],
                                                                                                              troopObject);
-                            bm.DbLoaderAddToCombatList(cityOffensiveCombatGroup, BattleManager.BattleSide.Attack);                            
+                            cityOffensiveCombatGroup.DbPersisted = true;
+                            battleManager.DbLoaderAddToCombatList(cityOffensiveCombatGroup, BattleManager.BattleSide.Attack);                            
                         }
                     }
 
-                    using (DbDataReader listReader = DbManager.SelectList(CityDefensiveCombatGroup.DB_TABLE, new DbColumn("battle_id", bm.BattleId, DbType.UInt32)))
+                    using (DbDataReader listReader = DbManager.SelectList(CityDefensiveCombatGroup.DB_TABLE, new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
                     {
                         while (listReader.Read())
                         {
@@ -809,15 +810,16 @@ namespace Game.Database
                             if (!combatGroupCity.Troops.TryGetStub((byte)listReader["troop_stub_id"], out troopStub))
                                 throw new Exception("Troop stub not found");
 
-                            var cityOffensiveCombatGroup = CombatGroupFactory.CreateCityDefensiveCombatGroup((uint)listReader["battle_id"],
+                            var cityDefensiveCombatGroup = CombatGroupFactory.CreateCityDefensiveCombatGroup((uint)listReader["battle_id"],
                                                                                                              (uint)listReader["id"],
                                                                                                              troopStub);
-                            bm.DbLoaderAddToCombatList(cityOffensiveCombatGroup, BattleManager.BattleSide.Defense);
+                            cityDefensiveCombatGroup.DbPersisted = true;
+                            battleManager.DbLoaderAddToCombatList(cityDefensiveCombatGroup, BattleManager.BattleSide.Defense);
                         }
                     }
 
                     // Load combat structures
-                    using (DbDataReader listReader = DbManager.SelectList(CombatStructure.DB_TABLE, new DbColumn("battle_id", bm.BattleId, DbType.UInt32)))
+                    using (DbDataReader listReader = DbManager.SelectList(CombatStructure.DB_TABLE, new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
                     {
                         while (listReader.Read())
                         {
@@ -840,7 +842,7 @@ namespace Game.Database
                                               };
 
                             var combatStructure = new CombatStructure((uint)listReader["id"],
-                                                                      bm.BattleId,
+                                                                      battleManager.BattleId,
                                                                       structure,
                                                                       battleStats,
                                                                       (decimal)listReader["hp"],
@@ -858,12 +860,12 @@ namespace Game.Database
                                                           DbPersisted = true
                                                   };
 
-                            bm.GetCombatGroup((uint)listReader["group_id"]).Add(combatStructure, false);
+                            battleManager.GetCombatGroup((uint)listReader["group_id"]).Add(combatStructure, false);
                         }
                     }
 
                     // Load attack combat units
-                    using (DbDataReader listReader = DbManager.SelectList(AttackCombatUnit.DB_TABLE, new DbColumn("battle_id", bm.BattleId, DbType.UInt32)))
+                    using (DbDataReader listReader = DbManager.SelectList(AttackCombatUnit.DB_TABLE, new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
                     {
                         while (listReader.Read())
                         {
@@ -873,7 +875,7 @@ namespace Game.Database
                             ITroopObject troopObject = (ITroopObject)troopStubCity[(uint)listReader["troop_object_id"]];
 
                             ICombatObject combatObj = new AttackCombatUnit((uint)listReader["id"], 
-                                                                 bm.BattleId,
+                                                                 battleManager.BattleId,
                                                                  troopObject,
                                                                  (FormationType)((byte)listReader["formation_type"]),
                                                                  (ushort)listReader["type"],
@@ -902,12 +904,12 @@ namespace Game.Database
                             combatObj.RoundsParticipated = (int)listReader["rounds_participated"];
                             combatObj.DbPersisted = true;
 
-                            bm.GetCombatGroup((uint)listReader["group_id"]).Add(combatObj, false);
+                            battleManager.GetCombatGroup((uint)listReader["group_id"]).Add(combatObj, false);
                         }
                     }
 
                     // Load defense combat units
-                    using (DbDataReader listReader = DbManager.SelectList(DefenseCombatUnit.DB_TABLE, new DbColumn("battle_id", bm.BattleId, DbType.UInt32)))
+                    using (DbDataReader listReader = DbManager.SelectList(DefenseCombatUnit.DB_TABLE, new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
                     {
                         while (listReader.Read())
                         {
@@ -918,7 +920,7 @@ namespace Game.Database
                             ITroopStub troopStub = troopStubCity.Troops[(byte)listReader["troop_stub_id"]];
 
                             ICombatObject combatObj = new DefenseCombatUnit((uint)listReader["id"], 
-                                                                  bm.BattleId,
+                                                                  battleManager.BattleId,
                                                                   troopStub,
                                                                   (FormationType)((byte)listReader["formation_type"]),
                                                                   (ushort)listReader["type"],
@@ -940,19 +942,21 @@ namespace Game.Database
                             combatObj.RoundsParticipated = (int)listReader["rounds_participated"];
                             combatObj.DbPersisted = true;
 
-                            bm.GetCombatGroup((uint)listReader["group_id"]).Add(combatObj, false);
+                            battleManager.GetCombatGroup((uint)listReader["group_id"]).Add(combatObj, false);
                         }
                     }
 
-                    bm.BattleReport.ReportedGroups.DbPersisted = true;
-                    using (DbDataReader listReader = DbManager.SelectList(bm.BattleReport.ReportedGroups))
+                    battleManager.BattleReport.ReportedGroups.DbPersisted = true;
+                    using (DbDataReader listReader = DbManager.SelectList(battleManager.BattleReport.ReportedGroups))
                     {
                         while (listReader.Read())
                         {
-                            bm.BattleReport.ReportedGroups[bm.GetCombatGroup((uint)reader["group_id"])] = (uint)listReader["combat_troop_id"];
+                            battleManager.BattleReport.ReportedGroups[battleManager.GetCombatGroup((uint)reader["group_id"])] = (uint)listReader["combat_troop_id"];
                         }
                     }
-                    bm.DbFinishedLoading();
+                    battleManager.DbFinishedLoading();
+
+                    World.Current.DbLoaderAdd(battleManager);
                 }
             }
 

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
-using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
@@ -39,17 +38,15 @@ namespace Game.Logic.Actions
 
         private readonly AttackMode mode;
 
-        private readonly Formula formula;
-
         private readonly IActionFactory actionFactory;
-
-        private readonly ObjectTypeFactory objectTypeFactory;
 
         private readonly Procedure procedure;
 
         private readonly ILocker locker;
 
         private readonly IGameObjectLocator gameObjectLocator;
+
+        private readonly BattleProcedure battleProcedure;
 
         public uint From
         {
@@ -72,24 +69,22 @@ namespace Game.Logic.Actions
                                  uint targetCityId,
                                  uint targetStructureId,
                                  AttackMode mode,
-                                 Formula formula,
                                  IActionFactory actionFactory,
-                                 ObjectTypeFactory objectTypeFactory,
                                  Procedure procedure,
                                  ILocker locker,
-                                 IGameObjectLocator gameObjectLocator)
+                                 IGameObjectLocator gameObjectLocator,
+                                 BattleProcedure battleProcedure)
         {
             this.cityId = cityId;
             this.targetCityId = targetCityId;
             this.targetStructureId = targetStructureId;
             this.troopObjectId = troopObjectId;
             this.mode = mode;
-            this.formula = formula;
             this.actionFactory = actionFactory;
-            this.objectTypeFactory = objectTypeFactory;
             this.procedure = procedure;
             this.locker = locker;
             this.gameObjectLocator = gameObjectLocator;
+            this.battleProcedure = battleProcedure;
         }
 
         public AttackChainAction(uint id,
@@ -98,20 +93,18 @@ namespace Game.Logic.Actions
                                  ActionState chainState,
                                  bool isVisible,
                                  IDictionary<string, string> properties,
-                                 Formula formula,
                                  IActionFactory actionFactory,
-                                 ObjectTypeFactory objectTypeFactory,
                                  Procedure procedure,
                                  ILocker locker,
-                                 IGameObjectLocator gameObjectLocator)
+                                 IGameObjectLocator gameObjectLocator,
+                                 BattleProcedure battleProcedure)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
-            this.formula = formula;
             this.actionFactory = actionFactory;
-            this.objectTypeFactory = objectTypeFactory;
             this.procedure = procedure;
             this.locker = locker;
             this.gameObjectLocator = gameObjectLocator;
+            this.battleProcedure = battleProcedure;
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             mode = (AttackMode)uint.Parse(properties["mode"]);
@@ -166,34 +159,16 @@ namespace Game.Logic.Actions
                 return Error.TooManyTroops;
             }
 
-            // Can't attack if target is under newbie protection
-            if (formula.IsNewbieProtected(targetCity.Owner))
+            var cityAttackResult = battleProcedure.CanCityBeAttacked(city, targetCity);
+            if (cityAttackResult != Error.Ok)
             {
-                return Error.PlayerNewbieProtection;
+                return cityAttackResult;
             }
 
-            // Can't attack cities that are being deleted
-            if (targetCity.Deleted != City.DeletedState.NotDeleted)
+            var structureAttackResult = battleProcedure.CanStructureBeAttacked(targetStructure);
+            if (structureAttackResult != Error.Ok)
             {
-                return Error.ObjectNotAttackable;
-            }
-
-            // Can't attack "Unattackable" Objects
-            if (objectTypeFactory.IsStructureType("Unattackable", targetStructure))
-            {
-                return Error.ObjectNotAttackable;
-            }
-
-            // Can't attack "Undestroyable" Objects if they're level 1
-            if (targetStructure.Lvl <= 1 && objectTypeFactory.IsStructureType("Undestroyable", targetStructure))
-            {
-                return Error.StructureUndestroyable;
-            }
-
-            // Can't attack tribes mate
-            if (city.Owner.Tribesman != null && targetCity.Owner.Tribesman != null && city.Owner.Tribesman.Tribe == targetCity.Owner.Tribesman.Tribe)
-            {
-                return Error.AssignmentCantAttackFriend;
+                return structureAttackResult;
             }
 
             //Load the units stats into the stub
@@ -242,10 +217,8 @@ namespace Game.Logic.Actions
                 }
 
                 // Get all of the stationed city id's from the target city since they will be used by the engage attack action
-                CallbackLock.CallbackLockHandler lockAllStationed = delegate
-                    {
-                        return targetCity.Troops.StationedHere().Select(stationedStub => stationedStub.City).Cast<ILockable>().ToArray();
-                    };
+                CallbackLock.CallbackLockHandler lockAllStationed =
+                        delegate { return targetCity.Troops.StationedHere().Select(stationedStub => stationedStub.City).Cast<ILockable>().ToArray(); };
 
                 using (locker.Lock(lockAllStationed, null, city, targetCity))
                 {
@@ -358,7 +331,6 @@ namespace Game.Logic.Actions
                 ITroopObject troopObject;
                 using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
                 {
-
                     city.Worker.References.Remove(troopObject, this);
 
                     procedure.TroopObjectDelete(troopObject, troopObject.Stub.TotalCount != 0);

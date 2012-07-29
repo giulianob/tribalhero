@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Battle;
 using Game.Data;
 using Game.Map;
 using Game.Setup;
@@ -23,11 +24,10 @@ namespace Game.Comm.ProcessorCommands
 
         private void Subscribe(Session session, Packet packet)
         {
-            uint cityId;
-            ICity city;
+            uint battleId;
             try
             {
-                cityId = packet.GetUInt32();
+                battleId = packet.GetUInt32();
             }
             catch(Exception)
             {
@@ -35,29 +35,26 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            if (!World.Current.TryGetObjects(cityId, out city))
-                ReplyError(session, packet, Error.CityNotFound);
+            IBattleManager battleManager;
+            if (!World.Current.TryGetObjects(battleId, out battleManager))
+            {
+                ReplyError(session, packet, Error.BattleNotViewable);
+                return;
+            }
 
             CallbackLock.CallbackLockHandler lockHandler = delegate
                 {
-                    var toBeLocked = new List<ILockable> {session.Player};
+                    var toBeLocked = new List<ILockable>();
 
-                    if (city.Battle != null)
-                        toBeLocked.AddRange(city.Battle.LockList);
+                    toBeLocked.AddRange(battleManager.LockList);
 
                     return toBeLocked.ToArray();
                 };
 
-            using (Concurrency.Current.Lock(lockHandler, null, city))
+            using (Concurrency.Current.Lock(lockHandler, null, session.Player))
             {
-                if (city.Battle == null)
-                {
-                    ReplyError(session, packet, Error.Unexpected);
-                    return;
-                }
-
                 int roundsLeft;
-                if (!Config.battle_instant_watch && !city.Battle.CanWatchBattle(session.Player, out roundsLeft))
+                if (!Config.battle_instant_watch && !battleManager.CanWatchBattle(session.Player, out roundsLeft))
                 {
                     packet = ReplyError(session, packet, Error.BattleNotViewable, false);
                     packet.AddInt32(roundsLeft);
@@ -66,17 +63,14 @@ namespace Game.Comm.ProcessorCommands
                 }
                
                 var reply = new Packet(packet);
-                reply.AddUInt32(city.Battle.BattleId);
-                reply.AddUInt32(city.Battle.Round);
-                PacketHelper.AddToPacket(city.Battle.Attackers.AllCombatObjects().ToList(), reply);
-                PacketHelper.AddToPacket(city.Battle.Defenders.AllCombatObjects().ToList(), reply);
-
-                // TODO: This used to be in the battle manager but it doesnt belong there
-                //  so I put it in here for now but it should not be here either. Need to make some other place
-                //  that takes care of the battle channel stuff
+                reply.AddUInt32(battleManager.BattleId);
+                reply.AddUInt32(battleManager.Round);
+                PacketHelper.AddToPacket(battleManager.Attackers.AllCombatObjects().ToList(), reply);
+                PacketHelper.AddToPacket(battleManager.Defenders.AllCombatObjects().ToList(), reply);
+                
                 try
                 {
-                    Global.Channel.Subscribe(session, "/BATTLE/" + city.Battle.BattleId);
+                    Global.Channel.Subscribe(session, "/BATTLE/" + battleManager.BattleId);
                 }
                 catch (DuplicateSubscriptionException)
                 {
@@ -88,11 +82,10 @@ namespace Game.Comm.ProcessorCommands
 
         private void Unsubscribe(Session session, Packet packet)
         {
-            uint cityId;
-            ICity city;
+            uint battleId;
             try
             {
-                cityId = packet.GetUInt32();
+                battleId = packet.GetUInt32();
             }
             catch(Exception)
             {
@@ -100,16 +93,9 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (Concurrency.Current.Lock(session.Player))
             {
-                if (city == null || city.Battle == null)
-                {
-                    ReplySuccess(session, packet);
-                    return;
-                }
-
-                // TODO: See comment for subscribe. Applies here too.
-                Global.Channel.Unsubscribe(session, "/BATTLE/" + city.Battle.BattleId);
+                Global.Channel.Unsubscribe(session, "/BATTLE/" + battleId);
             }
 
             ReplySuccess(session, packet);

@@ -268,9 +268,18 @@ namespace Game.Battle.CombatObjects
             returning = null;
         }
 
-        public override void CleanUp()
+        public override int LootPerRound()
         {
-            base.CleanUp();
+            return 0;
+        }
+
+        public override void ExitBattle()
+        {
+            base.ExitBattle();
+
+            Structure.BeginUpdate();
+            Structure.State = GameObjectState.NormalState();
+            Structure.EndUpdate();
 
             // Remove structure from the world if our combat object died
             if (hp > 0)
@@ -283,10 +292,6 @@ namespace Game.Battle.CombatObjects
             World.Current.LockRegion(Structure.X, Structure.Y);
             if (Structure.Lvl > 1)
             {
-                Structure.BeginUpdate();
-                Structure.State = GameObjectState.NormalState();
-                Structure.EndUpdate();
-
                 Structure.City.Worker.DoPassive(Structure.City, actionFactory.CreateStructureDowngradePassiveAction(Structure.City.Id, Structure.ObjectId), false);
             }
             else
@@ -297,18 +302,6 @@ namespace Game.Battle.CombatObjects
                 Structure.EndUpdate();
             }
             World.Current.UnlockRegion(Structure.X, Structure.Y);
-        }
-
-        public override int LootPerRound()
-        {
-            return 0;
-        }
-
-        public override void ExitBattle()
-        {
-            Structure.BeginUpdate();
-            Structure.State = GameObjectState.NormalState();
-            Structure.EndUpdate();
         }
 
         public override void ReceiveReward(int reward, Resource resource)

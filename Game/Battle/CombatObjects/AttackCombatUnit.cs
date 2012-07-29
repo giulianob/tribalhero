@@ -361,10 +361,6 @@ namespace Game.Battle.CombatObjects
             }
         }
 
-        public override void ExitBattle()
-        {
-        }
-
         public override void ReceiveReward(int attackPoint, Resource resource)
         {
             loot.Add(resource);

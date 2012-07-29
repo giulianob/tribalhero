@@ -62,6 +62,7 @@ namespace Testing.Battle
             attacker.Setup(m => m.Location()).Returns(new Location(0, 0));
             attacker.SetupGet(p => p.Visibility).Returns(1);
             attacker.SetupGet(p => p.IsDead).Returns(false);
+            attacker.Setup(m => m.CanSee(It.IsAny<ICombatObject>(), It.IsAny<uint>())).Returns(true);
 
             defenderStats.SetupGet(p => p.Stl).Returns(2);
 

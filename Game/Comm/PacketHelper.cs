@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Battle;
 using Game.Data;
+using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic;
@@ -68,6 +69,10 @@ namespace Game.Comm
             if (obj is IHasLevel)
                 packet.AddByte(((IHasLevel)obj).Lvl);
 
+            var stronghold = obj as IStronghold;
+            if (stronghold != null)
+                packet.AddUInt32(stronghold.StrongholdState == StrongholdState.Occupied ? stronghold.Tribe.Id : 0);
+
             if (sendRegularObject)
             {
                 packet.AddByte((byte)obj.State.Type);
@@ -89,6 +94,7 @@ namespace Game.Comm
 
                 if (gameObj is IStructure && ((IStructure)gameObj).IsMainBuilding)
                     packet.AddByte(gameObj.City.Radius);
+
             }
             else if (obj is IStructure)
             {
@@ -244,8 +250,8 @@ namespace Game.Comm
                 case TroopState.Stationed:
                 case TroopState.BattleStationed:
                     packet.AddUInt32(1); // Main building id
-                    packet.AddUInt32(stub.StationedCity.X);
-                    packet.AddUInt32(stub.StationedCity.Y);
+                    packet.AddUInt32(stub.Station.LocationX);
+                    packet.AddUInt32(stub.Station.LocationY);
                     break;
             }
 

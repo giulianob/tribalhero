@@ -185,6 +185,7 @@
     <Compile Include="Data\ILazyValue.cs" />
     <Compile Include="Data\IPlayer.cs" />
     <Compile Include="Data\ISimpleGameObject.cs" />
+    <Compile Include="Data\IStation.cs" />
     <Compile Include="Data\IStructure.cs" />
     <Compile Include="Data\ITechnologyManager.cs" />
     <Compile Include="Data\LazyValue.cs" />
@@ -288,6 +289,7 @@
     <Compile Include="Map\RoadPathFinder.cs" />
     <Compile Include="Map\TileLocator.cs" />
     <Compile Include="Logic\IGameTask.cs" />
+    <Compile Include="Module\Chat.cs" />
     <Compile Include="Module\Remover\CityRemover.cs" />
     <Compile Include="Module\Remover\ActivePlayerSelector.cs" />
     <Compile Include="Module\Remover\NewbieIdleSelector.cs" />

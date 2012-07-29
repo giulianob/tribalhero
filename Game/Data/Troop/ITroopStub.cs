@@ -14,15 +14,13 @@ namespace Game.Data.Troop
 
         TroopTemplate Template { get; }
 
-        ITroopManager TroopManager { get; set; }
-
         TroopState State { get; set; }
 
-        ICity City { get; }
+        ICity City { get; set; }
 
-        byte StationedTroopId { get; set; }
+        byte StationTroopId { get; set; }
 
-        ICity StationedCity { get; set; }
+        IStation Station { get; set; }
 
         ushort StationedRetreatCount { get; set; }
 

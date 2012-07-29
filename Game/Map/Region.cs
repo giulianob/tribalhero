@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Game.Data;
+using Game.Data.Stronghold;
 using Game.Setup;
 
 #endregion
@@ -138,6 +139,10 @@ namespace Game.Map
 
                         if (obj is IHasLevel)
                             bw.Write(((IHasLevel)obj).Lvl);
+
+                        var stronghold = obj as IStronghold;
+                        if( stronghold!=null)
+                            bw.Write(stronghold.StrongholdState == StrongholdState.Occupied ? stronghold.Tribe.Id : 0);
 
                         bw.Write((byte)obj.State.Type);
                         foreach (var parameter in obj.State.Parameters)

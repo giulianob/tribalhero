@@ -42,8 +42,8 @@ namespace Game.Logic.Actions
 
             foreach (var stub in ((ICity)custom[0]).Troops)
             {
-                if (stub.StationedCity != null)
-                    toBeLocked.Add(stub.StationedCity);
+                if (stub.Station != null)
+                    toBeLocked.Add(stub.Station);
             }
 
             return toBeLocked.ToArray();

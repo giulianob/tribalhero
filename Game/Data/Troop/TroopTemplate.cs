@@ -61,7 +61,7 @@ namespace Game.Data.Troop
         {
             get
             {
-                return new[] {new DbColumn("city_id", stub.TroopManager.City.Id, DbType.UInt32), new DbColumn("troop_stub_id", stub.TroopId, DbType.UInt32),};
+                return new[] {new DbColumn("city_id", stub.City.Id, DbType.UInt32), new DbColumn("troop_stub_id", stub.TroopId, DbType.UInt32),};
             }
         }
 

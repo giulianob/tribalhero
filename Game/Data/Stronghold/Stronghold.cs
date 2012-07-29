@@ -10,7 +10,7 @@ using Persistance;
 
 namespace Game.Data.Stronghold
 {
-    class Stronghold : SimpleGameObject, IStronghold
+    class Stronghold : SimpleGameObject, IStronghold, IStation
     {
         
         #region Implementation of IStronghold
@@ -20,6 +20,7 @@ namespace Game.Data.Stronghold
         public ushort Radius { get; private set; }
         public StrongholdState StrongholdState { get; set; }
         public LazyValue Gate { get; private set; }
+        public ITroopManager Troops { get; private set; }
 
         private ITribe tribe;
         public ITribe Tribe
@@ -59,6 +60,7 @@ namespace Game.Data.Stronghold
             Lvl = level;
             this.x = x;
             this.y = y;
+            Troops = new TroopManager(this);
         }
 
         #endregion
@@ -181,6 +183,54 @@ namespace Game.Data.Stronghold
             updating = false;
 
             Update();
+        }
+
+        #endregion
+
+        #region Implementation of ILocation
+
+        public uint LocationId
+        {
+            get
+            {
+                return Id;
+            }
+        }
+
+        public StationType LocationType
+        {
+            get
+            {
+                return StationType.Stronghold;
+            }
+        }
+
+        public uint LocationX
+        {
+            get
+            {
+                return x;
+            }
+        }
+
+        public uint LocationY
+        {
+            get
+            {
+                return y;
+            }
+        }
+
+        #endregion
+
+        #region Implementation of IStation
+
+        public ITroopManager TroopManager
+        {
+            get
+            {
+                return Troops;
+            }
         }
 
         #endregion

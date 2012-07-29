@@ -7,6 +7,7 @@ using System.Data.Common;
 using Game.Battle;
 using Game.Data;
 using Game.Data.Stats;
+using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic;
@@ -24,7 +25,7 @@ using Persistance;
 
 namespace Game.Database
 {
-    public class DbLoader
+    public class    DbLoader
     {
         private readonly IDbManager dbManager;
 
@@ -597,9 +598,9 @@ namespace Game.Database
                     if (!World.Current.TryGetObjects((uint)reader["city_id"], out city))
                         throw new Exception("City not found");
 
-                    var stub = new TroopStub
+                    var stub = new TroopStub()
                                {
-                                       TroopManager = city.Troops,
+                                       City = city,
                                        TroopId = (byte)reader["id"],
                                        State = (TroopState)Enum.Parse(typeof(TroopState), reader["state"].ToString(), true),
                                        DbPersisted = true,
@@ -622,18 +623,33 @@ namespace Game.Database
 
                     city.Troops.DbLoaderAdd((byte)reader["id"], stub);
 
-                    var stationedCityId = (uint)reader["stationed_city_id"];
-                    if (stationedCityId != 0) 
-                        stationedTroops.Add(new {stub, stationedCityId}); 
+                    var stationType = (byte)reader["station_type"];
+                    if (stationType!=0)
+                    {
+                        var stationId = (uint)reader["station_id"];
+                        stationedTroops.Add(new { stub, stationType, stationId });
+                    }
                 }
             }
 
             foreach (var stubInfo in stationedTroops)
             {
-                ICity stationedCity;
-                if (!World.Current.TryGetObjects(stubInfo.stationedCityId, out stationedCity))
-                    throw new Exception("City not found");
-                stationedCity.Troops.AddStationed(stubInfo.stub);
+                switch((StationType)stubInfo.stationType)
+                {
+                    case StationType.City:
+                        ICity stationedCity;
+                        if (!World.Current.TryGetObjects(stubInfo.stationId, out stationedCity))
+                            throw new Exception("City not found");
+                        stationedCity.Troops.AddStationed(stubInfo.stub);
+                        break;
+                    case StationType.Stronghold:
+                        IStrongholdManager strongholdManager = Ioc.Kernel.Get<IStrongholdManager>();
+                        IStronghold stronghold;
+                        if (!strongholdManager.TryGetValue(stubInfo.stationId, out stronghold))
+                            throw new Exception("Stronghold not found");
+                        stronghold.Troops.AddStationed(stubInfo.stub);
+                        break;
+                }
             }
 
             #endregion

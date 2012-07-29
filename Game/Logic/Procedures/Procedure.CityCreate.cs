@@ -47,8 +47,9 @@ namespace Game.Logic.Procedures
             defaultTroop.AddFormation(FormationType.Normal);
             defaultTroop.AddFormation(FormationType.Garrison);
             defaultTroop.AddFormation(FormationType.InBattle);
-            city.Troops.Add(defaultTroop);
             defaultTroop.EndUpdate();
+            defaultTroop.City = city;
+            city.Troops.Add(defaultTroop);
 
             return true;
         }

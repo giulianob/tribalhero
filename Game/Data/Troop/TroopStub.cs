@@ -55,13 +55,11 @@ namespace Game.Data.Troop
         #region Properties
 
         private TroopState state = TroopState.Idle;
-        private ICity stationedCity;
+        private IStation station;
         private ushort stationedRetreatCount;
         private byte troopId;
         private ITroopObject troopObject;
         public TroopTemplate Template { get; private set; }
-
-        public ITroopManager TroopManager { get; set; }
 
         public Formation this[FormationType type]
         {
@@ -91,26 +89,20 @@ namespace Game.Data.Troop
             }
         }
 
-        public ICity City
+        public ICity City { get; set; }
+
+        public byte StationTroopId { get; set; }
+
+        public IStation Station
         {
             get
             {
-                return TroopManager == null ? null : TroopManager.City;
-            }
-        }
-
-        public byte StationedTroopId { get; set; }
-
-        public ICity StationedCity
-        {
-            get
-            {
-                return stationedCity;
+                return station;
             }
             set
             {
                 CheckUpdateMode();
-                stationedCity = value;
+                station = value;
             }
         }
 
@@ -350,7 +342,7 @@ namespace Game.Data.Troop
         {
             get
             {
-                return new[] {new DbColumn("id", troopId, DbType.UInt32), new DbColumn("city_id", TroopManager.City.Id, DbType.UInt32)};
+                return new[] {new DbColumn("id", troopId, DbType.UInt32), new DbColumn("city_id", City.Id, DbType.UInt32)};
             }
         }
 
@@ -368,7 +360,8 @@ namespace Game.Data.Troop
             {
                 return new[]
                        {
-                               new DbColumn("stationed_city_id", stationedCity != null ? stationedCity.Id : 0, DbType.UInt32),
+                               new DbColumn("station_type", station != null ? station.LocationType : 0, DbType.Int32),
+                               new DbColumn("station_id", station != null ? station.LocationId : 0, DbType.Int32),
                                new DbColumn("state", (byte)state, DbType.Byte), new DbColumn("formations", GetFormationBits(), DbType.UInt16),
                                new DbColumn("retreat_count",stationedRetreatCount,DbType.UInt16)
                        };
@@ -428,8 +421,8 @@ namespace Game.Data.Troop
 
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
 
-            if (checkStationedCity && stationedCity != null)
-                DefaultMultiObjectLock.ThrowExceptionIfNotLocked(stationedCity);
+            if (checkStationedCity && station != null)
+                DefaultMultiObjectLock.ThrowExceptionIfNotLocked(station);
         }
 
         public void BeginUpdate()

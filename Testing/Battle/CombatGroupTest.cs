@@ -25,9 +25,12 @@ namespace Testing.Battle
             Mock<ITroopStub> troopStub = new Mock<ITroopStub>();
             Mock<IDbManager> dbManager = new Mock<IDbManager>();
 
+            troopStub.SetupGet(p => p.City.Id).Returns(1);
+
             combatObject.SetupProperty(p => p.GroupId);
 
-            CityDefensiveCombatGroup combatGroup = new CityDefensiveCombatGroup(1, 10, troopStub.Object, dbManager.Object) {combatObject.Object};
+            CityDefensiveCombatGroup combatGroup = new CityDefensiveCombatGroup(1, 10, troopStub.Object, dbManager.Object);
+            combatGroup.Add(combatObject.Object);
 
             combatObject.Object.GroupId.Should().Be(10);
         }

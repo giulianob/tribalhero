@@ -141,7 +141,7 @@ namespace Game.Logic.Actions
             targetCity.Battle.ExitBattle += BattleExitBattle;
             targetCity.Battle.WithdrawAttacker += BattleWithdrawAttacker;
             targetCity.Battle.EnterRound += BattleEnterRound;
-            targetCity.Battle.UnitRemoved += BattleUnitRemoved;
+            targetCity.Battle.UnitKilled += BattleUnitKilled;
             targetCity.Battle.ExitTurn += BattleExitTurn;
         }
 
@@ -149,7 +149,7 @@ namespace Game.Logic.Actions
         {
             targetCity.Battle.ActionAttacked -= BattleActionAttacked;
             targetCity.Battle.ExitBattle -= BattleExitBattle;
-            targetCity.Battle.UnitRemoved -= BattleUnitRemoved;
+            targetCity.Battle.UnitKilled -= BattleUnitKilled;
             targetCity.Battle.WithdrawAttacker -= BattleWithdrawAttacker;
             targetCity.Battle.EnterRound -= BattleEnterRound;
             targetCity.Battle.ExitTurn -= BattleExitTurn;
@@ -173,13 +173,14 @@ namespace Game.Logic.Actions
 
             originalUnitCount = troopObject.Stub.TotalCount;
 
-            battleProcedure.JoinOrCreateBattle(targetCity, troopObject, out groupId);
+            uint battleId;
+            battleProcedure.JoinOrCreateBattle(targetCity, troopObject, out groupId, out battleId);
 
             RegisterBattleListeners(targetCity);
 
             // Set the attacking troop object to the correct state and stamina
             troopObject.BeginUpdate();
-            troopObject.State = GameObjectState.BattleState(targetCity.Id);
+            troopObject.State = GameObjectState.BattleState(battleId);
             troopObject.Stats.Stamina = battleFormula.GetStamina(troopObject.Stub, targetCity);
             troopObject.EndUpdate();
 
@@ -191,7 +192,7 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        private void BattleWithdrawAttacker(IBattleManager battle, IEnumerable<ICombatObject> list)
+        private void BattleWithdrawAttacker(IBattleManager battle, ICombatGroup group)
         {            
             ICity targetCity;
             ICity city;
@@ -201,9 +202,7 @@ namespace Game.Logic.Actions
                 throw new ArgumentException();
             }
 
-            bool retreat = list.Any(combatObject => combatObject is AttackCombatUnit && combatObject.TroopStub == troopObject.Stub);
-
-            if (!retreat)
+            if (group.Id != groupId)
             {
                 return;
             }
@@ -221,7 +220,7 @@ namespace Game.Logic.Actions
         /// <summary>
         /// Takes care of finishing this action up if all our units are killed
         /// </summary>
-        private void BattleUnitRemoved(IBattleManager battle, ICombatObject combatobject)
+        private void BattleUnitKilled(IBattleManager battle, ICombatObject combatobject)
         {
             ICity targetCity;
             ICity city;

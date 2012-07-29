@@ -7,8 +7,8 @@ using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
 using Game.Map;
+using Game.Setup;
 using Moq;
-using Persistance;
 using Xunit;
 
 #endregion
@@ -26,6 +26,7 @@ namespace Testing.Troop
             Mock<IActionFactory> actionFactory = new Mock<IActionFactory>();
             Mock<ICombatUnitFactory> combatUnitFactory = new Mock<ICombatUnitFactory>();
             Mock<ICombatGroupFactory> combatGroupFactory = new Mock<ICombatGroupFactory>();
+            Mock<ObjectTypeFactory> objectTypeFactory = new Mock<ObjectTypeFactory>();
 
             var stub = new TroopStub();
             stub.AddFormation(FormationType.Normal);
@@ -33,8 +34,8 @@ namespace Testing.Troop
             stub.AddFormation(FormationType.InBattle);
 
             stub.AddUnit(FormationType.Normal, 101, 10);
-
-            var battleProcedure = new BattleProcedure(combatUnitFactory.Object, combatGroupFactory.Object, radiusLocator.Object, battleManagerFactory.Object, actionFactory.Object);
+            
+            var battleProcedure = new BattleProcedure(combatUnitFactory.Object, combatGroupFactory.Object, radiusLocator.Object, battleManagerFactory.Object, actionFactory.Object, objectTypeFactory.Object);
             battleProcedure.MoveUnitFormation(stub, FormationType.Normal, FormationType.InBattle);
             battleProcedure.MoveUnitFormation(stub, FormationType.InBattle, FormationType.Normal);
 

@@ -91,10 +91,10 @@ namespace Game.Logic.Actions
             originalHp = remainingHp = troopObject.Stub.TotalHp;
 
             city.Battle.ActionAttacked += BattleActionAttacked;
-            city.Battle.ExitBattle += BattleExitBattle;            
+            city.Battle.ExitBattle += BattleExitBattle;
 
             troopObject.BeginUpdate();
-            troopObject.State = GameObjectState.BattleState(cityId);
+            troopObject.State = GameObjectState.BattleState(city.Battle.BattleId);
             troopObject.EndUpdate();
             troopObject.Stub.BeginUpdate();
             troopObject.Stub.State = TroopState.Battle;

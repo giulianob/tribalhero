@@ -76,8 +76,6 @@ namespace Game.Battle.CombatObjects
 
         int LootPerRound();
 
-        void CleanUp();
-
         bool CanSee(ICombatObject obj, uint lowestSteath);
 
         void ParticipatedInRound();

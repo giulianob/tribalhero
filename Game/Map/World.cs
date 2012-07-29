@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.IO;
+using Game.Battle;
 using Game.Comm;
 using Game.Data;
 using Game.Data.Tribe;
@@ -48,6 +49,8 @@ namespace Game.Map
 
         private Dictionary<uint, ITribe> Tribes { get; set; }
 
+        private Dictionary<uint, IBattleManager> Battles { get; set; }
+
         private int RegionsCount { get; set; }
         private uint RegionSize { get; set; }
         private Stream RegionChanges { get; set; }
@@ -78,6 +81,7 @@ namespace Game.Map
 
         public World()
         {
+            Battles = new Dictionary<uint, IBattleManager>();
             Cities = new Dictionary<uint, ICity>();
             RoadManager = new RoadManager();
             Lock = new object();
@@ -101,6 +105,11 @@ namespace Game.Map
         public bool TryGetObjects(uint tribeId, out ITribe tribe)
         {
             return Tribes.TryGetValue(tribeId, out tribe);
+        }
+
+        public bool TryGetObjects(uint battleId, out IBattleManager battleManager)
+        {
+            return Battles.TryGetValue(battleId, out battleManager);
         }
 
         public bool TryGetObjects(uint cityId, byte troopStubId, out ICity city, out ITroopStub troopStub)
@@ -249,6 +258,30 @@ namespace Game.Map
             {
                 tribeIdGen.Set(tribe.Id);
                 Tribes.Add(tribe.Id, tribe);
+            }
+        }
+
+        public void Add(IBattleManager battleManager)
+        {
+            lock (Lock)
+            {
+                Battles.Add(battleManager.BattleId, battleManager);
+            }
+        }
+
+        public void Remove(IBattleManager battleManager)
+        {
+            lock (Lock)
+            {
+                Battles.Remove(battleManager.BattleId);
+            }
+        }
+
+        public void DbLoaderAdd(IBattleManager battleManager)
+        {
+            lock (Lock)
+            {
+                Battles.Add(battleManager.BattleId, battleManager);
             }
         }
 

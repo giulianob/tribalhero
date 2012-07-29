@@ -15,9 +15,8 @@ namespace Game.Battle
         {
             battle.EnterBattle += BattleEnterBattle;
             battle.ExitBattle += BattleExitBattle;
-            battle.EnterTurn += BattleEnterTurn;
             battle.ExitTurn += BattleExitTurn;
-            battle.UnitRemoved += BattleUnitRemoved;
+            battle.UnitKilled += BattleUnitKilled;
             battle.ActionAttacked += BattleActionAttacked;
             battle.SkippedAttacker += BattleSkippedAttacker;
             battle.EnterRound += BattleEnterRound;
@@ -64,7 +63,7 @@ namespace Game.Battle
             Append("**************************************\n");
         }
 
-        private void BattleUnitRemoved(IBattleManager battle, ICombatObject obj)
+        private void BattleUnitKilled(IBattleManager battle, ICombatObject obj)
         {
             Append("**************************************");
             Append("Removing: ");

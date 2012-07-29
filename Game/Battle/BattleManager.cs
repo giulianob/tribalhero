@@ -303,7 +303,7 @@ namespace Game.Battle
                 BattleReport.WriteReportGroup(group, side == BattleSide.Attack, state);
 
                 // Tell objects to exit from battle
-                foreach (var co in group.Where(co => !co.IsDead))
+                foreach (var co in group.Where(co => !co.Disposed))
                 {
                     co.ExitBattle();
                 }
@@ -316,12 +316,6 @@ namespace Game.Battle
                 else
                 {
                     WithdrawDefender(this, group);
-                }
-
-                // Clean up objects
-                foreach (var co in group.Where(co => !co.Disposed))
-                {
-                    co.CleanUp();
                 }
             }
         }
@@ -354,25 +348,19 @@ namespace Game.Battle
                 BattleReport.CompleteBattle();
             }
 
-            foreach (var combatObj in Defenders.AllCombatObjects())
-            {
-                if (!combatObj.IsDead)
-                {
-                    combatObj.ExitBattle();
-                }
-            }
-
-            foreach (var combatObj in Attackers.AllCombatObjects())
-            {
-                if (!combatObj.IsDead)
-                {
-                    combatObj.ExitBattle();
-                }
-            }
-
             ExitBattle(this, Attackers, Defenders);
 
-            //have to call to remove from the database
+            foreach (var combatObj in Defenders.AllCombatObjects().Where(combatObj => !combatObj.IsDead))
+            {
+                combatObj.ExitBattle();
+            }
+
+            foreach (var combatObj in Attackers.AllCombatObjects().Where(combatObj => !combatObj.IsDead))
+            {
+                combatObj.ExitBattle();
+            }
+
+            // Delete all groups
             Attackers.Clear();
             Defenders.Clear();
         }
@@ -626,11 +614,11 @@ namespace Game.Battle
                 
                 ActionAttacked(this, NextToAttack, attacker, target.CombatObject, actualDmg);
 
-                UnitRemoved(this, target.CombatObject);
+                UnitKilled(this, target.CombatObject);
 
                 if (!target.CombatObject.Disposed)
                 {
-                    target.CombatObject.CleanUp();
+                    target.CombatObject.ExitBattle();
                 }
             }
             else
@@ -652,15 +640,17 @@ namespace Game.Battle
 
         #region Events
 
-        public delegate void OnAttack(IBattleManager battle, BattleSide attackingSide, ICombatObject source, ICombatObject target, decimal damage);
+        public delegate void OnAttack(IBattleManager battle, BattleSide attackingSide, ICombatObject attacker, ICombatObject target, decimal damage);
 
-        public delegate void OnBattle(IBattleManager battle, ICombatList atk, ICombatList def);
+        public delegate void OnBattle(IBattleManager battle, ICombatList attackers, ICombatList defenders);
 
         public delegate void OnReinforce(IBattleManager battle, IEnumerable<ICombatObject> list);
 
-        public delegate void OnRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round);
+        public delegate void OnWithdraw(IBattleManager battle, ICombatGroup group);
 
-        public delegate void OnTurn(IBattleManager battle, ICombatList atk, ICombatList def, int turn);
+        public delegate void OnRound(IBattleManager battle, ICombatList attackers, ICombatList defenders, uint round);
+
+        public delegate void OnTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, int turn);
 
         public delegate void OnUnitUpdate(IBattleManager battle, ICombatObject obj);
 
@@ -670,23 +660,17 @@ namespace Game.Battle
 
         public event OnRound EnterRound = delegate { };
 
-        public event OnTurn EnterTurn = delegate { };
-
         public event OnTurn ExitTurn = delegate { };
 
         public event OnReinforce ReinforceAttacker = delegate { };
 
         public event OnReinforce ReinforceDefender = delegate { };
 
-        public event OnReinforce WithdrawAttacker = delegate { };
+        public event OnWithdraw WithdrawAttacker = delegate { };
 
-        public event OnReinforce WithdrawDefender = delegate { };
+        public event OnWithdraw WithdrawDefender = delegate { };
 
-        public event OnUnitUpdate UnitAdded = delegate { };
-
-        public event OnUnitUpdate UnitRemoved = delegate { };
-
-        public event OnUnitUpdate UnitUpdated = delegate { };
+        public event OnUnitUpdate UnitKilled = delegate { };
 
         public event OnUnitUpdate SkippedAttacker = delegate { };
 

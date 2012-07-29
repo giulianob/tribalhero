@@ -35,7 +35,6 @@ namespace Game.Battle
         public CombatList(IDbManager manager, RadiusLocator radiusLocator, BattleFormulas battleFormulas)
                 : base(manager)
         {
-            ItemRemoved += GroupRemoved;
             this.radiusLocator = radiusLocator;
             this.battleFormulas = battleFormulas;
         }
@@ -113,11 +112,6 @@ namespace Game.Battle
         public IEnumerable<ICombatObject> AllCombatObjects()
         {
             return BackingList.SelectMany(group => group.Select(combatObject => combatObject));
-        }
-
-        private void GroupRemoved(PersistableObjectList<ICombatGroup> list, ICombatGroup item)
-        {
-            item.Clear();
         }
 
         #region Nested type: CombatScoreItem

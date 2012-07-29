@@ -82,7 +82,7 @@
 					break;
 				case ObjectFactory.TYPE_STRONGHOLD:
 					objLvl = packet.readUByte();
-					objTribeId = 0;
+					objTribeId = packet.readUInt();
 					break;
 			} 							
 			

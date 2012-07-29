@@ -23,17 +23,22 @@ package src.Comm.Commands
 		public function dispose() : void {
 		}
 		
-		public function getStrongholdInfo(obj: Stronghold):void
+		public function viewStrongholdProfile(id: int): void
 		{
-			var packet: Packet = new Packet();
-			packet.cmd = Commands.TROOP_INFO;
+	/*		var packet: Packet = new Packet();
+			packet.cmd = Commands.STRONGHOLD_INFO;
 
-			packet.writeUInt(obj.objectId);
+			packet.writeUInt(id);
 
 			session.write(packet, function(packet: Packet, custom: * ): void {
 				if (MapComm.tryShowError(packet)) return;
 				var stronghold: Stronghold = custom as Stronghold;
-			}, obj);
+			}, obj);	*/		
+		}
+	
+		public function viewStrongholdPublicProfile(id: int): void
+		{
+
 		}
 	}
 

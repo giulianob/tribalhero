@@ -16,6 +16,7 @@
 	import src.UI.Dialog.*;
 	import src.UI.GameJSidebar;
 	import src.UI.Sidebars.ObjectInfo.Buttons.*;
+	import src.UI.Sidebars.StrongholdInfo.Buttons.ViewStrongholdButton;
 	import src.Util.*;
 	import flash.display.*;
 	import flash.utils.Timer;
@@ -71,6 +72,8 @@
 			}
 			
 			addStatRow("Level", stronghold.level.toString());
+
+			pnlGroups.append(new ViewStrongholdButton(stronghold));
 
 			var buttons: Array = new Array();
 
@@ -274,6 +277,7 @@
 			append(pnlStats);
 			append(pnlGroups);
 			append(pnlActions);
+			
 		}
 
 		override public function show(owner:* = null, onClose:Function = null):JFrame

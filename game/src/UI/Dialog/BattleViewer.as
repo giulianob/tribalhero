@@ -29,18 +29,18 @@
 		private var lstLogScroll:JScrollPane;
 
 		private var battle: BattleManager;
-		private var battleCityId: int;
+		private var battleId: int;
 
 		private var combat: Array = new Array();
 
-		public function BattleViewer(battleCityId: int) {
+		public function BattleViewer(battleId: int) {
 			createUI();
 
 			title = "Battle Viewer";
 
-			this.battleCityId = battleCityId;
+			this.battleId = battleId;
 
-			battle = Global.mapComm.Battle.battleSubscribe(battleCityId, this);
+			battle = Global.mapComm.Battle.battleSubscribe(battleId, this);
 			
 			if (battle) {
 				battle.addEventListener(BattleManager.OBJECT_ADDED_ATTACK, onAddedAttack);
@@ -67,7 +67,7 @@
 				battle.removeEventListener(BattleManager.END, onEnd);
 				battle.removeEventListener(BattleManager.NEW_ROUND, onNewRound);
 
-				Global.mapComm.Battle.battleUnsubscribe(battleCityId);
+				Global.mapComm.Battle.battleUnsubscribe(battleId);
 			}
 		}
 

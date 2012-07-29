@@ -462,9 +462,6 @@ class Battle extends AppModel {
             'contain' => array(
                 'BattleReportTroop' => array(
                     'order' => array('BattleReportTroop.group_id ASC'),
-                    'City' => array('fields' => array('id', 'name'),
-                        'Player' => array('fields' => array('id', 'name')),
-                    ),
                     'BattleReportObject' => array('order' => array('BattleReportObject.type ASC', 'BattleReportObject.object_id ASC'))
                 )
             )
@@ -474,6 +471,16 @@ class Battle extends AppModel {
 
         if (empty($battleReport)) {
             return false;
+        }
+
+        foreach ($battleReport['BattleReportTroop'] as $k => $troop) {
+            $battleReport['BattleReportTroop'][$k]['owner'] = array(
+                'id' => $troop['owner_id'],
+                'type' => $troop['owner_type'],
+                'name' => $this->getLocationName($troop['owner_type'], $troop['owner_id'])
+            );
+            unset($battleReport['BattleReportTroop'][$k]['owner_id']);
+            unset($battleReport['BattleReportTroop'][$k]['owner_type']);
         }
 
         return $battleReport;

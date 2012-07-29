@@ -298,6 +298,7 @@ namespace Game.Module
                     defaultTroop.AddFormation(FormationType.Normal);
                     defaultTroop.AddFormation(FormationType.Garrison);
                     defaultTroop.AddFormation(FormationType.InBattle);
+                    defaultTroop.City = city;
                     city.Troops.Add(defaultTroop);
 
                     Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);

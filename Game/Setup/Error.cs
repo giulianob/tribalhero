@@ -131,5 +131,10 @@ namespace Game.Setup
         AssignmentNotEligible = 746,
         #endregion
 
+        #region Stronghold
+        StrongholdNotFound = 801,
+        StrongholdNotOccupied = 802,
+        #endregion
+
     }
 }

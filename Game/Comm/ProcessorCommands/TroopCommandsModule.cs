@@ -397,7 +397,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ICity city;
-            ICity stationedCity;
+            IStation station;
 
             //we need to find out the stationed city first then reacquire local + stationed city locks            
             using (Concurrency.Current.Lock(cityId, out city))
@@ -410,16 +410,16 @@ namespace Game.Comm.ProcessorCommands
 
                 ITroopStub stub;
 
-                if (!city.Troops.TryGetStub(troopId, out stub) || stub.StationedCity == null)
+                if (!city.Troops.TryGetStub(troopId, out stub) || stub.Station == null)
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
-                stationedCity = stub.StationedCity;
+                station = stub.Station;
             }
 
-            using (Concurrency.Current.Lock(city, stationedCity))
+            using (Concurrency.Current.Lock(city, station))
             {
                 ITroopStub stub;
 
@@ -430,7 +430,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 //Make sure that the person sending the retreat is either the guy who owns the troop or the guy who owns the stationed city
-                if (city.Owner != session.Player && stub.StationedCity != null && stub.StationedCity.Owner != session.Player)
+                if (city.Owner != session.Player && stub.Station != null && session.Player.GetCityList().All(x => x != stub.Station))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;

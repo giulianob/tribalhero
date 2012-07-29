@@ -23,5 +23,6 @@ namespace Game.Data.Stronghold
         StrongholdState StrongholdState { get; set; }
         LazyValue Gate { get; }
         ITribe Tribe { get; set; }
+        ITroopManager Troops { get; }
     }
 }

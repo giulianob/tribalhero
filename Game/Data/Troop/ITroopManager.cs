@@ -12,7 +12,7 @@ namespace Game.Data.Troop
 
         byte Size { get; }
 
-        ICity City { get; set; }
+        IStation BaseStation { get; }
 
         int Upkeep { get; }
 

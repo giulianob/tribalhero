@@ -188,7 +188,7 @@ namespace Game.Logic.Actions
                     // Check if stub has died, if so, remove it completely from both cities
                     if (stub.TotalCount == 0)
                     {
-                        city.Troops.RemoveStationed(stub.StationedTroopId);
+                        city.Troops.RemoveStationed(stub.StationTroopId);
                         stub.City.Troops.Remove(stub.TroopId);
                         continue;
                     }
@@ -230,7 +230,7 @@ namespace Game.Logic.Actions
             var list = new List<ITroopStub>();
 
             //Add reinforcement
-            foreach (var stub in city.Troops.Where(stub => stub != city.DefaultTroop && stub.State == TroopState.Stationed && stub.StationedCity == city))
+            foreach (var stub in city.Troops.Where(stub => stub != city.DefaultTroop && stub.State == TroopState.Stationed && stub.Station == city))
             {
                 stub.BeginUpdate();
                 stub.State = TroopState.BattleStationed;
@@ -257,7 +257,7 @@ namespace Game.Logic.Actions
             }
 
             // Handle sending stationed troops back if they are below the set threshold
-            if (combatUnit != null && !combatUnit.IsAttacker && target.TroopStub.StationedCity == city && target.TroopStub.TotalCount > 0 && target.TroopStub.TotalCount <= target.TroopStub.StationedRetreatCount)
+            if (combatUnit != null && !combatUnit.IsAttacker && target.TroopStub.Station == city && target.TroopStub.TotalCount > 0 && target.TroopStub.TotalCount <= target.TroopStub.StationedRetreatCount)
             {
                 ITroopStub stub = combatUnit.TroopStub;
 

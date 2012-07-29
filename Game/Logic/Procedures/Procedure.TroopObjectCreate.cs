@@ -22,6 +22,7 @@ namespace Game.Logic.Procedures
             }
 
             stub.State = initialState;
+            stub.City = city;
             city.Troops.Add(stub);
 
             dbManager.Save(stub);
@@ -51,6 +52,7 @@ namespace Game.Logic.Procedures
             if (stub.TotalCount == 0 || !RemoveFromNormal(city.DefaultTroop, stub))
                 return false;
 
+            stub.City = city;
             var troop = new TroopObject(stub) {X = x, Y = y + 1};
 
             city.Troops.Add(stub);

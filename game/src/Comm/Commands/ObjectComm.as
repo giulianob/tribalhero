@@ -107,8 +107,8 @@
 					return new GameObjectState();
 				break;
 				case SimpleGameObject.STATE_BATTLE:
-					var battleCityId: int = packet.readUInt();
-					return new BattleState(battleCityId);
+					var battleId: int = packet.readUInt();
+					return new BattleState(battleId);
 				break;
 				case SimpleGameObject.STATE_MOVING:
 					var destX: int = 0;

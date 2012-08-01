@@ -4,7 +4,6 @@ using System.Globalization;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Data;
-using Game.Data.Troop;
 using Persistance;
 
 namespace Game.Battle.Reporting
@@ -36,7 +35,8 @@ namespace Game.Battle.Reporting
                             new[]
                             {
                                     new DbColumn("id", battleId, DbType.UInt32), new DbColumn("owner_type", owner.Type.ToString(), DbType.String, 15),
-                                    new DbColumn("owner_id", owner.Id, DbType.UInt32), new DbColumn("location_type", location.Type.ToString(), DbType.String, 15),
+                                    new DbColumn("owner_id", owner.Id, DbType.UInt32),
+                                    new DbColumn("location_type", location.Type.ToString(), DbType.String, 15),
                                     new DbColumn("location_id", location.Id, DbType.UInt32)
                             });
         }
@@ -74,8 +74,8 @@ namespace Game.Battle.Reporting
             Resource loot = group.GroupLoot;
             dbManager.Query(
                             string.Format(
-                                            @"UPDATE `{0}` SET `state` = @state, `gold` = @gold, `crop` = @crop, `iron` = @iron, `wood` = @wood WHERE `id` = @id LIMIT 1",
-                                            BATTLE_REPORT_TROOPS_DB),
+                                          @"UPDATE `{0}` SET `state` = @state, `gold` = @gold, `crop` = @crop, `iron` = @iron, `wood` = @wood WHERE `id` = @id LIMIT 1",
+                                          BATTLE_REPORT_TROOPS_DB),
                             new[]
                             {
                                     new DbColumn("state", state, DbType.Byte), new DbColumn("gold", loot.Gold, DbType.Int32),
@@ -91,24 +91,20 @@ namespace Game.Battle.Reporting
             uint battleTroopId = (uint)BattleReport.BattleTroopIdGenerator.GetNext();
 
             dbManager.Query(
-                            string.Format(
-                                          @"INSERT INTO `{0}` 
+                            string.Format(@"INSERT INTO `{0}` 
                                             (`id`, `battle_report_id`, `owner_type`, `owner_id`, `group_id`, `name`, `state`, `is_attacker`, `gold`, `crop`, `iron`, `wood`) VALUES
-                                            (@id, @report_id, @owner_type, @owner_id, @group_id, @name, @state, @is_attacker, @gold, @crop, @iron, @wood)",
-                                          BATTLE_REPORT_TROOPS_DB),
+                                            (@id, @report_id, @owner_type, @owner_id, @group_id, @name, @state, @is_attacker, @gold, @crop, @iron, @wood)", BATTLE_REPORT_TROOPS_DB),
                             new[]
                             {
-                                    new DbColumn("id", battleTroopId, DbType.UInt32), 
-                                    new DbColumn("report_id", reportId, DbType.UInt32),
-                                    new DbColumn("owner_type", group.Owner.Type.ToString(), DbType.String, 15), 
-                                    new DbColumn("owner_id", group.Owner.Id, DbType.UInt32),
-                                    new DbColumn("group_id", group.Id, DbType.UInt32), 
-                                    new DbColumn("name", group.TroopId == 1 ? "[LOCAL]" : group.TroopId.ToString(CultureInfo.InvariantCulture), DbType.String, 32),
-                                    new DbColumn("state", state, DbType.Byte), 
-                                    new DbColumn("is_attacker", isAttacker, DbType.Boolean),
-                                    new DbColumn("gold", loot.Gold, DbType.Int32),
-                                    new DbColumn("crop", loot.Crop, DbType.Int32), new DbColumn("iron", loot.Iron, DbType.Int32),
-                                    new DbColumn("wood", loot.Wood, DbType.Int32)
+                                    new DbColumn("id", battleTroopId, DbType.UInt32), new DbColumn("report_id", reportId, DbType.UInt32),
+                                    new DbColumn("owner_type", group.Owner.Type.ToString(), DbType.String, 15),
+                                    new DbColumn("owner_id", group.Owner.Id, DbType.UInt32), new DbColumn("group_id", group.Id, DbType.UInt32),
+                                    new DbColumn("name",
+                                                 group.TroopId == 1 ? "[LOCAL]" : group.TroopId.ToString(CultureInfo.InvariantCulture),
+                                                 DbType.String,
+                                                 32), new DbColumn("state", state, DbType.Byte), new DbColumn("is_attacker", isAttacker, DbType.Boolean),
+                                    new DbColumn("gold", loot.Gold, DbType.Int32), new DbColumn("crop", loot.Crop, DbType.Int32),
+                                    new DbColumn("iron", loot.Iron, DbType.Int32), new DbColumn("wood", loot.Wood, DbType.Int32)
                             });
 
             return battleTroopId;
@@ -130,16 +126,23 @@ namespace Game.Battle.Reporting
 
         public void SnapCombatObject(uint troopId, ICombatObject co)
         {
+            // Delete any existing snapshots of this combat object
+            dbManager.Query(
+                            string.Format(@"DELETE FROM `{0}` WHERE `battle_report_troop_id` = @battle_report_troop_id AND `object_id` = @object_id LIMIT 1",
+                                          BATTLE_REPORT_OBJECTS_DB),
+                            new[] {new DbColumn("battle_report_troop_id", troopId, DbType.UInt32), new DbColumn("object_id", co.Id, DbType.UInt32)});
+
+            // Snap the combat object
             dbManager.Query(
                             string.Format(
-                                          @"INSERT INTO `{0}` VALUES ('', @object_id, @troop_id, @type, @lvl, @hp, @count, @dmg_recv, @dmg_dealt, @hit_dealt, @hit_dealt_by_unit, @hit_recv)",
+                                          @"INSERT INTO `{0}` VALUES ('', @object_id, @battle_report_troop_id, @type, @lvl, @hp, @count, @dmg_recv, @dmg_dealt, @hit_dealt, @hit_dealt_by_unit, @hit_recv)",
                                           BATTLE_REPORT_OBJECTS_DB),
                             new[]
                             {
-                                    new DbColumn("object_id", co.Id, DbType.UInt32), new DbColumn("troop_id", troopId, DbType.UInt32),
-                                    new DbColumn("type", co.Type, DbType.UInt16), new DbColumn("lvl", co.Lvl, DbType.Byte), new DbColumn("hp", co.Hp, DbType.Decimal),
-                                    new DbColumn("count", co.Count, DbType.UInt16), new DbColumn("dmg_recv", co.DmgRecv, DbType.Decimal),
-                                    new DbColumn("dmg_dealt", co.DmgDealt, DbType.Decimal),
+                                    new DbColumn("object_id", co.Id, DbType.UInt32), new DbColumn("battle_report_troop_id", troopId, DbType.UInt32),
+                                    new DbColumn("type", co.Type, DbType.UInt16), new DbColumn("lvl", co.Lvl, DbType.Byte),
+                                    new DbColumn("hp", co.Hp, DbType.Decimal), new DbColumn("count", co.Count, DbType.UInt16),
+                                    new DbColumn("dmg_recv", co.DmgRecv, DbType.Decimal), new DbColumn("dmg_dealt", co.DmgDealt, DbType.Decimal),
                                     new DbColumn("hit_dealt", co.HitDealt, DbType.UInt16), new DbColumn("hit_dealt_by_unit", co.HitDealtByUnit, DbType.UInt32),
                                     new DbColumn("hit_recv", co.HitRecv, DbType.UInt16),
                             });
@@ -173,9 +176,7 @@ namespace Game.Battle.Reporting
                 reportViewId = (uint)reader["report_view_id"];
             }
 
-            dbManager.Query(
-                            string.Format(
-                                          @"UPDATE `{0}` 
+            dbManager.Query(string.Format(@"UPDATE `{0}` 
                                             SET 
                                             `loot_wood` = @wood, 
                                             `loot_gold` = @gold, 
@@ -186,8 +187,7 @@ namespace Game.Battle.Reporting
                                             `bonus_crop` = @bonus_crop, 
                                             `bonus_iron` = @bonus_iron 
                                             WHERE 
-                                            `id` = @id",
-                                          BATTLE_REPORT_VIEWS_DB),
+                                            `id` = @id", BATTLE_REPORT_VIEWS_DB),
                             new[]
                             {
                                     new DbColumn("wood", lootResource.Wood, DbType.Int32), new DbColumn("crop", lootResource.Crop, DbType.Int32),

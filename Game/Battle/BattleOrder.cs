@@ -14,7 +14,7 @@ namespace Game.Battle
     /// returns the next unit in the combat list that hasnt participated
     /// in the round. It doesn't care if its the same group or not.
     /// </summary>
-    class BattleOrder
+    public class BattleOrder
     {
         /// <summary>
         /// Returns the next object from the primary group that should attack.
@@ -69,7 +69,7 @@ namespace Game.Battle
             {
                 outCombatGroup = null;
                 outCombatObject = null;
-                foundInGroup = BattleManager.BattleSide.Attack;
+                foundInGroup = offensiveSide;
                 return true;
             }
 

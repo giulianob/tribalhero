@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using Game.Battle.CombatGroups;
+using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Util;
 using Persistance;
@@ -26,7 +27,7 @@ namespace Game.Battle.Reporting
         {
             set
             {
-                battle = value;
+                battle = value;                
                 ReportedGroups = new ReportedGroups(battle.BattleId);
             }
         }
@@ -40,6 +41,11 @@ namespace Game.Battle.Reporting
         /// Id of the current report. This will change as each new snapshot is taken.
         /// </summary>
         public uint ReportId { get; set; }
+
+        /// <summary>
+        /// Holds whether the current report has snapped an event other than Staying.
+        /// </summary>
+        public bool SnappedImportantEvent { get; set; }
 
         /// <summary>
         /// Persistable list of troops that have been reported for this snapshot.
@@ -85,7 +91,27 @@ namespace Game.Battle.Reporting
             WriteBeginReport();
             CompleteReport(ReportState.Exiting);
             battleReportWriter.SnapBattleEnd(battle.BattleId);
-        }      
+        }
+
+        /// <summary>
+        /// Writes an object that is leaving the battle without reporting on the other objects in the group
+        /// </summary>
+        public void WriteExitingObject(ICombatGroup group, bool isAttacker, ICombatObject combatObject)
+        {
+            WriteBeginReport();
+
+            uint reportedGroupId;
+            
+            bool alreadySnapped = ReportedGroups.TryGetValue(group, out reportedGroupId);
+            
+            if (!alreadySnapped)
+            {
+                reportedGroupId = battleReportWriter.SnapGroup(ReportId, group, ReportState.Staying, isAttacker);
+                ReportedGroups[group] = reportedGroupId;
+            }
+
+            battleReportWriter.SnapCombatObject(reportedGroupId, combatObject);
+        }
 
         /// <summary>
         /// Writes a report group
@@ -94,6 +120,11 @@ namespace Game.Battle.Reporting
         {
             WriteBeginReport();
 
+            if (state != ReportState.Staying)
+            {
+                SnappedImportantEvent = true;
+            }
+
             // Holds the id of the group for the current battle report
             uint reportedGroupId;
             
@@ -101,7 +132,7 @@ namespace Game.Battle.Reporting
             
             if (!alreadySnapped)
             {
-                // Snap the troop
+                // Snap the group
                 reportedGroupId = battleReportWriter.SnapGroup(ReportId,
                                                                 group,
                                                                 state,                                                                
@@ -109,49 +140,46 @@ namespace Game.Battle.Reporting
 
                 ReportedGroups[group] = reportedGroupId;
             }                
-            else
+            else if (state != ReportState.Staying)
             {
                 battleReportWriter.SnapGroupState(reportedGroupId, group, state);
             }
 
-            // Update the state if it's not Staying (Staying is the default state basically.. anything else overrides it)
-            if (state != ReportState.Staying)
-            {                
-
-                // Log any troops that are entering the battle to the view table so they are able to see this report
-                // Notice that we don't log the local troop. This is because they can automatically see all of the battles that take place in their cities by using the battles table.
-                // TODO: Should not really depend on an interface to decide this behavior and should not expect local troop to be group with id 1. Could do it by adding a method to 
-                // the group to return whether it should log a report view and use the owner type/id pattern to log the owner.
-                if (group.Id != 1 && group is IReportView)
-                {
-                    switch(state)
-                    {
-                        // When entering, we log the initial report id.
-                        case ReportState.Entering:
-                            if (!alreadySnapped)
-                            {
-                                battleReportWriter.SnapBattleReportView(((IReportView)group).City.Id,
-                                                                        group.TroopId,
-                                                                        battle.BattleId,
-                                                                        group.Id,
-                                                                        isAttacker,
-                                                                        ReportId);
-                            }
-                            break;
-                        // When exiting, we log the end report id
-                        case ReportState.Exiting:
-                        case ReportState.Dying:
-                        case ReportState.OutOfStamina:
-                        case ReportState.Retreating:
-                            battleReportWriter.SnapBattleReportViewExit(battle.BattleId, group.Id, ReportId);
-                            break;
-                    }
-                }
-            }
-
+            // Snap each object in the group
             foreach (var combatObject in group)
             {                
                 battleReportWriter.SnapCombatObject(reportedGroupId, combatObject);
+            }
+
+            // Log any troops that are entering the battle to the view table so they are able to see this report
+            // TODO: Should not really depend on an interface to decide this behavior and should not expect local troop to be group with id 1. Could do it by adding a method to 
+            // the group to return whether it should log a report view and use the owner type/id pattern to log the owner.
+            // This approach will have to change for stronghold since each tribe member will need to be able to see the report. We'll need to use
+            // the owner type/id as specified above.
+            if (group.Id != 1 && group is IReportView)
+            {
+                switch(state)
+                {
+                    // When entering, we log the initial report id.
+                    case ReportState.Entering:
+                        if (!alreadySnapped)
+                        {
+                            battleReportWriter.SnapBattleReportView(((IReportView)group).City.Id,
+                                                                    group.TroopId,
+                                                                    battle.BattleId,
+                                                                    group.Id,
+                                                                    isAttacker,
+                                                                    ReportId);
+                        }
+                        break;
+                    // When exiting, we log the end report id
+                    case ReportState.Exiting:
+                    case ReportState.Dying:
+                    case ReportState.OutOfStamina:
+                    case ReportState.Retreating:
+                        battleReportWriter.SnapBattleReportViewExit(battle.BattleId, group.Id, ReportId);
+                        break;
+                }
             }
         }
 
@@ -172,7 +200,7 @@ namespace Game.Battle.Reporting
         /// <param name="state"></param>
         public void CompleteReport(ReportState state)
         {
-            if (!ReportStarted)
+            if (!ReportStarted || (state == ReportState.Staying && !SnappedImportantEvent))
             {
                 return;
             }
@@ -182,6 +210,7 @@ namespace Game.Battle.Reporting
             battleReportWriter.SnapEndReport(ReportId, battle.BattleId, battle.Round, battle.Turn);
             ReportedGroups.Clear();
             ReportStarted = false;
+            SnappedImportantEvent = false;
         }
 
         public void SetLootedResources(uint cityId, byte troopId, uint battleId, Resource lootResource, Resource bonusResource)

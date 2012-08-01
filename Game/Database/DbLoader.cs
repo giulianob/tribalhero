@@ -951,7 +951,15 @@ namespace Game.Database
                     {
                         while (listReader.Read())
                         {
-                            battleManager.BattleReport.ReportedGroups[battleManager.GetCombatGroup((uint)reader["group_id"])] = (uint)listReader["combat_troop_id"];
+                            // Group may not exist anymore if it was snapped and then exited the battle
+                            var group = battleManager.GetCombatGroup((uint)listReader["group_id"]);
+
+                            if (group == null)
+                            {
+                                continue;
+                            }
+
+                            battleManager.BattleReport.ReportedGroups[group] = (uint)listReader["combat_troop_id"];
                         }
                     }
                     battleManager.DbFinishedLoading();

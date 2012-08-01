@@ -148,7 +148,7 @@ namespace Game.Battle
                         new DbColumn("report_started", BattleReport.ReportStarted, DbType.Boolean), new DbColumn("report_id", BattleReport.ReportId, DbType.UInt32),
                         new DbColumn("owner_type", Owner.Type.ToString(), DbType.String, 15), new DbColumn("owner_id", Owner.Id, DbType.UInt32),
                         new DbColumn("location_type", Location.Type.ToString(), DbType.String, 15), new DbColumn("location_id", Location.Id, DbType.UInt32),
-                        new DbColumn("next_to_attack", (byte)NextToAttack, DbType.Byte)
+                        new DbColumn("next_to_attack", (byte)NextToAttack, DbType.Byte), new DbColumn("snapped_important_event", BattleReport.SnappedImportantEvent, DbType.Boolean)
                 };
             }
         }
@@ -265,7 +265,7 @@ namespace Game.Battle
                 if (!BattleStarted)
                 {
                     return;
-                }                
+                }
 
                 BattleReport.WriteReportGroup(group, isAttacker, state);
 
@@ -603,14 +603,14 @@ namespace Game.Battle
             {                
                 if (target.Group.IsDead())
                 {
-                    BattleReport.WriteReportGroup(target.Group, NextToAttack == BattleSide.Attack, ReportState.Dying);
+                    BattleReport.WriteReportGroup(target.Group, NextToAttack != BattleSide.Attack, ReportState.Dying);
                     defensiveCombatList.Remove(target.Group);
                 }
                 else
                 {
-                    BattleReport.WriteReportGroup(target.Group, NextToAttack == BattleSide.Attack, ReportState.Staying);
+                    BattleReport.WriteExitingObject(target.Group, NextToAttack != BattleSide.Attack, target.CombatObject);
                     target.Group.Remove(target.CombatObject);
-                }                                
+                }
                 
                 ActionAttacked(this, NextToAttack, attacker, target.CombatObject, actualDmg);
 

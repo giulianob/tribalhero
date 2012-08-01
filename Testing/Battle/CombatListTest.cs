@@ -86,7 +86,7 @@ namespace Testing.Battle
         
         /// <summary>
         /// When a group is removed
-        /// Then the group should be cleared
+        /// Then the group should be deleted
         /// </summary>
         [Fact]
         public void TestGroupIsClearedWhenRemoved()
@@ -100,7 +100,7 @@ namespace Testing.Battle
 
             list.Remove(combatGroup.Object);           
 
-            combatGroup.Verify(m => m.Clear(), Times.Once());
+            manager.Verify(m => m.Delete(combatGroup.Object), Times.Once());
         }
 
         #endregion

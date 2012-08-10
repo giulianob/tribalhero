@@ -122,6 +122,8 @@ namespace Game
 
             Bind<ICombatUnitFactory>().ToMethod(c => new CombatUnitFactory(c.Kernel));
 
+            Bind<ICombatList>().To<CombatList>().NamedLikeFactoryMethod((ICombatListFactory p) => p.GetCombatList());
+
             Bind<ICombatListFactory>().ToFactory();
             
             #endregion

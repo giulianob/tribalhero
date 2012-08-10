@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Battle;
+using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Troop;
@@ -22,26 +23,30 @@ namespace Game.Logic.Actions
 
         private readonly BattleProcedure battleProcedure;
 
+        private readonly IGameObjectLocator gameObjectLocator;
+
         private decimal originalHp;
         private decimal remainingHp;
 
-        public EngageDefensePassiveAction(uint cityId, uint troopObjectId, BattleProcedure battleProcedure)
+        public EngageDefensePassiveAction(uint cityId, uint troopObjectId, BattleProcedure battleProcedure, IGameObjectLocator gameObjectLocator)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
             this.battleProcedure = battleProcedure;
+            this.gameObjectLocator = gameObjectLocator;
         }
 
-        public EngageDefensePassiveAction(uint id, bool isVisible, IDictionary<string, string> properties, BattleProcedure battleProcedure) : base(id, isVisible)
+        public EngageDefensePassiveAction(uint id, bool isVisible, IDictionary<string, string> properties, BattleProcedure battleProcedure, IGameObjectLocator gameObjectLocator) : base(id, isVisible)
         {
             this.battleProcedure = battleProcedure;
+            this.gameObjectLocator = gameObjectLocator;
             cityId = uint.Parse(properties["troop_city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             originalHp = decimal.Parse(properties["original_hp"]);
             remainingHp = decimal.Parse(properties["remaining_hp"]);
 
             ICity city;
-            if (!World.Current.TryGetObjects(cityId, out city))
+            if (!gameObjectLocator.TryGetObjects(cityId, out city))
                 throw new Exception();
 
             city.Battle.ActionAttacked += BattleActionAttacked;
@@ -79,7 +84,7 @@ namespace Game.Logic.Actions
             ICity city;
 
             ITroopObject troopObject;
-            if (!World.Current.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
+            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
                 return Error.ObjectNotFound;
 
             if (city.Battle == null)
@@ -107,8 +112,10 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        private void BattleActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatObject source, ICombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatGroup attackerGroup, ICombatObject attacker, ICombatGroup targetGroup, ICombatObject target, decimal damage)
         {
+            // TODO: Save groupId like in EngageAttackAction and use it to identify our objects
+            // TODO: This whole method can be changed to use the GroupKilled event instead of keeping the HP around like this
             var unit = target as AttackCombatUnit;
 
             if (unit == null || unit.City.Id != cityId)
@@ -118,15 +125,21 @@ namespace Game.Logic.Actions
 
             ICity city;
             ITroopObject troopObject;
-            if (!World.Current.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
+            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
+            {
                 throw new Exception();
+            }
 
             if (unit.TroopStub != troopObject.Stub)
+            {
                 return;
+            }
 
             remainingHp -= damage;
             if (remainingHp > 0)
+            {
                 return;
+            }
 
             city.Battle.ActionAttacked -= BattleActionAttacked;
             city.Battle.ExitBattle -= BattleExitBattle;
@@ -142,7 +155,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
             ITroopObject troopObject;
-            if (!World.Current.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
+            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
                 throw new Exception();
 
             city.Battle.ActionAttacked -= BattleActionAttacked;

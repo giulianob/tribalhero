@@ -3,6 +3,8 @@ using Game.Data;
 
 namespace Game.Logic.Actions
 {
+    // TODO: Change this factory to use custom instance provider. Every method should just return IAction and the method name can be used to return
+    // the correct type
     public interface IActionFactory
     {
         AttackChainAction CreateAttackChainAction(uint cityId, uint troopObjectId, uint targetCityId, uint targetStructureId, AttackMode mode);

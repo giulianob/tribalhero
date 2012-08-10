@@ -178,15 +178,12 @@ namespace Game.Battle
             return --stamina;
         }
 
-        public virtual short GetStaminaStructureDestroyed(short stamina, CombatStructure combatStructure)
+        public virtual short GetStaminaStructureDestroyed(short stamina, ICombatStructure combatStructure)
         {
             if (combatStructure.Stats.Base.Armor != ArmorType.Building3)
                 return stamina;
 
-            if (stamina < Config.battle_stamina_destroyed_deduction)
-                return 0;
-
-            return (short)(stamina - Config.battle_stamina_destroyed_deduction);
+            return Math.Max((short)0, (short)(stamina - Config.battle_stamina_destroyed_deduction));
         }
 
         public virtual ushort GetStaminaDefenseCombatObject(ICity city, ushort stamina, uint round)

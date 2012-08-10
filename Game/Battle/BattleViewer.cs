@@ -1,5 +1,6 @@
 #region
 
+using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Setup;
@@ -53,7 +54,7 @@ namespace Game.Battle
             }
         }
 
-        private void BattleActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatObject source, ICombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatGroup attackerGroup, ICombatObject source, ICombatGroup defenderGroup, ICombatObject target, decimal damage)
         {
             Append("**************************************");
             Append("Attacker: ");
@@ -63,7 +64,7 @@ namespace Game.Battle
             Append("**************************************\n");
         }
 
-        private void BattleUnitKilled(IBattleManager battle, ICombatObject obj)
+        private void BattleUnitKilled(IBattleManager battle, BattleManager.BattleSide objSide, ICombatObject obj)
         {
             Append("**************************************");
             Append("Removing: ");
@@ -91,7 +92,7 @@ namespace Game.Battle
             Append("Battle Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        void BattleSkippedAttacker(IBattleManager battle, ICombatObject obj)
+        void BattleSkippedAttacker(IBattleManager battle, BattleManager.BattleSide objSide, ICombatObject obj)
         {
             Append("**************************************");
             Append("Skipping: ");

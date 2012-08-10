@@ -49,7 +49,7 @@ namespace Game.Battle
 
         public bool HasInRange(ICombatObject attacker)
         {
-            return AllCombatObjects().Any(obj => (obj.InRange(attacker) && attacker.InRange(obj)) && !obj.IsDead);
+            return AllAliveCombatObjects().Any(obj => obj.InRange(attacker) && attacker.InRange(obj));
         }
 
         public BestTargetResult GetBestTargets(ICombatObject attacker, out IList<Target> result, int maxCount)
@@ -112,6 +112,11 @@ namespace Game.Battle
         public IEnumerable<ICombatObject> AllCombatObjects()
         {
             return BackingList.SelectMany(group => group.Select(combatObject => combatObject));
+        }
+
+        public IEnumerable<ICombatObject> AllAliveCombatObjects()
+        {
+            return BackingList.SelectMany(group => group.Where(combatObject => !combatObject.IsDead).Select(combatObject => combatObject));
         }
 
         #region Nested type: CombatScoreItem

@@ -128,6 +128,7 @@
     <Compile Include="Battle\CombatObjects\CombatUnitFactory.cs" />
     <Compile Include="Battle\CombatObjects\DefenseCombatUnit.cs" />
     <Compile Include="Battle\CombatObjects\ICombatObject.cs" />
+    <Compile Include="Battle\CombatObjects\ICombatStructure.cs" />
     <Compile Include="Battle\CombatObjects\ICombatUnitFactory.cs" />
     <Compile Include="Battle\IBattleManager.cs" />
     <Compile Include="Battle\IBattleManagerFactory.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Battle\RewardStrategies\CityRewardStrategy.cs" />
     <Compile Include="Battle\RewardStrategies\IRewardStrategy.cs" />
     <Compile Include="Battle\RewardStrategies\IRewardStrategyFactory.cs" />
+    <Compile Include="Battle\StaminaMonitor.cs" />
     <Compile Include="Comm\Channel\BattleChannel.cs" />
     <Compile Include="Battle\BattleFormulas.cs" />
     <Compile Include="Battle\BattleManager.cs" />

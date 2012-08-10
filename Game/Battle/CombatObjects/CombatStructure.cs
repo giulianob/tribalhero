@@ -15,7 +15,7 @@ using Persistance;
 
 namespace Game.Battle.CombatObjects
 {
-    public class CombatStructure : CityCombatObject
+    public class CombatStructure : CityCombatObject, ICombatStructure
     {
         public const string DB_TABLE = "combat_structures";
         private readonly byte lvl;
@@ -215,7 +215,7 @@ namespace Game.Battle.CombatObjects
 
         public override bool InRange(ICombatObject obj)
         {
-            if (obj is AttackCombatUnit)
+            if (obj.ClassType == BattleClass.Unit)
             {
                 return RadiusLocator.Current.IsOverlapping(obj.Location(),
                                                            obj.AttackRadius(),

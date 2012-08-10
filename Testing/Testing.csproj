@@ -113,6 +113,7 @@
     <Compile Include="Balancing\TestCavalry.cs" />
     <Compile Include="Balancing\TestOutnumber.cs" />
     <Compile Include="Balancing\TestArcher.cs" />
+    <Compile Include="Battle\BattleManagerTest.cs" />
     <Compile Include="Battle\BattleOrderTest.cs" />
     <Compile Include="Battle\CombatGroupTest.cs" />
     <Compile Include="Battle\CombatListTest.cs" />

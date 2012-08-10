@@ -21,7 +21,7 @@ namespace Game.Battle
         /// If primary group has no one able to attack, it will look into the secondary group instead.
         /// </summary>
         /// <returns>True if got an object from the current round. False if had to look into next round.</returns>
-        public bool NextObject(uint round, List<ICombatGroup> attacker, List<ICombatGroup> defender, BattleManager.BattleSide sideAttacking, out ICombatObject outCombatObject, out ICombatGroup outCombatGroup, out BattleManager.BattleSide foundInGroup)
+        public bool NextObject(uint round, IEnumerable<ICombatGroup> attacker, IEnumerable<ICombatGroup> defender, BattleManager.BattleSide sideAttacking, out ICombatObject outCombatObject, out ICombatGroup outCombatGroup, out BattleManager.BattleSide foundInGroup)
         {
             var offensiveCombatList = sideAttacking == BattleManager.BattleSide.Attack ? attacker : defender;
             var defensiveCombatList = sideAttacking == BattleManager.BattleSide.Attack ? defender : attacker;
@@ -76,7 +76,7 @@ namespace Game.Battle
             return false;
         }
 
-        private bool NextObjectFromList(uint round, List<ICombatGroup> combatGroups, out ICombatObject outObj, out ICombatGroup outGroup)
+        private bool NextObjectFromList(uint round, IEnumerable<ICombatGroup> combatGroups, out ICombatObject outObj, out ICombatGroup outGroup)
         {
             // Find any objects that are still in the current round
             foreach (ICombatGroup combatGroup in combatGroups)

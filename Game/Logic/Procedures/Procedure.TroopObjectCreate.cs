@@ -15,18 +15,18 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public virtual bool TroopStubCreate(ICity city, ITroopStub stub, TroopState initialState = TroopState.Idle, params FormationType[] formations) {
+        public virtual bool TroopStubCreate(out ITroopStub troopStub, ICity city, ISimpleStub stub, TroopState initialState = TroopState.Idle, params FormationType[] formations)
+        {
             if (!RemoveFromNormal(city.DefaultTroop, stub, formations))
             {
+                troopStub = null;
                 return false;
             }
-
-            stub.State = initialState;
-            stub.City = city;
-            city.Troops.Add(stub);
-
-            dbManager.Save(stub);
-            
+            troopStub = city.Troops.Create();
+            troopStub.BeginUpdate();
+            troopStub.Add(stub);
+            troopStub.State = initialState;
+            troopStub.EndUpdate();
             return true;
         }
 
@@ -47,19 +47,25 @@ namespace Game.Logic.Procedures
             troop.EndUpdate();            
         }
 
-        public virtual bool TroopObjectCreateFromCity(ICity city, TroopStub stub, uint x, uint y)
+        public virtual bool TroopObjectCreateFromCity(out ITroopStub troopStub, ICity city, ISimpleStub stub, uint x, uint y)
         {
             if (stub.TotalCount == 0 || !RemoveFromNormal(city.DefaultTroop, stub))
+            {
+                troopStub = null;
                 return false;
+            }
 
-            stub.City = city;
-            var troop = new TroopObject(stub) {X = x, Y = y + 1};
+            troopStub = city.Troops.Create();
+            troopStub.BeginUpdate();
+            troopStub.Add(stub);
+            troopStub.EndUpdate();
 
-            city.Troops.Add(stub);
+            var troop = new TroopObject(troopStub) { X = x, Y = y + 1 };
             city.Add(troop);
 
+
             troop.BeginUpdate();
-            troop.Stats = new TroopStats(Formula.Current.GetTroopRadius(stub, null), Formula.Current.GetTroopSpeed(stub));
+            troop.Stats = new TroopStats(Formula.Current.GetTroopRadius(troopStub, null), Formula.Current.GetTroopSpeed(troopStub));
             World.Current.Add(troop);
             troop.EndUpdate();
 

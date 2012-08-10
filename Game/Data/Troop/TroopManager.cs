@@ -13,6 +13,8 @@ namespace Game.Data.Troop
 {
     public class TroopManager : ITroopManager
     {
+        private readonly ITroopStubFactory troopStubFactory;
+
         #region Event
 
         #region Delegates
@@ -58,8 +60,9 @@ namespace Game.Data.Troop
 
         #region Methods
 
-        public TroopManager(IStation baseStation)
+        public TroopManager(IStation baseStation, ITroopStubFactory troopStubFactory)
         {
+            this.troopStubFactory = troopStubFactory;
             BaseStation = baseStation;
         }
 
@@ -82,8 +85,6 @@ namespace Game.Data.Troop
                 return;
 
             CheckUpdateMode();
-
-            DbPersistance.Current.Save(stub);
 
             if (TroopUpdated != null)
                 TroopUpdated(stub);
@@ -121,10 +122,34 @@ namespace Game.Data.Troop
                 return false;
             idGen.Set(id);
             dict[id] = stub;
-            stub.BeginUpdate();
-            stub.EndUpdate();
             stub.UnitUpdate += StubUpdateEvent;
             return true;
+        }
+
+        public bool DbLoaderAddStation(ITroopStub stub)
+        {
+            int nextId = idGen.GetNext();
+            if (nextId == -1)
+                return false;
+            var id = (byte)nextId;
+
+            stub.StationTroopId = id;
+            stub.State = TroopState.Stationed;
+            stub.Station = BaseStation;
+
+            dict.Add(id, stub);
+            stub.UnitUpdate += StubUpdateEvent;
+            FireAdded(stub);
+            return true;
+        }
+
+        public ITroopStub Create()
+        {
+            var stub = troopStubFactory.CreateTroopStub((byte)idGen.GetNext());
+            dict.Add(stub.TroopId, stub);
+            stub.UnitUpdate += StubUpdateEvent;
+            FireAdded(stub);
+            return stub;
         }
 
         public bool Add(ITroopStub stub, out byte id)
@@ -141,7 +166,7 @@ namespace Game.Data.Troop
 
             stub.BeginUpdate();
             stub.TroopId = id;
-            stub.EndUpdate();
+            stub.EndUpdate();  // Updating inside prevents Endupate being called at higher level, causing an "Update" to be sent after "Add"
 
             dict.Add(id, stub);
 
@@ -157,9 +182,13 @@ namespace Game.Data.Troop
             if (nextId == -1)
                 return false;
             var id = (byte)nextId;
+
+            stub.BeginUpdate();
             stub.StationTroopId = id;
             stub.State = TroopState.Stationed;
             stub.Station = BaseStation;
+            stub.EndUpdate();
+
             dict.Add(id, stub);
             stub.UnitUpdate += StubUpdateEvent;
             FireAdded(stub);

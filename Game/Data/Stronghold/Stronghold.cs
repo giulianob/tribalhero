@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,8 @@ namespace Game.Data.Stronghold
 {
     class Stronghold : SimpleGameObject, IStronghold, IStation
     {
-        
+        public const string DB_TABLE = "strongholds";
+
         #region Implementation of IStronghold
 
         public uint Id { get; private set; }
@@ -36,19 +38,6 @@ namespace Game.Data.Stronghold
             }
         }
 
-        public void Activate()
-        {
-            BeginUpdate();
-      //      world.Add(simpleGameObject);
-            EndUpdate();
-
-        }
-
-        public void TransferTo(ITribe tribe)
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
 
         #region Constructor
@@ -60,7 +49,10 @@ namespace Game.Data.Stronghold
             Lvl = level;
             this.x = x;
             this.y = y;
-            Troops = new TroopManager(this);
+            Troops = new TroopManager(this, null);
+
+            StrongholdState = StrongholdState.Inactive;
+            Gate = new LazyValue(0);
         }
 
         #endregion
@@ -234,5 +226,56 @@ namespace Game.Data.Stronghold
         }
 
         #endregion
-    }
+
+        #region Implementation of IPersistable
+
+        public string DbTable
+        {
+            get
+            {
+                return DB_TABLE;
+            }
+        }
+
+        public DbColumn[] DbPrimaryKey
+        {
+            get
+            {
+                return new[] { new DbColumn("id", Id, DbType.UInt32) };
+            }
+        }
+
+        public DbDependency[] DbDependencies
+        {
+            get
+            {
+                return new DbDependency[] { };
+            }
+        }
+
+        public DbColumn[] DbColumns
+        {
+            get
+            {
+                return new[]
+                       {
+                               new DbColumn("tribe_id", tribe == null ? 0 : tribe.Id, DbType.UInt32), 
+                               new DbColumn("name", Name, DbType.String, 20),
+                               new DbColumn("level", Lvl, DbType.Byte), 
+                               new DbColumn("state",(byte)StrongholdState, DbType.Byte),
+                               new DbColumn("gate", Gate.Value, DbType.Int32),
+                               new DbColumn("x", x, DbType.UInt32),
+                               new DbColumn("y", y, DbType.UInt32),
+                       };
+            }
+        }
+
+        #endregion
+
+        #region Implementation of IPersistableObject
+
+        public bool DbPersisted { get; set; }
+
+        #endregion
+        }
 }

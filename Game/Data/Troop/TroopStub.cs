@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Game.Database;
 using Game.Logic.Formulas;
 using Game.Util;
 using Game.Util.Locking;
@@ -32,11 +33,10 @@ namespace Game.Data.Troop
         Defense = 2,
     }
 
-    public class TroopStub : ITroopStub
+    public class TroopStub : SimpleStub, ITroopStub
     {
         public const string DB_TABLE = "troop_stubs";
         private readonly object objLock = new object();
-        protected Dictionary<FormationType, Formation> data = new Dictionary<FormationType, Formation>();
         private bool isDirty;
         private bool isUpdating;
 
@@ -145,29 +145,6 @@ namespace Game.Data.Troop
             }
         }
 
-        public byte FormationCount
-        {
-            get
-            {
-                return (byte)data.Count;
-            }
-        }
-
-        public ushort TotalCount
-        {
-            get
-            {
-                ushort count = 0;
-
-                lock (objLock)
-                {
-                    foreach (var formation in data.Values)
-                        count += (ushort)formation.Sum(x => x.Value);
-                }
-
-                return count;
-            }
-        }
 
         public decimal TotalHp
         {
@@ -289,8 +266,10 @@ namespace Game.Data.Troop
 
         #endregion
 
-        public TroopStub()
+        public TroopStub(byte troopId, ICity city)
         {
+            City = city;
+            this.troopId = troopId;
             Template = new TroopTemplate(this);
         }
 
@@ -438,6 +417,8 @@ namespace Game.Data.Troop
         {
             isUpdating = false;
 
+            DbPersistance.Current.Save(this);
+
             if (isDirty)
                 UnitUpdate(this);
         }
@@ -449,7 +430,9 @@ namespace Game.Data.Troop
                 CheckUpdateMode();
                 if (data.ContainsKey(type))
                     return false;
-                data.Add(type, new Formation(type, this));
+                var formation = new Formation(type);
+                formation.OnUnitUpdated += FormationOnOnUnitUpdated;
+                data.Add(type, formation);
 
                 FireUpdated();
             }
@@ -457,7 +440,12 @@ namespace Game.Data.Troop
             return true;
         }
 
-        public bool Add(ITroopStub stub)
+        private void FormationOnOnUnitUpdated()
+        {
+            FireUpdated();
+        }
+
+        public bool Add(ISimpleStub stub)
         {
             lock (objLock)
             {
@@ -468,7 +456,8 @@ namespace Game.Data.Troop
                     Formation targetFormation;
                     if (!data.TryGetValue(stubFormation.Type, out targetFormation))
                     {
-                        targetFormation = new Formation(stubFormation.Type, this);
+                        targetFormation = new Formation(stubFormation.Type);
+                        targetFormation.OnUnitUpdated += FormationOnOnUnitUpdated;
                         data.Add(stubFormation.Type, targetFormation);
                     }
 
@@ -481,7 +470,7 @@ namespace Game.Data.Troop
             return true;
         }
 
-        public bool AddUnit(FormationType formationType, ushort type, ushort count)
+        public override bool AddUnit(FormationType formationType, ushort type, ushort count)
         {
             lock (objLock)
             {
@@ -629,23 +618,5 @@ namespace Game.Data.Troop
             }
         }
 
-        /// <summary>
-        /// Returns a list of units for specified formations.
-        /// If formation is empty, will return all units.
-        /// </summary>
-        /// <param name="formations"></param>
-        /// <returns></returns>
-        public List<Unit> ToUnitList(params FormationType[] formations)
-        {
-            var allUnits = from formation in data.Values
-                           from unit in formation
-                           where (formations.Length == 0 || formations.Contains(formation.Type))
-                           orderby unit.Key
-                           group unit by unit.Key
-                           into unitGroups                            
-                           select new Unit(unitGroups.Key, (ushort)unitGroups.Sum(x => x.Value));
-
-            return allUnits.ToList();
-        }
     }
 }

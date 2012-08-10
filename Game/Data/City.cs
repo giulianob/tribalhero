@@ -367,7 +367,7 @@ namespace Game.Data
 
             Technologies = new TechnologyManager(EffectLocation.City, this, id);
 
-            Troops = new TroopManager(this);
+            Troops = new TroopManager(this, new CityTroopStubFactory(this));
 
             Troops.TroopUpdated += TroopManagerTroopUpdated;
             Troops.TroopRemoved += TroopManagerTroopRemoved;

@@ -88,7 +88,7 @@ namespace ConsoleSimulator
             player.Add(city);
             cityId++;
 
-            attack = new TroopStub();
+            attack = new TroopStub(0,city);
             attack.AddFormation(FormationType.Normal);
             obj = new TroopObject(attack);
             attack.TroopObject = obj;

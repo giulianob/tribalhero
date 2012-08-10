@@ -32,7 +32,7 @@ namespace Game.Comm.ProcessorCommands
             uint targetObjectId;
             AttackMode mode;
             DateTime time;
-            TroopStub stub;
+            ISimpleStub simpleStub;
             string description;
             bool isAttack;
             try
@@ -43,7 +43,7 @@ namespace Game.Comm.ProcessorCommands
                 targetObjectId = packet.GetUInt32();
                 time = DateTime.UtcNow.AddSeconds(packet.GetInt32());
                 isAttack = packet.GetByte() == 1;
-                stub = PacketHelper.ReadStub(packet, isAttack?FormationType.Attack:FormationType.Defense);
+                simpleStub = PacketHelper.ReadStub(packet, isAttack ? FormationType.Attack : FormationType.Defense);
                 description = packet.GetString();
             }
             catch (Exception) {
@@ -110,7 +110,7 @@ namespace Game.Comm.ProcessorCommands
 
                 int id;
                 Error ret = session.Player.Tribesman.Tribe.CreateAssignment(city,
-                                                                            stub,
+                                                                            simpleStub,
                                                                             targetStructure.X,
                                                                             targetStructure.Y,
                                                                             targetCity,
@@ -126,7 +126,7 @@ namespace Game.Comm.ProcessorCommands
         public void Join(Session session, Packet packet) {
             uint cityId;
             int assignmentId;
-            TroopStub stub;
+            ISimpleStub stub;
             try
             {
                 cityId = packet.GetUInt32();

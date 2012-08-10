@@ -109,7 +109,7 @@ namespace Game.Comm.ProcessorCommands
         {
             uint cityId;            
             bool hideNewUnits;
-            ITroopStub stub;
+            ISimpleStub stub;
             try
             {
                 cityId = packet.GetUInt32();
@@ -255,7 +255,7 @@ namespace Game.Comm.ProcessorCommands
             uint cityId;
             uint targetCityId;
             uint targetObjectId;
-            TroopStub stub;
+            ISimpleStub simpleStub;
             AttackMode mode;
 
             try
@@ -264,7 +264,7 @@ namespace Game.Comm.ProcessorCommands
                 cityId = packet.GetUInt32();
                 targetCityId = packet.GetUInt32();
                 targetObjectId = packet.GetUInt32();
-                stub = PacketHelper.ReadStub(packet, FormationType.Attack);
+                simpleStub = PacketHelper.ReadStub(packet, FormationType.Attack);
             }
             catch(Exception)
             {
@@ -302,7 +302,8 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 // Create troop object                
-                if (!Procedure.Current.TroopObjectCreateFromCity(city, stub, city.X, city.Y))
+                ITroopStub stub;
+                if (!Procedure.Current.TroopObjectCreateFromCity(out stub, city, simpleStub, city.X, city.Y))
                 {
                     ReplyError(session, packet, Error.TroopChanged);
                     return;
@@ -326,14 +327,14 @@ namespace Game.Comm.ProcessorCommands
         {
             uint cityId;
             uint targetCityId;
-            TroopStub stub;
+            ISimpleStub simpleStub;
             AttackMode mode;
 
             try
             {
                 cityId = packet.GetUInt32();
                 targetCityId = packet.GetUInt32();
-                stub = PacketHelper.ReadStub(packet, FormationType.Defense);
+                simpleStub = PacketHelper.ReadStub(packet, FormationType.Defense);
                 mode = (AttackMode)packet.GetByte();
             }
             catch(Exception)
@@ -362,7 +363,8 @@ namespace Game.Comm.ProcessorCommands
             {
                 ICity city = cities[cityId];
 
-                if (!Procedure.Current.TroopObjectCreateFromCity(city, stub, city.X, city.Y))
+                ITroopStub stub;
+                if (!Procedure.Current.TroopObjectCreateFromCity(out stub, city, simpleStub, city.X, city.Y))
                 {
                     ReplyError(session, packet, Error.ObjectNotFound);
                     return;

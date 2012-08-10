@@ -199,7 +199,8 @@ namespace Game
                                                                       new StrongholdConfigurator(),
                                                                       c.Kernel.Get<IStrongholdFactory>(),
                                                                       c.Kernel.Get<IWorld>(),
-                                                                      c.Kernel.Get<Chat>())).InSingletonScope();
+                                                                      c.Kernel.Get<Chat>(),
+                                                                      c.Kernel.Get<IDbManager>())).InSingletonScope();
             Bind<IStronghold>().To<Stronghold>();
             Bind<IStrongholdActivationCondition>().To<StrongholdActivationCondition>();
             Bind<StrongholdActivationChecker>().ToSelf().InSingletonScope();

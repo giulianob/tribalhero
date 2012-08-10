@@ -15,7 +15,7 @@ namespace Game.Data.Stronghold
         Neutral,
         Occupied
     }
-    public interface IStronghold : IHasLevel, ICityRegionObject, ILockable, ISimpleGameObject
+    public interface IStronghold : IHasLevel, ICityRegionObject, ILockable, ISimpleGameObject, IPersistableObject
     {
         uint Id { get; }
         string Name { get; }

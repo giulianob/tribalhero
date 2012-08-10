@@ -294,12 +294,12 @@ namespace Game.Module
                     World.Current.Add(structure);
                     structure.EndUpdate();
 
-                    var defaultTroop = new TroopStub();
+                    var defaultTroop = city.Troops.Create();
+                    defaultTroop.BeginUpdate();
                     defaultTroop.AddFormation(FormationType.Normal);
                     defaultTroop.AddFormation(FormationType.Garrison);
                     defaultTroop.AddFormation(FormationType.InBattle);
-                    defaultTroop.City = city;
-                    city.Troops.Add(defaultTroop);
+                    defaultTroop.EndUpdate();
 
                     Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
                     throw new Exception("NPC isnt working right now due ot line below");

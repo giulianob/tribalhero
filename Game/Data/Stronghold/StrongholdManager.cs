@@ -5,6 +5,7 @@ using Game.Data.Tribe;
 using Game.Map;
 using Game.Module;
 using Game.Util;
+using Persistance;
 
 namespace Game.Data.Stronghold
 {
@@ -17,18 +18,21 @@ namespace Game.Data.Stronghold
         private readonly IdGenerator idGenerator;
         private readonly IWorld world;
         private Chat chat;
+        private readonly IDbManager dbManager;
 
         public StrongholdManager(IdGenerator idGenerator,
                                     IStrongholdConfigurator strongholdConfigurator,
                                     IStrongholdFactory strongholdFactory,
                                     IWorld world,
-                                    Chat chat)
+                                    Chat chat,
+                                    IDbManager dbManager)
         {
             this.idGenerator = idGenerator;
             this.strongholdConfigurator = strongholdConfigurator;
             this.strongholdFactory = strongholdFactory;
             this.world = world;
             this.chat = chat;
+            this.dbManager = dbManager;
         }
 
         public int Count
@@ -40,6 +44,12 @@ namespace Game.Data.Stronghold
         }
 
         public void Add(IStronghold stronghold)
+        {
+            strongholds.AddOrUpdate(stronghold.Id, stronghold, (id, old) => stronghold);
+            dbManager.Save(stronghold);
+        }
+
+        public void DbLoaderAdd(IStronghold stronghold)
         {
             strongholds.AddOrUpdate(stronghold.Id, stronghold, (id, old) => stronghold);
         }
@@ -60,7 +70,10 @@ namespace Game.Data.Stronghold
                 if (!strongholdConfigurator.Next(out name, out level, out x, out y))
                     break;
                 IStronghold stronghold = strongholdFactory.CreateStronghold((uint)idGenerator.GetNext(), name, level, x, y);
-                Add(stronghold);
+                using (dbManager.GetThreadTransaction())
+                {
+                    Add(stronghold);
+                }
             }
         }
 
@@ -70,6 +83,7 @@ namespace Game.Data.Stronghold
             stronghold.BeginUpdate();
             world.Add(stronghold);
             stronghold.EndUpdate();
+            dbManager.Save(stronghold);
             chat.SendSystemChat(stronghold.Name + "is now activated and can be captured!!");
         }
 
@@ -82,6 +96,7 @@ namespace Game.Data.Stronghold
             stronghold.StrongholdState = StrongholdState.Occupied;
             stronghold.Tribe = tribe;
             stronghold.EndUpdate();
+            dbManager.Save(stronghold);
             chat.SendSystemChat(oldTribe != null
                                         ? string.Format("{0} is taken over by {1} from the hands of {2}!!", stronghold.Name, tribe.Name, oldTribe.Name)
                                         : string.Format("{0} is now under the command of {1} ", stronghold.Name, tribe.Name));

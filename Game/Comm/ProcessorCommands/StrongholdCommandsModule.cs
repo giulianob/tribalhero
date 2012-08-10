@@ -26,7 +26,35 @@ namespace Game.Comm.ProcessorCommands
 
         private void GetPublicInfo(Session session, Packet packet)
         {
-            throw new NotImplementedException();
+            var reply = new Packet(packet);
+            uint strongholdId;
+
+            try
+            {
+                strongholdId = packet.GetUInt32();
+            }
+            catch (Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            IStrongholdManager strongholdManager = Ioc.Kernel.Get<IStrongholdManager>();
+            IStronghold stronghold;
+            if (!strongholdManager.TryGetValue(strongholdId, out stronghold))
+            {
+                ReplyError(session, packet, Error.StrongholdNotFound);
+                return;
+            }
+
+            using (Concurrency.Current.Lock(stronghold))
+            {
+                reply.AddUInt32(stronghold.Id);
+                reply.AddByte((byte)stronghold.State.Type);
+                reply.AddByte((byte)stronghold.StrongholdState);
+                reply.AddUInt32(stronghold.Tribe == null ? 0 : stronghold.Tribe.Id);
+                session.Write(reply);
+            }
         }
 
         private void GetInfo(Session session, Packet packet)
@@ -61,7 +89,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(tribe,stronghold))
             {
-                if(stronghold.StrongholdState!= StrongholdState.Occupied || tribe.Id == stronghold.Tribe.Id)
+                if(stronghold.StrongholdState!= StrongholdState.Occupied || tribe.Id != stronghold.Tribe.Id)
                 {
                     ReplyError(session, packet, Error.StrongholdNotOccupied);
                     return;
@@ -73,7 +101,7 @@ namespace Game.Comm.ProcessorCommands
                 reply.AddByte(stronghold.Troops.Size);
                 foreach(var troop in stronghold.Troops)
                 {
-                    PacketHelper.AddToPacket(troop, packet);
+                    PacketHelper.AddToPacket(troop, reply);
                 }
 
                 // Incoming List

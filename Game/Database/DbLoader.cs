@@ -35,12 +35,18 @@ namespace Game.Database
 
         private readonly ITribeFactory tribeFactory;
 
-        public DbLoader(IDbManager dbManager, DbLoaderActionFactory actionFactory, IBattleManagerFactory battleManagerFactory, ITribeFactory tribeFactory)
+        private readonly IStrongholdFactory strongholdFactory;
+
+        private readonly IStrongholdManager strongholdManager;
+
+        public DbLoader(IDbManager dbManager, DbLoaderActionFactory actionFactory, IBattleManagerFactory battleManagerFactory, ITribeFactory tribeFactory, IStrongholdFactory strongholdFactory, IStrongholdManager strongholdManager)
         {
             this.dbManager = dbManager;
             this.actionFactory = actionFactory;
             this.battleManagerFactory = battleManagerFactory;
             this.tribeFactory = tribeFactory;
+            this.strongholdFactory = strongholdFactory;
+            this.strongholdManager = strongholdManager;
         }
 
         public bool LoadFromDatabase()
@@ -80,6 +86,7 @@ namespace Game.Database
                     LoadStructureProperties();
                     LoadTechnologies();
                     LoadForests(downTime);
+                    LoadStrongholds();
                     LoadTroopStubs();
                     LoadTroopStubTemplates();
                     LoadTroops();
@@ -379,6 +386,38 @@ namespace Game.Database
             #endregion
         }
 
+        private void LoadStrongholds()
+        {
+            #region Strongholds
+
+            Global.Logger.Info("Loading strongholds...");
+            using (var reader = dbManager.Select(Stronghold.DB_TABLE))
+            {
+                while (reader.Read())
+                {
+                    var stronghold = strongholdFactory.CreateStronghold((uint)reader["id"],
+                                                        (string)reader["name"],
+                                                        (byte)reader["level"],
+                                                        (uint)reader["x"],
+                                                        (uint)reader["y"]);
+                    stronghold.StrongholdState = (StrongholdState)((byte)reader["state"]);
+                    var tribeId = (uint)reader["tribe_id"];
+                    ITribe tribe;
+                    if(World.Current.TryGetObjects(tribeId, out tribe))
+                    {
+                        stronghold.Tribe = tribe;
+                    }
+                    stronghold.DbPersisted = true;
+                    strongholdManager.DbLoaderAdd(stronghold);
+                    if (stronghold.StrongholdState != StrongholdState.Inactive)
+                    {
+                        World.Current.Add(stronghold);
+                    }
+                }
+            }
+            #endregion
+        }
+
         private void LoadUnitTemplates()
         {
             #region Unit Template
@@ -598,10 +637,8 @@ namespace Game.Database
                     if (!World.Current.TryGetObjects((uint)reader["city_id"], out city))
                         throw new Exception("City not found");
 
-                    var stub = new TroopStub()
+                    var stub = new TroopStub((byte)reader["id"], city )
                                {
-                                       City = city,
-                                       TroopId = (byte)reader["id"],
                                        State = (TroopState)Enum.Parse(typeof(TroopState), reader["state"].ToString(), true),
                                        DbPersisted = true,
                                        StationedRetreatCount = (ushort)reader["retreat_count"]
@@ -640,14 +677,13 @@ namespace Game.Database
                         ICity stationedCity;
                         if (!World.Current.TryGetObjects(stubInfo.stationId, out stationedCity))
                             throw new Exception("City not found");
-                        stationedCity.Troops.AddStationed(stubInfo.stub);
+                        stationedCity.Troops.DbLoaderAddStation(stubInfo.stub);
                         break;
                     case StationType.Stronghold:
-                        IStrongholdManager strongholdManager = Ioc.Kernel.Get<IStrongholdManager>();
                         IStronghold stronghold;
                         if (!strongholdManager.TryGetValue(stubInfo.stationId, out stronghold))
                             throw new Exception("Stronghold not found");
-                        stronghold.Troops.AddStationed(stubInfo.stub);
+                        stronghold.Troops.DbLoaderAddStation(stubInfo.stub);
                         break;
                 }
             }

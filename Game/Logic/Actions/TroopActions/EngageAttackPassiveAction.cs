@@ -22,6 +22,8 @@ namespace Game.Logic.Actions
 {
     public class EngageAttackPassiveAction : PassiveAction
     {
+        private StaminaMonitor StaminaMonitor { get; set; }
+
         private readonly BattleFormulas battleFormula;
 
         private readonly IGameObjectLocator gameObjectLocator;
@@ -110,6 +112,9 @@ namespace Game.Logic.Actions
             ICity targetCity;
             gameObjectLocator.TryGetObjects(targetCityId, out targetCity);
             RegisterBattleListeners(targetCity);
+
+            StaminaMonitor = new StaminaMonitor(targetCity.Battle, targetCity.Battle.GetCombatGroup(groupId), short.Parse(properties["stamina"]), battleFormula);
+            StaminaMonitor.PropertyChanged += (sender, args) => dbManager.Save(this);
         }
 
         public override ActionType Type
@@ -130,7 +135,7 @@ namespace Game.Logic.Actions
                                 new XmlKvPair("target_city_id", targetCityId), new XmlKvPair("troop_city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId),
                                 new XmlKvPair("mode", (byte)mode), new XmlKvPair("original_count", originalUnitCount), new XmlKvPair("crop", bonus.Crop),
                                 new XmlKvPair("gold", bonus.Gold), new XmlKvPair("iron", bonus.Iron), new XmlKvPair("wood", bonus.Wood),
-                                new XmlKvPair("labor", bonus.Labor), new XmlKvPair("group_id", groupId)
+                                new XmlKvPair("labor", bonus.Labor), new XmlKvPair("group_id", groupId), new XmlKvPair("stamina", StaminaMonitor.Stamina)
                         });
             }
         }
@@ -138,18 +143,16 @@ namespace Game.Logic.Actions
         private void RegisterBattleListeners(ICity targetCity)
         {
             targetCity.Battle.ActionAttacked += BattleActionAttacked;
-            targetCity.Battle.ExitBattle += BattleExitBattle;
             targetCity.Battle.WithdrawAttacker += BattleWithdrawAttacker;
             targetCity.Battle.EnterRound += BattleEnterRound;
-            targetCity.Battle.UnitKilled += BattleUnitKilled;
+            targetCity.Battle.GroupKilled += BattleGroupKilled;
             targetCity.Battle.ExitTurn += BattleExitTurn;
         }
 
         private void DeregisterBattleListeners(ICity targetCity)
         {
             targetCity.Battle.ActionAttacked -= BattleActionAttacked;
-            targetCity.Battle.ExitBattle -= BattleExitBattle;
-            targetCity.Battle.UnitKilled -= BattleUnitKilled;
+            targetCity.Battle.GroupKilled -= BattleGroupKilled;
             targetCity.Battle.WithdrawAttacker -= BattleWithdrawAttacker;
             targetCity.Battle.EnterRound -= BattleEnterRound;
             targetCity.Battle.ExitTurn -= BattleExitTurn;
@@ -171,17 +174,25 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
+            // Save original unit count to know when to bail out of battle
             originalUnitCount = troopObject.Stub.TotalCount;
 
+            // Create the group in the battle
             uint battleId;
-            battleProcedure.JoinOrCreateBattle(targetCity, troopObject, out groupId, out battleId);
+            ICombatGroup combatGroup;
+            battleProcedure.JoinOrCreateBattle(targetCity, troopObject, out combatGroup, out battleId);
+            groupId = combatGroup.Id;
 
+            // Register the battle listeners
             RegisterBattleListeners(targetCity);
+
+            // Create stamina monitor
+            StaminaMonitor = new StaminaMonitor(targetCity.Battle, combatGroup, battleFormula.GetStamina(troopObject.Stub, targetCity), battleFormula);
+            StaminaMonitor.PropertyChanged += (sender, args) => dbManager.Save(this);
 
             // Set the attacking troop object to the correct state and stamina
             troopObject.BeginUpdate();
             troopObject.State = GameObjectState.BattleState(battleId);
-            troopObject.Stats.Stamina = battleFormula.GetStamina(troopObject.Stub, targetCity);
             troopObject.EndUpdate();
 
             // Set the troop stub to the correct state
@@ -210,8 +221,11 @@ namespace Game.Logic.Actions
             DeregisterBattleListeners(targetCity);
 
             troopObject.BeginUpdate();
-            troopObject.State = GameObjectState.NormalState();
             SetLootedResources(targetCity.Battle, troopObject);
+            troopObject.Stub.BeginUpdate();
+            troopObject.State = GameObjectState.NormalState();
+            troopObject.Stub.State = TroopState.Idle;
+            troopObject.Stub.EndUpdate();
             troopObject.EndUpdate();
 
             StateChange(ActionState.Completed);
@@ -220,20 +234,20 @@ namespace Game.Logic.Actions
         /// <summary>
         /// Takes care of finishing this action up if all our units are killed
         /// </summary>
-        private void BattleUnitKilled(IBattleManager battle, ICombatObject combatobject)
+        private void BattleGroupKilled(IBattleManager battle, ICombatGroup group)
         {
+            // Ignore if not our group
+            if (group.Id != groupId)
+            {
+                return;
+            }
+
             ICity targetCity;
             ICity city;
             ITroopObject troopObject;
             if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) || !gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
             {
                 throw new ArgumentException();
-            }
-
-            // If this combat object is ours and all the units are dead, then remove it
-            if (!(combatobject is AttackCombatUnit) || combatobject.TroopStub != troopObject.Stub || combatobject.TroopStub.TotalCount > 0)
-            {
-                return;
             }
 
             DeregisterBattleListeners(targetCity);
@@ -278,6 +292,11 @@ namespace Game.Logic.Actions
 
         private void BattleExitTurn(IBattleManager battle, ICombatList atk, ICombatList def, int turn)
         {
+
+        }
+
+        private void BattleActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatGroup attackerGroup, ICombatObject attacker, ICombatGroup targetGroup, ICombatObject target, decimal damage)
+        {
             ICity city;
             ITroopObject troopObject;
             if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
@@ -285,119 +304,57 @@ namespace Game.Logic.Actions
                 throw new ArgumentException();
             }
 
-            // Remove troop from battle if he is out of stamina, we need to check here because he might have lost
-            // some stamina after knocking down a building
-            if (troopObject.Stats.Stamina == 0)
+            if (attackerGroup.Id == groupId && target.ClassType == BattleClass.Structure && target.IsDead)
             {
-                ICity targetCity;
-                if (!gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
+                // if our troop knocked down a building, we get the bonus.
+                bonus.Add(structureFactory.GetCost(target.Type, target.Lvl)/2);
+
+                IStructure structure = ((ICombatStructure)target).Structure;
+                object value;
+                if (structure.Properties.TryGet("Crop", out value))
                 {
-                    throw new ArgumentException();
+                    bonus.Crop += (int)value;
+                }
+                if (structure.Properties.TryGet("Gold", out value))
+                {
+                    bonus.Gold += (int)value;
+                }
+                if (structure.Properties.TryGet("Iron", out value))
+                {
+                    bonus.Iron += (int)value;
+                }
+                if (structure.Properties.TryGet("Wood", out value))
+                {
+                    bonus.Wood += (int)value;
+                }
+                if (structure.Properties.TryGet("Labor", out value))
+                {
+                    bonus.Labor += (int)value;
                 }
 
-                ICombatGroup combatGroup = targetCity.Battle.GetCombatGroup(groupId);
-                if (combatGroup == null)
-                {
-                    throw new Exception("Cannot find group to be removed");
-                }
-                targetCity.Battle.Remove(combatGroup, BattleManager.BattleSide.Attack, ReportState.OutOfStamina);
-            }
-        }
-
-        private void BattleActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatObject source, ICombatObject target, decimal damage)
-        {
-            ICity city;
-            ICity targetCity;
-
-            ITroopObject troopObject;
-            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) || !gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
-            {
-                throw new ArgumentException();
+                dbManager.Save(this);
             }
 
-            var targetCombatUnit = target as AttackCombatUnit;
-            if (targetCombatUnit == null)
-            {
-                if (target.ClassType == BattleClass.Structure && target.IsDead)
-                {
-                    // if our troop knocked down a building, we get the bonus.
-                    if (source.TroopStub == troopObject.Stub)
-                    {
-                        bonus.Add(structureFactory.GetCost(target.Type, target.Lvl)/2);
-
-                        IStructure structure = ((CombatStructure)target).Structure;
-                        object value;
-                        if (structure.Properties.TryGet("Crop", out value))
-                        {
-                            bonus.Crop += (int)value;
-                        }
-                        if (structure.Properties.TryGet("Gold", out value))
-                        {
-                            bonus.Gold += (int)value;
-                        }
-                        if (structure.Properties.TryGet("Iron", out value))
-                        {
-                            bonus.Iron += (int)value;
-                        }
-                        if (structure.Properties.TryGet("Wood", out value))
-                        {
-                            bonus.Wood += (int)value;
-                        }
-                        if (structure.Properties.TryGet("Labor", out value))
-                        {
-                            bonus.Labor += (int)value;
-                        }
-
-                        dbManager.Save(this);
-                    }
-
-                    ReduceStamina(troopObject, battleFormula.GetStaminaStructureDestroyed(troopObject.Stats.Stamina, target as CombatStructure));
-                }
-            }
             // Check if the unit being attacked belongs to us
-            else if (targetCombatUnit.TroopStub == troopObject.Stub)
+            if (targetGroup.Id == groupId)
             {
                 // Check to see if player should retreat
                 remainingUnitCount = troopObject.Stub.TotalCount;
 
                 // Don't return if we haven't fulfilled the minimum rounds or not below the threshold
-                if (targetCombatUnit.RoundsParticipated < Config.battle_min_rounds || remainingUnitCount == 0 ||
+                if (target.RoundsParticipated < Config.battle_min_rounds || remainingUnitCount == 0 ||
                     remainingUnitCount > formula.GetAttackModeTolerance(originalUnitCount, mode))
                 {
                     return;
                 }
 
-                ICombatGroup combatGroup = targetCity.Battle.GetCombatGroup(groupId);
+                ICombatGroup combatGroup = battle.GetCombatGroup(groupId);
                 if (combatGroup == null)
                 {
                     throw new Exception("Cannot find group to be removed");
                 }
-                targetCity.Battle.Remove(combatGroup, BattleManager.BattleSide.Attack, ReportState.Retreating);
+                battle.Remove(combatGroup, BattleManager.BattleSide.Attack, ReportState.Retreating);
             }
-        }
-
-        private void BattleExitBattle(IBattleManager battle, ICombatList atk, ICombatList def)
-        {
-            ICity city;
-            ICity targetCity;
-
-            ITroopObject troopObject;
-            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) || !gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
-            {
-                throw new ArgumentException();
-            }
-
-            DeregisterBattleListeners(targetCity);
-
-            troopObject.BeginUpdate();
-            SetLootedResources(targetCity.Battle, troopObject);
-            troopObject.Stub.BeginUpdate();
-            troopObject.State = GameObjectState.NormalState();
-            troopObject.Stub.State = TroopState.Idle;
-            troopObject.Stub.EndUpdate();
-            troopObject.EndUpdate();
-
-            StateChange(ActionState.Completed);
         }
 
         private void BattleEnterRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round)
@@ -412,36 +369,13 @@ namespace Game.Logic.Actions
                 throw new ArgumentException();
             }
 
-            // Find our guy
-            var combatObject = atk.AllCombatObjects().First(co => co is AttackCombatUnit && co.TroopStub == troopObject.Stub);
-
             // if battle lasts more than 5 rounds, attacker gets 3 attack points.
-            if (combatObject != null && combatObject.RoundsParticipated == 5)
+            if (battle.GetCombatGroup(groupId).Any(co => co.RoundsParticipated == 5))
             {
                 troopObject.BeginUpdate();
                 troopObject.Stats.AttackPoint += 3;
                 troopObject.EndUpdate();
             }
-
-            // Reduce stamina and check if we need to remove this stub
-            ReduceStamina(troopObject, (short)(troopObject.Stats.Stamina - 1));
-
-            if (troopObject.Stats.Stamina == 0)
-            {
-                ICombatGroup combatGroup = targetCity.Battle.GetCombatGroup(groupId);
-                if (combatGroup == null)
-                {
-                    throw new Exception("Cannot find group to be removed");
-                }
-                targetCity.Battle.Remove(combatGroup, BattleManager.BattleSide.Attack, ReportState.OutOfStamina);
-            }
-        }
-
-        private static void ReduceStamina(ITroopObject troopObject, short stamina)
-        {
-            troopObject.BeginUpdate();
-            troopObject.Stats.Stamina = Math.Max((short)0, stamina);
-            troopObject.EndUpdate();
         }
 
         public override void UserCancelled()

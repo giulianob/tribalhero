@@ -265,7 +265,7 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        private void BattleActionAttacked(IBattleManager battleManager, BattleManager.BattleSide attackingSide,  ICombatObject source, ICombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battleManager, BattleManager.BattleSide attackingSide, ICombatGroup attackerGroup, ICombatObject source, ICombatGroup targetGroup, ICombatObject target, decimal damage)
         {
             ICity city;
             if (!gameObjectLocator.TryGetObjects(cityId, out city))
@@ -303,14 +303,10 @@ namespace Game.Logic.Actions
         /// <summary>
         /// Gives alignment points when a structure is destroyed.
         /// </summary>
-        /// <param name="battle"></param>
-        /// <param name="obj"></param>
-        private void BattleUnitKilled(IBattleManager battle, ICombatObject obj)
+        private void BattleUnitKilled(IBattleManager battle, BattleManager.BattleSide objSide, ICombatObject obj)
         {
             // Keep track of our buildings destroyed HP
-            //TODO: Shouldn't know about CityCombatObject here.. It should know by the group instead
-            var cityCombatObj = obj as CityCombatObject;
-            if (obj.ClassType != BattleClass.Structure || cityCombatObj == null || cityCombatObj.City.Id != cityId)
+            if (objSide != BattleManager.BattleSide.Defense || obj.ClassType != BattleClass.Structure)
             {
                 return;
             }

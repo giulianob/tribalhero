@@ -38,6 +38,7 @@ namespace Game.Battle
         event BattleManager.OnReinforce ReinforceDefender;
         event BattleManager.OnWithdraw WithdrawAttacker;
         event BattleManager.OnWithdraw WithdrawDefender;
+        event BattleManager.OnWithdraw GroupKilled;
         event BattleManager.OnUnitUpdate UnitKilled;
         event BattleManager.OnUnitUpdate SkippedAttacker;
         event BattleManager.OnAttack ActionAttacked;

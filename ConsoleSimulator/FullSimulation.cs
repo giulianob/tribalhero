@@ -255,7 +255,7 @@ namespace ConsoleSimulator
             sw.WriteLine(",{0}", enemyCount);
         }
 
-        private void BattleUnitKilled(IBattleManager battle, ICombatObject obj)
+        private void BattleUnitKilled(IBattleManager battle, BattleManager.BattleSide objSide, ICombatObject obj)
         {
             deadObject = obj;
             if (obj is DefenseCombatUnit)
@@ -283,7 +283,7 @@ namespace ConsoleSimulator
             }
         }
 
-        private void BmUnitRemoved2(IBattleManager battle, ICombatObject obj)
+        private void BmUnitRemoved2(IBattleManager battle, BattleManager.BattleSide objSide, ICombatObject obj)
         {
             deadObject = obj;
             if (obj is AttackCombatUnit)

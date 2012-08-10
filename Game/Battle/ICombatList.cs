@@ -14,5 +14,7 @@ namespace Game.Battle
         CombatList.BestTargetResult GetBestTargets(ICombatObject attacker, out IList<CombatList.Target> result, int maxCount);
 
         IEnumerable<ICombatObject> AllCombatObjects();
+
+        IEnumerable<ICombatObject> AllAliveCombatObjects();
     }
 }

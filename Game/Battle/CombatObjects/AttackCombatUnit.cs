@@ -129,14 +129,6 @@ namespace Game.Battle.CombatObjects
             }
         }
 
-        public virtual short Stamina
-        {
-            get
-            {
-                return troopObject.Stats.Stamina;
-            }
-        }
-
         public override uint Visibility
         {
             get
@@ -266,17 +258,15 @@ namespace Game.Battle.CombatObjects
 
         public override bool InRange(ICombatObject obj)
         {
-            if (obj is AttackCombatUnit || obj is DefenseCombatUnit) //all units can attack other units
+            switch (obj.ClassType)
             {
-                return true;
+                case BattleClass.Unit:
+                    return true;
+                case BattleClass.Structure:
+                    return RadiusLocator.Current.IsOverlapping(Location(), AttackRadius(), obj.Location(), obj.AttackRadius());
+                default:
+                    throw new Exception(string.Format("Why is an attack combat unit trying to kill a unit of type {0}?", obj.GetType().FullName));
             }
-
-            if (obj is CombatStructure)
-            {
-                return RadiusLocator.Current.IsOverlapping(Location(), AttackRadius(), obj.Location(), obj.AttackRadius());
-            }
-
-            throw new Exception(string.Format("Why is an attack combat unit trying to kill a unit of type {0}?", obj.GetType().FullName));
         }
 
         public override Location Location()

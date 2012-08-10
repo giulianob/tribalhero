@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using Game.Battle;
+using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Data;
 using System.Linq;
@@ -68,14 +69,14 @@ namespace Game.Comm.Channel
             Global.Channel.Post(channelName, packet);
         }
 
-        private void BattleSkippedAttacker(IBattleManager battle, ICombatObject source)
+        private void BattleSkippedAttacker(IBattleManager battle, BattleManager.BattleSide objSide, ICombatObject source)
         {
             var packet = CreatePacket(battle, Command.BattleSkipped);
             packet.AddUInt32(source.Id);
             Global.Channel.Post(channelName, packet);
         }
 
-        private void BattleActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatObject source, ICombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatGroup attackerGroup, ICombatObject source, ICombatGroup targetGroup, ICombatObject target, decimal damage)
         {
             var packet = CreatePacket(battle, Command.BattleAttack);
             packet.AddUInt32(source.Id);

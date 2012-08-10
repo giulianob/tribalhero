@@ -25,20 +25,34 @@ package src.Comm.Commands
 		
 		public function viewStrongholdProfile(id: int): void
 		{
-	/*		var packet: Packet = new Packet();
+			var packet: Packet = new Packet();
 			packet.cmd = Commands.STRONGHOLD_INFO;
 
 			packet.writeUInt(id);
 
 			session.write(packet, function(packet: Packet, custom: * ): void {
 				if (MapComm.tryShowError(packet)) return;
-				var stronghold: Stronghold = custom as Stronghold;
-			}, obj);	*/		
+				trace("private id:" + packet.readUInt().toString());
+				trace("private gate:" + packet.readInt().toString());
+				trace("private state:" + packet.readByte().toString());
+				trace("private troop count:" + packet.readByte().toString());
+				
+			}, null);
 		}
 	
 		public function viewStrongholdPublicProfile(id: int): void
 		{
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.STRONGHOLD_PUBLIC_INFO;
+			packet.writeUInt(id);
 
+			session.write(packet, function(packet: Packet, custom: * ): void {
+				if (MapComm.tryShowError(packet)) return;
+				trace("public id:" + packet.readUInt().toString());
+				trace("public state:" + packet.readByte().toString());
+				trace("public occupied:" + packet.readByte().toString());
+				trace("public tribe:" + packet.readUInt().toString());
+			}, null);
 		}
 	}
 

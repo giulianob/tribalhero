@@ -37,19 +37,18 @@ namespace Game.Logic.Procedures
             city = new City(player, cityName, Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), mainBuilding, Formula.Current.GetInitialAp());
             player.Add(city);
 
+
             World.Current.Add(city);
             mainBuilding.BeginUpdate();
             World.Current.Add(mainBuilding);
             mainBuilding.EndUpdate();
 
-            var defaultTroop = new TroopStub();
+            var defaultTroop = city.Troops.Create();
             defaultTroop.BeginUpdate();
             defaultTroop.AddFormation(FormationType.Normal);
             defaultTroop.AddFormation(FormationType.Garrison);
             defaultTroop.AddFormation(FormationType.InBattle);
             defaultTroop.EndUpdate();
-            defaultTroop.City = city;
-            city.Troops.Add(defaultTroop);
 
             return true;
         }

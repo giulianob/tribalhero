@@ -4,7 +4,22 @@ using Persistance;
 
 namespace Game.Data.Troop
 {
-    public interface ITroopStub : IEnumerable<Formation>, IPersistableList, ILockable
+    public interface ISimpleStub : IEnumerable<Formation>
+    {
+        bool AddUnit(FormationType formationType, ushort type, ushort count);
+        byte FormationCount { get; }
+        ushort TotalCount { get; }
+
+        /// <summary>
+        /// Returns a list of units for specified formations.
+        /// If formation is empty, will return all units.
+        /// </summary>
+        /// <param name="formations"></param>
+        /// <returns></returns>
+        List<Unit> ToUnitList(params FormationType[] formations);
+    }
+
+    public interface ITroopStub : IPersistableList, ILockable, ISimpleStub
     {
         event TroopStub.StateSwitched OnStateSwitched;
 
@@ -28,10 +43,6 @@ namespace Game.Data.Troop
 
         byte TroopId { get; set; }
 
-        byte FormationCount { get; }
-
-        ushort TotalCount { get; }
-
         decimal TotalHp { get; }
 
         byte Speed { get; }
@@ -47,8 +58,6 @@ namespace Game.Data.Troop
 
         Formation this[FormationType type] { get; set; }
 
-        bool IsDefault();
-
         void Starve(int percent = 5, bool bypassProtection = false);
 
         void FireUpdated();
@@ -59,11 +68,7 @@ namespace Game.Data.Troop
 
         bool AddFormation(FormationType type);
 
-        bool Add(ITroopStub stub);
-
-        bool AddUnit(FormationType formationType, ushort type, ushort count);
-
-        bool Remove(ITroopStub troop);
+        bool Add(ISimpleStub stub);
 
         bool HasFormation(FormationType formation);
 
@@ -72,24 +77,6 @@ namespace Game.Data.Troop
         ushort RemoveUnit(FormationType formationType, ushort type, ushort count);
 
         void RemoveAllUnits(params FormationType[] formations);
-
-        bool HasEnough(ITroopStub troop);
-
-        void Print();
-
-        bool TryGetValue(FormationType formationType, out Formation formation);
-
-        ushort GetFormationBits();
-
-        void KeepFormations(params FormationType[] formations);
-
-        /// <summary>
-        /// Returns a list of units for specified formations.
-        /// If formation is empty, will return all units.
-        /// </summary>
-        /// <param name="formations"></param>
-        /// <returns></returns>
-        List<Unit> ToUnitList(params FormationType[] formations);
 
         int UpkeepForFormation(FormationType inBattle);
     }

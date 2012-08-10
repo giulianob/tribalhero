@@ -12,9 +12,7 @@ namespace Game.Logic.Procedures
     {
         public virtual void TroopObjectStation(ITroopObject troop, ICity target)
         {
-            troop.Stub.BeginUpdate();
             target.Troops.AddStationed(troop.Stub);
-            troop.Stub.EndUpdate();
 
             troop.BeginUpdate();
             World.Current.Remove(troop);

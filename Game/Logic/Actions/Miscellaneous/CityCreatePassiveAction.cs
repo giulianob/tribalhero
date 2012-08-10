@@ -137,15 +137,13 @@ namespace Game.Logic.Actions {
                 Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
                 structure.EndUpdate();
 
-                var defaultTroop = new TroopStub();
+                var defaultTroop = newCity.Troops.Create();
                 defaultTroop.BeginUpdate();
                 defaultTroop.AddFormation(FormationType.Normal);
                 defaultTroop.AddFormation(FormationType.Garrison);
                 defaultTroop.AddFormation(FormationType.InBattle);
                 defaultTroop.EndUpdate();
-                defaultTroop.City = newCity;
-                newCity.Troops.Add(defaultTroop);
-
+                
                 // taking resource from the old city
                 city.BeginUpdate();
                 city.DefaultTroop.BeginUpdate();

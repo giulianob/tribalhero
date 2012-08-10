@@ -2,6 +2,7 @@
 using Game.Logic;
 using Game.Map;
 using System.Linq;
+using Persistance;
 
 namespace Game.Data.Stronghold
 {
@@ -10,14 +11,16 @@ namespace Game.Data.Stronghold
         private IStrongholdManager strongholdManager;
         private IStrongholdActivationCondition strongholdActivationCondition;
         private IWorld world;
+        private IDbManager dbManager;
 
         private TimeSpan timeSpan;
 
-        public StrongholdActivationChecker(IStrongholdManager strongholdManager, IStrongholdActivationCondition strongholdActivationCondition, IWorld world)
+        public StrongholdActivationChecker(IStrongholdManager strongholdManager, IStrongholdActivationCondition strongholdActivationCondition, IWorld world, IDbManager dbManager)
         {
             this.strongholdManager = strongholdManager;
             this.strongholdActivationCondition = strongholdActivationCondition;
             this.world = world;
+            this.dbManager = dbManager;
         }
 
         public void Start(TimeSpan timeSpan)
@@ -37,7 +40,10 @@ namespace Game.Data.Stronghold
         {
             foreach (IStronghold stronghold in strongholdManager.Where(s => s.StrongholdState == StrongholdState.Inactive).Where(stronghold => strongholdActivationCondition.ShouldActivate(stronghold)))
             {
-                strongholdManager.Activate(stronghold);
+                using(dbManager.GetThreadTransaction())
+                {
+                    strongholdManager.Activate(stronghold);
+                }
             }
         }
     }

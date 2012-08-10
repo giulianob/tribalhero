@@ -22,20 +22,17 @@ namespace Game.Data.Troop
 
     public class Formation : Dictionary<ushort, ushort>
     {
-        private readonly ITroopStub parent;
+        #region Events
+        public delegate void UnitUpdated();
+        public event UnitUpdated OnUnitUpdated = delegate { };
+        #endregion
 
-        public Formation(FormationType type, ITroopStub parent)
+        public Formation(FormationType type)
         {
             Type = type;
-            this.parent = parent;
         }
 
         public FormationType Type { get; set; }
-
-        public void FireUpdated()
-        {
-            parent.FireUpdated();
-        }
 
         public new void Add(ushort type, ushort count)
         {
@@ -44,8 +41,7 @@ namespace Game.Data.Troop
                 this[type] = (ushort)(currentCount + count);
             else
                 this[type] = count;
-
-            FireUpdated();
+            OnUnitUpdated();
         }
 
         public ushort Remove(ushort type, ushort count)
@@ -56,13 +52,13 @@ namespace Game.Data.Troop
                 if (currentCount <= count)
                 {
                     Remove(type);
-                    FireUpdated();
+                    OnUnitUpdated();
                     return currentCount;
                 }
 
                 var remaining = (ushort)(currentCount - count);
                 this[type] = remaining;
-                FireUpdated();
+                OnUnitUpdated();
                 return count;
             }
             return 0;
@@ -72,7 +68,7 @@ namespace Game.Data.Troop
         {
             foreach (var kvp in formation)
                 Add(kvp.Key, kvp.Value);
-            FireUpdated();
+            OnUnitUpdated();
         }
     }
 }

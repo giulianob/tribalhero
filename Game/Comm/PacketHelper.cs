@@ -411,9 +411,9 @@ namespace Game.Comm
             }
         }
 
-        public static TroopStub ReadStub(Packet packet, params FormationType[] formations)
+        public static ISimpleStub ReadStub(Packet packet, params FormationType[] formations)
         {
-            var stub = new TroopStub();
+            var simpleStub = new SimpleStub();
 
             foreach (FormationType t in formations)
             {
@@ -425,18 +425,15 @@ namespace Game.Comm
 
                 byte unitCount = packet.GetByte();
 
-                stub.AddFormation(formationType);
-
                 for (int u = 0; u < unitCount; ++u)
                 {
                     ushort type = packet.GetUInt16();
                     ushort count = packet.GetUInt16();
-
-                    stub.AddUnit(formationType, type, count);
+                    simpleStub.AddUnit(formationType, type, count);
                 }
             }
 
-            return stub;
+            return simpleStub;
         }
     }
 }

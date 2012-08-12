@@ -48,13 +48,16 @@ package src.UI.Components
 		private function onClickLink(e:TextEvent):void 
 		{
 			var text:String = e.text;
-			var parts:Array = text.split(':', 2);
+			var parts:Array = text.split(':');
 			
 			switch (parts[0])
 			{
 				case 'viewProfile': 
 					Global.mapComm.City.viewPlayerProfile(parts[1]);
 					break;
+				case 'viewProfileByType': 
+					Global.mapComm.General.viewProfileByType(parts[1], parts[2]);
+					break;					
 				case 'goToCity': 
 					Global.mapComm.City.gotoCityLocation(parts[1]);
 					break;		

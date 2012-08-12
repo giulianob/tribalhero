@@ -100,6 +100,7 @@
 			}
 			else
 			{
+				siteVersion = new Date().getTime().toString();
 				showLoginDialog();
 			}			
 		}

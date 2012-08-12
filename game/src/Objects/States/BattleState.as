@@ -9,11 +9,11 @@ package src.Objects.States
 	 */
 	public class BattleState extends GameObjectState
 	{
-		public var battleCityId: int;
+		public var battleId: int;
 		
-		public function BattleState(battleCityId: int) 
+		public function BattleState(battleId: int) 
 		{
-			this.battleCityId = battleCityId;
+			this.battleId = battleId;
 		}
 		
 		override public function getStateType():int 

@@ -1,9 +1,3 @@
-/**
-* ...
-* @author Default
-* @version 0.1
-*/
-
 package src.Comm {
 	
 	public class Commands {
@@ -115,6 +109,8 @@ package src.Comm {
 		public static const BATTLE_NEW_ROUND: int = 707;
 		public static const BATTLE_WITHDRAW_ATTACKER: int = 708;
 		public static const BATTLE_WITHDRAW_DEFENDER: int = 709;
+		public static const BATTLE_GROUP_UNIT_ADDED: int = 710;				
+		public static const BATTLE_GROUP_UNIT_REMOVED: int = 711;		
 		
 		public static const RESOURCE_GATHER: int = 801;
 		

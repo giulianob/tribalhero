@@ -2,10 +2,6 @@
 	import flash.events.EventDispatcher;
 	import src.Util.Util;
 
-	/**
-	 * ...
-	 * @author Default
-	 */
 	public class BinaryList extends EventDispatcher {
 
 		private var dirty: Boolean;

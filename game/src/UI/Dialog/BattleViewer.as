@@ -1,26 +1,25 @@
 ﻿package src.UI.Dialog {
 
-	import fl.lang.Locale;
-	import flash.display.DisplayObjectContainer;
-	import mx.utils.StringUtil;
+	import flash.display.*;
+	import flash.events.Event;
+	import flash.utils.Dictionary;
+	import mx.utils.*;
 	import org.aswing.*;
-	import src.Constants;
-	import src.UI.GameJImagePanelBackground;
-	import src.Util.Util;
 	import org.aswing.border.*;
-	import org.aswing.event.PopupEvent;
-	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
+	import org.aswing.event.*;
 	import org.aswing.ext.*;
-	import src.Global;
-	import src.Map.Username;
-	import src.Objects.Factories.ObjectFactory;
-	import src.UI.Components.CombatObjectGridList.CombatObjectGridList;
-	import src.UI.GameJPanel;
+	import org.aswing.geom.*;
+	import src.*;
+	import src.Map.*;
 	import src.Objects.Battle.*;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.Util.StringHelper;
-
+	import src.Objects.Factories.*;
+	import src.UI.*;
+	import src.UI.Components.CombatObjectGridList.*;
+	import src.UI.Components.StickyScroll;
+	import src.UI.LookAndFeel.*;
+	import src.Util.*;
+	
 	public class BattleViewer extends GameJPanel {
 
 		private var tabDefensive:JTabbedPane;
@@ -32,36 +31,42 @@
 		private var battleId: int;
 
 		private var combat: Array = new Array();
+		
+		private var tabsByGroup: Dictionary = new Dictionary();
 
 		public function BattleViewer(battleId: int) {
 			createUI();
 
 			title = "Battle Viewer";
+			
+			new StickyScroll(lstLogScroll);
 
 			this.battleId = battleId;
 
 			battle = Global.mapComm.Battle.battleSubscribe(battleId, this);
 			
 			if (battle) {
-				battle.addEventListener(BattleManager.OBJECT_ADDED_ATTACK, onAddedAttack);
-				battle.addEventListener(BattleManager.OBJECT_REMOVED_ATTACK, onRemoved);
-				battle.addEventListener(BattleManager.OBJECT_ADDED_DEFENSE, onAddedDefense);
-				battle.addEventListener(BattleManager.OBJECT_REMOVED_DEFENSE, onRemoved);
+				battle.addEventListener(BattleManager.GROUP_ADDED_ATTACK, onAddedAttack);
+				battle.addEventListener(BattleManager.GROUP_REMOVED_ATTACK, onRemoved);
+				battle.addEventListener(BattleManager.GROUP_ADDED_DEFENSE, onAddedDefense);
+				battle.addEventListener(BattleManager.GROUP_REMOVED_DEFENSE, onRemoved);
+				battle.addEventListener(BattleManager.GROUP_UNIT_REMOVED, onGroupUnitRemoved);
 				battle.addEventListener(BattleManager.OBJECT_ATTACKED, onAttack);
 				battle.addEventListener(BattleManager.OBJECT_SKIPPED, onSkipped);
 				battle.addEventListener(BattleManager.END, onEnd);
 				battle.addEventListener(BattleManager.NEW_ROUND, onNewRound);
 			}
 		}
-
+		
 		public function onClosed(e: *):void
 		{
 			if (battle)
 			{
-				battle.removeEventListener(BattleManager.OBJECT_ADDED_ATTACK, onAddedAttack);
-				battle.removeEventListener(BattleManager.OBJECT_REMOVED_ATTACK, onRemoved);
-				battle.removeEventListener(BattleManager.OBJECT_ADDED_DEFENSE, onAddedDefense);
-				battle.removeEventListener(BattleManager.OBJECT_REMOVED_DEFENSE, onRemoved);
+				battle.removeEventListener(BattleManager.GROUP_ADDED_ATTACK, onAddedAttack);
+				battle.removeEventListener(BattleManager.GROUP_REMOVED_ATTACK, onRemoved);
+				battle.removeEventListener(BattleManager.GROUP_UNIT_REMOVED, onGroupUnitRemoved);
+				battle.removeEventListener(BattleManager.GROUP_ADDED_DEFENSE, onAddedDefense);
+				battle.removeEventListener(BattleManager.GROUP_REMOVED_DEFENSE, onRemoved);
 				battle.removeEventListener(BattleManager.OBJECT_ATTACKED, onAttack);
 				battle.removeEventListener(BattleManager.OBJECT_SKIPPED, onSkipped);
 				battle.removeEventListener(BattleManager.END, onEnd);
@@ -73,75 +78,43 @@
 
 		private function onNewRound(e: BattleRoundEvent = null) : void {
 			log(new JSeparator());
-			var cityName: Username = Global.gameContainer.map.usernames.cities.getUsername(battle.cityId);			
-			getFrame().setTitle(StringUtil.substitute("Battle - {0} - Round {1}", (cityName ? cityName.name : ""), (e.round + 1)));
+			getFrame().setTitle(StringUtil.substitute("Battle - {0} - Round {1}", battle.location.name, (e.round + 1)));
 			logStr("Round " + (e.round + 1), null, true);
 		}
-
-		private function addTab(combatObj: CombatObject, defense: Boolean) : Object {
-
-			var obj: Object = findTab(combatObj.cityId, combatObj.troopStubId);
-			if (obj != null) {
-				(obj.grid as CombatObjectGridList).addCombatObject(combatObj);
-				return obj;
-			}
-
-			var grid: CombatObjectGridList = CombatObjectGridList.getGridList([combatObj]);
-			var tab: JScrollPane = new JScrollPane(grid);
-
-			obj = { "cityId": combatObj.cityId, "troopStubId": combatObj.troopStubId, "defense": defense, "tab" : tab, "grid": grid };
-
-			combat.push(obj);
-
-			//tab.append(grid);
-
-			if (defense)
-			tabDefensive.appendTab(tab, combatObj.cityId + "(" + combatObj.troopStubId + ")");
-			else
-			tabOffensive.appendTab(tab, combatObj.cityId + "(" + combatObj.troopStubId + ")");
-
-			Global.map.usernames.cities.getUsername(combatObj.cityId, setTabUsername, combatObj.troopStubId);
-
-			return obj;
-		}
-
-		private function setTabUsername(username: Username, custom: *) : void
-		{
-			var idx: int = tabDefensive.indexOfTitle(username.id + "(" + custom + ")");
-			if (idx > -1) tabDefensive.setTitleAt(idx, username.name + "(" + custom + ")");
-
-			idx = tabOffensive.indexOfTitle(username.id + "(" + custom + ")");
-			if (idx > -1) tabOffensive.setTitleAt(idx, username.name + "(" + custom + ")");
-		}
-
-		private function removeTab(cityId: int, troopStubId: int) : void {
-			for (var i: int = 0; i < combat.length; i++)
-			{
-				var iteObj: Object = combat[i];
-
-				if (cityId != iteObj.cityId || troopStubId != iteObj.troopStubId) continue;
-
-				if (iteObj.defense)
-				tabDefensive.remove(iteObj.tab);
-				else
-				tabOffensive.remove(iteObj.tab);
-
-				combat.splice(i, 1);
+		
+		private function addGroup(combatGroup: CombatGroup, defense: Boolean) : void {
+			
+			// If group already exists then return
+			if (tabsByGroup[combatGroup.id]) {
 				return;
 			}
+			
+			var grid: CombatObjectGridList = CombatObjectGridList.getGridList(combatGroup.toArray());
+			var tab: JScrollPane = new JScrollPane(grid);
+
+			tabsByGroup[combatGroup.id] = { tab: tab, grid: grid, isAttacker: !defense };
+					
+			var tabPanel: JTabbedPane = defense ? tabDefensive : tabOffensive;
+			tabPanel.appendTab(tab, StringUtil.substitute("{0} ({1})", combatGroup.owner.name, combatGroup.troopId == 1 ? "Local" : combatGroup.troopId));
 		}
 
-		private function findTab(cityId: int, troopStubId: int) : Object {
-			for each (var obj: Object in combat) {
-				if (obj.cityId == cityId && obj.troopStubId == troopStubId)
-				return obj;
+		private function removeGroup(groupId: int) : void {
+			var groupUi:* = tabsByGroup[groupId];
+			
+			if (!groupUi) { 
+				return;
 			}
-
-			return null;
+			
+			if (groupUi.isAttacker) {
+				tabOffensive.remove(groupUi.tab);
+			}
+			else {
+				tabDefensive.remove(groupUi.tab);
+			}
 		}
 
-		private function findObject(list: CombatObjectGridList, combatObjectId: int) : * {
-			var listData: VectorListModel = list.getModel() as VectorListModel;
+		private function findObject(gridList: CombatObjectGridList, combatObjectId: int) : * {
+			var listData: VectorListModel = gridList.getModel() as VectorListModel;
 			for (var i: int = 0; i < listData.size(); i++) {
 				var combatObj: * = listData.getElementAt(i);
 				if (combatObj.data.combatObjectId == combatObjectId) {
@@ -152,140 +125,120 @@
 			return null;
 		}
 
-		public function onEnd(e: BattleEvent):void
+		public function onEnd(e: Event):void
 		{
 			tabOffensive.removeAll();
 			tabDefensive.removeAll();
+			tabsByGroup = new Dictionary();
 
 			logStr("Battle has ended");
 		}
 
-		public function onAddedAttack(e: BattleEvent):void
-		{
-			addTab(e.combatObj, false);
+		public function onAddedAttack(e: BattleGroupEvent):void
+		{			
+			addGroup(e.combatGroup, false);
 		}
 
-		public function onRemoved(e: BattleEvent):void
-		{
-			var srcObj: Object = findTab(e.combatObj.cityId, e.combatObj.troopStubId);
+		public function onRemoved(e: BattleGroupEvent):void
+		{		
+			removeGroup(e.combatGroup.id);
+		}
 
-			var attackObj: CombatObject = null;
-			var listData: VectorListModel = (srcObj.grid as CombatObjectGridList).getModel() as VectorListModel;
-			for (var i: int = 0; i < listData.size(); i++) {
-				var combatObj: Object = listData.getElementAt(i);
-				if (combatObj.data.combatObjectId == e.combatObj.combatObjectId) {
-					listData.removeAt(i);
-					break;
-				}
+		public function onAddedDefense(e: BattleGroupEvent):void
+		{
+			addGroup(e.combatGroup, true);
+		}
+
+		private function onGroupUnitRemoved(e:BattleObjectEvent):void 
+		{
+			var groupUi: * = tabsByGroup[e.combatGroup.id];
+			
+			if (!groupUi) {
+				Util.log("Received unit removed for unknown group");
+				return;
 			}
-
-			if (listData.size() == 0) {
-				removeTab(e.combatObj.cityId, e.combatObj.troopStubId);
+			
+			var combatObject: * = findObject(groupUi.grid, e.combatObject.combatObjectId);
+			var groupListModel: VectorListModel = groupUi.grid.getModel();
+			groupListModel.remove(combatObject);		
+			if (groupListModel.size() == 0) {
+				removeGroup(e.combatGroup.id);
 			}
-		}
-
-		public function onAddedDefense(e: BattleEvent):void
-		{
-			addTab(e.combatObj, true);
-		}
-
-		public function onSkipped(e: BattleEvent) : void {
-			var srcObj: Object = findTab(e.combatObj.cityId, e.combatObj.troopStubId);
-
-			if (srcObj == null) {
-				Util.log("Received skip for unknown object");
+		}		
+		
+		public function onSkipped(e: BattleObjectEvent) : void {
+			var groupUi: * = tabsByGroup[e.combatGroup.id];
+			
+			if (!groupUi) {
+				Util.log("Received skip for unknown group");
 				return;
 			}
 
-			var attackObj: * = findObject(srcObj.grid, e.combatObj.combatObjectId);
+			var attackObj:* = findObject(groupUi.grid, e.combatObject.combatObjectId);
 
 			if (attackObj == null) {
 				Util.log("Could not find attacker combat object");
 				return;
 			}
 
-			var srcCityName: Username = Global.map.usernames.cities.getUsername(e.combatObj.cityId);
-
 			var pnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0, 0, false));
-			pnl.append(getCombatObjectPanel(srcCityName, e.combatObj));
-			var lbl: JLabel = new JLabel("couldn't reach anyone", new AssetIcon(srcObj.defense ? new ICON_SHIELD : new ICON_SINGLE_SWORD));
+			pnl.append(getCombatObjectPanel(e.combatGroup, e.combatObject));
+			var lbl: JLabel = new JLabel("couldn't reach anyone", new AssetIcon(groupUi.isAttacker ? new ICON_SINGLE_SWORD : new ICON_SHIELD));
 			lbl.setHorizontalTextPosition(AsWingConstants.LEFT);
 			pnl.append(lbl);
 
 			log(pnl);
 		}
-
-		public function onAttack(e: BattleEvent):void
+		
+		public function onAttack(e: BattleAttackEvent):void
 		{
-			var destObj: Object = findTab(e.destCombatObj.cityId, e.destCombatObj.troopStubId);
-			var srcObj: Object = findTab(e.combatObj.cityId, e.combatObj.troopStubId);
+			var targetGroupUi: * = tabsByGroup[e.targetCombatGroup.id];
+			var attackerGroupUi: * = tabsByGroup[e.attackerCombatGroup.id];
 
-			if (srcObj == null || destObj == null) {
+			if (!targetGroupUi || !attackerGroupUi) {
 				Util.log("Received attack for unknown object");
 				return;
 			}
 
 			//find attacker
-			var attackObj: * = findObject(srcObj.grid, e.combatObj.combatObjectId);
+			var defenseObj: * = findObject(targetGroupUi.grid, e.targetCombatObj.combatObjectId);
+			var attackObj:* = findObject(attackerGroupUi.grid, e.attackerCombatObj.combatObjectId);
 
-			if (attackObj == null) {
-				Util.log("Could not find attacker combat object");
+			if (!attackObj || !defenseObj) {
+				Util.log("Could not find combat objects");
 				return;
 			}
-
-			//find defender
-			var defenseObj: * = findObject(destObj.grid, e.destCombatObj.combatObjectId);
-
-			if (defenseObj == null) {
-				Util.log("Could not find defender combat object");
-				return;
-			}
-
-			var srcCityName: Username = Global.map.usernames.cities.getUsername(e.combatObj.cityId);
-			var destCityName: Username = Global.map.usernames.cities.getUsername(e.destCombatObj.cityId);
 
 			var dmgPnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0, AsWingConstants.CENTER));
-			dmgPnl.append(new JLabel(e.dmg.toString() + " dmg", new AssetIcon(srcObj.defense ? new ICON_SHIELD : new ICON_SINGLE_SWORD)));
+			dmgPnl.append(new JLabel(e.dmg.toString() + " dmg", new AssetIcon(e.attackerSide == BattleManager.SIDE_DEFENSE ? new ICON_SHIELD : new ICON_SINGLE_SWORD)));
 			var arrowPnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER));
-			arrowPnl.append(new AssetPane(srcObj.defense ? new ICON_ARROW_RIGHT : new ICON_ARROW_LEFT));
+			arrowPnl.append(new AssetPane(e.attackerSide == BattleManager.SIDE_DEFENSE ? new ICON_ARROW_RIGHT : new ICON_ARROW_LEFT));
 			dmgPnl.append(arrowPnl);
 
 			var pnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER, 7, 0, false));
-			if (srcObj.defense) {
-				pnl.append(getCombatObjectPanel(srcCityName, e.combatObj));
-				pnl.append(dmgPnl);
-				pnl.append(getCombatObjectPanel(destCityName, e.destCombatObj));
-			} else {
-				pnl.append(getCombatObjectPanel(destCityName, e.destCombatObj));
-				pnl.append(dmgPnl);
-				pnl.append(getCombatObjectPanel(srcCityName, e.combatObj));
-			}
+			
+			pnl.append(getCombatObjectPanel(e.attackerCombatGroup, e.attackerCombatObj));
+			pnl.append(dmgPnl);
+			pnl.append(getCombatObjectPanel(e.targetCombatGroup, e.targetCombatObj));			
 
 			log(pnl);
 
 			if (defenseObj.data.hp <= 0) {
 				pnl = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0, 0, false));
-				pnl.append(getCombatObjectPanel(destCityName, e.destCombatObj));
-				var defeatLbl: JLabel = new JLabel("has been defeated", new AssetIcon(!srcObj.defense ? new ICON_SHIELD : new ICON_SINGLE_SWORD));
+				pnl.append(getCombatObjectPanel(e.targetCombatGroup, e.targetCombatObj));
+				var defeatLbl: JLabel = new JLabel("has been defeated", new AssetIcon(e.attackerSide == BattleManager.SIDE_ATTACK ? new ICON_SHIELD : new ICON_SINGLE_SWORD));
 				defeatLbl.setHorizontalTextPosition(AsWingConstants.LEFT);
 				pnl.append(defeatLbl);
 				log(pnl);
 			}
 
-			destObj.grid.getModel().valueChanged(defenseObj);
+			targetGroupUi.grid.getModel().valueChanged(defenseObj);
 		}
-
-		private function getCombatObjectPanel(cityName: Username, combatObj: CombatObject) : Component {
-			var name: String = "";
-			if (cityName != null) name += cityName.name;
-			name += "(" + combatObj.troopStubId + "): " + combatObj.name;
-
-			var icon: DisplayObjectContainer = ObjectFactory.getSpriteEx(combatObj.type, combatObj.level, true);
-			if (ObjectFactory.getClassType(combatObj.type) == ObjectFactory.TYPE_STRUCTURE) icon = ObjectFactory.makeSpriteSmall(icon);
-
-			var lbl: JLabel = new JLabel(name, (icon != null ? new AssetIcon(icon) : null));
-
-			return lbl;
+		
+		private function getCombatObjectPanel(combatGroup: CombatGroup, combatObj: CombatObject) : Component {
+			var text: String = StringUtil.substitute("{0}({1}):{2}", combatGroup.owner.name, combatGroup.troopId == 1 ? "Local" : combatGroup.troopId, combatObj.name);
+			var icon: DisplayObjectContainer = combatObj.getIcon();
+			return new JLabel(text, (icon != null ? new AssetIcon(icon) : null));
 		}
 
 		private function logStr(string: String, icon: Icon = null, header: Boolean = false) : void {
@@ -295,10 +248,10 @@
 		}
 
 		private function log(item: Component) : void {
-			pnlLog.insert(0, item);
+			pnlLog.append(item);
 
 			if (pnlLog.getComponentCount() > 100) {
-				pnlLog.removeAt(pnlLog.getComponentCount() - 1);
+				pnlLog.removeAt(0);
 			}
 
 			pnlLog.pack();

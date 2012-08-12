@@ -16,6 +16,7 @@ package src.UI.Dialog
 	import src.*;
 	import src.UI.*;
 	import src.UI.Components.SimpleTooltip;
+	import src.UI.Components.StickyScroll;
 	import src.UI.LookAndFeel.*;
 	import src.Util.*;
 	
@@ -62,20 +63,7 @@ package src.UI.Dialog
 			log(TYPE_GLOBAL, 'Remember to keep it classy.');
 			log(TYPE_GLOBAL, 'Not sure what to do? <a href="http://tribalhero.wikia.com" target="_blank">Visit the wiki for help</a>.', false, false);
 			
-			var stickScroll:Boolean = true;
-			var lastScrollValue:int = 0;
-			scrollConsole.addAdjustmentListener(function(e:InteractiveEvent):void
-				{
-					if (e.isProgrammatic())
-					{
-						scrollConsole.getVerticalScrollBar().setValue(stickScroll ? scrollConsole.getVerticalScrollBar().getMaximum() : lastScrollValue, false);
-					}
-					else
-					{
-						stickScroll = scrollConsole.getVerticalScrollBar().getValue() == scrollConsole.getVerticalScrollBar().getModel().getMaximum() - scrollConsole.getVerticalScrollBar().getModel().getExtent();
-						lastScrollValue = scrollConsole.getVerticalScrollBar().getValue();
-					}
-				});
+			new StickyScroll(scrollConsole);
 			
 			addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void
 				{
@@ -92,12 +80,7 @@ package src.UI.Dialog
 					var len:int = txtCommand.getText().length;
 					txtCommand.setSelection(len, len);
 				});
-						
-			txtConsole.addEventListener(MouseEvent.MOUSE_WHEEL, function(e:Event):void
-				{
-					scrollConsole.getVerticalScrollBar().dispatchEvent(e);
-				});
-			
+									
 			txtConsole.getTextField().addEventListener(TextEvent.LINK, function(e:TextEvent):void
 				{
 					var text:String = e.text;

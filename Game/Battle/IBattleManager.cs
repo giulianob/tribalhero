@@ -30,18 +30,75 @@ namespace Game.Battle
         void Remove(ICombatGroup group, BattleManager.BattleSide side, ReportState state);
         bool ExecuteTurn();        
 
+        /// <summary>
+        /// Fired once when the battle begins
+        /// </summary>
         event BattleManager.OnBattle EnterBattle;
+
+        /// <summary>
+        /// Fired once when the battle ends
+        /// </summary>
         event BattleManager.OnBattle ExitBattle;
+
+        /// <summary>
+        /// Fired when a new round starts
+        /// </summary>
         event BattleManager.OnRound EnterRound;
+
+        /// <summary>
+        /// Fired everytime a unit exits its turn
+        /// </summary>
         event BattleManager.OnTurn ExitTurn;
+
+        /// <summary>
+        /// Fired when a new attacker joins the battle
+        /// </summary>
         event BattleManager.OnReinforce ReinforceAttacker;
+
+        /// <summary>
+        /// Fired when a new defender joins the battle
+        /// </summary>
         event BattleManager.OnReinforce ReinforceDefender;
+
+        /// <summary>
+        /// Fired when an attacker withdraws from the battle 
+        /// </summary>
         event BattleManager.OnWithdraw WithdrawAttacker;
+
+        /// <summary>
+        /// Fired when a defender withdraws from the battle
+        /// </summary>
         event BattleManager.OnWithdraw WithdrawDefender;
+
+        /// <summary>
+        /// Fired when all of the units in a group are killed
+        /// </summary>
         event BattleManager.OnWithdraw GroupKilled;
+
+        /// <summary>
+        /// Fired when one of the groups in battle receives a new unit
+        /// </summary>
+        event BattleManager.OnUnitUpdate GroupUnitAdded;
+
+        /// <summary>
+        /// Fired when one of the groups in battle loses a unit
+        /// </summary>
+        event BattleManager.OnUnitUpdate GroupUnitRemoved; 
+
+        /// <summary>
+        /// Fired when a single unit is killed
+        /// </summary>
         event BattleManager.OnUnitUpdate UnitKilled;
+
+        /// <summary>
+        /// Fired when an attacker is unable to take his turn
+        /// </summary>
         event BattleManager.OnUnitUpdate SkippedAttacker;
-        event BattleManager.OnAttack ActionAttacked;
+
+        /// <summary>
+        /// Fired when a unit hits another one
+        /// </summary>
+        event BattleManager.OnAttack ActionAttacked;        
 
         uint GetNextGroupId();
 

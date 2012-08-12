@@ -9,6 +9,12 @@ namespace Game.Battle.CombatGroups
 {
     public abstract class CombatGroup : PersistableObjectList<ICombatObject>, ICombatGroup
     {
+        public delegate void CombatGroupChange(ICombatGroup group, ICombatObject combatObject);
+
+        public event CombatGroupChange CombatObjectAdded = delegate { };
+
+        public event CombatGroupChange CombatObjectRemoved = delegate { };
+
         protected readonly uint BattleId;
 
         public uint Id { get; private set; }
@@ -28,20 +34,21 @@ namespace Game.Battle.CombatGroups
         protected CombatGroup(uint battleId, uint id, IDbManager manager)
                 : base(manager)
         {
-            ItemRemoved += ObjectRemoved;
             ItemAdded += ObjectAdded;
+            ItemRemoved += ObjectRemoved;
             Id = id;
             BattleId = battleId;
+        }
+
+        private void ObjectRemoved(PersistableObjectList<ICombatObject> list, ICombatObject combatObject)
+        {
+            CombatObjectRemoved(this, combatObject);
         }
 
         private void ObjectAdded(PersistableObjectList<ICombatObject> persistableObjectList, ICombatObject combatObject)
         {
             combatObject.GroupId = Id;
-        }
-
-        private void ObjectRemoved(PersistableObjectList<ICombatObject> persistableObjectList, ICombatObject combatObject)
-        {
-            combatObject.GroupId = 0;
+            CombatObjectAdded(this, combatObject);
         }
 
         public bool IsDead()
@@ -68,5 +75,6 @@ namespace Game.Battle.CombatGroups
         public abstract object Lock { get; }
 
         public abstract bool BelongsTo(IPlayer player);
-    }
+
+    }    
 }

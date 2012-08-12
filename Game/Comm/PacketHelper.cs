@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Battle;
+using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Tribe;
@@ -269,30 +270,38 @@ namespace Game.Comm
             }
         }
 
-        internal static void AddToPacket(IList<ICombatObject> list, Packet packet)
+        internal static void AddToPacket(ICombatList combatList, Packet packet)
         {
-            packet.AddUInt16((ushort)list.Count);
-            foreach (var obj in list)
-            {         
-                // TODO: Implement diff types on client
-                if (obj is CityCombatObject)
-                {
-                    //packet.AddByte(1);
-                    packet.AddUInt32(((CityCombatObject)obj).PlayerId);
-                    packet.AddUInt32(((CityCombatObject)obj).City.Id);
-                }
-                else
-                {
-                    //packet.AddByte(0);
-                }
-                packet.AddUInt32(obj.Id);
-                packet.AddByte((byte)obj.ClassType);
-                packet.AddByte(obj.TroopStub.TroopId);
-                packet.AddUInt16(obj.Type);
-                packet.AddByte(obj.Lvl);
-                packet.AddFloat((float)obj.Hp);
-                packet.AddFloat((float)obj.Stats.MaxHp);
+            packet.AddInt32(combatList.Count);
+            foreach (var group in combatList)
+            {
+                AddToPacket(group, packet);
             }
+        }
+
+        internal static void AddToPacket(ICombatGroup combatGroup, Packet packet)
+        {
+            packet.AddUInt32(combatGroup.Id);
+            packet.AddByte(combatGroup.TroopId);
+            packet.AddByte((byte)combatGroup.Owner.Type);
+            packet.AddUInt32(combatGroup.Owner.Id);
+            packet.AddString(combatGroup.Owner.GetName());            
+
+            packet.AddInt32(combatGroup.Count);
+            foreach (var combatObject in combatGroup)
+            {
+                AddToPacket(combatObject, packet);
+            }
+        }
+
+        internal static void AddToPacket(ICombatObject combatObject, Packet packet)
+        {
+            packet.AddUInt32(combatObject.Id);
+            packet.AddByte((byte)combatObject.ClassType);
+            packet.AddUInt16(combatObject.Type);
+            packet.AddByte(combatObject.Lvl);
+            packet.AddFloat((float)combatObject.Hp);
+            packet.AddFloat((float)combatObject.Stats.MaxHp);
         }
 
         public static void AddLoginToPacket(Session session, Packet packet)

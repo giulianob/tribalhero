@@ -64,9 +64,12 @@ namespace Game.Comm.ProcessorCommands
                
                 var reply = new Packet(packet);
                 reply.AddUInt32(battleManager.BattleId);
+                reply.AddByte((byte)battleManager.Location.Type);
+                reply.AddUInt32(battleManager.Location.Id);
+                reply.AddString(battleManager.Location.GetName());
                 reply.AddUInt32(battleManager.Round);
-                PacketHelper.AddToPacket(battleManager.Attackers.AllCombatObjects().ToList(), reply);
-                PacketHelper.AddToPacket(battleManager.Defenders.AllCombatObjects().ToList(), reply);
+                PacketHelper.AddToPacket(battleManager.Attackers, reply);
+                PacketHelper.AddToPacket(battleManager.Defenders, reply);
                 
                 try
                 {

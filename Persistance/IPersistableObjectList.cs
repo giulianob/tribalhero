@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Persistance
 {
-    public interface IListOfPersistableObjects<T> : IList<T> where T : IPersistableObject
+    public interface IPersistableObjectList<T> : IList<T> where T : IPersistableObject
     {
         void Add(T item, bool save);
 

@@ -100,7 +100,7 @@
     <Compile Include="DbDependency.cs" />
     <Compile Include="DbTransaction.cs" />
     <Compile Include="IDbManager.cs" />
-    <Compile Include="IListOfPersistableObjects.cs" />
+    <Compile Include="IPersistableObjectList.cs" />
     <Compile Include="IPersistable.cs" />
     <Compile Include="Managers\MySqlDbManager.cs" />
     <Compile Include="Managers\MySqlDbTransaction.cs" />

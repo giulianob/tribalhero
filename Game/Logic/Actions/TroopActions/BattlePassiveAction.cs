@@ -168,7 +168,7 @@ namespace Game.Logic.Actions
                     var toBeLocked = new List<ILockable>();
                     toBeLocked.AddRange(city.Battle.LockList);
                     toBeLocked.Add(city);
-                    toBeLocked.AddRange(city.Troops.StationedHere().Select(stub => stub.City));
+                    toBeLocked.AddRange(city.Troops.StationedHere().Select(stub => stub.City).Distinct());
                     return toBeLocked.ToArray();
                 };
 
@@ -274,7 +274,7 @@ namespace Game.Logic.Actions
             }
 
             // Check if we should retreat a unit
-            if (target.ClassType != BattleClass.Unit || attackingSide != BattleManager.BattleSide.Defense || target.TroopStub.StationedCity != city || target.TroopStub.TotalCount <= 0 ||
+            if (attackingSide == BattleManager.BattleSide.Defense || target.TroopStub.StationedCity != city || target.TroopStub.TotalCount <= 0 ||
                 target.TroopStub.TotalCount > target.TroopStub.StationedRetreatCount)
             {
                 return;
@@ -282,15 +282,8 @@ namespace Game.Logic.Actions
 
             ITroopStub stub = target.TroopStub;
 
-            // TODO: Should keep track of groups and not look it up this way
-            var group = city.Battle.Defenders.OfType<CityDefensiveCombatGroup>().First(combatGroup => combatGroup.TroopStub == stub);
-            if (group == null)
-            {
-                throw new Exception("Trying to retreat a stationed troop but cannot find group");
-            }
-
             // Remove the object from the battle
-            city.Battle.Remove(group, BattleManager.BattleSide.Defense, ReportState.Retreating);
+            city.Battle.Remove(targetGroup, BattleManager.BattleSide.Defense, ReportState.Retreating);
             stub.BeginUpdate();
             stub.State = TroopState.Stationed;
             stub.EndUpdate();
@@ -303,7 +296,7 @@ namespace Game.Logic.Actions
         /// <summary>
         /// Gives alignment points when a structure is destroyed.
         /// </summary>
-        private void BattleUnitKilled(IBattleManager battle, BattleManager.BattleSide objSide, ICombatObject obj)
+        private void BattleUnitKilled(IBattleManager battle, BattleManager.BattleSide objSide, ICombatGroup combatGroup, ICombatObject obj)
         {
             // Keep track of our buildings destroyed HP
             if (objSide != BattleManager.BattleSide.Defense || obj.ClassType != BattleClass.Structure)

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Persistance
 {
-    abstract public class PersistableObjectList<T> : IListOfPersistableObjects<T> where T : IPersistableObject
+    abstract public class PersistableObjectList<T> : IPersistableObjectList<T> where T : IPersistableObject
     {
         public delegate void ListChanged(PersistableObjectList<T> list, T item);
 

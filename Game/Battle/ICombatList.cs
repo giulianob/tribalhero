@@ -5,7 +5,7 @@ using Persistance;
 
 namespace Game.Battle
 {
-    public interface ICombatList : IListOfPersistableObjects<ICombatGroup>
+    public interface ICombatList : IPersistableObjectList<ICombatGroup>
     {
         int Upkeep { get; }
 

@@ -1,4 +1,6 @@
 ﻿using System;
+using Game.Data;
+using Game.Map;
 
 namespace Game.Battle
 {
@@ -22,6 +24,19 @@ namespace Game.Battle
         {
             Type = type;
             Id = id;
+        }
+
+        public string GetName()
+        {
+            switch (Type)
+            {
+                case BattleLocationType.City:
+                    ICity city;
+                    return World.Current.TryGetObjects(Id, out city) ? city.Name : string.Empty;
+                // TODO: Add Stronghold name support
+                default:
+                    return string.Empty;
+            }
         }
     }
 }

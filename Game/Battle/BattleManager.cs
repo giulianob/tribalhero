@@ -275,22 +275,51 @@ namespace Game.Battle
 
                 combatList.Add(group);
 
-                if (!BattleStarted)
-                {
-                    return;
-                }
-
-                BattleReport.WriteReportGroup(group, isAttacker, state);
-
                 if (isAttacker)
                 {
-                    ReinforceAttacker(this, group);
+                    group.CombatObjectAdded += AttackerGroupOnCombatObjectAdded;                    
+                    group.CombatObjectRemoved += AttackerGroupOnCombatObjectRemoved;
                 }
                 else
                 {
-                    ReinforceDefender(this, group);
+                    group.CombatObjectAdded += DefenderGroupOnCombatObjectAdded;                    
+                    group.CombatObjectRemoved += DefenderGroupOnCombatObjectRemoved;
+                }
+
+                if (BattleStarted)
+                {
+                    BattleReport.WriteReportGroup(group, isAttacker, state);
+
+                    if (isAttacker)
+                    {
+                        ReinforceAttacker(this, group);
+                    }
+                    else
+                    {
+                        ReinforceDefender(this, group);
+                    }
                 }
             }
+        }
+
+        private void DefenderGroupOnCombatObjectAdded(ICombatGroup group, ICombatObject combatObject)
+        {
+            GroupUnitAdded(this, BattleSide.Defense, group, combatObject);
+        }
+
+        private void DefenderGroupOnCombatObjectRemoved(ICombatGroup group, ICombatObject combatObject)
+        {
+            GroupUnitRemoved(this, BattleSide.Defense, group, combatObject);
+        }
+
+        private void AttackerGroupOnCombatObjectAdded(ICombatGroup group, ICombatObject combatObject)
+        {            
+            GroupUnitAdded(this, BattleSide.Attack, group, combatObject);
+        }
+
+        private void AttackerGroupOnCombatObjectRemoved(ICombatGroup group, ICombatObject combatObject)
+        {
+            GroupUnitRemoved(this, BattleSide.Attack, group, combatObject);
         }
 
         public void Remove(ICombatGroup group, BattleSide side, ReportState state)
@@ -300,10 +329,16 @@ namespace Game.Battle
                 // Remove from appropriate combat list
                 if (side == BattleSide.Attack)
                 {
+                    group.CombatObjectAdded -= AttackerGroupOnCombatObjectAdded;                    
+                    group.CombatObjectRemoved -= AttackerGroupOnCombatObjectRemoved;
+                    
                     Attackers.Remove(group);
                 }
                 else
                 {
+                    group.CombatObjectAdded -= DefenderGroupOnCombatObjectAdded;                    
+                    group.CombatObjectRemoved -= DefenderGroupOnCombatObjectRemoved;
+
                     Defenders.Remove(group);
                 }
 
@@ -422,7 +457,7 @@ namespace Game.Battle
 
                 do
                 {
-                    #region Find Attacker                    
+                    #region Find Attacker
 
                     BattleSide sideAttacking;
                     
@@ -437,6 +472,7 @@ namespace Game.Battle
                     {
                         ++Round;
                         Turn = 0;
+
                         EnterRound(this, Attackers, Defenders, Round);
 
                         // Since the EventEnterRound can remove the object from battle, we need to make sure he's still in the battle
@@ -444,9 +480,10 @@ namespace Game.Battle
                         if (!offensiveCombatList.AllCombatObjects().Contains(attackerObject))
                         {
                             continue;
-                        }
+                        }         
                     }
 
+                    // Verify battle is still good to go
                     if (attackerObject == null || !IsBattleValid())
                     {
                         BattleEnded(true);
@@ -465,7 +502,7 @@ namespace Game.Battle
                     {
                         attackerObject.ParticipatedInRound();
                         dbManager.Save(attackerObject);
-                        SkippedAttacker(this, NextToAttack, attackerObject);
+                        SkippedAttacker(this, NextToAttack, attackerGroup, attackerObject);
 
                         // If the attacker can't attack because it has no one in range, then we skip him and find another target right away.
                         if (targetResult == CombatList.BestTargetResult.NoneInRange)
@@ -622,7 +659,7 @@ namespace Game.Battle
 
                 ActionAttacked(this, NextToAttack, attackerGroup, attacker, target.Group, target.CombatObject, actualDmg);
 
-                UnitKilled(this, NextToAttack == BattleSide.Attack ? BattleSide.Defense : BattleSide.Attack, target.CombatObject);
+                UnitKilled(this, NextToAttack == BattleSide.Attack ? BattleSide.Defense : BattleSide.Attack, target.Group, target.CombatObject);
 
                 if (!target.CombatObject.Disposed)
                 {
@@ -655,7 +692,7 @@ namespace Game.Battle
 
         public delegate void OnBattle(IBattleManager battle, ICombatList attackers, ICombatList defenders);
 
-        public delegate void OnReinforce(IBattleManager battle, IEnumerable<ICombatObject> list);
+        public delegate void OnReinforce(IBattleManager battle, ICombatGroup combatGroup);
 
         public delegate void OnWithdraw(IBattleManager battle, ICombatGroup group);
 
@@ -663,31 +700,77 @@ namespace Game.Battle
 
         public delegate void OnTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, int turn);
 
-        public delegate void OnUnitUpdate(IBattleManager battle, BattleSide combatObjectSide, ICombatObject combatObject);
+        public delegate void OnUnitUpdate(IBattleManager battle, BattleSide combatObjectSide, ICombatGroup combatGroup, ICombatObject combatObject);
 
+        /// <summary>
+        /// Fired once when the battle begins
+        /// </summary>
         public event OnBattle EnterBattle = delegate { };
 
+        /// <summary>
+        /// Fired once when the battle ends
+        /// </summary>
         public event OnBattle ExitBattle = delegate { };
 
+        /// <summary>
+        /// Fired when a new round starts
+        /// </summary>
         public event OnRound EnterRound = delegate { };
 
+        /// <summary>
+        /// Fired everytime a unit exits its turn
+        /// </summary>
         public event OnTurn ExitTurn = delegate { };
 
+        /// <summary>
+        /// Fired when a new attacker joins the battle
+        /// </summary>
         public event OnReinforce ReinforceAttacker = delegate { };
 
+        /// <summary>
+        /// Fired when a new defender joins the battle
+        /// </summary>
         public event OnReinforce ReinforceDefender = delegate { };
 
+        /// <summary>
+        /// Fired when an attacker withdraws from the battle 
+        /// </summary>
         public event OnWithdraw WithdrawAttacker = delegate { };
 
+        /// <summary>
+        /// Fired when a defender withdraws from the battle
+        /// </summary>
         public event OnWithdraw WithdrawDefender = delegate { };
 
+        /// <summary>
+        /// Fired when all of the units in a group are killed
+        /// </summary>
+        public event OnWithdraw GroupKilled = delegate { };
+
+        /// <summary>
+        /// Fired when one of the groups in battle receives a new unit
+        /// </summary>
+        public event OnUnitUpdate GroupUnitAdded = delegate { };
+
+        /// <summary>
+        /// Fired when one of the groups in battle loses a unit
+        /// </summary>
+        public event OnUnitUpdate GroupUnitRemoved = delegate { }; 
+
+        /// <summary>
+        /// Fired when a single unit is killed
+        /// </summary>
         public event OnUnitUpdate UnitKilled = delegate { };
 
+        /// <summary>
+        /// Fired when an attacker is unable to take his turn
+        /// </summary>
         public event OnUnitUpdate SkippedAttacker = delegate { };
 
-        public event OnAttack ActionAttacked = delegate { };
-
-        public event OnWithdraw GroupKilled = delegate { };
+        /// <summary>
+        /// Fired when a unit hits another one
+        /// </summary>
+        public event OnAttack ActionAttacked = delegate { };        
 
         #endregion
     }

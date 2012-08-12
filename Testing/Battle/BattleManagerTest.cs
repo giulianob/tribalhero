@@ -534,7 +534,7 @@ namespace Testing.Battle
             });
 
             var skippedAttackerCalled = false;
-            battle.SkippedAttacker += (manager, side, o) =>
+            battle.SkippedAttacker += (manager, side, group, o) =>
                 {
                     side.Should().Be(BattleManager.BattleSide.Defense);
                     o.Should().Be(defender.Object);
@@ -604,7 +604,7 @@ namespace Testing.Battle
             });
 
             int skippedCallCount = 0;
-            battle.SkippedAttacker += (manager, side, o) =>
+            battle.SkippedAttacker += (manager, side, group, o) =>
                 {
                     skippedCallCount++;
 

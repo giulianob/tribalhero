@@ -64,7 +64,7 @@ namespace Game.Battle
             Append("**************************************\n");
         }
 
-        private void BattleUnitKilled(IBattleManager battle, BattleManager.BattleSide objSide, ICombatObject obj)
+        private void BattleUnitKilled(IBattleManager battle, BattleManager.BattleSide objSide, ICombatGroup combatGroup, ICombatObject obj)
         {
             Append("**************************************");
             Append("Removing: ");
@@ -92,7 +92,7 @@ namespace Game.Battle
             Append("Battle Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        void BattleSkippedAttacker(IBattleManager battle, BattleManager.BattleSide objSide, ICombatObject obj)
+        void BattleSkippedAttacker(IBattleManager battle, BattleManager.BattleSide objSide, ICombatGroup combatGroup, ICombatObject obj)
         {
             Append("**************************************");
             Append("Skipping: ");

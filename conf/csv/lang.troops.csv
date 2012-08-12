@@ -49,7 +49,7 @@ GLADIATOR_UNIT,Gladiator
 1_HELEPOLIS_UNIT_DESC,Machine that shoots thousands of arrows every minute. 
 1_CATAPULT_UNIT,Catapult
 1_CATAPULT_PLURAL_UNIT,Catapults
-1_CATAPULT_UNIT_DESC,"The only unit that does meaningful damage to structures. Catapults are also strong against machines but can fall quickly to any melee units. Beware when Catapult is sent with the troops, overall movement will be lowered to have the same speed as the Catapult irregardless of the troop composition."
+1_CATAPULT_UNIT_DESC,"The only unit that does meaningful damage to structures. Catapults are also strong against machines but can fall quickly to any melee units. Beware when Catapult is sent with the troops, overall movement will be lowered to have the same speed as the Catapult regardless of the troop's composition."
 1_OXWAGON_UNIT,Ox Wagon
 1_OXWAGON_PLURAL_UNIT,Ox Wagons
 1_OXWAGON_UNIT_DESC,A non-combat unit used to carry loot. The oxen are fed with beer; its fat is quite thick so some tribes use them as shields.

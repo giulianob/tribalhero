@@ -1,5 +1,7 @@
 ﻿using System;
 using Game.Data;
+using Game.Data.Tribe;
+using Game.Map;
 
 namespace Game.Battle
 {
@@ -34,6 +36,21 @@ namespace Game.Battle
             }
 
             return false;
+        }
+
+        public string GetName()
+        {
+            switch (Type)
+            {
+                case BattleOwnerType.City:
+                    ICity city;
+                    return World.Current.TryGetObjects(Id, out city) ? city.Name : string.Empty;
+                case BattleOwnerType.Tribe:
+                    ITribe tribe;
+                    return World.Current.TryGetObjects(Id, out tribe) ? tribe.Name : string.Empty;
+                default:
+                    return string.Empty;
+            }
         }
     }
 }

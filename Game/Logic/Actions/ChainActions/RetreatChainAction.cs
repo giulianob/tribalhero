@@ -9,7 +9,6 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -17,20 +16,33 @@ namespace Game.Logic.Actions
 {
     public class RetreatChainAction : ChainAction
     {
+        private readonly IActionFactory actionFactory;
+
         private readonly uint cityId;
+
         private readonly byte stubId;
 
-        public RetreatChainAction(uint cityId, byte stubId)
+        private uint troopObjectId;
+
+        public RetreatChainAction(uint cityId, byte stubId, IActionFactory actionFactory)
         {
             this.cityId = cityId;
             this.stubId = stubId;
+            this.actionFactory = actionFactory;
         }
 
-        public RetreatChainAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, Dictionary<string, string> properties)
+        public RetreatChainAction(uint id,
+                                  string chainCallback,
+                                  PassiveAction current,
+                                  ActionState chainState,
+                                  bool isVisible,
+                                  Dictionary<string, string> properties,
+                                  IActionFactory actionFactory)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
+            this.actionFactory = actionFactory;
             cityId = uint.Parse(properties["city_id"]);
-            stubId = byte.Parse(properties["troop_stub_id"]);
+            troopObjectId = uint.Parse(properties["troop_object_id"]);
         }
 
         public override ActionType Type
@@ -45,7 +57,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return XmlSerializer.Serialize(new[] {new XmlKvPair("city_id", cityId), new XmlKvPair("troop_stub_id", stubId)});
+                return XmlSerializer.Serialize(new[] {new XmlKvPair("city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId)});
             }
         }
 
@@ -68,17 +80,20 @@ namespace Game.Logic.Actions
                 return Error.CityInBattle;
             }
 
-            if (!Procedure.Current.TroopObjectCreateFromStation(stub))
+            ITroopObject troopObject;
+            if (!Procedure.Current.TroopObjectCreateFromStation(stub, out troopObject))
             {
                 return Error.Unexpected;
             }
 
-            var tma = new TroopMovePassiveAction(cityId, stub.TroopObject.ObjectId, stub.City.X, stub.City.Y, true, false);
+            troopObjectId = troopObject.ObjectId;
+
+            var tma = new TroopMovePassiveAction(cityId, troopObject.ObjectId, stub.City.X, stub.City.Y, true, false);
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
 
-            stub.City.Worker.References.Add(stub.TroopObject, this);
-            stub.City.Worker.Notifications.Add(stub.TroopObject, this);
+            stub.City.Worker.References.Add(troopObject, this);
+            stub.City.Worker.Notifications.Add(troopObject, this);
 
             return Error.Ok;
         }
@@ -90,21 +105,22 @@ namespace Game.Logic.Actions
                 ICity city;
                 using (Concurrency.Current.Lock(cityId, out city))
                 {
-                    ITroopStub stub;
-
-                    if (!city.Troops.TryGetStub(stubId, out stub))
-                        throw new Exception();
-
-                    if (stub.City.Battle == null)
+                    ITroopObject troopObject;
+                    if (!city.TryGetTroop(troopObjectId, out troopObject))
                     {
-                        stub.City.Worker.Notifications.Remove(this);
-                        stub.City.Worker.References.Remove(stub.TroopObject, this);
-                        Procedure.Current.TroopObjectDelete(stub.TroopObject, true);
+                        throw new Exception();
+                    }
+
+                    if (city.Battle == null)
+                    {
+                        city.Worker.Notifications.Remove(this);
+                        city.Worker.References.Remove(troopObject, this);
+                        Procedure.Current.TroopObjectDelete(troopObject, true);
                         StateChange(ActionState.Completed);
                     }
                     else
                     {
-                        var eda = new EngageDefensePassiveAction(cityId, stubId);
+                        var eda = actionFactory.CreateEngageDefensePassiveAction(cityId, troopObjectId);
                         ExecuteChainAndWait(eda, AfterEngageDefense);
                     }
                 }
@@ -114,12 +130,14 @@ namespace Game.Logic.Actions
                 ICity city;
                 using (Concurrency.Current.Lock(cityId, out city))
                 {
-                    ITroopStub stub;
-
-                    if (!city.Troops.TryGetStub(stubId, out stub))
+                    ITroopObject troopObject;
+                    if (!city.TryGetTroop(troopObjectId, out troopObject))
+                    {
                         throw new Exception();
+                    }
 
-                    Procedure.Current.TroopObjectStation(stub.TroopObject, city);
+
+                    Procedure.Current.TroopObjectStation(troopObject, city);
                 }
             }
         }
@@ -131,14 +149,16 @@ namespace Game.Logic.Actions
                 ICity city;
                 using (Concurrency.Current.Lock(cityId, out city))
                 {
-                    ITroopStub stub;
-
-                    if (!city.Troops.TryGetStub(stubId, out stub))
+                    ITroopObject troopObject;
+                    if (!city.TryGetTroop(troopObjectId, out troopObject))
+                    {
                         throw new Exception();
+                    }
 
-                    stub.City.Worker.References.Remove(stub.TroopObject, this);
-                    stub.City.Worker.Notifications.Remove(this);
-                    Procedure.Current.TroopObjectDelete(stub.TroopObject, stub.TotalCount != 0);
+
+                    city.Worker.References.Remove(troopObject, this);
+                    city.Worker.Notifications.Remove(this);
+                    Procedure.Current.TroopObjectDelete(troopObject, troopObject.Stub.TotalCount != 0);
                     StateChange(ActionState.Completed);
                 }
             }

@@ -1,3 +1,5 @@
+using Game.Battle.CombatGroups;
+using Game.Battle.CombatObjects;
 using Persistance;
 
 namespace Game.Logic.Procedures

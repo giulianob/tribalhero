@@ -9,6 +9,12 @@
             Logs messages to a customizable sink.
             </summary>
         </member>
+        <member name="M:Ninject.Extensions.Logging.ILogger.Debug(System.String)">
+            <summary>
+            Logs the specified message with Debug severity.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
         <member name="M:Ninject.Extensions.Logging.ILogger.Debug(System.String,System.Object[])">
             <summary>
             Logs the specified message with Debug severity.
@@ -23,6 +29,12 @@
             <param name="exception">The exception to log.</param>
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
+        </member>
+        <member name="M:Ninject.Extensions.Logging.ILogger.Info(System.String)">
+            <summary>
+            Logs the specified message with Info severity.
+            </summary>
+            <param name="message">The message.</param>
         </member>
         <member name="M:Ninject.Extensions.Logging.ILogger.Info(System.String,System.Object[])">
             <summary>
@@ -39,6 +51,12 @@
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
         </member>
+        <member name="M:Ninject.Extensions.Logging.ILogger.Trace(System.String)">
+            <summary>
+            Logs the specified message with Trace severity.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
         <member name="M:Ninject.Extensions.Logging.ILogger.Trace(System.String,System.Object[])">
             <summary>
             Logs the specified message with Trace severity.
@@ -53,6 +71,12 @@
             <param name="exception">The exception to log.</param>
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
+        </member>
+        <member name="M:Ninject.Extensions.Logging.ILogger.Warn(System.String)">
+            <summary>
+            Logs the specified message with Warn severity.
+            </summary>
+            <param name="message">The message.</param>
         </member>
         <member name="M:Ninject.Extensions.Logging.ILogger.Warn(System.String,System.Object[])">
             <summary>
@@ -69,6 +93,12 @@
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
         </member>
+        <member name="M:Ninject.Extensions.Logging.ILogger.Error(System.String)">
+            <summary>
+            Logs the specified message with Error severity.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
         <member name="M:Ninject.Extensions.Logging.ILogger.Error(System.String,System.Object[])">
             <summary>
             Logs the specified message with Error severity.
@@ -83,6 +113,12 @@
             <param name="exception">The exception to log.</param>
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
+        </member>
+        <member name="M:Ninject.Extensions.Logging.ILogger.Fatal(System.String)">
+            <summary>
+            Logs the specified message with Fatal severity.
+            </summary>
+            <param name="message">The message.</param>
         </member>
         <member name="M:Ninject.Extensions.Logging.ILogger.Fatal(System.String,System.Object[])">
             <summary>
@@ -170,6 +206,12 @@
             </summary>
             <param name="type">The type to associate with the logger.</param>
         </member>
+        <member name="M:Ninject.Extensions.Logging.LoggerBase.Debug(System.String)">
+            <summary>
+            Logs the specified message with Debug severity.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
         <member name="M:Ninject.Extensions.Logging.LoggerBase.Debug(System.String,System.Object[])">
             <summary>
             Logs the specified message with Debug severity.
@@ -184,6 +226,12 @@
             <param name="exception">The exception to log.</param>
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
+        </member>
+        <member name="M:Ninject.Extensions.Logging.LoggerBase.Info(System.String)">
+            <summary>
+            Logs the specified message with Info severity.
+            </summary>
+            <param name="message">The message.</param>
         </member>
         <member name="M:Ninject.Extensions.Logging.LoggerBase.Info(System.String,System.Object[])">
             <summary>
@@ -200,6 +248,12 @@
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
         </member>
+        <member name="M:Ninject.Extensions.Logging.LoggerBase.Trace(System.String)">
+            <summary>
+            Logs the specified message with Trace severity.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
         <member name="M:Ninject.Extensions.Logging.LoggerBase.Trace(System.String,System.Object[])">
             <summary>
             Logs the specified message with Trace severity.
@@ -214,6 +268,12 @@
             <param name="exception">The exception to log.</param>
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
+        </member>
+        <member name="M:Ninject.Extensions.Logging.LoggerBase.Warn(System.String)">
+            <summary>
+            Logs the specified message with Warn severity.
+            </summary>
+            <param name="message">The message.</param>
         </member>
         <member name="M:Ninject.Extensions.Logging.LoggerBase.Warn(System.String,System.Object[])">
             <summary>
@@ -230,6 +290,12 @@
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
         </member>
+        <member name="M:Ninject.Extensions.Logging.LoggerBase.Error(System.String)">
+            <summary>
+            Logs the specified message with Error severity.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
         <member name="M:Ninject.Extensions.Logging.LoggerBase.Error(System.String,System.Object[])">
             <summary>
             Logs the specified message with Error severity.
@@ -244,6 +310,12 @@
             <param name="exception">The exception to log.</param>
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
+        </member>
+        <member name="M:Ninject.Extensions.Logging.LoggerBase.Fatal(System.String)">
+            <summary>
+            Logs the specified message with Fatal severity.
+            </summary>
+            <param name="message">The message.</param>
         </member>
         <member name="M:Ninject.Extensions.Logging.LoggerBase.Fatal(System.String,System.Object[])">
             <summary>

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -123,15 +124,9 @@ namespace Persistance.Managers
                 }
 
                 Type objType = obj.GetType();
-                foreach (var dependency in obj.DbDependencies)
+                foreach (var dependency in obj.DbDependencies.Where(dep => dep.AutoSave))
                 {
-                    if (dependency.AutoSave)
-                    {
-                        PropertyInfo propInfo = objType.GetProperty(dependency.Property);
-                        var persistable = propInfo.GetValue(obj, null) as IPersistable;
-                        if (persistable != null)
-                            Save(persistable);
-                    }
+                    Save((IPersistable)objType.GetProperty(dependency.Property).GetValue(obj, null));
                 }
             }
 

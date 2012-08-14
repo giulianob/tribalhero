@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using Game.Battle;
+using Game.Battle.CombatGroups;
+using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Procedures;
@@ -17,25 +19,34 @@ namespace Game.Logic.Actions
     public class EngageDefensePassiveAction : PassiveAction
     {
         private readonly uint cityId;
-        private readonly byte stubId;
+        private readonly uint troopObjectId;
+
+        private readonly BattleProcedure battleProcedure;
+
+        private readonly IGameObjectLocator gameObjectLocator;
+
         private decimal originalHp;
         private decimal remainingHp;
 
-        public EngageDefensePassiveAction(uint cityId, byte stubId)
+        public EngageDefensePassiveAction(uint cityId, uint troopObjectId, BattleProcedure battleProcedure, IGameObjectLocator gameObjectLocator)
         {
             this.cityId = cityId;
-            this.stubId = stubId;
+            this.troopObjectId = troopObjectId;
+            this.battleProcedure = battleProcedure;
+            this.gameObjectLocator = gameObjectLocator;
         }
 
-        public EngageDefensePassiveAction(uint id, bool isVisible, IDictionary<string, string> properties) : base(id, isVisible)
+        public EngageDefensePassiveAction(uint id, bool isVisible, IDictionary<string, string> properties, BattleProcedure battleProcedure, IGameObjectLocator gameObjectLocator) : base(id, isVisible)
         {
+            this.battleProcedure = battleProcedure;
+            this.gameObjectLocator = gameObjectLocator;
             cityId = uint.Parse(properties["troop_city_id"]);
-            stubId = byte.Parse(properties["troop_id"]);
+            troopObjectId = uint.Parse(properties["troop_object_id"]);
             originalHp = decimal.Parse(properties["original_hp"]);
             remainingHp = decimal.Parse(properties["remaining_hp"]);
 
             ICity city;
-            if (!World.Current.TryGetObjects(cityId, out city))
+            if (!gameObjectLocator.TryGetObjects(cityId, out city))
                 throw new Exception();
 
             city.Battle.ActionAttacked += BattleActionAttacked;
@@ -57,7 +68,7 @@ namespace Game.Logic.Actions
                 return
                         XmlSerializer.Serialize(new[]
                                                 {
-                                                        new XmlKvPair("troop_city_id", cityId), new XmlKvPair("troop_id", stubId),
+                                                        new XmlKvPair("troop_city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId),
                                                         new XmlKvPair("original_hp", originalHp), new XmlKvPair("remaining_hp", remainingHp)
                                                 });
             }
@@ -71,8 +82,9 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city;
-            ITroopStub stub;
-            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
+
+            ITroopObject troopObject;
+            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
                 return Error.ObjectNotFound;
 
             if (city.Battle == null)
@@ -81,73 +93,80 @@ namespace Game.Logic.Actions
                 return Error.Ok;
             }
 
-            var list = new List<ITroopStub> {stub};
-            originalHp = remainingHp = stub.TotalHp;
+            originalHp = remainingHp = troopObject.Stub.TotalHp;
 
             city.Battle.ActionAttacked += BattleActionAttacked;
             city.Battle.ExitBattle += BattleExitBattle;
-            city.Battle.AddToDefense(list);
 
-            stub.TroopObject.BeginUpdate();
-            stub.TroopObject.State = GameObjectState.BattleState(cityId);
-            stub.TroopObject.EndUpdate();
-            stub.TroopObject.Stub.BeginUpdate();
-            stub.TroopObject.Stub.State = TroopState.Battle;
-            stub.TroopObject.Stub.EndUpdate();
+            troopObject.BeginUpdate();
+            troopObject.State = GameObjectState.BattleState(city.Battle.BattleId);
+            troopObject.EndUpdate();
+            troopObject.Stub.BeginUpdate();
+            troopObject.Stub.State = TroopState.Battle;
+            troopObject.Stub.EndUpdate();
 
-            // Add any units in local troop to battle
-            Procedure.Current.AddLocalToBattle(city.Battle, city, ReportState.Reinforced);
+            // Add units to battle
+            battleProcedure.AddReinforcementToBattle(city.Battle, troopObject.Stub);
+            battleProcedure.AddLocalUnitsToBattle(city.Battle, city);
 
             return Error.Ok;
         }
 
-        private void BattleActionAttacked(uint battleId, CombatObject source, CombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatGroup attackerGroup, ICombatObject attacker, ICombatGroup targetGroup, ICombatObject target, decimal damage)
         {
-            if (target.City.Id != cityId)
-                return;
-
+            // TODO: Save groupId like in EngageAttackAction and use it to identify our objects
+            // TODO: This whole method can be changed to use the GroupKilled event instead of keeping the HP around like this
             var unit = target as AttackCombatUnit;
-            if (unit == null)
+
+            if (unit == null || unit.City.Id != cityId)
+            {
                 return;
+            }
 
             ICity city;
-            ITroopStub stub;
-            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
+            ITroopObject troopObject;
+            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
+            {
                 throw new Exception();
+            }
 
-            if (unit.TroopStub != stub)
+            if (unit.TroopStub != troopObject.Stub)
+            {
                 return;
+            }
 
             remainingHp -= damage;
             if (remainingHp > 0)
+            {
                 return;
+            }
 
             city.Battle.ActionAttacked -= BattleActionAttacked;
             city.Battle.ExitBattle -= BattleExitBattle;
 
-            stub.TroopObject.BeginUpdate();
-            stub.TroopObject.State = GameObjectState.NormalState();
-            stub.TroopObject.Stub.State = TroopState.Idle;
-            stub.TroopObject.EndUpdate();
+            troopObject.BeginUpdate();
+            troopObject.State = GameObjectState.NormalState();
+            troopObject.Stub.State = TroopState.Idle;
+            troopObject.EndUpdate();
             StateChange(ActionState.Completed);
         }
 
-        private void BattleExitBattle(uint battleId, ICombatList atk, ICombatList def)
+        private void BattleExitBattle(IBattleManager battle, ICombatList atk, ICombatList def)
         {
             ICity city;
-            ITroopStub stub;
-            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
+            ITroopObject troopObject;
+            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
                 throw new Exception();
 
             city.Battle.ActionAttacked -= BattleActionAttacked;
             city.Battle.ExitBattle -= BattleExitBattle;
 
-            stub.TroopObject.BeginUpdate();
-            stub.BeginUpdate();
-            stub.TroopObject.State = GameObjectState.NormalState();
-            stub.State = TroopState.Idle;
-            stub.EndUpdate();
-            stub.TroopObject.EndUpdate();
+            troopObject.BeginUpdate();
+            troopObject.Stub.BeginUpdate();
+            troopObject.State = GameObjectState.NormalState();
+            troopObject.Stub.State = TroopState.Idle;
+            troopObject.Stub.EndUpdate();
+            troopObject.EndUpdate();
 
             StateChange(ActionState.Completed);
         }

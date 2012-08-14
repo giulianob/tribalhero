@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using Persistance;
 
@@ -53,7 +54,7 @@ namespace Game.Data.Tribe
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get { return new DbDependency[] { }; }
         }

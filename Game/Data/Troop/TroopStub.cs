@@ -58,7 +58,7 @@ namespace Game.Data.Troop
         private IStation station;
         private ushort stationedRetreatCount;
         private byte troopId;
-        private ITroopObject troopObject;
+        //private ITroopObject troopObject;
         public TroopTemplate Template { get; private set; }
 
         public Formation this[FormationType type]
@@ -116,19 +116,6 @@ namespace Game.Data.Troop
             {
                 CheckUpdateMode();
                 stationedRetreatCount = value;
-            }
-        }
-
-        public ITroopObject TroopObject
-        {
-            get
-            {
-                return troopObject;
-            }
-            set
-            {
-                CheckUpdateMode(false);
-                troopObject = value;
             }
         }
 
@@ -325,7 +312,7 @@ namespace Game.Data.Troop
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {
@@ -347,7 +334,7 @@ namespace Game.Data.Troop
             }
         }
 
-        public DbColumn[] DbListColumns
+        public IEnumerable<DbColumn> DbListColumns
         {
             get
             {

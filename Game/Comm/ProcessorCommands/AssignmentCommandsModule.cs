@@ -20,13 +20,26 @@ namespace Game.Comm.ProcessorCommands
 {
     class AssignmentCommandsModule : CommandModule
     {
+        private readonly BattleProcedure battleProcedure;
+
+        private readonly IGameObjectLocator gameObjectLocator;
+
+        private readonly ILocker locker;
+
+        public AssignmentCommandsModule(BattleProcedure battleProcedure, IGameObjectLocator gameObjectLocator, ILocker locker)
+        {
+            this.battleProcedure = battleProcedure;
+            this.gameObjectLocator = gameObjectLocator;
+            this.locker = locker;
+        }
+
         public override void RegisterCommands(Processor processor)
         {
             processor.RegisterCommand(Command.TribeAssignmentCreate, Create);
             processor.RegisterCommand(Command.TribeAssignmentJoin, Join);
         }
 
-        public void Create(Session session, Packet packet) {
+        private void Create(Session session, Packet packet) {
             uint cityId;
             uint targetCityId;
             uint targetObjectId;
@@ -54,7 +67,7 @@ namespace Game.Comm.ProcessorCommands
             // First need to find all the objects that should be locked
             uint[] playerIds;
             Dictionary<uint, ICity> cities;
-            using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
+            using (locker.Lock(out cities, cityId, targetCityId))
             {
                 if (cities == null)
                 {
@@ -73,7 +86,7 @@ namespace Game.Comm.ProcessorCommands
                 ICity targetCity = cities[targetCityId];
 
                 // Make sure they are not in newbie protection
-                if (Formula.Current.IsNewbieProtected(targetCity.Owner))
+                if (BattleProcedure.IsNewbieProtected(targetCity.Owner))
                 {
                     ReplyError(session, packet, Error.PlayerNewbieProtection);
                     return;
@@ -83,10 +96,10 @@ namespace Game.Comm.ProcessorCommands
             }
 
             Dictionary<uint, IPlayer> players;
-            using (Concurrency.Current.Lock(out players, playerIds)) {
+            using (locker.Lock(out players, playerIds)) {
                 ICity city;
                 ICity targetCity;
-                if (players == null || !World.Current.TryGetObjects(cityId, out city) || !World.Current.TryGetObjects(targetCityId, out targetCity))
+                if (players == null || !gameObjectLocator.TryGetObjects(cityId, out city) || !gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
@@ -122,8 +135,8 @@ namespace Game.Comm.ProcessorCommands
                 ReplyWithResult(session, packet, ret);
             }
         }
- 
-        public void Join(Session session, Packet packet) {
+
+        private void Join(Session session, Packet packet) {
             uint cityId;
             int assignmentId;
             ISimpleStub stub;

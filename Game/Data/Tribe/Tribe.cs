@@ -36,6 +36,7 @@ namespace Game.Data.Tribe
         public uint Id { set; get; }
         public IPlayer Owner { get; set; }
         public string Name { get; set; }
+
         public byte Level { get; set; }
 
         private int attackPoint;
@@ -333,7 +334,7 @@ namespace Game.Data.Tribe
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {

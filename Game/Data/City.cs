@@ -437,13 +437,6 @@ namespace Game.Data
                 if (troopobjects.ContainsKey(objId))
                     return false;
 
-                if (troop.Stub != null)
-                {
-                    troop.Stub.BeginUpdate();
-                    troop.Stub.TroopObject = troop;
-                    troop.Stub.EndUpdate();
-                }
-
                 troop.City = this;
 
                 troopobjects.Add(objId, troop);
@@ -593,13 +586,6 @@ namespace Game.Data
                 DbPersistance.Current.Delete(obj);
 
                 obj.City = null;
-
-                if (obj.Stub != null)
-                {
-                    obj.Stub.BeginUpdate();
-                    obj.Stub.TroopObject = null;
-                    obj.Stub.EndUpdate();
-                }
 
                 ObjRemoveEvent(obj);
             }
@@ -1078,7 +1064,7 @@ namespace Game.Data
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {
@@ -1116,7 +1102,7 @@ namespace Game.Data
                 bw.Write(value);
                 bw.Write((float)alignmentPoint);
                 bw.Write(Owner.Tribesman == null ? 0 : Owner.Tribesman.Tribe.Id);
-                bw.Write((byte)(Formula.Current.IsNewbieProtected(Owner) ? 1 : 0));
+                bw.Write((byte)(BattleProcedure.IsNewbieProtected(Owner) ? 1 : 0));
                 ms.Position = 0;
                 return ms.ToArray();
             }

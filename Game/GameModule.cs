@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Game.Battle;
+using Game.Battle.CombatGroups;
+using Game.Battle.CombatObjects;
+using Game.Battle.Reporting;
+using Game.Battle.RewardStrategies;
 using Game.Comm;
-using Game.Comm.Channel;
 using Game.Comm.CmdLine_Commands;
 using Game.Comm.ProcessorCommands;
 using Game.Comm.Protocol;
@@ -20,6 +21,7 @@ using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
+using Game.Module.Remover;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -27,7 +29,6 @@ using Ninject;
 using Ninject.Extensions.Factory;
 using Ninject.Extensions.Logging.Log4net.Infrastructure;
 using Ninject.Modules;
-using Ninject.Parameters;
 using Persistance;
 using Persistance.Managers;
 using Thrift.Server;
@@ -74,6 +75,7 @@ namespace Game
             #region Formulas
 
             Bind<Formula>().ToSelf().InSingletonScope();
+            Bind<BattleFormulas>().ToSelf().InSingletonScope();
 
             #endregion
 
@@ -109,20 +111,23 @@ namespace Game
 
             #region Battle
 
-            Bind<IBattleChannel>()
-                .To<BattleChannel>()
-                .WhenInjectedInto<BattleManager>()
-                .WithConstructorArgument("city", ctx => ctx.Request.ParentRequest.Parameters.OfType<ConstructorArgument>()
-                    .First(p => p.Name == "owner")
-                    .GetValue(ctx, ctx.Request.Target));
-
-            Bind<ICity>().To<ICity>();
+            Bind<ICity>().To<City>();
 
             Bind<IBattleReport>().To<BattleReport>();
 
             Bind<IBattleManagerFactory>().To<BattleManagerFactory>();
 
             Bind<IBattleReportWriter>().To<SqlBattleReportWriter>();
+
+            Bind<IRewardStrategyFactory>().ToFactory();
+
+            Bind<ICombatGroupFactory>().ToFactory();
+
+            Bind<ICombatUnitFactory>().ToMethod(c => new CombatUnitFactory(c.Kernel));
+
+            Bind<ICombatList>().To<CombatList>().NamedLikeFactoryMethod((ICombatListFactory p) => p.GetCombatList());
+
+            Bind<ICombatListFactory>().ToFactory();
             
             #endregion
 
@@ -167,6 +172,7 @@ namespace Game
             Bind<TileLocator>().ToMethod(c => new TileLocator(new Random().Next)).InSingletonScope();
             Bind<ReverseTileLocator>().ToMethod(c => new ReverseTileLocator(new Random().Next)).InSingletonScope();
             Bind<Procedure>().ToSelf().InSingletonScope();
+            Bind<BattleProcedure>().ToSelf().InSingletonScope();
 
             #endregion
 
@@ -180,15 +186,16 @@ namespace Game
             #endregion
 
             #region Misc. Factories
-
-            Bind<ICombatUnitFactory>().ToMethod(c => new CombatUnitFactory(c.Kernel));
+            
             Bind<IProtocolFactory>().ToFactory();
-            Bind<ICombatListFactory>().ToFactory();
             Bind<IAssignmentFactory>().ToFactory();
             Bind<IActionFactory>().ToFactory();
             Bind<ITribeFactory>().ToFactory();
+            Bind<IPlayersRemoverFactory>().ToFactory();
+            Bind<IPlayerSelectorFactory>().ToFactory();
+            Bind<ICityRemoverFactory>().ToFactory();
             Bind<IStrongholdFactory>().ToFactory();
-
+			
             #endregion
 
             #region Stronghold

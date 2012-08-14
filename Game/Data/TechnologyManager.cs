@@ -331,7 +331,7 @@ namespace Game.Data
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {
@@ -347,7 +347,7 @@ namespace Game.Data
             }
         }
 
-        public DbColumn[] DbListColumns
+        public IEnumerable<DbColumn> DbListColumns
         {
             get
             {

@@ -7,7 +7,6 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Actions;
-using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util.Locking;
@@ -198,7 +197,7 @@ namespace Game.Comm.ProcessorCommands
                 if (!city.TryGetStructure(objectId, out barrack))
                     ReplyError(session, packet, Error.Unexpected);
 
-                var upgradeAction = new UnitUpgradeActiveAction(cityId, objectId, type);
+                var upgradeAction = actionFactory.CreateUnitUpgradeActiveAction(cityId, objectId, type);
                 Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(barrack), barrack, upgradeAction, barrack.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
@@ -241,7 +240,7 @@ namespace Game.Comm.ProcessorCommands
                 if (!city.TryGetStructure(objectId, out barrack))
                     ReplyError(session, packet, Error.Unexpected);
 
-                var trainAction = new UnitTrainActiveAction(cityId, objectId, type, count);
+                var trainAction = actionFactory.CreateUnitTrainActiveAction(cityId, objectId, type, count);
                 Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(barrack), barrack, trainAction, barrack.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
@@ -302,18 +301,18 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 // Create troop object                
-                ITroopStub stub;
-                if (!Procedure.Current.TroopObjectCreateFromCity(out stub, city, simpleStub, city.X, city.Y))
+                ITroopObject troopObject;
+                if (!Procedure.Current.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.TroopChanged);
                     return;
                 }
 
-                var aa = actionFactory.CreateAttackChainAction(cityId, stub.TroopId, targetCityId, targetObjectId, mode);
+                var aa = actionFactory.CreateAttackChainAction(cityId, troopObject.ObjectId, targetCityId, targetObjectId, mode);
                 Error ret = city.Worker.DoPassive(city, aa, true);
                 if (ret != 0)
                 {
-                    Procedure.Current.TroopObjectDelete(stub.TroopObject, true);
+                    Procedure.Current.TroopObjectDelete(troopObject, true);
                     ReplyError(session, packet, ret);
                 }
                 else
@@ -363,18 +362,18 @@ namespace Game.Comm.ProcessorCommands
             {
                 ICity city = cities[cityId];
 
-                ITroopStub stub;
-                if (!Procedure.Current.TroopObjectCreateFromCity(out stub, city, simpleStub, city.X, city.Y))
+                ITroopObject troopObject;
+                if (!Procedure.Current.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.ObjectNotFound);
                     return;
                 }
 
-                var da = new DefenseChainAction(cityId, stub.TroopId, targetCityId, mode);
+                var da = actionFactory.CreateDefenseChainAction(cityId, troopObject.ObjectId, targetCityId, mode);
                 Error ret = city.Worker.DoPassive(city, da, true);
                 if (ret != 0)
                 {
-                    Procedure.Current.TroopObjectDelete(stub.TroopObject, true);
+                    Procedure.Current.TroopObjectDelete(troopObject, true);
                     ReplyError(session, packet, ret);
                 }
                 else
@@ -438,7 +437,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var ra = new RetreatChainAction(cityId, troopId);
+                var ra = actionFactory.CreateRetreatChainAction(cityId, troopId);
 
                 Error ret = city.Worker.DoPassive(city, ra, true);
                 ReplyWithResult(session, packet, ret);

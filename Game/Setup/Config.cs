@@ -15,6 +15,8 @@ namespace Game.Setup
 {
     public class Config
     {
+        public static string database_schema_version = "20120731014541";
+
         // ReSharper disable InconsistentNaming        
         public static int client_min_version;
         public static int client_min_revision;
@@ -111,14 +113,22 @@ namespace Game.Setup
 
         public static int stronghold_generate = 0;
         public static int stronghold_activation_check_interval_in_sec = 3600;
-        public static string stronghold_name_txt_file = "conf/maps/names.txt";
         public static int stronghold_cities_per_level = 5;
         public static int stronghold_radius_per_level = 10;
         public static int stronghold_radius_base = 100;
 
         public static int idle_days = 3;
+        
+        [ThreadStatic]
+        private static Random random;
 
-        public static Random Random { get; private set; }
+        public static Random Random
+        {
+            get
+            {
+                return random ?? (random = new Random());
+            }
+        }
 
         private static Dictionary<string, string> extraProperties = new Dictionary<string, string>();
 
@@ -140,8 +150,6 @@ namespace Game.Setup
 
             XmlConfigurator.Configure();
             ILog logger = LogManager.GetLogger(typeof(Config));
-
-            Random = new Random();
 
             string key = string.Empty;
 

@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Battle;
+using Game.Battle.CombatGroups;
+using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
@@ -201,6 +203,8 @@ namespace Game.Comm
 
         internal static void AddToPacket(ITroopStub stub, Packet packet)
         {
+            ITroopObject troopObject = stub.City.TroopObjects.FirstOrDefault(troopObj => troopObj.Stub == stub);
+
             packet.AddUInt32(stub.City.Owner.PlayerId);
             packet.AddUInt32(stub.City.Id);
 
@@ -229,16 +233,19 @@ namespace Game.Comm
             {
                 case TroopState.Moving:
                 case TroopState.ReturningHome:
-                    packet.AddUInt32(stub.TroopObject.ObjectId);
-                    packet.AddUInt32(stub.TroopObject.X);
-                    packet.AddUInt32(stub.TroopObject.Y);
+                    packet.AddUInt32(troopObject.ObjectId);
+                    packet.AddUInt32(troopObject.X);
+                    packet.AddUInt32(troopObject.Y);
                     break;
                 case TroopState.Battle:
-                    if (stub.TroopObject != null)
+                    // If the stub is in battle, determine whether there is a troop object attached to it or not.
+                    // If there is we send the troop objs location otherwise we assume that the troop stub is 
+                    // in their city
+                    if (troopObject != null)
                     {
-                        packet.AddUInt32(stub.TroopObject.ObjectId);
-                        packet.AddUInt32(stub.TroopObject.X);
-                        packet.AddUInt32(stub.TroopObject.Y);
+                        packet.AddUInt32(troopObject.ObjectId);
+                        packet.AddUInt32(troopObject.X);
+                        packet.AddUInt32(troopObject.Y);
                     }
                     else
                     {
@@ -269,24 +276,38 @@ namespace Game.Comm
             }
         }
 
-        internal static void AddToPacket(IList<CombatObject> list, Packet packet)
+        internal static void AddToPacket(ICombatList combatList, Packet packet)
         {
-            packet.AddUInt16((ushort)list.Count);
-            foreach (var obj in list)
+            packet.AddInt32(combatList.Count);
+            foreach (var group in combatList)
             {
-                packet.AddUInt32(obj.PlayerId);
-                packet.AddUInt32(obj.City.Id);
-                packet.AddUInt32(obj.Id);
-                packet.AddByte((byte)obj.ClassType);
-                if (obj.ClassType == BattleClass.Unit)
-                    packet.AddByte(((ICombatUnit)obj).TroopStub.TroopId);
-                else
-                    packet.AddByte(1);
-                packet.AddUInt16(obj.Type);
-                packet.AddByte(obj.Lvl);
-                packet.AddFloat((float)obj.Hp);
-                packet.AddFloat((float)obj.Stats.MaxHp);
+                AddToPacket(group, packet);
             }
+        }
+
+        internal static void AddToPacket(ICombatGroup combatGroup, Packet packet)
+        {
+            packet.AddUInt32(combatGroup.Id);
+            packet.AddByte(combatGroup.TroopId);
+            packet.AddByte((byte)combatGroup.Owner.Type);
+            packet.AddUInt32(combatGroup.Owner.Id);
+            packet.AddString(combatGroup.Owner.GetName());            
+
+            packet.AddInt32(combatGroup.Count);
+            foreach (var combatObject in combatGroup)
+            {
+                AddToPacket(combatObject, packet);
+            }
+        }
+
+        internal static void AddToPacket(ICombatObject combatObject, Packet packet)
+        {
+            packet.AddUInt32(combatObject.Id);
+            packet.AddByte((byte)combatObject.ClassType);
+            packet.AddUInt16(combatObject.Type);
+            packet.AddByte(combatObject.Lvl);
+            packet.AddFloat((float)combatObject.Hp);
+            packet.AddFloat((float)combatObject.Stats.MaxHp);
         }
 
         public static void AddLoginToPacket(Session session, Packet packet)
@@ -367,7 +388,9 @@ namespace Game.Comm
             //City Troops
             packet.AddByte(city.Troops.Size);
             foreach (var stub in city.Troops)
+            {
                 AddToPacket(stub, packet);
+            }
 
             //Unit Template
             AddToPacket(city.Template, packet);

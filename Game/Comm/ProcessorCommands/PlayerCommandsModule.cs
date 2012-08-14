@@ -27,6 +27,7 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.PlayerUsernameGet, GetUsername);
             processor.RegisterCommand(Command.PlayerNameFromCityName, GetCityOwnerName);
             processor.RegisterCommand(Command.CityResourceSend, SendResources);                      
+            processor.RegisterCommand(Command.ProfileByType, ProfileByType);         
         }
 
         private void SetDescription(Session session, Packet packet)
@@ -53,6 +54,41 @@ namespace Game.Comm.ProcessorCommands
                 session.Player.Description = description;
 
                 ReplySuccess(session, packet);
+            }
+        }
+
+        //TODO: Add stronghold support and move to where it makes sense
+        private void ProfileByType(Session session, Packet packet)
+        {
+            var reply = new Packet(packet);
+
+            string type;
+            uint id;            
+            try
+            {
+                type = packet.GetString();
+                id = packet.GetUInt32();
+            }
+            catch (Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }            
+
+            if (type.ToLowerInvariant() == "city")
+            {
+                ICity city;
+                if (!World.Current.TryGetObjects(id, out city))
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;                    
+                }
+
+                AddPlayerProfileToPacket(session, reply, city.Owner.PlayerId);
+            }
+            else
+            {
+                ReplyError(session, packet, Error.Unexpected);
             }
         }
 
@@ -83,12 +119,17 @@ namespace Game.Comm.ProcessorCommands
                 }
             }
 
+            AddPlayerProfileToPacket(session, reply, playerId);
+        }
+
+        private void AddPlayerProfileToPacket(Session session, Packet reply, uint playerId)
+        {
             IPlayer player;
             using (Concurrency.Current.Lock(playerId, out player))
             {
                 if (player == null)
                 {
-                    ReplyError(session, packet, Error.PlayerNotFound);
+                    ReplyError(session, reply, Error.PlayerNotFound);
                     return;                    
                 }
 

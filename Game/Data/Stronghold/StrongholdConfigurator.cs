@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Game.Map;
 using Game.Setup;
@@ -9,7 +10,7 @@ namespace Game.Data.Stronghold
 {
     class StrongholdConfigurator : IStrongholdConfigurator
     {
-        private readonly NameGenerator nameGenerator = new NameGenerator(Config.stronghold_name_txt_file);
+        private readonly NameGenerator nameGenerator = new NameGenerator(Path.Combine(Config.maps_folder, "strongholdnames.txt"));
         private readonly MapFactory mapFactory;
         private readonly TileLocator tileLocator;
 

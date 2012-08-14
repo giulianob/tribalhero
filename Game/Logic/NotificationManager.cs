@@ -277,7 +277,7 @@ namespace Game.Logic
                 }
             }
 
-            public DbDependency[] DbDependencies
+            public IEnumerable<DbDependency> DbDependencies
             {
                 get
                 {
@@ -293,7 +293,7 @@ namespace Game.Logic
                 }
             }
 
-            public DbColumn[] DbListColumns
+            public IEnumerable<DbColumn> DbListColumns
             {
                 get
                 {

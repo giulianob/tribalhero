@@ -184,24 +184,24 @@
             Gets an instance for the specified method and arguments.
             </summary>
             <param name="instanceResolver">The instance resolver.</param>
-            <param name="methodInfo">The method info.</param>
-            <param name="arguments">The arguments.</param>
+            <param name="methodInfo">The method info of the method that was called on the factory.</param>
+            <param name="arguments">The arguments that were passed to the factory.</param>
             <returns>The newly created instance.</returns>
         </member>
         <member name="M:Ninject.Extensions.Factory.StandardInstanceProvider.GetConstraint(System.Reflection.MethodInfo,System.Object[])">
             <summary>
             Gets the constraint for the specified method and arguments.
             </summary>
-            <param name="methodInfo">The method info.</param>
-            <param name="arguments">The arguments.</param>
+            <param name="methodInfo">The method info of the method that was called on the factory.</param>
+            <param name="arguments">The arguments passed to the factory.</param>
             <returns>The constraint that shall be used to receive an instance. Null if no constraint shall be used.</returns>
         </member>
         <member name="M:Ninject.Extensions.Factory.StandardInstanceProvider.GetType(System.Reflection.MethodInfo,System.Object[])">
             <summary>
             Gets the type that shall be created for the specified method and arguments.
             </summary>
-            <param name="methodInfo">The method info.</param>
-            <param name="arguments">The arguments.</param>
+            <param name="methodInfo">The method info of the method that was called on the factory.</param>
+            <param name="arguments">The arguments that were passed to the factory.</param>
             <returns>The type that shall be created for the specified method and arguments.</returns>
         </member>
         <member name="M:Ninject.Extensions.Factory.StandardInstanceProvider.GetName(System.Reflection.MethodInfo,System.Object[])">
@@ -209,8 +209,8 @@
             Gets the name that shall be used to request an instance for the specified method and arguments. 
             Null if unnamed instances shall be requested.
             </summary>
-            <param name="methodInfo">The method info.</param>
-            <param name="arguments">The arguments.</param>
+            <param name="methodInfo">The method info of the method that was called on the factory.</param>
+            <param name="arguments">The arguments that were passed to the factory.</param>
             <returns>The name that shall be used to request an instance for the specified method and arguments. 
             Null if unnamed instances shall be requested.</returns>
         </member>
@@ -218,8 +218,8 @@
             <summary>
             Gets the constructor arguments that shall be passed with the instance request.
             </summary>
-            <param name="methodInfo">The method info.</param>
-            <param name="arguments">The arguments.</param>
+            <param name="methodInfo">The method info of the method that was called on the factory.</param>
+            <param name="arguments">The arguments that were passed to the factory.</param>
             <returns>The constructor arguments that shall be passed with the instance request.</returns>
         </member>
         <member name="P:Ninject.Extensions.Factory.StandardInstanceProvider.Fallback">
@@ -1138,6 +1138,18 @@
             <param name="factoryType">Type of the factory.</param>
             <returns>
             The <see cref="T:Ninject.Syntax.IBindingWhenInNamedWithOrOnSyntax`1"/> to configure more things for the binding.
+            </returns>
+        </member>
+        <member name="M:Ninject.Extensions.Factory.BindToExtensions.NamedLikeFactoryMethod``2(Ninject.Syntax.IBindingNamedSyntax{``0},System.Linq.Expressions.Expression{System.Action{``1}})">
+            <summary>
+            Defines a named binding with the name taken from the factory method used to create instances.
+            </summary>
+            <typeparam name="TInterface">The type of the interface.</typeparam>
+            <typeparam name="TFactory">¨The type of the factory.</typeparam>
+            <param name="syntax">The syntax.</param>
+            <param name="action">Expression defining the factory method used to get the binding name from.</param>
+            <returns>
+            The <see cref="T:Ninject.Syntax.IBindingWithOrOnSyntax`1"/> to configure more things for the binding.
             </returns>
         </member>
         <member name="M:Ninject.Extensions.Factory.BindToExtensions.ToFactory``1(Ninject.Syntax.IBindingToSyntax{``0},System.Func{Ninject.Activation.IContext,Ninject.Extensions.Factory.IInstanceProvider},System.Type)">

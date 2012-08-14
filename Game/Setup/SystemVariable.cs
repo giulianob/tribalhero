@@ -1,5 +1,6 @@
 #region
 
+using System.Collections.Generic;
 using System.Data;
 using Game.Util;
 using Persistance;
@@ -65,7 +66,7 @@ namespace Game.Setup
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {

@@ -294,21 +294,22 @@ namespace Game.Data.Tribe
             }
 
             // Create troop object
-            procedure.TroopObjectCreate(stub.City, stub);
+            ITroopObject troopObject;
+            procedure.TroopObjectCreate(stub.City, stub, out troopObject);
             
             PassiveAction action;
             if (IsAttack)
             {
-                action = actionFactory.CreateAttackChainAction(stub.City.Id, stub.TroopId, structure.City.Id, structure.ObjectId, AttackMode);
+                action = actionFactory.CreateAttackChainAction(stub.City.Id, troopObject.ObjectId, structure.City.Id, structure.ObjectId, AttackMode);
             }
             else
             {
-                action = actionFactory.CreateDefenseChainAction(stub.City.Id, stub.TroopId, structure.City.Id, AttackMode);
+                action = actionFactory.CreateDefenseChainAction(stub.City.Id, troopObject.ObjectId, structure.City.Id, AttackMode);
             }
 
             if (stub.City.Worker.DoPassive(stub.City, action, true) != Error.Ok)
             {
-                procedure.TroopObjectDelete(stub.TroopObject, true);
+                procedure.TroopObjectDelete(troopObject, true);
                 return false;
             }
 
@@ -393,7 +394,7 @@ namespace Game.Data.Tribe
 
         #region IPersistableList Members
 
-        public DbColumn[] DbListColumns
+        public IEnumerable<DbColumn> DbListColumns
         {
             get
             {
@@ -424,7 +425,7 @@ namespace Game.Data.Tribe
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {

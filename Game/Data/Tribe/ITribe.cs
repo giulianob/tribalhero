@@ -12,11 +12,11 @@ namespace Game.Data.Tribe
     {
         uint Id { get; set; }
 
-        IPlayer Owner { get; set; }
+        IPlayer Owner { get; }
 
         string Name { get; set; }
 
-        byte Level { get; set; }
+        byte Level { get; }
 
         int AttackPoint { get; set; }
 

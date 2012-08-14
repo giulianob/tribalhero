@@ -18,6 +18,19 @@ namespace Game.Comm
 {
     class PlayerCommandLineModule : CommandLineModule
     {
+        private readonly IPlayersRemoverFactory playerRemoverFactory;
+
+        private readonly IPlayerSelectorFactory playerSelectorFactory;
+
+        private readonly ICityRemoverFactory cityRemoverFactory;
+
+        public PlayerCommandLineModule(IPlayersRemoverFactory playerRemoverFactory, IPlayerSelectorFactory playerSelectorFactory, ICityRemoverFactory cityRemoverFactory)
+        {
+            this.playerRemoverFactory = playerRemoverFactory;
+            this.playerSelectorFactory = playerSelectorFactory;
+            this.cityRemoverFactory = cityRemoverFactory;
+        }
+
         public override void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("playerinfo", Info, PlayerRights.Moderator);
@@ -554,7 +567,7 @@ namespace Game.Comm
 
                 foreach (ICity city in player.GetCityList())
                 {
-                    CityRemover cr = new CityRemover(city.Id);
+                    CityRemover cr = cityRemoverFactory.CreateCityRemover(city.Id);
                     cr.Start();
                 }
             }
@@ -580,7 +593,7 @@ namespace Game.Comm
             if (help)
                 return "deletenewbies";
 
-            PlayersRemover playersRemover = new PlayersRemover(new CityRemoverFactory(), new NewbieIdleSelector());
+            PlayersRemover playersRemover = playerRemoverFactory.CreatePlayersRemover(playerSelectorFactory.CreateNewbieIdleSelector());
 
             return string.Format("OK! Deleting {0} players.", playersRemover.DeletePlayers());
         }

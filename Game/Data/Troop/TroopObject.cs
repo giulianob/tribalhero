@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using Game.Data.Stats;
@@ -197,7 +198,7 @@ namespace Game.Data.Troop
                                new DbColumn("gold", Stats.Loot.Gold, DbType.Int32), new DbColumn("crop", Stats.Loot.Crop, DbType.Int32),
                                new DbColumn("wood", Stats.Loot.Wood, DbType.Int32), new DbColumn("iron", Stats.Loot.Iron, DbType.Int32),
                                new DbColumn("attack_point", Stats.AttackPoint, DbType.Int32), new DbColumn("attack_radius", Stats.AttackRadius, DbType.Byte),
-                               new DbColumn("stamina", Stats.Stamina, DbType.Int16), new DbColumn("speed", Stats.Speed, DbType.Byte),
+                               new DbColumn("speed", Stats.Speed, DbType.Byte),
                                new DbColumn("x", X, DbType.UInt32), new DbColumn("y", Y, DbType.UInt32), new DbColumn("target_x", TargetX, DbType.UInt32),
                                new DbColumn("target_y", TargetY, DbType.UInt32), new DbColumn("in_world", InWorld, DbType.Boolean),
                                new DbColumn("state", (byte)State.Type, DbType.Boolean),
@@ -214,7 +215,7 @@ namespace Game.Data.Troop
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {

@@ -10,7 +10,7 @@ namespace Game.Map
         void DbLoaderAdd(ISimpleGameObject obj);
         void Remove(ISimpleGameObject obj);
         List<ISimpleGameObject> GetObjects(uint x, uint y);
-        List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, byte radius);
+        List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, int radius);
         void ObjectUpdateEvent(ISimpleGameObject sender, uint origX, uint origY);
 
         bool IsValidXandY(uint x, uint y);

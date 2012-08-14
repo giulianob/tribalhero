@@ -15,7 +15,7 @@ namespace Game.Setup
 {
     public class MapFactory
     {
-        private readonly List<Point> dict = new List<Point>();
+        private readonly List<Location> dict = new List<Location>();
         private int index;
         private const int SKIP = 1; 
 
@@ -30,9 +30,14 @@ namespace Game.Setup
                     uint x = uint.Parse(strs[0]);
                     uint y = uint.Parse(strs[1]);
 
-                    dict.Add(new Point(x, y));
+                    dict.Add(new Location(x, y));
                 }
             }
+        }
+
+        public IEnumerable<Location> Locations()
+        {
+            return dict;
         }
 
         public bool NextLocation(out uint x, out uint y, byte radius)
@@ -48,7 +53,7 @@ namespace Game.Setup
                 if(index >= dict.Count)                
                     return false;
 
-                Point point = dict[index];
+                Location point = dict[index];
                 index += SKIP;
                 
                 // Check if objects already on that point
@@ -78,20 +83,5 @@ namespace Game.Setup
             return true;
         }
 
-        #region Nested type: Point
-
-        private class Point
-        {
-            public Point(uint x, uint y)
-            {
-                X = x;
-                Y = y;
-            }
-
-            public uint X { get; private set; }
-            public uint Y { get; private set; }
-        }
-
-        #endregion
     }
 }

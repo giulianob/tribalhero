@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Database;
 using Game.Logic.Formulas;
@@ -20,10 +21,12 @@ namespace Game.Comm.ProcessorCommands
     class TribeCommandsModule : CommandModule
     {
         private readonly ITribeFactory tribeFactory;
+        private readonly IStrongholdManager strongholdManager;
 
-        public TribeCommandsModule(ITribeFactory tribeFactory)
+        public TribeCommandsModule(ITribeFactory tribeFactory, IStrongholdManager strongholdManager)
         {
             this.tribeFactory = tribeFactory;
+            this.strongholdManager = strongholdManager;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -188,6 +191,7 @@ namespace Game.Comm.ProcessorCommands
                     PacketHelper.AddToPacket(assignment, reply);
                 }
 
+                //strongholdManager.Where(x=>x.Tribe.Id==tribe.Id).Select(x=> new [] { x.Id, x.State }_
                 session.Write(reply);
             }
         }

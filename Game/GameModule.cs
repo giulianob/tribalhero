@@ -196,13 +196,13 @@ namespace Game
             Bind<IStrongholdManager>().ToMethod(
                                                 c =>
                                                 new StrongholdManager(new IdGenerator(5000),
-                                                                      new StrongholdConfigurator(),
+                                                                      new StrongholdConfigurator(c.Kernel.Get<MapFactory>(),c.Kernel.Get<TileLocator>()),
                                                                       c.Kernel.Get<IStrongholdFactory>(),
                                                                       c.Kernel.Get<IWorld>(),
                                                                       c.Kernel.Get<Chat>(),
                                                                       c.Kernel.Get<IDbManager>())).InSingletonScope();
             Bind<IStronghold>().To<Stronghold>();
-            Bind<IStrongholdActivationCondition>().To<StrongholdActivationCondition>();
+            Bind<IStrongholdActivationCondition>().To<DummyActivationCondition>();
             Bind<StrongholdActivationChecker>().ToSelf().InSingletonScope();
 
 

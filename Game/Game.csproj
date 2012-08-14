@@ -195,6 +195,7 @@
     <Compile Include="Data\Global.cs" />
     <Compile Include="Data\Player.cs" />
     <Compile Include="Data\Resource.cs" />
+    <Compile Include="Data\Stronghold\DummyActivationCondition.cs" />
     <Compile Include="Data\Stronghold\IStronghold.cs" />
     <Compile Include="Data\Stronghold\IStrongholdActivationCondition.cs" />
     <Compile Include="Data\Stronghold\IStrongholdFactory.cs" />

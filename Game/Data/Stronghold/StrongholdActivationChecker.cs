@@ -45,6 +45,7 @@ namespace Game.Data.Stronghold
                     strongholdManager.Activate(stronghold);
                 }
             }
+
         }
     }
 }

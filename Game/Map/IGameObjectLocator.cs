@@ -25,6 +25,6 @@ namespace Game.Map
 
         List<ISimpleGameObject> GetObjects(uint x, uint y);
 
-        List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, byte radius);
+        List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, int radius);
     }
 }

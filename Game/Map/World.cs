@@ -556,7 +556,7 @@ namespace Game.Map
             return true;
         }
 
-        public List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, byte radius)
+        public List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, int radius)
         {
             var list = new List<ISimpleGameObject>();
             TileLocator.Current.ForeachObject(x, y, radius, false, GetObjectsForeach, list);

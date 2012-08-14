@@ -4,13 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Threading;
-using Game.Comm;
-using Game.Comm.Channel;
+using Game.Battle.CombatGroups;
+using Game.Battle.CombatObjects;
+using Game.Battle.Reporting;
+using Game.Battle.RewardStrategies;
 using Game.Data;
-using Game.Data.Tribe;
-using Game.Data.Troop;
-using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -22,165 +20,94 @@ namespace Game.Battle
 {
     public class BattleManager : IBattleManager
     {
+        public enum BattleSide
+        {
+            Defense,
+
+            Attack
+        }
+
         public const string DB_TABLE = "battle_managers";
-        private readonly CombatList attackers;
+
         private readonly object battleLock = new object();
-        private readonly CombatList defenders;
-        private readonly ICombatUnitFactory combatUnitFactory;
-        private readonly ObjectTypeFactory objectTypeFactory;
+
+        private readonly BattleFormulas battleFormulas;
+
         private readonly LargeIdGenerator groupIdGen;
+
         private readonly LargeIdGenerator idGen;
 
+        private readonly IRewardStrategy rewardStrategy;
+
         private readonly IDbManager dbManager;
-        private readonly IBattleReport report;
 
-        private uint battleId;
-        private BattleOrder battleOrder = new BattleOrder(0);
-        private bool battleStarted;
-        private ICity city;
-        private uint round;
-        private uint turn;
+        private readonly BattleOrder battleOrder = new BattleOrder();
 
-        public BattleManager(ICity owner, IDbManager dbManager, IBattleChannel battleChannel, IBattleReport battleReport, ICombatListFactory combatListFactory, ICombatUnitFactory combatUnitFactory, ObjectTypeFactory objectTypeFactory)
+        public BattleManager(uint battleId,
+                             BattleLocation location,
+                             BattleOwner owner,
+                             IRewardStrategy rewardStrategy,
+                             IDbManager dbManager,
+                             IBattleReport battleReport,
+                             ICombatListFactory combatListFactory,
+                             BattleFormulas battleFormulas)
         {
-            attackers = combatListFactory.CreateCombatList();
-            defenders = combatListFactory.CreateCombatList();
+            NextToAttack = BattleSide.Defense;
 
             groupIdGen = new LargeIdGenerator(ushort.MaxValue);
             idGen = new LargeIdGenerator(ushort.MaxValue);
-            
-            this.dbManager = dbManager;            
-            this.combatUnitFactory = combatUnitFactory;
-            this.objectTypeFactory = objectTypeFactory;
-            city = owner;
-            report = battleReport;
-
-            // Group id 1 is reserved for local troop
+            // Group id 1 is always reserved for local troop
             groupIdGen.Set(1);
 
-            ActionAttacked += battleChannel.BattleActionAttacked;
-            SkippedAttacker += battleChannel.BattleSkippedAttacker;
-            ReinforceAttacker += battleChannel.BattleReinforceAttacker;
-            ReinforceDefender += battleChannel.BattleReinforceDefender;
-            ExitBattle += battleChannel.BattleExitBattle;
-            EnterRound += battleChannel.BattleEnterRound;
-            WithdrawAttacker += battleChannel.BattleWithdrawAtacker;
-            WithdrawDefender += battleChannel.BattleWithdrawDefender;
+            BattleId = battleId;
+            Location = location;
+            Owner = owner;
+            BattleReport = battleReport;
+            Attackers = combatListFactory.GetCombatList();
+            Defenders = combatListFactory.GetCombatList();
+
+            this.rewardStrategy = rewardStrategy;
+            this.dbManager = dbManager;
+            this.battleFormulas = battleFormulas;
         }
 
-        public uint BattleId
+        public uint BattleId { get; private set; }
+
+        public BattleLocation Location { get; private set; }
+
+        public BattleOwner Owner { get; private set; }
+
+        public bool BattleStarted { get; set; }
+
+        public uint Round { get; set; }
+
+        public uint Turn { get; set; }
+
+        public BattleSide NextToAttack { private get; set; }
+
+        public ICombatList Attackers { get; private set; }
+
+        public ICombatList Defenders { get; private set; }
+
+        public IBattleReport BattleReport { get; private set; }
+
+        public IEnumerable<ILockable> LockList
         {
             get
             {
-                return battleId;
-            }
-            set
-            {
-                battleId = value;
-            }
-        }
+                var locks = new HashSet<ILockable>();
 
-        public bool BattleStarted
-        {
-            get
-            {
-                return battleStarted;
-            }
-            set
-            {
-                battleStarted = value;
-            }
-        }
+                foreach (var co in Attackers)
+                {
+                    locks.Add(co);
+                }
 
-        public uint Round
-        {
-            get
-            {
-                return round;
-            }
-            set
-            {
-                round = value;
-            }
-        }
+                foreach (var co in Defenders)
+                {
+                    locks.Add(co);
+                }
 
-        public uint Turn
-        {
-            get
-            {
-                return turn;
-            }
-            set
-            {
-                turn = value;
-            }
-        }
-
-        public ICity City
-        {
-            get
-            {
-                return city;
-            }
-            set
-            {
-                city = value;
-            }
-        }
-
-        public ICombatList Attacker
-        {
-            get
-            {
-                return attackers;
-            }
-        }
-
-        public ICombatList Defender
-        {
-            get
-            {
-                return defenders;
-            }
-        }
-
-        public IBattleReport BattleReport
-        {
-            get
-            {
-                return report;
-            }
-        }
-
-        public ReportedObjects ReportedObjects
-        {
-            get
-            {
-                return report.ReportedObjects;
-            }
-        }
-
-        public ReportedTroops ReportedTroops
-        {
-            get
-            {
-                return report.ReportedTroops;
-            }
-        }
-
-        public ICity[] LockList
-        {
-            get
-            {
-                var cities = new Dictionary<uint, ICity> {{city.Id, city}};
-
-                foreach (var co in attackers)
-                    cities[co.City.Id] = co.City;
-
-                foreach (var co in defenders)
-                    cities[co.City.Id] = co.City;
-
-                return cities.Values.ToArray();
+                return locks;
             }
         }
 
@@ -198,15 +125,21 @@ namespace Game.Battle
         {
             get
             {
-                return new[] {new DbColumn("city_id", city.Id, DbType.UInt32)};
+                return new[]
+                {
+                        new DbColumn("battle_id", BattleId, DbType.UInt32)
+                };
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {
-                return new[] {new DbDependency("ReportedObjects", true, true), new DbDependency("ReportedTroops", true, true)};
+                return new[]
+                {
+                        new DbDependency("BattleReport", true, true)
+                };
             }
         }
 
@@ -215,12 +148,14 @@ namespace Game.Battle
             get
             {
                 return new[]
-                       {
-                               new DbColumn("battle_id", battleId, DbType.UInt32), new DbColumn("battle_started", battleStarted, DbType.Boolean),
-                               new DbColumn("round", round, DbType.UInt32), new DbColumn("turn", turn, DbType.UInt32),
-                               new DbColumn("report_flag", report.ReportFlag, DbType.Boolean), new DbColumn("report_started", report.ReportStarted, DbType.Boolean),
-                               new DbColumn("report_id", report.ReportId, DbType.UInt32)
-                       };
+                {
+                        new DbColumn("battle_started", BattleStarted, DbType.Boolean), new DbColumn("round", Round, DbType.UInt32),
+                        new DbColumn("turn", Turn, DbType.UInt32), new DbColumn("report_started", BattleReport.ReportStarted, DbType.Boolean),
+                        new DbColumn("report_id", BattleReport.ReportId, DbType.UInt32), new DbColumn("owner_type", Owner.Type.ToString(), DbType.String, 15),
+                        new DbColumn("owner_id", Owner.Id, DbType.UInt32), new DbColumn("location_type", Location.Type.ToString(), DbType.String, 15),
+                        new DbColumn("location_id", Location.Id, DbType.UInt32), new DbColumn("next_to_attack", (byte)NextToAttack, DbType.Byte),
+                        new DbColumn("snapped_important_event", BattleReport.SnappedImportantEvent, DbType.Boolean)
+                };
             }
         }
 
@@ -228,25 +163,9 @@ namespace Game.Battle
 
         #endregion
 
-        public void Subscribe(Session session)
+        public ICombatObject GetCombatObject(uint id)
         {
-            try
-            {
-                Global.Channel.Subscribe(session, "/BATTLE/" + city.Id);
-            }
-            catch(DuplicateSubscriptionException)
-            {
-            }
-        }
-
-        public void Unsubscribe(Session session)
-        {
-            Global.Channel.Unsubscribe(session, "/BATTLE/" + city.Id);
-        }
-
-        public CombatObject GetCombatObject(uint id)
-        {
-            return attackers.FirstOrDefault(co => co.Id == id) ?? defenders.FirstOrDefault(co => co.Id == id);
+            return Attackers.AllCombatObjects().FirstOrDefault(co => co.Id == id) ?? Defenders.AllCombatObjects().FirstOrDefault(co => co.Id == id);
         }
 
         public bool CanWatchBattle(IPlayer player, out int roundsLeft)
@@ -255,32 +174,49 @@ namespace Game.Battle
 
             lock (battleLock)
             {
-                if (player == city.Owner)
+                if (Owner.IsOwner(player))
+                {
                     return true;
+                }
 
                 int defendersRoundsLeft = int.MaxValue;
                 int attackersRoundsLeft = int.MaxValue;
 
-                var playersDefenders = defenders.Where(co => co.City.Owner == player).ToList();
-                if (playersDefenders.Any()) {
-                    defendersRoundsLeft = playersDefenders.Min(co => Config.battle_min_rounds - co.RoundsParticipated);
+                // Check if player has a defender that is over the minimum battle rounds
+                var playersDefenders = Defenders.Where(combatGroup => combatGroup.BelongsTo(player)).ToList();
+                if (playersDefenders.Any())
+                {
+                    defendersRoundsLeft =
+                            playersDefenders.Min(combatGroup => combatGroup.Min(combatObject => Config.battle_min_rounds - combatObject.RoundsParticipated));
                     if (defendersRoundsLeft < 0)
+                    {
                         return true;
+                    }
                 }
 
-                var playersAttackers = attackers.Where(co => co.City.Owner == player).ToList();
+                // Check if player has an attacker that is over the minimum battle rounds
+                var playersAttackers = Attackers.Where(co => co.BelongsTo(player)).ToList();
                 if (playersAttackers.Any())
                 {
-                    attackersRoundsLeft = playersAttackers.Min(co => Config.battle_min_rounds - co.RoundsParticipated);
+                    attackersRoundsLeft =
+                            playersAttackers.Min(combatGroup => combatGroup.Min(combatObject => Config.battle_min_rounds - combatObject.RoundsParticipated));
                     if (attackersRoundsLeft < 0)
+                    {
                         return true;
+                    }
                 }
 
+                // Calculate how many rounds until player can see the battle
                 roundsLeft = Math.Min(attackersRoundsLeft, defendersRoundsLeft);
                 if (roundsLeft == int.MaxValue)
+                {
                     roundsLeft = 0;
+                }
                 else
+                {
+                    // Increase by 1 since here 0 roundsLeft actually means 1 round left in normal terms
                     roundsLeft++;
+                }
 
                 return false;
             }
@@ -288,243 +224,148 @@ namespace Game.Battle
 
         #region Database Loader
 
-        public void DbLoaderAddToLocal(CombatStructure structure, uint id)
+        public void DbLoaderAddToCombatList(ICombatGroup group, BattleSide side)
         {
-            structure.Id = id;
-
-            if (structure.IsDead)
-                return;
-
-            defenders.Add(structure, false);
-
-            idGen.Set((int)structure.Id);
-        }
-
-        public void DbLoaderAddToCombatList(CombatObject obj, uint id, bool isLocal)
-        {
-            obj.Id = id;
-
-            if (obj.IsDead)
-                return;
-
-            if (isLocal)
-                defenders.Add(obj, false);
+            if (side == BattleSide.Defense)
+            {
+                Defenders.Add(group, false);
+            }
             else
-                attackers.Add(obj, false);
+            {
+                Attackers.Add(group, false);
+            }
 
-            idGen.Set((int)obj.Id);
-            groupIdGen.Set((int)obj.GroupId);
+            groupIdGen.Set((int)group.Id);
         }
 
         #endregion
 
-        #region Adding/Removing from Battle
+        #region Adding/Removing Groups
 
-        public void AddToLocal(IEnumerable<ITroopStub> objects, ReportState state)
+        public uint GetNextGroupId()
         {
-            AddToCombatList(objects, defenders, true, state);
+            return (uint)groupIdGen.GetNext();
         }
 
-        public void AddToLocal(IEnumerable<IStructure> objects)
+        public uint GetNextCombatObjectId()
+        {
+            return (uint)idGen.GetNext();
+        }
+
+        public void DbFinishedLoading()
+        {
+            uint maxId = Math.Max(Attackers.SelectMany(group => group).DefaultIfEmpty().Max(combatObject => combatObject == null ? 0 : combatObject.Id),
+                                  Defenders.SelectMany(group => group).DefaultIfEmpty().Max(combatObject => combatObject == null ? 0 : combatObject.Id));
+            idGen.Set(maxId);
+        }
+
+        public void Add(ICombatGroup combatGroup, BattleSide battleSide)
+        {
+            AddToCombatList(combatGroup, battleSide == BattleSide.Attack, battleSide == BattleSide.Attack ? Attackers : Defenders, ReportState.Entering);
+        }
+
+        private void AddToCombatList(ICombatGroup group, bool isAttacker, ICombatList combatList, ReportState state)
         {
             lock (battleLock)
             {
-                var list = new List<CombatObject>();
-
-                bool added = false;
-
-                foreach (var obj in objects)
+                if (GetCombatGroup(group.Id) != null)
                 {
-                    if (obj.Stats.Hp == 0 || defenders.Contains(obj) || objectTypeFactory.IsStructureType("Unattackable", obj) || obj.IsBlocked)
-                    {
-                        continue;
-                    }
-
-                    // Don't add main building if lvl 1 or if a building is lvl 0
-                    if ((objectTypeFactory.IsStructureType("Undestroyable", obj) && obj.Lvl <= 1) || (obj.Lvl == 0) ||
-                        objectTypeFactory.IsStructureType("Noncombatstructure", obj))
-                    {
-                        continue;
-                    }
-
-                    added = true;
-
-                    obj.BeginUpdate();
-                    obj.State = GameObjectState.BattleState(obj.City.Id);
-                    obj.EndUpdate();
-
-                    CombatObject combatObject = combatUnitFactory.CreateStructureCombatUnit(this, obj);
-                    combatObject.Id = (uint)idGen.GetNext();
-                    combatObject.GroupId = 1;
-                    combatObject.LastRound = round;
-                
-                    defenders.Add(combatObject);
-                    list.Add(combatObject);
+                    throw new Exception(string.Format("Trying to add a group to battle {0} with id {1} that already exists", BattleId, group.Id));
                 }
 
-                if (battleStarted && added)
+                combatList.Add(group);
+
+                if (isAttacker)
                 {
-                    report.WriteReportObjects(list, false, ReportState.Staying);
-                    EventReinforceDefender(list);
-                    RefreshBattleOrder();
+                    group.CombatObjectAdded += AttackerGroupOnCombatObjectAdded;                    
+                    group.CombatObjectRemoved += AttackerGroupOnCombatObjectRemoved;
+                }
+                else
+                {
+                    group.CombatObjectAdded += DefenderGroupOnCombatObjectAdded;                    
+                    group.CombatObjectRemoved += DefenderGroupOnCombatObjectRemoved;
+                }
+
+                if (BattleStarted)
+                {
+                    BattleReport.WriteReportGroup(group, isAttacker, state);
+
+                    if (isAttacker)
+                    {
+                        ReinforceAttacker(this, group);
+                    }
+                    else
+                    {
+                        ReinforceDefender(this, group);
+                    }
                 }
             }
         }
 
-        public void AddToAttack(ITroopStub stub)
+        private void DefenderGroupOnCombatObjectAdded(ICombatGroup group, ICombatObject combatObject)
         {
-            var list = new List<ITroopStub> {stub};
-            AddToAttack(list);
+            GroupUnitAdded(this, BattleSide.Defense, group, combatObject);
         }
 
-        public void AddToAttack(IEnumerable<ITroopStub> objects)
+        private void DefenderGroupOnCombatObjectRemoved(ICombatGroup group, ICombatObject combatObject)
         {
-            AddToCombatList(objects, attackers, false, ReportState.Entering);
+            GroupUnitRemoved(this, BattleSide.Defense, group, combatObject);
         }
 
-        public void AddToDefense(IEnumerable<ITroopStub> objects)
-        {
-            AddToCombatList(objects, defenders, false, ReportState.Entering);
+        private void AttackerGroupOnCombatObjectAdded(ICombatGroup group, ICombatObject combatObject)
+        {            
+            GroupUnitAdded(this, BattleSide.Attack, group, combatObject);
         }
 
-        public void RemoveFromAttack(IEnumerable<ITroopStub> objects, ReportState state)
+        private void AttackerGroupOnCombatObjectRemoved(ICombatGroup group, ICombatObject combatObject)
         {
-            RemoveFromCombatList(objects, attackers, state);
+            GroupUnitRemoved(this, BattleSide.Attack, group, combatObject);
         }
 
-        public void RemoveFromLocal(IEnumerable<IStructure> objects, ReportState state)
+        public void Remove(ICombatGroup group, BattleSide side, ReportState state)
         {
             lock (battleLock)
             {
-                var list = (from obj in defenders                            
-                            where obj is CombatStructure && objects.Contains(((CombatStructure)obj).Structure)
-                            select obj).ToList();
+                // Remove from appropriate combat list
+                if (side == BattleSide.Attack)
+                {
+                    group.CombatObjectAdded -= AttackerGroupOnCombatObjectAdded;                    
+                    group.CombatObjectRemoved -= AttackerGroupOnCombatObjectRemoved;
+                    
+                    Attackers.Remove(group);
+                }
+                else
+                {
+                    group.CombatObjectAdded -= DefenderGroupOnCombatObjectAdded;                    
+                    group.CombatObjectRemoved -= DefenderGroupOnCombatObjectRemoved;
 
-                defenders.RemoveAll(list.Contains);
+                    Defenders.Remove(group);
+                }
 
-                if (!battleStarted)
+                // If battle hasnt started then dont worry about cleaning anything up since nothing has happened to these objects
+                if (!BattleStarted)
+                {
                     return;
-
-                report.WriteReportObjects(list, false, state);
-                EventWithdrawDefender(list);                               
-                
-                RefreshBattleOrder();
-            }
-        }
-
-        public void RemoveFromDefense(IEnumerable<ITroopStub> objects, ReportState state)
-        {
-            RemoveFromCombatList(objects, defenders, state);
-        }
-
-        private void AddToCombatList(IEnumerable<ITroopStub> objects, CombatList combatList, bool isLocal, ReportState state)
-        {
-            lock (battleLock)
-            {
-                var list = new List<CombatObject>();
-
-                bool added = false;
-
-                foreach (var obj in objects)
-                {
-                    uint groupId = isLocal ? 1 : (uint)groupIdGen.GetNext();
-
-                    foreach (var formation in obj)
-                    {
-                        if (formation.Type == FormationType.Garrison || formation.Type == FormationType.InBattle)
-                        {
-                            continue;
-                        }
-
-                        //if it's our local troop then it should be in the battle formation since 
-                        //it will be moved by the battle manager (who is calling this function) to the in battle formation
-                        //There should be a better way to do this but I cant figure it out right now
-                        FormationType formationType = formation.Type;
-                        if (isLocal)
-                        {
-                            formationType = FormationType.InBattle;
-                        }
-
-                        foreach (var kvp in formation)
-                        {
-                            // ReSharper disable CoVariantArrayConversion
-                            CombatObject[] combatObjects;
-                            if (combatList == defenders)
-                            {
-                                combatObjects = combatUnitFactory.CreateDefenseCombatUnit(this, obj, formationType, kvp.Key, kvp.Value);
-                            }
-                            else
-                            {
-                                combatObjects = combatUnitFactory.CreateAttackCombatUnit(this, obj.TroopObject, formationType, kvp.Key, kvp.Value);
-                            }
-                            // ReSharper restore CoVariantArrayConversion
-
-                            foreach (var unit in combatObjects)
-                            {
-                                added = true;
-                                unit.LastRound = round;
-                                unit.Id = (uint)idGen.GetNext();
-                                unit.GroupId = groupId;
-                                combatList.Add(unit);
-                                list.Add(unit);
-                            }
-                        }
-                    }
                 }
-
-                if (battleStarted && added)
-                {
-                    if (combatList == Attacker)
-                    {
-                        report.WriteReportObjects(list, true, state);
-                        EventReinforceAttacker(list);
-                    }
-                    else if (combatList == Defender)
-                    {
-                        report.WriteReportObjects(list, false, state);
-                        EventReinforceDefender(list);
-                    }
-
-                    RefreshBattleOrder();
-                }
-            }
-        }
-
-        private void RemoveFromCombatList(IEnumerable<ITroopStub> objects, CombatList combatList, ReportState state)
-        {
-            lock (battleLock)
-            {
-                var list = (from obj in combatList
-                            where obj is ICombatUnit && objects.Contains(((ICombatUnit)obj).TroopStub)
-                            select obj).ToList();
-
-                combatList.RemoveAll(list.Contains);
-
-                if (!battleStarted)
-                    return;
 
                 // Snap a report of exit
-                report.WriteReportObjects(list, combatList == Attacker, state);
+                BattleReport.WriteReportGroup(group, side == BattleSide.Attack, state);
 
                 // Tell objects to exit from battle
-                foreach (var co in list.Where(co => !co.IsDead))
-                    co.ExitBattle();
-
-                // Send exit events
-                if (combatList == Attacker)
-                    EventWithdrawAttacker(list);
-                else if (combatList == Defender)
-                    EventWithdrawDefender(list);
-
-                // Clean up objects
-                foreach (var co in list)
+                foreach (var co in group.Where(co => !co.Disposed))
                 {
-                    if (!co.Disposed)
-                        co.CleanUp();
+                    co.ExitBattle();
                 }
 
-                // Refresh battle order
-                RefreshBattleOrder();
+                // Send exit events
+                if (side == BattleSide.Attack)
+                {
+                    WithdrawAttacker(this, group);
+                }
+                else
+                {
+                    WithdrawDefender(this, group);
+                }
             }
         }
 
@@ -532,223 +373,183 @@ namespace Game.Battle
 
         #region Battle
 
-        public void RefreshBattleOrder()
-        {
-            battleOrder = new BattleOrder(round);
-
-            IEnumerator<CombatObject> defIter = defenders.GetEnumerator();
-            IEnumerator<CombatObject> atkIter = attackers.GetEnumerator();
-
-            bool atkDone = false;
-            bool defDone = false;
-
-            while (!atkDone || !defDone)
-            {
-                if (!defDone && defIter.MoveNext())
-                    battleOrder.Add(defIter.Current);
-                else
-                    defDone = true;
-
-                if (!atkDone && atkIter.MoveNext())
-                    battleOrder.Add(atkIter.Current);
-                else
-                    atkDone = true;
-            }
-        }
-
         private bool IsBattleValid()
         {
-            if (attackers.Count == 0 || defenders.Count == 0)
-                return false;
-
-            //Check to see if there are still units in the local troop
-            bool localUnits = false;
-            foreach (var combatObj in defenders.Where(combatObj => !combatObj.IsDead))
+            if (Attackers.Count == 0 || Defenders.Count == 0)
             {
-                if (combatObj is CombatStructure)
-                {
-                    localUnits = true;
-                    break;
-                }
-
-                var cu = combatObj as DefenseCombatUnit;
-                if (cu == null)
-                    continue;
-
-                localUnits = true;
-                break;
+                return false;
             }
 
-            if (!localUnits)
-                return false;
-
-            //Make sure units can still see each other
-            return attackers.Any(combatObj => defenders.HasInRange(combatObj));
+            // Check to see if all units in the defense is dead
+            // and make sure units can still see each other
+            return Attackers.AllAliveCombatObjects().Any(combatObj => Defenders.HasInRange(combatObj));
         }
 
         private void BattleEnded(bool writeReport)
         {
             if (writeReport)
             {
-                report.CompleteBattle();
+                BattleReport.CompleteBattle();
             }
 
-            foreach (var combatObj in defenders)
+            ExitBattle(this, Attackers, Defenders);
+
+            foreach (var combatObj in Defenders.AllCombatObjects().Where(combatObj => !combatObj.IsDead))
             {
-                if (!combatObj.IsDead)
-                    combatObj.ExitBattle();
+                combatObj.ExitBattle();
             }
 
-            foreach (var combatObj in attackers)
+            foreach (var combatObj in Attackers.AllCombatObjects().Where(combatObj => !combatObj.IsDead))
             {
-                if (!combatObj.IsDead)
-                    combatObj.ExitBattle();
+                combatObj.ExitBattle();
             }
 
-            EventExitBattle(attackers, defenders);
+            foreach (var group in Attackers)
+            {
+                WithdrawAttacker(this, group);
+            }
 
-            //have to call to remove from the database
-            attackers.Clear();
-            defenders.Clear();
+            foreach (var group in Defenders)
+            {
+                WithdrawDefender(this, group);
+            }
 
-            //unsubscribe all
-            Global.Channel.Unsubscribe("/BATTLE/" + city.Id);
-        }
-
-        public bool GroupIsDead(CombatObject co, CombatList combatList)
-        {
-            return combatList.All(combatObject => combatObject.GroupId != co.GroupId || combatObject.IsDead);
+            // Delete all groups
+            Attackers.Clear();
+            Defenders.Clear();
         }
 
         public bool ExecuteTurn()
         {
             lock (battleLock)
             {
+                ICombatList offensiveCombatList;
+                ICombatList defensiveCombatList;
+
                 // This will finalize any reports already started.
-                report.CompleteReport(ReportState.Staying);
+                BattleReport.CompleteReport(ReportState.Staying);
 
                 #region Battle Start
 
-                bool battleJustStarted = !battleStarted;
-                if (!battleStarted)
+                if (!BattleStarted)
                 {
-                    RefreshBattleOrder();
-
                     // Makes sure battle is valid before even starting it
+                    // This shouldnt really happen but I remember it happening in the past
+                    // so until we can make sure that we dont even start invalid battles, it's better to leave it
                     if (!IsBattleValid())
                     {
                         BattleEnded(false);
                         return false;
                     }
 
-                    battleStarted = true;
-                    report.CreateBattleReport();
-                    EventEnterBattle(attackers, defenders);
+                    BattleStarted = true;
+                    BattleReport.CreateBattleReport();
+                    EnterBattle(this, Attackers, Defenders);
                 }
 
                 #endregion
 
                 #region Targeting
 
-                CombatObject currentAttacker;
-                IList<CombatObject> currentDefenders;
+                IList<CombatList.Target> currentDefenders;
+                ICombatGroup attackerGroup;
+                ICombatObject attackerObject;
 
                 do
                 {
-                    #region Find Attacker                    
+                    #region Find Attacker
 
-                    do
+                    BattleSide sideAttacking;
+                    
+                    var newRound = !battleOrder.NextObject(Round, Attackers, Defenders, NextToAttack, out attackerObject, out attackerGroup, out sideAttacking);
+
+                    // Save the offensive/defensive side relative to the attacker to make it easier in this function to know
+                    // which side is attacking.
+                    defensiveCombatList = sideAttacking == BattleSide.Attack ? Defenders : Attackers;
+                    offensiveCombatList = sideAttacking == BattleSide.Attack ? Attackers : Defenders;
+
+                    if (newRound)
                     {
-                        if (!battleOrder.NextObject(out currentAttacker) && !battleJustStarted)
-                        {
-                            ++round;
-                            battleOrder.ParticipatedInRound();
-                            turn = 0;
-                            EventEnterRound(Attacker, Defender, round);
-                        }
+                        ++Round;
+                        Turn = 0;
 
-                        if (currentAttacker == null || defenders.Count == 0 || attackers.Count == 0)
+                        EnterRound(this, Attackers, Defenders, Round);
+
+                        // Since the EventEnterRound can remove the object from battle, we need to make sure he's still in the battle
+                        // If they aren't, then we just find a new attacker
+                        if (!offensiveCombatList.AllCombatObjects().Contains(attackerObject))
                         {
-                            BattleEnded(true);
-                            return false;
-                        }                        
-                    } while (!battleOrder.Contains(currentAttacker)); // Since the EventEnterRound can remove the object from battle, we need to make sure he's still here before we proceed
+                            continue;
+                        }         
+                    }
+
+                    // Verify battle is still good to go
+                    if (attackerObject == null || !IsBattleValid())
+                    {
+                        BattleEnded(true);
+                        return false;
+                    }
+
+                    NextToAttack = sideAttacking;
 
                     #endregion
 
                     #region Find Target(s)
 
-                    CombatList.BestTargetResult targetResult;
+                    var targetResult = defensiveCombatList.GetBestTargets(attackerObject, out currentDefenders, battleFormulas.GetNumberOfHits(attackerObject));
 
-                    if (currentAttacker.CombatList == attackers)
-                        targetResult = defenders.GetBestTargets(currentAttacker, out currentDefenders, BattleFormulas.Current.GetNumberOfHits(currentAttacker));
-                    else if (currentAttacker.CombatList == defenders)
-                        targetResult = attackers.GetBestTargets(currentAttacker, out currentDefenders, BattleFormulas.Current.GetNumberOfHits(currentAttacker));
-                    else
-                        throw new Exception("How can this happen");
-
-                    if (currentDefenders.Count == 0 || currentAttacker.Stats.Atk == 0)
+                    if (currentDefenders.Count == 0 || attackerObject.Stats.Atk == 0)
                     {
-                        currentAttacker.ParticipatedInRound();
-                        dbManager.Save(currentAttacker);
-                        EventSkippedAttacker(currentAttacker);
+                        attackerObject.ParticipatedInRound();
+                        dbManager.Save(attackerObject);
+                        SkippedAttacker(this, NextToAttack, attackerGroup, attackerObject);
 
                         // If the attacker can't attack because it has no one in range, then we skip him and find another target right away.
                         if (targetResult == CombatList.BestTargetResult.NoneInRange)
+                        {
                             continue;
+                        }
 
+                        FlipNextToAttack();
                         return true;
                     }
 
                     #endregion
 
                     break;
-                } while (true);
+                }
+                while (true);
 
                 #endregion
-
-                bool killedADefender = false;
 
                 int attackIndex = 0;
                 foreach (var defender in currentDefenders)
                 {
-                    // Make sure the target is still in the battle
-                    if (currentAttacker.CombatList == attackers && !defenders.Contains(defender))
+                    // Make sure the target is still in the battle (they can leave if someone else in the group took dmg and caused the entire group to leave)
+                    // We just skip incase they left while we were attacking
+                    // which means if the attacker is dealing splash they may deal less hits in this fringe case
+                    if (!defensiveCombatList.AllCombatObjects().Contains(defender.CombatObject))
+                    {
                         continue;
-                    
-                    if (currentAttacker.CombatList == defenders && !attackers.Contains(defender))
-                        continue;
-                    
+                    }
+
                     // Target is still in battle, attack it
-                    if (AttackTarget(currentAttacker, defender, attackIndex))
-                        killedADefender = true;
+                    AttackTarget(offensiveCombatList, defensiveCombatList, attackerGroup, attackerObject, defender, attackIndex);
+
                     attackIndex++;
                 }
 
-                if (currentAttacker.Disposed)
-                    throw new Exception("Attacker has been improperly disposed");
-
-                currentAttacker.ParticipatedInRound();
-
-                dbManager.Save(currentAttacker);
-
-                EventExitTurn(Attacker, Defender, (int)turn++);
-
-                // Send back any attackers that have no targets left
-                if (killedADefender)
+                // Just a safety check
+                if (attackerObject.Disposed)
                 {
-                    if (currentAttacker.CombatList == attackers && defenders.Count > 0)
-                    {
-                        //Since the list of attackers will be changing, we need to keep reiterating through it until there are no more to remove
-                        AttackCombatUnit co;
-                        do
-                        {
-                            co = attackers.OfType<AttackCombatUnit>().FirstOrDefault(x => !defenders.HasInRange(x));
-                            if (co != null)
-                                RemoveFromAttack(new List<ITroopStub> {(co).TroopStub}, ReportState.Exiting);
-                        } while (co != null);
-                    }
+                    throw new Exception("Attacker has been improperly disposed");
                 }
+
+                attackerObject.ParticipatedInRound();
+
+                dbManager.Save(attackerObject);
+
+                ExitTurn(this, Attackers, Defenders, (int)Turn++);
 
                 if (!IsBattleValid())
                 {
@@ -756,39 +557,40 @@ namespace Game.Battle
                     return false;
                 }
 
+                // Remove any attackers that don't have anyone in range
+                foreach (var group in Attackers.Where(group => group.All(combatObjects => !Defenders.HasInRange(combatObjects))).ToList())
+                {
+                    Remove(group, BattleSide.Attack, ReportState.Exiting);
+                }
+
+                FlipNextToAttack();
                 return true;
             }
         }
 
-        private bool AttackTarget(CombatObject attacker, CombatObject defender, int attackIndex)
+        public ICombatGroup GetCombatGroup(uint id)
+        {
+            return Attackers.FirstOrDefault(group => group.Id == id) ?? Defenders.FirstOrDefault(group => group.Id == id);
+        }
+
+        private void FlipNextToAttack()
+        {
+            NextToAttack = NextToAttack == BattleSide.Attack ? BattleSide.Defense : BattleSide.Attack;
+        }
+
+        protected virtual void AttackTarget(ICombatList offensiveCombatList, ICombatList defensiveCombatList, ICombatGroup attackerGroup, ICombatObject attacker, CombatList.Target target, int attackIndex)
         {
             #region Damage
 
-            decimal dmg = BattleFormulas.Current.GetDamage(attacker, defender, attacker.CombatList == defenders);
+            decimal dmg = battleFormulas.GetAttackerDmgToDefender(attacker, target.CombatObject, NextToAttack == BattleSide.Defense);
+
             decimal actualDmg;
-            Resource lostResource;
+            target.CombatObject.CalcActualDmgToBeTaken(offensiveCombatList, defensiveCombatList, dmg, attackIndex, out actualDmg);
+            actualDmg = Math.Min(target.CombatObject.Hp, actualDmg);
+
+            Resource defenderDroppedLoot;
             int attackPoints;
-
-            #region Miss Chance
-            var missChance = BattleFormulas.Current.MissChance(attacker.CombatList.Sum(x => x.Upkeep), defender.CombatList.Sum(x => x.Upkeep));
-            if (missChance > 0) {
-                var rand = (int)(Config.Random.NextDouble() * 100);
-                if (rand <= missChance)
-                    dmg /= 2;
-            }
-            #endregion
-
-            #region Splash Damage Reduction
-            if (attackIndex > 0)
-            {
-                decimal reduction = defender.City.Technologies.GetEffects(EffectCode.SplashReduction, EffectInheritance.SelfAll).Where(effect => BattleFormulas.Current.UnitStatModCheck(defender.Stats.Base, TroopBattleGroup.Defense, (string)effect.Value[1])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
-                reduction = (100 - reduction)/100;
-                dmg = reduction*dmg;
-            }
-            #endregion
-
-            defender.CalculateDamage(dmg, out actualDmg);
-            defender.TakeDamage(actualDmg, out lostResource, out attackPoints);
+            target.CombatObject.TakeDamage(actualDmg, out defenderDroppedLoot, out attackPoints);
 
             attacker.DmgDealt += actualDmg;
             attacker.MaxDmgDealt = (ushort)Math.Max(attacker.MaxDmgDealt, actualDmg);
@@ -796,226 +598,180 @@ namespace Game.Battle
             ++attacker.HitDealt;
             attacker.HitDealtByUnit += attacker.Count;
 
-            defender.DmgRecv += actualDmg;
-            defender.MaxDmgRecv = (ushort)Math.Max(defender.MaxDmgRecv, actualDmg);
-            defender.MinDmgRecv = (ushort)Math.Min(defender.MinDmgRecv, actualDmg);
-            ++defender.HitRecv;
+            target.CombatObject.DmgRecv += actualDmg;
+            target.CombatObject.MaxDmgRecv = (ushort)Math.Max(target.CombatObject.MaxDmgRecv, actualDmg);
+            target.CombatObject.MinDmgRecv = (ushort)Math.Min(target.CombatObject.MinDmgRecv, actualDmg);
+            ++target.CombatObject.HitRecv;
 
             #endregion
 
             #region Loot and Attack Points
 
-            if (attacker.CombatList == Attacker)
+            // NOTE: In the following rewardStrategy calls we are in passing in whatever the existing implementations
+            // of reward startegy need. If some specific implementation needs more info then add more params or change it to
+            // take the entire BattleManager as a param.
+            if (NextToAttack == BattleSide.Attack)
             {
                 // Only give loot if we are attacking the first target in the list
+                Resource loot = new Resource();
                 if (attackIndex == 0)
                 {
-                    Resource loot=null;
-                    city.BeginUpdate();
-                    if (round >= Config.battle_loot_begin_round)
+                    if (Round >= Config.battle_loot_begin_round)
                     {
-                        loot = BattleFormulas.Current.GetRewardResource(attacker, defender);
-                        city.Resource.Subtract(loot, Formula.Current.HiddenResource(city,true), out loot);
-                    } 
-                    attacker.ReceiveReward(attackPoints, loot ?? new Resource() );
-                    city.EndUpdate();
+                        rewardStrategy.RemoveLoot(attacker, target.CombatObject, out loot);
+                    }
                 }
-                else
+
+                if (attackPoints > 0 || (loot != null && !loot.Empty))
                 {
-                    city.BeginUpdate();
-                    attacker.ReceiveReward(attackPoints, new Resource());
-                    city.EndUpdate();
+                    rewardStrategy.GiveAttackerRewards(attacker, attackPoints, loot ?? new Resource());
                 }
             }
             else
             {
-                // Give back any lost resources if the attacker dropped them
-                if (lostResource != null && !lostResource.Empty)
+                // Give defender rewards if there are any
+                if (attackPoints > 0 || (defenderDroppedLoot != null && !defenderDroppedLoot.Empty))
                 {
-                    city.BeginUpdate();
-                    city.Resource.Add(lostResource);
+                    rewardStrategy.GiveDefendersRewards(Defenders.AllCombatObjects(), attackPoints, defenderDroppedLoot ?? new Resource());
                 }
-
-                // If the defender killed someone then give the city defense points
-                if (attackPoints > 0)
-                {
-                    // Give anyone stationed defense points as well
-                    // DONT convert this to LINQ because I'm not sure how it might affect the list inside of the loop that keeps changing
-                    var uniqueCities = new List<ICity>();
-
-                    foreach (var co in defenders)
-                    {
-                        if (uniqueCities.Contains(co.City))
-                            continue;
-                        if (!co.City.IsUpdating)
-                            co.City.BeginUpdate();
-                        co.City.DefensePoint += attackPoints;
-                        co.City.EndUpdate();
-                        uniqueCities.Add(co.City);
-                    }
-
-                    var tribes = new List<ITribe>(uniqueCities.Where(w=>w.Owner.Tribesman!=null).Select(s => s.Owner.Tribesman.Tribe).Distinct());
-                    ThreadPool.QueueUserWorkItem(delegate {
-                        foreach (var tribe in tribes) {
-                            using (Concurrency.Current.Lock(tribe)) {
-                                tribe.DefensePoint += attackPoints;
-                            }
-                        }
-                    });
-                }
-
-                if (city.IsUpdating)
-                    city.EndUpdate();
             }
 
             #endregion
 
             #region Object removal
 
-            bool isDefenderDead = defender.IsDead;
+            bool isDefenderDead = target.CombatObject.IsDead;
             if (isDefenderDead)
-            {                
-                battleOrder.Remove(defender);
-
-                if (attacker.CombatList == attackers)
+            {
+                bool isGroupDead = target.Group.IsDead();
+                if (isGroupDead)
                 {
-                    defenders.Remove(defender);
-                    report.WriteReportObject(defender, false, GroupIsDead(defender, defenders) ? ReportState.Dying : ReportState.Staying);
+                    // Remove the entire group
+                    BattleReport.WriteReportGroup(target.Group, NextToAttack != BattleSide.Attack, ReportState.Dying);
+                    defensiveCombatList.Remove(target.Group);
                 }
-                else if (attacker.CombatList == defenders)
+                else
                 {
-                    attackers.Remove(defender);
-                    report.WriteReportObject(defender, true, GroupIsDead(defender, attackers) ? ReportState.Dying : ReportState.Staying);
+                    // Only remove the single object
+                    BattleReport.WriteExitingObject(target.Group, NextToAttack != BattleSide.Attack, target.CombatObject);
+                    target.Group.Remove(target.CombatObject);
                 }
 
-                EventActionAttacked(attacker, defender, actualDmg);
+                ActionAttacked(this, NextToAttack, attackerGroup, attacker, target.Group, target.CombatObject, actualDmg);
 
-                EventUnitRemoved(defender);
+                UnitKilled(this, NextToAttack == BattleSide.Attack ? BattleSide.Defense : BattleSide.Attack, target.Group, target.CombatObject);
 
-                if (!defender.Disposed)
-                    defender.CleanUp();
+                if (!target.CombatObject.Disposed)
+                {
+                    target.CombatObject.ExitBattle();
+                }
+
+                if (isGroupDead)
+                {
+                    GroupKilled(this, target.Group);
+                }
             }
             else
             {
-                EventActionAttacked(attacker, defender, actualDmg);
+                ActionAttacked(this, NextToAttack, attackerGroup, attacker, target.Group, target.CombatObject, actualDmg);
 
-                if (!defender.Disposed)
-                    dbManager.Save(defender);
+                if (!target.CombatObject.Disposed)
+                {
+                    dbManager.Save(target.CombatObject);
+                }
             }
 
-            #endregion            
-
-            return defender.IsDead;
+            #endregion
         }
 
         #endregion
 
         #region Events
-        public delegate void OnAttack(uint battleId, CombatObject source, CombatObject target, decimal damage);
-        public delegate void OnBattle(uint battleId, ICombatList atk, ICombatList def);
-        public delegate void OnReinforce(uint battleId, IEnumerable<CombatObject> list);
-        public delegate void OnRound(uint battleId, ICombatList atk, ICombatList def, uint round);
-        public delegate void OnTurn(uint battleId, ICombatList atk, ICombatList def, int turn);
-        public delegate void OnUnitUpdate(uint battleId, CombatObject obj);
 
-        public event OnBattle EnterBattle;
-        public event OnBattle ExitBattle;
-        public event OnRound EnterRound;
-        public event OnTurn EnterTurn;
-        public event OnTurn ExitTurn;
-        public event OnReinforce ReinforceAttacker;
-        public event OnReinforce ReinforceDefender;
-        public event OnReinforce WithdrawAttacker;
-        public event OnReinforce WithdrawDefender;
-        public event OnUnitUpdate UnitAdded;
-        public event OnUnitUpdate UnitRemoved;
-        public event OnUnitUpdate UnitUpdated;
-        public event OnUnitUpdate SkippedAttacker;
-        public event OnAttack ActionAttacked;
+        public delegate void OnAttack(IBattleManager battle, BattleSide attackingSide, ICombatGroup attackerGroup, ICombatObject attacker, ICombatGroup targetGroup, ICombatObject target, decimal damage);
 
-        private void EventEnterBattle(CombatList atk, CombatList def)
-        {
-            if (EnterBattle != null)
-                EnterBattle(BattleId, atk, def);
-        }
+        public delegate void OnBattle(IBattleManager battle, ICombatList attackers, ICombatList defenders);
 
-        private void EventExitBattle(CombatList atk, CombatList def)
-        {
-            if (ExitBattle != null)
-                ExitBattle(BattleId, atk, def);
-        }
+        public delegate void OnReinforce(IBattleManager battle, ICombatGroup combatGroup);
 
-        private void EventEnterRound(ICombatList atk, ICombatList def, uint round)
-        {
-            if (EnterRound != null)
-                EnterRound(BattleId, atk, def, round);
-        }
+        public delegate void OnWithdraw(IBattleManager battle, ICombatGroup group);
 
-        private void EventEnterTurn(ICombatList atk, ICombatList def, int turn)
-        {
-            if (EnterTurn != null)
-                EnterTurn(BattleId, atk, def, turn);
-        }
+        public delegate void OnRound(IBattleManager battle, ICombatList attackers, ICombatList defenders, uint round);
 
-        private void EventExitTurn(ICombatList atk, ICombatList def, int turn)
-        {
-            if (ExitTurn != null)
-                ExitTurn(BattleId, atk, def, turn);
-        }
+        public delegate void OnTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, int turn);
 
-        private void EventReinforceAttacker(IEnumerable<CombatObject> list)
-        {
-            if (ReinforceAttacker != null)
-                ReinforceAttacker(BattleId, list);
-        }
+        public delegate void OnUnitUpdate(IBattleManager battle, BattleSide combatObjectSide, ICombatGroup combatGroup, ICombatObject combatObject);
 
-        private void EventReinforceDefender(IEnumerable<CombatObject> list)
-        {
-            if (ReinforceDefender != null)
-                ReinforceDefender(BattleId, list);
-        }
+        /// <summary>
+        /// Fired once when the battle begins
+        /// </summary>
+        public event OnBattle EnterBattle = delegate { };
 
-        private void EventWithdrawAttacker(IEnumerable<CombatObject> list)
-        {
-            if (WithdrawAttacker != null)
-                WithdrawAttacker(BattleId, list);
-        }
+        /// <summary>
+        /// Fired once when the battle ends
+        /// </summary>
+        public event OnBattle ExitBattle = delegate { };
 
-        private void EventWithdrawDefender(IEnumerable<CombatObject> list)
-        {
-            if (WithdrawDefender != null)
-                WithdrawDefender(BattleId, list);
-        }
+        /// <summary>
+        /// Fired when a new round starts
+        /// </summary>
+        public event OnRound EnterRound = delegate { };
 
-        private void EventUnitRemoved(CombatObject obj)
-        {
-            if (UnitRemoved != null)
-                UnitRemoved(BattleId, obj);
-        }
+        /// <summary>
+        /// Fired everytime a unit exits its turn
+        /// </summary>
+        public event OnTurn ExitTurn = delegate { };
 
-        private void EventUnitAdded(CombatObject obj)
-        {
-            if (UnitAdded != null)
-                UnitAdded(BattleId, obj);
-        }
+        /// <summary>
+        /// Fired when a new attacker joins the battle
+        /// </summary>
+        public event OnReinforce ReinforceAttacker = delegate { };
 
-        private void EventUnitUpdated(CombatObject obj)
-        {
-            if (UnitUpdated != null)
-                UnitUpdated(BattleId, obj);
-        }
+        /// <summary>
+        /// Fired when a new defender joins the battle
+        /// </summary>
+        public event OnReinforce ReinforceDefender = delegate { };
 
-        private void EventActionAttacked(CombatObject source, CombatObject target, decimal dmg)
-        {
-            if (ActionAttacked != null)
-                ActionAttacked(BattleId, source, target, dmg);
-        }
+        /// <summary>
+        /// Fired when an attacker withdraws from the battle 
+        /// </summary>
+        public event OnWithdraw WithdrawAttacker = delegate { };
 
-        private void EventSkippedAttacker(CombatObject source)
-        {
-            if (SkippedAttacker != null)
-                SkippedAttacker(BattleId, source);
-        }
+        /// <summary>
+        /// Fired when a defender withdraws from the battle
+        /// </summary>
+        public event OnWithdraw WithdrawDefender = delegate { };
+
+        /// <summary>
+        /// Fired when all of the units in a group are killed
+        /// </summary>
+        public event OnWithdraw GroupKilled = delegate { };
+
+        /// <summary>
+        /// Fired when one of the groups in battle receives a new unit
+        /// </summary>
+        public event OnUnitUpdate GroupUnitAdded = delegate { };
+
+        /// <summary>
+        /// Fired when one of the groups in battle loses a unit
+        /// </summary>
+        public event OnUnitUpdate GroupUnitRemoved = delegate { }; 
+
+        /// <summary>
+        /// Fired when a single unit is killed
+        /// </summary>
+        public event OnUnitUpdate UnitKilled = delegate { };
+
+        /// <summary>
+        /// Fired when an attacker is unable to take his turn
+        /// </summary>
+        public event OnUnitUpdate SkippedAttacker = delegate { };
+
+        /// <summary>
+        /// Fired when a unit hits another one
+        /// </summary>
+        public event OnAttack ActionAttacked = delegate { };        
+
         #endregion
     }
 }

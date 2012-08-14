@@ -4,16 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Battle;
+using Game.Battle.CombatGroups;
+using Game.Battle.CombatObjects;
+using Game.Battle.Reporting;
 using Game.Data;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 using Persistance;
 
 #endregion
@@ -26,7 +27,7 @@ namespace Game.Logic.Actions
 
         private readonly IActionFactory actionFactory;
 
-        private readonly Procedure procedure;
+        private readonly BattleProcedure battleProcedure;
 
         private readonly ILocker locker;
 
@@ -38,11 +39,17 @@ namespace Game.Logic.Actions
 
         private uint destroyedHp;
 
-        public BattlePassiveAction(uint cityId, IActionFactory actionFactory, Procedure procedure, ILocker locker, IGameObjectLocator gameObjectLocator, IDbManager dbManager, Formula formula)
+        public BattlePassiveAction(uint cityId,
+                                   IActionFactory actionFactory,
+                                   BattleProcedure battleProcedure,
+                                   ILocker locker,
+                                   IGameObjectLocator gameObjectLocator,
+                                   IDbManager dbManager,
+                                   Formula formula)
         {
             this.cityId = cityId;
             this.actionFactory = actionFactory;
-            this.procedure = procedure;
+            this.battleProcedure = battleProcedure;
             this.locker = locker;
             this.gameObjectLocator = gameObjectLocator;
             this.dbManager = dbManager;
@@ -56,14 +63,26 @@ namespace Game.Logic.Actions
 
             city.Battle.EnterRound += BattleEnterRound;
             city.Battle.ActionAttacked += BattleActionAttacked;
-            city.Battle.UnitRemoved += BattleUnitRemoved;
+            city.Battle.UnitKilled += BattleUnitKilled;
         }
 
-        public BattlePassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription, IDictionary<string, string> properties, IActionFactory actionFactory, Procedure procedure, ILocker locker, IGameObjectLocator gameObjectLocator, IDbManager dbManager, Formula formula)
+        public BattlePassiveAction(uint id,
+                                   DateTime beginTime,
+                                   DateTime nextTime,
+                                   DateTime endTime,
+                                   bool isVisible,
+                                   string nlsDescription,
+                                   IDictionary<string, string> properties,
+                                   IActionFactory actionFactory,
+                                   BattleProcedure battleProcedure,
+                                   ILocker locker,
+                                   IGameObjectLocator gameObjectLocator,
+                                   IDbManager dbManager,
+                                   Formula formula)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.actionFactory = actionFactory;
-            this.procedure = procedure;
+            this.battleProcedure = battleProcedure;
             this.locker = locker;
             this.gameObjectLocator = gameObjectLocator;
             this.dbManager = dbManager;
@@ -80,10 +99,10 @@ namespace Game.Logic.Actions
 
             city.Battle.EnterRound += BattleEnterRound;
             city.Battle.ActionAttacked += BattleActionAttacked;
-            city.Battle.UnitRemoved += BattleUnitRemoved;
+            city.Battle.UnitKilled += BattleUnitKilled;
         }
 
-        private void AddAlignmentPoint(ICombatList atk, ICombatList def, uint numOfRounds)
+        private void AddAlignmentPoint(ICombatList attackers, ICombatList defenders, uint numberOfRounds)
         {
             ICity city;
             if (!gameObjectLocator.TryGetObjects(cityId, out city))
@@ -93,20 +112,20 @@ namespace Game.Logic.Actions
 
             // Subtract the "In Battle" formation of the local troop since that's already
             // included in our defenders
-            decimal defUpkeep = def.Upkeep + city.Troops.Upkeep - city.DefaultTroop.UpkeepForFormation(FormationType.InBattle);
-            decimal atkUpkeep = atk.Upkeep;
+            decimal defUpkeep = defenders.Upkeep + city.Troops.Upkeep - city.DefaultTroop.UpkeepForFormation(FormationType.InBattle);
+            decimal atkUpkeep = attackers.Upkeep;
 
             if (atkUpkeep == 0 || atkUpkeep <= defUpkeep)
             {
                 return;
             }
-
-            decimal points = Math.Min(defUpkeep == 0 ? Config.ap_max_per_battle : (atkUpkeep/defUpkeep - 1), Config.ap_max_per_battle)*numOfRounds/20m;
-
-            foreach (ITroopStub stub in atk.Select(co => co.TroopStub).Distinct())
+            
+            decimal points = Math.Min(defUpkeep == 0 ? Config.ap_max_per_battle : (atkUpkeep/defUpkeep - 1), Config.ap_max_per_battle)*numberOfRounds/20m;
+            
+            foreach (ITroopStub stub in attackers.Where(p => p is CityOffensiveCombatGroup).Select(offensiveCombatGroup => ((CityOffensiveCombatGroup)offensiveCombatGroup).TroopObject.Stub))
             {
                 stub.City.BeginUpdate();
-                stub.City.AlignmentPoint -= stub.Upkeep / atkUpkeep * points;
+                stub.City.AlignmentPoint -= stub.Upkeep/atkUpkeep*points;
                 stub.City.EndUpdate();
             }
 
@@ -115,9 +134,9 @@ namespace Game.Logic.Actions
             city.EndUpdate();
         }
 
-        public void BattleEnterRound(uint battleId, ICombatList atk, ICombatList def, uint round)
+        public void BattleEnterRound(IBattleManager battle, ICombatList attackers, ICombatList defenders, uint round)
         {
-            AddAlignmentPoint(atk, def, 1);
+            AddAlignmentPoint(attackers, defenders, 1);
         }
 
         public override ActionType Type
@@ -132,9 +151,9 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return XmlSerializer.Serialize(new[] { new XmlKvPair("city_id", cityId), new XmlKvPair("destroyed_hp", destroyedHp) });
+                return XmlSerializer.Serialize(new[] {new XmlKvPair("city_id", cityId), new XmlKvPair("destroyed_hp", destroyedHp)});
             }
-        }	
+        }
 
         public override void Callback(object custom)
         {
@@ -148,7 +167,8 @@ namespace Game.Logic.Actions
                 {
                     var toBeLocked = new List<ILockable>();
                     toBeLocked.AddRange(city.Battle.LockList);
-                    toBeLocked.AddRange(city.Troops.StationedHere().Select(stub => stub.City));
+                    toBeLocked.Add(city);
+                    toBeLocked.AddRange(city.Troops.StationedHere().Select(stub => stub.City).Distinct());
                     return toBeLocked.ToArray();
                 };
 
@@ -158,7 +178,7 @@ namespace Game.Logic.Actions
                 {
                     // Battle continues, just save it and reschedule
                     dbManager.Save(city.Battle);
-                    endTime = SystemClock.Now.AddSeconds(formula.GetBattleInterval(city.Battle.Defender.Count + city.Battle.Attacker.Count));
+                    endTime = SystemClock.Now.AddSeconds(formula.GetBattleInterval(city.Battle.Defenders.Count + city.Battle.Attackers.Count));
                     StateChange(ActionState.Fired);
                     return;
                 }
@@ -166,8 +186,9 @@ namespace Game.Logic.Actions
                 // Battle has ended
                 // Delete the battle
                 city.Battle.ActionAttacked -= BattleActionAttacked;
-                city.Battle.UnitRemoved -= BattleUnitRemoved;
+                city.Battle.UnitKilled -= BattleUnitKilled;
                 city.Battle.EnterRound -= BattleEnterRound;
+                World.Current.Remove(city.Battle);
                 dbManager.Delete(city.Battle);
                 city.Battle = null;
 
@@ -175,7 +196,7 @@ namespace Game.Logic.Actions
                 city.DefaultTroop.BeginUpdate();
                 city.DefaultTroop.Template.ClearStats();
                 city.DefaultTroop.State = TroopState.Idle;
-                procedure.MoveUnitFormation(city.DefaultTroop, FormationType.InBattle, FormationType.Normal);
+                battleProcedure.MoveUnitFormation(city.DefaultTroop, FormationType.InBattle, FormationType.Normal);
                 city.DefaultTroop.EndUpdate();
 
                 // Get a COPY of the stubs that are stationed in the town since the loop below will modify city.Troops
@@ -202,7 +223,7 @@ namespace Game.Logic.Actions
                 // Handle SenseOfUrgency technology
                 if (destroyedHp > 0)
                 {
-                    procedure.SenseOfUrgency(city, destroyedHp);
+                    battleProcedure.SenseOfUrgency(city, destroyedHp);
                 }
 
                 StateChange(ActionState.Completed);
@@ -222,12 +243,11 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
+            World.Current.Add(city.Battle);
             dbManager.Save(city.Battle);
 
             //Add local troop
-            procedure.AddLocalToBattle(city.Battle, city, ReportState.Entering);
-
-            var list = new List<ITroopStub>();
+            battleProcedure.AddLocalUnitsToBattle(city.Battle, city);
 
             //Add reinforcement
             foreach (var stub in city.Troops.Where(stub => stub != city.DefaultTroop && stub.State == TroopState.Stationed && stub.Station == city))
@@ -236,50 +256,56 @@ namespace Game.Logic.Actions
                 stub.State = TroopState.BattleStationed;
                 stub.EndUpdate();
 
-                list.Add(stub);
+                battleProcedure.AddReinforcementToBattle(city.Battle, stub);                
             }
 
-            city.Battle.AddToDefense(list);
             beginTime = SystemClock.Now;
             endTime = SystemClock.Now;
 
             return Error.Ok;
         }
 
-        public void BattleActionAttacked(uint battleId, CombatObject source, CombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battleManager, BattleManager.BattleSide attackingSide, ICombatGroup attackerGroup, ICombatObject source, ICombatGroup targetGroup, ICombatObject target, decimal damage)
         {
-            var combatUnit = target as ICombatUnit;
-
             ICity city;
             if (!gameObjectLocator.TryGetObjects(cityId, out city))
             {
                 return;
             }
 
-            // Handle sending stationed troops back if they are below the set threshold
-            if (combatUnit != null && !combatUnit.IsAttacker && target.TroopStub.Station == city && target.TroopStub.TotalCount > 0 && target.TroopStub.TotalCount <= target.TroopStub.StationedRetreatCount)
+            // Check if we should retreat a unit
+            if (attackingSide == BattleManager.BattleSide.Defense || target.TroopStub.Station != city || target.TroopStub.TotalCount <= 0 ||
+                target.TroopStub.TotalCount > target.TroopStub.StationedRetreatCount)
             {
-                ITroopStub stub = combatUnit.TroopStub;
-
-                // Remove the object from the battle
-                city.Battle.RemoveFromDefense(new List<ITroopStub> {combatUnit.TroopStub}, ReportState.Retreating);                
-                stub.BeginUpdate();
-                stub.State = TroopState.Stationed;
-                stub.EndUpdate();
-
-                // Send the defender back to their city but restation them if there's a problem
-                var retreatChainAction = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
-                stub.City.Worker.DoPassive(stub.City, retreatChainAction, true);
+                return;
             }
+
+            ITroopStub stub = target.TroopStub;
+
+            // Remove the object from the battle
+            city.Battle.Remove(targetGroup, BattleManager.BattleSide.Defense, ReportState.Retreating);
+            stub.BeginUpdate();
+            stub.State = TroopState.Stationed;
+            stub.EndUpdate();
+
+            // Send the defender back to their city but restation them if there's a problem
+            var retreatChainAction = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
+            stub.City.Worker.DoPassive(stub.City, retreatChainAction, true);
         }
 
-        public void BattleUnitRemoved(uint battleId, CombatObject obj)
+        /// <summary>
+        /// Gives alignment points when a structure is destroyed.
+        /// </summary>
+        private void BattleUnitKilled(IBattleManager battle, BattleManager.BattleSide objSide, ICombatGroup combatGroup, ICombatObject obj)
         {
             // Keep track of our buildings destroyed HP
-            if (obj.ClassType == BattleClass.Structure && obj.City.Id == cityId) {
-                destroyedHp += (uint)obj.Stats.MaxHp;
-                AddAlignmentPoint(obj.Battle.Attacker, obj.Battle.Defender, Config.battle_stamina_destroyed_deduction);
+            if (objSide != BattleManager.BattleSide.Defense || obj.ClassType != BattleClass.Structure)
+            {
+                return;
             }
+
+            destroyedHp += (uint)obj.Stats.MaxHp;
+            AddAlignmentPoint(battle.Attackers, battle.Defenders, Config.battle_stamina_destroyed_deduction);
         }
 
         public override void UserCancelled()
@@ -290,6 +316,5 @@ namespace Game.Logic.Actions
         {
             throw new Exception("City removed during battle?");
         }
-
     }
 }

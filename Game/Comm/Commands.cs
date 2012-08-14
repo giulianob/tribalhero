@@ -23,6 +23,7 @@ namespace Game.Comm
 
         PlayerProfile = 20,
         PlayerDescriptionSet = 21,
+        ProfileByType = 22,
 
         #endregion
 
@@ -162,11 +163,15 @@ namespace Game.Comm
         BattleNewRound = 707,
         BattleWithdrawAttacker = 708,
         BattleWithdrawDefender = 709,
+        BattleGroupUnitAdded = 710,
+        BattleGroupUnitRemoved = 711,
 
         #endregion
 
         #region Misc
+
         ResourceGather = 801,
+        
         #endregion
 
         #region Market
@@ -200,6 +205,7 @@ namespace Game.Comm
 
         TribeChannelNotification = 1031,
         TribeChannelUpdate = 1051,
+
         #endregion
 
         #region Stronghold

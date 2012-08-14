@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game.Battle;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Data.Troop;
@@ -14,6 +15,8 @@ namespace Game.Map
         bool TryGetObjects(uint tribeId, out ITribe tribe);
 
         bool TryGetObjects(uint cityId, byte troopStubId, out ICity city, out ITroopStub troopStub);
+
+        bool TryGetObjects(uint battleId, out IBattleManager battleManager);
 
         bool TryGetObjects(uint cityId, uint structureId, out ICity city, out IStructure structure);
 

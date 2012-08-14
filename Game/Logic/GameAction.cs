@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using Game.Setup;
 using Game.Util;
@@ -112,7 +113,7 @@ namespace Game.Logic
 
         public abstract string DbTable { get; }
 
-        public virtual DbDependency[] DbDependencies
+        public virtual IEnumerable<DbDependency> DbDependencies
         {
             get
             {

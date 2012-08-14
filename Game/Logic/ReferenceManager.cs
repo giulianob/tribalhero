@@ -63,7 +63,7 @@ namespace Game.Logic
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {

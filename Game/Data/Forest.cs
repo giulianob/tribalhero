@@ -324,7 +324,7 @@ namespace Game.Data
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {

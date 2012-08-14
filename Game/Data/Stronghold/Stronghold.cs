@@ -245,7 +245,7 @@ namespace Game.Data.Stronghold
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {

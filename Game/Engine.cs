@@ -41,17 +41,23 @@ namespace Game
 
         private readonly DbLoader dbLoader;
 
+        private readonly IPlayerSelectorFactory playerSelector;
+
+        private readonly IPlayersRemoverFactory playersRemoverFactory;
+
         private readonly ITcpServer server;        
 
         public EngineState State { get; private set; }
 
-        public Engine(ILogger logger, ITcpServer server, IPolicyServer policyServer, TServer thriftServer, DbLoader dbLoader)
+        public Engine(ILogger logger, ITcpServer server, IPolicyServer policyServer, TServer thriftServer, DbLoader dbLoader, IPlayerSelectorFactory playerSelector, IPlayersRemoverFactory playersRemoverFactory)
         {
             this.logger = logger;
             this.server = server;
             this.policyServer = policyServer;
             this.thriftServer = thriftServer;
             this.dbLoader = dbLoader;
+            this.playerSelector = playerSelector;
+            this.playersRemoverFactory = playersRemoverFactory;
         }
 
         public bool Start()
@@ -156,14 +162,14 @@ _________ _______ _________ ______   _______  _
             ThreadPool.QueueUserWorkItem(o => thriftServer.Serve());
 
             // Schedule player deletions
-            ThreadPool.QueueUserWorkItem(o => new PlayersRemover(new CityRemoverFactory(), new NewbieIdleSelector()).Start());
+            ThreadPool.QueueUserWorkItem(o => playersRemoverFactory.CreatePlayersRemover(playerSelector.CreateNewbieIdleSelector()).Start());
 
             State = EngineState.Started;
 
             return true;
         }
 
-        public static IKernel CreateDefaultKernel()
+        public static void CreateDefaultKernel()
         {
             Ioc.Kernel = new StandardKernel(new NinjectSettings { LoadExtensions = true }, new GameModule());
             
@@ -180,7 +186,7 @@ _________ _______ _________ ______   _______  _
             Scheduler.Current = Ioc.Kernel.Get<IScheduler>();
             DbPersistance.Current = Ioc.Kernel.Get<IDbManager>();
 
-            return Ioc.Kernel;
+            return;
         }
 
         private void CurrentDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)

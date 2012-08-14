@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Game.Battle
+﻿namespace Game.Battle
 {
     public interface ICombatListFactory
     {
-        CombatList CreateCombatList();
+        ICombatList GetCombatList();
     }
 }

@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Game.Battle.Reporting;
+using Game.Battle.RewardStrategies;
+using Game.Comm.Channel;
 using Game.Data;
 using Ninject;
-using Ninject.Parameters;
+using Persistance;
 
 namespace Game.Battle
 {
@@ -14,11 +16,27 @@ namespace Game.Battle
             this.kernel = kernel;
         }
 
-        public IBattleManager CreateBattleManager(ICity owner)
+        public IBattleManager CreateBattleManager(uint battleId, BattleLocation location, BattleOwner owner, ICity city)
         {
-            var bm = kernel.Get<BattleManager>(new ConstructorArgument("owner", owner));
+            var bm = new BattleManager(battleId,
+                                       location,
+                                       owner,
+                                       kernel.Get<IRewardStrategyFactory>().CreateCityRewardStrategy(city),
+                                       kernel.Get<IDbManager>(),
+                                       kernel.Get<IBattleReport>(),
+                                       kernel.Get<ICombatListFactory>(),
+                                       kernel.Get<BattleFormulas>());
+
+            new BattleChannel(bm);
+
             bm.BattleReport.Battle = bm;
             return bm;
+        }
+
+        public IBattleManager CreateBattleManager(BattleLocation location, BattleOwner owner, ICity city)
+        {
+            var battleId = (uint)BattleReport.BattleIdGenerator.GetNext();
+            return CreateBattleManager(battleId, location, owner, city);
         }
     }
 }

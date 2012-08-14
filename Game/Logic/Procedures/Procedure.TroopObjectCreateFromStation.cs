@@ -17,10 +17,11 @@ namespace Game.Logic.Procedures
         /// NOTE: This will fail if the stub is in a state besides Stationed (e.g. troop is in battle)
         /// </summary>
         /// <returns></returns>
-        public virtual bool TroopObjectCreateFromStation(ITroopStub stub)
+        public virtual bool TroopObjectCreateFromStation(ITroopStub stub, out ITroopObject troopObject)
         {
             if (stub.State != TroopState.Stationed)
             {
+                troopObject = null;
                 return false;
             }
 
@@ -29,17 +30,18 @@ namespace Game.Logic.Procedures
 
             if (!stub.Station.TroopManager.RemoveStationed(stub.StationTroopId))
             {
+                troopObject = null;
                 return false;
             }
 
-            var troop = new TroopObject(stub) {X = x, Y = y + 1};
+            troopObject = new TroopObject(stub) {X = x, Y = y + 1};
 
-            stub.City.Add(troop);
+            stub.City.Add(troopObject);
 
-            troop.BeginUpdate();
-            troop.Stats = new TroopStats(Formula.Current.GetTroopRadius(stub, null), Formula.Current.GetTroopSpeed(stub));
-            World.Current.Add(troop);
-            troop.EndUpdate();
+            troopObject.BeginUpdate();
+            troopObject.Stats = new TroopStats(Formula.Current.GetTroopRadius(stub, null), Formula.Current.GetTroopSpeed(stub));
+            World.Current.Add(troopObject);
+            troopObject.EndUpdate();
 
             return true;
         }

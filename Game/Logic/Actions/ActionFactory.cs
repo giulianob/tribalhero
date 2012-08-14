@@ -3,9 +3,11 @@ using Game.Data;
 
 namespace Game.Logic.Actions
 {
+    // TODO: Change this factory to use custom instance provider. Every method should just return IAction and the method name can be used to return
+    // the correct type
     public interface IActionFactory
     {
-        AttackChainAction CreateAttackChainAction(uint cityId, byte stubId, uint targetCityId, uint targetStructureId, AttackMode mode);
+        AttackChainAction CreateAttackChainAction(uint cityId, uint troopObjectId, uint targetCityId, uint targetStructureId, AttackMode mode);
 
         StructureBuildActiveAction CreateStructureBuildActiveAction(uint cityId, ushort type, uint x, uint y, byte level);
 
@@ -21,9 +23,9 @@ namespace Game.Logic.Actions
 
         ResourceGatherActiveAction CreateResourceGatherActiveAction(uint cityId, uint objectId);
 
-        EngageDefensePassiveAction CreateEngageDefensePassiveAction(uint cityId, byte stubId);
+        EngageDefensePassiveAction CreateEngageDefensePassiveAction(uint cityId, uint troopObjectId);
 
-        EngageAttackPassiveAction CreateEngageAttackPassiveAction(uint cityId, byte stubId, uint targetCityId, AttackMode mode);
+        EngageAttackPassiveAction CreateEngageAttackPassiveAction(uint cityId, uint troopObjectId, uint targetCityId, AttackMode mode);
 
         StructureSelfDestroyPassiveAction CreateStructureSelfDestroyPassiveAction(uint cityId, uint objectId);
 
@@ -55,7 +57,7 @@ namespace Game.Logic.Actions
 
         ForestCampHarvestPassiveAction CreateForestCampHarvestPassiveAction(uint cityId, uint forestId);
 
-        DefenseChainAction CreateDefenseChainAction(uint cityId, byte stubId, uint targetCityId, AttackMode mode);
+        DefenseChainAction CreateDefenseChainAction(uint cityId, uint troopObjectId, uint targetCityId, AttackMode mode);
 
         TroopMovePassiveAction CreateTroopMovePassiveAction(uint cityId, uint troopObjectId, uint x, uint y, bool isReturningHome, bool isAttacking);
 

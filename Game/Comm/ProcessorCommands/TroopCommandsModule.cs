@@ -108,7 +108,7 @@ namespace Game.Comm.ProcessorCommands
         {
             uint cityId;            
             bool hideNewUnits;
-            ITroopStub stub;
+            ISimpleStub stub;
             try
             {
                 cityId = packet.GetUInt32();
@@ -254,7 +254,7 @@ namespace Game.Comm.ProcessorCommands
             uint cityId;
             uint targetCityId;
             uint targetObjectId;
-            TroopStub stub;
+            ISimpleStub simpleStub;
             AttackMode mode;
 
             try
@@ -263,7 +263,7 @@ namespace Game.Comm.ProcessorCommands
                 cityId = packet.GetUInt32();
                 targetCityId = packet.GetUInt32();
                 targetObjectId = packet.GetUInt32();
-                stub = PacketHelper.ReadStub(packet, FormationType.Attack);
+                simpleStub = PacketHelper.ReadStub(packet, FormationType.Attack);
             }
             catch(Exception)
             {
@@ -302,7 +302,7 @@ namespace Game.Comm.ProcessorCommands
 
                 // Create troop object                
                 ITroopObject troopObject;
-                if (!Procedure.Current.TroopObjectCreateFromCity(city, stub, city.X, city.Y, out troopObject))
+                if (!Procedure.Current.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.TroopChanged);
                     return;
@@ -326,14 +326,14 @@ namespace Game.Comm.ProcessorCommands
         {
             uint cityId;
             uint targetCityId;
-            TroopStub stub;
+            ISimpleStub simpleStub;
             AttackMode mode;
 
             try
             {
                 cityId = packet.GetUInt32();
                 targetCityId = packet.GetUInt32();
-                stub = PacketHelper.ReadStub(packet, FormationType.Defense);
+                simpleStub = PacketHelper.ReadStub(packet, FormationType.Defense);
                 mode = (AttackMode)packet.GetByte();
             }
             catch(Exception)
@@ -363,7 +363,7 @@ namespace Game.Comm.ProcessorCommands
                 ICity city = cities[cityId];
 
                 ITroopObject troopObject;
-                if (!Procedure.Current.TroopObjectCreateFromCity(city, stub, city.X, city.Y, out troopObject))
+                if (!Procedure.Current.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.ObjectNotFound);
                     return;
@@ -398,7 +398,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ICity city;
-            ICity stationedCity;
+            IStation station;
 
             //we need to find out the stationed city first then reacquire local + stationed city locks            
             using (Concurrency.Current.Lock(cityId, out city))
@@ -411,16 +411,16 @@ namespace Game.Comm.ProcessorCommands
 
                 ITroopStub stub;
 
-                if (!city.Troops.TryGetStub(troopId, out stub) || stub.StationedCity == null)
+                if (!city.Troops.TryGetStub(troopId, out stub) || stub.Station == null)
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
-                stationedCity = stub.StationedCity;
+                station = stub.Station;
             }
 
-            using (Concurrency.Current.Lock(city, stationedCity))
+            using (Concurrency.Current.Lock(city, station))
             {
                 ITroopStub stub;
 
@@ -431,7 +431,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 //Make sure that the person sending the retreat is either the guy who owns the troop or the guy who owns the stationed city
-                if (city.Owner != session.Player && stub.StationedCity != null && stub.StationedCity.Owner != session.Player)
+                if (city.Owner != session.Player && stub.Station != null && session.Player.GetCityList().All(x => x != stub.Station))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;

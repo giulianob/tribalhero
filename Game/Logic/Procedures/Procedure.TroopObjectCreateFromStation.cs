@@ -25,10 +25,10 @@ namespace Game.Logic.Procedures
                 return false;
             }
 
-            uint x = stub.StationedCity.X;
-            uint y = stub.StationedCity.Y;
+            uint x = stub.Station.LocationX;
+            uint y = stub.Station.LocationX;
 
-            if (!stub.StationedCity.Troops.RemoveStationed(stub.StationedTroopId))
+            if (!stub.Station.TroopManager.RemoveStationed(stub.StationTroopId))
             {
                 troopObject = null;
                 return false;

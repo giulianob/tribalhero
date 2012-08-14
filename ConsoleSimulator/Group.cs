@@ -107,8 +107,7 @@ namespace ConsoleSimulator
             player.Add(city);
             cityId++;
 
-            AttackStub = new TroopStub();
-            AttackStub = new TroopStub();
+            AttackStub = new TroopStub(0, city);
             AttackStub.AddFormation(FormationType.Normal);
             obj = new TroopObject(AttackStub);            
             using (Concurrency.Current.Lock(city))

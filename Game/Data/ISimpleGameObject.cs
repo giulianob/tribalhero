@@ -35,5 +35,6 @@ namespace Game.Data
         int RadiusDistance(uint x1, uint y1);
 
         int RadiusDistance(ISimpleGameObject obj);
+
     }
 }

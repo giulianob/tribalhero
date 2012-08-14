@@ -361,16 +361,17 @@ namespace Game.Data.Tribe
 
         #endregion
 
-        public Error CreateAssignment(ICity city, ITroopStub stub, uint x, uint y, ICity targetCity, DateTime time, AttackMode mode, string desc, bool isAttack, out int id)
+        public Error CreateAssignment(ICity city, ISimpleStub simpleStub, uint x, uint y, ICity targetCity, DateTime time, AttackMode mode, string desc, bool isAttack, out int id)
         {
             id = 0;
 
-            // Create troop             
-            if (!procedure.TroopStubCreate(city, stub, TroopState.WaitingInAssignment))
+            // Create troop      
+            ITroopStub stub;
+            if (!procedure.TroopStubCreate(out stub, city, simpleStub, TroopState.WaitingInAssignment))
             {
                 return Error.TroopChanged;
             }
-            
+
             // Max of 48 hrs for planning assignments
             if (DateTime.UtcNow.AddDays(2) < time)
             {
@@ -429,8 +430,8 @@ namespace Game.Data.Tribe
             SendUpdate();
             return result;
         }
-        
-        public Error JoinAssignment(int id, ICity city, ITroopStub stub)
+
+        public Error JoinAssignment(int id, ICity city, ISimpleStub simpleStub)
         {
             Assignment assignment;
 
@@ -439,7 +440,7 @@ namespace Game.Data.Tribe
                 return Error.AssignmentNotFound;
             }
 
-            if (stub.TotalCount == 0)
+            if (simpleStub.TotalCount == 0)
             {
                 return Error.TroopEmpty;
             }
@@ -449,7 +450,8 @@ namespace Game.Data.Tribe
                 return Error.AssignmentNotEligible;
             }
 
-            if (!procedure.TroopStubCreate(city, stub, TroopState.WaitingInAssignment, assignment.IsAttack ? FormationType.Attack : FormationType.Defense))
+            ITroopStub stub;
+            if (!procedure.TroopStubCreate(out stub, city, simpleStub, TroopState.WaitingInAssignment, assignment.IsAttack ? FormationType.Attack : FormationType.Defense))
             {
                 return Error.TroopChanged;
             }            

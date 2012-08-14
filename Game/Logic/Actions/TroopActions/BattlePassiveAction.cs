@@ -209,7 +209,7 @@ namespace Game.Logic.Actions
                     // Check if stub has died, if so, remove it completely from both cities
                     if (stub.TotalCount == 0)
                     {
-                        city.Troops.RemoveStationed(stub.StationedTroopId);
+                        city.Troops.RemoveStationed(stub.StationTroopId);
                         stub.City.Troops.Remove(stub.TroopId);
                         continue;
                     }
@@ -250,7 +250,7 @@ namespace Game.Logic.Actions
             battleProcedure.AddLocalUnitsToBattle(city.Battle, city);
 
             //Add reinforcement
-            foreach (var stub in city.Troops.Where(stub => stub != city.DefaultTroop && stub.State == TroopState.Stationed && stub.StationedCity == city))
+            foreach (var stub in city.Troops.Where(stub => stub != city.DefaultTroop && stub.State == TroopState.Stationed && stub.Station == city))
             {
                 stub.BeginUpdate();
                 stub.State = TroopState.BattleStationed;
@@ -274,7 +274,7 @@ namespace Game.Logic.Actions
             }
 
             // Check if we should retreat a unit
-            if (attackingSide == BattleManager.BattleSide.Defense || target.TroopStub.StationedCity != city || target.TroopStub.TotalCount <= 0 ||
+            if (attackingSide == BattleManager.BattleSide.Defense || target.TroopStub.Station != city || target.TroopStub.TotalCount <= 0 ||
                 target.TroopStub.TotalCount > target.TroopStub.StationedRetreatCount)
             {
                 return;

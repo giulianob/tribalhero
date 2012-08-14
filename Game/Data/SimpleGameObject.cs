@@ -15,6 +15,8 @@ namespace Game.Data
             Troop = 100,
 
             Forest = 200,
+
+            Stronghold = 300,
         }
 
         public enum SystemGroupIds : uint
@@ -23,7 +25,7 @@ namespace Game.Data
 
             Forest = 10000002,
 
-            Stronghold = 10000003,
+            Stronghold = 10000003
         }
 
         protected uint objectId;

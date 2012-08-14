@@ -70,7 +70,7 @@ namespace Game.Module
         private static ILockable[] GetLocalTroopLockList(object[] custom)
         {
             return
-                    ((ICity)custom[0]).Troops.MyStubs().Where(x => x.StationedCity != null).Select(stub => stub.StationedCity).Distinct().Cast<ILockable>().
+                    ((ICity)custom[0]).Troops.MyStubs().Where(x => x.Station != null).Select(stub => stub.Station).Distinct().Cast<ILockable>().
                             ToArray();
         }
 
@@ -108,7 +108,7 @@ namespace Game.Module
                     foreach (var stub in stationedTroops)
                     {
                         if (RemoveForeignTroop(stub) != Error.Ok)
-                            Global.Logger.Error(String.Format("removeForeignTroop failed! cityid[{0}] stubid[{1}]", city.Id, stub.StationedTroopId));
+                            Global.Logger.Error(String.Format("removeForeignTroop failed! cityid[{0}] stubid[{1}]", city.Id, stub.StationTroopId));
                     }
                 }
 

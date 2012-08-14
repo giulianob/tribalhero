@@ -350,7 +350,7 @@ namespace Game.Data
         #region Constructors
 
         public City(IPlayer owner, string name, Resource resource, byte radius, IStructure mainBuilding, decimal ap)
-            : this(owner, name, new LazyResource(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor), radius, mainBuilding, ap)
+                : this(owner, name, new LazyResource(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor), radius, mainBuilding, ap)
         {
         }
 
@@ -367,7 +367,7 @@ namespace Game.Data
 
             Technologies = new TechnologyManager(EffectLocation.City, this, id);
 
-            Troops = new TroopManager(this);
+            Troops = new TroopManager(this, new CityTroopStubFactory(this));
 
             Troops.TroopUpdated += TroopManagerTroopUpdated;
             Troops.TroopRemoved += TroopManagerTroopRemoved;
@@ -643,7 +643,7 @@ namespace Game.Data
             {
                 Global.Channel.Subscribe(s, "/CITY/" + id);
             }
-            catch (DuplicateSubscriptionException)
+            catch(DuplicateSubscriptionException)
             {
             }
         }
@@ -904,7 +904,7 @@ namespace Game.Data
 
             bool doUpdate = IsUpdating;
             if (!doUpdate)
-                BeginUpdate();            
+                BeginUpdate();
             Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, Troops);
             if (!doUpdate)
                 EndUpdate();
@@ -1060,7 +1060,7 @@ namespace Game.Data
         {
             get
             {
-                return new[] { new DbColumn("id", Id, DbType.UInt32) };
+                return new[] {new DbColumn("id", Id, DbType.UInt32)};
             }
         }
 
@@ -1068,7 +1068,7 @@ namespace Game.Data
         {
             get
             {
-                return new[] { new DbDependency("Technologies", false, true), new DbDependency("Template", false, true), };
+                return new[] {new DbDependency("Technologies", false, true), new DbDependency("Template", false, true),};
             }
         }
 
@@ -1100,6 +1100,9 @@ namespace Game.Data
                 bw.Write(Lvl);
                 bw.Write(Owner.PlayerId);
                 bw.Write(value);
+                bw.Write((float)alignmentPoint);
+                bw.Write(Owner.Tribesman == null ? 0 : Owner.Tribesman.Tribe.Id);
+                bw.Write((byte)(BattleProcedure.IsNewbieProtected(Owner) ? 1 : 0));
                 ms.Position = 0;
                 return ms.ToArray();
             }
@@ -1117,7 +1120,7 @@ namespace Game.Data
         {
             get
             {
-                return (ushort)(X % Config.city_region_width);
+                return (ushort)(X%Config.city_region_width);
             }
         }
 
@@ -1125,7 +1128,7 @@ namespace Game.Data
         {
             get
             {
-                return (ushort)(Y % Config.city_region_height);
+                return (ushort)(Y%Config.city_region_height);
             }
         }
 
@@ -1142,6 +1145,54 @@ namespace Game.Data
             get
             {
                 return 1;
+            }
+        }
+
+        #endregion
+
+        #region Implementation of IStation
+
+        public ITroopManager TroopManager
+        {
+            get
+            {
+                return Troops;
+            }
+        }
+
+        #endregion
+
+        #region Implementation of ILocation
+
+        public uint LocationId
+        {
+            get
+            {
+                return Id;
+            }
+        }
+
+        public StationType LocationType
+        {
+            get
+            {
+                return StationType.City;
+            }
+        }
+
+        public uint LocationX
+        {
+            get
+            {
+                return X;
+            }
+        }
+
+        public uint LocationY
+        {
+            get
+            {
+                return Y;
             }
         }
 

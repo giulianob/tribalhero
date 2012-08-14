@@ -147,7 +147,7 @@ namespace Game.Comm
                 }
 
                 // TODO: Clean this up.. shouldnt really need to do this here
-                TroopStub stub = new TroopStub();
+                var stub = city.Troops.Create();
                 FormationType formation = isAttack.GetValueOrDefault() ? FormationType.Attack : FormationType.Defense;
                 stub.AddFormation(formation);
                 foreach (var unit in city.DefaultTroop[FormationType.Normal])
@@ -216,7 +216,7 @@ namespace Game.Comm
                 }
 
                 // TODO: Clean this up.. shouldnt really need to do this here
-                TroopStub stub = new TroopStub();
+                ITroopStub stub = city.Troops.Create();
                 FormationType formation = assignment.IsAttack ? FormationType.Attack : FormationType.Defense;
                 stub.AddFormation(formation);
                 foreach (var unit in city.DefaultTroop[FormationType.Normal])

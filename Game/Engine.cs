@@ -6,6 +6,7 @@ using System.Threading;
 using Game.Battle;
 using Game.Comm;
 using Game.Data;
+using Game.Data.Stronghold;
 using Game.Database;
 using Game.Logic;
 using Game.Logic.Formulas;
@@ -133,6 +134,16 @@ _________ _______ _________ ______   _______  _
                 logger.Error("Failed to load database");
                 return false;
             }
+
+            // Initialize stronghold
+            IStrongholdManager manager = Ioc.Kernel.Get<IStrongholdManager>();
+            if(Config.stronghold_generate>0 && manager.Count==0)  // Only generate if there is none.
+            {
+                manager.Generate(Config.stronghold_generate);
+            }
+            StrongholdActivationChecker strongholdActivationChecker = Ioc.Kernel.Get<StrongholdActivationChecker>();
+            strongholdActivationChecker.Start(new TimeSpan(0, 0, Config.stronghold_activation_check_interval_in_sec));
+            
 
             // Initialize game market
             Market.Init();

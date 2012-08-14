@@ -10,6 +10,7 @@ using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
 using Game.Data;
 using Game.Data.Stats;
+using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic;
@@ -43,6 +44,11 @@ namespace Game.Database
 
         [Inject]
         public ICombatUnitFactory CombatUnitFactory { get; set; }
+		[Inject]
+		public IStrongholdManager strongholdManager { get; set; }
+		
+		[Inject]
+		public IStrongholdFactory strongholdFactory { get; set; }		
 
         [Inject]
         public ICombatGroupFactory CombatGroupFactory { get; set; }
@@ -87,6 +93,7 @@ namespace Game.Database
                     LoadStructureProperties();
                     LoadTechnologies();
                     LoadForests(downTime);
+                    LoadStrongholds();
                     LoadTroopStubs();
                     LoadTroopStubTemplates();
                     LoadTroops();
@@ -400,6 +407,38 @@ namespace Game.Database
             #endregion
         }
 
+        private void LoadStrongholds()
+        {
+            #region Strongholds
+
+            Global.Logger.Info("Loading strongholds...");
+            using (var reader = DbManager.Select(Stronghold.DB_TABLE))
+            {
+                while (reader.Read())
+                {
+                    var stronghold = strongholdFactory.CreateStronghold((uint)reader["id"],
+                                                        (string)reader["name"],
+                                                        (byte)reader["level"],
+                                                        (uint)reader["x"],
+                                                        (uint)reader["y"]);
+                    stronghold.StrongholdState = (StrongholdState)((byte)reader["state"]);
+                    var tribeId = (uint)reader["tribe_id"];
+                    ITribe tribe;
+                    if(World.Current.TryGetObjects(tribeId, out tribe))
+                    {
+                        stronghold.Tribe = tribe;
+                    }
+                    stronghold.DbPersisted = true;
+                    strongholdManager.DbLoaderAdd(stronghold);
+                    if (stronghold.StrongholdState != StrongholdState.Inactive)
+                    {
+                        World.Current.Add(stronghold);
+                    }
+                }
+            }
+            #endregion
+        }
+
         private void LoadUnitTemplates()
         {
             #region Unit Template
@@ -619,10 +658,8 @@ namespace Game.Database
                     if (!World.Current.TryGetObjects((uint)reader["city_id"], out city))
                         throw new Exception("City not found");
 
-                    var stub = new TroopStub
+                    var stub = new TroopStub((byte)reader["id"], city )
                                {
-                                       TroopManager = city.Troops,
-                                       TroopId = (byte)reader["id"],
                                        State = (TroopState)Enum.Parse(typeof(TroopState), reader["state"].ToString(), true),
                                        DbPersisted = true,
                                        StationedRetreatCount = (ushort)reader["retreat_count"]
@@ -644,18 +681,32 @@ namespace Game.Database
 
                     city.Troops.DbLoaderAdd((byte)reader["id"], stub);
 
-                    var stationedCityId = (uint)reader["stationed_city_id"];
-                    if (stationedCityId != 0) 
-                        stationedTroops.Add(new {stub, stationedCityId}); 
+                    var stationType = (byte)reader["station_type"];
+                    if (stationType!=0)
+                    {
+                        var stationId = (uint)reader["station_id"];
+                        stationedTroops.Add(new { stub, stationType, stationId });
+                    }
                 }
             }
 
             foreach (var stubInfo in stationedTroops)
             {
-                ICity stationedCity;
-                if (!World.Current.TryGetObjects(stubInfo.stationedCityId, out stationedCity))
-                    throw new Exception("City not found");
-                stationedCity.Troops.AddStationed(stubInfo.stub);
+                switch((StationType)stubInfo.stationType)
+                {
+                    case StationType.City:
+                        ICity stationedCity;
+                        if (!World.Current.TryGetObjects(stubInfo.stationId, out stationedCity))
+                            throw new Exception("City not found");
+                        stationedCity.Troops.DbLoaderAddStation(stubInfo.stub);
+                        break;
+                    case StationType.Stronghold:
+                        IStronghold stronghold;
+                        if (!strongholdManager.TryGetValue(stubInfo.stationId, out stronghold))
+                            throw new Exception("Stronghold not found");
+                        stronghold.Troops.DbLoaderAddStation(stubInfo.stub);
+                        break;
+                }
             }
 
             #endregion

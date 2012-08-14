@@ -45,7 +45,7 @@ namespace Game.Comm.ProcessorCommands
             uint targetObjectId;
             AttackMode mode;
             DateTime time;
-            TroopStub stub;
+            ISimpleStub simpleStub;
             string description;
             bool isAttack;
             try
@@ -56,7 +56,7 @@ namespace Game.Comm.ProcessorCommands
                 targetObjectId = packet.GetUInt32();
                 time = DateTime.UtcNow.AddSeconds(packet.GetInt32());
                 isAttack = packet.GetByte() == 1;
-                stub = PacketHelper.ReadStub(packet, isAttack?FormationType.Attack:FormationType.Defense);
+                simpleStub = PacketHelper.ReadStub(packet, isAttack ? FormationType.Attack : FormationType.Defense);
                 description = packet.GetString();
             }
             catch (Exception) {
@@ -86,7 +86,7 @@ namespace Game.Comm.ProcessorCommands
                 ICity targetCity = cities[targetCityId];
 
                 // Make sure they are not in newbie protection
-                if (battleProcedure.IsNewbieProtected(targetCity.Owner))
+                if (BattleProcedure.IsNewbieProtected(targetCity.Owner))
                 {
                     ReplyError(session, packet, Error.PlayerNewbieProtection);
                     return;
@@ -123,7 +123,7 @@ namespace Game.Comm.ProcessorCommands
 
                 int id;
                 Error ret = session.Player.Tribesman.Tribe.CreateAssignment(city,
-                                                                            stub,
+                                                                            simpleStub,
                                                                             targetStructure.X,
                                                                             targetStructure.Y,
                                                                             targetCity,
@@ -139,6 +139,7 @@ namespace Game.Comm.ProcessorCommands
         private void Join(Session session, Packet packet) {
             uint cityId;
             int assignmentId;
+            ISimpleStub stub;
             try
             {
                 cityId = packet.GetUInt32();
@@ -166,7 +167,6 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                TroopStub stub;
                 try
                 {
                     stub = PacketHelper.ReadStub(packet, assignment.IsAttack ? FormationType.Attack : FormationType.Defense);

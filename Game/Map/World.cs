@@ -22,7 +22,7 @@ using System.Linq;
 
 namespace Game.Map
 {
-    public class World : IGameObjectLocator
+    public class World : IGameObjectLocator, IWorld
     {
         public static World Current { get; set; }
 

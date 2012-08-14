@@ -4,6 +4,8 @@ namespace Game.Comm
     {
         Invalid = 1,
 
+        SystemChat = 6, 
+
         CmdLine = 7,
 
         MessageBox = 8,
@@ -17,6 +19,8 @@ namespace Game.Comm
         CityUsernameGet = 13,
         PlayerNameFromCityName = 14,
         TribeNameGet = 15,
+        StrongholdNameGet = 16,
+
         PlayerProfile = 20,
         PlayerDescriptionSet = 21,
         ProfileByType = 22,
@@ -202,6 +206,11 @@ namespace Game.Comm
         TribeChannelNotification = 1031,
         TribeChannelUpdate = 1051,
 
+        #endregion
+
+        #region Stronghold
+        StrongholdInfo = 1101,
+        StrongholdPublicInfo = 1102,
         #endregion
 
         #region Internal Messages

@@ -76,8 +76,19 @@
 
 		private function resourceLabelMaker(name: String, resource: LazyValue, icon: Icon = null, includeLimit: Boolean = true, includeRate: Boolean = true) : JLabel {
 			var value: int = resource.getValue();
+			
+			var netRate: int = resource.getHourlyRate() - resource.getHourlyUpkeep();
 
-			var label: JLabel = new JLabel((name != "" ? (name + ": ") : "") + value + (includeLimit ? "/" + resource.getLimit() : "") + (includeRate ? " (+" + (resource.getHourlyRate() - resource.getHourlyUpkeep()) + (resource.getHourlyUpkeep() > 0 ? " net per hour":" per hour") + ")" : ""), icon);
+			var label: JLabel = new JLabel(
+				(name != "" ? (name + ": ") : "") + 
+				value + 
+				(includeLimit ? "/" + resource.getLimit() : "") + 
+				(includeRate ? 
+					" (" + (netRate > 0 ? "+" : "") + netRate + (resource.getHourlyUpkeep() > 0 ? " net per hour":" per hour") + 
+					")" : 
+					""
+				)
+				, icon);
 
 			GameLookAndFeel.changeClass(label, "Tooltip.text Label.small");
 

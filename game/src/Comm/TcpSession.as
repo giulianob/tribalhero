@@ -92,8 +92,11 @@
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.LOGIN;			
 			
-			packet.writeShort(Constants.version);
-			packet.writeShort(Constants.revision);
+			var version: int = Constants.version == 0 && Constants.revision == 0 ? 999 : Constants.version;
+			var revision: int = Constants.version == 0 && Constants.revision == 0 ? 999 : Constants.revision;
+			
+			packet.writeShort(version);
+			packet.writeShort(revision);
 
 			packet.writeUByte(useLoginKey ? 0 : 1);
 			packet.writeString(username);

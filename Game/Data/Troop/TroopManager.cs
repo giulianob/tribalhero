@@ -13,6 +13,8 @@ namespace Game.Data.Troop
 {
     public class TroopManager : ITroopManager
     {
+        private readonly ITroopStubFactory troopStubFactory;
+
         #region Event
 
         #region Delegates
@@ -40,6 +42,8 @@ namespace Game.Data.Troop
             }
         }
 
+        public IStation BaseStation { get; private set; }
+
         public ITroopStub this[byte index]
         {
             get
@@ -52,15 +56,14 @@ namespace Game.Data.Troop
             }
         }
 
-        public ICity City { get; set; }
-
         #endregion
 
         #region Methods
 
-        public TroopManager(ICity city)
+        public TroopManager(IStation baseStation, ITroopStubFactory troopStubFactory)
         {
-            City = city;
+            this.troopStubFactory = troopStubFactory;
+            BaseStation = baseStation;
         }
 
         public int Upkeep
@@ -73,7 +76,7 @@ namespace Game.Data.Troop
 
         private void CheckUpdateMode()
         {
-            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(City);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(BaseStation);
         }
 
         private void FireUpdated(TroopStub stub)
@@ -82,8 +85,6 @@ namespace Game.Data.Troop
                 return;
 
             CheckUpdateMode();
-
-            DbPersistance.Current.Save(stub);
 
             if (TroopUpdated != null)
                 TroopUpdated(stub);
@@ -108,7 +109,7 @@ namespace Game.Data.Troop
             CheckUpdateMode();
 
             //We don't want to delete a troopstub that doesn't belong to us.
-            if (stub.City == City)
+            if (stub.City == BaseStation)
                 DbPersistance.Current.Delete(stub);
 
             if (TroopRemoved != null)
@@ -121,11 +122,34 @@ namespace Game.Data.Troop
                 return false;
             idGen.Set(id);
             dict[id] = stub;
-            stub.BeginUpdate();
-            stub.TroopManager = this;
-            stub.EndUpdate();
             stub.UnitUpdate += StubUpdateEvent;
             return true;
+        }
+
+        public bool DbLoaderAddStation(ITroopStub stub)
+        {
+            int nextId = idGen.GetNext();
+            if (nextId == -1)
+                return false;
+            var id = (byte)nextId;
+
+            stub.StationTroopId = id;
+            stub.State = TroopState.Stationed;
+            stub.Station = BaseStation;
+
+            dict.Add(id, stub);
+            stub.UnitUpdate += StubUpdateEvent;
+            FireAdded(stub);
+            return true;
+        }
+
+        public ITroopStub Create()
+        {
+            var stub = troopStubFactory.CreateTroopStub((byte)idGen.GetNext());
+            dict.Add(stub.TroopId, stub);
+            stub.UnitUpdate += StubUpdateEvent;
+            FireAdded(stub);
+            return stub;
         }
 
         public bool Add(ITroopStub stub, out byte id)
@@ -140,8 +164,9 @@ namespace Game.Data.Troop
 
             id = (byte)nextId;
 
+            stub.BeginUpdate();
             stub.TroopId = id;
-            stub.TroopManager = this;
+            stub.EndUpdate();  // Updating inside prevents Endupate being called at higher level, causing an "Update" to be sent after "Add"
 
             dict.Add(id, stub);
 
@@ -157,9 +182,13 @@ namespace Game.Data.Troop
             if (nextId == -1)
                 return false;
             var id = (byte)nextId;
-            stub.StationedTroopId = id;
+
+            stub.BeginUpdate();
+            stub.StationTroopId = id;
             stub.State = TroopState.Stationed;
-            stub.StationedCity = City;
+            stub.Station = BaseStation;
+            stub.EndUpdate();
+
             dict.Add(id, stub);
             stub.UnitUpdate += StubUpdateEvent;
             FireAdded(stub);
@@ -182,8 +211,8 @@ namespace Game.Data.Troop
             idGen.Release(id);
 
             stub.BeginUpdate();
-            stub.StationedTroopId = 0;
-            stub.StationedCity = null;
+            stub.StationTroopId = 0;
+            stub.Station = null;
             stub.EndUpdate();
 
             stub.UnitUpdate -= StubUpdateEvent;
@@ -226,7 +255,7 @@ namespace Game.Data.Troop
             {
 
                 // Skip troops that aren't ours
-                if (stub.City != City)
+                if (stub.City != BaseStation)
                     continue;
 
                 // Skip troops that are in battle
@@ -241,10 +270,9 @@ namespace Game.Data.Troop
                 // Remove it if it's been starved to death (and isn't the default troop)
                 if (stub.TotalCount == 0 && !stub.IsDefault())
                 {
-                    if (stub.StationedCity != null)
+                    if (stub.Station != null)
                     {
-                        ICity stationedCity = stub.StationedCity;
-                        stationedCity.Troops.RemoveStationed(stub.StationedTroopId);
+                        stub.Station.TroopManager.RemoveStationed(stub.StationTroopId);
                     }
 
                     Remove(stub.TroopId);
@@ -285,7 +313,7 @@ namespace Game.Data.Troop
         /// <returns></returns>
         public IEnumerable<ITroopStub> StationedHere()
         {
-            return this.Where(stub => stub.StationedCity == City);
+            return this.Where(stub => stub.Station == BaseStation);
         }
 
         /// <summary>
@@ -294,7 +322,7 @@ namespace Game.Data.Troop
         /// <returns></returns>
         public IEnumerable<ITroopStub> MyStubs()
         {
-            return this.Where(stub => stub.City == City);
+            return this.Where(stub => stub.City == BaseStation);
         }
 
         #endregion

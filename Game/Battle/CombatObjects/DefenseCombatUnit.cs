@@ -256,9 +256,9 @@ namespace Game.Battle.CombatObjects
 
         public override Location Location()
         {
-            if (TroopStub.StationedCity != null)
+            if (TroopStub.Station != null)
             {
-                return new Location(troopStub.StationedCity.X, troopStub.StationedCity.Y);
+                return new Location(troopStub.Station.LocationX, troopStub.Station.LocationY);
             }
 
             return new Location(City.X, City.Y);

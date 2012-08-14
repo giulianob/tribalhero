@@ -96,7 +96,7 @@ namespace Game.Logic.Actions {
             int influencePoints, wagons;
             ushort wagonType = Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("Wagon").First();
             Formula.Current.GetNewCityCost(city.Owner.GetCityCount(), out influencePoints, out wagons);
-            if (city.Owner.Value < influencePoints)
+            if (city.Owner.Value < influencePoints && !Config.actions_ignore_requirements)
                 return Error.ResourceNotEnough;
             if (city.DefaultTroop.Sum(f => f.ContainsKey(wagonType)?f[wagonType]:0) < wagons)
                 return Error.ResourceNotEnough;
@@ -140,14 +140,13 @@ namespace Game.Logic.Actions {
                 Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
                 structure.EndUpdate();
 
-                var defaultTroop = new TroopStub();
+                var defaultTroop = newCity.Troops.Create();
                 defaultTroop.BeginUpdate();
                 defaultTroop.AddFormation(FormationType.Normal);
                 defaultTroop.AddFormation(FormationType.Garrison);
                 defaultTroop.AddFormation(FormationType.InBattle);
-                newCity.Troops.Add(defaultTroop);
                 defaultTroop.EndUpdate();
-
+                
                 // taking resource from the old city
                 city.BeginUpdate();
                 city.DefaultTroop.BeginUpdate();

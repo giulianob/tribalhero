@@ -15,7 +15,7 @@ namespace Game.Setup
 {
     public class Config
     {
-        public static string database_schema_version = "20120612152932";
+        public static string database_schema_version = "20120731014541";
 
         // ReSharper disable InconsistentNaming        
         public static int client_min_version;
@@ -110,6 +110,9 @@ namespace Game.Setup
         public static bool actions_skip_city_actions;
         public static int actions_free_cancel_interval_in_sec = 60;
         public static bool actions_ignore_requirements;
+
+        public static int stronghold_generate = 0;
+        public static int stronghold_activation_check_interval_in_sec = 3600;        
 
         public static int idle_days = 3;
         

@@ -152,6 +152,7 @@
     <Compile Include="Comm\ApiCaller.cs" />
     <Compile Include="Comm\CmdLine Commands\AssignmentCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\CityCommandLineModule.cs" />
+    <Compile Include="Comm\CmdLine Commands\StrongholdCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\TribeCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\PlayerCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\ResourcesCommandLineModule.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="Comm\ProcessorCommands\BattleCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\AssignmentCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\ChatCommandsModule.cs" />
+    <Compile Include="Comm\ProcessorCommands\StrongholdCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\TribesmanCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\TribeCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\CommandLineCommandsModule.cs" />
@@ -202,6 +204,7 @@
     <Compile Include="Data\ILazyValue.cs" />
     <Compile Include="Data\IPlayer.cs" />
     <Compile Include="Data\ISimpleGameObject.cs" />
+    <Compile Include="Data\IStation.cs" />
     <Compile Include="Data\IStructure.cs" />
     <Compile Include="Data\ITechnologyManager.cs" />
     <Compile Include="Data\LazyValue.cs" />
@@ -211,6 +214,15 @@
     <Compile Include="Data\Global.cs" />
     <Compile Include="Data\Player.cs" />
     <Compile Include="Data\Resource.cs" />
+    <Compile Include="Data\Stronghold\IStronghold.cs" />
+    <Compile Include="Data\Stronghold\IStrongholdActivationCondition.cs" />
+    <Compile Include="Data\Stronghold\IStrongholdFactory.cs" />
+    <Compile Include="Data\Stronghold\IStrongholdConfigurator.cs" />
+    <Compile Include="Data\Stronghold\IStrongholdManager.cs" />
+    <Compile Include="Data\Stronghold\Stronghold.cs" />
+    <Compile Include="Data\Stronghold\StrongholdActivationCondition.cs" />
+    <Compile Include="Data\Stronghold\StrongholdConfigurator.cs" />
+    <Compile Include="Data\Stronghold\StrongholdManager.cs" />
     <Compile Include="Data\Structure.cs" />
     <Compile Include="Data\Technology.cs" />
     <Compile Include="Data\TechnologyManager.cs" />
@@ -221,9 +233,12 @@
     <Compile Include="Data\Tribe\ITribesman.cs" />
     <Compile Include="Data\Tribe\Tribe.cs" />
     <Compile Include="Data\Tribe\Tribesman.cs" />
+    <Compile Include="Data\Troop\CityTroopStubFactory.cs" />
     <Compile Include="Data\Troop\ITroopManager.cs" />
     <Compile Include="Data\Troop\ITroopObject.cs" />
     <Compile Include="Data\Troop\ITroopStub.cs" />
+    <Compile Include="Data\Troop\ITroopStubFactory.cs" />
+    <Compile Include="Data\Troop\SimpleStub.cs" />
     <Compile Include="Data\Troop\Unit.cs" />
     <Compile Include="Data\Troop\Formation.cs" />
     <Compile Include="Data\Troop\TroopManager.cs" />
@@ -285,6 +300,7 @@
     <Compile Include="Logic\ThreadedScheduler.cs" />
     <Compile Include="Data\ICityRegionObject.cs" />
     <Compile Include="Map\IGameObjectLocator.cs" />
+    <Compile Include="Map\IWorld.cs" />
     <Compile Include="Map\Location.cs" />
     <Compile Include="Map\MapMath.cs" />
     <Compile Include="Map\ObjectLink.cs" />
@@ -295,6 +311,7 @@
     <Compile Include="Map\RoadPathFinder.cs" />
     <Compile Include="Map\TileLocator.cs" />
     <Compile Include="Logic\IGameTask.cs" />
+    <Compile Include="Module\Chat.cs" />
     <Compile Include="Module\Remover\CityRemover.cs" />
     <Compile Include="Module\Remover\ActivePlayerSelector.cs" />
     <Compile Include="Module\Remover\IPlayerSelectorFactory.cs" />
@@ -305,6 +322,7 @@
     <Compile Include="Module\Remover\IPlayerSelector.cs" />
     <Compile Include="Module\Remover\PlayersRemover.cs" />
     <Compile Include="Module\Market.cs" />
+    <Compile Include="Data\Stronghold\StrongholdActivationChecker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Map\Region.cs" />
     <Compile Include="Map\World.cs" />
@@ -338,6 +356,7 @@
     <Compile Include="Util\Locking\TransactionalMultiObjectLock.cs" />
     <Compile Include="Util\MathParser.cs" />
     <Compile Include="Util\Locking\DefaultMultiObjectLock.cs" />
+    <Compile Include="Util\NameGenerator.cs" />
     <Compile Include="Util\UnixDateTime.cs" />
     <Compile Include="Util\XMLSerializer.cs" />
   </ItemGroup>

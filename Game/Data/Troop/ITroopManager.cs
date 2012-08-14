@@ -12,13 +12,15 @@ namespace Game.Data.Troop
 
         byte Size { get; }
 
-        ICity City { get; set; }
+        IStation BaseStation { get; }
 
         int Upkeep { get; }
 
         ITroopStub this[byte index] { get; set; }
 
         bool DbLoaderAdd(byte id, ITroopStub stub);
+
+        bool DbLoaderAddStation(ITroopStub stub);
 
         bool Add(ITroopStub stub, out byte id);
 
@@ -29,6 +31,8 @@ namespace Game.Data.Troop
         bool RemoveStationed(byte id);
 
         bool Remove(byte id);
+
+        ITroopStub Create();
 
         bool TryGetStub(byte id, out ITroopStub stub);
 

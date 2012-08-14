@@ -7,6 +7,7 @@ using Game.Battle;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Data;
+using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic;
@@ -70,6 +71,10 @@ namespace Game.Comm
             if (obj is IHasLevel)
                 packet.AddByte(((IHasLevel)obj).Lvl);
 
+            var stronghold = obj as IStronghold;
+            if (stronghold != null)
+                packet.AddUInt32(stronghold.StrongholdState == StrongholdState.Occupied ? stronghold.Tribe.Id : 0);
+
             if (sendRegularObject)
             {
                 packet.AddByte((byte)obj.State.Type);
@@ -91,6 +96,7 @@ namespace Game.Comm
 
                 if (gameObj is IStructure && ((IStructure)gameObj).IsMainBuilding)
                     packet.AddByte(gameObj.City.Radius);
+
             }
             else if (obj is IStructure)
             {
@@ -251,8 +257,8 @@ namespace Game.Comm
                 case TroopState.Stationed:
                 case TroopState.BattleStationed:
                     packet.AddUInt32(1); // Main building id
-                    packet.AddUInt32(stub.StationedCity.X);
-                    packet.AddUInt32(stub.StationedCity.Y);
+                    packet.AddUInt32(stub.Station.LocationX);
+                    packet.AddUInt32(stub.Station.LocationY);
                     break;
             }
 
@@ -428,9 +434,9 @@ namespace Game.Comm
             }
         }
 
-        public static TroopStub ReadStub(Packet packet, params FormationType[] formations)
+        public static ISimpleStub ReadStub(Packet packet, params FormationType[] formations)
         {
-            var stub = new TroopStub();
+            var simpleStub = new SimpleStub();
 
             foreach (FormationType t in formations)
             {
@@ -442,18 +448,15 @@ namespace Game.Comm
 
                 byte unitCount = packet.GetByte();
 
-                stub.AddFormation(formationType);
-
                 for (int u = 0; u < unitCount; ++u)
                 {
                     ushort type = packet.GetUInt16();
                     ushort count = packet.GetUInt16();
-
-                    stub.AddUnit(formationType, type, count);
+                    simpleStub.AddUnit(formationType, type, count);
                 }
             }
 
-            return stub;
+            return simpleStub;
         }
     }
 }

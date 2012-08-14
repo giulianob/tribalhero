@@ -3,6 +3,7 @@
 using Game.Battle;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
+using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
@@ -28,7 +29,7 @@ namespace Testing.Troop
             Mock<ICombatGroupFactory> combatGroupFactory = new Mock<ICombatGroupFactory>();
             Mock<ObjectTypeFactory> objectTypeFactory = new Mock<ObjectTypeFactory>();
 
-            var stub = new TroopStub();
+            var stub = new TroopStub(0, new Mock<ICity>().Object);
             stub.AddFormation(FormationType.Normal);
             stub.AddFormation(FormationType.Garrison);
             stub.AddFormation(FormationType.InBattle);

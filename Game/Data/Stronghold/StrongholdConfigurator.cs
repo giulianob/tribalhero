@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using Game.Setup;
+using Game.Util;
+
+namespace Game.Data.Stronghold
+{
+    class StrongholdConfigurator : IStrongholdConfigurator
+    {
+        private readonly NameGenerator nameGenerator = new NameGenerator(Path.Combine(Config.maps_folder, "strongholdnames.txt"));
+
+        #region Implementation of IStrongholdConfigurator
+
+        public bool Next(out string name, out byte level, out uint x, out uint y)
+        {
+            if (!nameGenerator.Next(out name))
+            {
+                name = "";
+                level = 0;
+                x = 0;
+                y = 0;
+                return false;
+            }
+            level = (byte)(Config.Random.Next(20) + 1);
+            x = (uint)Config.Random.Next((int)Config.map_width);
+            y = (uint)Config.Random.Next((int)Config.map_height);
+            return true;
+        }
+
+        #endregion
+    }
+}

@@ -8,7 +8,7 @@ using Persistance;
 
 namespace Game.Data
 {
-    public interface ICity : IEnumerable<IStructure>, ICanDo, ILockable, IPersistableObject, ICityRegionObject
+    public interface ICity : IEnumerable<IStructure>, ICanDo, ILockable, IPersistableObject, ICityRegionObject, IStation
     {
         /// <summary>
         ///   Enumerates only through structures in this city

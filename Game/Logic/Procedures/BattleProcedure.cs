@@ -95,7 +95,8 @@ namespace Game.Logic.Procedures
                                                                  structure.Stats.Base.Radius));
         }
 
-        public virtual bool IsNewbieProtected(IPlayer player)
+        //TODO: Change to instance method.. need to make sure City is being created by ninject first though
+        public static bool IsNewbieProtected(IPlayer player)
         {
             return SystemClock.Now.Subtract(player.Created).TotalSeconds < Config.newbie_protection;
         }

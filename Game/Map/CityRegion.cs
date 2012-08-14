@@ -20,7 +20,8 @@ namespace Game.Map
         {
             City = 0,
             Forest = 1,
-            Troop = 2
+            Troop = 2,
+            Stronghold = 6
         }
 
         #endregion

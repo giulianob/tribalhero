@@ -12,7 +12,9 @@ using Game.Comm.ProcessorCommands;
 using Game.Comm.Protocol;
 using Game.Comm.Thrift;
 using Game.Data;
+using Game.Data.Stronghold;
 using Game.Data.Tribe;
+using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
@@ -21,6 +23,7 @@ using Game.Map;
 using Game.Module;
 using Game.Module.Remover;
 using Game.Setup;
+using Game.Util;
 using Game.Util.Locking;
 using Ninject;
 using Ninject.Extensions.Factory;
@@ -50,7 +53,7 @@ namespace Game
                     writer.AutoFlush = true;
                     return new ChatCommandsModule(writer);
                 });
-
+            Bind<Chat>().ToMethod(c => new Chat(Global.Channel));
             #endregion
 
             #region Tribe Objects
@@ -139,7 +142,8 @@ namespace Game
                                                     c.Kernel.Get<PlayerCommandLineModule>(),
                                                     c.Kernel.Get<CityCommandLineModule>(),
                                                     c.Kernel.Get<ResourcesCommandLineModule>(),
-                                                    c.Kernel.Get<TribeCommandLineModule>());
+                                                    c.Kernel.Get<TribeCommandLineModule>(),
+                                                    c.Kernel.Get<StrongholdCommandLineModule>());
                 }).InSingletonScope();
             Bind<Processor>().ToMethod(
                                        c =>
@@ -156,6 +160,7 @@ namespace Game
                                                      c.Kernel.Get<StructureCommandsModule>(),
                                                      c.Kernel.Get<TribeCommandsModule>(),
                                                      c.Kernel.Get<TribesmanCommandsModule>(),
+                                                     c.Kernel.Get<StrongholdCommandsModule>(),
                                                      c.Kernel.Get<TroopCommandsModule>())).InSingletonScope();
 
             #endregion
@@ -177,7 +182,7 @@ namespace Game
 
             // Bind IGameObjectLocator to the World binding
             Bind<IGameObjectLocator>().ToMethod(c => c.Kernel.Get<World>());
-
+            Bind<IWorld>().ToMethod(c => c.Kernel.Get<World>());
             #endregion
 
             #region Misc. Factories
@@ -189,6 +194,24 @@ namespace Game
             Bind<IPlayersRemoverFactory>().ToFactory();
             Bind<IPlayerSelectorFactory>().ToFactory();
             Bind<ICityRemoverFactory>().ToFactory();
+            Bind<IStrongholdFactory>().ToFactory();
+			
+            #endregion
+
+            #region Stronghold
+
+            Bind<IStrongholdManager>().ToMethod(
+                                                c =>
+                                                new StrongholdManager(new IdGenerator(5000),
+                                                                      new StrongholdConfigurator(),
+                                                                      c.Kernel.Get<IStrongholdFactory>(),
+                                                                      c.Kernel.Get<IWorld>(),
+                                                                      c.Kernel.Get<Chat>(),
+                                                                      c.Kernel.Get<IDbManager>())).InSingletonScope();
+            Bind<IStronghold>().To<Stronghold>();
+            Bind<IStrongholdActivationCondition>().To<StrongholdActivationCondition>();
+            Bind<StrongholdActivationChecker>().ToSelf().InSingletonScope();
+
 
             #endregion
         }

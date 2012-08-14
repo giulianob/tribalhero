@@ -14,7 +14,7 @@ namespace Testing.Troop
     {
         public ITroopStub CreateSimpleStub()
         {
-            var stub = new TroopStub();
+            var stub = new TroopStub(0,null);
             stub.AddFormation(FormationType.Normal);
             return stub;
         }

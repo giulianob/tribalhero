@@ -150,23 +150,27 @@
 				lblBattleStatsDefenseUnits.setText("Defender lost " + (data.battleOutcome.defenderJoinCount - data.battleOutcome.defenderLeaveCount) + " out of " + (data.battleOutcome.defenderJoinCount) + " units");
 				lblBattleStatsStructuresDestroyed.setText(StringHelper.makePlural(data.battleOutcome.destroyedStructures, "1 structure was", data.battleOutcome.destroyedStructures + " structures were", "No structures were") + " knocked down");
 				lblBattleStatsTime.setText("Battle lasted " + Util.niceTime(data.battleOutcome.timeLasted, false));
-				lblBattleStatsTribes.setText((data.battleOutcome.attackerTribes.length + data.battleOutcome.defenderTribes.length) + " tribes participated");
 				
-				for each (var defenderTribe:Object in data.battleOutcome.defenderTribes)
-				{
-					var lblTribeDefender:JLabel = new JLabel(defenderTribe.name, null, AsWingConstants.LEFT);
-					GameLookAndFeel.changeClass(lblTribeDefender, "Tooltip.text");
-					pnlBattleStatsTribesDefenders.append(lblTribeDefender);
+				var tribesCount: int = data.battleOutcome.attackerTribes.length + data.battleOutcome.defenderTribes.length;
+				lblBattleStatsTribes.setText(tribesCount + " tribe(s) participated");
+							
+				if (tribesCount > 0) {
+					for each (var defenderTribe:Object in data.battleOutcome.defenderTribes)
+					{
+						var lblTribeDefender:JLabel = new JLabel(defenderTribe.name, null, AsWingConstants.LEFT);
+						GameLookAndFeel.changeClass(lblTribeDefender, "Tooltip.text");
+						pnlBattleStatsTribesDefenders.append(lblTribeDefender);
+					}
+					
+					for each (var attackerTribe:Object in data.battleOutcome.attackerTribes)
+					{
+						var lblTribeAttacker:JLabel = new JLabel(attackerTribe.name, null, AsWingConstants.LEFT);
+						GameLookAndFeel.changeClass(lblTribeAttacker, "Tooltip.text");
+						pnlBattleStatsTribesAttackers.append(lblTribeAttacker);
+					}					
+					tooltipBattleStatsTribes.bind(lblBattleStatsTribes);			
+					tooltipBattleStatsTribes.getUI().pack();
 				}
-				
-				for each (var attackerTribe:Object in data.battleOutcome.attackerTribes)
-				{
-					var lblTribeAttacker:JLabel = new JLabel(attackerTribe.name, null, AsWingConstants.LEFT);
-					GameLookAndFeel.changeClass(lblTribeAttacker, "Tooltip.text");
-					pnlBattleStatsTribesAttackers.append(lblTribeAttacker);
-				}
-				
-				tooltipBattleStatsTribes.getUI().pack();
 			}
 			else {
 				pnlHolder.remove(pnlBattleStats);
@@ -308,8 +312,7 @@
 					pnlTooltipBattleStatsTribes.appendAll(pnlBattleStatsTribesDefenders, pnlBattleStatsTribesAttackers);
 					
 					tooltipBattleStatsTribes.getUI().append(pnlTooltipBattleStatsTribes);
-				}
-				tooltipBattleStatsTribes.bind(lblBattleStatsTribes);			
+				}				
 				
 				var viewport:JViewport = new JViewport(pnlHolder, true, false);
 				viewport.setBorder(new EmptyBorder(null, new Insets(0, 0, 0, 5)));

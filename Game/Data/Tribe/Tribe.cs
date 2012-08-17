@@ -27,7 +27,7 @@ namespace Game.Data.Tribe
         public class IncomingListItem
         {
             public ICity City { get; set; }
-            public AttackChainAction Action { get; set; }
+            public CityAttackChainAction Action { get; set; }
         }
 
         public const string DB_TABLE = "tribes";
@@ -252,9 +252,9 @@ namespace Game.Data.Tribe
             return from tribesmen in Tribesmen
                    from city in tribesmen.Player.GetCityList()
                    from notification in city.Worker.Notifications
-                   where notification.Action is AttackChainAction && notification.Action.WorkerObject.City != city && notification.Subscriptions.Count > 0
+                   where notification.Action is CityAttackChainAction && notification.Action.WorkerObject.City != city && notification.Subscriptions.Count > 0
                    orderby ((ChainAction)notification.Action).EndTime ascending
-                   select new IncomingListItem { Action = (AttackChainAction)notification.Action };
+                   select new IncomingListItem { Action = (CityAttackChainAction)notification.Action };
         }
 
         public bool HasRight(uint playerId, string action)

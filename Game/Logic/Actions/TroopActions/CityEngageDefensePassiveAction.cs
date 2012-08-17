@@ -16,7 +16,7 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    public class EngageDefensePassiveAction : PassiveAction
+    public class CityEngageDefensePassiveAction : PassiveAction
     {
         private readonly uint cityId;
         private readonly uint troopObjectId;
@@ -28,7 +28,7 @@ namespace Game.Logic.Actions
         private decimal originalHp;
         private decimal remainingHp;
 
-        public EngageDefensePassiveAction(uint cityId, uint troopObjectId, BattleProcedure battleProcedure, IGameObjectLocator gameObjectLocator)
+        public CityEngageDefensePassiveAction(uint cityId, uint troopObjectId, BattleProcedure battleProcedure, IGameObjectLocator gameObjectLocator)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
@@ -36,7 +36,7 @@ namespace Game.Logic.Actions
             this.gameObjectLocator = gameObjectLocator;
         }
 
-        public EngageDefensePassiveAction(uint id, bool isVisible, IDictionary<string, string> properties, BattleProcedure battleProcedure, IGameObjectLocator gameObjectLocator) : base(id, isVisible)
+        public CityEngageDefensePassiveAction(uint id, bool isVisible, IDictionary<string, string> properties, BattleProcedure battleProcedure, IGameObjectLocator gameObjectLocator) : base(id, isVisible)
         {
             this.battleProcedure = battleProcedure;
             this.gameObjectLocator = gameObjectLocator;
@@ -57,7 +57,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.EngageDefensePassive;
+                return ActionType.CityEngageDefensePassive;
             }
         }
 

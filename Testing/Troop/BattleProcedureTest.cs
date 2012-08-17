@@ -28,11 +28,11 @@ namespace Testing.Troop
             Mock<ICombatUnitFactory> combatUnitFactory = new Mock<ICombatUnitFactory>();
             Mock<ICombatGroupFactory> combatGroupFactory = new Mock<ICombatGroupFactory>();
             Mock<ObjectTypeFactory> objectTypeFactory = new Mock<ObjectTypeFactory>();
-
-            var stub = new TroopStub(0, new Mock<ICity>().Object);
+            
+            var stub = new TroopStub(0, null);
             stub.AddFormation(FormationType.Normal);
             stub.AddFormation(FormationType.Garrison);
-            stub.AddFormation(FormationType.InBattle);
+            stub.AddFormation(FormationType.InBattle);            
 
             stub.AddUnit(FormationType.Normal, 101, 10);
             

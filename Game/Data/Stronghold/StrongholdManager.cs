@@ -14,23 +14,26 @@ namespace Game.Data.Stronghold
         private readonly ConcurrentDictionary<uint, IStronghold> strongholds = new ConcurrentDictionary<uint, IStronghold>();
 
         private readonly IStrongholdFactory strongholdFactory;
+        
         private readonly IStrongholdConfigurator strongholdConfigurator;
-        private readonly IdGenerator idGenerator;
-        private readonly IWorld world;
-        private Chat chat;
+        
+        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(10000, 5000);
+        
+        private readonly IRegionManager regionManager;
+        
+        private readonly Chat chat;
+
         private readonly IDbManager dbManager;
 
-        public StrongholdManager(IdGenerator idGenerator,
-                                    IStrongholdConfigurator strongholdConfigurator,
+        public StrongholdManager(IStrongholdConfigurator strongholdConfigurator,
                                     IStrongholdFactory strongholdFactory,
-                                    IWorld world,
+                                    IRegionManager regionManager,
                                     Chat chat,
                                     IDbManager dbManager)
         {
-            this.idGenerator = idGenerator;
             this.strongholdConfigurator = strongholdConfigurator;
             this.strongholdFactory = strongholdFactory;
-            this.world = world;
+            this.regionManager = regionManager;
             this.chat = chat;
             this.dbManager = dbManager;
         }
@@ -54,7 +57,7 @@ namespace Game.Data.Stronghold
             strongholds.AddOrUpdate(stronghold.Id, stronghold, (id, old) => stronghold);
         }
 
-        public bool TryGetValue(uint id, out IStronghold stronghold)
+        public bool TryGetStronghold(uint id, out IStronghold stronghold)
         {
             return strongholds.TryGetValue(id, out stronghold);
         }
@@ -81,10 +84,10 @@ namespace Game.Data.Stronghold
         {
             stronghold.StrongholdState = StrongholdState.Neutral;
             stronghold.BeginUpdate();
-            world.Add(stronghold);
+            regionManager.Add(stronghold);
             stronghold.EndUpdate();
             dbManager.Save(stronghold);
-            chat.SendSystemChat(stronghold.Name + "is now activated and can be captured!!");
+            chat.SendSystemChat(string.Format("{0} is now activated and can be captured!!", stronghold.Name));
         }
 
         public void TransferTo(IStronghold stronghold, ITribe tribe)

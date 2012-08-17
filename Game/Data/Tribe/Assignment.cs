@@ -300,11 +300,11 @@ namespace Game.Data.Tribe
             PassiveAction action;
             if (IsAttack)
             {
-                action = actionFactory.CreateAttackChainAction(stub.City.Id, troopObject.ObjectId, structure.City.Id, structure.ObjectId, AttackMode);
+                action = actionFactory.CreateCityAttackChainAction(stub.City.Id, troopObject.ObjectId, structure.City.Id, structure.ObjectId, AttackMode);
             }
             else
             {
-                action = actionFactory.CreateDefenseChainAction(stub.City.Id, troopObject.ObjectId, structure.City.Id, AttackMode);
+                action = actionFactory.CreateCityDefenseChainAction(stub.City.Id, troopObject.ObjectId, structure.City.Id, AttackMode);
             }
 
             if (stub.City.Worker.DoPassive(stub.City, action, true) != Error.Ok)

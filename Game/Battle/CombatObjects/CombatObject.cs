@@ -76,8 +76,6 @@ namespace Game.Battle.CombatObjects
 
         public abstract Resource Loot { get; }
 
-        public abstract ITroopStub TroopStub { get; }
-
         public abstract BattleClass ClassType { get; }
 
         public abstract ushort Count { get; }

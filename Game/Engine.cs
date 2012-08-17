@@ -103,7 +103,7 @@ _________ _______ _________ ______   _______  _
                 FileStream regionChanges = File.Open(regionChangesPath, createRegionChanges ? FileMode.Create : FileMode.Open, FileAccess.ReadWrite);
 
                 // Load map
-                World.Current.Load(map,
+                World.Current.Regions.Load(map,
                                   regionChanges,
                                   createRegionChanges,
                                   Config.map_width,
@@ -181,7 +181,7 @@ _________ _______ _________ ______   _______  _
             BattleFormulas.Current = Ioc.Kernel.Get<BattleFormulas>();
             Concurrency.Current = Ioc.Kernel.Get<ILocker>();
             Formula.Current = Ioc.Kernel.Get<Formula>();
-            World.Current = Ioc.Kernel.Get<World>();
+            World.Current = Ioc.Kernel.Get<IWorld>();
             Procedure.Current = Ioc.Kernel.Get<Procedure>();
             Scheduler.Current = Ioc.Kernel.Get<IScheduler>();
             DbPersistance.Current = Ioc.Kernel.Get<IDbManager>();
@@ -210,7 +210,7 @@ _________ _______ _________ ______   _______  _
             logger.Info("Waiting for scheduler to end...");
             //thriftServer.Stop();
             Scheduler.Current.Pause();
-            World.Current.Unload();
+            World.Current.Regions.Unload();
             Global.Logger.Info("Goodbye!");
 
             State = EngineState.Stopped;

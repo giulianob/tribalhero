@@ -41,7 +41,7 @@ namespace Game.Comm.ProcessorCommands
 
             IStrongholdManager strongholdManager = Ioc.Kernel.Get<IStrongholdManager>();
             IStronghold stronghold;
-            if (!strongholdManager.TryGetValue(strongholdId, out stronghold))
+            if (!strongholdManager.TryGetStronghold(strongholdId, out stronghold))
             {
                 ReplyError(session, packet, Error.StrongholdNotFound);
                 return;
@@ -81,7 +81,7 @@ namespace Game.Comm.ProcessorCommands
 
             IStrongholdManager strongholdManager = Ioc.Kernel.Get<IStrongholdManager>();
             IStronghold stronghold;
-            if(!strongholdManager.TryGetValue(strongholdId, out stronghold))
+            if(!strongholdManager.TryGetStronghold(strongholdId, out stronghold))
             {
                 ReplyError(session, packet, Error.StrongholdNotFound);
                 return;
@@ -136,7 +136,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 uint strongholdId = strongholdIds[i];
                 IStronghold stronghold;
-                if (!strongholdManager.TryGetValue(strongholdIds[i],out stronghold))
+                if (!strongholdManager.TryGetStronghold(strongholdIds[i],out stronghold))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;

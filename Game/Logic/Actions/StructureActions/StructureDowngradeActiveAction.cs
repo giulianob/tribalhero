@@ -148,7 +148,7 @@ namespace Game.Logic.Actions
                 structure.Stats.Labor = 0;
 
                 // Destroy structure
-                World.Current.Remove(structure);
+                World.Current.Regions.Remove(structure);
                 city.ScheduleRemove(structure, false);
 
                 structure.EndUpdate();

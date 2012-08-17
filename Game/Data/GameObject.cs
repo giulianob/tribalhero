@@ -70,7 +70,7 @@ namespace Game.Data
                 return;
 
             City.ObjUpdateEvent(this, origX, origY);
-            World.Current.ObjectUpdateEvent(this, origX, origY);
+            World.Current.Regions.ObjectUpdateEvent(this, origX, origY);
         }
 
         #endregion

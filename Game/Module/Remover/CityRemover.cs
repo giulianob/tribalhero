@@ -152,7 +152,7 @@ namespace Game.Module
                         foreach (IStructure structure in new List<IStructure>(city).Where(structure => !structure.IsBlocked && !structure.IsMainBuilding))
                         {
                             structure.BeginUpdate();
-                            World.Current.Remove(structure);
+                            World.Current.Regions.Remove(structure);
                             city.ScheduleRemove(structure, false);
                             structure.EndUpdate();
                         }
@@ -168,7 +168,7 @@ namespace Game.Module
                                                 true,
                                                 delegate(uint origX, uint origY, uint x1, uint y1, object c)
                                                     {
-                                                        World.Current.RevertTileType(x1, y1, true);
+                                                        World.Current.Regions.RevertTileType(x1, y1, true);
                                                         return true;
                                                     },
                                                 null);
@@ -200,12 +200,10 @@ namespace Game.Module
                     city.Troops.Remove(1);
 
                     // remove city from the region
-                    CityRegion region = World.Current.GetCityRegion(city.X, city.Y);
-                    if (region != null)
-                        region.Remove(city);
+                    World.Current.Regions.CityRegions.Remove(city);
 
                     mainBuilding.BeginUpdate();
-                    World.Current.Remove(mainBuilding);
+                    World.Current.Regions.Remove(mainBuilding);
                     city.ScheduleRemove(mainBuilding, false);
                     mainBuilding.EndUpdate();
 
@@ -220,7 +218,7 @@ namespace Game.Module
                     return;
                 }
                 Global.Logger.Info(string.Format("Player {0}:{1} City {2}:{3} Lvl {4} is deleted.", city.Owner.Name, city.Owner.PlayerId, city.Name, city.Id, city.Lvl));
-                World.Current.Remove(city);
+                World.Current.Cities.Remove(city);
             }
 
         }

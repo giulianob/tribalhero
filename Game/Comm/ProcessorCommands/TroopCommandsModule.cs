@@ -308,7 +308,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var aa = actionFactory.CreateAttackChainAction(cityId, troopObject.ObjectId, targetCityId, targetObjectId, mode);
+                var aa = actionFactory.CreateCityAttackChainAction(cityId, troopObject.ObjectId, targetCityId, targetObjectId, mode);
                 Error ret = city.Worker.DoPassive(city, aa, true);
                 if (ret != 0)
                 {
@@ -369,7 +369,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var da = actionFactory.CreateDefenseChainAction(cityId, troopObject.ObjectId, targetCityId, mode);
+                var da = actionFactory.CreateCityDefenseChainAction(cityId, troopObject.ObjectId, targetCityId, mode);
                 Error ret = city.Worker.DoPassive(city, da, true);
                 if (ret != 0)
                 {

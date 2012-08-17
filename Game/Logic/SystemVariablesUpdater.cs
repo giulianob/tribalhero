@@ -108,7 +108,7 @@ namespace Game.Logic
                                             new SystemVariable("Database.queries_per_second", (int)(queriesRan/now.Subtract(lastDbProbe).TotalSeconds)),
                                             new SystemVariable("Players.count", World.Current.Players.Count),
                                             new SystemVariable("Players.logged_in", TcpWorker.GetSessionCount()),
-                                            new SystemVariable("Cities.count", World.Current.CityCount),
+                                            new SystemVariable("Cities.count", World.Current.Cities.Count),
                                             new SystemVariable("Channel.subscriptions", Global.Channel.SubscriptionCount()),
                                             new SystemVariable("Tribes.count", World.Current.TribeCount),
                                     };

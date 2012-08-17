@@ -20,7 +20,7 @@ using Persistance;
 
 namespace Game.Logic.Actions
 {
-    public class EngageAttackPassiveAction : PassiveAction
+    public class CityEngageAttackPassiveAction : PassiveAction
     {
         private StaminaMonitor StaminaMonitor { get; set; }
 
@@ -52,7 +52,7 @@ namespace Game.Logic.Actions
 
         private int remainingUnitCount;
 
-        public EngageAttackPassiveAction(uint cityId,
+        public CityEngageAttackPassiveAction(uint cityId,
                                          uint troopObjectId,
                                          uint targetCityId,
                                          AttackMode mode,
@@ -77,7 +77,7 @@ namespace Game.Logic.Actions
             bonus = new Resource();
         }
 
-        public EngageAttackPassiveAction(uint id,
+        public CityEngageAttackPassiveAction(uint id,
                                          bool isVisible,
                                          IDictionary<string, string> properties,
                                          BattleFormulas battleFormula,
@@ -121,7 +121,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.EngageAttackPassive;
+                return ActionType.CityEngageAttackPassive;
             }
         }
 

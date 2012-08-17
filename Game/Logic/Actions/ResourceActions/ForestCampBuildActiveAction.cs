@@ -115,7 +115,7 @@ namespace Game.Logic.Actions
                                              delegate(uint ox, uint oy, uint x, uint y, object custom)
                                                  {
                                                      // Check tile type                
-                                                     if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileBuildable", World.Current.GetTileType(x, y)))
+                                                     if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileBuildable", World.Current.Regions.GetTileType(x, y)))
                                                          return true;
 
                                                      // Make sure it's not taken
@@ -132,7 +132,7 @@ namespace Game.Logic.Actions
             if (emptyX == 0 || emptyY == 0)
                 return Error.MapFull;
 
-            World.Current.LockRegion(emptyX, emptyY);
+            World.Current.Regions.LockRegion(emptyX, emptyY);
 
             // add structure to the map                    
             IStructure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(campType, 0);
@@ -148,14 +148,14 @@ namespace Game.Logic.Actions
 
             city.Add(structure);
 
-            if (!World.Current.Add(structure))
+            if (!World.Current.Regions.Add(structure))
             {
                 city.ScheduleRemove(structure, false);
                 city.BeginUpdate();
                 city.Resource.Add(cost);
                 city.EndUpdate();
 
-                World.Current.UnlockRegion(emptyX, emptyY);
+                World.Current.Regions.UnlockRegion(emptyX, emptyY);
                 return Error.MapFull;
             }
 
@@ -177,7 +177,7 @@ namespace Game.Logic.Actions
 
             city.Worker.References.Add(structure, this);
 
-            World.Current.UnlockRegion(emptyX, emptyY);
+            World.Current.Regions.UnlockRegion(emptyX, emptyY);
 
             return Error.Ok;
         }
@@ -213,7 +213,7 @@ namespace Game.Logic.Actions
                 {
                     // Remove the camp
                     structure.BeginUpdate();
-                    World.Current.Remove(structure);
+                    World.Current.Regions.Remove(structure);
                     city.ScheduleRemove(structure, false);
                     structure.EndUpdate();
 
@@ -283,7 +283,7 @@ namespace Game.Logic.Actions
 
                 // Remove the camp                        
                 structure.BeginUpdate();
-                World.Current.Remove(structure);
+                World.Current.Regions.Remove(structure);
                 city.ScheduleRemove(structure, false);
                 structure.EndUpdate();
 

@@ -1,4 +1,5 @@
 using Game.Data;
+using Game.Data.Troop;
 
 namespace Game.Battle.CombatObjects
 {
@@ -11,7 +12,9 @@ namespace Game.Battle.CombatObjects
 
         public abstract uint PlayerId { get; }
 
-        public abstract ICity City { get; }        
+        public abstract ICity City { get; }
+
+        public abstract ITroopStub TroopStub { get; }
 
         public override int Hash
         {

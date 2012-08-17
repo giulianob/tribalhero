@@ -289,7 +289,7 @@ namespace Game.Battle.CombatObjects
 
             ICity city = Structure.City;
 
-            World.Current.LockRegion(Structure.X, Structure.Y);
+            World.Current.Regions.LockRegion(Structure.X, Structure.Y);
             if (Structure.Lvl > 1)
             {
                 Structure.City.Worker.DoPassive(Structure.City, actionFactory.CreateStructureDowngradePassiveAction(Structure.City.Id, Structure.ObjectId), false);
@@ -297,11 +297,11 @@ namespace Game.Battle.CombatObjects
             else
             {
                 Structure.BeginUpdate();
-                World.Current.Remove(Structure);
+                World.Current.Regions.Remove(Structure);
                 city.ScheduleRemove(Structure, true);
                 Structure.EndUpdate();
             }
-            World.Current.UnlockRegion(Structure.X, Structure.Y);
+            World.Current.Regions.UnlockRegion(Structure.X, Structure.Y);
         }
 
         public override void ReceiveReward(int reward, Resource resource)

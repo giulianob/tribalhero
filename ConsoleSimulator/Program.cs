@@ -42,7 +42,7 @@ namespace ConsoleSimulator
                                                      FileAccess.ReadWrite);
 
                 // Load map
-                World.Current.Load(map,
+                World.Current.Regions.Load(map,
                                   regionChanges,
                                   createRegionChanges,
                                   Config.map_width,

@@ -120,7 +120,7 @@ namespace Game.Logic.Actions
                     }
                     else
                     {
-                        var eda = actionFactory.CreateEngageDefensePassiveAction(cityId, troopObjectId);
+                        var eda = actionFactory.CreateCityEngageDefensePassiveAction(cityId, troopObjectId);
                         ExecuteChainAndWait(eda, AfterEngageDefense);
                     }
                 }

@@ -234,7 +234,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             uint cityId;
-            if (!World.Current.FindCityId(cityName, out cityId))
+            if (!World.Current.Cities.FindCityId(cityName, out cityId))
             {
                 ReplyError(session, packet, Error.CityNotFound);
                 return;
@@ -272,7 +272,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             uint targetCityId;
-            if (!World.Current.FindCityId(targetCityName, out targetCityId))
+            if (!World.Current.Cities.FindCityId(targetCityName, out targetCityId))
             {
                 ReplyError(session, packet, Error.CityNotFound);
                 return;

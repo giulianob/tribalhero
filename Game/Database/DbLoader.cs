@@ -388,7 +388,7 @@ namespace Game.Database
                                        Deleted = (City.DeletedState)reader["deleted"]
                                };
 
-                    World.Current.DbLoaderAdd((uint)reader["id"], city);
+                    World.Current.Cities.DbLoaderAdd((uint)reader["id"], city);
 
                     switch (city.Deleted)
                     {
@@ -432,7 +432,7 @@ namespace Game.Database
                     strongholdManager.DbLoaderAdd(stronghold);
                     if (stronghold.StrongholdState != StrongholdState.Inactive)
                     {
-                        World.Current.Add(stronghold);
+                        World.Current.Regions.Add(stronghold);
                     }
                 }
             }
@@ -512,7 +512,7 @@ namespace Game.Database
                         // Create deplete time
                         forest.DepleteAction = new ForestDepleteAction(forest, forest.DepleteTime);
                         Scheduler.Current.Put(forest.DepleteAction);
-                        World.Current.DbLoaderAdd(forest);
+                        World.Current.Regions.DbLoaderAdd(forest);
                         World.Current.Forests.DbLoaderAdd(forest);                        
                     }
 
@@ -552,7 +552,7 @@ namespace Game.Database
                     city.Add(structure.ObjectId, structure, false);
 
                     if (structure.InWorld)
-                        World.Current.DbLoaderAdd(structure);
+                        World.Current.Regions.DbLoaderAdd(structure);
                 }
             }
             
@@ -702,7 +702,7 @@ namespace Game.Database
                         break;
                     case StationType.Stronghold:
                         IStronghold stronghold;
-                        if (!strongholdManager.TryGetValue(stubInfo.stationId, out stronghold))
+                        if (!strongholdManager.TryGetStronghold(stubInfo.stationId, out stronghold))
                             throw new Exception("Stronghold not found");
                         stronghold.Troops.DbLoaderAddStation(stubInfo.stub);
                         break;
@@ -790,7 +790,9 @@ namespace Game.Database
                     city.Add(obj.ObjectId, obj, false);
 
                     if (obj.InWorld)
-                        World.Current.DbLoaderAdd(obj);
+                    {
+                        World.Current.Regions.DbLoaderAdd(obj);
+                    }
                 }
             }
 

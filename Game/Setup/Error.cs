@@ -134,6 +134,10 @@ namespace Game.Setup
         #region Stronghold
         StrongholdNotFound = 801,
         StrongholdNotOccupied = 802,
+
+        StrongholdCantAttackSelf = 810,
+        StrongholdGateNotOpenToTribe = 811,
+        StrongholdBelongsToOther = 812,
         #endregion
 
     }

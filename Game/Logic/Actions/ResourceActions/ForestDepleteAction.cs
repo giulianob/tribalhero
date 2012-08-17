@@ -52,7 +52,7 @@ namespace Game.Logic.Actions.ResourceActions
 
                     // Remove structure from city
                     obj.BeginUpdate();
-                    World.Current.Remove(obj);
+                    World.Current.Regions.Remove(obj);
                     obj.City.ScheduleRemove(obj, false, true);
                     obj.EndUpdate();
                 }

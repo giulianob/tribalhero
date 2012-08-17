@@ -507,7 +507,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            if (!World.Current.IsValidXandY(x, y))
+            if (!World.Current.Regions.IsValidXandY(x, y))
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;

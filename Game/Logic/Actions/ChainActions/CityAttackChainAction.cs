@@ -15,16 +15,7 @@ using Game.Util.Locking;
 
 namespace Game.Logic.Actions
 {
-    public enum AttackMode
-    {
-        Weak = 0,
-
-        Normal = 1,
-
-        Strong = 2
-    }
-
-    public class AttackChainAction : ChainAction
+    public class CityAttackChainAction : ChainAction
     {
         private readonly uint cityId;
 
@@ -64,7 +55,7 @@ namespace Game.Logic.Actions
             }
         }
 
-        public AttackChainAction(uint cityId,
+        public CityAttackChainAction(uint cityId,
                                  uint troopObjectId,
                                  uint targetCityId,
                                  uint targetStructureId,
@@ -87,7 +78,7 @@ namespace Game.Logic.Actions
             this.battleProcedure = battleProcedure;
         }
 
-        public AttackChainAction(uint id,
+        public CityAttackChainAction(uint id,
                                  string chainCallback,
                                  PassiveAction current,
                                  ActionState chainState,
@@ -117,7 +108,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.AttackChain;
+                return ActionType.CityAttackChain;
             }
         }
 
@@ -153,7 +144,7 @@ namespace Game.Logic.Actions
                 return Error.AttackSelf;
             }
 
-            int currentAttacks = city.Worker.PassiveActions.Values.Count(action => action is AttackChainAction);
+            int currentAttacks = city.Worker.PassiveActions.Values.Count(action => action is CityAttackChainAction);
             if (currentAttacks > 20)
             {
                 return Error.TooManyTroops;
@@ -222,7 +213,7 @@ namespace Game.Logic.Actions
 
                 using (locker.Lock(lockAllStationed, null, city, targetCity))
                 {
-                    var bea = actionFactory.CreateEngageAttackPassiveAction(cityId, troopObject.ObjectId, targetCityId, mode);
+                    var bea = actionFactory.CreateCityEngageAttackPassiveAction(cityId, troopObject.ObjectId, targetCityId, mode);
                     ExecuteChainAndWait(bea, AfterBattle);
                 }
             }
@@ -316,7 +307,7 @@ namespace Game.Logic.Actions
                     }
                     else
                     {
-                        var eda = actionFactory.CreateEngageDefensePassiveAction(cityId, troopObject.ObjectId);
+                        var eda = actionFactory.CreateCityEngageDefensePassiveAction(cityId, troopObject.ObjectId);
                         ExecuteChainAndWait(eda, AfterEngageDefense);
                     }
                 }
@@ -343,6 +334,14 @@ namespace Game.Logic.Actions
         public override Error Validate(string[] parms)
         {
             return Error.Ok;
+        }
+
+        public override ActionCategory Category
+        {
+            get
+            {
+                return ActionCategory.Attack;
+            }
         }
     }
 }

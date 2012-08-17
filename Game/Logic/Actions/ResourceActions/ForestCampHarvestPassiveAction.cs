@@ -121,7 +121,7 @@ namespace Game.Logic.Actions
 
                 // Remove ourselves
                 structure.BeginUpdate();
-                World.Current.Remove(structure);
+                World.Current.Regions.Remove(structure);
                 city.ScheduleRemove(structure, false);
                 structure.EndUpdate();
 

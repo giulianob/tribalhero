@@ -52,7 +52,7 @@ namespace Game.Comm
                 return "sendresources --city=city [--crop=###] [--wood=###] [--iron=###] [--labor=###] [--gold=###]";
 
             uint cityId;
-            if (!World.Current.FindCityId(cityName, out cityId))
+            if (!World.Current.Cities.FindCityId(cityName, out cityId))
                 return "City not found";
 
             ICity city;
@@ -96,7 +96,7 @@ namespace Game.Comm
                 return "trainunits --city=city --type=type --count=count";
 
             uint cityId;
-            if (!World.Current.FindCityId(cityName, out cityId))
+            if (!World.Current.Cities.FindCityId(cityName, out cityId))
                 return "City not found";
 
             ICity city;

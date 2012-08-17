@@ -7,6 +7,7 @@ using Game.Battle;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Data;
+using Game.Data.Stronghold;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Map;
@@ -67,7 +68,7 @@ namespace Game.Logic.Procedures
                                                                              new BattleOwner(BattleOwnerType.City, targetCity.Id),
                                                                              targetCity);
 
-                var battlePassiveAction = actionFactory.CreateBattlePassiveAction(targetCity.City.Id);
+                var battlePassiveAction = actionFactory.CreateCityBattlePassiveAction(targetCity.City.Id);
 
                 AddLocalStructuresToBattle(targetCity.Battle, targetCity, attackerTroopObject);
                 combatGroup = AddAttackerToBattle(targetCity.Battle, attackerTroopObject);
@@ -255,6 +256,46 @@ namespace Game.Logic.Procedures
                 structure.Stats.Hp += restore;
                 structure.EndUpdate();
             }
+        }
+
+        public bool HasTooManyAttacks(ICity city)
+        {
+            return city.Worker.PassiveActions.Values.Count(action => action.Category == ActionCategory.Attack) > 20;
+        }
+
+        public Error CanStrongholdBeAttacked(ICity city, IStronghold stronghold)
+        {
+            if (!city.Owner.IsInTribe)
+            {
+                return Error.TribesmanNotPartOfTribe;
+            }
+
+            if (city.Owner.Tribesman.Tribe == stronghold.Tribe)
+            {
+                return Error.StrongholdCantAttackSelf;
+            }
+
+            if (stronghold.GateOpenTo != null && stronghold.GateOpenTo != city.Owner.Tribesman.Tribe)
+            {
+                return Error.StrongholdGateNotOpenToTribe;
+            }
+
+            return Error.Ok;
+        }
+
+        public Error CanStrongholdBeDefended(ICity city, IStronghold stronghold)
+        {
+            if (!city.Owner.IsInTribe)
+            {
+                return Error.TribesmanNotPartOfTribe;
+            }
+
+            if (city.Owner.Tribesman.Tribe != stronghold.Tribe)
+            {
+                return Error.StrongholdBelongsToOther;
+            }
+
+            return Error.Ok;            
         }
     }
 }

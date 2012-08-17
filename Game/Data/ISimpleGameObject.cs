@@ -1,6 +1,6 @@
 namespace Game.Data
 {
-    public interface ISimpleGameObject
+    public interface ISimpleGameObject : IXYPosition
     {
         bool InWorld { get; set; }
 
@@ -11,10 +11,6 @@ namespace Game.Data
         uint GroupId { get; }
 
         uint ObjectId { get; set; }
-
-        uint X { get; set; }
-
-        uint Y { get; set; }
 
         uint RelX { get; }
 

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
-using System.Text;
 using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Map;
@@ -18,13 +16,19 @@ namespace Game.Data.Stronghold
         #region Implementation of IStronghold
 
         public uint Id { get; private set; }
+
         public string Name { get; private set; }
+
         public ushort Radius { get; private set; }
+
         public StrongholdState StrongholdState { get; set; }
+        
         public LazyValue Gate { get; private set; }
+        
         public ITroopManager Troops { get; private set; }
 
         private ITribe tribe;
+
         public ITribe Tribe
         {
             get
@@ -33,10 +37,12 @@ namespace Game.Data.Stronghold
             }
             set
             {
-                StrongholdState = value!=null ? StrongholdState.Occupied : StrongholdState.Neutral;
+                StrongholdState = value != null ? StrongholdState.Occupied : StrongholdState.Neutral;
                 tribe = value;
             }
         }
+
+        public ITribe GateOpenTo { get; set; }
 
         #endregion
 
@@ -51,7 +57,6 @@ namespace Game.Data.Stronghold
             this.y = y;
             Troops = new TroopManager(this, null);
 
-            StrongholdState = StrongholdState.Inactive;
             Gate = new LazyValue(0);
         }
 
@@ -266,6 +271,7 @@ namespace Game.Data.Stronghold
                                new DbColumn("gate", Gate.Value, DbType.Int32),
                                new DbColumn("x", x, DbType.UInt32),
                                new DbColumn("y", y, DbType.UInt32),
+                               new DbColumn("gate_open_to", GateOpenTo == null ? 0 : GateOpenTo.Id, DbType.UInt32)
                        };
             }
         }
@@ -277,5 +283,5 @@ namespace Game.Data.Stronghold
         public bool DbPersisted { get; set; }
 
         #endregion
-        }
+    }
 }

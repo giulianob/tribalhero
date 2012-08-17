@@ -1,11 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Game.Battle;
-using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
-using Game.Battle.RewardStrategies;
 using Game.Comm;
 using Game.Comm.CmdLine_Commands;
 using Game.Comm.ProcessorCommands;
@@ -14,18 +13,16 @@ using Game.Comm.Thrift;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
-using Game.Database;
 using Game.Logic;
-using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
-using Game.Module.Remover;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using Ninject;
+using Ninject.Extensions.Conventions;
 using Ninject.Extensions.Factory;
 using Ninject.Extensions.Logging.Log4net.Infrastructure;
 using Ninject.Modules;
@@ -40,11 +37,11 @@ namespace Game
     {
         public override void Load()
         {
+
             #region General Comms
 
             Bind<IPolicyServer>().To<PolicyServer>().InSingletonScope();
-            Bind<ITcpServer>().To<TcpServer>().InSingletonScope();
-            Bind<ISocketSessionFactory>().ToFactory();
+            Bind<ITcpServer>().To<TcpServer>().InSingletonScope();            
             Bind<TServer>().ToMethod(c => new TSimpleServer(new Notification.Processor(c.Kernel.Get<NotificationHandler>()), new TServerSocket(46000)));
             Bind<IProtocol>().To<PacketProtocol>();
             Bind<ChatCommandsModule>().ToMethod(c =>
@@ -119,15 +116,9 @@ namespace Game
 
             Bind<IBattleReportWriter>().To<SqlBattleReportWriter>();
 
-            Bind<IRewardStrategyFactory>().ToFactory();
-
-            Bind<ICombatGroupFactory>().ToFactory();
-
             Bind<ICombatUnitFactory>().ToMethod(c => new CombatUnitFactory(c.Kernel));
 
             Bind<ICombatList>().To<CombatList>().NamedLikeFactoryMethod((ICombatListFactory p) => p.GetCombatList());
-
-            Bind<ICombatListFactory>().ToFactory();
             
             #endregion
 
@@ -135,8 +126,10 @@ namespace Game
 
             Bind<CommandLineProcessor>().ToMethod(c =>
                 {
-                    var writer = new StreamWriter("commandline.log", true, Encoding.UTF8);
-                    writer.AutoFlush = true;
+                    var writer = new StreamWriter("commandline.log", true, Encoding.UTF8)
+                    {
+                            AutoFlush = true
+                    };
                     return new CommandLineProcessor(writer,
                                                     c.Kernel.Get<AssignmentCommandLineModule>(),
                                                     c.Kernel.Get<PlayerCommandLineModule>(),
@@ -178,40 +171,39 @@ namespace Game
 
             #region World/Map
 
-            Bind<World>().ToSelf().InSingletonScope();
-
-            // Bind IGameObjectLocator to the World binding
+            Bind<IWorld>().To<World>().InSingletonScope();            
             Bind<IGameObjectLocator>().ToMethod(c => c.Kernel.Get<World>());
-            Bind<IWorld>().ToMethod(c => c.Kernel.Get<World>());
-            #endregion
 
-            #region Misc. Factories
-            
-            Bind<IProtocolFactory>().ToFactory();
-            Bind<IAssignmentFactory>().ToFactory();
-            Bind<IActionFactory>().ToFactory();
-            Bind<ITribeFactory>().ToFactory();
-            Bind<IPlayersRemoverFactory>().ToFactory();
-            Bind<IPlayerSelectorFactory>().ToFactory();
-            Bind<ICityRemoverFactory>().ToFactory();
-            Bind<IStrongholdFactory>().ToFactory();
-			
+            Bind<IRegionManager>().To<RegionManager>().InSingletonScope();
+            Bind<ICityManager>().To<CityManager>().InSingletonScope();
+            Bind<ICityRegionManager>().To<CityRegionManager>().InSingletonScope();
+
             #endregion
 
             #region Stronghold
 
-            Bind<IStrongholdManager>().ToMethod(
-                                                c =>
-                                                new StrongholdManager(new IdGenerator(5000),
-                                                                      new StrongholdConfigurator(c.Kernel.Get<MapFactory>(),c.Kernel.Get<TileLocator>()),
-                                                                      c.Kernel.Get<IStrongholdFactory>(),
-                                                                      c.Kernel.Get<IWorld>(),
-                                                                      c.Kernel.Get<Chat>(),
-                                                                      c.Kernel.Get<IDbManager>())).InSingletonScope();
+            Bind<IStrongholdManager>().To<StrongholdManager>().InSingletonScope();
+
+            Bind<IStrongholdConfigurator>().To<StrongholdConfigurator>().InSingletonScope();
             Bind<IStronghold>().To<Stronghold>();
             Bind<IStrongholdActivationCondition>().To<DummyActivationCondition>();
             Bind<StrongholdActivationChecker>().ToSelf().InSingletonScope();
 
+            #endregion
+
+            #region Conventions
+
+            // Binds any interface that ends with Factory to auto factory if it doesn't have any implementations
+            var explicitFactoryBindings = Bindings.Where(t => t.Service.Name.EndsWith("Factory")).ToLookup(k => k.Service.AssemblyQualifiedName, v => v.Service);
+            this.Bind(x => x.FromThisAssembly().SelectAllInterfaces().EndingWith("Factory").Where(t =>
+                {
+                    var notBinded = !explicitFactoryBindings.Contains(t.AssemblyQualifiedName);
+                    if (notBinded)
+                    {
+                        Console.Out.WriteLine("Binding {0}", t.FullName);
+                    }
+                    return notBinded;
+                }).BindToFactory());
 
             #endregion
         }

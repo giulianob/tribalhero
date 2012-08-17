@@ -203,7 +203,7 @@ namespace Game.Module
                         if (!allowedBuildings.Contains(buildingType))
                             continue;
 
-                        var action = new StructureBuildActiveAction(city.Id, buildingType, x, y, 1);
+                        var action = Ioc.Kernel.Get<IActionFactory>().CreateStructureBuildActiveAction(city.Id, buildingType, x, y, 1);
                         if (city.Worker.DoActive(workerType, structure, action, structure.Technologies) == Error.Ok)
                         {
                             //Global.Logger.Info(string.Format("{0} building {1} at ({2},{3})", city.Name, buildingType, structure.Stats.Base.Lvl, x, y));
@@ -289,9 +289,9 @@ namespace Game.Module
                     var city = new City(npc, string.Format("{0} {1}", npc.Name, npc.GetCityCount() + 1), Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), structure, 0);
                     npc.Add(city);
 
-                    World.Current.Add(city);
+                    World.Current.Cities.Add(city);
                     structure.BeginUpdate();
-                    World.Current.Add(structure);
+                    World.Current.Regions.Add(structure);
                     structure.EndUpdate();
 
                     var defaultTroop = city.Troops.Create();
@@ -321,7 +321,7 @@ namespace Game.Module
         {
             var city = (custom as ICity);
 
-            ushort tileType = World.Current.GetTileType(x, y);
+            ushort tileType = World.Current.Regions.GetTileType(x, y);
             if (Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileTree", tileType))
             {
                 // Lumber mill
@@ -331,7 +331,7 @@ namespace Game.Module
                 structure.Stats.Labor = structure.Stats.Base.MaxLabor;
 
                 city.Add(structure);
-                World.Current.Add(structure);
+                World.Current.Regions.Add(structure);
             }
             else if (Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileCrop", tileType))
             {
@@ -342,7 +342,7 @@ namespace Game.Module
                 structure.Stats.Labor = structure.Stats.Base.MaxLabor;
 
                 city.Add(structure);
-                World.Current.Add(structure);
+                World.Current.Regions.Add(structure);
             }
             else if (x == origX - 1 && y == origY - 1)
             {
@@ -352,7 +352,7 @@ namespace Game.Module
                 structure.Y = y;
 
                 city.Add(structure);
-                World.Current.Add(structure);
+                World.Current.Regions.Add(structure);
             }
 
             return true;

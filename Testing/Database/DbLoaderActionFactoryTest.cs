@@ -203,7 +203,7 @@ namespace Testing.Database
             {
                 get
                 {
-                    return ActionType.AttackChain;
+                    return ActionType.CityAttackChain;
                 }
             }
 
@@ -255,7 +255,7 @@ namespace Testing.Database
             {
                 get
                 {
-                    return ActionType.AttackChain;
+                    return ActionType.CityAttackChain;
                 }
             }
 

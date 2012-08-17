@@ -16,7 +16,7 @@ using Game.Util.Locking;
 
 namespace Game.Logic.Actions
 {
-    public class DefenseChainAction : ChainAction
+    public class CityDefenseChainAction : ChainAction
     {
         private readonly uint cityId;
         private readonly uint troopObjectId;
@@ -25,7 +25,7 @@ namespace Game.Logic.Actions
 
         private readonly BattleProcedure battleProcedure;
 
-        public DefenseChainAction(uint cityId, uint troopObjectId, uint targetCityId, AttackMode mode, BattleProcedure battleProcedure)
+        public CityDefenseChainAction(uint cityId, uint troopObjectId, uint targetCityId, AttackMode mode, BattleProcedure battleProcedure)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
@@ -34,7 +34,7 @@ namespace Game.Logic.Actions
             this.battleProcedure = battleProcedure;
         }
 
-        public DefenseChainAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, Dictionary<string, string> properties, BattleProcedure battleProcedure)
+        public CityDefenseChainAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, Dictionary<string, string> properties, BattleProcedure battleProcedure)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
             this.battleProcedure = battleProcedure;
@@ -47,7 +47,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.DefenseChain;
+                return ActionType.CityDefenseChain;
             }
         }
 
@@ -71,7 +71,7 @@ namespace Game.Logic.Actions
             if (!World.Current.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
                 return Error.ObjectNotFound;
 
-            int currentReinforcements = city.Worker.PassiveActions.Values.Count(action => action is DefenseChainAction);
+            int currentReinforcements = city.Worker.PassiveActions.Values.Count(action => action is CityDefenseChainAction);
             if (currentReinforcements > 20)
             {
                 return Error.TooManyTroops;

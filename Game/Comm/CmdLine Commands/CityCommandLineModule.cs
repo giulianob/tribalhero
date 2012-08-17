@@ -53,7 +53,7 @@ namespace Game.Comm.CmdLine_Commands
                 return "deletestucktroop --city=### --stubId=###";
 
             uint cityId;
-            if (!World.Current.FindCityId(cityName, out cityId))
+            if (!World.Current.Cities.FindCityId(cityName, out cityId))
                 return "City not found";
 
             ICity city;
@@ -103,9 +103,11 @@ namespace Game.Comm.CmdLine_Commands
             if (help || x == 0 || y == 0)
                 return "removestructure --x=### --y=###";
 
-            Region region = World.Current.GetRegion(x, y);
+            Region region = World.Current.Regions.GetRegion(x, y);
             if (region == null)
+            {
                 return "Invalid coordinates";
+            }
 
             var structure = region.GetObjects(x, y).OfType<IStructure>().FirstOrDefault();
             
@@ -153,7 +155,7 @@ namespace Game.Comm.CmdLine_Commands
                 return "renamecity --city=city --newname=name";
 
             uint cityId;
-            if (!World.Current.FindCityId(cityName, out cityId))
+            if (!World.Current.Cities.FindCityId(cityName, out cityId))
                 return "City not found";
 
             ICity city;

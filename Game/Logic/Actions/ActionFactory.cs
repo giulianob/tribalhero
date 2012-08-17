@@ -7,13 +7,13 @@ namespace Game.Logic.Actions
     // the correct type
     public interface IActionFactory
     {
-        AttackChainAction CreateAttackChainAction(uint cityId, uint troopObjectId, uint targetCityId, uint targetStructureId, AttackMode mode);
+        CityAttackChainAction CreateCityAttackChainAction(uint cityId, uint troopObjectId, uint targetCityId, uint targetStructureId, AttackMode mode);
 
         StructureBuildActiveAction CreateStructureBuildActiveAction(uint cityId, ushort type, uint x, uint y, byte level);
 
         ResourceSendActiveAction CreateResourceSendActiveAction(uint cityId, uint structureId, uint targetCityId, Resource resource);
 
-        BattlePassiveAction CreateBattlePassiveAction(uint cityId);
+        CityBattlePassiveAction CreateCityBattlePassiveAction(uint cityId);
 
         UnitTrainActiveAction CreateUnitTrainActiveAction(uint cityId, uint structureId, ushort type, ushort count);
 
@@ -23,9 +23,9 @@ namespace Game.Logic.Actions
 
         ResourceGatherActiveAction CreateResourceGatherActiveAction(uint cityId, uint objectId);
 
-        EngageDefensePassiveAction CreateEngageDefensePassiveAction(uint cityId, uint troopObjectId);
+        CityEngageDefensePassiveAction CreateCityEngageDefensePassiveAction(uint cityId, uint troopObjectId);
 
-        EngageAttackPassiveAction CreateEngageAttackPassiveAction(uint cityId, uint troopObjectId, uint targetCityId, AttackMode mode);
+        CityEngageAttackPassiveAction CreateCityEngageAttackPassiveAction(uint cityId, uint troopObjectId, uint targetCityId, AttackMode mode);
 
         StructureSelfDestroyPassiveAction CreateStructureSelfDestroyPassiveAction(uint cityId, uint objectId);
 
@@ -57,7 +57,7 @@ namespace Game.Logic.Actions
 
         ForestCampHarvestPassiveAction CreateForestCampHarvestPassiveAction(uint cityId, uint forestId);
 
-        DefenseChainAction CreateDefenseChainAction(uint cityId, uint troopObjectId, uint targetCityId, AttackMode mode);
+        CityDefenseChainAction CreateCityDefenseChainAction(uint cityId, uint troopObjectId, uint targetCityId, AttackMode mode);
 
         TroopMovePassiveAction CreateTroopMovePassiveAction(uint cityId, uint troopObjectId, uint x, uint y, bool isReturningHome, bool isAttacking);
 

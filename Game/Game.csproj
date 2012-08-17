@@ -86,6 +86,9 @@
     <Reference Include="Ninject">
       <HintPath>..\Lib\ninject\Ninject.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject.Extensions.Conventions">
+      <HintPath>..\Lib\ninject\Ninject.Extensions.Conventions.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject.Extensions.Factory">
       <HintPath>..\Lib\ninject\Ninject.Extensions.Factory.dll</HintPath>
     </Reference>
@@ -207,6 +210,7 @@
     <Compile Include="Data\IStation.cs" />
     <Compile Include="Data\IStructure.cs" />
     <Compile Include="Data\ITechnologyManager.cs" />
+    <Compile Include="Data\IXYPosition.cs" />
     <Compile Include="Data\LazyValue.cs" />
     <Compile Include="Data\PlayerRights.cs" />
     <Compile Include="Data\Stats\TroopStats.cs" />
@@ -251,8 +255,10 @@
     <Compile Include="GameModule.cs" />
     <Compile Include="Logic\ActionRequirement.cs" />
     <Compile Include="Logic\Actions\ActionFactory.cs" />
-    <Compile Include="Logic\Actions\ChainActions\AttackChainAction.cs" />
+    <Compile Include="Logic\Actions\ChainActions\AttackMode.cs" />
+    <Compile Include="Logic\Actions\ChainActions\CityAttackChainAction.cs" />
     <Compile Include="Logic\Actions\ChainAction.cs" />
+    <Compile Include="Logic\Actions\ChainActions\StrongholdAttackChainAction.cs" />
     <Compile Include="Logic\Actions\Miscellaneous\CityCreatePassiveAction.cs" />
     <Compile Include="Logic\Actions\MovementActions\TroopMovePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\CityRadiusChangePassiveAction.cs" />
@@ -266,8 +272,8 @@
     <Compile Include="Logic\Actions\TechnologyActions\TechnologyCreatePassiveAction.cs" />
     <Compile Include="Logic\Actions\TechnologyActions\TechnologyUpgradeActiveAction.cs" />
     <Compile Include="Logic\Actions\TribeActions\TribeContributeActiveAction.cs" />
-    <Compile Include="Logic\Actions\TroopActions\BattlePassiveAction.cs" />
-    <Compile Include="Logic\Actions\TroopActions\EngageAttackPassiveAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\CityBattlePassiveAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\CityEngageAttackPassiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\UnitTrainActiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\UnitUpgradeActiveAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\StructureUpgradeActiveAction.cs" />
@@ -300,7 +306,13 @@
     <Compile Include="Logic\Scheduler.cs" />
     <Compile Include="Logic\ThreadedScheduler.cs" />
     <Compile Include="Data\ICityRegionObject.cs" />
+    <Compile Include="Map\CityManager.cs" />
+    <Compile Include="Map\CityRegionManager.cs" />
+    <Compile Include="Map\ICityManager.cs" />
+    <Compile Include="Map\ICityRegionManager.cs" />
+    <Compile Include="Map\ICityRegionManagerFactory.cs" />
     <Compile Include="Map\IGameObjectLocator.cs" />
+    <Compile Include="Map\IRegionManager.cs" />
     <Compile Include="Map\IWorld.cs" />
     <Compile Include="Map\Location.cs" />
     <Compile Include="Map\MapMath.cs" />
@@ -308,6 +320,7 @@
     <Compile Include="Map\ObjectList.AllObjectEnum.cs" />
     <Compile Include="Map\ObjectList.cs" />
     <Compile Include="Map\RadiusLocator.cs" />
+    <Compile Include="Map\RegionManager.cs" />
     <Compile Include="Map\ReverseTileLocator.cs" />
     <Compile Include="Map\RoadPathFinder.cs" />
     <Compile Include="Map\TileLocator.cs" />
@@ -379,7 +392,7 @@
     <Compile Include="Data\StructureProperties.cs" />
     <Compile Include="Data\Forest.cs" />
     <Compile Include="Data\Troop\TroopTemplate.cs" />
-    <Compile Include="Logic\Actions\ChainActions\DefenseChainAction.cs" />
+    <Compile Include="Logic\Actions\ChainActions\CityDefenseChainAction.cs" />
     <Compile Include="Logic\Actions\ChainActions\RetreatChainAction.cs" />
     <Compile Include="Logic\Actions\ChainExecuter.cs" />
     <Compile Include="Logic\Actions\Miscellaneous\ObjectRemovePassiveAction.cs" />
@@ -396,7 +409,7 @@
     <Compile Include="Logic\Actions\StructureActions\LaborMoveActiveAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\PropertyCreatePassiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\StarvePassiveAction.cs" />
-    <Compile Include="Logic\Actions\TroopActions\EngageDefensePassiveAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\CityEngageDefensePassiveAction.cs" />
     <Compile Include="Logic\Formulas\Formula.Forest.cs" />
     <Compile Include="Logic\Formulas\Formula.Ranking.cs" />
     <Compile Include="Logic\Conditons\IBaseBattleStatsCondition.cs" />

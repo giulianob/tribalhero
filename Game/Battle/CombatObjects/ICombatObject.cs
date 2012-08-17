@@ -46,9 +46,7 @@ namespace Game.Battle.CombatObjects
 
         ushort Type { get; }
 
-        Resource Loot { get; }
-
-        ITroopStub TroopStub { get; }
+        Resource Loot { get; }        
 
         BattleClass ClassType { get; }
 

@@ -43,7 +43,7 @@ namespace Game.Logic.Procedures
 
             troopObject.BeginUpdate();
             troopObject.Stats = new TroopStats(Formula.Current.GetTroopRadius(stub, null), Formula.Current.GetTroopSpeed(stub));
-            World.Current.Add(troopObject);
+            World.Current.Regions.Add(troopObject);
             troopObject.EndUpdate();            
         }
 
@@ -65,7 +65,7 @@ namespace Game.Logic.Procedures
 
             troopObject.BeginUpdate();
             troopObject.Stats = new TroopStats(Formula.Current.GetTroopRadius(troopStub, null), Formula.Current.GetTroopSpeed(troopStub));
-            World.Current.Add(troopObject);
+            World.Current.Regions.Add(troopObject);
             troopObject.EndUpdate();
 
             return true;

@@ -18,9 +18,12 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly RadiusLocator radiusLocator;
 
-        public RegionCommandsModule(RadiusLocator radiusLocator)
+        private readonly IWorld world;
+
+        public RegionCommandsModule(RadiusLocator radiusLocator, IWorld world)
         {
             this.radiusLocator = radiusLocator;
+            this.world = world;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -54,14 +57,14 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            if (!World.Current.IsValidXandY(x, y))
+            if (!world.Regions.IsValidXandY(x, y))
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
             // Make sure there is no structure at this point that has no road requirement
-            if (World.Current[x, y].Any(s => s is IStructure && Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("NoRoadRequired", (IStructure)s)))
+            if (world.Regions[x, y].Any(s => s is IStructure && Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("NoRoadRequired", (IStructure)s)))
             {
                 ReplyError(session, packet, Error.StructureExists);
                 return;
@@ -83,12 +86,12 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                World.Current.LockRegion(x, y);
+                world.Regions.LockRegion(x, y);
 
                 // Make sure this tile is not already a road
-                if (RoadManager.IsRoad(x, y))
+                if (world.Roads.IsRoad(x, y))
                 {
-                    World.Current.UnlockRegion(x, y);
+                    world.Regions.UnlockRegion(x, y);
                     ReplyError(session, packet, Error.RoadAlreadyExists);
                     return;
                 }
@@ -110,7 +113,7 @@ namespace Game.Comm.ProcessorCommands
                                                         return false;
                                                     }
 
-                                                    if (RoadManager.IsRoad(x1, y1) && !World.Current[x1, y1].Exists(s => s is IStructure))
+                                                    if (world.Roads.IsRoad(x1, y1) && !world.Regions[x1, y1].Exists(s => s is IStructure))
                                                     {
                                                         hasRoad = true;
                                                         return false;
@@ -122,21 +125,21 @@ namespace Game.Comm.ProcessorCommands
 
                 if (!hasRoad)
                 {
-                    World.Current.UnlockRegion(x, y);
+                    world.Regions.UnlockRegion(x, y);
                     ReplyError(session, packet, Error.RoadNotAround);
                     return;
                 }
 
-                if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileBuildable", World.Current.GetTileType(x, y)))
+                if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileBuildable", world.Regions.GetTileType(x, y)))
                 {
-                    World.Current.UnlockRegion(x, y);
+                    world.Regions.UnlockRegion(x, y);
                     ReplyError(session, packet, Error.TileMismatch);
                     return;
                 }
 
-                World.Current.RoadManager.CreateRoad(x, y);
+                world.Roads.CreateRoad(x, y);
 
-                World.Current.UnlockRegion(x, y);
+                world.Regions.UnlockRegion(x, y);
 
                 session.Write(reply);
             }
@@ -162,7 +165,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            if (!World.Current.IsValidXandY(x, y))
+            if (!world.Regions.IsValidXandY(x, y))
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -184,20 +187,20 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                World.Current.LockRegion(x, y);
+                world.Regions.LockRegion(x, y);
 
                 // Make sure this tile is indeed a road
-                if (!RoadManager.IsRoad(x, y))
+                if (!world.Roads.IsRoad(x, y))
                 {
-                    World.Current.UnlockRegion(x, y);
+                    world.Regions.UnlockRegion(x, y);
                     ReplyError(session, packet, Error.TileMismatch);
                     return;
                 }
 
                 // Make sure there is no structure at this point
-                if (World.Current[x, y].Exists(s => s is IStructure))
+                if (world.Regions[x, y].Exists(s => s is IStructure))
                 {
-                    World.Current.UnlockRegion(x, y);
+                    world.Regions.UnlockRegion(x, y);
                     ReplyError(session, packet, Error.StructureExists);
                     return;
                 }
@@ -219,7 +222,7 @@ namespace Game.Comm.ProcessorCommands
 
                 if (breaksRoad)
                 {
-                    World.Current.UnlockRegion(x, y);
+                    world.Regions.UnlockRegion(x, y);
                     ReplyError(session, packet, Error.RoadDestroyUniquePath);
                     return;
                 }
@@ -238,7 +241,7 @@ namespace Game.Comm.ProcessorCommands
                                                     if (city.X == x1 && city.Y == y1)
                                                         return true;
 
-                                                    if (RoadManager.IsRoad(x1, y1))
+                                                    if (world.Roads.IsRoad(x1, y1))
                                                     {
                                                         if (
                                                                 !RoadPathFinder.HasPath(new Location(x1, y1),
@@ -257,14 +260,14 @@ namespace Game.Comm.ProcessorCommands
 
                 if (!allNeighborsHaveOtherPaths)
                 {
-                    World.Current.UnlockRegion(x, y);
+                    world.Regions.UnlockRegion(x, y);
                     ReplyError(session, packet, Error.RoadDestroyUniquePath);
                     return;
                 }
 
-                World.Current.RoadManager.DestroyRoad(x, y);
+                world.Roads.DestroyRoad(x, y);
 
-                World.Current.UnlockRegion(x, y);
+                world.Regions.UnlockRegion(x, y);
                 session.Write(reply);
             }
         }
@@ -318,7 +321,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             uint cityId;
-            if (!World.Current.FindCityId(cityName, out cityId))
+            if (!world.Cities.FindCityId(cityName, out cityId))
             {
                 ReplyError(session, packet, Error.CityNotFound);
                 return;
@@ -438,8 +441,8 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 reply.AddUInt16(regionId);                
-                reply.AddBytes(World.Current.GetRegion(regionId).GetObjectBytes());
-                World.Current.SubscribeRegion(session, regionId);
+                reply.AddBytes(world.Regions.GetRegion(regionId).GetObjectBytes());
+                world.Regions.SubscribeRegion(session, regionId);
             }
 
             byte regionUnsubscribeCount;
@@ -468,7 +471,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                World.Current.UnsubscribeRegion(session, regionId);
+                world.Regions.UnsubscribeRegion(session, regionId);
             }
 
             if (Global.Channel.SubscriptionCount(session) > 30)
@@ -515,7 +518,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 reply.AddUInt16(regionId);
-                reply.AddBytes(World.Current.GetCityRegion(regionId).GetCityBytes());
+                reply.AddBytes(world.Regions.CityRegions.GetCityRegion(regionId).GetCityBytes());
             }
 
             session.Write(reply);

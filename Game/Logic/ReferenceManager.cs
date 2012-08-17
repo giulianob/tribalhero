@@ -76,6 +76,9 @@ namespace Game.Logic
         #endregion
     }
 
+    /// <summary>
+    /// Allows adding a reference of an action to an object. E.g. For attaching the AttackChainAction to the moving TroopObject
+    /// </summary>
     public class ReferenceManager : IEnumerable<ReferenceStub>
     {
         private readonly IActionWorker actionWorker;

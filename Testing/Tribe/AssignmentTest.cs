@@ -299,7 +299,7 @@ namespace Testing.Tribe
 
             // Dispatch first troop
             assignment.Callback(null);
-            actionFactory.Verify(m => m.CreateDefenseChainAction(20, 99, 100, AttackMode.Strong));
+            actionFactory.Verify(m => m.CreateCityDefenseChainAction(20, 99, 100, AttackMode.Strong));
         }
 
         private Mock<ITroopStub> CreateStub(out Mock<ICity> stubCity)

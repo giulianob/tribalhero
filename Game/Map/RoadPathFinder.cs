@@ -44,7 +44,7 @@ namespace Game.Map
                                                 {
                                                     if (World.Current[location.X, location.Y].Exists(s => s is IStructure))
                                                         return false;
-                                                    if (!RoadManager.IsRoad(location.X, location.Y))
+                                                    if (!World.Current.Roads.IsRoad(location.X, location.Y))
                                                         return false;
                                                     if (SimpleGameObject.TileDistance(location.X, location.Y, city.X, city.Y) >
                                                         city.Radius)

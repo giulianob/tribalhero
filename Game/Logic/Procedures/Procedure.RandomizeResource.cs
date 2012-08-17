@@ -19,20 +19,20 @@ namespace Game.Logic.Procedures
             var city = (ICity)custom;
             if (Config.Random.Next()%4 == 0)
             {
-                World.Current.LockRegion(x, y);
+                World.Current.Regions.LockRegion(x, y);
                 IStructure structure = Config.Random.Next()%2 == 0 ? Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2106, 1) : Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2107, 1);
                 structure.X = x;
                 structure.Y = y;
 
                 city.Add(structure);
-                if (!World.Current.Add(structure))
+                if (!World.Current.Regions.Add(structure))
                 {
                     city.ScheduleRemove(structure, false);
-                    World.Current.UnlockRegion(x, y);
+                    World.Current.Regions.UnlockRegion(x, y);
                     return true;
                 }
                 Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
-                World.Current.UnlockRegion(x, y);
+                World.Current.Regions.UnlockRegion(x, y);
             }
             return true;
         }

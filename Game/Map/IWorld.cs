@@ -1,22 +1,52 @@
 using System.Collections.Generic;
+using Game.Battle;
 using Game.Data;
+using Game.Data.Stronghold;
+using Game.Data.Tribe;
 
 namespace Game.Map
 {
-    public interface IWorld
+    // TODO: IGameObjectLocator shouldnt need to be the world
+    public interface IWorld : IGameObjectLocator
     {
-        List<ISimpleGameObject> this[uint x, uint y] { get; }
-        bool Add(ISimpleGameObject obj);
-        void DbLoaderAdd(ISimpleGameObject obj);
-        void Remove(ISimpleGameObject obj);
-        List<ISimpleGameObject> GetObjects(uint x, uint y);
-        List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, int radius);
-        void ObjectUpdateEvent(ISimpleGameObject sender, uint origX, uint origY);
+        ICityManager Cities { get; }
 
-        bool IsValidXandY(uint x, uint y);
-        List<ushort> GetTilesWithin(uint x, uint y, byte radius);
-        ushort GetTileType(uint x, uint y);
-        ushort RevertTileType(uint x, uint y, bool sendEvent);
-        void SetTileType(uint x, uint y, ushort tileType, bool sendEvent);
+        IRegionManager Regions { get; }
+
+        RoadManager Roads { get; }
+
+        ForestManager Forests { get; }
+
+        IStrongholdManager Strongholds { get; }
+
+        object Lock { get; }
+
+        Dictionary<uint, IPlayer> Players { get; }
+
+        int TribeCount { get; }
+
+        int GetActivePlayerCount();
+
+        void Add(ITribe tribe);
+
+        void DbLoaderAdd(ITribe tribe);
+
+        void Add(IBattleManager battleManager);
+
+        void Remove(IBattleManager battleManager);
+
+        void DbLoaderAdd(IBattleManager battleManager);
+
+        void AfterDbLoaded();
+
+        void Remove(ITribe tribe);
+
+        bool FindPlayerId(string name, out uint playerId);        
+
+        bool FindTribeId(string name, out uint tribeId);
+
+        bool CityNameTaken(string name);
+
+        bool TribeNameTaken(string name);
     }
 }

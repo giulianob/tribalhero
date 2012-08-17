@@ -24,10 +24,16 @@ namespace Game.Module
         {
             this.channel = channel;
         }
-        public void SendSystemChat(string message)
+
+        public void SendSystemChat(string messageId, params string[] messageArgs)
         {
             Packet chatPacket = new Packet(Command.SystemChat);
-            chatPacket.AddString(message);
+            chatPacket.AddString(messageId);
+            foreach (var messageArg in messageArgs)
+            {
+                chatPacket.AddString(messageArg);
+            }
+
             channel.Post("/GLOBAL", chatPacket);
         }
     }

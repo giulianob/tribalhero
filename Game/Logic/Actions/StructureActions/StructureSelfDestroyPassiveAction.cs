@@ -107,7 +107,7 @@ namespace Game.Logic.Actions
                 city.BeginUpdate();
                 structure.BeginUpdate();
 
-                World.Current.Remove(structure);
+                World.Current.Regions.Remove(structure);
                 city.ScheduleRemove(structure, false);
 
                 structure.EndUpdate();

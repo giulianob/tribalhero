@@ -112,6 +112,10 @@ namespace Game.Data
             {
                 return MainBuilding == null ? 0 : MainBuilding.X;
             }
+            set
+            {
+                throw new NotSupportedException("Cannot set city X");
+            }
         }
 
         /// <summary>
@@ -122,6 +126,10 @@ namespace Game.Data
             get
             {
                 return MainBuilding == null ? 0 : MainBuilding.Y;
+            }
+            set
+            {
+                throw new NotSupportedException("Cannot set city Y");
             }
         }
 
@@ -337,13 +345,11 @@ namespace Game.Data
 
                 if (Global.FireEvents && id > 0)
                 {
-                    World.Current.GetCityRegion(X, Y).MarkAsDirty();
+                    World.Current.Regions.CityRegions.GetCityRegion(X, Y).MarkAsDirty();
                     PointUpdate();
                 }
             }
         }
-
-
 
         #endregion
 
@@ -673,7 +679,7 @@ namespace Game.Data
 
             var packet = new Packet(Command.CityRadiusUpdate);
 
-            World.Current.ObjectUpdateEvent(MainBuilding, X, Y);
+            World.Current.Regions.ObjectUpdateEvent(MainBuilding, X, Y);
 
             packet.AddUInt32(Id);
             packet.AddByte(radius);

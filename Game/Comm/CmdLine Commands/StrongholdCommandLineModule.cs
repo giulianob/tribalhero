@@ -62,7 +62,7 @@ namespace Game.Comm
 
 
             uint cityId;
-            if (!World.Current.FindCityId(cityName, out cityId))
+            if (!World.Current.Cities.FindCityId(cityName, out cityId))
                 return "City not found";
 
             ICity city;

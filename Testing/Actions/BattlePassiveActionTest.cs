@@ -37,14 +37,7 @@ namespace Testing.Actions
             troopObject.SetupGet(p => p.City).Returns(troopStub.City);
             return troopObject.Object;
         }
-
-        private ICombatObject MockCombatObject(ITroopStub stub)
-        {
-            var co = new Mock<ICombatObject>();
-            co.SetupGet(p => p.TroopStub).Returns(stub);
-            return co.Object;
-        }
-
+        
         private CityOffensiveCombatGroup CreateCityOffensiveCombatGroup(ITroopObject troopObject)
         {
             return new CityOffensiveCombatGroup(1, 1, troopObject, new Mock<IDbManager>().Object);            
@@ -103,7 +96,7 @@ namespace Testing.Actions
             // ReSharper restore RedundantAssignment
             gameObjectLocator.Setup(p => p.TryGetObjects(1, out localCityObj)).Returns(true);
 
-            var action = new BattlePassiveAction(1,
+            var action = new CityBattlePassiveAction(1,
                                                  actionFactory.Object,
                                                  battleProcedure.Object,
                                                  locker.Object,
@@ -171,7 +164,7 @@ namespace Testing.Actions
             // ReSharper restore RedundantAssignment
             gameObjectLocator.Setup(p => p.TryGetObjects(1, out localCityObj)).Returns(true);
 
-            var action = new BattlePassiveAction(1,
+            var action = new CityBattlePassiveAction(1,
                                                  actionFactory.Object,
                                                  battleProcedure.Object,
                                                  locker.Object,
@@ -237,7 +230,7 @@ namespace Testing.Actions
             // ReSharper restore RedundantAssignment
             gameObjectLocator.Setup(p => p.TryGetObjects(1, out localCityObj)).Returns(true);
 
-            var action = new BattlePassiveAction(1,
+            var action = new CityBattlePassiveAction(1,
                                                  actionFactory.Object,
                                                  battleProcedure.Object,
                                                  locker.Object,
@@ -307,7 +300,7 @@ namespace Testing.Actions
             // ReSharper restore RedundantAssignment
             gameObjectLocator.Setup(p => p.TryGetObjects(1, out localCityObj)).Returns(true);
 
-            var action = new BattlePassiveAction(1,
+            var action = new CityBattlePassiveAction(1,
                                                  actionFactory.Object,
                                                  battleProcedure.Object,
                                                  locker.Object,
@@ -377,7 +370,7 @@ namespace Testing.Actions
             // ReSharper restore RedundantAssignment
             gameObjectLocator.Setup(p => p.TryGetObjects(1, out localCityObj)).Returns(true);
 
-            var action = new BattlePassiveAction(1,
+            var action = new CityBattlePassiveAction(1,
                                                  actionFactory.Object,
                                                  battleProcedure.Object,
                                                  locker.Object,

@@ -68,7 +68,7 @@ namespace Game.Data
 
         public static bool HasForestNear(uint x, uint y, int radius)
         {
-            return World.Current.GetRegion(x, y).GetObjects().Any(forest => forest is Forest && forest.TileDistance(x, y) <= radius);
+            return World.Current.Regions.GetRegion(x, y).GetObjects().Any(forest => forest is Forest && forest.TileDistance(x, y) <= radius);
         }
 
         public void CreateForest(byte lvl, int capacity, double rate)
@@ -78,77 +78,83 @@ namespace Game.Data
 
         public void CreateForestAt(byte lvl, int capacity, double rate, uint x, uint y)
         {
-            var forest = new Forest(lvl, capacity, rate);
-
-            if (x == 0 || y == 0)
+            lock (forests)
             {
-                while (true)
+                var forest = new Forest(lvl, capacity, rate);
+
+                if (x == 0 || y == 0)
                 {
-                    x = (uint)Config.Random.Next(15, (int)Config.map_width - 15);
-                    y = (uint)Config.Random.Next(15, (int)Config.map_height - 15);
-
-                    if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileBuildable", World.Current.GetTileType(x, y)))
-                        continue;
-
-                    // check if tile is safe
-                    List<ushort> tiles = World.Current.GetTilesWithin(x, y, 7);
-                    if (Ioc.Kernel.Get<ObjectTypeFactory>().HasTileType("CityStartTile", tiles))
-                        continue;
-
-                    if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsAllTileType("TileBuildable", tiles))
-                        continue;
-
-                    World.Current.LockRegion(x, y);
-
-                    // check if near any other objects
-                    if (World.Current.GetObjects(x, y).Exists(obj => !(obj is ITroopObject)) ||
-                        World.Current.GetObjectsWithin(x, y, 4).Exists(obj => !(obj is ITroopObject)))
+                    while (true)
                     {
-                        World.Current.UnlockRegion(x, y);
-                        continue;
+                        x = (uint)Config.Random.Next(15, (int)Config.map_width - 15);
+                        y = (uint)Config.Random.Next(15, (int)Config.map_height - 15);
+
+                        if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileBuildable", World.Current.Regions.GetTileType(x, y)))
+                            continue;
+
+                        // check if tile is safe
+                        List<ushort> tiles = World.Current.Regions.GetTilesWithin(x, y, 7);
+                        if (Ioc.Kernel.Get<ObjectTypeFactory>().HasTileType("CityStartTile", tiles))
+                            continue;
+
+                        if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsAllTileType("TileBuildable", tiles))
+                            continue;
+
+                        World.Current.Regions.LockRegion(x, y);
+
+                        // check if near any other objects
+                        if (World.Current.GetObjects(x, y).Exists(obj => !(obj is ITroopObject)) ||
+                            World.Current.GetObjectsWithin(x, y, 4).Exists(obj => !(obj is ITroopObject)))
+                        {
+                            World.Current.Regions.UnlockRegion(x, y);
+                            continue;
+                        }
+
+                        break;
                     }
-
-                    break;
                 }
+                else
+                    World.Current.Regions.LockRegion(x, y);
+
+                forest.X = x;
+                forest.Y = y;
+
+                forest.ObjectId = (uint)objectIdGenerator.GetNext();
+
+                World.Current.Regions.Add(forest);
+                World.Current.Regions.UnlockRegion(x, y);
+
+                forests.Add(forest.ObjectId, forest);
+
+                forest.BeginUpdate();
+                forest.RecalculateForest();
+                forest.EndUpdate();
+
+                ForestCount[lvl - 1]++;
             }
-            else
-                World.Current.LockRegion(x, y);
-            
-            forest.X = x;
-            forest.Y = y;
-
-            forest.ObjectId = (uint)objectIdGenerator.GetNext();
-
-            World.Current.Add(forest);
-            World.Current.UnlockRegion(x, y);
-
-            forests.Add(forest.ObjectId, forest);
-
-            forest.BeginUpdate();
-            forest.RecalculateForest();
-            forest.EndUpdate();
-
-            ForestCount[lvl - 1]++;
         }
 
         public void RemoveForest(Forest forest)
         {
-            ForestCount[forest.Lvl - 1]--;
+            lock (forests)
+            {
+                ForestCount[forest.Lvl - 1]--;
 
-            forests.Remove(forest.ObjectId);
+                forests.Remove(forest.ObjectId);
 
-            forest.BeginUpdate();
-            World.Current.Remove(forest);
-            forest.EndUpdate();
+                forest.BeginUpdate();
+                World.Current.Regions.Remove(forest);
+                forest.EndUpdate();
 
-            DbPersistance.Current.Delete(forest);
+                DbPersistance.Current.Delete(forest);
+            }
         }
 
         /// <summary>
         ///   Locks all cities participating in this forest. 
         ///   Proper usage would be to lock the forest manager and the main city in the base objects. 
         ///   The custom[0] parameter should a uint with the forestId.
-        ///   Once inside of the lock, a call to ForestManager.TryGetValue should be used to get the forest.
+        ///   Once inside of the lock, a call to ForestManager.TryGetStronghold should be used to get the forest.
         /// </summary>
         /// <param name = "custom">custom[0] should contain the forestId to lock</param>
         /// <returns>List of cities to lock for the forest.</returns>
@@ -159,16 +165,26 @@ namespace Game.Data
 
         public ILockable[] GetListOfLocks(uint forestId)
         {
-            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(World.Current.Forests);
+            lock (forests)
+            {
+                DefaultMultiObjectLock.ThrowExceptionIfNotLocked(World.Current.Forests);
 
-            Forest forest;
+                Forest forest;
 
-            return !forests.TryGetValue(forestId, out forest) ? new ILockable[] {} : forest.Select(obj => obj.City).ToArray();
+                return !forests.TryGetValue(forestId, out forest)
+                               ? new ILockable[]
+                               {
+                               }
+                               : forest.Select(obj => obj.City).ToArray<ILockable>();
+            }
         }
 
         public bool TryGetValue(uint id, out Forest forest)
         {
-            return forests.TryGetValue(id, out forest);
+            lock (forests)
+            {
+                return forests.TryGetValue(id, out forest);
+            }
         }
     }
 }

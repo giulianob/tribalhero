@@ -13,6 +13,13 @@ namespace Game.Map
 {
     public class RoadManager
     {
+        private readonly IRegionManager regionManager;
+
+        public RoadManager(IRegionManager regionManager)
+        {
+            this.regionManager = regionManager;
+        }
+
         private void SendUpdate(Dictionary<ushort, List<TileUpdate>> updates)
         {
             foreach (var list in updates)
@@ -97,7 +104,7 @@ namespace Game.Map
 
                 TileUpdate update;
                 if (i == 0)
-                    update = new TileUpdate(tiles[i].X, tiles[i].Y, World.Current.RevertTileType(tiles[i].X, tiles[i].Y, false));
+                    update = new TileUpdate(tiles[i].X, tiles[i].Y, regionManager.RevertTileType(tiles[i].X, tiles[i].Y, false));
                 else
                     update = new TileUpdate(tiles[i].X, tiles[i].Y, CalculateRoad(tiles[i].X, tiles[i].Y, false));
                 if (update.TileType == ushort.MaxValue)
@@ -120,7 +127,7 @@ namespace Game.Map
             if (x <= 1 || y <= 1 || x >= Config.map_width || y >= Config.map_height)
                 return ushort.MaxValue;
 
-            if (!createHere && !IsRoad(World.Current.GetTileType(x, y)))
+            if (!createHere && !IsRoad(regionManager.GetTileType(x, y)))
                 return ushort.MaxValue;
 
             // Create array of neighbor roads
@@ -190,14 +197,14 @@ namespace Game.Map
             }
 
             // Set the new road tile
-            World.Current.SetTileType(x, y, types[roadType], false);
+            regionManager.SetTileType(x, y, types[roadType], false);
 
             return types[roadType];
         }
 
-        public static bool IsRoad(uint x, uint y)
+        public bool IsRoad(uint x, uint y)
         {
-            return IsRoad(World.Current.GetTileType(x, y));
+            return IsRoad(regionManager.GetTileType(x, y));
         }
 
         public static bool IsRoad(ushort tileId)

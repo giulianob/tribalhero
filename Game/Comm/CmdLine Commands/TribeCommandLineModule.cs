@@ -452,8 +452,8 @@ namespace Game.Comm
             {
                 foreach (var city in tribe.Tribesmen.SelectMany(tribesman => tribesman.Player.GetCityList()))
                 {
-                    List<NotificationManager.Notification> notifications = new List<NotificationManager.Notification>(city.Worker.Notifications.Where(x => x.Action is AttackChainAction && x.Subscriptions.Any(y => y == city)));
-                    foreach (AttackChainAction action in notifications.Select(notification => notification.Action).OfType<AttackChainAction>())
+                    List<NotificationManager.Notification> notifications = new List<NotificationManager.Notification>(city.Worker.Notifications.Where(x => x.Action is CityAttackChainAction && x.Subscriptions.Any(y => y == city)));
+                    foreach (CityAttackChainAction action in notifications.Select(notification => notification.Action).OfType<CityAttackChainAction>())
                     {
                         result.Append(string.Format("To [{0}-{1}] From[{2}] Arrival Time[{3}]\n", city.Owner.Name, city.Name, action.From, action.NextTime));
                     }

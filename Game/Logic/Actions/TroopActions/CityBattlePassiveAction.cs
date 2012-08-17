@@ -21,7 +21,7 @@ using Persistance;
 
 namespace Game.Logic.Actions
 {
-    public class BattlePassiveAction : ScheduledPassiveAction
+    public class CityBattlePassiveAction : ScheduledPassiveAction
     {
         private readonly uint cityId;
 
@@ -39,7 +39,7 @@ namespace Game.Logic.Actions
 
         private uint destroyedHp;
 
-        public BattlePassiveAction(uint cityId,
+        public CityBattlePassiveAction(uint cityId,
                                    IActionFactory actionFactory,
                                    BattleProcedure battleProcedure,
                                    ILocker locker,
@@ -66,7 +66,7 @@ namespace Game.Logic.Actions
             city.Battle.UnitKilled += BattleUnitKilled;
         }
 
-        public BattlePassiveAction(uint id,
+        public CityBattlePassiveAction(uint id,
                                    DateTime beginTime,
                                    DateTime nextTime,
                                    DateTime endTime,
@@ -143,7 +143,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.BattlePassive;
+                return ActionType.CityBattlePassive;
             }
         }
 
@@ -273,14 +273,16 @@ namespace Game.Logic.Actions
                 return;
             }
 
+            var cityCombatTarget = target as CityCombatObject;
+
             // Check if we should retreat a unit
-            if (attackingSide == BattleManager.BattleSide.Defense || target.TroopStub.Station != city || target.TroopStub.TotalCount <= 0 ||
-                target.TroopStub.TotalCount > target.TroopStub.StationedRetreatCount)
+            if (cityCombatTarget == null || attackingSide == BattleManager.BattleSide.Defense || cityCombatTarget.TroopStub.Station != city || cityCombatTarget.TroopStub.TotalCount <= 0 ||
+                cityCombatTarget.TroopStub.TotalCount > cityCombatTarget.TroopStub.StationedRetreatCount)
             {
                 return;
             }
 
-            ITroopStub stub = target.TroopStub;
+            ITroopStub stub = cityCombatTarget.TroopStub;
 
             // Remove the object from the battle
             city.Battle.Remove(targetGroup, BattleManager.BattleSide.Defense, ReportState.Retreating);

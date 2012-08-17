@@ -8,9 +8,6 @@ using System.Linq;
 using Game.Comm;
 using Game.Data;
 using Game.Database;
-using Game.Setup;
-using Game.Util;
-using Ninject;
 using Persistance;
 
 #endregion

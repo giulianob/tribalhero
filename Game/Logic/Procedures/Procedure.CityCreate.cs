@@ -37,10 +37,9 @@ namespace Game.Logic.Procedures
             city = new City(player, cityName, Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), mainBuilding, Formula.Current.GetInitialAp());
             player.Add(city);
 
-
-            World.Current.Add(city);
+            World.Current.Cities.Add(city);
             mainBuilding.BeginUpdate();
-            World.Current.Add(mainBuilding);
+            World.Current.Regions.Add(mainBuilding);
             mainBuilding.EndUpdate();
 
             var defaultTroop = city.Troops.Create();

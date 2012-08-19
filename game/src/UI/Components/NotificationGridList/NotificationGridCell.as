@@ -27,10 +27,10 @@
 
 			var state: int = TroopStub.IDLE;
 			switch(notification.type) {
-				case PassiveAction.ATTACK:
+				case PassiveAction.CITY_ATTACK:
 					state = TroopStub.BATTLE;
 				break;
-				case PassiveAction.DEFENSE:
+				case PassiveAction.CITY_DEFENSE:
 					state = TroopStub.BATTLE_STATIONED;
 				break;
 			}

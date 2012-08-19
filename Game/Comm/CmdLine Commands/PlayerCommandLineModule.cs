@@ -24,11 +24,14 @@ namespace Game.Comm
 
         private readonly ICityRemoverFactory cityRemoverFactory;
 
-        public PlayerCommandLineModule(IPlayersRemoverFactory playerRemoverFactory, IPlayerSelectorFactory playerSelectorFactory, ICityRemoverFactory cityRemoverFactory)
+        private readonly Chat chat;
+
+        public PlayerCommandLineModule(IPlayersRemoverFactory playerRemoverFactory, IPlayerSelectorFactory playerSelectorFactory, ICityRemoverFactory cityRemoverFactory, Chat chat)
         {
             this.playerRemoverFactory = playerRemoverFactory;
             this.playerSelectorFactory = playerSelectorFactory;
             this.cityRemoverFactory = cityRemoverFactory;
+            this.chat = chat;
         }
 
         public override void RegisterCommands(CommandLineProcessor processor)
@@ -40,6 +43,7 @@ namespace Game.Comm
             processor.RegisterCommand("clearplayerdescription", PlayerClearDescription, PlayerRights.Moderator);
             processor.RegisterCommand("deletenewbies", DeleteNewbies, PlayerRights.Bureaucrat);
             processor.RegisterCommand("broadcast", SystemBroadcast, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("systemchat", SystemChat, PlayerRights.Bureaucrat);
             processor.RegisterCommand("broadcastmail", SystemBroadcastMail, PlayerRights.Bureaucrat);
             processor.RegisterCommand("setpassword", SetPassword, PlayerRights.Admin);
             processor.RegisterCommand("renameplayer", RenamePlayer, PlayerRights.Admin);
@@ -47,6 +51,39 @@ namespace Game.Comm
             processor.RegisterCommand("setrights", SetRights, PlayerRights.Bureaucrat);
             processor.RegisterCommand("muteplayer", Mute, PlayerRights.Moderator);
             processor.RegisterCommand("unmuteplayer", Unmute, PlayerRights.Moderator);
+        }
+
+        private string SystemChat(Session session, string[] parms)
+        {
+            bool help = false;
+            string message = string.Empty;
+
+            try
+            {
+                var p = new OptionSet
+                {
+                        {
+                                "?|help|h", v => help = true
+                        },
+                        {
+                                "message=", v => message = v.TrimMatchingQuotes()
+                        },
+                };
+                p.Parse(parms);
+            }
+            catch(Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(message))
+            {
+                return "systemchat --message=\"MESSAGE\"";
+            }
+
+            chat.SendSystemChat("SYSTEM_CHAT_LITERAL", message);
+            
+            return "OK!";
         }
 
         public string SetRights(Session session, String[] parms)

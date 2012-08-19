@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using Game.Data.Tribe;
 using Game.Map;
 using Game.Module;
@@ -87,22 +88,30 @@ namespace Game.Data.Stronghold
             regionManager.Add(stronghold);
             stronghold.EndUpdate();
             dbManager.Save(stronghold);
-            chat.SendSystemChat(string.Format("{0} is now activated and can be captured!!", stronghold.Name));
+            chat.SendSystemChat("STRONGHOLD_ACTIVE", stronghold.Id.ToString(CultureInfo.InvariantCulture), stronghold.Name);
         }
 
         public void TransferTo(IStronghold stronghold, ITribe tribe)
         {
             if (tribe == null)
+            {
                 return;
+            }
+
             ITribe oldTribe = stronghold.Tribe;
             stronghold.BeginUpdate();
             stronghold.StrongholdState = StrongholdState.Occupied;
             stronghold.Tribe = tribe;
             stronghold.EndUpdate();
             dbManager.Save(stronghold);
-            chat.SendSystemChat(oldTribe != null
-                                        ? string.Format("{0} is taken over by {1} from the hands of {2}!!", stronghold.Name, tribe.Name, oldTribe.Name)
-                                        : string.Format("{0} is now under the command of {1} ", stronghold.Name, tribe.Name));
+            if (oldTribe != null)
+            {
+                chat.SendSystemChat("STRONGHOLD_TAKEN_OVER", stronghold.Id.ToString(CultureInfo.InvariantCulture), stronghold.Name, tribe.Id.ToString(CultureInfo.InvariantCulture), tribe.Name, oldTribe.Id.ToString(CultureInfo.InvariantCulture), oldTribe.Name);
+            }
+            else
+            {
+                chat.SendSystemChat("STRONGHOLD_NEUTRAL_TAKEN_OVER", stronghold.Id.ToString(CultureInfo.InvariantCulture), stronghold.Name, tribe.Id.ToString(CultureInfo.InvariantCulture), tribe.Name);
+            }
         }
 
         #region Implementation of IEnumerable

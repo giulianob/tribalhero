@@ -179,7 +179,7 @@ namespace Game.Data.Stronghold
 
             updating = false;
 
-            Update();
+            Update();            
         }
 
         #endregion

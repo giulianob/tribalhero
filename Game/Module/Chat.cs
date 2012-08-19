@@ -29,6 +29,7 @@ namespace Game.Module
         {
             Packet chatPacket = new Packet(Command.SystemChat);
             chatPacket.AddString(messageId);
+            chatPacket.AddByte((byte)messageArgs.Length);
             foreach (var messageArg in messageArgs)
             {
                 chatPacket.AddString(messageArg);

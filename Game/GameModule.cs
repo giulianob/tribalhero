@@ -195,15 +195,7 @@ namespace Game
 
             // Binds any interface that ends with Factory to auto factory if it doesn't have any implementations
             var explicitFactoryBindings = Bindings.Where(t => t.Service.Name.EndsWith("Factory")).ToLookup(k => k.Service.AssemblyQualifiedName, v => v.Service);
-            this.Bind(x => x.FromThisAssembly().SelectAllInterfaces().EndingWith("Factory").Where(t =>
-                {
-                    var notBinded = !explicitFactoryBindings.Contains(t.AssemblyQualifiedName);
-                    if (notBinded)
-                    {
-                        Console.Out.WriteLine("Binding {0}", t.FullName);
-                    }
-                    return notBinded;
-                }).BindToFactory());
+            this.Bind(x => x.FromThisAssembly().SelectAllInterfaces().EndingWith("Factory").Where(t => !explicitFactoryBindings.Contains(t.AssemblyQualifiedName)).BindToFactory());
 
             #endregion
         }

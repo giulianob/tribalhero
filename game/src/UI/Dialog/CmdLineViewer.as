@@ -279,6 +279,21 @@ package src.UI.Dialog
 			refreshText();
 		}
 		
+		public function logSystem(messageId:String, params:Array):void 
+		{
+			var substituteArgs: Array = new Array();
+			substituteArgs.push(Locale.loadString(messageId));
+			
+			for each (var str: String in params) {
+				substituteArgs.push(StringHelper.htmlEscape(str));
+			}
+			
+			var message: String = StringUtil.substitute.apply(StringUtil, substituteArgs);
+			
+			Global.gameContainer.cmdLine.log(CmdLineViewer.TYPE_GLOBAL, message);
+			Global.gameContainer.cmdLine.log(CmdLineViewer.TYPE_TRIBE, message);					
+		}
+		
 		private function refreshText():void
 		{
 			txtConsole.setHtmlText(chats[currentChatType]);

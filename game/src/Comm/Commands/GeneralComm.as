@@ -69,10 +69,14 @@
 		
 		private function onChatSystemMessage(packet: Packet): void
 		{
-			var message: String = packet.readString();		
+			var messageId: String = packet.readString();
+			var paramsCount: int = packet.readUByte();
+			var params: Array = new Array();
+			for (var i: int = 0; i < paramsCount; i++) {
+				params.push(packet.readString());
+			}
 			
-			Global.gameContainer.cmdLine.log(CmdLineViewer.TYPE_GLOBAL, message);					
-			Global.gameContainer.cmdLine.log(CmdLineViewer.TYPE_TRIBE, message);					
+			Global.gameContainer.cmdLine.logSystem(messageId, params);
 		}
 		
 		public function queryXML(callback: Function, custom: * ):void

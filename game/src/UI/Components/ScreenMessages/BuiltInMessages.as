@@ -93,12 +93,12 @@ package src.UI.Components.ScreenMessages
 				for each (var notification: Notification in city.notifications.each()) {
 					if (notification.cityId == city.id) continue;
 
-					if (notification.type == PassiveAction.ATTACK) {
+					if (notification.type == PassiveAction.CITY_ATTACK) {
 						Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/INATK", StringUtil.substitute(Locale.loadString("MSG_INCOMING_ATTACK"), city.name), new AssetIcon(new ICON_BATTLE)));
 						inAtk = true;
 					}
 
-					if (notification.type == PassiveAction.DEFENSE) {
+					if (notification.type == PassiveAction.CITY_DEFENSE) {
 						Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/INDEF", StringUtil.substitute(Locale.loadString("MSG_INCOMING_DEFENSE"), city.name), new AssetIcon(new ICON_SHIELD)));
 						inDef = true;
 					}

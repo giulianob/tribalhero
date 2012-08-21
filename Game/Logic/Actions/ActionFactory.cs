@@ -74,5 +74,7 @@ namespace Game.Logic.Actions
         RetreatChainAction CreateRetreatChainAction(uint cityId, byte stubId);
 
         TribeContributeActiveAction CreateTribeContributeActiveAction(uint cityId, uint structureId, Resource resource);
+
+        StrongholdEngageGateAttackPassiveAction CreateStrongholdEngageGateAttackPassiveAction(uint cityId, uint objectId, uint targetStrongholdId, AttackMode mode);
     }
 }

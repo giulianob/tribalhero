@@ -143,6 +143,7 @@
     <Compile Include="Battle\Reporting\ReportState.cs" />
     <Compile Include="Battle\Reporting\SqlBattleReportWriter.cs" />
     <Compile Include="Battle\RewardStrategies\CityRewardStrategy.cs" />
+    <Compile Include="Battle\RewardStrategies\StrongholdRewardStrategy.cs" />
     <Compile Include="Battle\RewardStrategies\IRewardStrategy.cs" />
     <Compile Include="Battle\RewardStrategies\IRewardStrategyFactory.cs" />
     <Compile Include="Battle\StaminaMonitor.cs" />

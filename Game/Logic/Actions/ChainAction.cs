@@ -124,8 +124,23 @@ namespace Game.Logic.Actions
 
         #endregion
 
+        protected void CancelCurrentChain()
+        {
+            if (Current == null)
+            {
+                throw new Exception("No current chain action to cancel");
+            }
+
+            Current.WorkerRemoved(false);
+        }
+
         protected void ExecuteChainAndWait(PassiveAction chainable, ChainCallback routeCallback)
         {
+            if (Current != null)
+            {
+                throw new Exception("Previous chain action has not yet completed");
+            }
+
             chainable.IsChain = true;
             chainable.OnNotify += ChainNotify;
             chainCallback = routeCallback;
@@ -170,7 +185,7 @@ namespace Game.Logic.Actions
             //current action is completed by either success or failure
             action.IsDone = true;
             action.OnNotify -= ChainNotify;
-
+            Current = null;
             ChainCallback currentChain = chainCallback;
             DbPersistance.Current.Save(this);
 

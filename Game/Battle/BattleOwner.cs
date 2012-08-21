@@ -7,8 +7,9 @@ namespace Game.Battle
 {
     public enum BattleOwnerType
     {
-        City,
-        Tribe
+        City = 0,
+        Tribe = 1,
+        Stronghold = 2
     }
 
     public class BattleOwner

@@ -809,17 +809,31 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     // Load battle manager
-                    ICity city;
-                    // TODO: Change to understand the different owner types
-                    if (!World.Current.TryGetObjects((uint)reader["owner_id"], out city))
-                        throw new Exception("City not found");
-                    
-                    var battleManager = BattleManagerFactory.CreateBattleManager((uint)reader["battle_id"],
-                                                                      new BattleLocation((string)reader["location_type"], (uint)reader["location_id"]),
-                                                                      new BattleOwner((string)reader["owner_type"], (uint)reader["owner_id"]),
-                                                                      city);
-                    city.Battle = battleManager;
+                    IBattleManager battleManager;
+                    var battleOwner = new BattleOwner((string)reader["owner_type"], (uint)reader["owner_id"]);
+                    var battleLocation = new BattleLocation((string)reader["location_type"], (uint)reader["location_id"]);
 
+                    switch (battleLocation.Type)
+                    {
+                        case BattleLocationType.City:
+                            ICity city;
+                            if (!World.Current.TryGetObjects((uint)reader["owner_id"], out city))
+                                throw new Exception("City not found");
+
+                            battleManager = BattleManagerFactory.CreateBattleManager((uint)reader["battle_id"], battleLocation, battleOwner, city);
+                            city.Battle = battleManager;
+                            break;
+                        case BattleLocationType.Stronghold:
+                            IStronghold stronghold;
+                            if (!World.Current.TryGetObjects((uint)reader["owner_id"], out stronghold))
+                                throw new Exception("Stronghold not found");
+
+                            battleManager = BattleManagerFactory.CreateBattleManager((uint)reader["battle_id"], battleLocation, battleOwner, stronghold);
+                            stronghold.Battle = battleManager;
+                            break;
+                        default:
+                            throw new Exception(string.Format("Unknown location type {0} when loading battle manager", battleLocation.Type));
+                    }
 
                     battleManager.DbPersisted = true;
                     battleManager.BattleStarted = (bool)reader["battle_started"];

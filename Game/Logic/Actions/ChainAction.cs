@@ -2,10 +2,8 @@
 
 using System;
 using System.Data;
-using Game.Data;
 using Game.Database;
 using Game.Setup;
-using Ninject;
 using Persistance;
 
 #endregion
@@ -49,13 +47,17 @@ namespace Game.Logic.Actions
                     current.IsChain = true;
                     current.OnNotify += ChainNotify;
 
-                    if (current is ScheduledPassiveAction)
-                        Scheduler.Current.Put((ScheduledPassiveAction)current);
+                    ScheduledPassiveAction scheduledPassiveAction = current as ScheduledPassiveAction;
+                    if (scheduledPassiveAction != null)
+                    {
+                        Scheduler.Current.Put(scheduledPassiveAction);
+                    }
+
                     break;
             }
         }
 
-        protected PassiveAction Current { get; private set; }
+        private PassiveAction Current { get; set; }
 
         public ActionState ChainState
         {

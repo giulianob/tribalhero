@@ -92,8 +92,8 @@ namespace Game.Logic.Actions
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
 
-            stub.City.Worker.References.Add(troopObject, this);
-            stub.City.Worker.Notifications.Add(troopObject, this);
+            stub.City.References.Add(troopObject, this);
+            stub.City.Notifications.Add(troopObject, this);
 
             return Error.Ok;
         }
@@ -113,8 +113,8 @@ namespace Game.Logic.Actions
 
                     if (city.Battle == null)
                     {
-                        city.Worker.Notifications.Remove(this);
-                        city.Worker.References.Remove(troopObject, this);
+                        city.Notifications.Remove(this);
+                        city.References.Remove(troopObject, this);
                         Procedure.Current.TroopObjectDelete(troopObject, true);
                         StateChange(ActionState.Completed);
                     }
@@ -156,8 +156,8 @@ namespace Game.Logic.Actions
                     }
 
 
-                    city.Worker.References.Remove(troopObject, this);
-                    city.Worker.Notifications.Remove(this);
+                    city.References.Remove(troopObject, this);
+                    city.Notifications.Remove(this);
                     Procedure.Current.TroopObjectDelete(troopObject, troopObject.Stub.TotalCount != 0);
                     StateChange(ActionState.Completed);
                 }

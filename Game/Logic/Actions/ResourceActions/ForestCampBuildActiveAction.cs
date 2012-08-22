@@ -175,7 +175,7 @@ namespace Game.Logic.Actions
                                                              lumbermill.TileDistance(forest) * 30));
             BeginTime = DateTime.UtcNow;
 
-            city.Worker.References.Add(structure, this);
+            city.References.Add(structure, this);
 
             World.Current.Regions.UnlockRegion(emptyX, emptyY);
 
@@ -205,7 +205,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                city.Worker.References.Remove(structure, this);
+                city.References.Remove(structure, this);
 
                 // Get forest. If it doesn't exist, we need to delete the structure.
                 Forest forest;
@@ -269,7 +269,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                city.Worker.References.Remove(structure, this);
+                city.References.Remove(structure, this);
 
                 // Remove camp from forest and recalculate forest
                 Forest forest;

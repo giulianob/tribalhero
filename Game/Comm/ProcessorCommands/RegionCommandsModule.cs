@@ -386,7 +386,7 @@ namespace Game.Comm.ProcessorCommands
                 ICity city = cities[cityId];
 
                 NotificationManager.Notification notification;
-                if (!srcCity.Worker.Notifications.TryGetValue(city, actionId, out notification))
+                if (!srcCity.Notifications.TryGetValue(city, actionId, out notification))
                 {
                     ReplyError(session, packet, Error.ActionNotFound);
                     return;

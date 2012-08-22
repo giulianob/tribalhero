@@ -95,8 +95,8 @@ namespace Game.Logic.Actions
             troopObject.Stub.StationedRetreatCount = (ushort)Formula.Current.GetAttackModeTolerance(troopObject.Stub.TotalCount, mode);
             troopObject.Stub.EndUpdate();
 
-            city.Worker.References.Add(troopObject, this);
-            city.Worker.Notifications.Add(troopObject, this, targetCity);
+            city.References.Add(troopObject, this);
+            city.Notifications.Add(troopObject, this, targetCity);
 
             var tma = new TroopMovePassiveAction(cityId, troopObject.ObjectId, targetCity.X, targetCity.Y, false, false);
 
@@ -124,8 +124,8 @@ namespace Game.Logic.Actions
                     if (!city.TryGetTroop(troopObjectId, out troopObject))
                         throw new Exception();
 
-                    city.Worker.References.Remove(troopObject, this);
-                    city.Worker.Notifications.Remove(this);
+                    city.References.Remove(troopObject, this);
+                    city.Notifications.Remove(this);
 
                     Procedure.Current.TroopObjectStation(troopObject, targetCity);
 

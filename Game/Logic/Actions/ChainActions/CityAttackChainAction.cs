@@ -169,8 +169,8 @@ namespace Game.Logic.Actions
 
             initialTroopValue = troopObject.Stub.Value;
 
-            city.Worker.References.Add(troopObject, this);
-            city.Worker.Notifications.Add(troopObject, this, targetCity);
+            city.References.Add(troopObject, this);
+            city.Notifications.Add(troopObject, this, targetCity);
 
             var tma = actionFactory.CreateTroopMovePassiveAction(cityId, troopObject.ObjectId, targetStructure.X, targetStructure.Y, false, true);
 
@@ -235,7 +235,7 @@ namespace Game.Logic.Actions
                     ICity targetCity = cities[targetCityId];
 
                     //Remove notification to target city once battle is over
-                    city.Worker.Notifications.Remove(this);
+                    city.Notifications.Remove(this);
 
                     //Remove Incoming Icon from the target's tribe
                     if (targetCity.Owner.Tribesman != null)
@@ -262,7 +262,7 @@ namespace Game.Logic.Actions
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
 
                         // Add notification just to the main city
-                        city.Worker.Notifications.Add(troopObject, this);
+                        city.Notifications.Add(troopObject, this);
                     }
                     else
                     {
@@ -273,7 +273,7 @@ namespace Game.Logic.Actions
                         targetCity.Resource.Add(troopObject.Stats.Loot);
 
                         // Remove this actions reference from the troop
-                        city.Worker.References.Remove(troopObject, this);
+                        city.References.Remove(troopObject, this);
 
                         // Remove troop since he's dead
                         procedure.TroopObjectDelete(troopObject, false);
@@ -296,12 +296,12 @@ namespace Game.Logic.Actions
                 using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
                 {
                     // Remove notification
-                    city.Worker.Notifications.Remove(this);
+                    city.Notifications.Remove(this);
 
                     // If city is not in battle then add back to city otherwise join local battle
                     if (city.Battle == null)
                     {
-                        city.Worker.References.Remove(troopObject, this);
+                        city.References.Remove(troopObject, this);
                         procedure.TroopObjectDelete(troopObject, true);
                         StateChange(ActionState.Completed);
                     }
@@ -322,7 +322,7 @@ namespace Game.Logic.Actions
                 ITroopObject troopObject;
                 using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
                 {
-                    city.Worker.References.Remove(troopObject, this);
+                    city.References.Remove(troopObject, this);
 
                     procedure.TroopObjectDelete(troopObject, troopObject.Stub.TotalCount != 0);
 

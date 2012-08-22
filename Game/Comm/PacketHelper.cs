@@ -345,13 +345,15 @@ namespace Game.Comm
             AddToPacket(new List<GameAction>(city.Worker.GetVisibleActions()), packet, true);
 
             //Notifications
-            packet.AddUInt16(city.Worker.Notifications.Count);
-            foreach (var notification in city.Worker.Notifications)
+            packet.AddUInt16(city.Notifications.Count);
+            foreach (var notification in city.Notifications)
+            {
                 AddToPacket(notification, packet);
+            }
 
             //References
-            packet.AddUInt16(city.Worker.References.Count);
-            foreach (var reference in city.Worker.References)
+            packet.AddUInt16(city.References.Count);
+            foreach (var reference in city.References)
             {
                 packet.AddUInt16(reference.ReferenceId);
                 packet.AddUInt32(reference.WorkerObject.WorkerId);

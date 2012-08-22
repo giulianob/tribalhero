@@ -424,11 +424,19 @@ namespace Game.Database
                     stronghold.StrongholdState = (StrongholdState)((byte)reader["state"]);
                     var tribeId = (uint)reader["tribe_id"];
                     ITribe tribe;
-                    if(World.Current.TryGetObjects(tribeId, out tribe))
+                    if (tribeId != 0 && World.Current.TryGetObjects(tribeId, out tribe))
                     {
                         stronghold.Tribe = tribe;
                     }
                     stronghold.DbPersisted = true;
+
+                    var gateOpenToTribeId = (uint)reader["gate_open_to"];
+                    ITribe gateOpenToTribe;
+                    if (gateOpenToTribeId != 0 && World.Current.TryGetObjects(tribeId, out gateOpenToTribe))
+                    {
+                        stronghold.Tribe = gateOpenToTribe;
+                    }
+
                     strongholdManager.DbLoaderAdd(stronghold);
                     if (stronghold.StrongholdState != StrongholdState.Inactive)
                     {
@@ -1242,7 +1250,7 @@ namespace Game.Database
 
                     var referenceStub = new ReferenceStub((ushort)reader["id"], obj, action) {DbPersisted = true};
 
-                    city.Worker.References.DbLoaderAdd(referenceStub);
+                    city.References.DbLoaderAdd(referenceStub);
                 }
             }
 
@@ -1278,7 +1286,7 @@ namespace Game.Database
                         }
                     }
 
-                    city.Worker.Notifications.DbLoaderAdd(false, notification);
+                    city.Notifications.DbLoaderAdd(false, notification);
 
                     notification.DbPersisted = true;
                 }

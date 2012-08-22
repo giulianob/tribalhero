@@ -275,6 +275,7 @@
     <Compile Include="Logic\Actions\TribeActions\TribeContributeActiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\CityBattlePassiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\CityEngageAttackPassiveAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\StrongholdEngageGateAttackPassiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\UnitTrainActiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\UnitUpgradeActiveAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\StructureUpgradeActiveAction.cs" />

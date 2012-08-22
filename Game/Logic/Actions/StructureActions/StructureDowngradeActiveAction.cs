@@ -89,7 +89,7 @@ namespace Game.Logic.Actions
             BeginTime = DateTime.UtcNow;
 
             if (WorkerObject.WorkerId != structureId)
-                city.Worker.References.Add(structure, this);
+                city.References.Add(structure, this);
 
             return Error.Ok;
         }
@@ -113,7 +113,7 @@ namespace Game.Logic.Actions
 
                 if (WorkerObject.WorkerId != structureId)
                 {
-                    city.Worker.References.Remove(structure, this);
+                    city.References.Remove(structure, this);
                 }
 
                 if (structure.IsBlocked)
@@ -173,7 +173,7 @@ namespace Game.Logic.Actions
 
                 IStructure structure;
                 if (WorkerObject.WorkerId != structureId && city.TryGetStructure(structureId, out structure))
-                    city.Worker.References.Remove(structure, this);
+                    city.References.Remove(structure, this);
 
                 StateChange(ActionState.Failed);
             }

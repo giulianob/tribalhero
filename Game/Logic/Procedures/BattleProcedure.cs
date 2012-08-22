@@ -68,7 +68,7 @@ namespace Game.Logic.Procedures
                                                                              new BattleOwner(BattleOwnerType.City, targetCity.Id),
                                                                              targetCity);
 
-                var battlePassiveAction = actionFactory.CreateCityBattlePassiveAction(targetCity.City.Id);
+                var battlePassiveAction = actionFactory.CreateCityBattlePassiveAction(targetCity.Id);
 
                 AddLocalStructuresToBattle(targetCity.Battle, targetCity, attackerTroopObject);
                 combatGroup = AddAttackerToBattle(targetCity.Battle, attackerTroopObject);
@@ -329,13 +329,13 @@ namespace Game.Logic.Procedures
                                                                                    targetStronghold);
                 
                 combatGroup = AddAttackerToBattle(targetStronghold.Battle, attackerTroopObject);
-                /*
+                
                 var battlePassiveAction = actionFactory.CreateStrongholdGateBattlePassiveAction(targetStronghold.Id);
                 Error result = targetStronghold.Worker.DoPassive(targetCity, battlePassiveAction, false);
                 if (result != Error.Ok)
                 {
                     throw new Exception(string.Format("Failed to start a battle due to error {0}", result));
-                }*/
+                }
             }
 
             battleId = targetStronghold.Battle.BattleId;

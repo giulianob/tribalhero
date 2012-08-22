@@ -363,7 +363,7 @@ namespace Game.Logic.Actions
             endTime = DateTime.UtcNow.AddSeconds(CalculateTime(formula.BuildTime(structureFactory.GetTime(type, level), city, city.Technologies)));
             BeginTime = DateTime.UtcNow;
 
-            city.Worker.References.Add(structure, this);
+            city.References.Add(structure, this);
 
             world.Regions.UnlockRegion(x, y);
 
@@ -387,7 +387,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                city.Worker.References.Remove(structure, this);
+                city.References.Remove(structure, this);
                 structure.BeginUpdate();
                 structure.Technologies.Parent = structure.City.Technologies;
                 structureFactory.GetUpgradedStructure(structure, structure.Type, level);
@@ -465,7 +465,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                city.Worker.References.Remove(structure, this);
+                city.References.Remove(structure, this);
 
                 structure.BeginUpdate();
                 world.Regions.Remove(structure);

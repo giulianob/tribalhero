@@ -8,7 +8,7 @@ using Persistance;
 
 namespace Game.Data
 {
-    public interface ICity : IEnumerable<IStructure>, ICanDo, ILockable, IPersistableObject, ICityRegionObject, IStation
+    public interface ICity : IEnumerable<IStructure>, ICanDo, IPersistableObject, ICityRegionObject, IStation
     {
         /// <summary>
         ///   Enumerates only through structures in this city
@@ -21,6 +21,10 @@ namespace Game.Data
         byte Radius { get; set; }
 
         byte Lvl { get; }
+
+        NotificationManager Notifications { get; }
+
+        ReferenceManager References { get; }
 
         /// <summary>
         ///   Returns the city's center point which is the town centers position

@@ -2,9 +2,9 @@ using System;
 
 namespace Game.Map
 {
-    public class Location : IEquatable<Location>
+    public class Position : IEquatable<Position>
     {
-        public Location(uint x, uint y)
+        public Position(uint x, uint y)
         {
             X = x;
             Y = y;
@@ -15,7 +15,7 @@ namespace Game.Map
 
         #region IEquatable<Location> Members
 
-        bool IEquatable<Location>.Equals(Location other)
+        bool IEquatable<Position>.Equals(Position other)
         {
             return X == other.X && Y == other.Y;
         }
@@ -28,12 +28,12 @@ namespace Game.Map
                 return false;
             if (ReferenceEquals(this, obj))
                 return true;
-            if (obj.GetType() != typeof(Location))
+            if (obj.GetType() != typeof(Position))
                 return false;
-            return Equals((Location)obj);
+            return Equals((Position)obj);
         }
 
-        public bool Equals(Location other)
+        public bool Equals(Position other)
         {
             if (ReferenceEquals(null, other))
                 return false;

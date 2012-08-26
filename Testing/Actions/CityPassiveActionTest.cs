@@ -58,7 +58,6 @@ namespace Testing.Actions
             // Not necessarily related to this test
             city.SetupGet(p => p.Id).Returns(1);
             city.SetupGet(p => p.Owner).Returns(player.Object);
-            city.SetupGet(p => p.City).Returns(city.Object);
             city.SetupGet(p => p.Resource).Returns(new LazyResource(1, 1, 1, 1, 1));
             city.Setup(p => p.GetEnumerator()).Returns(() => new IStructure[] {}.AsEnumerable().GetEnumerator());
             city.SetupGet(p => p.Technologies).Returns(technologies.Object);

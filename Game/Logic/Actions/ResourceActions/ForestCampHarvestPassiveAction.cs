@@ -57,8 +57,6 @@ namespace Game.Logic.Actions
 
         public void Reschedule()
         {
-            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(WorkerObject.City);
-
             Forest forest;
             if (!World.Current.Forests.TryGetValue(forestId, out forest))
                 throw new Exception("Forest is missing");

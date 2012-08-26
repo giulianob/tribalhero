@@ -159,29 +159,18 @@ namespace Game.Comm.ProcessorCommands
                 foreach (var incoming in incomingList)
                 {
                     // Target
-                    ICity targetCity;
-                    if (World.Current.TryGetObjects(incoming.Action.To, out targetCity))
-                    {
-                        reply.AddUInt32(targetCity.Owner.PlayerId);
-                        reply.AddUInt32(targetCity.Id);
-                        reply.AddString(targetCity.Owner.Name);
-                        reply.AddString(targetCity.Name);
-                    }
-                    else
-                    {
-                        reply.AddUInt32(0);
-                        reply.AddUInt32(0);
-                        reply.AddString("N/A");
-                        reply.AddString("N/A");
-                    }
+                    reply.AddUInt32(incoming.TargetCity.Owner.PlayerId);
+                    reply.AddUInt32(incoming.TargetCity.Id);
+                    reply.AddString(incoming.TargetCity.Owner.Name);
+                    reply.AddString(incoming.TargetCity.Name);
 
                     // Attacker
-                    reply.AddUInt32(incoming.Action.WorkerObject.City.Owner.PlayerId);
-                    reply.AddUInt32(incoming.Action.WorkerObject.City.Id);
-                    reply.AddString(incoming.Action.WorkerObject.City.Owner.Name);
-                    reply.AddString(incoming.Action.WorkerObject.City.Name);
+                    reply.AddUInt32(incoming.SourceCity.Owner.PlayerId);
+                    reply.AddUInt32(incoming.SourceCity.Id);
+                    reply.AddString(incoming.SourceCity.Owner.Name);
+                    reply.AddString(incoming.SourceCity.Name);
 
-                    reply.AddUInt32(UnixDateTime.DateTimeToUnix(incoming.Action.EndTime.ToUniversalTime()));
+                    reply.AddUInt32(UnixDateTime.DateTimeToUnix(incoming.EndTime.ToUniversalTime()));
                 }
 
                 // Assignment List

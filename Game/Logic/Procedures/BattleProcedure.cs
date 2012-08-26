@@ -85,14 +85,14 @@ namespace Game.Logic.Procedures
 
         private IEnumerable<IStructure> GetStructuresInRadius(IEnumerable<IStructure> structures, ITroopObject troopObject)
         {
-            Location troopLocation = new Location(troopObject.X, troopObject.Y);
+            Position troopPosition = new Position(troopObject.X, troopObject.Y);
 
             return
                     structures.Where(
                                      structure =>
-                                     radiusLocator.IsOverlapping(troopLocation,
+                                     radiusLocator.IsOverlapping(troopPosition,
                                                                  troopObject.Stats.AttackRadius,
-                                                                 new Location(structure.X, structure.Y),
+                                                                 new Position(structure.X, structure.Y),
                                                                  structure.Stats.Base.Radius));
         }
 
@@ -329,13 +329,13 @@ namespace Game.Logic.Procedures
                                                                                    targetStronghold);
                 
                 combatGroup = AddAttackerToBattle(targetStronghold.Battle, attackerTroopObject);
-                
+                /*
                 var battlePassiveAction = actionFactory.CreateStrongholdGateBattlePassiveAction(targetStronghold.Id);
                 Error result = targetStronghold.Worker.DoPassive(targetCity, battlePassiveAction, false);
                 if (result != Error.Ok)
                 {
                     throw new Exception(string.Format("Failed to start a battle due to error {0}", result));
-                }
+                }*/
             }
 
             battleId = targetStronghold.Battle.BattleId;

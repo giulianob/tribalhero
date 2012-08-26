@@ -66,7 +66,7 @@ namespace Game.Battle.CombatObjects
 
         bool InRange(ICombatObject obj);
 
-        Location Location();
+        Position Location();
 
         byte AttackRadius();
 

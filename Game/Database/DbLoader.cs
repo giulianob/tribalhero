@@ -700,15 +700,15 @@ namespace Game.Database
 
             foreach (var stubInfo in stationedTroops)
             {
-                switch((StationType)stubInfo.stationType)
+                switch((LocationType)stubInfo.stationType)
                 {
-                    case StationType.City:
+                    case LocationType.City:
                         ICity stationedCity;
                         if (!World.Current.TryGetObjects(stubInfo.stationId, out stationedCity))
                             throw new Exception("City not found");
                         stationedCity.Troops.DbLoaderAddStation(stubInfo.stub);
                         break;
-                    case StationType.Stronghold:
+                    case LocationType.Stronghold:
                         IStronghold stronghold;
                         if (!strongholdManager.TryGetStronghold(stubInfo.stationId, out stronghold))
                             throw new Exception("Stronghold not found");
@@ -1047,16 +1047,40 @@ namespace Game.Database
 
         private void LoadActions(TimeSpan downTime)
         {
+            // Used to help get the proper action worker
+            Func<GameAction, uint, LocationType, uint, IActionWorker> resolveWorker = (action, workerId, locationType, locationId) =>
+                {
+                    switch(locationType)
+                    {
+                        case LocationType.City:
+
+                            ICity city;
+                            if (!World.Current.TryGetObjects(locationId, out city))
+                                throw new Exception("City not found");
+
+                            if (action != null)
+                            {
+                                action.WorkerObject = workerId == 0 ? (ICanDo)city : city[workerId];
+                            }
+
+                            return city.Worker;
+
+                            // TODO: Add worker to stronghold
+                        default:
+                            throw new Exception(string.Format("Unknown location type {0} when loading actions", locationType));
+                    }
+                };
+
             #region Active Actions
 
-            Global.Logger.Info("Loading active actions...");
+            Global.Logger.Info("Loading active actions...");           
 
             using (var reader = DbManager.Select(ActiveAction.DB_TABLE))
             {
                 while (reader.Read())
                 {
                     var actionType = (ActionType)((int)reader["type"]);
-                    Type type = Type.GetType("Game.Logic.Actions." + actionType.ToString().Replace("_", "") + "Action", true, true);                    
+                    Type type = Type.GetType("Game.Logic.Actions." + actionType.ToString().Replace("_", "") + "Action", true, true);
 
                     DateTime beginTime = DateTime.SpecifyKind((DateTime)reader["begin_time"], DateTimeKind.Utc).Add(downTime);
 
@@ -1079,17 +1103,12 @@ namespace Game.Database
                                                                            properties);
                     action.DbPersisted = true;
 
-                    ICity city;
-                    if (!World.Current.TryGetObjects((uint)reader["city_id"], out city))
-                        throw new Exception("City not found");
+                    var locationType = (LocationType)Enum.Parse(typeof(LocationType), (string)reader["location_type"], true);
+                    var locationId = (uint)reader["location_id"];
 
-                    var workerId = (uint)reader["object_id"];
-                    if (workerId == 0)
-                        action.WorkerObject = city;
-                    else
-                        action.WorkerObject = city[(uint)reader["object_id"]];
+                    IActionWorker worker = resolveWorker(action, (uint)reader["object_id"], locationType, locationId);
 
-                    city.Worker.DbLoaderDoActive(action);
+                    worker.DbLoaderDoActive(action);
 
                     DbManager.Save(action);
                 }
@@ -1102,7 +1121,7 @@ namespace Game.Database
             Global.Logger.Info("Loading passive actions...");
 
             //this will hold chain actions that we encounter for the next phase
-            var chainActions = new Dictionary<uint, List<PassiveAction>>();            
+            var chainActions = new Dictionary<IActionWorker, List<PassiveAction>>();            
 
             using (var reader = DbManager.Select(PassiveAction.DB_TABLE))
             {
@@ -1138,30 +1157,25 @@ namespace Game.Database
 
                     action.DbPersisted = true;
 
-                    ICity city;
-                    if (!World.Current.TryGetObjects((uint)reader["city_id"], out city))
-                        throw new Exception("City not found");
+                    var locationType = (LocationType)Enum.Parse(typeof(LocationType), (string)reader["location_type"], true);
+                    var locationId = (uint)reader["location_id"];
 
-                    var workerId = (uint)reader["object_id"];
-                    if (workerId == 0)
-                        action.WorkerObject = city;
-                    else
-                        action.WorkerObject = city[workerId];
+                    IActionWorker worker = resolveWorker(action, (uint)reader["object_id"], locationType, locationId);
 
                     if ((bool)reader["is_chain"] == false)
-                        city.Worker.DbLoaderDoPassive(action);
+                        worker.DbLoaderDoPassive(action);
                     else
                     {
                         List<PassiveAction> chainList;
-                        if (!chainActions.TryGetValue(city.Id, out chainList))
+                        if (!chainActions.TryGetValue(worker, out chainList))
                         {
                             chainList = new List<PassiveAction>();
-                            chainActions[city.Id] = chainList;
+                            chainActions[worker] = chainList;
                         }
 
                         action.IsChain = true;
 
-                        city.Worker.DbLoaderDoPassive(action);
+                        worker.DbLoaderDoPassive(action);
 
                         chainList.Add(action);
                     }
@@ -1184,17 +1198,20 @@ namespace Game.Database
                     var actionType = (ActionType)((int)reader["type"]);
                     Type type = Type.GetType("Game.Logic.Actions." + actionType + "Action", true, true);
 
-                    ICity city;
-                    if (!World.Current.TryGetObjects((uint)reader["city_id"], out city))
-                        throw new Exception("City not found");
-
                     var currentActionId = DBNull.Value.Equals(reader["current_action_id"]) ? 0 : (uint)reader["current_action_id"];
+
+                    var locationType = (LocationType)Enum.Parse(typeof(LocationType), (string)reader["location_type"], true);
+                    var locationId = (uint)reader["location_id"];
+
+                    IActionWorker worker = resolveWorker(null, (uint)reader["object_id"], locationType, locationId);
 
                     List<PassiveAction> chainList;
                     PassiveAction currentAction = null;
                     //current action might be null if it has already completed and we are in the call chain part of the cycle
-                    if (chainActions.TryGetValue(city.Id, out chainList))
+                    if (chainActions.TryGetValue(worker, out chainList))
+                    {
                         currentAction = chainList.Find(lookupAction => lookupAction.ActionId == currentActionId);
+                    }
 
                     Dictionary<string, string> properties = XmlSerializer.Deserialize((string)reader["properties"]);
                     var action = ActionFactory.CreateChainAction(type,
@@ -1207,13 +1224,9 @@ namespace Game.Database
                     
                     action.DbPersisted = true;
 
-                    var workerId = (uint)reader["object_id"];
-                    if (workerId == 0)
-                        action.WorkerObject = city;
-                    else
-                        action.WorkerObject = city[(uint)reader["object_id"]];
+                    worker = resolveWorker(action, (uint)reader["object_id"], locationType, locationId);
 
-                    city.Worker.DbLoaderDoPassive(action);
+                    worker.DbLoaderDoPassive(action);
 
                     DbManager.Save(action);
                 }
@@ -1248,7 +1261,7 @@ namespace Game.Database
                     else
                         obj = city[(uint)reader["object_id"]];
 
-                    var referenceStub = new ReferenceStub((ushort)reader["id"], obj, action) {DbPersisted = true};
+                    var referenceStub = new ReferenceStub((ushort)reader["id"], obj, action, city) {DbPersisted = true};
 
                     city.References.DbLoaderAdd(referenceStub);
                 }

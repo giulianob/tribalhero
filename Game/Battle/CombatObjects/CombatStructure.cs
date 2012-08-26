@@ -219,15 +219,15 @@ namespace Game.Battle.CombatObjects
             {
                 return RadiusLocator.Current.IsOverlapping(obj.Location(),
                                                            obj.AttackRadius(),
-                                                           new Location(Structure.X, Structure.Y),
+                                                           new Position(Structure.X, Structure.Y),
                                                            Structure.Stats.Base.Radius);
             }
 
             throw new Exception(string.Format("Why is a structure trying to kill a unit of type {0}?", obj.GetType().FullName));
         }
 
-        public override Location Location() {
-            return new Location(Structure.X, Structure.Y);
+        public override Position Location() {
+            return new Position(Structure.X, Structure.Y);
         }
 
         public override byte AttackRadius()

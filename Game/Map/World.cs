@@ -28,7 +28,7 @@ namespace Game.Map
         
         #endregion
 
-        private readonly LargeIdGenerator tribeIdGen = new LargeIdGenerator(100000, 200000);
+        private readonly LargeIdGenerator tribeIdGen = new LargeIdGenerator(200000, 100000);
 
         public ICityManager Cities { get; private set; }
 

@@ -18,7 +18,7 @@ namespace Game.Map
 
         private readonly IRegionManager regionManager;
 
-        private readonly LargeIdGenerator cityIdGen = new LargeIdGenerator(200000, 300000);
+        private readonly LargeIdGenerator cityIdGen = new LargeIdGenerator(300000, 200000);
 
         private readonly Dictionary<uint, ICity> cities = new Dictionary<uint, ICity>();
 

@@ -191,6 +191,7 @@ namespace Game.Comm
         TribeSetDescription = 1006,
         TribePublicInfo = 1007,
         TribeTransfer = 1008,
+        TribeInfoByName = 1009,
         TribesmanAdd = 1011,
         TribesmanRemove = 1012,
         TribesmanUpdate = 1013,
@@ -211,6 +212,7 @@ namespace Game.Comm
         #region Stronghold
         StrongholdInfo = 1101,
         StrongholdPublicInfo = 1102,
+        StrongholdInfoByName = 1103,
         #endregion
 
         #region Internal Messages

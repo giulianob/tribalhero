@@ -13,6 +13,7 @@ namespace Game.Data.Stronghold
         void Add(IStronghold stronghold);
         void DbLoaderAdd(IStronghold stronghold);
         bool TryGetStronghold(uint id, out IStronghold stronghold);
+        bool TryGetStronghold(string name, out IStronghold stronghold);
         void Generate(int count);
 
         void Activate(IStronghold stronghold);

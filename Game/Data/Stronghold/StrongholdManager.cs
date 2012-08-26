@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Game.Data.Tribe;
 using Game.Map;
 using Game.Module;
@@ -63,6 +65,13 @@ namespace Game.Data.Stronghold
             return strongholds.TryGetValue(id, out stronghold);
         }
 
+        public bool TryGetStronghold(string name, out IStronghold stronghold)
+        {
+            if ((stronghold = strongholds.Values.FirstOrDefault(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase))) == null)
+                return false;
+            return true;
+        }
+
         public void Generate(int count)
         {
             while (count-- > 0)
@@ -106,11 +115,11 @@ namespace Game.Data.Stronghold
             dbManager.Save(stronghold);
             if (oldTribe != null)
             {
-                chat.SendSystemChat("STRONGHOLD_TAKEN_OVER", stronghold.Id.ToString(CultureInfo.InvariantCulture), stronghold.Name, tribe.Id.ToString(CultureInfo.InvariantCulture), tribe.Name, oldTribe.Id.ToString(CultureInfo.InvariantCulture), oldTribe.Name);
+                chat.SendSystemChat("STRONGHOLD_TAKEN_OVER", stronghold.Name, tribe.Name, oldTribe.Name);
             }
             else
             {
-                chat.SendSystemChat("STRONGHOLD_NEUTRAL_TAKEN_OVER", stronghold.Id.ToString(CultureInfo.InvariantCulture), stronghold.Name, tribe.Id.ToString(CultureInfo.InvariantCulture), tribe.Name);
+                chat.SendSystemChat("STRONGHOLD_NEUTRAL_TAKEN_OVER", stronghold.Name, tribe.Name);
             }
         }
 

@@ -76,5 +76,7 @@ namespace Game.Logic.Actions
         TribeContributeActiveAction CreateTribeContributeActiveAction(uint cityId, uint structureId, Resource resource);
 
         StrongholdEngageGateAttackPassiveAction CreateStrongholdEngageGateAttackPassiveAction(uint cityId, uint objectId, uint targetStrongholdId, AttackMode mode);
+
+        StrongholdGateBattlePassiveAction CreateStrongholdGateBattlePassiveAction(uint strongholdId);
     }
 }

@@ -4,10 +4,8 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Stats;
-using Game.Data.Troop;
 using Game.Database;
 using Game.Map;
-using Game.Util.Locking;
 using Persistance;
 
 #endregion

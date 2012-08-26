@@ -1020,6 +1020,44 @@ namespace Game.Database
                         }
                     }
 
+                    // Load stronghold combat units
+                    using (DbDataReader listReader = DbManager.SelectList(StrongholdCombatUnit.DB_TABLE, new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
+                    {
+                        while (listReader.Read())
+                        {
+                            IStronghold stronghold;
+                            if (!World.Current.TryGetObjects((uint)listReader["stronghold_id"], out stronghold))
+                                throw new Exception("Stronghold not found");
+
+                            ICombatObject combatObj = new StrongholdCombatUnit((uint)listReader["id"], 
+                                                                 battleManager.BattleId,
+                                                                 (ushort)listReader["type"],
+                                                                 (byte)listReader["level"],
+                                                                 (ushort)listReader["count"],
+                                                                 stronghold,
+                                                                 (decimal)listReader["left_over_hp"],
+                                                                 Ioc.Kernel.Get<UnitFactory>(),
+                                                                 Ioc.Kernel.Get<BattleFormulas>());                            
+
+                            combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
+                            combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
+                            combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
+                            combatObj.MinDmgDealt = (ushort)listReader["damage_max_received"];
+                            combatObj.HitDealt = (ushort)listReader["hits_dealt"];
+                            combatObj.HitDealtByUnit = (uint)listReader["hits_dealt_by_unit"];
+                            combatObj.HitRecv = (ushort)listReader["hits_received"];
+                            combatObj.GroupId = (uint)listReader["group_id"];
+                            combatObj.DmgDealt = (decimal)listReader["damage_dealt"];
+                            combatObj.DmgRecv = (decimal)listReader["damage_received"];
+                            combatObj.LastRound = (uint)listReader["last_round"];
+                            combatObj.RoundsParticipated = (int)listReader["rounds_participated"];
+                            combatObj.DbPersisted = true;
+
+                            battleManager.GetCombatGroup((uint)listReader["group_id"]).Add(combatObj, false);
+                        }
+                    }
+
+                    // Reported groups
                     battleManager.BattleReport.ReportedGroups.DbPersisted = true;
                     using (DbDataReader listReader = DbManager.SelectList(battleManager.BattleReport.ReportedGroups))
                     {

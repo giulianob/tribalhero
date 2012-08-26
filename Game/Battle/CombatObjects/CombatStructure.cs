@@ -74,14 +74,6 @@ namespace Game.Battle.CombatObjects
             }
         }
 
-        public override uint PlayerId
-        {
-            get
-            {
-                return Structure.City.Owner.PlayerId;
-            }
-        }
-
         public override ICity City
         {
             get

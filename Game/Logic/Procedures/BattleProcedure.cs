@@ -329,16 +329,26 @@ namespace Game.Logic.Procedures
                                                                                    targetStronghold);
                 
                 combatGroup = AddAttackerToBattle(targetStronghold.Battle, attackerTroopObject);
-                /*
+                
                 var battlePassiveAction = actionFactory.CreateStrongholdGateBattlePassiveAction(targetStronghold.Id);
-                Error result = targetStronghold.Worker.DoPassive(targetCity, battlePassiveAction, false);
+                Error result = targetStronghold.Worker.DoPassive(targetStronghold, battlePassiveAction, false);
                 if (result != Error.Ok)
                 {
                     throw new Exception(string.Format("Failed to start a battle due to error {0}", result));
-                }*/
+                }
             }
 
             battleId = targetStronghold.Battle.BattleId;
+        }
+
+        public ICombatGroup AddGateToBattle(IBattleManager battle, IStronghold stronghold)
+        {
+            var strongholdCombatGroup = combatGroupFactory.CreateStrongholdCombatGroup(battle.BattleId, battle.GetNextGroupId(), stronghold);
+            strongholdCombatGroup.Add(combatUnitFactory.CreateStrongholdGateUnit(battle, stronghold));
+
+            battle.Add(strongholdCombatGroup, BattleManager.BattleSide.Defense);
+
+            return strongholdCombatGroup;
         }
     }
 }

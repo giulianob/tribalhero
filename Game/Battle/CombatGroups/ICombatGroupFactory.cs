@@ -1,4 +1,5 @@
-﻿using Game.Data.Troop;
+﻿using Game.Data.Stronghold;
+using Game.Data.Troop;
 
 namespace Game.Battle.CombatGroups
 {
@@ -21,5 +22,7 @@ namespace Game.Battle.CombatGroups
         /// <param name="troopObject">Troop object to create group from</param>
         /// <returns></returns>
         CityOffensiveCombatGroup CreateCityOffensiveCombatGroup(uint battleId, uint id, ITroopObject troopObject);
+
+        StrongholdCombatGroup CreateStrongholdCombatGroup(uint battleId, uint id, IStronghold stronghold);
     }
 }

@@ -10,8 +10,6 @@ namespace Game.Battle.CombatObjects
             
         }
 
-        public abstract uint PlayerId { get; }
-
         public abstract ICity City { get; }
 
         public abstract ITroopStub TroopStub { get; }

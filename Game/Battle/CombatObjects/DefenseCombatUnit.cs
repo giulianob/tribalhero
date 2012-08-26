@@ -133,14 +133,6 @@ namespace Game.Battle.CombatObjects
             }
         }
 
-        public override uint PlayerId
-        {
-            get
-            {
-                return TroopStub.City.Owner.PlayerId;
-            }
-        }
-
         public override ICity City
         {
             get

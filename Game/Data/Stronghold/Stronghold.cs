@@ -5,6 +5,7 @@ using System.IO;
 using Game.Battle;
 using Game.Data.Tribe;
 using Game.Data.Troop;
+using Game.Logic;
 using Game.Map;
 using Game.Util.Locking;
 using Persistance;
@@ -33,6 +34,8 @@ namespace Game.Data.Stronghold
 
         public IBattleManager Battle { get; set; }
 
+        public IActionWorker Worker { get; private set; }
+
         public IEnumerable<ILockable> LockList
         {
             get
@@ -55,6 +58,14 @@ namespace Game.Data.Stronghold
                 locks.AddRange(Troops.StationedHere());
 
                 return locks;
+            }
+        }
+
+        public uint WorkerId
+        {
+            get
+            {
+                return Id;
             }
         }
 
@@ -84,6 +95,7 @@ namespace Game.Data.Stronghold
             Lvl = level;
             this.x = x;
             this.y = y;
+            Worker = new ActionWorker(() => this, this);
             Troops = new TroopManager(this, null);
 
             Gate = new LazyValue(0);

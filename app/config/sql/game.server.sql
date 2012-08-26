@@ -24,7 +24,8 @@ DROP TABLE IF EXISTS `active_actions`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `active_actions` (
   `id` int(10) unsigned NOT NULL,
-  `city_id` int(10) unsigned NOT NULL,
+  `location_type` varchar(20) NOT NULL,
+  `location_id` int(10) unsigned NOT NULL,
   `object_id` int(10) unsigned NOT NULL,
   `type` int(10) NOT NULL,
   `worker_type` int(11) NOT NULL,
@@ -34,7 +35,7 @@ CREATE TABLE `active_actions` (
   `next_time` datetime NOT NULL,
   `end_time` datetime NOT NULL,
   `properties` text,
-  PRIMARY KEY (`id`,`city_id`)
+  PRIMARY KEY (`id`,`location_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -278,7 +279,8 @@ DROP TABLE IF EXISTS `chain_actions`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `chain_actions` (
   `id` int(10) unsigned NOT NULL,
-  `city_id` int(10) unsigned NOT NULL,
+  `location_type` varchar(20) NOT NULL,
+  `location_id` int(10) unsigned NOT NULL,
   `object_id` int(10) unsigned NOT NULL,
   `type` int(11) NOT NULL,
   `current_action_id` int(10) unsigned DEFAULT NULL,
@@ -286,7 +288,7 @@ CREATE TABLE `chain_actions` (
   `chain_state` tinyint(3) unsigned NOT NULL,
   `is_visible` tinyint(1) NOT NULL,
   `properties` text,
-  PRIMARY KEY (`id`,`city_id`)
+  PRIMARY KEY (`id`,`location_type`,`location_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -610,7 +612,8 @@ DROP TABLE IF EXISTS `passive_actions`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `passive_actions` (
   `id` int(10) unsigned NOT NULL,
-  `city_id` int(10) unsigned NOT NULL,
+  `location_type` varchar(20) NOT NULL,
+  `location_id` int(10) unsigned NOT NULL,
   `object_id` int(10) unsigned NOT NULL,
   `type` int(11) NOT NULL,
   `begin_time` datetime NOT NULL,
@@ -621,7 +624,7 @@ CREATE TABLE `passive_actions` (
   `is_visible` tinyint(1) NOT NULL,
   `properties` text,
   `nls_description` varchar(16) DEFAULT NULL,
-  PRIMARY KEY (`id`,`city_id`)
+  PRIMARY KEY (`id`,`location_type`,`location_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -773,6 +776,8 @@ CREATE TABLE `strongholds` (
   `gate` int(11) NOT NULL,
   `x` int(11) unsigned NOT NULL,
   `y` int(11) unsigned NOT NULL,
+  `battle_id` int(10) unsigned NOT NULL,
+  `gate_open_to` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1064,7 +1069,7 @@ CREATE TABLE `unit_templates_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-08-14 19:36:26
+-- Dump completed on 2012-08-26 12:25:18
 -- MySQL dump 10.13  Distrib 5.5.16, for Win32 (x86)
 --
 -- Host: localhost    Database: tribalhero_server
@@ -1101,4 +1106,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-08-14 19:36:27
+-- Dump completed on 2012-08-26 12:25:18

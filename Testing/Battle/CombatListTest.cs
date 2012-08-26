@@ -59,7 +59,7 @@ namespace Testing.Battle
             attackerStats.SetupGet(p => p.Stl).Returns(1);
 
             attacker.Setup(m => m.InRange(defender.Object)).Returns(true);
-            attacker.Setup(m => m.Location()).Returns(new Location(0, 0));
+            attacker.Setup(m => m.Location()).Returns(new Position(0, 0));
             attacker.SetupGet(p => p.Visibility).Returns(1);
             attacker.SetupGet(p => p.IsDead).Returns(false);
             attacker.Setup(m => m.CanSee(It.IsAny<ICombatObject>(), It.IsAny<uint>())).Returns(true);
@@ -67,7 +67,7 @@ namespace Testing.Battle
             defenderStats.SetupGet(p => p.Stl).Returns(2);
 
             defender.Setup(m => m.InRange(attacker.Object)).Returns(true);
-            defender.Setup(m => m.Location()).Returns(new Location(0, 0));
+            defender.Setup(m => m.Location()).Returns(new Position(0, 0));
             defender.SetupGet(p => p.IsDead).Returns(false);
             defender.SetupGet(p => p.Stats).Returns(defenderStats.Object);
 

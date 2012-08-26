@@ -32,7 +32,7 @@ namespace Game.Comm
 
         public static void AddToPacket(NotificationManager.Notification notification, Packet packet)
         {
-            packet.AddUInt32(notification.Action.WorkerObject.City.Id);
+            packet.AddUInt32(notification.GameObject.City.Id);
             packet.AddUInt32(notification.GameObject.ObjectId);
             packet.AddUInt32(notification.Action.ActionId);
             packet.AddUInt16((ushort)notification.Action.Type);

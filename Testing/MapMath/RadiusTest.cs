@@ -127,7 +127,7 @@ namespace Testing.MapMath
         [CsvData("MapMath/overlapping_test_data.csv")]
         public void TestIsOverlapping(uint x1, uint y1, byte r1, uint x2, uint y2, byte r2, bool overlapping, byte distance)
         {
-            new RadiusLocator().IsOverlapping(new Location(x1, y1), r1, new Location(x2, y2), r2).Should().Be(overlapping);
+            new RadiusLocator().IsOverlapping(new Position(x1, y1), r1, new Position(x2, y2), r2).Should().Be(overlapping);
         }
 
         private readonly RadiusLocator cacheForTestIsOverlappingWithCache = new RadiusLocator();
@@ -135,7 +135,7 @@ namespace Testing.MapMath
         [CsvData("MapMath/overlapping_test_data.csv")]
         public void TestIsOverlappingAllPointsWithCache(uint x1, uint y1, byte r1, uint x2, uint y2, byte r2, bool overlapping, byte distance)
         {
-            cacheForTestIsOverlappingWithCache.IsOverlapping(new Location(x1, y1), r1, new Location(x2, y2), r2).Should().Be(overlapping);
+            cacheForTestIsOverlappingWithCache.IsOverlapping(new Position(x1, y1), r1, new Position(x2, y2), r2).Should().Be(overlapping);
         }
 
         [Fact(Skip = "Intensive test.. only run if you need to")]
@@ -145,7 +145,7 @@ namespace Testing.MapMath
 
             int called = 0;
 
-            radiusLocator.Object.IsOverlapping(new Location(50, 50), 1, new Location(50, 48), 0);            
+            radiusLocator.Object.IsOverlapping(new Position(50, 50), 1, new Position(50, 48), 0);            
 
             radiusLocator.Setup(
                                 m =>
@@ -163,7 +163,7 @@ namespace Testing.MapMath
                                                                                                                                      custom) =>
                                                                                                                                     { called++; });
 
-            radiusLocator.Object.IsOverlapping(new Location(50, 50), 1, new Location(50, 48), 0);
+            radiusLocator.Object.IsOverlapping(new Position(50, 50), 1, new Position(50, 48), 0);
             called.Should().Be(0);
         }
     }

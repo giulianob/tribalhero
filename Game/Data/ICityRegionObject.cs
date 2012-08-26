@@ -8,7 +8,7 @@ namespace Game.Data
 
         ushort CityRegionRelY { get; }
 
-        Location CityRegionLocation { get; }
+        Position CityRegionLocation { get; }
 
         CityRegion.ObjectType CityRegionType { get; }
 

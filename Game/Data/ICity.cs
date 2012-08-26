@@ -3,7 +3,6 @@ using Game.Battle;
 using Game.Data.Troop;
 using Game.Logic;
 using Game.Util;
-using Game.Util.Locking;
 using Persistance;
 
 namespace Game.Data

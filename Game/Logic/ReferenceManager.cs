@@ -19,11 +19,12 @@ namespace Game.Logic
     {
         public const string DB_TABLE = "reference_stubs";
 
-        public ReferenceStub(ushort id, ICanDo obj, GameAction action)
+        public ReferenceStub(ushort id, ICanDo obj, GameAction action, ICity city)
         {
             ReferenceId = id;
             WorkerObject = obj;
             Action = action;
+            City = city;
         }
 
         public ushort ReferenceId { get; private set; }
@@ -31,6 +32,8 @@ namespace Game.Logic
         public ICanDo WorkerObject { get; private set; }
 
         public GameAction Action { get; private set; }
+
+        public ICity City { get; set; }
 
         #region IPersistableObject Members
 
@@ -60,7 +63,7 @@ namespace Game.Logic
             {
                 return new[]
                 {
-                        new DbColumn("id", ReferenceId, DbType.UInt16), new DbColumn("city_id", WorkerObject.City.Id, DbType.UInt32)
+                        new DbColumn("id", ReferenceId, DbType.UInt16), new DbColumn("city_id", City.Id, DbType.UInt32)
                 };
             }
         }
@@ -161,7 +164,7 @@ namespace Game.Logic
                 throw new Exception("Action not found");
             }
 
-            var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub);
+            var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub, city);
             reference.Add(newReference);
             DbPersistance.Current.Save(newReference);
 
@@ -176,7 +179,7 @@ namespace Game.Logic
                 throw new Exception("Action not found");
             }
 
-            var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub);
+            var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub, city);
             reference.Add(newReference);
             DbPersistance.Current.Save(newReference);
 

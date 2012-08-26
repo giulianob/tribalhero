@@ -213,7 +213,7 @@ namespace Game.Comm.ProcessorCommands
                     if (str.IsMainBuilding || Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("NoRoadRequired", str))
                         continue;
 
-                    if (!RoadPathFinder.HasPath(new Location(str.X, str.Y), new Location(city.X, city.Y), city, new Location(x, y)))
+                    if (!RoadPathFinder.HasPath(new Position(str.X, str.Y), new Position(city.X, city.Y), city, new Position(x, y)))
                     {
                         breaksRoad = true;
                         break;
@@ -244,10 +244,10 @@ namespace Game.Comm.ProcessorCommands
                                                     if (world.Roads.IsRoad(x1, y1))
                                                     {
                                                         if (
-                                                                !RoadPathFinder.HasPath(new Location(x1, y1),
-                                                                                        new Location(city.X, city.Y),
+                                                                !RoadPathFinder.HasPath(new Position(x1, y1),
+                                                                                        new Position(city.X, city.Y),
                                                                                         city,
-                                                                                        new Location(origX, origY)))
+                                                                                        new Position(origX, origY)))
                                                         {
                                                             allNeighborsHaveOtherPaths = false;
                                                             return false;

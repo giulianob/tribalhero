@@ -149,7 +149,9 @@ namespace Game.Logic.Actions
 
             Current = chainable;
             Current.WorkerObject = WorkerObject;
-            Current.ActionId = (uint)WorkerObject.City.Worker.GetId();
+            Current.ActionId = (uint)ActionIdGenerator.GetNext();
+            Current.ActionIdGenerator = ActionIdGenerator;
+            Current.Location = Location;
 
             DbPersistance.Current.Save(this);
             chainable.StateChange(chainable.Execute() == Error.Ok ? ActionState.Started : ActionState.Failed);
@@ -177,7 +179,7 @@ namespace Game.Logic.Actions
                     return;
                 case ActionState.Completed:
                 case ActionState.Failed:
-                    WorkerObject.City.Worker.ReleaseId(action.ActionId);
+                    ActionIdGenerator.Release(action.ActionId);
                     DbPersistance.Current.Delete(action);
                     break;
                 default:

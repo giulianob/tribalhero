@@ -316,7 +316,7 @@
     <Compile Include="Map\IGameObjectLocator.cs" />
     <Compile Include="Map\IRegionManager.cs" />
     <Compile Include="Map\IWorld.cs" />
-    <Compile Include="Map\Location.cs" />
+    <Compile Include="Map\Position.cs" />
     <Compile Include="Map\MapMath.cs" />
     <Compile Include="Map\ObjectLink.cs" />
     <Compile Include="Map\ObjectList.AllObjectEnum.cs" />

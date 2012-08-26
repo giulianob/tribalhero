@@ -269,9 +269,9 @@ namespace Game.Battle.CombatObjects
             }
         }
 
-        public override Location Location()
+        public override Position Location()
         {
-            return new Location(troopObject.X, troopObject.Y);
+            return new Position(troopObject.X, troopObject.Y);
         }
 
         public override byte AttackRadius()

@@ -100,7 +100,7 @@ namespace Game.Battle.CombatObjects
 
         public abstract bool InRange(ICombatObject obj);
 
-        public abstract Location Location();
+        public abstract Position Location();
 
         public abstract byte AttackRadius();
 

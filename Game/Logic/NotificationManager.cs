@@ -132,7 +132,7 @@ namespace Game.Logic
                         //send removal
                         var packet = new Packet(Command.NotificationRemove);
                         packet.AddUInt32(City.Id);
-                        packet.AddUInt32(notification.Action.WorkerObject.City.Id);
+                        packet.AddUInt32(notification.GameObject.City.Id);
                         packet.AddUInt32(notification.Action.ActionId);
 
                         Global.Channel.Post("/CITY/" + City.Id, packet);
@@ -197,7 +197,7 @@ namespace Game.Logic
 
         public bool TryGetValue(ICity city, ushort actionId, out Notification notification)
         {
-            notification = notifications.FirstOrDefault(n => n.Action.WorkerObject.City == city && n.Action.ActionId == actionId);
+            notification = notifications.FirstOrDefault(n => n.GameObject.City == city && n.Action.ActionId == actionId);
 
             return notification != null;
         }
@@ -242,8 +242,11 @@ namespace Game.Logic
             public Notification(IGameObject obj, PassiveAction action, params ICity[] subscriptions)
             {
                 DbPersisted = false;
-                if (obj.City != action.WorkerObject.City)
+                if (obj.City.Id != action.Location.LocationId || action.Location.LocationType != LocationType.City)
+                {
                     throw new Exception("Object should be in the same city as the action worker");
+                }
+
                 this.obj = obj;
                 this.action = action;
                 this.subscriptions.AddRange(subscriptions);

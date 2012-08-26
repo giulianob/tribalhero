@@ -96,13 +96,6 @@
 			}
 		}
 		
-		public function viewTribeProfile(callback: Function = null):void {
-			var packet: Packet = new Packet();
-			packet.cmd = Commands.TRIBE_INFO;
-
-			session.write(packet, onReceiveTribeProfile, {callback: callback});
-		}
-		
 		public function setTribeDescription(description: String) : void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TRIBE_DESCRIPTION_SET;
@@ -112,6 +105,33 @@
 			session.write(packet, showErrorOrRefreshTribePanel, { refresh: true });
 		}		
 		
+		public function viewTribeProfileByName(name: String , callback: Function = null):void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBE_INFO_BY_NAME;
+			packet.writeString(name);
+			session.write(packet, onReceiveTribeProfileByName, {callback: callback});
+		}
+		
+		public function onReceiveTribeProfileByName(packet: Packet, custom: * ): void {
+			if (MapComm.tryShowError(packet)) {
+				if(custom.callback!=null) custom.callback(null);
+				return;
+			}
+			var isPrivate: Boolean = packet.readByte()==1;
+			if (isPrivate) {
+				onReceiveTribeProfile(packet, custom);
+			} else {
+				onReceiveTribePublicProfile(packet, custom);
+			}
+		}
+		
+		public function viewTribeProfile(callback: Function = null):void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBE_INFO;
+
+			session.write(packet, onReceiveTribeProfile, {callback: callback});
+		}
+
 		public function onReceiveTribeProfile(packet: Packet, custom: * ):void {
 			mapComm.hideLoading();
 			if (MapComm.tryShowError(packet)) {
@@ -222,6 +242,24 @@
 				}
 				
 				profileData.assignments.push(assignment);
+			}
+			
+			profileData.strongholds = [];
+			var strongholdCount: int = packet.readShort();
+			for (i = 0; i < strongholdCount; i++) {
+				var stronghold: * = {
+					id: packet.readUInt(),
+					name: packet.readString(),
+					state: packet.readByte(),
+					gameState: packet.readByte(),
+					lvl: packet.readByte(),
+					gate: packet.readInt(),
+					x: packet.readUInt(),
+					y: packet.readUInt()
+				};
+				Global.map.usernames.strongholds.add(new Username(stronghold.id, stronghold.name));
+				profileData.strongholds.push(stronghold);
+				trace("stronghold[" + i.toString() + "] : " + stronghold.name);
 			}
 			
 			if (custom.callback)

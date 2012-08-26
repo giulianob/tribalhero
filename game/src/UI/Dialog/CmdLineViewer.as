@@ -88,9 +88,23 @@ package src.UI.Dialog
 					
 					switch (parts[0])
 					{
-						case 'viewProfile': 
+						case 'viewPlayerProfile': 
 							Global.mapComm.City.viewPlayerProfile(parts[1]);
 							break;
+						case 'viewPlayerProfileByName': 
+							Global.mapComm.City.viewPlayerProfileByName(parts[1]);
+							break;
+						case 'viewTribeProfileByName': 
+							Global.mapComm.Tribe.viewTribeProfileByName(parts[1]);
+							break;
+						case 'viewCityProfileByName': 
+							Global.gameContainer.clearAllSelections();
+							Global.gameContainer.closeAllFrames(true);			
+							Global.mapComm.City.gotoCityLocationByName(parts[1]);
+							break;
+						case 'viewStrongholdProfileByName': 
+							Global.mapComm.Stronghold.viewStrongholdProfileByName(parts[1]);
+							break;					
 					}
 				});
 			
@@ -229,6 +243,41 @@ package src.UI.Dialog
 			return cmdIndex != -1 && cmdHistory[cmdIndex] == txtCommand.getText();
 		}
 		
+		public function replaceProfileLabel(str: String): String
+		{
+			var index: int;
+			var beginOfs: int;
+			var endOfs: int;
+			var result: String = "";
+			while ((beginOfs = str.indexOf("#", index)) != -1 && (endOfs = str.indexOf("#", beginOfs + 1)) != -1) {
+				result += str.substring(index, beginOfs);
+				var values: Array =  str.substring(beginOfs + 1, endOfs).split(":");
+				if (values.length >= 2) {
+					switch(values[0]) {
+						case "p":
+							result += StringUtil.substitute('<a href="event:viewPlayerProfileByName:{0}"><span class="global">{0}</span></a>', values[1]);
+							break;
+						case "t":
+							result += StringUtil.substitute('<a href="event:viewTribeProfileByName:{0}"><span class="global">{0}</span></a>', values[1]);
+							break;
+						case "s":
+							result += StringUtil.substitute('<a href="event:viewStrongholdProfileByName:{0}"><span class="global">{0}</span></a>', values[1]);
+							break;
+						case "c":
+							result += StringUtil.substitute('<a href="event:viewCityProfileByName:{0}"><span class="global">{0}</span></a>', values[1]);
+							break;
+						default:
+							result += str.substring(beginOfs, endOfs + 1);
+							break;
+					}
+				} else {
+					result += str.substring(beginOfs, endOfs + 1);
+				}
+				index = endOfs + 1;
+			}
+			return result + str.substring(index);
+		}
+		
 		public function logChat(type:int, playerId:int, playerName:String, str:String):void
 		{
 			var f:DateFormatter = new DateFormatter();
@@ -245,7 +294,7 @@ package src.UI.Dialog
 				cssClass = 'global';
 			}
 			
-			log(type, StringUtil.substitute('[{0}] {1}<a href="event:viewProfile:{3}"><span class="{2}">{4}</span></a>: {5}', f.format(new Date()), "", cssClass, playerId, StringHelper.htmlEscape(playerName), StringHelper.linkify(str)), false, false);
+			log(type, StringUtil.substitute('[{0}] {1}<a href="event:viewPlayerProfile:{3}"><span class="{2}">{4}</span></a>: {5}', f.format(new Date()), "", cssClass, playerId, StringHelper.htmlEscape(playerName), StringHelper.linkify(str)), false, false);
 			
 			if (type != currentChatType) {
 				var button: JToggleButton = CHANNELS[type].button;
@@ -264,6 +313,8 @@ package src.UI.Dialog
 			if (escapeStr)
 				str = StringHelper.htmlEscape(str);
 			
+			str = replaceProfileLabel(str);
+			
 			// This should be moved to the guy calling it w/ command response
 			if (isCommand)
 				str = "&gt;" + str;
@@ -281,6 +332,7 @@ package src.UI.Dialog
 		
 		public function logSystem(messageId:String, params:Array):void 
 		{
+			if (Global.gameContainer.cmdLine == null) return;
 			var substituteArgs: Array = new Array();
 			substituteArgs.push(Locale.loadString(messageId));
 			
@@ -291,7 +343,7 @@ package src.UI.Dialog
 			var message: String = StringUtil.substitute.apply(StringUtil, substituteArgs);
 			
 			Global.gameContainer.cmdLine.log(CmdLineViewer.TYPE_GLOBAL, message);
-			Global.gameContainer.cmdLine.log(CmdLineViewer.TYPE_TRIBE, message);					
+			Global.gameContainer.cmdLine.log(CmdLineViewer.TYPE_TRIBE, message);
 		}
 		
 		private function refreshText():void

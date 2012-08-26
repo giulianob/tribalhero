@@ -1,0 +1,18 @@
+relre:/bin/
+relre:/obj/
+glob:_ReSharper.Game/
+glob:conf/csv/compiled/*.csv
+glob:conf/maps/*.dat
+relre:.suo
+glob:conf/data/*.xml
+glob:*.user
+glob:swordsman.csv
+glob:TestResults/*
+glob:conf/regions/region_changes.dat
+glob:conf/conf.rar
+glob:conf/settings.ini
+glob:*.pidb
+glob:output/
+syntax: glob
+ratio.csv
+NDependOut/

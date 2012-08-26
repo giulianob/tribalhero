@@ -428,6 +428,13 @@ namespace Game.Database
                     {
                         stronghold.Tribe = tribe;
                     }
+
+                    var gateOpenTo = (uint)reader["gate_open_to"];
+                    if (World.Current.TryGetObjects(gateOpenTo, out tribe))
+                    {
+                        stronghold.GateOpenTo = tribe;
+                    }
+
                     stronghold.DbPersisted = true;
                     strongholdManager.DbLoaderAdd(stronghold);
                     if (stronghold.StrongholdState != StrongholdState.Inactive)

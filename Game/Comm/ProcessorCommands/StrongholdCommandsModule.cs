@@ -1,15 +1,9 @@
 #region
 
 using System;
-using Game.Data;
 using Game.Data.Stronghold;
-using Game.Data.Tribe;
-using Game.Map;
 using Game.Setup;
-using Game.Util;
-using System.Linq;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -17,11 +11,42 @@ namespace Game.Comm.ProcessorCommands
 {
     class StrongholdCommandsModule : CommandModule
     {
+        private readonly IStrongholdManager strongholdManager;
+
+        public StrongholdCommandsModule(IStrongholdManager strongholdManager)
+        {
+            this.strongholdManager = strongholdManager;
+        }
+
         public override void RegisterCommands(Processor processor)
         {
             processor.RegisterCommand(Command.StrongholdNameGet, GetName);
             processor.RegisterCommand(Command.StrongholdInfo, GetInfo);
             processor.RegisterCommand(Command.StrongholdPublicInfo, GetPublicInfo);
+            processor.RegisterCommand(Command.StrongholdInfoByName, GetInfoByName);
+        }
+
+        private void AddPrivateInfo(IStronghold stronghold, Packet packet)
+        {
+            packet.AddUInt32(stronghold.Id);
+            packet.AddInt32(stronghold.Gate.Value);
+            packet.AddByte((byte)stronghold.State.Type);
+            packet.AddByte(stronghold.Troops.Size);
+            foreach (var troop in stronghold.Troops)
+            {
+                PacketHelper.AddToPacket(troop, packet);
+            }
+
+            // Incoming List
+
+        }
+        
+        private void AddPublicInfo(IStronghold stronghold, Packet packet)
+        {
+            packet.AddUInt32(stronghold.Id);
+            packet.AddByte((byte)stronghold.State.Type);
+            packet.AddByte((byte)stronghold.StrongholdState);
+            packet.AddUInt32(stronghold.Tribe == null ? 0 : stronghold.Tribe.Id);
         }
 
         private void GetPublicInfo(Session session, Packet packet)
@@ -39,7 +64,6 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            IStrongholdManager strongholdManager = Ioc.Kernel.Get<IStrongholdManager>();
             IStronghold stronghold;
             if (!strongholdManager.TryGetStronghold(strongholdId, out stronghold))
             {
@@ -49,10 +73,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(stronghold))
             {
-                reply.AddUInt32(stronghold.Id);
-                reply.AddByte((byte)stronghold.State.Type);
-                reply.AddByte((byte)stronghold.StrongholdState);
-                reply.AddUInt32(stronghold.Tribe == null ? 0 : stronghold.Tribe.Id);
+                AddPublicInfo(stronghold, reply);
                 session.Write(reply);
             }
         }
@@ -79,7 +100,6 @@ namespace Game.Comm.ProcessorCommands
             }
             var tribe = session.Player.Tribesman.Tribe;
 
-            IStrongholdManager strongholdManager = Ioc.Kernel.Get<IStrongholdManager>();
             IStronghold stronghold;
             if(!strongholdManager.TryGetStronghold(strongholdId, out stronghold))
             {
@@ -94,19 +114,52 @@ namespace Game.Comm.ProcessorCommands
                     ReplyError(session, packet, Error.StrongholdNotOccupied);
                     return;
                 }
-
-                reply.AddUInt32(stronghold.Id);
-                reply.AddInt32(stronghold.Gate.Value);
-                reply.AddByte((byte)stronghold.State.Type);
-                reply.AddByte(stronghold.Troops.Size);
-                foreach(var troop in stronghold.Troops)
-                {
-                    PacketHelper.AddToPacket(troop, reply);
-                }
-
-                // Incoming List
+                AddPrivateInfo(stronghold, reply);
                 session.Write(reply);
             }
+        }
+
+        private void GetInfoByName(Session session, Packet packet)
+        {
+            var reply = new Packet(packet);
+            string name;
+            try
+            {
+                name = packet.GetString();
+            }
+            catch (Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            IStronghold stronghold;
+            if (!strongholdManager.TryGetStronghold(name, out stronghold))
+            {
+                ReplyError(session, packet, Error.TribeNotFound);
+                return;
+            }
+
+            using (Concurrency.Current.Lock(stronghold))
+            {
+                if (stronghold == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+                if (session.Player.IsInTribe && stronghold.StrongholdState==StrongholdState.Occupied && stronghold.Tribe.Id == session.Player.Tribesman.Tribe.Id)
+                {
+                    reply.AddByte(1);
+                    AddPrivateInfo(stronghold, reply);
+                }
+                else
+                {
+                    reply.AddByte(0);
+                    AddPublicInfo(stronghold, reply);
+                }
+                session.Write(reply);
+            }
+
         }
 
         private void GetName(Session session, Packet packet)
@@ -129,8 +182,6 @@ namespace Game.Comm.ProcessorCommands
             }
 
             reply.AddByte(count);
-
-            IStrongholdManager strongholdManager = Ioc.Kernel.Get<IStrongholdManager>();
 
             for (int i = 0; i < count; i++)
             {

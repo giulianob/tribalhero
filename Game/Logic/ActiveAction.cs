@@ -10,6 +10,7 @@ namespace Game.Logic
     public abstract class ActiveAction : GameAction
     {
         public const string DB_TABLE = "active_actions";
+
         public int WorkerType { get; set; }
 
         public byte WorkerIndex { get; set; }

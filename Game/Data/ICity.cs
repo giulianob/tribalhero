@@ -3,12 +3,11 @@ using Game.Battle;
 using Game.Data.Troop;
 using Game.Logic;
 using Game.Util;
-using Game.Util.Locking;
 using Persistance;
 
 namespace Game.Data
 {
-    public interface ICity : IEnumerable<IStructure>, ICanDo, ILockable, IPersistableObject, ICityRegionObject, IStation
+    public interface ICity : IEnumerable<IStructure>, ICanDo, IPersistableObject, ICityRegionObject, IStation
     {
         /// <summary>
         ///   Enumerates only through structures in this city
@@ -22,15 +21,9 @@ namespace Game.Data
 
         byte Lvl { get; }
 
-        /// <summary>
-        ///   Returns the city's center point which is the town centers position
-        /// </summary>
-        uint X { get; }
+        NotificationManager Notifications { get; }
 
-        /// <summary>
-        ///   Returns the city's center point which is the town centers position
-        /// </summary>
-        uint Y { get; }
+        ReferenceManager References { get; }
 
         /// <summary>
         ///   City's battle manager. Maybe null if city is not in battle.

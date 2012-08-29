@@ -10,7 +10,6 @@ using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using Ninject;
-using Persistance;
 
 #endregion
 
@@ -18,20 +17,20 @@ namespace Game.Logic
 {
     public class ActionWorker : IActionWorker
     {
+        public ILocation Location { get; set; }
+
+        private readonly Func<ILockable> lockDelegate;
+
         private readonly LargeIdGenerator actionIdGen = new LargeIdGenerator(ushort.MaxValue);
 
-        private readonly IDictionary<uint, ActiveAction> active = new Dictionary<uint, ActiveAction>();
-        private readonly ICity city;
+        private readonly IDictionary<uint, ActiveAction> active = new Dictionary<uint, ActiveAction>();        
 
-        private readonly NotificationManager notifications;
         private readonly IDictionary<uint, PassiveAction> passive = new Dictionary<uint, PassiveAction>();
-        private readonly ReferenceManager references;
 
-        public ActionWorker(ICity owner)
+        public ActionWorker(Func<ILockable> lockDelegate, ILocation location)
         {
-            city = owner;
-            notifications = new NotificationManager(this);
-            references = new ReferenceManager(this);
+            Location = location;
+            this.lockDelegate = lockDelegate;
         }
 
         #region Properties
@@ -51,36 +50,12 @@ namespace Game.Logic
                 return passive;
             }
         }
-
-        public NotificationManager Notifications
-        {
-            get
-            {
-                return notifications;
-            }
-        }
-
-        public ReferenceManager References
-        {
-            get
-            {
-                return references;
-            }
-        }
-
-        public ICity City
-        {
-            get
-            {
-                return city;
-            }
-        }
-
+        
         #endregion
 
         private void NotifyPassive(GameAction action, ActionState state)
         {
-            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(city);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(lockDelegate());
 
             PassiveAction actionStub;
             if (!passive.TryGetValue(action.ActionId, out actionStub))
@@ -113,9 +88,7 @@ namespace Game.Logic
                     action.IsDone = true;
 
                     if (ActionRemoved != null)
-                        ActionRemoved(actionStub, state);
-
-                    notifications.Remove(actionStub);
+                        ActionRemoved(actionStub, state);                    
 
                     if (action is ScheduledPassiveAction)
                         Scheduler.Current.Remove(action as ScheduledPassiveAction);
@@ -136,9 +109,7 @@ namespace Game.Logic
 
                     if (ActionRemoved != null)
                         ActionRemoved(actionStub, state);
-
-                    notifications.Remove(actionStub);
-
+                    
                     if (action is ScheduledPassiveAction)
                         Scheduler.Current.Remove(action as ScheduledPassiveAction);
 
@@ -150,7 +121,7 @@ namespace Game.Logic
 
         private void NotifyActive(GameAction action, ActionState state)
         {
-            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(city);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(lockDelegate());
 
             ActiveAction actionStub;
             if (!active.TryGetValue(action.ActionId, out actionStub))
@@ -225,7 +196,7 @@ namespace Game.Logic
 
             // Cancel Active actions
             IList<ActiveAction> activeList;
-            using (Concurrency.Current.Lock(City))
+            using (Concurrency.Current.Lock(lockDelegate()))
             {
                 // Very important to keep the ToList() here since we will be modifying the collection in the loop below and an IEnumerable will crash!
                 activeList = active.Values.Where(actionStub => actionStub.WorkerObject == workerObject).ToList();
@@ -241,7 +212,7 @@ namespace Game.Logic
 
             // Cancel Passive actions
             IList<PassiveAction> passiveList;
-            using (Concurrency.Current.Lock(City))
+            using (Concurrency.Current.Lock(lockDelegate()))
             {
                 // Very important to keep the ToList() here since we will be modifying the collection in the loop below and an IEnumerable will crash!
                 passiveList = passive.Values.Where(action => action.WorkerObject == workerObject).ToList();
@@ -255,10 +226,7 @@ namespace Game.Logic
                 stub.WorkerRemoved(false);
             }
 
-            using (Concurrency.Current.Lock(City))
-            {
-                references.Remove(workerObject);
-            }
+            ActionsRemovedFromWorker(workerObject);
         }
 
         private static void ActiveCancelCallback(object item)
@@ -306,22 +274,28 @@ namespace Game.Logic
             if (action is ScheduledActiveAction)
                 Schedule(action as ScheduledActiveAction);
 
-            action.OnNotify += NotifyActive;
+            SetActiveActionParams(action);
+
             actionIdGen.Set(action.ActionId);
             active.Add(action.ActionId, action);
         }
 
         public void DbLoaderDoPassive(PassiveAction action)
         {
+            SetPassiveActionParams(action);
+
             if (action.IsChain)
+            {
+                action.OnNotify -= NotifyPassive;
                 actionIdGen.Set(action.ActionId);
+            }
             else
             {
-                //this should only be used by the db loader
                 if (action is ScheduledPassiveAction)
+                {
                     Schedule(action as ScheduledPassiveAction);
-
-                action.OnNotify += NotifyPassive;
+                }
+                
                 actionIdGen.Set(action.ActionId);
                 passive.Add(action.ActionId, action);
             }
@@ -367,11 +341,12 @@ namespace Game.Logic
                 if (error != Error.Ok)
                     return error;
 
-                action.OnNotify += NotifyActive;
+                SetActiveActionParams(action);
+
                 action.ActionId = (ushort)actionId;
                 action.WorkerIndex = actionReq.Index;
                 action.WorkerType = workerType;
-                action.WorkerObject = workerObject;
+                action.WorkerObject = workerObject;                
                 active.Add(action.ActionId, action);
 
                 Error ret = action.Execute();
@@ -396,7 +371,7 @@ namespace Game.Logic
             switch(action.ActionConcurrency)
             {
                 case ConcurrencyType.StandAlone:
-                    return !active.Any(x => x.Value.WorkerObject == worker);
+                    return active.All(x => x.Value.WorkerObject != worker);
                 case ConcurrencyType.Normal:
                     return !active.Any(x => x.Value.WorkerObject == worker && (x.Value.ActionConcurrency == ConcurrencyType.StandAlone || x.Value.ActionConcurrency == ConcurrencyType.Normal));
                 case ConcurrencyType.Concurrent:
@@ -417,7 +392,8 @@ namespace Game.Logic
             if (actionId == -1)
                 return Error.ActionTotalMaxReached;
 
-            action.OnNotify += NotifyPassive;
+            SetPassiveActionParams(action);
+
             action.WorkerObject = workerObject;
             action.ActionId = (uint)actionId;
 
@@ -436,6 +412,19 @@ namespace Game.Logic
             return ret;
         }
 
+        private void SetActiveActionParams(ActiveAction action)
+        {
+            action.Location = Location;
+            action.OnNotify += NotifyActive;
+        }
+
+        private void SetPassiveActionParams(PassiveAction action)
+        {
+            action.OnNotify += NotifyPassive;            
+            action.ActionIdGenerator = actionIdGen;            
+            action.Location = Location;
+        }
+
         public void DoOnce(IGameObject workerObject, PassiveAction action)
         {
             if (passive.Values.Any(a => a.Type == action.Type))
@@ -445,12 +434,14 @@ namespace Game.Logic
             if (actionId == -1)
                 throw new Exception(Error.ActionTotalMaxReached.ToString());
 
-            action.WorkerObject = workerObject;
-            action.OnNotify += NotifyPassive;
+            action.WorkerObject = workerObject;            
             action.ActionId = (ushort)actionId;
+
+            SetPassiveActionParams(action);
+
             passive.Add(action.ActionId, action);
 
-            using (Concurrency.Current.Lock(city))
+            using (Concurrency.Current.Lock(lockDelegate()))
             {
                 action.Execute();
             }
@@ -536,11 +527,14 @@ namespace Game.Logic
 
         public delegate void UpdateCallback(GameAction stub, ActionState state);
 
+        public delegate void RemovedWorkerCallback(IGameObject workerObject);
+
         #endregion
 
         public event UpdateCallback ActionStarted;
         public event UpdateCallback ActionRescheduled;
         public event UpdateCallback ActionRemoved;
+        public event RemovedWorkerCallback ActionsRemovedFromWorker;
 
         #endregion
     }

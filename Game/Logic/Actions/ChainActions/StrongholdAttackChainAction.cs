@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
@@ -150,10 +151,10 @@ namespace Game.Logic.Actions
 
             initialTroopValue = troopObject.Stub.Value;
 
-            city.Worker.References.Add(troopObject, this);
+            city.References.Add(troopObject, this);
 
             // TODO: Figure out notifications
-            //city.Worker.Notifications.Add(troopObject, this, targetCity);
+            //city.Notifications.Add(troopObject, this, targetCity);
 
             var tma = actionFactory.CreateTroopMovePassiveAction(cityId, troopObject.ObjectId, targetStronghold.X, targetStronghold.Y, false, true);
 
@@ -169,18 +170,45 @@ namespace Game.Logic.Actions
 
         private void AfterTroopMoved(ActionState state)
         {
-            /*
             if (state == ActionState.Fired)
             {
-                // Verify stronghold is still available to attack
-                battleProcedure.CanStrongholdBeAttacked(
+                // Verify the target is still good, otherwise we walk back immediately
+
+                ICity city;
+                IStronghold targetStronghold;
+                ITroopObject troopObject;
+
+                if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
+                {
+                    throw new Exception("City or troop object is missing");
+                }
+
+                // If the stronghold is not there or we are unable to attack/defense it, then cancel the current TroopMoveAction
+                if (!gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold) ||
+                    (battleProcedure.CanStrongholdBeAttacked(city, targetStronghold) != Error.Ok &&
+                     battleProcedure.CanStrongholdBeDefended(city, targetStronghold) != Error.Ok))
+                {
+                    CancelCurrentChain();
+                }
+            }
+            else if (state == ActionState.Failed)
+            {
+                // If TroopMove failed it's because we cancelled it and the target is invalid. Walk back home
+                ICity city;
+                ITroopObject troopObject;
+
+                using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
+                {
+                    TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id, troopObject.ObjectId, city.X, city.Y, true, true);
+                    ExecuteChainAndWait(tma, AfterTroopMovedHome);
+                }
             }
             else if (state == ActionState.Completed)
             {
                 ICity city;
                 IStronghold targetStronghold;
                 ITroopObject troopObject;
-                
+
                 if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
                 {
                     throw new Exception("City or troop object is missing");
@@ -188,31 +216,57 @@ namespace Game.Logic.Actions
 
                 if (!gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold))
                 {
-                    //If the target is missing, walk back
-                    using (locker.Lock(city))
+                    throw new Exception("Stronghold is missing");
+                }
+                
+                if (targetStronghold.GateOpenTo == city.Owner.Tribesman.Tribe)
+                {
+                    // If stronghold's gate is open to the tribe, then it should engage the stronghold
+
+                    CallbackLock.CallbackLockHandler lockAll = delegate { return targetStronghold.LockList.ToArray(); };
+
+                    using (locker.Lock(lockAll, null, city, targetStronghold))
+                    {
+                        //var bea = actionFactory.CreateStrongholdEngagePassiveAction(cityId, troopObject.ObjectId, targetStrongholdId, mode);
+                        //ExecuteChainAndWait(bea, AfterGateBattle);
+                    }
+                }                        
+                else if (targetStronghold.Tribe == city.Owner.Tribesman.Tribe)
+                {
+                    // If tribe already owns stronghold, then it should defend it
+
+                    if (targetStronghold.GateOpenTo != null && targetStronghold.Battle != null)
+                    {
+                        // TODO: Join the battle
+                    }
+                    else
+                    {
+                        // TODO: Station yourself
+                    }
+                }                        
+                else if (targetStronghold.GateOpenTo == null)
+                {
+                    // If gate isn't open to anyone then engage the gate
+
+                    CallbackLock.CallbackLockHandler lockAll = delegate { return targetStronghold.LockList.ToArray(); };
+
+                    using (locker.Lock(lockAll, null, city, targetStronghold))
+                    {
+                        var bea = actionFactory.CreateStrongholdEngageGateAttackPassiveAction(cityId, troopObject.ObjectId, targetStrongholdId);
+                        ExecuteChainAndWait(bea, AfterGateBattle);
+                    }
+                }                        
+                else
+                {
+                    // Walk back to city if none of the above conditions apply
+
+                    using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
                     {
                         TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id, troopObject.ObjectId, city.X, city.Y, true, true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
-                        return;
-                    }
-                }
-
-                if (targetStronghold.GateOpenTo == city.Owner.Tribesman.Tribe)
-                {
-                    JoinStrongholdBattle();
-                }
-                else
-                {
-                    CallbackLock.CallbackLockHandler lockAllStationed = delegate { return targetStronghold.LockList; };
-
-                    using (locker.Lock(lockAllStationed, null, city, targetStronghold))
-                    {
-                        var bea = actionFactory.CreateStrongholdEngageGatePassiveAction(cityId, troopObject.ObjectId, targetStrongholdId, mode);
-                        ExecuteChainAndWait(bea, AfterGateBattle);
                     }
                 }
             }
-             */
         }
 
         private void AfterGateBattle(ActionState state)
@@ -231,7 +285,7 @@ namespace Game.Logic.Actions
                     ICity targetCity = cities[targetStrongholdId];
 
                     //Remove notification to target city once battle is over
-                    city.Worker.Notifications.Remove(this);
+                    city.Notifications.Remove(this);
 
                     //Remove Incoming Icon from the target's tribe
                     if (targetCity.Owner.Tribesman != null)
@@ -258,7 +312,7 @@ namespace Game.Logic.Actions
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
 
                         // Add notification just to the main city
-                        city.Worker.Notifications.Add(troopObject, this);
+                        city.Notifications.Add(troopObject, this);
                     }
                     else
                     {
@@ -269,7 +323,7 @@ namespace Game.Logic.Actions
                         targetCity.Resource.Add(troopObject.Stats.Loot);
 
                         // Remove this actions reference from the troop
-                        city.Worker.References.Remove(troopObject, this);
+                        city.References.Remove(troopObject, this);
 
                         // Remove troop since he's dead
                         procedure.TroopObjectDelete(troopObject, false);
@@ -292,12 +346,12 @@ namespace Game.Logic.Actions
                 using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
                 {
                     // Remove notification
-                    city.Worker.Notifications.Remove(this);
+                    city.Notifications.Remove(this);
 
                     // If city is not in battle then add back to city otherwise join local battle
                     if (city.Battle == null)
                     {
-                        city.Worker.References.Remove(troopObject, this);
+                        city.References.Remove(troopObject, this);
                         procedure.TroopObjectDelete(troopObject, true);
                         StateChange(ActionState.Completed);
                     }
@@ -318,7 +372,7 @@ namespace Game.Logic.Actions
                 ITroopObject troopObject;
                 using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
                 {
-                    city.Worker.References.Remove(troopObject, this);
+                    city.References.Remove(troopObject, this);
 
                     procedure.TroopObjectDelete(troopObject, troopObject.Stub.TotalCount != 0);
 

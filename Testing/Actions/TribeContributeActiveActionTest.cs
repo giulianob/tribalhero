@@ -46,7 +46,6 @@ namespace Testing.Actions
             structure.SetupGet(p => p.City).Returns(city.Object);
             locator.Setup(m => m.TryGetObjects(1, out cityObj, out tribeObj)).Returns(true);
             locker.Setup(m => m.Lock(1, out cityObj, out tribeObj)).Returns((CallbackLock)null);
-            canDo.SetupGet(p => p.City).Returns(cityObj);
             player.SetupGet(p => p.IsInTribe).Returns(true);
             player.SetupGet(p => p.PlayerId).Returns(123);
             tribe.Setup(m => m.Contribute(123, It.IsAny<Resource>())).Returns((uint inPlayerId, Resource inResource) =>
@@ -188,7 +187,6 @@ namespace Testing.Actions
             locator.Setup(m => m.TryGetObjects(1, out cityObj, out tribeObj)).Returns(true);
             locker.Setup(m => m.Lock(1, out cityObj, out tribeObj)).Returns((CallbackLock)null);
             locker.Setup(m => m.Lock(1, out cityObj)).Returns((IMultiObjectLock)null);
-            canDo.SetupGet(p => p.City).Returns(cityObj);
             player.SetupGet(p => p.IsInTribe).Returns(true);
             player.SetupGet(p => p.PlayerId).Returns(123);
             tribe.Setup(m => m.Contribute(123, It.IsAny<Resource>())).Returns((uint inPlayerId, Resource inResource) =>
@@ -248,7 +246,6 @@ namespace Testing.Actions
             locator.Setup(m => m.TryGetObjects(1, out cityObj, out tribeObj)).Returns(true);
             locker.Setup(m => m.Lock(1, out cityObj, out tribeObj)).Returns((CallbackLock)null);
             locker.Setup(m => m.Lock(1, out cityObj)).Returns((IMultiObjectLock)null);
-            canDo.SetupGet(p => p.City).Returns(cityObj);
             player.SetupGet(p => p.IsInTribe).Returns(true);
             player.SetupGet(p => p.PlayerId).Returns(123);
             tribe.Setup(m => m.Contribute(123, It.IsAny<Resource>())).Returns((uint inPlayerId, Resource inResource) =>

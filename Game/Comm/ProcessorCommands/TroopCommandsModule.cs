@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Data.Stats;
+using Game.Data.Stronghold;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
 
@@ -21,10 +23,13 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly StructureFactory structureFactory;
 
-        public TroopCommandsModule(IActionFactory actionFactory, StructureFactory structureFactory)
+        private readonly IGameObjectLocator gameObjectLocator;
+
+        public TroopCommandsModule(IActionFactory actionFactory, StructureFactory structureFactory, IGameObjectLocator gameObjectLocator)
         {
             this.actionFactory = actionFactory;
             this.structureFactory = structureFactory;
+            this.gameObjectLocator = gameObjectLocator;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -32,7 +37,8 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.UnitTrain, TrainUnit);
             processor.RegisterCommand(Command.UnitUpgrade, UnitUpgrade);
             processor.RegisterCommand(Command.TroopInfo, GetTroopInfo);
-            processor.RegisterCommand(Command.TroopAttack, Attack);
+            processor.RegisterCommand(Command.TroopAttackCity, AttackCity);
+            processor.RegisterCommand(Command.TroopAttackStronghold, AttackStronghold);
             processor.RegisterCommand(Command.TroopDefend, Defend);
             processor.RegisterCommand(Command.TroopRetreat, Retreat);
             processor.RegisterCommand(Command.TroopLocalSet, LocalTroopSet);
@@ -249,7 +255,70 @@ namespace Game.Comm.ProcessorCommands
             }
         }
 
-        private void Attack(Session session, Packet packet)
+        private void AttackStronghold(Session session, Packet packet)
+        {
+            uint cityId;
+            uint targetStrongholdId;
+            ISimpleStub simpleStub;
+            AttackMode mode;
+
+            try
+            {
+                mode = (AttackMode)packet.GetByte();
+                cityId = packet.GetUInt32();
+                targetStrongholdId = packet.GetUInt32();
+                simpleStub = PacketHelper.ReadStub(packet, FormationType.Attack);
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            IStronghold stronghold;
+            ICity city;
+
+            using (Concurrency.Current.Lock(session.Player))
+            {
+                city = session.Player.GetCity(cityId);
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                if (!gameObjectLocator.TryGetObjects(targetStrongholdId, out stronghold))
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;                    
+                }
+            }
+
+            using (Concurrency.Current.Lock(city, stronghold))
+            {
+                // Create troop object                
+                ITroopObject troopObject;
+                if (!Procedure.Current.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+                {
+                    ReplyError(session, packet, Error.TroopChanged);
+                    return;
+                }
+
+                var aa = actionFactory.CreateStrongholdAttackChainAction(cityId, troopObject.ObjectId, targetStrongholdId, mode);
+                Error ret = city.Worker.DoPassive(city, aa, true);
+                if (ret != 0)
+                {
+                    Procedure.Current.TroopObjectDelete(troopObject, true);
+                    ReplyError(session, packet, ret);
+                }
+                else
+                {
+                    ReplySuccess(session, packet);
+                }
+            }
+        }
+
+        private void AttackCity(Session session, Packet packet)
         {
             uint cityId;
             uint targetCityId;

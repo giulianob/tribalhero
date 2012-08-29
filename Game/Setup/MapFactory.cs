@@ -15,7 +15,7 @@ namespace Game.Setup
 {
     public class MapFactory
     {
-        private readonly List<Location> dict = new List<Location>();
+        private readonly List<Position> dict = new List<Position>();
         private int index;
         private const int SKIP = 1; 
 
@@ -30,12 +30,12 @@ namespace Game.Setup
                     uint x = uint.Parse(strs[0]);
                     uint y = uint.Parse(strs[1]);
 
-                    dict.Add(new Location(x, y));
+                    dict.Add(new Position(x, y));
                 }
             }
         }
 
-        public IEnumerable<Location> Locations()
+        public IEnumerable<Position> Locations()
         {
             return dict;
         }
@@ -53,7 +53,7 @@ namespace Game.Setup
                 if(index >= dict.Count)                
                     return false;
 
-                Location point = dict[index];
+                Position point = dict[index];
                 index += SKIP;
                 
                 // Check if objects already on that point

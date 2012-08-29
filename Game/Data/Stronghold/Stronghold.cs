@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using Game.Battle;
 using Game.Data.Tribe;
 using Game.Data.Troop;
+using Game.Logic;
 using Game.Map;
+using Game.Util.Locking;
 using Persistance;
 
 namespace Game.Data.Stronghold
@@ -28,6 +31,43 @@ namespace Game.Data.Stronghold
         public ITroopManager Troops { get; private set; }
 
         private ITribe tribe;
+
+        public IBattleManager Battle { get; set; }
+
+        public IActionWorker Worker { get; private set; }
+
+        public IEnumerable<ILockable> LockList
+        {
+            get
+            {
+                var locks = new List<ILockable>
+                {
+                        this
+                };
+
+                if (Tribe != null)
+                {
+                    locks.Add(Tribe);
+                }
+
+                if (Battle != null)
+                {
+                    locks.AddRange(Battle.LockList);
+                }
+
+                locks.AddRange(Troops.StationedHere());
+
+                return locks;
+            }
+        }
+
+        public uint WorkerId
+        {
+            get
+            {
+                return Id;
+            }
+        }
 
         public ITribe Tribe
         {
@@ -55,6 +95,7 @@ namespace Game.Data.Stronghold
             Lvl = level;
             this.x = x;
             this.y = y;
+            Worker = new ActionWorker(() => this, this);
             Troops = new TroopManager(this, null);
 
             Gate = new LazyValue(0);
@@ -70,11 +111,11 @@ namespace Game.Data.Stronghold
 
         #region Implementation of ICityRegionObject
 
-        public Location CityRegionLocation
+        public Position CityRegionLocation
         {
             get
             {
-                return new Location(X, Y);
+                return new Position(X, Y);
             }
         }
 
@@ -169,7 +210,7 @@ namespace Game.Data.Stronghold
             if (!updating)
                 throw new Exception("Changed state outside of begin/end update block");
 
-            //DefaultMultiObjectLock.ThrowExceptionIfNotLocked(World.Current.Forests);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
         }
 
         public override void EndUpdate()
@@ -194,11 +235,11 @@ namespace Game.Data.Stronghold
             }
         }
 
-        public StationType LocationType
+        public LocationType LocationType
         {
             get
             {
-                return StationType.Stronghold;
+                return LocationType.Stronghold;
             }
         }
 
@@ -271,7 +312,8 @@ namespace Game.Data.Stronghold
                                new DbColumn("gate", Gate.Value, DbType.Int32),
                                new DbColumn("x", x, DbType.UInt32),
                                new DbColumn("y", y, DbType.UInt32),
-                               new DbColumn("gate_open_to", GateOpenTo == null ? 0 : GateOpenTo.Id, DbType.UInt32)
+                               new DbColumn("gate_open_to", GateOpenTo == null ? 0 : GateOpenTo.Id, DbType.UInt32),
+                               new DbColumn("battle_id", Battle != null ? Battle.BattleId : 0, DbType.UInt32)
                        };
             }
         }

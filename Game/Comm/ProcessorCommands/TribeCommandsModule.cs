@@ -144,29 +144,18 @@ namespace Game.Comm.ProcessorCommands
             foreach (var incoming in incomingList)
             {
                 // Target
-                ICity targetCity;
-                if (World.Current.TryGetObjects(incoming.Action.To, out targetCity))
-                {
-                    packet.AddUInt32(targetCity.Owner.PlayerId);
-                    packet.AddUInt32(targetCity.Id);
-                    packet.AddString(targetCity.Owner.Name);
-                    packet.AddString(targetCity.Name);
-                }
-                else
-                {
-                    packet.AddUInt32(0);
-                    packet.AddUInt32(0);
-                    packet.AddString("N/A");
-                    packet.AddString("N/A");
-                }
+                packet.AddUInt32(incoming.TargetCity.Owner.PlayerId);
+                packet.AddUInt32(incoming.TargetCity.Id);
+                packet.AddString(incoming.TargetCity.Owner.Name);
+                packet.AddString(incoming.TargetCity.Name);
 
                 // Attacker
-                packet.AddUInt32(incoming.Action.WorkerObject.City.Owner.PlayerId);
-                packet.AddUInt32(incoming.Action.WorkerObject.City.Id);
-                packet.AddString(incoming.Action.WorkerObject.City.Owner.Name);
-                packet.AddString(incoming.Action.WorkerObject.City.Name);
+                packet.AddUInt32(incoming.SourceCity.Owner.PlayerId);
+                packet.AddUInt32(incoming.SourceCity.Id);
+                packet.AddString(incoming.SourceCity.Owner.Name);
+                packet.AddString(incoming.SourceCity.Name);
 
-                packet.AddUInt32(UnixDateTime.DateTimeToUnix(incoming.Action.EndTime.ToUniversalTime()));
+                packet.AddUInt32(UnixDateTime.DateTimeToUnix(incoming.EndTime.ToUniversalTime()));
             }
 
             // Assignment List
@@ -351,7 +340,7 @@ namespace Game.Comm.ProcessorCommands
 
         private void Delete(Session session, Packet packet)
         {
-            if (session.Player.Tribesman == null)
+            if (!session.Player.IsInTribe)
             {
                 ReplyError(session, packet, Error.TribeIsNull);
                 return;

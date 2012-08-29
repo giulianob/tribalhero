@@ -761,6 +761,52 @@ CREATE TABLE `simple_objects` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `stronghold_combat_groups`
+--
+
+DROP TABLE IF EXISTS `stronghold_combat_groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `stronghold_combat_groups` (
+  `id` int(10) unsigned NOT NULL,
+  `battle_id` int(10) unsigned NOT NULL,
+  `stronghold_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`,`battle_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `stronghold_combat_units`
+--
+
+DROP TABLE IF EXISTS `stronghold_combat_units`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `stronghold_combat_units` (
+  `id` int(10) unsigned NOT NULL,
+  `battle_id` int(10) unsigned NOT NULL,
+  `stronghold_id` int(10) unsigned NOT NULL,
+  `last_round` int(10) unsigned NOT NULL,
+  `rounds_participated` int(10) NOT NULL,
+  `damage_dealt` decimal(10,2) NOT NULL,
+  `damage_received` decimal(10,2) NOT NULL,
+  `group_id` int(10) unsigned NOT NULL,
+  `level` tinyint(3) unsigned NOT NULL,
+  `type` smallint(5) unsigned NOT NULL,
+  `count` smallint(5) unsigned NOT NULL,
+  `left_over_hp` decimal(10,2) NOT NULL,
+  `damage_min_dealt` smallint(5) unsigned NOT NULL,
+  `damage_max_dealt` smallint(5) unsigned NOT NULL,
+  `damage_min_received` smallint(5) unsigned NOT NULL,
+  `damage_max_received` smallint(5) unsigned NOT NULL,
+  `hits_dealt` smallint(5) unsigned NOT NULL,
+  `hits_dealt_by_unit` int(10) unsigned NOT NULL,
+  `hits_received` smallint(5) unsigned NOT NULL,
+  PRIMARY KEY (`battle_id`,`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `strongholds`
 --
 
@@ -1069,7 +1115,7 @@ CREATE TABLE `unit_templates_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-08-26 12:25:18
+-- Dump completed on 2012-08-28 20:24:18
 -- MySQL dump 10.13  Distrib 5.5.16, for Win32 (x86)
 --
 -- Host: localhost    Database: tribalhero_server
@@ -1106,4 +1152,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-08-26 12:25:18
+-- Dump completed on 2012-08-28 20:24:18

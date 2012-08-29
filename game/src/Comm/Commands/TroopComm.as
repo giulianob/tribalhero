@@ -250,10 +250,10 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 
-		public function troopAttack(cityId: int, targetCityId: int, targetObjectId: int, mode: int, troop: TroopStub, onAttackFail:Function):void
+		public function troopAttackCity(cityId: int, targetCityId: int, targetObjectId: int, mode: int, troop: TroopStub, onAttackFail:Function):void
 		{
 			var packet: Packet = new Packet();
-			packet.cmd = Commands.TROOP_ATTACK;
+			packet.cmd = Commands.TROOP_ATTACK_CITY;
 			packet.writeUByte(mode);
 			packet.writeUInt(cityId);
 			packet.writeUInt(targetCityId);
@@ -262,6 +262,18 @@
 
 			session.write(packet, onReceiveTroopAttack, onAttackFail);
 		}
+		
+		public function troopAttackStronghold(cityId: int, targetObjectId: int, mode: int, troop: TroopStub, onAttackFail:Function):void
+		{
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TROOP_ATTACK_STRONGHOLD;
+			packet.writeUByte(mode);
+			packet.writeUInt(cityId);
+			packet.writeUInt(targetObjectId);
+			writeTroop(troop, packet);
+
+			session.write(packet, onReceiveTroopAttack, onAttackFail);
+		}		
 		
 		public function onReceiveTroopAttack(packet: Packet, custom: * ):void
 		{

@@ -228,12 +228,28 @@
 			}
 		}
 
-		public function getObjectsAt(x: int, y: int, objClass: Class = null): Array
+		public function getObjectsAt(x: int, y: int, objClass: * = null): Array
 		{
 			var objs: Array = new Array();
 			for each(var gameObj: SimpleGameObject in objects.each())
 			{
-				if (objClass != null && !(gameObj is objClass)) continue;
+				if (objClass != null) {
+					if (objClass is Array) {
+						var typeOk: Boolean = false;
+						for each (var type: Class in objClass) {
+							if (gameObj is type) {
+								typeOk = true;
+								break;
+							}
+						}
+						if (!typeOk) {
+							continue;
+						}
+					}
+					else if (!(gameObj is objClass)) {
+						continue;
+					}
+				}
 
 				if (gameObj.getX() == x && gameObj.getY() == y && gameObj.visible) {
 					objs.push(gameObj);

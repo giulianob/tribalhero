@@ -13,6 +13,7 @@
 	import src.Objects.SimpleGameObject;
 	import src.Objects.SimpleObject;
 	import src.Objects.Factories.*;
+	import src.Objects.Stronghold.Stronghold;
 	import src.Objects.StructureObject;
 	import src.Objects.Troop.*;
 	import src.UI.SmartMovieClip;
@@ -144,6 +145,8 @@
 				sprite = ForestFactory.getSprite((obj as Forest).level, centered);
 			else if (obj is NewCityPlaceholder)
 				sprite = getNewCityPlaceholderSprite();
+			else if (obj is Stronghold)
+				sprite = StructureFactory.getSprite((obj as Stronghold).type, (obj as Stronghold).level, centered);
 			else
 				return null;			
 

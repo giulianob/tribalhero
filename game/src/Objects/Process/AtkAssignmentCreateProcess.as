@@ -11,6 +11,7 @@ package src.Objects.Process
 	import src.Map.MapUtil;
 	import src.Objects.Effects.Formula;
 	import src.Objects.GameObject;
+	import src.Objects.SimpleGameObject;
 	import src.Objects.Troop.TroopStub;
 	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
 	import src.UI.Cursors.GroundAttackCursor;
@@ -24,7 +25,7 @@ package src.Objects.Process
 	public class AtkAssignmentCreateProcess implements IProcess
 	{		
 		private var attackDialog: AttackTroopDialog;		
-		private var target: GameObject;
+		private var target: SimpleGameObject;
 		
 		public function AtkAssignmentCreateProcess() 
 		{
@@ -81,7 +82,7 @@ package src.Objects.Process
 		{
 			assignmentDialog.getFrame().dispose();
 			
-			Global.mapComm.Troop.assignmentCreate(Global.gameContainer.selectedCity.id, target.cityId, target.objectId, assignmentDialog.getTime(), attackDialog.getMode(), attackDialog.getTroop(), assignmentDialog.getDescription(),true);
+			Global.mapComm.Troop.assignmentCreate(Global.gameContainer.selectedCity.id, target.groupId, target.objectId, assignmentDialog.getTime(), attackDialog.getMode(), attackDialog.getTroop(), assignmentDialog.getDescription(),true);
 		}
 	}
 

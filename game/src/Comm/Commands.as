@@ -94,12 +94,13 @@ package src.Comm {
         public static const UNIT_TEMPLATE_UPGRADED: int = 503;
 		
 		public static const TROOP_INFO: int = 600;
-		public static const TROOP_ATTACK: int = 601;
 		public static const TROOP_REINFORCE: int = 602;
 		public static const TROOP_RETREAT: int = 603;		
 		public static const TROOP_ADDED: int = 611;
 		public static const TROOP_UPDATED: int = 612;
 		public static const TROOP_REMOVED: int = 613;
+		public static const TROOP_ATTACK_CITY: int = 614;		
+		public static const TROOP_ATTACK_STRONGHOLD: int = 615;
 		public static const LOCAL_TROOP_MOVE: int = 621;	
 		
         public static const BATTLE_SUBSCRIBE: int = 700;

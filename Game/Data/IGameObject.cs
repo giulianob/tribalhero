@@ -6,6 +6,6 @@ namespace Game.Data
     {
         bool IsBlocked { get; set; }
 
-        new ICity City { get; set; }
+        ICity City { get; set; }
     }
 }

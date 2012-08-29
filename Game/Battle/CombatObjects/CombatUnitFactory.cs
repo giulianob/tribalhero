@@ -102,7 +102,7 @@ namespace Game.Battle.CombatObjects
 
             return units;
         }
-
+        
         public StrongholdCombatUnit CreateStrongholdGateUnit(IBattleManager battleManager, IStronghold stronghold)
         {
             return new StrongholdCombatUnit(battleManager.GetNextCombatObjectId(),

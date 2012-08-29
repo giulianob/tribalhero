@@ -892,6 +892,22 @@ namespace Game.Database
                         }
                     }
 
+                    using (DbDataReader listReader = DbManager.SelectList(StrongholdCombatGroup.DB_TABLE, new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
+                    {
+                        while (listReader.Read())
+                        {
+                            IStronghold combatGroupStronghold;
+                            if (!World.Current.TryGetObjects((uint)listReader["stronghold_id"], out combatGroupStronghold))
+                                throw new Exception("Stronghold not found");
+
+                            var strongholdCombatGroup = CombatGroupFactory.CreateStrongholdCombatGroup((uint)listReader["battle_id"],
+                                                                                                             (uint)listReader["id"],
+                                                                                                             combatGroupStronghold);
+                            combatGroupStronghold.DbPersisted = true;
+                            battleManager.DbLoaderAddToCombatList(strongholdCombatGroup, BattleManager.BattleSide.Defense);
+                        }
+                    }
+
                     // Load combat structures
                     using (DbDataReader listReader = DbManager.SelectList(CombatStructure.DB_TABLE, new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
                     {
@@ -1103,7 +1119,19 @@ namespace Game.Database
 
                             return city.Worker;
 
-                            // TODO: Add worker to stronghold
+                        case LocationType.Stronghold:
+
+                            IStronghold stronghold;
+                            if (!World.Current.TryGetObjects(locationId, out stronghold))
+                                throw new Exception("Stronghold not found");
+
+                            if (action != null)
+                            {
+                                action.WorkerObject = stronghold;
+                            }
+
+                            return stronghold.Worker;
+
                         default:
                             throw new Exception(string.Format("Unknown location type {0} when loading actions", locationType));
                     }

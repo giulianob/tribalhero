@@ -130,6 +130,7 @@ package src.Comm {
 		public static const TRIBE_DESCRIPTION_SET: int = 1006;
 		public static const TRIBE_PUBLIC_INFO: int = 1007;
 		public static const TRIBE_TRANSFER: int = 1008;
+		public static const TRIBE_INFO_BY_NAME: int = 1009;
         public static const TRIBESMAN_ADD: int = 1011;
         public static const TRIBESMAN_REMOVE: int = 1012;
         public static const TRIBESMAN_UPDATE: int = 1013;
@@ -144,8 +145,9 @@ package src.Comm {
 		public static const TRIBE_UPDATE_NOTIFICATIONS: int = 1031;
 		public static const TRIBE_UPDATE_CHANNEL: int = 1051;
 		
-		public static const STRONGHOLD_INFO: int = 1101
+		public static const STRONGHOLD_INFO: int = 1101;
 		public static const STRONGHOLD_PUBLIC_INFO: int = 1102;
+		public static const STRONGHOLD_PUBLIC_INFO_BY_NAME: int = 1103;
 		
 	}
 	

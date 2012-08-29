@@ -26,16 +26,6 @@ namespace Game.Data
         ReferenceManager References { get; }
 
         /// <summary>
-        ///   Returns the city's center point which is the town centers position
-        /// </summary>
-        uint X { get; }
-
-        /// <summary>
-        ///   Returns the city's center point which is the town centers position
-        /// </summary>
-        uint Y { get; }
-
-        /// <summary>
         ///   City's battle manager. Maybe null if city is not in battle.
         /// </summary>
         IBattleManager Battle { get; set; }

@@ -85,7 +85,7 @@ namespace Game.Logic.Actions
 
             localGroupId = uint.Parse(properties["local_group_id"]);
 
-            foreach (var parts in properties["tribe_damage_dealt"].Split(',').Select(damageDealtItem => damageDealtItem.Split('=')))
+            foreach (var parts in properties["tribe_damage_dealt"].Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries).Select(damageDealtItem => damageDealtItem.Split('=')))
             {
                 tribeDamageDealt[Convert.ToUInt32(parts[0], CultureInfo.InvariantCulture)] = Convert.ToDecimal(parts[1], CultureInfo.InvariantCulture);
             }
@@ -180,6 +180,7 @@ namespace Game.Logic.Actions
                 return XmlSerializer.Serialize(new[]
                 {
                         new XmlKvPair("stronghold_id", strongholdId),
+                        new XmlKvPair("local_group_id", localGroupId),
                         new XmlKvPair("tribe_damage_dealt", String.Join(",", tribeDamageDealt.Select(item => item.Key.ToString(CultureInfo.InvariantCulture) + "=" + item.Value.ToString(CultureInfo.InvariantCulture))))
                 });
             }

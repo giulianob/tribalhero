@@ -252,7 +252,7 @@ namespace Game.Logic.Actions
 
                     using (locker.Lock(lockAll, null, city, targetStronghold))
                     {
-                        var bea = actionFactory.CreateStrongholdEngageGateAttackPassiveAction(cityId, troopObject.ObjectId, targetStrongholdId, mode);
+                        var bea = actionFactory.CreateStrongholdEngageGateAttackPassiveAction(cityId, troopObject.ObjectId, targetStrongholdId);
                         ExecuteChainAndWait(bea, AfterGateBattle);
                     }
                 }                        

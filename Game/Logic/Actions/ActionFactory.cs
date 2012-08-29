@@ -3,8 +3,7 @@ using Game.Data;
 
 namespace Game.Logic.Actions
 {
-    // TODO: Change this factory to use custom instance provider. Every method should just return IAction and the method name can be used to return
-    // the correct type
+    // TODO: Change this factory to use custom instance provider. Every method should just return IAction and the method name can be used to return the correct type. This will aid testing.
     public interface IActionFactory
     {
         CityAttackChainAction CreateCityAttackChainAction(uint cityId, uint troopObjectId, uint targetCityId, uint targetStructureId, AttackMode mode);
@@ -75,8 +74,10 @@ namespace Game.Logic.Actions
 
         TribeContributeActiveAction CreateTribeContributeActiveAction(uint cityId, uint structureId, Resource resource);
 
-        StrongholdEngageGateAttackPassiveAction CreateStrongholdEngageGateAttackPassiveAction(uint cityId, uint objectId, uint targetStrongholdId, AttackMode mode);
+        StrongholdEngageGateAttackPassiveAction CreateStrongholdEngageGateAttackPassiveAction(uint cityId, uint troopObjectId, uint targetStrongholdId);
 
         StrongholdGateBattlePassiveAction CreateStrongholdGateBattlePassiveAction(uint strongholdId);
+
+        StrongholdAttackChainAction CreateStrongholdAttackChainAction(uint cityId, uint troopObjectId, uint targetStrongholdId, AttackMode mode);
     }
 }

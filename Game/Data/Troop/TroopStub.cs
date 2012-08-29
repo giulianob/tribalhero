@@ -262,11 +262,6 @@ namespace Game.Data.Troop
 
         #region IEnumerable<Formation> Members
 
-        public IEnumerator<Formation> GetEnumerator()
-        {
-            return data.Values.GetEnumerator();
-        }
-
         IEnumerator IEnumerable.GetEnumerator()
         {
             return data.GetEnumerator();

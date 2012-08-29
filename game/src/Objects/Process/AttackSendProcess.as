@@ -6,6 +6,9 @@ package src.Objects.Process
 	import org.aswing.JOptionPane;
 	import src.Global;
 	import src.Objects.GameObject;
+	import src.Objects.SimpleGameObject;
+	import src.Objects.Stronghold.Stronghold;
+	import src.Objects.StructureObject;
 	import src.UI.Cursors.GroundAttackCursor;
 	import src.UI.Dialog.AttackTroopDialog;
 	import src.UI.Dialog.InfoDialog;
@@ -14,7 +17,7 @@ package src.Objects.Process
 	public class AttackSendProcess implements IProcess
 	{		
 		private var attackDialog: AttackTroopDialog;		
-		private var target: GameObject;
+		private var target: SimpleGameObject;
 		
 		public function AttackSendProcess() 
 		{
@@ -46,7 +49,12 @@ package src.Objects.Process
 		public function onChoseTarget(sender: GroundAttackCursor): void {			
 			this.target = sender.getTargetObject();
 			
-			Global.mapComm.City.isCityUnderAPBonus(target.cityId, onGotAPStatus);
+			if (target is StructureObject) {
+				Global.mapComm.City.isCityUnderAPBonus(target.groupId, onGotAPStatus);
+			}
+			else {
+				onAttackAccepted();
+			}
 		}
 		
 		public function onGotAPStatus(hasBonuses: Boolean): void {
@@ -66,7 +74,12 @@ package src.Objects.Process
 		}
 		
 		public function onAttackAccepted(): void {				
-			Global.mapComm.Troop.troopAttack(Global.gameContainer.selectedCity.id, target.cityId, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);
+			if (target is StructureObject) {
+				Global.mapComm.Troop.troopAttackCity(Global.gameContainer.selectedCity.id, target.groupId, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);
+			}
+			else if (target is Stronghold) {
+				Global.mapComm.Troop.troopAttackStronghold(Global.gameContainer.selectedCity.id, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
+			}
 
 			Global.gameContainer.setOverlaySprite(null);
 			Global.gameContainer.setSidebar(null);

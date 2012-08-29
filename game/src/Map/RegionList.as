@@ -94,7 +94,7 @@
 			return newObj;
 		}
 
-		public function getObjectsAt(x: int, y: int, objClass: Class = null): Array
+		public function getObjectsAt(x: int, y: int, objClass: * = null): Array
 		{
 			var regionId: int = MapUtil.getRegionId(x, y);
 			var region: Region = get(regionId);

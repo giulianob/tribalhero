@@ -3,6 +3,7 @@
 using System.Linq;
 using Game.Data;
 using Game.Data.Stats;
+using Game.Data.Stronghold;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
@@ -17,9 +18,12 @@ namespace Game.Battle.CombatObjects
     {
         private readonly IKernel kernel;
 
-        public CombatUnitFactory(IKernel kernel)
+        private readonly ObjectTypeFactory objectTypeFactory;
+
+        public CombatUnitFactory(IKernel kernel, ObjectTypeFactory objectTypeFactory)
         {
             this.kernel = kernel;
+            this.objectTypeFactory = objectTypeFactory;
         }
 
         public CombatStructure CreateStructureCombatUnit(IBattleManager battleManager, IStructure structure)
@@ -97,6 +101,18 @@ namespace Game.Battle.CombatObjects
             while (count > 0);
 
             return units;
+        }
+        
+        public StrongholdCombatUnit CreateStrongholdGateUnit(IBattleManager battleManager, IStronghold stronghold)
+        {
+            return new StrongholdCombatUnit(battleManager.GetNextCombatObjectId(),
+                                            battleManager.BattleId,
+                                            objectTypeFactory.GetTypes("StrongholdGateUnitType")[0],
+                                            1,
+                                            1,
+                                            stronghold,
+                                            kernel.Get<UnitFactory>(),
+                                            kernel.Get<BattleFormulas>());
         }
     }
 }

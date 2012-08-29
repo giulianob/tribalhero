@@ -119,7 +119,7 @@ namespace Game.Map
             return Math.Max(0, (int)(radius * 2) - 1);
         }
 
-        public virtual bool IsOverlapping(Location location1, byte r1, Location location2, byte r2)
+        public virtual bool IsOverlapping(Position location1, byte r1, Position location2, byte r2)
         {
             var distance = RadiusDistance(location1.X, location1.Y, location2.X, location2.Y);
 
@@ -141,7 +141,7 @@ namespace Game.Map
 
             overlapping = false;
 
-            HashSet<Location> points = new HashSet<Location>();
+            HashSet<Position> points = new HashSet<Position>();
 
             ForeachObject(location1.X,
                           location1.Y,
@@ -149,7 +149,7 @@ namespace Game.Map
                           true,
                           (x, y, x2, y2, custom) =>
                           {
-                              points.Add(new Location(x2, y2));
+                              points.Add(new Position(x2, y2));
 
                               return true;
                           },
@@ -161,7 +161,7 @@ namespace Game.Map
                           true,
                           (x, y, x2, y2, custom) =>
                           {
-                              if (points.Contains(new Location(x2, y2)))
+                              if (points.Contains(new Position(x2, y2)))
                               {
                                   overlapping = true;
                                   return false;

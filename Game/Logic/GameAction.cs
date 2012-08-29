@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using Game.Data;
 using Game.Setup;
 using Game.Util;
 using Persistance;
@@ -106,6 +107,10 @@ namespace Game.Logic
 
         CityEngageDefensePassive = 703,
 
+        StrongholdEngageGateAttackPassive = 704,
+
+        StrongholdGateBattlePassive = 705,
+
         TribeContributeActive = 1018,
     }
 
@@ -148,6 +153,8 @@ namespace Game.Logic
 
         #endregion
 
+        public ILocation Location { get; set; }
+
         public ICanDo WorkerObject { get; set; }
 
         public bool IsDone { get; set; }
@@ -188,11 +195,11 @@ namespace Game.Logic
             {
                 return new[]
                 {
-                        new DbColumn("id", ActionId, DbType.UInt16), new DbColumn("city_id", WorkerObject.City.Id, DbType.UInt32)
+                        new DbColumn("id", ActionId, DbType.UInt16), new DbColumn("location_type", Location.LocationType.ToString(), DbType.String), new DbColumn("location_id", Location.LocationId, DbType.UInt32)
                 };
             }
         }
-
+        
         public bool DbPersisted { get; set; }
 
         #endregion
@@ -219,7 +226,7 @@ namespace Game.Logic
         {
             try
             {
-                if (WorkerObject == null || WorkerObject.City == null)
+                if (WorkerObject == null || IsDone)
                 {
                     return false;
                 }

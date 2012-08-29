@@ -133,14 +133,6 @@ namespace Game.Battle.CombatObjects
             }
         }
 
-        public override uint PlayerId
-        {
-            get
-            {
-                return TroopStub.City.Owner.PlayerId;
-            }
-        }
-
         public override ICity City
         {
             get
@@ -254,14 +246,14 @@ namespace Game.Battle.CombatObjects
             return true;
         }
 
-        public override Location Location()
+        public override Position Location()
         {
             if (TroopStub.Station != null)
             {
-                return new Location(troopStub.Station.LocationX, troopStub.Station.LocationY);
+                return new Position(troopStub.Station.LocationX, troopStub.Station.LocationY);
             }
 
-            return new Location(City.X, City.Y);
+            return new Position(City.X, City.Y);
         }
 
         public override byte AttackRadius()

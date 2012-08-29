@@ -116,7 +116,7 @@ namespace Game
 
             Bind<IBattleReportWriter>().To<SqlBattleReportWriter>();
 
-            Bind<ICombatUnitFactory>().ToMethod(c => new CombatUnitFactory(c.Kernel));
+            Bind<ICombatUnitFactory>().ToMethod(c => new CombatUnitFactory(c.Kernel, c.Kernel.Get<ObjectTypeFactory>()));
 
             Bind<ICombatList>().To<CombatList>().NamedLikeFactoryMethod((ICombatListFactory p) => p.GetCombatList());
             

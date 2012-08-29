@@ -39,21 +39,21 @@ namespace Game.Map
 
         public void CreateRoad(uint x, uint y)
         {
-            var tiles = new List<Location>(5) {new Location(x, y)};
+            var tiles = new List<Position>(5) {new Position(x, y)};
 
             if (y%2 == 0)
             {
-                tiles.Add(new Location(x, y - 1));
-                tiles.Add(new Location(x, y + 1));
-                tiles.Add(new Location(x - 1, y - 1));
-                tiles.Add(new Location(x - 1, y + 1));
+                tiles.Add(new Position(x, y - 1));
+                tiles.Add(new Position(x, y + 1));
+                tiles.Add(new Position(x - 1, y - 1));
+                tiles.Add(new Position(x - 1, y + 1));
             }
             else
             {
-                tiles.Add(new Location(x + 1, y - 1));
-                tiles.Add(new Location(x + 1, y + 1));
-                tiles.Add(new Location(x, y - 1));
-                tiles.Add(new Location(x, y + 1));
+                tiles.Add(new Position(x + 1, y - 1));
+                tiles.Add(new Position(x + 1, y + 1));
+                tiles.Add(new Position(x, y - 1));
+                tiles.Add(new Position(x, y + 1));
             }
 
             var updates = new Dictionary<ushort, List<TileUpdate>>();
@@ -79,21 +79,21 @@ namespace Game.Map
 
         public void DestroyRoad(uint x, uint y)
         {
-            var tiles = new List<Location>(5) {new Location(x, y)};
+            var tiles = new List<Position>(5) {new Position(x, y)};
 
             if (y%2 == 0)
             {
-                tiles.Add(new Location(x, y - 1));
-                tiles.Add(new Location(x, y + 1));
-                tiles.Add(new Location(x - 1, y - 1));
-                tiles.Add(new Location(x - 1, y + 1));
+                tiles.Add(new Position(x, y - 1));
+                tiles.Add(new Position(x, y + 1));
+                tiles.Add(new Position(x - 1, y - 1));
+                tiles.Add(new Position(x - 1, y + 1));
             }
             else
             {
-                tiles.Add(new Location(x + 1, y - 1));
-                tiles.Add(new Location(x + 1, y + 1));
-                tiles.Add(new Location(x, y - 1));
-                tiles.Add(new Location(x, y + 1));
+                tiles.Add(new Position(x + 1, y - 1));
+                tiles.Add(new Position(x + 1, y + 1));
+                tiles.Add(new Position(x, y - 1));
+                tiles.Add(new Position(x, y + 1));
             }
 
             var updates = new Dictionary<ushort, List<TileUpdate>>();

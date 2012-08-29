@@ -187,7 +187,7 @@ namespace Game.Module
 
             using (Concurrency.Current.Lock(cityId, out city))
             {
-                if (city.Worker.Notifications.Count > 0)
+                if (city.Notifications.Count > 0)
                 {
                     Reschedule(SHORT_RETRY);
                     return;

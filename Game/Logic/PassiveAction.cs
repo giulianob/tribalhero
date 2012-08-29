@@ -1,6 +1,7 @@
 #region
 
 using System.Data;
+using Game.Util;
 using Persistance;
 
 #endregion
@@ -12,6 +13,8 @@ namespace Game.Logic
         public const string DB_TABLE = "passive_actions";
         private bool isChain;
         private bool isVisible;
+
+        public LargeIdGenerator ActionIdGenerator { get; set; }
 
         protected PassiveAction()
         {
@@ -68,6 +71,6 @@ namespace Game.Logic
                                new DbColumn("type", Type, DbType.UInt32), new DbColumn("properties", Properties, DbType.String),
                        };
             }
-        }
+        }        
     }
 }

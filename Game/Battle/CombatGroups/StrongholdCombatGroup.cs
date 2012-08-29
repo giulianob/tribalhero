@@ -1,22 +1,22 @@
 using System.Collections.Generic;
 using System.Data;
 using Game.Data;
-using Game.Data.Troop;
+using Game.Data.Stronghold;
 using Persistance;
 
 namespace Game.Battle.CombatGroups
 {
-    public class CityDefensiveCombatGroup : CombatGroup
+    public class StrongholdCombatGroup : CombatGroup
     {
-        private ITroopStub TroopStub { get; set; }
+        private readonly IStronghold stronghold;
 
         private readonly BattleOwner owner;
-       
+
         public override byte TroopId
         {
             get
             {
-                return TroopStub.TroopId;
+                return 1;
             }
         }
 
@@ -36,21 +36,24 @@ namespace Game.Battle.CombatGroups
             }
         }
 
-        public CityDefensiveCombatGroup(uint battleId, uint id, ITroopStub troopStub, IDbManager dbManager) : base(battleId, id, dbManager)
+        public StrongholdCombatGroup(uint battleId, uint id, IStronghold stronghold, IDbManager dbManager)
+                : base(battleId, id, dbManager)
         {
-            owner = new BattleOwner(BattleOwnerType.City, troopStub.City.Id);
-            TroopStub = troopStub;
+            this.stronghold = stronghold;
+            owner = new BattleOwner(BattleOwnerType.Stronghold, stronghold.Id);
         }
 
         #region Persistance
 
-        public const string DB_TABLE = "city_defensive_combat_groups";
+        public const string DB_TABLE = "stronghold_combat_groups";
 
         public override IEnumerable<DbDependency> DbDependencies
         {
             get
             {
-                return new DbDependency[] {};
+                return new DbDependency[]
+                {
+                };
             }
         }
 
@@ -68,7 +71,10 @@ namespace Game.Battle.CombatGroups
         {
             get
             {
-                return new[] {new DbColumn("battle_id", BattleId, DbType.UInt32), new DbColumn("id", Id, DbType.UInt32)};
+                return new[]
+                {
+                        new DbColumn("battle_id", BattleId, DbType.UInt32), new DbColumn("id", Id, DbType.UInt32)
+                };
             }
         }
 
@@ -76,17 +82,20 @@ namespace Game.Battle.CombatGroups
         {
             get
             {
-                return new[] {new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.UInt32), new DbColumn("city_id", TroopStub.City.Id, DbType.UInt32)};
+                return new[]
+                {
+                        new DbColumn("stronghold_id", stronghold.Id, DbType.UInt32)
+                };
             }
         }
 
         #endregion
-        
+
         public override int Hash
         {
             get
             {
-                return TroopStub.City.Hash;
+                return stronghold.Hash;
             }
         }
 
@@ -94,21 +103,13 @@ namespace Game.Battle.CombatGroups
         {
             get
             {
-                return TroopStub.City.Lock;
+                return stronghold.Lock;
             }
         }
 
         public override bool BelongsTo(IPlayer player)
-        {        
-            return TroopStub.City.Owner == player;        
-        }
-
-        public ICity City
         {
-            get
-            {
-                return TroopStub.City;
-            }
+            return false;
         }
     }
 }

@@ -83,10 +83,10 @@ namespace Game.Battle
 
                 int score = 0;
 
-                Location defenderLocation = target.CombatObject.Location();
+                Position defenderPosition = target.CombatObject.Location();
 
                 // Distance 0 gives 60% higher chance to hit, distance 1 gives 20%
-                score += Math.Max(3 - radiusLocator.RadiusDistance(attackerLocation.X, attackerLocation.Y, defenderLocation.X, defenderLocation.Y)*2, 0);
+                score += Math.Max(3 - radiusLocator.RadiusDistance(attackerLocation.X, attackerLocation.Y, defenderPosition.X, defenderPosition.Y)*2, 0);
 
                 // Have to compare armor and weapon type here to give some sort of score
                 score += ((int)(battleFormulas.GetDmgModifier(attacker, target.CombatObject)*10));

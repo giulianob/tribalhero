@@ -25,8 +25,7 @@ namespace Game.Logic.Actions
 
         private readonly IGameObjectLocator gameObjectLocator;
 
-        private decimal originalHp;
-        private decimal remainingHp;
+        private uint groupId;
 
         public CityEngageDefensePassiveAction(uint cityId, uint troopObjectId, BattleProcedure battleProcedure, IGameObjectLocator gameObjectLocator)
         {
@@ -41,16 +40,52 @@ namespace Game.Logic.Actions
             this.battleProcedure = battleProcedure;
             this.gameObjectLocator = gameObjectLocator;
             cityId = uint.Parse(properties["troop_city_id"]);
+            groupId = uint.Parse(properties["group_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
-            originalHp = decimal.Parse(properties["original_hp"]);
-            remainingHp = decimal.Parse(properties["remaining_hp"]);
 
             ICity city;
             if (!gameObjectLocator.TryGetObjects(cityId, out city))
                 throw new Exception();
 
-            city.Battle.ActionAttacked += BattleActionAttacked;
+            RegisterBattleListeners(city);
+        }
+
+        private void RegisterBattleListeners(ICity city)
+        {
+            city.Battle.ActionAttacked += BattleGroupKilled;
             city.Battle.ExitBattle += BattleExitBattle;
+        }
+
+        private void DeregisterBattleListeners(ICity city)
+        {
+            city.Battle.ActionAttacked -= BattleGroupKilled;
+            city.Battle.ExitBattle -= BattleExitBattle;            
+        }
+
+        /// <summary>
+        /// Handles ending this action if our group has been killed
+        /// </summary>
+        private void BattleGroupKilled(IBattleManager battle, BattleManager.BattleSide attackingside, ICombatGroup attackergroup, ICombatObject attacker, ICombatGroup targetgroup, ICombatObject target, decimal damage)
+        {
+            if (targetgroup.Id != groupId)
+            {
+                return;
+            }
+
+            ICity city;
+            ITroopObject troopObject;
+            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
+            {
+                throw new Exception();
+            }
+
+            DeregisterBattleListeners(city);
+
+            troopObject.BeginUpdate();
+            troopObject.State = GameObjectState.NormalState();
+            troopObject.Stub.State = TroopState.Idle;
+            troopObject.EndUpdate();
+            StateChange(ActionState.Completed);
         }
 
         public override ActionType Type
@@ -65,12 +100,10 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return
-                        XmlSerializer.Serialize(new[]
-                                                {
-                                                        new XmlKvPair("troop_city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId),
-                                                        new XmlKvPair("original_hp", originalHp), new XmlKvPair("remaining_hp", remainingHp)
-                                                });
+                return XmlSerializer.Serialize(new[]
+                {
+                        new XmlKvPair("troop_city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId), new XmlKvPair("group_id", groupId)
+                });
             }
         }
 
@@ -93,10 +126,7 @@ namespace Game.Logic.Actions
                 return Error.Ok;
             }
 
-            originalHp = remainingHp = troopObject.Stub.TotalHp;
-
-            city.Battle.ActionAttacked += BattleActionAttacked;
-            city.Battle.ExitBattle += BattleExitBattle;
+            RegisterBattleListeners(city);
 
             troopObject.BeginUpdate();
             troopObject.State = GameObjectState.BattleState(city.Battle.BattleId);
@@ -106,49 +136,10 @@ namespace Game.Logic.Actions
             troopObject.Stub.EndUpdate();
 
             // Add units to battle
-            battleProcedure.AddReinforcementToBattle(city.Battle, troopObject.Stub);
+            groupId = battleProcedure.AddReinforcementToBattle(city.Battle, troopObject.Stub);
             battleProcedure.AddLocalUnitsToBattle(city.Battle, city);
 
             return Error.Ok;
-        }
-
-        private void BattleActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatGroup attackerGroup, ICombatObject attacker, ICombatGroup targetGroup, ICombatObject target, decimal damage)
-        {
-            // TODO: Save groupId like in EngageAttackAction and use it to identify our objects
-            // TODO: This whole method can be changed to use the GroupKilled event instead of keeping the HP around like this
-            var unit = target as AttackCombatUnit;
-
-            if (unit == null || unit.City.Id != cityId)
-            {
-                return;
-            }
-
-            ICity city;
-            ITroopObject troopObject;
-            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
-            {
-                throw new Exception();
-            }
-
-            if (unit.TroopStub != troopObject.Stub)
-            {
-                return;
-            }
-
-            remainingHp -= damage;
-            if (remainingHp > 0)
-            {
-                return;
-            }
-
-            city.Battle.ActionAttacked -= BattleActionAttacked;
-            city.Battle.ExitBattle -= BattleExitBattle;
-
-            troopObject.BeginUpdate();
-            troopObject.State = GameObjectState.NormalState();
-            troopObject.Stub.State = TroopState.Idle;
-            troopObject.EndUpdate();
-            StateChange(ActionState.Completed);
         }
 
         private void BattleExitBattle(IBattleManager battle, ICombatList atk, ICombatList def)
@@ -156,10 +147,11 @@ namespace Game.Logic.Actions
             ICity city;
             ITroopObject troopObject;
             if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
+            {
                 throw new Exception();
+            }
 
-            city.Battle.ActionAttacked -= BattleActionAttacked;
-            city.Battle.ExitBattle -= BattleExitBattle;
+            DeregisterBattleListeners(city);
 
             troopObject.BeginUpdate();
             troopObject.Stub.BeginUpdate();

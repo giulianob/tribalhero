@@ -11,13 +11,13 @@ namespace Game.Battle.RewardStrategies
 {
     public class CityRewardStrategy : IRewardStrategy
     {
-        private readonly City city;
+        private readonly ICity city;
 
         private readonly BattleFormulas battleFormulas;
 
         private readonly Formula formula;
 
-        public CityRewardStrategy(City city, BattleFormulas battleFormulas, Formula formula)
+        public CityRewardStrategy(ICity city, BattleFormulas battleFormulas, Formula formula)
         {
             this.city = city;
             this.battleFormulas = battleFormulas;
@@ -31,23 +31,14 @@ namespace Game.Battle.RewardStrategies
             city.Resource.Subtract(loot, formula.HiddenResource(city, true), out actualLoot);
             city.EndUpdate();
         }
-
-        public void ReturnLoot(Resource loot)
-        {
-            city.BeginUpdate();
-            city.Resource.Add(loot);
-            city.EndUpdate();
-        }
-
+        
         public void GiveAttackerRewards(ICombatObject attacker, int attackPoints, Resource loot)
         {
             attacker.ReceiveReward(attackPoints, loot);
         }
 
         public void GiveDefendersRewards(IEnumerable<ICombatObject> defenders, int attackPoints, Resource loot)
-        {
-            var cityObjectDefenders = defenders.OfType<CityCombatObject>();
-
+        {            
             // Any loot being added to the defender is loot dropped by the attacker
             if (!loot.Empty)
             {
@@ -62,7 +53,7 @@ namespace Game.Battle.RewardStrategies
             {
                 var uniqueCities = new HashSet<ICity>();
 
-                foreach (var defendingCity in cityObjectDefenders.Select(co => co.City).Distinct())
+                foreach (var defendingCity in defenders.OfType<CityCombatObject>().Select(co => co.City).Distinct())
                 {
                     defendingCity.BeginUpdate();
                     defendingCity.DefensePoint += attackPoints;

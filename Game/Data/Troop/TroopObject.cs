@@ -132,11 +132,11 @@ namespace Game.Data.Troop
 
         #region Implementation of ICityRegionObject
 
-        public Location CityRegionLocation
+        public Position CityRegionLocation
         {
             get
             {
-                return new Location(X, Y);
+                return new Position(X, Y);
             }
         }
 

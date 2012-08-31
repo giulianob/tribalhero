@@ -65,7 +65,7 @@ namespace Game.Map
         {
             lock (objLock)
             {
-                Location loc = obj.CityRegionLocation;
+                Position loc = obj.CityRegionLocation;
                 if (loc.X != origX || loc.Y != origY)
                 {
                     Remove(obj);

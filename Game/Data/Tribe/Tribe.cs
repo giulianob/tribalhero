@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Game.Comm;
 using Game.Data.Troop;
+using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -26,8 +27,11 @@ namespace Game.Data.Tribe
 
         public class IncomingListItem
         {
-            public ICity City { get; set; }
-            public CityAttackChainAction Action { get; set; }
+            public ICity TargetCity { get; set; }
+
+            public ICity SourceCity { get; set; }
+
+            public DateTime EndTime { get; set; }
         }
 
         public const string DB_TABLE = "tribes";
@@ -251,10 +255,10 @@ namespace Game.Data.Tribe
         {
             return from tribesmen in Tribesmen
                    from city in tribesmen.Player.GetCityList()
-                   from notification in city.Worker.Notifications
-                   where notification.Action is CityAttackChainAction && notification.Action.WorkerObject.City != city && notification.Subscriptions.Count > 0
+                   from notification in city.Notifications
+                   where notification.Action is IActionTime && notification.Action.Category == ActionCategory.Attack && notification.GameObject.City != city && notification.Subscriptions.Count > 0
                    orderby ((ChainAction)notification.Action).EndTime ascending
-                   select new IncomingListItem { Action = (CityAttackChainAction)notification.Action };
+                   select new IncomingListItem { SourceCity = notification.GameObject.City, TargetCity = city, EndTime = ((IActionTime)notification.Action).EndTime };
         }
 
         public bool HasRight(uint playerId, string action)

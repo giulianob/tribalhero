@@ -2,10 +2,8 @@
 
 using System;
 using System.Data;
-using Game.Data;
 using Game.Database;
 using Game.Setup;
-using Ninject;
 using Persistance;
 
 #endregion
@@ -49,13 +47,17 @@ namespace Game.Logic.Actions
                     current.IsChain = true;
                     current.OnNotify += ChainNotify;
 
-                    if (current is ScheduledPassiveAction)
-                        Scheduler.Current.Put((ScheduledPassiveAction)current);
+                    ScheduledPassiveAction scheduledPassiveAction = current as ScheduledPassiveAction;
+                    if (scheduledPassiveAction != null)
+                    {
+                        Scheduler.Current.Put(scheduledPassiveAction);
+                    }
+
                     break;
             }
         }
 
-        protected PassiveAction Current { get; private set; }
+        private PassiveAction Current { get; set; }
 
         public ActionState ChainState
         {
@@ -124,15 +126,32 @@ namespace Game.Logic.Actions
 
         #endregion
 
+        protected void CancelCurrentChain()
+        {
+            if (Current == null)
+            {
+                throw new Exception("No current chain action to cancel");
+            }
+
+            Current.WorkerRemoved(false);
+        }
+
         protected void ExecuteChainAndWait(PassiveAction chainable, ChainCallback routeCallback)
         {
+            if (Current != null)
+            {
+                throw new Exception("Previous chain action has not yet completed");
+            }
+
             chainable.IsChain = true;
             chainable.OnNotify += ChainNotify;
             chainCallback = routeCallback;
 
             Current = chainable;
             Current.WorkerObject = WorkerObject;
-            Current.ActionId = (uint)WorkerObject.City.Worker.GetId();
+            Current.ActionId = (uint)ActionIdGenerator.GetNext();
+            Current.ActionIdGenerator = ActionIdGenerator;
+            Current.Location = Location;
 
             DbPersistance.Current.Save(this);
             chainable.StateChange(chainable.Execute() == Error.Ok ? ActionState.Started : ActionState.Failed);
@@ -160,7 +179,7 @@ namespace Game.Logic.Actions
                     return;
                 case ActionState.Completed:
                 case ActionState.Failed:
-                    WorkerObject.City.Worker.ReleaseId(action.ActionId);
+                    ActionIdGenerator.Release(action.ActionId);
                     DbPersistance.Current.Delete(action);
                     break;
                 default:
@@ -170,7 +189,7 @@ namespace Game.Logic.Actions
             //current action is completed by either success or failure
             action.IsDone = true;
             action.OnNotify -= ChainNotify;
-
+            Current = null;
             ChainCallback currentChain = chainCallback;
             DbPersistance.Current.Save(this);
 

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Game.Data.Troop;
+﻿using Game.Data.Troop;
 using Game.Util.Locking;
 
 namespace Game.Data
 {
-    public enum StationType
+    public enum LocationType
     {
         City = 1,
         Stronghold = 2
@@ -21,7 +17,7 @@ namespace Game.Data
     public interface ILocation : ILockable
     {
         uint LocationId { get; }
-        StationType LocationType { get; }
+        LocationType LocationType { get; }
         uint LocationX { get; }
         uint LocationY { get; }
     }

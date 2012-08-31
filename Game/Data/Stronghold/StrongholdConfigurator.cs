@@ -14,7 +14,7 @@ namespace Game.Data.Stronghold
         private readonly MapFactory mapFactory;
         private readonly TileLocator tileLocator;
 
-        private readonly List<Location> strongholds = new List<Location>();
+        private readonly List<Position> strongholds = new List<Position>();
         private const int MIN_DISTANCE_AWAY_FROM_CITIES = 10;
         private const int MIN_DISTANCE_AWAY_FROM_STRONGHOLDS = 200;
         private static readonly int citiesPerLevel = Config.stronghold_cities_per_level;
@@ -65,7 +65,7 @@ namespace Game.Data.Stronghold
             } while (!HasEnoughCities(x, y, level) || TooCloseToCities(x, y, MIN_DISTANCE_AWAY_FROM_CITIES) ||
                      TooCloseToStrongholds(x, y, MIN_DISTANCE_AWAY_FROM_STRONGHOLDS));
 
-            strongholds.Add(new Location(x, y));
+            strongholds.Add(new Position(x, y));
             Global.Logger.Info(string.Format("Added stronghold[{0},{1}] Number[{2}] ", x, y, strongholds.Count));
             return true;
         }

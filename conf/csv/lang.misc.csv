@@ -112,3 +112,12 @@ STRONGHOLD_TAKEN_OVER,"<a href=""event:viewStrongholdProfileByName:{0}"">{0}</a>
 STRONGHOLD_NEUTRAL_TAKEN_OVER,"<a href=""event:viewStrongholdProfileByName:{0}"">{0}</a> is now under the control of <a href=""event:viewTribeProfileByName:{1}"">{1}</a>!"
 ,
 SYSTEM_CHAT_LITERAL,{0}
+,
+ATTACK_STRUCTURE_UNATTACKABLE,This structure can't be attacked.
+ATTACK_STRUCTURE_BEING_BUILT,This structure can't be attacked while it's being built.
+ATTACK_STRUCTURE_UNDESTROYABLE,This structure can't be attacked while it's level 1.
+ATTACK_CHOOSE_TARGET,Choose target to attack.
+ATTACK_DISTANCE_MESSAGE,About {0} away. Double click to attack.
+ATTACK_OWN_STRONGHOLD,This stronghold can't be attacked since it belongs to your tribe. Send defense instead to protect it.
+ATTACK_STRONGHOLD_NO_TRIBESMAN,You must join or create a tribe in order to attack strongholds.
+ATTACK_SELF_ERROR,You can't attack your own city.

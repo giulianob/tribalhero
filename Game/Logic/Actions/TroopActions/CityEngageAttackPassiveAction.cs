@@ -146,7 +146,6 @@ namespace Game.Logic.Actions
             targetCity.Battle.WithdrawAttacker += BattleWithdrawAttacker;
             targetCity.Battle.EnterRound += BattleEnterRound;
             targetCity.Battle.GroupKilled += BattleGroupKilled;
-            targetCity.Battle.ExitTurn += BattleExitTurn;
         }
 
         private void DeregisterBattleListeners(ICity targetCity)
@@ -155,7 +154,6 @@ namespace Game.Logic.Actions
             targetCity.Battle.GroupKilled -= BattleGroupKilled;
             targetCity.Battle.WithdrawAttacker -= BattleWithdrawAttacker;
             targetCity.Battle.EnterRound -= BattleEnterRound;
-            targetCity.Battle.ExitTurn -= BattleExitTurn;
         }
 
         public override Error Validate(string[] parms)
@@ -180,7 +178,7 @@ namespace Game.Logic.Actions
             // Create the group in the battle
             uint battleId;
             ICombatGroup combatGroup;
-            battleProcedure.JoinOrCreateBattle(targetCity, troopObject, out combatGroup, out battleId);
+            battleProcedure.JoinOrCreateCityBattle(targetCity, troopObject, out combatGroup, out battleId);
             groupId = combatGroup.Id;
 
             // Register the battle listeners
@@ -289,12 +287,7 @@ namespace Game.Logic.Actions
             // Update battle report view with actual received bonus            
             battle.BattleReport.SetLootedResources(troopObject.City.Id, troopObject.Stub.TroopId, battle.BattleId, looted, actual);
         }
-
-        private void BattleExitTurn(IBattleManager battle, ICombatList atk, ICombatList def, int turn)
-        {
-
-        }
-
+        
         private void BattleActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatGroup attackerGroup, ICombatObject attacker, ICombatGroup targetGroup, ICombatObject target, decimal damage)
         {
             ICity city;
@@ -366,7 +359,7 @@ namespace Game.Logic.Actions
             ITroopObject troopObject;
             if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) || !gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
             {
-                throw new ArgumentException();
+                throw new Exception("City or troop not found");
             }
 
             // if battle lasts more than 5 rounds, attacker gets 3 attack points.

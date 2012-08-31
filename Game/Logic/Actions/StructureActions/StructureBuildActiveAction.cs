@@ -226,7 +226,7 @@ namespace Game.Logic.Actions
                             continue;
                         }
 
-                        if (!RoadPathFinder.HasPath(new Location(str.X, str.Y), new Location(city.X, city.Y), city, new Location(x, y)))
+                        if (!RoadPathFinder.HasPath(new Position(str.X, str.Y), new Position(city.X, city.Y), city, new Position(x, y)))
                         {
                             breaksRoad = true;
                             break;
@@ -260,10 +260,10 @@ namespace Game.Logic.Actions
                                                         if (world.Roads.IsRoad(x1, y1))
                                                         {
                                                             if (
-                                                                    !RoadPathFinder.HasPath(new Location(x1, y1),
-                                                                                            new Location(city.X, city.Y),
+                                                                    !RoadPathFinder.HasPath(new Position(x1, y1),
+                                                                                            new Position(city.X, city.Y),
                                                                                             city,
-                                                                                            new Location(origX, origY)))
+                                                                                            new Position(origX, origY)))
                                                             {
                                                                 allNeighborsHaveOtherPaths = false;
                                                                 return false;
@@ -302,10 +302,10 @@ namespace Game.Logic.Actions
                                                     if (!hasRoad && !hasStructure && world.Roads.IsRoad(x1, y1))
                                                     {
                                                         if (!buildingOnRoad ||
-                                                            RoadPathFinder.HasPath(new Location(x1, y1),
-                                                                                   new Location(city.X, city.Y),
+                                                            RoadPathFinder.HasPath(new Position(x1, y1),
+                                                                                   new Position(city.X, city.Y),
                                                                                    city,
-                                                                                   new Location(origX, origY)))
+                                                                                   new Position(origX, origY)))
                                                         {
                                                             hasRoad = true;
                                                         }
@@ -363,7 +363,7 @@ namespace Game.Logic.Actions
             endTime = DateTime.UtcNow.AddSeconds(CalculateTime(formula.BuildTime(structureFactory.GetTime(type, level), city, city.Technologies)));
             BeginTime = DateTime.UtcNow;
 
-            city.Worker.References.Add(structure, this);
+            city.References.Add(structure, this);
 
             world.Regions.UnlockRegion(x, y);
 
@@ -387,7 +387,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                city.Worker.References.Remove(structure, this);
+                city.References.Remove(structure, this);
                 structure.BeginUpdate();
                 structure.Technologies.Parent = structure.City.Technologies;
                 structureFactory.GetUpgradedStructure(structure, structure.Type, level);
@@ -465,7 +465,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                city.Worker.References.Remove(structure, this);
+                city.References.Remove(structure, this);
 
                 structure.BeginUpdate();
                 world.Regions.Remove(structure);

@@ -7,9 +7,8 @@ using System.Data;
 using Game.Comm;
 using Game.Data;
 using Game.Database;
-using Game.Setup;
 using Game.Util;
-using Ninject;
+using Game.Util.Locking;
 using Persistance;
 
 #endregion
@@ -20,11 +19,12 @@ namespace Game.Logic
     {
         public const string DB_TABLE = "reference_stubs";
 
-        public ReferenceStub(ushort id, ICanDo obj, GameAction action)
+        public ReferenceStub(ushort id, ICanDo obj, GameAction action, ICity city)
         {
             ReferenceId = id;
             WorkerObject = obj;
             Action = action;
+            City = city;
         }
 
         public ushort ReferenceId { get; private set; }
@@ -32,6 +32,8 @@ namespace Game.Logic
         public ICanDo WorkerObject { get; private set; }
 
         public GameAction Action { get; private set; }
+
+        public ICity City { get; set; }
 
         #region IPersistableObject Members
 
@@ -48,10 +50,10 @@ namespace Game.Logic
             get
             {
                 return new[]
-                       {
-                               new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32), new DbColumn("action_id", Action.ActionId, DbType.UInt32),
-                               new DbColumn("is_active", Action is ActiveAction, DbType.Boolean)
-                       };
+                {
+                        new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32), new DbColumn("action_id", Action.ActionId, DbType.UInt32),
+                        new DbColumn("is_active", Action is ActiveAction, DbType.Boolean)
+                };
             }
         }
 
@@ -59,7 +61,10 @@ namespace Game.Logic
         {
             get
             {
-                return new[] {new DbColumn("id", ReferenceId, DbType.UInt16), new DbColumn("city_id", WorkerObject.City.Id, DbType.UInt32)};
+                return new[]
+                {
+                        new DbColumn("id", ReferenceId, DbType.UInt16), new DbColumn("city_id", City.Id, DbType.UInt32)
+                };
             }
         }
 
@@ -67,7 +72,9 @@ namespace Game.Logic
         {
             get
             {
-                return new DbDependency[] {};
+                return new DbDependency[]
+                {
+                };
             }
         }
 
@@ -81,13 +88,16 @@ namespace Game.Logic
     /// </summary>
     public class ReferenceManager : IEnumerable<ReferenceStub>
     {
-        private readonly IActionWorker actionWorker;
+        private readonly ICity city;
+
         private readonly List<ReferenceStub> reference = new List<ReferenceStub>();
+
         private readonly LargeIdGenerator referenceIdGen = new LargeIdGenerator(ushort.MaxValue);
 
-        public ReferenceManager(IActionWorker actionWorker)
+        public ReferenceManager(ICity city)
         {
-            this.actionWorker = actionWorker;
+            this.city = city;
+            city.Worker.ActionsRemovedFromWorker += WorkerOnActionsRemovedFromWorker;
         }
 
         public ushort Count
@@ -124,12 +134,12 @@ namespace Game.Logic
             {
                 //send removal
                 var packet = new Packet(Command.ReferenceAdd);
-                packet.AddUInt32(actionWorker.City.Id);
+                packet.AddUInt32(city.Id);
                 packet.AddUInt16(referenceObject.ReferenceId);
                 packet.AddUInt32(referenceObject.WorkerObject.WorkerId);
                 packet.AddUInt32(referenceObject.Action.ActionId);
 
-                Global.Channel.Post("/CITY/" + actionWorker.City.Id, packet);
+                Global.Channel.Post("/CITY/" + city.Id, packet);
             }
         }
 
@@ -139,20 +149,22 @@ namespace Game.Logic
             {
                 //send removal
                 var packet = new Packet(Command.ReferenceRemove);
-                packet.AddUInt32(actionWorker.City.Id);
+                packet.AddUInt32(city.Id);
                 packet.AddUInt16(referenceObject.ReferenceId);
 
-                Global.Channel.Post("/CITY/" + actionWorker.City.Id, packet);
+                Global.Channel.Post("/CITY/" + city.Id, packet);
             }
         }
 
         public void Add(IGameObject referenceObject, PassiveAction action)
         {
-
             PassiveAction workingStub;
-            if (!actionWorker.PassiveActions.TryGetValue(action.ActionId, out workingStub)) return; 
+            if (!city.Worker.PassiveActions.TryGetValue(action.ActionId, out workingStub))
+            {
+                throw new Exception("Action not found");
+            }
 
-            var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub);
+            var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub, city);
             reference.Add(newReference);
             DbPersistance.Current.Save(newReference);
 
@@ -161,11 +173,13 @@ namespace Game.Logic
 
         public void Add(IGameObject referenceObject, ActiveAction action)
         {
-            ActiveAction workingStub = actionWorker.ActiveActions[action.ActionId];
-            if (workingStub == null)
+            ActiveAction workingStub;
+            if (!city.Worker.ActiveActions.TryGetValue(action.ActionId, out workingStub))
+            {
                 throw new Exception("Action not found");
+            }
 
-            var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub);
+            var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub, city);
             reference.Add(newReference);
             DbPersistance.Current.Save(newReference);
 
@@ -209,6 +223,14 @@ namespace Game.Logic
         public IEnumerable<ReferenceStub> GetReferences(ICanDo worker)
         {
             return reference.FindAll(stub => stub.WorkerObject.WorkerId == worker.WorkerId);
+        }
+
+        private void WorkerOnActionsRemovedFromWorker(IGameObject workerObject)
+        {
+            using (Concurrency.Current.Lock(city))
+            {
+                Remove(workerObject);
+            }
         }
     }
 }

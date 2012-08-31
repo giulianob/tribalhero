@@ -95,6 +95,10 @@ namespace Game.Data
             }
         }
 
+        public NotificationManager Notifications { get; private set; }
+
+        public ReferenceManager References { get; private set; }
+
         public byte Lvl
         {
             get
@@ -369,7 +373,9 @@ namespace Game.Data
             AlignmentPoint = ap;
             Resource = resource;
 
-            Worker = new ActionWorker(this);
+            Worker = new ActionWorker(() => this, this);
+            Notifications = new NotificationManager(this);
+            References = new ReferenceManager(this);
 
             Technologies = new TechnologyManager(EffectLocation.City, this, id);
 
@@ -542,12 +548,12 @@ namespace Game.Data
                 var actions = new List<uint>();
                 if (cancelReferences)
                 {
-                    actions = (from reference in Worker.References
+                    actions = (from reference in References
                                where reference.WorkerObject == obj
                                select reference.Action.ActionId).ToList();
                 }
 
-                Worker.References.Remove(obj);
+                References.Remove(obj);
 
                 var removeAction = new ObjectRemovePassiveAction(Id, obj.ObjectId, wasKilled, actions);
                 return Worker.DoPassive(this, removeAction, false) == Error.Ok;
@@ -972,15 +978,7 @@ namespace Game.Data
         public IActionWorker Worker { get; private set; }
 
         #region ICanDo Members
-
-        ICity ICanDo.City
-        {
-            get
-            {
-                return this;
-            }
-        }
-
+        
         public uint WorkerId
         {
             get
@@ -1090,11 +1088,11 @@ namespace Game.Data
 
         #region Implementation of ICityRegionObject
 
-        public Location CityRegionLocation
+        public Position CityRegionLocation
         {
             get
             {
-                return new Location(X, Y);
+                return new Position(X, Y);
             }
         }
 
@@ -1178,11 +1176,11 @@ namespace Game.Data
             }
         }
 
-        public StationType LocationType
+        public LocationType LocationType
         {
             get
             {
-                return StationType.City;
+                return LocationType.City;
             }
         }
 

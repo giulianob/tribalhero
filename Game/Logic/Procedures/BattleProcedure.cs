@@ -52,7 +52,7 @@ namespace Game.Logic.Procedures
             this.objectTypeFactory = objectTypeFactory;
         }
 
-        public virtual void JoinOrCreateBattle(ICity targetCity, ITroopObject attackerTroopObject, out ICombatGroup combatGroup, out uint battleId)
+        public virtual void JoinOrCreateCityBattle(ICity targetCity, ITroopObject attackerTroopObject, out ICombatGroup combatGroup, out uint battleId)
         {
             // If battle already exists, then we just join it in also bringing any new units
             if (targetCity.Battle != null)
@@ -68,7 +68,7 @@ namespace Game.Logic.Procedures
                                                                              new BattleOwner(BattleOwnerType.City, targetCity.Id),
                                                                              targetCity);
 
-                var battlePassiveAction = actionFactory.CreateCityBattlePassiveAction(targetCity.City.Id);
+                var battlePassiveAction = actionFactory.CreateCityBattlePassiveAction(targetCity.Id);
 
                 AddLocalStructuresToBattle(targetCity.Battle, targetCity, attackerTroopObject);
                 combatGroup = AddAttackerToBattle(targetCity.Battle, attackerTroopObject);
@@ -85,14 +85,14 @@ namespace Game.Logic.Procedures
 
         private IEnumerable<IStructure> GetStructuresInRadius(IEnumerable<IStructure> structures, ITroopObject troopObject)
         {
-            Location troopLocation = new Location(troopObject.X, troopObject.Y);
+            Position troopPosition = new Position(troopObject.X, troopObject.Y);
 
             return
                     structures.Where(
                                      structure =>
-                                     radiusLocator.IsOverlapping(troopLocation,
+                                     radiusLocator.IsOverlapping(troopPosition,
                                                                  troopObject.Stats.AttackRadius,
-                                                                 new Location(structure.X, structure.Y),
+                                                                 new Position(structure.X, structure.Y),
                                                                  structure.Stats.Base.Radius));
         }
 
@@ -204,7 +204,7 @@ namespace Game.Logic.Procedures
             return offensiveGroup;
         }
 
-        public virtual void AddReinforcementToBattle(IBattleManager battleManager, ITroopStub stub)
+        public virtual uint AddReinforcementToBattle(IBattleManager battleManager, ITroopStub stub)
         {
             var defensiveGroup = combatGroupFactory.CreateCityDefensiveCombatGroup(battleManager.BattleId, battleManager.GetNextGroupId(), stub);
             foreach (var kvp in stub.SelectMany(formation => formation))
@@ -212,6 +212,8 @@ namespace Game.Logic.Procedures
                 combatUnitFactory.CreateDefenseCombatUnit(battleManager, stub, FormationType.Defense, kvp.Key, kvp.Value).ToList().ForEach(defensiveGroup.Add);
             }
             battleManager.Add(defensiveGroup, BattleManager.BattleSide.Defense);
+            
+            return defensiveGroup.Id;
         }
 
         private ICombatGroup GetOrCreateLocalGroup(IBattleManager battleManager, ICity city)
@@ -265,6 +267,11 @@ namespace Game.Logic.Procedures
 
         public Error CanStrongholdBeAttacked(ICity city, IStronghold stronghold)
         {
+            if (stronghold.StrongholdState == StrongholdState.Inactive)
+            {
+                return Error.StrongholdStillInactive;
+            }
+
             if (!city.Owner.IsInTribe)
             {
                 return Error.TribesmanNotPartOfTribe;
@@ -285,6 +292,11 @@ namespace Game.Logic.Procedures
 
         public Error CanStrongholdBeDefended(ICity city, IStronghold stronghold)
         {
+            if (stronghold.StrongholdState == StrongholdState.Inactive)
+            {
+                return Error.StrongholdStillInactive;
+            }
+
             if (!city.Owner.IsInTribe)
             {
                 return Error.TribesmanNotPartOfTribe;
@@ -296,6 +308,47 @@ namespace Game.Logic.Procedures
             }
 
             return Error.Ok;            
+        }
+
+        public void JoinOrCreateStrongholdGateBattle(IStronghold targetStronghold, ITroopObject attackerTroopObject, out ICombatGroup combatGroup, out uint battleId)
+        {
+             // If battle already exists, then we just join it in also bringing any new units
+            if (targetStronghold.Battle != null)
+            {
+                combatGroup = AddAttackerToBattle(targetStronghold.Battle, attackerTroopObject);
+            }
+            // Otherwise, the battle has to be created
+            else
+            {
+                var battleOwner = targetStronghold.Tribe == null
+                                          ? new BattleOwner(BattleOwnerType.Stronghold, targetStronghold.Id)
+                                          : new BattleOwner(BattleOwnerType.Tribe, targetStronghold.Tribe.Id);
+
+                targetStronghold.Battle = battleManagerFactory.CreateBattleManager(new BattleLocation(BattleLocationType.Stronghold, targetStronghold.Id),
+                                                                                   battleOwner,
+                                                                                   targetStronghold);
+                
+                combatGroup = AddAttackerToBattle(targetStronghold.Battle, attackerTroopObject);
+                
+                var battlePassiveAction = actionFactory.CreateStrongholdGateBattlePassiveAction(targetStronghold.Id);
+                Error result = targetStronghold.Worker.DoPassive(targetStronghold, battlePassiveAction, false);
+                if (result != Error.Ok)
+                {
+                    throw new Exception(string.Format("Failed to start a battle due to error {0}", result));
+                }
+            }
+
+            battleId = targetStronghold.Battle.BattleId;
+        }
+
+        public ICombatGroup AddGateToBattle(IBattleManager battle, IStronghold stronghold)
+        {
+            var strongholdCombatGroup = combatGroupFactory.CreateStrongholdCombatGroup(battle.BattleId, battle.GetNextGroupId(), stronghold);
+            strongholdCombatGroup.Add(combatUnitFactory.CreateStrongholdGateUnit(battle, stronghold));
+
+            battle.Add(strongholdCombatGroup, BattleManager.BattleSide.Defense);
+
+            return strongholdCombatGroup;
         }
     }
 }

@@ -224,6 +224,7 @@
     <Compile Include="Data\Stronghold\IStrongholdFactory.cs" />
     <Compile Include="Data\Stronghold\IStrongholdConfigurator.cs" />
     <Compile Include="Data\Stronghold\IStrongholdManager.cs" />
+    <Compile Include="Data\Stronghold\SimpleStubGenerator.cs" />
     <Compile Include="Data\Stronghold\Stronghold.cs" />
     <Compile Include="Data\Stronghold\StrongholdActivationCondition.cs" />
     <Compile Include="Data\Stronghold\StrongholdConfigurator.cs" />

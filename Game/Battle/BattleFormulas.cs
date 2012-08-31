@@ -5,6 +5,7 @@ using System.Linq;
 using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Stats;
+using Game.Data.Stronghold;
 using Game.Data.Troop;
 using Game.Setup;
 using System.Collections.Generic;
@@ -166,6 +167,11 @@ namespace Game.Battle
             return (short)Config.battle_stamina_initial;
         }
 
+        public short GetStamina(ITroopStub stub, IStronghold targetStronghold)
+        {
+            return (short)(Config.battle_stamina_initial*3);
+        }
+
         public virtual ushort GetStaminaReinforced(ICity city, ushort stamina, uint round)
         {
             return stamina;
@@ -318,6 +324,6 @@ namespace Game.Battle
 
             reduction = (100 - reduction)/100;
             return reduction*dmg;
-        }
+        }        
     }
 }

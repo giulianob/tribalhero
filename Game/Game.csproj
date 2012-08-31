@@ -118,6 +118,7 @@
     <Compile Include="Battle\CombatGroups\CityOffensiveCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\CityDefensiveCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\CombatGroup.cs" />
+    <Compile Include="Battle\CombatGroups\StrongholdCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\ICombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\ICombatGroupFactory.cs" />
     <Compile Include="Battle\CombatGroups\IReportView.cs" />
@@ -126,9 +127,9 @@
     <Compile Include="Battle\CombatObjects\AttackCombatUnit.cs" />
     <Compile Include="Battle\CombatObjects\CityCombatObject.cs" />
     <Compile Include="Battle\CombatObjects\CombatObject.cs" />
-    <Compile Include="Battle\CombatObjects\CombatObjectFactory.cs" />
     <Compile Include="Battle\CombatObjects\CombatStructure.cs" />
     <Compile Include="Battle\CombatObjects\CombatUnitFactory.cs" />
+    <Compile Include="Battle\CombatObjects\StrongholdCombatUnit.cs" />
     <Compile Include="Battle\CombatObjects\DefenseCombatUnit.cs" />
     <Compile Include="Battle\CombatObjects\ICombatObject.cs" />
     <Compile Include="Battle\CombatObjects\ICombatStructure.cs" />
@@ -143,6 +144,7 @@
     <Compile Include="Battle\Reporting\ReportState.cs" />
     <Compile Include="Battle\Reporting\SqlBattleReportWriter.cs" />
     <Compile Include="Battle\RewardStrategies\CityRewardStrategy.cs" />
+    <Compile Include="Battle\RewardStrategies\StrongholdRewardStrategy.cs" />
     <Compile Include="Battle\RewardStrategies\IRewardStrategy.cs" />
     <Compile Include="Battle\RewardStrategies\IRewardStrategyFactory.cs" />
     <Compile Include="Battle\StaminaMonitor.cs" />
@@ -275,6 +277,8 @@
     <Compile Include="Logic\Actions\TribeActions\TribeContributeActiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\CityBattlePassiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\CityEngageAttackPassiveAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\StrongholdGateBattlePassiveAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\StrongholdEngageGateAttackPassiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\UnitTrainActiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\UnitUpgradeActiveAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\StructureUpgradeActiveAction.cs" />
@@ -315,7 +319,7 @@
     <Compile Include="Map\IGameObjectLocator.cs" />
     <Compile Include="Map\IRegionManager.cs" />
     <Compile Include="Map\IWorld.cs" />
-    <Compile Include="Map\Location.cs" />
+    <Compile Include="Map\Position.cs" />
     <Compile Include="Map\MapMath.cs" />
     <Compile Include="Map\ObjectLink.cs" />
     <Compile Include="Map\ObjectList.AllObjectEnum.cs" />

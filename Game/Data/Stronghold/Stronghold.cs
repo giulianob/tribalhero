@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using Game.Battle;
 using Game.Data.Tribe;
 using Game.Data.Troop;
@@ -32,7 +33,9 @@ namespace Game.Data.Stronghold
 
         private ITribe tribe;
 
-        public IBattleManager Battle { get; set; }
+        public IBattleManager MainBattle { get; set; }
+
+        public IBattleManager GateBattle { get; set; }
 
         public IActionWorker Worker { get; private set; }
 
@@ -50,14 +53,19 @@ namespace Game.Data.Stronghold
                     locks.Add(Tribe);
                 }
 
-                if (Battle != null)
+                if (GateBattle != null)
                 {
-                    locks.AddRange(Battle.LockList);
+                    locks.AddRange(GateBattle.LockList);
+                }
+
+                if (MainBattle != null)
+                {
+                    locks.AddRange(MainBattle.LockList);
                 }
 
                 locks.AddRange(Troops.StationedHere());
 
-                return locks;
+                return locks.Distinct();
             }
         }
 
@@ -98,7 +106,11 @@ namespace Game.Data.Stronghold
             Worker = new ActionWorker(() => this, this);
             Troops = new TroopManager(this, null);
 
-            Gate = new LazyValue(0);
+            //TODO: Adjust the max HP, rate, and make sure the stronghold battle is adjusting the rate while in battle
+            Gate = new LazyValue(10000)
+            {
+                    Limit = 20000
+            };
         }
 
         #endregion
@@ -261,18 +273,6 @@ namespace Game.Data.Stronghold
 
         #endregion
 
-        #region Implementation of IStation
-
-        public ITroopManager TroopManager
-        {
-            get
-            {
-                return Troops;
-            }
-        }
-
-        #endregion
-
         #region Implementation of IPersistable
 
         public string DbTable
@@ -313,7 +313,8 @@ namespace Game.Data.Stronghold
                                new DbColumn("x", x, DbType.UInt32),
                                new DbColumn("y", y, DbType.UInt32),
                                new DbColumn("gate_open_to", GateOpenTo == null ? 0 : GateOpenTo.Id, DbType.UInt32),
-                               new DbColumn("battle_id", Battle != null ? Battle.BattleId : 0, DbType.UInt32)
+                               new DbColumn("gate_battle_id", GateBattle != null ? GateBattle.BattleId : 0, DbType.UInt32),
+                               new DbColumn("main_battle_id", MainBattle != null ? MainBattle.BattleId : 0, DbType.UInt32)
                        };
             }
         }

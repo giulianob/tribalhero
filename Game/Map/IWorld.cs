@@ -3,6 +3,7 @@ using Game.Battle;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
+using Game.Logic.Procedures;
 
 namespace Game.Map
 {
@@ -37,7 +38,7 @@ namespace Game.Map
 
         void DbLoaderAdd(IBattleManager battleManager);
 
-        void AfterDbLoaded();
+        void AfterDbLoaded(Procedure procedure);
 
         void Remove(ITribe tribe);
 

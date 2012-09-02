@@ -12,6 +12,8 @@ namespace Game.Battle.CombatObjects
 
         DefenseCombatUnit[] CreateDefenseCombatUnit(IBattleManager battleManager, ITroopStub stub, FormationType formation, ushort type, ushort count);
 
-        StrongholdCombatUnit CreateStrongholdGateUnit(IBattleManager battleManager, IStronghold stronghold);
+        StrongholdCombatUnit CreateStrongholdCombatUnit(IBattleManager battleManager, IStronghold stronghold, ushort type, byte level, ushort count);
+
+        StrongholdCombatStructure CreateStrongholdGateStructure(IBattleManager battleManager, IStronghold stronghold, decimal hp);
     }
 }

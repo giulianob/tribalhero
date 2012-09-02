@@ -38,22 +38,6 @@ namespace Game.Logic.Actions
 
         private readonly BattleProcedure battleProcedure;
 
-        public uint From
-        {
-            get
-            {
-                return cityId;
-            }
-        }
-
-        public uint To
-        {
-            get
-            {
-                return targetStrongholdId;
-            }
-        }
-
         public StrongholdAttackChainAction(uint cityId,
                                            uint troopObjectId,
                                            uint targetStrongholdId,
@@ -153,8 +137,7 @@ namespace Game.Logic.Actions
 
             city.References.Add(troopObject, this);
 
-            // TODO: Figure out notifications
-            //city.Notifications.Add(troopObject, this, targetCity);
+            city.Notifications.Add(troopObject, this);
 
             var tma = actionFactory.CreateTroopMovePassiveAction(cityId, troopObject.ObjectId, targetStronghold.X, targetStronghold.Y, false, true);
 
@@ -183,10 +166,21 @@ namespace Game.Logic.Actions
                     throw new Exception("City or troop object is missing");
                 }
 
+                if (!gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold))
+                {
+                    CancelCurrentChain();
+                    return;
+                }
+
+                bool invalidTarget;
+                using (locker.Lock(city, targetStronghold))
+                {
+                    invalidTarget = battleProcedure.CanStrongholdBeAttacked(city, targetStronghold) != Error.Ok &&
+                                    battleProcedure.CanStrongholdBeDefended(city, targetStronghold) != Error.Ok;
+                }
+
                 // If the stronghold is not there or we are unable to attack/defense it, then cancel the current TroopMoveAction
-                if (!gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold) ||
-                    (battleProcedure.CanStrongholdBeAttacked(city, targetStronghold) != Error.Ok &&
-                     battleProcedure.CanStrongholdBeDefended(city, targetStronghold) != Error.Ok))
+                if (invalidTarget)
                 {
                     CancelCurrentChain();
                 }
@@ -196,7 +190,7 @@ namespace Game.Logic.Actions
                 // If TroopMove failed it's because we cancelled it and the target is invalid. Walk back home
                 ICity city;
                 ITroopObject troopObject;
-
+                
                 using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
                 {
                     TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id, troopObject.ObjectId, city.X, city.Y, true, true);
@@ -218,50 +212,37 @@ namespace Game.Logic.Actions
                 {
                     throw new Exception("Stronghold is missing");
                 }
-                
-                if (targetStronghold.GateOpenTo == city.Owner.Tribesman.Tribe)
+
+                CallbackLock.CallbackLockHandler lockAll = delegate { return targetStronghold.LockList.ToArray(); };
+
+                using (locker.Lock(lockAll, null, city, targetStronghold))
                 {
-                    // If stronghold's gate is open to the tribe, then it should engage the stronghold
 
-                    CallbackLock.CallbackLockHandler lockAll = delegate { return targetStronghold.LockList.ToArray(); };
-
-                    using (locker.Lock(lockAll, null, city, targetStronghold))
+                    if (targetStronghold.GateOpenTo == city.Owner.Tribesman.Tribe)
                     {
-                        //var bea = actionFactory.CreateStrongholdEngagePassiveAction(cityId, troopObject.ObjectId, targetStrongholdId, mode);
-                        //ExecuteChainAndWait(bea, AfterGateBattle);
+                        // If stronghold's gate is open to the tribe, then it should engage the stronghold
+                        JoinOrCreateStrongholdMainBattle(city, targetStronghold);
                     }
-                }                        
-                else if (targetStronghold.Tribe == city.Owner.Tribesman.Tribe)
-                {
-                    // If tribe already owns stronghold, then it should defend it
-
-                    if (targetStronghold.GateOpenTo != null && targetStronghold.Battle != null)
+                    else if (targetStronghold.Tribe == city.Owner.Tribesman.Tribe)
                     {
-                        // TODO: Join the battle
+                        StationTroopInStronghold(troopObject, targetStronghold);
+
+                        // If tribe already owns stronghold, then it should defend it
+                        if (targetStronghold.GateOpenTo != null && targetStronghold.MainBattle != null)
+                        {
+                            throw new Exception("Need to join the current battle on the defensive side");
+                        }
                     }
-                    else
+                    else if (targetStronghold.GateOpenTo == null)
                     {
-                        // TODO: Station yourself
-                    }
-                }                        
-                else if (targetStronghold.GateOpenTo == null)
-                {
-                    // If gate isn't open to anyone then engage the gate
-
-                    CallbackLock.CallbackLockHandler lockAll = delegate { return targetStronghold.LockList.ToArray(); };
-
-                    using (locker.Lock(lockAll, null, city, targetStronghold))
-                    {
+                        // If gate isn't open to anyone then engage the gate
                         var bea = actionFactory.CreateStrongholdEngageGateAttackPassiveAction(cityId, troopObject.ObjectId, targetStrongholdId);
                         ExecuteChainAndWait(bea, AfterGateBattle);
                     }
-                }                        
-                else
-                {
-                    // Walk back to city if none of the above conditions apply
-
-                    using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
+                    else
                     {
+                        // Walk back to city if none of the above conditions apply
+
                         TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id, troopObject.ObjectId, city.X, city.Y, true, true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
                     }
@@ -269,69 +250,132 @@ namespace Game.Logic.Actions
             }
         }
 
-        private void AfterGateBattle(ActionState state)
+        private void JoinOrCreateStrongholdMainBattle(ICity city, IStronghold targetStronghold)
+        {
+            ITroopObject troopObject;
+            if (!city.TryGetTroop(troopObjectId, out troopObject))
+            {
+                throw new Exception("Troop object should still exist");
+            }
+
+            throw new Exception("Trying to create main battle");
+            //var bea = actionFactory.CreateStrongholdEngagePassiveAction(cityId, troopObject.ObjectId, targetStrongholdId, mode);
+            //ExecuteChainAndWait(bea, AfterMainBattle);
+        }
+
+        private void AfterMainBattle(ActionState state)
         {
             if (state == ActionState.Completed)
             {
-                Dictionary<uint, ICity> cities;
-                using (locker.Lock(out cities, cityId, targetStrongholdId))
+                     ICity city;
+                IStronghold targetStronghold;
+
+                if (!gameObjectLocator.TryGetObjects(cityId, out city))
                 {
-                    if (cities == null)
-                    {
-                        throw new Exception("City not found");
-                    }
+                    throw new Exception("City not found");
+                }
 
-                    ICity city = cities[cityId];
-                    ICity targetCity = cities[targetStrongholdId];
+                if (!gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold))
+                {
+                    throw new Exception("Stronghold not found");
+                }
 
-                    //Remove notification to target city once battle is over
-                    city.Notifications.Remove(this);
+                CallbackLock.CallbackLockHandler lockAll = delegate { return targetStronghold.LockList.ToArray(); };
 
-                    //Remove Incoming Icon from the target's tribe
-                    if (targetCity.Owner.Tribesman != null)
-                    {
-                        targetCity.Owner.Tribesman.Tribe.SendUpdate();
-                    }
-
+                using (locker.Lock(lockAll, null, city, targetStronghold))
+                {
                     ITroopObject troopObject;
                     if (!city.TryGetTroop(troopObjectId, out troopObject))
                     {
                         throw new Exception("Troop object should still exist");
                     }
 
-                    // Check if troop is still alive
-                    if (troopObject.Stub.TotalCount > 0)
+                    // Remove troop if he's dead
+                    if (troopObject.Stub.TotalCount == 0)
                     {
-                        // Calculate how many attack points to give to the city
                         city.BeginUpdate();
-                        procedure.GiveAttackPoints(city, troopObject.Stats.AttackPoint, initialTroopValue, troopObject.Stub.Value);
-                        city.EndUpdate();
-
-                        // Send troop back home
-                        var tma = actionFactory.CreateTroopMovePassiveAction(city.Id, troopObject.ObjectId, city.X, city.Y, true, true);
-                        ExecuteChainAndWait(tma, AfterTroopMovedHome);
-
-                        // Add notification just to the main city
-                        city.Notifications.Add(troopObject, this);
-                    }
-                    else
-                    {
-                        targetCity.BeginUpdate();
-                        city.BeginUpdate();
-
-                        // Give back the loot to the target city
-                        targetCity.Resource.Add(troopObject.Stats.Loot);
-
                         // Remove this actions reference from the troop
                         city.References.Remove(troopObject, this);
-
                         // Remove troop since he's dead
                         procedure.TroopObjectDelete(troopObject, false);
-
-                        targetCity.EndUpdate();
                         city.EndUpdate();
 
                         StateChange(ActionState.Completed);
+                        return;
+                    }
+
+                    if (city.Owner.IsInTribe && targetStronghold.Tribe == city.Owner.Tribesman.Tribe)
+                    {
+                        // If our city is the one that now owns the stronghold then station there                        
+                        StationTroopInStronghold(troopObject, targetStronghold);
+                    }
+                    else
+                    {
+                        // Send troop back home
+                        var tma = actionFactory.CreateTroopMovePassiveAction(city.Id, troopObject.ObjectId, city.X, city.Y, true, true);
+                        ExecuteChainAndWait(tma, AfterTroopMovedHome);
+                    }
+                }
+            }
+        }
+
+        private void StationTroopInStronghold(ITroopObject troopObject, IStronghold stronghold)
+        {
+            procedure.TroopObjectStation(troopObject, stronghold);
+            StateChange(ActionState.Completed);
+        }
+
+        private void AfterGateBattle(ActionState state)
+        {
+            if (state == ActionState.Completed)
+            {
+                ICity city;
+                IStronghold targetStronghold;
+
+                if (!gameObjectLocator.TryGetObjects(cityId, out city))
+                {
+                    throw new Exception("City not found");
+                }
+
+                if (!gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold))
+                {
+                    throw new Exception("Stronghold not found");
+                }
+
+                CallbackLock.CallbackLockHandler lockAll = delegate { return targetStronghold.LockList.ToArray(); };
+
+                using (locker.Lock(lockAll, null, city, targetStronghold))
+                {
+                    ITroopObject troopObject;
+                    if (!city.TryGetTroop(troopObjectId, out troopObject))
+                    {
+                        throw new Exception("Troop object should still exist");
+                    }
+
+                    // Remove troop if he's dead
+                    if (troopObject.Stub.TotalCount == 0)
+                    {
+                        city.BeginUpdate();
+                        // Remove this actions reference from the troop
+                        city.References.Remove(troopObject, this);
+                        // Remove troop since he's dead
+                        procedure.TroopObjectDelete(troopObject, false);
+                        city.EndUpdate();
+
+                        StateChange(ActionState.Completed);
+                        return;
+                    }
+
+                    if (city.Owner.IsInTribe && targetStronghold.GateOpenTo == city.Owner.Tribesman.Tribe)
+                    {
+                        // If our city is the one that now has access to the stronghold then join the real battle
+                        JoinOrCreateStrongholdMainBattle(city, targetStronghold);
+                    }
+                    else
+                    {
+                        // Send troop back home
+                        var tma = actionFactory.CreateTroopMovePassiveAction(city.Id, troopObject.ObjectId, city.X, city.Y, true, true);
+                        ExecuteChainAndWait(tma, AfterTroopMovedHome);
                     }
                 }
             }

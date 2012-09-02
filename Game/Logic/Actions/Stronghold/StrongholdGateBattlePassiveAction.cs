@@ -37,6 +37,8 @@ namespace Game.Logic.Actions
 
         private readonly Formula formula;
 
+        private readonly IWorld world;
+
         private readonly Dictionary<uint, decimal> tribeDamageDealt = new Dictionary<uint, decimal>();
 
         public StrongholdGateBattlePassiveAction(uint strongholdId,
@@ -44,7 +46,8 @@ namespace Game.Logic.Actions
                                    ILocker locker,
                                    IGameObjectLocator gameObjectLocator,
                                    IDbManager dbManager,
-                                   Formula formula)
+                                   Formula formula, 
+                                   IWorld world)
         {
             this.strongholdId = strongholdId;
             this.battleProcedure = battleProcedure;
@@ -52,6 +55,7 @@ namespace Game.Logic.Actions
             this.gameObjectLocator = gameObjectLocator;
             this.dbManager = dbManager;
             this.formula = formula;
+            this.world = world;
 
             IStronghold stronghold;
             if (!gameObjectLocator.TryGetObjects(strongholdId, out stronghold))
@@ -59,8 +63,8 @@ namespace Game.Logic.Actions
                 throw new Exception("Did not find stronghold that was supposed to be having a battle");
             }
 
-            stronghold.Battle.GroupKilled += BattleOnGroupKilled;
-            stronghold.Battle.ActionAttacked += BattleOnActionAttacked;
+            stronghold.GateBattle.GroupKilled += BattleOnGroupKilled;
+            stronghold.GateBattle.ActionAttacked += BattleOnActionAttacked;
         }
 
         public StrongholdGateBattlePassiveAction(uint id,
@@ -74,7 +78,8 @@ namespace Game.Logic.Actions
                                    ILocker locker,
                                    IGameObjectLocator gameObjectLocator,
                                    IDbManager dbManager,
-                                   Formula formula)
+                                   Formula formula,
+                                   IWorld world)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.battleProcedure = battleProcedure;
@@ -82,6 +87,7 @@ namespace Game.Logic.Actions
             this.gameObjectLocator = gameObjectLocator;
             this.dbManager = dbManager;
             this.formula = formula;
+            this.world = world;
 
             localGroupId = uint.Parse(properties["local_group_id"]);
 
@@ -98,8 +104,8 @@ namespace Game.Logic.Actions
                 throw new Exception();
             }
 
-            stronghold.Battle.GroupKilled += BattleOnGroupKilled;
-            stronghold.Battle.ActionAttacked += BattleOnActionAttacked;
+            stronghold.GateBattle.GroupKilled += BattleOnGroupKilled;
+            stronghold.GateBattle.ActionAttacked += BattleOnActionAttacked;
         }
 
         private void BattleOnActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatGroup attackerGroup, ICombatObject attacker, ICombatGroup targetGroup, ICombatObject target, decimal damage)
@@ -201,23 +207,24 @@ namespace Game.Logic.Actions
 
             using (locker.Lock(lockHandler, null, stronghold))
             {
-                if (stronghold.Battle.ExecuteTurn())
+                if (stronghold.GateBattle.ExecuteTurn())
                 {
                     // Battle continues, just save it and reschedule
-                    dbManager.Save(stronghold.Battle);
-                    endTime = SystemClock.Now.AddSeconds(formula.GetBattleInterval(stronghold.Battle.Defenders.Count + stronghold.Battle.Attackers.Count));
+                    dbManager.Save(stronghold.GateBattle);
+                    endTime = SystemClock.Now.AddSeconds(formula.GetBattleInterval(stronghold.GateBattle.Defenders.Count + stronghold.GateBattle.Attackers.Count));
                     StateChange(ActionState.Fired);
                     return;
                 }
 
                 // Battle has ended
                 // Delete the battle
-                stronghold.Battle.GroupKilled -= BattleOnGroupKilled;
-                stronghold.Battle.ActionAttacked -= BattleOnActionAttacked;
+                stronghold.GateBattle.GroupKilled -= BattleOnGroupKilled;
+                stronghold.GateBattle.ActionAttacked -= BattleOnActionAttacked;
 
-                World.Current.Remove(stronghold.Battle);
-                dbManager.Delete(stronghold.Battle);
-                stronghold.Battle = null;
+                world.Remove(stronghold.GateBattle);
+                dbManager.Delete(stronghold.GateBattle);
+                stronghold.GateBattle = null;
+                dbManager.Save(stronghold);
 
                 StateChange(ActionState.Completed);
             }
@@ -236,11 +243,11 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
-            World.Current.Add(stronghold.Battle);
-            dbManager.Save(stronghold.Battle);
+            world.Add(stronghold.GateBattle);
+            dbManager.Save(stronghold.GateBattle);
 
             //Add gate to battle
-            var combatGroup = battleProcedure.AddGateToBattle(stronghold.Battle, stronghold);            
+            var combatGroup = battleProcedure.AddGateToBattle(stronghold.GateBattle, stronghold);            
             localGroupId = combatGroup.Id;
 
             beginTime = SystemClock.Now;

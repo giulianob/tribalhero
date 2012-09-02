@@ -14,18 +14,15 @@ namespace Game.Map
     {
         private readonly IDbManager dbManager;
 
-        private readonly Procedure procedure;
-
         private readonly IRegionManager regionManager;
 
         private readonly LargeIdGenerator cityIdGen = new LargeIdGenerator(300000, 200000);
 
         private readonly Dictionary<uint, ICity> cities = new Dictionary<uint, ICity>();
 
-        public CityManager(IDbManager dbManager, Procedure procedure, IRegionManager regionManager)
+        public CityManager(IDbManager dbManager, IRegionManager regionManager)
         {
             this.dbManager = dbManager;
-            this.procedure = procedure;
             this.regionManager = regionManager;
         }
 
@@ -42,7 +39,7 @@ namespace Game.Map
             return cities.TryGetValue(cityId, out city);
         }
 
-        public void AfterDbLoaded()
+        public void AfterDbLoaded(Procedure procedure)
         {
             IEnumerator<ICity> iter = cities.Values.GetEnumerator();
             while (iter.MoveNext())

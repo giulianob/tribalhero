@@ -313,9 +313,9 @@ namespace Game.Logic.Procedures
         public void JoinOrCreateStrongholdGateBattle(IStronghold targetStronghold, ITroopObject attackerTroopObject, out ICombatGroup combatGroup, out uint battleId)
         {
              // If battle already exists, then we just join it in also bringing any new units
-            if (targetStronghold.Battle != null)
+            if (targetStronghold.GateBattle != null)
             {
-                combatGroup = AddAttackerToBattle(targetStronghold.Battle, attackerTroopObject);
+                combatGroup = AddAttackerToBattle(targetStronghold.GateBattle, attackerTroopObject);
             }
             // Otherwise, the battle has to be created
             else
@@ -324,11 +324,11 @@ namespace Game.Logic.Procedures
                                           ? new BattleOwner(BattleOwnerType.Stronghold, targetStronghold.Id)
                                           : new BattleOwner(BattleOwnerType.Tribe, targetStronghold.Tribe.Id);
 
-                targetStronghold.Battle = battleManagerFactory.CreateBattleManager(new BattleLocation(BattleLocationType.Stronghold, targetStronghold.Id),
+                targetStronghold.GateBattle = battleManagerFactory.CreateBattleManager(new BattleLocation(BattleLocationType.StrongholdGate, targetStronghold.Id),
                                                                                    battleOwner,
                                                                                    targetStronghold);
                 
-                combatGroup = AddAttackerToBattle(targetStronghold.Battle, attackerTroopObject);
+                combatGroup = AddAttackerToBattle(targetStronghold.GateBattle, attackerTroopObject);
                 
                 var battlePassiveAction = actionFactory.CreateStrongholdGateBattlePassiveAction(targetStronghold.Id);
                 Error result = targetStronghold.Worker.DoPassive(targetStronghold, battlePassiveAction, false);
@@ -338,13 +338,17 @@ namespace Game.Logic.Procedures
                 }
             }
 
-            battleId = targetStronghold.Battle.BattleId;
+            battleId = targetStronghold.GateBattle.BattleId;
         }
 
         public ICombatGroup AddGateToBattle(IBattleManager battle, IStronghold stronghold)
         {
             var strongholdCombatGroup = combatGroupFactory.CreateStrongholdCombatGroup(battle.BattleId, battle.GetNextGroupId(), stronghold);
-            strongholdCombatGroup.Add(combatUnitFactory.CreateStrongholdGateUnit(battle, stronghold));
+            if (stronghold.Gate.Value == 0)
+            {
+                throw new Exception("Dead gate trying to join the battle");
+            }
+            strongholdCombatGroup.Add(combatUnitFactory.CreateStrongholdGateStructure(battle, stronghold, stronghold.Gate.Value));
 
             battle.Add(strongholdCombatGroup, BattleManager.BattleSide.Defense);
 

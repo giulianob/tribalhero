@@ -1,12 +1,10 @@
-using Game.Battle.CombatGroups;
-using Game.Battle.CombatObjects;
-using Persistance;
+using Game.Map;
 
 namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        private readonly IDbManager dbManager;
+        private readonly IWorld world;
 
         public static Procedure Current { get; set; }
 
@@ -15,9 +13,9 @@ namespace Game.Logic.Procedures
             
         }
 
-        public Procedure(IDbManager dbManager)
+        public Procedure(IWorld world)
         {
-            this.dbManager = dbManager;
+            this.world = world;
         }
     }
 }

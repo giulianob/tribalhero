@@ -2,6 +2,7 @@
 using Game.Logic;
 using Game.Map;
 using System.Linq;
+using Game.Util.Locking;
 using Persistance;
 
 namespace Game.Data.Stronghold
@@ -40,7 +41,7 @@ namespace Game.Data.Stronghold
         {
             foreach (IStronghold stronghold in strongholdManager.Where(s => s.StrongholdState == StrongholdState.Inactive).Where(stronghold => strongholdActivationCondition.ShouldActivate(stronghold)))
             {
-                using(dbManager.GetThreadTransaction())
+                using (Concurrency.Current.Lock(stronghold))
                 {
                     strongholdManager.Activate(stronghold);
                 }

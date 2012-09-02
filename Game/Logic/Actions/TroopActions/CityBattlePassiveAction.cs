@@ -37,6 +37,8 @@ namespace Game.Logic.Actions
 
         private readonly Formula formula;
 
+        private readonly IWorld world;
+
         private uint destroyedHp;
 
         public CityBattlePassiveAction(uint cityId,
@@ -45,7 +47,8 @@ namespace Game.Logic.Actions
                                    ILocker locker,
                                    IGameObjectLocator gameObjectLocator,
                                    IDbManager dbManager,
-                                   Formula formula)
+                                   Formula formula,
+                                   IWorld world)
         {
             this.cityId = cityId;
             this.actionFactory = actionFactory;
@@ -54,6 +57,7 @@ namespace Game.Logic.Actions
             this.gameObjectLocator = gameObjectLocator;
             this.dbManager = dbManager;
             this.formula = formula;
+            this.world = world;
 
             ICity city;
             if (!gameObjectLocator.TryGetObjects(cityId, out city))
@@ -78,7 +82,8 @@ namespace Game.Logic.Actions
                                    ILocker locker,
                                    IGameObjectLocator gameObjectLocator,
                                    IDbManager dbManager,
-                                   Formula formula)
+                                   Formula formula,
+                                   IWorld world)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.actionFactory = actionFactory;
@@ -87,6 +92,7 @@ namespace Game.Logic.Actions
             this.gameObjectLocator = gameObjectLocator;
             this.dbManager = dbManager;
             this.formula = formula;
+            this.world = world;
 
             cityId = uint.Parse(properties["city_id"]);
             destroyedHp = uint.Parse(properties["destroyed_hp"]);
@@ -188,7 +194,7 @@ namespace Game.Logic.Actions
                 city.Battle.ActionAttacked -= BattleActionAttacked;
                 city.Battle.UnitKilled -= BattleUnitKilled;
                 city.Battle.EnterRound -= BattleEnterRound;
-                World.Current.Remove(city.Battle);
+                world.Remove(city.Battle);
                 dbManager.Delete(city.Battle);
                 city.Battle = null;
 
@@ -243,7 +249,7 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
-            World.Current.Add(city.Battle);
+            world.Add(city.Battle);
             dbManager.Save(city.Battle);
 
             //Add local troop

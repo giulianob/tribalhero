@@ -48,7 +48,7 @@ namespace Game.Battle
                 return;
             }
 
-            Stamina = BattleFormulas.GetStaminaStructureDestroyed(Stamina, (ICombatStructure)target);
+            Stamina = BattleFormulas.GetStaminaStructureDestroyed(Stamina, target);
         }
 
         private void BattleWithdrawAttacker(IBattleManager battle, ICombatGroup groupWithdrawn)

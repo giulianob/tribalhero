@@ -132,7 +132,7 @@ namespace Game.Logic.Actions
             {
                 throw new Exception("No current chain action to cancel");
             }
-
+            
             Current.WorkerRemoved(false);
         }
 
@@ -162,20 +162,24 @@ namespace Game.Logic.Actions
         private void ChainNotify(GameAction action, ActionState state)
         {
             chainState = state;
+            ChainCallback currentChain = chainCallback;
+
+            ISchedule scheduledAction = action as ISchedule;
 
             switch(state)
             {
                 case ActionState.Fired:
                 case ActionState.Started:
                 case ActionState.Rescheduled:
-                    DbPersistance.Current.Save(action);
-                    if (action is ScheduledPassiveAction)
-                        Scheduler.Current.Put((ScheduledPassiveAction)action);
-                    else if (action is ScheduledActiveAction)
-                        Scheduler.Current.Put((ScheduledActiveAction)action);
+                    DbPersistance.Current.Save(action);                    
+                    if (scheduledAction != null)
+                    {
+                        Scheduler.Current.Put(scheduledAction);
+                    }
 
                     DbPersistance.Current.Save(this);
 
+                    Scheduler.Current.Put(new ChainExecuter(currentChain, state));
                     return;
                 case ActionState.Completed:
                 case ActionState.Failed:
@@ -185,12 +189,16 @@ namespace Game.Logic.Actions
                 default:
                     throw new Exception("Unexpected state " + state);
             }
-
+            
             //current action is completed by either success or failure
+            if (scheduledAction != null)
+            {
+                Scheduler.Current.Remove(scheduledAction);
+            }
+
             action.IsDone = true;
             action.OnNotify -= ChainNotify;
-            Current = null;
-            ChainCallback currentChain = chainCallback;
+            Current = null;            
             DbPersistance.Current.Save(this);
 
             Scheduler.Current.Put(new ChainExecuter(currentChain, state));

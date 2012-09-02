@@ -129,6 +129,7 @@
     <Compile Include="Battle\CombatObjects\CombatObject.cs" />
     <Compile Include="Battle\CombatObjects\CombatStructure.cs" />
     <Compile Include="Battle\CombatObjects\CombatUnitFactory.cs" />
+    <Compile Include="Battle\CombatObjects\StrongholdCombatStructure.cs" />
     <Compile Include="Battle\CombatObjects\StrongholdCombatUnit.cs" />
     <Compile Include="Battle\CombatObjects\DefenseCombatUnit.cs" />
     <Compile Include="Battle\CombatObjects\ICombatObject.cs" />

@@ -1,4 +1,5 @@
 using Game.Data;
+using Game.Logic.Procedures;
 
 namespace Game.Map
 {
@@ -8,7 +9,7 @@ namespace Game.Map
 
         bool TryGetCity(uint cityId, out ICity city);
 
-        void AfterDbLoaded();
+        void AfterDbLoaded(Procedure procedure);
 
         void Remove(ICity city);
 

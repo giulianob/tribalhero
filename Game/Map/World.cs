@@ -11,6 +11,7 @@ using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Database;
+using Game.Logic.Procedures;
 using Game.Module.Remover;
 using Game.Setup;
 using Game.Util;
@@ -199,9 +200,9 @@ namespace Game.Map
             }
         }
 
-        public void AfterDbLoaded()
+        public void AfterDbLoaded(Procedure procedure)
         {
-            Cities.AfterDbLoaded();
+            Cities.AfterDbLoaded(procedure);
 
             // Launch forest creator
             Forests.StartForestCreator();

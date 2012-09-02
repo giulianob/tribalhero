@@ -81,7 +81,7 @@ namespace Game.Logic.Actions
             gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold);
             RegisterBattleListeners(targetStronghold);
 
-            StaminaMonitor = new StaminaMonitor(targetStronghold.Battle, targetStronghold.Battle.GetCombatGroup(groupId), short.Parse(properties["stamina"]), battleFormula);
+            StaminaMonitor = new StaminaMonitor(targetStronghold.GateBattle, targetStronghold.GateBattle.GetCombatGroup(groupId), short.Parse(properties["stamina"]), battleFormula);
             StaminaMonitor.PropertyChanged += (sender, args) => dbManager.Save(this);
         }
 
@@ -107,12 +107,12 @@ namespace Game.Logic.Actions
 
         private void RegisterBattleListeners(IStronghold targetStronghold)
         {
-            targetStronghold.Battle.WithdrawAttacker += BattleWithdrawAttacker;
+            targetStronghold.GateBattle.WithdrawAttacker += BattleWithdrawAttacker;
         }
 
         private void DeregisterBattleListeners(IStronghold targetStronghold)
         {
-            targetStronghold.Battle.WithdrawAttacker -= BattleWithdrawAttacker;
+            targetStronghold.GateBattle.WithdrawAttacker -= BattleWithdrawAttacker;
         }
 
         public override Error Validate(string[] parms)
@@ -141,7 +141,7 @@ namespace Game.Logic.Actions
             RegisterBattleListeners(targetStronghold);
 
             // Create stamina monitor
-            StaminaMonitor = new StaminaMonitor(targetStronghold.Battle, combatGroup, battleFormula.GetStamina(troopObject.Stub, targetStronghold), battleFormula);
+            StaminaMonitor = new StaminaMonitor(targetStronghold.GateBattle, combatGroup, battleFormula.GetStamina(troopObject.Stub, targetStronghold), battleFormula);
             StaminaMonitor.PropertyChanged += (sender, args) => dbManager.Save(this);
 
             // Set the attacking troop object to the correct state and stamina

@@ -272,7 +272,7 @@ namespace Game.Data.Troop
                 {
                     if (stub.Station != null)
                     {
-                        stub.Station.TroopManager.RemoveStationed(stub.StationTroopId);
+                        stub.Station.Troops.RemoveStationed(stub.StationTroopId);
                     }
 
                     Remove(stub.TroopId);

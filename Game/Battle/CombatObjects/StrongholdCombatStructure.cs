@@ -14,11 +14,11 @@ using Persistance;
 
 namespace Game.Battle.CombatObjects
 {
-    public class StrongholdCombatUnit : CombatObject
+    public class StrongholdCombatStructure : CombatObject
     {
         private IStronghold Stronghold { get; set; }
 
-        public const string DB_TABLE = "stronghold_combat_units";
+        public const string DB_TABLE = "stronghold_combat_structures";
 
         private readonly byte lvl;
 
@@ -26,58 +26,31 @@ namespace Game.Battle.CombatObjects
 
         private readonly ushort type;
 
-        private ushort count;
-
-        private readonly UnitFactory unitFactory;
-
-        public StrongholdCombatUnit(uint id,
+        private decimal hp;
+        
+        public StrongholdCombatStructure(uint id,
                                 uint battleId,
                                 ushort type,
                                 byte lvl,
-                                ushort count,
+                                decimal hp,
                                 IStronghold stronghold,
-                                UnitFactory unitFactory,
+                                StructureFactory structureFactory,
                                 BattleFormulas battleFormulas)
                 : base(id, battleId, battleFormulas)
         {
             Stronghold = stronghold;
             this.type = type;
-            this.count = count;
-            this.unitFactory = unitFactory;
             this.lvl = lvl;
+            this.hp = hp;
 
-            stats = new BattleStats(unitFactory.GetUnitStats(type, lvl).Battle);
-            LeftOverHp = stats.MaxHp;
+            stats = new BattleStats(structureFactory.GetBaseStats(type, lvl).Battle);
         }
-
-        public StrongholdCombatUnit(uint id,
-                                uint battleId,
-                                ushort type,
-                                byte lvl,
-                                ushort count,
-                                IStronghold stronghold,
-                                decimal leftOverHp,
-                                UnitFactory unitFactory,
-                                BattleFormulas battleFormulas)
-                : base(id, battleId, battleFormulas)
-        {
-            Stronghold = stronghold;
-            this.type = type;
-            this.count = count;
-            this.unitFactory = unitFactory;
-            this.lvl = lvl;
-            LeftOverHp = leftOverHp;
-
-            stats = new BattleStats(unitFactory.GetUnitStats(type, lvl).Battle);
-        }
-
-        private decimal LeftOverHp { get; set; }
 
         public override BattleClass ClassType
         {
             get
             {
-                return BattleClass.Unit;
+                return BattleClass.Structure;
             }
         }
 
@@ -93,7 +66,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return count;
+                return (ushort)(Hp > 0 ? 1 : 0);;
             }
         }
 
@@ -109,7 +82,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return unitFactory.GetUnitStats(type, lvl).Upkeep*count;
+                return BattleFormulas.GetUnitsPerStructure(lvl) / 5;
             }
         }
 
@@ -157,7 +130,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return Math.Max(0, stats.MaxHp*(count - 1) + LeftOverHp);
+                return hp;
             }
         }
 
@@ -194,9 +167,8 @@ namespace Game.Battle.CombatObjects
                         new DbColumn("stronghold_id", Stronghold.Id, DbType.UInt32),
                         new DbColumn("group_id", GroupId, DbType.UInt32), 
                         new DbColumn("level", lvl, DbType.Byte), 
-                        new DbColumn("count", count, DbType.UInt16), 
                         new DbColumn("type", type, DbType.UInt16),
-                        new DbColumn("left_over_hp", LeftOverHp, DbType.Decimal), 
+                        new DbColumn("hp", hp, DbType.Decimal), 
                         new DbColumn("last_round", LastRound, DbType.UInt32),
                         new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
                         new DbColumn("damage_min_dealt", MinDmgDealt, DbType.UInt16),
@@ -259,27 +231,7 @@ namespace Game.Battle.CombatObjects
             attackPoints = 0;
             returning = null;
 
-            ushort dead = 0;
-            if (dmg >= LeftOverHp)
-            {
-                dmg -= LeftOverHp;
-                LeftOverHp = stats.MaxHp;
-                dead++;
-            }
-
-            dead += (ushort)(dmg/stats.MaxHp);
-            LeftOverHp -= dmg%stats.MaxHp;
-
-            if (dead > 0)
-            {
-                if (dead > count)
-                {
-                    dead = count;
-                }
-
-                // Remove troops that died from the count
-                count -= dead;
-            }
+            hp = Math.Max(0, hp - dmg);
         }
 
         public override void ReceiveReward(int attackPoint, Resource resource)
@@ -288,7 +240,7 @@ namespace Game.Battle.CombatObjects
 
         public override int CompareTo(object other)
         {
-            if (other is StrongholdCombatUnit)
+            if (other is StrongholdCombatStructure)
             {
                 return other == this ? 0 : 1;
             }

@@ -19,7 +19,6 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 using Persistance;
 
 #endregion
@@ -1038,25 +1037,25 @@ namespace Game.Data
             get
             {
                 return new[]
-                       {
-                               new DbColumn("player_id", Owner.PlayerId, DbType.UInt32), new DbColumn("name", Name, DbType.String, 32),
-                               new DbColumn("value", Value, DbType.UInt16), new DbColumn("alignment_point", AlignmentPoint, DbType.Decimal),
-                               new DbColumn("radius", Radius, DbType.Byte), new DbColumn("hide_new_units", HideNewUnits, DbType.Boolean),
-                               new DbColumn("loot_stolen", LootStolen, DbType.UInt32), new DbColumn("attack_point", AttackPoint, DbType.Int32),
-                               new DbColumn("defense_point", DefensePoint, DbType.Int32), new DbColumn("gold", Resource.Gold.RawValue, DbType.Int32),
-                               new DbColumn("gold_realize_time", Resource.Gold.LastRealizeTime, DbType.DateTime),
-                               new DbColumn("gold_production_rate", Resource.Gold.Rate, DbType.Int32), new DbColumn("wood", Resource.Wood.RawValue, DbType.Int32),
-                               new DbColumn("wood_realize_time", Resource.Wood.LastRealizeTime, DbType.DateTime),
-                               new DbColumn("wood_production_rate", Resource.Wood.Rate, DbType.Int32), new DbColumn("iron", Resource.Iron.RawValue, DbType.Int32),
-                               new DbColumn("iron_realize_time", Resource.Iron.LastRealizeTime, DbType.DateTime),
-                               new DbColumn("iron_production_rate", Resource.Iron.Rate, DbType.Int32), new DbColumn("crop", Resource.Crop.RawValue, DbType.Int32),
-                               new DbColumn("crop_realize_time", Resource.Crop.LastRealizeTime, DbType.DateTime),
-                               new DbColumn("crop_production_rate", Resource.Crop.Rate, DbType.Int32), new DbColumn("crop_upkeep", Resource.Crop.Upkeep, DbType.Int32),
-                               new DbColumn("labor", Resource.Labor.RawValue, DbType.Int32),
-                               new DbColumn("labor_realize_time", Resource.Labor.LastRealizeTime, DbType.DateTime),
-                               new DbColumn("labor_production_rate", Resource.Labor.Rate, DbType.Int32), new DbColumn("x", X, DbType.UInt32),
-                               new DbColumn("y", Y, DbType.UInt32), new DbColumn("deleted", Deleted, DbType.Int32),
-                       };
+                {
+                        new DbColumn("player_id", Owner.PlayerId, DbType.UInt32), new DbColumn("name", Name, DbType.String, 32),
+                        new DbColumn("value", Value, DbType.UInt16), new DbColumn("alignment_point", AlignmentPoint, DbType.Decimal),
+                        new DbColumn("radius", Radius, DbType.Byte), new DbColumn("hide_new_units", HideNewUnits, DbType.Boolean),
+                        new DbColumn("loot_stolen", LootStolen, DbType.UInt32), new DbColumn("attack_point", AttackPoint, DbType.Int32),
+                        new DbColumn("defense_point", DefensePoint, DbType.Int32), new DbColumn("gold", Resource.Gold.RawValue, DbType.Int32),
+                        new DbColumn("gold_realize_time", Resource.Gold.LastRealizeTime, DbType.DateTime),
+                        new DbColumn("gold_production_rate", Resource.Gold.Rate, DbType.Int32), new DbColumn("wood", Resource.Wood.RawValue, DbType.Int32),
+                        new DbColumn("wood_realize_time", Resource.Wood.LastRealizeTime, DbType.DateTime),
+                        new DbColumn("wood_production_rate", Resource.Wood.Rate, DbType.Int32), new DbColumn("iron", Resource.Iron.RawValue, DbType.Int32),
+                        new DbColumn("iron_realize_time", Resource.Iron.LastRealizeTime, DbType.DateTime),
+                        new DbColumn("iron_production_rate", Resource.Iron.Rate, DbType.Int32), new DbColumn("crop", Resource.Crop.RawValue, DbType.Int32),
+                        new DbColumn("crop_realize_time", Resource.Crop.LastRealizeTime, DbType.DateTime),
+                        new DbColumn("crop_production_rate", Resource.Crop.Rate, DbType.Int32), new DbColumn("crop_upkeep", Resource.Crop.Upkeep, DbType.Int32),
+                        new DbColumn("labor", Resource.Labor.RawValue, DbType.Int32),
+                        new DbColumn("labor_realize_time", Resource.Labor.LastRealizeTime, DbType.DateTime),
+                        new DbColumn("labor_production_rate", Resource.Labor.Rate, DbType.Int32), new DbColumn("x", X, DbType.UInt32),
+                        new DbColumn("y", Y, DbType.UInt32), new DbColumn("deleted", Deleted, DbType.Int32)
+                };
             }
         }
 

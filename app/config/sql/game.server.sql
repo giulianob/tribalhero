@@ -137,6 +137,7 @@ CREATE TABLE `battle_managers` (
   `location_id` int(10) unsigned NOT NULL,
   `next_to_attack` tinyint(3) unsigned NOT NULL,
   `snapped_important_event` tinyint(1) NOT NULL,
+  `properties` varchar(4096) NOT NULL,
   PRIMARY KEY (`battle_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -776,6 +777,36 @@ CREATE TABLE `stronghold_combat_groups` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `stronghold_combat_structures`
+--
+
+DROP TABLE IF EXISTS `stronghold_combat_structures`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `stronghold_combat_structures` (
+  `id` int(10) unsigned NOT NULL,
+  `battle_id` int(10) unsigned NOT NULL,
+  `stronghold_id` int(10) unsigned NOT NULL,
+  `last_round` int(10) unsigned NOT NULL,
+  `rounds_participated` int(10) NOT NULL,
+  `damage_dealt` decimal(10,2) NOT NULL,
+  `damage_received` decimal(10,2) NOT NULL,
+  `group_id` int(10) unsigned NOT NULL,
+  `level` tinyint(3) unsigned NOT NULL,
+  `type` smallint(5) unsigned NOT NULL,
+  `hp` decimal(10,2) NOT NULL,
+  `damage_min_dealt` smallint(5) unsigned NOT NULL,
+  `damage_max_dealt` smallint(5) unsigned NOT NULL,
+  `damage_min_received` smallint(5) unsigned NOT NULL,
+  `damage_max_received` smallint(5) unsigned NOT NULL,
+  `hits_dealt` smallint(5) unsigned NOT NULL,
+  `hits_dealt_by_unit` int(10) unsigned NOT NULL,
+  `hits_received` smallint(5) unsigned NOT NULL,
+  PRIMARY KEY (`battle_id`,`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `stronghold_combat_units`
 --
 
@@ -822,7 +853,8 @@ CREATE TABLE `strongholds` (
   `gate` int(11) NOT NULL,
   `x` int(11) unsigned NOT NULL,
   `y` int(11) unsigned NOT NULL,
-  `battle_id` int(10) unsigned NOT NULL,
+  `main_battle_id` int(10) unsigned NOT NULL,
+  `gate_battle_id` int(10) unsigned NOT NULL,
   `gate_open_to` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -1115,7 +1147,7 @@ CREATE TABLE `unit_templates_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-08-28 20:35:20
+-- Dump completed on 2012-09-03 17:14:32
 -- MySQL dump 10.13  Distrib 5.5.16, for Win32 (x86)
 --
 -- Host: localhost    Database: tribalhero_server
@@ -1152,4 +1184,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-08-28 20:35:20
+-- Dump completed on 2012-09-03 17:14:32

@@ -73,7 +73,7 @@
       <HintPath>..\Lib\ninject\DynamicProxy\lib\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="JsonFx">
-      <HintPath>..\Lib\jsonfx\JsonFx.dll</HintPath>
+      <HintPath>..\packages\JsonFx.2.0.1106.2610\lib\net40\JsonFx.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -258,10 +258,12 @@
     <Compile Include="GameModule.cs" />
     <Compile Include="Logic\ActionRequirement.cs" />
     <Compile Include="Logic\Actions\ActionFactory.cs" />
-    <Compile Include="Logic\Actions\ChainActions\AttackMode.cs" />
-    <Compile Include="Logic\Actions\ChainActions\CityAttackChainAction.cs" />
+    <Compile Include="Logic\Actions\AttackMode.cs" />
+    <Compile Include="Logic\Actions\Stronghold\StrongholdEngageMainAttackPassiveAction.cs" />
+    <Compile Include="Logic\Actions\Stronghold\StrongholdMainBattlePassiveAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\CityAttackChainAction.cs" />
     <Compile Include="Logic\Actions\ChainAction.cs" />
-    <Compile Include="Logic\Actions\ChainActions\StrongholdAttackChainAction.cs" />
+    <Compile Include="Logic\Actions\Stronghold\StrongholdAttackChainAction.cs" />
     <Compile Include="Logic\Actions\Miscellaneous\CityCreatePassiveAction.cs" />
     <Compile Include="Logic\Actions\MovementActions\TroopMovePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\CityRadiusChangePassiveAction.cs" />
@@ -277,8 +279,8 @@
     <Compile Include="Logic\Actions\TribeActions\TribeContributeActiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\CityBattlePassiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\CityEngageAttackPassiveAction.cs" />
-    <Compile Include="Logic\Actions\TroopActions\StrongholdGateBattlePassiveAction.cs" />
-    <Compile Include="Logic\Actions\TroopActions\StrongholdEngageGateAttackPassiveAction.cs" />
+    <Compile Include="Logic\Actions\Stronghold\StrongholdGateBattlePassiveAction.cs" />
+    <Compile Include="Logic\Actions\Stronghold\StrongholdEngageGateAttackPassiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\UnitTrainActiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\UnitUpgradeActiveAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\StructureUpgradeActiveAction.cs" />
@@ -397,8 +399,8 @@
     <Compile Include="Data\StructureProperties.cs" />
     <Compile Include="Data\Forest.cs" />
     <Compile Include="Data\Troop\TroopTemplate.cs" />
-    <Compile Include="Logic\Actions\ChainActions\CityDefenseChainAction.cs" />
-    <Compile Include="Logic\Actions\ChainActions\RetreatChainAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\CityDefenseChainAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\RetreatChainAction.cs" />
     <Compile Include="Logic\Actions\ChainExecuter.cs" />
     <Compile Include="Logic\Actions\Miscellaneous\ObjectRemovePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\CityPassiveAction.cs" />
@@ -480,6 +482,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Tribe\Assignment.AssignmentTroop.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

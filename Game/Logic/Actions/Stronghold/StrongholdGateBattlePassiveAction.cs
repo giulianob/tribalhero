@@ -15,6 +15,7 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
+using JsonFx.Json;
 using Persistance;
 
 #endregion
@@ -91,11 +92,8 @@ namespace Game.Logic.Actions
 
             localGroupId = uint.Parse(properties["local_group_id"]);
 
-            foreach (var parts in properties["tribe_damage_dealt"].Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries).Select(damageDealtItem => damageDealtItem.Split('=')))
-            {
-                tribeDamageDealt[Convert.ToUInt32(parts[0], CultureInfo.InvariantCulture)] = Convert.ToDecimal(parts[1], CultureInfo.InvariantCulture);
-            }
-
+            tribeDamageDealt = new JsonReader().Read<Dictionary<uint, decimal>>(properties["tribe_damage_dealt"]);
+            
             strongholdId = uint.Parse(properties["stronghold_id"]);
 
             IStronghold stronghold;
@@ -187,7 +185,7 @@ namespace Game.Logic.Actions
                 {
                         new XmlKvPair("stronghold_id", strongholdId),
                         new XmlKvPair("local_group_id", localGroupId),
-                        new XmlKvPair("tribe_damage_dealt", String.Join(",", tribeDamageDealt.Select(item => item.Key.ToString(CultureInfo.InvariantCulture) + "=" + item.Value.ToString(CultureInfo.InvariantCulture))))
+                        new XmlKvPair("tribe_damage_dealt", new JsonWriter().Write(tribeDamageDealt))
                 });
             }
         }
@@ -247,7 +245,7 @@ namespace Game.Logic.Actions
             dbManager.Save(stronghold.GateBattle);
 
             //Add gate to battle
-            var combatGroup = battleProcedure.AddGateToBattle(stronghold.GateBattle, stronghold);            
+            var combatGroup = battleProcedure.AddStrongholdGateToBattle(stronghold.GateBattle, stronghold);            
             localGroupId = combatGroup.Id;
 
             beginTime = SystemClock.Now;

@@ -190,7 +190,7 @@ namespace Game.Logic.Actions
                 // If TroopMove failed it's because we cancelled it and the target is invalid. Walk back home
                 ICity city;
                 ITroopObject troopObject;
-                
+
                 using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
                 {
                     TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id, troopObject.ObjectId, city.X, city.Y, true, true);
@@ -217,11 +217,10 @@ namespace Game.Logic.Actions
 
                 using (locker.Lock(lockAll, null, city, targetStronghold))
                 {
-
                     if (targetStronghold.GateOpenTo == city.Owner.Tribesman.Tribe)
                     {
                         // If stronghold's gate is open to the tribe, then it should engage the stronghold
-                        JoinOrCreateStrongholdMainBattle(city, targetStronghold);
+                        JoinOrCreateStrongholdMainBattle(city);
                     }
                     else if (targetStronghold.Tribe == city.Owner.Tribesman.Tribe)
                     {
@@ -250,7 +249,7 @@ namespace Game.Logic.Actions
             }
         }
 
-        private void JoinOrCreateStrongholdMainBattle(ICity city, IStronghold targetStronghold)
+        private void JoinOrCreateStrongholdMainBattle(ICity city)
         {
             ITroopObject troopObject;
             if (!city.TryGetTroop(troopObjectId, out troopObject))
@@ -258,16 +257,15 @@ namespace Game.Logic.Actions
                 throw new Exception("Troop object should still exist");
             }
 
-            throw new Exception("Trying to create main battle");
-            //var bea = actionFactory.CreateStrongholdEngagePassiveAction(cityId, troopObject.ObjectId, targetStrongholdId, mode);
-            //ExecuteChainAndWait(bea, AfterMainBattle);
+            var bea = actionFactory.CreateStrongholdEngageMainAttackPassiveAction(cityId, troopObject.ObjectId, targetStrongholdId, mode);
+            ExecuteChainAndWait(bea, AfterMainBattle);
         }
 
         private void AfterMainBattle(ActionState state)
         {
             if (state == ActionState.Completed)
             {
-                     ICity city;
+                ICity city;
                 IStronghold targetStronghold;
 
                 if (!gameObjectLocator.TryGetObjects(cityId, out city))
@@ -369,7 +367,7 @@ namespace Game.Logic.Actions
                     if (city.Owner.IsInTribe && targetStronghold.GateOpenTo == city.Owner.Tribesman.Tribe)
                     {
                         // If our city is the one that now has access to the stronghold then join the real battle
-                        JoinOrCreateStrongholdMainBattle(city, targetStronghold);
+                        JoinOrCreateStrongholdMainBattle(city);
                     }
                     else
                     {

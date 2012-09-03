@@ -247,13 +247,8 @@ namespace Game.Logic.Procedures
 
             ushort restore = (ushort)(maxHp*(healPercent/100f));
 
-            foreach (IStructure structure in city)
+            foreach (IStructure structure in city.Where(structure => structure.State.Type != ObjectState.Battle && structure.Stats.Hp != structure.Stats.Base.Battle.MaxHp))
             {
-                if (structure.State.Type == ObjectState.Battle || structure.Stats.Hp == structure.Stats.Base.Battle.MaxHp)
-                {
-                    continue;
-                }
-
                 structure.BeginUpdate();
                 structure.Stats.Hp += restore;
                 structure.EndUpdate();
@@ -341,7 +336,7 @@ namespace Game.Logic.Procedures
             battleId = targetStronghold.GateBattle.BattleId;
         }
 
-        public ICombatGroup AddGateToBattle(IBattleManager battle, IStronghold stronghold)
+        public ICombatGroup AddStrongholdGateToBattle(IBattleManager battle, IStronghold stronghold)
         {
             var strongholdCombatGroup = combatGroupFactory.CreateStrongholdCombatGroup(battle.BattleId, battle.GetNextGroupId(), stronghold);
             if (stronghold.Gate.Value == 0)
@@ -353,6 +348,54 @@ namespace Game.Logic.Procedures
             battle.Add(strongholdCombatGroup, BattleManager.BattleSide.Defense);
 
             return strongholdCombatGroup;
+        }
+
+        public ICombatGroup AddStrongholdUnitsToBattle(IBattleManager battle, IStronghold stronghold, IEnumerable<Unit> units)
+        {
+            var strongholdCombatGroup = combatGroupFactory.CreateStrongholdCombatGroup(battle.BattleId, battle.GetNextGroupId(), stronghold);
+            
+            foreach (var unit in units)
+            {
+                strongholdCombatGroup.Add(combatUnitFactory.CreateStrongholdCombatUnit(battle, stronghold, unit.Type, 5, unit.Count));
+            }
+
+            battle.Add(strongholdCombatGroup, BattleManager.BattleSide.Defense);
+
+            return strongholdCombatGroup;
+        }
+
+        public void JoinOrCreateStrongholdMainBattle(IStronghold targetStronghold, ITroopObject attackerTroopObject, out ICombatGroup combatGroup, out uint battleId)
+        {
+             // If battle already exists, then we just join it in also bringing any new units
+            if (targetStronghold.MainBattle != null)
+            {
+                combatGroup = AddAttackerToBattle(targetStronghold.MainBattle, attackerTroopObject);
+            }
+            // Otherwise, the battle has to be created
+            else
+            {
+                var battleOwner = targetStronghold.Tribe == null
+                                          ? new BattleOwner(BattleOwnerType.Stronghold, targetStronghold.Id)
+                                          : new BattleOwner(BattleOwnerType.Tribe, targetStronghold.Tribe.Id);
+
+                targetStronghold.MainBattle = battleManagerFactory.CreateBattleManager(new BattleLocation(BattleLocationType.Stronghold, targetStronghold.Id),
+                                                                                   battleOwner,
+                                                                                   targetStronghold);
+
+                targetStronghold.MainBattle.SetProperty("defense_stronghold_meter", 100);
+                targetStronghold.MainBattle.SetProperty("offense_stronghold_meter", 100);
+                
+                combatGroup = AddAttackerToBattle(targetStronghold.MainBattle, attackerTroopObject);
+                
+                var battlePassiveAction = actionFactory.CreateStrongholdMainBattlePassiveAction(targetStronghold.Id);
+                Error result = targetStronghold.Worker.DoPassive(targetStronghold, battlePassiveAction, false);
+                if (result != Error.Ok)
+                {
+                    throw new Exception(string.Format("Failed to start a battle due to error {0}", result));
+                }
+            }
+
+            battleId = targetStronghold.MainBattle.BattleId;
         }
     }
 }

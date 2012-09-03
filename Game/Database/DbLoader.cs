@@ -22,6 +22,7 @@ using Game.Map;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
+using JsonFx.Json;
 using Ninject;
 using Persistance;
 
@@ -864,7 +865,7 @@ namespace Game.Database
                         default:
                             throw new Exception(string.Format("Unknown location type {0} when loading battle manager", battleLocation.Type));
                     }
-
+                    battleManager.DbLoadProperties(new JsonReader().Read<Dictionary<string, object>>((string)reader["properties"]));
                     battleManager.DbPersisted = true;
                     battleManager.BattleStarted = (bool)reader["battle_started"];
                     battleManager.Round = (uint)reader["round"];

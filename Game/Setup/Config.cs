@@ -2,8 +2,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters;
 using JsonFx.Json;
 using log4net;
 using log4net.Config;

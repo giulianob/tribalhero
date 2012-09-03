@@ -111,6 +111,10 @@ namespace Game.Logic
 
         StrongholdGateBattlePassive = 705,
 
+        StrongholdMainBattlePassive = 706,
+
+        StrongholdEngageMainAttackPassive = 707,
+
         TribeContributeActive = 1018,
     }
 

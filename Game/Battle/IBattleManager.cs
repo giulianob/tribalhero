@@ -11,30 +11,65 @@ namespace Game.Battle
     public interface IBattleManager : IPersistableObject
     {
         uint BattleId { get; }
+
         bool BattleStarted { get; set; }
+
         uint Round { get; set; }
+
         uint Turn { get; set; }
+
         BattleLocation Location { get; }
+
         BattleOwner Owner { get; }
+
         ICombatList Attackers { get; }
+
         ICombatList Defenders { get; }
+
         IBattleReport BattleReport { get; }
+
         IEnumerable<ILockable> LockList { get; }
+
         BattleManager.BattleSide NextToAttack { set; }
 
         ICombatObject GetCombatObject(uint id);
+
         ICombatGroup GetCombatGroup(uint id);
+
         bool CanWatchBattle(IPlayer player, out int roundsLeft);
+
         void DbLoaderAddToCombatList(ICombatGroup group, BattleManager.BattleSide side);
+
         void Add(ICombatGroup combatGroup, BattleManager.BattleSide battleSide);
+
         void Remove(ICombatGroup group, BattleManager.BattleSide side, ReportState state);
-        bool ExecuteTurn();        
+
+        bool ExecuteTurn();
+
+        uint GetNextGroupId();
+
+        uint GetNextCombatObjectId();
+
+        void DbFinishedLoading();
+
+        T GetProperty<T>(string name);
+
+        void SetProperty(string name, object value);
+
+        IDictionary<string, object> ListProperties();
+
+        void DbLoadProperties(Dictionary<string, object> dbProperties);
 
         /// <summary>
         /// Fired once when the battle begins
         /// </summary>
         event BattleManager.OnBattle EnterBattle;
 
+        /// <summary>
+        /// Fired when the battle is about to end
+        /// </summary>
+        event BattleManager.OnBattle AboutToExitBattle;
+        
         /// <summary>
         /// Fired once when the battle ends
         /// </summary>
@@ -83,7 +118,7 @@ namespace Game.Battle
         /// <summary>
         /// Fired when one of the groups in battle loses a unit
         /// </summary>
-        event BattleManager.OnUnitUpdate GroupUnitRemoved; 
+        event BattleManager.OnUnitUpdate GroupUnitRemoved;
 
         /// <summary>
         /// Fired when a single unit is killed
@@ -99,11 +134,5 @@ namespace Game.Battle
         /// Fired when a unit hits another one
         /// </summary>
         event BattleManager.OnAttack ActionAttacked;        
-
-        uint GetNextGroupId();
-
-        uint GetNextCombatObjectId();
-
-        void DbFinishedLoading();
     }
 }

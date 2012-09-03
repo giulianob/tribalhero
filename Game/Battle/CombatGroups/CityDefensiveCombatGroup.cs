@@ -8,7 +8,7 @@ namespace Game.Battle.CombatGroups
 {
     public class CityDefensiveCombatGroup : CombatGroup
     {
-        private ITroopStub TroopStub { get; set; }
+        public ITroopStub TroopStub { get; private set; }
 
         private readonly BattleOwner owner;
        

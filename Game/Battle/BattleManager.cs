@@ -12,6 +12,7 @@ using Game.Data;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
+using JsonFx.Json;
 using Persistance;
 
 #endregion
@@ -42,6 +43,8 @@ namespace Game.Battle
         private readonly IDbManager dbManager;
 
         private readonly BattleOrder battleOrder = new BattleOrder();
+
+        private readonly Dictionary<string, object> properties = new Dictionary<string, object>();
 
         public BattleManager(uint battleId,
                              BattleLocation location,
@@ -149,12 +152,18 @@ namespace Game.Battle
             {
                 return new[]
                 {
-                        new DbColumn("battle_started", BattleStarted, DbType.Boolean), new DbColumn("round", Round, DbType.UInt32),
-                        new DbColumn("turn", Turn, DbType.UInt32), new DbColumn("report_started", BattleReport.ReportStarted, DbType.Boolean),
-                        new DbColumn("report_id", BattleReport.ReportId, DbType.UInt32), new DbColumn("owner_type", Owner.Type.ToString(), DbType.String, 15),
-                        new DbColumn("owner_id", Owner.Id, DbType.UInt32), new DbColumn("location_type", Location.Type.ToString(), DbType.String, 15),
-                        new DbColumn("location_id", Location.Id, DbType.UInt32), new DbColumn("next_to_attack", (byte)NextToAttack, DbType.Byte),
-                        new DbColumn("snapped_important_event", BattleReport.SnappedImportantEvent, DbType.Boolean)
+                        new DbColumn("battle_started", BattleStarted, DbType.Boolean), 
+                        new DbColumn("round", Round, DbType.UInt32),
+                        new DbColumn("turn", Turn, DbType.UInt32), 
+                        new DbColumn("report_started", BattleReport.ReportStarted, DbType.Boolean),
+                        new DbColumn("report_id", BattleReport.ReportId, DbType.UInt32), 
+                        new DbColumn("owner_type", Owner.Type.ToString(), DbType.String, 15),
+                        new DbColumn("owner_id", Owner.Id, DbType.UInt32), 
+                        new DbColumn("location_type", Location.Type.ToString(), DbType.String, 15),
+                        new DbColumn("location_id", Location.Id, DbType.UInt32), 
+                        new DbColumn("next_to_attack", (byte)NextToAttack, DbType.Byte),
+                        new DbColumn("snapped_important_event", BattleReport.SnappedImportantEvent, DbType.Boolean),
+                        new DbColumn("properties", new JsonWriter().Write(properties), DbType.String)
                 };
             }
         }
@@ -257,6 +266,30 @@ namespace Game.Battle
             uint maxId = Math.Max(Attackers.SelectMany(group => group).DefaultIfEmpty().Max(combatObject => combatObject == null ? 0 : combatObject.Id),
                                   Defenders.SelectMany(group => group).DefaultIfEmpty().Max(combatObject => combatObject == null ? 0 : combatObject.Id));
             idGen.Set(maxId);
+        }
+
+        public T GetProperty<T>(string name)
+        {
+            return (T)properties[name];
+        }
+
+        public void SetProperty(string name, object value)
+        {
+            properties[name] = value;
+        }
+
+        public void DbLoadProperties(Dictionary<string, object> dbProperties)
+        {
+            properties.Clear();
+            foreach (var property in dbProperties)
+            {
+                properties.Add(property.Key, property.Value);
+            }
+        }
+
+        public IDictionary<string, object> ListProperties()
+        {
+            return new Dictionary<string, object>(properties);
         }
 
         public void Add(ICombatGroup combatGroup, BattleSide battleSide)
@@ -392,6 +425,7 @@ namespace Game.Battle
                 BattleReport.CompleteBattle();
             }
 
+            AboutToExitBattle(this, Attackers, Defenders);
             ExitBattle(this, Attackers, Defenders);
 
             foreach (var combatObj in Defenders.AllCombatObjects().Where(combatObj => !combatObj.IsDead))
@@ -706,6 +740,11 @@ namespace Game.Battle
         /// Fired once when the battle begins
         /// </summary>
         public event OnBattle EnterBattle = delegate { };
+
+        /// <summary>
+        /// Fired right before the battle is about to end
+        /// </summary>
+        public event OnBattle AboutToExitBattle = delegate { };
 
         /// <summary>
         /// Fired once when the battle ends

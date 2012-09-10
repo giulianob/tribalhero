@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
@@ -270,7 +271,7 @@ namespace Game.Battle
 
         public T GetProperty<T>(string name)
         {
-            return (T)properties[name];
+            return (T)Convert.ChangeType(properties[name], typeof(T), CultureInfo.InvariantCulture);
         }
 
         public void SetProperty(string name, object value)
@@ -681,8 +682,7 @@ namespace Game.Battle
                 if (isGroupDead)
                 {
                     // Remove the entire group
-                    BattleReport.WriteReportGroup(target.Group, NextToAttack != BattleSide.Attack, ReportState.Dying);
-                    defensiveCombatList.Remove(target.Group);
+                    Remove(target.Group, NextToAttack == BattleSide.Attack ? BattleSide.Defense : BattleSide.Attack, ReportState.Dying);
                 }
                 else
                 {

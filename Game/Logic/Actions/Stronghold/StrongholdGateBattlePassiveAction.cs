@@ -164,7 +164,6 @@ namespace Game.Logic.Actions
                     stronghold.BeginUpdate();
                     stronghold.GateOpenTo = attackerTribes[winningTribe.TribeId];
                     stronghold.EndUpdate();
-                    dbManager.Save(stronghold);
                 }
             }
         }

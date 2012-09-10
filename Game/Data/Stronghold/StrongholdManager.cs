@@ -96,7 +96,7 @@ namespace Game.Data.Stronghold
             stronghold.BeginUpdate();
             regionManager.Add(stronghold);
             stronghold.EndUpdate();
-            dbManager.Save(stronghold);
+            
             chat.SendSystemChat("STRONGHOLD_ACTIVE", stronghold.Id.ToString(CultureInfo.InvariantCulture), stronghold.Name);
         }
 
@@ -112,7 +112,7 @@ namespace Game.Data.Stronghold
             stronghold.StrongholdState = StrongholdState.Occupied;
             stronghold.Tribe = tribe;
             stronghold.EndUpdate();
-            dbManager.Save(stronghold);
+
             if (oldTribe != null)
             {
                 chat.SendSystemChat("STRONGHOLD_TAKEN_OVER", stronghold.Name, tribe.Name, oldTribe.Name);

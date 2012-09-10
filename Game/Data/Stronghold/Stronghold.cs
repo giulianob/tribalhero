@@ -15,6 +15,8 @@ namespace Game.Data.Stronghold
 {
     class Stronghold : SimpleGameObject, IStronghold, IStation
     {
+        private readonly IDbManager dbManager;
+
         public const string DB_TABLE = "strongholds";
 
         #region Implementation of IStronghold
@@ -96,8 +98,9 @@ namespace Game.Data.Stronghold
 
         #region Constructor
 
-        public Stronghold(uint id, string name, byte level, uint x, uint y)
+        public Stronghold(uint id, string name, byte level, uint x, uint y, IDbManager dbManager)
         {
+            this.dbManager = dbManager;
             Id = id;
             Name = name;
             Lvl = level;
@@ -233,6 +236,19 @@ namespace Game.Data.Stronghold
             updating = false;
 
             Update();            
+        }
+
+        protected new void Update()
+        {
+            base.Update();
+
+            if (!Global.FireEvents)
+                return;
+
+            if (updating)
+                return;
+
+            dbManager.Save(this);
         }
 
         #endregion

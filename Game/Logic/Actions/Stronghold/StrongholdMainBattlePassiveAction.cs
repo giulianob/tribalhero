@@ -2,13 +2,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Game.Battle;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
-using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
@@ -43,6 +41,10 @@ namespace Game.Logic.Actions
 
         private readonly IActionFactory actionFactory;
 
+        private uint npcGroupId;
+
+        private bool npcGroupKilled;
+
         public StrongholdMainBattlePassiveAction(uint strongholdId,
                                    BattleProcedure battleProcedure,
                                    ILocker locker,
@@ -69,8 +71,7 @@ namespace Game.Logic.Actions
                 throw new Exception("Did not find stronghold that was supposed to be having a battle");
             }
 
-            stronghold.MainBattle.UnitKilled += MainBattleOnUnitKilled;
-            stronghold.MainBattle.GroupKilled += MainBattleOnGroupKilled;
+            RegisterBattleListeners(stronghold);
         }
 
         public StrongholdMainBattlePassiveAction(uint id,
@@ -100,6 +101,8 @@ namespace Game.Logic.Actions
             this.actionFactory = actionFactory;
 
             strongholdId = uint.Parse(properties["stronghold_id"]);
+            npcGroupId = uint.Parse(properties["npc_group_id"]);
+            npcGroupKilled = bool.Parse(properties["npc_group_killed"]);
 
             IStronghold stronghold;
             if (!gameObjectLocator.TryGetObjects(strongholdId, out stronghold))
@@ -107,6 +110,11 @@ namespace Game.Logic.Actions
                 throw new Exception();
             }
 
+            RegisterBattleListeners(stronghold);
+        }
+
+        private void RegisterBattleListeners(IStronghold stronghold)
+        {
             stronghold.MainBattle.UnitKilled += MainBattleOnUnitKilled;
             stronghold.MainBattle.GroupKilled += MainBattleOnGroupKilled;
             stronghold.MainBattle.AboutToExitBattle += MainBattleOnAboutToExitBattle;
@@ -122,7 +130,7 @@ namespace Game.Logic.Actions
 
             // If stronghold has no one left then it means the attacker took over
             // This same action removes all defenders if the defensive meter gets to 0
-            if (!stronghold.Troops.StationedHere().Any())
+            if ((stronghold.StrongholdState == StrongholdState.Occupied && !stronghold.Troops.StationedHere().Any()) || (stronghold.StrongholdState == StrongholdState.Neutral && npcGroupKilled))
             {
                 strongholdManager.TransferTo(stronghold, stronghold.GateOpenTo);
             }
@@ -134,6 +142,11 @@ namespace Game.Logic.Actions
             if (!gameObjectLocator.TryGetObjects(strongholdId, out stronghold))
             {
                 throw new Exception("Stronghold not found");
+            }
+
+            if (stronghold.StrongholdState == StrongholdState.Neutral && group.Id == npcGroupId)
+            {
+                npcGroupKilled = true;
             }
 
             // Take care of clearing any dead stationed troops while in the middle of the battle
@@ -194,7 +207,7 @@ namespace Game.Logic.Actions
 
                     // Defenders need to manually be sent back
                     cityCombatGroup.TroopStub.BeginUpdate();
-                    cityCombatGroup.TroopStub.State = TroopState.Stationed;
+                    cityCombatGroup.TroopStub.State = TroopState.Idle;
                     cityCombatGroup.TroopStub.EndUpdate();
 
                     // Send the defender back to their city
@@ -231,7 +244,7 @@ namespace Game.Logic.Actions
             {
                 return XmlSerializer.Serialize(new[]
                 {
-                        new XmlKvPair("stronghold_id", strongholdId)
+                        new XmlKvPair("stronghold_id", strongholdId), new XmlKvPair("npc_group_id", npcGroupId), new XmlKvPair("npc_group_killed", npcGroupKilled)
                 });
             }
         }
@@ -265,6 +278,17 @@ namespace Game.Logic.Actions
                 stronghold.MainBattle.UnitKilled -= MainBattleOnUnitKilled;
                 stronghold.MainBattle.GroupKilled -= MainBattleOnGroupKilled;
 
+                stronghold.BeginUpdate();
+                stronghold.GateOpenTo = null;
+                stronghold.EndUpdate();
+
+                foreach (var stub in stronghold.Troops.StationedHere())
+                {
+                    stub.BeginUpdate();
+                    stub.State = TroopState.BattleStationed;
+                    stub.EndUpdate();
+                }
+
                 world.Remove(stronghold.MainBattle);
                 dbManager.Delete(stronghold.MainBattle);
                 stronghold.MainBattle = null;
@@ -290,7 +314,7 @@ namespace Game.Logic.Actions
             world.Add(stronghold.MainBattle);
             dbManager.Save(stronghold.MainBattle);
 
-            if (stronghold.Tribe != null)
+            if (stronghold.StrongholdState == StrongholdState.Occupied)
             {
                 // Add stationed to battle
                 foreach (var stub in stronghold.Troops.StationedHere())
@@ -304,7 +328,12 @@ namespace Game.Logic.Actions
             }
             else
             {
-                throw new Exception("Need to add NPC to battle");
+                var strongholdGroup = battleProcedure.AddStrongholdUnitsToBattle(stronghold.MainBattle, stronghold, new List<Unit>
+                {
+                        new Unit(11, 20), new Unit(12, 20)
+                });
+
+                npcGroupId = strongholdGroup.Id;
             }
 
             beginTime = SystemClock.Now;

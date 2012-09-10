@@ -839,7 +839,7 @@ namespace Game.Database
                     {
                         case BattleLocationType.City:
                             ICity city;
-                            if (!World.Current.TryGetObjects((uint)reader["owner_id"], out city))
+                            if (!World.Current.TryGetObjects((uint)reader["location_id"], out city))
                                 throw new Exception("City not found");
 
                             battleManager = BattleManagerFactory.CreateBattleManager((uint)reader["battle_id"], battleLocation, battleOwner, city);
@@ -848,7 +848,7 @@ namespace Game.Database
                         case BattleLocationType.Stronghold:
                         case BattleLocationType.StrongholdGate:
                             IStronghold stronghold;
-                            if (!World.Current.TryGetObjects((uint)reader["owner_id"], out stronghold))
+                            if (!World.Current.TryGetObjects((uint)reader["location_id"], out stronghold))
                                 throw new Exception("Stronghold not found");
 
                             battleManager = BattleManagerFactory.CreateBattleManager((uint)reader["battle_id"], battleLocation, battleOwner, stronghold);

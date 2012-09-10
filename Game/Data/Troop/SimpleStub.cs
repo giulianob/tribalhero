@@ -10,16 +10,16 @@ namespace Game.Data.Troop
 
         #region Implementation of IEnumerable
 
-        public virtual bool AddUnit(FormationType formationType, ushort type, ushort count)
+        public virtual void AddUnit(FormationType formationType, ushort type, ushort count)
         {
             Formation formation;
-            if(!data.TryGetValue(formationType, out formation))
+            if (!data.TryGetValue(formationType, out formation))
             {
                 formation = new Formation(formationType);
                 data.Add(formationType, formation);
             }
+
             formation.Add(type, count);
-            return true;
         }
 
         public byte FormationCount

@@ -8,6 +8,7 @@ package src.Objects {
 	import src.Map.*;
 	import src.Objects.*;
 	import src.Objects.Factories.*;
+	import src.Objects.Stronghold.Stronghold;
 	import src.Objects.Troop.TroopObject;
 	import src.UI.Dialog.*;
 	import src.UI.Tooltips.*;
@@ -254,6 +255,7 @@ package src.Objects {
 					var structureObj: StructureObject = highestObj as StructureObject;
 					objTooltip = new StructureTooltip(structureObj, StructureFactory.getPrototype(structureObj.type, structureObj.level));					
 				}				
+				// TODO: Add tooltip
 				else if (highestObj is TroopObject) {
 					var troopObj: TroopObject = highestObj as TroopObject;
 					objTooltip = new TroopObjectTooltip(troopObj);					
@@ -379,7 +381,7 @@ package src.Objects {
 					continue;
 				}
 
-				if (currObj is StructureObject)
+				if (currObj is StructureObject || currObj is Stronghold)
 				{
 					bestObj = currObj;
 					break;

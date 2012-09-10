@@ -168,7 +168,7 @@
 			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, [StructureObject, Stronghold]);
 
 			if (objects.length == 0) {
-				Global.gameContainer.message.showMessage("ATTACK_CHOOSE_TARGET");
+				Global.gameContainer.message.showMessage(Locale.loadString("ATTACK_CHOOSE_TARGET"));
 				return;
 			}
 			
@@ -188,12 +188,12 @@
 				}
 				
 				if (structObj.level == 0) {
-					Global.gameContainer.message.showMessage("ATTACK_STRUCTURE_BEING_BUILT");
+					Global.gameContainer.message.showMessage(Locale.loadString("ATTACK_STRUCTURE_BEING_BUILT"));
 					return;
 				}			
 				
 				if (structObj.level == 1 && ObjectFactory.isType("Undestroyable", structObj.type)) {
-					Global.gameContainer.message.showMessage("ATTACK_STRUCTURE_UNDESTROYABLE");
+					Global.gameContainer.message.showMessage(Locale.loadString("ATTACK_STRUCTURE_UNDESTROYABLE"));
 					return;
 				}
 				
@@ -204,12 +204,12 @@
 				var strongholdObj: Stronghold = gameObj as Stronghold;
 				
 				if (Constants.tribeId == 0) {
-					Global.gameContainer.message.showMessage("ATTACK_STRONGHOLD_NO_TRIBESMAN");
+					Global.gameContainer.message.showMessage(Locale.loadString("ATTACK_STRONGHOLD_NO_TRIBESMAN"));
 					return;
 				}
 				
 				if (strongholdObj.tribeId == Constants.tribeId) {
-					Global.gameContainer.message.showMessage("ATTACK_OWN_STRONGHOLD");
+					Global.gameContainer.message.showMessage(Locale.loadString("ATTACK_OWN_STRONGHOLD"));
 					return;
 				}
 			}

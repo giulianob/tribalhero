@@ -334,7 +334,7 @@ package src.UI.Dialog
 		{
 			if (Global.gameContainer.cmdLine == null) return;
 			var substituteArgs: Array = new Array();
-			substituteArgs.push(Locale.loadString(messageId));
+			substituteArgs.push('<span class="system">' + Locale.loadString(messageId) + '</strong>');
 			
 			for each (var str: String in params) {
 				substituteArgs.push(StringHelper.htmlEscape(str));
@@ -342,8 +342,8 @@ package src.UI.Dialog
 			
 			var message: String = StringUtil.substitute.apply(StringUtil, substituteArgs);
 			
-			Global.gameContainer.cmdLine.log(CmdLineViewer.TYPE_GLOBAL, message);
-			Global.gameContainer.cmdLine.log(CmdLineViewer.TYPE_TRIBE, message);
+			Global.gameContainer.cmdLine.log(CmdLineViewer.TYPE_GLOBAL, message, false, false);
+			Global.gameContainer.cmdLine.log(CmdLineViewer.TYPE_TRIBE, message, false, false);
 		}
 		
 		private function refreshText():void
@@ -474,7 +474,8 @@ package src.UI.Dialog
 			consoleCss.setStyle("a:hover", {textDecoration: 'underline'});
 			
 			consoleCss.setStyle(".global", {color: '#8ecafe'});
-			consoleCss.setStyle(".self", {color: '#aef64f'});
+			consoleCss.setStyle(".self", { color: '#aef64f' } );
+			consoleCss.setStyle(".system", { color: '#ec7600' } );
 			
 			txtConsole.setCSS(consoleCss);
 			

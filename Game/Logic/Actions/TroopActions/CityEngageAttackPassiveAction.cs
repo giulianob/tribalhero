@@ -297,7 +297,7 @@ namespace Game.Logic.Actions
                 throw new ArgumentException();
             }
 
-            if (attackerGroup.Id == groupId && target.ClassType == BattleClass.Structure && target.IsDead)
+            if (attackerGroup.Id == groupId && target.ClassType == BattleClass.Structure && target is ICombatStructure && target.IsDead)
             {
                 // if our troop knocked down a building, we get the bonus.
                 bonus.Add(structureFactory.GetCost(target.Type, target.Lvl)/2);

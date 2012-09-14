@@ -11,7 +11,7 @@ namespace Game.Data
 
     public interface IStation : ILocation
     {
-        ITroopManager TroopManager { get; }
+        ITroopManager Troops { get; }
     }
 
     public interface ILocation : ILockable

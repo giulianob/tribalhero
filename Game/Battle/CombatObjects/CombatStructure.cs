@@ -18,8 +18,11 @@ namespace Game.Battle.CombatObjects
     public class CombatStructure : CityCombatObject, ICombatStructure
     {
         public const string DB_TABLE = "combat_structures";
+
         private readonly byte lvl;
+
         private readonly BattleStats stats;
+
         private readonly Formula formula;
 
         private readonly IActionFactory actionFactory;
@@ -31,9 +34,16 @@ namespace Game.Battle.CombatObjects
         /// We Need to keep a copy track of the hp that will be used for the battle. This creates some discrepancy
         /// between the structure's HP on the outside world and in the battle but that's okay.
         /// </summary>
-        private decimal hp; 
+        private decimal hp;
 
-        public CombatStructure(uint id, uint battleId, IStructure structure, BattleStats stats, Formula formula, IActionFactory actionFactory, BattleFormulas battleFormulas) : base(id, battleId, battleFormulas)
+        public CombatStructure(uint id,
+                               uint battleId,
+                               IStructure structure,
+                               BattleStats stats,
+                               Formula formula,
+                               IActionFactory actionFactory,
+                               BattleFormulas battleFormulas)
+                : base(id, battleId, battleFormulas)
         {
             this.stats = stats;
             this.formula = formula;
@@ -44,11 +54,20 @@ namespace Game.Battle.CombatObjects
             hp = structure.Stats.Hp;
         }
 
-        public CombatStructure(uint id, uint battleId, IStructure structure, BattleStats stats, decimal hp, ushort type, byte lvl, Formula formula, IActionFactory actionFactory, BattleFormulas battleFormulas)
-            : base(id, battleId, battleFormulas)
+        public CombatStructure(uint id,
+                               uint battleId,
+                               IStructure structure,
+                               BattleStats stats,
+                               decimal hp,
+                               ushort type,
+                               byte lvl,
+                               Formula formula,
+                               IActionFactory actionFactory,
+                               BattleFormulas battleFormulas)
+                : base(id, battleId, battleFormulas)
         {
             Structure = structure;
-            this.formula = formula;            
+            this.formula = formula;
             this.actionFactory = actionFactory;
             this.stats = stats;
             this.hp = hp;
@@ -150,7 +169,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return BattleFormulas.GetUnitsPerStructure(Structure) / 5;
+                return BattleFormulas.GetUnitsPerStructure(Structure.Lvl)/5;
             }
         }
 
@@ -174,7 +193,10 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return new[] { new DbColumn("battle_id", BattleId, DbType.UInt32), new DbColumn("id", Id, DbType.UInt32)};
+                return new[]
+                {
+                        new DbColumn("battle_id", BattleId, DbType.UInt32), new DbColumn("id", Id, DbType.UInt32)
+                };
             }
         }
 
@@ -182,7 +204,9 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return new DbDependency[] {};
+                return new DbDependency[]
+                {
+                };
             }
         }
 
@@ -191,17 +215,17 @@ namespace Game.Battle.CombatObjects
             get
             {
                 return new[]
-                       {
-                               new DbColumn("last_round", LastRound, DbType.UInt32), new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
-                               new DbColumn("damage_dealt", DmgDealt, DbType.Decimal), new DbColumn("damage_received", DmgRecv, DbType.Decimal),
-                               new DbColumn("group_id", GroupId, DbType.UInt32), new DbColumn("structure_city_id", Structure.City.Id, DbType.UInt32),
-                               new DbColumn("structure_id", Structure.ObjectId, DbType.UInt32), new DbColumn("hp", hp, DbType.Decimal),
-                               new DbColumn("type", type, DbType.UInt16), new DbColumn("level", lvl, DbType.Byte), new DbColumn("max_hp", stats.MaxHp, DbType.Decimal),
-                               new DbColumn("attack", stats.Atk, DbType.Decimal), new DbColumn("splash", stats.Splash, DbType.Byte),
-                               new DbColumn("range", stats.Rng, DbType.Byte), new DbColumn("stealth", stats.Stl, DbType.Byte), new DbColumn("speed", stats.Spd, DbType.Byte),
-                               new DbColumn("hits_dealt", HitDealt, DbType.UInt16), new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
-                               new DbColumn("hits_received", HitRecv, DbType.UInt16)
-                       };
+                {
+                        new DbColumn("last_round", LastRound, DbType.UInt32), new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
+                        new DbColumn("damage_dealt", DmgDealt, DbType.Decimal), new DbColumn("damage_received", DmgRecv, DbType.Decimal),
+                        new DbColumn("group_id", GroupId, DbType.UInt32), new DbColumn("structure_city_id", Structure.City.Id, DbType.UInt32),
+                        new DbColumn("structure_id", Structure.ObjectId, DbType.UInt32), new DbColumn("hp", hp, DbType.Decimal),
+                        new DbColumn("type", type, DbType.UInt16), new DbColumn("level", lvl, DbType.Byte), new DbColumn("max_hp", stats.MaxHp, DbType.Decimal),
+                        new DbColumn("attack", stats.Atk, DbType.Decimal), new DbColumn("splash", stats.Splash, DbType.Byte),
+                        new DbColumn("range", stats.Rng, DbType.Byte), new DbColumn("stealth", stats.Stl, DbType.Byte),
+                        new DbColumn("speed", stats.Spd, DbType.Byte), new DbColumn("hits_dealt", HitDealt, DbType.UInt16),
+                        new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32), new DbColumn("hits_received", HitRecv, DbType.UInt16)
+                };
             }
         }
 
@@ -218,7 +242,8 @@ namespace Game.Battle.CombatObjects
             throw new Exception(string.Format("Why is a structure trying to kill a unit of type {0}?", obj.GetType().FullName));
         }
 
-        public override Position Location() {
+        public override Position Location()
+        {
             return new Position(Structure.X, Structure.Y);
         }
 
@@ -246,8 +271,8 @@ namespace Game.Battle.CombatObjects
         {
             attackPoints = 0;
 
-            hp = (dmg > hp) ? 0 : hp - dmg;
-            
+            hp = Math.Max(0, hp - dmg);
+
             Structure.BeginUpdate();
             Structure.Stats.Hp = hp;
             Structure.EndUpdate();
@@ -284,7 +309,9 @@ namespace Game.Battle.CombatObjects
             World.Current.Regions.LockRegion(Structure.X, Structure.Y);
             if (Structure.Lvl > 1)
             {
-                Structure.City.Worker.DoPassive(Structure.City, actionFactory.CreateStructureDowngradePassiveAction(Structure.City.Id, Structure.ObjectId), false);
+                Structure.City.Worker.DoPassive(Structure.City,
+                                                actionFactory.CreateStructureDowngradePassiveAction(Structure.City.Id, Structure.ObjectId),
+                                                false);
             }
             else
             {
@@ -303,7 +330,9 @@ namespace Game.Battle.CombatObjects
         public override int CompareTo(object other)
         {
             if (other is IStructure)
+            {
                 return other == Structure ? 0 : 1;
+            }
 
             return -1;
         }

@@ -76,7 +76,11 @@ namespace Game.Logic.Actions
 
         StrongholdEngageGateAttackPassiveAction CreateStrongholdEngageGateAttackPassiveAction(uint cityId, uint troopObjectId, uint targetStrongholdId);
 
+        StrongholdEngageMainAttackPassiveAction CreateStrongholdEngageMainAttackPassiveAction(uint cityId, uint troopObjectId, uint targetStrongholdId, AttackMode mode);
+
         StrongholdGateBattlePassiveAction CreateStrongholdGateBattlePassiveAction(uint strongholdId);
+
+        StrongholdMainBattlePassiveAction CreateStrongholdMainBattlePassiveAction(uint strongholdId);
 
         StrongholdAttackChainAction CreateStrongholdAttackChainAction(uint cityId, uint troopObjectId, uint targetStrongholdId, AttackMode mode);
     }

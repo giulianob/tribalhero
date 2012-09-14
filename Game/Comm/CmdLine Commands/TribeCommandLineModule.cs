@@ -450,13 +450,9 @@ namespace Game.Comm
             StringBuilder result = new StringBuilder("Incomings:\n");
             using (Concurrency.Current.Lock(tribeId, out tribe))
             {
-                foreach (var city in tribe.Tribesmen.SelectMany(tribesman => tribesman.Player.GetCityList()))
+                foreach (var incoming in tribe.GetIncomingList())
                 {
-                    List<NotificationManager.Notification> notifications = new List<NotificationManager.Notification>(city.Notifications.Where(x => x.Action is CityAttackChainAction && x.Subscriptions.Any(y => y == city)));
-                    foreach (CityAttackChainAction action in notifications.Select(notification => notification.Action).OfType<CityAttackChainAction>())
-                    {
-                        result.Append(string.Format("To [{0}-{1}] From[{2}] Arrival Time[{3}]\n", city.Owner.Name, city.Name, action.From, action.NextTime));
-                    }
+                    result.Append(string.Format("To [{0}-{1}] From[{2}] Arrival Time[{3}]\n", incoming.TargetCity.Name, incoming.TargetCity.Owner.Name, incoming.SourceCity.Name, incoming.EndTime));
                 }
             }
 

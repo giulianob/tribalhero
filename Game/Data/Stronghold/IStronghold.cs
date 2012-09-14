@@ -18,7 +18,7 @@ namespace Game.Data.Stronghold
         Occupied
     }
 
-    public interface IStronghold : IHasLevel, ICityRegionObject, ILockable, ISimpleGameObject, IPersistableObject, ICanDo
+    public interface IStronghold : IHasLevel, ICityRegionObject, ISimpleGameObject, IPersistableObject, ICanDo, IStation
     {
         uint Id { get; }
 
@@ -34,11 +34,11 @@ namespace Game.Data.Stronghold
 
         ITribe Tribe { get; set; }
 
-        ITroopManager Troops { get; }
-
         ITribe GateOpenTo { get; set; }
 
-        IBattleManager Battle { get; set; }
+        IBattleManager GateBattle { get; set; }
+
+        IBattleManager MainBattle { get; set; }
 
         IEnumerable<ILockable> LockList { get; }
 

@@ -39,22 +39,6 @@ namespace Game.Logic.Actions
 
         private readonly BattleProcedure battleProcedure;
 
-        public uint From
-        {
-            get
-            {
-                return cityId;
-            }
-        }
-
-        public uint To
-        {
-            get
-            {
-                return targetCityId;
-            }
-        }
-
         public CityAttackChainAction(uint cityId,
                                  uint troopObjectId,
                                  uint targetCityId,

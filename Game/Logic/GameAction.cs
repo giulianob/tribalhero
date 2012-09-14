@@ -111,6 +111,10 @@ namespace Game.Logic
 
         StrongholdGateBattlePassive = 705,
 
+        StrongholdMainBattlePassive = 706,
+
+        StrongholdEngageMainAttackPassive = 707,
+
         TribeContributeActive = 1018,
     }
 
@@ -224,22 +228,10 @@ namespace Game.Logic
 
         protected bool IsValid()
         {
-            try
-            {
-                if (WorkerObject == null || IsDone)
-                {
-                    return false;
-                }
-            }
-            catch
-            {
-                return false; //Structure is dead
-            }
-
-            return !IsDone;
+            return WorkerObject != null && !IsDone;
         }
 
-        public double CalculateTime(double seconds)
+        protected double CalculateTime(double seconds)
         {
             if (!Config.server_production && Debugger.IsAttached)
             {
@@ -259,6 +251,9 @@ namespace Game.Logic
             return seconds*Config.seconds_per_unit;
         }
 
+        /// <summary>
+        /// Specified the general purpose of this action (e.g. Attack, defend, etc...)
+        /// </summary>
         public virtual ActionCategory Category
         {
             get

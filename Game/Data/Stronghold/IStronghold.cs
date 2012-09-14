@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Game.Battle;
 using Game.Data.Tribe;
 using Game.Data.Troop;
@@ -26,6 +27,10 @@ namespace Game.Data.Stronghold
         StrongholdState StrongholdState { get; set; }
 
         LazyValue Gate { get; }
+
+        decimal VictoryPointRate { get; }
+
+        DateTime DateOccupied { get; set; }
 
         ITribe Tribe { get; set; }
 

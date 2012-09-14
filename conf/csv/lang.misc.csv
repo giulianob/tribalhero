@@ -14,6 +14,8 @@ AP_POINTS_DESC,Alignment Rating\n\nShows how aggressive or defensive the city ha
 ,
 FARMING_LABEL,Farming
 TIME_LEFT_LABEL,Time Left
+STR_TROOPS,Troops
+STR_REPORTS,Reports
 ,
 CITY_OVERVIEW_TITLE,City Overview
 CITY_OVERVIEW_INFLUENCE_POINTS_LABEL,{0} influence points.

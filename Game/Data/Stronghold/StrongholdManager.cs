@@ -111,6 +111,7 @@ namespace Game.Data.Stronghold
             stronghold.BeginUpdate();
             stronghold.StrongholdState = StrongholdState.Occupied;
             stronghold.Tribe = tribe;
+            stronghold.DateOccupied = DateTime.UtcNow;
             stronghold.EndUpdate();
             dbManager.Save(stronghold);
             if (oldTribe != null)

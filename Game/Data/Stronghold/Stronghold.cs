@@ -27,7 +27,17 @@ namespace Game.Data.Stronghold
         public StrongholdState StrongholdState { get; set; }
         
         public LazyValue Gate { get; private set; }
-        
+
+        public decimal VictoryPointRate
+        {
+            get
+            {
+                return (decimal)(DateTime.UtcNow.Subtract(DateOccupied).TotalDays/2 + 10);
+            }
+        }
+
+        public DateTime DateOccupied { get; set; }
+
         public ITroopManager Troops { get; private set; }
 
         private ITribe tribe;
@@ -313,7 +323,8 @@ namespace Game.Data.Stronghold
                                new DbColumn("x", x, DbType.UInt32),
                                new DbColumn("y", y, DbType.UInt32),
                                new DbColumn("gate_open_to", GateOpenTo == null ? 0 : GateOpenTo.Id, DbType.UInt32),
-                               new DbColumn("battle_id", Battle != null ? Battle.BattleId : 0, DbType.UInt32)
+                               new DbColumn("battle_id", Battle != null ? Battle.BattleId : 0, DbType.UInt32),
+                               new DbColumn("date_occupied", DateOccupied, DbType.DateTime),
                        };
             }
         }

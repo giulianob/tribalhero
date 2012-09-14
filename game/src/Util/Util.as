@@ -156,7 +156,7 @@ package src.Util {
 
 			return (hours <= 9 ? "0" + hours : hours) + ":" + (minutes <= 9 ? "0" + minutes : minutes) + ":" + (seconds <= 9 ? "0" + seconds : seconds);
 		}
-
+		
 		public static function simpleTime(time: int): String
 		{
 			if ( time < 60 ) return "1 min";
@@ -176,6 +176,17 @@ package src.Util {
 				simple += hours + "h ";
 			simple += minutes + "m";
 			return simple;
+		}
+		
+		public static function niceDays(time: int): String
+		{
+			time /= 86400;
+			if (time > 1) {
+				return time.toString() + " days";
+			} else if ( time == 1) {
+				return "1 day";
+			}
+			return "less than 1 day";	
 		}
 		
 		public static function niceTime(time: int, conj: Boolean = true): String

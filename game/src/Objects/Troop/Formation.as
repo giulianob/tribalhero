@@ -73,10 +73,12 @@ package src.Objects.Troop {
 		{
 			var unit: Unit = get((obj as Unit).type);
 
-			if (unit == null)
-			super.add(obj, resort);
-			else
-			unit.count = (obj as Unit).count;
+			if (unit == null) {
+				super.add(obj, resort);
+				unit = obj as Unit;
+			} else {
+				unit.count += ((obj as Unit).count);
+			}
 		}
 
 		override public function remove(val: *): *

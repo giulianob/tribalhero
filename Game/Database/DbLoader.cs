@@ -444,6 +444,8 @@ namespace Game.Database
                         stronghold.Tribe = gateOpenToTribe;
                     }
 
+                    stronghold.DateOccupied = (DateTime)reader["date_occupied"];
+
                     strongholdManager.DbLoaderAdd(stronghold);
                     if (stronghold.StrongholdState != StrongholdState.Inactive)
                     {

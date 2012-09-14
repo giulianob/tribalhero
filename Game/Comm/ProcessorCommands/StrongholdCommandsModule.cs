@@ -3,6 +3,7 @@
 using System;
 using Game.Data.Stronghold;
 using Game.Setup;
+using Game.Util;
 using Game.Util.Locking;
 
 #endregion
@@ -29,16 +30,38 @@ namespace Game.Comm.ProcessorCommands
         private void AddPrivateInfo(IStronghold stronghold, Packet packet)
         {
             packet.AddUInt32(stronghold.Id);
+            packet.AddString(stronghold.Name);
+            packet.AddByte(stronghold.Lvl);
             packet.AddInt32(stronghold.Gate.Value);
             packet.AddByte((byte)stronghold.State.Type);
+            packet.AddFloat((float)stronghold.VictoryPointRate);
+            packet.AddUInt32(UnixDateTime.DateTimeToUnix(stronghold.DateOccupied.ToUniversalTime()));
+
             packet.AddByte(stronghold.Troops.Size);
             foreach (var troop in stronghold.Troops)
             {
-                PacketHelper.AddToPacket(troop, packet);
+                packet.AddUInt32(troop.City.Owner.PlayerId);
+                packet.AddUInt32(troop.City.Id);
+                packet.AddString(troop.City.Owner.Name);
+                packet.AddString(troop.City.Name);
+                packet.AddByte(troop.TroopId);
+
+                //Actual formation and unit counts
+                packet.AddByte(troop.FormationCount);
+                foreach (var formation in troop)
+                {
+                    packet.AddByte((byte)formation.Type);
+                    packet.AddByte((byte)formation.Count);
+                    foreach (var kvp in formation)
+                    {
+                        packet.AddUInt16(kvp.Key);
+                        packet.AddUInt16(kvp.Value);
+                    }
+                }
             }
 
             // Incoming List
-
+            // Reports
         }
         
         private void AddPublicInfo(IStronghold stronghold, Packet packet)

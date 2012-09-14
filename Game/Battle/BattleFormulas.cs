@@ -59,10 +59,10 @@ namespace Game.Battle
             return dmg/2m;
         }
 
-        public virtual int GetUnitsPerStructure(IStructure structure)
+        public virtual int GetUnitsPerStructure(byte level)
         {
             var units = new[] { 20, 20, 23, 28, 34, 39, 45, 52, 59, 67, 76, 85, 95, 106, 117, 130 };
-            return units[structure.Lvl];
+            return units[level];
         }
 
         public virtual decimal GetAttackerDmgToDefender(ICombatObject attacker, ICombatObject target, bool useDefAsAtk)
@@ -184,7 +184,7 @@ namespace Game.Battle
             return --stamina;
         }
 
-        public virtual short GetStaminaStructureDestroyed(short stamina, ICombatStructure combatStructure)
+        public virtual short GetStaminaStructureDestroyed(short stamina, ICombatObject combatStructure)
         {
             if (combatStructure.Stats.Base.Armor != ArmorType.Building3)
                 return stamina;

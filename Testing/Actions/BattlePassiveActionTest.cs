@@ -55,6 +55,7 @@ namespace Testing.Actions
             var gameObjectLocator = new Mock<IGameObjectLocator>();
             var dbManager = new Mock<IDbManager>();
             var battleManager = new Mock<IBattleManager>();
+            var world = new Mock<IWorld>();
 
             battleManager.SetupGet(p => p.BattleId).Returns(1);
 
@@ -102,7 +103,8 @@ namespace Testing.Actions
                                                  locker.Object,
                                                  gameObjectLocator.Object,
                                                  dbManager.Object,
-                                                 formula.Object);
+                                                 formula.Object,
+                                                 world.Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
@@ -123,6 +125,7 @@ namespace Testing.Actions
             var gameObjectLocator = new Mock<IGameObjectLocator>();
             var dbManager = new Mock<IDbManager>();
             var battleManager = new Mock<IBattleManager>();
+            var world = new Mock<IWorld>();
 
             battleManager.SetupGet(p => p.BattleId).Returns(1);
 
@@ -170,7 +173,8 @@ namespace Testing.Actions
                                                  locker.Object,
                                                  gameObjectLocator.Object,
                                                  dbManager.Object,
-                                                 formula.Object);
+                                                 formula.Object,
+                                                 world.Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
@@ -191,6 +195,7 @@ namespace Testing.Actions
             var gameObjectLocator = new Mock<IGameObjectLocator>();
             var dbManager = new Mock<IDbManager>();
             var battleManager = new Mock<IBattleManager>();
+            var world = new Mock<IWorld>();
 
             // Local city
             var defaultStub = new Mock<ITroopStub>();
@@ -236,7 +241,8 @@ namespace Testing.Actions
                                                  locker.Object,
                                                  gameObjectLocator.Object,
                                                  dbManager.Object,
-                                                 formula.Object);
+                                                 formula.Object,
+                                                 world.Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
@@ -257,6 +263,7 @@ namespace Testing.Actions
             var gameObjectLocator = new Mock<IGameObjectLocator>();
             var dbManager = new Mock<IDbManager>();
             var battleManager = new Mock<IBattleManager>();
+            var world = new Mock<IWorld>();
 
             // Local city
             var defaultStub = new Mock<ITroopStub>();
@@ -306,7 +313,8 @@ namespace Testing.Actions
                                                  locker.Object,
                                                  gameObjectLocator.Object,
                                                  dbManager.Object,
-                                                 formula.Object);
+                                                 formula.Object,
+                                                 world.Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
@@ -327,6 +335,7 @@ namespace Testing.Actions
             var gameObjectLocator = new Mock<IGameObjectLocator>();
             var dbManager = new Mock<IDbManager>();
             var battleManager = new Mock<IBattleManager>();
+            var world = new Mock<IWorld>();
 
             // Local city
             var defaultStub = new Mock<ITroopStub>();
@@ -376,7 +385,8 @@ namespace Testing.Actions
                                                  locker.Object,
                                                  gameObjectLocator.Object,
                                                  dbManager.Object,
-                                                 formula.Object);
+                                                 formula.Object,
+                                                 world.Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 

@@ -28,7 +28,7 @@ namespace Game.Logic.Procedures
             uint x = stub.Station.LocationX;
             uint y = stub.Station.LocationX;
 
-            if (!stub.Station.TroopManager.RemoveStationed(stub.StationTroopId))
+            if (!stub.Station.Troops.RemoveStationed(stub.StationTroopId))
             {
                 troopObject = null;
                 return false;

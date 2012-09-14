@@ -17,10 +17,12 @@ using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Actions.ResourceActions;
 using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
+using JsonFx.Json;
 using Ninject;
 using Persistance;
 
@@ -44,11 +46,15 @@ namespace Game.Database
 
         [Inject]
         public ICombatUnitFactory CombatUnitFactory { get; set; }
+
 		[Inject]
-		public IStrongholdManager strongholdManager { get; set; }
+		public IStrongholdManager StrongholdManager { get; set; }
 		
 		[Inject]
-		public IStrongholdFactory strongholdFactory { get; set; }		
+		public IStrongholdFactory StrongholdFactory { get; set; }
+
+        [Inject]
+        public Procedure Procedure { get; set; }
 
         [Inject]
         public ICombatGroupFactory CombatGroupFactory { get; set; }
@@ -103,7 +109,7 @@ namespace Game.Database
                     LoadActionNotifications();
                     LoadAssignments(downTime);
 
-                    World.Current.AfterDbLoaded();
+                    World.Current.AfterDbLoaded(Procedure);
 
                     //Ok data all loaded. We can get the system going now.
                     Global.SystemVariables["System.time"].Value = now;
@@ -388,8 +394,10 @@ namespace Game.Database
                                        Deleted = (City.DeletedState)reader["deleted"]
                                };
 
+                    // Add to world
                     World.Current.Cities.DbLoaderAdd((uint)reader["id"], city);
 
+                    // Restart city remover if needed
                     switch (city.Deleted)
                     {
                         case City.DeletedState.Deleting:
@@ -416,37 +424,36 @@ namespace Game.Database
             {
                 while (reader.Read())
                 {
-                    var stronghold = strongholdFactory.CreateStronghold((uint)reader["id"],
+                    var stronghold = StrongholdFactory.CreateStronghold((uint)reader["id"],
                                                         (string)reader["name"],
                                                         (byte)reader["level"],
                                                         (uint)reader["x"],
                                                         (uint)reader["y"]);
                     stronghold.StrongholdState = (StrongholdState)((byte)reader["state"]);
+                    stronghold.DbPersisted = true;
+
+                    // Load owner tribe
                     var tribeId = (uint)reader["tribe_id"];
                     ITribe tribe;
                     if (tribeId != 0 && World.Current.TryGetObjects(tribeId, out tribe))
                     {
                         stronghold.Tribe = tribe;
-                    }
-
-                    var gateOpenTo = (uint)reader["gate_open_to"];
-                    if (World.Current.TryGetObjects(gateOpenTo, out tribe))
-                    {
-                        stronghold.GateOpenTo = tribe;
-                    }
-
-                    stronghold.DbPersisted = true;
-
+                    }                    
+                    
+                    // Load current tribe that knocked down gate
                     var gateOpenToTribeId = (uint)reader["gate_open_to"];
                     ITribe gateOpenToTribe;
-                    if (gateOpenToTribeId != 0 && World.Current.TryGetObjects(tribeId, out gateOpenToTribe))
+                    if (gateOpenToTribeId != 0 && World.Current.TryGetObjects(gateOpenToTribeId, out gateOpenToTribe))
                     {
-                        stronghold.Tribe = gateOpenToTribe;
+                        stronghold.GateOpenTo = gateOpenToTribe;
                     }
-
+                    
                     stronghold.DateOccupied = (DateTime)reader["date_occupied"];
 
-                    strongholdManager.DbLoaderAdd(stronghold);
+                    // Add stronghold to main manager
+                    StrongholdManager.DbLoaderAdd(stronghold);
+
+                    // Add stronghold to region
                     if (stronghold.StrongholdState != StrongholdState.Inactive)
                     {
                         World.Current.Regions.Add(stronghold);
@@ -719,7 +726,7 @@ namespace Game.Database
                         break;
                     case LocationType.Stronghold:
                         IStronghold stronghold;
-                        if (!strongholdManager.TryGetStronghold(stubInfo.stationId, out stronghold))
+                        if (!StrongholdManager.TryGetStronghold(stubInfo.stationId, out stronghold))
                             throw new Exception("Stronghold not found");
                         stronghold.Troops.DbLoaderAddStation(stubInfo.stub);
                         break;
@@ -834,24 +841,33 @@ namespace Game.Database
                     {
                         case BattleLocationType.City:
                             ICity city;
-                            if (!World.Current.TryGetObjects((uint)reader["owner_id"], out city))
+                            if (!World.Current.TryGetObjects((uint)reader["location_id"], out city))
                                 throw new Exception("City not found");
 
                             battleManager = BattleManagerFactory.CreateBattleManager((uint)reader["battle_id"], battleLocation, battleOwner, city);
                             city.Battle = battleManager;
                             break;
                         case BattleLocationType.Stronghold:
+                        case BattleLocationType.StrongholdGate:
                             IStronghold stronghold;
-                            if (!World.Current.TryGetObjects((uint)reader["owner_id"], out stronghold))
+                            if (!World.Current.TryGetObjects((uint)reader["location_id"], out stronghold))
                                 throw new Exception("Stronghold not found");
 
                             battleManager = BattleManagerFactory.CreateBattleManager((uint)reader["battle_id"], battleLocation, battleOwner, stronghold);
-                            stronghold.Battle = battleManager;
+
+                            if (battleLocation.Type == BattleLocationType.Stronghold)
+                            {
+                                stronghold.MainBattle = battleManager;
+                            }
+                            else
+                            {
+                                stronghold.GateBattle = battleManager;
+                            }
                             break;
                         default:
                             throw new Exception(string.Format("Unknown location type {0} when loading battle manager", battleLocation.Type));
                     }
-
+                    battleManager.DbLoadProperties(new JsonReader().Read<Dictionary<string, object>>((string)reader["properties"]));
                     battleManager.DbPersisted = true;
                     battleManager.BattleStarted = (bool)reader["battle_started"];
                     battleManager.Round = (uint)reader["round"];
@@ -1062,6 +1078,41 @@ namespace Game.Database
                                                                  stronghold,
                                                                  (decimal)listReader["left_over_hp"],
                                                                  Ioc.Kernel.Get<UnitFactory>(),
+                                                                 Ioc.Kernel.Get<BattleFormulas>());                            
+
+                            combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
+                            combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
+                            combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
+                            combatObj.MinDmgDealt = (ushort)listReader["damage_max_received"];
+                            combatObj.HitDealt = (ushort)listReader["hits_dealt"];
+                            combatObj.HitDealtByUnit = (uint)listReader["hits_dealt_by_unit"];
+                            combatObj.HitRecv = (ushort)listReader["hits_received"];
+                            combatObj.GroupId = (uint)listReader["group_id"];
+                            combatObj.DmgDealt = (decimal)listReader["damage_dealt"];
+                            combatObj.DmgRecv = (decimal)listReader["damage_received"];
+                            combatObj.LastRound = (uint)listReader["last_round"];
+                            combatObj.RoundsParticipated = (int)listReader["rounds_participated"];
+                            combatObj.DbPersisted = true;
+
+                            battleManager.GetCombatGroup((uint)listReader["group_id"]).Add(combatObj, false);
+                        }
+                    }
+
+                    using (DbDataReader listReader = DbManager.SelectList(StrongholdCombatStructure.DB_TABLE, new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
+                    {
+                        while (listReader.Read())
+                        {
+                            IStronghold stronghold;
+                            if (!World.Current.TryGetObjects((uint)listReader["stronghold_id"], out stronghold))
+                                throw new Exception("Stronghold not found");
+
+                            ICombatObject combatObj = new StrongholdCombatStructure((uint)listReader["id"], 
+                                                                 battleManager.BattleId,
+                                                                 (ushort)listReader["type"],
+                                                                 (byte)listReader["level"],
+                                                                 (decimal)listReader["hp"],
+                                                                 stronghold,
+                                                                 Ioc.Kernel.Get<StructureFactory>(),
                                                                  Ioc.Kernel.Get<BattleFormulas>());                            
 
                             combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];

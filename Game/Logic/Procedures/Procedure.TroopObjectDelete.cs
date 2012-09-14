@@ -1,5 +1,6 @@
 #region
 
+using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Map;
@@ -41,10 +42,9 @@ namespace Game.Logic.Procedures
         private void AddToNormal(ITroopStub source, ITroopStub target)
         {
             target.BeginUpdate();
-            foreach (var formation in source)
+            foreach (var unit in source.SelectMany(formation => formation))
             {
-                foreach (var unit in formation)
-                    target.AddUnit(FormationType.Normal, unit.Key, unit.Value);
+                target.AddUnit(FormationType.Normal, unit.Key, unit.Value);
             }
             target.EndUpdate();
         }

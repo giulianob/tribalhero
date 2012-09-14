@@ -36,11 +36,6 @@ namespace Game.Data
         IEnumerable<ITroopObject> TroopObjects { get; }
 
         /// <summary>
-        ///   Troop manager which manages all troop stubs in city
-        /// </summary>
-        ITroopManager Troops { get; }
-
-        /// <summary>
         ///   Technology manager for city
         /// </summary>
         ITechnologyManager Technologies { get; }

@@ -14,23 +14,17 @@ using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
-using Persistance;
 
 #endregion
 
 namespace Game.Logic.Actions
 {
-    public class StrongholdEngageGateAttackPassiveAction : PassiveAction
+    // TODO: Add attack mode HP monitor
+    public class StrongholdEngageMainAttackPassiveAction : PassiveAction
     {
-        private StaminaMonitor StaminaMonitor { get; set; }
-
-        private readonly BattleFormulas battleFormula;
-
         private readonly IGameObjectLocator gameObjectLocator;
 
         private readonly BattleProcedure battleProcedure;
-
-        private readonly IDbManager dbManager;
 
         private readonly uint cityId;
 
@@ -40,56 +34,50 @@ namespace Game.Logic.Actions
 
         private readonly uint targetStrongholdId;
 
-        public StrongholdEngageGateAttackPassiveAction(uint cityId,
+        private readonly AttackMode mode;
+
+        public StrongholdEngageMainAttackPassiveAction(uint cityId,
                                          uint troopObjectId,
                                          uint targetStrongholdId,
-                                         BattleFormulas battleFormula,
+                                         AttackMode mode,
                                          IGameObjectLocator gameObjectLocator,
-                                         BattleProcedure battleProcedure,
-                                         IDbManager dbManager)
+                                         BattleProcedure battleProcedure)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
             this.targetStrongholdId = targetStrongholdId;
-            this.battleFormula = battleFormula;
+            this.mode = mode;
             this.gameObjectLocator = gameObjectLocator;
             this.battleProcedure = battleProcedure;
-            this.dbManager = dbManager;
         }
 
-        public StrongholdEngageGateAttackPassiveAction(uint id,
+        public StrongholdEngageMainAttackPassiveAction(uint id,
                                          bool isVisible,
                                          IDictionary<string, string> properties,
-                                         BattleFormulas battleFormula,
                                          IGameObjectLocator gameObjectLocator,
-                                         BattleProcedure battleProcedure,
-                                         IDbManager dbManager)
+                                         BattleProcedure battleProcedure)
                 : base(id, isVisible)
         {
-            this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
             this.battleProcedure = battleProcedure;
-            this.dbManager = dbManager;
 
             cityId = uint.Parse(properties["troop_city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             groupId = uint.Parse(properties["group_id"]);
+            mode = (AttackMode)uint.Parse(properties["mode"]);
 
             targetStrongholdId = uint.Parse(properties["target_stronghold_id"]);
 
             IStronghold targetStronghold;
             gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold);
             RegisterBattleListeners(targetStronghold);
-
-            StaminaMonitor = new StaminaMonitor(targetStronghold.Battle, targetStronghold.Battle.GetCombatGroup(groupId), short.Parse(properties["stamina"]), battleFormula);
-            StaminaMonitor.PropertyChanged += (sender, args) => dbManager.Save(this);
         }
 
         public override ActionType Type
         {
             get
             {
-                return ActionType.StrongholdEngageGateAttackPassive;
+                return ActionType.StrongholdEngageMainAttackPassive;
             }
         }
 
@@ -99,20 +87,23 @@ namespace Game.Logic.Actions
             {
                 return XmlSerializer.Serialize(new[]
                 {
-                        new XmlKvPair("target_stronghold_id", targetStrongholdId), new XmlKvPair("troop_city_id", cityId),
-                        new XmlKvPair("troop_object_id", troopObjectId), new XmlKvPair("group_id", groupId), new XmlKvPair("stamina", StaminaMonitor.Stamina)
+                        new XmlKvPair("target_stronghold_id", targetStrongholdId), 
+                        new XmlKvPair("troop_city_id", cityId),
+                        new XmlKvPair("troop_object_id", troopObjectId), 
+                        new XmlKvPair("group_id", groupId), 
+                        new XmlKvPair("mode", (int)mode)
                 });
             }
         }
 
         private void RegisterBattleListeners(IStronghold targetStronghold)
         {
-            targetStronghold.Battle.WithdrawAttacker += BattleWithdrawAttacker;
+            targetStronghold.MainBattle.WithdrawAttacker += BattleWithdrawAttacker;
         }
 
         private void DeregisterBattleListeners(IStronghold targetStronghold)
         {
-            targetStronghold.Battle.WithdrawAttacker -= BattleWithdrawAttacker;
+            targetStronghold.MainBattle.WithdrawAttacker -= BattleWithdrawAttacker;
         }
 
         public override Error Validate(string[] parms)
@@ -134,16 +125,12 @@ namespace Game.Logic.Actions
             // Create the group in the battle
             uint battleId;
             ICombatGroup combatGroup;
-            battleProcedure.JoinOrCreateStrongholdGateBattle(targetStronghold, troopObject, out combatGroup, out battleId);
+            battleProcedure.JoinOrCreateStrongholdMainBattle(targetStronghold, troopObject, out combatGroup, out battleId);            
             groupId = combatGroup.Id;
 
             // Register the battle listeners
             RegisterBattleListeners(targetStronghold);
-
-            // Create stamina monitor
-            StaminaMonitor = new StaminaMonitor(targetStronghold.Battle, combatGroup, battleFormula.GetStamina(troopObject.Stub, targetStronghold), battleFormula);
-            StaminaMonitor.PropertyChanged += (sender, args) => dbManager.Save(this);
-
+            
             // Set the attacking troop object to the correct state and stamina
             troopObject.BeginUpdate();
             troopObject.State = GameObjectState.BattleState(battleId);

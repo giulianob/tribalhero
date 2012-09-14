@@ -176,6 +176,11 @@ namespace Game.Logic.Actions
 
             using (Concurrency.Current.Lock(cityId, troopObjectId, out city, out troopObj))
             {
+                if (!IsValid())
+                {
+                    return;
+                }
+
                 --distanceRemaining;
 
                 troopObj.BeginUpdate();
@@ -202,7 +207,7 @@ namespace Game.Logic.Actions
                 }
 
                 nextTime = DateTime.UtcNow.AddSeconds(moveTime);
-                StateChange(ActionState.Rescheduled);
+                StateChange(ActionState.Fired);
             }
         }
 

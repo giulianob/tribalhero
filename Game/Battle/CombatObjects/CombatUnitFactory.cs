@@ -103,15 +103,27 @@ namespace Game.Battle.CombatObjects
             return units;
         }
         
-        public StrongholdCombatUnit CreateStrongholdGateUnit(IBattleManager battleManager, IStronghold stronghold)
+        public StrongholdCombatUnit CreateStrongholdCombatUnit(IBattleManager battleManager, IStronghold stronghold, ushort type, byte level, ushort count)
         {
             return new StrongholdCombatUnit(battleManager.GetNextCombatObjectId(),
                                             battleManager.BattleId,
-                                            objectTypeFactory.GetTypes("StrongholdGateUnitType")[0],
-                                            1,
-                                            1,
+                                            type,
+                                            level,
+                                            count,
                                             stronghold,
                                             kernel.Get<UnitFactory>(),
+                                            kernel.Get<BattleFormulas>());
+        }
+
+        public StrongholdCombatStructure CreateStrongholdGateStructure(IBattleManager battleManager, IStronghold stronghold, decimal hp)
+        {
+            return new StrongholdCombatStructure(battleManager.GetNextCombatObjectId(),
+                                            battleManager.BattleId,
+                                            objectTypeFactory.GetTypes("StrongholdGateStructureType")[0],
+                                            stronghold.Lvl,
+                                            hp,
+                                            stronghold,
+                                            kernel.Get<StructureFactory>(),
                                             kernel.Get<BattleFormulas>());
         }
     }

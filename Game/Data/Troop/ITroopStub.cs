@@ -6,7 +6,7 @@ namespace Game.Data.Troop
 {
     public interface ISimpleStub : IEnumerable<Formation>
     {
-        bool AddUnit(FormationType formationType, ushort type, ushort count);
+        void AddUnit(FormationType formationType, ushort type, ushort count);
         byte FormationCount { get; }
         ushort TotalCount { get; }
 
@@ -31,7 +31,7 @@ namespace Game.Data.Troop
 
         TroopState State { get; set; }
 
-        ICity City { get; set; }
+        ICity City { get; }
 
         byte StationTroopId { get; set; }
 
@@ -66,7 +66,9 @@ namespace Game.Data.Troop
 
         bool AddFormation(FormationType type);
 
-        bool Add(ISimpleStub stub);
+        void ChangeFormation(FormationType originalFormation, FormationType newFormation);
+
+        void Add(ISimpleStub stub);
 
         bool HasFormation(FormationType formation);
 

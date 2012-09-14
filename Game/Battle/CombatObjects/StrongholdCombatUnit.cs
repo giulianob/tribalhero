@@ -16,7 +16,7 @@ namespace Game.Battle.CombatObjects
 {
     public class StrongholdCombatUnit : CombatObject
     {
-        public IStronghold Stronghold { get; private set; }
+        private IStronghold Stronghold { get; set; }
 
         public const string DB_TABLE = "stronghold_combat_units";
 
@@ -70,8 +70,8 @@ namespace Game.Battle.CombatObjects
 
             stats = new BattleStats(unitFactory.GetUnitStats(type, lvl).Battle);
         }
-        
-        public decimal LeftOverHp { get; set; }
+
+        private decimal LeftOverHp { get; set; }
 
         public override BattleClass ClassType
         {

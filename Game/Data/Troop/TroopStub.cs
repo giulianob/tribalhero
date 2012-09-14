@@ -422,12 +422,39 @@ namespace Game.Data.Troop
             return true;
         }
 
+        public void ChangeFormation(FormationType originalFormation, FormationType newFormation)
+        {
+            lock (objLock)
+            {
+                CheckUpdateMode();
+
+                if (!data.ContainsKey(originalFormation))
+                {
+                    throw new Exception("Trying to move from invalid formation");
+                }
+
+                if (!AddFormation(newFormation))
+                {
+                    throw new Exception("New formation already exists");
+                }
+
+                foreach (var unit in data[originalFormation])
+                {
+                    AddUnit(newFormation, unit.Key, unit.Value);
+                }
+
+                data.Remove(originalFormation);
+
+                FireUpdated();
+            }
+        }
+
         private void FormationOnOnUnitUpdated()
         {
             FireUpdated();
         }
 
-        public bool Add(ISimpleStub stub)
+        public void Add(ISimpleStub stub)
         {
             lock (objLock)
             {
@@ -448,11 +475,9 @@ namespace Game.Data.Troop
 
                 FireUpdated();
             }
-
-            return true;
         }
 
-        public override bool AddUnit(FormationType formationType, ushort type, ushort count)
+        public override void AddUnit(FormationType formationType, ushort type, ushort count)
         {
             lock (objLock)
             {
@@ -460,13 +485,10 @@ namespace Game.Data.Troop
                 if (data.TryGetValue(formationType, out formation))
                 {
                     formation.Add(type, count);
-                    return true;
                 }
 
                 FireUpdated();
             }
-
-            return false;
         }
 
         public bool Remove(ITroopStub troop)

@@ -5,8 +5,6 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Actions;
-using Game.Setup;
-using Game.Util;
 
 #endregion
 
@@ -52,16 +50,15 @@ namespace Game.Logic.Formulas
 
         public virtual int GetAttackModeTolerance(int totalCount, AttackMode mode)
         {
-            switch(mode)
+            switch (mode)
             {
                 case AttackMode.Weak:
                     return (ushort)(totalCount*2/3);
                 case AttackMode.Normal:
                     return (ushort)(totalCount/3);
-                case AttackMode.Strong:
+                default:
                     return 0;
             }
-            return 0;
         }
     }
 }

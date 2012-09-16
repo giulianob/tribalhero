@@ -283,7 +283,7 @@ namespace Game.Logic.Actions
 
             // Check if we should retreat a unit
             if (cityCombatTarget == null || attackingSide == BattleManager.BattleSide.Defense || cityCombatTarget.TroopStub.Station != city || cityCombatTarget.TroopStub.TotalCount <= 0 ||
-                cityCombatTarget.TroopStub.TotalCount > cityCombatTarget.TroopStub.StationedRetreatCount)
+                cityCombatTarget.TroopStub.TotalCount > cityCombatTarget.TroopStub.RetreatCount)
             {
                 return;
             }

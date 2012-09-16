@@ -58,6 +58,8 @@ namespace Game.Logic.Actions
 
         CityDefenseChainAction CreateCityDefenseChainAction(uint cityId, uint troopObjectId, uint targetCityId, AttackMode mode);
 
+        StrongholdDefenseChainAction CreateStrongholdDefenseChainAction(uint cityId, uint troopObjectId, uint targetStrongholdId, AttackMode mode);
+
         TroopMovePassiveAction CreateTroopMovePassiveAction(uint cityId, uint troopObjectId, uint x, uint y, bool isReturningHome, bool isAttacking);
 
         StructureDowngradeActiveAction CreateStructureDowngradeActiveAction(uint cityId, uint structureId);

@@ -69,10 +69,11 @@ namespace Game.Logic.Actions
             ICity city;
             ITroopObject troopObject;
             if (!World.Current.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
+            {
                 return Error.ObjectNotFound;
+            }
 
-            int currentReinforcements = city.Worker.PassiveActions.Values.Count(action => action is CityDefenseChainAction);
-            if (currentReinforcements > 20)
+            if (battleProcedure.HasTooManyDefenses(city))
             {
                 return Error.TooManyTroops;
             }
@@ -92,7 +93,7 @@ namespace Game.Logic.Actions
             //Load the units stats into the stub
             troopObject.Stub.BeginUpdate();
             troopObject.Stub.Template.LoadStats(TroopBattleGroup.Defense);
-            troopObject.Stub.StationedRetreatCount = (ushort)Formula.Current.GetAttackModeTolerance(troopObject.Stub.TotalCount, mode);
+            troopObject.Stub.RetreatCount = (ushort)Formula.Current.GetAttackModeTolerance(troopObject.Stub.TotalCount, mode);
             troopObject.Stub.EndUpdate();
 
             city.References.Add(troopObject, this);
@@ -146,6 +147,14 @@ namespace Game.Logic.Actions
         public override Error Validate(string[] parms)
         {
             return Error.Ok;
+        }
+
+        public override ActionCategory Category
+        {
+            get
+            {
+                return ActionCategory.Defense;
+            }
         }
     }
 }

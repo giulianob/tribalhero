@@ -123,3 +123,6 @@ ATTACK_DISTANCE_MESSAGE,About {0} away. Double click to attack.
 ATTACK_OWN_STRONGHOLD,This stronghold can't be attacked since it belongs to your tribe. Send defense instead to protect it.
 ATTACK_STRONGHOLD_NO_TRIBESMAN,You must join or create a tribe in order to attack strongholds.
 ATTACK_SELF_ERROR,You can't attack your own city.
+,
+REINFORCE_CHOOSE_TARGET,Choose a town center to defend or stronghold to defend.
+REINFORCE_DISTANCE_MESSAGE,About {0} away. Double click to defend.

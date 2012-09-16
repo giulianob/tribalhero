@@ -5,6 +5,10 @@ package src.Comm.Commands
 	import src.Comm.Session;
 	import src.Map.MapComm;
 	import src.Objects.Stronghold.Stronghold;
+	import src.UI.Dialog.StrongholdProfileDialog;
+	import src.Objects.Troop.*;
+	import src.Global;
+	import src.Map.Username;
 	/**
 	 * ...
 	 * @author Anthony Lam
@@ -34,13 +38,60 @@ package src.Comm.Commands
 		}
 		
 		private function onReceiveStrongholdProfile(packet: Packet, custom: * ): void {
+			var profileData: * = new Object();
 			if (MapComm.tryShowError(packet)) return;
-			trace("private id:" + packet.readUInt().toString());
-			trace("private gate:" + packet.readInt().toString());
-			trace("private state:" + packet.readByte().toString());
-			trace("private troop count:" + packet.readByte().toString());
+			profileData.strongholdId = packet.readUInt();
+			profileData.strongholdName = packet.readString();
+			profileData.strongholdLevel = packet.readByte();
+			profileData.strongholdGate = packet.readInt();
+			profileData.strongholdState = packet.readByte();
+			profileData.strongholdVictoryPointRate = packet.readFloat();
+			profileData.strongholdDateOccupied = packet.readUInt();
 			
+			profileData.troops = [];
+			var troopCount: int = packet.readByte();
+			for (var i: int = 0; i < troopCount; i++) {
+				var troop: * = {
+					playerId: packet.readUInt(),
+					cityId: packet.readUInt(),
+					playerName: packet.readString(),
+					cityName: packet.readString(),
+					stub: null
+				};
+				
+				troop.stub = new TroopStub(packet.readByte(), troop.playerId, troop.cityId);
+				
+				Global.map.usernames.players.add(new Username(troop.playerId, troop.playerName));
+				Global.map.usernames.cities.add(new Username(troop.cityId, troop.cityName));
+				
+				var stub: TroopStub = troop.stub;
+				
+				var formationCnt: int = packet.readByte();
+				for (var formationIter: int = 0; formationIter < formationCnt; formationIter++) {
+					var formation: Formation = new Formation(packet.readByte());
+					
+					var unitCount: int = packet.readByte();
+					for (var unitIter: int = 0; unitIter < unitCount; unitIter++) {
+						formation.add(new Unit(packet.readUShort(), packet.readUShort()));
+					}
+					
+					stub.add(formation);
+				}
+				
+				profileData.troops.push(troop);
+			}
+			
+			if (custom && custom.callback)
+				custom.callback(profileData);
+			else
+			{
+				if (!profileData) 
+					return;
+				var dialog: StrongholdProfileDialog = new StrongholdProfileDialog(profileData);
+				dialog.show();		
+			}
 		}
+		
 		public function viewStrongholdPublicProfile(id: int): void
 		{
 			var packet: Packet = new Packet();

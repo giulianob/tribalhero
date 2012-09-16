@@ -19,7 +19,6 @@ using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
 using Game.Setup;
-using Game.Util;
 using Game.Util.Locking;
 using Ninject;
 using Ninject.Extensions.Conventions;
@@ -172,7 +171,7 @@ namespace Game
             #region World/Map
 
             Bind<IWorld>().To<World>().InSingletonScope();            
-            Bind<IGameObjectLocator>().ToMethod(c => c.Kernel.Get<World>());
+            Bind<IGameObjectLocator>().ToMethod(c => c.Kernel.Get<World>()).InSingletonScope();
 
             Bind<IRegionManager>().To<RegionManager>().InSingletonScope();
             Bind<ICityManager>().To<CityManager>().InSingletonScope();

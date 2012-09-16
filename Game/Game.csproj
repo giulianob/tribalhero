@@ -135,6 +135,7 @@
     <Compile Include="Battle\CombatObjects\ICombatObject.cs" />
     <Compile Include="Battle\CombatObjects\ICombatStructure.cs" />
     <Compile Include="Battle\CombatObjects\ICombatUnitFactory.cs" />
+    <Compile Include="Battle\AttackModeMonitor.cs" />
     <Compile Include="Battle\IBattleManager.cs" />
     <Compile Include="Battle\IBattleManagerFactory.cs" />
     <Compile Include="Battle\ICombatList.cs" />
@@ -260,6 +261,7 @@
     <Compile Include="Logic\ActionRequirement.cs" />
     <Compile Include="Logic\Actions\ActionFactory.cs" />
     <Compile Include="Logic\Actions\AttackMode.cs" />
+    <Compile Include="Logic\Actions\Stronghold\StrongholdDefenseChainAction.cs" />
     <Compile Include="Logic\Actions\Stronghold\StrongholdEngageMainAttackPassiveAction.cs" />
     <Compile Include="Logic\Actions\Stronghold\StrongholdMainBattlePassiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\CityAttackChainAction.cs" />

@@ -86,7 +86,7 @@ namespace Common
             var items = new string[coll.Count];
             int i = 0;
             foreach (Match m in coll)
-                items[i++] = m.Groups[0].Value.Trim('"').Trim(',').Trim('"').Trim();
+                items[i++] = m.Groups[0].Value.Trim('"').Trim(',').Trim('"').Replace("\"\"", "\"").Trim();
 
             return items;
         }

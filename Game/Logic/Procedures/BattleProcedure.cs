@@ -260,6 +260,11 @@ namespace Game.Logic.Procedures
             return city.Worker.PassiveActions.Values.Count(action => action.Category == ActionCategory.Attack) > 20;
         }
 
+        public bool HasTooManyDefenses(ICity city)
+        {
+            return city.Worker.PassiveActions.Values.Count(action => action.Category == ActionCategory.Defense) > 20;
+        }
+
         public Error CanStrongholdBeAttacked(ICity city, IStronghold stronghold)
         {
             if (stronghold.StrongholdState == StrongholdState.Inactive)

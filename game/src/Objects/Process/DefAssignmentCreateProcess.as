@@ -8,6 +8,7 @@ package src.Objects.Process
 	import src.Map.MapUtil;
 	import src.Objects.Effects.Formula;
 	import src.Objects.GameObject;
+	import src.Objects.SimpleGameObject;
 	import src.Objects.Troop.TroopStub;
 	import src.UI.Cursors.GroundReinforceCursor;
 	import src.UI.Dialog.AssignmentCreateDialog;
@@ -17,7 +18,7 @@ package src.Objects.Process
 	public class DefAssignmentCreateProcess implements IProcess
 	{		
 		private var troopDialog: ReinforceTroopDialog;
-		private var target: GameObject;
+		private var target: SimpleGameObject;
 		
 		public function DefAssignmentCreateProcess() 
 		{
@@ -74,7 +75,7 @@ package src.Objects.Process
 		{
 			assignmentDialog.getFrame().dispose();
 			
-			Global.mapComm.Troop.assignmentCreate(Global.gameContainer.selectedCity.id, target.cityId, target.objectId, assignmentDialog.getTime(), troopDialog.getMode(), troopDialog.getTroop(), assignmentDialog.getDescription(),false);
+			Global.mapComm.Troop.assignmentCreate(Global.gameContainer.selectedCity.id, target.groupId, target.objectId, assignmentDialog.getTime(), troopDialog.getMode(), troopDialog.getTroop(), assignmentDialog.getDescription(),false);
 		}
 	}
 

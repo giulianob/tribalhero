@@ -10,6 +10,7 @@ using Game.Battle.Reporting;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
+using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
@@ -19,12 +20,15 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    // TODO: Add attack mode HP monitor
     public class StrongholdEngageMainAttackPassiveAction : PassiveAction
     {
+        private AttackModeMonitor AttackModeMonitor { get; set; }
+
         private readonly IGameObjectLocator gameObjectLocator;
 
         private readonly BattleProcedure battleProcedure;
+
+        private readonly Formula formula;
 
         private readonly uint cityId;
 
@@ -36,12 +40,15 @@ namespace Game.Logic.Actions
 
         private readonly AttackMode mode;
 
+        private int originalUnitCount;
+
         public StrongholdEngageMainAttackPassiveAction(uint cityId,
                                          uint troopObjectId,
                                          uint targetStrongholdId,
                                          AttackMode mode,
                                          IGameObjectLocator gameObjectLocator,
-                                         BattleProcedure battleProcedure)
+                                         BattleProcedure battleProcedure,
+                                         Formula formula)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
@@ -49,28 +56,38 @@ namespace Game.Logic.Actions
             this.mode = mode;
             this.gameObjectLocator = gameObjectLocator;
             this.battleProcedure = battleProcedure;
+            this.formula = formula;
         }
 
         public StrongholdEngageMainAttackPassiveAction(uint id,
                                          bool isVisible,
                                          IDictionary<string, string> properties,
                                          IGameObjectLocator gameObjectLocator,
-                                         BattleProcedure battleProcedure)
+                                         BattleProcedure battleProcedure,
+                                         Formula formula)
                 : base(id, isVisible)
         {
             this.gameObjectLocator = gameObjectLocator;
             this.battleProcedure = battleProcedure;
+            this.formula = formula;
 
             cityId = uint.Parse(properties["troop_city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             groupId = uint.Parse(properties["group_id"]);
             mode = (AttackMode)uint.Parse(properties["mode"]);
+            originalUnitCount = int.Parse(properties["original_count"]);
 
             targetStrongholdId = uint.Parse(properties["target_stronghold_id"]);
 
             IStronghold targetStronghold;
             gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold);
             RegisterBattleListeners(targetStronghold);
+
+            var combatGroup = targetStronghold.MainBattle.GetCombatGroup(groupId);
+            ITroopObject troopObject;
+            ICity city;
+            gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject);
+            AttackModeMonitor = new AttackModeMonitor(targetStronghold.MainBattle, combatGroup, troopObject.Stub);
         }
 
         public override ActionType Type
@@ -91,7 +108,8 @@ namespace Game.Logic.Actions
                         new XmlKvPair("troop_city_id", cityId),
                         new XmlKvPair("troop_object_id", troopObjectId), 
                         new XmlKvPair("group_id", groupId), 
-                        new XmlKvPair("mode", (int)mode)
+                        new XmlKvPair("mode", (int)mode),
+                        new XmlKvPair("original_count", originalUnitCount)
                 });
             }
         }
@@ -127,6 +145,10 @@ namespace Game.Logic.Actions
             ICombatGroup combatGroup;
             battleProcedure.JoinOrCreateStrongholdMainBattle(targetStronghold, troopObject, out combatGroup, out battleId);            
             groupId = combatGroup.Id;
+
+            // Create attack mode monitor            
+            originalUnitCount = troopObject.Stub.TotalCount;
+            AttackModeMonitor = new AttackModeMonitor(targetStronghold.MainBattle, combatGroup, troopObject.Stub);
 
             // Register the battle listeners
             RegisterBattleListeners(targetStronghold);

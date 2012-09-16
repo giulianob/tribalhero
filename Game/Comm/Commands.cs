@@ -139,14 +139,15 @@ namespace Game.Comm
         UnitUpgrade = 502,
         UnitTemplateUpgraded = 503,
 
-        TroopInfo = 600,        
-        TroopDefend = 602,
+        TroopInfo = 600,                
         TroopRetreat = 603,
         TroopAdded = 611,
         TroopUpdated = 612,
         TroopRemoved = 613,
         TroopAttackCity = 614,
         TroopAttackStronghold = 615,
+        TroopDefendCity = 616,
+        TroopDefendStronghold = 617,
 
         TroopLocalSet = 621,
 

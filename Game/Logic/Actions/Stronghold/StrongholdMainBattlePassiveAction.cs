@@ -118,6 +118,99 @@ namespace Game.Logic.Actions
             stronghold.MainBattle.UnitKilled += MainBattleOnUnitKilled;
             stronghold.MainBattle.GroupKilled += MainBattleOnGroupKilled;
             stronghold.MainBattle.AboutToExitBattle += MainBattleOnAboutToExitBattle;
+            stronghold.MainBattle.ActionAttacked += MainBattleOnActionAttacked;
+            stronghold.MainBattle.ExitTurn += MainBattleOnExitTurn;
+        }
+
+        private void MainBattleOnExitTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, int turn)
+        {
+            IStronghold stronghold;
+            if (!gameObjectLocator.TryGetObjects(strongholdId, out stronghold))
+            {
+                throw new Exception("Stronghold not found");
+            }
+
+            var defensiveMeter = battle.GetProperty<decimal>("defense_stronghold_meter");
+            var offensiveMeter = battle.GetProperty<decimal>("offense_stronghold_meter");
+
+            // If the defense has lost all their juice then remove them all from the battle
+            // This will cause the battle to naturally end
+            if (defensiveMeter == 0)
+            {              
+                // Make copy since defenders will be changing
+                var defendersLoopCopy = defenders.ToList();
+                foreach (var defender in defendersLoopCopy)
+                {
+                    battle.Remove(defender, BattleManager.BattleSide.Defense, ReportState.OutOfStamina);
+
+                    var cityCombatGroup = defender as CityDefensiveCombatGroup;
+
+                    if (cityCombatGroup == null)
+                    {
+                        continue;
+                    }
+
+                    // Dead troops should just be removed immediately
+                    if (cityCombatGroup.TroopStub.TotalCount == 0)
+                    {
+                        stronghold.Troops.RemoveStationed(cityCombatGroup.TroopStub.StationTroopId);
+                        cityCombatGroup.TroopStub.City.Troops.Remove(cityCombatGroup.TroopStub.TroopId);
+                        continue;
+                    }
+
+                    // Defenders need to manually be sent back
+                    cityCombatGroup.TroopStub.BeginUpdate();
+                    cityCombatGroup.TroopStub.State = TroopState.Stationed;
+                    cityCombatGroup.TroopStub.EndUpdate();
+
+                    // Send the defender back to their city
+                    var retreatChainAction = actionFactory.CreateRetreatChainAction(cityCombatGroup.TroopStub.City.Id, cityCombatGroup.TroopStub.TroopId);
+                    if (cityCombatGroup.TroopStub.City.Worker.DoPassive(cityCombatGroup.TroopStub.City, retreatChainAction, true) != Error.Ok)
+                    {
+                        throw new Exception("Should always be able to retreat troops from stronghold to main city");
+                    }
+                }
+            }
+            else if (offensiveMeter == 0)
+            {
+                // Make copy since attackers will be changing
+                var attackerLoopCopy = attackers.ToList();
+                foreach (var attacker in attackerLoopCopy)
+                {
+                    // Remove from battle, no need to send them back since attacking troops have actions to handle that
+                    battle.Remove(attacker, BattleManager.BattleSide.Attack, ReportState.OutOfStamina);
+                }                
+            }
+        }
+
+        private void MainBattleOnActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatGroup attackerGroup, ICombatObject attacker, ICombatGroup targetGroup, ICombatObject target, decimal damage)
+        {
+            IStronghold stronghold;
+            if (!gameObjectLocator.TryGetObjects(strongholdId, out stronghold))
+            {
+                throw new Exception("Stronghold not found");
+            }
+
+            var cityCombatTarget = target as CityCombatObject;
+
+            // Check if we should retreat a unit
+            if (cityCombatTarget == null || attackingSide == BattleManager.BattleSide.Defense || cityCombatTarget.TroopStub.Station != stronghold ||
+                cityCombatTarget.TroopStub.TotalCount <= 0 || cityCombatTarget.TroopStub.TotalCount > cityCombatTarget.TroopStub.RetreatCount)
+            {
+                return;
+            }
+
+            ITroopStub stub = cityCombatTarget.TroopStub;
+
+            // Remove the object from the battle
+            stronghold.MainBattle.Remove(targetGroup, BattleManager.BattleSide.Defense, ReportState.Retreating);
+            stub.BeginUpdate();
+            stub.State = TroopState.Stationed;
+            stub.EndUpdate();
+
+            // Send the defender back to their city but restation them if there's a problem
+            var retreatChainAction = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
+            stub.City.Worker.DoPassive(stub.City, retreatChainAction, true);
         }
 
         private void MainBattleOnAboutToExitBattle(IBattleManager battle, ICombatList attackers, ICombatList defenders)
@@ -179,55 +272,6 @@ namespace Game.Logic.Actions
 
             battle.SetProperty("defense_stronghold_meter", defensiveMeter);
             battle.SetProperty("offense_stronghold_meter", offensiveMeter);
-
-            // If the defense has lost all their juice then remove them all from the battle
-            // This will cause the battle to naturally end
-            if (defensiveMeter == 0)
-            {              
-                // Make copy since defenders will be changing
-                var defenders = battle.Defenders.ToList();
-                foreach (var defender in defenders)
-                {
-                    battle.Remove(defender, BattleManager.BattleSide.Defense, ReportState.OutOfStamina);
-
-                    var cityCombatGroup = defender as CityDefensiveCombatGroup;
-
-                    if (cityCombatGroup == null)
-                    {
-                        continue;
-                    }
-
-                    // Dead troops should just be removed immediately
-                    if (cityCombatGroup.TroopStub.TotalCount == 0)
-                    {
-                        stronghold.Troops.RemoveStationed(cityCombatGroup.TroopStub.StationTroopId);
-                        cityCombatGroup.TroopStub.City.Troops.Remove(cityCombatGroup.TroopStub.TroopId);
-                        continue;
-                    }
-
-                    // Defenders need to manually be sent back
-                    cityCombatGroup.TroopStub.BeginUpdate();
-                    cityCombatGroup.TroopStub.State = TroopState.Idle;
-                    cityCombatGroup.TroopStub.EndUpdate();
-
-                    // Send the defender back to their city
-                    var retreatChainAction = actionFactory.CreateRetreatChainAction(cityCombatGroup.TroopStub.City.Id, cityCombatGroup.TroopStub.TroopId);
-                    if (cityCombatGroup.TroopStub.City.Worker.DoPassive(cityCombatGroup.TroopStub.City, retreatChainAction, true) != Error.Ok)
-                    {
-                        throw new Exception("Should always be able to retreat troops from stronghold to main city");
-                    }
-                }
-            }
-            else if (offensiveMeter == 0)
-            {
-                // Make copy since attackers will be changing
-                var attackers = battle.Attackers.ToList();
-                foreach (var attacker in attackers)
-                {
-                    // Remove from battle, no need to send them back since attacking troops have actions to handle that
-                    battle.Remove(attacker, BattleManager.BattleSide.Attack, ReportState.OutOfStamina);
-                }                
-            }
         }
 
         public override ActionType Type
@@ -277,6 +321,8 @@ namespace Game.Logic.Actions
                 // Delete the battle
                 stronghold.MainBattle.UnitKilled -= MainBattleOnUnitKilled;
                 stronghold.MainBattle.GroupKilled -= MainBattleOnGroupKilled;
+                stronghold.MainBattle.ActionAttacked -= MainBattleOnActionAttacked;
+                stronghold.MainBattle.ExitTurn -= MainBattleOnExitTurn;
 
                 stronghold.BeginUpdate();
                 stronghold.GateOpenTo = null;

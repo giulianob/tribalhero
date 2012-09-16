@@ -39,7 +39,8 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.TroopInfo, GetTroopInfo);
             processor.RegisterCommand(Command.TroopAttackCity, AttackCity);
             processor.RegisterCommand(Command.TroopAttackStronghold, AttackStronghold);
-            processor.RegisterCommand(Command.TroopDefend, Defend);
+            processor.RegisterCommand(Command.TroopDefendCity, DefendCity);
+            processor.RegisterCommand(Command.TroopDefendStronghold, DefendStronghold);
             processor.RegisterCommand(Command.TroopRetreat, Retreat);
             processor.RegisterCommand(Command.TroopLocalSet, LocalTroopSet);
         }
@@ -391,7 +392,7 @@ namespace Game.Comm.ProcessorCommands
             }
         }
 
-        private void Defend(Session session, Packet packet)
+        private void DefendCity(Session session, Packet packet)
         {
             uint cityId;
             uint targetCityId;
@@ -439,6 +440,65 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var da = actionFactory.CreateCityDefenseChainAction(cityId, troopObject.ObjectId, targetCityId, mode);
+                Error ret = city.Worker.DoPassive(city, da, true);
+                if (ret != 0)
+                {
+                    Procedure.Current.TroopObjectDelete(troopObject, true);
+                    ReplyError(session, packet, ret);
+                }
+                else
+                    ReplySuccess(session, packet);
+            }
+        }
+
+        private void DefendStronghold(Session session, Packet packet)
+        {
+            uint cityId;
+            uint targetStrongholdId;
+            ISimpleStub simpleStub;
+            AttackMode mode;
+
+            try
+            {
+                cityId = packet.GetUInt32();
+                targetStrongholdId = packet.GetUInt32();
+                simpleStub = PacketHelper.ReadStub(packet, FormationType.Defense);
+                mode = (AttackMode)packet.GetByte();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            IStronghold stronghold;
+            ICity city;
+            using (Concurrency.Current.Lock(session.Player))
+            {
+                city = session.Player.GetCity(cityId);
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                if (!gameObjectLocator.TryGetObjects(targetStrongholdId, out stronghold))
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;                    
+                }
+            }
+
+            using (Concurrency.Current.Lock(city, stronghold))
+            {
+                ITroopObject troopObject;
+                if (!Procedure.Current.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+                {
+                    ReplyError(session, packet, Error.ObjectNotFound);
+                    return;
+                }
+
+                var da = actionFactory.CreateStrongholdDefenseChainAction(cityId, troopObject.ObjectId, targetStrongholdId, mode);
                 Error ret = city.Worker.DoPassive(city, da, true);
                 if (ret != 0)
                 {

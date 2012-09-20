@@ -76,7 +76,7 @@ package src.UI.Sidebars.NewCityPlaceholder.Buttons {
 			if (isEnabled())
 			{
 				var dlg: CreateCityDialog = new CreateCityDialog(function(sender: CreateCityDialog) : void {				
-					var mapPos: Point = MapUtil.getMapCoord(newCityPlaceholder.getX(), newCityPlaceholder.getY());
+					var mapPos: Point = MapUtil.getMapCoord(newCityPlaceholder.objX, newCityPlaceholder.objY);
 					Global.mapComm.Region.createCity(Global.gameContainer.selectedCity.id, mapPos.x, mapPos.y, sender.getCityName());
 					sender.getFrame().dispose();
 				});						

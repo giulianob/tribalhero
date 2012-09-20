@@ -1,6 +1,7 @@
 ﻿package src.Objects.Battle {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.utils.Dictionary;
 	import src.Util.BinaryList.*;
 	import src.Util.Util;
 	
@@ -25,6 +26,8 @@
 		
 		public var attackers: BinaryList = new BinaryList(CombatGroup.sortOnId, CombatGroup.compareObjId);
 		public var defenders: BinaryList = new BinaryList(CombatGroup.sortOnId, CombatGroup.compareObjId);
+		
+		public var properties: Dictionary = new Dictionary();
 		
 		public var battleId: int;
 		public var location: BattleLocation;

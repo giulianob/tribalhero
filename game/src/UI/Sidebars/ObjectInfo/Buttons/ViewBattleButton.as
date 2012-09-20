@@ -45,8 +45,8 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				if (parentObj.State is BattleState) {
-					var battleViewer: BattleViewer = new BattleViewer((parentObj.State as BattleState).battleId);
+				if (parentObj.state is BattleState) {
+					var battleViewer: BattleViewer = new BattleViewer((parentObj.state as BattleState).battleId);
 					battleViewer.show(null, false);
 				}
 			}

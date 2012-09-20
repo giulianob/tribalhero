@@ -58,8 +58,8 @@
 		{
 			var troopObject: TroopObject = new TroopObject(type, state, objX, objY, playerId, cityId, objectId);
 			
-			troopObject.addChild(ObjectFactory.makeIntoShadow(getSprite()));
-			troopObject.addChild(getSprite());
+			troopObject.spriteContainer.addChild(ObjectFactory.makeIntoShadow(getSprite()));
+			troopObject.spriteContainer.addChild(getSprite());
 			
 			troopObject.setOnSelect(Global.map.selectObject);
 			

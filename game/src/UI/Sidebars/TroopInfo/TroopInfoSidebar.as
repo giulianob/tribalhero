@@ -76,7 +76,7 @@
 			}
 
 			//Special Case Buttons
-			switch(troopObj.State.getStateType())
+			switch(troopObj.state.getStateType())
 			{
 				case SimpleGameObject.STATE_BATTLE:
 					buttons.push(new ViewBattleButton(troopObj));
@@ -281,7 +281,7 @@
 		{
 			super.showSelf(owner, onClose, dispose);
 
-			var pt: Point = MapUtil.getMapCoord(troopObj.getX(), troopObj.getY());
+			var pt: Point = MapUtil.getMapCoord(troopObj.objX, troopObj.objY);
 			frame.getTitleBar().setText("Troop (" + pt.x + "," + pt.y + ")");
 
 			frame.show();

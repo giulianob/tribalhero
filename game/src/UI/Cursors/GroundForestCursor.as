@@ -137,10 +137,8 @@
 				objX = pos.x;
 				objY = pos.y;
 
-				cursor.setX(objX);
-				cursor.setY(objY);
-
-				cursor.moveWithCamera(Global.gameContainer.camera);
+				cursor.objX = objX;
+				cursor.objY = objY;
 
 				Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
 
@@ -169,7 +167,7 @@
 			forestObj.setHighlighted(true);
 			highlightedObj = (gameObj as GameObject);
 
-			var targetMapDistance: Point = MapUtil.getMapCoord(forestObj.getX(), forestObj.getY());
+			var targetMapDistance: Point = MapUtil.getMapCoord(forestObj.objX, forestObj.objY);
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 
 			Global.gameContainer.message.showMessage("Double click this forest to gather wood.");

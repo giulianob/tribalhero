@@ -41,8 +41,8 @@
 		{
 			var strongholdObj: Stronghold = new Stronghold(type, state, objX, objY, groupId, objectId, level, tribeId);
 
-			strongholdObj.addChild(ObjectFactory.makeIntoShadow(getSprite()));
-			strongholdObj.addChild(getSprite());
+			strongholdObj.spriteContainer.addChild(ObjectFactory.makeIntoShadow(getSprite()));
+			strongholdObj.spriteContainer.addChild(getSprite());
 
 			strongholdObj.setOnSelect(Global.map.selectObject);
 			

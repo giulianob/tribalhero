@@ -58,8 +58,9 @@
 			var coord: Point = MapUtil.getMiniMapScreenCoord(objX, objY);
 
 			var regionObject: CityRegionObject = new CityRegionObject(type, groupId, objectId);
-			regionObject.setX(objX);
-			regionObject.setY(objY);
+			regionObject.x = objX;
+			regionObject.y = objY;
+			
 			regionObject.extraProps = extraProps;
 
 			Global.gameContainer.miniMap.objContainer.addObject(regionObject);

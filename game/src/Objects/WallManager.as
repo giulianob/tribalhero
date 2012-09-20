@@ -1,5 +1,6 @@
 ﻿package src.Objects
 {
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.geom.Point;
 	import src.Global;
@@ -286,7 +287,7 @@
 		public function clear():void {
 			parent.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			
-			for each(var obj: IScrollableObject in objects)
+			for each(var obj: DisplayObject in objects)
 				Global.map.objContainer.removeObject(obj);			
 
 			objects = new Array();
@@ -301,11 +302,11 @@
 			
 			// Delay until the obj is in the stage
 			if (parent.stage == null) {
-				parent.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+				parent.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
 				return;
 			}
 
-			var pos: Point = MapUtil.getMapCoord(parent.getX(), parent.getY());
+			var pos: Point = MapUtil.getMapCoord(parent.objX, parent.objY);
 
 			var typeHash: int = wallTypeHash(pos.x, pos.y, radius);
 
@@ -325,7 +326,7 @@
 
 		public function addWallCallback(x: int, y: int, custom: *):void
 		{
-			var parentPos: Point = MapUtil.getMapCoord(parent.getX(), parent.getY());
+			var parentPos: Point = MapUtil.getMapCoord(parent.objX, parent.objY);
 
 			var dist: int = MapUtil.distance(parentPos.x, parentPos.y, x, y);
 
@@ -373,16 +374,11 @@
 		}
 
 		private function pushWall(wallName: String, x: int, y: int) : void {
-
-			var wall: SimpleObject = ObjectFactory.getSimpleObject("WALL_" + wallName + (wallName.charAt(0) == 'O' ? "" : "_" + wallHash(x, y).toString()), false);
-
 			var pos: Point = MapUtil.getScreenCoord(x, y);
-			x = pos.x;
-			y = pos.y;
+			var wallName: String = "WALL_" + wallName + (wallName.charAt(0) == 'O' ? "" : "_" + wallHash(x, y).toString());
+			var wall: SimpleObject = ObjectFactory.getSimpleObject(wallName, pos.x, pos.y, false);
 
-			wall.setXY(x, y);
 			Global.map.objContainer.addObject(wall);
-			wall.moveWithCamera(Global.gameContainer.camera);
 
 			objects.push(wall);
 		}

@@ -219,9 +219,7 @@
 					return;
 				}
 				
-				var obj: NewCityPlaceholder = ObjectFactory.getNewCityPlaceholderInstance();
-				obj.setX(coord.x);
-				obj.setY(coord.y);
+				var obj: NewCityPlaceholder = ObjectFactory.getNewCityPlaceholderInstance(coord.x, coord.y);
 				obj.setOnSelect(Global.map.selectObject);
 				map.objContainer.addObject(obj);		
 				placeHolders.add(obj);
@@ -251,7 +249,7 @@
 					}
 				}
 
-				if (gameObj.getX() == x && gameObj.getY() == y && gameObj.visible) {
+				if (gameObj.objX == x && gameObj.objY == y && gameObj.visible) {
 					objs.push(gameObj);
 				}
 			}
@@ -280,13 +278,12 @@
 			if (sorted) {
 				var existingObj: SimpleObject = objects.get([gameObj.groupId, gameObj.objectId]);
 
-				if (existingObj != null) //don't add if obj already exists
+				if (existingObj != null)
 				{
-					Util.log("Obj " + gameObj.groupId + ", " + gameObj.objectId + " already exists in region " + id);
 					return null;
 				}
 			}
-
+			
 			//add to object container and to internal list
 			map.objContainer.addObject(gameObj);
 			objects.add(gameObj, sorted);
@@ -294,9 +291,7 @@
 			//select object if the map is waiting for it to be selected
 			if (map.selectViewable != null && map.selectViewable.groupId == gameObj.groupId && map.selectViewable.objectId == gameObj.objectId)			
 				map.selectObject(gameObj as GameObject);			
-
-			gameObj.moveWithCamera(Global.gameContainer.camera);
-			
+		
 			return gameObj;
 		}
 

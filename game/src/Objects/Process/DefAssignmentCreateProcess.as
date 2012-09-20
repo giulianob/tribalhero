@@ -56,7 +56,7 @@ package src.Objects.Process
 			
 			var troop: TroopStub = troopDialog.getTroop();
 			var city: City = Global.gameContainer.selectedCity;
-			var targetMapDistance: Point = MapUtil.getMapCoord(target.getX(), target.getY());
+			var targetMapDistance: Point = MapUtil.getMapCoord(target.objX, target.objY);
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 			
 			var assignmentDialog: AssignmentCreateDialog = new AssignmentCreateDialog(Formula.moveTimeTotal(city, troop.getSpeed(city), distance, true), onChoseTime);

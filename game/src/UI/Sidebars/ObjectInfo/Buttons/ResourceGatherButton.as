@@ -1,17 +1,12 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import src.Global;
-	import src.Map.MapUtil;
+	import flash.events.*;
+	import src.*;
+	import src.Objects.*;
+	import src.Objects.Actions.*;
 	import src.Objects.Factories.*;
-	import src.Objects.GameObject;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.States.MovingState;
 	import src.UI.Cursors.*;
-	import src.UI.Tooltips.TextTooltip;
+	import src.UI.Tooltips.*;
 
 	public class ResourceGatherButton extends ActionButton
 	{

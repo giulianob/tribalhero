@@ -2,12 +2,9 @@ package src.Objects.Stronghold
 {
 	import src.Objects.Factories.StrongholdFactory;
 	import src.Objects.SimpleGameObject;
+	import src.Objects.SimpleObject;
 	import src.Objects.States.GameObjectState;
-	
-	/**
-	 * ...
-	 * @author Anthony Lam
-	 */
+
 	public class Stronghold extends SimpleGameObject
 	{
 		public var level: int;
@@ -27,6 +24,13 @@ package src.Objects.Stronghold
 			return StrongholdFactory.getSprite();
 		}
 		
+		override public function copy(obj:SimpleObject):void 
+		{
+			super.copy(obj);
+			var strongholdObj: Stronghold = obj as Stronghold;
+			id = strongholdObj.id;
+			level = strongholdObj.level;
+			tribeId = strongholdObj.tribeId;
+		}
 	}
-
 }

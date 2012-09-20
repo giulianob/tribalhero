@@ -140,10 +140,8 @@
 				objX = pos.x;
 				objY = pos.y;
 
-				cursor.setX(objX);
-				cursor.setY(objY);
-
-				cursor.moveWithCamera(Global.gameContainer.camera);
+				cursor.objX = objX;
+				cursor.objY = objY;
 
 				Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
 
@@ -190,7 +188,7 @@
 			gameObj.setHighlighted(true);
 			highlightedObj = gameObj;
 
-			var targetMapDistance: Point = MapUtil.getMapCoord(gameObj.getX(), gameObj.getY());
+			var targetMapDistance: Point = MapUtil.getMapCoord(gameObj.objX, gameObj.objY);
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 			var timeAwayInSeconds: int = Formula.moveTimeTotal(city, troopSpeed, distance, false);			
 

@@ -19,10 +19,6 @@
 
 	import flash.utils.getDefinitionByName;
 
-	/**
-	 * ...
-	 * @author Default
-	 */
 	public class StructureFactory {
 
 		private static var map: Map;
@@ -146,13 +142,14 @@
 			return sprite;
 		}
 
-		public static function getSimpleObject(type: int, level:int): SimpleObject
+		public static function getSimpleObject(type: int, level:int, x: int, y: int): SimpleObject
 		{
 			var sprite: DisplayObjectContainer = getSprite(type, level) as DisplayObjectContainer;
-			var simpleObject: SimpleObject = new SimpleObject();
+			var simpleObject: SimpleObject = new SimpleObject(x, y);
 			
-			if (sprite != null)
-				simpleObject.addChild(sprite);
+			if (sprite != null) {
+				simpleObject.spriteContainer.addChild(sprite);
+			}
 
 			return simpleObject;
 		}
@@ -160,17 +157,9 @@
 		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int): StructureObject
 		{
 			var structureObj: StructureObject = new StructureObject(type, state, objX, objY, playerId, cityId, objectId, level, wallRadius);
-
-			var shadow: DisplayObjectContainer = StructureFactory.getSprite(type, level);
-			shadow.transform.colorTransform = new ColorTransform(0, 0, 0);
-			shadow.transform.matrix = new Matrix(1, 0, -0.7, 0.5, 20, 15);
-			shadow.alpha = 0.4;
-			shadow.filters = [new BlurFilter(5, 5)];
-			shadow.mouseEnabled = false;
-			structureObj.addChild(shadow);
-
-			var img: DisplayObject = getSprite(type, level);
-			structureObj.addChild(img);
+		
+			structureObj.spriteContainer.addChild(ObjectFactory.makeIntoShadow(getSprite(type, level)));
+			structureObj.spriteContainer.addChild(getSprite(type, level));
 			
 			structureObj.setOnSelect(Global.map.selectObject);
 

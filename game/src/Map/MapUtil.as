@@ -82,7 +82,7 @@ package src.Map {
 			return new Point(xcoord, ycoord);
 		}
 		
-		public static function getScreenMinimapToMapCoord(x: int, y: int): Point // from screen minimap coord (e.g. obj.getX() ) to the true map coord
+		public static function getScreenMinimapToMapCoord(x: int, y: int): Point // from screen minimap coord (e.g. obj.x ) to the true map coord
 		{
 			var xcoord: int = int(Math.max(x + int(Constants.miniMapTileW / 2), 0) / Constants.miniMapTileW);
 			var ycoord: int = Math.round(Math.max(y + (Constants.miniMapTileH / 2), 0) / (Constants.miniMapTileH / 2));

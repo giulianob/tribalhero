@@ -143,10 +143,8 @@
 				objX = pos.x;
 				objY = pos.y;
 
-				cursor.setX(objX);
-				cursor.setY(objY);
-
-				cursor.moveWithCamera(Global.gameContainer.camera);
+				cursor.objX = objX;
+				cursor.objY = objY;
 
 				Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
 

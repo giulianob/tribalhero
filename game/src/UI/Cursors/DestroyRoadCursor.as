@@ -48,8 +48,9 @@ package src.UI.Cursors {
 			
 			destroyableArea.alpha = 0.3;
 			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
-			destroyableArea.setX(point.x); destroyableArea.setY(point.y);
-			destroyableArea.moveWithCamera(src.Global.gameContainer.camera);
+			destroyableArea.objX = point.x; 
+			destroyableArea.objY = point.y;
+			
 			Global.map.objContainer.addObject(destroyableArea, ObjectContainer.LOWER);
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
@@ -142,8 +143,8 @@ package src.UI.Cursors {
 				if (cursor.stage != null) 
 					Global.map.objContainer.removeObject(cursor);
 					
-				cursor.setX(objX); cursor.setY(objY);
-				cursor.moveWithCamera(src.Global.gameContainer.camera);
+				cursor.objX = objX;
+				cursor.objY = objY;
 				
 				Global.map.objContainer.addObject(cursor);
 				

@@ -1,5 +1,7 @@
 ﻿package src
 {
+	import com.greensock.plugins.TransformMatrixPlugin;
+	import com.greensock.plugins.TweenPlugin;
 	import fl.lang.*;
 	import flash.display.*;
 	import flash.events.*;
@@ -12,6 +14,7 @@
 	import src.UI.Components.*;
 	import src.UI.Dialog.*;
 	import src.UI.LookAndFeel.*;
+	import src.UI.TweenPlugins.DynamicPropsPlugin;
 	import src.Util.*;
 
 	public class Main extends MovieClip
@@ -52,6 +55,9 @@
 			//Init ASWING
 			AsWingManager.initAsStandard(stage);
 			UIManager.setLookAndFeel(new GameLookAndFeel());
+			
+			//Init TweenLite
+			TweenPlugin.activate([DynamicPropsPlugin, TransformMatrixPlugin]);
 
 			//Init stage options
 			stage.stageFocusRect = false;

@@ -50,8 +50,6 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 					battleViewer.show(null, false);
 				}
 			}
-
-			event.stopImmediatePropagation();
 		}
 	}
 

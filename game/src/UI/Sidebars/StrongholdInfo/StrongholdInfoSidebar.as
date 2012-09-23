@@ -73,7 +73,9 @@
 			
 			addStatRow("Level", stronghold.level.toString());
 
-			pnlGroups.append(new ViewStrongholdButton(stronghold));
+			if (Constants.tribeId!=0 && stronghold.tribeId==Constants.tribeId) {
+				pnlGroups.append(new ViewStrongholdButton(stronghold));
+			}
 
 			var buttons: Array = new Array();
 

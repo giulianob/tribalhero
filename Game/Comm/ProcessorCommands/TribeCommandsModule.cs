@@ -178,6 +178,9 @@ namespace Game.Comm.ProcessorCommands
                 packet.AddInt32(stronghold.Gate.Value);
                 packet.AddUInt32(stronghold.X);
                 packet.AddUInt32(stronghold.Y);
+                packet.AddInt32(stronghold.Troops.StationedHere().Sum(x=> x.Upkeep));
+                packet.AddFloat((float)stronghold.VictoryPointRate);
+                packet.AddUInt32(UnixDateTime.DateTimeToUnix(stronghold.DateOccupied.ToUniversalTime()));
             }            
         }
         private void AddPublicInfo(ITribe tribe, Packet packet)

@@ -36,6 +36,8 @@ namespace Game.Comm.ProcessorCommands
             packet.AddByte((byte)stronghold.State.Type);
             packet.AddFloat((float)stronghold.VictoryPointRate);
             packet.AddUInt32(UnixDateTime.DateTimeToUnix(stronghold.DateOccupied.ToUniversalTime()));
+            packet.AddUInt32(stronghold.X);
+            packet.AddUInt32(stronghold.Y);
 
             packet.AddByte(stronghold.Troops.Size);
             foreach (var troop in stronghold.Troops)

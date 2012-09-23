@@ -133,7 +133,7 @@ package src.UI.Sidebars.ObjectInfo {
 			}
 
 			//Special Case Buttons
-			switch(structureObject.State.getStateType())
+			switch(structureObject.state.getStateType())
 			{
 				case SimpleGameObject.STATE_BATTLE:
 					buttons.push(new ViewBattleButton(structureObject));
@@ -399,7 +399,7 @@ package src.UI.Sidebars.ObjectInfo {
 
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(gameObject.type, gameObject.level);
 			if (structPrototype) {
-				var pt: Point = MapUtil.getMapCoord(gameObject.getX(), gameObject.getY());
+				var pt: Point = MapUtil.getMapCoord(gameObject.objX, gameObject.objY);
 				frame.getTitleBar().setText(structPrototype.getName() + " (" + pt.x + "," + pt.y + ")");
 			}
 

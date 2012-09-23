@@ -84,7 +84,7 @@
 					objLvl = packet.readUByte();
 					objTribeId = packet.readUInt();
 					break;
-			} 							
+			}
 			
 			var objState: GameObjectState = readState(packet);
 			
@@ -118,9 +118,7 @@
 					return new BattleState(battleId);
 				break;
 				case SimpleGameObject.STATE_MOVING:
-					var destX: int = 0;
-					var destY: int = 0;
-					return new MovingState(destX, destY);
+					return new MovingState();
 				break;
 				default:
 					Util.log("Unknown object state in onReceiveRegion:" + objState);
@@ -492,9 +490,7 @@
 
 			var obj: SimpleGameObject = readObject(packet, regionId);
 			
-			Global.map.regions.addObject(regionId, obj);
-
-			obj.fadeIn();
+			Global.map.regions.addObject(regionId, obj);			
 		}
 
 		public function onRemoveObject(packet: Packet):void

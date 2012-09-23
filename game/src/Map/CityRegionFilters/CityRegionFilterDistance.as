@@ -36,7 +36,7 @@ package src.Map.CityRegionFilters
 				obj.sprite = img;
 				
 				// Apply the difficulty transformation to the tile
-				var point: Point = MapUtil.getScreenMinimapToMapCoord(obj.getX(), obj.getY());
+				var point: Point = MapUtil.getScreenMinimapToMapCoord(obj.x, obj.y);
 				var distance: int = MapUtil.distance(point.x, point.y, Global.gameContainer.selectedCity.MainBuilding.x, Global.gameContainer.selectedCity.MainBuilding.y);
 				var distanceIdx: int;
 				if (distance <= 100) distanceIdx = 4;

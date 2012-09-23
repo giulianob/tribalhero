@@ -55,7 +55,7 @@
 			var lblLvl: JLabel = new JLabel("Level " + obj.extraProps.level, null, AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblLvl, "Tooltip.text");
 			
-			var mapPos: Point = MapUtil.getScreenMinimapToMapCoord(obj.getX(), obj.getY());
+			var mapPos: Point = MapUtil.getScreenMinimapToMapCoord(obj.x, obj.y);
 			var distance: int = MapUtil.distance(mapPos.x, mapPos.y, Global.gameContainer.selectedCity.MainBuilding.x, Global.gameContainer.selectedCity.MainBuilding.y);
 			
 			var lblDistance: JLabel = new JLabel(distance + " tiles away", null, AsWingConstants.LEFT);
@@ -80,7 +80,7 @@
 			var lblLvl: JLabel = new JLabel("Level " + obj.extraProps.level, null, AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblLvl, "Tooltip.text");
 			
-			var mapPos: Point = MapUtil.getScreenMinimapToMapCoord(obj.getX(), obj.getY());
+			var mapPos: Point = MapUtil.getScreenMinimapToMapCoord(obj.x, obj.y);
 			var distance: int = MapUtil.distance(mapPos.x, mapPos.y, Global.gameContainer.selectedCity.MainBuilding.x, Global.gameContainer.selectedCity.MainBuilding.y);
 			
 			var lblDistance: JLabel = new JLabel(distance + " tiles away", null, AsWingConstants.LEFT);
@@ -102,7 +102,7 @@
 			var lblName: JLabel = new JLabel(username.name + "(" + obj.extraProps.troopId + ")", null, AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblName, "header");
 			
-			var mapPos: Point = MapUtil.getScreenMinimapToMapCoord(obj.getX(), obj.getY());
+			var mapPos: Point = MapUtil.getScreenMinimapToMapCoord(obj.x, obj.y);
 			var distance: int = MapUtil.distance(mapPos.x, mapPos.y, Global.gameContainer.selectedCity.MainBuilding.x, Global.gameContainer.selectedCity.MainBuilding.y);
 			
 			var lblDistance: JLabel = new JLabel(distance + " tiles away", null, AsWingConstants.LEFT);

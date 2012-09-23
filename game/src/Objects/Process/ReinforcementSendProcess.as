@@ -4,6 +4,9 @@ package src.Objects.Process
 	import org.aswing.JButton;
 	import src.Global;
 	import src.Objects.GameObject;
+	import src.Objects.SimpleGameObject;
+	import src.Objects.Stronghold.Stronghold;
+	import src.Objects.StructureObject;
 	import src.UI.Cursors.GroundReinforceCursor;
 	import src.UI.Dialog.ReinforceTroopDialog;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
@@ -53,9 +56,14 @@ package src.Objects.Process
 		
 		public function onChoseTarget(sender: GroundReinforceCursor): void {			
 			
-			var target: GameObject = sender.getTargetObject();
-			
-			Global.mapComm.Troop.troopReinforce(Global.gameContainer.selectedCity.id, target.cityId, reinforceDialog.getTroop(), reinforceDialog.getMode());
+			var target: SimpleGameObject = sender.getTargetObject();
+
+			if (target is StructureObject) {
+				Global.mapComm.Troop.troopReinforceCity(Global.gameContainer.selectedCity.id, target.groupId, reinforceDialog.getTroop(), reinforceDialog.getMode());
+			}
+			else if (target is Stronghold) {
+				Global.mapComm.Troop.troopReinforceStronghold(Global.gameContainer.selectedCity.id, target.objectId, reinforceDialog.getTroop(), reinforceDialog.getMode());
+			}
 
 			Global.gameContainer.setOverlaySprite(null);
 			Global.gameContainer.setSidebar(null);

@@ -284,10 +284,10 @@
 			}
 		}
 		
-		public function troopReinforce(cityId: int, targetCityId: int, troop: TroopStub, mode: int):void
+		public function troopReinforceCity(cityId: int, targetCityId: int, troop: TroopStub, mode: int):void
 		{
 			var packet: Packet = new Packet();
-			packet.cmd = Commands.TROOP_REINFORCE;
+			packet.cmd = Commands.TROOP_REINFORCE_CITY;
 			packet.writeUInt(cityId);
 			packet.writeUInt(targetCityId);
 			writeTroop(troop, packet);
@@ -295,6 +295,18 @@
 			
 			session.write(packet, mapComm.catchAllErrors);
 		}
+		
+		public function troopReinforceStronghold(cityId: int, targetStrongholdId: int, troop: TroopStub, mode: int):void
+		{
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TROOP_REINFORCE_STRONGHOLD;
+			packet.writeUInt(cityId);
+			packet.writeUInt(targetStrongholdId);
+			writeTroop(troop, packet);
+			packet.writeUShort(mode);
+			
+			session.write(packet, mapComm.catchAllErrors);
+		}		
 
 		public function moveUnitAndSetHideNewUnits(cityId: int, troop: TroopStub, hideNewUnits: Boolean):void
 		{

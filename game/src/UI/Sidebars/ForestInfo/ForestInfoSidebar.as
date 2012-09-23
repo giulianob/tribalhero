@@ -126,7 +126,7 @@
 		{
 			super.showSelf(owner, onClose, dispose);
 
-			var pt: Point = MapUtil.getMapCoord(forestObj.getX(), forestObj.getY());
+			var pt: Point = MapUtil.getMapCoord(forestObj.objX, forestObj.objY);
 			frame.getTitleBar().setText("Forest (" + pt.x + "," + pt.y + ")");
 
 			frame.show();

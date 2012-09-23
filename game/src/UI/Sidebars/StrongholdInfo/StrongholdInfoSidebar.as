@@ -78,7 +78,7 @@
 			var buttons: Array = new Array();
 
 			//Special Case Buttons
-			switch(stronghold.State.getStateType())
+			switch(stronghold.state.getStateType())
 			{
 				case SimpleGameObject.STATE_BATTLE:
 		//			buttons.push(new ViewBattleButton(troopObj));
@@ -284,7 +284,7 @@
 		{
 			super.showSelf(owner, onClose, dispose);
 
-			var pt: Point = MapUtil.getMapCoord(stronghold.getX(), stronghold.getY());
+			var pt: Point = MapUtil.getMapCoord(stronghold.objX, stronghold.objY);
 			frame.getTitleBar().setText("Stronghold (" + pt.x + "," + pt.y + ")");
 
 			frame.show();

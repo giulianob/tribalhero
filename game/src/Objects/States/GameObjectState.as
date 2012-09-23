@@ -1,11 +1,7 @@
 package src.Objects.States
 {
-	import flash.display.DisplayObject;
-	import org.aswing.AssetIcon;
-	/**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
+	import flash.display.*;
+
 	public class GameObjectState
 	{
 
@@ -21,6 +17,10 @@ package src.Objects.States
 		public function getStateIcon() : DisplayObject {
 			return null;
 		}		
+		
+		public function equals(other: GameObjectState): Boolean {
+			return false;
+		}
 	}
 
 }

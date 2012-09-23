@@ -160,17 +160,15 @@
 			return sprite;
 		}
 
-		public static function getSimpleObject(name: String, addShadow: Boolean = true): SimpleObject {
-			var obj: SimpleObject = new SimpleObject();
+		public static function getSimpleObject(name: String, x: int, y: int, addShadow: Boolean = true): SimpleObject {
+			var obj: SimpleObject = new SimpleObject(x, y);
 			var objRef: Class = getDefinitionByName(name) as Class;
 
 			if (addShadow) {
-				var shadow: DisplayObjectContainer = new objRef() as DisplayObjectContainer;
-				makeIntoShadow(shadow);
-				obj.addChild(shadow);
+				obj.spriteContainer.addChild(makeIntoShadow(new objRef() as DisplayObjectContainer));
 			}
 
-			obj.addChild(new objRef() as DisplayObject);
+			obj.spriteContainer.addChild(new objRef() as DisplayObject);
 
 			return obj;
 		}
@@ -182,10 +180,10 @@
 			return obj;
 		}
 		
-		public static function getNewCityPlaceholderInstance() : NewCityPlaceholder
+		public static function getNewCityPlaceholderInstance(x: int, y: int) : NewCityPlaceholder
 		{
-			var obj: NewCityPlaceholder = new NewCityPlaceholder();
-			obj.addChild(getNewCityPlaceholderSprite());
+			var obj: NewCityPlaceholder = new NewCityPlaceholder(x, y);
+			obj.spriteContainer.addChild(getNewCityPlaceholderSprite());
 			return obj;
 		}
 

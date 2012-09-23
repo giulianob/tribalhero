@@ -388,7 +388,7 @@
 		public function eventKeyUp(event: KeyboardEvent):void
 		{
 			// clear key press
-			delete pressedKeys[event.keyCode];
+			pressedKeys[event.keyCode] = false;
 		}		
 		
 		public function isKeyDown(keyCode: int) : Boolean
@@ -414,8 +414,8 @@
 			// end key down handler
 			
 			// Key Press Handler
-			if(pressedKeys[e.keyCode]) return;
-			pressedKeys[e.keyCode] = 1;
+			if (pressedKeys[e.keyCode]) return;
+			pressedKeys[e.keyCode] = true;
 			
 			// Escape key functions
 			if (e.charCode == Keyboard.ESCAPE)
@@ -453,7 +453,7 @@
 		}
 
 		public function setMap(map: Map, miniMap: MiniMap):void
-		{		
+		{				
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
 			stage.addEventListener(KeyboardEvent.KEY_UP, eventKeyUp);
@@ -598,7 +598,9 @@
 			}
 
 			if (cmdLine) {
-				cmdLine.getFrame().dispose();
+				if (cmdLine.getFrame()) {
+					cmdLine.getFrame().dispose();
+				}
 				cmdLine = null;
 			}
 			

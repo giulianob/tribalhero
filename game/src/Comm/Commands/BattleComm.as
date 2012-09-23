@@ -134,11 +134,17 @@
 			var round: int = packet.readUInt();
 			battle.newRound(round);
 			
+			// Properties
+			var propertiesCount: int = packet.readByte();
+			for (var i: int = 0; i < propertiesCount; i++) {
+				battle.properties[packet.readString()] = packet.readString();
+			}
+			
 			// Add units
 			var group: CombatGroup;
 			
 			var attackerGroups: int = packet.readInt();
-			for (var i: int = 0; i < attackerGroups; i++) {
+			for (i = 0; i < attackerGroups; i++) {
 				group = readGroup(packet);
 				battle.addToAttack(group);
 			}

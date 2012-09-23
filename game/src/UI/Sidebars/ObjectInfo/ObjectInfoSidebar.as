@@ -12,6 +12,7 @@ package src.UI.Sidebars.ObjectInfo {
 	import src.Objects.Actions.*;
 	import src.Objects.Factories.*;
 	import src.Objects.*;
+	import src.Objects.Process.AttackSendProcess;
 	import src.Objects.Prototypes.*;
 	import src.UI.*;
 	import src.UI.Components.CityLabel;
@@ -129,7 +130,12 @@ package src.UI.Sidebars.ObjectInfo {
 						lbl = addStatRow(propPrototype[i].name, propPrototype[i].toString(structureObject.properties[i]), propPrototype[i].getIcon());
 						if (propPrototype[i].tooltip != "") new SimpleTooltip(lbl, propPrototype[i].tooltip);
 					}
+					buttons.push(new SendAttackButton(gameObject)); 
 				}
+			}
+			
+			if (Global.gameContainer.selectedCity.id != gameObject.cityId) {
+				buttons.push(new SendReinforcementButton(gameObject));
 			}
 
 			//Special Case Buttons

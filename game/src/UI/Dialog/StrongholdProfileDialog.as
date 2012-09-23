@@ -15,6 +15,7 @@
 	import org.aswing.table.*;
 	import src.*;
 	import src.Map.MapUtil;
+	import src.Objects.Location;
 	import src.Objects.Process.ReinforcementSendProcess;
 	import src.UI.*;
 	import src.UI.Components.*;
@@ -124,7 +125,7 @@
 
 			var btnSendReinforcement: JButton = new JButton("Send reinforcement");
 			btnSendReinforcement.addActionListener(function(e:Event): void {
-				var process : ReinforcementSendProcess = new ReinforcementSendProcess();
+				var process : ReinforcementSendProcess = new ReinforcementSendProcess(new Location(Location.STRONGHOLD,profileData.strongholdId));
 				process.execute();
 			});
 			

@@ -4,6 +4,7 @@ package src.Objects.Process
 	import org.aswing.JButton;
 	import src.Global;
 	import src.Objects.GameObject;
+	import src.Objects.Location;
 	import src.Objects.SimpleGameObject;
 	import src.Objects.Stronghold.Stronghold;
 	import src.Objects.StructureObject;
@@ -17,11 +18,11 @@ package src.Objects.Process
 	public class ReinforcementSendProcess implements IProcess
 	{		
 		private var reinforceDialog: ReinforceTroopDialog;
-		private var target : GameObject;
+		private var location : Location;
 		
-		public function ReinforcementSendProcess(target : GameObject = null) 
+		public function ReinforcementSendProcess(location: Location = null) 
 		{
-			this.target = target;
+			this.location = location;
 		}
 		
 		public function execute(): void 
@@ -36,7 +37,7 @@ package src.Objects.Process
 			Global.gameContainer.closeAllFrames(true);
 			
 			
-			if(target==null) {
+			if(location==null) {
 				var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
 				
 				var cursor: GroundReinforceCursor = new GroundReinforceCursor(onChoseTarget, reinforceDialog.getTroop());
@@ -47,22 +48,29 @@ package src.Objects.Process
 				
 				Global.gameContainer.setSidebar(sidebar);
 			} else {
-				Global.mapComm.Troop.troopReinforce(Global.gameContainer.selectedCity.id, target.cityId, reinforceDialog.getTroop(), reinforceDialog.getMode());
-
+				sendReinforcement(location.type, location.id);
 				Global.gameContainer.setOverlaySprite(null);
 				Global.gameContainer.setSidebar(null);
 			}
 		}
 		
+		private function sendReinforcement(type : int, id : uint): void {
+			if (type == Location.CITY) {
+				Global.mapComm.Troop.troopReinforceCity(Global.gameContainer.selectedCity.id, id, reinforceDialog.getTroop(), reinforceDialog.getMode());
+			}
+			else if (type == Location.STRONGHOLD) {
+				Global.mapComm.Troop.troopReinforceStronghold(Global.gameContainer.selectedCity.id, id, reinforceDialog.getTroop(), reinforceDialog.getMode());
+			}			
+		}
 		public function onChoseTarget(sender: GroundReinforceCursor): void {			
 			
 			var target: SimpleGameObject = sender.getTargetObject();
 
 			if (target is StructureObject) {
-				Global.mapComm.Troop.troopReinforceCity(Global.gameContainer.selectedCity.id, target.groupId, reinforceDialog.getTroop(), reinforceDialog.getMode());
+				sendReinforcement(Location.CITY, target.groupId);
 			}
 			else if (target is Stronghold) {
-				Global.mapComm.Troop.troopReinforceStronghold(Global.gameContainer.selectedCity.id, target.objectId, reinforceDialog.getTroop(), reinforceDialog.getMode());
+				sendReinforcement(Location.STRONGHOLD, target.objectId);
 			}
 
 			Global.gameContainer.setOverlaySprite(null);

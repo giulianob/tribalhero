@@ -686,7 +686,7 @@ namespace Game.Database
                                {
                                        State = (TroopState)Enum.Parse(typeof(TroopState), reader["state"].ToString(), true),
                                        DbPersisted = true,
-                                       StationedRetreatCount = (ushort)reader["retreat_count"]
+                                       RetreatCount = (ushort)reader["retreat_count"]
                                };
 
                     var formationMask = (ushort)reader["formations"];

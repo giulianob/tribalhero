@@ -37,7 +37,7 @@ namespace Game.Data.Troop
 
         IStation Station { get; set; }
 
-        ushort StationedRetreatCount { get; set; }
+        ushort RetreatCount { get; set; }
 
         byte TroopId { get; set; }
 

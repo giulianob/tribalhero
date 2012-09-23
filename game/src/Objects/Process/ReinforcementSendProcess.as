@@ -14,10 +14,11 @@ package src.Objects.Process
 	public class ReinforcementSendProcess implements IProcess
 	{		
 		private var reinforceDialog: ReinforceTroopDialog;
+		private var target : GameObject;
 		
-		public function ReinforcementSendProcess() 
+		public function ReinforcementSendProcess(target : GameObject = null) 
 		{
-			
+			this.target = target;
 		}
 		
 		public function execute(): void 
@@ -31,15 +32,23 @@ package src.Objects.Process
 			
 			Global.gameContainer.closeAllFrames(true);
 			
-			var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
 			
-			var cursor: GroundReinforceCursor = new GroundReinforceCursor(onChoseTarget, reinforceDialog.getTroop());
-			
-			var changeTroop: JButton = new JButton("Change Troop");
-			changeTroop.addActionListener(onChangeTroop);
-			sidebar.append(changeTroop);
-			
-			Global.gameContainer.setSidebar(sidebar);
+			if(target==null) {
+				var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
+				
+				var cursor: GroundReinforceCursor = new GroundReinforceCursor(onChoseTarget, reinforceDialog.getTroop());
+				
+				var changeTroop: JButton = new JButton("Change Troop");
+				changeTroop.addActionListener(onChangeTroop);
+				sidebar.append(changeTroop);
+				
+				Global.gameContainer.setSidebar(sidebar);
+			} else {
+				Global.mapComm.Troop.troopReinforce(Global.gameContainer.selectedCity.id, target.cityId, reinforceDialog.getTroop(), reinforceDialog.getMode());
+
+				Global.gameContainer.setOverlaySprite(null);
+				Global.gameContainer.setSidebar(null);
+			}
 		}
 		
 		public function onChoseTarget(sender: GroundReinforceCursor): void {			

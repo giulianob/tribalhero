@@ -47,6 +47,8 @@ package src.Comm.Commands
 			profileData.strongholdState = packet.readByte();
 			profileData.strongholdVictoryPointRate = packet.readFloat();
 			profileData.strongholdDateOccupied = packet.readUInt();
+			profileData.strongholdX = packet.readUInt();
+			profileData.strongholdY = packet.readUInt();
 			
 			profileData.troops = [];
 			var troopCount: int = packet.readByte();
@@ -129,6 +131,7 @@ package src.Comm.Commands
 				onReceiveStrongholdPublicProfile(packet, custom);
 			}
 		}
+
 	}
 
 }

@@ -255,7 +255,10 @@
 					lvl: packet.readByte(),
 					gate: packet.readInt(),
 					x: packet.readUInt(),
-					y: packet.readUInt()
+					y: packet.readUInt(),
+					upkeep: packet.readInt(),
+					victoryPointRate: packet.readFloat(),
+					dateOccupied: packet.readUInt()
 				};
 				Global.map.usernames.strongholds.add(new Username(stronghold.id, stronghold.name));
 				profileData.strongholds.push(stronghold);

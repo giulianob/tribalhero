@@ -98,6 +98,12 @@ namespace Game.Logic
         {
             this.city = city;
             city.Worker.ActionsRemovedFromWorker += WorkerOnActionsRemovedFromWorker;
+            city.Worker.ActionRemoved += WorkerOnActionRemoved;
+        }
+
+        private void WorkerOnActionRemoved(GameAction stub, ActionState state)
+        {
+            Remove(stub);
         }
 
         public ushort Count
@@ -208,6 +214,23 @@ namespace Game.Logic
             reference.RemoveAll(referenceStub =>
                 {
                     bool ret = (referenceObject == referenceStub.WorkerObject);
+
+                    if (ret)
+                    {
+                        DbPersistance.Current.Delete(referenceStub);
+
+                        SendRemoveReference(referenceStub);
+                    }
+
+                    return ret;
+                });
+        }
+
+        public void Remove(GameAction action)
+        {
+            reference.RemoveAll(referenceStub =>
+                {
+                    bool ret = (action == referenceStub.Action);
 
                     if (ret)
                     {

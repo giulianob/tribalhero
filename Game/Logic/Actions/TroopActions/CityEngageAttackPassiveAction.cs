@@ -6,10 +6,8 @@ using System.Linq;
 using Game.Battle;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
-using Game.Battle.Reporting;
 using Game.Data;
 using Game.Data.Troop;
-using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
@@ -24,13 +22,13 @@ namespace Game.Logic.Actions
     {
         private StaminaMonitor StaminaMonitor { get; set; }
 
+        private AttackModeMonitor AttackModeMonitor { get; set; }
+
         private readonly BattleFormulas battleFormula;
 
         private readonly IGameObjectLocator gameObjectLocator;
 
         private readonly BattleProcedure battleProcedure;
-
-        private readonly Formula formula;
 
         private readonly StructureFactory structureFactory;
 
@@ -50,18 +48,15 @@ namespace Game.Logic.Actions
 
         private int originalUnitCount;
 
-        private int remainingUnitCount;
-
         public CityEngageAttackPassiveAction(uint cityId,
-                                         uint troopObjectId,
-                                         uint targetCityId,
-                                         AttackMode mode,
-                                         BattleFormulas battleFormula,
-                                         IGameObjectLocator gameObjectLocator,
-                                         BattleProcedure battleProcedure,
-                                         Formula formula,
-                                         StructureFactory structureFactory,
-                                         IDbManager dbManager)
+                                             uint troopObjectId,
+                                             uint targetCityId,
+                                             AttackMode mode,
+                                             BattleFormulas battleFormula,
+                                             IGameObjectLocator gameObjectLocator,
+                                             BattleProcedure battleProcedure,
+                                             StructureFactory structureFactory,
+                                             IDbManager dbManager)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
@@ -70,7 +65,6 @@ namespace Game.Logic.Actions
             this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
             this.battleProcedure = battleProcedure;
-            this.formula = formula;
             this.structureFactory = structureFactory;
             this.dbManager = dbManager;
 
@@ -78,20 +72,18 @@ namespace Game.Logic.Actions
         }
 
         public CityEngageAttackPassiveAction(uint id,
-                                         bool isVisible,
-                                         IDictionary<string, string> properties,
-                                         BattleFormulas battleFormula,
-                                         IGameObjectLocator gameObjectLocator,
-                                         BattleProcedure battleProcedure,
-                                         Formula formula,
-                                         StructureFactory structureFactory,
-                                         IDbManager dbManager)
+                                             bool isVisible,
+                                             IDictionary<string, string> properties,
+                                             BattleFormulas battleFormula,
+                                             IGameObjectLocator gameObjectLocator,
+                                             BattleProcedure battleProcedure,
+                                             StructureFactory structureFactory,
+                                             IDbManager dbManager)
                 : base(id, isVisible)
         {
             this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
             this.battleProcedure = battleProcedure;
-            this.formula = formula;
             this.structureFactory = structureFactory;
             this.dbManager = dbManager;
 
@@ -113,8 +105,15 @@ namespace Game.Logic.Actions
             gameObjectLocator.TryGetObjects(targetCityId, out targetCity);
             RegisterBattleListeners(targetCity);
 
-            StaminaMonitor = new StaminaMonitor(targetCity.Battle, targetCity.Battle.GetCombatGroup(groupId), short.Parse(properties["stamina"]), battleFormula);
+            var combatGroup = targetCity.Battle.GetCombatGroup(groupId);
+            ITroopObject troopObject;
+            ICity city;
+            gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject);
+
+            StaminaMonitor = new StaminaMonitor(targetCity.Battle, combatGroup, short.Parse(properties["stamina"]), battleFormula);
             StaminaMonitor.PropertyChanged += (sender, args) => dbManager.Save(this);
+
+            AttackModeMonitor = new AttackModeMonitor(targetCity.Battle, combatGroup, troopObject.Stub);
         }
 
         public override ActionType Type
@@ -129,14 +128,13 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return
-                        XmlSerializer.Serialize(new[]
-                        {
-                                new XmlKvPair("target_city_id", targetCityId), new XmlKvPair("troop_city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId),
-                                new XmlKvPair("mode", (byte)mode), new XmlKvPair("original_count", originalUnitCount), new XmlKvPair("crop", bonus.Crop),
-                                new XmlKvPair("gold", bonus.Gold), new XmlKvPair("iron", bonus.Iron), new XmlKvPair("wood", bonus.Wood),
-                                new XmlKvPair("labor", bonus.Labor), new XmlKvPair("group_id", groupId), new XmlKvPair("stamina", StaminaMonitor.Stamina)
-                        });
+                return XmlSerializer.Serialize(new[]
+                {
+                        new XmlKvPair("target_city_id", targetCityId), new XmlKvPair("troop_city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId),
+                        new XmlKvPair("mode", (byte)mode), new XmlKvPair("original_count", originalUnitCount), new XmlKvPair("crop", bonus.Crop),
+                        new XmlKvPair("gold", bonus.Gold), new XmlKvPair("iron", bonus.Iron), new XmlKvPair("wood", bonus.Wood),
+                        new XmlKvPair("labor", bonus.Labor), new XmlKvPair("group_id", groupId), new XmlKvPair("stamina", StaminaMonitor.Stamina)
+                });
             }
         }
 
@@ -167,7 +165,8 @@ namespace Game.Logic.Actions
             ICity targetCity;
             ITroopObject troopObject;
 
-            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) || !gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
+            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) ||
+                !gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
             {
                 return Error.ObjectNotFound;
             }
@@ -188,6 +187,9 @@ namespace Game.Logic.Actions
             StaminaMonitor = new StaminaMonitor(targetCity.Battle, combatGroup, battleFormula.GetStamina(troopObject.Stub, targetCity), battleFormula);
             StaminaMonitor.PropertyChanged += (sender, args) => dbManager.Save(this);
 
+            // Create attack mode monitor
+            AttackModeMonitor = new AttackModeMonitor(targetCity.Battle, combatGroup, troopObject.Stub);
+
             // Set the attacking troop object to the correct state and stamina
             troopObject.BeginUpdate();
             troopObject.State = GameObjectState.BattleState(battleId);
@@ -202,11 +204,12 @@ namespace Game.Logic.Actions
         }
 
         private void BattleWithdrawAttacker(IBattleManager battle, ICombatGroup group)
-        {            
+        {
             ICity targetCity;
             ICity city;
             ITroopObject troopObject;
-            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) || !gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
+            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) ||
+                !gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
             {
                 throw new ArgumentException();
             }
@@ -243,7 +246,8 @@ namespace Game.Logic.Actions
             ICity targetCity;
             ICity city;
             ITroopObject troopObject;
-            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) || !gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
+            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) ||
+                !gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
             {
                 throw new ArgumentException();
             }
@@ -265,7 +269,7 @@ namespace Game.Logic.Actions
             }
 
             // Calculate bonus
-            Resource resource = battleFormula.GetBonusResources(troopObject, originalUnitCount, remainingUnitCount);
+            Resource resource = battleFormula.GetBonusResources(troopObject, originalUnitCount, troopObject.Stub.TotalCount);
 
             // Destroyed Structure bonus
             resource.Add(bonus);
@@ -287,8 +291,14 @@ namespace Game.Logic.Actions
             // Update battle report view with actual received bonus            
             battle.BattleReport.SetLootedResources(troopObject.City.Id, troopObject.Stub.TroopId, battle.BattleId, looted, actual);
         }
-        
-        private void BattleActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatGroup attackerGroup, ICombatObject attacker, ICombatGroup targetGroup, ICombatObject target, decimal damage)
+
+        private void BattleActionAttacked(IBattleManager battle,
+                                          BattleManager.BattleSide attackingSide,
+                                          ICombatGroup attackerGroup,
+                                          ICombatObject attacker,
+                                          ICombatGroup targetGroup,
+                                          ICombatObject target,
+                                          decimal damage)
         {
             ICity city;
             ITroopObject troopObject;
@@ -327,37 +337,17 @@ namespace Game.Logic.Actions
 
                 dbManager.Save(this);
             }
-
-            // Check if the unit being attacked belongs to us
-            if (targetGroup.Id == groupId)
-            {
-                // Check to see if player should retreat
-                remainingUnitCount = troopObject.Stub.TotalCount;
-
-                // Don't return if we haven't fulfilled the minimum rounds or not below the threshold
-                if (target.RoundsParticipated < Config.battle_min_rounds || remainingUnitCount == 0 ||
-                    remainingUnitCount > formula.GetAttackModeTolerance(originalUnitCount, mode))
-                {
-                    return;
-                }
-
-                ICombatGroup combatGroup = battle.GetCombatGroup(groupId);
-                if (combatGroup == null)
-                {
-                    throw new Exception("Cannot find group to be removed");
-                }
-                battle.Remove(combatGroup, BattleManager.BattleSide.Attack, ReportState.Retreating);
-            }
         }
 
         private void BattleEnterRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round)
         {
             ICity city;
-            
+
             ICity targetCity;
 
             ITroopObject troopObject;
-            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) || !gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
+            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) ||
+                !gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
             {
                 throw new Exception("City or troop not found");
             }

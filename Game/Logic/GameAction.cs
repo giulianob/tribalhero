@@ -67,6 +67,8 @@ namespace Game.Logic
 
         StrongholdAttackChain = 253,
 
+        StrongholdDefenseChain = 254,
+
         ResourceSendActive = 305,
 
         ResourceBuyActive = 306,

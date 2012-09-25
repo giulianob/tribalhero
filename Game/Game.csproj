@@ -142,6 +142,7 @@
     <Compile Include="Battle\Reporting\BattleReport.cs" />
     <Compile Include="Battle\Reporting\IBattleReport.cs" />
     <Compile Include="Battle\Reporting\IBattleReportWriter.cs" />
+    <Compile Include="Battle\Reporting\NullBattleReportWriter.cs" />
     <Compile Include="Battle\Reporting\ReportedObjects.cs" />
     <Compile Include="Battle\Reporting\ReportState.cs" />
     <Compile Include="Battle\Reporting\SqlBattleReportWriter.cs" />

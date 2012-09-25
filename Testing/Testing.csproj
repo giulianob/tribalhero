@@ -106,6 +106,7 @@
   <ItemGroup>
     <Compile Include="Actions\BattlePassiveActionTest.cs" />
     <Compile Include="Actions\CityPassiveActionTest.cs" />
+    <Compile Include="Actions\StrongholdGateBattlePassiveActionTest.cs" />
     <Compile Include="Actions\TribeContributeActiveActionTest.cs" />
     <Compile Include="Balancing\TestUserBattles.cs" />
     <Compile Include="Balancing\TestSwordsman.cs" />

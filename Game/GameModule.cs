@@ -37,6 +37,16 @@ namespace Game
         public override void Load()
         {
 
+            #region World/Map
+
+            Bind<IWorld, IGameObjectLocator>().To<World>().InSingletonScope();
+
+            Bind<IRegionManager>().To<RegionManager>().InSingletonScope();
+            Bind<ICityManager>().To<CityManager>().InSingletonScope();
+            Bind<ICityRegionManager>().To<CityRegionManager>().InSingletonScope();
+
+            #endregion
+
             #region General Comms
 
             Bind<IPolicyServer>().To<PolicyServer>().InSingletonScope();
@@ -63,7 +73,7 @@ namespace Game
             Bind<ILocker>().ToMethod(c =>
                 {
                     DefaultMultiObjectLock.Factory multiObjectLockFactory = () => new TransactionalMultiObjectLock(new DefaultMultiObjectLock());
-                    return new DefaultLocker(multiObjectLockFactory, () => new CallbackLock(multiObjectLockFactory));
+                    return new DefaultLocker(multiObjectLockFactory, () => new CallbackLock(multiObjectLockFactory), c.Kernel.Get<IGameObjectLocator>());
                 }).InSingletonScope();
 
             #endregion
@@ -165,17 +175,6 @@ namespace Game
             Bind<ReverseTileLocator>().ToMethod(c => new ReverseTileLocator(new Random().Next)).InSingletonScope();
             Bind<Procedure>().ToSelf().InSingletonScope();
             Bind<BattleProcedure>().ToSelf().InSingletonScope();
-
-            #endregion
-
-            #region World/Map
-
-            Bind<IWorld>().To<World>().InSingletonScope();            
-            Bind<IGameObjectLocator>().ToMethod(c => c.Kernel.Get<World>()).InSingletonScope();
-
-            Bind<IRegionManager>().To<RegionManager>().InSingletonScope();
-            Bind<ICityManager>().To<CityManager>().InSingletonScope();
-            Bind<ICityRegionManager>().To<CityRegionManager>().InSingletonScope();
 
             #endregion
 

@@ -221,32 +221,36 @@ namespace Game.Logic.Actions
                 {
                     if (targetStronghold.Tribe == city.Owner.Tribesman.Tribe)
                     {                       
-                        StationTroopInStronghold(troopObject, targetStronghold, city);
+                        StationTroopInStronghold(troopObject, targetStronghold);
 
                         // If tribe already owns stronghold, then it should defend it
-                        if (targetStronghold.GateOpenTo != null && targetStronghold.MainBattle != null)
+                        if (targetStronghold.MainBattle != null)
                         {
-                            //TODO: Join Battle
-                            throw new Exception("Need to join the current battle on the defensive side");
+                            battleProcedure.AddReinforcementToBattle(targetStronghold.MainBattle, troopObject.Stub);                            
                         }
+
+                        StationTroopInStronghold(troopObject, targetStronghold);
+                        return;
                     }
-                    else if (targetStronghold.GateOpenTo == city.Owner.Tribesman.Tribe)
+                    
+                    if (targetStronghold.GateOpenTo == city.Owner.Tribesman.Tribe)
                     {
                         // If stronghold's gate is open to the tribe, then it should engage the stronghold
                         JoinOrCreateStrongholdMainBattle(city);
+                        return;
                     }
-                    else if (targetStronghold.GateOpenTo == null)
+                    
+                    if (targetStronghold.GateOpenTo == null)
                     {
                         // If gate isn't open to anyone then engage the gate
                         var bea = actionFactory.CreateStrongholdEngageGateAttackPassiveAction(cityId, troopObject.ObjectId, targetStrongholdId);
                         ExecuteChainAndWait(bea, AfterGateBattle);
+                        return;
                     }
-                    else
-                    {
-                        // Walk back to city if none of the above conditions apply
-                        TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id, troopObject.ObjectId, city.X, city.Y, true, true);
-                        ExecuteChainAndWait(tma, AfterTroopMovedHome);
-                    }
+                    
+                    // Walk back to city if none of the above conditions apply
+                    TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id, troopObject.ObjectId, city.X, city.Y, true, true);
+                    ExecuteChainAndWait(tma, AfterTroopMovedHome);                    
                 }
             }
         }
@@ -299,7 +303,7 @@ namespace Game.Logic.Actions
                     if (city.Owner.IsInTribe && targetStronghold.Tribe == city.Owner.Tribesman.Tribe)
                     {
                         // If our city is the one that now owns the stronghold then station there and we're done               
-                        StationTroopInStronghold(troopObject, targetStronghold, city);
+                        StationTroopInStronghold(troopObject, targetStronghold);
                     }
                     else
                     {
@@ -311,7 +315,7 @@ namespace Game.Logic.Actions
             }
         }
 
-        private void StationTroopInStronghold(ITroopObject troopObject, IStronghold stronghold, ICity city)
+        private void StationTroopInStronghold(ITroopObject troopObject, IStronghold stronghold)
         {
             troopObject.Stub.BeginUpdate();
             troopObject.Stub.ChangeFormation(FormationType.Attack, FormationType.Defense);

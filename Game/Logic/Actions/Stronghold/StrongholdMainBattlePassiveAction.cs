@@ -120,6 +120,18 @@ namespace Game.Logic.Actions
             stronghold.MainBattle.AboutToExitBattle += MainBattleOnAboutToExitBattle;
             stronghold.MainBattle.ActionAttacked += MainBattleOnActionAttacked;
             stronghold.MainBattle.ExitTurn += MainBattleOnExitTurn;
+            stronghold.MainBattle.EnterBattle += MainBattleOnEnterBattle;
+        }
+
+        private void MainBattleOnEnterBattle(IBattleManager battle, ICombatList attackers, ICombatList defenders)
+        {
+            IStronghold stronghold;
+            if (!gameObjectLocator.TryGetObjects(strongholdId, out stronghold))
+            {
+                throw new Exception("Stronghold not found");
+            }
+
+            battle.BattleReport.AddAccess(new BattleOwner(BattleOwnerType.Tribe, stronghold.GateOpenTo.Id));
         }
 
         private void MainBattleOnExitTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, int turn)
@@ -323,6 +335,7 @@ namespace Game.Logic.Actions
                 stronghold.MainBattle.GroupKilled -= MainBattleOnGroupKilled;
                 stronghold.MainBattle.ActionAttacked -= MainBattleOnActionAttacked;
                 stronghold.MainBattle.ExitTurn -= MainBattleOnExitTurn;
+                stronghold.MainBattle.EnterBattle -= MainBattleOnEnterBattle;
 
                 stronghold.BeginUpdate();
                 stronghold.GateOpenTo = null;

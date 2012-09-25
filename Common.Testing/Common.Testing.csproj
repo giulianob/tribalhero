@@ -46,12 +46,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CsvDataAttribute.cs" />
+    <Compile Include="GameObjectLocatorStub.cs" />
+    <Compile Include="LockerStub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{A5302ED1-2B78-4FD4-B0C8-C19C3299AB59}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Game\Game.csproj">
+      <Project>{93D46B65-B2E0-46C9-8BAA-518B3DB64DC0}</Project>
+      <Name>Game</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Persistance\Persistance.csproj">
+      <Project>{75C1FE1A-4872-44A0-ADE1-FEA01DFBB082}</Project>
+      <Name>Persistance</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

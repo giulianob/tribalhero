@@ -256,19 +256,19 @@ namespace Game.Map
             //if object has moved then we need to do some logic to see if it has changed regions
             ushort oldRegionId = Region.GetRegionIndex(origX, origY);
             ushort newRegionId = Region.GetRegionIndex(sender);
-
-            //object has not changed regions so simply update
+            
             if (oldRegionId == newRegionId)
             {
+                //object has not changed regions so simply update
                 regions[newRegionId].Update(sender, origX, origY);
                 var packet = new Packet(Command.ObjectUpdate);
                 packet.AddUInt16(newRegionId);
                 PacketHelper.AddToPacket(sender, packet, true);
                 Global.Channel.Post("/WORLD/" + newRegionId, packet);
-            }
-                    // object has changed regions, need to remove it from the old one and add it to the new one
+            }            
             else
             {
+                // object has changed regions, need to remove it from the old one and add it to the new one
                 regions[oldRegionId].Remove(sender, origX, origY);
                 regions[newRegionId].Add(sender);
                 var packet = new Packet(Command.ObjectMove);

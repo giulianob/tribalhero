@@ -716,17 +716,18 @@ namespace Game.Database
 
             foreach (var stubInfo in stationedTroops)
             {
+                uint stationId = stubInfo.stationId;
                 switch((LocationType)stubInfo.stationType)
-                {
+                {                        
                     case LocationType.City:
                         ICity stationedCity;
-                        if (!World.Current.TryGetObjects(stubInfo.stationId, out stationedCity))
+                        if (!World.Current.TryGetObjects(stationId, out stationedCity))
                             throw new Exception("City not found");
                         stationedCity.Troops.DbLoaderAddStation(stubInfo.stub);
                         break;
                     case LocationType.Stronghold:
                         IStronghold stronghold;
-                        if (!StrongholdManager.TryGetStronghold(stubInfo.stationId, out stronghold))
+                        if (!StrongholdManager.TryGetStronghold(stationId, out stronghold))
                             throw new Exception("Stronghold not found");
                         stronghold.Troops.DbLoaderAddStation(stubInfo.stub);
                         break;
@@ -851,16 +852,18 @@ namespace Game.Database
                         case BattleLocationType.StrongholdGate:
                             IStronghold stronghold;
                             if (!World.Current.TryGetObjects((uint)reader["location_id"], out stronghold))
+                            {
                                 throw new Exception("Stronghold not found");
-
-                            battleManager = BattleManagerFactory.CreateBattleManager((uint)reader["battle_id"], battleLocation, battleOwner, stronghold);
+                            }
 
                             if (battleLocation.Type == BattleLocationType.Stronghold)
                             {
+                                battleManager = BattleManagerFactory.CreateStrongholdMainBattleManager((uint)reader["battle_id"], battleLocation, battleOwner, stronghold);
                                 stronghold.MainBattle = battleManager;
                             }
                             else
                             {
+                                battleManager = BattleManagerFactory.CreateStrongholdGateBattleManager((uint)reader["battle_id"], battleLocation, battleOwner, stronghold);
                                 stronghold.GateBattle = battleManager;
                             }
                             break;
@@ -876,6 +879,7 @@ namespace Game.Database
 
                     battleManager.BattleReport.ReportStarted = (bool)reader["report_started"];
                     battleManager.BattleReport.ReportId = (uint)reader["report_id"];
+                    battleManager.BattleReport.SnappedImportantEvent = (bool)reader["snapped_important_event"];
 
                     // Load combat groups
                     using (DbDataReader listReader = DbManager.SelectList(CityOffensiveCombatGroup.DB_TABLE, new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
@@ -928,7 +932,7 @@ namespace Game.Database
                             var strongholdCombatGroup = CombatGroupFactory.CreateStrongholdCombatGroup((uint)listReader["battle_id"],
                                                                                                              (uint)listReader["id"],
                                                                                                              combatGroupStronghold);
-                            combatGroupStronghold.DbPersisted = true;
+                            strongholdCombatGroup.DbPersisted = true;
                             battleManager.DbLoaderAddToCombatList(strongholdCombatGroup, BattleManager.BattleSide.Defense);
                         }
                     }

@@ -1,7 +1,6 @@
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Data;
-using Game.Data.Troop;
 
 namespace Game.Battle.Reporting
 {
@@ -19,12 +18,14 @@ namespace Game.Battle.Reporting
 
         uint SnapGroup(uint reportId, ICombatGroup group, ReportState state, bool isAttacker);
 
-        void SnapBattleReportView(uint cityId, byte troopId, uint battleId, uint groupId, bool isAttacker, uint enterBattleReportId);
+        void SnapBattleReportCityView(uint cityId, byte troopId, uint battleId, uint groupId, bool isAttacker, uint enterBattleReportId);
 
         void SnapCombatObject(uint troopId, ICombatObject co);
 
         void SnapLootedResources(uint cityId, byte troopId, uint battleId, Resource lootResource, Resource bonusResource);
 
-        void SnapBattleReportViewExit(uint battleId, uint groupId, uint reportId);
+        void SnapBattleReportCityViewExit(uint battleId, uint groupId, uint reportId);
+
+        void SnapBattleAccess(uint battleId, BattleOwner owner);
     }
 }

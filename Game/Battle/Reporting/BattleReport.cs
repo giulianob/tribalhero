@@ -164,7 +164,7 @@ namespace Game.Battle.Reporting
                     case ReportState.Entering:
                         if (!alreadySnapped)
                         {
-                            battleReportWriter.SnapBattleReportView(((IReportView)group).City.Id,
+                            battleReportWriter.SnapBattleReportCityView(((IReportView)group).City.Id,
                                                                     group.TroopId,
                                                                     battle.BattleId,
                                                                     group.Id,
@@ -177,7 +177,7 @@ namespace Game.Battle.Reporting
                     case ReportState.Dying:
                     case ReportState.OutOfStamina:
                     case ReportState.Retreating:
-                        battleReportWriter.SnapBattleReportViewExit(battle.BattleId, group.Id, ReportId);
+                        battleReportWriter.SnapBattleReportCityViewExit(battle.BattleId, group.Id, ReportId);
                         break;
                 }
             }
@@ -216,6 +216,11 @@ namespace Game.Battle.Reporting
         public void SetLootedResources(uint cityId, byte troopId, uint battleId, Resource lootResource, Resource bonusResource)
         {
             battleReportWriter.SnapLootedResources(cityId, troopId, battleId, lootResource, bonusResource);
+        }
+
+        public void AddAccess(BattleOwner owner)
+        {
+            battleReportWriter.SnapBattleAccess(battle.BattleId, owner);
         }
 
         public IEnumerable<DbDependency> DbDependencies

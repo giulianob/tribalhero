@@ -92,7 +92,7 @@ namespace Game.Logic.Actions
 
             localGroupId = uint.Parse(properties["local_group_id"]);
 
-            tribeDamageDealt = new JsonReader().Read<Dictionary<uint, decimal>>(properties["tribe_damage_dealt"]);
+            tribeDamageDealt = new JsonReader().Read<Dictionary<string, decimal>>(properties["tribe_damage_dealt"]).ToDictionary(k => uint.Parse(k.Key), v => v.Value);
             
             strongholdId = uint.Parse(properties["stronghold_id"]);
 
@@ -108,29 +108,31 @@ namespace Game.Logic.Actions
 
         private void BattleOnActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatGroup attackerGroup, ICombatObject attacker, ICombatGroup targetGroup, ICombatObject target, decimal damage)
         {
-            if (attackingSide == BattleManager.BattleSide.Attack && attackerGroup.Owner.Type == BattleOwnerType.City)
+            if (attackingSide != BattleManager.BattleSide.Attack || attackerGroup.Owner.Type != BattleOwnerType.City)
             {
-                ICity attackingCity;
-                if (!gameObjectLocator.TryGetObjects(attackerGroup.Owner.Id, out attackingCity))
-                {
-                    throw new Exception("Attacker city not found");
-                }
+                return;
+            }
 
-                if (!attackingCity.Owner.IsInTribe)
-                {
-                    return;
-                }
+            ICity attackingCity;
+            if (!gameObjectLocator.TryGetObjects(attackerGroup.Owner.Id, out attackingCity))
+            {
+                throw new Exception("Attacker city not found");
+            }
 
-                var tribeId = attackingCity.Owner.Tribesman.Tribe.Id;
+            if (!attackingCity.Owner.IsInTribe)
+            {
+                return;
+            }
 
-                if (tribeDamageDealt.ContainsKey(tribeId))
-                {
-                    tribeDamageDealt[tribeId] += damage;
-                }
-                else
-                {
-                    tribeDamageDealt[tribeId] = damage;
-                }
+            var tribeId = attackingCity.Owner.Tribesman.Tribe.Id;
+
+            if (tribeDamageDealt.ContainsKey(tribeId))
+            {
+                tribeDamageDealt[tribeId] += damage;
+            }
+            else
+            {
+                tribeDamageDealt[tribeId] = damage;
             }
         }
 

@@ -17,7 +17,7 @@ namespace Game.Battle.CombatGroups
 
         protected readonly uint BattleId;
 
-        public uint Id { get; private set; }
+        public virtual uint Id { get; private set; }
 
         public abstract byte TroopId { get; }
 

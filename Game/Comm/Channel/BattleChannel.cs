@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using Game.Battle;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
@@ -27,6 +28,20 @@ namespace Game.Comm.Channel
             battleManager.WithdrawDefender += BattleWithdrawDefender;
             battleManager.GroupUnitAdded += BattleManagerOnGroupUnitAdded;
             battleManager.GroupUnitRemoved += BattleManagerOnGroupUnitRemoved;
+            battleManager.ExitTurn += BattleManagerOnExitTurn;
+        }
+
+        private void BattleManagerOnExitTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, int turn)
+        {
+            var properties = battle.ListProperties();
+            if (properties.Count == 0)
+            {
+                return;
+            }
+
+            var packet = CreatePacket(battle, Command.BattlePropertyUpdate);
+            PacketHelper.AddBattleProperties(battle.ListProperties(), packet);
+            Global.Channel.Post(channelName, packet);
         }
 
         private Packet CreatePacket(IBattleManager battle, Command command)
@@ -85,6 +100,12 @@ namespace Game.Comm.Channel
 
         private void BattleSkippedAttacker(IBattleManager battle, BattleManager.BattleSide objSide, ICombatGroup combatGroup, ICombatObject source)
         {
+            // Don't inform client for objs that simply never attack
+            if (source.Stats.Atk == 0)
+            {
+                return;
+            }
+            
             var packet = CreatePacket(battle, Command.BattleSkipped);
             packet.AddUInt32(combatGroup.Id);
             packet.AddUInt32(source.Id);

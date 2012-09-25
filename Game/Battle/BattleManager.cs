@@ -24,9 +24,8 @@ namespace Game.Battle
     {
         public enum BattleSide
         {
-            Defense,
-
-            Attack
+            Defense = 0,
+            Attack = 1
         }
 
         public const string DB_TABLE = "battle_managers";

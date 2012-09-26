@@ -2,8 +2,11 @@
 
 $report = array(
     'refreshOnClose' => $refreshOnClose,
-    'outcomeOnly' => true,
-    'playerOutcome' => $playerOutcome);
+    'outcomeOnly' => true);
+
+if (isset($playerOutcome)) {
+    $report['playerOutcome'] = $playerOutcome;
+}
 
 if (isset($loot)) {
     $report['loot'] = $loot;

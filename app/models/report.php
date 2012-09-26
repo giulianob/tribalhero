@@ -10,7 +10,9 @@ class Report extends AppModel {
 
         $localUnread = $Battle->find('count', array(
                     'link' => array(
-                        'City' => array('type' => 'inner'),
+                        'City' => array(
+                            'type' => 'inner'
+                        ),
                     ),
                     'conditions' => array(
                         'City.player_id' => $playerId,
@@ -70,7 +72,8 @@ class Report extends AppModel {
 			'BattleReportView.read' => true
 				),
 				array(
-					'BattleReportView.city_id' => $cityIds,
+                    'BattleReportView.owner_type' => 'City',
+                    'BattleReportView.owner_id' => $cityIds,
 				)
 		);        
     }
@@ -108,7 +111,8 @@ class Report extends AppModel {
                     ),
                     array(
                         'BattleReportView.id' => $id,
-                        'BattleReportView.city_id' => $cityIds,
+                        'BattleReportView.owner_type' => 'City',
+                        'BattleReportView.owner_id' => $cityIds,
                     )
             );
         }

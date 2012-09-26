@@ -3,9 +3,12 @@
 $report = array(
     'refreshOnClose' => $refreshOnClose,
     'outcomeOnly' => false,
-    'playerOutcome' => $playerOutcome,
     'battleOutcome' => $battleOutcome,
     'battleEvents' => $battleEvents);
+
+if (!empty($playerOutcome)) {
+    $report['playerOutcome'] = $playerOutcome;
+}
 
 if (!empty($loot)) {
     $report['loot'] = $loot;

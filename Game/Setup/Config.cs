@@ -69,6 +69,7 @@ namespace Game.Setup
         public static int battle_loot_begin_round = 5; 
         public static int battle_stamina_initial = 20;
         public static ushort battle_stamina_destroyed_deduction = 5;
+        public static int battle_stamina_gate_multiplier = 3;
         public static bool battle_instant_move;
         public static double battle_cost_penalty = 1;        
         public static bool resource_cap = true;

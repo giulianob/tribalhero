@@ -33,11 +33,11 @@ namespace Game.Comm.ProcessorCommands
             packet.AddString(stronghold.Name);
             packet.AddByte(stronghold.Lvl);
             packet.AddInt32(stronghold.Gate.Value);
-            packet.AddByte((byte)stronghold.State.Type);
             packet.AddFloat((float)stronghold.VictoryPointRate);
             packet.AddUInt32(UnixDateTime.DateTimeToUnix(stronghold.DateOccupied.ToUniversalTime()));
             packet.AddUInt32(stronghold.X);
             packet.AddUInt32(stronghold.Y);
+            PacketHelper.AddToPacket(stronghold.State, packet);
 
             packet.AddByte(stronghold.Troops.Size);
             foreach (var troop in stronghold.Troops)

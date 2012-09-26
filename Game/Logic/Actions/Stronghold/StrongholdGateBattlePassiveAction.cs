@@ -220,8 +220,10 @@ namespace Game.Logic.Actions
 
                 world.Remove(stronghold.GateBattle);
                 dbManager.Delete(stronghold.GateBattle);
+                stronghold.BeginUpdate();
                 stronghold.GateBattle = null;
-                dbManager.Save(stronghold);
+                stronghold.State = GameObjectState.NormalState();
+                stronghold.EndUpdate();
 
                 StateChange(ActionState.Completed);
             }
@@ -246,6 +248,10 @@ namespace Game.Logic.Actions
             //Add gate to battle
             var combatGroup = battleProcedure.AddStrongholdGateToBattle(stronghold.GateBattle, stronghold);            
             localGroupId = combatGroup.Id;
+
+            stronghold.BeginUpdate();
+            stronghold.State = GameObjectState.BattleState(stronghold.GateBattle.BattleId);
+            stronghold.EndUpdate();
 
             beginTime = SystemClock.Now;
             endTime = SystemClock.Now;

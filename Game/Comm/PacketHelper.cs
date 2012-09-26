@@ -104,6 +104,26 @@ namespace Game.Comm
                 packet.AddUInt16((obj as IStructure).Stats.Labor);
             }
         }
+        
+        public static void AddToPacket(GameObjectState state, Packet packet)
+        {
+            packet.AddByte((byte)state.Type);
+            foreach (var parameter in state.Parameters)
+            {
+                if (parameter is byte)
+                    packet.AddByte((byte)parameter);
+                else if (parameter is short)
+                    packet.AddInt16((short)parameter);
+                else if (parameter is int)
+                    packet.AddInt32((int)parameter);
+                else if (parameter is ushort)
+                    packet.AddUInt16((ushort)parameter);
+                else if (parameter is uint)
+                    packet.AddUInt32((uint)parameter);
+                else if (parameter is string)
+                    packet.AddString((string)parameter);
+            }
+        }
 
         public static void AddToPacket(Resource resource, Packet packet, bool includeLabor = false)
         {

@@ -336,6 +336,9 @@ namespace Game.Logic.Procedures
                 {
                     throw new Exception(string.Format("Failed to start a battle due to error {0}", result));
                 }
+                targetStronghold.BeginUpdate();
+                targetStronghold.State = GameObjectState.BattleState(targetStronghold.GateBattle.BattleId);
+                targetStronghold.EndUpdate();
             }
 
             battleId = targetStronghold.GateBattle.BattleId;

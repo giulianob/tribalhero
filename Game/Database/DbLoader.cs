@@ -431,6 +431,10 @@ namespace Game.Database
                                                         (uint)reader["y"]);
                     stronghold.StrongholdState = (StrongholdState)((byte)reader["state"]);
                     stronghold.DbPersisted = true;
+                    stronghold.State.Type = (ObjectState)((byte)reader["object_state"]);
+                    foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
+                        stronghold.State.Parameters.Add(variable);
+
 
                     // Load owner tribe
                     var tribeId = (uint)reader["tribe_id"];
@@ -716,17 +720,20 @@ namespace Game.Database
 
             foreach (var stubInfo in stationedTroops)
             {
+                uint stationid;
                 switch((LocationType)stubInfo.stationType)
                 {
                     case LocationType.City:
                         ICity stationedCity;
-                        if (!World.Current.TryGetObjects(stubInfo.stationId, out stationedCity))
+                        stationid = stubInfo.stationId;
+                        if (!World.Current.TryGetObjects(stationid, out stationedCity))
                             throw new Exception("City not found");
                         stationedCity.Troops.DbLoaderAddStation(stubInfo.stub);
                         break;
                     case LocationType.Stronghold:
                         IStronghold stronghold;
-                        if (!StrongholdManager.TryGetStronghold(stubInfo.stationId, out stronghold))
+                        stationid = stubInfo.stationId;
+                        if (!StrongholdManager.TryGetStronghold(stationid, out stronghold))
                             throw new Exception("Stronghold not found");
                         stronghold.Troops.DbLoaderAddStation(stubInfo.stub);
                         break;

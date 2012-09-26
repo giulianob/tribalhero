@@ -82,7 +82,7 @@
 			pnlLocal.setBorder(border1);
 			pnlLocal.setLayout(new BorderLayout());
 
-			localReports = new LocalReportList();
+			localReports = new LocalReportList(BattleReportViewer.REPORT_CITY_LOCAL);
 			localReports.setConstraints("Center");
 			pnlLocal.append(localReports);
 
@@ -94,7 +94,7 @@
 			pnlRemote.setBorder(border2);
 			pnlRemote.setLayout(new BorderLayout());
 
-			remoteReports = new RemoteReportList();
+			remoteReports = new RemoteReportList(BattleReportViewer.REPORT_CITY_FOREIGN);
 			remoteReports.setConstraints("Center");
 			pnlRemote.append(remoteReports);
 			

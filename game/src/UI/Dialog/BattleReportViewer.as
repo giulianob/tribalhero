@@ -20,6 +20,11 @@
 	
 	public class BattleReportViewer extends GameJPanel
 	{
+		public static const REPORT_CITY_LOCAL: int = 1;
+		public static const REPORT_CITY_FOREIGN: int = 2;
+		public static const REPORT_TRIBE_LOCAL: int = 3;
+		public static const REPORT_TRIBE_FOREIGN: int = 4;
+		
 		private var pnlResources:JPanel;
 		private var pnlGroupOutcomeTableHolder:JPanel;
 		
@@ -38,7 +43,7 @@
 		private var loader:GameURLLoader = new GameURLLoader();
 		private var eventLoader:GameURLLoader = new GameURLLoader();
 		private var id:int;
-		private var isLocal:Boolean;
+		private var viewType:int;
 		private var playerNameFilter:String;
 		private var currentPage: int = 0;
 		private var pnlGroupOutcome:JPanel;
@@ -50,10 +55,10 @@
 		
 		public var refreshOnClose:Boolean;
 		
-		public function BattleReportViewer(id:int, playerNameFilter:String, isLocal:Boolean)
+		public function BattleReportViewer(id:int, playerNameFilter:String, viewType:int)
 		{
 			this.id = id;
-			this.isLocal = isLocal;
+			this.viewType = viewType;
 			this.playerNameFilter = playerNameFilter;	
 			
 			snapshotLoader = new GameURLLoader();
@@ -65,7 +70,7 @@
 		
 		private function load():void
 		{
-			Global.mapComm.BattleReport.viewReport(loader, id, playerNameFilter, isLocal);
+			Global.mapComm.BattleReport.viewReport(loader, id, playerNameFilter, viewType);
 		}
 		
 		private function onLoadSnapshot(e:Event):void 
@@ -87,7 +92,7 @@
 		
 		private function loadMoreEvents():void
 		{
-			Global.mapComm.BattleReport.viewMoreEvents(eventLoader, id, playerNameFilter, isLocal, currentPage);
+			Global.mapComm.BattleReport.viewMoreEvents(eventLoader, id, playerNameFilter, viewType, currentPage);
 		}		
 		
 		private function onLoadedEvents(e:Event):void
@@ -177,8 +182,13 @@
 			}
 			
 			// Show group outcome
-			var groupOutcome:TroopTable = new TroopTable(data.playerOutcome);
-			pnlGroupOutcomeTableHolder.append(groupOutcome);
+			if (data.hasOwnProperty("playerOutcome")) {
+				var groupOutcome:TroopTable = new TroopTable(data.playerOutcome);
+				pnlGroupOutcomeTableHolder.append(groupOutcome);
+			}
+			else {
+				pnlGroupOutcome.setVisible(false);
+			}
 			
 			// Show events
 			if (!data.outcomeOnly) {
@@ -197,7 +207,7 @@
 			for each (var snapshot:* in battleEvents.reports) {				
 				var importantRound: BattleImportantRound = new BattleImportantRound(snapshot);
 				importantRound.addEventListener(BattleImportantRound.EVENT_VIEW_SNAPSHOT, function(e: ViewSnapshotEvent): void {
-					Global.mapComm.BattleReport.viewSnapshot(snapshotLoader, id, playerNameFilter, isLocal, e.reportId);
+					Global.mapComm.BattleReport.viewSnapshot(snapshotLoader, id, playerNameFilter, viewType, e.reportId);
 				});
 				pnlImportantEvents.append(importantRound);
 			}

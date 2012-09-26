@@ -1,5 +1,6 @@
 ﻿package src.UI.Dialog {
 
+	import fl.lang.Locale;
 	import flash.display.*;
 	import flash.events.Event;
 	import flash.utils.Dictionary;
@@ -26,6 +27,7 @@
 		private var pnlLog: JPanel;
 		private var tabOffensive:JTabbedPane;
 		private var lstLogScroll:JScrollPane;
+		private var pnlProperties:JPanel;
 
 		private var battle: BattleManager;
 		private var battleId: int;
@@ -55,6 +57,7 @@
 				battle.addEventListener(BattleManager.OBJECT_SKIPPED, onSkipped);
 				battle.addEventListener(BattleManager.END, onEnd);
 				battle.addEventListener(BattleManager.NEW_ROUND, onNewRound);
+				battle.addEventListener(BattleManager.PROPERTIES_CHANGED, onPropertiesChanged);
 			}
 		}
 		
@@ -71,15 +74,27 @@
 				battle.removeEventListener(BattleManager.OBJECT_SKIPPED, onSkipped);
 				battle.removeEventListener(BattleManager.END, onEnd);
 				battle.removeEventListener(BattleManager.NEW_ROUND, onNewRound);
+				battle.removeEventListener(BattleManager.PROPERTIES_CHANGED, onPropertiesChanged);
 
 				Global.mapComm.Battle.battleUnsubscribe(battleId);
 			}
 		}
+				
+		private function onPropertiesChanged(e:Event):void 
+		{
+			pnlProperties.removeAll();
+			for (var propertyName: String in battle.properties) {
+				var lbl: JLabel = new JLabel(StringUtil.substitute("{0}: {1}", Locale.loadString("BATTLE_PROP_" + propertyName.toUpperCase()), battle.properties[propertyName].toString()), null, AsWingConstants.LEFT);
+				GameLookAndFeel.changeClass(lbl, "darkText");
+				pnlProperties.append(lbl);
+			}
+			pnlProperties.setVisible(pnlProperties.getComponentCount() > 0);
+		}		
 
 		private function onNewRound(e: BattleRoundEvent = null) : void {
 			log(new JSeparator());
-			getFrame().setTitle(StringUtil.substitute("Battle - {0} - Round {1}", battle.location.name, (e.round + 1)));
-			logStr("Round " + (e.round + 1), null, true);
+			getFrame().setTitle(StringUtil.substitute(Locale.loadString("BATTLE_NEW_ROUND"), battle.location.name, (e.round + 1)));
+			logStr(StringUtil.substitute(Locale.loadString("BATTLE_ROUND"), (e.round + 1)), null, true);
 		}
 		
 		private function addGroup(combatGroup: CombatGroup, defense: Boolean) : void {
@@ -95,7 +110,7 @@
 			tabsByGroup[combatGroup.id] = { tab: tab, grid: grid, isAttacker: !defense };
 					
 			var tabPanel: JTabbedPane = defense ? tabDefensive : tabOffensive;
-			tabPanel.appendTab(tab, StringUtil.substitute("{0} ({1})", combatGroup.owner.name, combatGroup.troopId == 1 ? "Local" : combatGroup.troopId));
+			tabPanel.appendTab(tab, StringUtil.substitute("{0} ({1})", combatGroup.owner.name, combatGroup.troopId == 1 ? Locale.loadString("BATTLE_SIDE_LOCAL") : combatGroup.troopId));
 		}
 
 		private function removeGroup(groupId: int) : void {
@@ -131,7 +146,7 @@
 			tabDefensive.removeAll();
 			tabsByGroup = new Dictionary();
 
-			logStr("Battle has ended");
+			logStr(Locale.loadString("BATTLE_ENDED"));
 		}
 
 		public function onAddedAttack(e: BattleGroupEvent):void
@@ -183,7 +198,7 @@
 
 			var pnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0, 0, false));
 			pnl.append(getCombatObjectPanel(e.combatGroup, e.combatObject));
-			var lbl: JLabel = new JLabel("couldn't reach anyone", new AssetIcon(groupUi.isAttacker ? new ICON_SINGLE_SWORD : new ICON_SHIELD));
+			var lbl: JLabel = new JLabel(Locale.loadString("BATTLE_CANT_REACH"), new AssetIcon(groupUi.isAttacker ? new ICON_SINGLE_SWORD : new ICON_SHIELD));
 			lbl.setHorizontalTextPosition(AsWingConstants.LEFT);
 			pnl.append(lbl);
 
@@ -209,24 +224,34 @@
 				return;
 			}
 
-			var dmgPnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0, AsWingConstants.CENTER));
-			dmgPnl.append(new JLabel(e.dmg.toString() + " dmg", new AssetIcon(e.attackerSide == BattleManager.SIDE_DEFENSE ? new ICON_SHIELD : new ICON_SINGLE_SWORD)));
 			var arrowPnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER));
 			arrowPnl.append(new AssetPane(e.attackerSide == BattleManager.SIDE_DEFENSE ? new ICON_ARROW_RIGHT : new ICON_ARROW_LEFT));
-			dmgPnl.append(arrowPnl);
+			
+			var dmgPnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0, AsWingConstants.CENTER));
+			dmgPnl.appendAll(
+				new JLabel(StringUtil.substitute(Locale.loadString("BATTLE_DAMAGE"), e.dmg.toString()), new AssetIcon(e.attackerSide == BattleManager.SIDE_DEFENSE ? new ICON_SHIELD : new ICON_SINGLE_SWORD)),
+				arrowPnl
+			);
 
 			var pnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER, 7, 0, false));
 			
-			pnl.append(getCombatObjectPanel(e.attackerCombatGroup, e.attackerCombatObj));
-			pnl.append(dmgPnl);
-			pnl.append(getCombatObjectPanel(e.targetCombatGroup, e.targetCombatObj));			
+			var attackerPnl: Component = getCombatObjectPanel(e.attackerCombatGroup, e.attackerCombatObj);
+			var targetPnl: Component = getCombatObjectPanel(e.targetCombatGroup, e.targetCombatObj);
+			
+			// Always keep defensive obj on the left and attacker on the right
+			if (e.attackerSide == BattleManager.SIDE_DEFENSE) {
+				pnl.appendAll(attackerPnl, dmgPnl, targetPnl);
+			}
+			else {
+				pnl.appendAll(targetPnl, dmgPnl, attackerPnl);
+			}
 
 			log(pnl);
 
 			if (defenseObj.data.hp <= 0) {
 				pnl = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0, 0, false));
 				pnl.append(getCombatObjectPanel(e.targetCombatGroup, e.targetCombatObj));
-				var defeatLbl: JLabel = new JLabel("has been defeated", new AssetIcon(e.attackerSide == BattleManager.SIDE_ATTACK ? new ICON_SHIELD : new ICON_SINGLE_SWORD));
+				var defeatLbl: JLabel = new JLabel(Locale.loadString("BATTLE_DEFEATED"), new AssetIcon(e.attackerSide == BattleManager.SIDE_ATTACK ? new ICON_SHIELD : new ICON_SINGLE_SWORD));
 				defeatLbl.setHorizontalTextPosition(AsWingConstants.LEFT);
 				pnl.append(defeatLbl);
 				log(pnl);
@@ -236,7 +261,7 @@
 		}
 		
 		private function getCombatObjectPanel(combatGroup: CombatGroup, combatObj: CombatObject) : Component {
-			var text: String = StringUtil.substitute("{0}({1}):{2}", combatGroup.owner.name, combatGroup.troopId == 1 ? "Local" : combatGroup.troopId, combatObj.name);
+			var text: String = StringUtil.substitute("{0}({1}):{2}", combatGroup.owner.name, combatGroup.troopId == 1 ? Locale.loadString("BATTLE_SIDE_LOCAL") : combatGroup.troopId, combatObj.name);
 			var icon: DisplayObjectContainer = combatObj.getIcon();
 			return new JLabel(text, (icon != null ? new AssetIcon(icon) : null));
 		}
@@ -280,13 +305,22 @@
 			setLayout(new BorderLayout());
 			setBorder(null);
 			setPreferredSize(new IntDimension(650, Math.max(600, Constants.screenH - GameJImagePanelBackground.getFrameHeight())));
-
-			tabDefensive = new JTabbedPane();
-			tabDefensive.setPreferredHeight(175);
-
-			var border1:SimpleTitledBorder = new SimpleTitledBorder(null, "Defender", AsWingConstants.TOP, AsWingConstants.LEFT);
-			tabDefensive.setBorder(border1);
-
+			
+			var pnlNorth: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+			pnlNorth.setConstraints("North");
+			{			
+				pnlProperties = new JPanel(new FlowLayout(AsWingConstants.LEFT, 15, 5, false));
+				pnlProperties.setVisible(false);
+				
+				tabDefensive = new JTabbedPane();
+				tabDefensive.setPreferredHeight(175);
+			
+				var defenderBorder:SimpleTitledBorder = new SimpleTitledBorder(null, Locale.loadString("BATTLE_TAB_DEFENDER"), AsWingConstants.TOP, AsWingConstants.LEFT);
+				tabDefensive.setBorder(defenderBorder);
+				
+				pnlNorth.appendAll(pnlProperties, tabDefensive);
+			}
+			
 			pnlLog = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 8, AsWingConstants.CENTER));
 			pnlLog.setBorder(new EmptyBorder(null, new Insets(10, 0, 5, 0)));
 
@@ -294,20 +328,19 @@
 			lstLogScroll.setBorder(new EmptyBorder(null, new Insets()));
 
 			var tabLog: JTabbedPane = new JTabbedPane();
-			tabLog.appendTab(lstLogScroll, "Battle Log");
+			tabLog.appendTab(lstLogScroll, Locale.loadString("BATTLE_TAB_LOG"));
 
 			tabOffensive = new JTabbedPane();
 			tabOffensive.setPreferredHeight(175);
 
-			var border3: SimpleTitledBorder = new SimpleTitledBorder(null, "Attacker", AsWingConstants.TOP, AsWingConstants.LEFT);
-			tabOffensive.setBorder(border3);
+			var attackerBorder: SimpleTitledBorder = new SimpleTitledBorder(null, Locale.loadString("BATTLE_TAB_ATTACKER"), AsWingConstants.TOP, AsWingConstants.LEFT);
+			tabOffensive.setBorder(attackerBorder);
 
-			//component layoution
-			tabDefensive.setConstraints("North");
+			//component layoution			
 			tabLog.setConstraints("Center");
 			tabOffensive.setConstraints("South");
 			
-			append(tabDefensive);
+			append(pnlNorth);
 			append(tabLog);
 			append(tabOffensive);
 		}

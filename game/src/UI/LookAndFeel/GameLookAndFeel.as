@@ -17,8 +17,15 @@
 			super();
 		}
 
-		public static function changeClass(obj: Component, classes: *) : void {
-			var ui: ComponentUI = obj.getUI();
+		public static function changeClass(obj: Component, classes: * , resetPrevious: Boolean = false) : void {
+			var ui: ComponentUI;
+			if (resetPrevious) {
+				var uiClass: Class = obj.getDefaultBasicUIClass();
+				ui = (new uiClass()) as ComponentUI
+			}			
+			else {
+				ui = obj.getUI();
+			}
 
 			var keys: Array = (classes is String) ? classes.split(" ") : classes;
 

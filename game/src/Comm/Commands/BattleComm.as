@@ -1,5 +1,6 @@
 ﻿package src.Comm.Commands {
 
+	import flash.utils.Dictionary;
 	import src.Comm.*;
 	import src.GameContainer;
 	import src.Global;
@@ -77,6 +78,9 @@
 				case Commands.BATTLE_GROUP_UNIT_REMOVED:
 					onReceiveGroupUnitRemoved(e.packet);				
 				break;				
+				case Commands.BATTLE_PROPERTIES_UPDATED:
+					onReceiveBattlePropertiesUpdated(e.packet);
+				break;
 			}
 		}
 		
@@ -134,16 +138,14 @@
 			var round: int = packet.readUInt();
 			battle.newRound(round);
 			
-			// Properties
-			var propertiesCount: int = packet.readByte();
-			for (var i: int = 0; i < propertiesCount; i++) {
-				battle.properties[packet.readString()] = packet.readString();
-			}
+			// Properties			
+			battle.setProperties(readProperties(packet));
 			
 			// Add units
 			var group: CombatGroup;
 			
 			var attackerGroups: int = packet.readInt();
+			var i: int;
 			for (i = 0; i < attackerGroups; i++) {
 				group = readGroup(packet);
 				battle.addToAttack(group);
@@ -154,6 +156,16 @@
 				group = readGroup(packet);
 				battle.addToDefense(group);
 			}			
+		}
+		
+		private function readProperties(packet:Packet):Dictionary
+		{	
+			var properties: Dictionary = new Dictionary();
+			var propertiesCount: int = packet.readByte();
+			for (var i: int = 0; i < propertiesCount; i++) {
+				properties[packet.readString()] = packet.readString();
+			}
+			return properties;
 		}
 		
 		private function readGroup(packet: Packet): CombatGroup {
@@ -216,6 +228,14 @@
 			
 			group.add(combatObj);
 		}		
+		
+		private function onReceiveBattlePropertiesUpdated(packet:Packet):void 
+		{
+			var battle: BattleManager = getBattle(packet.readUInt());
+			if (!battle) return;
+
+			battle.setProperties(readProperties(packet));
+		}
 		
 		private function onReceiveGroupUnitRemoved(packet:Packet):void 
 		{

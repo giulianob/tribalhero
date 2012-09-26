@@ -17,6 +17,10 @@
 	import src.UI.TweenPlugins.DynamicPropsPlugin;
 	import src.Util.*;
 
+	CONFIG::debug {
+		import com.sociodox.theminer.TheMiner;
+	}
+
 	public class Main extends MovieClip
 	{
 		private var importObjects: ImportObjects;
@@ -25,7 +29,6 @@
 
 		private var map:Map;
 		private var miniMap: MiniMap;
-		private var frameCounter:FPSCounter;
 		public var packetCounter:GeneralCounter;
 		private var session:TcpSession;
 		private var password: String;
@@ -39,21 +42,27 @@
 		private var siteVersion: String;
 		
 		private var uncaughtExceptionHandler: UncaughtExceptionHandler;
-		
+			
 		public function Main()
 		{
+			name = "Main";
 			trace("TribalHero v" + Constants.version + "." + Constants.revision);
 			
 			addEventListener(Event.ADDED_TO_STAGE, init);		
-		}  
-
+		}
+		
 		public function init(e: Event = null) : void {			
 			removeEventListener(Event.ADDED_TO_STAGE, init);		
 			
 			uncaughtExceptionHandler = new UncaughtExceptionHandler(loaderInfo);
 			
-			//Init ASWING
-			AsWingManager.initAsStandard(stage);
+			CONFIG::debug {
+				stage.addChild(new TheMiner());
+			}
+			
+			//Init ASWING			
+			//resizeHandler(null);
+			AsWingManager.initAsStandard(this);				
 			UIManager.setLookAndFeel(new GameLookAndFeel());
 			
 			//Init TweenLite
@@ -287,15 +296,6 @@
 			gameContainer.show();
 			Global.mapComm.General.readLoginInfo(packet);
 			gameContainer.setMap(map, miniMap);
-
-			if (Constants.debug > 0) {
-				if (frameCounter)
-					removeChild(frameCounter);
-
-				frameCounter = new FPSCounter();
-				frameCounter.y = Constants.screenH - 32;
-				addChild(frameCounter);
-			}
 		}
 
 		public function onReceive(packet: Packet):void
@@ -308,8 +308,7 @@
 		}
 
 		private function resizeHandler(event:Event):void {
-			Util.log("resizeHandler: " + event);
-			Util.log("stageWidth: " + stage.stageWidth + " stageHeight: " + stage.stageHeight);
+			
 		}
 	}
 }

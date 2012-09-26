@@ -12,6 +12,7 @@ package src.Util {
 	import flash.filters.ColorMatrixFilter;
 	import flash.geom.Rectangle;
 	import flash.utils.getQualifiedClassName;
+	import mx.utils.StringUtil;
 	import org.aswing.Component;
 	import org.aswing.Container;
 	import org.aswing.event.*;
@@ -25,7 +26,7 @@ package src.Util {
 	import src.UI.GameJImagePanelBackground;
 
 	public class Util {
-		public static function log(msg: String) : void {			
+		public static function log(msg: String) : void {					
 			if (Constants.loginKey) ExternalInterface.call("console.log", msg);
 			else trace(msg);
 		}

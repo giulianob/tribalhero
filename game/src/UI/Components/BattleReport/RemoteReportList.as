@@ -35,11 +35,14 @@
 		private var loader: GameURLLoader = new GameURLLoader();
 		private var page: int = 0;
 		private var playerNameFilter: String = "";
+		private var viewType:int;
 		
 		public var refreshOnClose: Boolean = false;
 		
-		public function RemoteReportList()
+		public function RemoteReportList(viewType: int)
 		{
+			this.viewType = viewType;
+			
 			createUI();
 			loader.addEventListener(Event.COMPLETE, onLoaded);
 			
@@ -55,7 +58,7 @@
 
 				tblReports.clearSelection(true);
 
-				var battleReportDialog: BattleReportViewer = new BattleReportViewer(id, playerNameFilter, false);
+				var battleReportDialog: BattleReportViewer = new BattleReportViewer(id, playerNameFilter, viewType);
 				battleReportDialog.show(null, true, function(viewDialog: BattleReportViewer = null) : void {
 					if (battleReportDialog.refreshOnClose) {
 						refreshOnClose = true;
@@ -84,7 +87,7 @@
 			btnPrevious.setVisible(false);
 			btnNext.setVisible(false);
 
-			Global.mapComm.BattleReport.listRemote(loader, page, playerNameFilter);
+			Global.mapComm.BattleReport.listRemote(loader, viewType, page, playerNameFilter);
 		}
 
 		private function onLoaded(e: Event) : void {
@@ -119,11 +122,20 @@
 
 			reportList = new VectorListModel();
 
-			tableModel = new PropertyTableModel(reportList,
-			["Date", "Battle Location", "Troop", "Side"],
-			["date", ".", "troop", "side"],
-			[null, null, null, null]
-			);
+			if (viewType == BattleReportViewer.REPORT_TRIBE_FOREIGN) {
+				tableModel = new PropertyTableModel(reportList,
+					["Date", "Battle Location", "Side"],
+					["date", ".", "side"],
+					[null, null, null, null]
+				);				
+			}
+			else {
+				tableModel = new PropertyTableModel(reportList,
+					["Date", "Battle Location", "Troop", "Side"],
+					["date", ".", "troop", "side"],
+					[null, null, null, null]
+				);
+			}
 
 			tblReports = new JTable(tableModel);
 			tblReports.setSelectionMode(JTable.SINGLE_SELECTION);

@@ -33,11 +33,14 @@
 		private var loader: GameURLLoader = new GameURLLoader();
 		private var page: int = 0;
 		private var playerNameFilter: String = "";
+		private var viewType:int;
 		
 		public var refreshOnClose: Boolean = false;
 
-		public function LocalReportList()
+		public function LocalReportList(viewType: int)
 		{
+			this.viewType = viewType;
+			
 			createUI();
 			loader.addEventListener(Event.COMPLETE, onLoaded);
 
@@ -54,7 +57,7 @@
 
 				tblReports.clearSelection(true);
 
-				var battleReportDialog: BattleReportViewer = new BattleReportViewer(id, playerNameFilter, true);
+				var battleReportDialog: BattleReportViewer = new BattleReportViewer(id, playerNameFilter, viewType);
 				battleReportDialog.show(null, true, function(viewDialog: BattleReportViewer = null) : void {
 					if (battleReportDialog.refreshOnClose) {
 						refreshOnClose = true;
@@ -83,7 +86,7 @@
 			btnPrevious.setVisible(false);
 			btnNext.setVisible(false);			
 
-			Global.mapComm.BattleReport.listLocal(loader, page, playerNameFilter);
+			Global.mapComm.BattleReport.listLocal(loader, viewType, page, playerNameFilter);
 		}
 
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame
@@ -104,7 +107,7 @@
 				InfoDialog.showMessageDialog("Error", "Unable to query report. Refresh the page if this problem persists");
 				return;
 			}
-
+			
 			//Paging info
 			this.page = data.page;
 			btnPrevious.setVisible(page > 1);

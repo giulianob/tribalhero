@@ -73,9 +73,9 @@ package src.UI.Tooltips
 			return true;
 		}
 		
-		override protected function showFrame():void 
+		override protected function showFrame(obj: DisplayObject = null):void 
 		{
-			super.showFrame();
+			super.showFrame(obj);
 			
 			// Set as modal
 			var frame: JFrame = ui.getFrame();

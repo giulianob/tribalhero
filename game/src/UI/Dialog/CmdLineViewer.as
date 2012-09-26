@@ -475,7 +475,7 @@ package src.UI.Dialog
 			
 			consoleCss.setStyle(".global", {color: '#8ecafe'});
 			consoleCss.setStyle(".self", { color: '#aef64f' } );
-			consoleCss.setStyle(".system", { color: '#ec7600' } );
+			consoleCss.setStyle(".system", { color: '#ec7600', fontWeight: 'bold' } );
 			
 			txtConsole.setCSS(consoleCss);
 			

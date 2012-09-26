@@ -116,6 +116,7 @@ package src.Comm {
 		public static const BATTLE_WITHDRAW_DEFENDER: int = 709;
 		public static const BATTLE_GROUP_UNIT_ADDED: int = 710;				
 		public static const BATTLE_GROUP_UNIT_REMOVED: int = 711;		
+		public static const BATTLE_PROPERTIES_UPDATED: int = 712;		
 		
 		public static const RESOURCE_GATHER: int = 801;
 		

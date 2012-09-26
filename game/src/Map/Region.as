@@ -24,6 +24,7 @@
 		public function Region(id: int, data: Array, map: Map)
 		{
 			mouseEnabled = false;
+			mouseChildren = false;
 
 			this.id = id;
 			this.map = map;			
@@ -81,8 +82,7 @@
 		{			
 			if (Constants.debug >= 2)
 				Util.log("Creating region id: " + id + " " + globalX + "," + globalY);
-			
-			
+						
 			clearAllPlaceholders();
 			
 			for (var a:int = 0; a < Math.ceil(Constants.regionW / Constants.regionBitmapW); a++)

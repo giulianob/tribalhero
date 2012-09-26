@@ -17,6 +17,7 @@
 		public static const OBJECT_SKIPPED: String = "BATTLE_OBJECT_SKIPPED";
 		public static const END: String = "BATTLE_ENDED";		
 		public static const NEW_ROUND: String = "BATTLE_NEW_ROUND";		
+		public static const PROPERTIES_CHANGED: String = "BATTLE_PROPERTIES_CHANGED";
 		
 		public static const SIDE_DEFENSE: int = 0;
 		public static const SIDE_ATTACK: int = 1;		
@@ -33,7 +34,12 @@
 		public var location: BattleLocation;
 		
 		public function BattleManager(battleId: int) {
-			this.battleId = battleId;
+			this.battleId = battleId;			
+		}
+		
+		public function setProperties(properties: Dictionary): void {
+			this.properties = properties;
+			dispatchEvent(new Event(PROPERTIES_CHANGED));
 		}
 		
 		public function end(): void {

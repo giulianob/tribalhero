@@ -5,9 +5,12 @@
  */
 
 package src.UI.Tooltips {
+	import com.greensock.loading.core.DisplayObjectLoader;
 	import flash.display.DisplayObject;
+	import flash.display.InteractiveObject;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import org.aswing.AsWingManager;
 	import org.aswing.border.EmptyBorder;
 	import org.aswing.Component;
 	import org.aswing.event.AWEvent;
@@ -52,11 +55,11 @@ package src.UI.Tooltips {
 				viewObj.addEventListener(Event.REMOVED_FROM_STAGE, parentHidden);
 				viewObj.addEventListener(MouseEvent.MOUSE_DOWN, parentHidden);				
 				
-				showFrame();
+				showFrame(obj);
 			}
 
 			this.position = new IntPoint(ui.getFrame().stage.mouseX, ui.getFrame().stage.mouseY);			
-			adjustPosition();
+			adjustPosition();			
 		}
 		
 		public function showFixed(position: IntPoint):void
@@ -64,17 +67,21 @@ package src.UI.Tooltips {
 			this.position = position;
 			showFrame();
 			adjustPosition();
-		}		
+		}
 		
-		protected function showFrame(): void {
-			ui.addEventListener(AWEvent.PAINT, onPaint);
-			ui.show();
+		protected function showFrame(obj: DisplayObject = null): void {
+			ui.addEventListener(AWEvent.PAINT, onPaint);				
+			ui.show();			
 			
 			if (!mouseInteractive()) {
 				ui.getFrame().parent.mouseEnabled = false;
 				ui.getFrame().parent.mouseChildren = false;
 				ui.getFrame().parent.tabEnabled = false;
 				ui.getFrame().setFocusable(false);
+				
+				if (obj && obj.stage && obj is InteractiveObject) {
+					obj.stage.focus = obj as InteractiveObject;
+				}				
 			}
 		}
 		

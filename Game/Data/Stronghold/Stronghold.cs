@@ -8,6 +8,7 @@ using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic;
 using Game.Map;
+using Game.Util;
 using Game.Util.Locking;
 using Persistance;
 
@@ -341,7 +342,10 @@ namespace Game.Data.Stronghold
                                new DbColumn("gate_open_to", GateOpenTo == null ? 0 : GateOpenTo.Id, DbType.UInt32),
                                new DbColumn("date_occupied", DateOccupied, DbType.DateTime),
                                new DbColumn("gate_battle_id", GateBattle != null ? GateBattle.BattleId : 0, DbType.UInt32),
-                               new DbColumn("main_battle_id", MainBattle != null ? MainBattle.BattleId : 0, DbType.UInt32)
+                               new DbColumn("main_battle_id", MainBattle != null ? MainBattle.BattleId : 0, DbType.UInt32),
+                               new DbColumn("object_state", (byte)State.Type, DbType.Boolean),
+                               new DbColumn("state_parameters", XmlSerializer.SerializeList(State.Parameters.ToArray()), DbType.String)
+
                        };
             }
         }

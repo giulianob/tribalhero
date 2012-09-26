@@ -173,7 +173,6 @@ namespace Game.Comm.ProcessorCommands
                 packet.AddUInt32(stronghold.Id);
                 packet.AddString(stronghold.Name);
                 packet.AddByte((byte)stronghold.StrongholdState);
-                packet.AddByte((byte)stronghold.State.Type);
                 packet.AddByte(stronghold.Lvl);
                 packet.AddInt32(stronghold.Gate.Value);
                 packet.AddUInt32(stronghold.X);
@@ -181,7 +180,9 @@ namespace Game.Comm.ProcessorCommands
                 packet.AddInt32(stronghold.Troops.StationedHere().Sum(x=> x.Upkeep));
                 packet.AddFloat((float)stronghold.VictoryPointRate);
                 packet.AddUInt32(UnixDateTime.DateTimeToUnix(stronghold.DateOccupied.ToUniversalTime()));
-            }            
+                packet.AddUInt32(stronghold.GateOpenTo == null ? 0 : stronghold.GateOpenTo.Id);
+                PacketHelper.AddToPacket(stronghold.State, packet);
+            }
         }
         private void AddPublicInfo(ITribe tribe, Packet packet)
         {

@@ -169,7 +169,7 @@ namespace Game.Battle
 
         public short GetStamina(ITroopStub stub, IStronghold targetStronghold)
         {
-            return (short)(Config.battle_stamina_initial*3);
+            return (short)(Config.battle_stamina_initial*Config.battle_stamina_gate_multiplier);
         }
 
         public virtual ushort GetStaminaReinforced(ICity city, ushort stamina, uint round)

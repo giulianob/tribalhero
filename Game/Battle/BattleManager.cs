@@ -292,9 +292,14 @@ namespace Game.Battle
             return new Dictionary<string, object>(properties);
         }
 
-        public void Add(ICombatGroup combatGroup, BattleSide battleSide)
+        public void Add(ICombatGroup combatGroup, BattleSide battleSide, bool allowReportAccess)
         {
             AddToCombatList(combatGroup, battleSide == BattleSide.Attack, battleSide == BattleSide.Attack ? Attackers : Defenders, ReportState.Entering);
+
+            if (allowReportAccess)
+            {
+                BattleReport.AddAccess(combatGroup, battleSide);
+            }
         }
 
         private void AddToCombatList(ICombatGroup group, bool isAttacker, ICombatList combatList, ReportState state)

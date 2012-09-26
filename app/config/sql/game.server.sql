@@ -165,7 +165,7 @@ CREATE TABLE `battle_report_objects` (
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`battle_report_troop_id`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -224,7 +224,7 @@ CREATE TABLE `battle_report_views` (
   KEY `battle_report_troop_id` (`group_id`),
   KEY `city_id` (`city_id`),
   KEY `battle_id` (`battle_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -521,7 +521,7 @@ CREATE TABLE `message_board_read` (
   PRIMARY KEY (`id`),
   KEY `idx_message_board_read_player_id_and_message_board_thread_id` (`player_id`,`message_board_thread_id`),
   KEY `idx_message_board_read_last_read` (`last_read`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -547,7 +547,7 @@ CREATE TABLE `message_board_threads` (
   KEY `idx_message_board_threads_tribe_id_and_deleted` (`tribe_id`,`deleted`),
   KEY `idx_message_board_threads_sticky` (`sticky`),
   KEY `idx_message_board_threads_last_post_date` (`last_post_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -843,6 +843,8 @@ CREATE TABLE `strongholds` (
   `gate_battle_id` int(10) unsigned NOT NULL,
   `gate_open_to` int(11) unsigned NOT NULL,
   `date_occupied` datetime NOT NULL,
+  `object_state` tinyint(3) unsigned NOT NULL,
+  `state_parameters` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1134,7 +1136,7 @@ CREATE TABLE `unit_templates_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-09-16 16:45:45
+-- Dump completed on 2012-09-25 23:40:42
 -- MySQL dump 10.13  Distrib 5.5.16, for Win64 (x86)
 --
 -- Host: localhost    Database: tribalhero_server
@@ -1171,4 +1173,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-09-16 16:45:45
+-- Dump completed on 2012-09-25 23:40:42

@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.16, for Win64 (x86)
+-- MySQL dump 10.13  Distrib 5.5.16, for Win32 (x86)
 --
 -- Host: localhost    Database: tribalhero_server
 -- ------------------------------------------------------
--- Server version	5.5.16-log
+-- Server version	5.5.16
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -165,7 +165,7 @@ CREATE TABLE `battle_report_objects` (
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`battle_report_troop_id`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -203,7 +203,8 @@ DROP TABLE IF EXISTS `battle_report_views`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `battle_report_views` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `city_id` int(10) unsigned NOT NULL,
+  `owner_type` varchar(20) NOT NULL,
+  `owner_id` int(10) unsigned NOT NULL,
   `troop_stub_id` tinyint(3) unsigned NOT NULL,
   `battle_id` int(10) unsigned NOT NULL,
   `group_id` int(10) unsigned NOT NULL,
@@ -218,13 +219,11 @@ CREATE TABLE `battle_report_views` (
   `bonus_gold` int(11) NOT NULL DEFAULT '0',
   `read` tinyint(1) NOT NULL,
   `created` datetime NOT NULL,
-  `battle_report_enter_id` int(11) unsigned DEFAULT NULL,
-  `battle_report_exit_id` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`group_id`),
-  KEY `city_id` (`city_id`),
-  KEY `battle_id` (`battle_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `battle_id` (`battle_id`),
+  KEY `owner_type` (`owner_type`,`owner_id`,`created`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1134,12 +1133,12 @@ CREATE TABLE `unit_templates_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-09-16 16:45:45
--- MySQL dump 10.13  Distrib 5.5.16, for Win64 (x86)
+-- Dump completed on 2012-09-25 23:36:14
+-- MySQL dump 10.13  Distrib 5.5.16, for Win32 (x86)
 --
 -- Host: localhost    Database: tribalhero_server
 -- ------------------------------------------------------
--- Server version	5.5.16-log
+-- Server version	5.5.16
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -1171,4 +1170,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-09-16 16:45:45
+-- Dump completed on 2012-09-25 23:36:14

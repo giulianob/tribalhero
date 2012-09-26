@@ -9,6 +9,7 @@ class Battle extends AppModel {
 
     var $name = 'Battle';
     var $belongsTo = array(
+        'City' => array('conditions' => 'Battle.owner_type = "City"', 'foreignKey' => 'owner_id', 'dependent' => false)
     );
     var $hasMany = array(
         'BattleReport' => array('dependent' => true, 'conditions' => 'BattleReport.ready = 1'),
@@ -23,6 +24,7 @@ class Battle extends AppModel {
      * @return string
      */
     function getLocationName($type, $id) {
+
         if (isset($this->locationCache[$type . $id])) {
             return $this->locationCache[$type . $id];
         }
@@ -37,6 +39,16 @@ class Battle extends AppModel {
                     $name = $city['City']['name'];
                 }
                 break;
+
+            case 'stronghold':
+            case 'strongholdgate':
+                /** @var $strongholdModel Stronghold */
+                $strongholdModel = & ClassRegistry::init('Stronghold');
+                $stronghold = $strongholdModel->findById($id);
+                if ($stronghold) {
+                    $name = $stronghold['Stronghold']['name'];
+                }
+                break;
         }
 
         $this->locationCache[$type . $id] = $name;
@@ -46,7 +58,6 @@ class Battle extends AppModel {
 
     /**
      * Returns the important battle events for the given battle
-     * @param type $battle 
      */
     function viewBattleEvents($battle, $page) {
         $eventsPerPage = 3;
@@ -182,7 +193,7 @@ class Battle extends AppModel {
 
     /**
      * Returns the results for a group for a given battle
-     * @param type $battleId 
+     * @param type $battleId
      */
     function viewGroupOutcome($battle, $groupId) {
         App::import('Sanitize');
@@ -234,7 +245,7 @@ class Battle extends AppModel {
      * @param type $joinOrLeave
      * @param type $fields
      * @param type $conditions
-     * @return type 
+     * @return type
      */
     private function getBattleReportObjectJoinOrLeaveInfo($battleId, $groupId, $joinOrLeave, $fields, $conditions = array()) {
         App::import('Sanitize');
@@ -249,23 +260,23 @@ class Battle extends AppModel {
         return $this->query(sprintf("
           SELECT %s
           FROM `battle_report_objects` AS `BattleReportObject`
-          INNER JOIN `battle_report_troops` AS `BattleReportTroop` ON (`BattleReportTroop`.`id` = `BattleReportObject`.`battle_report_troop_id`), 
+          INNER JOIN `battle_report_troops` AS `BattleReportTroop` ON (`BattleReportTroop`.`id` = `BattleReportObject`.`battle_report_troop_id`),
             (
                 SELECT %s(`BattleReportObjectJoin`.`id`) `id`
                 FROM `battle_report_objects` AS `BattleReportObjectJoin`
-                INNER JOIN `battle_report_troops` AS `BattleReportTroopJoin` ON (`BattleReportTroopJoin`.`id` = `BattleReportObjectJoin`.`battle_report_troop_id`)                
+                INNER JOIN `battle_report_troops` AS `BattleReportTroopJoin` ON (`BattleReportTroopJoin`.`id` = `BattleReportObjectJoin`.`battle_report_troop_id`)
                 INNER JOIN `battle_reports` AS `BattleReportJoin` ON (`BattleReportJoin`.`battle_id` = %s AND `BattleReportJoin`.`id` = `BattleReportTroopJoin`.`battle_report_id`)
                 %s
                 GROUP BY `BattleReportObjectJoin`.`object_id`
-            ) as `HighestObject`                     
+            ) as `HighestObject`
           WHERE `BattleReportObject`.`id` = HighestObject.id
-          ORDER BY `BattleReportObject`.`type` DESC, `BattleReportObject`.`id` ASC", implode(',', $dbo->fields($this->BattleReport->BattleReportTroop->BattleReportObject, null, $fields)), $joinOrLeave == 'JOIN' ? 'MIN' : 'MAX', Sanitize::escape($battleId), $dbo->conditions($conditions)));
+          ORDER BY `BattleReportObject`.`type` DESC, `BattleReportObject`.`id` ASC LIMIT 1", implode(',', $dbo->fields($this->BattleReport->BattleReportTroop->BattleReportObject, null, $fields)), $joinOrLeave == 'JOIN' ? 'MIN' : 'MAX', Sanitize::escape($battleId), $dbo->conditions($conditions)));
     }
 
     /**
      * Returns the battle outcome overview for the specified $battle
      * @param type $battle
-     * @return type 
+     * @return type
      */
     function viewBattleOutcome($battle) {
         $cacheKey = "battle_outcome_{$battle['Battle']['id']}";
@@ -379,11 +390,10 @@ class Battle extends AppModel {
     }
 
     /**
-     * Lists all of the invasion reports for a list of cities
-     * @param array $cities List of cities to find reports on
-     * @return array List of reports
+     * Lists all of the invasion reports for a list of places.
+     * Optionally further filter based on a location
      */
-    function listInvasionReports($cities) {
+    function listInvasionReports($viewType, $ownerType, $ownerIds, $locationType = null, $locationId = null) {
         $options = array(
             'fields' => array(
                 'Battle.created',
@@ -400,18 +410,21 @@ class Battle extends AppModel {
             'order' => 'Battle.ended DESC'
         );
 
-        if (!is_null($cities)) {
-            $options['conditions']['Battle.owner_type'] = 'City';
-            $options['conditions']['Battle.owner_id'] = $cities;
+        $options['conditions']['Battle.owner_type'] = $ownerType;
+
+        if ($ownerIds !== "*") {
+            $options['conditions']['Battle.owner_id'] = $ownerIds;
+        }
+
+        if ($locationType !== false && $locationId !== false) {
+            $options['conditions']['Battle.location_type'] = $locationType;
+            $options['conditions']['Battle.location_id'] = $locationId;
         }
 
         return $options;
     }
 
-    /**
-     * Returns a given report for a list of cities and given battle id
-     */
-    function viewInvasionReport($cities, $battleId, &$outcomeOnly, &$groupId, &$isUnread, &$loot) {
+    function viewInvasionReport($ownerType, $ownerId, $battleId, &$outcomeOnly, &$groupId, &$isUnread, &$loot) {
         $loot = null;
         $outcomeOnly = false;
         $groupId = 1;
@@ -431,9 +444,10 @@ class Battle extends AppModel {
             'link' => array()
         );
 
-        if (!is_null($cities)) {
-            $options['conditions']['Battle.owner_type'] = 'City';
-            $options['conditions']['Battle.owner_id'] = $cities;
+        $options['conditions']['Battle.owner_type'] = $ownerType;
+
+        if ($ownerId !== "*") {
+            $options['conditions']['Battle.owner_id'] = $ownerId;
         }
 
         $report = $this->find('first', $options);
@@ -452,7 +466,7 @@ class Battle extends AppModel {
      * @return array
      */
     function viewSnapshot($battleId, $reportId) {
-        // We could just accept the reportId here but then it would take an extra lookup to make sure the user is not trying to see a snapshot for 
+        // We could just accept the reportId here but then it would take an extra lookup to make sure the user is not trying to see a snapshot for
         // the wrong battle so we just take in both to save 1 query.
         $options = array(
             'conditions' => array(
@@ -488,40 +502,22 @@ class Battle extends AppModel {
 
     /**
      * Lists all of the attack reports for a list of cities
-     * @param array $cities List of cities to find reports on
      * @return array List of reports
      */
-    function listAttackReports($cities) {
+    function listAttackReports($viewType, $ownerType, $ownerId, $locationType, $locationId) {
         $options = array(
-            'joins' => array(
-                array(
-                    'table' => 'battles',
-                    'alias' => 'Battle',
-                    'type' => 'INNER',
-                    'foreignKey' => false,
-                    'conditions' => array(
-                        'BattleReportView.battle_id = Battle.id',
-                        'Battle.ended IS NOT NULL',
-                    )
-                ),
-                array(
-                    'table' => 'cities',
-                    'alias' => 'TroopCity',
-                    'type' => 'INNER',
-                    'foreignKey' => false,
-                    'conditions' => array(
-                        'BattleReportView.city_id = TroopCity.id'
-                    )
-                )
+            'contain' => array(
+                'Battle' => array('conditions' => array('Battle.ended IS NOT NULL'))
             ),
             'fields' => array(
                 'BattleReportView.id',
                 'BattleReportView.battle_id',
                 'BattleReportView.created',
+                'BattleReportView.owner_id',
+                'BattleReportView.owner_type',
                 'BattleReportView.is_attacker',
                 'BattleReportView.troop_stub_id',
                 'BattleReportView.read',
-                'TroopCity.name',
                 'Battle.location_type',
                 'Battle.location_id',
             ),
@@ -529,8 +525,15 @@ class Battle extends AppModel {
             )
         );
 
-        if (!is_null($cities)) {
-            $options['conditions']['BattleReportView.city_id'] = $cities;
+        $options['conditions']['BattleReportView.owner_type'] = $ownerType;
+
+        if ($ownerId !== "*") {
+            $options['conditions']['BattleReportView.owner_id'] = $ownerId;
+        }
+
+        if ($locationType !== false && $locationId !== false) {
+            $options['conditions']['Battle.location_type'] = $locationType;
+            $options['conditions']['Battle.location_id'] = $locationId;
         }
 
         return $options;
@@ -542,18 +545,17 @@ class Battle extends AppModel {
      * @param int $reportViewId
      * @return array
      */
-    function viewAttackReport($cities, $reportViewId, &$outcomeOnly, &$groupId, &$isUnread, &$loot) {
+    function viewAttackReport($ownerType, $ownerId, $reportViewId, &$outcomeOnly, &$groupId, &$isUnread, &$loot) {
         $outcomeOnly = false;
 
         $options = array(
             'link' => array(
                 'Battle' => array('conditions' => array('NOT' => array('Battle.ended' => null))),
             ),
-            'contain' => array(
-                'BattleReportEnter' => array('fields' => 'BattleReportEnter.round'),
-                'BattleReportExit' => array('fields' => array('BattleReportExit.round')),
-            ),
             'fields' => array(
+                'Battle.id',
+                'Battle.owner_type',
+                'Battle.owner_id',
                 'BattleReportView.id',
                 'BattleReportView.battle_id',
                 'BattleReportView.is_attacker',
@@ -573,13 +575,15 @@ class Battle extends AppModel {
             )
         );
 
-        if (!is_null($cities)) {
-            $options['conditions']['BattleReportView.city_id'] = $cities;
+        $options['conditions']['BattleReportView.owner_type'] = $ownerType;
+
+        if ($ownerId !== "*") {
+            $options['conditions']['BattleReportView.owner_id'] = $ownerId;
         }
 
         $report = $this->BattleReportView->find('first', $options);
 
-        if (empty($report) || empty($report['BattleReportExit']) || empty($report['BattleReportEnter']))
+        if (empty($report))
             return false;
 
         $groupId = $report['BattleReportView']['group_id'];
@@ -597,14 +601,21 @@ class Battle extends AppModel {
             ),
         );
 
-        // If player lasted less than min rounds and did not leave due to out of stamina, then they can still see the battle
-        $roundDelta = $report['BattleReportExit']['round'] - $report['BattleReportEnter']['round'];
-        if ($roundDelta < BATTLE_VIEW_MIN_ROUND) {
-            // If troop left and they weren't exiting or out of stamina then 
-            $leaveInfo = reset($this->getBattleReportObjectJoinOrLeaveInfo($report['BattleReportView']['battle_id'], $groupId, 'leave', array('BattleReportTroop.state')));
+        $joinInfo = reset($this->getBattleReportObjectJoinOrLeaveInfo($report['BattleReportView']['battle_id'], $groupId, 'JOIN', array('BattleReportTroop.battle_report_id', 'BattleReportTroop.state')));
+        $leaveInfo = reset($this->getBattleReportObjectJoinOrLeaveInfo($report['BattleReportView']['battle_id'], $groupId, 'LEAVE', array('BattleReportTroop.battle_report_id', 'BattleReportTroop.state')));
 
-            if (!in_array($leaveInfo['BattleReportTroop']['state'], array(TROOP_STATE_EXITING, TROOP_STATE_OUT_OF_STAMINA))) {
-                $outcomeOnly = true;
+        $report['BattleReportEnter'] = reset($this->BattleReport->findById($joinInfo['BattleReportTroop']['battle_report_id']));
+        $report['BattleReportExit'] = reset($this->BattleReport->findById($leaveInfo['BattleReportTroop']['battle_report_id']));
+
+        // For city battles only, the min round rule applies
+        if ($report['Battle']['location_type'] == 'City') {
+            // If player lasted less than min rounds and did not leave due to out of stamina, then they can still see the battle
+            $roundDelta = intVal($report['BattleReportExit']['round']) - intVal($report['BattleReportEnter']['round']);
+            if ($roundDelta < BATTLE_VIEW_MIN_ROUND) {
+                // If troop left and they weren't exiting or out of stamina then
+                if (!in_array($leaveInfo['BattleReportTroop']['state'], array(TROOP_STATE_EXITING, TROOP_STATE_OUT_OF_STAMINA))) {
+                    $outcomeOnly = true;
+                }
             }
         }
 

@@ -1,25 +1,13 @@
 <?php
 /*
- * LinkableBehavior
- * Light-weight approach for data mining on deep relations between models. 
- * Join tables based on model relations to easily enable right to left find operations.
- * Original behavior by rafaelbandeira3 on GitHub. 
- * Includes modifications from Terr, n8man, and Chad Jablonski
- *  
+ * LinkableBehavior by GiulianoB
+ * Version 1.1
+ *
+ * More information at:
+ * https://bitbucket.org/giulianob/linkable
+ *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
- *  
- * GiulianoB ( https://github.com/giulianob/linkable )
- *
- * @version 1.0; 
- * 
- * @version 1.1:
- *  -Brought in improvements and test cases from Terr. However, THIS VERSION OF LINKABLE IS NOT DROP IN COMPATIBLE WITH Terr's VERSION!
- *  -If fields aren't specified, will now return all columns of that model
- *  -No need to specify the foreign key condition if a custom condition is given. Linkable will automatically include the foreign key relationship. 
- *  -Ability to specify the exact condition Linkable should use (e.g. $this->Post->find('first', array('link' => array('User' => array('conditions' => array('exactly' => 'User.last_post_id = Post.id'))))) )
- *  This is usually required when doing on-the-fly joins since Linkable generally assumes a belongsTo relationship when no specific relationship is found and may produce invalid foreign key conditions.
- *  -Linkable will no longer break queries that use SQL COUNTs
  */
  
 class LinkableBehavior extends ModelBehavior {
@@ -82,10 +70,10 @@ class LinkableBehavior extends ModelBehavior {
 						$type = $associations[$Reference->alias];
 						$association = $_Model->{$type}[$Reference->alias];						
 					} else {
-						$_Model->bindModel(array('belongsTo' => array($Reference->alias)));
+						$_Model->bindModel(array('belongsTo' => array($Reference->name => array('className' => $Reference->name))));
 						$type = 'belongsTo';
-						$association = $_Model->{$type}[$Reference->alias];
-						$_Model->unbindModel(array('belongsTo' => array($Reference->alias)));
+						$association = $_Model->{$type}[$Reference->name];
+						$_Model->unbindModel(array('belongsTo' => array($Reference->name)));
 					}
 					
 					if (!isset($options['conditions'])) {
@@ -138,6 +126,15 @@ class LinkableBehavior extends ModelBehavior {
 							$options['conditions'][] = "{$modelKey} = {$referenceKey}";
 						}					
 					}
+
+                    if (!empty($association['conditions'])) {
+                        if (is_array($association['conditions'])) {
+                            $options['conditions'] = array_combine($association['conditions'], $options['conditions']);
+                        }
+                        else {
+                            $options['conditions'][] = $association['conditions'];
+                        }
+                    }
 						
 					if (empty($options['table'])) {
 						$options['table'] = $db->fullTableName($_Model, true);

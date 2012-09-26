@@ -121,7 +121,6 @@
     <Compile Include="Battle\CombatGroups\StrongholdCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\ICombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\ICombatGroupFactory.cs" />
-    <Compile Include="Battle\CombatGroups\IReportView.cs" />
     <Compile Include="Battle\CombatListFactory.cs" />
     <Compile Include="Battle\BattleOwner.cs" />
     <Compile Include="Battle\CombatObjects\AttackCombatUnit.cs" />

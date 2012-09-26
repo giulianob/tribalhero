@@ -131,7 +131,7 @@ namespace Game.Logic.Actions
                 throw new Exception("Stronghold not found");
             }
 
-            battle.BattleReport.AddAccess(new BattleOwner(BattleOwnerType.Tribe, stronghold.GateOpenTo.Id));
+            battle.BattleReport.AddAccess(new BattleOwner(BattleOwnerType.Tribe, stronghold.GateOpenTo.Id), BattleManager.BattleSide.Attack);
         }
 
         private void MainBattleOnExitTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, int turn)

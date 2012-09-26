@@ -18,14 +18,10 @@ namespace Game.Battle.Reporting
 
         uint SnapGroup(uint reportId, ICombatGroup group, ReportState state, bool isAttacker);
 
-        void SnapBattleReportCityView(uint cityId, byte troopId, uint battleId, uint groupId, bool isAttacker, uint enterBattleReportId);
-
         void SnapCombatObject(uint troopId, ICombatObject co);
 
-        void SnapLootedResources(uint cityId, byte troopId, uint battleId, Resource lootResource, Resource bonusResource);
+        void SnapLootedResources(BattleOwner owner, uint groupId, uint battleId, Resource lootResource, Resource bonusResource);
 
-        void SnapBattleReportCityViewExit(uint battleId, uint groupId, uint reportId);
-
-        void SnapBattleAccess(uint battleId, BattleOwner owner);
+        void SnapBattleAccess(uint battleId, BattleOwner owner, byte troopId, uint groupId, bool isAttacker);
     }
 }

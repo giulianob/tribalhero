@@ -57,7 +57,7 @@ namespace ConsoleSimulator
                 {
                     localGroup.Add(combatUnitFactory.CreateStructureCombatUnit(battleManager, structure));
                 }
-                battleManager.Add(localGroup, BattleManager.BattleSide.Defense);
+                battleManager.Add(localGroup, BattleManager.BattleSide.Defense, false);
                 Ioc.Kernel.Get<BattleProcedure>().MoveUnitFormation(Defender.Local, FormationType.Normal, FormationType.InBattle);
                 Defender.Local.EndUpdate();
             }
@@ -74,7 +74,7 @@ namespace ConsoleSimulator
                 {
                     combatUnitFactory.CreateAttackCombatUnit(battleManager, Attacker.TroopObject, FormationType.InBattle, kvp.Key, kvp.Value).ToList().ForEach(attackGroup.Add);
                 }
-                battleManager.Add(attackGroup, BattleManager.BattleSide.Attack);
+                battleManager.Add(attackGroup, BattleManager.BattleSide.Attack, false);
             }
         }
 

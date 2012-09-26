@@ -199,7 +199,7 @@ namespace Game.Logic.Procedures
                 attackCombatUnits.ToList().ForEach(offensiveGroup.Add);
             }
 
-            battleManager.Add(offensiveGroup, BattleManager.BattleSide.Attack);
+            battleManager.Add(offensiveGroup, BattleManager.BattleSide.Attack, true);
 
             return offensiveGroup;
         }
@@ -211,7 +211,7 @@ namespace Game.Logic.Procedures
             {
                 combatUnitFactory.CreateDefenseCombatUnit(battleManager, stub, FormationType.Defense, kvp.Key, kvp.Value).ToList().ForEach(defensiveGroup.Add);
             }
-            battleManager.Add(defensiveGroup, BattleManager.BattleSide.Defense);
+            battleManager.Add(defensiveGroup, BattleManager.BattleSide.Defense, true);
             
             return defensiveGroup.Id;
         }
@@ -222,7 +222,7 @@ namespace Game.Logic.Procedures
             if (combatGroup == null)
             {
                 combatGroup = combatGroupFactory.CreateCityDefensiveCombatGroup(battleManager.BattleId, 1, city.DefaultTroop);
-                battleManager.Add(combatGroup, BattleManager.BattleSide.Defense);
+                battleManager.Add(combatGroup, BattleManager.BattleSide.Defense, false);
             }
 
             return combatGroup;
@@ -350,7 +350,7 @@ namespace Game.Logic.Procedures
             }
             strongholdCombatGroup.Add(combatUnitFactory.CreateStrongholdGateStructure(battle, stronghold, stronghold.Gate.Value));
 
-            battle.Add(strongholdCombatGroup, BattleManager.BattleSide.Defense);
+            battle.Add(strongholdCombatGroup, BattleManager.BattleSide.Defense, false);
 
             return strongholdCombatGroup;
         }
@@ -364,7 +364,7 @@ namespace Game.Logic.Procedures
                 strongholdCombatGroup.Add(combatUnitFactory.CreateStrongholdCombatUnit(battle, stronghold, unit.Type, 5, unit.Count));
             }
 
-            battle.Add(strongholdCombatGroup, BattleManager.BattleSide.Defense);
+            battle.Add(strongholdCombatGroup, BattleManager.BattleSide.Defense, false);
 
             return strongholdCombatGroup;
         }

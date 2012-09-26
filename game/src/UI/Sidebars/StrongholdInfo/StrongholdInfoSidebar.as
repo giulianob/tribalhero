@@ -6,6 +6,7 @@
 	import src.Objects.Factories.*;
 	import src.Objects.Prototypes.*;
 	import src.Objects.*;
+	import src.Objects.States.BattleState;
 	import src.Objects.Stronghold.Stronghold;
 	import src.UI.Components.CityLabel;
 	import src.UI.Components.GoToCityIcon;
@@ -83,9 +84,9 @@
 			switch(stronghold.state.getStateType())
 			{
 				case SimpleGameObject.STATE_BATTLE:
-		//			buttons.push(new ViewBattleButton(troopObj));
+					pnlGroups.append(new ViewBattleButton(stronghold));
 				break;
-			}		
+			}
 
 			//Add buttons to UI
 		/*	for each(var group: Object in Action.groups) {

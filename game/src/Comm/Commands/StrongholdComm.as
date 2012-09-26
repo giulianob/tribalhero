@@ -4,6 +4,7 @@ package src.Comm.Commands
 	import src.Comm.Commands;
 	import src.Comm.Session;
 	import src.Map.MapComm;
+	import src.Objects.SimpleGameObject;
 	import src.Objects.Stronghold.Stronghold;
 	import src.UI.Dialog.StrongholdProfileDialog;
 	import src.Objects.Troop.*;
@@ -44,12 +45,16 @@ package src.Comm.Commands
 			profileData.strongholdName = packet.readString();
 			profileData.strongholdLevel = packet.readByte();
 			profileData.strongholdGate = packet.readInt();
-			profileData.strongholdState = packet.readByte();
 			profileData.strongholdVictoryPointRate = packet.readFloat();
 			profileData.strongholdDateOccupied = packet.readUInt();
 			profileData.strongholdX = packet.readUInt();
 			profileData.strongholdY = packet.readUInt();
-			
+			profileData.strongholdObjectState = packet.readUByte();
+		
+			if(profileData.strongholdObjectState==SimpleGameObject.STATE_BATTLE) {
+				profileData.strongholdBattleId = packet.readUInt();
+			}
+
 			profileData.troops = [];
 			var troopCount: int = packet.readByte();
 			for (var i: int = 0; i < troopCount; i++) {

@@ -17,6 +17,7 @@
 	import src.Map.MapUtil;
 	import src.Objects.Location;
 	import src.Objects.Process.ReinforcementSendProcess;
+	import src.Objects.SimpleGameObject;
 	import src.UI.*;
 	import src.UI.Components.*;
 	import src.UI.Components.TableCells.*;
@@ -119,19 +120,23 @@
 				var pt:Point = MapUtil.getScreenCoord(profileData.strongholdX, profileData.strongholdY);
 				Global.map.camera.ScrollToCenter(pt.x, pt.y);
 			});
+			pnl.append(btnGotoStronghold);
 			
-			var btnViewBattle: JButton = new JButton("View battle");
-			btnViewBattle.setEnabled(false);
-
 			var btnSendReinforcement: JButton = new JButton("Send reinforcement");
 			btnSendReinforcement.addActionListener(function(e:Event): void {
 				var process : ReinforcementSendProcess = new ReinforcementSendProcess(new Location(Location.STRONGHOLD,profileData.strongholdId));
 				process.execute();
 			});
-			
-			pnl.appendAll(	btnGotoStronghold,
-							btnSendReinforcement,
-							btnViewBattle);
+			pnl.append(btnSendReinforcement);
+						
+			if(profileData.strongholdObjectState==SimpleGameObject.STATE_BATTLE) {
+				var btnViewBattle: JButton = new JButton("View battle");
+				btnViewBattle.addActionListener(function(e: Event): void {
+					var battleViewer: BattleViewer = new BattleViewer(profileData.strongholdBattleId);
+					battleViewer.show(null, false);
+				});
+				pnl.append(btnViewBattle);
+			}
 			
 			return pnl;
 		}

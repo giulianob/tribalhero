@@ -3,23 +3,24 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import src.Objects.Factories.*;
-	import src.Objects.GameObject;
 	import src.Objects.Actions.ActionButton;
 	import src.Objects.Location;
 	import src.Objects.Process.AttackSendProcess;
+	import src.Objects.SimpleGameObject;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.Tooltips.TextTooltip;
 
 	public class SendAttackButton extends ActionButton
 	{
 		private var tooltip: TextTooltip;
+		private var location: Location;
 
-		public function SendAttackButton(parentObj: GameObject)
+		public function SendAttackButton(parentObj: SimpleGameObject, location: Location)
 		{
 			super(parentObj, "Send Attack");
 
-			new SimpleTooltip(this, "Send attack to the selected structure.");
-
+			new SimpleTooltip(this, "Send Attack");
+			this.location = location;
 			addEventListener(MouseEvent.CLICK, onMouseClick);
 		}
 
@@ -27,7 +28,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				var process : AttackSendProcess = new AttackSendProcess(new Location(Location.CITY, parentObj.groupId, parentObj.objectId));
+				var process : AttackSendProcess = new AttackSendProcess(location);
 				process.execute();
 			}
 		}

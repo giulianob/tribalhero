@@ -76,6 +76,9 @@
 
 			if (Constants.tribeId!=0 && stronghold.tribeId==Constants.tribeId) {
 				pnlGroups.append(new ViewStrongholdButton(stronghold));
+				pnlGroups.append(new SendReinforcementButton(stronghold, new Location(Location.STRONGHOLD, stronghold.id)));
+			} else {
+				pnlGroups.append(new SendAttackButton(stronghold,new Location(Location.STRONGHOLD, stronghold.id)));
 			}
 
 			var buttons: Array = new Array();
@@ -87,6 +90,7 @@
 					pnlGroups.append(new ViewBattleButton(stronghold));
 				break;
 			}
+			
 
 			//Add buttons to UI
 		/*	for each(var group: Object in Action.groups) {

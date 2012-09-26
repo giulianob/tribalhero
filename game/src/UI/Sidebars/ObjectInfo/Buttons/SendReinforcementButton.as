@@ -3,22 +3,24 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import src.Objects.Factories.*;
-	import src.Objects.GameObject;
 	import src.Objects.Actions.ActionButton;
 	import src.Objects.Location;
 	import src.Objects.Process.ReinforcementSendProcess;
+	import src.Objects.SimpleGameObject;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.Tooltips.TextTooltip;
 
 	public class SendReinforcementButton extends ActionButton
 	{
 		private var tooltip: TextTooltip;
+		private var location: Location;
 
-		public function SendReinforcementButton(parentObj: GameObject)
+		public function SendReinforcementButton(parentObj: SimpleGameObject, location: Location)
 		{
 			super(parentObj, "Send Reinforcement");
 
-			new SimpleTooltip(this, "Send reinforcement to selected structure's city.");
+			this.location = location;
+			new SimpleTooltip(this, "Send Reinforcement");
 
 			addEventListener(MouseEvent.CLICK, onMouseClick);
 		}
@@ -27,7 +29,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				var process : ReinforcementSendProcess = new ReinforcementSendProcess(new Location(Location.CITY, parentObj.groupId));
+				var process : ReinforcementSendProcess = new ReinforcementSendProcess(location);
 				process.execute();
 			}
 		}

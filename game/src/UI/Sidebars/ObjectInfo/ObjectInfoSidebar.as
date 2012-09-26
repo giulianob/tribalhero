@@ -130,12 +130,12 @@ package src.UI.Sidebars.ObjectInfo {
 						lbl = addStatRow(propPrototype[i].name, propPrototype[i].toString(structureObject.properties[i]), propPrototype[i].getIcon());
 						if (propPrototype[i].tooltip != "") new SimpleTooltip(lbl, propPrototype[i].tooltip);
 					}
-					buttons.push(new SendAttackButton(gameObject)); 
+					buttons.push(new SendAttackButton(gameObject, new Location(Location.CITY, gameObject.groupId, gameObject.objectId))); 
 				}
 			}
 			
 			if (Global.gameContainer.selectedCity.id != gameObject.cityId) {
-				buttons.push(new SendReinforcementButton(gameObject));
+				buttons.push(new SendReinforcementButton(gameObject, new Location(Location.CITY, gameObject.groupId, gameObject.objectId)));
 			}
 
 			//Special Case Buttons

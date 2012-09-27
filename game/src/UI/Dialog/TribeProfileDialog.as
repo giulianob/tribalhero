@@ -1,6 +1,7 @@
 ﻿package src.UI.Dialog 
 {
 	import adobe.utils.CustomActions;
+	import fl.lang.Locale;
 	import flash.events.*;
 	import flash.utils.*;
 	import mx.utils.StringUtil;
@@ -92,6 +93,7 @@
 			// Append tabs			
 			pnlTabs.appendTab(createInfoTab(), "Info");
 			pnlTabs.appendTab(createMessageBoardTab(), "Message Board");
+			pnlTabs.appendTab(createStrongholdTab(), Locale.loadString("STR_STRONGHOLDS"));
 			
 			// Append main panels
 			appendAll(pnlHeader, pnlTabs);
@@ -100,6 +102,87 @@
 		private function createMessageBoardTab(): Container {		
 			messageBoard = new MessageBoard();					
 			return messageBoard;
+		}
+		
+		private function simpleLabelMaker(text: String, tooltip:String, icon:Icon = null):JLabel
+		{
+			var label:JLabel = new JLabel(text, icon);
+			
+			label.setIconTextGap(0);
+			label.setHorizontalTextPosition(AsWingConstants.RIGHT);
+			label.setHorizontalAlignment(AsWingConstants.LEFT);
+			
+			new SimpleTooltip(label, tooltip);
+			
+			return label;
+		}
+		
+		private function createStrongholdItem(stronghold : * ): JPanel {
+			var pnl: JPanel = new JPanel(new BorderLayout(5, 5));
+			var pnlLeft: JPanel = new JPanel(new BorderLayout(5, 5));
+			var pnlRight: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
+			
+			pnlRight.setPreferredSize(new IntDimension(200, 0));
+			
+			var label : StrongholdLabel = new StrongholdLabel(stronghold.id, stronghold.name);
+			label.setHorizontalAlignment(AsWingConstants.LEFT);
+			
+			var grid: JPanel = new JPanel(new GridLayout(1, 0, 20, 0));
+			grid.append(simpleLabelMaker("Level " + stronghold.lvl.toString(), "Level", new AssetIcon(new ICON_UPGRADE())));
+			grid.append(simpleLabelMaker(Util.roundNumber(stronghold.victoryPointRate).toString() + " per day", "Victory Point Rate", new AssetIcon(new ICON_UPGRADE())));
+			var timediff :int = Global.map.getServerTime() - stronghold.dateOccupied;
+			grid.append(simpleLabelMaker(Util.niceDays(timediff), "Total days occupied", new AssetIcon(new ICON_UPGRADE())));
+
+			pnlLeft.append(label,"North");
+			pnlLeft.append(grid, "Center");
+			
+			var lblTroop: JLabel = new JLabel(stronghold.upkeep.toString() + " Troop");
+			var lblGate: JLabel = new JLabel(stronghold.gate.toString() + " Gate");
+			lblTroop.setHorizontalAlignment(AsWingConstants.RIGHT);
+			lblGate.setHorizontalAlignment(AsWingConstants.RIGHT);
+			pnlRight.append(lblTroop);
+			pnlRight.append(lblGate);
+			
+			pnl.append(pnlLeft, "Center");
+			pnl.append(pnlRight, "East");
+			return pnl;
+		}
+		
+		private function createStrongholdTab(): Container {
+			//   Troop Tab
+			var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+			for each (var stronghold: * in profileData.strongholds) {
+				pnl.append(createStrongholdItem(stronghold));
+			}
+			var tabScrollPanel: JScrollPane = new JScrollPane(pnl, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
+			(tabScrollPanel.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
+			var tabTroops: JTabbedPane = new JTabbedPane();
+			tabTroops.appendTab(tabScrollPanel, Locale.loadString("STR_STRONGHOLDS_UNDER_COMMAND"));
+
+			//  Ongoing Attack Tab
+			pnl = new JPanel();
+			var tabOnGoing: JTabbedPane = new JTabbedPane();
+			tabOnGoing.appendTab(new JScrollPane(pnl, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER), Locale.loadString("STR_ONGOING_ATTACKS"));
+			tabOnGoing.setPreferredSize(new IntDimension(getPreferredWidth() / 2, 150));
+
+			// Report Tab
+			pnl = new JPanel();
+			var tabReports: JTabbedPane = new JTabbedPane();
+			tabReports.appendTab(new JScrollPane(pnl, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER), Locale.loadString("STR_REPORTS"));
+			
+			// Troop + Ongoing
+			var pnlLeft : JPanel = new JPanel(new BorderLayout(10,10));
+			tabTroops.setConstraints("Center");
+			tabOnGoing.setConstraints("South");
+			pnlLeft.appendAll(tabTroops, tabOnGoing);
+			
+			// Main tab
+			pnl = new JPanel(new BorderLayout(10, 10));
+			pnlLeft.setConstraints("West");
+			tabReports.setConstraints("Center");
+			pnl.appendAll(pnlLeft, tabReports);
+			
+			return pnl;
 		}
 		
 		private function createIncomingPanelItem(incoming: *): JPanel {

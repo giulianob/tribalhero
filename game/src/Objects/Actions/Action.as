@@ -19,7 +19,7 @@ package src.Objects.Actions {
 			{ name: "Upgrade Units", icon: ICON_UPGRADE, actions: [ UnitUpgradeButton ] },				
 			{ name: "Convert Structure", icon: ICON_HAMMER, actions: [ StructureChangeButton ] },
 			{ name: "Research", icon: ICON_BOOK, actions: [ TechnologyButton ] },			
-			{ name: "Other", icon: ICON_QUESTION, actions: [ DefaultActionButton, ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton, SendResourcesButton, StructureSelfDestroyButton, ResourceGatherButton, TribeContributeButton] },
+			{ name: "Other", icon: ICON_QUESTION, actions: [ DefaultActionButton, ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton, SendResourcesButton, StructureSelfDestroyButton, ResourceGatherButton, TribeContributeButton, SendAttackButton, SendReinforcementButton] },
 		];	
 		
 		public static const CONCURRENCY_STANDALONE: int = 1;

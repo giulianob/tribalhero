@@ -251,12 +251,21 @@
 					id: packet.readUInt(),
 					name: packet.readString(),
 					state: packet.readByte(),
-					gameState: packet.readByte(),
 					lvl: packet.readByte(),
 					gate: packet.readInt(),
 					x: packet.readUInt(),
-					y: packet.readUInt()
+					y: packet.readUInt(),
+					upkeep: packet.readInt(),
+					victoryPointRate: packet.readFloat(),
+					dateOccupied: packet.readUInt(),
+					gateOpenTo: packet.readUInt(),
+					objectState: packet.readByte()
 				};
+				
+				if(stronghold.objectState==SimpleGameObject.STATE_BATTLE) {
+					stronghold.battleId = packet.readUInt();
+				}
+
 				Global.map.usernames.strongholds.add(new Username(stronghold.id, stronghold.name));
 				profileData.strongholds.push(stronghold);
 				trace("stronghold[" + i.toString() + "] : " + stronghold.name);

@@ -11,7 +11,6 @@ package src.UI.Sidebars.StrongholdInfo.Buttons {
 	import src.Objects.Troop.*;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.Cursors.*;
-	import src.UI.Dialog.StrongholdInfoDialog;
 	import src.UI.Dialog.TroopInfoDialog;
 	import src.UI.Tooltips.TextTooltip;
 
@@ -36,10 +35,6 @@ package src.UI.Sidebars.StrongholdInfo.Buttons {
 				if (stronghold.tribeId!=0 && Constants.tribeId == stronghold.tribeId)
 				{
 					Global.mapComm.Stronghold.viewStrongholdProfile(stronghold.id);
-				}
-				else
-				{
-					Global.mapComm.Stronghold.viewStrongholdPublicProfile(stronghold.id);
 				}
 			}
 		}

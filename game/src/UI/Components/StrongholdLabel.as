@@ -12,7 +12,7 @@
 	{
 		public var strongholdId: int;
 
-		public function StrongholdLabel(strongholdId: int, strongholdName: String = null, showTooltip: Boolean = true)
+		public function StrongholdLabel(strongholdId: int, strongholdName: String = null)
 		{
 			super("-");
 			
@@ -27,6 +27,15 @@
 			else
 				Global.map.usernames.strongholds.getUsername(strongholdId, onReceiveUsername);
 
+			addEventListener(MouseEvent.MOUSE_DOWN, function(e: MouseEvent) : void {
+				viewStronghold();
+			});
+			
+			new SimpleTooltip(this, "View profile");
+		}
+		
+		private function viewStronghold(): void {
+			Global.mapComm.Stronghold.viewStrongholdProfile(strongholdId);
 		}
 		
 		private function onReceiveUsername(username: Username, custom: *) : void {

@@ -6,6 +6,7 @@
 	import src.Objects.Factories.*;
 	import src.Objects.Prototypes.*;
 	import src.Objects.*;
+	import src.Objects.States.BattleState;
 	import src.Objects.Stronghold.Stronghold;
 	import src.UI.Components.CityLabel;
 	import src.UI.Components.GoToCityIcon;
@@ -73,7 +74,12 @@
 			
 			addStatRow("Level", stronghold.level.toString());
 
-			pnlGroups.append(new ViewStrongholdButton(stronghold));
+			if (Constants.tribeId!=0 && stronghold.tribeId==Constants.tribeId) {
+				pnlGroups.append(new ViewStrongholdButton(stronghold));
+				pnlGroups.append(new SendReinforcementButton(stronghold, new Location(Location.STRONGHOLD, stronghold.id)));
+			} else {
+				pnlGroups.append(new SendAttackButton(stronghold,new Location(Location.STRONGHOLD, stronghold.id)));
+			}
 
 			var buttons: Array = new Array();
 
@@ -81,9 +87,10 @@
 			switch(stronghold.state.getStateType())
 			{
 				case SimpleGameObject.STATE_BATTLE:
-		//			buttons.push(new ViewBattleButton(troopObj));
+					pnlGroups.append(new ViewBattleButton(stronghold));
 				break;
-			}		
+			}
+			
 
 			//Add buttons to UI
 		/*	for each(var group: Object in Action.groups) {

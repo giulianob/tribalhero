@@ -4,6 +4,7 @@
 	import com.adobe.images.JPGEncoder;
 	import fl.lang.Locale;
 	import flash.events.*;
+	import flash.geom.Point;
 	import flash.utils.*;
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -13,6 +14,10 @@
 	import org.aswing.geom.*;
 	import org.aswing.table.*;
 	import src.*;
+	import src.Map.MapUtil;
+	import src.Objects.Location;
+	import src.Objects.Process.ReinforcementSendProcess;
+	import src.Objects.SimpleGameObject;
 	import src.UI.*;
 	import src.UI.Components.*;
 	import src.UI.Components.TableCells.*;
@@ -73,7 +78,7 @@
 			pnlReportPanel = createReportPanel();
 			
 			// Left panel
-			pnlLeftContainer = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
+			pnlLeftContainer = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS,20));
 			pnlLeftContainer.appendAll(pnlInfoContainer, pnlButtonContainer);
 			
 			// Right panel
@@ -108,9 +113,30 @@
 		
 		private function createButtonPanel() : Container {
 			var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10, AsWingConstants.EAST));
-			pnl.appendAll(	new JButton("Send Reinforcement"),
-							new JButton("View Battle"),
-							new JButton("Goto Stronghold"));
+			
+			var btnGotoStronghold: JButton = new JButton("Go to stronghold");
+			btnGotoStronghold.addActionListener(function(e: Event):void {
+				Global.gameContainer.closeAllFrames(true);
+				var pt:Point = MapUtil.getScreenCoord(profileData.strongholdX, profileData.strongholdY);
+				Global.map.camera.ScrollToCenter(pt.x, pt.y);
+			});
+			pnl.append(btnGotoStronghold);
+			
+			var btnSendReinforcement: JButton = new JButton("Send reinforcement");
+			btnSendReinforcement.addActionListener(function(e:Event): void {
+				var process : ReinforcementSendProcess = new ReinforcementSendProcess(new Location(Location.STRONGHOLD,profileData.strongholdId));
+				process.execute();
+			});
+			pnl.append(btnSendReinforcement);
+						
+			if(profileData.strongholdObjectState==SimpleGameObject.STATE_BATTLE) {
+				var btnViewBattle: JButton = new JButton("View battle");
+				btnViewBattle.addActionListener(function(e: Event): void {
+					var battleViewer: BattleViewer = new BattleViewer(profileData.strongholdBattleId);
+					battleViewer.show(null, false);
+				});
+				pnl.append(btnViewBattle);
+			}
 			
 			return pnl;
 		}
@@ -142,7 +168,10 @@
 				}
 			}
 			s.add(f);
-			addInfo(form, "Total Troops", new TroopCompositionGridList(s, Formation.Defense, 3, 0));
+			if(f.size()>0)
+				addInfo(form, "Total Troops", new TroopCompositionGridList(s, Formation.Defense, 3, 0));
+			else 
+				addInfo(form, "Total Troops", "No troop is currently defending!");
 			return form;
 		}
 		
@@ -177,16 +206,16 @@
 		}
 		
 		private function createTroopPanel() : Container {
-			var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+			var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5,AsWingConstants.TOP));
 			for each (var troop: * in profileData.troops) {
 				pnl.append(createTroopItem(troop));
 			}
 			
-			var scrollTroops: JScrollPane = new JScrollPane(new JViewport(pnl, true), JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
-			(scrollTroops.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);			
-			
+			var tabScrollPanel: JScrollPane = new JScrollPane(pnl, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
+			(tabScrollPanel.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
+
 			var tabPanel: JTabbedPane = new JTabbedPane();
-			tabPanel.appendTab(new JScrollPane(pnl, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER), Locale.loadString("STR_TROOPS"));
+			tabPanel.appendTab(tabScrollPanel, Locale.loadString("STR_TROOPS"));
 			tabPanel.setPreferredSize(new IntDimension(400, 300));
 			return tabPanel;
 		}

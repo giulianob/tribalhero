@@ -5,6 +5,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Objects.Factories.*;
 	import src.Objects.GameObject;
 	import src.Objects.Actions.ActionButton;
+	import src.Objects.SimpleGameObject;
 	import src.Objects.States.BattleState;
 	import src.UI.Cursors.*;
 	import src.UI.Dialog.BattleViewer;
@@ -14,7 +15,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	{
 		private var tooltip: TextTooltip;
 
-		public function ViewBattleButton(parentObj: GameObject)
+		public function ViewBattleButton(parentObj: SimpleGameObject)
 		{
 			super(parentObj, "View Battle");
 
@@ -50,8 +51,6 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 					battleViewer.show(null, false);
 				}
 			}
-
-			event.stopImmediatePropagation();
 		}
 	}
 

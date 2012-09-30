@@ -348,7 +348,7 @@ namespace Game.Logic.Actions
                 foreach (var stub in stronghold.Troops.StationedHere())
                 {
                     stub.BeginUpdate();
-                    stub.State = TroopState.BattleStationed;
+                    stub.State = TroopState.Stationed;
                     stub.EndUpdate();
                 }
 

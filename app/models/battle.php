@@ -4,6 +4,7 @@
  * @property City $City
  * @property BattleReport $BattleReport
  * @property BattleReportView $BattleReportView
+ * @property BattleTribe $BattleTribe
  */
 class Battle extends AppModel {
 
@@ -13,8 +14,14 @@ class Battle extends AppModel {
     );
     var $hasMany = array(
         'BattleReport' => array('dependent' => true, 'conditions' => 'BattleReport.ready = 1'),
-        'BattleReportView' => array('dependent' => true)
+        'BattleReportView' => array('dependent' => true),
+        'BattleTribe' => array('dependent' => true)
     );
+    var $hasAndBelongsToMany = array(
+        'Tribe' => array('with' => 'BattleTribe')
+    );
+
+    // Saves the names of locations for the current session
     var $locationCache = array();
 
     /**
@@ -354,27 +361,21 @@ class Battle extends AppModel {
         $outcome = array_merge($outcome, reset(reset($totalLoot)));
 
         // Find tribes that participated in the battle
-        $tribesParticipated = $this->BattleReport->BattleReportTroop->BattleReportObject->find('all', array(
-            'fields' => array('DISTINCT(Tribe.id)', 'Tribe.name'),
+        $tribesParticipated = $this->BattleTribe->find('all', array(
+            'fields' => array('BattleTribe.is_attacker'),
+            'conditions' => array('BattleTribe.battle_id' => $battleId),
             'link' => array(
-                'BattleReportTroop' => array('type' => 'INNER', 'fields' => array('BattleReportTroop.is_attacker'),
-                    'conditions' => array('BattleReportTroop.owner_type' => 'City'),
-                    'BattleReport' => array('type' => 'INNER', 'fields' => array(),
-                        'conditions' => array('BattleReport.battle_id' => $battleId),
-                    ),
-                    'City' => array('type' => 'INNER', 'fields' => array(), 'table' => 'cities',
-                        'Player' => array('type' => 'INNER', 'fields' => array(),
-                            'Tribesman' => array('type' => 'INNER', 'fields' => array(),
-                                'Tribe' => array('type' => 'INNER', 'fields' => array()),
-                            ),
-                        ),
-                    ),
-            ))));
+                'Tribe' => array(
+                    'type' => 'INNER',
+                    'fields' => array('Tribe.id', 'Tribe.name')
+                )
+            )
+        ));
 
         $outcome['attackerTribes'] = array();
         $outcome['defenderTribes'] = array();
         foreach ($tribesParticipated as $tribeParticipated) {
-            if ($tribeParticipated['BattleReportTroop']['is_attacker']) {
+            if ($tribeParticipated['BattleTribe']['is_attacker']) {
                 $outcome['attackerTribes'][] = array('id' => $tribeParticipated['Tribe']['id'], 'name' => $tribeParticipated['Tribe']['name']);
             }
             else {
@@ -404,7 +405,10 @@ class Battle extends AppModel {
             'conditions' => array(
                 'NOT' => array('Battle.ended' => null)
             ),
-            'link' => array(
+            'contain' => array(
+                'Tribe' => array(
+                    'fields' => array('Tribe.id', 'Tribe.name')
+                )
             ),
             'order' => 'Battle.ended DESC'
         );
@@ -505,8 +509,14 @@ class Battle extends AppModel {
      */
     function listAttackReports($viewType, $ownerType, $ownerId, $locationType, $locationId) {
         $options = array(
+            'conditions' => array('Battle.ended IS NOT NULL'),
             'contain' => array(
-                'Battle' => array('conditions' => array('Battle.ended IS NOT NULL'))
+                'Tribe' => array(
+                    'fields' => array('Tribe.id', 'Tribe.name')
+                )
+            ),
+            'link' => array(
+                'BattleReportView' => array('type' => 'INNER')
             ),
             'fields' => array(
                 'BattleReportView.id',
@@ -519,8 +529,6 @@ class Battle extends AppModel {
                 'BattleReportView.read',
                 'Battle.location_type',
                 'Battle.location_id',
-            ),
-            'conditions' => array(
             )
         );
 

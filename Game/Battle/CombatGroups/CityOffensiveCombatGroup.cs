@@ -6,7 +6,7 @@ using Persistance;
 
 namespace Game.Battle.CombatGroups
 {
-    public class CityOffensiveCombatGroup : CombatGroup, IReportView
+    public class CityOffensiveCombatGroup : CombatGroup
     {
         public ITroopObject TroopObject { get; private set; }
 
@@ -33,6 +33,14 @@ namespace Game.Battle.CombatGroups
             get
             {
                 return owner;
+            }
+        }
+
+        public override Data.Tribe.ITribe Tribe
+        {
+            get
+            {
+                return TroopObject.City.Owner.IsInTribe ? TroopObject.City.Owner.Tribesman.Tribe : null;
             }
         }
 

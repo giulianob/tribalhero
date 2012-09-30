@@ -480,5 +480,15 @@ namespace Game.Comm
 
             return simpleStub;
         }
+
+        public static void AddBattleProperties(IDictionary<string, object> properties, Packet reply)
+        {
+            reply.AddByte((byte)properties.Count);
+            foreach (var property in properties)
+            {
+                reply.AddString(property.Key);
+                reply.AddString(property.Value.ToString());
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Game.Battle;
 using Game.Data;
@@ -68,6 +69,9 @@ namespace Game.Comm.ProcessorCommands
                 reply.AddUInt32(battleManager.Location.Id);
                 reply.AddString(battleManager.Location.GetName());
                 reply.AddUInt32(battleManager.Round);
+
+                // Battle properties
+                PacketHelper.AddBattleProperties(battleManager.ListProperties(), reply);
                 PacketHelper.AddToPacket(battleManager.Attackers, reply);
                 PacketHelper.AddToPacket(battleManager.Defenders, reply);
                 

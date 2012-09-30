@@ -9,8 +9,12 @@ namespace Game.Battle
 
         IBattleManager CreateBattleManager(BattleLocation location, BattleOwner owner, ICity city);
 
-        IBattleManager CreateBattleManager(uint battleId, BattleLocation battleLocation, BattleOwner battleOwner, IStronghold stronghold);
+        IBattleManager CreateStrongholdMainBattleManager(uint battleId, BattleLocation battleLocation, BattleOwner battleOwner, IStronghold stronghold);
 
-        IBattleManager CreateBattleManager(BattleLocation battleLocation, BattleOwner battleOwner, IStronghold stronghold);
+        IBattleManager CreateStrongholdMainBattleManager(BattleLocation battleLocation, BattleOwner battleOwner, IStronghold stronghold);
+
+        IBattleManager CreateStrongholdGateBattleManager(uint battleId, BattleLocation battleLocation, BattleOwner battleOwner, IStronghold stronghold);
+
+        IBattleManager CreateStrongholdGateBattleManager(BattleLocation battleLocation, BattleOwner battleOwner, IStronghold stronghold);
     }
 }

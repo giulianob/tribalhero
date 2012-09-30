@@ -167,6 +167,7 @@ namespace Game.Comm
         BattleWithdrawDefender = 709,
         BattleGroupUnitAdded = 710,
         BattleGroupUnitRemoved = 711,
+        BattlePropertyUpdate = 712,
 
         #endregion
 

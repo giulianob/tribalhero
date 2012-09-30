@@ -117,7 +117,7 @@ namespace Game.Battle.CombatObjects
 
         public StrongholdCombatStructure CreateStrongholdGateStructure(IBattleManager battleManager, IStronghold stronghold, decimal hp)
         {
-            return new StrongholdCombatStructure(battleManager.GetNextCombatObjectId(),
+            return new StrongholdCombatGate(battleManager.GetNextCombatObjectId(),
                                             battleManager.BattleId,
                                             objectTypeFactory.GetTypes("StrongholdGateStructureType")[0],
                                             stronghold.Lvl,

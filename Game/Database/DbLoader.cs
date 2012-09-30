@@ -720,20 +720,18 @@ namespace Game.Database
 
             foreach (var stubInfo in stationedTroops)
             {
-                uint stationid;
+                uint stationId = stubInfo.stationId;
                 switch((LocationType)stubInfo.stationType)
-                {
+                {                        
                     case LocationType.City:
                         ICity stationedCity;
-                        stationid = stubInfo.stationId;
-                        if (!World.Current.TryGetObjects(stationid, out stationedCity))
+                        if (!World.Current.TryGetObjects(stationId, out stationedCity))
                             throw new Exception("City not found");
                         stationedCity.Troops.DbLoaderAddStation(stubInfo.stub);
                         break;
                     case LocationType.Stronghold:
                         IStronghold stronghold;
-                        stationid = stubInfo.stationId;
-                        if (!StrongholdManager.TryGetStronghold(stationid, out stronghold))
+                        if (!StrongholdManager.TryGetStronghold(stationId, out stronghold))
                             throw new Exception("Stronghold not found");
                         stronghold.Troops.DbLoaderAddStation(stubInfo.stub);
                         break;
@@ -858,16 +856,18 @@ namespace Game.Database
                         case BattleLocationType.StrongholdGate:
                             IStronghold stronghold;
                             if (!World.Current.TryGetObjects((uint)reader["location_id"], out stronghold))
+                            {
                                 throw new Exception("Stronghold not found");
-
-                            battleManager = BattleManagerFactory.CreateBattleManager((uint)reader["battle_id"], battleLocation, battleOwner, stronghold);
+                            }
 
                             if (battleLocation.Type == BattleLocationType.Stronghold)
                             {
+                                battleManager = BattleManagerFactory.CreateStrongholdMainBattleManager((uint)reader["battle_id"], battleLocation, battleOwner, stronghold);
                                 stronghold.MainBattle = battleManager;
                             }
                             else
                             {
+                                battleManager = BattleManagerFactory.CreateStrongholdGateBattleManager((uint)reader["battle_id"], battleLocation, battleOwner, stronghold);
                                 stronghold.GateBattle = battleManager;
                             }
                             break;
@@ -883,6 +883,7 @@ namespace Game.Database
 
                     battleManager.BattleReport.ReportStarted = (bool)reader["report_started"];
                     battleManager.BattleReport.ReportId = (uint)reader["report_id"];
+                    battleManager.BattleReport.SnappedImportantEvent = (bool)reader["snapped_important_event"];
 
                     // Load combat groups
                     using (DbDataReader listReader = DbManager.SelectList(CityOffensiveCombatGroup.DB_TABLE, new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
@@ -935,7 +936,7 @@ namespace Game.Database
                             var strongholdCombatGroup = CombatGroupFactory.CreateStrongholdCombatGroup((uint)listReader["battle_id"],
                                                                                                              (uint)listReader["id"],
                                                                                                              combatGroupStronghold);
-                            combatGroupStronghold.DbPersisted = true;
+                            strongholdCombatGroup.DbPersisted = true;
                             battleManager.DbLoaderAddToCombatList(strongholdCombatGroup, BattleManager.BattleSide.Defense);
                         }
                     }
@@ -1113,7 +1114,7 @@ namespace Game.Database
                             if (!World.Current.TryGetObjects((uint)listReader["stronghold_id"], out stronghold))
                                 throw new Exception("Stronghold not found");
 
-                            ICombatObject combatObj = new StrongholdCombatStructure((uint)listReader["id"], 
+                            ICombatObject combatObj = new StrongholdCombatGate((uint)listReader["id"], 
                                                                  battleManager.BattleId,
                                                                  (ushort)listReader["type"],
                                                                  (byte)listReader["level"],

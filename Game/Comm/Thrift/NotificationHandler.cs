@@ -65,7 +65,7 @@ namespace Game.Comm.Thrift
                 IPlayer player;
                 using (Concurrency.Current.Lock((uint)playerUnreadCount.Id, out player))
                 {
-                    if (player.Session == null)
+                    if (player == null || player.Session == null)
                         continue;
 
                     try

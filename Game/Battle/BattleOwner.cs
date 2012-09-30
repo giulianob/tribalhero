@@ -1,5 +1,6 @@
 ﻿using System;
 using Game.Data;
+using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Map;
 
@@ -49,6 +50,9 @@ namespace Game.Battle
                 case BattleOwnerType.Tribe:
                     ITribe tribe;
                     return World.Current.TryGetObjects(Id, out tribe) ? tribe.Name : string.Empty;
+                case BattleOwnerType.Stronghold:
+                    IStronghold stronghold;
+                    return World.Current.TryGetObjects(Id, out stronghold) ? stronghold.Name : string.Empty;
                 default:
                     return string.Empty;
             }

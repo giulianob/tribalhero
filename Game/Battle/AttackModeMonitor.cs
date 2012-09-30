@@ -47,7 +47,7 @@ namespace Game.Battle
                 return;
             }
 
-            battle.Remove(combatGroup, BattleManager.BattleSide.Attack, ReportState.Retreating);
+            battle.Remove(combatGroup, attackingside == BattleManager.BattleSide.Attack ? BattleManager.BattleSide.Defense : BattleManager.BattleSide.Attack, ReportState.Retreating);
         }
 
         private void BattleWithdrawAttacker(IBattleManager battle, ICombatGroup groupWithdrawn)

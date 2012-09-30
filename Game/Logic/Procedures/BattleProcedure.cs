@@ -96,7 +96,7 @@ namespace Game.Logic.Procedures
                                                                  structure.Stats.Base.Radius));
         }
 
-        //TODO: Change to instance method.. need to make sure City is being created by ninject first though
+        // TODO: Change to instance method.. need to make sure City is being created by ninject first though
         public static bool IsNewbieProtected(IPlayer player)
         {
             return SystemClock.Now.Subtract(player.Created).TotalSeconds < Config.newbie_protection;
@@ -199,7 +199,7 @@ namespace Game.Logic.Procedures
                 attackCombatUnits.ToList().ForEach(offensiveGroup.Add);
             }
 
-            battleManager.Add(offensiveGroup, BattleManager.BattleSide.Attack);
+            battleManager.Add(offensiveGroup, BattleManager.BattleSide.Attack, true);
 
             return offensiveGroup;
         }
@@ -211,7 +211,7 @@ namespace Game.Logic.Procedures
             {
                 combatUnitFactory.CreateDefenseCombatUnit(battleManager, stub, FormationType.Defense, kvp.Key, kvp.Value).ToList().ForEach(defensiveGroup.Add);
             }
-            battleManager.Add(defensiveGroup, BattleManager.BattleSide.Defense);
+            battleManager.Add(defensiveGroup, BattleManager.BattleSide.Defense, true);
             
             return defensiveGroup.Id;
         }
@@ -222,7 +222,7 @@ namespace Game.Logic.Procedures
             if (combatGroup == null)
             {
                 combatGroup = combatGroupFactory.CreateCityDefensiveCombatGroup(battleManager.BattleId, 1, city.DefaultTroop);
-                battleManager.Add(combatGroup, BattleManager.BattleSide.Defense);
+                battleManager.Add(combatGroup, BattleManager.BattleSide.Defense, false);
             }
 
             return combatGroup;
@@ -255,17 +255,17 @@ namespace Game.Logic.Procedures
             }
         }
 
-        public bool HasTooManyAttacks(ICity city)
+        public virtual bool HasTooManyAttacks(ICity city)
         {
             return city.Worker.PassiveActions.Values.Count(action => action.Category == ActionCategory.Attack) > 20;
         }
 
-        public bool HasTooManyDefenses(ICity city)
+        public virtual bool HasTooManyDefenses(ICity city)
         {
             return city.Worker.PassiveActions.Values.Count(action => action.Category == ActionCategory.Defense) > 20;
         }
 
-        public Error CanStrongholdBeAttacked(ICity city, IStronghold stronghold)
+        public virtual Error CanStrongholdBeAttacked(ICity city, IStronghold stronghold)
         {
             if (stronghold.StrongholdState == StrongholdState.Inactive)
             {
@@ -290,7 +290,7 @@ namespace Game.Logic.Procedures
             return Error.Ok;
         }
 
-        public Error CanStrongholdBeDefended(ICity city, IStronghold stronghold)
+        public virtual Error CanStrongholdBeDefended(ICity city, IStronghold stronghold)
         {
             if (stronghold.StrongholdState == StrongholdState.Inactive)
             {
@@ -310,7 +310,7 @@ namespace Game.Logic.Procedures
             return Error.Ok;            
         }
 
-        public void JoinOrCreateStrongholdGateBattle(IStronghold targetStronghold, ITroopObject attackerTroopObject, out ICombatGroup combatGroup, out uint battleId)
+        public virtual void JoinOrCreateStrongholdGateBattle(IStronghold targetStronghold, ITroopObject attackerTroopObject, out ICombatGroup combatGroup, out uint battleId)
         {
              // If battle already exists, then we just join it in also bringing any new units
             if (targetStronghold.GateBattle != null)
@@ -324,7 +324,7 @@ namespace Game.Logic.Procedures
                                           ? new BattleOwner(BattleOwnerType.Stronghold, targetStronghold.Id)
                                           : new BattleOwner(BattleOwnerType.Tribe, targetStronghold.Tribe.Id);
 
-                targetStronghold.GateBattle = battleManagerFactory.CreateBattleManager(new BattleLocation(BattleLocationType.StrongholdGate, targetStronghold.Id),
+                targetStronghold.GateBattle = battleManagerFactory.CreateStrongholdGateBattleManager(new BattleLocation(BattleLocationType.StrongholdGate, targetStronghold.Id),
                                                                                    battleOwner,
                                                                                    targetStronghold);
                 
@@ -344,7 +344,7 @@ namespace Game.Logic.Procedures
             battleId = targetStronghold.GateBattle.BattleId;
         }
 
-        public ICombatGroup AddStrongholdGateToBattle(IBattleManager battle, IStronghold stronghold)
+        public virtual ICombatGroup AddStrongholdGateToBattle(IBattleManager battle, IStronghold stronghold)
         {
             var strongholdCombatGroup = combatGroupFactory.CreateStrongholdCombatGroup(battle.BattleId, battle.GetNextGroupId(), stronghold);
             if (stronghold.Gate == 0)
@@ -353,12 +353,12 @@ namespace Game.Logic.Procedures
             }
             strongholdCombatGroup.Add(combatUnitFactory.CreateStrongholdGateStructure(battle, stronghold, stronghold.Gate));
 
-            battle.Add(strongholdCombatGroup, BattleManager.BattleSide.Defense);
+            battle.Add(strongholdCombatGroup, BattleManager.BattleSide.Defense, false);
 
             return strongholdCombatGroup;
         }
 
-        public ICombatGroup AddStrongholdUnitsToBattle(IBattleManager battle, IStronghold stronghold, IEnumerable<Unit> units)
+        public virtual ICombatGroup AddStrongholdUnitsToBattle(IBattleManager battle, IStronghold stronghold, IEnumerable<Unit> units)
         {
             var strongholdCombatGroup = combatGroupFactory.CreateStrongholdCombatGroup(battle.BattleId, battle.GetNextGroupId(), stronghold);
             
@@ -367,12 +367,12 @@ namespace Game.Logic.Procedures
                 strongholdCombatGroup.Add(combatUnitFactory.CreateStrongholdCombatUnit(battle, stronghold, unit.Type, 5, unit.Count));
             }
 
-            battle.Add(strongholdCombatGroup, BattleManager.BattleSide.Defense);
+            battle.Add(strongholdCombatGroup, BattleManager.BattleSide.Defense, false);
 
             return strongholdCombatGroup;
         }
 
-        public void JoinOrCreateStrongholdMainBattle(IStronghold targetStronghold, ITroopObject attackerTroopObject, out ICombatGroup combatGroup, out uint battleId)
+        public virtual void JoinOrCreateStrongholdMainBattle(IStronghold targetStronghold, ITroopObject attackerTroopObject, out ICombatGroup combatGroup, out uint battleId)
         {
              // If battle already exists, then we just join it in also bringing any new units
             if (targetStronghold.MainBattle != null)
@@ -386,7 +386,7 @@ namespace Game.Logic.Procedures
                                           ? new BattleOwner(BattleOwnerType.Stronghold, targetStronghold.Id)
                                           : new BattleOwner(BattleOwnerType.Tribe, targetStronghold.Tribe.Id);
 
-                targetStronghold.MainBattle = battleManagerFactory.CreateBattleManager(new BattleLocation(BattleLocationType.Stronghold, targetStronghold.Id),
+                targetStronghold.MainBattle = battleManagerFactory.CreateStrongholdMainBattleManager(new BattleLocation(BattleLocationType.Stronghold, targetStronghold.Id),
                                                                                    battleOwner,
                                                                                    targetStronghold);
 

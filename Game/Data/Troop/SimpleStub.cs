@@ -12,7 +12,11 @@ namespace Game.Data.Troop
 
         public virtual void AddUnit(FormationType formationType, ushort type, ushort count)
         {
-            if (count <= 0) return;
+            if (count <= 0)
+            {
+                return;
+            }
+
             Formation formation;
             if (!data.TryGetValue(formationType, out formation))
             {

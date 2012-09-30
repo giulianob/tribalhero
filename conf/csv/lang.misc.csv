@@ -129,3 +129,16 @@ ATTACK_SELF_ERROR,You can't attack your own city.
 ,
 REINFORCE_CHOOSE_TARGET,Choose a town center to defend or stronghold to defend.
 REINFORCE_DISTANCE_MESSAGE,About {0} away. Double click to defend.
+,
+BATTLE_PROP_DEFENSE_STRONGHOLD_METER,Defenders Stamina
+BATTLE_PROP_OFFENSE_STRONGHOLD_METER,Attackers Stamina
+BATTLE_NEW_ROUND,Battle - {0} - Round {1}
+BATTLE_SIDE_LOCAL,Local
+BATTLE_CANT_REACH,couldn't reach anyone
+BATTLE_DAMAGE,{0} dmg
+BATTLE_DEFEATED,has been defeated
+BATTLE_TAB_DEFENDER,Defender
+BATTLE_TAB_ATTACKER,Attacker
+BATTLE_TAB_LOG,Battle Log
+BATTLE_ROUND,Round {0}
+BATTLE_ENDED,Battle has ended

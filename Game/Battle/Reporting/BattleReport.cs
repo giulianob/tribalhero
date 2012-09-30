@@ -138,7 +138,7 @@ namespace Game.Battle.Reporting
                                                                 state,                                                                
                                                                 isAttacker);
 
-                ReportedGroups[group] = reportedGroupId;
+                ReportedGroups[group] = reportedGroupId;                
             }                
             else if (state != ReportState.Staying)
             {
@@ -149,38 +149,7 @@ namespace Game.Battle.Reporting
             foreach (var combatObject in group)
             {                
                 battleReportWriter.SnapCombatObject(reportedGroupId, combatObject);
-            }
-
-            // Log any troops that are entering the battle to the view table so they are able to see this report
-            // TODO: Should not really depend on an interface to decide this behavior and should not expect local troop to be group with id 1. Could do it by adding a method to 
-            // the group to return whether it should log a report view and use the owner type/id pattern to log the owner.
-            // This approach will have to change for stronghold since each tribe member will need to be able to see the report. We'll need to use
-            // the owner type/id as specified above.
-            if (group.Id != 1 && group is IReportView)
-            {
-                switch(state)
-                {
-                    // When entering, we log the initial report id.
-                    case ReportState.Entering:
-                        if (!alreadySnapped)
-                        {
-                            battleReportWriter.SnapBattleReportView(((IReportView)group).City.Id,
-                                                                    group.TroopId,
-                                                                    battle.BattleId,
-                                                                    group.Id,
-                                                                    isAttacker,
-                                                                    ReportId);
-                        }
-                        break;
-                    // When exiting, we log the end report id
-                    case ReportState.Exiting:
-                    case ReportState.Dying:
-                    case ReportState.OutOfStamina:
-                    case ReportState.Retreating:
-                        battleReportWriter.SnapBattleReportViewExit(battle.BattleId, group.Id, ReportId);
-                        break;
-                }
-            }
+            }          
         }
 
         /// <summary>
@@ -213,9 +182,19 @@ namespace Game.Battle.Reporting
             SnappedImportantEvent = false;
         }
 
-        public void SetLootedResources(uint cityId, byte troopId, uint battleId, Resource lootResource, Resource bonusResource)
+        public void SetLootedResources(BattleOwner owner, uint groupId, uint battleId, Resource lootResource, Resource bonusResource)
         {
-            battleReportWriter.SnapLootedResources(cityId, troopId, battleId, lootResource, bonusResource);
+            battleReportWriter.SnapLootedResources(owner, groupId, battleId, lootResource, bonusResource);
+        }
+
+        public void AddAccess(BattleOwner owner, BattleManager.BattleSide battleSide)
+        {
+            battleReportWriter.SnapBattleAccess(battle.BattleId, owner, 0, 0, battleSide == BattleManager.BattleSide.Attack);
+        }
+
+        public void AddAccess(ICombatGroup group, BattleManager.BattleSide battleSide)
+        {
+            battleReportWriter.SnapBattleAccess(battle.BattleId, group.Owner, group.TroopId, group.Id, battleSide == BattleManager.BattleSide.Attack);
         }
 
         public IEnumerable<DbDependency> DbDependencies

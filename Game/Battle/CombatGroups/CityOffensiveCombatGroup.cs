@@ -6,7 +6,7 @@ using Persistance;
 
 namespace Game.Battle.CombatGroups
 {
-    public class CityOffensiveCombatGroup : CombatGroup, IReportView
+    public class CityOffensiveCombatGroup : CombatGroup
     {
         public ITroopObject TroopObject { get; private set; }
 

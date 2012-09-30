@@ -28,9 +28,7 @@ namespace Game.Battle
                                        kernel.Get<ICombatListFactory>(),
                                        kernel.Get<BattleFormulas>());
 
-// ReSharper disable ObjectCreationAsStatement
             new BattleChannel(bm);
-// ReSharper restore ObjectCreationAsStatement
 
             bm.BattleReport.Battle = bm;
             return bm;
@@ -42,7 +40,7 @@ namespace Game.Battle
             return CreateBattleManager(battleId, location, owner, city);
         }
 
-        public IBattleManager CreateBattleManager(uint battleId, BattleLocation battleLocation, BattleOwner battleOwner, IStronghold stronghold)
+        public IBattleManager CreateStrongholdMainBattleManager(uint battleId, BattleLocation battleLocation, BattleOwner battleOwner, IStronghold stronghold)
         {
             var bm = new BattleManager(battleId,
                                        battleLocation,
@@ -53,18 +51,39 @@ namespace Game.Battle
                                        kernel.Get<ICombatListFactory>(),
                                        kernel.Get<BattleFormulas>());
 
-// ReSharper disable ObjectCreationAsStatement
             new BattleChannel(bm);
-// ReSharper restore ObjectCreationAsStatement
 
             bm.BattleReport.Battle = bm;
             return bm;
         }
 
-        public IBattleManager CreateBattleManager(BattleLocation battleLocation, BattleOwner battleOwner, IStronghold stronghold)
+        public IBattleManager CreateStrongholdMainBattleManager(BattleLocation battleLocation, BattleOwner battleOwner, IStronghold stronghold)
         {
             var battleId = (uint)BattleReport.BattleIdGenerator.GetNext();
-            return CreateBattleManager(battleId, battleLocation, battleOwner, stronghold);
+            return CreateStrongholdMainBattleManager(battleId, battleLocation, battleOwner, stronghold);
+        }
+
+        public IBattleManager CreateStrongholdGateBattleManager(BattleLocation battleLocation, BattleOwner battleOwner, IStronghold stronghold)
+        {
+            var battleId = (uint)BattleReport.BattleIdGenerator.GetNext();
+            return CreateStrongholdGateBattleManager(battleId, battleLocation, battleOwner, stronghold);
+        }
+
+        public IBattleManager CreateStrongholdGateBattleManager(uint battleId, BattleLocation battleLocation, BattleOwner battleOwner, IStronghold stronghold)
+        {
+            var bm = new BattleManager(battleId,
+                                       battleLocation,
+                                       battleOwner,
+                                       kernel.Get<IRewardStrategyFactory>().CreateStrongholdRewardStrategy(stronghold),
+                                       kernel.Get<IDbManager>(),
+                                       new BattleReport(new NullBattleReportWriter()),
+                                       kernel.Get<ICombatListFactory>(),
+                                       kernel.Get<BattleFormulas>());
+
+            new BattleChannel(bm);
+
+            bm.BattleReport.Battle = bm;
+            return bm;
         }
     }
 }

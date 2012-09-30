@@ -43,6 +43,7 @@ namespace Testing.Actions
             return new CityOffensiveCombatGroup(1, 1, troopObject, new Mock<IDbManager>().Object);            
         }
 
+        #region AP Tests
         [Fact]
         public void WhenDefenderStrongerShouldNotGiveAnyAp()
         {
@@ -394,5 +395,7 @@ namespace Testing.Actions
             attackerStub1.City.AlignmentPoint.Should().Be(29.981818181818181818181818182m);
             attackerStub2.City.AlignmentPoint.Should().Be(29.818181818181818181818181818m);
         }
+        #endregion
+
     }
 }

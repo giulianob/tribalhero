@@ -61,8 +61,9 @@ namespace Game.Battle
 
         public virtual int GetUnitsPerStructure(byte level)
         {
-            var units = new[] { 20, 20, 23, 28, 34, 39, 45, 52, 59, 67, 76, 85, 95, 106, 117, 130 };
-            return units[level];
+            int[] units = new[] { 20, 20, 23, 28, 34, 39, 45, 52, 59, 67, 76, 85, 95, 106, 117, 130 };
+
+            return units[Math.Min(level, units.Length - 1)];
         }
 
         public virtual decimal GetAttackerDmgToDefender(ICombatObject attacker, ICombatObject target, bool useDefAsAtk)

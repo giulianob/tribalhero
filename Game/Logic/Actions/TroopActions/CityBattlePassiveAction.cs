@@ -298,7 +298,11 @@ namespace Game.Logic.Actions
 
             // Send the defender back to their city but restation them if there's a problem
             var retreatChainAction = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
-            stub.City.Worker.DoPassive(stub.City, retreatChainAction, true);
+            var result = stub.City.Worker.DoPassive(stub.City, retreatChainAction, true);
+            if (result != Error.Ok)
+            {
+                throw new Exception("Unexpected failure when retreating a unit from city");
+            }
         }
 
         /// <summary>

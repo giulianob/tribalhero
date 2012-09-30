@@ -112,7 +112,7 @@ namespace ConsoleSimulator
                         {
                             localGroup.Add(combatUnitFactory.CreateStructureCombatUnit(battleManager, structure));
                         }
-                        battleManager.Add(localGroup, BattleManager.BattleSide.Defense);
+                        battleManager.Add(localGroup, BattleManager.BattleSide.Defense, false);
                         Ioc.Kernel.Get<BattleProcedure>().MoveUnitFormation(defender.Local, FormationType.Normal, FormationType.InBattle);
                         defender.Local.EndUpdate();
                     }
@@ -129,7 +129,7 @@ namespace ConsoleSimulator
                             combatUnitFactory.CreateAttackCombatUnit(battleManager, attacker.TroopObject, FormationType.InBattle, unitKvp.Key, unitKvp.Value).
                                     ToList().ForEach(attackGroup.Add);
                         }
-                        battleManager.Add(attackGroup, BattleManager.BattleSide.Attack);
+                        battleManager.Add(attackGroup, BattleManager.BattleSide.Attack, false);
                     }
 
                     using (Concurrency.Current.Lock(attacker.AttackStub, defender.Local))
@@ -202,7 +202,7 @@ namespace ConsoleSimulator
                         {
                             localGroup.Add(combatUnitFactory.CreateStructureCombatUnit(battleManager, structure));
                         }
-                        battleManager.Add(localGroup, BattleManager.BattleSide.Defense);
+                        battleManager.Add(localGroup, BattleManager.BattleSide.Defense, false);
                         Ioc.Kernel.Get<BattleProcedure>().MoveUnitFormation(defender.Local, FormationType.Normal, FormationType.InBattle);
                         defender.Local.EndUpdate();
                     }
@@ -219,7 +219,7 @@ namespace ConsoleSimulator
                             combatUnitFactory.CreateAttackCombatUnit(battleManager, attacker.TroopObject, FormationType.InBattle, unitKvp.Key, unitKvp.Value).
                                     ToList().ForEach(attackGroup.Add);
                         }
-                        battleManager.Add(attackGroup, BattleManager.BattleSide.Attack);
+                        battleManager.Add(attackGroup, BattleManager.BattleSide.Attack, false);
                     }
 
                     using (Concurrency.Current.Lock(attacker.AttackStub, defender.Local))

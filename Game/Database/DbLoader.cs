@@ -1114,7 +1114,7 @@ namespace Game.Database
                             if (!World.Current.TryGetObjects((uint)listReader["stronghold_id"], out stronghold))
                                 throw new Exception("Stronghold not found");
 
-                            ICombatObject combatObj = new StrongholdCombatStructure((uint)listReader["id"], 
+                            ICombatObject combatObj = new StrongholdCombatGate((uint)listReader["id"], 
                                                                  battleManager.BattleId,
                                                                  (ushort)listReader["type"],
                                                                  (byte)listReader["level"],

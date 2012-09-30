@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Data;
+using Game.Data.Tribe;
 using Game.Util;
 using Persistance;
 
@@ -195,6 +196,11 @@ namespace Game.Battle.Reporting
         public void AddAccess(ICombatGroup group, BattleManager.BattleSide battleSide)
         {
             battleReportWriter.SnapBattleAccess(battle.BattleId, group.Owner, group.TroopId, group.Id, battleSide == BattleManager.BattleSide.Attack);
+        }
+
+        public void AddTribeToBattle(ITribe tribe, BattleManager.BattleSide side)
+        {
+            battleReportWriter.SnapTribeToBattle(battle.BattleId, tribe.Id, side == BattleManager.BattleSide.Attack);
         }
 
         public IEnumerable<DbDependency> DbDependencies

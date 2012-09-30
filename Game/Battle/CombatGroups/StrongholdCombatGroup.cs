@@ -36,6 +36,14 @@ namespace Game.Battle.CombatGroups
             }
         }
 
+        public override Data.Tribe.ITribe Tribe
+        {
+            get
+            {
+                return null;
+            }
+        }
+
         public StrongholdCombatGroup(uint battleId, uint id, IStronghold stronghold, IDbManager dbManager)
                 : base(battleId, id, dbManager)
         {

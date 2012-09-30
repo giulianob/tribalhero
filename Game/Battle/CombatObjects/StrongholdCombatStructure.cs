@@ -14,19 +14,23 @@ using Persistance;
 
 namespace Game.Battle.CombatObjects
 {
+    /// <summary>
+    /// TODO: This class cant be used directly since the DbLoader is always creating a StrongholdCombatGate when loading from this table
+    /// If we need to use this class then make the DbLoader load either a StrongholdCombatStructure or StrongholdCombatGate depending on what was created.
+    /// </summary>
     public class StrongholdCombatStructure : CombatObject
     {
-        private IStronghold Stronghold { get; set; }
+        protected IStronghold Stronghold { get; set; }
 
         public const string DB_TABLE = "stronghold_combat_structures";
 
-        private readonly byte lvl;
+        protected readonly byte lvl;
 
-        private readonly BattleStats stats;
+        protected readonly BattleStats stats;
 
-        private readonly ushort type;
+        protected readonly ushort type;
 
-        private decimal hp;
+        protected decimal hp;
         
         public StrongholdCombatStructure(uint id,
                                 uint battleId,

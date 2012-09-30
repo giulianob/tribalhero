@@ -1,6 +1,7 @@
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Data;
+using Game.Data.Tribe;
 using Persistance;
 
 namespace Game.Battle.Reporting
@@ -32,5 +33,7 @@ namespace Game.Battle.Reporting
         void AddAccess(BattleOwner owner, BattleManager.BattleSide battleSide);        
 
         void AddAccess(ICombatGroup group, BattleManager.BattleSide battleSide);
+
+        void AddTribeToBattle(ITribe tribe, BattleManager.BattleSide side);
     }
 }

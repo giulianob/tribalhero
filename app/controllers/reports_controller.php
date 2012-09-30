@@ -169,7 +169,7 @@ class ReportsController extends AppController {
             'page' => array_key_exists('page', $this->params['form']) ? $this->params['form']['page'] : 1
         );
 
-        $reports = $this->paginate($this->Battle->BattleReportView);
+        $reports = $this->paginate($this->Battle);
 
         // Resolve the name of the battle location and owner
         foreach ($reports as $k => $report) {

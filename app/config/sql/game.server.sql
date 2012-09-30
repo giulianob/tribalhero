@@ -247,6 +247,23 @@ CREATE TABLE `battle_reports` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `battle_tribes`
+--
+
+DROP TABLE IF EXISTS `battle_tribes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `battle_tribes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `battle_id` int(10) unsigned NOT NULL,
+  `tribe_id` int(10) unsigned NOT NULL,
+  `is_attacker` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `battle_id` (`battle_id`,`tribe_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `battles`
 --
 
@@ -265,8 +282,7 @@ CREATE TABLE `battles` (
   PRIMARY KEY (`id`),
   KEY `ended` (`ended`),
   KEY `created` (`created`),
-  KEY `owner` (`owner_type`,`owner_id`),
-  KEY `location` (`location_type`,`location_id`)
+  KEY `owner` (`owner_type`,`owner_id`,`location_type`,`location_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -520,7 +536,7 @@ CREATE TABLE `message_board_read` (
   PRIMARY KEY (`id`),
   KEY `idx_message_board_read_player_id_and_message_board_thread_id` (`player_id`,`message_board_thread_id`),
   KEY `idx_message_board_read_last_read` (`last_read`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -546,7 +562,7 @@ CREATE TABLE `message_board_threads` (
   KEY `idx_message_board_threads_tribe_id_and_deleted` (`tribe_id`,`deleted`),
   KEY `idx_message_board_threads_sticky` (`sticky`),
   KEY `idx_message_board_threads_last_post_date` (`last_post_date`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -569,7 +585,7 @@ CREATE TABLE `messages` (
   KEY `created` (`created`),
   KEY `sender_player_id` (`sender_player_id`,`sender_state`),
   KEY `recipient_player_id` (`recipient_player_id`,`recipient_state`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1135,7 +1151,7 @@ CREATE TABLE `unit_templates_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-09-16 16:45:45
+-- Dump completed on 2012-09-30 15:43:52
 -- MySQL dump 10.13  Distrib 5.5.16, for Win32 (x86)
 --
 -- Host: localhost    Database: tribalhero_server
@@ -1172,4 +1188,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-09-16 16:45:45
+-- Dump completed on 2012-09-30 15:43:52

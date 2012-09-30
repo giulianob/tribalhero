@@ -1,10 +1,8 @@
 ﻿package src.UI.Dialog 
 {
-	import adobe.utils.CustomActions;
-	import com.adobe.images.JPGEncoder;
-	import fl.lang.Locale;
+	import fl.lang.*;
 	import flash.events.*;
-	import flash.geom.Point;
+	import flash.geom.*;
 	import flash.utils.*;
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -14,22 +12,21 @@
 	import org.aswing.geom.*;
 	import org.aswing.table.*;
 	import src.*;
-	import src.Map.MapUtil;
-	import src.Objects.Location;
-	import src.Objects.Process.ReinforcementSendProcess;
-	import src.Objects.SimpleGameObject;
+	import src.Map.*;
+	import src.Objects.*;
+	import src.Objects.Battle.*;
+	import src.Objects.Process.*;
+	import src.Objects.Troop.*;
 	import src.UI.*;
 	import src.UI.Components.*;
+	import src.UI.Components.BattleReport.*;
+	import src.UI.Components.ComplexTroopGridList.*;
 	import src.UI.Components.TableCells.*;
 	import src.UI.Components.Tribe.*;
-	import src.UI.Components.TroopCompositionGridList.TroopCompositionGridList;
-	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
+	import src.UI.Components.TroopCompositionGridList.*;
 	import src.UI.LookAndFeel.*;
 	import src.UI.Tooltips.*;
-	import src.Map.Username;
-	import src.Objects.Troop.*;
-	import src.UI.Components.ComplexTroopGridList.*;
-	import src.Util.Util;
+	import src.Util.*;
 	
 	public class StrongholdProfileDialog extends GameJPanel
 	{
@@ -44,6 +41,8 @@
 		private var pnlRightContainer: Container;
 		
 		private var lblStrongholdName: JLabel;
+		
+		private var reports: LocalReportList;
 				
 		public function StrongholdProfileDialog(profileData: *) 
 		{
@@ -124,11 +123,11 @@
 			
 			var btnSendReinforcement: JButton = new JButton("Send reinforcement");
 			btnSendReinforcement.addActionListener(function(e:Event): void {
-				var process : ReinforcementSendProcess = new ReinforcementSendProcess(new Location(Location.STRONGHOLD,profileData.strongholdId));
+				var process : ReinforcementSendProcess = new ReinforcementSendProcess(new Location(Location.STRONGHOLD, profileData.strongholdId));
 				process.execute();
 			});
 			pnl.append(btnSendReinforcement);
-						
+			
 			if(profileData.strongholdObjectState==SimpleGameObject.STATE_BATTLE) {
 				var btnViewBattle: JButton = new JButton("View battle");
 				btnViewBattle.addActionListener(function(e: Event): void {
@@ -221,10 +220,16 @@
 		}
 		
 		private function createReportPanel() : Container {
-			var pnl: JPanel = new JPanel();
+			reports = new LocalReportList(BattleReportViewer.REPORT_TRIBE_LOCAL, new BattleLocation(BattleLocation.STRONGHOLD, profileData.strongholdId));
+			reports.setConstraints("Center");
+			
+			var pnl: JPanel = new JPanel(new BorderLayout());
+			pnl.append(reports);
+			
 			pnl.setPreferredSize(new IntDimension(400, 150));
 			var tabPanel: JTabbedPane = new JTabbedPane();
 			tabPanel.appendTab(pnl, Locale.loadString("STR_REPORTS"));
+			
 			return tabPanel;
 		}
 	}

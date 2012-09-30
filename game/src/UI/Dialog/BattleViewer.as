@@ -286,17 +286,11 @@
 		{
 			super.showSelf(owner, modal, onClose);
 
-			frame.addEventListener(PopupEvent.POPUP_CLOSED, onClosed);
-
-			if (modal) {
-				Global.gameContainer.showFrame(frame);
-			}
-			else {
-				frame.show();
-			}
-			
+			frame.addEventListener(PopupEvent.POPUP_CLOSED, onClosed);			
 			frame.setResizable(true);
 			frame.setMinimumSize(new IntDimension(650, 545));
+			
+			Global.gameContainer.showFrame(frame);
 			
 			return frame;
 		}

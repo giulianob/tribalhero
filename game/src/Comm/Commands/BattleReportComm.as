@@ -1,8 +1,8 @@
 ﻿package src.Comm.Commands 
 {
 	import src.Comm.*;
-	import src.Map.Map;
 	import src.Map.MapComm;
+	import src.Objects.Battle.BattleLocation;
 	
 	public class BattleReportComm
 	{
@@ -18,8 +18,13 @@
 		
 		}
 		
-		public function listLocal(loader: GameURLLoader, viewType: int, page: int, playerNameFilter: String) : void {
-			loader.load("/reports/index_local", [ { key: "viewType", value: viewType }, { key: "page", value: page }, { key: "playerNameFilter", value: playerNameFilter } ]);
+		public function listLocal(loader: GameURLLoader, viewType: int, location: BattleLocation, page: int, playerNameFilter: String) : void {
+			var params: Array = [ { key: "viewType", value: viewType }, { key: "page", value: page }, { key: "playerNameFilter", value: playerNameFilter } ];
+			if (location) {
+				params.push( { key: "locationId", value: location.id } );
+				params.push( { key: "locationType", value: location.getLocationTypeAsString() } );
+			}
+			loader.load("/reports/index_local", params);
 		}
 		
 		public function markAllAsRead(loader: GameURLLoader) : void {
@@ -38,8 +43,13 @@
 			loader.load("/reports/view_snapshot", [ { key: "id", value: id }, { key: "playerNameFilter", value: playerNameFilter }, { key: "viewType", value: viewType }, { key: "reportId", value: reportId } ]);
 		}				
 		
-		public function listRemote(loader: GameURLLoader, viewType: int, page: int, playerNameFilter: String) : void {
-			loader.load("/reports/index_remote", [ { key: "viewType", value: viewType }, { key: "page", value: page }, { key: "playerNameFilter", value: playerNameFilter }]);
+		public function listRemote(loader: GameURLLoader, viewType: int, location: BattleLocation, page: int, playerNameFilter: String) : void {
+			var params: Array = [ { key: "viewType", value: viewType }, { key: "page", value: page }, { key: "playerNameFilter", value: playerNameFilter } ];
+			if (location) {
+				params.push( { key: "locationId", value: location.id } );
+				params.push( { key: "locationType", value: location.getLocationTypeAsString() } );
+			}
+			loader.load("/reports/index_remote", params);
 		}		
 	}
 

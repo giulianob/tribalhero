@@ -24,6 +24,8 @@ namespace Game.Battle.Reporting
 
         public const string BATTLE_REPORTS_ACCESS_DB = "battle_report_access";
 
+        public const string BATTLE_TRIBES_DB = "battle_tribes";
+
         public SqlBattleReportWriter(IDbManager dbManager)
         {
             this.dbManager = dbManager;
@@ -126,6 +128,18 @@ namespace Game.Battle.Reporting
                                     new DbColumn("troop_id", troopId, DbType.Byte),
                                     new DbColumn("battle_id", battleId, DbType.UInt32), 
                                     new DbColumn("object_id", groupId, DbType.UInt32),
+                                    new DbColumn("is_attacker", isAttacker, DbType.Boolean)
+                            });
+        }
+
+        public void SnapTribeToBattle(uint battleId, uint tribeId, bool isAttacker)
+        {
+            dbManager.Query(
+                            string.Format(@"INSERT IGNORE `{0}` SET `battle_id` = @battle_id, `tribe_id` = @tribe_id, `is_attacker` = @is_attacker",
+                                          BATTLE_TRIBES_DB),
+                            new[]
+                            {
+                                    new DbColumn("battle_id", battleId, DbType.UInt32), new DbColumn("tribe_id", tribeId, DbType.UInt32),
                                     new DbColumn("is_attacker", isAttacker, DbType.Boolean)
                             });
         }

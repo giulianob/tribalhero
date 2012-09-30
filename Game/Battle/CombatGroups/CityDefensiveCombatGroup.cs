@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Data;
 using Game.Data;
+using Game.Data.Tribe;
 using Game.Data.Troop;
 using Persistance;
 
@@ -33,6 +34,14 @@ namespace Game.Battle.CombatGroups
             get
             {
                 return owner;
+            }
+        }
+
+        public override ITribe Tribe
+        {
+            get
+            {
+                return TroopStub.City.Owner.IsInTribe ? TroopStub.City.Owner.Tribesman.Tribe : null;
             }
         }
 

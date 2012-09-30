@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Battle.CombatObjects;
 using Game.Data;
+using Game.Data.Tribe;
 using Persistance;
 
 namespace Game.Battle.CombatGroups
@@ -24,6 +25,8 @@ namespace Game.Battle.CombatGroups
         public abstract Resource GroupLoot { get; }
 
         public abstract BattleOwner Owner { get; }
+
+        public abstract ITribe Tribe { get; }
 
         [Obsolete("For testing only", true)]
         protected CombatGroup()

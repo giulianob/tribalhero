@@ -294,50 +294,52 @@ namespace Game.Battle
 
         public void Add(ICombatGroup combatGroup, BattleSide battleSide, bool allowReportAccess)
         {
-            AddToCombatList(combatGroup, battleSide == BattleSide.Attack, battleSide == BattleSide.Attack ? Attackers : Defenders, ReportState.Entering);
+            bool isAttacker = battleSide == BattleSide.Attack;
 
-            if (allowReportAccess)
-            {
-                BattleReport.AddAccess(combatGroup, battleSide);
-            }
-        }
-
-        private void AddToCombatList(ICombatGroup group, bool isAttacker, ICombatList combatList, ReportState state)
-        {
             lock (battleLock)
             {
-                if (GetCombatGroup(group.Id) != null)
+                if (GetCombatGroup(combatGroup.Id) != null)
                 {
-                    throw new Exception(string.Format("Trying to add a group to battle {0} with id {1} that already exists", BattleId, group.Id));
+                    throw new Exception(string.Format("Trying to add a group to battle {0} with id {1} that already exists", BattleId, combatGroup.Id));
                 }
 
-                combatList.Add(group);
+                (battleSide == BattleSide.Attack ? Attackers : Defenders).Add(combatGroup);
 
                 if (isAttacker)
                 {
-                    group.CombatObjectAdded += AttackerGroupOnCombatObjectAdded;                    
-                    group.CombatObjectRemoved += AttackerGroupOnCombatObjectRemoved;
+                    combatGroup.CombatObjectAdded += AttackerGroupOnCombatObjectAdded;                    
+                    combatGroup.CombatObjectRemoved += AttackerGroupOnCombatObjectRemoved;
                 }
                 else
                 {
-                    group.CombatObjectAdded += DefenderGroupOnCombatObjectAdded;                    
-                    group.CombatObjectRemoved += DefenderGroupOnCombatObjectRemoved;
+                    combatGroup.CombatObjectAdded += DefenderGroupOnCombatObjectAdded;                    
+                    combatGroup.CombatObjectRemoved += DefenderGroupOnCombatObjectRemoved;
                 }
 
                 if (BattleStarted)
                 {
-                    BattleReport.WriteReportGroup(group, isAttacker, state);
+                    BattleReport.WriteReportGroup(combatGroup, isAttacker, ReportState.Entering);
 
                     if (isAttacker)
                     {
-                        ReinforceAttacker(this, group);
+                        ReinforceAttacker(this, combatGroup);
                     }
                     else
                     {
-                        ReinforceDefender(this, group);
+                        ReinforceDefender(this, combatGroup);
                     }
                 }
-            }
+
+                if (allowReportAccess)
+                {
+                    BattleReport.AddAccess(combatGroup, battleSide);
+                }
+
+                if (combatGroup.Tribe != null)
+                {
+                    BattleReport.AddTribeToBattle(combatGroup.Tribe, battleSide);
+                }
+            }            
         }
 
         private void DefenderGroupOnCombatObjectAdded(ICombatGroup group, ICombatObject combatObject)

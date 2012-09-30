@@ -36,6 +36,14 @@ namespace Game.Battle.CombatGroups
             }
         }
 
+        public override Data.Tribe.ITribe Tribe
+        {
+            get
+            {
+                return TroopObject.City.Owner.IsInTribe ? TroopObject.City.Owner.Tribesman.Tribe : null;
+            }
+        }
+
         public CityOffensiveCombatGroup(uint battleId, uint id, ITroopObject troopObject, IDbManager dbManager) : base(battleId, id, dbManager)
         {
             owner = new BattleOwner(BattleOwnerType.City, troopObject.City.Id);

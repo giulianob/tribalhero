@@ -1,5 +1,6 @@
 using Game.Battle.CombatObjects;
 using Game.Data;
+using Game.Data.Tribe;
 using Game.Util.Locking;
 using Persistance;
 
@@ -14,6 +15,8 @@ namespace Game.Battle.CombatGroups
         Resource GroupLoot { get; }
 
         BattleOwner Owner { get; }
+
+        ITribe Tribe { get; }
 
         bool IsDead();
 

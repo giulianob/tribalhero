@@ -201,18 +201,6 @@ namespace Game.Comm.ProcessorCommands
                 //User session backreference
                 session.Player = player;                
 
-                // Subscribe him to the player channel
-                Global.Channel.Subscribe(session, "/PLAYER/" + player.PlayerId);
-
-                // Subscribe him to the tribe channel if available
-                if (player.Tribesman != null)
-                {
-                    Global.Channel.Subscribe(session, "/TRIBE/" + player.Tribesman.Tribe.Id);
-                }
-
-                // Subscribe to global channel
-                Global.Channel.Subscribe(session, "/GLOBAL");
-
                 //Player Info
                 reply.AddUInt32(player.PlayerId);
                 reply.AddByte((byte)(player.Rights >= PlayerRights.Admin ? 1 : 0));
@@ -237,6 +225,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     reply.AddByte(0);
                     PacketHelper.AddLoginToPacket(session, reply);
+                    SubscribeDefaultChannels(session, session.Player);
                 }
 
                 session.Write(reply);
@@ -296,8 +285,25 @@ namespace Game.Comm.ProcessorCommands
                 var reply = new Packet(packet);
                 reply.Option |= (ushort)Packet.Options.Compressed;
                 PacketHelper.AddLoginToPacket(session, reply);
+                SubscribeDefaultChannels(session, session.Player);
                 session.Write(reply);
             }
+        }
+
+        private void SubscribeDefaultChannels(Session session, IPlayer player)
+        {
+            
+                // Subscribe him to the player channel
+                Global.Channel.Subscribe(session, "/PLAYER/" + player.PlayerId);
+
+                // Subscribe him to the tribe channel if available
+                if (player.Tribesman != null)
+                {
+                    Global.Channel.Subscribe(session, "/TRIBE/" + player.Tribesman.Tribe.Id);
+                }
+
+                // Subscribe to global channel
+                Global.Channel.Subscribe(session, "/GLOBAL");
         }
     }
 }

@@ -120,6 +120,18 @@ namespace Game.Logic.Actions
             stronghold.MainBattle.AboutToExitBattle += MainBattleOnAboutToExitBattle;
             stronghold.MainBattle.ActionAttacked += MainBattleOnActionAttacked;
             stronghold.MainBattle.ExitTurn += MainBattleOnExitTurn;
+            stronghold.MainBattle.EnterBattle += MainBattleOnEnterBattle;
+        }
+
+        private void MainBattleOnEnterBattle(IBattleManager battle, ICombatList attackers, ICombatList defenders)
+        {
+            IStronghold stronghold;
+            if (!gameObjectLocator.TryGetObjects(strongholdId, out stronghold))
+            {
+                throw new Exception("Stronghold not found");
+            }
+
+            battle.BattleReport.AddAccess(new BattleOwner(BattleOwnerType.Tribe, stronghold.GateOpenTo.Id), BattleManager.BattleSide.Attack);
         }
 
         private void MainBattleOnExitTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, int turn)
@@ -208,9 +220,13 @@ namespace Game.Logic.Actions
             stub.State = TroopState.Stationed;
             stub.EndUpdate();
 
-            // Send the defender back to their city but restation them if there's a problem
+            // Send the defender back to their city
             var retreatChainAction = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
-            stub.City.Worker.DoPassive(stub.City, retreatChainAction, true);
+            var result = stub.City.Worker.DoPassive(stub.City, retreatChainAction, true);
+            if (result != Error.Ok)
+            {
+                throw new Exception("Unexpected failure when retreating a unit from stronghold");
+            }
         }
 
         private void MainBattleOnAboutToExitBattle(IBattleManager battle, ICombatList attackers, ICombatList defenders)
@@ -323,6 +339,7 @@ namespace Game.Logic.Actions
                 stronghold.MainBattle.GroupKilled -= MainBattleOnGroupKilled;
                 stronghold.MainBattle.ActionAttacked -= MainBattleOnActionAttacked;
                 stronghold.MainBattle.ExitTurn -= MainBattleOnExitTurn;
+                stronghold.MainBattle.EnterBattle -= MainBattleOnEnterBattle;
 
                 stronghold.BeginUpdate();
                 stronghold.GateOpenTo = null;

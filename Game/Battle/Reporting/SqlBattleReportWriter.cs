@@ -22,6 +22,8 @@ namespace Game.Battle.Reporting
 
         public const string BATTLE_REPORT_VIEWS_DB = "battle_report_views";
 
+        public const string BATTLE_REPORTS_ACCESS_DB = "battle_report_access";
+
         public SqlBattleReportWriter(IDbManager dbManager)
         {
             this.dbManager = dbManager;
@@ -110,17 +112,21 @@ namespace Game.Battle.Reporting
             return battleTroopId;
         }
 
-        public void SnapBattleReportView(uint cityId, byte troopId, uint battleId, uint groupId, bool isAttacker, uint enterBattleReportId)
+        public void SnapBattleAccess(uint battleId, BattleOwner owner, byte troopId, uint groupId, bool isAttacker)
         {
             dbManager.Query(
                             string.Format(
-                                          @"INSERT INTO `{0}` VALUES ('', @city_id, @troop_id, @battle_id, @object_id, @is_attacker, 0, 0, 0, 0, 0, 0, 0, 0, 0, UTC_TIMESTAMP(), @report_id, null)",
+                                          @"INSERT INTO `{0}`
+                                          VALUES ('', @owner_type, @owner_id, @troop_id, @battle_id, @object_id, @is_attacker, 0, 0, 0, 0, 0, 0, 0, 0, 0, UTC_TIMESTAMP())",
                                           BATTLE_REPORT_VIEWS_DB),
                             new[]
                             {
-                                    new DbColumn("city_id", cityId, DbType.UInt32), new DbColumn("troop_id", troopId, DbType.Byte),
-                                    new DbColumn("battle_id", battleId, DbType.UInt32), new DbColumn("object_id", groupId, DbType.UInt32),
-                                    new DbColumn("is_attacker", isAttacker, DbType.Boolean), new DbColumn("report_id", enterBattleReportId, DbType.UInt32)
+                                    new DbColumn("owner_type", owner.Type, DbType.String), 
+                                    new DbColumn("owner_id", owner.Id, DbType.UInt32), 
+                                    new DbColumn("troop_id", troopId, DbType.Byte),
+                                    new DbColumn("battle_id", battleId, DbType.UInt32), 
+                                    new DbColumn("object_id", groupId, DbType.UInt32),
+                                    new DbColumn("is_attacker", isAttacker, DbType.Boolean)
                             });
         }
 
@@ -148,22 +154,21 @@ namespace Game.Battle.Reporting
                             });
         }
 
-        public void SnapLootedResources(uint cityId, byte troopId, uint battleId, Resource lootResource, Resource bonusResource)
+        public void SnapLootedResources(BattleOwner owner, uint groupId, uint battleId, Resource lootResource, Resource bonusResource)
         {
-            // Since we only have cityId and troopId but not groupId, just get the last report view that matches these conditions
-            // In the future this should really be fixed by having a groupId passed in
-
             uint reportViewId;
             using (
                     var reader =
                             dbManager.ReaderQuery(
                                                   string.Format(
-                                                                @"SELECT MAX(`id`) as `report_view_id` FROM `{0}` WHERE `city_id` = @city_id AND `battle_id` = @battle_id AND `troop_stub_id` = @troop_stub_id",
+                                                                @"SELECT `id` as `report_view_id` FROM `{0}` WHERE `owner_type` = @owner_type AND `owner_id` = @owner_id AND `battle_id` = @battle_id AND `group_id` = @group_id",
                                                                 BATTLE_REPORT_VIEWS_DB),
                                                   new[]
                                                   {
-                                                          new DbColumn("city_id", cityId, DbType.UInt32), new DbColumn("battle_id", battleId, DbType.UInt32),
-                                                          new DbColumn("troop_stub_id", troopId, DbType.Byte)
+                                                          new DbColumn("owner_type", owner.Type.ToString(), DbType.String),
+                                                          new DbColumn("owner_id", owner.Id.ToString(), DbType.UInt32), 
+                                                          new DbColumn("battle_id", battleId, DbType.UInt32),
+                                                          new DbColumn("group_id", groupId, DbType.UInt32)
                                                   }))
             {
                 if (!reader.HasRows)
@@ -195,18 +200,6 @@ namespace Game.Battle.Reporting
                                     new DbColumn("bonus_wood", bonusResource.Wood, DbType.Int32), new DbColumn("bonus_crop", bonusResource.Crop, DbType.Int32),
                                     new DbColumn("bonus_iron", bonusResource.Iron, DbType.Int32), new DbColumn("bonus_gold", bonusResource.Gold, DbType.Int32),
                                     new DbColumn("id", reportViewId, DbType.UInt32)
-                            });
-        }
-
-        public void SnapBattleReportViewExit(uint battleId, uint groupId, uint reportId)
-        {
-            dbManager.Query(
-                            string.Format(@"UPDATE `{0}` SET `battle_report_exit_id` = @report_id WHERE `battle_id` = @battle_id AND `group_id` = @group_id",
-                                          BATTLE_REPORT_VIEWS_DB),
-                            new[]
-                            {
-                                    new DbColumn("report_id", reportId, DbType.UInt32), new DbColumn("battle_id", battleId, DbType.UInt32),
-                                    new DbColumn("group_id", groupId, DbType.UInt32),
                             });
         }
     }

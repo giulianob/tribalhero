@@ -222,7 +222,7 @@ namespace Game.Logic.Actions
             DeregisterBattleListeners(targetCity);
 
             troopObject.BeginUpdate();
-            SetLootedResources(targetCity.Battle, troopObject);
+            SetLootedResources(targetCity.Battle, troopObject, group);
             troopObject.Stub.BeginUpdate();
             troopObject.State = GameObjectState.NormalState();
             troopObject.Stub.State = TroopState.Idle;
@@ -261,7 +261,7 @@ namespace Game.Logic.Actions
             StateChange(ActionState.Completed);
         }
 
-        private void SetLootedResources(IBattleManager battle, ITroopObject troopObject)
+        private void SetLootedResources(IBattleManager battle, ITroopObject troopObject, ICombatGroup combatGroup)
         {
             if (!battle.BattleStarted)
             {
@@ -289,7 +289,7 @@ namespace Game.Logic.Actions
             troopObject.Stats.Loot.Add(resource, cap, out actual, out returning);
 
             // Update battle report view with actual received bonus            
-            battle.BattleReport.SetLootedResources(troopObject.City.Id, troopObject.Stub.TroopId, battle.BattleId, looted, actual);
+            battle.BattleReport.SetLootedResources(combatGroup.Owner, combatGroup.Id, battle.BattleId, looted, actual);
         }
 
         private void BattleActionAttacked(IBattleManager battle,

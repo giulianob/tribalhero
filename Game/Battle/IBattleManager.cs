@@ -40,7 +40,7 @@ namespace Game.Battle
 
         void DbLoaderAddToCombatList(ICombatGroup group, BattleManager.BattleSide side);
 
-        void Add(ICombatGroup combatGroup, BattleManager.BattleSide battleSide);
+        void Add(ICombatGroup combatGroup, BattleManager.BattleSide battleSide, bool allowReportAccess);
 
         void Remove(ICombatGroup group, BattleManager.BattleSide side, ReportState state);
 

@@ -99,7 +99,7 @@ namespace Game.Database
                     LoadStructureProperties();
                     LoadTechnologies();
                     LoadForests(downTime);
-                    LoadStrongholds();
+                    LoadStrongholds(downTime);
                     LoadTroopStubs();
                     LoadTroopStubTemplates();
                     LoadTroops();
@@ -415,7 +415,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadStrongholds()
+        private void LoadStrongholds(TimeSpan downTime)
         {
             #region Strongholds
 
@@ -428,22 +428,22 @@ namespace Game.Database
                                                         (string)reader["name"],
                                                         (byte)reader["level"],
                                                         (uint)reader["x"],
-                                                        (uint)reader["y"]);
+                                                        (uint)reader["y"],
+                                                        (decimal)reader["gate"]);
                     stronghold.StrongholdState = (StrongholdState)((byte)reader["state"]);
                     stronghold.DbPersisted = true;
                     stronghold.State.Type = (ObjectState)((byte)reader["object_state"]);
                     foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
                         stronghold.State.Parameters.Add(variable);
-
-
+                    
                     // Load owner tribe
                     var tribeId = (uint)reader["tribe_id"];
                     ITribe tribe;
                     if (tribeId != 0 && World.Current.TryGetObjects(tribeId, out tribe))
                     {
                         stronghold.Tribe = tribe;
-                    }                    
-                    
+                    }
+
                     // Load current tribe that knocked down gate
                     var gateOpenToTribeId = (uint)reader["gate_open_to"];
                     ITribe gateOpenToTribe;
@@ -720,32 +720,20 @@ namespace Game.Database
 
             foreach (var stubInfo in stationedTroops)
             {
-<<<<<<< local
-                uint stationId = stubInfo.stationId;
-=======
                 uint stationid;
->>>>>>> other
                 switch((LocationType)stubInfo.stationType)
-                {                        
+                {
                     case LocationType.City:
                         ICity stationedCity;
-<<<<<<< local
-                        if (!World.Current.TryGetObjects(stationId, out stationedCity))
-=======
                         stationid = stubInfo.stationId;
                         if (!World.Current.TryGetObjects(stationid, out stationedCity))
->>>>>>> other
                             throw new Exception("City not found");
                         stationedCity.Troops.DbLoaderAddStation(stubInfo.stub);
                         break;
                     case LocationType.Stronghold:
                         IStronghold stronghold;
-<<<<<<< local
-                        if (!StrongholdManager.TryGetStronghold(stationId, out stronghold))
-=======
                         stationid = stubInfo.stationId;
                         if (!StrongholdManager.TryGetStronghold(stationid, out stronghold))
->>>>>>> other
                             throw new Exception("Stronghold not found");
                         stronghold.Troops.DbLoaderAddStation(stubInfo.stub);
                         break;
@@ -870,18 +858,16 @@ namespace Game.Database
                         case BattleLocationType.StrongholdGate:
                             IStronghold stronghold;
                             if (!World.Current.TryGetObjects((uint)reader["location_id"], out stronghold))
-                            {
                                 throw new Exception("Stronghold not found");
-                            }
+
+                            battleManager = BattleManagerFactory.CreateBattleManager((uint)reader["battle_id"], battleLocation, battleOwner, stronghold);
 
                             if (battleLocation.Type == BattleLocationType.Stronghold)
                             {
-                                battleManager = BattleManagerFactory.CreateStrongholdMainBattleManager((uint)reader["battle_id"], battleLocation, battleOwner, stronghold);
                                 stronghold.MainBattle = battleManager;
                             }
                             else
                             {
-                                battleManager = BattleManagerFactory.CreateStrongholdGateBattleManager((uint)reader["battle_id"], battleLocation, battleOwner, stronghold);
                                 stronghold.GateBattle = battleManager;
                             }
                             break;
@@ -897,7 +883,6 @@ namespace Game.Database
 
                     battleManager.BattleReport.ReportStarted = (bool)reader["report_started"];
                     battleManager.BattleReport.ReportId = (uint)reader["report_id"];
-                    battleManager.BattleReport.SnappedImportantEvent = (bool)reader["snapped_important_event"];
 
                     // Load combat groups
                     using (DbDataReader listReader = DbManager.SelectList(CityOffensiveCombatGroup.DB_TABLE, new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
@@ -950,7 +935,7 @@ namespace Game.Database
                             var strongholdCombatGroup = CombatGroupFactory.CreateStrongholdCombatGroup((uint)listReader["battle_id"],
                                                                                                              (uint)listReader["id"],
                                                                                                              combatGroupStronghold);
-                            strongholdCombatGroup.DbPersisted = true;
+                            combatGroupStronghold.DbPersisted = true;
                             battleManager.DbLoaderAddToCombatList(strongholdCombatGroup, BattleManager.BattleSide.Defense);
                         }
                     }

@@ -7,6 +7,7 @@ using Game.Battle;
 using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic;
+using Game.Logic.Formulas;
 using Game.Map;
 using Game.Util;
 using Game.Util.Locking;
@@ -14,9 +15,11 @@ using Persistance;
 
 namespace Game.Data.Stronghold
 {
+        
     class Stronghold : SimpleGameObject, IStronghold, IStation
     {
         private readonly IDbManager dbManager;
+        private readonly Formula formula;
 
         public const string DB_TABLE = "strongholds";
 
@@ -30,7 +33,7 @@ namespace Game.Data.Stronghold
 
         public StrongholdState StrongholdState { get; set; }
         
-        public LazyValue Gate { get; private set; }
+        public decimal Gate { get; set; }
 
         public decimal VictoryPointRate
         {
@@ -109,9 +112,10 @@ namespace Game.Data.Stronghold
 
         #region Constructor
 
-        public Stronghold(uint id, string name, byte level, uint x, uint y, IDbManager dbManager)
+        public Stronghold(uint id, string name, byte level, uint x, uint y, decimal gate, IDbManager dbManager, Formula formula)
         {
             this.dbManager = dbManager;
+            this.formula = formula;
             Id = id;
             Name = name;
             Lvl = level;
@@ -119,12 +123,7 @@ namespace Game.Data.Stronghold
             this.y = y;
             Worker = new ActionWorker(() => this, this);
             Troops = new TroopManager(this, null);
-
-            //TODO: Adjust the max HP, rate, and make sure the stronghold battle is adjusting the rate while in battle
-            Gate = new LazyValue(10000)
-            {
-                    Limit = 20000
-            };
+            Gate = gate;
         }
 
         #endregion
@@ -336,7 +335,7 @@ namespace Game.Data.Stronghold
                                new DbColumn("name", Name, DbType.String, 20),
                                new DbColumn("level", Lvl, DbType.Byte), 
                                new DbColumn("state",(byte)StrongholdState, DbType.Byte),
-                               new DbColumn("gate", Gate.Value, DbType.Int32),
+                               new DbColumn("gate", Gate, DbType.Decimal),
                                new DbColumn("x", x, DbType.UInt32),
                                new DbColumn("y", y, DbType.UInt32),
                                new DbColumn("gate_open_to", GateOpenTo == null ? 0 : GateOpenTo.Id, DbType.UInt32),

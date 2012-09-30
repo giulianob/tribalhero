@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Game.Data.Tribe;
+using Game.Logic.Formulas;
 using Game.Map;
 using Game.Module;
 using Game.Util;
@@ -82,7 +83,7 @@ namespace Game.Data.Stronghold
 
                 if (!strongholdConfigurator.Next(out name, out level, out x, out y))
                     break;
-                IStronghold stronghold = strongholdFactory.CreateStronghold((uint)idGenerator.GetNext(), name, level, x, y);
+                IStronghold stronghold = strongholdFactory.CreateStronghold((uint)idGenerator.GetNext(), name, level, x, y, Formula.Current.GetGateLimit(level));
                 using (dbManager.GetThreadTransaction())
                 {
                     Add(stronghold);

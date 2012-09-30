@@ -194,5 +194,10 @@ namespace Game.Logic.Formulas
         {
             return 50m;
         }
+
+        public virtual int GetGateLimit(byte level)
+        {
+            return level*500 + 5000;
+        }
     }
 }

@@ -7,6 +7,7 @@
 	import org.aswing.table.PropertyTableModel;
 	import src.Comm.GameURLLoader;
 	import src.Global;
+	import src.Objects.Battle.BattleLocation;
 	import src.UI.GameJPanel;
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -34,11 +35,13 @@
 		private var page: int = 0;
 		private var playerNameFilter: String = "";
 		private var viewType:int;
+		private var location:BattleLocation;
 		
 		public var refreshOnClose: Boolean = false;
 
-		public function LocalReportList(viewType: int)
+		public function LocalReportList(viewType: int, location: BattleLocation = null)
 		{
+			this.location = location;
 			this.viewType = viewType;
 			
 			createUI();
@@ -86,7 +89,7 @@
 			btnPrevious.setVisible(false);
 			btnNext.setVisible(false);			
 
-			Global.mapComm.BattleReport.listLocal(loader, viewType, page, playerNameFilter);
+			Global.mapComm.BattleReport.listLocal(loader, viewType, location, page, playerNameFilter);
 		}
 
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame

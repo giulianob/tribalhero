@@ -71,9 +71,10 @@
 			
 			city.addEventListener(City.RESOURCES_UPDATE, onResourceChange);
 			
+			var innerCity: City = city;
 			frame.addEventListener(PopupEvent.POPUP_CLOSED, function(e:PopupEvent):void
 				{
-					city.removeEventListener(City.RESOURCES_UPDATE, onResourceChange);
+					innerCity.removeEventListener(City.RESOURCES_UPDATE, onResourceChange);
 				});
 						
 			frame.setResizable(true);

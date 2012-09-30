@@ -8,6 +8,7 @@
 	import src.Comm.GameURLLoader;
 	import src.Constants;
 	import src.Global;
+	import src.Objects.Battle.BattleLocation;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJPanel;
 	import org.aswing.*;
@@ -36,11 +37,13 @@
 		private var page: int = 0;
 		private var playerNameFilter: String = "";
 		private var viewType:int;
+		private var location:BattleLocation;
 		
 		public var refreshOnClose: Boolean = false;
 		
-		public function RemoteReportList(viewType: int)
+		public function RemoteReportList(viewType: int, location: BattleLocation = null)
 		{
+			this.location = location;
 			this.viewType = viewType;
 			
 			createUI();
@@ -87,7 +90,7 @@
 			btnPrevious.setVisible(false);
 			btnNext.setVisible(false);
 
-			Global.mapComm.BattleReport.listRemote(loader, viewType, page, playerNameFilter);
+			Global.mapComm.BattleReport.listRemote(loader, viewType, location, page, playerNameFilter);
 		}
 
 		private function onLoaded(e: Event) : void {

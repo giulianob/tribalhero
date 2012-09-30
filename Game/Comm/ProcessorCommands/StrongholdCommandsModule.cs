@@ -32,7 +32,7 @@ namespace Game.Comm.ProcessorCommands
             packet.AddUInt32(stronghold.Id);
             packet.AddString(stronghold.Name);
             packet.AddByte(stronghold.Lvl);
-            packet.AddInt32(stronghold.Gate.Value);
+            packet.AddFloat((float)stronghold.Gate);
             packet.AddFloat((float)stronghold.VictoryPointRate);
             packet.AddUInt32(UnixDateTime.DateTimeToUnix(stronghold.DateOccupied.ToUniversalTime()));
             packet.AddUInt32(stronghold.X);

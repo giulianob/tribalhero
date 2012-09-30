@@ -174,7 +174,7 @@ namespace Game.Comm.ProcessorCommands
                 packet.AddString(stronghold.Name);
                 packet.AddByte((byte)stronghold.StrongholdState);
                 packet.AddByte(stronghold.Lvl);
-                packet.AddInt32(stronghold.Gate.Value);
+                packet.AddFloat((float)stronghold.Gate);
                 packet.AddUInt32(stronghold.X);
                 packet.AddUInt32(stronghold.Y);
                 packet.AddInt32(stronghold.Troops.StationedHere().Sum(x=> x.Upkeep));

@@ -270,7 +270,7 @@ class Battle extends AppModel {
                 GROUP BY `BattleReportObjectJoin`.`object_id`
             ) as `HighestObject`
           WHERE `BattleReportObject`.`id` = HighestObject.id
-          ORDER BY `BattleReportObject`.`type` DESC, `BattleReportObject`.`id` ASC LIMIT 1", implode(',', $dbo->fields($this->BattleReport->BattleReportTroop->BattleReportObject, null, $fields)), $joinOrLeave == 'JOIN' ? 'MIN' : 'MAX', Sanitize::escape($battleId), $dbo->conditions($conditions)));
+          ORDER BY `BattleReportObject`.`type` DESC, `BattleReportObject`.`id` ASC", implode(',', $dbo->fields($this->BattleReport->BattleReportTroop->BattleReportObject, null, $fields)), $joinOrLeave == 'JOIN' ? 'MIN' : 'MAX', Sanitize::escape($battleId), $dbo->conditions($conditions)));
     }
 
     /**
@@ -363,7 +363,6 @@ class Battle extends AppModel {
                         'conditions' => array('BattleReport.battle_id' => $battleId),
                     ),
                     'City' => array('type' => 'INNER', 'fields' => array(), 'table' => 'cities',
-                        'conditions' => array('exactly' => array('BattleReportTroop.owner_id' => 'City.id')),
                         'Player' => array('type' => 'INNER', 'fields' => array(),
                             'Tribesman' => array('type' => 'INNER', 'fields' => array(),
                                 'Tribe' => array('type' => 'INNER', 'fields' => array()),
@@ -609,11 +608,10 @@ class Battle extends AppModel {
 
         // For city battles only, the min round rule applies
         if ($report['Battle']['location_type'] == 'City') {
-            // If player lasted less than min rounds and did not leave due to out of stamina, then they can still see the battle
             $roundDelta = intVal($report['BattleReportExit']['round']) - intVal($report['BattleReportEnter']['round']);
             if ($roundDelta < BATTLE_VIEW_MIN_ROUND) {
-                // If troop left and they weren't exiting or out of stamina then
-                if (!in_array($leaveInfo['BattleReportTroop']['state'], array(TROOP_STATE_EXITING, TROOP_STATE_OUT_OF_STAMINA))) {
+                // If troop left and they were either defenders OR they weren't exiting or out of stamina then they cant see
+                if (!$report['BattleReportView']['is_attacker'] ||  !in_array($leaveInfo['BattleReportTroop']['state'], array(TROOP_STATE_EXITING, TROOP_STATE_OUT_OF_STAMINA))) {
                     $outcomeOnly = true;
                 }
             }

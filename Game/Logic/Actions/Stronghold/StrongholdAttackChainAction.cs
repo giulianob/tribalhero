@@ -226,6 +226,10 @@ namespace Game.Logic.Actions
                         // If tribe already owns stronghold, then it should defend it
                         if (targetStronghold.MainBattle != null)
                         {
+                            troopObject.Stub.BeginUpdate();
+                            troopObject.Stub.State = TroopState.BattleStationed;
+                            troopObject.Stub.EndUpdate();
+
                             battleProcedure.AddReinforcementToBattle(targetStronghold.MainBattle, troopObject.Stub);                            
                         }
 

@@ -220,7 +220,11 @@
 		}
 		
 		private function createReportPanel() : Container {
-			reports = new LocalReportList(BattleReportViewer.REPORT_TRIBE_LOCAL, new BattleLocation(BattleLocation.STRONGHOLD, profileData.strongholdId));
+			reports = new LocalReportList(
+				BattleReportViewer.REPORT_TRIBE_LOCAL, 
+				[BattleReportListTable.COLUMN_DATE, BattleReportListTable.COLUMN_LOCATION], 
+				new BattleLocation(BattleLocation.STRONGHOLD, profileData.strongholdId));
+				
 			reports.setConstraints("Center");
 			
 			var pnl: JPanel = new JPanel(new BorderLayout());

@@ -16,10 +16,7 @@
 	import org.aswing.ext.*;
 	import flash.net.*;
 	import src.UI.Dialog.*;
-	/**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
+
 	public class LocalReportList extends GameJPanel
 	{
 
@@ -29,7 +26,6 @@
 		private var lblPages:JLabel;
 		private var btnNext:JLabelButton;
 		private var reportList: VectorListModel;
-		private var tableModel: PropertyTableModel;
 
 		private var loader: GameURLLoader = new GameURLLoader();
 		private var page: int = 0;
@@ -39,17 +35,13 @@
 		
 		public var refreshOnClose: Boolean = false;
 
-		public function LocalReportList(viewType: int, location: BattleLocation = null)
+		public function LocalReportList(viewType: int, cols: Array, location: BattleLocation = null)
 		{
 			this.location = location;
 			this.viewType = viewType;
 			
-			createUI();
+			createUI(cols);
 			loader.addEventListener(Event.COMPLETE, onLoaded);
-
-			tblReports.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
-				tblReports.getCellEditor().cancelCellEditing();
-			});
 
 			tblReports.addEventListener(SelectionEvent.ROW_SELECTION_CHANGED, function(e: SelectionEvent) : void {
 				if (tblReports.getSelectedRow() == -1) return;
@@ -126,24 +118,12 @@
 			reportList.append(snapshot);
 		}
 
-		private function createUI() : void {
+		private function createUI(cols: Array) : void {
 			var layout0:BorderLayout = new BorderLayout();
 			setLayout(layout0);
-
-			reportList = new VectorListModel();
-
-			tableModel = new PropertyTableModel(reportList,
-			["Date", "Battle Location"],
-			["date", "."],
-			[null, null, null, null]
-			);
-
-			tblReports = new JTable(tableModel);
-			tblReports.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-			tblReports.setSelectionMode(JTable.SINGLE_SELECTION);
-			tblReports.getColumnAt(0).setPreferredWidth(100);
-			tblReports.getColumnAt(1).setPreferredWidth(400);
-			tblReports.getColumnAt(1).setCellFactory(new GeneralTableCellFactory(UnreadTextCell));
+			
+			tblReports = new BattleReportListTable(cols);
+			reportList = VectorListModel(PropertyTableModel(tblReports.getModel()).getList());
 
 			var pnlReportsScroll: JScrollPane = new JScrollPane(tblReports);
 			pnlReportsScroll.setConstraints("Center");

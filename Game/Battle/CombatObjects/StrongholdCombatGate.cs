@@ -17,7 +17,7 @@ namespace Game.Battle.CombatObjects
 
             // Intead of setting it like this make sure you do
             // Stronghold.Gate = hp;
-            throw new Exception("Fix this");
+            //throw new Exception("Fix this");
         }
     }
 }

@@ -180,7 +180,8 @@ namespace Game.Database
                                                          (byte)reader["level"],
                                                          (int)reader["attack_point"],
                                                          (int)reader["defense_point"],
-                                                         resource);
+                                                         resource,
+                                                         DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc));
                     tribe.Id = (uint)reader["id"];
                     tribe.DbPersisted = true;
 

@@ -19,6 +19,20 @@ STR_REPORTS,Reports
 STR_ONGOING_ATTACKS,Ongoing Attacks
 STR_STRONGHOLDS,Strongholds
 STR_STRONGHOLDS_UNDER_COMMAND,Strongholds in command
+STR_NAME,Name
+STR_LEVEL,Level
+STR_NOT_OCCUPIED,Not Occupied
+STR_TRIBE,Tribe
+STR_GATE,Gate
+STR_OCCUPIED,Occupied
+STR_VP_RATE,Victory Points Rate
+STR_PER_DAY_RATE,{0} per day
+STR_TOTAL_TROOPS,Total Troops
+STR_NONE_DEFENDING,None defending
+STR_GO_TO,Go there
+STR_RETREAT,Retreat
+STR_VIEW_BATTLE,View Battle
+STR_ESTABLISHED,Established
 ,
 CITY_OVERVIEW_TITLE,City Overview
 CITY_OVERVIEW_INFLUENCE_POINTS_LABEL,{0} influence points.

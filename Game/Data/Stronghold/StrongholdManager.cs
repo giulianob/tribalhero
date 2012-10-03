@@ -28,6 +28,12 @@ namespace Game.Data.Stronghold
 
         private readonly IDbManager dbManager;
 
+        private ILookup<ITribe, IStronghold> tribeIndex;
+
+        private Dictionary<string, IStronghold> nameIndex;
+
+        private bool indexDirty = true;
+
         public StrongholdManager(IStrongholdConfigurator strongholdConfigurator,
                                     IStrongholdFactory strongholdFactory,
                                     IRegionManager regionManager,
@@ -49,15 +55,40 @@ namespace Game.Data.Stronghold
             }
         }
 
+        private void Reindex()
+        {
+            lock (this)
+            {
+                if (!indexDirty)
+                {
+                    return;
+                }
+
+                indexDirty = false;
+                tribeIndex = strongholds.Values.Where(stronghold => stronghold.Tribe != null).ToLookup(stronghold => stronghold.Tribe, stronghold => stronghold);
+                nameIndex = strongholds.Values.ToDictionary(stronghold => stronghold.Name.ToLowerInvariant(), stronghold => stronghold);
+            }
+        }
+
+        private void MarkIndexDirty()
+        {
+            lock (this)
+            {
+                indexDirty = true;
+            }
+        }
+
         public void Add(IStronghold stronghold)
         {
             strongholds.AddOrUpdate(stronghold.Id, stronghold, (id, old) => stronghold);
             dbManager.Save(stronghold);
+            MarkIndexDirty();
         }
 
         public void DbLoaderAdd(IStronghold stronghold)
         {
             strongholds.AddOrUpdate(stronghold.Id, stronghold, (id, old) => stronghold);
+            MarkIndexDirty();
         }
 
         public bool TryGetStronghold(uint id, out IStronghold stronghold)
@@ -67,9 +98,12 @@ namespace Game.Data.Stronghold
 
         public bool TryGetStronghold(string name, out IStronghold stronghold)
         {
-            if ((stronghold = strongholds.Values.FirstOrDefault(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase))) == null)
-                return false;
-            return true;
+            if (indexDirty)
+            {
+                Reindex();
+            }
+            
+            return nameIndex.TryGetValue(name.ToLowerInvariant(), out stronghold);
         }
 
         public void Generate(int count)
@@ -81,7 +115,10 @@ namespace Game.Data.Stronghold
                 uint x, y;
 
                 if (!strongholdConfigurator.Next(out name, out level, out x, out y))
+                {
                     break;
+                }
+
                 IStronghold stronghold = strongholdFactory.CreateStronghold((uint)idGenerator.GetNext(), name, level, x, y);
                 using (dbManager.GetThreadTransaction())
                 {
@@ -113,6 +150,7 @@ namespace Game.Data.Stronghold
             stronghold.Tribe = tribe;
             stronghold.DateOccupied = DateTime.UtcNow;
             stronghold.EndUpdate();
+            MarkIndexDirty();
 
             if (oldTribe != null)
             {
@@ -122,6 +160,23 @@ namespace Game.Data.Stronghold
             {
                 chat.SendSystemChat("STRONGHOLD_NEUTRAL_TAKEN_OVER", stronghold.Name, tribe.Name);
             }
+        }
+
+        public IEnumerable<IStronghold> StrongholdsForTribe(ITribe tribe)
+        {
+            if (indexDirty)
+            {
+                Reindex();
+            }
+
+            if (!tribeIndex.Contains(tribe))
+            {
+                return new IStronghold[]
+                {
+                };
+            }
+
+            return tribeIndex[tribe];
         }
 
         #region Implementation of IEnumerable

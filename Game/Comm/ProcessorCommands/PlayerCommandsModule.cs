@@ -27,7 +27,6 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.PlayerUsernameGet, GetUsername);
             processor.RegisterCommand(Command.PlayerNameFromCityName, GetCityOwnerName);
             processor.RegisterCommand(Command.CityResourceSend, SendResources);                      
-            processor.RegisterCommand(Command.ProfileByType, ProfileByType);         
         }
 
         private void SetDescription(Session session, Packet packet)
@@ -54,41 +53,6 @@ namespace Game.Comm.ProcessorCommands
                 session.Player.Description = description;
 
                 ReplySuccess(session, packet);
-            }
-        }
-
-        //TODO: Add stronghold support and move to where it makes sense
-        private void ProfileByType(Session session, Packet packet)
-        {
-            var reply = new Packet(packet);
-
-            string type;
-            uint id;            
-            try
-            {
-                type = packet.GetString();
-                id = packet.GetUInt32();
-            }
-            catch (Exception)
-            {
-                ReplyError(session, packet, Error.Unexpected);
-                return;
-            }            
-
-            if (type.ToLowerInvariant() == "city")
-            {
-                ICity city;
-                if (!World.Current.TryGetObjects(id, out city))
-                {
-                    ReplyError(session, packet, Error.Unexpected);
-                    return;                    
-                }
-
-                AddPlayerProfileToPacket(session, reply, city.Owner.PlayerId);
-            }
-            else
-            {
-                ReplyError(session, packet, Error.Unexpected);
             }
         }
 
@@ -119,67 +83,19 @@ namespace Game.Comm.ProcessorCommands
                 }
             }
 
-            AddPlayerProfileToPacket(session, reply, playerId);
-        }
-
-        private void AddPlayerProfileToPacket(Session session, Packet reply, uint playerId)
-        {
             IPlayer player;
             using (Concurrency.Current.Lock(playerId, out player))
             {
                 if (player == null)
                 {
                     ReplyError(session, reply, Error.PlayerNotFound);
-                    return;                    
+                    return;
                 }
 
-                reply.AddUInt32(player.PlayerId);
-                reply.AddString(player.Name);
-                reply.AddString(player.Description);
+                PacketHelper.AddPlayerProfileToPacket(player, reply);
 
-                reply.AddUInt32(player.Tribesman != null ? player.Tribesman.Tribe.Id : 0);
-                reply.AddString(player.Tribesman != null ? player.Tribesman.Tribe.Name : string.Empty);
-                reply.AddByte((byte)(player.Tribesman != null ? player.Tribesman.Rank : 0));
-                
-                // Ranking info
-                List<dynamic> ranks = new List<dynamic>();
-
-                using (DbDataReader reader =
-                        DbPersistance.Current.ReaderQuery(
-                                                     string.Format("SELECT `city_id`, `rank`, `type` FROM `rankings` WHERE player_id = @playerId ORDER BY `type` ASC"),
-                                                     new[] { new DbColumn("playerId", player.PlayerId, DbType.String) }))
-                {                    
-                    while (reader.Read())
-                    {
-                        dynamic rank = new ExpandoObject();
-                        rank.CityId = (uint)reader["city_id"];
-                        rank.Rank = (int)reader["rank"];
-                        rank.Type = (byte)((sbyte)reader["type"]);
-                        ranks.Add(rank);
-                    }
-                }
-
-                reply.AddUInt16((ushort)ranks.Count);
-                foreach (var rank in ranks)
-                {
-                    reply.AddUInt32(rank.CityId);
-                    reply.AddInt32(rank.Rank);
-                    reply.AddByte(rank.Type);
-                }
-
-                // City info
-                var cityCount = (byte)player.GetCityCount();
-                reply.AddByte(cityCount);
-                foreach (var city in player.GetCityList())
-                {
-                    reply.AddUInt32(city.Id);
-                    reply.AddString(city.Name);
-                    reply.AddUInt32(city.X);
-                    reply.AddUInt32(city.Y);
-                }
+                session.Write(reply);
             }
-
-            session.Write(reply);
         }
 
         private void GetUsername(Session session, Packet packet)

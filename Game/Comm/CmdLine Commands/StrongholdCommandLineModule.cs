@@ -72,8 +72,8 @@ namespace Game.Comm
 
             IStrongholdManager strongholdManager = Ioc.Kernel.Get<IStrongholdManager>();
 
-            var stronghold = strongholdManager.FirstOrDefault(x => String.Compare(x.Name, strongholdName, StringComparison.OrdinalIgnoreCase) == 0);
-            if (stronghold == null)
+            IStronghold stronghold;
+            if (!strongholdManager.TryGetStronghold(strongholdName, out stronghold))
             {
                 return "Stronghold not found";
             }
@@ -139,8 +139,8 @@ namespace Game.Comm
 
             IStrongholdManager strongholdManager = Ioc.Kernel.Get<IStrongholdManager>();
 
-            var stronghold = strongholdManager.FirstOrDefault(x => String.Compare(x.Name, strongholdName, StringComparison.OrdinalIgnoreCase)==0);
-            if(stronghold==null)
+            IStronghold stronghold;
+            if (!strongholdManager.TryGetStronghold(strongholdName, out stronghold))
             {
                 return "Stronghold not found";
             }

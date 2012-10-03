@@ -81,6 +81,8 @@ namespace Game.Comm
         ObjectRemove = 203,
         ObjectMove = 204,
 
+        ObjectLocate = 210,
+
         #endregion
 
         #region Structure
@@ -213,9 +215,8 @@ namespace Game.Comm
         #endregion
 
         #region Stronghold
-        StrongholdInfo = 1101,
-        StrongholdPublicInfo = 1102,
-        StrongholdInfoByName = 1103,
+        StrongholdInfo = 1101,        
+        StrongholdInfoByName = 1102,
         #endregion
 
         #region Internal Messages

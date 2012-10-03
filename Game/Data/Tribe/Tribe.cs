@@ -10,6 +10,7 @@ using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Setup;
+using Game.Util;
 using Game.Util.Locking;
 using Persistance;
 
@@ -104,6 +105,8 @@ namespace Game.Data.Tribe
 
         public Resource Resource { get; private set; }
 
+        public DateTime Created { get; private set; }
+
         public short AssignmentCount
         {
             get
@@ -129,12 +132,12 @@ namespace Game.Data.Tribe
         }
 
         public Tribe(IPlayer owner, string name, Procedure procedure, IDbManager dbManager, Formula formula, IAssignmentFactory assignmentFactory) :
-            this(owner, name, string.Empty, 1, 0, 0, new Resource(), procedure, dbManager, formula, assignmentFactory)
+            this(owner, name, string.Empty, 1, 0, 0, new Resource(), SystemClock.Now, procedure, dbManager, formula, assignmentFactory)
         {
 
         }
 
-        public Tribe(IPlayer owner, string name, string desc, byte level, int attackPoints, int defensePoints, Resource resource, Procedure procedure, IDbManager dbManager, Formula formula, IAssignmentFactory assignmentFactory)
+        public Tribe(IPlayer owner, string name, string desc, byte level, int attackPoints, int defensePoints, Resource resource, DateTime created, Procedure procedure, IDbManager dbManager, Formula formula, IAssignmentFactory assignmentFactory)
         {
             this.procedure = procedure;
             this.dbManager = dbManager;
@@ -147,6 +150,7 @@ namespace Game.Data.Tribe
             Name = name;
             AttackPoint = attackPoints;
             DefensePoint = defensePoints;
+            Created = created;
         }
 
         public bool IsOwner(IPlayer player)
@@ -359,6 +363,7 @@ namespace Game.Data.Tribe
                                new DbColumn("gold", Resource.Gold, DbType.Int32),
                                new DbColumn("iron", Resource.Iron, DbType.Int32), 
                                new DbColumn("wood", Resource.Wood, DbType.Int32),
+                               new DbColumn("created", Created, DbType.DateTime),
                        };
             }
         }

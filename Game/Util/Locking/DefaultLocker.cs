@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Map;
@@ -111,6 +112,11 @@ namespace Game.Util.Locking
             return TryGetCity(cityId, out city);
         }
 
+        public IMultiObjectLock Lock(uint strongholdId, out IStronghold stronghold)
+        {
+            return TryGetStronghold(strongholdId, out stronghold);
+        }
+
         public IMultiObjectLock Lock(uint cityId, uint objectId, out ICity city, out IStructure obj)
         {
             return TryGetCityStructure(cityId, objectId, out city, out obj);
@@ -149,6 +155,26 @@ namespace Game.Util.Locking
             catch(Exception)
             {
                 city = null;
+                return null;
+            }
+        }
+
+        private IMultiObjectLock TryGetStronghold(uint strongholdId, out IStronghold stronghold)
+        {
+            if (!locator.TryGetObjects(strongholdId, out stronghold))
+                return null;
+
+            try
+            {
+                return Lock(stronghold);
+            }
+            catch(LockException)
+            {
+                throw;
+            }
+            catch(Exception)
+            {
+                stronghold = null;
                 return null;
             }
         }

@@ -2,6 +2,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Dynamic;
 using System.Linq;
 using Game.Battle;
 using Game.Battle.CombatGroups;
@@ -10,9 +13,11 @@ using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
+using Game.Database;
 using Game.Logic;
 using Game.Map;
 using Game.Util;
+using Persistance;
 
 #endregion
 
@@ -66,14 +71,20 @@ namespace Game.Comm
 
             var gameObj = obj as IGameObject;
             if (gameObj != null)
+            {
                 packet.AddUInt32(gameObj.City.Owner.PlayerId);
+            }
 
             if (obj is IHasLevel)
+            {
                 packet.AddByte(((IHasLevel)obj).Lvl);
+            }
 
             var stronghold = obj as IStronghold;
             if (stronghold != null)
+            {
                 packet.AddUInt32(stronghold.StrongholdState == StrongholdState.Occupied ? stronghold.Tribe.Id : 0);
+            }
 
             if (sendRegularObject)
             {
@@ -81,22 +92,35 @@ namespace Game.Comm
                 foreach (var parameter in obj.State.Parameters)
                 {
                     if (parameter is byte)
+                    {
                         packet.AddByte((byte)parameter);
+                    }
                     else if (parameter is short)
+                    {
                         packet.AddInt16((short)parameter);
+                    }
                     else if (parameter is int)
+                    {
                         packet.AddInt32((int)parameter);
+                    }
                     else if (parameter is ushort)
+                    {
                         packet.AddUInt16((ushort)parameter);
+                    }
                     else if (parameter is uint)
+                    {
                         packet.AddUInt32((uint)parameter);
+                    }
                     else if (parameter is string)
+                    {
                         packet.AddString((string)parameter);
+                    }
                 }
 
                 if (gameObj is IStructure && ((IStructure)gameObj).IsMainBuilding)
+                {
                     packet.AddByte(gameObj.City.Radius);
-
+                }
             }
             else if (obj is IStructure)
             {
@@ -104,24 +128,36 @@ namespace Game.Comm
                 packet.AddUInt16((obj as IStructure).Stats.Labor);
             }
         }
-        
+
         public static void AddToPacket(GameObjectState state, Packet packet)
         {
             packet.AddByte((byte)state.Type);
             foreach (var parameter in state.Parameters)
             {
                 if (parameter is byte)
+                {
                     packet.AddByte((byte)parameter);
+                }
                 else if (parameter is short)
+                {
                     packet.AddInt16((short)parameter);
+                }
                 else if (parameter is int)
+                {
                     packet.AddInt32((int)parameter);
+                }
                 else if (parameter is ushort)
+                {
                     packet.AddUInt16((ushort)parameter);
+                }
                 else if (parameter is uint)
+                {
                     packet.AddUInt32((uint)parameter);
+                }
                 else if (parameter is string)
+                {
                     packet.AddString((string)parameter);
+                }
             }
         }
 
@@ -132,7 +168,9 @@ namespace Game.Comm
             packet.AddUInt32((uint)resource.Iron);
             packet.AddUInt32((uint)resource.Wood);
             if (includeLabor)
+            {
                 packet.AddUInt32((uint)resource.Labor);
+            }
         }
 
         public static void AddToPacket(ILazyValue value, Packet packet)
@@ -177,13 +215,17 @@ namespace Game.Comm
         {
             packet.AddByte((byte)actions.Count);
             foreach (var actionStub in actions)
+            {
                 AddToPacket(actionStub, packet, includeWorkerId);
+            }
         }
 
         internal static void AddToPacket(GameAction actionStub, Packet packet, bool includeWorkerId)
         {
             if (includeWorkerId)
+            {
                 packet.AddUInt32(actionStub.WorkerObject.WorkerId);
+            }
 
             if (actionStub is PassiveAction)
             {
@@ -205,14 +247,22 @@ namespace Game.Comm
             {
                 var actionTime = actionStub as IActionTime;
                 if (actionTime.BeginTime == DateTime.MinValue)
+                {
                     packet.AddUInt32(0);
+                }
                 else
+                {
                     packet.AddUInt32(UnixDateTime.DateTimeToUnix(actionTime.BeginTime.ToUniversalTime()));
+                }
 
                 if (actionTime.EndTime == DateTime.MinValue)
+                {
                     packet.AddUInt32(0);
+                }
                 else
+                {
                     packet.AddUInt32(UnixDateTime.DateTimeToUnix(actionTime.EndTime.ToUniversalTime()));
+                }
             }
             else
             {
@@ -311,7 +361,7 @@ namespace Game.Comm
             packet.AddByte(combatGroup.TroopId);
             packet.AddByte((byte)combatGroup.Owner.Type);
             packet.AddUInt32(combatGroup.Owner.Id);
-            packet.AddString(combatGroup.Owner.GetName());            
+            packet.AddString(combatGroup.Owner.GetName());
 
             packet.AddInt32(combatGroup.Count);
             foreach (var combatObject in combatGroup)
@@ -392,7 +442,9 @@ namespace Game.Comm
                 foreach (var tech in structure.Technologies)
                 {
                     if (tech.OwnerLocation != EffectLocation.Object)
+                    {
                         continue;
+                    }
                     packet.AddUInt32(tech.Type);
                     packet.AddByte(tech.Level);
                 }
@@ -431,7 +483,7 @@ namespace Game.Comm
             packet.AddByte((byte)assignment.AttackMode);
             packet.AddUInt32(assignment.DispatchCount);
             packet.AddString(assignment.Description);
-            packet.AddByte((byte)(assignment.IsAttack?1:0));
+            packet.AddByte((byte)(assignment.IsAttack ? 1 : 0));
             packet.AddInt32(assignment.TroopCount);
             foreach (var assignmentTroop in assignment)
             {
@@ -488,6 +540,196 @@ namespace Game.Comm
             {
                 reply.AddString(property.Key);
                 reply.AddString(property.Value.ToString());
+            }
+        }
+
+        public static void AddPlayerProfileToPacket(IPlayer player, Packet reply)
+        {
+            reply.AddUInt32(player.PlayerId);
+            reply.AddString(player.Name);
+            reply.AddString(player.Description);
+
+            reply.AddUInt32(player.Tribesman != null ? player.Tribesman.Tribe.Id : 0);
+            reply.AddString(player.Tribesman != null ? player.Tribesman.Tribe.Name : string.Empty);
+            reply.AddByte((byte)(player.Tribesman != null ? player.Tribesman.Rank : 0));
+
+            // Ranking info
+            List<dynamic> ranks = new List<dynamic>();
+
+            using (
+                    DbDataReader reader =
+                            DbPersistance.Current.ReaderQuery(
+                                                              string.Format(
+                                                                            "SELECT `city_id`, `rank`, `type` FROM `rankings` WHERE player_id = @playerId ORDER BY `type` ASC"),
+                                                              new[]
+                                                              {
+                                                                      new DbColumn("playerId", player.PlayerId, DbType.String)
+                                                              }))
+            {
+                while (reader.Read())
+                {
+                    dynamic rank = new ExpandoObject();
+                    rank.CityId = (uint)reader["city_id"];
+                    rank.Rank = (int)reader["rank"];
+                    rank.Type = (byte)((sbyte)reader["type"]);
+                    ranks.Add(rank);
+                }
+            }
+
+            reply.AddUInt16((ushort)ranks.Count);
+            foreach (var rank in ranks)
+            {
+                reply.AddUInt32(rank.CityId);
+                reply.AddInt32(rank.Rank);
+                reply.AddByte(rank.Type);
+            }
+
+            // City info
+            var cityCount = (byte)player.GetCityCount();
+            reply.AddByte(cityCount);
+            foreach (var city in player.GetCityList())
+            {
+                reply.AddUInt32(city.Id);
+                reply.AddString(city.Name);
+                reply.AddUInt32(city.X);
+                reply.AddUInt32(city.Y);
+            }
+        }
+
+        public static void AddTribeInfo(IStrongholdManager strongholdManager, Session session, ITribe tribe, Packet packet)
+        {
+            if (session.Player.IsInTribe && tribe.Id == session.Player.Tribesman.Tribe.Id)
+            {
+                packet.AddByte(1);
+                packet.AddUInt32(tribe.Id);
+                packet.AddUInt32(tribe.Owner.PlayerId);
+                packet.AddByte(tribe.Level);
+                packet.AddString(tribe.Name);
+                packet.AddString(tribe.Description);
+                packet.AddUInt32(UnixDateTime.DateTimeToUnix(tribe.Created));
+                AddToPacket(tribe.Resource, packet);
+
+                packet.AddInt16((short)tribe.Count);
+                foreach (var tribesman in tribe.Tribesmen)
+                {
+                    packet.AddUInt32(tribesman.Player.PlayerId);
+                    packet.AddString(tribesman.Player.Name);
+                    packet.AddInt32(tribesman.Player.GetCityCount());
+                    packet.AddByte(tribesman.Rank);
+                    packet.AddUInt32(tribesman.Player.IsLoggedIn ? 0 : UnixDateTime.DateTimeToUnix(tribesman.Player.LastLogin));
+                    AddToPacket(tribesman.Contribution, packet);
+                }
+
+                // Incoming List
+                var incomingList = tribe.GetIncomingList().ToList();
+                packet.AddInt16((short)incomingList.Count());
+                foreach (var incoming in incomingList)
+                {
+                    // Target
+                    packet.AddUInt32(incoming.TargetCity.Owner.PlayerId);
+                    packet.AddUInt32(incoming.TargetCity.Id);
+                    packet.AddString(incoming.TargetCity.Owner.Name);
+                    packet.AddString(incoming.TargetCity.Name);
+
+                    // Attacker
+                    packet.AddUInt32(incoming.SourceCity.Owner.PlayerId);
+                    packet.AddUInt32(incoming.SourceCity.Id);
+                    packet.AddString(incoming.SourceCity.Owner.Name);
+                    packet.AddString(incoming.SourceCity.Name);
+
+                    packet.AddUInt32(UnixDateTime.DateTimeToUnix(incoming.EndTime.ToUniversalTime()));
+                }
+
+                // Assignment List
+                packet.AddInt16(tribe.AssignmentCount);
+                foreach (var assignment in tribe.Assignments)
+                {
+                    AddToPacket(assignment, packet);
+                }
+
+                // Strongholds
+                var strongholds = strongholdManager.StrongholdsForTribe(tribe);
+                packet.AddInt16((short)strongholds.Count());
+                foreach (var stronghold in strongholds)
+                {
+                    packet.AddUInt32(stronghold.Id);
+                    packet.AddString(stronghold.Name);
+                    packet.AddByte((byte)stronghold.StrongholdState);
+                    packet.AddByte(stronghold.Lvl);
+                    packet.AddInt32(stronghold.Gate.Value);
+                    packet.AddUInt32(stronghold.X);
+                    packet.AddUInt32(stronghold.Y);
+                    packet.AddInt32(stronghold.Troops.StationedHere().Sum(x => x.Upkeep));
+                    packet.AddFloat((float)stronghold.VictoryPointRate);
+                    packet.AddUInt32(UnixDateTime.DateTimeToUnix(stronghold.DateOccupied.ToUniversalTime()));
+                    packet.AddUInt32(stronghold.GateOpenTo == null ? 0 : stronghold.GateOpenTo.Id);
+                    AddToPacket(stronghold.State, packet);
+                }
+            }
+            else
+            {
+                packet.AddByte(0);
+                packet.AddUInt32(tribe.Id);
+                packet.AddString(tribe.Name);
+                packet.AddByte(tribe.Level);
+                packet.AddUInt32(UnixDateTime.DateTimeToUnix(tribe.Created));
+                packet.AddInt16((short)tribe.Count);
+                foreach (var tribesman in tribe.Tribesmen)
+                {
+                    packet.AddUInt32(tribesman.Player.PlayerId);
+                    packet.AddString(tribesman.Player.Name);
+                    packet.AddInt32(tribesman.Player.GetCityCount());
+                    packet.AddByte(tribesman.Rank);
+                }
+            }
+        }
+
+        public static void AddStrongholdProfileToPacket(Session session, IStronghold stronghold, Packet packet)
+        {
+            if (stronghold.StrongholdState != StrongholdState.Occupied || !session.Player.IsInTribe || session.Player.Tribesman.Tribe.Id != stronghold.Tribe.Id)
+            {
+                packet.AddByte(0);
+                packet.AddUInt32(stronghold.X);
+                packet.AddUInt32(stronghold.Y);
+            }
+            else
+            {
+                packet.AddByte(1);
+                packet.AddUInt32(stronghold.Id);
+                packet.AddString(stronghold.Name);
+                packet.AddByte(stronghold.Lvl);
+                packet.AddInt32(stronghold.Gate.Value);
+                packet.AddFloat((float)stronghold.VictoryPointRate);
+                packet.AddUInt32(UnixDateTime.DateTimeToUnix(stronghold.DateOccupied.ToUniversalTime()));
+                packet.AddUInt32(stronghold.X);
+                packet.AddUInt32(stronghold.Y);
+                AddToPacket(stronghold.State, packet);
+
+                packet.AddByte(stronghold.Troops.Size);
+                foreach (var troop in stronghold.Troops)
+                {
+                    packet.AddUInt32(troop.City.Owner.PlayerId);
+                    packet.AddUInt32(troop.City.Id);
+                    packet.AddString(troop.City.Owner.Name);
+                    packet.AddString(troop.City.Name);
+                    packet.AddByte(troop.TroopId);
+
+                    //Actual formation and unit counts
+                    packet.AddByte(troop.FormationCount);
+                    foreach (var formation in troop)
+                    {
+                        packet.AddByte((byte)formation.Type);
+                        packet.AddByte((byte)formation.Count);
+                        foreach (var kvp in formation)
+                        {
+                            packet.AddUInt16(kvp.Key);
+                            packet.AddUInt16(kvp.Value);
+                        }
+                    }
+                }
+
+                // Incoming List
+                // Reports
             }
         }
     }

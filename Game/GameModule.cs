@@ -163,6 +163,7 @@ namespace Game
                                                      c.Kernel.Get<TribeCommandsModule>(),
                                                      c.Kernel.Get<TribesmanCommandsModule>(),
                                                      c.Kernel.Get<StrongholdCommandsModule>(),
+                                                     c.Kernel.Get<ProfileCommandsModule>(),
                                                      c.Kernel.Get<TroopCommandsModule>())).InSingletonScope();
 
             #endregion

@@ -34,6 +34,8 @@ namespace Game.Data.Tribe
 
         int Count { get; }
 
+        DateTime Created { get; }
+
         bool IsOwner(IPlayer player);
 
         Error AddTribesman(ITribesman tribesman, bool save = true);

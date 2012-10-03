@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Game.Data;
+using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
 
@@ -18,6 +19,8 @@ namespace Game.Util.Locking
         IMultiObjectLock Lock(uint playerId, out IPlayer player, out ITribe tribe);
 
         IMultiObjectLock Lock(uint cityId, out ICity city);
+
+        IMultiObjectLock Lock(uint strongholdId, out IStronghold stronghold);
 
         IMultiObjectLock Lock(uint cityId, uint objectId, out ICity city, out IStructure obj);
 

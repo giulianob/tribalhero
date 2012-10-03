@@ -49,6 +49,7 @@ package src.UI.Dialog {
 			pnlHeader.setConstraints("North");
 			
 			var lblCountdown: CountDownLabel = new CountDownLabel(assignment.endTime);
+			lblCountdown.setVerticalAlignment(AsWingConstants.TOP);
 			lblCountdown.setConstraints("East");
 			var pnlDetails: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 			pnlDetails.setConstraints("Center");					

@@ -69,6 +69,7 @@
 			/* DEFAULT COMPONENTS */
 			"LabelButton.foreground", new ASColorUIResource(0x0066cc), 
 			"LabelButton.font", new ASFontUIResource("Arial", 11, false, false, true),
+			"TextArea.font", new ASFontUIResource("Arial", 11, false, false, true),
 
 			/* CLASSES */			
 			"Class.darkText", [
@@ -82,8 +83,9 @@
 			],
 			
 			"Class.darkSectionHeader", [
-			"Label.font", new ASFontUIResource("Arial", 15, true),
+			"Label.font", new ASFontUIResource("Arial", 15, true),			
 			"Label.foreground", new ASColorUIResource(0x000000),
+			"LabelButton.font", new ASFontUIResource("Arial", 15, true, false, true),
 			],
 
 			"Class.darkHeader", [

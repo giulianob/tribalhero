@@ -1,22 +1,14 @@
 ﻿package src.Comm.Commands {
 
-	import flash.utils.ByteArray;
-	import org.aswing.AssetIcon;
-	import org.aswing.Icon;
+	import src.*;
 	import src.Comm.*;
-	import src.Constants;
 	import src.Map.*;
 	import src.Objects.*;
 	import src.Objects.Actions.*;
 	import src.Objects.Troop.*;
-	import src.Global;
-	import src.UI.Components.ScreenMessages.ScreenMessageItem;
-	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
-	import src.UI.Dialog.InfoDialog;
-	import src.UI.Dialog.TribeProfileDialog;
-	import src.UI.Dialog.TribePublicProfileDialog;
+	import src.UI.Components.ScreenMessages.*;
+	import src.UI.Dialog.*;
 	import src.Util.*;
-	import src.UI.Components.ScreenMessages.BuiltInMessages;
 
 	public class TribeComm {
 
@@ -109,30 +101,33 @@
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TRIBE_INFO_BY_NAME;
 			packet.writeString(name);
-			session.write(packet, onReceiveTribeProfileByName, {callback: callback});
+			session.write(packet, onReceiveTribeProfile, {callback: callback});
 		}
 		
-		public function onReceiveTribeProfileByName(packet: Packet, custom: * ): void {
+		public function onReceiveTribeProfile(packet: Packet, custom: * ): void {
+			mapComm.hideLoading();
+			
 			if (MapComm.tryShowError(packet)) {
 				if(custom.callback!=null) custom.callback(null);
 				return;
 			}
 			var isPrivate: Boolean = packet.readByte()==1;
 			if (isPrivate) {
-				onReceiveTribeProfile(packet, custom);
+				readPrivateTribeProfile(packet, custom);
 			} else {
-				onReceiveTribePublicProfile(packet, custom);
+				readPublicTribeProfile(packet, custom);
 			}
 		}
 		
-		public function viewTribeProfile(callback: Function = null):void {
+		public function viewTribeProfile(tribeId: int, callback: Function = null):void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TRIBE_INFO;
+			packet.writeUInt(tribeId);
 
 			session.write(packet, onReceiveTribeProfile, {callback: callback});
 		}
 
-		public function onReceiveTribeProfile(packet: Packet, custom: * ):void {
+		public function readPrivateTribeProfile(packet: Packet, custom: * ):void {
 			mapComm.hideLoading();
 			if (MapComm.tryShowError(packet)) {
 				custom.callback(null);
@@ -145,6 +140,7 @@
 			profileData.tribeLevel = packet.readUByte();
 			profileData.tribeName = packet.readString();
 			profileData.description = packet.readString();
+			profileData.created = packet.readUInt();
 			
 			profileData.resources = new Resources(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUInt(), 0);
 			
@@ -283,17 +279,7 @@
 			}		
 		}
 		
-		public function viewTribePublicProfile(tribeId: int, callback: Function = null):void {
-			var packet: Packet = new Packet();
-			
-			packet.cmd = Commands.TRIBE_PUBLIC_INFO;
-			packet.writeUInt(tribeId);
-
-			mapComm.showLoading();
-			session.write(packet, onReceiveTribePublicProfile, { callback: callback } );
-		}	
-		
-		public function onReceiveTribePublicProfile(packet: Packet, custom: * ):void {
+		public function readPublicTribeProfile(packet: Packet, custom: * ):void {
 			mapComm.hideLoading();
 			if (MapComm.tryShowError(packet)) {
 				custom.callback(null);
@@ -303,6 +289,8 @@
 			var profileData: * = new Object();
 			profileData.tribeId = packet.readUInt();
 			profileData.tribeName = packet.readString();
+			profileData.level = packet.readUByte();
+			profileData.created = packet.readUInt();
 			profileData.members = [];
 			var memberCount: int = packet.readShort();
 			for (var i: int = 0; i < memberCount; i++)

@@ -600,10 +600,12 @@
 		
 		public function onReceiveCityLocation(packet:Packet, custom:*):void
 		{
-			if (MapComm.tryShowError(packet))
+			if (MapComm.tryShowError(packet)) {
 				return;
+			}
 			var pt:Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
 			Global.map.camera.ScrollToCenter(pt.x, pt.y);
+			Global.gameContainer.closeAllFrames(true);
 		}
 		
 		public function isCityUnderAPBonus(cityId:int, callback:Function):void

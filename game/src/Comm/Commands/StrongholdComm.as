@@ -1,19 +1,19 @@
 package src.Comm.Commands 
 {
+	import flash.geom.Point;
 	import src.Comm.Packet;
 	import src.Comm.Commands;
 	import src.Comm.Session;
 	import src.Map.MapComm;
+	import src.Map.MapUtil;
 	import src.Objects.SimpleGameObject;
 	import src.Objects.Stronghold.Stronghold;
 	import src.UI.Dialog.StrongholdProfileDialog;
 	import src.Objects.Troop.*;
 	import src.Global;
 	import src.Map.Username;
-	/**
-	 * ...
-	 * @author Anthony Lam
-	 */
+	import src.Util.Util;
+
 	public class StrongholdComm 
 	{
 		private var mapComm: MapComm;
@@ -28,19 +28,26 @@ package src.Comm.Commands
 		public function dispose() : void {
 		}
 		
-		public function viewStrongholdProfile(id: int): void
+		public function viewStrongholdProfile(id: int, custom: * = null): void
 		{
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.STRONGHOLD_INFO;
 
 			packet.writeUInt(id);
 
-			session.write(packet, onReceiveStrongholdProfile, null);
+			session.write(packet, onReceiveStrongholdProfile, custom);
+			mapComm.showLoading();
 		}
 		
-		private function onReceiveStrongholdProfile(packet: Packet, custom: * ): void {
-			var profileData: * = new Object();
-			if (MapComm.tryShowError(packet)) return;
+		private function readStrongholdPublicProfile(packet: Packet, custom: * ): void {
+			// We don't actually have a public profile we just send the map there
+			var pt:Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
+			Global.map.camera.ScrollToCenter(pt.x, pt.y);
+			Global.gameContainer.closeAllFrames(true);
+		}
+		
+		private function readStrongholdPrivateProfile(packet: Packet, custom: * ): void {
+			var profileData: * = new Object();			
 			profileData.strongholdId = packet.readUInt();
 			profileData.strongholdName = packet.readString();
 			profileData.strongholdLevel = packet.readByte();
@@ -54,7 +61,7 @@ package src.Comm.Commands
 			if(profileData.strongholdObjectState==SimpleGameObject.STATE_BATTLE) {
 				profileData.strongholdBattleId = packet.readUInt();
 			}
-
+			
 			profileData.troops = [];
 			var troopCount: int = packet.readByte();
 			for (var i: int = 0; i < troopCount; i++) {
@@ -94,47 +101,30 @@ package src.Comm.Commands
 			{
 				if (!profileData) 
 					return;
+					
 				var dialog: StrongholdProfileDialog = new StrongholdProfileDialog(profileData);
 				dialog.show();		
 			}
 		}
 		
-		public function viewStrongholdPublicProfile(id: int): void
-		{
-			var packet: Packet = new Packet();
-			packet.cmd = Commands.STRONGHOLD_PUBLIC_INFO;
-			packet.writeUInt(id);
-
-			session.write(packet, onReceiveStrongholdPublicProfile, null);
-		}
-						
-		private function onReceiveStrongholdPublicProfile(packet: Packet, custom: * ): void {
+		private function onReceiveStrongholdProfile(packet: Packet, custom: * ): void {
+			mapComm.hideLoading();
 			if (MapComm.tryShowError(packet)) return;
-			trace("public id:" + packet.readUInt().toString());
-			trace("public state:" + packet.readByte().toString());
-			trace("public occupied:" + packet.readByte().toString());
-			trace("public tribe:" + packet.readUInt().toString());
+
+			var isPrivate: Boolean = packet.readByte()==1;
+			if (isPrivate) {
+				readStrongholdPrivateProfile(packet, custom);
+			} else {
+				readStrongholdPublicProfile(packet, custom);
+			}			
 		}
 		
 		public function viewStrongholdProfileByName(name: String , callback: Function = null):void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.STRONGHOLD_PUBLIC_INFO_BY_NAME;
 			packet.writeString(name);
-			session.write(packet, onReceiveStrongholdProfileByName, {callback: callback});
-		}
-
-		public function onReceiveStrongholdProfileByName(packet: Packet, custom: * ): void {
-			if (MapComm.tryShowError(packet)) {
-				if(custom.callback!=null) custom.callback(null);
-				return;
-			}
-			
-			var isPrivate: Boolean = packet.readByte()==1;
-			if (isPrivate) {
-				onReceiveStrongholdProfile(packet, custom);
-			} else {
-				onReceiveStrongholdPublicProfile(packet, custom);
-			}
+			session.write(packet, onReceiveStrongholdProfile, { callback: callback } );
+			mapComm.showLoading();
 		}
 
 	}

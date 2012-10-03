@@ -4,6 +4,7 @@
 	import flash.events.*;
 	import flash.geom.*;
 	import flash.utils.*;
+	import mx.utils.StringUtil;
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.colorchooser.*;
@@ -43,13 +44,36 @@
 		private var lblStrongholdName: JLabel;
 		
 		private var reports: LocalReportList;
+		private var nameLabel: JLabel;
+		
+		private var btnGoTo: JLabelButton;
+		private var btnSendReinforcement: JLabelButton;
+		private var btnViewBattle: JLabelButton;
+		private var pnlHeaderButtons:JPanel;
 				
 		public function StrongholdProfileDialog(profileData: *) 
 		{
 			this.profileData = profileData;
 			createUI();
+			
+			var self: StrongholdProfileDialog = this;
+			btnGoTo.addActionListener(function(e: Event):void {
+				Global.gameContainer.closeAllFrames(true);
+				var pt:Point = MapUtil.getScreenCoord(self.profileData.strongholdX, self.profileData.strongholdY);
+				Global.map.camera.ScrollToCenter(pt.x, pt.y);
+			});
+			
+			btnSendReinforcement.addActionListener(function(e:Event): void {
+				var process : ReinforcementSendProcess = new ReinforcementSendProcess(new Location(Location.STRONGHOLD, self.profileData.strongholdId));
+				process.execute();
+			});			
+			
+			btnViewBattle.addActionListener(function(e: Event): void {
+				var battleViewer: BattleViewer = new BattleViewer(self.profileData.strongholdBattleId);
+				battleViewer.show(null, false);
+			});			
 		}
-
+		
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame 
 		{
 			super.showSelf(owner, modal, onClose);
@@ -59,10 +83,13 @@
 		}
 		
 		private function createUI():void {
-			//setPreferredSize(new IntDimension(Math.min(375, Constants.screenW - GameJImagePanelBackground.getFrameWidth()) , Math.min(600, Constants.screenH - GameJImagePanelBackground.getFrameHeight())));
+			setPreferredHeight(500);
 			
 			title = "Stronghold Profile - " + profileData.strongholdName;
 			setLayout(new SoftBoxLayout(SoftBoxLayout.X_AXIS));
+			
+			nameLabel = new JLabel(profileData.strongholdName, null, AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(nameLabel, "darkSectionHeader");
 			
 			// stronghold properties panel
 			pnlInfoContainer = createInfoPanel();
@@ -77,18 +104,21 @@
 			pnlReportPanel = createReportPanel();
 			
 			// Left panel
-			pnlLeftContainer = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS,20));
-			pnlLeftContainer.appendAll(pnlInfoContainer, pnlButtonContainer);
+			pnlLeftContainer = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0));
+			pnlLeftContainer.setPreferredWidth(225);			
+			pnlLeftContainer.appendAll(nameLabel, pnlButtonContainer, pnlInfoContainer);
 			
-			// Right panel
-			pnlRightContainer = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
-			pnlRightContainer.appendAll(pnlTroopPanel, pnlReportPanel);
+			// Right panel			
+			var tabPanel: JTabbedPane = new JTabbedPane();
+			tabPanel.setPreferredWidth(500);
+			tabPanel.appendTab(pnlTroopPanel, Locale.loadString("STR_TROOPS"));
+			tabPanel.appendTab(pnlReportPanel, Locale.loadString("STR_REPORTS"));			
 
 			// Append main panels
-			appendAll(pnlLeftContainer, pnlRightContainer);
+			appendAll(pnlLeftContainer, tabPanel);
 		}
 		
-		private function addInfo(form: Form, title: String, textOrComponent: *, icon: Icon = null) : * {
+		private function addInfo(form: Form, title: String, textOrComponent: *, icon: Icon = null) : void {
 			var rowTitle: JLabel = new JLabel(title);
 			rowTitle.setHorizontalAlignment(AsWingConstants.LEFT);
 			rowTitle.setName("title");
@@ -106,51 +136,35 @@
 				rowValue = textOrComponent as Component;			
 
 			form.addRow(rowTitle, rowValue);
-
-			return rowValue;
 		}
 		
 		private function createButtonPanel() : Container {
-			var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10, AsWingConstants.EAST));
-			
-			var btnGotoStronghold: JButton = new JButton("Go to stronghold");
-			btnGotoStronghold.addActionListener(function(e: Event):void {
-				Global.gameContainer.closeAllFrames(true);
-				var pt:Point = MapUtil.getScreenCoord(profileData.strongholdX, profileData.strongholdY);
-				Global.map.camera.ScrollToCenter(pt.x, pt.y);
-			});
-			pnl.append(btnGotoStronghold);
-			
-			var btnSendReinforcement: JButton = new JButton("Send reinforcement");
-			btnSendReinforcement.addActionListener(function(e:Event): void {
-				var process : ReinforcementSendProcess = new ReinforcementSendProcess(new Location(Location.STRONGHOLD, profileData.strongholdId));
-				process.execute();
-			});
-			pnl.append(btnSendReinforcement);
-			
-			if(profileData.strongholdObjectState==SimpleGameObject.STATE_BATTLE) {
-				var btnViewBattle: JButton = new JButton("View battle");
-				btnViewBattle.addActionListener(function(e: Event): void {
-					var battleViewer: BattleViewer = new BattleViewer(profileData.strongholdBattleId);
-					battleViewer.show(null, false);
-				});
-				pnl.append(btnViewBattle);
+			if (!pnlHeaderButtons) {
+				pnlHeaderButtons = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));
+				pnlHeaderButtons.setBorder(new EmptyBorder(null, new Insets(0, 0, 10)));
+				
+				btnSendReinforcement = new JLabelButton("Send reinforcement");
+
+				btnGoTo = new JLabelButton("Go there");
+				
+				btnViewBattle = new JLabelButton("View battle");
+				
+				pnlHeaderButtons.appendAll(btnSendReinforcement, btnGoTo, btnViewBattle);
 			}
 			
-			return pnl;
+			btnViewBattle.setVisible(profileData.strongholdObjectState == SimpleGameObject.STATE_BATTLE);
+			
+			return pnlHeaderButtons;
 		}
-
+   
 		private function createInfoPanel() : Container {
-			
-			
 			var form: Form = new Form();
-			addInfo(form, "Name", profileData.strongholdName);
-			addInfo(form, "Level", profileData.strongholdLevel.toString());
-			addInfo(form, "Gate", profileData.strongholdGate.toString());
+			addInfo(form, Locale.loadString("STR_LEVEL"), profileData.strongholdLevel.toString());
+			addInfo(form, Locale.loadString("STR_GATE"), profileData.strongholdGate.toString());
 			
 			var timediff :int = Global.map.getServerTime() - profileData.strongholdDateOccupied;
-			addInfo(form, "Occupied", Util.niceDays(timediff));
-			addInfo(form, "Victory Point Rate", Util.roundNumber(profileData.strongholdVictoryPointRate).toString()+ " per day");
+			addInfo(form, Locale.loadString("STR_OCCUPIED"), Util.niceDays(timediff));
+			addInfo(form, Locale.loadString("STR_VP_RATE"), StringUtil.substitute(Locale.loadString("STR_PER_DAY_RATE"), Util.roundNumber(profileData.strongholdVictoryPointRate).toString()));
 		
 			var s:TroopStub = new TroopStub();
 			var f:Formation = new Formation(Formation.Defense);
@@ -167,10 +181,12 @@
 				}
 			}
 			s.add(f);
+			
 			if(f.size()>0)
-				addInfo(form, "Total Troops", new TroopCompositionGridList(s, Formation.Defense, 3, 0));
+				addInfo(form, Locale.loadString("STR_TOTAL_TROOPS"), new TroopCompositionGridList(s, Formation.Defense, 3, 0));
 			else 
-				addInfo(form, "Total Troops", "No troop is currently defending!");
+				addInfo(form, Locale.loadString("STR_TOTAL_TROOPS"), Locale.loadString("STR_NONE_DEFENDING"));
+				
 			return form;
 		}
 		
@@ -181,60 +197,55 @@
 			label.setConstraints("West");
 			pnl.append(label);
 			
-			//var tilelists: Array = ComplexTroopGridList.getGridList(troop.stub);
 			var gridList: TroopCompositionGridList = new TroopCompositionGridList(troop.stub, Formation.Defense, 5, 0);
-			gridList.setVerticalAlignment(AsWingConstants.TOP);
-			pnl.append(gridList);
+			gridList.setConstraints("Center");
+			
+			pnl.append(AsWingUtils.createPaneToHold(gridList, new SoftBoxLayout(), "Center"));
 			
 			if (troop.playerId == Constants.playerId) {
-				var btn: JLabelButton = new JLabelButton("Retreat", null, AsWingConstants.RIGHT);
+				var retreatButton: JLabelButton = new JLabelButton(Locale.loadString("STR_RETREAT"), null, AsWingConstants.LEFT);
+				retreatButton.setVerticalAlignment(AsWingConstants.TOP);
+				
 				var cityId: uint = troop.cityId;
 				var troopId: int = troop.stub.id;
-				btn.addActionListener(function(e: Event):void {
-					InfoDialog.showMessageDialog("Confirm", "Are you sure? Retreating will bring your troop back to your city..", function(result: int): void {				
+				retreatButton.addActionListener(function(e: Event):void {
+					InfoDialog.showMessageDialog("Confirm", "Are you sure? Retreating will bring your troop back to your city.", function(result: int): void {				
 						if (result == JOptionPane.YES) {
 							Global.mapComm.Troop.retreat(cityId, troopId);
 						}
 					}, null, true, true, JOptionPane.YES | JOptionPane.NO);		
-				},0,true);
-				btn.setConstraints("East");
-				btn.setVerticalAlignment(AsWingConstants.TOP);
-				pnl.append(btn);
+				},0, true);
+				
+				var pnlButtons: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 5, 0, false));
+				retreatButton.setVerticalAlignment(AsWingConstants.TOP);
+				pnlButtons.setConstraints("East");								
+				pnlButtons.appendAll(retreatButton);
+				pnl.append(pnlButtons);
 			}
+			
 			return pnl;
 		}
 		
 		private function createTroopPanel() : Container {
-			var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5,AsWingConstants.TOP));
+			var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5, AsWingConstants.TOP));
+			
 			for each (var troop: * in profileData.troops) {
 				pnl.append(createTroopItem(troop));
 			}
 			
-			var tabScrollPanel: JScrollPane = new JScrollPane(pnl, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
+			var tabScrollPanel: JScrollPane = new JScrollPane(new JViewport(pnl, true), JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);			
 			(tabScrollPanel.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
 
-			var tabPanel: JTabbedPane = new JTabbedPane();
-			tabPanel.appendTab(tabScrollPanel, Locale.loadString("STR_TROOPS"));
-			tabPanel.setPreferredSize(new IntDimension(400, 300));
-			return tabPanel;
+			return pnl;
 		}
 		
 		private function createReportPanel() : Container {
 			reports = new LocalReportList(
 				BattleReportViewer.REPORT_TRIBE_LOCAL, 
-				[BattleReportListTable.COLUMN_DATE, BattleReportListTable.COLUMN_LOCATION], 
+				[BattleReportListTable.COLUMN_DATE, BattleReportListTable.COLUMN_LOCATION, BattleReportListTable.COLUMN_ATTACK_TRIBES], 
 				new BattleLocation(BattleLocation.STRONGHOLD, profileData.strongholdId));
-				
-			reports.setConstraints("Center");
-			
-			var pnl: JPanel = new JPanel(new BorderLayout());
-			pnl.append(reports);
-			
-			pnl.setPreferredSize(new IntDimension(400, 150));
-			var tabPanel: JTabbedPane = new JTabbedPane();
-			tabPanel.appendTab(pnl, Locale.loadString("STR_REPORTS"));
-			
-			return tabPanel;
+							
+			return reports;
 		}
 	}
 	

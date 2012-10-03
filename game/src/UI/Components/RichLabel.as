@@ -63,14 +63,7 @@ package src.UI.Components
 					break;		
 				case 'viewTribeProfile':
 					var tribeId: int = int(parts[1]);
-					if (Constants.tribeId == tribeId)
-					{
-						Global.mapComm.Tribe.viewTribeProfile();
-					}
-					else
-					{
-						Global.mapComm.Tribe.viewTribePublicProfile(tribeId);
-					}
+					Global.mapComm.Tribe.viewTribeProfile(tribeId);
 					break;
 				case 'custom':
 					dispatchEvent(new RichLabelCustomEvent(RichLabelCustomEvent.CUSTOM_EVENT_CLICK, parts[1]));

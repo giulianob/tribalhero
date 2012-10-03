@@ -33,14 +33,8 @@ package src.Objects.Process
 			}
 		}
 		
-		public function onChoseUnits(sender: *): void {
-			
-			Global.gameContainer.closeAllFrames(true);
-				
+		public function onChoseUnits(sender: *): void {				
 			Global.mapComm.Troop.assignmentJoin(Global.gameContainer.selectedCity.id, assignment.id, isAttack?attackDialog.getTroop():reinforceDialog.getTroop());
-
-			Global.gameContainer.setOverlaySprite(null);
-			Global.gameContainer.setSidebar(null);
 		}		
 	}
 

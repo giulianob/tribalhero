@@ -1,10 +1,9 @@
 ﻿package src.UI.Dialog 
 {
-	import adobe.utils.CustomActions;
-	import fl.lang.Locale;
+	import fl.lang.*;
 	import flash.events.*;
 	import flash.utils.*;
-	import mx.utils.StringUtil;
+	import mx.utils.*;
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.colorchooser.*;
@@ -13,14 +12,11 @@
 	import org.aswing.geom.*;
 	import org.aswing.table.*;
 	import src.*;
-	import src.Objects.Process.AtkAssignmentCreateProcess;
-	import src.Objects.Process.DefAssignmentCreateProcess;
-	import src.Objects.Process.AssignmentJoinProcess;
+	import src.Objects.Process.*;
 	import src.UI.*;
 	import src.UI.Components.*;
 	import src.UI.Components.TableCells.*;
 	import src.UI.Components.Tribe.*;
-	import src.UI.Cursors.GroundAttackCursor;
 	import src.UI.LookAndFeel.*;
 	import src.UI.Tooltips.*;
 	import src.Util.*;
@@ -38,6 +34,7 @@
 		private var pnlInfoTabs: JTabbedPane;
 		
 		private var updateTimer: Timer;
+		private var pnlStrongholds:JPanel;
 		
 		public function TribeProfileDialog(profileData: *) 
 		{
@@ -59,12 +56,14 @@
 		}
 		
 		public function update(): void {
-			Global.mapComm.Tribe.viewTribeProfile(function(newProfileData: *): void {
-				if (!newProfileData) 
+			Global.mapComm.Tribe.viewTribeProfile(profileData.tribeId, function(newProfileData: *): void {
+				if (!newProfileData) {
 					return;
+				}
 				
 				profileData = newProfileData;
-				createInfoTab();				
+				createInfoTab();
+				createStrongholdList();
 			});
 		}
 		
@@ -149,12 +148,9 @@
 		}
 		
 		private function createStrongholdTab(): Container {
-			//   Troop Tab
-			var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
-			for each (var stronghold: * in profileData.strongholds) {
-				pnl.append(createStrongholdItem(stronghold));
-			}
-			var tabScrollPanel: JScrollPane = new JScrollPane(pnl, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
+			// Strongholds List
+			var pnl: JPanel = createStrongholdList();			
+			var tabScrollPanel: JScrollPane = new JScrollPane(new JViewport(pnl, true), JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
 			(tabScrollPanel.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
 			var tabTroops: JTabbedPane = new JTabbedPane();
 			tabTroops.appendTab(tabScrollPanel, Locale.loadString("STR_STRONGHOLDS_UNDER_COMMAND"));
@@ -183,6 +179,22 @@
 			pnl.appendAll(pnlLeft, tabReports);
 			
 			return pnl;
+		}
+		
+		private function createStrongholdList(): JPanel 
+		{
+			if (!pnlStrongholds) {
+				pnlStrongholds = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+			}
+			else {
+				pnlStrongholds.removeAll();
+			}
+			
+			for each (var stronghold: * in profileData.strongholds) {
+				pnlStrongholds.append(createStrongholdItem(stronghold));
+			}
+			
+			return pnlStrongholds;
 		}
 		
 		private function createIncomingPanelItem(incoming: *): JPanel {

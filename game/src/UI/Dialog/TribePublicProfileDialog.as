@@ -1,8 +1,10 @@
 ﻿package src.UI.Dialog 
 {
 	import adobe.utils.CustomActions;
+	import fl.lang.Locale;
 	import flash.events.*;
 	import flash.utils.*;
+	import mx.utils.StringUtil;
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.colorchooser.*;
@@ -19,6 +21,7 @@
 	import src.UI.LookAndFeel.*;
 	import src.UI.Tooltips.*;
 	import src.Map.Username;
+	import src.Util.Util;
 	
 	public class TribePublicProfileDialog extends GameJPanel
 	{
@@ -46,25 +49,43 @@
 			return frame;
 		}
 		
+		private function addInfo(form: Form, title: String, text: *) : void {
+			var rowTitle: JLabel = new JLabel(title, null, AsWingConstants.LEFT);
+			rowTitle.setName("title");
+
+			var label: JLabel = new JLabel(text, null, AsWingConstants.LEFT);
+			label.setName("value");
+
+			form.addRow(rowTitle, label);
+		}
+						
 		private function createUI():void {
 			setPreferredSize(new IntDimension(Math.min(375, Constants.screenW - GameJImagePanelBackground.getFrameWidth()) , Math.min(600, Constants.screenH - GameJImagePanelBackground.getFrameHeight())));
 			
 			title = "Tribe Profile - " + profileData.tribeName;
-			setLayout(new BorderLayout(10, 10));
+			setLayout(new BorderLayout(0, 15));
 			
 			// Header panel
-			pnlHeader = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
+			pnlHeader = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 			pnlHeader.setConstraints("North");		
-			lblTribeName = new JLabel();
-			pnlHeader.append(lblTribeName);
+			lblTribeName = new JLabel(profileData.tribeName, null, AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblTribeName, "darkSectionHeader");
+			
+			var stats: Form = new Form();
+			
+			var establishedDiff:int = Global.map.getServerTime() - profileData.created;
+			addInfo(stats, Locale.loadString("STR_LEVEL"), profileData.level);
+			addInfo(stats, Locale.loadString("STR_ESTABLISHED"), Util.niceDays(establishedDiff));
+			
+			pnlHeader.appendAll(lblTribeName, stats);
 			
 			// Tab panel
 			pnlTabs = new JTabbedPane();
 			pnlTabs.setPreferredSize(new IntDimension(375, 600));
 			pnlTabs.setConstraints("Center");
-						
+
 			// Append tabs			
-			pnlTabs.appendTab(createMembersTab(), "Members");
+			pnlTabs.appendTab(createMembersTab(), StringUtil.substitute("Members ({0})", profileData.members.length));
 			
 			// Append main panels
 			appendAll(pnlHeader, pnlTabs);

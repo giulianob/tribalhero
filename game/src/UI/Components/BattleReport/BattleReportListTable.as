@@ -1,19 +1,13 @@
 package src.UI.Components.BattleReport 
 {
 	import fl.lang.Locale;
-	import org.aswing.Container;
 	import org.aswing.event.TableCellEditEvent;
 	import org.aswing.JTable;
 	import org.aswing.table.GeneralTableCellFactory;
 	import org.aswing.table.PropertyTableModel;
 	import org.aswing.table.TableColumn;
-	import org.aswing.table.TableModel;
 	import org.aswing.VectorListModel;
 	
-	/**
-	 * ...
-	 * @author Tribal Hero
-	 */
 	public class BattleReportListTable extends JTable 
 	{
 		public static const COLUMN_DATE: int = 0;
@@ -27,8 +21,8 @@ package src.UI.Components.BattleReport
 		private static const columnsDef: Array = [
 			{ name: "REPORT_DATE_COLUMN", property: "date", width: 115  },
 			{ name: "REPORT_DATE_COLUMN", property: ".", cellType: DateUnreadTextCell, width: 115 },
-			{ name: "REPORT_ATTACKING_TRIBES_COLUMN", property: ".", width: 0.5 },
-			{ name: "REPORT_DEFENDING_TRIBES_COLUMN", property: ".", width: 0.5 },
+			{ name: "REPORT_ATTACKING_TRIBES_COLUMN", property: "attackerTribes", cellType: TribesReportTableCell, width: 0.5 },
+			{ name: "REPORT_DEFENDING_TRIBES_COLUMN", property: "defenderTribes", cellType: TribesReportTableCell, width: 0.5 },
 			{ name: "REPORT_SIDE_COLUMN", property: "side", width: 90 },
 			{ name: "REPORT_LOCATION_COLUMN", property: "location", width: 0.3 },
 			{ name: "REPORT_TROOP_COLUMN", property: "troop", width: 0.3 }
@@ -73,7 +67,7 @@ package src.UI.Components.BattleReport
 			
 			setSelectionMode(JTable.SINGLE_SELECTION);
 			
-			setAutoResizeMode(JTable.AUTO_RESIZE_OFF);						
+			setAutoResizeMode(JTable.AUTO_RESIZE_OFF);					
 			
 			for (var i: int = 0; i < columns.length; i++) {		
 				columnIdx = columns[i];

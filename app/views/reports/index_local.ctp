@@ -9,8 +9,12 @@ foreach ($battle_reports as $battle_report) {
     $attackerTribes = array();
 
     foreach ($battle_report['Tribe'] as $tribe) {
-        $arr = $tribe['BattleTribe']['is_attacker'] ? $attackerTribes : $defenderTribes;
-        array_push($arr, array('id' => $tribe['id'], 'name' => $tribe['name']));
+        if ($tribe['BattleTribe']['is_attacker']) {
+            $attackerTribes[] = array('id' => $tribe['id'], 'name' => $tribe['name']);
+        }
+        else {
+            $defenderTribes[] = array('id' => $tribe['id'], 'name' => $tribe['name']);
+        }
     }
 
     $results['snapshots'][] = array(

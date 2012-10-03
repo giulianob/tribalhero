@@ -986,6 +986,7 @@ CREATE TABLE `tribes` (
   `wood` int(11) NOT NULL,
   `attack_point` int(11) NOT NULL,
   `defense_point` int(11) NOT NULL,
+  `created` datetime NOT NULL,
   `id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -1151,7 +1152,7 @@ CREATE TABLE `unit_templates_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-09-30 15:43:52
+-- Dump completed on 2012-10-02 22:38:43
 -- MySQL dump 10.13  Distrib 5.5.16, for Win32 (x86)
 --
 -- Host: localhost    Database: tribalhero_server
@@ -1188,4 +1189,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-09-30 15:43:52
+-- Dump completed on 2012-10-02 22:38:43

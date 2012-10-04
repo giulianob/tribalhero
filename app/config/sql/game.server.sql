@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.16, for Win32 (x86)
+-- MySQL dump 10.13  Distrib 5.5.16, for Win64 (x86)
 --
 -- Host: localhost    Database: tribalhero_server
 -- ------------------------------------------------------
--- Server version	5.5.16
+-- Server version	5.5.16-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -585,7 +585,7 @@ CREATE TABLE `messages` (
   KEY `created` (`created`),
   KEY `sender_player_id` (`sender_player_id`,`sender_state`),
   KEY `recipient_player_id` (`recipient_player_id`,`recipient_state`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -851,7 +851,7 @@ CREATE TABLE `strongholds` (
   `level` tinyint(3) unsigned DEFAULT NULL,
   `tribe_id` int(11) unsigned DEFAULT NULL,
   `state` tinyint(3) unsigned NOT NULL,
-  `gate` int(11) NOT NULL,
+  `gate` decimal(10,2) NOT NULL,
   `x` int(11) unsigned NOT NULL,
   `y` int(11) unsigned NOT NULL,
   `main_battle_id` int(10) unsigned NOT NULL,
@@ -1151,12 +1151,12 @@ CREATE TABLE `unit_templates_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-09-30 15:43:52
--- MySQL dump 10.13  Distrib 5.5.16, for Win32 (x86)
+-- Dump completed on 2012-10-04 19:47:29
+-- MySQL dump 10.13  Distrib 5.5.16, for Win64 (x86)
 --
 -- Host: localhost    Database: tribalhero_server
 -- ------------------------------------------------------
--- Server version	5.5.16
+-- Server version	5.5.16-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -1188,4 +1188,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-09-30 15:43:52
+-- Dump completed on 2012-10-04 19:47:30

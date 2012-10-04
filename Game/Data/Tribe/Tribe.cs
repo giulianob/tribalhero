@@ -274,6 +274,7 @@ namespace Game.Data.Tribe
                 case "Request":
                 case "Assignment":
                 case "Kick":
+                case "Repair":
                     switch (tribesman.Rank)
                     {
                         case 0:

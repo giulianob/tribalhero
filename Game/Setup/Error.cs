@@ -101,6 +101,7 @@ namespace Game.Setup
         TroopChanged = 604,
         TooManyTroops = 605,
         TroopEmpty = 606,
+        TroopInBattle =607,
 
         #endregion
 
@@ -134,11 +135,12 @@ namespace Game.Setup
         #region Stronghold
         StrongholdNotFound = 801,
         StrongholdNotOccupied = 802,
-
+        
         StrongholdCantAttackSelf = 810,
         StrongholdGateNotOpenToTribe = 811,
         StrongholdBelongsToOther = 812,
         StrongholdStillInactive = 813,
+        StrongholdGateFull = 814,
         #endregion
 
     }

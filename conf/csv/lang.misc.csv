@@ -19,6 +19,7 @@ STR_REPORTS,Reports
 STR_ONGOING_ATTACKS,Ongoing Attacks
 STR_STRONGHOLDS,Strongholds
 STR_STRONGHOLDS_UNDER_COMMAND,Strongholds in command
+STRONGHOLD_GATE_REPAIRED,Gate is completely repaired.
 ,
 CITY_OVERVIEW_TITLE,City Overview
 CITY_OVERVIEW_INFLUENCE_POINTS_LABEL,{0} influence points.

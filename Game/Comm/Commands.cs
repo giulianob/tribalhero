@@ -216,6 +216,7 @@ namespace Game.Comm
         StrongholdInfo = 1101,
         StrongholdPublicInfo = 1102,
         StrongholdInfoByName = 1103,
+        StrongholdGateRepair = 1104,
         #endregion
 
         #region Internal Messages

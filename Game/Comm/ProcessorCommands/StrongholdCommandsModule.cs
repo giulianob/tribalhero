@@ -2,9 +2,11 @@
 
 using System;
 using Game.Data.Stronghold;
+using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
+using Persistance;
 
 #endregion
 
@@ -13,10 +15,14 @@ namespace Game.Comm.ProcessorCommands
     class StrongholdCommandsModule : CommandModule
     {
         private readonly IStrongholdManager strongholdManager;
+        private readonly IDbManager dbManager;
+        private readonly Formula formula;
 
-        public StrongholdCommandsModule(IStrongholdManager strongholdManager)
+        public StrongholdCommandsModule(IStrongholdManager strongholdManager, Formula formula, IDbManager dbManager)
         {
             this.strongholdManager = strongholdManager;
+            this.formula = formula;
+            this.dbManager = dbManager;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -25,6 +31,7 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.StrongholdInfo, GetInfo);
             processor.RegisterCommand(Command.StrongholdPublicInfo, GetPublicInfo);
             processor.RegisterCommand(Command.StrongholdInfoByName, GetInfoByName);
+            processor.RegisterCommand(Command.StrongholdGateRepair, GateRepair);
         }
 
         private void AddPrivateInfo(IStronghold stronghold, Packet packet)
@@ -65,7 +72,7 @@ namespace Game.Comm.ProcessorCommands
             // Incoming List
             // Reports
         }
-        
+
         private void AddPublicInfo(IStronghold stronghold, Packet packet)
         {
             packet.AddUInt32(stronghold.Id);
@@ -83,7 +90,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 strongholdId = packet.GetUInt32();
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -112,7 +119,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 strongholdId = packet.GetUInt32();
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -126,15 +133,15 @@ namespace Game.Comm.ProcessorCommands
             var tribe = session.Player.Tribesman.Tribe;
 
             IStronghold stronghold;
-            if(!strongholdManager.TryGetStronghold(strongholdId, out stronghold))
+            if (!strongholdManager.TryGetStronghold(strongholdId, out stronghold))
             {
                 ReplyError(session, packet, Error.StrongholdNotFound);
                 return;
             }
 
-            using (Concurrency.Current.Lock(tribe,stronghold))
+            using (Concurrency.Current.Lock(tribe, stronghold))
             {
-                if(stronghold.StrongholdState!= StrongholdState.Occupied || tribe.Id != stronghold.Tribe.Id)
+                if (stronghold.StrongholdState != StrongholdState.Occupied || tribe.Id != stronghold.Tribe.Id)
                 {
                     ReplyError(session, packet, Error.StrongholdNotOccupied);
                     return;
@@ -152,7 +159,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 name = packet.GetString();
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -172,7 +179,8 @@ namespace Game.Comm.ProcessorCommands
                     ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
-                if (session.Player.IsInTribe && stronghold.StrongholdState==StrongholdState.Occupied && stronghold.Tribe.Id == session.Player.Tribesman.Tribe.Id)
+                if (session.Player.IsInTribe && stronghold.StrongholdState == StrongholdState.Occupied &&
+                    stronghold.Tribe.Id == session.Player.Tribesman.Tribe.Id)
                 {
                     reply.AddByte(1);
                     AddPrivateInfo(stronghold, reply);
@@ -200,7 +208,7 @@ namespace Game.Comm.ProcessorCommands
                 for (int i = 0; i < count; i++)
                     strongholdIds[i] = packet.GetUInt32();
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -212,7 +220,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 uint strongholdId = strongholdIds[i];
                 IStronghold stronghold;
-                if (!strongholdManager.TryGetStronghold(strongholdIds[i],out stronghold))
+                if (!strongholdManager.TryGetStronghold(strongholdIds[i], out stronghold))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
@@ -223,6 +231,71 @@ namespace Game.Comm.ProcessorCommands
             }
 
             session.Write(reply);
+        }
+
+        private void GateRepair(Session session, Packet packet)
+        {
+            uint strongholdId;
+
+            try
+            {
+                strongholdId = packet.GetUInt32();
+            }
+            catch (Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            if (session.Player.Tribesman == null)
+            {
+                ReplyError(session, packet, Error.TribeIsNull);
+                return;
+            }
+            var tribe = session.Player.Tribesman.Tribe;
+
+            IStronghold stronghold;
+            if (!strongholdManager.TryGetStronghold(strongholdId, out stronghold))
+            {
+                ReplyError(session, packet, Error.StrongholdNotFound);
+                return;
+            }
+
+            using (Concurrency.Current.Lock(tribe, stronghold))
+            {
+                if (stronghold.StrongholdState != StrongholdState.Occupied || tribe.Id != stronghold.Tribe.Id)
+                {
+                    ReplyError(session, packet, Error.StrongholdNotOccupied);
+                    return;
+                }
+
+                if (!tribe.HasRight(session.Player.PlayerId, "Repair"))
+                {
+                    ReplyError(session, packet, Error.TribesmanNotAuthorized);
+                    return;
+                }
+
+                var diff = formula.GetGateLimit(stronghold.Lvl) - stronghold.Gate;
+                if(diff<=0)
+                {
+                    ReplyError(session, packet, Error.StrongholdGateFull);
+                    return;
+                }
+
+                var cost = formula.GetGateRepairCost(stronghold.Lvl, diff);
+                if(!tribe.Resource.HasEnough(cost))
+                {
+                    ReplyError(session, packet, Error.ResourceNotEnough);
+                    return;
+                }
+                tribe.Resource.Subtract(cost);
+                dbManager.Save(tribe);
+                
+                stronghold.BeginUpdate();
+                stronghold.Gate = formula.GetGateLimit(stronghold.Lvl);
+                stronghold.EndUpdate();
+                ReplySuccess(session, packet);
+            }
         }
 
     }

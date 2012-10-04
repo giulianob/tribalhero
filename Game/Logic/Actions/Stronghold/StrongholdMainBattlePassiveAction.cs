@@ -354,7 +354,7 @@ namespace Game.Logic.Actions
                 stronghold.BeginUpdate();
                 stronghold.GateOpenTo = null;
                 stronghold.MainBattle = null;
-                stronghold.Gate = formula.GetGateLimit(stronghold.Lvl)/2;
+                stronghold.Gate = Math.Max(stronghold.Gate, formula.GetGateLimit(stronghold.Lvl)/2m);
                 stronghold.State = GameObjectState.NormalState();
                 stronghold.EndUpdate();
 

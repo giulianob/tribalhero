@@ -112,6 +112,7 @@ namespace Game.Data.Stronghold
             stronghold.BeginUpdate();
             stronghold.StrongholdState = StrongholdState.Occupied;
             stronghold.Tribe = tribe;
+            stronghold.Gate = Formula.Current.GetGateLimit(stronghold.Lvl);
             stronghold.DateOccupied = DateTime.UtcNow;
             stronghold.EndUpdate();
 

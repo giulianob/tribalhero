@@ -32,5 +32,10 @@ package src.Objects.Stronghold
 			level = strongholdObj.level;
 			tribeId = strongholdObj.tribeId;
 		}
+		
+		public static function GateToString(level: int, value: int) : String {
+			var limit: int = level * 500 + 5000;
+			return value.toString() + "/" + limit.toString();
+		}
 	}
 }

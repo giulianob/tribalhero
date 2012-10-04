@@ -12,10 +12,12 @@
 	import org.aswing.geom.*;
 	import org.aswing.table.*;
 	import src.*;
+	import src.Comm.Commands;
 	import src.Map.*;
 	import src.Objects.*;
 	import src.Objects.Battle.*;
 	import src.Objects.Process.*;
+	import src.Objects.Stronghold.Stronghold;
 	import src.Objects.Troop.*;
 	import src.UI.*;
 	import src.UI.Components.*;
@@ -128,6 +130,12 @@
 			});
 			pnl.append(btnSendReinforcement);
 			
+			var btnRepairGate: JButton = new JButton("Repair gate");
+			btnRepairGate.addActionListener(function(e:Event): void {
+				Global.mapComm.Stronghold.repairStrongholdGate(profileData.strongholdId);
+			});
+			pnl.append(btnRepairGate);
+			
 			if(profileData.strongholdObjectState==SimpleGameObject.STATE_BATTLE) {
 				var btnViewBattle: JButton = new JButton("View battle");
 				btnViewBattle.addActionListener(function(e: Event): void {
@@ -146,7 +154,7 @@
 			var form: Form = new Form();
 			addInfo(form, "Name", profileData.strongholdName);
 			addInfo(form, "Level", profileData.strongholdLevel.toString());
-			addInfo(form, "Gate", profileData.strongholdGate.toString());
+			addInfo(form, "Gate", Stronghold.GateToString(profileData.strongholdLevel,profileData.strongholdGate));
 			
 			var timediff :int = Global.map.getServerTime() - profileData.strongholdDateOccupied;
 			addInfo(form, "Occupied", Util.niceDays(timediff));

@@ -16,6 +16,8 @@
 	import src.Objects.Process.AtkAssignmentCreateProcess;
 	import src.Objects.Process.DefAssignmentCreateProcess;
 	import src.Objects.Process.AssignmentJoinProcess;
+	import src.Objects.SimpleGameObject;
+	import src.Objects.Stronghold.Stronghold;
 	import src.UI.*;
 	import src.UI.Components.*;
 	import src.UI.Components.TableCells.*;
@@ -118,39 +120,49 @@
 		}
 		
 		private function createStrongholdItem(stronghold : * ): JPanel {
-			var pnl: JPanel = new JPanel(new BorderLayout(5, 5));
-			var pnlLeft: JPanel = new JPanel(new BorderLayout(5, 5));
-			var pnlRight: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
-			
-			pnlRight.setPreferredSize(new IntDimension(200, 0));
+			var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS,0));
+			var pnlTop: JPanel = new JPanel(new BorderLayout(5, 0));
+			var pnlBottom: JPanel = new JPanel(new BorderLayout(5, 0));
 			
 			var label : StrongholdLabel = new StrongholdLabel(stronghold.id, stronghold.name);
 			label.setHorizontalAlignment(AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(label, "Button");
 			
-			var grid: JPanel = new JPanel(new GridLayout(1, 0, 20, 0));
+			var pnlNameStatus : JPanel = new JPanel();
+			pnlNameStatus.append(label);
+			
+			if (stronghold.objectState == SimpleGameObject.STATE_BATTLE) {
+				pnlNameStatus.append(new JLabel("in battle " + stronghold.battleId.toString()));
+			}
+			
+			var grid: JPanel = new JPanel(new FlowLayout());
 			grid.append(simpleLabelMaker("Level " + stronghold.lvl.toString(), "Level", new AssetIcon(new ICON_UPGRADE())));
 			grid.append(simpleLabelMaker(Util.roundNumber(stronghold.victoryPointRate).toString() + " per day", "Victory Point Rate", new AssetIcon(new ICON_UPGRADE())));
 			var timediff :int = Global.map.getServerTime() - stronghold.dateOccupied;
 			grid.append(simpleLabelMaker(Util.niceDays(timediff), "Total days occupied", new AssetIcon(new ICON_UPGRADE())));
-
-			pnlLeft.append(label,"North");
-			pnlLeft.append(grid, "Center");
 			
 			var lblTroop: JLabel = new JLabel(stronghold.upkeep.toString() + " Troop");
-			var lblGate: JLabel = new JLabel(stronghold.gate.toString() + " Gate");
 			lblTroop.setHorizontalAlignment(AsWingConstants.RIGHT);
+
+			var lblGate: JLabel = new JLabel(" Gate " + Stronghold.GateToString(stronghold.lvl,stronghold.gate));
 			lblGate.setHorizontalAlignment(AsWingConstants.RIGHT);
-			pnlRight.append(lblTroop);
-			pnlRight.append(lblGate);
 			
-			pnl.append(pnlLeft, "Center");
-			pnl.append(pnlRight, "East");
+			
+			pnlTop.append(pnlNameStatus, "Center");
+			pnlTop.append(lblGate, "East");
+			
+			pnlBottom.append(grid, "Center");
+			pnlBottom.append(lblTroop, "East");
+			
+			pnl.setPreferredWidth(400);
+			pnl.appendAll(pnlTop, pnlBottom);
+			
 			return pnl;
 		}
 		
 		private function createStrongholdTab(): Container {
 			//   Troop Tab
-			var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+			var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 15));
 			for each (var stronghold: * in profileData.strongholds) {
 				pnl.append(createStrongholdItem(stronghold));
 			}

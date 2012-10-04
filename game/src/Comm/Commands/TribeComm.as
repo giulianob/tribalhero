@@ -252,7 +252,7 @@
 					name: packet.readString(),
 					state: packet.readByte(),
 					lvl: packet.readByte(),
-					gate: packet.readInt(),
+					gate: packet.readFloat(),
 					x: packet.readUInt(),
 					y: packet.readUInt(),
 					upkeep: packet.readInt(),

@@ -24,6 +24,39 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.StrongholdNameGet, GetName);
             processor.RegisterCommand(Command.StrongholdInfo, GetInfo);
             processor.RegisterCommand(Command.StrongholdInfoByName, GetInfoByName);
+            processor.RegisterCommand(Command.StrongholdLocate, Locate);
+        }
+
+        private void Locate(Session session, Packet packet)
+        {
+            var reply = new Packet(packet);
+
+            uint strongholdId;
+
+            try
+            {
+                strongholdId = packet.GetUInt32();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            IStronghold stronghold;
+            using (Concurrency.Current.Lock(strongholdId, out stronghold))
+            {
+                if (stronghold == null)
+                {
+                    ReplyError(session, packet, Error.CityNotFound);
+                    return;
+                }
+
+                reply.AddUInt32(stronghold.X);
+                reply.AddUInt32(stronghold.Y);
+
+                session.Write(reply);
+            }
         }
 
         private void GetInfo(Session session, Packet packet)

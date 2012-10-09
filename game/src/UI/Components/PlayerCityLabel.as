@@ -51,7 +51,7 @@ package src.UI.Components
 	
 		private function updateText(): void
 		{
-			var text = StringUtil.substitute("<a href='event:viewProfile:{0}'>{1}</a> (<a href='event:goToCity:{2}'>{3}</a>)", playerId, playerName, cityId, cityName);
+			var text: String = StringUtil.substitute("<a href='event:viewProfile:{0}'>{1}</a> (<a href='event:goToCity:{2}'>{3}</a>)", playerId, playerName, cityId, cityName);
 			setHtmlText(text);
 			setColumns(playerName.length + cityName.length + 5);
 		}

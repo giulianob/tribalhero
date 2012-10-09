@@ -126,6 +126,25 @@ package src.Comm.Commands
 			session.write(packet, onReceiveStrongholdProfile, { callback: callback } );
 			mapComm.showLoading();
 		}
+		
+		public function gotoStrongholdLocation(cityId:int):void
+		{
+			var packet:Packet = new Packet();
+			packet.cmd = Commands.STRONGHOLD_LOCATE;
+			packet.writeUInt(cityId);
+			
+			session.write(packet, onReceiveStrongholdLocation);
+		}
+		
+		public function onReceiveStrongholdLocation(packet:Packet, custom:*):void
+		{
+			if (MapComm.tryShowError(packet)) {
+				return;
+			}
+			var pt:Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
+			Global.map.camera.ScrollToCenter(pt.x, pt.y);
+			Global.gameContainer.closeAllFrames(true);
+		}		
 
 	}
 

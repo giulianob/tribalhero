@@ -61,6 +61,9 @@ package src.UI.Components
 				case 'goToCity': 
 					Global.mapComm.City.gotoCityLocation(parts[1]);
 					break;		
+				case 'goToStronghold': 
+					Global.mapComm.Stronghold.gotoStrongholdLocation(parts[1]);
+					break;											
 				case 'viewTribeProfile':
 					var tribeId: int = int(parts[1]);
 					Global.mapComm.Tribe.viewTribeProfile(tribeId);

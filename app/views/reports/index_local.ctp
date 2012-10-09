@@ -20,7 +20,11 @@ foreach ($battle_reports as $battle_report) {
     $results['snapshots'][] = array(
         'id' => $battle_report['Battle']['id'],
         'date' => $time->niceShort($battle_report['Battle']['created']),
-        'location' => $battle_report['Battle']['location_name'],
+        'location' => array(
+            'type' => $battle_report['Battle']['location_type'],
+            'id' => $battle_report['Battle']['location_id'],
+            'name' => $battle_report['Battle']['location_name']
+        ),
         'unread' => $battle_report['Battle']['read'] ? false : true,
         'defenderTribes' => $defenderTribes,
         'attackerTribes' => $attackerTribes

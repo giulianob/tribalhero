@@ -217,6 +217,7 @@ namespace Game.Comm
         #region Stronghold
         StrongholdInfo = 1101,        
         StrongholdInfoByName = 1102,
+        StrongholdLocate = 1103,
         #endregion
 
         #region Internal Messages

@@ -24,7 +24,7 @@ package src.UI.Components.BattleReport
 			{ name: "REPORT_ATTACKING_TRIBES_COLUMN", property: "attackerTribes", cellType: TribesReportTableCell, width: 0.5 },
 			{ name: "REPORT_DEFENDING_TRIBES_COLUMN", property: "defenderTribes", cellType: TribesReportTableCell, width: 0.5 },
 			{ name: "REPORT_SIDE_COLUMN", property: "side", width: 90 },
-			{ name: "REPORT_LOCATION_COLUMN", property: "location", width: 0.3 },
+			{ name: "REPORT_LOCATION_COLUMN", property: "location", width: 0.3, cellType: BattleLocationTableCell },
 			{ name: "REPORT_TROOP_COLUMN", property: "troop", width: 0.3 }
 		];
 		

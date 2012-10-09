@@ -579,21 +579,21 @@
 			var pt:Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
 			Global.map.camera.ScrollToCenter(pt.x, pt.y);
 		}
+			
+		public function gotoCityLocationByName(cityName:String):void
+		{
+			var packet:Packet = new Packet();
+			packet.cmd = Commands.CITY_LOCATE_BY_NAME;
+			packet.writeString(cityName);
+			
+			session.write(packet, onReceiveCityLocation);
+		}
 		
 		public function gotoCityLocation(cityId:int):void
 		{
 			var packet:Packet = new Packet();
 			packet.cmd = Commands.CITY_LOCATE;
 			packet.writeUInt(cityId);
-			
-			session.write(packet, onReceiveCityLocation);
-		}
-		
-		public function gotoCityLocationByName(cityName:String):void
-		{
-			var packet:Packet = new Packet();
-			packet.cmd = Commands.CITY_LOCATE_BY_NAME;
-			packet.writeString(cityName);
 			
 			session.write(packet, onReceiveCityLocation);
 		}

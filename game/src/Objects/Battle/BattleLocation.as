@@ -10,15 +10,37 @@ package src.Objects.Battle
 		public var id:int;
 		public var type:int;
 		
-		public function BattleLocation(type: int, id: int, name: String = "")
-		{
+		public function BattleLocation(type: *, id: int, name: String = "")
+		{			
 			this.name = name;
 			this.id = id;
-			this.type = type;
+			
+			if (type is int) {
+				this.type = type;
+			}
+			else {
+				switch (type) {
+					case "City":
+						this.type = CITY;
+						break;
+					case "Stronghold":
+						this.type = STRONGHOLD;
+						break;					
+					case "StrongholdGate":
+						this.type = STRONGHOLDGATE;
+						break;		
+					default:
+						throw new Error("Unknown location type");						
+				}
+			}
 			
 		}		
 		
 		public function getLocationTypeAsString(): String {
+			return BattleLocation.getLocationTypeAsString(type);
+		}
+		
+		public static function getLocationTypeAsString(type: int): String {
 			switch (type) {
 				case CITY:
 					return "City";

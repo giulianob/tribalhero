@@ -1,4 +1,5 @@
 package src.Util {
+	import fl.lang.Locale;
 	import flash.xml.*;
 	import mx.utils.StringUtil;
 	import src.UI.LookAndFeel.GameLookAndFeel;
@@ -97,6 +98,16 @@ package src.Util {
 			});
 			
 			return ret;
+		}
+		
+		public static function localize(msgId: String, ... params): String {
+			var localizedStr: String = Locale.loadString(msgId);
+			if (localizedStr == null) {
+				return "[" + msgId + "]";				
+			}
+			
+			params.unshift(localizedStr);
+			return StringUtil.substitute.apply(undefined, params);
 		}
 	}
 	

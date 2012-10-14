@@ -10,7 +10,7 @@
 	import src.Objects.Troop.*;
 	import src.UI.Tooltips.*;
 
-		public class TroopCompositionGridList extends GridList
+	public class TroopCompositionGridList extends GridList
 	{
 		private var city: City;
 
@@ -26,6 +26,8 @@
 
 			setTileWidth(40);
 			setTileHeight(32);			
+			setHorizontalAlignment(AsWingConstants.LEFT);
+			setVerticalAlignment(AsWingConstants.TOP);
 			
 			for each(var formation: Formation in troop.each())
 			{
@@ -39,14 +41,10 @@
 					var icon: DisplayObject = UnitFactory.getSprite(unit.type, 1, false) as DisplayObject;
 					icon.scaleX = 0.5;
 					icon.scaleY = 0.5;
-					(getModel() as VectorListModel).append( { source: icon, data: unit } );
+					(getModel() as VectorListModel).append( { source: icon, data: unit } );					
 				}
-
 			}
 		}
-
-
 	}
-
 }
 

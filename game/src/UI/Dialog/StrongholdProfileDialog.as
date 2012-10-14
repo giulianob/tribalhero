@@ -111,8 +111,8 @@
 			// Right panel			
 			var tabPanel: JTabbedPane = new JTabbedPane();
 			tabPanel.setPreferredWidth(500);
-			tabPanel.appendTab(pnlTroopPanel, Locale.loadString("STR_TROOPS"));
-			tabPanel.appendTab(pnlReportPanel, Locale.loadString("STR_REPORTS"));			
+			tabPanel.appendTab(pnlTroopPanel, StringHelper.localize("STR_TROOPS"));
+			tabPanel.appendTab(pnlReportPanel, StringHelper.localize("STR_REPORTS"));			
 
 			// Append main panels
 			appendAll(pnlLeftContainer, tabPanel);
@@ -194,6 +194,7 @@
 			var pnl: JPanel = new JPanel(new BorderLayout(5));
 			
 			var label: PlayerCityLabel = new PlayerCityLabel(troop.playerId, troop.cityId, troop.playerName, troop.cityName);
+			label.setPreferredWidth(175);
 			label.setConstraints("West");
 			pnl.append(label);
 			
@@ -231,6 +232,10 @@
 			
 			for each (var troop: * in profileData.troops) {
 				pnl.append(createTroopItem(troop));
+			}
+			
+			if (profileData.troops.length == 0) {
+				pnl.append(new JLabel(Locale.loadString("STRONGHOLD_NO_TROOPS"), null, AsWingConstants.LEFT));
 			}
 			
 			var tabScrollPanel: JScrollPane = new JScrollPane(new JViewport(pnl, true), JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);			

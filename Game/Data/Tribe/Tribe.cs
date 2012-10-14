@@ -18,6 +18,8 @@ namespace Game.Data.Tribe
 {
     public class Tribe : ITribe
     {
+        public event EventHandler<TribesmanRemovedEventArgs> TribesmanRemoved = (sender, args) => { };
+
         private readonly Procedure procedure;
 
         private readonly IDbManager dbManager;
@@ -36,15 +38,19 @@ namespace Game.Data.Tribe
         }
 
         public const string DB_TABLE = "tribes";
+
         public const int MEMBERS_PER_LEVEL = 5;
 
         public uint Id { set; get; }
-        public IPlayer Owner { get; set; }
+
+        public IPlayer Owner { get; private set; }
+
         public string Name { get; set; }
 
         public byte Level { get; set; }
 
         private int attackPoint;
+
         public int AttackPoint
         {
             get
@@ -56,13 +62,21 @@ namespace Game.Data.Tribe
                 attackPoint = value;
                 if (DbPersisted)
                 {
-                    dbManager.Query(string.Format("UPDATE `{0}` SET `attack_point` = @attack_point WHERE `id` = @id LIMIT 1", DB_TABLE),
-                                           new[] { new DbColumn("attack_point", attackPoint, DbType.Int32), new DbColumn("id", Id, DbType.UInt32) });
+                    dbManager.Query(
+                                    string.Format(
+                                                  "UPDATE `{0}` SET `attack_point` = @attack_point WHERE `id` = @id LIMIT 1",
+                                                  DB_TABLE),
+                                    new[]
+                                    {
+                                            new DbColumn("attack_point", attackPoint, DbType.Int32),
+                                            new DbColumn("id", Id, DbType.UInt32)
+                                    });
                 }
             }
         }
 
         private int defensePoint;
+
         public int DefensePoint
         {
             get
@@ -75,13 +89,21 @@ namespace Game.Data.Tribe
 
                 if (DbPersisted)
                 {
-                    dbManager.Query(string.Format("UPDATE `{0}` SET `defense_point` = @defense_point WHERE `id` = @id LIMIT 1", DB_TABLE),
-                                           new[] { new DbColumn("defense_point", defensePoint, DbType.Int32), new DbColumn("id", Id, DbType.UInt32) });
+                    dbManager.Query(
+                                    string.Format(
+                                                  "UPDATE `{0}` SET `defense_point` = @defense_point WHERE `id` = @id LIMIT 1",
+                                                  DB_TABLE),
+                                    new[]
+                                    {
+                                            new DbColumn("defense_point", defensePoint, DbType.Int32),
+                                            new DbColumn("id", Id, DbType.UInt32)
+                                    });
                 }
             }
         }
 
         private string description = string.Empty;
+
         public string Description
         {
             get
@@ -94,14 +116,23 @@ namespace Game.Data.Tribe
 
                 if (DbPersisted)
                 {
-                    dbManager.Query(string.Format("UPDATE `{0}` SET `desc` = @desc WHERE `id` = @id LIMIT 1", DB_TABLE),
-                                           new[] { new DbColumn("desc", description, DbType.String, Player.MAX_DESCRIPTION_LENGTH), new DbColumn("id", Id, DbType.UInt32) });
+                    dbManager.Query(
+                                    string.Format("UPDATE `{0}` SET `desc` = @desc WHERE `id` = @id LIMIT 1", DB_TABLE),
+                                    new[]
+                                    {
+                                            new DbColumn("desc",
+                                                         description,
+                                                         DbType.String,
+                                                         Player.MAX_DESCRIPTION_LENGTH),
+                                            new DbColumn("id", Id, DbType.UInt32)
+                                    });
                 }
             }
         }
 
-        readonly Dictionary<uint, ITribesman> tribesmen = new Dictionary<uint, ITribesman>();
-        readonly Dictionary<int, Assignment> assignments = new Dictionary<int, Assignment>();
+        private readonly Dictionary<uint, ITribesman> tribesmen = new Dictionary<uint, ITribesman>();
+
+        private readonly Dictionary<int, Assignment> assignments = new Dictionary<int, Assignment>();
 
         public Resource Resource { get; private set; }
 
@@ -131,13 +162,40 @@ namespace Game.Data.Tribe
             }
         }
 
-        public Tribe(IPlayer owner, string name, Procedure procedure, IDbManager dbManager, Formula formula, IAssignmentFactory assignmentFactory) :
-            this(owner, name, string.Empty, 1, 0, 0, new Resource(), SystemClock.Now, procedure, dbManager, formula, assignmentFactory)
+        public Tribe(IPlayer owner,
+                     string name,
+                     Procedure procedure,
+                     IDbManager dbManager,
+                     Formula formula,
+                     IAssignmentFactory assignmentFactory)
+                : this(
+                        owner: owner,
+                        name: name,
+                        desc: string.Empty,
+                        level: 1,
+                        attackPoints: 0,
+                        defensePoints: 0,
+                        resource: new Resource(),
+                        created: SystemClock.Now,
+                        procedure: procedure,
+                        dbManager: dbManager,
+                        formula: formula,
+                        assignmentFactory: assignmentFactory)
         {
-
         }
 
-        public Tribe(IPlayer owner, string name, string desc, byte level, int attackPoints, int defensePoints, Resource resource, DateTime created, Procedure procedure, IDbManager dbManager, Formula formula, IAssignmentFactory assignmentFactory)
+        public Tribe(IPlayer owner,
+                     string name,
+                     string desc,
+                     byte level,
+                     int attackPoints,
+                     int defensePoints,
+                     Resource resource,
+                     DateTime created,
+                     Procedure procedure,
+                     IDbManager dbManager,
+                     Formula formula,
+                     IAssignmentFactory assignmentFactory)
         {
             this.procedure = procedure;
             this.dbManager = dbManager;
@@ -161,31 +219,78 @@ namespace Game.Data.Tribe
         public Error AddTribesman(ITribesman tribesman, bool save = true)
         {
             if (tribesmen.ContainsKey(tribesman.Player.PlayerId))
+            {
                 return Error.TribesmanAlreadyExists;
+            }
 
-            if (tribesmen.Count >= Level * MEMBERS_PER_LEVEL)
+            if (tribesmen.Count >= Level*MEMBERS_PER_LEVEL)
+            {
                 return Error.TribeFull;
+            }
 
             tribesman.Player.Tribesman = tribesman;
             tribesmen.Add(tribesman.Player.PlayerId, tribesman);
+
             if (save)
             {
                 DefaultMultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
                 dbManager.Save(tribesman);
             }
+
+            if (tribesman.Player.Session != null)
+            {
+                Global.Channel.Subscribe(tribesman.Player.Session, "/TRIBE/" + Id);
+            }
+
             return Error.Ok;
         }
 
-        public Error RemoveTribesman(uint playerId)
+        public Error RemoveTribesman(uint playerId, bool wasKicked, bool checkIfOwner = true)
         {
             ITribesman tribesman;
             if (!tribesmen.TryGetValue(playerId, out tribesman))
+            {
                 return Error.TribesmanNotFound;
+            }
 
-            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
-            tribesman.Player.Tribesman = null;
+            IPlayer player = tribesman.Player;
+
+            if (IsOwner(player))
+            {
+                if (checkIfOwner)
+                {
+                    return Error.TribesmanIsOwner;
+                }
+
+                Owner = null;
+                dbManager.Save(this);
+            }
+
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(tribesman);           
+
+            player.Tribesman = null;
+            
             dbManager.Delete(tribesman);
-            return !tribesmen.Remove(playerId) ? Error.TribesmanNotFound : Error.Ok;
+
+            tribesmen.Remove(playerId);
+
+            if (player.Session != null)
+            {
+                Global.Channel.Unsubscribe(player.Session, "/TRIBE/" + Id);
+
+                if (wasKicked)
+                {
+                    player.Session.Write(new Packet(Command.TribesmanKicked));
+                }
+            }
+
+            TribesmanRemoved(this,
+                             new TribesmanRemovedEventArgs
+                             {
+                                     Player = player
+                             });
+
+            return Error.Ok;
         }
 
         public bool TryGetTribesman(uint playerId, out ITribesman tribesman)
@@ -203,7 +308,9 @@ namespace Game.Data.Tribe
             ITribesman newOwnerTribesman;
 
             if (!tribesmen.TryGetValue(newOwnerPlayerId, out newOwnerTribesman))
+            {
                 return Error.TribesmanNotFound;
+            }
 
             var previousOwnerTribesman = Owner.Tribesman;
 
@@ -212,11 +319,11 @@ namespace Game.Data.Tribe
             Owner = newOwnerTribesman.Player;
 
             dbManager.Save(previousOwnerTribesman, newOwnerTribesman, this);
-                        
+
             previousOwnerTribesman.Player.TribeUpdate();
             newOwnerTribesman.Player.TribeUpdate();
 
-            return Error.Ok;            
+            return Error.Ok;
         }
 
         public Error SetRank(uint playerId, byte rank)
@@ -224,15 +331,21 @@ namespace Game.Data.Tribe
             ITribesman tribesman;
 
             if (rank == 0)
+            {
                 return Error.TribesmanNotAuthorized;
+            }
 
             if (!tribesmen.TryGetValue(playerId, out tribesman))
+            {
                 return Error.TribesmanNotFound;
+            }
 
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
 
             if (IsOwner(tribesman.Player))
+            {
                 return Error.TribesmanIsOwner;
+            }
 
             tribesman.Rank = rank;
             dbManager.Save(tribesman);
@@ -245,7 +358,9 @@ namespace Game.Data.Tribe
         {
             ITribesman tribesman;
             if (!tribesmen.TryGetValue(playerId, out tribesman))
+            {
                 return Error.TribesmanNotFound;
+            }
 
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
             tribesman.Contribution += resource;
@@ -260,9 +375,16 @@ namespace Game.Data.Tribe
             return from tribesmen in Tribesmen
                    from city in tribesmen.Player.GetCityList()
                    from notification in city.Notifications
-                   where notification.Action is IActionTime && notification.Action.Category == ActionCategory.Attack && notification.GameObject.City != city && notification.Subscriptions.Count > 0
+                   where
+                           notification.Action is IActionTime && notification.Action.Category == ActionCategory.Attack &&
+                           notification.GameObject.City != city && notification.Subscriptions.Count > 0
                    orderby ((ChainAction)notification.Action).EndTime ascending
-                   select new IncomingListItem { SourceCity = notification.GameObject.City, TargetCity = city, EndTime = ((IActionTime)notification.Action).EndTime };
+                   select new IncomingListItem
+                   {
+                           SourceCity = notification.GameObject.City,
+                           TargetCity = city,
+                           EndTime = ((IActionTime)notification.Action).EndTime
+                   };
         }
 
         public bool HasRight(uint playerId, string action)
@@ -273,12 +395,12 @@ namespace Game.Data.Tribe
                 return false;
             }
 
-            switch (action)
+            switch(action)
             {
                 case "Request":
                 case "Assignment":
                 case "Kick":
-                    switch (tribesman.Rank)
+                    switch(tribesman.Rank)
                     {
                         case 0:
                         case 1:
@@ -291,6 +413,7 @@ namespace Game.Data.Tribe
         }
 
         #region Properties
+
         public int Count
         {
             get
@@ -298,19 +421,25 @@ namespace Game.Data.Tribe
                 return tribesmen.Count;
             }
         }
-        #endregion
 
+        #endregion
 
         #region ILockable Members
 
         public int Hash
         {
-            get { return unchecked((int)Owner.PlayerId); }
+            get
+            {
+                return unchecked((int)Owner.PlayerId);
+            }
         }
 
         public object Lock
         {
-            get { return Owner; }
+            get
+            {
+                return Owner;
+            }
         }
 
         #endregion
@@ -331,14 +460,20 @@ namespace Game.Data.Tribe
 
         public string DbTable
         {
-            get { return DB_TABLE; }
+            get
+            {
+                return DB_TABLE;
+            }
         }
 
         public DbColumn[] DbPrimaryKey
         {
             get
             {
-                return new[] { new DbColumn("id", Id, DbType.UInt32) };
+                return new[]
+                {
+                        new DbColumn("id", Id, DbType.UInt32)
+                };
             }
         }
 
@@ -346,7 +481,9 @@ namespace Game.Data.Tribe
         {
             get
             {
-                return new DbDependency[] { };
+                return new DbDependency[]
+                {
+                };
             }
         }
 
@@ -355,22 +492,30 @@ namespace Game.Data.Tribe
             get
             {
                 return new[]
-                       {
-                               new DbColumn("owner_player_id", Owner.PlayerId, DbType.UInt32),
-                               new DbColumn("name", Name, DbType.String, 20), 
-                               new DbColumn("level", Level, DbType.Byte),
-                               new DbColumn("crop", Resource.Crop, DbType.Int32), 
-                               new DbColumn("gold", Resource.Gold, DbType.Int32),
-                               new DbColumn("iron", Resource.Iron, DbType.Int32), 
-                               new DbColumn("wood", Resource.Wood, DbType.Int32),
-                               new DbColumn("created", Created, DbType.DateTime),
-                       };
+                {
+                        new DbColumn("owner_player_id", Owner != null ? Owner.PlayerId : 0, DbType.UInt32),
+                        new DbColumn("name", Name, DbType.String, 20), new DbColumn("level", Level, DbType.Byte),
+                        new DbColumn("crop", Resource.Crop, DbType.Int32),
+                        new DbColumn("gold", Resource.Gold, DbType.Int32),
+                        new DbColumn("iron", Resource.Iron, DbType.Int32),
+                        new DbColumn("wood", Resource.Wood, DbType.Int32),
+                        new DbColumn("created", Created, DbType.DateTime),
+                };
             }
         }
 
         #endregion
 
-        public Error CreateAssignment(ICity city, ISimpleStub simpleStub, uint x, uint y, ICity targetCity, DateTime time, AttackMode mode, string desc, bool isAttack, out int id)
+        public Error CreateAssignment(ICity city,
+                                      ISimpleStub simpleStub,
+                                      uint x,
+                                      uint y,
+                                      ICity targetCity,
+                                      DateTime time,
+                                      AttackMode mode,
+                                      string desc,
+                                      bool isAttack,
+                                      out int id)
         {
             id = 0;
 
@@ -401,7 +546,8 @@ namespace Game.Data.Tribe
             }
 
             // Cant attack other tribesman
-            if (isAttack && targetCity.Owner.Tribesman != null && targetCity.Owner.Tribesman.Tribe == stub.City.Owner.Tribesman.Tribe)
+            if (isAttack && targetCity.Owner.Tribesman != null &&
+                targetCity.Owner.Tribesman.Tribe == stub.City.Owner.Tribesman.Tribe)
             {
                 Procedure.Current.TroopStubDelete(city, stub);
                 return Error.AssignmentCantAttackFriend;
@@ -411,7 +557,7 @@ namespace Game.Data.Tribe
             if (targetCity == stub.City)
             {
                 Procedure.Current.TroopStubDelete(city, stub);
-                return Error.DefendSelf;                
+                return Error.DefendSelf;
             }
 
             // Player creating the assignment cannot be late (Give a few minutes lead)
@@ -425,7 +571,14 @@ namespace Game.Data.Tribe
             }
 
             // Create assignment
-            Assignment assignment = assignmentFactory.CreateAssignment(this, x, y, targetCity, mode, time, desc, isAttack);
+            Assignment assignment = assignmentFactory.CreateAssignment(this,
+                                                                       x,
+                                                                       y,
+                                                                       targetCity,
+                                                                       mode,
+                                                                       time,
+                                                                       desc,
+                                                                       isAttack);
             id = assignment.Id;
             assignments.Add(assignment.Id, assignment);
             assignment.AssignmentComplete += RemoveAssignment;
@@ -460,10 +613,15 @@ namespace Game.Data.Tribe
             }
 
             ITroopStub stub;
-            if (!procedure.TroopStubCreate(out stub, city, simpleStub, TroopState.WaitingInAssignment, assignment.IsAttack ? FormationType.Attack : FormationType.Defense))
+            if (
+                    !procedure.TroopStubCreate(out stub,
+                                               city,
+                                               simpleStub,
+                                               TroopState.WaitingInAssignment,
+                                               assignment.IsAttack ? FormationType.Attack : FormationType.Defense))
             {
                 return Error.TroopChanged;
-            }            
+            }
 
             var error = assignment.Add(stub);
 
@@ -488,14 +646,24 @@ namespace Game.Data.Tribe
             assignments.Add(assignment.Id, assignment);
         }
 
-        public void Upgrade()
+        public Error Upgrade()
         {
             if (Level >= 20)
-                return;
+            {
+                return Error.TribeMaxLevel;
+            }
+
+            Resource cost = formula.GetTribeUpgradeCost(Level);
+            if (!Resource.HasEnough(cost))
+            {
+                return Error.ResourceNotEnough;
+            }
 
             Resource.Subtract(formula.GetTribeUpgradeCost(Level));
             Level++;
             dbManager.Save(this);
+
+            return Error.Ok;
         }
 
         public void SendUpdate()

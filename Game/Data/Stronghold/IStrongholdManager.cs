@@ -20,5 +20,7 @@ namespace Game.Data.Stronghold
         void TransferTo(IStronghold stronghold, ITribe tribe);
 
         IEnumerable<IStronghold> StrongholdsForTribe(ITribe tribe);
+
+        void RemoveStrongholdsFromTribe(ITribe tribe);
     }
 }

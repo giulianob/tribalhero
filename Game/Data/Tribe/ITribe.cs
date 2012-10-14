@@ -10,6 +10,8 @@ namespace Game.Data.Tribe
 {
     public interface ITribe : ILockable, IPersistableObject
     {
+        event EventHandler<TribesmanRemovedEventArgs> TribesmanRemoved;
+
         uint Id { get; set; }
 
         IPlayer Owner { get; }
@@ -40,9 +42,7 @@ namespace Game.Data.Tribe
 
         Error AddTribesman(ITribesman tribesman, bool save = true);
 
-        Error RemoveTribesman(uint playerId);
-
-        bool TryGetTribesman(uint playerId, out ITribesman tribesman);
+        Error RemoveTribesman(uint playerId, bool wasKicked, bool checkIfOwner = true);
 
         Error SetRank(uint playerId, byte rank);
 
@@ -58,11 +58,9 @@ namespace Game.Data.Tribe
 
         Error Transfer(uint newOwnerPlayerId);
 
-        void RemoveAssignment(Assignment assignment);
-
         void DbLoaderAddAssignment(Assignment assignment);
 
-        void Upgrade();
+        Error Upgrade();
 
         void SendUpdate();
     }

@@ -29,6 +29,8 @@ namespace Game.Setup
         public static bool server_admin_always;
         public static bool server_production = true;
 
+        public static bool players_remove_idle = true;
+
         public static string flash_domain = "tribalhero.com";
 
         public static string api_domain = "tribalhero.com";

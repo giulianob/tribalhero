@@ -2,6 +2,7 @@
 
 using System;
 using Game.Data.Stronghold;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -14,9 +15,12 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly IStrongholdManager strongholdManager;
 
-        public StrongholdCommandsModule(IStrongholdManager strongholdManager)
+        private readonly IWorld world;
+
+        public StrongholdCommandsModule(IStrongholdManager strongholdManager, IWorld world)
         {
             this.strongholdManager = strongholdManager;
+            this.world = world;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -32,15 +36,29 @@ namespace Game.Comm.ProcessorCommands
             var reply = new Packet(packet);
 
             uint strongholdId;
+            string strongholdName = string.Empty;
 
             try
             {
                 strongholdId = packet.GetUInt32();
+                if (strongholdId == 0)
+                {
+                    strongholdName = packet.GetString();
+                }
             }
             catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
+            }
+
+            if (strongholdId == 0)
+            {
+                if (!world.FindStrongholdId(strongholdName, out strongholdId))
+                {
+                    ReplyError(session, packet, Error.StrongholdNotFound);
+                    return;
+                }
             }
 
             IStronghold stronghold;

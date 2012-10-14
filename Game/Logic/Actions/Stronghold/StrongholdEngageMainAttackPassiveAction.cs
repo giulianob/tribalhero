@@ -10,7 +10,6 @@ using Game.Battle.Reporting;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
-using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
@@ -27,8 +26,6 @@ namespace Game.Logic.Actions
         private readonly IGameObjectLocator gameObjectLocator;
 
         private readonly BattleProcedure battleProcedure;
-
-        private readonly Formula formula;
 
         private readonly uint cityId;
 
@@ -47,8 +44,7 @@ namespace Game.Logic.Actions
                                          uint targetStrongholdId,
                                          AttackMode mode,
                                          IGameObjectLocator gameObjectLocator,
-                                         BattleProcedure battleProcedure,
-                                         Formula formula)
+                                         BattleProcedure battleProcedure)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
@@ -56,20 +52,17 @@ namespace Game.Logic.Actions
             this.mode = mode;
             this.gameObjectLocator = gameObjectLocator;
             this.battleProcedure = battleProcedure;
-            this.formula = formula;
         }
 
         public StrongholdEngageMainAttackPassiveAction(uint id,
                                          bool isVisible,
                                          IDictionary<string, string> properties,
                                          IGameObjectLocator gameObjectLocator,
-                                         BattleProcedure battleProcedure,
-                                         Formula formula)
+                                         BattleProcedure battleProcedure)
                 : base(id, isVisible)
         {
             this.gameObjectLocator = gameObjectLocator;
             this.battleProcedure = battleProcedure;
-            this.formula = formula;
 
             cityId = uint.Parse(properties["troop_city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);

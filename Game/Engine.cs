@@ -162,7 +162,15 @@ _________ _______ _________ ______   _______  _
             ThreadPool.QueueUserWorkItem(o => thriftServer.Serve());
 
             // Schedule player deletions
-            ThreadPool.QueueUserWorkItem(o => playersRemoverFactory.CreatePlayersRemover(playerSelector.CreateNewbieIdleSelector()).Start());
+            if (Config.players_remove_idle)
+            {
+                ThreadPool.QueueUserWorkItem(
+                                             o =>
+                                             playersRemoverFactory.CreatePlayersRemover(
+                                                                                        playerSelector.
+                                                                                                CreateNewbieIdleSelector
+                                                                                                ()).Start());
+            }
 
             State = EngineState.Started;
 
@@ -185,8 +193,6 @@ _________ _______ _________ ______   _______  _
             Procedure.Current = Ioc.Kernel.Get<Procedure>();
             Scheduler.Current = Ioc.Kernel.Get<IScheduler>();
             DbPersistance.Current = Ioc.Kernel.Get<IDbManager>();
-
-            return;
         }
 
         private void CurrentDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)

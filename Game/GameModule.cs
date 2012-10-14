@@ -62,8 +62,9 @@ namespace Game
             Bind<Chat>().ToMethod(c => new Chat(Global.Channel));
             #endregion
 
-            #region Tribe Objects
+            #region Tribes
 
+            Bind<ITribeManager>().To<TribeManager>().InSingletonScope();
             Bind<ITribe>().To<Tribe>();
             
             #endregion

@@ -16,7 +16,7 @@
 			this.text = text;
 
 			if (text.length < 40) {
-				label = new JLabel(text);
+				label = new JLabel(text, null, AsWingConstants.LEFT);
 			} else {
 				label = new MultilineLabel(text, 0, 20);
 			}

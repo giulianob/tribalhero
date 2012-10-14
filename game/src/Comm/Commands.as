@@ -149,6 +149,8 @@ package src.Comm {
 		public static const STRONGHOLD_INFO: int = 1101;
 		public static const STRONGHOLD_PUBLIC_INFO_BY_NAME: int = 1102;
 		public static const STRONGHOLD_LOCATE: int = 1103;
+		public static const STRONGHOLD_GATE_REPAIR: int = 1104;
+		public static const STRONGHOLD_LOCATE_BY_NAME: int = 1105;
 		
 	}
 	

@@ -226,6 +226,17 @@
 			}
 			return { wagonRequired:wagonRequired, wagonCurrent:wagonCurrent, influenceRequired:influenceRequired, influenceCurrent:influenceCurrent };
 		}
+		 
+		public static function getGateLimit(level: int) : int
+        {
+            return level*500 + 5000;
+        }
+
+        public static function getGateRepairCost(level: int, currentHp: Number) : Resources
+        {
+			var hp: int = getGateLimit(level) - currentHp;
+            return new Resources(0, level * hp / 8, level * hp / 16, level * hp / 4, 0);
+        }
 	}
 }
 

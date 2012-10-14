@@ -32,6 +32,8 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.StrongholdPublicInfo, GetPublicInfo);
             processor.RegisterCommand(Command.StrongholdInfoByName, GetInfoByName);
             processor.RegisterCommand(Command.StrongholdGateRepair, GateRepair);
+            processor.RegisterCommand(Command.StrongholdLocate, Locate);
+            processor.RegisterCommand(Command.StrongholdLocateByName, LocateByName);
         }
 
         private void AddPrivateInfo(IStronghold stronghold, Packet packet)
@@ -168,7 +170,7 @@ namespace Game.Comm.ProcessorCommands
             IStronghold stronghold;
             if (!strongholdManager.TryGetStronghold(name, out stronghold))
             {
-                ReplyError(session, packet, Error.TribeNotFound);
+                ReplyError(session, packet, Error.StrongholdNotFound);
                 return;
             }
 
@@ -297,6 +299,83 @@ namespace Game.Comm.ProcessorCommands
                 ReplySuccess(session, packet);
             }
         }
+
+        private void Locate(Session session, Packet packet)
+        {
+            var reply = new Packet(packet);
+
+            uint strongholdId;
+
+            try
+            {
+                strongholdId = packet.GetUInt32();
+            }
+            catch (Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            IStronghold stronghold;
+            if (!strongholdManager.TryGetStronghold(strongholdId, out stronghold))
+            {
+                ReplyError(session, packet, Error.StrongholdNotFound);
+                return;
+            }
+
+            using (Concurrency.Current.Lock(stronghold))
+            {
+                if (stronghold == null)
+                {
+                    ReplyError(session, packet, Error.StrongholdNotFound);
+                    return;
+                }
+
+                reply.AddUInt32(stronghold.X);
+                reply.AddUInt32(stronghold.Y);
+                session.Write(reply);
+            }
+        }
+
+        private void LocateByName(Session session, Packet packet)
+        {
+            var reply = new Packet(packet);
+
+            string name;
+
+            try
+            {
+                name = packet.GetString();
+            }
+            catch (Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            IStronghold stronghold;
+            if (!strongholdManager.TryGetStronghold(name, out stronghold))
+            {
+                ReplyError(session, packet, Error.StrongholdNotFound);
+                return;
+            }
+
+
+            using (Concurrency.Current.Lock(stronghold))
+            {
+                if (stronghold == null)
+                {
+                    ReplyError(session, packet, Error.CityNotFound);
+                    return;
+                }
+
+                reply.AddUInt32(stronghold.X);
+                reply.AddUInt32(stronghold.Y);
+
+                session.Write(reply);
+            }
+        }
+
 
     }
 }

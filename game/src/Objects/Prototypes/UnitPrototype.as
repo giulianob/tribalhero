@@ -6,7 +6,7 @@
 
 package src.Objects.Prototypes {
 	import src.Objects.Resources;
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 
 	public class UnitPrototype {
 
@@ -40,7 +40,7 @@ package src.Objects.Prototypes {
 
 		public function getName(count: int = 1): String
 		{
-			var str: String = Locale.loadString(nlsname + (count != 1 && count >= 0 ? "_PLURAL" : "") + "_UNIT");
+			var str: String = StringHelper.localize(nlsname + (count != 1 && count >= 0 ? "_PLURAL" : "") + "_UNIT");
 			if (str && str != "")
 			return str;
 
@@ -49,7 +49,7 @@ package src.Objects.Prototypes {
 
 		public function getDescription(): String
 		{
-			var str: String = Locale.loadString(nlsname + "_UNIT_DESC");
+			var str: String = StringHelper.localize(nlsname + "_UNIT_DESC");
 			if (str)
 			return str;
 

@@ -1,6 +1,6 @@
 ﻿package src.UI.Dialog {
 
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import flash.events.Event;
 	import org.aswing.*;
 	import org.aswing.border.*;

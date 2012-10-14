@@ -1,6 +1,6 @@
 package src.Map 
 {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.AsyncErrorEvent;

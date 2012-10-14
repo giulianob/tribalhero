@@ -166,7 +166,7 @@
 			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, [StructureObject, Stronghold]);
 
 			if (objects.length == 0) {
-				Global.gameContainer.message.showMessage(Locale.loadString("ATTACK_CHOOSE_TARGET"));
+				Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_CHOOSE_TARGET"));
 				return;
 			}
 			
@@ -176,22 +176,22 @@
 				var structObj: StructureObject = gameObj as StructureObject;		
 
 				if (Global.gameContainer.map.cities.get(structObj.cityId)) {
-					Global.gameContainer.message.showMessage(Locale.loadString("ATTACK_SELF_ERROR"));
+					Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_SELF_ERROR"));
 					return;
 				}
 				
 				if (ObjectFactory.isType("Unattackable", structObj.type)) {
-					Global.gameContainer.message.showMessage(Locale.loadString("ATTACK_STRUCTURE_UNATTACKABLE"));
+					Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_STRUCTURE_UNATTACKABLE"));
 					return;
 				}
 				
 				if (structObj.level == 0) {
-					Global.gameContainer.message.showMessage(Locale.loadString("ATTACK_STRUCTURE_BEING_BUILT"));
+					Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_STRUCTURE_BEING_BUILT"));
 					return;
 				}			
 				
 				if (structObj.level == 1 && ObjectFactory.isType("Undestroyable", structObj.type)) {
-					Global.gameContainer.message.showMessage(Locale.loadString("ATTACK_STRUCTURE_UNDESTROYABLE"));
+					Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_STRUCTURE_UNDESTROYABLE"));
 					return;
 				}
 				
@@ -202,12 +202,12 @@
 				var strongholdObj: Stronghold = gameObj as Stronghold;
 				
 				if (Constants.tribeId == 0) {
-					Global.gameContainer.message.showMessage(Locale.loadString("ATTACK_STRONGHOLD_NO_TRIBESMAN"));
+					Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_STRONGHOLD_NO_TRIBESMAN"));
 					return;
 				}
 				
 				if (strongholdObj.tribeId == Constants.tribeId) {
-					Global.gameContainer.message.showMessage(Locale.loadString("ATTACK_OWN_STRONGHOLD"));
+					Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_OWN_STRONGHOLD"));
 					return;
 				}
 			}
@@ -219,7 +219,7 @@
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 			var timeAwayInSeconds: int = Formula.moveTimeTotal(city, troopSpeed, distance, true);
 
-			Global.gameContainer.message.showMessage(StringUtil.substitute(Locale.loadString("ATTACK_DISTANCE_MESSAGE"), Util.niceTime(timeAwayInSeconds)));
+			Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_DISTANCE_MESSAGE", Util.niceTime(timeAwayInSeconds)));
 		}
 	}
 

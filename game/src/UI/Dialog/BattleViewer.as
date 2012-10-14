@@ -1,6 +1,6 @@
 ﻿package src.UI.Dialog {
 
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import flash.display.*;
 	import flash.events.Event;
 	import flash.utils.Dictionary;
@@ -84,7 +84,7 @@
 		{
 			pnlProperties.removeAll();
 			for (var propertyName: String in battle.properties) {
-				var lbl: JLabel = new JLabel(StringUtil.substitute("{0}: {1}", Locale.loadString("BATTLE_PROP_" + propertyName.toUpperCase()), battle.properties[propertyName].toString()), null, AsWingConstants.LEFT);
+				var lbl: JLabel = new JLabel(StringUtil.substitute("{0}: {1}", StringHelper.localize("BATTLE_PROP_" + propertyName.toUpperCase()), battle.properties[propertyName].toString()), null, AsWingConstants.LEFT);
 				GameLookAndFeel.changeClass(lbl, "darkText");
 				pnlProperties.append(lbl);
 			}
@@ -93,8 +93,8 @@
 
 		private function onNewRound(e: BattleRoundEvent = null) : void {
 			log(new JSeparator());
-			getFrame().setTitle(StringUtil.substitute(Locale.loadString("BATTLE_NEW_ROUND"), battle.location.name, (e.round + 1)));
-			logStr(StringUtil.substitute(Locale.loadString("BATTLE_ROUND"), (e.round + 1)), null, true);
+			getFrame().setTitle(StringHelper.localize("BATTLE_NEW_ROUND", battle.location.name, (e.round + 1)));
+			logStr(StringHelper.localize("BATTLE_ROUND", (e.round + 1)), null, true);
 		}
 		
 		private function addGroup(combatGroup: CombatGroup, defense: Boolean) : void {
@@ -110,7 +110,7 @@
 			tabsByGroup[combatGroup.id] = { tab: tab, grid: grid, isAttacker: !defense };
 					
 			var tabPanel: JTabbedPane = defense ? tabDefensive : tabOffensive;
-			tabPanel.appendTab(tab, StringUtil.substitute("{0} ({1})", combatGroup.owner.name, combatGroup.troopId == 1 ? Locale.loadString("BATTLE_SIDE_LOCAL") : combatGroup.troopId));
+			tabPanel.appendTab(tab, StringUtil.substitute("{0} ({1})", combatGroup.owner.name, combatGroup.troopId == 1 ? StringHelper.localize("BATTLE_SIDE_LOCAL") : combatGroup.troopId));
 		}
 
 		private function removeGroup(groupId: int) : void {
@@ -146,7 +146,7 @@
 			tabDefensive.removeAll();
 			tabsByGroup = new Dictionary();
 
-			logStr(Locale.loadString("BATTLE_ENDED"));
+			logStr(StringHelper.localize("BATTLE_ENDED"));
 		}
 
 		public function onAddedAttack(e: BattleGroupEvent):void
@@ -198,7 +198,7 @@
 
 			var pnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0, 0, false));
 			pnl.append(getCombatObjectPanel(e.combatGroup, e.combatObject));
-			var lbl: JLabel = new JLabel(Locale.loadString("BATTLE_CANT_REACH"), new AssetIcon(groupUi.isAttacker ? new ICON_SINGLE_SWORD : new ICON_SHIELD));
+			var lbl: JLabel = new JLabel(StringHelper.localize("BATTLE_CANT_REACH"), new AssetIcon(groupUi.isAttacker ? new ICON_SINGLE_SWORD : new ICON_SHIELD));
 			lbl.setHorizontalTextPosition(AsWingConstants.LEFT);
 			pnl.append(lbl);
 
@@ -229,7 +229,7 @@
 			
 			var dmgPnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0, AsWingConstants.CENTER));
 			dmgPnl.appendAll(
-				new JLabel(StringUtil.substitute(Locale.loadString("BATTLE_DAMAGE"), e.dmg.toString()), new AssetIcon(e.attackerSide == BattleManager.SIDE_DEFENSE ? new ICON_SHIELD : new ICON_SINGLE_SWORD)),
+				new JLabel(StringHelper.localize("BATTLE_DAMAGE", e.dmg.toString()), new AssetIcon(e.attackerSide == BattleManager.SIDE_DEFENSE ? new ICON_SHIELD : new ICON_SINGLE_SWORD)),
 				arrowPnl
 			);
 
@@ -251,7 +251,7 @@
 			if (defenseObj.data.hp <= 0) {
 				pnl = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0, 0, false));
 				pnl.append(getCombatObjectPanel(e.targetCombatGroup, e.targetCombatObj));
-				var defeatLbl: JLabel = new JLabel(Locale.loadString("BATTLE_DEFEATED"), new AssetIcon(e.attackerSide == BattleManager.SIDE_ATTACK ? new ICON_SHIELD : new ICON_SINGLE_SWORD));
+				var defeatLbl: JLabel = new JLabel(StringHelper.localize("BATTLE_DEFEATED"), new AssetIcon(e.attackerSide == BattleManager.SIDE_ATTACK ? new ICON_SHIELD : new ICON_SINGLE_SWORD));
 				defeatLbl.setHorizontalTextPosition(AsWingConstants.LEFT);
 				pnl.append(defeatLbl);
 				log(pnl);
@@ -261,7 +261,7 @@
 		}
 		
 		private function getCombatObjectPanel(combatGroup: CombatGroup, combatObj: CombatObject) : Component {
-			var text: String = StringUtil.substitute("{0}({1}):{2}", combatGroup.owner.name, combatGroup.troopId == 1 ? Locale.loadString("BATTLE_SIDE_LOCAL") : combatGroup.troopId, combatObj.name);
+			var text: String = StringUtil.substitute("{0}({1}):{2}", combatGroup.owner.name, combatGroup.troopId == 1 ? StringHelper.localize("BATTLE_SIDE_LOCAL") : combatGroup.troopId, combatObj.name);
 			var icon: DisplayObjectContainer = combatObj.getIcon();
 			return new JLabel(text, (icon != null ? new AssetIcon(icon) : null));
 		}
@@ -309,7 +309,7 @@
 				tabDefensive = new JTabbedPane();
 				tabDefensive.setPreferredHeight(175);
 			
-				var defenderBorder:SimpleTitledBorder = new SimpleTitledBorder(null, Locale.loadString("BATTLE_TAB_DEFENDER"), AsWingConstants.TOP, AsWingConstants.LEFT);
+				var defenderBorder:SimpleTitledBorder = new SimpleTitledBorder(null, StringHelper.localize("BATTLE_TAB_DEFENDER"), AsWingConstants.TOP, AsWingConstants.LEFT);
 				tabDefensive.setBorder(defenderBorder);
 				
 				pnlNorth.appendAll(pnlProperties, tabDefensive);
@@ -322,12 +322,12 @@
 			lstLogScroll.setBorder(new EmptyBorder(null, new Insets()));
 
 			var tabLog: JTabbedPane = new JTabbedPane();
-			tabLog.appendTab(lstLogScroll, Locale.loadString("BATTLE_TAB_LOG"));
+			tabLog.appendTab(lstLogScroll, StringHelper.localize("BATTLE_TAB_LOG"));
 
 			tabOffensive = new JTabbedPane();
 			tabOffensive.setPreferredHeight(175);
 
-			var attackerBorder: SimpleTitledBorder = new SimpleTitledBorder(null, Locale.loadString("BATTLE_TAB_ATTACKER"), AsWingConstants.TOP, AsWingConstants.LEFT);
+			var attackerBorder: SimpleTitledBorder = new SimpleTitledBorder(null, StringHelper.localize("BATTLE_TAB_ATTACKER"), AsWingConstants.TOP, AsWingConstants.LEFT);
 			tabOffensive.setBorder(attackerBorder);
 
 			//component layoution			

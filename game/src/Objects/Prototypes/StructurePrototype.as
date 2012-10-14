@@ -5,7 +5,7 @@
  */
 
 package src.Objects.Prototypes {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import src.Global;
 	import src.Map.City;
 	import src.Map.CityObject;
@@ -63,7 +63,7 @@ package src.Objects.Prototypes {
 
 		public function getName(plural: Boolean = false): String
 		{
-			var str: String = Locale.loadString(name + "_STRUCTURE_NAME" + (plural ? "_PLURAL" : ""));
+			var str: String = StringHelper.localize(name + "_STRUCTURE_NAME" + (plural ? "_PLURAL" : ""));
 			if (str && str != "")
 			return str;
 
@@ -72,7 +72,7 @@ package src.Objects.Prototypes {
 
 		public function getGeneralDescription(): String
 		{
-			var str: String = Locale.loadString(name + "_STRUCTURE_DESCRIPTION");
+			var str: String = StringHelper.localize(name + "_STRUCTURE_DESCRIPTION");
 			if (str && str != "")
 			return str;
 
@@ -81,7 +81,7 @@ package src.Objects.Prototypes {
 
 		public function getDescription(): String
 		{
-			var str: String = Locale.loadString(name + "_STRUCTURE_LVL_" + level);
+			var str: String = StringHelper.localize(name + "_STRUCTURE_LVL_" + level);
 			if (str && str != "")
 			return str;
 

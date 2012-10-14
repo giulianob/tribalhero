@@ -159,12 +159,12 @@
    
 		private function createInfoPanel() : Container {
 			var form: Form = new Form();
-			addInfo(form, Locale.loadString("STR_LEVEL"), profileData.strongholdLevel.toString());
-			addInfo(form, Locale.loadString("STR_GATE"), profileData.strongholdGate.toString());
+			addInfo(form, StringHelper.localize("STR_LEVEL"), profileData.strongholdLevel.toString());
+			addInfo(form, StringHelper.localize("STR_GATE"), profileData.strongholdGate.toString());
 			
 			var timediff :int = Global.map.getServerTime() - profileData.strongholdDateOccupied;
-			addInfo(form, Locale.loadString("STR_OCCUPIED"), Util.niceDays(timediff));
-			addInfo(form, Locale.loadString("STR_VP_RATE"), StringUtil.substitute(Locale.loadString("STR_PER_DAY_RATE"), Util.roundNumber(profileData.strongholdVictoryPointRate).toString()));
+			addInfo(form, StringHelper.localize("STR_OCCUPIED"), Util.niceDays(timediff));
+			addInfo(form, StringHelper.localize("STR_VP_RATE"), StringHelper.localize("STR_PER_DAY_RATE", Util.roundNumber(profileData.strongholdVictoryPointRate).toString()));
 		
 			var s:TroopStub = new TroopStub();
 			var f:Formation = new Formation(Formation.Defense);
@@ -183,9 +183,9 @@
 			s.add(f);
 			
 			if(f.size()>0)
-				addInfo(form, Locale.loadString("STR_TOTAL_TROOPS"), new TroopCompositionGridList(s, Formation.Defense, 3, 0));
+				addInfo(form, StringHelper.localize("STR_TOTAL_TROOPS"), new TroopCompositionGridList(s, Formation.Defense, 3, 0));
 			else 
-				addInfo(form, Locale.loadString("STR_TOTAL_TROOPS"), Locale.loadString("STR_NONE_DEFENDING"));
+				addInfo(form, StringHelper.localize("STR_TOTAL_TROOPS"), StringHelper.localize("STR_NONE_DEFENDING"));
 				
 			return form;
 		}
@@ -204,7 +204,7 @@
 			pnl.append(AsWingUtils.createPaneToHold(gridList, new SoftBoxLayout(), "Center"));
 			
 			if (troop.playerId == Constants.playerId) {
-				var retreatButton: JLabelButton = new JLabelButton(Locale.loadString("STR_RETREAT"), null, AsWingConstants.LEFT);
+				var retreatButton: JLabelButton = new JLabelButton(StringHelper.localize("STR_RETREAT"), null, AsWingConstants.LEFT);
 				retreatButton.setVerticalAlignment(AsWingConstants.TOP);
 				
 				var cityId: uint = troop.cityId;
@@ -235,7 +235,7 @@
 			}
 			
 			if (profileData.troops.length == 0) {
-				pnl.append(new JLabel(Locale.loadString("STRONGHOLD_NO_TROOPS"), null, AsWingConstants.LEFT));
+				pnl.append(new JLabel(StringHelper.localize("STRONGHOLD_NO_TROOPS"), null, AsWingConstants.LEFT));
 			}
 			
 			var tabScrollPanel: JScrollPane = new JScrollPane(new JViewport(pnl, true), JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);			

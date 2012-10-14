@@ -6,7 +6,7 @@
 
 package src.Objects.Prototypes {
 	import src.Objects.Resources;
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import src.Util.BinaryList.*;
 
 	public class TechnologyPrototype {
@@ -29,7 +29,7 @@ package src.Objects.Prototypes {
 
 		public function getName(): String
 		{
-			var str: String = Locale.loadString(spriteClass + "_NAME");
+			var str: String = StringHelper.localize(spriteClass + "_NAME");
 			if (str && str != "")
 			return str;
 
@@ -37,7 +37,7 @@ package src.Objects.Prototypes {
 		}
 
 		public function getDescription(): String {
-			var str: String = Locale.loadString(spriteClass + "_LVL_" + level);
+			var str: String = StringHelper.localize(spriteClass + "_LVL_" + level);
 			if (str && str != "")
 			return str;
 

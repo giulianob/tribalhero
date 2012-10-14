@@ -1,7 +1,7 @@
 ﻿package src.UI.Components.BattleReport
 {
 
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import mx.utils.*;
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -41,7 +41,7 @@
 		}		
 		
 		private function troopName(troop: * ): String {
-			return StringUtil.substitute("{0} ({1})", troop.owner.name, troop.name == '[LOCAL]' ? Locale.loadString("LOCAL_TROOP") : troop.name);
+			return StringUtil.substitute("{0} ({1})", troop.owner.name, troop.name == '[LOCAL]' ? StringHelper.localize("LOCAL_TROOP") : troop.name);
 		}
 
 		private function createUI(): void {			

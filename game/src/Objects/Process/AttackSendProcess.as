@@ -1,6 +1,6 @@
 package src.Objects.Process 
 {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import flash.events.Event;
 	import org.aswing.JButton;
 	import org.aswing.JOptionPane;
@@ -73,7 +73,7 @@ package src.Objects.Process
 				onAttackAccepted();
 			}
 			else {
-				InfoDialog.showMessageDialog(Locale.loadString("STR_MESSAGE"), Locale.loadString("SEND_ATTACK_AP_BONUS"), function (result: int): void {
+				InfoDialog.showMessageDialog(StringHelper.localize("STR_MESSAGE"), StringHelper.localize("SEND_ATTACK_AP_BONUS"), function (result: int): void {
 					if (result == JOptionPane.YES) {
 						onAttackAccepted();
 					}

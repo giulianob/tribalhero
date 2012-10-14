@@ -1,5 +1,5 @@
 ﻿package src.UI.Sidebars.StrongholdInfo {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.*;
@@ -55,20 +55,20 @@
 			clear();		
 			
 			if (stronghold.tribeId == Constants.tribeId) {
-				addStatRow(Locale.loadString("STR_NAME"),  new StrongholdLabel(stronghold.id));
+				addStatRow(StringHelper.localize("STR_NAME"),  new StrongholdLabel(stronghold.id));
 			}
 			else {
-				var plainNameLabel: JLabel = addStatRow(Locale.loadString("STR_NAME"), "");
+				var plainNameLabel: JLabel = addStatRow(StringHelper.localize("STR_NAME"), "");
 				Global.map.usernames.strongholds.setLabelUsername(stronghold.id, plainNameLabel);
 			}
 						
 			if (stronghold.tribeId == 0) {
-				var neutralLabel: JLabel = addStatRow(Locale.loadString("STR_TRIBE"), Locale.loadString("STR_NOT_OCCUPIED"));
+				var neutralLabel: JLabel = addStatRow(StringHelper.localize("STR_TRIBE"), StringHelper.localize("STR_NOT_OCCUPIED"));
 			} else {
-				var tribeLabel: TribeLabel = addStatRow(Locale.loadString("STR_TRIBE"), new TribeLabel(stronghold.tribeId));
+				var tribeLabel: TribeLabel = addStatRow(StringHelper.localize("STR_TRIBE"), new TribeLabel(stronghold.tribeId));
 			}
 			
-			addStatRow(Locale.loadString("STR_LEVEL"), stronghold.level.toString());
+			addStatRow(StringHelper.localize("STR_LEVEL"), stronghold.level.toString());
 
 			if (Constants.tribeId!=0 && stronghold.tribeId==Constants.tribeId) {
 				pnlGroups.append(new ViewStrongholdButton(stronghold));

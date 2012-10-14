@@ -79,3 +79,10 @@ ERROR_743,Invalid assignment dispatch time.
 ERROR_744,You are not allowed to attack a member of your own tribe.
 ERROR_745,Your units are too slow for the specified attack time.
 ERROR_746,You cannot join this assignment.
+ERROR_801,Stronghold not found.
+ERROR_802,Stronghold is not occupied.
+ERROR_810,You are not allowed to attack a stronghold of your own tribe.
+ERROR_811,Stronghold's gate is not opened to your tribe.
+ERROR_812,Stronghold is owned by another tribe.
+ERROR_813,Stronghold is inactive.
+ERROR_814,Stronghold gate is already at full health.

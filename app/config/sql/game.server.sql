@@ -681,6 +681,7 @@ CREATE TABLE `rankings` (
   `type` tinyint(4) NOT NULL,
   `value` int(11) NOT NULL,
   `tribe_id` int(11) unsigned NOT NULL,
+  `stronghold_id` int(10) unsigned NOT NULL,
   KEY `player_id` (`player_id`),
   KEY `city_id` (`city_id`),
   KEY `type` (`type`),
@@ -987,6 +988,7 @@ CREATE TABLE `tribes` (
   `attack_point` int(11) NOT NULL,
   `defense_point` int(11) NOT NULL,
   `id` int(11) unsigned NOT NULL,
+  `victory_point` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1151,7 +1153,7 @@ CREATE TABLE `unit_templates_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-10-04 19:47:29
+-- Dump completed on 2012-10-14 14:53:49
 -- MySQL dump 10.13  Distrib 5.5.16, for Win64 (x86)
 --
 -- Host: localhost    Database: tribalhero_server
@@ -1188,4 +1190,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-10-04 19:47:30
+-- Dump completed on 2012-10-14 14:53:49

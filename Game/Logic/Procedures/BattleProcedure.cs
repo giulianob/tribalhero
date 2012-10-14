@@ -347,11 +347,11 @@ namespace Game.Logic.Procedures
         public virtual ICombatGroup AddStrongholdGateToBattle(IBattleManager battle, IStronghold stronghold)
         {
             var strongholdCombatGroup = combatGroupFactory.CreateStrongholdCombatGroup(battle.BattleId, battle.GetNextGroupId(), stronghold);
-            if (stronghold.Gate.Value == 0)
+            if (stronghold.Gate == 0)
             {
                 throw new Exception("Dead gate trying to join the battle");
             }
-            strongholdCombatGroup.Add(combatUnitFactory.CreateStrongholdGateStructure(battle, stronghold, stronghold.Gate.Value));
+            strongholdCombatGroup.Add(combatUnitFactory.CreateStrongholdGateStructure(battle, stronghold, stronghold.Gate));
 
             battle.Add(strongholdCombatGroup, BattleManager.BattleSide.Defense, false);
 

@@ -26,7 +26,7 @@ namespace Game.Data.Stronghold
 
         StrongholdState StrongholdState { get; set; }
 
-        LazyValue Gate { get; }
+        decimal Gate { get; set; }
 
         decimal VictoryPointRate { get; }
 

@@ -105,7 +105,7 @@ namespace Game.Database
                     LoadStructureProperties();
                     LoadTechnologies();
                     LoadForests(downTime);
-                    LoadStrongholds();
+                    LoadStrongholds(downTime);
                     LoadTroopStubs();
                     LoadTroopStubTemplates();
                     LoadTroops();
@@ -189,6 +189,7 @@ namespace Game.Database
                                                          (string)reader["name"],
                                                          (string)reader["desc"],
                                                          (byte)reader["level"],
+                                                         (int)reader["victory_point"],
                                                          (int)reader["attack_point"],
                                                          (int)reader["defense_point"],
                                                          resource,
@@ -427,7 +428,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadStrongholds()
+        private void LoadStrongholds(TimeSpan downTime)
         {
             #region Strongholds
 
@@ -440,22 +441,22 @@ namespace Game.Database
                                                         (string)reader["name"],
                                                         (byte)reader["level"],
                                                         (uint)reader["x"],
-                                                        (uint)reader["y"]);
+                                                        (uint)reader["y"],
+                                                        (decimal)reader["gate"]);
                     stronghold.StrongholdState = (StrongholdState)((byte)reader["state"]);
                     stronghold.DbPersisted = true;
                     stronghold.State.Type = (ObjectState)((byte)reader["object_state"]);
                     foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
                         stronghold.State.Parameters.Add(variable);
-
-
+                    
                     // Load owner tribe
                     var tribeId = (uint)reader["tribe_id"];
                     ITribe tribe;
                     if (tribeId != 0 && World.TryGetObjects(tribeId, out tribe))
                     {
                         stronghold.Tribe = tribe;
-                    }                    
-                    
+                    }
+
                     // Load current tribe that knocked down gate
                     var gateOpenToTribeId = (uint)reader["gate_open_to"];
                     ITribe gateOpenToTribe;

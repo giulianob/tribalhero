@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Game.Data.Tribe;
+using Game.Setup;
 
 namespace Game.Data.Stronghold
 {
@@ -22,5 +23,7 @@ namespace Game.Data.Stronghold
         IEnumerable<IStronghold> StrongholdsForTribe(ITribe tribe);
 
         void RemoveStrongholdsFromTribe(ITribe tribe);
+
+        Error RepairGate(IStronghold stronghold);
     }
 }

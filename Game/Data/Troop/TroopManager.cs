@@ -134,7 +134,6 @@ namespace Game.Data.Troop
             var id = (byte)nextId;
 
             stub.StationTroopId = id;
-            stub.State = TroopState.Stationed;
             stub.Station = BaseStation;
 
             dict.Add(id, stub);

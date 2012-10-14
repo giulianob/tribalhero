@@ -194,5 +194,15 @@ namespace Game.Logic.Formulas
         {
             return 50m;
         }
+
+        public virtual int GetGateLimit(byte level)
+        {
+            return level*500 + 5000;
+        }
+
+        public virtual Resource GetGateRepairCost(byte level, decimal damagedGateHp)
+        {
+            return new Resource(0, (int)(level*damagedGateHp/8), (int)(level*damagedGateHp/16), (int)(level*damagedGateHp/4), 0);
+        }
     }
 }

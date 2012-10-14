@@ -81,6 +81,8 @@ namespace Game.Comm
         ObjectRemove = 203,
         ObjectMove = 204,
 
+        ObjectLocate = 210,
+
         #endregion
 
         #region Structure
@@ -167,6 +169,7 @@ namespace Game.Comm
         BattleWithdrawDefender = 709,
         BattleGroupUnitAdded = 710,
         BattleGroupUnitRemoved = 711,
+        BattlePropertyUpdate = 712,
 
         #endregion
 
@@ -212,9 +215,18 @@ namespace Game.Comm
         #endregion
 
         #region Stronghold
+<<<<<<< local
+        StrongholdInfo = 1101,        
+        StrongholdInfoByName = 1102,
+        StrongholdLocate = 1103,
+=======
         StrongholdInfo = 1101,
         StrongholdPublicInfo = 1102,
         StrongholdInfoByName = 1103,
+        StrongholdGateRepair = 1104,
+        StrongholdLocate = 1105,
+        StrongholdLocateByName = 1106,
+>>>>>>> other
         #endregion
 
         #region Internal Messages

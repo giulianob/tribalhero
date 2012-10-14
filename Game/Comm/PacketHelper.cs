@@ -606,6 +606,7 @@ namespace Game.Comm
                 packet.AddByte(tribe.Level);
                 packet.AddString(tribe.Name);
                 packet.AddString(tribe.Description);
+                packet.AddInt32(tribe.VictoryPoint);
                 packet.AddUInt32(UnixDateTime.DateTimeToUnix(tribe.Created));
                 AddToPacket(tribe.Resource, packet);
 
@@ -656,7 +657,7 @@ namespace Game.Comm
                     packet.AddString(stronghold.Name);
                     packet.AddByte((byte)stronghold.StrongholdState);
                     packet.AddByte(stronghold.Lvl);
-                    packet.AddInt32(stronghold.Gate.Value);
+                    packet.AddFloat((float)stronghold.Gate);
                     packet.AddUInt32(stronghold.X);
                     packet.AddUInt32(stronghold.Y);
                     packet.AddInt32(stronghold.Troops.StationedHere().Sum(x => x.Upkeep));
@@ -698,7 +699,7 @@ namespace Game.Comm
                 packet.AddUInt32(stronghold.Id);
                 packet.AddString(stronghold.Name);
                 packet.AddByte(stronghold.Lvl);
-                packet.AddInt32(stronghold.Gate.Value);
+                packet.AddFloat((float)stronghold.Gate);
                 packet.AddFloat((float)stronghold.VictoryPointRate);
                 packet.AddUInt32(UnixDateTime.DateTimeToUnix(stronghold.DateOccupied.ToUniversalTime()));
                 packet.AddUInt32(stronghold.X);

@@ -7,6 +7,7 @@ using Game.Battle;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
+using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
@@ -353,10 +354,6 @@ namespace Game.Logic.Actions
                 stronghold.MainBattle.ExitTurn -= MainBattleOnExitTurn;
                 stronghold.MainBattle.EnterBattle -= MainBattleOnEnterBattle;
 
-                stronghold.BeginUpdate();
-                stronghold.GateOpenTo = null;
-                stronghold.EndUpdate();
-
                 foreach (var stub in stronghold.Troops.StationedHere())
                 {
                     stub.BeginUpdate();
@@ -366,8 +363,12 @@ namespace Game.Logic.Actions
 
                 world.Remove(stronghold.MainBattle);
                 dbManager.Delete(stronghold.MainBattle);
+                stronghold.BeginUpdate();
+                stronghold.GateOpenTo = null;
                 stronghold.MainBattle = null;
-                dbManager.Save(stronghold);
+                stronghold.Gate = Math.Max(stronghold.Gate, formula.GetGateLimit(stronghold.Lvl)/2m);
+                stronghold.State = GameObjectState.NormalState();
+                stronghold.EndUpdate();
 
                 StateChange(ActionState.Completed);
             }
@@ -410,6 +411,9 @@ namespace Game.Logic.Actions
 
                 npcGroupId = strongholdGroup.Id;
             }
+            stronghold.BeginUpdate();
+            stronghold.State = GameObjectState.BattleState(stronghold.MainBattle.BattleId);
+            stronghold.EndUpdate();
 
             beginTime = SystemClock.Now;
             endTime = SystemClock.Now;

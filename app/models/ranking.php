@@ -7,6 +7,7 @@ class Ranking extends AppModel {
         'Player',
         'City',
     	'Tribe',
+        'Stronghold'
     );
     var $rankingTypes = array(
         array('name' => 'RANKING_ATTACK_CITY', 'field' => 'attack_point', 'order' => 'desc', 'group' => 'city'),
@@ -22,6 +23,10 @@ class Ranking extends AppModel {
         array('name' => 'RANKING_LEVEL_TRIBE', 'field' => 'level', 'order' => 'desc', 'group' => 'tribe'),
         array('name' => 'RANKING_ATTACK_TRIBE', 'field' => 'attack_point', 'order' => 'desc', 'group' => 'tribe'),
         array('name' => 'RANKING_DEFENSE_TRIBE', 'field' => 'defense_point', 'order' => 'desc', 'group' => 'tribe'),
+        array('name' => 'RANKING_VICTORY_TRIBE', 'field' => 'victory_point', 'order' => 'desc', 'group' => 'tribe'),
+        
+        array('name' => 'RANKING_LEVEL_STRONGHOLD', 'field' => 'level', 'order' => 'desc', 'group' => 'stronghold'),
+        array('name' => 'RANKING_OCCUPIED_STRONGHOLD', 'field' => 'date_occupied', 'order' => 'desc', 'group' => 'stronghold'),
     );
     var $rankingsPerPage = 100;
 
@@ -79,7 +84,19 @@ class Ranking extends AppModel {
                 'fields' => array('Ranking.rank', 'Ranking.value', 'Tribe.id', 'Tribe.name'),
                 'order' => 'Ranking.rank ASC'
             );       
-        }
+        } else if ($this->rankingTypes[$type]['group']=='stronghold') {
+             $options = array(
+                'link' => array(
+                    'Stronghold' => array('fields' => array('Stronghold.id', 'Stronghold.name')),
+                    'Tribe' => array('fields' => array('Tribe.id', 'Tribe.name'))
+                ),
+                'conditions' => array('type' => $type),
+                'limit' => $this->rankingsPerPage,
+                'page' => $page,
+                'fields' => array('Ranking.rank', 'Ranking.value'),
+                'order' => 'Ranking.rank ASC'
+            );       
+        } 
 
         if ($returnOptions)
             return $options;
@@ -135,7 +152,14 @@ class Ranking extends AppModel {
 	            return false;
 	
 	        return $tribe['Tribe']['id'];
-        }
+        } else if($this->rankingTypes[$type]['group']=='stronghold') {
+
+	        $stronghold = $this->Stronghold->findByName($search);
+	        if (empty($stronghold))
+	            return false;
+	
+	        return $stronghold['Stronghold']['id'];
+        } 
     }
 
     /**
@@ -152,7 +176,9 @@ class Ranking extends AppModel {
         else if ($this->rankingTypes[$type]['group']=='player')
             return $this->getPlayerRanking($type, $id);
         else if ($this->rankingTypes[$type]['group']=='tribe')
-        	return $this->getTribeRanking($type, $id);
+            return $this->getTribeRanking($type, $id);
+        else if ($this->rankingTypes[$type]['group']=='stronghold')
+            return $this->getStrongholdRanking($type, $id);
     }
 
     /**
@@ -219,6 +245,27 @@ class Ranking extends AppModel {
     }
 
     /**
+     * Return the ranking of the stronghold specified.
+     * @param int $type Type index
+     * @param int $stronghold_id Stronghold id to find
+     * @return int Stronghold rank or 1 if not found
+     */
+    public function getStrongholdRanking($type, $stronghold_id) {
+        if (empty($stronghold_id) || !is_numeric($stronghold_id))
+            return 1;
+
+        $ranking = $this->find('first', array(
+                    'contain' => array(),
+                    'conditions' => array('type' => $type, 'stronghold_id' => $stronghold_id)
+                ));
+
+        if (empty($ranking))
+            return 1;
+
+        return $ranking['Ranking']['rank'];
+    }
+
+    /**
      * This is the main function used to batch process on all of the different ranking types.
      * This should only be called from the Cake shell
      */
@@ -233,6 +280,8 @@ class Ranking extends AppModel {
                 $this->rankPlayer($i, $type['field'], $type['order']);
             } else if($type['group']=='tribe') {
             	$this->rankTribe($i, $type['field'], $type['order']);
+            } else if($type['group']=='stronghold') {
+                $this->rankStronghold($i, $type['field'], $type['order']);
             }
         }
     }
@@ -324,6 +373,40 @@ class Ranking extends AppModel {
             $rankings[] = '(' . $tribe['Tribe']['id'] . ",0,0," . ($i + 1) . "," . $type . "," . $tribe['Tribe'][$field] . ')';
 
             if ((($i + 1) % $itemsPerInsert) == 0 || $i == count($tribes) - 1) {
+                $this->getDataSource()->insertMulti($this->table, $fields, $rankings);
+                $rankings = array();
+            }
+        }
+    }
+    
+    /**
+     * Inserts all of the stronghold ranking into the rankings table
+     * @param type int The ranking type
+     * @param field string The field used by this ranking to aggregate on
+     * @param order string The order of ranking (asc or desc)
+     */
+    public function rankStronghold($type, $field, $order) {
+        $strongholds = $this->Stronghold->find('all', array(
+                    'contain' => array(),
+                    'conditions' => array(),
+                    'order' => array($field . ' ' . $order, 'id ASC'),
+                    'fields' => array('id', 'tribe_id', $field ),
+                ));
+
+        $itemsPerInsert = 500;
+        $fields = array( 'stronghold_id', 'tribe_id','rank', 'type', 'value');
+
+        $strongholdCount = count($strongholds);
+        $rankings = array();
+
+        for ($i = 0; $i < $strongholdCount; ++$i) {
+            $stronghold = $strongholds[$i];
+            if($field=="date_occupied") {
+                $rankings[] = "(" . $stronghold['Stronghold']['id'] . "," . $stronghold['Stronghold']['tribe_id'] . ",". ($i + 1) . "," . $type. "," . "UNIX_TIMESTAMP('" .$stronghold['Stronghold'][$field]. "'))";
+            } else {
+                $rankings[] = '(' . $stronghold['Stronghold']['id'] . "," . $stronghold['Stronghold']['tribe_id'] . ",". ($i + 1) . "," . $type . "," .$stronghold['Stronghold'][$field] . ')';
+            }
+            if ((($i + 1) % $itemsPerInsert) == 0 || $i == count($strongholds) - 1) {
                 $this->getDataSource()->insertMulti($this->table, $fields, $rankings);
                 $rankings = array();
             }

@@ -16,6 +16,7 @@
 	import src.Objects.Process.AtkAssignmentCreateProcess;
 	import src.Objects.Process.DefAssignmentCreateProcess;
 	import src.Objects.Process.AssignmentJoinProcess;
+	import src.Objects.Resources;
 	import src.Objects.SimpleGameObject;
 	import src.Objects.Stronghold.Stronghold;
 	import src.UI.*;
@@ -126,7 +127,6 @@
 			
 			var label : StrongholdLabel = new StrongholdLabel(stronghold.id, stronghold.name);
 			label.setHorizontalAlignment(AsWingConstants.LEFT);
-			GameLookAndFeel.changeClass(label, "Button");
 			
 			var pnlNameStatus : JPanel = new JPanel();
 			pnlNameStatus.append(label);
@@ -144,12 +144,23 @@
 			var lblTroop: JLabel = new JLabel(stronghold.upkeep.toString() + " Troop");
 			lblTroop.setHorizontalAlignment(AsWingConstants.RIGHT);
 
-			var lblGate: JLabel = new JLabel(" Gate " + Stronghold.GateToString(stronghold.lvl,stronghold.gate));
+			var lblGate: JLabel = new JLabel(" Gate " + Stronghold.GateToString(stronghold.lvl, stronghold.gate));
 			lblGate.setHorizontalAlignment(AsWingConstants.RIGHT);
+			var pnlGate: JPanel = new JPanel(new SoftBoxLayout());
+			if(stronghold.objectState != SimpleGameObject.STATE_BATTLE && stronghold && Constants.tribeRank<=1) {
+				var btnGateRepair: JLabelButton = new JLabelButton("Repair");
+				btnGateRepair.addActionListener(function(e: Event): void {
+					Global.mapComm.Stronghold.repairStrongholdGate(stronghold.id);
+				});
+				var tooltip: SimpleTooltip = new SimpleTooltip(btnGateRepair, "Repair the gate");
+				tooltip.append(new ResourcesPanel(new Resources(2000,2000,2000,2000,0),profileData.resources, true, false));
+				pnlGate.append(btnGateRepair);
+			}
+			pnlGate.append(lblGate);
 			
 			
 			pnlTop.append(pnlNameStatus, "Center");
-			pnlTop.append(lblGate, "East");
+			pnlTop.append(pnlGate, "East");
 			
 			pnlBottom.append(grid, "Center");
 			pnlBottom.append(lblTroop, "East");
@@ -492,11 +503,14 @@
 			GameLookAndFeel.changeClass(lblTribeName, "darkHeader");			
 			
 			var pnlResources: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 10, 0, false));
-			pnlResources.setConstraints("East");
-			
-			pnlResources.append(new SimpleResourcesPanel(profileData.resources, false));
+			var lblVictoryPoint: JLabel = new JLabel(profileData.victoryPoint,  new AssetIcon(new ICON_UPGRADE()));
+			new SimpleTooltip(lblVictoryPoint, "Victory Point");
+			lblVictoryPoint.setIconTextGap(0);
 			
 			pnlHeaderFirstRow.appendAll(lblTribeName, pnlResources);		
+			pnlResources.setConstraints("East");
+			pnlResources.append(lblVictoryPoint);
+			pnlResources.append(new SimpleResourcesPanel(profileData.resources, false));
 			
 			pnlHeader.removeAll();
 			pnlHeader.append(pnlHeaderFirstRow);			

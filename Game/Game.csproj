@@ -244,6 +244,8 @@
     <Compile Include="Data\Tribe\ITribeFactory.cs" />
     <Compile Include="Data\Tribe\ITribesman.cs" />
     <Compile Include="Data\Tribe\Tribe.cs" />
+    <Compile Include="Data\Tribe\TribeEvents.cs" />
+    <Compile Include="Data\Tribe\TribeManager.cs" />
     <Compile Include="Data\Tribe\Tribesman.cs" />
     <Compile Include="Data\Troop\CityTroopStubFactory.cs" />
     <Compile Include="Data\Troop\ITroopManager.cs" />
@@ -325,6 +327,7 @@
     <Compile Include="Map\ICityRegionManagerFactory.cs" />
     <Compile Include="Map\IGameObjectLocator.cs" />
     <Compile Include="Map\IRegionManager.cs" />
+    <Compile Include="Data\Tribe\ITribeManager.cs" />
     <Compile Include="Map\IWorld.cs" />
     <Compile Include="Map\Position.cs" />
     <Compile Include="Map\MapMath.cs" />

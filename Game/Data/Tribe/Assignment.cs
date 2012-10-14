@@ -43,7 +43,7 @@ namespace Game.Data.Tribe
         /// <summary>
         /// Assignment id generator
         /// </summary>
-        public static readonly LargeIdGenerator IdGen = new LargeIdGenerator(long.MaxValue);
+        private static readonly LargeIdGenerator IdGen = new LargeIdGenerator(long.MaxValue);
 
         /// <summary>
         /// Table name where Assignment gets persisted to
@@ -53,12 +53,12 @@ namespace Game.Data.Tribe
         /// <summary>
         /// Id of the assignment
         /// </summary>
-        public int Id { get; set; }
+        public int Id { get; private set; }
 
         /// <summary>
         /// Tribe assignment belongs to
         /// </summary>
-        public ITribe Tribe { get; private set; }
+        private ITribe Tribe { get; set; }
 
         /// <summary>
         /// City this assignment is targetting
@@ -325,7 +325,7 @@ namespace Game.Data.Tribe
         public void Callback(object custom)
         {
             var now = SystemClock.Now;
-            using (Concurrency.Current.Lock(c => assignmentTroops.Select(troop => troop.Stub).ToArray(), new object[] { }, Tribe))
+            using (Concurrency.Current.Lock(c => assignmentTroops.Select(troop => troop.Stub).ToArray<ILockable>(), new object[] { }, Tribe))
             {
                 lock (assignmentLock)
                 {

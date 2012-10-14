@@ -144,23 +144,34 @@ namespace Game.Logic.Actions
 
             var defensiveMeter = battle.GetProperty<decimal>("defense_stronghold_meter");
             var offensiveMeter = battle.GetProperty<decimal>("offense_stronghold_meter");
+            
+            // Make copy since defenders may change
+            var defendersLoopCopy = defenders.ToList();
+            // Remove defenders if:
+            //  defensive meter is 0
+            //  stronghold is still neutral (no tribe)
+            //  the defender isnt part of the tribe that owns the stronghold
+            foreach (var defender in defendersLoopCopy)
+            {
+                var cityCombatGroup = defender as CityDefensiveCombatGroup;
 
-            // If the defense has lost all their juice then remove them all from the battle
-            // This will cause the battle to naturally end
-            if (defensiveMeter == 0)
-            {              
-                // Make copy since defenders will be changing
-                var defendersLoopCopy = defenders.ToList();
-                foreach (var defender in defendersLoopCopy)
+                if (cityCombatGroup == null)
                 {
-                    battle.Remove(defender, BattleManager.BattleSide.Defense, ReportState.OutOfStamina);
-
-                    var cityCombatGroup = defender as CityDefensiveCombatGroup;
-
-                    if (cityCombatGroup == null)
+                    if (defensiveMeter != 0)
                     {
                         continue;
                     }
+
+                    battle.Remove(defender, BattleManager.BattleSide.Defense, ReportState.OutOfStamina);
+                }
+                else
+                {
+                    if (defensiveMeter > 0 && stronghold.Tribe != null && defender.Tribe == stronghold.Tribe)
+                    {
+                        continue;
+                    }
+
+                    battle.Remove(cityCombatGroup, BattleManager.BattleSide.Defense, ReportState.OutOfStamina);
 
                     // Dead troops should just be removed immediately
                     if (cityCombatGroup.TroopStub.TotalCount == 0)
@@ -181,9 +192,10 @@ namespace Game.Logic.Actions
                     {
                         throw new Exception("Should always be able to retreat troops from stronghold to main city");
                     }
-                }
+                }             
             }
-            else if (offensiveMeter == 0)
+
+            if (offensiveMeter == 0)
             {
                 // Make copy since attackers will be changing
                 var attackerLoopCopy = attackers.ToList();

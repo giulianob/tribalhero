@@ -32,17 +32,5 @@ namespace Game.Logic.Procedures
             SetResourceCap(structure.City);
             structure.City.EndUpdate();
         }
-
-        public virtual void OnSessionTribesmanQuit(Session session, uint tribeId, uint playerId, bool isKicked)
-        {
-            if (session != null)
-            {
-                Global.Channel.Unsubscribe(session, "/TRIBE/" + tribeId);
-                if(isKicked)
-                {
-                    session.Write(new Packet(Command.TribesmanKicked));
-                }
-            }
-        }
     }
 }

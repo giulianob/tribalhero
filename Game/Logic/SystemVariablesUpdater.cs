@@ -2,19 +2,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Game.Comm;
 using Game.Data;
-using Game.Database;
 using Game.Map;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
-using Ninject;
 using Persistance;
 
 #endregion
@@ -23,7 +20,23 @@ namespace Game.Logic
 {
     public class SystemVariablesUpdater : IGameTask
     {
+        private readonly IWorld world;
+
+        private readonly ITribeManager tribeManager;
+
+        private readonly IDbManager dbManager;
+
+        private readonly IScheduler scheduler;
+
         public static SystemVariablesUpdater Current { get; set; }
+
+        public SystemVariablesUpdater(IWorld world, ITribeManager tribeManager, IDbManager dbManager, IScheduler scheduler)
+        {
+            this.world = world;
+            this.tribeManager = tribeManager;
+            this.dbManager = dbManager;
+            this.scheduler = scheduler;
+        }
 
         private Timer timer;
         private readonly object objLock = new object();
@@ -50,7 +63,7 @@ namespace Game.Logic
         {
             lock (objLock)
             {
-                using (DbPersistance.Current.GetThreadTransaction())
+                using (dbManager.GetThreadTransaction())
                 {                    
                     DateTime now = DateTime.UtcNow;
 
@@ -59,7 +72,7 @@ namespace Game.Logic
 
                     //System time
                     Global.SystemVariables["System.time"].Value = now;
-                    DbPersistance.Current.Save(Global.SystemVariables["System.time"]);
+                    dbManager.Save(Global.SystemVariables["System.time"]);
 
                     if (DateTime.UtcNow.Subtract(lastUpdateScheduler).TotalMilliseconds < 5000)
                         return;
@@ -73,7 +86,7 @@ namespace Game.Logic
                     DateTime lastProbe;
                     DateTime nextFire;
 
-                    Scheduler.Current.Probe(out lastProbe, out actionsFired, out schedulerSize, out schedulerDelta, out nextFire);
+                    scheduler.Probe(out lastProbe, out actionsFired, out schedulerSize, out schedulerDelta, out nextFire);
 
                     int workerThreads;
                     int completionThreads;
@@ -86,7 +99,7 @@ namespace Game.Logic
                     // Database info
                     int queriesRan;
                     DateTime lastDbProbe;
-                    DbPersistance.Current.Probe(out queriesRan, out lastDbProbe);
+                    dbManager.Probe(out queriesRan, out lastDbProbe);
 
                     var uptime = now.Subtract(systemStartTime);
 
@@ -106,15 +119,15 @@ namespace Game.Logic
                                             new SystemVariable("Process.memory_usage", Process.GetCurrentProcess().WorkingSet64),
                                             new SystemVariable("Process.peak_memory_usage", Process.GetCurrentProcess().PeakWorkingSet64),
                                             new SystemVariable("Database.queries_per_second", (int)(queriesRan/now.Subtract(lastDbProbe).TotalSeconds)),
-                                            new SystemVariable("Players.count", World.Current.Players.Count),
+                                            new SystemVariable("Players.count", world.Players.Count),
                                             new SystemVariable("Players.logged_in", TcpWorker.GetSessionCount()),
-                                            new SystemVariable("Cities.count", World.Current.Cities.Count),
+                                            new SystemVariable("Cities.count", world.Cities.Count),
                                             new SystemVariable("Channel.subscriptions", Global.Channel.SubscriptionCount()),
-                                            new SystemVariable("Tribes.count", World.Current.TribeCount),
+                                            new SystemVariable("Tribes.count", tribeManager.TribeCount),
                                     };
 
                     // Max player logged in ever
-                    using (DbDataReader reader = DbPersistance.Current.ReaderQuery(string.Format("SELECT * FROM `{0}` WHERE `name` = 'Players.max_logged_in' LIMIT 1", SystemVariable.DB_TABLE),
+                    using (DbDataReader reader = dbManager.ReaderQuery(string.Format("SELECT * FROM `{0}` WHERE `name` = 'Players.max_logged_in' LIMIT 1", SystemVariable.DB_TABLE),
                                                  new DbColumn[] {}))
                     {
                         if (reader.HasRows)
@@ -142,7 +155,7 @@ namespace Game.Logic
                     }
 
                     // Forest cnt
-                    variables.AddRange(World.Current.Forests.ForestCount.Select((t, i) => new SystemVariable("Forests.lvl" + (i + 1) + "_count", t)));                    
+                    variables.AddRange(world.Forests.ForestCount.Select((t, i) => new SystemVariable("Forests.lvl" + (i + 1) + "_count", t)));                    
 
                     // Update vars
                     foreach (var variable in variables)
@@ -152,7 +165,7 @@ namespace Game.Logic
                         else
                             Global.SystemVariables[variable.Key].Value = variable.Value;
 
-                        DbPersistance.Current.Save(Global.SystemVariables[variable.Key]);
+                        dbManager.Save(Global.SystemVariables[variable.Key]);
                     }
                 }
             }

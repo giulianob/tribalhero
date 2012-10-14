@@ -1,24 +1,14 @@
 ﻿#region
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
-using Game.Database;
-using Game.Logic;
-using Game.Logic.Actions;
-using Game.Logic.Procedures;
 using Game.Map;
-using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using NDesk.Options;
-using Ninject;
-using Persistance;
 
 #endregion
 
@@ -26,8 +16,20 @@ namespace Game.Comm
 {
     class StrongholdCommandLineModule : CommandLineModule
     {
-        public StrongholdCommandLineModule()
+        private readonly ITribeManager tribeManager;
+
+        private readonly IWorld world;
+
+        private readonly ILocker locker;
+
+        private readonly IStrongholdManager strongholdManager;
+
+        public StrongholdCommandLineModule(ITribeManager tribeManager, IWorld world, ILocker locker, IStrongholdManager strongholdManager)
         {
+            this.tribeManager = tribeManager;
+            this.world = world;
+            this.locker = locker;
+            this.strongholdManager = strongholdManager;
         }
 
         public override void RegisterCommands(CommandLineProcessor processor)
@@ -62,15 +64,12 @@ namespace Game.Comm
 
 
             uint cityId;
-            if (!World.Current.Cities.FindCityId(cityName, out cityId))
+            if (!world.Cities.FindCityId(cityName, out cityId))
                 return "City not found";
 
             ICity city;
-            if (!World.Current.TryGetObjects(cityId, out city))
+            if (!world.TryGetObjects(cityId, out city))
                 return "City not found";
-
-
-            IStrongholdManager strongholdManager = Ioc.Kernel.Get<IStrongholdManager>();
 
             IStronghold stronghold;
             if (!strongholdManager.TryGetStronghold(strongholdName, out stronghold))
@@ -78,7 +77,7 @@ namespace Game.Comm
                 return "Stronghold not found";
             }
 
-            using (Concurrency.Current.Lock(city, stronghold))
+            using (locker.Lock(city, stronghold))
             {
                 if (city.DefaultTroop.Upkeep == 0)
                 {
@@ -129,15 +128,12 @@ namespace Game.Comm
 
 
             uint tribeId;
-            if (!World.Current.FindTribeId(tribeName, out tribeId))
+            if (!tribeManager.FindTribeId(tribeName, out tribeId))
                 return "Tribe not found";
 
             ITribe tribe;
-            if (!World.Current.TryGetObjects(tribeId, out tribe))
+            if (!world.TryGetObjects(tribeId, out tribe))
                 return "Tribe not found";
-
-
-            IStrongholdManager strongholdManager = Ioc.Kernel.Get<IStrongholdManager>();
 
             IStronghold stronghold;
             if (!strongholdManager.TryGetStronghold(strongholdName, out stronghold))
@@ -145,7 +141,7 @@ namespace Game.Comm
                 return "Stronghold not found";
             }
 
-            using (Concurrency.Current.Lock(tribe,stronghold))
+            using (locker.Lock(tribe,stronghold))
             {
                 strongholdManager.TransferTo(stronghold, tribe);
             }

@@ -14,7 +14,6 @@ using Game.Database;
 using Game.Logic.Procedures;
 using Game.Module.Remover;
 using Game.Setup;
-using Game.Util;
 using Persistance;
 
 #endregion
@@ -24,12 +23,10 @@ namespace Game.Map
     public class World : IWorld
     {
         #region Singleton
-        
-        public static IWorld Current { get; set; }
-        
-        #endregion
 
-        private readonly LargeIdGenerator tribeIdGen = new LargeIdGenerator(200000, 100000);
+        public static IWorld Current { get; set; }
+
+        #endregion
 
         public ICityManager Cities { get; private set; }
 
@@ -39,40 +36,37 @@ namespace Game.Map
 
         public ForestManager Forests { get; private set; }
 
-        public IStrongholdManager Strongholds { get; private set; }        
+        private IStrongholdManager Strongholds { get; set; }
+
+        private ITribeManager Tribes { get; set; }
 
         public object Lock { get; private set; }
 
-        public Dictionary<uint, IPlayer> Players { get; private set; }        
-
-        private Dictionary<uint, ITribe> Tribes { get; set; }
+        public Dictionary<uint, IPlayer> Players { get; private set; }
 
         private Dictionary<uint, IBattleManager> Battles { get; set; }
-        
-        public int TribeCount
-        {
-            get
-            {
-                return Tribes.Count;
-            }
-        }
 
         public int GetActivePlayerCount()
         {
             return new ActivePlayerSelector(Config.idle_days).GetPlayerIds().Count();
         }
 
-        public World(RoadManager roadManager, ForestManager forestManager, IStrongholdManager strongholdManager, ICityManager cityManager, IRegionManager regionManager)
+        public World(RoadManager roadManager,
+                     ForestManager forestManager,
+                     IStrongholdManager strongholdManager,
+                     ICityManager cityManager,
+                     IRegionManager regionManager,
+                     ITribeManager tribeManager)
         {
             Roads = roadManager;
             Forests = forestManager;
             Strongholds = strongholdManager;
             Cities = cityManager;
             Regions = regionManager;
-            Battles = new Dictionary<uint, IBattleManager>();              
+            Tribes = tribeManager;
+            Battles = new Dictionary<uint, IBattleManager>();
             Lock = new object();
             Players = new Dictionary<uint, IPlayer>();            
-            Tribes = new Dictionary<uint, ITribe>();
         }
 
         #region Object Locator
@@ -104,7 +98,7 @@ namespace Game.Map
 
         public bool TryGetObjects(uint tribeId, out ITribe tribe)
         {
-            return Tribes.TryGetValue(tribeId, out tribe);
+            return Tribes.TryGetTribe(tribeId, out tribe);
         }
 
         public bool TryGetObjects(uint battleId, out IBattleManager battleManager)
@@ -157,25 +151,6 @@ namespace Game.Map
 
         #endregion
 
-        public void Add(ITribe tribe)
-        {
-            lock (Lock)
-            {
-                tribe.Id = (uint)tribeIdGen.GetNext();
-                Tribes.Add(tribe.Id, tribe);
-                DbPersistance.Current.Save(tribe);
-            }
-        }
-
-        public void DbLoaderAdd(ITribe tribe)
-        {
-            lock (Lock)
-            {
-                tribeIdGen.Set(tribe.Id);
-                Tribes.Add(tribe.Id, tribe);
-            }
-        }
-
         public void Add(IBattleManager battleManager)
         {
             lock (Lock)
@@ -208,15 +183,6 @@ namespace Game.Map
             Forests.StartForestCreator();
         }
 
-        public void Remove(ITribe tribe)
-        {
-            lock (Lock)
-            {
-                Tribes.Remove(tribe.Id);
-                DbPersistance.Current.Delete(tribe);
-            }
-        }
-       
         public bool FindPlayerId(string name, out uint playerId)
         {
             playerId = UInt16.MaxValue;
@@ -238,22 +204,23 @@ namespace Game.Map
             }
         }
 
-        public bool FindTribeId(string name, out uint tribeId)
+        public bool FindStrongholdId(string name, out uint strongholdId)
         {
-            tribeId = UInt16.MaxValue;
+            strongholdId = UInt16.MaxValue;
             using (
-                    DbDataReader reader = DbPersistance.Current.ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
-                                                                            new[]
-                                                                            {
-                                                                                    new DbColumn("name", name, DbType.String)
-                                                                            }))
+                    DbDataReader reader =
+                            DbPersistance.Current.ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Stronghold.DB_TABLE),
+                                                              new[]
+                                                              {
+                                                                      new DbColumn("name", name, DbType.String)
+                                                              }))
             {
                 if (!reader.HasRows)
                 {
                     return false;
                 }
                 reader.Read();
-                tribeId = (uint)reader[0];
+                strongholdId = (uint)reader[0];
                 return true;
             }
         }
@@ -269,19 +236,6 @@ namespace Game.Map
             {
                 return reader.HasRows;
             }
-        }
-
-        public bool TribeNameTaken(string name)
-        {
-            using (
-                    DbDataReader reader = DbPersistance.Current.ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
-                                                                            new[]
-                                                                            {
-                                                                                    new DbColumn("name", name, DbType.String)
-                                                                            }))
-            {
-                return reader.HasRows;
-            }
-        }
+        }        
     }
 }

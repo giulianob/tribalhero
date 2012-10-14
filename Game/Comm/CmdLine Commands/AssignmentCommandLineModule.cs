@@ -3,9 +3,7 @@ using System.Linq;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic.Actions;
-using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -16,6 +14,19 @@ namespace Game.Comm
 {
     class AssignmentCommandLineModule : CommandLineModule
     {
+        private readonly IWorld world;
+
+        private readonly ITribeManager tribeManager;
+
+        private readonly ILocker locker;
+
+        public AssignmentCommandLineModule(IWorld world, ITribeManager tribeManager, ILocker locker)
+        {
+            this.world = world;
+            this.tribeManager = tribeManager;
+            this.locker = locker;
+        }
+
         public override void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("assignmentlist", AssignmentList, PlayerRights.Bureaucrat);
@@ -50,19 +61,19 @@ namespace Game.Comm
             uint playerId;
             if (!string.IsNullOrEmpty(playerName))
             {
-                if (!World.Current.FindPlayerId(playerName, out playerId))
+                if (!world.FindPlayerId(playerName, out playerId))
                     return "Player not found";
             }
             else
             {
-                if (!World.Current.FindTribeId(tribeName, out playerId))
+                if (!tribeManager.FindTribeId(tribeName, out playerId))
                     return "Tribe not found";
             }
 
             IPlayer player;
             ITribe tribe;
             string result = string.Format("Now[{0}] Assignments:\n", DateTime.UtcNow);
-            using (Concurrency.Current.Lock(playerId, out player, out tribe))
+            using (locker.Lock(playerId, out player, out tribe))
             {
                 if (player == null)
                     return "Player not found";
@@ -109,13 +120,13 @@ namespace Game.Comm
             }
 
             uint cityId;
-            if (!World.Current.Cities.FindCityId(cityName, out cityId))
+            if (!world.Cities.FindCityId(cityName, out cityId))
             {
                 return "City not found";
             }
 
             ICity city;
-            if (!World.Current.TryGetObjects(cityId, out city))
+            if (!world.TryGetObjects(cityId, out city))
             {
                 return "City not found!";
             }
@@ -126,20 +137,20 @@ namespace Game.Comm
             }
 
             ITribe tribe = city.Owner.Tribesman.Tribe;
-            IStructure targetStructure = World.Current.GetObjects(x, y).OfType<IStructure>().FirstOrDefault();           
+            IStructure targetStructure = world.GetObjects(x, y).OfType<IStructure>().FirstOrDefault();           
             if (targetStructure == null)
             {
                 return "Could not find a structure for the given coordinates";
             }
 
-            using (Concurrency.Current.Lock(city, tribe, targetStructure.City))
+            using (locker.Lock(city, tribe, targetStructure.City))
             {
                 if (city.DefaultTroop.Upkeep == 0)
                 {
                     return "No troops in the city!";
                 }
 
-                targetStructure = World.Current.GetObjects(x, y).OfType<IStructure>().First();
+                targetStructure = world.GetObjects(x, y).OfType<IStructure>().First();
 
                 if (targetStructure == null)
                 {
@@ -186,11 +197,11 @@ namespace Game.Comm
                 return "AssignementCreate --city=city_name --id=id";
 
             uint cityId;
-            if (!World.Current.Cities.FindCityId(cityName, out cityId))
+            if (!world.Cities.FindCityId(cityName, out cityId))
                 return "City not found";
 
             ICity city;            
-            if (!World.Current.TryGetObjects(cityId, out city))
+            if (!world.TryGetObjects(cityId, out city))
             {
                 return "City not found!";
             }
@@ -201,7 +212,7 @@ namespace Game.Comm
             }
 
             ITribe tribe = city.Owner.Tribesman.Tribe;
-            using (Concurrency.Current.Lock(city, tribe))
+            using (locker.Lock(city, tribe))
             {
                 if (city.DefaultTroop.Upkeep == 0)
                 {

@@ -128,9 +128,9 @@ namespace Game.Data.Stronghold
         }
 
         public void Activate(IStronghold stronghold)
-        {
-            stronghold.StrongholdState = StrongholdState.Neutral;
+        {            
             stronghold.BeginUpdate();
+            stronghold.StrongholdState = StrongholdState.Neutral;
             regionManager.Add(stronghold);
             stronghold.EndUpdate();
             
@@ -171,12 +171,24 @@ namespace Game.Data.Stronghold
 
             if (!tribeIndex.Contains(tribe))
             {
-                return new IStronghold[]
-                {
-                };
+                return new IStronghold[] { };
             }
 
             return tribeIndex[tribe];
+        }
+
+        public void RemoveStrongholdsFromTribe(ITribe tribe)
+        {
+            foreach (var stronghold in StrongholdsForTribe(tribe))
+            {
+                stronghold.BeginUpdate();
+                stronghold.StrongholdState = StrongholdState.Neutral;
+                stronghold.Tribe = null;
+                stronghold.DateOccupied = DateTime.UtcNow;
+                stronghold.EndUpdate();
+            }
+
+            MarkIndexDirty();
         }
 
         #region Implementation of IEnumerable

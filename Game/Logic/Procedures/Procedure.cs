@@ -4,7 +4,7 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        private readonly IWorld world;
+        private readonly IRegionManager regions;
 
         public static Procedure Current { get; set; }
 
@@ -13,9 +13,9 @@ namespace Game.Logic.Procedures
             
         }
 
-        public Procedure(IWorld world)
+        public Procedure(IRegionManager regions)
         {
-            this.world = world;
+            this.regions = regions;
         }
     }
 }

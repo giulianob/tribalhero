@@ -18,19 +18,11 @@ namespace Game.Map
 
         ForestManager Forests { get; }
 
-        IStrongholdManager Strongholds { get; }
-
         object Lock { get; }
 
         Dictionary<uint, IPlayer> Players { get; }
 
-        int TribeCount { get; }
-
         int GetActivePlayerCount();
-
-        void Add(ITribe tribe);
-
-        void DbLoaderAdd(ITribe tribe);
 
         void Add(IBattleManager battleManager);
 
@@ -40,14 +32,10 @@ namespace Game.Map
 
         void AfterDbLoaded(Procedure procedure);
 
-        void Remove(ITribe tribe);
+        bool FindStrongholdId(string name, out uint strongholdId);        
 
         bool FindPlayerId(string name, out uint playerId);        
 
-        bool FindTribeId(string name, out uint tribeId);
-
         bool CityNameTaken(string name);
-
-        bool TribeNameTaken(string name);
     }
 }

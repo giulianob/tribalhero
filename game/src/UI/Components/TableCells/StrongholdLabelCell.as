@@ -9,12 +9,12 @@
 	import src.UI.Components.Messaging.MessagingIcon;
 	import src.UI.Components.Tribe.SetRankIcon;
 
-	public class TribeLabelCell extends AbstractTableCell
+	public class StrongholdLabelCell extends AbstractTableCell
 	{
-		protected var label: TribeLabel;
+		protected var label: StrongholdLabel;
 		protected var wrapper: JPanel;
 
-		public function TribeLabelCell()
+		public function StrongholdLabelCell()
 		{
 			super();
 			
@@ -27,15 +27,12 @@
 			super.setCellValue(value);
 			wrapper.removeAll();
 			
-			if (value is int) {
-				label = new TribeLabel(value);
-				wrapper.append(label);
-			} else if( value.tribeId!=null) {
-				label = new TribeLabel(value.tribeId, value.tribeName);
-				wrapper.append(label);
-			} else {
-				wrapper.append(new JLabel("NPC"));
-			}
+			if (value is int)
+				label = new StrongholdLabel(value, false);
+			else
+				label = new StrongholdLabel(value.strongholdId, false, value.strongholdName);
+				
+			wrapper.append(label);
 		}
 
 		override public function getCellValue():*

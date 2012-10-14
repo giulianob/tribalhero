@@ -4,12 +4,8 @@
 	import org.aswing.table.DefaultTextCell;
 	import src.UI.LookAndFeel.GameLookAndFeel;
 
-	/**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
 	public class UnreadTextCell extends DefaultTextCell
-	{
+	{			
 		override public function setCellValue(value:*):void
 		{
 			this.value = value;
@@ -22,7 +18,7 @@
 				setForeground(GameLookAndFeel.getClassAttribute("Message.read", "Label.foreground"));
 			}
 
-			setText(value.location + "");
+			setText(value[getCellProperty()]);
 		}
 
 		override public function setTableCellStatus(table:JTable, isSelected:Boolean, row:int, column:int):void
@@ -34,6 +30,10 @@
 				setBackground(table.getBackground());
 				setForeground(table.getForeground());
 			}
+		}
+		
+		protected function getCellProperty(): String {
+			throw new Error("Should be overriden");
 		}
 	}
 

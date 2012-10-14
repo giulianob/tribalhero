@@ -41,17 +41,13 @@
 		
 		public var refreshOnClose: Boolean = false;
 		
-		public function RemoteReportList(viewType: int, location: BattleLocation = null)
+		public function RemoteReportList(viewType: int, cols: Array, location: BattleLocation = null)
 		{
 			this.location = location;
 			this.viewType = viewType;
 			
-			createUI();
-			loader.addEventListener(Event.COMPLETE, onLoaded);
-			
-			tblReports.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
-				tblReports.getCellEditor().cancelCellEditing();
-			});
+			createUI(cols);
+			loader.addEventListener(Event.COMPLETE, onLoaded);			
 
 			tblReports.addEventListener(SelectionEvent.ROW_SELECTION_CHANGED, function(e: SelectionEvent) : void {
 				if (tblReports.getSelectedRow() == -1) return;
@@ -119,30 +115,13 @@
 			reportList.append(snapshot);
 		}
 
-		private function createUI() : void {
+		private function createUI(cols: Array) : void {
 			var layout0:BorderLayout = new BorderLayout();
 			setLayout(layout0);
 
-			reportList = new VectorListModel();
-
-			if (viewType == BattleReportViewer.REPORT_TRIBE_FOREIGN) {
-				tableModel = new PropertyTableModel(reportList,
-					["Date", "Battle Location", "Side"],
-					["date", ".", "side"],
-					[null, null, null, null]
-				);				
-			}
-			else {
-				tableModel = new PropertyTableModel(reportList,
-					["Date", "Battle Location", "Troop", "Side"],
-					["date", ".", "troop", "side"],
-					[null, null, null, null]
-				);
-			}
-
-			tblReports = new JTable(tableModel);
-			tblReports.setSelectionMode(JTable.SINGLE_SELECTION);
-			tblReports.getColumnAt(1).setCellFactory(new GeneralTableCellFactory(UnreadTextCell));
+			tblReports = new BattleReportListTable(cols);
+			
+			reportList = VectorListModel(PropertyTableModel(tblReports.getModel()).getList());		
 
 			var pnlReportsScroll: JScrollPane = new JScrollPane(tblReports);
 			pnlReportsScroll.setConstraints("Center");

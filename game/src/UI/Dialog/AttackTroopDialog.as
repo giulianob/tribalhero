@@ -15,6 +15,7 @@
 	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
 	import src.UI.GameJPanel;
 	import src.Objects.Troop.*;
+	import src.Util.StringHelper;
 	import src.Util.Util;
 
 	public class AttackTroopDialog extends GameJPanel {
@@ -86,7 +87,7 @@
 		protected function updateSpeedInfo(e: Event = null): void {
 			var stub: TroopStub = getTroop();			
 			if (stub.getIndividualUnitCount() == 0) {
-				lblTroopSpeed.setText("Hint: Drag units to assign to the different troops. Hold SHIFT while dragging to transfer all units at once.") 
+				lblTroopSpeed.setText(StringHelper.localize("TROOP_CREATE_DRAG_HINT")) 
 			}
 			else {
 				lblTroopSpeed.setText("Troop speed will be: " + Formula.moveTimeString(stub.getSpeed(city)));

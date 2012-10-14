@@ -13,6 +13,7 @@
 	import src.UI.GameJPanel;
 	import src.UI.Components.SimpleTooltip;
 	import src.Objects.Troop.*;
+	import src.Util.StringHelper;
 	import src.Util.Util;
 
 	public class ReinforceTroopDialog extends GameJPanel {
@@ -83,7 +84,7 @@
 		protected function updateSpeedInfo(e: Event = null): void {
 			var stub: TroopStub = getTroop();			
 			if (stub.getIndividualUnitCount() == 0) {
-				lblTroopSpeed.setText("Hint: Drag units to assign to the different troops");
+				lblTroopSpeed.setText(StringHelper.localize("TROOP_CREATE_DRAG_HINT"));
 			}
 			else {
 				lblTroopSpeed.setText("Troop speed will be: " + Formula.moveTimeString(stub.getSpeed(city)));

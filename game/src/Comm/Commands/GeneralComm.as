@@ -309,6 +309,24 @@
 			autocompleteLoader.load("/cities/autocomplete", [ { key: "name", value: name }], true, false);
 		}		
 		
+		public function autoCompleteStronghold(name: String, callback: Function) : void {
+			var autocompleteLoader: GameURLLoader = new GameURLLoader();
+			autocompleteLoader.addEventListener(Event.COMPLETE, function(e: Event): void {
+				var data: Object;
+				try
+				{
+					data = autocompleteLoader.getDataAsObject();
+				}
+				catch (e: Error) {					
+					return;
+				}
+				
+				callback(data, name);
+			});
+			
+			autocompleteLoader.load("/strongholds/autocomplete", [ { key: "name", value: name }], true, false);
+		}				
+		
 		public function autoCompletePlayer(name: String, callback: Function) : void {
 			var autocompleteLoader: GameURLLoader = new GameURLLoader();
 			autocompleteLoader.addEventListener(Event.COMPLETE, function(e: Event): void {

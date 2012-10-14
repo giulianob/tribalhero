@@ -12,7 +12,7 @@
 	{
 		public var strongholdId: int;
 
-		public function StrongholdLabel(strongholdId: int, strongholdName: String = null)
+		public function StrongholdLabel(strongholdId: int, isPrivate: Boolean, strongholdName: String = null)
 		{
 			super("-");
 			
@@ -27,17 +27,19 @@
 			else
 				Global.map.usernames.strongholds.getUsername(strongholdId, onReceiveUsername);
 
-			addEventListener(MouseEvent.MOUSE_DOWN, function(e: MouseEvent) : void {
-				viewStronghold();
-			});
-			
-			new SimpleTooltip(this, "View profile");
+			if (isPrivate) {
+				new SimpleTooltip(this, "View profile");
+				addEventListener(MouseEvent.MOUSE_DOWN, function(e: MouseEvent) : void {
+					Global.mapComm.Stronghold.viewStrongholdProfile(strongholdId);
+				});				
+			} else {
+				new SimpleTooltip(this, "Go to Stronghold");
+				addEventListener(MouseEvent.MOUSE_DOWN, function(e: MouseEvent) : void {
+					Global.mapComm.Stronghold.gotoStrongholdLocation(strongholdId);
+				});
+			}
 		}
-		
-		private function viewStronghold(): void {
-			Global.mapComm.Stronghold.viewStrongholdProfile(strongholdId);
-		}
-		
+				
 		private function onReceiveUsername(username: Username, custom: *) : void {
 			setText(username.name);
 			repaintAndRevalidate();

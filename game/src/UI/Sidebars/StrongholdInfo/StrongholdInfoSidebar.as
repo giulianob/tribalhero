@@ -64,7 +64,7 @@
 
 			clear();
 
-			var nameLabel: StrongholdLabel  = addStatRow("Name", new StrongholdLabel(stronghold.id));
+			var nameLabel: StrongholdLabel  = addStatRow("Name", new StrongholdLabel(stronghold.id, false));
 			
 			if (stronghold.tribeId == 0) {
 				var neutralLabel: JLabel = addStatRow("Tribe", "Not occupied");

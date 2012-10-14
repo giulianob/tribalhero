@@ -102,8 +102,8 @@ package src.UI.Dialog
 							Global.gameContainer.closeAllFrames(true);			
 							Global.mapComm.City.gotoCityLocationByName(parts[1]);
 							break;
-						case 'viewStrongholdProfileByName': 
-							Global.mapComm.Stronghold.viewStrongholdProfileByName(parts[1]);
+						case 'gotoStrongholdByName': 
+							Global.mapComm.Stronghold.gotoStrongholdLocationByName(parts[1]);
 							break;					
 					}
 				});
@@ -261,7 +261,7 @@ package src.UI.Dialog
 							result += StringUtil.substitute('<a href="event:viewTribeProfileByName:{0}"><span class="global">{0}</span></a>', values[1]);
 							break;
 						case "s":
-							result += StringUtil.substitute('<a href="event:viewStrongholdProfileByName:{0}"><span class="global">{0}</span></a>', values[1]);
+							result += StringUtil.substitute('<a href="event:gotoStrongholdByName:{0}"><span class="global">{0}</span></a>', values[1]);
 							break;
 						case "c":
 							result += StringUtil.substitute('<a href="event:viewCityProfileByName:{0}"><span class="global">{0}</span></a>', values[1]);

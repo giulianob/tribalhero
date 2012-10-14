@@ -1,10 +1,13 @@
 package src.Comm.Commands 
 {
 	import fl.lang.Locale;
+	import flash.geom.Point;
+	import org.aswing.AsWingConstants;
 	import src.Comm.Packet;
 	import src.Comm.Commands;
 	import src.Comm.Session;
 	import src.Map.MapComm;
+	import src.Map.MapUtil;
 	import src.Objects.SimpleGameObject;
 	import src.Objects.Stronghold.Stronghold;
 	import src.UI.Dialog.InfoDialog;
@@ -150,6 +153,32 @@ package src.Comm.Commands
 			if (!MapComm.tryShowError(packet)) {
 				InfoDialog.showMessageDialog("Info",Locale.loadString("STRONGHOLD_GATE_REPAIRED"));
 			}
+		}
+		
+		public function gotoStrongholdLocation(strongholdId:int):void
+		{
+			var packet:Packet = new Packet();
+			packet.cmd = Commands.STRONGHOLD_LOCATE;
+			packet.writeUInt(strongholdId);
+			
+			session.write(packet, onReceiveStrongholdLocation);
+		}
+		
+		public function gotoStrongholdLocationByName(strongholdName:String):void
+		{
+			var packet:Packet = new Packet();
+			packet.cmd = Commands.STRONGHOLD_LOCATE_BY_NAME;
+			packet.writeString(strongholdName);
+			
+			session.write(packet, onReceiveStrongholdLocation);
+		}
+		
+		private function onReceiveStrongholdLocation(packet: Packet, custom: * ): void {
+			if (MapComm.tryShowError(packet))
+				return;
+			Global.gameContainer.closeAllFrames(true);
+			var pt:Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
+			Global.map.camera.ScrollToCenter(pt.x, pt.y);
 		}
 	}
 

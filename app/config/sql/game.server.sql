@@ -585,7 +585,7 @@ CREATE TABLE `messages` (
   KEY `created` (`created`),
   KEY `sender_player_id` (`sender_player_id`,`sender_state`),
   KEY `recipient_player_id` (`recipient_player_id`,`recipient_state`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -988,6 +988,7 @@ CREATE TABLE `tribes` (
   `defense_point` int(11) NOT NULL,
   `created` datetime NOT NULL,
   `id` int(11) unsigned NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1152,7 +1153,7 @@ CREATE TABLE `unit_templates_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-10-02 22:38:43
+-- Dump completed on 2012-10-14 17:02:07
 -- MySQL dump 10.13  Distrib 5.5.16, for Win32 (x86)
 --
 -- Host: localhost    Database: tribalhero_server
@@ -1189,4 +1190,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-10-02 22:38:43
+-- Dump completed on 2012-10-14 17:02:07

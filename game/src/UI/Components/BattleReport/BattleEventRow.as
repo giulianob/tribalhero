@@ -1,6 +1,6 @@
 package src.UI.Components.BattleReport
 {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import flash.events.*;
 	import mx.utils.*;
 	import org.aswing.*;
@@ -46,7 +46,7 @@ package src.UI.Components.BattleReport
 		{
 			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 			{
-				var header: String = StringUtil.substitute(EVENT_STATES[event.state], event.owner.type, event.owner.id, StringHelper.htmlEscape(event.owner.name), event.name == '[LOCAL]' ? Locale.loadString("LOCAL_TROOP") : event.name, totalUnits);
+				var header: String = StringUtil.substitute(EVENT_STATES[event.state], event.owner.type, event.owner.id, StringHelper.htmlEscape(event.owner.name), event.name == '[LOCAL]' ? StringHelper.localize("LOCAL_TROOP") : event.name, totalUnits);
 				lblHeader = new RichLabel(header, 0, 30);
 				lblHeader.addEventListener(RichLabelCustomEvent.CUSTOM_EVENT_MOUSE_OVER, customEventMouseOver);
 				lblHeader.addEventListener(MouseEvent.MOUSE_OUT, eventMouseOut);

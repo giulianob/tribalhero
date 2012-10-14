@@ -1,7 +1,7 @@
 ﻿
 package src.UI.Tooltips {
 
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import mx.events.ResourceEvent;
 	import src.Global;
 	import src.Map.City;
@@ -46,7 +46,7 @@ package src.UI.Tooltips {
 		}
 		
 		private function getDescription(level: int): String {
-			return Locale.loadString("TRIBE_LVL_" + level);
+			return StringHelper.localize("TRIBE_LVL_" + level);
 		}
 
 		override public function draw(): void

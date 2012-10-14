@@ -6,7 +6,7 @@
 	import src.Objects.Factories.UnitFactory;
 	import src.Objects.Prototypes.UnitPrototype;
 	import src.Util.BinaryList.*;
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 
 	public class TroopStub extends BinaryList {
 
@@ -62,7 +62,7 @@
 		}
 
 		public function getStateName(): String {
-			var str: String = Locale.loadString("TROOP_STATE_" + STATE_NAMES[state]);
+			var str: String = StringHelper.localize("TROOP_STATE_" + STATE_NAMES[state]);
 			if (str && str != "")
 			return str;
 

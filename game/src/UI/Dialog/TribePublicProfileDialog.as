@@ -1,7 +1,7 @@
 ﻿package src.UI.Dialog 
 {
 	import adobe.utils.CustomActions;
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import flash.events.*;
 	import flash.utils.*;
 	import mx.utils.StringUtil;
@@ -74,8 +74,8 @@
 			var stats: Form = new Form();
 			
 			var establishedDiff:int = Global.map.getServerTime() - profileData.created;
-			addInfo(stats, Locale.loadString("STR_LEVEL"), profileData.level);
-			addInfo(stats, Locale.loadString("STR_ESTABLISHED"), Util.niceDays(establishedDiff));
+			addInfo(stats, StringHelper.localize("STR_LEVEL"), profileData.level);
+			addInfo(stats, StringHelper.localize("STR_ESTABLISHED"), Util.niceDays(establishedDiff));
 			
 			pnlHeader.appendAll(lblTribeName, stats);
 			

@@ -1,6 +1,6 @@
 package src.UI.Components.BattleReport 
 {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import org.aswing.event.TableCellEditEvent;
 	import org.aswing.JTable;
 	import org.aswing.table.GeneralTableCellFactory;
@@ -46,7 +46,7 @@ package src.UI.Components.BattleReport
 			
 			var columnIdx: int;
 			for each (columnIdx in columns) {
-				names.push(Locale.loadString(columnsDef[columnIdx].name));
+				names.push(StringHelper.localize(columnsDef[columnIdx].name));
 				properties.push(columnsDef[columnIdx].property);
 				translators.push(null);
 				if (columnsDef[columnIdx].width < 1) {

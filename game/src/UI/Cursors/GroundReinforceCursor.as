@@ -1,5 +1,5 @@
 ﻿package src.UI.Cursors {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.*;
@@ -165,7 +165,7 @@
 			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, [StructureObject, Stronghold]);
 		
 			if (objects.length == 0) {
-				Global.gameContainer.message.showMessage(Locale.loadString("REINFORCE_CHOOSE_TARGET"));
+				Global.gameContainer.message.showMessage(StringHelper.localize("REINFORCE_CHOOSE_TARGET"));
 				return;
 			}				
 
@@ -174,7 +174,7 @@
 			if (gameObj is StructureObject) {
 				var structObj: StructureObject = gameObj as StructureObject;		
 				if (structObj.cityId == city.id) {
-					Global.gameContainer.message.showMessage(Locale.loadString("REINFORCE_CHOOSE_TARGET"));
+					Global.gameContainer.message.showMessage(StringHelper.localize("REINFORCE_CHOOSE_TARGET"));
 					return;					
 				}
 				
@@ -192,7 +192,7 @@
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 			var timeAwayInSeconds: int = Formula.moveTimeTotal(city, troopSpeed, distance, false);			
 
-			Global.gameContainer.message.showMessage(StringUtil.substitute(Locale.loadString("REINFORCE_DISTANCE_MESSAGE"), Util.niceTime(timeAwayInSeconds)));
+			Global.gameContainer.message.showMessage(StringHelper.localize("REINFORCE_DISTANCE_MESSAGE", Util.niceTime(timeAwayInSeconds)));
 		}
 	}
 

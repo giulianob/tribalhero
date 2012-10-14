@@ -1,6 +1,6 @@
 ﻿package src.UI.Components.BattleReport
 {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import flash.events.MouseEvent;
 	import org.aswing.*;
 	import org.aswing.table.*;

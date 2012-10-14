@@ -1,6 +1,6 @@
 package src.UI.Dialog
 {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import flash.events.*;
 	import flash.text.*;
 	import flash.ui.*;
@@ -334,7 +334,7 @@ package src.UI.Dialog
 		{
 			if (Global.gameContainer.cmdLine == null) return;
 			var substituteArgs: Array = new Array();
-			substituteArgs.push('<span class="system">' + Locale.loadString(messageId) + '</strong>');
+			substituteArgs.push('<span class="system">' + StringHelper.localize(messageId) + '</strong>');
 			
 			for each (var str: String in params) {
 				substituteArgs.push(StringHelper.htmlEscape(str));
@@ -400,7 +400,7 @@ package src.UI.Dialog
 		
 		private function createTab(type: int):JToggleButton
 		{
-			var button: JToggleButton = new JToggleButton(Locale.loadString(CHANNELS[type].name), new SkinCustomIcon("Frame.chatDisabledIcon"));
+			var button: JToggleButton = new JToggleButton(StringHelper.localize(CHANNELS[type].name), new SkinCustomIcon("Frame.chatDisabledIcon"));
 			button.setSelected(type == currentChatType);
 			
 			button.addActionListener(function(e: Event): void {				

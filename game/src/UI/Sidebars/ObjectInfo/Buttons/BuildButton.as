@@ -1,6 +1,6 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import src.Global;
@@ -99,7 +99,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				
 				var concurrentUpgrades: int = Formula.concurrentBuildUpgrades(city.MainBuilding.level);				
 				if (currentCount >= concurrentUpgrades)
-					missingReqs.push(EffectReqPrototype.asMessage(Locale.loadString("CONCURRENT_UPGRADE_" + concurrentUpgrades)));					
+					missingReqs.push(EffectReqPrototype.asMessage(StringHelper.localize("CONCURRENT_UPGRADE_" + concurrentUpgrades)));					
 			}
 
 			buildToolTip.missingRequirements = missingReqs;

@@ -1,6 +1,6 @@
 ﻿package src.UI.Tooltips {
 
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import src.Global;
 	import src.Map.City;
 	import src.Objects.Effects.RequirementFormula;
@@ -121,7 +121,7 @@
 			
 			// text values
 			lblTitle.setText("Build New City");
-			lblDescription.setText(Locale.loadString("NEW_CITY_DESC"));
+			lblDescription.setText(StringHelper.localize("NEW_CITY_DESC"));
 		}
 	}
 

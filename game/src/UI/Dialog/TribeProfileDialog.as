@@ -92,7 +92,7 @@
 			// Append tabs			
 			pnlTabs.appendTab(createInfoTab(), "Info");
 			pnlTabs.appendTab(createMessageBoardTab(), "Message Board");
-			pnlTabs.appendTab(createStrongholdTab(), Locale.loadString("STR_STRONGHOLDS"));
+			pnlTabs.appendTab(createStrongholdTab(), StringHelper.localize("STR_STRONGHOLDS"));
 			
 			// Append main panels
 			appendAll(pnlHeader, pnlTabs);
@@ -153,18 +153,18 @@
 			var tabScrollPanel: JScrollPane = new JScrollPane(new JViewport(pnl, true), JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
 			(tabScrollPanel.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
 			var tabTroops: JTabbedPane = new JTabbedPane();
-			tabTroops.appendTab(tabScrollPanel, Locale.loadString("STR_STRONGHOLDS_UNDER_COMMAND"));
+			tabTroops.appendTab(tabScrollPanel, StringHelper.localize("STR_STRONGHOLDS_UNDER_COMMAND"));
 
 			//  Ongoing Attack Tab
 			pnl = new JPanel();
 			var tabOnGoing: JTabbedPane = new JTabbedPane();
-			tabOnGoing.appendTab(new JScrollPane(pnl, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER), Locale.loadString("STR_ONGOING_ATTACKS"));
+			tabOnGoing.appendTab(new JScrollPane(pnl, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER), StringHelper.localize("STR_ONGOING_ATTACKS"));
 			tabOnGoing.setPreferredSize(new IntDimension(getPreferredWidth() / 2, 150));
 
 			// Report Tab
 			pnl = new JPanel();
 			var tabReports: JTabbedPane = new JTabbedPane();
-			tabReports.appendTab(new JScrollPane(pnl, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER), Locale.loadString("STR_REPORTS"));
+			tabReports.appendTab(new JScrollPane(pnl, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER), StringHelper.localize("STR_REPORTS"));
 			
 			// Troop + Ongoing
 			var pnlLeft : JPanel = new JPanel(new BorderLayout(10,10));

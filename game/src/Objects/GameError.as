@@ -1,6 +1,6 @@
 ﻿package src.Objects
 {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import org.aswing.*;
 	import src.Constants;
 	import src.UI.Dialog.InfoDialog;
@@ -9,7 +9,7 @@
 	{
 		public static function getMessage(errorCode: int): String
 		{
-			var str: String = Locale.loadString("ERROR_" + errorCode.toString());
+			var str: String = StringHelper.localize("ERROR_" + errorCode.toString());
 			if (str && str != "")
 			return str + (Constants.debug > 0 ? " [" + errorCode + "]" : "");
 			else

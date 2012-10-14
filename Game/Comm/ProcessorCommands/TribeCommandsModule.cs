@@ -125,6 +125,7 @@ namespace Game.Comm.ProcessorCommands
             packet.AddByte(tribe.Level);
             packet.AddString(tribe.Name);
             packet.AddString(tribe.Description);
+            packet.AddInt32(tribe.VictoryPoint);
             PacketHelper.AddToPacket(tribe.Resource, packet);
 
             packet.AddInt16((short)tribe.Count);

@@ -24,6 +24,8 @@ namespace Game.Data.Tribe
 
         int DefensePoint { get; set; }
 
+        int VictoryPoint { get; set; }
+
         string Description { get; set; }
 
         Resource Resource { get; }

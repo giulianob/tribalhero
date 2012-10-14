@@ -14,10 +14,7 @@ namespace Game.Battle.CombatObjects
         public override void TakeDamage(decimal dmg, out Data.Resource returning, out int attackPoints)
         {
             base.TakeDamage(dmg, out returning, out attackPoints);
-
-            // Intead of setting it like this make sure you do
-            // Stronghold.Gate = hp;
-            //throw new Exception("Fix this");
+            Stronghold.Gate = hp;
         }
     }
 }

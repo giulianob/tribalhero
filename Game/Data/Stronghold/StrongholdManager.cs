@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Game.Data.Tribe;
+using Game.Logic.Formulas;
 using Game.Map;
 using Game.Module;
+using Game.Setup;
 using Game.Util;
 using Persistance;
 
@@ -28,6 +30,8 @@ namespace Game.Data.Stronghold
 
         private readonly IDbManager dbManager;
 
+        private readonly Formula formula;
+
         private ILookup<ITribe, IStronghold> tribeIndex;
 
         private Dictionary<string, IStronghold> nameIndex;
@@ -38,13 +42,15 @@ namespace Game.Data.Stronghold
                                     IStrongholdFactory strongholdFactory,
                                     IRegionManager regionManager,
                                     Chat chat,
-                                    IDbManager dbManager)
+                                    IDbManager dbManager,
+                                    Formula formula)
         {
             this.strongholdConfigurator = strongholdConfigurator;
             this.strongholdFactory = strongholdFactory;
             this.regionManager = regionManager;
             this.chat = chat;
             this.dbManager = dbManager;
+            this.formula = formula;
         }
 
         public int Count
@@ -119,7 +125,7 @@ namespace Game.Data.Stronghold
                     break;
                 }
 
-                IStronghold stronghold = strongholdFactory.CreateStronghold((uint)idGenerator.GetNext(), name, level, x, y);
+                IStronghold stronghold = strongholdFactory.CreateStronghold((uint)idGenerator.GetNext(), name, level, x, y, formula.GetGateLimit(level));
                 using (dbManager.GetThreadTransaction())
                 {
                     Add(stronghold);
@@ -148,6 +154,7 @@ namespace Game.Data.Stronghold
             stronghold.BeginUpdate();
             stronghold.StrongholdState = StrongholdState.Occupied;
             stronghold.Tribe = tribe;
+            stronghold.Gate = formula.GetGateLimit(stronghold.Lvl);
             stronghold.DateOccupied = DateTime.UtcNow;
             stronghold.EndUpdate();
             MarkIndexDirty();
@@ -169,12 +176,7 @@ namespace Game.Data.Stronghold
                 Reindex();
             }
 
-            if (!tribeIndex.Contains(tribe))
-            {
-                return new IStronghold[] { };
-            }
-
-            return tribeIndex[tribe];
+            return !tribeIndex.Contains(tribe) ? new IStronghold[] { } : tribeIndex[tribe];
         }
 
         public void RemoveStrongholdsFromTribe(ITribe tribe)
@@ -189,6 +191,35 @@ namespace Game.Data.Stronghold
             }
 
             MarkIndexDirty();
+        }
+
+        public Error RepairGate(IStronghold stronghold)
+        {
+            if (stronghold.Tribe == null )
+            {
+                return Error.StrongholdNotOccupied;                
+            }
+
+            var diff = formula.GetGateLimit(stronghold.Lvl) - stronghold.Gate;
+            if (diff <= 0)
+            {
+                return Error.StrongholdGateFull;
+            }
+
+            var cost = formula.GetGateRepairCost(stronghold.Lvl, diff);
+            if (!stronghold.Tribe.Resource.HasEnough(cost))
+            {
+                return Error.ResourceNotEnough;
+            }
+
+            stronghold.Tribe.Resource.Subtract(cost);
+            dbManager.Save(stronghold.Tribe);
+
+            stronghold.BeginUpdate();
+            stronghold.Gate = formula.GetGateLimit(stronghold.Lvl);
+            stronghold.EndUpdate();
+
+            return Error.Ok;
         }
 
         #region Implementation of IEnumerable

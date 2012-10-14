@@ -77,7 +77,7 @@ namespace Game.Logic.Actions
 
             if (stub.State != TroopState.Stationed)
             {
-                return Error.CityInBattle;
+                return Error.TroopInBattle;
             }
 
             ITroopObject troopObject;

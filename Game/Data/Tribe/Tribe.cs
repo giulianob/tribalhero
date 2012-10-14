@@ -49,6 +49,8 @@ namespace Game.Data.Tribe
 
         public byte Level { get; set; }
 
+        public int VictoryPoint { get; set; }
+
         private int attackPoint;
 
         public int AttackPoint
@@ -173,6 +175,7 @@ namespace Game.Data.Tribe
                         name: name,
                         desc: string.Empty,
                         level: 1,
+                        victoryPoints: 0,
                         attackPoints: 0,
                         defensePoints: 0,
                         resource: new Resource(),
@@ -188,6 +191,7 @@ namespace Game.Data.Tribe
                      string name,
                      string desc,
                      byte level,
+					 int victoryPoints,
                      int attackPoints,
                      int defensePoints,
                      Resource resource,
@@ -206,6 +210,7 @@ namespace Game.Data.Tribe
             Resource = resource;
             Description = desc;
             Name = name;
+            VictoryPoint = victoryPoints;
             AttackPoint = attackPoints;
             DefensePoint = defensePoints;
             Created = created;
@@ -400,7 +405,8 @@ namespace Game.Data.Tribe
                 case "Request":
                 case "Assignment":
                 case "Kick":
-                    switch(tribesman.Rank)
+                case "Repair":
+                    switch (tribesman.Rank)
                     {
                         case 0:
                         case 1:
@@ -500,6 +506,7 @@ namespace Game.Data.Tribe
                         new DbColumn("iron", Resource.Iron, DbType.Int32),
                         new DbColumn("wood", Resource.Wood, DbType.Int32),
                         new DbColumn("created", Created, DbType.DateTime),
+						new DbColumn("victory_point", VictoryPoint, DbType.Int32),
                 };
             }
         }

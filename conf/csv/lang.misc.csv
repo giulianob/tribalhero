@@ -130,6 +130,7 @@ STRONGHOLD_ACTIVE,"<a href=""event:viewStrongholdProfileByName:{0}"">{0}</a> has
 STRONGHOLD_TAKEN_OVER,"<a href=""event:viewStrongholdProfileByName:{0}"">{0}</a> has been taken over by <a href=""event:viewTribeProfileByName:{1}"">{1}</a> from the hands of <a href=""event:viewTribeProfileByName:{2}"">{2}</a>."
 STRONGHOLD_NEUTRAL_TAKEN_OVER,"<a href=""event:viewStrongholdProfileByName:{0}"">{0}</a> is now under the control of <a href=""event:viewTribeProfileByName:{1}"">{1}</a>."
 STRONGHOLD_NO_TROOPS,There are no troops protecting this stronghold.
+STRONGHOLD_GATE_REPAIRED,Gate is completely repaired.
 ,
 SYSTEM_CHAT_LITERAL,{0}
 ,

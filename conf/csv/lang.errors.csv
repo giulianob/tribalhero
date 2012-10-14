@@ -57,6 +57,7 @@ ERROR_602,Why would you want to defend yourself?
 ERROR_603,You aren't allowed to watch this battle unless one of your troops have participated for at least 5 rounds.
 ERROR_605,You have reached the maximum number of troops allowed.
 ERROR_606,No units have been selected
+ERROR_607,Not allowed while troop is in battle
 ERROR_701,Tribe is already full
 ERROR_702,You are not allowed to do this action because you aren't currently a member in a tribe
 ERROR_703,Tribe name already taken
@@ -78,3 +79,10 @@ ERROR_743,Invalid assignment dispatch time.
 ERROR_744,You are not allowed to attack a member of your own tribe.
 ERROR_745,Your units are too slow for the specified attack time.
 ERROR_746,You cannot join this assignment.
+ERROR_801,Stronghold not found.
+ERROR_802,Stronghold is not occupied.
+ERROR_810,You are not allowed to attack a stronghold of your own tribe.
+ERROR_811,Stronghold's gate is not opened to your tribe.
+ERROR_812,Stronghold is owned by another tribe.
+ERROR_813,Stronghold is inactive.
+ERROR_814,Stronghold gate is already at full health.

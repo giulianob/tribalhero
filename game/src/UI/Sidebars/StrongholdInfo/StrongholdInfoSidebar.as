@@ -54,18 +54,12 @@
 
 			clear();		
 			
-			if (stronghold.tribeId == Constants.tribeId) {
-				addStatRow(StringHelper.localize("STR_NAME"),  new StrongholdLabel(stronghold.id));
-			}
-			else {
-				var plainNameLabel: JLabel = addStatRow(StringHelper.localize("STR_NAME"), "");
-				Global.map.usernames.strongholds.setLabelUsername(stronghold.id, plainNameLabel);
-			}
+			addStatRow(StringHelper.localize("STR_NAME"), new StrongholdLabel(stronghold.id, stronghold.tribeId == Constants.tribeId));			
 						
 			if (stronghold.tribeId == 0) {
-				var neutralLabel: JLabel = addStatRow(StringHelper.localize("STR_TRIBE"), StringHelper.localize("STR_NOT_OCCUPIED"));
+				addStatRow(StringHelper.localize("STR_TRIBE"), StringHelper.localize("STR_NOT_OCCUPIED"));
 			} else {
-				var tribeLabel: TribeLabel = addStatRow(StringHelper.localize("STR_TRIBE"), new TribeLabel(stronghold.tribeId));
+				addStatRow(StringHelper.localize("STR_TRIBE"), new TribeLabel(stronghold.tribeId));
 			}
 			
 			addStatRow(StringHelper.localize("STR_LEVEL"), stronghold.level.toString());

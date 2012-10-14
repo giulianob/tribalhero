@@ -1,6 +1,8 @@
 package src.Comm.Commands 
 {
+	import fl.lang.Locale;
 	import flash.geom.Point;
+	import org.aswing.AsWingConstants;
 	import src.Comm.Packet;
 	import src.Comm.Commands;
 	import src.Comm.Session;
@@ -8,6 +10,7 @@ package src.Comm.Commands
 	import src.Map.MapUtil;
 	import src.Objects.SimpleGameObject;
 	import src.Objects.Stronghold.Stronghold;
+	import src.UI.Dialog.InfoDialog;
 	import src.UI.Dialog.StrongholdProfileDialog;
 	import src.Objects.Troop.*;
 	import src.Global;
@@ -51,7 +54,7 @@ package src.Comm.Commands
 			profileData.strongholdId = packet.readUInt();
 			profileData.strongholdName = packet.readString();
 			profileData.strongholdLevel = packet.readByte();
-			profileData.strongholdGate = packet.readInt();
+			profileData.strongholdGate = packet.readFloat();
 			profileData.strongholdVictoryPointRate = packet.readFloat();
 			profileData.strongholdDateOccupied = packet.readUInt();
 			profileData.strongholdX = packet.readUInt();
@@ -155,7 +158,19 @@ package src.Comm.Commands
 			Global.map.camera.ScrollToCenter(pt.x, pt.y);
 			Global.gameContainer.closeAllFrames(true);
 		}		
-
+		
+		public function repairStrongholdGate(id: uint): void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.STRONGHOLD_GATE_REPAIR;
+			packet.writeUInt(id);
+			session.write(packet, onRepairStrongholdGate, null);
+		}
+		
+		public function onRepairStrongholdGate(packet: Packet, custom: *): void {
+			if (!MapComm.tryShowError(packet)) {
+				InfoDialog.showMessageDialog("Info",Locale.loadString("STRONGHOLD_GATE_REPAIRED"));
+			}
+		}
 	}
 
 }

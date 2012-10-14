@@ -17,6 +17,7 @@
 	import src.Objects.*;
 	import src.Objects.Battle.*;
 	import src.Objects.Process.*;
+	import src.Objects.Stronghold.Stronghold;
 	import src.Objects.Troop.*;
 	import src.UI.*;
 	import src.UI.Components.*;
@@ -160,7 +161,7 @@
 		private function createInfoPanel() : Container {
 			var form: Form = new Form();
 			addInfo(form, StringHelper.localize("STR_LEVEL"), profileData.strongholdLevel.toString());
-			addInfo(form, StringHelper.localize("STR_GATE"), profileData.strongholdGate.toString());
+			addInfo(form, StringHelper.localize("STR_GATE"), Stronghold.GateToString(profileData.strongholdLevel, profileData.strongholdGate));
 			
 			var timediff :int = Global.map.getServerTime() - profileData.strongholdDateOccupied;
 			addInfo(form, StringHelper.localize("STR_OCCUPIED"), Util.niceDays(timediff));

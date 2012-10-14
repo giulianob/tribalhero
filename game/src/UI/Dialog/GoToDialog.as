@@ -26,6 +26,9 @@
 		private var txtPlayerName:JTextField;
 		private var btnOkPlayer:JButton;
 		
+		private var txtStrongholdName:JTextField;
+		private var btnOkStronghold:JButton;		
+		
 		private var pnlTabs: JTabbedPane;
 	
 		public function GoToDialog() 
@@ -39,11 +42,14 @@
 			txtCityName.addActionListener(onOkCity);
 			btnOkCity.addActionListener(onOkCity);
 			
+			txtStrongholdName.addActionListener(onOkStronghold);
+			btnOkStronghold.addActionListener(onOkStronghold);			
+			
 			txtPlayerName.addActionListener(onOkPlayer);
 			btnOkPlayer.addActionListener(onOkPlayer);
 			
 			AsWingManager.callLater(txtX.requestFocus);
-				
+			
 			pnlTabs.addStateListener(function(e: Event = null): void {
 				switch (pnlTabs.getSelectedIndex())
 				{
@@ -56,6 +62,8 @@
 					case 2:
 						AsWingManager.callLater(txtPlayerName.requestFocus);
 						break;
+					case 3:
+						AsWingManager.callLater(txtStrongholdName.requestFocus);
 				}
 			});
 		}		
@@ -83,6 +91,16 @@
 			getFrame().dispose();
 		}		
 		
+		private function onOkStronghold(e: * ):void {		
+			if (txtStrongholdName.getText() == "") {
+				getFrame().dispose();
+				return;
+			}
+			
+			Global.mapComm.Stronghold.gotoStrongholdLocationByName(txtStrongholdName.getText());	
+			getFrame().dispose();
+		}		
+				
 		private function onOkPlayer(e: * ):void {		
 			if (txtPlayerName.getText() == "") {
 				getFrame().dispose();
@@ -199,11 +217,36 @@
 			pnlPlayerCenter.appendAll(txtPlayerName);
 			pnlPlayer.appendAll(lblPlayerTitle, pnlPlayerCenter, pnlPlayerSouth);					
 			
+			//stronghold name panel
+			var pnlStronghold: JPanel = new JPanel(new BorderLayout());			
+			
+			var lblStrongholdTitle: JLabel = new JLabel("Enter a stronghold name to find it", null, AsWingConstants.LEFT);
+			lblStrongholdTitle.setConstraints("North");
+			
+			var pnlStrongholdCenter: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0));
+			pnlStrongholdCenter.setConstraints("Center");
+			
+			txtStrongholdName = new AutoCompleteTextField(Global.mapComm.General.autoCompleteStronghold);
+			txtStrongholdName.setColumns(16);
+			txtStrongholdName.setMaxChars(32);
+			
+			var pnlStrongholdSouth: JPanel = new JPanel();
+			pnlStrongholdSouth.setConstraints("South");
+			pnlStrongholdSouth.setLayout(new FlowLayout(AsWingConstants.CENTER));
+			
+			btnOkStronghold = new JButton();
+			btnOkStronghold.setText("Ok");
+			
+			pnlStrongholdSouth.appendAll(btnOkStronghold);
+			pnlStrongholdCenter.appendAll(txtStrongholdName);
+			pnlStronghold.appendAll(lblStrongholdTitle, pnlStrongholdCenter, pnlStrongholdSouth);				
+			
 			// Tabs
 			pnlTabs = new JTabbedPane();
 			
 			pnlTabs.appendTab(pnlCity, "Find city");
 			pnlTabs.appendTab(pnlPlayer, "Find player");
+			pnlTabs.appendTab(pnlStronghold, "Find stronghold");
 			pnlTabs.appendTab(pnlCoords, "Go to coordinates");
 
 			append(pnlTabs);			

@@ -131,7 +131,7 @@
 			minimapZoomTooltip = new SimpleTooltip(minimapTools.btnMinimapZoom);
 			minimapTools.btnMinimapZoom.addEventListener(MouseEvent.CLICK, onZoomIntoMinimap);
 
-			new SimpleTooltip(minimapTools.btnGoToCoords, "Find cities, players, and coordinates");
+			new SimpleTooltip(minimapTools.btnGoToCoords, "Find...");
 			minimapTools.btnGoToCoords.addEventListener(MouseEvent.CLICK, onGoToCoords);
 			
 			new SimpleTooltip(minimapTools.btnFeedback, "Send Feedback");

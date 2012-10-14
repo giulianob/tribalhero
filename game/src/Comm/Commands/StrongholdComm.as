@@ -127,14 +127,24 @@ package src.Comm.Commands
 			mapComm.showLoading();
 		}
 		
-		public function gotoStrongholdLocation(cityId:int):void
+		public function gotoStrongholdLocation(strongholdId:int):void
 		{
 			var packet:Packet = new Packet();
 			packet.cmd = Commands.STRONGHOLD_LOCATE;
-			packet.writeUInt(cityId);
+			packet.writeUInt(strongholdId);
 			
 			session.write(packet, onReceiveStrongholdLocation);
 		}
+		
+		public function gotoStrongholdLocationByName(name:String):void
+		{
+			var packet:Packet = new Packet();
+			packet.cmd = Commands.STRONGHOLD_LOCATE;
+			packet.writeUInt(0);
+			packet.writeString(name);
+			
+			session.write(packet, onReceiveStrongholdLocation);
+		}		
 		
 		public function onReceiveStrongholdLocation(packet:Packet, custom:*):void
 		{

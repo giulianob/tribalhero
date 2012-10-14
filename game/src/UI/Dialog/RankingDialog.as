@@ -12,6 +12,7 @@ package src.UI.Dialog{
 	import src.Comm.*;
 	import src.UI.*;
 	import src.UI.Components.*;
+	import src.UI.Components.Stronghold.DaysOccupiedRankTranslator;
 	import src.UI.Components.TableCells.*;
 
 	public class RankingDialog extends GameJPanel {
@@ -28,6 +29,9 @@ package src.UI.Dialog{
 		{name: "Level", baseOn: "tribe"},
 		{name: "Attack Points", baseOn: "tribe"},
 		{name: "Defense Points", baseOn: "tribe"},
+		{name: "Victory Points", baseOn: "tribe" },
+		{name: "Level", baseOn: "stronghold"},
+		{name: "Days Occupied", baseOn: "stronghold"},
 		];
 
 		private var loader: GameURLLoader;		
@@ -56,6 +60,11 @@ package src.UI.Dialog{
 		private var tribeLevelRanking: JToggleButton;
 		private var tribeAttackRanking: JToggleButton;
 		private var tribeDefenseRanking: JToggleButton;
+		private var tribeVictoryRanking: JToggleButton;
+		
+		private var strongholdRanking: JPanel;
+		private var strongholdLevelRanking: JToggleButton;
+		private var strongholdOccupiedRanking: JToggleButton;
 
 		private var txtSearch: JTextField;
 		private var btnSearch: JButton;
@@ -89,7 +98,9 @@ package src.UI.Dialog{
 			new SimpleTooltip(tribeLevelRanking, "Sort by level");
 			new SimpleTooltip(tribeAttackRanking, "Sort by attack points");
 			new SimpleTooltip(tribeDefenseRanking, "Sort by defense points");
-			
+			new SimpleTooltip(tribeVictoryRanking, "Sort by victory points");
+			new SimpleTooltip(strongholdLevelRanking, "Sort by level");
+			new SimpleTooltip(strongholdOccupiedRanking, "Sort by days occupied");			
 			// Handle different buttons being pressed
 			cityAttackRanking.addActionListener(onChangeRanking);
 			cityDefenseRanking.addActionListener(onChangeRanking);
@@ -104,7 +115,11 @@ package src.UI.Dialog{
 			tribeLevelRanking.addActionListener(onChangeRanking);
 			tribeAttackRanking.addActionListener(onChangeRanking);
 			tribeDefenseRanking.addActionListener(onChangeRanking);
+			tribeVictoryRanking.addActionListener(onChangeRanking);
 			
+			strongholdLevelRanking.addActionListener(onChangeRanking);
+			strongholdOccupiedRanking.addActionListener(onChangeRanking);
+
 			btnSearch.addActionListener(onSearch);
 
 			tabs.addStateListener(onTabChanged);
@@ -170,8 +185,19 @@ package src.UI.Dialog{
 					type = 9;
 				} else if (tribeDefenseRanking.isSelected()) {
 					type = 10;
+				} else if ( tribeVictoryRanking.isSelected()) {
+					type = 11;
 				}
 			}
+			// Stronghold ranking
+			else if (tabs.getSelectedIndex() == 3) {
+				if (strongholdLevelRanking.isSelected()) {
+					type = 12;
+				} else if (strongholdOccupiedRanking.isSelected()) {
+					type = 13;
+				}
+			}
+			
 
 			pagingBar.refreshPage( -1);
 		}
@@ -187,6 +213,8 @@ package src.UI.Dialog{
 				Global.mapComm.Ranking.list(loader, Constants.playerId, type, page);
 			} else if (rankings[type].baseOn == "tribe") {
 				Global.mapComm.Ranking.list(loader, Constants.tribeId, type, page);
+			} else if (rankings[type].baseOn == "stronghold") {
+				Global.mapComm.Ranking.list(loader, 0, type, page);
 			}
 		}
 
@@ -215,6 +243,8 @@ package src.UI.Dialog{
 				onPlayerRanking(data);
 			else if (rankings[type].baseOn == "tribe")
 				onTribeRanking(data);
+			else if (rankings[type].baseOn == "stronghold")
+				onStrongholdRanking(data);
 		}
 
 		private function onPlayerRanking(data: Object) : void {
@@ -290,7 +320,7 @@ package src.UI.Dialog{
 			rankingModel = new PropertyTableModel(rankingList,
 			["Rank", "Tribe", rankings[type].name],
 			["rank", ".", "value"],
-			[null, null, null, null]
+			[null, null, null]
 			);
 
 			var selectIdx: int = -1;
@@ -313,6 +343,39 @@ package src.UI.Dialog{
 			
 			rankingTable.getColumnAt(1).setCellFactory(new GeneralTableCellFactory(TribeLabelCell));
 
+
+			if (selectIdx > -1) {
+				rankingTable.setRowSelectionInterval(selectIdx, selectIdx, true);
+			}
+		}
+		
+		private function onStrongholdRanking(data: Object) : void {
+			
+			rankingList = new VectorListModel();
+
+			rankingModel = new PropertyTableModel(rankingList,
+			["Rank", "Stronghold", "Tribe", rankings[type].name],
+			["rank", ".", ".", "value"],
+			[null, null, null, rankings[type].name=="Days Occupied"?new DaysOccupiedRankTranslator():null]
+			);
+
+			var selectIdx: int = -1;
+
+			for each(var rank: Object in data.rankings) {
+				if (!rank || rank.strongholdId == null || rank.strongholdName == null) continue;
+				
+				rankingList.append( { "rank": rank.rank, "value": rank.value, "strongholdId": rank.strongholdId, "strongholdName": rank.strongholdName, "tribeId": rank.tribeId, "tribeName": rank.tribeName } );
+			}
+
+			rankingTable.setModel(rankingModel);
+
+			rankingTable.getColumnAt(0).setPreferredWidth(45);
+			rankingTable.getColumnAt(1).setPreferredWidth(220);
+			rankingTable.getColumnAt(2).setPreferredWidth(200);
+			rankingTable.getColumnAt(3).setPreferredWidth(150);
+			
+			rankingTable.getColumnAt(1).setCellFactory(new GeneralTableCellFactory(StrongholdLabelCell));
+			rankingTable.getColumnAt(2).setCellFactory(new GeneralTableCellFactory(TribeLabelCell));
 
 			if (selectIdx > -1) {
 				rankingTable.setRowSelectionInterval(selectIdx, selectIdx, true);
@@ -369,17 +432,30 @@ package src.UI.Dialog{
 			tribeLevelRanking.setSelected(true);
 			tribeAttackRanking = new JToggleButton("Attack");
 			tribeDefenseRanking = new JToggleButton("Defense");
+			tribeVictoryRanking = new JToggleButton("Victory");
 			var tribeButtonGroup: ButtonGroup = new ButtonGroup();
-			tribeButtonGroup.appendAll(tribeLevelRanking,tribeAttackRanking,tribeDefenseRanking);
+			tribeButtonGroup.appendAll(tribeLevelRanking,tribeAttackRanking,tribeDefenseRanking,tribeVictoryRanking);
 			var tribeButtonGroupHolder: JPanel = new JPanel();
-			tribeButtonGroupHolder.appendAll(tribeLevelRanking, tribeAttackRanking, tribeDefenseRanking);
+			tribeButtonGroupHolder.appendAll(tribeLevelRanking, tribeAttackRanking, tribeDefenseRanking,tribeVictoryRanking);
 			tribeRanking.appendAll(tribeButtonGroupHolder);
+			
+			strongholdRanking = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+			strongholdLevelRanking = new JToggleButton("Level");
+			strongholdOccupiedRanking = new JToggleButton("Days Occupied");
+			strongholdOccupiedRanking.setSelected(true);
+
+			var strongholdButtonGroup: ButtonGroup = new ButtonGroup();
+			strongholdButtonGroup.appendAll(strongholdLevelRanking,strongholdOccupiedRanking);
+			var strongholdButtonGroupHolder: JPanel = new JPanel();
+			strongholdButtonGroupHolder.appendAll(strongholdLevelRanking,strongholdOccupiedRanking);
+			strongholdRanking.appendAll(strongholdButtonGroupHolder);
 			
 			
 			tabs = new JTabbedPane();
 			tabs.appendTab(cityRanking, "City");
 			tabs.appendTab(playerRanking, "Player");
 			tabs.appendTab(tribeRanking, "Tribe");
+			tabs.appendTab(strongholdRanking, "Stronghold");
 
 			// Bottom bar
 			var pnlFooter: JPanel = new JPanel(new BorderLayout(10));

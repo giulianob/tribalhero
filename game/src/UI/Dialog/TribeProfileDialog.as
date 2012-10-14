@@ -13,6 +13,7 @@
 	import org.aswing.geom.*;
 	import org.aswing.table.*;
 	import src.*;
+	import src.Objects.Effects.Formula;
 	import src.Objects.Process.AtkAssignmentCreateProcess;
 	import src.Objects.Process.DefAssignmentCreateProcess;
 	import src.Objects.Process.AssignmentJoinProcess;
@@ -153,7 +154,7 @@
 					Global.mapComm.Stronghold.repairStrongholdGate(stronghold.id);
 				});
 				var tooltip: SimpleTooltip = new SimpleTooltip(btnGateRepair, "Repair the gate");
-				tooltip.append(new ResourcesPanel(new Resources(2000,2000,2000,2000,0),profileData.resources, true, false));
+				tooltip.append(new ResourcesPanel(Formula.getGateRepairCost(stronghold.lvl, stronghold.gate), profileData.resources, true, false));
 				pnlGate.append(btnGateRepair);
 			}
 			pnlGate.append(lblGate);

@@ -606,7 +606,7 @@ namespace Game.Comm
                 packet.AddByte(tribe.Level);
                 packet.AddString(tribe.Name);
                 packet.AddString(tribe.Description);
-                packet.AddInt32(tribe.VictoryPoint);
+                packet.AddFloat((float)tribe.VictoryPoint);
                 packet.AddUInt32(UnixDateTime.DateTimeToUnix(tribe.Created));
                 AddToPacket(tribe.Resource, packet);
 

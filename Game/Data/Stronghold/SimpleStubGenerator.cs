@@ -38,8 +38,15 @@ namespace Game.Data.Stronghold
         {
             this.unitFactory = unitFactory;
         }
-
-        public void Generate(int level, int upkeep, double randomness, int seed, out ISimpleStub stub)
+        /// <summary>
+        /// This method generates simplestub.
+        /// </summary>
+        /// <param name="level">level of stronghold</param>
+        /// <param name="upkeep">Total output upkeep</param>
+        /// <param name="randomness">A percentage of upkeep being completely random, 1 means it's completely random</param>
+        /// <param name="seed">seed for the randomizer</param>
+        /// <param name="stub">output</param>
+        public virtual void Generate(int level, int upkeep, double randomness, int seed, out ISimpleStub stub)
         {
             stub = new SimpleStub();
             for(int i=0; i<type.Length; ++i)

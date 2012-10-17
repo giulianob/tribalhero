@@ -235,6 +235,7 @@
     <Compile Include="Data\Stronghold\StrongholdActivationCondition.cs" />
     <Compile Include="Data\Stronghold\StrongholdConfigurator.cs" />
     <Compile Include="Data\Stronghold\StrongholdManager.cs" />
+    <Compile Include="Data\Stronghold\VictoryPointChecker.cs" />
     <Compile Include="Data\Structure.cs" />
     <Compile Include="Data\Technology.cs" />
     <Compile Include="Data\TechnologyManager.cs" />

@@ -504,7 +504,7 @@
 			GameLookAndFeel.changeClass(lblTribeName, "darkHeader");			
 			
 			var pnlResources: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 10, 0, false));
-			var lblVictoryPoint: JLabel = new JLabel(profileData.victoryPoint,  new AssetIcon(new ICON_UPGRADE()));
+			var lblVictoryPoint: JLabel = new JLabel(profileData.victoryPoint.toFixed(1),  new AssetIcon(new ICON_UPGRADE()));
 			new SimpleTooltip(lblVictoryPoint, "Victory Point");
 			lblVictoryPoint.setIconTextGap(0);
 			

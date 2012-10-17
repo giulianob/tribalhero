@@ -178,7 +178,7 @@ namespace Game.Database
                                                          (string)reader["name"],
                                                          (string)reader["desc"],
                                                          (byte)reader["level"],
-                                                         (int)reader["victory_point"],
+                                                         (decimal)reader["victory_point"],
                                                          (int)reader["attack_point"],
                                                          (int)reader["defense_point"],
                                                          resource);

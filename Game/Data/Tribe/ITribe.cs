@@ -22,7 +22,7 @@ namespace Game.Data.Tribe
 
         int DefensePoint { get; set; }
 
-        int VictoryPoint { get; set; }
+        decimal VictoryPoint { get; set; }
 
         string Description { get; set; }
 

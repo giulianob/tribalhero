@@ -43,7 +43,7 @@ namespace Game.Data.Tribe
 
         public byte Level { get; set; }
 
-        public int VictoryPoint { get; set; }
+        public decimal VictoryPoint { get; set; }
 
         private int attackPoint;
         public int AttackPoint
@@ -136,7 +136,7 @@ namespace Game.Data.Tribe
 
         }
 
-        public Tribe(IPlayer owner, string name, string desc, byte level, int victoryPoints, int attackPoints, int defensePoints, Resource resource, Procedure procedure, IDbManager dbManager, Formula formula, IAssignmentFactory assignmentFactory)
+        public Tribe(IPlayer owner, string name, string desc, byte level, decimal victoryPoints, int attackPoints, int defensePoints, Resource resource, Procedure procedure, IDbManager dbManager, Formula formula, IAssignmentFactory assignmentFactory)
         {
             this.procedure = procedure;
             this.dbManager = dbManager;
@@ -363,7 +363,7 @@ namespace Game.Data.Tribe
                                new DbColumn("gold", Resource.Gold, DbType.Int32),
                                new DbColumn("iron", Resource.Iron, DbType.Int32), 
                                new DbColumn("wood", Resource.Wood, DbType.Int32),
-                               new DbColumn("victory_point", VictoryPoint, DbType.Int32),
+                               new DbColumn("victory_point", VictoryPoint, DbType.Decimal),
                        };
             }
         }

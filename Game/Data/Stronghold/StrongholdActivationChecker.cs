@@ -9,10 +9,8 @@ namespace Game.Data.Stronghold
 {
     class StrongholdActivationChecker : ISchedule
     {
-        private IStrongholdManager strongholdManager;
-        private IStrongholdActivationCondition strongholdActivationCondition;
-        private IWorld world;
-        private IDbManager dbManager;
+        private readonly IStrongholdManager strongholdManager;
+        private readonly IStrongholdActivationCondition strongholdActivationCondition;
 
         private TimeSpan timeSpan;
 
@@ -20,8 +18,6 @@ namespace Game.Data.Stronghold
         {
             this.strongholdManager = strongholdManager;
             this.strongholdActivationCondition = strongholdActivationCondition;
-            this.world = world;
-            this.dbManager = dbManager;
         }
 
         public void Start(TimeSpan timeSpan)
@@ -46,7 +42,8 @@ namespace Game.Data.Stronghold
                     strongholdManager.Activate(stronghold);
                 }
             }
-
+            Time = DateTime.UtcNow.Add(timeSpan);
+            Scheduler.Current.Put(this);
         }
     }
 }

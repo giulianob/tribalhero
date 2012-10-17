@@ -121,7 +121,6 @@
     <Compile Include="Battle\CombatGroups\StrongholdCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\ICombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\ICombatGroupFactory.cs" />
-    <Compile Include="Battle\CombatGroups\IReportView.cs" />
     <Compile Include="Battle\CombatListFactory.cs" />
     <Compile Include="Battle\BattleOwner.cs" />
     <Compile Include="Battle\CombatObjects\AttackCombatUnit.cs" />
@@ -129,6 +128,7 @@
     <Compile Include="Battle\CombatObjects\CombatObject.cs" />
     <Compile Include="Battle\CombatObjects\CombatStructure.cs" />
     <Compile Include="Battle\CombatObjects\CombatUnitFactory.cs" />
+    <Compile Include="Battle\CombatObjects\StrongholdCombatGate.cs" />
     <Compile Include="Battle\CombatObjects\StrongholdCombatStructure.cs" />
     <Compile Include="Battle\CombatObjects\StrongholdCombatUnit.cs" />
     <Compile Include="Battle\CombatObjects\DefenseCombatUnit.cs" />
@@ -142,6 +142,7 @@
     <Compile Include="Battle\Reporting\BattleReport.cs" />
     <Compile Include="Battle\Reporting\IBattleReport.cs" />
     <Compile Include="Battle\Reporting\IBattleReportWriter.cs" />
+    <Compile Include="Battle\Reporting\NullBattleReportWriter.cs" />
     <Compile Include="Battle\Reporting\ReportedObjects.cs" />
     <Compile Include="Battle\Reporting\ReportState.cs" />
     <Compile Include="Battle\Reporting\SqlBattleReportWriter.cs" />
@@ -228,10 +229,12 @@
     <Compile Include="Data\Stronghold\IStrongholdFactory.cs" />
     <Compile Include="Data\Stronghold\IStrongholdConfigurator.cs" />
     <Compile Include="Data\Stronghold\IStrongholdManager.cs" />
+    <Compile Include="Data\Stronghold\SimpleStubGenerator.cs" />
     <Compile Include="Data\Stronghold\Stronghold.cs" />
     <Compile Include="Data\Stronghold\StrongholdActivationCondition.cs" />
     <Compile Include="Data\Stronghold\StrongholdConfigurator.cs" />
     <Compile Include="Data\Stronghold\StrongholdManager.cs" />
+    <Compile Include="Data\Stronghold\VictoryPointChecker.cs" />
     <Compile Include="Data\Structure.cs" />
     <Compile Include="Data\Technology.cs" />
     <Compile Include="Data\TechnologyManager.cs" />

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Game.Data.Tribe;
+using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Map;
 using Game.Module;
@@ -23,6 +24,8 @@ namespace Game.Data.Stronghold
         private readonly IStrongholdConfigurator strongholdConfigurator;
         
         private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(10000, 5000);
+
+        private readonly SimpleStubGenerator simpleStubGenerator;
         
         private readonly IRegionManager regionManager;
         
@@ -43,6 +46,7 @@ namespace Game.Data.Stronghold
                                     IRegionManager regionManager,
                                     Chat chat,
                                     IDbManager dbManager,
+                                    SimpleStubGenerator simpleStubGenerator,
                                     Formula formula)
         {
             this.strongholdConfigurator = strongholdConfigurator;
@@ -50,6 +54,7 @@ namespace Game.Data.Stronghold
             this.regionManager = regionManager;
             this.chat = chat;
             this.dbManager = dbManager;
+            this.simpleStubGenerator = simpleStubGenerator;
             this.formula = formula;
         }
 
@@ -167,6 +172,18 @@ namespace Game.Data.Stronghold
             {
                 chat.SendSystemChat("STRONGHOLD_NEUTRAL_TAKEN_OVER", stronghold.Name, tribe.Name);
             }
+        }
+
+        public IEnumerable<Unit> GenerateNeutralStub(IStronghold stronghold)
+        {
+            
+            ISimpleStub simpleStub;
+            simpleStubGenerator.Generate(stronghold.Lvl,
+                                         Config.stronghold_npc_base_upkeep + stronghold.Lvl*Config.stronghold_npc_per_lvl_upkeep,
+                                         Config.stronghold_npc_randomness,
+                                         (int)stronghold.Id,
+                                         out simpleStub);
+            return simpleStub.ToUnitList(FormationType.Normal);
         }
 
         public IEnumerable<IStronghold> StrongholdsForTribe(ITribe tribe)

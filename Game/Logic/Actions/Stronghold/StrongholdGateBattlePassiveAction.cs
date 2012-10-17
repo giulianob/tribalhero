@@ -225,6 +225,10 @@ namespace Game.Logic.Actions
                 stronghold.BeginUpdate();
                 stronghold.GateBattle = null;
                 stronghold.State = GameObjectState.NormalState();
+                if (stronghold.GateOpenTo == null && stronghold.StrongholdState == StrongholdState.Neutral)
+                {
+                    stronghold.Gate = formula.GetGateLimit(stronghold.Lvl);
+                }
                 stronghold.EndUpdate();
 
                 StateChange(ActionState.Completed);

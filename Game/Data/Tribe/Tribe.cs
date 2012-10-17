@@ -49,7 +49,7 @@ namespace Game.Data.Tribe
 
         public byte Level { get; set; }
 
-        public int VictoryPoint { get; set; }
+        public decimal VictoryPoint { get; set; }
 
         private int attackPoint;
 

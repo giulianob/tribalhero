@@ -13,6 +13,7 @@ using Game.Comm.Thrift;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
+using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -177,7 +178,7 @@ namespace Game
             Bind<ReverseTileLocator>().ToMethod(c => new ReverseTileLocator(new Random().Next)).InSingletonScope();
             Bind<Procedure>().ToSelf().InSingletonScope();
             Bind<BattleProcedure>().ToSelf().InSingletonScope();
-
+            
             #endregion
 
             #region Stronghold
@@ -188,6 +189,7 @@ namespace Game
             Bind<IStronghold>().To<Stronghold>();
             Bind<IStrongholdActivationCondition>().To<DummyActivationCondition>();
             Bind<StrongholdActivationChecker>().ToSelf().InSingletonScope();
+            Bind<VictoryPointChecker>().ToSelf().InSingletonScope();
 
             #endregion
 

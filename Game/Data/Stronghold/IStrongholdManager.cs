@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Game.Data.Tribe;
+using Game.Data.Troop;
 
 namespace Game.Data.Stronghold
 {
@@ -14,5 +15,6 @@ namespace Game.Data.Stronghold
 
         void Activate(IStronghold stronghold);
         void TransferTo(IStronghold stronghold, ITribe tribe);
+        IEnumerable<Unit> GenerateNeutralStub(IStronghold stronghold);
     }
 }

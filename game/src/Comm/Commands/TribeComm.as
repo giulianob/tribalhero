@@ -140,7 +140,7 @@
 			profileData.tribeLevel = packet.readUByte();
 			profileData.tribeName = packet.readString();
 			profileData.description = packet.readString();
-			profileData.victoryPoint = packet.readInt();
+			profileData.victoryPoint = packet.readFloat();
 			profileData.created = packet.readUInt();			
 			
 			profileData.resources = new Resources(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUInt(), 0);

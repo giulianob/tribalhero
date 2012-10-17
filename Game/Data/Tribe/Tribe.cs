@@ -191,7 +191,7 @@ namespace Game.Data.Tribe
                      string name,
                      string desc,
                      byte level,
-					 int victoryPoints,
+					 decimal victoryPoints,
                      int attackPoints,
                      int defensePoints,
                      Resource resource,

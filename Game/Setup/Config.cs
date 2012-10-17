@@ -119,6 +119,9 @@ namespace Game.Setup
         public static int stronghold_cities_per_level = 5;
         public static int stronghold_radius_per_level = 10;
         public static int stronghold_radius_base = 100;
+        public static double stronghold_npc_randomness = 0.4;
+        public static int stronghold_npc_base_upkeep = 800;
+        public static int stronghold_npc_per_lvl_upkeep = 200;
 
         public static int idle_days = 3;
         

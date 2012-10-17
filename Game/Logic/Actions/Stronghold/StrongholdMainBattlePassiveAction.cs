@@ -392,10 +392,8 @@ namespace Game.Logic.Actions
             }
             else
             {
-                var strongholdGroup = battleProcedure.AddStrongholdUnitsToBattle(stronghold.MainBattle, stronghold, new List<Unit>
-                {
-                        new Unit(11, 20), new Unit(12, 20)
-                });
+                   
+                var strongholdGroup = battleProcedure.AddStrongholdUnitsToBattle(stronghold.MainBattle, stronghold, strongholdManager.GenerateNeutralStub(stronghold));
 
                 npcGroupId = strongholdGroup.Id;
             }

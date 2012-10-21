@@ -18,6 +18,9 @@
 	import src.Objects.Stronghold.Stronghold;
 	import src.UI.*;
 	import src.UI.Components.*;
+	import src.UI.Components.BattleReport.BattleReportListTable;
+	import src.UI.Components.BattleReport.LocalReportList;
+	import src.UI.Components.BattleReport.RemoteReportList;
 	import src.UI.Components.TableCells.*;
 	import src.UI.Components.Tribe.*;
 	import src.UI.LookAndFeel.*;
@@ -38,6 +41,9 @@
 		
 		private var updateTimer: Timer;
 		private var pnlStrongholds:JPanel;
+		private var remoteReports:RemoteReportList;
+		private var localReports:LocalReportList;
+		private var strongholdTab:JPanel;
 		
 		public function TribeProfileDialog(profileData: *) 
 		{
@@ -52,6 +58,13 @@
 				update();
 			});			
 			updateTimer.start();
+			
+			pnlTabs.addStateListener(function (e: InteractiveEvent): void {
+				if (pnlTabs.getSelectedComponent() == strongholdTab) {
+					localReports.loadInitially();
+					remoteReports.loadInitially();
+				}
+			});
 		}
 		
 		private function dispose():void {
@@ -95,7 +108,9 @@
 			// Append tabs			
 			pnlTabs.appendTab(createInfoTab(), "Info");
 			pnlTabs.appendTab(createMessageBoardTab(), "Message Board");
-			pnlTabs.appendTab(createStrongholdTab(), StringHelper.localize("STR_STRONGHOLDS"));
+			
+			strongholdTab = createStrongholdTab();
+			pnlTabs.appendTab(strongholdTab, StringHelper.localize("STR_STRONGHOLDS"));
 			
 			// Append main panels
 			appendAll(pnlHeader, pnlTabs);
@@ -124,41 +139,48 @@
 			var pnlTop: JPanel = new JPanel(new BorderLayout(5, 0));
 			var pnlBottom: JPanel = new JPanel(new BorderLayout(5, 0));
 			
-			var label : StrongholdLabel = new StrongholdLabel(stronghold.id, stronghold.name);
-			label.setHorizontalAlignment(AsWingConstants.LEFT);
+			var lblName : StrongholdLabel = new StrongholdLabel(stronghold.id, stronghold.name);
+			lblName.setHorizontalAlignment(AsWingConstants.LEFT);
+			lblName.setVerticalAlignment(AsWingConstants.TOP);
 			
-			var pnlNameStatus : JPanel = new JPanel();
-			pnlNameStatus.append(label);
+			var pnlNameStatus: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 5));			
+			pnlNameStatus.setPreferredHeight(25);
+			pnlNameStatus.append(lblName);				
+			pnlNameStatus.append(Stronghold.getBattleStateString(stronghold, 2, 30));			
 			
-			if (stronghold.objectState == SimpleGameObject.STATE_BATTLE) {
-				pnlNameStatus.append(new JLabel("in battle " + stronghold.battleId.toString()));
-			}
-			
-			var grid: JPanel = new JPanel(new FlowLayout());
-			grid.append(simpleLabelMaker("Level " + stronghold.lvl.toString(), "Level", new AssetIcon(new ICON_UPGRADE())));
-			grid.append(simpleLabelMaker(Util.roundNumber(stronghold.victoryPointRate).toString() + " per day", "Victory Point Rate", new AssetIcon(new ICON_UPGRADE())));
+			var grid: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 0, false));
+			grid.append(simpleLabelMaker(StringHelper.localize("STR_LEVEL_VALUE", stronghold.lvl), StringHelper.localize("STR_LEVEL"), new AssetIcon(new ICON_UPGRADE())));
+			grid.append(simpleLabelMaker(StringHelper.localize("STR_PER_DAY_RATE", Util.roundNumber(stronghold.victoryPointRate)), StringHelper.localize("STR_VP_RATE"), new AssetIcon(new ICON_STAR())));
 			var timediff :int = Global.map.getServerTime() - stronghold.dateOccupied;
-			grid.append(simpleLabelMaker(Util.niceDays(timediff), "Total days occupied", new AssetIcon(new ICON_UPGRADE())));
+			grid.append(simpleLabelMaker(Util.niceDays(timediff), StringHelper.localize("STR_DAYS_OCCUPIED"), new AssetIcon(new ICON_SHIELD())));
 			
-			var lblTroop: JLabel = new JLabel(stronghold.upkeep.toString() + " Troop");
+			var lblTroop: JLabel = new JLabel(StringHelper.localize("STR_UNIT_SINGULAR_PLURAl", stronghold.upkeep));
 			lblTroop.setHorizontalAlignment(AsWingConstants.RIGHT);
 
-			var lblGate: JLabel = new JLabel("Gate " + Stronghold.GateToString(stronghold.lvl, stronghold.gate));
-			lblGate.setHorizontalAlignment(AsWingConstants.RIGHT);
-
-			var pnlGate: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 5, AsWingConstants.RIGHT));						
-			if (stronghold.objectState != SimpleGameObject.STATE_BATTLE && stronghold && Constants.tribeRank <= 1) {
-				var btnGateRepair: JLabelButton = new JLabelButton("Repair");
-				btnGateRepair.addActionListener(function(e: Event): void {
-					Global.mapComm.Stronghold.repairStrongholdGate(stronghold.id);
-				});
-				var tooltip: SimpleTooltip = new SimpleTooltip(btnGateRepair, "Repair the gate");
-				tooltip.append(new ResourcesPanel(Formula.getGateRepairCost(stronghold.lvl, stronghold.gate), profileData.resources, true, false));
-				pnlGate.append(btnGateRepair);
-			}			
+			var pnlGate: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 0, AsWingConstants.RIGHT));									
+			pnlGate.setPreferredHeight(25);
+			var lblGate: JLabel = new JLabel(StringHelper.localize("STR_GATE"), null, AsWingConstants.LEFT);
+			lblGate.setVerticalAlignment(AsWingConstants.TOP);
 			pnlGate.append(lblGate);
 			
-			
+			if (stronghold.objectState != SimpleGameObject.STATE_BATTLE && stronghold.gate < Stronghold.maxGateHp(stronghold.lvl) && Constants.tribeRank <= 1) {
+				var btnGateRepair: JLabelButton = new JLabelButton(Stronghold.gateToString(stronghold.lvl, stronghold.gate), null, AsWingConstants.LEFT);
+				btnGateRepair.useHandCursor = true;
+				btnGateRepair.addEventListener(MouseEvent.CLICK, function(e: Event): void {
+					Global.mapComm.Stronghold.repairStrongholdGate(stronghold.id);
+				});
+				var tooltip: SimpleTooltip = new SimpleTooltip(btnGateRepair, StringHelper.localize("STRONGHOLD_REPAIR_GATE_ACTION"));
+				tooltip.append(new ResourcesPanel(Formula.getGateRepairCost(stronghold.lvl, stronghold.gate), profileData.resources, true, false));				
+				btnGateRepair.setVerticalAlignment(AsWingConstants.TOP);
+				pnlGate.append(btnGateRepair);
+			}						
+			else {
+				var lblGateHealth: JLabel = new JLabel(Stronghold.gateToString(stronghold.lvl, stronghold.gate), null, AsWingConstants.LEFT);
+				lblGateHealth.setVerticalAlignment(AsWingConstants.TOP);
+				pnlGate.append(lblGateHealth);
+			}
+						
+			pnlTop.setPreferredHeight(25);
 			pnlTop.append(pnlNameStatus, "Center");
 			pnlTop.append(pnlGate, "East");
 			
@@ -171,24 +193,22 @@
 			return pnl;
 		}
 		
-		private function createStrongholdTab(): Container {
+		private function createStrongholdTab(): JPanel {
 			// Strongholds List
 			var pnl: JPanel = createStrongholdList();			
-			var tabScrollPanel: JScrollPane = new JScrollPane(new JViewport(pnl, true), JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
-			(tabScrollPanel.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
 			var tabTroops: JTabbedPane = new JTabbedPane();
-			tabTroops.appendTab(tabScrollPanel, StringHelper.localize("STR_STRONGHOLDS_UNDER_COMMAND"));
+			tabTroops.appendTab(Util.createTopAlignedScrollPane(pnl), StringHelper.localize("STR_STRONGHOLDS_UNDER_COMMAND"));
 
 			//  Ongoing Attack Tab
 			pnl = new JPanel();
 			var tabOnGoing: JTabbedPane = new JTabbedPane();
 			tabOnGoing.appendTab(new JScrollPane(pnl, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER), StringHelper.localize("STR_ONGOING_ATTACKS"));
-			tabOnGoing.setPreferredSize(new IntDimension(getPreferredWidth() / 2, 150));
+			tabOnGoing.setPreferredHeight(150);
 
 			// Report Tab
-			pnl = new JPanel();
+			pnl = createReportsPanels();
 			var tabReports: JTabbedPane = new JTabbedPane();
-			tabReports.appendTab(new JScrollPane(pnl, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER), StringHelper.localize("STR_REPORTS"));
+			tabReports.appendTab(pnl, StringHelper.localize("STR_REPORTS"));
 			
 			// Troop + Ongoing
 			var pnlLeft : JPanel = new JPanel(new BorderLayout(10,10));
@@ -199,8 +219,31 @@
 			// Main tab
 			pnl = new JPanel(new BorderLayout(10, 10));
 			pnlLeft.setConstraints("West");
+			pnlLeft.setPreferredWidth(Math.max(150, getPreferredWidth() / 2.5));
 			tabReports.setConstraints("Center");
 			pnl.appendAll(pnlLeft, tabReports);
+			
+			return pnl;
+		}
+		
+		private function createReportsPanels(): JPanel 
+		{			
+			var localReportBorder:TitledBorder = new TitledBorder(null, "Invasion Reports", 1, AsWingConstants.LEFT, 0, 10);				
+			localReportBorder.setBeveled(true);
+
+			localReports = new LocalReportList(BattleReportViewer.REPORT_TRIBE_LOCAL, [BattleReportListTable.COLUMN_DATE, BattleReportListTable.COLUMN_LOCATION, BattleReportListTable.COLUMN_ATTACK_TRIBES], null, false);
+			localReports.setBorder(localReportBorder);
+
+			var pnlRemote: JPanel = new JPanel();			
+			var remoteReportBorder:TitledBorder = new TitledBorder(null, "Foreign Reports", 1, AsWingConstants.LEFT, 0, 10);
+			remoteReportBorder.setColor(new ASColor(0x0, 1));			
+			remoteReportBorder.setBeveled(true);
+
+			remoteReports = new RemoteReportList(BattleReportViewer.REPORT_TRIBE_FOREIGN, [BattleReportListTable.COLUMN_DATE, BattleReportListTable.COLUMN_LOCATION, BattleReportListTable.COLUMN_DEFENSE_TRIBES], null, false);
+			remoteReports.setBorder(remoteReportBorder);
+			
+			var pnl: JPanel = new JPanel(new GridLayout(2, 1, 5));
+			pnl.appendAll(localReports, remoteReports);
 			
 			return pnl;
 		}

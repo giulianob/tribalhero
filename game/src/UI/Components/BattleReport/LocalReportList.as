@@ -32,10 +32,11 @@
 		private var playerNameFilter: String = "";
 		private var viewType:int;
 		private var location:BattleLocation;
+		private var hasLoaded:Boolean;
 		
 		public var refreshOnClose: Boolean = false;
 
-		public function LocalReportList(viewType: int, cols: Array, location: BattleLocation = null)
+		public function LocalReportList(viewType: int, cols: Array, location: BattleLocation = null, loadImmediately: Boolean = true)
 		{
 			this.location = location;
 			this.viewType = viewType;
@@ -69,7 +70,9 @@
 				loadPage(page - 1);
 			});
 
-			loadPage(0);
+			if (loadImmediately) {
+				loadInitially();
+			}
 		}
 		
 		public function filterPlayerName(playerName: String) : void {
@@ -82,6 +85,13 @@
 			btnNext.setVisible(false);			
 
 			Global.mapComm.BattleReport.listLocal(loader, viewType, location, page, playerNameFilter);
+		}
+		
+		public function loadInitially(): void {
+			if (!hasLoaded) {
+				hasLoaded = true;
+				loadPage(0);
+			}
 		}
 
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame

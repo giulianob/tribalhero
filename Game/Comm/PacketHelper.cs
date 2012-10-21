@@ -327,8 +327,8 @@ namespace Game.Comm
                 case TroopState.Stationed:
                 case TroopState.BattleStationed:
                     packet.AddUInt32(1); // Main building id
-                    packet.AddUInt32(stub.Station.LocationX);
-                    packet.AddUInt32(stub.Station.LocationY);
+                    packet.AddUInt32(stub.Station.X);
+                    packet.AddUInt32(stub.Station.Y);
                     break;
             }
 
@@ -649,22 +649,36 @@ namespace Game.Comm
                 }
 
                 // Strongholds
-                var strongholds = strongholdManager.StrongholdsForTribe(tribe);
-                packet.AddInt16((short)strongholds.Count());
+                var strongholds = strongholdManager.StrongholdsForTribe(tribe).ToList();
+                packet.AddInt16((short)strongholds.Count);
                 foreach (var stronghold in strongholds)
                 {
                     packet.AddUInt32(stronghold.Id);
                     packet.AddString(stronghold.Name);
                     packet.AddByte((byte)stronghold.StrongholdState);
                     packet.AddByte(stronghold.Lvl);
-                    packet.AddFloat((float)stronghold.Gate);
+                    packet.AddFloat((float)stronghold.Gate);                    
                     packet.AddUInt32(stronghold.X);
                     packet.AddUInt32(stronghold.Y);
                     packet.AddInt32(stronghold.Troops.StationedHere().Sum(x => x.Upkeep));
                     packet.AddFloat((float)stronghold.VictoryPointRate);
                     packet.AddUInt32(UnixDateTime.DateTimeToUnix(stronghold.DateOccupied.ToUniversalTime()));
                     packet.AddUInt32(stronghold.GateOpenTo == null ? 0 : stronghold.GateOpenTo.Id);
-                    AddToPacket(stronghold.State, packet);
+                    packet.AddString(stronghold.GateOpenTo == null ? string.Empty : stronghold.GateOpenTo.Name);
+                    if (stronghold.GateBattle != null)
+                    {
+                        packet.AddByte(1);
+                        packet.AddUInt32(stronghold.GateBattle.BattleId);
+                    }
+                    else if (stronghold.MainBattle != null)
+                    {
+                        packet.AddByte(2);
+                        packet.AddUInt32(stronghold.MainBattle.BattleId);
+                    }
+                    else
+                    {
+                        packet.AddByte(0);
+                    }
                 }
             }
             else

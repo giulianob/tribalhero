@@ -1183,22 +1183,6 @@ namespace Game.Data
             }
         }
 
-        public uint LocationX
-        {
-            get
-            {
-                return X;
-            }
-        }
-
-        public uint LocationY
-        {
-            get
-            {
-                return Y;
-            }
-        }
-
         #endregion
     }
 }

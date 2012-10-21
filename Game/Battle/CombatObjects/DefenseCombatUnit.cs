@@ -250,7 +250,7 @@ namespace Game.Battle.CombatObjects
         {
             if (TroopStub.Station != null)
             {
-                return new Position(troopStub.Station.LocationX, troopStub.Station.LocationY);
+                return new Position(troopStub.Station.X, troopStub.Station.Y);
             }
 
             return new Position(City.X, City.Y);

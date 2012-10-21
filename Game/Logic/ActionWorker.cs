@@ -383,7 +383,7 @@ namespace Game.Logic
 
         public Error DoPassive(ICanDo workerObject, PassiveAction action, bool visible)
         {
-            if (workerObject is IGameObject && ((IGameObject)workerObject).IsBlocked)
+            if (workerObject.IsBlocked)
                 return Error.ObjectNotFound;
 
             action.IsVisible = visible;

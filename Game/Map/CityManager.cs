@@ -72,13 +72,15 @@ namespace Game.Map
             }
         }
 
+        public uint GetNextCityId()
+        {
+            return (uint)cityIdGen.GetNext();
+        }
+
         public void Add(ICity city)
         {
             lock (cities)
             {
-                city.BeginUpdate();
-                city.Id = (uint)cityIdGen.GetNext();
-                city.EndUpdate();
                 cities[city.Id] = city;
 
                 //Initial save of these objects
@@ -96,12 +98,11 @@ namespace Game.Map
             }
         }
 
-        public void DbLoaderAdd(uint id, ICity city)
+        public void DbLoaderAdd(ICity city)
         {
             lock (cities)
             {
-                city.Id = id;
-                cityIdGen.Set((int)id);
+                cityIdGen.Set((int)city.Id);
 
                 if (city.Deleted != City.DeletedState.Deleted)
                 {

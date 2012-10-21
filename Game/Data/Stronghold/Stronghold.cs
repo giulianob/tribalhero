@@ -93,6 +93,8 @@ namespace Game.Data.Stronghold
             }
         }
 
+        public bool IsBlocked { get; set; }
+
         public ITribe Tribe
         {
             get

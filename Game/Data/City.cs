@@ -14,6 +14,7 @@ using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
+using Game.Logic.Notifications;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
@@ -44,7 +45,7 @@ namespace Game.Data
         private IBattleManager battle;
         private int defensePoint;
         private bool hideNewUnits;
-        private uint id;
+
         private string name = "Washington";
         private uint nextObjectId;
         private byte radius;
@@ -210,18 +211,7 @@ namespace Game.Data
         /// <summary>
         ///   Unique city id
         /// </summary>
-        public uint Id
-        {
-            get
-            {
-                return id;
-            }
-            set
-            {
-                CheckUpdateMode();
-                id = value;
-            }
-        }
+        public uint Id { get; private set; }
 
         /// <summary>
         ///   City name
@@ -346,7 +336,7 @@ namespace Game.Data
                 CheckUpdateMode();
                 this.value = value;
 
-                if (Global.FireEvents && id > 0)
+                if (Global.FireEvents && Id > 0)
                 {
                     World.Current.Regions.CityRegions.GetCityRegion(X, Y).MarkAsDirty();
                     PointUpdate();
@@ -358,13 +348,14 @@ namespace Game.Data
 
         #region Constructors
 
-        public City(IPlayer owner, string name, Resource resource, byte radius, IStructure mainBuilding, decimal ap)
-                : this(owner, name, new LazyResource(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor), radius, mainBuilding, ap)
+        public City(uint id, IPlayer owner, string name, Resource resource, byte radius, IStructure mainBuilding, decimal ap)
+                : this(id, owner, name, new LazyResource(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor), radius, mainBuilding, ap)
         {
         }
 
-        public City(IPlayer owner, string name, LazyResource resource, byte radius, IStructure mainBuilding, decimal ap)
+        public City(uint id, IPlayer owner, string name, LazyResource resource, byte radius, IStructure mainBuilding, decimal ap)
         {
+            Id = id;
             Owner = owner;
             this.name = name;
             this.radius = radius;
@@ -373,7 +364,7 @@ namespace Game.Data
             Resource = resource;
 
             Worker = new ActionWorker(() => this, this);
-            Notifications = new NotificationManager(this);
+            Notifications = new CityNotificationManager(Worker, id);
             References = new ReferenceManager(this);
 
             Technologies = new TechnologyManager(EffectLocation.City, this, id);
@@ -619,7 +610,7 @@ namespace Game.Data
             if (!Global.FireEvents)
                 return;
 
-            if (id == 0)
+            if (Id == 0)
                 return;
 
             if (!IsUpdating)
@@ -652,7 +643,7 @@ namespace Game.Data
         {
             try
             {
-                Global.Channel.Subscribe(s, "/CITY/" + id);
+                Global.Channel.Subscribe(s, "/CITY/" + Id);
             }
             catch(DuplicateSubscriptionException)
             {
@@ -661,7 +652,7 @@ namespace Game.Data
 
         public void Unsubscribe(IChannel s)
         {
-            Global.Channel.Unsubscribe(s, "/CITY/" + id);
+            Global.Channel.Unsubscribe(s, "/CITY/" + Id);
         }
 
         public void ResourceUpdateEvent()
@@ -674,12 +665,12 @@ namespace Game.Data
             var packet = new Packet(Command.CityResourcesUpdate);
             packet.AddUInt32(Id);
             PacketHelper.AddToPacket(Resource, packet);
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         public void RadiusUpdateEvent()
         {
-            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             var packet = new Packet(Command.CityRadiusUpdate);
@@ -689,12 +680,12 @@ namespace Game.Data
             packet.AddUInt32(Id);
             packet.AddByte(radius);
 
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         public void PointUpdate()
         {
-            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             var packet = new Packet(Command.CityPointUpdate);
@@ -705,12 +696,12 @@ namespace Game.Data
             packet.AddUInt16(value);
             packet.AddFloat((float)alignmentPoint);
 
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         public void HideNewUnitsUpdate()
         {
-            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             var packet = new Packet(Command.CityHideNewUnitsUpdate);
@@ -718,12 +709,12 @@ namespace Game.Data
             packet.AddUInt32(Id);
             packet.AddByte(hideNewUnits ? (byte)1 : (byte)0);
 
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         public void NewCityUpdate()
         {
-            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             var packet = new Packet(Command.CityNewUpdate);
@@ -735,7 +726,7 @@ namespace Game.Data
 
         public void ObjAddEvent(IGameObject obj)
         {
-            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             bool doUpdate = IsUpdating;
@@ -750,12 +741,12 @@ namespace Game.Data
             var packet = new Packet(Command.CityObjectAdd);
             packet.AddUInt16(Region.GetRegionIndex(obj));
             PacketHelper.AddToPacket(obj, packet, false);
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         public void ObjRemoveEvent(IGameObject obj)
         {
-            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             bool doUpdate = IsUpdating;
@@ -770,12 +761,12 @@ namespace Game.Data
             var packet = new Packet(Command.CityObjectRemove);
             packet.AddUInt32(Id);
             packet.AddUInt32(obj.ObjectId);
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         public void ObjUpdateEvent(IGameObject sender, uint origX, uint origY)
         {
-            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             bool doUpdate = IsUpdating;
@@ -790,12 +781,12 @@ namespace Game.Data
             var packet = new Packet(Command.CityObjectUpdate);
             packet.AddUInt16(Region.GetRegionIndex(sender));
             PacketHelper.AddToPacket(sender, packet, false);
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         private void WorkerActionRescheduled(GameAction stub, ActionState state)
         {
-            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
@@ -804,12 +795,12 @@ namespace Game.Data
             var packet = new Packet(Command.ActionRescheduled);
             packet.AddUInt32(Id);
             PacketHelper.AddToPacket(stub, packet, true);
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         private void WorkerActionAdded(GameAction stub, ActionState state)
         {
-            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
@@ -818,12 +809,12 @@ namespace Game.Data
             var packet = new Packet(Command.ActionStarted);
             packet.AddUInt32(Id);
             PacketHelper.AddToPacket(stub, packet, true);
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         private void WorkerActionRemoved(GameAction stub, ActionState state)
         {
-            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
@@ -833,12 +824,12 @@ namespace Game.Data
             packet.AddInt32((int)state);
             packet.AddUInt32(Id);
             PacketHelper.AddToPacket(stub, packet, true);
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         private void TechnologiesTechnologyUpgraded(Technology tech)
         {
-            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             var packet = new Packet(Command.TechUpgraded);
@@ -847,12 +838,12 @@ namespace Game.Data
             packet.AddUInt32(tech.Type);
             packet.AddByte(tech.Level);
 
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         private void TechnologiesTechnologyRemoved(Technology tech)
         {
-            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             var packet = new Packet(Command.TechRemoved);
@@ -861,24 +852,24 @@ namespace Game.Data
             packet.AddUInt32(tech.Type);
             packet.AddByte(tech.Level);
 
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         private void TechnologiesTechnologyCleared(ITechnologyManager manager)
         {
-            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             var packet = new Packet(Command.TechCleared);
             packet.AddUInt32(Id);
             packet.AddUInt32(manager.OwnerLocation == EffectLocation.City ? 0 : manager.OwnerId);
 
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         private void TechnologiesTechnologyAdded(Technology tech)
         {
-            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             var packet = new Packet(Command.TechAdded);
@@ -887,12 +878,12 @@ namespace Game.Data
             packet.AddUInt32(tech.Type);
             packet.AddByte(tech.Level);
 
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         private void TroopManagerTroopUpdated(ITroopStub stub)
         {
-            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             bool doUpdate = IsUpdating;
@@ -905,12 +896,12 @@ namespace Game.Data
             var packet = new Packet(Command.TroopUpdated);
             packet.AddUInt32(Id);
             PacketHelper.AddToPacket(stub, packet);
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         private void TroopManagerTroopAdded(ITroopStub stub)
         {
-            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             bool doUpdate = IsUpdating;
@@ -923,12 +914,12 @@ namespace Game.Data
             var packet = new Packet(Command.TroopAdded);
             packet.AddUInt32(Id);
             PacketHelper.AddToPacket(stub, packet);
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         private void TroopManagerTroopRemoved(ITroopStub stub)
         {
-            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             bool doUpdate = IsUpdating;
@@ -942,12 +933,12 @@ namespace Game.Data
             packet.AddUInt32(Id);
             packet.AddUInt32(stub.City.Id);
             packet.AddByte(stub.TroopId);
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         public void UnitTemplateUnitUpdated(UnitTemplate sender)
         {
-            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             DbPersistance.Current.Save(sender);
@@ -955,21 +946,21 @@ namespace Game.Data
             var packet = new Packet(Command.UnitTemplateUpgraded);
             packet.AddUInt32(Id);
             PacketHelper.AddToPacket(sender, packet);
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         public void BattleStarted()
         {
             var packet = new Packet(Command.CityBattleStarted);
             packet.AddUInt32(Id);
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         public void BattleEnded()
         {
             var packet = new Packet(Command.CityBattleEnded);
             packet.AddUInt32(Id);
-            Global.Channel.Post("/CITY/" + id, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         #endregion
@@ -985,6 +976,8 @@ namespace Game.Data
                 return 0;
             }
         }
+
+        public bool IsBlocked { get; set; }
 
         #endregion
 

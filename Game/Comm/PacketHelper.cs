@@ -35,7 +35,7 @@ namespace Game.Comm
             }
         }
 
-        public static void AddToPacket(NotificationManager.Notification notification, Packet packet)
+        public static void AddToPacket(Logic.Notifications.Notification notification, Packet packet)
         {
             packet.AddUInt32(notification.GameObject.City.Id);
             packet.AddUInt32(notification.GameObject.ObjectId);

@@ -299,7 +299,11 @@
     <Compile Include="Logic\ActiveAction.cs" />
     <Compile Include="Logic\IActionTime.cs" />
     <Compile Include="Logic\IActionWorker.cs" />
+    <Compile Include="Logic\IActionWorkerOwner.cs" />
     <Compile Include="Logic\IScheduler.cs" />
+    <Compile Include="Logic\Notifications\CityNotificationManager.cs" />
+    <Compile Include="Logic\Notifications\INotificationOwner.cs" />
+    <Compile Include="Logic\Notifications\Notification.cs" />
     <Compile Include="Logic\PassiveAction.cs" />
     <Compile Include="Logic\Procedures\Procedure.CityCreate.cs" />
     <Compile Include="Logic\Procedures\Procedure.Structure.cs" />
@@ -436,7 +440,7 @@
     <Compile Include="Logic\Formulas\Formula.Cost.cs" />
     <Compile Include="Logic\Formulas\Formula.Troop.cs" />
     <Compile Include="Logic\Formulas\Formula.Time.cs" />
-    <Compile Include="Logic\NotificationManager.cs" />
+    <Compile Include="Logic\Notifications\NotificationManager.cs" />
     <Compile Include="Logic\Procedures\BattleProcedure.cs" />
     <Compile Include="Logic\Procedures\Procedure.Ranking.cs" />
     <Compile Include="Logic\Procedures\Procedure.OnActionCallback.cs" />

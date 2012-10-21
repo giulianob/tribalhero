@@ -159,16 +159,20 @@ package src.Comm.Commands
 			Global.gameContainer.closeAllFrames(true);
 		}		
 		
-		public function repairStrongholdGate(id: uint): void {
+		public function repairStrongholdGate(id: uint, callback: Function = null): void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.STRONGHOLD_GATE_REPAIR;
 			packet.writeUInt(id);
-			session.write(packet, onRepairStrongholdGate, null);
+			session.write(packet, onRepairStrongholdGate, { callback: callback });
 		}
 		
 		public function onRepairStrongholdGate(packet: Packet, custom: *): void {
 			if (!MapComm.tryShowError(packet)) {
 				InfoDialog.showMessageDialog("Info",Locale.loadString("STRONGHOLD_GATE_REPAIRED"));
+			}
+			
+			if (custom.callback) {
+				custom.callback();
 			}
 		}
 	}

@@ -44,15 +44,15 @@
 		private var remoteReports:RemoteReportList;
 		private var localReports:LocalReportList;
 		private var strongholdTab:JPanel;
+		private var messageBoardTab:JPanel;
 		
 		public function TribeProfileDialog(profileData: *) 
 		{
 			this.profileData = profileData;
 			
-			createUI();
+			createUI();				
 			
-			messageBoard.loadThreadPage();
-			
+			// Refreshes the general tribe info
 			updateTimer = new Timer(60 * 5 * 1000);
 			updateTimer.addEventListener(TimerEvent.TIMER, function(e: Event = null): void {
 				update();
@@ -63,6 +63,9 @@
 				if (pnlTabs.getSelectedComponent() == strongholdTab) {
 					localReports.loadInitially();
 					remoteReports.loadInitially();
+				}
+				else if (pnlTabs.getSelectedComponent() == messageBoardTab) {
+					messageBoard.loadInitially();
 				}
 			});
 		}
@@ -107,7 +110,9 @@
 						
 			// Append tabs			
 			pnlTabs.appendTab(createInfoTab(), "Info");
-			pnlTabs.appendTab(createMessageBoardTab(), "Message Board");
+			
+			messageBoardTab = createMessageBoardTab();
+			pnlTabs.appendTab(messageBoardTab, "Message Board");
 			
 			strongholdTab = createStrongholdTab();
 			pnlTabs.appendTab(strongholdTab, StringHelper.localize("STR_STRONGHOLDS"));
@@ -116,7 +121,7 @@
 			appendAll(pnlHeader, pnlTabs);
 		}
 	
-		private function createMessageBoardTab(): Container {		
+		private function createMessageBoardTab(): JPanel {		
 			messageBoard = new MessageBoard();					
 			return messageBoard;
 		}
@@ -167,7 +172,9 @@
 				var btnGateRepair: JLabelButton = new JLabelButton(Stronghold.gateToString(stronghold.lvl, stronghold.gate), null, AsWingConstants.LEFT);
 				btnGateRepair.useHandCursor = true;
 				btnGateRepair.addEventListener(MouseEvent.CLICK, function(e: Event): void {
-					Global.mapComm.Stronghold.repairStrongholdGate(stronghold.id);
+					Global.mapComm.Stronghold.repairStrongholdGate(stronghold.id, function(): void {
+						update();
+					});
 				});
 				var tooltip: SimpleTooltip = new SimpleTooltip(btnGateRepair, StringHelper.localize("STRONGHOLD_REPAIR_GATE_ACTION"));
 				tooltip.append(new ResourcesPanel(Formula.getGateRepairCost(stronghold.lvl, stronghold.gate), profileData.resources, true, false));				
@@ -275,7 +282,7 @@
 				new PlayerCityLabel(incoming.sourcePlayerId, incoming.sourceCityId, incoming.sourcePlayerName, incoming.sourceCityName)
 			);
 			
-			var lblCountdown: CountDownLabel = new CountDownLabel(incoming.endTime, "Battle In Progress");
+			var lblCountdown: CountDownLabel = new CountDownLabel(incoming.endTime, StringHelper.localize("STR_BATTLE_IN_PROGRESS"));
 			
 			pnlContainer.appendAll(pnlHeader, lblCountdown);
 			

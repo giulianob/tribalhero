@@ -14,13 +14,19 @@ package src.UI.Components
 	{		
 		public function RichLabel(text:String = "", rows:int = 0, columns:int = 0)
 		{
+			/**
+			if (rows == 0 && columns == 0) {
+				var removeHtml:RegExp = new RegExp(/<\/?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)\/?>/ig);
+				columns = text.replace(removeHtml, "").length;
+			}*/
+			
 			super("", rows, columns);
 			
 			var css: StyleSheet = new StyleSheet();
 			css.setStyle("a:link", { textDecoration:'underline', fontFamily:'Arial', color:'#0066cc' });
 			setCSS(css);
 			
-			setHtmlText(text);
+			setHtmlText(text);			
 
 			getTextField().addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			
@@ -68,6 +74,12 @@ package src.UI.Components
 					var tribeId: int = int(parts[1]);
 					Global.mapComm.Tribe.viewTribeProfile(tribeId);
 					break;
+				case 'viewTribeProfileByName':
+					var tribeName: String = parts[1];
+					Global.mapComm.Tribe.viewTribeProfileByName(tribeName);
+				case 'viewBattle':
+					var battleId: int = int(parts[1]);
+					Global.mapComm.Battle.viewBattle(battleId);
 				case 'custom':
 					dispatchEvent(new RichLabelCustomEvent(RichLabelCustomEvent.CUSTOM_EVENT_CLICK, parts[1]));
 					break;

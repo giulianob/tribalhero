@@ -38,10 +38,11 @@
 		private var playerNameFilter: String = "";
 		private var viewType:int;
 		private var location:BattleLocation;
+		private var hasLoaded:Boolean;
 		
 		public var refreshOnClose: Boolean = false;
 		
-		public function RemoteReportList(viewType: int, cols: Array, location: BattleLocation = null)
+		public function RemoteReportList(viewType: int, cols: Array, location: BattleLocation = null, loadImmediately: Boolean = true)
 		{
 			this.location = location;
 			this.viewType = viewType;
@@ -74,7 +75,9 @@
 				loadPage(page - 1);
 			});
 
-			loadPage(0);
+			if (loadImmediately) {
+				loadInitially();
+			}
 		}
 
 		public function filterPlayerName(playerName: String) : void {
@@ -88,6 +91,13 @@
 
 			Global.mapComm.BattleReport.listRemote(loader, viewType, location, page, playerNameFilter);
 		}
+		
+		public function loadInitially(): void {
+			if (!hasLoaded) {
+				hasLoaded = true;
+				loadPage(0);
+			}
+		}		
 
 		private function onLoaded(e: Event) : void {
 			var data: Object;

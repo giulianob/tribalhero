@@ -2,6 +2,7 @@
 package src.UI.Sidebars.ObjectInfo.Buttons {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import src.Global;
 	import src.Objects.Factories.*;
 	import src.Objects.GameObject;
 	import src.Objects.Actions.ActionButton;
@@ -47,8 +48,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			if (isEnabled())
 			{
 				if (parentObj.state is BattleState) {
-					var battleViewer: BattleViewer = new BattleViewer((parentObj.state as BattleState).battleId);
-					battleViewer.show(null, false);
+					Global.mapComm.Battle.viewBattle((parentObj.state as BattleState).battleId);
 				}
 			}
 		}

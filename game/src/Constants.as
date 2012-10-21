@@ -28,7 +28,7 @@ package src
 		public static const debug:int = 0;
 		public static const defLang:String = "en";
 		
-		public static const alwaysEnableButtons: Boolean = true;
+		public static const alwaysEnableButtons: Boolean = false;
 
 		public static var secondsPerUnit: Number = 1;
 

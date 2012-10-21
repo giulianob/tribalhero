@@ -5,6 +5,7 @@
 	import src.Map.*;
 	import src.Objects.*;
 	import src.Objects.Actions.*;
+	import src.Objects.Stronghold.Stronghold;
 	import src.Objects.Troop.*;
 	import src.UI.Components.ScreenMessages.*;
 	import src.UI.Dialog.*;
@@ -255,21 +256,24 @@
 					upkeep: packet.readInt(),
 					victoryPointRate: packet.readFloat(),
 					dateOccupied: packet.readUInt(),
-					gateOpenTo: packet.readUInt(),
-					objectState: packet.readByte()
+					gateOpenTo: {
+						id: packet.readUInt(),
+						name: packet.readString()
+					},
+					battleState: packet.readByte()
 				};
 				
-				if(stronghold.objectState==SimpleGameObject.STATE_BATTLE) {
+				if (stronghold.battleState != Stronghold.BATTLE_STATE_NONE) {
 					stronghold.battleId = packet.readUInt();
 				}
 
 				Global.map.usernames.strongholds.add(new Username(stronghold.id, stronghold.name));
 				profileData.strongholds.push(stronghold);
-				trace("stronghold[" + i.toString() + "] : " + stronghold.name);
 			}
 			
-			if (custom.callback)
+			if (custom.callback) {
 				custom.callback(profileData);
+			}
 			else
 			{			
 				if (!profileData) 

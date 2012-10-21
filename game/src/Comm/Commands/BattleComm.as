@@ -112,8 +112,10 @@
 
 			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED)
 			{			
-				battle.end();
-				battles.splice(battles.indexOf(battle), 1);
+				if (battle) {
+					battle.end();
+					battles.splice(battles.indexOf(battle), 1);
+				}
 				
 				if (custom.battleViewer.getFrame()) {
 					custom.battleViewer.getFrame().dispose();
@@ -322,6 +324,12 @@
 			if (!battle) return;
 
 			battle.removeFromDefense(packet.readUInt());
+		}
+		
+		public function viewBattle(battleId:int):void 
+		{
+			var battleViewer: BattleViewer = new BattleViewer(battleId);
+			battleViewer.show(null, false);
 		}
 	}
 

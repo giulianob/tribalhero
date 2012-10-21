@@ -1,8 +1,3 @@
--- MySQL dump 10.13  Distrib 5.5.16, for Win64 (x86)
---
--- Host: localhost    Database: tribalhero_server
--- ------------------------------------------------------
--- Server version	5.5.16-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,11 +9,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `active_actions`
---
-
 DROP TABLE IF EXISTS `active_actions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -38,11 +28,6 @@ CREATE TABLE `active_actions` (
   PRIMARY KEY (`id`,`location_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `assignments`
---
-
 DROP TABLE IF EXISTS `assignments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -62,11 +47,6 @@ CREATE TABLE `assignments` (
   KEY `idx_city_id` (`city_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `assignments_list`
---
-
 DROP TABLE IF EXISTS `assignments_list`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -78,11 +58,6 @@ CREATE TABLE `assignments_list` (
   KEY `idx_assignments_list_id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `attack_combat_units`
---
-
 DROP TABLE IF EXISTS `attack_combat_units`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -116,11 +91,6 @@ CREATE TABLE `attack_combat_units` (
   PRIMARY KEY (`battle_id`,`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `battle_managers`
---
-
 DROP TABLE IF EXISTS `battle_managers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -141,11 +111,6 @@ CREATE TABLE `battle_managers` (
   PRIMARY KEY (`battle_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `battle_report_objects`
---
-
 DROP TABLE IF EXISTS `battle_report_objects`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -165,13 +130,8 @@ CREATE TABLE `battle_report_objects` (
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`battle_report_troop_id`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `battle_report_troops`
---
-
 DROP TABLE IF EXISTS `battle_report_troops`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -193,11 +153,6 @@ CREATE TABLE `battle_report_troops` (
   KEY `combat_object_id` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `battle_report_views`
---
-
 DROP TABLE IF EXISTS `battle_report_views`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -223,13 +178,8 @@ CREATE TABLE `battle_report_views` (
   KEY `battle_report_troop_id` (`group_id`),
   KEY `battle_id` (`battle_id`),
   KEY `owner_type` (`owner_type`,`owner_id`,`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `battle_reports`
---
-
 DROP TABLE IF EXISTS `battle_reports`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -245,11 +195,6 @@ CREATE TABLE `battle_reports` (
   KEY `created` (`created`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `battle_tribes`
---
-
 DROP TABLE IF EXISTS `battle_tribes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -260,13 +205,8 @@ CREATE TABLE `battle_tribes` (
   `is_attacker` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `battle_id` (`battle_id`,`tribe_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `battles`
---
-
 DROP TABLE IF EXISTS `battles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -285,11 +225,6 @@ CREATE TABLE `battles` (
   KEY `owner` (`owner_type`,`owner_id`,`location_type`,`location_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `chain_actions`
---
-
 DROP TABLE IF EXISTS `chain_actions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -307,11 +242,6 @@ CREATE TABLE `chain_actions` (
   PRIMARY KEY (`id`,`location_type`,`location_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `cities`
---
-
 DROP TABLE IF EXISTS `cities`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -353,11 +283,6 @@ CREATE TABLE `cities` (
   KEY `deleted` (`deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `city_defensive_combat_groups`
---
-
 DROP TABLE IF EXISTS `city_defensive_combat_groups`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -369,11 +294,6 @@ CREATE TABLE `city_defensive_combat_groups` (
   PRIMARY KEY (`id`,`battle_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `city_offensive_combat_groups`
---
-
 DROP TABLE IF EXISTS `city_offensive_combat_groups`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -385,11 +305,6 @@ CREATE TABLE `city_offensive_combat_groups` (
   PRIMARY KEY (`id`,`battle_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `combat_structures`
---
-
 DROP TABLE IF EXISTS `combat_structures`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -419,11 +334,6 @@ CREATE TABLE `combat_structures` (
   PRIMARY KEY (`battle_id`,`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `defense_combat_units`
---
-
 DROP TABLE IF EXISTS `defense_combat_units`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -457,11 +367,6 @@ CREATE TABLE `defense_combat_units` (
   PRIMARY KEY (`battle_id`,`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `forests`
---
-
 DROP TABLE IF EXISTS `forests`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -484,11 +389,6 @@ CREATE TABLE `forests` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `market`
---
-
 DROP TABLE IF EXISTS `market`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -501,11 +401,6 @@ CREATE TABLE `market` (
   PRIMARY KEY (`resource_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `message_board_posts`
---
-
 DROP TABLE IF EXISTS `message_board_posts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -520,11 +415,6 @@ CREATE TABLE `message_board_posts` (
   UNIQUE KEY `idx_message_board_posts_message_board_thread_id_and_created` (`message_board_thread_id`,`created`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `message_board_read`
---
-
 DROP TABLE IF EXISTS `message_board_read`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -538,11 +428,6 @@ CREATE TABLE `message_board_read` (
   KEY `idx_message_board_read_last_read` (`last_read`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `message_board_threads`
---
-
 DROP TABLE IF EXISTS `message_board_threads`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -564,11 +449,6 @@ CREATE TABLE `message_board_threads` (
   KEY `idx_message_board_threads_last_post_date` (`last_post_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `messages`
---
-
 DROP TABLE IF EXISTS `messages`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -587,11 +467,6 @@ CREATE TABLE `messages` (
   KEY `recipient_player_id` (`recipient_player_id`,`recipient_state`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `notifications`
---
-
 DROP TABLE IF EXISTS `notifications`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -602,11 +477,6 @@ CREATE TABLE `notifications` (
   PRIMARY KEY (`city_id`,`object_id`,`action_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `notifications_list`
---
-
 DROP TABLE IF EXISTS `notifications_list`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -618,11 +488,6 @@ CREATE TABLE `notifications_list` (
   KEY `city_id` (`city_id`,`object_id`,`action_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `passive_actions`
---
-
 DROP TABLE IF EXISTS `passive_actions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -643,11 +508,6 @@ CREATE TABLE `passive_actions` (
   PRIMARY KEY (`id`,`location_type`,`location_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `players`
---
-
 DROP TABLE IF EXISTS `players`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -666,11 +526,6 @@ CREATE TABLE `players` (
   KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `rankings`
---
-
 DROP TABLE IF EXISTS `rankings`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -688,11 +543,6 @@ CREATE TABLE `rankings` (
   KEY `rank` (`rank`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `reference_stubs`
---
-
 DROP TABLE IF EXISTS `reference_stubs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -705,11 +555,6 @@ CREATE TABLE `reference_stubs` (
   PRIMARY KEY (`id`,`city_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `reported_groups`
---
-
 DROP TABLE IF EXISTS `reported_groups`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -718,11 +563,6 @@ CREATE TABLE `reported_groups` (
   PRIMARY KEY (`battle_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `reported_groups_list`
---
-
 DROP TABLE IF EXISTS `reported_groups_list`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -733,11 +573,6 @@ CREATE TABLE `reported_groups_list` (
   KEY `battle_id` (`battle_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `schema_migrations`
---
-
 DROP TABLE IF EXISTS `schema_migrations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -746,11 +581,6 @@ CREATE TABLE `schema_migrations` (
   UNIQUE KEY `idx_schema_migrations_version` (`version`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `simple_objects`
---
-
 DROP TABLE IF EXISTS `simple_objects`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -762,11 +592,6 @@ CREATE TABLE `simple_objects` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Used in Database/DatabasePerformanceTest.cs';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `stronghold_combat_groups`
---
-
 DROP TABLE IF EXISTS `stronghold_combat_groups`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -777,11 +602,6 @@ CREATE TABLE `stronghold_combat_groups` (
   PRIMARY KEY (`id`,`battle_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `stronghold_combat_structures`
---
-
 DROP TABLE IF EXISTS `stronghold_combat_structures`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -807,11 +627,6 @@ CREATE TABLE `stronghold_combat_structures` (
   PRIMARY KEY (`battle_id`,`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `stronghold_combat_units`
---
-
 DROP TABLE IF EXISTS `stronghold_combat_units`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -838,11 +653,6 @@ CREATE TABLE `stronghold_combat_units` (
   PRIMARY KEY (`battle_id`,`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `strongholds`
---
-
 DROP TABLE IF EXISTS `strongholds`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -864,11 +674,6 @@ CREATE TABLE `strongholds` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `structure_properties`
---
-
 DROP TABLE IF EXISTS `structure_properties`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -880,11 +685,6 @@ CREATE TABLE `structure_properties` (
   KEY `structure_id` (`structure_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `structure_properties_list`
---
-
 DROP TABLE IF EXISTS `structure_properties_list`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -897,11 +697,6 @@ CREATE TABLE `structure_properties_list` (
   KEY `combo_index` (`city_id`,`structure_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `structures`
---
-
 DROP TABLE IF EXISTS `structures`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -921,11 +716,6 @@ CREATE TABLE `structures` (
   PRIMARY KEY (`id`,`city_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `system_variables`
---
-
 DROP TABLE IF EXISTS `system_variables`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -936,11 +726,6 @@ CREATE TABLE `system_variables` (
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `technologies`
---
-
 DROP TABLE IF EXISTS `technologies`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -951,11 +736,6 @@ CREATE TABLE `technologies` (
   PRIMARY KEY (`city_id`,`owner_id`,`owner_location`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `technologies_list`
---
-
 DROP TABLE IF EXISTS `technologies_list`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -968,11 +748,6 @@ CREATE TABLE `technologies_list` (
   KEY `city_id` (`city_id`,`owner_id`,`owner_location`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tribes`
---
-
 DROP TABLE IF EXISTS `tribes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -994,11 +769,6 @@ CREATE TABLE `tribes` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tribesmen`
---
-
 DROP TABLE IF EXISTS `tribesmen`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -1014,11 +784,6 @@ CREATE TABLE `tribesmen` (
   PRIMARY KEY (`player_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `troop_stubs`
---
-
 DROP TABLE IF EXISTS `troop_stubs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -1033,11 +798,6 @@ CREATE TABLE `troop_stubs` (
   PRIMARY KEY (`id`,`city_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `troop_stubs_list`
---
-
 DROP TABLE IF EXISTS `troop_stubs_list`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -1050,11 +810,6 @@ CREATE TABLE `troop_stubs_list` (
   KEY `id` (`id`,`city_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `troop_templates`
---
-
 DROP TABLE IF EXISTS `troop_templates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -1064,11 +819,6 @@ CREATE TABLE `troop_templates` (
   PRIMARY KEY (`city_id`,`troop_stub_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `troop_templates_list`
---
-
 DROP TABLE IF EXISTS `troop_templates_list`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -1087,11 +837,6 @@ CREATE TABLE `troop_templates_list` (
   KEY `city_id` (`city_id`,`troop_stub_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `troops`
---
-
 DROP TABLE IF EXISTS `troops`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -1117,11 +862,6 @@ CREATE TABLE `troops` (
   PRIMARY KEY (`id`,`city_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `unit_templates`
---
-
 DROP TABLE IF EXISTS `unit_templates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -1130,11 +870,6 @@ CREATE TABLE `unit_templates` (
   PRIMARY KEY (`city_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `unit_templates_list`
---
-
 DROP TABLE IF EXISTS `unit_templates_list`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -1155,12 +890,6 @@ CREATE TABLE `unit_templates_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-10-16 19:50:48
--- MySQL dump 10.13  Distrib 5.5.16, for Win64 (x86)
---
--- Host: localhost    Database: tribalhero_server
--- ------------------------------------------------------
--- Server version	5.5.16-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -1172,10 +901,6 @@ CREATE TABLE `unit_templates_list` (
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Dumping data for table `schema_migrations`
---
 
 LOCK TABLES `schema_migrations` WRITE;
 /*!40000 ALTER TABLE `schema_migrations` DISABLE KEYS */;
@@ -1192,4 +917,3 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-10-16 19:50:49

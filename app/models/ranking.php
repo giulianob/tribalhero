@@ -357,7 +357,7 @@ class Ranking extends AppModel {
     public function rankTribe($type, $field, $order) {
         $tribes = $this->Tribe->find('all', array(
                     'contain' => array(),
-                    'conditions' => array(),
+                    'conditions' => array('Tribe.deleted' => 0),
                     'order' => array($field . ' ' . $order, 'id ASC'),
                     'fields' => array('id', $field ),
                 ));

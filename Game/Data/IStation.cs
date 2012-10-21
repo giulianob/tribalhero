@@ -14,11 +14,9 @@ namespace Game.Data
         ITroopManager Troops { get; }
     }
 
-    public interface ILocation : ILockable
+    public interface ILocation : ILockable, IXYPosition
     {
         uint LocationId { get; }
         LocationType LocationType { get; }
-        uint LocationX { get; }
-        uint LocationY { get; }
     }
 }

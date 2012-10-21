@@ -16,7 +16,7 @@ using Persistance;
 namespace Game.Data.Stronghold
 {
         
-    class Stronghold : SimpleGameObject, IStronghold, IStation
+    class Stronghold : SimpleGameObject, IStronghold
     {
         private readonly IDbManager dbManager;
         private readonly Formula formula;
@@ -278,22 +278,6 @@ namespace Game.Data.Stronghold
             get
             {
                 return LocationType.Stronghold;
-            }
-        }
-
-        public uint LocationX
-        {
-            get
-            {
-                return x;
-            }
-        }
-
-        public uint LocationY
-        {
-            get
-            {
-                return y;
             }
         }
 

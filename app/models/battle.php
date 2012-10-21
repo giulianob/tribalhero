@@ -430,7 +430,7 @@ class Battle extends AppModel {
     function viewInvasionReport($ownerType, $ownerId, $battleId, &$outcomeOnly, &$groupId, &$isUnread, &$loot) {
         $loot = null;
         $outcomeOnly = false;
-        $groupId = 1;
+        $groupId = $ownerType == 'City' ? 1 : 0;
         $isUnread = false;
 
         $options = array(
@@ -529,7 +529,8 @@ class Battle extends AppModel {
                 'BattleReportView.read',
                 'Battle.location_type',
                 'Battle.location_id',
-            )
+            ),
+            'order' => 'Battle.ended DESC'
         );
 
         $options['conditions']['BattleReportView.owner_type'] = $ownerType;

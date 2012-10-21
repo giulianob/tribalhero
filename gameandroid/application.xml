@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?> 
+<application xmlns="http://ns.adobe.com/air/application/2.5">
+	
+	<id>TribalHero</id> 
+	<versionNumber>1.0</versionNumber> 
+	<filename>TribalHero</filename> 
+	
+	<name>TribalHero</name> 
+	<description></description> 
+	<copyright></copyright> 
+	
+	<initialWindow> 
+		<content>Game.swf</content> 
+		<visible>true</visible>
+		<fullScreen>true</fullScreen>
+		<aspectRatio>landscape</aspectRatio>
+        <autoOrients>true</autoOrients>
+	</initialWindow>
+	
+	<icon>
+		<image36x36>icons/icon36.png</image36x36>
+		<image48x48>icons/icon48.png</image48x48>
+		<image72x72>icons/icon72.png</image72x72>
+	</icon>
+	
+    <supportedProfiles>mobileDevice</supportedProfiles>
+	
+	<android>  
+		<manifestAdditions>  
+		<![CDATA[  
+			<manifest>  
+			<uses-permission android:name="android.permission.INTERNET"/>
+			<uses-permission android:name="android.permission.WAKE_LOCK" />  
+			<uses-permission android:name="android.permission.READ_PHONE_STATE" />  
+			</manifest>  
+		]]>  
+		</manifestAdditions>  
+	</android>
+	
+	<!-- 
+	More options:
+	http://livedocs.adobe.com/flex/3/html/File_formats_1.html#1043413
+	-->
+</application>

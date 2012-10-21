@@ -733,22 +733,11 @@ namespace Game.Database
 
             foreach (var stubInfo in stationedTroops)
             {
+                string stationType = ((LocationType)stubInfo.stationType).ToString();
                 uint stationId = stubInfo.stationId;
-                switch((LocationType)stubInfo.stationType)
-                {                        
-                    case LocationType.City:
-                        ICity stationedCity;
-                        if (!World.TryGetObjects(stationId, out stationedCity))
-                            throw new Exception("City not found");
-                        stationedCity.Troops.DbLoaderAddStation(stubInfo.stub);
-                        break;
-                    case LocationType.Stronghold:
-                        IStronghold stronghold;
-                        if (!StrongholdManager.TryGetStronghold(stationId, out stronghold))
-                            throw new Exception("Stronghold not found");
-                        stronghold.Troops.DbLoaderAddStation(stubInfo.stub);
-                        break;
-                }
+
+                IStation station = ResolveLocationAs<IStation>(stationType, stationId);
+                station.Troops.DbLoaderAddStation(stubInfo.stub);
             }
 
             #endregion
@@ -1453,6 +1442,25 @@ namespace Game.Database
             }
 
             #endregion
+        }
+    
+        private T ResolveLocationAs<T>(string locationType, uint locationId)
+        {
+                switch((LocationType)Enum.Parse(typeof(LocationType), locationType, true))
+                {                        
+                    case LocationType.City:
+                        ICity city;
+                        if (!World.TryGetObjects(locationId, out city))
+                            throw new Exception("City not found");
+                        return (T)city;
+                    case LocationType.Stronghold:
+                        IStronghold stronghold;
+                        if (!StrongholdManager.TryGetStronghold(locationId, out stronghold))
+                            throw new Exception("Stronghold not found");
+                        return (T)stronghold;
+                    default:
+                        throw new Exception("Unknown location type");
+                }
         }
     }
 }

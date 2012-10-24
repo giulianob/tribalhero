@@ -39,12 +39,13 @@ CREATE TABLE `assignments` (
   `attack_time` datetime NOT NULL,
   `mode` varchar(20) DEFAULT NULL,
   `dispatch_count` int(11) unsigned NOT NULL,
-  `city_id` int(11) unsigned DEFAULT NULL,
+  `location_type` varchar(15) NOT NULL,
+  `location_id` int(10) unsigned DEFAULT NULL,
   `description` varchar(250) NOT NULL DEFAULT '',
   `is_attack` tinyint(1) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `idx_assignments_tribe_id` (`tribe_id`),
-  KEY `idx_city_id` (`city_id`)
+  KEY `idx_city_id` (`location_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `assignments_list`;
@@ -130,7 +131,7 @@ CREATE TABLE `battle_report_objects` (
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`battle_report_troop_id`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `battle_report_troops`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -178,7 +179,7 @@ CREATE TABLE `battle_report_views` (
   KEY `battle_report_troop_id` (`group_id`),
   KEY `battle_id` (`battle_id`),
   KEY `owner_type` (`owner_type`,`owner_id`,`created`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `battle_reports`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -205,7 +206,7 @@ CREATE TABLE `battle_tribes` (
   `is_attacker` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `battle_id` (`battle_id`,`tribe_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `battles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

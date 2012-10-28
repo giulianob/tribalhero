@@ -20,6 +20,7 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
+using Ninject;
 using Persistance;
 
 #endregion
@@ -364,7 +365,7 @@ namespace Game.Data
             Resource = resource;
 
             Worker = new ActionWorker(() => this, this);
-            Notifications = new CityNotificationManager(Worker, id);
+            Notifications = new CityNotificationManager(Worker, id, DbPersistance.Current);
             References = new ReferenceManager(this);
 
             Technologies = new TechnologyManager(EffectLocation.City, this, id);

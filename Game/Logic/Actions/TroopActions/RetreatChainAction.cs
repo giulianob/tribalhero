@@ -111,9 +111,10 @@ namespace Game.Logic.Actions
                         throw new Exception();
                     }
 
+                    city.Notifications.Remove(this);
+
                     if (city.Battle == null)
-                    {
-                        city.Notifications.Remove(this);
+                    {                        
                         city.References.Remove(troopObject, this);
                         Procedure.Current.TroopObjectDelete(troopObject, true);
                         StateChange(ActionState.Completed);
@@ -156,8 +157,7 @@ namespace Game.Logic.Actions
                     }
 
 
-                    city.References.Remove(troopObject, this);
-                    city.Notifications.Remove(this);
+                    city.References.Remove(troopObject, this);                    
                     Procedure.Current.TroopObjectDelete(troopObject, troopObject.Stub.TotalCount != 0);
                     StateChange(ActionState.Completed);
                 }

@@ -1,10 +1,11 @@
 #region
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
-using Game.Database;
+using Persistance;
 
 #endregion
 
@@ -12,12 +13,21 @@ namespace Game.Logic.Notifications
 {
     public class NotificationManager : IEnumerable<Notification>
     {
+        public event EventHandler<NotificationEventArgs> NotificationAdded = (sender, args) => { };
+
+        public event EventHandler<NotificationEventArgs> NotificationRemoved = (sender, args) => { };
+
+        public event EventHandler<NotificationEventArgs> NotificationUpdated = (sender, args) => { };
+ 
+        private readonly IDbManager dbManager;
+
         private readonly List<Notification> notifications = new List<Notification>();
 
         private readonly object objLock = new object();
 
-        public NotificationManager(IActionWorker worker)
+        public NotificationManager(IActionWorker worker, IDbManager dbManager)
         {
+            this.dbManager = dbManager;
             worker.ActionRescheduled += WorkerActionRescheduled;
             worker.ActionRemoved += WorkerOnActionRemoved;
         }
@@ -85,7 +95,7 @@ namespace Game.Logic.Notifications
 
             if (persist)
             {
-                DbPersistance.Current.Save(notification);
+                dbManager.Save(notification);
             }
         }
 
@@ -97,6 +107,8 @@ namespace Game.Logic.Notifications
                     return false;
 
                 notifications.Add(notification);
+
+                NotificationAdded(this, new NotificationEventArgs(notification));
 
                 return true;
             }
@@ -117,10 +129,12 @@ namespace Game.Logic.Notifications
         protected virtual void RemoveNotification(Notification notification)
         {
             notifications.Remove(notification);
+            NotificationRemoved(this, new NotificationEventArgs(notification));
         }
 
         protected virtual void UpdateNotification(Notification notification)
         {
+            NotificationUpdated(this, new NotificationEventArgs(notification));
         }
 
         private void WorkerActionRescheduled(GameAction action, ActionState state)
@@ -162,7 +176,7 @@ namespace Game.Logic.Notifications
             lock (objLock)
             {
                 RemoveNotificationsForAction(action);
-                DbPersistance.Current.Delete(notification);
+                dbManager.Delete(notification);
             }
         }    
 

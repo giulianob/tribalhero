@@ -19,7 +19,7 @@ namespace Game.Logic
     {
         public ILocation Location { get; set; }
 
-        private readonly Func<ILockable> lockDelegate;
+        public Func<ILockable> LockDelegate { get; set; }
 
         private readonly LargeIdGenerator actionIdGen = new LargeIdGenerator(ushort.MaxValue);
 
@@ -27,10 +27,10 @@ namespace Game.Logic
 
         private readonly IDictionary<uint, PassiveAction> passive = new Dictionary<uint, PassiveAction>();
 
-        public ActionWorker(Func<ILockable> lockDelegate, ILocation location)
+        public ActionWorker(Func<ILockable> lockDelegate = null, ILocation location = null)
         {
             Location = location;
-            this.lockDelegate = lockDelegate;
+            LockDelegate = lockDelegate;
         }
 
         #region Properties
@@ -55,7 +55,7 @@ namespace Game.Logic
 
         private void NotifyPassive(GameAction action, ActionState state)
         {
-            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(lockDelegate());
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(LockDelegate());
 
             PassiveAction actionStub;
             if (!passive.TryGetValue(action.ActionId, out actionStub))
@@ -121,7 +121,7 @@ namespace Game.Logic
 
         private void NotifyActive(GameAction action, ActionState state)
         {
-            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(lockDelegate());
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(LockDelegate());
 
             ActiveAction actionStub;
             if (!active.TryGetValue(action.ActionId, out actionStub))
@@ -196,7 +196,7 @@ namespace Game.Logic
 
             // Cancel Active actions
             IList<ActiveAction> activeList;
-            using (Concurrency.Current.Lock(lockDelegate()))
+            using (Concurrency.Current.Lock(LockDelegate()))
             {
                 // Very important to keep the ToList() here since we will be modifying the collection in the loop below and an IEnumerable will crash!
                 activeList = active.Values.Where(actionStub => actionStub.WorkerObject == workerObject).ToList();
@@ -212,7 +212,7 @@ namespace Game.Logic
 
             // Cancel Passive actions
             IList<PassiveAction> passiveList;
-            using (Concurrency.Current.Lock(lockDelegate()))
+            using (Concurrency.Current.Lock(LockDelegate()))
             {
                 // Very important to keep the ToList() here since we will be modifying the collection in the loop below and an IEnumerable will crash!
                 passiveList = passive.Values.Where(action => action.WorkerObject == workerObject).ToList();
@@ -441,7 +441,7 @@ namespace Game.Logic
 
             passive.Add(action.ActionId, action);
 
-            using (Concurrency.Current.Lock(lockDelegate()))
+            using (Concurrency.Current.Lock(LockDelegate()))
             {
                 action.Execute();
             }

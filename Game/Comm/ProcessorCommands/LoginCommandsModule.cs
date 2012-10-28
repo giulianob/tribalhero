@@ -24,9 +24,12 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly IActionFactory actionFactory;
 
-        public LoginCommandsModule(IActionFactory actionFactory)
+        private readonly ITribeManager tribeManager;
+
+        public LoginCommandsModule(IActionFactory actionFactory, ITribeManager tribeManager)
         {
             this.actionFactory = actionFactory;
+            this.tribeManager = tribeManager;
         }
 
         private readonly object loginLock = new object();
@@ -208,7 +211,7 @@ namespace Game.Comm.ProcessorCommands
                 reply.AddString(player.Name);
                 reply.AddInt32(Config.newbie_protection);
                 reply.AddUInt32(UnixDateTime.DateTimeToUnix(player.Created.ToUniversalTime()));
-                reply.AddInt32(player.Tribesman == null ? 0 : player.Tribesman.Tribe.GetIncomingList().Count());
+                reply.AddInt32(player.Tribesman == null ? 0 : tribeManager.GetIncomingList(player.Tribesman.Tribe).Count());
                 reply.AddInt16((short)(player.Tribesman == null ? 0 : player.Tribesman.Tribe.AssignmentCount));
 
                 //Server time

@@ -1,5 +1,6 @@
 ﻿using Game.Comm;
 using Game.Data;
+using Persistance;
 
 namespace Game.Logic.Notifications
 {
@@ -9,8 +10,8 @@ namespace Game.Logic.Notifications
 
         private readonly string channelName;
 
-        public CityNotificationManager(IActionWorker worker, uint cityId)
-                : base(worker)
+        public CityNotificationManager(IActionWorker worker, uint cityId, IDbManager actionWorker)
+                : base(worker, actionWorker)
         {
             this.cityId = cityId;
             channelName = "/CITY/" + cityId;

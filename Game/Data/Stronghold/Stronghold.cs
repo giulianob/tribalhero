@@ -7,7 +7,7 @@ using Game.Battle;
 using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic;
-using Game.Logic.Formulas;
+using Game.Logic.Notifications;
 using Game.Map;
 using Game.Util;
 using Game.Util.Locking;
@@ -19,11 +19,10 @@ namespace Game.Data.Stronghold
     class Stronghold : SimpleGameObject, IStronghold
     {
         private readonly IDbManager dbManager;
-        private readonly Formula formula;
 
         public const string DB_TABLE = "strongholds";
 
-        #region Implementation of IStronghold
+        public event EventHandler<EventArgs> GateStatusChanged = (sender, args) => { }; 
 
         public uint Id { get; private set; }
 
@@ -49,11 +48,15 @@ namespace Game.Data.Stronghold
 
         private ITribe tribe;
 
+        private ITribe gateOpenTo;
+
         public IBattleManager MainBattle { get; set; }
 
         public IBattleManager GateBattle { get; set; }
 
         public IActionWorker Worker { get; private set; }
+
+        public NotificationManager Notifications { get; private set; }
 
         public IEnumerable<ILockable> LockList
         {
@@ -108,24 +111,45 @@ namespace Game.Data.Stronghold
             }
         }
 
-        public ITribe GateOpenTo { get; set; }
-
-        #endregion
+        public ITribe GateOpenTo
+        {
+            get
+            {
+                return gateOpenTo;
+            }
+            set
+            {
+                gateOpenTo = value;
+                GateStatusChanged(this, new EventArgs());
+            }
+        }
 
         #region Constructor
 
-        public Stronghold(uint id, string name, byte level, uint x, uint y, decimal gate, IDbManager dbManager, Formula formula)
+        public Stronghold(uint id, string name, byte level, uint x, uint y, decimal gate, IDbManager dbManager, NotificationManager notificationManager, ITroopManager troopManager, IActionWorker actionWorker)
         {
+            Notifications = notificationManager;
             this.dbManager = dbManager;
-            this.formula = formula;
             Id = id;
             Name = name;
             Lvl = level;
             this.x = x;
             this.y = y;
-            Worker = new ActionWorker(() => this, this);
-            Troops = new TroopManager(this, null);
+            Worker = actionWorker;
+            Troops = troopManager;
             Gate = gate;
+
+            Notifications.NotificationAdded += NotificationsUpdate;
+            Notifications.NotificationRemoved += NotificationsUpdate;
+            Notifications.NotificationUpdated += NotificationsUpdate;
+        }
+
+        private void NotificationsUpdate(object sender, NotificationEventArgs notificationEventArgs)
+        {
+            if (Tribe != null)
+            {
+                Tribe.SendUpdate();
+            }
         }
 
         #endregion
@@ -250,7 +274,7 @@ namespace Game.Data.Stronghold
             Update();            
         }
 
-        protected new void Update()
+        protected override void Update()
         {
             base.Update();
 
@@ -341,6 +365,6 @@ namespace Game.Data.Stronghold
 
         public bool DbPersisted { get; set; }
 
-        #endregion
+        #endregion        
     }
 }

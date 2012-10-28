@@ -13,6 +13,7 @@
 			
 			
 			//Icons
+			ICON_UNFRIEND;
 			ICON_WORLD;
 			ICON_CROP;
 			ICON_BATTLE;

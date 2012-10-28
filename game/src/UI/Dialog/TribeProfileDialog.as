@@ -45,6 +45,7 @@
 		private var localReports:LocalReportList;
 		private var strongholdTab:JPanel;
 		private var messageBoardTab:JPanel;
+		private var pnlOngoingAttacks:JPanel;
 		
 		public function TribeProfileDialog(profileData: *) 
 		{
@@ -138,6 +139,43 @@
 			
 			return label;
 		}
+
+		private function createOngoingAttackItem(stronghold : * ): JPanel {
+			var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS,0));
+			var pnlTop: JPanel = new JPanel(new BorderLayout(5, 0));
+			var pnlBottom: JPanel = new JPanel(new BorderLayout(5, 0));
+			
+			var lblName : StrongholdLabel = new StrongholdLabel(stronghold.id, false, stronghold.name);
+			lblName.setHorizontalAlignment(AsWingConstants.LEFT);
+			lblName.setVerticalAlignment(AsWingConstants.TOP);
+			
+			var pnlNameStatus: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 5));			
+			pnlNameStatus.setPreferredHeight(25);
+			pnlNameStatus.append(lblName);				
+			pnlNameStatus.append(Stronghold.getBattleStateString(stronghold, 2, 30));			
+			
+			var grid: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));
+			grid.append(simpleLabelMaker(StringHelper.localize("STR_LEVEL_VALUE", stronghold.lvl), StringHelper.localize("STR_LEVEL"), new AssetIcon(new ICON_UPGRADE())));
+			
+			if (stronghold.tribeId == 0) {
+				grid.append(simpleLabelMaker(StringHelper.localize("STR_NEUTRAL"), StringHelper.localize("STR_NEUTRAL"), new AssetIcon(new ICON_SHIELD())));
+			}			
+			else {
+				var tribeLabel: TribeLabel = new TribeLabel(stronghold.tribeId, stronghold.tribeName)
+				tribeLabel.setIcon(new AssetIcon(new ICON_SHIELD()));
+				grid.append(tribeLabel);
+			}
+			
+			pnlTop.setPreferredHeight(25);
+			pnlTop.append(pnlNameStatus, "Center");			
+			
+			pnlBottom.append(grid, "Center");
+			
+			pnl.setPreferredWidth(400);
+			pnl.appendAll(pnlTop, pnlBottom);
+			
+			return pnl;
+		}		
 		
 		private function createStrongholdItem(stronghold : * ): JPanel {
 			var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS,0));
@@ -153,13 +191,13 @@
 			pnlNameStatus.append(lblName);				
 			pnlNameStatus.append(Stronghold.getBattleStateString(stronghold, 2, 30));			
 			
-			var grid: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 0, false));
+			var grid: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));
 			grid.append(simpleLabelMaker(StringHelper.localize("STR_LEVEL_VALUE", stronghold.lvl), StringHelper.localize("STR_LEVEL"), new AssetIcon(new ICON_UPGRADE())));
 			grid.append(simpleLabelMaker(StringHelper.localize("STR_PER_DAY_RATE", Util.roundNumber(stronghold.victoryPointRate)), StringHelper.localize("STR_VP_RATE"), new AssetIcon(new ICON_STAR())));
 			var timediff :int = Global.map.getServerTime() - stronghold.dateOccupied;
 			grid.append(simpleLabelMaker(Util.niceDays(timediff), StringHelper.localize("STR_DAYS_OCCUPIED"), new AssetIcon(new ICON_SHIELD())));
 			
-			var lblTroop: JLabel = new JLabel(StringHelper.localize("STR_UNIT_SINGULAR_PLURAl", stronghold.upkeep));
+			var lblTroop: JLabel = new JLabel(StringHelper.localize("STR_UNIT_SINGULAR_PLURAL", stronghold.upkeep));
 			lblTroop.setHorizontalAlignment(AsWingConstants.RIGHT);
 
 			var pnlGate: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 0, AsWingConstants.RIGHT));									
@@ -207,9 +245,9 @@
 			tabTroops.appendTab(Util.createTopAlignedScrollPane(pnl), StringHelper.localize("STR_STRONGHOLDS_UNDER_COMMAND"));
 
 			//  Ongoing Attack Tab
-			pnl = new JPanel();
+			pnl = createOngoingAttacksList();
 			var tabOnGoing: JTabbedPane = new JTabbedPane();
-			tabOnGoing.appendTab(new JScrollPane(pnl, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER), StringHelper.localize("STR_ONGOING_ATTACKS"));
+			tabOnGoing.appendTab(Util.createTopAlignedScrollPane(pnl), StringHelper.localize("STR_ONGOING_ATTACKS"));
 			tabOnGoing.setPreferredHeight(150);
 
 			// Report Tab
@@ -231,6 +269,26 @@
 			pnl.appendAll(pnlLeft, tabReports);
 			
 			return pnl;
+		}
+		
+		private function createOngoingAttacksList(): JPanel
+		{
+			if (!pnlOngoingAttacks) {
+				pnlOngoingAttacks = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 15));
+			}
+			else {
+				pnlOngoingAttacks.removeAll();
+			}
+			
+			for each (var stronghold: * in profileData.openStrongholds) {
+				pnlOngoingAttacks.append(createOngoingAttackItem(stronghold));
+			}
+			
+			if (profileData.openStrongholds.length == 0) {
+				pnlOngoingAttacks.append(new JLabel(StringHelper.localize("TRIBE_NO_STRONGHOLDS_OPEN"), null, AsWingConstants.LEFT));
+			}
+			
+			return pnlOngoingAttacks;			
 		}
 		
 		private function createReportsPanels(): JPanel 
@@ -266,6 +324,10 @@
 			
 			for each (var stronghold: * in profileData.strongholds) {
 				pnlStrongholds.append(createStrongholdItem(stronghold));
+			}
+			
+			if (profileData.strongholds.length == 0) {
+				pnlStrongholds.append(new JLabel(StringHelper.localize("TRIBE_NO_STRONGHOLDS_OWNED"), null, AsWingConstants.LEFT));
 			}
 			
 			return pnlStrongholds;

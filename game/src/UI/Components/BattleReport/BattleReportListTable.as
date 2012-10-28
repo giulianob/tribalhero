@@ -19,7 +19,7 @@ package src.UI.Components.BattleReport
 		public static const COLUMN_TROOP_NAME: int = 6;
 		
 		private static const columnsDef: Array = [
-			{ name: "REPORT_DATE_COLUMN", property: "date", width: 115  },
+			{ name: "REPORT_DATE_COLUMN", property: "date", cellType: DatePlainTextCell, width: 115  },
 			{ name: "REPORT_DATE_COLUMN", property: ".", cellType: DateUnreadTextCell, width: 115 },
 			{ name: "REPORT_ATTACKING_TRIBES_COLUMN", property: "attackerTribes", cellType: TribesReportTableCell, width: 0.5 },
 			{ name: "REPORT_DEFENDING_TRIBES_COLUMN", property: "defenderTribes", cellType: TribesReportTableCell, width: 0.5 },

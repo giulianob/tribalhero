@@ -427,7 +427,7 @@ CREATE TABLE `message_board_read` (
   PRIMARY KEY (`id`),
   KEY `idx_message_board_read_player_id_and_message_board_thread_id` (`player_id`,`message_board_thread_id`),
   KEY `idx_message_board_read_last_read` (`last_read`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `message_board_threads`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -448,7 +448,7 @@ CREATE TABLE `message_board_threads` (
   KEY `idx_message_board_threads_tribe_id_and_deleted` (`tribe_id`,`deleted`),
   KEY `idx_message_board_threads_sticky` (`sticky`),
   KEY `idx_message_board_threads_last_post_date` (`last_post_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `messages`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -466,7 +466,7 @@ CREATE TABLE `messages` (
   KEY `created` (`created`),
   KEY `sender_player_id` (`sender_player_id`,`sender_state`),
   KEY `recipient_player_id` (`recipient_player_id`,`recipient_state`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `notifications`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -485,7 +485,8 @@ CREATE TABLE `notifications_list` (
   `city_id` int(10) unsigned NOT NULL,
   `object_id` int(10) unsigned NOT NULL,
   `action_id` int(10) unsigned NOT NULL,
-  `subscription_city_id` int(10) unsigned NOT NULL,
+  `subscription_location_type` varchar(20) NOT NULL,
+  `subscription_location_id` int(10) unsigned NOT NULL,
   KEY `city_id` (`city_id`,`object_id`,`action_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;

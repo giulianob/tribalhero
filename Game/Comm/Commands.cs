@@ -197,7 +197,6 @@ namespace Game.Comm
         TribePublicInfo = 1007,
         TribeTransfer = 1008,
         TribeInfoByName = 1009,
-        TribesmanAdd = 1011,
         TribesmanRemove = 1012,
         TribesmanUpdate = 1013,
         TribesmanRequest = 1014,

@@ -152,7 +152,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                PacketHelper.AddTribeInfo(strongholdManager, session, tribe, reply);
+                PacketHelper.AddTribeInfo(strongholdManager, tribeManager, session, tribe, reply);
 
                 session.Write(reply);
             }
@@ -188,7 +188,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                PacketHelper.AddTribeInfo(strongholdManager, session, tribe, reply);
+                PacketHelper.AddTribeInfo(strongholdManager, tribeManager, session, tribe, reply);
 
                 session.Write(reply);
             }

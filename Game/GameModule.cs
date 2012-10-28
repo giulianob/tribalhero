@@ -191,6 +191,8 @@ namespace Game
             Bind<StrongholdActivationChecker>().ToSelf().InSingletonScope();
             Bind<VictoryPointChecker>().ToSelf().InSingletonScope();
 
+            Bind<IStrongholdFactory>().To<StrongholdFactory>();
+
             #endregion
 
             #region Conventions

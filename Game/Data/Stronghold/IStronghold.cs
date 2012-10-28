@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using Game.Battle;
 using Game.Data.Tribe;
-using Game.Data.Troop;
 using Game.Logic;
+using Game.Logic.Notifications;
 using Game.Util.Locking;
 using Persistance;
 
@@ -18,7 +18,7 @@ namespace Game.Data.Stronghold
         Occupied
     }
 
-    public interface IStronghold : IHasLevel, ICityRegionObject, ISimpleGameObject, IPersistableObject, ICanDo, IStation
+    public interface IStronghold : IHasLevel, ICityRegionObject, ISimpleGameObject, IPersistableObject, ICanDo, IStation, INotificationOwner
     {
         uint Id { get; }
 
@@ -43,5 +43,7 @@ namespace Game.Data.Stronghold
         IEnumerable<ILockable> LockList { get; }
 
         IActionWorker Worker { get; }
+
+        event EventHandler<EventArgs> GateStatusChanged;
     }
 }

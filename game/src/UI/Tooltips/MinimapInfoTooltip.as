@@ -41,6 +41,9 @@
 			// Troop tooltip
 			else if (obj.type == ObjectFactory.TYPE_TROOP_OBJ)
 				Global.map.usernames.cities.getUsername(obj.groupId, createTroopUI);
+			// Stronghold tooltip
+			else if (obj.type == ObjectFactory.TYPE_STRONGHOLD)
+				Global.map.usernames.strongholds.getUsername(obj.objectId, createStrongholdUI);				
 		}
 
 		private function createForestUI() : void {
@@ -92,6 +95,31 @@
 
 			show(obj);
 		}
+		
+		private function createStrongholdUI(username: Username, custom: * ) : void {
+			if (disposed) return;
+			
+			var layout0:SoftBoxLayout = new SoftBoxLayout(AsWingConstants.VERTICAL);
+			ui.setLayout(layout0);
+
+			var lblName: JLabel = new JLabel(username.name, null, AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblName, "header");
+
+			var lblLvl: JLabel = new JLabel("Level " + obj.extraProps.level, null, AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblLvl, "Tooltip.text");
+			
+			var mapPos: Point = MapUtil.getScreenMinimapToMapCoord(obj.x, obj.y);
+			var distance: int = MapUtil.distance(mapPos.x, mapPos.y, Global.gameContainer.selectedCity.MainBuilding.x, Global.gameContainer.selectedCity.MainBuilding.y);
+			
+			var lblDistance: JLabel = new JLabel(distance + " tiles away", null, AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblDistance, "Tooltip.italicsText");			
+
+			ui.append(lblName);
+			ui.append(lblLvl);
+			ui.append(lblDistance);
+
+			show(obj);
+		}		
 		
 		private function createTroopUI(username: Username, custom: * ) : void {
 			if (disposed) return;

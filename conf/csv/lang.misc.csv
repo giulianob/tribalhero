@@ -39,6 +39,8 @@ STR_UNIT_SINGULAR_PLURAL,{0} unit(s)
 STR_BATTLE_IN_PROGRESS,Battle In Progress
 STR_VIEW_REPORT,View Report
 STR_NEUTRAL,Neutral
+STR_VIEW_PROFILE,View Profile
+STR_GOTO,Go to
 ,
 CITY_OVERVIEW_TITLE,City Overview
 CITY_OVERVIEW_INFLUENCE_POINTS_LABEL,{0} influence points.
@@ -178,7 +180,7 @@ REPORT_DEFENDING_TRIBES_COLUMN,Defender
 TROOP_CREATE_DRAG_HINT,Hint: Drag units to assign to the different troops. Hold SHIFT while dragging to move all units.
 ,
 LOCATION_CITY_LABEL,<a href='event:viewProfile:{0}'>{1}</a> (<a href='event:goToCity:{2}'>{3}</a>)
-LOCATION_STRONGHOLD_LABEL,"<a href=""event:viewStronghold:{0}>{1}</a>"
+LOCATION_STRONGHOLD_LABEL,"<a href=""event:viewStronghold:{0}"">{1}</a>"
 
 TRIBE_NO_STRONGHOLDS_OWNED,Your tribe doesn't control any strongholds right now.
 TRIBE_NO_STRONGHOLDS_OPEN,Your tribe hasn't broken through the gate of any strongholds.

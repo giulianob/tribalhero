@@ -44,7 +44,11 @@ package src.UI.Components
 				return;
 			}
 				
-			var textFormat:TextFormat = getTextField().getTextFormat(idx, idx + 1);
+			if (getTextField().htmlText.length == 0) {
+				return;
+			}
+			
+			var textFormat:TextFormat = getTextField().getTextFormat(idx, idx + 1);			
 			if (textFormat.url && textFormat.url.substr(0, 12) == "event:custom")
 			{
 				var parts: Array = textFormat.url.split(':', 3);

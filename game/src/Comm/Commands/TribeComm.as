@@ -255,10 +255,13 @@
 				profileData.assignments.push(assignment);
 			}
 			
+			// Strongholds
+			var stronghold: *;
+			
 			profileData.strongholds = [];
 			var strongholdCount: int = packet.readShort();
 			for (i = 0; i < strongholdCount; i++) {
-				var stronghold: * = {
+				stronghold = {
 					id: packet.readUInt(),
 					name: packet.readString(),
 					state: packet.readByte(),
@@ -280,9 +283,39 @@
 					stronghold.battleId = packet.readUInt();
 				}
 
-				Global.map.usernames.strongholds.add(new Username(stronghold.id, stronghold.name));
+				if (!Global.map.usernames.strongholds.get(stronghold.id)) {
+					Global.map.usernames.strongholds.add(new Username(stronghold.id, stronghold.name));
+				}
+				
 				profileData.strongholds.push(stronghold);
 			}
+			
+			// Attackable strongholds
+			profileData.openStrongholds = [];
+			strongholdCount  = packet.readShort();
+			for (i = 0; i < strongholdCount; i++) {
+				stronghold = {
+					id: packet.readUInt(),
+					name: packet.readString(),
+					tribeId: packet.readUInt(),
+					tribeName: packet.readString(),					
+					state: packet.readByte(),
+					lvl: packet.readByte(),
+					x: packet.readUInt(),
+					y: packet.readUInt(),
+					battleState: packet.readByte()
+				};
+				
+				if (stronghold.battleState != Stronghold.BATTLE_STATE_NONE) {
+					stronghold.battleId = packet.readUInt();
+				}
+
+				if (!Global.map.usernames.strongholds.get(stronghold.id)) {
+					Global.map.usernames.strongholds.add(new Username(stronghold.id, stronghold.name));
+				}
+				
+				profileData.openStrongholds.push(stronghold);
+			}			
 			
 			if (custom.callback) {
 				custom.callback(profileData);

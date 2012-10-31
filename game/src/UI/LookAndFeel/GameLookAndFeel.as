@@ -148,13 +148,15 @@
 			"TextField.font", new ASFontUIResource("Arial", 12, true),
 			"TextField.foreground", new ASColorUIResource(0x000000),
 			"Label.font", new ASFontUIResource("Arial", 12, true),
-			"Label.foreground", new ASColorUIResource(0x000000)
+			"Label.foreground", new ASColorUIResource(0x000000),
+			"LabelButton.font", new ASFontUIResource("Arial", 11, true, false, true),			
 			],
 			"Class.Message.read", [
 			"TextField.font", new ASFontUIResource("Arial", 12, false),
 			"TextField.foreground", new ASColorUIResource(0x000000),
 			"Label.font", new ASFontUIResource("Arial", 12, false),
-			"Label.foreground", new ASColorUIResource(0x000000)
+			"Label.foreground", new ASColorUIResource(0x000000),
+			"LabelButton.font", new ASFontUIResource("Arial", 11, false, false, true),
 			],
 
 			"Class.Label.very_small", [

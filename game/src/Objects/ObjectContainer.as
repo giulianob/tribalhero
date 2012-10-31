@@ -257,11 +257,14 @@ package src.Objects {
 					var structureObj: StructureObject = highestObj as StructureObject;
 					objTooltip = new StructureTooltip(structureObj, StructureFactory.getPrototype(structureObj.type, structureObj.level));					
 				}				
-				// TODO: Add tooltip
 				else if (highestObj is TroopObject) {
 					var troopObj: TroopObject = highestObj as TroopObject;
 					objTooltip = new TroopObjectTooltip(troopObj);					
-				}								
+				}				
+				else if (highestObj is Stronghold) {
+					var strongholdObj: Stronghold = highestObj as Stronghold;
+					objTooltip = new StrongholdTooltip(strongholdObj);
+				}
 			}
 			
 			highlightedObject = highestObj;

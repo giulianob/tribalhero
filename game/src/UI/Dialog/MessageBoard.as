@@ -41,6 +41,7 @@ package src.UI.Dialog
 		private var btnNewPostCancel: JLabelButton;
 		
 		private var lastThreadId: int = -1;
+		private var hasLoaded:Boolean;
 		
 		public function MessageBoard() 
 		{
@@ -298,6 +299,13 @@ package src.UI.Dialog
 		
 		public function loadThreadPage(page: int = 0): void {
 			Global.mapComm.MessageBoard.listing(threadLoader, page);
+		}
+		
+		public function loadInitially(): void {
+			if (!hasLoaded) {
+				hasLoaded = true;
+				loadThreadPage();
+			}
 		}
 		
 		public function getSelectedThreadId() : int {

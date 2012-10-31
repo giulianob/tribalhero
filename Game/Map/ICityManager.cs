@@ -7,6 +7,8 @@ namespace Game.Map
     {
         int Count { get; }
 
+        uint GetNextCityId();
+
         bool TryGetCity(uint cityId, out ICity city);
 
         void AfterDbLoaded(Procedure procedure);
@@ -15,7 +17,7 @@ namespace Game.Map
 
         void Add(ICity city);
 
-        void DbLoaderAdd(uint id, ICity city);
+        void DbLoaderAdd(ICity city);
 
         bool FindCityId(string name, out uint cityId);
     }

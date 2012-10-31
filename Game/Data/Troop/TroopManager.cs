@@ -13,7 +13,7 @@ namespace Game.Data.Troop
 {
     public class TroopManager : ITroopManager
     {
-        private readonly ITroopStubFactory troopStubFactory;
+        public ITroopStubFactory TroopStubFactory { get; set; }
 
         #region Event
 
@@ -42,7 +42,7 @@ namespace Game.Data.Troop
             }
         }
 
-        public IStation BaseStation { get; private set; }
+        public IStation BaseStation { get; set; }
 
         public ITroopStub this[byte index]
         {
@@ -60,9 +60,9 @@ namespace Game.Data.Troop
 
         #region Methods
 
-        public TroopManager(IStation baseStation, ITroopStubFactory troopStubFactory)
+        public TroopManager(IStation baseStation = null, ITroopStubFactory troopStubFactory = null)
         {
-            this.troopStubFactory = troopStubFactory;
+            TroopStubFactory = troopStubFactory;
             BaseStation = baseStation;
         }
 
@@ -144,7 +144,7 @@ namespace Game.Data.Troop
 
         public ITroopStub Create()
         {
-            var stub = troopStubFactory.CreateTroopStub((byte)idGen.GetNext());
+            var stub = TroopStubFactory.CreateTroopStub((byte)idGen.GetNext());
             dict.Add(stub.TroopId, stub);
             stub.UnitUpdate += StubUpdateEvent;
             FireAdded(stub);

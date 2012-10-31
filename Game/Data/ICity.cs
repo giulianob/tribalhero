@@ -2,12 +2,13 @@ using System.Collections.Generic;
 using Game.Battle;
 using Game.Data.Troop;
 using Game.Logic;
+using Game.Logic.Notifications;
 using Game.Util;
 using Persistance;
 
 namespace Game.Data
 {
-    public interface ICity : IEnumerable<IStructure>, ICanDo, IPersistableObject, ICityRegionObject, IStation
+    public interface ICity : IEnumerable<IStructure>, ICanDo, IPersistableObject, ICityRegionObject, IStation, INotificationOwner
     {
         /// <summary>
         ///   Enumerates only through structures in this city
@@ -63,7 +64,7 @@ namespace Game.Data
         /// <summary>
         ///   Unique city id
         /// </summary>
-        uint Id { get; set; }
+        uint Id { get; }
 
         /// <summary>
         ///   City name

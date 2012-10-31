@@ -233,6 +233,9 @@ namespace Game.Logic.Actions
                         throw new Exception("Troop object should still exist");
                     }
 
+                    // Remove this actions reference from the troop
+                    city.References.Remove(troopObject, this);
+
                     // Check if troop is still alive
                     if (troopObject.Stub.TotalCount > 0)
                     {
@@ -244,9 +247,6 @@ namespace Game.Logic.Actions
                         // Send troop back home
                         var tma = actionFactory.CreateTroopMovePassiveAction(city.Id, troopObject.ObjectId, city.X, city.Y, true, true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
-
-                        // Add notification just to the main city
-                        city.Notifications.Add(troopObject, this);
                     }
                     else
                     {
@@ -255,9 +255,6 @@ namespace Game.Logic.Actions
 
                         // Give back the loot to the target city
                         targetCity.Resource.Add(troopObject.Stats.Loot);
-
-                        // Remove this actions reference from the troop
-                        city.References.Remove(troopObject, this);
 
                         // Remove troop since he's dead
                         procedure.TroopObjectDelete(troopObject, false);
@@ -279,9 +276,6 @@ namespace Game.Logic.Actions
                 ITroopObject troopObject;
                 using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
                 {
-                    // Remove notification
-                    city.Notifications.Remove(this);
-
                     // If city is not in battle then add back to city otherwise join local battle
                     if (city.Battle == null)
                     {

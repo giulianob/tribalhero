@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
+using Game.Comm;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
+using Game.Logic;
 using Game.Logic.Actions;
 using Game.Map;
 using Game.Setup;
@@ -23,8 +25,6 @@ namespace Game.Data.Tribe
         private readonly IActionFactory actionFactory;
 
         private readonly LargeIdGenerator tribeIdGen = new LargeIdGenerator(200000, 100000);
-
-        private readonly object Lock = new object();
 
         private ConcurrentDictionary<uint, ITribe> Tribes { get; set; }
 
@@ -71,6 +71,16 @@ namespace Game.Data.Tribe
         private void SubscribeEvents(ITribe tribe)
         {
             tribe.TribesmanRemoved += TribeOnTribesmanRemoved;
+            tribe.Updated += TribeOnUpdated;
+        }
+
+        private void TribeOnUpdated(object sender, EventArgs eventArgs)
+        {
+            ITribe tribe = (ITribe)sender;
+            Packet packet = new Packet(Command.TribeChannelNotification);
+            packet.AddInt32(GetIncomingList(tribe).Count());
+            packet.AddInt16(tribe.AssignmentCount);
+            Global.Channel.Post("/TRIBE/" + tribe.Id, packet);
         }
 
         private void UnsubscribeEvents(ITribe tribe)
@@ -163,6 +173,42 @@ namespace Game.Data.Tribe
         public bool TryGetTribe(uint tribeId, out ITribe tribe)
         {
             return Tribes.TryGetValue(tribeId, out tribe);
+        }
+
+        public IEnumerable<Tribe.IncomingListItem> GetIncomingList(ITribe tribe)
+        {
+            var incomingTroops = (from tribesmen in tribe.Tribesmen
+                                  from city in tribesmen.Player.GetCityList()
+                                  from notification in city.Notifications
+                                  where
+                                          notification.Action is IActionTime &&
+                                          notification.Action.Category == ActionCategory.Attack &&
+                                          notification.GameObject.City != city && notification.Subscriptions.Count > 0
+                                  select
+                                          new Tribe.IncomingListItem
+                                          {
+                                                  SourceCity = notification.GameObject.City,
+                                                  Target = city,
+                                                  EndTime = ((IActionTime)notification.Action).EndTime
+                                          }).ToList();
+
+            incomingTroops.AddRange(from stronghold in strongholdManager.StrongholdsForTribe(tribe)
+                                    from notification in stronghold.Notifications
+                                    where
+                                            notification.Action is IActionTime &&
+                                            notification.Action.Category == ActionCategory.Attack &&
+                                            notification.Subscriptions.Count > 0 &&
+                                            (!notification.GameObject.City.Owner.IsInTribe ||
+                                             notification.GameObject.City.Owner.Tribesman.Tribe != tribe)
+                                    select
+                                            new Tribe.IncomingListItem
+                                            {
+                                                    SourceCity = notification.GameObject.City,
+                                                    Target = stronghold,
+                                                    EndTime = ((IActionTime)notification.Action).EndTime
+                                            });
+
+            return incomingTroops.OrderBy(i => i.EndTime);
         }
     }
 }

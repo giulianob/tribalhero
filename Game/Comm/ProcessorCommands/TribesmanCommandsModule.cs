@@ -30,12 +30,15 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IStrongholdManager strongholdManager;
 
+        private readonly ITribeManager tribeManager;
+
         public TribesmanCommandsModule(IActionFactory actionFactory,
                                        StructureFactory structureFactory,
                                        ILocker locker,
                                        IWorld world,
                                        IDbManager dbManager,
-                                       IStrongholdManager strongholdManager)
+                                       IStrongholdManager strongholdManager,
+                                       ITribeManager tribeManager)
         {
             this.actionFactory = actionFactory;
             this.structureFactory = structureFactory;
@@ -43,12 +46,12 @@ namespace Game.Comm.ProcessorCommands
             this.world = world;
             this.dbManager = dbManager;
             this.strongholdManager = strongholdManager;
+            this.tribeManager = tribeManager;
         }
 
         public override void RegisterCommands(Processor processor)
         {
             processor.RegisterCommand(Command.TribesmanSetRank, SetRank);
-            processor.RegisterCommand(Command.TribesmanAdd, Add);
             processor.RegisterCommand(Command.TribesmanRemove, Remove);
             processor.RegisterCommand(Command.TribesmanRequest, Request);
             processor.RegisterCommand(Command.TribesmanConfirm, Confirm);
@@ -261,39 +264,9 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var reply = new Packet(packet);
-                reply.AddInt32(tribe.GetIncomingList().Count());
+                reply.AddInt32(tribeManager.GetIncomingList(tribe).Count());
                 reply.AddInt16(tribe.AssignmentCount);
                 session.Write(reply);
-            }
-        }
-
-        public void Add(Session session, Packet packet)
-        {
-            uint playerId;
-            try
-            {
-                playerId = packet.GetUInt32();
-            }
-            catch(Exception)
-            {
-                ReplyError(session, packet, Error.Unexpected);
-                return;
-            }
-
-            if (session.Player.Tribesman == null)
-            {
-                ReplyError(session, packet, Error.TribeIsNull);
-                return;
-            }
-
-            Dictionary<uint, IPlayer> players;
-            using (locker.Lock(out players, playerId, session.Player.Tribesman.Tribe.Owner.PlayerId))
-            {
-                var tribesman = new Tribesman(session.Player.Tribesman.Tribe, players[playerId], 2);
-                session.Player.Tribesman.Tribe.AddTribesman(tribesman);
-                packet.AddInt32(session.Player.Tribesman.Tribe.GetIncomingList().Count());
-                packet.AddInt16(session.Player.Tribesman.Tribe.AssignmentCount);
-                ReplySuccess(session, packet);
             }
         }
 

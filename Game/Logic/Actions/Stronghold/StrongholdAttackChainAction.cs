@@ -139,7 +139,7 @@ namespace Game.Logic.Actions
 
             city.References.Add(troopObject, this);
 
-            city.Notifications.Add(troopObject, this);
+            city.Notifications.Add(troopObject, this, targetStronghold);
 
             var tma = actionFactory.CreateTroopMovePassiveAction(cityId, troopObject.ObjectId, targetStronghold.X, targetStronghold.Y, false, true);
 
@@ -195,6 +195,8 @@ namespace Game.Logic.Actions
 
                 using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
                 {
+                    city.Notifications.Remove(this);
+
                     TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id, troopObject.ObjectId, city.X, city.Y, true, true);
                     ExecuteChainAndWait(tma, AfterTroopMovedHome);
                 }
@@ -252,6 +254,8 @@ namespace Game.Logic.Actions
                         return;
                     }
                     
+                    city.Notifications.Remove(this);
+
                     // Walk back to city if none of the above conditions apply
                     TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id, troopObject.ObjectId, city.X, city.Y, true, true);
                     ExecuteChainAndWait(tma, AfterTroopMovedHome);                    
@@ -298,11 +302,14 @@ namespace Game.Logic.Actions
                         throw new Exception("Troop object should still exist");
                     }
 
+                    //Remove notification once battle is over
+                    city.Notifications.Remove(this);
+
                     // Remove troop if he's dead
                     if (TroopIsDead(troopObject, city)) {
                         StateChange(ActionState.Completed);
                         return;
-                    }
+                    }                   
 
                     if (city.Owner.IsInTribe && targetStronghold.Tribe == city.Owner.Tribesman.Tribe)
                     {
@@ -369,6 +376,9 @@ namespace Game.Logic.Actions
                     }
                     else
                     {
+                        //Remove notification to target once battle is over
+                        city.Notifications.Remove(this);
+
                         // Send troop back home
                         var tma = actionFactory.CreateTroopMovePassiveAction(city.Id, troopObject.ObjectId, city.X, city.Y, true, true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);

@@ -39,7 +39,9 @@ namespace Game.Data.Stronghold
 
         private Dictionary<string, IStronghold> nameIndex;
 
-        private bool indexDirty = true;
+        private ILookup<ITribe, IStronghold> gateOpenToIndex;
+
+        private bool indexDirty = true;        
 
         public StrongholdManager(IStrongholdConfigurator strongholdConfigurator,
                                     IStrongholdFactory strongholdFactory,
@@ -77,6 +79,7 @@ namespace Game.Data.Stronghold
 
                 indexDirty = false;
                 tribeIndex = strongholds.Values.Where(stronghold => stronghold.Tribe != null).ToLookup(stronghold => stronghold.Tribe, stronghold => stronghold);
+                gateOpenToIndex = strongholds.Values.Where(stronghold => stronghold.GateOpenTo != null).ToLookup(stronghold => stronghold.GateOpenTo, stronghold => stronghold);
                 nameIndex = strongholds.Values.ToDictionary(stronghold => stronghold.Name.ToLowerInvariant(), stronghold => stronghold);
             }
         }
@@ -92,6 +95,7 @@ namespace Game.Data.Stronghold
         public void Add(IStronghold stronghold)
         {
             strongholds.AddOrUpdate(stronghold.Id, stronghold, (id, old) => stronghold);
+            RegisterEvents(stronghold);
             dbManager.Save(stronghold);
             MarkIndexDirty();
         }
@@ -99,6 +103,17 @@ namespace Game.Data.Stronghold
         public void DbLoaderAdd(IStronghold stronghold)
         {
             strongholds.AddOrUpdate(stronghold.Id, stronghold, (id, old) => stronghold);
+            RegisterEvents(stronghold);
+            MarkIndexDirty();
+        }
+
+        private void RegisterEvents(IStronghold stronghold)
+        {
+            stronghold.GateStatusChanged += StrongholdOnGateStatusChanged;
+        }
+
+        private void StrongholdOnGateStatusChanged(object sender, EventArgs eventArgs)
+        {
             MarkIndexDirty();
         }
 
@@ -159,6 +174,7 @@ namespace Game.Data.Stronghold
             stronghold.BeginUpdate();
             stronghold.StrongholdState = StrongholdState.Occupied;
             stronghold.Tribe = tribe;
+            stronghold.GateOpenTo = null;
             stronghold.Gate = formula.GetGateLimit(stronghold.Lvl);
             stronghold.DateOccupied = DateTime.UtcNow;
             stronghold.EndUpdate();
@@ -194,6 +210,16 @@ namespace Game.Data.Stronghold
             }
 
             return !tribeIndex.Contains(tribe) ? new IStronghold[] { } : tribeIndex[tribe];
+        }
+
+        public IEnumerable<IStronghold> OpenStrongholdsForTribe(ITribe tribe)
+        {
+            if (indexDirty)
+            {
+                Reindex();
+            }
+
+            return !gateOpenToIndex.Contains(tribe) ? new IStronghold[] { } : gateOpenToIndex[tribe];
         }
 
         public void RemoveStrongholdsFromTribe(ITribe tribe)

@@ -188,23 +188,36 @@
 			profileData.assignments = [];
 			var assignmentCount: int = packet.readShort();
 			for (i = 0; i < assignmentCount; i++) {
-				var assignment: * = {
-					id: packet.readInt(),
-					endTime: packet.readUInt(),
-					x: packet.readUInt(),
-					y: packet.readUInt(),
-					targetPlayerId: packet.readUInt(),
-					targetCityId: packet.readUInt(),
-					targetPlayerName: packet.readString(),
-					targetCityName: packet.readString(),
-					attackMode: packet.readByte(),
-					dispatchCount: packet.readUInt(),
-					description: packet.readString(),
-					isAttack: packet.readByte(),
-					troopCount: packet.readInt(),
-					troops: []
-				};
-				
+				var assignment: * = {};
+				assignment.id = packet.readInt();
+				assignment.endTime = packet.readUInt();
+				assignment.x = packet.readUInt();
+				assignment.y = packet.readUInt();
+				assignment.targetType = packet.readInt();
+				if (assignment.targetType == 1) {
+					assignment.target = {
+						type: assignment.targetType,
+						playerId: packet.readUInt(),
+						cityId: packet.readUInt(),
+						playerName: packet.readString(),
+						cityName: packet.readString()
+					};
+				} else if (assignment.targetType == 2) {
+					assignment.target = { 
+						type: assignment.targetType,
+						strongholdId: packet.readUInt(),
+						strongholdName: packet.readString(),
+						tribeId: packet.readUInt(),
+						tribeName: packet.readString()
+					};
+				}
+				assignment.attackMode = packet.readByte();
+				assignment.dispatchCount = packet.readUInt();
+				assignment.description = packet.readString();
+				assignment.isAttack = packet.readByte();
+				assignment.troopCount = packet.readInt();
+				assignment.troops = [];
+
 				Global.map.usernames.players.add(new Username(assignment.targetPlayerId, assignment.targetPlayerName));
 				Global.map.usernames.cities.add(new Username(assignment.targetCityId, assignment.targetCityName));
 				

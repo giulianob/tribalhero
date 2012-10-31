@@ -9,6 +9,8 @@ package src.Objects.Process
 	import src.Objects.Effects.Formula;
 	import src.Objects.GameObject;
 	import src.Objects.SimpleGameObject;
+	import src.Objects.Stronghold.Stronghold;
+	import src.Objects.StructureObject;
 	import src.Objects.Troop.TroopStub;
 	import src.UI.Cursors.GroundReinforceCursor;
 	import src.UI.Dialog.AssignmentCreateDialog;
@@ -74,8 +76,11 @@ package src.Objects.Process
 		public function onChoseTime(assignmentDialog: AssignmentCreateDialog): void
 		{
 			assignmentDialog.getFrame().dispose();
-			
-			Global.mapComm.Troop.assignmentCreate(Global.gameContainer.selectedCity.id, target.groupId, target.objectId, assignmentDialog.getTime(), troopDialog.getMode(), troopDialog.getTroop(), assignmentDialog.getDescription(),false);
+			if (target is StructureObject) {
+				Global.mapComm.Troop.cityAssignmentCreate(Global.gameContainer.selectedCity.id, target.groupId, target.objectId, assignmentDialog.getTime(), troopDialog.getMode(), troopDialog.getTroop(), assignmentDialog.getDescription(),false);
+			} else if (target is Stronghold) {
+				Global.mapComm.Troop.strongholdAssignmentCreate(Global.gameContainer.selectedCity.id, target.objectId, assignmentDialog.getTime(), troopDialog.getMode(), troopDialog.getTroop(), assignmentDialog.getDescription(), false);
+			}
 		}
 	}
 

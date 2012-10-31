@@ -47,6 +47,10 @@ package src.Comm.Commands
 			var pt:Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
 			Global.map.camera.ScrollToCenter(pt.x, pt.y);
 			Global.gameContainer.closeAllFrames(true);
+			
+			if (custom && custom.callback) {
+				custom.callback();
+			}
 		}
 		
 		private function readStrongholdPrivateProfile(packet: Packet, custom: * ): void {
@@ -110,7 +114,7 @@ package src.Comm.Commands
 			}
 		}
 		
-		private function onReceiveStrongholdProfile(packet: Packet, custom: * ): void {
+		public function onReceiveStrongholdProfile(packet: Packet, custom: * ): void {
 			mapComm.hideLoading();
 			if (MapComm.tryShowError(packet)) return;
 

@@ -173,3 +173,9 @@ REPORT_ATTACKING_TRIBES_COLUMN,Attacker
 REPORT_DEFENDING_TRIBES_COLUMN,Defender
 ,
 TROOP_CREATE_DRAG_HINT,Hint: Drag units to assign to the different troops. Hold SHIFT while dragging to move all units.
+,
+LOCATION_CITY_LABEL,<a href='event:viewProfile:{0}'>{1}</a> (<a href='event:goToCity:{2}'>{3}</a>)
+LOCATION_STRONGHOLD_LABEL,"<a href=""event:viewStronghold:{0}>{1}</a>"
+,
+ASSIGNMENT_ATK,Attack {0}
+ASSIGNMENT_DEF,Defend {0}

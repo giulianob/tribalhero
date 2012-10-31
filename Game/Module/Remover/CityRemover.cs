@@ -114,8 +114,8 @@ namespace Game.Module
 
                 // If city is being targetted by an assignment, try again later
                 var reader =
-                        DbPersistance.Current.ReaderQuery(string.Format("SELECT id FROM `{0}` WHERE `city_id` = @cityId  LIMIT 1", Assignment.DB_TABLE),
-                                                                 new[] {new DbColumn("cityId", city.Id, DbType.UInt32)});
+                        DbPersistance.Current.ReaderQuery(string.Format("SELECT id FROM `{0}` WHERE `location_type` = '{1}' AND `location_id` = @locationId  LIMIT 1", Assignment.DB_TABLE, LocationType.City),
+                                                                 new[] {new DbColumn("locationId", city.Id, DbType.UInt32)});
                 bool beingTargetted = reader.HasRows;
                 reader.Close();
                 if (beingTargetted)

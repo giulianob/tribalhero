@@ -261,6 +261,8 @@ namespace Testing.Tribe
             targetStructure.SetupGet(p => p.City).Returns(targetCity.Object);
 
             targetCity.SetupGet(p => p.Id).Returns(100);
+            targetCity.SetupGet(p => p.LocationType).Returns(LocationType.City);
+            targetCity.SetupGet(p => p.LocationId).Returns(100);
 
             actionWorker.Setup(m => m.DoPassive(It.IsAny<ICity>(), It.IsAny<PassiveAction>(), true)).Returns(Error.Ok);
 

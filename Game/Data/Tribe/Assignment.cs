@@ -63,7 +63,7 @@ namespace Game.Data.Tribe
         /// <summary>
         /// City this assignment is targetting
         /// </summary>
-        public ICity TargetCity { get; private set; }
+        public ILocation Target { get; private set; }
 
         /// <summary>
         /// Time that the assignment will end (time it should reach its target)
@@ -114,7 +114,7 @@ namespace Game.Data.Tribe
         /// Creates a new assignment.
         /// An id will be assigned and the stub passed in will be added to the assignment. This will not schedule the assignment!
         /// </summary>
-        public Assignment(ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, string description, bool isAttack, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
+        public Assignment(ITribe tribe, uint x, uint y, ILocation target, AttackMode mode, DateTime targetTime, string description, bool isAttack, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
         {
             this.formula = formula;
             this.dbManager = dbManager;
@@ -127,7 +127,7 @@ namespace Game.Data.Tribe
             Id = IdGen.GetNext();
             Tribe = tribe;
             TargetTime = targetTime;
-            TargetCity = targetCity;
+            Target = target;
             X = x;
             Y = y;
             AttackMode = mode;
@@ -140,7 +140,7 @@ namespace Game.Data.Tribe
         /// Creates a new assignment. 
         /// NOTE: This constructor is used by the db loader. Use the other constructor when creating a new assignment from scratch.
         /// </summary>
-        public Assignment(int id, ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount, string description, bool isAttack, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
+        public Assignment(int id, ITribe tribe, uint x, uint y, ILocation target, AttackMode mode, DateTime targetTime, uint dispatchCount, string description, bool isAttack, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
         {
             this.formula = formula;
             this.dbManager = dbManager;
@@ -153,7 +153,7 @@ namespace Game.Data.Tribe
             Id = id;
             Tribe = tribe;
             TargetTime = targetTime;
-            TargetCity = targetCity;
+            Target = target;
             X = x;
             Y = y;
             AttackMode = mode;
@@ -289,22 +289,46 @@ namespace Game.Data.Tribe
             if (structure == null)
             {
                 procedure.TroopStubDelete(stub.City, stub);
-                stub.City.Owner.SendSystemMessage(null, "Assignment Failed", string.Format(@"Assigned target({0},{1}) has already been destroyed. The reserved troops have been returned to the city.", X, Y));
+                stub.City.Owner.SendSystemMessage(null,
+                                                  "Assignment Failed",
+                                                  string.Format(
+                                                                @"Assigned target({0},{1}) has already been destroyed. The reserved troops have been returned to the city.",
+                                                                X,
+                                                                Y));
                 return false;
             }
 
             // Create troop object
             ITroopObject troopObject;
             procedure.TroopObjectCreate(stub.City, stub, out troopObject);
-            
+
             PassiveAction action;
-            if (IsAttack)
+            if (Target.LocationType == LocationType.City)
             {
-                action = actionFactory.CreateCityAttackChainAction(stub.City.Id, troopObject.ObjectId, structure.City.Id, structure.ObjectId, AttackMode);
+                if (IsAttack)
+                {
+                    action = actionFactory.CreateCityAttackChainAction(stub.City.Id, troopObject.ObjectId, structure.City.Id, structure.ObjectId, AttackMode);
+                }
+                else
+                {
+                    action = actionFactory.CreateCityDefenseChainAction(stub.City.Id, troopObject.ObjectId, structure.City.Id, AttackMode);
+                }
+            }
+            else if (Target.LocationType == LocationType.Stronghold)
+            {
+                if (IsAttack)
+                {
+                    action = actionFactory.CreateStrongholdAttackChainAction(stub.City.Id, troopObject.ObjectId, Target.LocationId, AttackMode);
+                }
+                else
+                {
+                    action = actionFactory.CreateStrongholdDefenseChainAction(stub.City.Id, troopObject.ObjectId, Target.LocationId, AttackMode);
+                }
             }
             else
             {
-                action = actionFactory.CreateCityDefenseChainAction(stub.City.Id, troopObject.ObjectId, structure.City.Id, AttackMode);
+                procedure.TroopObjectDelete(troopObject, true);
+                return false;
             }
 
             if (stub.City.Worker.DoPassive(stub.City, action, true) != Error.Ok)
@@ -439,7 +463,9 @@ namespace Game.Data.Tribe
             {
                 return new[]
                        {
-                               new DbColumn("tribe_id", Tribe.Id, DbType.UInt32), new DbColumn("city_id", TargetCity.Id, DbType.UInt32),
+                               new DbColumn("tribe_id", Tribe.Id, DbType.UInt32),
+                               new DbColumn("location_type", Target.LocationType.ToString(), DbType.String),
+                               new DbColumn("location_id", Target.LocationId, DbType.UInt32),
                                new DbColumn("x", X, DbType.UInt32), new DbColumn("y", Y, DbType.UInt32),
                                new DbColumn("mode", Enum.GetName(typeof(AttackMode), AttackMode), DbType.String),
                                new DbColumn("attack_time", TargetTime, DbType.DateTime), new DbColumn("dispatch_count", DispatchCount, DbType.UInt32),

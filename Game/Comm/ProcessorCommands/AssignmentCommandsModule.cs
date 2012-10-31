@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
+using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Database;
@@ -26,20 +27,106 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly ILocker locker;
 
-        public AssignmentCommandsModule(BattleProcedure battleProcedure, IGameObjectLocator gameObjectLocator, ILocker locker)
+        private readonly IStrongholdManager strongholdManager;
+
+        private readonly ICityManager cityManager;
+
+        public AssignmentCommandsModule(BattleProcedure battleProcedure, IGameObjectLocator gameObjectLocator, ILocker locker, IStrongholdManager strongholdManager, ICityManager cityManager)
         {
             this.battleProcedure = battleProcedure;
             this.gameObjectLocator = gameObjectLocator;
             this.locker = locker;
+            this.strongholdManager = strongholdManager;
+            this.cityManager = cityManager;
         }
 
         public override void RegisterCommands(Processor processor)
         {
-            processor.RegisterCommand(Command.TribeAssignmentCreate, Create);
+            processor.RegisterCommand(Command.TribeCityAssignmentCreate, CreateCityAssignment);
+            processor.RegisterCommand(Command.TribeStrongholdAssignmentCreate, CreateStrongholdAssignment);
             processor.RegisterCommand(Command.TribeAssignmentJoin, Join);
         }
+        private void CreateStrongholdAssignment(Session session, Packet packet)
+        {
+            uint cityId;
+            uint strongholdId;
+            AttackMode mode;
+            DateTime time;
+            ISimpleStub simpleStub;
+            string description;
+            bool isAttack;
+            try
+            {
+                mode = (AttackMode)packet.GetByte();
+                cityId = packet.GetUInt32();
+                strongholdId = packet.GetUInt32();
+                time = DateTime.UtcNow.AddSeconds(packet.GetInt32());
+                isAttack = packet.GetByte() == 1;
+                simpleStub = PacketHelper.ReadStub(packet, isAttack ? FormationType.Attack : FormationType.Defense);
+                description = packet.GetString();
+            }
+            catch (Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
 
-        private void Create(Session session, Packet packet) {
+            IStronghold stronghold;
+            if(!strongholdManager.TryGetStronghold(strongholdId, out stronghold))
+            {
+                ReplyError(session, packet, Error.StrongholdNotFound);
+                return;
+            }
+
+            ICity city;
+            if (!cityManager.TryGetCity(cityId, out city))
+            {
+                ReplyError(session, packet, Error.StrongholdNotFound);
+                return;
+            }
+
+
+            // First need to find all the objects that should be locked
+            uint[] playerIds;
+            Dictionary<uint, ICity> cities;
+            using (locker.Lock(city,stronghold))
+            {
+                if (city == null || stronghold ==null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                // Make sure city belongs to player and he is in a tribe
+                if (city.Owner != session.Player || city.Owner.Tribesman == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                // Make sure this player is ranked high enough
+                if (city.Owner.Tribesman == null || !city.Owner.Tribesman.Tribe.HasRight(city.Owner.PlayerId, "Assignment"))
+                {
+                    ReplyError(session, packet, Error.TribesmanNotAuthorized);
+                    return;
+                }
+
+                int id;
+                Error ret = session.Player.Tribesman.Tribe.CreateAssignment(city,
+                                                                            simpleStub,
+                                                                            stronghold.X,
+                                                                            stronghold.Y,
+                                                                            stronghold,
+                                                                            time,
+                                                                            mode,
+                                                                            description,
+                                                                            isAttack,
+                                                                            out id);
+                ReplyWithResult(session, packet, ret);
+            }
+        }
+
+        private void CreateCityAssignment(Session session, Packet packet) {
             uint cityId;
             uint targetCityId;
             uint targetObjectId;

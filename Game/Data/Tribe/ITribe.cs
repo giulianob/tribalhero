@@ -54,7 +54,7 @@ namespace Game.Data.Tribe
 
         bool HasRight(uint playerId, string action);
 
-        Error CreateAssignment(ICity city, ISimpleStub stub, uint x, uint y, ICity targetCity, DateTime time, AttackMode mode, string description, bool isAttack, out int id);
+        Error CreateAssignment(ICity city, ISimpleStub stub, uint x, uint y, ILocation target, DateTime time, AttackMode mode, string description, bool isAttack, out int id);
 
         Error JoinAssignment(int id, ICity city, ISimpleStub stub);
 

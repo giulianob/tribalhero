@@ -235,15 +235,11 @@ namespace Game.Database
                     ITribe tribe;
                     World.TryGetObjects((uint)reader["tribe_id"], out tribe);
 
-                    ICity city;
-                    if (!World.TryGetObjects((uint)reader["city_id"], out city))
-                        throw new Exception("City not found");
-
                     Assignment assignment = assignmentFactory.CreateAssignmentFromDb((int)reader["id"],
                                                            tribe,
                                                            (uint)reader["x"],
                                                            (uint)reader["y"],
-                                                           city,
+                                                           new SimpleLocation((LocationType)Enum.Parse(typeof(LocationType), (string)reader["location_type"], true),(uint)reader["location_id"]),
                                                            (AttackMode)Enum.Parse(typeof(AttackMode), (string)reader["mode"]),
                                                            DateTime.SpecifyKind((DateTime)reader["attack_time"], DateTimeKind.Utc).Add(downTime),
                                                            (uint)reader["dispatch_count"],
@@ -254,6 +250,7 @@ namespace Game.Database
                     {
                         while (listReader.Read())
                         {
+                            ICity city;
                             if (!World.TryGetObjects((uint)listReader["city_id"], out city))
                                 throw new Exception("City not found");
 

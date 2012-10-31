@@ -4,11 +4,13 @@ using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Game.Comm;
+using Game.Data.Stronghold;
 using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -27,6 +29,10 @@ namespace Game.Data.Tribe
         private readonly Formula formula;
 
         private readonly IAssignmentFactory assignmentFactory;
+
+        private readonly ICityManager cityManager;
+
+        private readonly IStrongholdManager strongholdManager;
 
         public class IncomingListItem
         {
@@ -169,7 +175,7 @@ namespace Game.Data.Tribe
                      Procedure procedure,
                      IDbManager dbManager,
                      Formula formula,
-                     IAssignmentFactory assignmentFactory)
+                     IAssignmentFactory assignmentFactory, ICityManager cityManager, IStrongholdManager strongholdManager)
                 : this(
                         owner: owner,
                         name: name,
@@ -183,7 +189,9 @@ namespace Game.Data.Tribe
                         procedure: procedure,
                         dbManager: dbManager,
                         formula: formula,
-                        assignmentFactory: assignmentFactory)
+                        assignmentFactory: assignmentFactory, 
+                        cityManager : cityManager, 
+                        strongholdManager : strongholdManager)
         {
         }
 
@@ -199,12 +207,16 @@ namespace Game.Data.Tribe
                      Procedure procedure,
                      IDbManager dbManager,
                      Formula formula,
-                     IAssignmentFactory assignmentFactory)
+                     IAssignmentFactory assignmentFactory, 
+                     ICityManager cityManager, 
+                     IStrongholdManager strongholdManager)
         {
             this.procedure = procedure;
             this.dbManager = dbManager;
             this.formula = formula;
             this.assignmentFactory = assignmentFactory;
+            this.cityManager = cityManager;
+            this.strongholdManager = strongholdManager;
             Owner = owner;
             Level = level;
             Resource = resource;
@@ -517,7 +529,7 @@ namespace Game.Data.Tribe
                                       ISimpleStub simpleStub,
                                       uint x,
                                       uint y,
-                                      ICity targetCity,
+                                      ILocation target,
                                       DateTime time,
                                       AttackMode mode,
                                       string desc,
@@ -552,19 +564,50 @@ namespace Game.Data.Tribe
                 return Error.TribeNotFound;
             }
 
-            // Cant attack other tribesman
-            if (isAttack && targetCity.Owner.Tribesman != null &&
-                targetCity.Owner.Tribesman.Tribe == stub.City.Owner.Tribesman.Tribe)
+            if (target.LocationType == LocationType.City)
             {
-                Procedure.Current.TroopStubDelete(city, stub);
-                return Error.AssignmentCantAttackFriend;
-            }
+                ICity targetCity;
+                if (!cityManager.TryGetCity(target.LocationId, out targetCity))
+                {
+                    Procedure.Current.TroopStubDelete(city, stub);
+                    return Error.CityNotFound;
+                }
 
-            // Cant defend the same city
-            if (targetCity == stub.City)
+                // Cant attack other tribesman
+                if (isAttack && targetCity.Owner.Tribesman != null && targetCity.Owner.Tribesman.Tribe == stub.City.Owner.Tribesman.Tribe)
+                {
+                    Procedure.Current.TroopStubDelete(city, stub);
+                    return Error.AssignmentCantAttackFriend;
+                }
+
+                // Cant defend the same city
+                if (targetCity == stub.City)
+                {
+                    Procedure.Current.TroopStubDelete(city, stub);
+                    return Error.DefendSelf;
+                }
+            }
+            else if(target.LocationType == LocationType.Stronghold)
             {
-                Procedure.Current.TroopStubDelete(city, stub);
-                return Error.DefendSelf;
+                IStronghold stronghold;
+                if(!strongholdManager.TryGetStronghold(target.LocationId,out stronghold))
+                {
+                    Procedure.Current.TroopStubDelete(city, stub);
+                    return Error.StrongholdNotFound;
+                }
+
+                // Cant attack your stronghold
+                if(isAttack && stronghold.Tribe == stub.City.Owner.Tribesman.Tribe)
+                {
+                    Procedure.Current.TroopStubDelete(city, stub);
+                    return Error.AttackSelf;
+                }
+                // Cant defend other tribe's stronghold
+                if (!isAttack && stronghold.Tribe != stub.City.Owner.Tribesman.Tribe)
+                {
+                    Procedure.Current.TroopStubDelete(city, stub);
+                    return Error.DefendSelf;
+                }
             }
 
             // Player creating the assignment cannot be late (Give a few minutes lead)
@@ -581,7 +624,7 @@ namespace Game.Data.Tribe
             Assignment assignment = assignmentFactory.CreateAssignment(this,
                                                                        x,
                                                                        y,
-                                                                       targetCity,
+                                                                       target,
                                                                        mode,
                                                                        time,
                                                                        desc,
@@ -614,7 +657,7 @@ namespace Game.Data.Tribe
                 return Error.TroopEmpty;
             }
 
-            if (assignment.TargetCity == city)
+            if (assignment.Target == city)
             {
                 return Error.AssignmentNotEligible;
             }

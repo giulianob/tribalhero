@@ -19,4 +19,34 @@ namespace Game.Data
         uint LocationId { get; }
         LocationType LocationType { get; }
     }
+
+    public class SimpleLocation : ILocation
+    {
+        public SimpleLocation(LocationType locationType, uint locationId)
+        {
+            LocationType = locationType;
+            LocationId = locationId;
+        }
+
+        #region Implementation of ILockable
+
+        public int Hash { get; private set; }
+        public object Lock { get; private set; }
+
+        #endregion
+
+        #region Implementation of IXYPosition
+
+        public uint X { get; set; }
+        public uint Y { get; set; }
+
+        #endregion
+
+        #region Implementation of ILocation
+
+        public uint LocationId { get; private set; }
+        public LocationType LocationType { get; private set; }
+
+        #endregion
+    }
 }

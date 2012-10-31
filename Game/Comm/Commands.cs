@@ -206,8 +206,9 @@ namespace Game.Comm
         TribesmanLeave = 1017,
         TribesmanContribute = 1018,
         TribesmanKicked = 1019,
-        TribeAssignmentCreate = 1022,
+        TribeCityAssignmentCreate = 1022,
         TribeAssignmentJoin = 1023,
+        TribeStrongholdAssignmentCreate = 1024,
 
         TribeChannelNotification = 1031,
         TribeChannelUpdate = 1051,

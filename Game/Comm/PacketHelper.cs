@@ -16,7 +16,9 @@ using Game.Data.Troop;
 using Game.Database;
 using Game.Logic;
 using Game.Map;
+using Game.Setup;
 using Game.Util;
+using Ninject;
 using Persistance;
 
 #endregion
@@ -476,10 +478,7 @@ namespace Game.Comm
             packet.AddUInt32(UnixDateTime.DateTimeToUnix(assignment.TargetTime.ToUniversalTime()));
             packet.AddUInt32(assignment.X);
             packet.AddUInt32(assignment.Y);
-            packet.AddUInt32(assignment.TargetCity.Owner.PlayerId);
-            packet.AddUInt32(assignment.TargetCity.Id);
-            packet.AddString(assignment.TargetCity.Owner.Name);
-            packet.AddString(assignment.TargetCity.Name);
+            AddToPacket(assignment.Target, packet);
             packet.AddByte((byte)assignment.AttackMode);
             packet.AddUInt32(assignment.DispatchCount);
             packet.AddString(assignment.Description);
@@ -505,6 +504,40 @@ namespace Game.Comm
                         packet.AddUInt16(kvp.Value);
                     }
                 }
+            }
+        }
+
+        public static void AddToPacket(ILocation location, Packet packet)
+        {
+            packet.AddInt32((int)location.LocationType);
+            switch(location.LocationType)
+            {
+                case LocationType.City:
+                {
+                    ICity targetCity;
+                    if (Ioc.Kernel.Get<ICityManager>().TryGetCity(location.LocationId, out targetCity))
+                    {
+                        packet.AddUInt32(targetCity.Owner.PlayerId);
+                        packet.AddUInt32(targetCity.Id);
+                        packet.AddString(targetCity.Owner.Name);
+                        packet.AddString(targetCity.Name);
+                    }
+                }
+                    break;
+                case LocationType.Stronghold:
+                {
+                    IStronghold targetStronghold;
+                    if (Ioc.Kernel.Get<IStrongholdManager>().TryGetStronghold(location.LocationId, out targetStronghold))
+                    {
+                        packet.AddUInt32(targetStronghold.Id);
+                        packet.AddString(targetStronghold.Name);
+                        packet.AddUInt32(targetStronghold.Tribe == null ? 0 : targetStronghold.Tribe.Id);
+                        packet.AddString(targetStronghold.Tribe == null ? "" : targetStronghold.Tribe.Name);
+                    }
+                }
+                    break;
+                default:
+                    throw new Exception("Unknown location type");
             }
         }
 

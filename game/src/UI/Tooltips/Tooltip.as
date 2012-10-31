@@ -1,9 +1,3 @@
-/**
- * ...
- * @author Default
- * @version 0.1
- */
-
 package src.UI.Tooltips {
 	import com.greensock.loading.core.DisplayObjectLoader;
 	import flash.display.DisplayObject;
@@ -48,7 +42,9 @@ package src.UI.Tooltips {
 
 		public function show(obj: DisplayObject):void
 		{
-			Global.map.camera.addEventListener(Camera.ON_MOVE, onCameraMove);
+			this.position = new IntPoint(Global.map.stage.mouseX, Global.map.stage.mouseY);
+						
+			Global.map.camera.addEventListener(Camera.ON_MOVE, onCameraMove, false, 0, true);
 			
 			if (this.viewObj == null || this.viewObj != obj) {
 				this.viewObj = obj;
@@ -57,9 +53,11 @@ package src.UI.Tooltips {
 				
 				showFrame(obj);
 			}
-
-			this.position = new IntPoint(ui.getFrame().stage.mouseX, ui.getFrame().stage.mouseY);			
-			adjustPosition();			
+			else {
+				ui.getFrame().pack();
+				ui.getFrame().addEventListener(AWEvent.PAINT, onPaint);
+				ui.getFrame().repaintAndRevalidate();
+			}
 		}
 		
 		public function showFixed(position: IntPoint):void
@@ -70,8 +68,10 @@ package src.UI.Tooltips {
 		}
 		
 		protected function showFrame(obj: DisplayObject = null): void {
-			ui.addEventListener(AWEvent.PAINT, onPaint);				
-			ui.show();			
+			ui.show();
+			
+			ui.getFrame().addEventListener(AWEvent.PAINT, onPaint);
+			ui.getFrame().repaintAndRevalidate();
 			
 			if (!mouseInteractive()) {
 				ui.getFrame().parent.mouseEnabled = false;
@@ -97,12 +97,12 @@ package src.UI.Tooltips {
 		// We need this function since the size is wrong of the component until it has been painted
 		private function onPaint(e: AWEvent): void {
 			ui.removeEventListener(AWEvent.PAINT, onPaint);
+			ui.getFrame().removeEventListener(AWEvent.PAINT, onPaint);
 			ui.getFrame().pack();
 			adjustPosition();
 		}
 
 		private function parentHidden(e: Event) : void {
-			Global.map.camera.removeEventListener(Camera.ON_MOVE, onCameraMove);
 			hide();
 		}
 
@@ -149,6 +149,8 @@ package src.UI.Tooltips {
 
 		public function hide():void
 		{
+			Global.map.camera.removeEventListener(Camera.ON_MOVE, onCameraMove);
+			
 			if (this.viewObj != null)
 			{
 				this.viewObj.removeEventListener(Event.REMOVED_FROM_STAGE, parentHidden);

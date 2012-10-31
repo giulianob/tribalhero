@@ -98,7 +98,8 @@ namespace ConsoleSimulator
 
             var main = new Structure(structurestats);
 
-            city = new City(owner: player,
+            city = new City(id: cityId,
+                            owner: player,
                             name: "city " + cityId,
                             resource: Formula.Current.GetInitialCityResources(),
                             radius: Formula.Current.GetInitialCityRadius(),

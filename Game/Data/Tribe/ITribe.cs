@@ -50,8 +50,6 @@ namespace Game.Data.Tribe
 
         Error Contribute(uint playerId, Resource resource);
 
-        IEnumerable<Tribe.IncomingListItem> GetIncomingList();
-
         bool HasRight(uint playerId, string action);
 
         Error CreateAssignment(ICity city, ISimpleStub stub, uint x, uint y, ILocation target, DateTime time, AttackMode mode, string description, bool isAttack, out int id);
@@ -65,5 +63,7 @@ namespace Game.Data.Tribe
         Error Upgrade();
 
         void SendUpdate();
+
+        event EventHandler<EventArgs> Updated;
     }
 }

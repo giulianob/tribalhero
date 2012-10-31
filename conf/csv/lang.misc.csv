@@ -16,9 +16,9 @@ FARMING_LABEL,Farming
 TIME_LEFT_LABEL,Time Left
 STR_TROOPS,Troops
 STR_REPORTS,Reports
-STR_ONGOING_ATTACKS,Ongoing Attacks
+STR_ONGOING_ATTACKS,Attacks
 STR_STRONGHOLDS,Strongholds
-STR_STRONGHOLDS_UNDER_COMMAND,Strongholds in command
+STR_STRONGHOLDS_UNDER_COMMAND,Strongholds In Command
 STR_NAME,Name
 STR_LEVEL,Level
 STR_NOT_OCCUPIED,Not Occupied
@@ -35,7 +35,10 @@ STR_VIEW_BATTLE,View Battle
 STR_ESTABLISHED,Established
 STR_LEVEL_VALUE,Level {0}
 STR_DAYS_OCCUPIED,Total Days Occupied
-STR_UNIT_SINGULAR_PLURAl,{0} unit(s)
+STR_UNIT_SINGULAR_PLURAL,{0} unit(s)
+STR_BATTLE_IN_PROGRESS,Battle In Progress
+STR_VIEW_REPORT,View Report
+STR_NEUTRAL,Neutral
 ,
 CITY_OVERVIEW_TITLE,City Overview
 CITY_OVERVIEW_INFLUENCE_POINTS_LABEL,{0} influence points.
@@ -176,6 +179,9 @@ TROOP_CREATE_DRAG_HINT,Hint: Drag units to assign to the different troops. Hold 
 ,
 LOCATION_CITY_LABEL,<a href='event:viewProfile:{0}'>{1}</a> (<a href='event:goToCity:{2}'>{3}</a>)
 LOCATION_STRONGHOLD_LABEL,"<a href=""event:viewStronghold:{0}>{1}</a>"
+
+TRIBE_NO_STRONGHOLDS_OWNED,Your tribe doesn't control any strongholds right now.
+TRIBE_NO_STRONGHOLDS_OPEN,Your tribe hasn't broken through the gate of any strongholds.
 ,
 ASSIGNMENT_ATK,Attack {0}
 ASSIGNMENT_DEF,Defend {0}

@@ -129,7 +129,7 @@ namespace Game.Logic.Actions {
                 structure.Y = y;
 
                 // Creating New City
-                newCity = new City(city.Owner, cityName, Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), structure, Formula.Current.GetInitialAp());
+                newCity = new City(World.Current.Cities.GetNextCityId(), city.Owner, cityName, Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), structure, Formula.Current.GetInitialAp());
                 city.Owner.Add(newCity);
 
                 World.Current.Regions.SetTileType(x, y, 0, true);

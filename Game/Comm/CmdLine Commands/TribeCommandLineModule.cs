@@ -473,9 +473,9 @@ namespace Game.Comm
             StringBuilder result = new StringBuilder("Incomings:\n");
             using (locker.Lock(tribeId, out tribe))
             {
-                foreach (var incoming in tribe.GetIncomingList())
+                foreach (var incoming in tribeManager.GetIncomingList(tribe))
                 {
-                    result.Append(string.Format("To [{0}-{1}] From[{2}] Arrival Time[{3}]\n", incoming.TargetCity.Name, incoming.TargetCity.Owner.Name, incoming.SourceCity.Name, incoming.EndTime));
+                    result.Append(string.Format("To [{0}-{1}] From[{2}] Arrival Time[{3}]\n", incoming.Target.LocationType.ToString(), incoming.Target.LocationId, incoming.SourceCity.Name, incoming.EndTime));
                 }
             }
 

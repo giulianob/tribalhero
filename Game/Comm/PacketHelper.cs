@@ -37,7 +37,7 @@ namespace Game.Comm
             }
         }
 
-        public static void AddToPacket(NotificationManager.Notification notification, Packet packet)
+        public static void AddToPacket(Logic.Notifications.Notification notification, Packet packet)
         {
             packet.AddUInt32(notification.GameObject.City.Id);
             packet.AddUInt32(notification.GameObject.ObjectId);
@@ -629,7 +629,7 @@ namespace Game.Comm
             }
         }
 
-        public static void AddTribeInfo(IStrongholdManager strongholdManager, Session session, ITribe tribe, Packet packet)
+        public static void AddTribeInfo(IStrongholdManager strongholdManager, ITribeManager tribeManager, Session session, ITribe tribe, Packet packet)
         {
             if (session.Player.IsInTribe && tribe.Id == session.Player.Tribesman.Tribe.Id)
             {
@@ -655,15 +655,15 @@ namespace Game.Comm
                 }
 
                 // Incoming List
-                var incomingList = tribe.GetIncomingList().ToList();
+                var incomingList = tribeManager.GetIncomingList(tribe).ToList();
                 packet.AddInt16((short)incomingList.Count());
                 foreach (var incoming in incomingList)
                 {
                     // Target
-                    packet.AddUInt32(incoming.TargetCity.Owner.PlayerId);
-                    packet.AddUInt32(incoming.TargetCity.Id);
-                    packet.AddString(incoming.TargetCity.Owner.Name);
-                    packet.AddString(incoming.TargetCity.Name);
+                    packet.AddUInt32(0);
+                    packet.AddUInt32(0);
+                    packet.AddString(incoming.Target.LocationType.ToString());
+                    packet.AddString(incoming.Target.LocationId.ToString());                    
 
                     // Attacker
                     packet.AddUInt32(incoming.SourceCity.Owner.PlayerId);
@@ -712,6 +712,35 @@ namespace Game.Comm
                     {
                         packet.AddByte(0);
                     }
+                }
+
+                // Attackable Strongholds 
+                strongholds = strongholdManager.OpenStrongholdsForTribe(tribe).ToList();
+                packet.AddInt16((short)strongholds.Count);
+                foreach (var stronghold in strongholds)
+                {
+                    packet.AddUInt32(stronghold.Id);
+                    packet.AddString(stronghold.Name);
+                    packet.AddUInt32(stronghold.Tribe == null ? 0 : stronghold.Tribe.Id);
+                    packet.AddString(stronghold.Tribe == null ? string.Empty : stronghold.Tribe.Name);
+                    packet.AddByte((byte)stronghold.StrongholdState);
+                    packet.AddByte(stronghold.Lvl);
+                    packet.AddUInt32(stronghold.X);
+                    packet.AddUInt32(stronghold.Y);
+                    if (stronghold.GateBattle != null)
+                    {
+                        packet.AddByte(1);
+                        packet.AddUInt32(stronghold.GateBattle.BattleId);
+                    }
+                    else if (stronghold.MainBattle != null)
+                    {
+                        packet.AddByte(2);
+                        packet.AddUInt32(stronghold.MainBattle.BattleId);
+                    }
+                    else
+                    {
+                        packet.AddByte(0);
+                    }                    
                 }
             }
             else

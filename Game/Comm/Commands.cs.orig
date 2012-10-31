@@ -206,8 +206,9 @@ namespace Game.Comm
         TribesmanLeave = 1017,
         TribesmanContribute = 1018,
         TribesmanKicked = 1019,
-        TribeAssignmentCreate = 1022,
+        TribeCityAssignmentCreate = 1022,
         TribeAssignmentJoin = 1023,
+        TribeStrongholdAssignmentCreate = 1024,
 
         TribeChannelNotification = 1031,
         TribeChannelUpdate = 1051,
@@ -215,18 +216,11 @@ namespace Game.Comm
         #endregion
 
         #region Stronghold
-<<<<<<< local
         StrongholdInfo = 1101,        
         StrongholdInfoByName = 1102,
         StrongholdLocate = 1103,
-=======
-        StrongholdInfo = 1101,
-        StrongholdPublicInfo = 1102,
-        StrongholdInfoByName = 1103,
         StrongholdGateRepair = 1104,
-        StrongholdLocate = 1105,
-        StrongholdLocateByName = 1106,
->>>>>>> other
+        StrongholdLocateByName = 1105,
         #endregion
 
         #region Internal Messages

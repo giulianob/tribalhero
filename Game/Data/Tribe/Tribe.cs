@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 using Game.Comm;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
-using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -22,6 +21,8 @@ namespace Game.Data.Tribe
     {
         public event EventHandler<TribesmanRemovedEventArgs> TribesmanRemoved = (sender, args) => { };
 
+        public event EventHandler<EventArgs> Updated = (sender, args) => { }; 
+
         private readonly Procedure procedure;
 
         private readonly IDbManager dbManager;
@@ -36,7 +37,7 @@ namespace Game.Data.Tribe
 
         public class IncomingListItem
         {
-            public ICity TargetCity { get; set; }
+            public ILocation Target { get; set; }
 
             public ICity SourceCity { get; set; }
 
@@ -387,23 +388,6 @@ namespace Game.Data.Tribe
             return Error.Ok;
         }
 
-        public IEnumerable<IncomingListItem> GetIncomingList()
-        {
-            return from tribesmen in Tribesmen
-                   from city in tribesmen.Player.GetCityList()
-                   from notification in city.Notifications
-                   where
-                           notification.Action is IActionTime && notification.Action.Category == ActionCategory.Attack &&
-                           notification.GameObject.City != city && notification.Subscriptions.Count > 0
-                   orderby ((ChainAction)notification.Action).EndTime ascending
-                   select new IncomingListItem
-                   {
-                           SourceCity = notification.GameObject.City,
-                           TargetCity = city,
-                           EndTime = ((IActionTime)notification.Action).EndTime
-                   };
-        }
-
         public bool HasRight(uint playerId, string action)
         {
             ITribesman tribesman;
@@ -718,10 +702,7 @@ namespace Game.Data.Tribe
 
         public void SendUpdate()
         {
-            Packet packet = new Packet(Command.TribeChannelNotification);
-            packet.AddInt32(GetIncomingList().Count());
-            packet.AddInt16(AssignmentCount);
-            Global.Channel.Post("/TRIBE/" + Id, packet);
+            Updated(this, new EventArgs());
         }
     }
 }

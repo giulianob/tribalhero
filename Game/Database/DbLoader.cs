@@ -17,6 +17,7 @@ using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Actions.ResourceActions;
 using Game.Logic.Formulas;
+using Game.Logic.Notifications;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
@@ -388,7 +389,8 @@ namespace Game.Database
                                                     (int)reader["labor"],
                                                     laborRealizeTime,
                                                     (int)reader["labor_production_rate"]);
-                    var city = new City(World.Players[(uint)reader["player_id"]],
+                    var city = new City((uint)reader["id"],
+                                        World.Players[(uint)reader["player_id"]],
                                         (string)reader["name"],
                                         resource,
                                         (byte)reader["radius"],
@@ -405,7 +407,7 @@ namespace Game.Database
                                };
 
                     // Add to world
-                    World.Cities.DbLoaderAdd((uint)reader["id"], city);
+                    World.Cities.DbLoaderAdd(city);
 
                     // Restart city remover if needed
                     switch (city.Deleted)
@@ -1408,7 +1410,7 @@ namespace Game.Database
             #region Action Notifications
 
             Global.Logger.Info("Loading action notifications...");
-            using (var reader = DbManager.Select(NotificationManager.Notification.DB_TABLE))
+            using (var reader = DbManager.Select(Logic.Notifications.Notification.DB_TABLE))
             {
                 while (reader.Read())
                 {
@@ -1419,16 +1421,19 @@ namespace Game.Database
                     IGameObject obj = city[(uint)reader["object_id"]];
                     PassiveAction action = city.Worker.PassiveActions[(uint)reader["action_id"]];
 
-                    var notification = new NotificationManager.Notification(obj, action);
+                    var notification = new Logic.Notifications.Notification(obj, action);
 
                     using (DbDataReader listReader = DbManager.SelectList(notification))
                     {
                         while (listReader.Read())
                         {
-                            ICity subscriptionCity;
-                            if (!World.TryGetObjects((uint)listReader["subscription_city_id"], out subscriptionCity))
-                                throw new Exception("City not found");
-                            notification.Subscriptions.Add(subscriptionCity);
+                            INotificationOwner notificationOwner =
+                                    ResolveLocationAs<INotificationOwner>(
+                                                                          (string)
+                                                                          listReader["subscription_location_type"],
+                                                                          (uint)listReader["subscription_location_id"]);
+
+                            notification.Subscriptions.Add(notificationOwner);
                         }
                     }
 

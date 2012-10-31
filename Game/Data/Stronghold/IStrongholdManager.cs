@@ -28,5 +28,7 @@ namespace Game.Data.Stronghold
         void RemoveStrongholdsFromTribe(ITribe tribe);
 
         Error RepairGate(IStronghold stronghold);
+
+        IEnumerable<IStronghold> OpenStrongholdsForTribe(ITribe tribe);
     }
 }

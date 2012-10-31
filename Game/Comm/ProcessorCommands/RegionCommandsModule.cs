@@ -385,7 +385,7 @@ namespace Game.Comm.ProcessorCommands
                 ICity srcCity = cities[srcCityId];
                 ICity city = cities[cityId];
 
-                NotificationManager.Notification notification;
+                Logic.Notifications.Notification notification;
                 if (!srcCity.Notifications.TryGetValue(city, actionId, out notification))
                 {
                     ReplyError(session, packet, Error.ActionNotFound);

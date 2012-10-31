@@ -4,6 +4,7 @@ package src.UI.Components
 	import flash.events.TextEvent;
 	import flash.text.StyleSheet;
 	import flash.text.TextFormat;
+	import mx.utils.StringUtil;
 	import org.aswing.ext.MultilineLabel;
 	import org.aswing.plaf.ASColorUIResource;
 	import src.Constants;
@@ -73,7 +74,7 @@ package src.UI.Components
 					break;		
 				case 'goToStronghold': 
 					Global.mapComm.Stronghold.gotoStrongholdLocation(parts[1]);
-					break;											
+					break;							
 				case 'viewTribeProfile':
 					var tribeId: int = int(parts[1]);
 					Global.mapComm.Tribe.viewTribeProfile(tribeId);
@@ -88,6 +89,22 @@ package src.UI.Components
 					dispatchEvent(new RichLabelCustomEvent(RichLabelCustomEvent.CUSTOM_EVENT_CLICK, parts[1]));
 					break;
 			}			
+		}
+		
+		public static function getHtmlForLocation(location: * ) : String {
+			switch(location.type)
+			{
+				case 1:
+					return StringUtil.substitute("City <a href=\"event:viewProfileByType:city:{0}\">{1}</a> (<a href =\"event:viewProfile:{2}\">{3})</a>",
+												  location.cityId, location.cityName, location.playerId, location.playerName);
+					break;
+				case 2:
+					return StringUtil.substitute("Stronghold <a href=\"event:viewProfileByType:stronghold:{0}\">{1}</a> (<a href =\"event:viewTribeProfile:{2}\">{3}</a>)",
+												  location.strongholdId, location.strongholdName, location.tribeId, location.tribeName);
+					break;
+				default:
+					return "Bad Location"
+			}
 		}
 	}
 

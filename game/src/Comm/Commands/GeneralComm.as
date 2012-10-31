@@ -358,6 +358,9 @@
 				case 'city':
 					session.write(packet, mapComm.City.onReceivePlayerProfile, { callback: callback } );
 					break;
+				case 'stronghold':
+					session.write(packet, mapComm.Stronghold.onReceiveStrongholdProfile, { callback: callback } );
+					break;
 				default:
 					throw new Error("Unknown owner type while getting profile");
 			}			

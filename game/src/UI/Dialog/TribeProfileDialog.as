@@ -285,13 +285,7 @@
 		private function createAssignmentItem(assignment: *): JPanel {
 			var pnlContainer: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0));
 			
-			var pnlName: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));			
-			pnlName.appendAll(				
-				new JLabel(assignment.isAttack?"Attack":"Defend", null, AsWingConstants.LEFT),
-				new PlayerCityLabel(assignment.targetPlayerId, assignment.targetCityId, assignment.targetPlayerName, assignment.targetCityName)
-			);						
-			pnlName.setConstraints("Center");
-			
+			var pnlName: RichLabel = new RichLabel(StringUtil.substitute(Locale.loadString(assignment.isAttack?"ASSIGNMENT_ATK":"ASSIGNMENT_DEF"),RichLabel.getHtmlForLocation(assignment.target)));
 			var pnlStats: JPanel = new JPanel(new SoftBoxLayout(AsWingConstants.RIGHT, 5, AsWingConstants.RIGHT));
 			pnlStats.appendAll(
 				new JLabel(assignment.troopCount, new AssetIcon(assignment.isAttack?new ICON_SINGLE_SWORD:new ICON_SHIELD), AsWingConstants.RIGHT),

@@ -611,7 +611,7 @@ namespace Game.Data
             if (!Global.FireEvents)
                 return;
 
-            if (Id == 0)
+            if (Id == 0 || !DbPersisted)
                 return;
 
             if (!IsUpdating)

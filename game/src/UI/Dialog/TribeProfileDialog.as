@@ -12,15 +12,13 @@
 	import org.aswing.geom.*;
 	import org.aswing.table.*;
 	import src.*;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Process.*;
 	import src.Objects.*;
-	import src.Objects.Stronghold.Stronghold;
+	import src.Objects.Effects.*;
+	import src.Objects.Process.*;
+	import src.Objects.Stronghold.*;
 	import src.UI.*;
 	import src.UI.Components.*;
-	import src.UI.Components.BattleReport.BattleReportListTable;
-	import src.UI.Components.BattleReport.LocalReportList;
-	import src.UI.Components.BattleReport.RemoteReportList;
+	import src.UI.Components.BattleReport.*;
 	import src.UI.Components.TableCells.*;
 	import src.UI.Components.Tribe.*;
 	import src.UI.LookAndFeel.*;
@@ -54,7 +52,7 @@
 			createUI();				
 			
 			// Refreshes the general tribe info
-			updateTimer = new Timer(60 * 5 * 1000);
+			updateTimer = new Timer(120 * 1000);
 			updateTimer.addEventListener(TimerEvent.TIMER, function(e: Event = null): void {
 				update();
 			});			
@@ -84,6 +82,7 @@
 				profileData = newProfileData;
 				createInfoTab();
 				createStrongholdList();
+				createOngoingAttacksList();
 			});
 		}
 		
@@ -206,7 +205,7 @@
 			lblGate.setVerticalAlignment(AsWingConstants.TOP);
 			pnlGate.append(lblGate);
 			
-			if (stronghold.objectState != SimpleGameObject.STATE_BATTLE && stronghold.gate < Stronghold.maxGateHp(stronghold.lvl) && Constants.tribeRank <= 1) {
+			if (stronghold.state != SimpleGameObject.STATE_BATTLE && stronghold.gate < Stronghold.maxGateHp(stronghold.lvl) && Constants.tribeRank <= 1) {
 				var btnGateRepair: JLabelButton = new JLabelButton(Stronghold.gateToString(stronghold.lvl, stronghold.gate), null, AsWingConstants.LEFT);
 				btnGateRepair.useHandCursor = true;
 				btnGateRepair.addEventListener(MouseEvent.CLICK, function(e: Event): void {
@@ -611,30 +610,35 @@
 			});		
 			
 			btnDonate.addActionListener(function(e: Event): void {
-				InfoDialog.showMessageDialog("Contribue to tribe", "You have to use Trading Post to contribute resources.");
+				InfoDialog.showMessageDialog("Contribute to tribe", "Use a Trading Post to contribute resources.");
 			});
 			
 			// First row of header panel which contains player name + ranking
 			var pnlHeaderFirstRow: JPanel = new JPanel(new BorderLayout(5));
 			
-			var lblTribeName: JLabel = new JLabel(profileData.tribeName + " (Level " + profileData.tribeLevel + ")", null, AsWingConstants.LEFT);	
-			lblTribeName.setConstraints("Center");
+			var lblTribeName: JLabel = new JLabel(profileData.tribeName + " (Level " + profileData.tribeLevel + ")", null, AsWingConstants.LEFT);				
 			GameLookAndFeel.changeClass(lblTribeName, "darkHeader");			
+			
+			var lblEstablished: JLabel = new JLabel(StringHelper.localize("STR_ESTABLISHED_WITH_TIME", Util.niceDays(Global.map.getServerTime() - profileData.created)));
+			
+			var pnlHeaderTitle: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 0, false));
+			pnlHeaderTitle.setConstraints("Center");
+			pnlHeaderTitle.appendAll(lblTribeName, lblEstablished);
 			
 			var pnlResources: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 10, 0, false));
 			var lblVictoryPoint: JLabel = new JLabel(profileData.victoryPoint.toFixed(1),  new AssetIcon(new ICON_UPGRADE()));
 			new SimpleTooltip(lblVictoryPoint, "Victory Point");
 			lblVictoryPoint.setIconTextGap(0);
-			
-			pnlHeaderFirstRow.appendAll(lblTribeName, pnlResources);		
+						
 			pnlResources.setConstraints("East");
 			pnlResources.append(lblVictoryPoint);
 			pnlResources.append(new SimpleResourcesPanel(profileData.resources, false));
+			pnlHeaderFirstRow.appendAll(pnlHeaderTitle, pnlResources);		
 			
 			pnlHeader.removeAll();
 			pnlHeader.append(pnlHeaderFirstRow);			
 			
-			// Needed since gets called after the panel has already been rendered (for updates
+			// Needed since gets called after the panel has already been rendered (for updates)
 			pnlHeader.repaintAndRevalidate();
 			pnlInfoContainer.repaintAndRevalidate();
 			

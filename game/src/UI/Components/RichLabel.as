@@ -10,10 +10,15 @@ package src.UI.Components
 	import src.Constants;
 	import src.Global;
 	import src.UI.LookAndFeel.GameLookAndFeel;
+	import src.UI.Tooltips.TextTooltip;
+	import src.Util.StringHelper;
 	
 	public class RichLabel extends MultilineLabel
 	{		
-		public function RichLabel(text:String = "", rows:int = 0, columns:int = 0)
+		
+		private var tooltip: TextTooltip = new TextTooltip("");
+		
+		public function RichLabel(text:String = "", rows:int = 0, columns:int = 0, showTooltips: Boolean = true)
 		{
 			/**
 			if (rows == 0 && columns == 0) {
@@ -30,8 +35,13 @@ package src.UI.Components
 			setHtmlText(text);			
 
 			getTextField().addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-			
+			getTextField().addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);			
 			getTextField().addEventListener(TextEvent.LINK, onClickLink);
+		}
+		
+		private function onMouseOut(e:MouseEvent):void 
+		{
+			tooltip.hide();
 		}
 		
 		private function onMouseMove(e:MouseEvent):void 
@@ -41,18 +51,50 @@ package src.UI.Components
 			if (idx == -1)
 			{
 				dispatchEvent(new RichLabelCustomEvent(RichLabelCustomEvent.CUSTOM_EVENT_MOUSE_OVER, ""));
+				tooltip.hide();
 				return;
 			}
 				
 			if (getTextField().htmlText.length == 0) {
+				tooltip.hide();
 				return;
 			}
 			
 			var textFormat:TextFormat = getTextField().getTextFormat(idx, idx + 1);			
-			if (textFormat.url && textFormat.url.substr(0, 12) == "event:custom")
-			{
-				var parts: Array = textFormat.url.split(':', 3);
-				dispatchEvent(new RichLabelCustomEvent(RichLabelCustomEvent.CUSTOM_EVENT_MOUSE_OVER, parts[2]));
+			if (!textFormat.url) {
+				tooltip.hide();
+				return;
+			}
+			
+			var parts: Array = textFormat.url.split(":");
+			
+			if (parts[0] == "event") {
+				parts.shift();
+			}
+			
+			switch (parts[0]) {
+				case 'viewProfile': 
+				case 'viewProfileByType': 
+				case 'viewTribeProfile':
+				case 'viewTribeProfileByName':					
+					tooltip.setText(StringHelper.localize("STR_VIEW_PROFILE"));
+					tooltip.show(this);
+					break;
+				case 'goToCity': 
+				case 'goToStronghold': 
+					tooltip.setText(StringHelper.localize("STR_GOTO"));
+					tooltip.show(this);					
+					break;
+				case 'viewBattle':					
+					tooltip.setText(StringHelper.localize("STR_VIEW_BATTLE"));
+					tooltip.show(this);					
+					break;
+				case "custom":
+					tooltip.hide();
+					dispatchEvent(new RichLabelCustomEvent(RichLabelCustomEvent.CUSTOM_EVENT_MOUSE_OVER, parts[1]));
+					break;
+				default:
+					tooltip.hide();
 			}
 		}
 		
@@ -76,15 +118,14 @@ package src.UI.Components
 					Global.mapComm.Stronghold.gotoStrongholdLocation(parts[1]);
 					break;							
 				case 'viewTribeProfile':
-					var tribeId: int = int(parts[1]);
-					Global.mapComm.Tribe.viewTribeProfile(tribeId);
+					Global.mapComm.Tribe.viewTribeProfile(int(parts[1]));
 					break;
 				case 'viewTribeProfileByName':
-					var tribeName: String = parts[1];
-					Global.mapComm.Tribe.viewTribeProfileByName(tribeName);
+					Global.mapComm.Tribe.viewTribeProfileByName(parts[1]);
+					break;
 				case 'viewBattle':
-					var battleId: int = int(parts[1]);
-					Global.mapComm.Battle.viewBattle(battleId);
+					Global.mapComm.Battle.viewBattle(int(parts[1]));
+					break;
 				case 'custom':
 					dispatchEvent(new RichLabelCustomEvent(RichLabelCustomEvent.CUSTOM_EVENT_CLICK, parts[1]));
 					break;

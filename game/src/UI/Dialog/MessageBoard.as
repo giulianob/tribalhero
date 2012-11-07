@@ -263,8 +263,13 @@ package src.UI.Dialog
 			
 			var btnPostTools: JLabelButton = new JLabelButton("Actions", null, AsWingConstants.RIGHT);								
 			btnPostTools.addActionListener(function(e: Event): void {
-				menuTools.show(btnPostTools, 0, btnPostTools.getHeight());
-			});
+				if (menuTools.isShowing()) {
+					menuTools.setVisible(false);					
+				}
+				else {
+					menuTools.show(btnPostTools, 0, btnPostTools.getHeight());
+				}
+			});			
 			
 			if (Constants.tribeRank <= 1 || Constants.playerId == postData.playerId) {				
 				menuTools.addMenuItem(postData.subject ? "Delete Thread" : "Delete Post").addActionListener(function(e: Event): void {

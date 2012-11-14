@@ -14,6 +14,8 @@
 			
 			//Icons
 			ICON_UNFRIEND;
+			ICON_COLLAPSE;
+			ICON_EXPAND;
 			ICON_WORLD;
 			ICON_CROP;
 			ICON_BATTLE;

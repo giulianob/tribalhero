@@ -1,8 +1,7 @@
 ﻿package src.Map {
-	import src.Objects.Factories.StructureFactory;
-	import src.Objects.Prototypes.EffectPrototype;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.TechnologyManager;
+	import src.Objects.*;
+	import src.Objects.Factories.*;
+	import src.Objects.Prototypes.*;
 	import src.Util.BinaryList.*;
 
 	public class CityObject {

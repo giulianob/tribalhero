@@ -32,7 +32,8 @@
 			troop.cityId = packet.readUInt();
 
 			troop.id = packet.readUByte();
-			troop.state = packet.readUByte();
+			troop.state = packet.readUByte();			
+			troop.stationedLocation = mapComm.General.readLocation(packet);
 
 			var templateCnt: int = packet.readUByte();
 			for (var templateI: int = 0; templateI < templateCnt; templateI++) {

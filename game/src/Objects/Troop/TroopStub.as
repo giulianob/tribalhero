@@ -2,6 +2,7 @@
 	import adobe.utils.CustomActions;
 	import src.Global;
 	import src.Map.City;
+	import src.Objects.Location;
 	import src.Util.Util;
 	import src.Objects.Factories.UnitFactory;
 	import src.Objects.Prototypes.UnitPrototype;
@@ -16,7 +17,8 @@
 		public static const BATTLE_STATIONED: int = 3;
 		public static const MOVING: int = 4;
 		public static const RETURNING_HOME: int = 5;
-		public static const WAITING_IN_ASSIGNMENT: int = 6;
+        public static const WAITING_IN_DEFENSIVE_ASSIGNMENT:int = 6;
+        public static const WAITING_IN_OFFENSIVE_ASSIGNMENT: int = 7;
 		
 		public static const REPORT_STATE_ENTERING: int = 0;
 		public static const REPORT_STATE_STAYING: int = 1;
@@ -26,7 +28,7 @@
 		public static const REPORT_STATE_REINFORCED: int = 5;
 		public static const REPORT_STATE_OUT_OF_STAMINA: int = 6;
 
-		public static const STATE_NAMES: Array = ["IDLE", "BATTLE", "STATIONED", "BATTLE_STATIONED", "MOVING", "RETURNING_HOME"];
+		public static const STATE_NAMES: Array = ["IDLE", "BATTLE", "STATIONED", "BATTLE_STATIONED", "MOVING", "RETURNING_HOME", "WAITING_IN_DEFENSIVE_ASSIGNMENT", "WAITING_IN_OFFENSIVE_ASSIGNMENT"];
 
 		public var id: int;
 		public var state: int = 0;
@@ -39,6 +41,8 @@
 		public var playerId: int;
 
 		public var template: TroopTemplateManager = new TroopTemplateManager();
+		
+		public var stationedLocation: *;
 
 		public function TroopStub(id: int = 0, playerId: int = 0, cityId: int = 0)
 		{
@@ -53,12 +57,12 @@
 			return state == BATTLE_STATIONED || state == STATIONED;
 		}
 
-		public function getNiceId(includeParenthesis: Boolean = false) : String {
-			if (id == 1) {
-				if (includeParenthesis) return "(Local Troop)";
-				else return "Local Troop";
-			}
-			else return (includeParenthesis?"(":"") + id.toString()  + (includeParenthesis?")":"");
+		public function isLocal() : Boolean {
+			return id == 1;
+		}
+		
+		public function getNiceId(includeParenthesis: Boolean = false) : String {			
+			return (includeParenthesis?"(":"") + (id == 1 ? StringHelper.localize("TROOP_LOCAL") : id.toString()) + (includeParenthesis?")":"");
 		}
 
 		public function getStateName(): String {

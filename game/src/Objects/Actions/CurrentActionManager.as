@@ -2,10 +2,6 @@
 	import src.Global;
 	import src.Util.BinaryList.*;
 
-	/**
-	 * ...
-	 * @author Default
-	 */
 	public class CurrentActionManager extends BinaryList
 	{
 

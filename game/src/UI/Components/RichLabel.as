@@ -9,6 +9,7 @@ package src.UI.Components
 	import org.aswing.plaf.ASColorUIResource;
 	import src.Constants;
 	import src.Global;
+	import src.Objects.Location;
 	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.UI.Tooltips.TextTooltip;
 	import src.Util.StringHelper;
@@ -16,17 +17,15 @@ package src.UI.Components
 	public class RichLabel extends MultilineLabel
 	{		
 		
+		private var usingCustomSize: Boolean = false;
+		
 		private var tooltip: TextTooltip = new TextTooltip("");
 		
 		public function RichLabel(text:String = "", rows:int = 0, columns:int = 0, showTooltips: Boolean = true)
-		{
-			/**
-			if (rows == 0 && columns == 0) {
-				var removeHtml:RegExp = new RegExp(/<\/?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)\/?>/ig);
-				columns = text.replace(removeHtml, "").length;
-			}*/
+		{									
+			usingCustomSize = rows == 1 && columns == 0;
 			
-			super("", rows, columns);
+			super("", rows, columns);				
 			
 			var css: StyleSheet = new StyleSheet();
 			css.setStyle("a:link", { textDecoration:'underline', fontFamily:'Arial', color:'#0066cc' });
@@ -37,6 +36,16 @@ package src.UI.Components
 			getTextField().addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			getTextField().addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);			
 			getTextField().addEventListener(TextEvent.LINK, onClickLink);
+		}
+		
+		override public function setHtmlText(ht:String):void 
+		{
+			if (usingCustomSize) {
+				var removeHtml:RegExp = new RegExp(/<\/?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)\/?>/ig);
+				setColumns(ht.replace(removeHtml, "").length + 1);
+			}
+			
+			super.setHtmlText(ht);
 		}
 		
 		private function onMouseOut(e:MouseEvent):void 
@@ -132,17 +141,13 @@ package src.UI.Components
 			}			
 		}
 		
-		public static function getHtmlForLocation(location: * ) : String {
+		public static function getHtmlForLocation(location: *) : String {
 			switch(location.type)
 			{
-				case 1:
-					return StringUtil.substitute("City <a href=\"event:viewProfileByType:city:{0}\">{1}</a> (<a href =\"event:viewProfile:{2}\">{3})</a>",
-												  location.cityId, location.cityName, location.playerId, location.playerName);
-					break;
-				case 2:
-					return StringUtil.substitute("Stronghold <a href=\"event:viewProfileByType:stronghold:{0}\">{1}</a> (<a href =\"event:viewTribeProfile:{2}\">{3}</a>)",
-												  location.strongholdId, location.strongholdName, location.tribeId, location.tribeName);
-					break;
+				case Location.CITY:
+					return StringHelper.localize("RICH_LABEL_LOCATION_CITY", location.cityId, location.cityName, location.playerId, location.playerName);
+				case Location.STRONGHOLD:
+					return StringHelper.localize(location.tribeId == 0 ? "RICH_LABEL_LOCATION_STRONGHOLD_NEUTRAL" : "RICH_LABEL_LOCATION_STRONGHOLD", location.strongholdId, location.strongholdName, location.tribeId, location.tribeName);
 				default:
 					return "Bad Location"
 			}

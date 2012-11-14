@@ -101,6 +101,10 @@ package src.Util {
 		}
 		
 		public static function localize(msgId: String, ... params): String {
+			if (msgId == "") {
+				return "";
+			}
+			
 			var localizedStr: String = Locale.loadString(msgId);
 			if (localizedStr == null) {
 				return "[" + msgId + "]";				

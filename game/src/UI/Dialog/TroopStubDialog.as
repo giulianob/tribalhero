@@ -1,29 +1,18 @@
 package src.UI.Dialog {
-	import flash.display.*
-	import org.aswing.AsWingConstants;
-	import org.aswing.BorderLayout;
-	import org.aswing.event.AWEvent;
-	import org.aswing.FlowLayout;
-	import org.aswing.JButton;
-	import org.aswing.JFrame;
-	import org.aswing.JLabel;
-	import org.aswing.JOptionPane;
-	import org.aswing.JPanel;
-	import org.aswing.SoftBoxLayout;
-	import src.Constants;
-	import src.Global;
+	import flash.display.*;
+	import org.aswing.*;
+	import org.aswing.event.*;
+	import src.*;
 	import src.Map.*;
 	import src.Objects.*;
-	import src.Objects.Actions.CurrentActionReference;
-	import src.Objects.Actions.Notification;
+	import src.Objects.Actions.*;
+	import src.Objects.Process.*;
 	import src.Objects.Troop.*;
+	import src.UI.*;
+	import src.UI.Components.*;
 	import src.UI.Components.ComplexTroopGridList.*;
-	import src.UI.Components.NotificationBox;
-	import src.UI.Components.ReferenceBox;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.GameJPanel;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.Util.BinaryList.BinaryListEvent;
+	import src.UI.LookAndFeel.*;
+	import src.Util.BinaryList.*;
 
 	public class TroopStubDialog extends GameJPanel {
 
@@ -78,8 +67,9 @@ package src.UI.Dialog {
 			btnRetreat.addActionListener(onClickRetreat);
 			btnManage.addActionListener(onClickManage);
 
-			if (troop.id == 1)
-			buttons.push(btnManage);
+			if (troop.id == 1) {
+				buttons.push(btnManage);
+			}
 
 			switch (troop.state)
 			{
@@ -136,35 +126,17 @@ package src.UI.Dialog {
 
 		public function onClickLocate(event: AWEvent):void
 		{
-			if (troop.state == TroopStub.MOVING || troop.state == TroopStub.RETURNING_HOME) {
-				Global.map.selectWhenViewable(troop.cityId, troop.objectId);
-			}
-
-			Global.gameContainer.camera.ScrollTo(troop.x * Constants.tileW - Constants.screenW / 2, troop.y * Constants.tileH / 2 - Constants.screenH / 2);
-			Global.gameContainer.closeAllFrames();
+			new LocateTroopProcess(troop).execute();
 		}
 
 		public function onClickRetreat(event: AWEvent):void
 		{		
-			InfoDialog.showMessageDialog("Confirm", "Are you sure? Retreating will bring your troop back to your city..", function(result: int): void {				
-				if (result == JOptionPane.YES) {
-					Global.mapComm.Troop.retreat(troop.cityId, troop.id);
-				}
-				
-			}, null, true, true, JOptionPane.YES | JOptionPane.NO);						
+			new RetreatTroopProcess().execute();
 		}
 
 		public function onClickManage(e: AWEvent) :void
 		{
-			var unitMove: UnitMoveDialog = new UnitMoveDialog(city, onManage);
-			unitMove.show();
-		}
-
-		public function onManage(dialog: UnitMoveDialog):void
-		{
-			dialog.getFrame().dispose();
-			
-			Global.mapComm.Troop.moveUnitAndSetHideNewUnits(city.id, dialog.getTroop(), dialog.getHideNewUnits());
+			new ManageLocalTroopsProcess(city).execute();
 		}
 
 		private function createUI() : void {

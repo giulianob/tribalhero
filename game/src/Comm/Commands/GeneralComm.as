@@ -365,6 +365,34 @@
 					throw new Error("Unknown owner type while getting profile");
 			}			
 		}		
+		
+		public function readLocation(packet:Packet):*
+		{
+			var targetType: int = packet.readInt();
+			
+			switch (targetType) {
+				case -1:
+					return null;
+				case Location.CITY:
+					return {
+						type: targetType,
+						playerId: packet.readUInt(),
+						cityId: packet.readUInt(),
+						playerName: packet.readString(),
+						cityName: packet.readString()
+					}
+				case Location.STRONGHOLD:
+					return { 
+						type: targetType,
+						strongholdId: packet.readUInt(),
+						strongholdName: packet.readString(),
+						tribeId: packet.readUInt(),
+						tribeName: packet.readString()
+					}
+				default:
+					new Error("Unknown location type " + targetType);					
+			}
+		}
 	}
 }
 

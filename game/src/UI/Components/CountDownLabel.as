@@ -41,14 +41,20 @@ package src.UI.Components
 		
 		public function setTime(time: int): void 
 		{
-			this.time = time;
+			this.time = time;						
 			update();
+			
+			if (stage) {
+				timer.start();
+			}
 		}
 		
 		public function update(): void {
 			var timeLeft: int = Math.max(0, time - Global.map.getServerTime());
-			if (timeLeft <= 0)
+			if (timeLeft <= 0) {
 				setText(this.negativeText);
+				timer.stop();
+			}
 			else
 				setText(Util.formatTime(timeLeft));
 		}

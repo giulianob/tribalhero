@@ -173,14 +173,8 @@
 			var incomingAttackCount: int = packet.readShort();
 			for (i = 0; i < incomingAttackCount; i++) {
 				profileData.incomingAttacks.push( {
-					targetPlayerId: packet.readUInt(),
-					targetCityId: packet.readUInt(),
-					targetPlayerName: packet.readString(),
-					targetCityName: packet.readString(),
-					sourcePlayerId: packet.readUInt(),
-					sourceCityId: packet.readUInt(),
-					sourcePlayerName: packet.readString(),
-					sourceCityName: packet.readString(),
+					target: mapComm.General.readLocation(packet),
+					source: mapComm.General.readLocation(packet),
 					endTime: packet.readUInt()
 				});
 			}
@@ -193,24 +187,7 @@
 				assignment.endTime = packet.readUInt();
 				assignment.x = packet.readUInt();
 				assignment.y = packet.readUInt();
-				assignment.targetType = packet.readInt();
-				if (assignment.targetType == 1) {
-					assignment.target = {
-						type: assignment.targetType,
-						playerId: packet.readUInt(),
-						cityId: packet.readUInt(),
-						playerName: packet.readString(),
-						cityName: packet.readString()
-					};
-				} else if (assignment.targetType == 2) {
-					assignment.target = { 
-						type: assignment.targetType,
-						strongholdId: packet.readUInt(),
-						strongholdName: packet.readString(),
-						tribeId: packet.readUInt(),
-						tribeName: packet.readString()
-					};
-				}
+				assignment.target = mapComm.General.readLocation(packet);
 				assignment.attackMode = packet.readByte();
 				assignment.dispatchCount = packet.readUInt();
 				assignment.description = packet.readString();

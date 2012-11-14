@@ -25,7 +25,7 @@ package src.Objects.Actions {
 		public static const CONCURRENCY_STANDALONE: int = 1;
 		public static const CONCURRENCY_NORMAL: int = 2;
 		public static const CONCURRENCY_CONCURRENT: int = 3;
-		
+					
 		public static const actionConcurrency: Object = {
 			101: CONCURRENCY_NORMAL, // STRUCTURE BUILD
 			102: CONCURRENCY_STANDALONE, // STRUCTURE UPGRADE
@@ -46,6 +46,17 @@ package src.Objects.Actions {
 			602: CONCURRENCY_NORMAL, // UNIT UPGRADE
 			801: CONCURRENCY_CONCURRENT, // DEFAULT ACTION
 			1018: CONCURRENCY_CONCURRENT// TRIBE CONTRIBUTE
+		};
+		
+		public static const CATEGORY_UNSPECIFIED: int = 0;
+		public static const CATEGORY_ATTACK: int = 1;
+		public static const CATEGORY_DEFENSE: int = 2;
+		
+		public static const actionCategory: Object = {
+			250: CATEGORY_ATTACK,
+			251: CATEGORY_DEFENSE,
+			253: CATEGORY_ATTACK,
+			254: CATEGORY_DEFENSE			
 		};
 		
 		public static const costsToCancelActions: Array = [STRUCTURE_BUILD, STRUCTURE_UPGRADE, STRUCTURE_CHANGE, TECHNOLOGY_UPGRADE, UNIT_TRAIN, UNIT_UPGRADE, RESOURCE_SEND, RESOURCE_BUY, RESOURCE_SELL, TRIBE_CONTRIBUTE];

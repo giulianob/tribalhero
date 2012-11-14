@@ -5,10 +5,7 @@ package src.Objects.Process
 	import src.Objects.GameObject;
 	import src.UI.Dialog.AssignmentJoinAtkDialog;
 	import src.UI.Dialog.AssignmentJoinDefDialog;
-	/**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
+
 	public class AssignmentJoinProcess implements IProcess
 	{		
 		private var attackDialog: AssignmentJoinAtkDialog;

@@ -227,11 +227,11 @@
 
 		public function onViewCityTroops(e: MouseEvent) :void
 		{
-			if (!selectedCity)
+			if (!selectedCity) {
 				return;
+			}
 
-			var movementDialog: MovementDialog = new MovementDialog(selectedCity);
-			movementDialog.show();
+			new TroopsDialog(selectedCity).show();
 		}
 		
 		public function onViewTribe(e: MouseEvent) :void

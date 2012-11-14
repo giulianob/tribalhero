@@ -337,12 +337,8 @@
 			
 			var pnlHeader: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));
 			
-			pnlHeader.appendAll(
-				new PlayerCityLabel(incoming.targetPlayerId, incoming.targetCityId, incoming.targetPlayerName, incoming.targetCityName),
-				new JLabel(" is being attacked by ", null, AsWingConstants.LEFT),
-				new PlayerCityLabel(incoming.sourcePlayerId, incoming.sourceCityId, incoming.sourcePlayerName, incoming.sourceCityName)
-			);
-			
+			pnlHeader.append(new RichLabel(StringUtil.substitute("TRIBE_INCOMING_ATK", RichLabel.getHtmlForLocation(incoming.target), RichLabel.getHtmlForLocation(incoming.source))));
+						
 			var lblCountdown: CountDownLabel = new CountDownLabel(incoming.endTime, StringHelper.localize("STR_BATTLE_IN_PROGRESS"));
 			
 			pnlContainer.appendAll(pnlHeader, lblCountdown);

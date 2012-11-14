@@ -282,6 +282,7 @@ namespace Game.Comm
 
             packet.AddByte(stub.TroopId);
             packet.AddByte((byte)stub.State);
+            AddToPacket((ILocation)stub.Station, packet);
 
             //Add troop template
             packet.AddByte(stub.Template.Count);
@@ -509,36 +510,45 @@ namespace Game.Comm
 
         public static void AddToPacket(ILocation location, Packet packet)
         {
+            if (location == null)
+            {
+                packet.AddInt32(-1);
+                return;
+            }
+
             packet.AddInt32((int)location.LocationType);
             switch(location.LocationType)
             {
                 case LocationType.City:
-                {
-                    ICity targetCity;
-                    if (Ioc.Kernel.Get<ICityManager>().TryGetCity(location.LocationId, out targetCity))
+                    ICity targetCity = location as ICity;
+                    if (targetCity != null ||
+                        Ioc.Kernel.Get<ICityManager>().TryGetCity(location.LocationId, out targetCity))
                     {
                         packet.AddUInt32(targetCity.Owner.PlayerId);
                         packet.AddUInt32(targetCity.Id);
                         packet.AddString(targetCity.Owner.Name);
                         packet.AddString(targetCity.Name);
+                        return;
                     }
-                }
                     break;
                 case LocationType.Stronghold:
-                {
-                    IStronghold targetStronghold;
-                    if (Ioc.Kernel.Get<IStrongholdManager>().TryGetStronghold(location.LocationId, out targetStronghold))
+                    IStronghold targetStronghold = location as IStronghold;
+                    if (targetStronghold != null ||
+                        Ioc.Kernel.Get<IStrongholdManager>().TryGetStronghold(location.LocationId, out targetStronghold))
                     {
                         packet.AddUInt32(targetStronghold.Id);
                         packet.AddString(targetStronghold.Name);
                         packet.AddUInt32(targetStronghold.Tribe == null ? 0 : targetStronghold.Tribe.Id);
                         packet.AddString(targetStronghold.Tribe == null ? "" : targetStronghold.Tribe.Name);
+                        return;
                     }
-                }
                     break;
-                default:
-                    throw new Exception("Unknown location type");
             }
+
+            packet.AddUInt32(0);
+            packet.AddUInt32(0);
+            packet.AddString("Error");
+            packet.AddString("Error");
         }
 
         public static ISimpleStub ReadStub(Packet packet, params FormationType[] formations)
@@ -659,17 +669,8 @@ namespace Game.Comm
                 packet.AddInt16((short)incomingList.Count());
                 foreach (var incoming in incomingList)
                 {
-                    // Target
-                    packet.AddUInt32(0);
-                    packet.AddUInt32(0);
-                    packet.AddString(incoming.Target.LocationType.ToString());
-                    packet.AddString(incoming.Target.LocationId.ToString());                    
-
-                    // Attacker
-                    packet.AddUInt32(incoming.SourceCity.Owner.PlayerId);
-                    packet.AddUInt32(incoming.SourceCity.Id);
-                    packet.AddString(incoming.SourceCity.Owner.Name);
-                    packet.AddString(incoming.SourceCity.Name);
+                    AddToPacket(incoming.Target, packet);
+                    AddToPacket(incoming.Source, packet);
 
                     packet.AddUInt32(UnixDateTime.DateTimeToUnix(incoming.EndTime.ToUniversalTime()));
                 }

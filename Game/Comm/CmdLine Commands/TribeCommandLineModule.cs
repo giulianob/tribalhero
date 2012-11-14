@@ -475,7 +475,7 @@ namespace Game.Comm
             {
                 foreach (var incoming in tribeManager.GetIncomingList(tribe))
                 {
-                    result.Append(string.Format("To [{0}-{1}] From[{2}] Arrival Time[{3}]\n", incoming.Target.LocationType.ToString(), incoming.Target.LocationId, incoming.SourceCity.Name, incoming.EndTime));
+                    result.Append(string.Format("To [{0}-{1}] From[{2}] Arrival Time[{3}]\n", incoming.Target.LocationType.ToString(), incoming.Target.LocationId, incoming.Source.LocationId, incoming.EndTime));
                 }
             }
 

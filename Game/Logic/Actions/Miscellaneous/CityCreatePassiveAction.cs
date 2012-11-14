@@ -97,9 +97,24 @@ namespace Game.Logic.Actions {
             ushort wagonType = Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("Wagon").First();
             Formula.Current.GetNewCityCost(city.Owner.GetCityCount(), out influencePoints, out wagons);
             if (city.Owner.Value < influencePoints && !Config.actions_ignore_requirements)
+            {
                 return Error.ResourceNotEnough;
-            if (city.DefaultTroop.Sum(f => f.ContainsKey(wagonType)?f[wagonType]:0) < wagons)
+            }
+
+            var totalWagons = city.DefaultTroop.Sum(f =>
+                {
+                    if (f.Type != FormationType.Normal && f.Type != FormationType.Garrison)
+                    {
+                        return 0;
+                    }
+
+                    return f.ContainsKey(wagonType) ? f[wagonType] : 0;
+                });
+
+            if (totalWagons < wagons && !Config.actions_ignore_requirements)
+            {
                 return Error.ResourceNotEnough;
+            }
 
             World.Current.Regions.LockRegion(x, y);
 
@@ -150,7 +165,8 @@ namespace Game.Logic.Actions {
                 // taking resource from the old city
                 city.BeginUpdate();
                 city.DefaultTroop.BeginUpdate();
-                if((wagons -= city.DefaultTroop.RemoveUnit(FormationType.Normal, wagonType, (ushort)wagons))>0)
+                wagons -= city.DefaultTroop.RemoveUnit(FormationType.Normal, wagonType, (ushort)wagons);
+                if (wagons > 0)
                 {
                     city.DefaultTroop.RemoveUnit(FormationType.Garrison, wagonType, (ushort)wagons);
                 }

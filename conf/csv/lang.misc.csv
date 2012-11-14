@@ -41,6 +41,11 @@ STR_VIEW_REPORT,View Report
 STR_NEUTRAL,Neutral
 STR_VIEW_PROFILE,View Profile
 STR_GOTO,Go to
+STR_ESTABLISHED_WITH_TIME,established {0} ago
+STR_OVERVIEW,Overview
+STR_TARGET,Target
+STR_LOCATE,Locate
+STR_MANAGE,Manage
 ,
 CITY_OVERVIEW_TITLE,City Overview
 CITY_OVERVIEW_INFLUENCE_POINTS_LABEL,{0} influence points.
@@ -181,9 +186,29 @@ TROOP_CREATE_DRAG_HINT,Hint: Drag units to assign to the different troops. Hold 
 ,
 LOCATION_CITY_LABEL,<a href='event:viewProfile:{0}'>{1}</a> (<a href='event:goToCity:{2}'>{3}</a>)
 LOCATION_STRONGHOLD_LABEL,"<a href=""event:viewStronghold:{0}"">{1}</a>"
-
+,
 TRIBE_NO_STRONGHOLDS_OWNED,Your tribe doesn't control any strongholds right now.
 TRIBE_NO_STRONGHOLDS_OPEN,Your tribe hasn't broken through the gate of any strongholds.
-,
+TRIBE_INCOMING_ATK,{0} is being attacked by {1}
 ASSIGNMENT_ATK,Attack {0}
 ASSIGNMENT_DEF,Defend {0}
+,
+RICH_LABEL_LOCATION_CITY_ONLY,"<a href=""event:viewProfileByType:city:{0}"">{1}</a>"
+RICH_LABEL_LOCATION_CITY,"<a href=""event:viewProfileByType:city:{0}"">{1}</a> (<a href =""event:viewProfile:{2}"">{3}</a>)"
+RICH_LABEL_LOCATION_STRONGHOLD,"Stronghold <a href=""event:viewProfileByType:stronghold:{0}"">{1}</a> (<a href =""event:viewTribeProfile:{2}"">{3}</a>)"
+RICH_LABEL_LOCATION_STRONGHOLD_NEUTRAL,"Stronghold <a href=""event:viewProfileByType:stronghold:{0}"">{1}</a> (Neutral)"
+,
+TROOPS_DIALOG_SEND_ATTACK,Send Attack
+TROOPS_DIALOG_SEND_DEFENSE,Send Defense
+TROOPS_DIALOG_LOCAL_GROUP,Local
+TROOPS_DIALOG_ON_THE_MOVE_GROUP,On the move
+TROOPS_DIALOG_INCOMING_GROUP,Incoming
+TROOPS_DIALOG_STATIONED_GROUP,Stationed
+,
+TROOP_NAME_COLUMN,Troop
+TROOP_LOCATION_COLUMN,Location
+TROOP_STATUS_COLUMN,Status
+TROOP_UNITS_COLUMN,Units
+TROOP_ACTIONS_COLUMN,Actions
+TROOP_LOCAL,Local
+RICH_LABEL_TROOP,"<a href=""event:viewProfileByType:city:{0}"">{1}</a> ({2})"

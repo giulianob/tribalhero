@@ -187,7 +187,7 @@ namespace Game.Data.Tribe
                                   select
                                           new Tribe.IncomingListItem
                                           {
-                                                  SourceCity = notification.GameObject.City,
+                                                  Source = notification.GameObject.City,
                                                   Target = city,
                                                   EndTime = ((IActionTime)notification.Action).EndTime
                                           }).ToList();
@@ -203,7 +203,7 @@ namespace Game.Data.Tribe
                                     select
                                             new Tribe.IncomingListItem
                                             {
-                                                    SourceCity = notification.GameObject.City,
+                                                    Source = notification.GameObject.City,
                                                     Target = stronghold,
                                                     EndTime = ((IActionTime)notification.Action).EndTime
                                             });

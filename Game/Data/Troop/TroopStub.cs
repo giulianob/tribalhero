@@ -23,7 +23,8 @@ namespace Game.Data.Troop
         BattleStationed = 3,
         Moving = 4,
         ReturningHome = 5,
-        WaitingInAssignment = 6
+        WaitingInDefensiveAssignment = 6,
+        WaitingInOffensiveAssignment = 7
     }
 
     public enum TroopBattleGroup

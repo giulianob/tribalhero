@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Game.Data;
+using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
@@ -16,9 +17,12 @@ namespace Game.Comm.CmdLine_Commands
     {
         private readonly Procedure procedure;
 
-        public CityCommandLineModule(Procedure procedure)
+        private readonly IActionFactory actionFactory;
+
+        public CityCommandLineModule(Procedure procedure, IActionFactory actionFactory)
         {
             this.procedure = procedure;
+            this.actionFactory = actionFactory;
         }
 
         public override void RegisterCommands(CommandLineProcessor processor)
@@ -26,6 +30,59 @@ namespace Game.Comm.CmdLine_Commands
             processor.RegisterCommand("renamecity", RenameCity, PlayerRights.Admin);
             processor.RegisterCommand("removestructure", RemoveStructure, PlayerRights.Bureaucrat);
             processor.RegisterCommand("deletestucktroop", DeleteStuckTroop, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("createcity", CreateCity, PlayerRights.Bureaucrat);
+        }
+
+        public string CreateCity(Session session, String[] parms)
+        {
+            bool help = false;
+            string cityName = string.Empty;
+            string playerName = string.Empty;
+            uint x = 0;
+            uint y = 0;
+
+            try
+            {
+                var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},
+                        {"newcity=", v => cityName = v.TrimMatchingQuotes()} ,
+                        {"player=", v => playerName = v.TrimMatchingQuotes() },
+                        {"x=", v => x = uint.Parse(v.TrimMatchingQuotes()) },
+                        {"y=", v => y = uint.Parse(v.TrimMatchingQuotes()) },
+                };
+                p.Parse(parms);
+            }
+            catch(Exception)
+            {
+                help = true;
+            }
+
+            if (help || cityName == string.Empty)
+                return "createcity --player=### --newcity=### --x=#### --y=####";
+
+            uint playerId;
+            if (!World.Current.FindPlayerId(playerName, out playerId))
+                return "Player not found";
+
+            IPlayer player;
+            using (Concurrency.Current.Lock(playerId, out player))
+            {
+                if (player == null)
+                {
+                    return "Player not found";
+                }
+
+                ICity city = player.GetCityList().First();
+                var cityCreateAction = actionFactory.CreateCityCreatePassiveAction(city.Id, x, y, cityName);
+                Error ret = city.Worker.DoPassive(city[1], cityCreateAction, true);
+                if (ret != Error.Ok)
+                {
+                    return string.Format("Error: {0}", ret);
+                }
+            }
+
+            return "OK!";
         }
 
         public string DeleteStuckTroop(Session session, String[] parms)

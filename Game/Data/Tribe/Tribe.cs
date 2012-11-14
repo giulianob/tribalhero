@@ -39,7 +39,7 @@ namespace Game.Data.Tribe
         {
             public ILocation Target { get; set; }
 
-            public ICity SourceCity { get; set; }
+            public ILocation Source { get; set; }
 
             public DateTime EndTime { get; set; }
         }
@@ -524,7 +524,7 @@ namespace Game.Data.Tribe
 
             // Create troop      
             ITroopStub stub;
-            if (!procedure.TroopStubCreate(out stub, city, simpleStub, TroopState.WaitingInAssignment))
+            if (!procedure.TroopStubCreate(out stub, city, simpleStub, isAttack ? TroopState.WaitingInOffensiveAssignment : TroopState.WaitingInDefensiveAssignment))
             {
                 return Error.TroopChanged;
             }
@@ -651,7 +651,7 @@ namespace Game.Data.Tribe
                     !procedure.TroopStubCreate(out stub,
                                                city,
                                                simpleStub,
-                                               TroopState.WaitingInAssignment,
+                                               assignment.IsAttack ? TroopState.WaitingInOffensiveAssignment : TroopState.WaitingInDefensiveAssignment,
                                                assignment.IsAttack ? FormationType.Attack : FormationType.Defense))
             {
                 return Error.TroopChanged;

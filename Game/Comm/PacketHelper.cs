@@ -57,12 +57,7 @@ namespace Game.Comm
             }
         }
 
-        //sendRegularObject defines whether to send the state and labor count. Basicaly the sendRegularObject should be true
-        //when sending the object where the client will accept it as a regular StructureObject and should be false if the client
-        //will be accepting it as a CityObject
-        //
-        //These add to packet methods might need to be broken up a bit since this one has too many "cases"
-        public static void AddToPacket(ISimpleGameObject obj, Packet packet, bool sendRegularObject)
+        public static void AddToPacket(ISimpleGameObject obj, Packet packet, bool forRegion = false)
         {
             packet.AddUInt16(obj.Type);
             packet.AddUInt16((ushort)(obj.RelX));
@@ -77,9 +72,10 @@ namespace Game.Comm
                 packet.AddUInt32(gameObj.City.Owner.PlayerId);
             }
 
-            if (obj is IHasLevel)
+            IHasLevel objHasLevel = obj as IHasLevel;
+            if (objHasLevel != null)
             {
-                packet.AddByte(((IHasLevel)obj).Lvl);
+                packet.AddByte(objHasLevel.Lvl);
             }
 
             var stronghold = obj as IStronghold;
@@ -88,47 +84,21 @@ namespace Game.Comm
                 packet.AddUInt32(stronghold.StrongholdState == StrongholdState.Occupied ? stronghold.Tribe.Id : 0);
             }
 
-            if (sendRegularObject)
+            var structure = obj as IStructure;
+            if (structure != null)
             {
-                packet.AddByte((byte)obj.State.Type);
-                foreach (var parameter in obj.State.Parameters)
+                if (!forRegion)
                 {
-                    if (parameter is byte)
-                    {
-                        packet.AddByte((byte)parameter);
-                    }
-                    else if (parameter is short)
-                    {
-                        packet.AddInt16((short)parameter);
-                    }
-                    else if (parameter is int)
-                    {
-                        packet.AddInt32((int)parameter);
-                    }
-                    else if (parameter is ushort)
-                    {
-                        packet.AddUInt16((ushort)parameter);
-                    }
-                    else if (parameter is uint)
-                    {
-                        packet.AddUInt32((uint)parameter);
-                    }
-                    else if (parameter is string)
-                    {
-                        packet.AddString((string)parameter);
-                    }
+                    packet.AddUInt16(structure.Stats.Labor);
                 }
 
-                if (gameObj is IStructure && ((IStructure)gameObj).IsMainBuilding)
+                if (structure.IsMainBuilding)
                 {
                     packet.AddByte(gameObj.City.Radius);
                 }
             }
-            else if (obj is IStructure)
-            {
-                //if obj is a structure and we are sending it as CityObj we include the labor
-                packet.AddUInt16((obj as IStructure).Stats.Labor);
-            }
+
+            AddToPacket(obj.State, packet);
         }
 
         public static void AddToPacket(GameObjectState state, Packet packet)
@@ -439,7 +409,7 @@ namespace Game.Comm
             foreach (var structure in structs)
             {
                 packet.AddUInt16(Region.GetRegionIndex(structure));
-                AddToPacket(structure, packet, false);
+                AddToPacket(structure, packet);
 
                 packet.AddUInt16((ushort)structure.Technologies.OwnedTechnologyCount);
                 foreach (var tech in structure.Technologies)
@@ -459,7 +429,7 @@ namespace Game.Comm
             foreach (var troop in troops)
             {
                 packet.AddUInt16(Region.GetRegionIndex(troop));
-                AddToPacket(troop, packet, false);
+                AddToPacket(troop, packet);
             }
 
             //City Troops

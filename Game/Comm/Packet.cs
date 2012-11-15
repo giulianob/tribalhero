@@ -286,6 +286,11 @@ namespace Game.Comm
 
         #region Methods
 
+        public byte[] GetPayload()
+        {
+            return sendBuffer.ToArray();
+        } 
+
         public byte[] GetBytes()
         {
             byte[] ret;

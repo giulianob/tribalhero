@@ -215,7 +215,7 @@
 			{
 				var regionId: int = packet.readUShort();
 			
-				var cityObj: CityObject = mapComm.City.readObject(packet, regionId, city);
+				var cityObj: CityObject = mapComm.City.readCityObject(packet, regionId, city);
 
 				var technologyCount: int = packet.readUShort();
 				for (k = 0; k < technologyCount; k++)
@@ -231,7 +231,7 @@
 			{
 				regionId = packet.readUShort();
 
-				cityObj = mapComm.City.readObject(packet, regionId, city);
+				cityObj = mapComm.City.readCityObject(packet, regionId, city);
 				
 				city.objects.add(cityObj, false);
 			}

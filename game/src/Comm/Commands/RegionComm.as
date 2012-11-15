@@ -116,7 +116,7 @@
 
 				for (var j: int = 0; j < objCnt; j++)
 				{
-					var obj: SimpleGameObject = mapComm.Objects.readObject(packet, newRegion.id);
+					var obj: SimpleGameObject = mapComm.Objects.readObjectInstance(packet, newRegion.id, true);
 					newRegion.addObject(obj, false);					
 				}
 				

@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using Game.Comm;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Setup;
@@ -127,48 +128,10 @@ namespace Game.Map
                     bw.Write(objlist.Count);
                     foreach (ISimpleGameObject obj in objlist)
                     {
-                        bw.Write(obj.Type);
-                        bw.Write((ushort)(obj.RelX));
-                        bw.Write((ushort)(obj.RelY));
-
-                        bw.Write(obj.GroupId);
-                        bw.Write(obj.ObjectId);
-
-                        if (obj is IGameObject)
-                            bw.Write(((IGameObject)obj).City.Owner.PlayerId);
-
-                        if (obj is IHasLevel)
-                            bw.Write(((IHasLevel)obj).Lvl);
-
-                        var stronghold = obj as IStronghold;
-                        if( stronghold!=null)
-                            bw.Write(stronghold.StrongholdState == StrongholdState.Occupied ? stronghold.Tribe.Id : 0);
-
-                        bw.Write((byte)obj.State.Type);
-                        foreach (var parameter in obj.State.Parameters)
-                        {
-                            if (parameter is byte)
-                                bw.Write((byte)parameter);
-                            else if (parameter is short)
-                                bw.Write((short)parameter);
-                            else if (parameter is int)
-                                bw.Write((int)parameter);
-                            else if (parameter is ushort)
-                                bw.Write((ushort)parameter);
-                            else if (parameter is uint)
-                                bw.Write((uint)parameter);
-                            else if (parameter is string)
-                                bw.Write((string)parameter);
-                        }
-
-                        //if this is the main building then include radius
-                        if (obj is IStructure)
-                        {
-                            var structure = obj as IStructure;
-
-                            if (structure.IsMainBuilding)
-                                bw.Write(structure.City.Radius);
-                        }
+                        // TODO: Make this not require a packet
+                        Packet dummyPacket = new Packet();
+                        PacketHelper.AddToPacket(obj, dummyPacket, true);
+                        bw.Write(dummyPacket.GetPayload());
                     }
 
                     isDirty = false;

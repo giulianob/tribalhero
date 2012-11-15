@@ -146,7 +146,7 @@ namespace Game.Map
 
                     var packet = new Packet(Command.ObjectAdd);
                     packet.AddUInt16(regionId);
-                    PacketHelper.AddToPacket(obj, packet, true);
+                    PacketHelper.AddToPacket(obj, packet);
 
                     Global.Channel.Post("/WORLD/" + regionId, packet);
                 }
@@ -263,7 +263,7 @@ namespace Game.Map
                 regions[newRegionId].Update(sender, origX, origY);
                 var packet = new Packet(Command.ObjectUpdate);
                 packet.AddUInt16(newRegionId);
-                PacketHelper.AddToPacket(sender, packet, true);
+                PacketHelper.AddToPacket(sender, packet);
                 Global.Channel.Post("/WORLD/" + newRegionId, packet);
             }            
             else
@@ -274,12 +274,12 @@ namespace Game.Map
                 var packet = new Packet(Command.ObjectMove);
                 packet.AddUInt16(oldRegionId);
                 packet.AddUInt16(newRegionId);
-                PacketHelper.AddToPacket(sender, packet, true);
+                PacketHelper.AddToPacket(sender, packet);
                 Global.Channel.Post("/WORLD/" + oldRegionId, packet);
 
                 packet = new Packet(Command.ObjectAdd);
                 packet.AddUInt16(newRegionId);
-                PacketHelper.AddToPacket(sender, packet, true);
+                PacketHelper.AddToPacket(sender, packet);
                 Global.Channel.Post("/WORLD/" + newRegionId, packet);
             }
         }

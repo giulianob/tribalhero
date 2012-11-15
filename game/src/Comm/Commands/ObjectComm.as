@@ -58,51 +58,59 @@
 			}
 		}
 		
-		public function readObject(packet: Packet, regionId: int) : SimpleGameObject {
-			var objType: int = packet.readUShort();
-			var objX: int = packet.readUShort() + MapUtil.regionXOffset(regionId);
-			var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);
+		public function readObject(packet: Packet, regionId: int, forRegion: Boolean = false) : * {
+			var obj: * = {
+				type: packet.readUShort(),
+				x: packet.readUShort() + MapUtil.regionXOffset(regionId),
+				y: packet.readUShort() + MapUtil.regionYOffset(regionId),	
+				groupId: packet.readUInt(),
+				id: packet.readUInt()
+			};
 			
-			var objGroupId: int = packet.readUInt();
-			var objId: int = packet.readUInt();
-			
-			var objPlayerId: int;
-			var objLvl: int;
-			var objTribeId: uint;
-			switch(ObjectFactory.getClassType(objType)) {
+			switch(ObjectFactory.getClassType(obj.type)) {
 				case ObjectFactory.TYPE_STRUCTURE:
-					objPlayerId = packet.readUInt();
-					objLvl = packet.readUByte();						
+					obj.playerId = packet.readUInt();
+					obj.lvl = packet.readUByte();		
+					obj.labor = forRegion ? 0 : packet.readUShort();
+						
+					if (obj.id == 1) {
+						obj.wallRadius = packet.readUByte();
+					}
 					break;
 				case ObjectFactory.TYPE_FOREST:
-					objLvl = packet.readUByte();						
+					obj.lvl = packet.readUByte();						
 					break;
 				case ObjectFactory.TYPE_TROOP_OBJ:
-					objPlayerId = packet.readUInt();
+					obj.playerId = packet.readUInt();
 					break;
 				case ObjectFactory.TYPE_STRONGHOLD:
-					objLvl = packet.readUByte();
-					objTribeId = packet.readUInt();
+					obj.lvl = packet.readUByte();
+					obj.tribeId = packet.readUInt();
 					break;
 			}
 			
-			var objState: GameObjectState = readState(packet);
+			obj.state = readState(packet);
 			
-			var coord: Point = MapUtil.getScreenCoord(objX, objY);
+			return obj;
+		}
 			
-			switch(ObjectFactory.getClassType(objType)) {
+		public function readObjectInstance(packet: Packet, regionId: int, forRegion: Boolean = false): SimpleGameObject {
+			var obj: * = readObject(packet, regionId, forRegion);
+			
+			var coord: Point = MapUtil.getScreenCoord(obj.x, obj.y);
+			
+			switch(ObjectFactory.getClassType(obj.type)) {
 				case ObjectFactory.TYPE_STRUCTURE:
-					var wallRadius: int = objId == 1 ? packet.readUByte() : 0;
-					return StructureFactory.getInstance(objType, objState, coord.x, coord.y, objPlayerId, objGroupId, objId, objLvl, wallRadius);
+					return StructureFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.playerId, obj.groupId, obj.id, obj.lvl, obj.wallRadius);
 				case ObjectFactory.TYPE_FOREST:
-					return ForestFactory.getInstance(objType, objState, coord.x, coord.y, objGroupId, objId, objLvl);
+					return ForestFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.groupId, obj.id, obj.lvl);
 				case ObjectFactory.TYPE_TROOP_OBJ:
-					return TroopFactory.getInstance(objType, objState, coord.x, coord.y, objPlayerId, objGroupId, objId);
+					return TroopFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.playerId, obj.groupId, obj.id);
 				case ObjectFactory.TYPE_STRONGHOLD:
-					return StrongholdFactory.getInstance(objType, objState, coord.x, coord.y, objGroupId, objId, objLvl, objTribeId);
+					return StrongholdFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.groupId, obj.id, obj.lvl, obj.tribeId);
+				default:
+					throw new Error("Trying to unread unknown object class type " + obj.type);
 			}
-			
-			return null;
 		}
 
 		public function readState(packet: Packet) : GameObjectState {
@@ -112,17 +120,13 @@
 			{
 				case SimpleGameObject.STATE_NORMAL:
 					return new GameObjectState();
-				break;
 				case SimpleGameObject.STATE_BATTLE:
 					var battleId: int = packet.readUInt();
 					return new BattleState(battleId);
-				break;
 				case SimpleGameObject.STATE_MOVING:
 					return new MovingState();
-				break;
 				default:
-					Util.log("Unknown object state in onReceiveRegion:" + objState);
-				break;
+					throw new Error("Unknown object state in onReceiveRegion:" + objState);
 			}
 			
 			return null;
@@ -479,7 +483,7 @@
 		{
 			var regionId: int = packet.readUShort();
 			
-			var obj: SimpleGameObject = readObject(packet, regionId);
+			var obj: SimpleGameObject = readObjectInstance(packet, regionId);
 			
 			Global.map.regions.updateObject(regionId, obj);
 		}
@@ -488,7 +492,7 @@
 		{
 			var regionId: int = packet.readUShort();
 
-			var obj: SimpleGameObject = readObject(packet, regionId);
+			var obj: SimpleGameObject = readObjectInstance(packet, regionId);
 			
 			Global.map.regions.addObject(regionId, obj);			
 		}
@@ -507,7 +511,7 @@
 			var oldRegionId: int = packet.readUShort();
 			var newRegionId: int = packet.readUShort();
 			
-			var obj: SimpleGameObject = readObject(packet, newRegionId);
+			var obj: SimpleGameObject = readObjectInstance(packet, newRegionId);
 			
 			Global.map.regions.moveObject(oldRegionId, newRegionId, obj);
 		}

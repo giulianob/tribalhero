@@ -10,6 +10,9 @@ TROOP_STATE_RETURNING_HOME,Returning Home
 TROOP_STATE_WAITING_IN_DEFENSIVE_ASSIGNMENT,Waiting in defensive assignment
 TROOP_STATE_WAITING_IN_OFFENSIVE_ASSIGNMENT,Waiting in offensive assignment
 ,
+TROOP_MORE_UNITS,and {0} more
+TROOP_UNITS,{0} unit(s)
+,
 SWORDSMAN_UNIT,Swordsman
 HEAVY_SWORDSMAN_UNIT,Heavy Swordsman
 PIKEMAN_UNIT,Pikeman

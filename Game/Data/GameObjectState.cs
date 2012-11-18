@@ -43,7 +43,7 @@ namespace Game.Data
             return new GameObjectState(ObjectState.Battle, battleId);
         }
 
-        public static GameObjectState MovingState(uint x, uint y)
+        public static GameObjectState MovingState()
         {
             return new GameObjectState(ObjectState.Moving);
         }

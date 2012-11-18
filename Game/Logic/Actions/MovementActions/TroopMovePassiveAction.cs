@@ -150,7 +150,7 @@ namespace Game.Logic.Actions
             troopObj.BeginUpdate();
             troopObj.TargetX = x;
             troopObj.TargetY = y;
-            troopObj.State = GameObjectState.MovingState(x, y);
+            troopObj.State = GameObjectState.MovingState();
             troopObj.EndUpdate();
 
             return Error.Ok;

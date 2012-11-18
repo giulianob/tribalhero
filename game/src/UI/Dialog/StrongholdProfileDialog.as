@@ -65,7 +65,7 @@
 			});
 			
 			btnSendReinforcement.addActionListener(function(e:Event): void {
-				var process : ReinforcementSendProcess = new ReinforcementSendProcess(new Location(Location.STRONGHOLD, self.profileData.strongholdId));
+				var process : ReinforcementSendProcess = new ReinforcementSendProcess(Global.gameContainer.selectedCity, new Location(Location.STRONGHOLD, self.profileData.strongholdId));
 				process.execute();
 			});			
 			
@@ -184,7 +184,7 @@
 			s.add(f);
 			
 			if(f.size()>0)
-				addInfo(form, StringHelper.localize("STR_TOTAL_TROOPS"), new TroopCompositionGridList(s, Formation.Defense, 3, 0));
+				addInfo(form, StringHelper.localize("STR_TOTAL_TROOPS"), new TroopCompositionGridList(s, 3, 0));
 			else 
 				addInfo(form, StringHelper.localize("STR_TOTAL_TROOPS"), StringHelper.localize("STR_NONE_DEFENDING"));
 				
@@ -199,7 +199,7 @@
 			label.setConstraints("West");
 			pnl.append(label);
 			
-			var gridList: TroopCompositionGridList = new TroopCompositionGridList(troop.stub, Formation.Defense, 5, 0);
+			var gridList: TroopCompositionGridList = new TroopCompositionGridList(troop.stub, 5, 0);
 			gridList.setConstraints("Center");
 			
 			pnl.append(AsWingUtils.createPaneToHold(gridList, new SoftBoxLayout(), "Center"));
@@ -211,7 +211,7 @@
 				var cityId: uint = troop.cityId;
 				var troopId: int = troop.stub.id;
 				retreatButton.addActionListener(function(e: Event):void {
-					InfoDialog.showMessageDialog("Confirm", "Are you sure? Retreating will bring your troop back to your city.", function(result: int): void {				
+					InfoDialog.showMessageDialog("Confirm", "Are you sure? Retreating will send troops back to their home cities.", function(result: int): void {				
 						if (result == JOptionPane.YES) {
 							Global.mapComm.Troop.retreat(cityId, troopId);
 						}

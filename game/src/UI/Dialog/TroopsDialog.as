@@ -66,6 +66,10 @@
 			super.showSelf(owner, modal, onClose);
 
 			Global.gameContainer.showFrame(frame);
+			
+			frame.setResizable(true);
+			frame.setMinimumSize(new IntDimension(640, 345));	
+			frame.pack();
 
 			return frame;
 		}
@@ -80,6 +84,7 @@
 			append(scrollBody);
 			
 			var pnlHeader: JPanel = new JPanel(new BorderLayout(5));
+			pnlHeader.setPreferredHeight(70);
 			{							
 				var pnlCenter: JPanel = new JPanel(new GridLayout(0, 3, 5, 5));
 				pnlCenter.setConstraints("Center");
@@ -121,6 +126,9 @@
 		private function citySelectionChanged(e:InteractiveEvent):void 
 		{		
 			update();
+			
+			btnAttack.setVisible(lstCities.getSelectedIndex() > 0);
+			btnDefend.setVisible(lstCities.getSelectedIndex() > 0);
 		}
 		
 		private function update():void 
@@ -154,6 +162,7 @@
 			pnlGroup.setBorder(new EmptyBorder(null, new Insets(10, 0, 0, 0)));
 			
 			var lblGroupTitle: JLabel = new JLabel(title, new AssetIcon(new ICON_COLLAPSE), AsWingConstants.LEFT);
+			lblGroupTitle.useHandCursor = true;
 			lblGroupTitle.addEventListener(MouseEvent.CLICK, function (e: Event): void {				
 				if (troopTable.isVisible()) {
 					troopTable.setVisible(false);
@@ -219,13 +228,13 @@
 		
 		public function onClickAttack(event: AWEvent):void
 		{
-			var attackProcess: AttackSendProcess = new AttackSendProcess();
+			var attackProcess: AttackSendProcess = new AttackSendProcess(getSelectedCity());
 			attackProcess.execute();
 		}
 
 		public function onClickReinforce(event: AWEvent):void
 		{		
-			var reinforcementProcess: ReinforcementSendProcess = new ReinforcementSendProcess();
+			var reinforcementProcess: ReinforcementSendProcess = new ReinforcementSendProcess(getSelectedCity());
 			reinforcementProcess.execute();
 		}
 		

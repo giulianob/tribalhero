@@ -2,6 +2,7 @@
 package src.UI.Sidebars.ObjectInfo.Buttons {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import src.Global;
 	import src.Objects.Factories.*;
 	import src.Objects.Actions.ActionButton;
 	import src.Objects.Location;
@@ -29,7 +30,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				var process : ReinforcementSendProcess = new ReinforcementSendProcess(location);
+				var process : ReinforcementSendProcess = new ReinforcementSendProcess(Global.gameContainer.selectedCity, location);
 				process.execute();
 			}
 		}

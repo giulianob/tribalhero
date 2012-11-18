@@ -5,6 +5,7 @@ package src.UI.Components
 	import flash.text.StyleSheet;
 	import flash.text.TextFormat;
 	import mx.utils.StringUtil;
+	import org.aswing.AsWingManager;
 	import org.aswing.ext.MultilineLabel;
 	import org.aswing.plaf.ASColorUIResource;
 	import src.Constants;
@@ -35,8 +36,10 @@ package src.UI.Components
 
 			getTextField().addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			getTextField().addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);			
-			getTextField().addEventListener(TextEvent.LINK, onClickLink);
-		}
+			// We cannot use the Link event here because when a tooltip shows for some reason
+			// the link event isnt fired when the user clicks it
+			getTextField().addEventListener(MouseEvent.CLICK, onClickLink);
+		}	
 		
 		override public function setHtmlText(ht:String):void 
 		{
@@ -54,31 +57,13 @@ package src.UI.Components
 		}
 		
 		private function onMouseMove(e:MouseEvent):void 
-		{
-			var idx: int = getTextField().getCharIndexAtPoint(e.localX, e.localY);
+		{				
+			var parts: Array = getLinkParts(e);
 			
-			if (idx == -1)
-			{
+			if (parts == null) {
 				dispatchEvent(new RichLabelCustomEvent(RichLabelCustomEvent.CUSTOM_EVENT_MOUSE_OVER, ""));
 				tooltip.hide();
 				return;
-			}
-				
-			if (getTextField().htmlText.length == 0) {
-				tooltip.hide();
-				return;
-			}
-			
-			var textFormat:TextFormat = getTextField().getTextFormat(idx, idx + 1);			
-			if (!textFormat.url) {
-				tooltip.hide();
-				return;
-			}
-			
-			var parts: Array = textFormat.url.split(":");
-			
-			if (parts[0] == "event") {
-				parts.shift();
 			}
 			
 			switch (parts[0]) {
@@ -104,13 +89,43 @@ package src.UI.Components
 					break;
 				default:
 					tooltip.hide();
-			}
+			}			
 		}
 		
-		private function onClickLink(e:TextEvent):void 
+		private function getLinkParts(e:MouseEvent):Array
 		{
-			var text:String = e.text;
-			var parts:Array = text.split(':');
+			var idx: int = getTextField().getCharIndexAtPoint(e.localX, e.localY);
+			
+			if (idx == -1)
+			{				
+				return null;
+			}
+			
+			if (getTextField().htmlText.length == 0) {
+				return null;
+			}
+			
+			var textFormat:TextFormat = getTextField().getTextFormat(idx, idx + 1);			
+			if (!textFormat.url) {
+				return null;
+			}
+			
+			var parts: Array = textFormat.url.split(":");
+			
+			if (parts[0] == "event") {
+				parts.shift();
+			}
+			
+			return parts;
+		}
+		
+		private function onClickLink(e:MouseEvent):void 
+		{
+			var parts:Array = getLinkParts(e);
+			
+			if (parts == null) {
+				return;
+			}
 			
 			switch (parts[0])
 			{

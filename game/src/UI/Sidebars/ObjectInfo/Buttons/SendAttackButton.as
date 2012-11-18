@@ -2,6 +2,7 @@
 package src.UI.Sidebars.ObjectInfo.Buttons {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import src.Global;
 	import src.Objects.Factories.*;
 	import src.Objects.Actions.ActionButton;
 	import src.Objects.Location;
@@ -28,7 +29,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				var process : AttackSendProcess = new AttackSendProcess(location);
+				var process : AttackSendProcess = new AttackSendProcess(Global.gameContainer.selectedCity, location);
 				process.execute();
 			}
 		}

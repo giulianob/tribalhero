@@ -1,33 +1,30 @@
 package src.Objects.Process 
 {
-	import flash.events.Event;
-	import org.aswing.JButton;
-	import src.Global;
-	import src.Objects.GameObject;
-	import src.Objects.Location;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.Stronghold.Stronghold;
-	import src.Objects.StructureObject;
-	import src.UI.Cursors.GroundReinforceCursor;
-	import src.UI.Dialog.ReinforceTroopDialog;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
-	/**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
+	import flash.events.*;
+	import org.aswing.*;
+	import src.*;
+	import src.Map.*;
+	import src.Objects.*;
+	import src.Objects.Stronghold.*;
+	import src.UI.Cursors.*;
+	import src.UI.Dialog.*;
+	import src.UI.Sidebars.CursorCancel.*;
+
 	public class ReinforcementSendProcess implements IProcess
 	{		
 		private var reinforceDialog: ReinforceTroopDialog;
 		private var location : Location;
+		private var sourceCity:City;
 		
-		public function ReinforcementSendProcess(location: Location = null) 
+		public function ReinforcementSendProcess(sourceCity: City, targetLocation: Location = null) 
 		{
-			this.location = location;
+			this.sourceCity = sourceCity;
+			this.location = targetLocation;
 		}
 		
 		public function execute(): void 
 		{
-			reinforceDialog = new ReinforceTroopDialog(onChoseUnits,true);
+			reinforceDialog = new ReinforceTroopDialog(sourceCity, onChoseUnits, true);
 			
 			reinforceDialog.show();
 		}
@@ -56,10 +53,10 @@ package src.Objects.Process
 		
 		private function sendReinforcement(type : int, id : uint): void {
 			if (type == Location.CITY) {
-				Global.mapComm.Troop.troopReinforceCity(Global.gameContainer.selectedCity.id, id, reinforceDialog.getTroop(), reinforceDialog.getMode());
+				Global.mapComm.Troop.troopReinforceCity(sourceCity.id, id, reinforceDialog.getTroop(), reinforceDialog.getMode());
 			}
 			else if (type == Location.STRONGHOLD) {
-				Global.mapComm.Troop.troopReinforceStronghold(Global.gameContainer.selectedCity.id, id, reinforceDialog.getTroop(), reinforceDialog.getMode());
+				Global.mapComm.Troop.troopReinforceStronghold(sourceCity.id, id, reinforceDialog.getTroop(), reinforceDialog.getMode());
 			}			
 		}
 		public function onChoseTarget(sender: GroundReinforceCursor): void {			

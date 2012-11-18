@@ -1,6 +1,7 @@
 ﻿package src.UI.Components.TroopCompositionGridList
 {
 	import flash.display.*;
+	import flash.utils.Dictionary;
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.ext.*;
@@ -9,42 +10,45 @@
 	import src.Objects.Prototypes.*;
 	import src.Objects.Troop.*;
 	import src.UI.Tooltips.*;
-
+	
 	public class TroopCompositionGridList extends GridList
 	{
 		private var city: City;
-
+		
 		private var formationType: int;
 		private var tooltip: Tooltip;
-
-		public function TroopCompositionGridList(troop: TroopStub, formationType: int, col: int, row: int)
+		
+		public function TroopCompositionGridList(troop: TroopStub, col: int, row: int)
 		{
 			super(new VectorListModel(), new GeneralGridListCellFactory(TroopCompositionGridCell), col, row);
 			setBorder(new EmptyBorder(null, new Insets(0, 0, 0, 0)));
 			setTracksWidth(true);
 			this.formationType = formationType;
 
+			setHGap(0);		
 			setTileWidth(40);
-			setTileHeight(32);			
+			setTileHeight(20);
 			setHorizontalAlignment(AsWingConstants.LEFT);
 			setVerticalAlignment(AsWingConstants.TOP);
 			
-			for each(var formation: Formation in troop.each())
+			if (troop) {
+				setTroop(troop);
+			}
+		}
+		
+		public function setTroop(troop:TroopStub):void 
+		{
+			(getModel() as VectorListModel).clear();
+			
+			var units: Dictionary = troop.toUnitsArray();
+			for (var unitType: Object in units)
 			{
-				//Don't show empty formations for tooltips
-				if (formation.type!=formationType || formation.size() == 0) continue;
-
-				for (var z: int = 0; z < formation.size(); z++)
-				{
-					var unit: Unit = formation.getByIndex(z);
-					var unitPrototype: UnitPrototype = UnitFactory.getPrototype(unit.type, 1);
-					var icon: DisplayObject = UnitFactory.getSprite(unit.type, 1, false) as DisplayObject;
-					icon.scaleX = 0.5;
-					icon.scaleY = 0.5;
-					(getModel() as VectorListModel).append( { source: icon, data: unit } );					
-				}
+				var unitPrototype: UnitPrototype = UnitFactory.getPrototype(int(unitType), 1);
+				var icon: DisplayObject = UnitFactory.getSprite(int(unitType), 1, false) as DisplayObject;
+				icon.scaleX = 0.5;
+				icon.scaleY = 0.5;
+				(getModel() as VectorListModel).append( { source: icon, data: new Unit(int(unitType), units[unitType]) } );					
 			}
 		}
 	}
 }
-

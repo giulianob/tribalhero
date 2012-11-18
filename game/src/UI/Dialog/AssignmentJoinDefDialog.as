@@ -20,13 +20,14 @@
 	import src.Util.Util;
 
 	public class AssignmentJoinDefDialog extends ReinforceTroopDialog {
+		private var sourceCity:City;
 
 		protected var assignment: *;
 		protected var distance: int;
 	
-		public function AssignmentJoinDefDialog(onAccept: Function, assignment: *):void
+		public function AssignmentJoinDefDialog(city: City, onAccept: Function, assignment: *):void
 		{
-			super(onAccept, false);
+			super(city, onAccept, false);
 			
 			title = "Join Assignment";
 			

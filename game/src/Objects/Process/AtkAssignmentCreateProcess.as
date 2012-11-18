@@ -20,23 +20,22 @@ package src.Objects.Process
 	import src.UI.Dialog.AssignmentCreateDialog;
 	import src.UI.Dialog.AttackTroopDialog;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
-	/**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
+	
 	public class AtkAssignmentCreateProcess implements IProcess
 	{		
 		private var attackDialog: AttackTroopDialog;		
 		private var target: SimpleGameObject;
+		private var sourceCity:City;
 		
-		public function AtkAssignmentCreateProcess() 
+		public function AtkAssignmentCreateProcess(sourceCity: City) 
 		{
+			this.sourceCity = sourceCity;
 			
 		}
 		
 		public function execute(): void
 		{
-			attackDialog = new AttackTroopDialog(onChoseUnits);
+			attackDialog = new AttackTroopDialog(sourceCity, onChoseUnits);
 			
 			attackDialog.show();
 		}
@@ -63,12 +62,11 @@ package src.Objects.Process
 			Global.gameContainer.setOverlaySprite(null);
 			Global.gameContainer.setSidebar(null);
 			
-			var troop: TroopStub = attackDialog.getTroop();
-			var city: City = Global.gameContainer.selectedCity;
+			var troop: TroopStub = attackDialog.getTroop();			
 			var targetMapDistance: Point = MapUtil.getMapCoord(target.objX, target.objY);
-			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
+			var distance: int = sourceCity.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 			
-			var assignmentDialog: AssignmentCreateDialog = new AssignmentCreateDialog(Formula.moveTimeTotal(city, troop.getSpeed(city), distance, true), onChoseTime);
+			var assignmentDialog: AssignmentCreateDialog = new AssignmentCreateDialog(Formula.moveTimeTotal(sourceCity, troop.getSpeed(sourceCity), distance, true), onChoseTime);
 			assignmentDialog.show();
 		}
 		
@@ -84,9 +82,9 @@ package src.Objects.Process
 		{
 			assignmentDialog.getFrame().dispose();
 			if (target is StructureObject) {
-				Global.mapComm.Troop.cityAssignmentCreate(Global.gameContainer.selectedCity.id, target.groupId, target.objectId, assignmentDialog.getTime(), attackDialog.getMode(), attackDialog.getTroop(), assignmentDialog.getDescription(),true);
+				Global.mapComm.Troop.cityAssignmentCreate(sourceCity.id, target.groupId, target.objectId, assignmentDialog.getTime(), attackDialog.getMode(), attackDialog.getTroop(), assignmentDialog.getDescription(),true);
 			} else if (target is Stronghold) {
-				Global.mapComm.Troop.strongholdAssignmentCreate(Global.gameContainer.selectedCity.id, target.objectId, assignmentDialog.getTime(), attackDialog.getMode(), attackDialog.getTroop(), assignmentDialog.getDescription(),true);
+				Global.mapComm.Troop.strongholdAssignmentCreate(sourceCity.id, target.objectId, assignmentDialog.getTime(), attackDialog.getMode(), attackDialog.getTroop(), assignmentDialog.getDescription(),true);
 			}
 		}
 	}

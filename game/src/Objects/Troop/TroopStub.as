@@ -1,5 +1,6 @@
 ﻿package src.Objects.Troop {
 	import adobe.utils.CustomActions;
+	import flash.utils.Dictionary;
 	import src.Global;
 	import src.Map.City;
 	import src.Objects.Location;
@@ -129,23 +130,23 @@
 
 			return total;
 		}
-
-		public function ToString():void
-		{
-			Util.log("=========");
-			Util.log("Troop " + id );
-			Util.log("Formation count: " + size());
-			Util.log("Total unit count: " + getIndividualUnitCount());
-			for each (var formation: Formation in each())
+		
+		public function toUnitsArray(): Dictionary {
+			var units: Dictionary = new Dictionary();
+			
+			for each(var formation: Formation in this.each())
 			{
-				Util.log("\tFormation: " + formation.type);
-				Util.log("\tSize: " + formation.size());
-				for each (var unit: Unit in formation.each())
+				for each(var unit: Unit in formation.each())
 				{
-					Util.log("\t\tUnit: " + unit.type + " (" + unit.count + ")");
+					if (!units.hasOwnProperty(unit.type)) {
+						units[unit.type] = 0;
+					}
+					
+					units[unit.type] += unit.count;
 				}
 			}
-			Util.log("=========");
+			
+			return units;
 		}
 
 		public static function compareCityIdAndTroopId(a: TroopStub, value: Array):int

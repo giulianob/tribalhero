@@ -25,9 +25,9 @@
 		protected var assignment: *;
 		protected var distance: int;
 	
-		public function AssignmentJoinAtkDialog(onAccept: Function, assignment: *):void
+		public function AssignmentJoinAtkDialog(city: City, onAccept: Function, assignment: *):void
 		{
-			super(onAccept, false);
+			super(city, onAccept, false);
 			
 			title = "Join Assignment";
 			

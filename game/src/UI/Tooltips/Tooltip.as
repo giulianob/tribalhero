@@ -8,6 +8,7 @@ package src.UI.Tooltips {
 	import org.aswing.border.EmptyBorder;
 	import org.aswing.Component;
 	import org.aswing.event.AWEvent;
+	import org.aswing.FocusManager;
 	import org.aswing.geom.IntPoint;
 	import org.aswing.Insets;
 	import src.Global;
@@ -23,7 +24,6 @@ package src.UI.Tooltips {
 		private var position: IntPoint;
 
 		public function Tooltip() {
-			ui.setFocusable(false);
 			ui.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));		
 		}
 
@@ -67,21 +67,18 @@ package src.UI.Tooltips {
 			adjustPosition();
 		}
 		
-		protected function showFrame(obj: DisplayObject = null): void {
+		protected function showFrame(obj: DisplayObject = null): void {		
 			ui.show();
 			
 			ui.getFrame().addEventListener(AWEvent.PAINT, onPaint);
 			ui.getFrame().repaintAndRevalidate();
 			
-			if (!mouseInteractive()) {
+			if (!mouseInteractive()) {				
 				ui.getFrame().parent.mouseEnabled = false;
 				ui.getFrame().parent.mouseChildren = false;
 				ui.getFrame().parent.tabEnabled = false;
-				ui.getFrame().setFocusable(false);
-				
-				if (obj && obj.stage && obj is InteractiveObject) {
-					obj.stage.focus = obj as InteractiveObject;
-				}				
+				ui.getFrame().parent.tabChildren = false;
+				ui.getFrame().setFocusable(false);					
 			}
 		}
 		

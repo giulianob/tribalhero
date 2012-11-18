@@ -234,7 +234,7 @@
 			
 			if (!city)
 			{
-				city = Global.map.cities.get(obj.cityId);
+				city = Global.map.cities.get(obj.groupId);
 				if (!city) {
 					return null;
 				}

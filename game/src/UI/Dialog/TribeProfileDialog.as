@@ -386,7 +386,7 @@
 			});
 			
 			btnJoin.addActionListener(function(e: Event): void {
-				var join: AssignmentJoinProcess = new AssignmentJoinProcess(assignment);
+				var join: AssignmentJoinProcess = new AssignmentJoinProcess(Global.gameContainer.selectedCity, assignment);
 				join.execute();
 			});			
 						
@@ -419,11 +419,11 @@
 			
 			var menu : JPopupMenu = new JPopupMenu();
 			menu.addMenuItem("Offensive Assignment").addActionListener(function(e: Event): void {
-				var assignmentCreate: AtkAssignmentCreateProcess = new AtkAssignmentCreateProcess();
+				var assignmentCreate: AtkAssignmentCreateProcess = new AtkAssignmentCreateProcess(Global.gameContainer.selectedCity);
 				assignmentCreate.execute();
 			});
 			menu.addMenuItem("Defensive Assignment").addActionListener(function(e: Event): void {
-				var assignmentCreate: DefAssignmentCreateProcess = new DefAssignmentCreateProcess();
+				var assignmentCreate: DefAssignmentCreateProcess = new DefAssignmentCreateProcess(Global.gameContainer.selectedCity);
 				assignmentCreate.execute();
 			});
 

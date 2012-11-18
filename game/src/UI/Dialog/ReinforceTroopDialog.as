@@ -38,11 +38,11 @@
 		private var tilelists: Array = new Array();
 		private var attackTilelists: Array = new Array();
 
-		public function ReinforceTroopDialog(onAccept: Function, hasAttackStrength: Boolean = true):void
+		public function ReinforceTroopDialog(city: City, onAccept: Function, hasAttackStrength: Boolean = true):void
 		{
 			title = "Send Reinforcement";
 
-			this.city = Global.gameContainer.selectedCity;
+			this.city = city;
 			this.hasAttackStrength = hasAttackStrength;
 
 			createUI();

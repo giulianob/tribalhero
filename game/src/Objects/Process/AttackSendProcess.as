@@ -1,5 +1,6 @@
 package src.Objects.Process 
 {
+	import src.Map.City;
 	import src.Util.StringHelper;
 	import flash.events.Event;
 	import org.aswing.JButton;
@@ -19,16 +20,18 @@ package src.Objects.Process
 	{		
 		private var attackDialog: AttackTroopDialog;		
 		private var target: SimpleGameObject;
-		private var location: Location;
+		private var targetLocation: Location;
+		private var sourceCity:City;
 		
-		public function AttackSendProcess(location: Location = null) 
+		public function AttackSendProcess(sourceCity: City, targetLocation: Location = null) 
 		{
-			this.location = location;
+			this.sourceCity = sourceCity;
+			this.targetLocation = targetLocation;
 		}
 		
 		public function execute(): void 
 		{
-			attackDialog = new AttackTroopDialog(onChoseUnits);			
+			attackDialog = new AttackTroopDialog(sourceCity, onChoseUnits);			
 			
 			attackDialog.show();
 		}
@@ -37,7 +40,7 @@ package src.Objects.Process
 			
 			Global.gameContainer.closeAllFrames(true);
 			
-			if(location==null) {
+			if(targetLocation==null) {
 				var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
 				
 				var cursor: GroundAttackCursor = new GroundAttackCursor(onChoseTarget, attackDialog.getTroop());
@@ -48,8 +51,8 @@ package src.Objects.Process
 				
 				Global.gameContainer.setSidebar(sidebar);
 			} else {
-				if (location.type==Location.CITY) {
-					Global.mapComm.City.isCityUnderAPBonus(location.id, onGotAPStatus);
+				if (targetLocation.type==Location.CITY) {
+					Global.mapComm.City.isCityUnderAPBonus(targetLocation.id, onGotAPStatus);
 				}
 				else {
 					onAttackAccepted();
@@ -85,19 +88,19 @@ package src.Objects.Process
 		}
 		
 		public function onAttackAccepted(): void {
-			if(location==null) {
+			if(targetLocation==null) {
 				if (target is StructureObject) {
-					Global.mapComm.Troop.troopAttackCity(Global.gameContainer.selectedCity.id, target.groupId, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);
+					Global.mapComm.Troop.troopAttackCity(sourceCity.id, target.groupId, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);
 				}
 				else if (target is Stronghold) {
-					Global.mapComm.Troop.troopAttackStronghold(Global.gameContainer.selectedCity.id, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
+					Global.mapComm.Troop.troopAttackStronghold(sourceCity.id, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
 				}
 			} else {
-				if (location.type==Location.CITY) {
-					Global.mapComm.Troop.troopAttackCity(Global.gameContainer.selectedCity.id, location.id, location.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);
+				if (targetLocation.type==Location.CITY) {
+					Global.mapComm.Troop.troopAttackCity(sourceCity.id, targetLocation.id, targetLocation.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);
 				}
-				else if (location.type==Location.STRONGHOLD) {
-					Global.mapComm.Troop.troopAttackStronghold(Global.gameContainer.selectedCity.id, location.id, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
+				else if (targetLocation.type==Location.STRONGHOLD) {
+					Global.mapComm.Troop.troopAttackStronghold(sourceCity.id, targetLocation.id, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
 				}
 			}
 
@@ -106,7 +109,7 @@ package src.Objects.Process
 		}
 		
 		public function onAttackFail(custom: * = null):void {
-			if(location==null) {
+			if(targetLocation==null) {
 				onChoseUnits(attackDialog);
 			}
 		}

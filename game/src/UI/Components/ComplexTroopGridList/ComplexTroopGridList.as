@@ -49,6 +49,7 @@
 
 			setTileWidth(55);
 			setTileHeight(32);			
+			setColsRows(5, -1);
 
 			if (!tooltipMode) {
 				addEventListener(GridListItemEvent.ITEM_ROLL_OVER, onItemRollOver);
@@ -163,9 +164,7 @@
 			var layout0: SoftBoxLayout = new SoftBoxLayout();
 			layout0.setAxis(AsWingConstants.VERTICAL);
 			
-			if (!tooltipMode) {
-				layout0.setGap(10);
-			}
+			layout0.setGap(10);			
 
 			panel.setLayout(layout0);
 

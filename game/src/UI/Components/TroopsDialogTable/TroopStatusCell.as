@@ -1,6 +1,8 @@
 package src.UI.Components.TroopsDialogTable 
 {
+	import flash.events.Event;
 	import org.aswing.border.EmptyBorder;
+	import org.aswing.event.ResizedEvent;
 	import org.aswing.table.AbstractTableCell;
 	import org.aswing.*;
 	import src.Global;
@@ -24,7 +26,6 @@ package src.UI.Components.TroopsDialogTable
 			
 			lblState = new JLabel("", null, AsWingConstants.LEFT);
 			lblCountdown = new CountDownLabel( -1);
-			lblCountdown.setIcon(null);
 			
 			lblState.setConstraints("Center");
 			lblCountdown.setConstraints("East");
@@ -52,18 +53,11 @@ package src.UI.Components.TroopsDialogTable
 						lblCountdown.setVisible(true);
 						break;
 					}
-					else if (Action.actionCategory[notification.type] == Action.CATEGORY_DEFENSE) {
-						icon = new AssetIcon(new ICON_SHIELD);
-						lblCountdown.setTime(notification.endTime);
-						lblCountdown.setVisible(true);
-						break;
-					}
 				}
 			}
 			
-			// This cell only shows defender info so show a shield by default
 			if (!icon) {
-				icon = new AssetIcon(new ICON_SHIELD());
+				icon = troopStub.state == TroopStub.WAITING_IN_OFFENSIVE_ASSIGNMENT ? new AssetIcon(new ICON_SINGLE_SWORD) : new AssetIcon(new ICON_SHIELD);
 			}
 			
 			lblState.setText(troopStub.getStateName());

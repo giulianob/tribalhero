@@ -25,7 +25,7 @@
 			var onTheMove: int = getDefaultTroop().get(Formation.InBattle).getIndividualUnitCount();
 			var idle: int = getDefaultTroop().get(Formation.Normal).getIndividualUnitCount() + getDefaultTroop().get(Formation.Garrison).getIndividualUnitCount();
 			
-			for each(var stub: TroopStub in each()) {
+			for each(var stub: TroopStub in this) {
 				// Skip other peoples stubs or the default one since its handled above
 				if (stub.cityId != city.id || stub.id == 1) continue;
 				
@@ -53,7 +53,7 @@
 			}
 
 			var total: int = 0;
-			for each(var stub: TroopStub in each()) {
+			for each(var stub: TroopStub in this) {
 				if (stub.cityId != city.id) continue;
 
 				total += stub.getIndividualUnitCount(type);

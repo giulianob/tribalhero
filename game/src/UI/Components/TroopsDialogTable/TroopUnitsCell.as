@@ -83,18 +83,11 @@ package src.UI.Components.TroopsDialogTable
 		private function recalcSize(): void {			
 			var maxVisibleItems: int = Math.floor(getCellPanel().getWidth() / unitGrid.getTileWidth());
 			
-			trace("****");
-			trace("Pnl width:", getCellPanel().getWidth());
-			trace("List items:", unitGrid.getModel().getSize());
-			trace("Max visible:", maxVisibleItems);			
-			
 			unitGrid.setVisible(false);
 			lblMoreUnits.setVisible(false);
 			
 			if (unitGrid.getModel().getSize() > maxVisibleItems) {
-				trace("Exceeded threshold");
 				maxVisibleItems = Math.max(0, Math.floor((getCellPanel().getWidth() - moreTextSize) / unitGrid.getTileWidth()));
-				trace("New max visible:", maxVisibleItems);			
 				
 				lblMoreUnits.setVisible(true);
 				if (maxVisibleItems == 0) {					

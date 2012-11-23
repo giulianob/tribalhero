@@ -91,7 +91,7 @@ package src.UI.Components.ScreenMessages
 			var inDef: Boolean = false;
 
 			if (!city.inBattle) {
-				for each (var notification: Notification in city.notifications.each()) {
+				for each (var notification: Notification in city.notifications) {
 					if (notification.cityId == city.id) continue;
 
 					if (notification.type == PassiveAction.CITY_ATTACK) {

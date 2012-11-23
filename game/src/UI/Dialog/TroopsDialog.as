@@ -1,5 +1,5 @@
 ﻿package src.UI.Dialog {
-	import flash.events.*;
+	import flash.events.*;	
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.colorchooser.*;
@@ -9,13 +9,17 @@
 	import src.*;
 	import src.Map.*;
 	import src.Objects.*;
+	import src.Objects.Actions.Action;
+	import src.Objects.Actions.Notification;
+	import src.Objects.Actions.NotificationManager;
 	import src.Objects.Process.*;
 	import src.Objects.Troop.*;
 	import src.UI.*;
 	import src.UI.Components.TroopsDialogTable.*;
 	import src.Util.*;
 	import src.Util.BinaryList.BinaryListEvent;
-
+	import System.Linq.Enumerable;
+            
 	public class TroopsDialog extends GameJPanel {
 		
 		private var lstCities:JComboBox;			
@@ -32,12 +36,19 @@
 		private var pnlOnTheMoveGroup: JPanel;
 		private var pnlStationedAwayGroup: JPanel;
 		
+		private var lblCitiesUnderAttack: JLabel;
+		private var lblIncomingDefense: JLabel;
+		private var lblIncomingAttack: JLabel;
+		private var lblStationedTroops: JLabel;
+		private var lblTroopsOnTheMove: JLabel;
+		private var lblTroopsReturningHome: JLabel;
+		
 		public function TroopsDialog(defaultCity: City)
 		{
 			createUI();
 			title = "Troops";
 			
-			for each (var city: City in Global.map.cities.each()) {
+			for each (var city: City in Global.map.cities) {
 				(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String { return this.city.name; } } );				
 				
 				city.troops.addEventListener(BinaryListEvent.ADDED, onTroopAdded, false, 0, true);
@@ -86,8 +97,22 @@
 			var pnlHeader: JPanel = new JPanel(new BorderLayout(5));
 			pnlHeader.setPreferredHeight(70);
 			{							
-				var pnlCenter: JPanel = new JPanel(new GridLayout(0, 3, 5, 5));
+				var pnlCenter: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));
 				pnlCenter.setConstraints("Center");
+				{
+                    var pnlGrid: JPanel = new JPanel(new GridLayout(0, 3, 10, 5));
+                    {
+                        lblCitiesUnderAttack = new JLabel("", null, AsWingConstants.LEFT);
+                        lblIncomingDefense = new JLabel("", null, AsWingConstants.LEFT);
+                        lblIncomingAttack = new JLabel("", null, AsWingConstants.LEFT);
+                        lblStationedTroops = new JLabel("", null, AsWingConstants.LEFT);
+                        lblTroopsOnTheMove = new JLabel("", null, AsWingConstants.LEFT);
+                        lblTroopsReturningHome = new JLabel("", null, AsWingConstants.LEFT);	
+                        
+                        pnlGrid.appendAll(lblCitiesUnderAttack, lblIncomingAttack, lblTroopsOnTheMove, lblStationedTroops, lblIncomingDefense, lblTroopsReturningHome);
+                    }
+                    pnlCenter.append(pnlGrid);
+				}
 				
 				var pnlRight: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 				pnlRight.setConstraints("East");				
@@ -137,13 +162,51 @@
 			onTheMoveTroops.clear();
 			//incomingTroops.clear();
 			stationedAwayTroops.clear();
+            
+            // A list of OUR troops used below for some overview calcs
+			var troops: Array = [];
 			
-			for each (var city: City in Global.map.cities.each()) {
-				for each (var troop: TroopStub in city.troops.each()) {
+			for each (var city: City in Global.map.cities) {
+				for each (var troop: TroopStub in city.troops) {                    
+                    if (troop.cityId == city.id) {
+                        troops.push(troop);
+                    }
+                    
 					addTroop(troop);
 				}
 			}
-			
+            
+			// Update overview labels			
+			lblCitiesUnderAttack.setText(StringHelper.localize("TROOPS_DIALOG_CITIES_UNDER_ATTACK", Enumerable.from(Global.map.cities)
+																									  .where(function (city: City): Boolean { return city.inBattle; } )
+																									  .count()));
+                                                                                                      
+            lblTroopsOnTheMove.setText(StringHelper.localize("TROOPS_DIALOG_ON_THE_MOVE", Enumerable.from(troops)
+                                                                                            .where(function (troop: TroopStub): Boolean { return troop.state == TroopStub.MOVING; } )
+                                                                                            .count()));
+                                                                                            
+            lblTroopsReturningHome.setText(StringHelper.localize("TROOPS_DIALOG_RETURNING_HOME", Enumerable.from(troops)
+                                                                                            .where(function (troop: TroopStub): Boolean { return troop.state == TroopStub.RETURNING_HOME; } )
+                                                                                            .count()));
+                                                                                            
+            var stationedTroops: int = Enumerable.from(troops).where(function (troop: TroopStub): Boolean { return troop.state == TroopStub.STATIONED || troop.state == TroopStub.BATTLE_STATIONED; } ).count();
+            var stationedTroopsInBattle: int = Enumerable.from(troops).where(function (troop: TroopStub): Boolean { return troop.state == TroopStub.BATTLE_STATIONED; } ).count();
+            lblStationedTroops.setText(StringHelper.localize("TROOPS_DIALOG_STATIONED_TROOPS", stationedTroops, stationedTroopsInBattle));                                
+            
+			var incomingAttacks: int = Enumerable.from(Global.map.cities)
+						     .selectMany(function(city: City):NotificationManager { return city.notifications; } )							
+							 .where(function (notification: Notification): Boolean { return Action.actionCategory[notification.type] == Action.CATEGORY_ATTACK; } )
+							 .count();							
+			lblIncomingAttack.setText(StringHelper.localize("TROOPS_DIALOG_INCOMING_ATTACK", incomingAttacks));
+            
+            
+			var incomingDefenses: int = Enumerable.from(Global.map.cities)
+						     .selectMany(function(city: City):NotificationManager { return city.notifications; } )							
+							 .where(function (notification: Notification): Boolean { return Action.actionCategory[notification.type] == Action.CATEGORY_DEFENSE; } )
+							 .count();							
+			lblIncomingDefense.setText(StringHelper.localize("TROOPS_DIALOG_INCOMING_DEFENSE", incomingDefenses));            
+                        		
+			// Hide empty groups
 			setGroupVisibility();
 		}
 		
@@ -239,21 +302,15 @@
 		}
 		
 		private function onTroopUpdated(e: BinaryListEvent) : void {
-			onTroopRemoved(e);
-			onTroopAdded(e);
+			update();
 		}
 
 		private function onTroopRemoved(e: BinaryListEvent) : void {
-			removeStubFromVectorList(localTroops, e.item);
-			removeStubFromVectorList(stationedAwayTroops, e.item);
-			//removeStubFromVectorList(incomingTroops, e.item);
-			removeStubFromVectorList(onTheMoveTroops, e.item);
-			setGroupVisibility();
+			update();
 		}
 
 		private function onTroopAdded(e: BinaryListEvent) : void {
-			addTroop(e.item);
-			setGroupVisibility();
+			update();
 		}		
 		
 		private function removeStubFromVectorList(list: VectorListModel, troop: TroopStub): void {			

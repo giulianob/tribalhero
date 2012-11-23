@@ -52,7 +52,7 @@
 		public static function getList(name: String) : Array {
 			var ret: Array = new Array();
 
-			for each (var obj: ObjectTypePrototype in objectTypes.each()) {
+			for each (var obj: ObjectTypePrototype in objectTypes) {
 				if (obj.name == name) {
 					ret.push(obj.type);
 				}
@@ -62,7 +62,7 @@
 		}
 		
 		public static function getFirstType(name: String) : int {
-			for each (var obj: ObjectTypePrototype in objectTypes.each()) {
+			for each (var obj: ObjectTypePrototype in objectTypes) {
 				if (obj.name == name)
 					return obj.type;
 			}

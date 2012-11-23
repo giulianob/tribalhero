@@ -94,7 +94,7 @@
 
 			var tilelists: Array = new Array();
 
-			for each(var formation: Formation in troop.each())
+			for each(var formation: Formation in troop)
 			{
 				//Don't show empty formations for tooltips
 				if (tooltipMode && formation.size() == 0) continue;

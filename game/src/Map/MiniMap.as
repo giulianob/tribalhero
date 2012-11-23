@@ -118,7 +118,7 @@
 			} else {
 				return false;
 			}
-			for each(var region:CityRegion in regions.each()) {
+			for each(var region:CityRegion in regions) {
 				region.setFilter(filter);
 			}
 			showLegend();
@@ -216,7 +216,7 @@
 			
 			// Remove all regions if we are forcing
 			if (forceParse) {
-				for each (var region: CityRegion in regions.each()) {
+				for each (var region: CityRegion in regions) {
 					region.disposeData();
 					regionSpace.removeChild(region);					
 				}

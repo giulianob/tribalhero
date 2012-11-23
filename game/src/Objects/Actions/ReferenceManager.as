@@ -17,7 +17,7 @@
 		public function getByObject(objectId: int) : Array {
 			var ret: Array = new Array();
 
-			for each (var reference: CurrentActionReference in each()) {
+			for each (var reference: CurrentActionReference in this) {
 				if (reference.objectId == objectId)
 				ret.push(reference);
 			}

@@ -206,7 +206,7 @@ package src.UI.Cursors {
 			// Check for road requirement
 			if (buildingOnRoad) {
 				var breaksPath: Boolean = false;
-				for each(var cityObject: CityObject in city.objects.each()) {
+				for each(var cityObject: CityObject in city.objects) {
 					if (cityObject.x == city.MainBuilding.x && cityObject.y == city.MainBuilding.y) continue;
 					if (ObjectFactory.isType("NoRoadRequired", cityObject.type)) continue;
 

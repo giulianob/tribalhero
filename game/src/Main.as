@@ -16,6 +16,7 @@
 	import src.UI.LookAndFeel.*;
 	import src.UI.TweenPlugins.DynamicPropsPlugin;
 	import src.Util.*;
+	import System.Linq.EnumerationExtender;
 
 	CONFIG::debug {
 		import com.sociodox.theminer.TheMiner;
@@ -33,16 +34,16 @@
 		private var session:TcpSession;
 		private var password: String;
 		private var parms: Object;
-
+        
 		private var loginDialog: LoginDialog;
-
+        
 		private var pnlLoading: InfoDialog;
 		public var errorAlreadyTriggered: Boolean;
-
+        
 		private var siteVersion: String;
 		
 		private var uncaughtExceptionHandler: UncaughtExceptionHandler;
-			
+		
 		public function Main()
 		{
 			name = "Main";
@@ -58,7 +59,10 @@
 			
 			CONFIG::debug {
 				stage.addChild(new TheMiner());
-			}
+			}			
+			
+			//Init actionLinq
+			EnumerationExtender.Initialize();
 			
 			//Init ASWING			
 			//resizeHandler(null);

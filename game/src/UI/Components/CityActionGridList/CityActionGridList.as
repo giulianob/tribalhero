@@ -77,7 +77,7 @@
 				return a.endTime - value;
 			});
 
-			for each(var currentAction: CurrentAction in city.currentActions.each()) {
+			for each(var currentAction: CurrentAction in city.currentActions) {
 				if (currentAction is CurrentActionReference) continue; //Skip action references as it should only show actions directly related to objects
 				if (currentAction.workerId == 0) continue; //Skip city actions
 
@@ -86,7 +86,7 @@
 
 			actions.sort();
 
-			for each(currentAction in actions.each()) {
+			for each(currentAction in actions) {
 				var cityObj: CityObject = city.objects.get(currentAction.workerId);
 
 				var prototype: * = ObjectFactory.getPrototype(cityObj.type, cityObj.level);

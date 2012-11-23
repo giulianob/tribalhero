@@ -174,7 +174,7 @@
 				// Build the list of "City1 - About 10 min away"
 				var distanceMsg: String = "";
 				
-				for each (var myCity: City in Global.map.cities.each()) {
+				for each (var myCity: City in Global.map.cities) {
 					var distance: int = myCity.MainBuilding.distance(city.x, city.y);
 					var timeAwayInSeconds: int = Formula.moveTimeTotal(myCity, 12, distance, true);
 		

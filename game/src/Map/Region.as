@@ -65,7 +65,7 @@
 			clearAllPlaceholders();
 			cleanTiles();
 
-			for each(var gameObj: SimpleGameObject in objects.each())		
+			for each(var gameObj: SimpleGameObject in objects)		
 				map.objContainer.removeObject(gameObj);			
 
 			objects.clear();
@@ -204,7 +204,7 @@
 		
 		private function clearAllPlaceholders() : void
 		{
-			for each (var obj: SimpleObject in placeHolders.each())
+			for each (var obj: SimpleObject in placeHolders)
 				map.objContainer.removeObject(obj);
 				
 			placeHolders.clear();
@@ -229,7 +229,7 @@
 		public function getObjectsAt(x: int, y: int, objClass: * = null): Array
 		{
 			var objs: Array = new Array();
-			for each(var gameObj: SimpleGameObject in objects.each())
+			for each(var gameObj: SimpleGameObject in objects)
 			{
 				if (objClass != null) {
 					if (objClass is Array) {

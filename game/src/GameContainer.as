@@ -478,7 +478,7 @@
 			addChild(this.mapOverlay);
 
 			// Populate city list
-			for each (var city: City in map.cities.each()) {
+			for each (var city: City in map.cities) {
 				addCityToUI(city);
 			}
 

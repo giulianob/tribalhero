@@ -57,7 +57,7 @@
 			
 			createUI();
 			
-			for each (var eachCity: City in Global.map.cities.each()) {
+			for each (var eachCity: City in Global.map.cities) {
 				(lstCities.getModel() as VectorListModel).append( { id: eachCity.id, city: eachCity, toString: function() : String { return this.city.name; } } );
 				if (eachCity == city) {
 					lstCities.setSelectedIndex(lstCities.getItemCount() - 1);
@@ -203,7 +203,7 @@
 				// Laborers tab
 				// Go through each city object and add if it accepts laborers		
 				laborersListModel.clear();
-				for each (var cityObj: CityObject in city.objects.each()) {
+				for each (var cityObj: CityObject in city.objects) {
 					if (ObjectFactory.getClassType(cityObj.type) != ObjectFactory.TYPE_STRUCTURE) {
 						continue;
 					}

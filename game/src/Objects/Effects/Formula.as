@@ -79,7 +79,7 @@
 			if (!city) return 0;
 
 			var university: CityObject;
-			for each (var structure: CityObject in city.objects.each()) {
+			for each (var structure: CityObject in city.objects) {
 				if (ObjectFactory.isType("University", structure.type)) {
 					university = structure;
 					break;
@@ -220,7 +220,7 @@
 			var wagonCurrent:Number = Global.gameContainer.selectedCity.troops.getDefaultTroop().getIndividualUnitCount(ObjectFactory.getFirstType("Wagon"));
 			var influenceRequired:Number = size * (100 + 20 * (size-1));
 			var influenceCurrent:Number = 0;
-			for each(var city: City in Global.map.cities.each())
+			for each(var city: City in Global.map.cities)
 			{
 				influenceCurrent += city.value;
 			}

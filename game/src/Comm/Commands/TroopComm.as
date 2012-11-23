@@ -74,12 +74,12 @@
 
 		public function writeTroop(stub: TroopStub, packet: Packet): void
 		{
-			for each(var formation: Formation in stub.each())
+			for each(var formation: Formation in stub)
 			{
 				packet.writeUByte(formation.type);
 				packet.writeUByte(formation.size());
 
-				for each (var unit: Unit in formation.each())
+				for each (var unit: Unit in formation)
 				{
 					packet.writeUShort(unit.type);
 					packet.writeUShort(unit.count);

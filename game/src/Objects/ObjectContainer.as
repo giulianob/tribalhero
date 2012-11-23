@@ -92,7 +92,7 @@ package src.Objects {
 			
 			if (highlightedObject && !ignoreClick)
 			{
-				var idxs: Array = Util.binarySearchRange(objects.each(), SimpleObject.compareXAndY, [highlightedObject.objX, highlightedObject.objY]);
+				var idxs: Array = Util.binarySearchRange(objects.toArray(), SimpleObject.compareXAndY, [highlightedObject.objX, highlightedObject.objY]);
 				var multiObjects: Array = new Array();
 				for each(var idx: int in idxs) {
 					var obj: SimpleObject = objects.getByIndex(idx);
@@ -235,7 +235,7 @@ package src.Objects {
 				}
 			}
 		
-			var idxs: Array = Util.binarySearchRange(this.objects.each(), SimpleObject.compareXAndY, [highestObj.objX, highestObj.objY]);
+			var idxs: Array = Util.binarySearchRange(objects.toArray(), SimpleObject.compareXAndY, [highestObj.objX, highestObj.objY]);
 			if (idxs.length > 1)
 			{
 				selectableCnt = 0;
@@ -346,7 +346,7 @@ package src.Objects {
 			var simpleObj: SimpleObject = obj as SimpleObject;
 			if (layer == 0 && simpleObj)
 			{								
-				var idxs: Array = Util.binarySearchRange(objects.each(), SimpleObject.compareXAndY, [simpleObj.objX, simpleObj.objY]);
+				var idxs: Array = Util.binarySearchRange(objects.toArray(), SimpleObject.compareXAndY, [simpleObj.objX, simpleObj.objY]);
 
 				var found: Boolean = false;
 				for each (var idx: int in idxs)
@@ -380,7 +380,7 @@ package src.Objects {
 		private function showBestObject(x: int, y: int):void
 		{
 			//figure out which object is the best to show on the map if multiple obj exist on this tile
-			var idxs: Array = Util.binarySearchRange(objects.each(), SimpleObject.compareXAndY, [x, y]);
+			var idxs: Array = Util.binarySearchRange(objects.toArray(), SimpleObject.compareXAndY, [x, y]);
 
 			var bestObj: SimpleObject = null;			
 			

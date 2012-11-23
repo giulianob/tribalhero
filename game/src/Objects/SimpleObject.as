@@ -62,10 +62,7 @@ package src.Objects {
 		
 		public function setObjectCount(count: int) : void {
 			var simpleObj: SimpleGameObject = this as SimpleGameObject;
-			if (simpleObj) {
-				trace("Set count " + count + " on obj " + simpleObj.objectId + " city " + simpleObj.groupId);
-			}
-			
+		
 			if (objectCount != null) {
 				removeChild(objectCount);			
 				objectCount = null;

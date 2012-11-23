@@ -47,9 +47,7 @@
 			
 			Global.map.requeryIfSelected(obj);
 			
-			obj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
-			
-			trace("Update " + obj.objectId);
+			obj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));		
 			
 			return obj;
 		}
@@ -62,7 +60,6 @@
 				return;
 			
 			var obj: SimpleGameObject = region.removeObject(groupId, objId);
-			trace("Remove " + objId);
 		}
 
 		public function moveObject(oldRegionId: int, newRegionId: int, newObj: SimpleGameObject): SimpleGameObject
@@ -90,9 +87,7 @@
 			Global.map.requeryIfSelected(obj);
 			
 			obj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
-			
-			trace("Move " + obj.objectId);
-			
+					
 			return obj;
 		}
 
@@ -149,11 +144,7 @@
 				return null;
 			}
 
-			var obj:SimpleGameObject = region.addObject(obj);
-			
-			if (obj) {
-				trace("Added obj " + obj.objectId);
-			}
+			var obj:SimpleGameObject = region.addObject(obj);			
 			
 			if (obj && fadeIn) {
 				obj.fadeIn();

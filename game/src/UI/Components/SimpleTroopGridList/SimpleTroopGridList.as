@@ -128,10 +128,10 @@
 		{
 			//make a copy of troop
 			var troop: TroopStub = new TroopStub(srcTroop.id, srcTroop.playerId, srcTroop.cityId);
-			for each(var formation: Formation in srcTroop.each())
+			for each(var formation: Formation in srcTroop)
 			{
 				var newFormation: Formation = new Formation(formation.type);
-				for each(var unit: Unit in formation.each())
+				for each(var unit: Unit in formation)
 				{
 					newFormation.add(new Unit(unit.type, unit.count));
 				}
@@ -140,7 +140,7 @@
 
 			var tilelists: Array = new Array();
 
-			for each(formation in troop.each())
+			for each(formation in troop)
 			{
 				if (formations != null)
 				{

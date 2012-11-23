@@ -170,7 +170,7 @@
 			var s:TroopStub = new TroopStub();
 			var f:Formation = new Formation(Formation.Defense);
 			for each (var troop: * in profileData.troops) {
-				for each(var formation: Formation in troop.stub.each())
+				for each(var formation: Formation in troop.stub)
 				{
 					if (formation.type!=Formation.Defense || formation.size() == 0) continue;
 					for (var z: int = 0; z < formation.size(); z++)

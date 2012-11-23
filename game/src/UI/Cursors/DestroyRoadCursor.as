@@ -164,7 +164,7 @@ package src.UI.Cursors {
 
 			// Make sure that buildings have a path back to the city without this point				
 			var breaksPath: Boolean = false;
-			for each(var cityObject: CityObject in city.objects.each()) {
+			for each(var cityObject: CityObject in city.objects) {
 				if (ObjectFactory.getClassType(cityObject.type) != ObjectFactory.TYPE_STRUCTURE) 
 					continue;
 					

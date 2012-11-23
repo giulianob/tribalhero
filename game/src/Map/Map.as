@@ -257,7 +257,7 @@
 			selectObject(null);
 
 			selectViewable = null;
-			for each(var gameObject: SimpleObject in objContainer.objects.each()) {
+			for each(var gameObject: SimpleObject in objContainer.objects) {
 				if (!(gameObject is SimpleGameObject)) 
 					continue;
 				

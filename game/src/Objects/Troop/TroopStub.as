@@ -80,9 +80,9 @@
 			var totalSpeed: int = 0;
 			var machineSpeed: int = int.MAX_VALUE;
 			
-			for each (var formation: Formation in each())
+			for each (var formation: Formation in this)
 			{
-				for each (var unit: Unit in formation.each()) {
+				for each (var unit: Unit in formation) {
 					var template: UnitTemplate = city.template.get(unit.type);
 					var unitPrototype: UnitPrototype = UnitFactory.getPrototype(unit.type, template.level);
 					
@@ -101,7 +101,7 @@
 		public function getIndividualUnitCount(type: int = -1): int
 		{
 			var total: int = 0;
-			for each (var formation: Formation in each())
+			for each (var formation: Formation in this)
 			{
 				total += formation.getIndividualUnitCount(type);
 			}
@@ -122,7 +122,7 @@
 				useTemplate = template;
 			}
 			
-			for each (var formation: Formation in each())
+			for each (var formation: Formation in this)
 			{
 				// InBattle formation always uses the troop's template
 				total += formation.getUpkeep(formation.type == Formation.InBattle && !forceUsingCityTemplate ? template : useTemplate);
@@ -134,9 +134,9 @@
 		public function toUnitsArray(): Dictionary {
 			var units: Dictionary = new Dictionary();
 			
-			for each(var formation: Formation in this.each())
+			for each(var formation: Formation in this)
 			{
-				for each(var unit: Unit in formation.each())
+				for each(var unit: Unit in formation)
 				{
 					if (!units.hasOwnProperty(unit.type)) {
 						units[unit.type] = 0;

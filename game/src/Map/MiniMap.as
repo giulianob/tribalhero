@@ -101,7 +101,9 @@
 
 			mapMask.graphics.clear();
 			g = new Graphics2D(mapMask.graphics);
-			g.fillRoundRect(new SolidBrush(ASColor.BLACK), 0, 0, this.miniMapWidth, this.miniMapHeight, 10);			
+			g.fillRoundRect(new SolidBrush(ASColor.BLACK), 0, 0, this.miniMapWidth, this.miniMapHeight, 10);	
+            
+            showLegend();
 		}
 		
 		public function setFilter(name:String) : Boolean {

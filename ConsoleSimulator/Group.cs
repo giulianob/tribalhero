@@ -82,7 +82,8 @@ namespace ConsoleSimulator
                                                                   stealth: 0,
                                                                   speed: 0,
                                                                   groupSize: 1,
-                                                                  carry: 0);
+                                                                  carry: 0,
+                                                                  normalizedCost: 0);
             StructureBaseStats structureBaseStats = new StructureBaseStats(name: "MainBuilding",
                                                                            spriteClass: "",
                                                                            type: 2000,

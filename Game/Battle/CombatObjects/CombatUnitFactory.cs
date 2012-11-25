@@ -103,16 +103,28 @@ namespace Game.Battle.CombatObjects
             return units;
         }
         
-        public StrongholdCombatUnit CreateStrongholdCombatUnit(IBattleManager battleManager, IStronghold stronghold, ushort type, byte level, ushort count)
+        public StrongholdCombatUnit[] CreateStrongholdCombatUnit(IBattleManager battleManager, IStronghold stronghold, ushort type, byte level, ushort count)
         {
-            return new StrongholdCombatUnit(battleManager.GetNextCombatObjectId(),
-                                            battleManager.BattleId,
-                                            type,
-                                            level,
-                                            count,
-                                            stronghold,
-                                            kernel.Get<UnitFactory>(),
-                                            kernel.Get<BattleFormulas>());
+            var groupSize = kernel.Get<UnitFactory>().GetUnitStats(type, level).Battle.GroupSize;
+            var units = new StrongholdCombatUnit[(count - 1) / groupSize + 1];
+            int i = 0;
+            do
+            {
+                ushort size = (ushort)(groupSize > count ? count : groupSize);
+                StrongholdCombatUnit newUnit = new StrongholdCombatUnit(battleManager.GetNextCombatObjectId(),
+                                                                        battleManager.BattleId,
+                                                                        type,
+                                                                        level,
+                                                                        size,
+                                                                        stronghold,
+                                                                        kernel.Get<UnitFactory>(),
+                                                                        kernel.Get<BattleFormulas>());
+
+                units[i++] = newUnit;
+                count -= size;
+            }
+            while (count > 0);
+            return units;
         }
 
         public StrongholdCombatStructure CreateStrongholdGateStructure(IBattleManager battleManager, IStronghold stronghold, decimal hp)

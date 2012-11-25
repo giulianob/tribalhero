@@ -59,6 +59,7 @@ namespace Game.Setup
                                                     byte.Parse(toks[col["Stl"]]),
                                                     byte.Parse(toks[col["Spd"]]),
                                                     0,
+                                                    0,
                                                     0);
                     int workerId = int.Parse(toks[col["Worker"]]);
 

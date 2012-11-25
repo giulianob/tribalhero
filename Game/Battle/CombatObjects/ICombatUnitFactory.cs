@@ -1,6 +1,7 @@
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
+using Game.Setup;
 
 namespace Game.Battle.CombatObjects
 {
@@ -12,7 +13,7 @@ namespace Game.Battle.CombatObjects
 
         DefenseCombatUnit[] CreateDefenseCombatUnit(IBattleManager battleManager, ITroopStub stub, FormationType formation, ushort type, ushort count);
 
-        StrongholdCombatUnit CreateStrongholdCombatUnit(IBattleManager battleManager, IStronghold stronghold, ushort type, byte level, ushort count);
+        StrongholdCombatUnit[] CreateStrongholdCombatUnit(IBattleManager battleManager, IStronghold stronghold, ushort type, byte level, ushort count);
 
         StrongholdCombatStructure CreateStrongholdGateStructure(IBattleManager battleManager, IStronghold stronghold, decimal hp);
     }

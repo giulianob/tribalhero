@@ -166,6 +166,7 @@ namespace Game.Battle
             Stl = new IntStatsModCalculator(baseStats.Stl);
             Spd = new IntStatsModCalculator(baseStats.Spd);
             Carry = new IntStatsModCalculator(baseStats.Carry);
+            NormalizedCost = new DoubleStatsModCalculator((double)baseStats.NormalizedCost);
             this.baseStats = baseStats;
         }
 
@@ -176,6 +177,7 @@ namespace Game.Battle
         public IntStatsModCalculator Stl { get; private set; }
         public IntStatsModCalculator Spd { get; private set; }
         public IntStatsModCalculator Carry { get; private set; }
+        public DoubleStatsModCalculator NormalizedCost { get; private set; }
 
         public void AddAtkParameter(string paramter, int value)
         {
@@ -221,7 +223,8 @@ namespace Game.Battle
                                 Spd = (byte)Spd.GetResult(),
                                 Stl = (byte)Stl.GetResult(),
                                 Carry = (ushort)Carry.GetResult(),
-                                MaxHp =(decimal)MaxHp.GetResult()
+                                MaxHp =(decimal)MaxHp.GetResult(),
+                                NormalizedCost = (decimal)NormalizedCost.GetResult(),
                         };
             return stats;
         }

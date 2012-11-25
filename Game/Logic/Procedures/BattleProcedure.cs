@@ -10,6 +10,7 @@ using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
 using Game.Logic.Actions;
+using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -32,6 +33,8 @@ namespace Game.Logic.Procedures
 
         private readonly ObjectTypeFactory objectTypeFactory;
 
+        private readonly Formula formula;
+
         [Obsolete("For testing only", true)]
         protected BattleProcedure()
         {
@@ -42,7 +45,8 @@ namespace Game.Logic.Procedures
                                RadiusLocator radiusLocator,
                                IBattleManagerFactory battleManagerFactory,
                                IActionFactory actionFactory,
-                               ObjectTypeFactory objectTypeFactory)
+                               ObjectTypeFactory objectTypeFactory,
+                               Formula formula)
         {
             this.combatUnitFactory = combatUnitFactory;
             this.combatGroupFactory = combatGroupFactory;
@@ -50,6 +54,7 @@ namespace Game.Logic.Procedures
             this.battleManagerFactory = battleManagerFactory;
             this.actionFactory = actionFactory;
             this.objectTypeFactory = objectTypeFactory;
+            this.formula = formula;
         }
 
         public virtual void JoinOrCreateCityBattle(ICity targetCity, ITroopObject attackerTroopObject, out ICombatGroup combatGroup, out uint battleId)
@@ -364,7 +369,8 @@ namespace Game.Logic.Procedures
             
             foreach (var unit in units)
             {
-                strongholdCombatGroup.Add(combatUnitFactory.CreateStrongholdCombatUnit(battle, stronghold, unit.Type, 5, unit.Count));
+                foreach (var obj in combatUnitFactory.CreateStrongholdCombatUnit(battle, stronghold, unit.Type, (byte)Math.Max(1,stronghold.Lvl/2), unit.Count))
+                    strongholdCombatGroup.Add(obj);
             }
 
             battle.Add(strongholdCombatGroup, BattleManager.BattleSide.Defense, false);
@@ -390,8 +396,8 @@ namespace Game.Logic.Procedures
                                                                                    battleOwner,
                                                                                    targetStronghold);
 
-                targetStronghold.MainBattle.SetProperty("defense_stronghold_meter", 100);
-                targetStronghold.MainBattle.SetProperty("offense_stronghold_meter", 100);
+                targetStronghold.MainBattle.SetProperty("defense_stronghold_meter", formula.GetMainBattleMeter(targetStronghold.Lvl));
+                targetStronghold.MainBattle.SetProperty("offense_stronghold_meter", formula.GetMainBattleMeter(targetStronghold.Lvl));
                 
                 combatGroup = AddAttackerToBattle(targetStronghold.MainBattle, attackerTroopObject);
                 

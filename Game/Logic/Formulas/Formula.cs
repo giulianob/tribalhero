@@ -197,12 +197,21 @@ namespace Game.Logic.Formulas
 
         public virtual int GetGateLimit(byte level)
         {
-            return level*500 + 5000;
+            if (Config.stronghold_gate_limit > 0)
+                return Config.stronghold_gate_limit;
+            return level*10000;
         }
 
         public virtual Resource GetGateRepairCost(byte level, decimal damagedGateHp)
         {
             return new Resource(0, (int)(level*damagedGateHp/8), (int)(level*damagedGateHp/16), (int)(level*damagedGateHp/4), 0);
+        }
+
+        public virtual int GetMainBattleMeter(byte level)
+        {
+            if (Config.stronghold_battle_meter > 0)
+                return Config.stronghold_battle_meter;
+            return level*1000;
         }
     }
 }

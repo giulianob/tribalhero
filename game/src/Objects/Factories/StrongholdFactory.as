@@ -13,10 +13,6 @@
 	import src.Objects.States.GameObjectState;
 	import src.Objects.Stronghold.Stronghold;
 
-	/**
-	 * ...
-	 * @author Default
-	 */
 	public class StrongholdFactory {
 
 		public function StrongholdFactory() {
@@ -24,7 +20,7 @@
 
 		public static function getSprite(centered: Boolean = false): DisplayObjectContainer
 		{
-			var objRef: Class = getDefinitionByName("DEFAULT_STRUCTURE_SIMPLE") as Class;
+			var objRef: Class = getDefinitionByName("STRONGHOLD_STRUCTURE") as Class;
 
 			var sprite: DisplayObjectContainer = new objRef() as DisplayObjectContainer;
 

@@ -16,5 +16,12 @@ namespace Game.Battle.CombatObjects
             base.TakeDamage(dmg, out returning, out attackPoints);
             Stronghold.Gate = hp;
         }
+
+        public override void CalcActualDmgToBeTaken(ICombatList attackers, ICombatList defenders, decimal baseDmg, int attackIndex, out decimal actualDmg)
+        {
+            baseDmg /= 10;
+            base.CalcActualDmgToBeTaken(attackers, defenders, baseDmg, attackIndex, out actualDmg);
+        }
+
     }
 }

@@ -88,6 +88,8 @@ namespace Game.Battle
                             return unitModFactory.GetModifier(1, 2);
                         case ArmorType.Building3:
                             return unitModFactory.GetModifier(1, 3);
+                        case ArmorType.Gate:
+                            return unitModFactory.GetModifier(1, 4);
                         default:
                             return unitModFactory.GetModifier(1, target.Type);
                     }
@@ -100,6 +102,8 @@ namespace Game.Battle
                             return unitModFactory.GetModifier(2, 2);
                         case ArmorType.Building3:
                             return unitModFactory.GetModifier(2, 3);
+                        case ArmorType.Gate:
+                            return unitModFactory.GetModifier(2, 4);
                         default:
                             return unitModFactory.GetModifier(2, target.Type);
                     }
@@ -112,6 +116,8 @@ namespace Game.Battle
                             return unitModFactory.GetModifier(3, 2);
                         case ArmorType.Building3:
                             return unitModFactory.GetModifier(3, 3);
+                        case ArmorType.Gate:
+                            return unitModFactory.GetModifier(3, 4);
                         default:
                             return unitModFactory.GetModifier(3, target.Type);
                     }
@@ -124,6 +130,8 @@ namespace Game.Battle
                             return unitModFactory.GetModifier(attacker.Type, 2);
                         case ArmorType.Building3:
                             return unitModFactory.GetModifier(attacker.Type, 3);
+                        case ArmorType.Gate:
+                            return unitModFactory.GetModifier(attacker.Type, 4);
                         default:
                             return unitModFactory.GetModifier(attacker.Type, target.Type);
                     }

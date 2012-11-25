@@ -631,7 +631,14 @@ namespace Game.Battle
 
             Resource defenderDroppedLoot;
             int attackPoints;
+            int initialCount = target.CombatObject.Count;
             target.CombatObject.TakeDamage(actualDmg, out defenderDroppedLoot, out attackPoints);
+            if (initialCount > target.CombatObject.Count)
+                UnitCountDecreased(this,
+                                   NextToAttack == BattleSide.Attack ? BattleSide.Defense : BattleSide.Attack,
+                                   target.Group,
+                                   target.CombatObject,
+                                   initialCount - target.CombatObject.Count);
 
             attacker.DmgDealt += actualDmg;
             attacker.MaxDmgDealt = (ushort)Math.Max(attacker.MaxDmgDealt, actualDmg);
@@ -742,6 +749,8 @@ namespace Game.Battle
 
         public delegate void OnUnitUpdate(IBattleManager battle, BattleSide combatObjectSide, ICombatGroup combatGroup, ICombatObject combatObject);
 
+        public delegate void OnUnitCountChange(IBattleManager battle, BattleSide combatObjectSide, ICombatGroup combatGroup, ICombatObject combatObject, int count);
+
         /// <summary>
         /// Fired once when the battle begins
         /// </summary>
@@ -800,12 +809,17 @@ namespace Game.Battle
         /// <summary>
         /// Fired when one of the groups in battle loses a unit
         /// </summary>
-        public event OnUnitUpdate GroupUnitRemoved = delegate { }; 
+        public event OnUnitUpdate GroupUnitRemoved = delegate { };
+
+        /// <summary>
+        /// Fired when obecj is killed
+        /// </summary>
+        public event OnUnitUpdate UnitKilled = delegate { };
 
         /// <summary>
         /// Fired when a single unit is killed
         /// </summary>
-        public event OnUnitUpdate UnitKilled = delegate { };
+        public event OnUnitCountChange UnitCountDecreased = delegate { };
 
         /// <summary>
         /// Fired when an attacker is unable to take his turn

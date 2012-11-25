@@ -90,7 +90,7 @@ namespace Game.Data.Troop
                                new DbColumn("type", DbType.UInt16), new DbColumn("level", DbType.Byte), new DbColumn("max_hp", DbType.UInt16),
                                new DbColumn("attack", DbType.UInt16), new DbColumn("splash", DbType.Byte),
                                new DbColumn("range", DbType.Byte), new DbColumn("stealth", DbType.Byte), new DbColumn("speed", DbType.Byte),
-                               new DbColumn("carry", DbType.UInt16), 
+                               new DbColumn("carry", DbType.UInt16), new DbColumn("normalized_cost", DbType.Decimal),
                        };
             }
         }
@@ -109,7 +109,7 @@ namespace Game.Data.Troop
                                 new DbColumn("type", battleStats.Base.Type, DbType.UInt16), new DbColumn("level", battleStats.Base.Lvl, DbType.Byte),
                                 new DbColumn("max_hp", battleStats.MaxHp, DbType.Decimal), new DbColumn("attack", battleStats.Atk, DbType.Decimal),
                                 new DbColumn("splash", battleStats.Splash, DbType.Byte), new DbColumn("range", battleStats.Rng, DbType.Byte), new DbColumn("stealth", battleStats.Stl, DbType.Byte),
-                                new DbColumn("speed", battleStats.Spd, DbType.Byte), new DbColumn("carry", battleStats.Carry, DbType.UInt16), 
+                                new DbColumn("speed", battleStats.Spd, DbType.Byte), new DbColumn("carry", battleStats.Carry, DbType.UInt16), new DbColumn("normalized_cost", battleStats.NormalizedCost, DbType.Decimal),
                         };
             }
         }

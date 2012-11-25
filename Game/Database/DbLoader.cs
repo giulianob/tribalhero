@@ -771,7 +771,8 @@ namespace Game.Database
                                                       Rng = (byte)listReader["range"],
                                                       Stl = (byte)listReader["stealth"],
                                                       Spd = (byte)listReader["speed"],
-                                                      Carry = (ushort)listReader["carry"]
+                                                      Carry = (ushort)listReader["carry"],
+                                                      NormalizedCost =  (decimal)listReader["normalized_cost"]
                                               };
 
                             stub.Template.DbLoaderAdd(battleStats);
@@ -962,7 +963,8 @@ namespace Game.Database
                                                       Splash = (byte)listReader["splash"],
                                                       Rng = (byte)listReader["range"],
                                                       Stl = (byte)listReader["stealth"],
-                                                      Spd = (byte)listReader["speed"],                                                      
+                                                      Spd = (byte)listReader["speed"],     
+                                                 
                                               };
 
                             var combatStructure = new CombatStructure((uint)listReader["id"],

@@ -7,6 +7,7 @@ using Common;
 using Game.Battle;
 using Game.Data;
 using Game.Data.Stats;
+using Game.Logic.Formulas;
 using Game.Util;
 using System.Linq;
 
@@ -19,7 +20,7 @@ namespace Game.Setup
         private readonly Dictionary<int, BaseUnitStats> dict = new Dictionary<int, BaseUnitStats>();
 
         public UnitFactory()
-        {            
+        {
         }
 
         public UnitFactory(string filename)
@@ -63,7 +64,8 @@ namespace Game.Setup
                                                     byte.Parse(toks[col["Stl"]]),
                                                     byte.Parse(toks[col["Spd"]]),
                                                     ushort.Parse(toks[col["GrpSize"]]),
-                                                    ushort.Parse(toks[col["Carry"]]));
+                                                    ushort.Parse(toks[col["Carry"]]),
+                                                    resource.NormalizedCost);
 
                     var basestats = new BaseUnitStats(toks[col["Name"]],
                                                       toks[col["SpriteClass"]],

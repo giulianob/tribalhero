@@ -19,7 +19,7 @@ package src.Objects.Process
 			}
 
 			Global.gameContainer.camera.ScrollTo(troop.x * Constants.tileW - Constants.screenW / 2, troop.y * Constants.tileH / 2 - Constants.screenH / 2);
-			Global.gameContainer.closeAllFrames();			
+			Global.gameContainer.closeAllFrames();
 		}
 		
 	}

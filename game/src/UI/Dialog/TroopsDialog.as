@@ -51,9 +51,8 @@
 			for each (var city: City in Global.map.cities) {
 				(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String { return this.city.name; } } );				
 				
-				city.troops.addEventListener(BinaryListEvent.ADDED, onTroopAdded, false, 0, true);
-				city.troops.addEventListener(BinaryListEvent.REMOVED, onTroopRemoved, false, 0, true);
-				city.troops.addEventListener(BinaryListEvent.UPDATED, onTroopUpdated, false, 0, true);
+                city.notifications.addEventListener(BinaryListEvent.CHANGED, update);
+				city.troops.addEventListener(BinaryListEvent.CHANGED, update);
 			}			
 			
 			lstCities.setSelectedIndex(0);
@@ -75,8 +74,15 @@
 		public function show(owner:* = null, modal:Boolean = false, onClose:Function = null):JFrame
 		{
 			super.showSelf(owner, modal, onClose);
-
+            
 			Global.gameContainer.showFrame(frame);
+            
+            frame.addEventListener(PopupEvent.POPUP_CLOSED, function (e: Event): void {
+                for each (var city: City in Global.map.cities) {								
+                    city.notifications.removeEventListener(BinaryListEvent.CHANGED, update);
+                    city.troops.removeEventListener(BinaryListEvent.CHANGED, update);
+                }			
+            });            
 			
 			frame.setResizable(true);
 			frame.setMinimumSize(new IntDimension(640, 345));	
@@ -144,8 +150,12 @@
 			var stationedGroup: * = createGroup(StringHelper.localize("TROOPS_DIALOG_STATIONED_GROUP"), [ TroopTable.COLUMN_NAME, TroopTable.COLUMN_LOCATION, TroopTable.COLUMN_STATUS, TroopTable.COLUMNS_UNITS, TroopTable.COLUMN_ACTIONS ]);
 			stationedAwayTroops = stationedGroup.table.getModel().getList() as VectorListModel;						
 			pnlStationedAwayGroup = stationedGroup.group;
+            
+			var incomingGroup: * = createGroup(StringHelper.localize("TROOPS_DIALOG_INCOMING_GROUP"), [ TroopTable.COLUMN_NOTIFICATION_NAME, TroopTable.COLUMN_NOTIFICATION_LOCATION, TroopTable.COLUMN_NOTIFICATION_STATUS, TroopTable.COLUMN_NOTIFICATION_ACTIONS ]);
+			incomingTroops = incomingGroup.table.getModel().getList() as VectorListModel;						
+			pnlIncomingGroup = incomingGroup.group;            
 			
-			pnlBody.appendAll(pnlHeader, localGroup.group, onTheMoveGroup.group, stationedGroup.group);			
+			pnlBody.appendAll(pnlHeader, localGroup.group, incomingGroup.group, onTheMoveGroup.group, stationedGroup.group);			
 		}
 		
 		private function citySelectionChanged(e:InteractiveEvent):void 
@@ -156,17 +166,21 @@
 			btnDefend.setVisible(lstCities.getSelectedIndex() > 0);
 		}
 		
-		private function update():void 
+		private function update(e: Event = null):void 
 		{
 			localTroops.clear();
 			onTheMoveTroops.clear();
-			//incomingTroops.clear();
+			incomingTroops.clear();
 			stationedAwayTroops.clear();
             
             // A list of OUR troops used below for some overview calcs
 			var troops: Array = [];
 			
 			for each (var city: City in Global.map.cities) {
+                for each (var notification: Notification in city.notifications) {
+                    addNotification(notification);
+                }
+                
 				for each (var troop: TroopStub in city.troops) {                    
                     if (troop.cityId == city.id) {
                         troops.push(troop);
@@ -212,7 +226,7 @@
 		
 		private function setGroupVisibility():void 
 		{
-			//pnlIncomingGroup.setVisible(incomingTroops.size() > 0);
+			pnlIncomingGroup.setVisible(incomingTroops.size() > 0);
 			pnlLocalGroup.setVisible(localTroops.size() > 0);
 			pnlOnTheMoveGroup.setVisible(onTheMoveTroops.size() > 0);
 			pnlStationedAwayGroup.setVisible(stationedAwayTroops.size() > 0);
@@ -244,6 +258,17 @@
 				table: troopTable
 			}
 		}
+        
+        private function addNotification(notification: Notification) : void {
+			var selectedCity: City = getSelectedCity();
+			
+			// Make sure it matches the selected city first
+			if (selectedCity && notification.targetCityId != selectedCity.id) {
+                return;			
+			}
+            
+            incomingTroops.append(notification);
+        }
 		
 		private function addTroop(troop: TroopStub) : void {	
 			var selectedCity: City = getSelectedCity();
@@ -300,19 +325,7 @@
 			var reinforcementProcess: ReinforcementSendProcess = new ReinforcementSendProcess(getSelectedCity());
 			reinforcementProcess.execute();
 		}
-		
-		private function onTroopUpdated(e: BinaryListEvent) : void {
-			update();
-		}
-
-		private function onTroopRemoved(e: BinaryListEvent) : void {
-			update();
-		}
-
-		private function onTroopAdded(e: BinaryListEvent) : void {
-			update();
-		}		
-		
+				
 		private function removeStubFromVectorList(list: VectorListModel, troop: TroopStub): void {			
 			for (var i: int = 0; i < list.getSize(); i++) {
 				var item: * = list.getElementAt(i);

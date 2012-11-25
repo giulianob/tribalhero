@@ -195,7 +195,7 @@
 			var notificationsCnt: int = packet.readUShort();
 			for (k = 0; k < notificationsCnt; k++)
 			{
-				var notification: Notification = new Notification(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+				var notification: Notification = new Notification(city.id, packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 				city.notifications.add(notification, false);
 			}
 			city.notifications.sort();

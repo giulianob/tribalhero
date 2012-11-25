@@ -8,6 +8,7 @@ namespace Game.Data
         Building1 = 4,
         Building2 = 5,
         Building3 = 6,
+        Gate = 7
     }
 
     public enum ArmorClass
@@ -67,6 +68,8 @@ namespace Game.Data
 
         public virtual ushort Carry { get; private set; }
 
+        public virtual decimal NormalizedCost { get; private set; }
+
         #endregion
 
         #region Constructors
@@ -86,7 +89,8 @@ namespace Game.Data
                                byte stealth,
                                byte speed,
                                ushort groupSize,
-                               ushort carry)
+                               ushort carry,
+                               decimal normalizedCost)
         {
             Type = type;
             Lvl = lvl;
@@ -102,6 +106,7 @@ namespace Game.Data
             Spd = speed;
             GroupSize = groupSize;
             Carry = carry;
+            NormalizedCost = normalizedCost;
         }
 
         #endregion

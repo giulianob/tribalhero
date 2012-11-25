@@ -496,7 +496,7 @@
 		{
 			var cityId:int = packet.readUInt();
 			
-			var notification:Notification = new Notification(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+			var notification:Notification = new Notification(cityId, packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 			
 			var city:City = Global.map.cities.get(cityId);
 			if (city == null)
@@ -526,7 +526,7 @@
 			
 			if (!notification)
 			{
-				notification = new Notification(notificationCityId, notificationObjId, notificationActionId, notificationType, notificationStartTime, notificationEndTime);
+				notification = new Notification(cityId, notificationCityId, notificationObjId, notificationActionId, notificationType, notificationStartTime, notificationEndTime);
 				city.notifications.add(notification);
 			}
 			else

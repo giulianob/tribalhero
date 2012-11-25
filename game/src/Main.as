@@ -125,7 +125,7 @@
 		}
 
 		private function loadData(): void
-		{			
+		{
 			pnlLoading = InfoDialog.showMessageDialog("TribalHero", "Launching the game...", null, null, true, false, 0);
 			
 			if (Constants.queryData) {

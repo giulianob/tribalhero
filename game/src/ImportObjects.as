@@ -9,9 +9,7 @@
 	{
 		
 		public function ImportObjects() 
-		{
-			
-			
+		{					
 			//Icons
 			ICON_UNFRIEND;
 			ICON_COLLAPSE;
@@ -36,6 +34,7 @@
 			//Minimap Icons
 			MINIMAP_TROOP_ICON;
 			MINIMAP_FOREST_ICON;
+            MINIMAP_STRONGHOLD_ICON;
 			
 			//Passive Action Icons
 			PASSIVE_ATTACKING;
@@ -138,6 +137,7 @@
 			TRIBAL_CARNIVAL_STRUCTURE;
 			TRIBAL_FAIR_STRUCTURE;
 			TRIBAL_FESTIVAL_STRUCTURE;
+            STRONGHOLD_STRUCTURE;
 			TRIBAL_GATHERING_STRUCTURE;
 			STABLE_STRUCTURE;
 			FARM_STRUCTURE;

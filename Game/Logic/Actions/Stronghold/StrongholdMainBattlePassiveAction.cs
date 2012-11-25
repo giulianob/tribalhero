@@ -116,7 +116,7 @@ namespace Game.Logic.Actions
 
         private void RegisterBattleListeners(IStronghold stronghold)
         {
-            stronghold.MainBattle.UnitKilled += MainBattleOnUnitKilled;
+            stronghold.MainBattle.UnitCountDecreased += MainBattleOnUnitKilled;
             stronghold.MainBattle.GroupKilled += MainBattleOnGroupKilled;
             stronghold.MainBattle.AboutToExitBattle += MainBattleOnAboutToExitBattle;
             stronghold.MainBattle.ActionAttacked += MainBattleOnActionAttacked;
@@ -158,7 +158,7 @@ namespace Game.Logic.Actions
 
                 if (cityCombatGroup == null)
                 {
-                    if (defensiveMeter != 0)
+                    if (defensiveMeter > 0)
                     {
                         continue;
                     }
@@ -196,7 +196,7 @@ namespace Game.Logic.Actions
                 }             
             }
 
-            if (offensiveMeter == 0)
+            if (offensiveMeter <= 0)
             {
                 // Make copy since attackers will be changing
                 var attackerLoopCopy = attackers.ToList();
@@ -250,9 +250,10 @@ namespace Game.Logic.Actions
                 throw new Exception("Stronghold not found");
             }
 
+            var defensiveMeter = battle.GetProperty<decimal>("defense_stronghold_meter");
             // If stronghold has no one left then it means the attacker took over
             // This same action removes all defenders if the defensive meter gets to 0
-            if ((stronghold.StrongholdState == StrongholdState.Occupied && !stronghold.Troops.StationedHere().Any()) || (stronghold.StrongholdState == StrongholdState.Neutral && npcGroupKilled))
+            if ((stronghold.StrongholdState == StrongholdState.Occupied && !stronghold.Troops.StationedHere().Any()) || (stronghold.StrongholdState == StrongholdState.Neutral && (npcGroupKilled || defensiveMeter <= 0)))
             {
                 strongholdManager.TransferTo(stronghold, stronghold.GateOpenTo);
             }
@@ -279,7 +280,7 @@ namespace Game.Logic.Actions
             }
         }
 
-        private void MainBattleOnUnitKilled(IBattleManager battle, BattleManager.BattleSide combatObjectSide, ICombatGroup combatGroup, ICombatObject combatObject)
+        private void MainBattleOnUnitKilled(IBattleManager battle, BattleManager.BattleSide combatObjectSide, ICombatGroup combatGroup, ICombatObject combatObject, int count)
         {
             IStronghold stronghold;
             if (!gameObjectLocator.TryGetObjects(strongholdId, out stronghold))
@@ -292,11 +293,11 @@ namespace Game.Logic.Actions
 
             if (combatObjectSide == BattleManager.BattleSide.Attack)
             {
-                offensiveMeter -= 1;
+                offensiveMeter -= combatObject.Stats.NormalizedCost*count;
             }
             else
             {
-                defensiveMeter -= 1;
+                defensiveMeter -= combatObject.Stats.NormalizedCost*count;
             }
 
             battle.SetProperty("defense_stronghold_meter", defensiveMeter);
@@ -348,7 +349,7 @@ namespace Game.Logic.Actions
 
                 // Battle has ended
                 // Delete the battle
-                stronghold.MainBattle.UnitKilled -= MainBattleOnUnitKilled;
+                stronghold.MainBattle.UnitCountDecreased -= MainBattleOnUnitKilled;
                 stronghold.MainBattle.GroupKilled -= MainBattleOnGroupKilled;
                 stronghold.MainBattle.ActionAttacked -= MainBattleOnActionAttacked;
                 stronghold.MainBattle.ExitTurn -= MainBattleOnExitTurn;

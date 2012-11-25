@@ -121,10 +121,15 @@ namespace Game.Battle
         event BattleManager.OnUnitUpdate GroupUnitRemoved;
 
         /// <summary>
-        /// Fired when a single unit is killed
+        /// Fired when the whole object is killed
         /// </summary>
         event BattleManager.OnUnitUpdate UnitKilled;
 
+        /// <summary>
+        /// Fired when a single unit is killed
+        ///</summary>
+        event BattleManager.OnUnitCountChange UnitCountDecreased;
+ 
         /// <summary>
         /// Fired when an attacker is unable to take his turn
         /// </summary>

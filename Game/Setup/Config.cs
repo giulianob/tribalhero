@@ -71,9 +71,9 @@ namespace Game.Setup
         public static int battle_loot_begin_round = 5; 
         public static int battle_stamina_initial = 20;
         public static ushort battle_stamina_destroyed_deduction = 5;
-        public static int battle_stamina_gate_multiplier = 3;
+        public static int battle_stamina_gate_multiplier = 1;
         public static bool battle_instant_move;
-        public static double battle_cost_penalty = 1;        
+        public static double battle_cost_penalty = 1;
         public static bool resource_cap = true;
         public static bool resource_fast_income;        
         public static int resource_crop_ratio = 1;
@@ -124,6 +124,8 @@ namespace Game.Setup
         public static double stronghold_npc_randomness = 0.4;
         public static int stronghold_npc_base_upkeep = 800;
         public static int stronghold_npc_per_lvl_upkeep = 200;
+        public static int stronghold_gate_limit;
+        public static int stronghold_battle_meter;
 
         public static int idle_days = 3;
         

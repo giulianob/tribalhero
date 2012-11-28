@@ -71,7 +71,7 @@ namespace Game.Battle
 
         public IBattleManager CreateStrongholdGateBattleManager(uint battleId, BattleLocation battleLocation, BattleOwner battleOwner, IStronghold stronghold)
         {
-            var bm = new BattleManager(battleId,
+            var bm = new BattleManagerPrivate(battleId,
                                        battleLocation,
                                        battleOwner,
                                        kernel.Get<IRewardStrategyFactory>().CreateStrongholdRewardStrategy(stronghold),

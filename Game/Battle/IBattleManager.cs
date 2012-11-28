@@ -3,6 +3,7 @@ using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
 using Game.Data;
+using Game.Setup;
 using Game.Util.Locking;
 using Persistance;
 
@@ -36,7 +37,7 @@ namespace Game.Battle
 
         ICombatGroup GetCombatGroup(uint id);
 
-        bool CanWatchBattle(IPlayer player, out int roundsLeft);
+        Error CanWatchBattle(IPlayer player, out int roundsLeft);
 
         void DbLoaderAddToCombatList(ICombatGroup group, BattleManager.BattleSide side);
 

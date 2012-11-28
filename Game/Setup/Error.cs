@@ -52,6 +52,20 @@ namespace Game.Setup
 
         #endregion
 
+        #region Layout/Effect Requirement Errors
+
+        LayoutNotFullfilled = 250,
+        EffectRequirementNotMet = 251,
+
+        #endregion
+
+        #region Market Errors
+
+        MarketPriceChanged = 300,
+        MarketInvalidQuantity = 301,
+
+        #endregion
+
         #region Map Errors
 
         ObjectNotFound = 400,
@@ -78,30 +92,19 @@ namespace Game.Setup
 
         #endregion
 
-        #region Layout/Effect Requirement Errors
-
-        LayoutNotFullfilled = 250,
-        EffectRequirementNotMet = 251,
-
-        #endregion
-
-        #region Market Errors
-
-        MarketPriceChanged = 300,
-        MarketInvalidQuantity = 301,
-
-        #endregion
-
         #region Troop Errors
 
         AttackSelf = 600,
         CityInBattle = 601,
-        DefendSelf = 602,
-        BattleNotViewable = 603,
+        DefendSelf = 602,        
         TroopChanged = 604,
         TooManyTroops = 605,
         TroopEmpty = 606,
-        TroopInBattle =607,
+        TroopInBattle = 607,
+
+        BattleNotViewable = 610,
+        BattleViewableNoTroopsInBattle = 611,
+        BattleViewableInRounds = 612,
 
         #endregion
 

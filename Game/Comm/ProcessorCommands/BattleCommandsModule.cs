@@ -17,6 +17,16 @@ namespace Game.Comm.ProcessorCommands
 {
     class BattleCommandsModule : CommandModule
     {
+        private readonly ILocker locker;
+
+        private readonly IGameObjectLocator world;
+
+        public BattleCommandsModule(ILocker locker, IGameObjectLocator world)
+        {
+            this.locker = locker;
+            this.world = world;
+        }
+
         public override void RegisterCommands(Processor processor)
         {
             processor.RegisterCommand(Command.BattleSubscribe, Subscribe);
@@ -37,7 +47,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             IBattleManager battleManager;
-            if (!World.Current.TryGetObjects(battleId, out battleManager))
+            if (!world.TryGetObjects(battleId, out battleManager))
             {
                 ReplyError(session, packet, Error.BattleNotViewable);
                 return;
@@ -52,19 +62,19 @@ namespace Game.Comm.ProcessorCommands
                     return toBeLocked.ToArray();
                 };
 
-            using (Concurrency.Current.Lock(lockHandler, null, session.Player))
+            using (locker.Lock(lockHandler, null, session.Player))
             {
                 int roundsLeft;
-                if (!Config.battle_instant_watch && !battleManager.CanWatchBattle(session.Player, out roundsLeft))
+                var canWatchBattle = battleManager.CanWatchBattle(session.Player, out roundsLeft);
+                if (!Config.battle_instant_watch && canWatchBattle != Error.Ok)
                 {
-                    packet = ReplyError(session, packet, Error.BattleNotViewable, false);
+                    packet = ReplyError(session, packet, canWatchBattle, false);
                     packet.AddInt32(roundsLeft);
                     session.Write(packet);
                     return;
                 }
-               
+                
                 var reply = new Packet(packet);
-                reply.AddUInt32(battleManager.BattleId);
                 reply.AddByte((byte)battleManager.Location.Type);
                 reply.AddUInt32(battleManager.Location.Id);
                 reply.AddString(battleManager.Location.GetName());
@@ -100,7 +110,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 Global.Channel.Unsubscribe(session, "/BATTLE/" + battleId);
             }

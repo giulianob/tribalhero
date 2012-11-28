@@ -177,7 +177,7 @@ namespace Game.Battle
             return Attackers.AllCombatObjects().FirstOrDefault(co => co.Id == id) ?? Defenders.AllCombatObjects().FirstOrDefault(co => co.Id == id);
         }
 
-        public bool CanWatchBattle(IPlayer player, out int roundsLeft)
+        public virtual Error CanWatchBattle(IPlayer player, out int roundsLeft)
         {
             roundsLeft = 0;
 
@@ -185,7 +185,7 @@ namespace Game.Battle
             {
                 if (Owner.IsOwner(player))
                 {
-                    return true;
+                    return Error.Ok;
                 }
 
                 int defendersRoundsLeft = int.MaxValue;
@@ -199,7 +199,7 @@ namespace Game.Battle
                             playersDefenders.Min(combatGroup => combatGroup.Min(combatObject => Config.battle_min_rounds - combatObject.RoundsParticipated));
                     if (defendersRoundsLeft < 0)
                     {
-                        return true;
+                        return Error.Ok;
                     }
                 }
 
@@ -211,7 +211,7 @@ namespace Game.Battle
                             playersAttackers.Min(combatGroup => combatGroup.Min(combatObject => Config.battle_min_rounds - combatObject.RoundsParticipated));
                     if (attackersRoundsLeft < 0)
                     {
-                        return true;
+                        return Error.Ok;
                     }
                 }
 
@@ -220,14 +220,11 @@ namespace Game.Battle
                 if (roundsLeft == int.MaxValue)
                 {
                     roundsLeft = 0;
-                }
-                else
-                {
-                    // Increase by 1 since here 0 roundsLeft actually means 1 round left in normal terms
-                    roundsLeft++;
+                    return Error.BattleViewableNoTroopsInBattle;
                 }
 
-                return false;
+                roundsLeft = Math.Max(roundsLeft, 1);
+                return Error.BattleViewableInRounds;
             }
         }
 

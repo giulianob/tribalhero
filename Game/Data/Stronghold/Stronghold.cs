@@ -38,7 +38,7 @@ namespace Game.Data.Stronghold
         {
             get
             {
-                return (decimal)(DateTime.UtcNow.Subtract(DateOccupied).TotalDays/2 + 10);
+                return StrongholdState == StrongholdState.Occupied ? (decimal)(DateTime.UtcNow.Subtract(DateOccupied).TotalDays / 2 + 10) : 0;
             }
         }
 
@@ -353,7 +353,8 @@ namespace Game.Data.Stronghold
                                new DbColumn("gate_battle_id", GateBattle != null ? GateBattle.BattleId : 0, DbType.UInt32),
                                new DbColumn("main_battle_id", MainBattle != null ? MainBattle.BattleId : 0, DbType.UInt32),
                                new DbColumn("object_state", (byte)State.Type, DbType.Boolean),
-                               new DbColumn("state_parameters", XmlSerializer.SerializeList(State.Parameters.ToArray()), DbType.String)
+                               new DbColumn("state_parameters", XmlSerializer.SerializeList(State.Parameters.ToArray()), DbType.String),
+                               new DbColumn("victory_point_rate", VictoryPointRate, DbType.Decimal),
 
                        };
             }

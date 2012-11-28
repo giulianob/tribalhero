@@ -1,6 +1,7 @@
 ﻿package src.Comm.Commands {
 
 	import flash.utils.Dictionary;
+    import mx.utils.StringUtil;
 	import src.Comm.*;
 	import src.GameContainer;
 	import src.Global;
@@ -16,6 +17,7 @@
 	import src.Objects.GameError;
 	import src.UI.Dialog.BattleViewer;
 	import src.UI.Dialog.InfoDialog;
+    import src.Util.StringHelper;
 	import src.Util.Util;
 
 	public class BattleComm {
@@ -93,22 +95,20 @@
 			
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.BATTLE_SUBSCRIBE;
-			packet.writeUInt(battleId);
-
-			mapComm.session.write(packet, onReceiveBattleSubscribe, { battleViewer: battleViewer} );
+			packet.writeUInt(battleId);			
 
 			battle = new BattleManager(battleId);
 			
 			battles.push(battle);
+            
+            mapComm.session.write(packet, onReceiveBattleSubscribe, { battleViewer: battleViewer, battle: battle } );
 
 			return battle;
 		}
 
 		public function onReceiveBattleSubscribe(packet: Packet, custom: *):void
-		{		
-			var battleId: int = packet.readUInt();
-			
-			var battle: BattleManager = getBattle(battleId);
+		{					
+			var battle: BattleManager = custom.battle;
 
 			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED)
 			{			
@@ -121,10 +121,10 @@
 					custom.battleViewer.getFrame().dispose();
 				}
 
-				var err: int = packet.readUInt();
+				var err: int = packet.readInt();
 				var roundsLeft: int = packet.readInt();
 
-				InfoDialog.showMessageDialog("Battle", GameError.getMessage(err) + (roundsLeft > 0 ? " Battle will be viewable in approximately " + roundsLeft + " round(s)." : ""));
+				InfoDialog.showMessageDialog("Battle", StringUtil.substitute(GameError.getMessage(err), roundsLeft));
 
 				return;
 			}

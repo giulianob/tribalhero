@@ -14,18 +14,18 @@ class Ranking extends AppModel {
         array('name' => 'RANKING_DEFENSE_CITY', 'field' => 'defense_point', 'order' => 'desc', 'group' => 'city'),
         array('name' => 'RANKING_LOOT_CITY', 'field' => 'loot_stolen', 'order' => 'desc', 'group' => 'city'),
         array('name' => 'RANKING_INFLUENCE_CITY', 'field' => 'value', 'order' => 'desc', 'group' => 'city'),
-        
+
         array('name' => 'RANKING_ATTACK_PLAYER', 'field' => 'attack_point', 'order' => 'desc', 'group' => 'player'),
         array('name' => 'RANKING_DEFENSE_PLAYER', 'field' => 'defense_point', 'order' => 'desc', 'group' => 'player'),
         array('name' => 'RANKING_LOOT_PLAYER', 'field' => 'loot_stolen', 'order' => 'desc', 'group' => 'player'),
         array('name' => 'RANKING_INFLUENCE_PLAYER', 'field' => 'value', 'order' => 'desc', 'group' => 'player'),
-        
+
         array('name' => 'RANKING_LEVEL_TRIBE', 'field' => 'level', 'order' => 'desc', 'group' => 'tribe'),
         array('name' => 'RANKING_ATTACK_TRIBE', 'field' => 'attack_point', 'order' => 'desc', 'group' => 'tribe'),
         array('name' => 'RANKING_DEFENSE_TRIBE', 'field' => 'defense_point', 'order' => 'desc', 'group' => 'tribe'),
         array('name' => 'RANKING_VICTORY_TRIBE', 'field' => 'victory_point', 'order' => 'desc', 'group' => 'tribe'),
-        array('name' => 'RANKING_VICTORY_RATE_TRIBE', 'field' => 'victory_point_rate', 'order' => 'desc', 'group' => 'tribe'),
-        
+        array('name' => 'RANKING_VICTORY_RATE_TRIBE', 'field' => 'victory_point_rate_sum', 'order' => 'desc', 'group' => 'tribe'),
+
         array('name' => 'RANKING_LEVEL_STRONGHOLD', 'field' => 'level', 'order' => 'desc', 'group' => 'stronghold'),
         array('name' => 'RANKING_OCCUPIED_STRONGHOLD', 'field' => 'date_occupied', 'order' => 'desc', 'group' => 'stronghold'),
         array('name' => 'RANKING_VICTORY_POINT_RATE', 'field' => 'victory_point_rate', 'order' => 'desc', 'group' => 'stronghold')
@@ -357,22 +357,20 @@ class Ranking extends AppModel {
      * @param order string The order of ranking (asc or desc)
      */
     public function rankTribe($type, $field, $order) {
-        if($field=="victory_point_rate") {
-    /*        $vpRateSums = $this->Stronghold->find('list', array(
-               'fields' => array('tribe_id', 'SUM(victory_point_rate)'),
-               'contain' => array(),
-               'conditions' => array('Stronghold.tribe_id >' => 0),
-               'group' => array('Stronghold.tribe_id')
-            ));
-            
-            debug($vpRateSums);
-            
+        if($field == "victory_point_rate_sum") {
             $tribes = $this->Tribe->find('all', array(
                         'contain' => array(),
                         'conditions' => array('Tribe.deleted' => 0),
-                        'order' => array($field . ' ' . $order, 'id ASC'),
-                        'fields' => array('id', $field ),
-                    )); */          
+                        'order' => array($field . ' ' . $order, 'Tribe.id ASC'),
+                        'fields' => array('Tribe.id', 'SUM(Stronghold.victory_point_rate) as victory_point_rate_sum'),
+                        'link' => array('Stronghold' => array('fields' => array())),
+                        'group' => array('Tribe.id')
+                    ));
+
+            foreach ($tribes as $k => $tribe) {
+                $tribes[$k]['Tribe']['victory_point_rate_sum'] = empty($tribe[0]['victory_point_rate_sum']) ? 0 : $tribe[0]['victory_point_rate_sum'];
+                unset($tribes[$k][0]);
+            }
         } else {
             $tribes = $this->Tribe->find('all', array(
                         'contain' => array(),

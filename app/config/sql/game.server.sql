@@ -39,13 +39,13 @@ CREATE TABLE `assignments` (
   `attack_time` datetime NOT NULL,
   `mode` varchar(20) DEFAULT NULL,
   `dispatch_count` int(11) unsigned NOT NULL,
-  `location_type` varchar(15) NOT NULL,
-  `location_id` int(10) unsigned DEFAULT NULL,
+  `location_type` varchar(20) NOT NULL,
+  `location_id` int(10) unsigned NOT NULL,
   `description` varchar(250) NOT NULL DEFAULT '',
   `is_attack` tinyint(1) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `idx_assignments_tribe_id` (`tribe_id`),
-  KEY `idx_city_id` (`location_id`)
+  KEY `idx_location_id` (`location_type`,`location_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `assignments_list`;

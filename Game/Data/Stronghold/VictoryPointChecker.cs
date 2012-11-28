@@ -46,12 +46,11 @@ namespace Game.Data.Stronghold
             {
                 using (Concurrency.Current.Lock(stronghold,stronghold.Tribe))
                 {
-                    stronghold.BeginUpdate();
                     stronghold.Tribe.VictoryPoint += stronghold.VictoryPointRate;
-                    stronghold.EndUpdate();
-                    dbManager.Save(stronghold.Tribe);
+                    dbManager.Save(stronghold.Tribe, stronghold);
                 }
             }
+
             SetNextExecution();
             Scheduler.Current.Put(this);
         }

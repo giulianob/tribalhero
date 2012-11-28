@@ -24,9 +24,11 @@ class Ranking extends AppModel {
         array('name' => 'RANKING_ATTACK_TRIBE', 'field' => 'attack_point', 'order' => 'desc', 'group' => 'tribe'),
         array('name' => 'RANKING_DEFENSE_TRIBE', 'field' => 'defense_point', 'order' => 'desc', 'group' => 'tribe'),
         array('name' => 'RANKING_VICTORY_TRIBE', 'field' => 'victory_point', 'order' => 'desc', 'group' => 'tribe'),
+        array('name' => 'RANKING_VICTORY_RATE_TRIBE', 'field' => 'victory_point_rate', 'order' => 'desc', 'group' => 'tribe'),
         
         array('name' => 'RANKING_LEVEL_STRONGHOLD', 'field' => 'level', 'order' => 'desc', 'group' => 'stronghold'),
         array('name' => 'RANKING_OCCUPIED_STRONGHOLD', 'field' => 'date_occupied', 'order' => 'desc', 'group' => 'stronghold'),
+        array('name' => 'RANKING_VICTORY_POINT_RATE', 'field' => 'victory_point_rate', 'order' => 'desc', 'group' => 'stronghold')
     );
     var $rankingsPerPage = 100;
 
@@ -96,7 +98,7 @@ class Ranking extends AppModel {
                 'fields' => array('Ranking.rank', 'Ranking.value'),
                 'order' => 'Ranking.rank ASC'
             );       
-        } 
+        }
 
         if ($returnOptions)
             return $options;
@@ -355,12 +357,30 @@ class Ranking extends AppModel {
      * @param order string The order of ranking (asc or desc)
      */
     public function rankTribe($type, $field, $order) {
-        $tribes = $this->Tribe->find('all', array(
-                    'contain' => array(),
-                    'conditions' => array('Tribe.deleted' => 0),
-                    'order' => array($field . ' ' . $order, 'id ASC'),
-                    'fields' => array('id', $field ),
-                ));
+        if($field=="victory_point_rate") {
+    /*        $vpRateSums = $this->Stronghold->find('list', array(
+               'fields' => array('tribe_id', 'SUM(victory_point_rate)'),
+               'contain' => array(),
+               'conditions' => array('Stronghold.tribe_id >' => 0),
+               'group' => array('Stronghold.tribe_id')
+            ));
+            
+            debug($vpRateSums);
+            
+            $tribes = $this->Tribe->find('all', array(
+                        'contain' => array(),
+                        'conditions' => array('Tribe.deleted' => 0),
+                        'order' => array($field . ' ' . $order, 'id ASC'),
+                        'fields' => array('id', $field ),
+                    )); */          
+        } else {
+            $tribes = $this->Tribe->find('all', array(
+                        'contain' => array(),
+                        'conditions' => array('Tribe.deleted' => 0),
+                        'order' => array($field . ' ' . $order, 'id ASC'),
+                        'fields' => array('id', $field ),
+                    ));
+        }
 
         $itemsPerInsert = 500;
         $fields = array( 'tribe_id', 'player_id', 'city_id', 'rank', 'type', 'value');

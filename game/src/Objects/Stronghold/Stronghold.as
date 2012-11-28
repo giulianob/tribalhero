@@ -7,6 +7,7 @@ package src.Objects.Stronghold
 	import src.Objects.SimpleGameObject;
 	import src.Objects.SimpleObject;
 	import src.Objects.States.GameObjectState;
+    import src.Objects.WallManager;
 	import src.UI.Components.RichLabel;
 	import src.Util.StringHelper;
 	import src.Util.Util;
@@ -21,12 +22,16 @@ package src.Objects.Stronghold
 		public var tribeId: int;
 		public var strongholdName: String;
 		public var id: int;
+        
+        public var wallManager: WallManager;
 		
 		public function Stronghold(type: int, state: GameObjectState, objX: int, objY: int, groupId: int, objectId: int, level: int, tribeId: int) {
 			super(type, state, objX, objY, groupId, objectId);
 			this.id = objectId;
 			this.level = level;
 			this.tribeId = tribeId;
+            
+            wallManager = new WallManager(this, 2);
 		}
 		
 		public function ToSprite(): Object
@@ -63,5 +68,12 @@ package src.Objects.Stronghold
 			
 			return new RichLabel("", rows, cols);
 		}
+        
+		override public function dispose():void
+		{
+			super.dispose();
+			
+			wallManager.clear();
+		}        
 	}
 }

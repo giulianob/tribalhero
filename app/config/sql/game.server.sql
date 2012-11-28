@@ -673,6 +673,7 @@ CREATE TABLE `strongholds` (
   `date_occupied` datetime NOT NULL,
   `object_state` tinyint(3) unsigned NOT NULL,
   `state_parameters` text NOT NULL,
+  `victory_point_rate` decimal(10,2) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;

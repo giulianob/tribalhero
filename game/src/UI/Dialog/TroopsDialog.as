@@ -178,7 +178,10 @@
 			
 			for each (var city: City in Global.map.cities) {
                 for each (var notification: Notification in city.notifications) {
-                    addNotification(notification);
+                    if (notification.cityId == city.id) {
+                        continue;
+                    }
+                    addNotification(notification);                    
                 }
                 
 				for each (var troop: TroopStub in city.troops) {                    
@@ -208,14 +211,18 @@
             lblStationedTroops.setText(StringHelper.localize("TROOPS_DIALOG_STATIONED_TROOPS", stationedTroops, stationedTroopsInBattle));                                
             
 			var incomingAttacks: int = Enumerable.from(Global.map.cities)
-						     .selectMany(function(city: City):NotificationManager { return city.notifications; } )							
+						     .selectMany(function(city: City):* { 
+                                 return Enumerable.from(city.notifications).where(function (notification: Notification): Boolean { return notification.cityId != city.id } );
+                              })							
 							 .where(function (notification: Notification): Boolean { return Action.actionCategory[notification.type] == Action.CATEGORY_ATTACK; } )
 							 .count();							
 			lblIncomingAttack.setText(StringHelper.localize("TROOPS_DIALOG_INCOMING_ATTACK", incomingAttacks));
             
             
 			var incomingDefenses: int = Enumerable.from(Global.map.cities)
-						     .selectMany(function(city: City):NotificationManager { return city.notifications; } )							
+						     .selectMany(function(city: City):* { 
+                                 return Enumerable.from(city.notifications).where(function (notification: Notification): Boolean { return notification.cityId != city.id } );
+                              })							
 							 .where(function (notification: Notification): Boolean { return Action.actionCategory[notification.type] == Action.CATEGORY_DEFENSE; } )
 							 .count();							
 			lblIncomingDefense.setText(StringHelper.localize("TROOPS_DIALOG_INCOMING_DEFENSE", incomingDefenses));            

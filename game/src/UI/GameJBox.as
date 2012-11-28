@@ -1,7 +1,11 @@
 ﻿package src.UI
 {
+    import flash.events.Event;
 	import org.aswing.*;
 	import org.aswing.border.*;
+    import org.aswing.event.AWEvent;
+    import org.aswing.event.FrameEvent;
+    import org.aswing.event.PopupEvent;
 	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
@@ -21,6 +25,7 @@
 				frame = new GameJFrame(owner, "", false);
 				frame.setContentPane(this);
 				frame.pack();
+                frame.addEventListener(PopupEvent.POPUP_CLOSED, onDisposeFrame);
 			}
 
 			frame.setBackgroundDecorator(new GameJBoxBackground());
@@ -34,6 +39,12 @@
 
 			return frame;
 		}
+        
+        private function onDisposeFrame(e: PopupEvent): void {
+            var closingFrame: JFrame = e.target as JFrame;
+            closingFrame.removeEventListener(PopupEvent.POPUP_CLOSED, onDisposeFrame);
+            frame = null;
+        }
 	}
 
 }

@@ -6,6 +6,8 @@
 	import flash.geom.Point;
 	import mx.messaging.ConsumerMessageDispatcher;
 	import org.aswing.ASColor;
+    import org.aswing.AsWingManager;
+    import org.aswing.AsWingUtils;
 	import org.aswing.graphics.Graphics2D;
 	import org.aswing.graphics.SolidBrush;
 	import src.Constants;
@@ -103,7 +105,7 @@
 			g = new Graphics2D(mapMask.graphics);
 			g.fillRoundRect(new SolidBrush(ASColor.BLACK), 0, 0, this.miniMapWidth, this.miniMapHeight, 10);	
             
-            showLegend();
+            alignLegend();
 		}
 		
 		public function setFilter(name:String) : Boolean {
@@ -147,6 +149,10 @@
 			filter.applyLegend(legend);
 			legend.show(this.x + this.miniMapWidth, this.y);
 		}
+        
+        public function alignLegend() : void {
+            legend.align(this.x + this.miniMapWidth, this.y);
+        }
 		
 		public function hideLegend() : void {
 			legend.hide();
@@ -180,8 +186,7 @@
 		public function resize(width: int, height: int) : void {
 			this.miniMapWidth = width;
 			this.miniMapHeight = height;
-			
-			redraw();
+            redraw();            
 		}
 
 		public function setScreenRectHidden(hidden: Boolean) : void {

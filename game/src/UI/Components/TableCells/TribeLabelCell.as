@@ -8,6 +8,8 @@
 	import src.UI.Components.*;
 	import src.UI.Components.Messaging.MessagingIcon;
 	import src.UI.Components.Tribe.SetRankIcon;
+    import src.Util.StringHelper;
+    import src.Util.Util;
 
 	public class TribeLabelCell extends AbstractTableCell
 	{
@@ -34,7 +36,7 @@
 				label = new TribeLabel(value.tribeId, value.tribeName);
 				wrapper.append(label);
 			} else {
-				wrapper.append(new JLabel("NPC"));
+				wrapper.append(new JLabel(StringHelper.localize("STR_NEUTRAL")));
 			}
 		}
 

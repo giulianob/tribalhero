@@ -142,7 +142,7 @@ _________ _______ _________ ______   _______  _
                 manager.Generate(Config.stronghold_generate);
             }
             StrongholdActivationChecker strongholdActivationChecker = Ioc.Kernel.Get<StrongholdActivationChecker>();
-            strongholdActivationChecker.Start(new TimeSpan(0, 0, Config.stronghold_activation_check_interval_in_sec));
+            strongholdActivationChecker.Start(TimeSpan.FromSeconds(Config.stronghold_activation_check_interval_in_sec));
 
             VictoryPointChecker victoryPointChecker = Ioc.Kernel.Get<VictoryPointChecker>();
             victoryPointChecker.Start();

@@ -21,7 +21,6 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.ProfileByType, ProfileByType);
         }
     
-        //TODO: Add stronghold support and move to where it makes sense
         private void ProfileByType(Session session, Packet packet)
         {
             var reply = new Packet(packet);

@@ -7,7 +7,7 @@ namespace Game.Map
 {
     public interface IRegionManager
     {
-        ICityRegionManager CityRegions { get; set; }
+        ICityRegionManager CityRegions { get; }
 
         uint WorldWidth { get; }
 
@@ -16,6 +16,8 @@ namespace Game.Map
         List<ISimpleGameObject> this[uint x, uint y] { get; }
 
         bool IsValidXandY(uint x, uint y);
+
+        IEnumerable<ISimpleGameObject> GetObjectsFromSurroundingRegions(uint x, uint y, int radius);
 
         List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, int radius);
 

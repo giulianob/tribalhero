@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Game.Data;
 
 namespace Game.Map
 {
@@ -75,8 +74,7 @@ namespace Game.Map
                                       oy,
                                       radius,
                                       doSelf,
-                                      (x, y, u, u1, c) => RadiusDistance(x, y, u, u1) > radius || work(x, y, u, u1, custom),
-                                      null);
+                                      (x, y, u, u1, c) => RadiusDistance(x, y, u, u1) > radius || work(x, y, u, u1, custom));
         }
 
         public virtual int RadiusDistance(uint x, uint y, uint x1, uint y1)
@@ -138,8 +136,6 @@ namespace Game.Map
             {
                 return overlapping;
             }
-
-            overlapping = false;
 
             HashSet<Position> points = new HashSet<Position>();
 

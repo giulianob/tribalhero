@@ -80,19 +80,49 @@ namespace Game.Map
             GetRegion(x, y).Lock.ExitWriteLock();
         }
 
-        private bool GetObjectsForeach(uint ox, uint oy, uint x, uint y, object custom)
+        public IEnumerable<ISimpleGameObject> GetObjectsFromSurroundingRegions(uint x, uint y, int radius)
         {
-            if (x < WorldWidth && y < WorldHeight)
+            int xRegionDiameter = (int)Math.Ceiling((decimal)radius / Config.region_width);
+            int yRegionDiameter = (int)Math.Ceiling((decimal)radius / Config.region_height);
+            int xRegionRadius = (int)Math.Ceiling(xRegionDiameter / 2m);
+            int yRegionRadius = (int)Math.Ceiling(yRegionDiameter / 2m);
+
+            for (uint xRegion = 0; xRegion < xRegionDiameter; xRegion++)
             {
-                ((List<ISimpleGameObject>)custom).AddRange(GetObjects(x, y));
+                for (uint yRegion = 0; yRegion < yRegionDiameter; yRegion++)
+                {
+                    var xRegionPoint = (uint) (x + (xRegion - xRegionRadius) * Config.region_width);
+                    var yRegionPoint = (uint) (y + (yRegion - yRegionRadius) * Config.region_height);
+                    var region = GetRegion(xRegionPoint, yRegionPoint);
+
+                    if (region == null)
+                    {
+                        continue;
+                    }
+
+                    foreach (var s in region.GetObjects())
+                    {
+                        yield return s;
+                    }
+                }
             }
-            return true;
         }
 
         public List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, int radius)
         {
             var list = new List<ISimpleGameObject>();
-            TileLocator.Current.ForeachObject(x, y, radius, false, GetObjectsForeach, list);
+            TileLocator.Current.ForeachObject(x,
+                                              y,
+                                              radius,
+                                              false,
+                                              (ox, oy, x1, y1, custom) =>
+                                                  {
+                                                      if (x1 < WorldWidth && y1 < WorldHeight)
+                                                      {
+                                                          list.AddRange(GetObjects(x1, y1));
+                                                      }
+                                                      return true;
+                                                  });
             return list;
         }
 
@@ -128,7 +158,7 @@ namespace Game.Map
                 // If simple object, we must assign an id
                 if (!objectTypeFactory.IsStructureType("NoRoadRequired", obj.Type))
                 {
-                    // TODO: Should not have a reference to the world from the region manager since its a circular depdencny and wont be injectable once World.Current is gone
+                    // TODO: Should not have a reference to the roads from the region manager but this causes a circular dependency. RoadManager requires RegionManager. Need to figure out where the road creation logic should take place.
                     World.Current.Roads.CreateRoad(obj.X, obj.Y);
                 }
 

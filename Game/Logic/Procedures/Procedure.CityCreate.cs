@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Game.Data;
+﻿using Game.Data;
 using Game.Data.Troop;
 using Game.Database;
 using Game.Logic.Formulas;
 using Game.Map;
-using Game.Setup;
-using Ninject;
-using Persistance;
 
 namespace Game.Logic.Procedures
 {

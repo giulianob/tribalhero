@@ -1,32 +1,41 @@
 ﻿using System;
 using Game.Logic;
-using Game.Map;
 using System.Linq;
 using Game.Util.Locking;
-using Persistance;
 
 namespace Game.Data.Stronghold
 {
     class StrongholdActivationChecker : ISchedule
     {
         private readonly IStrongholdManager strongholdManager;
+
         private readonly IStrongholdActivationCondition strongholdActivationCondition;
 
-        private TimeSpan timeSpan;
+        private readonly IScheduler scheduler;
 
-        public StrongholdActivationChecker(IStrongholdManager strongholdManager, IStrongholdActivationCondition strongholdActivationCondition, IWorld world, IDbManager dbManager)
+        private readonly ILocker locker;
+
+        private TimeSpan TimeSpan { get; set; }
+
+        public StrongholdActivationChecker(IStrongholdManager strongholdManager,
+                                           IStrongholdActivationCondition strongholdActivationCondition,
+                                           IScheduler scheduler,
+                                           ILocker locker)
         {
             this.strongholdManager = strongholdManager;
             this.strongholdActivationCondition = strongholdActivationCondition;
+            this.scheduler = scheduler;
+            this.locker = locker;
         }
 
         public void Start(TimeSpan timeSpan)
         {
             if (IsScheduled)
                 return;
-            this.timeSpan = timeSpan;
+
+            TimeSpan = timeSpan;
             Time = DateTime.UtcNow.Add(timeSpan);
-            Scheduler.Current.Put(this);
+            scheduler.Put(this);
         }
 
         public bool IsScheduled { get; set; }
@@ -35,15 +44,20 @@ namespace Game.Data.Stronghold
 
         public void Callback(object custom)
         {
-            foreach (IStronghold stronghold in strongholdManager.Where(s => s.StrongholdState == StrongholdState.Inactive).Where(stronghold => strongholdActivationCondition.ShouldActivate(stronghold)))
+            foreach (IStronghold stronghold in
+                    strongholdManager.Where(
+                                            s =>
+                                            s.StrongholdState == StrongholdState.Inactive &&
+                                            strongholdActivationCondition.ShouldActivate(s)))
             {
-                using (Concurrency.Current.Lock(stronghold))
+                using (locker.Lock(stronghold))
                 {
                     strongholdManager.Activate(stronghold);
                 }
             }
-            Time = DateTime.UtcNow.Add(timeSpan);
-            Scheduler.Current.Put(this);
+
+            Time = DateTime.UtcNow.Add(TimeSpan);
+            scheduler.Put(this);
         }
     }
 }

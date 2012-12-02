@@ -106,30 +106,30 @@ namespace Game.Map
             } while (!doSelf && (x == ox && y == oy));
         }
 
-        public virtual void ForeachObject(uint ox, uint oy, int radius, bool doSelf, DoWork work, object custom)
+        public virtual void ForeachObject(uint ox, uint oy, int radius, bool doSelf, DoWork work, object custom = null)
         {
             byte mode = (byte)(oy%2 == 0 ? 0 : 1);
 
             uint cx = ox;
             uint cy = oy - (uint)(2*radius);
             bool done = false;
-            for (byte row = 0; row < radius*2 + 1; ++row)
+            for (uint row = 0; row < radius*2 + 1; ++row)
             {
-                for (byte count = 0; count < radius*2 + 1; ++count)
+                for (uint count = 0; count < radius*2 + 1; ++count)
                 {
                     if (row%2 == 0)
                     {
                         if (mode == 0)
                         {
-                            if (!doSelf && ox == cx + (uint)((count)/2) && oy == cy + count)
+                            if (!doSelf && ox == cx + (count)/2 && oy == cy + count)
                                 continue;
-                            done = !work(ox, oy, cx + (uint)((count)/2), cy + count, custom);
+                            done = !work(ox, oy, cx + (count)/2, cy + count, custom);
                         }
                         else
                         {
-                            if (!doSelf && ox == cx + (uint)((count + 1)/2) && oy == cy + count)
+                            if (!doSelf && ox == cx + (count + 1)/2 && oy == cy + count)
                                 continue;
-                            done = !work(ox, oy, cx + (uint)((count + 1)/2), cy + count, custom);
+                            done = !work(ox, oy, cx + (count + 1)/2, cy + count, custom);
                         }
                     }
                     else
@@ -137,15 +137,15 @@ namespace Game.Map
                         // alternate row
                         if (mode == 0)
                         {
-                            if (!doSelf && ox == cx + (uint)((count + 1)/2) && oy == cy + count)
+                            if (!doSelf && ox == cx + (count + 1)/2 && oy == cy + count)
                                 continue;
-                            done = !work(ox, oy, cx + (uint)((count + 1)/2), cy + count, custom);
+                            done = !work(ox, oy, cx + (count + 1)/2, cy + count, custom);
                         }
                         else
                         {
-                            if (!doSelf && ox == cx + (uint)((count)/2) && oy == cy + count)
+                            if (!doSelf && ox == cx + (count)/2 && oy == cy + count)
                                 continue;
-                            done = !work(ox, oy, cx + (uint)((count)/2), cy + count, custom);
+                            done = !work(ox, oy, cx + (count)/2, cy + count, custom);
                         }
                     }
 
@@ -158,11 +158,11 @@ namespace Game.Map
 
                 if (mode == 0)
                 {
-                    cx -= (uint)((row + 1)%2);
+                    cx -= (row + 1)%2;
                 }
                 else
                 {
-                    cx -= (uint)((row)%2);
+                    cx -= (row)%2;
                 }
 
                 ++cy;

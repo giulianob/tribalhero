@@ -6,8 +6,6 @@ using System.IO;
 using System.Linq;
 using ConsoleSimulator.UserBattle;
 using Game;
-using Game.Battle;
-using Game.Data;
 using Game.Map;
 using Game.Setup;
 using Ninject;

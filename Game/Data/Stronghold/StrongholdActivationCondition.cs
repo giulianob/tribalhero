@@ -16,16 +16,18 @@ namespace Game.Data.Stronghold
             this.world = world;
         }
 
-        #region Implementation of IStrongholdActivationCondition
-
         public bool ShouldActivate(IStronghold stronghold)
         {
-            var structures = world.GetObjectsWithin(stronghold.X, stronghold.Y, radiusBase + stronghold.Lvl*radiusPerLevel).OfType<Structure>();
-            int citiesInRegion = structures.Select(s => s.City).Distinct().Count();
+            var citiesInRegion =
+                    world.Regions.GetObjectsFromSurroundingRegions(stronghold.X,
+                                                                   stronghold.Y,
+                                                                   radiusBase + stronghold.Lvl * radiusPerLevel)
+                         .OfType<Structure>()
+                         .Select(s => s.City)
+                         .Distinct()
+                         .Count();
 
             return citiesInRegion >= cityPerLevel*stronghold.Lvl;
         }
-
-        #endregion
     }
 }

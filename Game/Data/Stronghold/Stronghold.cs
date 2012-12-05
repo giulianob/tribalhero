@@ -38,7 +38,7 @@ namespace Game.Data.Stronghold
         {
             get
             {
-                return StrongholdState == StrongholdState.Occupied ? (decimal)(DateTime.UtcNow.Subtract(DateOccupied).TotalDays / 2 + 10) : 0;
+                return (StrongholdState == StrongholdState.Occupied ? (decimal)(DateTime.UtcNow.Subtract(DateOccupied).TotalDays / 2 + 10) : 0) * Lvl;
             }
         }
 

@@ -3,36 +3,52 @@ namespace Game.Data
     public enum ArmorType
     {
         Ground = 0,
+
         Mount = 1,
+
         Machine = 2,
+
         Building1 = 4,
+
         Building2 = 5,
+
         Building3 = 6,
+
         Gate = 7
     }
 
     public enum ArmorClass
     {
         Leather = 0,
+
         Metal = 1,
+
         Wooden = 2,
+
         Stone = 3
     }
 
     public enum WeaponType
     {
         Sword = 0,
+
         Pike = 1,
+
         Bow = 2,
+
         Ball = 3,
+
         Barricade = 4,
+
         Tower = 5,
+
         Cannon = 6,
     }
 
     public enum WeaponClass
     {
         Basic = 0,
+
         Elemental = 1
     }
 
@@ -74,7 +90,9 @@ namespace Game.Data
 
         #region Constructors
 
-        public BaseBattleStats() { }
+        public BaseBattleStats()
+        {
+        }
 
         public BaseBattleStats(ushort type,
                                byte lvl,

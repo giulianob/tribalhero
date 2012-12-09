@@ -1,19 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Stronghold;
-using Game.Data.Tribe;
 using Game.Map;
 
 namespace Game.Battle.RewardStrategies
 {
     public class StrongholdRewardStrategy : IRewardStrategy
     {
-        private readonly IStronghold stronghold;
-
         private readonly IGameObjectLocator gameObjectLocator;
+
+        private readonly IStronghold stronghold;
 
         public StrongholdRewardStrategy(IStronghold stronghold, IGameObjectLocator gameObjectLocator)
         {
@@ -25,7 +23,7 @@ namespace Game.Battle.RewardStrategies
         {
             actualLoot = new Resource();
         }
-        
+
         public void GiveAttackerRewards(ICombatObject attacker, int attackPoints, Resource loot)
         {
             attacker.ReceiveReward(attackPoints, loot);
@@ -39,7 +37,7 @@ namespace Game.Battle.RewardStrategies
             }
 
             var cityObjectDefenders = defenders.OfType<CityCombatObject>();
-            
+
             // Give anyone stationed defense points as well
             if (attackPoints > 0)
             {

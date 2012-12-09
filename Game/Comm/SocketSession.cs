@@ -10,13 +10,14 @@ namespace Game.Comm
 {
     public class SocketSession : Session
     {
-        public SocketSession(string name, Socket socket, Processor processor) : base(name, processor)
+        public SocketSession(string name, Socket socket, Processor processor)
+                : base(name, processor)
         {
             Socket = socket;
         }
 
         public Socket Socket { get; private set; }
-       
+
         public override bool Write(Packet packet)
         {
 #if DEBUG || CHECK_LOCKS

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Game.Data;
-using Game.Setup;
-using Ninject;
 
 namespace Game.Util.Locking
 {
@@ -20,23 +18,31 @@ namespace Game.Util.Locking
 
         public delegate CallbackLock Factory();
 
-        #endregion        
+        #endregion
 
         public CallbackLock(DefaultMultiObjectLock.Factory multiObjectLockFactory)
         {
             this.multiObjectLockFactory = multiObjectLockFactory;
         }
 
-        public CallbackLock Lock(CallbackLockHandler lockHandler, object[] lockHandlerParams, params ILockable[] baseLocks)
+        public CallbackLock Lock(CallbackLockHandler lockHandler,
+                                 object[] lockHandlerParams,
+                                 params ILockable[] baseLocks)
         {
             int count = 0;
             while (currentLock == null)
             {
-                if ((++count)%10 == 0)
-                    Global.Logger.Info(string.Format("CallbackLock has iterated {0} times from {1}", count, Environment.StackTrace));
+                if ((++count) % 10 == 0)
+                {
+                    Global.Logger.Info(string.Format("CallbackLock has iterated {0} times from {1}",
+                                                     count,
+                                                     Environment.StackTrace));
+                }
 
                 if (count >= 10000)
+                {
                     throw new LockException("Callback lock exceeded maximum count");
+                }
 
                 var toBeLocked = new List<ILockable>(baseLocks);
 
@@ -66,7 +72,9 @@ namespace Game.Util.Locking
                 }
 
                 if (!newToBeLocked.Where((t, i) => t.Hash != toBeLocked[i].Hash).Any())
+                {
                     continue;
+                }
 
                 currentLock.Dispose();
                 currentLock = null;

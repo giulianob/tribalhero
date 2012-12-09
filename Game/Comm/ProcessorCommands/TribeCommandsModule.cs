@@ -15,15 +15,15 @@ namespace Game.Comm.ProcessorCommands
 {
     class TribeCommandsModule : CommandModule
     {
-        private readonly ITribeFactory tribeFactory;
+        private readonly ILocker locker;
 
         private readonly IStrongholdManager strongholdManager;
 
-        private readonly IWorld world;
+        private readonly ITribeFactory tribeFactory;
 
         private readonly ITribeManager tribeManager;
 
-        private readonly ILocker locker;
+        private readonly IWorld world;
 
         public TribeCommandsModule(ITribeFactory tribeFactory,
                                    IStrongholdManager strongholdManager,
@@ -240,7 +240,7 @@ namespace Game.Comm.ProcessorCommands
                 var tribesman = new Tribesman(tribe, session.Player, 0);
 
                 tribe.AddTribesman(tribesman);
-                
+
                 ReplySuccess(session, packet);
             }
         }
@@ -258,15 +258,16 @@ namespace Game.Comm.ProcessorCommands
             CallbackLock.CallbackLockHandler lockHandler = delegate
                 {
                     var locks =
-                            strongholdManager.StrongholdsForTribe(tribe).SelectMany(stronghold => stronghold.LockList).
-                                    ToList();
+                            strongholdManager.StrongholdsForTribe(tribe)
+                                             .SelectMany(stronghold => stronghold.LockList)
+                                             .ToList();
 
                     locks.AddRange(tribe.Tribesmen);
 
                     return locks.ToArray();
                 };
 
-            using (locker.Lock(lockHandler, new object[] { }, tribe))
+            using (locker.Lock(lockHandler, new object[] {}, tribe))
             {
                 if (!session.Player.Tribesman.Tribe.IsOwner(session.Player))
                 {

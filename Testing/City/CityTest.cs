@@ -8,7 +8,7 @@ using Xunit;
 namespace Testing.City
 {
     /// <summary>
-    ///   Summary description for ChannelTest
+    ///     Summary description for ChannelTest
     /// </summary>
     public class CityTest
     {

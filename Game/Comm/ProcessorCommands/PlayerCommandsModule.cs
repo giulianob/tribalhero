@@ -2,17 +2,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Dynamic;
 using Game.Data;
-using Game.Database;
 using Game.Logic.Actions;
 using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
 using Ninject;
-using Persistance;
 
 #endregion
 
@@ -26,7 +21,7 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.PlayerDescriptionSet, SetDescription);
             processor.RegisterCommand(Command.PlayerUsernameGet, GetUsername);
             processor.RegisterCommand(Command.PlayerNameFromCityName, GetCityOwnerName);
-            processor.RegisterCommand(Command.CityResourceSend, SendResources);                      
+            processor.RegisterCommand(Command.CityResourceSend, SendResources);
         }
 
         private void SetDescription(Session session, Packet packet)
@@ -36,12 +31,12 @@ namespace Game.Comm.ProcessorCommands
             {
                 description = packet.GetString();
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
             }
-            
+
             using (Concurrency.Current.Lock(session.Player))
             {
                 if (description.Length > Player.MAX_DESCRIPTION_LENGTH)
@@ -66,9 +61,11 @@ namespace Game.Comm.ProcessorCommands
             {
                 playerId = packet.GetUInt32();
                 if (playerId == 0)
+                {
                     playerName = packet.GetString();
+                }
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -109,7 +106,9 @@ namespace Game.Comm.ProcessorCommands
                 count = packet.GetByte();
                 playerIds = new uint[count];
                 for (int i = 0; i < count; i++)
+                {
                     playerIds[i] = packet.GetUInt32();
+                }
             }
             catch(Exception)
             {
@@ -222,19 +221,29 @@ namespace Game.Comm.ProcessorCommands
 
                 IStructure structure;
                 if (!city.TryGetStructure(objectId, out structure))
+                {
                     ReplyError(session, packet, Error.Unexpected);
+                }
 
                 var action = new ResourceSendActiveAction(cityId, objectId, targetCityId, resource);
 
                 // If actually send then we perform the action, otherwise, we send the player information about the trade.
                 if (actuallySend)
-                {                    
-                    Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure), structure, action, structure.Technologies);
+                {
+                    Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure),
+                                                     structure,
+                                                     action,
+                                                     structure.Technologies);
                     if (ret != 0)
+                    {
                         ReplyError(session, packet, ret);
+                    }
                     else
+                    {
                         ReplySuccess(session, packet);
-                } else
+                    }
+                }
+                else
                 {
                     var reply = new Packet(packet);
                     reply.AddString(cities[targetCityId].Owner.Name);

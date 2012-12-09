@@ -13,8 +13,11 @@ namespace Game.Logic.Actions
     public class TechnologyCreatePassiveAction : PassiveAction, IScriptable
     {
         private byte lvl;
+
         private IStructure obj;
+
         private uint techId;
+
         private TimeSpan ts;
 
         public override ActionType Type
@@ -38,7 +41,9 @@ namespace Game.Logic.Actions
         public void ScriptInit(IGameObject obj, string[] parms)
         {
             if ((this.obj = obj as IStructure) == null)
+            {
                 throw new Exception();
+            }
             techId = uint.Parse(parms[0]);
             lvl = byte.Parse(parms[1]);
             ts = TimeSpan.FromSeconds(int.Parse(parms[2]));
@@ -55,11 +60,15 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             if (obj == null)
+            {
                 return Error.ObjectNotFound;
+            }
 
             TechnologyBase techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(techId, lvl);
             if (techBase == null)
+            {
                 return Error.ObjectNotFound;
+            }
 
             Technology tech;
             if (!obj.Technologies.TryGetTechnology(techBase.Techtype, out tech))

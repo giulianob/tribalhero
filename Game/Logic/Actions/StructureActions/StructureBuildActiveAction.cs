@@ -19,7 +19,27 @@ namespace Game.Logic.Actions
     {
         private readonly uint cityId;
 
+        private readonly ILocker concurrency;
+
+        private readonly Formula formula;
+
+        private readonly InitFactory initFactory;
+
+        private readonly byte level;
+
+        private readonly ObjectTypeFactory objectTypeFactory;
+
+        private readonly Procedure procedure;
+
+        private readonly RadiusLocator radiusLocator;
+
+        private readonly RequirementFactory requirementFactory;
+
+        private readonly StructureFactory structureFactory;
+
         private readonly ushort type;
+
+        private readonly IWorld world;
 
         private readonly uint x;
 
@@ -28,26 +48,6 @@ namespace Game.Logic.Actions
         private Resource cost;
 
         private uint structureId;
-
-        private byte level;
-
-        private readonly ObjectTypeFactory objectTypeFactory;
-
-        private readonly IWorld world;
-
-        private readonly Formula formula;
-
-        private readonly RequirementFactory requirementFactory;
-
-        private readonly RadiusLocator radiusLocator;
-
-        private StructureFactory structureFactory;
-
-        private readonly InitFactory initFactory;
-
-        private ILocker concurrency;
-
-        private readonly Procedure procedure;
 
         public StructureBuildActiveAction(uint cityId,
                                           ushort type,
@@ -162,7 +162,9 @@ namespace Game.Logic.Actions
                                                        action.ActionId != ActionId &&
                                                        (action.Type == ActionType.StructureUpgradeActive ||
                                                         (action.Type == ActionType.StructureBuildActive &&
-                                                         !objectTypeFactory.IsStructureType("UnlimitedBuilding", ((StructureBuildActiveAction)action).BuildType)))) >=
+                                                         !objectTypeFactory.IsStructureType("UnlimitedBuilding",
+                                                                                            ((StructureBuildActiveAction
+                                                                                             )action).BuildType)))) >=
                 maxConcurrentUpgrades)
             {
                 return Error.ActionTotalMaxReached;
@@ -226,7 +228,11 @@ namespace Game.Logic.Actions
                             continue;
                         }
 
-                        if (!RoadPathFinder.HasPath(new Position(str.X, str.Y), new Position(city.X, city.Y), city, new Position(x, y)))
+                        if (
+                                !RoadPathFinder.HasPath(new Position(str.X, str.Y),
+                                                        new Position(city.X, city.Y),
+                                                        city,
+                                                        new Position(x, y)))
                         {
                             breaksRoad = true;
                             break;
@@ -294,7 +300,9 @@ namespace Game.Logic.Actions
                                                         return true;
                                                     }
 
-                                                    var curStruct = (IStructure)world[x1, y1].FirstOrDefault(obj => obj is IStructure);
+                                                    var curStruct =
+                                                            (IStructure)
+                                                            world[x1, y1].FirstOrDefault(obj => obj is IStructure);
 
                                                     bool hasStructure = curStruct != null;
 
@@ -360,7 +368,11 @@ namespace Game.Logic.Actions
             structureId = structure.ObjectId;
 
             // add to queue for completion
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(formula.BuildTime(structureFactory.GetTime(type, level), city, city.Technologies)));
+            endTime =
+                    DateTime.UtcNow.AddSeconds(
+                                               CalculateTime(formula.BuildTime(structureFactory.GetTime(type, level),
+                                                                               city,
+                                                                               city.Technologies)));
             BeginTime = DateTime.UtcNow;
 
             city.References.Add(structure, this);
@@ -499,12 +511,15 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return XmlSerializer.Serialize(new[]
-                {
-                        new XmlKvPair("type", type), new XmlKvPair("x", x), new XmlKvPair("y", y), new XmlKvPair("city_id", cityId),
-                        new XmlKvPair("structure_id", structureId), new XmlKvPair("wood", cost.Wood), new XmlKvPair("crop", cost.Crop),
-                        new XmlKvPair("iron", cost.Iron), new XmlKvPair("gold", cost.Gold), new XmlKvPair("labor", cost.Labor), new XmlKvPair("level", level),
-                });
+                return
+                        XmlSerializer.Serialize(new[]
+                        {
+                                new XmlKvPair("type", type), new XmlKvPair("x", x), new XmlKvPair("y", y),
+                                new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId),
+                                new XmlKvPair("wood", cost.Wood), new XmlKvPair("crop", cost.Crop),
+                                new XmlKvPair("iron", cost.Iron), new XmlKvPair("gold", cost.Gold),
+                                new XmlKvPair("labor", cost.Labor), new XmlKvPair("level", level),
+                        });
             }
         }
 

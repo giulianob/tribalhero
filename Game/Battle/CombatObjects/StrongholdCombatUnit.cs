@@ -16,8 +16,6 @@ namespace Game.Battle.CombatObjects
 {
     public class StrongholdCombatUnit : CombatObject
     {
-        private IStronghold Stronghold { get; set; }
-
         public const string DB_TABLE = "stronghold_combat_units";
 
         private readonly byte lvl;
@@ -26,18 +24,18 @@ namespace Game.Battle.CombatObjects
 
         private readonly ushort type;
 
-        private ushort count;
-
         private readonly UnitFactory unitFactory;
 
+        private ushort count;
+
         public StrongholdCombatUnit(uint id,
-                                uint battleId,
-                                ushort type,
-                                byte lvl,
-                                ushort count,
-                                IStronghold stronghold,
-                                UnitFactory unitFactory,
-                                BattleFormulas battleFormulas)
+                                    uint battleId,
+                                    ushort type,
+                                    byte lvl,
+                                    ushort count,
+                                    IStronghold stronghold,
+                                    UnitFactory unitFactory,
+                                    BattleFormulas battleFormulas)
                 : base(id, battleId, battleFormulas)
         {
             Stronghold = stronghold;
@@ -51,14 +49,14 @@ namespace Game.Battle.CombatObjects
         }
 
         public StrongholdCombatUnit(uint id,
-                                uint battleId,
-                                ushort type,
-                                byte lvl,
-                                ushort count,
-                                IStronghold stronghold,
-                                decimal leftOverHp,
-                                UnitFactory unitFactory,
-                                BattleFormulas battleFormulas)
+                                    uint battleId,
+                                    ushort type,
+                                    byte lvl,
+                                    ushort count,
+                                    IStronghold stronghold,
+                                    decimal leftOverHp,
+                                    UnitFactory unitFactory,
+                                    BattleFormulas battleFormulas)
                 : base(id, battleId, battleFormulas)
         {
             Stronghold = stronghold;
@@ -70,6 +68,8 @@ namespace Game.Battle.CombatObjects
 
             stats = new BattleStats(unitFactory.GetUnitStats(type, lvl).Battle);
         }
+
+        private IStronghold Stronghold { get; set; }
 
         private decimal LeftOverHp { get; set; }
 
@@ -109,7 +109,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return unitFactory.GetUnitStats(type, lvl).Upkeep*count;
+                return unitFactory.GetUnitStats(type, lvl).Upkeep * count;
             }
         }
 
@@ -128,7 +128,7 @@ namespace Game.Battle.CombatObjects
                 return Stats.Rng;
             }
         }
-        
+
         public override byte Lvl
         {
             get
@@ -157,7 +157,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return Math.Max(0, stats.MaxHp*(count - 1) + LeftOverHp);
+                return Math.Max(0, stats.MaxHp * (count - 1) + LeftOverHp);
             }
         }
 
@@ -173,7 +173,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return new[] { new DbColumn("battle_id", BattleId, DbType.UInt32), new DbColumn("id", Id, DbType.UInt32)};
+                return new[] {new DbColumn("battle_id", BattleId, DbType.UInt32), new DbColumn("id", Id, DbType.UInt32)};
             }
         }
 
@@ -192,31 +192,24 @@ namespace Game.Battle.CombatObjects
                 return new[]
                 {
                         new DbColumn("stronghold_id", Stronghold.Id, DbType.UInt32),
-                        new DbColumn("group_id", GroupId, DbType.UInt32), 
-                        new DbColumn("level", lvl, DbType.Byte), 
-                        new DbColumn("count", count, DbType.UInt16), 
-                        new DbColumn("type", type, DbType.UInt16),
-                        new DbColumn("left_over_hp", LeftOverHp, DbType.Decimal), 
+                        new DbColumn("group_id", GroupId, DbType.UInt32), new DbColumn("level", lvl, DbType.Byte),
+                        new DbColumn("count", count, DbType.UInt16), new DbColumn("type", type, DbType.UInt16),
+                        new DbColumn("left_over_hp", LeftOverHp, DbType.Decimal),
                         new DbColumn("last_round", LastRound, DbType.UInt32),
                         new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
                         new DbColumn("damage_min_dealt", MinDmgDealt, DbType.UInt16),
-                        new DbColumn("damage_max_dealt", MaxDmgDealt, DbType.UInt16), 
+                        new DbColumn("damage_max_dealt", MaxDmgDealt, DbType.UInt16),
                         new DbColumn("damage_min_received", MinDmgRecv, DbType.UInt16),
-                        new DbColumn("damage_max_received", MaxDmgRecv, DbType.UInt16), 
+                        new DbColumn("damage_max_received", MaxDmgRecv, DbType.UInt16),
                         new DbColumn("damage_dealt", DmgDealt, DbType.Int32),
-                        new DbColumn("damage_received", DmgRecv, DbType.Int32), 
+                        new DbColumn("damage_received", DmgRecv, DbType.Int32),
                         new DbColumn("hits_dealt", HitDealt, DbType.UInt16),
-                        new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32), 
-                        new DbColumn("hits_received", HitRecv, DbType.UInt16),                        
+                        new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
+                        new DbColumn("hits_received", HitRecv, DbType.UInt16),
                 };
             }
         }
 
-        public override int LootPerRound()
-        {
-            return 0;
-        }
-        
         public override Resource Loot
         {
             get
@@ -231,6 +224,11 @@ namespace Game.Battle.CombatObjects
             {
                 return false;
             }
+        }
+
+        public override int LootPerRound()
+        {
+            return 0;
         }
 
         public override bool InRange(ICombatObject obj)
@@ -248,7 +246,11 @@ namespace Game.Battle.CombatObjects
             return byte.MaxValue;
         }
 
-        public override void CalcActualDmgToBeTaken(ICombatList attackers, ICombatList defenders, decimal baseDmg, int attackIndex, out decimal actualDmg)
+        public override void CalcActualDmgToBeTaken(ICombatList attackers,
+                                                    ICombatList defenders,
+                                                    decimal baseDmg,
+                                                    int attackIndex,
+                                                    out decimal actualDmg)
         {
             // Miss chance
             actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg);
@@ -267,8 +269,8 @@ namespace Game.Battle.CombatObjects
                 dead++;
             }
 
-            dead += (ushort)(dmg/stats.MaxHp);
-            LeftOverHp -= dmg%stats.MaxHp;
+            dead += (ushort)(dmg / stats.MaxHp);
+            LeftOverHp -= dmg % stats.MaxHp;
 
             if (dead > 0)
             {

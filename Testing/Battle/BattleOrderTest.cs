@@ -18,117 +18,155 @@ namespace Testing.Battle
             {
                 // offensive side has obj and sideAttacking = Attack
                 ICombatObject expectedCombatObject = CreateCombatObject(1);
-                yield return new object[]
-                {
-                        1, new List<ICombatGroup>
+                yield return
+                        new object[]
                         {
-                                CreateGroup(CreateCombatObject(2), CreateCombatObject(0), expectedCombatObject, CreateCombatObject(1)),
-                                CreateGroup(CreateCombatObject(1))
-                        }, new List<ICombatGroup>
-                        {
-                                CreateGroup(CreateCombatObject(1), CreateCombatObject(2))
-                        }, BattleManager.BattleSide.Attack, BattleManager.BattleSide.Attack, expectedCombatObject, true
-                };
-                
+                                1,
+                                new List<ICombatGroup>
+                                {
+                                        CreateGroup(CreateCombatObject(2),
+                                                    CreateCombatObject(0),
+                                                    expectedCombatObject,
+                                                    CreateCombatObject(1)),
+                                        CreateGroup(CreateCombatObject(1))
+                                },
+                                new List<ICombatGroup> {CreateGroup(CreateCombatObject(1), CreateCombatObject(2))},
+                                BattleManager.BattleSide.Attack, BattleManager.BattleSide.Attack, expectedCombatObject,
+                                true
+                        };
+
                 // defensive side has obj and sideAttacking = Attack
                 expectedCombatObject = CreateCombatObject(3);
-                yield return new object[]
-                {
-                        3, new List<ICombatGroup>
+                yield return
+                        new object[]
                         {
-                                CreateGroup(CreateCombatObject(4), CreateCombatObject(4), CreateCombatObject(4)),
-                                CreateGroup(CreateCombatObject(5))
-                        }, new List<ICombatGroup>
-                        {
-                                CreateGroup(CreateCombatObject(4), expectedCombatObject, CreateCombatObject(4))
-                        }, BattleManager.BattleSide.Attack, BattleManager.BattleSide.Defense, expectedCombatObject, true
-                };
+                                3,
+                                new List<ICombatGroup>
+                                {
+                                        CreateGroup(CreateCombatObject(4), CreateCombatObject(4), CreateCombatObject(4)),
+                                        CreateGroup(CreateCombatObject(5))
+                                },
+                                new List<ICombatGroup>
+                                {
+                                        CreateGroup(CreateCombatObject(4), expectedCombatObject, CreateCombatObject(4))
+                                }
+                                , BattleManager.BattleSide.Attack, BattleManager.BattleSide.Defense,
+                                expectedCombatObject, true
+                        };
 
                 // offensive side has obj and sideAttacking = Defense
                 expectedCombatObject = CreateCombatObject(2);
-                yield return new object[]
-                {
-                        2, new List<ICombatGroup>
+                yield return
+                        new object[]
                         {
-                                CreateGroup(CreateCombatObject(4), CreateCombatObject(4), CreateCombatObject(4)),
-                                CreateGroup(expectedCombatObject)
-                        }, new List<ICombatGroup>
-                        {
-                                CreateGroup(CreateCombatObject(4), CreateCombatObject(4))
-                        }, BattleManager.BattleSide.Defense, BattleManager.BattleSide.Attack, expectedCombatObject, true
-                };
+                                2,
+                                new List<ICombatGroup>
+                                {
+                                        CreateGroup(CreateCombatObject(4), CreateCombatObject(4), CreateCombatObject(4)),
+                                        CreateGroup(expectedCombatObject)
+                                },
+                                new List<ICombatGroup> {CreateGroup(CreateCombatObject(4), CreateCombatObject(4))},
+                                BattleManager.BattleSide.Defense, BattleManager.BattleSide.Attack, expectedCombatObject,
+                                true
+                        };
 
                 // defensive side has obj and sideAttacking = Defense
                 expectedCombatObject = CreateCombatObject(5);
-                yield return new object[]
-                {
-                        5, new List<ICombatGroup>
+                yield return
+                        new object[]
                         {
-                                CreateGroup(CreateCombatObject(6), CreateCombatObject(6), CreateCombatObject(6))                                
-                        }, new List<ICombatGroup>
-                        {
-                                CreateGroup(CreateCombatObject(6), CreateCombatObject(6)),
-                                CreateGroup(expectedCombatObject),
-                                CreateGroup(CreateCombatObject(6), CreateCombatObject(6))
-                        }, BattleManager.BattleSide.Defense, BattleManager.BattleSide.Defense, expectedCombatObject, true
-                };
+                                5,
+                                new List<ICombatGroup>
+                                {
+                                        CreateGroup(CreateCombatObject(6), CreateCombatObject(6), CreateCombatObject(6))
+                                },
+                                new List<ICombatGroup>
+                                {
+                                        CreateGroup(CreateCombatObject(6), CreateCombatObject(6)),
+                                        CreateGroup(expectedCombatObject),
+                                        CreateGroup(CreateCombatObject(6), CreateCombatObject(6))
+                                },
+                                BattleManager.BattleSide.Defense, BattleManager.BattleSide.Defense, expectedCombatObject
+                                , true
+                        };
 
                 // defensive side attacking and everyone is on next round
                 expectedCombatObject = CreateCombatObject(6);
-                yield return new object[]
-                {
-                        5, new List<ICombatGroup>
+                yield return
+                        new object[]
                         {
-                                CreateGroup(CreateCombatObject(6), CreateCombatObject(6), CreateCombatObject(6))                                
-                        }, new List<ICombatGroup>
-                        {
-                                CreateGroup(expectedCombatObject),
-                                CreateGroup(CreateCombatObject(6), CreateCombatObject(6)),                                
-                                CreateGroup(CreateCombatObject(6), CreateCombatObject(6))
-                        }, BattleManager.BattleSide.Defense, BattleManager.BattleSide.Defense, expectedCombatObject, false
-                };
+                                5,
+                                new List<ICombatGroup>
+                                {
+                                        CreateGroup(CreateCombatObject(6), CreateCombatObject(6), CreateCombatObject(6))
+                                },
+                                new List<ICombatGroup>
+                                {
+                                        CreateGroup(expectedCombatObject),
+                                        CreateGroup(CreateCombatObject(6), CreateCombatObject(6)),
+                                        CreateGroup(CreateCombatObject(6), CreateCombatObject(6))
+                                },
+                                BattleManager.BattleSide.Defense, BattleManager.BattleSide.Defense, expectedCombatObject
+                                , false
+                        };
 
                 // offensive side attacking and everyone is on next round
                 expectedCombatObject = CreateCombatObject(6);
-                yield return new object[]
-                {
-                        5, new List<ICombatGroup>
+                yield return
+                        new object[]
                         {
-                                CreateGroup(expectedCombatObject, CreateCombatObject(6), CreateCombatObject(6), CreateCombatObject(6))                                
-                        }, new List<ICombatGroup>
-                        {
-                                CreateGroup(),
-                                CreateGroup(CreateCombatObject(6), CreateCombatObject(6)),                                
-                                CreateGroup(CreateCombatObject(6), CreateCombatObject(6))
-                        }, BattleManager.BattleSide.Attack, BattleManager.BattleSide.Attack, expectedCombatObject, false
-                };
+                                5,
+                                new List<ICombatGroup>
+                                {
+                                        CreateGroup(expectedCombatObject,
+                                                    CreateCombatObject(6),
+                                                    CreateCombatObject(6),
+                                                    CreateCombatObject(6))
+                                },
+                                new List<ICombatGroup>
+                                {
+                                        CreateGroup(),
+                                        CreateGroup(CreateCombatObject(6), CreateCombatObject(6)),
+                                        CreateGroup(CreateCombatObject(6), CreateCombatObject(6))
+                                },
+                                BattleManager.BattleSide.Attack, BattleManager.BattleSide.Attack, expectedCombatObject,
+                                false
+                        };
 
                 // Invalid order
-                yield return new object[]
-                {
-                        4, new List<ICombatGroup>
+                yield return
+                        new object[]
                         {
-                                CreateGroup(CreateCombatObject(6), CreateCombatObject(6), CreateCombatObject(6))                                
-                        }, new List<ICombatGroup>
-                        {
-                                CreateGroup(),
-                                CreateGroup(CreateCombatObject(6), CreateCombatObject(6)),                                
-                                CreateGroup(CreateCombatObject(6), CreateCombatObject(6))
-                        }, BattleManager.BattleSide.Attack, BattleManager.BattleSide.Attack, null, true
-                };
+                                4,
+                                new List<ICombatGroup>
+                                {
+                                        CreateGroup(CreateCombatObject(6), CreateCombatObject(6), CreateCombatObject(6))
+                                },
+                                new List<ICombatGroup>
+                                {
+                                        CreateGroup(),
+                                        CreateGroup(CreateCombatObject(6), CreateCombatObject(6)),
+                                        CreateGroup(CreateCombatObject(6), CreateCombatObject(6))
+                                },
+                                BattleManager.BattleSide.Attack, BattleManager.BattleSide.Attack, null, true
+                        };
 
-                yield return new object[]
-                {
-                        4, new List<ICombatGroup>
+                yield return
+                        new object[]
                         {
-                                CreateGroup(CreateCombatObject(6), CreateCombatObject(6), CreateCombatObject(6))                                
-                        }, new List<ICombatGroup>
-                        {
-                                CreateGroup(),
-                                CreateGroup(CreateCombatObject(6), CreateCombatObject(6)),                                
-                                CreateGroup(CreateCombatObject(6), CreateCombatObject(6))
-                        }, BattleManager.BattleSide.Defense, BattleManager.BattleSide.Defense, null, true
-                };
+                                4,
+                                new List<ICombatGroup>
+                                {
+                                        CreateGroup(CreateCombatObject(6), CreateCombatObject(6), CreateCombatObject(6))
+                                },
+                                new List<ICombatGroup>
+                                {
+                                        CreateGroup(),
+                                        CreateGroup(CreateCombatObject(6), CreateCombatObject(6)),
+                                        CreateGroup(CreateCombatObject(6), CreateCombatObject(6))
+                                },
+                                BattleManager.BattleSide.Defense, BattleManager.BattleSide.Defense, null, true
+                        };
             }
         }
 
@@ -147,7 +185,13 @@ namespace Testing.Battle
             ICombatObject outCombatObject;
             ICombatGroup outCombatGroup;
             BattleManager.BattleSide foundInGroup;
-            var nextObject = battleOrder.NextObject(round: (uint)round, attacker: attackers, defender: defenders, sideAttacking: sideAttacking, outCombatObject: out outCombatObject, outCombatGroup: out outCombatGroup, foundInGroup: out foundInGroup);
+            var nextObject = battleOrder.NextObject(round: (uint)round,
+                                                    attacker: attackers,
+                                                    defender: defenders,
+                                                    sideAttacking: sideAttacking,
+                                                    outCombatObject: out outCombatObject,
+                                                    outCombatGroup: out outCombatGroup,
+                                                    foundInGroup: out foundInGroup);
 
             foundInGroup.Should().Be(expectedFoundInGroup);
             if (expectedCombatObject == null)
@@ -163,7 +207,7 @@ namespace Testing.Battle
                 attackers.Should().Contain(outCombatGroup);
             }
 
-            outCombatObject.Should().Be(expectedCombatObject);            
+            outCombatObject.Should().Be(expectedCombatObject);
             nextObject.Should().Be(expectedResult);
         }
 

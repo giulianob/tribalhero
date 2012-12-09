@@ -8,9 +8,22 @@ namespace Game.Battle
 {
     public class StaminaMonitor
     {
-        public event PropertyChangedEventHandler PropertyChanged = delegate { }; 
-
         private short stamina;
+
+        public StaminaMonitor(IBattleManager battleManager,
+                              ICombatGroup combatGroup,
+                              short initialStamina,
+                              BattleFormulas battleFormulas)
+        {
+            CombatGroup = combatGroup;
+            Stamina = initialStamina;
+            BattleFormulas = battleFormulas;
+
+            battleManager.ActionAttacked += BattleActionAttacked;
+            battleManager.WithdrawAttacker += BattleWithdrawAttacker;
+            battleManager.EnterRound += BattleEnterRound;
+            battleManager.ExitTurn += BattleExitTurn;
+        }
 
         private ICombatGroup CombatGroup { get; set; }
 
@@ -29,19 +42,15 @@ namespace Game.Battle
 
         private BattleFormulas BattleFormulas { get; set; }
 
-        public StaminaMonitor(IBattleManager battleManager, ICombatGroup combatGroup, short initialStamina, BattleFormulas battleFormulas)
-        {
-            CombatGroup = combatGroup;
-            Stamina = initialStamina;
-            BattleFormulas = battleFormulas;
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-            battleManager.ActionAttacked += BattleActionAttacked;
-            battleManager.WithdrawAttacker += BattleWithdrawAttacker;
-            battleManager.EnterRound += BattleEnterRound;
-            battleManager.ExitTurn += BattleExitTurn;
-        }
-
-        private void BattleActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingside, ICombatGroup attackerGroup, ICombatObject attacker, ICombatGroup targetGroup, ICombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battle,
+                                          BattleManager.BattleSide attackingside,
+                                          ICombatGroup attackerGroup,
+                                          ICombatObject attacker,
+                                          ICombatGroup targetGroup,
+                                          ICombatObject target,
+                                          decimal damage)
         {
             if (attackerGroup != CombatGroup || target.ClassType != BattleClass.Structure || !target.IsDead)
             {

@@ -18,11 +18,12 @@ namespace Game.Module
     public class CityRemover : ICityRemover, ISchedule
     {
         private const double SHORT_RETRY = 5;
+
         private const double LONG_RETRY = 90;
 
-        private readonly uint cityId;
-
         private readonly IActionFactory actionFactory;
+
+        private readonly uint cityId;
 
         public CityRemover(uint cityId, IActionFactory actionFactory)
         {
@@ -34,10 +35,14 @@ namespace Game.Module
         {
             ICity city;
             if (!World.Current.TryGetObjects(cityId, out city))
+            {
                 throw new Exception("City not found");
+            }
 
             if (!force && city.Deleted != City.DeletedState.NotDeleted)
+            {
                 return false;
+            }
 
             if (city.Deleted == City.DeletedState.NotDeleted)
             {
@@ -54,31 +59,8 @@ namespace Game.Module
         #region ISchedule Members
 
         public DateTime Time { get; private set; }
+
         public bool IsScheduled { get; set; }
-
-        private void Reschedule(double interval)
-        {
-            Time = DateTime.UtcNow.AddMinutes(interval*Config.seconds_per_unit);
-            Scheduler.Current.Put(this);
-        }
-
-        private static ILockable[] GetForeignTroopLockList(object[] custom)
-        {
-            return ((ICity)custom[0]).Troops.StationedHere().Select(stub => stub.City).Distinct().Cast<ILockable>().ToArray();
-        }
-
-        private static ILockable[] GetLocalTroopLockList(object[] custom)
-        {
-            return
-                    ((ICity)custom[0]).Troops.MyStubs().Where(x => x.Station != null).Select(stub => stub.Station).Distinct().Cast<ILockable>().
-                            ToArray();
-        }
-
-        private Error RemoveForeignTroop(ITroopStub stub)
-        {
-            var ra = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
-            return stub.City.Worker.DoPassive(stub.City, ra, true);
-        }
 
         public void Callback(object custom)
         {
@@ -86,12 +68,16 @@ namespace Game.Module
             IStructure mainBuilding;
 
             if (!World.Current.TryGetObjects(cityId, out city))
+            {
                 throw new Exception("City not found");
+            }
 
             using (Concurrency.Current.Lock(GetForeignTroopLockList, new[] {city}, city))
             {
                 if (city == null)
+                {
                     return;
+                }
 
                 // if local city is in battle, try again later
                 if (city.Battle != null)
@@ -108,7 +94,11 @@ namespace Game.Module
                     foreach (var stub in stationedTroops)
                     {
                         if (RemoveForeignTroop(stub) != Error.Ok)
-                            Global.Logger.Error(String.Format("removeForeignTroop failed! cityid[{0}] stubid[{1}]", city.Id, stub.StationTroopId));
+                        {
+                            Global.Logger.Error(String.Format("removeForeignTroop failed! cityid[{0}] stubid[{1}]",
+                                                              city.Id,
+                                                              stub.StationTroopId));
+                        }
                     }
                 }
 
@@ -152,7 +142,12 @@ namespace Game.Module
                     if (city.Any(structure => !structure.IsMainBuilding))
                     {
                         city.BeginUpdate();
-                        foreach (IStructure structure in new List<IStructure>(city).Where(structure => !structure.IsBlocked && !structure.IsMainBuilding))
+                        foreach (
+                                IStructure structure in
+                                        new List<IStructure>(city).Where(
+                                                                         structure =>
+                                                                         !structure.IsBlocked &&
+                                                                         !structure.IsMainBuilding))
                         {
                             structure.BeginUpdate();
                             World.Current.Regions.Remove(structure);
@@ -166,16 +161,15 @@ namespace Game.Module
 
                     // remove all customized tiles
                     TileLocator.Current.ForeachObject(city.X,
-                                                city.Y,
-                                                city.Radius,
-                                                true,
-                                                delegate(uint origX, uint origY, uint x1, uint y1, object c)
-                                                    {
-                                                        World.Current.Regions.RevertTileType(x1, y1, true);
-                                                        return true;
-                                                    },
-                                                null);
-
+                                                      city.Y,
+                                                      city.Radius,
+                                                      true,
+                                                      delegate(uint origX, uint origY, uint x1, uint y1, object c)
+                                                          {
+                                                              World.Current.Regions.RevertTileType(x1, y1, true);
+                                                              return true;
+                                                          },
+                                                      null);
                 }
             }
 
@@ -220,14 +214,49 @@ namespace Game.Module
                     Reschedule(SHORT_RETRY);
                     return;
                 }
-                Global.Logger.Info(string.Format("Player {0}:{1} City {2}:{3} Lvl {4} is deleted.", city.Owner.Name, city.Owner.PlayerId, city.Name, city.Id, city.Lvl));
+                Global.Logger.Info(string.Format("Player {0}:{1} City {2}:{3} Lvl {4} is deleted.",
+                                                 city.Owner.Name,
+                                                 city.Owner.PlayerId,
+                                                 city.Name,
+                                                 city.Id,
+                                                 city.Lvl));
                 World.Current.Cities.Remove(city);
             }
+        }
 
+        private void Reschedule(double interval)
+        {
+            Time = DateTime.UtcNow.AddMinutes(interval * Config.seconds_per_unit);
+            Scheduler.Current.Put(this);
+        }
+
+        private static ILockable[] GetForeignTroopLockList(object[] custom)
+        {
+            return
+                    ((ICity)custom[0]).Troops.StationedHere()
+                                      .Select(stub => stub.City)
+                                      .Distinct()
+                                      .Cast<ILockable>()
+                                      .ToArray();
+        }
+
+        private static ILockable[] GetLocalTroopLockList(object[] custom)
+        {
+            return
+                    ((ICity)custom[0]).Troops.MyStubs()
+                                      .Where(x => x.Station != null)
+                                      .Select(stub => stub.Station)
+                                      .Distinct()
+                                      .Cast<ILockable>()
+                                      .ToArray();
+        }
+
+        private Error RemoveForeignTroop(ITroopStub stub)
+        {
+            var ra = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
+            return stub.City.Worker.DoPassive(stub.City, ra, true);
         }
 
         #endregion
-
-
     }
 }

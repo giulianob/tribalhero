@@ -23,7 +23,9 @@ namespace Game.Comm
         public Packet GetNextPacket()
         {
             if (ms.Length < Packet.HEADER_SIZE)
+            {
                 return null;
+            }
 
             byte[] payloadLengthBytes = new byte[sizeof(ushort)];
             ms.Position = Packet.LENGTH_OFFSET;
@@ -34,8 +36,10 @@ namespace Game.Comm
             int packetLen = Packet.HEADER_SIZE + payloadLen;
 
             if (ms.Length < packetLen)
-                return null;            
-            
+            {
+                return null;
+            }
+
             byte[] msBytes = ms.ToArray();
 
             var newMs = new MemoryStream();
@@ -51,7 +55,7 @@ namespace Game.Comm
             {
                 packet = null;
             }
-            
+
             return packet;
         }
     }

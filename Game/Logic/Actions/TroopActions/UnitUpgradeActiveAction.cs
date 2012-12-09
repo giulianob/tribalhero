@@ -19,6 +19,7 @@ namespace Game.Logic.Actions
     public class UnitUpgradeActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
+
         private readonly uint structureId;
 
         public UnitUpgradeActiveAction(uint cityId, uint structureId, ushort type)
@@ -29,13 +30,14 @@ namespace Game.Logic.Actions
         }
 
         public UnitUpgradeActiveAction(uint id,
-                                 DateTime beginTime,
-                                 DateTime nextTime,
-                                 DateTime endTime,
-                                 int workerType,
-                                 byte workerIndex,
-                                 ushort actionCount,
-                                 Dictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+                                       DateTime beginTime,
+                                       DateTime nextTime,
+                                       DateTime endTime,
+                                       int workerType,
+                                       byte workerIndex,
+                                       ushort actionCount,
+                                       Dictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             UnitType = ushort.Parse(properties["type"]);
             cityId = uint.Parse(properties["city_id"]);
@@ -65,10 +67,14 @@ namespace Game.Logic.Actions
             ICity city;
             IStructure structure;
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            {
                 return Error.ActionInvalid;
+            }
 
             if (ushort.Parse(parms[0]) != UnitType || byte.Parse(parms[1]) <= city.Template[UnitType].Lvl)
+            {
                 return Error.ActionInvalid;
+            }
 
             return Error.Ok;
         }
@@ -78,28 +84,48 @@ namespace Game.Logic.Actions
             ICity city;
             IStructure structure;
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            {
                 return Error.ObjectNotFound;
+            }
 
-            if (city.Worker.ActiveActions.Values.Any(action => action.Type == Type && UnitType == ((UnitUpgradeActiveAction)action).UnitType && action != this))
-                return Error.ActionAlreadyInProgress;            
+            if (
+                    city.Worker.ActiveActions.Values.Any(
+                                                         action =>
+                                                         action.Type == Type &&
+                                                         UnitType == ((UnitUpgradeActiveAction)action).UnitType &&
+                                                         action != this))
+            {
+                return Error.ActionAlreadyInProgress;
+            }
 
             BaseUnitStats unitStats = city.Template[UnitType];
             if (unitStats == null)
+            {
                 return Error.Unexpected;
+            }
 
             Resource cost = Formula.Current.UnitUpgradeCost(city, UnitType, (byte)(unitStats.Lvl + 1));
 
             if (cost == null)
+            {
                 return Error.Unexpected;
+            }
 
             if (!city.Resource.HasEnough(cost))
+            {
                 return Error.ResourceNotEnough;
+            }
 
             city.BeginUpdate();
             city.Resource.Subtract(cost);
             city.EndUpdate();
 
-            var upgradeTime = Formula.Current.BuildTime(Ioc.Kernel.Get<UnitFactory>().GetUpgradeTime(UnitType, (byte)(unitStats.Lvl + 1)), city, structure.Technologies);
+            var upgradeTime =
+                    Formula.Current.BuildTime(
+                                              Ioc.Kernel.Get<UnitFactory>()
+                                                 .GetUpgradeTime(UnitType, (byte)(unitStats.Lvl + 1)),
+                                              city,
+                                              structure.Technologies);
             endTime = DateTime.UtcNow.AddSeconds(CalculateTime(upgradeTime));
             BeginTime = DateTime.UtcNow;
 
@@ -112,12 +138,18 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 if (!wasKilled)
                 {
                     city.BeginUpdate();
-                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, Ioc.Kernel.Get<UnitFactory>().GetUpgradeCost(UnitType, city.Template[UnitType].Lvl + 1)));
+                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime,
+                                                                              Ioc.Kernel.Get<UnitFactory>()
+                                                                                 .GetUpgradeCost(UnitType,
+                                                                                                 city.Template[UnitType]
+                                                                                                         .Lvl + 1)));
                     city.EndUpdate();
                 }
 
@@ -142,7 +174,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 if (!city.TryGetStructure(structureId, out structure))
                 {
@@ -150,7 +184,9 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                structure.City.Template[UnitType] = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(UnitType, (byte)(structure.City.Template[UnitType].Lvl + 1));
+                structure.City.Template[UnitType] = Ioc.Kernel.Get<UnitFactory>()
+                                                       .GetUnitStats(UnitType,
+                                                                     (byte)(structure.City.Template[UnitType].Lvl + 1));
 
                 StateChange(ActionState.Completed);
             }
@@ -164,7 +200,10 @@ namespace Game.Logic.Actions
             {
                 return
                         XmlSerializer.Serialize(new[]
-                                                {new XmlKvPair("type", UnitType), new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId)});
+                        {
+                                new XmlKvPair("type", UnitType), new XmlKvPair("city_id", cityId),
+                                new XmlKvPair("structure_id", structureId)
+                        });
             }
         }
 

@@ -11,7 +11,9 @@ namespace Game.Battle
 
         bool HasInRange(ICombatObject attacker);
 
-        CombatList.BestTargetResult GetBestTargets(ICombatObject attacker, out IList<CombatList.Target> result, int maxCount);
+        CombatList.BestTargetResult GetBestTargets(ICombatObject attacker,
+                                                   out IList<CombatList.Target> result,
+                                                   int maxCount);
 
         IEnumerable<ICombatObject> AllCombatObjects();
 

@@ -2,14 +2,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using Game.Data;
 using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -18,11 +17,15 @@ namespace Game.Logic.Actions
     public class StructureChangePassiveAction : ScheduledPassiveAction, IScriptable
     {
         private uint cityId;
-        private uint objectId;
-        private TimeSpan ts;
-        private ushort type;
+
         private byte lvl;
-        
+
+        private uint objectId;
+
+        private TimeSpan ts;
+
+        private ushort type;
+
         public StructureChangePassiveAction()
         {
         }
@@ -37,18 +40,18 @@ namespace Game.Logic.Actions
         }
 
         public StructureChangePassiveAction(uint id,
-                                          DateTime beginTime,
-                                          DateTime nextTime,
-                                          DateTime endTime,
-                                          bool isVisible,
-                                          string nlsDescription, 
-                                          Dictionary<string, string> properties)
-            : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
+                                            DateTime beginTime,
+                                            DateTime nextTime,
+                                            DateTime endTime,
+                                            bool isVisible,
+                                            string nlsDescription,
+                                            Dictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
             type = ushort.Parse(properties["type"]);
-            lvl = byte.Parse(properties["lvl"]);            
+            lvl = byte.Parse(properties["lvl"]);
         }
 
         public override ActionType Type
@@ -63,7 +66,12 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return XmlSerializer.Serialize(new[] {new XmlKvPair("city_id", cityId), new XmlKvPair("object_id", objectId), new XmlKvPair("type", type), new XmlKvPair("lvl", lvl)});
+                return
+                        XmlSerializer.Serialize(new[]
+                        {
+                                new XmlKvPair("city_id", cityId), new XmlKvPair("object_id", objectId),
+                                new XmlKvPair("type", type), new XmlKvPair("lvl", lvl)
+                        });
             }
         }
 
@@ -75,17 +83,21 @@ namespace Game.Logic.Actions
             IStructure structure;
 
             if (!(obj is IStructure))
+            {
                 throw new Exception();
+            }
 
             cityId = obj.City.Id;
             objectId = obj.ObjectId;
 
             ts = Formula.Current.ReadCsvTimeFormat(parms[0]);
             type = ushort.Parse(parms[1]);
-            lvl = byte.Parse(parms[2]);            
+            lvl = byte.Parse(parms[2]);
 
             if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
+            {
                 return;
+            }
 
             city.Worker.DoPassive(structure, this, true);
         }
@@ -101,7 +113,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 if (structure.IsBlocked)
                 {
@@ -114,12 +128,14 @@ namespace Game.Logic.Actions
                 structure.EndUpdate();
             }
 
-            structure.City.Worker.Remove(structure, new GameAction[] { this });
-            
+            structure.City.Worker.Remove(structure, new GameAction[] {this});
+
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 if (structure == null)
                 {
@@ -130,7 +146,7 @@ namespace Game.Logic.Actions
 
                 structure.City.BeginUpdate();
                 structure.BeginUpdate();
-                Procedures.Procedure.Current.StructureChange(structure, type, lvl);
+                Procedure.Current.StructureChange(structure, type, lvl);
                 structure.EndUpdate();
                 structure.City.EndUpdate();
 
@@ -152,13 +168,15 @@ namespace Game.Logic.Actions
             BeginTime = SystemClock.Now;
 
             if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
+            {
                 return Error.ObjectNotFound;
+            }
 
             return Error.Ok;
         }
 
         public override void UserCancelled()
-        {            
+        {
         }
 
         public override void WorkerRemoved(bool wasKilled)
@@ -168,7 +186,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
-                    return;                
+                {
+                    return;
+                }
 
                 StateChange(ActionState.Failed);
             }

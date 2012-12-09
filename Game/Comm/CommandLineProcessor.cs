@@ -13,12 +13,12 @@ using Game.Util;
 namespace Game.Comm
 {
     public class CommandLineProcessor
-    {        
+    {
         public delegate string DoWork(Session session, string[] parms);
 
-        private readonly StreamWriter writer;
-        
         private readonly Dictionary<string, ProcessorCommand> commands = new Dictionary<string, ProcessorCommand>();
+
+        private readonly StreamWriter writer;
 
         public CommandLineProcessor(StreamWriter writer, params CommandLineModule[] modules)
         {
@@ -46,7 +46,9 @@ namespace Game.Comm
             }
 
             if (parms == null)
+            {
                 parms = string.Empty;
+            }
 
             ProcessorCommand cmdWorker;
             if (!commands.TryGetValue(cmd, out cmdWorker) || cmdWorker.RightsRequired > session.Player.Rights)

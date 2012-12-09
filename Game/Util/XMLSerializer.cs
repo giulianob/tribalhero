@@ -126,7 +126,12 @@ namespace Game.Util
     {
         public static String SerializeComplexList(IEnumerable<object[]> list)
         {
-            var writerSettings = new XmlWriterSettings {OmitXmlDeclaration = true, Indent = false, NewLineOnAttributes = false};
+            var writerSettings = new XmlWriterSettings
+            {
+                    OmitXmlDeclaration = true,
+                    Indent = false,
+                    NewLineOnAttributes = false
+            };
 
             using (var sw = new StringWriter())
             {
@@ -141,19 +146,33 @@ namespace Game.Util
                         foreach (var variable in variables)
                         {
                             if (variable is byte)
+                            {
                                 writer.WriteStartElement("Byte");
+                            }
                             else if (variable is short)
+                            {
                                 writer.WriteStartElement("Short");
+                            }
                             else if (variable is int)
+                            {
                                 writer.WriteStartElement("Int");
+                            }
                             else if (variable is ushort)
+                            {
                                 writer.WriteStartElement("UShort");
+                            }
                             else if (variable is uint)
+                            {
                                 writer.WriteStartElement("UInt");
+                            }
                             else if (variable is string)
+                            {
                                 writer.WriteStartElement("String");
+                            }
                             else
+                            {
                                 throw new Exception("Unsupported variable type " + variable.GetType().Name);
+                            }
 
                             writer.WriteAttributeString("value", variable.ToString());
                             writer.WriteEndElement();
@@ -172,7 +191,12 @@ namespace Game.Util
 
         public static String SerializeList(params object[] variables)
         {
-            var writerSettings = new XmlWriterSettings {OmitXmlDeclaration = true, Indent = false, NewLineOnAttributes = false};
+            var writerSettings = new XmlWriterSettings
+            {
+                    OmitXmlDeclaration = true,
+                    Indent = false,
+                    NewLineOnAttributes = false
+            };
 
             using (var sw = new StringWriter())
             {
@@ -183,19 +207,33 @@ namespace Game.Util
                     foreach (var variable in variables)
                     {
                         if (variable is byte)
+                        {
                             writer.WriteStartElement("Byte");
+                        }
                         else if (variable is short)
+                        {
                             writer.WriteStartElement("Short");
+                        }
                         else if (variable is int)
+                        {
                             writer.WriteStartElement("Int");
+                        }
                         else if (variable is ushort)
+                        {
                             writer.WriteStartElement("UShort");
+                        }
                         else if (variable is uint)
+                        {
                             writer.WriteStartElement("UInt");
+                        }
                         else if (variable is string)
+                        {
                             writer.WriteStartElement("String");
+                        }
                         else
+                        {
                             throw new Exception("Unsupported variable type " + variable.GetType().Name);
+                        }
 
                         writer.WriteAttributeString("value", variable.ToString());
                         writer.WriteEndElement();
@@ -211,7 +249,12 @@ namespace Game.Util
 
         public static String Serialize(params XmlKvPair[] variables)
         {
-            var writerSettings = new XmlWriterSettings {OmitXmlDeclaration = true, Indent = false, NewLineOnAttributes = false};
+            var writerSettings = new XmlWriterSettings
+            {
+                    OmitXmlDeclaration = true,
+                    Indent = false,
+                    NewLineOnAttributes = false
+            };
 
             using (var sw = new StringWriter())
             {
@@ -255,7 +298,9 @@ namespace Game.Util
                                     continue;
                                 case "properties":
                                     if (properties != null)
+                                    {
                                         ret.Add(properties.ToArray());
+                                    }
                                     properties = new List<object>();
                                     break;
                                 case "string":
@@ -283,7 +328,9 @@ namespace Game.Util
                     }
 
                     if (properties != null)
+                    {
                         ret.Add(properties.ToArray());
+                    }
 
                     return ret;
                 }

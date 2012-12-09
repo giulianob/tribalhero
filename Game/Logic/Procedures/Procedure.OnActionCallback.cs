@@ -1,10 +1,7 @@
 ﻿#region
 
-using Game.Comm;
 using Game.Data;
 using Game.Logic.Formulas;
-using Game.Setup;
-using Ninject;
 
 #endregion
 

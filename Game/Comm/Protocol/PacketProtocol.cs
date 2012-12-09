@@ -2,7 +2,7 @@
 
 namespace Game.Comm.Protocol
 {
-    internal class PacketProtocol : IProtocol
+    class PacketProtocol : IProtocol
     {
         private readonly Session session;
 
@@ -32,6 +32,5 @@ namespace Game.Comm.Protocol
             var packet = new Packet(Command.ForumUnread);
             Global.Channel.Post("/PLAYER/" + session.Player.PlayerId, packet);
         }
-
     }
 }

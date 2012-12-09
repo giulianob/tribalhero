@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using FluentAssertions;
 using Game.Battle;
 using Game.Battle.CombatGroups;
-using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Actions;
@@ -37,13 +33,14 @@ namespace Testing.Actions
             troopObject.SetupGet(p => p.City).Returns(troopStub.City);
             return troopObject.Object;
         }
-        
+
         private CityOffensiveCombatGroup CreateCityOffensiveCombatGroup(ITroopObject troopObject)
         {
-            return new CityOffensiveCombatGroup(1, 1, troopObject, new Mock<IDbManager>().Object);            
+            return new CityOffensiveCombatGroup(1, 1, troopObject, new Mock<IDbManager>().Object);
         }
 
         #region AP Tests
+
         [Fact]
         public void WhenDefenderStrongerShouldNotGiveAnyAp()
         {
@@ -83,11 +80,13 @@ namespace Testing.Actions
 
             var attackers = new Mock<ICombatList>();
             attackers.SetupGet(p => p.Upkeep).Returns(150);
-            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<ICombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
+            attackers.Setup(p => p.GetEnumerator())
+                     .Returns(() => new List<ICombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
 
             // Local city + troops
             var localTroops = new Mock<ITroopManager>();
-            localTroops.Setup(p => p.GetEnumerator()).Returns(() => new List<ITroopStub> {defaultStub.Object}.GetEnumerator());
+            localTroops.Setup(p => p.GetEnumerator())
+                       .Returns(() => new List<ITroopStub> {defaultStub.Object}.GetEnumerator());
             var localCity = new Mock<ICity>();
             localCity.SetupGet(p => p.DefaultTroop).Returns(defaultStub.Object);
             localCity.SetupGet(p => p.Troops).Returns(localTroops.Object);
@@ -99,13 +98,13 @@ namespace Testing.Actions
             gameObjectLocator.Setup(p => p.TryGetObjects(1, out localCityObj)).Returns(true);
 
             var action = new CityBattlePassiveAction(1,
-                                                 actionFactory.Object,
-                                                 battleProcedure.Object,
-                                                 locker.Object,
-                                                 gameObjectLocator.Object,
-                                                 dbManager.Object,
-                                                 formula.Object,
-                                                 world.Object);
+                                                     actionFactory.Object,
+                                                     battleProcedure.Object,
+                                                     locker.Object,
+                                                     gameObjectLocator.Object,
+                                                     dbManager.Object,
+                                                     formula.Object,
+                                                     world.Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
@@ -153,11 +152,13 @@ namespace Testing.Actions
 
             var attackers = new Mock<ICombatList>();
             attackers.SetupGet(p => p.Upkeep).Returns(150);
-            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<ICombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
+            attackers.Setup(p => p.GetEnumerator())
+                     .Returns(() => new List<ICombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
 
             // Local city + troops
             var localTroops = new Mock<ITroopManager>();
-            localTroops.Setup(p => p.GetEnumerator()).Returns(() => new List<ITroopStub> {defaultStub.Object}.GetEnumerator());
+            localTroops.Setup(p => p.GetEnumerator())
+                       .Returns(() => new List<ITroopStub> {defaultStub.Object}.GetEnumerator());
             var localCity = new Mock<ICity>();
             localCity.SetupGet(p => p.DefaultTroop).Returns(defaultStub.Object);
             localCity.SetupGet(p => p.Troops).Returns(localTroops.Object);
@@ -169,13 +170,13 @@ namespace Testing.Actions
             gameObjectLocator.Setup(p => p.TryGetObjects(1, out localCityObj)).Returns(true);
 
             var action = new CityBattlePassiveAction(1,
-                                                 actionFactory.Object,
-                                                 battleProcedure.Object,
-                                                 locker.Object,
-                                                 gameObjectLocator.Object,
-                                                 dbManager.Object,
-                                                 formula.Object,
-                                                 world.Object);
+                                                     actionFactory.Object,
+                                                     battleProcedure.Object,
+                                                     locker.Object,
+                                                     gameObjectLocator.Object,
+                                                     dbManager.Object,
+                                                     formula.Object,
+                                                     world.Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
@@ -219,13 +220,15 @@ namespace Testing.Actions
             var attackerGroup1 = CreateCityOffensiveCombatGroup(attackerTroop1);
             var attackerGroup2 = CreateCityOffensiveCombatGroup(attackerTroop2);
 
-            var attackers = new Mock<ICombatList>();            
-            attackers.SetupGet(p => p.Upkeep).Returns(300);            
-            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<ICombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
-            
+            var attackers = new Mock<ICombatList>();
+            attackers.SetupGet(p => p.Upkeep).Returns(300);
+            attackers.Setup(p => p.GetEnumerator())
+                     .Returns(() => new List<ICombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
+
             // Local city + troops
             var localTroops = new Mock<ITroopManager>();
-            localTroops.Setup(p => p.GetEnumerator()).Returns(() => new List<ITroopStub> {defaultStub.Object}.GetEnumerator());
+            localTroops.Setup(p => p.GetEnumerator())
+                       .Returns(() => new List<ITroopStub> {defaultStub.Object}.GetEnumerator());
             var localCity = new Mock<ICity>();
             localCity.SetupGet(p => p.DefaultTroop).Returns(defaultStub.Object);
             localCity.SetupGet(p => p.Troops).Returns(localTroops.Object);
@@ -237,13 +240,13 @@ namespace Testing.Actions
             gameObjectLocator.Setup(p => p.TryGetObjects(1, out localCityObj)).Returns(true);
 
             var action = new CityBattlePassiveAction(1,
-                                                 actionFactory.Object,
-                                                 battleProcedure.Object,
-                                                 locker.Object,
-                                                 gameObjectLocator.Object,
-                                                 dbManager.Object,
-                                                 formula.Object,
-                                                 world.Object);
+                                                     actionFactory.Object,
+                                                     battleProcedure.Object,
+                                                     locker.Object,
+                                                     gameObjectLocator.Object,
+                                                     dbManager.Object,
+                                                     formula.Object,
+                                                     world.Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
@@ -289,15 +292,13 @@ namespace Testing.Actions
 
             var attackers = new Mock<ICombatList>();
             attackers.SetupGet(p => p.Upkeep).Returns(1100);
-            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<ICombatGroup>
-            {
-                    attackerGroup1,
-                    attackerGroup2
-            }.GetEnumerator());
+            attackers.Setup(p => p.GetEnumerator())
+                     .Returns(() => new List<ICombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
 
             // Local city + troops
             var localTroops = new Mock<ITroopManager>();
-            localTroops.Setup(p => p.GetEnumerator()).Returns(() => new List<ITroopStub> {defaultStub.Object}.GetEnumerator());
+            localTroops.Setup(p => p.GetEnumerator())
+                       .Returns(() => new List<ITroopStub> {defaultStub.Object}.GetEnumerator());
             var localCity = new Mock<ICity>();
             localCity.SetupGet(p => p.DefaultTroop).Returns(defaultStub.Object);
             localCity.SetupGet(p => p.Troops).Returns(localTroops.Object);
@@ -309,13 +310,13 @@ namespace Testing.Actions
             gameObjectLocator.Setup(p => p.TryGetObjects(1, out localCityObj)).Returns(true);
 
             var action = new CityBattlePassiveAction(1,
-                                                 actionFactory.Object,
-                                                 battleProcedure.Object,
-                                                 locker.Object,
-                                                 gameObjectLocator.Object,
-                                                 dbManager.Object,
-                                                 formula.Object,
-                                                 world.Object);
+                                                     actionFactory.Object,
+                                                     battleProcedure.Object,
+                                                     locker.Object,
+                                                     gameObjectLocator.Object,
+                                                     dbManager.Object,
+                                                     formula.Object,
+                                                     world.Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
@@ -361,15 +362,13 @@ namespace Testing.Actions
 
             var attackers = new Mock<ICombatList>();
             attackers.SetupGet(p => p.Upkeep).Returns(1100);
-            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<ICombatGroup>
-            {
-                    attackerGroup1,
-                    attackerGroup2
-            }.GetEnumerator());
+            attackers.Setup(p => p.GetEnumerator())
+                     .Returns(() => new List<ICombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
 
             // Local city + troops
             var localTroops = new Mock<ITroopManager>();
-            localTroops.Setup(p => p.GetEnumerator()).Returns(() => new List<ITroopStub> {defaultStub.Object}.GetEnumerator());
+            localTroops.Setup(p => p.GetEnumerator())
+                       .Returns(() => new List<ITroopStub> {defaultStub.Object}.GetEnumerator());
             var localCity = new Mock<ICity>();
             localCity.SetupGet(p => p.DefaultTroop).Returns(defaultStub.Object);
             localCity.SetupGet(p => p.Troops).Returns(localTroops.Object);
@@ -381,13 +380,13 @@ namespace Testing.Actions
             gameObjectLocator.Setup(p => p.TryGetObjects(1, out localCityObj)).Returns(true);
 
             var action = new CityBattlePassiveAction(1,
-                                                 actionFactory.Object,
-                                                 battleProcedure.Object,
-                                                 locker.Object,
-                                                 gameObjectLocator.Object,
-                                                 dbManager.Object,
-                                                 formula.Object,
-                                                 world.Object);
+                                                     actionFactory.Object,
+                                                     battleProcedure.Object,
+                                                     locker.Object,
+                                                     gameObjectLocator.Object,
+                                                     dbManager.Object,
+                                                     formula.Object,
+                                                     world.Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
@@ -395,7 +394,7 @@ namespace Testing.Actions
             attackerStub1.City.AlignmentPoint.Should().Be(29.981818181818181818181818182m);
             attackerStub2.City.AlignmentPoint.Should().Be(29.818181818181818181818181818m);
         }
-        #endregion
 
+        #endregion
     }
 }

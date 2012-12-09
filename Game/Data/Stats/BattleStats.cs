@@ -27,7 +27,7 @@ namespace Game.Data.Stats
         #region Constructors
 
         public BattleStats()
-        {            
+        {
         }
 
         public BattleStats(BaseBattleStats baseStats)

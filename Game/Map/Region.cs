@@ -1,13 +1,11 @@
 #region
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Game.Comm;
 using Game.Data;
-using Game.Data.Stronghold;
 using Game.Setup;
 
 #endregion
@@ -25,9 +23,13 @@ namespace Game.Map
         #region Members
 
         private readonly byte[] map;
+
         private readonly ReaderWriterLockSlim objLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+
         private readonly ObjectList objlist = new ObjectList();
+
         private bool isDirty;
+
         private byte[] objects;
 
         public ReaderWriterLockSlim Lock
@@ -83,7 +85,9 @@ namespace Game.Map
             if (obj.X != origX || obj.Y != origY)
             {
                 if (!objlist.Remove(obj, origX, origY))
+                {
                     throw new Exception("WTF");
+                }
 
                 objlist.AddGameObject(obj);
             }
@@ -112,7 +116,9 @@ namespace Game.Map
         public byte[] GetObjectBytes()
         {
             if (!isDirty && objects != null)
+            {
                 return objects;
+            }
 
             objLock.EnterWriteLock();
             if (isDirty || objects == null)
@@ -148,7 +154,7 @@ namespace Game.Map
         public ushort GetTileType(uint x, uint y)
         {
             objLock.EnterReadLock();
-            var tileType = BitConverter.ToUInt16(map, GetTileIndex(x, y)*2);
+            var tileType = BitConverter.ToUInt16(map, GetTileIndex(x, y) * 2);
             objLock.ExitReadLock();
             return tileType;
         }
@@ -156,7 +162,7 @@ namespace Game.Map
         public void SetTileType(uint x, uint y, ushort tileType)
         {
             objLock.EnterWriteLock();
-            int idx = GetTileIndex(x, y)*TILE_SIZE;
+            int idx = GetTileIndex(x, y) * TILE_SIZE;
             byte[] ushortArr = BitConverter.GetBytes(tileType);
             map[idx] = ushortArr[0];
             map[idx + 1] = ushortArr[1];
@@ -176,7 +182,7 @@ namespace Game.Map
 
         public static ushort GetRegionIndex(uint x, uint y)
         {
-            return (ushort)(x/Config.region_width + (y/Config.region_height)*Config.column);
+            return (ushort)(x / Config.region_width + (y / Config.region_height) * Config.column);
         }
 
         public static int GetTileIndex(ISimpleGameObject obj)
@@ -186,7 +192,7 @@ namespace Game.Map
 
         public static int GetTileIndex(uint x, uint y)
         {
-            return (int)(x%Config.region_width + (y%Config.region_height)*Config.region_width);
+            return (int)(x % Config.region_width + (y % Config.region_height) * Config.region_width);
         }
 
         #endregion

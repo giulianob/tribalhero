@@ -57,17 +57,22 @@ namespace ConsoleSimulator
 
         private static uint cityId;
 
-        private List<IStructure> structures = new List<IStructure>();
-
         private readonly ICity city;
 
         private readonly TroopObject obj;
 
         private readonly IPlayer player;
 
+        private readonly List<IStructure> structures = new List<IStructure>();
+
         public Group()
         {
-            player = new Player(playerId, DateTime.MinValue, SystemClock.Now, "player " + playerId, string.Empty, PlayerRights.Basic);
+            player = new Player(playerId,
+                                DateTime.MinValue,
+                                SystemClock.Now,
+                                "player " + playerId,
+                                string.Empty,
+                                PlayerRights.Basic);
             playerId++;
             BaseBattleStats baseBattleStats = new BaseBattleStats(type: 2000,
                                                                   lvl: 1,
@@ -111,7 +116,7 @@ namespace ConsoleSimulator
 
             AttackStub = new TroopStub(0, city);
             AttackStub.AddFormation(FormationType.Normal);
-            obj = new TroopObject(AttackStub);            
+            obj = new TroopObject(AttackStub);
             using (Concurrency.Current.Lock(city))
             {
                 city.Troops.Add(AttackStub);
@@ -120,11 +125,11 @@ namespace ConsoleSimulator
 
             TroopObject = new TroopObject(AttackStub) {X = city.X, Y = city.Y};
             TroopObject.BeginUpdate();
-            TroopObject.Stats = new TroopStats(Formula.Current.GetTroopRadius(AttackStub, null), Formula.Current.GetTroopSpeed(AttackStub));
+            TroopObject.Stats = new TroopStats(Formula.Current.GetTroopRadius(AttackStub, null),
+                                               Formula.Current.GetTroopSpeed(AttackStub));
             TroopObject.EndUpdate();
 
             city.Add(TroopObject);
-
         }
 
         public ITroopStub Local
@@ -213,7 +218,7 @@ namespace ConsoleSimulator
 
         public int Upkeep(UnitType type)
         {
-            return AttackStub[FormationType.Normal][(ushort)type]*city.Template[(ushort)type].Upkeep;
+            return AttackStub[FormationType.Normal][(ushort)type] * city.Template[(ushort)type].Upkeep;
         }
 
         public int Upkeep()

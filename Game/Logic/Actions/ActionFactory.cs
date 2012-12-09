@@ -6,11 +6,18 @@ namespace Game.Logic.Actions
     // TODO: Change this factory to use custom instance provider. Every method should just return IAction and the method name can be used to return the correct type. This will aid testing.
     public interface IActionFactory
     {
-        CityAttackChainAction CreateCityAttackChainAction(uint cityId, uint troopObjectId, uint targetCityId, uint targetStructureId, AttackMode mode);
+        CityAttackChainAction CreateCityAttackChainAction(uint cityId,
+                                                          uint troopObjectId,
+                                                          uint targetCityId,
+                                                          uint targetStructureId,
+                                                          AttackMode mode);
 
         StructureBuildActiveAction CreateStructureBuildActiveAction(uint cityId, ushort type, uint x, uint y, byte level);
 
-        ResourceSendActiveAction CreateResourceSendActiveAction(uint cityId, uint structureId, uint targetCityId, Resource resource);
+        ResourceSendActiveAction CreateResourceSendActiveAction(uint cityId,
+                                                                uint structureId,
+                                                                uint targetCityId,
+                                                                Resource resource);
 
         CityBattlePassiveAction CreateCityBattlePassiveAction(uint cityId);
 
@@ -18,17 +25,28 @@ namespace Game.Logic.Actions
 
         StarvePassiveAction CreateStarvePassiveAction(uint cityId);
 
-        ResourceBuyActiveAction CreateResourceBuyActiveAction(uint cityId, uint structureId, ushort price, ushort quantity, ResourceType resourceType);
+        ResourceBuyActiveAction CreateResourceBuyActiveAction(uint cityId,
+                                                              uint structureId,
+                                                              ushort price,
+                                                              ushort quantity,
+                                                              ResourceType resourceType);
 
         ResourceGatherActiveAction CreateResourceGatherActiveAction(uint cityId, uint objectId);
 
         CityEngageDefensePassiveAction CreateCityEngageDefensePassiveAction(uint cityId, uint troopObjectId);
 
-        CityEngageAttackPassiveAction CreateCityEngageAttackPassiveAction(uint cityId, uint troopObjectId, uint targetCityId, AttackMode mode);
+        CityEngageAttackPassiveAction CreateCityEngageAttackPassiveAction(uint cityId,
+                                                                          uint troopObjectId,
+                                                                          uint targetCityId,
+                                                                          AttackMode mode);
 
         StructureSelfDestroyPassiveAction CreateStructureSelfDestroyPassiveAction(uint cityId, uint objectId);
 
-        StructureChangePassiveAction CreateStructureChangePassiveAction(uint cityId, uint objectId, int seconds, ushort newType, byte newLvl);
+        StructureChangePassiveAction CreateStructureChangePassiveAction(uint cityId,
+                                                                        uint objectId,
+                                                                        int seconds,
+                                                                        ushort newType,
+                                                                        byte newLvl);
 
         TechnologyUpgradeActiveAction CreateTechnologyUpgradeActiveAction(uint cityId, uint structureId, uint techId);
 
@@ -44,29 +62,54 @@ namespace Game.Logic.Actions
 
         StructureDowngradePassiveAction CreateStructureDowngradePassiveAction(uint cityId, uint structureId);
 
-        ForestCampBuildActiveAction CreateForestCampBuildActiveAction(uint cityId, uint lumbermillId, uint forestId, ushort campType, byte labors);
+        ForestCampBuildActiveAction CreateForestCampBuildActiveAction(uint cityId,
+                                                                      uint lumbermillId,
+                                                                      uint forestId,
+                                                                      ushort campType,
+                                                                      byte labors);
 
         StructureUpgradeActiveAction CreateStructureUpgradeActiveAction(uint cityId, uint structureId);
 
         PropertyCreatePassiveAction CreatePropertyCreatePassiveAction();
 
-        ObjectRemovePassiveAction CreateObjectRemovePassiveAction(uint cityId, uint objectId, bool wasKilled, List<uint> cancelActions);
+        ObjectRemovePassiveAction CreateObjectRemovePassiveAction(uint cityId,
+                                                                  uint objectId,
+                                                                  bool wasKilled,
+                                                                  List<uint> cancelActions);
 
-        ResourceSellActiveAction CreateResourceSellActiveAction(uint cityId, uint structureId, ushort price, ushort quantity, ResourceType resourceType);
+        ResourceSellActiveAction CreateResourceSellActiveAction(uint cityId,
+                                                                uint structureId,
+                                                                ushort price,
+                                                                ushort quantity,
+                                                                ResourceType resourceType);
 
         ForestCampHarvestPassiveAction CreateForestCampHarvestPassiveAction(uint cityId, uint forestId);
 
-        CityDefenseChainAction CreateCityDefenseChainAction(uint cityId, uint troopObjectId, uint targetCityId, AttackMode mode);
+        CityDefenseChainAction CreateCityDefenseChainAction(uint cityId,
+                                                            uint troopObjectId,
+                                                            uint targetCityId,
+                                                            AttackMode mode);
 
-        StrongholdDefenseChainAction CreateStrongholdDefenseChainAction(uint cityId, uint troopObjectId, uint targetStrongholdId, AttackMode mode);
+        StrongholdDefenseChainAction CreateStrongholdDefenseChainAction(uint cityId,
+                                                                        uint troopObjectId,
+                                                                        uint targetStrongholdId,
+                                                                        AttackMode mode);
 
-        TroopMovePassiveAction CreateTroopMovePassiveAction(uint cityId, uint troopObjectId, uint x, uint y, bool isReturningHome, bool isAttacking);
+        TroopMovePassiveAction CreateTroopMovePassiveAction(uint cityId,
+                                                            uint troopObjectId,
+                                                            uint x,
+                                                            uint y,
+                                                            bool isReturningHome,
+                                                            bool isAttacking);
 
         StructureDowngradeActiveAction CreateStructureDowngradeActiveAction(uint cityId, uint structureId);
 
         StructureChangeActiveAction CreateStructureChangeActiveAction(uint cityId, uint structureId, uint type, byte lvl);
 
-        LaborMoveActiveAction CreateLaborMoveActiveAction(uint cityId, uint structureId, bool cityToStructure, ushort count);
+        LaborMoveActiveAction CreateLaborMoveActiveAction(uint cityId,
+                                                          uint structureId,
+                                                          bool cityToStructure,
+                                                          ushort count);
 
         UnitUpgradeActiveAction CreateUnitUpgradeActiveAction(uint cityId, uint structureId, ushort type);
 
@@ -76,14 +119,22 @@ namespace Game.Logic.Actions
 
         TribeContributeActiveAction CreateTribeContributeActiveAction(uint cityId, uint structureId, Resource resource);
 
-        StrongholdEngageGateAttackPassiveAction CreateStrongholdEngageGateAttackPassiveAction(uint cityId, uint troopObjectId, uint targetStrongholdId);
+        StrongholdEngageGateAttackPassiveAction CreateStrongholdEngageGateAttackPassiveAction(uint cityId,
+                                                                                              uint troopObjectId,
+                                                                                              uint targetStrongholdId);
 
-        StrongholdEngageMainAttackPassiveAction CreateStrongholdEngageMainAttackPassiveAction(uint cityId, uint troopObjectId, uint targetStrongholdId, AttackMode mode);
+        StrongholdEngageMainAttackPassiveAction CreateStrongholdEngageMainAttackPassiveAction(uint cityId,
+                                                                                              uint troopObjectId,
+                                                                                              uint targetStrongholdId,
+                                                                                              AttackMode mode);
 
         StrongholdGateBattlePassiveAction CreateStrongholdGateBattlePassiveAction(uint strongholdId);
 
         StrongholdMainBattlePassiveAction CreateStrongholdMainBattlePassiveAction(uint strongholdId);
 
-        StrongholdAttackChainAction CreateStrongholdAttackChainAction(uint cityId, uint troopObjectId, uint targetStrongholdId, AttackMode mode);
+        StrongholdAttackChainAction CreateStrongholdAttackChainAction(uint cityId,
+                                                                      uint troopObjectId,
+                                                                      uint targetStrongholdId,
+                                                                      AttackMode mode);
     }
 }

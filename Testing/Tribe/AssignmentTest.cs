@@ -34,15 +34,25 @@ namespace Testing.Tribe
             Concurrency.Current = new Mock<ILocker>().Object;
         }
 
+        public static IEnumerable<object[]> WhenSomeoneJoinsData
+        {
+            get
+            {
+                yield return new object[] {new[] {300, 150, 200}, targetTime.AddMinutes(-5)};
+                yield return new object[] {new[] {150, 300, 250}, targetTime.AddMinutes(-5)};
+                yield return new object[] {new[] {150, 300, 360}, targetTime.AddMinutes(-6)};
+            }
+        }
+
         public void Dispose()
         {
             Concurrency.Current = null;
         }
 
         /// <summary>
-        /// When an assignment is rescheduled for the first time
-        /// Then it should schedule itself at the proper time
-        /// And save itself
+        ///     When an assignment is rescheduled for the first time
+        ///     Then it should schedule itself at the proper time
+        ///     And save itself
         /// </summary>
         [Fact]
         public void WhenScheduled()
@@ -87,23 +97,13 @@ namespace Testing.Tribe
             assignment.Time.Should().Be(targetTime.AddMinutes(-5));
         }
 
-        public static IEnumerable<object[]> WhenSomeoneJoinsData
-        {
-            get
-            {
-                yield return new object[] {new[] {300, 150, 200}, targetTime.AddMinutes(-5)};
-                yield return new object[] {new[] {150, 300, 250}, targetTime.AddMinutes(-5)};
-                yield return new object[] {new[] {150, 300, 360}, targetTime.AddMinutes(-6)};
-            }
-        }
-
         /// <summary>
-        /// Given the assignment is already scheduled
-        /// When someone joins
-        /// Then it should remove itself from scheduler first 
-        /// And reschedule itself at the right time
-        /// And save itself
-        /// </summary>       
+        ///     Given the assignment is already scheduled
+        ///     When someone joins
+        ///     Then it should remove itself from scheduler first
+        ///     And reschedule itself at the right time
+        ///     And save itself
+        /// </summary>
         [Theory, PropertyData("WhenSomeoneJoinsData")]
         public void WhenSomeoneJoins(IEnumerable<int> moveTimes, DateTime expectedTime)
         {
@@ -180,10 +180,10 @@ namespace Testing.Tribe
 
             SystemClock.SetClock(startTime);
 
-
             troopObject.SetupGet(p => p.ObjectId).Returns(95);
 
-            gameObjectLocator.Setup(m => m.GetObjects(TARGET_X, TARGET_Y)).Returns(new List<ISimpleGameObject> {targetStructure.Object});
+            gameObjectLocator.Setup(m => m.GetObjects(TARGET_X, TARGET_Y))
+                             .Returns(new List<ISimpleGameObject> {targetStructure.Object});
 
             targetStructure.SetupGet(p => p.City).Returns(targetCity.Object);
 
@@ -232,9 +232,9 @@ namespace Testing.Tribe
         }
 
         /// <summary>
-        /// When an defensive assignment is rescheduled for the first time
-        /// Then it should schedule itself at the proper time
-        /// And save itself
+        ///     When an defensive assignment is rescheduled for the first time
+        ///     Then it should schedule itself at the proper time
+        ///     And save itself
         /// </summary>
         [Fact]
         public void WhenDefensiveAssignmentScheduled()
@@ -256,7 +256,8 @@ namespace Testing.Tribe
 
             troopObject.SetupGet(p => p.ObjectId).Returns(99);
 
-            gameObjectLocator.Setup(m => m.GetObjects(TARGET_X, TARGET_Y)).Returns(new List<ISimpleGameObject> {targetStructure.Object});
+            gameObjectLocator.Setup(m => m.GetObjects(TARGET_X, TARGET_Y))
+                             .Returns(new List<ISimpleGameObject> {targetStructure.Object});
 
             targetStructure.SetupGet(p => p.City).Returns(targetCity.Object);
 
@@ -272,7 +273,7 @@ namespace Testing.Tribe
             SystemClock.SetClock(startTime);
 
             // troop should be dispatched a minute later
-            formula.Setup(m => m.MoveTimeTotal(stub.Object, It.IsAny<int>(), true)).Returns(300);            
+            formula.Setup(m => m.MoveTimeTotal(stub.Object, It.IsAny<int>(), true)).Returns(300);
 
             // ReSharper disable RedundantAssignment
             ITroopObject outTroopObject = troopObject.Object;

@@ -18,14 +18,22 @@ namespace Game.Logic.Actions
     public class ResourceSellActiveAction : ScheduledActiveAction
     {
         private const int TRADE_SIZE = 100;
+
         private readonly uint cityId;
 
         private readonly ushort price;
+
         private readonly ushort quantity;
+
         private readonly ResourceType resourceType;
+
         private readonly uint structureId;
 
-        public ResourceSellActiveAction(uint cityId, uint structureId, ushort price, ushort quantity, ResourceType resourceType)
+        public ResourceSellActiveAction(uint cityId,
+                                        uint structureId,
+                                        ushort price,
+                                        ushort quantity,
+                                        ResourceType resourceType)
         {
             this.cityId = cityId;
             this.structureId = structureId;
@@ -35,13 +43,14 @@ namespace Game.Logic.Actions
         }
 
         public ResourceSellActiveAction(uint id,
-                                  DateTime beginTime,
-                                  DateTime nextTime,
-                                  DateTime endTime,
-                                  int workerType,
-                                  byte workerIndex,
-                                  ushort actionCount,
-                                  Dictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+                                        DateTime beginTime,
+                                        DateTime nextTime,
+                                        DateTime endTime,
+                                        int workerType,
+                                        byte workerIndex,
+                                        ushort actionCount,
+                                        Dictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
@@ -72,14 +81,16 @@ namespace Game.Logic.Actions
             IStructure structure;
 
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            {
                 return Error.ObjectNotFound;
+            }
 
             Market market;
-            Resource cost;            
+            Resource cost;
 
             if (!Formula.Current.MarketResourceSellable(structure).Contains(resourceType))
             {
-                return Error.ResourceNotTradable;                
+                return Error.ResourceNotTradable;
             }
 
             if (quantity <= 0 || quantity % TRADE_SIZE != 0 || quantity > Formula.Current.MarketTradeQuantity(structure))
@@ -106,10 +117,14 @@ namespace Game.Logic.Actions
             }
 
             if (!structure.City.Resource.HasEnough(cost))
+            {
                 return Error.ResourceNotEnough;
+            }
 
             if (!market.Sell(quantity, price))
+            {
                 return Error.MarketPriceChanged;
+            }
 
             structure.City.BeginUpdate();
             structure.City.Resource.Subtract(cost);
@@ -131,19 +146,25 @@ namespace Game.Logic.Actions
             InterruptCatchAll(wasKilled);
         }
 
-        private void InterruptCatchAll(bool wasKilled) {
+        private void InterruptCatchAll(bool wasKilled)
+        {
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city)) {
+            using (Concurrency.Current.Lock(cityId, out city))
+            {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 IStructure structure;
-                if (!city.TryGetStructure(structureId, out structure)) {
+                if (!city.TryGetStructure(structureId, out structure))
+                {
                     StateChange(ActionState.Failed);
                     return;
                 }
 
-                if (!wasKilled) {
+                if (!wasKilled)
+                {
                     city.BeginUpdate();
                     Resource resource = new Resource();
                     switch(resourceType)
@@ -161,7 +182,7 @@ namespace Game.Logic.Actions
                             Market.Iron.Consume(quantity);
                             break;
                     }
-                    
+
                     city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, resource));
                     city.EndUpdate();
                 }
@@ -176,7 +197,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 IStructure structure;
                 if (!city.TryGetStructure(structureId, out structure))
@@ -206,11 +229,11 @@ namespace Game.Logic.Actions
             {
                 return
                         XmlSerializer.Serialize(new[]
-                                                {
-                                                        new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId),
-                                                        new XmlKvPair("resource_type", resourceType.ToString()), new XmlKvPair("price", price),
-                                                        new XmlKvPair("quantity", quantity)
-                                                });
+                        {
+                                new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId),
+                                new XmlKvPair("resource_type", resourceType.ToString()), new XmlKvPair("price", price),
+                                new XmlKvPair("quantity", quantity)
+                        });
             }
         }
 

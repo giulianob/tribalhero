@@ -55,6 +55,7 @@ package src.Objects.Actions {
 		public static const actionCategory: Object = {
 			250: CATEGORY_ATTACK,
 			251: CATEGORY_DEFENSE,
+            252: CATEGORY_DEFENSE,
 			253: CATEGORY_ATTACK,
 			254: CATEGORY_DEFENSE			
 		};

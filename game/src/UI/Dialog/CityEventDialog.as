@@ -189,7 +189,7 @@
 				// Divide and multiply by 10 to truncate to 1 decimal place w/o rounding
 				lblApPoints.setText(StringHelper.localize("CITY_OVERVIEW_AP_POINTS_LABEL", Util.truncateNumber(city.ap)));
 				lblLabor.setText(simpleLabelText(StringHelper.localize("CITY_OVERVIEW_LABORERS_LABEL", city.resources.labor.getValue(), city.getBusyLaborCount()), false, false));
-				lblUpkeep.setText(simpleLabelText(city.resources.crop.getUpkeep().toString(), true, true));
+				lblUpkeep.setText(simpleLabelText((city.resources.crop.getUpkeep() / Constants.secondsPerUnit).toString(), true, true));
 				lblUpkeepMsg.setVisible(city.resources.crop.getRate() < city.resources.crop.getUpkeep());
 				lblAttackPoints.setText(StringHelper.localize("CITY_OVERVIEW_ATTACK_POINTS_LABEL", city.attackPoint));
 				lblDefensePoints.setText(StringHelper.localize("CITY_OVERVIEW_DEFENSE_POINTS_LABEL", city.defensePoint));

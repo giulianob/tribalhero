@@ -39,7 +39,7 @@ package src.UI.Components.TroopsDialogTable
 			super.setCellValue(value);
 			
 			var troopStub: TroopStub = value as TroopStub;		
-						
+			
 			var icon: Icon;
 			lblCountdown.setVisible(false);
 			
@@ -53,6 +53,12 @@ package src.UI.Components.TroopsDialogTable
 						lblCountdown.setVisible(true);
 						break;
 					}
+                    else if (Action.actionCategory[notification.type] == Action.CATEGORY_DEFENSE) {
+						icon = new AssetIcon(new ICON_SHIELD);
+						lblCountdown.setTime(notification.endTime);
+						lblCountdown.setVisible(true);
+						break;
+                    }
 				}
 			}
 			

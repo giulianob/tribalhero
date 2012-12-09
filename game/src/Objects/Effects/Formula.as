@@ -186,12 +186,13 @@
 			for each (var effect: EffectPrototype in effects) {
 				rateBonus = Math.min(rateBonus, (int)(effect.param1) / 10);
 			}
+            
 			if (effects.length > 1)
 				rateBonus *= Math.pow(0.92, effects.length - 1); // for every extra tribal gathering, you gain 10 % each
 			
 			var newMultiplier:Number = Math.min(2, 3 - laborTotal / 400);
             newMultiplier = Math.max(1,newMultiplier);
-			return (43200 / (( -6.845 * Math.log(laborTotal / 1.3 - 100) + 55) * newMultiplier)) * rateBonus;
+			return (43200 / (( -6.845 * Math.log(laborTotal / 1.3 - 100) + 55) * newMultiplier)) * rateBonus * Constants.secondsPerUnit;
 		}
 		
 		// Returns the new resource rate and accounts for any resource bonus

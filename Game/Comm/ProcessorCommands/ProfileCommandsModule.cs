@@ -1,7 +1,6 @@
 ﻿using System;
 using Game.Data;
 using Game.Data.Stronghold;
-using Game.Data.Tribe;
 using Game.Setup;
 using Game.Util.Locking;
 
@@ -20,7 +19,7 @@ namespace Game.Comm.ProcessorCommands
         {
             processor.RegisterCommand(Command.ProfileByType, ProfileByType);
         }
-    
+
         private void ProfileByType(Session session, Packet packet)
         {
             var reply = new Packet(packet);
@@ -62,7 +61,7 @@ namespace Game.Comm.ProcessorCommands
                     if (stronghold == null)
                     {
                         ReplyError(session, reply, Error.ObjectNotFound);
-                        return;                        
+                        return;
                     }
 
                     PacketHelper.AddStrongholdProfileToPacket(session, stronghold, reply);

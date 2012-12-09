@@ -13,12 +13,6 @@ namespace Game.Logic.Notifications
 {
     public class NotificationManager : IEnumerable<Notification>
     {
-        public event EventHandler<NotificationEventArgs> NotificationAdded = (sender, args) => { };
-
-        public event EventHandler<NotificationEventArgs> NotificationRemoved = (sender, args) => { };
-
-        public event EventHandler<NotificationEventArgs> NotificationUpdated = (sender, args) => { };
- 
         private readonly IDbManager dbManager;
 
         private readonly List<Notification> notifications = new List<Notification>();
@@ -32,6 +26,12 @@ namespace Game.Logic.Notifications
             worker.ActionRemoved += WorkerOnActionRemoved;
         }
 
+        public event EventHandler<NotificationEventArgs> NotificationAdded = (sender, args) => { };
+
+        public event EventHandler<NotificationEventArgs> NotificationRemoved = (sender, args) => { };
+
+        public event EventHandler<NotificationEventArgs> NotificationUpdated = (sender, args) => { };
+
         private void WorkerOnActionRemoved(GameAction stub, ActionState state)
         {
             PassiveAction passiveAction = stub as PassiveAction;
@@ -41,32 +41,6 @@ namespace Game.Logic.Notifications
                 Remove(passiveAction);
             }
         }
-
-        #region Properties
-
-        public ushort Count
-        {
-            get
-            {
-                return (ushort)notifications.Count;
-            }
-        }
-
-        #endregion
-
-        #region IEnumerable<Notification> Members
-
-        public IEnumerator<Notification> GetEnumerator()
-        {
-            return notifications.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return notifications.GetEnumerator();
-        }
-
-        #endregion
 
         public void Add(IGameObject obj, PassiveAction action, params INotificationOwner[] targetSubscriptions)
         {
@@ -104,7 +78,9 @@ namespace Game.Logic.Notifications
             lock (objLock)
             {
                 if (notifications.Contains(notification))
+                {
                     return false;
+                }
 
                 notifications.Add(notification);
 
@@ -120,7 +96,8 @@ namespace Game.Logic.Notifications
             {
                 var notificationsToRemove = notifications.Where(notification => notification.Equals(action)).ToList();
 
-                foreach (var notification in notificationsToRemove) {
+                foreach (var notification in notificationsToRemove)
+                {
                     RemoveNotification(notification);
                 }
             }
@@ -140,19 +117,25 @@ namespace Game.Logic.Notifications
         private void WorkerActionRescheduled(GameAction action, ActionState state)
         {
             if (!(action is PassiveAction))
+            {
                 return;
+            }
 
             lock (objLock)
             {
                 Notification notification = notifications.Find(other => other.Equals(action as PassiveAction));
 
                 if (notification == null)
+                {
                     return;
+                }
 
                 UpdateNotification(notification);
 
                 foreach (var city in notification.Subscriptions)
+                {
                     city.Notifications.UpdateNotification(notification);
+                }
             }
         }
 
@@ -164,8 +147,9 @@ namespace Game.Logic.Notifications
                 notification = notifications.Find(other => other.Equals(action));
 
                 if (notification == null)
+                {
                     return;
-
+                }
             }
 
             foreach (var city in notification.Subscriptions)
@@ -178,7 +162,7 @@ namespace Game.Logic.Notifications
                 RemoveNotificationsForAction(action);
                 dbManager.Delete(notification);
             }
-        }    
+        }
 
         public bool TryGetValue(ICity city, ushort actionId, out Notification notification)
         {
@@ -186,5 +170,31 @@ namespace Game.Logic.Notifications
 
             return notification != null;
         }
+
+        #region Properties
+
+        public ushort Count
+        {
+            get
+            {
+                return (ushort)notifications.Count;
+            }
+        }
+
+        #endregion
+
+        #region IEnumerable<Notification> Members
+
+        public IEnumerator<Notification> GetEnumerator()
+        {
+            return notifications.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return notifications.GetEnumerator();
+        }
+
+        #endregion
     }
 }

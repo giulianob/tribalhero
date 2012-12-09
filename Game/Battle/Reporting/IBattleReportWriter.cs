@@ -20,7 +20,11 @@ namespace Game.Battle.Reporting
 
         void SnapCombatObject(uint troopId, ICombatObject co);
 
-        void SnapLootedResources(BattleOwner owner, uint groupId, uint battleId, Resource lootResource, Resource bonusResource);
+        void SnapLootedResources(BattleOwner owner,
+                                 uint groupId,
+                                 uint battleId,
+                                 Resource lootResource,
+                                 Resource bonusResource);
 
         void SnapBattleAccess(uint battleId, BattleOwner owner, byte troopId, uint groupId, bool isAttacker);
 

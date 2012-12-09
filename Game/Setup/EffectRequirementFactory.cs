@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using Common;
 using Game.Logic;
-using Game.Util;
 
 #endregion
 
@@ -13,24 +12,34 @@ namespace Game.Setup
 {
     public class EffectRequirementFactory
     {
-        private Dictionary<uint, EffectRequirementContainer> dict;
+        private readonly Dictionary<uint, EffectRequirementContainer> dict;
 
         public EffectRequirementFactory(string filename)
-        {            
+        {
             dict = new Dictionary<uint, EffectRequirementContainer>();
 
-            using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
+            using (
+                    var reader =
+                            new CsvReader(
+                                    new StreamReader(new FileStream(filename,
+                                                                    FileMode.Open,
+                                                                    FileAccess.Read,
+                                                                    FileShare.ReadWrite))))
             {
                 String[] toks;
                 var col = new Dictionary<string, int>();
                 for (int i = 0; i < reader.Columns.Length; ++i)
+                {
                     col.Add(reader.Columns[i], i);
+                }
 
                 Type type = typeof(RequirementFormula);
                 while ((toks = reader.ReadRow()) != null)
                 {
                     if (toks[0].Length <= 0)
+                    {
                         continue;
+                    }
 
                     uint index = uint.Parse(toks[col["Id"]]);
                     EffectRequirementContainer container;
@@ -45,9 +54,13 @@ namespace Game.Setup
                     for (int i = 2; i < toks.Length; ++i)
                     {
                         if (toks[i].Contains("="))
+                        {
                             parms[i - 2] = toks[i].Split('=')[1];
+                        }
                         else
+                        {
                             parms[i - 2] = toks[i];
+                        }
                     }
                     req.Parms = parms;
                     req.Method = type.GetMethod(toks[col["Method"]]);
@@ -61,10 +74,14 @@ namespace Game.Setup
         public EffectRequirementContainer GetEffectRequirementContainer(uint index)
         {
             if (dict == null)
+            {
                 return null;
+            }
             EffectRequirementContainer tmp;
             if (dict.TryGetValue(index, out tmp))
+            {
                 return tmp;
+            }
             return new EffectRequirementContainer();
         }
     }

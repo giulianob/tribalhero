@@ -9,10 +9,12 @@ namespace Game.Util
     public class IdGenerator
     {
         private readonly BitArray bitarray;
+
         private readonly bool fetchLowest;
+
         private readonly int offset;
 
-        private int start = 1;        
+        private int start = 1;
 
         public IdGenerator(int max, bool fetchLowest = false, int startValue = 0)
         {
@@ -30,12 +32,18 @@ namespace Game.Util
                 {
                     int idx;
                     if (fetchLowest)
+                    {
                         idx = i;
+                    }
                     else
-                        idx = (i + start)%bitarray.Length;
+                    {
+                        idx = (i + start) % bitarray.Length;
+                    }
 
                     if (idx == 0)
+                    {
                         continue;
+                    }
 
                     if (bitarray.Get(idx) == false)
                     {

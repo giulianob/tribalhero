@@ -32,15 +32,15 @@ namespace Game.Battle.Reporting
             return 0;
         }
 
-        public void SnapBattleReportCityView(uint cityId, byte troopId, uint battleId, uint groupId, bool isAttacker, uint enterBattleReportId)
-        {
-        }
-
         public void SnapCombatObject(uint troopId, ICombatObject co)
         {
         }
 
-        public void SnapLootedResources(BattleOwner owner, uint groupId, uint battleId, Resource lootResource, Resource bonusResource)
+        public void SnapLootedResources(BattleOwner owner,
+                                        uint groupId,
+                                        uint battleId,
+                                        Resource lootResource,
+                                        Resource bonusResource)
         {
         }
 
@@ -50,7 +50,15 @@ namespace Game.Battle.Reporting
 
         public void SnapTribeToBattle(uint battleId, uint tribeId, bool isAttacker)
         {
-            
+        }
+
+        public void SnapBattleReportCityView(uint cityId,
+                                             byte troopId,
+                                             uint battleId,
+                                             uint groupId,
+                                             bool isAttacker,
+                                             uint enterBattleReportId)
+        {
         }
     }
 }

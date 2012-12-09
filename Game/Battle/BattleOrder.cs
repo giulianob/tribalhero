@@ -10,23 +10,31 @@ using Game.Battle.CombatObjects;
 namespace Game.Battle
 {
     /// <summary>
-    /// Manages the order of the attack. This implementation simply
-    /// returns the next unit in the combat list that hasnt participated
-    /// in the round. It doesn't care if its the same group or not.
+    ///     Manages the order of the attack. This implementation simply
+    ///     returns the next unit in the combat list that hasnt participated
+    ///     in the round. It doesn't care if its the same group or not.
     /// </summary>
     public class BattleOrder
     {
         /// <summary>
-        /// Returns the next object from the primary group that should attack.
-        /// If primary group has no one able to attack, it will look into the secondary group instead.
+        ///     Returns the next object from the primary group that should attack.
+        ///     If primary group has no one able to attack, it will look into the secondary group instead.
         /// </summary>
         /// <returns>True if got an object from the current round. False if had to look into next round.</returns>
-        public bool NextObject(uint round, IEnumerable<ICombatGroup> attacker, IEnumerable<ICombatGroup> defender, BattleManager.BattleSide sideAttacking, out ICombatObject outCombatObject, out ICombatGroup outCombatGroup, out BattleManager.BattleSide foundInGroup)
+        public bool NextObject(uint round,
+                               IEnumerable<ICombatGroup> attacker,
+                               IEnumerable<ICombatGroup> defender,
+                               BattleManager.BattleSide sideAttacking,
+                               out ICombatObject outCombatObject,
+                               out ICombatGroup outCombatGroup,
+                               out BattleManager.BattleSide foundInGroup)
         {
             var offensiveCombatList = sideAttacking == BattleManager.BattleSide.Attack ? attacker : defender;
             var defensiveCombatList = sideAttacking == BattleManager.BattleSide.Attack ? defender : attacker;
             var offensiveSide = sideAttacking;
-            var defensiveSide = sideAttacking == BattleManager.BattleSide.Attack ? BattleManager.BattleSide.Defense : BattleManager.BattleSide.Attack;
+            var defensiveSide = sideAttacking == BattleManager.BattleSide.Attack
+                                        ? BattleManager.BattleSide.Defense
+                                        : BattleManager.BattleSide.Attack;
 
             // Look into offenside combat list first
             ICombatObject outCombatObjectAttacker;
@@ -56,7 +64,7 @@ namespace Game.Battle
             {
                 foundInGroup = offensiveSide;
                 outCombatGroup = outCombatGroupAttacker;
-                outCombatObject = outCombatObjectAttacker;                
+                outCombatObject = outCombatObjectAttacker;
             }
             else if (outCombatObjectDefender != null)
             {
@@ -64,7 +72,7 @@ namespace Game.Battle
                 outCombatGroup = outCombatGroupDefender;
                 outCombatObject = outCombatObjectDefender;
             }
-            // If this happens then it means there is no one in the battle or the battle is prolly over
+                    // If this happens then it means there is no one in the battle or the battle is prolly over
             else
             {
                 outCombatGroup = null;
@@ -76,7 +84,10 @@ namespace Game.Battle
             return false;
         }
 
-        private bool NextObjectFromList(uint round, IEnumerable<ICombatGroup> combatGroups, out ICombatObject outObj, out ICombatGroup outGroup)
+        private bool NextObjectFromList(uint round,
+                                        IEnumerable<ICombatGroup> combatGroups,
+                                        out ICombatObject outObj,
+                                        out ICombatGroup outGroup)
         {
             // Find any objects that are still in the current round
             foreach (ICombatGroup combatGroup in combatGroups)

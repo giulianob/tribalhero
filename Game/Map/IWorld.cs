@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using Game.Battle;
 using Game.Data;
-using Game.Data.Stronghold;
-using Game.Data.Tribe;
 using Game.Logic.Procedures;
 
 namespace Game.Map
@@ -32,9 +30,9 @@ namespace Game.Map
 
         void AfterDbLoaded(Procedure procedure);
 
-        bool FindStrongholdId(string name, out uint strongholdId);        
+        bool FindStrongholdId(string name, out uint strongholdId);
 
-        bool FindPlayerId(string name, out uint playerId);        
+        bool FindPlayerId(string name, out uint playerId);
 
         bool CityNameTaken(string name);
     }

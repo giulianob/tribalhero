@@ -16,15 +16,18 @@ namespace Game.Comm
 {
     class StrongholdCommandLineModule : CommandLineModule
     {
-        private readonly ITribeManager tribeManager;
-
-        private readonly IWorld world;
-
         private readonly ILocker locker;
 
         private readonly IStrongholdManager strongholdManager;
 
-        public StrongholdCommandLineModule(ITribeManager tribeManager, IWorld world, ILocker locker, IStrongholdManager strongholdManager)
+        private readonly ITribeManager tribeManager;
+
+        private readonly IWorld world;
+
+        public StrongholdCommandLineModule(ITribeManager tribeManager,
+                                           IWorld world,
+                                           ILocker locker,
+                                           IStrongholdManager strongholdManager)
         {
             this.tribeManager = tribeManager;
             this.world = world;
@@ -43,33 +46,38 @@ namespace Game.Comm
             bool help = false;
             string strongholdName = string.Empty;
             string cityName = string.Empty;
-            
+
             try
             {
                 var p = new OptionSet
-                    {
-                        { "?|help|h", v => help = true }, 
-                        { "stronghold=", v => strongholdName = v.TrimMatchingQuotes()},
-                        { "city=", v => cityName = v.TrimMatchingQuotes()},
-                    };
+                {
+                        {"?|help|h", v => help = true},
+                        {"stronghold=", v => strongholdName = v.TrimMatchingQuotes()},
+                        {"city=", v => cityName = v.TrimMatchingQuotes()},
+                };
                 p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }
 
             if (help || string.IsNullOrEmpty(strongholdName) || string.IsNullOrEmpty(cityName))
+            {
                 return "StrongholdAddTroop --stronghold=tribe_name --city=city_name";
-
+            }
 
             uint cityId;
             if (!world.Cities.FindCityId(cityName, out cityId))
+            {
                 return "City not found";
+            }
 
             ICity city;
             if (!world.TryGetObjects(cityId, out city))
+            {
                 return "City not found";
+            }
 
             IStronghold stronghold;
             if (!strongholdManager.TryGetStronghold(strongholdName, out stronghold))
@@ -111,29 +119,34 @@ namespace Game.Comm
             try
             {
                 var p = new OptionSet
-                    {
-                        { "?|help|h", v => help = true }, 
-                        { "stronghold=", v => strongholdName = v.TrimMatchingQuotes()},
-                        { "tribe=", v => tribeName = v.TrimMatchingQuotes()},
-                    };
+                {
+                        {"?|help|h", v => help = true},
+                        {"stronghold=", v => strongholdName = v.TrimMatchingQuotes()},
+                        {"tribe=", v => tribeName = v.TrimMatchingQuotes()},
+                };
                 p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }
 
             if (help || string.IsNullOrEmpty(strongholdName) || string.IsNullOrEmpty(tribeName))
+            {
                 return "StrongholdTransfer --stronghold=tribe_name --tribe=tribe_name";
-
+            }
 
             uint tribeId;
             if (!tribeManager.FindTribeId(tribeName, out tribeId))
+            {
                 return "Tribe not found";
+            }
 
             ITribe tribe;
             if (!world.TryGetObjects(tribeId, out tribe))
+            {
                 return "Tribe not found";
+            }
 
             IStronghold stronghold;
             if (!strongholdManager.TryGetStronghold(strongholdName, out stronghold))
@@ -141,7 +154,7 @@ namespace Game.Comm
                 return "Stronghold not found";
             }
 
-            using (locker.Lock(tribe,stronghold))
+            using (locker.Lock(tribe, stronghold))
             {
                 strongholdManager.TransferTo(stronghold, tribe);
             }

@@ -10,12 +10,15 @@ namespace Game.Util.Locking
 {
     public class DefaultLocker : ILocker
     {
-        private readonly DefaultMultiObjectLock.Factory multiObjectLockFactory;
         private readonly CallbackLock.Factory callbackLockFactory;
 
         private readonly IGameObjectLocator locator;
 
-        public DefaultLocker(DefaultMultiObjectLock.Factory multiObjectLockFactory, CallbackLock.Factory callbackLockFactory, IGameObjectLocator locator)
+        private readonly DefaultMultiObjectLock.Factory multiObjectLockFactory;
+
+        public DefaultLocker(DefaultMultiObjectLock.Factory multiObjectLockFactory,
+                             CallbackLock.Factory callbackLockFactory,
+                             IGameObjectLocator locator)
         {
             this.multiObjectLockFactory = multiObjectLockFactory;
             this.callbackLockFactory = callbackLockFactory;
@@ -51,9 +54,11 @@ namespace Game.Util.Locking
             var players = new ILockable[playerIds.Length];
 
             int i = 0;
-            foreach (var playerId in playerIds) {
+            foreach (var playerId in playerIds)
+            {
                 IPlayer player;
-                if (!locator.TryGetObjects(playerId, out player)) {
+                if (!locator.TryGetObjects(playerId, out player))
+                {
                     result = null;
                     return null;
                 }
@@ -90,21 +95,27 @@ namespace Game.Util.Locking
                 tribe = null;
                 return null;
             }
-           
-            try {
+
+            try
+            {
                 tribe = player.Tribesman.Tribe;
 
-                if (!player.Tribesman.Tribe.IsOwner(player)) {
+                if (!player.Tribesman.Tribe.IsOwner(player))
+                {
                     return Lock(player, player.Tribesman.Tribe);
                 }
-                
+
                 return Lock(player);
-            } catch (LockException) {
+            }
+            catch(LockException)
+            {
                 throw;
-            } catch (Exception) {
+            }
+            catch(Exception)
+            {
                 tribe = null;
                 return null;
-            }            
+            }
         }
 
         public IMultiObjectLock Lock(uint cityId, out ICity city)
@@ -139,10 +150,19 @@ namespace Game.Util.Locking
             return lck;
         }
 
+        public CallbackLock Lock(CallbackLock.CallbackLockHandler lockHandler,
+                                 object[] lockHandlerParams,
+                                 params ILockable[] baseLocks)
+        {
+            return callbackLockFactory().Lock(lockHandler, lockHandlerParams, baseLocks);
+        }
+
         private IMultiObjectLock TryGetCity(uint cityId, out ICity city)
         {
             if (!locator.TryGetObjects(cityId, out city))
+            {
                 return null;
+            }
 
             try
             {
@@ -162,7 +182,9 @@ namespace Game.Util.Locking
         private IMultiObjectLock TryGetStronghold(uint strongholdId, out IStronghold stronghold)
         {
             if (!locator.TryGetObjects(strongholdId, out stronghold))
+            {
                 return null;
+            }
 
             try
             {
@@ -182,7 +204,9 @@ namespace Game.Util.Locking
         private IMultiObjectLock TryGetPlayer(uint playerId, out IPlayer player)
         {
             if (!locator.TryGetObjects(playerId, out player))
+            {
                 return null;
+            }
 
             try
             {
@@ -202,13 +226,20 @@ namespace Game.Util.Locking
         private IMultiObjectLock TryGetTribe(uint tribeId, out ITribe tribe)
         {
             if (!locator.TryGetObjects(tribeId, out tribe))
+            {
                 return null;
+            }
 
-            try {
+            try
+            {
                 return Lock(tribe);
-            } catch (LockException) {
+            }
+            catch(LockException)
+            {
                 throw;
-            } catch (Exception) {
+            }
+            catch(Exception)
+            {
                 tribe = null;
                 return null;
             }
@@ -221,7 +252,9 @@ namespace Game.Util.Locking
             var lck = TryGetCity(cityId, out city);
 
             if (lck == null)
+            {
                 return null;
+            }
 
             city.TryGetStructure(objectId, out obj);
 
@@ -235,7 +268,9 @@ namespace Game.Util.Locking
             var lck = TryGetCity(cityId, out city);
 
             if (lck == null)
+            {
                 return null;
+            }
 
             if (!city.TryGetTroop(objectId, out obj))
             {
@@ -254,24 +289,27 @@ namespace Game.Util.Locking
             tribe = null;
 
             if (!locator.TryGetObjects(cityId, out city))
+            {
                 return null;
+            }
 
             var lck = callbackLockFactory().Lock((custom) =>
                 {
                     ICity cityParam = (ICity)custom[0];
 
-                    return !cityParam.Owner.IsInTribe ? new ILockable[] {} : new ILockable[] { cityParam.Owner.Tribesman.Tribe };
-                }, new object[] { city }, city);
+                    return !cityParam.Owner.IsInTribe
+                                   ? new ILockable[] {}
+                                   : new ILockable[] {cityParam.Owner.Tribesman.Tribe};
+                },
+                                                 new object[] {city},
+                                                 city);
 
             if (city.Owner.IsInTribe)
+            {
                 tribe = city.Owner.Tribesman.Tribe;
+            }
 
             return lck;
-        }
-    
-        public CallbackLock Lock(CallbackLock.CallbackLockHandler lockHandler, object[] lockHandlerParams, params ILockable[] baseLocks)
-        {
-            return callbackLockFactory().Lock(lockHandler, lockHandlerParams, baseLocks);
         }
     }
 }

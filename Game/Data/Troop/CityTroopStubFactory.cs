@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Game.Data.Troop
+﻿namespace Game.Data.Troop
 {
     public class CityTroopStubFactory : ITroopStubFactory
     {
-        private ICity City { get; set; }
-
         public CityTroopStubFactory(ICity city)
         {
             City = city;
         }
+
+        private ICity City { get; set; }
 
         public TroopStub CreateTroopStub(byte troopId)
         {

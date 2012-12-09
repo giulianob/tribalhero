@@ -12,26 +12,11 @@ namespace Game.Battle.CombatGroups
     {
         public delegate void CombatGroupChange(ICombatGroup group, ICombatObject combatObject);
 
-        public event CombatGroupChange CombatObjectAdded = delegate { };
-
-        public event CombatGroupChange CombatObjectRemoved = delegate { };
-
         protected readonly uint BattleId;
-
-        public virtual uint Id { get; private set; }
-
-        public abstract byte TroopId { get; }
-
-        public abstract Resource GroupLoot { get; }
-
-        public abstract BattleOwner Owner { get; }
-
-        public abstract ITribe Tribe { get; }
 
         [Obsolete("For testing only", true)]
         protected CombatGroup()
         {
-            
         }
 
         protected CombatGroup(uint battleId, uint id, IDbManager manager)
@@ -43,21 +28,30 @@ namespace Game.Battle.CombatGroups
             BattleId = battleId;
         }
 
-        private void ObjectRemoved(PersistableObjectList<ICombatObject> list, ICombatObject combatObject)
-        {
-            CombatObjectRemoved(this, combatObject);
-        }
+        public event CombatGroupChange CombatObjectAdded = delegate { };
 
-        private void ObjectAdded(PersistableObjectList<ICombatObject> persistableObjectList, ICombatObject combatObject)
-        {
-            combatObject.GroupId = Id;
-            CombatObjectAdded(this, combatObject);
-        }
+        public event CombatGroupChange CombatObjectRemoved = delegate { };
+
+        public virtual uint Id { get; private set; }
+
+        public abstract byte TroopId { get; }
+
+        public abstract Resource GroupLoot { get; }
+
+        public abstract BattleOwner Owner { get; }
+
+        public abstract ITribe Tribe { get; }
 
         public bool IsDead()
         {
             return BackingList.All(combatObject => combatObject.IsDead);
         }
+
+        public abstract int Hash { get; }
+
+        public abstract object Lock { get; }
+
+        public abstract bool BelongsTo(IPlayer player);
 
         #region Persistance
 
@@ -73,11 +67,15 @@ namespace Game.Battle.CombatGroups
 
         #endregion
 
-        public abstract int Hash { get; }
+        private void ObjectRemoved(PersistableObjectList<ICombatObject> list, ICombatObject combatObject)
+        {
+            CombatObjectRemoved(this, combatObject);
+        }
 
-        public abstract object Lock { get; }
-
-        public abstract bool BelongsTo(IPlayer player);
-
-    }    
+        private void ObjectAdded(PersistableObjectList<ICombatObject> persistableObjectList, ICombatObject combatObject)
+        {
+            combatObject.GroupId = Id;
+            CombatObjectAdded(this, combatObject);
+        }
+    }
 }

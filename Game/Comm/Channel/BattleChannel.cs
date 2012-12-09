@@ -1,6 +1,5 @@
 ﻿#region
 
-using System;
 using Game.Battle;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
@@ -31,7 +30,10 @@ namespace Game.Comm.Channel
             battleManager.ExitTurn += BattleManagerOnExitTurn;
         }
 
-        private void BattleManagerOnExitTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, int turn)
+        private void BattleManagerOnExitTurn(IBattleManager battle,
+                                             ICombatList attackers,
+                                             ICombatList defenders,
+                                             int turn)
         {
             var properties = battle.ListProperties();
             if (properties.Count == 0)
@@ -52,7 +54,10 @@ namespace Game.Comm.Channel
             return packet;
         }
 
-        private void BattleManagerOnGroupUnitAdded(IBattleManager battle, BattleManager.BattleSide combatObjectSide, ICombatGroup combatGroup, ICombatObject combatObject)
+        private void BattleManagerOnGroupUnitAdded(IBattleManager battle,
+                                                   BattleManager.BattleSide combatObjectSide,
+                                                   ICombatGroup combatGroup,
+                                                   ICombatObject combatObject)
         {
             var packet = CreatePacket(battle, Command.BattleGroupUnitAdded);
             packet.AddUInt32(combatGroup.Id);
@@ -60,7 +65,10 @@ namespace Game.Comm.Channel
             Global.Channel.Post(channelName, packet);
         }
 
-        private void BattleManagerOnGroupUnitRemoved(IBattleManager battle, BattleManager.BattleSide combatObjectSide, ICombatGroup combatGroup, ICombatObject combatObject)
+        private void BattleManagerOnGroupUnitRemoved(IBattleManager battle,
+                                                     BattleManager.BattleSide combatObjectSide,
+                                                     ICombatGroup combatGroup,
+                                                     ICombatObject combatObject)
         {
             var packet = CreatePacket(battle, Command.BattleGroupUnitRemoved);
             packet.AddUInt32(combatGroup.Id);
@@ -85,7 +93,7 @@ namespace Game.Comm.Channel
         }
 
         private void BattleReinforceDefender(IBattleManager battle, ICombatGroup combatGroup)
-        {            
+        {
             var packet = CreatePacket(battle, Command.BattleReinforceDefender);
             PacketHelper.AddToPacket(combatGroup, packet);
             Global.Channel.Post(channelName, packet);
@@ -98,21 +106,30 @@ namespace Game.Comm.Channel
             Global.Channel.Post(channelName, packet);
         }
 
-        private void BattleSkippedAttacker(IBattleManager battle, BattleManager.BattleSide objSide, ICombatGroup combatGroup, ICombatObject source)
+        private void BattleSkippedAttacker(IBattleManager battle,
+                                           BattleManager.BattleSide objSide,
+                                           ICombatGroup combatGroup,
+                                           ICombatObject source)
         {
             // Don't inform client for objs that simply never attack
             if (source.Stats.Atk == 0)
             {
                 return;
             }
-            
+
             var packet = CreatePacket(battle, Command.BattleSkipped);
             packet.AddUInt32(combatGroup.Id);
             packet.AddUInt32(source.Id);
             Global.Channel.Post(channelName, packet);
         }
 
-        private void BattleActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatGroup attackerGroup, ICombatObject source, ICombatGroup targetGroup, ICombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battle,
+                                          BattleManager.BattleSide attackingSide,
+                                          ICombatGroup attackerGroup,
+                                          ICombatObject source,
+                                          ICombatGroup targetGroup,
+                                          ICombatObject target,
+                                          decimal damage)
         {
             var packet = CreatePacket(battle, Command.BattleAttack);
             packet.AddByte((byte)attackingSide);

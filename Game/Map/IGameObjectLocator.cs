@@ -9,6 +9,8 @@ namespace Game.Map
 {
     public interface IGameObjectLocator
     {
+        List<ISimpleGameObject> this[uint x, uint y] { get; }
+
         bool TryGetObjects(uint cityId, out ICity city);
 
         bool TryGetObjects(uint playerId, out IPlayer player);
@@ -24,8 +26,6 @@ namespace Game.Map
         bool TryGetObjects(uint cityId, uint troopObjectId, out ICity city, out ITroopObject troopObject);
 
         bool TryGetObjects(uint cityId, out ICity city, out ITribe tribe);
-
-        List<ISimpleGameObject> this[uint x, uint y] { get; }
 
         List<ISimpleGameObject> GetObjects(uint x, uint y);
 

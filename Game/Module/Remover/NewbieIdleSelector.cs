@@ -10,11 +10,7 @@ namespace Game.Module.Remover
 
         public IEnumerable<uint> GetPlayerIds()
         {
-            using (
-                    var reader =
-                            DbPersistance.Current.ReaderQuery(
-                                                              string.Format(
-                                                                            @"
+            using (var reader = DbPersistance.Current.ReaderQuery(string.Format(@"
                                                                                 SELECT DISTINCT players.id player_id 
                                                                                 FROM   players 
                                                                                         INNER JOIN cities 
@@ -26,8 +22,10 @@ namespace Game.Module.Remover
                                                                                             FROM   cities c 
                                                                                             WHERE  c.player_id = players.id 
                                                                                             GROUP  BY c.player_id) = 1 
-                                                                                ORDER  BY players.id ASC "),
-                                                              new DbColumn[] {}))
+                                                                                ORDER  BY players.id ASC "), new DbColumn
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             [
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ]
+            {}))
             {
                 while (reader.Read())
                 {

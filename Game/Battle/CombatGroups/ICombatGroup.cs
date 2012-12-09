@@ -6,7 +6,7 @@ using Persistance;
 
 namespace Game.Battle.CombatGroups
 {
-    public interface ICombatGroup: IPersistableObjectList<ICombatObject>, IPersistableObject, ILockable
+    public interface ICombatGroup : IPersistableObjectList<ICombatObject>, IPersistableObject, ILockable
     {
         uint Id { get; }
 
@@ -23,6 +23,7 @@ namespace Game.Battle.CombatGroups
         bool BelongsTo(IPlayer player);
 
         event CombatGroup.CombatGroupChange CombatObjectAdded;
+
         event CombatGroup.CombatGroupChange CombatObjectRemoved;
     }
 }

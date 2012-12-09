@@ -32,7 +32,7 @@ namespace Game.Comm.ProcessorCommands
                 type = (Chat.ChatType)packet.GetByte();
                 message = packet.GetString().Trim();
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -41,7 +41,7 @@ namespace Game.Comm.ProcessorCommands
             if (string.IsNullOrEmpty(message) || message.Length > 500)
             {
                 ReplyError(session, packet, Error.ChatMessageTooLong);
-                return;                
+                return;
             }
 
             Packet chatPacket;
@@ -50,7 +50,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player))
             {
-                switch (type)
+                switch(type)
                 {
                     case Module.Chat.ChatType.Tribe:
                         if (session.Player.Tribesman == null)
@@ -71,8 +71,9 @@ namespace Game.Comm.ProcessorCommands
                         }
 
                         // Flood chat protection
-                        int secondsFromLastMessage = (int)SystemClock.Now.Subtract(session.Player.ChatLastMessage).TotalSeconds;
-                        
+                        int secondsFromLastMessage =
+                                (int)SystemClock.Now.Subtract(session.Player.ChatLastMessage).TotalSeconds;
+
                         if (secondsFromLastMessage <= 10)
                         {
                             session.Player.ChatFloodCount++;
@@ -101,7 +102,11 @@ namespace Game.Comm.ProcessorCommands
                         return;
                 }
 
-                writer.WriteLine(string.Format("[{0} {1}] {2}:{3}", SystemClock.Now, channel, session.Player.Name, message));                
+                writer.WriteLine(string.Format("[{0} {1}] {2}:{3}",
+                                               SystemClock.Now,
+                                               channel,
+                                               session.Player.Name,
+                                               message));
 
                 chatPacket = new Packet(Command.Chat);
                 chatPacket.AddByte((byte)type);

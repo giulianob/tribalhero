@@ -15,40 +15,41 @@ using Persistance;
 
 namespace Game.Data.Stronghold
 {
-        
     class Stronghold : SimpleGameObject, IStronghold
     {
-        private readonly IDbManager dbManager;
-
         public const string DB_TABLE = "strongholds";
 
-        public event EventHandler<EventArgs> GateStatusChanged = (sender, args) => { }; 
+        private readonly IDbManager dbManager;
+
+        private ITribe gateOpenTo;
+
+        private ITribe tribe;
+
+        public ushort Radius { get; private set; }
+
+        public event EventHandler<EventArgs> GateStatusChanged = (sender, args) => { };
 
         public uint Id { get; private set; }
 
         public string Name { get; private set; }
 
-        public ushort Radius { get; private set; }
-
         public StrongholdState StrongholdState { get; set; }
-        
+
         public decimal Gate { get; set; }
 
         public decimal VictoryPointRate
         {
             get
             {
-                return (StrongholdState == StrongholdState.Occupied ? (decimal)(DateTime.UtcNow.Subtract(DateOccupied).TotalDays / 2 + 10) : 0) * Lvl;
+                return (StrongholdState == StrongholdState.Occupied
+                                ? (decimal)(DateTime.UtcNow.Subtract(DateOccupied).TotalDays / 2 + 10)
+                                : 0) * Lvl;
             }
         }
 
         public DateTime DateOccupied { get; set; }
 
         public ITroopManager Troops { get; private set; }
-
-        private ITribe tribe;
-
-        private ITribe gateOpenTo;
 
         public IBattleManager MainBattle { get; set; }
 
@@ -62,10 +63,7 @@ namespace Game.Data.Stronghold
         {
             get
             {
-                var locks = new List<ILockable>
-                {
-                        this
-                };
+                var locks = new List<ILockable> {this};
 
                 if (Tribe != null)
                 {
@@ -126,7 +124,16 @@ namespace Game.Data.Stronghold
 
         #region Constructor
 
-        public Stronghold(uint id, string name, byte level, uint x, uint y, decimal gate, IDbManager dbManager, NotificationManager notificationManager, ITroopManager troopManager, IActionWorker actionWorker)
+        public Stronghold(uint id,
+                          string name,
+                          byte level,
+                          uint x,
+                          uint y,
+                          decimal gate,
+                          IDbManager dbManager,
+                          NotificationManager notificationManager,
+                          ITroopManager troopManager,
+                          IActionWorker actionWorker)
         {
             Notifications = notificationManager;
             this.dbManager = dbManager;
@@ -177,6 +184,7 @@ namespace Game.Data.Stronghold
                 return CityRegion.ObjectType.Stronghold;
             }
         }
+
         public uint CityRegionGroupId
         {
             get
@@ -256,10 +264,14 @@ namespace Game.Data.Stronghold
         public override void CheckUpdateMode()
         {
             if (!Global.FireEvents)
+            {
                 return;
+            }
 
             if (!updating)
+            {
                 throw new Exception("Changed state outside of begin/end update block");
+            }
 
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
         }
@@ -267,11 +279,13 @@ namespace Game.Data.Stronghold
         public override void EndUpdate()
         {
             if (!updating)
+            {
                 throw new Exception("Called an endupdate without first calling a beginupdate");
+            }
 
             updating = false;
 
-            Update();            
+            Update();
         }
 
         protected override void Update()
@@ -279,10 +293,14 @@ namespace Game.Data.Stronghold
             base.Update();
 
             if (!Global.FireEvents)
+            {
                 return;
+            }
 
             if (updating)
+            {
                 return;
+            }
 
             dbManager.Save(this);
         }
@@ -323,7 +341,7 @@ namespace Game.Data.Stronghold
         {
             get
             {
-                return new[] { new DbColumn("id", Id, DbType.UInt32) };
+                return new[] {new DbColumn("id", Id, DbType.UInt32)};
             }
         }
 
@@ -331,7 +349,7 @@ namespace Game.Data.Stronghold
         {
             get
             {
-                return new DbDependency[] { };
+                return new DbDependency[] {};
             }
         }
 
@@ -340,23 +358,22 @@ namespace Game.Data.Stronghold
             get
             {
                 return new[]
-                       {
-                               new DbColumn("tribe_id", tribe == null ? 0 : tribe.Id, DbType.UInt32), 
-                               new DbColumn("name", Name, DbType.String, 20),
-                               new DbColumn("level", Lvl, DbType.Byte), 
-                               new DbColumn("state",(byte)StrongholdState, DbType.Byte),
-                               new DbColumn("gate", Gate, DbType.Decimal),
-                               new DbColumn("x", x, DbType.UInt32),
-                               new DbColumn("y", y, DbType.UInt32),
-                               new DbColumn("gate_open_to", GateOpenTo == null ? 0 : GateOpenTo.Id, DbType.UInt32),
-                               new DbColumn("date_occupied", DateOccupied, DbType.DateTime),
-                               new DbColumn("gate_battle_id", GateBattle != null ? GateBattle.BattleId : 0, DbType.UInt32),
-                               new DbColumn("main_battle_id", MainBattle != null ? MainBattle.BattleId : 0, DbType.UInt32),
-                               new DbColumn("object_state", (byte)State.Type, DbType.Boolean),
-                               new DbColumn("state_parameters", XmlSerializer.SerializeList(State.Parameters.ToArray()), DbType.String),
-                               new DbColumn("victory_point_rate", VictoryPointRate, DbType.Decimal),
-
-                       };
+                {
+                        new DbColumn("tribe_id", tribe == null ? 0 : tribe.Id, DbType.UInt32),
+                        new DbColumn("name", Name, DbType.String, 20), new DbColumn("level", Lvl, DbType.Byte),
+                        new DbColumn("state", (byte)StrongholdState, DbType.Byte),
+                        new DbColumn("gate", Gate, DbType.Decimal), new DbColumn("x", x, DbType.UInt32),
+                        new DbColumn("y", y, DbType.UInt32),
+                        new DbColumn("gate_open_to", GateOpenTo == null ? 0 : GateOpenTo.Id, DbType.UInt32),
+                        new DbColumn("date_occupied", DateOccupied, DbType.DateTime),
+                        new DbColumn("gate_battle_id", GateBattle != null ? GateBattle.BattleId : 0, DbType.UInt32),
+                        new DbColumn("main_battle_id", MainBattle != null ? MainBattle.BattleId : 0, DbType.UInt32),
+                        new DbColumn("object_state", (byte)State.Type, DbType.Boolean),
+                        new DbColumn("state_parameters",
+                                     XmlSerializer.SerializeList(State.Parameters.ToArray()),
+                                     DbType.String),
+                        new DbColumn("victory_point_rate", VictoryPointRate, DbType.Decimal),
+                };
             }
         }
 
@@ -366,6 +383,6 @@ namespace Game.Data.Stronghold
 
         public bool DbPersisted { get; set; }
 
-        #endregion        
+        #endregion
     }
 }

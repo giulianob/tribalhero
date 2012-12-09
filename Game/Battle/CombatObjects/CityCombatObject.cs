@@ -5,9 +5,9 @@ namespace Game.Battle.CombatObjects
 {
     public abstract class CityCombatObject : CombatObject
     {
-        protected CityCombatObject(uint id, uint battleId, BattleFormulas battleFormulas) : base(id, battleId, battleFormulas)
+        protected CityCombatObject(uint id, uint battleId, BattleFormulas battleFormulas)
+                : base(id, battleId, battleFormulas)
         {
-            
         }
 
         public abstract ICity City { get; }
@@ -28,6 +28,6 @@ namespace Game.Battle.CombatObjects
             {
                 return City.Lock;
             }
-        }        
+        }
     }
 }

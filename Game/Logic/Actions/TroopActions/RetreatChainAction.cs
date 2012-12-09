@@ -53,11 +53,21 @@ namespace Game.Logic.Actions
             }
         }
 
+        public override ActionCategory Category
+        {
+            get
+            {
+                return ActionCategory.Defense;
+            }
+        }
+
         public override string Properties
         {
             get
             {
-                return XmlSerializer.Serialize(new[] {new XmlKvPair("city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId)});
+                return
+                        XmlSerializer.Serialize(new[]
+                        {new XmlKvPair("city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId)});
             }
         }
 
@@ -114,7 +124,7 @@ namespace Game.Logic.Actions
                     city.Notifications.Remove(this);
 
                     if (city.Battle == null)
-                    {                        
+                    {
                         city.References.Remove(troopObject, this);
                         Procedure.Current.TroopObjectDelete(troopObject, true);
                         StateChange(ActionState.Completed);
@@ -137,7 +147,6 @@ namespace Game.Logic.Actions
                         throw new Exception();
                     }
 
-
                     Procedure.Current.TroopObjectStation(troopObject, city);
                 }
             }
@@ -156,8 +165,7 @@ namespace Game.Logic.Actions
                         throw new Exception();
                     }
 
-
-                    city.References.Remove(troopObject, this);                    
+                    city.References.Remove(troopObject, this);
                     Procedure.Current.TroopObjectDelete(troopObject, troopObject.Stub.TotalCount != 0);
                     StateChange(ActionState.Completed);
                 }

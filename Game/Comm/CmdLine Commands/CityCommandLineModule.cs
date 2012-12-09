@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Game.Data;
-using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
@@ -15,9 +14,9 @@ namespace Game.Comm.CmdLine_Commands
 {
     class CityCommandLineModule : CommandLineModule
     {
-        private readonly Procedure procedure;
-
         private readonly IActionFactory actionFactory;
+
+        private readonly Procedure procedure;
 
         public CityCommandLineModule(Procedure procedure, IActionFactory actionFactory)
         {
@@ -46,10 +45,10 @@ namespace Game.Comm.CmdLine_Commands
                 var p = new OptionSet
                 {
                         {"?|help|h", v => help = true},
-                        {"newcity=", v => cityName = v.TrimMatchingQuotes()} ,
-                        {"player=", v => playerName = v.TrimMatchingQuotes() },
-                        {"x=", v => x = uint.Parse(v.TrimMatchingQuotes()) },
-                        {"y=", v => y = uint.Parse(v.TrimMatchingQuotes()) },
+                        {"newcity=", v => cityName = v.TrimMatchingQuotes()},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()},
+                        {"x=", v => x = uint.Parse(v.TrimMatchingQuotes())},
+                        {"y=", v => y = uint.Parse(v.TrimMatchingQuotes())},
                 };
                 p.Parse(parms);
             }
@@ -59,11 +58,15 @@ namespace Game.Comm.CmdLine_Commands
             }
 
             if (help || cityName == string.Empty)
+            {
                 return "createcity --player=### --newcity=### --x=#### --y=####";
+            }
 
             uint playerId;
             if (!World.Current.FindPlayerId(playerName, out playerId))
+            {
                 return "Player not found";
+            }
 
             IPlayer player;
             using (Concurrency.Current.Lock(playerId, out player))
@@ -94,30 +97,36 @@ namespace Game.Comm.CmdLine_Commands
             try
             {
                 var p = new OptionSet
-                        {
-                                { "?|help|h", v => help = true }, 
-                                { "city=", v => cityName = v.TrimMatchingQuotes() },
-                                { "stubId=", v => stubId = byte.Parse(v.TrimMatchingQuotes()) }
-                        };
+                {
+                        {"?|help|h", v => help = true},
+                        {"city=", v => cityName = v.TrimMatchingQuotes()},
+                        {"stubId=", v => stubId = byte.Parse(v.TrimMatchingQuotes())}
+                };
                 p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }
 
             if (help || cityName == string.Empty)
+            {
                 return "deletestucktroop --city=### --stubId=###";
+            }
 
             uint cityId;
             if (!World.Current.Cities.FindCityId(cityName, out cityId))
+            {
                 return "City not found";
+            }
 
             ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)
+                {
                     return "City not found";
+                }
 
                 ITroopStub stub;
                 if (!city.Troops.TryGetStub(stubId, out stub))
@@ -133,7 +142,7 @@ namespace Game.Comm.CmdLine_Commands
                 procedure.TroopStubDelete(city, stub);
             }
 
-            return "OK!";            
+            return "OK!";
         }
 
         public string RemoveStructure(Session session, String[] parms)
@@ -145,20 +154,22 @@ namespace Game.Comm.CmdLine_Commands
             try
             {
                 var p = new OptionSet
-                        {
-                                { "?|help|h", v => help = true }, 
-                                { "x=", v => x = uint.Parse(v.TrimMatchingQuotes()) },
-                                { "y=", v => y = uint.Parse(v.TrimMatchingQuotes()) }
-                        };
+                {
+                        {"?|help|h", v => help = true},
+                        {"x=", v => x = uint.Parse(v.TrimMatchingQuotes())},
+                        {"y=", v => y = uint.Parse(v.TrimMatchingQuotes())}
+                };
                 p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }
 
             if (help || x == 0 || y == 0)
+            {
                 return "removestructure --x=### --y=###";
+            }
 
             Region region = World.Current.Regions.GetRegion(x, y);
             if (region == null)
@@ -167,9 +178,9 @@ namespace Game.Comm.CmdLine_Commands
             }
 
             var structure = region.GetObjects(x, y).OfType<IStructure>().FirstOrDefault();
-            
+
             if (structure == null)
-            {                
+            {
                 return "No structures found at specified coordinates";
             }
 
@@ -177,7 +188,7 @@ namespace Game.Comm.CmdLine_Commands
             {
                 var removeAction = new StructureSelfDestroyPassiveAction(structure.City.Id, structure.ObjectId);
                 var result = structure.City.Worker.DoPassive(structure.City, removeAction, false);
-                
+
                 if (result != Error.Ok)
                 {
                     return string.Format("Error: {0}", result);
@@ -196,30 +207,36 @@ namespace Game.Comm.CmdLine_Commands
             try
             {
                 var p = new OptionSet
-                        {
-                                { "?|help|h", v => help = true }, 
-                                { "city=", v => cityName = v.TrimMatchingQuotes() },
-                                { "newname=", v => newCityName = v.TrimMatchingQuotes() }
-                        };
+                {
+                        {"?|help|h", v => help = true},
+                        {"city=", v => cityName = v.TrimMatchingQuotes()},
+                        {"newname=", v => newCityName = v.TrimMatchingQuotes()}
+                };
                 p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }
 
             if (help || string.IsNullOrEmpty(cityName) || string.IsNullOrEmpty(newCityName))
+            {
                 return "renamecity --city=city --newname=name";
+            }
 
             uint cityId;
             if (!World.Current.Cities.FindCityId(cityName, out cityId))
+            {
                 return "City not found";
+            }
 
             ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)
+                {
                     return "City not found";
+                }
 
                 // Verify city name is valid
                 if (!City.IsNameValid(newCityName))

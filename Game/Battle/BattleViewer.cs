@@ -23,7 +23,7 @@ namespace Game.Battle
             battle.EnterRound += BattleEnterRound;
         }
 
-        void BattleEnterRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round)
+        private void BattleEnterRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round)
         {
             Append("Round[" + round + "] Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
@@ -38,23 +38,31 @@ namespace Game.Battle
             if (co is AttackCombatUnit)
             {
                 var unit = co as AttackCombatUnit;
-                Append("Team[Atk] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" + Ioc.Kernel.Get<UnitFactory>().GetName(unit.Type, 1) +
-                       "] HP[" + unit.Hp + "]");
+                Append("Team[Atk] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" +
+                       Ioc.Kernel.Get<UnitFactory>().GetName(unit.Type, 1) + "] HP[" + unit.Hp + "]");
             }
-            else if(co is DefenseCombatUnit)
+            else if (co is DefenseCombatUnit)
             {
                 var unit = co as DefenseCombatUnit;
-                Append("Team[Def] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" + Ioc.Kernel.Get<UnitFactory>().GetName(unit.Type, 1) +
-                       "] HP[" + unit.Hp + "]");
-            } 
+                Append("Team[Def] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" +
+                       Ioc.Kernel.Get<UnitFactory>().GetName(unit.Type, 1) + "] HP[" + unit.Hp + "]");
+            }
             else if (co is CombatStructure)
             {
                 var cs = co as CombatStructure;
-                Append("Team[Def] Structure[" + co.Id + "] Type[" + Ioc.Kernel.Get<StructureFactory>().GetName(cs.Structure.Type, cs.Structure.Lvl) + "] HP[" + cs.Hp + "]");
+                Append("Team[Def] Structure[" + co.Id + "] Type[" +
+                       Ioc.Kernel.Get<StructureFactory>().GetName(cs.Structure.Type, cs.Structure.Lvl) + "] HP[" + cs.Hp +
+                       "]");
             }
         }
 
-        private void BattleActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatGroup attackerGroup, ICombatObject source, ICombatGroup defenderGroup, ICombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battle,
+                                          BattleManager.BattleSide attackingSide,
+                                          ICombatGroup attackerGroup,
+                                          ICombatObject source,
+                                          ICombatGroup defenderGroup,
+                                          ICombatObject target,
+                                          decimal damage)
         {
             Append("**************************************");
             Append("Attacker: ");
@@ -64,7 +72,10 @@ namespace Game.Battle
             Append("**************************************\n");
         }
 
-        private void BattleUnitKilled(IBattleManager battle, BattleManager.BattleSide objSide, ICombatGroup combatGroup, ICombatObject obj)
+        private void BattleUnitKilled(IBattleManager battle,
+                                      BattleManager.BattleSide objSide,
+                                      ICombatGroup combatGroup,
+                                      ICombatObject obj)
         {
             Append("**************************************");
             Append("Removing: ");
@@ -92,7 +103,10 @@ namespace Game.Battle
             Append("Battle Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        void BattleSkippedAttacker(IBattleManager battle, BattleManager.BattleSide objSide, ICombatGroup combatGroup, ICombatObject obj)
+        private void BattleSkippedAttacker(IBattleManager battle,
+                                           BattleManager.BattleSide objSide,
+                                           ICombatGroup combatGroup,
+                                           ICombatObject obj)
         {
             Append("**************************************");
             Append("Skipping: ");

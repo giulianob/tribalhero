@@ -11,23 +11,41 @@ namespace Game.Util
         public static byte Serialize(object value)
         {
             if (value is uint)
+            {
                 return 1;
+            }
             if (value is ushort)
+            {
                 return 2;
+            }
             if (value is byte)
+            {
                 return 3;
+            }
             if (value is string)
+            {
                 return 4;
+            }
             if (value is short)
+            {
                 return 5;
+            }
             if (value is int)
+            {
                 return 6;
+            }
             if (value is DateTime)
+            {
                 return 7;
+            }
             if (value is long)
+            {
                 return 8;
+            }
             if (value is float)
+            {
                 return 9;
+            }
 
             throw new Exception("Unknown data type");
         }

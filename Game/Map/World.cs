@@ -28,29 +28,6 @@ namespace Game.Map
 
         #endregion
 
-        public ICityManager Cities { get; private set; }
-
-        public IRegionManager Regions { get; private set; }
-
-        public RoadManager Roads { get; private set; }
-
-        public ForestManager Forests { get; private set; }
-
-        private IStrongholdManager Strongholds { get; set; }
-
-        private ITribeManager Tribes { get; set; }
-
-        public object Lock { get; private set; }
-
-        public Dictionary<uint, IPlayer> Players { get; private set; }
-
-        private Dictionary<uint, IBattleManager> Battles { get; set; }
-
-        public int GetActivePlayerCount()
-        {
-            return new ActivePlayerSelector(Config.idle_days).GetPlayerIds().Count();
-        }
-
         public World(RoadManager roadManager,
                      ForestManager forestManager,
                      IStrongholdManager strongholdManager,
@@ -66,7 +43,7 @@ namespace Game.Map
             Tribes = tribeManager;
             Battles = new Dictionary<uint, IBattleManager>();
             Lock = new object();
-            Players = new Dictionary<uint, IPlayer>();            
+            Players = new Dictionary<uint, IPlayer>();
         }
 
         #region Object Locator
@@ -151,6 +128,29 @@ namespace Game.Map
 
         #endregion
 
+        private IStrongholdManager Strongholds { get; set; }
+
+        private ITribeManager Tribes { get; set; }
+
+        private Dictionary<uint, IBattleManager> Battles { get; set; }
+
+        public ICityManager Cities { get; private set; }
+
+        public IRegionManager Regions { get; private set; }
+
+        public RoadManager Roads { get; private set; }
+
+        public ForestManager Forests { get; private set; }
+
+        public object Lock { get; private set; }
+
+        public Dictionary<uint, IPlayer> Players { get; private set; }
+
+        public int GetActivePlayerCount()
+        {
+            return new ActivePlayerSelector(Config.idle_days).GetPlayerIds().Count();
+        }
+
         public void Add(IBattleManager battleManager)
         {
             lock (Lock)
@@ -187,12 +187,12 @@ namespace Game.Map
         {
             playerId = UInt16.MaxValue;
             using (
-                    DbDataReader reader = DbPersistance.Current.ReaderQuery(
-                                                                            String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Player.DB_TABLE),
-                                                                            new[]
-                                                                            {
-                                                                                    new DbColumn("name", name, DbType.String)
-                                                                            }))
+                    DbDataReader reader =
+                            DbPersistance.Current.ReaderQuery(
+                                                              String.Format(
+                                                                            "SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1",
+                                                                            Player.DB_TABLE),
+                                                              new[] {new DbColumn("name", name, DbType.String)}))
             {
                 if (!reader.HasRows)
                 {
@@ -209,11 +209,11 @@ namespace Game.Map
             strongholdId = UInt16.MaxValue;
             using (
                     DbDataReader reader =
-                            DbPersistance.Current.ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Stronghold.DB_TABLE),
-                                                              new[]
-                                                              {
-                                                                      new DbColumn("name", name, DbType.String)
-                                                              }))
+                            DbPersistance.Current.ReaderQuery(
+                                                              String.Format(
+                                                                            "SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1",
+                                                                            Stronghold.DB_TABLE),
+                                                              new[] {new DbColumn("name", name, DbType.String)}))
             {
                 if (!reader.HasRows)
                 {
@@ -228,14 +228,15 @@ namespace Game.Map
         public bool CityNameTaken(string name)
         {
             using (
-                    DbDataReader reader = DbPersistance.Current.ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE),
-                                                                            new[]
-                                                                            {
-                                                                                    new DbColumn("name", name, DbType.String)
-                                                                            }))
+                    DbDataReader reader =
+                            DbPersistance.Current.ReaderQuery(
+                                                              String.Format(
+                                                                            "SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1",
+                                                                            City.DB_TABLE),
+                                                              new[] {new DbColumn("name", name, DbType.String)}))
             {
                 return reader.HasRows;
             }
-        }        
+        }
     }
 }

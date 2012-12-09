@@ -16,6 +16,7 @@ namespace Game.Logic.Actions
     public class StructureDowngradePassiveAction : ScheduledPassiveAction
     {
         private readonly uint cityId;
+
         private readonly uint structureId;
 
         public StructureDowngradePassiveAction(uint cityId, uint structureId)
@@ -24,7 +25,13 @@ namespace Game.Logic.Actions
             this.structureId = structureId;
         }
 
-        public StructureDowngradePassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription, IDictionary<string, string> properties)
+        public StructureDowngradePassiveAction(uint id,
+                                               DateTime beginTime,
+                                               DateTime nextTime,
+                                               DateTime endTime,
+                                               bool isVisible,
+                                               string nlsDescription,
+                                               IDictionary<string, string> properties)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             cityId = uint.Parse(properties["city_id"]);
@@ -62,7 +69,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 StateChange(ActionState.Failed);
             }
@@ -77,7 +86,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, structureId, out city, out structure))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 if (structure.IsBlocked)
                 {
@@ -90,22 +101,26 @@ namespace Game.Logic.Actions
                 structure.EndUpdate();
             }
 
-            structure.City.Worker.Remove(structure, new[] { this });
+            structure.City.Worker.Remove(structure, new[] {this});
 
             using (Concurrency.Current.Lock(cityId, structureId, out city, out structure))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 city.BeginUpdate();
                 structure.BeginUpdate();
                 structure.IsBlocked = false;
                 ushort oldLabor = structure.Stats.Labor;
-                Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
+                Ioc.Kernel.Get<StructureFactory>()
+                   .GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
                 structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
                 structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);
-                
-                Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnDowngrade, structure, structure.Type, structure.Lvl);
+
+                Ioc.Kernel.Get<InitFactory>()
+                   .InitGameObject(InitCondition.OnDowngrade, structure, structure.Type, structure.Lvl);
 
                 Procedure.Current.OnStructureUpgradeDowngrade(structure);
 
@@ -122,7 +137,9 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return XmlSerializer.Serialize(new[] {new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId)});
+                return
+                        XmlSerializer.Serialize(new[]
+                        {new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId)});
             }
         }
 

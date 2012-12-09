@@ -6,7 +6,7 @@ namespace Game.Battle.CombatGroups
     public interface ICombatGroupFactory
     {
         /// <summary>
-        /// Creates a combat group from the specified troop stub and formations
+        ///     Creates a combat group from the specified troop stub and formations
         /// </summary>
         /// <param name="battleId">Battle id of the owner</param>
         /// <param name="id">Group id</param>
@@ -15,7 +15,7 @@ namespace Game.Battle.CombatGroups
         CityDefensiveCombatGroup CreateCityDefensiveCombatGroup(uint battleId, uint id, ITroopStub troopStub);
 
         /// <summary>
-        /// Creates a combat group from the given troop object
+        ///     Creates a combat group from the given troop object
         /// </summary>
         /// <param name="battleId">Battle id of the owner</param>
         /// <param name="id">Group id</param>

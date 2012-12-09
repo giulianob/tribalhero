@@ -24,6 +24,16 @@ namespace Testing.Battle
             }
         }
 
+        public static IEnumerable<object[]> TakeDamageWhenDiedData
+        {
+            get
+            {
+                yield return new object[] {10.5m, 10.5m, 0m};
+                yield return new object[] {0.3m, 30.4m, 0m};
+                yield return new object[] {300.3m, 1000.4m, 0m};
+            }
+        }
+
         [Theory, PropertyData("TakeDamageWhenNotDiedData")]
         public void TakeDamageWhenNotDied(decimal hp, decimal dmg, decimal expectedHp)
         {
@@ -59,16 +69,6 @@ namespace Testing.Battle
             formula.Verify(m => m.GetStructureKilledAttackPoint(It.IsAny<ushort>(), It.IsAny<byte>()), Times.Never());
             structure.Verify(m => m.BeginUpdate(), Times.Once());
             structure.Verify(m => m.EndUpdate(), Times.Once());
-        }
-
-        public static IEnumerable<object[]> TakeDamageWhenDiedData
-        {
-            get
-            {
-                yield return new object[] {10.5m, 10.5m, 0m};
-                yield return new object[] {0.3m, 30.4m, 0m};
-                yield return new object[] {300.3m, 1000.4m, 0m};
-            }
         }
 
         [Theory, PropertyData("TakeDamageWhenDiedData")]

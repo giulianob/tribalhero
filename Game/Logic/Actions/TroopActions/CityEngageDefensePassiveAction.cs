@@ -18,16 +18,20 @@ namespace Game.Logic.Actions
 {
     public class CityEngageDefensePassiveAction : PassiveAction
     {
-        private readonly uint cityId;
-        private readonly uint troopObjectId;
-
         private readonly BattleProcedure battleProcedure;
+
+        private readonly uint cityId;
 
         private readonly IGameObjectLocator gameObjectLocator;
 
+        private readonly uint troopObjectId;
+
         private uint groupId;
 
-        public CityEngageDefensePassiveAction(uint cityId, uint troopObjectId, BattleProcedure battleProcedure, IGameObjectLocator gameObjectLocator)
+        public CityEngageDefensePassiveAction(uint cityId,
+                                              uint troopObjectId,
+                                              BattleProcedure battleProcedure,
+                                              IGameObjectLocator gameObjectLocator)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
@@ -35,7 +39,12 @@ namespace Game.Logic.Actions
             this.gameObjectLocator = gameObjectLocator;
         }
 
-        public CityEngageDefensePassiveAction(uint id, bool isVisible, IDictionary<string, string> properties, BattleProcedure battleProcedure, IGameObjectLocator gameObjectLocator) : base(id, isVisible)
+        public CityEngageDefensePassiveAction(uint id,
+                                              bool isVisible,
+                                              IDictionary<string, string> properties,
+                                              BattleProcedure battleProcedure,
+                                              IGameObjectLocator gameObjectLocator)
+                : base(id, isVisible)
         {
             this.battleProcedure = battleProcedure;
             this.gameObjectLocator = gameObjectLocator;
@@ -45,9 +54,32 @@ namespace Game.Logic.Actions
 
             ICity city;
             if (!gameObjectLocator.TryGetObjects(cityId, out city))
+            {
                 throw new Exception();
+            }
 
             RegisterBattleListeners(city);
+        }
+
+        public override ActionType Type
+        {
+            get
+            {
+                return ActionType.CityEngageDefensePassive;
+            }
+        }
+
+        public override string Properties
+        {
+            get
+            {
+                return
+                        XmlSerializer.Serialize(new[]
+                        {
+                                new XmlKvPair("troop_city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId),
+                                new XmlKvPair("group_id", groupId)
+                        });
+            }
         }
 
         private void RegisterBattleListeners(ICity city)
@@ -59,13 +91,19 @@ namespace Game.Logic.Actions
         private void DeregisterBattleListeners(ICity city)
         {
             city.Battle.ActionAttacked -= BattleGroupKilled;
-            city.Battle.ExitBattle -= BattleExitBattle;            
+            city.Battle.ExitBattle -= BattleExitBattle;
         }
 
         /// <summary>
-        /// Handles ending this action if our group has been killed
+        ///     Handles ending this action if our group has been killed
         /// </summary>
-        private void BattleGroupKilled(IBattleManager battle, BattleManager.BattleSide attackingside, ICombatGroup attackergroup, ICombatObject attacker, ICombatGroup targetgroup, ICombatObject target, decimal damage)
+        private void BattleGroupKilled(IBattleManager battle,
+                                       BattleManager.BattleSide attackingside,
+                                       ICombatGroup attackergroup,
+                                       ICombatObject attacker,
+                                       ICombatGroup targetgroup,
+                                       ICombatObject target,
+                                       decimal damage)
         {
             if (targetgroup.Id != groupId)
             {
@@ -88,25 +126,6 @@ namespace Game.Logic.Actions
             StateChange(ActionState.Completed);
         }
 
-        public override ActionType Type
-        {
-            get
-            {
-                return ActionType.CityEngageDefensePassive;
-            }
-        }
-
-        public override string Properties
-        {
-            get
-            {
-                return XmlSerializer.Serialize(new[]
-                {
-                        new XmlKvPair("troop_city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId), new XmlKvPair("group_id", groupId)
-                });
-            }
-        }
-
         public override Error Validate(string[] parms)
         {
             return Error.Ok;
@@ -118,7 +137,9 @@ namespace Game.Logic.Actions
 
             ITroopObject troopObject;
             if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
+            {
                 return Error.ObjectNotFound;
+            }
 
             if (city.Battle == null)
             {

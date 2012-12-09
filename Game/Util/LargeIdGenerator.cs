@@ -11,6 +11,7 @@ namespace Game.Util
         private readonly long max;
 
         private readonly object objLock = new object();
+
         private long last;
 
         public LargeIdGenerator(long max, long startValue = 0)
@@ -25,7 +26,9 @@ namespace Game.Util
             {
                 last++;
                 if (last > max)
+                {
                     throw new ArgumentOutOfRangeException();
+                }
 
                 return (int)last;
             }
@@ -36,7 +39,9 @@ namespace Game.Util
             lock (objLock)
             {
                 if (last < id)
+                {
                     last = id;
+                }
             }
         }
 
@@ -45,7 +50,9 @@ namespace Game.Util
             lock (objLock)
             {
                 if (last == id)
+                {
                     last--;
+                }
             }
         }
 

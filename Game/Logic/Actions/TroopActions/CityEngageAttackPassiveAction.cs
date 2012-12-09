@@ -20,31 +20,27 @@ namespace Game.Logic.Actions
 {
     public class CityEngageAttackPassiveAction : PassiveAction
     {
-        private StaminaMonitor StaminaMonitor { get; set; }
-
-        private AttackModeMonitor AttackModeMonitor { get; set; }
-
         private readonly BattleFormulas battleFormula;
 
-        private readonly IGameObjectLocator gameObjectLocator;
-
         private readonly BattleProcedure battleProcedure;
-
-        private readonly StructureFactory structureFactory;
-
-        private readonly IDbManager dbManager;
 
         private readonly Resource bonus;
 
         private readonly uint cityId;
 
-        private uint groupId;
+        private readonly IDbManager dbManager;
+
+        private readonly IGameObjectLocator gameObjectLocator;
 
         private readonly AttackMode mode;
 
-        private readonly uint troopObjectId;
+        private readonly StructureFactory structureFactory;
 
         private readonly uint targetCityId;
+
+        private readonly uint troopObjectId;
+
+        private uint groupId;
 
         private int originalUnitCount;
 
@@ -110,11 +106,18 @@ namespace Game.Logic.Actions
             ICity city;
             gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject);
 
-            StaminaMonitor = new StaminaMonitor(targetCity.Battle, combatGroup, short.Parse(properties["stamina"]), battleFormula);
+            StaminaMonitor = new StaminaMonitor(targetCity.Battle,
+                                                combatGroup,
+                                                short.Parse(properties["stamina"]),
+                                                battleFormula);
             StaminaMonitor.PropertyChanged += (sender, args) => dbManager.Save(this);
 
             AttackModeMonitor = new AttackModeMonitor(targetCity.Battle, combatGroup, troopObject.Stub);
         }
+
+        private StaminaMonitor StaminaMonitor { get; set; }
+
+        private AttackModeMonitor AttackModeMonitor { get; set; }
 
         public override ActionType Type
         {
@@ -128,13 +131,16 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return XmlSerializer.Serialize(new[]
-                {
-                        new XmlKvPair("target_city_id", targetCityId), new XmlKvPair("troop_city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId),
-                        new XmlKvPair("mode", (byte)mode), new XmlKvPair("original_count", originalUnitCount), new XmlKvPair("crop", bonus.Crop),
-                        new XmlKvPair("gold", bonus.Gold), new XmlKvPair("iron", bonus.Iron), new XmlKvPair("wood", bonus.Wood),
-                        new XmlKvPair("labor", bonus.Labor), new XmlKvPair("group_id", groupId), new XmlKvPair("stamina", StaminaMonitor.Stamina)
-                });
+                return
+                        XmlSerializer.Serialize(new[]
+                        {
+                                new XmlKvPair("target_city_id", targetCityId), new XmlKvPair("troop_city_id", cityId),
+                                new XmlKvPair("troop_object_id", troopObjectId), new XmlKvPair("mode", (byte)mode),
+                                new XmlKvPair("original_count", originalUnitCount), new XmlKvPair("crop", bonus.Crop),
+                                new XmlKvPair("gold", bonus.Gold), new XmlKvPair("iron", bonus.Iron),
+                                new XmlKvPair("wood", bonus.Wood), new XmlKvPair("labor", bonus.Labor),
+                                new XmlKvPair("group_id", groupId), new XmlKvPair("stamina", StaminaMonitor.Stamina)
+                        });
             }
         }
 
@@ -184,7 +190,10 @@ namespace Game.Logic.Actions
             RegisterBattleListeners(targetCity);
 
             // Create stamina monitor
-            StaminaMonitor = new StaminaMonitor(targetCity.Battle, combatGroup, battleFormula.GetStamina(troopObject.Stub, targetCity), battleFormula);
+            StaminaMonitor = new StaminaMonitor(targetCity.Battle,
+                                                combatGroup,
+                                                battleFormula.GetStamina(troopObject.Stub, targetCity),
+                                                battleFormula);
             StaminaMonitor.PropertyChanged += (sender, args) => dbManager.Save(this);
 
             // Create attack mode monitor
@@ -233,7 +242,7 @@ namespace Game.Logic.Actions
         }
 
         /// <summary>
-        /// Takes care of finishing this action up if all our units are killed
+        ///     Takes care of finishing this action up if all our units are killed
         /// </summary>
         private void BattleGroupKilled(IBattleManager battle, ICombatGroup group)
         {
@@ -269,7 +278,9 @@ namespace Game.Logic.Actions
             }
 
             // Calculate bonus
-            Resource resource = battleFormula.GetBonusResources(troopObject, originalUnitCount, troopObject.Stub.TotalCount);
+            Resource resource = battleFormula.GetBonusResources(troopObject,
+                                                                originalUnitCount,
+                                                                troopObject.Stub.TotalCount);
 
             // Destroyed Structure bonus
             resource.Add(bonus);
@@ -280,11 +291,11 @@ namespace Game.Logic.Actions
             // Add bonus to troop object            
             Resource returning;
             Resource actual;
-            Resource cap = new Resource(troopObject.Stub.Carry/Config.resource_crop_ratio,
-                                        troopObject.Stub.Carry/Config.resource_gold_ratio,
-                                        troopObject.Stub.Carry/Config.resource_iron_ratio,
-                                        troopObject.Stub.Carry/Config.resource_wood_ratio,
-                                        troopObject.Stub.Carry/Config.resource_labor_ratio);
+            Resource cap = new Resource(troopObject.Stub.Carry / Config.resource_crop_ratio,
+                                        troopObject.Stub.Carry / Config.resource_gold_ratio,
+                                        troopObject.Stub.Carry / Config.resource_iron_ratio,
+                                        troopObject.Stub.Carry / Config.resource_wood_ratio,
+                                        troopObject.Stub.Carry / Config.resource_labor_ratio);
 
             troopObject.Stats.Loot.Add(resource, cap, out actual, out returning);
 
@@ -307,10 +318,11 @@ namespace Game.Logic.Actions
                 throw new ArgumentException();
             }
 
-            if (attackerGroup.Id == groupId && target.ClassType == BattleClass.Structure && target is ICombatStructure && target.IsDead)
+            if (attackerGroup.Id == groupId && target.ClassType == BattleClass.Structure && target is ICombatStructure &&
+                target.IsDead)
             {
                 // if our troop knocked down a building, we get the bonus.
-                bonus.Add(structureFactory.GetCost(target.Type, target.Lvl)/2);
+                bonus.Add(structureFactory.GetCost(target.Type, target.Lvl) / 2);
 
                 IStructure structure = ((ICombatStructure)target).Structure;
                 object value;

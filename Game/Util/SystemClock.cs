@@ -9,6 +9,7 @@ namespace Game.Util
     public class SystemClock
     {
         private static bool customTime;
+
         private static DateTime clock = DateTime.MinValue;
 
         public static DateTime Now

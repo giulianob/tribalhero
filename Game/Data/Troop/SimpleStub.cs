@@ -39,13 +39,15 @@ namespace Game.Data.Troop
         {
             get
             {
-                return data.Values.Aggregate<Formation, ushort>(0, (current, formation) => (ushort)(current + (ushort)formation.Sum(x => x.Value)));
+                return data.Values.Aggregate<Formation, ushort>(0,
+                                                                (current, formation) =>
+                                                                (ushort)(current + (ushort)formation.Sum(x => x.Value)));
             }
         }
 
         /// <summary>
-        /// Returns a list of units for specified formations.
-        /// If formation is empty, will return all units.
+        ///     Returns a list of units for specified formations.
+        ///     If formation is empty, will return all units.
         /// </summary>
         /// <param name="formations"></param>
         /// <returns></returns>
@@ -56,8 +58,7 @@ namespace Game.Data.Troop
                            where (formations.Length == 0 || formations.Contains(formation.Type))
                            orderby unit.Key
                            group unit by unit.Key
-                               into unitGroups
-                               select new Unit(unitGroups.Key, (ushort)unitGroups.Sum(x => x.Value));
+                           into unitGroups select new Unit(unitGroups.Key, (ushort)unitGroups.Sum(x => x.Value));
 
             return allUnits.ToList();
         }

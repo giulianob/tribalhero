@@ -17,11 +17,15 @@ namespace Game.Logic.Requirements.LayoutRequirements
                 {
                     case 1:
                         if (!HaveBuilding(req, builder.City, x, y))
+                        {
                             return false;
+                        }
                         break;
                     case 2:
                         if (!HaveNoBuilding(req, builder.City, x, y))
+                        {
                             return false;
+                        }
                         break;
                     default:
                         return false;
@@ -35,21 +39,31 @@ namespace Game.Logic.Requirements.LayoutRequirements
             foreach (var obj in objects)
             {
                 if (req.Type != obj.Type)
+                {
                     continue;
+                }
 
                 if (obj.Lvl > req.MaxLvl)
+                {
                     continue;
+                }
 
                 if (obj.Lvl < req.MinLvl)
+                {
                     continue;
+                }
 
                 int dist = obj.RadiusDistance(x, y);
 
                 if (dist > req.MaxDist)
+                {
                     continue;
+                }
 
                 if (dist < req.MinDist)
+                {
                     continue;
+                }
                 return false;
             }
             return true;
@@ -60,21 +74,31 @@ namespace Game.Logic.Requirements.LayoutRequirements
             foreach (var obj in objects)
             {
                 if (req.Type != obj.Type)
+                {
                     continue;
+                }
 
                 if (obj.Lvl > req.MaxLvl)
+                {
                     continue;
+                }
 
                 if (obj.Lvl < req.MinLvl)
+                {
                     continue;
+                }
 
                 int dist = obj.RadiusDistance(x, y);
 
                 if (dist > req.MaxDist)
+                {
                     continue;
+                }
 
                 if (dist < req.MinDist)
+                {
                     continue;
+                }
                 return true;
             }
             return false;

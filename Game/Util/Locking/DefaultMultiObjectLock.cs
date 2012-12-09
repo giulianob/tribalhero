@@ -3,8 +3,8 @@
 using System;
 using System.Linq;
 using System.Threading;
-// ReSharper disable RedundantUsingDirective
-using Game.Data;
+        // ReSharper disable RedundantUsingDirective
+
 // ReSharper restore RedundantUsingDirective
 
 #endregion
@@ -18,12 +18,14 @@ namespace Game.Util.Locking
         [ThreadStatic]
         private static DefaultMultiObjectLock currentLock;
 
-        private object[] lockedObjects = new object[] { };
+        private object[] lockedObjects = new object[] {};
 
         public void Lock(ILockable[] list)
         {
             if (currentLock != null)
+            {
                 throw new LockException("Attempting to nest MultiObjectLock");
+            }
 
             currentLock = this;
 
@@ -37,6 +39,23 @@ namespace Game.Util.Locking
             }
         }
 
+        public void Dispose()
+        {
+            UnlockAll();
+        }
+
+        public void UnlockAll()
+        {
+            for (int i = lockedObjects.Length - 1; i >= 0; --i)
+            {
+                Monitor.Exit(lockedObjects[i]);
+            }
+
+            lockedObjects = new object[] {};
+
+            currentLock = null;
+        }
+
         public static bool IsLocked(ILockable obj)
         {
             return currentLock != null && currentLock.lockedObjects.Any(lck => lck == obj.Lock);
@@ -47,32 +66,18 @@ namespace Game.Util.Locking
             return x.Hash.CompareTo(y.Hash);
         }
 
-        public void Dispose()
-        {
-            UnlockAll();
-        }
-
         public static void ThrowExceptionIfNotLocked(ILockable obj)
         {
 #if DEBUG
             if (!IsLocked(obj))
+            {
                 throw new LockException("Object not locked");
+            }
 
 #elif CHECK_LOCKS
             if (!IsLocked(obj)) 
                 Global.Logger.Error(string.Format("Object not locked id[{0}] {1}", obj.Hash, Environment.StackTrace));
 #endif
         }
-
-        public void UnlockAll()
-        {
-            for (int i = lockedObjects.Length - 1; i >= 0; --i)
-                Monitor.Exit(lockedObjects[i]);
-
-            lockedObjects = new object[] { };
-
-            currentLock = null;
-        }
-
     }
 }

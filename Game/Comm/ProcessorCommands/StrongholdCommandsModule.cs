@@ -2,12 +2,9 @@
 
 using System;
 using Game.Data.Stronghold;
-using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
-using Game.Util;
 using Game.Util.Locking;
-using Persistance;
 
 #endregion
 
@@ -15,11 +12,11 @@ namespace Game.Comm.ProcessorCommands
 {
     class StrongholdCommandsModule : CommandModule
     {
+        private readonly ILocker locker;
+
         private readonly IStrongholdManager strongholdManager;
 
         private readonly IWorld world;
-
-        private readonly ILocker locker;
 
         public StrongholdCommandsModule(IStrongholdManager strongholdManager, IWorld world, ILocker locker)
         {
@@ -92,7 +89,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 strongholdId = packet.GetUInt32();
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -103,9 +100,9 @@ namespace Game.Comm.ProcessorCommands
                 ReplyError(session, packet, Error.TribeIsNull);
                 return;
             }
-            
+
             IStronghold stronghold;
-            if(!strongholdManager.TryGetStronghold(strongholdId, out stronghold))
+            if (!strongholdManager.TryGetStronghold(strongholdId, out stronghold))
             {
                 ReplyError(session, packet, Error.StrongholdNotFound);
                 return;
@@ -127,7 +124,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 name = packet.GetString();
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -152,7 +149,6 @@ namespace Game.Comm.ProcessorCommands
 
                 session.Write(reply);
             }
-
         }
 
         private void GetName(Session session, Packet packet)
@@ -166,9 +162,11 @@ namespace Game.Comm.ProcessorCommands
                 count = packet.GetByte();
                 strongholdIds = new uint[count];
                 for (int i = 0; i < count; i++)
+                {
                     strongholdIds[i] = packet.GetUInt32();
+                }
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -180,7 +178,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 uint strongholdId = strongholdIds[i];
                 IStronghold stronghold;
-                if (!strongholdManager.TryGetStronghold(strongholdIds[i],out stronghold))
+                if (!strongholdManager.TryGetStronghold(strongholdIds[i], out stronghold))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
@@ -201,7 +199,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 strongholdId = packet.GetUInt32();
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;

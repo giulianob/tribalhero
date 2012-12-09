@@ -17,7 +17,9 @@ namespace Game.Util
             return commandLine.Split(c =>
                 {
                     if (c == '\"')
+                    {
                         inQuotes = !inQuotes;
+                    }
 
                     return !inQuotes && c == ' ';
                 }).Select(arg => arg.Trim().TrimMatchingQuotes('\"')).Where(arg => !string.IsNullOrEmpty(arg));
@@ -30,7 +32,9 @@ namespace Game.Util
             for (int c = 0; c < str.Length; c++)
             {
                 if (!controller(str[c]))
+                {
                     continue;
+                }
 
                 yield return str.Substring(nextPiece, c - nextPiece);
                 nextPiece = c + 1;
@@ -47,7 +51,9 @@ namespace Game.Util
         public static string TrimMatchingQuotes(this string input, char quote)
         {
             if ((input.Length >= 2) && (input[0] == quote) && (input[input.Length - 1] == quote))
+            {
                 return input.Substring(1, input.Length - 2);
+            }
 
             return input;
         }

@@ -14,16 +14,16 @@ namespace Game.Battle.CombatObjects
 {
     public abstract class CombatObject : ICombatObject
     {
-        protected readonly uint BattleId;
-
         protected readonly BattleFormulas BattleFormulas;
 
+        protected readonly uint BattleId;
+
         /// <summary>
-        /// Parameterless constructor for mocking only
+        ///     Parameterless constructor for mocking only
         /// </summary>
         [Obsolete("Used for testing only", true)]
         protected CombatObject()
-        {            
+        {
         }
 
         protected CombatObject(uint id, uint battleId, BattleFormulas battleFormulas)
@@ -38,17 +38,22 @@ namespace Game.Battle.CombatObjects
         #region Properties
 
         public ushort MaxDmgRecv { get; set; }
+
         public ushort MinDmgRecv { get; set; }
 
         public ushort MaxDmgDealt { get; set; }
+
         public ushort MinDmgDealt { get; set; }
 
         public ushort HitRecv { get; set; }
+
         public ushort HitDealt { get; set; }
+
         public uint HitDealtByUnit { get; set; }
 
         public decimal DmgRecv { get; set; }
-        public decimal DmgDealt { get; set; }        
+
+        public decimal DmgDealt { get; set; }
 
         public int RoundsParticipated { get; set; }
 
@@ -94,7 +99,11 @@ namespace Game.Battle.CombatObjects
 
         public abstract void TakeDamage(decimal dmg, out Resource returning, out int attackPoints);
 
-        public abstract void CalcActualDmgToBeTaken(ICombatList attackers, ICombatList defenders, decimal baseDmg, int attackIndex, out decimal actualDmg);
+        public abstract void CalcActualDmgToBeTaken(ICombatList attackers,
+                                                    ICombatList defenders,
+                                                    decimal baseDmg,
+                                                    int attackIndex,
+                                                    out decimal actualDmg);
 
         public abstract bool InRange(ICombatObject obj);
 
@@ -132,6 +141,7 @@ namespace Game.Battle.CombatObjects
         #endregion
 
         #region Public Methods
+
         public virtual void ExitBattle()
         {
             Disposed = true;

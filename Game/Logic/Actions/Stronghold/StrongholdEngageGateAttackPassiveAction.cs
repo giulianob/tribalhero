@@ -2,11 +2,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Game.Battle;
 using Game.Battle.CombatGroups;
-using Game.Battle.CombatObjects;
-using Game.Battle.Reporting;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
@@ -22,31 +19,29 @@ namespace Game.Logic.Actions
 {
     public class StrongholdEngageGateAttackPassiveAction : PassiveAction
     {
-        private StaminaMonitor StaminaMonitor { get; set; }
-
         private readonly BattleFormulas battleFormula;
-
-        private readonly IGameObjectLocator gameObjectLocator;
 
         private readonly BattleProcedure battleProcedure;
 
-        private readonly IDbManager dbManager;
-
         private readonly uint cityId;
 
-        private uint groupId;
+        private readonly IDbManager dbManager;
 
-        private readonly uint troopObjectId;
+        private readonly IGameObjectLocator gameObjectLocator;
 
         private readonly uint targetStrongholdId;
 
+        private readonly uint troopObjectId;
+
+        private uint groupId;
+
         public StrongholdEngageGateAttackPassiveAction(uint cityId,
-                                         uint troopObjectId,
-                                         uint targetStrongholdId,
-                                         BattleFormulas battleFormula,
-                                         IGameObjectLocator gameObjectLocator,
-                                         BattleProcedure battleProcedure,
-                                         IDbManager dbManager)
+                                                       uint troopObjectId,
+                                                       uint targetStrongholdId,
+                                                       BattleFormulas battleFormula,
+                                                       IGameObjectLocator gameObjectLocator,
+                                                       BattleProcedure battleProcedure,
+                                                       IDbManager dbManager)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
@@ -58,12 +53,12 @@ namespace Game.Logic.Actions
         }
 
         public StrongholdEngageGateAttackPassiveAction(uint id,
-                                         bool isVisible,
-                                         IDictionary<string, string> properties,
-                                         BattleFormulas battleFormula,
-                                         IGameObjectLocator gameObjectLocator,
-                                         BattleProcedure battleProcedure,
-                                         IDbManager dbManager)
+                                                       bool isVisible,
+                                                       IDictionary<string, string> properties,
+                                                       BattleFormulas battleFormula,
+                                                       IGameObjectLocator gameObjectLocator,
+                                                       BattleProcedure battleProcedure,
+                                                       IDbManager dbManager)
                 : base(id, isVisible)
         {
             this.battleFormula = battleFormula;
@@ -81,9 +76,14 @@ namespace Game.Logic.Actions
             gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold);
             RegisterBattleListeners(targetStronghold);
 
-            StaminaMonitor = new StaminaMonitor(targetStronghold.GateBattle, targetStronghold.GateBattle.GetCombatGroup(groupId), short.Parse(properties["stamina"]), battleFormula);
+            StaminaMonitor = new StaminaMonitor(targetStronghold.GateBattle,
+                                                targetStronghold.GateBattle.GetCombatGroup(groupId),
+                                                short.Parse(properties["stamina"]),
+                                                battleFormula);
             StaminaMonitor.PropertyChanged += (sender, args) => dbManager.Save(this);
         }
+
+        private StaminaMonitor StaminaMonitor { get; set; }
 
         public override ActionType Type
         {
@@ -97,11 +97,13 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return XmlSerializer.Serialize(new[]
-                {
-                        new XmlKvPair("target_stronghold_id", targetStrongholdId), new XmlKvPair("troop_city_id", cityId),
-                        new XmlKvPair("troop_object_id", troopObjectId), new XmlKvPair("group_id", groupId), new XmlKvPair("stamina", StaminaMonitor.Stamina)
-                });
+                return
+                        XmlSerializer.Serialize(new[]
+                        {
+                                new XmlKvPair("target_stronghold_id", targetStrongholdId),
+                                new XmlKvPair("troop_city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId),
+                                new XmlKvPair("group_id", groupId), new XmlKvPair("stamina", StaminaMonitor.Stamina)
+                        });
             }
         }
 
@@ -126,7 +128,8 @@ namespace Game.Logic.Actions
             ITroopObject troopObject;
             IStronghold targetStronghold;
 
-            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) || !gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold))
+            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) ||
+                !gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold))
             {
                 return Error.ObjectNotFound;
             }
@@ -134,14 +137,20 @@ namespace Game.Logic.Actions
             // Create the group in the battle
             uint battleId;
             ICombatGroup combatGroup;
-            battleProcedure.JoinOrCreateStrongholdGateBattle(targetStronghold, troopObject, out combatGroup, out battleId);
+            battleProcedure.JoinOrCreateStrongholdGateBattle(targetStronghold,
+                                                             troopObject,
+                                                             out combatGroup,
+                                                             out battleId);
             groupId = combatGroup.Id;
 
             // Register the battle listeners
             RegisterBattleListeners(targetStronghold);
 
             // Create stamina monitor
-            StaminaMonitor = new StaminaMonitor(targetStronghold.GateBattle, combatGroup, battleFormula.GetStamina(troopObject.Stub, targetStronghold), battleFormula);
+            StaminaMonitor = new StaminaMonitor(targetStronghold.GateBattle,
+                                                combatGroup,
+                                                battleFormula.GetStamina(troopObject.Stub, targetStronghold),
+                                                battleFormula);
             StaminaMonitor.PropertyChanged += (sender, args) => dbManager.Save(this);
 
             // Set the attacking troop object to the correct state and stamina
@@ -158,12 +167,13 @@ namespace Game.Logic.Actions
         }
 
         private void BattleWithdrawAttacker(IBattleManager battle, ICombatGroup group)
-        {            
+        {
             ICity city;
             ITroopObject troopObject;
             IStronghold targetStronghold;
 
-            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) || !gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold))
+            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) ||
+                !gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold))
             {
                 throw new ArgumentException();
             }
@@ -184,7 +194,7 @@ namespace Game.Logic.Actions
 
             StateChange(ActionState.Completed);
         }
-        
+
         public override void UserCancelled()
         {
         }

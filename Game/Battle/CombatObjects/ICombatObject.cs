@@ -1,14 +1,13 @@
 using System;
 using Game.Data;
 using Game.Data.Stats;
-using Game.Data.Troop;
 using Game.Map;
 using Game.Util.Locking;
 using Persistance;
 
 namespace Game.Battle.CombatObjects
 {
-    public interface ICombatObject: IComparable<object>, IPersistableObject, ILockable
+    public interface ICombatObject : IComparable<object>, IPersistableObject, ILockable
     {
         ushort MaxDmgRecv { get; set; }
 
@@ -46,7 +45,7 @@ namespace Game.Battle.CombatObjects
 
         ushort Type { get; }
 
-        Resource Loot { get; }        
+        Resource Loot { get; }
 
         BattleClass ClassType { get; }
 
@@ -62,7 +61,11 @@ namespace Game.Battle.CombatObjects
 
         void TakeDamage(decimal dmg, out Resource returning, out int attackPoints);
 
-        void CalcActualDmgToBeTaken(ICombatList attackers, ICombatList defenders, decimal baseDmg, int attackIndex, out decimal actualDmg);
+        void CalcActualDmgToBeTaken(ICombatList attackers,
+                                    ICombatList defenders,
+                                    decimal baseDmg,
+                                    int attackIndex,
+                                    out decimal actualDmg);
 
         bool InRange(ICombatObject obj);
 

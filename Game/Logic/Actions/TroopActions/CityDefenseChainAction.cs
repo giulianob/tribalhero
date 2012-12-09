@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
@@ -18,14 +17,21 @@ namespace Game.Logic.Actions
 {
     public class CityDefenseChainAction : ChainAction
     {
-        private readonly uint cityId;
-        private readonly uint troopObjectId;
-        private readonly uint targetCityId;
-        private readonly AttackMode mode;
-
         private readonly BattleProcedure battleProcedure;
 
-        public CityDefenseChainAction(uint cityId, uint troopObjectId, uint targetCityId, AttackMode mode, BattleProcedure battleProcedure)
+        private readonly uint cityId;
+
+        private readonly AttackMode mode;
+
+        private readonly uint targetCityId;
+
+        private readonly uint troopObjectId;
+
+        public CityDefenseChainAction(uint cityId,
+                                      uint troopObjectId,
+                                      uint targetCityId,
+                                      AttackMode mode,
+                                      BattleProcedure battleProcedure)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
@@ -34,7 +40,13 @@ namespace Game.Logic.Actions
             this.battleProcedure = battleProcedure;
         }
 
-        public CityDefenseChainAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, Dictionary<string, string> properties, BattleProcedure battleProcedure)
+        public CityDefenseChainAction(uint id,
+                                      string chainCallback,
+                                      PassiveAction current,
+                                      ActionState chainState,
+                                      bool isVisible,
+                                      Dictionary<string, string> properties,
+                                      BattleProcedure battleProcedure)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
             this.battleProcedure = battleProcedure;
@@ -57,10 +69,18 @@ namespace Game.Logic.Actions
             {
                 return
                         XmlSerializer.Serialize(new[]
-                                                {
-                                                        new XmlKvPair("city_id", cityId), new XmlKvPair("target_city_id", targetCityId),
-                                                        new XmlKvPair("troop_object_id", troopObjectId)
-                                                });
+                        {
+                                new XmlKvPair("city_id", cityId), new XmlKvPair("target_city_id", targetCityId),
+                                new XmlKvPair("troop_object_id", troopObjectId)
+                        });
+            }
+        }
+
+        public override ActionCategory Category
+        {
+            get
+            {
+                return ActionCategory.Defense;
             }
         }
 
@@ -80,20 +100,27 @@ namespace Game.Logic.Actions
 
             ICity targetCity;
             if (!World.Current.TryGetObjects(targetCityId, out targetCity))
+            {
                 return Error.ObjectNotFound;
+            }
 
             // Can't defend cities that are being deleted
             if (targetCity.Deleted != City.DeletedState.NotDeleted)
+            {
                 return Error.ObjectNotFound;
+            }
 
             // Can't send out defense while in battle
             if (city.Battle != null)
+            {
                 return Error.CityInBattle;
+            }
 
             //Load the units stats into the stub
             troopObject.Stub.BeginUpdate();
             troopObject.Stub.Template.LoadStats(TroopBattleGroup.Defense);
-            troopObject.Stub.RetreatCount = (ushort)Formula.Current.GetAttackModeTolerance(troopObject.Stub.TotalCount, mode);
+            troopObject.Stub.RetreatCount =
+                    (ushort)Formula.Current.GetAttackModeTolerance(troopObject.Stub.TotalCount, mode);
             troopObject.Stub.EndUpdate();
 
             city.References.Add(troopObject, this);
@@ -123,7 +150,9 @@ namespace Game.Logic.Actions
 
                     ITroopObject troopObject;
                     if (!city.TryGetTroop(troopObjectId, out troopObject))
+                    {
                         throw new Exception();
+                    }
 
                     city.References.Remove(troopObject, this);
                     city.Notifications.Remove(this);
@@ -147,14 +176,6 @@ namespace Game.Logic.Actions
         public override Error Validate(string[] parms)
         {
             return Error.Ok;
-        }
-
-        public override ActionCategory Category
-        {
-            get
-            {
-                return ActionCategory.Defense;
-            }
         }
     }
 }

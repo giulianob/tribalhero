@@ -41,7 +41,7 @@ namespace Game.Map
         {
             var tiles = new List<Position>(5) {new Position(x, y)};
 
-            if (y%2 == 0)
+            if (y % 2 == 0)
             {
                 tiles.Add(new Position(x, y - 1));
                 tiles.Add(new Position(x, y + 1));
@@ -63,7 +63,9 @@ namespace Game.Map
                 ushort regionId = Region.GetRegionIndex(tiles[i].X, tiles[i].Y);
                 var update = new TileUpdate(tiles[i].X, tiles[i].Y, CalculateRoad(tiles[i].X, tiles[i].Y, i == 0));
                 if (update.TileType == ushort.MaxValue)
+                {
                     continue; // Not a road here
+                }
                 List<TileUpdate> list;
                 if (!updates.TryGetValue(regionId, out list))
                 {
@@ -71,7 +73,9 @@ namespace Game.Map
                     updates.Add(regionId, list);
                 }
                 else
+                {
                     updates[regionId].Add(update);
+                }
             }
 
             SendUpdate(updates);
@@ -81,7 +85,7 @@ namespace Game.Map
         {
             var tiles = new List<Position>(5) {new Position(x, y)};
 
-            if (y%2 == 0)
+            if (y % 2 == 0)
             {
                 tiles.Add(new Position(x, y - 1));
                 tiles.Add(new Position(x, y + 1));
@@ -104,11 +108,19 @@ namespace Game.Map
 
                 TileUpdate update;
                 if (i == 0)
-                    update = new TileUpdate(tiles[i].X, tiles[i].Y, regionManager.RevertTileType(tiles[i].X, tiles[i].Y, false));
+                {
+                    update = new TileUpdate(tiles[i].X,
+                                            tiles[i].Y,
+                                            regionManager.RevertTileType(tiles[i].X, tiles[i].Y, false));
+                }
                 else
+                {
                     update = new TileUpdate(tiles[i].X, tiles[i].Y, CalculateRoad(tiles[i].X, tiles[i].Y, false));
+                }
                 if (update.TileType == ushort.MaxValue)
+                {
                     continue; // Not a road here
+                }
                 List<TileUpdate> list;
                 if (!updates.TryGetValue(regionId, out list))
                 {
@@ -116,7 +128,9 @@ namespace Game.Map
                     updates.Add(regionId, list);
                 }
                 else
+                {
                     updates[regionId].Add(update);
+                }
             }
 
             SendUpdate(updates);
@@ -125,71 +139,109 @@ namespace Game.Map
         private ushort CalculateRoad(uint x, uint y, bool createHere)
         {
             if (x <= 1 || y <= 1 || x >= Config.map_width || y >= Config.map_height)
+            {
                 return ushort.MaxValue;
+            }
 
             if (!createHere && !IsRoad(regionManager.GetTileType(x, y)))
+            {
                 return ushort.MaxValue;
+            }
 
             // Create array of neighbor roads
             byte[] neighbors;
 
-            if (y%2 == 0)
+            if (y % 2 == 0)
             {
                 neighbors = new[]
-                            {
-                                    IsRoad(x - 1, y - 1) ? (byte)1 : (byte)0, IsRoad(x - 1, y + 1) ? (byte)1 : (byte)0, IsRoad(x, y - 1) ? (byte)1 : (byte)0,
-                                    IsRoad(x, y + 1) ? (byte)1 : (byte)0,
-                            };
+                {
+                        IsRoad(x - 1, y - 1) ? (byte)1 : (byte)0, IsRoad(x - 1, y + 1) ? (byte)1 : (byte)0,
+                        IsRoad(x, y - 1) ? (byte)1 : (byte)0, IsRoad(x, y + 1) ? (byte)1 : (byte)0,
+                };
             }
             else
             {
                 neighbors = new[]
-                            {
-                                    IsRoad(x, y - 1) ? (byte)1 : (byte)0, IsRoad(x, y + 1) ? (byte)1 : (byte)0, IsRoad(x + 1, y - 1) ? (byte)1 : (byte)0,
-                                    IsRoad(x + 1, y + 1) ? (byte)1 : (byte)0,
-                            };
+                {
+                        IsRoad(x, y - 1) ? (byte)1 : (byte)0, IsRoad(x, y + 1) ? (byte)1 : (byte)0,
+                        IsRoad(x + 1, y - 1) ? (byte)1 : (byte)0, IsRoad(x + 1, y + 1) ? (byte)1 : (byte)0,
+                };
             }
 
             // Select appropriate tile based on the neighbors around this tile
             uint roadType = 0;
             if (neighbors.SequenceEqual(new byte[] {0, 0, 0, 0}))
+            {
                 roadType = 15;
+            }
             else if (neighbors.SequenceEqual(new byte[] {1, 0, 0, 0}))
+            {
                 roadType = 11;
+            }
             else if (neighbors.SequenceEqual(new byte[] {0, 1, 0, 0}))
+            {
                 roadType = 14;
+            }
             else if (neighbors.SequenceEqual(new byte[] {0, 0, 1, 0}))
+            {
                 roadType = 13;
+            }
             else if (neighbors.SequenceEqual(new byte[] {0, 0, 0, 1}))
+            {
                 roadType = 12;
+            }
             else if (neighbors.SequenceEqual(new byte[] {1, 1, 0, 0}))
+            {
                 roadType = 7;
+            }
             else if (neighbors.SequenceEqual(new byte[] {0, 0, 1, 1}))
+            {
                 roadType = 8;
+            }
             else if (neighbors.SequenceEqual(new byte[] {1, 0, 1, 0}))
+            {
                 roadType = 9;
+            }
             else if (neighbors.SequenceEqual(new byte[] {1, 0, 0, 1}))
+            {
                 roadType = 0;
+            }
             else if (neighbors.SequenceEqual(new byte[] {0, 1, 1, 0}))
+            {
                 roadType = 1;
+            }
             else if (neighbors.SequenceEqual(new byte[] {0, 1, 0, 1}))
+            {
                 roadType = 10;
+            }
             else if (neighbors.SequenceEqual(new byte[] {1, 1, 1, 0}))
+            {
                 roadType = 2;
+            }
             else if (neighbors.SequenceEqual(new byte[] {1, 1, 0, 1}))
+            {
                 roadType = 5;
+            }
             else if (neighbors.SequenceEqual(new byte[] {1, 0, 1, 1}))
+            {
                 roadType = 3;
+            }
             else if (neighbors.SequenceEqual(new byte[] {0, 1, 1, 1}))
+            {
                 roadType = 4;
+            }
             else if (neighbors.SequenceEqual(new byte[] {1, 1, 1, 1}))
+            {
                 roadType = 6;
+            }
 
             // Grab the list of actual tiles based on the road type we need.
             ushort[] types;
 
             if (World.Current[x, y].Exists(s => s is IStructure))
+            {
                 types = Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("RoadSetStructures");
+            }
             else
             {
                 //TODO: Load random road set
@@ -215,7 +267,7 @@ namespace Game.Map
         #region Nested type: TileUpdate
 
         /// <summary>
-        ///   Simple wrapper to keep track of tiles that were updated so we can send it in one shot to the client.
+        ///     Simple wrapper to keep track of tiles that were updated so we can send it in one shot to the client.
         /// </summary>
         private class TileUpdate
         {
@@ -227,7 +279,9 @@ namespace Game.Map
             }
 
             public uint X { get; set; }
+
             public uint Y { get; set; }
+
             public ushort TileType { get; set; }
         }
 

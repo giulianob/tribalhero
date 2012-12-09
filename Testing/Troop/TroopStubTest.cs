@@ -1,5 +1,4 @@
-﻿
-using Game.Data.Troop;
+﻿using Game.Data.Troop;
 using Xunit;
 
 namespace Testing.Troop
@@ -9,12 +8,12 @@ namespace Testing.Troop
         [Fact]
         public void TestUnitListsNoUnitsInStub()
         {
-            ITroopStub stub = new TroopStub(0,null);
+            ITroopStub stub = new TroopStub(0, null);
             stub.AddFormation(FormationType.Normal);
             stub.AddFormation(FormationType.Attack);
 
             var units = stub.ToUnitList();
-            
+
             Assert.True(units.Count == 0);
         }
 

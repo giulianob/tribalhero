@@ -12,13 +12,13 @@ namespace Game.Map
 {
     public class CityManager : ICityManager
     {
-        private readonly IDbManager dbManager;
-
-        private readonly IRegionManager regionManager;
+        private readonly Dictionary<uint, ICity> cities = new Dictionary<uint, ICity>();
 
         private readonly LargeIdGenerator cityIdGen = new LargeIdGenerator(300000, 200000);
 
-        private readonly Dictionary<uint, ICity> cities = new Dictionary<uint, ICity>();
+        private readonly IDbManager dbManager;
+
+        private readonly IRegionManager regionManager;
 
         public CityManager(IDbManager dbManager, IRegionManager regionManager)
         {
@@ -88,7 +88,7 @@ namespace Game.Map
                 foreach (var stub in city.Troops)
                 {
                     dbManager.Save(stub);
-                }                
+                }
 
                 CityRegion region = regionManager.CityRegions.GetCityRegion(city.X, city.Y);
                 if (region != null)
@@ -115,11 +115,12 @@ namespace Game.Map
         {
             cityId = UInt16.MaxValue;
             using (
-                    DbDataReader reader = DbPersistance.Current.ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE),
-                                                                            new[]
-                                                                            {
-                                                                                    new DbColumn("name", name, DbType.String)
-                                                                            }))
+                    DbDataReader reader =
+                            DbPersistance.Current.ReaderQuery(
+                                                              String.Format(
+                                                                            "SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1",
+                                                                            City.DB_TABLE),
+                                                              new[] {new DbColumn("name", name, DbType.String)}))
             {
                 if (!reader.HasRows)
                 {

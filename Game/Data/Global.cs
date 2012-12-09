@@ -2,13 +2,9 @@
 
 using System;
 using System.Collections.Generic;
-using Game.Data.Tribe;
-using Game.Logic;
-using Game.Map;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
-using Persistance;
 using log4net;
 
 #endregion
@@ -20,7 +16,7 @@ namespace Game.Data
         #region Locks enum
 
         /// <summary>
-        ///   List of global locks. These should all have negative ids so they do not conflict with player locks.
+        ///     List of global locks. These should all have negative ids so they do not conflict with player locks.
         /// </summary>
         public enum Locks
         {

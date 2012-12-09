@@ -1,6 +1,5 @@
 #region
 
-using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
@@ -13,8 +12,8 @@ namespace Game.Logic.Procedures
     public partial class Procedure
     {
         /// <summary>
-        /// Creates a troop object from the specified stationed troop and removes the stub from being stationed.
-        /// NOTE: This will fail if the stub is in a state besides Stationed (e.g. troop is in battle)
+        ///     Creates a troop object from the specified stationed troop and removes the stub from being stationed.
+        ///     NOTE: This will fail if the stub is in a state besides Stationed (e.g. troop is in battle)
         /// </summary>
         /// <returns></returns>
         public virtual bool TroopObjectCreateFromStation(ITroopStub stub, out ITroopObject troopObject)
@@ -39,7 +38,8 @@ namespace Game.Logic.Procedures
             stub.City.Add(troopObject);
 
             troopObject.BeginUpdate();
-            troopObject.Stats = new TroopStats(Formula.Current.GetTroopRadius(stub, null), Formula.Current.GetTroopSpeed(stub));
+            troopObject.Stats = new TroopStats(Formula.Current.GetTroopRadius(stub, null),
+                                               Formula.Current.GetTroopSpeed(stub));
             World.Current.Regions.Add(troopObject);
             troopObject.EndUpdate();
 

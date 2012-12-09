@@ -6,8 +6,6 @@ using System.IO;
 using Game.Data;
 using Game.Database;
 using Game.Map;
-using Ninject;
-using Persistance;
 
 #endregion
 
@@ -15,13 +13,20 @@ namespace Game.Setup
 {
     public class MapFactory
     {
+        private const int SKIP = 1;
+
         private readonly List<Position> dict = new List<Position>();
+
         private int index;
-        private const int SKIP = 1; 
 
         public MapFactory(string filename)
-        {            
-            using (var reader = new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+        {
+            using (
+                    var reader =
+                            new StreamReader(new FileStream(filename,
+                                                            FileMode.Open,
+                                                            FileAccess.Read,
+                                                            FileShare.ReadWrite)))
             {
                 String line;
                 while ((line = reader.ReadLine()) != null)
@@ -47,32 +52,44 @@ namespace Game.Setup
 
             SystemVariable mapStartIndex;
             if (Global.SystemVariables.TryGetValue("Map.start_index", out mapStartIndex) && index == 0)
-                index = (int)mapStartIndex.Value;            
+            {
+                index = (int)mapStartIndex.Value;
+            }
 
-            do {
-                if(index >= dict.Count)                
+            do
+            {
+                if (index >= dict.Count)
+                {
                     return false;
+                }
 
                 Position point = dict[index];
                 index += SKIP;
-                
+
                 // Check if objects already on that point
                 List<ISimpleGameObject> objects = World.Current.GetObjects(point.X, point.Y);
 
                 if (objects == null)
+                {
                     continue;
+                }
 
                 if (objects.Count != 0)
+                {
                     continue;
+                }
 
                 if (ForestManager.HasForestNear(point.X, point.Y, radius))
+                {
                     continue;
-                
+                }
+
                 x = point.X;
                 y = point.Y;
 
                 break;
-            } while (true);
+            }
+            while (true);
 
             if (mapStartIndex != null)
             {
@@ -82,6 +99,5 @@ namespace Game.Setup
 
             return true;
         }
-
     }
 }

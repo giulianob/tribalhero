@@ -20,9 +20,9 @@ namespace Game.Data.Stronghold
         void Activate(IStronghold stronghold);
 
         void TransferTo(IStronghold stronghold, ITribe tribe);
-        
+
         IEnumerable<Unit> GenerateNeutralStub(IStronghold stronghold);
-        
+
         IEnumerable<IStronghold> StrongholdsForTribe(ITribe tribe);
 
         void RemoveStrongholdsFromTribe(ITribe tribe);

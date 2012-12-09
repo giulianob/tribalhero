@@ -21,37 +21,52 @@ namespace Game.Map
                                     {
                                         var neighbors = new List<Position>(4);
                                         Position[] possibleNeighbors;
-                                        if (node.Y%2 == 0)
+                                        if (node.Y % 2 == 0)
                                         {
                                             possibleNeighbors = new[]
-                                                                {
-                                                                        new Position(node.X, node.Y - 1), new Position(node.X, node.Y + 1),
-                                                                        new Position(node.X - 1, node.Y - 1), new Position(node.X - 1, node.Y + 1)
-                                                                };
+                                            {
+                                                    new Position(node.X, node.Y - 1), new Position(node.X, node.Y + 1),
+                                                    new Position(node.X - 1, node.Y - 1),
+                                                    new Position(node.X - 1, node.Y + 1)
+                                            };
                                         }
                                         else
                                         {
                                             possibleNeighbors = new[]
-                                                                {
-                                                                        new Position(node.X + 1, node.Y - 1), new Position(node.X + 1, node.Y + 1),
-                                                                        new Position(node.X, node.Y - 1), new Position(node.X, node.Y + 1)
-                                                                };
+                                            {
+                                                    new Position(node.X + 1, node.Y - 1), new Position(node.X + 1, node.Y + 1),
+                                                    new Position(node.X, node.Y - 1), new Position(node.X, node.Y + 1)
+                                            };
                                         }
 
                                         neighbors.AddRange(possibleNeighbors.Where(delegate(Position location)
                                             {
                                                 if (!location.Equals(end))
                                                 {
-                                                    if (World.Current[location.X, location.Y].Exists(s => s is IStructure))
+                                                    if (
+                                                            World.Current[location.X, location.Y].Exists(
+                                                                                                         s =>
+                                                                                                         s is IStructure))
+                                                    {
                                                         return false;
+                                                    }
                                                     if (!World.Current.Roads.IsRoad(location.X, location.Y))
+                                                    {
                                                         return false;
-                                                    if (SimpleGameObject.TileDistance(location.X, location.Y, city.X, city.Y) >
-                                                        city.Radius)
+                                                    }
+                                                    if (
+                                                            SimpleGameObject.TileDistance(location.X,
+                                                                                          location.Y,
+                                                                                          city.X,
+                                                                                          city.Y) > city.Radius)
+                                                    {
                                                         return false;
+                                                    }
                                                 }
                                                 else if (fromStructure && node.Equals(start))
+                                                {
                                                     return false;
+                                                }
 
                                                 return true;
                                             }));
@@ -60,13 +75,18 @@ namespace Game.Map
                                     });
         }
 
-        private static bool BreadthFirst(Position end, List<Position> visited, Position excludedPoint, GetNeighbors getNeighbors)
+        private static bool BreadthFirst(Position end,
+                                         List<Position> visited,
+                                         Position excludedPoint,
+                                         GetNeighbors getNeighbors)
         {
             List<Position> nodes = getNeighbors(visited.Last());
 
             // Examine adjacent nodes for end goal
             if (nodes.Contains(end))
+            {
                 return true;
+            }
 
             // in breadth-first, recursion needs to come after visiting adjacent nodes
             foreach (var node in
@@ -74,7 +94,9 @@ namespace Game.Map
             {
                 visited.Add(node);
                 if (BreadthFirst(end, visited, excludedPoint, getNeighbors))
+                {
                     return true;
+                }
             }
 
             return false;

@@ -1,24 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Game.Comm;
-using Game.Comm.ProcessorCommands;
+﻿using Game.Comm;
 using Game.Util;
 
 namespace Game.Module
 {
-
     public class Chat
     {
         public enum ChatType
         {
             Global = 0,
+
             Tribe = 1,
+
             Offtopic = 2,
         }
 
-        private Channel channel;
+        private readonly Channel channel;
 
         public Chat(Channel channel)
         {

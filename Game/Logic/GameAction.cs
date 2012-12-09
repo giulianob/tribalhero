@@ -171,6 +171,17 @@ namespace Game.Logic
 
         public abstract String Properties { get; }
 
+        /// <summary>
+        ///     Specified the general purpose of this action (e.g. Attack, defend, etc...)
+        /// </summary>
+        public virtual ActionCategory Category
+        {
+            get
+            {
+                return ActionCategory.Unspecified;
+            }
+        }
+
         #region IPersistableObject Members
 
         public abstract string DbTable { get; }
@@ -179,9 +190,7 @@ namespace Game.Logic
         {
             get
             {
-                return new DbDependency[]
-                {
-                };
+                return new DbDependency[] {};
             }
         }
 
@@ -189,9 +198,7 @@ namespace Game.Logic
         {
             get
             {
-                return new DbColumn[]
-                {
-                };
+                return new DbColumn[] {};
             }
         }
 
@@ -201,11 +208,13 @@ namespace Game.Logic
             {
                 return new[]
                 {
-                        new DbColumn("id", ActionId, DbType.UInt16), new DbColumn("location_type", Location.LocationType.ToString(), DbType.String), new DbColumn("location_id", Location.LocationId, DbType.UInt32)
+                        new DbColumn("id", ActionId, DbType.UInt16),
+                        new DbColumn("location_type", Location.LocationType.ToString(), DbType.String),
+                        new DbColumn("location_id", Location.LocationId, DbType.UInt32)
                 };
             }
         }
-        
+
         public bool DbPersisted { get; set; }
 
         #endregion
@@ -250,18 +259,7 @@ namespace Game.Logic
                 }
             }
 
-            return seconds*Config.seconds_per_unit;
-        }
-
-        /// <summary>
-        /// Specified the general purpose of this action (e.g. Attack, defend, etc...)
-        /// </summary>
-        public virtual ActionCategory Category
-        {
-            get
-            {
-                return ActionCategory.Unspecified;
-            }
+            return seconds * Config.seconds_per_unit;
         }
     }
 }

@@ -6,13 +6,15 @@ namespace Game.Data.Troop
 {
     public interface ISimpleStub : IEnumerable<Formation>
     {
-        void AddUnit(FormationType formationType, ushort type, ushort count);
         byte FormationCount { get; }
+
         ushort TotalCount { get; }
 
+        void AddUnit(FormationType formationType, ushort type, ushort count);
+
         /// <summary>
-        /// Returns a list of units for specified formations.
-        /// If formation is empty, will return all units.
+        ///     Returns a list of units for specified formations.
+        ///     If formation is empty, will return all units.
         /// </summary>
         /// <param name="formations"></param>
         /// <returns></returns>
@@ -21,12 +23,6 @@ namespace Game.Data.Troop
 
     public interface ITroopStub : IPersistableList, ILockable, ISimpleStub
     {
-        event TroopStub.StateSwitched OnStateSwitched;
-
-        event TroopStub.Removed OnRemoved;
-
-        event TroopStub.OnUnitUpdate UnitUpdate;
-
         TroopTemplate Template { get; }
 
         TroopState State { get; set; }
@@ -46,7 +42,7 @@ namespace Game.Data.Troop
         byte Speed { get; }
 
         /// <summary>
-        ///   Returns the sum of the upkeep for all units in troop stub
+        ///     Returns the sum of the upkeep for all units in troop stub
         /// </summary>
         int Value { get; }
 
@@ -55,6 +51,12 @@ namespace Game.Data.Troop
         int Carry { get; }
 
         Formation this[FormationType type] { get; set; }
+
+        event TroopStub.StateSwitched OnStateSwitched;
+
+        event TroopStub.Removed OnRemoved;
+
+        event TroopStub.OnUnitUpdate UnitUpdate;
 
         void Starve(int percent = 5, bool bypassProtection = false);
 

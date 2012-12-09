@@ -13,23 +13,29 @@ namespace Game.Map
     {
         #region Constants
 
-        public const int TILE_SIZE = 2;
-
         public enum ObjectType : byte
         {
             City = 0,
+
             Forest = 1,
+
             Troop = 2,
+
             Stronghold = 6
         }
+
+        public const int TILE_SIZE = 2;
 
         #endregion
 
         #region Members
 
         private readonly List<ICityRegionObject> data = new List<ICityRegionObject>();
+
         private readonly object objLock = new object();
+
         private bool isDirty = true;
+
         private byte[] objects;
 
         #endregion
@@ -116,7 +122,7 @@ namespace Game.Map
 
         public static ushort GetRegionIndex(uint x, uint y)
         {
-            return (ushort)(x/Config.city_region_width + (y/Config.city_region_height)*Config.city_region_column);
+            return (ushort)(x / Config.city_region_width + (y / Config.city_region_height) * Config.city_region_column);
         }
 
         #endregion

@@ -8,7 +8,7 @@ using Game.Data;
 #endregion
 
 namespace Game.Map
-{    
+{
     public partial class ObjectList : IEnumerable<ISimpleGameObject>
     {
         #region Members
@@ -37,7 +37,9 @@ namespace Game.Map
             if (Dict.TryGetValue(index, out list))
             {
                 if (list.Contains(obj))
+                {
                     throw new Exception("WTF");
+                }
                 list.Add(obj);
             }
             else
@@ -65,7 +67,9 @@ namespace Game.Map
                 bool ret = list.Remove(obj);
 
                 if (list.Count == 0)
+                {
                     Dict.Remove(index); //Remove list if it is empty
+                }
 
                 return ret;
             }
@@ -80,7 +84,9 @@ namespace Game.Map
             int index = Region.GetTileIndex(x, y);
 
             if (Dict.TryGetValue(index, out list))
+            {
                 return new List<ISimpleGameObject>(list);
+            }
 
             return new List<ISimpleGameObject>();
         }

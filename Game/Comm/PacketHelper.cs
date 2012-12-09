@@ -47,8 +47,12 @@ namespace Game.Comm
             var actionTime = notification.Action as IActionTime;
             if (actionTime != null)
             {
-                packet.AddUInt32(actionTime.BeginTime == DateTime.MinValue ? 0 : UnixDateTime.DateTimeToUnix(actionTime.BeginTime.ToUniversalTime()));
-                packet.AddUInt32(actionTime.EndTime == DateTime.MinValue ? 0 : UnixDateTime.DateTimeToUnix(actionTime.EndTime.ToUniversalTime()));
+                packet.AddUInt32(actionTime.BeginTime == DateTime.MinValue
+                                         ? 0
+                                         : UnixDateTime.DateTimeToUnix(actionTime.BeginTime.ToUniversalTime()));
+                packet.AddUInt32(actionTime.EndTime == DateTime.MinValue
+                                         ? 0
+                                         : UnixDateTime.DateTimeToUnix(actionTime.EndTime.ToUniversalTime()));
             }
             else
             {
@@ -204,7 +208,9 @@ namespace Game.Comm
                 packet.AddByte(0);
                 packet.AddUInt32(actionStub.ActionId);
                 packet.AddUInt16((ushort)actionStub.Type);
-                packet.AddString(actionStub is ScheduledPassiveAction ? ((ScheduledPassiveAction)actionStub).NlsDescription : string.Empty);
+                packet.AddString(actionStub is ScheduledPassiveAction
+                                         ? ((ScheduledPassiveAction)actionStub).NlsDescription
+                                         : string.Empty);
             }
             else
             {
@@ -252,7 +258,7 @@ namespace Game.Comm
 
             packet.AddByte(stub.TroopId);
             packet.AddByte((byte)stub.State);
-            AddToPacket((ILocation)stub.Station, packet);
+            AddToPacket(stub.Station, packet);
 
             //Add troop template
             packet.AddByte(stub.Template.Count);
@@ -575,9 +581,8 @@ namespace Game.Comm
                                                               string.Format(
                                                                             "SELECT `city_id`, `rank`, `type` FROM `rankings` WHERE player_id = @playerId ORDER BY `type` ASC"),
                                                               new[]
-                                                              {
-                                                                      new DbColumn("playerId", player.PlayerId, DbType.String)
-                                                              }))
+                                                              {new DbColumn("playerId", player.PlayerId, DbType.String)})
+                    )
             {
                 while (reader.Read())
                 {
@@ -609,7 +614,11 @@ namespace Game.Comm
             }
         }
 
-        public static void AddTribeInfo(IStrongholdManager strongholdManager, ITribeManager tribeManager, Session session, ITribe tribe, Packet packet)
+        public static void AddTribeInfo(IStrongholdManager strongholdManager,
+                                        ITribeManager tribeManager,
+                                        Session session,
+                                        ITribe tribe,
+                                        Packet packet)
         {
             if (session.Player.IsInTribe && tribe.Id == session.Player.Tribesman.Tribe.Id)
             {
@@ -630,7 +639,9 @@ namespace Game.Comm
                     packet.AddString(tribesman.Player.Name);
                     packet.AddInt32(tribesman.Player.GetCityCount());
                     packet.AddByte(tribesman.Rank);
-                    packet.AddUInt32(tribesman.Player.IsLoggedIn ? 0 : UnixDateTime.DateTimeToUnix(tribesman.Player.LastLogin));
+                    packet.AddUInt32(tribesman.Player.IsLoggedIn
+                                             ? 0
+                                             : UnixDateTime.DateTimeToUnix(tribesman.Player.LastLogin));
                     AddToPacket(tribesman.Contribution, packet);
                 }
 
@@ -661,7 +672,7 @@ namespace Game.Comm
                     packet.AddString(stronghold.Name);
                     packet.AddByte((byte)stronghold.StrongholdState);
                     packet.AddByte(stronghold.Lvl);
-                    packet.AddFloat((float)stronghold.Gate);                    
+                    packet.AddFloat((float)stronghold.Gate);
                     packet.AddUInt32(stronghold.X);
                     packet.AddUInt32(stronghold.Y);
                     packet.AddInt32(stronghold.Troops.StationedHere().Sum(x => x.Upkeep));
@@ -711,7 +722,7 @@ namespace Game.Comm
                     else
                     {
                         packet.AddByte(0);
-                    }                    
+                    }
                 }
             }
             else
@@ -734,7 +745,8 @@ namespace Game.Comm
 
         public static void AddStrongholdProfileToPacket(Session session, IStronghold stronghold, Packet packet)
         {
-            if (stronghold.StrongholdState != StrongholdState.Occupied || !session.Player.IsInTribe || session.Player.Tribesman.Tribe.Id != stronghold.Tribe.Id)
+            if (stronghold.StrongholdState != StrongholdState.Occupied || !session.Player.IsInTribe ||
+                session.Player.Tribesman.Tribe.Id != stronghold.Tribe.Id)
             {
                 packet.AddByte(0);
                 packet.AddUInt32(stronghold.X);

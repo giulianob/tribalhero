@@ -21,9 +21,9 @@ namespace Testing.Actions
     public class StrongholdGateBattlePassiveActionTest
     {
         /// <summary>
-        /// Tests that if a tribe that deals a lot of dmg to the gate
-        /// leaves and someone else knocks it down, the one that knocks it down
-        /// gets the gate open
+        ///     Tests that if a tribe that deals a lot of dmg to the gate
+        ///     leaves and someone else knocks it down, the one that knocks it down
+        ///     gets the gate open
         /// </summary>
         [Fact]
         public void TestIgnoresTribesThatLeave()
@@ -58,10 +58,8 @@ namespace Testing.Actions
 
             var battle = new Mock<IBattleManager>();
             var attackers = new Mock<ICombatList>();
-            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<ICombatGroup>
-            {
-                    attackGroup1.Object
-            }.GetEnumerator());
+            attackers.Setup(p => p.GetEnumerator())
+                     .Returns(() => new List<ICombatGroup> {attackGroup1.Object}.GetEnumerator());
             battle.SetupGet(m => m.Attackers).Returns(attackers.Object);
 
             var stronghold = new Mock<IStronghold>();
@@ -69,10 +67,15 @@ namespace Testing.Actions
             stronghold.SetupGet(p => p.GateBattle).Returns(battle.Object);
             stronghold.SetupProperty(p => p.GateOpenTo);
 
-            IGameObjectLocator locator = new GameObjectLocatorStub(stronghold.Object, city1.Object, city2.Object, tribe1.Object, tribe2.Object);
+            IGameObjectLocator locator = new GameObjectLocatorStub(stronghold.Object,
+                                                                   city1.Object,
+                                                                   city2.Object,
+                                                                   tribe1.Object,
+                                                                   tribe2.Object);
 
             var battleProcedure = new Mock<BattleProcedure>();
-            battleProcedure.Setup(m => m.AddStrongholdGateToBattle(battle.Object, stronghold.Object)).Returns(gateGroup.Object);
+            battleProcedure.Setup(m => m.AddStrongholdGateToBattle(battle.Object, stronghold.Object))
+                           .Returns(gateGroup.Object);
 
             var action = new StrongholdGateBattlePassiveAction(300,
                                                                battleProcedure.Object,
@@ -132,8 +135,8 @@ namespace Testing.Actions
         }
 
         /// <summary>
-        /// Tests that if a couple of tribes are attacking the gate
-        /// the one with the most dmg is the one that opens the gate
+        ///     Tests that if a couple of tribes are attacking the gate
+        ///     the one with the most dmg is the one that opens the gate
         /// </summary>
         [Fact]
         public void TestTribeThatDealsMostDamageOpensGate()
@@ -168,11 +171,8 @@ namespace Testing.Actions
 
             var battle = new Mock<IBattleManager>();
             var attackers = new Mock<ICombatList>();
-            attackers.Setup(p => p.GetEnumerator()).Returns(() => new List<ICombatGroup>
-            {
-                    attackGroup1.Object,
-                    attackGroup2.Object
-            }.GetEnumerator());
+            attackers.Setup(p => p.GetEnumerator())
+                     .Returns(() => new List<ICombatGroup> {attackGroup1.Object, attackGroup2.Object}.GetEnumerator());
             battle.SetupGet(m => m.Attackers).Returns(attackers.Object);
 
             var stronghold = new Mock<IStronghold>();
@@ -180,10 +180,15 @@ namespace Testing.Actions
             stronghold.SetupGet(p => p.GateBattle).Returns(battle.Object);
             stronghold.SetupProperty(p => p.GateOpenTo);
 
-            IGameObjectLocator locator = new GameObjectLocatorStub(stronghold.Object, city1.Object, city2.Object, tribe1.Object, tribe2.Object);
+            IGameObjectLocator locator = new GameObjectLocatorStub(stronghold.Object,
+                                                                   city1.Object,
+                                                                   city2.Object,
+                                                                   tribe1.Object,
+                                                                   tribe2.Object);
 
             var battleProcedure = new Mock<BattleProcedure>();
-            battleProcedure.Setup(m => m.AddStrongholdGateToBattle(battle.Object, stronghold.Object)).Returns(gateGroup.Object);
+            battleProcedure.Setup(m => m.AddStrongholdGateToBattle(battle.Object, stronghold.Object))
+                           .Returns(gateGroup.Object);
 
             var action = new StrongholdGateBattlePassiveAction(300,
                                                                battleProcedure.Object,

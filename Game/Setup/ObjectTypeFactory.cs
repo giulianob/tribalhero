@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using Common;
 using Game.Data;
-using Game.Util;
 
 #endregion
 
@@ -22,15 +21,23 @@ namespace Game.Setup
         }
 
         public ObjectTypeFactory(string filename)
-        {            
-            using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
+        {
+            using (
+                    var reader =
+                            new CsvReader(
+                                    new StreamReader(new FileStream(filename,
+                                                                    FileMode.Open,
+                                                                    FileAccess.Read,
+                                                                    FileShare.ReadWrite))))
             {
                 String[] toks;
                 List<ushort> set;
                 while ((toks = reader.ReadRow()) != null)
                 {
                     if (toks[0].Length <= 0)
+                    {
                         continue;
+                    }
 
                     if (!dict.TryGetValue(toks[0], out set))
                     {

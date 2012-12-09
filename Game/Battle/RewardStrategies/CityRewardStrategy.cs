@@ -11,9 +11,9 @@ namespace Game.Battle.RewardStrategies
 {
     public class CityRewardStrategy : IRewardStrategy
     {
-        private readonly ICity city;
-
         private readonly BattleFormulas battleFormulas;
+
+        private readonly ICity city;
 
         private readonly Formula formula;
 
@@ -31,14 +31,14 @@ namespace Game.Battle.RewardStrategies
             city.Resource.Subtract(loot, formula.HiddenResource(city, true), out actualLoot);
             city.EndUpdate();
         }
-        
+
         public void GiveAttackerRewards(ICombatObject attacker, int attackPoints, Resource loot)
         {
             attacker.ReceiveReward(attackPoints, loot);
         }
 
         public void GiveDefendersRewards(IEnumerable<ICombatObject> defenders, int attackPoints, Resource loot)
-        {            
+        {
             // Any loot being added to the defender is loot dropped by the attacker
             if (!loot.Empty)
             {
@@ -60,7 +60,11 @@ namespace Game.Battle.RewardStrategies
                     defendingCity.EndUpdate();
                 }
 
-                var tribes = new List<ITribe>(uniqueCities.Where(w => w.Owner.Tribesman != null).Select(s => s.Owner.Tribesman.Tribe).Distinct());
+                var tribes =
+                        new List<ITribe>(
+                                uniqueCities.Where(w => w.Owner.Tribesman != null)
+                                            .Select(s => s.Owner.Tribesman.Tribe)
+                                            .Distinct());
 
                 // Need to queue this since the tribe is probably not locked
                 // The defense points will be persisted because the DefensePoint

@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.IO;
@@ -25,9 +24,17 @@ namespace Persistance.Managers
         private readonly string connectionString;
 
         private readonly ConcurrentDictionary<Type, String> createCommands = new ConcurrentDictionary<Type, String>();
-        private readonly ConcurrentDictionary<Type, String> createListCommands = new ConcurrentDictionary<Type, String>();
+
+        private readonly ConcurrentDictionary<Type, String> createListCommands =
+                new ConcurrentDictionary<Type, String>();
+
         private readonly ConcurrentDictionary<Type, String> deleteCommands = new ConcurrentDictionary<Type, String>();
-        private readonly ConcurrentDictionary<Type, String> deleteListCommands = new ConcurrentDictionary<Type, String>();
+
+        private readonly ConcurrentDictionary<Type, String> deleteListCommands =
+                new ConcurrentDictionary<Type, String>();
+
+        private readonly ILogger logger;
+
         private readonly ConcurrentDictionary<Type, String> saveCommands = new ConcurrentDictionary<Type, String>();
 
         private readonly bool verbose;
@@ -35,13 +42,25 @@ namespace Persistance.Managers
         private DateTime lastProbe;
 
         private bool paused;
+
         private long queriesRan;
 
-        private readonly ILogger logger;
-
-        public MySqlDbManager(ILogger logger, string hostname, string username, string password, string database, int timeout, bool verbose)
+        public MySqlDbManager(ILogger logger,
+                              string hostname,
+                              string username,
+                              string password,
+                              string database,
+                              int timeout,
+                              bool verbose)
         {
-            connectionString = string.Format("Database={0};Host={1};User Id={2};Password={3};Connection Timeout={4};Default Command Timeout={4};", database, hostname, username, password, timeout);
+            connectionString =
+                    string.Format(
+                                  "Database={0};Host={1};User Id={2};Password={3};Connection Timeout={4};Default Command Timeout={4};",
+                                  database,
+                                  hostname,
+                                  username,
+                                  password,
+                                  timeout);
             this.logger = logger;
             this.verbose = verbose;
         }
@@ -81,17 +100,23 @@ namespace Persistance.Managers
         public bool Save(params IPersistable[] objects)
         {
             if (paused)
+            {
                 return true;
+            }
 
             InitPersistantTransaction();
 
             var mySqlTransaction = (persistantTransaction.Transaction as MySqlTransaction);
 
             if (mySqlTransaction == null)
+            {
                 throw new Exception("Invalid transaction specified");
+            }
 
             if (objects.Length == 0)
+            {
                 return true;
+            }
 
             foreach (var obj in objects)
             {
@@ -100,10 +125,14 @@ namespace Persistance.Managers
                 if (obj is IPersistableObject)
                 {
                     var persistableObj = obj as IPersistableObject;
-                    command = persistableObj.DbPersisted ? UpdateObject(mySqlTransaction.Connection, mySqlTransaction, persistableObj) : CreateObject(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
+                    command = persistableObj.DbPersisted
+                                      ? UpdateObject(mySqlTransaction.Connection, mySqlTransaction, persistableObj)
+                                      : CreateObject(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
 
                     if (command != null)
+                    {
                         ExecuteNonQuery(command);
+                    }
 
                     persistableObj.DbPersisted = true;
                 }
@@ -115,12 +144,16 @@ namespace Persistance.Managers
                     command = DeleteList(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
 
                     if (command != null)
+                    {
                         ExecuteNonQuery(command);
+                    }
 
                     command = CreateList(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
 
                     if (command != null)
+                    {
                         ExecuteNonQuery(command);
+                    }
                 }
 
                 Type objType = obj.GetType();
@@ -136,21 +169,29 @@ namespace Persistance.Managers
         public bool Delete(params IPersistable[] objects)
         {
             if (paused)
+            {
                 return true;
+            }
 
             InitPersistantTransaction();
 
             var mySqlTransaction = (persistantTransaction.Transaction as MySqlTransaction);
             if (mySqlTransaction == null)
+            {
                 throw new Exception("Invalid transaction specified");
+            }
 
             if (objects.Length == 0)
+            {
                 return true;
+            }
 
             foreach (var obj in objects)
             {
                 if (obj is IPersistableObject && !(obj as IPersistableObject).DbPersisted)
+                {
                     continue;
+                }
 
                 if (obj is IPersistableObject)
                 {
@@ -180,7 +221,9 @@ namespace Persistance.Managers
                         PropertyInfo propInfo = objType.GetProperty(dependency.Property);
                         var persistable = propInfo.GetValue(obj, null) as IPersistable;
                         if (persistable != null)
+                        {
                             Delete(persistable);
+                        }
                     }
                 }
             }
@@ -194,12 +237,16 @@ namespace Persistance.Managers
             foreach (var dependency in obj.DbDependencies)
             {
                 if (!dependency.AutoDelete)
+                {
                     continue;
+                }
 
                 PropertyInfo propInfo = objType.GetProperty(dependency.Property);
                 var persistable = propInfo.GetValue(obj, null) as IPersistable;
                 if (persistable != null)
+                {
                     Delete(persistable);
+                }
             }
         }
 
@@ -215,9 +262,13 @@ namespace Persistance.Managers
             foreach (var column in obj.DbPrimaryKey)
             {
                 if (startComma)
+                {
                     where += " AND ";
+                }
                 else
+                {
                     startComma = true;
+                }
 
                 where += string.Format("`{0}`=@{0}", column.Column);
             }
@@ -228,12 +279,16 @@ namespace Persistance.Managers
         public void LogCommand(DbCommand command, bool onlyIfVerbose = true)
         {
             if (command == null || (onlyIfVerbose && !verbose))
+            {
                 return;
+            }
 
             var sqlwriter = new StringWriter();
             sqlwriter.Write("({0} {1} (", Thread.CurrentThread.ManagedThreadId, command.CommandText);
             foreach (MySqlParameter param in command.Parameters)
+            {
                 sqlwriter.Write("{0}={1},", param, ((param.Value != null) ? param.Value.ToString() : "NULL"));
+            }
             sqlwriter.Write(")");
 
             logger.Info("{0}", sqlwriter.ToString());
@@ -252,9 +307,13 @@ namespace Persistance.Managers
             foreach (var column in primaryKeyValues)
             {
                 if (startComma)
+                {
                     where += " AND ";
+                }
                 else
+                {
                     startComma = true;
+                }
 
                 where += string.Format("`{0}`=@{0}", column.Column);
             }
@@ -265,7 +324,9 @@ namespace Persistance.Managers
         public DbDataReader ReaderQuery(string query, DbColumn[] parms = null)
         {
             if (parms == null)
+            {
                 parms = new DbColumn[] {};
+            }
 
             MySqlConnection connection = GetConnection();
 
@@ -274,7 +335,9 @@ namespace Persistance.Managers
             command.Connection = connection;
             command.CommandText = query;
             foreach (var parm in parms)
+            {
                 AddParameter(command, parm);
+            }
 
             LogCommand(command);
 
@@ -284,10 +347,14 @@ namespace Persistance.Managers
         public void Query(string query, DbColumn[] parms)
         {
             if (paused)
+            {
                 return;
+            }
 
             if (persistantTransaction == null)
+            {
                 throw new Exception("Calling transactional query outside of transactional block");
+            }
 
             InitPersistantTransaction();
             MySqlCommand command = ((MySqlTransaction)persistantTransaction.Transaction).Connection.CreateCommand();
@@ -296,7 +363,9 @@ namespace Persistance.Managers
 
             command.CommandText = query;
             foreach (var parm in parms)
+            {
                 AddParameter(command, parm);
+            }
 
             ExecuteNonQuery(command);
         }
@@ -304,10 +373,14 @@ namespace Persistance.Managers
         public void Rollback()
         {
             if (persistantTransaction == null)
+            {
                 throw new Exception("Not inside of a transaction");
+            }
 
             if (verbose)
+            {
                 logger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") Transaction rollback");
+            }
 
             persistantTransaction.Rollback();
         }
@@ -335,7 +408,9 @@ namespace Persistance.Managers
             while (reader.Read())
             {
                 if ((String)reader[0] == "schema_migrations")
+                {
                     continue;
+                }
 
                 MySqlConnection truncateConnection = GetConnection();
                 MySqlCommand truncateCommand = connection.CreateCommand();
@@ -378,7 +453,9 @@ namespace Persistance.Managers
         private void InitPersistantTransaction()
         {
             if (persistantTransaction == null || persistantTransaction.Transaction != null)
+            {
                 return;
+            }
 
             MySqlConnection connection = GetConnection();
 
@@ -389,7 +466,9 @@ namespace Persistance.Managers
             }
 
             if (verbose)
+            {
                 logger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") Transaction started");
+            }
 
             try
             {
@@ -412,13 +491,17 @@ namespace Persistance.Managers
             ExecuteNonQuery(command);
         }
 
-        private MySqlCommand UpdateObject(MySqlConnection connection, MySqlTransaction transaction, IPersistableObject obj)
+        private MySqlCommand UpdateObject(MySqlConnection connection,
+                                          MySqlTransaction transaction,
+                                          IPersistableObject obj)
         {
             string commandText;
 
             DbColumn[] columns = obj.DbColumns;
             if (columns.Length == 0)
+            {
                 return null;
+            }
 
             if (!saveCommands.TryGetValue(obj.GetType(), out commandText))
             {
@@ -427,9 +510,13 @@ namespace Persistance.Managers
                 foreach (var column in obj.DbColumns)
                 {
                     if (startComma)
+                    {
                         values += ", ";
+                    }
                     else
+                    {
                         startComma = true;
+                    }
 
                     values += string.Format("`{0}`=@{0}", column.Column);
                 }
@@ -439,9 +526,13 @@ namespace Persistance.Managers
                 foreach (var column in obj.DbPrimaryKey)
                 {
                     if (startComma)
+                    {
                         where += " AND ";
+                    }
                     else
+                    {
                         startComma = true;
+                    }
 
                     where += string.Format("{0}=@{0}", column.Column);
                 }
@@ -455,13 +546,19 @@ namespace Persistance.Managers
             command.CommandText = commandText;
 
             if (transaction != null)
+            {
                 command.Transaction = transaction;
+            }
 
             foreach (var column in columns)
+            {
                 AddParameter(command, column);
+            }
 
             foreach (var column in obj.DbPrimaryKey)
+            {
                 AddParameter(command, column);
+            }
 
             return command;
         }
@@ -479,7 +576,9 @@ namespace Persistance.Managers
                 foreach (var column in obj.DbPrimaryKey)
                 {
                     if (startComma)
+                    {
                         columns += ",";
+                    }
                     startComma = true;
                     columns += string.Format("`{0}`", column.Column);
                 }
@@ -487,7 +586,9 @@ namespace Persistance.Managers
                 foreach (var column in obj.DbListColumns)
                 {
                     if (startComma)
+                    {
                         columns += ",";
+                    }
                     startComma = true;
                     columns += string.Format("`{0}`", column.Column);
                 }
@@ -507,7 +608,9 @@ namespace Persistance.Managers
                 empty = false;
 
                 if (startColumnsComma)
+                {
                     builder.Append(", (");
+                }
                 else
                 {
                     builder.Append("(");
@@ -519,9 +622,13 @@ namespace Persistance.Managers
                 foreach (var column in obj.DbPrimaryKey)
                 {
                     if (startComma)
+                    {
                         builder.Append(", ");
+                    }
                     else
+                    {
                         startComma = true;
+                    }
 
                     builder.Append("'" + column.Value + "'");
                 }
@@ -529,9 +636,13 @@ namespace Persistance.Managers
                 foreach (var column in columns)
                 {
                     if (startComma)
+                    {
                         builder.Append(", ");
+                    }
                     else
+                    {
                         startComma = true;
+                    }
 
                     builder.Append("'" + column.Value + "'");
                 }
@@ -539,19 +650,25 @@ namespace Persistance.Managers
             }
 
             if (empty)
+            {
                 return null;
+            }
 
             MySqlCommand command = connection.CreateCommand();
 
             if (transaction != null)
+            {
                 command.Transaction = transaction;
+            }
 
             command.CommandText = builder.ToString();
 
             return command;
         }
 
-        private MySqlCommand CreateObject(MySqlConnection connection, MySqlTransaction transaction, IPersistableObject obj)
+        private MySqlCommand CreateObject(MySqlConnection connection,
+                                          MySqlTransaction transaction,
+                                          IPersistableObject obj)
         {
             string commandText;
 
@@ -594,13 +711,19 @@ namespace Persistance.Managers
             command.CommandText = commandText;
 
             if (transaction != null)
+            {
                 command.Transaction = transaction;
+            }
 
             foreach (var column in obj.DbColumns)
+            {
                 AddParameter(command, column);
+            }
 
             foreach (var column in obj.DbPrimaryKey)
+            {
                 AddParameter(command, column);
+            }
 
             return command;
         }
@@ -616,9 +739,13 @@ namespace Persistance.Managers
                 foreach (var column in obj.DbPrimaryKey)
                 {
                     if (startComma)
+                    {
                         where += " AND ";
+                    }
                     else
+                    {
                         startComma = true;
+                    }
 
                     where += string.Format("`{0}`=@{0}", column.Column);
                 }
@@ -632,15 +759,21 @@ namespace Persistance.Managers
             command.CommandText = commandText;
 
             if (transaction != null)
+            {
                 command.Transaction = transaction;
+            }
 
             foreach (var column in obj.DbPrimaryKey)
+            {
                 AddParameter(command, column, DataRowVersion.Original);
+            }
 
             return command;
         }
 
-        private MySqlCommand DeleteObject(MySqlConnection connection, MySqlTransaction transaction, IPersistableObject obj)
+        private MySqlCommand DeleteObject(MySqlConnection connection,
+                                          MySqlTransaction transaction,
+                                          IPersistableObject obj)
         {
             string commandText;
 
@@ -651,9 +784,13 @@ namespace Persistance.Managers
                 foreach (var column in obj.DbPrimaryKey)
                 {
                     if (startComma)
+                    {
                         where += " AND ";
+                    }
                     else
+                    {
                         startComma = true;
+                    }
 
                     where += string.Format("`{0}`=@{0}", column.Column);
                 }
@@ -667,24 +804,34 @@ namespace Persistance.Managers
             command.CommandText = commandText;
 
             if (transaction != null)
+            {
                 command.Transaction = transaction;
+            }
 
             foreach (var column in obj.DbPrimaryKey)
+            {
                 AddParameter(command, column, DataRowVersion.Original);
+            }
 
             return command;
         }
 
-        private static void AddParameter(MySqlCommand command, DbColumn column, DataRowVersion sourceVersion = DataRowVersion.Default)
+        private static void AddParameter(MySqlCommand command,
+                                         DbColumn column,
+                                         DataRowVersion sourceVersion = DataRowVersion.Default)
         {
             MySqlParameter parameter = command.CreateParameter();
             parameter.ParameterName = "@" + column.Column;
 
             if (column.Type != DbType.Object)
+            {
                 parameter.DbType = column.Type;
+            }
 
             if (column.Size > 0)
+            {
                 parameter.Size = column.Size;
+            }
 
             parameter.SourceVersion = sourceVersion;
             parameter.Value = column.Value;
@@ -707,14 +854,16 @@ namespace Persistance.Managers
                     affectedRows = command.ExecuteNonQuery();
                     break;
                 }
-                catch (MySqlException e)
+                catch(MySqlException e)
                 {
-                    switch (e.Number)
+                    switch(e.Number)
                     {
                         case 1213:
                             Thread.Sleep(0);
                             if (command.Transaction == persistantTransaction.Transaction)
+                            {
                                 persistantTransaction.RerunTransaction();
+                            }
                             break;
                         case 1215:
                             Thread.Sleep(0);
@@ -724,14 +873,17 @@ namespace Persistance.Managers
                             break;
                     }
                 }
-                catch (Exception e)
+                catch(Exception e)
                 {
-                    HandleGeneralException(e, command);                    
+                    HandleGeneralException(e, command);
                 }
-            } while (true);                                      
+            }
+            while (true);
 
             if (command.Transaction != null && command.Transaction == persistantTransaction.Transaction)
+            {
                 persistantTransaction.Commands.Add(command);
+            }
 
             return affectedRows;
         }
@@ -741,7 +893,9 @@ namespace Persistance.Managers
             logger.Error(e, "General database error on thread {0}", Thread.CurrentThread.ManagedThreadId);
 
             if (command != null)
+            {
                 LogCommand(command, false);
+            }
 
             Environment.Exit(2);
         }

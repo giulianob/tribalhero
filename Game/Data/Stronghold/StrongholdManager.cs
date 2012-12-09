@@ -160,7 +160,7 @@ namespace Game.Data.Stronghold
             regionManager.Add(stronghold);
             stronghold.EndUpdate();
             
-            chat.SendSystemChat("STRONGHOLD_ACTIVE", stronghold.Id.ToString(CultureInfo.InvariantCulture), stronghold.Name);
+            chat.SendSystemChat("STRONGHOLD_ACTIVE", stronghold.Name);
         }
 
         public void TransferTo(IStronghold stronghold, ITribe tribe)

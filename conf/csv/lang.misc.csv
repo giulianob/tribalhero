@@ -141,9 +141,9 @@ MINIMAP_LEGEND_NEWBIE,Protection
 MINIMAP_LEGEND_NEWBIE_YES,Newbie protected
 MINIMAP_LEGEND_NEWBIE_NO,Not protected
 ,
-STRONGHOLD_ACTIVE,"<a href=""event:viewStrongholdProfileByName:{0}"">{0}</a> has been built and can now be captured."
-STRONGHOLD_TAKEN_OVER,"<a href=""event:viewStrongholdProfileByName:{0}"">{0}</a> has been taken over by <a href=""event:viewTribeProfileByName:{1}"">{1}</a> from the hands of <a href=""event:viewTribeProfileByName:{2}"">{2}</a>."
-STRONGHOLD_NEUTRAL_TAKEN_OVER,"<a href=""event:viewStrongholdProfileByName:{0}"">{0}</a> is now under the control of <a href=""event:viewTribeProfileByName:{1}"">{1}</a>."
+STRONGHOLD_ACTIVE,"<a href=""event:gotoStrongholdByName:{0}"">{0}</a> has been built and can now be captured."
+STRONGHOLD_TAKEN_OVER,"<a href=""event:gotoStrongholdByName:{0}"">{0}</a> has been taken over by <a href=""event:viewTribeProfileByName:{1}"">{1}</a> from the hands of <a href=""event:viewTribeProfileByName:{2}"">{2}</a>."
+STRONGHOLD_NEUTRAL_TAKEN_OVER,"<a href=""event:gotoStrongholdByName:{0}"">{0}</a> is now under the control of <a href=""event:viewTribeProfileByName:{1}"">{1}</a>."
 STRONGHOLD_NO_TROOPS,There are no troops protecting this stronghold.
 STRONGHOLD_GATE_REPAIRED,Gate is completely repaired.
 STRONGHOLD_STATE_GATE_ATTACK,gate is under attack

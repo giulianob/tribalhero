@@ -5,6 +5,13 @@ package src
 	{
 		public static var version: int;
 		public static var revision: int;
+        
+        public static var welcomeMessage: Array = [
+            '<a href="http://tribalhero.com/pages/donate" target="_blank">Help us</a> improve the game.',
+			'Remember to keep it classy.',
+			'Not sure what to do? <a href="http://tribalhero.wikia.com" target="_blank">Visit the wiki for help</a>.'
+        ];
+        public static var motd:String = "";
 		
 		/* SESSION VARIABLES */
 		public static var username: String = "1234";
@@ -114,7 +121,7 @@ package src
 		public static const miniMapLargeScreenW: int = 800;
 		public static const miniMapLargeScreenH: int = 550;
 
-		public static const miniMapLargeScreenX: Function = function(width: int) : int {
+		public static const miniMapLargeScreenX: Function = function(width: int) : int {        
 			var x : int = ((screenW - 0) / 2) - ((width +0) / 2);
 			if (x < CityRegionLegend.LEGEND_WIDTH) {
 				var delta : int = CityRegionLegend.LEGEND_WIDTH - x;

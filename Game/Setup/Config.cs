@@ -194,6 +194,8 @@ namespace Game.Setup
 
         public static int idle_days = 3;
 
+        public static string welcome_motd = string.Empty;
+
         [ThreadStatic]
         private static Random random;
 

@@ -58,10 +58,12 @@ package src.UI.Dialog
 			for (var i: int = 0; i < chats.length; i++) {
 				chats[i] = "";
 			}
-			
-			log(TYPE_GLOBAL, '<a href="http://tribalhero.com/pages/donate" target="_blank">We need donations</a> to keep improving the game.', false, false);
-			log(TYPE_GLOBAL, 'Remember to keep it classy.');
-			log(TYPE_GLOBAL, 'Not sure what to do? <a href="http://tribalhero.wikia.com" target="_blank">Visit the wiki for help</a>.', false, false);
+
+            for each(var msg: String in Constants.welcomeMessage) {
+                log(TYPE_GLOBAL, msg, false, false);
+            }
+            
+            log(TYPE_GLOBAL, Constants.motd, false, false);
 			
 			new StickyScroll(scrollConsole);
 			
@@ -304,10 +306,7 @@ package src.UI.Dialog
 		{
 			if (str.length == 0)
 				return;
-			
-			// Remove new lines
-			str = str.replace("\n", "");
-			
+						
 			if (escapeStr)
 				str = StringHelper.htmlEscape(str);
 			

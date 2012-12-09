@@ -109,6 +109,7 @@
 
 		public function onLogin(packet: Packet): Boolean
 		{
+            Constants.motd = packet.readString();
 			Constants.playerId = packet.readUInt();
 			Constants.admin = packet.readByte() == 1;
 			Constants.sessionId = packet.readString();			

@@ -17,39 +17,40 @@ namespace Game.Data.Stronghold
 {
     class StrongholdManager : IStrongholdManager
     {
-        private readonly ConcurrentDictionary<uint, IStronghold> strongholds = new ConcurrentDictionary<uint, IStronghold>();
-
-        private readonly IStrongholdFactory strongholdFactory;
-        
-        private readonly IStrongholdConfigurator strongholdConfigurator;
-        
-        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(10000, 5000);
-
-        private readonly SimpleStubGenerator simpleStubGenerator;
-        
-        private readonly IRegionManager regionManager;
-        
         private readonly Chat chat;
 
         private readonly IDbManager dbManager;
 
         private readonly Formula formula;
 
-        private ILookup<ITribe, IStronghold> tribeIndex;
+        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(10000, 5000);
 
-        private Dictionary<string, IStronghold> nameIndex;
+        private readonly IRegionManager regionManager;
+
+        private readonly SimpleStubGenerator simpleStubGenerator;
+
+        private readonly IStrongholdConfigurator strongholdConfigurator;
+
+        private readonly IStrongholdFactory strongholdFactory;
+
+        private readonly ConcurrentDictionary<uint, IStronghold> strongholds =
+                new ConcurrentDictionary<uint, IStronghold>();
 
         private ILookup<ITribe, IStronghold> gateOpenToIndex;
 
-        private bool indexDirty = true;        
+        private bool indexDirty = true;
+
+        private Dictionary<string, IStronghold> nameIndex;
+
+        private ILookup<ITribe, IStronghold> tribeIndex;
 
         public StrongholdManager(IStrongholdConfigurator strongholdConfigurator,
-                                    IStrongholdFactory strongholdFactory,
-                                    IRegionManager regionManager,
-                                    Chat chat,
-                                    IDbManager dbManager,
-                                    SimpleStubGenerator simpleStubGenerator,
-                                    Formula formula)
+                                 IStrongholdFactory strongholdFactory,
+                                 IRegionManager regionManager,
+                                 Chat chat,
+                                 IDbManager dbManager,
+                                 SimpleStubGenerator simpleStubGenerator,
+                                 Formula formula)
         {
             this.strongholdConfigurator = strongholdConfigurator;
             this.strongholdFactory = strongholdFactory;
@@ -68,52 +69,10 @@ namespace Game.Data.Stronghold
             }
         }
 
-        private void Reindex()
-        {
-            lock (this)
-            {
-                if (!indexDirty)
-                {
-                    return;
-                }
-
-                indexDirty = false;
-                tribeIndex = strongholds.Values.Where(stronghold => stronghold.Tribe != null).ToLookup(stronghold => stronghold.Tribe, stronghold => stronghold);
-                gateOpenToIndex = strongholds.Values.Where(stronghold => stronghold.GateOpenTo != null).ToLookup(stronghold => stronghold.GateOpenTo, stronghold => stronghold);
-                nameIndex = strongholds.Values.ToDictionary(stronghold => stronghold.Name.ToLowerInvariant(), stronghold => stronghold);
-            }
-        }
-
-        private void MarkIndexDirty()
-        {
-            lock (this)
-            {
-                indexDirty = true;
-            }
-        }
-
-        public void Add(IStronghold stronghold)
-        {
-            strongholds.AddOrUpdate(stronghold.Id, stronghold, (id, old) => stronghold);
-            RegisterEvents(stronghold);
-            dbManager.Save(stronghold);
-            MarkIndexDirty();
-        }
-
         public void DbLoaderAdd(IStronghold stronghold)
         {
             strongholds.AddOrUpdate(stronghold.Id, stronghold, (id, old) => stronghold);
             RegisterEvents(stronghold);
-            MarkIndexDirty();
-        }
-
-        private void RegisterEvents(IStronghold stronghold)
-        {
-            stronghold.GateStatusChanged += StrongholdOnGateStatusChanged;
-        }
-
-        private void StrongholdOnGateStatusChanged(object sender, EventArgs eventArgs)
-        {
             MarkIndexDirty();
         }
 
@@ -128,7 +87,7 @@ namespace Game.Data.Stronghold
             {
                 Reindex();
             }
-            
+
             return nameIndex.TryGetValue(name.ToLowerInvariant(), out stronghold);
         }
 
@@ -145,7 +104,12 @@ namespace Game.Data.Stronghold
                     break;
                 }
 
-                IStronghold stronghold = strongholdFactory.CreateStronghold((uint)idGenerator.GetNext(), name, level, x, y, formula.GetGateLimit(level));
+                IStronghold stronghold = strongholdFactory.CreateStronghold((uint)idGenerator.GetNext(),
+                                                                            name,
+                                                                            level,
+                                                                            x,
+                                                                            y,
+                                                                            formula.GetGateLimit(level));
                 using (dbManager.GetThreadTransaction())
                 {
                     Add(stronghold);
@@ -154,13 +118,15 @@ namespace Game.Data.Stronghold
         }
 
         public void Activate(IStronghold stronghold)
-        {            
+        {
             stronghold.BeginUpdate();
             stronghold.StrongholdState = StrongholdState.Neutral;
             regionManager.Add(stronghold);
             stronghold.EndUpdate();
-            
-            chat.SendSystemChat("STRONGHOLD_ACTIVE", stronghold.Id.ToString(CultureInfo.InvariantCulture), stronghold.Name);
+
+            chat.SendSystemChat("STRONGHOLD_ACTIVE",
+                                stronghold.Id.ToString(CultureInfo.InvariantCulture),
+                                stronghold.Name);
         }
 
         public void TransferTo(IStronghold stronghold, ITribe tribe)
@@ -192,10 +158,10 @@ namespace Game.Data.Stronghold
 
         public IEnumerable<Unit> GenerateNeutralStub(IStronghold stronghold)
         {
-            
             ISimpleStub simpleStub;
             simpleStubGenerator.Generate(stronghold.Lvl,
-                                         Config.stronghold_npc_base_upkeep + stronghold.Lvl*Config.stronghold_npc_per_lvl_upkeep,
+                                         Config.stronghold_npc_base_upkeep +
+                                         stronghold.Lvl * Config.stronghold_npc_per_lvl_upkeep,
                                          Config.stronghold_npc_randomness,
                                          (int)stronghold.Id,
                                          out simpleStub);
@@ -209,7 +175,7 @@ namespace Game.Data.Stronghold
                 Reindex();
             }
 
-            return !tribeIndex.Contains(tribe) ? new IStronghold[] { } : tribeIndex[tribe];
+            return !tribeIndex.Contains(tribe) ? new IStronghold[] {} : tribeIndex[tribe];
         }
 
         public IEnumerable<IStronghold> OpenStrongholdsForTribe(ITribe tribe)
@@ -219,7 +185,7 @@ namespace Game.Data.Stronghold
                 Reindex();
             }
 
-            return !gateOpenToIndex.Contains(tribe) ? new IStronghold[] { } : gateOpenToIndex[tribe];
+            return !gateOpenToIndex.Contains(tribe) ? new IStronghold[] {} : gateOpenToIndex[tribe];
         }
 
         public void RemoveStrongholdsFromTribe(ITribe tribe)
@@ -238,9 +204,9 @@ namespace Game.Data.Stronghold
 
         public Error RepairGate(IStronghold stronghold)
         {
-            if (stronghold.Tribe == null )
+            if (stronghold.Tribe == null)
             {
-                return Error.StrongholdNotOccupied;                
+                return Error.StrongholdNotOccupied;
             }
 
             var diff = formula.GetGateLimit(stronghold.Lvl) - stronghold.Gate;
@@ -278,5 +244,52 @@ namespace Game.Data.Stronghold
         }
 
         #endregion
+
+        private void Reindex()
+        {
+            lock (this)
+            {
+                if (!indexDirty)
+                {
+                    return;
+                }
+
+                indexDirty = false;
+                tribeIndex =
+                        strongholds.Values.Where(stronghold => stronghold.Tribe != null)
+                                   .ToLookup(stronghold => stronghold.Tribe, stronghold => stronghold);
+                gateOpenToIndex =
+                        strongholds.Values.Where(stronghold => stronghold.GateOpenTo != null)
+                                   .ToLookup(stronghold => stronghold.GateOpenTo, stronghold => stronghold);
+                nameIndex = strongholds.Values.ToDictionary(stronghold => stronghold.Name.ToLowerInvariant(),
+                                                            stronghold => stronghold);
+            }
+        }
+
+        private void MarkIndexDirty()
+        {
+            lock (this)
+            {
+                indexDirty = true;
+            }
+        }
+
+        public void Add(IStronghold stronghold)
+        {
+            strongholds.AddOrUpdate(stronghold.Id, stronghold, (id, old) => stronghold);
+            RegisterEvents(stronghold);
+            dbManager.Save(stronghold);
+            MarkIndexDirty();
+        }
+
+        private void RegisterEvents(IStronghold stronghold)
+        {
+            stronghold.GateStatusChanged += StrongholdOnGateStatusChanged;
+        }
+
+        private void StrongholdOnGateStatusChanged(object sender, EventArgs eventArgs)
+        {
+            MarkIndexDirty();
+        }
     }
 }

@@ -1,13 +1,11 @@
 ﻿#region
 
 using System;
-using Game.Data;
 using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -23,6 +21,7 @@ namespace Game.Logic.Actions.ResourceActions
         #region ISchedule Members
 
         public DateTime Time { get; private set; }
+
         public bool IsScheduled { get; set; }
 
         public void Callback(object custom)
@@ -35,7 +34,11 @@ namespace Game.Logic.Actions.ResourceActions
                     int delta = Config.forest_count[i] - World.Current.Forests.ForestCount[i];
 
                     for (int j = 0; j < delta; j++)
-                        World.Current.Forests.CreateForest(lvl, Formula.Current.GetMaxForestCapacity(lvl), Formula.Current.GetMaxForestRate(lvl));
+                    {
+                        World.Current.Forests.CreateForest(lvl,
+                                                           Formula.Current.GetMaxForestCapacity(lvl),
+                                                           Formula.Current.GetMaxForestRate(lvl));
+                    }
                 }
 
                 // Reschedule ourselves

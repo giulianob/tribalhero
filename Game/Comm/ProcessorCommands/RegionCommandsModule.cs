@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
-using Game.Logic;
 using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
@@ -64,7 +63,12 @@ namespace Game.Comm.ProcessorCommands
             }
 
             // Make sure there is no structure at this point that has no road requirement
-            if (world.Regions[x, y].Any(s => s is IStructure && Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("NoRoadRequired", (IStructure)s)))
+            if (
+                    world.Regions[x, y].Any(
+                                            s =>
+                                            s is IStructure &&
+                                            Ioc.Kernel.Get<ObjectTypeFactory>()
+                                               .IsStructureType("NoRoadRequired", (IStructure)s)))
             {
                 ReplyError(session, packet, Error.StructureExists);
                 return;
@@ -105,7 +109,9 @@ namespace Game.Comm.ProcessorCommands
                                             delegate(uint origX, uint origY, uint x1, uint y1, object custom)
                                                 {
                                                     if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1)
+                                                    {
                                                         return true;
+                                                    }
 
                                                     if (city.X == x1 && city.Y == y1)
                                                     {
@@ -113,7 +119,8 @@ namespace Game.Comm.ProcessorCommands
                                                         return false;
                                                     }
 
-                                                    if (world.Roads.IsRoad(x1, y1) && !world.Regions[x1, y1].Exists(s => s is IStructure))
+                                                    if (world.Roads.IsRoad(x1, y1) &&
+                                                        !world.Regions[x1, y1].Exists(s => s is IStructure))
                                                     {
                                                         hasRoad = true;
                                                         return false;
@@ -211,9 +218,15 @@ namespace Game.Comm.ProcessorCommands
                 foreach (var str in city)
                 {
                     if (str.IsMainBuilding || Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("NoRoadRequired", str))
+                    {
                         continue;
+                    }
 
-                    if (!RoadPathFinder.HasPath(new Position(str.X, str.Y), new Position(city.X, city.Y), city, new Position(x, y)))
+                    if (
+                            !RoadPathFinder.HasPath(new Position(str.X, str.Y),
+                                                    new Position(city.X, city.Y),
+                                                    city,
+                                                    new Position(x, y)))
                     {
                         breaksRoad = true;
                         break;
@@ -236,10 +249,14 @@ namespace Game.Comm.ProcessorCommands
                                             delegate(uint origX, uint origY, uint x1, uint y1, object custom)
                                                 {
                                                     if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1)
+                                                    {
                                                         return true;
+                                                    }
 
                                                     if (city.X == x1 && city.Y == y1)
+                                                    {
                                                         return true;
+                                                    }
 
                                                     if (world.Roads.IsRoad(x1, y1))
                                                     {
@@ -412,7 +429,9 @@ namespace Game.Comm.ProcessorCommands
                 regionSubscribeCount = packet.GetByte();
 
                 if (regionSubscribeCount > 15)
+                {
                     throw new Exception("Too many regions requested");
+                }
             }
             catch(Exception)
             {
@@ -440,7 +459,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                reply.AddUInt16(regionId);                
+                reply.AddUInt16(regionId);
                 reply.AddBytes(world.Regions.GetRegion(regionId).GetObjectBytes());
                 world.Regions.SubscribeRegion(session, regionId);
             }
@@ -451,7 +470,9 @@ namespace Game.Comm.ProcessorCommands
                 regionUnsubscribeCount = packet.GetByte();
 
                 if (regionUnsubscribeCount > 15)
+                {
                     throw new Exception("Too many unsubscribe regions");
+                }
             }
             catch(Exception)
             {
@@ -475,9 +496,13 @@ namespace Game.Comm.ProcessorCommands
             }
 
             if (Global.Channel.SubscriptionCount(session) > 30)
+            {
                 session.CloseSession();
+            }
             else
+            {
                 session.Write(reply);
+            }
         }
 
         private void CmdGetCityRegion(Session session, Packet packet)

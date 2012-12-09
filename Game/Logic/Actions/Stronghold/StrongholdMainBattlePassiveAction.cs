@@ -24,37 +24,37 @@ namespace Game.Logic.Actions
 {
     public class StrongholdMainBattlePassiveAction : ScheduledPassiveAction
     {
-        private readonly uint strongholdId;
+        private readonly IActionFactory actionFactory;
 
         private readonly BattleProcedure battleProcedure;
-
-        private readonly ILocker locker;
-
-        private readonly IGameObjectLocator gameObjectLocator;
 
         private readonly IDbManager dbManager;
 
         private readonly Formula formula;
 
-        private readonly IWorld world;
+        private readonly IGameObjectLocator gameObjectLocator;
+
+        private readonly ILocker locker;
+
+        private readonly uint strongholdId;
 
         private readonly IStrongholdManager strongholdManager;
 
-        private readonly IActionFactory actionFactory;
+        private readonly IWorld world;
 
         private uint npcGroupId;
 
         private bool npcGroupKilled;
 
         public StrongholdMainBattlePassiveAction(uint strongholdId,
-                                   BattleProcedure battleProcedure,
-                                   ILocker locker,
-                                   IGameObjectLocator gameObjectLocator,
-                                   IDbManager dbManager,
-                                   Formula formula, 
-                                   IWorld world,
-                                   IStrongholdManager strongholdManager,
-                                   IActionFactory actionFactory)
+                                                 BattleProcedure battleProcedure,
+                                                 ILocker locker,
+                                                 IGameObjectLocator gameObjectLocator,
+                                                 IDbManager dbManager,
+                                                 Formula formula,
+                                                 IWorld world,
+                                                 IStrongholdManager strongholdManager,
+                                                 IActionFactory actionFactory)
         {
             this.strongholdId = strongholdId;
             this.battleProcedure = battleProcedure;
@@ -76,20 +76,20 @@ namespace Game.Logic.Actions
         }
 
         public StrongholdMainBattlePassiveAction(uint id,
-                                   DateTime beginTime,
-                                   DateTime nextTime,
-                                   DateTime endTime,
-                                   bool isVisible,
-                                   string nlsDescription,
-                                   IDictionary<string, string> properties,
-                                   BattleProcedure battleProcedure,
-                                   ILocker locker,
-                                   IGameObjectLocator gameObjectLocator,
-                                   IDbManager dbManager,
-                                   Formula formula,
-                                   IWorld world,
-                                   IStrongholdManager strongholdManager,
-                                   IActionFactory actionFactory)
+                                                 DateTime beginTime,
+                                                 DateTime nextTime,
+                                                 DateTime endTime,
+                                                 bool isVisible,
+                                                 string nlsDescription,
+                                                 IDictionary<string, string> properties,
+                                                 BattleProcedure battleProcedure,
+                                                 ILocker locker,
+                                                 IGameObjectLocator gameObjectLocator,
+                                                 IDbManager dbManager,
+                                                 Formula formula,
+                                                 IWorld world,
+                                                 IStrongholdManager strongholdManager,
+                                                 IActionFactory actionFactory)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.battleProcedure = battleProcedure;
@@ -114,6 +114,27 @@ namespace Game.Logic.Actions
             RegisterBattleListeners(stronghold);
         }
 
+        public override ActionType Type
+        {
+            get
+            {
+                return ActionType.StrongholdMainBattlePassive;
+            }
+        }
+
+        public override string Properties
+        {
+            get
+            {
+                return
+                        XmlSerializer.Serialize(new[]
+                        {
+                                new XmlKvPair("stronghold_id", strongholdId), new XmlKvPair("npc_group_id", npcGroupId),
+                                new XmlKvPair("npc_group_killed", npcGroupKilled)
+                        });
+            }
+        }
+
         private void RegisterBattleListeners(IStronghold stronghold)
         {
             stronghold.MainBattle.UnitCountDecreased += MainBattleOnUnitKilled;
@@ -132,7 +153,8 @@ namespace Game.Logic.Actions
                 throw new Exception("Stronghold not found");
             }
 
-            battle.BattleReport.AddAccess(new BattleOwner(BattleOwnerType.Tribe, stronghold.GateOpenTo.Id), BattleManager.BattleSide.Attack);
+            battle.BattleReport.AddAccess(new BattleOwner(BattleOwnerType.Tribe, stronghold.GateOpenTo.Id),
+                                          BattleManager.BattleSide.Attack);
         }
 
         private void MainBattleOnExitTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, int turn)
@@ -145,7 +167,7 @@ namespace Game.Logic.Actions
 
             var defensiveMeter = battle.GetProperty<decimal>("defense_stronghold_meter");
             var offensiveMeter = battle.GetProperty<decimal>("offense_stronghold_meter");
-            
+
             // Make copy since defenders may change
             var defendersLoopCopy = defenders.ToList();
             // Remove defenders if:
@@ -188,12 +210,16 @@ namespace Game.Logic.Actions
                     cityCombatGroup.TroopStub.EndUpdate();
 
                     // Send the defender back to their city
-                    var retreatChainAction = actionFactory.CreateRetreatChainAction(cityCombatGroup.TroopStub.City.Id, cityCombatGroup.TroopStub.TroopId);
-                    if (cityCombatGroup.TroopStub.City.Worker.DoPassive(cityCombatGroup.TroopStub.City, retreatChainAction, true) != Error.Ok)
+                    var retreatChainAction = actionFactory.CreateRetreatChainAction(cityCombatGroup.TroopStub.City.Id,
+                                                                                    cityCombatGroup.TroopStub.TroopId);
+                    if (
+                            cityCombatGroup.TroopStub.City.Worker.DoPassive(cityCombatGroup.TroopStub.City,
+                                                                            retreatChainAction,
+                                                                            true) != Error.Ok)
                     {
                         throw new Exception("Should always be able to retreat troops from stronghold to main city");
                     }
-                }             
+                }
             }
 
             if (offensiveMeter <= 0)
@@ -204,11 +230,17 @@ namespace Game.Logic.Actions
                 {
                     // Remove from battle, no need to send them back since attacking troops have actions to handle that
                     battle.Remove(attacker, BattleManager.BattleSide.Attack, ReportState.OutOfStamina);
-                }                
+                }
             }
         }
 
-        private void MainBattleOnActionAttacked(IBattleManager battle, BattleManager.BattleSide attackingSide, ICombatGroup attackerGroup, ICombatObject attacker, ICombatGroup targetGroup, ICombatObject target, decimal damage)
+        private void MainBattleOnActionAttacked(IBattleManager battle,
+                                                BattleManager.BattleSide attackingSide,
+                                                ICombatGroup attackerGroup,
+                                                ICombatObject attacker,
+                                                ICombatGroup targetGroup,
+                                                ICombatObject target,
+                                                decimal damage)
         {
             IStronghold stronghold;
             if (!gameObjectLocator.TryGetObjects(strongholdId, out stronghold))
@@ -219,8 +251,9 @@ namespace Game.Logic.Actions
             var cityCombatTarget = target as CityCombatObject;
 
             // Check if we should retreat a unit
-            if (cityCombatTarget == null || attackingSide == BattleManager.BattleSide.Defense || cityCombatTarget.TroopStub.Station != stronghold ||
-                cityCombatTarget.TroopStub.TotalCount <= 0 || cityCombatTarget.TroopStub.TotalCount > cityCombatTarget.TroopStub.RetreatCount)
+            if (cityCombatTarget == null || attackingSide == BattleManager.BattleSide.Defense ||
+                cityCombatTarget.TroopStub.Station != stronghold || cityCombatTarget.TroopStub.TotalCount <= 0 ||
+                cityCombatTarget.TroopStub.TotalCount > cityCombatTarget.TroopStub.RetreatCount)
             {
                 return;
             }
@@ -253,7 +286,8 @@ namespace Game.Logic.Actions
             var defensiveMeter = battle.GetProperty<decimal>("defense_stronghold_meter");
             // If stronghold has no one left then it means the attacker took over
             // This same action removes all defenders if the defensive meter gets to 0
-            if ((stronghold.StrongholdState == StrongholdState.Occupied && !stronghold.Troops.StationedHere().Any()) || (stronghold.StrongholdState == StrongholdState.Neutral && (npcGroupKilled || defensiveMeter <= 0)))
+            if ((stronghold.StrongholdState == StrongholdState.Occupied && !stronghold.Troops.StationedHere().Any()) ||
+                (stronghold.StrongholdState == StrongholdState.Neutral && (npcGroupKilled || defensiveMeter <= 0)))
             {
                 strongholdManager.TransferTo(stronghold, stronghold.GateOpenTo);
             }
@@ -274,13 +308,17 @@ namespace Game.Logic.Actions
 
             // Take care of clearing any dead stationed troops while in the middle of the battle
             foreach (var stub in stronghold.Troops.StationedHere().Where(stub => stub.TotalCount == 0).ToList())
-            {               
+            {
                 stronghold.Troops.RemoveStationed(stub.StationTroopId);
                 stub.City.Troops.Remove(stub.TroopId);
             }
         }
 
-        private void MainBattleOnUnitKilled(IBattleManager battle, BattleManager.BattleSide combatObjectSide, ICombatGroup combatGroup, ICombatObject combatObject, int count)
+        private void MainBattleOnUnitKilled(IBattleManager battle,
+                                            BattleManager.BattleSide combatObjectSide,
+                                            ICombatGroup combatGroup,
+                                            ICombatObject combatObject,
+                                            int count)
         {
             IStronghold stronghold;
             if (!gameObjectLocator.TryGetObjects(strongholdId, out stronghold))
@@ -293,34 +331,15 @@ namespace Game.Logic.Actions
 
             if (combatObjectSide == BattleManager.BattleSide.Attack)
             {
-                offensiveMeter -= combatObject.Stats.NormalizedCost*count;
+                offensiveMeter -= combatObject.Stats.NormalizedCost * count;
             }
             else
             {
-                defensiveMeter -= combatObject.Stats.NormalizedCost*count;
+                defensiveMeter -= combatObject.Stats.NormalizedCost * count;
             }
 
             battle.SetProperty("defense_stronghold_meter", defensiveMeter);
             battle.SetProperty("offense_stronghold_meter", offensiveMeter);
-        }
-
-        public override ActionType Type
-        {
-            get
-            {
-                return ActionType.StrongholdMainBattlePassive;
-            }
-        }
-
-        public override string Properties
-        {
-            get
-            {
-                return XmlSerializer.Serialize(new[]
-                {
-                        new XmlKvPair("stronghold_id", strongholdId), new XmlKvPair("npc_group_id", npcGroupId), new XmlKvPair("npc_group_killed", npcGroupKilled)
-                });
-            }
         }
 
         public override void Callback(object custom)
@@ -331,10 +350,7 @@ namespace Game.Logic.Actions
                 throw new Exception("Stronghold is missing");
             }
 
-            CallbackLock.CallbackLockHandler lockHandler = delegate
-                {
-                    return stronghold.LockList.ToArray();
-                };
+            CallbackLock.CallbackLockHandler lockHandler = delegate { return stronghold.LockList.ToArray(); };
 
             using (locker.Lock(lockHandler, null, stronghold))
             {
@@ -342,7 +358,10 @@ namespace Game.Logic.Actions
                 {
                     // Battle continues, just save it and reschedule
                     dbManager.Save(stronghold.MainBattle);
-                    endTime = SystemClock.Now.AddSeconds(formula.GetBattleInterval(stronghold.MainBattle.Defenders.Count + stronghold.MainBattle.Attackers.Count));
+                    endTime =
+                            SystemClock.Now.AddSeconds(
+                                                       formula.GetBattleInterval(stronghold.MainBattle.Defenders.Count +
+                                                                                 stronghold.MainBattle.Attackers.Count));
                     StateChange(ActionState.Fired);
                     return;
                 }
@@ -409,8 +428,10 @@ namespace Game.Logic.Actions
             }
             else
             {
-                   
-                var strongholdGroup = battleProcedure.AddStrongholdUnitsToBattle(stronghold.MainBattle, stronghold, strongholdManager.GenerateNeutralStub(stronghold));
+                var strongholdGroup = battleProcedure.AddStrongholdUnitsToBattle(stronghold.MainBattle,
+                                                                                 stronghold,
+                                                                                 strongholdManager.GenerateNeutralStub(
+                                                                                                                       stronghold));
 
                 npcGroupId = strongholdGroup.Id;
             }

@@ -28,26 +28,32 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.ResourceGather, GatherResource);
         }
 
-        private void CreateCity(Session session, Packet packet) {
+        private void CreateCity(Session session, Packet packet)
+        {
             uint cityId;
             uint x;
             uint y;
             string cityName;
 
-            try {
+            try
+            {
                 cityId = packet.GetUInt32();
                 x = packet.GetUInt32();
                 y = packet.GetUInt32();
                 cityName = packet.GetString();
-            } catch (Exception) {
+            }
+            catch(Exception)
+            {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player)) {
+            using (Concurrency.Current.Lock(session.Player))
+            {
                 ICity city = session.Player.GetCity(cityId);
 
-                if (city == null) {
+                if (city == null)
+                {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
@@ -55,9 +61,13 @@ namespace Game.Comm.ProcessorCommands
                 var cityCreateAction = actionFactory.CreateCityCreatePassiveAction(cityId, x, y, cityName);
                 Error ret = city.Worker.DoPassive(city[1], cityCreateAction, true);
                 if (ret != 0)
+                {
                     ReplyError(session, packet, ret);
+                }
                 else
+                {
                     ReplySuccess(session, packet);
+                }
             }
         }
 
@@ -66,34 +76,47 @@ namespace Game.Comm.ProcessorCommands
             uint cityId;
             uint objectId;
 
-            try {
+            try
+            {
                 cityId = packet.GetUInt32();
                 objectId = packet.GetUInt32();
-            } catch (Exception) {
+            }
+            catch(Exception)
+            {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player)) {
+            using (Concurrency.Current.Lock(session.Player))
+            {
                 ICity city = session.Player.GetCity(cityId);
 
-                if (city == null) {
+                if (city == null)
+                {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
                 IStructure obj;
-                if (!city.TryGetStructure(objectId, out obj)) {
+                if (!city.TryGetStructure(objectId, out obj))
+                {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
                 var gatherAction = actionFactory.CreateResourceGatherActiveAction(cityId, objectId);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(obj), obj, gatherAction, obj.Technologies);
+                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(obj),
+                                                 obj,
+                                                 gatherAction,
+                                                 obj.Technologies);
                 if (ret != 0)
+                {
                     ReplyError(session, packet, ret);
+                }
                 else
+                {
                     ReplySuccess(session, packet);
+                }
             }
         }
     }

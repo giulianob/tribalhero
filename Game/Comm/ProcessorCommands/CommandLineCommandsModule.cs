@@ -32,7 +32,9 @@ namespace Game.Comm.ProcessorCommands
                 cmd = packet.GetString();
 
                 if (string.IsNullOrEmpty(cmd))
+                {
                     throw new Exception();
+                }
             }
             catch(Exception)
             {
@@ -50,7 +52,7 @@ namespace Game.Comm.ProcessorCommands
 
             string parms = cmdParts.Length == 2 ? cmdParts[1] : string.Empty;
 
-            string output = commandLineProcessor.Execute(session,cmdParts[0].Trim(), parms);
+            string output = commandLineProcessor.Execute(session, cmdParts[0].Trim(), parms);
 
             reply.AddString(output);
             session.Write(reply);

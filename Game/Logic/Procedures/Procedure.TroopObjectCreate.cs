@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-
 using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
@@ -15,7 +14,11 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public virtual bool TroopStubCreate(out ITroopStub troopStub, ICity city, ISimpleStub stub, TroopState initialState = TroopState.Idle, params FormationType[] formations)
+        public virtual bool TroopStubCreate(out ITroopStub troopStub,
+                                            ICity city,
+                                            ISimpleStub stub,
+                                            TroopState initialState = TroopState.Idle,
+                                            params FormationType[] formations)
         {
             if (!RemoveFromNormal(city.DefaultTroop, stub, formations))
             {
@@ -38,17 +41,22 @@ namespace Game.Logic.Procedures
 
         public virtual void TroopObjectCreate(ICity city, ITroopStub stub, out ITroopObject troopObject)
         {
-            troopObject = new TroopObject(stub) { X = city.X, Y = city.Y };
+            troopObject = new TroopObject(stub) {X = city.X, Y = city.Y};
             city.Add(troopObject);
 
             troopObject.BeginUpdate();
-            troopObject.Stats = new TroopStats(Formula.Current.GetTroopRadius(stub, null), Formula.Current.GetTroopSpeed(stub));
+            troopObject.Stats = new TroopStats(Formula.Current.GetTroopRadius(stub, null),
+                                               Formula.Current.GetTroopSpeed(stub));
             World.Current.Regions.Add(troopObject);
-            troopObject.EndUpdate();            
+            troopObject.EndUpdate();
         }
 
-        public virtual bool TroopObjectCreateFromCity(ICity city, ISimpleStub stub, uint x, uint y, out ITroopObject troopObject)
-        {            
+        public virtual bool TroopObjectCreateFromCity(ICity city,
+                                                      ISimpleStub stub,
+                                                      uint x,
+                                                      uint y,
+                                                      out ITroopObject troopObject)
+        {
             if (stub.TotalCount == 0 || !RemoveFromNormal(city.DefaultTroop, stub))
             {
                 troopObject = null;
@@ -60,25 +68,32 @@ namespace Game.Logic.Procedures
             troopStub.Add(stub);
             troopStub.EndUpdate();
 
-            troopObject = new TroopObject(troopStub) { X = x, Y = y + 1 };
+            troopObject = new TroopObject(troopStub) {X = x, Y = y + 1};
             city.Add(troopObject);
 
             troopObject.BeginUpdate();
-            troopObject.Stats = new TroopStats(Formula.Current.GetTroopRadius(troopStub, null), Formula.Current.GetTroopSpeed(troopStub));
+            troopObject.Stats = new TroopStats(Formula.Current.GetTroopRadius(troopStub, null),
+                                               Formula.Current.GetTroopSpeed(troopStub));
             World.Current.Regions.Add(troopObject);
             troopObject.EndUpdate();
 
             return true;
         }
 
-        private bool RemoveFromNormal(ITroopStub source, IEnumerable<Formation> unitsToRemove, params FormationType[] formations)
+        private bool RemoveFromNormal(ITroopStub source,
+                                      IEnumerable<Formation> unitsToRemove,
+                                      params FormationType[] formations)
         {
             if (!source.HasFormation(FormationType.Normal))
             {
                 return false;
             }
 
-            var acceptableUnits = unitsToRemove.Where(formation => formations == null || formations.Length == 0 || formations.Contains(formation.Type)).ToList();
+            var acceptableUnits =
+                    unitsToRemove.Where(
+                                        formation =>
+                                        formations == null || formations.Length == 0 ||
+                                        formations.Contains(formation.Type)).ToList();
 
             // Make sure there are enough units
             foreach (var unit in acceptableUnits.SelectMany(formation => formation))

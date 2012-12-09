@@ -21,8 +21,13 @@ namespace Game.Logic
             NlsDescription = string.Empty;
         }
 
-        protected ScheduledPassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription)
-        {            
+        protected ScheduledPassiveAction(uint id,
+                                         DateTime beginTime,
+                                         DateTime nextTime,
+                                         DateTime endTime,
+                                         bool isVisible,
+                                         string nlsDescription)
+        {
             ActionId = id;
             IsVisible = isVisible;
             this.beginTime = beginTime;
@@ -36,17 +41,23 @@ namespace Game.Logic
             get
             {
                 return new[]
-                       {
-                               new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32), new DbColumn("is_chain", IsChain, DbType.Boolean),
-                               new DbColumn("is_scheduled", true, DbType.Boolean), new DbColumn("is_visible", IsVisible, DbType.Boolean),
-                               new DbColumn("type", Type, DbType.UInt32), new DbColumn("begin_time", BeginTime, DbType.DateTime),
-                               new DbColumn("end_time", EndTime, DbType.DateTime), new DbColumn("next_time", nextTime, DbType.DateTime),
-                               new DbColumn("properties", Properties, DbType.String), new DbColumn("nls_description", NlsDescription, DbType.String)
-                       };
+                {
+                        new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32),
+                        new DbColumn("is_chain", IsChain, DbType.Boolean),
+                        new DbColumn("is_scheduled", true, DbType.Boolean),
+                        new DbColumn("is_visible", IsVisible, DbType.Boolean), new DbColumn("type", Type, DbType.UInt32)
+                        , new DbColumn("begin_time", BeginTime, DbType.DateTime),
+                        new DbColumn("end_time", EndTime, DbType.DateTime),
+                        new DbColumn("next_time", nextTime, DbType.DateTime),
+                        new DbColumn("properties", Properties, DbType.String),
+                        new DbColumn("nls_description", NlsDescription, DbType.String)
+                };
             }
         }
 
         #region IActionTime Members
+
+        public string NlsDescription { get; set; }
 
         public DateTime BeginTime
         {
@@ -69,7 +80,9 @@ namespace Game.Logic
             set
             {
                 if (IsScheduled)
+                {
                     throw new Exception("Trying to change scheduled time while action is in scheduler");
+                }
                 endTime = value;
             }
         }
@@ -83,15 +96,17 @@ namespace Game.Logic
             set
             {
                 if (IsScheduled)
+                {
                     throw new Exception("Trying to change scheduled time while action is in scheduler");
+                }
                 nextTime = value;
                 // Cap the end time so it can never be less than the next time
                 if (endTime < nextTime)
+                {
                     endTime = nextTime;
+                }
             }
         }
-
-        public string NlsDescription { get; set; }
 
         #endregion
 

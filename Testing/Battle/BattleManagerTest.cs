@@ -17,21 +17,29 @@ namespace Testing.Battle
     {
         #region Helper Classes/Methods
 
+        private static ICombatGroup CreateGroup(params ICombatObject[] combatObjects)
+        {
+            Mock<ICombatGroup> combatGroup = new Mock<ICombatGroup>();
+            combatGroup.SetupAllProperties();
+            combatGroup.Setup(m => m.GetEnumerator()).Returns(() => combatObjects.ToList().GetEnumerator());
+            return combatGroup.Object;
+        }
+
         private class BattleManagerSut
         {
-            public Mock<IRewardStrategy> MockRewardStrategy = new Mock<IRewardStrategy>();
+            public readonly StubCombatList MockAttackers = new StubCombatList();
 
-            public Mock<IDbManager> MockDbManager = new Mock<IDbManager>();
+            public readonly Mock<BattleFormulas> MockBattleFormulas = new Mock<BattleFormulas>();
 
-            public Mock<BattleFormulas> MockBattleFormulas = new Mock<BattleFormulas>();
+            public readonly Mock<IBattleReport> MockBattleReport = new Mock<IBattleReport>();
 
-            public Mock<IBattleReport> MockBattleReport = new Mock<IBattleReport>();
+            public readonly Mock<ICombatListFactory> MockCombatListFactory = new Mock<ICombatListFactory>();
 
-            public StubCombatList MockAttackers = new StubCombatList();
+            public readonly Mock<IDbManager> MockDbManager = new Mock<IDbManager>();
 
-            public StubCombatList MockDefenders = new StubCombatList();
+            public readonly StubCombatList MockDefenders = new StubCombatList();
 
-            public Mock<ICombatListFactory> MockCombatListFactory = new Mock<ICombatListFactory>();
+            public readonly Mock<IRewardStrategy> MockRewardStrategy = new Mock<IRewardStrategy>();
 
             public BattleManagerSut()
             {
@@ -45,7 +53,10 @@ namespace Testing.Battle
             public StubbedAttackTargetBattleManager CreateStubbedAttackBattleManager(uint battleId,
                                                                                      BattleLocation location,
                                                                                      BattleOwner owner,
-                                                                                     Action<ICombatList, ICombatList, ICombatObject, CombatList.Target, int>
+                                                                                     Action
+                                                                                             <ICombatList, ICombatList,
+                                                                                             ICombatObject,
+                                                                                             CombatList.Target, int>
                                                                                              attackTargetCallback)
             {
                 return new StubbedAttackTargetBattleManager(battleId,
@@ -60,71 +71,42 @@ namespace Testing.Battle
             }
         }
 
-        private class StubbedAttackTargetBattleManager : BattleManager
-        {
-            private readonly Action<ICombatList, ICombatList, ICombatObject, CombatList.Target, int> attackTargetCallback;
-
-            public StubbedAttackTargetBattleManager(uint battleId,
-                                                    BattleLocation location,
-                                                    BattleOwner owner,
-                                                    IRewardStrategy rewardStrategy,
-                                                    IDbManager dbManager,
-                                                    IBattleReport battleReport,
-                                                    ICombatListFactory combatListFactory,
-                                                    BattleFormulas battleFormulas,
-                                                    Action<ICombatList, ICombatList, ICombatObject, CombatList.Target, int> attackTargetCallback)
-                    : base(battleId, location, owner, rewardStrategy, dbManager, battleReport, combatListFactory, battleFormulas)
-            {
-                this.attackTargetCallback = attackTargetCallback;
-            }
-
-            protected override void AttackTarget(ICombatList offensiveCombatList, ICombatList defensiveCombatList, ICombatGroup attackerGroup, ICombatObject attacker, CombatList.Target target, int attackIndex)
-            {
-                attackTargetCallback(offensiveCombatList, defensiveCombatList, attacker, target, attackIndex);
-            }
-        }
-
         private class StubCombatList : List<ICombatGroup>, ICombatList
         {
-            public class GetBestTargetQueueItem
-            {
-                public CombatList.BestTargetResult BestTargetResult { get; set; }
-
-                public IList<CombatList.Target> Targets { get; set; }
-            }
-
-            /// <summary>
-            /// Set the upkeep manually in tests
-            /// </summary>
-            public int Upkeep { get; private set; }
-
-            /// <summary>
-            /// Set this to a list of objects that should be in range
-            /// </summary>
-            public IEnumerable<ICombatObject> MockInRange { get; set; }
-
-            /// <summary>
-            /// Queue items for return from GetBestTargets call
-            /// </summary>
-            public Queue<GetBestTargetQueueItem> MockGetBestTargets { get; set; }
-
-            /// <summary>
-            /// Sets to true if Clear() was called
-            /// </summary>
-            public bool ClearCalled { get; set; }
-
             public StubCombatList()
             {
                 MockGetBestTargets = new Queue<GetBestTargetQueueItem>();
                 MockInRange = new List<ICombatObject>();
             }
 
+            /// <summary>
+            ///     Set this to a list of objects that should be in range
+            /// </summary>
+            public IEnumerable<ICombatObject> MockInRange { get; set; }
+
+            /// <summary>
+            ///     Queue items for return from GetBestTargets call
+            /// </summary>
+            public Queue<GetBestTargetQueueItem> MockGetBestTargets { get; set; }
+
+            /// <summary>
+            ///     Sets to true if Clear() was called
+            /// </summary>
+            public bool ClearCalled { get; set; }
+
+            /// <summary>
+            ///     Set the upkeep manually in tests
+            /// </summary>
+            public int Upkeep { get; private set; }
+
             public bool HasInRange(ICombatObject attacker)
             {
                 return MockInRange.Contains(attacker);
             }
 
-            public CombatList.BestTargetResult GetBestTargets(ICombatObject attacker, out IList<CombatList.Target> result, int maxCount)
+            public CombatList.BestTargetResult GetBestTargets(ICombatObject attacker,
+                                                              out IList<CombatList.Target> result,
+                                                              int maxCount)
             {
                 var queueItem = MockGetBestTargets.Dequeue();
                 result = queueItem.Targets;
@@ -138,7 +120,11 @@ namespace Testing.Battle
 
             public IEnumerable<ICombatObject> AllAliveCombatObjects()
             {
-                return this.SelectMany(group => group.Where(combatObject => !combatObject.IsDead).Select(combatObject => combatObject));
+                return
+                        this.SelectMany(
+                                        group =>
+                                        group.Where(combatObject => !combatObject.IsDead)
+                                             .Select(combatObject => combatObject));
             }
 
             public void Add(ICombatGroup item, bool save)
@@ -155,22 +141,61 @@ namespace Testing.Battle
             {
                 ClearCalled = true;
             }
+
+            public class GetBestTargetQueueItem
+            {
+                public CombatList.BestTargetResult BestTargetResult { get; set; }
+
+                public IList<CombatList.Target> Targets { get; set; }
+            }
         }
 
-        private static ICombatGroup CreateGroup(params ICombatObject[] combatObjects)
+        private class StubbedAttackTargetBattleManager : BattleManager
         {
-            Mock<ICombatGroup> combatGroup = new Mock<ICombatGroup>();
-            combatGroup.SetupAllProperties();
-            combatGroup.Setup(m => m.GetEnumerator()).Returns(() => combatObjects.ToList().GetEnumerator());
-            return combatGroup.Object;
+            private readonly Action<ICombatList, ICombatList, ICombatObject, CombatList.Target, int>
+                    attackTargetCallback;
+
+            public StubbedAttackTargetBattleManager(uint battleId,
+                                                    BattleLocation location,
+                                                    BattleOwner owner,
+                                                    IRewardStrategy rewardStrategy,
+                                                    IDbManager dbManager,
+                                                    IBattleReport battleReport,
+                                                    ICombatListFactory combatListFactory,
+                                                    BattleFormulas battleFormulas,
+                                                    Action
+                                                            <ICombatList, ICombatList, ICombatObject, CombatList.Target,
+                                                            int> attackTargetCallback)
+                    : base(
+                            battleId,
+                            location,
+                            owner,
+                            rewardStrategy,
+                            dbManager,
+                            battleReport,
+                            combatListFactory,
+                            battleFormulas)
+            {
+                this.attackTargetCallback = attackTargetCallback;
+            }
+
+            protected override void AttackTarget(ICombatList offensiveCombatList,
+                                                 ICombatList defensiveCombatList,
+                                                 ICombatGroup attackerGroup,
+                                                 ICombatObject attacker,
+                                                 CombatList.Target target,
+                                                 int attackIndex)
+            {
+                attackTargetCallback(offensiveCombatList, defensiveCombatList, attacker, target, attackIndex);
+            }
         }
 
         #endregion
 
         /// <summary>
-        /// When battle has not yet begun
-        /// And ExecuteTurn is called with an invalid battle because there are no attackers
-        /// Then no battle report should be created and battle ended should be fired
+        ///     When battle has not yet begun
+        ///     And ExecuteTurn is called with an invalid battle because there are no attackers
+        ///     Then no battle report should be created and battle ended should be fired
         /// </summary>
         [Fact]
         public void TestExecuteInvalidBattleNoAttackersWhenBattleJustStarted()
@@ -203,12 +228,12 @@ namespace Testing.Battle
         }
 
         /// <summary>
-        /// When battle has not yet begun
-        /// And ExecuteTurn is called with an invalid battle because there are no defenders
-        /// Then no battle report should be created,
-        /// ExitBattle should be fired,
-        /// CombatObject.Exit should be called on all objects in battle
-        /// Attacker/Defender combat list should be cleared
+        ///     When battle has not yet begun
+        ///     And ExecuteTurn is called with an invalid battle because there are no defenders
+        ///     Then no battle report should be created,
+        ///     ExitBattle should be fired,
+        ///     CombatObject.Exit should be called on all objects in battle
+        ///     Attacker/Defender combat list should be cleared
         /// </summary>
         [Fact]
         public void TestExecuteInvalidBattleNoDefendersWhenBattleJustStarted()
@@ -241,9 +266,9 @@ namespace Testing.Battle
         }
 
         /// <summary>
-        /// When battle has already begun
-        /// And ExecuteTurn is called with an invalid battle because there are no attackers
-        /// Then no battle report should be created and battle ended should be fired
+        ///     When battle has already begun
+        ///     And ExecuteTurn is called with an invalid battle because there are no attackers
+        ///     Then no battle report should be created and battle ended should be fired
         /// </summary>
         [Fact]
         public void TestExecuteInvalidBattleNoAttackersWhenBattleAlreadyStarted()
@@ -277,9 +302,9 @@ namespace Testing.Battle
         }
 
         /// <summary>
-        /// When battle has already begun
-        /// And ExecuteTurn is called with an invalid battle because there is no one in the battle
-        /// Then no battle report should be created and battle ended should be fired
+        ///     When battle has already begun
+        ///     And ExecuteTurn is called with an invalid battle because there is no one in the battle
+        ///     Then no battle report should be created and battle ended should be fired
         /// </summary>
         [Fact]
         public void TestExecuteInvalidBattleNoAttackersWhenCompletelyInvalid()
@@ -307,12 +332,12 @@ namespace Testing.Battle
         }
 
         /// <summary>
-        /// When battle has already begun
-        /// And ExecuteTurn is called with an invalid battle because there are no defenders
-        /// Then no battle report should be created,
-        /// ExitBattle should be fired,
-        /// CombatObject.Exit should be called on all objects in battle
-        /// Attacker/Defender combat list should be cleared
+        ///     When battle has already begun
+        ///     And ExecuteTurn is called with an invalid battle because there are no defenders
+        ///     Then no battle report should be created,
+        ///     ExitBattle should be fired,
+        ///     CombatObject.Exit should be called on all objects in battle
+        ///     Attacker/Defender combat list should be cleared
         /// </summary>
         [Fact]
         public void TestExecuteInvalidBattleNoDefendersWhenBattleHasStarted()
@@ -345,11 +370,10 @@ namespace Testing.Battle
             sut.MockDefenders.ClearCalled.Should().BeTrue();
         }
 
-
         /// <summary>
-        /// When battle has not yet begun
-        /// And ExecuteTurn is called with an invalid battle because no one is in range
-        /// Then no battle report should be created and battle ended should be fired
+        ///     When battle has not yet begun
+        ///     And ExecuteTurn is called with an invalid battle because no one is in range
+        ///     Then no battle report should be created and battle ended should be fired
         /// </summary>
         [Fact]
         public void TestExecuteInvalidBattleNoneInRangeWhenBattleJustStarted()
@@ -384,10 +408,10 @@ namespace Testing.Battle
         }
 
         /// <summary>
-        /// When battle has not yet begun
-        /// And ExecuteTurn is called with a valid battle
-        /// Then a battle report should be created and enterbattle event fired
-        /// NOTE: This scenario will exit out before attacking since GetBestTargets wont return anything
+        ///     When battle has not yet begun
+        ///     And ExecuteTurn is called with a valid battle
+        ///     Then a battle report should be created and enterbattle event fired
+        ///     NOTE: This scenario will exit out before attacking since GetBestTargets wont return anything
         /// </summary>
         [Fact]
         public void TestExecuteWhenBattleJustStarted()
@@ -405,14 +429,8 @@ namespace Testing.Battle
 
             sut.MockDefenders.Add(defenderGroup);
             sut.MockAttackers.Add(attackerGroup);
-            sut.MockDefenders.MockInRange = new List<ICombatObject>
-            {
-                    attacker.Object
-            };
-            sut.MockAttackers.MockInRange = new List<ICombatObject>
-            {
-                    defender.Object
-            };
+            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker.Object};
+            sut.MockAttackers.MockInRange = new List<ICombatObject> {defender.Object};
 
             sut.MockAttackers.MockGetBestTargets.Enqueue(new StubCombatList.GetBestTargetQueueItem
             {
@@ -433,11 +451,11 @@ namespace Testing.Battle
         }
 
         /// <summary>
-        /// When all units are in the next round
-        /// And ExecuteTurn is called
-        /// Then the round should be incremented
-        /// and EnterRound should be fired
-        /// NOTE: This scenario will exit out before attacking since GetBestTargets wont return anything
+        ///     When all units are in the next round
+        ///     And ExecuteTurn is called
+        ///     Then the round should be incremented
+        ///     and EnterRound should be fired
+        ///     NOTE: This scenario will exit out before attacking since GetBestTargets wont return anything
         /// </summary>
         [Fact]
         public void TestExecuteWhenFinishedRoundShouldEnterNewRound()
@@ -457,14 +475,8 @@ namespace Testing.Battle
 
             sut.MockDefenders.Add(defenderGroup);
             sut.MockAttackers.Add(attackerGroup);
-            sut.MockDefenders.MockInRange = new List<ICombatObject>
-            {
-                    attacker.Object
-            };
-            sut.MockAttackers.MockInRange = new List<ICombatObject>
-            {
-                    defender.Object
-            };
+            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker.Object};
+            sut.MockAttackers.MockInRange = new List<ICombatObject> {defender.Object};
 
             sut.MockAttackers.MockGetBestTargets.Enqueue(new StubCombatList.GetBestTargetQueueItem
             {
@@ -489,9 +501,9 @@ namespace Testing.Battle
         }
 
         /// <summary>
-        /// When the next unit to fight has 0 attack
-        /// And ExecuteTurn is called
-        /// Then he should be skipped
+        ///     When the next unit to fight has 0 attack
+        ///     And ExecuteTurn is called
+        ///     Then he should be skipped
         /// </summary>
         [Fact]
         public void TestExecuteWhenAtkIs0ShouldSkip()
@@ -511,26 +523,17 @@ namespace Testing.Battle
 
             sut.MockDefenders.Add(defenderGroup);
             sut.MockAttackers.Add(attackerGroup);
-            sut.MockDefenders.MockInRange = new List<ICombatObject>
-            {
-                    attacker.Object
-            };
-            sut.MockAttackers.MockInRange = new List<ICombatObject>
-            {
-                    defender.Object
-            };
+            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker.Object};
+            sut.MockAttackers.MockInRange = new List<ICombatObject> {defender.Object};
 
             sut.MockAttackers.MockGetBestTargets.Enqueue(new StubCombatList.GetBestTargetQueueItem
             {
                     BestTargetResult = CombatList.BestTargetResult.Ok,
-                    Targets = new List<CombatList.Target>
-                    {
-                            new CombatList.Target
+                    Targets =
+                            new List<CombatList.Target>
                             {
-                                    CombatObject = attacker.Object,
-                                    Group = attackerGroup
+                                    new CombatList.Target {CombatObject = attacker.Object, Group = attackerGroup}
                             }
-                    }
             });
 
             var skippedAttackerCalled = false;
@@ -549,10 +552,10 @@ namespace Testing.Battle
         }
 
         /// <summary>
-        /// When an object has no on in range
-        /// And ExecuteTurn is called
-        /// Then he should be skipped
-        /// And another attacker should be used immediatelly
+        ///     When an object has no on in range
+        ///     And ExecuteTurn is called
+        ///     Then he should be skipped
+        ///     And another attacker should be used immediatelly
         /// </summary>
         [Fact]
         public void TestExecuteWhenSkippedDueToNoneInRangeShouldFindAnotherTargetImmediately()
@@ -574,27 +577,18 @@ namespace Testing.Battle
 
             sut.MockDefenders.Add(defenderGroup);
             sut.MockAttackers.Add(attackerGroup);
-            sut.MockDefenders.MockInRange = new List<ICombatObject>
-            {
-                    attacker.Object
-            };
-            sut.MockAttackers.MockInRange = new List<ICombatObject>
-            {
-                    defender.Object
-            };
+            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker.Object};
+            sut.MockAttackers.MockInRange = new List<ICombatObject> {defender.Object};
 
             // Have it skip both objects but w/ different code path
             sut.MockAttackers.MockGetBestTargets.Enqueue(new StubCombatList.GetBestTargetQueueItem
             {
                     BestTargetResult = CombatList.BestTargetResult.NoneInRange,
-                    Targets = new List<CombatList.Target>
-                    {
-                            new CombatList.Target
+                    Targets =
+                            new List<CombatList.Target>
                             {
-                                    CombatObject = attacker.Object,
-                                    Group = attackerGroup
+                                    new CombatList.Target {CombatObject = attacker.Object, Group = attackerGroup}
                             }
-                    }
             });
 
             sut.MockDefenders.MockGetBestTargets.Enqueue(new StubCombatList.GetBestTargetQueueItem
@@ -626,9 +620,9 @@ namespace Testing.Battle
         }
 
         /// <summary>
-        /// When an attacker has no one in range
-        /// And ExecuteTurn is called 
-        /// Then he should be removed
+        ///     When an attacker has no one in range
+        ///     And ExecuteTurn is called
+        ///     Then he should be removed
         /// </summary>
         [Fact]
         public void TestExecuteWhenAttackerHasNoneInRangeIsRemoved()
@@ -649,27 +643,17 @@ namespace Testing.Battle
             sut.MockDefenders.Add(defenderGroup);
             sut.MockAttackers.Add(attacker1Group);
             sut.MockAttackers.Add(attackerWithoutInRangeGroup);
-            sut.MockDefenders.MockInRange = new List<ICombatObject>
-            {
-                    attacker.Object
-            };
+            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker.Object};
 
             sut.MockDefenders.MockGetBestTargets.Enqueue(new StubCombatList.GetBestTargetQueueItem
             {
                     BestTargetResult = CombatList.BestTargetResult.Ok,
-                    Targets = new List<CombatList.Target>
-                    {
-                            new CombatList.Target
+                    Targets =
+                            new List<CombatList.Target>
                             {
-                                    CombatObject = defender1.Object,
-                                    Group = attacker1Group
-                            },
-                            new CombatList.Target
-                            {
-                                    CombatObject = defender2.Object,
-                                    Group = attacker1Group
+                                    new CombatList.Target {CombatObject = defender1.Object, Group = attacker1Group},
+                                    new CombatList.Target {CombatObject = defender2.Object, Group = attacker1Group}
                             }
-                    }
             });
 
             var battle = sut.CreateStubbedAttackBattleManager(1,
@@ -687,7 +671,7 @@ namespace Testing.Battle
             battle.BattleStarted = true;
             battle.NextToAttack = BattleManager.BattleSide.Attack;
             battle.ExecuteTurn().Should().BeTrue();
-           
+
             withdrawCalled.Should().BeTrue();
             attacker.Verify(m => m.ParticipatedInRound(), Times.Once());
             attackerWithoutInRange.Verify(m => m.ExitBattle(), Times.Once());
@@ -695,12 +679,12 @@ namespace Testing.Battle
         }
 
         /// <summary>
-        /// When an object has targets
-        /// And NextToAttack is Defense
-        /// And ExecuteTurn is called 
-        /// Then he should attack all the targets
-        /// And ExitTurn should be called
-        /// And ParticipatedInRound should be called on the attacker
+        ///     When an object has targets
+        ///     And NextToAttack is Defense
+        ///     And ExecuteTurn is called
+        ///     Then he should attack all the targets
+        ///     And ExitTurn should be called
+        ///     And ParticipatedInRound should be called on the attacker
         /// </summary>
         [Fact]
         public void TestExecuteWhenHasTargetsAndOffensiveSideAttackingButDoesntKillShouldAttack()
@@ -719,28 +703,17 @@ namespace Testing.Battle
 
             sut.MockDefenders.Add(defenderGroup);
             sut.MockAttackers.Add(attackerGroup);
-            sut.MockDefenders.MockInRange = new List<ICombatObject>
-            {
-                    attacker.Object
-
-            };
+            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker.Object};
 
             sut.MockDefenders.MockGetBestTargets.Enqueue(new StubCombatList.GetBestTargetQueueItem
             {
                     BestTargetResult = CombatList.BestTargetResult.Ok,
-                    Targets = new List<CombatList.Target>
-                    {
-                            new CombatList.Target
+                    Targets =
+                            new List<CombatList.Target>
                             {
-                                    CombatObject = defender1.Object,
-                                    Group = attackerGroup
-                            },
-                            new CombatList.Target
-                            {
-                                    CombatObject = defender2.Object,
-                                    Group = attackerGroup
+                                    new CombatList.Target {CombatObject = defender1.Object, Group = attackerGroup},
+                                    new CombatList.Target {CombatObject = defender2.Object, Group = attackerGroup}
                             }
-                    }
             });
 
             var attackTargetCallCount = 0;
@@ -748,20 +721,27 @@ namespace Testing.Battle
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
-                                                              (offensiveCombatList, defensiveCombatList, attackerObject, defenderObject, attackIndex) =>
+                                                              (offensiveCombatList,
+                                                               defensiveCombatList,
+                                                               attackerObject,
+                                                               defenderObject,
+                                                               attackIndex) =>
                                                                   {
                                                                       attackTargetCallCount++;
 
                                                                       switch(attackIndex)
                                                                       {
                                                                           case 0:
-                                                                              attackerObject.Should().Be(defender1.Object);
+                                                                              attackerObject.Should()
+                                                                                            .Be(defender1.Object);
                                                                               break;
                                                                           case 1:
-                                                                              attackerObject.Should().Be(defender2.Object);
+                                                                              attackerObject.Should()
+                                                                                            .Be(defender2.Object);
                                                                               break;
                                                                           default:
-                                                                              throw new Exception("Unexpected attackIndex");
+                                                                              throw new Exception(
+                                                                                      "Unexpected attackIndex");
                                                                       }
                                                                   });
 
@@ -784,12 +764,12 @@ namespace Testing.Battle
         }
 
         /// <summary>
-        /// When an object has targets
-        /// And NextToAttack is Defense
-        /// And ExecuteTurn is called 
-        /// Then he should attack all the targets
-        /// And ExitTurn should be called
-        /// And ParticipatedInRound should be called on the attacker
+        ///     When an object has targets
+        ///     And NextToAttack is Defense
+        ///     And ExecuteTurn is called
+        ///     Then he should attack all the targets
+        ///     And ExitTurn should be called
+        ///     And ParticipatedInRound should be called on the attacker
         /// </summary>
         [Fact]
         public void TestExecuteWhenHasTargetsButDoesntKillShouldAttack()
@@ -808,32 +788,18 @@ namespace Testing.Battle
 
             sut.MockDefenders.Add(defenderGroup);
             sut.MockAttackers.Add(attackerGroup);
-            sut.MockDefenders.MockInRange = new List<ICombatObject>
-            {
-                    attacker1.Object,
-                    attacker2.Object
-            };
-            sut.MockAttackers.MockInRange = new List<ICombatObject>
-            {
-                    defender.Object
-            };
+            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker1.Object, attacker2.Object};
+            sut.MockAttackers.MockInRange = new List<ICombatObject> {defender.Object};
 
             sut.MockAttackers.MockGetBestTargets.Enqueue(new StubCombatList.GetBestTargetQueueItem
             {
                     BestTargetResult = CombatList.BestTargetResult.Ok,
-                    Targets = new List<CombatList.Target>
-                    {
-                            new CombatList.Target
+                    Targets =
+                            new List<CombatList.Target>
                             {
-                                    CombatObject = attacker1.Object,
-                                    Group = attackerGroup
-                            },
-                            new CombatList.Target
-                            {
-                                    CombatObject = attacker2.Object,
-                                    Group = attackerGroup
+                                    new CombatList.Target {CombatObject = attacker1.Object, Group = attackerGroup},
+                                    new CombatList.Target {CombatObject = attacker2.Object, Group = attackerGroup}
                             }
-                    }
             });
 
             var attackTargetCallCount = 0;
@@ -841,20 +807,27 @@ namespace Testing.Battle
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
-                                                              (offensiveCombatList, defensiveCombatList, attackerObject, defenderObject, attackIndex) =>
+                                                              (offensiveCombatList,
+                                                               defensiveCombatList,
+                                                               attackerObject,
+                                                               defenderObject,
+                                                               attackIndex) =>
                                                                   {
                                                                       attackTargetCallCount++;
 
                                                                       switch(attackIndex)
                                                                       {
                                                                           case 0:
-                                                                              attackerObject.Should().Be(attacker1.Object);
+                                                                              attackerObject.Should()
+                                                                                            .Be(attacker1.Object);
                                                                               break;
                                                                           case 1:
-                                                                              attackerObject.Should().Be(attacker2.Object);
+                                                                              attackerObject.Should()
+                                                                                            .Be(attacker2.Object);
                                                                               break;
                                                                           default:
-                                                                              throw new Exception("Unexpected attackIndex");
+                                                                              throw new Exception(
+                                                                                      "Unexpected attackIndex");
                                                                       }
                                                                   });
 
@@ -866,7 +839,7 @@ namespace Testing.Battle
                 };
 
             battle.BattleStarted = true;
-            battle.NextToAttack = BattleManager.BattleSide.Defense;            
+            battle.NextToAttack = BattleManager.BattleSide.Defense;
             battle.ExecuteTurn().Should().BeTrue();
 
             battle.Turn.Should().Be(1);

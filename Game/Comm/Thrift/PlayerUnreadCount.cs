@@ -4,127 +4,131 @@
  * DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
  *  @generated
  */
+
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Text;
-using System.IO;
-using Thrift;
-using Thrift.Collections;
 using Thrift.Protocol;
-using Thrift.Transport;
 
 [Serializable]
-public partial class PlayerUnreadCount : TBase
+public class PlayerUnreadCount : TBase
 {
-  private int _id;
-  private int _unreadCount;
+    public Isset __isset;
 
-  public int Id
-  {
-    get
+    private int _id;
+
+    private int _unreadCount;
+
+    public int Id
     {
-      return _id;
+        get
+        {
+            return _id;
+        }
+        set
+        {
+            __isset.id = true;
+            _id = value;
+        }
     }
-    set
+
+    public int UnreadCount
     {
-      __isset.id = true;
-      this._id = value;
+        get
+        {
+            return _unreadCount;
+        }
+        set
+        {
+            __isset.unreadCount = true;
+            _unreadCount = value;
+        }
     }
-  }
 
-  public int UnreadCount
-  {
-    get
+    public void Read(TProtocol iprot)
     {
-      return _unreadCount;
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+            field = iprot.ReadFieldBegin();
+            if (field.Type == TType.Stop)
+            {
+                break;
+            }
+            switch(field.ID)
+            {
+                case 1:
+                    if (field.Type == TType.I32)
+                    {
+                        Id = iprot.ReadI32();
+                    }
+                    else
+                    {
+                        TProtocolUtil.Skip(iprot, field.Type);
+                    }
+                    break;
+                case 2:
+                    if (field.Type == TType.I32)
+                    {
+                        UnreadCount = iprot.ReadI32();
+                    }
+                    else
+                    {
+                        TProtocolUtil.Skip(iprot, field.Type);
+                    }
+                    break;
+                default:
+                    TProtocolUtil.Skip(iprot, field.Type);
+                    break;
+            }
+            iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
     }
-    set
+
+    public void Write(TProtocol oprot)
     {
-      __isset.unreadCount = true;
-      this._unreadCount = value;
+        TStruct struc = new TStruct("PlayerUnreadCount");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+        if (__isset.id)
+        {
+            field.Name = "id";
+            field.Type = TType.I32;
+            field.ID = 1;
+            oprot.WriteFieldBegin(field);
+            oprot.WriteI32(Id);
+            oprot.WriteFieldEnd();
+        }
+        if (__isset.unreadCount)
+        {
+            field.Name = "unreadCount";
+            field.Type = TType.I32;
+            field.ID = 2;
+            oprot.WriteFieldBegin(field);
+            oprot.WriteI32(UnreadCount);
+            oprot.WriteFieldEnd();
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
     }
-  }
 
-
-  public Isset __isset;
-  [Serializable]
-  public struct Isset {
-    public bool id;
-    public bool unreadCount;
-  }
-
-  public PlayerUnreadCount() {
-  }
-
-  public void Read (TProtocol iprot)
-  {
-    TField field;
-    iprot.ReadStructBegin();
-    while (true)
+    public override string ToString()
     {
-      field = iprot.ReadFieldBegin();
-      if (field.Type == TType.Stop) { 
-        break;
-      }
-      switch (field.ID)
-      {
-        case 1:
-          if (field.Type == TType.I32) {
-            Id = iprot.ReadI32();
-          } else { 
-            TProtocolUtil.Skip(iprot, field.Type);
-          }
-          break;
-        case 2:
-          if (field.Type == TType.I32) {
-            UnreadCount = iprot.ReadI32();
-          } else { 
-            TProtocolUtil.Skip(iprot, field.Type);
-          }
-          break;
-        default: 
-          TProtocolUtil.Skip(iprot, field.Type);
-          break;
-      }
-      iprot.ReadFieldEnd();
+        StringBuilder sb = new StringBuilder("PlayerUnreadCount(");
+        sb.Append("Id: ");
+        sb.Append(Id);
+        sb.Append(",UnreadCount: ");
+        sb.Append(UnreadCount);
+        sb.Append(")");
+        return sb.ToString();
     }
-    iprot.ReadStructEnd();
-  }
 
-  public void Write(TProtocol oprot) {
-    TStruct struc = new TStruct("PlayerUnreadCount");
-    oprot.WriteStructBegin(struc);
-    TField field = new TField();
-    if (__isset.id) {
-      field.Name = "id";
-      field.Type = TType.I32;
-      field.ID = 1;
-      oprot.WriteFieldBegin(field);
-      oprot.WriteI32(Id);
-      oprot.WriteFieldEnd();
+    [Serializable]
+    public struct Isset
+    {
+        public bool id;
+
+        public bool unreadCount;
     }
-    if (__isset.unreadCount) {
-      field.Name = "unreadCount";
-      field.Type = TType.I32;
-      field.ID = 2;
-      oprot.WriteFieldBegin(field);
-      oprot.WriteI32(UnreadCount);
-      oprot.WriteFieldEnd();
-    }
-    oprot.WriteFieldStop();
-    oprot.WriteStructEnd();
-  }
-
-  public override string ToString() {
-    StringBuilder sb = new StringBuilder("PlayerUnreadCount(");
-    sb.Append("Id: ");
-    sb.Append(Id);
-    sb.Append(",UnreadCount: ");
-    sb.Append(UnreadCount);
-    sb.Append(")");
-    return sb.ToString();
-  }
-
 }
-

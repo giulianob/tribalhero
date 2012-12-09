@@ -11,7 +11,6 @@ using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using Ninject;
-using Persistance;
 
 #endregion
 
@@ -68,7 +67,10 @@ namespace Game.Data
 
         public static bool HasForestNear(uint x, uint y, int radius)
         {
-            return World.Current.Regions.GetRegion(x, y).GetObjects().Any(forest => forest is Forest && forest.TileDistance(x, y) <= radius);
+            return
+                    World.Current.Regions.GetRegion(x, y)
+                         .GetObjects()
+                         .Any(forest => forest is Forest && forest.TileDistance(x, y) <= radius);
         }
 
         public void CreateForest(byte lvl, int capacity, double rate)
@@ -89,16 +91,24 @@ namespace Game.Data
                         x = (uint)Config.Random.Next(15, (int)Config.map_width - 15);
                         y = (uint)Config.Random.Next(15, (int)Config.map_height - 15);
 
-                        if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileBuildable", World.Current.Regions.GetTileType(x, y)))
+                        if (
+                                !Ioc.Kernel.Get<ObjectTypeFactory>()
+                                    .IsTileType("TileBuildable", World.Current.Regions.GetTileType(x, y)))
+                        {
                             continue;
+                        }
 
                         // check if tile is safe
                         List<ushort> tiles = World.Current.Regions.GetTilesWithin(x, y, 7);
                         if (Ioc.Kernel.Get<ObjectTypeFactory>().HasTileType("CityStartTile", tiles))
+                        {
                             continue;
+                        }
 
                         if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsAllTileType("TileBuildable", tiles))
+                        {
                             continue;
+                        }
 
                         World.Current.Regions.LockRegion(x, y);
 
@@ -114,7 +124,9 @@ namespace Game.Data
                     }
                 }
                 else
+                {
                     World.Current.Regions.LockRegion(x, y);
+                }
 
                 forest.X = x;
                 forest.Y = y;
@@ -151,12 +163,12 @@ namespace Game.Data
         }
 
         /// <summary>
-        ///   Locks all cities participating in this forest. 
-        ///   Proper usage would be to lock the forest manager and the main city in the base objects. 
-        ///   The custom[0] parameter should a uint with the forestId.
-        ///   Once inside of the lock, a call to ForestManager.TryGetStronghold should be used to get the forest.
+        ///     Locks all cities participating in this forest.
+        ///     Proper usage would be to lock the forest manager and the main city in the base objects.
+        ///     The custom[0] parameter should a uint with the forestId.
+        ///     Once inside of the lock, a call to ForestManager.TryGetStronghold should be used to get the forest.
         /// </summary>
-        /// <param name = "custom">custom[0] should contain the forestId to lock</param>
+        /// <param name="custom">custom[0] should contain the forestId to lock</param>
         /// <returns>List of cities to lock for the forest.</returns>
         public ILockable[] CallbackLockHandler(object[] custom)
         {
@@ -172,9 +184,7 @@ namespace Game.Data
                 Forest forest;
 
                 return !forests.TryGetValue(forestId, out forest)
-                               ? new ILockable[]
-                               {
-                               }
+                               ? new ILockable[] {}
                                : forest.Select(obj => obj.City).ToArray<ILockable>();
             }
         }

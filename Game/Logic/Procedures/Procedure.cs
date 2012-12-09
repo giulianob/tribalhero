@@ -6,16 +6,15 @@ namespace Game.Logic.Procedures
     {
         private readonly IRegionManager regions;
 
-        public static Procedure Current { get; set; }
-
         public Procedure()
         {
-            
         }
 
         public Procedure(IRegionManager regions)
         {
             this.regions = regions;
         }
+
+        public static Procedure Current { get; set; }
     }
 }

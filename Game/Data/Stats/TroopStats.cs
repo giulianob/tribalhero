@@ -5,6 +5,7 @@ namespace Game.Data.Stats
         #region Base Stats
 
         private int attackPoint;
+
         private byte attackRadius;
 
         private byte speed;
@@ -54,7 +55,8 @@ namespace Game.Data.Stats
 
         #region Constructors
 
-        public TroopStats(byte attackRadius, byte speed) : this(0, attackRadius, speed, new Resource())
+        public TroopStats(byte attackRadius, byte speed)
+                : this(0, attackRadius, speed, new Resource())
         {
         }
 

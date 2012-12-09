@@ -19,8 +19,14 @@ namespace Game.Logic
             {
                 int radius = Formula.Current.GetAwayFromRadius(effects, req.MinDist, type);
                 Requirement req1 = req; // Copy for local closure
-                if (builder.City.Any(o => o.Type == req1.Type && o.Lvl >= req1.MinLvl && o.Lvl <= req1.MaxLvl && o.RadiusDistance(x, y) < radius + 1))
+                if (
+                        builder.City.Any(
+                                         o =>
+                                         o.Type == req1.Type && o.Lvl >= req1.MinLvl && o.Lvl <= req1.MaxLvl &&
+                                         o.RadiusDistance(x, y) < radius + 1))
+                {
                     return false;
+                }
             }
             return true;
         }

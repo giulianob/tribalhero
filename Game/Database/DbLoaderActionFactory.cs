@@ -60,7 +60,10 @@ namespace Game.Database
                                new ConstructorArgument("properties", properties));
         }
 
-        public PassiveAction CreatePassiveAction(Type type, uint id, bool isVisible, IDictionary<string, string> properties)
+        public PassiveAction CreatePassiveAction(Type type,
+                                                 uint id,
+                                                 bool isVisible,
+                                                 IDictionary<string, string> properties)
         {
             return
                     (PassiveAction)

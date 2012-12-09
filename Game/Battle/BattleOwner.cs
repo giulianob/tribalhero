@@ -9,18 +9,17 @@ namespace Game.Battle
     public enum BattleOwnerType
     {
         City = 0,
+
         Tribe = 1,
+
         Stronghold = 2
     }
 
     public class BattleOwner
     {
-        public BattleOwnerType Type { get; set; }
-        public uint Id { get; set; }
-
-        public BattleOwner(string type, uint id) :
-            this((BattleOwnerType)Enum.Parse(typeof(BattleOwnerType), type), id)
-        {            
+        public BattleOwner(string type, uint id)
+                : this((BattleOwnerType)Enum.Parse(typeof(BattleOwnerType), type), id)
+        {
         }
 
         public BattleOwner(BattleOwnerType type, uint id)
@@ -29,9 +28,13 @@ namespace Game.Battle
             Id = id;
         }
 
+        public BattleOwnerType Type { get; set; }
+
+        public uint Id { get; set; }
+
         public bool IsOwner(IPlayer player)
         {
-            switch (Type)
+            switch(Type)
             {
                 case BattleOwnerType.City:
                     return player.GetCity(Id) != null;
@@ -42,7 +45,7 @@ namespace Game.Battle
 
         public string GetName()
         {
-            switch (Type)
+            switch(Type)
             {
                 case BattleOwnerType.City:
                     ICity city;

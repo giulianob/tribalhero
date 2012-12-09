@@ -6,6 +6,7 @@ namespace Game.Data
     public enum LocationType
     {
         City = 1,
+
         Stronghold = 2
     }
 
@@ -17,6 +18,7 @@ namespace Game.Data
     public interface ILocation : ILockable, IXYPosition
     {
         uint LocationId { get; }
+
         LocationType LocationType { get; }
     }
 
@@ -31,6 +33,7 @@ namespace Game.Data
         #region Implementation of ILockable
 
         public int Hash { get; private set; }
+
         public object Lock { get; private set; }
 
         #endregion
@@ -38,6 +41,7 @@ namespace Game.Data
         #region Implementation of IXYPosition
 
         public uint X { get; set; }
+
         public uint Y { get; set; }
 
         #endregion
@@ -45,6 +49,7 @@ namespace Game.Data
         #region Implementation of ILocation
 
         public uint LocationId { get; private set; }
+
         public LocationType LocationType { get; private set; }
 
         #endregion

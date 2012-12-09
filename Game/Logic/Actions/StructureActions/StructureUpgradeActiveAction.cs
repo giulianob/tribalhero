@@ -1,8 +1,8 @@
 #region
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -19,8 +19,11 @@ namespace Game.Logic.Actions
     public class StructureUpgradeActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
+
         private readonly uint structureId;
+
         private Resource cost;
+
         private ushort type;
 
         public StructureUpgradeActiveAction(uint cityId, uint structureId)
@@ -30,14 +33,14 @@ namespace Game.Logic.Actions
         }
 
         public StructureUpgradeActiveAction(uint id,
-                                      DateTime beginTime,
-                                      DateTime nextTime,
-                                      DateTime endTime,
-                                      int workerType,
-                                      byte workerIndex,
-                                      ushort actionCount,
-                                      Dictionary<string, string> properties)
-            : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+                                            DateTime beginTime,
+                                            DateTime nextTime,
+                                            DateTime endTime,
+                                            int workerType,
+                                            byte workerIndex,
+                                            ushort actionCount,
+                                            Dictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
@@ -70,36 +73,48 @@ namespace Game.Logic.Actions
             IStructure structure;
 
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            {
                 return Error.ObjectNotFound;
+            }
 
             int maxConcurrentUpgrades = Formula.Current.ConcurrentBuildUpgrades(((IStructure)city[1]).Lvl);
 
             if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("UnlimitedBuilding", type) &&
-                    city.Worker.ActiveActions.Values.Count(
-                                                           action =>
-                                                           action.ActionId != ActionId &&
-                                                           (action.Type == ActionType.StructureUpgradeActive ||
-                                                            (action.Type == ActionType.StructureBuildActive &&
-                                                             !Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("UnlimitedBuilding",
-                                                                                                ((StructureBuildActiveAction)action).BuildType)))) >= maxConcurrentUpgrades)
+                city.Worker.ActiveActions.Values.Count(
+                                                       action =>
+                                                       action.ActionId != ActionId &&
+                                                       (action.Type == ActionType.StructureUpgradeActive ||
+                                                        (action.Type == ActionType.StructureBuildActive &&
+                                                         !Ioc.Kernel.Get<ObjectTypeFactory>()
+                                                             .IsStructureType("UnlimitedBuilding",
+                                                                              ((StructureBuildActiveAction)action)
+                                                                                      .BuildType)))) >=
+                maxConcurrentUpgrades)
+            {
                 return Error.ActionTotalMaxReached;
+            }
 
             cost = Formula.Current.StructureCost(city, structure.Type, (byte)(structure.Lvl + 1));
             type = structure.Type;
 
             if (cost == null)
+            {
                 return Error.ObjectStructureNotFound;
+            }
 
             // layout requirement
             if (
-                    !Ioc.Kernel.Get<RequirementFactory>().GetLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1)).Validate(structure,
-                                                                                                                 structure.Type,
-                                                                                                                 structure.X,
-                                                                                                                 structure.Y))
+                    !Ioc.Kernel.Get<RequirementFactory>()
+                        .GetLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1))
+                        .Validate(structure, structure.Type, structure.X, structure.Y))
+            {
                 return Error.LayoutNotFullfilled;
+            }
 
             if (!structure.City.Resource.HasEnough(cost))
+            {
                 return Error.ResourceNotEnough;
+            }
 
             structure.City.BeginUpdate();
             structure.City.Resource.Subtract(cost);
@@ -107,9 +122,14 @@ namespace Game.Logic.Actions
 
             endTime =
                     DateTime.UtcNow.AddSeconds(
-                                               CalculateTime(Formula.Current.BuildTime(Ioc.Kernel.Get<StructureFactory>().GetTime(structure.Type, (byte)(structure.Lvl + 1)),
-                                                                               city,
-                                                                               structure.Technologies)));
+                                               CalculateTime(
+                                                             Formula.Current.BuildTime(
+                                                                                       Ioc.Kernel.Get<StructureFactory>()
+                                                                                          .GetTime(structure.Type,
+                                                                                                   (byte)
+                                                                                                   (structure.Lvl + 1)),
+                                                                                       city,
+                                                                                       structure.Technologies)));
             BeginTime = DateTime.UtcNow;
 
             return Error.Ok;
@@ -122,7 +142,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 if (!city.TryGetStructure(structureId, out structure))
                 {
@@ -131,8 +153,10 @@ namespace Game.Logic.Actions
                 }
 
                 structure.BeginUpdate();
-                Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
-                Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnUpgrade, structure, structure.Type, structure.Lvl);
+                Ioc.Kernel.Get<StructureFactory>()
+                   .GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
+                Ioc.Kernel.Get<InitFactory>()
+                   .InitGameObject(InitCondition.OnUpgrade, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 
                 structure.City.BeginUpdate();
@@ -155,7 +179,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 if (!city.TryGetStructure(structureId, out structure))
                 {
@@ -192,11 +218,12 @@ namespace Game.Logic.Actions
             {
                 return
                         XmlSerializer.Serialize(new[]
-                                                {
-                                                        new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId), new XmlKvPair("wood", cost.Wood),
-                                                        new XmlKvPair("crop", cost.Crop), new XmlKvPair("iron", cost.Iron), new XmlKvPair("gold", cost.Gold),
-                                                        new XmlKvPair("labor", cost.Labor)
-                                                });
+                        {
+                                new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId),
+                                new XmlKvPair("wood", cost.Wood), new XmlKvPair("crop", cost.Crop),
+                                new XmlKvPair("iron", cost.Iron), new XmlKvPair("gold", cost.Gold),
+                                new XmlKvPair("labor", cost.Labor)
+                        });
             }
         }
 

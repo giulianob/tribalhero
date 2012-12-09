@@ -8,7 +8,6 @@ using System.Reflection;
 using Common;
 using Game.Data;
 using Game.Logic.Formulas;
-using Game.Util;
 
 #endregion
 
@@ -17,16 +16,22 @@ namespace Game.Setup
     public enum DataType : byte
     {
         Byte = 0,
+
         UShort = 1,
+
         UInt = 2,
+
         Int = 3,
+
         Float = 4,
+
         String = 10
     }
 
     public enum Visibility : byte
     {
         Private = 0,
+
         Public = 1,
     }
 
@@ -41,14 +46,19 @@ namespace Game.Setup
         }
 
         public string Name { get; private set; }
+
         public DataType Type { get; private set; }
+
         public PropertyOrigin Origin { get; private set; }
+
         public Visibility Visibility { get; private set; }
 
         public object GetValue(IStructure structure)
         {
             if (!structure.Properties.Contains(Name))
+            {
                 return GetDefaultValue();
+            }
 
             if (Origin == PropertyOrigin.Formula)
             {
@@ -57,7 +67,9 @@ namespace Game.Setup
             }
 
             if (Origin == PropertyOrigin.System)
+            {
                 return Global.SystemVariables[Name].Value;
+            }
 
             return structure[Name];
         }
@@ -87,30 +99,42 @@ namespace Game.Setup
     public enum PropertyOrigin
     {
         Structure,
+
         Formula,
+
         System
     }
 
     public class PropertyFactory
     {
-        private Dictionary<int, List<Property>> dict;
+        private readonly Dictionary<int, List<Property>> dict;
 
         public PropertyFactory(string filename)
         {
             dict = new Dictionary<int, List<Property>>();
 
-            using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
+            using (
+                    var reader =
+                            new CsvReader(
+                                    new StreamReader(new FileStream(filename,
+                                                                    FileMode.Open,
+                                                                    FileAccess.Read,
+                                                                    FileShare.ReadWrite))))
             {
                 String[] toks;
                 List<Property> properties;
                 var col = new Dictionary<string, int>();
                 for (int i = 0; i < reader.Columns.Length; ++i)
+                {
                     col.Add(reader.Columns[i], i);
+                }
 
                 while ((toks = reader.ReadRow()) != null)
                 {
                     if (toks[0].Length <= 0)
+                    {
                         continue;
+                    }
 
                     int index = int.Parse(toks[col["Type"]]);
 
@@ -125,11 +149,23 @@ namespace Game.Setup
                     var visibility = (Visibility)Enum.Parse(typeof(Visibility), toks[col["Visibility"]], true);
 
                     if (toks[col["Name"]].Contains("Formula."))
-                        prop = new Property(toks[col["Name"]].Substring(toks[col["Name"]].LastIndexOf('.') + 1), type, PropertyOrigin.Formula, visibility);
+                    {
+                        prop = new Property(toks[col["Name"]].Substring(toks[col["Name"]].LastIndexOf('.') + 1),
+                                            type,
+                                            PropertyOrigin.Formula,
+                                            visibility);
+                    }
                     else if (toks[col["Name"]].Contains("System."))
-                        prop = new Property(toks[col["Name"]].Substring(toks[col["Name"]].LastIndexOf('.') + 1), type, PropertyOrigin.System, visibility);
+                    {
+                        prop = new Property(toks[col["Name"]].Substring(toks[col["Name"]].LastIndexOf('.') + 1),
+                                            type,
+                                            PropertyOrigin.System,
+                                            visibility);
+                    }
                     else
+                    {
                         prop = new Property(toks[col["Name"]], type, PropertyOrigin.Structure, visibility);
+                    }
 
                     properties.Add(prop);
                 }
@@ -139,7 +175,9 @@ namespace Game.Setup
         public IEnumerable<Property> GetProperties(int type)
         {
             if (dict == null)
+            {
                 return null;
+            }
 
             List<Property> list;
             return !dict.TryGetValue(type, out list) ? new List<Property>() : list;
@@ -149,7 +187,9 @@ namespace Game.Setup
         {
             List<Property> list;
             if (dict == null || !dict.TryGetValue(type, out list))
+            {
                 return new List<Property>();
+            }
 
             return list.Where(prop => prop.Visibility == visibility);
         }

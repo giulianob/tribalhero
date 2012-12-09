@@ -8,13 +8,11 @@ namespace Game.Battle
 {
     public class AttackModeMonitor
     {
-        private readonly ITroopStub troopStub;
-
         private readonly ICombatGroup combatGroup;
 
-        public AttackModeMonitor(IBattleManager battleManager,
-                                 ICombatGroup combatGroup,
-                                 ITroopStub troopStub)
+        private readonly ITroopStub troopStub;
+
+        public AttackModeMonitor(IBattleManager battleManager, ICombatGroup combatGroup, ITroopStub troopStub)
         {
             this.troopStub = troopStub;
             this.combatGroup = combatGroup;
@@ -47,7 +45,11 @@ namespace Game.Battle
                 return;
             }
 
-            battle.Remove(combatGroup, attackingside == BattleManager.BattleSide.Attack ? BattleManager.BattleSide.Defense : BattleManager.BattleSide.Attack, ReportState.Retreating);
+            battle.Remove(combatGroup,
+                          attackingside == BattleManager.BattleSide.Attack
+                                  ? BattleManager.BattleSide.Defense
+                                  : BattleManager.BattleSide.Attack,
+                          ReportState.Retreating);
         }
 
         private void BattleWithdrawAttacker(IBattleManager battle, ICombatGroup groupWithdrawn)

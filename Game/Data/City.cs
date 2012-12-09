@@ -31,30 +31,54 @@ namespace Game.Data
         public enum DeletedState
         {
             NotDeleted,
+
             Deleting,
+
             Deleted,
         }
 
         public const string DB_TABLE = "cities";
+
         private readonly object objLock = new object();
 
         private readonly Dictionary<uint, IStructure> structures = new Dictionary<uint, IStructure>();
+
         private readonly Dictionary<uint, ITroopObject> troopobjects = new Dictionary<uint, ITroopObject>();
+
         private decimal alignmentPoint;
+
         private int attackPoint;
+
         private IBattleManager battle;
+
         private int defensePoint;
+
         private bool hideNewUnits;
 
         private string name = "Washington";
+
         private uint nextObjectId;
+
         private byte radius;
+
         private ushort value;
 
         #region Properties
 
         /// <summary>
-        ///   Enumerates only through structures in this city
+        ///     Returns the town center
+        /// </summary>
+        private IStructure MainBuilding
+        {
+            get
+            {
+                IStructure mainBuilding;
+                return !structures.TryGetValue(1, out mainBuilding) ? null : mainBuilding;
+            }
+        }
+
+        /// <summary>
+        ///     Enumerates only through structures in this city
         /// </summary>
         public Dictionary<uint, IStructure>.Enumerator Structures
         {
@@ -65,7 +89,7 @@ namespace Game.Data
         }
 
         /// <summary>
-        ///   Radius of city. This affects city wall and where user can build.
+        ///     Radius of city. This affects city wall and where user can build.
         /// </summary>
         public byte Radius
         {
@@ -76,22 +100,12 @@ namespace Game.Data
             set
             {
                 if (value == radius)
+                {
                     return;
+                }
 
                 radius = value;
                 RadiusUpdateEvent();
-            }
-        }
-
-        /// <summary>
-        ///   Returns the town center
-        /// </summary>
-        private IStructure MainBuilding
-        {
-            get
-            {
-                IStructure mainBuilding;
-                return !structures.TryGetValue(1, out mainBuilding) ? null : mainBuilding;
             }
         }
 
@@ -108,7 +122,7 @@ namespace Game.Data
         }
 
         /// <summary>
-        ///   Returns the city's center point which is the town centers position
+        ///     Returns the city's center point which is the town centers position
         /// </summary>
         public uint X
         {
@@ -123,7 +137,7 @@ namespace Game.Data
         }
 
         /// <summary>
-        ///   Returns the city's center point which is the town centers position
+        ///     Returns the city's center point which is the town centers position
         /// </summary>
         public uint Y
         {
@@ -138,7 +152,7 @@ namespace Game.Data
         }
 
         /// <summary>
-        ///   City's battle manager. Maybe null if city is not in battle.
+        ///     City's battle manager. Maybe null if city is not in battle.
         /// </summary>
         public IBattleManager Battle
         {
@@ -151,14 +165,18 @@ namespace Game.Data
                 battle = value;
 
                 if (value == null)
+                {
                     BattleEnded();
+                }
                 else
+                {
                     BattleStarted();
+                }
             }
         }
 
         /// <summary>
-        ///   Enumerates through all troop objects in this city
+        ///     Enumerates through all troop objects in this city
         /// </summary>
         public IEnumerable<ITroopObject> TroopObjects
         {
@@ -169,17 +187,17 @@ namespace Game.Data
         }
 
         /// <summary>
-        ///   Troop manager which manages all troop stubs in city
+        ///     Troop manager which manages all troop stubs in city
         /// </summary>
         public ITroopManager Troops { get; private set; }
 
         /// <summary>
-        ///   Technology manager for city
+        ///     Technology manager for city
         /// </summary>
         public ITechnologyManager Technologies { get; private set; }
 
         /// <summary>
-        ///   Returns the local troop
+        ///     Returns the local troop
         /// </summary>
         public ITroopStub DefaultTroop
         {
@@ -194,27 +212,27 @@ namespace Game.Data
         }
 
         /// <summary>
-        ///   Returns unit template. Unit template holds levels for all units in the city.
+        ///     Returns unit template. Unit template holds levels for all units in the city.
         /// </summary>
         public UnitTemplate Template { get; private set; }
 
         /// <summary>
-        ///   Resource available in the city
+        ///     Resource available in the city
         /// </summary>
         public ILazyResource Resource { get; private set; }
 
         /// <summary>
-        ///   Amount of loot this city has stolen from other players
+        ///     Amount of loot this city has stolen from other players
         /// </summary>
         public uint LootStolen { get; set; }
 
         /// <summary>
-        ///   Unique city id
+        ///     Unique city id
         /// </summary>
         public uint Id { get; private set; }
 
         /// <summary>
-        ///   City name
+        ///     City name
         /// </summary>
         public string Name
         {
@@ -230,14 +248,14 @@ namespace Game.Data
         }
 
         /// <summary>
-        ///   Player that owns this city
+        ///     Player that owns this city
         /// </summary>
         public IPlayer Owner { get; private set; }
 
         /// <summary>
-        ///   Enumerates through all structures and troops in this city
+        ///     Enumerates through all structures and troops in this city
         /// </summary>
-        /// <param name = "objectId"></param>
+        /// <param name="objectId"></param>
         /// <returns></returns>
         public IGameObject this[uint objectId]
         {
@@ -245,18 +263,22 @@ namespace Game.Data
             {
                 IStructure structure;
                 if (structures.TryGetValue(objectId, out structure))
+                {
                     return structure;
+                }
 
                 ITroopObject troop;
                 if (troopobjects.TryGetValue(objectId, out troop))
+                {
                     return troop;
+                }
 
                 throw new KeyNotFoundException();
             }
         }
 
         /// <summary>
-        ///   Whether to send new units to hiding or not
+        ///     Whether to send new units to hiding or not
         /// </summary>
         public bool HideNewUnits
         {
@@ -273,7 +295,7 @@ namespace Game.Data
         }
 
         /// <summary>
-        ///   Attack points earned by this city
+        ///     Attack points earned by this city
         /// </summary>
         public int AttackPoint
         {
@@ -290,7 +312,7 @@ namespace Game.Data
         }
 
         /// <summary>
-        ///   Defense points earned by this city
+        ///     Defense points earned by this city
         /// </summary>
         public int DefensePoint
         {
@@ -348,12 +370,31 @@ namespace Game.Data
 
         #region Constructors
 
-        public City(uint id, IPlayer owner, string name, Resource resource, byte radius, IStructure mainBuilding, decimal ap)
-                : this(id, owner, name, new LazyResource(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor), radius, mainBuilding, ap)
+        public City(uint id,
+                    IPlayer owner,
+                    string name,
+                    Resource resource,
+                    byte radius,
+                    IStructure mainBuilding,
+                    decimal ap)
+                : this(
+                        id,
+                        owner,
+                        name,
+                        new LazyResource(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor),
+                        radius,
+                        mainBuilding,
+                        ap)
         {
         }
 
-        public City(uint id, IPlayer owner, string name, LazyResource resource, byte radius, IStructure mainBuilding, decimal ap)
+        public City(uint id,
+                    IPlayer owner,
+                    string name,
+                    LazyResource resource,
+                    byte radius,
+                    IStructure mainBuilding,
+                    decimal ap)
         {
             Id = id;
             Owner = owner;
@@ -437,17 +478,23 @@ namespace Game.Data
             lock (objLock)
             {
                 if (troopobjects.ContainsKey(objId))
+                {
                     return false;
+                }
 
                 troop.City = this;
 
                 troopobjects.Add(objId, troop);
 
                 if (nextObjectId < objId)
+                {
                     nextObjectId = objId;
+                }
 
                 if (save)
+                {
                     DbPersistance.Current.Save(troop);
+                }
 
                 ObjAddEvent(troop);
             }
@@ -470,17 +517,23 @@ namespace Game.Data
             lock (objLock)
             {
                 if (structures.ContainsKey(objId))
+                {
                     return false;
+                }
 
                 structure.City = this;
 
                 structures.Add(objId, structure);
 
                 if (nextObjectId < objId)
+                {
                     nextObjectId = objId;
+                }
 
                 if (save)
+                {
                     DbPersistance.Current.Save(structure);
+                }
 
                 structure.Technologies.TechnologyCleared += TechnologiesTechnologyCleared;
                 structure.Technologies.TechnologyAdded += TechnologiesTechnologyAdded;
@@ -512,7 +565,9 @@ namespace Game.Data
             lock (objLock)
             {
                 if (!troopobjects.ContainsKey(obj.ObjectId))
+                {
                     return false;
+                }
 
                 obj.IsBlocked = true;
 
@@ -531,16 +586,19 @@ namespace Game.Data
             lock (objLock)
             {
                 if (!structures.ContainsKey(obj.ObjectId) || obj.IsBlocked)
+                {
                     return false;
+                }
 
                 obj.IsBlocked = true;
 
                 var actions = new List<uint>();
                 if (cancelReferences)
                 {
-                    actions = (from reference in References
-                               where reference.WorkerObject == obj
-                               select reference.Action.ActionId).ToList();
+                    actions =
+                            (from reference in References
+                             where reference.WorkerObject == obj
+                             select reference.Action.ActionId).ToList();
                 }
 
                 References.Remove(obj);
@@ -551,9 +609,9 @@ namespace Game.Data
         }
 
         /// <summary>
-        ///   Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
+        ///     Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
         /// </summary>
-        /// <param name = "obj"></param>
+        /// <param name="obj"></param>
         public void DoRemove(IStructure obj)
         {
             lock (objLock)
@@ -576,9 +634,9 @@ namespace Game.Data
         }
 
         /// <summary>
-        ///   Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
+        ///     Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
         /// </summary>
-        /// <param name = "obj"></param>
+        /// <param name="obj"></param>
         public void DoRemove(ITroopObject obj)
         {
             lock (objLock)
@@ -603,36 +661,47 @@ namespace Game.Data
         #region Updates
 
         public bool IsUpdating { get; private set; }
+
         public DeletedState Deleted { get; set; }
-
-        private void CheckUpdateMode()
-        {
-            if (!Global.FireEvents)
-                return;
-
-            if (Id == 0 || !DbPersisted)
-                return;
-
-            if (!IsUpdating)
-                throw new Exception("Changed state outside of begin/end update block");
-
-            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
-        }
 
         public void BeginUpdate()
         {
             if (IsUpdating)
+            {
                 throw new Exception("Nesting beginupdate");
+            }
             IsUpdating = true;
         }
 
         public void EndUpdate()
         {
             if (!IsUpdating)
+            {
                 throw new Exception("Called EndUpdate without first calling BeginUpdate");
+            }
 
             DbPersistance.Current.Save(this);
             IsUpdating = false;
+        }
+
+        private void CheckUpdateMode()
+        {
+            if (!Global.FireEvents)
+            {
+                return;
+            }
+
+            if (Id == 0 || !DbPersisted)
+            {
+                return;
+            }
+
+            if (!IsUpdating)
+            {
+                throw new Exception("Changed state outside of begin/end update block");
+            }
+
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
         }
 
         #endregion
@@ -658,7 +727,9 @@ namespace Game.Data
         public void ResourceUpdateEvent()
         {
             if (!Global.FireEvents || Deleted != DeletedState.NotDeleted)
+            {
                 return;
+            }
 
             CheckUpdateMode();
 
@@ -671,7 +742,9 @@ namespace Game.Data
         public void RadiusUpdateEvent()
         {
             if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
                 return;
+            }
 
             var packet = new Packet(Command.CityRadiusUpdate);
 
@@ -686,7 +759,9 @@ namespace Game.Data
         public void PointUpdate()
         {
             if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
                 return;
+            }
 
             var packet = new Packet(Command.CityPointUpdate);
 
@@ -702,7 +777,9 @@ namespace Game.Data
         public void HideNewUnitsUpdate()
         {
             if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
                 return;
+            }
 
             var packet = new Packet(Command.CityHideNewUnitsUpdate);
 
@@ -715,7 +792,9 @@ namespace Game.Data
         public void NewCityUpdate()
         {
             if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
                 return;
+            }
 
             var packet = new Packet(Command.CityNewUpdate);
 
@@ -727,16 +806,22 @@ namespace Game.Data
         public void ObjAddEvent(IGameObject obj)
         {
             if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
                 return;
+            }
 
             bool doUpdate = IsUpdating;
             if (!doUpdate)
+            {
                 BeginUpdate();
+            }
 
             Value = Formula.Current.CalculateCityValue(this);
 
             if (!doUpdate)
+            {
                 EndUpdate();
+            }
 
             var packet = new Packet(Command.CityObjectAdd);
             packet.AddUInt16(Region.GetRegionIndex(obj));
@@ -747,16 +832,22 @@ namespace Game.Data
         public void ObjRemoveEvent(IGameObject obj)
         {
             if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
                 return;
+            }
 
             bool doUpdate = IsUpdating;
             if (!doUpdate)
+            {
                 BeginUpdate();
+            }
 
             Value = Formula.Current.CalculateCityValue(this);
 
             if (!doUpdate)
+            {
                 EndUpdate();
+            }
 
             var packet = new Packet(Command.CityObjectRemove);
             packet.AddUInt32(Id);
@@ -767,16 +858,22 @@ namespace Game.Data
         public void ObjUpdateEvent(IGameObject sender, uint origX, uint origY)
         {
             if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
                 return;
+            }
 
             bool doUpdate = IsUpdating;
             if (!doUpdate)
+            {
                 BeginUpdate();
+            }
 
             Value = Formula.Current.CalculateCityValue(this);
 
             if (!doUpdate)
+            {
                 EndUpdate();
+            }
 
             var packet = new Packet(Command.CityObjectUpdate);
             packet.AddUInt16(Region.GetRegionIndex(sender));
@@ -784,162 +881,12 @@ namespace Game.Data
             Global.Channel.Post("/CITY/" + Id, packet);
         }
 
-        private void WorkerActionRescheduled(GameAction stub, ActionState state)
-        {
-            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
-                return;
-
-            if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
-                return;
-
-            var packet = new Packet(Command.ActionRescheduled);
-            packet.AddUInt32(Id);
-            PacketHelper.AddToPacket(stub, packet, true);
-            Global.Channel.Post("/CITY/" + Id, packet);
-        }
-
-        private void WorkerActionAdded(GameAction stub, ActionState state)
-        {
-            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
-                return;
-
-            if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
-                return;
-
-            var packet = new Packet(Command.ActionStarted);
-            packet.AddUInt32(Id);
-            PacketHelper.AddToPacket(stub, packet, true);
-            Global.Channel.Post("/CITY/" + Id, packet);
-        }
-
-        private void WorkerActionRemoved(GameAction stub, ActionState state)
-        {
-            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
-                return;
-
-            if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
-                return;
-
-            var packet = new Packet(Command.ActionCompleted);
-            packet.AddInt32((int)state);
-            packet.AddUInt32(Id);
-            PacketHelper.AddToPacket(stub, packet, true);
-            Global.Channel.Post("/CITY/" + Id, packet);
-        }
-
-        private void TechnologiesTechnologyUpgraded(Technology tech)
-        {
-            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
-                return;
-
-            var packet = new Packet(Command.TechUpgraded);
-            packet.AddUInt32(Id);
-            packet.AddUInt32(tech.OwnerLocation == EffectLocation.City ? 0 : tech.OwnerId);
-            packet.AddUInt32(tech.Type);
-            packet.AddByte(tech.Level);
-
-            Global.Channel.Post("/CITY/" + Id, packet);
-        }
-
-        private void TechnologiesTechnologyRemoved(Technology tech)
-        {
-            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
-                return;
-
-            var packet = new Packet(Command.TechRemoved);
-            packet.AddUInt32(Id);
-            packet.AddUInt32(tech.OwnerLocation == EffectLocation.City ? 0 : tech.OwnerId);
-            packet.AddUInt32(tech.Type);
-            packet.AddByte(tech.Level);
-
-            Global.Channel.Post("/CITY/" + Id, packet);
-        }
-
-        private void TechnologiesTechnologyCleared(ITechnologyManager manager)
-        {
-            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
-                return;
-
-            var packet = new Packet(Command.TechCleared);
-            packet.AddUInt32(Id);
-            packet.AddUInt32(manager.OwnerLocation == EffectLocation.City ? 0 : manager.OwnerId);
-
-            Global.Channel.Post("/CITY/" + Id, packet);
-        }
-
-        private void TechnologiesTechnologyAdded(Technology tech)
-        {
-            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
-                return;
-
-            var packet = new Packet(Command.TechAdded);
-            packet.AddUInt32(Id);
-            packet.AddUInt32(tech.OwnerLocation == EffectLocation.City ? 0 : tech.OwnerId);
-            packet.AddUInt32(tech.Type);
-            packet.AddByte(tech.Level);
-
-            Global.Channel.Post("/CITY/" + Id, packet);
-        }
-
-        private void TroopManagerTroopUpdated(ITroopStub stub)
-        {
-            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
-                return;
-
-            bool doUpdate = IsUpdating;
-            if (!doUpdate)
-                BeginUpdate();
-            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, Troops);
-            if (!doUpdate)
-                EndUpdate();
-
-            var packet = new Packet(Command.TroopUpdated);
-            packet.AddUInt32(Id);
-            PacketHelper.AddToPacket(stub, packet);
-            Global.Channel.Post("/CITY/" + Id, packet);
-        }
-
-        private void TroopManagerTroopAdded(ITroopStub stub)
-        {
-            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
-                return;
-
-            bool doUpdate = IsUpdating;
-            if (!doUpdate)
-                BeginUpdate();
-            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, Troops);
-            if (!doUpdate)
-                EndUpdate();
-
-            var packet = new Packet(Command.TroopAdded);
-            packet.AddUInt32(Id);
-            PacketHelper.AddToPacket(stub, packet);
-            Global.Channel.Post("/CITY/" + Id, packet);
-        }
-
-        private void TroopManagerTroopRemoved(ITroopStub stub)
-        {
-            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
-                return;
-
-            bool doUpdate = IsUpdating;
-            if (!doUpdate)
-                BeginUpdate();
-            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, Troops);
-            if (!doUpdate)
-                EndUpdate();
-
-            var packet = new Packet(Command.TroopRemoved);
-            packet.AddUInt32(Id);
-            packet.AddUInt32(stub.City.Id);
-            packet.AddByte(stub.TroopId);
-            Global.Channel.Post("/CITY/" + Id, packet);
-        }
-
         public void UnitTemplateUnitUpdated(UnitTemplate sender)
         {
             if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
                 return;
+            }
 
             DbPersistance.Current.Save(sender);
 
@@ -963,12 +910,202 @@ namespace Game.Data
             Global.Channel.Post("/CITY/" + Id, packet);
         }
 
+        private void WorkerActionRescheduled(GameAction stub, ActionState state)
+        {
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
+                return;
+            }
+
+            if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
+            {
+                return;
+            }
+
+            var packet = new Packet(Command.ActionRescheduled);
+            packet.AddUInt32(Id);
+            PacketHelper.AddToPacket(stub, packet, true);
+            Global.Channel.Post("/CITY/" + Id, packet);
+        }
+
+        private void WorkerActionAdded(GameAction stub, ActionState state)
+        {
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
+                return;
+            }
+
+            if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
+            {
+                return;
+            }
+
+            var packet = new Packet(Command.ActionStarted);
+            packet.AddUInt32(Id);
+            PacketHelper.AddToPacket(stub, packet, true);
+            Global.Channel.Post("/CITY/" + Id, packet);
+        }
+
+        private void WorkerActionRemoved(GameAction stub, ActionState state)
+        {
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
+                return;
+            }
+
+            if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
+            {
+                return;
+            }
+
+            var packet = new Packet(Command.ActionCompleted);
+            packet.AddInt32((int)state);
+            packet.AddUInt32(Id);
+            PacketHelper.AddToPacket(stub, packet, true);
+            Global.Channel.Post("/CITY/" + Id, packet);
+        }
+
+        private void TechnologiesTechnologyUpgraded(Technology tech)
+        {
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
+                return;
+            }
+
+            var packet = new Packet(Command.TechUpgraded);
+            packet.AddUInt32(Id);
+            packet.AddUInt32(tech.OwnerLocation == EffectLocation.City ? 0 : tech.OwnerId);
+            packet.AddUInt32(tech.Type);
+            packet.AddByte(tech.Level);
+
+            Global.Channel.Post("/CITY/" + Id, packet);
+        }
+
+        private void TechnologiesTechnologyRemoved(Technology tech)
+        {
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
+                return;
+            }
+
+            var packet = new Packet(Command.TechRemoved);
+            packet.AddUInt32(Id);
+            packet.AddUInt32(tech.OwnerLocation == EffectLocation.City ? 0 : tech.OwnerId);
+            packet.AddUInt32(tech.Type);
+            packet.AddByte(tech.Level);
+
+            Global.Channel.Post("/CITY/" + Id, packet);
+        }
+
+        private void TechnologiesTechnologyCleared(ITechnologyManager manager)
+        {
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
+                return;
+            }
+
+            var packet = new Packet(Command.TechCleared);
+            packet.AddUInt32(Id);
+            packet.AddUInt32(manager.OwnerLocation == EffectLocation.City ? 0 : manager.OwnerId);
+
+            Global.Channel.Post("/CITY/" + Id, packet);
+        }
+
+        private void TechnologiesTechnologyAdded(Technology tech)
+        {
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
+                return;
+            }
+
+            var packet = new Packet(Command.TechAdded);
+            packet.AddUInt32(Id);
+            packet.AddUInt32(tech.OwnerLocation == EffectLocation.City ? 0 : tech.OwnerId);
+            packet.AddUInt32(tech.Type);
+            packet.AddByte(tech.Level);
+
+            Global.Channel.Post("/CITY/" + Id, packet);
+        }
+
+        private void TroopManagerTroopUpdated(ITroopStub stub)
+        {
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
+                return;
+            }
+
+            bool doUpdate = IsUpdating;
+            if (!doUpdate)
+            {
+                BeginUpdate();
+            }
+            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, Troops);
+            if (!doUpdate)
+            {
+                EndUpdate();
+            }
+
+            var packet = new Packet(Command.TroopUpdated);
+            packet.AddUInt32(Id);
+            PacketHelper.AddToPacket(stub, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
+        }
+
+        private void TroopManagerTroopAdded(ITroopStub stub)
+        {
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
+                return;
+            }
+
+            bool doUpdate = IsUpdating;
+            if (!doUpdate)
+            {
+                BeginUpdate();
+            }
+            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, Troops);
+            if (!doUpdate)
+            {
+                EndUpdate();
+            }
+
+            var packet = new Packet(Command.TroopAdded);
+            packet.AddUInt32(Id);
+            PacketHelper.AddToPacket(stub, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
+        }
+
+        private void TroopManagerTroopRemoved(ITroopStub stub)
+        {
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
+                return;
+            }
+
+            bool doUpdate = IsUpdating;
+            if (!doUpdate)
+            {
+                BeginUpdate();
+            }
+            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, Troops);
+            if (!doUpdate)
+            {
+                EndUpdate();
+            }
+
+            var packet = new Packet(Command.TroopRemoved);
+            packet.AddUInt32(Id);
+            packet.AddUInt32(stub.City.Id);
+            packet.AddByte(stub.TroopId);
+            Global.Channel.Post("/CITY/" + Id, packet);
+        }
+
         #endregion
 
         public IActionWorker Worker { get; private set; }
 
         #region ICanDo Members
-        
+
         public uint WorkerId
         {
             get
@@ -1125,7 +1262,7 @@ namespace Game.Data
         {
             get
             {
-                return (ushort)(X%Config.city_region_width);
+                return (ushort)(X % Config.city_region_width);
             }
         }
 
@@ -1133,7 +1270,7 @@ namespace Game.Data
         {
             get
             {
-                return (ushort)(Y%Config.city_region_height);
+                return (ushort)(Y % Config.city_region_height);
             }
         }
 

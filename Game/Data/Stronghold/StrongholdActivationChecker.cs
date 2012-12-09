@@ -1,21 +1,19 @@
 ﻿using System;
-using Game.Logic;
 using System.Linq;
+using Game.Logic;
 using Game.Util.Locking;
 
 namespace Game.Data.Stronghold
 {
     class StrongholdActivationChecker : ISchedule
     {
-        private readonly IStrongholdManager strongholdManager;
-
-        private readonly IStrongholdActivationCondition strongholdActivationCondition;
+        private readonly ILocker locker;
 
         private readonly IScheduler scheduler;
 
-        private readonly ILocker locker;
+        private readonly IStrongholdActivationCondition strongholdActivationCondition;
 
-        private TimeSpan TimeSpan { get; set; }
+        private readonly IStrongholdManager strongholdManager;
 
         public StrongholdActivationChecker(IStrongholdManager strongholdManager,
                                            IStrongholdActivationCondition strongholdActivationCondition,
@@ -28,15 +26,7 @@ namespace Game.Data.Stronghold
             this.locker = locker;
         }
 
-        public void Start(TimeSpan timeSpan)
-        {
-            if (IsScheduled)
-                return;
-
-            TimeSpan = timeSpan;
-            Time = DateTime.UtcNow.Add(timeSpan);
-            scheduler.Put(this);
-        }
+        private TimeSpan TimeSpan { get; set; }
 
         public bool IsScheduled { get; set; }
 
@@ -57,6 +47,18 @@ namespace Game.Data.Stronghold
             }
 
             Time = DateTime.UtcNow.Add(TimeSpan);
+            scheduler.Put(this);
+        }
+
+        public void Start(TimeSpan timeSpan)
+        {
+            if (IsScheduled)
+            {
+                return;
+            }
+
+            TimeSpan = timeSpan;
+            Time = DateTime.UtcNow.Add(timeSpan);
             scheduler.Put(this);
         }
     }

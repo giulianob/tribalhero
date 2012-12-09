@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using Game.Data;
-using Game.Setup;
 
 #endregion
 
@@ -17,6 +16,7 @@ namespace Game.Comm
         #endregion
 
         private readonly Dictionary<Command, ProcessorCommand> commands = new Dictionary<Command, ProcessorCommand>();
+
         private readonly Dictionary<Command, ProcessorCommand> events = new Dictionary<Command, ProcessorCommand>();
 
         public Processor(params CommandModule[] commandModules)
@@ -35,7 +35,7 @@ namespace Game.Comm
         public void RegisterEvent(Command cmd, DoWork func)
         {
             events[cmd] = new ProcessorCommand(func);
-        }        
+        }
 
         public void Execute(Session session, Packet packet)
         {
@@ -47,7 +47,9 @@ namespace Game.Comm
             {
                 ProcessorCommand command;
                 if (!commands.TryGetValue(packet.Cmd, out command))
+                {
                     return;
+                }
 
                 command.Function(session, packet);
             }

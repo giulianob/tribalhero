@@ -7,7 +7,7 @@ namespace Game.Logic.Procedures
     public partial class Procedure
     {
         /// <summary>
-        /// Changes a structure to a new type. Must call beginupdate on structure beforehand.  All technologies belong to the structure will be removed.
+        ///     Changes a structure to a new type. Must call beginupdate on structure beforehand.  All technologies belong to the structure will be removed.
         /// </summary>
         /// <param name="structure">Current structure obj</param>
         /// <param name="newType">New type</param>
@@ -17,11 +17,12 @@ namespace Game.Logic.Procedures
             Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, newType, newLvl);
             structure.Technologies.BeginUpdate();
             structure.Technologies.Parent = structure.City.Technologies;
-            structure.Technologies.Clear();  
+            structure.Technologies.Clear();
             structure.Technologies.EndUpdate();
             structure.IsBlocked = false;
-            Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnConvert, structure, structure.Type, structure.Lvl);
-            
+            Ioc.Kernel.Get<InitFactory>()
+               .InitGameObject(InitCondition.OnConvert, structure, structure.Type, structure.Lvl);
+
             OnStructureUpgradeDowngrade(structure);
         }
     }

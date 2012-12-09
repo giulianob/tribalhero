@@ -11,16 +11,20 @@ using Xunit;
 namespace Testing.Channel
 {
     /// <summary>
-    ///   Summary description for ChannelTest
-    /// </summary>    
+    ///     Summary description for ChannelTest
+    /// </summary>
     public class ChannelTest
     {
+        private readonly Game.Util.Channel channel;
+
         private readonly Packet msg1 = new Packet();
+
         private readonly Packet msg2 = new Packet();
-        private Game.Util.Channel channel;
-        private Mock<IChannel> session1;
-        private Mock<IChannel> session2;
-        
+
+        private readonly Mock<IChannel> session1;
+
+        private readonly Mock<IChannel> session2;
+
         public ChannelTest()
         {
             channel = new Game.Util.Channel();
@@ -170,7 +174,8 @@ namespace Testing.Channel
         public void TestSubscribingDuplicates()
         {
             channel.Subscribe(session1.Object, "Channel1");
-            channel.Invoking(c => c.Subscribe(session1.Object, "Channel1")).ShouldThrow<DuplicateSubscriptionException>();
+            channel.Invoking(c => c.Subscribe(session1.Object, "Channel1"))
+                   .ShouldThrow<DuplicateSubscriptionException>();
         }
 
         [Fact]

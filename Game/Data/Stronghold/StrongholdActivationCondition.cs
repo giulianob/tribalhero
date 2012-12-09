@@ -6,9 +6,12 @@ namespace Game.Data.Stronghold
 {
     class StrongholdActivationCondition : IStrongholdActivationCondition
     {
-        private readonly int radiusPerLevel = Config.stronghold_radius_per_level;
-        private readonly int radiusBase = Config.stronghold_radius_base;
         private readonly int cityPerLevel = Config.stronghold_radius_per_level;
+
+        private readonly int radiusBase = Config.stronghold_radius_base;
+
+        private readonly int radiusPerLevel = Config.stronghold_radius_per_level;
+
         private readonly IWorld world;
 
         public StrongholdActivationCondition(IWorld world)
@@ -27,7 +30,7 @@ namespace Game.Data.Stronghold
                          .Distinct()
                          .Count();
 
-            return citiesInRegion >= cityPerLevel*stronghold.Lvl;
+            return citiesInRegion >= cityPerLevel * stronghold.Lvl;
         }
     }
 }

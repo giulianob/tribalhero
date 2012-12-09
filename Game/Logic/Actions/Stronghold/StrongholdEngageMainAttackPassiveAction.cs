@@ -2,11 +2,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Game.Battle;
 using Game.Battle.CombatGroups;
-using Game.Battle.CombatObjects;
-using Game.Battle.Reporting;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
@@ -21,30 +18,28 @@ namespace Game.Logic.Actions
 {
     public class StrongholdEngageMainAttackPassiveAction : PassiveAction
     {
-        private AttackModeMonitor AttackModeMonitor { get; set; }
-
-        private readonly IGameObjectLocator gameObjectLocator;
-
         private readonly BattleProcedure battleProcedure;
 
         private readonly uint cityId;
 
-        private uint groupId;
+        private readonly IGameObjectLocator gameObjectLocator;
 
-        private readonly uint troopObjectId;
+        private readonly AttackMode mode;
 
         private readonly uint targetStrongholdId;
 
-        private readonly AttackMode mode;
+        private readonly uint troopObjectId;
+
+        private uint groupId;
 
         private int originalUnitCount;
 
         public StrongholdEngageMainAttackPassiveAction(uint cityId,
-                                         uint troopObjectId,
-                                         uint targetStrongholdId,
-                                         AttackMode mode,
-                                         IGameObjectLocator gameObjectLocator,
-                                         BattleProcedure battleProcedure)
+                                                       uint troopObjectId,
+                                                       uint targetStrongholdId,
+                                                       AttackMode mode,
+                                                       IGameObjectLocator gameObjectLocator,
+                                                       BattleProcedure battleProcedure)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
@@ -55,10 +50,10 @@ namespace Game.Logic.Actions
         }
 
         public StrongholdEngageMainAttackPassiveAction(uint id,
-                                         bool isVisible,
-                                         IDictionary<string, string> properties,
-                                         IGameObjectLocator gameObjectLocator,
-                                         BattleProcedure battleProcedure)
+                                                       bool isVisible,
+                                                       IDictionary<string, string> properties,
+                                                       IGameObjectLocator gameObjectLocator,
+                                                       BattleProcedure battleProcedure)
                 : base(id, isVisible)
         {
             this.gameObjectLocator = gameObjectLocator;
@@ -83,6 +78,8 @@ namespace Game.Logic.Actions
             AttackModeMonitor = new AttackModeMonitor(targetStronghold.MainBattle, combatGroup, troopObject.Stub);
         }
 
+        private AttackModeMonitor AttackModeMonitor { get; set; }
+
         public override ActionType Type
         {
             get
@@ -95,15 +92,14 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return XmlSerializer.Serialize(new[]
-                {
-                        new XmlKvPair("target_stronghold_id", targetStrongholdId), 
-                        new XmlKvPair("troop_city_id", cityId),
-                        new XmlKvPair("troop_object_id", troopObjectId), 
-                        new XmlKvPair("group_id", groupId), 
-                        new XmlKvPair("mode", (int)mode),
-                        new XmlKvPair("original_count", originalUnitCount)
-                });
+                return
+                        XmlSerializer.Serialize(new[]
+                        {
+                                new XmlKvPair("target_stronghold_id", targetStrongholdId),
+                                new XmlKvPair("troop_city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId),
+                                new XmlKvPair("group_id", groupId), new XmlKvPair("mode", (int)mode),
+                                new XmlKvPair("original_count", originalUnitCount)
+                        });
             }
         }
 
@@ -128,7 +124,8 @@ namespace Game.Logic.Actions
             ITroopObject troopObject;
             IStronghold targetStronghold;
 
-            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) || !gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold))
+            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) ||
+                !gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold))
             {
                 return Error.ObjectNotFound;
             }
@@ -136,7 +133,10 @@ namespace Game.Logic.Actions
             // Create the group in the battle
             uint battleId;
             ICombatGroup combatGroup;
-            battleProcedure.JoinOrCreateStrongholdMainBattle(targetStronghold, troopObject, out combatGroup, out battleId);            
+            battleProcedure.JoinOrCreateStrongholdMainBattle(targetStronghold,
+                                                             troopObject,
+                                                             out combatGroup,
+                                                             out battleId);
             groupId = combatGroup.Id;
 
             // Create attack mode monitor            
@@ -145,7 +145,7 @@ namespace Game.Logic.Actions
 
             // Register the battle listeners
             RegisterBattleListeners(targetStronghold);
-            
+
             // Set the attacking troop object to the correct state and stamina
             troopObject.BeginUpdate();
             troopObject.State = GameObjectState.BattleState(battleId);
@@ -160,12 +160,13 @@ namespace Game.Logic.Actions
         }
 
         private void BattleWithdrawAttacker(IBattleManager battle, ICombatGroup group)
-        {            
+        {
             ICity city;
             ITroopObject troopObject;
             IStronghold targetStronghold;
 
-            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) || !gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold))
+            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) ||
+                !gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold))
             {
                 throw new ArgumentException();
             }
@@ -186,7 +187,7 @@ namespace Game.Logic.Actions
 
             StateChange(ActionState.Completed);
         }
-        
+
         public override void UserCancelled()
         {
         }

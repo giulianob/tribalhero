@@ -17,21 +17,21 @@ namespace Game.Comm
 {
     class PlayerCommandLineModule : CommandLineModule
     {
+        private readonly Chat chat;
+
+        private readonly ICityRemoverFactory cityRemoverFactory;
+
+        private readonly IDbManager dbManager;
+
+        private readonly ILocker locker;
+
         private readonly IPlayersRemoverFactory playerRemoverFactory;
 
         private readonly IPlayerSelectorFactory playerSelectorFactory;
 
-        private readonly ICityRemoverFactory cityRemoverFactory;
-
-        private readonly Chat chat;
-
-        private readonly IDbManager dbManager;
-
         private readonly ITribeManager tribeManager;
 
         private readonly IWorld world;
-
-        private readonly ILocker locker;
 
         public PlayerCommandLineModule(IPlayersRemoverFactory playerRemoverFactory,
                                        IPlayerSelectorFactory playerSelectorFactory,
@@ -80,12 +80,8 @@ namespace Game.Comm
             {
                 var p = new OptionSet
                 {
-                        {
-                                "?|help|h", v => help = true
-                        },
-                        {
-                                "message=", v => message = v.TrimMatchingQuotes()
-                        },
+                        {"?|help|h", v => help = true},
+                        {"message=", v => message = v.TrimMatchingQuotes()},
                 };
                 p.Parse(parms);
             }
@@ -114,12 +110,8 @@ namespace Game.Comm
             {
                 var p = new OptionSet
                 {
-                        {
-                                "?|help|h", v => help = true
-                        },
-                        {
-                                "player=", v => playerName = v.TrimMatchingQuotes()
-                        },
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()},
                         {
                                 "rights=",
                                 v =>
@@ -173,12 +165,8 @@ namespace Game.Comm
             {
                 var p = new OptionSet
                 {
-                        {
-                                "?|help|h", v => help = true
-                        },
-                        {
-                                "player=", v => playerName = v.TrimMatchingQuotes()
-                        },
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()},
                 };
                 p.Parse(parms);
             }
@@ -221,12 +209,8 @@ namespace Game.Comm
             {
                 var p = new OptionSet
                 {
-                        {
-                                "?|help|h", v => help = true
-                        },
-                        {
-                                "player=", v => playerName = v.TrimMatchingQuotes()
-                        },
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()},
                 };
                 p.Parse(parms);
             }
@@ -269,12 +253,8 @@ namespace Game.Comm
             {
                 var p = new OptionSet
                 {
-                        {
-                                "?|help|h", v => help = true
-                        },
-                        {
-                                "player=", v => playerName = v.TrimMatchingQuotes()
-                        },
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()},
                 };
                 p.Parse(parms);
             }
@@ -318,15 +298,9 @@ namespace Game.Comm
             {
                 var p = new OptionSet
                 {
-                        {
-                                "?|help|h", v => help = true
-                        },
-                        {
-                                "tribe=", v => tribeName = v.TrimMatchingQuotes()
-                        },
-                        {
-                                "newname=", v => newTribeName = v.TrimMatchingQuotes()
-                        }
+                        {"?|help|h", v => help = true},
+                        {"tribe=", v => tribeName = v.TrimMatchingQuotes()},
+                        {"newname=", v => newTribeName = v.TrimMatchingQuotes()}
                 };
                 p.Parse(parms);
             }
@@ -381,15 +355,9 @@ namespace Game.Comm
             {
                 var p = new OptionSet
                 {
-                        {
-                                "?|help|h", v => help = true
-                        },
-                        {
-                                "subject=", v => subject = v.TrimMatchingQuotes()
-                        },
-                        {
-                                "message=", v => message = v.TrimMatchingQuotes()
-                        },
+                        {"?|help|h", v => help = true},
+                        {"subject=", v => subject = v.TrimMatchingQuotes()},
+                        {"message=", v => message = v.TrimMatchingQuotes()},
                 };
                 p.Parse(parms);
             }
@@ -405,9 +373,7 @@ namespace Game.Comm
 
             using (
                     var reader = dbManager.ReaderQuery(string.Format("SELECT * FROM `{0}`", Player.DB_TABLE),
-                                                       new DbColumn[]
-                                                       {
-                                                       }))
+                                                       new DbColumn[] {}))
             {
                 while (reader.Read())
                 {
@@ -430,12 +396,8 @@ namespace Game.Comm
             {
                 var p = new OptionSet
                 {
-                        {
-                                "?|help|h", v => help = true
-                        },
-                        {
-                                "message=", v => message = v.TrimMatchingQuotes()
-                        },
+                        {"?|help|h", v => help = true},
+                        {"message=", v => message = v.TrimMatchingQuotes()},
                 };
                 p.Parse(parms);
             }
@@ -465,12 +427,8 @@ namespace Game.Comm
             {
                 var p = new OptionSet
                 {
-                        {
-                                "?|help|h", v => help = true
-                        },
-                        {
-                                "player=", v => playerName = v.TrimMatchingQuotes()
-                        }
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()}
                 };
                 p.Parse(parms);
             }
@@ -516,15 +474,9 @@ namespace Game.Comm
             {
                 var p = new OptionSet
                 {
-                        {
-                                "?|help|h", v => help = true
-                        },
-                        {
-                                "player=", v => playerName = v.TrimMatchingQuotes()
-                        },
-                        {
-                                "newname=", v => newPlayerName = v.TrimMatchingQuotes()
-                        }
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()},
+                        {"newname=", v => newPlayerName = v.TrimMatchingQuotes()}
                 };
                 p.Parse(parms);
             }
@@ -589,15 +541,9 @@ namespace Game.Comm
             {
                 var p = new OptionSet
                 {
-                        {
-                                "?|help|h", v => help = true
-                        },
-                        {
-                                "player=", v => playerName = v.TrimMatchingQuotes()
-                        },
-                        {
-                                "password=", v => password = v.TrimMatchingQuotes()
-                        }
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()},
+                        {"password=", v => password = v.TrimMatchingQuotes()}
                 };
                 p.Parse(parms);
             }
@@ -625,12 +571,8 @@ namespace Game.Comm
             {
                 var p = new OptionSet
                 {
-                        {
-                                "?|help|h", v => help = true
-                        },
-                        {
-                                "player=", v => playerName = v.TrimMatchingQuotes()
-                        }
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()}
                 };
                 p.Parse(parms);
             }
@@ -679,12 +621,8 @@ namespace Game.Comm
             {
                 var p = new OptionSet
                 {
-                        {
-                                "?|help|h", v => help = true
-                        },
-                        {
-                                "player=", v => playerName = v.TrimMatchingQuotes()
-                        }
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()}
                 };
                 p.Parse(parms);
             }
@@ -712,12 +650,8 @@ namespace Game.Comm
             {
                 var p = new OptionSet
                 {
-                        {
-                                "?|help|h", v => help = true
-                        },
-                        {
-                                "player=", v => playerName = v.TrimMatchingQuotes()
-                        }
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()}
                 };
                 p.Parse(parms);
             }
@@ -772,12 +706,7 @@ namespace Game.Comm
 
             try
             {
-                var p = new OptionSet
-                {
-                        {
-                                "?|help|h", v => help = true
-                        }
-                };
+                var p = new OptionSet {{"?|help|h", v => help = true}};
                 p.Parse(parms);
             }
             catch(Exception)

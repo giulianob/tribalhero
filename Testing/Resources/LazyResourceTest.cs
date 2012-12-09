@@ -13,8 +13,8 @@ using Xunit.Extensions;
 namespace Testing.Resources
 {
     /// <summary>
-    ///   Summary description for LazyResourceTest
-    /// </summary>    
+    ///     Summary description for LazyResourceTest
+    /// </summary>
     public class LazyResourceTest : IDisposable
     {
         private DateTime begin = DateTime.UtcNow;
@@ -31,7 +31,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Tests rate and upkeep being zero
+        ///     Tests rate and upkeep being zero
         /// </summary>
         [Fact]
         public void TestZero()
@@ -42,7 +42,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Tests having positive rate but no upkeep
+        ///     Tests having positive rate but no upkeep
         /// </summary>
         [Fact]
         public void TestPositiveRate()
@@ -56,7 +56,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Tests having positive upkeep but no rate
+        ///     Tests having positive upkeep but no rate
         /// </summary>
         [Fact]
         public void TestPositiveUpkeep()
@@ -70,7 +70,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Tests having rate higher than upkeep
+        ///     Tests having rate higher than upkeep
         /// </summary>
         [Fact]
         public void TestPositiveRateGreaterThanUpkeep()
@@ -84,7 +84,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Tests having upkeep higher than rate
+        ///     Tests having upkeep higher than rate
         /// </summary>
         [Fact]
         public void TestPositiveUpkeepGreaterThanRate()
@@ -98,7 +98,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Test equal upkeep and rate
+        ///     Test equal upkeep and rate
         /// </summary>
         [Fact]
         public void TestEqualUpkeepAndRate()
@@ -112,7 +112,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Tests changing the rate
+        ///     Tests changing the rate
         /// </summary>
         [Fact]
         public void TestChangeRate()
@@ -130,7 +130,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Tests changing the upkeep
+        ///     Tests changing the upkeep
         /// </summary>
         [Fact]
         public void TestChangeUpkeep()
@@ -197,7 +197,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Tests having positive rate but no upkeep and secs per unit modified
+        ///     Tests having positive rate but no upkeep and secs per unit modified
         /// </summary>
         [Fact]
         public void TestPositiveRateWithSecsPerUnit()
@@ -213,7 +213,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Tests having rate higher than upkeep and secs per unit
+        ///     Tests having rate higher than upkeep and secs per unit
         /// </summary>
         [Fact]
         public void TestPositiveRateGreaterThanUpkeepWithSecsPerUnit()
@@ -229,20 +229,23 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Tests get amount received with various scenarios
+        ///     Tests get amount received with various scenarios
         /// </summary>
-        [Theory]
-        [InlineData(3600000, 0, 0, 0)] // No rate or upkeep for 1 hr should return 0
-        [InlineData(600000, 0, 0, 0)] // No rate or upkeep for 10 min should return 0
-        [InlineData(600000, 10, 0, 1)] // Rate of 10 for 10 min should return 1
-        [InlineData(600000, 60, 0, 10)] // Rate of 60 for 10 min should return 10
-        [InlineData(3600000, 60, 0, 60)] // Rate of 60 for 1 hour should return 60
-        [InlineData(3600000, 60, 30, 30)] // Rate of 60 with 30 upkeep for 1 hour should return 30
-        [InlineData(1800000, 60, 30, 15)] // Rate of 60 with 30 upkeep for 30 min should return 15
-        [InlineData(1800000, 30, 60, -15)] // Rate of 30 with 60 upkeep for 30 min should return -15
-        [InlineData(1800000, 11, 60, -24)] // Rate of 11 with 60 upkeep for 30 min should return -24
-        [InlineData(3600000, 30, 60, -30)] // Rate of 60 with 30 upkeep for 1 hour should return -30
-        [InlineData(1800000, 30, 30, 0)] // Rate of 30 with 30 upkeep for 1 hour should return 0
+        [Theory, InlineData(3600000, 0, 0, 0), InlineData(600000, 0, 0, 0), InlineData(600000, 10, 0, 1),
+         InlineData(600000, 60, 0, 10), InlineData(3600000, 60, 0, 60), InlineData(3600000, 60, 30, 30),
+         InlineData(1800000, 60, 30, 15), InlineData(1800000, 30, 60, -15), InlineData(1800000, 11, 60, -24),
+         InlineData(3600000, 30, 60, -30), InlineData(1800000, 30, 30, 0)]
+        // No rate or upkeep for 1 hr should return 0
+        // No rate or upkeep for 10 min should return 0
+        // Rate of 10 for 10 min should return 1
+        // Rate of 60 for 10 min should return 10
+        // Rate of 60 for 1 hour should return 60
+        // Rate of 60 with 30 upkeep for 1 hour should return 30
+        // Rate of 60 with 30 upkeep for 30 min should return 15
+        // Rate of 30 with 60 upkeep for 30 min should return -15
+        // Rate of 11 with 60 upkeep for 30 min should return -24
+        // Rate of 60 with 30 upkeep for 1 hour should return -30
+         // Rate of 30 with 30 upkeep for 1 hour should return 0
         public void TestGetAmountReceived(int interval, int rate, int upkeep, int expected)
         {
             var resource = new LazyValue(0, DateTime.MinValue, rate, upkeep);

@@ -20,17 +20,17 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly IActionFactory actionFactory;
 
-        private readonly StructureFactory structureFactory;
+        private readonly IDbManager dbManager;
 
         private readonly ILocker locker;
 
-        private readonly IWorld world;
-
-        private readonly IDbManager dbManager;
-
         private readonly IStrongholdManager strongholdManager;
 
+        private readonly StructureFactory structureFactory;
+
         private readonly ITribeManager tribeManager;
+
+        private readonly IWorld world;
 
         public TribesmanCommandsModule(IActionFactory actionFactory,
                                        StructureFactory structureFactory,
@@ -287,7 +287,7 @@ namespace Game.Comm.ProcessorCommands
             if (!world.TryGetObjects(playerId, out playerToBeRemoved))
             {
                 ReplyError(session, packet, Error.PlayerNotFound);
-                return;                
+                return;
             }
 
             CallbackLock.CallbackLockHandler lockHandler = delegate
@@ -296,23 +296,23 @@ namespace Game.Comm.ProcessorCommands
 
                     if (tribe == null)
                     {
-                        return new ILockable[]
-                        {
-                        };
+                        return new ILockable[] {};
                     }
 
                     var locks =
-                            strongholdManager.StrongholdsForTribe(tribe).SelectMany(stronghold => stronghold.LockList).
-                                    ToList();
+                            strongholdManager.StrongholdsForTribe(tribe)
+                                             .SelectMany(stronghold => stronghold.LockList)
+                                             .ToList();
 
                     locks.Add(tribe);
 
                     return locks.ToArray();
                 };
 
-            using (locker.Lock(lockHandler, new object[] { }, session.Player))
+            using (locker.Lock(lockHandler, new object[] {}, session.Player))
             {
-                if (!session.Player.IsInTribe || !playerToBeRemoved.IsInTribe || playerToBeRemoved.Tribesman.Tribe != session.Player.Tribesman.Tribe)
+                if (!session.Player.IsInTribe || !playerToBeRemoved.IsInTribe ||
+                    playerToBeRemoved.Tribesman.Tribe != session.Player.Tribesman.Tribe)
                 {
                     ReplyError(session, packet, Error.TribeIsNull);
                     return;
@@ -350,8 +350,9 @@ namespace Game.Comm.ProcessorCommands
             CallbackLock.CallbackLockHandler lockHandler = delegate
                 {
                     var locks =
-                            strongholdManager.StrongholdsForTribe(tribe).SelectMany(stronghold => stronghold.LockList).
-                                    ToList();
+                            strongholdManager.StrongholdsForTribe(tribe)
+                                             .SelectMany(stronghold => stronghold.LockList)
+                                             .ToList();
 
                     return locks.ToArray();
                 };

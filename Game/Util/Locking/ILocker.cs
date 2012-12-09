@@ -30,6 +30,8 @@ namespace Game.Util.Locking
 
         IMultiObjectLock Lock(params ILockable[] list);
 
-        CallbackLock Lock(CallbackLock.CallbackLockHandler lockHandler, object[] lockHandlerParams, params ILockable[] baseLocks);
+        CallbackLock Lock(CallbackLock.CallbackLockHandler lockHandler,
+                          object[] lockHandlerParams,
+                          params ILockable[] baseLocks);
     }
 }

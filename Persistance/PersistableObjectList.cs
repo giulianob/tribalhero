@@ -8,24 +8,20 @@ using System.Collections.Generic;
 
 namespace Persistance
 {
-    abstract public class PersistableObjectList<T> : IPersistableObjectList<T> where T : IPersistableObject
+    public abstract class PersistableObjectList<T> : IPersistableObjectList<T> where T : IPersistableObject
     {
         public delegate void ListChanged(PersistableObjectList<T> list, T item);
 
-        public event ListChanged ItemAdded = delegate { };
-        public event ListChanged ItemRemoved = delegate { };
+        /// <summary>
+        ///     Do not modify the backing list from subclasses directly!
+        /// </summary>
+        protected readonly List<T> BackingList;
 
         private readonly IDbManager manager;
-
-        /// <summary>
-        /// Do not modify the backing list from subclasses directly!
-        /// </summary>
-        protected readonly List<T> BackingList; 
 
         [Obsolete("For testing only", true)]
         protected PersistableObjectList()
         {
-            
         }
 
         protected PersistableObjectList(IDbManager manager)
@@ -88,7 +84,7 @@ namespace Persistance
 
                 return true;
             }
-            
+
             return false;
         }
 
@@ -135,7 +131,9 @@ namespace Persistance
             for (int i = Count - 1; i >= 0; i--)
             {
                 if (!match(this[i]))
+                {
                     continue;
+                }
 
                 RemoveAt(i);
                 count++;
@@ -166,5 +164,9 @@ namespace Persistance
         {
             return GetEnumerator();
         }
+
+        public event ListChanged ItemAdded = delegate { };
+
+        public event ListChanged ItemRemoved = delegate { };
     }
 }

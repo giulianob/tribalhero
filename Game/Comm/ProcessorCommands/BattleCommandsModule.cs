@@ -2,8 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using Game.Battle;
 using Game.Data;
 using Game.Map;
@@ -73,7 +71,7 @@ namespace Game.Comm.ProcessorCommands
                     session.Write(packet);
                     return;
                 }
-                
+
                 var reply = new Packet(packet);
                 reply.AddByte((byte)battleManager.Location.Type);
                 reply.AddUInt32(battleManager.Location.Id);
@@ -84,15 +82,15 @@ namespace Game.Comm.ProcessorCommands
                 PacketHelper.AddBattleProperties(battleManager.ListProperties(), reply);
                 PacketHelper.AddToPacket(battleManager.Attackers, reply);
                 PacketHelper.AddToPacket(battleManager.Defenders, reply);
-                
+
                 try
                 {
                     Global.Channel.Subscribe(session, "/BATTLE/" + battleManager.BattleId);
                 }
-                catch (DuplicateSubscriptionException)
+                catch(DuplicateSubscriptionException)
                 {
                 }
-                
+
                 session.Write(reply);
             }
         }

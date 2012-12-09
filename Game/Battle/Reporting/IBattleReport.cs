@@ -28,9 +28,13 @@ namespace Game.Battle.Reporting
 
         void CompleteReport(ReportState state);
 
-        void SetLootedResources(BattleOwner owner, uint groupId, uint battleId, Resource lootResource, Resource bonusResource);
+        void SetLootedResources(BattleOwner owner,
+                                uint groupId,
+                                uint battleId,
+                                Resource lootResource,
+                                Resource bonusResource);
 
-        void AddAccess(BattleOwner owner, BattleManager.BattleSide battleSide);        
+        void AddAccess(BattleOwner owner, BattleManager.BattleSide battleSide);
 
         void AddAccess(ICombatGroup group, BattleManager.BattleSide battleSide);
 

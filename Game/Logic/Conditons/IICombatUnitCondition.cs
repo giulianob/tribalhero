@@ -1,6 +1,5 @@
 ﻿#region
 
-using Game.Battle;
 using Game.Battle.CombatObjects;
 
 #endregion

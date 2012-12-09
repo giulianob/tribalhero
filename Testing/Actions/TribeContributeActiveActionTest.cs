@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentAssertions;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Logic;
@@ -9,7 +10,6 @@ using Game.Setup;
 using Game.Util.Locking;
 using Moq;
 using Xunit;
-using FluentAssertions;
 
 namespace Testing.Actions
 {
@@ -36,7 +36,10 @@ namespace Testing.Actions
             var tribeObj = tribe.Object;
             // ReSharper restore RedundantAssignment            
             var action = new TribeContributeActiveAction(1, 100, resource, locator.Object, formula.Object, locker.Object)
-                         {WorkerObject = canDo.Object, IsDone = false};
+            {
+                    WorkerObject = canDo.Object,
+                    IsDone = false
+            };
             var contributedResources = new Resource();
 
             locator.Setup(m => m.TryGetObjects(1, 100, out cityObj, out structureObj)).Returns(true);
@@ -91,7 +94,10 @@ namespace Testing.Actions
             var tribeObj = tribe.Object;
             // ReSharper restore RedundantAssignment            
             var action = new TribeContributeActiveAction(1, 100, resource, locator.Object, formula.Object, locker.Object)
-                         {WorkerObject = canDo.Object, IsDone = false};
+            {
+                    WorkerObject = canDo.Object,
+                    IsDone = false
+            };
 
             locator.Setup(m => m.TryGetObjects(1, 100, out cityObj, out structureObj)).Returns(true);
             formula.Setup(m => m.GetSendCapacity(structureObj)).Returns(capacity);
@@ -132,7 +138,10 @@ namespace Testing.Actions
             var tribeObj = tribe.Object;
             // ReSharper restore RedundantAssignment            
             var action = new TribeContributeActiveAction(1, 100, resource, locator.Object, formula.Object, locker.Object)
-                         {WorkerObject = canDo.Object, IsDone = false};
+            {
+                    WorkerObject = canDo.Object,
+                    IsDone = false
+            };
 
             locator.Setup(m => m.TryGetObjects(1, 100, out cityObj, out structureObj)).Returns(true);
             formula.Setup(m => m.GetSendCapacity(structureObj)).Returns(capacity);
@@ -173,7 +182,10 @@ namespace Testing.Actions
             var tribeObj = tribe.Object;
             // ReSharper restore RedundantAssignment            
             var action = new TribeContributeActiveAction(1, 100, resource, locator.Object, formula.Object, locker.Object)
-                         {WorkerObject = canDo.Object, IsDone = false};
+            {
+                    WorkerObject = canDo.Object,
+                    IsDone = false
+            };
             var contributedResources = new Resource();
 
             locator.Setup(m => m.TryGetObjects(1, 100, out cityObj, out structureObj)).Returns(true);
@@ -232,7 +244,10 @@ namespace Testing.Actions
             var tribeObj = tribe.Object;
             // ReSharper restore RedundantAssignment            
             var action = new TribeContributeActiveAction(1, 100, resource, locator.Object, formula.Object, locker.Object)
-                         {WorkerObject = canDo.Object, IsDone = false};
+            {
+                    WorkerObject = canDo.Object,
+                    IsDone = false
+            };
             var contributedResources = new Resource();
 
             locator.Setup(m => m.TryGetObjects(1, 100, out cityObj, out structureObj)).Returns(true);

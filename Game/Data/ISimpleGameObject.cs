@@ -15,7 +15,7 @@ namespace Game.Data
         uint RelX { get; }
 
         uint RelY { get; }
-        
+
         void BeginUpdate();
 
         void CheckUpdateMode();
@@ -31,6 +31,5 @@ namespace Game.Data
         int RadiusDistance(uint x1, uint y1);
 
         int RadiusDistance(ISimpleGameObject obj);
-
     }
 }

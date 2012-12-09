@@ -8,7 +8,7 @@ using System.Text;
 namespace Game.Comm
 {
     public class Parameter
-    {        
+    {
         public static byte[] ToBytes(int value)
         {
             return BitConverter.GetBytes(value);

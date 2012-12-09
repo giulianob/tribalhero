@@ -8,7 +8,7 @@ using Xunit;
 namespace Testing.Balancing
 {
     /// <summary>
-    ///   Summary description for TroopProcedureTest
+    ///     Summary description for TroopProcedureTest
     /// </summary>
     public class TestArcher
     {

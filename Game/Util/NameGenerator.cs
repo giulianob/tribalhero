@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace Game.Util
 {
@@ -12,11 +9,13 @@ namespace Game.Util
 
         public NameGenerator(string path)
         {
-            using(StreamReader sr = new StreamReader(path))
+            using (StreamReader sr = new StreamReader(path))
             {
                 string line;
                 while ((line = sr.ReadLine()) != null)
+                {
                     names.Add(line);
+                }
             }
         }
 

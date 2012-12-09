@@ -17,10 +17,13 @@ namespace Game.Logic.Actions
 {
     public class TechnologyUpgradeActiveAction : ScheduledActiveAction
     {
-        private uint cityId;
+        private readonly uint cityId;
+
+        private readonly uint structureId;
+
+        private readonly uint techId;
+
         private bool isSelfInit = false;
-        private uint structureId;
-        private uint techId;
 
         public TechnologyUpgradeActiveAction()
         {
@@ -34,13 +37,14 @@ namespace Game.Logic.Actions
         }
 
         public TechnologyUpgradeActiveAction(uint id,
-                                       DateTime beginTime,
-                                       DateTime nextTime,
-                                       DateTime endTime,
-                                       int workerType,
-                                       byte workerIndex,
-                                       ushort actionCount,
-                                       Dictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+                                             DateTime beginTime,
+                                             DateTime nextTime,
+                                             DateTime endTime,
+                                             int workerType,
+                                             byte workerIndex,
+                                             ushort actionCount,
+                                             Dictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
@@ -70,7 +74,11 @@ namespace Game.Logic.Actions
             get
             {
                 return
-                        XmlSerializer.Serialize(new[] { new XmlKvPair("tech_id", techId), new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId) });
+                        XmlSerializer.Serialize(new[]
+                        {
+                                new XmlKvPair("tech_id", techId), new XmlKvPair("city_id", cityId),
+                                new XmlKvPair("structure_id", structureId)
+                        });
             }
         }
 
@@ -81,19 +89,27 @@ namespace Game.Logic.Actions
             byte maxLevel = byte.Parse(parms[1]);
 
             if (uint.Parse(parms[0]) != techId)
+            {
                 return Error.ActionInvalid;
+            }
 
             ICity city;
             IStructure structure;
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            {
                 return Error.ObjectNotFound;
+            }
 
             Technology tech;
             if (!structure.Technologies.TryGetTechnology(techId, out tech))
+            {
                 return Error.Ok;
+            }
 
             if (tech.Level >= maxLevel)
+            {
                 return Error.TechnologyMaxLevelReached;
+            }
 
             return Error.Ok;
         }
@@ -103,17 +119,25 @@ namespace Game.Logic.Actions
             ICity city;
             IStructure structure;
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            {
                 return Error.ObjectNotFound;
+            }
 
             Technology tech;
             TechnologyBase techBase;
             if (structure.Technologies.TryGetTechnology(techId, out tech))
+            {
                 techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
+            }
             else
+            {
                 techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(techId, 1);
+            }
 
             if (techBase == null)
+            {
                 return Error.ObjectNotFound;
+            }
 
             if (isSelfInit)
             {
@@ -123,14 +147,20 @@ namespace Game.Logic.Actions
             else
             {
                 if (!city.Resource.HasEnough(techBase.Resources))
+                {
                     return Error.ResourceNotEnough;
+                }
 
                 city.BeginUpdate();
                 city.Resource.Subtract(techBase.Resources);
                 city.EndUpdate();
 
                 BeginTime = DateTime.UtcNow;
-                endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.Current.BuildTime((int)techBase.Time, city, city.Technologies)));
+                endTime =
+                        DateTime.UtcNow.AddSeconds(
+                                                   CalculateTime(Formula.Current.BuildTime((int)techBase.Time,
+                                                                                           city,
+                                                                                           city.Technologies)));
             }
 
             return Error.Ok;
@@ -142,18 +172,26 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 IStructure structure;
                 if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+                {
                     return;
+                }
 
                 Technology tech;
                 TechnologyBase techBase;
                 if (structure.Technologies.TryGetTechnology(techId, out tech))
+                {
                     techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
+                }
                 else
+                {
                     techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(techId, 1);
+                }
 
                 if (techBase == null)
                 {
@@ -189,7 +227,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 if (!city.TryGetStructure(structureId, out structure))
                 {
@@ -200,7 +240,8 @@ namespace Game.Logic.Actions
                 Technology tech;
                 if (structure.Technologies.TryGetTechnology(techId, out tech))
                 {
-                    TechnologyBase techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
+                    TechnologyBase techBase = Ioc.Kernel.Get<TechnologyFactory>()
+                                                 .GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
 
                     if (techBase == null)
                     {

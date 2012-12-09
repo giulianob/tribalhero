@@ -8,7 +8,7 @@ namespace Game.Comm
 
         protected void ReplySuccess(Session session, Packet packet)
         {
-            var reply = new Packet(packet) { Option = (ushort)Packet.Options.Reply };
+            var reply = new Packet(packet) {Option = (ushort)Packet.Options.Reply};
             session.Write(reply);
         }
 
@@ -19,11 +19,13 @@ namespace Game.Comm
 
         protected Packet ReplyError(Session session, Packet packet, Error error, bool sendPacket)
         {
-            var reply = new Packet(packet) { Option = (ushort)Packet.Options.Failed | (ushort)Packet.Options.Reply };
+            var reply = new Packet(packet) {Option = (ushort)Packet.Options.Failed | (ushort)Packet.Options.Reply};
             reply.AddInt32((int)error);
 
             if (sendPacket)
+            {
                 session.Write(reply);
+            }
 
             return reply;
         }

@@ -20,7 +20,13 @@ namespace Game.Logic
         {
         }
 
-        protected ScheduledActiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType, byte workerIndex, ushort actionCount)
+        protected ScheduledActiveAction(uint id,
+                                        DateTime beginTime,
+                                        DateTime nextTime,
+                                        DateTime endTime,
+                                        int workerType,
+                                        byte workerIndex,
+                                        ushort actionCount)
         {
             ActionId = id;
             this.beginTime = beginTime;
@@ -36,13 +42,17 @@ namespace Game.Logic
             get
             {
                 return new[]
-                       {
-                               new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32), new DbColumn("type", Type, DbType.UInt32),
-                               new DbColumn("begin_time", BeginTime, DbType.DateTime), new DbColumn("end_time", EndTime, DbType.DateTime),
-                               new DbColumn("next_time", nextTime, DbType.DateTime), new DbColumn("worker_type", WorkerType, DbType.Int32),
-                               new DbColumn("worker_index", WorkerIndex, DbType.Byte), new DbColumn("count", ActionCount, DbType.UInt16),
-                               new DbColumn("properties", Properties, DbType.String)
-                       };
+                {
+                        new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32),
+                        new DbColumn("type", Type, DbType.UInt32),
+                        new DbColumn("begin_time", BeginTime, DbType.DateTime),
+                        new DbColumn("end_time", EndTime, DbType.DateTime),
+                        new DbColumn("next_time", nextTime, DbType.DateTime),
+                        new DbColumn("worker_type", WorkerType, DbType.Int32),
+                        new DbColumn("worker_index", WorkerIndex, DbType.Byte),
+                        new DbColumn("count", ActionCount, DbType.UInt16),
+                        new DbColumn("properties", Properties, DbType.String)
+                };
             }
         }
 
@@ -69,7 +79,9 @@ namespace Game.Logic
             set
             {
                 if (IsScheduled)
+                {
                     throw new Exception("Trying to change scheduled time while action is in scheduler");
+                }
                 endTime = value;
             }
         }
@@ -83,11 +95,15 @@ namespace Game.Logic
             set
             {
                 if (IsScheduled)
+                {
                     throw new Exception("Trying to change scheduled time while action is in scheduler");
+                }
                 nextTime = value;
                 // Cap the end time so it can never be less than the next time
                 if (endTime < nextTime)
+                {
                     endTime = nextTime;
+                }
             }
         }
 

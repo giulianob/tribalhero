@@ -52,8 +52,6 @@ namespace Game.Comm.ProcessorCommands
         private void Login(Session session, Packet packet)
         {
             IPlayer player;
-            var reply = new Packet(packet);
-            reply.Option |= (ushort)Packet.Options.Compressed;
 
             short clientVersion;
             short clientRevision;
@@ -214,6 +212,11 @@ namespace Game.Comm.ProcessorCommands
 
                 //User session backreference
                 session.Player = player;
+
+                var reply = new Packet(packet);
+                reply.Option |= (ushort)Packet.Options.Compressed;
+
+                reply.AddString(Config.welcome_motd);
 
                 //Player Info
                 reply.AddUInt32(player.PlayerId);

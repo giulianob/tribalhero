@@ -1,6 +1,7 @@
 package src.UI.Dialog {
 
 	import flash.events.Event;
+    import src.Constants;
 	import src.Global;
 	import src.Map.City;
 	import src.Objects.Effects.Formula;
@@ -11,6 +12,7 @@ package src.UI.Dialog {
 	import src.UI.Components.SimpleResourcesPanel;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJPanel;
+    import src.Util.StringHelper;
 	import src.Util.Util;
 
 	import org.aswing.*;
@@ -69,7 +71,7 @@ package src.UI.Dialog {
 
 		private function updateResources(e: Event = null) : void {
 			var totalUpkeep: int = (unitPrototype.upkeep * sldAmount.getValue());
-			lblUpkeep.setText("-" + totalUpkeep + " per hour");
+			lblUpkeep.setText(StringHelper.localize("STR_PER_HOUR", -(totalUpkeep/Constants.secondsPerUnit)));
 
 			var cityResources: LazyResources = city.resources;
 			pnlUpkeepMsg.setVisible((cityResources.crop.getUpkeep() + totalUpkeep) > cityResources.crop.getRate());

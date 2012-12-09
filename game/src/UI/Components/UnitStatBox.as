@@ -93,7 +93,7 @@
 			lblRange.setText(Constants.stealthRangeNames[range]);
 			lblStealth.setText(Constants.stealthRangeNames[stealth]);
 			lblHp.setText(hp.toString());
-			lblUpkeep.setText("-" + upkeep.toString());
+			lblUpkeep.setText("-" + (upkeep / Constants.secondsPerUnit).toString());
 		}
 
 		private function createUI() : void

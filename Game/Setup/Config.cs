@@ -126,6 +126,7 @@ namespace Game.Setup
         public static int stronghold_npc_per_lvl_upkeep = 200;
         public static int stronghold_gate_limit;
         public static int stronghold_battle_meter;
+        public static bool stronghold_bypass_activation = false;
 
         public static int idle_days = 3;
         

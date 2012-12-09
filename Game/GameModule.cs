@@ -187,7 +187,10 @@ namespace Game
 
             Bind<IStrongholdConfigurator>().To<StrongholdConfigurator>().InSingletonScope();
             Bind<IStronghold>().To<Stronghold>();
-            Bind<IStrongholdActivationCondition>().To<StrongholdActivationCondition>();
+            if (Config.stronghold_bypass_activation) 
+                Bind<IStrongholdActivationCondition>().To<DummyActivationCondition>();
+            else
+                Bind<IStrongholdActivationCondition>().To<StrongholdActivationCondition>();
             Bind<StrongholdActivationChecker>().ToSelf().InSingletonScope();
             Bind<VictoryPointChecker>().ToSelf().InSingletonScope();
 

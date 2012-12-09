@@ -79,5 +79,4 @@ namespace Game.Battle.Reporting
 
         #endregion
     }
-
 }

@@ -6,6 +6,9 @@ namespace Game.Map
 {
     public class RadiusLocator
     {
+        private readonly ConcurrentDictionary<RadiusCache, bool> overlappingCache =
+                new ConcurrentDictionary<RadiusCache, bool>();
+
         public static RadiusLocator Current { get; set; }
 
         #region Delegates
@@ -18,11 +21,6 @@ namespace Game.Map
 
         private class RadiusCache : IEquatable<RadiusCache>
         {
-            public int RelativeX { get; private set; }
-            public int RelativeY { get; private set; }
-            public byte Radius { get; private set; }
-            public byte OriginalRadius { get; private set; }
-
             public RadiusCache(int relativeX, int relativeY, byte radius, byte originalRadius)
             {
                 RelativeX = relativeX;
@@ -31,23 +29,42 @@ namespace Game.Map
                 OriginalRadius = originalRadius;
             }
 
+            public int RelativeX { get; private set; }
+
+            public int RelativeY { get; private set; }
+
+            public byte Radius { get; private set; }
+
+            public byte OriginalRadius { get; private set; }
+
             public bool Equals(RadiusCache other)
             {
                 if (ReferenceEquals(null, other))
+                {
                     return false;
+                }
                 if (ReferenceEquals(this, other))
+                {
                     return true;
-                return other.RelativeX == RelativeX && other.RelativeY == RelativeY && other.Radius == Radius && other.OriginalRadius == OriginalRadius;
+                }
+                return other.RelativeX == RelativeX && other.RelativeY == RelativeY && other.Radius == Radius &&
+                       other.OriginalRadius == OriginalRadius;
             }
 
             public override bool Equals(object obj)
             {
                 if (ReferenceEquals(null, obj))
+                {
                     return false;
+                }
                 if (ReferenceEquals(this, obj))
+                {
                     return true;
+                }
                 if (obj.GetType() != typeof(RadiusCache))
+                {
                     return false;
+                }
                 return Equals((RadiusCache)obj);
             }
 
@@ -66,15 +83,14 @@ namespace Game.Map
 
         #endregion
 
-        private readonly ConcurrentDictionary<RadiusCache, bool> overlappingCache = new ConcurrentDictionary<RadiusCache, bool>();
-
         public virtual void ForeachObject(uint ox, uint oy, byte radius, bool doSelf, DoWork work, object custom)
         {
             TileLocator.Current.ForeachObject(ox,
-                                      oy,
-                                      radius,
-                                      doSelf,
-                                      (x, y, u, u1, c) => RadiusDistance(x, y, u, u1) > radius || work(x, y, u, u1, custom));
+                                              oy,
+                                              radius,
+                                              doSelf,
+                                              (x, y, u, u1, c) =>
+                                              RadiusDistance(x, y, u, u1) > radius || work(x, y, u, u1, custom));
         }
 
         public virtual int RadiusDistance(uint x, uint y, uint x1, uint y1)
@@ -97,12 +113,16 @@ namespace Game.Map
                 if (y % 2 == 0)
                 {
                     if (x > x1)
+                    {
                         xoffset = 1;
+                    }
                 }
                 else
                 {
                     if (x1 > x)
+                    {
                         xoffset = 1;
+                    }
                 }
                 offset = 1;
             }
@@ -128,7 +148,10 @@ namespace Game.Map
                 return distance - 1 < r1 + r2;
             }
 
-            RadiusCache cacheItem = new RadiusCache((int)(location1.X - location2.X), (int)(location1.Y - location2.Y), r1, r2);
+            RadiusCache cacheItem = new RadiusCache((int)(location1.X - location2.X),
+                                                    (int)(location1.Y - location2.Y),
+                                                    r1,
+                                                    r2);
 
             bool overlapping;
 
@@ -144,11 +167,11 @@ namespace Game.Map
                           r1,
                           true,
                           (x, y, x2, y2, custom) =>
-                          {
-                              points.Add(new Position(x2, y2));
+                              {
+                                  points.Add(new Position(x2, y2));
 
-                              return true;
-                          },
+                                  return true;
+                              },
                           null);
 
             ForeachObject(location2.X,
@@ -156,15 +179,15 @@ namespace Game.Map
                           r2,
                           true,
                           (x, y, x2, y2, custom) =>
-                          {
-                              if (points.Contains(new Position(x2, y2)))
                               {
-                                  overlapping = true;
-                                  return false;
-                              }
+                                  if (points.Contains(new Position(x2, y2)))
+                                  {
+                                      overlapping = true;
+                                      return false;
+                                  }
 
-                              return true;
-                          },
+                                  return true;
+                              },
                           null);
 
             overlappingCache.TryAdd(cacheItem, overlapping);

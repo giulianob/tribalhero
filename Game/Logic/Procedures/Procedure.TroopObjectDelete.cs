@@ -1,7 +1,6 @@
 #region
 
 using System.Linq;
-using Game.Data;
 using Game.Data.Troop;
 using Game.Map;
 

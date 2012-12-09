@@ -2,7 +2,6 @@
 
 using Game.Data;
 using Game.Data.Troop;
-using Game.Map;
 
 #endregion
 

@@ -18,11 +18,16 @@ namespace Game.Logic.Actions
     public class UnitTrainActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
+
         private readonly ushort count;
+
         private readonly uint structureId;
+
         private readonly ushort type;
-        private int timePerUnit;
+
         private Resource cost;
+
+        private int timePerUnit;
 
         public UnitTrainActiveAction(uint cityId, uint structureId, ushort type, ushort count)
         {
@@ -33,13 +38,14 @@ namespace Game.Logic.Actions
         }
 
         public UnitTrainActiveAction(uint id,
-                               DateTime beginTime,
-                               DateTime nextTime,
-                               DateTime endTime,
-                               int workerType,
-                               byte workerIndex,
-                               ushort actionCount,
-                               Dictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+                                     DateTime beginTime,
+                                     DateTime nextTime,
+                                     DateTime endTime,
+                                     int workerType,
+                                     byte workerIndex,
+                                     ushort actionCount,
+                                     Dictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             type = ushort.Parse(properties["type"]);
             cityId = uint.Parse(properties["city_id"]);
@@ -82,18 +88,20 @@ namespace Game.Logic.Actions
 
             if (template == null)
             {
-                return Error.Unexpected;                
+                return Error.Unexpected;
             }
 
             var unitLvl = template.Lvl;
             var unitTime = Ioc.Kernel.Get<UnitFactory>().GetTime(type, unitLvl);
 
             cost = Formula.Current.UnitTrainCost(structure.City, type, unitLvl);
-            Resource totalCost = cost*count;
-            ActionCount = (ushort)(count + count/Formula.Current.GetXForOneCount(structure.Technologies));
+            Resource totalCost = cost * count;
+            ActionCount = (ushort)(count + count / Formula.Current.GetXForOneCount(structure.Technologies));
 
             if (!structure.City.Resource.HasEnough(totalCost))
+            {
                 return Error.ResourceNotEnough;
+            }
 
             structure.City.BeginUpdate();
             structure.City.Resource.Subtract(totalCost);
@@ -104,7 +112,7 @@ namespace Game.Logic.Actions
             // add to queue for completion
             nextTime = DateTime.UtcNow.AddSeconds(timePerUnit);
             beginTime = DateTime.UtcNow;
-            endTime = DateTime.UtcNow.AddSeconds(timePerUnit*ActionCount);
+            endTime = DateTime.UtcNow.AddSeconds(timePerUnit * ActionCount);
 
             return Error.Ok;
         }
@@ -112,7 +120,9 @@ namespace Game.Logic.Actions
         public override Error Validate(string[] parms)
         {
             if (ushort.Parse(parms[0]) != type)
+            {
                 return Error.ActionInvalid;
+            }
 
             return Error.Ok;
         }
@@ -124,7 +134,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 if (!city.TryGetStructure(structureId, out structure))
                 {
@@ -139,7 +151,9 @@ namespace Game.Logic.Actions
                 }
 
                 structure.City.DefaultTroop.BeginUpdate();
-                structure.City.DefaultTroop.AddUnit(city.HideNewUnits ? FormationType.Garrison : FormationType.Normal, type, 1);
+                structure.City.DefaultTroop.AddUnit(city.HideNewUnits ? FormationType.Garrison : FormationType.Normal,
+                                                    type,
+                                                    1);
                 structure.City.DefaultTroop.EndUpdate();
 
                 --ActionCount;
@@ -163,7 +177,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 if (!city.TryGetStructure(structureId, out structure))
                 {
@@ -174,11 +190,11 @@ namespace Game.Logic.Actions
                 if (!wasKilled)
                 {
                     int xfor1 = Formula.Current.GetXForOneCount(structure.Technologies);
-                    int totalordered = count + count/xfor1;
+                    int totalordered = count + count / xfor1;
                     int totaltrained = totalordered - ActionCount;
-                    int totalpaidunit = totaltrained - (totaltrained - 1)/xfor1;
+                    int totalpaidunit = totaltrained - (totaltrained - 1) / xfor1;
                     int totalrefund = count - totalpaidunit;
-                    Resource totalCost = cost*totalrefund;
+                    Resource totalCost = cost * totalrefund;
 
                     structure.City.BeginUpdate();
                     structure.City.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, totalCost));
@@ -207,12 +223,13 @@ namespace Game.Logic.Actions
             {
                 return
                         XmlSerializer.Serialize(new[]
-                                                {
-                                                        new XmlKvPair("type", type), new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId),
-                                                        new XmlKvPair("wood", cost.Wood), new XmlKvPair("crop", cost.Crop), new XmlKvPair("iron", cost.Iron),
-                                                        new XmlKvPair("gold", cost.Gold), new XmlKvPair("labor", cost.Labor), new XmlKvPair("count", count),
-                                                        new XmlKvPair("time_per_unit", timePerUnit)
-                                                });
+                        {
+                                new XmlKvPair("type", type), new XmlKvPair("city_id", cityId),
+                                new XmlKvPair("structure_id", structureId), new XmlKvPair("wood", cost.Wood),
+                                new XmlKvPair("crop", cost.Crop), new XmlKvPair("iron", cost.Iron),
+                                new XmlKvPair("gold", cost.Gold), new XmlKvPair("labor", cost.Labor),
+                                new XmlKvPair("count", count), new XmlKvPair("time_per_unit", timePerUnit)
+                        });
             }
         }
 

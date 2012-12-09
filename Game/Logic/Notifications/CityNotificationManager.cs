@@ -6,9 +6,9 @@ namespace Game.Logic.Notifications
 {
     class CityNotificationManager : NotificationManager
     {
-        private readonly uint cityId;
-
         private readonly string channelName;
+
+        private readonly uint cityId;
 
         public CityNotificationManager(IActionWorker worker, uint cityId, IDbManager actionWorker)
                 : base(worker, actionWorker)
@@ -17,7 +17,7 @@ namespace Game.Logic.Notifications
             channelName = "/CITY/" + cityId;
         }
 
-        override protected void RemoveNotification(Notification notification)
+        protected override void RemoveNotification(Notification notification)
         {
             base.RemoveNotification(notification);
 
@@ -30,7 +30,7 @@ namespace Game.Logic.Notifications
                 packet.AddUInt32(notification.Action.ActionId);
 
                 Global.Channel.Post(channelName, packet);
-            }            
+            }
         }
 
         protected override void UpdateNotification(Notification notification)

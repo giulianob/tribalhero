@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Game.Battle;
-using Game.Data.Stats;
-using Game.Map;
-using Moq;
-using Persistance;
 using Xunit;
 
 namespace Testing.Battle
@@ -16,8 +7,9 @@ namespace Testing.Battle
     public class StatsModCalculator
     {
         #region AtkDmgModCalculator
+
         /// <summary>
-        /// Test AtkDmgModCalculator
+        ///     Test AtkDmgModCalculator
         /// </summary>
         [Fact]
         public void TestAtkDmgModCalculatorPercentBonus()
@@ -36,6 +28,7 @@ namespace Testing.Battle
             atk.AddMod("PERCENT_BONUS", 500);
             atk.GetResult().Should().BeInRange(24.9, 25.1);
         }
+
         #endregion
     }
 }

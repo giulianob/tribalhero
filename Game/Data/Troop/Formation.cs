@@ -9,22 +9,34 @@ namespace Game.Data.Troop
     public enum FormationType : byte
     {
         Normal = 1,
+
         Attack = 2,
+
         Defense = 3,
+
         Scout = 4,
+
         Garrison = 5,
+
         Structure = 6,
+
         InBattle = 7,
+
         Captured = 11,
+
         Wounded = 12,
+
         Killed = 13
     }
 
     public class Formation : Dictionary<ushort, ushort>
     {
         #region Events
+
         public delegate void UnitUpdated();
+
         public event UnitUpdated OnUnitUpdated = delegate { };
+
         #endregion
 
         public Formation(FormationType type)
@@ -38,9 +50,13 @@ namespace Game.Data.Troop
         {
             ushort currentCount;
             if (TryGetValue(type, out currentCount))
+            {
                 this[type] = (ushort)(currentCount + count);
+            }
             else
+            {
                 this[type] = count;
+            }
             OnUnitUpdated();
         }
 
@@ -67,7 +83,9 @@ namespace Game.Data.Troop
         internal void Add(Formation formation)
         {
             foreach (var kvp in formation)
+            {
                 Add(kvp.Key, kvp.Value);
+            }
             OnUnitUpdated();
         }
     }

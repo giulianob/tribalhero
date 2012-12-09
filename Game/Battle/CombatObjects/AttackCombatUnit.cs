@@ -28,13 +28,13 @@ namespace Game.Battle.CombatObjects
 
         private readonly BattleStats stats;
 
-        private readonly ushort type;
-
         private readonly ITroopObject troopObject;
 
-        private ushort count;
+        private readonly ushort type;
 
         private readonly UnitFactory unitFactory;
+
+        private ushort count;
 
         public AttackCombatUnit(uint id,
                                 uint battleId,
@@ -59,7 +59,7 @@ namespace Game.Battle.CombatObjects
         }
 
         /// <summary>
-        /// DB loader constructor
+        ///     DB loader constructor
         /// </summary>
         public AttackCombatUnit(uint id,
                                 uint battleId,
@@ -117,7 +117,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return unitFactory.GetUnitStats(type, lvl).Upkeep*count;
+                return unitFactory.GetUnitStats(type, lvl).Upkeep * count;
             }
         }
 
@@ -157,7 +157,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return Math.Max(0, stats.MaxHp*(count - 1) + LeftOverHp);
+                return Math.Max(0, stats.MaxHp * (count - 1) + LeftOverHp);
             }
         }
 
@@ -173,7 +173,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return new[] { new DbColumn("battle_id", BattleId, DbType.UInt32), new DbColumn("id", Id, DbType.UInt32)};
+                return new[] {new DbColumn("battle_id", BattleId, DbType.UInt32), new DbColumn("id", Id, DbType.UInt32)};
             }
         }
 
@@ -191,17 +191,28 @@ namespace Game.Battle.CombatObjects
             {
                 return new[]
                 {
-                        new DbColumn("group_id", GroupId, DbType.UInt32), new DbColumn("formation_type", (byte)formation, DbType.Byte),
-                        new DbColumn("level", lvl, DbType.Byte), new DbColumn("count", count, DbType.UInt16), new DbColumn("type", type, DbType.UInt16),
-                        new DbColumn("left_over_hp", LeftOverHp, DbType.Decimal), new DbColumn("last_round", LastRound, DbType.UInt32),
-                        new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32), new DbColumn("troop_stub_city_id", TroopStub.City.Id, DbType.UInt32),
-                        new DbColumn("troop_object_id", troopObject.ObjectId, DbType.UInt32), new DbColumn("damage_min_dealt", MinDmgDealt, DbType.UInt16),
-                        new DbColumn("damage_max_dealt", MaxDmgDealt, DbType.UInt16), new DbColumn("damage_min_received", MinDmgRecv, DbType.UInt16),
-                        new DbColumn("damage_max_received", MaxDmgRecv, DbType.UInt16), new DbColumn("damage_dealt", DmgDealt, DbType.Int32),
-                        new DbColumn("damage_received", DmgRecv, DbType.Int32), new DbColumn("hits_dealt", HitDealt, DbType.UInt16),
-                        new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32), new DbColumn("hits_received", HitRecv, DbType.UInt16),
-                        new DbColumn("loot_crop", loot.Crop, DbType.UInt32), new DbColumn("loot_wood", loot.Wood, DbType.UInt32),
-                        new DbColumn("loot_iron", loot.Iron, DbType.UInt32), new DbColumn("loot_gold", loot.Gold, DbType.UInt32),
+                        new DbColumn("group_id", GroupId, DbType.UInt32),
+                        new DbColumn("formation_type", (byte)formation, DbType.Byte),
+                        new DbColumn("level", lvl, DbType.Byte), new DbColumn("count", count, DbType.UInt16),
+                        new DbColumn("type", type, DbType.UInt16),
+                        new DbColumn("left_over_hp", LeftOverHp, DbType.Decimal),
+                        new DbColumn("last_round", LastRound, DbType.UInt32),
+                        new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
+                        new DbColumn("troop_stub_city_id", TroopStub.City.Id, DbType.UInt32),
+                        new DbColumn("troop_object_id", troopObject.ObjectId, DbType.UInt32),
+                        new DbColumn("damage_min_dealt", MinDmgDealt, DbType.UInt16),
+                        new DbColumn("damage_max_dealt", MaxDmgDealt, DbType.UInt16),
+                        new DbColumn("damage_min_received", MinDmgRecv, DbType.UInt16),
+                        new DbColumn("damage_max_received", MaxDmgRecv, DbType.UInt16),
+                        new DbColumn("damage_dealt", DmgDealt, DbType.Int32),
+                        new DbColumn("damage_received", DmgRecv, DbType.Int32),
+                        new DbColumn("hits_dealt", HitDealt, DbType.UInt16),
+                        new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
+                        new DbColumn("hits_received", HitRecv, DbType.UInt16),
+                        new DbColumn("loot_crop", loot.Crop, DbType.UInt32),
+                        new DbColumn("loot_wood", loot.Wood, DbType.UInt32),
+                        new DbColumn("loot_iron", loot.Iron, DbType.UInt32),
+                        new DbColumn("loot_gold", loot.Gold, DbType.UInt32),
                         new DbColumn("loot_labor", loot.Labor, DbType.UInt32)
                 };
             }
@@ -210,6 +221,147 @@ namespace Game.Battle.CombatObjects
         public override int LootPerRound()
         {
             return BattleFormulas.GetLootPerRoundForCity(City);
+        }
+
+        public override bool InRange(ICombatObject obj)
+        {
+            switch(obj.ClassType)
+            {
+                case BattleClass.Unit:
+                    return true;
+                case BattleClass.Structure:
+                    return RadiusLocator.Current.IsOverlapping(Location(),
+                                                               AttackRadius(),
+                                                               obj.Location(),
+                                                               obj.AttackRadius());
+                default:
+                    throw new Exception(string.Format(
+                                                      "Why is an attack combat unit trying to kill a unit of type {0}?",
+                                                      obj.GetType().FullName));
+            }
+        }
+
+        public override Position Location()
+        {
+            return new Position(troopObject.X, troopObject.Y);
+        }
+
+        public override byte AttackRadius()
+        {
+            return troopObject.Stats.AttackRadius;
+        }
+
+        public override void CalcActualDmgToBeTaken(ICombatList attackers,
+                                                    ICombatList defenders,
+                                                    decimal baseDmg,
+                                                    int attackIndex,
+                                                    out decimal actualDmg)
+        {
+            // Miss chance
+            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg);
+
+            // Splash dmg reduction
+            actualDmg = BattleFormulas.SplashReduction(this, actualDmg, attackIndex);
+
+            // if hp is less than 20% of the original total HP(entire group), lastStand kicks in.
+            if (Hp < (Hp + DmgRecv) / 5m)
+            {
+                var lastStandEffects = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand);
+                var percent =
+                        lastStandEffects.Where(
+                                               tech =>
+                                               BattleFormulas.UnitStatModCheck(Stats.Base,
+                                                                               TroopBattleGroup.Attack,
+                                                                               (string)tech.Value[1]))
+                                        .DefaultIfEmpty()
+                                        .Max(x => x == null ? 0 : (int)x.Value[0]);
+
+                actualDmg = actualDmg * (100 - percent) / 100m;
+            }
+        }
+
+        public override void TakeDamage(decimal dmg, out Resource returning, out int attackPoints)
+        {
+            attackPoints = 0;
+            returning = null;
+
+            ushort dead = 0;
+            if (dmg >= LeftOverHp)
+            {
+                dmg -= LeftOverHp;
+                LeftOverHp = stats.MaxHp;
+                dead++;
+            }
+
+            dead += (ushort)(dmg / stats.MaxHp);
+            LeftOverHp -= dmg % stats.MaxHp;
+
+            if (dead > 0)
+            {
+                if (dead > count)
+                {
+                    dead = count;
+                }
+
+                // Find out how many points the defender should get
+                attackPoints = Formula.Current.GetUnitKilledAttackPoint(type, lvl, dead);
+
+                // Remove troops that died from the count
+                count -= dead;
+
+                // Remove dead troops from the troop stub 
+                TroopStub.BeginUpdate();
+                TroopStub[formation].Remove(type, dead);
+                TroopStub.EndUpdate();
+
+                // Figure out how much loot we have to return to the city
+                int totalCarry = Stats.Carry * Count;
+                returning =
+                        new Resource(
+                                loot.Crop > totalCarry / Config.resource_crop_ratio
+                                        ? loot.Crop - totalCarry / Config.resource_crop_ratio
+                                        : 0,
+                                loot.Gold > totalCarry / Config.resource_gold_ratio
+                                        ? loot.Gold - totalCarry / Config.resource_gold_ratio
+                                        : 0,
+                                loot.Iron > totalCarry / Config.resource_iron_ratio
+                                        ? loot.Iron - totalCarry / Config.resource_iron_ratio
+                                        : 0,
+                                loot.Wood > totalCarry / Config.resource_wood_ratio
+                                        ? loot.Wood - totalCarry / Config.resource_wood_ratio
+                                        : 0,
+                                loot.Labor > totalCarry / Config.resource_labor_ratio
+                                        ? loot.Wood - totalCarry / Config.resource_labor_ratio
+                                        : 0);
+
+                // Remove it from our loot
+                loot.Subtract(returning);
+
+                // Since the loot is stored at the troop stub as well, we need to remove it from there too
+                troopObject.BeginUpdate();
+                troopObject.Stats.Loot.Subtract(returning);
+                troopObject.EndUpdate();
+            }
+        }
+
+        public override void ReceiveReward(int attackPoint, Resource resource)
+        {
+            loot.Add(resource);
+
+            troopObject.BeginUpdate();
+            troopObject.Stats.AttackPoint += attackPoint;
+            troopObject.Stats.Loot.Add(resource);
+            troopObject.EndUpdate();
+        }
+
+        public override int CompareTo(object other)
+        {
+            if (other is ITroopStub)
+            {
+                return other == TroopStub ? 0 : 1;
+            }
+
+            return -1;
         }
 
         #region ICombatUnit Members
@@ -247,120 +399,5 @@ namespace Game.Battle.CombatObjects
         }
 
         #endregion
-
-        public override bool InRange(ICombatObject obj)
-        {
-            switch (obj.ClassType)
-            {
-                case BattleClass.Unit:
-                    return true;
-                case BattleClass.Structure:
-                    return RadiusLocator.Current.IsOverlapping(Location(), AttackRadius(), obj.Location(), obj.AttackRadius());
-                default:
-                    throw new Exception(string.Format("Why is an attack combat unit trying to kill a unit of type {0}?", obj.GetType().FullName));
-            }
-        }
-
-        public override Position Location()
-        {
-            return new Position(troopObject.X, troopObject.Y);
-        }
-
-        public override byte AttackRadius()
-        {
-            return troopObject.Stats.AttackRadius;
-        }
-
-        public override void CalcActualDmgToBeTaken(ICombatList attackers, ICombatList defenders, decimal baseDmg, int attackIndex, out decimal actualDmg)
-        {
-            // Miss chance
-            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg);
-
-            // Splash dmg reduction
-            actualDmg = BattleFormulas.SplashReduction(this, actualDmg, attackIndex);
-
-            // if hp is less than 20% of the original total HP(entire group), lastStand kicks in.
-            if (Hp < (Hp + DmgRecv)/5m)
-            {
-                var lastStandEffects = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand);
-                var percent =
-                        lastStandEffects.Where(tech => BattleFormulas.UnitStatModCheck(Stats.Base, TroopBattleGroup.Attack, (string)tech.Value[1])).
-                                DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
-
-                actualDmg = actualDmg*(100 - percent)/100m;
-            }
-        }
-
-        public override void TakeDamage(decimal dmg, out Resource returning, out int attackPoints)
-        {
-            attackPoints = 0;
-            returning = null;
-
-            ushort dead = 0;
-            if (dmg >= LeftOverHp)
-            {
-                dmg -= LeftOverHp;
-                LeftOverHp = stats.MaxHp;
-                dead++;
-            }
-
-            dead += (ushort)(dmg/stats.MaxHp);
-            LeftOverHp -= dmg%stats.MaxHp;
-
-            if (dead > 0)
-            {
-                if (dead > count)
-                {
-                    dead = count;
-                }
-
-                // Find out how many points the defender should get
-                attackPoints = Formula.Current.GetUnitKilledAttackPoint(type, lvl, dead);
-
-                // Remove troops that died from the count
-                count -= dead;
-
-                // Remove dead troops from the troop stub 
-                TroopStub.BeginUpdate();
-                TroopStub[formation].Remove(type, dead);
-                TroopStub.EndUpdate();
-
-                // Figure out how much loot we have to return to the city
-                int totalCarry = Stats.Carry*Count;
-                returning = new Resource(loot.Crop > totalCarry/Config.resource_crop_ratio ? loot.Crop - totalCarry/Config.resource_crop_ratio : 0,
-                                         loot.Gold > totalCarry/Config.resource_gold_ratio ? loot.Gold - totalCarry/Config.resource_gold_ratio : 0,
-                                         loot.Iron > totalCarry/Config.resource_iron_ratio ? loot.Iron - totalCarry/Config.resource_iron_ratio : 0,
-                                         loot.Wood > totalCarry/Config.resource_wood_ratio ? loot.Wood - totalCarry/Config.resource_wood_ratio : 0,
-                                         loot.Labor > totalCarry/Config.resource_labor_ratio ? loot.Wood - totalCarry/Config.resource_labor_ratio : 0);
-
-                // Remove it from our loot
-                loot.Subtract(returning);
-
-                // Since the loot is stored at the troop stub as well, we need to remove it from there too
-                troopObject.BeginUpdate();
-                troopObject.Stats.Loot.Subtract(returning);
-                troopObject.EndUpdate();
-            }
-        }
-
-        public override void ReceiveReward(int attackPoint, Resource resource)
-        {
-            loot.Add(resource);
-
-            troopObject.BeginUpdate();
-            troopObject.Stats.AttackPoint += attackPoint;
-            troopObject.Stats.Loot.Add(resource);
-            troopObject.EndUpdate();
-        }
-
-        public override int CompareTo(object other)
-        {
-            if (other is ITroopStub)
-            {
-                return other == TroopStub ? 0 : 1;
-            }
-
-            return -1;
-        }
     }
 }

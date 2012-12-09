@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Data.Troop;
@@ -15,8 +11,8 @@ namespace Testing.Battle
     public class CombatGroupTest
     {
         /// <summary>
-        /// When an object is added to the group
-        /// Then the group id of the object should be set
+        ///     When an object is added to the group
+        ///     Then the group id of the object should be set
         /// </summary>
         [Fact]
         public void TestGroupIdSetWhenObjectAdded()
@@ -29,7 +25,10 @@ namespace Testing.Battle
 
             combatObject.SetupProperty(p => p.GroupId);
 
-            CityDefensiveCombatGroup combatGroup = new CityDefensiveCombatGroup(1, 10, troopStub.Object, dbManager.Object);
+            CityDefensiveCombatGroup combatGroup = new CityDefensiveCombatGroup(1,
+                                                                                10,
+                                                                                troopStub.Object,
+                                                                                dbManager.Object);
             combatGroup.Add(combatObject.Object);
 
             combatObject.Object.GroupId.Should().Be(10);

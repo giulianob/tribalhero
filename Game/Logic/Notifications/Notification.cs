@@ -10,8 +10,11 @@ namespace Game.Logic.Notifications
     public class Notification : IEquatable<PassiveAction>, IEquatable<Notification>, IPersistableList
     {
         public const string DB_TABLE = "notifications";
+
         private readonly PassiveAction action;
+
         private readonly IGameObject obj;
+
         private readonly List<INotificationOwner> subscriptions = new List<INotificationOwner>();
 
         #region Properties
@@ -91,7 +94,7 @@ namespace Game.Logic.Notifications
             {
                 return new[]
                 {
-                        new DbColumn("city_id", obj.City.Id, DbType.UInt32), 
+                        new DbColumn("city_id", obj.City.Id, DbType.UInt32),
                         new DbColumn("object_id", obj.ObjectId, DbType.UInt32),
                         new DbColumn("action_id", action.ActionId, DbType.UInt32),
                 };
@@ -128,10 +131,18 @@ namespace Game.Logic.Notifications
 
         public IEnumerable<DbColumn[]> DbListValues()
         {
-            return subscriptions.Select(subscription => new[] {
-                new DbColumn("subscription_location_type", subscription.LocationType.ToString(), DbType.String),
-                new DbColumn("subscription_location_id", subscription.LocationId, DbType.UInt32)
-            });
+            return
+                    subscriptions.Select(
+                                         subscription =>
+                                         new[]
+                                         {
+                                                 new DbColumn("subscription_location_type",
+                                                              subscription.LocationType.ToString(),
+                                                              DbType.String),
+                                                 new DbColumn("subscription_location_id",
+                                                              subscription.LocationId,
+                                                              DbType.UInt32)
+                                         });
         }
 
         #endregion

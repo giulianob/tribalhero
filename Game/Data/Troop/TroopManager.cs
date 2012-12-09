@@ -24,7 +24,9 @@ namespace Game.Data.Troop
         #endregion
 
         public event UpdateCallback TroopUpdated;
+
         public event UpdateCallback TroopAdded;
+
         public event UpdateCallback TroopRemoved;
 
         #endregion
@@ -32,6 +34,7 @@ namespace Game.Data.Troop
         #region Properties
 
         private readonly Dictionary<byte, ITroopStub> dict = new Dictionary<byte, ITroopStub>();
+
         private readonly SmallIdGenerator idGen = new SmallIdGenerator(byte.MaxValue, true);
 
         public byte Size
@@ -74,52 +77,12 @@ namespace Game.Data.Troop
             }
         }
 
-        private void CheckUpdateMode()
-        {
-            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(BaseStation);
-        }
-
-        private void FireUpdated(TroopStub stub)
-        {
-            if (!Global.FireEvents)
-                return;
-
-            CheckUpdateMode();
-
-            if (TroopUpdated != null)
-                TroopUpdated(stub);
-        }
-
-        private void FireAdded(ITroopStub stub)
-        {
-            if (!Global.FireEvents)
-                return;
-
-            CheckUpdateMode();
-
-            if (TroopAdded != null)
-                TroopAdded(stub);
-        }
-
-        private void FireRemoved(ITroopStub stub)
-        {
-            if (!Global.FireEvents)
-                return;
-
-            CheckUpdateMode();
-
-            //We don't want to delete a troopstub that doesn't belong to us.
-            if (stub.City == BaseStation)
-                DbPersistance.Current.Delete(stub);
-
-            if (TroopRemoved != null)
-                TroopRemoved(stub);
-        }
-
         public bool DbLoaderAdd(byte id, ITroopStub stub)
         {
             if (dict.ContainsKey(id))
+            {
                 return false;
+            }
             idGen.Set(id);
             dict[id] = stub;
             stub.UnitUpdate += StubUpdateEvent;
@@ -130,7 +93,9 @@ namespace Game.Data.Troop
         {
             int nextId = idGen.GetNext();
             if (nextId == -1)
+            {
                 return false;
+            }
             var id = (byte)nextId;
 
             stub.StationTroopId = id;
@@ -165,7 +130,8 @@ namespace Game.Data.Troop
 
             stub.BeginUpdate();
             stub.TroopId = id;
-            stub.EndUpdate();  // Updating inside prevents Endupate being called at higher level, causing an "Update" to be sent after "Add"
+            stub.EndUpdate();
+                    // Updating inside prevents Endupate being called at higher level, causing an "Update" to be sent after "Add"
 
             dict.Add(id, stub);
 
@@ -179,7 +145,9 @@ namespace Game.Data.Troop
         {
             int nextId = idGen.GetNext();
             if (nextId == -1)
+            {
                 return false;
+            }
             var id = (byte)nextId;
 
             stub.BeginUpdate();
@@ -204,9 +172,13 @@ namespace Game.Data.Troop
         {
             ITroopStub stub;
             if (!dict.TryGetValue(id, out stub))
+            {
                 return false;
+            }
             if (!dict.Remove(id))
+            {
                 return false;
+            }
             idGen.Release(id);
 
             stub.BeginUpdate();
@@ -225,10 +197,14 @@ namespace Game.Data.Troop
             ITroopStub stub;
 
             if (!dict.TryGetValue(id, out stub))
+            {
                 return false;
+            }
 
             if (!dict.Remove(id))
+            {
                 return false;
+            }
 
             stub.FireRemoved();
 
@@ -244,7 +220,7 @@ namespace Game.Data.Troop
             return dict.TryGetValue(id, out stub);
         }
 
-        public void Starve(int percent = 5, bool bypassProtection=false)
+        public void Starve(int percent = 5, bool bypassProtection = false)
         {
             // Make a copy of the stub list since it might change during the foreach loop
             var troopStubs = new TroopStub[dict.Values.Count];
@@ -252,14 +228,17 @@ namespace Game.Data.Troop
 
             foreach (var stub in troopStubs)
             {
-
                 // Skip troops that aren't ours
                 if (stub.City != BaseStation)
+                {
                     continue;
+                }
 
                 // Skip troops that are in battle
                 if (stub.State == TroopState.Battle || stub.State == TroopState.BattleStationed)
+                {
                     continue;
+                }
 
                 // Starve the troop
                 stub.BeginUpdate();
@@ -276,6 +255,62 @@ namespace Game.Data.Troop
 
                     Remove(stub.TroopId);
                 }
+            }
+        }
+
+        private void CheckUpdateMode()
+        {
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(BaseStation);
+        }
+
+        private void FireUpdated(TroopStub stub)
+        {
+            if (!Global.FireEvents)
+            {
+                return;
+            }
+
+            CheckUpdateMode();
+
+            if (TroopUpdated != null)
+            {
+                TroopUpdated(stub);
+            }
+        }
+
+        private void FireAdded(ITroopStub stub)
+        {
+            if (!Global.FireEvents)
+            {
+                return;
+            }
+
+            CheckUpdateMode();
+
+            if (TroopAdded != null)
+            {
+                TroopAdded(stub);
+            }
+        }
+
+        private void FireRemoved(ITroopStub stub)
+        {
+            if (!Global.FireEvents)
+            {
+                return;
+            }
+
+            CheckUpdateMode();
+
+            //We don't want to delete a troopstub that doesn't belong to us.
+            if (stub.City == BaseStation)
+            {
+                DbPersistance.Current.Delete(stub);
+            }
+
+            if (TroopRemoved != null)
+            {
+                TroopRemoved(stub);
             }
         }
 
@@ -307,7 +342,7 @@ namespace Game.Data.Troop
         #region Enumeration Helpers
 
         /// <summary>
-        ///   Returns all foreign troops that are stationed in this city.
+        ///     Returns all foreign troops that are stationed in this city.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<ITroopStub> StationedHere()
@@ -316,7 +351,7 @@ namespace Game.Data.Troop
         }
 
         /// <summary>
-        ///   Only returns troops that belong to this city. Won't return troops that are stationed here but will return troops that may be stationed outside of the city.
+        ///     Only returns troops that belong to this city. Won't return troops that are stationed here but will return troops that may be stationed outside of the city.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<ITroopStub> MyStubs()

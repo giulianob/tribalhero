@@ -11,15 +11,15 @@ namespace Common.Testing
 {
     public class GameObjectLocatorStub : IGameObjectLocator
     {
-        private Dictionary<uint, ICity> cities = new Dictionary<uint, ICity>();
+        private readonly Dictionary<uint, IBattleManager> battles = new Dictionary<uint, IBattleManager>();
 
-        private Dictionary<uint, IPlayer> players = new Dictionary<uint, IPlayer>();
+        private readonly Dictionary<uint, ICity> cities = new Dictionary<uint, ICity>();
 
-        private Dictionary<uint, ITribe> tribes = new Dictionary<uint, ITribe>();
+        private readonly Dictionary<uint, IPlayer> players = new Dictionary<uint, IPlayer>();
 
-        private Dictionary<uint, IBattleManager> battles = new Dictionary<uint, IBattleManager>();
+        private readonly Dictionary<uint, IStronghold> strongholds = new Dictionary<uint, IStronghold>();
 
-        private Dictionary<uint, IStronghold> strongholds = new Dictionary<uint, IStronghold>();
+        private readonly Dictionary<uint, ITribe> tribes = new Dictionary<uint, ITribe>();
 
         public GameObjectLocatorStub(params object[] objects)
         {

@@ -1,7 +1,7 @@
 #region
 
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Game.Comm;
 
@@ -15,14 +15,15 @@ namespace Game.Util
 
         private class Subscriber
         {
-            public IChannel Session { get; private set; }
-            public List<string> Channels { get; private set; }
-
             public Subscriber(IChannel session)
             {
                 Session = session;
                 Channels = new List<string>();
             }
+
+            public IChannel Session { get; private set; }
+
+            public List<string> Channels { get; private set; }
         }
 
         #endregion
@@ -31,7 +32,8 @@ namespace Game.Util
 
         private readonly ReaderWriterLockSlim channelLock = new ReaderWriterLockSlim();
 
-        private readonly Dictionary<string, List<Subscriber>> subscribersByChannel = new Dictionary<string, List<Subscriber>>();
+        private readonly Dictionary<string, List<Subscriber>> subscribersByChannel =
+                new Dictionary<string, List<Subscriber>>();
 
         private readonly Dictionary<IChannel, Subscriber> subscribersBySession = new Dictionary<IChannel, Subscriber>();
 
@@ -48,13 +50,17 @@ namespace Game.Util
         public void Post(string channelId, Packet message)
         {
             channelLock.EnterReadLock();
-            try 
+            try
             {
                 if (!subscribersByChannel.ContainsKey(channelId))
+                {
                     return;
+                }
 
                 foreach (var sub in subscribersByChannel[channelId])
+                {
                     sub.Session.OnPost(message);
+                }
             }
             finally
             {
@@ -82,11 +88,13 @@ namespace Game.Util
                 {
                     // If subscription already exists then throw exception
                     if (sublist.Contains(sub))
+                    {
                         throw new DuplicateSubscriptionException();
+                    }
 
                     sub.Channels.Add(channelId);
                 }
-                // If not we need to make an object for this session
+                        // If not we need to make an object for this session
                 else
                 {
                     sub = new Subscriber(session);
@@ -98,7 +106,7 @@ namespace Game.Util
             }
             finally
             {
-                channelLock.ExitWriteLock();            
+                channelLock.ExitWriteLock();
             }
         }
 
@@ -112,7 +120,9 @@ namespace Game.Util
                 {
                     sub.Channels.Remove(channelId);
                     if (sub.Channels.Count == 0)
+                    {
                         subscribersBySession.Remove(session);
+                    }
 
                     List<Subscriber> sublist;
                     if (subscribersByChannel.TryGetValue(channelId, out sublist))
@@ -120,7 +130,9 @@ namespace Game.Util
                         sublist.Remove(sub);
 
                         if (sublist.Count == 0)
+                        {
                             subscribersByChannel.Remove(channelId);
+                        }
                     }
 
                     return true;
@@ -142,7 +154,9 @@ namespace Game.Util
                 {
                     Subscriber sub;
                     if (subscribersBySession.TryGetValue(session, out sub))
+                    {
                         return sub.Channels.Count;
+                    }
                 }
                 else
                 {
@@ -169,12 +183,16 @@ namespace Game.Util
                         List<Subscriber> sublist;
 
                         if (!subscribersByChannel.TryGetValue(id, out sublist))
+                        {
                             continue;
+                        }
 
                         sublist.Remove(sub);
 
                         if (sublist.Count == 0)
+                        {
                             subscribersByChannel.Remove(id);
+                        }
                     }
 
                     sub.Channels.Clear();
@@ -202,7 +220,9 @@ namespace Game.Util
                     {
                         sub.Channels.Remove(channelId);
                         if (sub.Channels.Count == 0)
+                        {
                             subscribersBySession.Remove(sub.Session);
+                        }
                     }
                     subscribersByChannel.Remove(channelId);
                     return true;

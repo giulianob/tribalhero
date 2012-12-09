@@ -4,13 +4,14 @@ using Ninject;
 namespace Game.Setup
 {
     /// <summary>
-    /// A static container for the kernel.
+    ///     A static container for the kernel.
     /// </summary>
     public static class Ioc
     {
         #region Fields
 
         private static IKernel kernel;
+
         private static readonly object lck = new object();
 
         #endregion
@@ -18,7 +19,7 @@ namespace Game.Setup
         #region Properties
 
         /// <summary>
-        /// Gets or sets the kernel that is used in the application.
+        ///     Gets or sets the kernel that is used in the application.
         /// </summary>
         public static IKernel Kernel
         {
@@ -45,7 +46,7 @@ namespace Game.Setup
         #region Public Methods
 
         /// <summary>
-        /// Injects the specified instance by using the container's kernel.
+        ///     Injects the specified instance by using the container's kernel.
         /// </summary>
         /// <param name="instance">The instance to inject.</param>
         public static void Inject(object instance)
@@ -53,7 +54,9 @@ namespace Game.Setup
             if (kernel == null)
             {
                 throw new InvalidOperationException(
-                        String.Format("The type {0} requested an injection, but no kernel has been registered for the application." + instance.GetType()));
+                        String.Format(
+                                      "The type {0} requested an injection, but no kernel has been registered for the application." +
+                                      instance.GetType()));
             }
 
             lock (lck)

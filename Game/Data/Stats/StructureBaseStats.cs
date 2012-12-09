@@ -64,7 +64,7 @@ namespace Game.Data.Stats
         {
             get
             {
-                return Type*100 + Lvl;
+                return Type * 100 + Lvl;
             }
         }
     }

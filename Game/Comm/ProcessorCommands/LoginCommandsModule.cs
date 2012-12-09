@@ -1,4 +1,5 @@
 #region
+
 using System;
 using System.Globalization;
 using System.IO;
@@ -24,6 +25,8 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly IActionFactory actionFactory;
 
+        private readonly object loginLock = new object();
+
         private readonly ITribeManager tribeManager;
 
         public LoginCommandsModule(IActionFactory actionFactory, ITribeManager tribeManager)
@@ -31,8 +34,6 @@ namespace Game.Comm.ProcessorCommands
             this.actionFactory = actionFactory;
             this.tribeManager = tribeManager;
         }
-
-        private readonly object loginLock = new object();
 
         public override void RegisterCommands(Processor processor)
         {
@@ -71,9 +72,13 @@ namespace Game.Comm.ProcessorCommands
                 loginMode = packet.GetByte();
                 playerName = packet.GetString();
                 if (loginMode == 0)
+                {
                     loginKey = packet.GetString();
+                }
                 else
+                {
                     playerPassword = packet.GetString();
+                }
             }
             catch(Exception)
             {
@@ -94,7 +99,9 @@ namespace Game.Comm.ProcessorCommands
                 ApiResponse response;
                 try
                 {
-                    response = loginMode == 0 ? ApiCaller.CheckLoginKey(playerName, loginKey) : ApiCaller.CheckLogin(playerName, playerPassword);
+                    response = loginMode == 0
+                                       ? ApiCaller.CheckLoginKey(playerName, loginKey)
+                                       : ApiCaller.CheckLogin(playerName, playerPassword);
                 }
                 catch(Exception e)
                 {
@@ -132,7 +139,6 @@ namespace Game.Comm.ProcessorCommands
                     session.CloseSession();
                     return;
                 }
-
             }
             else
             {
@@ -150,14 +156,14 @@ namespace Game.Comm.ProcessorCommands
             string sessionId;
             if (Config.server_admin_always && !Config.server_production)
             {
-
                 sessionId = playerId.ToString(CultureInfo.InvariantCulture);
                 playerRights = PlayerRights.Bureaucrat;
             }
             else
             {
                 SHA1 sha = new SHA1CryptoServiceProvider();
-                byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(playerId + Config.database_salt + DateTime.UtcNow.Ticks));
+                byte[] hash =
+                        sha.ComputeHash(Encoding.UTF8.GetBytes(playerId + Config.database_salt + DateTime.UtcNow.Ticks));
                 sessionId = BitConverter.ToString(hash).Replace("-", String.Empty);
             }
 
@@ -171,7 +177,13 @@ namespace Game.Comm.ProcessorCommands
                 {
                     Global.Logger.Info(string.Format("Creating new player {0}({1})", playerName, playerId));
 
-                    player = new Player(playerId, SystemClock.Now, SystemClock.Now, playerName, string.Empty, playerRights, sessionId);
+                    player = new Player(playerId,
+                                        SystemClock.Now,
+                                        SystemClock.Now,
+                                        playerName,
+                                        string.Empty,
+                                        playerRights,
+                                        sessionId);
 
                     World.Current.Players.Add(player.PlayerId, player);
                 }
@@ -179,14 +191,13 @@ namespace Game.Comm.ProcessorCommands
                 {
                     Global.Logger.Info(string.Format("Player login in {0}({1})", player.Name, player.PlayerId));
 
-                    player.Name = playerName;                    
+                    player.Name = playerName;
                 }
             }
 
             using (Concurrency.Current.Lock(player))
             {
-                
-               // If someone is already connected as this player, kick them off
+                // If someone is already connected as this player, kick them off
                 if (player.Session != null)
                 {
                     player.Session.CloseSession();
@@ -202,7 +213,7 @@ namespace Game.Comm.ProcessorCommands
                 DbPersistance.Current.Save(player);
 
                 //User session backreference
-                session.Player = player;                
+                session.Player = player;
 
                 //Player Info
                 reply.AddUInt32(player.PlayerId);
@@ -211,7 +222,9 @@ namespace Game.Comm.ProcessorCommands
                 reply.AddString(player.Name);
                 reply.AddInt32(Config.newbie_protection);
                 reply.AddUInt32(UnixDateTime.DateTimeToUnix(player.Created.ToUniversalTime()));
-                reply.AddInt32(player.Tribesman == null ? 0 : tribeManager.GetIncomingList(player.Tribesman.Tribe).Count());
+                reply.AddInt32(player.Tribesman == null
+                                       ? 0
+                                       : tribeManager.GetIncomingList(player.Tribesman.Tribe).Count());
                 reply.AddInt16((short)(player.Tribesman == null ? 0 : player.Tribesman.Tribe.AssignmentCount));
 
                 //Server time
@@ -223,7 +236,9 @@ namespace Game.Comm.ProcessorCommands
                 // If it's a new player we send simply a 1 which means the client will need to send back a city name
                 // Otherwise, we just send the whole login info
                 if (player.GetCityCount() == 0)
+                {
                     reply.AddByte(1);
+                }
                 else
                 {
                     reply.AddByte(0);
@@ -234,8 +249,16 @@ namespace Game.Comm.ProcessorCommands
                 session.Write(reply);
 
                 //Restart any city actions that may have been stopped due to inactivity
-                foreach (var city in player.GetCityList().Where(city => city.Worker.PassiveActions.Values.All(x => x.Type != ActionType.CityPassive)))
+                foreach (
+                        var city in
+                                player.GetCityList()
+                                      .Where(
+                                             city =>
+                                             city.Worker.PassiveActions.Values.All(x => x.Type != ActionType.CityPassive))
+                        )
+                {
                     city.Worker.DoPassive(city, actionFactory.CreateCityPassiveAction(city.Id), false);
+                }
             }
         }
 
@@ -281,7 +304,8 @@ namespace Game.Comm.ProcessorCommands
 
                 IStructure mainBuilding = (IStructure)city[1];
 
-                Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
+                Ioc.Kernel.Get<InitFactory>()
+                   .InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
 
                 city.Worker.DoPassive(city, actionFactory.CreateCityPassiveAction(city.Id), false);
 

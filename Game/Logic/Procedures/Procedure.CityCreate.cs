@@ -9,7 +9,7 @@ namespace Game.Logic.Procedures
     partial class Procedure
     {
         /// <summary>
-        /// Creates a city under the specified player with initial troop and main building
+        ///     Creates a city under the specified player with initial troop and main building
         /// </summary>
         /// <param name="player"></param>
         /// <param name="cityName"></param>
@@ -27,7 +27,13 @@ namespace Game.Logic.Procedures
                 return false;
             }
 
-            city = new City(World.Current.Cities.GetNextCityId(), player, cityName, Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), mainBuilding, Formula.Current.GetInitialAp());
+            city = new City(World.Current.Cities.GetNextCityId(),
+                            player,
+                            cityName,
+                            Formula.Current.GetInitialCityResources(),
+                            Formula.Current.GetInitialCityRadius(),
+                            mainBuilding,
+                            Formula.Current.GetInitialAp());
             player.Add(city);
 
             World.Current.Cities.Add(city);

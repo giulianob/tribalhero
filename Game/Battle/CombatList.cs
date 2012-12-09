@@ -13,13 +13,13 @@ using Persistance;
 namespace Game.Battle
 {
     /// <summary>
-    /// A list of combat objects and manages targetting.
+    ///     A list of combat objects and manages targetting.
     /// </summary>
     public class CombatList : PersistableObjectList<ICombatGroup>, ICombatList
     {
-        private readonly RadiusLocator radiusLocator;
-
         private readonly BattleFormulas battleFormulas;
+
+        private readonly RadiusLocator radiusLocator;
 
         #region BestTargetResult enum
 
@@ -60,7 +60,9 @@ namespace Game.Battle
 
             var objsInRange = (from @group in this
                                from combatObject in @group
-                               where combatObject.InRange(attacker) && attacker.InRange(combatObject) && !combatObject.IsDead
+                               where
+                                       combatObject.InRange(attacker) && attacker.InRange(combatObject) &&
+                                       !combatObject.IsDead
                                select new Target {Group = @group, CombatObject = combatObject}).ToList();
 
             if (objsInRange.Count == 0)
@@ -86,10 +88,17 @@ namespace Game.Battle
                 Position defenderPosition = target.CombatObject.Location();
 
                 // Distance 0 gives 60% higher chance to hit, distance 1 gives 20%
-                score += Math.Max(3 - radiusLocator.RadiusDistance(attackerLocation.X, attackerLocation.Y, defenderPosition.X, defenderPosition.Y)*2, 0);
+                score +=
+                        Math.Max(
+                                 3 -
+                                 radiusLocator.RadiusDistance(attackerLocation.X,
+                                                              attackerLocation.Y,
+                                                              defenderPosition.X,
+                                                              defenderPosition.Y) * 2,
+                                 0);
 
                 // Have to compare armor and weapon type here to give some sort of score
-                score += ((int)(battleFormulas.GetDmgModifier(attacker, target.CombatObject)*10));
+                score += ((int)(battleFormulas.GetDmgModifier(attacker, target.CombatObject) * 10));
 
                 if (bestTarget == null || score > bestTargetScore)
                 {
@@ -101,10 +110,13 @@ namespace Game.Battle
             }
 
             // Sort by score descending
-            objectsByScore.Sort((x, y) => x.Score.CompareTo(y.Score)*-1);
+            objectsByScore.Sort((x, y) => x.Score.CompareTo(y.Score) * -1);
 
             // Get top results specified by the maxCount param
-            result = objectsByScore.GetRange(0, Math.Min(maxCount, objectsByScore.Count)).Select(scoreItem => scoreItem.Target).ToList();
+            result =
+                    objectsByScore.GetRange(0, Math.Min(maxCount, objectsByScore.Count))
+                                  .Select(scoreItem => scoreItem.Target)
+                                  .ToList();
 
             return BestTargetResult.Ok;
         }
@@ -116,7 +128,11 @@ namespace Game.Battle
 
         public IEnumerable<ICombatObject> AllAliveCombatObjects()
         {
-            return BackingList.SelectMany(group => group.Where(combatObject => !combatObject.IsDead).Select(combatObject => combatObject));
+            return
+                    BackingList.SelectMany(
+                                           group =>
+                                           group.Where(combatObject => !combatObject.IsDead)
+                                                .Select(combatObject => combatObject));
         }
 
         #region Nested type: CombatScoreItem

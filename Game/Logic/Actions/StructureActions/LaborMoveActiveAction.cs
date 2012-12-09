@@ -9,7 +9,6 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -18,7 +17,9 @@ namespace Game.Logic.Actions
     public class LaborMoveActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
+
         private readonly bool cityToStructure;
+
         private readonly uint structureId;
 
         public LaborMoveActiveAction(uint cityId, uint structureId, bool cityToStructure, ushort count)
@@ -30,13 +31,14 @@ namespace Game.Logic.Actions
         }
 
         public LaborMoveActiveAction(uint id,
-                               DateTime beginTime,
-                               DateTime nextTime,
-                               DateTime endTime,
-                               int workerType,
-                               byte workerIndex,
-                               ushort actionCount,
-                               IDictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+                                     DateTime beginTime,
+                                     DateTime nextTime,
+                                     DateTime endTime,
+                                     int workerType,
+                                     byte workerIndex,
+                                     ushort actionCount,
+                                     IDictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             cityToStructure = bool.Parse(properties["city_to_structure"]);
             cityId = uint.Parse(properties["city_id"]);
@@ -64,7 +66,9 @@ namespace Game.Logic.Actions
             ICity city;
             IStructure structure;
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            {
                 return Error.ObjectNotFound;
+            }
 
             if (cityToStructure)
             {
@@ -88,9 +92,23 @@ namespace Game.Logic.Actions
             BeginTime = DateTime.UtcNow;
 
             if (cityToStructure)
-                endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.Current.LaborMoveTime(structure, (byte)ActionCount, structure.Technologies)));
+            {
+                endTime =
+                        DateTime.UtcNow.AddSeconds(
+                                                   CalculateTime(Formula.Current.LaborMoveTime(structure,
+                                                                                               (byte)ActionCount,
+                                                                                               structure.Technologies)));
+            }
             else
-                endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.Current.LaborMoveTime(structure, (byte)ActionCount, structure.Technologies) / 20));
+            {
+                endTime =
+                        DateTime.UtcNow.AddSeconds(
+                                                   CalculateTime(
+                                                                 Formula.Current.LaborMoveTime(structure,
+                                                                                               (byte)ActionCount,
+                                                                                               structure.Technologies) /
+                                                                 20));
+            }
 
             return Error.Ok;
         }
@@ -101,7 +119,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 StateChange(ActionState.Failed);
             }
@@ -115,7 +135,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 if (!city.TryGetStructure(structureId, out structure))
                 {
@@ -149,11 +171,15 @@ namespace Game.Logic.Actions
             ICity city;
             IStructure structure;
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            {
                 return Error.ObjectNotFound;
+            }
             if (cityToStructure)
             {
                 if (ActionCount > Formula.Current.LaborMoveMax(structure))
+                {
                     return Error.ActionCountInvalid;
+                }
             }
             return Error.Ok;
         }
@@ -165,7 +191,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 if (!city.TryGetStructure(structureId, out structure))
                 {
@@ -202,10 +230,10 @@ namespace Game.Logic.Actions
             {
                 return
                         XmlSerializer.Serialize(new[]
-                                                {
-                                                        new XmlKvPair("city_to_structure", cityToStructure), new XmlKvPair("city_id", cityId),
-                                                        new XmlKvPair("structure_id", structureId)
-                                                });
+                        {
+                                new XmlKvPair("city_to_structure", cityToStructure), new XmlKvPair("city_id", cityId),
+                                new XmlKvPair("structure_id", structureId)
+                        });
             }
         }
 

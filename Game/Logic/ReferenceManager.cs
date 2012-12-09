@@ -51,7 +51,8 @@ namespace Game.Logic
             {
                 return new[]
                 {
-                        new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32), new DbColumn("action_id", Action.ActionId, DbType.UInt32),
+                        new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32),
+                        new DbColumn("action_id", Action.ActionId, DbType.UInt32),
                         new DbColumn("is_active", Action is ActiveAction, DbType.Boolean)
                 };
             }
@@ -62,9 +63,7 @@ namespace Game.Logic
             get
             {
                 return new[]
-                {
-                        new DbColumn("id", ReferenceId, DbType.UInt16), new DbColumn("city_id", City.Id, DbType.UInt32)
-                };
+                {new DbColumn("id", ReferenceId, DbType.UInt16), new DbColumn("city_id", City.Id, DbType.UInt32)};
             }
         }
 
@@ -72,9 +71,7 @@ namespace Game.Logic
         {
             get
             {
-                return new DbDependency[]
-                {
-                };
+                return new DbDependency[] {};
             }
         }
 
@@ -84,7 +81,7 @@ namespace Game.Logic
     }
 
     /// <summary>
-    /// Allows adding a reference of an action to an object. E.g. For attaching the AttackChainAction to the moving TroopObject
+    ///     Allows adding a reference of an action to an object. E.g. For attaching the AttackChainAction to the moving TroopObject
     /// </summary>
     public class ReferenceManager : IEnumerable<ReferenceStub>
     {
@@ -99,11 +96,6 @@ namespace Game.Logic
             this.city = city;
             city.Worker.ActionsRemovedFromWorker += WorkerOnActionsRemovedFromWorker;
             city.Worker.ActionRemoved += WorkerOnActionRemoved;
-        }
-
-        private void WorkerOnActionRemoved(GameAction stub, ActionState state)
-        {
-            Remove(stub);
         }
 
         public ushort Count
@@ -127,6 +119,11 @@ namespace Game.Logic
         }
 
         #endregion
+
+        private void WorkerOnActionRemoved(GameAction stub, ActionState state)
+        {
+            Remove(stub);
+        }
 
         public void DbLoaderAdd(ReferenceStub referenceObject)
         {

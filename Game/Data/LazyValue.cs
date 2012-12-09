@@ -13,7 +13,9 @@ namespace Game.Data
         #endregion
 
         private int limit;
+
         private int rate;
+
         private int upkeep;
 
         public LazyValue(int val)
@@ -56,11 +58,13 @@ namespace Game.Data
                 if (calculatedRate != 0)
                 {
                     int elapsed = Math.Max(0, (int)SystemClock.Now.Subtract(LastRealizeTime).TotalMilliseconds);
-                    delta = elapsed/calculatedRate;
+                    delta = elapsed / calculatedRate;
                 }
 
                 if (limit > 0 && (RawValue + delta) > limit)
+                {
                     return limit;
+                }
 
                 return Math.Max(0, RawValue + delta);
             }
@@ -78,7 +82,9 @@ namespace Game.Data
             {
                 Realize();
                 if (value < 0)
+                {
                     throw new Exception("Rate can not be negative");
+                }
                 rate = value;
                 Update();
             }
@@ -94,7 +100,9 @@ namespace Game.Data
             {
                 Realize();
                 if (value < 0)
+                {
                     throw new Exception("Upkeep can not be negative");
+                }
 
                 upkeep = value;
                 Update();
@@ -103,16 +111,12 @@ namespace Game.Data
 
         public event OnResourcesUpdate ResourcesUpdate;
 
-        private void Update()
-        {
-            if (ResourcesUpdate != null)
-                ResourcesUpdate();
-        }
-
         public void Add(int val)
         {
             if (val == 0)
+            {
                 return;
+            }
             Realize();
             RawValue += val;
             CheckLimit();
@@ -122,11 +126,39 @@ namespace Game.Data
         public void Subtract(int val)
         {
             if (val == 0)
+            {
                 return;
+            }
             Realize();
             RawValue -= val;
             CheckLimit();
             Update();
+        }
+
+        /// <summary>
+        ///     Returns the amount of resources received for the given timeframe.
+        ///     NOTE: This can return a negative amount if upkeep is higher than rate.
+        /// </summary>
+        /// <param name="millisecondInterval"></param>
+        /// <returns></returns>
+        public int GetAmountReceived(int millisecondInterval)
+        {
+            int deltaRate = rate - upkeep;
+            if (deltaRate == 0)
+            {
+                return 0;
+            }
+
+            double effectiveRate = (3600000f / deltaRate) * Config.seconds_per_unit;
+            return (int)(millisecondInterval / effectiveRate);
+        }
+
+        private void Update()
+        {
+            if (ResourcesUpdate != null)
+            {
+                ResourcesUpdate();
+            }
         }
 
         private void Realize()
@@ -137,55 +169,49 @@ namespace Game.Data
             {
                 DateTime now = SystemClock.Now;
                 int elapsed = Math.Max(0, (int)now.Subtract(LastRealizeTime).TotalMilliseconds);
-                int delta = elapsed/calculatedRate;
+                int delta = elapsed / calculatedRate;
 
                 RawValue += delta;
 
-                int leftOver = elapsed%calculatedRate;
+                int leftOver = elapsed % calculatedRate;
 
                 LastRealizeTime = now.Subtract(new TimeSpan(0, 0, 0, 0, leftOver));
 
                 CheckLimit();
             }
             else
+            {
                 LastRealizeTime = SystemClock.Now;
+            }
         }
 
         protected virtual void CheckLimit()
         {
             if (limit > 0 && RawValue > limit)
+            {
                 RawValue = limit;
+            }
 
             if (RawValue < 0)
+            {
                 RawValue = 0;
+            }
 
             // Cap to just limit something really bad from happening
             if (RawValue > 99999)
+            {
                 RawValue = 99999;
+            }
         }
 
         protected virtual int GetCalculatedRate()
         {
             int deltaRate = rate - upkeep;
             if (deltaRate <= 0)
+            {
                 return 0;
-            return (int)((3600000f/deltaRate)*Config.seconds_per_unit);
-        }
-
-        /// <summary>
-        /// Returns the amount of resources received for the given timeframe.
-        /// NOTE: This can return a negative amount if upkeep is higher than rate.
-        /// </summary>
-        /// <param name="millisecondInterval"></param>
-        /// <returns></returns>
-        public int GetAmountReceived(int millisecondInterval)
-        {
-            int deltaRate = rate - upkeep;
-            if (deltaRate == 0)
-                return 0;
-
-            double effectiveRate = (3600000f / deltaRate) * Config.seconds_per_unit;
-            return (int)(millisecondInterval/effectiveRate);
+            }
+            return (int)((3600000f / deltaRate) * Config.seconds_per_unit);
         }
     }
 }

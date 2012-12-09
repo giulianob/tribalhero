@@ -4,6 +4,6 @@ namespace Game.Data
     {
         uint X { get; set; }
 
-        uint Y { get; set;  }
+        uint Y { get; set; }
     }
 }

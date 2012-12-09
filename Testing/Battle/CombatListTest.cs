@@ -16,10 +16,10 @@ namespace Testing.Battle
         #region GetBestTargets
 
         /// <summary>
-        /// Given combat list is empty
-        /// When GetBestTargets is called
-        /// Then the result should be CombatList.BestTargetResult.NoneInRange
-        /// And out combatList should be empty
+        ///     Given combat list is empty
+        ///     When GetBestTargets is called
+        ///     Then the result should be CombatList.BestTargetResult.NoneInRange
+        ///     And out combatList should be empty
         /// </summary>
         [Fact]
         public void TestNoObjects()
@@ -39,11 +39,11 @@ namespace Testing.Battle
         }
 
         /// <summary>
-        /// Given combat list is not empty
-        /// And object is in range
-        /// When GetBestTargets is called
-        /// Then the result should be CombatList.BestTargetResult.Ok
-        /// And out combatList should have the defender
+        ///     Given combat list is not empty
+        ///     And object is in range
+        ///     When GetBestTargets is called
+        ///     Then the result should be CombatList.BestTargetResult.Ok
+        ///     And out combatList should have the defender
         /// </summary>
         [Fact]
         public void TestInRange()
@@ -72,9 +72,13 @@ namespace Testing.Battle
             defender.SetupGet(p => p.Stats).Returns(defenderStats.Object);
 
             Mock<ICombatGroup> combatGroup = new Mock<ICombatGroup>();
-            combatGroup.Setup(p => p.GetEnumerator()).Returns(() => new List<ICombatObject> {defender.Object}.GetEnumerator());
+            combatGroup.Setup(p => p.GetEnumerator())
+                       .Returns(() => new List<ICombatObject> {defender.Object}.GetEnumerator());
 
-            CombatList list = new CombatList(manager.Object, radiusLocator.Object, battleFormulas.Object) {{combatGroup.Object, false}};
+            CombatList list = new CombatList(manager.Object, radiusLocator.Object, battleFormulas.Object)
+            {
+                    {combatGroup.Object, false}
+            };
 
             IList<CombatList.Target> result;
             CombatList.BestTargetResult targetResult = list.GetBestTargets(attacker.Object, out result, 1);
@@ -83,10 +87,10 @@ namespace Testing.Battle
             result[0].CombatObject.Should().Be(defender.Object);
             targetResult.Should().Be(CombatList.BestTargetResult.Ok);
         }
-        
+
         /// <summary>
-        /// When a group is removed
-        /// Then the group should be deleted
+        ///     When a group is removed
+        ///     Then the group should be deleted
         /// </summary>
         [Fact]
         public void TestGroupIsClearedWhenRemoved()
@@ -95,10 +99,13 @@ namespace Testing.Battle
             Mock<RadiusLocator> radiusLocator = new Mock<RadiusLocator>();
             Mock<BattleFormulas> battleFormulas = new Mock<BattleFormulas>();
             Mock<ICombatGroup> combatGroup = new Mock<ICombatGroup>();
-            
-            CombatList list = new CombatList(manager.Object, radiusLocator.Object, battleFormulas.Object) {{combatGroup.Object, false}};
 
-            list.Remove(combatGroup.Object);           
+            CombatList list = new CombatList(manager.Object, radiusLocator.Object, battleFormulas.Object)
+            {
+                    {combatGroup.Object, false}
+            };
+
+            list.Remove(combatGroup.Object);
 
             manager.Verify(m => m.Delete(combatGroup.Object), Times.Once());
         }

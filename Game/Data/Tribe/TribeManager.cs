@@ -18,15 +18,13 @@ namespace Game.Data.Tribe
 {
     class TribeManager : ITribeManager
     {
+        private readonly IActionFactory actionFactory;
+
         private readonly IDbManager dbManager;
 
         private readonly IStrongholdManager strongholdManager;
 
-        private readonly IActionFactory actionFactory;
-
         private readonly LargeIdGenerator tribeIdGen = new LargeIdGenerator(200000, 100000);
-
-        private ConcurrentDictionary<uint, ITribe> Tribes { get; set; }
 
         public TribeManager(IDbManager dbManager, IStrongholdManager strongholdManager, IActionFactory actionFactory)
         {
@@ -35,6 +33,8 @@ namespace Game.Data.Tribe
             this.strongholdManager = strongholdManager;
             this.actionFactory = actionFactory;
         }
+
+        private ConcurrentDictionary<uint, ITribe> Tribes { get; set; }
 
         public int TribeCount
         {
@@ -68,40 +68,6 @@ namespace Game.Data.Tribe
             SubscribeEvents(tribe);
         }
 
-        private void SubscribeEvents(ITribe tribe)
-        {
-            tribe.TribesmanRemoved += TribeOnTribesmanRemoved;
-            tribe.Updated += TribeOnUpdated;
-        }
-
-        private void TribeOnUpdated(object sender, EventArgs eventArgs)
-        {
-            ITribe tribe = (ITribe)sender;
-            Packet packet = new Packet(Command.TribeChannelNotification);
-            packet.AddInt32(GetIncomingList(tribe).Count());
-            packet.AddInt16(tribe.AssignmentCount);
-            Global.Channel.Post("/TRIBE/" + tribe.Id, packet);
-        }
-
-        private void UnsubscribeEvents(ITribe tribe)
-        {
-            tribe.TribesmanRemoved += TribeOnTribesmanRemoved;
-        }
-
-        private void TribeOnTribesmanRemoved(object sender, TribesmanRemovedEventArgs e)
-        {
-           foreach (var city in e.Player.GetCityList())
-           {
-               // Retreat all stationed troops in strongholds that are idle.
-               // If they are in battle, then the battle action will take care of removing them. If they are walking to a stronghold, then the attack/reinforce action will walk them back as well.
-               foreach (var stub in city.Troops.MyStubs().Where(stub => stub.Station is IStronghold && stub.State == TroopState.Stationed))
-               {
-                    var retreatAction = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
-                    stub.City.Worker.DoPassive(stub.City, retreatAction, true);
-               }
-           }
-        }
-
         public Error Remove(ITribe tribe)
         {
             if (tribe.AssignmentCount > 0)
@@ -114,19 +80,18 @@ namespace Game.Data.Tribe
                 return Error.TribeNotFound;
             }
 
-            strongholdManager.RemoveStrongholdsFromTribe(tribe);       
+            strongholdManager.RemoveStrongholdsFromTribe(tribe);
 
             foreach (var tribesman in new List<ITribesman>(tribe.Tribesmen))
             {
                 tribe.RemoveTribesman(tribesman.Player.PlayerId, false, false);
-            }            
+            }
 
             UnsubscribeEvents(tribe);
 
             // Soft delete tribe
             dbManager.Query(
-                            String.Format(
-                                          "UPDATE `{0}` SET deleted = 1, name = @name WHERE id = @id LIMIT 1",
+                            String.Format("UPDATE `{0}` SET deleted = 1, name = @name WHERE id = @id LIMIT 1",
                                           Tribe.DB_TABLE),
                             new[]
                             {
@@ -140,11 +105,11 @@ namespace Game.Data.Tribe
         public bool TribeNameTaken(string name)
         {
             using (
-                    DbDataReader reader = dbManager.ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
-                                                                            new[]
-                                                                            {
-                                                                                    new DbColumn("name", name, DbType.String)
-                                                                            }))
+                    DbDataReader reader =
+                            dbManager.ReaderQuery(
+                                                  String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1",
+                                                                Tribe.DB_TABLE),
+                                                  new[] {new DbColumn("name", name, DbType.String)}))
             {
                 return reader.HasRows;
             }
@@ -154,11 +119,11 @@ namespace Game.Data.Tribe
         {
             tribeId = UInt16.MaxValue;
             using (
-                    DbDataReader reader = dbManager.ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
-                                                                            new[]
-                                                                            {
-                                                                                    new DbColumn("name", name, DbType.String)
-                                                                            }))
+                    DbDataReader reader =
+                            dbManager.ReaderQuery(
+                                                  String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1",
+                                                                Tribe.DB_TABLE),
+                                                  new[] {new DbColumn("name", name, DbType.String)}))
             {
                 if (!reader.HasRows)
                 {
@@ -209,6 +174,43 @@ namespace Game.Data.Tribe
                                             });
 
             return incomingTroops.OrderBy(i => i.EndTime);
+        }
+
+        private void SubscribeEvents(ITribe tribe)
+        {
+            tribe.TribesmanRemoved += TribeOnTribesmanRemoved;
+            tribe.Updated += TribeOnUpdated;
+        }
+
+        private void TribeOnUpdated(object sender, EventArgs eventArgs)
+        {
+            ITribe tribe = (ITribe)sender;
+            Packet packet = new Packet(Command.TribeChannelNotification);
+            packet.AddInt32(GetIncomingList(tribe).Count());
+            packet.AddInt16(tribe.AssignmentCount);
+            Global.Channel.Post("/TRIBE/" + tribe.Id, packet);
+        }
+
+        private void UnsubscribeEvents(ITribe tribe)
+        {
+            tribe.TribesmanRemoved += TribeOnTribesmanRemoved;
+        }
+
+        private void TribeOnTribesmanRemoved(object sender, TribesmanRemovedEventArgs e)
+        {
+            foreach (var city in e.Player.GetCityList())
+            {
+                // Retreat all stationed troops in strongholds that are idle.
+                // If they are in battle, then the battle action will take care of removing them. If they are walking to a stronghold, then the attack/reinforce action will walk them back as well.
+                foreach (
+                        var stub in
+                                city.Troops.MyStubs()
+                                    .Where(stub => stub.Station is IStronghold && stub.State == TroopState.Stationed))
+                {
+                    var retreatAction = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
+                    stub.City.Worker.DoPassive(stub.City, retreatAction, true);
+                }
+            }
         }
     }
 }

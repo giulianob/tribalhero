@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
-using Game.Setup;
 using Game.Logic.Formulas;
+using Game.Setup;
 using Moq;
 using Xunit;
 
@@ -13,7 +13,7 @@ namespace Testing.Formulas
         {
             int influencePoints;
             int wagons;
-            
+
             var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
                                       new Mock<StructureFactory>(MockBehavior.Strict).Object);

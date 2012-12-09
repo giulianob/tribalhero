@@ -9,7 +9,9 @@ namespace Game.Data
     public enum ObjectState
     {
         Normal = 0,
+
         Battle = 1,
+
         Moving = 2
     }
 

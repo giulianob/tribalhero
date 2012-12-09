@@ -12,6 +12,7 @@ namespace Game.Setup
     public class SystemVariable : IPersistableObject
     {
         public const string DB_TABLE = "system_variables";
+
         private string key = string.Empty;
 
         private object value;
@@ -78,7 +79,11 @@ namespace Game.Setup
         {
             get
             {
-                return new[] {new DbColumn("value", value, DbType.String), new DbColumn("datatype", DataTypeSerializer.Serialize(value), DbType.Byte)};
+                return new[]
+                {
+                        new DbColumn("value", value, DbType.String),
+                        new DbColumn("datatype", DataTypeSerializer.Serialize(value), DbType.Byte)
+                };
             }
         }
 

@@ -10,15 +10,6 @@ namespace Game.Data
 {
     public abstract class SimpleGameObject : ISimpleGameObject
     {
-        public enum Types : ushort
-        {
-            Troop = 100,
-
-            Forest = 200,
-
-            Stronghold = 300,
-        }
-
         public enum SystemGroupIds : uint
         {
             NewCityStartTile = 10000001,
@@ -26,6 +17,15 @@ namespace Game.Data
             Forest = 10000002,
 
             Stronghold = 10000003
+        }
+
+        public enum Types : ushort
+        {
+            Troop = 100,
+
+            Forest = 200,
+
+            Stronghold = 300,
         }
 
         protected uint objectId;
@@ -39,6 +39,22 @@ namespace Game.Data
         private bool inWorld;
 
         private GameObjectState state = GameObjectState.NormalState();
+
+        public ushort CityRegionRelX
+        {
+            get
+            {
+                return (ushort)(x % Config.city_region_width);
+            }
+        }
+
+        public ushort CityRegionRelY
+        {
+            get
+            {
+                return (ushort)(y % Config.city_region_height);
+            }
+        }
 
         public bool InWorld
         {
@@ -115,7 +131,7 @@ namespace Game.Data
         {
             get
             {
-                return x%Config.region_width;
+                return x % Config.region_width;
             }
         }
 
@@ -123,23 +139,7 @@ namespace Game.Data
         {
             get
             {
-                return y%Config.region_height;
-            }
-        }
-
-        public ushort CityRegionRelX
-        {
-            get
-            {
-                return (ushort)(x%Config.city_region_width);
-            }
-        }
-
-        public ushort CityRegionRelY
-        {
-            get
-            {
-                return (ushort)(y%Config.city_region_height);
+                return y % Config.region_height;
             }
         }
 
@@ -170,7 +170,9 @@ namespace Game.Data
         public virtual void BeginUpdate()
         {
             if (updating)
+            {
                 throw new Exception("Nesting beginupdate");
+            }
 
             updating = true;
             origX = x;
@@ -184,10 +186,14 @@ namespace Game.Data
         protected virtual void Update()
         {
             if (!Global.FireEvents)
+            {
                 return;
+            }
 
             if (updating)
+            {
                 return;
+            }
 
             World.Current.Regions.ObjectUpdateEvent(this, origX, origY);
         }
@@ -199,39 +205,6 @@ namespace Game.Data
         public override string ToString()
         {
             return base.ToString() + "[" + X + "," + Y + "]";
-        }
-
-        /// <summary>
-        /// Returns whether the two tiles are diagonal to one another.
-        /// NOTE: This function only handles case where the distance between both tiles is 1. If the distance is greater, you will get invalid results.
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="x1"></param>
-        /// <param name="y1"></param>
-        /// <returns></returns>
-        public static bool IsDiagonal(uint x, uint y, uint x1, uint y1)
-        {
-            return y%2 != y1%2;
-        }
-
-        /// <summary>
-        /// Returns whether two tiles are perpendicular. This means that they are on the same lines if you were to just draw 
-        /// lines going up/down and left/right from a tile.
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="x1"></param>
-        /// <param name="y1"></param>
-        /// <returns></returns>
-        public static bool IsPerpendicular(uint x, uint y, uint x1, uint y1)
-        {
-            return y == y1 || (x == x1 && y%2 == y1%2);
-        }
-
-        public static int TileDistance(uint x, uint y, uint x1, uint y1)
-        {
-            return TileLocator.Current.TileDistance(x, y, x1, y1);
         }
 
         public int TileDistance(uint x1, uint y1)
@@ -252,6 +225,39 @@ namespace Game.Data
         public int RadiusDistance(ISimpleGameObject obj)
         {
             return RadiusDistance(obj.X, obj.Y);
+        }
+
+        /// <summary>
+        ///     Returns whether the two tiles are diagonal to one another.
+        ///     NOTE: This function only handles case where the distance between both tiles is 1. If the distance is greater, you will get invalid results.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <returns></returns>
+        public static bool IsDiagonal(uint x, uint y, uint x1, uint y1)
+        {
+            return y % 2 != y1 % 2;
+        }
+
+        /// <summary>
+        ///     Returns whether two tiles are perpendicular. This means that they are on the same lines if you were to just draw
+        ///     lines going up/down and left/right from a tile.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <returns></returns>
+        public static bool IsPerpendicular(uint x, uint y, uint x1, uint y1)
+        {
+            return y == y1 || (x == x1 && y % 2 == y1 % 2);
+        }
+
+        public static int TileDistance(uint x, uint y, uint x1, uint y1)
+        {
+            return TileLocator.Current.TileDistance(x, y, x1, y1);
         }
 
         public static int RadiusDistance(uint x, uint y, uint x1, uint y1)

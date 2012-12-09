@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Data;
 using Game.Data;
+using Game.Data.Tribe;
 using Game.Data.Troop;
 using Persistance;
 
@@ -8,43 +9,10 @@ namespace Game.Battle.CombatGroups
 {
     public class CityOffensiveCombatGroup : CombatGroup
     {
-        public ITroopObject TroopObject { get; private set; }
-
         private readonly BattleOwner owner;
 
-        public override byte TroopId
-        {
-            get
-            {
-                return TroopObject.Stub.TroopId;
-            }
-        }
-
-        public override Resource GroupLoot
-        {
-            get
-            {
-                return TroopObject.Stats.Loot;
-            }
-        }
-
-        public override BattleOwner Owner
-        {
-            get
-            {
-                return owner;
-            }
-        }
-
-        public override Data.Tribe.ITribe Tribe
-        {
-            get
-            {
-                return TroopObject.City.Owner.IsInTribe ? TroopObject.City.Owner.Tribesman.Tribe : null;
-            }
-        }
-
-        public CityOffensiveCombatGroup(uint battleId, uint id, ITroopObject troopObject, IDbManager dbManager) : base(battleId, id, dbManager)
+        public CityOffensiveCombatGroup(uint battleId, uint id, ITroopObject troopObject, IDbManager dbManager)
+                : base(battleId, id, dbManager)
         {
             owner = new BattleOwner(BattleOwnerType.City, troopObject.City.Id);
             TroopObject = troopObject;
@@ -84,7 +52,11 @@ namespace Game.Battle.CombatGroups
         {
             get
             {
-                return new[] {new DbColumn("troop_object_id", TroopObject.ObjectId, DbType.UInt32), new DbColumn("city_id", TroopObject.City.Id, DbType.UInt32)};
+                return new[]
+                {
+                        new DbColumn("troop_object_id", TroopObject.ObjectId, DbType.UInt32),
+                        new DbColumn("city_id", TroopObject.City.Id, DbType.UInt32)
+                };
             }
         }
 
@@ -105,10 +77,39 @@ namespace Game.Battle.CombatGroups
         }
 
         #endregion
-        
-        public override bool BelongsTo(IPlayer player)
-        {        
-            return TroopObject.City.Owner == player;        
+
+        public ITroopObject TroopObject { get; private set; }
+
+        public override byte TroopId
+        {
+            get
+            {
+                return TroopObject.Stub.TroopId;
+            }
+        }
+
+        public override Resource GroupLoot
+        {
+            get
+            {
+                return TroopObject.Stats.Loot;
+            }
+        }
+
+        public override BattleOwner Owner
+        {
+            get
+            {
+                return owner;
+            }
+        }
+
+        public override ITribe Tribe
+        {
+            get
+            {
+                return TroopObject.City.Owner.IsInTribe ? TroopObject.City.Owner.Tribesman.Tribe : null;
+            }
         }
 
         public ICity City
@@ -117,6 +118,11 @@ namespace Game.Battle.CombatGroups
             {
                 return TroopObject.City;
             }
+        }
+
+        public override bool BelongsTo(IPlayer player)
+        {
+            return TroopObject.City.Owner == player;
         }
     }
 }

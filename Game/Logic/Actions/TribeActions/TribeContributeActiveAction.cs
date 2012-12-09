@@ -9,7 +9,6 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -18,13 +17,23 @@ namespace Game.Logic.Actions
     public class TribeContributeActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
-        private readonly uint structureId;
-        private readonly IGameObjectLocator locator;
+
         private readonly Formula formula;
+
+        private readonly IGameObjectLocator locator;
+
         private readonly ILocker locker;
+
         private readonly Resource resource;
 
-        public TribeContributeActiveAction(uint cityId, uint structureId, Resource resource, IGameObjectLocator locator, Formula formula, ILocker locker)
+        private readonly uint structureId;
+
+        public TribeContributeActiveAction(uint cityId,
+                                           uint structureId,
+                                           Resource resource,
+                                           IGameObjectLocator locator,
+                                           Formula formula,
+                                           ILocker locker)
         {
             this.cityId = cityId;
             this.structureId = structureId;
@@ -32,18 +41,20 @@ namespace Game.Logic.Actions
             this.formula = formula;
             this.locker = locker;
             this.resource = new Resource(resource);
-
         }
 
         public TribeContributeActiveAction(uint id,
-                                  DateTime beginTime,
-                                  DateTime nextTime,
-                                  DateTime endTime,
-                                  int workerType,
-                                  byte workerIndex,
-                                  ushort actionCount,
-                                  Dictionary<string, string> properties, IGameObjectLocator locator, Formula formula, ILocker locker)
-            : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+                                           DateTime beginTime,
+                                           DateTime nextTime,
+                                           DateTime endTime,
+                                           int workerType,
+                                           byte workerIndex,
+                                           ushort actionCount,
+                                           Dictionary<string, string> properties,
+                                           IGameObjectLocator locator,
+                                           Formula formula,
+                                           ILocker locker)
+                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             this.locator = locator;
             this.formula = formula;
@@ -79,21 +90,31 @@ namespace Game.Logic.Actions
             IStructure structure;
 
             if (!locator.TryGetObjects(cityId, structureId, out city, out structure))
+            {
                 return Error.ObjectNotFound;
+            }
 
             // Make sure we aren't exceeding our trade capacity
             if (!formula.GetSendCapacity(structure).HasEnough(resource))
+            {
                 return Error.ResourceExceedTradeLimit;
+            }
 
             // Gotta send something
             if (resource.Total == 0)
+            {
                 return Error.ResourceNotEnough;
+            }
 
             if (!city.Resource.HasEnough(resource))
+            {
                 return Error.ResourceNotEnough;
+            }
 
             if (!city.Owner.IsInTribe)
+            {
                 return Error.TribesmanNotPartOfTribe;
+            }
 
             structure.City.BeginUpdate();
             structure.City.Resource.Subtract(resource);
@@ -122,14 +143,19 @@ namespace Game.Logic.Actions
             city.EndUpdate();
         }
 
-        private void InterruptCatchAll(bool wasKilled) {
+        private void InterruptCatchAll(bool wasKilled)
+        {
             ICity city;
-            using (locker.Lock(cityId, out city)) {
+            using (locker.Lock(cityId, out city))
+            {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 IStructure structure;
-                if (!city.TryGetStructure(structureId, out structure)) {
+                if (!city.TryGetStructure(structureId, out structure))
+                {
                     StateChange(ActionState.Failed);
                     return;
                 }
@@ -151,26 +177,28 @@ namespace Game.Logic.Actions
             using (locker.Lock(cityId, out city, out tribe))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
-                if(city==null)
+                if (city == null)
                 {
                     StateChange(ActionState.Failed);
                     return;
                 }
 
                 // what if tribe is not there anymore?
-                if(tribe==null)
+                if (tribe == null)
                 {
                     RefundResource(city);
                     StateChange(ActionState.Failed);
                     return;
                 }
-                if(tribe.Contribute(city.Owner.PlayerId, resource)!=Error.Ok)
+                if (tribe.Contribute(city.Owner.PlayerId, resource) != Error.Ok)
                 {
                     RefundResource(city);
                     StateChange(ActionState.Failed);
-                    return;                   
+                    return;
                 }
                 StateChange(ActionState.Completed);
             }
@@ -189,12 +217,12 @@ namespace Game.Logic.Actions
             {
                 return
                         XmlSerializer.Serialize(new[]
-                                                {
-                                                        new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId),
-                                                        new XmlKvPair("crop", resource.Crop),
-                                                        new XmlKvPair("gold", resource.Gold), new XmlKvPair("iron", resource.Iron),
-                                                        new XmlKvPair("wood", resource.Wood), new XmlKvPair("labor", resource.Labor)
-                                                });
+                        {
+                                new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId),
+                                new XmlKvPair("crop", resource.Crop), new XmlKvPair("gold", resource.Gold),
+                                new XmlKvPair("iron", resource.Iron), new XmlKvPair("wood", resource.Wood),
+                                new XmlKvPair("labor", resource.Labor)
+                        });
             }
         }
 

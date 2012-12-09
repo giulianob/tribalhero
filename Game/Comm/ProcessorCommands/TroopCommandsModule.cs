@@ -21,11 +21,13 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly IActionFactory actionFactory;
 
-        private readonly StructureFactory structureFactory;
-
         private readonly IGameObjectLocator gameObjectLocator;
 
-        public TroopCommandsModule(IActionFactory actionFactory, StructureFactory structureFactory, IGameObjectLocator gameObjectLocator)
+        private readonly StructureFactory structureFactory;
+
+        public TroopCommandsModule(IActionFactory actionFactory,
+                                   StructureFactory structureFactory,
+                                   IGameObjectLocator gameObjectLocator)
         {
             this.actionFactory = actionFactory;
             this.structureFactory = structureFactory;
@@ -113,7 +115,7 @@ namespace Game.Comm.ProcessorCommands
 
         private void LocalTroopSet(Session session, Packet packet)
         {
-            uint cityId;            
+            uint cityId;
             bool hideNewUnits;
             ISimpleStub stub;
             try
@@ -152,11 +154,15 @@ namespace Game.Comm.ProcessorCommands
                     if (currentUnits.Count != newUnits.Count)
                     {
                         ReplyError(session, packet, Error.TroopChanged);
-                        return;                        
+                        return;
                     }
 
                     // Units are ordered by their type so we can compare the array by indexes
-                    if (currentUnits.Where((currentUnit, i) => currentUnit.Type != newUnits[i].Type || currentUnit.Count != newUnits[i].Count).Any())
+                    if (
+                            currentUnits.Where(
+                                               (currentUnit, i) =>
+                                               currentUnit.Type != newUnits[i].Type ||
+                                               currentUnit.Count != newUnits[i].Count).Any())
                     {
                         ReplyError(session, packet, Error.TroopChanged);
                         return;
@@ -202,14 +208,23 @@ namespace Game.Comm.ProcessorCommands
 
                 IStructure barrack;
                 if (!city.TryGetStructure(objectId, out barrack))
+                {
                     ReplyError(session, packet, Error.Unexpected);
+                }
 
                 var upgradeAction = actionFactory.CreateUnitUpgradeActiveAction(cityId, objectId, type);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(barrack), barrack, upgradeAction, barrack.Technologies);
+                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(barrack),
+                                                 barrack,
+                                                 upgradeAction,
+                                                 barrack.Technologies);
                 if (ret != 0)
+                {
                     ReplyError(session, packet, ret);
+                }
                 else
+                {
                     ReplySuccess(session, packet);
+                }
             }
         }
 
@@ -245,14 +260,23 @@ namespace Game.Comm.ProcessorCommands
 
                 IStructure barrack;
                 if (!city.TryGetStructure(objectId, out barrack))
+                {
                     ReplyError(session, packet, Error.Unexpected);
+                }
 
                 var trainAction = actionFactory.CreateUnitTrainActiveAction(cityId, objectId, type, count);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(barrack), barrack, trainAction, barrack.Technologies);
+                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(barrack),
+                                                 barrack,
+                                                 trainAction,
+                                                 barrack.Technologies);
                 if (ret != 0)
+                {
                     ReplyError(session, packet, ret);
+                }
                 else
+                {
                     ReplySuccess(session, packet);
+                }
             }
         }
 
@@ -291,7 +315,7 @@ namespace Game.Comm.ProcessorCommands
                 if (!gameObjectLocator.TryGetObjects(targetStrongholdId, out stronghold))
                 {
                     ReplyError(session, packet, Error.Unexpected);
-                    return;                    
+                    return;
                 }
             }
 
@@ -305,7 +329,10 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var aa = actionFactory.CreateStrongholdAttackChainAction(cityId, troopObject.ObjectId, targetStrongholdId, mode);
+                var aa = actionFactory.CreateStrongholdAttackChainAction(cityId,
+                                                                         troopObject.ObjectId,
+                                                                         targetStrongholdId,
+                                                                         mode);
                 Error ret = city.Worker.DoPassive(city, aa, true);
                 if (ret != 0)
                 {
@@ -378,7 +405,11 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var aa = actionFactory.CreateCityAttackChainAction(cityId, troopObject.ObjectId, targetCityId, targetObjectId, mode);
+                var aa = actionFactory.CreateCityAttackChainAction(cityId,
+                                                                   troopObject.ObjectId,
+                                                                   targetCityId,
+                                                                   targetObjectId,
+                                                                   mode);
                 Error ret = city.Worker.DoPassive(city, aa, true);
                 if (ret != 0)
                 {
@@ -447,7 +478,9 @@ namespace Game.Comm.ProcessorCommands
                     ReplyError(session, packet, ret);
                 }
                 else
+                {
                     ReplySuccess(session, packet);
+                }
             }
         }
 
@@ -485,7 +518,7 @@ namespace Game.Comm.ProcessorCommands
                 if (!gameObjectLocator.TryGetObjects(targetStrongholdId, out stronghold))
                 {
                     ReplyError(session, packet, Error.Unexpected);
-                    return;                    
+                    return;
                 }
             }
 
@@ -498,7 +531,10 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var da = actionFactory.CreateStrongholdDefenseChainAction(cityId, troopObject.ObjectId, targetStrongholdId, mode);
+                var da = actionFactory.CreateStrongholdDefenseChainAction(cityId,
+                                                                          troopObject.ObjectId,
+                                                                          targetStrongholdId,
+                                                                          mode);
                 Error ret = city.Worker.DoPassive(city, da, true);
                 if (ret != 0)
                 {
@@ -506,7 +542,9 @@ namespace Game.Comm.ProcessorCommands
                     ReplyError(session, packet, ret);
                 }
                 else
+                {
                     ReplySuccess(session, packet);
+                }
             }
         }
 
@@ -560,7 +598,8 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 //Make sure that the person sending the retreat is either the guy who owns the troop or the guy who owns the stationed city
-                if (city.Owner != session.Player && stub.Station != null && session.Player.GetCityList().All(x => x != stub.Station))
+                if (city.Owner != session.Player && stub.Station != null &&
+                    session.Player.GetCityList().All(x => x != stub.Station))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;

@@ -1,32 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MapGenerator
+﻿namespace MapGenerator
 {
     enum Direction
     {
         North,
+
         East,
+
         South,
+
         West
     }
+
     class SpiralOutOrder
     {
-        private int[] result;
-        private int resultIndex;
-        private int width;
-        private int height;
+        public delegate bool DoWork(int index, int x, int y, object custom);
+
         private int count;
+
+        private int height;
+
+        private int[] result;
+
+        private int resultIndex;
+
         private int startX;
+
         private int startY;
 
-        public delegate bool DoWork(int index, int x, int y, object custom);
+        private int width;
 
         private int Index(int x, int y)
         {
-            return y*width + x;
+            return y * width + x;
         }
 
         private void Walk(Direction direction, int steps, ref int x, ref int y)
@@ -49,7 +54,9 @@ namespace MapGenerator
                         break;
                 }
                 if (x >= 0 && x < width && y >= 0 && y < height)
-                    result[resultIndex++] = y*width + x;
+                {
+                    result[resultIndex++] = y * width + x;
+                }
             }
         }
 
@@ -57,8 +64,8 @@ namespace MapGenerator
         {
             this.width = width;
             this.height = height;
-            
-            count = width*height;
+
+            count = width * height;
             resultIndex = 0;
             result = new int[count];
 
@@ -74,7 +81,7 @@ namespace MapGenerator
             while (resultIndex < count)
             {
                 Walk(direction, steps, ref x, ref y);
-                switch (direction)
+                switch(direction)
                 {
                     case Direction.East:
                         direction = Direction.South;
@@ -100,7 +107,9 @@ namespace MapGenerator
         {
             BuildOrder(width, height, x, y);
             for (int i = 0; i < resultIndex; ++i)
-                work(i, result[i]%width, result[i]/width, custom);
+            {
+                work(i, result[i] % width, result[i] / width, custom);
+            }
         }
     }
 }

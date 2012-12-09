@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Comm;
+using Game.Data.Tribe;
 using Game.Util.Locking;
 using Persistance;
 
@@ -32,7 +33,7 @@ namespace Game.Data
 
         string Description { get; set; }
 
-        Tribe.ITribesman Tribesman { get; set; }
+        ITribesman Tribesman { get; set; }
 
         uint TribeRequest { get; set; }
 

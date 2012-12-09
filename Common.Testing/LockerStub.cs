@@ -5,6 +5,12 @@ namespace Common.Testing
 {
     public class LockerStub : DefaultLocker
     {
+        public LockerStub(IGameObjectLocator locator)
+                : base(() => new MultiObjectLockStub(), () => new CallbackLock(() => new MultiObjectLockStub()), locator
+                        )
+        {
+        }
+
         private class MultiObjectLockStub : IMultiObjectLock
         {
             public void Dispose()
@@ -18,11 +24,6 @@ namespace Common.Testing
             public void UnlockAll()
             {
             }
-        }
-
-        public LockerStub(IGameObjectLocator locator)
-                : base(() => new MultiObjectLockStub(), () => new CallbackLock(() => new MultiObjectLockStub()), locator)
-        {
         }
     }
 }

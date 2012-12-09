@@ -23,8 +23,8 @@ namespace Game.Data
         void Subtract(int val);
 
         /// <summary>
-        /// Returns the amount of resources received for the given timeframe.
-        /// NOTE: This can return a negative amount if upkeep is higher than rate.
+        ///     Returns the amount of resources received for the given timeframe.
+        ///     NOTE: This can return a negative amount if upkeep is higher than rate.
         /// </summary>
         /// <param name="millisecondInterval"></param>
         /// <returns></returns>

@@ -199,7 +199,7 @@
 																									  .count()));
                                                                                                       
             lblTroopsOnTheMove.setText(StringHelper.localize("TROOPS_DIALOG_ON_THE_MOVE", Enumerable.from(troops)
-                                                                                            .where(function (troop: TroopStub): Boolean { return troop.state == TroopStub.MOVING; } )
+                                                                                            .where(function (troop: TroopStub): Boolean { return troop.state == TroopStub.MOVING || troop.state == TroopStub.BATTLE; } )
                                                                                             .count()));
                                                                                             
             lblTroopsReturningHome.setText(StringHelper.localize("TROOPS_DIALOG_RETURNING_HOME", Enumerable.from(troops)

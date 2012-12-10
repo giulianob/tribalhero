@@ -331,7 +331,7 @@ package src.UI.Dialog
 		{
 			if (Global.gameContainer.cmdLine == null) return;
 			var substituteArgs: Array = new Array();
-			substituteArgs.push('<span class="system">' + StringHelper.localize(messageId) + '</strong>');
+			substituteArgs.push('<span class="system">' + StringHelper.localize(messageId) + '</span>');
 			
 			for each (var str: String in params) {
 				substituteArgs.push(StringHelper.htmlEscape(str));

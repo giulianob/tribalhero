@@ -23,7 +23,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			var strPrototype: StructurePrototype = StructureFactory.getPrototype(parentObj.type, (parentObj as StructureObject).level);
 
 			var str: String = StringHelper.localize(strPrototype.name + "_STRUCTURE_LABOR_MOVE");
-			if (!str || str == "") {
+			if (!str || str == "" || str.substr(0, 1) == "[") {
 				str = "Assign Laborers";
 			}
 

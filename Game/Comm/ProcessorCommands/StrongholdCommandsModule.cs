@@ -67,9 +67,9 @@ namespace Game.Comm.ProcessorCommands
             IStronghold stronghold;
             using (locker.Lock(strongholdId, out stronghold))
             {
-                if (stronghold == null)
+                if (stronghold == null || stronghold.StrongholdState == StrongholdState.Inactive)
                 {
-                    ReplyError(session, packet, Error.CityNotFound);
+                    ReplyError(session, packet, Error.StrongholdNotFound);
                     return;
                 }
 

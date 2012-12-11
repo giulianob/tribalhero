@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
+using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
@@ -20,6 +21,8 @@ namespace Game.Logic.Actions
         private readonly IActionFactory actionFactory;
 
         private readonly BattleProcedure battleProcedure;
+
+        private readonly Formula formula;
 
         private readonly uint cityId;
 
@@ -48,7 +51,8 @@ namespace Game.Logic.Actions
                                      Procedure procedure,
                                      ILocker locker,
                                      IGameObjectLocator gameObjectLocator,
-                                     BattleProcedure battleProcedure)
+                                     BattleProcedure battleProcedure,
+                                     Formula formula)
         {
             this.cityId = cityId;
             this.targetCityId = targetCityId;
@@ -60,6 +64,7 @@ namespace Game.Logic.Actions
             this.locker = locker;
             this.gameObjectLocator = gameObjectLocator;
             this.battleProcedure = battleProcedure;
+            this.formula = formula;
         }
 
         public CityAttackChainAction(uint id,
@@ -72,7 +77,8 @@ namespace Game.Logic.Actions
                                      Procedure procedure,
                                      ILocker locker,
                                      IGameObjectLocator gameObjectLocator,
-                                     BattleProcedure battleProcedure)
+                                     BattleProcedure battleProcedure,
+                                     Formula formula)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
             this.actionFactory = actionFactory;
@@ -80,6 +86,7 @@ namespace Game.Logic.Actions
             this.locker = locker;
             this.gameObjectLocator = gameObjectLocator;
             this.battleProcedure = battleProcedure;
+            this.formula = formula;
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             mode = (AttackMode)uint.Parse(properties["mode"]);
@@ -158,6 +165,7 @@ namespace Game.Logic.Actions
             //Load the units stats into the stub
             troopObject.Stub.BeginUpdate();
             troopObject.Stub.Template.LoadStats(TroopBattleGroup.Attack);
+            troopObject.Stub.RetreatCount = (ushort)formula.GetAttackModeTolerance(troopObject.Stub.TotalCount, mode);
             troopObject.Stub.EndUpdate();
 
             initialTroopValue = troopObject.Stub.Value;

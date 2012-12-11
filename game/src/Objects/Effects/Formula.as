@@ -230,7 +230,7 @@
 		 
 		public static function getGateLimit(level: int) : int
         {
-            return level*500 + 5000;
+            return level * 10000;
         }
 
         public static function getGateRepairCost(level: int, currentHp: Number) : Resources

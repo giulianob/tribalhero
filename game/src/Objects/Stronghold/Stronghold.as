@@ -3,6 +3,7 @@ package src.Objects.Stronghold
 	import org.aswing.AsWingConstants;
 	import org.aswing.Component;
 	import org.aswing.JLabel;
+    import src.Objects.Effects.Formula;
 	import src.Objects.Factories.StrongholdFactory;
 	import src.Objects.SimpleGameObject;
 	import src.Objects.SimpleObject;
@@ -49,13 +50,9 @@ package src.Objects.Stronghold
 		}
 		
 		public static function gateToString(level: int, value: int) : String {
-			var limit: int = Stronghold.maxGateHp(level);
+			var limit: int = Formula.getGateLimit(level);
 			return value.toString() + "/" + limit.toString();
-		}
-		
-		public static function maxGateHp(level: int): int {
-			return level * 500 + 5000;
-		}
+		}		
 		
 		public static function getBattleStateString(strongholdInfo: *, rows: int = 0, cols: int = 0): RichLabel {			
 			if (strongholdInfo.battleState == BATTLE_STATE_MAIN) {

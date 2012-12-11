@@ -151,7 +151,7 @@
 			var pnlNameStatus: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 5));			
 			pnlNameStatus.setPreferredHeight(25);
 			pnlNameStatus.append(lblName);				
-			pnlNameStatus.append(Stronghold.getBattleStateString(stronghold, 2, 30));			
+			//pnlNameStatus.append(Stronghold.getBattleStateString(stronghold, 2, 30));			
 			
 			var grid: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));
 			grid.append(simpleLabelMaker(StringHelper.localize("STR_LEVEL_VALUE", stronghold.lvl), StringHelper.localize("STR_LEVEL"), new AssetIcon(new ICON_UPGRADE())));
@@ -205,7 +205,7 @@
 			lblGate.setVerticalAlignment(AsWingConstants.TOP);
 			pnlGate.append(lblGate);
 			
-			if (stronghold.state != SimpleGameObject.STATE_BATTLE && stronghold.gate < Stronghold.maxGateHp(stronghold.lvl) && Constants.tribeRank <= 1) {
+			if (stronghold.state != SimpleGameObject.STATE_BATTLE && stronghold.gate < Formula.getGateLimit(stronghold.lvl) && Constants.tribeRank <= 1) {
 				var btnGateRepair: JLabelButton = new JLabelButton(Stronghold.gateToString(stronghold.lvl, stronghold.gate), null, AsWingConstants.LEFT);
 				btnGateRepair.useHandCursor = true;
 				btnGateRepair.addEventListener(MouseEvent.CLICK, function(e: Event): void {
@@ -337,7 +337,7 @@
 			
 			var pnlHeader: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));
 			
-			pnlHeader.append(new RichLabel(StringUtil.substitute("TRIBE_INCOMING_ATK", RichLabel.getHtmlForLocation(incoming.target), RichLabel.getHtmlForLocation(incoming.source))));
+			pnlHeader.append(new RichLabel(StringHelper.localize("TRIBE_INCOMING_ATK", RichLabel.getHtmlForLocation(incoming.target), RichLabel.getHtmlForLocation(incoming.source)), 2, 50));
 						
 			var lblCountdown: CountDownLabel = new CountDownLabel(incoming.endTime, StringHelper.localize("STR_BATTLE_IN_PROGRESS"));
 			
@@ -622,8 +622,8 @@
 			pnlHeaderTitle.appendAll(lblTribeName, lblEstablished);
 			
 			var pnlResources: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 10, 0, false));
-			var lblVictoryPoint: JLabel = new JLabel(profileData.victoryPoint.toFixed(1),  new AssetIcon(new ICON_UPGRADE()));
-			new SimpleTooltip(lblVictoryPoint, "Victory Point");
+			var lblVictoryPoint: JLabel = new JLabel(profileData.victoryPoint.toFixed(1),  new AssetIcon(new ICON_STAR()));
+			new SimpleTooltip(lblVictoryPoint, StringHelper.localize("STR_VICTORY_POINT"));
 			lblVictoryPoint.setIconTextGap(0);
 						
 			pnlResources.setConstraints("East");

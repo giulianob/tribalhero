@@ -406,7 +406,7 @@ class Ranking extends AppModel {
     public function rankStronghold($type, $field, $order) {
         $strongholds = $this->Stronghold->find('all', array(
                     'contain' => array(),
-                    'conditions' => array(),
+                    'conditions' => array('state >' => 0),
                     'order' => array($field . ' ' . $order, 'id ASC'),
                     'fields' => array('id', 'tribe_id', $field ),
                 ));

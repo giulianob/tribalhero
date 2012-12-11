@@ -58,7 +58,7 @@ namespace Game.Comm.ProcessorCommands
                 IStronghold stronghold;
                 using (locker.Lock(id, out stronghold))
                 {
-                    if (stronghold == null)
+                    if (stronghold == null || stronghold.StrongholdState == StrongholdState.Inactive)
                     {
                         ReplyError(session, reply, Error.ObjectNotFound);
                         return;

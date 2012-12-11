@@ -68,8 +68,8 @@ namespace Game.Data.Stronghold
             level = (byte)(Config.Random.Next(20) + 1);
             do
             {
-                x = (uint)Config.Random.Next((int)Config.map_width);
-                y = (uint)Config.Random.Next((int)Config.map_height);
+                x = (uint)Config.Random.Next(30, (int)Config.map_width - 30);
+                y = (uint)Config.Random.Next(30, (int)Config.map_height - 30);
             }
             while (!HasEnoughCities(x, y, level) || TooCloseToCities(x, y, MIN_DISTANCE_AWAY_FROM_CITIES) ||
                    TooCloseToStrongholds(x, y, MIN_DISTANCE_AWAY_FROM_STRONGHOLDS));

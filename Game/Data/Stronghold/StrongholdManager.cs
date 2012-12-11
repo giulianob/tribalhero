@@ -288,6 +288,13 @@ namespace Game.Data.Stronghold
         private void StrongholdOnGateStatusChanged(object sender, EventArgs eventArgs)
         {
             MarkIndexDirty();
+
+            var stronghold = (Stronghold)sender;
+
+            if (stronghold.GateOpenTo != null)
+            {
+                chat.SendSystemChat("STRONGHOLD_GATE_BROKEN", stronghold.Name, stronghold.GateOpenTo.Name);
+            }
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Game.Data.Stronghold
 {
     class StrongholdActivationCondition : IStrongholdActivationCondition
     {
-        private readonly int cityPerLevel = Config.stronghold_radius_per_level;
+        private readonly int cityPerLevel = Config.stronghold_cities_per_level;
 
         private readonly int radiusBase = Config.stronghold_radius_base;
 

@@ -21,7 +21,9 @@ namespace Game.Battle.CombatObjects
         public override void TakeDamage(decimal dmg, out Resource returning, out int attackPoints)
         {
             base.TakeDamage(dmg, out returning, out attackPoints);
+            Stronghold.BeginUpdate();
             Stronghold.Gate = hp;
+            Stronghold.EndUpdate();
         }
 
         public override void CalcActualDmgToBeTaken(ICombatList attackers,

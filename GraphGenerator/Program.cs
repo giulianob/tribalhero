@@ -66,6 +66,8 @@ namespace GraphGenerator
 
         private static readonly List<List<string>> ranks = new List<List<string>>();
 
+        private static string settings = string.Empty;
+
         private static void ParseArgs()
         {
             var imgDirList = new List<string>();
@@ -75,6 +77,7 @@ namespace GraphGenerator
                     {"img=", v => imgDirList.Add(v)},
                     {"gv-path=", v => gvPath = v},
                     {"output=", v => output = v},
+                    {"settings=", v => settings = v}
             };
 
             p.Parse(Environment.GetCommandLineArgs());
@@ -88,6 +91,7 @@ namespace GraphGenerator
         private static void Main()
         {
             ParseArgs();
+            Config.LoadConfigFile(settings);
             Factory.CompileConfigFiles();
             Engine.CreateDefaultKernel();
 

@@ -270,9 +270,6 @@ namespace Game.Logic.Actions
                         throw new Exception("Troop object should still exist");
                     }
 
-                    // Remove this actions reference from the troop
-                    city.References.Remove(troopObject, this);
-
                     // Check if troop is still alive
                     if (troopObject.Stub.TotalCount > 0)
                     {
@@ -283,6 +280,9 @@ namespace Game.Logic.Actions
                                                    initialTroopValue,
                                                    troopObject.Stub.Value);
                         city.EndUpdate();
+
+                        // Add notification for walking back
+                        city.Notifications.Add(troopObject, this);
 
                         // Send troop back home
                         var tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
@@ -295,6 +295,9 @@ namespace Game.Logic.Actions
                     }
                     else
                     {
+                        //Remove notification to target city once battle is over
+                        city.References.Remove(troopObject, this);
+
                         targetCity.BeginUpdate();
                         city.BeginUpdate();
 
@@ -325,6 +328,7 @@ namespace Game.Logic.Actions
                     if (city.Battle == null)
                     {
                         city.References.Remove(troopObject, this);
+                        city.Notifications.Remove(this);
                         procedure.TroopObjectDelete(troopObject, true);
                         StateChange(ActionState.Completed);
                     }
@@ -346,6 +350,7 @@ namespace Game.Logic.Actions
                 using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
                 {
                     city.References.Remove(troopObject, this);
+                    city.Notifications.Remove(this);
 
                     procedure.TroopObjectDelete(troopObject, troopObject.Stub.TotalCount != 0);
 

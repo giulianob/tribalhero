@@ -120,8 +120,10 @@ namespace Game.Logic.Actions
             DeregisterBattleListeners(city);
 
             troopObject.BeginUpdate();
+            troopObject.Stub.BeginUpdate();
             troopObject.State = GameObjectState.NormalState();
             troopObject.Stub.State = TroopState.Idle;
+            troopObject.Stub.EndUpdate();
             troopObject.EndUpdate();
             StateChange(ActionState.Completed);
         }

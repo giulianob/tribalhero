@@ -32,20 +32,22 @@ namespace DatabaseGenerator
 
         private static void Main()
         {
-            Factory.CompileConfigFiles();
-            Engine.CreateDefaultKernel();
-
-            LoadLanguages();
-
+            string settings = string.Empty;
             try
             {
-                var p = new OptionSet {{"output=", v => output = v},};
+                var p = new OptionSet {{"output=", v => output = v}, {"settings=", v => settings = v}};
 
                 p.Parse(Environment.GetCommandLineArgs());
             }
             catch(Exception)
             {
             }
+
+            Config.LoadConfigFile(settings);
+            Factory.CompileConfigFiles();            
+            Engine.CreateDefaultKernel();
+
+            LoadLanguages();
 
             // Get types
             structureTypes = from structure in Ioc.Kernel.Get<StructureFactory>().AllStructures()

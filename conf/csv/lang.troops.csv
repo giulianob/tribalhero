@@ -1,0 +1,60 @@
+Key,EN
+LOCAL_TROOP,Local
+,
+TROOP_STATE_IDLE,Idle
+TROOP_STATE_BATTLE,In Battle
+TROOP_STATE_STATIONED,Stationed
+TROOP_STATE_BATTLE_STATIONED,In Battle
+TROOP_STATE_MOVING,On the Move
+TROOP_STATE_RETURNING_HOME,Returning Home
+TROOP_STATE_WAITING_IN_DEFENSIVE_ASSIGNMENT,Waiting in defensive assignment
+TROOP_STATE_WAITING_IN_OFFENSIVE_ASSIGNMENT,Waiting in offensive assignment
+,
+TROOP_MORE_UNITS,and {0} more
+TROOP_UNITS,{0} unit(s)
+,
+SWORDSMAN_UNIT,Swordsman
+HEAVY_SWORDSMAN_UNIT,Heavy Swordsman
+PIKEMAN_UNIT,Pikeman
+ARCHER_UNIT,Archer
+CAVALRY_UNIT,Cavalry
+HEAVY_CAVALRY_UNIT,Heavy Cavalry
+HELEPOLIS_UNIT,Helepolis
+CATAPULT_UNIT,Catapult
+FIGHTER_UNIT,Fighter
+BOWMAN_UNIT,Bowman
+GLADIATOR_UNIT,Gladiator
+,
+0_FIGHTER_UNIT,Fighter
+0_FIGHTER_PLURAL_UNIT,Fighters
+0_FIGHTER_UNIT_DESC,"Fighter is a basic unit that can do average damage to most other units. On top of that, fighter health is high enough for them to hold off much damage and protect the weaker units behind them. Fighter is one of the few units that is good against Cannon Tower and Catapult but can fall to bow units if they receive no help. Fighter also carries average amount of loot from the battle which makes up for their lack of damage."
+0_BOWMAN_UNIT,Bowman
+0_BOWMAN_PLURAL_UNIT,Bowmen
+0_BOWMAN_UNIT_DESC,"Bowman is strong against all except machine units, structures, and their damage splashes among multiple targets; however they have relatively low health compare to the damage they deal. It is wise to protect them with other units. When using bowmen, be very careful of enemy units with high range (such as Cavalry, Knight) as they can hit the Bowmen from the beginning of the battle."
+1_SWORDSMAN_UNIT,Swordsman
+1_SWORDSMAN_PLURAL_UNIT,Swordsmen
+1_SWORDSMAN_UNIT_DESC,"Swordsman is a basic unit that can do average damage to most other units. On top of that, Swordsman health is high enough for them to hold off much damage and protect the weaker units behind them. Swordsman is one of the few units that is good against Cannon Tower and Catapult but can fall to bow units if they receive no help. Swordsman also carries average amount of loot from the battle which makes up for their lack of damage."
+1_ARCHER_UNIT,Archer
+1_ARCHER_PLURAL_UNIT,Archers
+1_ARCHER_UNIT_DESC,"Archer is strong against all except machine units, structures, and their damage splashes among multiple targets; however they have relatively low health compare to the damage they deal. It is wise to protect them with other units. When using Archer, be very careful of enemy unit with high range (such as Cavalry, Knight) they can reach Archer from the beginning of the battle."
+1_PIKEMAN_UNIT,Hoplite
+1_PIKEMAN_PLURAL_UNIT,Hoplites
+1_PIKEMAN_UNIT_DESC,Hoplite is a very special trained unit to take down mounted units such as Cavalry and Knight. They are not very well equiped against anyone else so do not expect to win a battle with just Hoplites.
+1_GLADIATOR_UNIT,Gladiator
+1_GLADIATOR_PLURAL_UNIT,Gladiators
+1_GLADIATOR_UNIT_DESC,"Gladiator, the fearless warrior is the one of the good siege units in a tribe. They are very good against Helepolis and Tower. Their quickness allow them to reach enemies deep in the formation; and with decent damage, none can hold long before they are beheaded."
+1_CAVALRY_UNIT,Cavalry
+1_CAVALRY_PLURAL_UNIT,Cavalries
+1_CAVALRY_UNIT_DESC,"This unit is very strong against Bowmen and Archers, as they can slice into second row in the very beginning; however, they are very fragile relatively to other unit. Their lack of armor is hard to justify without looking into their speed. Cavalry is the fastest unit and provides a speed boost to the overall troop."
+1_HEAVY_CAVALRY_UNIT,Knight
+1_HEAVY_CAVALRY_PLURAL_UNIT,Knights
+1_HEAVY_CAVALRY_UNIT_DESC,"An all-around unit which does not deal a whole lot of damage and has high upkeep, but most importantly, they hang around as long as they can to protect other units that are behind them. They are the meatshield in case the first row is destroyed. Knight is very strong against Cannon Tower, slightly weak against Hoplite and Helepolis."
+1_HELEPOLIS_UNIT,Helepolis
+1_HELEPOLIS_PLURAL_UNIT,Helepolises
+1_HELEPOLIS_UNIT_DESC,Machine that shoots thousands of arrows every minute. 
+1_CATAPULT_UNIT,Catapult
+1_CATAPULT_PLURAL_UNIT,Catapults
+1_CATAPULT_UNIT_DESC,"The only unit that does meaningful damage to structures. Catapults are also strong against machines but can fall quickly to any melee units. Beware when Catapult is sent with the troops, overall movement will be lowered to have the same speed as the Catapult regardless of the troop's composition."
+1_OXWAGON_UNIT,Ox Wagon
+1_OXWAGON_PLURAL_UNIT,Ox Wagons
+1_OXWAGON_UNIT_DESC,A non-combat unit used to carry loot. The oxen are fed with beer; its fat is quite thick so some tribes use them as shields.

@@ -363,19 +363,6 @@ namespace Game.Data.Tribe
         /// <returns></returns>
         private bool Dispatch(ITroopStub stub)
         {
-            IStructure structure = (IStructure)gameObjectLocator.GetObjects(X, Y).Find(z => z is IStructure);
-            if (structure == null)
-            {
-                procedure.TroopStubDelete(stub.City, stub);
-                stub.City.Owner.SendSystemMessage(null,
-                                                  "Assignment Failed",
-                                                  string.Format(
-                                                                @"Assigned target({0},{1}) has already been destroyed. The reserved troops have been returned to the city.",
-                                                                X,
-                                                                Y));
-                return false;
-            }
-
             // Create troop object
             ITroopObject troopObject;
             procedure.TroopObjectCreate(stub.City, stub, out troopObject);
@@ -383,6 +370,19 @@ namespace Game.Data.Tribe
             PassiveAction action;
             if (Target.LocationType == LocationType.City)
             {
+                IStructure structure = (IStructure)gameObjectLocator.GetObjects(X, Y).Find(z => z is IStructure);
+                if (structure == null)
+                {
+                    procedure.TroopStubDelete(stub.City, stub);
+                    stub.City.Owner.SendSystemMessage(null,
+                                                      "Assignment Failed",
+                                                      string.Format(
+                                                                    @"Assigned target({0},{1}) has already been destroyed. The reserved troops have been returned to the city.",
+                                                                    X,
+                                                                    Y));
+                    return false;
+                }
+
                 if (IsAttack)
                 {
                     action = actionFactory.CreateCityAttackChainAction(stub.City.Id,

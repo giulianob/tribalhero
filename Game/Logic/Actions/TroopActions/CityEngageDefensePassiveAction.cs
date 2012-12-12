@@ -84,13 +84,13 @@ namespace Game.Logic.Actions
 
         private void RegisterBattleListeners(ICity city)
         {
-            city.Battle.ActionAttacked += BattleGroupKilled;
+            city.Battle.GroupKilled += BattleGroupKilled;
             city.Battle.ExitBattle += BattleExitBattle;
         }
 
         private void DeregisterBattleListeners(ICity city)
         {
-            city.Battle.ActionAttacked -= BattleGroupKilled;
+            city.Battle.GroupKilled -= BattleGroupKilled;
             city.Battle.ExitBattle -= BattleExitBattle;
         }
 
@@ -98,14 +98,9 @@ namespace Game.Logic.Actions
         ///     Handles ending this action if our group has been killed
         /// </summary>
         private void BattleGroupKilled(IBattleManager battle,
-                                       BattleManager.BattleSide attackingside,
-                                       ICombatGroup attackergroup,
-                                       ICombatObject attacker,
-                                       ICombatGroup targetgroup,
-                                       ICombatObject target,
-                                       decimal damage)
+                                       ICombatGroup combatGroup)
         {
-            if (targetgroup.Id != groupId)
+            if (combatGroup.Id != groupId)
             {
                 return;
             }
@@ -120,11 +115,13 @@ namespace Game.Logic.Actions
             DeregisterBattleListeners(city);
 
             troopObject.BeginUpdate();
-            troopObject.Stub.BeginUpdate();
             troopObject.State = GameObjectState.NormalState();
+            troopObject.EndUpdate();
+
+            troopObject.Stub.BeginUpdate();            
             troopObject.Stub.State = TroopState.Idle;
             troopObject.Stub.EndUpdate();
-            troopObject.EndUpdate();
+            
             StateChange(ActionState.Completed);
         }
 
@@ -177,11 +174,12 @@ namespace Game.Logic.Actions
             DeregisterBattleListeners(city);
 
             troopObject.BeginUpdate();
-            troopObject.Stub.BeginUpdate();
             troopObject.State = GameObjectState.NormalState();
+            troopObject.EndUpdate();
+
+            troopObject.Stub.BeginUpdate();            
             troopObject.Stub.State = TroopState.Idle;
             troopObject.Stub.EndUpdate();
-            troopObject.EndUpdate();
 
             StateChange(ActionState.Completed);
         }

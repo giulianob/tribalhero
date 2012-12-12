@@ -322,7 +322,7 @@ namespace Game.Logic.Actions
             stub.State = TroopState.Stationed;
             stub.EndUpdate();
 
-            // Send the defender back to their city but restation them if there's a problem
+            // Send the defender back to their city
             var retreatChainAction = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
             var result = stub.City.Worker.DoPassive(stub.City, retreatChainAction, true);
             if (result != Error.Ok)

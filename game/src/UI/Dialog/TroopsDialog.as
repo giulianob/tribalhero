@@ -198,9 +198,7 @@
 																									  .where(function (city: City): Boolean { return city.inBattle; } )
 																									  .count()));
                                                                                                       
-            lblTroopsOnTheMove.setText(StringHelper.localize("TROOPS_DIALOG_ON_THE_MOVE", Enumerable.from(troops)
-                                                                                            .where(function (troop: TroopStub): Boolean { return troop.state == TroopStub.MOVING || troop.state == TroopStub.BATTLE; } )
-                                                                                            .count()));
+            lblTroopsOnTheMove.setText(StringHelper.localize("TROOPS_DIALOG_ON_THE_MOVE", onTheMoveTroops.size()));
                                                                                             
             lblTroopsReturningHome.setText(StringHelper.localize("TROOPS_DIALOG_RETURNING_HOME", Enumerable.from(troops)
                                                                                             .where(function (troop: TroopStub): Boolean { return troop.state == TroopStub.RETURNING_HOME; } )
@@ -286,27 +284,34 @@
 					return;			
 				}
 			}
-		
-			switch (troop.state) {
-				case TroopStub.WAITING_IN_DEFENSIVE_ASSIGNMENT:
-				case TroopStub.WAITING_IN_OFFENSIVE_ASSIGNMENT:
-				case TroopStub.MOVING:
-				case TroopStub.RETURNING_HOME:
-				case TroopStub.BATTLE:
-					onTheMoveTroops.append(troop);
-					break;
-				case TroopStub.STATIONED:
-				case TroopStub.BATTLE_STATIONED:
-					if (Global.map.cities.get(troop.cityId)) {
-						stationedAwayTroops.append(troop);
-					}
-					else {
-						localTroops.append(troop);
-					}					
-					break;				
-				default:
-					localTroops.append(troop);
-			}			
+            
+            if (troop.id == 1) {
+                localTroops.append(troop);                
+            }
+            else {
+                switch (troop.state) {
+                    case TroopStub.IDLE:
+                        break;
+                    case TroopStub.WAITING_IN_DEFENSIVE_ASSIGNMENT:
+                    case TroopStub.WAITING_IN_OFFENSIVE_ASSIGNMENT:
+                    case TroopStub.MOVING:
+                    case TroopStub.RETURNING_HOME:
+                    case TroopStub.BATTLE:  
+                        onTheMoveTroops.append(troop);
+                        break;
+                    case TroopStub.STATIONED:
+                    case TroopStub.BATTLE_STATIONED:
+                        if (Global.map.cities.get(troop.cityId)) {
+                            stationedAwayTroops.append(troop);
+                        }
+                        else {
+                            localTroops.append(troop);
+                        }					
+                        break;				
+                    default:
+                        trace("Unknown troop state?");
+                }			
+            }
 			
 			localTroops.sortOn(["id", "cityId"], Array.NUMERIC);
 			stationedAwayTroops.sortOn(["id", "cityId"], Array.NUMERIC);

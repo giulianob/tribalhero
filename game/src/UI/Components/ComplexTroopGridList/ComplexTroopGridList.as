@@ -47,7 +47,7 @@
 			this.city = city;
 			this.formationType = formationType;
 
-			setTileWidth(55);
+			setTileWidth(65);
 			setTileHeight(32);			
 			setColsRows(5, -1);
 

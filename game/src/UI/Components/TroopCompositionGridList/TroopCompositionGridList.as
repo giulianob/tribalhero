@@ -26,7 +26,7 @@
 			this.formationType = formationType;
 
 			setHGap(0);		
-			setTileWidth(40);
+			setTileWidth(55);
 			setTileHeight(20);
 			setHorizontalAlignment(AsWingConstants.LEFT);
 			setVerticalAlignment(AsWingConstants.TOP);

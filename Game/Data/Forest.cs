@@ -228,7 +228,7 @@ namespace Game.Data
                                               Wood.Upkeep,
                                               Wood.Value));
 
-            DepleteTime = DateTime.UtcNow.AddSeconds(hours * 3600 * Config.seconds_per_unit);
+            DepleteTime = DateTime.UtcNow.AddSeconds(hours * 3600);
 
             DepleteAction = new ForestDepleteAction(this, DepleteTime);
 

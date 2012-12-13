@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Game.Data;
+using Game.Data.Troop;
 
 namespace Game.Logic.Actions
 {
@@ -33,7 +34,7 @@ namespace Game.Logic.Actions
 
         ResourceGatherActiveAction CreateResourceGatherActiveAction(uint cityId, uint objectId);
 
-        CityEngageDefensePassiveAction CreateCityEngageDefensePassiveAction(uint cityId, uint troopObjectId);
+        CityEngageDefensePassiveAction CreateCityEngageDefensePassiveAction(uint cityId, uint troopObjectId, FormationType formationType);
 
         CityEngageAttackPassiveAction CreateCityEngageAttackPassiveAction(uint cityId,
                                                                           uint troopObjectId,

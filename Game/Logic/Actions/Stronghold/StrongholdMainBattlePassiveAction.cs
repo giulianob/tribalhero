@@ -423,7 +423,7 @@ namespace Game.Logic.Actions
                     stub.State = TroopState.BattleStationed;
                     stub.EndUpdate();
 
-                    battleProcedure.AddReinforcementToBattle(stronghold.MainBattle, stub);
+                    battleProcedure.AddReinforcementToBattle(stronghold.MainBattle, stub, FormationType.Defense);
                 }
             }
             else

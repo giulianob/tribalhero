@@ -281,7 +281,7 @@ namespace Game.Logic.Actions
                 stub.State = TroopState.BattleStationed;
                 stub.EndUpdate();
 
-                battleProcedure.AddReinforcementToBattle(city.Battle, stub);
+                battleProcedure.AddReinforcementToBattle(city.Battle, stub, FormationType.Defense);
             }
 
             beginTime = SystemClock.Now;

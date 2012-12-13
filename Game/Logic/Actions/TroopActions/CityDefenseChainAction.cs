@@ -165,7 +165,7 @@ namespace Game.Logic.Actions
                         troopObject.Stub.State = TroopState.BattleStationed;
                         troopObject.Stub.EndUpdate();
 
-                        battleProcedure.AddReinforcementToBattle(targetCity.Battle, troopObject.Stub);
+                        battleProcedure.AddReinforcementToBattle(targetCity.Battle, troopObject.Stub, FormationType.Defense);
                     }
 
                     StateChange(ActionState.Completed);

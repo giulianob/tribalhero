@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using Game.Battle;
 using Game.Battle.CombatGroups;
-using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Procedures;
@@ -26,15 +25,19 @@ namespace Game.Logic.Actions
 
         private readonly uint troopObjectId;
 
+        private readonly FormationType formationType;
+
         private uint groupId;
 
         public CityEngageDefensePassiveAction(uint cityId,
                                               uint troopObjectId,
+                                              FormationType formationType,
                                               BattleProcedure battleProcedure,
                                               IGameObjectLocator gameObjectLocator)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
+            this.formationType = formationType;
             this.battleProcedure = battleProcedure;
             this.gameObjectLocator = gameObjectLocator;
         }
@@ -156,7 +159,7 @@ namespace Game.Logic.Actions
             troopObject.Stub.EndUpdate();
 
             // Add units to battle
-            groupId = battleProcedure.AddReinforcementToBattle(city.Battle, troopObject.Stub);
+            groupId = battleProcedure.AddReinforcementToBattle(city.Battle, troopObject.Stub, formationType);
             battleProcedure.AddLocalUnitsToBattle(city.Battle, city);
 
             return Error.Ok;

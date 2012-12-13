@@ -84,7 +84,7 @@ namespace Game.Battle
                                                                 BattleOwner battleOwner,
                                                                 IStronghold stronghold)
         {
-            var bm = new BattleManagerPrivate(battleId,
+            var bm = new BattleManager(battleId,
                                               battleLocation,
                                               battleOwner,
                                               kernel.Get<IRewardStrategyFactory>()

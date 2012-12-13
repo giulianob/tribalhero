@@ -32,8 +32,7 @@ namespace Game.Battle.CombatObjects
                                                     int attackIndex,
                                                     out decimal actualDmg)
         {
-            baseDmg /= 10;
-            base.CalcActualDmgToBeTaken(attackers, defenders, baseDmg, attackIndex, out actualDmg);
+            actualDmg = baseDmg / 10;
         }
     }
 }

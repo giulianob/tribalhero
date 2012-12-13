@@ -35,6 +35,12 @@ package src.Objects.Process
 		
 		public function onChoseUnits(sender: *): void {				
 			Global.mapComm.Troop.assignmentJoin(sourceCity.id, assignment.id, isAttack?attackDialog.getTroop():reinforceDialog.getTroop());
+            if (isAttack) {
+                attackDialog.getFrame().dispose();
+            }
+            else {
+                reinforceDialog.getFrame().dispose();
+            }
 		}		
 	}
 

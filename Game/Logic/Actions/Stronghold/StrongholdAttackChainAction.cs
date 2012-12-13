@@ -130,6 +130,11 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
+            if (!troopObject.Stub.HasFormation(FormationType.Attack))
+            {
+                return Error.Unexpected;                
+            }
+
             if (battleProcedure.HasTooManyAttacks(city))
             {
                 return Error.TooManyTroops;
@@ -252,7 +257,7 @@ namespace Game.Logic.Actions
                             troopObject.Stub.State = TroopState.BattleStationed;
                             troopObject.Stub.EndUpdate();
 
-                            battleProcedure.AddReinforcementToBattle(targetStronghold.MainBattle, troopObject.Stub);
+                            battleProcedure.AddReinforcementToBattle(targetStronghold.MainBattle, troopObject.Stub, FormationType.Attack);
                         }
 
                         StationTroopInStronghold(troopObject, targetStronghold);
@@ -459,7 +464,7 @@ namespace Game.Logic.Actions
                     }
                     else
                     {
-                        var eda = actionFactory.CreateCityEngageDefensePassiveAction(cityId, troopObject.ObjectId);
+                        var eda = actionFactory.CreateCityEngageDefensePassiveAction(cityId, troopObject.ObjectId, FormationType.Attack);
                         ExecuteChainAndWait(eda, AfterEngageDefense);
                     }
                 }

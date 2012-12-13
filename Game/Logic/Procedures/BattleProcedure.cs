@@ -205,16 +205,9 @@ namespace Game.Logic.Procedures
 
             // Add to local group
             var combatGroup = GetOrCreateLocalGroup(battleManager, city);
-            foreach (
-                    var defenseCombatUnits in
-                            unitsToJoinBattle.Select(
-                                                     kvp =>
-                                                     combatUnitFactory.CreateDefenseCombatUnit(battleManager,
-                                                                                               city.DefaultTroop,
-                                                                                               FormationType.InBattle,
-                                                                                               kvp.Key,
-                                                                                               kvp.Value)))
+            foreach (KeyValuePair<ushort, ushort> kvp in unitsToJoinBattle)
             {
+                var defenseCombatUnits = combatUnitFactory.CreateDefenseCombatUnit(battleManager, city.DefaultTroop, FormationType.InBattle, kvp.Key, kvp.Value);
                 defenseCombatUnits.ToList().ForEach(combatGroup.Add);
             }
         }
@@ -243,14 +236,14 @@ namespace Game.Logic.Procedures
             return offensiveGroup;
         }
 
-        public virtual uint AddReinforcementToBattle(IBattleManager battleManager, ITroopStub stub)
+        public virtual uint AddReinforcementToBattle(IBattleManager battleManager, ITroopStub stub, FormationType formationToAddToBattle)
         {
             var defensiveGroup = combatGroupFactory.CreateCityDefensiveCombatGroup(battleManager.BattleId,
                                                                                    battleManager.GetNextGroupId(),
                                                                                    stub);
-            foreach (var kvp in stub.SelectMany(formation => formation))
+            foreach (var kvp in stub[formationToAddToBattle])
             {
-                combatUnitFactory.CreateDefenseCombatUnit(battleManager, stub, FormationType.Defense, kvp.Key, kvp.Value)
+                combatUnitFactory.CreateDefenseCombatUnit(battleManager, stub, formationToAddToBattle, kvp.Key, kvp.Value)
                                  .ToList()
                                  .ForEach(defensiveGroup.Add);
             }

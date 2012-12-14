@@ -45,7 +45,7 @@ namespace Game.Data.Stronghold
             {
                 stub.AddUnit(FormationType.Normal,
                              type[i],
-                             (ushort)(upkeep * ratio[level, i] / unitFactory.GetUnitStats(type[i], 1).Upkeep));
+                             (ushort)(upkeep * (1 - randomness) * ratio[level, i] / unitFactory.GetUnitStats(type[i], 1).Upkeep));
             }
 
             Random random = new Random(seed);

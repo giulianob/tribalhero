@@ -40,24 +40,20 @@ package src.Objects.Process
 			
 			Global.gameContainer.closeAllFrames(true);
 			
-			if(targetLocation==null) {
-				var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
-				
-				var cursor: GroundAttackCursor = new GroundAttackCursor(onChoseTarget, attackDialog.getTroop());
-				
-				var changeTroop: JButton = new JButton("Change Troop");
-				changeTroop.addActionListener(onChangeTroop);
-				sidebar.append(changeTroop);
-				
-				Global.gameContainer.setSidebar(sidebar);
-			} else {
-				if (targetLocation.type==Location.CITY) {
-					Global.mapComm.City.isCityUnderAPBonus(targetLocation.id, onGotAPStatus);
-				}
-				else {
-					onAttackAccepted();
-				}
+			if (targetLocation != null && targetLocation.type == Location.STRONGHOLD) {
+				onAttackAccepted();
+				return;
 			}
+			
+			var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
+			
+			var cursor: GroundAttackCursor = new GroundAttackCursor(onChoseTarget, attackDialog.getTroop());
+			
+			var changeTroop: JButton = new JButton("Change Troop");
+			changeTroop.addActionListener(onChangeTroop);
+			sidebar.append(changeTroop);
+			
+			Global.gameContainer.setSidebar(sidebar);
 		}
 		
 		public function onChoseTarget(sender: GroundAttackCursor): void {			
@@ -88,19 +84,14 @@ package src.Objects.Process
 		}
 		
 		public function onAttackAccepted(): void {
-			if(targetLocation==null) {
+			if (targetLocation != null && targetLocation.type == Location.STRONGHOLD) {
+				Global.mapComm.Troop.troopAttackStronghold(sourceCity.id, targetLocation.id, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
+			} else {
 				if (target is StructureObject) {
 					Global.mapComm.Troop.troopAttackCity(sourceCity.id, target.groupId, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);
 				}
 				else if (target is Stronghold) {
 					Global.mapComm.Troop.troopAttackStronghold(sourceCity.id, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
-				}
-			} else {
-				if (targetLocation.type==Location.CITY) {
-					Global.mapComm.Troop.troopAttackCity(sourceCity.id, targetLocation.id, targetLocation.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);
-				}
-				else if (targetLocation.type==Location.STRONGHOLD) {
-					Global.mapComm.Troop.troopAttackStronghold(sourceCity.id, targetLocation.id, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
 				}
 			}
 
@@ -109,7 +100,7 @@ package src.Objects.Process
 		}
 		
 		public function onAttackFail(custom: * = null):void {
-			if(targetLocation==null) {
+			if(targetLocation==null || targetLocation.type==Location.CITY) {
 				onChoseUnits(attackDialog);
 			}
 		}

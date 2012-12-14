@@ -43,7 +43,7 @@
 				Global.map.usernames.cities.getUsername(obj.groupId, createTroopUI);
 			// Stronghold tooltip
 			else if (obj.type == ObjectFactory.TYPE_STRONGHOLD)
-				Global.map.usernames.strongholds.getUsername(obj.objectId, createStrongholdUI);				
+				Global.map.usernames.strongholds.getUsername(obj.objectId, createStrongholdUI, obj);				
 		}
 
 		private function createForestUI() : void {
@@ -95,6 +95,12 @@
 
 			show(obj);
 		}
+
+		private function onUpdateTribeName(username: Username, custom: * ) : void {
+			var lblTribe: JLabel = new JLabel("Occupied by Tribe " + username.name, null, AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblTribe, "Tooltip.text");
+			ui.append(lblTribe);
+		}
 		
 		private function createStrongholdUI(username: Username, custom: * ) : void {
 			if (disposed) return;
@@ -117,7 +123,15 @@
 			ui.append(lblName);
 			ui.append(lblLvl);
 			ui.append(lblDistance);
-
+			
+			if(custom.extraProps.tribeId!=0) {
+				Global.map.usernames.tribes.getUsername(custom.extraProps.tribeId, onUpdateTribeName, null);
+			} else {
+				var lblTribe: JLabel = new JLabel("Occupied by bunch of barbarians!", null, AsWingConstants.LEFT);
+				GameLookAndFeel.changeClass(lblTribe, "Tooltip.text");
+				ui.append(lblTribe);
+			}
+			
 			show(obj);
 		}		
 		

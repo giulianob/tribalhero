@@ -319,6 +319,11 @@
 			
 			if (obj != null)
 			{				
+                var gameObj: SimpleGameObject = obj as SimpleGameObject;
+                if (gameObj && cities.get(gameObj.groupId)) {
+                    Global.gameContainer.selectCity(gameObj.groupId);
+                }
+                
 				selectedObject.addEventListener(SimpleObject.DISPOSED, onSelectedObjectDisposed);
 				
 				// Decide whether to query for the object info or just go ahead and select it

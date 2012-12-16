@@ -63,6 +63,10 @@
 			Global.gameContainer.showFrame(frame);
 			frame.setResizable(true);
 			frame.setTitle("Battle Reports");
+            
+            localReports.loadInitially();
+            remoteReports.loadInitially();
+            
 			return frame;
 		}
 

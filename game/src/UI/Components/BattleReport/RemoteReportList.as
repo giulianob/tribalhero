@@ -42,7 +42,7 @@
 		
 		public var refreshOnClose: Boolean = false;
 		
-		public function RemoteReportList(viewType: int, cols: Array, location: BattleLocation = null, loadImmediately: Boolean = true)
+		public function RemoteReportList(viewType: int, cols: Array, location: BattleLocation = null)
 		{
 			this.location = location;
 			this.viewType = viewType;
@@ -74,10 +74,6 @@
 			btnPrevious.addActionListener(function() : void{
 				loadPage(page - 1);
 			});
-
-			if (loadImmediately) {
-				loadInitially();
-			}
 		}
 
 		public function filterPlayerName(playerName: String) : void {

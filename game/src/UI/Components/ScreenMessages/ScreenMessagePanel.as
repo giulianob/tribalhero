@@ -32,7 +32,7 @@ package src.UI.Components.ScreenMessages
 
 			timer.addEventListener(TimerEvent.TIMER, onTimer);
 
-			setPreferredSize(new IntDimension(380, 335));
+			setPreferredSize(new IntDimension(380, 600));
 
 			if (!frame)
 			{

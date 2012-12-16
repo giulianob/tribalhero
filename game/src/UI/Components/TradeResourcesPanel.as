@@ -7,6 +7,7 @@
 	import src.Objects.Effects.Formula;
 	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.Global;
+    import src.Util.StringHelper;
 	
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -35,6 +36,7 @@
 		
 		private var pnlGold:JPanel;
 		private var lblGoldAmount:JAdjuster;
+        private var lblMaxOut:JLabelButton;
 		
 		public function TradeResourcesPanel(parentObj:StructureObject, prompt:String = null)
 		{
@@ -47,6 +49,12 @@
 			parentObj.getCorrespondingCityObj().city.addEventListener(City.RESOURCES_UPDATE, onResourceChange);
 			draw();
 			onResourceChange();
+            lblMaxOut.addActionListener(function (e: Event): void {
+                lblWoodAmount.setValue(lblWoodAmount.getMaximum());
+                lblIronAmount.setValue(lblWoodAmount.getMaximum())
+                lblCropAmount.setValue(lblWoodAmount.getMaximum())
+                lblGoldAmount.setValue(lblWoodAmount.getMaximum())
+            });
 		}
 		
 		public function dispose():void
@@ -55,8 +63,7 @@
 		}
 		
 		private function onResourceChange(e:Event = null):void
-		{
-			
+		{			
 			var sendCapacity:int = Formula.sendCapacity(structure.level);
 			
 			lblWoodAmount.setMaximum(Math.min(sendCapacity, city.resources.wood.getValue()));
@@ -74,10 +81,15 @@
 		{
 			removeAll();
 			
+            var pnlTitle: JPanel = new JPanel(new BorderLayout(5));
 			lblTitle1 = new JLabel();
 			lblTitle1.setSize(new IntDimension(200, 17));
-			lblTitle1.setText(prompt == null ? "Choose amount of resources to send" : prompt);
+			lblTitle1.setText(StringHelper.localize("TRADE_DIALOG_CHOOSE_RESOURCE_AMOUNT"));
 			lblTitle1.setHorizontalAlignment(AsWingConstants.LEFT);
+            lblTitle1.setConstraints("Center");
+            
+            lblMaxOut = new JLabelButton(StringHelper.localize("TRADE_DIALOG_SET_MAX"), null, AsWingConstants.RIGHT);
+            lblMaxOut.setConstraints("East");
 			
 			pnlResources = new JPanel();
 			pnlResources.setLayout(new FlowLayout(AsWingConstants.LEFT, 10, 10));
@@ -115,13 +127,9 @@
 			lblGoldAmount.setValue(0);
 			
 			//component layoution
-			append(lblTitle1);
-			append(pnlResources);
-			
-			pnlResources.append(pnlGold);
-			pnlResources.append(pnlWood);
-			pnlResources.append(pnlCrop);
-			pnlResources.append(pnlIron);
+            pnlTitle.appendAll(lblTitle1, lblMaxOut);            			
+			pnlResources.appendAll(pnlGold, pnlWood, pnlCrop, pnlIron);
+            appendAll(pnlTitle, pnlResources);		
 			
 			var icon:AssetPane = new AssetPane(new ICON_GOLD());
 			new SimpleTooltip(icon, "Gold");

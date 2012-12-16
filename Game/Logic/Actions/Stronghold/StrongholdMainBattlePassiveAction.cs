@@ -222,15 +222,13 @@ namespace Game.Logic.Actions
                 }
             }
 
-            if (offensiveMeter <= 0)
+            // Remove attackers that have quit the tribe or have low meter
+            // Make copy since attackers will be changing
+            var attackerLoopCopy = attackers.ToList();
+            foreach (var attacker in attackerLoopCopy.Where(attacker => offensiveMeter <= 0 || attacker.Tribe != stronghold.GateOpenTo))
             {
-                // Make copy since attackers will be changing
-                var attackerLoopCopy = attackers.ToList();
-                foreach (var attacker in attackerLoopCopy)
-                {
-                    // Remove from battle, no need to send them back since attacking troops have actions to handle that
-                    battle.Remove(attacker, BattleManager.BattleSide.Attack, ReportState.OutOfStamina);
-                }
+                // Remove from battle, no need to send them back since attacking troops have actions to handle that
+                battle.Remove(attacker, BattleManager.BattleSide.Attack, ReportState.OutOfStamina);
             }
         }
 
@@ -386,11 +384,7 @@ namespace Game.Logic.Actions
                 stronghold.BeginUpdate();
                 stronghold.GateOpenTo = null;
                 stronghold.MainBattle = null;
-                stronghold.Gate = formula.GetGateLimit(stronghold.Lvl);
-                if (stronghold.StrongholdState != StrongholdState.Neutral)
-                {
-                    stronghold.Gate /= 2m;
-                }
+                stronghold.Gate = formula.GetGateHealHp(stronghold.StrongholdState, stronghold.Lvl);
                 stronghold.State = GameObjectState.NormalState();
                 stronghold.EndUpdate();
 

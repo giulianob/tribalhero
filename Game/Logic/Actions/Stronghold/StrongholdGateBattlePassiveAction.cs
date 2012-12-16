@@ -182,14 +182,12 @@ namespace Game.Logic.Actions
                                               loopCity.Owner.IsInTribe
                                       select loopCity.Owner.Tribesman.Tribe).Distinct().ToDictionary(k => k.Id, v => v);
 
-                var winningTribe =
+                var tribesByDamage =
                         (from kv in tribeDamageDealt
                          orderby kv.Value descending
-                         select new {TribeId = kv.Key, Damage = kv.Value}).FirstOrDefault(
-                                                                                          x =>
-                                                                                          attackerTribes.ContainsKey(
-                                                                                                                     x
-                                                                                                                             .TribeId));
+                         select new {TribeId = kv.Key, Damage = kv.Value});
+
+                var winningTribe = tribesByDamage.FirstOrDefault(x => attackerTribes.ContainsKey(x.TribeId));
 
                 if (winningTribe != null)
                 {
@@ -234,9 +232,10 @@ namespace Game.Logic.Actions
                 stronghold.BeginUpdate();
                 stronghold.GateBattle = null;
                 stronghold.State = GameObjectState.NormalState();
-                if (stronghold.GateOpenTo == null && stronghold.StrongholdState == StrongholdState.Neutral)
+                // Heal the gate if no one made through otherwise we let it be healed after the main battle
+                if (stronghold.GateOpenTo == null)
                 {
-                    stronghold.Gate = formula.GetGateLimit(stronghold.Lvl);
+                    stronghold.Gate = formula.GetGateHealHp(stronghold.StrongholdState, stronghold.Lvl);
                 }
                 stronghold.EndUpdate();
 

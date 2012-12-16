@@ -246,39 +246,44 @@ namespace Game.Logic.Actions
 
                 using (locker.Lock(lockAll, null, city, targetStronghold))
                 {
-                    if (targetStronghold.Tribe == city.Owner.Tribesman.Tribe)
+                    if (city.Owner.IsInTribe)
                     {
-                        StationTroopInStronghold(troopObject, targetStronghold);
-
-                        // If tribe already owns stronghold, then it should defend it
-                        if (targetStronghold.MainBattle != null)
+                        if (targetStronghold.Tribe == city.Owner.Tribesman.Tribe)
                         {
-                            troopObject.Stub.BeginUpdate();
-                            troopObject.Stub.State = TroopState.BattleStationed;
-                            troopObject.Stub.EndUpdate();
+                            StationTroopInStronghold(troopObject, targetStronghold);
 
-                            battleProcedure.AddReinforcementToBattle(targetStronghold.MainBattle, troopObject.Stub, FormationType.Attack);
+                            // If tribe already owns stronghold, then it should defend it
+                            if (targetStronghold.MainBattle != null)
+                            {
+                                troopObject.Stub.BeginUpdate();
+                                troopObject.Stub.State = TroopState.BattleStationed;
+                                troopObject.Stub.EndUpdate();
+
+                                battleProcedure.AddReinforcementToBattle(targetStronghold.MainBattle,
+                                                                         troopObject.Stub,
+                                                                         FormationType.Attack);
+                            }
+
+                            StationTroopInStronghold(troopObject, targetStronghold);
+                            return;
                         }
 
-                        StationTroopInStronghold(troopObject, targetStronghold);
-                        return;
-                    }
+                        if (targetStronghold.GateOpenTo == city.Owner.Tribesman.Tribe)
+                        {
+                            // If stronghold's gate is open to the tribe, then it should engage the stronghold
+                            JoinOrCreateStrongholdMainBattle(city);
+                            return;
+                        }
 
-                    if (targetStronghold.GateOpenTo == city.Owner.Tribesman.Tribe)
-                    {
-                        // If stronghold's gate is open to the tribe, then it should engage the stronghold
-                        JoinOrCreateStrongholdMainBattle(city);
-                        return;
-                    }
-
-                    if (targetStronghold.GateOpenTo == null)
-                    {
-                        // If gate isn't open to anyone then engage the gate
-                        var bea = actionFactory.CreateStrongholdEngageGateAttackPassiveAction(cityId,
-                                                                                              troopObject.ObjectId,
-                                                                                              targetStrongholdId);
-                        ExecuteChainAndWait(bea, AfterGateBattle);
-                        return;
+                        if (targetStronghold.GateOpenTo == null)
+                        {
+                            // If gate isn't open to anyone then engage the gate
+                            var bea = actionFactory.CreateStrongholdEngageGateAttackPassiveAction(cityId,
+                                                                                                  troopObject.ObjectId,
+                                                                                                  targetStrongholdId);
+                            ExecuteChainAndWait(bea, AfterGateBattle);
+                            return;
+                        }
                     }
 
                     city.Notifications.Remove(this);

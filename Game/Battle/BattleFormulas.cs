@@ -184,20 +184,20 @@ namespace Game.Battle
             int count = Math.Max(1, totalCarry * lootPerRound / 100);
 
             // spaceleft is the maxcarry.
-            var spaceLeft = new Resource(totalCarry / Config.resource_crop_ratio,
-                                         totalCarry / Config.resource_gold_ratio,
+            var spaceLeft = new Resource(totalCarry / 1,
+                                         totalCarry / 2,
                                          totalCarry / Config.resource_iron_ratio,
-                                         totalCarry / Config.resource_wood_ratio,
+                                         totalCarry / 1,
                                          totalCarry / Config.resource_labor_ratio);
 
             // maxcarry minus current resource is the empty space left.
             spaceLeft.Subtract(attacker.Loot);
 
             // returning lesser value between the count and the empty space.
-            return new Resource(Math.Min(count / Config.resource_crop_ratio, spaceLeft.Crop),
-                                Math.Min(count / Config.resource_gold_ratio, spaceLeft.Gold),
+            return new Resource(Math.Min(count / 1, spaceLeft.Crop),
+                                Math.Min(count / 2, spaceLeft.Gold),
                                 Math.Min(count / Config.resource_iron_ratio, spaceLeft.Iron),
-                                Math.Min(count / Config.resource_wood_ratio, spaceLeft.Wood),
+                                Math.Min(count / 1, spaceLeft.Wood),
                                 0);
         }
 

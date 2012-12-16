@@ -238,6 +238,10 @@ namespace Game.Logic.Procedures
 
         public virtual uint AddReinforcementToBattle(IBattleManager battleManager, ITroopStub stub, FormationType formationToAddToBattle)
         {
+            stub.BeginUpdate();
+            stub.Template.LoadStats(TroopBattleGroup.Defense);
+            stub.EndUpdate();
+
             var defensiveGroup = combatGroupFactory.CreateCityDefensiveCombatGroup(battleManager.BattleId,
                                                                                    battleManager.GetNextGroupId(),
                                                                                    stub);
@@ -404,6 +408,7 @@ namespace Game.Logic.Procedures
             {
                 throw new Exception("Dead gate trying to join the battle");
             }
+
             strongholdCombatGroup.Add(combatUnitFactory.CreateStrongholdGateStructure(battle,
                                                                                       stronghold,
                                                                                       stronghold.Gate));

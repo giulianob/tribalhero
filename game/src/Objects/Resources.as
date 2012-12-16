@@ -49,7 +49,7 @@
             if (gold > 0) parts.push(gold + " gold");
             if (labor > 0) parts.push(labor + " labor");
 
-            return parts.join(",");
+            return parts.join(", ");
         }		
 	}
 

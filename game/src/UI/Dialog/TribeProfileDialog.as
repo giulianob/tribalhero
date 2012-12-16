@@ -295,7 +295,7 @@
 			var localReportBorder:TitledBorder = new TitledBorder(null, "Invasion Reports", 1, AsWingConstants.LEFT, 0, 10);				
 			localReportBorder.setBeveled(true);
 
-			localReports = new LocalReportList(BattleReportViewer.REPORT_TRIBE_LOCAL, [BattleReportListTable.COLUMN_DATE, BattleReportListTable.COLUMN_LOCATION, BattleReportListTable.COLUMN_ATTACK_TRIBES], null, false);
+			localReports = new LocalReportList(BattleReportViewer.REPORT_TRIBE_LOCAL, [BattleReportListTable.COLUMN_DATE, BattleReportListTable.COLUMN_LOCATION, BattleReportListTable.COLUMN_ATTACK_TRIBES], null);
 			localReports.setBorder(localReportBorder);
 
 			var pnlRemote: JPanel = new JPanel();			
@@ -303,7 +303,7 @@
 			remoteReportBorder.setColor(new ASColor(0x0, 1));			
 			remoteReportBorder.setBeveled(true);
 
-			remoteReports = new RemoteReportList(BattleReportViewer.REPORT_TRIBE_FOREIGN, [BattleReportListTable.COLUMN_DATE, BattleReportListTable.COLUMN_LOCATION, BattleReportListTable.COLUMN_DEFENSE_TRIBES], null, false);
+			remoteReports = new RemoteReportList(BattleReportViewer.REPORT_TRIBE_FOREIGN, [BattleReportListTable.COLUMN_DATE, BattleReportListTable.COLUMN_LOCATION, BattleReportListTable.COLUMN_DEFENSE_TRIBES], null);
 			remoteReports.setBorder(remoteReportBorder);
 			
 			var pnl: JPanel = new JPanel(new GridLayout(2, 1, 5));

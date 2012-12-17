@@ -263,6 +263,12 @@ namespace Game.Battle
                                           combatGroup.Id));
                 }
 
+                foreach (var combatUnit in combatGroup)
+                {
+                    combatUnit.LastRound = Round;
+                    dbManager.Save(combatUnit);
+                }
+
                 (battleSide == BattleSide.Attack ? Attackers : Defenders).Add(combatGroup);
 
                 if (isAttacker)
@@ -382,7 +388,7 @@ namespace Game.Battle
 
                 // This will finalize any reports already started.
                 BattleReport.CompleteReport(ReportState.Staying);
-
+                 
                 #region Battle Start
 
                 if (!BattleStarted)

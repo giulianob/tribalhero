@@ -151,7 +151,6 @@
 			var pnlNameStatus: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 5));			
 			pnlNameStatus.setPreferredHeight(25);
 			pnlNameStatus.append(lblName);				
-			//pnlNameStatus.append(Stronghold.getBattleStateString(stronghold, 2, 30));			
 			
 			var grid: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));
 			grid.append(simpleLabelMaker(StringHelper.localize("STR_LEVEL_VALUE", stronghold.lvl), StringHelper.localize("STR_LEVEL"), new AssetIcon(new ICON_UPGRADE())));
@@ -205,7 +204,7 @@
 			lblGate.setVerticalAlignment(AsWingConstants.TOP);
 			pnlGate.append(lblGate);
 			
-			if (stronghold.state != SimpleGameObject.STATE_BATTLE && stronghold.gate < Formula.getGateLimit(stronghold.lvl) && Constants.tribeRank <= 1) {
+			if (stronghold.battleState == Stronghold.BATTLE_STATE_NONE && stronghold.gate < Formula.getGateLimit(stronghold.lvl) && Constants.tribeRank <= 1) {
 				var btnGateRepair: JLabelButton = new JLabelButton(Stronghold.gateToString(stronghold.lvl, stronghold.gate), null, AsWingConstants.LEFT);
 				btnGateRepair.useHandCursor = true;
 				btnGateRepair.addEventListener(MouseEvent.CLICK, function(e: Event): void {

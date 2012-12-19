@@ -140,8 +140,7 @@ namespace Game.Data
         {
             get
             {
-                return (Crop * Config.resource_crop_ratio + Wood * Config.resource_wood_ratio +
-                        Gold * Config.resource_gold_ratio + Iron * 2 + Labor * 100) / 100m;
+                return (Crop + Wood + Gold * 2 + Iron * 2 + Labor * 100) / 100m;
             }
         }
 

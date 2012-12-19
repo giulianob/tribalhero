@@ -226,6 +226,8 @@ namespace Game.Setup
 
         StrongholdGateFull = 814,
 
+        StrongholdNotRepairableInBattle = 815,
+
         #endregion
     }
 }

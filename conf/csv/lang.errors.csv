@@ -90,3 +90,4 @@ ERROR_811,Stronghold's gate is not opened to your tribe.
 ERROR_812,Stronghold is owned by another tribe.
 ERROR_813,Stronghold is inactive.
 ERROR_814,Stronghold gate is already at full health.
+ERROR_815,Stronghold gate cannot be repaired while its under attack

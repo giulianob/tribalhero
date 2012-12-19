@@ -206,6 +206,11 @@ namespace Game.Data.Stronghold
             {
                 return Error.StrongholdNotOccupied;
             }
+            
+            if (stronghold.MainBattle != null || stronghold.GateBattle != null)
+            {
+                return Error.StrongholdNotRepairableInBattle;
+            }
 
             var diff = formula.GetGateLimit(stronghold.Lvl) - stronghold.Gate;
             if (diff <= 0)

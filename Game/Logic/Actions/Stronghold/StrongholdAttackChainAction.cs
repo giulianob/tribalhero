@@ -251,20 +251,6 @@ namespace Game.Logic.Actions
                         if (targetStronghold.Tribe == city.Owner.Tribesman.Tribe)
                         {
                             StationTroopInStronghold(troopObject, targetStronghold);
-
-                            // If tribe already owns stronghold, then it should defend it
-                            if (targetStronghold.MainBattle != null)
-                            {
-                                troopObject.Stub.BeginUpdate();
-                                troopObject.Stub.State = TroopState.BattleStationed;
-                                troopObject.Stub.EndUpdate();
-
-                                battleProcedure.AddReinforcementToBattle(targetStronghold.MainBattle,
-                                                                         troopObject.Stub,
-                                                                         FormationType.Attack);
-                            }
-
-                            StationTroopInStronghold(troopObject, targetStronghold);
                             return;
                         }
 
@@ -377,7 +363,9 @@ namespace Game.Logic.Actions
             troopObject.Stub.BeginUpdate();
             troopObject.Stub.ChangeFormation(FormationType.Attack, FormationType.Defense);
             troopObject.Stub.EndUpdate();
+
             procedure.TroopObjectStation(troopObject, stronghold);
+
             StateChange(ActionState.Completed);
         }
 

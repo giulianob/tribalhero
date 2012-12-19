@@ -248,28 +248,38 @@ namespace Game.Logic.Actions
                         if (targetStronghold.MainBattle != null)
                         {
                             battleProcedure.AddReinforcementToBattle(targetStronghold.MainBattle, troopObject.Stub, FormationType.Defense);
+                            StationTroopInStronghold(troopObject, targetStronghold, TroopState.BattleStationed);
+                        }
+                        else
+                        {
+                            StationTroopInStronghold(troopObject, targetStronghold);
                         }
 
-                        StationTroopInStronghold(troopObject, targetStronghold);
+                        return;
                     }
-                    else
-                    {
-                        // Walk back to city if none of the above conditions apply
-                        TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
-                                                                                                troopObject.ObjectId,
-                                                                                                city.X,
-                                                                                                city.Y,
-                                                                                                true,
-                                                                                                true);
-                        ExecuteChainAndWait(tma, AfterTroopMovedHome);
-                    }
+
+                    // Walk back to city if we dont own it anymore
+                    TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
+                                                                                            troopObject.ObjectId,
+                                                                                            city.X,
+                                                                                            city.Y,
+                                                                                            true,
+                                                                                            true);
+                    ExecuteChainAndWait(tma, AfterTroopMovedHome);
                 }
             }
         }
 
-        private void StationTroopInStronghold(ITroopObject troopObject, IStronghold stronghold)
+        private void StationTroopInStronghold(ITroopObject troopObject, IStronghold stronghold, TroopState stubState = TroopState.Stationed)
         {
             procedure.TroopObjectStation(troopObject, stronghold);
+            if (troopObject.Stub.State != stubState)
+            {
+                troopObject.Stub.BeginUpdate();
+                troopObject.Stub.State = stubState;
+                troopObject.Stub.EndUpdate();
+            }
+
             StateChange(ActionState.Completed);
         }
 

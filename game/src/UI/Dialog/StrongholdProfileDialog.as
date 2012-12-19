@@ -1,34 +1,33 @@
 ﻿package src.UI.Dialog 
 {
-	import fl.lang.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import flash.utils.*;
-	import mx.utils.StringUtil;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.event.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import org.aswing.table.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Battle.*;
-	import src.Objects.Process.*;
-	import src.Objects.Stronghold.Stronghold;
-	import src.Objects.Troop.*;
-	import src.UI.*;
-	import src.UI.Components.*;
-	import src.UI.Components.BattleReport.*;
-	import src.UI.Components.ComplexTroopGridList.*;
-	import src.UI.Components.TableCells.*;
-	import src.UI.Components.Tribe.*;
-	import src.UI.Components.TroopCompositionGridList.*;
-	import src.UI.LookAndFeel.*;
-	import src.UI.Tooltips.*;
-	import src.Util.*;
+    import fl.lang.*;
+    import flash.events.*;
+    import flash.geom.*;
+    import flash.utils.*;
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.colorchooser.*;
+    import org.aswing.event.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
+    import org.aswing.table.*;
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Battle.*;
+    import src.Objects.Process.*;
+    import src.Objects.Stronghold.*;
+    import src.Objects.Troop.*;
+    import src.UI.*;
+    import src.UI.Components.*;
+    import src.UI.Components.BattleReport.*;
+    import src.UI.Components.ComplexTroopGridList.*;
+    import src.UI.Components.TableCells.*;
+    import src.UI.Components.Tribe.*;
+    import src.UI.Components.TroopCompositionGridList.*;
+    import src.UI.LookAndFeel.*;
+    import src.UI.Tooltips.*;
+    import src.Util.*;
 	
 	public class StrongholdProfileDialog extends GameJPanel
 	{
@@ -38,7 +37,7 @@
 		private var pnlButtonContainer: Container;
 		private var pnlLeftContainer: Container;
 
-		private var pnlTroopPanel: Container;
+		private var pnlTroopPanel: JPanel;
 		private var pnlReportPanel: Container;
 		private var pnlRightContainer: Container;
 		
@@ -112,7 +111,7 @@
 			// Right panel			
 			var tabPanel: JTabbedPane = new JTabbedPane();
 			tabPanel.setPreferredWidth(500);
-			tabPanel.appendTab(pnlTroopPanel, StringHelper.localize("STR_TROOPS"));
+			tabPanel.appendTab(Util.createTopAlignedScrollPane(pnlTroopPanel), StringHelper.localize("STR_TROOPS"));
 			tabPanel.appendTab(pnlReportPanel, StringHelper.localize("STR_REPORTS"));			
 
 			// Append main panels
@@ -228,7 +227,7 @@
 			return pnl;
 		}
 		
-		private function createTroopPanel() : Container {
+		private function createTroopPanel() : JPanel {
 			var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5, AsWingConstants.TOP));
 			
 			for each (var troop: * in profileData.troops) {
@@ -237,10 +236,7 @@
 			
 			if (profileData.troops.length == 0) {
 				pnl.append(new JLabel(StringHelper.localize("STRONGHOLD_NO_TROOPS"), null, AsWingConstants.LEFT));
-			}
-			
-			var tabScrollPanel: JScrollPane = new JScrollPane(new JViewport(pnl, true), JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);			
-			(tabScrollPanel.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
+			}			
 
 			return pnl;
 		}

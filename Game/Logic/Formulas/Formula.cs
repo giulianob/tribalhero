@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Data.Stats;
+using Game.Data.Stronghold;
 using Game.Setup;
 
 #endregion
@@ -224,7 +225,19 @@ namespace Game.Logic.Formulas
             {
                 return Config.stronghold_gate_limit;
             }
+
             return level * 10000;
+        }
+
+        public virtual int GetGateHealHp(StrongholdState state, byte level)
+        {
+            decimal hp = GetGateLimit(level);
+            if (state != StrongholdState.Neutral)
+            {
+                hp /= 2m;
+            }
+
+            return (int)hp;
         }
 
         public virtual Resource GetGateRepairCost(byte level, decimal damagedGateHp)

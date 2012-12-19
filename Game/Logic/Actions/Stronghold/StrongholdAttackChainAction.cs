@@ -340,6 +340,11 @@ namespace Game.Logic.Actions
                     //Remove notification once battle is over
                     city.Notifications.Remove(this);
 
+                    // Calculate how many attack points to give to the city
+                    city.BeginUpdate();
+                    procedure.GiveAttackPoints(city,troopObject.Stats.AttackPoint);
+                    city.EndUpdate();
+
                     // Remove troop if he's dead
                     if (TroopIsDead(troopObject, city))
                     {

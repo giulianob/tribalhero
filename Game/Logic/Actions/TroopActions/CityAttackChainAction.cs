@@ -270,16 +270,15 @@ namespace Game.Logic.Actions
                         throw new Exception("Troop object should still exist");
                     }
 
+                    // Calculate how many attack points to give to the city
+                    city.BeginUpdate();
+                    procedure.GiveAttackPoints(city,troopObject.Stats.AttackPoint);
+                    city.EndUpdate();
+                    
                     // Check if troop is still alive
                     if (troopObject.Stub.TotalCount > 0)
                     {
-                        // Calculate how many attack points to give to the city
-                        city.BeginUpdate();
-                        procedure.GiveAttackPoints(city,
-                                                   troopObject.Stats.AttackPoint,
-                                                   initialTroopValue,
-                                                   troopObject.Stub.Value);
-                        city.EndUpdate();
+
 
                         // Add notification for walking back
                         city.Notifications.Add(troopObject, this);

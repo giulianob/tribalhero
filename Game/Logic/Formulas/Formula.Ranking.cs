@@ -12,9 +12,8 @@ namespace Game.Logic.Formulas
         ///     Gets the ammount of attack points that should be received
         /// </summary>
         /// <param name="enemiesKilled">Value of enemy units killed</param>
-        /// <param name="unitsKilled">Value of units in the troop killed</param>
         /// <returns></returns>
-        public virtual int GetAttackPoint(int enemiesKilled, int unitsKilled)
+        public virtual int GetAttackPoint(int enemiesKilled)
         {
             return Math.Max(0, enemiesKilled);
         }

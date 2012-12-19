@@ -9,6 +9,7 @@ using Game.Data.Stronghold;
 using Game.Map;
 using Game.Setup;
 using Persistance;
+using Game.Logic.Formulas;
 
 #endregion
 
@@ -26,6 +27,8 @@ namespace Game.Battle.CombatObjects
 
         private readonly UnitFactory unitFactory;
 
+        private readonly Formula formula;
+
         private ushort count;
 
         public StrongholdCombatUnit(uint id,
@@ -35,7 +38,8 @@ namespace Game.Battle.CombatObjects
                                     ushort count,
                                     IStronghold stronghold,
                                     UnitFactory unitFactory,
-                                    BattleFormulas battleFormulas)
+                                    BattleFormulas battleFormulas,
+                                    Formula formula)
                 : base(id, battleId, battleFormulas)
         {
             Stronghold = stronghold;
@@ -43,6 +47,7 @@ namespace Game.Battle.CombatObjects
             this.count = count;
             this.unitFactory = unitFactory;
             this.lvl = lvl;
+            this.formula = formula;
 
             stats = new BattleStats(unitFactory.GetUnitStats(type, lvl).Battle);
             LeftOverHp = stats.MaxHp;
@@ -56,7 +61,8 @@ namespace Game.Battle.CombatObjects
                                     IStronghold stronghold,
                                     decimal leftOverHp,
                                     UnitFactory unitFactory,
-                                    BattleFormulas battleFormulas)
+                                    BattleFormulas battleFormulas,
+                                    Formula formula)
                 : base(id, battleId, battleFormulas)
         {
             Stronghold = stronghold;
@@ -65,6 +71,7 @@ namespace Game.Battle.CombatObjects
             this.unitFactory = unitFactory;
             this.lvl = lvl;
             LeftOverHp = leftOverHp;
+            this.formula = formula;
 
             stats = new BattleStats(unitFactory.GetUnitStats(type, lvl).Battle);
         }
@@ -278,10 +285,14 @@ namespace Game.Battle.CombatObjects
                 {
                     dead = count;
                 }
+                // Find out how many points the attacker should get
+                attackPoints = formula.GetUnitKilledAttackPoint(type, lvl, dead);
 
                 // Remove troops that died from the count
                 count -= dead;
             }
+
+
         }
 
         public override void ReceiveReward(int attackPoint, Resource resource)

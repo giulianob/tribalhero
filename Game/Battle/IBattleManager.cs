@@ -37,7 +37,7 @@ namespace Game.Battle
 
         ICombatGroup GetCombatGroup(uint id);
 
-        Error CanWatchBattle(IPlayer player, out int roundsLeft);
+        Error CanWatchBattle(IPlayer player, out IEnumerable<string> errorParams);
 
         void DbLoaderAddToCombatList(ICombatGroup group, BattleManager.BattleSide side);
 

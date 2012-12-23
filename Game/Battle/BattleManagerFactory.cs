@@ -84,15 +84,15 @@ namespace Game.Battle
                                                                 BattleOwner battleOwner,
                                                                 IStronghold stronghold)
         {
-            var bm = new BattleManager(battleId,
-                                              battleLocation,
-                                              battleOwner,
-                                              kernel.Get<IRewardStrategyFactory>()
-                                                    .CreateStrongholdRewardStrategy(stronghold),
-                                              kernel.Get<IDbManager>(),
-                                              new BattleReport(new NullBattleReportWriter()),
-                                              kernel.Get<ICombatListFactory>(),
-                                              kernel.Get<BattleFormulas>());
+            var bm = new BattleManagerGate(battleId,
+                                           stronghold,
+                                           battleLocation,
+                                           battleOwner,
+                                           kernel.Get<IRewardStrategyFactory>().CreateStrongholdRewardStrategy(stronghold),
+                                           kernel.Get<IDbManager>(),
+                                           new BattleReport(new NullBattleReportWriter()),
+                                           kernel.Get<ICombatListFactory>(),
+                                           kernel.Get<BattleFormulas>());
 
             new BattleChannel(bm);
 

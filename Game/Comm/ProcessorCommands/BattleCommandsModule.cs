@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Battle;
 using Game.Data;
 using Game.Map;
@@ -62,12 +63,16 @@ namespace Game.Comm.ProcessorCommands
 
             using (locker.Lock(lockHandler, null, session.Player))
             {
-                int roundsLeft;
-                var canWatchBattle = battleManager.CanWatchBattle(session.Player, out roundsLeft);
+                IEnumerable<string> errorParams;
+                var canWatchBattle = battleManager.CanWatchBattle(session.Player, out errorParams);
                 if (!Config.battle_instant_watch && canWatchBattle != Error.Ok)
                 {
                     packet = ReplyError(session, packet, canWatchBattle, false);
-                    packet.AddInt32(roundsLeft);
+                    packet.AddByte((byte)errorParams.Count());
+                    foreach (var errorParam in errorParams)
+                    {
+                        packet.AddString(errorParam);
+                    }
                     session.Write(packet);
                     return;
                 }

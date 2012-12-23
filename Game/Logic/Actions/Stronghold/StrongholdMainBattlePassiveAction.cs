@@ -208,17 +208,6 @@ namespace Game.Logic.Actions
                     cityCombatGroup.TroopStub.BeginUpdate();
                     cityCombatGroup.TroopStub.State = TroopState.Stationed;
                     cityCombatGroup.TroopStub.EndUpdate();
-
-                    // Send the defender back to their city
-                    var retreatChainAction = actionFactory.CreateRetreatChainAction(cityCombatGroup.TroopStub.City.Id,
-                                                                                    cityCombatGroup.TroopStub.TroopId);
-                    if (
-                            cityCombatGroup.TroopStub.City.Worker.DoPassive(cityCombatGroup.TroopStub.City,
-                                                                            retreatChainAction,
-                                                                            true) != Error.Ok)
-                    {
-                        throw new Exception("Should always be able to retreat troops from stronghold to main city");
-                    }
                 }
             }
 
@@ -282,10 +271,13 @@ namespace Game.Logic.Actions
             }
 
             var defensiveMeter = battle.GetProperty<decimal>("defense_stronghold_meter");
-            // If stronghold has no one left then it means the attacker took over
-            // This same action removes all defenders if the defensive meter gets to 0
-            if ((stronghold.StrongholdState == StrongholdState.Occupied && !stronghold.Troops.StationedHere().Any()) ||
-                (stronghold.StrongholdState == StrongholdState.Neutral && (npcGroupKilled || defensiveMeter <= 0)))
+            // Transfer stronghold if 
+            // - defensive meter is 0
+            // - occupied state and there is no one left defending it
+            // - neutral state and the attacker killed the main group
+            if (defensiveMeter <= 0 ||
+                (stronghold.StrongholdState == StrongholdState.Occupied && !stronghold.Troops.StationedHere().Any()) ||
+                (stronghold.StrongholdState == StrongholdState.Neutral && npcGroupKilled))
             {
                 strongholdManager.TransferTo(stronghold, stronghold.GateOpenTo);
             }
@@ -372,11 +364,27 @@ namespace Game.Logic.Actions
                 stronghold.MainBattle.ExitTurn -= MainBattleOnExitTurn;
                 stronghold.MainBattle.EnterBattle -= MainBattleOnEnterBattle;
 
-                foreach (var stub in stronghold.Troops.StationedHere())
+                // Set troop states to stationed and 
+                // send back anyone stationed here that doesn't belong
+                // Make copy because it may change
+                var stationedHere = stronghold.Troops.StationedHere().ToList();
+                foreach (var stub in stationedHere)
                 {
                     stub.BeginUpdate();
                     stub.State = TroopState.Stationed;
                     stub.EndUpdate();
+
+                    if (stub.City.Owner.IsInTribe && stub.City.Owner.Tribesman.Tribe == stronghold.Tribe)
+                    {
+                        continue;
+                    }
+                   
+                    var retreatChainAction = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
+                    var result = stub.City.Worker.DoPassive(stub.City, retreatChainAction, true);
+                    if (result != Error.Ok)
+                    {
+                        throw new Exception("Unexpected failure when retreating a unit from stronghold");
+                    }
                 }
 
                 world.Remove(stronghold.MainBattle);

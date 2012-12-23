@@ -158,6 +158,8 @@ namespace Game.Setup
 
         BattleViewableInRounds = 612,
 
+        BattleNotViewableGate = 613,
+
         #endregion
 
         #region Tribe Errors

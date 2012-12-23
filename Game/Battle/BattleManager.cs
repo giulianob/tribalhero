@@ -121,9 +121,9 @@ namespace Game.Battle
                    Defenders.AllCombatObjects().FirstOrDefault(co => co.Id == id);
         }
 
-        public virtual Error CanWatchBattle(IPlayer player, out int roundsLeft)
+        public virtual Error CanWatchBattle(IPlayer player, out IEnumerable<string> errorParams)
         {
-            roundsLeft = 0;
+            errorParams = new string[0];
 
             lock (battleLock)
             {
@@ -142,10 +142,7 @@ namespace Game.Battle
                     defendersRoundsLeft =
                             playersDefenders.Min(
                                                  combatGroup =>
-                                                 combatGroup.Min(
-                                                                 combatObject =>
-                                                                 Config.battle_min_rounds -
-                                                                 combatObject.RoundsParticipated));
+                                                 combatGroup.Min(combatObject => Config.battle_min_rounds - combatObject.RoundsParticipated));
                     if (defendersRoundsLeft < 0)
                     {
                         return Error.Ok;
@@ -159,10 +156,7 @@ namespace Game.Battle
                     attackersRoundsLeft =
                             playersAttackers.Min(
                                                  combatGroup =>
-                                                 combatGroup.Min(
-                                                                 combatObject =>
-                                                                 Config.battle_min_rounds -
-                                                                 combatObject.RoundsParticipated));
+                                                 combatGroup.Min(combatObject => Config.battle_min_rounds - combatObject.RoundsParticipated));
                     if (attackersRoundsLeft < 0)
                     {
                         return Error.Ok;
@@ -170,14 +164,14 @@ namespace Game.Battle
                 }
 
                 // Calculate how many rounds until player can see the battle
-                roundsLeft = Math.Min(attackersRoundsLeft, defendersRoundsLeft);
+                var roundsLeft = Math.Min(attackersRoundsLeft, defendersRoundsLeft);
                 if (roundsLeft == int.MaxValue)
                 {
-                    roundsLeft = 0;
                     return Error.BattleViewableNoTroopsInBattle;
                 }
 
                 roundsLeft = Math.Max(roundsLeft, 1);
+                errorParams = new[] {roundsLeft.ToString()};
                 return Error.BattleViewableInRounds;
             }
         }

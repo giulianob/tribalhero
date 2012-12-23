@@ -115,7 +115,7 @@
     <Compile Include="Battle\BattleClass.cs" />
     <Compile Include="Battle\BattleLocation.cs" />
     <Compile Include="Battle\BattleManagerFactory.cs" />
-    <Compile Include="Battle\BattleManagerPrivate.cs" />
+    <Compile Include="Battle\BattleManagerGate.cs" />
     <Compile Include="Battle\CombatGroups\CityOffensiveCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\CityDefensiveCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\CombatGroup.cs" />

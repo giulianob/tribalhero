@@ -14,9 +14,12 @@ namespace Game.Data.Stronghold
 
         private readonly IWorld world;
 
-        public StrongholdActivationCondition(IWorld world)
+        private readonly ObjectTypeFactory objectTypeFactory;
+
+        public StrongholdActivationCondition(IWorld world, ObjectTypeFactory objectTypeFactory)
         {
             this.world = world;
+            this.objectTypeFactory = objectTypeFactory;
         }
 
         public bool ShouldActivate(IStronghold stronghold)
@@ -26,6 +29,7 @@ namespace Game.Data.Stronghold
                                                                    stronghold.Y,
                                                                    radiusBase + stronghold.Lvl * radiusPerLevel)
                          .OfType<Structure>()
+                         .Where(s => objectTypeFactory.IsStructureType("MainBuilding", s))
                          .Select(s => s.City)
                          .Distinct()
                          .Count();

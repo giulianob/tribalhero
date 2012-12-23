@@ -122,9 +122,13 @@
 				}
 
 				var err: int = packet.readInt();
-				var roundsLeft: int = packet.readInt();
+				var paramCnt: int = packet.readByte();
+                var params: Array = [];
+                for (var paramIdx: int = 0; paramIdx < paramCnt; paramIdx++) {
+                    params.push(packet.readString());
+                }
 
-				InfoDialog.showMessageDialog("Battle", StringUtil.substitute(GameError.getMessage(err), roundsLeft));
+				InfoDialog.showMessageDialog("Battle", GameError.getMessage(err, params));
 
 				return;
 			}

@@ -235,7 +235,7 @@
 				}
 			}                       
             
-            var addTroopsToList: Function = function(list: VectorListModel, items: Array) {
+            var addTroopsToList: Function = function(list: VectorListModel, items: Array): void {
                 list.clear();
                 list.appendAll(Enumerable.from(items)
                     .distinct(new TroopStubComparer())

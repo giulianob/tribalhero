@@ -7,13 +7,14 @@
 
 	public class GameError
 	{
-		public static function getMessage(errorCode: int): String
+		public static function getMessage(errorCode: int, params: Array = null): String
 		{
-			var str: String = StringHelper.localize("ERROR_" + errorCode.toString());
-			if (str && str != "")
-			return str + (Constants.debug > 0 ? " [" + errorCode + "]" : "");
-			else
-			return "An unexpected error occurred. [" + errorCode + "]";
+            if (!params) {
+                params = [];
+            }
+            
+			params.unshift("ERROR_" + errorCode.toString());
+            return StringHelper.localize.apply(null, params);
 		}
 
 		public static function showMessage(errorCode: int, callback: Function = null, showDirectlyToStage: Boolean = false) : void

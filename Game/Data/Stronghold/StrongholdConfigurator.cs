@@ -9,6 +9,8 @@ namespace Game.Data.Stronghold
 {
     class StrongholdConfigurator : IStrongholdConfigurator
     {
+        private static readonly int[] LevelProbability = new[] {0, 8, 16, 23, 30, 37, 43, 49, 55, 60, 65, 70, 74, 78, 82, 85, 88, 91, 94, 97, 100};
+
         private const int MIN_DISTANCE_AWAY_FROM_CITIES = 10;
 
         private const int MIN_DISTANCE_AWAY_FROM_STRONGHOLDS = 200;
@@ -37,7 +39,7 @@ namespace Game.Data.Stronghold
         private bool HasEnoughCities(uint x, uint y, int level)
         {
             int radius = radiusBase + (level - 1) * radiusPerLevel;
-                    // basic radius 200, then every each level is 50 radius
+            // basic radius 200, then every each level is 50 radius
             int count = level * citiesPerLevel;
 
             return mapFactory.Locations().Count(loc => tileLocator.TileDistance(x, y, loc.X, loc.Y) < radius) > count;
@@ -55,7 +57,7 @@ namespace Game.Data.Stronghold
 
         #region Implementation of IStrongholdConfigurator
 
-        public bool Next(out string name, out byte level, out uint x, out uint y)
+        public bool Next(int index, int count, out string name, out byte level, out uint x, out uint y)
         {
             if (!nameGenerator.Next(out name))
             {
@@ -65,11 +67,22 @@ namespace Game.Data.Stronghold
                 y = 0;
                 return false;
             }
-            level = (byte)(Config.Random.Next(20) + 1);
+
+            var ratio = count / 100m;            
+            for (level = 1; index >= (decimal)LevelProbability[level] * ratio; level++)
+            {
+            }
+
+            var limit = 0;
             do
             {
                 x = (uint)Config.Random.Next(30, (int)Config.map_width - 30);
                 y = (uint)Config.Random.Next(30, (int)Config.map_height - 30);
+                                
+                if (limit++ > 10000)
+                {
+                    return false;
+                }
             }
             while (!HasEnoughCities(x, y, level) || TooCloseToCities(x, y, MIN_DISTANCE_AWAY_FROM_CITIES) ||
                    TooCloseToStrongholds(x, y, MIN_DISTANCE_AWAY_FROM_STRONGHOLDS));

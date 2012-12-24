@@ -2,6 +2,6 @@
 {
     interface IStrongholdConfigurator
     {
-        bool Next(out string name, out byte level, out uint x, out uint y);
+        bool Next(int index, int count, out string name, out byte level, out uint x, out uint y);
     }
 }

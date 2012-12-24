@@ -17,11 +17,9 @@ namespace Game.Logic.Procedures
         /// </summary>
         /// <param name="city"></param>
         /// <param name="attackPoints"></param>
-        /// <param name="initialTroopValue"></param>
-        /// <param name="endTroopValue"></param>
-        public virtual void GiveAttackPoints(ICity city, int attackPoints, int initialTroopValue, int endTroopValue)
+        public virtual void GiveAttackPoints(ICity city, int attackPoints)
         {
-            var point = Formula.Current.GetAttackPoint(attackPoints, initialTroopValue - endTroopValue);
+            var point = Formula.Current.GetAttackPoint(attackPoints);
             city.AttackPoint += point;
             if (city.Owner.Tribesman == null)
             {

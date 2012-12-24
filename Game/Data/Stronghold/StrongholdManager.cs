@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Game.Data.Tribe;
 using Game.Data.Troop;
@@ -93,13 +92,13 @@ namespace Game.Data.Stronghold
 
         public void Generate(int count)
         {
-            while (count-- > 0)
+            for (var i = 0; i < count; ++i)
             {
                 string name;
                 byte level;
                 uint x, y;
 
-                if (!strongholdConfigurator.Next(out name, out level, out x, out y))
+                if (!strongholdConfigurator.Next(i, count, out name, out level, out x, out y))
                 {
                     break;
                 }

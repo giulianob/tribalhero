@@ -1295,7 +1295,8 @@ namespace Game.Database
                                                                                stronghold,
                                                                                (decimal)listReader["left_over_hp"],
                                                                                Ioc.Kernel.Get<UnitFactory>(),
-                                                                               Ioc.Kernel.Get<BattleFormulas>());
+                                                                               Ioc.Kernel.Get<BattleFormulas>(),
+                                                                               Ioc.Kernel.Get<Formula>());
 
                             combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                             combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];

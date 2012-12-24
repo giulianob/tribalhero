@@ -134,7 +134,8 @@ namespace Game.Battle.CombatObjects
                                                                         size,
                                                                         stronghold,
                                                                         kernel.Get<UnitFactory>(),
-                                                                        kernel.Get<BattleFormulas>());
+                                                                        kernel.Get<BattleFormulas>(),
+                                                                        kernel.Get<Formula>());
 
                 units[i++] = newUnit;
                 count -= size;

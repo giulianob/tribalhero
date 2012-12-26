@@ -212,7 +212,6 @@ class Battle extends AppModel {
         $groupJoinCount = Set::combine($groupJoinCount, '/BattleReportObject/object_id', '/BattleReportObject/count');
 
         // Get the info for each object at the time that they left the battle
-        // This query will find the highest id for an object (which is the last time it was snapshotted) and join it to the actual objects
         $groupLeaveInfo = $this->getBattleReportObjectJoinOrLeaveInfo($battleId, $groupId, 'LEAVE', array(
             'BattleReportObject.type',
             'BattleReportObject.object_id',
@@ -609,18 +608,34 @@ class Battle extends AppModel {
             ),
         );
 
-        $joinInfo = reset($this->getBattleReportObjectJoinOrLeaveInfo($report['BattleReportView']['battle_id'], $groupId, 'JOIN', array('BattleReportTroop.battle_report_id', 'BattleReportTroop.state')));
-        $leaveInfo = reset($this->getBattleReportObjectJoinOrLeaveInfo($report['BattleReportView']['battle_id'], $groupId, 'LEAVE', array('BattleReportTroop.battle_report_id', 'BattleReportTroop.state')));
+        $joinAndLeaveReportIds = reset(reset($this->BattleReport->BattleReportTroop->find('all', array(
+            'link' => array(
+                'BattleReport' => array(
+                    'type' => 'INNER',
+                    'conditions' => array('BattleReport.battle_id' => $report['BattleReportView']['battle_id']),
+                    'fields' => array()
+                )
+            ),
+            'conditions' => array(
+                'BattleReportTroop.group_id' => $groupId
+            ),
+            'fields' => array(
+                'MIN(BattleReportTroop.battle_report_id) as join_battle_report_id',
+                'MAX(BattleReportTroop.battle_report_id) as leave_battle_report_id',
+                'MIN(BattleReportTroop.id) as join_battle_report_troop_id',
+                'MAX(BattleReportTroop.id) as leave_battle_report_troop_id'
+        )))));
 
-        $report['BattleReportEnter'] = reset($this->BattleReport->findById($joinInfo['BattleReportTroop']['battle_report_id']));
-        $report['BattleReportExit'] = reset($this->BattleReport->findById($leaveInfo['BattleReportTroop']['battle_report_id']));
-
+        $report['BattleReportEnter'] = reset($this->BattleReport->findById($joinAndLeaveReportIds['join_battle_report_id']));
+        $report['BattleReportExit'] = reset($this->BattleReport->findById($joinAndLeaveReportIds['leave_battle_report_id']));
         // For city battles only, the min round rule applies
         if ($report['Battle']['location_type'] == 'City') {
             $roundDelta = intVal($report['BattleReportExit']['round']) - intVal($report['BattleReportEnter']['round']);
             if ($roundDelta < BATTLE_VIEW_MIN_ROUND) {
+                // Get exit troop
+                $exitTroop = $this->BattleReport->BattleReportTroop->findById($joinAndLeaveReportIds['leave_battle_report_troop_id']);
                 // If troop left and they were either defenders OR they weren't exiting or out of stamina then they cant see
-                if (!$report['BattleReportView']['is_attacker'] ||  !in_array($leaveInfo['BattleReportTroop']['state'], array(TROOP_STATE_EXITING, TROOP_STATE_OUT_OF_STAMINA))) {
+                if (!$report['BattleReportView']['is_attacker'] ||  !in_array($exitTroop['BattleReportTroop']['state'], array(TROOP_STATE_EXITING, TROOP_STATE_OUT_OF_STAMINA))) {
                     $outcomeOnly = true;
                 }
             }

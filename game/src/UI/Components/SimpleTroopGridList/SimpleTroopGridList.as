@@ -43,7 +43,7 @@
 			this.templates = templateManager;
 			this.formationType = formationType;
 
-			setTileWidth(60);
+			setTileWidth(70);
 			setTileHeight(36);
 
 			addEventListener(GridListItemEvent.ITEM_ROLL_OVER, onItemRollOver);

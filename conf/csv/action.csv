@@ -119,7 +119,10 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 2204,12,6,1,,unit_upgrade,102,10,,,,,
 2204,12,8,1,,unit_upgrade,103,10,,,,,
 2204,12,10,1,,unit_upgrade,104,10,,,,,
-,,,,,,,,,,,,
+2204,15,14,1,,technology_Upgrade,22044,1,,,,22041,INVISIBLE
+2204,15,15,1,,technology_Upgrade,22045,1,,,,22041,INVISIBLE
+2204,15,16,1,,technology_Upgrade,22046,1,,,,22041,INVISIBLE
+2204,15,17,1,,technology_Upgrade,22047,1,,,,22041,INVISIBLE
 ,,,,,,,,,,,,
 ,,,,,,,,,,,,
 //Stable,,,,,,,,,,,,

@@ -1,6 +1,8 @@
 ﻿#region
 
+using System;
 using System.Linq;
+using Game.Battle;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
@@ -39,7 +41,21 @@ namespace Game.Logic.Procedures
 
         public int UpkeepForCity(City city, ITroopManager troops)
         {
-            return (int)(troops.Upkeep + city.DefaultTroop.UpkeepForFormation(FormationType.Garrison) * 0.25);
+            var upkeep = 0;
+            var effects = city.Technologies.GetEffects(EffectCode.UpkeepReduce);
+            foreach(var stub in troops)
+            {
+                if (stub.City != city) continue;
+                foreach (var formation in stub)
+                {
+                    foreach( var kvp in formation)
+                    {
+                        var reduce = effects.Sum(x=> BattleFormulas.Current.UnitStatModCheck(city.Template[kvp.Key].Battle, TroopBattleGroup.Any, (string)x.Value[1])?(int)x.Value[0]:0);
+                        upkeep += (int) Math.Ceiling((formation.Type == FormationType.Garrison ? 1.25f : 1f) * kvp.Value * city.Template[kvp.Key].Upkeep * (100f - Math.Max(reduce,70)) / 100);
+                    }
+                }
+            }
+            return upkeep;
         }
     }
 }

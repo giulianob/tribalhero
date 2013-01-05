@@ -142,6 +142,11 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 2202,12,3,1,,unit_upgrade,105,10,,,,,
 2202,12,7,1,,unit_upgrade,106,10,,,,,
 ,,,,,,,,,,,,
+2202,15,9,1,,technology_Upgrade,22024,1,,,,22041,INVISIBLE
+2202,15,10,1,,technology_Upgrade,22025,1,,,,22041,INVISIBLE
+,,,,,,,,,,,,
+,,,,,,,,,,,,
+,,,,,,,,,,,,
 //Workshop,,,,,,,,,,,,
 2203,1,0,1,,,,,,,,,
 2203,1,1,1,,structure_Upgrade,15,,,,,,
@@ -157,6 +162,8 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 2203,12,3,1,,unit_upgrade,107,10,,,,,
 2203,12,5,1,,unit_upgrade,108,10,,,,,
 ,,,,,,,,,,,,
+2203,15,7,1,,technology_Upgrade,22032,1,,,,22041,INVISIBLE
+2203,15,8,1,,technology_Upgrade,22033,1,,,,22041,INVISIBLE
 ,,,,,,,,,,,,
 //University,,,,,,,,,,,,
 2301,1,0,1,,,,,,,,,

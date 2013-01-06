@@ -1,6 +1,8 @@
 package src.UI.Dialog {
+	import fl.lang.Locale;
 	import flash.display.*;
 	import flash.events.*;
+	import mx.utils.StringUtil;
 	import org.aswing.*;
 	import org.aswing.geom.*;
 	import src.*;
@@ -49,13 +51,14 @@ package src.UI.Dialog {
 			pnlHeader.setConstraints("North");
 			
 			var lblCountdown: CountDownLabel = new CountDownLabel(assignment.endTime);
+			lblCountdown.setVerticalAlignment(AsWingConstants.TOP);
 			lblCountdown.setConstraints("East");
 			var pnlDetails: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 			pnlDetails.setConstraints("Center");					
-			
+
 			if(assignment.troops.length>0)
 				pnlDetails.append(createRow(new JLabel("Organized by"), new PlayerLabel(assignment.troops[0].playerId, assignment.troops[0].playerName)));
-			pnlDetails.append(createRow(new JLabel(assignment.isAttack?"Attack":"Defend"), new PlayerCityLabel(assignment.targetPlayerId, assignment.targetCityId, assignment.targetPlayerName, assignment.targetCityName)));
+			pnlDetails.append(createRow(new RichLabel(StringUtil.substitute(Locale.loadString(assignment.isAttack?"ASSIGNMENT_ATK":"ASSIGNMENT_DEF"), RichLabel.getHtmlForLocation(assignment.target)), 1)));
 			pnlDetails.append(createRow(new JLabel("Target"), new CoordLabel(assignment.x, assignment.y)));
 			if (assignment.attackMode == 0)
 				pnlDetails.append(createRow(new JLabel("Strength:"), new JLabel("Raid")));

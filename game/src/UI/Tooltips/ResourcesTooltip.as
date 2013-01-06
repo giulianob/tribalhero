@@ -1,7 +1,7 @@
 ﻿package src.UI.Tooltips
 {
 
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import flash.events.Event;
 	import mx.utils.StringUtil;
 	import org.aswing.*;
@@ -56,9 +56,9 @@
 			ui.append(resourceLabelMaker("Wood", city.resources.wood, new AssetIcon(new ICON_WOOD())));
 			ui.append(resourceLabelMaker("Crop", city.resources.crop, new AssetIcon(new ICON_CROP()), true, true));
 			ui.append(resourceLabelMaker("Iron", city.resources.iron, new AssetIcon(new ICON_IRON())));
-			ui.append(simpleLabelMaker("Laborers", StringUtil.substitute(Locale.loadString("CITY_OVERVIEW_LABORERS_LABEL"), city.resources.labor.getValue().toString(), city.getBusyLaborCount().toString()), false, "", new AssetIcon(new ICON_LABOR())));
+			ui.append(simpleLabelMaker("Laborers", StringHelper.localize("CITY_OVERVIEW_LABORERS_LABEL", city.resources.labor.getValue().toString(), city.getBusyLaborCount().toString()), false, "", new AssetIcon(new ICON_LABOR())));
 			ui.append(simpleLabelMaker("Influence Points", city.value.toString(), false, "", new AssetIcon(new ICON_UPGRADE())));
-			ui.append(simpleLabelMaker("Units", StringUtil.substitute(Locale.loadString("CITY_OVERVIEW_UNITS_STATUS_LABEL"), unitCounts.idle, unitCounts.onTheMove), false, "", new AssetIcon(new ICON_SINGLE_SWORD())));
+			ui.append(simpleLabelMaker("Units", StringHelper.localize("CITY_OVERVIEW_UNITS_STATUS_LABEL", unitCounts.idle, unitCounts.onTheMove), false, "", new AssetIcon(new ICON_SINGLE_SWORD())));
 			ui.append(simpleLabelMaker("Upkeep", (city.resources.crop.getHourlyUpkeep() * -1).toString(), true, "crop", new AssetIcon(new ICON_CROP())));			
 		}
 
@@ -76,8 +76,19 @@
 
 		private function resourceLabelMaker(name: String, resource: LazyValue, icon: Icon = null, includeLimit: Boolean = true, includeRate: Boolean = true) : JLabel {
 			var value: int = resource.getValue();
+			
+			var netRate: int = resource.getHourlyRate() - resource.getHourlyUpkeep();
 
-			var label: JLabel = new JLabel((name != "" ? (name + ": ") : "") + value + (includeLimit ? "/" + resource.getLimit() : "") + (includeRate ? " (+" + (resource.getHourlyRate() - resource.getHourlyUpkeep()) + (resource.getHourlyUpkeep() > 0 ? " net per hour":" per hour") + ")" : ""), icon);
+			var label: JLabel = new JLabel(
+				(name != "" ? (name + ": ") : "") + 
+				value + 
+				(includeLimit ? "/" + resource.getLimit() : "") + 
+				(includeRate ? 
+					" (" + (netRate > 0 ? "+" : "") + netRate + (resource.getHourlyUpkeep() > 0 ? " net per hour":" per hour") + 
+					")" : 
+					""
+				)
+				, icon);
 
 			GameLookAndFeel.changeClass(label, "Tooltip.text Label.small");
 

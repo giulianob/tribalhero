@@ -12,6 +12,8 @@ package src.Util {
 	import flash.filters.ColorMatrixFilter;
 	import flash.geom.Rectangle;
 	import flash.utils.getQualifiedClassName;
+	import mx.utils.StringUtil;
+	import org.aswing.AsWingConstants;
 	import org.aswing.Component;
 	import org.aswing.Container;
 	import org.aswing.event.*;
@@ -19,14 +21,29 @@ package src.Util {
 	import org.aswing.geom.IntPoint;
 	import org.aswing.JFrame;
 	import org.aswing.AsWingUtils;
+	import org.aswing.JPanel;
+	import org.aswing.JScrollPane;
 	import org.aswing.JTextComponent;
 	import flash.external.ExternalInterface;
+	import org.aswing.JViewport;
 	import src.Constants;
 	import src.UI.GameJImagePanelBackground;
 
 	public class Util {
-		public static function log(msg: String) : void {			
-			if (Constants.loginKey) ExternalInterface.call("console.log", msg);
+		public static function createTopAlignedScrollPane(pnl: JPanel): JScrollPane {
+			var scrollPane: JScrollPane = new JScrollPane(new JViewport(pnl, true), JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);
+			(scrollPane.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);			
+			return scrollPane;
+		}
+		
+		public static function log(msg: String) : void {					
+			if (Constants.loginKey) {
+                try {
+                    ExternalInterface.call("console.log", msg);
+                }
+                catch (e: Error) {                    
+                }
+            }
 			else trace(msg);
 		}
 		
@@ -156,7 +173,7 @@ package src.Util {
 
 			return (hours <= 9 ? "0" + hours : hours) + ":" + (minutes <= 9 ? "0" + minutes : minutes) + ":" + (seconds <= 9 ? "0" + seconds : seconds);
 		}
-
+		
 		public static function simpleTime(time: int): String
 		{
 			if ( time < 60 ) return "1 min";
@@ -176,6 +193,17 @@ package src.Util {
 				simple += hours + "h ";
 			simple += minutes + "m";
 			return simple;
+		}
+		
+		public static function niceDays(time: int): String
+		{
+			time /= 86400;
+			if (time > 1) {
+				return time.toString() + " days";
+			} else if ( time == 1) {
+				return "1 day";
+			}
+			return "less than 1 day";	
 		}
 		
 		public static function niceTime(time: int, conj: Boolean = true): String

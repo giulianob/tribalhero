@@ -1,6 +1,6 @@
 package src.UI.Dialog
 {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import flash.events.*;
 	import flash.text.*;
 	import flash.ui.*;
@@ -16,6 +16,7 @@ package src.UI.Dialog
 	import src.*;
 	import src.UI.*;
 	import src.UI.Components.SimpleTooltip;
+	import src.UI.Components.StickyScroll;
 	import src.UI.LookAndFeel.*;
 	import src.Util.*;
 	
@@ -25,9 +26,9 @@ package src.UI.Dialog
 		
 		public const CHANNELS: Array = [{name: "CHAT_CHANNEL_GLOBAL"}, {name: "CHAT_CHANNEL_TRIBE"}, {name: "CHAT_CHANNEL_OFFTOPIC"}];
 		
-		public const TYPE_GLOBAL:int = 0;
-		public const TYPE_TRIBE:int = 1;
-		public const TYPE_OFFTOPIC:int = 2;
+		public static const TYPE_GLOBAL:int = 0;
+		public static const TYPE_TRIBE:int = 1;
+		public static const TYPE_OFFTOPIC:int = 2;
 		
 		private var pnlContent:JPanel;
 		private var txtConsole:JTextArea;
@@ -57,25 +58,14 @@ package src.UI.Dialog
 			for (var i: int = 0; i < chats.length; i++) {
 				chats[i] = "";
 			}
+
+            for each(var msg: String in Constants.welcomeMessage) {
+                log(TYPE_GLOBAL, msg, false, false);
+            }
+            
+            log(TYPE_GLOBAL, Constants.motd, false, false);
 			
-			log(TYPE_GLOBAL, '<a href="http://tribalhero.com/pages/donate" target="_blank">We need donations</a> to keep improving the game.', false, false);
-			log(TYPE_GLOBAL, 'Remember to keep it classy.');
-			log(TYPE_GLOBAL, 'Not sure what to do? <a href="http://tribalhero.wikia.com" target="_blank">Visit the wiki for help</a>.', false, false);
-			
-			var stickScroll:Boolean = true;
-			var lastScrollValue:int = 0;
-			scrollConsole.addAdjustmentListener(function(e:InteractiveEvent):void
-				{
-					if (e.isProgrammatic())
-					{
-						scrollConsole.getVerticalScrollBar().setValue(stickScroll ? scrollConsole.getVerticalScrollBar().getMaximum() : lastScrollValue, false);
-					}
-					else
-					{
-						stickScroll = scrollConsole.getVerticalScrollBar().getValue() == scrollConsole.getVerticalScrollBar().getModel().getMaximum() - scrollConsole.getVerticalScrollBar().getModel().getExtent();
-						lastScrollValue = scrollConsole.getVerticalScrollBar().getValue();
-					}
-				});
+			new StickyScroll(scrollConsole);
 			
 			addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void
 				{
@@ -92,12 +82,7 @@ package src.UI.Dialog
 					var len:int = txtCommand.getText().length;
 					txtCommand.setSelection(len, len);
 				});
-						
-			txtConsole.addEventListener(MouseEvent.MOUSE_WHEEL, function(e:Event):void
-				{
-					scrollConsole.getVerticalScrollBar().dispatchEvent(e);
-				});
-			
+									
 			txtConsole.getTextField().addEventListener(TextEvent.LINK, function(e:TextEvent):void
 				{
 					var text:String = e.text;
@@ -105,9 +90,21 @@ package src.UI.Dialog
 					
 					switch (parts[0])
 					{
-						case 'viewProfile': 
+						case 'viewPlayerProfile': 
 							Global.mapComm.City.viewPlayerProfile(parts[1]);
 							break;
+						case 'viewPlayerProfileByName': 
+							Global.mapComm.City.viewPlayerProfileByName(parts[1]);
+							break;
+						case 'viewTribeProfileByName': 
+							Global.mapComm.Tribe.viewTribeProfileByName(parts[1]);
+							break;
+						case 'viewCityProfileByName': 
+							Global.mapComm.City.gotoCityLocationByName(parts[1]);
+							break;
+						case 'gotoStrongholdByName': 
+							Global.mapComm.Stronghold.gotoStrongholdLocationByName(parts[1]);
+							break;					
 					}
 				});
 			
@@ -246,6 +243,41 @@ package src.UI.Dialog
 			return cmdIndex != -1 && cmdHistory[cmdIndex] == txtCommand.getText();
 		}
 		
+		public function replaceProfileLabel(str: String): String
+		{
+			var index: int;
+			var beginOfs: int;
+			var endOfs: int;
+			var result: String = "";
+			while ((beginOfs = str.indexOf("#", index)) != -1 && (endOfs = str.indexOf("#", beginOfs + 1)) != -1) {
+				result += str.substring(index, beginOfs);
+				var values: Array =  str.substring(beginOfs + 1, endOfs).split(":");
+				if (values.length >= 2) {
+					switch(values[0]) {
+						case "p":
+							result += StringUtil.substitute('<a href="event:viewPlayerProfileByName:{0}"><span class="global">{0}</span></a>', values[1]);
+							break;
+						case "t":
+							result += StringUtil.substitute('<a href="event:viewTribeProfileByName:{0}"><span class="global">{0}</span></a>', values[1]);
+							break;
+						case "s":
+							result += StringUtil.substitute('<a href="event:gotoStrongholdByName:{0}"><span class="global">{0}</span></a>', values[1]);
+							break;
+						case "c":
+							result += StringUtil.substitute('<a href="event:viewCityProfileByName:{0}"><span class="global">{0}</span></a>', values[1]);
+							break;
+						default:
+							result += str.substring(beginOfs, endOfs + 1);
+							break;
+					}
+				} else {
+					result += str.substring(beginOfs, endOfs + 1);
+				}
+				index = endOfs + 1;
+			}
+			return result + str.substring(index);
+		}
+		
 		public function logChat(type:int, playerId:int, playerName:String, str:String):void
 		{
 			var f:DateFormatter = new DateFormatter();
@@ -262,7 +294,7 @@ package src.UI.Dialog
 				cssClass = 'global';
 			}
 			
-			log(type, StringUtil.substitute('[{0}] {1}<a href="event:viewProfile:{3}"><span class="{2}">{4}</span></a>: {5}', f.format(new Date()), "", cssClass, playerId, StringHelper.htmlEscape(playerName), StringHelper.linkify(str)), false, false);
+			log(type, StringUtil.substitute('[{0}] {1}<a href="event:viewPlayerProfile:{3}"><span class="{2}">{4}</span></a>: {5}', f.format(new Date()), "", cssClass, playerId, StringHelper.htmlEscape(playerName), StringHelper.linkify(str)), false, false);
 			
 			if (type != currentChatType) {
 				var button: JToggleButton = CHANNELS[type].button;
@@ -274,12 +306,11 @@ package src.UI.Dialog
 		{
 			if (str.length == 0)
 				return;
-			
-			// Remove new lines
-			str = str.replace("\n", "");
-			
+						
 			if (escapeStr)
 				str = StringHelper.htmlEscape(str);
+			
+			str = replaceProfileLabel(str);
 			
 			// This should be moved to the guy calling it w/ command response
 			if (isCommand)
@@ -294,6 +325,22 @@ package src.UI.Dialog
 			}
 			
 			refreshText();
+		}
+		
+		public function logSystem(messageId:String, params:Array):void 
+		{
+			if (Global.gameContainer.cmdLine == null) return;
+			var substituteArgs: Array = new Array();
+			substituteArgs.push('<span class="system">' + StringHelper.localize(messageId) + '</span>');
+			
+			for each (var str: String in params) {
+				substituteArgs.push(StringHelper.htmlEscape(str));
+			}
+			
+			var message: String = StringUtil.substitute.apply(StringUtil, substituteArgs);
+			
+			Global.gameContainer.cmdLine.log(CmdLineViewer.TYPE_GLOBAL, message, false, false);
+			Global.gameContainer.cmdLine.log(CmdLineViewer.TYPE_TRIBE, message, false, false);
 		}
 		
 		private function refreshText():void
@@ -350,7 +397,7 @@ package src.UI.Dialog
 		
 		private function createTab(type: int):JToggleButton
 		{
-			var button: JToggleButton = new JToggleButton(Locale.loadString(CHANNELS[type].name), new SkinCustomIcon("Frame.chatDisabledIcon"));
+			var button: JToggleButton = new JToggleButton(StringHelper.localize(CHANNELS[type].name), new SkinCustomIcon("Frame.chatDisabledIcon"));
 			button.setSelected(type == currentChatType);
 			
 			button.addActionListener(function(e: Event): void {				
@@ -424,7 +471,8 @@ package src.UI.Dialog
 			consoleCss.setStyle("a:hover", {textDecoration: 'underline'});
 			
 			consoleCss.setStyle(".global", {color: '#8ecafe'});
-			consoleCss.setStyle(".self", {color: '#aef64f'});
+			consoleCss.setStyle(".self", { color: '#aef64f' } );
+			consoleCss.setStyle(".system", { color: '#ec7600', fontWeight: 'bold' } );
 			
 			txtConsole.setCSS(consoleCss);
 			

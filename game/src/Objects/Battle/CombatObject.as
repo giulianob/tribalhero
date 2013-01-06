@@ -1,26 +1,17 @@
-﻿package src.Objects.Battle {
-	
-	/**
-	* ...
-	* @author Default
-	*/
+﻿package src.Objects.Battle {	
+	import flash.display.DisplayObjectContainer;
+	import src.Objects.Factories.ObjectFactory;
 	public class CombatObject {
-		public var playerId: int;
-		public var cityId: int;
 		public var combatObjectId: int;
 		public var type: int;
 		public var level: int;
 		public var hp: Number;
 		public var maxHp: Number;
-		public var troopStubId: int;
 		
-		public function CombatObject(playerId: int, cityId: int, combatObjectId: int, troopStubId: int, type: int, level: int, hp: Number, maxHp: Number)
+		public function CombatObject(combatObjectId: int, type: int, level: int, hp: Number, maxHp: Number)
 		{
-			this.playerId = playerId;
-			this.cityId = cityId;
 			this.combatObjectId = combatObjectId;
 			this.type = type;
-			this.troopStubId = troopStubId;
 			this.level = level;
 			this.hp = hp;
 			this.maxHp = maxHp;
@@ -29,6 +20,10 @@
 		public function get name(): String {
 			return "Unimplemented";
 		}
+		
+		public function getIcon(): DisplayObjectContainer {
+			return ObjectFactory.getSpriteEx(type, level, true);					
+		}		
 		
 		public static function sortOnId(a:CombatObject, b:CombatObject):Number 
 		{

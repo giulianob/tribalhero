@@ -1,5 +1,8 @@
 ﻿package src.Map
 {
+	import com.greensock.easing.Elastic;
+	import com.greensock.easing.Linear;
+	import com.greensock.TweenMax;
 	import flash.events.Event;
 	import flash.geom.Point;
 	import src.Global;
@@ -9,10 +12,6 @@
 	import src.Objects.SimpleGameObject;
 	import src.Util.BinaryList.*;
 
-	/**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
 	public class RegionList extends BinaryList
 	{
 		public static const REGION_UPDATED: String = "REGION_UPDATED";
@@ -33,25 +32,24 @@
 
 			if (obj == null)
 				return null;
-
-			var reselect: Boolean = Global.map.selectedObject != null && Global.map.selectedObject is SimpleGameObject && newObj.equalById(Global.map.selectedObject);
-
-			newObj.copy(obj);
-			region.removeObject(obj.groupId, obj.objectId);
-			addObject(regionId, newObj);
-			if (!newObj.equalsOnMap(obj))
-				newObj.fadeIn();						
 			
-			if (reselect) 
-				Global.map.selectObject(newObj);
+			var objChanged: Boolean = !newObj.equalsOnMap(obj);
 			
-			newObj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
+			var prevPosition: Point = new Point(obj.x, obj.y);
+						
+			region.removeObject(obj.groupId, obj.objectId, false);
 			
-			return newObj;			
-		}
-
-		public function removeObjectByObj(obj: SimpleGameObject):void {
-			removeObject(MapUtil.getRegionId(obj.getX(), obj.getY()), obj.groupId, obj.objectId);
+			obj.copy(newObj);
+			
+			addObject(regionId, obj, objChanged);
+			
+			TweenMax.from(obj, 0.75, { x: prevPosition.x, y: prevPosition.y });
+			
+			Global.map.requeryIfSelected(obj);
+			
+			obj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));		
+			
+			return obj;
 		}
 
 		public function removeObject(regionId: int, groupId: int, objId: int):void
@@ -70,31 +68,30 @@
 
 			if (oldRegion == null)
 				return null;
-
-			var reselect: Boolean = Global.map.selectedObject != null && Global.map.selectedObject is SimpleGameObject && newObj.equalById(Global.map.selectedObject);
 			
-			var obj: SimpleGameObject = oldRegion.removeObject(newObj.groupId, newObj.objectId);
+			var obj: SimpleGameObject = oldRegion.removeObject(newObj.groupId, newObj.objectId, false);
 
-			if (obj == null)
-				return null;
-
-			var newRegion:Region = get(newRegionId);			
+			if (obj == null) {
+				return null; 
+			}
 			
-			if (newRegion == null)
-				return null;
+			var objChanged: Boolean = !newObj.equalsOnMap(obj);
 			
-			newObj.copy(obj);
-			newRegion.addObject(newObj);
+			var prevPosition: Point = new Point(obj.x, obj.y);
+			
+			obj.copy(newObj);
+			addObject(newRegionId, obj, objChanged);
+			
+			TweenMax.from(obj, 0.75, { x: prevPosition.x, y: prevPosition.y });
 				
-			if (reselect) 
-				Global.map.selectObject(newObj);
+			Global.map.requeryIfSelected(obj);
 			
-			newObj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
-			
-			return newObj;
+			obj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
+					
+			return obj;
 		}
 
-		public function getObjectsAt(x: int, y: int, objClass: Class = null): Array
+		public function getObjectsAt(x: int, y: int, objClass: * = null): Array
 		{
 			var regionId: int = MapUtil.getRegionId(x, y);
 			var region: Region = get(regionId);
@@ -137,7 +134,7 @@
 			region.redraw();
 		}
 
-		public function addObject(regionId: int, obj: SimpleGameObject): SimpleGameObject
+		public function addObject(regionId: int, obj: SimpleGameObject, fadeIn: Boolean = true): SimpleGameObject
 		{
 			var region: Region = get(regionId);
 
@@ -147,7 +144,11 @@
 				return null;
 			}
 
-			var obj:SimpleGameObject = region.addObject(obj);
+			var obj:SimpleGameObject = region.addObject(obj);			
+			
+			if (obj && fadeIn) {
+				obj.fadeIn();
+			}
 			
 			return obj;
 		}

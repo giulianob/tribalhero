@@ -5,7 +5,7 @@
  */
 
 package src.Objects.Prototypes {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import src.Global;
 	import src.Map.City;
 	import src.Map.CityObject;
@@ -63,30 +63,17 @@ package src.Objects.Prototypes {
 
 		public function getName(plural: Boolean = false): String
 		{
-			var str: String = Locale.loadString(name + "_STRUCTURE_NAME" + (plural ? "_PLURAL" : ""));
-			if (str && str != "")
-			return str;
-
-			return "[" + name + "_STRUCTURE_NAME]";
+			return StringHelper.localize(name + "_STRUCTURE_NAME" + (plural ? "_PLURAL" : ""));
 		}
 
 		public function getGeneralDescription(): String
 		{
-			var str: String = Locale.loadString(name + "_STRUCTURE_DESCRIPTION");
-			if (str && str != "")
-			return str;
-
-			return "[" + name + "_STRUCTURE_DESCRIPTION]";
+			return StringHelper.localize(name + "_STRUCTURE_DESCRIPTION");
 		}
 
 		public function getDescription(): String
 		{
-			var str: String = Locale.loadString(name + "_STRUCTURE_LVL_" + level);
-			if (str && str != "")
-			return str;
-
-			//return "[" + name + "_STRUCTURE_LVL_" + level + "]";
-			return "";
+			return StringHelper.localize(name + "_STRUCTURE_LVL_" + level);
 		}
 
 		public static function sortOnTypeAndLevel(a:StructurePrototype, b:StructurePrototype):Number {

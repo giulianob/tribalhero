@@ -18,6 +18,8 @@
 		private var skipCenter: Boolean;
 
 		public function GroundCircle(size: int, skipCenter: Boolean = false, colorTransform: ColorTransform = null) {
+			super( -10, -10);
+			
 			if (colorTransform == null) {
 				colorTransform = new ColorTransform(1.0, 1.0, 1.0, 1.0, 0, 100, 0);
 			}

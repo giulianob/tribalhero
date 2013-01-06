@@ -47,8 +47,9 @@
 			this.city = city;
 			this.formationType = formationType;
 
-			setTileWidth(55);
+			setTileWidth(65);
 			setTileHeight(32);			
+			setColsRows(5, -1);
 
 			if (!tooltipMode) {
 				addEventListener(GridListItemEvent.ITEM_ROLL_OVER, onItemRollOver);
@@ -93,7 +94,7 @@
 
 			var tilelists: Array = new Array();
 
-			for each(var formation: Formation in troop.each())
+			for each(var formation: Formation in troop)
 			{
 				//Don't show empty formations for tooltips
 				if (tooltipMode && formation.size() == 0) continue;
@@ -163,9 +164,7 @@
 			var layout0: SoftBoxLayout = new SoftBoxLayout();
 			layout0.setAxis(AsWingConstants.VERTICAL);
 			
-			if (!tooltipMode) {
-				layout0.setGap(10);
-			}
+			layout0.setGap(10);			
 
 			panel.setLayout(layout0);
 

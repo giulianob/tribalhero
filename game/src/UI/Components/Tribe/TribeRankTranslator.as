@@ -1,6 +1,6 @@
 package src.UI.Components.Tribe 
 {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import org.aswing.table.PropertyTranslator;
 	
 	public class TribeRankTranslator implements PropertyTranslator
@@ -14,7 +14,7 @@ package src.UI.Components.Tribe
 		public function translate(info:*, key:String):*
 		{
 			var rank:int = info[key];
-			return Locale.loadString("TRIBE_RANK_" + rank);
+			return StringHelper.localize("TRIBE_RANK_" + rank);
 		}
 	}		
 

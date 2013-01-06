@@ -24,6 +24,7 @@
 		public function Region(id: int, data: Array, map: Map)
 		{
 			mouseEnabled = false;
+			mouseChildren = false;
 
 			this.id = id;
 			this.map = map;			
@@ -64,7 +65,7 @@
 			clearAllPlaceholders();
 			cleanTiles();
 
-			for each(var gameObj: SimpleGameObject in objects.each())		
+			for each(var gameObj: SimpleGameObject in objects)		
 				map.objContainer.removeObject(gameObj);			
 
 			objects.clear();
@@ -81,8 +82,7 @@
 		{			
 			if (Constants.debug >= 2)
 				Util.log("Creating region id: " + id + " " + globalX + "," + globalY);
-			
-			
+						
 			clearAllPlaceholders();
 			
 			for (var a:int = 0; a < Math.ceil(Constants.regionW / Constants.regionBitmapW); a++)
@@ -204,7 +204,7 @@
 		
 		private function clearAllPlaceholders() : void
 		{
-			for each (var obj: SimpleObject in placeHolders.each())
+			for each (var obj: SimpleObject in placeHolders)
 				map.objContainer.removeObject(obj);
 				
 			placeHolders.clear();
@@ -219,23 +219,37 @@
 					return;
 				}
 				
-				var obj: NewCityPlaceholder = ObjectFactory.getNewCityPlaceholderInstance();
-				obj.setX(coord.x);
-				obj.setY(coord.y);
+				var obj: NewCityPlaceholder = ObjectFactory.getNewCityPlaceholderInstance(coord.x, coord.y);
 				obj.setOnSelect(Global.map.selectObject);
 				map.objContainer.addObject(obj);		
 				placeHolders.add(obj);
 			}
 		}
 
-		public function getObjectsAt(x: int, y: int, objClass: Class = null): Array
+		public function getObjectsAt(x: int, y: int, objClass: * = null): Array
 		{
 			var objs: Array = new Array();
-			for each(var gameObj: SimpleGameObject in objects.each())
+			for each(var gameObj: SimpleGameObject in objects)
 			{
-				if (objClass != null && !(gameObj is objClass)) continue;
+				if (objClass != null) {
+					if (objClass is Array) {
+						var typeOk: Boolean = false;
+						for each (var type: Class in objClass) {
+							if (gameObj is type) {
+								typeOk = true;
+								break;
+							}
+						}
+						if (!typeOk) {
+							continue;
+						}
+					}
+					else if (!(gameObj is objClass)) {
+						continue;
+					}
+				}
 
-				if (gameObj.getX() == x && gameObj.getY() == y && gameObj.visible) {
+				if (gameObj.objX == x && gameObj.objY == y && gameObj.visible) {
 					objs.push(gameObj);
 				}
 			}
@@ -264,13 +278,12 @@
 			if (sorted) {
 				var existingObj: SimpleObject = objects.get([gameObj.groupId, gameObj.objectId]);
 
-				if (existingObj != null) //don't add if obj already exists
+				if (existingObj != null)
 				{
-					Util.log("Obj " + gameObj.groupId + ", " + gameObj.objectId + " already exists in region " + id);
 					return null;
 				}
 			}
-
+			
 			//add to object container and to internal list
 			map.objContainer.addObject(gameObj);
 			objects.add(gameObj, sorted);
@@ -278,9 +291,7 @@
 			//select object if the map is waiting for it to be selected
 			if (map.selectViewable != null && map.selectViewable.groupId == gameObj.groupId && map.selectViewable.objectId == gameObj.objectId)			
 				map.selectObject(gameObj as GameObject);			
-
-			gameObj.moveWithCamera(Global.gameContainer.camera);
-			
+		
 			return gameObj;
 		}
 

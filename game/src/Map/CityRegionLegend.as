@@ -1,6 +1,7 @@
 package src.Map 
 {
-	import fl.lang.Locale;
+    import org.aswing.JFrame;
+	import src.Util.StringHelper;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.AsyncErrorEvent;
@@ -56,14 +57,19 @@ package src.Map
 			button.addActionListener(func, 0, true);
 		}
 		
-		public function show(x : int, y: int) : void
+		public function show(x: int, y: int) : void
 		{
 			ui.show();
 			
 			ui.getFrame().pack();
-			ui.getFrame().setLocationXY(x, y);
-			ui.getFrame().repaintAndRevalidate();
+            align(x, y);
 		}
+        
+        public function align(x: int, y: int): void {
+            if (!ui.getFrame()) { return; }
+            ui.getFrame().setLocationXY(x, y);
+			ui.getFrame().repaintAndRevalidate();
+        }
 		
 		public function hide() : void {
 			if (ui.getFrame()) {

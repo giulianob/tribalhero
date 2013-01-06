@@ -56,10 +56,8 @@ package src.Objects
 			else
 				Global.map.objContainer.removeObject(circle, ObjectContainer.LOWER);
 
-			circle.setX(parentObj.getX());
-			circle.setY(parentObj.getY());
-
-			circle.moveWithCamera(Global.gameContainer.camera);
+			circle.objX = parentObj.objX;
+			circle.objY = parentObj.objY;
 
 			Global.map.objContainer.addObject(circle, ObjectContainer.LOWER);
 		}		

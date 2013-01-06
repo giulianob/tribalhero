@@ -1,29 +1,59 @@
 package src.UI.Components 
 {
+	import mx.utils.StringUtil;
 	import org.aswing.AsWingConstants;
 	import org.aswing.border.EmptyBorder;
 	import org.aswing.Container;
 	import org.aswing.FlowLayout;
 	import org.aswing.Insets;
 	import org.aswing.JLabel;
+	import src.Constants;
+	import src.Global;
+	import src.Map.Username;
 	
-	public class PlayerCityLabel extends Container
-	{
+	public class PlayerCityLabel extends RichLabel
+	{		
+		private var playerId:int;
+		private var cityId:int;
+		private var playerName:String;
+		private var cityName:String;
 		
-		public function PlayerCityLabel(playerId: int, cityId: int, playerName: String = null, cityName: String = null) 
+		public function PlayerCityLabel(playerId: int, cityId: int, playerName: String = "", cityName: String = "") 
 		{
-			setLayout(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));	
+			super("", 1);
+			this.cityName = cityName;
+			this.playerName = playerName;
+			this.cityId = cityId;
+			this.playerId = playerId;			
 			
-			appendAll(new PlayerLabel(playerId, playerName), getLabel("("), new CityLabel(cityId, cityName), getLabel(")"));
+			updateText();
+			
+			if (playerName == "") {
+				Global.map.usernames.players.getUsername(playerId, onPlayerUsername);
+			}
+			
+			if (cityName == "") {
+				Global.map.usernames.cities.getUsername(playerId, onCityUsername);
+			}			
+		}
+		
+		private function onPlayerUsername(u: Username):void 
+		{
+			playerName = u.name;
+			updateText();
+		}
+		
+		private function onCityUsername(u: Username):void 
+		{
+			cityName = u.name;
+			updateText();
 		}
 	
-		private function getLabel(text: String): JLabel
+		private function updateText(): void
 		{
-			var lbl: JLabel = new JLabel(text, null, AsWingConstants.LEFT);
-			lbl.setBorder(new EmptyBorder(null, new Insets()));
-			lbl.mouseEnabled = false;
-			
-			return lbl;
+			var text: String = StringUtil.substitute("<a href='event:viewProfile:{0}'>{1}</a> (<a href='event:goToCity:{2}'>{3}</a>)", playerId, playerName, cityId, cityName);
+			setHtmlText(text);
+			setColumns(playerName.length + cityName.length + 5);
 		}
 	}
 

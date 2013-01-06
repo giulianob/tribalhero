@@ -58,11 +58,7 @@ package src.UI.Dialog
 			for (var i: int = 0; i < chats.length; i++) {
 				chats[i] = "";
 			}
-
-            for each(var msg: String in Constants.welcomeMessage) {
-                log(TYPE_GLOBAL, msg, false, false);
-            }
-            
+           
             log(TYPE_GLOBAL, Constants.motd, false, false);
 			
 			new StickyScroll(scrollConsole);

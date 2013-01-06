@@ -167,31 +167,90 @@
 		}
 		
 		private function update(e: Event = null):void 
-		{
-			localTroops.clear();
-			onTheMoveTroops.clear();
-			incomingTroops.clear();
-			stationedAwayTroops.clear();
+		{           
+            var localTroopsTemp: Array = [];
+            var onTheMoveTroopsTemp: Array = [];
+            var stationedAwayTroopsTemp: Array = [];
+            var incomingTroopsTemp: Array = [];
             
             // A list of OUR troops used below for some overview calcs
 			var troops: Array = [];
 			
+            // The current selected city filter
+            var selectedCity: City = getSelectedCity();
+            
 			for each (var city: City in Global.map.cities) {
                 for each (var notification: Notification in city.notifications) {
                     if (notification.cityId == city.id) {
                         continue;
                     }
-                    addNotification(notification);                    
+                    
+                    if (selectedCity && notification.targetCityId != selectedCity.id) {
+                        continue;			
+                    }
+                    
+                    incomingTroopsTemp.push(notification);                    
                 }
                 
+                // Add the normal troops to the appropriate list
 				for each (var troop: TroopStub in city.troops) {                    
                     if (troop.cityId == city.id) {
                         troops.push(troop);
+                    }                                       
+			
+                    // Make sure it matches the selected city first
+                    if (selectedCity && troop.cityId != selectedCity.id) {
+                        if (!troop.isStationed() || troop.stationedLocation.type != Location.CITY || troop.stationedLocation.cityId != selectedCity.id) {
+                            continue;			
+                        }
                     }
                     
-					addTroop(troop);
+                    if (troop.id == 1) {
+                        localTroopsTemp.push(troop);                
+                    }
+                    else {
+                        switch (troop.state) {
+                            case TroopStub.IDLE:
+                                break;
+                            case TroopStub.WAITING_IN_DEFENSIVE_ASSIGNMENT:
+                            case TroopStub.WAITING_IN_OFFENSIVE_ASSIGNMENT:
+                            case TroopStub.MOVING:
+                            case TroopStub.RETURNING_HOME:
+                            case TroopStub.BATTLE:  
+                                onTheMoveTroopsTemp.push(troop);
+                                break;
+                            case TroopStub.STATIONED:
+                            case TroopStub.BATTLE_STATIONED:
+                                if (Global.map.cities.get(troop.cityId)) {
+                                    stationedAwayTroopsTemp.push(troop);
+                                }
+                                else {
+                                    localTroopsTemp.push(troop);
+                                }					
+                                break;				
+                            default:
+                                trace("Unknown troop state?");
+                        }			
+                    }                    
 				}
-			}
+			}                       
+            
+            var addTroopsToList: Function = function(list: VectorListModel, items: Array): void {
+                list.clear();
+                list.appendAll(Enumerable.from(items)
+                    .distinct(new TroopStubComparer())
+                    .orderBy(function (stub: *): * { return stub.id; } )
+                    .thenBy(function (stub: *): * { return stub.cityId; } )
+                    .toArray()
+                );                
+            }
+            
+            addTroopsToList(localTroops, localTroopsTemp);
+			addTroopsToList(onTheMoveTroops, onTheMoveTroopsTemp);			
+			addTroopsToList(stationedAwayTroops, stationedAwayTroopsTemp);        
+            
+            incomingTroops.clear();
+            incomingTroops.appendAll(incomingTroopsTemp);
             
 			// Update overview labels			
 			lblCitiesUnderAttack.setText(StringHelper.localize("TROOPS_DIALOG_CITIES_UNDER_ATTACK", Enumerable.from(Global.map.cities)
@@ -263,60 +322,6 @@
 				table: troopTable
 			}
 		}
-        
-        private function addNotification(notification: Notification) : void {
-			var selectedCity: City = getSelectedCity();
-			
-			// Make sure it matches the selected city first
-			if (selectedCity && notification.targetCityId != selectedCity.id) {
-                return;			
-			}
-            
-            incomingTroops.append(notification);
-        }
-		
-		private function addTroop(troop: TroopStub) : void {	
-			var selectedCity: City = getSelectedCity();
-			
-			// Make sure it matches the selected city first
-			if (selectedCity && troop.cityId != selectedCity.id) {
-				if (!troop.isStationed() || troop.stationedLocation.type != Location.CITY || troop.stationedLocation.cityId != selectedCity.id) {
-					return;			
-				}
-			}
-            
-            if (troop.id == 1) {
-                localTroops.append(troop);                
-            }
-            else {
-                switch (troop.state) {
-                    case TroopStub.IDLE:
-                        break;
-                    case TroopStub.WAITING_IN_DEFENSIVE_ASSIGNMENT:
-                    case TroopStub.WAITING_IN_OFFENSIVE_ASSIGNMENT:
-                    case TroopStub.MOVING:
-                    case TroopStub.RETURNING_HOME:
-                    case TroopStub.BATTLE:  
-                        onTheMoveTroops.append(troop);
-                        break;
-                    case TroopStub.STATIONED:
-                    case TroopStub.BATTLE_STATIONED:
-                        if (Global.map.cities.get(troop.cityId)) {
-                            stationedAwayTroops.append(troop);
-                        }
-                        else {
-                            localTroops.append(troop);
-                        }					
-                        break;				
-                    default:
-                        trace("Unknown troop state?");
-                }			
-            }
-			
-			localTroops.sortOn(["id", "cityId"], Array.NUMERIC);
-			stationedAwayTroops.sortOn(["id", "cityId"], Array.NUMERIC);
-			onTheMoveTroops.sortOn(["id", "cityId"], Array.NUMERIC);
-		}		
 		
 		private function getSelectedCity(): City {
 			if (lstCities.getSelectedIndex() <= 0) {

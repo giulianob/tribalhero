@@ -7,8 +7,9 @@
 	import src.Util.Util;
 	import src.Objects.Factories.UnitFactory;
 	import src.Objects.Prototypes.UnitPrototype;
-	import src.Util.BinaryList.*;
+	import src.Util.BinaryList.*;    
 	import src.Util.StringHelper;
+    import System.Collection.Generic.IEqualityComparer;
 
 	public class TroopStub extends BinaryList {
 
@@ -180,8 +181,7 @@
 			return -1;
 			else
 			return 0;
-		}
-	}
-
+		}        
+	}       
 }
 

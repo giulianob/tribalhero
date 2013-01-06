@@ -1,5 +1,6 @@
 ﻿package src.Objects.Troop {
 	import adobe.utils.CustomActions;
+	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import src.Global;
 	import src.Map.City;
@@ -22,6 +23,10 @@
         public static const WAITING_IN_DEFENSIVE_ASSIGNMENT:int = 6;
         public static const WAITING_IN_OFFENSIVE_ASSIGNMENT: int = 7;
 		
+		public static const ATTACK_MODE_WEAK: int = 0;
+		public static const ATTACK_MODE_NORMAL: int = 1;
+		public static const ATTACK_MODE_STRONG: int = 2;
+		
 		public static const REPORT_STATE_ENTERING: int = 0;
 		public static const REPORT_STATE_STAYING: int = 1;
 		public static const REPORT_STATE_EXITING: int = 2;
@@ -34,6 +39,7 @@
 
 		public var id: int;
 		public var state: int = 0;
+		public var attackMode: int;
 
 		public var x: int;
 		public var y: int;
@@ -44,7 +50,8 @@
 
 		public var template: TroopTemplateManager = new TroopTemplateManager();
 		
-		public var stationedLocation: *;
+		public var stationedLocation: * ;
+		
 
 		public function TroopStub(id: int = 0, playerId: int = 0, cityId: int = 0)
 		{
@@ -57,6 +64,11 @@
 		public function isStationed() : Boolean
 		{
 			return state == BATTLE_STATIONED || state == STATIONED;
+		}
+		
+		public function isStationedNotInBattle() : Boolean
+		{
+			return state == STATIONED;
 		}
 
 		public function isLocal() : Boolean {

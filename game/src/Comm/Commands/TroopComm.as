@@ -34,7 +34,8 @@
 			troop.id = packet.readUByte();
 			troop.state = packet.readUByte();			
 			troop.stationedLocation = mapComm.General.readLocation(packet);
-
+			troop.attackMode = packet.readUByte();
+			
 			var templateCnt: int = packet.readUByte();
 			for (var templateI: int = 0; templateI < templateCnt; templateI++) {
 				troop.template.add(new TroopTemplate(packet.readUShort(), packet.readUByte(), packet.readUShort(), packet.readUShort(), packet.readUByte(), packet.readUShort(), packet.readUByte(), packet.readUByte(), packet.readUByte()), false);
@@ -366,6 +367,26 @@
 			writeTroop(troop, packet);
 			
 			session.write(packet, mapComm.catchAllErrors, { message: { title: "Info", content: "You have joined the assignment. Your units will be automatically deployed at the proper time." } });
+		}
+		
+		public function onSwitchAttackMode(packet: Packet, custom: * ): void
+		{
+			var stub: TroopStub = custom.stub;
+			if ((packet.option & Packet.OPTIONS_FAILED) != Packet.OPTIONS_FAILED)
+				stub.attackMode = custom.mode;
+			mapComm.catchAllErrors(packet, { message: { title: "Info", content: "You have changed the attack mode for this troop." }} );
+		}
+		
+		public function switchAttackMode(troopStub: TroopStub, mode: int): void
+		{
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TROOP_SWITCH_MODE;
+			
+			packet.writeUInt(troopStub.cityId);
+			packet.writeByte(troopStub.id);
+			packet.writeByte(mode);
+			
+			session.write(packet, onSwitchAttackMode, { stub:troopStub, mode:mode } );
 		}
 	}
 

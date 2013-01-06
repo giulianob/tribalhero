@@ -25,9 +25,13 @@ class UnreadReportsShell extends Shell {
         $battles = $this->Battle->find('all', array(
             'conditions' => array(
                 'Battle.ended >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 65 SECOND)',
+                'Battle.owner_type' => 'City',
             ),
-            'link' => array('City' => array('fields' => array('City.id'),
-                    'Player' => array('fields' => array('Player.id')))
+            'link' => array(
+                    'City' => array(
+                        'fields' => array('City.id'),
+                        'Player' => array('fields' => array('Player.id')
+                    ))
             ),
             'fields' => array('Battle.id'))
         );
@@ -45,9 +49,13 @@ class UnreadReportsShell extends Shell {
         $battleReportIds = $this->BattleReportView->find('all', array(
             'conditions' => array(
                 'BattleReportView.battle_id' => $battleIds,
+                'BattleReportView.owner_type' => 'City',
             ),
-            'link' => array('City' => array('fields' => array('City.id'),
-                    'Player' => array('fields' => array('Player.id'))
+            'link' => array(
+                    'City' => array(
+                        'fields' => array('City.id'),
+                        'Player' => array('fields' => array('Player.id')
+                    )
             )))
         );
 

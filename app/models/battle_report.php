@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @param BattleReportTroop $BattleReportTroop
+ * @param Battle $Battle
+ */
 class BattleReport extends AppModel {
 
     var $name = 'BattleReport';

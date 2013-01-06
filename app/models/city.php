@@ -7,9 +7,6 @@ class City extends AppModel {
         'Player',
     );
     var $hasMany = array(
-        'BattleReportTroop',
-        'Battle',
-        'BattleReportView',
         'TroopStubList',
     );
 

@@ -35,7 +35,7 @@ package src.Objects.Troop {
 		public function getIndividualUnitCount(type: int = -1): int
 		{
 			var total: int = 0;
-			for each(var unit: Unit in each())
+			for each(var unit: Unit in this)
 			{
 				if (type > -1 && unit.type != type) continue;
 
@@ -48,7 +48,7 @@ package src.Objects.Troop {
 		public function getUpkeep(template: *): int
 		{
 			var total: int = 0;
-			for each(var unit: Unit in each())
+			for each(var unit: Unit in this)
 			{
 				var unitPrototype: UnitPrototype;
 				
@@ -73,10 +73,12 @@ package src.Objects.Troop {
 		{
 			var unit: Unit = get((obj as Unit).type);
 
-			if (unit == null)
-			super.add(obj, resort);
-			else
-			unit.count = (obj as Unit).count;
+			if (unit == null) {
+				super.add(obj, resort);
+				unit = obj as Unit;
+			} else {
+				unit.count += ((obj as Unit).count);
+			}
 		}
 
 		override public function remove(val: *): *

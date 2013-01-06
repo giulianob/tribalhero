@@ -53,11 +53,11 @@
 		{
 			this.city = city;			
 			
-			title = Locale.loadString("CITY_OVERVIEW_TITLE");
+			title = StringHelper.localize("CITY_OVERVIEW_TITLE");
 			
 			createUI();
 			
-			for each (var eachCity: City in Global.map.cities.each()) {
+			for each (var eachCity: City in Global.map.cities) {
 				(lstCities.getModel() as VectorListModel).append( { id: eachCity.id, city: eachCity, toString: function() : String { return this.city.name; } } );
 				if (eachCity == city) {
 					lstCities.setSelectedIndex(lstCities.getItemCount() - 1);
@@ -71,9 +71,10 @@
 			
 			city.addEventListener(City.RESOURCES_UPDATE, onResourceChange);
 			
+			var innerCity: City = city;
 			frame.addEventListener(PopupEvent.POPUP_CLOSED, function(e:PopupEvent):void
 				{
-					city.removeEventListener(City.RESOURCES_UPDATE, onResourceChange);
+					innerCity.removeEventListener(City.RESOURCES_UPDATE, onResourceChange);
 				});
 						
 			frame.setResizable(true);
@@ -133,7 +134,7 @@
 				return valueStr;
 			}
 			
-			return StringUtil.substitute(Locale.loadString("STR_PER_HOUR"), valueStr);
+			return StringHelper.localize("STR_PER_HOUR", valueStr);
 		}
 		
 		private function resourceLabelMaker(tooltip:String, icon:Icon = null):JLabel
@@ -153,26 +154,26 @@
 		{
 			var value:int = resource.getValue();
 			
-			return value + (includeLimit ? "/" + resource.getLimit() : "") + (includeRate ? " (" + StringUtil.substitute(Locale.loadString("STR_PER_HOUR"), "+" + resource.getHourlyRate()) + ")" : "");
+			return value + (includeLimit ? "/" + resource.getLimit() : "") + (includeRate ? " (" + StringHelper.localize("STR_PER_HOUR", "+" + resource.getHourlyRate()) + ")" : "");
 		}
 		
 		private function recreateResourcesPanel():void {
 			pnlResources.removeAll();
-			lblGold = resourceLabelMaker(Locale.loadString("GOLD_DESC"), new AssetIcon(new ICON_GOLD()));
-			lblWood = resourceLabelMaker(Locale.loadString("WOOD_DESC"), new AssetIcon(new ICON_WOOD()));
-			lblCrop = resourceLabelMaker(Locale.loadString("CROP_DESC"), new AssetIcon(new ICON_CROP()));
-			lblIron = resourceLabelMaker(Locale.loadString("IRON_DESC"), new AssetIcon(new ICON_IRON()));
-			lblUnits = simpleLabelMaker(Locale.loadString("UNITS_DESC"), new AssetIcon(new ICON_SINGLE_SWORD()));			
+			lblGold = resourceLabelMaker(StringHelper.localize("GOLD_DESC"), new AssetIcon(new ICON_GOLD()));
+			lblWood = resourceLabelMaker(StringHelper.localize("WOOD_DESC"), new AssetIcon(new ICON_WOOD()));
+			lblCrop = resourceLabelMaker(StringHelper.localize("CROP_DESC"), new AssetIcon(new ICON_CROP()));
+			lblIron = resourceLabelMaker(StringHelper.localize("IRON_DESC"), new AssetIcon(new ICON_IRON()));
+			lblUnits = simpleLabelMaker(StringHelper.localize("UNITS_DESC"), new AssetIcon(new ICON_SINGLE_SWORD()));			
 			
 			var laborTime:String = Util.niceTime(Formula.laborRate(city), false);
 			
-			lblLabor = simpleLabelMaker(StringUtil.substitute(Locale.loadString("LABOR_DESC"), laborTime), new AssetIcon(new ICON_LABOR()));
+			lblLabor = simpleLabelMaker(StringHelper.localize("LABOR_DESC", laborTime), new AssetIcon(new ICON_LABOR()));
 			
-			lblUpkeep = simpleLabelMaker(Locale.loadString("UPKEEP_DESC"), new AssetIcon(new ICON_CROP()));
-			lblDefensePoints = simpleLabelMaker(Locale.loadString("DEFENSE_POINTS_DESC"), new AssetIcon(new ICON_SHIELD()));
-			lblAttackPoints = simpleLabelMaker(Locale.loadString("ATTACK_POINTS_DESC"), new AssetIcon(new ICON_BATTLE()));
-			lblValue = simpleLabelMaker(Locale.loadString("INFLUENCE_POINTS_DESC"), new AssetIcon(new ICON_UPGRADE()));		
-			lblApPoints = simpleLabelMaker(Locale.loadString("AP_POINTS_DESC"), new AssetIcon(new ICON_HAMMER()));
+			lblUpkeep = simpleLabelMaker(StringHelper.localize("UPKEEP_DESC"), new AssetIcon(new ICON_CROP()));
+			lblDefensePoints = simpleLabelMaker(StringHelper.localize("DEFENSE_POINTS_DESC"), new AssetIcon(new ICON_SHIELD()));
+			lblAttackPoints = simpleLabelMaker(StringHelper.localize("ATTACK_POINTS_DESC"), new AssetIcon(new ICON_BATTLE()));
+			lblValue = simpleLabelMaker(StringHelper.localize("INFLUENCE_POINTS_DESC"), new AssetIcon(new ICON_UPGRADE()));		
+			lblApPoints = simpleLabelMaker(StringHelper.localize("AP_POINTS_DESC"), new AssetIcon(new ICON_HAMMER()));
 			
 			pnlResources.appendAll(lblGold, lblWood, lblCrop, lblIron, lblLabor, lblUpkeep, lblDefensePoints, lblAttackPoints, lblValue, lblUnits, lblApPoints);			
 		}
@@ -186,23 +187,23 @@
 				lblCrop.setText(resourceLabelText(city.resources.crop));
 				lblIron.setText(resourceLabelText(city.resources.iron));
 				// Divide and multiply by 10 to truncate to 1 decimal place w/o rounding
-				lblApPoints.setText(StringUtil.substitute(Locale.loadString("CITY_OVERVIEW_AP_POINTS_LABEL"), Util.truncateNumber(city.ap)));
-				lblLabor.setText(simpleLabelText(StringUtil.substitute(Locale.loadString("CITY_OVERVIEW_LABORERS_LABEL"), city.resources.labor.getValue(), city.getBusyLaborCount()), false, false));
-				lblUpkeep.setText(simpleLabelText(city.resources.crop.getUpkeep().toString(), true, true));
+				lblApPoints.setText(StringHelper.localize("CITY_OVERVIEW_AP_POINTS_LABEL", Util.truncateNumber(city.ap)));
+				lblLabor.setText(simpleLabelText(StringHelper.localize("CITY_OVERVIEW_LABORERS_LABEL", city.resources.labor.getValue(), city.getBusyLaborCount()), false, false));
+				lblUpkeep.setText(simpleLabelText((city.resources.crop.getUpkeep() / Constants.secondsPerUnit).toString(), true, true));
 				lblUpkeepMsg.setVisible(city.resources.crop.getRate() < city.resources.crop.getUpkeep());
-				lblAttackPoints.setText(StringUtil.substitute(Locale.loadString("CITY_OVERVIEW_ATTACK_POINTS_LABEL"), city.attackPoint));
-				lblDefensePoints.setText(StringUtil.substitute(Locale.loadString("CITY_OVERVIEW_DEFENSE_POINTS_LABEL"), city.defensePoint));
-				lblValue.setText(StringUtil.substitute(Locale.loadString("CITY_OVERVIEW_INFLUENCE_POINTS_LABEL"), city.value));			
+				lblAttackPoints.setText(StringHelper.localize("CITY_OVERVIEW_ATTACK_POINTS_LABEL", city.attackPoint));
+				lblDefensePoints.setText(StringHelper.localize("CITY_OVERVIEW_DEFENSE_POINTS_LABEL", city.defensePoint));
+				lblValue.setText(StringHelper.localize("CITY_OVERVIEW_INFLUENCE_POINTS_LABEL", city.value));			
 				
 				var unitCounts: * = city.troops.getUnitTotalsByStatus();
-				lblUnits.setText(StringUtil.substitute(Locale.loadString("CITY_OVERVIEW_UNITS_STATUS_LABEL"), unitCounts.idle, unitCounts.onTheMove));
+				lblUnits.setText(StringHelper.localize("CITY_OVERVIEW_UNITS_STATUS_LABEL", unitCounts.idle, unitCounts.onTheMove));
 			}
 			
 			{
 				// Laborers tab
 				// Go through each city object and add if it accepts laborers		
 				laborersListModel.clear();
-				for each (var cityObj: CityObject in city.objects.each()) {
+				for each (var cityObj: CityObject in city.objects) {
 					if (ObjectFactory.getClassType(cityObj.type) != ObjectFactory.TYPE_STRUCTURE) {
 						continue;
 					}
@@ -242,7 +243,7 @@
 				lstCities.addEventListener(InteractiveEvent.SELECTION_CHANGED, onChangeCitySelection);
 				lstCities.setPreferredSize(new IntDimension(150, 22));
 				
-				lblUpkeepMsg = new JLabel(Locale.loadString("CITY_OVERVIEW_TROOPS_STARVING"), new AssetIcon(new ICON_CROP()));
+				lblUpkeepMsg = new JLabel(StringHelper.localize("CITY_OVERVIEW_TROOPS_STARVING"), new AssetIcon(new ICON_CROP()));
 				lblUpkeepMsg.setBorder(new LineBorder(null, new ASColor(0xff0000), 2, 10));				
 				
 				pnlResources = new JPanel(new GridLayout(0, 3, 20, 10));			
@@ -257,13 +258,13 @@
 			// Local Events Tab
 			{
 				gridLocalActions = new CityActionGridList(city, 530);
-				pnlTabs.appendTab(new JScrollPane(gridLocalActions), Locale.loadString("CITY_OVERVIEW_LOCAL_EVENTS_TAB"));				
+				pnlTabs.appendTab(new JScrollPane(gridLocalActions), StringHelper.localize("CITY_OVERVIEW_LOCAL_EVENTS_TAB"));				
 			}
 			
 			// Laborers Tab
 			{
 				laborersListModel = new VectorListModel();
-				laborersTable = new JTable(new PropertyTableModel(laborersListModel, [Locale.loadString("CITY_OVERVIEW_LABORERS_STRUCTURE_COLUMN"), Locale.loadString("CITY_OVERVIEW_LABORERS_WORKING_COLUMN")], [".", "."], [null, maxLaborerTranslator]));
+				laborersTable = new JTable(new PropertyTableModel(laborersListModel, [StringHelper.localize("CITY_OVERVIEW_LABORERS_STRUCTURE_COLUMN"), StringHelper.localize("CITY_OVERVIEW_LABORERS_WORKING_COLUMN")], [".", "."], [null, maxLaborerTranslator]));
 				laborersTable.getColumnAt(0).setCellFactory(new GeneralTableCellFactory(StructureCell));
 				laborersTable.getColumnAt(0).setPreferredWidth(160);
 				laborersTable.getColumnAt(1).setPreferredWidth(370);
@@ -274,7 +275,7 @@
 				
 				laborersTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 				laborersTable.setRowHeight(40);
-				pnlTabs.appendTab(new JScrollPane(laborersTable), Locale.loadString("CITY_OVERVIEW_LABORERS_TAB"));
+				pnlTabs.appendTab(new JScrollPane(laborersTable), StringHelper.localize("CITY_OVERVIEW_LABORERS_TAB"));
 			}
 			
 			//component layoution			

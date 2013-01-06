@@ -1,12 +1,8 @@
 ﻿package src.Objects.Actions 
 {
-	/**
-	 * ...
-	 * @author Giuliano
-	 */
 	public class Notification
 	{
-		
+        public var targetCityId:int;		
 		public var cityId: int;
 		public var objectId: int;		
 		public var startTime: int;
@@ -14,9 +10,10 @@
 		public var actionId: int;
 		public var type: int;
 		
-		public function Notification(cityId: int, objectId: int, actionId: int, type: int, startTime: int, endTime: int) 
+		public function Notification(targetCityId: int, cityId: int, objectId: int, actionId: int, type: int, startTime: int, endTime: int) 
 		{			
-			this.cityId = cityId;
+			this.targetCityId = targetCityId;
+            this.cityId = cityId;
 			this.objectId = objectId;
 			this.actionId = actionId;
 			this.type = type;

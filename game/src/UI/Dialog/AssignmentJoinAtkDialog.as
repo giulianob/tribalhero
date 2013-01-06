@@ -1,5 +1,6 @@
 ﻿package src.UI.Dialog {
 
+	import src.Util.StringHelper;
 	import flash.events.Event;
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -16,6 +17,7 @@
 	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
 	import src.UI.GameJPanel;
 	import src.Objects.Troop.*;
+	import src.Util.StringHelper;
 	import src.Util.Util;
 
 	public class AssignmentJoinAtkDialog extends AttackTroopDialog {
@@ -23,9 +25,9 @@
 		protected var assignment: *;
 		protected var distance: int;
 	
-		public function AssignmentJoinAtkDialog(onAccept: Function, assignment: *):void
+		public function AssignmentJoinAtkDialog(city: City, onAccept: Function, assignment: *):void
 		{
-			super(onAccept, false);
+			super(city, onAccept, false);
 			
 			title = "Join Assignment";
 			
@@ -37,7 +39,7 @@
 		{
 			var stub: TroopStub = getTroop();			
 			if (stub.getIndividualUnitCount() == 0) {
-				lblTroopSpeed.setText("Hint: Drag units to assign to the different troops") 
+				lblTroopSpeed.setText(StringHelper.localize("TROOP_CREATE_DRAG_HINT"));
 			}
 			else {				
 				var moveTime: int = Formula.moveTimeTotal(city, stub.getSpeed(city), distance, true);
@@ -46,7 +48,7 @@
 					lblTroopSpeed.setText("Your units will be "+ Util.niceTime(diff)+" late. Choose faster units to arrive on time.");
 				}
 				else {
-					lblTroopSpeed.setText("Hint: Drag units to assign to the different troops");
+					lblTroopSpeed.setText(StringHelper.localize("TROOP_CREATE_DRAG_HINT"));
 				}
 			}
 		}

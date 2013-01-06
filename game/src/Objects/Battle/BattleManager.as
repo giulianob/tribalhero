@@ -1,145 +1,155 @@
 ﻿package src.Objects.Battle {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.utils.Dictionary;
 	import src.Util.BinaryList.*;
 	import src.Util.Util;
 	
-	/**
-	* ...
-	* @author Default
-	*/
 	public class BattleManager extends EventDispatcher
 	{		
-		public static const OBJECT_REMOVED_ATTACK: String = "BATTLE_OBJECT_REMOVED_ATTACK";
-		public static const OBJECT_REMOVED_DEFENSE: String = "BATTLE_OBJECT_REMOVED_DEFENSE";
-		public static const OBJECT_ADDED_ATTACK: String = "BATTLE_OBJECT_ADDED_ATTACK";
-		public static const OBJECT_ADDED_DEFENSE: String = "BATTLE_OBJECT_ADDED_DEFENSE";
+		public static const GROUP_UNIT_REMOVED: String = "BATTLE_GROUP_UNIT_REMOVED";
+		public static const GROUP_UNIT_ADDED: String = "BATTLE_GROUP_UNIT_ADDED";
+		public static const GROUP_ADDED_ATTACK: String = "BATTLE_GROUP_ADDED_ATTACK";
+		public static const GROUP_ADDED_DEFENSE: String = "BATTLE_GROUP_ADDED_DEFENSE";		
+		public static const GROUP_REMOVED_ATTACK: String = "BATTLE_GROUP_REMOVED_ATTACK";
+		public static const GROUP_REMOVED_DEFENSE: String = "BATTLE_GROUP_REMOVED_DEFENSE";
 		public static const OBJECT_ATTACKED: String = "BATTLE_OBJECT_ATTACKED";
 		public static const OBJECT_SKIPPED: String = "BATTLE_OBJECT_SKIPPED";
 		public static const END: String = "BATTLE_ENDED";		
 		public static const NEW_ROUND: String = "BATTLE_NEW_ROUND";		
+		public static const PROPERTIES_CHANGED: String = "BATTLE_PROPERTIES_CHANGED";
+		
+		public static const SIDE_DEFENSE: int = 0;
+		public static const SIDE_ATTACK: int = 1;		
 		
 		public static const STRUCTURE: int = 0;
 		public static const UNIT: int = 1;
 		
-		public var attackers: BinaryList = new BinaryList(CombatObject.sortOnId, CombatObject.compareObjId);
-		public var defenders: BinaryList = new BinaryList(CombatObject.sortOnId, CombatObject.compareObjId);
-		public var all: BinaryList = new BinaryList(CombatObject.sortOnId, CombatObject.compareObjId);
-		public var battleId: int;
-		public var cityId: int;
+		public var attackers: BinaryList = new BinaryList(CombatGroup.sortOnId, CombatGroup.compareObjId);
+		public var defenders: BinaryList = new BinaryList(CombatGroup.sortOnId, CombatGroup.compareObjId);
 		
-		public function BattleManager(cityId: int) {
-			this.cityId = cityId;
+		public var properties: Dictionary = new Dictionary();
+		
+		public var battleId: int;
+		public var location: BattleLocation;
+		
+		public function BattleManager(battleId: int) {
+			this.battleId = battleId;			
 		}
 		
-		public function end() : void {
+		public function setProperties(properties: Dictionary): void {
+			this.properties = properties;
+			dispatchEvent(new Event(PROPERTIES_CHANGED));
+		}
+		
+		public function end(): void {
 			attackers.clear();
 			defenders.clear();
-			all.clear();
 			
-			dispatchEvent(new BattleEvent(END));
+			dispatchEvent(new Event(END));
 		}
 		
-		public function addToDefense(classType: int, playerId: int, cityId: int, combatObjectId: int, troopStubId: int, type: int, level: int, hp: Number, maxHp: Number):void
+		public function addToDefense(group: CombatGroup): void
 		{
-			var combatObj: CombatObject = add(defenders, classType, playerId, cityId, combatObjectId, troopStubId, type, level, hp, maxHp);
+			defenders.add(group);
 			
-			dispatchEvent(new BattleEvent(OBJECT_ADDED_DEFENSE, combatObj));
+			registerGroupEvents(group);
+			
+			dispatchEvent(new BattleGroupEvent(GROUP_ADDED_DEFENSE, group));
 		}
 		
-		public function addToAttack(classType: int, playerId: int, cityId: int, combatObjectId: int, troopStubId: int, type: int, level: int, hp: Number, maxHp: Number):void
+		public function addToAttack(group: CombatGroup): void
 		{
-			var combatObj: CombatObject = add(attackers, classType, playerId, cityId, combatObjectId, troopStubId, type, level, hp, maxHp);
+			attackers.add(group);
 			
-			dispatchEvent(new BattleEvent(OBJECT_ADDED_ATTACK, combatObj));
+			registerGroupEvents(group);
+			
+			dispatchEvent(new BattleGroupEvent(GROUP_ADDED_ATTACK, group));
 		}
 		
-		private function add(list: BinaryList, classType: int, playerId: int, cityId: int, combatObjectId: int, troopStubId: int, type: int, level: int, hp: Number, maxHp: Number): CombatObject
+		private function registerGroupEvents(group:CombatGroup): void 
 		{
-			var combatObj: CombatObject;
+			var localGroup: CombatGroup = group;
 			
-			if (classType == UNIT)
-				combatObj = new CombatUnit(playerId, cityId, combatObjectId, troopStubId, type, level, hp, maxHp);
-			else if (classType == STRUCTURE)
-				combatObj = new CombatStructure(playerId, cityId, combatObjectId, troopStubId, type, level, hp, maxHp);
-			else
-				throw new Error("Unknown class type " + classType);
-
-			list.add(combatObj);
-			all.add(combatObj);
+			group.addEventListener(BinaryListEvent.ADDED, function(e: BinaryListEvent): void {
+				dispatchEvent(new BattleObjectEvent(GROUP_UNIT_ADDED, localGroup, e.item));
+			}, false, 0, true);
 			
-			return combatObj;
+			group.addEventListener(BinaryListEvent.REMOVED, function(e: BinaryListEvent): void {
+				dispatchEvent(new BattleObjectEvent(GROUP_UNIT_REMOVED, localGroup, e.item));
+			}, false, 0, true);			
 		}
 		
 		public function newRound(round: int): void {
 			dispatchEvent(new BattleRoundEvent(NEW_ROUND, round));
 		}
 		
-		public function skipped(attackerCombatId: int):void
-		{
-			var attacker: CombatObject = all.get(attackerCombatId);			
-			
-			if (attacker == null)
-			{
-				Util.log("Received skip command for unknown combat object. Attacker: " + attackerCombatId);
-				return;
-			}
-						
-			dispatchEvent(new BattleEvent(OBJECT_SKIPPED, attacker, null, 0));		
+		public function getCombatGroup(combatGroupId: int): CombatGroup {
+			return attackers.get(combatGroupId) || defenders.get(combatGroupId);
 		}
 		
-		public function attack(attackerCombatId: int, defenderCombatId: int, dmg: Number):void
+		public function skipped(combatGroupId: int, combatObjectId: int):void
 		{
-			var attacker: CombatObject = all.get(attackerCombatId);
-			var defender: CombatObject = all.get(defenderCombatId);
+			var group: CombatGroup = getCombatGroup(combatGroupId);
+			
+			var combatObject: CombatObject = group.get(combatObjectId);
+			
+			if (combatObject == null)
+			{
+				Util.log("Received skip command for unknown combat object. combatObject: " + combatObjectId);
+				return;
+			}
+			
+			dispatchEvent(new BattleObjectEvent(OBJECT_SKIPPED, group, combatObject));
+		}
+		
+		public function attack(attackingSide: int, attackerGroupId: int, attackerCombatId: int, defenderGroupId: int, defenderCombatId: int, dmg: Number):void
+		{
+			var attackerGroup: CombatGroup = attackers.get(attackerGroupId) || defenders.get(attackerGroupId);
+			var defenderGroup: CombatGroup = attackers.get(defenderGroupId) || defenders.get(defenderGroupId);
+			
+			if (attackerGroup == null || defenderGroup == null)
+			{
+				Util.log("Received attack command for unknown combat group. Attacker: " + attackerGroup + " Defender: " + defenderGroup + " Dmg:" + dmg);
+				return;
+			}
+			
+			var attacker: CombatObject = attackerGroup.get(attackerCombatId);
+			var defender: CombatObject = defenderGroup.get(defenderCombatId);
 			
 			if (attacker == null || defender == null)
 			{
 				Util.log("Received attack command for unknown combat object. Attacker: " + attackerCombatId + " Defender: " + defenderCombatId + " Dmg:" + dmg);
 				return;
 			}
-				
+			
 			defender.hp -= dmg;
 			defender.hp = Util.roundNumber(defender.hp);
 			
-			dispatchEvent(new BattleEvent(OBJECT_ATTACKED, attacker, defender, dmg));			
+			dispatchEvent(new BattleAttackEvent(OBJECT_ATTACKED, attackingSide, attackerGroup, attacker, defenderGroup, defender, dmg));
 			
 			if (defender.hp <= 0)
 			{
 				defender.hp = 0;
-				removeObject(defender);
+				defenderGroup.remove(defender.combatObjectId);
 			}
 		}
-
-		public function removeFromAttack(cityId: int, troopId: int):void
+		
+		public function removeFromAttack(groupId: int):void
 		{
-			remove(attackers, cityId, troopId);
+			var group: CombatGroup = attackers.remove(groupId);
+			if (group) {
+				dispatchEvent(new BattleGroupEvent(GROUP_REMOVED_ATTACK, group));
+			}
 		}
 		
-		public function removeFromDefense(cityId: int, troopId: int):void
+		public function removeFromDefense(groupId: int):void
 		{
-			remove(defenders, cityId, troopId);
-		}
-		
-		private function remove(list: BinaryList, cityId: int, troopId: int):void
-		{
-			var objs: Array = new Array();
-			for each(var co:CombatObject in list.each())
-				if (co.cityId == cityId && co.troopStubId == troopId)
-					objs.push(co);
-
-			for each(var co2:CombatObject in objs)
-				removeObject(co2);
-		}
-		
-		private function removeObject(co: CombatObject):void
-		{
-			all.remove(co);
-			if (attackers.remove(co.combatObjectId))
-				dispatchEvent(new BattleEvent(OBJECT_REMOVED_ATTACK, co));
-			else if (defenders.remove(co.combatObjectId))
-				dispatchEvent(new BattleEvent(OBJECT_REMOVED_DEFENSE, co));
-		}
+			var group: CombatGroup = defenders.remove(groupId);
+			if (group) {
+				dispatchEvent(new BattleGroupEvent(GROUP_REMOVED_DEFENSE, group));
+			}
+		}		
 	}
 	
 }

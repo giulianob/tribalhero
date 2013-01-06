@@ -1,16 +1,13 @@
 ﻿package src.UI.Components
 {
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import org.aswing.AssetIcon;
 	import org.aswing.AsWingConstants;
 	import org.aswing.border.EmptyBorder;
-	import org.aswing.border.LineBorder;
-	import org.aswing.EmptyLayout;
 	import org.aswing.FlowLayout;
-	import org.aswing.FlowWrapLayout;
 	import org.aswing.geom.IntDimension;
-	import org.aswing.geom.IntPoint;
 	import org.aswing.Icon;
 	import org.aswing.Insets;
 	import org.aswing.JFrame;
@@ -27,7 +24,8 @@
 	{
 		private var tooltip: ResourcesTooltip;
 		private var frame: JFrame;
-
+		private var labels: Object = new Object();
+		
 		public function ResourcesContainer()
 		{
 			var me: JPanel = this;
@@ -59,36 +57,52 @@
 
 		public function displayResources():void
 		{			
-			var resourceLabelMaker: Function = function(value: int, max : int, icon: Icon = null, labelWidth: int = 30) : JLabel {
-				var label: JLabel = new JLabel(value.toString(), icon);
-				if (max != -1 && value >= max)
-				GameLookAndFeel.changeClass(label, "Label.success Label.small");
-				else
-				GameLookAndFeel.changeClass(label, "Tooltip.text Label.small");
-
-				label.mouseEnabled = false;
-				label.setPreferredSize(new IntDimension(labelWidth, 16));				
-				label.mouseChildren = false;
-				label.setIconTextGap(0);
-				label.setHorizontalTextPosition(AsWingConstants.RIGHT);
-				label.setHorizontalAlignment(AsWingConstants.LEFT);
+			var resourceLabelMaker: Function = function(key: String, value: int, max : int, iconClass: Class = null, labelWidth: int = 30) : JLabel {							
+				
+				var label: JLabel = labels[key];
+				
+				if (!label) {
+					label = new JLabel(value.toString(), !iconClass ? null : new AssetIcon((new iconClass()) as DisplayObject));
+					label.mouseEnabled = false;
+					label.setPreferredSize(new IntDimension(labelWidth, 16));				
+					label.mouseChildren = false;
+					label.setIconTextGap(0);
+					label.setHorizontalTextPosition(AsWingConstants.RIGHT);
+					label.setHorizontalAlignment(AsWingConstants.LEFT);	
+					labels[key] = label;
+				}
+				else {
+					label.setText(value.toString());
+				}
+				
+				if (max != -1 && value >= max) {
+					GameLookAndFeel.changeClass(label, "Label.success Label.small", true);
+				}
+				else {
+					GameLookAndFeel.changeClass(label, "Tooltip.text Label.small", true);
+				}			
 				
 				return label;
 			};
 
 			var selectedCity: City = Global.gameContainer.selectedCity;
 
-			setLayout(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));
-			removeAll();
-
-			append(resourceLabelMaker(selectedCity.resources.labor.getValue(), -1, new AssetIcon(new ICON_LABOR()), 50));
-			append(resourceLabelMaker(selectedCity.resources.gold.getValue(), -1, new AssetIcon(new ICON_GOLD()), 61));
-			append(resourceLabelMaker(selectedCity.resources.wood.getValue(), selectedCity.resources.wood.getLimit(), new AssetIcon(new ICON_WOOD()), 61));
-			append(resourceLabelMaker(selectedCity.resources.crop.getValue(), selectedCity.resources.crop.getLimit(), new AssetIcon(new ICON_CROP()), 61));
-			append(resourceLabelMaker(selectedCity.resources.iron.getValue(), selectedCity.resources.iron.getLimit(), new AssetIcon(new ICON_IRON()), 56));
+			resourceLabelMaker("labor", selectedCity.resources.labor.getValue(), -1, ICON_LABOR, 50);
+			resourceLabelMaker("gold", selectedCity.resources.gold.getValue(), -1, ICON_GOLD, 61);
+			resourceLabelMaker("wood", selectedCity.resources.wood.getValue(), selectedCity.resources.wood.getLimit(), ICON_WOOD, 61);
+			resourceLabelMaker("crop", selectedCity.resources.crop.getValue(), selectedCity.resources.crop.getLimit(), ICON_CROP, 61);
+			resourceLabelMaker("iron", selectedCity.resources.iron.getValue(), selectedCity.resources.iron.getLimit(), ICON_IRON, 56);
 
 			if (!frame)
 			{
+				append(labels["labor"]);
+				append(labels["gold"]);
+				append(labels["wood"]);
+				append(labels["crop"]);
+				append(labels["iron"]);
+				
+				setLayout(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));
+							
 				frame = new JFrame(null, "", false);
 				frame.name = "Resources Container Frame";
 				frame.setContentPane(this);

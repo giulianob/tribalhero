@@ -49,9 +49,9 @@ package src.UI.Cursors {
 			Global.map.selectObject(null);
 
 			structPrototype = StructureFactory.getPrototype(type, level);
-			cursor = StructureFactory.getSimpleObject(type, level);
+			cursor = StructureFactory.getSimpleObject(type, level, 0, 0);
 
-			if (StructureFactory.getSimpleObject(type, level) == null)
+			if (cursor == null)
 			{
 				Util.log("Missing building cursor " + type);
 				return;
@@ -65,8 +65,9 @@ package src.UI.Cursors {
 			buildableArea = new GroundCallbackCircle(city.radius - 1, validateTileCallback);
 			buildableArea.alpha = 0.3;
 			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
-			buildableArea.setX(point.x); buildableArea.setY(point.y);
-			buildableArea.moveWithCamera(src.Global.gameContainer.camera);
+			buildableArea.objX = point.x; 
+			buildableArea.objY = point.y;
+						
 			Global.map.objContainer.addObject(buildableArea, ObjectContainer.LOWER);
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
@@ -148,11 +149,11 @@ package src.UI.Cursors {
 				if (rangeCursor.stage != null) Global.map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
 				if (cursor.stage != null) Global.map.objContainer.removeObject(cursor);
 				
-				rangeCursor.setX(objX); rangeCursor.setY(objY);
-				rangeCursor.moveWithCamera(src.Global.gameContainer.camera);				
+				rangeCursor.objX = objX; 
+				rangeCursor.objY = objY;
 				
-				cursor.setX(objX); cursor.setY(objY);
-				cursor.moveWithCamera(src.Global.gameContainer.camera);
+				cursor.objX = objX; 
+				cursor.objY = objY;
 				
 				if (validateBuilding()) {
 					Global.map.objContainer.addObject(rangeCursor, ObjectContainer.LOWER);
@@ -205,7 +206,7 @@ package src.UI.Cursors {
 			// Check for road requirement
 			if (buildingOnRoad) {
 				var breaksPath: Boolean = false;
-				for each(var cityObject: CityObject in city.objects.each()) {
+				for each(var cityObject: CityObject in city.objects) {
 					if (cityObject.x == city.MainBuilding.x && cityObject.y == city.MainBuilding.y) continue;
 					if (ObjectFactory.isType("NoRoadRequired", cityObject.type)) continue;
 

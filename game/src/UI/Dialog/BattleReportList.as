@@ -5,6 +5,7 @@
 	import src.Comm.GameURLLoader;
 	import src.Constants;
 	import src.Global;
+	import src.UI.Components.BattleReport.BattleReportListTable;
 	import src.UI.Components.BattleReport.LocalReportList;
 	import src.UI.Components.BattleReport.RemoteReportList;
 	import src.UI.Components.SimpleTooltip;
@@ -60,7 +61,12 @@
 		{
 			super.showSelf(owner, modal, onClose);
 			Global.gameContainer.showFrame(frame);
+			frame.setResizable(true);
 			frame.setTitle("Battle Reports");
+            
+            localReports.loadInitially();
+            remoteReports.loadInitially();
+            
 			return frame;
 		}
 
@@ -82,7 +88,7 @@
 			pnlLocal.setBorder(border1);
 			pnlLocal.setLayout(new BorderLayout());
 
-			localReports = new LocalReportList();
+			localReports = new LocalReportList(BattleReportViewer.REPORT_CITY_LOCAL, [BattleReportListTable.COLUMN_DATE_UNREAD_BOLD, BattleReportListTable.COLUMN_LOCATION]);
 			localReports.setConstraints("Center");
 			pnlLocal.append(localReports);
 
@@ -94,7 +100,7 @@
 			pnlRemote.setBorder(border2);
 			pnlRemote.setLayout(new BorderLayout());
 
-			remoteReports = new RemoteReportList();
+			remoteReports = new RemoteReportList(BattleReportViewer.REPORT_CITY_FOREIGN, [BattleReportListTable.COLUMN_DATE_UNREAD_BOLD, BattleReportListTable.COLUMN_LOCATION, BattleReportListTable.COLUMN_TROOP_NAME, BattleReportListTable.COLUMN_SIDE]);
 			remoteReports.setConstraints("Center");
 			pnlRemote.append(remoteReports);
 			

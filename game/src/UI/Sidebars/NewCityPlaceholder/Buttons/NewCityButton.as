@@ -4,6 +4,7 @@ package src.UI.Sidebars.NewCityPlaceholder.Buttons {
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import src.Comm.Commands;
+	import src.Constants;
 	import src.Global;
 	import src.Map.City;
 	import src.Map.MapUtil;
@@ -53,6 +54,7 @@ package src.UI.Sidebars.NewCityPlaceholder.Buttons {
 		override public function validateButton():Boolean 
 		{
 			var data:* = Formula.getResourceNewCity();
+			if (Constants.alwaysEnableButtons) return true;
 			if (data.influenceRequired > data.influenceCurrent || data.wagonRequired > data.wagonCurrent)
 				return false;
 
@@ -74,7 +76,7 @@ package src.UI.Sidebars.NewCityPlaceholder.Buttons {
 			if (isEnabled())
 			{
 				var dlg: CreateCityDialog = new CreateCityDialog(function(sender: CreateCityDialog) : void {				
-					var mapPos: Point = MapUtil.getMapCoord(newCityPlaceholder.getX(), newCityPlaceholder.getY());
+					var mapPos: Point = MapUtil.getMapCoord(newCityPlaceholder.objX, newCityPlaceholder.objY);
 					Global.mapComm.Region.createCity(Global.gameContainer.selectedCity.id, mapPos.x, mapPos.y, sender.getCityName());
 					sender.getFrame().dispose();
 				});						

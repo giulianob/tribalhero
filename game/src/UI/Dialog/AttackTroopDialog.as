@@ -1,21 +1,19 @@
 ﻿package src.UI.Dialog {
 
-	import flash.events.Event;
+	import flash.events.*;
 	import org.aswing.*;
 	import org.aswing.border.*;
-	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
-	import src.Global;
-	import src.Map.City;
-	import src.Objects.Effects.Formula;
-	import src.Objects.GameError;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Components.SimpleTroopGridList.*;
-	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
-	import src.UI.GameJPanel;
+	import org.aswing.geom.*;
+	import src.*;
+	import src.Map.*;
+	import src.Objects.Effects.*;
 	import src.Objects.Troop.*;
-	import src.Util.Util;
+	import src.UI.*;
+	import src.UI.Components.*;
+	import src.UI.Components.SimpleTroopGridList.*;
+	import src.Util.*;
 
 	public class AttackTroopDialog extends GameJPanel {
 
@@ -39,11 +37,11 @@
 		protected var tilelists: Array = new Array();
 		protected var attackTilelists: Array = new Array();
 
-		public function AttackTroopDialog(onAccept: Function, hasAttackStrength: Boolean = true):void
+		public function AttackTroopDialog(city: City, onAccept: Function, hasAttackStrength: Boolean = true):void
 		{
 			title = "Send Attack";
 
-			this.city = Global.gameContainer.selectedCity;
+			this.city = city;
 			this.hasAttackStrength = hasAttackStrength;
 			
 			createUI();			
@@ -86,7 +84,7 @@
 		protected function updateSpeedInfo(e: Event = null): void {
 			var stub: TroopStub = getTroop();			
 			if (stub.getIndividualUnitCount() == 0) {
-				lblTroopSpeed.setText("Hint: Drag units to assign to the different troops. Hold SHIFT while dragging to transfer all units at once.") 
+				lblTroopSpeed.setText(StringHelper.localize("TROOP_CREATE_DRAG_HINT")) 
 			}
 			else {
 				lblTroopSpeed.setText("Troop speed will be: " + Formula.moveTimeString(stub.getSpeed(city)));

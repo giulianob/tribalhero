@@ -170,7 +170,7 @@
 		{
 			var city: City = Global.map.cities.get(parentObj.cityId);
 
-			for each (var obj: CityObject in city.objects.each())
+			for each (var obj: CityObject in city.objects)
 			{
 				if (obj.type == type && obj.level >= minlevel && obj.level <= maxlevel)
 				return true;
@@ -194,7 +194,7 @@
 			if (count == 0) count = 1;
 			
 			var totalStructures: int = 0;
-			for each (var obj: CityObject in city.objects.each())
+			for each (var obj: CityObject in city.objects)
 			{
 				if (obj.type == type && obj.level >= minlevel && obj.level <= maxlevel)
 					totalStructures++;
@@ -261,7 +261,7 @@
 		private static function playerDefensePoint(parentObj: GameObject, effects: Array, comparison: String, value: int, param3: int, param4: int, param5:int): Boolean
 		{
 			var totalDefensePoints: int = 0;
-			for each (var city: City in Global.map.cities.each()) {
+			for each (var city: City in Global.map.cities) {
 				totalDefensePoints += city.attackPoint;
 			}
 
@@ -277,7 +277,7 @@
 		private static function playerDefensePointMsg(parentObj: GameObject, comparison: String, value: int, param3: int, param4: int, param5:int): String
 		{
 			var totalDefensePoints: int = 0;
-			for each (var city: City in Global.map.cities.each()) {
+			for each (var city: City in Global.map.cities) {
 				totalDefensePoints += city.attackPoint;
 			}
 
@@ -327,7 +327,7 @@
 		private static function playerAttackPoint(parentObj: GameObject, effects: Array, comparison: String, value: int, param3: int, param4: int, param5:int): Boolean
 		{
 			var totalAttackPoints: int = 0;
-			for each (var city: City in Global.map.cities.each()) {
+			for each (var city: City in Global.map.cities) {
 				totalAttackPoints += city.attackPoint;
 			}
 
@@ -343,7 +343,7 @@
 		private static function playerAttackPointMsg(parentObj: GameObject, comparison: String, value: int, param3: int, param4: int, param5:int): String
 		{
 			var totalAttackPoints: int = 0;
-			for each (var city: City in Global.map.cities.each()) {
+			for each (var city: City in Global.map.cities) {
 				totalAttackPoints += city.attackPoint;
 			}
 
@@ -402,7 +402,7 @@
 
 			if (city == null) return false;
 
-			for each (var obj: CityObject in city.objects.each()) {
+			for each (var obj: CityObject in city.objects) {
 				if (ObjectFactory.getClassType(obj.type) != ObjectFactory.TYPE_STRUCTURE) continue;
 
 				// Skip the current obj
@@ -424,7 +424,7 @@
 		
 		/* CAN CREATE TRIBE */
 		public static function canCreateTribe() : Boolean {
-			for each (var city: City in Global.map.cities.each()) {
+			for each (var city: City in Global.map.cities) {
 				if (city.MainBuilding.level >= 5) {
 					return true;
 				}

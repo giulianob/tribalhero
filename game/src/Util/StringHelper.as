@@ -1,12 +1,20 @@
 package src.Util {
+	import fl.lang.Locale;
+	import flash.text.*;
 	import flash.xml.*;
 	import mx.utils.StringUtil;
+	import org.aswing.ASFont;
 	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	public class StringHelper {
-		public function StringHelper() {
-		}
 		
+		private static var TEXT_FIELD:TextField = new TextField();
+		private static var TEXT_FONT:ASFont = null;
+		{
+			TEXT_FIELD.autoSize = TextFieldAutoSize.LEFT;
+			TEXT_FIELD.type = TextFieldType.DYNAMIC;
+		}				
+	
 		public static function htmlUnescape(str:String):String
 		{
 			return new XML(str).firstChild.nodeValue;
@@ -98,6 +106,30 @@ package src.Util {
 			
 			return ret;
 		}
+		
+		public static function localize(msgId: String, ... params): String {
+			if (msgId == "") {
+				return "";
+			}
+			
+			var localizedStr: String = Locale.loadString(msgId);
+			if (localizedStr == null) {
+				return "[" + msgId + "]";				
+			}
+			
+			params.unshift(localizedStr);
+			return StringUtil.substitute.apply(undefined, params);
+		}
+		
+		public static function calculateTextWidth(font: ASFont, str: String): Number {
+		    TEXT_FIELD.text = str;
+			if (TEXT_FONT != font){
+				font.apply(TEXT_FIELD);
+				TEXT_FONT = font;
+			}
+			
+			return TEXT_FIELD.width;
+		}					
 	}
 	
 }

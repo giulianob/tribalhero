@@ -1,17 +1,10 @@
 ﻿package src
 {
-	import flash.display.DisplayObject;
-	import flash.display.MovieClip;
-	import flash.events.Event;
-	import flash.text.TextField;
-	import flash.text.TextFieldAutoSize;
-	import flash.text.TextFormat;
-	import flash.utils.getDefinitionByName;
+	import flash.display.*;
+	import flash.events.*;
+	import flash.text.*;
+	import flash.utils.*;
 
-	/**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
 	public dynamic class Preloader extends MovieClip
 	{
 
@@ -27,7 +20,7 @@
 
 			loadText = new TextField();
 			loadText.autoSize = TextFieldAutoSize.CENTER;
-			loadText.text = "Downloading game. This may take a minute or two...";
+			loadText.text = "Downloading game. This may take a minute or two the first time...";
 			loadText.setTextFormat(new TextFormat("Arial", 13, null, true));
 			loadText.x = stage.stageWidth / 2 - loadText.textWidth / 2;
 			loadText.y = stage.stageHeight / 2 - loadText.textHeight / 2;		
@@ -64,10 +57,8 @@
 			stop();
 			removeChild(_clip);
 			var mainClass:Class = getDefinitionByName("src.Main") as Class;
-			addChild(new mainClass() as DisplayObject);
+			stage.addChild(new mainClass() as DisplayObject);
 		}
-
 	}
-
 }
 

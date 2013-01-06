@@ -2,7 +2,7 @@
 <!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
 <map version="1.0" orientation="rectiso" width="11" height="24" tilewidth="108" tileheight="54">
  <tileset name="Untitled" firstgid="1" tilewidth="108" tileheight="108">
-  <image source="../../../Users/Giuliano/Documents/My Dropbox/Game/Tilemap.large.png"/>
+  <image source="../graphics/Tilemap.large.png"/>
  </tileset>
  <layer name="Layer 0" width="11" height="24">
   <data encoding="base64" compression="gzip">

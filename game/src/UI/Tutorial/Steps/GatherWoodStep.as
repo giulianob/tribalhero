@@ -1,6 +1,6 @@
 package src.UI.Tutorial.Steps 
 {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
@@ -53,7 +53,7 @@ package src.UI.Tutorial.Steps
 			if ((lumbermill != null && lumbermill.level > 1) || forestCamp != null) {
 				
 				if (shouldShowTutorialEndMsg) {
-					InfoDialog.showMessageDialog(Locale.loadString("STR_MESSAGE"), Locale.loadString("TUTORIAL_END"));
+					InfoDialog.showMessageDialog(StringHelper.localize("STR_MESSAGE"), StringHelper.localize("TUTORIAL_END"));
 				}
 				
 				this.complete();

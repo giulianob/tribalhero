@@ -1,6 +1,6 @@
 package src.UI.Tutorial 
 {	
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import flash.display.DisplayObject;
 	import org.aswing.geom.IntPoint;
 	import org.aswing.plaf.basic.adjuster.PopupSliderThumbIcon;
@@ -29,7 +29,7 @@ package src.UI.Tutorial
 			
 			hideAllMessages();
 			
-			var text: String = Locale.loadString(messageId);
+			var text: String = StringHelper.localize(messageId);
 			this.messageTooltip = new TextTooltip(text == null ? "[" + messageId + "]" : text);
 			this.messageTooltip.show(target);		
 			
@@ -48,7 +48,7 @@ package src.UI.Tutorial
 			var messages: Array = new Array();
 			
 			for each (var messageId: String in messageIds) {
-				var text: String = Locale.loadString("TUTORIAL_" + messageId);
+				var text: String = StringHelper.localize("TUTORIAL_" + messageId);
 				messages.push(text == null ? "[" + messageId + "]" : text);
 			}
 			
@@ -65,7 +65,7 @@ package src.UI.Tutorial
 			
 			hideAllMessages();			
 			
-			var text: String = Locale.loadString(messageId);
+			var text: String = StringHelper.localize(messageId);
 			this.messageTooltip = new TextTooltip(text == null ? "[" + messageId + "]" : text);
 			this.messageTooltip.showFixed(position);	
 			this.messageId = messageId;

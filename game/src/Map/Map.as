@@ -7,6 +7,7 @@
 	import flash.utils.*;
 	import src.Objects.NewCityPlaceholder;
 	import src.Objects.SimpleObject;
+	import src.Objects.Stronghold.Stronghold;
 	import src.UI.Sidebars.NewCityPlaceholder.NewCityPlaceholderSidebar;
 	import src.Util.Util;
 	import flash.ui.Keyboard;
@@ -21,6 +22,7 @@
 	import src.UI.Sidebars.ForestInfo.ForestInfoSidebar;
 	import src.UI.Sidebars.ObjectInfo.ObjectInfoSidebar;
 	import src.UI.Sidebars.TroopInfo.TroopInfoSidebar;
+	import src.UI.Sidebars.StrongholdInfo.StrongholdInfoSidebar;
 
 	import src.Constants;
 
@@ -255,7 +257,7 @@
 			selectObject(null);
 
 			selectViewable = null;
-			for each(var gameObject: SimpleObject in objContainer.objects.each()) {
+			for each(var gameObject: SimpleObject in objContainer.objects) {
 				if (!(gameObject is SimpleGameObject)) 
 					continue;
 				
@@ -267,21 +269,35 @@
 
 			selectViewable = { 'groupId' : groupId, 'objectId': objectId };
 		}
+		
+		public function requeryIfSelected(obj: SimpleObject):void {
+			if (selectedObject !== obj) {
+				return;
+			}
+			
+			selectObject(obj);
+		}
 
 		public function selectObject(obj: SimpleObject, query: Boolean = true, deselectIfSelected: Boolean = false ):void
 		{
+			if (selectedObject != null) {
+				selectedObject.removeEventListener(SimpleObject.DISPOSED, onSelectedObjectDisposed);
+			}
+			
 			selectViewable = null;
 			
-			if (obj == null && selectedObject == null)
+			if (obj == null && selectedObject == null) {
 				return;
-				
-			if (obj != null && obj.disposed)
+			}
+			
+			if (obj != null && obj.disposed) {
 				obj = null;
+			}
 
 			var reselecting: Boolean = false;
 
 			//Check if we are reselecting the currently selected object
-			if (selectedObject != null && obj != null && (selectedObject == obj || (selectedObject is SimpleGameObject && (selectedObject as SimpleGameObject).equalById(obj))))
+			if (selectedObject != null && obj != null && selectedObject == obj)
 			{
 				//If we are, then deselect it if we have the deselectIfSelected option
 				if (deselectIfSelected) 
@@ -292,19 +308,23 @@
 
 			//If the reselecting bit is on, then we dont want to refresh the whole UI. This just makes a better user experience.
 			if (!reselecting) {				
-				if (selectedObject != null) 
+				if (selectedObject != null) {
 					selectedObject.setSelected(false);
-					
+				}
+				
 				Global.gameContainer.setSidebar(null);
 			}
 			
-			selectedObject = obj;
-
+			selectedObject = obj;							
+			
 			if (obj != null)
-			{
-				// Switch current selected city if needed
-				if (obj is GameObject)
-					Global.gameContainer.selectCity((obj as GameObject).groupId);
+			{				
+                var gameObj: SimpleGameObject = obj as SimpleGameObject;
+                if (gameObj && cities.get(gameObj.groupId)) {
+                    Global.gameContainer.selectCity(gameObj.groupId);
+                }
+                
+				selectedObject.addEventListener(SimpleObject.DISPOSED, onSelectedObjectDisposed);
 				
 				// Decide whether to query for the object info or just go ahead and select it
 				if (query) {
@@ -320,7 +340,9 @@
 						doSelectedObject(obj);
 				}
 				else
+				{
 					doSelectedObject(obj);
+				}
 			}
 		}
 
@@ -346,10 +368,16 @@
 				sidebar = new TroopInfoSidebar(obj as TroopObject);			
 			else if (obj is Forest)
 				sidebar = new ForestInfoSidebar(obj as Forest);
+			else if (obj is Stronghold)
+				sidebar = new StrongholdInfoSidebar(obj as Stronghold);
 			else if (obj is NewCityPlaceholder)
 				sidebar = new NewCityPlaceholderSidebar(obj as NewCityPlaceholder);
 
 			Global.gameContainer.setSidebar(sidebar);
+		}
+		
+		private function onSelectedObjectDisposed(e: Event): void {
+			selectObject(null);
 		}
 
 		//###################################################################

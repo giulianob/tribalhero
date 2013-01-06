@@ -1,15 +1,11 @@
-/**
-* ...
-* @author Default
-* @version 0.1
-*/
-
 package src.Comm {
 	
 	public class Commands {
 		public static const CHANNEL_NOTIFICATION: String = "CHANNEL_NOTIFICATION";
 		
 		public static const INVALID: int = 1;
+		
+		public static const SYSTEM_CHAT: int = 6;
 		
 		public static const CMD_LINE: int = 7;
 		
@@ -22,9 +18,11 @@ package src.Comm {
 		public static const CITY_USERNAME_GET: int = 13;
 		public static const PLAYER_NAME_FROM_CITY_NAME: int = 14;
 		public static const TRIBE_USERNAME_GET: int = 15;
+		public static const STRONGHOLD_USERNAME_GET: int = 16;
 		
 		public static const PLAYER_PROFILE: int = 20;
 		public static const PLAYER_DESCRIPTION_SET: int = 21;
+		public static const PROFILE_BY_TYPE: int = 22;
 		
 		public static const ACTION_CANCEL: int = 51;
 		public static const ACTION_COMPLETE: int = 52;
@@ -95,13 +93,15 @@ package src.Comm {
         public static const UNIT_UPGRADE: int = 502;
         public static const UNIT_TEMPLATE_UPGRADED: int = 503;
 		
-		public static const TROOP_INFO: int = 600;
-		public static const TROOP_ATTACK: int = 601;
-		public static const TROOP_REINFORCE: int = 602;
+		public static const TROOP_INFO: int = 600;		
 		public static const TROOP_RETREAT: int = 603;		
 		public static const TROOP_ADDED: int = 611;
 		public static const TROOP_UPDATED: int = 612;
 		public static const TROOP_REMOVED: int = 613;
+		public static const TROOP_ATTACK_CITY: int = 614;		
+		public static const TROOP_ATTACK_STRONGHOLD: int = 615;
+		public static const TROOP_REINFORCE_CITY: int = 616;
+		public static const TROOP_REINFORCE_STRONGHOLD: int = 617;
 		public static const LOCAL_TROOP_MOVE: int = 621;	
 		
         public static const BATTLE_SUBSCRIBE: int = 700;
@@ -114,6 +114,9 @@ package src.Comm {
 		public static const BATTLE_NEW_ROUND: int = 707;
 		public static const BATTLE_WITHDRAW_ATTACKER: int = 708;
 		public static const BATTLE_WITHDRAW_DEFENDER: int = 709;
+		public static const BATTLE_GROUP_UNIT_ADDED: int = 710;				
+		public static const BATTLE_GROUP_UNIT_REMOVED: int = 711;		
+		public static const BATTLE_PROPERTIES_UPDATED: int = 712;		
 		
 		public static const RESOURCE_GATHER: int = 801;
 		
@@ -126,10 +129,9 @@ package src.Comm {
         public static const TRIBE_DELETE: int = 1003;
         public static const TRIBE_UPDATE: int = 1004;
         public static const TRIBE_UPGRADE: int = 1005;
-		public static const TRIBE_DESCRIPTION_SET: int = 1006;
-		public static const TRIBE_PUBLIC_INFO: int = 1007;
+		public static const TRIBE_DESCRIPTION_SET: int = 1006;		
 		public static const TRIBE_TRANSFER: int = 1008;
-        public static const TRIBESMAN_ADD: int = 1011;
+		public static const TRIBE_INFO_BY_NAME: int = 1009;
         public static const TRIBESMAN_REMOVE: int = 1012;
         public static const TRIBESMAN_UPDATE: int = 1013;
         public static const TRIBESMAN_REQUEST: int = 1014;
@@ -138,10 +140,17 @@ package src.Comm {
 		public static const TRIBESMAN_LEAVE: int = 1017;
 		public static const TRIBESMAN_CONTRIBUTE: int = 1018;
 		public static const TRIBESMAN_GOT_KICKED: int = 1019;
-		public static const TRIBE_ASSIGNMENT_CREATE: int = 1022;
+		public static const TRIBE_CITY_ASSIGNMENT_CREATE: int = 1022;
 		public static const TRIBE_ASSIGNMENT_JOIN: int = 1023;
+		public static const TRIBE_STRONGHOLD_ASSIGNMENT_CREATE: int = 1024;
 		public static const TRIBE_UPDATE_NOTIFICATIONS: int = 1031;
 		public static const TRIBE_UPDATE_CHANNEL: int = 1051;
+		
+		public static const STRONGHOLD_INFO: int = 1101;
+		public static const STRONGHOLD_PUBLIC_INFO_BY_NAME: int = 1102;
+		public static const STRONGHOLD_LOCATE: int = 1103;
+		public static const STRONGHOLD_GATE_REPAIR: int = 1104;
+		public static const STRONGHOLD_LOCATE_BY_NAME: int = 1105;
 		
 	}
 	

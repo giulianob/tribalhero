@@ -29,7 +29,18 @@
 		}
 		
 		public function getDataAsObject() : Object {
-			return new JSONDecoder(loader.data).getValue();
+			try {
+				return new JSONDecoder(loader.data).getValue();
+			}
+			catch (e: Error) {
+				CONFIG::debug {
+					Util.log("Unable to convert data to object");
+					Util.log(loader.data.toString());
+				}
+				throw e;
+			}
+			
+			return null;
 		}
 		
 		private function addParameter(request: Object, key: String, value: *): Object {
@@ -68,8 +79,9 @@
 			try {
 				lastURL = request.url + "?" + request.data;
 				
-				if (Constants.debug)
-					Util.log(lastURL);
+				CONFIG::debug {
+					Util.log("Loading url: " + lastURL);
+				}
 				
 				loader.load(request);
 			}

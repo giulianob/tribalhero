@@ -131,7 +131,7 @@
 			minimapZoomTooltip = new SimpleTooltip(minimapTools.btnMinimapZoom);
 			minimapTools.btnMinimapZoom.addEventListener(MouseEvent.CLICK, onZoomIntoMinimap);
 
-			new SimpleTooltip(minimapTools.btnGoToCoords, "Find cities, players, and coordinates");
+			new SimpleTooltip(minimapTools.btnGoToCoords, "Find...");
 			minimapTools.btnGoToCoords.addEventListener(MouseEvent.CLICK, onGoToCoords);
 			
 			new SimpleTooltip(minimapTools.btnFeedback, "Send Feedback");
@@ -227,17 +227,17 @@
 
 		public function onViewCityTroops(e: MouseEvent) :void
 		{
-			if (!selectedCity)
+			if (!selectedCity) {
 				return;
+			}
 
-			var movementDialog: MovementDialog = new MovementDialog(selectedCity);
-			movementDialog.show();
+			new TroopsDialog(selectedCity).show();
 		}
 		
 		public function onViewTribe(e: MouseEvent) :void
 		{			
 			if (Constants.tribeId != 0) {				
-				Global.mapComm.Tribe.viewTribeProfile();
+				Global.mapComm.Tribe.viewTribeProfile(Constants.tribeId);
 			}
 			else if (Constants.tribeInviteId != 0) {
 				var tribeInviteDialog: TribeInviteRequestDialog = new TribeInviteRequestDialog(function(sender: TribeInviteRequestDialog) : void {
@@ -388,7 +388,7 @@
 		public function eventKeyUp(event: KeyboardEvent):void
 		{
 			// clear key press
-			delete pressedKeys[event.keyCode];
+			pressedKeys[event.keyCode] = false;
 		}		
 		
 		public function isKeyDown(keyCode: int) : Boolean
@@ -414,8 +414,8 @@
 			// end key down handler
 			
 			// Key Press Handler
-			if(pressedKeys[e.keyCode]) return;
-			pressedKeys[e.keyCode] = 1;
+			if (pressedKeys[e.keyCode]) return;
+			pressedKeys[e.keyCode] = true;
 			
 			// Escape key functions
 			if (e.charCode == Keyboard.ESCAPE)
@@ -453,7 +453,7 @@
 		}
 
 		public function setMap(map: Map, miniMap: MiniMap):void
-		{		
+		{				
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
 			stage.addEventListener(KeyboardEvent.KEY_UP, eventKeyUp);
@@ -478,7 +478,7 @@
 			addChild(this.mapOverlay);
 
 			// Populate city list
-			for each (var city: City in map.cities.each()) {
+			for each (var city: City in map.cities) {
 				addCityToUI(city);
 			}
 
@@ -598,7 +598,9 @@
 			}
 
 			if (cmdLine) {
-				cmdLine.getFrame().dispose();
+				if (cmdLine.getFrame()) {
+					cmdLine.getFrame().dispose();
+				}
 				cmdLine = null;
 			}
 			

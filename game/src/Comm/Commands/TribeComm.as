@@ -1,22 +1,15 @@
 ﻿package src.Comm.Commands {
 
-	import flash.utils.ByteArray;
-	import org.aswing.AssetIcon;
-	import org.aswing.Icon;
+	import src.*;
 	import src.Comm.*;
-	import src.Constants;
 	import src.Map.*;
 	import src.Objects.*;
 	import src.Objects.Actions.*;
+	import src.Objects.Stronghold.Stronghold;
 	import src.Objects.Troop.*;
-	import src.Global;
-	import src.UI.Components.ScreenMessages.ScreenMessageItem;
-	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
-	import src.UI.Dialog.InfoDialog;
-	import src.UI.Dialog.TribeProfileDialog;
-	import src.UI.Dialog.TribePublicProfileDialog;
+	import src.UI.Components.ScreenMessages.*;
+	import src.UI.Dialog.*;
 	import src.Util.*;
-	import src.UI.Components.ScreenMessages.BuiltInMessages;
 
 	public class TribeComm {
 
@@ -96,13 +89,6 @@
 			}
 		}
 		
-		public function viewTribeProfile(callback: Function = null):void {
-			var packet: Packet = new Packet();
-			packet.cmd = Commands.TRIBE_INFO;
-
-			session.write(packet, onReceiveTribeProfile, {callback: callback});
-		}
-		
 		public function setTribeDescription(description: String) : void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TRIBE_DESCRIPTION_SET;
@@ -112,7 +98,37 @@
 			session.write(packet, showErrorOrRefreshTribePanel, { refresh: true });
 		}		
 		
-		public function onReceiveTribeProfile(packet: Packet, custom: * ):void {
+		public function viewTribeProfileByName(name: String , callback: Function = null):void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBE_INFO_BY_NAME;
+			packet.writeString(name);
+			session.write(packet, onReceiveTribeProfile, {callback: callback});
+		}
+		
+		public function onReceiveTribeProfile(packet: Packet, custom: * ): void {
+			mapComm.hideLoading();
+			
+			if (MapComm.tryShowError(packet)) {
+				if(custom.callback!=null) custom.callback(null);
+				return;
+			}
+			var isPrivate: Boolean = packet.readByte()==1;
+			if (isPrivate) {
+				readPrivateTribeProfile(packet, custom);
+			} else {
+				readPublicTribeProfile(packet, custom);
+			}
+		}
+		
+		public function viewTribeProfile(tribeId: int, callback: Function = null):void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBE_INFO;
+			packet.writeUInt(tribeId);
+
+			session.write(packet, onReceiveTribeProfile, {callback: callback});
+		}
+
+		public function readPrivateTribeProfile(packet: Packet, custom: * ):void {
 			mapComm.hideLoading();
 			if (MapComm.tryShowError(packet)) {
 				custom.callback(null);
@@ -125,6 +141,8 @@
 			profileData.tribeLevel = packet.readUByte();
 			profileData.tribeName = packet.readString();
 			profileData.description = packet.readString();
+			profileData.victoryPoint = packet.readFloat();
+			profileData.created = packet.readUInt();			
 			
 			profileData.resources = new Resources(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUInt(), 0);
 			
@@ -155,14 +173,8 @@
 			var incomingAttackCount: int = packet.readShort();
 			for (i = 0; i < incomingAttackCount; i++) {
 				profileData.incomingAttacks.push( {
-					targetPlayerId: packet.readUInt(),
-					targetCityId: packet.readUInt(),
-					targetPlayerName: packet.readString(),
-					targetCityName: packet.readString(),
-					sourcePlayerId: packet.readUInt(),
-					sourceCityId: packet.readUInt(),
-					sourcePlayerName: packet.readString(),
-					sourceCityName: packet.readString(),
+					target: mapComm.General.readLocation(packet),
+					source: mapComm.General.readLocation(packet),
 					endTime: packet.readUInt()
 				});
 			}
@@ -170,23 +182,19 @@
 			profileData.assignments = [];
 			var assignmentCount: int = packet.readShort();
 			for (i = 0; i < assignmentCount; i++) {
-				var assignment: * = {
-					id: packet.readInt(),
-					endTime: packet.readUInt(),
-					x: packet.readUInt(),
-					y: packet.readUInt(),
-					targetPlayerId: packet.readUInt(),
-					targetCityId: packet.readUInt(),
-					targetPlayerName: packet.readString(),
-					targetCityName: packet.readString(),
-					attackMode: packet.readByte(),
-					dispatchCount: packet.readUInt(),
-					description: packet.readString(),
-					isAttack: packet.readByte(),
-					troopCount: packet.readInt(),
-					troops: []
-				};
-				
+				var assignment: * = {};
+				assignment.id = packet.readInt();
+				assignment.endTime = packet.readUInt();
+				assignment.x = packet.readUInt();
+				assignment.y = packet.readUInt();
+				assignment.target = mapComm.General.readLocation(packet);
+				assignment.attackMode = packet.readByte();
+				assignment.dispatchCount = packet.readUInt();
+				assignment.description = packet.readString();
+				assignment.isAttack = packet.readByte();
+				assignment.troopCount = packet.readInt();
+				assignment.troops = [];
+
 				Global.map.usernames.players.add(new Username(assignment.targetPlayerId, assignment.targetPlayerName));
 				Global.map.usernames.cities.add(new Username(assignment.targetCityId, assignment.targetCityName));
 				
@@ -224,8 +232,71 @@
 				profileData.assignments.push(assignment);
 			}
 			
-			if (custom.callback)
+			// Strongholds
+			var stronghold: *;
+			
+			profileData.strongholds = [];
+			var strongholdCount: int = packet.readShort();
+			for (i = 0; i < strongholdCount; i++) {
+				stronghold = {
+					id: packet.readUInt(),
+					name: packet.readString(),
+					state: packet.readByte(),
+					lvl: packet.readByte(),
+					gate: packet.readFloat(),
+					x: packet.readUInt(),
+					y: packet.readUInt(),
+					upkeep: packet.readInt(),
+					victoryPointRate: packet.readFloat(),
+					dateOccupied: packet.readUInt(),
+					gateOpenTo: {
+						id: packet.readUInt(),
+						name: packet.readString()
+					},
+					battleState: packet.readByte()
+				};
+				
+				if (stronghold.battleState != Stronghold.BATTLE_STATE_NONE) {
+					stronghold.battleId = packet.readUInt();
+				}
+
+				if (!Global.map.usernames.strongholds.get(stronghold.id)) {
+					Global.map.usernames.strongholds.add(new Username(stronghold.id, stronghold.name));
+				}
+				
+				profileData.strongholds.push(stronghold);
+			}
+			
+			// Attackable strongholds
+			profileData.openStrongholds = [];
+			strongholdCount  = packet.readShort();
+			for (i = 0; i < strongholdCount; i++) {
+				stronghold = {
+					id: packet.readUInt(),
+					name: packet.readString(),
+					tribeId: packet.readUInt(),
+					tribeName: packet.readString(),					
+					state: packet.readByte(),
+					lvl: packet.readByte(),
+					x: packet.readUInt(),
+					y: packet.readUInt(),
+					battleState: packet.readByte()
+				};
+				
+				if (stronghold.battleState != Stronghold.BATTLE_STATE_NONE) {
+					stronghold.battleId = packet.readUInt();
+				}
+
+				if (!Global.map.usernames.strongholds.get(stronghold.id)) {
+					Global.map.usernames.strongholds.add(new Username(stronghold.id, stronghold.name));
+				}
+				
+				profileData.openStrongholds.push(stronghold);
+			}			
+			
+			if (custom.callback) {
 				custom.callback(profileData);
+			}
 			else
 			{			
 				if (!profileData) 
@@ -236,37 +307,45 @@
 			}		
 		}
 		
-		public function viewTribePublicProfile(tribeId: int, callback: Function = null):void {
-			var packet: Packet = new Packet();
-			
-			packet.cmd = Commands.TRIBE_PUBLIC_INFO;
-			packet.writeUInt(tribeId);
-
-			mapComm.showLoading();
-			session.write(packet, onReceiveTribePublicProfile, { callback: callback } );
-		}	
-		
-		public function onReceiveTribePublicProfile(packet: Packet, custom: * ):void {
+		public function readPublicTribeProfile(packet: Packet, custom: * ):void {
 			mapComm.hideLoading();
 			if (MapComm.tryShowError(packet)) {
 				custom.callback(null);
 				return;
 			}
 			
+            var i: int;
+            
 			var profileData: * = new Object();
 			profileData.tribeId = packet.readUInt();
 			profileData.tribeName = packet.readString();
+			profileData.level = packet.readUByte();
+			profileData.created = packet.readUInt();
 			profileData.members = [];
 			var memberCount: int = packet.readShort();
-			for (var i: int = 0; i < memberCount; i++)
+			for (i = 0; i < memberCount; i++) {
 				profileData.members.push({
 					playerId: packet.readUInt(),
 					playerName: packet.readString(),
 					cityCount: packet.readInt(),
 					rank: packet.readUByte()
 				});
-				
-			(profileData.members as Array).sortOn("rank", [Array.NUMERIC]);
+            }						
+            
+            profileData.strongholds = [];
+            var strongholdsCount: int = packet.readShort();
+			for (i = 0; i < strongholdsCount; i++) {
+				profileData.strongholds.push({
+					strongholdId: packet.readUInt(),
+					strongholdName: packet.readString(),
+					strongholdLevel: packet.readByte(),
+                    strongholdX: packet.readUInt(),
+                    strongholdY: packet.readUInt()
+				});
+            }
+            
+            profileData.members.sortOn("rank", [Array.NUMERIC]);
+            profileData.strongholds.sortOn("strongholdLevel", [Array.NUMERIC | Array.DESCENDING]);
 			
 			if (custom.callback)
 				custom.callback(profileData);

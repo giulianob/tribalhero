@@ -1,6 +1,6 @@
 package src.Map.CityRegionFilters 
 {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import src.Constants;
 	import src.Map.CityRegionFilters.CityRegionFilter;
 	import src.Map.CityRegionLegend;
@@ -40,17 +40,17 @@ package src.Map.CityRegionFilters
 		
 		override public function applyLegend(legend: CityRegionLegend) : void {
 			var icon: DisplayObject = new DOT_SPRITE;
-			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_CITY"));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_CITY"));
 			
 			icon = new DOT_SPRITE;
 			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[3].r, DEFAULT_COLORS[3].g, DEFAULT_COLORS[3].b);
-			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_TRIBE_SELF"));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_TRIBE_SELF"));
 			
 			icon = new DOT_SPRITE;
 			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[0].r, DEFAULT_COLORS[0].g, DEFAULT_COLORS[0].b);
-			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_TRIBE_OTHER"));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_TRIBE_OTHER"));
 			
-			legend.setLegendTitle(Locale.loadString("MINIMAP_LEGEND_TRIBE"));
+			legend.setLegendTitle(StringHelper.localize("MINIMAP_LEGEND_TRIBE"));
 		}
 	}
 }

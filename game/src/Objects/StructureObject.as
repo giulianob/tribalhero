@@ -25,6 +25,14 @@
 			radiusManager = new RadiusManager(this);
 		}
 		
+		override public function copy(obj:SimpleObject):void 
+		{
+			super.copy(obj);
+			var gameObj: StructureObject = obj as StructureObject;
+			level = gameObj.level;
+			wallManager.draw(gameObj.wallManager.radius);
+		}
+				
 		override public function setSelected(bool:Boolean = false):void 
 		{
 			super.setSelected(bool);

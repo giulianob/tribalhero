@@ -6,8 +6,6 @@ using System.IO;
 using System.Linq;
 using ConsoleSimulator.UserBattle;
 using Game;
-using Game.Battle;
-using Game.Data;
 using Game.Map;
 using Game.Setup;
 using Ninject;
@@ -22,7 +20,6 @@ namespace ConsoleSimulator
     {
         private static void Main(string[] args)
         {
-
             Factory.CompileConfigFiles();
             // CSVToXML.Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
             Engine.CreateDefaultKernel();
@@ -42,54 +39,56 @@ namespace ConsoleSimulator
                                                      FileAccess.ReadWrite);
 
                 // Load map
-                World.Current.Load(map,
-                                  regionChanges,
-                                  createRegionChanges,
-                                  Config.map_width,
-                                  Config.map_height,
-                                  Config.region_width,
-                                  Config.region_height,
-                                  Config.city_region_width,
-                                  Config.city_region_height);
+                World.Current.Regions.Load(map,
+                                           regionChanges,
+                                           createRegionChanges,
+                                           Config.map_width,
+                                           Config.map_height,
+                                           Config.region_width,
+                                           Config.region_height,
+                                           Config.city_region_width,
+                                           Config.city_region_height);
             }
-            
+
             XmlConfigurator.Configure();
             ILog logger = LogManager.GetLogger(typeof(Program));
 
             JimSwdTgtArc b = new JimSwdTgtArc();
             b.Run();
             Console.ReadKey();
-
         }
 
-        private  static void RunFullSimulation()
+        private static void RunFullSimulation()
         {
             bool sameLevelOnly = true;
-            var lvlFilter = new List<byte> { 1, 10 };
+            var lvlFilter = new List<byte> {1, 10};
 
             Array.ForEach(Directory.GetFiles(Directory.GetCurrentDirectory(), "Simulation*.csv"),
-              delegate(string path) { File.Delete(path); });
+                          delegate(string path) { File.Delete(path); });
 
             FullSimulation sim;
-            foreach (var kvp in Ioc.Kernel.Get<UnitFactory>().GetList()) {
+            foreach (var kvp in Ioc.Kernel.Get<UnitFactory>().GetList())
+            {
                 if (!lvlFilter.Any(x => x == kvp.Value.Lvl))
+                {
                     continue;
+                }
                 sim = new FullSimulation((ushort)(kvp.Key / 100),
-                                     kvp.Value.Lvl,
-                                     1,
-                                     FullSimulation.QuantityUnit.GroupSize,
-                                     sameLevelOnly);
+                                         kvp.Value.Lvl,
+                                         1,
+                                         FullSimulation.QuantityUnit.GroupSize,
+                                         sameLevelOnly);
                 sim.RunDef("Simulation " + kvp.Value.Lvl + ".csv");
                 sim = new FullSimulation((ushort)(kvp.Key / 100),
-                                     kvp.Value.Lvl,
-                                     1,
-                                     FullSimulation.QuantityUnit.GroupSize,
-                                     sameLevelOnly);
+                                         kvp.Value.Lvl,
+                                         1,
+                                         FullSimulation.QuantityUnit.GroupSize,
+                                         sameLevelOnly);
                 sim.RunAtk("Simulation " + kvp.Value.Lvl + ".csv");
             }
         }
 
-       /* private static void bm_UnitRemoved(CombatObject co)
+        /* private static void bm_UnitRemoved(CombatObject co)
         {
             co.Print();
         }

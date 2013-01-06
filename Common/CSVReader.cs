@@ -12,18 +12,19 @@ namespace Common
     {
         private readonly StreamReader sr;
 
-        private bool initialized;
+        private string[] columns;
 
-        public bool HasHeader { get; set; }
+        private bool initialized;
 
         public CsvReader(StreamReader sr, bool hasHeader = true)
         {
             this.sr = sr;
 
-            HasHeader = hasHeader;            
+            HasHeader = hasHeader;
         }
 
-        private string[] columns;
+        public bool HasHeader { get; set; }
+
         public string[] Columns
         {
             get
@@ -52,12 +53,16 @@ namespace Common
             {
                 line = sr.ReadLine();
                 if (line == null)
+                {
                     return null;
+                }
 
                 line = line.Trim();
 
                 if (line != string.Empty && !line.StartsWith("//"))
+                {
                     break;
+                }
             }
 
             return RegexTokenizeCsvLine(line);
@@ -86,7 +91,9 @@ namespace Common
             var items = new string[coll.Count];
             int i = 0;
             foreach (Match m in coll)
-                items[i++] = m.Groups[0].Value.Trim('"').Trim(',').Trim('"').Trim();
+            {
+                items[i++] = m.Groups[0].Value.Trim('"').Trim(',').Trim('"').Replace("\"\"", "\"").Trim();
+            }
 
             return items;
         }
@@ -100,9 +107,13 @@ namespace Common
             {
                 string cell = cells[i].Trim();
                 if (cell.StartsWith("\""))
+                {
                     result[i] = cell.Replace("\"\"", "\"").Trim('"');
+                }
                 else
+                {
                     result[i] = cell;
+                }
             }
 
             return result;

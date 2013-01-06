@@ -3,12 +3,10 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
-using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -17,7 +15,9 @@ namespace Game.Logic.Actions
     public class StructureSelfDestroyPassiveAction : ScheduledPassiveAction, IScriptable
     {
         private uint cityId;
+
         private uint objectId;
+
         private TimeSpan ts;
 
         public StructureSelfDestroyPassiveAction()
@@ -31,13 +31,13 @@ namespace Game.Logic.Actions
         }
 
         public StructureSelfDestroyPassiveAction(uint id,
-                                          DateTime beginTime,
-                                          DateTime nextTime,
-                                          DateTime endTime,
-                                          bool isVisible,
-                                          string nlsDescription, 
-                                          Dictionary<string, string> properties)
-            : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
+                                                 DateTime beginTime,
+                                                 DateTime nextTime,
+                                                 DateTime endTime,
+                                                 bool isVisible,
+                                                 string nlsDescription,
+                                                 Dictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
@@ -55,7 +55,9 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return XmlSerializer.Serialize(new[] {new XmlKvPair("city_id", cityId), new XmlKvPair("object_id", objectId),});
+                return
+                        XmlSerializer.Serialize(new[]
+                        {new XmlKvPair("city_id", cityId), new XmlKvPair("object_id", objectId),});
             }
         }
 
@@ -67,14 +69,18 @@ namespace Game.Logic.Actions
             IStructure structure;
 
             if (!(obj is IStructure))
+            {
                 throw new Exception();
+            }
             cityId = obj.City.Id;
             objectId = obj.ObjectId;
             ts = TimeSpan.FromSeconds(int.Parse(parms[0]));
             NlsDescription = parms[1];
 
             if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
+            {
                 return;
+            }
 
             city.Worker.DoPassive(structure, this, true);
         }
@@ -89,7 +95,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 if (structure == null)
                 {
@@ -107,7 +115,7 @@ namespace Game.Logic.Actions
                 city.BeginUpdate();
                 structure.BeginUpdate();
 
-                World.Current.Remove(structure);
+                World.Current.Regions.Remove(structure);
                 city.ScheduleRemove(structure, false);
 
                 structure.EndUpdate();
@@ -131,13 +139,15 @@ namespace Game.Logic.Actions
             BeginTime = SystemClock.Now;
 
             if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
+            {
                 return Error.ObjectNotFound;
+            }
 
             return Error.Ok;
         }
 
         public override void UserCancelled()
-        {            
+        {
         }
 
         public override void WorkerRemoved(bool wasKilled)
@@ -147,7 +157,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
-                    return;                
+                {
+                    return;
+                }
 
                 StateChange(ActionState.Failed);
             }

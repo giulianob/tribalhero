@@ -1,28 +1,29 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
 using Game.Data;
 using Game.Logic;
-using Game.Setup;
-using Game.Util;
 using Game.Util.Locking;
-using Ninject;
-using Persistance;
 
-namespace Game.Module {
-    public class PlayersRemover : ISchedule {
-        double intervalInHours;
-        bool started = false;
-        ICityRemoverFactory iCityRemoverFactory;
-        IPlayerSelector iPlayerSelector;
+namespace Game.Module
+{
+    public class PlayersRemover : ISchedule
+    {
+        private readonly ICityRemoverFactory cityRemoverFactory;
 
-        public PlayersRemover(ICityRemoverFactory iCityRemoverFactory, IPlayerSelector iPlayerSelector)
+        private readonly IPlayerSelector playerSelector;
+
+        private double intervalInHours;
+
+        private bool started;
+
+        public PlayersRemover(IPlayerSelector playerSelector, ICityRemoverFactory cityRemoverFactory)
         {
-            this.iCityRemoverFactory = iCityRemoverFactory;
-            this.iPlayerSelector = iPlayerSelector;
+            this.cityRemoverFactory = cityRemoverFactory;
+            this.playerSelector = playerSelector;
         }
 
-        public void Start(double intervalInHours = 24) {
+        public void Start(double intervalInHours = 24)
+        {
             this.intervalInHours = intervalInHours;
             started = true;
             Callback(null);
@@ -33,13 +34,16 @@ namespace Game.Module {
             started = false;
         }
 
-        public int DeletePlayers() {
-            var list = iPlayerSelector.GetPlayerIds();
+        public int DeletePlayers()
+        {
+            var list = playerSelector.GetPlayerIds();
             int count = 0;
-            foreach (var id in list) {
+            foreach (var id in list)
+            {
                 IPlayer player;
-                using (Concurrency.Current.Lock(id, out player)) {
-                    count += player.GetCityList().Count(city => iCityRemoverFactory.CreateCityRemover(city).Start());
+                using (Concurrency.Current.Lock(id, out player))
+                {
+                    count += player.GetCityList().Count(city => cityRemoverFactory.CreateCityRemover(city.Id).Start());
                 }
             }
             return count;
@@ -48,10 +52,15 @@ namespace Game.Module {
         #region ISchedule Members
 
         public DateTime Time { get; private set; }
+
         public bool IsScheduled { get; set; }
 
-        public void Callback(object custom) {
-            if (!started) return;
+        public void Callback(object custom)
+        {
+            if (!started)
+            {
+                return;
+            }
             DeletePlayers();
             Time = DateTime.UtcNow.AddHours(intervalInHours);
             Scheduler.Current.Put(this);

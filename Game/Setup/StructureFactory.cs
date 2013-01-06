@@ -16,7 +16,9 @@ namespace Game.Setup
     public enum ClassId : ushort
     {
         Resource = 50,
+
         Structure = 100,
+
         Unit = 200,
     }
 
@@ -30,16 +32,26 @@ namespace Game.Setup
 
         public StructureFactory(string filename)
         {
-            using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
+            using (
+                    var reader =
+                            new CsvReader(
+                                    new StreamReader(new FileStream(filename,
+                                                                    FileMode.Open,
+                                                                    FileAccess.Read,
+                                                                    FileShare.ReadWrite))))
             {
                 String[] toks;
                 var col = new Dictionary<string, int>();
                 for (int i = 0; i < reader.Columns.Length; ++i)
+                {
                     col.Add(reader.Columns[i], i);
+                }
                 while ((toks = reader.ReadRow()) != null)
                 {
                     if (toks[0].Length <= 0)
+                    {
                         continue;
+                    }
                     var resource = new Resource(int.Parse(toks[col["Crop"]]),
                                                 int.Parse(toks[col["Gold"]]),
                                                 int.Parse(toks[col["Iron"]]),
@@ -48,10 +60,14 @@ namespace Game.Setup
 
                     var stats = new BaseBattleStats(ushort.Parse(toks[col["Type"]]),
                                                     byte.Parse(toks[col["Lvl"]]),
-                                                    (WeaponType)Enum.Parse(typeof(WeaponType), toks[col["Weapon"]].ToCamelCase()),
-                                                    (WeaponClass)Enum.Parse(typeof(WeaponClass), toks[col["WpnClass"]].ToCamelCase()),
-                                                    (ArmorType)Enum.Parse(typeof(ArmorType), toks[col["Armor"]].ToCamelCase()),
-                                                    (ArmorClass)Enum.Parse(typeof(ArmorClass), toks[col["ArmrClass"]].ToCamelCase()),
+                                                    (WeaponType)
+                                                    Enum.Parse(typeof(WeaponType), toks[col["Weapon"]].ToCamelCase()),
+                                                    (WeaponClass)
+                                                    Enum.Parse(typeof(WeaponClass), toks[col["WpnClass"]].ToCamelCase()),
+                                                    (ArmorType)
+                                                    Enum.Parse(typeof(ArmorType), toks[col["Armor"]].ToCamelCase()),
+                                                    (ArmorClass)
+                                                    Enum.Parse(typeof(ArmorClass), toks[col["ArmrClass"]].ToCamelCase()),
                                                     decimal.Parse(toks[col["Hp"]]),
                                                     decimal.Parse(toks[col["Atk"]]),
                                                     byte.Parse(toks[col["Splash"]]),
@@ -59,16 +75,19 @@ namespace Game.Setup
                                                     byte.Parse(toks[col["Stl"]]),
                                                     byte.Parse(toks[col["Spd"]]),
                                                     0,
+                                                    0,
                                                     0);
                     int workerId = int.Parse(toks[col["Worker"]]);
 
                     if (workerId == 0)
                     {
                         workerId = byte.Parse(toks[col["Lvl"]]) == 0
-                                        ? 0
-                                        : Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecordBestFit(int.Parse(toks[col["Type"]]), byte.Parse(toks[col["Lvl"]])).Id;
+                                           ? 0
+                                           : Ioc.Kernel.Get<ActionRequirementFactory>()
+                                                .GetActionRequirementRecordBestFit(int.Parse(toks[col["Type"]]),
+                                                                                   byte.Parse(toks[col["Lvl"]]))
+                                                .Id;
                     }
-
 
                     var basestats = new StructureBaseStats(toks[col["Name"]],
                                                            toks[col["SpriteClass"]],
@@ -80,9 +99,12 @@ namespace Game.Setup
                                                            ushort.Parse(toks[col["MaxLabor"]]),
                                                            int.Parse(toks[col["Time"]]),
                                                            workerId,
-                                                           (ClassId)Enum.Parse(typeof(ClassId), (toks[col["Class"]]), true));
+                                                           (ClassId)
+                                                           Enum.Parse(typeof(ClassId), (toks[col["Class"]]), true));
 
-                    Global.Logger.Info(string.Format("{0}:{1}", int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]]), toks[col["Name"]]));
+                    Global.Logger.Info(string.Format("{0}:{1}",
+                                                     int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]]),
+                                                     toks[col["Name"]]));
                     dict[int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]])] = basestats;
                 }
             }
@@ -97,13 +119,13 @@ namespace Game.Setup
         public int GetTime(ushort type, byte lvl)
         {
             StructureBaseStats tmp;
-            return dict.TryGetValue(type*100 + lvl, out tmp) ? tmp.BuildTime : -1;
+            return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp.BuildTime : -1;
         }
 
         public IStructure GetNewStructure(ushort type, byte lvl)
         {
             StructureBaseStats baseStats;
-            if (!dict.TryGetValue(type*100 + lvl, out baseStats))
+            if (!dict.TryGetValue(type * 100 + lvl, out baseStats))
             {
                 throw new Exception(String.Format("Structure not found in csv type[{0}] lvl[{1}]!", type, lvl));
             }
@@ -114,11 +136,11 @@ namespace Game.Setup
         public void GetUpgradedStructure(IStructure structure, ushort type, byte lvl)
         {
             StructureBaseStats baseStats;
-            if (!dict.TryGetValue(type*100 + lvl, out baseStats))
+            if (!dict.TryGetValue(type * 100 + lvl, out baseStats))
             {
                 throw new Exception(String.Format("Structure not found in csv type[{0}] lvl[{1}]!", type, lvl));
             }
-            
+
             //Calculate the different in MAXHP between the new and old structures and Add it to the current hp if the new one is greater.
             StructureStats oldStats = structure.Stats;
 

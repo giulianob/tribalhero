@@ -9,43 +9,55 @@ namespace Game.Data.Troop
     public enum FormationType : byte
     {
         Normal = 1,
+
         Attack = 2,
+
         Defense = 3,
+
         Scout = 4,
+
         Garrison = 5,
+
         Structure = 6,
+
         InBattle = 7,
+
         Captured = 11,
+
         Wounded = 12,
+
         Killed = 13
     }
 
     public class Formation : Dictionary<ushort, ushort>
     {
-        private readonly ITroopStub parent;
+        #region Events
 
-        public Formation(FormationType type, ITroopStub parent)
+        public delegate void UnitUpdated();
+
+        public event UnitUpdated OnUnitUpdated = delegate { };
+
+        #endregion
+
+        public Formation(FormationType type)
         {
             Type = type;
-            this.parent = parent;
         }
 
         public FormationType Type { get; set; }
-
-        public void FireUpdated()
-        {
-            parent.FireUpdated();
-        }
 
         public new void Add(ushort type, ushort count)
         {
             ushort currentCount;
             if (TryGetValue(type, out currentCount))
+            {
                 this[type] = (ushort)(currentCount + count);
+            }
             else
+            {
                 this[type] = count;
-
-            FireUpdated();
+            }
+            OnUnitUpdated();
         }
 
         public ushort Remove(ushort type, ushort count)
@@ -56,13 +68,13 @@ namespace Game.Data.Troop
                 if (currentCount <= count)
                 {
                     Remove(type);
-                    FireUpdated();
+                    OnUnitUpdated();
                     return currentCount;
                 }
 
                 var remaining = (ushort)(currentCount - count);
                 this[type] = remaining;
-                FireUpdated();
+                OnUnitUpdated();
                 return count;
             }
             return 0;
@@ -71,8 +83,10 @@ namespace Game.Data.Troop
         internal void Add(Formation formation)
         {
             foreach (var kvp in formation)
+            {
                 Add(kvp.Key, kvp.Value);
-            FireUpdated();
+            }
+            OnUnitUpdated();
         }
     }
 }

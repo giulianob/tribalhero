@@ -1,6 +1,7 @@
 #region
 
 using System.Data;
+using Game.Util;
 using Persistance;
 
 #endregion
@@ -10,7 +11,9 @@ namespace Game.Logic
     public abstract class PassiveAction : GameAction
     {
         public const string DB_TABLE = "passive_actions";
+
         private bool isChain;
+
         private bool isVisible;
 
         protected PassiveAction()
@@ -22,6 +25,8 @@ namespace Game.Logic
             ActionId = id;
             IsVisible = isVisible;
         }
+
+        public LargeIdGenerator ActionIdGenerator { get; set; }
 
         public bool IsVisible
         {
@@ -62,11 +67,13 @@ namespace Game.Logic
             get
             {
                 return new[]
-                       {
-                               new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32), new DbColumn("is_chain", isChain, DbType.Boolean),
-                               new DbColumn("is_scheduled", false, DbType.Boolean), new DbColumn("is_visible", isVisible, DbType.Boolean),
-                               new DbColumn("type", Type, DbType.UInt32), new DbColumn("properties", Properties, DbType.String),
-                       };
+                {
+                        new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32),
+                        new DbColumn("is_chain", isChain, DbType.Boolean),
+                        new DbColumn("is_scheduled", false, DbType.Boolean),
+                        new DbColumn("is_visible", isVisible, DbType.Boolean), new DbColumn("type", Type, DbType.UInt32)
+                        , new DbColumn("properties", Properties, DbType.String),
+                };
             }
         }
     }

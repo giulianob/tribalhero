@@ -5,16 +5,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using CSVToXML;
 using Common;
 using Game;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Logic;
 using Game.Setup;
-using Ninject;
-using log4net.Config;
 using NDesk.Options;
+using Ninject;
 
 #endregion
 
@@ -24,8 +22,7 @@ namespace GraphGenerator
     {
         private const ushort MAIN_BUILDING = 2000;
 
-        private const string TEMPLATE_LARGE =
-                @"digraph g {	
+        private const string TEMPLATE_LARGE = @"digraph g {	
     graph [fontsize=32 labelloc=""t"" bgcolor=""transparent"" splines=true overlap=false rankdir=""LR"" ranksep=""equally""];
     node [shape=none, fontsize=12];			
     edge [fontsize=12];
@@ -34,8 +31,7 @@ namespace GraphGenerator
 
 }";
 
-        private const string TEMPLATE =
-                @"digraph g {	
+        private const string TEMPLATE = @"digraph g {	
     graph [size=45 fontsize=32 labelloc=""t"" bgcolor=""transparent"" splines=true overlap=false rankdir=""LR"" ranksep=""equally""];
     node [shape=none, fontsize=15];			
     edge [fontsize=15];
@@ -44,46 +40,60 @@ namespace GraphGenerator
 
 }";
 
+        private const string GV_ARGS = @"-Tpng -o{0} {1}";
+
         private static StringWriter nodeConnections;
 
         private static string[] imageDirectories = new[]
-                                                   {
-                                                           @"c:\source\gameclient\graphics\buildings",
-                                                           @"c:\source\gameclient\graphics\units",
-                                                           @"c:\source\gameclient\graphics\icons\props"
-                                                   };
+        {
+                @"c:\source\gameclient\graphics\buildings", @"c:\source\gameclient\graphics\units",
+                @"c:\source\gameclient\graphics\icons\props"
+        };
 
         private static string gvPath = @"C:\Program Files (x86)\Graphviz2.26.3\bin\dot.exe";
-        private const string GV_ARGS = @"-Tpng -o{0} {1}";
 
         private static string output = "output";
 
         private static readonly List<int> processedStructures = new List<int>();
+
         private static readonly List<int> processedUnits = new List<int>();
+
         private static readonly List<int> processedTechnologies = new List<int>();
+
         private static readonly Dictionary<string, string> nodeDefintions = new Dictionary<string, string>();
+
         private static readonly Dictionary<string, string> lang = new Dictionary<string, string>();
 
         private static readonly List<List<string>> ranks = new List<List<string>>();
+
+        private static string settings = string.Empty;
 
         private static void ParseArgs()
         {
             var imgDirList = new List<string>();
 
             var p = new OptionSet
-                    {{"img=", v => imgDirList.Add(v)}, {"gv-path=", v => gvPath = v}, {"output=", v => output = v},};
+            {
+                    {"img=", v => imgDirList.Add(v)},
+                    {"gv-path=", v => gvPath = v},
+                    {"output=", v => output = v},
+                    {"settings=", v => settings = v}
+            };
 
             p.Parse(Environment.GetCommandLineArgs());
 
             if (imgDirList.Count > 0)
+            {
                 imageDirectories = imgDirList.ToArray();
+            }
         }
 
         private static void Main()
         {
             ParseArgs();
+            Config.LoadConfigFile(settings);
             Factory.CompileConfigFiles();
-            Engine.CreateDefaultKernel();            
+            Engine.CreateDefaultKernel();
 
             LoadLanguages();
 
@@ -94,7 +104,9 @@ namespace GraphGenerator
             foreach (var directory in imageDirectories)
             {
                 foreach (var file in Directory.GetFiles(directory, "*.png"))
+                {
                     File.Copy(file, Path.Combine(rawPath, Path.GetFileName(file)), true);
+                }
             }
 
             // Process
@@ -135,17 +147,17 @@ namespace GraphGenerator
         private static void RunGv(string outImg, string gvFile)
         {
             var info = new ProcessStartInfo
-                       {
-                               FileName = gvPath,
-                               Arguments = string.Format(GV_ARGS, outImg, gvFile),
-                               WorkingDirectory = Path.Combine(Path.GetFullPath(output), "raw"),
-                               CreateNoWindow = true,
-                               RedirectStandardError = true,
-                               RedirectStandardOutput = true,
-                               UseShellExecute = false
-                       };
-            Process proc = Process.Start(info);            
-            proc.WaitForExit();            
+            {
+                    FileName = gvPath,
+                    Arguments = string.Format(GV_ARGS, outImg, gvFile),
+                    WorkingDirectory = Path.Combine(Path.GetFullPath(output), "raw"),
+                    CreateNoWindow = true,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false
+            };
+            Process proc = Process.Start(info);
+            proc.WaitForExit();
             if (proc.ExitCode != 0)
             {
                 Console.Out.WriteLine(proc.StandardError.ReadToEnd());
@@ -165,10 +177,14 @@ namespace GraphGenerator
                     {
                         string[] obj = langReader.ReadRow();
                         if (obj == null)
+                        {
                             break;
+                        }
 
                         if (obj[0] == string.Empty)
+                        {
                             continue;
+                        }
 
                         lang[obj[0]] = obj[1];
                     }
@@ -179,7 +195,9 @@ namespace GraphGenerator
         private static void WriteDefinitions(TextWriter outStream)
         {
             foreach (var kvp in nodeDefintions)
+            {
                 outStream.WriteLine("{0} {1}", kvp.Key, kvp.Value);
+            }
         }
 
         private static void WriteRankings(TextWriter outStream)
@@ -188,30 +206,39 @@ namespace GraphGenerator
             {
                 outStream.Write("{ rank=\"same\"; ");
                 foreach (var str in ranking)
+                {
                     outStream.Write("{0}; ", str);
+                }
                 outStream.WriteLine("}");
             }
         }
 
         private static Result ProcessStructure(StructureBaseStats structureBaseStats, bool skipUpgrades)
         {
-            int hash = structureBaseStats.Type*100 + structureBaseStats.Lvl;
+            int hash = structureBaseStats.Type * 100 + structureBaseStats.Lvl;
             if (processedStructures.Contains(hash))
+            {
                 return Result.AlreadyProcessed;
+            }
 
             Console.Out.WriteLine("Parsing " + structureBaseStats.Name + " " + structureBaseStats.Lvl);
 
-            ActionRequirementFactory.ActionRecord record = Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(structureBaseStats.WorkerId);
+            ActionRequirementFactory.ActionRecord record =
+                    Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(structureBaseStats.WorkerId);
 
             processedStructures.Add(hash);
 
             bool hadConnection = false;
 
             if (structureBaseStats.Lvl == 1)
+            {
                 CreateDefinition(structureBaseStats);
+            }
 
             if (record == null)
+            {
                 return Result.Empty;
+            }
 
             // First pass
             foreach (var action in record.List)
@@ -220,20 +247,26 @@ namespace GraphGenerator
                 {
                     case ActionType.StructureBuildActive:
                     case ActionType.StructureChangeActive:
-                        StructureBaseStats building = Ioc.Kernel.Get<StructureFactory>().GetBaseStats(ushort.Parse(action.Parms[0]), 1);
+                        StructureBaseStats building =
+                                Ioc.Kernel.Get<StructureFactory>().GetBaseStats(ushort.Parse(action.Parms[0]), 1);
                         Result result = ProcessStructure(building, false);
                         if (result != Result.AlreadyProcessed)
                         {
                             if (action.Type == ActionType.StructureBuildActive)
+                            {
                                 WriteNode(structureBaseStats, building);
+                            }
                             else if (action.Type == ActionType.StructureChangeActive)
+                            {
                                 WriteNode(structureBaseStats, building, "dashed", "Converts To");
+                            }
 
                             hadConnection = true;
                         }
                         break;
                     case ActionType.UnitTrainActive:
-                        BaseUnitStats training = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(ushort.Parse(action.Parms[0]), 1);
+                        BaseUnitStats training =
+                                Ioc.Kernel.Get<UnitFactory>().GetUnitStats(ushort.Parse(action.Parms[0]), 1);
                         if (!processedUnits.Contains(training.UnitHash))
                         {
                             WriteNode(structureBaseStats, training);
@@ -243,7 +276,8 @@ namespace GraphGenerator
                         }
                         break;
                     case ActionType.TechnologyUpgradeActive:
-                        TechnologyBase tech = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(ushort.Parse(action.Parms[0]), 1);
+                        TechnologyBase tech =
+                                Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(ushort.Parse(action.Parms[0]), 1);
                         if (!processedTechnologies.Contains(tech.TechnologyHash))
                         {
                             WriteNode(structureBaseStats, tech);
@@ -269,7 +303,8 @@ namespace GraphGenerator
 
                             for (int i = from.Lvl; i < maxLvl; i++)
                             {
-                                StructureBaseStats to = Ioc.Kernel.Get<StructureFactory>().GetBaseStats(from.Type, (byte)(i + 1));
+                                StructureBaseStats to = Ioc.Kernel.Get<StructureFactory>()
+                                                           .GetBaseStats(from.Type, (byte)(i + 1));
                                 Result result = ProcessStructure(to, true);
                                 if (result == Result.Ok || i == maxLvl - 1)
                                 {
@@ -282,7 +317,9 @@ namespace GraphGenerator
                             }
 
                             if (newRank.Count > 1)
+                            {
                                 ranks.Add(newRank);
+                            }
                         }
                         break;
                 }
@@ -326,8 +363,10 @@ namespace GraphGenerator
 
         private static void CreateDefinition(TechnologyBase tech)
         {
-            nodeDefintions[GetKey(tech)] = string.Format("[label=\"{0}\", labelloc=\"b\", height=0.8, shape=none, image=\"paper-scroll.png\"]",
-                                                         lang[tech.Name + "_TECHNOLOGY_NAME"]);
+            nodeDefintions[GetKey(tech)] =
+                    string.Format(
+                                  "[label=\"{0}\", labelloc=\"b\", height=0.8, shape=none, image=\"paper-scroll.png\"]",
+                                  lang[tech.Name + "_TECHNOLOGY_NAME"]);
         }
 
         private static void WriteNode(StructureBaseStats from, StructureBaseStats to)
@@ -357,7 +396,9 @@ namespace GraphGenerator
         private enum Result
         {
             Ok,
+
             Empty,
+
             AlreadyProcessed
         }
 

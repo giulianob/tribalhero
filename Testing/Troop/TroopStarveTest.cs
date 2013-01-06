@@ -8,13 +8,13 @@ using Xunit;
 namespace Testing.Troop
 {
     /// <summary>
-    ///   Summary description for TroopProcedureTest
+    ///     Summary description for TroopProcedureTest
     /// </summary>
     public class TroopStarveTest
     {
         public ITroopStub CreateSimpleStub()
         {
-            var stub = new TroopStub();
+            var stub = new TroopStub(0, null);
             stub.AddFormation(FormationType.Normal);
             return stub;
         }
@@ -61,7 +61,7 @@ namespace Testing.Troop
             stub.AddUnit(FormationType.Normal, 0, 1);
 
             stub.Starve();
-            Assert.Equal(stub[FormationType.Normal][0],1);
+            Assert.Equal(stub[FormationType.Normal][0], 1);
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace Testing.Troop
             ITroopStub stub = CreateSimpleStub();
             stub.AddUnit(FormationType.Normal, 0, 1);
 
-            stub.Starve(5,true);
+            stub.Starve(5, true);
             Assert.False(stub[FormationType.Normal].ContainsKey(0));
         }
     }

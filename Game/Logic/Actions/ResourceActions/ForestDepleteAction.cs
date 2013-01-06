@@ -4,10 +4,7 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Map;
-using Game.Setup;
-using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -26,11 +23,14 @@ namespace Game.Logic.Actions.ResourceActions
         #region ISchedule Members
 
         public DateTime Time { get; private set; }
+
         public bool IsScheduled { get; set; }
 
         public void Callback(object custom)
         {
-            var lck = Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler, new object[] {Forest.ObjectId}, World.Current.Forests);
+            var lck = Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler,
+                                               new object[] {Forest.ObjectId},
+                                               World.Current.Forests);
             using (lck)
             {
                 Global.Logger.Debug(string.Format("Destroying forest[{0}]", Forest.ObjectId));
@@ -38,7 +38,9 @@ namespace Game.Logic.Actions.ResourceActions
                 var camps = new List<IStructure>(Forest);
 
                 if (!Forest.InWorld)
+                {
                     Global.Logger.Warn("Trying to remove forest that isnt even in the world");
+                }
 
                 foreach (var obj in camps)
                 {
@@ -48,11 +50,13 @@ namespace Game.Logic.Actions.ResourceActions
 
                     obj.City.Owner.SendSystemMessage(null,
                                                      string.Format("{0}: Forest depleted", obj.City.Name),
-                                                     string.Format("{0}: One of your lumbermill outposts have finished gathering wood from a forest. All laborers have returned to your city and are now idle.", obj.City.Name));
+                                                     string.Format(
+                                                                   "{0}: One of your lumbermill outposts have finished gathering wood from a forest. All laborers have returned to your city and are now idle.",
+                                                                   obj.City.Name));
 
                     // Remove structure from city
                     obj.BeginUpdate();
-                    World.Current.Remove(obj);
+                    World.Current.Regions.Remove(obj);
                     obj.City.ScheduleRemove(obj, false, true);
                     obj.EndUpdate();
                 }

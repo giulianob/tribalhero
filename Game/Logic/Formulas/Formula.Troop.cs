@@ -5,8 +5,6 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Actions;
-using Game.Setup;
-using Game.Util;
 
 #endregion
 
@@ -23,7 +21,9 @@ namespace Game.Logic.Formulas
         public virtual byte GetTroopSpeed(ITroopStub stub)
         {
             if (stub.TotalCount == 0)
+            {
                 return 0;
+            }
 
             int count = 0;
             int totalSpeed = 0;
@@ -35,14 +35,14 @@ namespace Game.Logic.Formulas
                 {
                     BaseUnitStats stats = stub.City.Template[kvp.Key];
                     // Use the slowest machine speed if available.
-                    if (stats.Battle.Armor == ArmorType.Machine) 
+                    if (stats.Battle.Armor == ArmorType.Machine)
                     {
-                        machineSpeed = Math.Min(stats.Battle.Spd,machineSpeed);
+                        machineSpeed = Math.Min(stats.Battle.Spd, machineSpeed);
                     }
                     else
                     {
-                        count += (kvp.Value*stats.Upkeep);
-                        totalSpeed += (kvp.Value*stats.Upkeep*stats.Battle.Spd);
+                        count += (kvp.Value * stats.Upkeep);
+                        totalSpeed += (kvp.Value * stats.Upkeep * stats.Battle.Spd);
                     }
                 }
             }
@@ -55,18 +55,12 @@ namespace Game.Logic.Formulas
             switch(mode)
             {
                 case AttackMode.Weak:
-                    return (ushort)(totalCount*2/3);
+                    return (ushort)(totalCount * 2 / 3);
                 case AttackMode.Normal:
-                    return (ushort)(totalCount/3);
-                case AttackMode.Strong:
+                    return (ushort)(totalCount / 3);
+                default:
                     return 0;
             }
-            return 0;
-        }
-
-        public virtual bool IsNewbieProtected(IPlayer player)
-        {
-            return SystemClock.Now.Subtract(player.Created).TotalSeconds < Config.newbie_protection;
         }
     }
 }

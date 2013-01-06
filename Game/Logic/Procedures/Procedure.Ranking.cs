@@ -1,14 +1,10 @@
 #region
 
-using System;
 using System.Threading;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Logic.Formulas;
-using Game.Setup;
-using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -17,30 +13,32 @@ namespace Game.Logic.Procedures
     public partial class Procedure
     {
         /// <summary>
-        ///   Gives the appropriate attack points to the specified city. Must call begin/endupdate on city.
+        ///     Gives the appropriate attack points to the specified city. Must call begin/endupdate on city.
         /// </summary>
-        /// <param name = "city"></param>
-        /// <param name = "attackPoints"></param>
-        /// <param name = "initialTroopValue"></param>
-        /// <param name = "endTroopValue"></param>
-        public virtual void GiveAttackPoints(ICity city, int attackPoints, int initialTroopValue, int endTroopValue)
+        /// <param name="city"></param>
+        /// <param name="attackPoints"></param>
+        public virtual void GiveAttackPoints(ICity city, int attackPoints)
         {
-            var point = Formula.Current.GetAttackPoint(attackPoints, initialTroopValue - endTroopValue);
+            var point = Formula.Current.GetAttackPoint(attackPoints);
             city.AttackPoint += point;
             if (city.Owner.Tribesman == null)
+            {
                 return;
+            }
             var id = city.Owner.Tribesman.Tribe.Id;
-            ThreadPool.QueueUserWorkItem(delegate {
-                ITribe tribe;
-                using (Concurrency.Current.Lock(id, out tribe)) {
-                    if (tribe == null)
+            ThreadPool.QueueUserWorkItem(delegate
+                {
+                    ITribe tribe;
+                    using (Concurrency.Current.Lock(id, out tribe))
                     {
-                        return;
-                    }
+                        if (tribe == null)
+                        {
+                            return;
+                        }
 
-                    tribe.AttackPoint += point;
-                }
-            });
+                        tribe.AttackPoint += point;
+                    }
+                });
         }
     }
 }

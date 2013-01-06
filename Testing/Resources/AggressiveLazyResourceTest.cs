@@ -10,8 +10,8 @@ using Xunit;
 namespace Testing.Resources
 {
     /// <summary>
-    ///   Summary description for LazyResourceTest
-    /// </summary>    
+    ///     Summary description for LazyResourceTest
+    /// </summary>
     public class AggressiveLazyResourceTest : IDisposable
     {
         private DateTime begin = DateTime.UtcNow;
@@ -20,14 +20,14 @@ namespace Testing.Resources
         {
             SystemClock.SetClock(begin);
         }
-        
+
         public void Dispose()
         {
             SystemClock.ResyncClock();
         }
 
         /// <summary>
-        ///   Tests rate and upkeep being zero
+        ///     Tests rate and upkeep being zero
         /// </summary>
         [Fact]
         public void TestZero()
@@ -38,7 +38,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Tests having positive rate but no upkeep
+        ///     Tests having positive rate but no upkeep
         /// </summary>
         [Fact]
         public void TestPositiveRate()
@@ -52,7 +52,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Tests having positive upkeep but no rate
+        ///     Tests having positive upkeep but no rate
         /// </summary>
         [Fact]
         public void TestPositiveUpkeep()
@@ -66,7 +66,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Tests having rate higher than upkeep
+        ///     Tests having rate higher than upkeep
         /// </summary>
         [Fact]
         public void TestPositiveRateGreaterThanUpkeep()
@@ -80,7 +80,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Tests having upkeep higher than rate
+        ///     Tests having upkeep higher than rate
         /// </summary>
         [Fact]
         public void TestPositiveUpkeepGreaterThanRate()
@@ -94,7 +94,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Test equal upkeep and rate
+        ///     Test equal upkeep and rate
         /// </summary>
         [Fact]
         public void TestEqualUpkeepAndRate()
@@ -108,7 +108,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Tests changing the rate
+        ///     Tests changing the rate
         /// </summary>
         [Fact]
         public void TestChangeRate()
@@ -126,7 +126,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Tests changing the upkeep
+        ///     Tests changing the upkeep
         /// </summary>
         [Fact]
         public void TestChangeUpkeep()

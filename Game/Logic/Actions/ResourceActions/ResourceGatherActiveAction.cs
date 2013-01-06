@@ -1,9 +1,7 @@
-﻿
-#region
+﻿#region
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using Game.Data;
 using Game.Map;
 using Game.Setup;
@@ -18,6 +16,7 @@ namespace Game.Logic.Actions
     public class ResourceGatherActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
+
         private readonly uint objectId;
 
         public ResourceGatherActiveAction(uint cityId, uint objectId)
@@ -27,14 +26,14 @@ namespace Game.Logic.Actions
         }
 
         public ResourceGatherActiveAction(uint id,
-                                            DateTime beginTime,
-                                            DateTime nextTime,
-                                            DateTime endTime,
-                                            int workerType,
-                                            byte workerIndex,
-                                            ushort actionCount,
-                                            Dictionary<string, string> properties)
-                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)        
+                                          DateTime beginTime,
+                                          DateTime nextTime,
+                                          DateTime endTime,
+                                          int workerType,
+                                          byte workerIndex,
+                                          ushort actionCount,
+                                          Dictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
@@ -60,11 +59,12 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return XmlSerializer.Serialize(new[] {new XmlKvPair("city_id", cityId), new XmlKvPair("object_id", objectId),});
+                return
+                        XmlSerializer.Serialize(new[]
+                        {new XmlKvPair("city_id", cityId), new XmlKvPair("object_id", objectId),});
             }
         }
 
-        
         public override void Callback(object custom)
         {
             ICity city;
@@ -73,20 +73,24 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 StateChange(ActionState.Completed);
             }
         }
 
         public override Error Execute()
-        {            
+        {
             ICity city;
             IStructure structure;
             object value;
 
             if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
+            {
                 return Error.ObjectNotFound;
+            }
 
             city.BeginUpdate();
             city.Resource.BeginUpdate();
@@ -128,7 +132,12 @@ namespace Game.Logic.Actions
             city.Resource.EndUpdate();
             city.EndUpdate();
 
-            var changeAction = new StructureChangePassiveAction(cityId, objectId, 0, Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("EmptyField")[0], 1);
+            var changeAction = new StructureChangePassiveAction(cityId,
+                                                                objectId,
+                                                                0,
+                                                                Ioc.Kernel.Get<ObjectTypeFactory>()
+                                                                   .GetTypes("EmptyField")[0],
+                                                                1);
             city.Worker.DoPassive(structure, changeAction, true);
 
             StateChange(ActionState.Completed);
@@ -140,13 +149,15 @@ namespace Game.Logic.Actions
             ICity city;
 
             if (!World.Current.TryGetObjects(cityId, out city))
+            {
                 return Error.ObjectNotFound;
+            }
 
             return Error.Ok;
         }
 
         public override void UserCancelled()
-        {            
+        {
         }
 
         public override void WorkerRemoved(bool wasKilled)
@@ -156,7 +167,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
-                    return;                
+                {
+                    return;
+                }
 
                 StateChange(ActionState.Failed);
             }

@@ -54,9 +54,13 @@ ERROR_422,This road is required for other structures to exist and cannot be remo
 ERROR_600,You can't attack yourself!
 ERROR_601,Not allowed while city is in battle
 ERROR_602,Why would you want to defend yourself?
-ERROR_603,You aren't allowed to watch this battle unless one of your troops have participated for at least 5 rounds.
 ERROR_605,You have reached the maximum number of troops allowed.
 ERROR_606,No units have been selected
+ERROR_607,Not allowed while troop is in battle
+ERROR_610,This battle cannot be watched.
+ERROR_611,You aren't allowed to watch this battle unless one of your troops have participated for at least 5 rounds.
+ERROR_612,You aren't allowed to watch this battle unless one of your troops have participated for at least 5 rounds. Battle will be viewable in approximately {0} round(s)
+ERROR_613,The gate is still under attack and has {0} hp remaining.
 ERROR_701,Tribe is already full
 ERROR_702,You are not allowed to do this action because you aren't currently a member in a tribe
 ERROR_703,Tribe name already taken
@@ -72,9 +76,19 @@ ERROR_725,You are not authorized to do that
 ERROR_726,This tribesman already has a pending invitation from another tribe. They must decline the current request before you can invite them.
 ERROR_727,You don't currently have any invitations to join a tribe
 ERROR_728,You must be part of a tribe to use this feature.
+ERROR_729,Your ranking in the tribe is too low.
+ERROR_730,Your ranking in the tribe is too high.
 ERROR_741,It's too late to join this assignment
 ERROR_742,Assignment not found
 ERROR_743,Invalid assignment dispatch time.
 ERROR_744,You are not allowed to attack a member of your own tribe.
 ERROR_745,Your units are too slow for the specified attack time.
 ERROR_746,You cannot join this assignment.
+ERROR_801,Stronghold not found.
+ERROR_802,Stronghold is not occupied.
+ERROR_810,You are not allowed to attack a stronghold of your own tribe.
+ERROR_811,Stronghold's gate is not opened to your tribe.
+ERROR_812,Stronghold is owned by another tribe.
+ERROR_813,Stronghold is inactive.
+ERROR_814,Stronghold gate is already at full health.
+ERROR_815,Stronghold gate cannot be repaired while its under attack

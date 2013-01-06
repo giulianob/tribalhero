@@ -10,12 +10,10 @@ using Xunit;
 namespace Testing.Balancing
 {
     /// <summary>
-    ///   Summary description for TroopProcedureTest
+    ///     Summary description for TroopProcedureTest
     /// </summary>
-
     public class TestUserBattles
     {
-
         [Fact(Skip = "For Anthony only")]
         public void TestBrennenGotOwned()
         {
@@ -42,14 +40,16 @@ namespace Testing.Balancing
             double actualAdvantage;
             if (attacker.Upkeep() == 0)
             {
-                actualAdvantage = ((double)defender.Upkeep()/defUpkeep);
+                actualAdvantage = ((double)defender.Upkeep() / defUpkeep);
             }
             else
             {
-                actualAdvantage = -1*((double)attacker.Upkeep()/atkUpkeep);
+                actualAdvantage = -1 * ((double)attacker.Upkeep() / atkUpkeep);
             }
             if (double.IsNaN(actualAdvantage))
+            {
                 actualAdvantage = 0;
+            }
 
             Assert.True(Math.Abs(actualAdvantage - 0) < double.Epsilon,
                         string.Format("Def[{0}/{1}] Structures[{4}/{5}] vs Atk[{2}/{3}]",

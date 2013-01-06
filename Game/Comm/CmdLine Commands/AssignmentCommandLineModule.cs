@@ -3,9 +3,7 @@ using System.Linq;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic.Actions;
-using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -16,6 +14,19 @@ namespace Game.Comm
 {
     class AssignmentCommandLineModule : CommandLineModule
     {
+        private readonly ILocker locker;
+
+        private readonly ITribeManager tribeManager;
+
+        private readonly IWorld world;
+
+        public AssignmentCommandLineModule(IWorld world, ITribeManager tribeManager, ILocker locker)
+        {
+            this.world = world;
+            this.tribeManager = tribeManager;
+            this.locker = locker;
+        }
+
         public override void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("assignmentlist", AssignmentList, PlayerRights.Bureaucrat);
@@ -32,44 +43,55 @@ namespace Game.Comm
             try
             {
                 var p = new OptionSet
-                        {
-                                {"?|help|h", v => help = true},
-                                {"player=", v => playerName = v.TrimMatchingQuotes()},
-                                {"tribe=", v => tribeName = v.TrimMatchingQuotes()},
-                        };
+                {
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()},
+                        {"tribe=", v => tribeName = v.TrimMatchingQuotes()},
+                };
                 p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }
 
             if (help || string.IsNullOrEmpty(playerName) && string.IsNullOrEmpty(tribeName))
+            {
                 return "AssignmentList --player=player_name|--tribe=tribe_name";
+            }
 
             uint playerId;
             if (!string.IsNullOrEmpty(playerName))
             {
-                if (!World.Current.FindPlayerId(playerName, out playerId))
+                if (!world.FindPlayerId(playerName, out playerId))
+                {
                     return "Player not found";
+                }
             }
             else
             {
-                if (!World.Current.FindTribeId(tribeName, out playerId))
+                if (!tribeManager.FindTribeId(tribeName, out playerId))
+                {
                     return "Tribe not found";
+                }
             }
 
             IPlayer player;
             ITribe tribe;
             string result = string.Format("Now[{0}] Assignments:\n", DateTime.UtcNow);
-            using (Concurrency.Current.Lock(playerId, out player, out tribe))
+            using (locker.Lock(playerId, out player, out tribe))
             {
                 if (player == null)
+                {
                     return "Player not found";
+                }
                 if (tribe == null)
+                {
                     return "Player does not own a tribe";
+                }
 
-                result = tribe.Assignments.Aggregate(result, (current, assignment) => current + assignment.ToNiceString());
+                result = tribe.Assignments.Aggregate(result,
+                                                     (current, assignment) => current + assignment.ToNiceString());
             }
 
             return result;
@@ -87,35 +109,37 @@ namespace Game.Comm
             try
             {
                 var p = new OptionSet
-                        {
-                                {"?|help|h", v => help = true},
-                                {"city=", v => cityName = v.TrimMatchingQuotes()},
-                                {"x=", v => x = uint.Parse(v)},
-                                {"y=", v => y = uint.Parse(v)},
-                                {"timespan=", v => time = TimeSpan.Parse(v.TrimMatchingQuotes())},
-                                {"mode=", v => mode = (AttackMode)Enum.Parse(typeof(AttackMode), v, true)},
-                                {"isattack=", v => isAttack = Boolean.Parse(v)}
-                        };
+                {
+                        {"?|help|h", v => help = true},
+                        {"city=", v => cityName = v.TrimMatchingQuotes()},
+                        {"x=", v => x = uint.Parse(v)},
+                        {"y=", v => y = uint.Parse(v)},
+                        {"timespan=", v => time = TimeSpan.Parse(v.TrimMatchingQuotes())},
+                        {"mode=", v => mode = (AttackMode)Enum.Parse(typeof(AttackMode), v, true)},
+                        {"isattack=", v => isAttack = Boolean.Parse(v)}
+                };
                 p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }
-            
-            if (help || string.IsNullOrEmpty(cityName) || x == 0 || y == 0 || time == TimeSpan.MinValue || !isAttack.HasValue)
+
+            if (help || string.IsNullOrEmpty(cityName) || x == 0 || y == 0 || time == TimeSpan.MinValue ||
+                !isAttack.HasValue)
             {
-                return "AssignmentCreate --city=city_name --x=x --y=y --timespan=00:00:00 --isattack=true/false [--mode=attack_mode]";
+                return
+                        "AssignmentCreate --city=city_name --x=x --y=y --timespan=00:00:00 --isattack=true/false [--mode=attack_mode]";
             }
 
             uint cityId;
-            if (!World.Current.FindCityId(cityName, out cityId))
+            if (!world.Cities.FindCityId(cityName, out cityId))
             {
                 return "City not found";
             }
 
             ICity city;
-            if (!World.Current.TryGetObjects(cityId, out city))
+            if (!world.TryGetObjects(cityId, out city))
             {
                 return "City not found!";
             }
@@ -126,20 +150,20 @@ namespace Game.Comm
             }
 
             ITribe tribe = city.Owner.Tribesman.Tribe;
-            IStructure targetStructure = World.Current.GetObjects(x, y).OfType<IStructure>().FirstOrDefault();           
+            IStructure targetStructure = world.GetObjects(x, y).OfType<IStructure>().FirstOrDefault();
             if (targetStructure == null)
             {
                 return "Could not find a structure for the given coordinates";
             }
 
-            using (Concurrency.Current.Lock(city, tribe, targetStructure.City))
+            using (locker.Lock(city, tribe, targetStructure.City))
             {
                 if (city.DefaultTroop.Upkeep == 0)
                 {
                     return "No troops in the city!";
                 }
 
-                targetStructure = World.Current.GetObjects(x, y).OfType<IStructure>().First();
+                targetStructure = world.GetObjects(x, y).OfType<IStructure>().First();
 
                 if (targetStructure == null)
                 {
@@ -147,7 +171,7 @@ namespace Game.Comm
                 }
 
                 // TODO: Clean this up.. shouldnt really need to do this here
-                TroopStub stub = new TroopStub();
+                var stub = city.Troops.Create();
                 FormationType formation = isAttack.GetValueOrDefault() ? FormationType.Attack : FormationType.Defense;
                 stub.AddFormation(formation);
                 foreach (var unit in city.DefaultTroop[FormationType.Normal])
@@ -156,7 +180,16 @@ namespace Game.Comm
                 }
 
                 int id;
-                Error error = tribe.CreateAssignment(city, stub, x, y, targetStructure.City, DateTime.UtcNow.Add(time), mode, "", isAttack.GetValueOrDefault(), out id);
+                Error error = tribe.CreateAssignment(city,
+                                                     stub,
+                                                     x,
+                                                     y,
+                                                     targetStructure.City,
+                                                     DateTime.UtcNow.Add(time),
+                                                     mode,
+                                                     "",
+                                                     isAttack.GetValueOrDefault(),
+                                                     out id);
                 if (error != Error.Ok)
                 {
                     city.Troops.Remove(stub.TroopId);
@@ -174,23 +207,32 @@ namespace Game.Comm
             int id = int.MaxValue;
             try
             {
-                var p = new OptionSet { { "?|help|h", v => help = true }, { "city=", v => cityName = v.TrimMatchingQuotes() }, { "id=", v => id = int.Parse(v) }, };
+                var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},
+                        {"city=", v => cityName = v.TrimMatchingQuotes()},
+                        {"id=", v => id = int.Parse(v)},
+                };
                 p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }
 
             if (help || string.IsNullOrEmpty(cityName) || id == int.MaxValue)
+            {
                 return "AssignementCreate --city=city_name --id=id";
+            }
 
             uint cityId;
-            if (!World.Current.FindCityId(cityName, out cityId))
+            if (!world.Cities.FindCityId(cityName, out cityId))
+            {
                 return "City not found";
+            }
 
-            ICity city;            
-            if (!World.Current.TryGetObjects(cityId, out city))
+            ICity city;
+            if (!world.TryGetObjects(cityId, out city))
             {
                 return "City not found!";
             }
@@ -201,7 +243,7 @@ namespace Game.Comm
             }
 
             ITribe tribe = city.Owner.Tribesman.Tribe;
-            using (Concurrency.Current.Lock(city, tribe))
+            using (locker.Lock(city, tribe))
             {
                 if (city.DefaultTroop.Upkeep == 0)
                 {
@@ -216,7 +258,7 @@ namespace Game.Comm
                 }
 
                 // TODO: Clean this up.. shouldnt really need to do this here
-                TroopStub stub = new TroopStub();
+                ITroopStub stub = city.Troops.Create();
                 FormationType formation = assignment.IsAttack ? FormationType.Attack : FormationType.Defense;
                 stub.AddFormation(formation);
                 foreach (var unit in city.DefaultTroop[FormationType.Normal])
@@ -230,7 +272,7 @@ namespace Game.Comm
                     return Enum.GetName(typeof(Error), error);
                 }
 
-                return string.Format("OK");                
+                return string.Format("OK");
             }
         }
     }

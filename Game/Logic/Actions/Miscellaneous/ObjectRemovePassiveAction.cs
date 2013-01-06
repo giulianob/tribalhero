@@ -6,10 +6,10 @@ using System.Globalization;
 using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
+using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -18,8 +18,11 @@ namespace Game.Logic.Actions
     public class ObjectRemovePassiveAction : ScheduledPassiveAction
     {
         private readonly List<uint> cancelActions;
+
         private readonly uint cityId;
+
         private readonly uint objectId;
+
         private readonly bool wasKilled;
 
         public ObjectRemovePassiveAction(uint cityId, uint objectId, bool wasKilled, List<uint> cancelActions)
@@ -30,7 +33,13 @@ namespace Game.Logic.Actions
             this.cancelActions = cancelActions;
         }
 
-        public ObjectRemovePassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription, Dictionary<string, string> properties)
+        public ObjectRemovePassiveAction(uint id,
+                                         DateTime beginTime,
+                                         DateTime nextTime,
+                                         DateTime endTime,
+                                         bool isVisible,
+                                         string nlsDescription,
+                                         Dictionary<string, string> properties)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             cityId = uint.Parse(properties["city_id"]);
@@ -41,7 +50,9 @@ namespace Game.Logic.Actions
             foreach (var actionId in properties["cancel_references"].Split(','))
             {
                 if (actionId == string.Empty)
+                {
                     continue;
+                }
 
                 cancelActions.Add(uint.Parse(actionId));
             }
@@ -61,10 +72,18 @@ namespace Game.Logic.Actions
             {
                 return
                         XmlSerializer.Serialize(new[]
-                                                {
-                                                        new XmlKvPair("city_id", cityId), new XmlKvPair("object_id", objectId), new XmlKvPair("was_killed", wasKilled),
-                                                        new XmlKvPair("cancel_references", string.Join(",", cancelActions.ConvertAll(t => t.ToString(CultureInfo.InvariantCulture)).ToArray())),
-                                                });
+                        {
+                                new XmlKvPair("city_id", cityId), new XmlKvPair("object_id", objectId),
+                                new XmlKvPair("was_killed", wasKilled),
+                                new XmlKvPair("cancel_references",
+                                              string.Join(",",
+                                                          cancelActions.ConvertAll(
+                                                                                   t =>
+                                                                                   t.ToString(
+                                                                                              CultureInfo
+                                                                                                      .InvariantCulture))
+                                                                       .ToArray())),
+                        });
             }
         }
 
@@ -84,15 +103,19 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            IGameObject obj;            
+            IGameObject obj;
 
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)
+                {
                     throw new Exception("City is missing");
+                }
 
                 if (!city.TryGetObject(objectId, out obj))
+                {
                     throw new Exception("Obj is missing");
+                }
             }
 
             // Cancel all active actions
@@ -104,17 +127,24 @@ namespace Game.Logic.Actions
                 using (Concurrency.Current.Lock(cityId, out city))
                 {
                     if (city == null)
+                    {
                         throw new Exception("City is missing");
+                    }
 
                     IGameObject obj1 = obj;
                     action = city.Worker.ActiveActions.Values.FirstOrDefault(x => x.WorkerObject == obj1);
 
                     loopCount++;
                     if (loopCount == 1000)
-                        throw new Exception(string.Format("Unable to cancel all active actions. Stuck cancelling {0}", action.Type));
+                    {
+                        throw new Exception(string.Format("Unable to cancel all active actions. Stuck cancelling {0}",
+                                                          action.Type));
+                    }
 
                     if (action == null)
+                    {
                         break;
+                    }
                 }
 
                 action.WorkerRemoved(wasKilled);
@@ -129,17 +159,24 @@ namespace Game.Logic.Actions
                 using (Concurrency.Current.Lock(cityId, out city))
                 {
                     if (city == null)
+                    {
                         throw new Exception("City is missing");
+                    }
 
                     IGameObject obj1 = obj;
                     action = city.Worker.PassiveActions.Values.FirstOrDefault(x => x.WorkerObject == obj1);
 
                     loopCount++;
                     if (loopCount == 1000)
-                        throw new Exception(string.Format("Unable to cancel all passive actions. Stuck cancelling {0}", action.Type));
+                    {
+                        throw new Exception(string.Format("Unable to cancel all passive actions. Stuck cancelling {0}",
+                                                          action.Type));
+                    }
 
                     if (action == null)
+                    {
                         break;
+                    }
                 }
 
                 action.WorkerRemoved(wasKilled);
@@ -152,12 +189,16 @@ namespace Game.Logic.Actions
                 using (Concurrency.Current.Lock(cityId, out city))
                 {
                     if (city == null)
+                    {
                         throw new Exception("City is missing");
+                    }
 
                     uint actionId1 = actionId;
                     action = city.Worker.ActiveActions.Values.FirstOrDefault(x => x.ActionId == actionId1);
                     if (action == null)
+                    {
                         continue;
+                    }
                 }
 
                 action.WorkerRemoved(wasKilled);
@@ -166,17 +207,25 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)
+                {
                     throw new Exception("City is missing");
+                }
 
                 if (!city.TryGetObject(objectId, out obj))
+                {
                     throw new Exception("Obj is missing");
+                }
 
                 if (city.Worker.GetActions(obj).Count() != 0)
+                {
                     throw new Exception("Not all actions were cancelled for this obj");
+                }
 
                 // Finish cleaning object
                 if (obj is ITroopObject)
+                {
                     city.DoRemove((TroopObject)obj);
+                }
                 else if (obj is IStructure)
                 {
                     city.BeginUpdate();
@@ -188,7 +237,7 @@ namespace Game.Logic.Actions
                     }
 
                     city.DoRemove(((IStructure)obj));
-                    Procedures.Procedure.Current.OnStructureUpgradeDowngrade((IStructure)obj);
+                    Procedure.Current.OnStructureUpgradeDowngrade((IStructure)obj);
                     city.EndUpdate();
                 }
                 StateChange(ActionState.Completed);

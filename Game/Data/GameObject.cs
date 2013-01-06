@@ -2,7 +2,6 @@
 
 using System;
 using Game.Map;
-using Game.Util;
 using Game.Util.Locking;
 
 #endregion
@@ -50,10 +49,14 @@ namespace Game.Data
         {
             //If city is null then we dont care about being inside of a begin/end update block
             if (!Global.FireEvents || City == null)
+            {
                 return;
+            }
 
             if (!updating)
+            {
                 throw new Exception("Changed state outside of begin/end update block");
+            }
 
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(City);
         }
@@ -61,16 +64,22 @@ namespace Game.Data
         protected override void Update()
         {
             if (!Global.FireEvents)
+            {
                 return;
+            }
 
             if (updating)
+            {
                 return;
+            }
 
             if (City == null)
+            {
                 return;
+            }
 
             City.ObjUpdateEvent(this, origX, origY);
-            World.Current.ObjectUpdateEvent(this, origX, origY);
+            World.Current.Regions.ObjectUpdateEvent(this, origX, origY);
         }
 
         #endregion

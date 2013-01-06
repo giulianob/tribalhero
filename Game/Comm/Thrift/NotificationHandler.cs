@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Game.Comm.Protocol;
 using Game.Data;
@@ -24,7 +23,9 @@ namespace Game.Comm.Thrift
             using (Concurrency.Current.Lock((uint)playerUnreadCount.Id, out player))
             {
                 if (player.Session == null)
+                {
                     return;
+                }
 
                 try
                 {
@@ -40,11 +41,18 @@ namespace Game.Comm.Thrift
         {
             ITribe tribe;
             if (!World.Current.TryGetObjects((uint)tribeId, out tribe))
-                return;
-
-            using (Concurrency.Current.Lock(custom => tribe.Tribesmen.ToArray(), new object[] { }, tribe))
             {
-                foreach (var tribesman in tribe.Tribesmen.Where(tribesman => tribesman.Player.Session != null && tribesman.Player.PlayerId!=playerId))
+                return;
+            }
+
+            using (Concurrency.Current.Lock(custom => tribe.Tribesmen.ToArray(), new object[] {}, tribe))
+            {
+                foreach (
+                        var tribesman in
+                                tribe.Tribesmen.Where(
+                                                      tribesman =>
+                                                      tribesman.Player.Session != null &&
+                                                      tribesman.Player.PlayerId != playerId))
                 {
                     try
                     {
@@ -54,7 +62,6 @@ namespace Game.Comm.Thrift
                     {
                     }
                 }
-
             }
         }
 
@@ -65,12 +72,15 @@ namespace Game.Comm.Thrift
                 IPlayer player;
                 using (Concurrency.Current.Lock((uint)playerUnreadCount.Id, out player))
                 {
-                    if (player.Session == null)
+                    if (player == null || player.Session == null)
+                    {
                         continue;
+                    }
 
                     try
                     {
-                        protocolFactory.CreateProtocol(player.Session).BattleReportSendUnreadCount(playerUnreadCount.UnreadCount);
+                        protocolFactory.CreateProtocol(player.Session)
+                                       .BattleReportSendUnreadCount(playerUnreadCount.UnreadCount);
                     }
                     catch
                     {

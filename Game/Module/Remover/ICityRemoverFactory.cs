@@ -1,8 +1,7 @@
-using Game.Data;
-
 namespace Game.Module
 {
-    public interface ICityRemoverFactory {
-        ICityRemover CreateCityRemover(ICity city);
+    public interface ICityRemoverFactory
+    {
+        CityRemover CreateCityRemover(uint cityId);
     }
 }

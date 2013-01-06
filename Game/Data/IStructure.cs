@@ -1,5 +1,4 @@
 using Game.Data.Stats;
-using Game.Logic;
 using Persistance;
 
 namespace Game.Data

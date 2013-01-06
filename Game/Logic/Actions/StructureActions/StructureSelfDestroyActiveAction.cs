@@ -7,7 +7,6 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -16,7 +15,9 @@ namespace Game.Logic.Actions
     public class StructureSelfDestroyActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
+
         private readonly uint objectId;
+
         private TimeSpan ts;
 
         public StructureSelfDestroyActiveAction(uint cityId, uint objectId)
@@ -26,14 +27,14 @@ namespace Game.Logic.Actions
         }
 
         public StructureSelfDestroyActiveAction(uint id,
-                                            DateTime beginTime,
-                                            DateTime nextTime,
-                                            DateTime endTime,
-                                            int workerType,
-                                            byte workerIndex,
-                                            ushort actionCount,
-                                            Dictionary<string, string> properties)
-                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)        
+                                                DateTime beginTime,
+                                                DateTime nextTime,
+                                                DateTime endTime,
+                                                int workerType,
+                                                byte workerIndex,
+                                                ushort actionCount,
+                                                Dictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
@@ -59,20 +60,23 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return XmlSerializer.Serialize(new[] {new XmlKvPair("city_id", cityId), new XmlKvPair("object_id", objectId),});
+                return
+                        XmlSerializer.Serialize(new[]
+                        {new XmlKvPair("city_id", cityId), new XmlKvPair("object_id", objectId),});
             }
         }
 
-        
         public override void Callback(object custom)
         {
             ICity city;
             IStructure structure;
-            
+
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 if (structure == null)
                 {
@@ -90,7 +94,7 @@ namespace Game.Logic.Actions
                 city.BeginUpdate();
                 structure.BeginUpdate();
 
-                World.Current.Remove(structure);
+                World.Current.Regions.Remove(structure);
                 city.ScheduleRemove(structure, false);
 
                 structure.EndUpdate();
@@ -109,7 +113,9 @@ namespace Game.Logic.Actions
             BeginTime = SystemClock.Now;
 
             if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
+            {
                 return Error.ObjectNotFound;
+            }
 
             return Error.Ok;
         }
@@ -119,7 +125,9 @@ namespace Game.Logic.Actions
             ICity city;
 
             if (!World.Current.TryGetObjects(cityId, out city))
+            {
                 return Error.ObjectNotFound;
+            }
 
             ts = TimeSpan.FromSeconds(int.Parse(parms[0]));
 
@@ -133,7 +141,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 StateChange(ActionState.Failed);
             }
@@ -146,7 +156,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
-                    return;                
+                {
+                    return;
+                }
 
                 StateChange(ActionState.Failed);
             }

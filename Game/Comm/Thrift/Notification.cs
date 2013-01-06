@@ -4,652 +4,678 @@
  * DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
  *  @generated
  */
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
+using System.Text;
 using Thrift;
-using Thrift.Collections;
 using Thrift.Protocol;
-using Thrift.Transport;
-public class Notification {
-  public interface Iface {
-    void NewMessage(PlayerUnreadCount playerUnreadCount);
-    void NewTribeForumPost(int tribeId, int unreadCount);
-    void NewBattleReport(List<PlayerUnreadCount> playerUnreadCount);
-  }
 
-  public class Client : Iface {
-    public Client(TProtocol prot) : this(prot, prot)
+public class Notification
+{
+    public class Client : Iface
     {
-    }
+        protected TProtocol iprot_;
 
-    public Client(TProtocol iprot, TProtocol oprot)
-    {
-      iprot_ = iprot;
-      oprot_ = oprot;
-    }
+        protected TProtocol oprot_;
 
-    protected TProtocol iprot_;
-    protected TProtocol oprot_;
-    protected int seqid_;
+        protected int seqid_;
 
-    public TProtocol InputProtocol
-    {
-      get { return iprot_; }
-    }
-    public TProtocol OutputProtocol
-    {
-      get { return oprot_; }
-    }
-
-
-    public void NewMessage(PlayerUnreadCount playerUnreadCount)
-    {
-      send_NewMessage(playerUnreadCount);
-      recv_NewMessage();
-    }
-
-    public void send_NewMessage(PlayerUnreadCount playerUnreadCount)
-    {
-      oprot_.WriteMessageBegin(new TMessage("NewMessage", TMessageType.Call, seqid_));
-      NewMessage_args args = new NewMessage_args();
-      args.PlayerUnreadCount = playerUnreadCount;
-      args.Write(oprot_);
-      oprot_.WriteMessageEnd();
-      oprot_.Transport.Flush();
-    }
-
-    public void recv_NewMessage()
-    {
-      TMessage msg = iprot_.ReadMessageBegin();
-      if (msg.Type == TMessageType.Exception) {
-        TApplicationException x = TApplicationException.Read(iprot_);
-        iprot_.ReadMessageEnd();
-        throw x;
-      }
-      NewMessage_result result = new NewMessage_result();
-      result.Read(iprot_);
-      iprot_.ReadMessageEnd();
-      return;
-    }
-
-    public void NewTribeForumPost(int tribeId, int unreadCount)
-    {
-      send_NewTribeForumPost(tribeId, unreadCount);
-      recv_NewTribeForumPost();
-    }
-
-    public void send_NewTribeForumPost(int tribeId, int unreadCount)
-    {
-      oprot_.WriteMessageBegin(new TMessage("NewTribeForumPost", TMessageType.Call, seqid_));
-      NewTribeForumPost_args args = new NewTribeForumPost_args();
-      args.TribeId = tribeId;
-      args.UnreadCount = unreadCount;
-      args.Write(oprot_);
-      oprot_.WriteMessageEnd();
-      oprot_.Transport.Flush();
-    }
-
-    public void recv_NewTribeForumPost()
-    {
-      TMessage msg = iprot_.ReadMessageBegin();
-      if (msg.Type == TMessageType.Exception) {
-        TApplicationException x = TApplicationException.Read(iprot_);
-        iprot_.ReadMessageEnd();
-        throw x;
-      }
-      NewTribeForumPost_result result = new NewTribeForumPost_result();
-      result.Read(iprot_);
-      iprot_.ReadMessageEnd();
-      return;
-    }
-
-    public void NewBattleReport(List<PlayerUnreadCount> playerUnreadCount)
-    {
-      send_NewBattleReport(playerUnreadCount);
-      recv_NewBattleReport();
-    }
-
-    public void send_NewBattleReport(List<PlayerUnreadCount> playerUnreadCount)
-    {
-      oprot_.WriteMessageBegin(new TMessage("NewBattleReport", TMessageType.Call, seqid_));
-      NewBattleReport_args args = new NewBattleReport_args();
-      args.PlayerUnreadCount = playerUnreadCount;
-      args.Write(oprot_);
-      oprot_.WriteMessageEnd();
-      oprot_.Transport.Flush();
-    }
-
-    public void recv_NewBattleReport()
-    {
-      TMessage msg = iprot_.ReadMessageBegin();
-      if (msg.Type == TMessageType.Exception) {
-        TApplicationException x = TApplicationException.Read(iprot_);
-        iprot_.ReadMessageEnd();
-        throw x;
-      }
-      NewBattleReport_result result = new NewBattleReport_result();
-      result.Read(iprot_);
-      iprot_.ReadMessageEnd();
-      return;
-    }
-
-  }
-  public class Processor : TProcessor {
-    public Processor(Iface iface)
-    {
-      iface_ = iface;
-      processMap_["NewMessage"] = NewMessage_Process;
-      processMap_["NewTribeForumPost"] = NewTribeForumPost_Process;
-      processMap_["NewBattleReport"] = NewBattleReport_Process;
-    }
-
-    protected delegate void ProcessFunction(int seqid, TProtocol iprot, TProtocol oprot);
-    private Iface iface_;
-    protected Dictionary<string, ProcessFunction> processMap_ = new Dictionary<string, ProcessFunction>();
-
-    public bool Process(TProtocol iprot, TProtocol oprot)
-    {
-      try
-      {
-        TMessage msg = iprot.ReadMessageBegin();
-        ProcessFunction fn;
-        processMap_.TryGetValue(msg.Name, out fn);
-        if (fn == null) {
-          TProtocolUtil.Skip(iprot, TType.Struct);
-          iprot.ReadMessageEnd();
-          TApplicationException x = new TApplicationException (TApplicationException.ExceptionType.UnknownMethod, "Invalid method name: '" + msg.Name + "'");
-          oprot.WriteMessageBegin(new TMessage(msg.Name, TMessageType.Exception, msg.SeqID));
-          x.Write(oprot);
-          oprot.WriteMessageEnd();
-          oprot.Transport.Flush();
-          return true;
-        }
-        fn(msg.SeqID, iprot, oprot);
-      }
-      catch (IOException)
-      {
-        return false;
-      }
-      return true;
-    }
-
-    public void NewMessage_Process(int seqid, TProtocol iprot, TProtocol oprot)
-    {
-      NewMessage_args args = new NewMessage_args();
-      args.Read(iprot);
-      iprot.ReadMessageEnd();
-      NewMessage_result result = new NewMessage_result();
-      iface_.NewMessage(args.PlayerUnreadCount);
-      oprot.WriteMessageBegin(new TMessage("NewMessage", TMessageType.Reply, seqid)); 
-      result.Write(oprot);
-      oprot.WriteMessageEnd();
-      oprot.Transport.Flush();
-    }
-
-    public void NewTribeForumPost_Process(int seqid, TProtocol iprot, TProtocol oprot)
-    {
-      NewTribeForumPost_args args = new NewTribeForumPost_args();
-      args.Read(iprot);
-      iprot.ReadMessageEnd();
-      NewTribeForumPost_result result = new NewTribeForumPost_result();
-      iface_.NewTribeForumPost(args.TribeId, args.UnreadCount);
-      oprot.WriteMessageBegin(new TMessage("NewTribeForumPost", TMessageType.Reply, seqid)); 
-      result.Write(oprot);
-      oprot.WriteMessageEnd();
-      oprot.Transport.Flush();
-    }
-
-    public void NewBattleReport_Process(int seqid, TProtocol iprot, TProtocol oprot)
-    {
-      NewBattleReport_args args = new NewBattleReport_args();
-      args.Read(iprot);
-      iprot.ReadMessageEnd();
-      NewBattleReport_result result = new NewBattleReport_result();
-      iface_.NewBattleReport(args.PlayerUnreadCount);
-      oprot.WriteMessageBegin(new TMessage("NewBattleReport", TMessageType.Reply, seqid)); 
-      result.Write(oprot);
-      oprot.WriteMessageEnd();
-      oprot.Transport.Flush();
-    }
-
-  }
-
-
-  [Serializable]
-  public partial class NewMessage_args : TBase
-  {
-    private PlayerUnreadCount _playerUnreadCount;
-
-    public PlayerUnreadCount PlayerUnreadCount
-    {
-      get
-      {
-        return _playerUnreadCount;
-      }
-      set
-      {
-        __isset.playerUnreadCount = true;
-        this._playerUnreadCount = value;
-      }
-    }
-
-
-    public Isset __isset;
-    [Serializable]
-    public struct Isset {
-      public bool playerUnreadCount;
-    }
-
-    public NewMessage_args() {
-    }
-
-    public void Read (TProtocol iprot)
-    {
-      TField field;
-      iprot.ReadStructBegin();
-      while (true)
-      {
-        field = iprot.ReadFieldBegin();
-        if (field.Type == TType.Stop) { 
-          break;
-        }
-        switch (field.ID)
+        public Client(TProtocol prot)
+                : this(prot, prot)
         {
-          case 1:
-            if (field.Type == TType.Struct) {
-              PlayerUnreadCount = new PlayerUnreadCount();
-              PlayerUnreadCount.Read(iprot);
-            } else { 
-              TProtocolUtil.Skip(iprot, field.Type);
+        }
+
+        public Client(TProtocol iprot, TProtocol oprot)
+        {
+            iprot_ = iprot;
+            oprot_ = oprot;
+        }
+
+        public TProtocol InputProtocol
+        {
+            get
+            {
+                return iprot_;
             }
-            break;
-          default: 
-            TProtocolUtil.Skip(iprot, field.Type);
-            break;
         }
-        iprot.ReadFieldEnd();
-      }
-      iprot.ReadStructEnd();
-    }
 
-    public void Write(TProtocol oprot) {
-      TStruct struc = new TStruct("NewMessage_args");
-      oprot.WriteStructBegin(struc);
-      TField field = new TField();
-      if (PlayerUnreadCount != null && __isset.playerUnreadCount) {
-        field.Name = "playerUnreadCount";
-        field.Type = TType.Struct;
-        field.ID = 1;
-        oprot.WriteFieldBegin(field);
-        PlayerUnreadCount.Write(oprot);
-        oprot.WriteFieldEnd();
-      }
-      oprot.WriteFieldStop();
-      oprot.WriteStructEnd();
-    }
-
-    public override string ToString() {
-      StringBuilder sb = new StringBuilder("NewMessage_args(");
-      sb.Append("PlayerUnreadCount: ");
-      sb.Append(PlayerUnreadCount== null ? "<null>" : PlayerUnreadCount.ToString());
-      sb.Append(")");
-      return sb.ToString();
-    }
-
-  }
-
-
-  [Serializable]
-  public partial class NewMessage_result : TBase
-  {
-
-    public NewMessage_result() {
-    }
-
-    public void Read (TProtocol iprot)
-    {
-      TField field;
-      iprot.ReadStructBegin();
-      while (true)
-      {
-        field = iprot.ReadFieldBegin();
-        if (field.Type == TType.Stop) { 
-          break;
-        }
-        switch (field.ID)
+        public TProtocol OutputProtocol
         {
-          default: 
-            TProtocolUtil.Skip(iprot, field.Type);
-            break;
-        }
-        iprot.ReadFieldEnd();
-      }
-      iprot.ReadStructEnd();
-    }
-
-    public void Write(TProtocol oprot) {
-      TStruct struc = new TStruct("NewMessage_result");
-      oprot.WriteStructBegin(struc);
-
-      oprot.WriteFieldStop();
-      oprot.WriteStructEnd();
-    }
-
-    public override string ToString() {
-      StringBuilder sb = new StringBuilder("NewMessage_result(");
-      sb.Append(")");
-      return sb.ToString();
-    }
-
-  }
-
-
-  [Serializable]
-  public partial class NewTribeForumPost_args : TBase
-  {
-    private int _tribeId;
-    private int _unreadCount;
-
-    public int TribeId
-    {
-      get
-      {
-        return _tribeId;
-      }
-      set
-      {
-        __isset.tribeId = true;
-        this._tribeId = value;
-      }
-    }
-
-    public int UnreadCount
-    {
-      get
-      {
-        return _unreadCount;
-      }
-      set
-      {
-        __isset.unreadCount = true;
-        this._unreadCount = value;
-      }
-    }
-
-
-    public Isset __isset;
-    [Serializable]
-    public struct Isset {
-      public bool tribeId;
-      public bool unreadCount;
-    }
-
-    public NewTribeForumPost_args() {
-    }
-
-    public void Read (TProtocol iprot)
-    {
-      TField field;
-      iprot.ReadStructBegin();
-      while (true)
-      {
-        field = iprot.ReadFieldBegin();
-        if (field.Type == TType.Stop) { 
-          break;
-        }
-        switch (field.ID)
-        {
-          case 1:
-            if (field.Type == TType.I32) {
-              TribeId = iprot.ReadI32();
-            } else { 
-              TProtocolUtil.Skip(iprot, field.Type);
+            get
+            {
+                return oprot_;
             }
-            break;
-          case 2:
-            if (field.Type == TType.I32) {
-              UnreadCount = iprot.ReadI32();
-            } else { 
-              TProtocolUtil.Skip(iprot, field.Type);
+        }
+
+        public void NewMessage(PlayerUnreadCount playerUnreadCount)
+        {
+            send_NewMessage(playerUnreadCount);
+            recv_NewMessage();
+        }
+
+        public void NewTribeForumPost(int tribeId, int unreadCount)
+        {
+            send_NewTribeForumPost(tribeId, unreadCount);
+            recv_NewTribeForumPost();
+        }
+
+        public void NewBattleReport(List<PlayerUnreadCount> playerUnreadCount)
+        {
+            send_NewBattleReport(playerUnreadCount);
+            recv_NewBattleReport();
+        }
+
+        public void send_NewMessage(PlayerUnreadCount playerUnreadCount)
+        {
+            oprot_.WriteMessageBegin(new TMessage("NewMessage", TMessageType.Call, seqid_));
+            NewMessage_args args = new NewMessage_args();
+            args.PlayerUnreadCount = playerUnreadCount;
+            args.Write(oprot_);
+            oprot_.WriteMessageEnd();
+            oprot_.Transport.Flush();
+        }
+
+        public void recv_NewMessage()
+        {
+            TMessage msg = iprot_.ReadMessageBegin();
+            if (msg.Type == TMessageType.Exception)
+            {
+                TApplicationException x = TApplicationException.Read(iprot_);
+                iprot_.ReadMessageEnd();
+                throw x;
             }
-            break;
-          default: 
-            TProtocolUtil.Skip(iprot, field.Type);
-            break;
+            NewMessage_result result = new NewMessage_result();
+            result.Read(iprot_);
+            iprot_.ReadMessageEnd();
+            return;
         }
-        iprot.ReadFieldEnd();
-      }
-      iprot.ReadStructEnd();
-    }
 
-    public void Write(TProtocol oprot) {
-      TStruct struc = new TStruct("NewTribeForumPost_args");
-      oprot.WriteStructBegin(struc);
-      TField field = new TField();
-      if (__isset.tribeId) {
-        field.Name = "tribeId";
-        field.Type = TType.I32;
-        field.ID = 1;
-        oprot.WriteFieldBegin(field);
-        oprot.WriteI32(TribeId);
-        oprot.WriteFieldEnd();
-      }
-      if (__isset.unreadCount) {
-        field.Name = "unreadCount";
-        field.Type = TType.I32;
-        field.ID = 2;
-        oprot.WriteFieldBegin(field);
-        oprot.WriteI32(UnreadCount);
-        oprot.WriteFieldEnd();
-      }
-      oprot.WriteFieldStop();
-      oprot.WriteStructEnd();
-    }
-
-    public override string ToString() {
-      StringBuilder sb = new StringBuilder("NewTribeForumPost_args(");
-      sb.Append("TribeId: ");
-      sb.Append(TribeId);
-      sb.Append(",UnreadCount: ");
-      sb.Append(UnreadCount);
-      sb.Append(")");
-      return sb.ToString();
-    }
-
-  }
-
-
-  [Serializable]
-  public partial class NewTribeForumPost_result : TBase
-  {
-
-    public NewTribeForumPost_result() {
-    }
-
-    public void Read (TProtocol iprot)
-    {
-      TField field;
-      iprot.ReadStructBegin();
-      while (true)
-      {
-        field = iprot.ReadFieldBegin();
-        if (field.Type == TType.Stop) { 
-          break;
-        }
-        switch (field.ID)
+        public void send_NewTribeForumPost(int tribeId, int unreadCount)
         {
-          default: 
-            TProtocolUtil.Skip(iprot, field.Type);
-            break;
+            oprot_.WriteMessageBegin(new TMessage("NewTribeForumPost", TMessageType.Call, seqid_));
+            NewTribeForumPost_args args = new NewTribeForumPost_args();
+            args.TribeId = tribeId;
+            args.UnreadCount = unreadCount;
+            args.Write(oprot_);
+            oprot_.WriteMessageEnd();
+            oprot_.Transport.Flush();
         }
-        iprot.ReadFieldEnd();
-      }
-      iprot.ReadStructEnd();
+
+        public void recv_NewTribeForumPost()
+        {
+            TMessage msg = iprot_.ReadMessageBegin();
+            if (msg.Type == TMessageType.Exception)
+            {
+                TApplicationException x = TApplicationException.Read(iprot_);
+                iprot_.ReadMessageEnd();
+                throw x;
+            }
+            NewTribeForumPost_result result = new NewTribeForumPost_result();
+            result.Read(iprot_);
+            iprot_.ReadMessageEnd();
+            return;
+        }
+
+        public void send_NewBattleReport(List<PlayerUnreadCount> playerUnreadCount)
+        {
+            oprot_.WriteMessageBegin(new TMessage("NewBattleReport", TMessageType.Call, seqid_));
+            NewBattleReport_args args = new NewBattleReport_args();
+            args.PlayerUnreadCount = playerUnreadCount;
+            args.Write(oprot_);
+            oprot_.WriteMessageEnd();
+            oprot_.Transport.Flush();
+        }
+
+        public void recv_NewBattleReport()
+        {
+            TMessage msg = iprot_.ReadMessageBegin();
+            if (msg.Type == TMessageType.Exception)
+            {
+                TApplicationException x = TApplicationException.Read(iprot_);
+                iprot_.ReadMessageEnd();
+                throw x;
+            }
+            NewBattleReport_result result = new NewBattleReport_result();
+            result.Read(iprot_);
+            iprot_.ReadMessageEnd();
+            return;
+        }
     }
 
-    public void Write(TProtocol oprot) {
-      TStruct struc = new TStruct("NewTribeForumPost_result");
-      oprot.WriteStructBegin(struc);
-
-      oprot.WriteFieldStop();
-      oprot.WriteStructEnd();
-    }
-
-    public override string ToString() {
-      StringBuilder sb = new StringBuilder("NewTribeForumPost_result(");
-      sb.Append(")");
-      return sb.ToString();
-    }
-
-  }
-
-
-  [Serializable]
-  public partial class NewBattleReport_args : TBase
-  {
-    private List<PlayerUnreadCount> _playerUnreadCount;
-
-    public List<PlayerUnreadCount> PlayerUnreadCount
+    public interface Iface
     {
-      get
-      {
-        return _playerUnreadCount;
-      }
-      set
-      {
-        __isset.playerUnreadCount = true;
-        this._playerUnreadCount = value;
-      }
+        void NewMessage(PlayerUnreadCount playerUnreadCount);
+
+        void NewTribeForumPost(int tribeId, int unreadCount);
+
+        void NewBattleReport(List<PlayerUnreadCount> playerUnreadCount);
     }
 
-
-    public Isset __isset;
     [Serializable]
-    public struct Isset {
-      public bool playerUnreadCount;
-    }
-
-    public NewBattleReport_args() {
-    }
-
-    public void Read (TProtocol iprot)
+    public class NewBattleReport_args : TBase
     {
-      TField field;
-      iprot.ReadStructBegin();
-      while (true)
-      {
-        field = iprot.ReadFieldBegin();
-        if (field.Type == TType.Stop) { 
-          break;
-        }
-        switch (field.ID)
+        public Isset __isset;
+
+        private List<PlayerUnreadCount> _playerUnreadCount;
+
+        public List<PlayerUnreadCount> PlayerUnreadCount
         {
-          case 1:
-            if (field.Type == TType.List) {
-              {
-                PlayerUnreadCount = new List<PlayerUnreadCount>();
-                TList _list0 = iprot.ReadListBegin();
-                for( int _i1 = 0; _i1 < _list0.Count; ++_i1)
+            get
+            {
+                return _playerUnreadCount;
+            }
+            set
+            {
+                __isset.playerUnreadCount = true;
+                _playerUnreadCount = value;
+            }
+        }
+
+        public void Read(TProtocol iprot)
+        {
+            TField field;
+            iprot.ReadStructBegin();
+            while (true)
+            {
+                field = iprot.ReadFieldBegin();
+                if (field.Type == TType.Stop)
                 {
-                  PlayerUnreadCount _elem2 = new PlayerUnreadCount();
-                  _elem2 = new PlayerUnreadCount();
-                  _elem2.Read(iprot);
-                  PlayerUnreadCount.Add(_elem2);
+                    break;
                 }
-                iprot.ReadListEnd();
-              }
-            } else { 
-              TProtocolUtil.Skip(iprot, field.Type);
+                switch(field.ID)
+                {
+                    case 1:
+                        if (field.Type == TType.List)
+                        {
+                            {
+                                PlayerUnreadCount = new List<PlayerUnreadCount>();
+                                TList _list0 = iprot.ReadListBegin();
+                                for (int _i1 = 0; _i1 < _list0.Count; ++_i1)
+                                {
+                                    PlayerUnreadCount _elem2 = new PlayerUnreadCount();
+                                    _elem2 = new PlayerUnreadCount();
+                                    _elem2.Read(iprot);
+                                    PlayerUnreadCount.Add(_elem2);
+                                }
+                                iprot.ReadListEnd();
+                            }
+                        }
+                        else
+                        {
+                            TProtocolUtil.Skip(iprot, field.Type);
+                        }
+                        break;
+                    default:
+                        TProtocolUtil.Skip(iprot, field.Type);
+                        break;
+                }
+                iprot.ReadFieldEnd();
             }
-            break;
-          default: 
-            TProtocolUtil.Skip(iprot, field.Type);
-            break;
+            iprot.ReadStructEnd();
         }
-        iprot.ReadFieldEnd();
-      }
-      iprot.ReadStructEnd();
-    }
 
-    public void Write(TProtocol oprot) {
-      TStruct struc = new TStruct("NewBattleReport_args");
-      oprot.WriteStructBegin(struc);
-      TField field = new TField();
-      if (PlayerUnreadCount != null && __isset.playerUnreadCount) {
-        field.Name = "playerUnreadCount";
-        field.Type = TType.List;
-        field.ID = 1;
-        oprot.WriteFieldBegin(field);
+        public void Write(TProtocol oprot)
         {
-          oprot.WriteListBegin(new TList(TType.Struct, PlayerUnreadCount.Count));
-          foreach (PlayerUnreadCount _iter3 in PlayerUnreadCount)
-          {
-            _iter3.Write(oprot);
-          }
-          oprot.WriteListEnd();
+            TStruct struc = new TStruct("NewBattleReport_args");
+            oprot.WriteStructBegin(struc);
+            TField field = new TField();
+            if (PlayerUnreadCount != null && __isset.playerUnreadCount)
+            {
+                field.Name = "playerUnreadCount";
+                field.Type = TType.List;
+                field.ID = 1;
+                oprot.WriteFieldBegin(field);
+                {
+                    oprot.WriteListBegin(new TList(TType.Struct, PlayerUnreadCount.Count));
+                    foreach (PlayerUnreadCount _iter3 in PlayerUnreadCount)
+                    {
+                        _iter3.Write(oprot);
+                    }
+                    oprot.WriteListEnd();
+                }
+                oprot.WriteFieldEnd();
+            }
+            oprot.WriteFieldStop();
+            oprot.WriteStructEnd();
         }
-        oprot.WriteFieldEnd();
-      }
-      oprot.WriteFieldStop();
-      oprot.WriteStructEnd();
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder("NewBattleReport_args(");
+            sb.Append("PlayerUnreadCount: ");
+            sb.Append(PlayerUnreadCount);
+            sb.Append(")");
+            return sb.ToString();
+        }
+
+        [Serializable]
+        public struct Isset
+        {
+            public bool playerUnreadCount;
+        }
     }
 
-    public override string ToString() {
-      StringBuilder sb = new StringBuilder("NewBattleReport_args(");
-      sb.Append("PlayerUnreadCount: ");
-      sb.Append(PlayerUnreadCount);
-      sb.Append(")");
-      return sb.ToString();
-    }
-
-  }
-
-
-  [Serializable]
-  public partial class NewBattleReport_result : TBase
-  {
-
-    public NewBattleReport_result() {
-    }
-
-    public void Read (TProtocol iprot)
+    [Serializable]
+    public class NewBattleReport_result : TBase
     {
-      TField field;
-      iprot.ReadStructBegin();
-      while (true)
-      {
-        field = iprot.ReadFieldBegin();
-        if (field.Type == TType.Stop) { 
-          break;
-        }
-        switch (field.ID)
+        public void Read(TProtocol iprot)
         {
-          default: 
-            TProtocolUtil.Skip(iprot, field.Type);
-            break;
+            TField field;
+            iprot.ReadStructBegin();
+            while (true)
+            {
+                field = iprot.ReadFieldBegin();
+                if (field.Type == TType.Stop)
+                {
+                    break;
+                }
+                switch(field.ID)
+                {
+                    default:
+                        TProtocolUtil.Skip(iprot, field.Type);
+                        break;
+                }
+                iprot.ReadFieldEnd();
+            }
+            iprot.ReadStructEnd();
         }
-        iprot.ReadFieldEnd();
-      }
-      iprot.ReadStructEnd();
+
+        public void Write(TProtocol oprot)
+        {
+            TStruct struc = new TStruct("NewBattleReport_result");
+            oprot.WriteStructBegin(struc);
+
+            oprot.WriteFieldStop();
+            oprot.WriteStructEnd();
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder("NewBattleReport_result(");
+            sb.Append(")");
+            return sb.ToString();
+        }
     }
 
-    public void Write(TProtocol oprot) {
-      TStruct struc = new TStruct("NewBattleReport_result");
-      oprot.WriteStructBegin(struc);
+    [Serializable]
+    public class NewMessage_args : TBase
+    {
+        public Isset __isset;
 
-      oprot.WriteFieldStop();
-      oprot.WriteStructEnd();
+        private PlayerUnreadCount _playerUnreadCount;
+
+        public PlayerUnreadCount PlayerUnreadCount
+        {
+            get
+            {
+                return _playerUnreadCount;
+            }
+            set
+            {
+                __isset.playerUnreadCount = true;
+                _playerUnreadCount = value;
+            }
+        }
+
+        public void Read(TProtocol iprot)
+        {
+            TField field;
+            iprot.ReadStructBegin();
+            while (true)
+            {
+                field = iprot.ReadFieldBegin();
+                if (field.Type == TType.Stop)
+                {
+                    break;
+                }
+                switch(field.ID)
+                {
+                    case 1:
+                        if (field.Type == TType.Struct)
+                        {
+                            PlayerUnreadCount = new PlayerUnreadCount();
+                            PlayerUnreadCount.Read(iprot);
+                        }
+                        else
+                        {
+                            TProtocolUtil.Skip(iprot, field.Type);
+                        }
+                        break;
+                    default:
+                        TProtocolUtil.Skip(iprot, field.Type);
+                        break;
+                }
+                iprot.ReadFieldEnd();
+            }
+            iprot.ReadStructEnd();
+        }
+
+        public void Write(TProtocol oprot)
+        {
+            TStruct struc = new TStruct("NewMessage_args");
+            oprot.WriteStructBegin(struc);
+            TField field = new TField();
+            if (PlayerUnreadCount != null && __isset.playerUnreadCount)
+            {
+                field.Name = "playerUnreadCount";
+                field.Type = TType.Struct;
+                field.ID = 1;
+                oprot.WriteFieldBegin(field);
+                PlayerUnreadCount.Write(oprot);
+                oprot.WriteFieldEnd();
+            }
+            oprot.WriteFieldStop();
+            oprot.WriteStructEnd();
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder("NewMessage_args(");
+            sb.Append("PlayerUnreadCount: ");
+            sb.Append(PlayerUnreadCount == null ? "<null>" : PlayerUnreadCount.ToString());
+            sb.Append(")");
+            return sb.ToString();
+        }
+
+        [Serializable]
+        public struct Isset
+        {
+            public bool playerUnreadCount;
+        }
     }
 
-    public override string ToString() {
-      StringBuilder sb = new StringBuilder("NewBattleReport_result(");
-      sb.Append(")");
-      return sb.ToString();
+    [Serializable]
+    public class NewMessage_result : TBase
+    {
+        public void Read(TProtocol iprot)
+        {
+            TField field;
+            iprot.ReadStructBegin();
+            while (true)
+            {
+                field = iprot.ReadFieldBegin();
+                if (field.Type == TType.Stop)
+                {
+                    break;
+                }
+                switch(field.ID)
+                {
+                    default:
+                        TProtocolUtil.Skip(iprot, field.Type);
+                        break;
+                }
+                iprot.ReadFieldEnd();
+            }
+            iprot.ReadStructEnd();
+        }
+
+        public void Write(TProtocol oprot)
+        {
+            TStruct struc = new TStruct("NewMessage_result");
+            oprot.WriteStructBegin(struc);
+
+            oprot.WriteFieldStop();
+            oprot.WriteStructEnd();
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder("NewMessage_result(");
+            sb.Append(")");
+            return sb.ToString();
+        }
     }
 
-  }
+    [Serializable]
+    public class NewTribeForumPost_args : TBase
+    {
+        public Isset __isset;
 
+        private int _tribeId;
+
+        private int _unreadCount;
+
+        public int TribeId
+        {
+            get
+            {
+                return _tribeId;
+            }
+            set
+            {
+                __isset.tribeId = true;
+                _tribeId = value;
+            }
+        }
+
+        public int UnreadCount
+        {
+            get
+            {
+                return _unreadCount;
+            }
+            set
+            {
+                __isset.unreadCount = true;
+                _unreadCount = value;
+            }
+        }
+
+        public void Read(TProtocol iprot)
+        {
+            TField field;
+            iprot.ReadStructBegin();
+            while (true)
+            {
+                field = iprot.ReadFieldBegin();
+                if (field.Type == TType.Stop)
+                {
+                    break;
+                }
+                switch(field.ID)
+                {
+                    case 1:
+                        if (field.Type == TType.I32)
+                        {
+                            TribeId = iprot.ReadI32();
+                        }
+                        else
+                        {
+                            TProtocolUtil.Skip(iprot, field.Type);
+                        }
+                        break;
+                    case 2:
+                        if (field.Type == TType.I32)
+                        {
+                            UnreadCount = iprot.ReadI32();
+                        }
+                        else
+                        {
+                            TProtocolUtil.Skip(iprot, field.Type);
+                        }
+                        break;
+                    default:
+                        TProtocolUtil.Skip(iprot, field.Type);
+                        break;
+                }
+                iprot.ReadFieldEnd();
+            }
+            iprot.ReadStructEnd();
+        }
+
+        public void Write(TProtocol oprot)
+        {
+            TStruct struc = new TStruct("NewTribeForumPost_args");
+            oprot.WriteStructBegin(struc);
+            TField field = new TField();
+            if (__isset.tribeId)
+            {
+                field.Name = "tribeId";
+                field.Type = TType.I32;
+                field.ID = 1;
+                oprot.WriteFieldBegin(field);
+                oprot.WriteI32(TribeId);
+                oprot.WriteFieldEnd();
+            }
+            if (__isset.unreadCount)
+            {
+                field.Name = "unreadCount";
+                field.Type = TType.I32;
+                field.ID = 2;
+                oprot.WriteFieldBegin(field);
+                oprot.WriteI32(UnreadCount);
+                oprot.WriteFieldEnd();
+            }
+            oprot.WriteFieldStop();
+            oprot.WriteStructEnd();
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder("NewTribeForumPost_args(");
+            sb.Append("TribeId: ");
+            sb.Append(TribeId);
+            sb.Append(",UnreadCount: ");
+            sb.Append(UnreadCount);
+            sb.Append(")");
+            return sb.ToString();
+        }
+
+        [Serializable]
+        public struct Isset
+        {
+            public bool tribeId;
+
+            public bool unreadCount;
+        }
+    }
+
+    [Serializable]
+    public class NewTribeForumPost_result : TBase
+    {
+        public void Read(TProtocol iprot)
+        {
+            TField field;
+            iprot.ReadStructBegin();
+            while (true)
+            {
+                field = iprot.ReadFieldBegin();
+                if (field.Type == TType.Stop)
+                {
+                    break;
+                }
+                switch(field.ID)
+                {
+                    default:
+                        TProtocolUtil.Skip(iprot, field.Type);
+                        break;
+                }
+                iprot.ReadFieldEnd();
+            }
+            iprot.ReadStructEnd();
+        }
+
+        public void Write(TProtocol oprot)
+        {
+            TStruct struc = new TStruct("NewTribeForumPost_result");
+            oprot.WriteStructBegin(struc);
+
+            oprot.WriteFieldStop();
+            oprot.WriteStructEnd();
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder("NewTribeForumPost_result(");
+            sb.Append(")");
+            return sb.ToString();
+        }
+    }
+
+    public class Processor : TProcessor
+    {
+        private readonly Iface iface_;
+
+        protected Dictionary<string, ProcessFunction> processMap_ = new Dictionary<string, ProcessFunction>();
+
+        public Processor(Iface iface)
+        {
+            iface_ = iface;
+            processMap_["NewMessage"] = NewMessage_Process;
+            processMap_["NewTribeForumPost"] = NewTribeForumPost_Process;
+            processMap_["NewBattleReport"] = NewBattleReport_Process;
+        }
+
+        public bool Process(TProtocol iprot, TProtocol oprot)
+        {
+            try
+            {
+                TMessage msg = iprot.ReadMessageBegin();
+                ProcessFunction fn;
+                processMap_.TryGetValue(msg.Name, out fn);
+                if (fn == null)
+                {
+                    TProtocolUtil.Skip(iprot, TType.Struct);
+                    iprot.ReadMessageEnd();
+                    TApplicationException x =
+                            new TApplicationException(TApplicationException.ExceptionType.UnknownMethod,
+                                                      "Invalid method name: '" + msg.Name + "'");
+                    oprot.WriteMessageBegin(new TMessage(msg.Name, TMessageType.Exception, msg.SeqID));
+                    x.Write(oprot);
+                    oprot.WriteMessageEnd();
+                    oprot.Transport.Flush();
+                    return true;
+                }
+                fn(msg.SeqID, iprot, oprot);
+            }
+            catch(IOException)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public void NewMessage_Process(int seqid, TProtocol iprot, TProtocol oprot)
+        {
+            NewMessage_args args = new NewMessage_args();
+            args.Read(iprot);
+            iprot.ReadMessageEnd();
+            NewMessage_result result = new NewMessage_result();
+            iface_.NewMessage(args.PlayerUnreadCount);
+            oprot.WriteMessageBegin(new TMessage("NewMessage", TMessageType.Reply, seqid));
+            result.Write(oprot);
+            oprot.WriteMessageEnd();
+            oprot.Transport.Flush();
+        }
+
+        public void NewTribeForumPost_Process(int seqid, TProtocol iprot, TProtocol oprot)
+        {
+            NewTribeForumPost_args args = new NewTribeForumPost_args();
+            args.Read(iprot);
+            iprot.ReadMessageEnd();
+            NewTribeForumPost_result result = new NewTribeForumPost_result();
+            iface_.NewTribeForumPost(args.TribeId, args.UnreadCount);
+            oprot.WriteMessageBegin(new TMessage("NewTribeForumPost", TMessageType.Reply, seqid));
+            result.Write(oprot);
+            oprot.WriteMessageEnd();
+            oprot.Transport.Flush();
+        }
+
+        public void NewBattleReport_Process(int seqid, TProtocol iprot, TProtocol oprot)
+        {
+            NewBattleReport_args args = new NewBattleReport_args();
+            args.Read(iprot);
+            iprot.ReadMessageEnd();
+            NewBattleReport_result result = new NewBattleReport_result();
+            iface_.NewBattleReport(args.PlayerUnreadCount);
+            oprot.WriteMessageBegin(new TMessage("NewBattleReport", TMessageType.Reply, seqid));
+            result.Write(oprot);
+            oprot.WriteMessageEnd();
+            oprot.Transport.Flush();
+        }
+
+        protected delegate void ProcessFunction(int seqid, TProtocol iprot, TProtocol oprot);
+    }
 }

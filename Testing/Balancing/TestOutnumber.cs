@@ -12,7 +12,7 @@ using Xunit;
 namespace Testing.Balancing
 {
     /// <summary>
-    ///   Summary description for TroopProcedureTest
+    ///     Summary description for TroopProcedureTest
     /// </summary>
     public class TestOutnumber
     {
@@ -33,7 +33,8 @@ namespace Testing.Balancing
                                                                   2,
                                                                   9,
                                                                   10,
-                                                                  30);
+                                                                  30,
+                                                                  0);
             BaseUnitStats baseUnitStats = new BaseUnitStats("TestSwordsman",
                                                             "SWORDSMAN_UNIT",
                                                             1001,
@@ -50,23 +51,28 @@ namespace Testing.Balancing
         private static void TestMultiplier(int baseCount, double multiplier, double expectAdvantage)
         {
             Group defender = new Group();
-            defender.AddToLocal(UnitType.Swordsman, 1, (ushort)(baseCount*multiplier));
+            defender.AddToLocal(UnitType.Swordsman, 1, (ushort)(baseCount * multiplier));
             Group attacker = new Group();
             attacker.AddToAttack(UnitType.Swordsman, 1, (ushort)baseCount);
             Simulation sim = new Simulation(attacker, defender);
             sim.Run();
 
-            double actualAdvantage = defender.Upkeep()/(multiplier*baseCount);
+            double actualAdvantage = defender.Upkeep() / (multiplier * baseCount);
             if (double.IsNaN(actualAdvantage))
+            {
                 actualAdvantage = 0;
-            Assert.True(expectAdvantage - ERROR_MARGIN < actualAdvantage && actualAdvantage < expectAdvantage + ERROR_MARGIN,
-                          string.Format("Multi[{0}] Base[{3}] \tLeft[{4}]'s actual advantage[{1}] is close to [{2}] expect left[{5}]",
-                          multiplier,
-                          actualAdvantage,
-                          expectAdvantage,
-                          baseCount*multiplier,
-                          defender.Upkeep(),
-                          multiplier*baseCount*expectAdvantage));
+            }
+            Assert.True(
+                        expectAdvantage - ERROR_MARGIN < actualAdvantage &&
+                        actualAdvantage < expectAdvantage + ERROR_MARGIN,
+                        string.Format(
+                                      "Multi[{0}] Base[{3}] \tLeft[{4}]'s actual advantage[{1}] is close to [{2}] expect left[{5}]",
+                                      multiplier,
+                                      actualAdvantage,
+                                      expectAdvantage,
+                                      baseCount * multiplier,
+                                      defender.Upkeep(),
+                                      multiplier * baseCount * expectAdvantage));
         }
 
         [Fact(Skip = "For Anthony only")]
@@ -212,6 +218,5 @@ namespace Testing.Balancing
         {
             TestMultiplier(1000, 5, .90);
         }
-
     }
 }

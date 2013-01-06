@@ -12,22 +12,24 @@ namespace Game.Logic
 {
     public class ThreadedScheduler : IScheduler
     {
-        class ScheduledJob
-        {
-            public ManualResetEvent ResetEvent { get; set; }
-            public ISchedule Schedule { get; set; }
-            public int Id { get; set; }
-        }
-
         private readonly ScheduleComparer comparer = new ScheduleComparer();
+
         private readonly Dictionary<int, ManualResetEvent> doneEvents = new Dictionary<int, ManualResetEvent>();
+
         private readonly List<ISchedule> schedules = new List<ISchedule>();
+
         private readonly object schedulesLock = new object();
+
         private readonly Timer timer;
+
         private int actionsFired;
+
         private DateTime lastProbe;
+
         private int lastScheduleSize;
+
         private DateTime nextFire;
+
         private int nextId;
 
         public ThreadedScheduler()
@@ -41,7 +43,11 @@ namespace Game.Logic
 
         public bool Paused { get; private set; }
 
-        public void Probe(out DateTime outLastProbe, out int outActionsFired, out int schedulerSize, out int schedulerDelta, out DateTime outNextFire)
+        public void Probe(out DateTime outLastProbe,
+                          out int outActionsFired,
+                          out int schedulerSize,
+                          out int schedulerDelta,
+                          out DateTime outNextFire)
         {
             lock (schedulesLock)
             {
@@ -55,22 +61,6 @@ namespace Game.Logic
                 lastProbe = SystemClock.Now;
                 actionsFired = 0;
             }
-        }
-
-        private void SetTimer(long ms)
-        {
-            if (ms == Timeout.Infinite)
-            {
-                Global.Logger.Debug(String.Format("Timer sleeping"));
-                nextFire = DateTime.MinValue;
-            }
-            else
-            {
-                Global.Logger.Debug(String.Format("Next schedule in {0} milliseconds.", ms));
-                nextFire = SystemClock.Now.AddMilliseconds(ms);
-            }
-
-            timer.Change(ms, Timeout.Infinite);
         }
 
         public void Pause()
@@ -87,7 +77,9 @@ namespace Game.Logic
             }
 
             foreach (var evt in events)
+            {
                 evt.WaitOne();
+            }
         }
 
         public void Resume()
@@ -105,7 +97,9 @@ namespace Game.Logic
             lock (schedulesLock)
             {
                 if (schedule.IsScheduled)
+                {
                     throw new Exception("Attempting to schedule action that is already scheduled");
+                }
 
                 int index = schedules.BinarySearch(schedule, comparer);
 
@@ -115,14 +109,18 @@ namespace Game.Logic
                     schedules.Insert(index, schedule);
                 }
                 else
+                {
                     schedules.Insert(index, schedule);
+                }
 
                 schedule.IsScheduled = true;
 
                 Global.Logger.Debug(String.Format("Schedule inserted at position {0}.", index));
 
                 if (index == 0)
+                {
                     SetNextActionTime();
+                }
             }
         }
 
@@ -130,8 +128,10 @@ namespace Game.Logic
         {
             lock (schedulesLock)
             {
-                if (!schedule.IsScheduled)                
-                    return false;                
+                if (!schedule.IsScheduled)
+                {
+                    return false;
+                }
 
                 if (schedules.Remove(schedule))
                 {
@@ -144,6 +144,22 @@ namespace Game.Logic
 
                 return false;
             }
+        }
+
+        private void SetTimer(long ms)
+        {
+            if (ms == Timeout.Infinite)
+            {
+                Global.Logger.Debug(String.Format("Timer sleeping"));
+                nextFire = DateTime.MinValue;
+            }
+            else
+            {
+                Global.Logger.Debug(String.Format("Next schedule in {0} milliseconds.", ms));
+                nextFire = SystemClock.Now.AddMilliseconds(ms);
+            }
+
+            timer.Change(ms, Timeout.Infinite);
         }
 
         // call back for the timer function
@@ -168,14 +184,19 @@ namespace Game.Logic
 
                 // Wrap around if the id is getting large
                 if (nextId == Int32.MaxValue - 1)
+                {
                     nextId = 0;
+                }
                 else
+                {
                     ++nextId;
+                }
 
                 doneEvents.Add(job.Id, job.ResetEvent);
                 ThreadPool.QueueUserWorkItem(DispatchThread, job);
 
-                Global.Logger.Debug(String.Format("Action dispatched. Delta {0} ms", (next.Time - SystemClock.Now).TotalMilliseconds));
+                Global.Logger.Debug(String.Format("Action dispatched. Delta {0} ms",
+                                                  (next.Time - SystemClock.Now).TotalMilliseconds));
 
                 SetNextActionTime();
             }
@@ -198,7 +219,9 @@ namespace Game.Logic
         private void SetNextActionTime()
         {
             if (Paused)
+            {
                 return;
+            }
 
             if (schedules.Count == 0)
             {
@@ -210,6 +233,15 @@ namespace Game.Logic
             TimeSpan ts = schedules[0].Time.Subtract(SystemClock.Now);
             long ms = Math.Max(0, (long)ts.TotalMilliseconds);
             SetTimer(ms);
+        }
+
+        private class ScheduledJob
+        {
+            public ManualResetEvent ResetEvent { get; set; }
+
+            public ISchedule Schedule { get; set; }
+
+            public int Id { get; set; }
         }
     }
 }

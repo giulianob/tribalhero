@@ -1,6 +1,6 @@
 namespace Game.Data
 {
-    public interface ISimpleGameObject
+    public interface ISimpleGameObject : IXYPosition
     {
         bool InWorld { get; set; }
 
@@ -12,14 +12,10 @@ namespace Game.Data
 
         uint ObjectId { get; set; }
 
-        uint X { get; set; }
-
-        uint Y { get; set; }
-
         uint RelX { get; }
 
         uint RelY { get; }
-        
+
         void BeginUpdate();
 
         void CheckUpdateMode();

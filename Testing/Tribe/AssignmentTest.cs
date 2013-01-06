@@ -34,15 +34,25 @@ namespace Testing.Tribe
             Concurrency.Current = new Mock<ILocker>().Object;
         }
 
+        public static IEnumerable<object[]> WhenSomeoneJoinsData
+        {
+            get
+            {
+                yield return new object[] {new[] {300, 150, 200}, targetTime.AddMinutes(-5)};
+                yield return new object[] {new[] {150, 300, 250}, targetTime.AddMinutes(-5)};
+                yield return new object[] {new[] {150, 300, 360}, targetTime.AddMinutes(-6)};
+            }
+        }
+
         public void Dispose()
         {
             Concurrency.Current = null;
         }
 
         /// <summary>
-        /// When an assignment is rescheduled for the first time
-        /// Then it should schedule itself at the proper time
-        /// And save itself
+        ///     When an assignment is rescheduled for the first time
+        ///     Then it should schedule itself at the proper time
+        ///     And save itself
         /// </summary>
         [Fact]
         public void WhenScheduled()
@@ -87,23 +97,13 @@ namespace Testing.Tribe
             assignment.Time.Should().Be(targetTime.AddMinutes(-5));
         }
 
-        public static IEnumerable<object[]> WhenSomeoneJoinsData
-        {
-            get
-            {
-                yield return new object[] { new[] { 300, 150, 200 }, targetTime.AddMinutes(-5) };
-                yield return new object[] { new[] { 150, 300, 250 }, targetTime.AddMinutes(-5) };
-                yield return new object[] { new[] { 150, 300, 360 }, targetTime.AddMinutes(-6) };
-            }
-        }
-
         /// <summary>
-        /// Given the assignment is already scheduled
-        /// When someone joins
-        /// Then it should remove itself from scheduler first 
-        /// And reschedule itself at the right time
-        /// And save itself
-        /// </summary>       
+        ///     Given the assignment is already scheduled
+        ///     When someone joins
+        ///     Then it should remove itself from scheduler first
+        ///     And reschedule itself at the right time
+        ///     And save itself
+        /// </summary>
         [Theory, PropertyData("WhenSomeoneJoinsData")]
         public void WhenSomeoneJoins(IEnumerable<int> moveTimes, DateTime expectedTime)
         {
@@ -176,10 +176,14 @@ namespace Testing.Tribe
             Mock<ITroopStub> newStub = CreateStub(out newCity);
             Mock<IStructure> targetStructure = new Mock<IStructure>();
             Mock<IActionWorker> actionWorker = new Mock<IActionWorker>();
+            Mock<ITroopObject> troopObject = new Mock<ITroopObject>();
 
             SystemClock.SetClock(startTime);
 
-            gameObjectLocator.Setup(m => m.GetObjects(TARGET_X, TARGET_Y)).Returns(new List<ISimpleGameObject> { targetStructure.Object });
+            troopObject.SetupGet(p => p.ObjectId).Returns(95);
+
+            gameObjectLocator.Setup(m => m.GetObjects(TARGET_X, TARGET_Y))
+                             .Returns(new List<ISimpleGameObject> {targetStructure.Object});
 
             targetStructure.SetupGet(p => p.City).Returns(targetCity.Object);
 
@@ -188,6 +192,11 @@ namespace Testing.Tribe
             actionWorker.Setup(m => m.DoPassive(It.IsAny<ICity>(), It.IsAny<PassiveAction>(), true)).Returns(Error.Ok);
 
             stubCity.SetupGet(p => p.Worker).Returns(actionWorker.Object);
+
+            // ReSharper disable RedundantAssignment
+            ITroopObject outTroopObject = troopObject.Object;
+            // ReSharper restore RedundantAssignment
+            procedure.Setup(m => m.TroopObjectCreate(stubCity.Object, stub.Object, out outTroopObject));
 
             Queue<int> moveTimes = new Queue<int>();
             moveTimes.Enqueue(300);
@@ -208,8 +217,7 @@ namespace Testing.Tribe
                                                    scheduler.Object,
                                                    procedure.Object,
                                                    tileLocator.Object,
-                                                   actionFactory.Object);
-            assignment.Add(stub.Object);
+                                                   actionFactory.Object) {stub.Object};
 
             SystemClock.SetClock(targetTime.AddSeconds(-90));
 
@@ -224,9 +232,9 @@ namespace Testing.Tribe
         }
 
         /// <summary>
-        /// When an defensive assignment is rescheduled for the first time
-        /// Then it should schedule itself at the proper time
-        /// And save itself
+        ///     When an defensive assignment is rescheduled for the first time
+        ///     Then it should schedule itself at the proper time
+        ///     And save itself
         /// </summary>
         [Fact]
         public void WhenDefensiveAssignmentScheduled()
@@ -244,12 +252,18 @@ namespace Testing.Tribe
             Mock<IActionFactory> actionFactory = new Mock<IActionFactory>();
             Mock<IStructure> targetStructure = new Mock<IStructure>();
             Mock<IActionWorker> actionWorker = new Mock<IActionWorker>();
+            Mock<ITroopObject> troopObject = new Mock<ITroopObject>();
 
-            gameObjectLocator.Setup(m => m.GetObjects(TARGET_X, TARGET_Y)).Returns(new List<ISimpleGameObject> { targetStructure.Object });
+            troopObject.SetupGet(p => p.ObjectId).Returns(99);
+
+            gameObjectLocator.Setup(m => m.GetObjects(TARGET_X, TARGET_Y))
+                             .Returns(new List<ISimpleGameObject> {targetStructure.Object});
 
             targetStructure.SetupGet(p => p.City).Returns(targetCity.Object);
 
             targetCity.SetupGet(p => p.Id).Returns(100);
+            targetCity.SetupGet(p => p.LocationType).Returns(LocationType.City);
+            targetCity.SetupGet(p => p.LocationId).Returns(100);
 
             actionWorker.Setup(m => m.DoPassive(It.IsAny<ICity>(), It.IsAny<PassiveAction>(), true)).Returns(Error.Ok);
 
@@ -260,6 +274,11 @@ namespace Testing.Tribe
 
             // troop should be dispatched a minute later
             formula.Setup(m => m.MoveTimeTotal(stub.Object, It.IsAny<int>(), true)).Returns(300);
+
+            // ReSharper disable RedundantAssignment
+            ITroopObject outTroopObject = troopObject.Object;
+            // ReSharper restore RedundantAssignment
+            procedure.Setup(m => m.TroopObjectCreate(stubCity.Object, stub.Object, out outTroopObject));
 
             Assignment assignment = new Assignment(tribe.Object,
                                                    TARGET_X,
@@ -275,8 +294,7 @@ namespace Testing.Tribe
                                                    scheduler.Object,
                                                    procedure.Object,
                                                    tileLocator.Object,
-                                                   actionFactory.Object);
-            assignment.Add(stub.Object);
+                                                   actionFactory.Object) {stub.Object};
             assignment.Reschedule();
             assignment.Time.Should().Be(targetTime.AddMinutes(-5));
 
@@ -284,7 +302,7 @@ namespace Testing.Tribe
 
             // Dispatch first troop
             assignment.Callback(null);
-            actionFactory.Verify(m => m.CreateDefenseChainAction(20, stub.Object.TroopId,100, AttackMode.Strong));
+            actionFactory.Verify(m => m.CreateCityDefenseChainAction(20, 99, 100, AttackMode.Strong));
         }
 
         private Mock<ITroopStub> CreateStub(out Mock<ICity> stubCity)

@@ -1,23 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Game.Data;
-using Game.Setup;
-
-namespace ConsoleSimulator.UserBattle {
-    public class JimSwdTgtArc {
-        public JimSwdTgtArc() {
-    /*        Global.FireEvents = false;
-            Factory.CompileConfigFiles();
-            Factory.InitAll();
-            Global.DbManager.Pause();*/
+﻿namespace ConsoleSimulator.UserBattle
+{
+    public class JimSwdTgtArc
+    {
+        public void TestCleanup()
+        {
         }
 
-        public void TestCleanup() {
-        }
-
-        public void Run() {
+        public void Run()
+        {
             Group defender = new Group();
             defender.AddToLocal(UnitType.Fighter, 3, 25);
             defender.AddToLocal(UnitType.Bowman, 3, 40);
@@ -33,8 +23,6 @@ namespace ConsoleSimulator.UserBattle {
 
             Simulation sim = new Simulation(attacker, defender);
             sim.RunTill(6);
-            
         }
-
     }
 }

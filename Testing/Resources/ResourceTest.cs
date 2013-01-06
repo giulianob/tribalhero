@@ -8,12 +8,12 @@ using Xunit;
 namespace Testing.Resources
 {
     /// <summary>
-    ///   Summary description for LazyResourceTest
+    ///     Summary description for LazyResourceTest
     /// </summary>
     public class ResourceTest
     {
         /// <summary>
-        ///   Tests main resource constructor
+        ///     Tests main resource constructor
         /// </summary>
         [Fact]
         public void TestConstructor()
@@ -26,7 +26,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Tests resources are comparing properly
+        ///     Tests resources are comparing properly
         /// </summary>
         [Fact]
         public void TestEqual()
@@ -38,7 +38,7 @@ namespace Testing.Resources
         }
 
         /// <summary>
-        ///   Tests resource copy constructor
+        ///     Tests resource copy constructor
         /// </summary>
         [Fact]
         public void TestCopyConstructor()

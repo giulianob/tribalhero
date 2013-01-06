@@ -23,7 +23,8 @@ namespace Persistance
             Type = type;
         }
 
-        public DbColumn(string column, object value, DbType type, int size) : this(column, value, type)
+        public DbColumn(string column, object value, DbType type, int size)
+                : this(column, value, type)
         {
             Size = size;
         }

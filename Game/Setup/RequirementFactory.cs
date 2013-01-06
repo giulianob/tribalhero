@@ -7,7 +7,6 @@ using Common;
 using Game.Data;
 using Game.Logic;
 using Game.Logic.Requirements.LayoutRequirements;
-using Game.Util;
 
 #endregion
 
@@ -21,18 +20,28 @@ namespace Game.Setup
         {
             dict = new Dictionary<int, LayoutRequirement>();
 
-            using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
+            using (
+                    var reader =
+                            new CsvReader(
+                                    new StreamReader(new FileStream(filename,
+                                                                    FileMode.Open,
+                                                                    FileAccess.Read,
+                                                                    FileShare.ReadWrite))))
             {
                 String[] toks;
                 var col = new Dictionary<string, int>();
                 for (int i = 0; i < reader.Columns.Length; ++i)
+                {
                     col.Add(reader.Columns[i], i);
+                }
 
                 while ((toks = reader.ReadRow()) != null)
                 {
                     if (toks[0].Length <= 0)
+                    {
                         continue;
-                    int index = int.Parse(toks[col["Type"]])*100 + int.Parse(toks[col["Lvl"]]);
+                    }
+                    int index = int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]]);
                     LayoutRequirement layoutReq;
                     if (!dict.TryGetValue(index, out layoutReq))
                     {
@@ -58,7 +67,8 @@ namespace Game.Setup
                                               byte.Parse(toks[col["Dmax"]]));
                     layoutReq.Add(req);
 
-                    Global.Logger.Info(string.Format("{0}", int.Parse(toks[col["Type"]])*100 + int.Parse(toks[col["Lvl"]])));
+                    Global.Logger.Info(string.Format("{0}",
+                                                     int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]])));
                     dict[index] = layoutReq;
                 }
             }
@@ -67,12 +77,16 @@ namespace Game.Setup
         public LayoutRequirement GetLayoutRequirement(ushort type, byte lvl)
         {
             if (dict == null)
+            {
                 return null;
+            }
 
             LayoutRequirement tmp;
 
-            if (dict.TryGetValue(type*100 + lvl, out tmp))
+            if (dict.TryGetValue(type * 100 + lvl, out tmp))
+            {
                 return tmp;
+            }
 
             return new SimpleLayout();
         }

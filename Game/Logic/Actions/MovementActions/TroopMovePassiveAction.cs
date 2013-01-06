@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
@@ -10,7 +9,6 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -19,19 +17,31 @@ namespace Game.Logic.Actions
     public class TroopMovePassiveAction : ScheduledPassiveAction
     {
         private readonly uint cityId;
+
+        private readonly Boolean isAttacking;
+
         private readonly Boolean isReturningHome;
+
         private readonly uint troopObjectId;
+
         private readonly uint x;
+
         private readonly uint y;
+
         private int distanceRemaining;
-        private uint nextX;
-        private uint nextY;
+
         private double moveTime;
 
-        // non-persist variable
-        private Boolean isAttacking;
+        private uint nextX;
 
-        public TroopMovePassiveAction(uint cityId, uint troopObjectId, uint x, uint y, bool isReturningHome, bool isAttacking)
+        private uint nextY;
+
+        public TroopMovePassiveAction(uint cityId,
+                                      uint troopObjectId,
+                                      uint x,
+                                      uint y,
+                                      bool isReturningHome,
+                                      bool isAttacking)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
@@ -41,7 +51,13 @@ namespace Game.Logic.Actions
             this.isAttacking = isAttacking;
         }
 
-        public TroopMovePassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription, Dictionary<string, string> properties)
+        public TroopMovePassiveAction(uint id,
+                                      DateTime beginTime,
+                                      DateTime nextTime,
+                                      DateTime endTime,
+                                      bool isVisible,
+                                      string nlsDescription,
+                                      Dictionary<string, string> properties)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             cityId = uint.Parse(properties["city_id"]);
@@ -69,12 +85,12 @@ namespace Game.Logic.Actions
             {
                 return
                         XmlSerializer.Serialize(new[]
-                                                {
-                                                        new XmlKvPair("city_id", cityId), new XmlKvPair("troop_id", troopObjectId), new XmlKvPair("x", x),
-                                                        new XmlKvPair("y", y), new XmlKvPair("next_x", nextX), new XmlKvPair("next_y", nextY),
-                                                        new XmlKvPair("distance_remaining", distanceRemaining), new XmlKvPair("returning_home", isReturningHome),
-                                                        new XmlKvPair("move_time", moveTime)
-                                                });
+                        {
+                                new XmlKvPair("city_id", cityId), new XmlKvPair("troop_id", troopObjectId),
+                                new XmlKvPair("x", x), new XmlKvPair("y", y), new XmlKvPair("next_x", nextX),
+                                new XmlKvPair("next_y", nextY), new XmlKvPair("distance_remaining", distanceRemaining),
+                                new XmlKvPair("returning_home", isReturningHome), new XmlKvPair("move_time", moveTime)
+                        });
             }
         }
 
@@ -108,12 +124,14 @@ namespace Game.Logic.Actions
         private bool CalculateNextPosition(ITroopObject obj)
         {
             if (distanceRemaining <= 0)
+            {
                 return false;
+            }
 
             var recordForeach = new RecordForeach {ShortestDistance = int.MaxValue, IsShortestDistanceDiagonal = false};
             TileLocator.Current.ForeachObject(obj.X, obj.Y, 1, false, Work, recordForeach);
             nextX = recordForeach.X;
-            nextY = recordForeach.Y;            
+            nextY = recordForeach.Y;
             return true;
         }
 
@@ -123,14 +141,16 @@ namespace Game.Logic.Actions
             ITroopObject troopObj;
 
             if (!World.Current.TryGetObjects(cityId, troopObjectId, out city, out troopObj))
+            {
                 return Error.ObjectNotFound;
+            }
 
             distanceRemaining = Math.Max(1, troopObj.TileDistance(x, y));
 
             double moveTimeTotal = Formula.Current.MoveTimeTotal(troopObj.Stub, distanceRemaining, isAttacking);
 
-            moveTime = Config.battle_instant_move ? 0 : moveTimeTotal/distanceRemaining;
-            
+            moveTime = Config.battle_instant_move ? 0 : moveTimeTotal / distanceRemaining;
+
             beginTime = DateTime.UtcNow;
             endTime = DateTime.UtcNow.AddSeconds(moveTimeTotal);
             nextTime = DateTime.UtcNow.AddSeconds(moveTime);
@@ -150,7 +170,7 @@ namespace Game.Logic.Actions
             troopObj.BeginUpdate();
             troopObj.TargetX = x;
             troopObj.TargetY = y;
-            troopObj.State = GameObjectState.MovingState(x, y);
+            troopObj.State = GameObjectState.MovingState();
             troopObj.EndUpdate();
 
             return Error.Ok;
@@ -176,11 +196,16 @@ namespace Game.Logic.Actions
 
             using (Concurrency.Current.Lock(cityId, troopObjectId, out city, out troopObj))
             {
+                if (!IsValid())
+                {
+                    return;
+                }
+
                 --distanceRemaining;
 
                 troopObj.BeginUpdate();
                 troopObj.X = nextX;
-                troopObj.Y = nextY;                
+                troopObj.Y = nextY;
                 troopObj.EndUpdate();
 
                 // Fire updated to force sending new position
@@ -202,7 +227,7 @@ namespace Game.Logic.Actions
                 }
 
                 nextTime = DateTime.UtcNow.AddSeconds(moveTime);
-                StateChange(ActionState.Rescheduled);
+                StateChange(ActionState.Fired);
             }
         }
 
@@ -211,10 +236,13 @@ namespace Game.Logic.Actions
         private class RecordForeach
         {
             public bool IsShortestDistanceDiagonal { get; set; }
+
             public int ShortestDistance { get; set; }
+
             public uint X { get; set; }
+
             public uint Y { get; set; }
-     }
+        }
 
         #endregion
     }

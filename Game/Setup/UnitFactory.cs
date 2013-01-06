@@ -4,11 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Common;
-using Game.Battle;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Util;
-using System.Linq;
 
 #endregion
 
@@ -19,25 +17,35 @@ namespace Game.Setup
         private readonly Dictionary<int, BaseUnitStats> dict = new Dictionary<int, BaseUnitStats>();
 
         public UnitFactory()
-        {            
+        {
         }
 
         public UnitFactory(string filename)
-        {           
-            using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
+        {
+            using (
+                    var reader =
+                            new CsvReader(
+                                    new StreamReader(new FileStream(filename,
+                                                                    FileMode.Open,
+                                                                    FileAccess.Read,
+                                                                    FileShare.ReadWrite))))
             {
                 String[] toks;
                 var col = new Dictionary<string, int>();
                 for (int i = 0; i < reader.Columns.Length; ++i)
                 {
                     if (reader.Columns[i].Length == 0)
+                    {
                         continue;
+                    }
                     col.Add(reader.Columns[i], i);
                 }
                 while ((toks = reader.ReadRow()) != null)
                 {
                     if (toks[0].Length <= 0)
+                    {
                         continue;
+                    }
                     var resource = new Resource(int.Parse(toks[col["Crop"]]),
                                                 int.Parse(toks[col["Gold"]]),
                                                 int.Parse(toks[col["Iron"]]),
@@ -52,10 +60,14 @@ namespace Game.Setup
 
                     var stats = new BaseBattleStats(ushort.Parse(toks[col["Type"]]),
                                                     byte.Parse(toks[col["Lvl"]]),
-                                                    (WeaponType)Enum.Parse(typeof(WeaponType), toks[col["Weapon"]].ToCamelCase()),
-                                                    (WeaponClass)Enum.Parse(typeof(WeaponClass), toks[col["WpnClass"]].ToCamelCase()),
-                                                    (ArmorType)Enum.Parse(typeof(ArmorType), toks[col["Armor"]].ToCamelCase()),
-                                                    (ArmorClass)Enum.Parse(typeof(ArmorClass), toks[col["ArmrClass"]].ToCamelCase()),
+                                                    (WeaponType)
+                                                    Enum.Parse(typeof(WeaponType), toks[col["Weapon"]].ToCamelCase()),
+                                                    (WeaponClass)
+                                                    Enum.Parse(typeof(WeaponClass), toks[col["WpnClass"]].ToCamelCase()),
+                                                    (ArmorType)
+                                                    Enum.Parse(typeof(ArmorType), toks[col["Armor"]].ToCamelCase()),
+                                                    (ArmorClass)
+                                                    Enum.Parse(typeof(ArmorClass), toks[col["ArmrClass"]].ToCamelCase()),
                                                     decimal.Parse(toks[col["Hp"]]),
                                                     decimal.Parse(toks[col["Atk"]]),
                                                     byte.Parse(toks[col["Splash"]]),
@@ -63,7 +75,8 @@ namespace Game.Setup
                                                     byte.Parse(toks[col["Stl"]]),
                                                     byte.Parse(toks[col["Spd"]]),
                                                     ushort.Parse(toks[col["GrpSize"]]),
-                                                    ushort.Parse(toks[col["Carry"]]));
+                                                    ushort.Parse(toks[col["Carry"]]),
+                                                    resource.NormalizedCost);
 
                     var basestats = new BaseUnitStats(toks[col["Name"]],
                                                       toks[col["SpriteClass"]],
@@ -76,7 +89,7 @@ namespace Game.Setup
                                                       int.Parse(toks[col["UpgrdTime"]]),
                                                       byte.Parse(toks[col["Upkeep"]]));
 
-                    dict[int.Parse(toks[col["Type"]])*100 + int.Parse(toks[col["Lvl"]])] = basestats;
+                    dict[int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]])] = basestats;
                 }
             }
         }
@@ -84,43 +97,43 @@ namespace Game.Setup
         public virtual Resource GetCost(int type, int lvl)
         {
             BaseUnitStats tmp;
-            return dict.TryGetValue(type*100 + lvl, out tmp) ? new Resource(tmp.Cost) : null;
+            return dict.TryGetValue(type * 100 + lvl, out tmp) ? new Resource(tmp.Cost) : null;
         }
 
         public virtual Resource GetUpgradeCost(int type, int lvl)
         {
             BaseUnitStats tmp;
-            return dict.TryGetValue(type*100 + lvl, out tmp) ? new Resource(tmp.UpgradeCost) : null;
+            return dict.TryGetValue(type * 100 + lvl, out tmp) ? new Resource(tmp.UpgradeCost) : null;
         }
 
         public virtual BaseUnitStats GetUnitStats(ushort type, byte lvl)
         {
             BaseUnitStats tmp;
-            return dict.TryGetValue(type*100 + lvl, out tmp) ? tmp : null;
+            return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp : null;
         }
 
         public virtual BaseBattleStats GetBattleStats(ushort type, byte lvl)
         {
             BaseUnitStats tmp;
-            return dict.TryGetValue(type*100 + lvl, out tmp) ? tmp.Battle : null;
+            return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp.Battle : null;
         }
 
         public virtual int GetTime(ushort type, byte lvl)
         {
             BaseUnitStats tmp;
-            return dict.TryGetValue(type*100 + lvl, out tmp) ? tmp.BuildTime : -1;
+            return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp.BuildTime : -1;
         }
 
         public virtual int GetUpgradeTime(ushort type, byte lvl)
         {
             BaseUnitStats tmp;
-            return dict.TryGetValue(type*100 + lvl, out tmp) ? tmp.UpgradeTime : -1;
+            return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp.UpgradeTime : -1;
         }
 
         public virtual string GetName(ushort type, byte lvl)
         {
             BaseUnitStats tmp;
-            return dict.TryGetValue(type*100 + lvl, out tmp) ? tmp.Name : null;
+            return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp.Name : null;
         }
 
         public virtual Dictionary<int, BaseUnitStats> GetList()

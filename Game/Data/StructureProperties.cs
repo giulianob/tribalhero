@@ -14,6 +14,7 @@ namespace Game.Data
     public class StructureProperties : IPersistableList
     {
         public const string DB_TABLE = "structure_properties";
+
         private readonly ListDictionary properties = new ListDictionary();
 
         private IStructure structure;
@@ -49,11 +50,15 @@ namespace Game.Data
         {
             get
             {
-                return new[] {new DbColumn("structure_id", structure.ObjectId, DbType.UInt32), new DbColumn("city_id", structure.City.Id, DbType.UInt32)};
+                return new[]
+                {
+                        new DbColumn("structure_id", structure.ObjectId, DbType.UInt32),
+                        new DbColumn("city_id", structure.City.Id, DbType.UInt32)
+                };
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {
@@ -69,11 +74,15 @@ namespace Game.Data
             }
         }
 
-        public DbColumn[] DbListColumns
+        public IEnumerable<DbColumn> DbListColumns
         {
             get
             {
-                return new[] {new DbColumn("name", DbType.String), new DbColumn("value", DbType.String), new DbColumn("datatype", DbType.Byte)};
+                return new[]
+                {
+                        new DbColumn("name", DbType.String), new DbColumn("value", DbType.String),
+                        new DbColumn("datatype", DbType.Byte)
+                };
             }
         }
 
@@ -82,7 +91,7 @@ namespace Game.Data
         public IEnumerable<DbColumn[]> DbListValues()
         {
             IDictionaryEnumerator itr = properties.GetEnumerator();
-            
+
             while (itr.MoveNext())
             {
                 byte datatype = DataTypeSerializer.Serialize(itr.Value);
@@ -118,7 +127,7 @@ namespace Game.Data
 
         public bool TryGet(object key, out object value)
         {
-            if(!properties.Contains(key))
+            if (!properties.Contains(key))
             {
                 value = null;
                 return false;

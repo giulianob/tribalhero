@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("TribalHero Server Launcher")]
-[assembly: AssemblyCopyright("Copyright © 2008-2010")]
+[assembly: AssemblyCopyright("Copyright © 2008-2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -1,10 +1,10 @@
 #region
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using Game.Comm;
 using Game.Data;
 using Game.Setup;
 
@@ -23,9 +23,13 @@ namespace Game.Map
         #region Members
 
         private readonly byte[] map;
+
         private readonly ReaderWriterLockSlim objLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+
         private readonly ObjectList objlist = new ObjectList();
+
         private bool isDirty;
+
         private byte[] objects;
 
         public ReaderWriterLockSlim Lock
@@ -81,7 +85,9 @@ namespace Game.Map
             if (obj.X != origX || obj.Y != origY)
             {
                 if (!objlist.Remove(obj, origX, origY))
+                {
                     throw new Exception("WTF");
+                }
 
                 objlist.AddGameObject(obj);
             }
@@ -110,7 +116,9 @@ namespace Game.Map
         public byte[] GetObjectBytes()
         {
             if (!isDirty && objects != null)
+            {
                 return objects;
+            }
 
             objLock.EnterWriteLock();
             if (isDirty || objects == null)
@@ -126,44 +134,10 @@ namespace Game.Map
                     bw.Write(objlist.Count);
                     foreach (ISimpleGameObject obj in objlist)
                     {
-                        bw.Write(obj.Type);
-                        bw.Write((ushort)(obj.RelX));
-                        bw.Write((ushort)(obj.RelY));
-
-                        bw.Write(obj.GroupId);
-                        bw.Write(obj.ObjectId);
-
-                        if (obj is IGameObject)
-                            bw.Write(((IGameObject)obj).City.Owner.PlayerId);
-
-                        if (obj is IHasLevel)
-                            bw.Write(((IHasLevel)obj).Lvl);
-
-                        bw.Write((byte)obj.State.Type);
-                        foreach (var parameter in obj.State.Parameters)
-                        {
-                            if (parameter is byte)
-                                bw.Write((byte)parameter);
-                            else if (parameter is short)
-                                bw.Write((short)parameter);
-                            else if (parameter is int)
-                                bw.Write((int)parameter);
-                            else if (parameter is ushort)
-                                bw.Write((ushort)parameter);
-                            else if (parameter is uint)
-                                bw.Write((uint)parameter);
-                            else if (parameter is string)
-                                bw.Write((string)parameter);
-                        }
-
-                        //if this is the main building then include radius
-                        if (obj is IStructure)
-                        {
-                            var structure = obj as IStructure;
-
-                            if (structure.IsMainBuilding)
-                                bw.Write(structure.City.Radius);
-                        }
+                        // TODO: Make this not require a packet
+                        Packet dummyPacket = new Packet();
+                        PacketHelper.AddToPacket(obj, dummyPacket, true);
+                        bw.Write(dummyPacket.GetPayload());
                     }
 
                     isDirty = false;
@@ -180,7 +154,7 @@ namespace Game.Map
         public ushort GetTileType(uint x, uint y)
         {
             objLock.EnterReadLock();
-            var tileType = BitConverter.ToUInt16(map, GetTileIndex(x, y)*2);
+            var tileType = BitConverter.ToUInt16(map, GetTileIndex(x, y) * 2);
             objLock.ExitReadLock();
             return tileType;
         }
@@ -188,7 +162,7 @@ namespace Game.Map
         public void SetTileType(uint x, uint y, ushort tileType)
         {
             objLock.EnterWriteLock();
-            int idx = GetTileIndex(x, y)*TILE_SIZE;
+            int idx = GetTileIndex(x, y) * TILE_SIZE;
             byte[] ushortArr = BitConverter.GetBytes(tileType);
             map[idx] = ushortArr[0];
             map[idx + 1] = ushortArr[1];
@@ -208,7 +182,7 @@ namespace Game.Map
 
         public static ushort GetRegionIndex(uint x, uint y)
         {
-            return (ushort)(x/Config.region_width + (y/Config.region_height)*Config.column);
+            return (ushort)(x / Config.region_width + (y / Config.region_height) * Config.column);
         }
 
         public static int GetTileIndex(ISimpleGameObject obj)
@@ -218,7 +192,7 @@ namespace Game.Map
 
         public static int GetTileIndex(uint x, uint y)
         {
-            return (int)(x%Config.region_width + (y%Config.region_height)*Config.region_width);
+            return (int)(x % Config.region_width + (y % Config.region_height) * Config.region_width);
         }
 
         #endregion

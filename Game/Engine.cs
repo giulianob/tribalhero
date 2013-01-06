@@ -1,11 +1,13 @@
 #region
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using Game.Battle;
 using Game.Comm;
 using Game.Data;
+using Game.Data.Stronghold;
 using Game.Database;
 using Game.Logic;
 using Game.Logic.Formulas;
@@ -27,36 +29,55 @@ namespace Game
     public enum EngineState
     {
         Stopped,
+
         Stopping,
+
         Started,
+
         Starting
     }
 
     public class Engine
     {
-        private readonly ILogger logger;
-        private readonly IPolicyServer policyServer;
-        private readonly TServer thriftServer;
-
         private readonly DbLoader dbLoader;
 
-        private readonly ITcpServer server;        
+        private readonly ILogger logger;
 
-        public EngineState State { get; private set; }
+        private readonly IPlayerSelectorFactory playerSelector;
 
-        public Engine(ILogger logger, ITcpServer server, IPolicyServer policyServer, TServer thriftServer, DbLoader dbLoader)
+        private readonly IPlayersRemoverFactory playersRemoverFactory;
+
+        private readonly IPolicyServer policyServer;
+
+        private readonly ITcpServer server;
+
+        private readonly TServer thriftServer;
+
+        public Engine(ILogger logger,
+                      ITcpServer server,
+                      IPolicyServer policyServer,
+                      TServer thriftServer,
+                      DbLoader dbLoader,
+                      IPlayerSelectorFactory playerSelector,
+                      IPlayersRemoverFactory playersRemoverFactory)
         {
             this.logger = logger;
             this.server = server;
             this.policyServer = policyServer;
             this.thriftServer = thriftServer;
             this.dbLoader = dbLoader;
+            this.playerSelector = playerSelector;
+            this.playersRemoverFactory = playersRemoverFactory;
         }
 
+        public EngineState State { get; private set; }
+
         public bool Start()
-        {            
-            if (!System.Diagnostics.Debugger.IsAttached)
+        {
+            if (!Debugger.IsAttached)
+            {
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomainUnhandledException;
+            }
 
             logger.Info(@"
 _________ _______ _________ ______   _______  _       
@@ -78,7 +99,9 @@ _________ _______ _________ ______   _______  _
 |/     \|(_______/|/   \__/(_______)");
 
             if (State != EngineState.Stopped)
+            {
                 throw new Exception("Server is not stopped");
+            }
 
             State = EngineState.Starting;
 
@@ -93,18 +116,20 @@ _________ _______ _________ ______   _______  _
 #else
                 bool createRegionChanges = !File.Exists(regionChangesPath);
 #endif
-                FileStream regionChanges = File.Open(regionChangesPath, createRegionChanges ? FileMode.Create : FileMode.Open, FileAccess.ReadWrite);
+                FileStream regionChanges = File.Open(regionChangesPath,
+                                                     createRegionChanges ? FileMode.Create : FileMode.Open,
+                                                     FileAccess.ReadWrite);
 
                 // Load map
-                World.Current.Load(map,
-                                  regionChanges,
-                                  createRegionChanges,
-                                  Config.map_width,
-                                  Config.map_height,
-                                  Config.region_width,
-                                  Config.region_height,
-                                  Config.city_region_width,
-                                  Config.city_region_height);
+                World.Current.Regions.Load(map,
+                                           regionChanges,
+                                           createRegionChanges,
+                                           Config.map_width,
+                                           Config.map_height,
+                                           Config.region_width,
+                                           Config.region_height,
+                                           Config.city_region_width,
+                                           Config.city_region_height);
             }
 
 #if DEBUG
@@ -118,7 +143,9 @@ _________ _______ _________ ______   _______  _
             // Empty database if specified
 #if DEBUG
             if (Config.database_empty)
+            {
                 DbPersistance.Current.EmptyDatabase();
+            }
 #endif
 
             // Load database
@@ -128,12 +155,26 @@ _________ _______ _________ ______   _______  _
                 return false;
             }
 
+            // Initialize stronghold
+            IStrongholdManager manager = Ioc.Kernel.Get<IStrongholdManager>();
+            if (Config.stronghold_generate > 0 && manager.Count == 0) // Only generate if there is none.
+            {
+                manager.Generate(Config.stronghold_generate);
+            }
+            StrongholdActivationChecker strongholdActivationChecker = Ioc.Kernel.Get<StrongholdActivationChecker>();
+            strongholdActivationChecker.Start(TimeSpan.FromSeconds(Config.stronghold_activation_check_interval_in_sec));
+
+            VictoryPointChecker victoryPointChecker = Ioc.Kernel.Get<VictoryPointChecker>();
+            victoryPointChecker.Start();
+
             // Initialize game market
             Market.Init();
 
             // Create NPC if specified
             if (Config.ai_enabled)
+            {
                 Ai.Init();
+            }
 
             // Start command processor
             server.Start();
@@ -145,17 +186,25 @@ _________ _______ _________ ______   _______  _
             ThreadPool.QueueUserWorkItem(o => thriftServer.Serve());
 
             // Schedule player deletions
-            ThreadPool.QueueUserWorkItem(o => new PlayersRemover(new CityRemoverFactory(), new NewbieIdleSelector()).Start());
+            if (Config.players_remove_idle)
+            {
+                ThreadPool.QueueUserWorkItem(
+                                             o =>
+                                             playersRemoverFactory.CreatePlayersRemover(
+                                                                                        playerSelector
+                                                                                                .CreateNewbieIdleSelector
+                                                                                                ()).Start());
+            }
 
             State = EngineState.Started;
 
             return true;
         }
 
-        public static IKernel CreateDefaultKernel()
+        public static void CreateDefaultKernel()
         {
-            Ioc.Kernel = new StandardKernel(new NinjectSettings { LoadExtensions = true }, new GameModule());
-            
+            Ioc.Kernel = new StandardKernel(new NinjectSettings {LoadExtensions = true}, new GameModule());
+
             // Instantiate singletons here for now until all classes are properly being injected
             SystemVariablesUpdater.Current = Ioc.Kernel.Get<SystemVariablesUpdater>();
             RadiusLocator.Current = Ioc.Kernel.Get<RadiusLocator>();
@@ -164,12 +213,10 @@ _________ _______ _________ ______   _______  _
             BattleFormulas.Current = Ioc.Kernel.Get<BattleFormulas>();
             Concurrency.Current = Ioc.Kernel.Get<ILocker>();
             Formula.Current = Ioc.Kernel.Get<Formula>();
-            World.Current = Ioc.Kernel.Get<World>();
+            World.Current = Ioc.Kernel.Get<IWorld>();
             Procedure.Current = Ioc.Kernel.Get<Procedure>();
             Scheduler.Current = Ioc.Kernel.Get<IScheduler>();
             DbPersistance.Current = Ioc.Kernel.Get<IDbManager>();
-
-            return Ioc.Kernel;
         }
 
         private void CurrentDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -181,7 +228,9 @@ _________ _______ _________ ______   _______  _
         public void Stop()
         {
             if (State != EngineState.Started)
+            {
                 throw new Exception("Server is not started");
+            }
 
             State = EngineState.Stopping;
 
@@ -193,7 +242,7 @@ _________ _______ _________ ______   _______  _
             logger.Info("Waiting for scheduler to end...");
             //thriftServer.Stop();
             Scheduler.Current.Pause();
-            World.Current.Unload();
+            World.Current.Regions.Unload();
             Global.Logger.Info("Goodbye!");
 
             State = EngineState.Stopped;

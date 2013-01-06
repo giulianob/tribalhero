@@ -16,6 +16,8 @@ namespace Game.Setup
 
         UnderMaintenance = 8,
 
+        NewFeature = 9,
+
         #endregion
 
         #region Chat
@@ -151,6 +153,8 @@ namespace Game.Setup
         TroopEmpty = 606,
 
         TroopInBattle = 607,
+
+        TroopNotStationed = 608,
 
         BattleNotViewable = 610,
 

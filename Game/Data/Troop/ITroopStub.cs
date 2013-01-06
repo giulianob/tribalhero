@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game.Logic.Actions;
 using Game.Util.Locking;
 using Persistance;
 
@@ -33,7 +34,11 @@ namespace Game.Data.Troop
 
         IStation Station { get; set; }
 
+        ushort InitialCount { get; set; }
+
         ushort RetreatCount { get; set; }
+
+        AttackMode AttackMode { get; set; }
 
         byte TroopId { get; set; }
 

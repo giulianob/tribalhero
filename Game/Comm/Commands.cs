@@ -214,6 +214,8 @@ namespace Game.Comm
 
         TroopDefendStronghold = 617,
 
+        TroopModeSwitch = 618,
+
         TroopLocalSet = 621,
 
         #endregion

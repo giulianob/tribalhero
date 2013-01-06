@@ -4,7 +4,7 @@ $snapshot = array('round' => $battleReport['BattleReport']['round'], 'turn' => $
 
 foreach ($battleReport['BattleReportTroop'] as $battleTroop) {
     //Save the main troop info
-    $troop = array('playerId' => $battleTroop['City']['Player']['id'], 'playerName' => $battleTroop['City']['Player']['name'], 'cityId' => $battleTroop['City']['id'], 'groupId' => $battleTroop['group_id'], 'name' => $battleTroop['City']['name'] . '(' . ($battleTroop['troop_stub_id'] == 1 ? 'Local' : $battleTroop['troop_stub_id']) . ')', 'units' => array());
+    $troop = array('name' => $battleTroop['name'], 'groupId' => $battleTroop['group_id'], 'owner' => $battleTroop['owner'], 'units' => array());
 
     //Only attackers have resources
     if ($battleTroop['is_attacker'])

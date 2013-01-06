@@ -3,45 +3,180 @@
 /**
  * @property Battle $Battle
  * @property Report $Report
+ * @property City $City
  */
 class ReportsController extends AppController {
 
-    var $uses = array('Report', 'Battle');
+    var $uses = array('Report', 'Battle', 'City');
     var $helpers = array('TimeAdv', 'Time');
     var $allowedFromGame = array('index_local', 'view_snapshot', 'view_report', 'view_more_events', 'index_remote', 'mark_all_as_read');
 
+    const REPORT_CITY_LOCAL = 1;
+    const REPORT_CITY_FOREIGN = 2;
+	const REPORT_TRIBE_LOCAL = 3;
+	const REPORT_TRIBE_FOREIGN = 4;
+
     /**
-     * Returns list of city ids
-     * @return mixed Null if user is admin and can see all cities, otherwise, list of city ids 
-     */
-    private function getCities() {
+     * Returns the player id of the player making the request
+     * or "*" if an admin wants to see all reports.
+    */
+    private function getPlayerId() {
         $playerId = $this->params['form']['playerId'];
+
         if ($this->Auth->user('rights') >= PLAYER_RIGHTS_ADMIN && !empty($this->params['form']['playerNameFilter'])) {
             if ($this->params['form']['playerNameFilter'] == '*')
-                return null;
+                return '*';
 
+            /** @var $Player Player */
             $Player = & ClassRegistry::init('Player');
             $player = $Player->findByName($this->params['form']['playerNameFilter']);
-            if ($player)
+            if ($player) {
                 $playerId = $player['Player']['id'];
+            }
         }
 
-        return array_keys($this->Battle->City->find('list', array('conditions' => array(
+        return $playerId;
+    }
+
+    /**
+     * Returns list of city ids
+     * or "*" to see all cities
+     */
+    private function getCities($playerId) {
+        if ($playerId === "*") {
+            return "*";
+        }
+
+        return array_keys($this->City->find('list', array('conditions' => array(
                                 'player_id' => $playerId
                                 ))));
     }
 
+    /**
+     * Get tribe of current player or '*' to see all tribe reports
+     */
+    private function getTribeId($playerId) {
+        if ($playerId === '*') {
+            return '*';
+        }
+
+        /** @var $Player Player */
+        $Player = & ClassRegistry::init('Player');
+        $tribeId = $Player->getTribeId($playerId);
+        return !$tribeId ? 0 : $tribeId;
+    }
+
+    function getReport($playerId, $battleId, $viewType, &$outcomeOnly, &$groupId, &$isUnread, &$loot) {
+        switch ($viewType) {
+            case ReportsController::REPORT_TRIBE_LOCAL:
+                $tribeId = $this->getTribeId($playerId);
+                return $this->Battle->viewInvasionReport('Tribe', $tribeId, $battleId, $outcomeOnly, $groupId, $isUnread, $loot);
+            case ReportsController::REPORT_TRIBE_FOREIGN:
+                $tribeId = $this->getTribeId($playerId);
+                return $this->Battle->viewAttackReport('Tribe', $tribeId, $battleId, $outcomeOnly, $groupId, $isUnread, $loot);
+            case ReportsController::REPORT_CITY_LOCAL:
+                $cityIds = $this->getCities($playerId);
+                return $this->Battle->viewInvasionReport('City', $cityIds, $battleId, $outcomeOnly, $groupId, $isUnread, $loot);
+            case ReportsController::REPORT_CITY_FOREIGN:
+                $cityIds = $this->getCities($playerId);
+                return $this->Battle->viewAttackReport('City', $cityIds, $battleId, $outcomeOnly, $groupId, $isUnread, $loot);
+            default:
+                return false;
+        }
+    }
+
     function index_local() {
-        $cityIds = $this->getCities();
+        $playerId = $this->getPlayerId();
 
         $this->Battle = & ClassRegistry::init('Battle');
 
-        $this->paginate = $this->Battle->listInvasionReports($cityIds, true) + array(
+        $viewType = get_value($this->params["form"], "viewType");
+
+        if ($viewType === false) {
+            $this->render(false);
+            return;
+        }
+
+        $locationType = get_value($this->params["form"], "locationType");
+        $locationId = get_value($this->params["form"], "locationId");
+
+        switch ($viewType) {
+            case ReportsController::REPORT_CITY_LOCAL:
+                $ownerIds = $this->getCities($playerId);
+                $ownerType = 'City';
+                break;
+            case ReportsController::REPORT_TRIBE_LOCAL:
+                $ownerIds = $this->getTribeId($playerId);
+                $ownerType = 'Tribe';
+                break;
+            default:
+                $this->render(false);
+                return;
+        }
+
+        $this->paginate = $this->Battle->listInvasionReports($viewType, $ownerType, $ownerIds, $locationType, $locationId) + array(
             'limit' => 15,
             'page' => array_key_exists('page', $this->params['form']) ? $this->params['form']['page'] : 1
         );
 
         $reports = $this->paginate('Battle');
+
+        // Resolve the name of the battle location
+        foreach ($reports as $k => $report) {
+            $report['Battle']['location_name'] = $this->Battle->getLocationName($report['Battle']['location_type'], $report['Battle']['location_id']);
+            $reports[$k] = $report;
+        }
+
+        $this->set('battle_reports', $reports);
+
+        $this->render("index_local");
+    }
+
+    function index_remote() {
+        $playerId = $this->getPlayerId();
+
+        $this->Battle = & ClassRegistry::init('Battle');
+
+        $viewType = get_value($this->params["form"], "viewType");
+
+        if ($viewType === false) {
+            $this->render(false);
+            return;
+        }
+
+        $locationType = get_value($this->params["form"], "locationType");
+        $locationId = get_value($this->params["form"], "locationId");
+
+        switch ($viewType) {
+            case ReportsController::REPORT_CITY_FOREIGN:
+                $ownerIds = $this->getCities($playerId);
+                $ownerType = 'City';
+                break;
+            case ReportsController::REPORT_TRIBE_FOREIGN:
+                $ownerIds = $this->getTribeId($playerId);
+                $ownerType = 'Tribe';
+                break;
+            default:
+                $this->render(false);
+                return;
+        }
+
+        $options = $this->Battle->listAttackReports($viewType, $ownerType, $ownerIds, $locationType, $locationId);
+
+        $this->paginate = $options + array(
+            'recursive' => '-1',
+            'limit' => 15,
+            'page' => array_key_exists('page', $this->params['form']) ? $this->params['form']['page'] : 1
+        );
+
+        $reports = $this->paginate($this->Battle);
+
+        // Resolve the name of the battle location and owner
+        foreach ($reports as $k => $report) {
+            $report['BattleReportView']['owner_name'] = $this->Battle->getLocationName($report['BattleReportView']['owner_type'], $report['BattleReportView']['owner_id']);
+            $report['Battle']['location_name'] = $this->Battle->getLocationName($report['Battle']['location_type'], $report['Battle']['location_id']);
+            $reports[$k] = $report;
+        }
 
         $this->set('battle_reports', $reports);
     }
@@ -56,31 +191,22 @@ class ReportsController extends AppController {
     }
 
     function view_report() {
-        if (empty($this->params['form']['id'])) {
+        $viewType = get_value($this->params['form'], 'viewType');
+        $reportId = get_value($this->params['form'], 'id');
+
+        if ($viewType === false || $reportId === false) {
             $this->render(false);
             return;
         }
 
-        $cityIds = $this->getCities();
-        $isLocal = filter_var(get_value($this->params['form'], 'isLocal', false), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-
-        if ($isLocal === null) {
-            $this->render(false);
-        }
+        $playerId = $this->getPlayerId();
 
         $outcomeOnly = false;
         $groupId = 0;
         $isUnread = false;
         $loot = null;
 
-        if (!$isLocal) {
-            $report = $this->Battle->viewAttackReport($cityIds, $this->params['form']['id'], $outcomeOnly, $groupId, $isUnread, $loot);
-        }
-        else {
-            $report = $this->Battle->viewInvasionReport($cityIds, $this->params['form']['id'], $outcomeOnly, $groupId, $isUnread, $loot);
-        }
-
-        // If report not found, then this guy is trying to get something they do not have access to
+        $report = $this->getReport($playerId, $reportId, $viewType, $outcomeOnly, $groupId, $isUnread, $loot);
         if ($report === false) {
             $this->render(false);
             return;
@@ -88,13 +214,17 @@ class ReportsController extends AppController {
 
         // Figure out if the player has read this report before
         $refreshOnClose = false;
-        if (!is_null($cityIds) && $isUnread) {
-            $this->Report->markAsRead($this->params['form']['playerId'], $isLocal, $this->params['form']['id']);
+        if ($groupId > 0 && $isUnread && $this->params['form']['playerId'] == $playerId) {
+            $this->Report->markAsRead($playerId, $viewType == ReportsController::REPORT_CITY_LOCAL, $reportId);
             $refreshOnClose = true;
         }
 
-        // Get outcome for the player
-        $playerOutcome = $this->Battle->viewGroupOutcome($report, $groupId);
+        // Only show outcome if we have the group
+        $playerOutcome = null;
+        if ($groupId) {
+            // Get outcome for the player
+            $playerOutcome = $this->Battle->viewGroupOutcome($report, $groupId);
+        }
 
         // If it's outcome only, then we only show the player outcome
         if ($outcomeOnly) {
@@ -111,30 +241,16 @@ class ReportsController extends AppController {
     }
 
     function view_more_events() {
-        if (empty($this->params['form']['id'])) {
-            $this->render(false);
-            return;
-        }
-
-        $cityIds = $this->getCities();
-        $isLocal = filter_var(get_value($this->params['form'], 'isLocal', false), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-
-        if ($isLocal === null) {
-            $this->render(false);
-        }
+        $viewType = get_value($this->params["form"], "viewType");
+        $playerId = $this->getPlayerId();
 
         $outcomeOnly = false;
         $groupId = 0;
         $isUnread = false;
+        $loot = null;
 
-        if (!$isLocal) {
-            $report = $this->Battle->viewAttackReport($cityIds, $this->params['form']['id'], $outcomeOnly, $groupId, $isUnread, $loot);
-        }
-        else {
-            $report = $this->Battle->viewInvasionReport($cityIds, $this->params['form']['id'], $outcomeOnly, $groupId, $isUnread, $loot);
-        }
-
-        if ($report === false || $outcomeOnly) {
+        $report = $this->getReport($playerId, $this->params['form']['id'], $viewType, $outcomeOnly, $groupId, $isUnread, $loot);
+        if ($report === false) {
             $this->render(false);
             return;
         }
@@ -145,45 +261,16 @@ class ReportsController extends AppController {
         $this->render('view_more_events');
     }
 
-    function index_remote() {
-        $cityIds = $this->getCities();
-
-        $options = $this->Battle->listAttackReports($cityIds, true);
-
-        $this->paginate = $options + array(
-            'recursive' => '-1',
-            'limit' => 15,
-            'page' => array_key_exists('page', $this->params['form']) ? $this->params['form']['page'] : 1
-        );
-
-        $reports = $this->paginate($this->Battle->BattleReportView);
-
-        $this->set('battle_reports', $reports);
-    }
-
     function view_snapshot() {
-        if (empty($this->params['form']['id']) || empty($this->params['form']['reportId'])) {
-            $this->render(false);
-            return;
-        }
-
-        $cityIds = $this->getCities();
-        $isLocal = filter_var(get_value($this->params['form'], 'isLocal', false), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-
-        if ($isLocal === null) {
-            $this->render(false);
-        }
+        $viewType = get_value($this->params["form"], "viewType");
+        $playerId = $this->getPlayerId();
 
         $outcomeOnly = false;
         $groupId = 0;
         $isUnread = false;
+        $loot = null;
 
-        if (!$isLocal) {
-            $report = $this->Battle->viewAttackReport($cityIds, $this->params['form']['id'], $outcomeOnly, $groupId, $isUnread, $loot);
-        }
-        else {
-            $report = $this->Battle->viewInvasionReport($cityIds, $this->params['form']['id'], $outcomeOnly, $groupId, $isUnread, $loot);
-        }
+        $report = $this->getReport($playerId, $this->params['form']['id'], $viewType, $outcomeOnly, $groupId, $isUnread, $loot);
 
         if ($report === false || $outcomeOnly) {
             $this->render(false);

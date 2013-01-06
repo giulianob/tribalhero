@@ -204,3 +204,20 @@ HANZO_SWORD_TECHNOLOGY_NAME,Hanzo Formation
 HANZO_SWORD_TECHNOLOGY_LVL_1,"Reduce splash damage received by 5% for Fighter, Swordsman and gladiator."
 HANZO_SWORD_TECHNOLOGY_LVL_2,"Reduce splash damage received by 10% for Fighter, Swordsman and gladiator."
 HANZO_SWORD_TECHNOLOGY_LVL_3,"Reduce splash damage received by 15% for Fighter, Swordsman and gladiator."
+,
+UPKEEP_REDUCE_SWORDSMAN_TECHNOLOGY_NAME,Swordy on Diet
+UPKEEP_REDUCE_SWORDSMAN_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Swordsman.
+UPKEEP_REDUCE_ARCHER_TECHNOLOGY_NAME,Archy on Diet
+UPKEEP_REDUCE_ARCHER_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Archer.
+UPKEEP_REDUCE_PIKEMAN_TECHNOLOGY_NAME,Piky on Diet
+UPKEEP_REDUCE_PIKEMAN_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Pikeman.
+UPKEEP_REDUCE_GLADIATOR_TECHNOLOGY_NAME,Glady on Diet
+UPKEEP_REDUCE_GLADIATOR_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Gladiator.
+UPKEEP_REDUCE_CAVALRY_TECHNOLOGY_NAME,Cavalry on Diet
+UPKEEP_REDUCE_CAVALRY_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Cavalry.
+UPKEEP_REDUCE_KNIGHT_TECHNOLOGY_NAME,Knight on Diet
+UPKEEP_REDUCE_KNIGHT_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Knight.
+UPKEEP_REDUCE_HELEPOLIS_TECHNOLOGY_NAME,Helepolis on Diet
+UPKEEP_REDUCE_HELEPOLIS_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Helepolis.
+UPKEEP_REDUCE_CATAPULT_TECHNOLOGY_NAME,Catapult on Diet
+UPKEEP_REDUCE_CATAPULT_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Catapult.

@@ -16,7 +16,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			super(parentObj, "Build Road");
 
-			new SimpleTooltip(this, "Build Road");
+			new SimpleTooltip(this, "Build Road - All structures, other than Farms and Lumbermills, must be connected to a road.");
 
 			addEventListener(MouseEvent.CLICK, onMouseClick);
 		}

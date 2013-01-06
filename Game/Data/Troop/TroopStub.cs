@@ -41,6 +41,8 @@ namespace Game.Data.Troop
         Attack = 1,
 
         Defense = 2,
+
+        Any = 3
     }
 
     public class TroopStub : SimpleStub, ITroopStub

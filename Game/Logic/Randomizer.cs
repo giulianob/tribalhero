@@ -49,22 +49,29 @@ namespace Game.Logic
         private static bool RandomizeNpcResourceWork(uint ox, uint oy, uint x, uint y, object custom)
         {
             var feObj = (RandomForeach)custom;
-            if (Config.Random.Next()%4 == 0)
+            if (Config.Random.Next() % 4 == 0)
             {
                 IStructure structure;
-                World.Current.LockRegion(x, y);
-                if (Config.Random.Next()%2 == 0)
+                World.Current.Regions.LockRegion(x, y);
+                if (Config.Random.Next() % 2 == 0)
+                {
                     structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2402, 1);
+                }
                 else
+                {
                     structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2402, 1);
+                }
                 structure.X = x;
                 structure.Y = y;
                 feObj.City.Add(structure);
-                if (!World.Current.Add(structure))
+                if (!World.Current.Regions.Add(structure))
+                {
                     feObj.City.ScheduleRemove(structure, false);
-                Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
+                }
+                Ioc.Kernel.Get<InitFactory>()
+                   .InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
                 DbPersistance.Current.Save(structure);
-                World.Current.UnlockRegion(x, y);
+                World.Current.Regions.UnlockRegion(x, y);
             }
             return true;
         }
@@ -73,7 +80,12 @@ namespace Game.Logic
         {
             byte radius = city.Radius;
             var feObject = new RandomForeach(city);
-            TileLocator.Current.ForeachObject(city.X, city.Y, (byte)Math.Max(radius - 1, 0), false, RandomizeNpcResourceWork, feObject);
+            TileLocator.Current.ForeachObject(city.X,
+                                              city.Y,
+                                              (byte)Math.Max(radius - 1, 0),
+                                              false,
+                                              RandomizeNpcResourceWork,
+                                              feObject);
         }
 
         #region Nested type: RandomForeach

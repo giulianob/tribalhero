@@ -11,7 +11,9 @@ namespace Game.Util
     struct HexByteArray
     {
         private const string MAP = "0123456789ABCDEF";
+
         private readonly byte[] arr;
+
         private readonly int sz;
 
         public HexByteArray(byte[] arr, int s)
@@ -26,8 +28,10 @@ namespace Game.Util
             int count = 0;
             foreach (var b in arr)
             {
-                if (count == sz/2)
+                if (count == sz / 2)
+                {
                     str.Append("| ");
+                }
                 char lsb = MAP[(b & 0x0f)];
                 char msb = MAP[((b >> 4) & 0x0f)];
                 str.Append(msb);
@@ -55,7 +59,9 @@ namespace Game.Util
             {
                 char ch = '.';
                 if (!(Char.IsWhiteSpace((char)b) || Char.IsControl((char)b)))
+                {
                     ch = (char)b;
+                }
                 str.Append(ch);
             }
 
@@ -86,11 +92,13 @@ namespace Game.Util
                     tmp = new byte[len];
 
                     for (int i = 0; i < tmp.Length; i++)
+                    {
                         tmp[i] = buf[i];
+                    }
                 }
                 var hex = new HexByteArray(tmp, sz);
                 var asc = new PritableByteArray(tmp);
-                ret.Append(hex.ToString().PadRight(3*sz + 2, ' ') + " " + asc + Environment.NewLine);
+                ret.Append(hex.ToString().PadRight(3 * sz + 2, ' ') + " " + asc + Environment.NewLine);
             }
 
             return ret.ToString();

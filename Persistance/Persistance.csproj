@@ -72,20 +72,23 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
-      <HintPath>..\Lib\ninject\log4net\lib\log4net.dll</HintPath>
+      <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="mysql.data, Version=6.4.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\mysql.data\mysql.data.dll</HintPath>
     </Reference>
     <Reference Include="Ninject">
-      <HintPath>..\Lib\ninject\Ninject.dll</HintPath>
+      <HintPath>..\packages\Ninject.3.0.1.10\lib\net40\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.Conventions">
+      <HintPath>..\packages\ninject.extensions.conventions.3.0.0.11\lib\net40\Ninject.Extensions.Conventions.dll</HintPath>
     </Reference>
     <Reference Include="Ninject.Extensions.Logging">
-      <HintPath>..\Lib\ninject\Ninject.Extensions.Logging.dll</HintPath>
+      <HintPath>..\packages\Ninject.Extensions.Logging.3.0.1.0\lib\net40\Ninject.Extensions.Logging.dll</HintPath>
     </Reference>
     <Reference Include="Ninject.Extensions.Logging.Log4Net">
-      <HintPath>..\Lib\ninject\log4net\Ninject.Extensions.Logging.Log4Net.dll</HintPath>
+      <HintPath>..\packages\Ninject.Extensions.Logging.Log4net.3.0.1.0\lib\net40\Ninject.Extensions.Logging.Log4Net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -100,12 +103,15 @@
     <Compile Include="DbDependency.cs" />
     <Compile Include="DbTransaction.cs" />
     <Compile Include="IDbManager.cs" />
-    <Compile Include="IListOfPersistableObjects.cs" />
+    <Compile Include="IPersistableObjectList.cs" />
     <Compile Include="IPersistable.cs" />
     <Compile Include="Managers\MySqlDbManager.cs" />
     <Compile Include="Managers\MySqlDbTransaction.cs" />
-    <Compile Include="ListOfPersistableObjects.cs" />
+    <Compile Include="PersistableObjectList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

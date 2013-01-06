@@ -2,8 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Game;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
@@ -20,85 +18,118 @@ namespace ConsoleSimulator
     public enum StructureType
     {
         Barrack = 2204,
+
         Farm = 2106,
+
         Tower = 2402,
+
         TradingPost = 2501,
     }
 
-    public enum UnitType {
+    public enum UnitType
+    {
         Fighter = 11,
+
         Bowman = 12,
 
         Swordsman = 101,
+
         Archer = 102,
+
         Pikeman = 103,
+
         Gladiator = 104,
 
         Cavalry = 105,
+
         Knight = 106,
 
         Helepolis = 107,
+
         Catapult = 108,
 
-        TestSwordsman =1001,
+        TestSwordsman = 1001,
     }
 
     public class Group
     {
         private static uint playerId;
+
         private static uint cityId;
-        private readonly TroopStub attack;
-        private List<IStructure> structures = new List<IStructure>();
 
         private readonly ICity city;
+
         private readonly TroopObject obj;
+
         private readonly IPlayer player;
+
+        private readonly List<IStructure> structures = new List<IStructure>();
 
         public Group()
         {
-            player = new Player(playerId, DateTime.MinValue, SystemClock.Now, "player " + playerId, string.Empty, PlayerRights.Basic);
+            player = new Player(playerId,
+                                DateTime.MinValue,
+                                SystemClock.Now,
+                                "player " + playerId,
+                                string.Empty,
+                                PlayerRights.Basic);
             playerId++;
-            var main =
-                    new Structure(
-                            new StructureStats(new StructureBaseStats("MainBuilding",
-                                                                      "",
-                                                                      2000,
-                                                                      1,
-                                                                      0,
-                                                                      null,
-                                                                      new BaseBattleStats(2000,
-                                                                                          1,
-                                                                                          WeaponType.Sword,
-                                                                                          WeaponClass.Elemental,
-                                                                                          ArmorType.Building3,
-                                                                                          ArmorClass.Stone,
-                                                                                          500,
-                                                                                          0,
-                                                                                          0,
-                                                                                          0,
-                                                                                          0,
-                                                                                          0,
-                                                                                          1,
-                                                                                          0),
-                                                                      0,
-                                                                      0,
-                                                                      0,
-                                                                      ClassId.Structure)));
-            city = new City(player, "city " + cityId, Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), main, 0);
+            BaseBattleStats baseBattleStats = new BaseBattleStats(type: 2000,
+                                                                  lvl: 1,
+                                                                  weapon: WeaponType.Sword,
+                                                                  wpnClass: WeaponClass.Elemental,
+                                                                  armor: ArmorType.Building3,
+                                                                  armrClass: ArmorClass.Stone,
+                                                                  maxHp: 500,
+                                                                  atk: 0,
+                                                                  splash: 0,
+                                                                  range: 0,
+                                                                  stealth: 0,
+                                                                  speed: 0,
+                                                                  groupSize: 1,
+                                                                  carry: 0,
+                                                                  normalizedCost: 0);
+            StructureBaseStats structureBaseStats = new StructureBaseStats(name: "MainBuilding",
+                                                                           spriteClass: "",
+                                                                           type: 2000,
+                                                                           lvl: 1,
+                                                                           radius: 0,
+                                                                           cost: null,
+                                                                           baseBattleStats: baseBattleStats,
+                                                                           maxLabor: 0,
+                                                                           buildTime: 0,
+                                                                           workerId: 0,
+                                                                           baseClass: ClassId.Structure);
+            StructureStats structurestats = new StructureStats(structureBaseStats);
+
+            var main = new Structure(structurestats);
+
+            city = new City(id: cityId,
+                            owner: player,
+                            name: "city " + cityId,
+                            resource: Formula.Current.GetInitialCityResources(),
+                            radius: Formula.Current.GetInitialCityRadius(),
+                            mainBuilding: main,
+                            ap: 0);
             player.Add(city);
             cityId++;
 
-            attack = new TroopStub();
-            attack = new TroopStub();
-            attack.AddFormation(FormationType.Normal);
-            obj = new TroopObject(attack);
-            attack.TroopObject = obj;
+            AttackStub = new TroopStub(0, city);
+            AttackStub.AddFormation(FormationType.Normal);
+            obj = new TroopObject(AttackStub);
             using (Concurrency.Current.Lock(city))
             {
-                //attack.City = city;
-                city.Troops.Add(attack);
+                city.Troops.Add(AttackStub);
                 city.Add(obj);
             }
+
+            TroopObject = new TroopObject(AttackStub) {X = city.X, Y = city.Y};
+            TroopObject.BeginUpdate();
+            TroopObject.Stats = new TroopStats(Formula.Current.GetTroopRadius(AttackStub, null),
+                                               Formula.Current.GetTroopSpeed(AttackStub));
+            TroopObject.EndUpdate();
+
+            city.Add(TroopObject);
         }
 
         public ITroopStub Local
@@ -109,13 +140,9 @@ namespace ConsoleSimulator
             }
         }
 
-        public ITroopStub AttackStub
-        {
-            get
-            {
-                return attack;
-            }
-        }
+        public ITroopObject TroopObject { get; set; }
+
+        public TroopStub AttackStub { get; private set; }
 
         public ICity City
         {
@@ -144,17 +171,22 @@ namespace ConsoleSimulator
             {
                 city.BeginUpdate();
                 city.Template[type] = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl);
-                if(city.Template[type]==null) throw  new Exception("Unit type not found!");
+                if (city.Template[type] == null)
+                {
+                    throw new Exception("Unit type not found!");
+                }
                 city.EndUpdate();
                 city.DefaultTroop.BeginUpdate();
                 city.DefaultTroop.AddUnit(formation, type, count);
                 city.DefaultTroop.EndUpdate();
             }
         }
+
         public void AddStructure(StructureType type, byte lvl)
         {
-            AddStructure((ushort)type,lvl);
+            AddStructure((ushort)type, lvl);
         }
+
         public void AddStructure(ushort type, byte lvl)
         {
             IStructure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(type, lvl);
@@ -164,7 +196,7 @@ namespace ConsoleSimulator
 
         public void AddToAttack(UnitType type, byte lvl, ushort count)
         {
-            AddToAttack((ushort)type,lvl,count, FormationType.Normal);
+            AddToAttack((ushort)type, lvl, count, FormationType.Normal);
         }
 
         public void AddToAttack(ushort type, byte lvl, ushort count, FormationType formation)
@@ -173,18 +205,20 @@ namespace ConsoleSimulator
             {
                 city.BeginUpdate();
                 city.Template[type] = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl);
-                if (city.Template[type] == null) throw new Exception("Unit type not found!");
+                if (city.Template[type] == null)
+                {
+                    throw new Exception("Unit type not found!");
+                }
                 city.EndUpdate();
-                attack.BeginUpdate();
-                attack.AddUnit(formation, type, count);
-                attack.EndUpdate();
+                AttackStub.BeginUpdate();
+                AttackStub.AddUnit(formation, type, count);
+                AttackStub.EndUpdate();
             }
         }
 
         public int Upkeep(UnitType type)
         {
-
-            return attack[FormationType.Normal][(ushort)type] * city.Template[(ushort)type].Upkeep;
+            return AttackStub[FormationType.Normal][(ushort)type] * city.Template[(ushort)type].Upkeep;
         }
 
         public int Upkeep()

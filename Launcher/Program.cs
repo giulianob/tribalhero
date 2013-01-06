@@ -1,17 +1,11 @@
 #region
 
 using System;
-using System.IO;
-using System.Threading;
 using CSVToXML;
 using Game;
-using Game.Data;
 using Game.Setup;
-using Game.Util;
-using Game.Util.Locking;
 using NDesk.Options;
 using Ninject;
-using Persistance;
 
 #endregion
 
@@ -25,11 +19,11 @@ namespace Launcher
             string settingsFile = string.Empty;
 
             try
-            {                
-                var p = new OptionSet { { "?|help|h", v => help = true }, { "settings=", v => settingsFile = v }, };
+            {
+                var p = new OptionSet {{"?|help|h", v => help = true}, {"settings=", v => settingsFile = v},};
                 p.Parse(Environment.GetCommandLineArgs());
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 Console.Out.WriteLine(e.Message);
                 Environment.Exit(0);
@@ -40,12 +34,12 @@ namespace Launcher
                 Console.Out.WriteLine("Usage: launcher [--settings=settings.ini]");
                 Environment.Exit(0);
             }
-            
+
             Config.LoadConfigFile(settingsFile);
-            Factory.CompileConfigFiles();            
+            Factory.CompileConfigFiles();
             Engine.CreateDefaultKernel();
             Factory.InitAll();
-            Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);            
+            Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
 
             // Empty db
 #if DEBUG
@@ -53,7 +47,9 @@ namespace Launcher
             {
                 Console.Out.Write("Are you sure you want to empty the database?(Y/N):");
                 if (!Console.ReadKey().Key.ToString().ToLower().Equals("y"))
+                {
                     return;
+                }
             }
 #endif
 
@@ -61,7 +57,9 @@ namespace Launcher
             var engine = Ioc.Kernel.Get<Engine>();
 
             if (!engine.Start())
-                throw new Exception("Failed to load server");            
+            {
+                throw new Exception("Failed to load server");
+            }
 
             // Quit if press alt+q
             while (true)
@@ -69,7 +67,9 @@ namespace Launcher
                 ConsoleKeyInfo key = Console.ReadKey();
 
                 if (key.Key != ConsoleKey.Q || key.Modifiers != ConsoleModifiers.Alt)
+                {
                     continue;
+                }
 
                 engine.Stop();
                 return;

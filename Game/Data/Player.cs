@@ -1,14 +1,14 @@
 #region
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Game.Comm;
+using Game.Data.Tribe;
 using Game.Database;
 using Game.Setup;
 using Game.Util;
-using Ninject;
 using Persistance;
 
 #endregion
@@ -16,17 +16,36 @@ using Persistance;
 namespace Game.Data
 {
     public class Player : IPlayer
-    {        
+    {
         public const string DB_TABLE = "players";
+
         public const int MAX_DESCRIPTION_LENGTH = 3000;
+
         private readonly List<ICity> list = new List<ICity>();
 
-        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, string description, PlayerRights playerRights)
-            : this(playerid, created, lastLogin, name, description, playerRights, string.Empty)
+        private string description = string.Empty;
+
+        private uint tribeRequest;
+
+        private ITribesman tribesman;
+
+        public Player(uint playerid,
+                      DateTime created,
+                      DateTime lastLogin,
+                      string name,
+                      string description,
+                      PlayerRights playerRights)
+                : this(playerid, created, lastLogin, name, description, playerRights, string.Empty)
         {
         }
 
-        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, string description, PlayerRights playerRights, string sessionId)
+        public Player(uint playerid,
+                      DateTime created,
+                      DateTime lastLogin,
+                      string name,
+                      string description,
+                      PlayerRights playerRights,
+                      string sessionId)
         {
             PlayerId = playerid;
             LastLogin = lastLogin;
@@ -66,7 +85,6 @@ namespace Game.Data
             }
         }
 
-        private string description = string.Empty;
         public string Description
         {
             get
@@ -79,14 +97,20 @@ namespace Game.Data
 
                 if (DbPersisted)
                 {
-                    DbPersistance.Current.Query(string.Format("UPDATE `{0}` SET `description` = @description WHERE `id` = @id LIMIT 1", DB_TABLE),
-                                           new[] { new DbColumn("description", description, DbType.String), new DbColumn("id", PlayerId, DbType.UInt32) });
+                    DbPersistance.Current.Query(
+                                                string.Format(
+                                                              "UPDATE `{0}` SET `description` = @description WHERE `id` = @id LIMIT 1",
+                                                              DB_TABLE),
+                                                new[]
+                                                {
+                                                        new DbColumn("description", description, DbType.String),
+                                                        new DbColumn("id", PlayerId, DbType.UInt32)
+                                                });
                 }
             }
         }
 
-        private Tribe.ITribesman tribesman;
-        public Tribe.ITribesman Tribesman
+        public ITribesman Tribesman
         {
             get
             {
@@ -99,7 +123,6 @@ namespace Game.Data
             }
         }
 
-        private uint tribeRequest;
         public uint TribeRequest
         {
             get
@@ -155,6 +178,69 @@ namespace Game.Data
             }
         }
 
+        public void Add(ICity city)
+        {
+            list.Add(city);
+        }
+
+        public int GetCityCount(bool includeDeleted = false)
+        {
+            return list.Count(city => includeDeleted || city.Deleted == City.DeletedState.NotDeleted);
+        }
+
+        public IEnumerable<ICity> GetCityList(bool includeDeleted = false)
+        {
+            return list.Where(city => includeDeleted || city.Deleted == City.DeletedState.NotDeleted);
+        }
+
+        public ICity GetCity(uint id)
+        {
+            return list.Find(city => city.Id == id && city.Deleted == City.DeletedState.NotDeleted);
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public void SendSystemMessage(IPlayer from, String subject, String message)
+        {
+            subject = String.Format("(System) {0}", subject);
+            DbPersistance.Current.Query(
+                                        "INSERT INTO `messages` (`sender_player_id`, `recipient_player_id`, `subject`, `message`, `sender_state`, `recipient_state`, `created`) VALUES (@sender_player_id, @recipient_player_id, @subject, @message, @sender_state, @recipient_state, UTC_TIMESTAMP())",
+                                        new[]
+                                        {
+                                                new DbColumn("sender_player_id",
+                                                             from == null ? 0 : from.PlayerId,
+                                                             DbType.UInt32),
+                                                new DbColumn("recipient_player_id", PlayerId, DbType.UInt32),
+                                                new DbColumn("subject", subject, DbType.String),
+                                                new DbColumn("message", message, DbType.String),
+                                                new DbColumn("sender_state", 2, DbType.Int16),
+                                                new DbColumn("recipient_state", 0, DbType.Int16),
+                                        });
+
+            if (Session != null)
+            {
+                var packet = new Packet(Command.RefreshUnread);
+                Global.Channel.Post("/PLAYER/" + PlayerId, packet);
+            }
+        }
+
+        public void TribeUpdate()
+        {
+            if (!Global.FireEvents)
+            {
+                return;
+            }
+
+            var packet = new Packet(Command.TribeChannelUpdate);
+            packet.AddUInt32(Tribesman == null ? 0 : Tribesman.Tribe.Id);
+            packet.AddUInt32(TribeRequest);
+            packet.AddByte((byte)(Tribesman == null ? 0 : tribesman.Rank));
+            Global.Channel.Post("/PLAYER/" + PlayerId, packet);
+        }
+
         #region ILockable Members
 
         public int Hash
@@ -190,15 +276,14 @@ namespace Game.Data
             get
             {
                 return new[]
-                       {
-                               new DbColumn("name", Name, DbType.String, 32), 
-                               new DbColumn("created", Created, DbType.DateTime),
-                               new DbColumn("last_login", LastLogin, DbType.DateTime), 
-                               new DbColumn("session_id", SessionId, DbType.String, 128),
-                               new DbColumn("rights", (int)Rights, DbType.UInt16),
-                               new DbColumn("online", Session != null, DbType.Boolean),
-                               new DbColumn("invitation_tribe_id", TribeRequest, DbType.UInt32), 
-                       };
+                {
+                        new DbColumn("name", Name, DbType.String, 32), new DbColumn("created", Created, DbType.DateTime),
+                        new DbColumn("last_login", LastLogin, DbType.DateTime),
+                        new DbColumn("session_id", SessionId, DbType.String, 128),
+                        new DbColumn("rights", (int)Rights, DbType.UInt16),
+                        new DbColumn("online", Session != null, DbType.Boolean),
+                        new DbColumn("invitation_tribe_id", TribeRequest, DbType.UInt32),
+                };
             }
         }
 
@@ -206,77 +291,20 @@ namespace Game.Data
         {
             get
             {
-                return new[] { new DbColumn("id", PlayerId, DbType.UInt32) };
+                return new[] {new DbColumn("id", PlayerId, DbType.UInt32)};
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {
-                return new DbDependency[] { };
+                return new DbDependency[] {};
             }
         }
 
         public bool DbPersisted { get; set; }
 
         #endregion
-
-        public void Add(ICity city)
-        {
-            list.Add(city);
-        }
-
-        public int GetCityCount(bool includeDeleted = false)
-        {
-            return list.Count(city => includeDeleted || city.Deleted == City.DeletedState.NotDeleted);
-        }
-
-        public IEnumerable<ICity> GetCityList(bool includeDeleted = false)
-        {
-            return list.Where(city => includeDeleted || city.Deleted == City.DeletedState.NotDeleted);
-        }
-
-        public ICity GetCity(uint id)
-        {
-            return list.Find(city => city.Id == id && city.Deleted == City.DeletedState.NotDeleted);
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
-
-        public void SendSystemMessage(IPlayer from, String subject, String message)
-        {
-            subject = String.Format("(System) {0}", subject);
-            DbPersistance.Current.Query(
-                                   "INSERT INTO `messages` (`sender_player_id`, `recipient_player_id`, `subject`, `message`, `sender_state`, `recipient_state`, `created`) VALUES (@sender_player_id, @recipient_player_id, @subject, @message, @sender_state, @recipient_state, UTC_TIMESTAMP())",
-                                   new[]
-                                   {
-                                           new DbColumn("sender_player_id", from == null ? 0 : from.PlayerId, DbType.UInt32),
-                                           new DbColumn("recipient_player_id", PlayerId, DbType.UInt32), new DbColumn("subject", subject, DbType.String),
-                                           new DbColumn("message", message, DbType.String), new DbColumn("sender_state", 2, DbType.Int16),
-                                           new DbColumn("recipient_state", 0, DbType.Int16),
-                                   });
-
-            if (Session != null)
-            {
-                var packet = new Packet(Command.RefreshUnread);
-                Global.Channel.Post("/PLAYER/" + PlayerId, packet);
-            }
-        }
-
-        public void TribeUpdate()
-        {
-            if (!Global.FireEvents)
-                return;
-
-            var packet = new Packet(Command.TribeChannelUpdate);
-            packet.AddUInt32(Tribesman == null ? 0 : Tribesman.Tribe.Id);
-            packet.AddUInt32(TribeRequest);
-            packet.AddByte((byte)(Tribesman == null ? 0 : tribesman.Rank));
-            Global.Channel.Post("/PLAYER/" + PlayerId, packet);
-        }
     }
 }

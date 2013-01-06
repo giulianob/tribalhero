@@ -9,6 +9,7 @@ namespace Game.Logic.Actions
     class ChainExecuter : ISchedule
     {
         private readonly ChainAction.ChainCallback chainCallback;
+
         private readonly ActionState state;
 
         public ChainExecuter(ChainAction.ChainCallback chainCallback, ActionState state)

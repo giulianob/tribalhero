@@ -12,15 +12,17 @@ namespace Game.Data.Tribe
     {
         uint Id { get; set; }
 
-        IPlayer Owner { get; set; }
+        IPlayer Owner { get; }
 
         string Name { get; set; }
 
-        byte Level { get; set; }
+        byte Level { get; }
 
         int AttackPoint { get; set; }
 
         int DefensePoint { get; set; }
+
+        decimal VictoryPoint { get; set; }
 
         string Description { get; set; }
 
@@ -34,34 +36,43 @@ namespace Game.Data.Tribe
 
         int Count { get; }
 
+        DateTime Created { get; }
+
+        event EventHandler<TribesmanRemovedEventArgs> TribesmanRemoved;
+
         bool IsOwner(IPlayer player);
 
         Error AddTribesman(ITribesman tribesman, bool save = true);
 
-        Error RemoveTribesman(uint playerId);
-
-        bool TryGetTribesman(uint playerId, out ITribesman tribesman);
+        Error RemoveTribesman(uint playerId, bool wasKicked, bool checkIfOwner = true);
 
         Error SetRank(uint playerId, byte rank);
 
         Error Contribute(uint playerId, Resource resource);
 
-        IEnumerable<Tribe.IncomingListItem> GetIncomingList();
-
         bool HasRight(uint playerId, string action);
 
-        Error CreateAssignment(ICity city, ITroopStub stub, uint x, uint y, ICity targetCity, DateTime time, AttackMode mode, string description, bool isAttack, out int id);
+        Error CreateAssignment(ICity city,
+                               ISimpleStub stub,
+                               uint x,
+                               uint y,
+                               ILocation target,
+                               DateTime time,
+                               AttackMode mode,
+                               string description,
+                               bool isAttack,
+                               out int id);
 
-        Error JoinAssignment(int id, ICity city, ITroopStub stub);
+        Error JoinAssignment(int id, ICity city, ISimpleStub stub);
 
         Error Transfer(uint newOwnerPlayerId);
 
-        void RemoveAssignment(Assignment assignment);
-
         void DbLoaderAddAssignment(Assignment assignment);
 
-        void Upgrade();
+        Error Upgrade();
 
         void SendUpdate();
+
+        event EventHandler<EventArgs> Updated;
     }
 }

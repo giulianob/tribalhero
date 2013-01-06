@@ -15,12 +15,19 @@ namespace Game.Comm
     class TcpWorker
     {
         private static readonly object workerLock = new object();
+
         private static readonly List<TcpWorker> workerList = new List<TcpWorker>();
+
         private readonly Dictionary<Socket, SocketSession> sessions = new Dictionary<Socket, SocketSession>();
+
         private readonly ArrayList sockList = new ArrayList();
+
         private readonly object sockListLock = new object();
+
         private readonly EventWaitHandle socketAvailable = new EventWaitHandle(false, EventResetMode.AutoReset);
+
         private bool isStopped;
+
         private Thread workerThread;
 
         public static int GetSessionCount()
@@ -42,11 +49,15 @@ namespace Game.Comm
                     {
                         // Worker full
                         if (worker.sessions.Count > 250)
+                        {
                             continue;
+                        }
 
                         // Socket already disconnected before we got here
                         if (!session.Socket.Connected)
+                        {
                             return;
+                        }
 
                         session.OnClose += worker.OnClose;
                         worker.Put(session);
@@ -60,7 +71,7 @@ namespace Game.Comm
                 {
                     var newWorker = new TcpWorker();
                     workerList.Add(newWorker);
-                    
+
                     session.OnClose += newWorker.OnClose;
 
                     newWorker.Put(session);
@@ -77,7 +88,9 @@ namespace Game.Comm
             lock (workerLock)
             {
                 foreach (var worker in workerList)
+                {
                     worker.Stop();
+                }
             }
         }
 
@@ -88,7 +101,9 @@ namespace Game.Comm
                 foreach (var worker in workerList)
                 {
                     if (worker.sockList.Contains(session.Socket))
+                    {
                         worker.sockList.Remove(session.Socket);
+                    }
                 }
             }
         }
@@ -107,10 +122,14 @@ namespace Game.Comm
         public void Start()
         {
             if (workerThread == null)
+            {
                 workerThread = new Thread(SocketHandler) {Name = "TcpWorker Thread"};
+            }
 
             if (workerThread.ThreadState != ThreadState.Running)
+            {
                 workerThread.Start();
+            }
         }
 
         public void Stop()
@@ -167,9 +186,13 @@ namespace Game.Comm
                         }
 
                         if (copyList.Count > 0)
+                        {
                             Socket.Select(copyList, null, null, 3000);
+                        }
                         else
+                        {
                             socketAvailable.WaitOne(-1, false);
+                        }
                     }
                     catch(Exception e)
                     {
@@ -216,15 +239,18 @@ namespace Game.Comm
                                         // Remove the player if after processing packets we still have over 64k of data remaining.
                                         // This probably means the player is spamming the server with an invalid client that doesn't speak our protocol
                                         if (session.PacketMaker.Length > 65536)
-                                            SocketDisconnect(s);                                                                                   
+                                        {
+                                            SocketDisconnect(s);
+                                        }
 
                                         break;
                                     }
 
                                     ThreadPool.QueueUserWorkItem(session.Process, packet);
-                                } while (true);
+                                }
+                                while (true);
                             }
-                            catch (SocketException)
+                            catch(SocketException)
                             {
                                 SocketDisconnect(s);
                             }

@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using FluentAssertions;
 using Game.Database;
@@ -67,7 +66,10 @@ namespace Testing.Database
 
                 var loader = new DbLoaderActionFactory(kernel);
 
-                var action = loader.CreatePassiveAction(typeof(PassiveActionStub), 1, true, new Dictionary<string, string>());
+                var action = loader.CreatePassiveAction(typeof(PassiveActionStub),
+                                                        1,
+                                                        true,
+                                                        new Dictionary<string, string>());
 
                 action.Should().BeOfType<PassiveActionStub>();
             }
@@ -83,20 +85,63 @@ namespace Testing.Database
                 var loader = new DbLoaderActionFactory(kernel);
 
                 var action = loader.CreateChainAction(typeof(ChainActionStub),
-                                         1,
-                                         "chain",
-                                         new PassiveActionStub(1, true, new Dictionary<string, string>()),
-                                         ActionState.Completed,
-                                         false,
-                                         new Dictionary<string, string>());
+                                                      1,
+                                                      "chain",
+                                                      new PassiveActionStub(1, true, new Dictionary<string, string>()),
+                                                      ActionState.Completed,
+                                                      false,
+                                                      new Dictionary<string, string>());
 
                 action.Should().BeOfType<ChainActionStub>();
             }
         }
 
         #region Stubs
+
+        private class ChainActionStub : ChainAction
+        {
+            public ChainActionStub(uint id,
+                                   string chainCallback,
+                                   PassiveAction current,
+                                   ActionState chainState,
+                                   bool isVisible,
+                                   IDictionary<string, string> properties)
+            {
+            }
+
+            public override ActionType Type
+            {
+                get
+                {
+                    return ActionType.CityAttackChain;
+                }
+            }
+
+            public override string Properties
+            {
+                get
+                {
+                    return "properties";
+                }
+            }
+
+            public override Error Validate(string[] parms)
+            {
+                return Error.Ok;
+            }
+
+            public override Error Execute()
+            {
+                return Error.Ok;
+            }
+        }
+
         private class PassiveActionStub : PassiveAction
         {
+            public PassiveActionStub(uint id, bool isVisible, IDictionary<string, string> properties)
+            {
+            }
+
             public override ActionType Type
             {
                 get
@@ -129,15 +174,22 @@ namespace Testing.Database
 
             public override void WorkerRemoved(bool wasKilled)
             {
-            }
-
-            public PassiveActionStub(uint id, bool isVisible, IDictionary<string, string> properties)
-            {                
             }
         }
 
         private class ScheduledActiveActionStub : ScheduledActiveAction
         {
+            public ScheduledActiveActionStub(uint id,
+                                             DateTime beginTime,
+                                             DateTime nextTime,
+                                             DateTime endTime,
+                                             int workerType,
+                                             byte workerIndex,
+                                             ushort actionCount,
+                                             Dictionary<string, string> properties)
+            {
+            }
+
             public override ActionType Type
             {
                 get
@@ -152,24 +204,6 @@ namespace Testing.Database
                 {
                     return "properties";
                 }
-            }
-
-            public override Error Validate(string[] parms)
-            {
-                return Error.Ok;
-            }
-
-            public override Error Execute()
-            {
-                return Error.Ok;
-            }
-
-            public override void UserCancelled()
-            {
-            }
-
-            public override void WorkerRemoved(bool wasKilled)
-            {
             }
 
             public override ConcurrencyType ActionConcurrency
@@ -180,30 +214,46 @@ namespace Testing.Database
                 }
             }
 
-            public override void Callback(object custom)
+            public override Error Validate(string[] parms)
+            {
+                return Error.Ok;
+            }
+
+            public override Error Execute()
+            {
+                return Error.Ok;
+            }
+
+            public override void UserCancelled()
             {
             }
 
-            public ScheduledActiveActionStub(uint id,
-                                             DateTime beginTime,
-                                             DateTime nextTime,
-                                             DateTime endTime,
-                                             int workerType,
-                                             byte workerIndex,
-                                             ushort actionCount,
-                                             Dictionary<string, string> properties)
+            public override void WorkerRemoved(bool wasKilled)
             {
+            }
 
+            public override void Callback(object custom)
+            {
             }
         }
 
         private class ScheduledPassiveActionStub : ScheduledPassiveAction
         {
+            public ScheduledPassiveActionStub(uint id,
+                                              DateTime beginTime,
+                                              DateTime nextTime,
+                                              DateTime endTime,
+                                              bool isVisible,
+                                              string nlsDescription,
+                                              Dictionary<string, string> properties)
+            {
+            }
+
             public override ActionType Type
             {
                 get
                 {
-                    return ActionType.AttackChain;
+                    return ActionType.CityAttackChain;
                 }
             }
 
@@ -235,50 +285,6 @@ namespace Testing.Database
 
             public override void Callback(object custom)
             {
-            }
-
-            public ScheduledPassiveActionStub(uint id,
-                                              DateTime beginTime,
-                                              DateTime nextTime,
-                                              DateTime endTime,
-                                              bool isVisible,
-                                              string nlsDescription,
-                                              Dictionary<string, string> properties)
-            {
-
-            }
-        }
-
-        private class ChainActionStub : ChainAction
-        {
-            public override ActionType Type
-            {
-                get
-                {
-                    return ActionType.AttackChain;
-                }
-            }
-
-            public override string Properties
-            {
-                get
-                {
-                    return "properties";
-                }
-            }
-
-            public override Error Validate(string[] parms)
-            {
-                return Error.Ok;
-            }
-
-            public override Error Execute()
-            {
-                return Error.Ok;
-            }
-
-            public ChainActionStub(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, IDictionary<string, string> properties)
-            {                
             }
         }
 

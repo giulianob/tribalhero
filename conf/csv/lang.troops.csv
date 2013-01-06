@@ -1,10 +1,17 @@
 Key,EN
+LOCAL_TROOP,Local
+,
 TROOP_STATE_IDLE,Idle
 TROOP_STATE_BATTLE,In Battle
 TROOP_STATE_STATIONED,Stationed
 TROOP_STATE_BATTLE_STATIONED,In Battle
 TROOP_STATE_MOVING,On the Move
 TROOP_STATE_RETURNING_HOME,Returning Home
+TROOP_STATE_WAITING_IN_DEFENSIVE_ASSIGNMENT,Waiting in defensive assignment
+TROOP_STATE_WAITING_IN_OFFENSIVE_ASSIGNMENT,Waiting in offensive assignment
+,
+TROOP_MORE_UNITS,and {0} more
+TROOP_UNITS,{0} unit(s)
 ,
 SWORDSMAN_UNIT,Swordsman
 HEAVY_SWORDSMAN_UNIT,Heavy Swordsman
@@ -32,7 +39,7 @@ GLADIATOR_UNIT,Gladiator
 1_ARCHER_UNIT_DESC,"Archer is strong against all except machine units, structures, and their damage splashes among multiple targets; however they have relatively low health compare to the damage they deal. It is wise to protect them with other units. When using Archer, be very careful of enemy unit with high range (such as Cavalry, Knight) they can reach Archer from the beginning of the battle."
 1_PIKEMAN_UNIT,Hoplite
 1_PIKEMAN_PLURAL_UNIT,Hoplites
-1_PIKEMAN_UNIT_DESC,"Hoplite is a very special trained unit to take down mounted units such as Cavalry and Knight. They are not very well equiped against anyone else so do not expect to win a battle with just Hoplites."
+1_PIKEMAN_UNIT_DESC,Hoplite is a very special trained unit to take down mounted units such as Cavalry and Knight. They are not very well equiped against anyone else so do not expect to win a battle with just Hoplites.
 1_GLADIATOR_UNIT,Gladiator
 1_GLADIATOR_PLURAL_UNIT,Gladiators
 1_GLADIATOR_UNIT_DESC,"Gladiator, the fearless warrior is the one of the good siege units in a tribe. They are very good against Helepolis and Tower. Their quickness allow them to reach enemies deep in the formation; and with decent damage, none can hold long before they are beheaded."
@@ -47,7 +54,7 @@ GLADIATOR_UNIT,Gladiator
 1_HELEPOLIS_UNIT_DESC,Machine that shoots thousands of arrows every minute. 
 1_CATAPULT_UNIT,Catapult
 1_CATAPULT_PLURAL_UNIT,Catapults
-1_CATAPULT_UNIT_DESC,"The only unit that does meaningful damage to structures. Catapults are also strong against machines but can fall quickly to any melee units. Beware when Catapult is sent with the troops, overall movement will be lowered to have the same speed as the Catapult irregardless of the troop composition."
+1_CATAPULT_UNIT_DESC,"The only unit that does meaningful damage to structures. Catapults are also strong against machines but can fall quickly to any melee units. Beware when Catapult is sent with the troops, overall movement will be lowered to have the same speed as the Catapult regardless of the troop's composition."
 1_OXWAGON_UNIT,Ox Wagon
 1_OXWAGON_PLURAL_UNIT,Ox Wagons
 1_OXWAGON_UNIT_DESC,A non-combat unit used to carry loot. The oxen are fed with beer; its fat is quite thick so some tribes use them as shields.

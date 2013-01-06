@@ -60,17 +60,26 @@ namespace Game.Database
                                new ConstructorArgument("properties", properties));
         }
 
-        public PassiveAction CreatePassiveAction(Type type, uint id, bool isVisible, IDictionary<string, string> properties)
+        public PassiveAction CreatePassiveAction(Type type,
+                                                 uint id,
+                                                 bool isVisible,
+                                                 IDictionary<string, string> properties)
         {
             return
                     (PassiveAction)
                     kernel.Get(type,
                                new ConstructorArgument("id", id),
                                new ConstructorArgument("isVisible", isVisible),
-                               new ConstructorArgument("properties", properties));            
+                               new ConstructorArgument("properties", properties));
         }
 
-        public ChainAction CreateChainAction(Type type, uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, IDictionary<string, string> properties)
+        public ChainAction CreateChainAction(Type type,
+                                             uint id,
+                                             string chainCallback,
+                                             PassiveAction current,
+                                             ActionState chainState,
+                                             bool isVisible,
+                                             IDictionary<string, string> properties)
         {
             return
                     (ChainAction)

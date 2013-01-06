@@ -9,17 +9,18 @@ namespace Game.Util
     public class IdGenerator
     {
         private readonly BitArray bitarray;
+
         private readonly bool fetchLowest;
+
+        private readonly int offset;
+
         private int start = 1;
 
-        public IdGenerator(int max) : this(max, false)
-        {
-        }
-
-        public IdGenerator(int max, bool fetchLowest)
+        public IdGenerator(int max, bool fetchLowest = false, int startValue = 0)
         {
             this.fetchLowest = fetchLowest;
             bitarray = new BitArray(max, false);
+            offset = startValue;
         }
 
         public int GetNext()
@@ -31,18 +32,24 @@ namespace Game.Util
                 {
                     int idx;
                     if (fetchLowest)
+                    {
                         idx = i;
+                    }
                     else
-                        idx = (i + start)%bitarray.Length;
+                    {
+                        idx = (i + start) % bitarray.Length;
+                    }
 
                     if (idx == 0)
+                    {
                         continue;
+                    }
 
                     if (bitarray.Get(idx) == false)
                     {
                         bitarray.Set(idx, true);
                         start = idx;
-                        return idx;
+                        return idx + offset;
                     }
                 }
             }
@@ -54,7 +61,7 @@ namespace Game.Util
         {
             lock (bitarray)
             {
-                bitarray.Set(id, true);
+                bitarray.Set(id - offset, true);
             }
         }
 
@@ -62,7 +69,7 @@ namespace Game.Util
         {
             lock (bitarray)
             {
-                bitarray.Set(id, false);
+                bitarray.Set(id - offset, false);
             }
         }
     }

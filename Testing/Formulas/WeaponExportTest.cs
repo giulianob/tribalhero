@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using FluentAssertions;
-using Game.Data;
-using Game.Data.Troop;
-using Game.Setup;
+﻿using FluentAssertions;
 using Game.Logic.Formulas;
+using Game.Setup;
 using Moq;
 using Xunit;
 

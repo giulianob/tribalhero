@@ -9,10 +9,13 @@ namespace Game.Util
     public class SmallIdGenerator
     {
         private readonly BitArray bitarray;
+
         private readonly bool fetchLowest;
+
         private int start = 1;
 
-        public SmallIdGenerator(int max) : this(max, false)
+        public SmallIdGenerator(int max)
+                : this(max, false)
         {
         }
 
@@ -31,12 +34,18 @@ namespace Game.Util
                 {
                     int idx;
                     if (fetchLowest)
+                    {
                         idx = i;
+                    }
                     else
-                        idx = (i + start)%bitarray.Length;
+                    {
+                        idx = (i + start) % bitarray.Length;
+                    }
 
                     if (idx == 0)
+                    {
                         continue;
+                    }
 
                     if (bitarray.Get(idx) == false)
                     {

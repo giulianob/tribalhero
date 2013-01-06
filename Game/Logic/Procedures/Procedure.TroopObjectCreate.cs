@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-
 using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
@@ -15,17 +14,22 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public virtual bool TroopStubCreate(ICity city, ITroopStub stub, TroopState initialState = TroopState.Idle, params FormationType[] formations) {
+        public virtual bool TroopStubCreate(out ITroopStub troopStub,
+                                            ICity city,
+                                            ISimpleStub stub,
+                                            TroopState initialState = TroopState.Idle,
+                                            params FormationType[] formations)
+        {
             if (!RemoveFromNormal(city.DefaultTroop, stub, formations))
             {
+                troopStub = null;
                 return false;
             }
-
-            stub.State = initialState;
-            city.Troops.Add(stub);
-
-            dbManager.Save(stub);
-            
+            troopStub = city.Troops.Create();
+            troopStub.BeginUpdate();
+            troopStub.Add(stub);
+            troopStub.State = initialState;
+            troopStub.EndUpdate();
             return true;
         }
 
@@ -35,43 +39,61 @@ namespace Game.Logic.Procedures
             city.Troops.Remove(stub.TroopId);
         }
 
-        public virtual void TroopObjectCreate(ICity city, ITroopStub stub)
+        public virtual void TroopObjectCreate(ICity city, ITroopStub stub, out ITroopObject troopObject)
         {
-            var troop = new TroopObject(stub) { X = city.X, Y = city.Y };
-            city.Add(troop);
+            troopObject = new TroopObject(stub) {X = city.X, Y = city.Y};
+            city.Add(troopObject);
 
-            troop.BeginUpdate();
-            troop.Stats = new TroopStats(Formula.Current.GetTroopRadius(stub, null), Formula.Current.GetTroopSpeed(stub));
-            World.Current.Add(troop);
-            troop.EndUpdate();            
+            troopObject.BeginUpdate();
+            troopObject.Stats = new TroopStats(Formula.Current.GetTroopRadius(stub, null),
+                                               Formula.Current.GetTroopSpeed(stub));
+            World.Current.Regions.Add(troopObject);
+            troopObject.EndUpdate();
         }
 
-        public virtual bool TroopObjectCreateFromCity(ICity city, TroopStub stub, uint x, uint y)
+        public virtual bool TroopObjectCreateFromCity(ICity city,
+                                                      ISimpleStub stub,
+                                                      uint x,
+                                                      uint y,
+                                                      out ITroopObject troopObject)
         {
             if (stub.TotalCount == 0 || !RemoveFromNormal(city.DefaultTroop, stub))
+            {
+                troopObject = null;
                 return false;
+            }
 
-            var troop = new TroopObject(stub) {X = x, Y = y + 1};
+            var troopStub = city.Troops.Create();
+            troopStub.BeginUpdate();
+            troopStub.Add(stub);
+            troopStub.EndUpdate();
 
-            city.Troops.Add(stub);
-            city.Add(troop);
+            troopObject = new TroopObject(troopStub) {X = x, Y = y + 1};
+            city.Add(troopObject);
 
-            troop.BeginUpdate();
-            troop.Stats = new TroopStats(Formula.Current.GetTroopRadius(stub, null), Formula.Current.GetTroopSpeed(stub));
-            World.Current.Add(troop);
-            troop.EndUpdate();
+            troopObject.BeginUpdate();
+            troopObject.Stats = new TroopStats(Formula.Current.GetTroopRadius(troopStub, null),
+                                               Formula.Current.GetTroopSpeed(troopStub));
+            World.Current.Regions.Add(troopObject);
+            troopObject.EndUpdate();
 
             return true;
         }
 
-        private bool RemoveFromNormal(ITroopStub source, IEnumerable<Formation> unitsToRemove, params FormationType[] formations)
+        private bool RemoveFromNormal(ITroopStub source,
+                                      IEnumerable<Formation> unitsToRemove,
+                                      params FormationType[] formations)
         {
             if (!source.HasFormation(FormationType.Normal))
             {
                 return false;
             }
 
-            var acceptableUnits = unitsToRemove.Where(formation => formations == null || formations.Length == 0 || formations.Contains(formation.Type)).ToList();
+            var acceptableUnits =
+                    unitsToRemove.Where(
+                                        formation =>
+                                        formations == null || formations.Length == 0 ||
+                                        formations.Contains(formation.Type)).ToList();
 
             // Make sure there are enough units
             foreach (var unit in acceptableUnits.SelectMany(formation => formation))

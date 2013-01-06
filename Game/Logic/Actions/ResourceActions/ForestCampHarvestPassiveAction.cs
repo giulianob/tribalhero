@@ -7,7 +7,6 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -16,6 +15,7 @@ namespace Game.Logic.Actions
     public class ForestCampHarvestPassiveAction : ScheduledPassiveAction
     {
         private readonly uint cityId;
+
         private readonly uint forestId;
 
         public ForestCampHarvestPassiveAction(uint cityId, uint forestId)
@@ -25,7 +25,13 @@ namespace Game.Logic.Actions
             this.cityId = cityId;
         }
 
-        public ForestCampHarvestPassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription, Dictionary<string, string> properties)
+        public ForestCampHarvestPassiveAction(uint id,
+                                              DateTime beginTime,
+                                              DateTime nextTime,
+                                              DateTime endTime,
+                                              bool isVisible,
+                                              string nlsDescription,
+                                              Dictionary<string, string> properties)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             IsCancellable = true;
@@ -46,7 +52,9 @@ namespace Game.Logic.Actions
             Forest forest;
 
             if (!World.Current.Forests.TryGetValue(forestId, out forest))
+            {
                 return Error.ObjectNotFound;
+            }
 
             // add to queue for completion
             endTime = forest.DepleteTime.AddSeconds(30);
@@ -57,14 +65,16 @@ namespace Game.Logic.Actions
 
         public void Reschedule()
         {
-            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(WorkerObject.City);
-
             Forest forest;
             if (!World.Current.Forests.TryGetValue(forestId, out forest))
+            {
                 throw new Exception("Forest is missing");
+            }
 
             if (IsScheduled)
+            {
                 Scheduler.Current.Remove(this);
+            }
 
             endTime = forest.DepleteTime.AddSeconds(30);
             StateChange(ActionState.Rescheduled);
@@ -74,12 +84,20 @@ namespace Game.Logic.Actions
         {
             ICity city;
             if (!World.Current.TryGetObjects(cityId, out city))
+            {
                 throw new Exception("City is missing");
+            }
 
-            using (Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler, new object[] {forestId}, city, World.Current.Forests))
+            using (
+                    Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler,
+                                             new object[] {forestId},
+                                             city,
+                                             World.Current.Forests))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 endTime = DateTime.UtcNow.AddSeconds(30);
                 StateChange(ActionState.Rescheduled);
@@ -95,12 +113,20 @@ namespace Game.Logic.Actions
         {
             ICity city;
             if (!World.Current.TryGetObjects(cityId, out city))
+            {
                 throw new Exception("City is missing");
+            }
 
-            using (Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler, new object[] {forestId}, city, World.Current.Forests))
+            using (
+                    Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler,
+                                             new object[] {forestId},
+                                             city,
+                                             World.Current.Forests))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 var structure = (IStructure)WorkerObject;
 
@@ -116,12 +142,12 @@ namespace Game.Logic.Actions
 
                 // Reset the rate
                 city.BeginUpdate();
-                city.Resource.Wood.Rate -= (int)structure["Rate"];                
+                city.Resource.Wood.Rate -= (int)structure["Rate"];
                 city.EndUpdate();
 
                 // Remove ourselves
                 structure.BeginUpdate();
-                World.Current.Remove(structure);
+                World.Current.Regions.Remove(structure);
                 city.ScheduleRemove(structure, false);
                 structure.EndUpdate();
 
@@ -133,12 +159,20 @@ namespace Game.Logic.Actions
         {
             ICity city;
             if (!World.Current.TryGetObjects(cityId, out city))
+            {
                 throw new Exception("City is missing");
+            }
 
-            using (Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler, new object[] {forestId}, city, World.Current.Forests))
+            using (
+                    Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler,
+                                             new object[] {forestId},
+                                             city,
+                                             World.Current.Forests))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 var structure = (IStructure)WorkerObject;
 
@@ -154,7 +188,7 @@ namespace Game.Logic.Actions
 
                 // Reset the rate
                 city.BeginUpdate();
-                city.Resource.Wood.Rate -= (int)structure["Rate"];                
+                city.Resource.Wood.Rate -= (int)structure["Rate"];
                 city.EndUpdate();
 
                 StateChange(ActionState.Failed);
@@ -167,7 +201,9 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return XmlSerializer.Serialize(new[] {new XmlKvPair("forest_id", forestId), new XmlKvPair("city_id", cityId)});
+                return
+                        XmlSerializer.Serialize(new[]
+                        {new XmlKvPair("forest_id", forestId), new XmlKvPair("city_id", cityId)});
             }
         }
 

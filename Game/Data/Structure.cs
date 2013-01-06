@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using Game.Data.Stats;
 using Game.Database;
@@ -14,7 +15,9 @@ namespace Game.Data
     public class Structure : GameObject, IStructure
     {
         public const string DB_TABLE = "structures";
+
         private readonly ITechnologyManager techmanager;
+
         private StructureProperties properties;
 
         private StructureStats stats;
@@ -100,7 +103,9 @@ namespace Game.Data
             set
             {
                 if (stats != null)
+                {
                     stats.StatsUpdate -= CheckUpdateMode;
+                }
 
                 CheckUpdateMode();
                 stats = value;
@@ -124,6 +129,17 @@ namespace Game.Data
             }
         }
 
+        public override void EndUpdate()
+        {
+            if (!updating)
+            {
+                throw new Exception("Called endupdate without first calling begin update");
+            }
+
+            updating = false;
+            Update();
+        }
+
         #region IPersistableObject Members
 
         public string DbTable
@@ -139,13 +155,17 @@ namespace Game.Data
             get
             {
                 return new[]
-                       {
-                               new DbColumn("x", X, DbType.UInt32), new DbColumn("y", Y, DbType.Int32), new DbColumn("hp", stats.Hp, DbType.Decimal),
-                               new DbColumn("type", Type, DbType.Int16), new DbColumn("level", Lvl, DbType.Byte), new DbColumn("labor", stats.Labor, DbType.UInt16),
-                               new DbColumn("is_blocked", IsBlocked, DbType.Boolean), new DbColumn("in_world", InWorld, DbType.Boolean),
-                               new DbColumn("state", (byte)State.Type, DbType.Boolean),
-                               new DbColumn("state_parameters", XmlSerializer.SerializeList(State.Parameters.ToArray()), DbType.String)
-                       };
+                {
+                        new DbColumn("x", X, DbType.UInt32), new DbColumn("y", Y, DbType.Int32),
+                        new DbColumn("hp", stats.Hp, DbType.Decimal), new DbColumn("type", Type, DbType.Int16),
+                        new DbColumn("level", Lvl, DbType.Byte), new DbColumn("labor", stats.Labor, DbType.UInt16),
+                        new DbColumn("is_blocked", IsBlocked, DbType.Boolean),
+                        new DbColumn("in_world", InWorld, DbType.Boolean),
+                        new DbColumn("state", (byte)State.Type, DbType.Boolean),
+                        new DbColumn("state_parameters",
+                                     XmlSerializer.SerializeList(State.Parameters.ToArray()),
+                                     DbType.String)
+                };
             }
         }
 
@@ -153,11 +173,12 @@ namespace Game.Data
         {
             get
             {
-                return new[] {new DbColumn("id", ObjectId, DbType.UInt32), new DbColumn("city_id", City.Id, DbType.UInt32)};
+                return new[]
+                {new DbColumn("id", ObjectId, DbType.UInt32), new DbColumn("city_id", City.Id, DbType.UInt32)};
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {
@@ -169,24 +190,19 @@ namespace Game.Data
 
         #endregion
 
-        public override void EndUpdate()
-        {
-            if (!updating)
-                throw new Exception("Called endupdate without first calling begin update");
-
-            updating = false;
-            Update();
-        }
-
         protected new void Update()
         {
             base.Update();
 
             if (!Global.FireEvents)
+            {
                 return;
+            }
 
             if (updating)
+            {
                 return;
+            }
 
             DbPersistance.Current.Save(this);
         }

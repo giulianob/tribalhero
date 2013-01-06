@@ -12,23 +12,25 @@ namespace Game.Data
     public enum ResourceType : byte
     {
         Gold = 0,
+
         Crop = 1,
+
         Wood = 2,
+
         Iron = 3
     }
 
     public class Resource : BaseStats, IComparable
     {
         private int crop;
+
         private int gold;
+
         private int iron;
+
         private int labor;
 
         private int wood;
-
-        public Resource()
-        {
-        }
 
         public Resource(Resource copy)
         {
@@ -39,7 +41,7 @@ namespace Game.Data
             Iron = copy.Iron;
         }
 
-        public Resource(int crop, int gold, int iron, int wood, int labor)
+        public Resource(int crop = 0, int gold = 0, int iron = 0, int wood = 0, int labor = 0)
         {
             this.crop = Math.Max(0, crop);
             this.gold = Math.Max(0, gold);
@@ -49,7 +51,7 @@ namespace Game.Data
         }
 
         public Resource(int value)
-            : this(value, value, value, value, value)
+                : this(value, value, value, value, value)
         {
         }
 
@@ -134,6 +136,14 @@ namespace Game.Data
             }
         }
 
+        public decimal NormalizedCost
+        {
+            get
+            {
+                return (Crop + Wood + Gold * 2 + Iron * 2 + Labor * 100) / 100m;
+            }
+        }
+
         #region IComparable Members
 
         public int CompareTo(object obj)
@@ -141,7 +151,9 @@ namespace Game.Data
             var obj2 = (Resource)obj;
 
             if (gold == obj2.gold && iron == obj2.iron && wood == obj2.wood && crop == obj2.crop && labor == obj2.labor)
+            {
                 return 0;
+            }
 
             return -1;
         }
@@ -150,64 +162,100 @@ namespace Game.Data
 
         public static Resource operator -(Resource obj, Resource obj2)
         {
-            return new Resource(obj.crop - obj2.crop, obj.gold - obj2.gold, obj.iron - obj2.iron, obj.wood - obj2.wood, obj.labor - obj2.labor);
+            return new Resource(obj.crop - obj2.crop,
+                                obj.gold - obj2.gold,
+                                obj.iron - obj2.iron,
+                                obj.wood - obj2.wood,
+                                obj.labor - obj2.labor);
         }
 
         public static Resource operator +(Resource obj, Resource obj2)
         {
-            return new Resource(obj.crop + obj2.crop, obj.gold + obj2.gold, obj.iron + obj2.iron, obj.wood + obj2.wood, obj.labor + obj2.labor);
+            return new Resource(obj.crop + obj2.crop,
+                                obj.gold + obj2.gold,
+                                obj.iron + obj2.iron,
+                                obj.wood + obj2.wood,
+                                obj.labor + obj2.labor);
         }
 
         public static Resource operator *(Resource obj, double multiplier)
         {
-            return new Resource((int)(obj.crop*multiplier),
-                                (int)(obj.gold*multiplier),
-                                (int)(obj.iron*multiplier),
-                                (int)(obj.wood*multiplier),
-                                (int)(obj.labor*multiplier));
+            return new Resource((int)(obj.crop * multiplier),
+                                (int)(obj.gold * multiplier),
+                                (int)(obj.iron * multiplier),
+                                (int)(obj.wood * multiplier),
+                                (int)(obj.labor * multiplier));
         }
 
         public static Resource operator *(Resource obj, int count)
         {
-            return new Resource(obj.crop*count, obj.gold*count, obj.iron*count, obj.wood*count, obj.labor*count);
+            return new Resource(obj.crop * count,
+                                obj.gold * count,
+                                obj.iron * count,
+                                obj.wood * count,
+                                obj.labor * count);
         }
 
         public static Resource operator /(Resource obj, int count)
         {
-            return new Resource(obj.crop/count, obj.gold/count, obj.iron/count, obj.wood/count, obj.labor/count);
+            return new Resource(obj.crop / count,
+                                obj.gold / count,
+                                obj.iron / count,
+                                obj.wood / count,
+                                obj.labor / count);
         }
 
         public int MaxAffordable(Resource costPerUnit)
         {
             int cropDelta;
             if (costPerUnit.crop == 0)
+            {
                 cropDelta = int.MaxValue;
+            }
             else
-                cropDelta = (crop/costPerUnit.crop);
+            {
+                cropDelta = (crop / costPerUnit.crop);
+            }
 
             int goldDelta;
             if (costPerUnit.gold == 0)
+            {
                 goldDelta = int.MaxValue;
+            }
             else
-                goldDelta = gold/costPerUnit.gold;
+            {
+                goldDelta = gold / costPerUnit.gold;
+            }
 
             int ironDelta;
             if (costPerUnit.iron == 0)
+            {
                 ironDelta = int.MaxValue;
+            }
             else
-                ironDelta = iron/costPerUnit.iron;
+            {
+                ironDelta = iron / costPerUnit.iron;
+            }
 
             int woodDelta;
             if (costPerUnit.wood == 0)
+            {
                 woodDelta = int.MaxValue;
+            }
             else
-                woodDelta = wood/costPerUnit.wood;
+            {
+                woodDelta = wood / costPerUnit.wood;
+            }
 
             int laborDelta;
             if (costPerUnit.labor == 0)
+            {
                 laborDelta = int.MaxValue;
+            }
             else
-                laborDelta = labor/costPerUnit.labor;
+            {
+                laborDelta = labor / costPerUnit.labor;
+            }
 
             return Math.Min(cropDelta, Math.Min(goldDelta, Math.Min(woodDelta, Math.Min(laborDelta, ironDelta))));
         }
@@ -215,15 +263,25 @@ namespace Game.Data
         public bool HasEnough(Resource cost)
         {
             if (crop < cost.crop)
+            {
                 return false;
+            }
             if (gold < cost.gold)
+            {
                 return false;
+            }
             if (wood < cost.wood)
+            {
                 return false;
+            }
             if (iron < cost.iron)
+            {
                 return false;
+            }
             if (labor < cost.labor)
+            {
                 return false;
+            }
             return true;
         }
 
@@ -324,15 +382,25 @@ namespace Game.Data
         {
             var parts = new List<string>();
             if (wood > 0)
+            {
                 parts.Add(wood + " wood");
+            }
             if (crop > 0)
+            {
                 parts.Add(crop + " crop");
+            }
             if (iron > 0)
+            {
                 parts.Add(iron + " iron");
+            }
             if (gold > 0)
+            {
                 parts.Add(gold + " gold");
+            }
             if (labor > 0)
+            {
                 parts.Add(labor + " labor");
+            }
 
             return String.Join(", ", parts.ToArray());
         }

@@ -6,8 +6,6 @@ using Game.Database;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
-using Persistance;
 
 #endregion
 
@@ -16,7 +14,9 @@ namespace Game.Logic.Actions
     public class PropertyCreatePassiveAction : PassiveAction, IScriptable
     {
         private string name;
+
         private IStructure structure;
+
         private object value;
 
         public override ActionType Type
@@ -40,7 +40,9 @@ namespace Game.Logic.Actions
         public void ScriptInit(IGameObject obj, string[] parms)
         {
             if ((structure = obj as IStructure) == null)
+            {
                 throw new Exception();
+            }
             name = parms[0];
 
             switch(parms[1].ToLower())
@@ -67,7 +69,6 @@ namespace Game.Logic.Actions
                     throw new Exception("Type not supported for structure property");
             }
 
-
             Execute();
         }
 
@@ -92,7 +93,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(structure.City))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 StateChange(ActionState.Failed);
             }

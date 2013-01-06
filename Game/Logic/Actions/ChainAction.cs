@@ -2,10 +2,8 @@
 
 using System;
 using System.Data;
-using Game.Data;
 using Game.Database;
 using Game.Setup;
-using Ninject;
 using Persistance;
 
 #endregion
@@ -21,14 +19,20 @@ namespace Game.Logic.Actions
         #endregion
 
         public new const string DB_TABLE = "chain_actions";
+
         private ChainCallback chainCallback;
+
         private ActionState chainState = ActionState.Started;
 
         protected ChainAction()
         {
         }
 
-        protected ChainAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible)
+        protected ChainAction(uint id,
+                              string chainCallback,
+                              PassiveAction current,
+                              ActionState chainState,
+                              bool isVisible)
         {
             ActionId = id;
             this.chainState = chainState;
@@ -37,7 +41,10 @@ namespace Game.Logic.Actions
 
             //set the chain callback through reflection. The chain callback method should always exist in this class
             if (chainCallback != string.Empty)
-                this.chainCallback = (ChainCallback)Delegate.CreateDelegate(typeof(ChainCallback), this, chainCallback, true);
+            {
+                this.chainCallback =
+                        (ChainCallback)Delegate.CreateDelegate(typeof(ChainCallback), this, chainCallback, true);
+            }
 
             switch(chainState)
             {
@@ -49,13 +56,17 @@ namespace Game.Logic.Actions
                     current.IsChain = true;
                     current.OnNotify += ChainNotify;
 
-                    if (current is ScheduledPassiveAction)
-                        Scheduler.Current.Put((ScheduledPassiveAction)current);
+                    ScheduledPassiveAction scheduledPassiveAction = current as ScheduledPassiveAction;
+                    if (scheduledPassiveAction != null)
+                    {
+                        Scheduler.Current.Put(scheduledPassiveAction);
+                    }
+
                     break;
             }
         }
 
-        protected PassiveAction Current { get; private set; }
+        private PassiveAction Current { get; set; }
 
         public ActionState ChainState
         {
@@ -78,12 +89,17 @@ namespace Game.Logic.Actions
             get
             {
                 return new[]
-                       {
-                               new DbColumn("type", Type, DbType.UInt32), new DbColumn("is_visible", IsVisible, DbType.Boolean),
-                               new DbColumn("current_action_id", Current != null ? (object)Current.ActionId : null, DbType.UInt32),
-                               new DbColumn("chain_callback", chainCallback != null ? chainCallback.Method.Name : null, DbType.String),
-                               new DbColumn("chain_state", (byte)chainState, DbType.Byte), new DbColumn("properties", Properties, DbType.String)
-                       };
+                {
+                        new DbColumn("type", Type, DbType.UInt32), new DbColumn("is_visible", IsVisible, DbType.Boolean),
+                        new DbColumn("current_action_id",
+                                     Current != null ? (object)Current.ActionId : null,
+                                     DbType.UInt32),
+                        new DbColumn("chain_callback",
+                                     chainCallback != null ? chainCallback.Method.Name : null,
+                                     DbType.String),
+                        new DbColumn("chain_state", (byte)chainState, DbType.Byte),
+                        new DbColumn("properties", Properties, DbType.String)
+                };
             }
         }
 
@@ -94,7 +110,9 @@ namespace Game.Logic.Actions
             get
             {
                 if (Current == null || !(Current is IActionTime))
+                {
                     return DateTime.MinValue;
+                }
 
                 return (Current as IActionTime).BeginTime;
             }
@@ -105,7 +123,9 @@ namespace Game.Logic.Actions
             get
             {
                 if (Current == null || !(Current is IActionTime))
+                {
                     return DateTime.MinValue;
+                }
 
                 return (Current as IActionTime).EndTime;
             }
@@ -116,7 +136,9 @@ namespace Game.Logic.Actions
             get
             {
                 if (Current == null || !(Current is IActionTime))
+                {
                     return DateTime.MinValue;
+                }
 
                 return (Current as IActionTime).NextTime;
             }
@@ -124,15 +146,32 @@ namespace Game.Logic.Actions
 
         #endregion
 
+        protected void CancelCurrentChain()
+        {
+            if (Current == null)
+            {
+                throw new Exception("No current chain action to cancel");
+            }
+
+            Current.WorkerRemoved(false);
+        }
+
         protected void ExecuteChainAndWait(PassiveAction chainable, ChainCallback routeCallback)
         {
+            if (Current != null)
+            {
+                throw new Exception("Previous chain action has not yet completed");
+            }
+
             chainable.IsChain = true;
             chainable.OnNotify += ChainNotify;
             chainCallback = routeCallback;
 
             Current = chainable;
             Current.WorkerObject = WorkerObject;
-            Current.ActionId = (uint)WorkerObject.City.Worker.GetId();
+            Current.ActionId = (uint)ActionIdGenerator.GetNext();
+            Current.ActionIdGenerator = ActionIdGenerator;
+            Current.Location = Location;
 
             DbPersistance.Current.Save(this);
             chainable.StateChange(chainable.Execute() == Error.Ok ? ActionState.Started : ActionState.Failed);
@@ -143,6 +182,9 @@ namespace Game.Logic.Actions
         private void ChainNotify(GameAction action, ActionState state)
         {
             chainState = state;
+            ChainCallback currentChain = chainCallback;
+
+            ISchedule scheduledAction = action as ISchedule;
 
             switch(state)
             {
@@ -150,17 +192,18 @@ namespace Game.Logic.Actions
                 case ActionState.Started:
                 case ActionState.Rescheduled:
                     DbPersistance.Current.Save(action);
-                    if (action is ScheduledPassiveAction)
-                        Scheduler.Current.Put((ScheduledPassiveAction)action);
-                    else if (action is ScheduledActiveAction)
-                        Scheduler.Current.Put((ScheduledActiveAction)action);
+                    if (scheduledAction != null)
+                    {
+                        Scheduler.Current.Put(scheduledAction);
+                    }
 
                     DbPersistance.Current.Save(this);
 
+                    Scheduler.Current.Put(new ChainExecuter(currentChain, state));
                     return;
                 case ActionState.Completed:
                 case ActionState.Failed:
-                    WorkerObject.City.Worker.ReleaseId(action.ActionId);
+                    ActionIdGenerator.Release(action.ActionId);
                     DbPersistance.Current.Delete(action);
                     break;
                 default:
@@ -168,10 +211,14 @@ namespace Game.Logic.Actions
             }
 
             //current action is completed by either success or failure
+            if (scheduledAction != null)
+            {
+                Scheduler.Current.Remove(scheduledAction);
+            }
+
             action.IsDone = true;
             action.OnNotify -= ChainNotify;
-
-            ChainCallback currentChain = chainCallback;
+            Current = null;
             DbPersistance.Current.Save(this);
 
             Scheduler.Current.Put(new ChainExecuter(currentChain, state));

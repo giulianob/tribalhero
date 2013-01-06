@@ -34,7 +34,9 @@ namespace Game.Logic.Actions
         public void ScriptInit(IGameObject obj, string[] parms)
         {
             if ((this.obj = obj as IStructure) == null)
+            {
                 throw new Exception();
+            }
 
             Execute();
         }
@@ -49,7 +51,9 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             if (obj == null)
+            {
                 return Error.ObjectNotFound;
+            }
 
             obj.Technologies.BeginUpdate();
             obj.Technologies.Clear();

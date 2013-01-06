@@ -5,10 +5,10 @@ namespace Game.Data.Stats
         #region Base Stats
 
         private int attackPoint;
+
         private byte attackRadius;
 
         private byte speed;
-        private short stamina;
 
         public byte AttackRadius
         {
@@ -49,34 +49,21 @@ namespace Game.Data.Stats
             }
         }
 
-        public short Stamina
-        {
-            get
-            {
-                return stamina;
-            }
-            set
-            {
-                stamina = value;
-                FireStatsUpdate();
-            }
-        }
-
         public Resource Loot { get; private set; }
 
         #endregion
 
         #region Constructors
 
-        public TroopStats(byte attackRadius, byte speed) : this(0, attackRadius, speed, 0, new Resource())
+        public TroopStats(byte attackRadius, byte speed)
+                : this(0, attackRadius, speed, new Resource())
         {
         }
 
-        public TroopStats(int attackPoint, byte attackRadius, byte speed, short stamina, Resource loot)
+        public TroopStats(int attackPoint, byte attackRadius, byte speed, Resource loot)
         {
             AttackPoint = attackPoint;
             Loot = loot;
-            Stamina = stamina;
             this.attackRadius = attackRadius;
             this.speed = speed;
 

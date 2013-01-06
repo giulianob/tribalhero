@@ -17,28 +17,28 @@ namespace Testing.MapMath
             var validPoints = new List<Point>();
 
             new TileLocator().ForeachObject(10,
-                                      10,
-                                      2,
-                                      true,
-                                      delegate(uint origX, uint origY, uint x, uint y, object custom)
-                                          {
-                                              ((List<Point>)custom).Add(new Point(x, y));
-                                              return true;
-                                          },
-                                      validPoints);
+                                            10,
+                                            2,
+                                            true,
+                                            delegate(uint origX, uint origY, uint x, uint y, object custom)
+                                                {
+                                                    ((List<Point>)custom).Add(new Point(x, y));
+                                                    return true;
+                                                },
+                                            validPoints);
 
             var reversePoints = new List<Point>();
 
             new ReverseTileLocator().ForeachObject(10,
-                                             10,
-                                             2,
-                                             true,
-                                             delegate(uint origX, uint origY, uint x, uint y, object custom)
-                                                 {
-                                                     ((List<Point>)custom).Add(new Point(x, y));
-                                                     return true;
-                                                 },
-                                             reversePoints);
+                                                   10,
+                                                   2,
+                                                   true,
+                                                   delegate(uint origX, uint origY, uint x, uint y, object custom)
+                                                       {
+                                                           ((List<Point>)custom).Add(new Point(x, y));
+                                                           return true;
+                                                       },
+                                                   reversePoints);
 
             validPoints.Should().BeEquivalentTo(reversePoints);
         }
@@ -49,28 +49,28 @@ namespace Testing.MapMath
             var validPoints = new List<Point>();
 
             new TileLocator().ForeachObject(10,
-                                      11,
-                                      2,
-                                      true,
-                                      delegate(uint origX, uint origY, uint x, uint y, object custom)
-                                          {
-                                              ((List<Point>)custom).Add(new Point(x, y));
-                                              return true;
-                                          },
-                                      validPoints);
+                                            11,
+                                            2,
+                                            true,
+                                            delegate(uint origX, uint origY, uint x, uint y, object custom)
+                                                {
+                                                    ((List<Point>)custom).Add(new Point(x, y));
+                                                    return true;
+                                                },
+                                            validPoints);
 
             var reversePoints = new List<Point>();
 
             new ReverseTileLocator().ForeachObject(10,
-                                             11,
-                                             2,
-                                             true,
-                                             delegate(uint origX, uint origY, uint x, uint y, object custom)
-                                                 {
-                                                     ((List<Point>)custom).Add(new Point(x, y));
-                                                     return true;
-                                                 },
-                                             reversePoints);
+                                                   11,
+                                                   2,
+                                                   true,
+                                                   delegate(uint origX, uint origY, uint x, uint y, object custom)
+                                                       {
+                                                           ((List<Point>)custom).Add(new Point(x, y));
+                                                           return true;
+                                                       },
+                                                   reversePoints);
 
             validPoints.Should().BeEquivalentTo(reversePoints);
         }
@@ -86,25 +86,36 @@ namespace Testing.MapMath
             }
 
             public uint X { get; set; }
+
             public uint Y { get; set; }
 
             public override bool Equals(object obj)
             {
                 if (ReferenceEquals(null, obj))
+                {
                     return false;
+                }
                 if (ReferenceEquals(this, obj))
+                {
                     return true;
+                }
                 if (obj.GetType() != typeof(Point))
+                {
                     return false;
+                }
                 return Equals((Point)obj);
             }
 
             private bool Equals(Point other)
             {
                 if (ReferenceEquals(null, other))
+                {
                     return false;
+                }
                 if (ReferenceEquals(this, other))
+                {
                     return true;
+                }
                 return other.X == X && other.Y == Y;
             }
 
@@ -112,7 +123,7 @@ namespace Testing.MapMath
             {
                 unchecked
                 {
-                    return (X.GetHashCode()*397) ^ Y.GetHashCode();
+                    return (X.GetHashCode() * 397) ^ Y.GetHashCode();
                 }
             }
 

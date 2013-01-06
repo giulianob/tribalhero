@@ -1,54 +1,144 @@
 using System.Collections.Generic;
-using Game.Comm;
+using Game.Battle.CombatGroups;
+using Game.Battle.CombatObjects;
+using Game.Battle.Reporting;
 using Game.Data;
-using Game.Data.Troop;
+using Game.Setup;
+using Game.Util.Locking;
 using Persistance;
 
 namespace Game.Battle
 {
     public interface IBattleManager : IPersistableObject
     {
-        uint BattleId { get; set; }
+        uint BattleId { get; }
+
         bool BattleStarted { get; set; }
+
         uint Round { get; set; }
+
         uint Turn { get; set; }
-        ICity City { get; set; }
-        ICombatList Attacker { get; }
-        ICombatList Defender { get; }
+
+        BattleLocation Location { get; }
+
+        BattleOwner Owner { get; }
+
+        ICombatList Attackers { get; }
+
+        ICombatList Defenders { get; }
+
         IBattleReport BattleReport { get; }
-        ReportedObjects ReportedObjects { get; }
-        ReportedTroops ReportedTroops { get; }
-        ICity[] LockList { get; }
-        void Subscribe(Session session);
-        void Unsubscribe(Session session);
-        CombatObject GetCombatObject(uint id);
-        bool CanWatchBattle(IPlayer player, out int roundsLeft);
-        void DbLoaderAddToLocal(CombatStructure structure, uint id);
-        void DbLoaderAddToCombatList(CombatObject obj, uint id, bool isLocal);
-        void AddToLocal(IEnumerable<ITroopStub> objects, ReportState state);
-        void AddToLocal(IEnumerable<IStructure> objects);
-        void AddToAttack(ITroopStub stub);
-        void AddToAttack(IEnumerable<ITroopStub> objects);
-        void AddToDefense(IEnumerable<ITroopStub> objects);
-        void RemoveFromAttack(IEnumerable<ITroopStub> objects, ReportState state);
-        void RemoveFromLocal(IEnumerable<IStructure> objects, ReportState state);
-        void RemoveFromDefense(IEnumerable<ITroopStub> objects, ReportState state);
-        void RefreshBattleOrder();
-        bool GroupIsDead(CombatObject co, CombatList combatList);
+
+        IEnumerable<ILockable> LockList { get; }
+
+        BattleManager.BattleSide NextToAttack { set; }
+
+        ICombatObject GetCombatObject(uint id);
+
+        ICombatGroup GetCombatGroup(uint id);
+
+        Error CanWatchBattle(IPlayer player, out IEnumerable<string> errorParams);
+
+        void DbLoaderAddToCombatList(ICombatGroup group, BattleManager.BattleSide side);
+
+        void Add(ICombatGroup combatGroup, BattleManager.BattleSide battleSide, bool allowReportAccess);
+
+        void Remove(ICombatGroup group, BattleManager.BattleSide side, ReportState state);
+
         bool ExecuteTurn();
+
+        uint GetNextGroupId();
+
+        uint GetNextCombatObjectId();
+
+        void DbFinishedLoading();
+
+        T GetProperty<T>(string name);
+
+        void SetProperty(string name, object value);
+
+        IDictionary<string, object> ListProperties();
+
+        void DbLoadProperties(Dictionary<string, object> dbProperties);
+
+        /// <summary>
+        ///     Fired once when the battle begins
+        /// </summary>
         event BattleManager.OnBattle EnterBattle;
+
+        /// <summary>
+        ///     Fired when the battle is about to end
+        /// </summary>
+        event BattleManager.OnBattle AboutToExitBattle;
+
+        /// <summary>
+        ///     Fired once when the battle ends
+        /// </summary>
         event BattleManager.OnBattle ExitBattle;
+
+        /// <summary>
+        ///     Fired when a new round starts
+        /// </summary>
         event BattleManager.OnRound EnterRound;
-        event BattleManager.OnTurn EnterTurn;
+
+        /// <summary>
+        ///     Fired everytime a unit exits its turn
+        /// </summary>
         event BattleManager.OnTurn ExitTurn;
+
+        /// <summary>
+        ///     Fired when a new attacker joins the battle
+        /// </summary>
         event BattleManager.OnReinforce ReinforceAttacker;
+
+        /// <summary>
+        ///     Fired when a new defender joins the battle
+        /// </summary>
         event BattleManager.OnReinforce ReinforceDefender;
-        event BattleManager.OnReinforce WithdrawAttacker;
-        event BattleManager.OnReinforce WithdrawDefender;
-        event BattleManager.OnUnitUpdate UnitAdded;
-        event BattleManager.OnUnitUpdate UnitRemoved;
-        event BattleManager.OnUnitUpdate UnitUpdated;
+
+        /// <summary>
+        ///     Fired when an attacker withdraws from the battle
+        /// </summary>
+        event BattleManager.OnWithdraw WithdrawAttacker;
+
+        /// <summary>
+        ///     Fired when a defender withdraws from the battle
+        /// </summary>
+        event BattleManager.OnWithdraw WithdrawDefender;
+
+        /// <summary>
+        ///     Fired when all of the units in a group are killed
+        /// </summary>
+        event BattleManager.OnWithdraw GroupKilled;
+
+        /// <summary>
+        ///     Fired when one of the groups in battle receives a new unit
+        /// </summary>
+        event BattleManager.OnUnitUpdate GroupUnitAdded;
+
+        /// <summary>
+        ///     Fired when one of the groups in battle loses a unit
+        /// </summary>
+        event BattleManager.OnUnitUpdate GroupUnitRemoved;
+
+        /// <summary>
+        ///     Fired when the whole object is killed
+        /// </summary>
+        event BattleManager.OnUnitUpdate UnitKilled;
+
+        /// <summary>
+        ///     Fired when a single unit is killed
+        /// </summary>
+        event BattleManager.OnUnitCountChange UnitCountDecreased;
+
+        /// <summary>
+        ///     Fired when an attacker is unable to take his turn
+        /// </summary>
         event BattleManager.OnUnitUpdate SkippedAttacker;
+
+        /// <summary>
+        ///     Fired when a unit hits another one
+        /// </summary>
         event BattleManager.OnAttack ActionAttacked;
     }
 }

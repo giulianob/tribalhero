@@ -9,7 +9,9 @@ namespace Game.Data
     public enum ObjectState
     {
         Normal = 0,
+
         Battle = 1,
+
         Moving = 2
     }
 
@@ -38,12 +40,12 @@ namespace Game.Data
             return new GameObjectState(ObjectState.Normal);
         }
 
-        public static GameObjectState BattleState(uint cityid)
+        public static GameObjectState BattleState(uint battleId)
         {
-            return new GameObjectState(ObjectState.Battle, cityid);
+            return new GameObjectState(ObjectState.Battle, battleId);
         }
 
-        public static GameObjectState MovingState(uint x, uint y)
+        public static GameObjectState MovingState()
         {
             return new GameObjectState(ObjectState.Moving);
         }

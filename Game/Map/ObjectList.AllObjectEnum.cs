@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Game.Data;
 
 namespace Game.Map
 {
     partial class ObjectList
     {
-        class AllObjectEnum : IEnumerator<ISimpleGameObject>
+        private class AllObjectEnum : IEnumerator<ISimpleGameObject>
         {
             #region Members
 
             private readonly ObjectList objectList;
+
             private bool isNew = true;
+
             private Dictionary<int, List<ISimpleGameObject>>.Enumerator itr;
+
             private List<ISimpleGameObject>.Enumerator listItr;
 
             #endregion
@@ -68,7 +68,9 @@ namespace Game.Map
                 }
 
                 if (listItr.MoveNext())
+                {
                     return true;
+                }
 
                 if (itr.MoveNext())
                 {

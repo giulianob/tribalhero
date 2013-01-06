@@ -1,32 +1,39 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
 using Game.Data;
-using Game.Setup;
 using Game.Logic.Formulas;
+using Game.Setup;
 using Moq;
-using Xunit;
 using Xunit.Extensions;
 
 namespace Testing.Formulas
 {
     public class CityValueTest
     {
-
         public static IEnumerable<object[]> WithDifferentCities
         {
             get
             {
                 // Single structure
-                yield return new object[] { new[] { CreateMockStructure(1, 1)}, 1 };
+                yield return new object[] {new[] {CreateMockStructure(1, 1)}, 1};
 
                 // Multiple structures w/ same id
-                yield return new object[] { new[] { CreateMockStructure(1, 1), CreateMockStructure(1, 10) }, 11 };
+                yield return new object[] {new[] {CreateMockStructure(1, 1), CreateMockStructure(1, 10)}, 11};
 
                 // Structure that shouldnt count towards city value
-                yield return new object[] { new[] { CreateMockStructure(100, 1) }, 0 };
+                yield return new object[] {new[] {CreateMockStructure(100, 1)}, 0};
 
                 // Multiple structures
-                yield return new object[] { new[] { CreateMockStructure(1, 1), CreateMockStructure(1, 10), CreateMockStructure(3, 5), CreateMockStructure(101, 10) }, 16 };
+                yield return
+                        new object[]
+                        {
+                                new[]
+                                {
+                                        CreateMockStructure(1, 1), CreateMockStructure(1, 10), CreateMockStructure(3, 5),
+                                        CreateMockStructure(101, 10)
+                                },
+                                16
+                        };
             }
         }
 
@@ -35,7 +42,8 @@ namespace Testing.Formulas
         {
             Mock<ObjectTypeFactory> objectTypeFactory = new Mock<ObjectTypeFactory>(MockBehavior.Strict);
             // Structures with id less than 100 count towards Influence, others dont
-            objectTypeFactory.Setup(m => m.IsStructureType("NoInfluencePoint", It.IsAny<IStructure>())).Returns((string type, IStructure s) => s.Type >= 100);
+            objectTypeFactory.Setup(m => m.IsStructureType("NoInfluencePoint", It.IsAny<IStructure>()))
+                             .Returns((string type, IStructure s) => s.Type >= 100);
 
             var formula = new Formula(objectTypeFactory.Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,

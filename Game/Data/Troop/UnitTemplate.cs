@@ -28,7 +28,9 @@ namespace Game.Data.Troop
         #endregion
 
         public const string DB_TABLE = "unit_templates";
+
         private readonly ICity city;
+
         private readonly Dictionary<ushort, BaseUnitStats> dict = new Dictionary<ushort, BaseUnitStats>();
 
         private bool isUpdating;
@@ -52,7 +54,9 @@ namespace Game.Data.Troop
             {
                 BaseUnitStats ret;
                 if (dict.TryGetValue(type, out ret))
+                {
                     return ret;
+                }
                 return Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, 1);
             }
             set
@@ -60,7 +64,9 @@ namespace Game.Data.Troop
                 dict[type] = value;
 
                 if (!isUpdating)
+                {
                     UpdateClient();
+                }
             }
         }
 
@@ -104,7 +110,7 @@ namespace Game.Data.Troop
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {
@@ -120,7 +126,7 @@ namespace Game.Data.Troop
             }
         }
 
-        public DbColumn[] DbListColumns
+        public IEnumerable<DbColumn> DbListColumns
         {
             get
             {
@@ -134,7 +140,14 @@ namespace Game.Data.Troop
         {
             Dictionary<ushort, BaseUnitStats>.Enumerator itr = dict.GetEnumerator();
             while (itr.MoveNext())
-                yield return new[] {new DbColumn("type", itr.Current.Key, DbType.UInt16), new DbColumn("level", itr.Current.Value.Lvl, DbType.Byte),};
+            {
+                yield return
+                        new[]
+                        {
+                                new DbColumn("type", itr.Current.Key, DbType.UInt16),
+                                new DbColumn("level", itr.Current.Value.Lvl, DbType.Byte),
+                        };
+            }
         }
 
         #endregion
@@ -142,7 +155,9 @@ namespace Game.Data.Troop
         public void BeginUpdate()
         {
             if (isUpdating)
+            {
                 throw new Exception("Nesting beginupdate");
+            }
             isUpdating = true;
         }
 
@@ -161,7 +176,9 @@ namespace Game.Data.Troop
         private void UpdateClient()
         {
             if (UnitUpdated != null)
+            {
                 UnitUpdated(this);
+            }
         }
     }
 }

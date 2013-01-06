@@ -2,7 +2,6 @@
 
 using Game.Data;
 using Game.Data.Troop;
-using Game.Map;
 
 #endregion
 
@@ -10,14 +9,12 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public virtual void TroopObjectStation(ITroopObject troop, ICity target)
+        public virtual void TroopObjectStation(ITroopObject troop, IStation station)
         {
-            troop.Stub.BeginUpdate();
-            target.Troops.AddStationed(troop.Stub);
-            troop.Stub.EndUpdate();
+            station.Troops.AddStationed(troop.Stub);
 
             troop.BeginUpdate();
-            World.Current.Remove(troop);
+            regions.Remove(troop);
             troop.City.ScheduleRemove(troop, false);
             troop.EndUpdate();
         }

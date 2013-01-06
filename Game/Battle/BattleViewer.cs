@@ -1,5 +1,7 @@
 #region
 
+using Game.Battle.CombatGroups;
+using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Setup;
 using Ninject;
@@ -10,54 +12,57 @@ namespace Game.Battle
 {
     public class BattleViewer
     {
-        private IBattleManager battle;
-
         public BattleViewer(IBattleManager battle)
         {
-            this.battle = battle;
             battle.EnterBattle += BattleEnterBattle;
             battle.ExitBattle += BattleExitBattle;
-            battle.EnterTurn += BattleEnterTurn;
             battle.ExitTurn += BattleExitTurn;
-            battle.UnitRemoved += BattleUnitRemoved;
+            battle.UnitKilled += BattleUnitKilled;
             battle.ActionAttacked += BattleActionAttacked;
             battle.SkippedAttacker += BattleSkippedAttacker;
             battle.EnterRound += BattleEnterRound;
         }
 
-        void BattleEnterRound(uint battleId, ICombatList atk, ICombatList def, uint round)
+        private void BattleEnterRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round)
         {
             Append("Round[" + round + "] Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-
-        protected virtual void Append(string str)
+        private void Append(string str)
         {
             Global.Logger.Info(str);
         }
 
-        private void PrintCombatobject(CombatObject co)
+        private void PrintCombatobject(ICombatObject co)
         {
             if (co is AttackCombatUnit)
             {
                 var unit = co as AttackCombatUnit;
-                Append("Team[Atk] List[" + co.CombatList.Id + "] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" + Ioc.Kernel.Get<UnitFactory>().GetName(unit.Type, 1) +
-                       "] HP[" + unit.Hp + "]");
+                Append("Team[Atk] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" +
+                       Ioc.Kernel.Get<UnitFactory>().GetName(unit.Type, 1) + "] HP[" + unit.Hp + "]");
             }
-            else if(co is DefenseCombatUnit)
+            else if (co is DefenseCombatUnit)
             {
                 var unit = co as DefenseCombatUnit;
-                Append("Team[Def] List[" + co.CombatList.Id + "] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" + Ioc.Kernel.Get<UnitFactory>().GetName(unit.Type, 1) +
-                       "] HP[" + unit.Hp + "]");
-            } 
+                Append("Team[Def] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" +
+                       Ioc.Kernel.Get<UnitFactory>().GetName(unit.Type, 1) + "] HP[" + unit.Hp + "]");
+            }
             else if (co is CombatStructure)
             {
                 var cs = co as CombatStructure;
-                Append("Team[Def] List[" + co.CombatList.Id + "] Structure[" + co.Id + "] Type[" + Ioc.Kernel.Get<StructureFactory>().GetName(cs.Structure.Type,(byte)cs.Structure.Lvl) + "] HP[" + cs.Hp + "]");
+                Append("Team[Def] Structure[" + co.Id + "] Type[" +
+                       Ioc.Kernel.Get<StructureFactory>().GetName(cs.Structure.Type, cs.Structure.Lvl) + "] HP[" + cs.Hp +
+                       "]");
             }
         }
 
-        private void BattleActionAttacked(uint battleId, CombatObject source, CombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battle,
+                                          BattleManager.BattleSide attackingSide,
+                                          ICombatGroup attackerGroup,
+                                          ICombatObject source,
+                                          ICombatGroup defenderGroup,
+                                          ICombatObject target,
+                                          decimal damage)
         {
             Append("**************************************");
             Append("Attacker: ");
@@ -67,7 +72,10 @@ namespace Game.Battle
             Append("**************************************\n");
         }
 
-        private void BattleUnitRemoved(uint battleId, CombatObject obj)
+        private void BattleUnitKilled(IBattleManager battle,
+                                      BattleManager.BattleSide objSide,
+                                      ICombatGroup combatGroup,
+                                      ICombatObject obj)
         {
             Append("**************************************");
             Append("Removing: ");
@@ -75,27 +83,30 @@ namespace Game.Battle
             Append("**************************************\n");
         }
 
-        private void BattleExitTurn(uint battleId, ICombatList atk, ICombatList def, int turn)
+        private void BattleExitTurn(IBattleManager battle, ICombatList atk, ICombatList def, int turn)
         {
             Append("Turn[" + turn + "] Ended with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        private void BattleEnterTurn(uint battleId, ICombatList atk, ICombatList def, int turn)
+        private void BattleEnterTurn(IBattleManager battle, ICombatList atk, ICombatList def, int turn)
         {
             Append("Turn[" + turn + "] Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        private void BattleExitBattle(uint battleId, ICombatList atk, ICombatList def)
+        private void BattleExitBattle(IBattleManager battle, ICombatList atk, ICombatList def)
         {
             Append("Battle Ended with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        private void BattleEnterBattle(uint battleId, ICombatList atk, ICombatList def)
+        private void BattleEnterBattle(IBattleManager battle, ICombatList atk, ICombatList def)
         {
             Append("Battle Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        void BattleSkippedAttacker(uint battleId, CombatObject obj)
+        private void BattleSkippedAttacker(IBattleManager battle,
+                                           BattleManager.BattleSide objSide,
+                                           ICombatGroup combatGroup,
+                                           ICombatObject obj)
         {
             Append("**************************************");
             Append("Skipping: ");

@@ -7,7 +7,6 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -22,7 +21,13 @@ namespace Game.Logic.Actions
             this.cityId = cityId;
         }
 
-        public StarvePassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription, Dictionary<string, string> properties)
+        public StarvePassiveAction(uint id,
+                                   DateTime beginTime,
+                                   DateTime nextTime,
+                                   DateTime endTime,
+                                   bool isVisible,
+                                   string nlsDescription,
+                                   Dictionary<string, string> properties)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             cityId = uint.Parse(properties["city_id"]);
@@ -42,8 +47,10 @@ namespace Game.Logic.Actions
 
             foreach (var stub in ((ICity)custom[0]).Troops)
             {
-                if (stub.StationedCity != null)
-                    toBeLocked.Add(stub.StationedCity);
+                if (stub.Station != null)
+                {
+                    toBeLocked.Add(stub.Station);
+                }
             }
 
             return toBeLocked.ToArray();
@@ -66,12 +73,16 @@ namespace Game.Logic.Actions
         {
             ICity city;
             if (!World.Current.TryGetObjects(cityId, out city))
+            {
                 throw new Exception("City not found");
+            }
 
             using (Concurrency.Current.Lock(GetTroopLockList, new[] {city}, city))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 city.Troops.Starve();
 

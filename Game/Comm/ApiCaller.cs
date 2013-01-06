@@ -11,20 +11,6 @@ namespace Game.Comm
 {
     public class ApiResponse
     {
-        public bool Success { get; set; }
-        public dynamic Data { get; set; }
-
-        public string ErrorMessage
-        {
-            get
-            {
-                if (Success || Data == null)
-                    return "An error occurred";
-                
-                return String.Join(", ", Data.errorMessage);
-            }
-        }
-
         public ApiResponse(bool success)
         {
             Success = success;
@@ -34,6 +20,23 @@ namespace Game.Comm
         {
             Success = success;
             Data = data;
+        }
+
+        public bool Success { get; set; }
+
+        public dynamic Data { get; set; }
+
+        public string ErrorMessage
+        {
+            get
+            {
+                if (Success || Data == null)
+                {
+                    return "An error occurred";
+                }
+
+                return String.Join(", ", Data.errorMessage);
+            }
         }
     }
 
@@ -47,23 +50,35 @@ namespace Game.Comm
             queryString.Write(string.Format("&{0}={1}", "apiId", Config.api_id));
             queryString.Write(string.Format("&{0}={1}", "apiKey", Config.api_key));
             foreach (var kv in data)
+            {
                 queryString.Write(string.Format("&{0}={1}", kv.Key, Uri.EscapeDataString(kv.Value)));
+            }
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(string.Format("http://{0}/api/{1}/{2}/?{3}", Config.api_domain, model, method, queryString));
+            HttpWebRequest request =
+                    (HttpWebRequest)
+                    WebRequest.Create(string.Format("http://{0}/api/{1}/{2}/?{3}",
+                                                    Config.api_domain,
+                                                    model,
+                                                    method,
+                                                    queryString));
             request.Proxy = null;
             request.Method = "GET";
-            
+
             try
             {
                 var webResponse = (HttpWebResponse)request.GetResponse();
 
                 if (webResponse.StatusCode != HttpStatusCode.OK)
+                {
                     return new ApiResponse(false);
+                }
 
                 Stream response = webResponse.GetResponseStream();
 
                 if (response == null)
+                {
                     return new ApiResponse(false);
+                }
 
                 using (StreamReader sr = new StreamReader(response))
                 {
@@ -71,9 +86,9 @@ namespace Game.Comm
                     dynamic responseData = jsonReader.Read(responseContent);
                     return new ApiResponse(responseData.success, responseData);
                 }
-
-            } catch (Exception)
-            {                
+            }
+            catch(Exception)
+            {
                 return new ApiResponse(false);
             }
         }
@@ -81,95 +96,80 @@ namespace Game.Comm
         public static ApiResponse CheckLogin(string name, string password)
         {
             var parms = new List<KeyValuePair<string, string>>
-                        {
-                                new KeyValuePair<string, string>("name", name),
-                                new KeyValuePair<string, string>("password", password),
-                        };
+            {
+                    new KeyValuePair<string, string>("name", name),
+                    new KeyValuePair<string, string>("password", password),
+            };
             return MakeCall("player", "check_login", parms);
         }
 
         public static ApiResponse CheckLoginKey(string name, string loginKey)
         {
             var parms = new List<KeyValuePair<string, string>>
-                        {
-                                new KeyValuePair<string, string>("name", name),
-                                new KeyValuePair<string, string>("login_key", loginKey),
-                        };
+            {
+                    new KeyValuePair<string, string>("name", name),
+                    new KeyValuePair<string, string>("login_key", loginKey),
+            };
             return MakeCall("player", "check_login", parms);
         }
 
         public static ApiResponse Unban(string name)
         {
-            var parms = new List<KeyValuePair<string, string>>
-                        {
-                                new KeyValuePair<string, string>("name", name),                                
-                        };
+            var parms = new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("name", name),};
             return MakeCall("player", "unban", parms);
         }
 
         public static ApiResponse Ban(string name)
         {
-            var parms = new List<KeyValuePair<string, string>>
-                        {
-                                new KeyValuePair<string, string>("name", name),                                
-                        };
+            var parms = new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("name", name),};
             return MakeCall("player", "ban", parms);
         }
 
         public static ApiResponse PlayerInfo(string name)
         {
-            var parms = new List<KeyValuePair<string, string>>
-                        {
-                                new KeyValuePair<string, string>("name", name),                                
-                        };
+            var parms = new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("name", name),};
             return MakeCall("player", "info", parms);
         }
 
         public static ApiResponse RenamePlayer(string name, string newName)
         {
             var parms = new List<KeyValuePair<string, string>>
-                        {
-                                new KeyValuePair<string, string>("name", name),                                
-                                new KeyValuePair<string, string>("new_name", newName),      
-                        };
+            {
+                    new KeyValuePair<string, string>("name", name),
+                    new KeyValuePair<string, string>("new_name", newName),
+            };
             return MakeCall("player", "rename", parms);
         }
 
         public static ApiResponse SetPlayerRights(string name, PlayerRights rights)
         {
             var parms = new List<KeyValuePair<string, string>>
-                        {
-                                new KeyValuePair<string, string>("name", name),                                
-                                new KeyValuePair<string, string>("rights", ((int)rights).ToString(CultureInfo.InvariantCulture)),      
-                        };
+            {
+                    new KeyValuePair<string, string>("name", name),
+                    new KeyValuePair<string, string>("rights", ((int)rights).ToString(CultureInfo.InvariantCulture)),
+            };
             return MakeCall("player", "set_rights", parms);
         }
 
         public static ApiResponse SetPassword(string name, string password)
         {
             var parms = new List<KeyValuePair<string, string>>
-                        {
-                                new KeyValuePair<string, string>("name", name),                                
-                                new KeyValuePair<string, string>("password", password),      
-                        };
+            {
+                    new KeyValuePair<string, string>("name", name),
+                    new KeyValuePair<string, string>("password", password),
+            };
             return MakeCall("player", "set_password", parms);
         }
 
         public static ApiResponse PlayerUnmute(string playerName)
         {
-            var parms = new List<KeyValuePair<string, string>>
-                        {
-                                new KeyValuePair<string, string>("name", playerName)                               
-                        };
+            var parms = new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("name", playerName)};
             return MakeCall("player", "unmute", parms);
         }
 
         public static ApiResponse PlayerMute(string playerName)
         {
-            var parms = new List<KeyValuePair<string, string>>
-                        {
-                                new KeyValuePair<string, string>("name", playerName)                               
-                        };
+            var parms = new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("name", playerName)};
             return MakeCall("player", "mute", parms);
         }
     }

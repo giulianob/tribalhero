@@ -14,7 +14,9 @@ namespace Game.Data.Troop
     public class TroopTemplate : IPersistableList, IEnumerable<KeyValuePair<ushort, BattleStats>>
     {
         public const string DB_TABLE = "troop_templates";
+
         private readonly ITroopStub stub;
+
         private Dictionary<ushort, BattleStats> stats = new Dictionary<ushort, BattleStats>();
 
         public TroopTemplate(ITroopStub stub)
@@ -49,6 +51,11 @@ namespace Game.Data.Troop
 
         #region IPersistableList Members
 
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return stats.GetEnumerator();
+        }
+
         public string DbTable
         {
             get
@@ -61,11 +68,15 @@ namespace Game.Data.Troop
         {
             get
             {
-                return new[] {new DbColumn("city_id", stub.TroopManager.City.Id, DbType.UInt32), new DbColumn("troop_stub_id", stub.TroopId, DbType.UInt32),};
+                return new[]
+                {
+                        new DbColumn("city_id", stub.City.Id, DbType.UInt32),
+                        new DbColumn("troop_stub_id", stub.TroopId, DbType.UInt32),
+                };
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {
@@ -81,17 +92,18 @@ namespace Game.Data.Troop
             }
         }
 
-        public DbColumn[] DbListColumns
+        public IEnumerable<DbColumn> DbListColumns
         {
             get
             {
                 return new[]
-                       {
-                               new DbColumn("type", DbType.UInt16), new DbColumn("level", DbType.Byte), new DbColumn("max_hp", DbType.UInt16),
-                               new DbColumn("attack", DbType.UInt16), new DbColumn("splash", DbType.Byte),
-                               new DbColumn("range", DbType.Byte), new DbColumn("stealth", DbType.Byte), new DbColumn("speed", DbType.Byte),
-                               new DbColumn("carry", DbType.UInt16), 
-                       };
+                {
+                        new DbColumn("type", DbType.UInt16), new DbColumn("level", DbType.Byte),
+                        new DbColumn("max_hp", DbType.UInt16), new DbColumn("attack", DbType.UInt16),
+                        new DbColumn("splash", DbType.Byte), new DbColumn("range", DbType.Byte),
+                        new DbColumn("stealth", DbType.Byte), new DbColumn("speed", DbType.Byte),
+                        new DbColumn("carry", DbType.UInt16), new DbColumn("normalized_cost", DbType.Decimal),
+                };
             }
         }
 
@@ -106,17 +118,18 @@ namespace Game.Data.Troop
                 yield return
                         new[]
                         {
-                                new DbColumn("type", battleStats.Base.Type, DbType.UInt16), new DbColumn("level", battleStats.Base.Lvl, DbType.Byte),
-                                new DbColumn("max_hp", battleStats.MaxHp, DbType.Decimal), new DbColumn("attack", battleStats.Atk, DbType.Decimal),
-                                new DbColumn("splash", battleStats.Splash, DbType.Byte), new DbColumn("range", battleStats.Rng, DbType.Byte), new DbColumn("stealth", battleStats.Stl, DbType.Byte),
-                                new DbColumn("speed", battleStats.Spd, DbType.Byte), new DbColumn("carry", battleStats.Carry, DbType.UInt16), 
+                                new DbColumn("type", battleStats.Base.Type, DbType.UInt16),
+                                new DbColumn("level", battleStats.Base.Lvl, DbType.Byte),
+                                new DbColumn("max_hp", battleStats.MaxHp, DbType.Decimal),
+                                new DbColumn("attack", battleStats.Atk, DbType.Decimal),
+                                new DbColumn("splash", battleStats.Splash, DbType.Byte),
+                                new DbColumn("range", battleStats.Rng, DbType.Byte),
+                                new DbColumn("stealth", battleStats.Stl, DbType.Byte),
+                                new DbColumn("speed", battleStats.Spd, DbType.Byte),
+                                new DbColumn("carry", battleStats.Carry, DbType.UInt16),
+                                new DbColumn("normalized_cost", battleStats.NormalizedCost, DbType.Decimal),
                         };
             }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return stats.GetEnumerator();
         }
 
         #endregion
@@ -129,7 +142,7 @@ namespace Game.Data.Troop
         }
 
         /// <summary>
-        ///   Must call begin/end update on the troop stub that owns this template
+        ///     Must call begin/end update on the troop stub that owns this template
         /// </summary>
         public void LoadStats(TroopBattleGroup group)
         {
@@ -140,9 +153,14 @@ namespace Game.Data.Troop
                 foreach (var type in formation.Keys)
                 {
                     if (stats.ContainsKey(type))
+                    {
                         continue;
+                    }
 
-                    BattleStats stat = BattleFormulas.Current.LoadStats(type, stub.City.Template[type].Lvl, stub.City, group);
+                    BattleStats stat = BattleFormulas.Current.LoadStats(type,
+                                                                        stub.City.Template[type].Lvl,
+                                                                        stub.City,
+                                                                        group);
                     stats.Add(type, stat);
                 }
             }

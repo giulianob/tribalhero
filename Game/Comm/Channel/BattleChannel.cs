@@ -1,105 +1,157 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Game.Battle;
+using Game.Battle.CombatGroups;
+using Game.Battle.CombatObjects;
 using Game.Data;
-using System.Linq;
 
 #endregion
 
 namespace Game.Comm.Channel
 {
-    public interface IBattleChannel
-    {
-        void BattleEnterRound(uint battleId, ICombatList atk, ICombatList def, uint round);
-        void BattleExitBattle(uint battleId, ICombatList atk, ICombatList def);
-        void BattleReinforceDefender(uint battleId, IEnumerable<CombatObject> list);
-        void BattleReinforceAttacker(uint battleId, IEnumerable<CombatObject> list);
-        void BattleSkippedAttacker(uint battleId, CombatObject source);
-        void BattleActionAttacked(uint battleId, CombatObject source, CombatObject target, decimal damage);
-        void BattleWithdrawDefender(uint battleId, IEnumerable<CombatObject> list);
-        void BattleWithdrawAtacker(uint battleId, IEnumerable<CombatObject> list);
-    }
-
-    public class BattleChannel : IBattleChannel
+    public class BattleChannel
     {
         private readonly string channelName;
 
-        public BattleChannel(ICity city)
+        public BattleChannel(IBattleManager battleManager)
         {
-            channelName = "/BATTLE/" + city.Id;
+            channelName = string.Format("/BATTLE/{0}", battleManager.BattleId);
+
+            battleManager.ActionAttacked += BattleActionAttacked;
+            battleManager.SkippedAttacker += BattleSkippedAttacker;
+            battleManager.ReinforceAttacker += BattleReinforceAttacker;
+            battleManager.ReinforceDefender += BattleReinforceDefender;
+            battleManager.ExitBattle += BattleExitBattle;
+            battleManager.EnterRound += BattleEnterRound;
+            battleManager.WithdrawAttacker += BattleWithdrawAttacker;
+            battleManager.WithdrawDefender += BattleWithdrawDefender;
+            battleManager.GroupUnitAdded += BattleManagerOnGroupUnitAdded;
+            battleManager.GroupUnitRemoved += BattleManagerOnGroupUnitRemoved;
+            battleManager.ExitTurn += BattleManagerOnExitTurn;
         }
 
-        private Packet CreatePacket(uint battleId, Command command)
+        private void BattleManagerOnExitTurn(IBattleManager battle,
+                                             ICombatList attackers,
+                                             ICombatList defenders,
+                                             int turn)
+        {
+            var properties = battle.ListProperties();
+            if (properties.Count == 0)
+            {
+                return;
+            }
+
+            var packet = CreatePacket(battle, Command.BattlePropertyUpdate);
+            PacketHelper.AddBattleProperties(battle.ListProperties(), packet);
+            Global.Channel.Post(channelName, packet);
+        }
+
+        private Packet CreatePacket(IBattleManager battle, Command command)
         {
             var packet = new Packet(command);
-            packet.AddUInt32(battleId);
+            packet.AddUInt32(battle.BattleId);
 
             return packet;
         }
 
-        public void BattleEnterRound(uint battleId, ICombatList atk, ICombatList def, uint round)
+        private void BattleManagerOnGroupUnitAdded(IBattleManager battle,
+                                                   BattleManager.BattleSide combatObjectSide,
+                                                   ICombatGroup combatGroup,
+                                                   ICombatObject combatObject)
         {
-            var packet = CreatePacket(battleId, Command.BattleNewRound);            
+            var packet = CreatePacket(battle, Command.BattleGroupUnitAdded);
+            packet.AddUInt32(combatGroup.Id);
+            PacketHelper.AddToPacket(combatObject, packet);
+            Global.Channel.Post(channelName, packet);
+        }
+
+        private void BattleManagerOnGroupUnitRemoved(IBattleManager battle,
+                                                     BattleManager.BattleSide combatObjectSide,
+                                                     ICombatGroup combatGroup,
+                                                     ICombatObject combatObject)
+        {
+            var packet = CreatePacket(battle, Command.BattleGroupUnitRemoved);
+            packet.AddUInt32(combatGroup.Id);
+            packet.AddUInt32(combatObject.Id);
+            Global.Channel.Post(channelName, packet);
+        }
+
+        private void BattleEnterRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round)
+        {
+            var packet = CreatePacket(battle, Command.BattleNewRound);
             packet.AddUInt32(round);
             Global.Channel.Post(channelName, packet);
         }
 
-        public void BattleExitBattle(uint battleId, ICombatList atk, ICombatList def)
+        private void BattleExitBattle(IBattleManager battle, ICombatList atk, ICombatList def)
         {
-            var packet = CreatePacket(battleId, Command.BattleEnded);
+            var packet = CreatePacket(battle, Command.BattleEnded);
+            Global.Channel.Post(channelName, packet);
+
+            // Unsubscribe everyone from this channel
+            Global.Channel.Unsubscribe(channelName);
+        }
+
+        private void BattleReinforceDefender(IBattleManager battle, ICombatGroup combatGroup)
+        {
+            var packet = CreatePacket(battle, Command.BattleReinforceDefender);
+            PacketHelper.AddToPacket(combatGroup, packet);
             Global.Channel.Post(channelName, packet);
         }
 
-        public void BattleReinforceDefender(uint battleId, IEnumerable<CombatObject> list)
+        private void BattleReinforceAttacker(IBattleManager battle, ICombatGroup combatGroup)
         {
-            var combatObjectList = new List<CombatObject>(list);
-            var packet = CreatePacket(battleId, Command.BattleReinforceDefender);
-            PacketHelper.AddToPacket(combatObjectList, packet);
+            var packet = CreatePacket(battle, Command.BattleReinforceAttacker);
+            PacketHelper.AddToPacket(combatGroup, packet);
             Global.Channel.Post(channelName, packet);
         }
 
-        public void BattleReinforceAttacker(uint battleId, IEnumerable<CombatObject> list)
+        private void BattleSkippedAttacker(IBattleManager battle,
+                                           BattleManager.BattleSide objSide,
+                                           ICombatGroup combatGroup,
+                                           ICombatObject source)
         {
-            var combatObjectList = new List<CombatObject>(list);
-            var packet = CreatePacket(battleId, Command.BattleReinforceAttacker);
-            PacketHelper.AddToPacket(combatObjectList, packet);
-            Global.Channel.Post(channelName, packet);
-        }
+            // Don't inform client for objs that simply never attack
+            if (source.Stats.Atk == 0)
+            {
+                return;
+            }
 
-        public void BattleSkippedAttacker(uint battleId, CombatObject source)
-        {
-            var packet = CreatePacket(battleId, Command.BattleSkipped);
+            var packet = CreatePacket(battle, Command.BattleSkipped);
+            packet.AddUInt32(combatGroup.Id);
             packet.AddUInt32(source.Id);
             Global.Channel.Post(channelName, packet);
         }
 
-        public void BattleActionAttacked(uint battleId, CombatObject source, CombatObject target, decimal damage)
+        private void BattleActionAttacked(IBattleManager battle,
+                                          BattleManager.BattleSide attackingSide,
+                                          ICombatGroup attackerGroup,
+                                          ICombatObject source,
+                                          ICombatGroup targetGroup,
+                                          ICombatObject target,
+                                          decimal damage)
         {
-            var packet = CreatePacket(battleId, Command.BattleAttack);
+            var packet = CreatePacket(battle, Command.BattleAttack);
+            packet.AddByte((byte)attackingSide);
+            packet.AddUInt32(attackerGroup.Id);
             packet.AddUInt32(source.Id);
+            packet.AddUInt32(targetGroup.Id);
             packet.AddUInt32(target.Id);
             packet.AddFloat((float)damage);
             Global.Channel.Post(channelName, packet);
         }
 
-        public void BattleWithdrawDefender(uint battleId, IEnumerable<CombatObject> list)
+        private void BattleWithdrawDefender(IBattleManager battle, ICombatGroup group)
         {
-            var combatObjectList = new List<CombatObject>(list);
-            var combatObject = combatObjectList.First();
-            var packet = CreatePacket(battleId, Command.BattleWithdrawDefender);
-            packet.AddUInt32(combatObject.TroopStub.City.Id);
-            packet.AddByte(combatObject.TroopStub.TroopId);
+            var packet = CreatePacket(battle, Command.BattleWithdrawDefender);
+            packet.AddUInt32(group.Id);
             Global.Channel.Post(channelName, packet);
         }
 
-        public void BattleWithdrawAtacker(uint battleId, IEnumerable<CombatObject> list)
+        private void BattleWithdrawAttacker(IBattleManager battle, ICombatGroup group)
         {
-            var combatObjectList = new List<CombatObject>(list);
-            var combatObject = combatObjectList.First();
-            var packet = CreatePacket(battleId, Command.BattleWithdrawAttacker);
-            packet.AddUInt32(combatObject.TroopStub.City.Id);
-            packet.AddByte(combatObject.TroopStub.TroopId);
+            var packet = CreatePacket(battle, Command.BattleWithdrawAttacker);
+            packet.AddUInt32(group.Id);
             Global.Channel.Post(channelName, packet);
         }
     }

@@ -1,13 +1,12 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using Game.Data;
 using Game.Database;
 using Game.Logic;
-using Game.Map;
 using Game.Setup;
-using Ninject;
 using Persistance;
 
 #endregion
@@ -19,28 +18,38 @@ namespace Game.Module
         private const int UPDATE_INTERVAL_IN_SECOND = 3600;
 
         private const int MIN_PRICE = 25;
+
         private const int MAX_PRICE = 1000;
 
         private const int QUANTITY_PER_CHANGE_PER_PLAYER = 100;
+
         public const string DB_TABLE = "market";
 
         private static Market crop;
+
         private static Market iron;
+
         private static Market wood;
+
         private readonly object marketLock = new object();
+
+        private readonly int price;
+
         private readonly int quantityPerChangePerPlayer;
+
         private readonly ResourceType resource;
 
         private int incoming;
+
         private int outgoing;
-        private int price;
+
         private DateTime time;
 
         public Market(ResourceType resource, int defaultPrice)
         {
             price = defaultPrice;
             quantityPerChangePerPlayer = QUANTITY_PER_CHANGE_PER_PLAYER;
-            time = DateTime.UtcNow.AddSeconds(UPDATE_INTERVAL_IN_SECOND*Config.seconds_per_unit);
+            time = DateTime.UtcNow.AddSeconds(UPDATE_INTERVAL_IN_SECOND * Config.seconds_per_unit);
             this.resource = resource;
             Scheduler.Current.Put(this);
         }
@@ -109,7 +118,7 @@ namespace Game.Module
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {
@@ -122,10 +131,11 @@ namespace Game.Module
             get
             {
                 return new[]
-                       {
-                               new DbColumn("incoming", incoming, DbType.Int32), new DbColumn("outgoing", outgoing, DbType.Int32),
-                               new DbColumn("price", price, DbType.Int32), new DbColumn("quantity_per_change", quantityPerChangePerPlayer, DbType.Int32)
-                       };
+                {
+                        new DbColumn("incoming", incoming, DbType.Int32), new DbColumn("outgoing", outgoing, DbType.Int32),
+                        new DbColumn("price", price, DbType.Int32),
+                        new DbColumn("quantity_per_change", quantityPerChangePerPlayer, DbType.Int32)
+                };
             }
         }
 
@@ -150,7 +160,7 @@ namespace Game.Module
                 using (DbPersistance.Current.GetThreadTransaction())
                 {
                     outgoing = incoming = 0;
-                    time = DateTime.UtcNow.AddSeconds(UPDATE_INTERVAL_IN_SECOND*Config.seconds_per_unit);
+                    time = DateTime.UtcNow.AddSeconds(UPDATE_INTERVAL_IN_SECOND * Config.seconds_per_unit);
                     DbPersistance.Current.Save(this);
                     Scheduler.Current.Put(this);
                 }
@@ -162,13 +172,19 @@ namespace Game.Module
         public static void Init()
         {
             if (crop == null)
+            {
                 crop = new Market(ResourceType.Crop, 50);
+            }
 
             if (iron == null)
+            {
                 iron = new Market(ResourceType.Iron, 500);
+            }
 
             if (wood == null)
+            {
                 wood = new Market(ResourceType.Wood, 50);
+            }
         }
 
         public void DbLoad(int outgoing, int incoming)
@@ -182,7 +198,9 @@ namespace Game.Module
             lock (marketLock)
             {
                 if (price != Price)
+                {
                     return false;
+                }
                 outgoing += quantity;
                 return true;
             }
@@ -193,7 +211,9 @@ namespace Game.Module
             lock (marketLock)
             {
                 if (price != Price)
+                {
                     return false;
+                }
                 incoming += quantity;
                 return true;
             }

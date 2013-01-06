@@ -1,7 +1,6 @@
 #region
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -19,11 +18,14 @@ namespace Game.Comm
         public enum Options : ushort
         {
             Compressed = 1,
+
             Failed = 2,
+
             Reply = 4
         }
 
         public const int HEADER_SIZE = 8;
+
         public const int LENGTH_OFFSET = 6;
 
         #endregion
@@ -31,7 +33,9 @@ namespace Game.Comm
         #region Packet Header
 
         private Command cmd = Command.Invalid;
+
         private ushort option;
+
         private ushort seq;
 
         public ushort Length { get; private set; }
@@ -40,10 +44,11 @@ namespace Game.Comm
 
         #region Members
 
-        private byte[] readBuffer;
-        private ushort readOffset;
+        private readonly MemoryStream sendBuffer;
 
-        private MemoryStream sendBuffer;
+        private byte[] readBuffer;
+
+        private ushort readOffset;
 
         #endregion
 
@@ -70,7 +75,8 @@ namespace Game.Comm
             option = (ushort)(request.option | (ushort)Options.Reply);
         }
 
-        public Packet(byte[] data) : this(data, 0, data.Length)
+        public Packet(byte[] data)
+                : this(data, 0, data.Length)
         {
         }
 
@@ -79,7 +85,9 @@ namespace Game.Comm
             int dataLength = count - index;
 
             if (dataLength < HEADER_SIZE)
+            {
                 return;
+            }
 
             seq = BitConverter.ToUInt16(data, 0);
             option = BitConverter.ToUInt16(data, 2);
@@ -89,7 +97,9 @@ namespace Game.Comm
             readOffset = HEADER_SIZE;
 
             if (dataLength != HEADER_SIZE + Length)
+            {
                 return;
+            }
 
             if ((option & (int)Options.Compressed) == (int)Options.Compressed)
             {
@@ -101,7 +111,9 @@ namespace Game.Comm
                     int len;
                     var buff = new byte[4096];
                     while ((len = ds.Read(buff, 0, 4096)) > 0)
+                    {
                         uncompressedMemory.Write(buff, 0, len);
+                    }
                 }
 
                 readBuffer = new byte[HEADER_SIZE + uncompressedMemory.Length];
@@ -286,12 +298,19 @@ namespace Game.Comm
 
         #region Methods
 
+        public byte[] GetPayload()
+        {
+            return sendBuffer.ToArray();
+        }
+
         public byte[] GetBytes()
         {
             byte[] ret;
 
             if (readBuffer != null)
+            {
                 return readBuffer;
+            }
 
             using (var memory = new MemoryStream())
             {
@@ -341,7 +360,9 @@ namespace Game.Comm
             byte[] dump = GetBytes();
 
             if (dump.Length <= maxLength)
+            {
                 str = HexDump.GetString(dump, 8, 16);
+            }
 
             return "Cmd[" + cmd + "] Len[" + dump.Length + "]:" + Environment.NewLine + str;
         }

@@ -9,6 +9,13 @@ namespace Common.Testing
     public class CsvDataAttribute : DataAttribute
     {
         private bool hasHeader = true;
+
+        public CsvDataAttribute(string filename, bool hasHeader = true)
+        {
+            HasHeader = hasHeader;
+            Filename = filename;
+        }
+
         public bool HasHeader
         {
             get
@@ -23,37 +30,36 @@ namespace Common.Testing
 
         public string Filename { get; set; }
 
-        public CsvDataAttribute(string filename, bool hasHeader = true)
-        {
-            HasHeader = hasHeader;
-            Filename = filename;
-        }
-
         public override IEnumerable<object[]> GetData(MethodInfo methodUnderTest, Type[] parameterTypes)
         {
-            using (var csvReader = new CsvReader(new StreamReader(new FileStream(Filename, FileMode.Open, FileAccess.Read)), hasHeader))
+            using (
+                    var csvReader =
+                            new CsvReader(new StreamReader(new FileStream(Filename, FileMode.Open, FileAccess.Read)),
+                                          hasHeader))
             {
                 string[] toks;
                 while ((toks = csvReader.ReadRow()) != null)
                 {
-                    yield return ConvertParameters(toks, parameterTypes);   
+                    yield return ConvertParameters(toks, parameterTypes);
                 }
             }
         }
 
-        object[] ConvertParameters(IList<string> values, IList<Type> parameterTypes)
+        private object[] ConvertParameters(IList<string> values, IList<Type> parameterTypes)
         {
             object[] result = new object[values.Count];
 
             for (int idx = 0; idx < values.Count; idx++)
+            {
                 result[idx] = ConvertParameter(values[idx], idx >= parameterTypes.Count ? null : parameterTypes[idx]);
+            }
 
             return result;
         }
 
         protected virtual object ConvertParameter(string parameter, Type parameterType)
         {
-            switch (parameterType.Name)
+            switch(parameterType.Name)
             {
                 case "Int32":
                     return int.Parse(parameter);

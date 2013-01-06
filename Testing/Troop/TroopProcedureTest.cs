@@ -19,7 +19,7 @@ namespace Testing.Troop
 
         public TroopProcedureTest()
         {
-            stub = new TroopStub();
+            stub = new TroopStub(0,null);
             stub.AddFormation(FormationType.Normal);
             stub.AddFormation(FormationType.Garrison);
             stub.AddFormation(FormationType.InBattle);

@@ -11,12 +11,10 @@ using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Actions.ResourceActions;
 using Game.Logic.Formulas;
-using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 using Persistance;
 
 #endregion
@@ -26,10 +24,11 @@ namespace Game.Data
     public class Forest : SimpleGameObject, IHasLevel, IPersistableObject, IEnumerable<IStructure>, ICityRegionObject
     {
         public const string DB_TABLE = "forests";
+
         private readonly byte lvl = 1;
 
         /// <summary>
-        ///   The structures currently getting wood from this forest
+        ///     The structures currently getting wood from this forest
         /// </summary>
         private readonly List<IStructure> structures = new List<IStructure>();
 
@@ -64,16 +63,8 @@ namespace Game.Data
             }
         }
 
-        public byte Lvl
-        {
-            get
-            {
-                return lvl;
-            }
-        }
-
         /// <summary>
-        ///   Maximum laborers allowed in this forest
+        ///     Maximum laborers allowed in this forest
         /// </summary>
         public ushort MaxLabor
         {
@@ -84,24 +75,24 @@ namespace Game.Data
         }
 
         /// <summary>
-        ///   Current amount of laborers in this forest
+        ///     Current amount of laborers in this forest
         /// </summary>
         public int Labor { get; set; }
 
         /// <summary>
-        ///   The lumber availabel at this forest. 
-        ///   Notice: The rate is not used, only the upkeep. The rate of the forest is kept in a separate variable.
+        ///     The lumber availabel at this forest.
+        ///     Notice: The rate is not used, only the upkeep. The rate of the forest is kept in a separate variable.
         /// </summary>
         public AggressiveLazyValue Wood { get; set; }
 
         /// <summary>
-        ///   Base rate at which this forest gives out resources.
+        ///     Base rate at which this forest gives out resources.
         /// </summary>
         public double Rate { get; private set; }
 
         /// <summary>
-        ///   Time until forest is depleted
-        ///   Only the db loader should be setting this.
+        ///     Time until forest is depleted
+        ///     Only the db loader should be setting this.
         /// </summary>
         public DateTime DepleteTime { get; set; }
 
@@ -132,9 +123,9 @@ namespace Game.Data
         }
 
         /// <summary>
-        ///   Removes structure from forest
+        ///     Removes structure from forest
         /// </summary>
-        /// <param name = "structure">Structure to remove</param>
+        /// <param name="structure">Structure to remove</param>
         public void RemoveLumberjack(IStructure structure)
         {
             CheckUpdateMode();
@@ -142,8 +133,8 @@ namespace Game.Data
         }
 
         /// <summary>
-        ///   Recalculates the rate of the forest and all lumberjack structures around it.
-        ///   Must lock all players using the forest and the forest manager.
+        ///     Recalculates the rate of the forest and all lumberjack structures around it.
+        ///     Must lock all players using the forest and the forest manager.
         /// </summary>
         public void RecalculateForest()
         {
@@ -153,9 +144,9 @@ namespace Game.Data
             int totalLabor = this.Aggregate(0, (current, obj) => current + obj.Stats.Labor);
 
             // Calculate efficiency
-            double playerEfficiency = structures.Count/8d;
-            double laborEfficiency = (double)totalLabor/MaxLabor;
-            double efficiency = (1 - Math.Abs(playerEfficiency - laborEfficiency))*(structures.Count*0.125);
+            double playerEfficiency = structures.Count / 8d;
+            double laborEfficiency = (double)totalLabor / MaxLabor;
+            double efficiency = (1 - Math.Abs(playerEfficiency - laborEfficiency)) * (structures.Count * 0.125);
 
             float totalRate = 0;
             // Set the appropriate rates
@@ -163,7 +154,9 @@ namespace Game.Data
             {
                 // Skip structures that are still being built
                 if (obj.Lvl == 0)
+                {
                     continue;
+                }
 
                 // Get the current rate. This will be figure out how much we need to adjust the rate.
                 var oldRate = (int)obj["Rate"];
@@ -197,9 +190,13 @@ namespace Game.Data
             //Reset the harvest actions
             foreach (var obj in this.Where(obj => obj.Lvl > 0))
             {
-                var action = (ForestCampHarvestPassiveAction)obj.City.Worker.FindAction(obj, typeof(ForestCampHarvestPassiveAction));
+                var action =
+                        (ForestCampHarvestPassiveAction)
+                        obj.City.Worker.FindAction(obj, typeof(ForestCampHarvestPassiveAction));
                 if (action != null)
+                {
                     action.Reschedule();
+                }
                 else
                 {
                     // Set new harvesting action                             
@@ -210,21 +207,28 @@ namespace Game.Data
         }
 
         /// <summary>
-        ///  Updates the deplete action to fire when appropriately.
+        ///     Updates the deplete action to fire when appropriately.
         /// </summary>
         private void SetDepleteAction()
         {
             if (DepleteAction != null)
+            {
                 Scheduler.Current.Remove(DepleteAction);
+            }
 
-            double hours = 2*24 + Config.Random.NextDouble()*24;
+            double hours = 2 * 24 + Config.Random.NextDouble() * 24;
 
             if (Wood.Upkeep != 0)
-                hours = Wood.Value/(Wood.Upkeep/Config.seconds_per_unit);
-            
-            Global.Logger.Debug(string.Format("DepleteTime in [{0}] hours Wood.Upkeep[{1}] Wood.Value[{2}]", hours, Wood.Upkeep, Wood.Value));
+            {
+                hours = Wood.Value / (Wood.Upkeep / Config.seconds_per_unit);
+            }
 
-            DepleteTime = DateTime.UtcNow.AddSeconds(hours * 3600 * Config.seconds_per_unit);
+            Global.Logger.Debug(string.Format("DepleteTime in [{0}] hours Wood.Upkeep[{1}] Wood.Value[{2}]",
+                                              hours,
+                                              Wood.Upkeep,
+                                              Wood.Value));
+
+            DepleteTime = DateTime.UtcNow.AddSeconds(hours * 3600);
 
             DepleteAction = new ForestDepleteAction(this, DepleteTime);
 
@@ -238,10 +242,14 @@ namespace Game.Data
         public override void CheckUpdateMode()
         {
             if (!Global.FireEvents || !DbPersisted)
+            {
                 return;
+            }
 
             if (!updating)
+            {
                 throw new Exception("Changed state outside of begin/end update block");
+            }
 
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(World.Current.Forests);
         }
@@ -249,7 +257,9 @@ namespace Game.Data
         public override void EndUpdate()
         {
             if (!updating)
+            {
                 throw new Exception("Called an endupdate without first calling a beginupdate");
+            }
 
             updating = false;
 
@@ -261,13 +271,19 @@ namespace Game.Data
             base.Update();
 
             if (!Global.FireEvents)
+            {
                 return;
+            }
 
             if (updating)
+            {
                 return;
+            }
 
             if (objectId > 0)
+            {
                 DbPersistance.Current.Save(this);
+            }
         }
 
         #endregion
@@ -300,19 +316,25 @@ namespace Game.Data
         {
             get
             {
-                IEnumerable<object[]> structuresEnum = structures.Select(structure => new object[] {structure.City.Id, structure.ObjectId});
+                IEnumerable<object[]> structuresEnum =
+                        structures.Select(structure => new object[] {structure.City.Id, structure.ObjectId});
 
                 return new[]
-                       {
-                               new DbColumn("labor", Labor, DbType.UInt16), new DbColumn("x", X, DbType.UInt32), new DbColumn("y", Y, DbType.Int32),
-                               new DbColumn("level", Lvl, DbType.Byte), new DbColumn("rate", Rate, DbType.Single), new DbColumn("capacity", Wood.Limit, DbType.Int32),
-                               new DbColumn("last_realize_time", Wood.LastRealizeTime, DbType.DateTime), new DbColumn("lumber", Wood.RawValue, DbType.Int32),
-                               new DbColumn("upkeep", Wood.Upkeep, DbType.Int32), new DbColumn("state", (byte)State.Type, DbType.Boolean),
-                               new DbColumn("state_parameters", XmlSerializer.SerializeList(State.Parameters.ToArray()), DbType.String),
-                               new DbColumn("deplete_time", DepleteTime, DbType.DateTime),
-                               new DbColumn("structures", XmlSerializer.SerializeComplexList(structuresEnum), DbType.String),
-                               new DbColumn("in_world", InWorld, DbType.Boolean)
-                       };
+                {
+                        new DbColumn("labor", Labor, DbType.UInt16), new DbColumn("x", X, DbType.UInt32),
+                        new DbColumn("y", Y, DbType.Int32), new DbColumn("level", Lvl, DbType.Byte),
+                        new DbColumn("rate", Rate, DbType.Single), new DbColumn("capacity", Wood.Limit, DbType.Int32),
+                        new DbColumn("last_realize_time", Wood.LastRealizeTime, DbType.DateTime),
+                        new DbColumn("lumber", Wood.RawValue, DbType.Int32),
+                        new DbColumn("upkeep", Wood.Upkeep, DbType.Int32),
+                        new DbColumn("state", (byte)State.Type, DbType.Boolean),
+                        new DbColumn("state_parameters",
+                                     XmlSerializer.SerializeList(State.Parameters.ToArray()),
+                                     DbType.String),
+                        new DbColumn("deplete_time", DepleteTime, DbType.DateTime),
+                        new DbColumn("structures", XmlSerializer.SerializeComplexList(structuresEnum), DbType.String),
+                        new DbColumn("in_world", InWorld, DbType.Boolean)
+                };
             }
         }
 
@@ -324,7 +346,7 @@ namespace Game.Data
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
             get
             {
@@ -338,11 +360,11 @@ namespace Game.Data
 
         #region Implementation of ICityRegionObject
 
-        public Location CityRegionLocation
+        public Position CityRegionLocation
         {
             get
             {
-                return new Location(X, Y);
+                return new Position(X, Y);
             }
         }
 
@@ -382,5 +404,13 @@ namespace Game.Data
         }
 
         #endregion
+
+        public byte Lvl
+        {
+            get
+            {
+                return lvl;
+            }
+        }
     }
 }

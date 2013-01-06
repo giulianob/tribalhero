@@ -18,10 +18,15 @@ namespace Game.Logic.Actions
     public class ForestCampBuildActiveAction : ScheduledActiveAction
     {
         private readonly ushort campType;
+
         private readonly uint cityId;
+
         private readonly uint forestId;
+
         private readonly byte labors;
+
         private readonly uint lumbermillId;
+
         private uint campId;
 
         public ForestCampBuildActiveAction(uint cityId, uint lumbermillId, uint forestId, ushort campType, byte labors)
@@ -34,13 +39,14 @@ namespace Game.Logic.Actions
         }
 
         public ForestCampBuildActiveAction(uint id,
-                                     DateTime beginTime,
-                                     DateTime nextTime,
-                                     DateTime endTime,
-                                     int workerType,
-                                     byte workerIndex,
-                                     ushort actionCount,
-                                     Dictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+                                           DateTime beginTime,
+                                           DateTime nextTime,
+                                           DateTime endTime,
+                                           int workerType,
+                                           byte workerIndex,
+                                           ushort actionCount,
+                                           Dictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             cityId = uint.Parse(properties["city_id"]);
             lumbermillId = uint.Parse(properties["lumbermill_id"]);
@@ -72,25 +78,36 @@ namespace Game.Logic.Actions
             IStructure lumbermill;
             Forest forest;
 
-            if (!World.Current.TryGetObjects(cityId, lumbermillId, out city, out lumbermill) || !World.Current.Forests.TryGetValue(forestId, out forest))
+            if (!World.Current.TryGetObjects(cityId, lumbermillId, out city, out lumbermill) ||
+                !World.Current.Forests.TryGetValue(forestId, out forest))
+            {
                 return Error.ObjectNotFound;
+            }
 
             // Count number of camps and verify there's enough space left                
             int campCount = city.Count(s => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("ForestCamp", s));
             if (campCount >= Formula.Current.GetMaxForestCount(lumbermill.Lvl))
+            {
                 return Error.ForestCampMaxReached;
+            }
 
             // Make sure some labors are being put in
             if (labors <= 0)
+            {
                 return Error.LaborNotEnough;
+            }
 
             // Make sure this user is not already milking this forest.
             if (forest.Count(obj => obj.City == city) > 0)
+            {
                 return Error.AlreadyInForest;
+            }
 
             // Verify user has access to this forest
             if (forest.Lvl > Formula.Current.GetMaxForestLevel(lumbermill.Lvl))
+            {
                 return Error.ForestInaccessible;
+            }
 
             // Cost requirement
             Resource cost = Formula.Current.StructureCost(city, campType, 1);
@@ -99,40 +116,55 @@ namespace Game.Logic.Actions
             cost.Labor += labors;
 
             if (!city.Resource.HasEnough(cost))
+            {
                 return Error.ResourceNotEnough;
+            }
 
             // Make sure we can fit this many laborers in the forest and that this user isn't trying to insert more into forest than he can
             if (labors + forest.Labor > forest.MaxLabor || labors > Formula.Current.GetForestMaxLaborPerUser(forest))
+            {
                 return Error.ForestFull;
+            }
 
             // find an open space around the forest
             uint emptyX = 0;
             uint emptyY = 0;
             ReverseTileLocator.Current.ForeachObject(forest.X,
-                                             forest.Y,
-                                             1,
-                                             false,
-                                             delegate(uint ox, uint oy, uint x, uint y, object custom)
-                                                 {
-                                                     // Check tile type                
-                                                     if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileBuildable", World.Current.GetTileType(x, y)))
-                                                         return true;
+                                                     forest.Y,
+                                                     1,
+                                                     false,
+                                                     delegate(uint ox, uint oy, uint x, uint y, object custom)
+                                                         {
+                                                             // Check tile type                
+                                                             if (
+                                                                     !Ioc.Kernel.Get<ObjectTypeFactory>()
+                                                                         .IsTileType("TileBuildable",
+                                                                                     World.Current.Regions.GetTileType(
+                                                                                                                       x,
+                                                                                                                       y)))
+                                                             {
+                                                                 return true;
+                                                             }
 
-                                                     // Make sure it's not taken
-                                                     if (World.Current[x, y].Count > 0)
-                                                         return true;
+                                                             // Make sure it's not taken
+                                                             if (World.Current[x, y].Count > 0)
+                                                             {
+                                                                 return true;
+                                                             }
 
-                                                     emptyX = x;
-                                                     emptyY = y;
+                                                             emptyX = x;
+                                                             emptyY = y;
 
-                                                     return false;
-                                                 },
-                                             null);
+                                                             return false;
+                                                         },
+                                                     null);
 
             if (emptyX == 0 || emptyY == 0)
+            {
                 return Error.MapFull;
+            }
 
-            World.Current.LockRegion(emptyX, emptyY);
+            World.Current.Regions.LockRegion(emptyX, emptyY);
 
             // add structure to the map                    
             IStructure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(campType, 0);
@@ -148,14 +180,14 @@ namespace Game.Logic.Actions
 
             city.Add(structure);
 
-            if (!World.Current.Add(structure))
+            if (!World.Current.Regions.Add(structure))
             {
                 city.ScheduleRemove(structure, false);
                 city.BeginUpdate();
                 city.Resource.Add(cost);
                 city.EndUpdate();
 
-                World.Current.UnlockRegion(emptyX, emptyY);
+                World.Current.Regions.UnlockRegion(emptyX, emptyY);
                 return Error.MapFull;
             }
 
@@ -166,18 +198,23 @@ namespace Game.Logic.Actions
             forest.BeginUpdate();
             forest.AddLumberjack(structure);
             forest.RecalculateForest();
-            forest.EndUpdate();          
+            forest.EndUpdate();
 
             // add to queue for completion
             endTime =
                     DateTime.UtcNow.AddSeconds(
-                                               CalculateTime(Formula.Current.BuildTime(Ioc.Kernel.Get<StructureFactory>().GetTime(campType, 1), city, city.Technologies) +
+                                               CalculateTime(
+                                                             Formula.Current.BuildTime(
+                                                                                       Ioc.Kernel.Get<StructureFactory>()
+                                                                                          .GetTime(campType, 1),
+                                                                                       city,
+                                                                                       city.Technologies) +
                                                              lumbermill.TileDistance(forest) * 30));
             BeginTime = DateTime.UtcNow;
 
-            city.Worker.References.Add(structure, this);
+            city.References.Add(structure, this);
 
-            World.Current.UnlockRegion(emptyX, emptyY);
+            World.Current.Regions.UnlockRegion(emptyX, emptyY);
 
             return Error.Ok;
         }
@@ -186,12 +223,20 @@ namespace Game.Logic.Actions
         {
             ICity city;
             if (!World.Current.TryGetObjects(cityId, out city))
+            {
                 return;
+            }
 
-            using (Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler, new object[] {forestId}, city, World.Current.Forests))
+            using (
+                    Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler,
+                                             new object[] {forestId},
+                                             city,
+                                             World.Current.Forests))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 IStructure structure;
                 if (!city.TryGetStructure(campId, out structure))
@@ -205,7 +250,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                city.Worker.References.Remove(structure, this);
+                city.References.Remove(structure, this);
 
                 // Get forest. If it doesn't exist, we need to delete the structure.
                 Forest forest;
@@ -213,7 +258,7 @@ namespace Game.Logic.Actions
                 {
                     // Remove the camp
                     structure.BeginUpdate();
-                    World.Current.Remove(structure);
+                    World.Current.Regions.Remove(structure);
                     city.ScheduleRemove(structure, false);
                     structure.EndUpdate();
 
@@ -225,7 +270,8 @@ namespace Game.Logic.Actions
                 structure.BeginUpdate();
                 structure.Technologies.Parent = structure.City.Technologies;
                 Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, structure.Type, 1);
-                Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
+                Ioc.Kernel.Get<InitFactory>()
+                   .InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 
                 // Recalculate the forest
@@ -240,7 +286,9 @@ namespace Game.Logic.Actions
         public override Error Validate(string[] parms)
         {
             if (ushort.Parse(parms[0]) == campType)
+            {
                 return Error.Ok;
+            }
 
             return Error.ActionInvalid;
         }
@@ -249,16 +297,27 @@ namespace Game.Logic.Actions
         {
             ICity city;
             if (!World.Current.TryGetObjects(cityId, out city))
+            {
                 throw new Exception("City is missing");
+            }
 
-            using (Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler, new object[] {forestId}, city, World.Current.Forests))
+            using (
+                    Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler,
+                                             new object[] {forestId},
+                                             city,
+                                             World.Current.Forests))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 // Give laborers back
-                city.BeginUpdate();                
-                city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, Formula.Current.StructureCost(city, campType, 1)));
+                city.BeginUpdate();
+                city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime,
+                                                                          Formula.Current.StructureCost(city,
+                                                                                                        campType,
+                                                                                                        1)));
                 city.EndUpdate();
 
                 // Get camp
@@ -269,7 +328,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                city.Worker.References.Remove(structure, this);
+                city.References.Remove(structure, this);
 
                 // Remove camp from forest and recalculate forest
                 Forest forest;
@@ -283,7 +342,7 @@ namespace Game.Logic.Actions
 
                 // Remove the camp                        
                 structure.BeginUpdate();
-                World.Current.Remove(structure);
+                World.Current.Regions.Remove(structure);
                 city.ScheduleRemove(structure, false);
                 structure.EndUpdate();
 
@@ -309,11 +368,11 @@ namespace Game.Logic.Actions
             {
                 return
                         XmlSerializer.Serialize(new[]
-                                                {
-                                                        new XmlKvPair("city_id", cityId), new XmlKvPair("lumbermill_id", lumbermillId),
-                                                        new XmlKvPair("camp_id", campId), new XmlKvPair("labors", labors), new XmlKvPair("camp_type", campType),
-                                                        new XmlKvPair("forest_id", forestId)
-                                                });
+                        {
+                                new XmlKvPair("city_id", cityId), new XmlKvPair("lumbermill_id", lumbermillId),
+                                new XmlKvPair("camp_id", campId), new XmlKvPair("labors", labors),
+                                new XmlKvPair("camp_type", campType), new XmlKvPair("forest_id", forestId)
+                        });
             }
         }
 

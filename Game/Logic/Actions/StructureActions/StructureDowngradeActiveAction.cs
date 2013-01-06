@@ -16,13 +16,17 @@ namespace Game.Logic.Actions
     public class StructureDowngradeActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
-        private readonly uint structureId;
 
         private readonly ObjectTypeFactory objectTypeFactory;
 
         private readonly StructureFactory structureFactory;
 
-        public StructureDowngradeActiveAction(uint cityId, uint structureId, ObjectTypeFactory objectTypeFactory, StructureFactory structureFactory)
+        private readonly uint structureId;
+
+        public StructureDowngradeActiveAction(uint cityId,
+                                              uint structureId,
+                                              ObjectTypeFactory objectTypeFactory,
+                                              StructureFactory structureFactory)
         {
             this.cityId = cityId;
             this.structureId = structureId;
@@ -31,16 +35,16 @@ namespace Game.Logic.Actions
         }
 
         public StructureDowngradeActiveAction(uint id,
-                                            DateTime beginTime,
-                                            DateTime nextTime,
-                                            DateTime endTime,
-                                            int workerType,
-                                            byte workerIndex,
-                                            ushort actionCount,
-                                            Dictionary<string, string> properties,
-                                            ObjectTypeFactory objectTypeFactory,
-                                            StructureFactory structureFactory)
-            : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+                                              DateTime beginTime,
+                                              DateTime nextTime,
+                                              DateTime endTime,
+                                              int workerType,
+                                              byte workerIndex,
+                                              ushort actionCount,
+                                              Dictionary<string, string> properties,
+                                              ObjectTypeFactory objectTypeFactory,
+                                              StructureFactory structureFactory)
+                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             this.objectTypeFactory = objectTypeFactory;
             this.structureFactory = structureFactory;
@@ -70,26 +74,44 @@ namespace Game.Logic.Actions
             IStructure structure;
 
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            {
                 return Error.ObjectNotFound;
+            }
 
             if (objectTypeFactory.IsStructureType("MainBuilding", structure))
+            {
                 return Error.StructureUndowngradable;
+            }
 
             if (objectTypeFactory.IsStructureType("NonUserDestroyable", structure))
+            {
                 return Error.StructureUndowngradable;
+            }
 
             if (objectTypeFactory.IsStructureType("Undestroyable", structure))
+            {
                 return Error.StructureUndestroyable;
+            }
 
             endTime =
                     DateTime.UtcNow.AddSeconds(
-                                               CalculateTime(Formula.Current.BuildTime(structureFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)),
-                                                                               city,
-                                                                               structure.Technologies)));
+                                               CalculateTime(
+                                                             Formula.Current.BuildTime(
+                                                                                       structureFactory.GetTime(
+                                                                                                                structure
+                                                                                                                        .Type,
+                                                                                                                (byte)
+                                                                                                                (structure
+                                                                                                                         .Lvl +
+                                                                                                                 1)),
+                                                                                       city,
+                                                                                       structure.Technologies)));
             BeginTime = DateTime.UtcNow;
 
             if (WorkerObject.WorkerId != structureId)
-                city.Worker.References.Add(structure, this);
+            {
+                city.References.Add(structure, this);
+            }
 
             return Error.Ok;
         }
@@ -103,7 +125,9 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, structureId, out city, out structure))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 if (structure == null)
                 {
@@ -113,7 +137,7 @@ namespace Game.Logic.Actions
 
                 if (WorkerObject.WorkerId != structureId)
                 {
-                    city.Worker.References.Remove(structure, this);
+                    city.References.Remove(structure, this);
                 }
 
                 if (structure.IsBlocked)
@@ -148,7 +172,7 @@ namespace Game.Logic.Actions
                 structure.Stats.Labor = 0;
 
                 // Destroy structure
-                World.Current.Remove(structure);
+                World.Current.Regions.Remove(structure);
                 city.ScheduleRemove(structure, false);
 
                 structure.EndUpdate();
@@ -169,11 +193,15 @@ namespace Game.Logic.Actions
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
+                {
                     return;
+                }
 
                 IStructure structure;
                 if (WorkerObject.WorkerId != structureId && city.TryGetStructure(structureId, out structure))
-                    city.Worker.References.Remove(structure, this);
+                {
+                    city.References.Remove(structure, this);
+                }
 
                 StateChange(ActionState.Failed);
             }
@@ -195,7 +223,9 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return XmlSerializer.Serialize(new[] {new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId)});
+                return
+                        XmlSerializer.Serialize(new[]
+                        {new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId)});
             }
         }
 

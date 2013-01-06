@@ -2,10 +2,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using Game.Data;
-using Game.Data.Troop;
+using Game.Battle.CombatGroups;
+using Game.Battle.CombatObjects;
 using Game.Map;
 using Persistance;
 
@@ -13,136 +12,147 @@ using Persistance;
 
 namespace Game.Battle
 {
-    public interface ICombatList : IListOfPersistableObjects<CombatObject>
+    /// <summary>
+    ///     A list of combat objects and manages targetting.
+    /// </summary>
+    public class CombatList : PersistableObjectList<ICombatGroup>, ICombatList
     {
-        int Id { get; set; }
-
-        int Upkeep { get; }
-
-        int Capacity { get; set; }
-
-        bool HasInRange(CombatObject attacker);
-
-        CombatList.BestTargetResult GetBestTargets(CombatObject attacker, out IList<CombatObject> result, int maxCount);
-    }
-
-    public class CombatList : ListOfPersistableObjects<CombatObject>, ICombatList
-    {
-        private readonly RadiusLocator radiusLocator;
         private readonly BattleFormulas battleFormulas;
+
+        private readonly RadiusLocator radiusLocator;
 
         #region BestTargetResult enum
 
         public enum BestTargetResult
         {
             NoneInRange,
+
             Ok
         }
 
         #endregion
 
-        public CombatList(IDbManager manager, RadiusLocator radiusLocator, BattleFormulas battleFormulas) : base(manager)
+        public CombatList(IDbManager manager, RadiusLocator radiusLocator, BattleFormulas battleFormulas)
+                : base(manager)
         {
             this.radiusLocator = radiusLocator;
             this.battleFormulas = battleFormulas;
         }
 
-        public int Id { get; set; }
-
         public int Upkeep
         {
             get
             {
-                return this.Sum(obj => obj.Upkeep);
+                return AllCombatObjects().Sum(obj => obj.Upkeep);
             }
         }
 
-        public bool HasInRange(CombatObject attacker)
+        public bool HasInRange(ICombatObject attacker)
         {
-            return this.Any(obj => (obj.InRange(attacker) && attacker.InRange(obj)) && !obj.IsDead);
+            return AllAliveCombatObjects().Any(obj => obj.InRange(attacker) && attacker.InRange(obj));
         }
 
-        public BestTargetResult GetBestTargets(CombatObject attacker, out IList<CombatObject> result, int maxCount)
+        public BestTargetResult GetBestTargets(ICombatObject attacker, out IList<Target> result, int maxCount)
         {
-            result = new List<CombatObject>();
-            
-            CombatObject bestTarget = null;
-
-            int bestTargetScore = 0;
+            result = new List<Target>();
 
             var objectsByScore = new List<CombatScoreItem>(Count);
 
-            var objsInRange = this.Where(obj => obj.InRange(attacker) && attacker.InRange(obj) && !obj.IsDead).ToList();
+            var objsInRange = (from @group in this
+                               from combatObject in @group
+                               where
+                                       combatObject.InRange(attacker) && attacker.InRange(combatObject) &&
+                                       !combatObject.IsDead
+                               select new Target {Group = @group, CombatObject = combatObject}).ToList();
 
             if (objsInRange.Count == 0)
             {
-                return BestTargetResult.NoneInRange;                
+                return BestTargetResult.NoneInRange;
             }
 
-            uint lowestRow = objsInRange.Min(obj => obj.Stats.Stl);
+            uint lowestRow = objsInRange.Min(target => target.CombatObject.Stats.Stl);
 
-            foreach (var obj in objsInRange)
+            var attackerLocation = attacker.Location();
+
+            Target bestTarget = null;
+            int bestTargetScore = 0;
+            foreach (var target in objsInRange)
             {
-                if (!attacker.CanSee(obj, lowestRow))
+                if (!attacker.CanSee(target.CombatObject, lowestRow))
+                {
                     continue;
+                }
 
                 int score = 0;
 
-                uint x1, y1, x2, y2;
-                attacker.Location(out x1, out y1);
-                obj.Location(out x2, out y2);
+                Position defenderPosition = target.CombatObject.Location();
 
                 // Distance 0 gives 60% higher chance to hit, distance 1 gives 20%
-                score += Math.Max(3 - radiusLocator.RadiusDistance(x1, y1, x2, y2) * 2, 0);
+                score +=
+                        Math.Max(
+                                 3 -
+                                 radiusLocator.RadiusDistance(attackerLocation.X,
+                                                              attackerLocation.Y,
+                                                              defenderPosition.X,
+                                                              defenderPosition.Y) * 2,
+                                 0);
 
                 // Have to compare armor and weapon type here to give some sort of score
-                score += ((int)(battleFormulas.GetDmgModifier(attacker, obj) * 10));
+                score += ((int)(battleFormulas.GetDmgModifier(attacker, target.CombatObject) * 10));
 
                 if (bestTarget == null || score > bestTargetScore)
                 {
-                    bestTarget = obj;
+                    bestTarget = target;
                     bestTargetScore = score;
                 }
 
-                objectsByScore.Add(new CombatScoreItem {CombatObject = obj, Score = score});
+                objectsByScore.Add(new CombatScoreItem {Target = target, Score = score});
             }
 
             // Sort by score descending
-            objectsByScore.Sort((x, y) => x.Score.CompareTo(y.Score)*-1);
+            objectsByScore.Sort((x, y) => x.Score.CompareTo(y.Score) * -1);
 
             // Get top results specified by the maxCount param
-            result = objectsByScore.GetRange(0, Math.Min(maxCount, objectsByScore.Count)).Select(x => x.CombatObject).ToList();
+            result =
+                    objectsByScore.GetRange(0, Math.Min(maxCount, objectsByScore.Count))
+                                  .Select(scoreItem => scoreItem.Target)
+                                  .ToList();
 
             return BestTargetResult.Ok;
         }
 
-        public new void Add(CombatObject item)
+        public IEnumerable<ICombatObject> AllCombatObjects()
         {
-            Add(item, true);
+            return BackingList.SelectMany(group => group.Select(combatObject => combatObject));
         }
 
-        public new void Add(CombatObject item, bool save)
+        public IEnumerable<ICombatObject> AllAliveCombatObjects()
         {
-            base.Add(item, save);
-            item.CombatList = this;
-        }
-
-        public bool Contains(ITroopStub obj)
-        {
-            return this.Any(currObj => currObj.CompareTo(obj) == 0);
-        }
-
-        public bool Contains(IStructure obj)
-        {
-            return this.Any(currObj => currObj.CompareTo(obj) == 0);
+            return
+                    BackingList.SelectMany(
+                                           group =>
+                                           group.Where(combatObject => !combatObject.IsDead)
+                                                .Select(combatObject => combatObject));
         }
 
         #region Nested type: CombatScoreItem
 
-        class CombatScoreItem
+        private class CombatScoreItem
         {
             public int Score { get; set; }
-            public CombatObject CombatObject { get; set; }
+
+            public Target Target { get; set; }
+        }
+
+        #endregion
+
+        #region Nested type: Target
+
+        public class Target
+        {
+            public ICombatObject CombatObject { get; set; }
+
+            public ICombatGroup Group { get; set; }
         }
 
         #endregion

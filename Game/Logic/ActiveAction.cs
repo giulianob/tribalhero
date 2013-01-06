@@ -10,6 +10,7 @@ namespace Game.Logic
     public abstract class ActiveAction : GameAction
     {
         public const string DB_TABLE = "active_actions";
+
         public int WorkerType { get; set; }
 
         public byte WorkerIndex { get; set; }
@@ -31,11 +32,13 @@ namespace Game.Logic
             get
             {
                 return new[]
-                       {
-                               new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32), new DbColumn("type", Type, DbType.UInt16),
-                               new DbColumn("worker_type", WorkerType, DbType.Int32), new DbColumn("worker_index", WorkerIndex, DbType.Byte),
-                               new DbColumn("count", ActionCount, DbType.UInt16), new DbColumn("properties", Properties, DbType.String)
-                       };
+                {
+                        new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32),
+                        new DbColumn("type", Type, DbType.UInt16), new DbColumn("worker_type", WorkerType, DbType.Int32)
+                        , new DbColumn("worker_index", WorkerIndex, DbType.Byte),
+                        new DbColumn("count", ActionCount, DbType.UInt16),
+                        new DbColumn("properties", Properties, DbType.String)
+                };
             }
         }
     }

@@ -12,18 +12,24 @@ namespace Game.Comm
 {
     public class TcpServer : ITcpServer
     {
-        private readonly ISocketSessionFactory socketFactory;
         private readonly TcpListener listener;
+
         private readonly Thread listeningThread;
-        private readonly int port = Config.server_port;        
+
+        private readonly int port = Config.server_port;
+
+        private readonly ISocketSessionFactory socketFactory;
+
         private bool isStopped = true;
 
         public TcpServer(ISocketSessionFactory socketFactory)
         {
-            this.socketFactory = socketFactory;            
+            this.socketFactory = socketFactory;
             IPAddress localAddr = IPAddress.Parse(Config.server_listen_address);
             if (localAddr == null)
+            {
                 throw new Exception("Could not bind to listen address");
+            }
 
             listener = new TcpListener(localAddr, port);
             listeningThread = new Thread(ListenerHandler);
@@ -32,9 +38,25 @@ namespace Game.Comm
         public bool Start()
         {
             if (!isStopped)
+            {
                 return false;
+            }
             isStopped = false;
             listeningThread.Start();
+            return true;
+        }
+
+        public bool Stop()
+        {
+            if (isStopped)
+            {
+                return false;
+            }
+
+            isStopped = true;
+            listener.Stop();
+            listeningThread.Join();
+            TcpWorker.DeleteAll();
             return true;
         }
 
@@ -55,7 +77,9 @@ namespace Game.Comm
                 }
 
                 if (s.LocalEndPoint == null)
+                {
                     continue;
+                }
 
                 s.Blocking = false;
 
@@ -65,18 +89,6 @@ namespace Game.Comm
             }
 
             listener.Stop();
-        }
-
-        public bool Stop()
-        {
-            if (isStopped)
-                return false;
-
-            isStopped = true;
-            listener.Stop();
-            listeningThread.Join();
-            TcpWorker.DeleteAll();
-            return true;
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Game.Data;
+using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
 
@@ -19,6 +20,8 @@ namespace Game.Util.Locking
 
         IMultiObjectLock Lock(uint cityId, out ICity city);
 
+        IMultiObjectLock Lock(uint strongholdId, out IStronghold stronghold);
+
         IMultiObjectLock Lock(uint cityId, uint objectId, out ICity city, out IStructure obj);
 
         IMultiObjectLock Lock(uint cityId, uint objectId, out ICity city, out ITroopObject obj);
@@ -27,6 +30,8 @@ namespace Game.Util.Locking
 
         IMultiObjectLock Lock(params ILockable[] list);
 
-        CallbackLock Lock(CallbackLock.CallbackLockHandler lockHandler, object[] lockHandlerParams, params ILockable[] baseLocks);
+        CallbackLock Lock(CallbackLock.CallbackLockHandler lockHandler,
+                          object[] lockHandlerParams,
+                          params ILockable[] baseLocks);
     }
 }

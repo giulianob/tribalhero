@@ -13,7 +13,6 @@ using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using Ninject;
-using Persistance;
 
 #endregion
 
@@ -21,10 +20,13 @@ namespace Game.Module
 {
     public class Ai : ISchedule
     {
-        private static readonly List<ushort> allowedBuildings = new List<ushort>(new ushort[] { 2110, 2202, 2301, 2302, 2501, 2502, 2402 });
+        private static readonly List<ushort> allowedBuildings =
+                new List<ushort>(new ushort[] {2110, 2202, 2301, 2302, 2501, 2502, 2402});
 
         private readonly List<Intelligence> playerList = new List<Intelligence>();
+
         private readonly Random rand = new Random();
+
         private DateTime time;
 
         #region ISchedule Members
@@ -77,19 +79,25 @@ namespace Game.Module
 
                         var step = (byte)rand.Next(0, 4);
 
-                        switch (step)
+                        switch(step)
                         {
                             case 0:
                                 if (rand.Next(0, 100) < 100 * intelligence.builder)
+                                {
                                     ret = UpgradeStructure(city, x, y);
+                                }
                                 break;
                             case 1:
                                 if (rand.Next(0, 100) < 100 * intelligence.builder)
+                                {
                                     ret = BuildStructure(city, x, y);
+                                }
                                 break;
                             case 2:
                                 if (rand.Next(0, 1000) < 100 * intelligence.military)
+                                {
                                     ret = TrainUnit(intelligence, city);
+                                }
                                 break;
                             case 3:
                                 ret = SetLabor(city);
@@ -103,13 +111,18 @@ namespace Game.Module
                         }
 
                         if (ret)
+                        {
                             successCount++;
+                        }
                     }
                 }
             }
 
             var timeTaken = (int)DateTime.UtcNow.Subtract(now).TotalMilliseconds;
-            Global.Logger.Info(String.Format("Took {0} ms for {1} actions. Average: {2}ms", timeTaken, successCount, (double)timeTaken / successCount));
+            Global.Logger.Info(String.Format("Took {0} ms for {1} actions. Average: {2}ms",
+                                             timeTaken,
+                                             successCount,
+                                             (double)timeTaken / successCount));
 
             time = DateTime.UtcNow.AddSeconds(30 * Config.seconds_per_unit);
             Scheduler.Current.Put(this);
@@ -120,7 +133,9 @@ namespace Game.Module
         private static bool SetLabor(ICity city)
         {
             if (city.Resource.Labor.Value == 0)
+            {
                 return true;
+            }
 
             Dictionary<uint, IStructure>.Enumerator enumerator = city.Structures;
             while (enumerator.MoveNext())
@@ -135,7 +150,9 @@ namespace Game.Module
                 }
 
                 if (city.Resource.Labor.Value == 0)
+                {
                     break;
+                }
             }
 
             return true;
@@ -149,20 +166,27 @@ namespace Game.Module
                 IStructure structure = enumerator.Current.Value;
 
                 int workerType = Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure);
-                ActionRequirementFactory.ActionRecord record = Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(workerType);
+                ActionRequirementFactory.ActionRecord record =
+                        Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(workerType);
                 if (record == null)
+                {
                     continue;
+                }
 
                 foreach (var req in record.List)
                 {
                     if (rand.Next(100) > 60)
+                    {
                         continue;
+                    }
 
                     if (req.Type == ActionType.UnitTrainActive)
                     {
                         ushort unitType = ushort.Parse(req.Parms[0]);
                         Resource costPerUnit = city.Template[unitType].Cost;
-                        ushort count = Math.Min((ushort)15, (ushort)(city.Resource.FindMaxAffordable(costPerUnit) * intelligence.military));
+                        ushort count = Math.Min((ushort)15,
+                                                (ushort)
+                                                (city.Resource.FindMaxAffordable(costPerUnit) * intelligence.military));
 
                         var action = new UnitTrainActiveAction(city.Id, structure.ObjectId, unitType, count);
                         if (city.Worker.DoActive(workerType, structure, action, structure.Technologies) == Error.Ok)
@@ -181,29 +205,39 @@ namespace Game.Module
         {
             List<ISimpleGameObject> objects = World.Current.GetObjects(x, y);
             if (objects.Count > 0)
+            {
                 return false;
+            }
 
             Dictionary<uint, IStructure>.Enumerator enumerator = city.Structures;
             while (enumerator.MoveNext())
             {
                 IStructure structure = enumerator.Current.Value;
                 int workerType = Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure);
-                ActionRequirementFactory.ActionRecord record = Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(workerType);
+                ActionRequirementFactory.ActionRecord record =
+                        Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(workerType);
                 if (record == null)
+                {
                     continue;
+                }
 
                 foreach (var req in record.List)
                 {
                     if (rand.Next(100) > 60)
+                    {
                         continue;
+                    }
 
                     if (req.Type == ActionType.StructureBuildActive)
                     {
                         ushort buildingType = ushort.Parse(req.Parms[0]);
                         if (!allowedBuildings.Contains(buildingType))
+                        {
                             continue;
+                        }
 
-                        var action = new StructureBuildActiveAction(city.Id, buildingType, x, y, 1);
+                        var action = Ioc.Kernel.Get<IActionFactory>()
+                                        .CreateStructureBuildActiveAction(city.Id, buildingType, x, y, 1);
                         if (city.Worker.DoActive(workerType, structure, action, structure.Technologies) == Error.Ok)
                         {
                             //Global.Logger.Info(string.Format("{0} building {1} at ({2},{3})", city.Name, buildingType, structure.Stats.Base.Lvl, x, y));
@@ -231,11 +265,17 @@ namespace Game.Module
             }
 
             if (structure == null)
+            {
                 return false;
+            }
 
             var action = new StructureUpgradeActiveAction(city.Id, structure.ObjectId);
 
-            if (city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure), structure, action, structure.Technologies) == Error.Ok)
+            if (
+                    city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure),
+                                         structure,
+                                         action,
+                                         structure.Technologies) == Error.Ok)
             {
                 //Global.Logger.Info(string.Format("{0} upgrading {1}({2}) at ({3},{4})", city.Name, structure.Type, structure.Stats.Base.Lvl, x, y));
                 return true;
@@ -255,12 +295,21 @@ namespace Game.Module
             for (uint i = 1; i <= Config.ai_count; ++i)
             {
                 if (i % 100 == 0)
+                {
                     Global.Logger.Info(String.Format("Creating NPC {0}/{1}...", i, Config.ai_count));
+                }
 
                 uint idx = 50000 + i;
 
-                var npc = new Player(idx, DateTime.MinValue, SystemClock.Now, "NPC " + i, string.Empty, PlayerRights.Basic);
-                var intelligence = new Intelligence(npc, Math.Max(0.5, rand.NextDouble()), Math.Max(0.5, rand.NextDouble()));
+                var npc = new Player(idx,
+                                     DateTime.MinValue,
+                                     SystemClock.Now,
+                                     "NPC " + i,
+                                     string.Empty,
+                                     PlayerRights.Basic);
+                var intelligence = new Intelligence(npc,
+                                                    Math.Max(0.5, rand.NextDouble()),
+                                                    Math.Max(0.5, rand.NextDouble()));
 
                 using (Concurrency.Current.Lock(npc))
                 {
@@ -286,21 +335,29 @@ namespace Game.Module
                         break;
                     }
 
-                    var city = new City(npc, string.Format("{0} {1}", npc.Name, npc.GetCityCount() + 1), Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), structure, 0);
+                    var city = new City(World.Current.Cities.GetNextCityId(),
+                                        npc,
+                                        string.Format("{0} {1}", npc.Name, npc.GetCityCount() + 1),
+                                        Formula.Current.GetInitialCityResources(),
+                                        Formula.Current.GetInitialCityRadius(),
+                                        structure,
+                                        0);
                     npc.Add(city);
 
-                    World.Current.Add(city);
+                    World.Current.Cities.Add(city);
                     structure.BeginUpdate();
-                    World.Current.Add(structure);
+                    World.Current.Regions.Add(structure);
                     structure.EndUpdate();
 
-                    var defaultTroop = new TroopStub();
+                    var defaultTroop = city.Troops.Create();
+                    defaultTroop.BeginUpdate();
                     defaultTroop.AddFormation(FormationType.Normal);
                     defaultTroop.AddFormation(FormationType.Garrison);
                     defaultTroop.AddFormation(FormationType.InBattle);
-                    city.Troops.Add(defaultTroop);
+                    defaultTroop.EndUpdate();
 
-                    Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
+                    Ioc.Kernel.Get<InitFactory>()
+                       .InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
                     throw new Exception("NPC isnt working right now due ot line below");
                     //city.Worker.DoPassive(city, new CityPassiveAction(city.Id), false);
 
@@ -320,7 +377,7 @@ namespace Game.Module
         {
             var city = (custom as ICity);
 
-            ushort tileType = World.Current.GetTileType(x, y);
+            ushort tileType = World.Current.Regions.GetTileType(x, y);
             if (Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileTree", tileType))
             {
                 // Lumber mill
@@ -330,7 +387,7 @@ namespace Game.Module
                 structure.Stats.Labor = structure.Stats.Base.MaxLabor;
 
                 city.Add(structure);
-                World.Current.Add(structure);
+                World.Current.Regions.Add(structure);
             }
             else if (Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileCrop", tileType))
             {
@@ -341,7 +398,7 @@ namespace Game.Module
                 structure.Stats.Labor = structure.Stats.Base.MaxLabor;
 
                 city.Add(structure);
-                World.Current.Add(structure);
+                World.Current.Regions.Add(structure);
             }
             else if (x == origX - 1 && y == origY - 1)
             {
@@ -351,7 +408,7 @@ namespace Game.Module
                 structure.Y = y;
 
                 city.Add(structure);
-                World.Current.Add(structure);
+                World.Current.Regions.Add(structure);
             }
 
             return true;
@@ -362,8 +419,11 @@ namespace Game.Module
         private class Intelligence
         {
             public readonly double builder;
+
             public readonly double military;
+
             public IPlayer player;
+
             public byte savingUp; // how many rounds it's saving up for
 
             public Intelligence(IPlayer player, double builder, double military)

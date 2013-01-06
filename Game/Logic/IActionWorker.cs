@@ -11,12 +11,6 @@ namespace Game.Logic
 
         IDictionary<uint, PassiveAction> PassiveActions { get; }
 
-        NotificationManager Notifications { get; }
-
-        ReferenceManager References { get; }
-
-        ICity City { get; }
-
         PassiveAction FindAction(IGameObject workerObject, Type type);
 
         void Remove(IGameObject workerObject, params GameAction[] ignoreActions);
@@ -50,5 +44,7 @@ namespace Game.Logic
         event ActionWorker.UpdateCallback ActionRescheduled;
 
         event ActionWorker.UpdateCallback ActionRemoved;
+
+        event ActionWorker.RemovedWorkerCallback ActionsRemovedFromWorker;
     }
 }

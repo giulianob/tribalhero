@@ -1,7 +1,7 @@
 #region
 
 using System.IO;
-using Game.Battle;
+using Game.Battle.CombatObjects;
 using Game.Data;
 using Ninject;
 
@@ -17,7 +17,9 @@ namespace Game.Setup
             Global.Logger.Info("Building CSV file " + outputFile);
 
             if (File.Exists(outputFile))
+            {
                 File.Delete(outputFile);
+            }
 
             using (var sw = new StreamWriter(outputFile))
             {
@@ -27,9 +29,16 @@ namespace Game.Setup
                     string fullFilename = filename;
 
                     if (Global.IsRunningOnMono())
+                    {
                         fullFilename = Path.Combine(dir, filename);
+                    }
 
-                    using (var sr = new StreamReader(new FileStream(fullFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+                    using (
+                            var sr =
+                                    new StreamReader(new FileStream(fullFilename,
+                                                                    FileMode.Open,
+                                                                    FileAccess.Read,
+                                                                    FileShare.ReadWrite)))
                     {
                         string header = sr.ReadLine();
                         if (!headerWritten)
@@ -49,14 +58,20 @@ namespace Game.Setup
 
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "structure.csv"), Config.csv_folder, "*structure.csv");
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "action.csv"), Config.csv_folder, "*action.csv");
-            BuildFiles(Path.Combine(Config.csv_compiled_folder, "effect_requirement.csv"), Config.csv_folder, "*effect_requirement.csv");
+            BuildFiles(Path.Combine(Config.csv_compiled_folder, "effect_requirement.csv"),
+                       Config.csv_folder,
+                       "*effect_requirement.csv");
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "init.csv"), Config.csv_folder, "*init.csv");
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "property.csv"), Config.csv_folder, "*property.csv");
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "layout.csv"), Config.csv_folder, "*layout.csv");
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "technology.csv"), Config.csv_folder, "*technology.csv");
-            BuildFiles(Path.Combine(Config.csv_compiled_folder, "technology_effects.csv"), Config.csv_folder, "*technology_effects.csv");
+            BuildFiles(Path.Combine(Config.csv_compiled_folder, "technology_effects.csv"),
+                       Config.csv_folder,
+                       "*technology_effects.csv");
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "unit.csv"), Config.csv_folder, "*unit.csv");
-            BuildFiles(Path.Combine(Config.csv_compiled_folder, "unit_modifier.csv"), Config.csv_folder, "*unit_modifier.csv");
+            BuildFiles(Path.Combine(Config.csv_compiled_folder, "unit_modifier.csv"),
+                       Config.csv_folder,
+                       "*unit_modifier.csv");
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "object_type.csv"), Config.csv_folder, "object_type.csv");
         }
 

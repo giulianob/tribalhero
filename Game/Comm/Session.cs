@@ -17,8 +17,6 @@ namespace Game.Comm
 
         #endregion
 
-        public PacketMaker PacketMaker { get; private set; }
-
         protected Processor processor;
 
         protected Session(string name, Processor processor)
@@ -27,6 +25,8 @@ namespace Game.Comm
             this.processor = processor;
             PacketMaker = new PacketMaker();
         }
+
+        public PacketMaker PacketMaker { get; private set; }
 
         public string Name { get; private set; }
 
@@ -59,7 +59,9 @@ namespace Game.Comm
         protected void Close()
         {
             if (OnClose != null)
+            {
                 OnClose(this);
+            }
         }
 
         public void Process(object obj)
@@ -67,25 +69,35 @@ namespace Game.Comm
             var p = (Packet)obj;
 
             if (!IsLoggedIn && p.Cmd != Command.Login)
+            {
                 return;
+            }
 
             if (IsLoggedIn)
             {
                 if (p.Cmd == Command.Login)
+                {
                     return;
+                }
 
                 if (Player.GetCityCount() == 0 && p.Cmd != Command.CityCreateInitial)
+                {
                     return;
+                }
             }
 
             if (processor != null)
+            {
                 processor.Execute(this, p);
+            }
         }
 
         public void ProcessEvent(object obj)
         {
             if (processor != null)
+            {
                 processor.ExecuteEvent(this, (Packet)obj);
+            }
         }
     }
 }

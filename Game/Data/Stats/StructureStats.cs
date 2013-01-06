@@ -1,4 +1,5 @@
 using System;
+
 namespace Game.Data.Stats
 {
     public class StructureStats : BaseStats
@@ -9,7 +10,6 @@ namespace Game.Data.Stats
 
         public StructureStats()
         {
-            
         }
 
         public StructureStats(StructureBaseStats baseStats)

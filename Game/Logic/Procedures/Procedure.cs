@@ -1,21 +1,20 @@
-using Persistance;
+using Game.Map;
 
 namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        private readonly IDbManager dbManager;
-
-        public static Procedure Current { get; set; }
+        private readonly IRegionManager regions;
 
         public Procedure()
         {
-            
         }
 
-        public Procedure(IDbManager dbManager)
+        public Procedure(IRegionManager regions)
         {
-            this.dbManager = dbManager;
+            this.regions = regions;
         }
+
+        public static Procedure Current { get; set; }
     }
 }

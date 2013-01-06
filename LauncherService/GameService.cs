@@ -8,7 +8,6 @@ using Game;
 using Game.Setup;
 using NDesk.Options;
 using Ninject;
-using log4net;
 using log4net.Config;
 
 #endregion
@@ -29,18 +28,18 @@ namespace LauncherService
             XmlConfigurator.Configure();
 
             var settingsFile = string.Empty;
- 
+
             try
             {
-                var p = new OptionSet { { "settings=", v => settingsFile = v }, };
+                var p = new OptionSet {{"settings=", v => settingsFile = v},};
                 p.Parse(Environment.GetCommandLineArgs());
             }
-            catch (Exception)
+            catch(Exception)
             {
                 Environment.Exit(0);
             }
-            
-            Config.LoadConfigFile(settingsFile);            
+
+            Config.LoadConfigFile(settingsFile);
             Factory.CompileConfigFiles();
             Engine.CreateDefaultKernel();
             Factory.InitAll();

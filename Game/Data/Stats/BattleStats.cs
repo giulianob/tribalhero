@@ -18,6 +18,8 @@ namespace Game.Data.Stats
 
         public virtual ushort Carry { get; set; }
 
+        public virtual decimal NormalizedCost { get; set; }
+
         public virtual BaseBattleStats Base { get; private set; }
 
         #endregion
@@ -25,7 +27,7 @@ namespace Game.Data.Stats
         #region Constructors
 
         public BattleStats()
-        {            
+        {
         }
 
         public BattleStats(BaseBattleStats baseStats)
@@ -38,6 +40,7 @@ namespace Game.Data.Stats
             Stl = baseStats.Stl;
             Spd = baseStats.Spd;
             Carry = baseStats.Carry;
+            NormalizedCost = baseStats.NormalizedCost;
         }
 
         #endregion

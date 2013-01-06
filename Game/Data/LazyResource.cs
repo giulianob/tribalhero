@@ -9,6 +9,7 @@ namespace Game.Data
     public class LazyResource : ILazyResource
     {
         private bool isDirty;
+
         private bool isUpdating;
 
         public LazyResource(int crop,
@@ -47,20 +48,16 @@ namespace Game.Data
         }
 
         public ILazyValue Crop { get; private set; }
-        public ILazyValue Wood { get; private set; }
-        public ILazyValue Iron { get; private set; }
-        public ILazyValue Gold { get; private set; }
-        public ILazyValue Labor { get; private set; }
-        public event LazyValue.OnResourcesUpdate ResourcesUpdate;
 
-        private void SetEvents()
-        {
-            Crop.ResourcesUpdate += Update;
-            Gold.ResourcesUpdate += Update;
-            Wood.ResourcesUpdate += Update;
-            Iron.ResourcesUpdate += Update;
-            Labor.ResourcesUpdate += Update;
-        }
+        public ILazyValue Wood { get; private set; }
+
+        public ILazyValue Iron { get; private set; }
+
+        public ILazyValue Gold { get; private set; }
+
+        public ILazyValue Labor { get; private set; }
+
+        public event LazyValue.OnResourcesUpdate ResourcesUpdate;
 
         public void SetLimits(int cropLimit, int goldLimit, int ironLimit, int woodLimit, int laborLimit)
         {
@@ -77,40 +74,61 @@ namespace Game.Data
         {
             int cropDelta;
             if (costPerUnit.Crop == 0)
+            {
                 cropDelta = int.MaxValue;
+            }
             else
-                cropDelta = Crop.Value/costPerUnit.Crop;
+            {
+                cropDelta = Crop.Value / costPerUnit.Crop;
+            }
 
             int goldDelta;
             if (costPerUnit.Gold == 0)
+            {
                 goldDelta = int.MaxValue;
+            }
             else
-                goldDelta = Gold.Value/costPerUnit.Gold;
+            {
+                goldDelta = Gold.Value / costPerUnit.Gold;
+            }
 
             int ironDelta;
             if (costPerUnit.Iron == 0)
+            {
                 ironDelta = int.MaxValue;
+            }
             else
-                ironDelta = Iron.Value/costPerUnit.Iron;
+            {
+                ironDelta = Iron.Value / costPerUnit.Iron;
+            }
 
             int woodDelta;
             if (costPerUnit.Wood == 0)
+            {
                 woodDelta = int.MaxValue;
+            }
             else
-                woodDelta = Wood.Value/costPerUnit.Wood;
+            {
+                woodDelta = Wood.Value / costPerUnit.Wood;
+            }
 
             int laborDelta;
             if (costPerUnit.Labor == 0)
+            {
                 laborDelta = int.MaxValue;
+            }
             else
-                laborDelta = Labor.Value/costPerUnit.Labor;
+            {
+                laborDelta = Labor.Value / costPerUnit.Labor;
+            }
 
             return Math.Min(cropDelta, Math.Min(goldDelta, Math.Min(laborDelta, Math.Min(woodDelta, ironDelta))));
         }
 
         public bool HasEnough(Resource cost)
         {
-            return Crop.Value >= cost.Crop && Gold.Value >= cost.Gold && Wood.Value >= cost.Wood && Iron.Value >= cost.Iron && Labor.Value >= cost.Labor;
+            return Crop.Value >= cost.Crop && Gold.Value >= cost.Gold && Wood.Value >= cost.Wood &&
+                   Iron.Value >= cost.Iron && Labor.Value >= cost.Labor;
         }
 
         public void Subtract(Resource resource)
@@ -118,19 +136,29 @@ namespace Game.Data
             BeginUpdate();
 
             if (resource.Crop > 0)
+            {
                 Crop.Subtract(resource.Crop);
+            }
 
             if (resource.Gold > 0)
+            {
                 Gold.Subtract(resource.Gold);
+            }
 
             if (resource.Wood > 0)
+            {
                 Wood.Subtract(resource.Wood);
+            }
 
             if (resource.Iron > 0)
+            {
                 Iron.Subtract(resource.Iron);
+            }
 
             if (resource.Labor > 0)
+            {
                 Labor.Subtract(resource.Labor);
+            }
 
             EndUpdate();
         }
@@ -151,11 +179,23 @@ namespace Game.Data
         {
             BeginUpdate();
             actual = new Resource();
-            Crop.Subtract((actual.Crop = (Crop.Value - hidden.Crop > cost.Crop ? cost.Crop : Math.Max(0, Crop.Value - hidden.Crop))));
-            Gold.Subtract((actual.Gold = (Gold.Value - hidden.Gold > cost.Gold ? cost.Gold : Math.Max(0, Gold.Value - hidden.Gold))));
-            Iron.Subtract((actual.Iron = (Iron.Value - hidden.Iron > cost.Iron ? cost.Iron : Math.Max(0, Iron.Value - hidden.Iron))));
-            Wood.Subtract((actual.Wood = (Wood.Value - hidden.Wood > cost.Wood ? cost.Wood : Math.Max(0, Wood.Value - hidden.Wood))));
-            Labor.Subtract((actual.Labor = (Labor.Value - hidden.Labor > cost.Labor ? cost.Labor : Math.Max(0, Labor.Value - hidden.Labor))));
+            Crop.Subtract(
+                          (actual.Crop =
+                           (Crop.Value - hidden.Crop > cost.Crop ? cost.Crop : Math.Max(0, Crop.Value - hidden.Crop))));
+            Gold.Subtract(
+                          (actual.Gold =
+                           (Gold.Value - hidden.Gold > cost.Gold ? cost.Gold : Math.Max(0, Gold.Value - hidden.Gold))));
+            Iron.Subtract(
+                          (actual.Iron =
+                           (Iron.Value - hidden.Iron > cost.Iron ? cost.Iron : Math.Max(0, Iron.Value - hidden.Iron))));
+            Wood.Subtract(
+                          (actual.Wood =
+                           (Wood.Value - hidden.Wood > cost.Wood ? cost.Wood : Math.Max(0, Wood.Value - hidden.Wood))));
+            Labor.Subtract(
+                           (actual.Labor =
+                            (Labor.Value - hidden.Labor > cost.Labor
+                                     ? cost.Labor
+                                     : Math.Max(0, Labor.Value - hidden.Labor))));
             EndUpdate();
         }
 
@@ -184,7 +224,9 @@ namespace Game.Data
         public void BeginUpdate()
         {
             if (isUpdating)
+            {
                 throw new Exception("Nesting beginupdate");
+            }
 
             isUpdating = true;
         }
@@ -192,14 +234,37 @@ namespace Game.Data
         public void EndUpdate()
         {
             if (!isUpdating)
+            {
                 return;
+            }
 
             isUpdating = false;
 
             if (isDirty)
+            {
                 Update();
+            }
 
             isDirty = false;
+        }
+
+        public override string ToString()
+        {
+            return "Gold " + Gold.Value + "/" + Gold.RawValue + "/" + Gold.Rate + Gold.LastRealizeTime +
+                   Environment.NewLine + " Wood " + Wood.Value + "/" + Wood.RawValue + "/" + Wood.Rate +
+                   Wood.LastRealizeTime + Environment.NewLine + " Iron " + Iron.Value + "/" + Iron.RawValue + "/" +
+                   Iron.Rate + Iron.LastRealizeTime + Environment.NewLine + " Crop " + Crop.Value + "/" + Crop.RawValue +
+                   "/" + Crop.Rate + Crop.LastRealizeTime + Environment.NewLine + " Labor " + Labor.Value + "/" +
+                   Labor.RawValue + "/" + Labor.Rate + Labor.LastRealizeTime + Environment.NewLine;
+        }
+
+        private void SetEvents()
+        {
+            Crop.ResourcesUpdate += Update;
+            Gold.ResourcesUpdate += Update;
+            Wood.ResourcesUpdate += Update;
+            Iron.ResourcesUpdate += Update;
+            Labor.ResourcesUpdate += Update;
         }
 
         private void Update()
@@ -207,18 +272,14 @@ namespace Game.Data
             if (!isUpdating)
             {
                 if (ResourcesUpdate != null)
+                {
                     ResourcesUpdate();
+                }
             }
             else
+            {
                 isDirty = true;
-        }
-
-        public override string ToString()
-        {
-            return "Gold " + Gold.Value + "/" + Gold.RawValue + "/" + Gold.Rate + Gold.LastRealizeTime + Environment.NewLine + " Wood " + Wood.Value + "/" +
-                   Wood.RawValue + "/" + Wood.Rate + Wood.LastRealizeTime + Environment.NewLine + " Iron " + Iron.Value + "/" + Iron.RawValue + "/" + Iron.Rate +
-                   Iron.LastRealizeTime + Environment.NewLine + " Crop " + Crop.Value + "/" + Crop.RawValue + "/" + Crop.Rate + Crop.LastRealizeTime +
-                   Environment.NewLine + " Labor " + Labor.Value + "/" + Labor.RawValue + "/" + Labor.Rate + Labor.LastRealizeTime + Environment.NewLine;
+            }
         }
     }
 }

@@ -2,103 +2,97 @@ using System.Collections.Generic;
 using Game.Battle;
 using Game.Data.Troop;
 using Game.Logic;
+using Game.Logic.Notifications;
 using Game.Util;
-using Game.Util.Locking;
 using Persistance;
 
 namespace Game.Data
 {
-    public interface ICity : IEnumerable<IStructure>, ICanDo, ILockable, IPersistableObject, ICityRegionObject
+    public interface ICity : IEnumerable<IStructure>,
+                             ICanDo,
+                             IPersistableObject,
+                             ICityRegionObject,
+                             IStation,
+                             INotificationOwner
     {
         /// <summary>
-        ///   Enumerates only through structures in this city
+        ///     Enumerates only through structures in this city
         /// </summary>
         Dictionary<uint, IStructure>.Enumerator Structures { get; }
 
         /// <summary>
-        ///   Radius of city. This affects city wall and where user can build.
+        ///     Radius of city. This affects city wall and where user can build.
         /// </summary>
         byte Radius { get; set; }
 
         byte Lvl { get; }
 
-        /// <summary>
-        ///   Returns the city's center point which is the town centers position
-        /// </summary>
-        uint X { get; }
+        NotificationManager Notifications { get; }
+
+        ReferenceManager References { get; }
 
         /// <summary>
-        ///   Returns the city's center point which is the town centers position
-        /// </summary>
-        uint Y { get; }
-
-        /// <summary>
-        ///   City's battle manager. Maybe null if city is not in battle.
+        ///     City's battle manager. Maybe null if city is not in battle.
         /// </summary>
         IBattleManager Battle { get; set; }
 
         /// <summary>
-        ///   Enumerates through all troop objects in this city
+        ///     Enumerates through all troop objects in this city
         /// </summary>
         IEnumerable<ITroopObject> TroopObjects { get; }
 
         /// <summary>
-        ///   Troop manager which manages all troop stubs in city
-        /// </summary>
-        ITroopManager Troops { get; }
-
-        /// <summary>
-        ///   Technology manager for city
+        ///     Technology manager for city
         /// </summary>
         ITechnologyManager Technologies { get; }
 
         /// <summary>
-        ///   Returns the local troop
+        ///     Returns the local troop
         /// </summary>
         ITroopStub DefaultTroop { get; set; }
 
         /// <summary>
-        ///   Returns unit template. Unit template holds levels for all units in the city.
+        ///     Returns unit template. Unit template holds levels for all units in the city.
         /// </summary>
         UnitTemplate Template { get; }
 
         /// <summary>
-        ///   Resource available in the city
+        ///     Resource available in the city
         /// </summary>
         ILazyResource Resource { get; }
 
         /// <summary>
-        ///   Amount of loot this city has stolen from other players
+        ///     Amount of loot this city has stolen from other players
         /// </summary>
         uint LootStolen { get; set; }
 
         /// <summary>
-        ///   Unique city id
+        ///     Unique city id
         /// </summary>
-        uint Id { get; set; }
+        uint Id { get; }
 
         /// <summary>
-        ///   City name
+        ///     City name
         /// </summary>
         string Name { get; set; }
 
         /// <summary>
-        ///   Player that owns this city
+        ///     Player that owns this city
         /// </summary>
         IPlayer Owner { get; }
 
         /// <summary>
-        ///   Whether to send new units to hiding or not
+        ///     Whether to send new units to hiding or not
         /// </summary>
         bool HideNewUnits { get; set; }
 
         /// <summary>
-        ///   Attack points earned by this city
+        ///     Attack points earned by this city
         /// </summary>
         int AttackPoint { get; set; }
 
         /// <summary>
-        ///   Defense points earned by this city
+        ///     Defense points earned by this city
         /// </summary>
         int DefensePoint { get; set; }
 
@@ -113,9 +107,9 @@ namespace Game.Data
         IActionWorker Worker { get; }
 
         /// <summary>
-        ///   Enumerates through all structures and troops in this city
+        ///     Enumerates through all structures and troops in this city
         /// </summary>
-        /// <param name = "objectId"></param>
+        /// <param name="objectId"></param>
         /// <returns></returns>
         IGameObject this[uint objectId] { get; }
 
@@ -144,15 +138,15 @@ namespace Game.Data
         bool ScheduleRemove(IStructure obj, bool wasKilled, bool cancelReferences);
 
         /// <summary>
-        ///   Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
+        ///     Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
         /// </summary>
-        /// <param name = "obj"></param>
+        /// <param name="obj"></param>
         void DoRemove(IStructure obj);
 
         /// <summary>
-        ///   Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
+        ///     Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
         /// </summary>
-        /// <param name = "obj"></param>
+        /// <param name="obj"></param>
         void DoRemove(ITroopObject obj);
 
         List<IGameObject> GetInRange(uint x, uint y, uint inRadius);

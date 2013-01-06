@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using Persistance;
 
@@ -7,12 +8,6 @@ namespace Game.Data.Tribe
     public class Tribesman : ITribesman
     {
         public const string DB_TABLE = "tribesmen";
-
-        public ITribe Tribe { get; private set; }
-        public IPlayer Player { get; private set; }
-        public DateTime JoinDate { get; private set; }
-        public Resource Contribution { get; set; }
-        public byte Rank { get; set; }
 
         public Tribesman(ITribe tribe, IPlayer player, byte rank)
         {
@@ -42,20 +37,26 @@ namespace Game.Data.Tribe
 
         public string DbTable
         {
-            get { return DB_TABLE; }
+            get
+            {
+                return DB_TABLE;
+            }
         }
 
         public DbColumn[] DbPrimaryKey
         {
             get
             {
-                return new[] { new DbColumn("player_id", Player.PlayerId, DbType.UInt32), };
+                return new[] {new DbColumn("player_id", Player.PlayerId, DbType.UInt32),};
             }
         }
 
-        public DbDependency[] DbDependencies
+        public IEnumerable<DbDependency> DbDependencies
         {
-            get { return new DbDependency[] { }; }
+            get
+            {
+                return new DbDependency[] {};
+            }
         }
 
         public DbColumn[] DbColumns
@@ -63,15 +64,13 @@ namespace Game.Data.Tribe
             get
             {
                 return new[]
-                       {
-                            new DbColumn("tribe_id", Tribe.Id, DbType.UInt32),
-                            new DbColumn("join_date", JoinDate, DbType.DateTime), 
-                            new DbColumn("rank",Rank, DbType.Byte),
-                            new DbColumn("crop",Contribution.Crop,DbType.Int32),
-                            new DbColumn("gold",Contribution.Gold,DbType.Int32),
-                            new DbColumn("iron",Contribution.Iron,DbType.Int32),
-                            new DbColumn("wood",Contribution.Wood,DbType.Int32),
-                       };
+                {
+                        new DbColumn("tribe_id", Tribe.Id, DbType.UInt32), new DbColumn("join_date", JoinDate, DbType.DateTime)
+                        , new DbColumn("rank", Rank, DbType.Byte), new DbColumn("crop", Contribution.Crop, DbType.Int32)
+                        , new DbColumn("gold", Contribution.Gold, DbType.Int32),
+                        new DbColumn("iron", Contribution.Iron, DbType.Int32),
+                        new DbColumn("wood", Contribution.Wood, DbType.Int32),
+                };
             }
         }
 
@@ -81,14 +80,30 @@ namespace Game.Data.Tribe
 
         public int Hash
         {
-            get { return unchecked((int)Player.PlayerId); }
+            get
+            {
+                return unchecked((int)Player.PlayerId);
+            }
         }
 
         public object Lock
         {
-            get { return Player; }
+            get
+            {
+                return Player;
+            }
         }
 
         #endregion
+
+        public ITribe Tribe { get; private set; }
+
+        public IPlayer Player { get; private set; }
+
+        public DateTime JoinDate { get; private set; }
+
+        public Resource Contribution { get; set; }
+
+        public byte Rank { get; set; }
     }
 }

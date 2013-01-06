@@ -31,7 +31,9 @@ namespace Game.Comm.ProcessorCommands
         private void EventOnDisconnect(Session session, Packet packet)
         {
             if (session == null || session.Player == null)
+            {
                 return;
+            }
 
             using (Concurrency.Current.Lock(session.Player))
             {
@@ -39,7 +41,9 @@ namespace Game.Comm.ProcessorCommands
 
                 // If player is logged in under new session already, then don't bother changing their session info
                 if (session.Player.Session != session)
+                {
                     return;
+                }
 
                 session.Player.Session = null;
                 session.Player.SessionId = string.Empty;

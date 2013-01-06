@@ -3,7 +3,6 @@
 using System;
 using Game.Data;
 using Game.Data.Tribe;
-using Game.Database;
 using Game.Map;
 using Game.Module;
 using Game.Module.Remover;
@@ -18,6 +17,41 @@ namespace Game.Comm
 {
     class PlayerCommandLineModule : CommandLineModule
     {
+        private readonly Chat chat;
+
+        private readonly ICityRemoverFactory cityRemoverFactory;
+
+        private readonly IDbManager dbManager;
+
+        private readonly ILocker locker;
+
+        private readonly IPlayersRemoverFactory playerRemoverFactory;
+
+        private readonly IPlayerSelectorFactory playerSelectorFactory;
+
+        private readonly ITribeManager tribeManager;
+
+        private readonly IWorld world;
+
+        public PlayerCommandLineModule(IPlayersRemoverFactory playerRemoverFactory,
+                                       IPlayerSelectorFactory playerSelectorFactory,
+                                       ICityRemoverFactory cityRemoverFactory,
+                                       Chat chat,
+                                       IDbManager dbManager,
+                                       ITribeManager tribeManager,
+                                       IWorld world,
+                                       ILocker locker)
+        {
+            this.playerRemoverFactory = playerRemoverFactory;
+            this.playerSelectorFactory = playerSelectorFactory;
+            this.cityRemoverFactory = cityRemoverFactory;
+            this.chat = chat;
+            this.dbManager = dbManager;
+            this.tribeManager = tribeManager;
+            this.world = world;
+            this.locker = locker;
+        }
+
         public override void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("playerinfo", Info, PlayerRights.Moderator);
@@ -27,6 +61,7 @@ namespace Game.Comm
             processor.RegisterCommand("clearplayerdescription", PlayerClearDescription, PlayerRights.Moderator);
             processor.RegisterCommand("deletenewbies", DeleteNewbies, PlayerRights.Bureaucrat);
             processor.RegisterCommand("broadcast", SystemBroadcast, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("systemchat", SystemChat, PlayerRights.Bureaucrat);
             processor.RegisterCommand("broadcastmail", SystemBroadcastMail, PlayerRights.Bureaucrat);
             processor.RegisterCommand("setpassword", SetPassword, PlayerRights.Admin);
             processor.RegisterCommand("renameplayer", RenamePlayer, PlayerRights.Admin);
@@ -34,6 +69,35 @@ namespace Game.Comm
             processor.RegisterCommand("setrights", SetRights, PlayerRights.Bureaucrat);
             processor.RegisterCommand("muteplayer", Mute, PlayerRights.Moderator);
             processor.RegisterCommand("unmuteplayer", Unmute, PlayerRights.Moderator);
+        }
+
+        private string SystemChat(Session session, string[] parms)
+        {
+            bool help = false;
+            string message = string.Empty;
+
+            try
+            {
+                var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},
+                        {"message=", v => message = v.TrimMatchingQuotes()},
+                };
+                p.Parse(parms);
+            }
+            catch(Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(message))
+            {
+                return "systemchat --message=\"MESSAGE\"";
+            }
+
+            chat.SendSystemChat("SYSTEM_CHAT_LITERAL", message);
+
+            return "OK!";
         }
 
         public string SetRights(Session session, String[] parms)
@@ -45,28 +109,34 @@ namespace Game.Comm
             try
             {
                 var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()},
                         {
-                                { "?|help|h", v => help = true }, 
-                                { "player=", v => playerName = v.TrimMatchingQuotes() },
-                                { "rights=", v => rights = (PlayerRights?)Enum.Parse(typeof(PlayerRights), v.TrimMatchingQuotes(), true) }
-                        };
+                                "rights=",
+                                v =>
+                                rights = (PlayerRights?)Enum.Parse(typeof(PlayerRights), v.TrimMatchingQuotes(), true)
+                        }
+                };
                 p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }
 
             if (help || string.IsNullOrEmpty(playerName) || !rights.HasValue)
-                return String.Format("setrights --player=player --rights={0}", String.Join("|", Enum.GetNames(typeof(PlayerRights))));
+            {
+                return String.Format("setrights --player=player --rights={0}",
+                                     String.Join("|", Enum.GetNames(typeof(PlayerRights))));
+            }
 
             // Kick user out if they are logged in
             uint playerId;
-            if (World.Current.FindPlayerId(playerName, out playerId))
+            if (world.FindPlayerId(playerName, out playerId))
             {
-
                 IPlayer player;
-                using (Concurrency.Current.Lock(playerId, out player))
+                using (locker.Lock(playerId, out player))
                 {
                     if (player != null && player.Session != null)
                     {
@@ -94,19 +164,21 @@ namespace Game.Comm
             try
             {
                 var p = new OptionSet
-                        {
-                                { "?|help|h", v => help = true }, 
-                                { "player=", v => playerName = v.TrimMatchingQuotes() },
-                        };
+                {
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()},
+                };
                 p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }
 
             if (help || string.IsNullOrEmpty(playerName))
+            {
                 return String.Format("playerinfo --player=player");
+            }
 
             ApiResponse response = ApiCaller.PlayerInfo(playerName);
 
@@ -115,15 +187,17 @@ namespace Game.Comm
                 return response.ErrorMessage;
             }
 
-            return String.Format("id[{0}] created[{1}] emailAddress[{2}] lastLogin[{3}] ipAddress[{4}] banned[{5}] muted[{6}] deleted[{7}]",
-                                 response.Data.id,
-                                 response.Data.created,
-                                 response.Data.emailAddress,
-                                 response.Data.lastLogin,
-                                 response.Data.ipAddress,
-                                 response.Data.banned == "1" ? "YES" : "NO",
-                                 response.Data.muted == "1" ? "YES" : "NO",
-                                 response.Data.deleted == "1" ? "YES" : "NO");
+            return
+                    String.Format(
+                                  "id[{0}] created[{1}] emailAddress[{2}] lastLogin[{3}] ipAddress[{4}] banned[{5}] muted[{6}] deleted[{7}]",
+                                  response.Data.id,
+                                  response.Data.created,
+                                  response.Data.emailAddress,
+                                  response.Data.lastLogin,
+                                  response.Data.ipAddress,
+                                  response.Data.banned == "1" ? "YES" : "NO",
+                                  response.Data.muted == "1" ? "YES" : "NO",
+                                  response.Data.deleted == "1" ? "YES" : "NO");
         }
 
         public string Mute(Session session, String[] parms)
@@ -134,27 +208,28 @@ namespace Game.Comm
             try
             {
                 var p = new OptionSet
-                        {
-                                { "?|help|h", v => help = true }, 
-                                { "player=", v => playerName = v.TrimMatchingQuotes() },
-                        };
+                {
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()},
+                };
                 p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }
 
             if (help || string.IsNullOrEmpty(playerName))
+            {
                 return String.Format("muteplayer --player=player");
+            }
 
             // Mute player in this world instantly
             uint playerId;
-            if (World.Current.FindPlayerId(playerName, out playerId))
+            if (world.FindPlayerId(playerName, out playerId))
             {
-
                 IPlayer player;
-                using (Concurrency.Current.Lock(playerId, out player))
+                using (locker.Lock(playerId, out player))
                 {
                     if (player != null)
                     {
@@ -177,27 +252,28 @@ namespace Game.Comm
             try
             {
                 var p = new OptionSet
-                        {
-                                { "?|help|h", v => help = true }, 
-                                { "player=", v => playerName = v.TrimMatchingQuotes() },
-                        };
+                {
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()},
+                };
                 p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }
 
             if (help || string.IsNullOrEmpty(playerName))
+            {
                 return String.Format("unmuteplayer --player=player");
+            }
 
             // Mute player in this world instantly
             uint playerId;
-            if (World.Current.FindPlayerId(playerName, out playerId))
+            if (world.FindPlayerId(playerName, out playerId))
             {
-
                 IPlayer player;
-                using (Concurrency.Current.Lock(playerId, out player))
+                using (locker.Lock(playerId, out player))
                 {
                     if (player != null)
                     {
@@ -221,39 +297,49 @@ namespace Game.Comm
             try
             {
                 var p = new OptionSet
-                        {
-                                { "?|help|h", v => help = true }, 
-                                { "tribe=", v => tribeName = v.TrimMatchingQuotes() },
-                                { "newname=", v => newTribeName = v.TrimMatchingQuotes() }
-                        };
-                p.Parse(parms);                
+                {
+                        {"?|help|h", v => help = true},
+                        {"tribe=", v => tribeName = v.TrimMatchingQuotes()},
+                        {"newname=", v => newTribeName = v.TrimMatchingQuotes()}
+                };
+                p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }
 
             if (help || string.IsNullOrEmpty(tribeName) || string.IsNullOrEmpty(newTribeName))
+            {
                 return "renametribe --tribe=name --newname=name";
+            }
 
             uint tribeId;
-            if (!World.Current.FindTribeId(tribeName, out tribeId))
+            if (!tribeManager.FindTribeId(tribeName, out tribeId))
+            {
                 return "Tribe not found";
+            }
 
             ITribe tribe;
-            using (Concurrency.Current.Lock(tribeId, out tribe))
+            using (locker.Lock(tribeId, out tribe))
             {
                 if (tribe == null)
+                {
                     return "Tribe not found";
+                }
 
                 if (!Tribe.IsNameValid(newTribeName))
+                {
                     return "New tribe name is not allowed";
+                }
 
-                if (World.Current.TribeNameTaken(newTribeName))
+                if (tribeManager.TribeNameTaken(newTribeName))
+                {
                     return "New tribe name is already taken";
+                }
 
                 tribe.Name = newTribeName;
-                DbPersistance.Current.Save(tribe);
+                dbManager.Save(tribe);
             }
 
             return "OK!";
@@ -268,11 +354,11 @@ namespace Game.Comm
             try
             {
                 var p = new OptionSet
-                        {
-                                {"?|help|h", v => help = true},
-                                {"subject=", v => subject = v.TrimMatchingQuotes()},
-                                {"message=", v => message = v.TrimMatchingQuotes()},
-                        };
+                {
+                        {"?|help|h", v => help = true},
+                        {"subject=", v => subject = v.TrimMatchingQuotes()},
+                        {"message=", v => message = v.TrimMatchingQuotes()},
+                };
                 p.Parse(parms);
             }
             catch(Exception)
@@ -281,14 +367,18 @@ namespace Game.Comm
             }
 
             if (help || string.IsNullOrEmpty(message) || string.IsNullOrEmpty(subject))
+            {
                 return "broadcastmail --subject=\"SUBJECT\" --message=\"MESSAGE\"";
+            }
 
-            using (var reader = DbPersistance.Current.ReaderQuery(string.Format("SELECT * FROM `{0}`", Player.DB_TABLE), new DbColumn[] {}))
+            using (
+                    var reader = dbManager.ReaderQuery(string.Format("SELECT * FROM `{0}`", Player.DB_TABLE),
+                                                       new DbColumn[] {}))
             {
                 while (reader.Read())
                 {
                     IPlayer player;
-                    using (Concurrency.Current.Lock((uint)reader["id"], out player))
+                    using (locker.Lock((uint)reader["id"], out player))
                     {
                         player.SendSystemMessage(null, subject, message);
                     }
@@ -304,7 +394,11 @@ namespace Game.Comm
 
             try
             {
-                var p = new OptionSet {{"?|help|h", v => help = true}, {"message=", v => message = v.TrimMatchingQuotes()},};
+                var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},
+                        {"message=", v => message = v.TrimMatchingQuotes()},
+                };
                 p.Parse(parms);
             }
             catch(Exception)
@@ -313,7 +407,9 @@ namespace Game.Comm
             }
 
             if (help || string.IsNullOrEmpty(message))
+            {
                 return "broadcast --message=\"MESSAGE\"";
+            }
 
             var packet = new Packet(Command.MessageBox);
             packet.AddString(message);
@@ -329,7 +425,11 @@ namespace Game.Comm
 
             try
             {
-                var p = new OptionSet {{"?|help|h", v => help = true}, {"player=", v => playerName = v.TrimMatchingQuotes()}};
+                var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()}
+                };
                 p.Parse(parms);
             }
             catch(Exception)
@@ -338,17 +438,23 @@ namespace Game.Comm
             }
 
             if (help || string.IsNullOrEmpty(playerName))
+            {
                 return "playercleardescription --player=player";
+            }
 
             uint playerId;
-            if (!World.Current.FindPlayerId(playerName, out playerId))
+            if (!world.FindPlayerId(playerName, out playerId))
+            {
                 return "Player not found";
+            }
 
             IPlayer player;
-            using (Concurrency.Current.Lock(playerId, out player))
+            using (locker.Lock(playerId, out player))
             {
                 if (player == null)
+                {
                     return "Player not found";
+                }
 
                 player.Description = string.Empty;
                 player.SendSystemMessage(null,
@@ -367,28 +473,32 @@ namespace Game.Comm
             try
             {
                 var p = new OptionSet
-                        {
-                                { "?|help|h", v => help = true }, 
-                                { "player=", v => playerName = v.TrimMatchingQuotes() },
-                                { "newname=", v => newPlayerName = v.TrimMatchingQuotes() }
-                        };
+                {
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()},
+                        {"newname=", v => newPlayerName = v.TrimMatchingQuotes()}
+                };
                 p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }
 
             if (help || string.IsNullOrEmpty(playerName) || string.IsNullOrEmpty(newPlayerName))
+            {
                 return "renameplayer --player=player --newname=name";
+            }
 
             uint playerId;
-            var foundLocally = World.Current.FindPlayerId(playerName, out playerId);
+            var foundLocally = world.FindPlayerId(playerName, out playerId);
 
             ApiResponse response = ApiCaller.RenamePlayer(playerName, newPlayerName);
 
             if (!response.Success)
+            {
                 return response.ErrorMessage;
+            }
 
             if (!foundLocally)
             {
@@ -396,10 +506,12 @@ namespace Game.Comm
             }
 
             IPlayer player;
-            using (Concurrency.Current.Lock(playerId, out player))
+            using (locker.Lock(playerId, out player))
             {
                 if (player == null)
+                {
                     return "Player not found";
+                }
 
                 if (player.Session != null)
                 {
@@ -407,13 +519,13 @@ namespace Game.Comm
                     {
                         player.Session.CloseSession();
                     }
-                    catch (Exception)
+                    catch(Exception)
                     {
                     }
                 }
 
                 player.Name = newPlayerName;
-                DbPersistance.Current.Save(player);
+                dbManager.Save(player);
             }
 
             return "OK!";
@@ -428,20 +540,22 @@ namespace Game.Comm
             try
             {
                 var p = new OptionSet
-                        {
-                                { "?|help|h", v => help = true }, 
-                                { "player=", v => playerName = v.TrimMatchingQuotes() },
-                                { "password=", v => password = v.TrimMatchingQuotes() }
-                        };
+                {
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()},
+                        {"password=", v => password = v.TrimMatchingQuotes()}
+                };
                 p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }
 
             if (help || string.IsNullOrEmpty(playerName) || string.IsNullOrEmpty(password))
+            {
                 return "setpassword --player=player --password=password";
+            }
 
             ApiResponse response = ApiCaller.SetPassword(playerName, password);
 
@@ -455,7 +569,11 @@ namespace Game.Comm
 
             try
             {
-                var p = new OptionSet {{"?|help|h", v => help = true}, {"player=", v => playerName = v.TrimMatchingQuotes()}};
+                var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()}
+                };
                 p.Parse(parms);
             }
             catch(Exception)
@@ -464,14 +582,18 @@ namespace Game.Comm
             }
 
             if (help || string.IsNullOrEmpty(playerName))
+            {
                 return "ban --player=player";
+            }
 
             uint playerId;
-            if (!World.Current.FindPlayerId(playerName, out playerId))
+            if (!world.FindPlayerId(playerName, out playerId))
+            {
                 return "Player not found";
+            }
 
             IPlayer player;
-            using (Concurrency.Current.Lock(playerId, out player))
+            using (locker.Lock(playerId, out player))
             {
                 if (player != null && player.Session != null)
                 {
@@ -497,7 +619,11 @@ namespace Game.Comm
 
             try
             {
-                var p = new OptionSet {{"?|help|h", v => help = true}, {"player=", v => playerName = v.TrimMatchingQuotes()}};
+                var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()}
+                };
                 p.Parse(parms);
             }
             catch(Exception)
@@ -506,7 +632,9 @@ namespace Game.Comm
             }
 
             if (help || string.IsNullOrEmpty(playerName))
+            {
                 return "unban --player=player";
+            }
 
             ApiResponse response = ApiCaller.Unban(playerName);
 
@@ -520,7 +648,11 @@ namespace Game.Comm
 
             try
             {
-                var p = new OptionSet {{"?|help|h", v => help = true}, {"player=", v => playerName = v.TrimMatchingQuotes()}};
+                var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()}
+                };
                 p.Parse(parms);
             }
             catch(Exception)
@@ -529,17 +661,23 @@ namespace Game.Comm
             }
 
             if (help || string.IsNullOrEmpty(playerName))
+            {
                 return "deleteplayer --player=player";
+            }
 
             uint playerId;
-            if (!World.Current.FindPlayerId(playerName, out playerId))
+            if (!world.FindPlayerId(playerName, out playerId))
+            {
                 return "Player not found";
+            }
 
             IPlayer player;
-            using (Concurrency.Current.Lock(playerId, out player))
+            using (locker.Lock(playerId, out player))
             {
                 if (player == null)
+                {
                     return "Player not found";
+                }
 
                 if (player.Session != null)
                 {
@@ -554,13 +692,12 @@ namespace Game.Comm
 
                 foreach (ICity city in player.GetCityList())
                 {
-                    CityRemover cr = new CityRemover(city.Id);
+                    CityRemover cr = cityRemoverFactory.CreateCityRemover(city.Id);
                     cr.Start();
                 }
             }
 
             return "OK!";
-
         }
 
         public string DeleteNewbies(Session session, string[] parms)
@@ -578,9 +715,12 @@ namespace Game.Comm
             }
 
             if (help)
+            {
                 return "deletenewbies";
+            }
 
-            PlayersRemover playersRemover = new PlayersRemover(new CityRemoverFactory(), new NewbieIdleSelector());
+            PlayersRemover playersRemover =
+                    playerRemoverFactory.CreatePlayersRemover(playerSelectorFactory.CreateNewbieIdleSelector());
 
             return string.Format("OK! Deleting {0} players.", playersRemover.DeletePlayers());
         }

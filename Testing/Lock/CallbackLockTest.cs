@@ -9,11 +9,11 @@ using Xunit;
 namespace Testing.Lock
 {
     /// <summary>
-    /// Summary description for TroopProcedureTest
-    /// </summary>    
+    ///     Summary description for TroopProcedureTest
+    /// </summary>
     public class CallbackLockTest
     {
-        readonly DefaultMultiObjectLock.Factory multiObjectLockFactory = () => new DefaultMultiObjectLock();
+        private readonly DefaultMultiObjectLock.Factory multiObjectLockFactory = () => new DefaultMultiObjectLock();
 
         [Fact]
         public void TestEmptyListFromCallback()

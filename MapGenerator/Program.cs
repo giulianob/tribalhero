@@ -8,93 +8,35 @@ using System.IO.Compression;
 using System.Xml;
 using System.Xml.XPath;
 using Game;
-using Game.Data;
-using Game.Logic.Formulas;
-using Game.Map;
 using Game.Setup;
 using NDesk.Options;
-using Ninject;
 
 #endregion
 
 namespace MapGenerator
 {
-    class Program
+    static class Program
     {
-        private const ushort FARM_TILE = 220;
-        private const ushort WOODLAND_TILE = 220;
-        private const ushort CITY_TILE = 209;        
-        private static readonly Random random = new Random();
-        private static StreamWriter sw;
-        private static readonly List<Location> locations = new List<Location>();
+        public const ushort CITY_TILE = 209;
 
-        private static int width = 3400;
-        private static int height = 6200;
-        private static int region_width = 34;
-        private static int region_height = 62;
-        private static readonly int regionColumn = width/region_width;
-        private static readonly int regionRow = height/region_height;
-        private static int numberOfTiles = 10;
-        private static int numberOfFarm = 2;
-        private static int numberOfWoodland = 2;
+        public const int WIDTH = 3400;
+
+        public const int HEIGHT = 6200;
+
+        public const int REGION_WIDTH = 34; // this region is not the same as the region in the game,
+
+        public const int REGION_HEIGHT = 62;
+                         // but they have same values because it guarantees cities will not be on the edge of the region.
+
+        private const int REGION_COLUMN = WIDTH / REGION_WIDTH;
+
+        private const int REGION_ROW = HEIGHT / REGION_HEIGHT;
+
+        public static readonly Random Random = new Random();
 
         private static readonly List<Region> regions = new List<Region>();
 
-        private static bool AreaClear(uint ox, uint oy, uint x, uint y, object custom)
-        {
-            var map = (ushort[])custom;
-            while (map[y*region_width + x] == FARM_TILE || map[y*region_width + x] == WOODLAND_TILE)
-                map[y*region_width + x] = (ushort)random.Next(1, numberOfTiles);
-            return true;
-        }
-
-        public static int DistanceBetween(uint x, uint y, uint x1, uint y1)
-        {
-            /***********************************************************
-             *   1,1  |  2,1  |  3,1  |  4,1  |
-             *       1,2  |  2,2  |  3,2  |  4,2
-             *   1,3  |  2,3  |  3,3  |  4,3  |
-             *       1,4  |  2,4  |  3,4  |  4,4
-             * 
-             * *********************************************************/
-            uint offset = 0;
-            if (y%2 == 1 && y1%2 == 0 && x1 <= x)
-                offset = 1;
-            if (y%2 == 0 && y1%2 == 1 && x1 >= x)
-                offset = 1;
-            
-            return (int)((x1 > x ? x1 - x : x - x1) + (y1 > y ? y1 - y : y - y1)/2 + offset);
-        }
-
-        private static void GenerateResource(Vector2D cityLocation, ushort[] map)
-        {
-            uint x;
-            uint y;
-
-            TileLocator.Current.ForeachObject(cityLocation.X, cityLocation.Y, Formula.Current.GetInitialCityRadius(), true, AreaClear, map);
-            for (int i = 0; i < numberOfFarm; ++i)
-            {
-                do
-                {
-                    TileLocator.Current.RandomPoint(cityLocation.X, cityLocation.Y, (byte)(Formula.Current.GetInitialCityRadius() - 1), false, out x, out y);
-                } while (map[y*region_width + x] == FARM_TILE || map[y*region_width + x] == WOODLAND_TILE ||
-                         SimpleGameObject.TileDistance(x, y, cityLocation.X, cityLocation.Y) <= 1 ||
-                         !SimpleGameObject.IsPerpendicular(x, y, cityLocation.X, cityLocation.Y));
-
-                map[y*region_width + x] = FARM_TILE;
-            }
-
-            for (int i = 0; i < numberOfWoodland; ++i)
-            {
-                do
-                {
-                    TileLocator.Current.RandomPoint(cityLocation.X, cityLocation.Y, (byte)(Formula.Current.GetInitialCityRadius() - 1), false, out x, out y);
-                } while (SimpleGameObject.TileDistance(x, y, cityLocation.X, cityLocation.Y) <= 1 ||
-                         map[y * region_width + x] == FARM_TILE || map[y * region_width + x] == WOODLAND_TILE ||
-                         !SimpleGameObject.IsPerpendicular(x, y, cityLocation.X, cityLocation.Y));
-                map[y*region_width + x] = WOODLAND_TILE;
-            }
-        }
+        private static readonly ushort[,] map = new ushort[WIDTH,HEIGHT];
 
         private static void LoadRegions()
         {
@@ -121,8 +63,8 @@ namespace MapGenerator
                         byte[] zippedMap = Convert.FromBase64String(nodeIter.Current.Value);
                         using (var gzip = new GZipStream(new MemoryStream(zippedMap), CompressionMode.Decompress))
                         {
-                            var tmpMap = new byte[region_width*region_height*sizeof(int)];
-                            gzip.Read(tmpMap, 0, region_width*region_height*sizeof(int));
+                            var tmpMap = new byte[REGION_WIDTH * REGION_HEIGHT * sizeof(int)];
+                            gzip.Read(tmpMap, 0, REGION_WIDTH * REGION_HEIGHT * sizeof(int));
 
                             int cnt = 0;
                             for (int i = 0; i < tmpMap.Length; i += sizeof(int))
@@ -136,14 +78,16 @@ namespace MapGenerator
                     }
 
                     //scan and generate tile list
-                    for (uint y = 0; y < region_height; ++y)
+                    for (uint y = 0; y < REGION_HEIGHT; ++y)
                     {
-                        for (uint x = 0; x < region_width; ++x)
+                        for (uint x = 0; x < REGION_WIDTH; ++x)
                         {
-                            ushort tileId = region.Map[y*region_width + x];
+                            ushort tileId = region.Map[y * REGION_WIDTH + x];
 
                             if (tileId != CITY_TILE)
+                            {
                                 continue;
+                            }
 
                             region.CityLocations.Add(new Vector2D(x, y));
                         }
@@ -154,35 +98,19 @@ namespace MapGenerator
             }
         }
 
-        private static ushort[] GenerateRegion(uint xOffset, uint yOffset)
+        private static ushort[] GenerateRegion()
         {
-            Region region = regions[random.Next(regions.Count)];
+            Region region = regions[Random.Next(regions.Count)];
 
-            var map = new ushort[region_width*region_height];
-            Buffer.BlockCopy(region.Map, 0, map, 0, region.Map.Length*sizeof(ushort));
+            var regionMap = new ushort[REGION_WIDTH * REGION_HEIGHT];
+            Buffer.BlockCopy(region.Map, 0, regionMap, 0, region.Map.Length * sizeof(ushort));
 
             foreach (var cityLocation in region.CityLocations)
             {
-                locations.Add(new Location(xOffset + cityLocation.X, yOffset + cityLocation.Y, (uint)SimpleGameObject.TileDistance(xOffset + cityLocation.X, yOffset + cityLocation.Y, (uint)width / 2, (uint)height / 2)));
-                GenerateResource(cityLocation, map);
+                CityResourceTileGenerator.GenerateResource(cityLocation, regionMap);
             }
 
-            return map;
-        }
-
-        private class Location
-        {
-            public uint X { get; private set; }
-            public uint Y { get; private set; }
-            public uint Distance { get; private set; }
-
-            public Location(uint x, uint y, uint distance)
-
-            {
-                X = x;
-                Y = y;
-                Distance = distance;
-            }
+            return regionMap;
         }
 
         private static void Main()
@@ -192,10 +120,10 @@ namespace MapGenerator
 
             try
             {
-                var p = new OptionSet { { "?|help|h", v => help = true }, { "settings=", v => settingsFile = v }, };
+                var p = new OptionSet {{"?|help|h", v => help = true}, {"settings=", v => settingsFile = v},};
                 p.Parse(Environment.GetCommandLineArgs());
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 Console.Out.WriteLine(e.Message);
                 Environment.Exit(0);
@@ -208,7 +136,7 @@ namespace MapGenerator
             }
 
             Config.LoadConfigFile(settingsFile);
-            Factory.CompileConfigFiles();       
+            Factory.CompileConfigFiles();
             Engine.CreateDefaultKernel();
 
             LoadRegions();
@@ -221,34 +149,33 @@ namespace MapGenerator
 
             using (var bw = new BinaryWriter(File.Open("map.dat", FileMode.Create, FileAccess.Write)))
             {
-                for (int row = 0; row < regionRow; ++row)
+                for (int row = 0; row < REGION_ROW; ++row)
                 {
-                    for (int col = 0; col < regionColumn; ++col)
+                    for (int col = 0; col < REGION_COLUMN; ++col)
                     {
-                        var xOffset = (uint)(col*region_width);
-                        var yOffset = (uint)(row*region_height);
+                        ushort[] data = GenerateRegion();
 
-                        ushort[] data = GenerateRegion(xOffset, yOffset);
-
-                        for (int y = 0; y < region_height; ++y)
+                        for (int y = 0; y < REGION_HEIGHT; ++y)
                         {
-                            for (int x = 0; x < region_width; ++x)
-                                bw.Write(data[y*region_width + x]);
+                            for (int x = 0; x < REGION_WIDTH; ++x)
+                            {
+                                bw.Write(data[y * REGION_WIDTH + x]);
+                                map[REGION_WIDTH * col + x, REGION_HEIGHT * row + y] = data[y * REGION_WIDTH + x];
+                            }
                         }
                     }
                 }
-
-
             }
-            using (sw = new StreamWriter(File.Open("CityLocations.txt", FileMode.Create)))
+
+            using (StreamWriter sw = new StreamWriter(File.Open("CityLocations.txt", FileMode.Create)))
             {
-                locations.Sort((a, b) => a.Distance.CompareTo(b.Distance));
-                foreach(Location loc in locations)
+                var sorter = new SpiralSorter();
+
+                foreach (Vector2D loc in sorter.Sort(map))
                 {
                     sw.WriteLine("{0},{1}", loc.X, loc.Y);
                 }
             }
-
         }
 
         #region Nested type: Region
@@ -256,24 +183,8 @@ namespace MapGenerator
         private class Region
         {
             public readonly List<Vector2D> CityLocations = new List<Vector2D>();
-            public readonly ushort[] Map = new ushort[region_width*region_height];
-        }
 
-        #endregion
-
-        #region Nested type: Vector2D
-
-        private struct Vector2D
-        {
-            public Vector2D(uint x, uint y) : this()
-            {
-                X = x;
-                Y = y;
-            }
-
-            public uint X { get; private set; }
-
-            public uint Y { get; private set; }
+            public readonly ushort[] Map = new ushort[REGION_WIDTH * REGION_HEIGHT];
         }
 
         #endregion

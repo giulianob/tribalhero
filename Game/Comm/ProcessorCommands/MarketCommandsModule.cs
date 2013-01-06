@@ -72,10 +72,19 @@ namespace Game.Comm.ProcessorCommands
                 {
                     Error ret;
                     var rba = new ResourceBuyActiveAction(cityId, objectId, price, quantity, type);
-                    if ((ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(obj), obj, rba, obj.Technologies)) == 0)
+                    if (
+                            (ret =
+                             city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(obj),
+                                                  obj,
+                                                  rba,
+                                                  obj.Technologies)) == 0)
+                    {
                         ReplySuccess(session, packet);
+                    }
                     else
+                    {
                         ReplyError(session, packet, ret);
+                    }
                     return;
                 }
                 ReplyError(session, packet, Error.Unexpected);
@@ -124,10 +133,19 @@ namespace Game.Comm.ProcessorCommands
                 {
                     Error ret;
                     var rsa = new ResourceSellActiveAction(cityId, objectId, price, quantity, type);
-                    if ((ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(obj), obj, rsa, obj.Technologies)) == 0)
+                    if (
+                            (ret =
+                             city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(obj),
+                                                  obj,
+                                                  rsa,
+                                                  obj.Technologies)) == 0)
+                    {
                         ReplySuccess(session, packet);
+                    }
                     else
+                    {
                         ReplyError(session, packet, ret);
+                    }
                     return;
                 }
                 ReplyError(session, packet, Error.Unexpected);

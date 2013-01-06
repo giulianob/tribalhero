@@ -1,16 +1,12 @@
 #region
 
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
+using Game.Data.Stronghold;
 using Game.Data.Tribe;
-using Game.Database;
-using Game.Logic.Formulas;
-using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
-using Game.Util;
-using System.Linq;
 using Game.Util.Locking;
 
 #endregion
@@ -19,11 +15,27 @@ namespace Game.Comm.ProcessorCommands
 {
     class TribeCommandsModule : CommandModule
     {
+        private readonly ILocker locker;
+
+        private readonly IStrongholdManager strongholdManager;
+
         private readonly ITribeFactory tribeFactory;
 
-        public TribeCommandsModule(ITribeFactory tribeFactory)
+        private readonly ITribeManager tribeManager;
+
+        private readonly IWorld world;
+
+        public TribeCommandsModule(ITribeFactory tribeFactory,
+                                   IStrongholdManager strongholdManager,
+                                   IWorld world,
+                                   ITribeManager tribeManager,
+                                   ILocker locker)
         {
             this.tribeFactory = tribeFactory;
+            this.strongholdManager = strongholdManager;
+            this.world = world;
+            this.tribeManager = tribeManager;
+            this.locker = locker;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -34,7 +46,7 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.TribeDelete, Delete);
             processor.RegisterCommand(Command.TribeUpgrade, Upgrade);
             processor.RegisterCommand(Command.TribeSetDescription, SetDescription);
-            processor.RegisterCommand(Command.TribePublicInfo, GetPublicInfo);
+            processor.RegisterCommand(Command.TribeInfoByName, GetInfoByName);
         }
 
         private void SetDescription(Session session, Packet packet)
@@ -44,13 +56,13 @@ namespace Game.Comm.ProcessorCommands
             {
                 description = packet.GetString();
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 if (session.Player.Tribesman == null)
                 {
@@ -87,9 +99,11 @@ namespace Game.Comm.ProcessorCommands
                 count = packet.GetByte();
                 tribeIds = new uint[count];
                 for (int i = 0; i < count; i++)
+                {
                     tribeIds[i] = packet.GetUInt32();
+                }
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -101,7 +115,7 @@ namespace Game.Comm.ProcessorCommands
                 uint tribeId = tribeIds[i];
                 ITribe tribe;
 
-                if (!World.Current.TryGetObjects(tribeId, out tribe))
+                if (!world.TryGetObjects(tribeId, out tribe))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
@@ -117,90 +131,12 @@ namespace Game.Comm.ProcessorCommands
         private void GetInfo(Session session, Packet packet)
         {
             var reply = new Packet(packet);
-            if (session.Player.Tribesman == null)
-            {
-                ReplyError(session, packet, Error.TribeIsNull);
-                return;
-            }
-            var tribe = session.Player.Tribesman.Tribe;
-
-            using (Concurrency.Current.Lock(tribe))
-            {
-                if (tribe == null)
-                {
-                    ReplyError(session, packet, Error.Unexpected);
-                    return;
-                }
-
-                reply.AddUInt32(tribe.Id);
-                reply.AddUInt32(tribe.Owner.PlayerId);
-                reply.AddByte(tribe.Level);
-                reply.AddString(tribe.Name);
-                reply.AddString(tribe.Description);
-                PacketHelper.AddToPacket(tribe.Resource, reply);
-
-                reply.AddInt16((short)tribe.Count);
-                foreach (var tribesman in tribe.Tribesmen)
-                {
-                    reply.AddUInt32(tribesman.Player.PlayerId);
-                    reply.AddString(tribesman.Player.Name);
-                    reply.AddInt32(tribesman.Player.GetCityCount());
-                    reply.AddByte(tribesman.Rank);
-                    reply.AddUInt32(tribesman.Player.IsLoggedIn ? 0 : UnixDateTime.DateTimeToUnix(tribesman.Player.LastLogin));
-                    PacketHelper.AddToPacket(tribesman.Contribution, reply);
-                }
-
-                // Incoming List
-                var incomingList = tribe.GetIncomingList().ToList();
-                reply.AddInt16((short)incomingList.Count());
-                foreach (var incoming in incomingList)
-                {
-                    // Target
-                    ICity targetCity;
-                    if (World.Current.TryGetObjects(incoming.Action.To, out targetCity))
-                    {
-                        reply.AddUInt32(targetCity.Owner.PlayerId);
-                        reply.AddUInt32(targetCity.Id);
-                        reply.AddString(targetCity.Owner.Name);
-                        reply.AddString(targetCity.Name);
-                    }
-                    else
-                    {
-                        reply.AddUInt32(0);
-                        reply.AddUInt32(0);
-                        reply.AddString("N/A");
-                        reply.AddString("N/A");
-                    }
-
-                    // Attacker
-                    reply.AddUInt32(incoming.Action.WorkerObject.City.Owner.PlayerId);
-                    reply.AddUInt32(incoming.Action.WorkerObject.City.Id);
-                    reply.AddString(incoming.Action.WorkerObject.City.Owner.Name);
-                    reply.AddString(incoming.Action.WorkerObject.City.Name);
-
-                    reply.AddUInt32(UnixDateTime.DateTimeToUnix(incoming.Action.EndTime.ToUniversalTime()));
-                }
-
-                // Assignment List
-                reply.AddInt16(tribe.AssignmentCount);
-                foreach (var assignment in tribe.Assignments)
-                {
-                    PacketHelper.AddToPacket(assignment, reply);
-                }
-
-                session.Write(reply);
-            }
-        }
-
-        private void GetPublicInfo(Session session, Packet packet)
-        {
-            var reply = new Packet(packet);
             uint id;
             try
             {
                 id = packet.GetUInt32();
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -208,7 +144,43 @@ namespace Game.Comm.ProcessorCommands
 
             ITribe tribe;
 
-            using (Concurrency.Current.Lock(id, out tribe))
+            using (locker.Lock(id, out tribe))
+            {
+                if (tribe == null)
+                {
+                    ReplyError(session, packet, Error.TribeNotFound);
+                    return;
+                }
+
+                PacketHelper.AddTribeInfo(strongholdManager, tribeManager, session, tribe, reply);
+
+                session.Write(reply);
+            }
+        }
+
+        private void GetInfoByName(Session session, Packet packet)
+        {
+            var reply = new Packet(packet);
+            string name;
+            try
+            {
+                name = packet.GetString();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            uint id;
+            if (!tribeManager.FindTribeId(name, out id))
+            {
+                ReplyError(session, packet, Error.TribeNotFound);
+                return;
+            }
+
+            ITribe tribe;
+            using (locker.Lock(id, out tribe))
             {
                 if (tribe == null)
                 {
@@ -216,16 +188,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                reply.AddUInt32(tribe.Id);
-                reply.AddString(tribe.Name);
-                reply.AddInt16((short)tribe.Count);
-                foreach (var tribesman in tribe.Tribesmen)
-                {
-                    reply.AddUInt32(tribesman.Player.PlayerId);
-                    reply.AddString(tribesman.Player.Name);
-                    reply.AddInt32(tribesman.Player.GetCityCount());
-                    reply.AddByte(tribesman.Rank);
-                }
+                PacketHelper.AddTribeInfo(strongholdManager, tribeManager, session, tribe, reply);
 
                 session.Write(reply);
             }
@@ -238,13 +201,13 @@ namespace Game.Comm.ProcessorCommands
             {
                 name = packet.GetString();
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 if (session.Player.Tribesman != null)
                 {
@@ -252,7 +215,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                if (World.Current.TribeNameTaken(name))
+                if (tribeManager.TribeNameTaken(name))
                 {
                     ReplyError(session, packet, Error.TribeAlreadyExists);
                     return;
@@ -271,27 +234,40 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 ITribe tribe = tribeFactory.CreateTribe(session.Player, name);
-                
-                World.Current.Add(tribe);
+
+                tribeManager.Add(tribe);
 
                 var tribesman = new Tribesman(tribe, session.Player, 0);
+
                 tribe.AddTribesman(tribesman);
 
-                Global.Channel.Subscribe(session, "/TRIBE/" + tribe.Id);
                 ReplySuccess(session, packet);
             }
         }
 
         private void Delete(Session session, Packet packet)
         {
-            if (session.Player.Tribesman == null)
+            if (!session.Player.IsInTribe)
             {
                 ReplyError(session, packet, Error.TribeIsNull);
                 return;
             }
 
             ITribe tribe = session.Player.Tribesman.Tribe;
-            using (Concurrency.Current.Lock(custom => tribe.Tribesmen.ToArray(), new object[] { }, tribe))
+
+            CallbackLock.CallbackLockHandler lockHandler = delegate
+                {
+                    var locks =
+                            strongholdManager.StrongholdsForTribe(tribe)
+                                             .SelectMany(stronghold => stronghold.LockList)
+                                             .ToList();
+
+                    locks.AddRange(tribe.Tribesmen);
+
+                    return locks.ToArray();
+                };
+
+            using (locker.Lock(lockHandler, new object[] {}, tribe))
             {
                 if (!session.Player.Tribesman.Tribe.IsOwner(session.Player))
                 {
@@ -299,23 +275,9 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                if (tribe.AssignmentCount > 0)
-                {
-                    ReplyError(session, packet, Error.TribeHasAssignment);
-                    return;
-                }
-
-                foreach (var tribesman in new List<ITribesman>(tribe.Tribesmen))
-                {
-                    if (tribesman.Player.Session != null)
-                        Procedure.Current.OnSessionTribesmanQuit(tribesman.Player.Session, tribe.Id, tribesman.Player.PlayerId, true);
-                    tribe.RemoveTribesman(tribesman.Player.PlayerId);
-                }
-
-                World.Current.Remove(tribe);                
+                var result = tribeManager.Remove(tribe);
+                ReplyWithResult(session, packet, result);
             }
-
-            ReplySuccess(session, packet);
         }
 
         private void Upgrade(Session session, Packet packet)
@@ -327,24 +289,11 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ITribe tribe = session.Player.Tribesman.Tribe;
-            using (Concurrency.Current.Lock(tribe))
+            using (locker.Lock(tribe))
             {
-                if (tribe.Level >= 20)
-                {
-                    ReplyError(session, packet, Error.TribeMaxLevel);
-                    return;
-                }
-                Resource cost = Formula.Current.GetTribeUpgradeCost(tribe.Level);
-                if (!tribe.Resource.HasEnough(cost))
-                {
-                    ReplyError(session, packet, Error.ResourceNotEnough);
-                    return;
-                }
-
-                tribe.Upgrade();
+                var result = tribe.Upgrade();
+                ReplyWithResult(session, packet, result);
             }
-
-            ReplySuccess(session, packet);
         }
     }
 }

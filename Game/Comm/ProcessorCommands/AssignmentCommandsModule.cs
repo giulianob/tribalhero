@@ -4,11 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
+using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic.Actions;
-using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
@@ -20,19 +19,124 @@ namespace Game.Comm.ProcessorCommands
 {
     class AssignmentCommandsModule : CommandModule
     {
+        private readonly BattleProcedure battleProcedure;
+
+        private readonly ICityManager cityManager;
+
+        private readonly IGameObjectLocator gameObjectLocator;
+
+        private readonly ILocker locker;
+
+        private readonly IStrongholdManager strongholdManager;
+
+        public AssignmentCommandsModule(BattleProcedure battleProcedure,
+                                        IGameObjectLocator gameObjectLocator,
+                                        ILocker locker,
+                                        IStrongholdManager strongholdManager,
+                                        ICityManager cityManager)
+        {
+            this.battleProcedure = battleProcedure;
+            this.gameObjectLocator = gameObjectLocator;
+            this.locker = locker;
+            this.strongholdManager = strongholdManager;
+            this.cityManager = cityManager;
+        }
+
         public override void RegisterCommands(Processor processor)
         {
-            processor.RegisterCommand(Command.TribeAssignmentCreate, Create);
+            processor.RegisterCommand(Command.TribeCityAssignmentCreate, CreateCityAssignment);
+            processor.RegisterCommand(Command.TribeStrongholdAssignmentCreate, CreateStrongholdAssignment);
             processor.RegisterCommand(Command.TribeAssignmentJoin, Join);
         }
 
-        public void Create(Session session, Packet packet) {
+        private void CreateStrongholdAssignment(Session session, Packet packet)
+        {
+            uint cityId;
+            uint strongholdId;
+            AttackMode mode;
+            DateTime time;
+            ISimpleStub simpleStub;
+            string description;
+            bool isAttack;
+            try
+            {
+                mode = (AttackMode)packet.GetByte();
+                cityId = packet.GetUInt32();
+                strongholdId = packet.GetUInt32();
+                time = DateTime.UtcNow.AddSeconds(packet.GetInt32());
+                isAttack = packet.GetByte() == 1;
+                simpleStub = PacketHelper.ReadStub(packet, isAttack ? FormationType.Attack : FormationType.Defense);
+                description = packet.GetString();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            IStronghold stronghold;
+            if (!strongholdManager.TryGetStronghold(strongholdId, out stronghold))
+            {
+                ReplyError(session, packet, Error.StrongholdNotFound);
+                return;
+            }
+
+            ICity city;
+            if (!cityManager.TryGetCity(cityId, out city))
+            {
+                ReplyError(session, packet, Error.StrongholdNotFound);
+                return;
+            }
+
+            // First need to find all the objects that should be locked
+            uint[] playerIds;
+            Dictionary<uint, ICity> cities;
+            using (locker.Lock(city, stronghold))
+            {
+                if (city == null || stronghold == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                // Make sure city belongs to player and he is in a tribe
+                if (city.Owner != session.Player || city.Owner.Tribesman == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                // Make sure this player is ranked high enough
+                if (city.Owner.Tribesman == null ||
+                    !city.Owner.Tribesman.Tribe.HasRight(city.Owner.PlayerId, "Assignment"))
+                {
+                    ReplyError(session, packet, Error.TribesmanNotAuthorized);
+                    return;
+                }
+
+                int id;
+                Error ret = session.Player.Tribesman.Tribe.CreateAssignment(city,
+                                                                            simpleStub,
+                                                                            stronghold.X,
+                                                                            stronghold.Y,
+                                                                            stronghold,
+                                                                            time,
+                                                                            mode,
+                                                                            description,
+                                                                            isAttack,
+                                                                            out id);
+                ReplyWithResult(session, packet, ret);
+            }
+        }
+
+        private void CreateCityAssignment(Session session, Packet packet)
+        {
             uint cityId;
             uint targetCityId;
             uint targetObjectId;
             AttackMode mode;
             DateTime time;
-            TroopStub stub;
+            ISimpleStub simpleStub;
             string description;
             bool isAttack;
             try
@@ -43,10 +147,11 @@ namespace Game.Comm.ProcessorCommands
                 targetObjectId = packet.GetUInt32();
                 time = DateTime.UtcNow.AddSeconds(packet.GetInt32());
                 isAttack = packet.GetByte() == 1;
-                stub = PacketHelper.ReadStub(packet, isAttack?FormationType.Attack:FormationType.Defense);
+                simpleStub = PacketHelper.ReadStub(packet, isAttack ? FormationType.Attack : FormationType.Defense);
                 description = packet.GetString();
             }
-            catch (Exception) {
+            catch(Exception)
+            {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
             }
@@ -54,7 +159,7 @@ namespace Game.Comm.ProcessorCommands
             // First need to find all the objects that should be locked
             uint[] playerIds;
             Dictionary<uint, ICity> cities;
-            using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
+            using (locker.Lock(out cities, cityId, targetCityId))
             {
                 if (cities == null)
                 {
@@ -65,7 +170,8 @@ namespace Game.Comm.ProcessorCommands
                 var city = cities[cityId];
 
                 // Make sure city belongs to player and he is in a tribe
-                if (city.Owner != session.Player || city.Owner.Tribesman == null) {
+                if (city.Owner != session.Player || city.Owner.Tribesman == null)
+                {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
@@ -73,27 +179,31 @@ namespace Game.Comm.ProcessorCommands
                 ICity targetCity = cities[targetCityId];
 
                 // Make sure they are not in newbie protection
-                if (Formula.Current.IsNewbieProtected(targetCity.Owner))
+                if (BattleProcedure.IsNewbieProtected(targetCity.Owner))
                 {
                     ReplyError(session, packet, Error.PlayerNewbieProtection);
                     return;
                 }
 
-                playerIds = new[] {city.Owner.PlayerId, city.Owner.Tribesman.Tribe.Owner.PlayerId, targetCity.Owner.PlayerId};
+                playerIds = new[]
+                {city.Owner.PlayerId, city.Owner.Tribesman.Tribe.Owner.PlayerId, targetCity.Owner.PlayerId};
             }
 
             Dictionary<uint, IPlayer> players;
-            using (Concurrency.Current.Lock(out players, playerIds)) {
+            using (locker.Lock(out players, playerIds))
+            {
                 ICity city;
                 ICity targetCity;
-                if (players == null || !World.Current.TryGetObjects(cityId, out city) || !World.Current.TryGetObjects(targetCityId, out targetCity))
+                if (players == null || !gameObjectLocator.TryGetObjects(cityId, out city) ||
+                    !gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
-                
+
                 // Make sure this player is ranked high enough
-                if (city.Owner.Tribesman == null || !city.Owner.Tribesman.Tribe.HasRight(city.Owner.PlayerId, "Assignment"))
+                if (city.Owner.Tribesman == null ||
+                    !city.Owner.Tribesman.Tribe.HasRight(city.Owner.PlayerId, "Assignment"))
                 {
                     ReplyError(session, packet, Error.TribesmanNotAuthorized);
                     return;
@@ -107,10 +217,9 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-
                 int id;
                 Error ret = session.Player.Tribesman.Tribe.CreateAssignment(city,
-                                                                            stub,
+                                                                            simpleStub,
                                                                             targetStructure.X,
                                                                             targetStructure.Y,
                                                                             targetCity,
@@ -122,23 +231,26 @@ namespace Game.Comm.ProcessorCommands
                 ReplyWithResult(session, packet, ret);
             }
         }
- 
-        public void Join(Session session, Packet packet) {
+
+        private void Join(Session session, Packet packet)
+        {
             uint cityId;
             int assignmentId;
-            TroopStub stub;
+            ISimpleStub stub;
             try
             {
                 cityId = packet.GetUInt32();
                 assignmentId = packet.GetInt32();
             }
-            catch (Exception) {
+            catch(Exception)
+            {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
             ITribe tribe = session.Player.Tribesman.Tribe;
-            using (Concurrency.Current.Lock(session.Player, tribe)) {
+            using (Concurrency.Current.Lock(session.Player, tribe))
+            {
                 ICity city = session.Player.GetCity(cityId);
                 if (city == null)
                 {
@@ -156,9 +268,10 @@ namespace Game.Comm.ProcessorCommands
 
                 try
                 {
-                    stub = PacketHelper.ReadStub(packet, assignment.IsAttack ? FormationType.Attack : FormationType.Defense);
+                    stub = PacketHelper.ReadStub(packet,
+                                                 assignment.IsAttack ? FormationType.Attack : FormationType.Defense);
                 }
-                catch (Exception)
+                catch(Exception)
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;

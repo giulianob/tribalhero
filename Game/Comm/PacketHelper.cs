@@ -639,9 +639,7 @@ namespace Game.Comm
                     packet.AddString(tribesman.Player.Name);
                     packet.AddInt32(tribesman.Player.GetCityCount());
                     packet.AddByte(tribesman.Rank);
-                    packet.AddUInt32(tribesman.Player.IsLoggedIn
-                                             ? 0
-                                             : UnixDateTime.DateTimeToUnix(tribesman.Player.LastLogin));
+                    packet.AddUInt32(tribesman.Player.IsLoggedIn ? 0 : UnixDateTime.DateTimeToUnix(tribesman.Player.LastLogin));
                     AddToPacket(tribesman.Contribution, packet);
                 }
 
@@ -739,6 +737,17 @@ namespace Game.Comm
                     packet.AddString(tribesman.Player.Name);
                     packet.AddInt32(tribesman.Player.GetCityCount());
                     packet.AddByte(tribesman.Rank);
+                }
+
+                var strongholds = strongholdManager.StrongholdsForTribe(tribe).ToList();
+                packet.AddInt16((short)strongholds.Count);
+                foreach (var stronghold in strongholds)
+                {
+                    packet.AddUInt32(stronghold.Id);                    
+                    packet.AddString(stronghold.Name);
+                    packet.AddByte(stronghold.Lvl);
+                    packet.AddUInt32(stronghold.X);
+                    packet.AddUInt32(stronghold.Y);
                 }
             }
         }

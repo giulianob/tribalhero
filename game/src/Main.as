@@ -5,6 +5,7 @@
 	import fl.lang.*;
 	import flash.display.*;
 	import flash.events.*;
+    import flash.external.ExternalInterface;
 	import flash.net.*;
 	import flash.ui.*;
 	import org.aswing.*;
@@ -188,9 +189,6 @@
 
 		public function onSecurityError(event: SecurityErrorEvent):void
 		{
-			//if (pnlLoading) pnlLoading.getFrame().dispose();
-
-			//InfoDialog.showMessageDialog("Security Error", event.toString());
 			Util.log("Security error " + event.toString());
 			
 			if (session && session.hasLoginSuccess()) 
@@ -201,6 +199,14 @@
 
 		public function onDisconnected(event: Event = null):void
 		{			
+            if (Constants.loginKey) {
+                try {
+                    ExternalInterface.call("clientDisconnect");
+                }
+                catch (e: Error) {                    
+                }
+            }
+            
 			var wasStillLoading: Boolean = session == null || !session.hasLoginSuccess();
 			
 			if (pnlLoading)
@@ -233,6 +239,14 @@
 				showConnectionError(true);		
 			else
 			{
+                if (Constants.loginKey) {
+                    try {
+                        ExternalInterface.call("clientConnect");
+                    }
+                    catch (e: Error) {                    
+                    }
+                }                
+                
 				Global.mapComm = new MapComm(session);
 
 				if (Constants.loginKey) session.login(true, Constants.playerName, Constants.loginKey);

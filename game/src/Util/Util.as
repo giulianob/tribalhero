@@ -37,7 +37,13 @@ package src.Util {
 		}
 		
 		public static function log(msg: String) : void {					
-			if (Constants.loginKey) ExternalInterface.call("console.log", msg);
+			if (Constants.loginKey) {
+                try {
+                    ExternalInterface.call("console.log", msg);
+                }
+                catch (e: Error) {                    
+                }
+            }
 			else trace(msg);
 		}
 		

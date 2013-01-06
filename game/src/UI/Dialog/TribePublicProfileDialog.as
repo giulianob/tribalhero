@@ -86,11 +86,13 @@
 
 			// Append tabs			
 			pnlTabs.appendTab(createMembersTab(), StringUtil.substitute("Members ({0})", profileData.members.length));
+            
+            pnlTabs.appendTab(createStrongholdsTab(), StringUtil.substitute("Strongholds ({0})", profileData.strongholds.length));
 			
 			// Append main panels
 			appendAll(pnlHeader, pnlTabs);
 		}
-		
+        
 		private function createMembersTab() : Container {
 			var modelMembers: VectorListModel = new VectorListModel(profileData.members);
 			var tableMembers: JTable = new JTable(new PropertyTableModel(
@@ -111,6 +113,26 @@
 			var scrollMembers: JScrollPane = new JScrollPane(tableMembers, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
 			
 			return scrollMembers;
+		}        
+		
+		private function createStrongholdsTab() : Container {
+			var tableModel: VectorListModel = new VectorListModel(profileData.strongholds);
+			var table: JTable = new JTable(new PropertyTableModel(
+				tableModel, 
+				["Name", "Level"],
+				[".", "strongholdLevel"],
+				[null, null]
+			));			
+			table.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
+				table.getCellEditor().cancelCellEditing();
+			});			
+			table.setRowSelectionAllowed(false);
+			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			table.getColumnAt(0).setPreferredWidth(145);
+			table.getColumnAt(0).setCellFactory(new GeneralTableCellFactory(StrongholdLabelCell));
+			table.getColumnAt(1).setPreferredWidth(145);
+			
+			return new JScrollPane(table, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
 		}
 	}
 	

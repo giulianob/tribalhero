@@ -314,6 +314,8 @@
 				return;
 			}
 			
+            var i: int;
+            
 			var profileData: * = new Object();
 			profileData.tribeId = packet.readUInt();
 			profileData.tribeName = packet.readString();
@@ -321,15 +323,29 @@
 			profileData.created = packet.readUInt();
 			profileData.members = [];
 			var memberCount: int = packet.readShort();
-			for (var i: int = 0; i < memberCount; i++)
+			for (i = 0; i < memberCount; i++) {
 				profileData.members.push({
 					playerId: packet.readUInt(),
 					playerName: packet.readString(),
 					cityCount: packet.readInt(),
 					rank: packet.readUByte()
 				});
-				
-			(profileData.members as Array).sortOn("rank", [Array.NUMERIC]);
+            }						
+            
+            profileData.strongholds = [];
+            var strongholdsCount: int = packet.readShort();
+			for (i = 0; i < strongholdsCount; i++) {
+				profileData.strongholds.push({
+					strongholdId: packet.readUInt(),
+					strongholdName: packet.readString(),
+					strongholdLevel: packet.readByte(),
+                    strongholdX: packet.readUInt(),
+                    strongholdY: packet.readUInt()
+				});
+            }
+            
+            profileData.members.sortOn("rank", [Array.NUMERIC]);
+            profileData.strongholds.sortOn("strongholdLevel", [Array.NUMERIC | Array.DESCENDING]);
 			
 			if (custom.callback)
 				custom.callback(profileData);

@@ -181,7 +181,7 @@
 		{
 			var regionId:int = packet.readUShort();
 			
-			var cityObj:CityObject = readObject(packet, regionId);
+			var cityObj:CityObject = readCityObject(packet, regionId);
 			
 			if (!cityObj)
 				return;
@@ -202,7 +202,7 @@
 		{
 			var regionId:int = packet.readUShort();
 			
-			var cityObj:CityObject = readObject(packet, regionId);
+			var cityObj:CityObject = readCityObject(packet, regionId);
 			
 			if (!cityObj)
 			{
@@ -228,31 +228,19 @@
 			city.objects.remove(objId);
 		}
 		
-		public function readObject(packet:Packet, regionId:int, city:City = null):CityObject
+		public function readCityObject(packet:Packet, regionId:int, city:City = null):CityObject
 		{
-			var objType:int = packet.readUShort();
-			var objX:int = packet.readUShort() + MapUtil.regionXOffset(regionId);
-			var objY:int = packet.readUShort() + MapUtil.regionYOffset(regionId);
-			var objCityId:int = packet.readUInt();
-			var objId:int = packet.readUInt();
-			var objPlayerId:int = packet.readUInt();
-			var objLvl:int = 0;
-			var objLabor:int = 0;
-			
-			if (ObjectFactory.getClassType(objType) == ObjectFactory.TYPE_STRUCTURE)
-			{
-				objLvl = packet.readUByte();
-				objLabor = packet.readUShort();
-			}
+			var obj: * = mapComm.Objects.readObject(packet, regionId);
 			
 			if (!city)
 			{
-				city = Global.map.cities.get(objCityId);
-				if (!city)
+				city = Global.map.cities.get(obj.groupId);
+				if (!city) {
 					return null;
+				}
 			}
 			
-			return new CityObject(city, objId, objType, objLvl, objX, objY, objLabor);
+			return new CityObject(city, obj.id, obj.type, obj.lvl, obj.state, obj.x, obj.y, obj.labor);
 		}
 		
 		public function setPlayerDescription(description:String):void
@@ -508,7 +496,7 @@
 		{
 			var cityId:int = packet.readUInt();
 			
-			var notification:Notification = new Notification(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+			var notification:Notification = new Notification(cityId, packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 			
 			var city:City = Global.map.cities.get(cityId);
 			if (city == null)
@@ -538,7 +526,7 @@
 			
 			if (!notification)
 			{
-				notification = new Notification(notificationCityId, notificationObjId, notificationActionId, notificationType, notificationStartTime, notificationEndTime);
+				notification = new Notification(cityId, notificationCityId, notificationObjId, notificationActionId, notificationType, notificationStartTime, notificationEndTime);
 				city.notifications.add(notification);
 			}
 			else
@@ -579,6 +567,15 @@
 			var pt:Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
 			Global.map.camera.ScrollToCenter(pt.x, pt.y);
 		}
+			
+		public function gotoCityLocationByName(cityName:String):void
+		{
+			var packet:Packet = new Packet();
+			packet.cmd = Commands.CITY_LOCATE_BY_NAME;
+			packet.writeString(cityName);
+			
+			session.write(packet, onReceiveCityLocation);
+		}
 		
 		public function gotoCityLocation(cityId:int):void
 		{
@@ -589,21 +586,14 @@
 			session.write(packet, onReceiveCityLocation);
 		}
 		
-		public function gotoCityLocationByName(cityName:String):void
-		{
-			var packet:Packet = new Packet();
-			packet.cmd = Commands.CITY_LOCATE_BY_NAME;
-			packet.writeString(cityName);
-			
-			session.write(packet, onReceiveCityLocation);
-		}
-		
 		public function onReceiveCityLocation(packet:Packet, custom:*):void
 		{
-			if (MapComm.tryShowError(packet))
+			if (MapComm.tryShowError(packet)) {
 				return;
+			}
 			var pt:Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
 			Global.map.camera.ScrollToCenter(pt.x, pt.y);
+			Global.gameContainer.closeAllFrames(true);
 		}
 		
 		public function isCityUnderAPBonus(cityId:int, callback:Function):void

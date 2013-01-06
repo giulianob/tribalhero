@@ -8,6 +8,7 @@
 	import src.Comm.GameURLLoader;
 	import src.Constants;
 	import src.Global;
+	import src.Objects.Battle.BattleLocation;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJPanel;
 	import org.aswing.*;
@@ -35,17 +36,19 @@
 		private var loader: GameURLLoader = new GameURLLoader();
 		private var page: int = 0;
 		private var playerNameFilter: String = "";
+		private var viewType:int;
+		private var location:BattleLocation;
+		private var hasLoaded:Boolean;
 		
 		public var refreshOnClose: Boolean = false;
 		
-		public function RemoteReportList()
+		public function RemoteReportList(viewType: int, cols: Array, location: BattleLocation = null)
 		{
-			createUI();
-			loader.addEventListener(Event.COMPLETE, onLoaded);
+			this.location = location;
+			this.viewType = viewType;
 			
-			tblReports.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
-				tblReports.getCellEditor().cancelCellEditing();
-			});
+			createUI(cols);
+			loader.addEventListener(Event.COMPLETE, onLoaded);			
 
 			tblReports.addEventListener(SelectionEvent.ROW_SELECTION_CHANGED, function(e: SelectionEvent) : void {
 				if (tblReports.getSelectedRow() == -1) return;
@@ -55,7 +58,7 @@
 
 				tblReports.clearSelection(true);
 
-				var battleReportDialog: BattleReportViewer = new BattleReportViewer(id, playerNameFilter, false);
+				var battleReportDialog: BattleReportViewer = new BattleReportViewer(id, playerNameFilter, viewType);
 				battleReportDialog.show(null, true, function(viewDialog: BattleReportViewer = null) : void {
 					if (battleReportDialog.refreshOnClose) {
 						refreshOnClose = true;
@@ -71,8 +74,6 @@
 			btnPrevious.addActionListener(function() : void{
 				loadPage(page - 1);
 			});
-
-			loadPage(0);
 		}
 
 		public function filterPlayerName(playerName: String) : void {
@@ -84,8 +85,15 @@
 			btnPrevious.setVisible(false);
 			btnNext.setVisible(false);
 
-			Global.mapComm.BattleReport.listRemote(loader, page, playerNameFilter);
+			Global.mapComm.BattleReport.listRemote(loader, viewType, location, page, playerNameFilter);
 		}
+		
+		public function loadInitially(): void {
+			if (!hasLoaded) {
+				hasLoaded = true;
+				loadPage(0);
+			}
+		}		
 
 		private function onLoaded(e: Event) : void {
 			var data: Object;
@@ -113,21 +121,13 @@
 			reportList.append(snapshot);
 		}
 
-		private function createUI() : void {
+		private function createUI(cols: Array) : void {
 			var layout0:BorderLayout = new BorderLayout();
 			setLayout(layout0);
 
-			reportList = new VectorListModel();
-
-			tableModel = new PropertyTableModel(reportList,
-			["Date", "Battle Location", "Troop", "Side"],
-			["date", ".", "troop", "side"],
-			[null, null, null, null]
-			);
-
-			tblReports = new JTable(tableModel);
-			tblReports.setSelectionMode(JTable.SINGLE_SELECTION);
-			tblReports.getColumnAt(1).setCellFactory(new GeneralTableCellFactory(UnreadTextCell));
+			tblReports = new BattleReportListTable(cols);
+			
+			reportList = VectorListModel(PropertyTableModel(tblReports.getModel()).getList());		
 
 			var pnlReportsScroll: JScrollPane = new JScrollPane(tblReports);
 			pnlReportsScroll.setConstraints("Center");

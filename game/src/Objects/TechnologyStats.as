@@ -29,7 +29,7 @@ package src.Objects {
 			var isSelf: Boolean = (inheritance & EffectPrototype.INHERIT_SELF) == EffectPrototype.INHERIT_SELF;
 			var isInvisible: Boolean = (inheritance & EffectPrototype.INHERIT_INVISIBLE) == EffectPrototype.INHERIT_INVISIBLE;
 			
-			for each(var effect: EffectPrototype in prototype.effects.each())
+			for each(var effect: EffectPrototype in prototype.effects)
 			{
 				if (effect.location == location)
 				{

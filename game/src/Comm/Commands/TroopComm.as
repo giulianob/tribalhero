@@ -32,7 +32,8 @@
 			troop.cityId = packet.readUInt();
 
 			troop.id = packet.readUByte();
-			troop.state = packet.readUByte();
+			troop.state = packet.readUByte();			
+			troop.stationedLocation = mapComm.General.readLocation(packet);
 
 			var templateCnt: int = packet.readUByte();
 			for (var templateI: int = 0; templateI < templateCnt; templateI++) {
@@ -73,12 +74,12 @@
 
 		public function writeTroop(stub: TroopStub, packet: Packet): void
 		{
-			for each(var formation: Formation in stub.each())
+			for each(var formation: Formation in stub)
 			{
 				packet.writeUByte(formation.type);
 				packet.writeUByte(formation.size());
 
-				for each (var unit: Unit in formation.each())
+				for each (var unit: Unit in formation)
 				{
 					packet.writeUShort(unit.type);
 					packet.writeUShort(unit.count);
@@ -250,10 +251,10 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 
-		public function troopAttack(cityId: int, targetCityId: int, targetObjectId: int, mode: int, troop: TroopStub, onAttackFail:Function):void
+		public function troopAttackCity(cityId: int, targetCityId: int, targetObjectId: int, mode: int, troop: TroopStub, onAttackFail:Function):void
 		{
 			var packet: Packet = new Packet();
-			packet.cmd = Commands.TROOP_ATTACK;
+			packet.cmd = Commands.TROOP_ATTACK_CITY;
 			packet.writeUByte(mode);
 			packet.writeUInt(cityId);
 			packet.writeUInt(targetCityId);
@@ -262,6 +263,18 @@
 
 			session.write(packet, onReceiveTroopAttack, onAttackFail);
 		}
+		
+		public function troopAttackStronghold(cityId: int, targetObjectId: int, mode: int, troop: TroopStub, onAttackFail:Function):void
+		{
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TROOP_ATTACK_STRONGHOLD;
+			packet.writeUByte(mode);
+			packet.writeUInt(cityId);
+			packet.writeUInt(targetObjectId);
+			writeTroop(troop, packet);
+
+			session.write(packet, onReceiveTroopAttack, onAttackFail);
+		}		
 		
 		public function onReceiveTroopAttack(packet: Packet, custom: * ):void
 		{
@@ -272,10 +285,10 @@
 			}
 		}
 		
-		public function troopReinforce(cityId: int, targetCityId: int, troop: TroopStub, mode: int):void
+		public function troopReinforceCity(cityId: int, targetCityId: int, troop: TroopStub, mode: int):void
 		{
 			var packet: Packet = new Packet();
-			packet.cmd = Commands.TROOP_REINFORCE;
+			packet.cmd = Commands.TROOP_REINFORCE_CITY;
 			packet.writeUInt(cityId);
 			packet.writeUInt(targetCityId);
 			writeTroop(troop, packet);
@@ -283,6 +296,18 @@
 			
 			session.write(packet, mapComm.catchAllErrors);
 		}
+		
+		public function troopReinforceStronghold(cityId: int, targetStrongholdId: int, troop: TroopStub, mode: int):void
+		{
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TROOP_REINFORCE_STRONGHOLD;
+			packet.writeUInt(cityId);
+			packet.writeUInt(targetStrongholdId);
+			writeTroop(troop, packet);
+			packet.writeUShort(mode);
+			
+			session.write(packet, mapComm.catchAllErrors);
+		}		
 
 		public function moveUnitAndSetHideNewUnits(cityId: int, troop: TroopStub, hideNewUnits: Boolean):void
 		{
@@ -297,10 +322,10 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 		
-		public function assignmentCreate(cityId: int, targetCityId: int, targetObjectId: int, time: int, mode: int, troop: TroopStub, description: String, isAttack: Boolean): void
+		public function cityAssignmentCreate(cityId: int, targetCityId: int, targetObjectId: int, time: int, mode: int, troop: TroopStub, description: String, isAttack: Boolean): void
 		{
 			var packet: Packet = new Packet();
-			packet.cmd = Commands.TRIBE_ASSIGNMENT_CREATE;
+			packet.cmd = Commands.TRIBE_CITY_ASSIGNMENT_CREATE;
 			
 			packet.writeUByte(mode);
 			packet.writeUInt(cityId);
@@ -313,6 +338,23 @@
 			
 			session.write(packet, mapComm.catchAllErrors, { message: { title: "Info", content: "The assignment has been created. Other tribe members will be able to join this assignment until the end time has been reached." } });
 		}
+		
+		public function strongholdAssignmentCreate(cityId: int, strongholdId: int, time: int, mode: int, troop: TroopStub, description: String, isAttack: Boolean): void
+		{
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBE_STRONGHOLD_ASSIGNMENT_CREATE;
+			
+			packet.writeUByte(mode);
+			packet.writeUInt(cityId);
+			packet.writeUInt(strongholdId);
+			packet.writeInt(time);			
+			packet.writeUByte(isAttack?1:0);
+			writeTroop(troop, packet);
+			packet.writeString(description);
+			
+			session.write(packet, mapComm.catchAllErrors, { message: { title: "Info", content: "The assignment has been created. Other tribe members will be able to join this assignment until the end time has been reached." } });
+		}
+		
 		
 		public function assignmentJoin(cityId: int, assignmentId: int, troop: TroopStub): void
 		{

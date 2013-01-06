@@ -1,15 +1,17 @@
 ﻿package src.UI.Cursors {
+	import fl.lang.*;
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.*;
+	import mx.utils.*;
 	import src.*;
 	import src.Map.*;
 	import src.Objects.*;
 	import src.Objects.Effects.*;
 	import src.Objects.Factories.*;
+	import src.Objects.Stronghold.*;
 	import src.Objects.Troop.*;
 	import src.UI.Components.*;
-	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
 	import src.UI.Tooltips.*;
 	import src.Util.*;
 
@@ -31,7 +33,7 @@
 		
 		private var onAccept: Function;
 
-		private var highlightedObj: GameObject;
+		private var highlightedObj: SimpleGameObject;
 
 		private var tooltip: StructureTooltip;
 
@@ -68,7 +70,7 @@
 			Global.gameContainer.setOverlaySprite(this);
 		}
 		
-		public function getTargetObject(): GameObject
+		public function getTargetObject(): SimpleGameObject
 		{
 			return highlightedObj;
 		}
@@ -139,10 +141,8 @@
 				objX = pos.x;
 				objY = pos.y;
 
-				cursor.setX(objX);
-				cursor.setY(objY);
-
-				cursor.moveWithCamera(Global.gameContainer.camera);
+				cursor.objX = objX;
+				cursor.objY = objY;
 
 				Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
 
@@ -157,58 +157,69 @@
 				highlightedObj.setHighlighted(false);
 				highlightedObj = null;
 			}
+			
+			if (tooltip) {
+				tooltip.hide();
+				tooltip = null;			
+			}			
 
-			var msg: XML;
-
-			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, StructureObject);
+			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, [StructureObject, Stronghold]);
 
 			if (objects.length == 0) {
-				if (tooltip) tooltip.hide();
-				tooltip = null;
-				Global.gameContainer.message.showMessage("Choose target to attack");
+				Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_CHOOSE_TARGET"));
 				return;
 			}
 			
-			var gameObj: StructureObject = objects[0];
+			var gameObj: SimpleGameObject = objects[0];
 			
-			// Verify that object is attackable
-			if (ObjectFactory.isType("Unattackable", gameObj.type)) {
-				if (tooltip) tooltip.hide();
-				tooltip = null;
-				Global.gameContainer.message.showMessage("This structure can't be attacked");
-				return;
+			if (gameObj is StructureObject) {
+				var structObj: StructureObject = gameObj as StructureObject;		
+
+				if (Global.gameContainer.map.cities.get(structObj.cityId)) {
+					Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_SELF_ERROR"));
+					return;
+				}
+				
+				if (ObjectFactory.isType("Unattackable", structObj.type)) {
+					Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_STRUCTURE_UNATTACKABLE"));
+					return;
+				}
+				
+				if (structObj.level == 0) {
+					Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_STRUCTURE_BEING_BUILT"));
+					return;
+				}			
+				
+				if (structObj.level == 1 && ObjectFactory.isType("Undestroyable", structObj.type)) {
+					Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_STRUCTURE_UNDESTROYABLE"));
+					return;
+				}
+				
+				tooltip = new StructureTooltip(structObj, StructureFactory.getPrototype(structObj.type, structObj.level));
+				tooltip.show(structObj);				
 			}
-			
-			if (gameObj.level == 0) {
-				if (tooltip) tooltip.hide();
-				tooltip = null;
-				Global.gameContainer.message.showMessage("This structure can't be attacked while it's being built");
-				return;
-			}			
-			
-			if (gameObj.level == 1 && ObjectFactory.isType("Undestroyable", gameObj.type)) {
-				if (tooltip) tooltip.hide();
-				tooltip = null;
-				Global.gameContainer.message.showMessage("This structure can't be attacked while it's level 1");
-				return;
+			else if (gameObj is Stronghold) {
+				var strongholdObj: Stronghold = gameObj as Stronghold;
+				
+				if (Constants.tribeId == 0) {
+					Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_STRONGHOLD_NO_TRIBESMAN"));
+					return;
+				}
+				
+				if (strongholdObj.tribeId == Constants.tribeId) {
+					Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_OWN_STRONGHOLD"));
+					return;
+				}
 			}
 		
-			// Return if we are already highlighting this object
-			if (highlightedObj == gameObj) return;
-
-			var structObj: StructureObject = gameObj as StructureObject;
-			structObj.setHighlighted(true);
-			highlightedObj = (gameObj as GameObject);
-
-			var targetMapDistance: Point = MapUtil.getMapCoord(structObj.getX(), structObj.getY());
+			gameObj.setHighlighted(true);
+			highlightedObj = gameObj;
+			
+			var targetMapDistance: Point = MapUtil.getMapCoord(gameObj.objX, gameObj.objY);
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 			var timeAwayInSeconds: int = Formula.moveTimeTotal(city, troopSpeed, distance, true);
 
-			if (tooltip) tooltip.hide();
-			tooltip = new StructureTooltip(structObj, StructureFactory.getPrototype(structObj.type, structObj.level));
-			tooltip.show(structObj);
-
-			Global.gameContainer.message.showMessage("About " + Util.niceTime(timeAwayInSeconds) + " away. Double click to attack.");
+			Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_DISTANCE_MESSAGE", Util.niceTime(timeAwayInSeconds)));
 		}
 	}
 

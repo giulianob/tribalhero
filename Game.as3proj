@@ -54,6 +54,9 @@
     <element path="lib\swc\Game\Game.swc" />
     <element path="lib\swc\as3corelib\as3corelib.swc" />
     <element path="lib\swc\flash\flash.swc" />
+    <element path="lib\swc\tweenmax\greensock.swc" />
+    <element path="lib\swc\theminer\TheMiner_en.swc" />
+    <element path="lib\swc\actionlinq\Linq_Flash.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>

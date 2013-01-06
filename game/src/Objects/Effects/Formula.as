@@ -79,7 +79,7 @@
 			if (!city) return 0;
 
 			var university: CityObject;
-			for each (var structure: CityObject in city.objects.each()) {
+			for each (var structure: CityObject in city.objects) {
 				if (ObjectFactory.isType("University", structure.type)) {
 					university = structure;
 					break;
@@ -186,12 +186,13 @@
 			for each (var effect: EffectPrototype in effects) {
 				rateBonus = Math.min(rateBonus, (int)(effect.param1) / 10);
 			}
+            
 			if (effects.length > 1)
 				rateBonus *= Math.pow(0.92, effects.length - 1); // for every extra tribal gathering, you gain 10 % each
 			
 			var newMultiplier:Number = Math.min(2, 3 - laborTotal / 400);
             newMultiplier = Math.max(1,newMultiplier);
-			return (43200 / (( -6.845 * Math.log(laborTotal / 1.3 - 100) + 55) * newMultiplier)) * rateBonus;
+			return (43200 / (( -6.845 * Math.log(laborTotal / 1.3 - 100) + 55) * newMultiplier)) * rateBonus * Constants.secondsPerUnit;
 		}
 		
 		// Returns the new resource rate and accounts for any resource bonus
@@ -220,12 +221,23 @@
 			var wagonCurrent:Number = Global.gameContainer.selectedCity.troops.getDefaultTroop().getIndividualUnitCount(ObjectFactory.getFirstType("Wagon"));
 			var influenceRequired:Number = size * (100 + 20 * (size-1));
 			var influenceCurrent:Number = 0;
-			for each(var city: City in Global.map.cities.each())
+			for each(var city: City in Global.map.cities)
 			{
 				influenceCurrent += city.value;
 			}
 			return { wagonRequired:wagonRequired, wagonCurrent:wagonCurrent, influenceRequired:influenceRequired, influenceCurrent:influenceCurrent };
 		}
+		 
+		public static function getGateLimit(level: int) : int
+        {
+            return level * 10000;
+        }
+
+        public static function getGateRepairCost(level: int, currentHp: Number) : Resources
+        {
+			var hp: int = getGateLimit(level) - currentHp;
+            return new Resources(0, level * hp / 8, level * hp / 16, level * hp / 4, 0);
+        }
 	}
 }
 

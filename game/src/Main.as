@@ -1,8 +1,11 @@
 ﻿package src
 {
+	import com.greensock.plugins.TransformMatrixPlugin;
+	import com.greensock.plugins.TweenPlugin;
 	import fl.lang.*;
 	import flash.display.*;
 	import flash.events.*;
+    import flash.external.ExternalInterface;
 	import flash.net.*;
 	import flash.ui.*;
 	import org.aswing.*;
@@ -12,7 +15,13 @@
 	import src.UI.Components.*;
 	import src.UI.Dialog.*;
 	import src.UI.LookAndFeel.*;
+	import src.UI.TweenPlugins.DynamicPropsPlugin;
 	import src.Util.*;
+	import System.Linq.EnumerationExtender;
+
+	CONFIG::debug {
+		import com.sociodox.theminer.TheMiner;
+	}
 
 	public class Main extends MovieClip
 	{
@@ -22,36 +31,47 @@
 
 		private var map:Map;
 		private var miniMap: MiniMap;
-		private var frameCounter:FPSCounter;
 		public var packetCounter:GeneralCounter;
 		private var session:TcpSession;
 		private var password: String;
 		private var parms: Object;
-
+        
 		private var loginDialog: LoginDialog;
-
+        
 		private var pnlLoading: InfoDialog;
 		public var errorAlreadyTriggered: Boolean;
-
+        
 		private var siteVersion: String;
 		
 		private var uncaughtExceptionHandler: UncaughtExceptionHandler;
 		
 		public function Main()
 		{
+			name = "Main";
 			trace("TribalHero v" + Constants.version + "." + Constants.revision);
 			
 			addEventListener(Event.ADDED_TO_STAGE, init);		
-		}  
-
+		}
+		
 		public function init(e: Event = null) : void {			
 			removeEventListener(Event.ADDED_TO_STAGE, init);		
 			
 			uncaughtExceptionHandler = new UncaughtExceptionHandler(loaderInfo);
 			
-			//Init ASWING
-			AsWingManager.initAsStandard(stage);
+			CONFIG::debug {
+				stage.addChild(new TheMiner());
+			}			
+			
+			//Init actionLinq
+			EnumerationExtender.Initialize();
+			
+			//Init ASWING			
+			//resizeHandler(null);
+			AsWingManager.initAsStandard(this);				
 			UIManager.setLookAndFeel(new GameLookAndFeel());
+			
+			//Init TweenLite
+			TweenPlugin.activate([DynamicPropsPlugin, TransformMatrixPlugin]);
 
 			//Init stage options
 			stage.stageFocusRect = false;
@@ -106,7 +126,7 @@
 		}
 
 		private function loadData(): void
-		{			
+		{
 			pnlLoading = InfoDialog.showMessageDialog("TribalHero", "Launching the game...", null, null, true, false, 0);
 			
 			if (Constants.queryData) {
@@ -169,9 +189,6 @@
 
 		public function onSecurityError(event: SecurityErrorEvent):void
 		{
-			//if (pnlLoading) pnlLoading.getFrame().dispose();
-
-			//InfoDialog.showMessageDialog("Security Error", event.toString());
 			Util.log("Security error " + event.toString());
 			
 			if (session && session.hasLoginSuccess()) 
@@ -182,6 +199,14 @@
 
 		public function onDisconnected(event: Event = null):void
 		{			
+            if (Constants.loginKey) {
+                try {
+                    ExternalInterface.call("clientDisconnect");
+                }
+                catch (e: Error) {                    
+                }
+            }
+            
 			var wasStillLoading: Boolean = session == null || !session.hasLoginSuccess();
 			
 			if (pnlLoading)
@@ -214,6 +239,14 @@
 				showConnectionError(true);		
 			else
 			{
+                if (Constants.loginKey) {
+                    try {
+                        ExternalInterface.call("clientConnect");
+                    }
+                    catch (e: Error) {                    
+                    }
+                }                
+                
 				Global.mapComm = new MapComm(session);
 
 				if (Constants.loginKey) session.login(true, Constants.playerName, Constants.loginKey);
@@ -281,15 +314,6 @@
 			gameContainer.show();
 			Global.mapComm.General.readLoginInfo(packet);
 			gameContainer.setMap(map, miniMap);
-
-			if (Constants.debug > 0) {
-				if (frameCounter)
-					removeChild(frameCounter);
-
-				frameCounter = new FPSCounter();
-				frameCounter.y = Constants.screenH - 32;
-				addChild(frameCounter);
-			}
 		}
 
 		public function onReceive(packet: Packet):void
@@ -302,8 +326,7 @@
 		}
 
 		private function resizeHandler(event:Event):void {
-			Util.log("resizeHandler: " + event);
-			Util.log("stageWidth: " + stage.stageWidth + " stageHeight: " + stage.stageHeight);
+			
 		}
 	}
 }

@@ -17,8 +17,15 @@
 			super();
 		}
 
-		public static function changeClass(obj: Component, classes: *) : void {
-			var ui: ComponentUI = obj.getUI();
+		public static function changeClass(obj: Component, classes: * , resetPrevious: Boolean = false) : void {
+			var ui: ComponentUI;
+			if (resetPrevious) {
+				var uiClass: Class = obj.getDefaultBasicUIClass();
+				ui = (new uiClass()) as ComponentUI
+			}			
+			else {
+				ui = obj.getUI();
+			}
 
 			var keys: Array = (classes is String) ? classes.split(" ") : classes;
 
@@ -62,6 +69,7 @@
 			/* DEFAULT COMPONENTS */
 			"LabelButton.foreground", new ASColorUIResource(0x0066cc), 
 			"LabelButton.font", new ASFontUIResource("Arial", 11, false, false, true),
+			"TextArea.font", new ASFontUIResource("Arial", 11, false, false),
 
 			/* CLASSES */			
 			"Class.darkText", [
@@ -75,8 +83,9 @@
 			],
 			
 			"Class.darkSectionHeader", [
-			"Label.font", new ASFontUIResource("Arial", 15, true),
+			"Label.font", new ASFontUIResource("Arial", 15, true),			
 			"Label.foreground", new ASColorUIResource(0x000000),
+			"LabelButton.font", new ASFontUIResource("Arial", 15, true, false, true),
 			],
 
 			"Class.darkHeader", [
@@ -139,13 +148,15 @@
 			"TextField.font", new ASFontUIResource("Arial", 12, true),
 			"TextField.foreground", new ASColorUIResource(0x000000),
 			"Label.font", new ASFontUIResource("Arial", 12, true),
-			"Label.foreground", new ASColorUIResource(0x000000)
+			"Label.foreground", new ASColorUIResource(0x000000),
+			"LabelButton.font", new ASFontUIResource("Arial", 11, true, false, true),			
 			],
 			"Class.Message.read", [
 			"TextField.font", new ASFontUIResource("Arial", 12, false),
 			"TextField.foreground", new ASColorUIResource(0x000000),
 			"Label.font", new ASFontUIResource("Arial", 12, false),
-			"Label.foreground", new ASColorUIResource(0x000000)
+			"Label.foreground", new ASColorUIResource(0x000000),
+			"LabelButton.font", new ASFontUIResource("Arial", 11, false, false, true),
 			],
 
 			"Class.Label.very_small", [

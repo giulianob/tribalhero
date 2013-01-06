@@ -1,13 +1,14 @@
 ﻿package src.Util.BinaryList {
+	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
+	import flash.utils.flash_proxy;
+	import flash.utils.Proxy;
 	import src.Util.Util;
 
-	/**
-	 * ...
-	 * @author Default
-	 */
-	public class BinaryList extends EventDispatcher {
+	public class BinaryList extends Proxy implements IEventDispatcher {
 
+		private var dispatcher: EventDispatcher;
 		private var dirty: Boolean;
 		private var sortFunc: Function;
 		private var compareFunc: Function;
@@ -15,6 +16,7 @@
 		private var list: Array = new Array();
 
 		public function BinaryList(sortFunc: Function, compareFunc: Function) {
+			this.dispatcher = new EventDispatcher(this);
 			this.sortFunc = sortFunc;
 			this.compareFunc = compareFunc;
 		}
@@ -28,15 +30,10 @@
 			return list;
 		}
 
-		public function each(): Array
-		{
-			return list;
-		}
-
 		public function clear():void
 		{
 			list = new Array();
-			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED));
+			dispatcher.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED));
 		}
 
 		public function add(obj: *, sorted: Boolean = true):void
@@ -53,8 +50,8 @@
 				}
 			}
 
-			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED, obj));
-			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.ADDED, obj));
+			dispatcher.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED, obj));
+			dispatcher.dispatchEvent(new BinaryListEvent(BinaryListEvent.ADDED, obj));
 		}
 
 		public function update(obj: *, val: Array) : void
@@ -66,8 +63,8 @@
 
 			list[idx] = obj;
 
-			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED));
-			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.UPDATED, obj));
+			dispatcher.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED));
+			dispatcher.dispatchEvent(new BinaryListEvent(BinaryListEvent.UPDATED, obj));
 		}
 
 		public function remove(val: *): *
@@ -85,9 +82,9 @@
 
 			list.splice(index, 1);
 
-			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED));
+			dispatcher.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED));
 
-			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.REMOVED, obj));
+			dispatcher.dispatchEvent(new BinaryListEvent(BinaryListEvent.REMOVED, obj));
 
 			return obj;
 		}
@@ -99,7 +96,7 @@
 				
 			list.sort(sortFunc);
 			dirty = false;
-			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED));
+			dispatcher.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED));
 		}
 
 		public function getByIndex(index: int): *
@@ -152,6 +149,65 @@
 			
 			list.splice(idxs[0], idxs.length);
 		}
+		
+		override flash_proxy function deleteProperty(name:*):Boolean {
+			return delete list[name];
+		}
+
+		override flash_proxy function getProperty(name:*):* {
+			return list[name];
+		}
+
+		override flash_proxy function hasProperty(name:*):Boolean {
+			return name in list;
+		}
+
+		override flash_proxy function nextNameIndex(index:int):int
+		{
+			if (index < list.length) return index + 1;
+			return 0;
+		}
+
+		override flash_proxy function nextName(index:int):String {
+			return String(index - 1);
+		}
+
+		override flash_proxy function nextValue(index:int):* {
+			return list[index - 1];
+		}		
+        
+		override flash_proxy function callProperty(methodName:*, ... args):*
+		{
+			var res:*;
+
+			switch (methodName.toString())
+			{
+				default:
+				res = list[methodName].apply(list, args);
+				break;
+			}
+			return res;
+		}        
+		
+		public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void{
+			dispatcher.addEventListener(type, listener, useCapture, priority);
+		}
+
+		public function dispatchEvent(evt: Event):Boolean{
+			return dispatcher.dispatchEvent(evt);
+		}
+
+		public function hasEventListener(type:String):Boolean{
+			return dispatcher.hasEventListener(type);
+		}
+
+		public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void{
+			dispatcher.removeEventListener(type, listener, useCapture);
+		}
+
+		public function willTrigger(type:String):Boolean {
+			return dispatcher.willTrigger(type);
+		}		
 	}
 
 }

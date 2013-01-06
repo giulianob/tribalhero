@@ -74,7 +74,7 @@ package src.Map {
 
 			var pos: Point = MapUtil.getMapCoord(x, y);
 
-			for each(var obj: CityObject in objects.each())
+			for each(var obj: CityObject in objects)
 			{
 				if (type != -1 && obj.type != type)
 				continue;
@@ -90,7 +90,7 @@ package src.Map {
 
 		public function getStructureOfType(type: int): CityObject
 		{
-			for each(var obj: CityObject in objects.each())
+			for each(var obj: CityObject in objects)
 			{
 				if (ObjectFactory.getClassType(obj.type) != ObjectFactory.TYPE_STRUCTURE)
 					continue;
@@ -106,7 +106,7 @@ package src.Map {
 		{
 			var ret: Array = new Array();
 
-			for each(var obj: CityObject in objects.each())
+			for each(var obj: CityObject in objects)
 			{
 				if (ObjectFactory.getClassType(obj.type) != ObjectFactory.TYPE_STRUCTURE)
 				continue;
@@ -124,7 +124,7 @@ package src.Map {
 		{
 			var ret: Array = new Array();
 
-			for each(var obj: CityObject in objects.each())
+			for each(var obj: CityObject in objects)
 			{
 				if (ObjectFactory.getClassType(obj.type) != ObjectFactory.TYPE_STRUCTURE)
 				continue;
@@ -142,7 +142,7 @@ package src.Map {
 		{
 			var ret: Array = new Array();
 
-			for each(var obj: CityObject in objects.each())
+			for each(var obj: CityObject in objects)
 			{
 				if (ObjectFactory.getClassType(obj.type) != classType)
 				continue;
@@ -162,7 +162,7 @@ package src.Map {
 
 			var pos: Point = MapUtil.getMapCoord(x, y);
 
-			for each(var obj: CityObject in objects.each())
+			for each(var obj: CityObject in objects)
 			{
 				if (type != -1 && obj.type != type)
 				continue;
@@ -179,7 +179,7 @@ package src.Map {
 		public function getBusyLaborCount() : int {
 			var labors: int = 0;
 
-			for each(var obj: CityObject in objects.each())
+			for each(var obj: CityObject in objects)
 			{
 				labors += obj.labor;
 			}

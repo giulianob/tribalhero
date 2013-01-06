@@ -1,6 +1,7 @@
 ﻿package src.UI.Components.BattleReport
 {
 
+	import src.Util.StringHelper;
 	import mx.utils.*;
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -38,6 +39,10 @@
 			
 			return frame;
 		}		
+		
+		private function troopName(troop: * ): String {
+			return StringUtil.substitute("{0} ({1})", troop.owner.name, troop.name == '[LOCAL]' ? StringHelper.localize("LOCAL_TROOP") : troop.name);
+		}
 
 		private function createUI(): void {			
 			setPreferredWidth(1100);
@@ -65,7 +70,7 @@
 						pnlDefense.setBorder(new SimpleTitledBorder(null, "Defense", AsWingConstants.TOP, AsWingConstants.LEFT));
 						{										
 							for each (var defense: Object in snapshot.defenders) {
-								pnlDefense.appendTab(new TroopTable(defense.units), defense.name);
+								pnlDefense.appendTab(new TroopTable(defense.units), troopName(defense));
 							}
 						}
 
@@ -73,7 +78,7 @@
 						pnlAttack.setBorder(new SimpleTitledBorder(null, "Attack", AsWingConstants.TOP, AsWingConstants.LEFT));
 						{						
 							for each (var attack: Object in snapshot.attackers) {
-								pnlAttack.appendTab(new TroopTable(attack.units), attack.name);
+								pnlAttack.appendTab(new TroopTable(attack.units), troopName(attack));
 							}
 						}
 						

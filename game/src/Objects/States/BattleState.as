@@ -3,17 +3,14 @@ package src.Objects.States
 	import flash.display.DisplayObject;
 	import src.Objects.GameObject;
 	import src.Objects.SimpleGameObject;
-	/**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
+
 	public class BattleState extends GameObjectState
 	{
-		public var battleCityId: int;
+		public var battleId: int;
 		
-		public function BattleState(battleCityId: int) 
+		public function BattleState(battleId: int) 
 		{
-			this.battleCityId = battleCityId;
+			this.battleId = battleId;
 		}
 		
 		override public function getStateType():int 
@@ -26,6 +23,9 @@ package src.Objects.States
 			return new ICON_BATTLE();
 		}
 		
+		override public function equals(other: GameObjectState): Boolean {
+			return other is BattleState && (other as BattleState).battleId === battleId;
+		}
 	}
 
 }

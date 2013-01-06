@@ -1,6 +1,6 @@
 package src.Map.CityRegionFilters 
 {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import src.Map.CityRegionFilters.CityRegionFilter;
 	import src.Map.CityRegionLegend;
 	import src.Map.CityRegionObject;
@@ -47,29 +47,29 @@ package src.Map.CityRegionFilters
 		
 		override public function applyLegend(legend: CityRegionLegend) : void {
 			var icon: DisplayObject = new DOT_SPRITE;
-			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_CITY"));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_CITY"));
 			
 			icon = new DOT_SPRITE;
 			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[4].r, DEFAULT_COLORS[4].g, DEFAULT_COLORS[4].b);
-			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_ALIGNMENT_90"));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_ALIGNMENT_90"));
 			
 			icon = new DOT_SPRITE;
 			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[3].r, DEFAULT_COLORS[3].g, DEFAULT_COLORS[3].b);
-			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_ALIGNMENT_75"));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_ALIGNMENT_75"));
 
 			icon = new DOT_SPRITE;
 			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[2].r, DEFAULT_COLORS[2].g, DEFAULT_COLORS[2].b);
-			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_ALIGNMENT_50"));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_ALIGNMENT_50"));
 
 			icon = new DOT_SPRITE;
 			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[1].r, DEFAULT_COLORS[1].g, DEFAULT_COLORS[1].b);
-			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_ALIGNMENT_25"));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_ALIGNMENT_25"));
 
 			icon = new DOT_SPRITE;
 			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[0].r, DEFAULT_COLORS[0].g, DEFAULT_COLORS[0].b);
-			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_ALIGNMENT_10"));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_ALIGNMENT_10"));
 			
-			legend.setLegendTitle(Locale.loadString("MINIMAP_LEGEND_ALIGNMENT"));
+			legend.setLegendTitle(StringHelper.localize("MINIMAP_LEGEND_ALIGNMENT"));
 		}
 	}
 }

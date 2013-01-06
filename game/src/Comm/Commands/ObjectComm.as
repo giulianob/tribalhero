@@ -58,44 +58,59 @@
 			}
 		}
 		
-		public function readObject(packet: Packet, regionId: int) : SimpleGameObject {
-			var objType: int = packet.readUShort();
-			var objX: int = packet.readUShort() + MapUtil.regionXOffset(regionId);
-			var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);
+		public function readObject(packet: Packet, regionId: int, forRegion: Boolean = false) : * {
+			var obj: * = {
+				type: packet.readUShort(),
+				x: packet.readUShort() + MapUtil.regionXOffset(regionId),
+				y: packet.readUShort() + MapUtil.regionYOffset(regionId),	
+				groupId: packet.readUInt(),
+				id: packet.readUInt()
+			};
 			
-			var objGroupId: int = packet.readUInt();
-			var objId: int = packet.readUInt();
-			
-			var objPlayerId: int;
-			var objLvl: int;
-			switch(ObjectFactory.getClassType(objType)) {
+			switch(ObjectFactory.getClassType(obj.type)) {
 				case ObjectFactory.TYPE_STRUCTURE:
-					objPlayerId = packet.readUInt();
-					objLvl = packet.readUByte();						
+					obj.playerId = packet.readUInt();
+					obj.lvl = packet.readUByte();		
+					obj.labor = forRegion ? 0 : packet.readUShort();
+						
+					if (obj.id == 1) {
+						obj.wallRadius = packet.readUByte();
+					}
 					break;
 				case ObjectFactory.TYPE_FOREST:
-					objLvl = packet.readUByte();						
+					obj.lvl = packet.readUByte();						
 					break;
 				case ObjectFactory.TYPE_TROOP_OBJ:
-					objPlayerId = packet.readUInt();
+					obj.playerId = packet.readUInt();
 					break;
-			} 							
-			
-			var objState: GameObjectState = readState(packet);
-			
-			var coord: Point = MapUtil.getScreenCoord(objX, objY);
-			
-			switch(ObjectFactory.getClassType(objType)) {
-				case ObjectFactory.TYPE_STRUCTURE:
-					var wallRadius: int = objId == 1 ? packet.readUByte() : 0;
-					return StructureFactory.getInstance(objType, objState, coord.x, coord.y, objPlayerId, objGroupId, objId, objLvl, wallRadius);
-				case ObjectFactory.TYPE_FOREST:
-					return ForestFactory.getInstance(objType, objState, coord.x, coord.y, objGroupId, objId, objLvl);
-				case ObjectFactory.TYPE_TROOP_OBJ:
-					return TroopFactory.getInstance(objType, objState, coord.x, coord.y, objPlayerId, objGroupId, objId);
+				case ObjectFactory.TYPE_STRONGHOLD:
+					obj.lvl = packet.readUByte();
+					obj.tribeId = packet.readUInt();
+					break;
 			}
 			
-			return null;
+			obj.state = readState(packet);
+			
+			return obj;
+		}
+			
+		public function readObjectInstance(packet: Packet, regionId: int, forRegion: Boolean = false): SimpleGameObject {
+			var obj: * = readObject(packet, regionId, forRegion);
+			
+			var coord: Point = MapUtil.getScreenCoord(obj.x, obj.y);
+			
+			switch(ObjectFactory.getClassType(obj.type)) {
+				case ObjectFactory.TYPE_STRUCTURE:
+					return StructureFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.playerId, obj.groupId, obj.id, obj.lvl, obj.wallRadius);
+				case ObjectFactory.TYPE_FOREST:
+					return ForestFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.groupId, obj.id, obj.lvl);
+				case ObjectFactory.TYPE_TROOP_OBJ:
+					return TroopFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.playerId, obj.groupId, obj.id);
+				case ObjectFactory.TYPE_STRONGHOLD:
+					return StrongholdFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.groupId, obj.id, obj.lvl, obj.tribeId);
+				default:
+					throw new Error("Trying to unread unknown object class type " + obj.type);
+			}
 		}
 
 		public function readState(packet: Packet) : GameObjectState {
@@ -105,19 +120,13 @@
 			{
 				case SimpleGameObject.STATE_NORMAL:
 					return new GameObjectState();
-				break;
 				case SimpleGameObject.STATE_BATTLE:
-					var battleCityId: int = packet.readUInt();
-					return new BattleState(battleCityId);
-				break;
+					var battleId: int = packet.readUInt();
+					return new BattleState(battleId);
 				case SimpleGameObject.STATE_MOVING:
-					var destX: int = 0;
-					var destY: int = 0;
-					return new MovingState(destX, destY);
-				break;
+					return new MovingState();
 				default:
-					Util.log("Unknown object state in onReceiveRegion:" + objState);
-				break;
+					throw new Error("Unknown object state in onReceiveRegion:" + objState);
 			}
 			
 			return null;
@@ -217,6 +226,37 @@
 		}
 
 		public function onReceiveTribeUsername(packet: Packet, custom: *):void
+		{
+			packet.readUByte(); //just doing 1 username now
+
+			var id: int = packet.readUInt();
+			var username: String = packet.readString();
+
+			custom[0](id, username, custom[1]);
+		}
+		
+		public function getStrongholdUsername(id: int, callback: Function, custom: * = null) : void
+		{
+			if (id <= 0) {
+				callback(id, "System", custom);
+				return;
+			}
+			
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.STRONGHOLD_USERNAME_GET;
+			packet.writeUByte(1); //just doing 1 username now
+			packet.writeUInt(id);
+
+			var pass: Array = new Array();
+			pass.push(callback);
+			pass.push(custom);
+			pass.push(id);
+
+			session.write(packet, onReceivePlayerUsername, pass);
+		
+		}
+
+		public function onReceiveStrongholdUsername(packet: Packet, custom: *):void
 		{
 			packet.readUByte(); //just doing 1 username now
 
@@ -443,7 +483,7 @@
 		{
 			var regionId: int = packet.readUShort();
 			
-			var obj: SimpleGameObject = readObject(packet, regionId);
+			var obj: SimpleGameObject = readObjectInstance(packet, regionId);
 			
 			Global.map.regions.updateObject(regionId, obj);
 		}
@@ -452,11 +492,9 @@
 		{
 			var regionId: int = packet.readUShort();
 
-			var obj: SimpleGameObject = readObject(packet, regionId);
+			var obj: SimpleGameObject = readObjectInstance(packet, regionId);
 			
-			Global.map.regions.addObject(regionId, obj);
-
-			obj.fadeIn();
+			Global.map.regions.addObject(regionId, obj);			
 		}
 
 		public function onRemoveObject(packet: Packet):void
@@ -473,7 +511,7 @@
 			var oldRegionId: int = packet.readUShort();
 			var newRegionId: int = packet.readUShort();
 			
-			var obj: SimpleGameObject = readObject(packet, newRegionId);
+			var obj: SimpleGameObject = readObjectInstance(packet, newRegionId);
 			
 			Global.map.regions.moveObject(oldRegionId, newRegionId, obj);
 		}

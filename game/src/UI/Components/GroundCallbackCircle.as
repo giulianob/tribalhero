@@ -16,6 +16,8 @@
 		private var callback: Function;
 
 		public function GroundCallbackCircle(size: int, callback: Function) {
+			super( -10, -10);
+			
 			this.size = size;
 			this.callback = callback;
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);

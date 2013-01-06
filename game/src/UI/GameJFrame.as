@@ -38,7 +38,7 @@
 			
 			addEventListener(KeyboardEvent.KEY_DOWN, function(e: KeyboardEvent): void {
 				if (e.keyCode == Keyboard.ESCAPE) {
-					if (isClosable()) {						
+					if (getTitleBar() && isClosable() && getTitleBar().getCloseButton()) {						
 						getTitleBar().getCloseButton().doClick();
 						e.stopImmediatePropagation();
 					}

@@ -92,7 +92,7 @@
 				return a.endTime - value;
 			});
 
-			for each(var notification: Notification in city.notifications.each()) {
+			for each(var notification: Notification in city.notifications) {
 				// Don't show notifications from ourselves
 				if (notification.cityId == city.id) continue;
 				
@@ -101,7 +101,7 @@
 			
 			notifications.sort();
 			
-			for each (notification in notifications.each()) {
+			for each (notification in notifications) {
 				(getModel() as VectorListModel).append( {'cityId': city.id, 'notification': notification, 'local': notification.cityId == city.id} );
 			}
 		}

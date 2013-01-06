@@ -14,6 +14,7 @@
 	import src.UI.*;
 	import src.UI.Components.*;
 	import src.UI.LookAndFeel.*;
+	import src.Util.StringHelper;
 	import src.Util.Util;
 	
 	public class PlayerProfileDialog extends GameJPanel
@@ -131,7 +132,7 @@
 			pnlHeader.appendAll(lblPlayerName);
 			
 			if (profileData.tribeId > 0) {
-				var lblTribe: RichLabel = new RichLabel(StringUtil.substitute('<a href="event:viewTribeProfile:{0}">{1}</a> ({2})', profileData.tribeId, profileData.tribeName, Locale.loadString("TRIBE_RANK_" + profileData.tribeRank)));
+				var lblTribe: RichLabel = new RichLabel(StringUtil.substitute('<a href="event:viewTribeProfile:{0}">{1}</a> ({2})', profileData.tribeId, profileData.tribeName, StringHelper.localize("TRIBE_RANK_" + profileData.tribeRank)));
 				pnlHeader.append(lblTribe);
 			}
 			
@@ -173,15 +174,15 @@
 				// Build the list of "City1 - About 10 min away"
 				var distanceMsg: String = "";
 				
-				for each (var myCity: City in Global.map.cities.each()) {
+				for each (var myCity: City in Global.map.cities) {
 					var distance: int = myCity.MainBuilding.distance(city.x, city.y);
 					var timeAwayInSeconds: int = Formula.moveTimeTotal(myCity, 12, distance, true);
 		
-					distanceMsg += StringUtil.substitute(Locale.loadString("PLAYER_PROFILE_DIALOG_CITY_DISTANCE") + "\n", myCity.name, Util.niceTime(timeAwayInSeconds));
+					distanceMsg += StringHelper.localize("PLAYER_PROFILE_DIALOG_CITY_DISTANCE", myCity.name, Util.niceTime(timeAwayInSeconds)) + "\n";
 				}
 				
 				var cityDistanceTooltip: SimpleTooltip = new SimpleTooltip(lblCityName, distanceMsg);
-				var footerDistanceTooltipLabel: MultilineLabel = new MultilineLabel(Locale.loadString("PLAYER_PROFILE_DIALOG_CITY_DISTANCE_FOOTER"), 0, 20);
+				var footerDistanceTooltipLabel: MultilineLabel = new MultilineLabel(StringHelper.localize("PLAYER_PROFILE_DIALOG_CITY_DISTANCE_FOOTER"), 0, 20);
 				GameLookAndFeel.changeClass(footerDistanceTooltipLabel, "Tooltip.italicsText");
 				cityDistanceTooltip.append(footerDistanceTooltipLabel);				
 				

@@ -48,8 +48,9 @@ package src.UI.Cursors {
 			
 			destroyableArea.alpha = 0.3;
 			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
-			destroyableArea.setX(point.x); destroyableArea.setY(point.y);
-			destroyableArea.moveWithCamera(src.Global.gameContainer.camera);
+			destroyableArea.objX = point.x; 
+			destroyableArea.objY = point.y;
+			
 			Global.map.objContainer.addObject(destroyableArea, ObjectContainer.LOWER);
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
@@ -142,8 +143,8 @@ package src.UI.Cursors {
 				if (cursor.stage != null) 
 					Global.map.objContainer.removeObject(cursor);
 					
-				cursor.setX(objX); cursor.setY(objY);
-				cursor.moveWithCamera(src.Global.gameContainer.camera);
+				cursor.objX = objX;
+				cursor.objY = objY;
 				
 				Global.map.objContainer.addObject(cursor);
 				
@@ -163,7 +164,7 @@ package src.UI.Cursors {
 
 			// Make sure that buildings have a path back to the city without this point				
 			var breaksPath: Boolean = false;
-			for each(var cityObject: CityObject in city.objects.each()) {
+			for each(var cityObject: CityObject in city.objects) {
 				if (ObjectFactory.getClassType(cityObject.type) != ObjectFactory.TYPE_STRUCTURE) 
 					continue;
 					

@@ -77,7 +77,7 @@
 			city.troops.addEventListener(BinaryListEvent.REMOVED, onTroopRemoved);
 			city.troops.addEventListener(BinaryListEvent.UPDATED, onTroopUpdated);
 
-			for each (var troop: TroopStub in city.troops.each()) {
+			for each (var troop: TroopStub in city.troops) {
 				addTroop(troop);
 			}
 		}

@@ -1,14 +1,13 @@
-/**
-* ...
-* @author Default
-* @version 0.1
-*/
 
 package src.Objects {
 
+	import com.greensock.easing.Ease;
+	import com.greensock.easing.Elastic;
+	import com.greensock.TweenMax;
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
+	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.TimerEvent;
@@ -19,36 +18,59 @@ package src.Objects {
 	import src.Map.Camera;
 	import src.UI.SmartMovieClip;
 	
-	public class SimpleObject extends SmartMovieClip implements IScrollableObject {
+	public class SimpleObject extends SmartMovieClip {
+		
+		public static const DISPOSED: String = "DISPOSED";
 		
 		public var disposed: Boolean;
-		
-		public var objX: int;
-		public var objY: int;
-		
+				
 		private var onSelect: Function;
 		protected var selected: Boolean;						
 		
-		public var objectCount: DisplayObject;		
+		public var objectCount: DisplayObject;				
 		
-		public function SimpleObject() {
+		// This is the container where the objects sprite/image should go
+		public var spriteContainer: Sprite;
+		
+		private var _objX: int;
+		private var _objY: int;
+					
+		public function SimpleObject(objX: int, objY: int) {
 			super();
 			
-			addEventListener(Event.REMOVED_FROM_STAGE, function(e: Event) : void {
-				if (objectCount != null) {
-					removeChild(objectCount);
-					objectCount = null;
-				}
-			});					
+			spriteContainer = new Sprite();
+			addChild(spriteContainer);
+			
+			this.objX = objX;
+			this.objY = objY;			
+		}
+		
+		public function copy(obj: SimpleObject): void {
+			for (var i: int = spriteContainer.numChildren - 1; i >= 0; i--) {
+				spriteContainer.removeChildAt(i);				
+			}
+			
+			for (i = obj.spriteContainer.numChildren - 1; i >= 0; i--) {
+				spriteContainer.addChildAt(obj.spriteContainer.removeChildAt(i), 0);				
+			}
+			
+			objX = obj.objX;
+			objY = obj.objY;
+			x = obj.x;
+			y = obj.y;
 		}
 		
 		public function setObjectCount(count: int) : void {
+			var simpleObj: SimpleGameObject = this as SimpleGameObject;
+		
 			if (objectCount != null) {
 				removeChild(objectCount);			
 				objectCount = null;
 			}
 			
-			if (count <= 1) return;		
+			if (count <= 1) {
+				return;		
+			}
 			
 			var bubble: CountBubble = new CountBubble();
 			bubble.mouseChildren = false;
@@ -65,28 +87,19 @@ package src.Objects {
 		
 		public function dispose(): void {
 			disposed = true;
-			if (objectCount) removeChild(objectCount);			
+			if (objectCount != null) {
+				removeChild(objectCount);
+				objectCount = null;
+			}
+			dispatchEvent(new Event(DISPOSED));
 		}
 		
 		public function fadeIn():void
 		{
 			alpha = 0;
-			var t:Timer = new Timer(50, 20);
-			t.addEventListener(TimerEvent.TIMER, fadeInTimer);
-			t.start();
+			TweenMax.to(this, 1, {alpha:1});
 		}
-		
-		private function fadeInTimer(event: TimerEvent):void
-		{
-			alpha += 0.05;
-		}
-		
-		public function moveWithCamera(camera: Camera):void
-		{
-			x = objX - camera.x;
-			y = objY - camera.y;
-		}
-		
+			
 		public function setOnSelect(callback: Function):void
 		{
 			onSelect = callback;
@@ -120,40 +133,14 @@ package src.Objects {
 				filters = [new GlowFilter(0xFFDD00, 0.5, 16, 16, 3)];			
 		}		
 		
-		public function getX(): int
-		{
-			return objX;
-		}
-		
-		public function getY(): int
-		{
-			return objY;
-		}		
-		
-		public function setX(x: int):void
-		{
-			objX = x;
-		}
-		
-		public function setY(y: int):void
-		{
-			objY = y;
-		}
-		
-		public function setXY(x: int, y: int):void
-		{
-			setX(x);
-			setY(y);
-		}		
-		
 		public function distance(x_1: int, y_1: int): int
 		{
 			var offset: int = 0;
 
 			var objPos: Point = new Point();
 
-			objPos.x = getX();
-			objPos.y = getY();
+			objPos.x = objX;
+			objPos.y = objY;
 
 			if (objPos.y % 2 == 1 && y_1 % 2 == 0 && x_1 <= objPos.x) offset = 1;
 			if (objPos.y % 2 == 0 && y_1 % 2 == 1 && x_1 >= objPos.x) offset = 1;
@@ -161,12 +148,12 @@ package src.Objects {
 			return ((x_1 > objPos.x ? x_1 - objPos.x : objPos.x - x_1) + (y_1 > objPos.y ? y_1 - objPos.y : objPos.y - y_1) / 2 + offset);
 		}		
 		
-		public static function sortOnXandY(a: IScrollableObject, b: IScrollableObject):Number {
-			var aX:Number = a.getX();
-			var bX:Number = b.getX();
+		public static function sortOnXandY(a: SimpleObject, b: SimpleObject):Number {
+			var aX:Number = a.objX;
+			var bX:Number = b.objX;
 
-			var aY:Number = a.getY();
-			var bY:Number = b.getY();
+			var aY:Number = a.objY;
+			var bY:Number = b.objY;
 			
 			if (aX > bX)
 				return 1;
@@ -180,10 +167,10 @@ package src.Objects {
 				return 0;
 		}		
 		
-		public static function compareXAndY(a: IScrollableObject, value: Array):int
+		public static function compareXAndY(a: SimpleObject, value: Array):int
 		{
-			var xDelta: int = a.getX() - value[0];
-			var yDelta: int = a.getY() - value[1];
+			var xDelta: int = a.objX - value[0];
+			var yDelta: int = a.objY - value[1];
 			
 			if (xDelta != 0)
 				return xDelta;
@@ -193,6 +180,28 @@ package src.Objects {
 			else
 				return 0;
 		}			
+		
+		public function get objX():int 
+		{
+			return _objX;
+		}
+		
+		public function set objX(value:int):void 
+		{
+			_objX = value;
+			x = value;
+		}
+		
+		public function get objY():int 
+		{
+			return _objY;
+		}
+		
+		public function set objY(value:int):void 
+		{
+			_objY = value;
+			y = value;
+		}
 	}
 	
 }

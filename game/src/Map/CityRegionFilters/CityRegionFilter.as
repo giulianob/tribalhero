@@ -1,6 +1,6 @@
 package src.Map.CityRegionFilters 
 {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import org.aswing.AssetIcon;
 	import src.Constants;
 	import src.Map.CityRegionLegend;
@@ -42,6 +42,9 @@ package src.Map.CityRegionFilters
 					break;
 				case ObjectFactory.TYPE_CITY:
 					applyCity(obj);
+					break;
+				case ObjectFactory.TYPE_STRONGHOLD:
+					applyStronghold(obj);
 					break;
 			}
 		}
@@ -91,32 +94,44 @@ package src.Map.CityRegionFilters
 				obj.addChild(img);
 			}
 		}
+		public function applyStronghold(obj: CityRegionObject) : void {
+			var img: DisplayObject = ObjectFactory.getIcon("MINIMAP_FOREST_ICON");
+			obj.sprite = img;
+			obj.sprite.transform.colorTransform = new ColorTransform(0, 0, 0, 1, 255, 255, 0);
+			obj.addChild(img);
+			
+			var icon: MINIMAP_FOREST_ICON = obj.sprite as MINIMAP_FOREST_ICON;
+			icon.lvlText.mouseEnabled = false;
+			icon.useHandCursor = true;
+			icon.lvlText.text = obj.extraProps.level.toString();
+			obj.alpha = 0.5;
+		}
 		
 		public function applyLegend(legend: CityRegionLegend) : void {
 			var icon: DisplayObject = new DOT_SPRITE;
-			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_CITY"));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_CITY"));
 			
 			icon = new DOT_SPRITE;
 			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[4].r, DEFAULT_COLORS[4].g, DEFAULT_COLORS[4].b);
-			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_DIFFICULTY_STRONGEST"));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_DIFFICULTY_STRONGEST"));
 			
 			icon = new DOT_SPRITE;
 			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[3].r, DEFAULT_COLORS[3].g, DEFAULT_COLORS[3].b);
-			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_DIFFICULTY_STRONG"));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_DIFFICULTY_STRONG"));
 
 			icon = new DOT_SPRITE;
 			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[2].r, DEFAULT_COLORS[2].g, DEFAULT_COLORS[2].b);
-			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_DIFFICULTY_NORMAL"));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_DIFFICULTY_NORMAL"));
 
 			icon = new DOT_SPRITE;
 			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[1].r, DEFAULT_COLORS[1].g, DEFAULT_COLORS[1].b);
-			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_DIFFICULTY_WEAK"));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_DIFFICULTY_WEAK"));
 
 			icon = new DOT_SPRITE;
 			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[0].r, DEFAULT_COLORS[0].g, DEFAULT_COLORS[0].b);
-			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_DIFFICULTY_WEAKEST"));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_DIFFICULTY_WEAKEST"));
 			
-			legend.setLegendTitle(Locale.loadString("MINIMAP_LEGEND_DIFFICULTY"));
+			legend.setLegendTitle(StringHelper.localize("MINIMAP_LEGEND_DIFFICULTY"));
 		}
 		
 	}

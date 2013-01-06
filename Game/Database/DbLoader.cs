@@ -808,7 +808,9 @@ namespace Game.Database
                     {
                             State = (TroopState)Enum.Parse(typeof(TroopState), reader["state"].ToString(), true),
                             DbPersisted = true,
-                            RetreatCount = (ushort)reader["retreat_count"]
+                            InitialCount = (ushort)reader["initial_count"],
+                            RetreatCount = (ushort)reader["retreat_count"],
+                            AttackMode = (AttackMode)((byte)reader["attack_mode"]),
                     };
 
                     var formationMask = (ushort)reader["formations"];

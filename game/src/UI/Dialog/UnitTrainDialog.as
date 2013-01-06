@@ -14,6 +14,7 @@ package src.UI.Dialog {
 	import src.UI.GameJPanel;
     import src.Util.StringHelper;
 	import src.Util.Util;
+	import src.Objects.Prototypes.EffectPrototype;
 
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -70,11 +71,18 @@ package src.UI.Dialog {
 		}
 
 		private function updateResources(e: Event = null) : void {
-			var totalUpkeep: int = (unitPrototype.upkeep * sldAmount.getValue());
-			lblUpkeep.setText(StringHelper.localize("STR_PER_HOUR", -(totalUpkeep/Constants.secondsPerUnit)));
+			var reduceUpkeep: int = 100;
+			for each (var tech: EffectPrototype in city.techManager.getEffects(EffectPrototype.EFFECT_REDUCE_UPKEEP, EffectPrototype.INHERIT_ALL)) {
+				if (tech.param2.indexOf(unitPrototype.type.toString()) != -1) {
+					reduceUpkeep -= (int) (tech.param1);				
+				} 
+			}
+
+			var totalUpkeep: Number = (unitPrototype.upkeep * sldAmount.getValue()) * Math.max(reduceUpkeep, 70) / 100;
+			lblUpkeep.setText(StringHelper.localize("STR_PER_HOUR", -(Math.ceil(totalUpkeep / Constants.secondsPerUnit))));
 
 			var cityResources: LazyResources = city.resources;
-			pnlUpkeepMsg.setVisible((cityResources.crop.getUpkeep() + totalUpkeep) > cityResources.crop.getRate());
+			pnlUpkeepMsg.setVisible((cityResources.crop.getUpkeep() + Math.ceil(totalUpkeep)) > cityResources.crop.getRate());
 
 			var cost: Resources = Formula.unitTrainCost(city, unitPrototype);
 

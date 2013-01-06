@@ -1,11 +1,12 @@
 ﻿package src.Map {
-	import src.Objects.Factories.StructureFactory;
-	import src.Objects.Prototypes.EffectPrototype;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.TechnologyManager;
+	import src.Objects.*;
+	import src.Objects.Factories.*;
+	import src.Objects.Prototypes.*;
+	import src.Objects.States.GameObjectState;
 	import src.Util.BinaryList.*;
 
 	public class CityObject {
+		public var state:GameObjectState;
 
 		public var type: int;
 		public var level: int;
@@ -17,7 +18,8 @@
 
 		public var techManager: TechnologyManager;
 
-		public function CityObject(city: City, objectId: int, type: int, level: int, x: int, y: int, labor: int) {
+		public function CityObject(city: City, objectId: int, type: int, level: int, state: GameObjectState, x: int, y: int, labor: int) {
+			this.state = state;
 			this.city = city;
 			this.objectId = objectId;
 			this.type = type;

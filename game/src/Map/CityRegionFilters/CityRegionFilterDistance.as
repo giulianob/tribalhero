@@ -1,6 +1,6 @@
 package src.Map.CityRegionFilters 
 {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import mx.utils.StringUtil;
 	import src.Map.CityRegionFilters.CityRegionFilter;
 	import src.Map.CityRegionLegend;
@@ -12,6 +12,7 @@ package src.Map.CityRegionFilters
 	import flash.events.*;
 	import src.Global;
 	import flash.display.*;
+	import src.Util.StringHelper;
 	/**
 	 * ...
 	 * @author Anthony Lam
@@ -36,7 +37,7 @@ package src.Map.CityRegionFilters
 				obj.sprite = img;
 				
 				// Apply the difficulty transformation to the tile
-				var point: Point = MapUtil.getScreenMinimapToMapCoord(obj.getX(), obj.getY());
+				var point: Point = MapUtil.getScreenMinimapToMapCoord(obj.x, obj.y);
 				var distance: int = MapUtil.distance(point.x, point.y, Global.gameContainer.selectedCity.MainBuilding.x, Global.gameContainer.selectedCity.MainBuilding.y);
 				var distanceIdx: int;
 				if (distance <= 100) distanceIdx = 4;
@@ -52,29 +53,29 @@ package src.Map.CityRegionFilters
 		
 		override public function applyLegend(legend: CityRegionLegend) : void {
 			var icon: DisplayObject = new DOT_SPRITE;
-			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_CITY"));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_CITY"));
 			
 			icon = new DOT_SPRITE;
 			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[4].r, DEFAULT_COLORS[4].g, DEFAULT_COLORS[4].b);
-			legend.add(icon, StringUtil.substitute(Locale.loadString("MINIMAP_LEGEND_DISTANCE_LESS_THAN"),100));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_DISTANCE_LESS_THAN",100));
 			
 			icon = new DOT_SPRITE;
 			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[3].r, DEFAULT_COLORS[3].g, DEFAULT_COLORS[3].b);
-			legend.add(icon, StringUtil.substitute(Locale.loadString("MINIMAP_LEGEND_DISTANCE_LESS_THAN"),200));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_DISTANCE_LESS_THAN",200));
 
 			icon = new DOT_SPRITE;
 			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[2].r, DEFAULT_COLORS[2].g, DEFAULT_COLORS[2].b);
-			legend.add(icon, StringUtil.substitute(Locale.loadString("MINIMAP_LEGEND_DISTANCE_LESS_THAN"),300));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_DISTANCE_LESS_THAN",300));
 
 			icon = new DOT_SPRITE;
 			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[1].r, DEFAULT_COLORS[1].g, DEFAULT_COLORS[1].b);
-			legend.add(icon, StringUtil.substitute(Locale.loadString("MINIMAP_LEGEND_DISTANCE_LESS_THAN"),400));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_DISTANCE_LESS_THAN",400));
 
 			icon = new DOT_SPRITE;
 			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[0].r, DEFAULT_COLORS[0].g, DEFAULT_COLORS[0].b);
-			legend.add(icon, Locale.loadString("MINIMAP_LEGEND_DISTANCE_500"));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_DISTANCE_500"));
 			
-			legend.setLegendTitle(Locale.loadString("MINIMAP_LEGEND_DISTANCE"));
+			legend.setLegendTitle(StringHelper.localize("MINIMAP_LEGEND_DISTANCE"));
 		}
 	}
 }

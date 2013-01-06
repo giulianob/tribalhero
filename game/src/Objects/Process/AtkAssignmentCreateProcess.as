@@ -11,29 +11,31 @@ package src.Objects.Process
 	import src.Map.MapUtil;
 	import src.Objects.Effects.Formula;
 	import src.Objects.GameObject;
+	import src.Objects.SimpleGameObject;
+	import src.Objects.Stronghold.Stronghold;
+	import src.Objects.StructureObject;
 	import src.Objects.Troop.TroopStub;
 	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
 	import src.UI.Cursors.GroundAttackCursor;
 	import src.UI.Dialog.AssignmentCreateDialog;
 	import src.UI.Dialog.AttackTroopDialog;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
-	/**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
+	
 	public class AtkAssignmentCreateProcess implements IProcess
 	{		
 		private var attackDialog: AttackTroopDialog;		
-		private var target: GameObject;
+		private var target: SimpleGameObject;
+		private var sourceCity:City;
 		
-		public function AtkAssignmentCreateProcess() 
+		public function AtkAssignmentCreateProcess(sourceCity: City) 
 		{
+			this.sourceCity = sourceCity;
 			
 		}
 		
 		public function execute(): void
 		{
-			attackDialog = new AttackTroopDialog(onChoseUnits);
+			attackDialog = new AttackTroopDialog(sourceCity, onChoseUnits);
 			
 			attackDialog.show();
 		}
@@ -60,12 +62,11 @@ package src.Objects.Process
 			Global.gameContainer.setOverlaySprite(null);
 			Global.gameContainer.setSidebar(null);
 			
-			var troop: TroopStub = attackDialog.getTroop();
-			var city: City = Global.gameContainer.selectedCity;
-			var targetMapDistance: Point = MapUtil.getMapCoord(target.getX(), target.getY());
-			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
+			var troop: TroopStub = attackDialog.getTroop();			
+			var targetMapDistance: Point = MapUtil.getMapCoord(target.objX, target.objY);
+			var distance: int = sourceCity.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 			
-			var assignmentDialog: AssignmentCreateDialog = new AssignmentCreateDialog(Formula.moveTimeTotal(city, troop.getSpeed(city), distance, true), onChoseTime);
+			var assignmentDialog: AssignmentCreateDialog = new AssignmentCreateDialog(Formula.moveTimeTotal(sourceCity, troop.getSpeed(sourceCity), distance, true), onChoseTime);
 			assignmentDialog.show();
 		}
 		
@@ -80,8 +81,11 @@ package src.Objects.Process
 		public function onChoseTime(assignmentDialog: AssignmentCreateDialog): void
 		{
 			assignmentDialog.getFrame().dispose();
-			
-			Global.mapComm.Troop.assignmentCreate(Global.gameContainer.selectedCity.id, target.cityId, target.objectId, assignmentDialog.getTime(), attackDialog.getMode(), attackDialog.getTroop(), assignmentDialog.getDescription(),true);
+			if (target is StructureObject) {
+				Global.mapComm.Troop.cityAssignmentCreate(sourceCity.id, target.groupId, target.objectId, assignmentDialog.getTime(), attackDialog.getMode(), attackDialog.getTroop(), assignmentDialog.getDescription(),true);
+			} else if (target is Stronghold) {
+				Global.mapComm.Troop.strongholdAssignmentCreate(sourceCity.id, target.objectId, assignmentDialog.getTime(), attackDialog.getMode(), attackDialog.getTroop(), assignmentDialog.getDescription(),true);
+			}
 		}
 	}
 

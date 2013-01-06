@@ -1,11 +1,16 @@
 package src.Objects.Process 
 {
-	import fl.lang.Locale;
+	import src.Map.City;
+	import src.Util.StringHelper;
 	import flash.events.Event;
 	import org.aswing.JButton;
 	import org.aswing.JOptionPane;
 	import src.Global;
 	import src.Objects.GameObject;
+	import src.Objects.Location;
+	import src.Objects.SimpleGameObject;
+	import src.Objects.Stronghold.Stronghold;
+	import src.Objects.StructureObject;
 	import src.UI.Cursors.GroundAttackCursor;
 	import src.UI.Dialog.AttackTroopDialog;
 	import src.UI.Dialog.InfoDialog;
@@ -14,16 +19,19 @@ package src.Objects.Process
 	public class AttackSendProcess implements IProcess
 	{		
 		private var attackDialog: AttackTroopDialog;		
-		private var target: GameObject;
+		private var target: SimpleGameObject;
+		private var targetLocation: Location;
+		private var sourceCity:City;
 		
-		public function AttackSendProcess() 
+		public function AttackSendProcess(sourceCity: City, targetLocation: Location = null) 
 		{
-			
+			this.sourceCity = sourceCity;
+			this.targetLocation = targetLocation;
 		}
 		
 		public function execute(): void 
 		{
-			attackDialog = new AttackTroopDialog(onChoseUnits);			
+			attackDialog = new AttackTroopDialog(sourceCity, onChoseUnits);			
 			
 			attackDialog.show();
 		}
@@ -31,6 +39,11 @@ package src.Objects.Process
 		public function onChoseUnits(sender: AttackTroopDialog): void {
 			
 			Global.gameContainer.closeAllFrames(true);
+			
+			if (targetLocation != null && targetLocation.type == Location.STRONGHOLD) {
+				onAttackAccepted();
+				return;
+			}
 			
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
 			
@@ -46,7 +59,12 @@ package src.Objects.Process
 		public function onChoseTarget(sender: GroundAttackCursor): void {			
 			this.target = sender.getTargetObject();
 			
-			Global.mapComm.City.isCityUnderAPBonus(target.cityId, onGotAPStatus);
+			if (target is StructureObject) {
+				Global.mapComm.City.isCityUnderAPBonus(target.groupId, onGotAPStatus);
+			}
+			else {
+				onAttackAccepted();
+			}
 		}
 		
 		public function onGotAPStatus(hasBonuses: Boolean): void {
@@ -54,7 +72,7 @@ package src.Objects.Process
 				onAttackAccepted();
 			}
 			else {
-				InfoDialog.showMessageDialog(Locale.loadString("STR_MESSAGE"), Locale.loadString("SEND_ATTACK_AP_BONUS"), function (result: int): void {
+				InfoDialog.showMessageDialog(StringHelper.localize("STR_MESSAGE"), StringHelper.localize("SEND_ATTACK_AP_BONUS"), function (result: int): void {
 					if (result == JOptionPane.YES) {
 						onAttackAccepted();
 					}
@@ -65,15 +83,26 @@ package src.Objects.Process
 			}
 		}
 		
-		public function onAttackAccepted(): void {				
-			Global.mapComm.Troop.troopAttack(Global.gameContainer.selectedCity.id, target.cityId, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);
+		public function onAttackAccepted(): void {
+			if (targetLocation != null && targetLocation.type == Location.STRONGHOLD) {
+				Global.mapComm.Troop.troopAttackStronghold(sourceCity.id, targetLocation.id, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
+			} else {
+				if (target is StructureObject) {
+					Global.mapComm.Troop.troopAttackCity(sourceCity.id, target.groupId, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);
+				}
+				else if (target is Stronghold) {
+					Global.mapComm.Troop.troopAttackStronghold(sourceCity.id, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
+				}
+			}
 
 			Global.gameContainer.setOverlaySprite(null);
 			Global.gameContainer.setSidebar(null);
 		}
 		
 		public function onAttackFail(custom: * = null):void {
-			onChoseUnits(attackDialog);
+			if(targetLocation==null || targetLocation.type==Location.CITY) {
+				onChoseUnits(attackDialog);
+			}
 		}
 		
 		public function onChangeTroop(e: Event = null): void {

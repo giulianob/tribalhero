@@ -1,5 +1,6 @@
 package src.UI.Components.BattleReport
 {
+	import src.Util.StringHelper;
 	import flash.events.*;
 	import mx.utils.*;
 	import org.aswing.*;
@@ -14,13 +15,13 @@ package src.UI.Components.BattleReport
 	public class BattleEventRow extends JPanel
 	{
 		private static const EVENT_STATES:Array = [
-			'<a href="event:viewProfile:{0}">{1} ({2})</a> has joined with <a href="event:custom:viewTroop">{3}</a> units', 
-			'<a href="event:viewProfile:{0}">{1} ({2})</a> remains with <a href="event:custom:viewTroop">{3}</a> units',
-			'<a href="event:viewProfile:{0}">{1} ({2})</a> has left with <a href="event:custom:viewTroop">{3}</a> units',
-			'<a href="event:viewProfile:{0}">{1} ({2})</a> has died',
-			'<a href="event:viewProfile:{0}">{1} ({2})</a> has retreated with <a href="event:custom:viewTroop">{3}</a> units',
-			'<a href="event:viewProfile:{0}">{1} ({2})</a> has been reinforced with <a href="event:custom:viewTroop">{3}</a> units',
-			'<a href="event:viewProfile:{0}">{1} ({2})</a> ran out of stamina, left with <a href="event:custom:viewTroop">{3}</a> units'
+			'<a href="event:viewProfileByType:{0}:{1}">{2} ({3})</a> has joined with <a href="event:custom:viewTroop">{4}</a> units', 
+			'<a href="event:viewProfileByType:{0}:{1}">{2} ({3})</a> remains with <a href="event:custom:viewTroop">{4}</a> units',
+			'<a href="event:viewProfileByType:{0}:{1}">{2} ({3})</a> has left with <a href="event:custom:viewTroop">{4}</a> units',
+			'<a href="event:viewProfileByType:{0}:{1}">{2} ({3})</a> has died',
+			'<a href="event:viewProfileByType:{0}:{1}">{2} ({3})</a> has retreated with <a href="event:custom:viewTroop">{4}</a> units',
+			'<a href="event:viewProfileByType:{0}:{1}">{2} ({3})</a> has been reinforced with <a href="event:custom:viewTroop">{4}</a> units',
+			'<a href="event:viewProfileByType:{0}:{1}">{2} ({3})</a> ran out of stamina, left with <a href="event:custom:viewTroop">{4}</a> units'
 		];
 		
 		private var totalUnits:int = 0;
@@ -45,7 +46,7 @@ package src.UI.Components.BattleReport
 		{
 			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 			{
-				var header: String = StringUtil.substitute(EVENT_STATES[event.state], event.player.id, StringHelper.htmlEscape(event.city.name), event.groupId == 1 ? 'Local' : event.groupId, totalUnits);				
+				var header: String = StringUtil.substitute(EVENT_STATES[event.state], event.owner.type, event.owner.id, StringHelper.htmlEscape(event.owner.name), event.name == '[LOCAL]' ? StringHelper.localize("LOCAL_TROOP") : event.name, totalUnits);
 				lblHeader = new RichLabel(header, 0, 30);
 				lblHeader.addEventListener(RichLabelCustomEvent.CUSTOM_EVENT_MOUSE_OVER, customEventMouseOver);
 				lblHeader.addEventListener(MouseEvent.MOUSE_OUT, eventMouseOut);

@@ -1,12 +1,15 @@
 ﻿package src.UI.Cursors {
+	import src.Util.StringHelper;
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.*;
+	import mx.utils.StringUtil;
 	import src.*;
 	import src.Map.*;
 	import src.Objects.*;
 	import src.Objects.Effects.*;
 	import src.Objects.Factories.*;
+	import src.Objects.Stronghold.Stronghold;
 	import src.Objects.Troop.*;
 	import src.UI.Components.*;
 	import src.UI.Tooltips.*;
@@ -28,7 +31,7 @@
 
 		private var troopSpeed: int;
 
-		private var highlightedObj: GameObject;
+		private var highlightedObj: SimpleGameObject;
 
 		private var tooltip: StructureTooltip;
 		
@@ -64,7 +67,7 @@
 			Global.gameContainer.setOverlaySprite(this);
 		}
 		
-		public function getTargetObject(): GameObject
+		public function getTargetObject(): SimpleGameObject
 		{
 			return highlightedObj;
 		}
@@ -104,13 +107,8 @@
 
 			event.stopImmediatePropagation();
 
-			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, StructureObject);
-
-			if (objects.length == 0) return;
-
-			var gameObj: StructureObject = objects[0];
-
-			if (gameObj.objectId != 1) return;
+			if (highlightedObj == null) 
+				return;
 
 			if (onAccept != null)
 				onAccept(this);
@@ -142,10 +140,8 @@
 				objX = pos.x;
 				objY = pos.y;
 
-				cursor.setX(objX);
-				cursor.setY(objY);
-
-				cursor.moveWithCamera(Global.gameContainer.camera);
+				cursor.objX = objX;
+				cursor.objY = objY;
 
 				Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
 
@@ -160,33 +156,43 @@
 				highlightedObj.setHighlighted(false);
 				highlightedObj = null;
 			}
-
-			var objects: Array = Global.map.regions.getObjectsAt(objX, objY);
-
-			if (tooltip) tooltip.hide();
-			tooltip = null;
 			
-			if (objects.length == 0 || objects[0].objectId != 1) {
-				Global.gameContainer.message.showMessage("Choose a town center to defend");								
+			if (tooltip) {
+				tooltip.hide();
+				tooltip = null;			
+			}						
+
+			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, [StructureObject, Stronghold]);
+		
+			if (objects.length == 0) {
+				Global.gameContainer.message.showMessage(StringHelper.localize("REINFORCE_CHOOSE_TARGET"));
 				return;
-			}
+			}				
 
 			var gameObj: SimpleGameObject = objects[0];
 			
-			if (highlightedObj == gameObj) return;
-
-			var structObj: StructureObject = gameObj as StructureObject;
-			structObj.setHighlighted(true);
-			highlightedObj = (gameObj as GameObject);
-
-			var targetMapDistance: Point = MapUtil.getMapCoord(structObj.getX(), structObj.getY());
-			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
-			var timeAwayInSeconds: int = Formula.moveTimeTotal(city, troopSpeed, distance, false);
+			if (gameObj is StructureObject) {
+				var structObj: StructureObject = gameObj as StructureObject;		
+				if (structObj.cityId == city.id) {
+					Global.gameContainer.message.showMessage(StringHelper.localize("REINFORCE_CHOOSE_TARGET"));
+					return;					
+				}
+				
+				tooltip = new StructureTooltip(structObj, StructureFactory.getPrototype(structObj.type, structObj.level));
+				tooltip.show(structObj);				
+			}
+			else if (gameObj is Stronghold) {
+				//TODO: Show tooltip
+			}
 			
-			tooltip = new StructureTooltip(structObj, StructureFactory.getPrototype(structObj.type, structObj.level));
-			tooltip.show(structObj);
+			gameObj.setHighlighted(true);
+			highlightedObj = gameObj;
 
-			Global.gameContainer.message.showMessage("About " + Util.niceTime(timeAwayInSeconds) + " away. Double click to defend.");
+			var targetMapDistance: Point = MapUtil.getMapCoord(gameObj.objX, gameObj.objY);
+			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
+			var timeAwayInSeconds: int = Formula.moveTimeTotal(city, troopSpeed, distance, false);			
+
+			Global.gameContainer.message.showMessage(StringHelper.localize("REINFORCE_DISTANCE_MESSAGE", Util.niceTime(timeAwayInSeconds)));
 		}
 	}
 

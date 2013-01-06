@@ -7,6 +7,7 @@
 	import org.aswing.table.PropertyTableModel;
 	import src.Comm.GameURLLoader;
 	import src.Global;
+	import src.Objects.Battle.BattleLocation;
 	import src.UI.GameJPanel;
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -15,10 +16,7 @@
 	import org.aswing.ext.*;
 	import flash.net.*;
 	import src.UI.Dialog.*;
-	/**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
+
 	public class LocalReportList extends GameJPanel
 	{
 
@@ -28,22 +26,23 @@
 		private var lblPages:JLabel;
 		private var btnNext:JLabelButton;
 		private var reportList: VectorListModel;
-		private var tableModel: PropertyTableModel;
 
 		private var loader: GameURLLoader = new GameURLLoader();
 		private var page: int = 0;
 		private var playerNameFilter: String = "";
+		private var viewType:int;
+		private var location:BattleLocation;
+		private var hasLoaded:Boolean;
 		
 		public var refreshOnClose: Boolean = false;
 
-		public function LocalReportList()
+		public function LocalReportList(viewType: int, cols: Array, location: BattleLocation = null)
 		{
-			createUI();
+			this.location = location;
+			this.viewType = viewType;
+			
+			createUI(cols);
 			loader.addEventListener(Event.COMPLETE, onLoaded);
-
-			tblReports.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
-				tblReports.getCellEditor().cancelCellEditing();
-			});
 
 			tblReports.addEventListener(SelectionEvent.ROW_SELECTION_CHANGED, function(e: SelectionEvent) : void {
 				if (tblReports.getSelectedRow() == -1) return;
@@ -54,7 +53,7 @@
 
 				tblReports.clearSelection(true);
 
-				var battleReportDialog: BattleReportViewer = new BattleReportViewer(id, playerNameFilter, true);
+				var battleReportDialog: BattleReportViewer = new BattleReportViewer(id, playerNameFilter, viewType);
 				battleReportDialog.show(null, true, function(viewDialog: BattleReportViewer = null) : void {
 					if (battleReportDialog.refreshOnClose) {
 						refreshOnClose = true;
@@ -70,9 +69,7 @@
 			btnPrevious.addActionListener(function() : void{
 				loadPage(page - 1);
 			});
-
-			loadPage(0);
-		}
+        }
 		
 		public function filterPlayerName(playerName: String) : void {
 			playerNameFilter = playerName;
@@ -83,7 +80,14 @@
 			btnPrevious.setVisible(false);
 			btnNext.setVisible(false);			
 
-			Global.mapComm.BattleReport.listLocal(loader, page, playerNameFilter);
+			Global.mapComm.BattleReport.listLocal(loader, viewType, location, page, playerNameFilter);
+		}
+		
+		public function loadInitially(): void {
+			if (!hasLoaded) {
+				hasLoaded = true;
+				loadPage(0);
+			}
 		}
 
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame
@@ -104,7 +108,7 @@
 				InfoDialog.showMessageDialog("Error", "Unable to query report. Refresh the page if this problem persists");
 				return;
 			}
-
+			
 			//Paging info
 			this.page = data.page;
 			btnPrevious.setVisible(page > 1);
@@ -120,24 +124,12 @@
 			reportList.append(snapshot);
 		}
 
-		private function createUI() : void {
+		private function createUI(cols: Array) : void {
 			var layout0:BorderLayout = new BorderLayout();
 			setLayout(layout0);
-
-			reportList = new VectorListModel();
-
-			tableModel = new PropertyTableModel(reportList,
-			["Date", "Battle Location"],
-			["date", "."],
-			[null, null, null, null]
-			);
-
-			tblReports = new JTable(tableModel);
-			tblReports.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-			tblReports.setSelectionMode(JTable.SINGLE_SELECTION);
-			tblReports.getColumnAt(0).setPreferredWidth(100);
-			tblReports.getColumnAt(1).setPreferredWidth(400);
-			tblReports.getColumnAt(1).setCellFactory(new GeneralTableCellFactory(UnreadTextCell));
+			
+			tblReports = new BattleReportListTable(cols);
+			reportList = VectorListModel(PropertyTableModel(tblReports.getModel()).getList());
 
 			var pnlReportsScroll: JScrollPane = new JScrollPane(tblReports);
 			pnlReportsScroll.setConstraints("Center");

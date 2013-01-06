@@ -12,6 +12,7 @@ package src.UI.Sidebars.ObjectInfo {
 	import src.Objects.Actions.*;
 	import src.Objects.Factories.*;
 	import src.Objects.*;
+	import src.Objects.Process.AttackSendProcess;
 	import src.Objects.Prototypes.*;
 	import src.UI.*;
 	import src.UI.Components.CityLabel;
@@ -129,11 +130,16 @@ package src.UI.Sidebars.ObjectInfo {
 						lbl = addStatRow(propPrototype[i].name, propPrototype[i].toString(structureObject.properties[i]), propPrototype[i].getIcon());
 						if (propPrototype[i].tooltip != "") new SimpleTooltip(lbl, propPrototype[i].tooltip);
 					}
+					buttons.push(new SendAttackButton(gameObject, new Location(Location.CITY, gameObject.groupId, gameObject.objectId))); 
 				}
+			}
+			
+			if (Global.gameContainer.selectedCity.id != gameObject.cityId) {
+				buttons.push(new SendReinforcementButton(gameObject, new Location(Location.CITY, gameObject.groupId, gameObject.objectId)));
 			}
 
 			//Special Case Buttons
-			switch(structureObject.State.getStateType())
+			switch(structureObject.state.getStateType())
 			{
 				case SimpleGameObject.STATE_BATTLE:
 					buttons.push(new ViewBattleButton(structureObject));
@@ -399,7 +405,7 @@ package src.UI.Sidebars.ObjectInfo {
 
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(gameObject.type, gameObject.level);
 			if (structPrototype) {
-				var pt: Point = MapUtil.getMapCoord(gameObject.getX(), gameObject.getY());
+				var pt: Point = MapUtil.getMapCoord(gameObject.objX, gameObject.objY);
 				frame.getTitleBar().setText(structPrototype.getName() + " (" + pt.x + "," + pt.y + ")");
 			}
 

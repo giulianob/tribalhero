@@ -13,7 +13,7 @@
 
 	public class KickIcon extends AssetIcon
 	{		
-		private var icon: MovieClip = new ICON_REDX();
+		private var icon: MovieClip = new ICON_UNFRIEND();
 
 		public function KickIcon(playerId: int)
 		{
@@ -21,9 +21,9 @@
 
 			icon.buttonMode = true;
 			icon.mouseEnabled = true;
-			new SimpleTooltip(icon, "Kick User");
+			new SimpleTooltip(icon, "Kick Out");
 			icon.addEventListener(MouseEvent.MOUSE_DOWN, function(e: MouseEvent) : void {		
-				InfoDialog.showMessageDialog("Kick tribesman", "Are you sure you want to kick this player from your tribe?", function(result: int): void {
+				InfoDialog.showMessageDialog("Kick tribesman", "Are you sure you want to remove this player from the tribe?", function(result: int): void {
 					if (result == JOptionPane.YES)
 						Global.mapComm.Tribe.kick(playerId);
 						

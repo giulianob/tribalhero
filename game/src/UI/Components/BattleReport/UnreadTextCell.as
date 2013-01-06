@@ -1,40 +1,65 @@
 ﻿package src.UI.Components.BattleReport
 {
+	import org.aswing.AsWingConstants;
+	import org.aswing.Component;
+	import org.aswing.FlowLayout;
+	import org.aswing.JLabelButton;
+	import org.aswing.JPanel;
 	import org.aswing.JTable;
+	import org.aswing.table.AbstractTableCell;
 	import org.aswing.table.DefaultTextCell;
+	import src.UI.Components.SimpleTooltip;
 	import src.UI.LookAndFeel.GameLookAndFeel;
+	import src.Util.StringHelper;
 
-	/**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
-	public class UnreadTextCell extends DefaultTextCell
-	{
+	public class UnreadTextCell extends AbstractTableCell
+	{			
+		private var lbl: JLabelButton = new JLabelButton("", null, AsWingConstants.LEFT);
+		private var pnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));
+		
+		public function UnreadTextCell() 
+		{
+			super();
+			
+			pnl.append(lbl);
+			
+			pnl.setOpaque(true);
+			
+			new SimpleTooltip(lbl, StringHelper.localize("STR_VIEW_REPORT"));
+		}
+		
 		override public function setCellValue(value:*):void
 		{
 			this.value = value;
-
+			
 			if (value.unread) {
-				setFont(GameLookAndFeel.getClassAttribute("Message.unread", "Label.font"));
-				setForeground(GameLookAndFeel.getClassAttribute("Message.unread", "Label.foreground"));
+				lbl.setFont(GameLookAndFeel.getClassAttribute("Message.unread", "LabelButton.font"));
 			} else {
-				setFont(GameLookAndFeel.getClassAttribute("Message.read", "Label.font"));
-				setForeground(GameLookAndFeel.getClassAttribute("Message.read", "Label.foreground"));
+				lbl.setFont(GameLookAndFeel.getClassAttribute("Message.read", "LabelButton.font"));
 			}
 
-			setText(value.location + "");
+			lbl.setText(value[getCellProperty()]);
 		}
 
 		override public function setTableCellStatus(table:JTable, isSelected:Boolean, row:int, column:int):void
 		{
 			if(isSelected){
-				setBackground(table.getSelectionBackground());
-				setForeground(table.getSelectionForeground());
+				pnl.setBackground(table.getSelectionBackground());
+				pnl.setForeground(table.getSelectionForeground());
 			}else{
-				setBackground(table.getBackground());
-				setForeground(table.getForeground());
+				pnl.setBackground(table.getBackground());
+				pnl.setForeground(table.getForeground());
 			}
 		}
+		
+		protected function getCellProperty(): String {
+			throw new Error("Should be overriden");
+		}
+		
+		override public function getCellComponent():Component
+		{			
+			return pnl;
+		}		
 	}
 
 }

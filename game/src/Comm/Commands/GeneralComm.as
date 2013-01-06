@@ -5,6 +5,7 @@
 	import src.Comm.*;
 	import src.Constants;
 	import src.Global;
+	import src.UI.Dialog.CmdLineViewer;
 	import src.Util.Util;
 	import src.Map.*;
 	import src.Objects.*;
@@ -40,10 +41,14 @@
 			{
 				case Commands.MESSAGE_BOX:
 					onMessageBox(e.packet);
-				break;
+					break;
 				case Commands.CHAT:
 					onChatMessage(e.packet);
-				break;				
+					break;
+				case Commands.SYSTEM_CHAT:
+					onChatSystemMessage(e.packet);
+					break;
+				
 			}
 		}				
 		
@@ -61,7 +66,19 @@
 			
 			Global.gameContainer.cmdLine.logChat(type, playerId, playerName, message);					
 		}
-
+		
+		private function onChatSystemMessage(packet: Packet): void
+		{
+			var messageId: String = packet.readString();
+			var paramsCount: int = packet.readUByte();
+			var params: Array = new Array();
+			for (var i: int = 0; i < paramsCount; i++) {
+				params.push(packet.readString());
+			}
+			
+			Global.gameContainer.cmdLine.logSystem(messageId, params);
+		}
+		
 		public function queryXML(callback: Function, custom: * ):void
 		{
 			var packet: Packet = new Packet();
@@ -88,10 +105,11 @@
 			}
 
 			custom[1](packet);
-		}
+		}	
 
 		public function onLogin(packet: Packet): Boolean
 		{
+            Constants.motd = packet.readString();
 			Constants.playerId = packet.readUInt();
 			Constants.admin = packet.readByte() == 1;
 			Constants.sessionId = packet.readString();			
@@ -178,7 +196,7 @@
 			var notificationsCnt: int = packet.readUShort();
 			for (k = 0; k < notificationsCnt; k++)
 			{
-				var notification: Notification = new Notification(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+				var notification: Notification = new Notification(city.id, packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 				city.notifications.add(notification, false);
 			}
 			city.notifications.sort();
@@ -198,7 +216,7 @@
 			{
 				var regionId: int = packet.readUShort();
 			
-				var cityObj: CityObject = mapComm.City.readObject(packet, regionId, city);
+				var cityObj: CityObject = mapComm.City.readCityObject(packet, regionId, city);
 
 				var technologyCount: int = packet.readUShort();
 				for (k = 0; k < technologyCount; k++)
@@ -214,7 +232,7 @@
 			{
 				regionId = packet.readUShort();
 
-				cityObj = mapComm.City.readObject(packet, regionId, city);
+				cityObj = mapComm.City.readCityObject(packet, regionId, city);
 				
 				city.objects.add(cityObj, false);
 			}
@@ -292,6 +310,24 @@
 			autocompleteLoader.load("/cities/autocomplete", [ { key: "name", value: name }], true, false);
 		}		
 		
+		public function autoCompleteStronghold(name: String, callback: Function) : void {
+			var autocompleteLoader: GameURLLoader = new GameURLLoader();
+			autocompleteLoader.addEventListener(Event.COMPLETE, function(e: Event): void {
+				var data: Object;
+				try
+				{
+					data = autocompleteLoader.getDataAsObject();
+				}
+				catch (e: Error) {					
+					return;
+				}
+				
+				callback(data, name);
+			});
+			
+			autocompleteLoader.load("/strongholds/autocomplete", [ { key: "name", value: name }], true, false);
+		}				
+		
 		public function autoCompletePlayer(name: String, callback: Function) : void {
 			var autocompleteLoader: GameURLLoader = new GameURLLoader();
 			autocompleteLoader.addEventListener(Event.COMPLETE, function(e: Event): void {
@@ -309,6 +345,55 @@
 			
 			autocompleteLoader.load("/players/autocomplete", [ { key: "name", value: name }], true, false);
 		}				
+		
+		public function viewProfileByType(type:String, id:int, callback:Function = null):void
+		{
+			var packet:Packet = new Packet();
+			packet.cmd = Commands.PROFILE_BY_TYPE;
+			packet.writeString(type);
+			packet.writeUInt(id);
+			
+			mapComm.showLoading();
+			
+			switch (type.toLowerCase()) {
+				case 'city':
+					session.write(packet, mapComm.City.onReceivePlayerProfile, { callback: callback } );
+					break;
+				case 'stronghold':
+					session.write(packet, mapComm.Stronghold.onReceiveStrongholdProfile, { callback: callback } );
+					break;
+				default:
+					throw new Error("Unknown owner type while getting profile");
+			}			
+		}		
+		
+		public function readLocation(packet:Packet):*
+		{
+			var targetType: int = packet.readInt();
+			
+			switch (targetType) {
+				case -1:
+					return null;
+				case Location.CITY:
+					return {
+						type: targetType,
+						playerId: packet.readUInt(),
+						cityId: packet.readUInt(),
+						playerName: packet.readString(),
+						cityName: packet.readString()
+					}
+				case Location.STRONGHOLD:
+					return { 
+						type: targetType,
+						strongholdId: packet.readUInt(),
+						strongholdName: packet.readString(),
+						tribeId: packet.readUInt(),
+						tribeName: packet.readString()
+					}
+				default:
+					new Error("Unknown location type " + targetType);					
+			}
+		}
 	}
 }
 

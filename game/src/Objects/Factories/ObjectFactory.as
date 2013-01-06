@@ -13,6 +13,7 @@
 	import src.Objects.SimpleGameObject;
 	import src.Objects.SimpleObject;
 	import src.Objects.Factories.*;
+	import src.Objects.Stronghold.Stronghold;
 	import src.Objects.StructureObject;
 	import src.Objects.Troop.*;
 	import src.UI.SmartMovieClip;
@@ -28,6 +29,7 @@
 		public static const TYPE_UNIT: int = 3;
 		public static const TYPE_STRUCTURE: int = 4;
 		public static const TYPE_NEW_CITY_PLACEHOLDER: int = 5;
+		public static const TYPE_STRONGHOLD: int = 6;
 
 		private static var objectTypes: BinaryList;
 
@@ -50,7 +52,7 @@
 		public static function getList(name: String) : Array {
 			var ret: Array = new Array();
 
-			for each (var obj: ObjectTypePrototype in objectTypes.each()) {
+			for each (var obj: ObjectTypePrototype in objectTypes) {
 				if (obj.name == name) {
 					ret.push(obj.type);
 				}
@@ -60,7 +62,7 @@
 		}
 		
 		public static function getFirstType(name: String) : int {
-			for each (var obj: ObjectTypePrototype in objectTypes.each()) {
+			for each (var obj: ObjectTypePrototype in objectTypes) {
 				if (obj.name == name)
 					return obj.type;
 			}
@@ -83,6 +85,8 @@
 				return TYPE_FOREST;
 			else if (type == 201)
 				return TYPE_NEW_CITY_PLACEHOLDER;
+			else if (type == 300)
+				return TYPE_STRONGHOLD;
 			else
 				return TYPE_UNIT;
 		}
@@ -141,6 +145,8 @@
 				sprite = ForestFactory.getSprite((obj as Forest).level, centered);
 			else if (obj is NewCityPlaceholder)
 				sprite = getNewCityPlaceholderSprite();
+			else if (obj is Stronghold)
+				sprite = StructureFactory.getSprite((obj as Stronghold).type, (obj as Stronghold).level, centered);
 			else
 				return null;			
 
@@ -154,17 +160,15 @@
 			return sprite;
 		}
 
-		public static function getSimpleObject(name: String, addShadow: Boolean = true): SimpleObject {
-			var obj: SimpleObject = new SimpleObject();
+		public static function getSimpleObject(name: String, x: int, y: int, addShadow: Boolean = true): SimpleObject {
+			var obj: SimpleObject = new SimpleObject(x, y);
 			var objRef: Class = getDefinitionByName(name) as Class;
 
 			if (addShadow) {
-				var shadow: DisplayObjectContainer = new objRef() as DisplayObjectContainer;
-				makeIntoShadow(shadow);
-				obj.addChild(shadow);
+				obj.spriteContainer.addChild(makeIntoShadow(new objRef() as DisplayObjectContainer));
 			}
 
-			obj.addChild(new objRef() as DisplayObject);
+			obj.spriteContainer.addChild(new objRef() as DisplayObject);
 
 			return obj;
 		}
@@ -176,10 +180,10 @@
 			return obj;
 		}
 		
-		public static function getNewCityPlaceholderInstance() : NewCityPlaceholder
+		public static function getNewCityPlaceholderInstance(x: int, y: int) : NewCityPlaceholder
 		{
-			var obj: NewCityPlaceholder = new NewCityPlaceholder();
-			obj.addChild(getNewCityPlaceholderSprite());
+			var obj: NewCityPlaceholder = new NewCityPlaceholder(x, y);
+			obj.spriteContainer.addChild(getNewCityPlaceholderSprite());
 			return obj;
 		}
 

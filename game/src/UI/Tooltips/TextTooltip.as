@@ -9,26 +9,12 @@
 	public class TextTooltip extends Tooltip {
 
 		private var text: String = "";
+		private var label: Component;
 		
-		public function TextTooltip(text: String) {
-			var label: Component;
+		public function TextTooltip(text: String) {							
+			ui.setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 5));			
 			
-			this.text = text;
-
-			if (text.length < 40) {
-				label = new JLabel(text);
-			} else {
-				label = new MultilineLabel(text, 0, 20);
-			}
-
-			GameLookAndFeel.changeClass(label, "Tooltip.text");
-
-			var layout0:SoftBoxLayout = new SoftBoxLayout();
-			layout0.setAxis(AsWingConstants.VERTICAL);
-			layout0.setGap(5);
-			ui.setLayout(layout0);
-
-			append(label);
+			createUI(text);			
 		}
 		
 		public function append(label: Component): void {
@@ -37,6 +23,30 @@
 		
 		public function getText(): String {
 			return text;
+		}
+		
+		public function setText(text: String): void {
+			if (this.text == text) {
+				return;
+			}
+			
+			ui.remove(label);
+			createUI(text);
+		}
+		
+		private function createUI(text: String): void {
+			if (text.length < 40) {
+				label = new JLabel(text, null, AsWingConstants.LEFT);
+			} else {
+				label = new MultilineLabel(text, 0, 20);
+			}			
+			
+			
+			GameLookAndFeel.changeClass(label, "Tooltip.text");
+			
+			this.text = text;
+			
+			ui.insert(0, label);
 		}
 	}
 

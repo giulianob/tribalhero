@@ -41,8 +41,9 @@ package src.UI.Cursors {
 			buildableArea = new GroundCallbackCircle(city.radius - 1, validateTileCallback);
 			buildableArea.alpha = 0.3;
 			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
-			buildableArea.setX(point.x); buildableArea.setY(point.y);
-			buildableArea.moveWithCamera(src.Global.gameContainer.camera);
+			buildableArea.objX = point.x; 
+			buildableArea.objY = point.y;
+			
 			Global.map.objContainer.addObject(buildableArea, ObjectContainer.LOWER);
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
@@ -125,8 +126,8 @@ package src.UI.Cursors {
 				if (cursor.stage != null) 
 					Global.map.objContainer.removeObject(cursor);
 				
-				cursor.setXY(objX, objY);
-				cursor.moveWithCamera(Global.gameContainer.camera);
+				cursor.objX = objX;
+				cursor.objY = objY;
 				
 				Global.map.objContainer.addObject(cursor);
 				

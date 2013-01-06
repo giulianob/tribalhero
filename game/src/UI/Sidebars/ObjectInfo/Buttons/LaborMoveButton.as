@@ -1,6 +1,6 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import src.Global;
@@ -22,8 +22,8 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 			var strPrototype: StructurePrototype = StructureFactory.getPrototype(parentObj.type, (parentObj as StructureObject).level);
 
-			var str: String = Locale.loadString(strPrototype.name + "_STRUCTURE_LABOR_MOVE");
-			if (!str || str == "") {
+			var str: String = StringHelper.localize(strPrototype.name + "_STRUCTURE_LABOR_MOVE");
+			if (!str || str == "" || str.substr(0, 1) == "[") {
 				str = "Assign Laborers";
 			}
 

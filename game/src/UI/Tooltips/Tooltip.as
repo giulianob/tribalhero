@@ -1,16 +1,14 @@
-/**
- * ...
- * @author Default
- * @version 0.1
- */
-
 package src.UI.Tooltips {
+	import com.greensock.loading.core.DisplayObjectLoader;
 	import flash.display.DisplayObject;
+	import flash.display.InteractiveObject;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import org.aswing.AsWingManager;
 	import org.aswing.border.EmptyBorder;
 	import org.aswing.Component;
 	import org.aswing.event.AWEvent;
+	import org.aswing.FocusManager;
 	import org.aswing.geom.IntPoint;
 	import org.aswing.Insets;
 	import src.Global;
@@ -26,7 +24,6 @@ package src.UI.Tooltips {
 		private var position: IntPoint;
 
 		public function Tooltip() {
-			ui.setFocusable(false);
 			ui.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));		
 		}
 
@@ -45,18 +42,22 @@ package src.UI.Tooltips {
 
 		public function show(obj: DisplayObject):void
 		{
-			Global.map.camera.addEventListener(Camera.ON_MOVE, onCameraMove);
+			this.position = new IntPoint(Global.map.stage.mouseX, Global.map.stage.mouseY);
+						
+			Global.map.camera.addEventListener(Camera.ON_MOVE, onCameraMove, false, 0, true);
 			
 			if (this.viewObj == null || this.viewObj != obj) {
 				this.viewObj = obj;
 				viewObj.addEventListener(Event.REMOVED_FROM_STAGE, parentHidden);
 				viewObj.addEventListener(MouseEvent.MOUSE_DOWN, parentHidden);				
 				
-				showFrame();
+				showFrame(obj);
 			}
-
-			this.position = new IntPoint(ui.getFrame().stage.mouseX, ui.getFrame().stage.mouseY);			
-			adjustPosition();
+			else {
+				ui.getFrame().pack();
+				ui.getFrame().addEventListener(AWEvent.PAINT, onPaint);
+				ui.getFrame().repaintAndRevalidate();
+			}
 		}
 		
 		public function showFixed(position: IntPoint):void
@@ -64,17 +65,20 @@ package src.UI.Tooltips {
 			this.position = position;
 			showFrame();
 			adjustPosition();
-		}		
+		}
 		
-		protected function showFrame(): void {
-			ui.addEventListener(AWEvent.PAINT, onPaint);
+		protected function showFrame(obj: DisplayObject = null): void {		
 			ui.show();
 			
-			if (!mouseInteractive()) {
+			ui.getFrame().addEventListener(AWEvent.PAINT, onPaint);
+			ui.getFrame().repaintAndRevalidate();
+			
+			if (!mouseInteractive()) {				
 				ui.getFrame().parent.mouseEnabled = false;
 				ui.getFrame().parent.mouseChildren = false;
 				ui.getFrame().parent.tabEnabled = false;
-				ui.getFrame().setFocusable(false);
+				ui.getFrame().parent.tabChildren = false;
+				ui.getFrame().setFocusable(false);					
 			}
 		}
 		
@@ -90,12 +94,12 @@ package src.UI.Tooltips {
 		// We need this function since the size is wrong of the component until it has been painted
 		private function onPaint(e: AWEvent): void {
 			ui.removeEventListener(AWEvent.PAINT, onPaint);
+			ui.getFrame().removeEventListener(AWEvent.PAINT, onPaint);
 			ui.getFrame().pack();
 			adjustPosition();
 		}
 
 		private function parentHidden(e: Event) : void {
-			Global.map.camera.removeEventListener(Camera.ON_MOVE, onCameraMove);
 			hide();
 		}
 
@@ -142,6 +146,8 @@ package src.UI.Tooltips {
 
 		public function hide():void
 		{
+			Global.map.camera.removeEventListener(Camera.ON_MOVE, onCameraMove);
+			
 			if (this.viewObj != null)
 			{
 				this.viewObj.removeEventListener(Event.REMOVED_FROM_STAGE, parentHidden);

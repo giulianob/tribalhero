@@ -9,7 +9,7 @@ package src.Objects {
 	import src.Objects.Factories.ObjectFactory;
 	import src.Objects.States.GameObjectState;
 
-	public class GameObject extends SimpleGameObject implements IScrollableObject
+	public class GameObject extends SimpleGameObject
 	{
 		public var playerId: int;				
 
@@ -20,6 +20,13 @@ package src.Objects {
 			this.playerId = playerId;			
 			
 			setHighlighted(false);
+		}
+		
+		override public function copy(obj:SimpleObject):void 
+		{
+			super.copy(obj);
+			var gameObj: GameObject = obj as GameObject;
+			playerId = gameObj.playerId;
 		}
 		
 		public function get cityId(): int		

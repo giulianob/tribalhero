@@ -1,6 +1,6 @@
 ﻿package src.Objects.Actions
 {
-	import fl.lang.Locale;
+	import src.Util.StringHelper;
 	import src.Objects.GameObject;
 
 	public class CurrentPassiveAction extends CurrentAction
@@ -19,7 +19,7 @@
 		public override function toString() : String 
 		{
 			if (nlsDescription && nlsDescription != "") {
-				var str: String = Locale.loadString(nlsDescription);
+				var str: String = StringHelper.localize(nlsDescription);
 				if (str && str != "")
 					return str;
 

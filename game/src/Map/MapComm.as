@@ -18,6 +18,7 @@
 		public var Ranking: RankingComm;
 		public var Messaging: MessagingComm;
 		public var Tribe: TribeComm;
+		public var Stronghold: StrongholdComm;
 		public var MessageBoard: MessageBoardComm;
 
 		public var session: Session;
@@ -38,6 +39,7 @@
 			Ranking = new RankingComm(this);
 			Messaging = new MessagingComm(this);
 			Tribe = new TribeComm(this);
+			Stronghold = new src.Comm.Commands.StrongholdComm(this);
 			MessageBoard = new src.Comm.Commands.MessageBoardComm(this);
 		}
 
@@ -53,6 +55,7 @@
 				BattleReport.dispose();
 				Ranking.dispose();
 				Messaging.dispose();
+				Stronghold.dispose();
 			}
 		}
 		

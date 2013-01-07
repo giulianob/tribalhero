@@ -40,8 +40,7 @@
 			} else {
 				label = new MultilineLabel(text, 0, 20);
 			}			
-			
-			
+						
 			GameLookAndFeel.changeClass(label, "Tooltip.text");
 			
 			this.text = text;

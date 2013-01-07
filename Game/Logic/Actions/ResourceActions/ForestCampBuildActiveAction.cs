@@ -209,7 +209,7 @@ namespace Game.Logic.Actions
                                                                                           .GetTime(campType, 1),
                                                                                        city,
                                                                                        city.Technologies) +
-                                                             lumbermill.TileDistance(forest) * 30));
+                                                             lumbermill.TileDistance(forest) * 5));
             BeginTime = DateTime.UtcNow;
 
             city.References.Add(structure, this);

@@ -71,7 +71,7 @@ namespace Game.Logic.Formulas
         {
             int[] cap =
             {
-                    700, 700, 880, 1130, 1450, 1880, 2440, 3200, 4200, 5500, 7200, 9500, 12500, 16500, 21800, 25000
+                    700, 800, 950, 1130, 1450, 1880, 2440, 3200, 4200, 5500, 7200, 9500, 12500, 16500, 21800, 25000
             };
             return cap[lvl];
         }
@@ -85,7 +85,7 @@ namespace Game.Logic.Formulas
         {
             int[] cap =
             {
-                    700, 700, 880, 1130, 1450, 1880, 2440, 3200, 4200, 5500, 7200, 9500, 12500, 16500, 21800, 25000
+                    700, 800, 950, 1130, 1450, 1880, 2440, 3200, 4200, 5500, 7200, 9500, 12500, 16500, 21800, 25000
             };
             return cap[lvl];
         }
@@ -206,7 +206,7 @@ namespace Game.Logic.Formulas
 
         public virtual Resource GetInitialCityResources()
         {
-            return new Resource(700, 0, 0, 700, 35);
+            return new Resource(800, 0, 0, 800, 65);
         }
 
         public virtual byte GetInitialCityRadius()

@@ -6,11 +6,6 @@ package src
 		public static var version: int;
 		public static var revision: int;
         
-        public static var welcomeMessage: Array = [
-            '<a href="http://tribalhero.com/pages/donate" target="_blank">Help us</a> improve the game.',
-			'Remember to keep it classy.',
-			'Not sure what to do? <a href="http://tribalhero.wikia.com" target="_blank">Visit the wiki for help</a>.'
-        ];
         public static var motd:String = "";
 		
 		/* SESSION VARIABLES */

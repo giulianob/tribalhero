@@ -548,7 +548,7 @@ namespace Testing.Battle
             battle.ExecuteTurn().Should().BeTrue();
             skippedAttackerCalled.Should().BeTrue();
             sut.MockDbManager.Verify(m => m.Save(defender.Object), Times.Once());
-            defender.Verify(m => m.ParticipatedInRound(), Times.Once());
+            defender.Verify(m => m.ParticipatedInRound(0), Times.Once());
         }
 
         /// <summary>
@@ -569,7 +569,7 @@ namespace Testing.Battle
             var defender = new Mock<ICombatObject>();
             defender.SetupProperty(p => p.Stats.Atk, 0m);
             defender.SetupProperty(p => p.LastRound);
-            defender.Setup(m => m.ParticipatedInRound()).Callback(() => { defender.Object.LastRound++; });
+            defender.Setup(m => m.ParticipatedInRound(0)).Callback(() => { defender.Object.LastRound++; });
             var attacker = new Mock<ICombatObject>();
 
             var defenderGroup = CreateGroup(defender.Object);
@@ -673,7 +673,7 @@ namespace Testing.Battle
             battle.ExecuteTurn().Should().BeTrue();
 
             withdrawCalled.Should().BeTrue();
-            attacker.Verify(m => m.ParticipatedInRound(), Times.Once());
+            attacker.Verify(m => m.ParticipatedInRound(0), Times.Once());
             attackerWithoutInRange.Verify(m => m.ExitBattle(), Times.Once());
             attacker.Verify(m => m.ExitBattle(), Times.Never());
         }
@@ -694,7 +694,7 @@ namespace Testing.Battle
             var attacker = new Mock<ICombatObject>();
             attacker.SetupProperty(p => p.Stats.Atk, 10m);
             attacker.SetupProperty(p => p.LastRound);
-            attacker.Setup(m => m.ParticipatedInRound()).Callback(() => { attacker.Object.LastRound++; });
+            attacker.Setup(m => m.ParticipatedInRound(0)).Callback(() => { attacker.Object.LastRound++; });
             var defender1 = new Mock<ICombatObject>();
             var defender2 = new Mock<ICombatObject>();
 
@@ -759,7 +759,7 @@ namespace Testing.Battle
             battle.Turn.Should().Be(1);
             attackTargetCallCount.Should().Be(2);
             exitTurnCalled.Should().BeTrue();
-            attacker.Verify(m => m.ParticipatedInRound(), Times.Once());
+            attacker.Verify(m => m.ParticipatedInRound(0), Times.Once());
             sut.MockDbManager.Verify(m => m.Save(attacker.Object), Times.Once());
         }
 
@@ -779,7 +779,7 @@ namespace Testing.Battle
             var defender = new Mock<ICombatObject>();
             defender.SetupProperty(p => p.Stats.Atk, 10m);
             defender.SetupProperty(p => p.LastRound);
-            defender.Setup(m => m.ParticipatedInRound()).Callback(() => { defender.Object.LastRound++; });
+            defender.Setup(m => m.ParticipatedInRound(0)).Callback(() => { defender.Object.LastRound++; });
             var attacker1 = new Mock<ICombatObject>();
             var attacker2 = new Mock<ICombatObject>();
 
@@ -845,8 +845,72 @@ namespace Testing.Battle
             battle.Turn.Should().Be(1);
             attackTargetCallCount.Should().Be(2);
             exitTurnCalled.Should().BeTrue();
-            defender.Verify(m => m.ParticipatedInRound(), Times.Once());
+            defender.Verify(m => m.ParticipatedInRound(0), Times.Once());
             sut.MockDbManager.Verify(m => m.Save(defender.Object), Times.Once());
+        }
+
+        /// <summary>
+        ///     When a attacker has entered the battle late
+        ///     And NextToAttack is Defense
+        ///     And ExecuteTurn is called
+        ///     Then attacker should attack
+        ///     And ExitTurn should be called
+        ///     And ParticipatedInRound should be called on the attacker
+        /// </summary>
+        [Fact]
+        public void TestExecuteWhenObjectJoinedLateShouldAttack()
+        {
+            var sut = new BattleManagerSut();
+
+            var attacker1 = new Mock<ICombatObject>();
+            attacker1.SetupProperty(p => p.Stats.Atk, 10m);
+            attacker1.SetupProperty(p => p.LastRound, (uint)3);
+
+            var attacker2 = new Mock<ICombatObject>();
+            attacker2.SetupProperty(p => p.Stats.Atk, 10m);
+            attacker2.SetupProperty(p => p.LastRound, (uint)0);
+            
+            var defender1 = new Mock<ICombatObject>();
+
+            var attackerGroup = CreateGroup(attacker1.Object, attacker2.Object);
+            var defenderGroup = CreateGroup(defender1.Object);
+
+            sut.MockDefenders.Add(defenderGroup);
+            sut.MockAttackers.Add(attackerGroup);
+            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker1.Object, attacker2.Object};
+
+            sut.MockDefenders.MockGetBestTargets.Enqueue(new StubCombatList.GetBestTargetQueueItem
+            {
+                    BestTargetResult = CombatList.BestTargetResult.Ok,
+                    Targets =
+                            new List<CombatList.Target>
+                            {
+                                    new CombatList.Target {CombatObject = defender1.Object, Group = defenderGroup}                                    
+                            }
+            });
+
+            var battle = sut.CreateStubbedAttackBattleManager(1,
+                                                              new BattleLocation(BattleLocationType.City, 100),
+                                                              new BattleOwner(BattleOwnerType.City, 200),
+                                                              delegate { });
+            battle.Round = 2;
+            battle.Turn = 2;
+
+            var exitTurnCalled = false;
+            battle.ExitTurn += (manager, attackers, defenders, turn) =>
+                {
+                    turn.Should().Be(2);
+                    exitTurnCalled = true;
+                };
+
+            battle.BattleStarted = true;
+            battle.NextToAttack = BattleManager.BattleSide.Attack;
+            battle.ExecuteTurn().Should().BeTrue();
+
+            battle.Turn.Should().Be(3);
+            attacker2.Verify(p => p.ParticipatedInRound(2), Times.Once());
+            exitTurnCalled.Should().BeTrue();            
+            sut.MockDbManager.Verify(m => m.Save(attacker2.Object), Times.Once());
         }
     }
 }

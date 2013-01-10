@@ -153,9 +153,9 @@ namespace Game.Battle.CombatObjects
             return Visibility >= obj.Stats.Stl || lowestSteath >= obj.Stats.Stl;
         }
 
-        public void ParticipatedInRound()
+        public void ParticipatedInRound(uint round)
         {
-            LastRound++;
+            LastRound = round + 1;
             RoundsParticipated++;
         }
 

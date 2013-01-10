@@ -92,7 +92,7 @@ namespace Game.Battle
             // Find any objects that are still in the current round
             foreach (ICombatGroup combatGroup in combatGroups)
             {
-                outObj = combatGroup.FirstOrDefault(obj => obj.LastRound == round);
+                outObj = combatGroup.FirstOrDefault(obj => obj.LastRound <= round);
 
                 if (outObj == null)
                 {

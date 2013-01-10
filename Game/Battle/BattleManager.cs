@@ -257,12 +257,6 @@ namespace Game.Battle
                                           combatGroup.Id));
                 }
 
-                foreach (var combatUnit in combatGroup)
-                {
-                    combatUnit.LastRound = Round;
-                    dbManager.Save(combatUnit);
-                }
-
                 (battleSide == BattleSide.Attack ? Attackers : Defenders).Add(combatGroup);
 
                 if (isAttacker)
@@ -463,7 +457,7 @@ namespace Game.Battle
 
                     if (currentDefenders.Count == 0 || attackerObject.Stats.Atk == 0)
                     {
-                        attackerObject.ParticipatedInRound();
+                        attackerObject.ParticipatedInRound(Round);
                         dbManager.Save(attackerObject);
                         SkippedAttacker(this, NextToAttack, attackerGroup, attackerObject);
 
@@ -513,7 +507,7 @@ namespace Game.Battle
                     throw new Exception("Attacker has been improperly disposed");
                 }
 
-                attackerObject.ParticipatedInRound();
+                attackerObject.ParticipatedInRound(Round);
 
                 dbManager.Save(attackerObject);
 

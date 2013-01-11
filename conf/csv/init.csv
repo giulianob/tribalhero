@@ -1,6 +1,9 @@
 Type,Lvl,Condition,Action,P1,P2,P3,P4,P5,NlsDesc,Comments
 ,,,,,,,,,,
 2204,1,ON_CONVERT,technology_create,techid=0,techlvl=0,time=0,,,,
+2000,1,ON_INIT,technology_create,techid=20002,techlvl=1,time=0,,,,
+2000,2,ON_UPGRADE,technology_create,techid=20002,techlvl=2,time=0,,,,
+2000,3,ON_UPGRADE,technology_delete,techid=20002,,,,,,
 2000,8,ON_UPGRADE,city_radius_change,radius=5,,,,,,
 3002,1,ON_INIT,structure_self_destroy,time=28800,,,,,,
 3002,1,ON_INIT,technology_create,techid=30021,techlvl=1,time=0,,,,

@@ -13,6 +13,8 @@ namespace Game.Logic.Actions
     {
         private IStructure obj;
 
+        private uint techId;
+
         public override ActionType Type
         {
             get
@@ -37,6 +39,7 @@ namespace Game.Logic.Actions
             {
                 throw new Exception();
             }
+            techId = uint.Parse(parms[0]);
 
             Execute();
         }
@@ -56,7 +59,7 @@ namespace Game.Logic.Actions
             }
 
             obj.Technologies.BeginUpdate();
-            obj.Technologies.Clear();
+            obj.Technologies.Remove(techId);
             obj.Technologies.EndUpdate();
             Procedure.Current.OnTechnologyChange(obj);
             StateChange(ActionState.Completed);

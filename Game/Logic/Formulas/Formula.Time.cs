@@ -55,14 +55,16 @@ namespace Game.Logic.Formulas
 
         public virtual int TrainTime(int baseValue, int structureLvl, ITechnologyManager em)
         {
-            return baseValue * (100 - TimeDiscount(structureLvl)) / 100;
+            var reduction = em.GetEffects(EffectCode.TrainTimeReduction).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
+            return baseValue * Math.Max(0, 100 - TimeDiscount(structureLvl) - reduction)  / 100;
         }
 
         public virtual int BuildTime(int baseValue, ICity city, ITechnologyManager em)
         {
+            var reduction = em.GetEffects(EffectCode.BuildTimeReduction).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
             IStructure university =
                     city.FirstOrDefault(structure => ObjectTypeFactory.IsStructureType("University", structure));
-            return (int)(baseValue * (100 - (university == null ? 0 : university.Stats.Labor) * 0.25) / 100);
+            return (int)(baseValue * Math.Max(0, 100 - ((university == null ? 0 : university.Stats.Labor) * 0.25) - reduction) / 100);
         }
 
         /// <summary>

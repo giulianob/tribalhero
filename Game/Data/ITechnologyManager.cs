@@ -26,6 +26,8 @@ namespace Game.Data
 
         bool Upgrade(Technology tech);
 
+        bool Remove(uint techId);
+
         void Clear();
 
         List<Effect> GetEffects(EffectCode effectCode, EffectInheritance inherit = EffectInheritance.All);

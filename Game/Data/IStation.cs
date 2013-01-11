@@ -7,7 +7,9 @@ namespace Game.Data
     {
         City = 1,
 
-        Stronghold = 2
+        Stronghold = 2,
+
+        Settlement = 3
     }
 
     public interface IStation : ILocation

@@ -220,6 +220,8 @@
     <Compile Include="Data\IXYPosition.cs" />
     <Compile Include="Data\LazyValue.cs" />
     <Compile Include="Data\PlayerRights.cs" />
+    <Compile Include="Data\Settlement\ISettlement.cs" />
+    <Compile Include="Data\Settlement\Settlement.cs" />
     <Compile Include="Data\Stats\TroopStats.cs" />
     <Compile Include="Data\Effect.cs" />
     <Compile Include="Data\Global.cs" />

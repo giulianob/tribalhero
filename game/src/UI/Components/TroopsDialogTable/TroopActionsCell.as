@@ -45,7 +45,8 @@ package src.UI.Components.TroopsDialogTable
 					new RetreatTroopProcess(value).execute();
 				});				
 				getCellPanel().append(btnRetreat);
-				if(value.isStationedNotInBattle && value.playerId==Constants.playerId) {
+                
+				if(value.isStationedNotInBattle() && value.playerId == Constants.playerId) {
 					var btnSwitch: JLabelButton = new JLabelButton(StringHelper.localize("STR_MANAGE"));
 					btnSwitch.addActionListener(function(e: Event): void {
 						var dialog : TroopAttackModeDialog = new TroopAttackModeDialog(value);

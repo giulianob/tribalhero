@@ -26,7 +26,7 @@ package src.UI.Dialog
 
 		public function TroopAttackModeDialog(troopStub : TroopStub) 
 		{
-			this.title = "Change troop attack strength";	
+			this.title = "Change attack strength";	
 			this.troopStub = troopStub;
 			createUI();
 			switch(troopStub.attackMode) {

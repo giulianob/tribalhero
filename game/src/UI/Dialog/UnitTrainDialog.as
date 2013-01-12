@@ -70,15 +70,8 @@ package src.UI.Dialog {
 			lblTime.setText(Util.formatTime(trainTime * sldAmount.getValue()));
 		}
 
-		private function updateResources(e: Event = null) : void {
-			var reduceUpkeep: int = 100;
-			for each (var tech: EffectPrototype in city.techManager.getEffects(EffectPrototype.EFFECT_REDUCE_UPKEEP, EffectPrototype.INHERIT_ALL)) {
-				if (tech.param2.indexOf(unitPrototype.type.toString()) != -1) {
-					reduceUpkeep -= (int) (tech.param1);				
-				} 
-			}
-
-			var totalUpkeep: Number = (unitPrototype.upkeep * sldAmount.getValue()) * Math.max(reduceUpkeep, 70) / 100;
+		private function updateResources(e: Event = null) : void {			
+			var totalUpkeep: Number = Formula.getUpkeepWithReductions(unitPrototype.upkeep * sldAmount.getValue(),  unitPrototype.type, city);
 			lblUpkeep.setText(StringHelper.localize("STR_PER_HOUR", -(Math.ceil(totalUpkeep / Constants.secondsPerUnit))));
 
 			var cityResources: LazyResources = city.resources;

@@ -372,9 +372,11 @@
 		public function onSwitchAttackMode(packet: Packet, custom: * ): void
 		{
 			var stub: TroopStub = custom.stub;
-			if ((packet.option & Packet.OPTIONS_FAILED) != Packet.OPTIONS_FAILED)
+			if ((packet.option & Packet.OPTIONS_FAILED) != Packet.OPTIONS_FAILED) {
 				stub.attackMode = custom.mode;
-			mapComm.catchAllErrors(packet, { message: { title: "Info", content: "You have changed the attack mode for this troop." }} );
+            }
+
+			mapComm.catchAllErrors(packet);
 		}
 		
 		public function switchAttackMode(troopStub: TroopStub, mode: int): void

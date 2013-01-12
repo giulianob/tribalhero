@@ -22,16 +22,14 @@ namespace Game.Logic.Procedures
         {
             if (Config.resource_cap)
             {
-                var bonus =
-                        city.Technologies.GetEffects(EffectCode.AtticStorageMod, EffectInheritance.All)
-                            .Sum(x => (int)x.Value[0]);
+                var bonus = city.Technologies.GetEffects(EffectCode.AtticStorageMod).Sum(x => (int)x.Value[0]);
                 var resourceBonus = Formula.Current.HiddenResource(city) * (double)bonus / 100;
 
-                city.Resource.SetLimits(Formula.Current.ResourceCropCap(city.Lvl) + resourceBonus.Crop,
-                                        0,
-                                        Formula.Current.ResourceIronCap(city.Lvl) + resourceBonus.Iron,
-                                        Formula.Current.ResourceWoodCap(city.Lvl) + resourceBonus.Wood,
-                                        0);
+                city.Resource.SetLimits(cropLimit: Formula.Current.ResourceCropCap(city.Lvl) + resourceBonus.Crop,
+                                        goldLimit: 0,
+                                        ironLimit: Formula.Current.ResourceIronCap(city.Lvl) + resourceBonus.Iron,
+                                        woodLimit: Formula.Current.ResourceWoodCap(city.Lvl) + resourceBonus.Wood,
+                                        laborLimit: 0);
             }
             else
             {
@@ -39,22 +37,28 @@ namespace Game.Logic.Procedures
             }
         }
 
-        public int UpkeepForCity(City city, ITroopManager troops)
+        public int UpkeepForCity(ICity city)
         {
             var upkeep = 0;
             var effects = city.Technologies.GetEffects(EffectCode.UpkeepReduce);
-            foreach(var stub in troops)
+
+            foreach (var stub in city.Troops.MyStubs())
             {
-                if (stub.City != city) continue;
                 foreach (var formation in stub)
                 {
-                    foreach( var kvp in formation)
+                    foreach (var kvp in formation)
                     {
-                        var reduce = effects.Sum(x=> BattleFormulas.Current.UnitStatModCheck(city.Template[kvp.Key].Battle, TroopBattleGroup.Any, (string)x.Value[1])?(int)x.Value[0]:0);
-                        upkeep += (int) Math.Ceiling((formation.Type == FormationType.Garrison ? 1.25f : 1f) * kvp.Value * city.Template[kvp.Key].Upkeep * (100f - Math.Max(reduce,70)) / 100);
+                        decimal formationPenalty = formation.Type == FormationType.Garrison ? 1.25m : 1m;
+                        int reduceTechSum = effects.Sum(x => BattleFormulas.Current.UnitStatModCheck(city.Template[kvp.Key].Battle,
+                                                                                    TroopBattleGroup.Any,
+                                                                                    (string)x.Value[1]) ? (int)x.Value[0] : 0);
+                        decimal reductionPercentage = (100m - Math.Min(reduceTechSum, 70m)) / 100m;
+
+                        upkeep += (int)Math.Ceiling(formationPenalty * kvp.Value * city.Template[kvp.Key].Upkeep * reductionPercentage);
                     }
                 }
             }
+
             return upkeep;
         }
     }

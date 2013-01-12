@@ -103,21 +103,23 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                if(stub.InitialCount==0)
+                if (stub.InitialCount == 0)
                 {
                     ReplyError(session, packet, Error.NewFeature);
                     return;
                 }
 
-                if(stub.State != TroopState.Stationed)
+                if (stub.State != TroopState.Stationed)
                 {
                     ReplyError(session, packet, Error.TroopNotStationed);
                     return;
                 }
+
                 stub.BeginUpdate();
                 stub.RetreatCount = (ushort)formula.GetAttackModeTolerance(stub.InitialCount, mode);
                 stub.AttackMode = mode;
                 stub.EndUpdate();
+
                 ReplySuccess(session, packet);
             }
         }
@@ -175,10 +177,10 @@ namespace Game.Comm.ProcessorCommands
                     }
 
                     reply.AddUInt16((ushort)template.Size);
-                    IEnumerator<KeyValuePair<ushort, BaseUnitStats>> templateIter = template.GetEnumerator();
+                    IEnumerator<KeyValuePair<ushort, IBaseUnitStats>> templateIter = template.GetEnumerator();
                     while (templateIter.MoveNext())
                     {
-                        KeyValuePair<ushort, BaseUnitStats> kvp = templateIter.Current;
+                        KeyValuePair<ushort, IBaseUnitStats> kvp = templateIter.Current;
                         reply.AddUInt16(kvp.Key);
                         reply.AddByte(kvp.Value.Lvl);
                     }

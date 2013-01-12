@@ -280,7 +280,12 @@ namespace Game.Logic.Actions
                         return;
                     }
 
+                    // Calculate how much crop the city is making between calls to this action
+                    // Notice: if the city is starving, then GetAmountReceived returns a negative number but cropCost will be positive
+                    // since we switch the signs.
                     int cropCost = -city.Resource.Crop.GetAmountReceived((int)(CalculateTime(INTERVAL_IN_SECONDS) * 1000));
+
+                    // If cropCost is negative, the city isnt starving
                     Resource upkeepCost = new Resource(crop: Math.Max(0, cropCost));
 
                     if (upkeepCost.Empty)

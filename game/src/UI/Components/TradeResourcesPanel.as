@@ -51,9 +51,9 @@
 			onResourceChange();
             lblMaxOut.addActionListener(function (e: Event): void {
                 lblWoodAmount.setValue(lblWoodAmount.getMaximum());
-                lblIronAmount.setValue(lblWoodAmount.getMaximum())
-                lblCropAmount.setValue(lblWoodAmount.getMaximum())
-                lblGoldAmount.setValue(lblWoodAmount.getMaximum())
+                lblIronAmount.setValue(lblIronAmount.getMaximum())
+                lblCropAmount.setValue(lblCropAmount.getMaximum())
+                lblGoldAmount.setValue(lblGoldAmount.getMaximum())
             });
 		}
 		

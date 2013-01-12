@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
+<map version="1.0" orientation="rectiso" width="11" height="24" tilewidth="108" tileheight="54">
+ <tileset name="Untitled" firstgid="1" tilewidth="108" tileheight="108">
+  <image source="../../../Users/Giuliano/Documents/My Dropbox/Game/Tilemap.large.png"/>
+ </tileset>
+ <layer name="Layer 0" width="11" height="24">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAAL3R3Q6AIAgGUOhHXepF7/9WPVG5SWMkojddfHPZkQwcALjBHBOWsop19pyVgAAbjjn/ZB+wuZrT8MicZROzvdpeuFlLzwva7t1j+7FhL+HpX5xVt8yRv+vc99MzpQ9l7c37FOfkzKOoRw6Vmqnx/aBYOSPNcZ9r/y3bus8fuQEwCL/VIAQAAA==
+  </data>
+ </layer>
+</map>

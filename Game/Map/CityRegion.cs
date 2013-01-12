@@ -21,7 +21,9 @@ namespace Game.Map
 
             Troop = 2,
 
-            Stronghold = 6
+            Stronghold = 6,
+
+            Settlement = 7
         }
 
         public const int TILE_SIZE = 2;

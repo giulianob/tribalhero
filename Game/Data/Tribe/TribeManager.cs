@@ -57,9 +57,15 @@ namespace Game.Data.Tribe
             SubscribeEvents(tribe);
         }
 
+        public void DbLoaderSetIdUsed(uint id)
+        {
+            tribeIdGen.Set(id);
+        }
+
         public void DbLoaderAdd(ITribe tribe)
         {
-            tribeIdGen.Set(tribe.Id);
+            tribeIdGen.Set(tribe.Id);            
+
             if (!Tribes.TryAdd(tribe.Id, tribe))
             {
                 return;

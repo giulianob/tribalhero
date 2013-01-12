@@ -158,7 +158,9 @@ namespace Game.Setup
 
         BattleViewableInRounds = 612,
 
-        BattleNotViewableGate = 613,
+        BattleViewableGateHp = 613,
+
+        BattleViewableGateAttackingUnits = 614,
 
         #endregion
 

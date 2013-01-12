@@ -28,7 +28,7 @@ namespace Game.Comm
 {
     public class PacketHelper
     {
-        public static void AddToPacket(UnitTemplate template, Packet packet)
+        public static void AddToPacket(IUnitTemplate template, Packet packet)
         {
             packet.AddUInt16((ushort)template.Size);
             foreach (var kvp in template)

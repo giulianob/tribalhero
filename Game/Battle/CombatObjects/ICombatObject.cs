@@ -79,6 +79,6 @@ namespace Game.Battle.CombatObjects
 
         bool CanSee(ICombatObject obj, uint lowestSteath);
 
-        void ParticipatedInRound();
+        void ParticipatedInRound(uint round);
     }
 }

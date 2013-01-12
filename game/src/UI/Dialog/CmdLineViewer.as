@@ -198,7 +198,7 @@ package src.UI.Dialog
 				resizeAndReposition();				
 			});
 			
-			frame.setSize(new IntDimension(Math.min(550, Constants.screenW * 0.5), Math.min(Constants.screenH - 300, Constants.screenH * 0.3)));
+			frame.setSize(new IntDimension(Math.min(550, Constants.screenW * 0.5), Math.min(Math.max(300, Constants.screenH - 300), Constants.screenH * 0.3)));
 			maximizedSize = frame.getSize();
 			
 			if (Constants.screenH < 600)

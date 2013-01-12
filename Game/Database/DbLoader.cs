@@ -193,6 +193,7 @@ namespace Game.Database
                 {
                     if ((bool)reader["deleted"])
                     {
+                        Tribes.DbLoaderSetIdUsed((uint)reader["id"]);
                         continue;
                     }
 

@@ -61,6 +61,7 @@ ERROR_610,This battle cannot be watched.
 ERROR_611,You aren't allowed to watch this battle unless one of your troops have participated for at least 5 rounds.
 ERROR_612,You aren't allowed to watch this battle unless one of your troops have participated for at least 5 rounds. Battle will be viewable in approximately {0} round(s)
 ERROR_613,The gate is still under attack and has {0} hp remaining.
+ERROR_614,The gate is still under attack and has {0} hp remaining. There appear to be around {1} units attacking.
 ERROR_701,Tribe is already full
 ERROR_702,You are not allowed to do this action because you aren't currently a member in a tribe
 ERROR_703,Tribe name already taken

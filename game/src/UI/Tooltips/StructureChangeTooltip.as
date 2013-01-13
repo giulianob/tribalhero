@@ -64,7 +64,7 @@ package src.UI.Tooltips {
 				return label;
 			};
 
-			lblTitle.setText("Convert to " + nextStructPrototype.getName());
+			lblTitle.setText("Convert to level 1 " + nextStructPrototype.getName());
 
 			lblTime.setText(Util.formatTime(Formula.buildTime(parentObj, nextStructPrototype.buildTime, parentObj.getCorrespondingCityObj().techManager)));
 

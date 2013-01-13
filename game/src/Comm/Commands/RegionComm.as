@@ -186,6 +186,9 @@
 						extraProps.level = packet.readUByte();
 						extraProps.tribeId = packet.readUInt();
 					}
+					else if (objType ==  ObjectFactory.TYPE_SETTLEMENT) {
+						extraProps.level = packet.readUByte();
+					}
 					newRegion.addRegionObject(objType, objGroupId, objId, coord.x, coord.y, extraProps);
 				}
 			}

@@ -46,6 +46,9 @@ package src.Map.CityRegionFilters
 				case ObjectFactory.TYPE_STRONGHOLD:
 					applyStronghold(obj);
 					break;
+				case ObjectFactory.TYPE_SETTLEMENT:
+					applySettlement(obj);
+					break;
 			}
 		}
 		public function applyForest(obj: CityRegionObject) : void {
@@ -106,6 +109,19 @@ package src.Map.CityRegionFilters
 			icon.lvlText.text = obj.extraProps.level.toString();
 			obj.alpha = 0.5;
 		}
+		
+		public function applySettlement(obj: CityRegionObject) : void {
+			var img: DisplayObject = ObjectFactory.getIcon("MINIMAP_FOREST_ICON");
+			obj.sprite = img;
+			obj.sprite.transform.colorTransform = new ColorTransform(0, 0, 0, 1, 0, 255, 255);
+			obj.addChild(img);
+			
+			var icon: MINIMAP_FOREST_ICON = obj.sprite as MINIMAP_FOREST_ICON;
+			icon.lvlText.mouseEnabled = false;
+			icon.useHandCursor = true;
+			icon.lvlText.text = obj.extraProps.level.toString();
+			obj.alpha = 0.5;
+		}		
 		
 		public function applyLegend(legend: CityRegionLegend) : void {
 			var icon: DisplayObject = new DOT_SPRITE;

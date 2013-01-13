@@ -72,25 +72,7 @@ package src.UI.Tooltips
 		{
 			return true;
 		}
-		
-		override protected function showFrame(obj: DisplayObject = null):void 
-		{
-			super.showFrame(obj);
-			
-			// Set as modal
-			var frame: JFrame = ui.getFrame();
-			frame.setModal(true);
-			frame.addEventListener(PopupEvent.POPUP_CLOSED, function(e: PopupEvent): void {
-				Global.gameContainer.resizeManager.removeObject(frame);
-			});
-			
-			var g: Graphics2D = new Graphics2D(frame.getModalMC().graphics);
-			var bounds: Rectangle = frame.getModalMC().getBounds(frame);
-			g.fillRectangle(new SolidBrush(new ASColor(0x000000, 0.6)), bounds.x, bounds.y, bounds.width, bounds.height);			
-
-			Global.gameContainer.resizeManager.addObject(frame.getModalMC(), ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP | ResizeManager.ANCHOR_LEFT | ResizeManager.ANCHOR_BOTTOM);
-		}
-		
+				
 		public function updateMessage(): void {						
 			label.setText(messages[cursor]);
 			
@@ -108,9 +90,7 @@ package src.UI.Tooltips
 				pnlFooter.append(btnNext);
 			}
 			
-			if (ui && ui.getFrame()) {
-				ui.getFrame().pack();
-			}
+			resize();
 		}
 	}
 

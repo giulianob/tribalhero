@@ -45,7 +45,7 @@
 			pnlBonus.append(lblBonusTitle);
 			pnlBonus.append(new SimpleResourcesPanel(bonus, false, true));
 
-			var ui: GameJBox = tooltip.getUI();
+			var ui: JPanel = tooltip.getUI();
 
 			ui.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
 

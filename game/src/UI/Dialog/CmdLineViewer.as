@@ -151,13 +151,7 @@ package src.UI.Dialog
 			}
 				
 			message = StringHelper.trim(message);
-			
-			if (profanityFilter.quickValidate(message) == false)
-			{
-				log(currentChatType, 'Looks like your chat message contains some offensive terms. Please keep it classy.', false);
-				return false;
-			}
-			
+					
 			if (message.charAt(0) == '/')
 			{
 				log(currentChatType, message, true);				
@@ -169,6 +163,12 @@ package src.UI.Dialog
 			}
 			else
 			{
+                if (profanityFilter.quickValidate(message) == false)
+                {
+                    log(currentChatType, 'Looks like your chat message contains some offensive terms. Please keep it classy.', false);
+                    return false;
+                }
+            
 				Global.mapComm.General.sendChat(type, message, function(resp:String, type: int = 0):void
 					{
 						log(type, resp, false);

@@ -3,31 +3,54 @@ package src.UI.Tooltips {
 	import flash.display.DisplayObject;
 	import flash.display.InteractiveObject;
 	import flash.events.Event;
+    import flash.events.EventDispatcher;
+    import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
 	import org.aswing.AsWingManager;
 	import org.aswing.border.EmptyBorder;
 	import org.aswing.Component;
+    import org.aswing.Container;
 	import org.aswing.event.AWEvent;
+    import org.aswing.event.ContainerEvent;
+    import org.aswing.event.PopupEvent;
 	import org.aswing.FocusManager;
 	import org.aswing.geom.IntPoint;
 	import org.aswing.Insets;
+    import org.aswing.JPanel;
 	import src.Global;
 	import src.Map.Camera;
 	import src.UI.GameJBox;
+    import src.UI.GameJBoxBackground;
 
-	public class Tooltip
+	public class Tooltip implements IEventDispatcher
 	{
-		protected var ui: GameJBox = new GameJBox();
+        private var dispatcher: EventDispatcher;
+        
+        protected var container: JPanel = new JPanel();
+        
+		protected var ui: JPanel = new JPanel();
 
 		protected var viewObj: DisplayObject;
 		
 		private var position: IntPoint;
+        
+        private var needsUpdate: Boolean = false;
 
-		public function Tooltip() {
-			ui.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));		
+		public function Tooltip() {                        
+            this.dispatcher = new EventDispatcher(this);
+			container.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));		
+            container.setOpaque(true);
+            container.setBackgroundDecorator(new GameJBoxBackground());
+            container.append(ui);
+            ui.addEventListener(ContainerEvent.COM_ADDED, function(e: Event): void {
+                resize();
+            });
+            container.addEventListener(AWEvent.PAINT, function(e: Event): void {                
+                adjustPosition(); 
+            });                        
 		}
 
-		public function getUI(): GameJBox {
+		public function getUI(): JPanel {
 			return ui;
 		}
 		
@@ -52,34 +75,36 @@ package src.UI.Tooltips {
 				viewObj.addEventListener(MouseEvent.MOUSE_DOWN, parentHidden);				
 				
 				showFrame(obj);
+                
+                AsWingManager.callLater(resize, 10);                
 			}
-			else {
-				ui.getFrame().pack();
-				ui.getFrame().addEventListener(AWEvent.PAINT, onPaint);
-				ui.getFrame().repaintAndRevalidate();
-			}
+			
+            this.needsUpdate = true;
 		}
-		
+        
+        public function resize(): void {  
+            trace("RESIZE");
+            container.pack();
+            container.repaintAndRevalidate();
+        }
+        
 		public function showFixed(position: IntPoint):void
 		{			
 			this.position = position;
-			showFrame();
-			adjustPosition();
+			showFrame();			
 		}
 		
 		protected function showFrame(obj: DisplayObject = null): void {		
-			ui.show();
-			
-			ui.getFrame().addEventListener(AWEvent.PAINT, onPaint);
-			ui.getFrame().repaintAndRevalidate();
-			
-			if (!mouseInteractive()) {				
-				ui.getFrame().parent.mouseEnabled = false;
-				ui.getFrame().parent.mouseChildren = false;
-				ui.getFrame().parent.tabEnabled = false;
-				ui.getFrame().parent.tabChildren = false;
-				ui.getFrame().setFocusable(false);					
-			}
+            Global.gameContainer.stage.addChild(container);
+            Global.gameContainer.stage.addEventListener(Event.ENTER_FRAME, enterFrame);
+            
+            if (!mouseInteractive()) {
+                container.mouseEnabled = false;
+                container.mouseChildren = false;
+                container.tabEnabled = false;
+            }            
+            
+            resize();
 		}
 		
 		protected function mouseInteractive(): Boolean {
@@ -91,26 +116,14 @@ package src.UI.Tooltips {
 			hide();
 		}
 
-		// We need this function since the size is wrong of the component until it has been painted
-		private function onPaint(e: AWEvent): void {
-			ui.removeEventListener(AWEvent.PAINT, onPaint);
-			ui.getFrame().removeEventListener(AWEvent.PAINT, onPaint);
-			ui.getFrame().pack();
-			adjustPosition();
-		}
-
 		private function parentHidden(e: Event) : void {
 			hide();
 		}
 
 		private function adjustPosition() : void
-		{
-			if (ui.getFrame() == null || ui.getFrame().stage == null || ui.getComBounds().width == 0) {
+		{                                          
+			if (container.stage == null || container.getComBounds().width == 0) {
 				return;
-			}
-
-			if (viewObj is Component) {
-				(viewObj as Component).requestFocus();
 			}
 
 			var posX: Number = position.x;
@@ -119,11 +132,11 @@ package src.UI.Tooltips {
 			var boxX: Number = posX;
 			var boxY: Number = posY;
 
-			var boxWidth: Number = ui.getFrame().getPreferredWidth();
-			var boxHeight: Number = ui.getFrame().getPreferredHeight();
+			var boxWidth: Number = ui.getPreferredWidth();
+			var boxHeight: Number = ui.getPreferredHeight();
 
-			var stageWidth: Number = ui.getFrame().stage.stageWidth;
-			var stageHeight: Number = ui.getFrame().stage.stageHeight;
+			var stageWidth: Number = container.stage.stageWidth;
+			var stageHeight: Number = container.stage.stageHeight;
 
 			if (boxX + boxWidth > stageWidth) {
 				boxX = posX - boxWidth + 5;
@@ -141,13 +154,13 @@ package src.UI.Tooltips {
 				boxX = 0;
 			}
 
-			ui.getFrame().setGlobalLocation(new IntPoint(boxX, boxY));
+			container.setGlobalLocation(new IntPoint(boxX, boxY));
 		}
 
 		public function hide():void
 		{
-			Global.map.camera.removeEventListener(Camera.ON_MOVE, onCameraMove);
-			
+			Global.map.camera.removeEventListener(Camera.ON_MOVE, onCameraMove);			                                  
+            
 			if (this.viewObj != null)
 			{
 				this.viewObj.removeEventListener(Event.REMOVED_FROM_STAGE, parentHidden);
@@ -155,9 +168,43 @@ package src.UI.Tooltips {
 				this.viewObj = null;
 			}
 
-			if (ui.getFrame())
-				ui.getFrame().dispose();
+			if (container.stage) {
+                container.stage.removeChild(container);
+                Global.gameContainer.stage.removeEventListener(Event.ENTER_FRAME, enterFrame);
+            }
+            
+            dispatchEvent(new Event(PopupEvent.POPUP_CLOSED));
 		}
+        
+        private function enterFrame(e:Event):void 
+        {
+            if (!this.needsUpdate) {
+                return;
+            }
+            
+            this.needsUpdate = false;
+            adjustPosition();
+        }
+        
+		public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void{
+			dispatcher.addEventListener(type, listener, useCapture, priority);
+		}
+
+		public function dispatchEvent(evt: Event):Boolean{
+			return dispatcher.dispatchEvent(evt);
+		}
+
+		public function hasEventListener(type:String):Boolean{
+			return dispatcher.hasEventListener(type);
+		}
+
+		public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void{
+			dispatcher.removeEventListener(type, listener, useCapture);
+		}
+
+		public function willTrigger(type:String):Boolean {
+			return dispatcher.willTrigger(type);
+		}	        
 	}
 
 }

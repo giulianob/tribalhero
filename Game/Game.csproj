@@ -221,7 +221,13 @@
     <Compile Include="Data\LazyValue.cs" />
     <Compile Include="Data\PlayerRights.cs" />
     <Compile Include="Data\Settlement\ISettlement.cs" />
+    <Compile Include="Data\Settlement\ISettlementFactory.cs" />
+    <Compile Include="Data\Settlement\ISettlementManager.cs" />
     <Compile Include="Data\Settlement\Settlement.cs" />
+    <Compile Include="Data\Settlement\SettlementChecker.cs" />
+    <Compile Include="Data\Settlement\ISettlementConfigurator.cs" />
+    <Compile Include="Data\Settlement\SettlementConfigurator.cs" />
+    <Compile Include="Data\Settlement\SettlementManager.cs" />
     <Compile Include="Data\Stats\TroopStats.cs" />
     <Compile Include="Data\Effect.cs" />
     <Compile Include="Data\Global.cs" />
@@ -233,7 +239,7 @@
     <Compile Include="Data\Stronghold\IStrongholdFactory.cs" />
     <Compile Include="Data\Stronghold\IStrongholdConfigurator.cs" />
     <Compile Include="Data\Stronghold\IStrongholdManager.cs" />
-    <Compile Include="Data\Stronghold\SimpleStubGenerator.cs" />
+    <Compile Include="Data\SimpleStubGenerator.cs" />
     <Compile Include="Data\Stronghold\Stronghold.cs" />
     <Compile Include="Data\Stronghold\StrongholdActivationCondition.cs" />
     <Compile Include="Data\Stronghold\StrongholdConfigurator.cs" />

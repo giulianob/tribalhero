@@ -11,13 +11,22 @@ using Persistance;
 
 namespace Game.Data.Settlement
 {
-    class Settlement : SimpleGameObject, ISettlement
+    public class Settlement : SimpleGameObject, ISettlement
     {
         public const string DB_TABLE = "settlements";
 
-        public uint Id { get; set; }
+        public uint Id { get; private set; }
 
         private readonly IDbManager dbManager;
+
+        public Settlement(uint id, string name, byte level, uint x, uint y, int count, IDbManager dbManager)
+        {
+            Id = id;
+            this.dbManager = dbManager;
+            this.x = x;
+            this.y = y;
+            Lvl = level;
+        }
 
         public override ushort Type
         {
@@ -31,7 +40,7 @@ namespace Game.Data.Settlement
         {
             get
             {
-                return (uint)SystemGroupIds.Stronghold;
+                return (uint)SystemGroupIds.Settlement;
             }
         }
 
@@ -76,7 +85,7 @@ namespace Game.Data.Settlement
                 return;
             }
 
-            dbManager.Save(this);
+         //   dbManager.Save(this);
         }
 
         public Position CityRegionLocation

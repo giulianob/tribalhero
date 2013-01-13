@@ -7,6 +7,7 @@ using System.Threading;
 using Game.Battle;
 using Game.Comm;
 using Game.Data;
+using Game.Data.Settlement;
 using Game.Data.Stronghold;
 using Game.Database;
 using Game.Logic;
@@ -166,6 +167,15 @@ _________ _______ _________ ______   _______  _
 
             VictoryPointChecker victoryPointChecker = Ioc.Kernel.Get<VictoryPointChecker>();
             victoryPointChecker.Start();
+
+            // Initialize settlement
+            var settlementManager = Ioc.Kernel.Get<ISettlementManager>();
+            if (Config.settlement_generate > 0 && settlementManager.Count < Config.settlement_generate) // Only generate if there is none.
+            {
+                settlementManager.Generate(Config.settlement_generate - settlementManager.Count);
+            }
+            SettlementChecker settlementChecker = Ioc.Kernel.Get<SettlementChecker>();
+            settlementChecker.Start(TimeSpan.FromSeconds(Config.settlement_idle_check_interval_in_sec));
 
             // Initialize game market
             Market.Init();

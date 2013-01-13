@@ -171,6 +171,10 @@ namespace Game.Setup
 
         public static bool actions_ignore_requirements;
 
+        public static int settlement_generate = 5000;
+
+        public static int settlement_idle_check_interval_in_sec = 3600;
+
         public static int stronghold_generate = 0;
 
         public static int stronghold_activation_check_interval_in_sec = 3600;

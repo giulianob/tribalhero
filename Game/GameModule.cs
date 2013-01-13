@@ -11,6 +11,7 @@ using Game.Comm.ProcessorCommands;
 using Game.Comm.Protocol;
 using Game.Comm.Thrift;
 using Game.Data;
+using Game.Data.Settlement;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Logic;
@@ -232,6 +233,15 @@ namespace Game
             Bind<VictoryPointChecker>().ToSelf().InSingletonScope();
 
             Bind<IStrongholdFactory>().To<StrongholdFactory>();
+
+            #endregion
+
+            #region Settlement
+
+            Bind<ISettlementManager>().To<SettlementManager>().InSingletonScope();
+            Bind<ISettlementConfigurator>().To<SettlementConfigurator>().InSingletonScope();
+            Bind<Settlement>().To<Settlement>();
+            Bind<SettlementChecker>().ToSelf().InSingletonScope();
 
             #endregion
 

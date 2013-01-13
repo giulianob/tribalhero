@@ -2,6 +2,7 @@
 using Game.Battle.RewardStrategies;
 using Game.Comm.Channel;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Data.Stronghold;
 using Ninject;
 using Persistance;
@@ -77,6 +78,24 @@ namespace Game.Battle
         {
             var battleId = (uint)BattleReport.BattleIdGenerator.GetNext();
             return CreateStrongholdGateBattleManager(battleId, battleLocation, battleOwner, stronghold);
+        }
+
+        public IBattleManager CreateBarbarianBattleManager(BattleLocation battleLocation, BattleOwner battleOwner, IBarbarianTribe barbarianTribe)
+        {
+            var battleId = (uint)BattleReport.BattleIdGenerator.GetNext();
+            var bm = new BattleManager(battleId,
+                                       battleLocation,
+                                       battleOwner,
+                                       kernel.Get<IRewardStrategyFactory>().CreateBarbarianTribeRewardStrategy(barbarianTribe),
+                                       kernel.Get<IDbManager>(),
+                                       kernel.Get<IBattleReport>(),
+                                       kernel.Get<ICombatListFactory>(),
+                                       kernel.Get<BattleFormulas>());
+
+            new BattleChannel(bm);
+
+            bm.BattleReport.Battle = bm;
+            return bm;        
         }
 
         public IBattleManager CreateStrongholdGateBattleManager(uint battleId,

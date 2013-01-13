@@ -161,9 +161,9 @@ namespace Game.Database
             }
         }
 
-        private uint GetMaxId(string table)
+        private uint GetMaxId(string table, string column = "id")
         {
-            using (var reader = DbManager.ReaderQuery(string.Format("SELECT max(`id`) FROM `{0}`", table)))
+            using (var reader = DbManager.ReaderQuery(string.Format("SELECT max(`{1}`) FROM `{0}`", table, column)))
             {
                 reader.Read();
                 if (DBNull.Value.Equals(reader[0]))
@@ -177,7 +177,7 @@ namespace Game.Database
 
         private void LoadReportIds()
         {
-            BattleReport.BattleIdGenerator.Set(GetMaxId(SqlBattleReportWriter.BATTLE_DB));
+            BattleReport.BattleIdGenerator.Set(Math.Max(GetMaxId(BattleManager.DB_TABLE, "battle_id"), GetMaxId(SqlBattleReportWriter.BATTLE_DB)));
             BattleReport.ReportIdGenerator.Set(GetMaxId(SqlBattleReportWriter.BATTLE_REPORTS_DB));
             BattleReport.BattleTroopIdGenerator.Set(GetMaxId(SqlBattleReportWriter.BATTLE_REPORT_TROOPS_DB));
         }

@@ -2,31 +2,45 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
-using System.Text;
+using Game.Battle;
+using Game.Logic;
 using Game.Map;
 using Game.Util;
 using Game.Util.Locking;
 using Persistance;
 
-namespace Game.Data.Settlement
+namespace Game.Data.BarbarianTribe
 {
-    public class Settlement : SimpleGameObject, ISettlement
+    public class BarbarianTribe : SimpleGameObject, IBarbarianTribe
     {
-        public const string DB_TABLE = "settlements";
+        public const string DB_TABLE = "barbarian_tribes";
 
         public uint Id { get; private set; }
 
+        public IActionWorker Worker { get; private set; }
+
+        public Resource Resource { private set; get; }
+
         private readonly IDbManager dbManager;
 
-        public Settlement(uint id, string name, byte level, uint x, uint y, int count, IDbManager dbManager)
+        public BarbarianTribe(uint id, string name, byte level, uint x, uint y, int count, IDbManager dbManager, IActionWorker actionWorker)
         {
             Id = id;
+            Lvl = level;
+            Worker = actionWorker;            
             this.dbManager = dbManager;
             this.x = x;
-            this.y = y;
-            Lvl = level;
+            this.y = y;           
+            Resource = new Resource();
+            Resource.StatsUpdate += ResourceOnStatsUpdate;
         }
+
+        private void ResourceOnStatsUpdate()
+        {
+            CheckUpdateMode();
+        }
+
+        public IBattleManager Battle { get; set; }
 
         public override ushort Type
         {
@@ -46,7 +60,7 @@ namespace Game.Data.Settlement
 
         public override void CheckUpdateMode()
         {
-            if (!Global.FireEvents)
+            if (!Global.FireEvents || !InWorld)
             {
                 return;
             }
@@ -161,9 +175,15 @@ namespace Game.Data.Settlement
             {
                 return new[]
                 {
-                        new DbColumn("level", Lvl, DbType.Byte), new DbColumn("x", x, DbType.UInt32), new DbColumn("y", y, DbType.UInt32),
+                        new DbColumn("level", Lvl, DbType.Byte), 
+                        new DbColumn("x", x, DbType.UInt32), 
+                        new DbColumn("y", y, DbType.UInt32),
                         new DbColumn("object_state", (byte)State.Type, DbType.Boolean),
-                        new DbColumn("state_parameters", XmlSerializer.SerializeList(State.Parameters.ToArray()), DbType.String)
+                        new DbColumn("state_parameters", XmlSerializer.SerializeList(State.Parameters.ToArray()), DbType.String),
+                        new DbColumn("loot_crop", Resource.Crop, DbType.UInt32),
+                        new DbColumn("loot_wood", Resource.Wood, DbType.UInt32),
+                        new DbColumn("loot_iron", Resource.Iron, DbType.UInt32),
+                        new DbColumn("loot_gold", Resource.Gold, DbType.UInt32),
                 };
             }
         }
@@ -215,12 +235,5 @@ namespace Game.Data.Settlement
         }
 
         #endregion
-
-        public Settlement(uint id, uint x, uint y, IDbManager dbManager)
-                : base(x, y)
-        {
-            Id = id;
-            this.dbManager = dbManager;
-        }
     }
 }

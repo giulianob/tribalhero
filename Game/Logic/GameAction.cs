@@ -117,7 +117,9 @@ namespace Game.Logic
 
         StrongholdEngageMainAttackPassive = 707,
 
-        TribeContributeActive = 1018,
+        BarbarianTribeAttackChain = 710,
+
+        TribeContributeActive = 1018,        
     }
 
     public enum ActionInterrupt

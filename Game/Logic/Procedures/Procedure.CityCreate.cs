@@ -19,26 +19,26 @@ namespace Game.Logic.Procedures
         {
             city = null;
             IStructure mainBuilding;
-            if (!Randomizer.MainBuilding(out mainBuilding, Formula.Current.GetInitialCityRadius(), 1))
+            if (!Randomizer.MainBuilding(out mainBuilding, formula.GetInitialCityRadius(), 1))
             {
-                World.Current.Players.Remove(player.PlayerId);
-                DbPersistance.Current.Rollback();
+                world.Players.Remove(player.PlayerId);
+                dbPersistance.Rollback();
                 // If this happens I'll be a very happy game developer
                 return false;
             }
 
-            city = new City(World.Current.Cities.GetNextCityId(),
+            city = new City(world.Cities.GetNextCityId(),
                             player,
                             cityName,
-                            Formula.Current.GetInitialCityResources(),
-                            Formula.Current.GetInitialCityRadius(),
+                            formula.GetInitialCityResources(),
+                            formula.GetInitialCityRadius(),
                             mainBuilding,
-                            Formula.Current.GetInitialAp());
+                            formula.GetInitialAp());
             player.Add(city);
 
-            World.Current.Cities.Add(city);
+            world.Cities.Add(city);
             mainBuilding.BeginUpdate();
-            World.Current.Regions.Add(mainBuilding);
+            world.Regions.Add(mainBuilding);
             mainBuilding.EndUpdate();
 
             var defaultTroop = city.Troops.Create();

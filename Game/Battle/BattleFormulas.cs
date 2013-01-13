@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using Game.Battle.CombatObjects;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Data.Stats;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
@@ -209,6 +210,11 @@ namespace Game.Battle
         public short GetStamina(ITroopStub stub, IStronghold targetStronghold)
         {
             return (short)(Config.battle_stamina_initial * Config.battle_stamina_gate_multiplier);
+        }
+
+        public short GetStamina(ITroopStub stub, IBarbarianTribe barbarianTribe)
+        {
+            return (short)Config.battle_stamina_initial;;
         }
 
         public virtual ushort GetStaminaReinforced(ICity city, ushort stamina, uint round)

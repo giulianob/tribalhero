@@ -33,6 +33,8 @@ namespace Game.Logic.Actions
 
         private readonly Formula formula;
 
+        private readonly CityBattleProcedure cityBattleProcedure;
+
         private readonly IGameObjectLocator gameObjectLocator;
 
         private readonly ILocker locker;
@@ -48,6 +50,7 @@ namespace Game.Logic.Actions
                                        IGameObjectLocator gameObjectLocator,
                                        IDbManager dbManager,
                                        Formula formula,
+                                       CityBattleProcedure cityBattleProcedure,
                                        IWorld world)
         {
             this.cityId = cityId;
@@ -57,6 +60,7 @@ namespace Game.Logic.Actions
             this.gameObjectLocator = gameObjectLocator;
             this.dbManager = dbManager;
             this.formula = formula;
+            this.cityBattleProcedure = cityBattleProcedure;
             this.world = world;
 
             ICity city;
@@ -83,6 +87,7 @@ namespace Game.Logic.Actions
                                        IGameObjectLocator gameObjectLocator,
                                        IDbManager dbManager,
                                        Formula formula,
+                                       CityBattleProcedure cityBattleProcedure,
                                        IWorld world)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
@@ -92,6 +97,7 @@ namespace Game.Logic.Actions
             this.gameObjectLocator = gameObjectLocator;
             this.dbManager = dbManager;
             this.formula = formula;
+            this.cityBattleProcedure = cityBattleProcedure;
             this.world = world;
 
             cityId = uint.Parse(properties["city_id"]);
@@ -215,7 +221,7 @@ namespace Game.Logic.Actions
                 city.DefaultTroop.BeginUpdate();
                 city.DefaultTroop.Template.ClearStats();
                 city.DefaultTroop.State = TroopState.Idle;
-                battleProcedure.MoveUnitFormation(city.DefaultTroop, FormationType.InBattle, FormationType.Normal);
+                cityBattleProcedure.MoveUnitFormation(city.DefaultTroop, FormationType.InBattle, FormationType.Normal);
                 city.DefaultTroop.EndUpdate();
 
                 // Get a COPY of the stubs that are stationed in the town since the loop below will modify city.Troops
@@ -267,7 +273,7 @@ namespace Game.Logic.Actions
             dbManager.Save(city.Battle);
 
             //Add local troop
-            battleProcedure.AddLocalUnitsToBattle(city.Battle, city);
+            cityBattleProcedure.AddLocalUnitsToBattle(city.Battle, city);
 
             //Add reinforcement
             foreach (

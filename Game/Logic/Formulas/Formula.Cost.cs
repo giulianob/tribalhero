@@ -232,8 +232,7 @@ namespace Game.Logic.Formulas
 
         public virtual Resource GetTribeUpgradeCost(byte level)
         {
-            return new Resource(1000, 400, 40, 2000, 0) * Tribe.MEMBERS_PER_LEVEL * level *
-                   (1 + ((double)level * level / 20));
+            return new Resource(crop: 1000, gold: 400, iron: 40, wood: 2000) * Tribe.MEMBERS_PER_LEVEL * level * (1 + ((double)level * level / 20));
         }
 
         public virtual void GetNewCityCost(int cityCount, out int influencePoints, out int wagons)

@@ -370,13 +370,7 @@ namespace Game.Data
 
         #region Constructors
 
-        public City(uint id,
-                    IPlayer owner,
-                    string name,
-                    Resource resource,
-                    byte radius,
-                    IStructure mainBuilding,
-                    decimal ap)
+        public City(uint id, IPlayer owner, string name, Resource resource, byte radius, IStructure mainBuilding, decimal ap)
                 : this(
                         id,
                         owner,
@@ -388,13 +382,7 @@ namespace Game.Data
         {
         }
 
-        public City(uint id,
-                    IPlayer owner,
-                    string name,
-                    LazyResource resource,
-                    byte radius,
-                    IStructure mainBuilding,
-                    decimal ap)
+        public City(uint id, IPlayer owner, string name, LazyResource resource, byte radius, IStructure mainBuilding, decimal ap)
         {
             Id = id;
             Owner = owner;

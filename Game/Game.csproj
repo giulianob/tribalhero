@@ -119,6 +119,7 @@
     <Compile Include="Battle\CombatGroups\CityOffensiveCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\CityDefensiveCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\CombatGroup.cs" />
+    <Compile Include="Battle\CombatGroups\BarbarianTribeCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\StrongholdCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\ICombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\ICombatGroupFactory.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="Battle\CombatObjects\CombatObject.cs" />
     <Compile Include="Battle\CombatObjects\CombatStructure.cs" />
     <Compile Include="Battle\CombatObjects\CombatUnitFactory.cs" />
+    <Compile Include="Battle\CombatObjects\BarbarianTribeCombatUnit.cs" />
     <Compile Include="Battle\CombatObjects\StrongholdCombatGate.cs" />
     <Compile Include="Battle\CombatObjects\StrongholdCombatStructure.cs" />
     <Compile Include="Battle\CombatObjects\StrongholdCombatUnit.cs" />
@@ -148,6 +150,7 @@
     <Compile Include="Battle\Reporting\ReportState.cs" />
     <Compile Include="Battle\Reporting\SqlBattleReportWriter.cs" />
     <Compile Include="Battle\RewardStrategies\CityRewardStrategy.cs" />
+    <Compile Include="Battle\RewardStrategies\BarbarianTribeRewardStrategy.cs" />
     <Compile Include="Battle\RewardStrategies\StrongholdRewardStrategy.cs" />
     <Compile Include="Battle\RewardStrategies\IRewardStrategy.cs" />
     <Compile Include="Battle\RewardStrategies\IRewardStrategyFactory.cs" />
@@ -205,6 +208,12 @@
     <Compile Include="Database\DbLoaderActionFactory.cs" />
     <Compile Include="Database\Persistance.cs" />
     <Compile Include="Data\AggressiveLazyValue.cs" />
+    <Compile Include="Data\BarbarianTribe\IBarbarianTribeConfigurator.cs" />
+    <Compile Include="Data\BarbarianTribe\IBarbarianTribeFactory.cs" />
+    <Compile Include="Data\BarbarianTribe\IBarbarianTribeManager.cs" />
+    <Compile Include="Data\BarbarianTribe\BarbarianTribeChecker.cs" />
+    <Compile Include="Data\BarbarianTribe\BarbarianTribeConfigurator.cs" />
+    <Compile Include="Data\BarbarianTribe\BarbarianTribeManager.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />
     <Compile Include="Data\ICity.cs" />
@@ -220,14 +229,8 @@
     <Compile Include="Data\IXYPosition.cs" />
     <Compile Include="Data\LazyValue.cs" />
     <Compile Include="Data\PlayerRights.cs" />
-    <Compile Include="Data\Settlement\ISettlement.cs" />
-    <Compile Include="Data\Settlement\ISettlementFactory.cs" />
-    <Compile Include="Data\Settlement\ISettlementManager.cs" />
-    <Compile Include="Data\Settlement\Settlement.cs" />
-    <Compile Include="Data\Settlement\SettlementChecker.cs" />
-    <Compile Include="Data\Settlement\ISettlementConfigurator.cs" />
-    <Compile Include="Data\Settlement\SettlementConfigurator.cs" />
-    <Compile Include="Data\Settlement\SettlementManager.cs" />
+    <Compile Include="Data\BarbarianTribe\IBarbarianTribe.cs" />
+    <Compile Include="Data\BarbarianTribe\BarbarianTribe.cs" />
     <Compile Include="Data\Stats\TroopStats.cs" />
     <Compile Include="Data\Effect.cs" />
     <Compile Include="Data\Global.cs" />
@@ -276,6 +279,8 @@
     <Compile Include="Logic\ActionRequirement.cs" />
     <Compile Include="Logic\Actions\ActionFactory.cs" />
     <Compile Include="Logic\Actions\AttackMode.cs" />
+    <Compile Include="Logic\Actions\BarbarianTribe\BarbarianTribeAttackChainAction.cs" />
+    <Compile Include="Logic\Actions\BarbarianTribe\BarbarianTribeEngageAttackPassiveAction.cs" />
     <Compile Include="Logic\Actions\Stronghold\StrongholdDefenseChainAction.cs" />
     <Compile Include="Logic\Actions\Stronghold\StrongholdEngageMainAttackPassiveAction.cs" />
     <Compile Include="Logic\Actions\Stronghold\StrongholdMainBattlePassiveAction.cs" />
@@ -316,8 +321,11 @@
     <Compile Include="Logic\Notifications\Notification.cs" />
     <Compile Include="Logic\Notifications\NotificationEventArgs.cs" />
     <Compile Include="Logic\PassiveAction.cs" />
+    <Compile Include="Logic\Procedures\CityBattleProcedure.cs" />
+    <Compile Include="Logic\Procedures\BarbarianTribeBattleProcedure.cs" />
     <Compile Include="Logic\Procedures\Procedure.CityCreate.cs" />
     <Compile Include="Logic\Procedures\Procedure.Structure.cs" />
+    <Compile Include="Logic\Procedures\StrongholdBattleProcedure.cs" />
     <Compile Include="Logic\Requirements\EffectRequirement.cs" />
     <Compile Include="Logic\Formulas\Formula.cs" />
     <Compile Include="Logic\ICanDo.cs" />
@@ -475,6 +483,7 @@
     <Compile Include="Util\SystemClock.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Data\Settlement\" />
     <Folder Include="Logic\Requirements\RequirementFormulas\" />
   </ItemGroup>
   <ItemGroup>

@@ -11,10 +11,10 @@ namespace Game.Logic.Procedures
     {
         public virtual void RecalculateCityResourceRates(ICity city)
         {
-            city.Resource.Crop.Rate = Formula.Current.GetCropRate(city);
-            city.Resource.Iron.Rate = Formula.Current.GetIronRate(city);
-            city.Resource.Wood.Rate = Formula.Current.GetWoodRate(city);
-            city.Resource.Gold.Rate = Formula.Current.GetGoldRate(city);
+            city.Resource.Crop.Rate = formula.GetCropRate(city);
+            city.Resource.Iron.Rate = formula.GetIronRate(city);
+            city.Resource.Wood.Rate = formula.GetWoodRate(city);
+            city.Resource.Gold.Rate = formula.GetGoldRate(city);
         }
 
         public virtual void OnStructureUpgradeDowngrade(IStructure structure)

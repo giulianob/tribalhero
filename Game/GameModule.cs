@@ -11,10 +11,11 @@ using Game.Comm.ProcessorCommands;
 using Game.Comm.Protocol;
 using Game.Comm.Thrift;
 using Game.Data;
-using Game.Data.Settlement;
+using Game.Data.BarbarianTribe;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Logic;
+using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
@@ -64,6 +65,12 @@ namespace Game
                     return new ChatCommandsModule(writer);
                 });
             Bind<Chat>().ToMethod(c => new Chat(Global.Channel));
+
+            #endregion
+
+            #region Action
+
+            Bind<IActionWorker>().ToMethod(c => new ActionWorker());            
 
             #endregion
 
@@ -216,6 +223,9 @@ namespace Game
             Bind<ReverseTileLocator>().ToMethod(c => new ReverseTileLocator(new Random().Next)).InSingletonScope();
             Bind<Procedure>().ToSelf().InSingletonScope();
             Bind<BattleProcedure>().ToSelf().InSingletonScope();
+            Bind<StrongholdBattleProcedure>().ToSelf().InSingletonScope();
+            Bind<CityBattleProcedure>().ToSelf().InSingletonScope();
+            Bind<BarbarianTribeBattleProcedure>().ToSelf().InSingletonScope();
 
             #endregion
 
@@ -236,12 +246,12 @@ namespace Game
 
             #endregion
 
-            #region Settlement
+            #region Barbarian Tribe
 
-            Bind<ISettlementManager>().To<SettlementManager>().InSingletonScope();
-            Bind<ISettlementConfigurator>().To<SettlementConfigurator>().InSingletonScope();
-            Bind<Settlement>().To<Settlement>();
-            Bind<SettlementChecker>().ToSelf().InSingletonScope();
+            Bind<IBarbarianTribeManager>().To<BarbarianTribeManager>().InSingletonScope();
+            Bind<IBarbarianTribeConfigurator>().To<BarbarianTribeConfigurator>().InSingletonScope();
+            Bind<IBarbarianTribe>().To<BarbarianTribe>();
+            Bind<BarbarianTribeChecker>().ToSelf().InSingletonScope();
 
             #endregion
 

@@ -1,4 +1,5 @@
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Data.Stronghold;
 
 namespace Game.Battle.RewardStrategies
@@ -8,5 +9,7 @@ namespace Game.Battle.RewardStrategies
         CityRewardStrategy CreateCityRewardStrategy(ICity city);
 
         StrongholdRewardStrategy CreateStrongholdRewardStrategy(IStronghold stronghold);
+
+        BarbarianTribeRewardStrategy CreateBarbarianTribeRewardStrategy(IBarbarianTribe barbarianTribe);
     }
 }

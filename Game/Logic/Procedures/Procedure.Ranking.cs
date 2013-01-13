@@ -19,7 +19,7 @@ namespace Game.Logic.Procedures
         /// <param name="attackPoints"></param>
         public virtual void GiveAttackPoints(ICity city, int attackPoints)
         {
-            var point = Formula.Current.GetAttackPoint(attackPoints);
+            var point = formula.GetAttackPoint(attackPoints);
             city.AttackPoint += point;
             if (city.Owner.Tribesman == null)
             {
@@ -29,7 +29,7 @@ namespace Game.Logic.Procedures
             ThreadPool.QueueUserWorkItem(delegate
                 {
                     ITribe tribe;
-                    using (Concurrency.Current.Lock(id, out tribe))
+                    using (locker.Lock(id, out tribe))
                     {
                         if (tribe == null)
                         {

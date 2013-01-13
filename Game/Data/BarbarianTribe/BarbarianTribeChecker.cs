@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System;
 using Game.Logic;
 
-namespace Game.Data.Settlement
+namespace Game.Data.BarbarianTribe
 {
-    public class SettlementChecker :ISchedule
+    public class BarbarianTribeChecker : ISchedule
     {
         private TimeSpan interval;
-        private readonly ISettlementManager manager;
+        private readonly IBarbarianTribeManager manager;
         private readonly IScheduler scheduler;
 
-        public SettlementChecker(ISettlementManager manager, IScheduler scheduler)
+        public BarbarianTribeChecker(IBarbarianTribeManager manager, IScheduler scheduler)
         {
             this.manager = manager;
             this.scheduler = scheduler;

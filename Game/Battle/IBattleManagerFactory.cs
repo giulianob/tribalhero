@@ -1,4 +1,5 @@
 ﻿using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Data.Stronghold;
 
 namespace Game.Battle
@@ -29,5 +30,7 @@ namespace Game.Battle
         IBattleManager CreateStrongholdGateBattleManager(BattleLocation battleLocation,
                                                          BattleOwner battleOwner,
                                                          IStronghold stronghold);
+
+        IBattleManager CreateBarbarianBattleManager(BattleLocation battleLocation, BattleOwner battleOwner, IBarbarianTribe barbarianTribe);
     }
 }

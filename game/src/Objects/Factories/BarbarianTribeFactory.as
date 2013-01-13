@@ -12,9 +12,9 @@
 	import src.Objects.SimpleGameObject;
 	import src.Objects.States.GameObjectState;
 
-	public class SettlementFactory {
+	public class BarbarianTribeFactory {
 
-		public function SettlementFactory() {
+		public function BarbarianTribeFactory() {
 		}
 
 		public static function getSprite(centered: Boolean = false): DisplayObjectContainer

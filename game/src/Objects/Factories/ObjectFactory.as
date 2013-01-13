@@ -30,7 +30,7 @@
 		public static const TYPE_STRUCTURE: int = 4;
 		public static const TYPE_NEW_CITY_PLACEHOLDER: int = 5;
 		public static const TYPE_STRONGHOLD: int = 6;
-		public static const TYPE_SETTLEMENT: int = 7;
+		public static const TYPE_BARBARIAN_TRIBE: int = 7;
 
 		private static var objectTypes: BinaryList;
 
@@ -89,7 +89,7 @@
 			else if (type == 300)
 				return TYPE_STRONGHOLD;
 			else if (type == 400)
-				return TYPE_SETTLEMENT;
+				return TYPE_BARBARIAN_TRIBE;
 			else
 				return TYPE_UNIT;
 		}

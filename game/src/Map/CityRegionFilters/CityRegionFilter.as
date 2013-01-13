@@ -46,8 +46,8 @@ package src.Map.CityRegionFilters
 				case ObjectFactory.TYPE_STRONGHOLD:
 					applyStronghold(obj);
 					break;
-				case ObjectFactory.TYPE_SETTLEMENT:
-					applySettlement(obj);
+				case ObjectFactory.TYPE_BARBARIAN_TRIBE:
+					applyBarbarianTribe(obj);
 					break;
 			}
 		}
@@ -110,7 +110,7 @@ package src.Map.CityRegionFilters
 			obj.alpha = 0.5;
 		}
 		
-		public function applySettlement(obj: CityRegionObject) : void {
+		public function applyBarbarianTribe(obj: CityRegionObject) : void {
 			var img: DisplayObject = ObjectFactory.getIcon("MINIMAP_FOREST_ICON");
 			obj.sprite = img;
 			obj.sprite.transform.colorTransform = new ColorTransform(0, 0, 0, 1, 0, 255, 255);

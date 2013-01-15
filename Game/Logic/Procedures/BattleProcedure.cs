@@ -172,13 +172,12 @@ namespace Game.Logic.Procedures
                                                           ITroopObject attackerTroopObject)
         {
             var localGroup = GetOrCreateLocalGroup(targetCity.Battle, targetCity);
-            foreach (
-                    IStructure structure in
-                            GetStructuresInRadius(targetCity, attackerTroopObject)
-                                    .Where(
-                                           structure =>
-                                           !structure.IsBlocked && structure.Stats.Hp > 0 &&
-                                           structure.State.Type == ObjectState.Normal))
+            foreach (IStructure structure in
+                    GetStructuresInRadius(targetCity, attackerTroopObject)
+                            .Where(
+                                   structure =>
+                                   !structure.IsBlocked && structure.Stats.Hp > 0 && structure.State.Type == ObjectState.Normal &&
+                                   CanStructureBeAttacked(structure) == Error.Ok))
             {
                 structure.BeginUpdate();
                 structure.State = GameObjectState.BattleState(battleManager.BattleId);

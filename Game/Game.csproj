@@ -281,6 +281,7 @@
     <Compile Include="Logic\Actions\AttackMode.cs" />
     <Compile Include="Logic\Actions\BarbarianTribe\BarbarianTribeAttackChainAction.cs" />
     <Compile Include="Logic\Actions\BarbarianTribe\BarbarianTribeEngageAttackPassiveAction.cs" />
+    <Compile Include="Logic\Actions\BarbarianTribe\BarbarianTribeBattlePassiveAction.cs" />
     <Compile Include="Logic\Actions\Stronghold\StrongholdDefenseChainAction.cs" />
     <Compile Include="Logic\Actions\Stronghold\StrongholdEngageMainAttackPassiveAction.cs" />
     <Compile Include="Logic\Actions\Stronghold\StrongholdMainBattlePassiveAction.cs" />

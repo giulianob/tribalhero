@@ -124,7 +124,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.CityEngageAttackPassive;
+                return ActionType.BarbarianTribeEngageAttackPassive;
             }
         }
 

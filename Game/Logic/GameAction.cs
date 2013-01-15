@@ -119,6 +119,10 @@ namespace Game.Logic
 
         BarbarianTribeAttackChain = 710,
 
+        BarbarianTribeBattlePassive = 711,
+
+        BarbarianTribeEngageAttackPassive = 712,
+
         TribeContributeActive = 1018,        
     }
 

@@ -17,8 +17,9 @@ namespace Common.Testing
             {
             }
 
-            public void Lock(ILockable[] list)
+            public IMultiObjectLock Lock(ILockable[] list)
             {
+                return this;
             }
 
             public void UnlockAll()

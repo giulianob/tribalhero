@@ -60,7 +60,7 @@ namespace Game.Data.BarbarianTribe
 
         public override void CheckUpdateMode()
         {
-            if (!Global.FireEvents || !InWorld)
+            if (!Global.FireEvents)
             {
                 return;
             }

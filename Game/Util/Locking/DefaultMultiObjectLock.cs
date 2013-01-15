@@ -20,7 +20,7 @@ namespace Game.Util.Locking
 
         private object[] lockedObjects = new object[] {};
 
-        public void Lock(ILockable[] list)
+        public IMultiObjectLock Lock(ILockable[] list)
         {
             if (currentLock != null)
             {
@@ -37,11 +37,14 @@ namespace Game.Util.Locking
                 Monitor.Enter(list[i].Lock);
                 lockedObjects[i] = list[i].Lock;
             }
+
+            return this;
         }
 
         public void Dispose()
         {
             UnlockAll();
+            GC.SuppressFinalize(this);
         }
 
         public void UnlockAll()

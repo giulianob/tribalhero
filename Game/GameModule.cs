@@ -15,7 +15,6 @@ using Game.Data.BarbarianTribe;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Logic;
-using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
@@ -82,6 +81,8 @@ namespace Game
             #endregion
 
             #region Locking
+
+            Bind<DefaultMultiObjectLock.Factory>().ToMethod(c => () => new TransactionalMultiObjectLock(new DefaultMultiObjectLock()));
 
             Bind<ILocker>().ToMethod(c =>
                 {

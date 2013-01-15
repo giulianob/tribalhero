@@ -38,8 +38,7 @@
 		{						
 			lblCity.setText(username.name);
 			ui.append(lblCity);
-			if (ui.getFrame())
-				ui.getFrame().pack();
+			resize();
 		}
 	}
 }

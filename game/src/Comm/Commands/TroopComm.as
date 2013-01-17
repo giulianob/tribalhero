@@ -275,6 +275,11 @@
 
 			session.write(packet, onReceiveTroopAttack, onAttackFail);
 		}		
+		public function troopAttackBarbarian(cityId: int, targetObjectId: int, mode: int, troop: TroopStub, onAttackFail:Function):void
+		{
+			// add command
+			trace("troopAttackBarbarian");
+		}
 		
 		public function onReceiveTroopAttack(packet: Packet, custom: * ):void
 		{

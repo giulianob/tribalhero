@@ -8,6 +8,7 @@ using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using Persistance;
+using System.Linq;
 
 namespace Game.Data.BarbarianTribe
 {
@@ -59,6 +60,7 @@ namespace Game.Data.BarbarianTribe
 
         public void Generate(int count)
         {
+            var random = new Random();
             for (var i = 0; i < count; ++i)
             {
                 string name;
@@ -70,7 +72,7 @@ namespace Game.Data.BarbarianTribe
                     break;
                 }
 
-                IBarbarianTribe barbarianTribe = barbarianTribeFactory.CreateBarbarianTribe((uint)idGenerator.GetNext(), name, level, x, y, 10);
+                IBarbarianTribe barbarianTribe = barbarianTribeFactory.CreateBarbarianTribe((uint)idGenerator.GetNext(), name, level, x, y, random.Next(10));
                 Add(barbarianTribe);
             }
         }
@@ -95,7 +97,12 @@ namespace Game.Data.BarbarianTribe
 
         public void RelocateIdle(TimeSpan duration)
         {
-
+            var tribes =
+                    barbarianTribes.Where(pair => pair.Value.Created.Add(duration) < DateTime.UtcNow && pair.Value.CampRemains == Config.settlement_camp_count);
+            foreach(var tribe in tribes)
+            {
+                //barbarianTribeConfigurator.Next(out )
+            }
         }
 
         public IEnumerable<Unit> GenerateNeutralStub(IBarbarianTribe barbarianTribe)

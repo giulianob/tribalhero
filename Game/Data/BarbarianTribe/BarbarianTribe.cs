@@ -20,6 +20,9 @@ namespace Game.Data.BarbarianTribe
         public IActionWorker Worker { get; private set; }
 
         public Resource Resource { private set; get; }
+        public DateTime Created { get; set; }
+        public DateTime LastAttacked { get; set; }
+        public byte CampRemains { get; private set; }
 
         private readonly IDbManager dbManager;
 
@@ -33,6 +36,8 @@ namespace Game.Data.BarbarianTribe
             this.y = y;           
             Resource = new Resource();
             Resource.StatsUpdate += ResourceOnStatsUpdate;
+            Created = DateTime.UtcNow;
+            CampRemains = (byte)count;
         }
 
         private void ResourceOnStatsUpdate()
@@ -139,6 +144,7 @@ namespace Game.Data.BarbarianTribe
             {
                 var bw = new BinaryWriter(ms);
                 bw.Write(Lvl);
+                bw.Write(CampRemains);
                 ms.Position = 0;
                 return ms.ToArray();
             }

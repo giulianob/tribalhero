@@ -10,6 +10,7 @@ using Game.Battle;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
@@ -100,6 +101,12 @@ namespace Game.Comm
                 {
                     packet.AddByte(gameObj.City.Radius);
                 }
+            }
+
+            var barbarianTribe = obj as IBarbarianTribe;
+            if (barbarianTribe!=null)
+            {
+                packet.AddByte(barbarianTribe.CampRemains);
             }
 
             AddToPacket(obj.State, packet);

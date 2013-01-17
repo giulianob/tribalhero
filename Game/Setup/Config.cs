@@ -173,7 +173,11 @@ namespace Game.Setup
 
         public static int settlement_generate = 5000;
 
+        public static int settlement_camp_count = 5;
+
         public static int settlement_idle_check_interval_in_sec = 3600;
+
+        public static int settlement_idle_duration_in_sec = 86400 * 3;
 
         public static int stronghold_generate = 0;
 

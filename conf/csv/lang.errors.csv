@@ -54,6 +54,7 @@ ERROR_422,This road is required for other structures to exist and cannot be remo
 ERROR_600,You can't attack yourself!
 ERROR_601,Not allowed while city is in battle
 ERROR_602,Why would you want to defend yourself?
+ERROR_604,It doesn't look like you have enough units to do that. You can try again as your units may have changed in the last few minutes since you started this action.
 ERROR_605,You have reached the maximum number of troops allowed.
 ERROR_606,No units have been selected
 ERROR_607,Not allowed while troop is in battle

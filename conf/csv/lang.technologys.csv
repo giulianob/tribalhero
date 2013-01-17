@@ -189,11 +189,11 @@ REINVENT_WHEEL_TECHNOLOGY_LVL_4,Increase send/trade resource speed by 32% for th
 REINVENT_WHEEL_TECHNOLOGY_LVL_5,Increase send/trade resource speed by 40% for this structure only.
 ,
 WEAPON_EXPORT_TECHNOLOGY_NAME,Weapon Export
-WEAPON_EXPORT_TECHNOLOGY_LVL_1,Every 3 idle laborers produce 1 gold per hour for up to 60 laborers.  (Does not stack)
-WEAPON_EXPORT_TECHNOLOGY_LVL_2,Every 3 idle laborers produce 1 gold per hour for up to 120 laborers. (Does not stack)
-WEAPON_EXPORT_TECHNOLOGY_LVL_3,Every 5 idle laborers produce 2 gold per hour for up to 180 laborers. (Does not stack)
-WEAPON_EXPORT_TECHNOLOGY_LVL_4,Every 5 idle laborers produce 2 gold per hour for up to 240 laborers. (Does not stack)
-WEAPON_EXPORT_TECHNOLOGY_LVL_5,Every 2 idle laborers produce 1 gold per hour for up to 300 laborers. (Does not stack)
+WEAPON_EXPORT_TECHNOLOGY_LVL_1,"Every 3 idle laborers produce 1 gold per hour for up to 60 laborers.  Once gold reserves go over 1000, production is reduced to 1 gold per hour for every 15 idle laborers.  (Does not stack)"
+WEAPON_EXPORT_TECHNOLOGY_LVL_2,"Every 3 idle laborers produce 1 gold per hour for up to 120 laborers.  Once gold reserves go over 2000, production is reduced to 1 gold per hour for every 15 idle laborers.  (Does not stack)"
+WEAPON_EXPORT_TECHNOLOGY_LVL_3,"Every 5 idle laborers produce 2 gold per hour for up to 180 laborers.  Once gold reserves go over 3000, production is reduced to 2 gold per hour for every 25 idle laborers.  (Does not stack)"
+WEAPON_EXPORT_TECHNOLOGY_LVL_4,"Every 5 idle laborers produce 2 gold per hour for up to 240 laborers.  Once gold reserves go over 4000, production is reduced to 2 gold per hour for every 25 idle laborers.  (Does not stack)"
+WEAPON_EXPORT_TECHNOLOGY_LVL_5,"Every 2 idle laborers produce 1 gold per hour for up to 300 laborers.  Once gold reserves go over 5000, production is reduced to 1 gold per hour for every 10 idle laborers.  (Does not stack)"
 ,
 SPIKE_BARRICADE_TECHNOLOGY_NAME,Spike Barricade
 SPIKE_BARRICADE_TECHNOLOGY_LVL_1,Increases building's splash damage by 1.

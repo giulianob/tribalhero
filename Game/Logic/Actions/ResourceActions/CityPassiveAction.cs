@@ -319,7 +319,7 @@ namespace Game.Logic.Actions
                             city.Technologies.GetEffects(EffectCode.WeaponExport)
                                 .DefaultIfEmpty()
                                 .Max(x => x == null ? 0 : (int)x.Value[0]);
-                    int gold = formula.GetWeaponExportLaborProduce(weaponExportMax, city.Resource.Labor.Value);
+                    int gold = formula.GetWeaponExportLaborProduce(weaponExportMax, city.Resource.Labor.Value, city.Resource.Gold.Value);
                     if (gold <= 0)
                     {
                         return;

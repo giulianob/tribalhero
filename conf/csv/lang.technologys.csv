@@ -56,7 +56,7 @@ DOUBLE_TIME_TECHNOLOGY_LVL_4,Increases troop's travel speed by 16% when distance
 DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% when distance is greater than 500 tiles. (Stacks additively)
 ,
 ARCHERY_RESEARCH_TECHNOLOGY_NAME,Archery Research
-ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow yielding units.
+ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow wielding units.
 ,
 BOW_RESEARCH_TECHNOLOGY_NAME,Bowshield  Research
 BOW_RESEARCH_TECHNOLOGY_LVL_1,"Increases Bowman, Archer and Helepolis's Max HP by 4%. (Does not stack)"

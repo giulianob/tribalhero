@@ -175,7 +175,8 @@ _________ _______ _________ ______   _______  _
                 settlementManager.Generate(Config.settlement_generate - settlementManager.Count);
             }
             BarbarianTribeChecker barbarianTribeChecker = Ioc.Kernel.Get<BarbarianTribeChecker>();
-            barbarianTribeChecker.Start(TimeSpan.FromSeconds(Config.settlement_idle_check_interval_in_sec));
+            barbarianTribeChecker.Start(TimeSpan.FromSeconds(Config.settlement_idle_check_interval_in_sec),
+                                        TimeSpan.FromSeconds(Config.settlement_idle_duration_in_sec));
 
             // Initialize game market
             Market.Init();

@@ -1,4 +1,5 @@
-﻿using Game.Battle;
+﻿using System;
+using Game.Battle;
 using Game.Logic;
 using Persistance;
 
@@ -13,5 +14,11 @@ namespace Game.Data.BarbarianTribe
         IActionWorker Worker { get; }
 
         Resource Resource { get; }
+
+        DateTime Created { get; set; }
+
+        DateTime LastAttacked { get; set; }
+
+        byte CampRemains { get; }
     }
 }

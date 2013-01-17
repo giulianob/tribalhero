@@ -6,6 +6,7 @@ namespace Game.Data.BarbarianTribe
     public class BarbarianTribeChecker : ISchedule
     {
         private TimeSpan interval;
+        private TimeSpan duration;
         private readonly IBarbarianTribeManager manager;
         private readonly IScheduler scheduler;
 
@@ -15,9 +16,15 @@ namespace Game.Data.BarbarianTribe
             this.scheduler = scheduler;
         }
 
-        public void Start(TimeSpan interval)
+        /// <summary>
+        /// Start the schedule checker for idle settlement
+        /// </summary>
+        /// <param name="interval">Interval between each run</param>
+        /// <param name="duration">Maximum duration of idle allowed</param>
+        public void Start(TimeSpan interval, TimeSpan duration)
         {
             this.interval = interval;
+            this.duration = duration;
             Time = DateTime.UtcNow;
             scheduler.Put(this);
         }
@@ -30,7 +37,7 @@ namespace Game.Data.BarbarianTribe
 
         public void Callback(object custom)
         {
-            manager.RelocateIdle(interval);
+            manager.RelocateIdle(duration);
             Time = DateTime.UtcNow.Add(interval);
             scheduler.Put(this);
         }

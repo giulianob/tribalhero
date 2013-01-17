@@ -9,6 +9,7 @@
 	import flash.utils.getDefinitionByName;
 	import src.Global;
 	import src.Objects.AggressiveLazyValue;
+	import src.Objects.BarbarianTribe;
 	import src.Objects.SimpleGameObject;
 	import src.Objects.States.GameObjectState;
 
@@ -32,14 +33,14 @@
 			return sprite;
 		}
 
-		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, groupId: int, objectId: int, level: int): SimpleGameObject
+		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, groupId: int, objectId: int, level: int, count: int): SimpleGameObject
 		{
-			var obj: SimpleGameObject = new SimpleGameObject(type, state, objX, objY, groupId, objectId);
+			var obj: BarbarianTribe = new BarbarianTribe(type, state, objX, objY, groupId, objectId, level, count);
 
 			obj.spriteContainer.addChild(ObjectFactory.makeIntoShadow(getSprite()));
 			obj.spriteContainer.addChild(getSprite());
 
-			//strongholdObj.setOnSelect(Global.map.selectObject);
+			obj.setOnSelect(Global.map.selectObject);
 			
 			return obj;
 		}

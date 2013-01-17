@@ -1,6 +1,7 @@
 package src.Objects.Process 
 {
 	import src.Map.City;
+	import src.Objects.BarbarianTribe;
 	import src.Util.StringHelper;
 	import flash.events.Event;
 	import org.aswing.JButton;
@@ -40,7 +41,7 @@ package src.Objects.Process
 			
 			Global.gameContainer.closeAllFrames(true);
 			
-			if (targetLocation != null && targetLocation.type == Location.STRONGHOLD) {
+			if (targetLocation != null && (targetLocation.type == Location.STRONGHOLD || targetLocation.type == Location.BARBARIAN)) {
 				onAttackAccepted();
 				return;
 			}
@@ -86,12 +87,17 @@ package src.Objects.Process
 		public function onAttackAccepted(): void {
 			if (targetLocation != null && targetLocation.type == Location.STRONGHOLD) {
 				Global.mapComm.Troop.troopAttackStronghold(sourceCity.id, targetLocation.id, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
+			} else if (targetLocation != null && targetLocation.type == Location.BARBARIAN) {
+				Global.mapComm.Troop.troopAttackBarbarian(sourceCity.id, targetLocation.id, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
 			} else {
 				if (target is StructureObject) {
 					Global.mapComm.Troop.troopAttackCity(sourceCity.id, target.groupId, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);
 				}
 				else if (target is Stronghold) {
 					Global.mapComm.Troop.troopAttackStronghold(sourceCity.id, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
+				}
+				else if (target is BarbarianTribe) {
+					Global.mapComm.Troop.troopAttackBarbarian(sourceCity.id, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
 				}
 			}
 

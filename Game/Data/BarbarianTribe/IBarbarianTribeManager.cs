@@ -13,10 +13,8 @@ namespace Game.Data.BarbarianTribe
         bool TryGetBarbarianTribe(uint id, out IBarbarianTribe barbarianTribe);
 
         void Generate(int count);
-
-        void Respawn(IBarbarianTribe barbarianTribe);
-
-        void RelocateIdle(TimeSpan duration);
+        
+        void RelocateAsNeeded();
 
         IEnumerable<Unit> GenerateNeutralStub(IBarbarianTribe barbarianTribe);
     }

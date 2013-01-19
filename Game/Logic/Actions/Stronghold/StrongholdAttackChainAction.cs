@@ -281,6 +281,7 @@ namespace Game.Logic.Actions
                     }
 
                     city.Notifications.Remove(this);
+                    city.Notifications.Add(troopObject, this);
 
                     // Walk back to city if none of the above conditions apply
                     TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
@@ -358,6 +359,8 @@ namespace Game.Logic.Actions
                     }
                     else
                     {
+
+                        city.Notifications.Add(troopObject, this);
                         // Send troop back home
                         var tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
                                                                              troopObject.ObjectId,
@@ -425,6 +428,8 @@ namespace Game.Logic.Actions
                     {
                         //Remove notification to target once battle is over
                         city.Notifications.Remove(this);
+
+                        city.Notifications.Add(troopObject, this);
 
                         // Send troop back home
                         var tma = actionFactory.CreateTroopMovePassiveAction(city.Id,

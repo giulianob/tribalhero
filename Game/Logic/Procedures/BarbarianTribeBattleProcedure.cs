@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Game.Battle;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
@@ -8,7 +7,6 @@ using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Troop;
 using Game.Logic.Actions;
-using Game.Map;
 using Game.Setup;
 
 namespace Game.Logic.Procedures
@@ -72,10 +70,35 @@ namespace Game.Logic.Procedures
                 {
                     throw new Exception(string.Format("Failed to start a battle due to error {0}", result));
                 }
+
+                barbarianTribe.BeginUpdate();
+                barbarianTribe.State = GameObjectState.BattleState(barbarianTribe.Battle.BattleId);
+                barbarianTribe.EndUpdate();
             }
 
             battleId = barbarianTribe.Battle.BattleId;
         }
 
+        public virtual ICombatGroup AddBarbarianTribeUnitsToBattle(IBattleManager battle, IBarbarianTribe barbarianTribe, IEnumerable<Unit> units)
+        {
+            var barbarianCombatGroup = combatGroupFactory.CreateBarbarianTribeCombatGroup(battle.BattleId, battle.GetNextGroupId(), barbarianTribe);
+
+            foreach (var unit in units)
+            {
+                var combatUnits = combatUnitFactory.CreateBarbarianTribeCombatUnit(battle,
+                                                                               barbarianTribe,
+                                                                               unit.Type,
+                                                                               (byte)Math.Max(1, barbarianTribe.Lvl / 2),
+                                                                               unit.Count);
+                foreach (var obj in combatUnits)
+                {
+                    barbarianCombatGroup.Add(obj);
+                }
+            }
+
+            battle.Add(barbarianCombatGroup, BattleManager.BattleSide.Defense, false);
+
+            return barbarianCombatGroup;
+        }
     }
 }

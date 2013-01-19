@@ -31,8 +31,6 @@ namespace Game.Logic.Actions
 
         private readonly IGameObjectLocator gameObjectLocator;
 
-        private readonly BarbarianTribeBattleProcedure barbarianTribeBattleProcedure;
-
         private readonly ILocker locker;
 
         private readonly AttackMode mode;
@@ -49,7 +47,6 @@ namespace Game.Logic.Actions
                                                Procedure procedure,
                                                ILocker locker,
                                                IGameObjectLocator gameObjectLocator,
-                                               BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
                                                Formula formula,
                                                BattleProcedure battleProcedure)
         {
@@ -61,7 +58,6 @@ namespace Game.Logic.Actions
             this.procedure = procedure;
             this.locker = locker;
             this.gameObjectLocator = gameObjectLocator;
-            this.barbarianTribeBattleProcedure = barbarianTribeBattleProcedure;
             this.formula = formula;
             this.battleProcedure = battleProcedure;
         }
@@ -76,7 +72,6 @@ namespace Game.Logic.Actions
                                                Procedure procedure,
                                                ILocker locker,
                                                IGameObjectLocator gameObjectLocator,
-                                               BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
                                                Formula formula,
                                                BattleProcedure battleProcedure)
                 : base(id, chainCallback, current, chainState, isVisible)
@@ -85,7 +80,6 @@ namespace Game.Logic.Actions
             this.procedure = procedure;
             this.locker = locker;
             this.gameObjectLocator = gameObjectLocator;
-            this.barbarianTribeBattleProcedure = barbarianTribeBattleProcedure;
             this.formula = formula;
             this.battleProcedure = battleProcedure;
             cityId = uint.Parse(properties["city_id"]);
@@ -140,6 +134,11 @@ namespace Game.Logic.Actions
             if (battleProcedure.HasTooManyAttacks(city))
             {
                 return Error.TooManyTroops;
+            }
+
+            if (barbarianTribe.CampRemains == 0)
+            {
+                return Error.BarbarianTribeNoCampsRemaining;
             }
 
             //Load the units stats into the stub

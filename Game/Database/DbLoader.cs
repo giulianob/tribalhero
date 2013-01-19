@@ -536,12 +536,6 @@ namespace Game.Database
 
                     // Add stronghold to main manager
                     StrongholdManager.DbLoaderAdd(stronghold);
-
-                    // Add stronghold to region
-                    if (stronghold.StrongholdState != StrongholdState.Inactive)
-                    {
-                        World.Regions.Add(stronghold);
-                    }
                 }
             }
 

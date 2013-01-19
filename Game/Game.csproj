@@ -400,6 +400,7 @@
     <Compile Include="Util\HexDump.cs" />
     <Compile Include="Util\IChannel.cs" />
     <Compile Include="Util\IdGenerator.cs" />
+    <Compile Include="Util\ListExtension.cs" />
     <Compile Include="Util\Locking\CallbackLock.cs" />
     <Compile Include="Util\Locking\Concurrency.cs" />
     <Compile Include="Util\Locking\ILockable.cs" />

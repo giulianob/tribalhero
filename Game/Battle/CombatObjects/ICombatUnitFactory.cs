@@ -1,4 +1,5 @@
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
 
@@ -29,5 +30,11 @@ namespace Game.Battle.CombatObjects
         StrongholdCombatStructure CreateStrongholdGateStructure(IBattleManager battleManager,
                                                                 IStronghold stronghold,
                                                                 decimal hp);
+
+        BarbarianTribeCombatUnit[] CreateBarbarianTribeCombatUnit(IBattleManager battleManager,
+                                                                  IBarbarianTribe barbarianTribe,
+                                                                  ushort type,
+                                                                  byte level,
+                                                                  ushort count);
     }
 }

@@ -3099,6 +3099,42 @@
             <value>The encapsulated node.</value>
             <seealso cref="M:Ploeh.AutoFixture.Dsl.CompositeNodeComposer`1.#ctor(Ploeh.AutoFixture.Kernel.ISpecimenBuilderNode)"/>
         </member>
+        <member name="T:Ploeh.AutoFixture.Kernel.AbstractTypeSpecification">
+            <summary>
+            A specification that evaluates whether a request is a request for an abstract type such as an abstract base class or an interface.
+            </summary>
+        </member>
+        <member name="T:Ploeh.AutoFixture.Kernel.IRequestSpecification">
+            <summary>
+            A Specification that evaluates requests.
+            </summary>
+            <remarks>
+            <para>
+            This is a codification of the Specification patter for requests. This interface can (and
+            should) be used in any place where you need to filter requests for specimens.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Ploeh.AutoFixture.Kernel.IRequestSpecification.IsSatisfiedBy(System.Object)">
+            <summary>
+            Evaluates a request for a specimen.
+            </summary>
+            <param name="request">The specimen request.</param>
+            <returns>
+            <see langword="true"/> if <paramref name="request"/> is satisfied by the Specification;
+            otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:Ploeh.AutoFixture.Kernel.AbstractTypeSpecification.IsSatisfiedBy(System.Object)">
+            <summary>
+            Evaluates a request for a specimen.
+            </summary>
+            <param name="request">The specimen request.</param>
+            <returns>
+            <see langword="true"/> if <paramref name="request"/> is a <see cref="T:System.Type"/> that represents an abstract base class or an interface;
+            otherwise, <see langword="false"/>.
+            </returns>
+        </member>
         <member name="T:Ploeh.AutoFixture.Kernel.ConstrainedStringRequest">
             <summary>
             Encapsulates a maximum length for a string.
@@ -3160,27 +3196,6 @@
             <summary>
             Evaluates whether a request is equal to an expected target.
             </summary>
-        </member>
-        <member name="T:Ploeh.AutoFixture.Kernel.IRequestSpecification">
-            <summary>
-            A Specification that evaluates requests.
-            </summary>
-            <remarks>
-            <para>
-            This is a codification of the Specification patter for requests. This interface can (and
-            should) be used in any place where you need to filter requests for specimens.
-            </para>
-            </remarks>
-        </member>
-        <member name="M:Ploeh.AutoFixture.Kernel.IRequestSpecification.IsSatisfiedBy(System.Object)">
-            <summary>
-            Evaluates a request for a specimen.
-            </summary>
-            <param name="request">The specimen request.</param>
-            <returns>
-            <see langword="true"/> if <paramref name="request"/> is satisfied by the Specification;
-            otherwise, <see langword="false"/>.
-            </returns>
         </member>
         <member name="M:Ploeh.AutoFixture.Kernel.EqualRequestSpecification.#ctor(System.Object)">
             <summary>
@@ -5626,7 +5641,9 @@
             <typeparam name="T">The type to freeze.</typeparam>
             <param name="fixture">The fixture.</param>
             <param name="seed">
-            Any data that adds additional information when creating the anonymous object.
+            Any data that adds additional information when creating the
+            anonymous object. Hypothetically, this value might be the value
+            being frozen, but this is not likely.
             </param>
             <returns>
             The value that will subsequently always be created for <typeparamref name="T"/>.
@@ -5637,9 +5654,17 @@
             same instance whenever an instance of the type is requested either directly, or
             indirectly as a nested value of other types.
             </para>
+            <para>
+            Please notice that the <paramref name="seed"/> isn't likely to be
+            used as the frozen value, unless you've customized
+            <paramref name="fixture"/> to do this. If you wish to inject a
+            specific value into the Fixture, you should use the
+            <see cref="M:Ploeh.AutoFixture.FixtureRegistrar.Inject``1(Ploeh.AutoFixture.IFixture,``0)"/> method instead.
+            </para>
             </remarks>
             <seealso cref="M:Ploeh.AutoFixture.FixtureFreezer.Freeze``1(Ploeh.AutoFixture.IFixture)"/>
             <seealso cref="M:Ploeh.AutoFixture.FixtureFreezer.Freeze``1(Ploeh.AutoFixture.IFixture,System.Func{Ploeh.AutoFixture.Dsl.ICustomizationComposer{``0},Ploeh.AutoFixture.Kernel.ISpecimenBuilderComposer})"/>
+            <seealso cref="M:Ploeh.AutoFixture.FixtureRegistrar.Inject``1(Ploeh.AutoFixture.IFixture,``0)"/>
         </member>
         <member name="M:Ploeh.AutoFixture.FixtureFreezer.Freeze``1(Ploeh.AutoFixture.IFixture,System.Func{Ploeh.AutoFixture.Dsl.ICustomizationComposer{``0},Ploeh.AutoFixture.Kernel.ISpecimenBuilderComposer})">
             <summary>

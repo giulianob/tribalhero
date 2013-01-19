@@ -2,6 +2,7 @@
 
 using System.Linq;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Data.Stats;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
@@ -136,6 +137,35 @@ namespace Game.Battle.CombatObjects
                                                                         kernel.Get<UnitFactory>(),
                                                                         kernel.Get<BattleFormulas>(),
                                                                         kernel.Get<Formula>());
+
+                units[i++] = newUnit;
+                count -= size;
+            }
+            while (count > 0);
+            return units;
+        }
+
+        public BarbarianTribeCombatUnit[] CreateBarbarianTribeCombatUnit(IBattleManager battleManager,
+                                                                 IBarbarianTribe barbarianTribe,
+                                                                 ushort type,
+                                                                 byte level,
+                                                                 ushort count)
+        {
+            var groupSize = kernel.Get<UnitFactory>().GetUnitStats(type, level).Battle.GroupSize;
+            var units = new BarbarianTribeCombatUnit[(count - 1) / groupSize + 1];
+            int i = 0;
+            do
+            {
+                ushort size = (groupSize > count ? count : groupSize);
+                BarbarianTribeCombatUnit newUnit = new BarbarianTribeCombatUnit(battleManager.GetNextCombatObjectId(),
+                                                                                battleManager.BattleId,
+                                                                                type,
+                                                                                level,
+                                                                                size,
+                                                                                barbarianTribe,
+                                                                                kernel.Get<UnitFactory>(),
+                                                                                kernel.Get<BattleFormulas>(),
+                                                                                kernel.Get<Formula>());
 
                 units[i++] = newUnit;
                 count -= size;

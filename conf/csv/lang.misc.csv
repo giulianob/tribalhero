@@ -49,6 +49,7 @@ STR_LOCATE,Locate
 STR_MANAGE,Manage
 STR_ATTACKING,Attacking
 STR_DEFENDING,Defending
+STR_BARBARIAN_TRIBE,Barbarian Tribe
 ,
 CITY_OVERVIEW_TITLE,City Overview
 CITY_OVERVIEW_INFLUENCE_POINTS_LABEL,{0} influence points.
@@ -197,6 +198,7 @@ TRIBE_INCOMING_ATK,{0} is being attacked by {1}
 ASSIGNMENT_ATK,Attack {0}
 ASSIGNMENT_DEF,Defend {0}
 ,
+RICH_LABEL_LOCATION_BARBARIAN_TRIBE,"Barbarian Tribe"
 RICH_LABEL_LOCATION_CITY_ONLY,"<a href=""event:viewProfileByType:city:{0}"">{1}</a>"
 RICH_LABEL_LOCATION_CITY,"<a href=""event:viewProfileByType:city:{0}"">{1}</a> (<a href =""event:viewProfile:{2}"">{3}</a>)"
 RICH_LABEL_LOCATION_STRONGHOLD,"Stronghold <a href=""event:viewProfileByType:stronghold:{0}"">{1}</a> (<a href =""event:viewTribeProfile:{2}"">{3}</a>)"

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.IO;
 using Game.Battle;
@@ -13,6 +14,8 @@ namespace Game.Data.BarbarianTribe
 {
     public class BarbarianTribe : SimpleGameObject, IBarbarianTribe
     {
+        public event EventHandler<EventArgs> CampRemainsChanged = (sender, args) => { };
+
         public const string DB_TABLE = "barbarian_tribes";
 
         public uint Id { get; private set; }
@@ -22,11 +25,25 @@ namespace Game.Data.BarbarianTribe
         public Resource Resource { private set; get; }
         public DateTime Created { get; set; }
         public DateTime LastAttacked { get; set; }
-        public byte CampRemains { get; private set; }
+        
+        private byte campRemains;
+
+        public byte CampRemains
+        {
+            get
+            {
+                return campRemains;
+            }
+            set
+            {
+                campRemains = value;
+                CampRemainsChanged(this, new EventArgs());
+            }
+        }
 
         private readonly IDbManager dbManager;
 
-        public BarbarianTribe(uint id, string name, byte level, uint x, uint y, int count, IDbManager dbManager, IActionWorker actionWorker)
+        public BarbarianTribe(uint id, byte level, uint x, uint y, int count, IDbManager dbManager, IActionWorker actionWorker)
         {
             Id = id;
             Lvl = level;
@@ -38,6 +55,9 @@ namespace Game.Data.BarbarianTribe
             Resource.StatsUpdate += ResourceOnStatsUpdate;
             Created = DateTime.UtcNow;
             CampRemains = (byte)count;
+
+            actionWorker.LockDelegate = () => this;
+            actionWorker.Location = this;
         }
 
         private void ResourceOnStatsUpdate()
@@ -61,6 +81,14 @@ namespace Game.Data.BarbarianTribe
             {
                 return (uint)SystemGroupIds.Settlement;
             }
+        }
+
+        public override uint ObjectId
+        {
+            get
+            {
+                return Id;
+            }            
         }
 
         public override void CheckUpdateMode()

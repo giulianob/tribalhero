@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Data;
 using Game.Data;
 using Game.Data.BarbarianTribe;
-using Game.Data.Stronghold;
+
 using Game.Data.Tribe;
 using Persistance;
 
@@ -18,7 +18,7 @@ namespace Game.Battle.CombatGroups
                 : base(battleId, id, dbManager)
         {
             this.barbarianTribe = barbarianTribe;
-            owner = new BattleOwner(BattleOwnerType.Stronghold, barbarianTribe.Id);
+            owner = new BattleOwner(BattleOwnerType.BarbarianTribe, barbarianTribe.Id);
         }
 
         #region Persistance

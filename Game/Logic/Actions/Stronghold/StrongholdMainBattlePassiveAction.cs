@@ -437,9 +437,8 @@ namespace Game.Logic.Actions
             else
             {
                 var strongholdGroup = strongholdBattleProcedure.AddStrongholdUnitsToBattle(stronghold.MainBattle,
-                                                                                 stronghold,
-                                                                                 strongholdManager.GenerateNeutralStub(
-                                                                                                                       stronghold));
+                                                                                           stronghold,
+                                                                                           strongholdManager.GenerateNeutralStub(stronghold));
 
                 npcGroupId = strongholdGroup.Id;
             }

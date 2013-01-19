@@ -73,6 +73,12 @@ namespace Game.Data.Stronghold
             strongholds.AddOrUpdate(stronghold.Id, stronghold, (id, old) => stronghold);
             RegisterEvents(stronghold);
             MarkIndexDirty();
+
+            if (stronghold.StrongholdState != StrongholdState.Inactive)
+            {
+                stronghold.InWorld = true;
+                regionManager.DbLoaderAdd(stronghold);
+            }
         }
 
         public bool TryGetStronghold(uint id, out IStronghold stronghold)

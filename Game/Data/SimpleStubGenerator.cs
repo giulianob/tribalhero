@@ -2,7 +2,7 @@
 using Game.Data.Troop;
 using Game.Setup;
 
-namespace Game.Data.Stronghold
+namespace Game.Data
 {
     public class SimpleStubGenerator
     {

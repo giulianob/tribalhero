@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>AutoFixture.Xunit</id>
-    <version>2.15.4</version>
+    <version>2.16.1</version>
     <title>AutoFixture with xUnit.net data theories</title>
     <authors>Mark Seemann</authors>
     <owners>Mark Seemann</owners>
@@ -14,8 +14,11 @@
     <summary>Extension to AutoFixture that integrates it with xUnit.net.</summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="autofixture" version="2.15.4" />
+      <dependency id="autofixture" version="2.16.1" />
       <dependency id="xunit.extensions" version="1.6.1" />
     </dependencies>
+    <references>
+      <reference file="Ploeh.AutoFixture.Xunit.dll" />
+    </references>
   </metadata>
 </package>

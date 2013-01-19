@@ -169,13 +169,13 @@ namespace Game.Map
             if (obj.InWorld)
             {
                 region.Add(obj);
-            }
 
-            // Add to minimap if needed
-            ICityRegionObject cityRegionObject = obj as ICityRegionObject;
-            if (cityRegionObject != null)
-            {
-                CityRegions.Add(cityRegionObject);
+                // Add to minimap if needed
+                ICityRegionObject cityRegionObject = obj as ICityRegionObject;
+                if (cityRegionObject != null)
+                {
+                    CityRegions.Add(cityRegionObject);
+                }
             }
         }
 

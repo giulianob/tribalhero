@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Game.Data.Stronghold;
 using Game.Data.Troop;
 using Game.Map;
 using Game.Setup;
@@ -23,7 +22,7 @@ namespace Game.Data.BarbarianTribe
         private readonly DefaultMultiObjectLock.Factory multiObjectLockFactory;
 
         private readonly ConcurrentDictionary<uint, IBarbarianTribe> barbarianTribes = new ConcurrentDictionary<uint, IBarbarianTribe>();
-        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(10000, 5000);
+        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(12000, 5000);
 
         public BarbarianTribeManager(IDbManager dbManager,
                                      SimpleStubGenerator simpleStubGenerator,
@@ -50,7 +49,9 @@ namespace Game.Data.BarbarianTribe
 
         public void DbLoaderAdd(IBarbarianTribe barbarianTribe)
         {
-            throw new NotImplementedException();
+            barbarianTribes.AddOrUpdate(barbarianTribe.Id, barbarianTribe, (id, old) => barbarianTribe);            
+            regionManager.DbLoaderAdd(barbarianTribe);
+            barbarianTribe.CampRemainsChanged += BarbarianTribeOnCampRemainsChanged;
         }
 
         public bool TryGetBarbarianTribe(uint id, out IBarbarianTribe barbarianTribe)
@@ -60,19 +61,17 @@ namespace Game.Data.BarbarianTribe
 
         public void Generate(int count)
         {
-            var random = new Random();
             for (var i = 0; i < count; ++i)
             {
-                string name;
                 byte level;
                 uint x, y;
 
-                if (!barbarianTribeConfigurator.Next(out name, out level, out x, out y))
+                if (!barbarianTribeConfigurator.Next(Config.barbariantribe_generate, out level, out x, out y))
                 {
                     break;
                 }
 
-                IBarbarianTribe barbarianTribe = barbarianTribeFactory.CreateBarbarianTribe((uint)idGenerator.GetNext(), name, level, x, y, random.Next(10));
+                IBarbarianTribe barbarianTribe = barbarianTribeFactory.CreateBarbarianTribe((uint)idGenerator.GetNext(), level, x, y, Config.barbariantribe_camp_count);
                 Add(barbarianTribe);
             }
         }
@@ -87,30 +86,64 @@ namespace Game.Data.BarbarianTribe
                 barbarianTribe.State = GameObjectState.NormalState();
                 regionManager.Add(barbarianTribe);
                 barbarianTribe.EndUpdate();
+
+                barbarianTribe.CampRemainsChanged += BarbarianTribeOnCampRemainsChanged;
             }            
         }
 
-        public void Respawn(IBarbarianTribe barbarianTribe)
+        private void BarbarianTribeOnCampRemainsChanged(object sender, EventArgs eventArgs)
         {
-            throw new NotImplementedException();
+            var barbarianTribe = (IBarbarianTribe)sender;
+            if (barbarianTribe.CampRemains == 0 && barbarianTribe.InWorld)
+            {
+                regionManager.Remove(barbarianTribe);
+            }
         }
 
-        public void RelocateIdle(TimeSpan duration)
+        private void Remove(IBarbarianTribe barbarianTribe)
         {
-            var tribes =
-                    barbarianTribes.Where(pair => pair.Value.Created.Add(duration) < DateTime.UtcNow && pair.Value.CampRemains == Config.settlement_camp_count);
-            foreach(var tribe in tribes)
+            if (barbarianTribe.Battle != null || barbarianTribe.Worker.PassiveActions.Any() || barbarianTribe.Worker.ActiveActions.Any())
             {
-                //barbarianTribeConfigurator.Next(out )
+                return;
+            }            
+
+            IBarbarianTribe obj;
+            if (!barbarianTribes.TryRemove(barbarianTribe.Id, out obj))
+            {
+                return;
             }
+
+            barbarianTribe.CampRemainsChanged -= BarbarianTribeOnCampRemainsChanged;
+
+            barbarianTribe.BeginUpdate();
+            regionManager.Remove(barbarianTribe);
+            barbarianTribe.EndUpdate();
+
+            dbManager.Delete(barbarianTribe);
+        }
+
+        public void RelocateAsNeeded()
+        {
+            var barbarianTribesToDelete =
+                    barbarianTribes.Values.Where(
+                                                 bt =>
+                                                 (bt.Created.Add(TimeSpan.FromSeconds(Config.barbariantribe_idle_duration_in_sec)) < DateTime.UtcNow &&
+                                                  bt.CampRemains == Config.barbariantribe_camp_count) || bt.CampRemains == 0);
+
+            foreach(var barbarianTribe in barbarianTribesToDelete)
+            {
+                Remove(barbarianTribe);
+            }
+
+            Generate(Math.Max(0, Config.barbariantribe_generate - barbarianTribes.Count));
         }
 
         public IEnumerable<Unit> GenerateNeutralStub(IBarbarianTribe barbarianTribe)
         {
             ISimpleStub simpleStub;
             simpleStubGenerator.Generate(barbarianTribe.Lvl,
-                                         10,
-                                         Config.stronghold_npc_randomness,
+                                         30,
+                                         Config.barbarian_tribes_npc_randomness,
                                          (int)barbarianTribe.Id,
                                          out simpleStub);
 

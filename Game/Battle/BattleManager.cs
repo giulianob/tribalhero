@@ -399,7 +399,7 @@ namespace Game.Battle
 
                 #region Targeting
 
-                IList<CombatList.Target> currentDefenders;
+                List<CombatList.Target> currentDefenders;
                 ICombatGroup attackerGroup;
                 ICombatObject attackerObject;
 
@@ -451,7 +451,8 @@ namespace Game.Battle
 
                     #region Find Target(s)
 
-                    var targetResult = defensiveCombatList.GetBestTargets(attackerObject,
+                    var targetResult = defensiveCombatList.GetBestTargets(BattleId,
+                                                                          attackerObject,
                                                                           out currentDefenders,
                                                                           battleFormulas.GetNumberOfHits(attackerObject));
 

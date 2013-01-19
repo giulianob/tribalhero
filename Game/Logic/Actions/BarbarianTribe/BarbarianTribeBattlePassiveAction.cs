@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Game.Battle;
 using Game.Battle.CombatGroups;
@@ -39,7 +40,11 @@ namespace Game.Logic.Actions
         private readonly ILocker locker;
 
         private readonly IWorld world;
-        
+
+        private readonly IBarbarianTribeManager barbarianTribeManager;
+
+        private uint localGroupId;
+
         public BarbarianTribeBattlePassiveAction(uint barbarianTribeId,
                                        BattleProcedure battleProcedure,
                                        ILocker locker,
@@ -47,7 +52,8 @@ namespace Game.Logic.Actions
                                        IDbManager dbManager,
                                        Formula formula,
                                        BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
-                                       IWorld world)
+                                       IWorld world,
+                                       IBarbarianTribeManager barbarianTribeManager)
         {
             this.barbarianTribeId = barbarianTribeId;
             this.battleProcedure = battleProcedure;
@@ -57,6 +63,7 @@ namespace Game.Logic.Actions
             this.formula = formula;
             this.barbarianTribeBattleProcedure = barbarianTribeBattleProcedure;
             this.world = world;
+            this.barbarianTribeManager = barbarianTribeManager;
 
             IBarbarianTribe barbarianTribe;
             if (!gameObjectLocator.TryGetObjects(barbarianTribeId, out barbarianTribe))
@@ -79,7 +86,8 @@ namespace Game.Logic.Actions
                                        IDbManager dbManager,
                                        Formula formula,
                                        BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
-                                       IWorld world)
+                                       IWorld world,
+                                       IBarbarianTribeManager barbarianTribeManager)
                 : base(barbarianTribeId, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.battleProcedure = battleProcedure;
@@ -89,14 +97,19 @@ namespace Game.Logic.Actions
             this.formula = formula;
             this.barbarianTribeBattleProcedure = barbarianTribeBattleProcedure;
             this.world = world;
+            this.barbarianTribeManager = barbarianTribeManager;
 
             barbarianTribeId = uint.Parse(properties["barbarian_tribe_id"]);
+
+            localGroupId = uint.Parse(properties["local_group_id"]);
 
             IBarbarianTribe barbarianTribe;
             if (!gameObjectLocator.TryGetObjects(barbarianTribeId, out barbarianTribe))
             {
                 throw new Exception();
             }
+
+            barbarianTribe.Battle.GroupKilled += BattleOnGroupKilled;
         }
 
         public override ActionType Type
@@ -111,7 +124,11 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return XmlSerializer.Serialize(new[] {new XmlKvPair("barbarian_tribe_id", barbarianTribeId)});
+                return XmlSerializer.Serialize(new[]
+                {
+                        new XmlKvPair("barbarian_tribe_id", barbarianTribeId),
+                        new XmlKvPair("local_group_id", localGroupId)
+                });
             }
         }
         
@@ -145,14 +162,16 @@ namespace Game.Logic.Actions
                     return;
                 }
 
+                barbarianTribe.Battle.GroupKilled -= BattleOnGroupKilled;
+
                 // Battle has ended
                 // Delete the battle
                 world.Remove(barbarianTribe.Battle);
-                dbManager.Delete(barbarianTribe.Battle);                
+                dbManager.Delete(barbarianTribe.Battle);
+
                 barbarianTribe.BeginUpdate();
                 barbarianTribe.Battle = null;
-                // TODO: Add camps
-                // barbarianTribe.Camps--;
+                barbarianTribe.State = GameObjectState.NormalState();
                 barbarianTribe.EndUpdate();
 
                 StateChange(ActionState.Completed);
@@ -175,16 +194,36 @@ namespace Game.Logic.Actions
             world.Add(barbarianTribe.Battle);
             dbManager.Save(barbarianTribe.Battle);
 
-            //Add local troop
-            // TODO: Generate 
-            barbarianTribe.AddLocalUnitsToBattle(barbarianTribe.Battle, barbarianTribe);
+            barbarianTribe.Battle.GroupKilled += BattleOnGroupKilled;
+
+            //Add local troop            
+            var combatGroup = barbarianTribeBattleProcedure.AddBarbarianTribeUnitsToBattle(barbarianTribe.Battle,
+                                                                                           barbarianTribe,
+                                                                                           barbarianTribeManager.GenerateNeutralStub(barbarianTribe));
+            localGroupId = combatGroup.Id;
             
             beginTime = SystemClock.Now;
             endTime = SystemClock.Now;
 
             return Error.Ok;
         }
-        
+
+        private void BattleOnGroupKilled(IBattleManager battle, ICombatGroup @group)
+        {
+            IBarbarianTribe barbarianTribe;
+            if (!gameObjectLocator.TryGetObjects(barbarianTribeId, out barbarianTribe))
+            {
+                throw new Exception("Barbarian tribe should still exist");
+            }
+
+            if (group.Id == localGroupId)
+            {
+                barbarianTribe.BeginUpdate();
+                barbarianTribe.CampRemains--;
+                barbarianTribe.EndUpdate();
+            }
+        }
+
         public override void UserCancelled()
         {
         }

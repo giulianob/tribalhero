@@ -7,6 +7,7 @@
 	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
 	import src.Map.Map;
+    import src.Objects.BarbarianTribe;
 	import src.Objects.Forest;
 	import src.Objects.NewCityPlaceholder;
 	import src.Objects.Prototypes.ObjectTypePrototype;
@@ -149,7 +150,9 @@
 			else if (obj is NewCityPlaceholder)
 				sprite = getNewCityPlaceholderSprite();
 			else if (obj is Stronghold)
-				sprite = StructureFactory.getSprite((obj as Stronghold).type, (obj as Stronghold).level, centered);
+				sprite = StrongholdFactory.getSprite(centered);
+			else if (obj is BarbarianTribe)
+				sprite = BarbarianTribeFactory.getSprite(centered);
 			else
 				return null;			
 

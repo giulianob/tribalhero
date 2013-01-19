@@ -20,7 +20,7 @@
 
 		public static function getSprite(centered: Boolean = false): DisplayObjectContainer
 		{
-			var objRef: Class = getDefinitionByName("STRONGHOLD_STRUCTURE") as Class;
+			var objRef: Class = getDefinitionByName("BARBARIAN_TRIBE_STRUCTURE") as Class;
 
 			var sprite: DisplayObjectContainer = new objRef() as DisplayObjectContainer;
 

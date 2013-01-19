@@ -78,7 +78,7 @@ package src.UI.Sidebars.BarbarianTribeInfo
 
 			addStatRow(StringHelper.localize("STR_COUNT"), tribe.count.toString());
 
-			pnlGroups.append(new SendAttackButton(tribe,new Location(Location.BARBARIAN, tribe.objectId)));
+			pnlGroups.append(new SendAttackButton(tribe,new Location(Location.BARBARIAN_TRIBE, tribe.objectId)));
 
 			var buttons: Array = new Array();
 

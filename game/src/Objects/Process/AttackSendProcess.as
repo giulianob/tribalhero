@@ -41,7 +41,7 @@ package src.Objects.Process
 			
 			Global.gameContainer.closeAllFrames(true);
 			
-			if (targetLocation != null && (targetLocation.type == Location.STRONGHOLD || targetLocation.type == Location.BARBARIAN)) {
+			if (targetLocation != null && (targetLocation.type == Location.STRONGHOLD || targetLocation.type == Location.BARBARIAN_TRIBE)) {
 				onAttackAccepted();
 				return;
 			}
@@ -87,7 +87,7 @@ package src.Objects.Process
 		public function onAttackAccepted(): void {
 			if (targetLocation != null && targetLocation.type == Location.STRONGHOLD) {
 				Global.mapComm.Troop.troopAttackStronghold(sourceCity.id, targetLocation.id, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
-			} else if (targetLocation != null && targetLocation.type == Location.BARBARIAN) {
+			} else if (targetLocation != null && targetLocation.type == Location.BARBARIAN_TRIBE) {
 				Global.mapComm.Troop.troopAttackBarbarian(sourceCity.id, targetLocation.id, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
 			} else {
 				if (target is StructureObject) {

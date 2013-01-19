@@ -401,7 +401,7 @@ package src.Objects {
 					continue;
 				}
 
-				if (currObj is StructureObject || currObj is Stronghold)
+				if (currObj is StructureObject || currObj is Stronghold || currObj is BarbarianTribe)
 				{
 					bestObj = currObj;
 					break;

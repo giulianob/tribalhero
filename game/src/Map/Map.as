@@ -376,7 +376,7 @@
 			else if (obj is NewCityPlaceholder)
 				sidebar = new NewCityPlaceholderSidebar(obj as NewCityPlaceholder);
 			else if (obj is BarbarianTribe)
-				sidebar = new BarbarianTribeSidebar(obj as BarbarianTribe);
+                    sidebar = new BarbarianTribeSidebar(obj as BarbarianTribe);
 
 			Global.gameContainer.setSidebar(sidebar);
 		}

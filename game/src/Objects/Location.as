@@ -8,7 +8,7 @@ package src.Objects
 	{
         public static const CITY: int = 1;
         public static const STRONGHOLD :int = 2;
-		public static const BARBARIAN: int = 3;
+		public static const BARBARIAN_TRIBE: int = 3;
 		
 		public var type :int;
 		public var id :uint;

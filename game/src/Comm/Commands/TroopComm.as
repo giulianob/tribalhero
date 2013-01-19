@@ -277,8 +277,14 @@
 		}		
 		public function troopAttackBarbarian(cityId: int, targetObjectId: int, mode: int, troop: TroopStub, onAttackFail:Function):void
 		{
-			// add command
-			trace("troopAttackBarbarian");
+			var packet: Packet = new Packet();
+            packet.cmd = Commands.TROOP_ATTACK_BARBARIAN_TRIBE;
+			packet.writeUByte(mode);
+			packet.writeUInt(cityId);
+			packet.writeUInt(targetObjectId);
+			writeTroop(troop, packet);
+
+			session.write(packet, onReceiveTroopAttack, onAttackFail);
 		}
 		
 		public function onReceiveTroopAttack(packet: Packet, custom: * ):void

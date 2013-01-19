@@ -161,6 +161,8 @@ package src.UI.Components
 			{
 				case Location.CITY:
 					return StringHelper.localize("RICH_LABEL_LOCATION_CITY", location.cityId, location.cityName, location.playerId, location.playerName);
+                case Location.BARBARIAN_TRIBE:
+                    return StringHelper.localize("RICH_LABEL_BARBARIAN_TRIBE");
 				case Location.STRONGHOLD:
 					return StringHelper.localize(location.tribeId == 0 ? "RICH_LABEL_LOCATION_STRONGHOLD_NEUTRAL" : "RICH_LABEL_LOCATION_STRONGHOLD", location.strongholdId, location.strongholdName, location.tribeId, location.tribeName);
 				default:

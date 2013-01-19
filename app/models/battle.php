@@ -46,7 +46,8 @@ class Battle extends AppModel {
                     $name = $city['City']['name'];
                 }
                 break;
-
+            case 'barbariantribe':
+                return 'Barbarian Tribe';
             case 'stronghold':
             case 'strongholdgate':
                 /** @var $strongholdModel Stronghold */

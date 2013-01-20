@@ -265,7 +265,7 @@ namespace GraphGenerator
                         }
                         break;
                     case ActionType.UnitTrainActive:
-                        BaseUnitStats training =
+                        IBaseUnitStats training =
                                 Ioc.Kernel.Get<UnitFactory>().GetUnitStats(ushort.Parse(action.Parms[0]), 1);
                         if (!processedUnits.Contains(training.UnitHash))
                         {
@@ -333,7 +333,7 @@ namespace GraphGenerator
             return "STRUCTURE_" + stats.StructureHash;
         }
 
-        private static string GetKey(BaseUnitStats unit)
+        private static string GetKey(IBaseUnitStats unit)
         {
             return "UNIT_" + unit.UnitHash;
         }
@@ -353,7 +353,7 @@ namespace GraphGenerator
                                   stats.SpriteClass);
         }
 
-        private static void CreateDefinition(BaseUnitStats stats)
+        private static void CreateDefinition(IBaseUnitStats stats)
         {
             nodeDefintions[GetKey(stats)] =
                     string.Format("[label=\"{0}\", labelloc=\"b\", height=1, shape=none, image=\"{1}.png\"]",
@@ -381,7 +381,7 @@ namespace GraphGenerator
             nodeConnections.WriteLine("{0} -> {1} [style={2} label=\"{3}\"];", GetKey(from), GetKey(to), style, label);
         }
 
-        private static void WriteNode(StructureBaseStats from, BaseUnitStats to)
+        private static void WriteNode(StructureBaseStats from, IBaseUnitStats to)
         {
             nodeConnections.WriteLine("{0} -> {1};", GetKey(from), GetKey(to));
         }

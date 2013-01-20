@@ -49,6 +49,7 @@ STR_LOCATE,Locate
 STR_MANAGE,Manage
 STR_ATTACKING,Attacking
 STR_DEFENDING,Defending
+STR_SAVE,Save
 ,
 CITY_OVERVIEW_TITLE,City Overview
 CITY_OVERVIEW_INFLUENCE_POINTS_LABEL,{0} influence points.
@@ -228,3 +229,8 @@ RICH_LABEL_TROOP,"<a href=""event:viewProfileByType:city:{0}"">{1}</a> ({2})"
 ,
 TRADE_DIALOG_CHOOSE_RESOURCE_AMOUNT,Choose amount of resources
 TRADE_DIALOG_SET_MAX,Set to max
+,
+UNIT_MANAGE_DIALOG_TITLE,Assign Units
+UNIT_MANAGE_DIALOG_TIP,Units in hiding will consume an extra 25% upkeep.
+UNIT_MANAGE_HIDE_NEW_UNITS,Hide newly trained units
+UNIT_MANAGE_HIDE_NEW_UNITS_TOOLTIP,"If selected, all newly trained units will go directly into hiding and will not defend your city if it is attacked. Units in hiding consume an extra 25% upkeep."

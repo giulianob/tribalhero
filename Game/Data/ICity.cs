@@ -54,7 +54,7 @@ namespace Game.Data
         /// <summary>
         ///     Returns unit template. Unit template holds levels for all units in the city.
         /// </summary>
-        UnitTemplate Template { get; }
+        IUnitTemplate Template { get; }
 
         /// <summary>
         ///     Resource available in the city

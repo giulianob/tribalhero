@@ -14,7 +14,7 @@ namespace Game.Setup
 {
     public class UnitFactory
     {
-        private readonly Dictionary<int, BaseUnitStats> dict = new Dictionary<int, BaseUnitStats>();
+        private readonly Dictionary<int, IBaseUnitStats> dict = new Dictionary<int, IBaseUnitStats>();
 
         public UnitFactory()
         {
@@ -96,57 +96,57 @@ namespace Game.Setup
 
         public virtual Resource GetCost(int type, int lvl)
         {
-            BaseUnitStats tmp;
+            IBaseUnitStats tmp;
             return dict.TryGetValue(type * 100 + lvl, out tmp) ? new Resource(tmp.Cost) : null;
         }
 
         public virtual Resource GetUpgradeCost(int type, int lvl)
         {
-            BaseUnitStats tmp;
+            IBaseUnitStats tmp;
             return dict.TryGetValue(type * 100 + lvl, out tmp) ? new Resource(tmp.UpgradeCost) : null;
         }
 
-        public virtual BaseUnitStats GetUnitStats(ushort type, byte lvl)
+        public virtual IBaseUnitStats GetUnitStats(ushort type, byte lvl)
         {
-            BaseUnitStats tmp;
+            IBaseUnitStats tmp;
             return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp : null;
         }
 
         public virtual BaseBattleStats GetBattleStats(ushort type, byte lvl)
         {
-            BaseUnitStats tmp;
+            IBaseUnitStats tmp;
             return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp.Battle : null;
         }
 
         public virtual int GetTime(ushort type, byte lvl)
         {
-            BaseUnitStats tmp;
+            IBaseUnitStats tmp;
             return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp.BuildTime : -1;
         }
 
         public virtual int GetUpgradeTime(ushort type, byte lvl)
         {
-            BaseUnitStats tmp;
+            IBaseUnitStats tmp;
             return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp.UpgradeTime : -1;
         }
 
         public virtual string GetName(ushort type, byte lvl)
         {
-            BaseUnitStats tmp;
+            IBaseUnitStats tmp;
             return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp.Name : null;
         }
 
-        public virtual Dictionary<int, BaseUnitStats> GetList()
+        public virtual Dictionary<int, IBaseUnitStats> GetList()
         {
-            return new Dictionary<int, BaseUnitStats>(dict);
+            return new Dictionary<int, IBaseUnitStats>(dict);
         }
 
-        public virtual IEnumerable<BaseUnitStats> AllUnits()
+        public virtual IEnumerable<IBaseUnitStats> AllUnits()
         {
             return dict.Values;
         }
 
-        public virtual void AddType(BaseUnitStats baseUnitStats)
+        public virtual void AddType(IBaseUnitStats baseUnitStats)
         {
             dict[baseUnitStats.Type * 100 + baseUnitStats.Lvl] = baseUnitStats;
         }

@@ -98,7 +98,7 @@ namespace Game.Logic.Actions
                 return Error.ActionAlreadyInProgress;
             }
 
-            BaseUnitStats unitStats = city.Template[UnitType];
+            IBaseUnitStats unitStats = city.Template[UnitType];
             if (unitStats == null)
             {
                 return Error.Unexpected;

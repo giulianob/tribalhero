@@ -176,6 +176,17 @@
 			var upkeep: int = troopStub.getUpkeep();
 			return Math.min(4, upkeep / 60);
 		}
+        
+        public static function getUpkeepWithReductions(baseUpkeep: int, unitType: int, city: City): Number {
+            var reduceUpkeep: int = 0;
+			for each (var tech: EffectPrototype in city.techManager.getEffects(EffectPrototype.EFFECT_REDUCE_UPKEEP, EffectPrototype.INHERIT_ALL)) {
+				if (tech.param2.indexOf(unitType.toString()) != -1) {
+					reduceUpkeep += (int) (tech.param1);				
+				} 
+			}
+            
+            return baseUpkeep * (100.0 - Math.min(reduceUpkeep, 70)) / 100.0;
+        }
 
 		public static function laborRate(city: City) : int {
 			var laborTotal: int = city.getBusyLaborCount() + city.resources.labor.getValue();

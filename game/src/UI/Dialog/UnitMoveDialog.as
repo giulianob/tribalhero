@@ -7,6 +7,7 @@
 	import src.UI.Components.SimpleTroopGridList.SimpleTroopGridList;
 	import src.UI.GameJPanel;
 	import src.Objects.Troop.*;
+    import src.Util.StringHelper;
 
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -28,7 +29,7 @@
 		public function UnitMoveDialog(city: City, onAccept: Function)
 		{
 			createUI();
-			title = "Assign Units";
+			title = StringHelper.localize("UNIT_MANAGE_DIALOG_TITLE");
 
 			var self: UnitMoveDialog = this;
 			btnOk.addActionListener(function():void { if (onAccept != null) onAccept(self); } );
@@ -86,8 +87,8 @@
 			layout0.setGap(10);
 			setLayout(layout0);
 
-			chkHideNewUnits = new JCheckBox("Hide newly trained units");
-			new SimpleTooltip(chkHideNewUnits, "If selected, all newly trained units will go directly into hiding and will not defend your city if it is attacked");
+			chkHideNewUnits = new JCheckBox(StringHelper.localize("UNIT_MANAGE_HIDE_NEW_UNITS"));
+			new SimpleTooltip(chkHideNewUnits, StringHelper.localize("UNIT_MANAGE_HIDE_NEW_UNITS_TOOLTIP"));
 
 			pnlNewUnits = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5));
 			pnlNewUnits.append(chkHideNewUnits);
@@ -105,12 +106,14 @@
 			btnOk = new JButton();
 			btnOk.setLocation(new IntPoint(184, 5));
 			btnOk.setSize(new IntDimension(31, 22));
-			btnOk.setText("Save");
+			btnOk.setText(StringHelper.localize("STR_SAVE"));
 
 			//component layoution
 			append(pnlNewUnits);
 			append(pnlFormations);
 			append(pnlBottom);
+            
+            append(new JLabel(StringHelper.localize("UNIT_MANAGE_DIALOG_TIP"), null, AsWingConstants.LEFT));
 
 			pnlBottom.append(btnOk);
 

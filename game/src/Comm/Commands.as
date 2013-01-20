@@ -102,6 +102,7 @@ package src.Comm {
 		public static const TROOP_ATTACK_STRONGHOLD: int = 615;
 		public static const TROOP_REINFORCE_CITY: int = 616;
 		public static const TROOP_REINFORCE_STRONGHOLD: int = 617;
+		public static const TROOP_SWITCH_MODE: int = 618;
 		public static const LOCAL_TROOP_MOVE: int = 621;	
 		
         public static const BATTLE_SUBSCRIBE: int = 700;

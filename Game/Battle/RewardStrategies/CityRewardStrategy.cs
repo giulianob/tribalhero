@@ -17,11 +17,14 @@ namespace Game.Battle.RewardStrategies
 
         private readonly Formula formula;
 
-        public CityRewardStrategy(ICity city, BattleFormulas battleFormulas, Formula formula)
+        private readonly ILocker locker;
+
+        public CityRewardStrategy(ICity city, BattleFormulas battleFormulas, Formula formula, ILocker locker)
         {
             this.city = city;
             this.battleFormulas = battleFormulas;
             this.formula = formula;
+            this.locker = locker;
         }
 
         public void RemoveLoot(ICombatObject attacker, ICombatObject defender, out Resource actualLoot)
@@ -55,6 +58,7 @@ namespace Game.Battle.RewardStrategies
 
                 foreach (var defendingCity in defenders.OfType<CityCombatObject>().Select(co => co.City).Distinct())
                 {
+                    uniqueCities.Add(defendingCity);
                     defendingCity.BeginUpdate();
                     defendingCity.DefensePoint += attackPoints;
                     defendingCity.EndUpdate();
@@ -74,7 +78,7 @@ namespace Game.Battle.RewardStrategies
                     {
                         foreach (var tribe in tribes)
                         {
-                            using (Concurrency.Current.Lock(tribe))
+                            using (locker.Lock(tribe))
                             {
                                 tribe.DefensePoint += attackPoints;
                             }

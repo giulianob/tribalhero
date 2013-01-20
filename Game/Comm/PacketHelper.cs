@@ -15,6 +15,7 @@ using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Database;
 using Game.Logic;
+using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -27,7 +28,7 @@ namespace Game.Comm
 {
     public class PacketHelper
     {
-        public static void AddToPacket(UnitTemplate template, Packet packet)
+        public static void AddToPacket(IUnitTemplate template, Packet packet)
         {
             packet.AddUInt16((ushort)template.Size);
             foreach (var kvp in template)
@@ -259,6 +260,7 @@ namespace Game.Comm
             packet.AddByte(stub.TroopId);
             packet.AddByte((byte)stub.State);
             AddToPacket(stub.Station, packet);
+            packet.AddByte((byte)stub.AttackMode);
 
             //Add troop template
             packet.AddByte(stub.Template.Count);

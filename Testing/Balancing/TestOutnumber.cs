@@ -35,7 +35,7 @@ namespace Testing.Balancing
                                                                   10,
                                                                   30,
                                                                   0);
-            BaseUnitStats baseUnitStats = new BaseUnitStats("TestSwordsman",
+            IBaseUnitStats baseUnitStats = new BaseUnitStats("TestSwordsman",
                                                             "SWORDSMAN_UNIT",
                                                             1001,
                                                             1,

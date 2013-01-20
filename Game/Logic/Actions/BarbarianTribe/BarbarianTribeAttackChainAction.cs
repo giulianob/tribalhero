@@ -136,7 +136,7 @@ namespace Game.Logic.Actions
                 return Error.TooManyTroops;
             }
 
-            if (barbarianTribe.CampRemains == 0)
+            if (barbarianTribe.CampRemains == 0 || !barbarianTribe.InWorld)
             {
                 return Error.BarbarianTribeNoCampsRemaining;
             }

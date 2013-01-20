@@ -48,14 +48,14 @@ namespace Game.Data
         /// <param name="randomness">A percentage of upkeep being completely random, 1 means it's completely random</param>
         /// <param name="seed">seed for the randomizer</param>
         /// <param name="stub">output</param>
-        public virtual void Generate(int level, int upkeep, double randomness, int seed, out ISimpleStub stub)
+        public virtual void Generate(int level, int upkeep, byte unitLevel, double randomness, int seed, out ISimpleStub stub)
         {
             stub = new SimpleStub();
             for (int i = 0; i < type.Length; ++i)
             {
                 stub.AddUnit(FormationType.Normal,
                              type[i],
-                             (ushort)(upkeep * (1 - randomness) * ratio[level, i] / unitFactory.GetUnitStats(type[i], 1).Upkeep));
+                             (ushort)(upkeep * (1 - randomness) * ratio[level, i] / unitFactory.GetUnitStats(type[i], unitLevel).Upkeep));
             }
 
             Random random = new Random(seed);
@@ -64,7 +64,7 @@ namespace Game.Data
             {
                 var nextUpkeep = random.Next(1, remaining);
                 var nextType = random.Next(0, type.Length);
-                var unitUpkeep = unitFactory.GetUnitStats(type[nextType], 1).Upkeep;
+                var unitUpkeep = unitFactory.GetUnitStats(type[nextType], unitLevel).Upkeep;
                 var unitCount = nextUpkeep / unitUpkeep;
                 if (unitCount <= 0)
                 {

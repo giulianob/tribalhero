@@ -47,7 +47,7 @@ namespace Game.Data.BarbarianTribe
                     return false;
                 }
             }
-            while (TooCloseToCities(x, y, MinDistanceAwayFromCities) || regionManager.GetObjects(x, y).Count > 0);
+            while (TooCloseToCities(x, y, MinDistanceAwayFromCities) || regionManager.GetObjectsWithin(x, y, 5).Count > 0);
          
             var ratio = count / 100m;
             var index = random.Next(count);

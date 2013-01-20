@@ -23,7 +23,7 @@ namespace Game.Map
 
             Stronghold = 6,
 
-            Settlement = 7
+            BarbarianTribe = 7
         }
 
         public const int TILE_SIZE = 2;

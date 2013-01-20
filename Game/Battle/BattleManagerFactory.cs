@@ -49,14 +49,14 @@ namespace Game.Battle
                                                                 BattleOwner battleOwner,
                                                                 IStronghold stronghold)
         {
-            var bm = new BattleManager(battleId,
-                                       battleLocation,
-                                       battleOwner,
-                                       kernel.Get<IRewardStrategyFactory>().CreateStrongholdRewardStrategy(stronghold),
-                                       kernel.Get<IDbManager>(),
-                                       kernel.Get<IBattleReport>(),
-                                       kernel.Get<ICombatListFactory>(),
-                                       kernel.Get<BattleFormulas>());
+            var bm = new PublicBattleManager(battleId,
+                                             battleLocation,
+                                             battleOwner,
+                                             kernel.Get<IRewardStrategyFactory>().CreateStrongholdRewardStrategy(stronghold),
+                                             kernel.Get<IDbManager>(),
+                                             kernel.Get<IBattleReport>(),
+                                             kernel.Get<ICombatListFactory>(),
+                                             kernel.Get<BattleFormulas>());
 
             new BattleChannel(bm);
 
@@ -83,19 +83,27 @@ namespace Game.Battle
         public IBattleManager CreateBarbarianBattleManager(BattleLocation battleLocation, BattleOwner battleOwner, IBarbarianTribe barbarianTribe)
         {
             var battleId = (uint)BattleReport.BattleIdGenerator.GetNext();
-            var bm = new BattleManager(battleId,
-                                       battleLocation,
-                                       battleOwner,
-                                       kernel.Get<IRewardStrategyFactory>().CreateBarbarianTribeRewardStrategy(barbarianTribe),
-                                       kernel.Get<IDbManager>(),
-                                       kernel.Get<IBattleReport>(),
-                                       kernel.Get<ICombatListFactory>(),
-                                       kernel.Get<BattleFormulas>());
+            return CreateBarbarianBattleManager(battleId, battleLocation, battleOwner, barbarianTribe);
+        }
+
+        public IBattleManager CreateBarbarianBattleManager(uint battleId,
+                                                           BattleLocation battleLocation,
+                                                           BattleOwner battleOwner,
+                                                           IBarbarianTribe barbarianTribe)
+        {
+            var bm = new PublicBattleManager(battleId,
+                                             battleLocation,
+                                             battleOwner,
+                                             kernel.Get<IRewardStrategyFactory>().CreateBarbarianTribeRewardStrategy(barbarianTribe),
+                                             kernel.Get<IDbManager>(),
+                                             kernel.Get<IBattleReport>(),
+                                             kernel.Get<ICombatListFactory>(),
+                                             kernel.Get<BattleFormulas>());
 
             new BattleChannel(bm);
 
             bm.BattleReport.Battle = bm;
-            return bm;        
+            return bm;
         }
 
         public IBattleManager CreateStrongholdGateBattleManager(uint battleId,

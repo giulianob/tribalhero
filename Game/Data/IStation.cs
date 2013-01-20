@@ -9,7 +9,7 @@ namespace Game.Data
 
         Stronghold = 2,
 
-        Settlement = 3
+        BarbarianTribe = 3
     }
 
     public interface IStation : ILocation

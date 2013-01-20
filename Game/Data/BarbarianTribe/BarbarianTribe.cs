@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.IO;
 using Game.Battle;
@@ -23,7 +22,9 @@ namespace Game.Data.BarbarianTribe
         public IActionWorker Worker { get; private set; }
 
         public Resource Resource { private set; get; }
+        
         public DateTime Created { get; set; }
+
         public DateTime LastAttacked { get; set; }
         
         private byte campRemains;
@@ -43,18 +44,21 @@ namespace Game.Data.BarbarianTribe
 
         private readonly IDbManager dbManager;
 
-        public BarbarianTribe(uint id, byte level, uint x, uint y, int count, IDbManager dbManager, IActionWorker actionWorker)
+        public BarbarianTribe(uint id, byte level, uint x, uint y, int count, Resource resources, IDbManager dbManager, IActionWorker actionWorker)
         {
-            Id = id;
-            Lvl = level;
-            Worker = actionWorker;            
             this.dbManager = dbManager;
             this.x = x;
-            this.y = y;           
-            Resource = new Resource();
-            Resource.StatsUpdate += ResourceOnStatsUpdate;
+            this.y = y;
+
+            Id = id;
+            Lvl = level;
+            Worker = actionWorker;
+            Resource = resources;            
+            CampRemains = (byte)count;            
             Created = DateTime.UtcNow;
-            CampRemains = (byte)count;
+            LastAttacked = DateTime.MinValue;
+
+            Resource.StatsUpdate += ResourceOnStatsUpdate;
 
             actionWorker.LockDelegate = () => this;
             actionWorker.Location = this;
@@ -71,7 +75,7 @@ namespace Game.Data.BarbarianTribe
         {
             get
             {
-                return (ushort)Types.Settlement;
+                return (ushort)Types.BarbarianTribe;
             }
         }
 
@@ -79,7 +83,7 @@ namespace Game.Data.BarbarianTribe
         {
             get
             {
-                return (uint)SystemGroupIds.Settlement;
+                return (uint)SystemGroupIds.BarbarianTribe;
             }
         }
 
@@ -132,7 +136,7 @@ namespace Game.Data.BarbarianTribe
                 return;
             }
 
-         //   dbManager.Save(this);
+            dbManager.Save(this);
         }
 
         public Position CityRegionLocation
@@ -146,7 +150,7 @@ namespace Game.Data.BarbarianTribe
         public CityRegion.ObjectType CityRegionType {
             get
             {
-                return CityRegion.ObjectType.Settlement;
+                return CityRegion.ObjectType.BarbarianTribe;
             }
         }
 
@@ -210,14 +214,18 @@ namespace Game.Data.BarbarianTribe
                 return new[]
                 {
                         new DbColumn("level", Lvl, DbType.Byte), 
+                        new DbColumn("camp_remains", CampRemains, DbType.Byte), 
                         new DbColumn("x", x, DbType.UInt32), 
                         new DbColumn("y", y, DbType.UInt32),
-                        new DbColumn("object_state", (byte)State.Type, DbType.Boolean),
+                        new DbColumn("state", (byte)State.Type, DbType.Boolean),
                         new DbColumn("state_parameters", XmlSerializer.SerializeList(State.Parameters.ToArray()), DbType.String),
-                        new DbColumn("loot_crop", Resource.Crop, DbType.UInt32),
-                        new DbColumn("loot_wood", Resource.Wood, DbType.UInt32),
-                        new DbColumn("loot_iron", Resource.Iron, DbType.UInt32),
-                        new DbColumn("loot_gold", Resource.Gold, DbType.UInt32),
+                        new DbColumn("resource_crop", Resource.Crop, DbType.Int32),
+                        new DbColumn("resource_wood", Resource.Wood, DbType.Int32),
+                        new DbColumn("resource_iron", Resource.Iron, DbType.Int32),
+                        new DbColumn("resource_gold", Resource.Gold, DbType.Int32),
+                        new DbColumn("in_world", InWorld, DbType.Boolean),
+                        new DbColumn("last_attacked", LastAttacked, DbType.DateTime),
+                        new DbColumn("created", Created, DbType.DateTime),
                 };
             }
         }
@@ -246,7 +254,7 @@ namespace Game.Data.BarbarianTribe
         {
             get
             {
-                return LocationType.Settlement;
+                return LocationType.BarbarianTribe;
             }
         }
 

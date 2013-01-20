@@ -22,7 +22,7 @@ namespace Game.Data.Stronghold
 
         private readonly Formula formula;
 
-        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(10000, 5000);
+        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(9999, 5000);
 
         private readonly IRegionManager regionManager;
 
@@ -162,9 +162,12 @@ namespace Game.Data.Stronghold
         public IEnumerable<Unit> GenerateNeutralStub(IStronghold stronghold)
         {
             ISimpleStub simpleStub;
+            int upkeep;
+            byte unitLevel;
+            formula.StrongholdUpkeep(stronghold.Lvl, out upkeep, out unitLevel);
             simpleStubGenerator.Generate(stronghold.Lvl,
-                                         Config.stronghold_npc_base_upkeep +
-                                         stronghold.Lvl * Config.stronghold_npc_per_lvl_upkeep,
+                                         upkeep,
+                                         unitLevel,
                                          Config.stronghold_npc_randomness,
                                          (int)stronghold.Id,
                                          out simpleStub);

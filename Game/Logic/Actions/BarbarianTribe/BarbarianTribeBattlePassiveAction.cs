@@ -41,7 +41,7 @@ namespace Game.Logic.Actions
 
         private readonly IWorld world;
 
-        private readonly IBarbarianTribeManager barbarianTribeManager;
+        private readonly SimpleStubGenerator simpleStubGenerator;
 
         private uint localGroupId;
 
@@ -53,7 +53,7 @@ namespace Game.Logic.Actions
                                        Formula formula,
                                        BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
                                        IWorld world,
-                                       IBarbarianTribeManager barbarianTribeManager)
+                                       SimpleStubGenerator simpleStubGenerator)
         {
             this.barbarianTribeId = barbarianTribeId;
             this.battleProcedure = battleProcedure;
@@ -63,32 +63,32 @@ namespace Game.Logic.Actions
             this.formula = formula;
             this.barbarianTribeBattleProcedure = barbarianTribeBattleProcedure;
             this.world = world;
-            this.barbarianTribeManager = barbarianTribeManager;
+            this.simpleStubGenerator = simpleStubGenerator;
 
             IBarbarianTribe barbarianTribe;
             if (!gameObjectLocator.TryGetObjects(barbarianTribeId, out barbarianTribe))
             {
                 throw new Exception("Did not find barb tribe that was supposed to be having a battle");
             }
+
         }
 
-        public BarbarianTribeBattlePassiveAction(uint barbarianTribeId,
-                                       DateTime beginTime,
-                                       DateTime nextTime,
-                                       DateTime endTime,
-                                       bool isVisible,
-                                       string nlsDescription,
-                                       IDictionary<string, string> properties,
-                                       IActionFactory actionFactory,
-                                       BattleProcedure battleProcedure,
-                                       ILocker locker,
-                                       IGameObjectLocator gameObjectLocator,
-                                       IDbManager dbManager,
-                                       Formula formula,
-                                       BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
-                                       IWorld world,
-                                       IBarbarianTribeManager barbarianTribeManager)
-                : base(barbarianTribeId, beginTime, nextTime, endTime, isVisible, nlsDescription)
+        public BarbarianTribeBattlePassiveAction(uint id,
+                                                 DateTime beginTime,
+                                                 DateTime nextTime,
+                                                 DateTime endTime,
+                                                 bool isVisible,
+                                                 string nlsDescription,
+                                                 IDictionary<string, string> properties,
+                                                 BattleProcedure battleProcedure,
+                                                 ILocker locker,
+                                                 IGameObjectLocator gameObjectLocator,
+                                                 IDbManager dbManager,
+                                                 Formula formula,
+                                                 BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
+                                                 IWorld world,
+                                                 SimpleStubGenerator simpleStubGenerator)
+                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.battleProcedure = battleProcedure;
             this.locker = locker;
@@ -97,7 +97,7 @@ namespace Game.Logic.Actions
             this.formula = formula;
             this.barbarianTribeBattleProcedure = barbarianTribeBattleProcedure;
             this.world = world;
-            this.barbarianTribeManager = barbarianTribeManager;
+            this.simpleStubGenerator = simpleStubGenerator;
 
             barbarianTribeId = uint.Parse(properties["barbarian_tribe_id"]);
 
@@ -197,9 +197,15 @@ namespace Game.Logic.Actions
             barbarianTribe.Battle.GroupKilled += BattleOnGroupKilled;
 
             //Add local troop            
+            ISimpleStub simpleStub;
+            int upkeep;
+            byte unitLevel;
+            formula.BarbarianTribeUpkeep(barbarianTribe.Lvl, out upkeep, out unitLevel);
+            simpleStubGenerator.Generate(barbarianTribe.Lvl, upkeep, unitLevel, Config.barbarian_tribes_npc_randomness, (int)barbarianTribe.Id, out simpleStub);
+
             var combatGroup = barbarianTribeBattleProcedure.AddBarbarianTribeUnitsToBattle(barbarianTribe.Battle,
                                                                                            barbarianTribe,
-                                                                                           barbarianTribeManager.GenerateNeutralStub(barbarianTribe));
+                                                                                           simpleStub.ToUnitList(FormationType.Normal));
             localGroupId = combatGroup.Id;
             
             beginTime = SystemClock.Now;
@@ -219,7 +225,11 @@ namespace Game.Logic.Actions
             if (group.Id == localGroupId)
             {
                 barbarianTribe.BeginUpdate();
-                barbarianTribe.CampRemains--;
+                // Reset resources
+                barbarianTribe.Resource.Clear();
+                barbarianTribe.Resource.Add(formula.BarbarianTribeResources(barbarianTribe.Lvl));
+                // Lower camps remaining
+                barbarianTribe.CampRemains--;                
                 barbarianTribe.EndUpdate();
             }
         }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -20,6 +21,8 @@ namespace Game.Logic.Actions
         private const int INTERVAL_IN_SECONDS = 1800;
 
         private readonly IActionFactory actionFactory;
+
+        private readonly Procedure procedure;
 
         private readonly uint cityId;
 
@@ -37,13 +40,15 @@ namespace Game.Logic.Actions
                                  ObjectTypeFactory objectTypeFactory,
                                  ILocker locker,
                                  Formula formula,
-                                 IActionFactory actionFactory)
+                                 IActionFactory actionFactory,
+                                 Procedure procedure)
         {
             this.cityId = cityId;
             this.objectTypeFactory = objectTypeFactory;
             this.locker = locker;
             this.formula = formula;
             this.actionFactory = actionFactory;
+            this.procedure = procedure;
 
             CreateSubscriptions();
         }
@@ -58,13 +63,15 @@ namespace Game.Logic.Actions
                                  ObjectTypeFactory objectTypeFactory,
                                  ILocker locker,
                                  Formula formula,
-                                 IActionFactory actionFactory)
+                                 IActionFactory actionFactory,
+                                 Procedure procedure)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.objectTypeFactory = objectTypeFactory;
             this.locker = locker;
             this.formula = formula;
             this.actionFactory = actionFactory;
+            this.procedure = procedure;
             cityId = uint.Parse(properties["city_id"]);
             laborTimeRemains = int.Parse(properties["labor_time_remains"]);
 
@@ -86,7 +93,8 @@ namespace Game.Logic.Actions
                 return
                         XmlSerializer.Serialize(new[]
                         {
-                                new XmlKvPair("city_id", cityId), new XmlKvPair("labor_time_remains", laborTimeRemains),
+                                new XmlKvPair("city_id", cityId), 
+                                new XmlKvPair("labor_time_remains", laborTimeRemains),
                                 new XmlKvPair("every_other", everyOther)
                         });
             }
@@ -274,7 +282,9 @@ namespace Game.Logic.Actions
         private void Upkeep()
         {
             PostFirstLoop += city =>
-                {
+                {                   
+                    city.Resource.Crop.Upkeep = procedure.UpkeepForCity(city);
+
                     if (!Config.troop_starve)
                     {
                         return;

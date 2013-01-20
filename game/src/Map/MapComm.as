@@ -74,7 +74,7 @@
 			return false;
 		}
 
-		public function catchAllErrors(packet: Packet, custom: *):void
+		public function catchAllErrors(packet: Packet, custom: * = null):void
 		{
 			hideLoading();
 			

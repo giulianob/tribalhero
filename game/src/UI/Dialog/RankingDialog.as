@@ -25,11 +25,11 @@ package src.UI.Dialog{
 		{name: "Attack Points", baseOn: "player"},
 		{name: "Defense Points", baseOn: "player"},
 		{name: "Resources Stolen", baseOn: "player"},
-		{name: "Influence Points", baseOn: "player" },
-        {name: "Victory Points", baseOn: "tribe" },        
+		{name: "Influence Points", baseOn: "player"},
 		{name: "Level", baseOn: "tribe"},
 		{name: "Attack Points", baseOn: "tribe"},
-		{name: "Defense Points", baseOn: "tribe"},		
+		{name: "Defense Points", baseOn: "tribe"},
+		{name: "Victory Points", baseOn: "tribe" },
 		{name: "Victory Point Rate", baseOn: "tribe" },
 		{name: "Level", baseOn: "stronghold"},
 		{name: "Days Occupied", baseOn: "stronghold" },
@@ -441,17 +441,17 @@ package src.UI.Dialog{
 			playerRanking.append(playerButtonGroupHolder);
 
 			tribeRanking = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
-			tribeLevelRanking = new JToggleButton("Level");			
+			tribeLevelRanking = new JToggleButton("Level");
+			tribeLevelRanking.setSelected(true);
 			tribeAttackRanking = new JToggleButton("Attack");
 			tribeDefenseRanking = new JToggleButton("Defense");
-			tribeVictoryRanking = new JToggleButton("Victory Point");
+			tribeVictoryRanking = new JToggleButton("Victory");
 			tribeVictoryRateRanking = new JToggleButton("Victory Point Rate");
 			var tribeButtonGroup: ButtonGroup = new ButtonGroup();
-			tribeButtonGroup.appendAll(tribeVictoryRanking,tribeLevelRanking,tribeAttackRanking,tribeDefenseRanking,tribeVictoryRateRanking);
+			tribeButtonGroup.appendAll(tribeLevelRanking,tribeAttackRanking,tribeDefenseRanking,tribeVictoryRanking,tribeVictoryRateRanking);
 			var tribeButtonGroupHolder: JPanel = new JPanel();
-			tribeButtonGroupHolder.appendAll(tribeVictoryRanking,tribeLevelRanking, tribeAttackRanking, tribeDefenseRanking,tribeVictoryRateRanking);
+			tribeButtonGroupHolder.appendAll(tribeLevelRanking, tribeAttackRanking, tribeDefenseRanking,tribeVictoryRanking,tribeVictoryRateRanking);
 			tribeRanking.appendAll(tribeButtonGroupHolder);
-            tribeVictoryRanking.setSelected(true);
 			
 			strongholdRanking = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 			strongholdLevelRanking = new JToggleButton("Level");

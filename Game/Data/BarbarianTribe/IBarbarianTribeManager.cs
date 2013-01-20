@@ -15,7 +15,5 @@ namespace Game.Data.BarbarianTribe
         void Generate(int count);
         
         void RelocateAsNeeded();
-
-        IEnumerable<Unit> GenerateNeutralStub(IBarbarianTribe barbarianTribe);
     }
 }

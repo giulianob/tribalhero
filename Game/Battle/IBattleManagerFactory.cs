@@ -32,5 +32,10 @@ namespace Game.Battle
                                                          IStronghold stronghold);
 
         IBattleManager CreateBarbarianBattleManager(BattleLocation battleLocation, BattleOwner battleOwner, IBarbarianTribe barbarianTribe);
+
+        IBattleManager CreateBarbarianBattleManager(uint battleId,
+                                                    BattleLocation battleLocation,
+                                                    BattleOwner battleOwner,
+                                                    IBarbarianTribe barbarianTribe);
     }
 }

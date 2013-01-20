@@ -142,6 +142,7 @@
     <Compile Include="Battle\IBattleManager.cs" />
     <Compile Include="Battle\IBattleManagerFactory.cs" />
     <Compile Include="Battle\ICombatList.cs" />
+    <Compile Include="Battle\PublicBattleManager.cs" />
     <Compile Include="Battle\Reporting\BattleReport.cs" />
     <Compile Include="Battle\Reporting\IBattleReport.cs" />
     <Compile Include="Battle\Reporting\IBattleReportWriter.cs" />
@@ -208,6 +209,7 @@
     <Compile Include="Database\DbLoaderActionFactory.cs" />
     <Compile Include="Database\Persistance.cs" />
     <Compile Include="Data\AggressiveLazyValue.cs" />
+    <Compile Include="Data\BarbarianTribe\BarbarianTribeFactory.cs" />
     <Compile Include="Data\BarbarianTribe\IBarbarianTribeConfigurator.cs" />
     <Compile Include="Data\BarbarianTribe\IBarbarianTribeFactory.cs" />
     <Compile Include="Data\BarbarianTribe\IBarbarianTribeManager.cs" />
@@ -309,6 +311,8 @@
     <Compile Include="Logic\Actions\TroopActions\UnitUpgradeActiveAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\StructureUpgradeActiveAction.cs" />
     <Compile Include="Logic\ActionWorker.cs" />
+    <Compile Include="Logic\Formulas\Formula.Stronghold.cs" />
+    <Compile Include="Logic\Formulas\Formula.BarbarianTribe.cs" />
     <Compile Include="Logic\GameAction.cs">
       <SubType>Code</SubType>
     </Compile>

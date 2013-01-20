@@ -174,9 +174,11 @@ namespace Game
 
             Bind<IBattleReportWriter>().To<SqlBattleReportWriter>();
 
-            Bind<ICombatUnitFactory>().ToMethod(c => new CombatUnitFactory(c.Kernel, c.Kernel.Get<ObjectTypeFactory>()));
+            Bind<ICombatUnitFactory>().To<CombatUnitFactory>().InSingletonScope();
 
             Bind<ICombatList>().To<CombatList>().NamedLikeFactoryMethod((ICombatListFactory p) => p.GetCombatList());
+
+            Bind<SimpleStubGenerator>().ToSelf().InSingletonScope();
 
             #endregion
 
@@ -252,6 +254,7 @@ namespace Game
             Bind<IBarbarianTribeManager>().To<BarbarianTribeManager>().InSingletonScope();
             Bind<IBarbarianTribeConfigurator>().To<BarbarianTribeConfigurator>().InSingletonScope();
             Bind<IBarbarianTribe>().To<BarbarianTribe>();
+            Bind<IBarbarianTribeFactory>().To<BarbarianTribeFactory>();
             Bind<BarbarianTribeChecker>().ToSelf().InSingletonScope();
 
             #endregion

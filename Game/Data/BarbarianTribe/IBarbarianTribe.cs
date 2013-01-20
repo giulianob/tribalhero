@@ -19,7 +19,7 @@ namespace Game.Data.BarbarianTribe
 
         DateTime LastAttacked { get; set; }
 
-        byte CampRemains { set; get; }
+        byte CampRemains { set; get; }        
 
         event EventHandler<EventArgs> CampRemainsChanged;
     }

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using Game.Data.Troop;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -13,8 +11,7 @@ namespace Game.Data.BarbarianTribe
 {
     public class BarbarianTribeManager : IBarbarianTribeManager
     {
-        private readonly IDbManager dbManager;
-        private readonly SimpleStubGenerator simpleStubGenerator;
+        private readonly IDbManager dbManager;        
         private readonly IBarbarianTribeFactory barbarianTribeFactory;
         private readonly IBarbarianTribeConfigurator barbarianTribeConfigurator;
         private readonly IRegionManager regionManager;
@@ -22,17 +19,15 @@ namespace Game.Data.BarbarianTribe
         private readonly DefaultMultiObjectLock.Factory multiObjectLockFactory;
 
         private readonly ConcurrentDictionary<uint, IBarbarianTribe> barbarianTribes = new ConcurrentDictionary<uint, IBarbarianTribe>();
-        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(12000, 5000);
+        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(50000, 10000);
 
-        public BarbarianTribeManager(IDbManager dbManager,
-                                     SimpleStubGenerator simpleStubGenerator,
+        public BarbarianTribeManager(IDbManager dbManager,                                     
                                      IBarbarianTribeFactory barbarianTribeFactory,
                                      IBarbarianTribeConfigurator barbarianTribeConfigurator,
                                      IRegionManager regionManager,
                                      DefaultMultiObjectLock.Factory multiObjectLockFactory)
         {
-            this.dbManager = dbManager;
-            this.simpleStubGenerator = simpleStubGenerator;
+            this.dbManager = dbManager;            
             this.barbarianTribeFactory = barbarianTribeFactory;
             this.barbarianTribeConfigurator = barbarianTribeConfigurator;
             this.regionManager = regionManager;
@@ -128,26 +123,17 @@ namespace Game.Data.BarbarianTribe
                     barbarianTribes.Values.Where(
                                                  bt =>
                                                  (bt.Created.Add(TimeSpan.FromSeconds(Config.barbariantribe_idle_duration_in_sec)) < DateTime.UtcNow &&
-                                                  bt.CampRemains == Config.barbariantribe_camp_count) || bt.CampRemains == 0);
+                                                  bt.LastAttacked == DateTime.MinValue) || bt.CampRemains == 0);
 
             foreach(var barbarianTribe in barbarianTribesToDelete)
             {
-                Remove(barbarianTribe);
+                using (multiObjectLockFactory().Lock(new ILockable[] {barbarianTribe}))
+                {
+                    Remove(barbarianTribe);
+                }
             }
 
             Generate(Math.Max(0, Config.barbariantribe_generate - barbarianTribes.Count));
-        }
-
-        public IEnumerable<Unit> GenerateNeutralStub(IBarbarianTribe barbarianTribe)
-        {
-            ISimpleStub simpleStub;
-            simpleStubGenerator.Generate(barbarianTribe.Lvl,
-                                         30,
-                                         Config.barbarian_tribes_npc_randomness,
-                                         (int)barbarianTribe.Id,
-                                         out simpleStub);
-
-            return simpleStub.ToUnitList(FormationType.Normal);
         }
     }
 }

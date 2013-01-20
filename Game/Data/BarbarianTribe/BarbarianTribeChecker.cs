@@ -16,12 +16,11 @@ namespace Game.Data.BarbarianTribe
         }
 
         /// <summary>
-        /// Start the schedule checker for idle settlement
-        /// </summary>
-        /// <param name="interval">Interval between each run</param>       
-        public void Start(TimeSpan interval)
+        /// Start the schedule checker for idle barbarian tribes
+        /// </summary>        
+        public void Start(TimeSpan intervalSpan)
         {
-            this.interval = interval;
+            this.interval = intervalSpan;
             Time = DateTime.UtcNow;
             scheduler.Put(this);
         }

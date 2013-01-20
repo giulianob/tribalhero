@@ -21,11 +21,11 @@ namespace Game.Battle.CombatObjects
 
         private readonly byte lvl;
 
-        private readonly BattleStats stats;
+        private readonly BaseUnitStats baseStats;
+
+        private readonly BattleStats battleStats;
 
         private readonly ushort type;
-
-        private readonly UnitFactory unitFactory;
 
         private readonly Formula formula;
 
@@ -36,49 +36,27 @@ namespace Game.Battle.CombatObjects
                                     ushort type,
                                     byte lvl,
                                     ushort count,
-                                    IBarbarianTribe barbarianTribe,
-                                    UnitFactory unitFactory,
+                                    BaseUnitStats unitBaseStats,
+                                    IBarbarianTribe barbarianTribe,                                    
                                     BattleFormulas battleFormulas,
                                     Formula formula)
                 : base(id, battleId, battleFormulas)
         {
             BarbarianTribe = barbarianTribe;
             this.type = type;
-            this.count = count;
-            this.unitFactory = unitFactory;
+            this.count = count;            
             this.lvl = lvl;
             this.formula = formula;
 
-            stats = new BattleStats(unitFactory.GetUnitStats(type, lvl).Battle);
-            LeftOverHp = stats.MaxHp;
-        }
+            baseStats = unitBaseStats;
+            battleStats = new BattleStats(unitBaseStats.Battle);
 
-        public BarbarianTribeCombatUnit(uint id,
-                                    uint battleId,
-                                    ushort type,
-                                    byte lvl,
-                                    ushort count,
-                                    IBarbarianTribe barbarianTribe,
-                                    decimal leftOverHp,
-                                    UnitFactory unitFactory,
-                                    BattleFormulas battleFormulas,
-                                    Formula formula)
-                : base(id, battleId, battleFormulas)
-        {
-            BarbarianTribe = barbarianTribe;
-            this.type = type;
-            this.count = count;
-            this.unitFactory = unitFactory;
-            this.lvl = lvl;
-            LeftOverHp = leftOverHp;
-            this.formula = formula;
-
-            stats = new BattleStats(unitFactory.GetUnitStats(type, lvl).Battle);
+            LeftOverHp = baseStats.Battle.MaxHp;
         }
 
         private IBarbarianTribe BarbarianTribe { get; set; }
 
-        private decimal LeftOverHp { get; set; }
+        public decimal LeftOverHp { get; set; }
 
         public override BattleClass ClassType
         {
@@ -116,7 +94,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return unitFactory.GetUnitStats(type, lvl).Upkeep * count;
+                return baseStats.Upkeep * count;
             }
         }
 
@@ -124,7 +102,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return stats;
+                return battleStats;
             }
         }
 
@@ -164,7 +142,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return Math.Max(0, stats.MaxHp * (count - 1) + LeftOverHp);
+                return Math.Max(0, battleStats.MaxHp * (count - 1) + LeftOverHp);
             }
         }
 
@@ -274,12 +252,12 @@ namespace Game.Battle.CombatObjects
             if (dmg >= LeftOverHp)
             {
                 dmg -= LeftOverHp;
-                LeftOverHp = stats.MaxHp;
+                LeftOverHp = battleStats.MaxHp;
                 dead++;
             }
 
-            dead += (ushort)(dmg / stats.MaxHp);
-            LeftOverHp -= dmg % stats.MaxHp;
+            dead += (ushort)(dmg / battleStats.MaxHp);
+            LeftOverHp -= dmg % battleStats.MaxHp;
 
             if (dead > 0)
             {

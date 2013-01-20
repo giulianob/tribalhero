@@ -1,6 +1,6 @@
 ﻿namespace Game.Data.Stronghold
 {
-    interface IStrongholdActivationCondition
+    public interface IStrongholdActivationCondition
     {
         bool ShouldActivate(IStronghold stronghold);
     }

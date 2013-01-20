@@ -18,8 +18,7 @@ namespace Game.Battle.RewardStrategies
         }
 
         public void RemoveLoot(ICombatObject attacker, ICombatObject defender, out Resource actualLoot)
-        {
-            actualLoot = new Resource();
+        {            
             var loot = battleFormulas.GetRewardResource(attacker, defender);
             barbarianTribe.BeginUpdate();
             barbarianTribe.Resource.Subtract(loot, out actualLoot);
@@ -33,7 +32,6 @@ namespace Game.Battle.RewardStrategies
 
         public void GiveDefendersRewards(IEnumerable<ICombatObject> defenders, int attackPoints, Resource loot)
         {
-            // Any loot being added to the defender is loot dropped by the attacker
             if (!loot.Empty)
             {
                 barbarianTribe.BeginUpdate();                

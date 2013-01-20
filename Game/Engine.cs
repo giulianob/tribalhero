@@ -48,6 +48,24 @@ namespace Game
 
         private readonly IPlayersRemoverFactory playersRemoverFactory;
 
+        private readonly IStrongholdManager strongholdManager;
+
+        private readonly IBarbarianTribeManager barbarianTribeManager;
+
+        private readonly IWorld world;
+
+        private readonly SystemVariablesUpdater systemVariablesUpdater;
+
+        private readonly IScheduler scheduler;
+
+        private readonly IDbManager dbManager;
+
+        private readonly StrongholdActivationChecker strongholdActivationChecker;
+
+        private readonly VictoryPointChecker victoryPointChecker;
+
+        private readonly BarbarianTribeChecker barbarianTribeChecker;
+
         private readonly IPolicyServer policyServer;
 
         private readonly ITcpServer server;
@@ -60,7 +78,16 @@ namespace Game
                       TServer thriftServer,
                       DbLoader dbLoader,
                       IPlayerSelectorFactory playerSelector,
-                      IPlayersRemoverFactory playersRemoverFactory)
+                      IPlayersRemoverFactory playersRemoverFactory,
+                      IStrongholdManager strongholdManager,
+                      IBarbarianTribeManager barbarianTribeManager,
+                      IWorld world,
+                      SystemVariablesUpdater systemVariablesUpdater,
+                      IScheduler scheduler,
+                      IDbManager dbManager,
+                      StrongholdActivationChecker strongholdActivationChecker,
+                      VictoryPointChecker victoryPointChecker,
+                      BarbarianTribeChecker barbarianTribeChecker)
         {
             this.logger = logger;
             this.server = server;
@@ -69,6 +96,15 @@ namespace Game
             this.dbLoader = dbLoader;
             this.playerSelector = playerSelector;
             this.playersRemoverFactory = playersRemoverFactory;
+            this.strongholdManager = strongholdManager;
+            this.barbarianTribeManager = barbarianTribeManager;
+            this.world = world;
+            this.systemVariablesUpdater = systemVariablesUpdater;
+            this.scheduler = scheduler;
+            this.dbManager = dbManager;
+            this.strongholdActivationChecker = strongholdActivationChecker;
+            this.victoryPointChecker = victoryPointChecker;
+            this.barbarianTribeChecker = barbarianTribeChecker;
         }
 
         public EngineState State { get; private set; }
@@ -122,7 +158,7 @@ _________ _______ _________ ______   _______  _
                                                      FileAccess.ReadWrite);
 
                 // Load map
-                World.Current.Regions.Load(map,
+                world.Regions.Load(map,
                                            regionChanges,
                                            createRegionChanges,
                                            Config.map_width,
@@ -145,7 +181,7 @@ _________ _______ _________ ______   _______  _
 #if DEBUG
             if (Config.database_empty)
             {
-                DbPersistance.Current.EmptyDatabase();
+                dbManager.EmptyDatabase();
             }
 #endif
 
@@ -157,24 +193,18 @@ _________ _______ _________ ______   _______  _
             }
 
             // Initialize stronghold
-            IStrongholdManager manager = Ioc.Kernel.Get<IStrongholdManager>();
-            if (Config.stronghold_generate > 0 && manager.Count == 0) // Only generate if there is none.
+            if (Config.stronghold_generate > 0 && strongholdManager.Count == 0) // Only generate if there is none.
             {
-                manager.Generate(Config.stronghold_generate);
-            }
-            StrongholdActivationChecker strongholdActivationChecker = Ioc.Kernel.Get<StrongholdActivationChecker>();
-            strongholdActivationChecker.Start(TimeSpan.FromSeconds(Config.stronghold_activation_check_interval_in_sec));
-
-            VictoryPointChecker victoryPointChecker = Ioc.Kernel.Get<VictoryPointChecker>();
+                strongholdManager.Generate(Config.stronghold_generate);
+            }            
+            strongholdActivationChecker.Start(TimeSpan.FromSeconds(Config.stronghold_activation_check_interval_in_sec));            
             victoryPointChecker.Start();
 
-            // Initialize settlement
-            var settlementManager = Ioc.Kernel.Get<IBarbarianTribeManager>();
-            if (Config.barbariantribe_generate > 0 && settlementManager.Count < Config.barbariantribe_generate) // Only generate if there is none.
+            // Initialize barbarian tribes
+            if (Config.barbariantribe_generate > 0 && barbarianTribeManager.Count < Config.barbariantribe_generate) // Only generate if there is none.
             {
-                settlementManager.Generate(Config.barbariantribe_generate - settlementManager.Count);
-            }
-            BarbarianTribeChecker barbarianTribeChecker = Ioc.Kernel.Get<BarbarianTribeChecker>();
+                barbarianTribeManager.Generate(Config.barbariantribe_generate - barbarianTribeManager.Count);
+            }            
             barbarianTribeChecker.Start(TimeSpan.FromSeconds(Config.barbariantribe_idle_check_interval_in_sec));
 
             // Initialize game market
@@ -244,15 +274,15 @@ _________ _______ _________ ______   _______  _
 
             State = EngineState.Stopping;
 
-            SystemVariablesUpdater.Current.Pause();
+            systemVariablesUpdater.Pause();
             logger.Info("Stopping TCP server...");
             server.Stop();
             logger.Info("Stopping policy server...");
             policyServer.Stop();
             logger.Info("Waiting for scheduler to end...");
             //thriftServer.Stop();
-            Scheduler.Current.Pause();
-            World.Current.Regions.Unload();
+            scheduler.Pause();
+            world.Regions.Unload();
             Global.Logger.Info("Goodbye!");
 
             State = EngineState.Stopped;

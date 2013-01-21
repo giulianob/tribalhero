@@ -43,7 +43,10 @@
 				Global.map.usernames.cities.getUsername(obj.groupId, createTroopUI);
 			// Stronghold tooltip
 			else if (obj.type == ObjectFactory.TYPE_STRONGHOLD)
-				Global.map.usernames.strongholds.getUsername(obj.objectId, createStrongholdUI, obj);				
+				Global.map.usernames.strongholds.getUsername(obj.objectId, createStrongholdUI, obj);
+			else if (obj.type == ObjectFactory.TYPE_BARBARIAN_TRIBE)
+				createBarbarianTribeUI();
+			
 		}
 
 		private function createForestUI() : void {
@@ -151,6 +154,35 @@
 			GameLookAndFeel.changeClass(lblDistance, "Tooltip.italicsText");			
 
 			ui.append(lblName);
+			ui.append(lblDistance);
+
+			show(obj);
+		}		
+		
+		private function createBarbarianTribeUI() : void {
+			if (disposed) return;
+			
+			var layout0:SoftBoxLayout = new SoftBoxLayout(AsWingConstants.VERTICAL);
+			ui.setLayout(layout0);
+
+			var lblName: JLabel = new JLabel("Barbarian Tribe", null, AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblName, "header");
+
+			var lblLvl: JLabel = new JLabel("Level " + obj.extraProps.level, null, AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblLvl, "Tooltip.text");
+			
+			var lblCampsRemain: JLabel = new JLabel(obj.extraProps.count + " Camps Remain", null, AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblCampsRemain, "Tooltip.text");
+
+			var mapPos: Point = MapUtil.getScreenMinimapToMapCoord(obj.x, obj.y);
+			var distance: int = MapUtil.distance(mapPos.x, mapPos.y, Global.gameContainer.selectedCity.MainBuilding.x, Global.gameContainer.selectedCity.MainBuilding.y);
+			
+			var lblDistance: JLabel = new JLabel(distance + " tiles away", null, AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblDistance, "Tooltip.italicsText");			
+
+			ui.append(lblName);
+			ui.append(lblLvl);
+			ui.append(lblCampsRemain);
 			ui.append(lblDistance);
 
 			show(obj);

@@ -21,13 +21,11 @@ package src.Objects.Process
 	{		
 		private var attackDialog: AttackTroopDialog;		
 		private var target: SimpleGameObject;
-		private var targetLocation: Location;
 		private var sourceCity:City;
 		
-		public function AttackSendProcess(sourceCity: City, targetLocation: Location = null) 
+		public function AttackSendProcess(sourceCity: City) 
 		{
 			this.sourceCity = sourceCity;
-			this.targetLocation = targetLocation;
 		}
 		
 		public function execute(): void 
@@ -40,11 +38,6 @@ package src.Objects.Process
 		public function onChoseUnits(sender: AttackTroopDialog): void {
 			
 			Global.gameContainer.closeAllFrames(true);
-			
-			if (targetLocation != null && (targetLocation.type == Location.STRONGHOLD || targetLocation.type == Location.BARBARIAN_TRIBE)) {
-				onAttackAccepted();
-				return;
-			}
 			
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
 			
@@ -85,20 +78,14 @@ package src.Objects.Process
 		}
 		
 		public function onAttackAccepted(): void {
-			if (targetLocation != null && targetLocation.type == Location.STRONGHOLD) {
-				Global.mapComm.Troop.troopAttackStronghold(sourceCity.id, targetLocation.id, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
-			} else if (targetLocation != null && targetLocation.type == Location.BARBARIAN_TRIBE) {
-				Global.mapComm.Troop.troopAttackBarbarian(sourceCity.id, targetLocation.id, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
-			} else {
-				if (target is StructureObject) {
-					Global.mapComm.Troop.troopAttackCity(sourceCity.id, target.groupId, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);
-				}
-				else if (target is Stronghold) {
-					Global.mapComm.Troop.troopAttackStronghold(sourceCity.id, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
-				}
-				else if (target is BarbarianTribe) {
-					Global.mapComm.Troop.troopAttackBarbarian(sourceCity.id, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
-				}
+			if (target is StructureObject) {
+				Global.mapComm.Troop.troopAttackCity(sourceCity.id, target.groupId, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);
+			}
+			else if (target is Stronghold) {
+				Global.mapComm.Troop.troopAttackStronghold(sourceCity.id, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
+			}
+			else if (target is BarbarianTribe) {
+				Global.mapComm.Troop.troopAttackBarbarian(sourceCity.id, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				
 			}
 
 			Global.gameContainer.setOverlaySprite(null);
@@ -106,9 +93,7 @@ package src.Objects.Process
 		}
 		
 		public function onAttackFail(custom: * = null):void {
-			if(targetLocation==null || targetLocation.type==Location.CITY) {
-				onChoseUnits(attackDialog);
-			}
+			onChoseUnits(attackDialog);
 		}
 		
 		public function onChangeTroop(e: Event = null): void {

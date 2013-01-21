@@ -9,6 +9,7 @@ package src.Objects.Process
 	import src.Global;
 	import src.Map.City;
 	import src.Map.MapUtil;
+	import src.Objects.BarbarianTribe;
 	import src.Objects.Effects.Formula;
 	import src.Objects.GameObject;
 	import src.Objects.SimpleGameObject;
@@ -19,7 +20,9 @@ package src.Objects.Process
 	import src.UI.Cursors.GroundAttackCursor;
 	import src.UI.Dialog.AssignmentCreateDialog;
 	import src.UI.Dialog.AttackTroopDialog;
+	import src.UI.Dialog.InfoDialog;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
+	import src.Util.StringHelper;
 	
 	public class AtkAssignmentCreateProcess implements IProcess
 	{		
@@ -55,10 +58,19 @@ package src.Objects.Process
 			Global.gameContainer.setSidebar(sidebar);
 		}
 		
+		private function onBadTarget(response: *) : void
+		{
+			onChoseUnits(attackDialog);
+		}
+		
 		public function onChoseTarget(sender: GroundAttackCursor): void 
 		{						
 			target = sender.getTargetObject();
-			
+			if (target is BarbarianTribe)
+			{
+				InfoDialog.showMessageDialog("Error", StringHelper.localize("BARBARIAN_ASSIGNMENT_ERROR"),onBadTarget);
+				return;
+			}
 			Global.gameContainer.setOverlaySprite(null);
 			Global.gameContainer.setSidebar(null);
 			

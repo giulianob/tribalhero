@@ -17,8 +17,14 @@ namespace Game.Battle.RewardStrategies
             this.battleFormulas = battleFormulas;
         }
 
-        public void RemoveLoot(ICombatObject attacker, ICombatObject defender, out Resource actualLoot)
+        public void RemoveLoot(IBattleManager battleManager, int attackIndex, ICombatObject attacker, ICombatObject defender, out Resource actualLoot)
         {            
+            if (attackIndex != 0)
+            {
+                actualLoot = new Resource();
+                return;
+            }
+
             var loot = battleFormulas.GetRewardResource(attacker, defender);
             barbarianTribe.BeginUpdate();
             barbarianTribe.Resource.Subtract(loot, out actualLoot);

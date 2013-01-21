@@ -178,8 +178,6 @@ namespace Game
 
             Bind<ICombatList>().To<CombatList>().NamedLikeFactoryMethod((ICombatListFactory p) => p.GetCombatList());
 
-            Bind<SimpleStubGenerator>().ToSelf().InSingletonScope();
-
             #endregion
 
             #region Processor

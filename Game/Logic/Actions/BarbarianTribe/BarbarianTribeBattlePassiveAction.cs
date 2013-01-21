@@ -53,7 +53,7 @@ namespace Game.Logic.Actions
                                        Formula formula,
                                        BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
                                        IWorld world,
-                                       SimpleStubGenerator simpleStubGenerator)
+                                       ISimpleStubGeneratorFactory simpleStubGeneratorFactory)
         {
             this.barbarianTribeId = barbarianTribeId;
             this.battleProcedure = battleProcedure;
@@ -62,8 +62,7 @@ namespace Game.Logic.Actions
             this.dbManager = dbManager;
             this.formula = formula;
             this.barbarianTribeBattleProcedure = barbarianTribeBattleProcedure;
-            this.world = world;
-            this.simpleStubGenerator = simpleStubGenerator;
+            this.world = world;            
 
             IBarbarianTribe barbarianTribe;
             if (!gameObjectLocator.TryGetObjects(barbarianTribeId, out barbarianTribe))
@@ -71,6 +70,7 @@ namespace Game.Logic.Actions
                 throw new Exception("Did not find barb tribe that was supposed to be having a battle");
             }
 
+            simpleStubGenerator = simpleStubGeneratorFactory.CreateSimpleStubGenerator(formula.BarbarianTribeUnitRatios(), formula.BarbarianTribeUnitTypes());
         }
 
         public BarbarianTribeBattlePassiveAction(uint id,

@@ -48,16 +48,17 @@ namespace Game.Data.Stronghold
                                  IRegionManager regionManager,
                                  Chat chat,
                                  IDbManager dbManager,
-                                 SimpleStubGenerator simpleStubGenerator,
+                                 ISimpleStubGeneratorFactory simpleStubGeneratorFactory,
                                  Formula formula)
         {
             this.strongholdConfigurator = strongholdConfigurator;
             this.strongholdFactory = strongholdFactory;
             this.regionManager = regionManager;
             this.chat = chat;
-            this.dbManager = dbManager;
-            this.simpleStubGenerator = simpleStubGenerator;
+            this.dbManager = dbManager;            
             this.formula = formula;
+
+            this.simpleStubGenerator = simpleStubGeneratorFactory.CreateSimpleStubGenerator(formula.StrongholdUnitRatio(), formula.StrongholdUnitType());
         }
 
         public int Count

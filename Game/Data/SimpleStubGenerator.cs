@@ -4,40 +4,19 @@ using Game.Setup;
 
 namespace Game.Data
 {
-    public class SimpleStubGenerator
+    public class SimpleStubGenerator : ISimpleStubGenerator
     {
-        private readonly double[,] ratio = new[,]
-        {
-                {.00, .00, .00, .00, .00, .00, .00, .00,}, 
-                {1.00, .00, .00, .00, .00, .00, .00, .00,},
-                {.90, .10, .00, .00, .00, .00, .00, .00,}, 
-                {.50, .50, .00, .00, .00, .00, .00, .00,},
-                {.50, .25, .25, .00, .00, .00, .00, .00,}, 
-                {.50, .25, .25, .00, .00, .00, .00, .00,},
-                {.40, .25, .25, .10, .00, .00, .00, .00,}, 
-                {.40, .25, .25, .10, .00, .00, .00, .00,},
-                {.35, .20, .25, .15, .05, .00, .00, .00,}, 
-                {.25, .20, .25, .15, .15, .00, .00, .00,},
-                {.25, .20, .25, .15, .15, .00, .00, .00,}, 
-                {.20, .15, .20, .15, .15, .15, .00, .00,},
-                {.20, .15, .20, .15, .15, .15, .00, .00,}, 
-                {.15, .10, .15, .15, .25, .20, .00, .00,},
-                {.10, .10, .10, .15, .25, .25, .05, .00,}, 
-                {.10, .10, .10, .15, .25, .25, .05, .00,},
-                {.10, .10, .10, .10, .20, .25, .10, .05,}, 
-                {.10, .10, .10, .10, .20, .25, .10, .05,},
-                {.10, .10, .10, .10, .15, .20, .15, .10,}, 
-                {.10, .10, .10, .10, .15, .20, .15, .10,},
-                {.10, .10, .10, .10, .15, .20, .15, .10,},
-        };
-
-        private readonly ushort[] type = new ushort[] {101, 102, 105, 103, 104, 107, 106, 108};
-
         private readonly UnitFactory unitFactory;
 
-        public SimpleStubGenerator(UnitFactory unitFactory)
+        private readonly double[,] ratio;
+
+        private readonly ushort[] type;
+
+        public SimpleStubGenerator(double[,] ratio, ushort[] type, UnitFactory unitFactory)
         {
             this.unitFactory = unitFactory;
+            this.ratio = ratio;
+            this.type = type;
         }
 
         /// <summary>
@@ -45,6 +24,7 @@ namespace Game.Data
         /// </summary>
         /// <param name="level">level of object</param>
         /// <param name="upkeep">Total output upkeep</param>
+        /// <param name="unitLevel">The unit level to generate</param>
         /// <param name="randomness">A percentage of upkeep being completely random, 1 means it's completely random</param>
         /// <param name="seed">seed for the randomizer</param>
         /// <param name="stub">output</param>

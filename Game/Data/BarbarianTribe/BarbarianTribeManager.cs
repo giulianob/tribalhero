@@ -44,6 +44,8 @@ namespace Game.Data.BarbarianTribe
 
         public void DbLoaderAdd(IBarbarianTribe barbarianTribe)
         {
+            idGenerator.Set(barbarianTribe.Id);
+
             barbarianTribes.AddOrUpdate(barbarianTribe.Id, barbarianTribe, (id, old) => barbarianTribe);            
             regionManager.DbLoaderAdd(barbarianTribe);
             barbarianTribe.CampRemainsChanged += BarbarianTribeOnCampRemainsChanged;

@@ -19,7 +19,7 @@ namespace Game.Battle.RewardStrategies
             this.gameObjectLocator = gameObjectLocator;
         }
 
-        public void RemoveLoot(ICombatObject attacker, ICombatObject defender, out Resource actualLoot)
+        public void RemoveLoot(IBattleManager battleManager, int attackIndex, ICombatObject attacker, ICombatObject defender, out Resource actualLoot)
         {
             actualLoot = new Resource();
         }

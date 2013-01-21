@@ -225,6 +225,8 @@
     <Compile Include="Data\ILazyValue.cs" />
     <Compile Include="Data\IPlayer.cs" />
     <Compile Include="Data\ISimpleGameObject.cs" />
+    <Compile Include="Data\ISimpleStubGenerator.cs" />
+    <Compile Include="Data\ISimpleStubGeneratorFactory.cs" />
     <Compile Include="Data\IStation.cs" />
     <Compile Include="Data\IStructure.cs" />
     <Compile Include="Data\ITechnologyManager.cs" />
@@ -313,6 +315,7 @@
     <Compile Include="Logic\ActionWorker.cs" />
     <Compile Include="Logic\Formulas\Formula.Stronghold.cs" />
     <Compile Include="Logic\Formulas\Formula.BarbarianTribe.cs" />
+    <Compile Include="Logic\Formulas\SlotMachineCalculator.cs" />
     <Compile Include="Logic\GameAction.cs">
       <SubType>Code</SubType>
     </Compile>

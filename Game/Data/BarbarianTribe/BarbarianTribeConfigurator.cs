@@ -7,7 +7,7 @@ namespace Game.Data.BarbarianTribe
 {
     class BarbarianTribeConfigurator : IBarbarianTribeConfigurator
     {
-        private static readonly int[] LevelProbability = new[] {0, 8, 16, 23, 30, 37, 43, 49, 55, 60, 65, 70, 74, 78, 82, 85, 88, 91, 94, 97, 100};
+        private static readonly int[] LevelProbability = new[] {0, 8, 23, 37, 49, 60, 70, 78, 85, 93, 100};
 
         private readonly MapFactory mapFactory;
 

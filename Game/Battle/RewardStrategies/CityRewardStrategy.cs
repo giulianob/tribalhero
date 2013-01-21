@@ -5,6 +5,7 @@ using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Logic.Formulas;
+using Game.Setup;
 using Game.Util.Locking;
 
 namespace Game.Battle.RewardStrategies
@@ -24,8 +25,14 @@ namespace Game.Battle.RewardStrategies
             this.formula = formula;
         }
 
-        public void RemoveLoot(ICombatObject attacker, ICombatObject defender, out Resource actualLoot)
+        public void RemoveLoot(IBattleManager battleManager, int attackIndex, ICombatObject attacker, ICombatObject defender, out Resource actualLoot)
         {
+            if (attackIndex != 0 || battleManager.Round < Config.battle_loot_begin_round)
+            {
+                actualLoot = new Resource();
+                return;
+            }
+
             var loot = battleFormulas.GetRewardResource(attacker, defender);
             city.BeginUpdate();
             city.Resource.Subtract(loot, formula.HiddenResource(city, true), out actualLoot);

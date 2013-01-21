@@ -242,11 +242,7 @@ namespace Game.Logic.Formulas
 
         public virtual Resource GetGateRepairCost(byte level, decimal damagedGateHp)
         {
-            return new Resource(0,
-                                (int)(level * damagedGateHp / 8),
-                                (int)(level * damagedGateHp / 16),
-                                (int)(level * damagedGateHp / 4),
-                                0);
+            return new Resource(0, (int)(damagedGateHp / 8), (int)(damagedGateHp / 16), (int)(damagedGateHp / 4));
         }
 
         public virtual int GetMainBattleMeter(byte level)

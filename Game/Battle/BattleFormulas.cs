@@ -198,8 +198,7 @@ namespace Game.Battle
             return new Resource(Math.Min(count / 1, spaceLeft.Crop),
                                 Math.Min(count / 2, spaceLeft.Gold),
                                 Math.Min(count / Config.resource_iron_ratio, spaceLeft.Iron),
-                                Math.Min(count / 1, spaceLeft.Wood),
-                                0);
+                                Math.Min(count / 1, spaceLeft.Wood));
         }
 
         public virtual short GetStamina(ITroopStub stub, ICity city)

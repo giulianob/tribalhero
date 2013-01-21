@@ -127,6 +127,7 @@
     <Compile Include="Channel\ChannelTest.cs" />
     <Compile Include="City\CityTest.cs" />
     <Compile Include="Database\DbLoaderActionFactoryTest.cs" />
+    <Compile Include="Formulas\BarbarianTribeFormulaTest.cs" />
     <Compile Include="Formulas\CityValueTest.cs" />
     <Compile Include="Formulas\NewCityResourceTest.cs" />
     <Compile Include="Formulas\ResourceFormulaTest.cs" />

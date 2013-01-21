@@ -119,8 +119,9 @@ namespace Game.Logic.Actions
             //Load the units stats into the stub
             troopObject.Stub.BeginUpdate();
             troopObject.Stub.Template.LoadStats(TroopBattleGroup.Defense);
-            troopObject.Stub.RetreatCount =
-                    (ushort)Formula.Current.GetAttackModeTolerance(troopObject.Stub.TotalCount, mode);
+            troopObject.Stub.InitialCount = troopObject.Stub.TotalCount;
+            troopObject.Stub.RetreatCount = (ushort)Formula.Current.GetAttackModeTolerance(troopObject.Stub.InitialCount, mode);
+            troopObject.Stub.AttackMode = mode;
             troopObject.Stub.EndUpdate();
 
             city.References.Add(troopObject, this);

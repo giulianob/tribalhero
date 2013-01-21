@@ -103,6 +103,8 @@ namespace Game.Data
 
         BattleStatsArmoryMod = 101,
 
-        BattleStatsBlacksmithMod = 102
+        BattleStatsBlacksmithMod = 102,
+
+        UpkeepReduce = 103
     }
 }

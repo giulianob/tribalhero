@@ -74,6 +74,9 @@
     <Reference Include="Ninject">
       <HintPath>..\packages\Ninject.3.0.1.10\lib\net40\Ninject.dll</HintPath>
     </Reference>
+    <Reference Include="NSubstitute">
+      <HintPath>..\packages\NSubstitute.1.4.3.0\lib\NET40\NSubstitute.dll</HintPath>
+    </Reference>
     <Reference Include="Ploeh.AutoFixture, Version=2.15.4.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\AutoFixture.2.15.4\lib\net35\Ploeh.AutoFixture.dll</HintPath>
@@ -126,6 +129,7 @@
     <Compile Include="City\CityTest.cs" />
     <Compile Include="Database\DbLoaderActionFactoryTest.cs" />
     <Compile Include="Formulas\CityValueTest.cs" />
+    <Compile Include="Formulas\UpkeepTest.cs" />
     <Compile Include="Formulas\NewCityResourceTest.cs" />
     <Compile Include="Formulas\ResourceFormulaTest.cs" />
     <Compile Include="Formulas\WeaponExportTest.cs" />

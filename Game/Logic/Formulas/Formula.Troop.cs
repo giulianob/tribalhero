@@ -33,7 +33,7 @@ namespace Game.Logic.Formulas
             {
                 foreach (var kvp in formation)
                 {
-                    BaseUnitStats stats = stub.City.Template[kvp.Key];
+                    IBaseUnitStats stats = stub.City.Template[kvp.Key];
                     // Use the slowest machine speed if available.
                     if (stats.Battle.Armor == ArmorType.Machine)
                     {

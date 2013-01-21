@@ -140,6 +140,11 @@ namespace Game.Logic.Procedures
 
         public virtual Error CanStructureBeAttacked(IStructure structure)
         {
+            if (structure.IsBlocked || structure.Stats.Hp == 0)
+            {
+                return Error.ObjectNotAttackable;
+            }
+
             // Can't attack structures that are being built
             if (structure.Lvl == 0)
             {
@@ -174,10 +179,7 @@ namespace Game.Logic.Procedures
             var localGroup = GetOrCreateLocalGroup(targetCity.Battle, targetCity);
             foreach (IStructure structure in
                     GetStructuresInRadius(targetCity, attackerTroopObject)
-                            .Where(
-                                   structure =>
-                                   !structure.IsBlocked && structure.Stats.Hp > 0 && structure.State.Type == ObjectState.Normal &&
-                                   CanStructureBeAttacked(structure) == Error.Ok))
+                            .Where(structure => structure.State.Type == ObjectState.Normal && CanStructureBeAttacked(structure) == Error.Ok))
             {
                 structure.BeginUpdate();
                 structure.State = GameObjectState.BattleState(battleManager.BattleId);

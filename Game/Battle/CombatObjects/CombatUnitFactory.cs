@@ -43,7 +43,7 @@ namespace Game.Battle.CombatObjects
                                                          ushort type,
                                                          ushort count)
         {
-            BaseUnitStats template = troop.City.Template[type];
+            IBaseUnitStats template = troop.City.Template[type];
             BattleStats stats = troop.Stub.Template[type];
             var groupSize = (from effect in troop.City.Technologies.GetEffects(EffectCode.UnitStatMod)
                              where
@@ -84,7 +84,7 @@ namespace Game.Battle.CombatObjects
                                                            ushort type,
                                                            ushort count)
         {
-            BaseUnitStats template = stub.City.Template[type];
+            IBaseUnitStats template = stub.City.Template[type];
             BattleStats stats = stub.Template[type];
             var groupSize = (from effect in stub.City.Technologies.GetEffects(EffectCode.UnitStatMod)
                              where

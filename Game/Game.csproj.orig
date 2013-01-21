@@ -70,33 +70,33 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core">
-      <HintPath>..\Lib\ninject\DynamicProxy\lib\Castle.Core.dll</HintPath>
+      <HintPath>..\packages\Castle.Core.3.0.0.4001\lib\net40-client\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="JsonFx">
-      <HintPath>..\packages\JsonFx.2.0.1106.2610\lib\net40\JsonFx.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+    <Reference Include="JsonFx, Version=2.0.1209.2802, Culture=neutral, PublicKeyToken=315052dd637f8a52, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\ninject\log4net\lib\log4net.dll</HintPath>
+      <HintPath>..\packages\JsonFx.2.0.1209.2802\lib\net40\JsonFx.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NDesk.Options">
       <HintPath>..\Lib\ndesk.options\NDesk.Options.dll</HintPath>
     </Reference>
     <Reference Include="Ninject">
-      <HintPath>..\Lib\ninject\Ninject.dll</HintPath>
+      <HintPath>..\packages\Ninject.3.0.1.10\lib\net40\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="Ninject.Extensions.Conventions">
-      <HintPath>..\Lib\ninject\Ninject.Extensions.Conventions.dll</HintPath>
+      <HintPath>..\packages\ninject.extensions.conventions.3.0.0.11\lib\net40\Ninject.Extensions.Conventions.dll</HintPath>
     </Reference>
     <Reference Include="Ninject.Extensions.Factory">
-      <HintPath>..\Lib\ninject\Ninject.Extensions.Factory.dll</HintPath>
+      <HintPath>..\packages\Ninject.Extensions.Factory.3.0.1.0\lib\net40\Ninject.Extensions.Factory.dll</HintPath>
     </Reference>
     <Reference Include="Ninject.Extensions.Logging">
-      <HintPath>..\Lib\ninject\Ninject.Extensions.Logging.dll</HintPath>
+      <HintPath>..\packages\Ninject.Extensions.Logging.3.0.1.0\lib\net40\Ninject.Extensions.Logging.dll</HintPath>
     </Reference>
     <Reference Include="Ninject.Extensions.Logging.Log4Net">
-      <HintPath>..\Lib\ninject\log4net\Ninject.Extensions.Logging.Log4Net.dll</HintPath>
+      <HintPath>..\packages\Ninject.Extensions.Logging.Log4net.3.0.1.0\lib\net40\Ninject.Extensions.Logging.Log4Net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -115,6 +115,7 @@
     <Compile Include="Battle\BattleClass.cs" />
     <Compile Include="Battle\BattleLocation.cs" />
     <Compile Include="Battle\BattleManagerFactory.cs" />
+    <Compile Include="Battle\BattleManagerGate.cs" />
     <Compile Include="Battle\CombatGroups\CityOffensiveCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\CityDefensiveCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\CombatGroup.cs" />
@@ -177,6 +178,7 @@
     <Compile Include="Comm\ProcessorCommands\BattleCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\AssignmentCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\ChatCommandsModule.cs" />
+    <Compile Include="Comm\ProcessorCommands\ProfileCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\StrongholdCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\TribesmanCommandsModule.cs" />
     <Compile Include="Comm\ProcessorCommands\TribeCommandsModule.cs" />
@@ -218,6 +220,12 @@
     <Compile Include="Data\IXYPosition.cs" />
     <Compile Include="Data\LazyValue.cs" />
     <Compile Include="Data\PlayerRights.cs" />
+<<<<<<< local
+    <Compile Include="Data\Stats\IBaseUnitStats.cs" />
+=======
+    <Compile Include="Data\Settlement\ISettlement.cs" />
+    <Compile Include="Data\Settlement\Settlement.cs" />
+>>>>>>> other
     <Compile Include="Data\Stats\TroopStats.cs" />
     <Compile Include="Data\Effect.cs" />
     <Compile Include="Data\Global.cs" />
@@ -233,6 +241,7 @@
     <Compile Include="Data\Stronghold\Stronghold.cs" />
     <Compile Include="Data\Stronghold\StrongholdActivationCondition.cs" />
     <Compile Include="Data\Stronghold\StrongholdConfigurator.cs" />
+    <Compile Include="Data\Stronghold\StrongholdFactory.cs" />
     <Compile Include="Data\Stronghold\StrongholdManager.cs" />
     <Compile Include="Data\Stronghold\VictoryPointChecker.cs" />
     <Compile Include="Data\Structure.cs" />
@@ -244,12 +253,15 @@
     <Compile Include="Data\Tribe\ITribeFactory.cs" />
     <Compile Include="Data\Tribe\ITribesman.cs" />
     <Compile Include="Data\Tribe\Tribe.cs" />
+    <Compile Include="Data\Tribe\TribeEvents.cs" />
+    <Compile Include="Data\Tribe\TribeManager.cs" />
     <Compile Include="Data\Tribe\Tribesman.cs" />
     <Compile Include="Data\Troop\CityTroopStubFactory.cs" />
     <Compile Include="Data\Troop\ITroopManager.cs" />
     <Compile Include="Data\Troop\ITroopObject.cs" />
     <Compile Include="Data\Troop\ITroopStub.cs" />
     <Compile Include="Data\Troop\ITroopStubFactory.cs" />
+    <Compile Include="Data\Troop\IUnitTemplate.cs" />
     <Compile Include="Data\Troop\SimpleStub.cs" />
     <Compile Include="Data\Troop\Unit.cs" />
     <Compile Include="Data\Troop\Formation.cs" />
@@ -296,7 +308,12 @@
     <Compile Include="Logic\ActiveAction.cs" />
     <Compile Include="Logic\IActionTime.cs" />
     <Compile Include="Logic\IActionWorker.cs" />
+    <Compile Include="Logic\IActionWorkerOwner.cs" />
     <Compile Include="Logic\IScheduler.cs" />
+    <Compile Include="Logic\Notifications\CityNotificationManager.cs" />
+    <Compile Include="Logic\Notifications\INotificationOwner.cs" />
+    <Compile Include="Logic\Notifications\Notification.cs" />
+    <Compile Include="Logic\Notifications\NotificationEventArgs.cs" />
     <Compile Include="Logic\PassiveAction.cs" />
     <Compile Include="Logic\Procedures\Procedure.CityCreate.cs" />
     <Compile Include="Logic\Procedures\Procedure.Structure.cs" />
@@ -325,6 +342,7 @@
     <Compile Include="Map\ICityRegionManagerFactory.cs" />
     <Compile Include="Map\IGameObjectLocator.cs" />
     <Compile Include="Map\IRegionManager.cs" />
+    <Compile Include="Data\Tribe\ITribeManager.cs" />
     <Compile Include="Map\IWorld.cs" />
     <Compile Include="Map\Position.cs" />
     <Compile Include="Map\MapMath.cs" />
@@ -432,7 +450,7 @@
     <Compile Include="Logic\Formulas\Formula.Cost.cs" />
     <Compile Include="Logic\Formulas\Formula.Troop.cs" />
     <Compile Include="Logic\Formulas\Formula.Time.cs" />
-    <Compile Include="Logic\NotificationManager.cs" />
+    <Compile Include="Logic\Notifications\NotificationManager.cs" />
     <Compile Include="Logic\Procedures\BattleProcedure.cs" />
     <Compile Include="Logic\Procedures\Procedure.Ranking.cs" />
     <Compile Include="Logic\Procedures\Procedure.OnActionCallback.cs" />

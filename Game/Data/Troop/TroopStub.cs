@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Game.Database;
+using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Util.Locking;
 using Persistance;
@@ -40,6 +41,8 @@ namespace Game.Data.Troop
         Attack = 1,
 
         Defense = 2,
+
+        Any = 3
     }
 
     public class TroopStub : SimpleStub, ITroopStub
@@ -70,7 +73,11 @@ namespace Game.Data.Troop
 
         #region Properties
 
+        private ushort initialCount;
+
         private ushort retreatCount;
+
+        private AttackMode attackMode;
 
         private TroopState state = TroopState.Idle;
 
@@ -126,6 +133,19 @@ namespace Game.Data.Troop
             }
         }
 
+        public ushort InitialCount
+        {
+            get
+            {
+                return initialCount;
+            }
+            set
+            {
+                CheckUpdateMode();
+                initialCount = value;
+            }
+        }
+
         public ushort RetreatCount
         {
             get
@@ -137,6 +157,19 @@ namespace Game.Data.Troop
                 CheckUpdateMode();
                 retreatCount = value;
             }
+        }
+
+        public AttackMode AttackMode
+        {
+            get
+            {
+                return attackMode;
+            }
+            set
+            {
+                CheckUpdateMode();
+                attackMode = value;
+            }          
         }
 
         public byte TroopId
@@ -358,7 +391,9 @@ namespace Game.Data.Troop
                         new DbColumn("station_id", station != null ? station.LocationId : 0, DbType.Int32),
                         new DbColumn("state", (byte)state, DbType.Byte),
                         new DbColumn("formations", GetFormationBits(), DbType.UInt16),
-                        new DbColumn("retreat_count", retreatCount, DbType.UInt16)
+                        new DbColumn("retreat_count", retreatCount, DbType.UInt16),
+                        new DbColumn("initial_count", initialCount, DbType.UInt16),
+                        new DbColumn("attack_mode", (byte)attackMode, DbType.Byte)
                 };
             }
         }

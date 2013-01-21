@@ -214,7 +214,7 @@ namespace Game.Data
         /// <summary>
         ///     Returns unit template. Unit template holds levels for all units in the city.
         /// </summary>
-        public UnitTemplate Template { get; private set; }
+        public IUnitTemplate Template { get; private set; }
 
         /// <summary>
         ///     Resource available in the city
@@ -1039,7 +1039,7 @@ namespace Game.Data
             {
                 BeginUpdate();
             }
-            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, Troops);
+            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this);
             if (!doUpdate)
             {
                 EndUpdate();
@@ -1063,7 +1063,7 @@ namespace Game.Data
             {
                 BeginUpdate();
             }
-            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, Troops);
+            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this);
             if (!doUpdate)
             {
                 EndUpdate();
@@ -1087,7 +1087,7 @@ namespace Game.Data
             {
                 BeginUpdate();
             }
-            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, Troops);
+            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this);
             if (!doUpdate)
             {
                 EndUpdate();

@@ -214,7 +214,7 @@ namespace Game.Logic.Formulas
 
         public virtual int GetWeaponExportLaborProduce(int weaponExport, int labor, int currentGold)
         {
-            var isOverLimit = weaponExport * 1000 < currentGold;
+            var isOverLimit = weaponExport * 2000 < currentGold;
             labor = Math.Min(labor, weaponExport * 60);
             switch(weaponExport)
             {

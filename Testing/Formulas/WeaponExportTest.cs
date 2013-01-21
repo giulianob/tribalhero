@@ -67,11 +67,11 @@ namespace Testing.Formulas
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
                                       new Mock<StructureFactory>(MockBehavior.Strict).Object);
 
-            formula.GetWeaponExportLaborProduce(1, 30, 1001).Should().Be(2);
-            formula.GetWeaponExportLaborProduce(2, 60, 2001).Should().Be(4);
-            formula.GetWeaponExportLaborProduce(3, 90, 3001).Should().Be(7);
-            formula.GetWeaponExportLaborProduce(4, 120, 4001).Should().Be(9);
-            formula.GetWeaponExportLaborProduce(5, 150, 5001).Should().Be(15);
+            formula.GetWeaponExportLaborProduce(1, 30, 2001).Should().Be(2);
+            formula.GetWeaponExportLaborProduce(2, 60, 4001).Should().Be(4);
+            formula.GetWeaponExportLaborProduce(3, 90, 6001).Should().Be(7);
+            formula.GetWeaponExportLaborProduce(4, 120, 8001).Should().Be(9);
+            formula.GetWeaponExportLaborProduce(5, 150, 10001).Should().Be(15);
         }
 
         [Fact]
@@ -82,9 +82,9 @@ namespace Testing.Formulas
                                       new Mock<StructureFactory>(MockBehavior.Strict).Object);
 
             formula.GetWeaponExportLaborProduce(3, 3, 0).Should().Be(1);
-            formula.GetWeaponExportLaborProduce(3, 15, 3001).Should().Be(1);
+            formula.GetWeaponExportLaborProduce(3, 15, 6001).Should().Be(1);
             formula.GetWeaponExportLaborProduce(4, 3, 0).Should().Be(1);
-            formula.GetWeaponExportLaborProduce(4, 15, 4001).Should().Be(1);
+            formula.GetWeaponExportLaborProduce(4, 15, 8001).Should().Be(1);
         }
 
     }

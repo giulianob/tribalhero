@@ -126,7 +126,7 @@
 			pnlCity.append(lblCityTitle);
 			pnlCity.append(txtCityName);
 		
-			pnlResources = new TradeResourcesPanel(parentObj);
+			pnlResources = new TradeResourcesPanel(parentObj, Formula.sendCapacity(parentObj.level));
 
 			pnlBottom = new JPanel();
 			pnlBottom.setSize(new IntDimension(200, 10));

@@ -41,6 +41,10 @@
 			return rate[level];
 		}
 		
+		public static function contributeCapacity(level: int) : int {
+			return sendCapacity(level) * 2;
+		}
+		
 		public static function troopRadius(troop: TroopStub) : int {
 			var city: City = Global.map.cities.get(troop.cityId);
 			return Math.min(4, city.value / 40);

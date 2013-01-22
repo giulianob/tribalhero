@@ -249,5 +249,15 @@ namespace Game.Logic.Formulas
             influencePoints = (100 + 20 * (cityCount - 1)) * cityCount;
             wagons = 50 * cityCount;
         }
+
+        public virtual int GetStrongholdUpkeep(byte level)
+        {
+
+            int[] upkeeps = {0, 1000, 1400, 1796, 2189, 2579, 2965, 3347, 3726, 4102, 4474, 
+                                4842, 5207, 5568, 5926, 6281, 6632, 6979, 7323, 7663, 8000};
+            if(Config.stronghold_npc_per_lvl_upkeep>0)
+                return Config.stronghold_npc_per_lvl_upkeep * level;
+            return upkeeps[level];
+        }
     }
 }

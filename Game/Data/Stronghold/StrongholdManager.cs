@@ -157,8 +157,7 @@ namespace Game.Data.Stronghold
         {
             ISimpleStub simpleStub;
             simpleStubGenerator.Generate(stronghold.Lvl,
-                                         Config.stronghold_npc_base_upkeep +
-                                         stronghold.Lvl * Config.stronghold_npc_per_lvl_upkeep,
+                                         formula.GetStrongholdUpkeep(stronghold.Lvl),
                                          Config.stronghold_npc_randomness,
                                          (int)stronghold.Id,
                                          out simpleStub);

@@ -58,7 +58,7 @@ namespace Game.Data.Stronghold
             this.dbManager = dbManager;            
             this.formula = formula;
 
-            this.simpleStubGenerator = simpleStubGeneratorFactory.CreateSimpleStubGenerator(formula.StrongholdUnitRatio(), formula.StrongholdUnitType());
+            simpleStubGenerator = simpleStubGeneratorFactory.CreateSimpleStubGenerator(formula.StrongholdUnitRatio(), formula.StrongholdUnitType());
         }
 
         public int Count

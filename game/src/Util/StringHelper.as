@@ -17,12 +17,16 @@ package src.Util {
 	
 		public static function htmlUnescape(str:String):String
 		{
-			return new XML(str).firstChild.nodeValue;
+			str = new XML(str).firstChild.nodeValue;
+            str = str.replace("\"", "&quot;");
+            return str;
 		}
 
 		public static function htmlEscape(str:String):String
 		{
-			return XML(new XMLNode(XMLNodeType.TEXT_NODE, str)).toXMLString();
+			str = XML(new XMLNode(XMLNodeType.TEXT_NODE, str)).toXMLString();
+            str = str.replace("\"", "&quot;");
+            return str;
 		}
 		
 		public static function linkify(str:String, escape: Boolean = true):String

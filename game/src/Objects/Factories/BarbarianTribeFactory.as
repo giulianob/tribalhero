@@ -12,6 +12,7 @@
 	import src.Objects.BarbarianTribe;
 	import src.Objects.SimpleGameObject;
 	import src.Objects.States.GameObjectState;
+    import src.Util.Util;
 
 	public class BarbarianTribeFactory {
 
@@ -26,9 +27,8 @@
 
 			if (centered)
 			{
-				sprite.getChildAt(0).x = 0;
-				sprite.getChildAt(0).y = 0;
-			}
+				Util.centerSprite(sprite);
+            }
 
 			return sprite;
 		}

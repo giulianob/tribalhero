@@ -12,6 +12,7 @@
 	import src.Objects.Forest;
 	import src.Objects.States.GameObjectState;
 	import src.Objects.Stronghold.Stronghold;
+    import src.Util.Util;
 
 	public class StrongholdFactory {
 
@@ -26,8 +27,7 @@
 
 			if (centered)
 			{
-				sprite.getChildAt(0).x = 0;
-				sprite.getChildAt(0).y = 0;
+				Util.centerSprite(sprite);
 			}
 
 			return sprite;

@@ -198,7 +198,7 @@ TRIBE_INCOMING_ATK,{0} is being attacked by {1}
 ASSIGNMENT_ATK,Attack {0}
 ASSIGNMENT_DEF,Defend {0}
 ,
-RICH_LABEL_LOCATION_BARBARIAN_TRIBE,"Barbarian Tribe"
+RICH_LABEL_LOCATION_BARBARIAN_TRIBE,Barbarian Tribe
 RICH_LABEL_LOCATION_CITY_ONLY,"<a href=""event:viewProfileByType:city:{0}"">{1}</a>"
 RICH_LABEL_LOCATION_CITY,"<a href=""event:viewProfileByType:city:{0}"">{1}</a> (<a href =""event:viewProfile:{2}"">{3}</a>)"
 RICH_LABEL_LOCATION_STRONGHOLD,"Stronghold <a href=""event:viewProfileByType:stronghold:{0}"">{1}</a> (<a href =""event:viewTribeProfile:{2}"">{3}</a>)"
@@ -230,3 +230,7 @@ RICH_LABEL_TROOP,"<a href=""event:viewProfileByType:city:{0}"">{1}</a> ({2})"
 ,
 TRADE_DIALOG_CHOOSE_RESOURCE_AMOUNT,Choose amount of resources
 TRADE_DIALOG_SET_MAX,Set to max
+,
+BARBARIAN_TRIBE_CAMP_COUNT,Camps Remain
+BARBARIAN_TRIBE_UPKEEP,Upkeep
+BARBARIAN_ASSIGNMENT_ERROR,Tribe Assignment does not support attacking or defending Barbarian Tribe.

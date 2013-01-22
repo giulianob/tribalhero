@@ -87,7 +87,7 @@ namespace Game.Logic.Actions
                                                  Formula formula,
                                                  BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
                                                  IWorld world,
-                                                 SimpleStubGenerator simpleStubGenerator)
+                                                 ISimpleStubGeneratorFactory simpleStubGeneratorFactory)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.battleProcedure = battleProcedure;
@@ -97,7 +97,8 @@ namespace Game.Logic.Actions
             this.formula = formula;
             this.barbarianTribeBattleProcedure = barbarianTribeBattleProcedure;
             this.world = world;
-            this.simpleStubGenerator = simpleStubGenerator;
+
+            simpleStubGenerator = simpleStubGeneratorFactory.CreateSimpleStubGenerator(formula.BarbarianTribeUnitRatios(), formula.BarbarianTribeUnitTypes());
 
             barbarianTribeId = uint.Parse(properties["barbarian_tribe_id"]);
 

@@ -59,7 +59,7 @@ package src.Util {
 			for (var i: int = 0; i < obj.numChildren; i++)
 			{
 				item = obj.getChildAt(i);
-				var rect: Rectangle = item.getRect(item);
+				var rect: Rectangle = item.getRect(obj);
 				item.x -= rect.x;
 				item.y -= rect.y;
 			}

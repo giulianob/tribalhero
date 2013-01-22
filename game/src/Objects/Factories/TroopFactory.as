@@ -6,6 +6,7 @@
 	import src.Objects.States.GameObjectState;
 	import src.Objects.Troop.TroopObject;
 	import src.Objects.Troop.TroopStub;
+    import src.Util.Util;
 
 	/**
 	 * ...
@@ -46,9 +47,7 @@
 
 			if (centered)
 			{
-				// Troop objs only have 1 child
-				sprite.getChildAt(0).x = 0;
-				sprite.getChildAt(0).y = 0;
+				Util.centerSprite(sprite);
 			}
 
 			return sprite;

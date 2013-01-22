@@ -204,6 +204,13 @@ namespace Game.Logic.Formulas
                                 sendRate[structure.Lvl]);
         }
 
+        public virtual Resource GetContributeCapacity(IStructure structure)
+        {
+            //Maximum amount of resources that can be contribute from the specified structure    
+            return GetSendCapacity(structure) * 2;
+        }
+
+
         public virtual ushort CalculateCityValue(ICity city)
         {
             return

@@ -43,7 +43,7 @@ namespace Testing.Actions
             var contributedResources = new Resource();
 
             locator.Setup(m => m.TryGetObjects(1, 100, out cityObj, out structureObj)).Returns(true);
-            formula.Setup(m => m.GetSendCapacity(structureObj)).Returns(capacity);
+            formula.Setup(m => m.GetContributeCapacity(structureObj)).Returns(capacity);
             city.SetupGet(p => p.Resource).Returns(cityResources);
             city.SetupGet(p => p.Owner).Returns(player.Object);
             structure.SetupGet(p => p.City).Returns(city.Object);
@@ -100,7 +100,7 @@ namespace Testing.Actions
             };
 
             locator.Setup(m => m.TryGetObjects(1, 100, out cityObj, out structureObj)).Returns(true);
-            formula.Setup(m => m.GetSendCapacity(structureObj)).Returns(capacity);
+            formula.Setup(m => m.GetContributeCapacity(structureObj)).Returns(capacity);
             city.SetupGet(p => p.Resource).Returns(cityResources);
             city.SetupGet(p => p.Owner).Returns(player.Object);
             structure.SetupGet(p => p.City).Returns(city.Object);
@@ -144,7 +144,7 @@ namespace Testing.Actions
             };
 
             locator.Setup(m => m.TryGetObjects(1, 100, out cityObj, out structureObj)).Returns(true);
-            formula.Setup(m => m.GetSendCapacity(structureObj)).Returns(capacity);
+            formula.Setup(m => m.GetContributeCapacity(structureObj)).Returns(capacity);
             city.SetupGet(p => p.Resource).Returns(cityResources);
             city.SetupGet(p => p.Owner).Returns(player.Object);
             structure.SetupGet(p => p.City).Returns(city.Object);
@@ -189,7 +189,7 @@ namespace Testing.Actions
             var contributedResources = new Resource();
 
             locator.Setup(m => m.TryGetObjects(1, 100, out cityObj, out structureObj)).Returns(true);
-            formula.Setup(m => m.GetSendCapacity(structureObj)).Returns(capacity);
+            formula.Setup(m => m.GetContributeCapacity(structureObj)).Returns(capacity);
             formula.Setup(m => m.TradeTime(structureObj, resource)).Returns(300);
             formula.Setup(m => m.GetActionCancelResource(It.IsAny<DateTime>(), It.IsAny<Resource>())).Returns(resource);
             city.SetupGet(p => p.Resource).Returns(cityResources);
@@ -251,7 +251,7 @@ namespace Testing.Actions
             var contributedResources = new Resource();
 
             locator.Setup(m => m.TryGetObjects(1, 100, out cityObj, out structureObj)).Returns(true);
-            formula.Setup(m => m.GetSendCapacity(structureObj)).Returns(capacity);
+            formula.Setup(m => m.GetContributeCapacity(structureObj)).Returns(capacity);
             formula.Setup(m => m.TradeTime(structureObj, resource)).Returns(300);
             formula.Setup(m => m.GetActionCancelResource(It.IsAny<DateTime>(), It.IsAny<Resource>())).Returns(resource);
             city.SetupGet(p => p.Resource).Returns(cityResources);

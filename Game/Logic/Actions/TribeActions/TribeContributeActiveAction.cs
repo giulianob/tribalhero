@@ -95,7 +95,7 @@ namespace Game.Logic.Actions
             }
 
             // Make sure we aren't exceeding our trade capacity
-            if (!formula.GetSendCapacity(structure).HasEnough(resource))
+            if (!formula.GetContributeCapacity(structure).HasEnough(resource))
             {
                 return Error.ResourceExceedTradeLimit;
             }

@@ -9,6 +9,7 @@ using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Troop;
+using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
@@ -23,8 +24,6 @@ namespace Game.Logic.Actions
     {
         private readonly BattleFormulas battleFormula;
 
-        private readonly Resource bonus;
-
         private readonly uint cityId;
 
         private readonly IDbManager dbManager;
@@ -33,10 +32,10 @@ namespace Game.Logic.Actions
 
         private readonly BarbarianTribeBattleProcedure barbarianTribeBattleProcedure;
 
+        private readonly Formula formula;
+
         private readonly AttackMode mode;
-
-        private readonly StructureFactory structureFactory;
-
+        
         private readonly uint targetObjectId;
 
         private readonly uint troopObjectId;
@@ -46,14 +45,14 @@ namespace Game.Logic.Actions
         private int originalUnitCount;
 
         public BarbarianTribeEngageAttackPassiveAction(uint cityId,
-                                             uint troopObjectId,
-                                             uint targetObjectId,
-                                             AttackMode mode,
-                                             BattleFormulas battleFormula,
-                                             IGameObjectLocator gameObjectLocator,
-                                             BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
-                                             StructureFactory structureFactory,
-                                             IDbManager dbManager)
+                                                       uint troopObjectId,
+                                                       uint targetObjectId,
+                                                       AttackMode mode,
+                                                       BattleFormulas battleFormula,
+                                                       IGameObjectLocator gameObjectLocator,
+                                                       BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
+                                                       Formula formula,
+                                                       IDbManager dbManager)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
@@ -61,27 +60,25 @@ namespace Game.Logic.Actions
             this.mode = mode;
             this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
-            this.barbarianTribeBattleProcedure = barbarianTribeBattleProcedure;            
-            this.structureFactory = structureFactory;
+            this.barbarianTribeBattleProcedure = barbarianTribeBattleProcedure;
+            this.formula = formula;
             this.dbManager = dbManager;
-
-            bonus = new Resource();
         }
 
         public BarbarianTribeEngageAttackPassiveAction(uint id,
-                                             bool isVisible,
-                                             IDictionary<string, string> properties,
-                                             BattleFormulas battleFormula,
-                                             IGameObjectLocator gameObjectLocator,
-                                             BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
-                                             StructureFactory structureFactory,
-                                             IDbManager dbManager)
+                                                       bool isVisible,
+                                                       IDictionary<string, string> properties,
+                                                       BattleFormulas battleFormula,
+                                                       IGameObjectLocator gameObjectLocator,
+                                                       BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
+                                                       Formula formula,
+                                                       IDbManager dbManager)
                 : base(id, isVisible)
         {
             this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
             this.barbarianTribeBattleProcedure = barbarianTribeBattleProcedure;
-            this.structureFactory = structureFactory;
+            this.formula = formula;
             this.dbManager = dbManager;
 
             cityId = uint.Parse(properties["troop_city_id"]);
@@ -93,11 +90,6 @@ namespace Game.Logic.Actions
 
             targetObjectId = uint.Parse(properties["target_object_id"]);
 
-            bonus = new Resource(int.Parse(properties["crop"]),
-                                 int.Parse(properties["gold"]),
-                                 int.Parse(properties["iron"]),
-                                 int.Parse(properties["wood"]),
-                                 int.Parse(properties["labor"]));
             IBarbarianTribe targetBarbarianTribe;
             gameObjectLocator.TryGetObjects(targetObjectId, out targetBarbarianTribe);
             RegisterBattleListeners(targetBarbarianTribe);
@@ -107,10 +99,7 @@ namespace Game.Logic.Actions
             ICity city;
             gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject);
 
-            StaminaMonitor = new StaminaMonitor(targetBarbarianTribe.Battle,
-                                                combatGroup,
-                                                short.Parse(properties["stamina"]),
-                                                battleFormula);
+            StaminaMonitor = new StaminaMonitor(targetBarbarianTribe.Battle, combatGroup, short.Parse(properties["stamina"]), battleFormula);
             StaminaMonitor.PropertyChanged += (sender, args) => dbManager.Save(this);
 
             AttackModeMonitor = new AttackModeMonitor(targetBarbarianTribe.Battle, combatGroup, troopObject.Stub);
@@ -139,11 +128,6 @@ namespace Game.Logic.Actions
                                 new XmlKvPair("troop_city_id", cityId),
                                 new XmlKvPair("troop_object_id", troopObjectId), 
                                 new XmlKvPair("mode", (byte)mode),
-                                new XmlKvPair("crop", bonus.Crop),
-                                new XmlKvPair("gold", bonus.Gold), 
-                                new XmlKvPair("iron", bonus.Iron),
-                                new XmlKvPair("wood", bonus.Wood), 
-                                new XmlKvPair("labor", bonus.Labor),
                                 new XmlKvPair("group_id", groupId), 
                                 new XmlKvPair("stamina", StaminaMonitor.Stamina),
                                 new XmlKvPair("original_count", originalUnitCount)
@@ -153,7 +137,6 @@ namespace Game.Logic.Actions
 
         private void RegisterBattleListeners(IBarbarianTribe barbarianTribe)
         {
-            barbarianTribe.Battle.ActionAttacked += BattleActionAttacked;
             barbarianTribe.Battle.WithdrawAttacker += BattleWithdrawAttacker;
             barbarianTribe.Battle.EnterRound += BattleEnterRound;
             barbarianTribe.Battle.GroupKilled += BattleGroupKilled;
@@ -161,7 +144,6 @@ namespace Game.Logic.Actions
 
         private void DeregisterBattleListeners(IBarbarianTribe barbarianTribe)
         {
-            barbarianTribe.Battle.ActionAttacked -= BattleActionAttacked;
             barbarianTribe.Battle.GroupKilled -= BattleGroupKilled;
             barbarianTribe.Battle.WithdrawAttacker -= BattleWithdrawAttacker;
             barbarianTribe.Battle.EnterRound -= BattleEnterRound;
@@ -238,7 +220,7 @@ namespace Game.Logic.Actions
             DeregisterBattleListeners(barbarianTribe);
 
             troopObject.BeginUpdate();
-            SetLootedResources(barbarianTribe.Battle, troopObject, group);
+            SetLootedResources(barbarianTribe, barbarianTribe.Battle, troopObject, group);
             troopObject.Stub.BeginUpdate();
             troopObject.State = GameObjectState.NormalState();
             troopObject.Stub.State = TroopState.Idle;
@@ -277,7 +259,7 @@ namespace Game.Logic.Actions
             StateChange(ActionState.Completed);
         }
 
-        private void SetLootedResources(IBattleManager battle, ITroopObject troopObject, ICombatGroup combatGroup)
+        private void SetLootedResources(IBarbarianTribe barbarianTribe, IBattleManager battle, ITroopObject troopObject, ICombatGroup combatGroup)
         {
             if (!battle.BattleStarted)
             {
@@ -288,9 +270,9 @@ namespace Game.Logic.Actions
             Resource resource = battleFormula.GetBonusResources(troopObject,
                                                                 originalUnitCount,
                                                                 troopObject.Stub.TotalCount);
-
-            // Destroyed Structure bonus
-            resource.Add(bonus);
+            
+            // Add barbarian tribe bonus
+            resource.Add(formula.BarbarianTribeBonus(barbarianTribe.Lvl, battle, combatGroup));
 
             // Copy looted resources since we'll be modifying the troop's loot variable
             var looted = new Resource(troopObject.Stats.Loot);
@@ -309,55 +291,7 @@ namespace Game.Logic.Actions
             // Update battle report view with actual received bonus            
             battle.BattleReport.SetLootedResources(combatGroup.Owner, combatGroup.Id, battle.BattleId, looted, actual);
         }
-
-        private void BattleActionAttacked(IBattleManager battle,
-                                          BattleManager.BattleSide attackingSide,
-                                          ICombatGroup attackerGroup,
-                                          ICombatObject attacker,
-                                          ICombatGroup targetGroup,
-                                          ICombatObject target,
-                                          decimal damage)
-        {
-            ICity city;
-            ITroopObject troopObject;
-            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
-            {
-                throw new ArgumentException();
-            }
-
-            if (attackerGroup.Id == groupId && target.ClassType == BattleClass.Structure && target is ICombatStructure &&
-                target.IsDead)
-            {
-                // if our troop knocked down a building, we get the bonus.
-                bonus.Add(structureFactory.GetCost(target.Type, target.Lvl) / 2);
-
-                IStructure structure = ((ICombatStructure)target).Structure;
-                object value;
-                if (structure.Properties.TryGet("Crop", out value))
-                {
-                    bonus.Crop += (int)value;
-                }
-                if (structure.Properties.TryGet("Gold", out value))
-                {
-                    bonus.Gold += (int)value;
-                }
-                if (structure.Properties.TryGet("Iron", out value))
-                {
-                    bonus.Iron += (int)value;
-                }
-                if (structure.Properties.TryGet("Wood", out value))
-                {
-                    bonus.Wood += (int)value;
-                }
-                if (structure.Properties.TryGet("Labor", out value))
-                {
-                    bonus.Labor += (int)value;
-                }
-
-                dbManager.Save(this);
-            }
-        }
-
+        
         private void BattleEnterRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round)
         {
             ICity city;

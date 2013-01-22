@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using Game.Battle;
+using Game.Battle.CombatGroups;
 using Game.Data;
 
 namespace Game.Logic.Formulas
@@ -55,11 +58,6 @@ namespace Game.Logic.Formulas
             upkeep = btUnitUpkeep[level-1];
         }
 
-        public Resource BarbarianTribeBonus(byte level)
-        {
-            return new Resource();
-        }
-
         public double[,] BarbarianTribeUnitRatios()
         {
             return new[,] {
@@ -79,6 +77,30 @@ namespace Game.Logic.Formulas
         public ushort[] BarbarianTribeUnitTypes()
         {
             return new ushort[] {101, 102, 105, 103, 104, 106};
+        }
+
+        public Resource BarbarianTribeBonus(byte level, IBattleManager battle, ICombatGroup combatGroup)
+        {
+            var bonusAmt = new[] {15, 34, 75, 141, 232, 349, 493, 665, 865, 1094};
+
+            // Get nothing if they didnt defeat the camp
+            if (battle.Defenders.Upkeep > 0)
+            {
+                return new Resource();
+            }            
+            
+            decimal total =
+                    battle.Attackers.AllCombatObjects()
+                          .Sum(combatObj => combatObj.Upkeep * combatObj.RoundsParticipated * combatObj.RoundsParticipated);
+
+            decimal myTotal = combatGroup.Sum(combatObj => combatObj.Upkeep * combatObj.RoundsParticipated * combatObj.RoundsParticipated);
+
+            if (total == 0 || myTotal == 0)
+            {
+                return new Resource();
+            }
+
+            return new Resource(wood: bonusAmt[level - 1], crop: bonusAmt[level - 1]) * (double)(myTotal / total);
         }
     }
 }

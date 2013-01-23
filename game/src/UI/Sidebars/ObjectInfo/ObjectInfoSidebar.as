@@ -130,7 +130,10 @@ package src.UI.Sidebars.ObjectInfo {
 						lbl = addStatRow(propPrototype[i].name, propPrototype[i].toString(structureObject.properties[i]), propPrototype[i].getIcon());
 						if (propPrototype[i].tooltip != "") new SimpleTooltip(lbl, propPrototype[i].tooltip);
 					}
-					buttons.push(new SendAttackButton(gameObject, new Location(Location.CITY, gameObject.groupId, gameObject.objectId))); 
+                    
+                    if (!ObjectFactory.isType("Unattackable", gameObject.type)) {
+                        buttons.push(new SendAttackButton(gameObject, new Location(Location.CITY, gameObject.groupId, gameObject.objectId))); 
+                    }
 				}
 			}
 			

@@ -23,7 +23,6 @@ package src.UI.Tutorial
 		
 		protected function showMessageAtObject(target: DisplayObject, messageId: String): void {
 			if (messageId == this.messageId) {
-				this.messageTooltip.getUI().getFrame().toFront();
 				return;
 			}
 			

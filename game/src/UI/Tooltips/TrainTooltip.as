@@ -1,10 +1,4 @@
-﻿/**
- * ...
- * @author Default
- * @version 0.1
- */
-
-package src.UI.Tooltips {
+﻿package src.UI.Tooltips {
 
 	import src.Global;
 	import src.Map.City;

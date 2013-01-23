@@ -49,8 +49,7 @@
 		private function setName(username: Username, custom: * = null): void
 		{						
 			lblName.setText(username.name);	
-			if (ui.getFrame())
-				ui.getFrame().pack();
+			resize();
 		}
 	}
 }

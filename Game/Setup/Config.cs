@@ -193,9 +193,7 @@ namespace Game.Setup
         
         public static double stronghold_npc_randomness = 0.4;
 
-        public static int stronghold_npc_base_upkeep = 800;
-
-        public static int stronghold_npc_per_lvl_upkeep = 200;
+        public static int stronghold_fixed_upkeep = 0;
 
         public static int stronghold_gate_limit;
 

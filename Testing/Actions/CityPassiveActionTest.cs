@@ -4,9 +4,11 @@ using FluentAssertions;
 using Game.Data;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util.Locking;
 using Moq;
+using NSubstitute;
 using Xunit.Extensions;
 
 namespace Testing.Actions
@@ -43,50 +45,44 @@ namespace Testing.Actions
             Config.troop_starve = false;
 
             // Player
-            Mock<IPlayer> player = new Mock<IPlayer>();
+            var player = Substitute.For<IPlayer>();
 
             // TechManager
-            Mock<ITechnologyManager> technologies = new Mock<ITechnologyManager>();
-            technologies.Setup(p => p.GetEffects(It.IsAny<EffectCode>(), It.IsAny<EffectInheritance>()))
-                        .Returns(() => new List<Effect>());
+            var technologies = Substitute.For<ITechnologyManager>();
+            technologies.GetEffects(Arg.Any<EffectCode>()).ReturnsForAnyArgs(x => new List<Effect>());
 
             // City
-            Mock<ICity> city = new Mock<ICity>();
-            city.SetupProperty(p => p.AlignmentPoint, initialValue);
+            var city = Substitute.For<ICity>();
+            city.AlignmentPoint = initialValue;
             // Not necessarily related to this test
-            city.SetupGet(p => p.Id).Returns(1);
-            city.SetupGet(p => p.Owner).Returns(player.Object);
-            city.SetupGet(p => p.Resource).Returns(new LazyResource(1, 1, 1, 1, 1));
-            city.Setup(p => p.GetEnumerator()).Returns(() => new IStructure[] {}.AsEnumerable().GetEnumerator());
-            city.SetupGet(p => p.Technologies).Returns(technologies.Object);
+            city.Id.Returns((uint)1);
+            city.Owner.Returns(player);
+            city.Resource.Returns(new LazyResource(1, 1, 1, 1, 1));
+            city.GetEnumerator().Returns(x => new List<IStructure>().GetEnumerator());
+            city.Technologies.Returns(technologies);
 
-            // ReSharper disable RedundantAssignment
-            ICity cityObj = city.Object;
-            // ReSharper restore RedundantAssignment
-
+            ICity cityObj;
             // Locker
-            Mock<ILocker> locker = new Mock<ILocker>();
-            locker.Setup(p => p.Lock(1, out cityObj)).Returns(() => new Mock<IMultiObjectLock>().Object);
-
-            // Formula
-            Mock<Formula> formula = new Mock<Formula>();
-
-            // Object Type Factory
-            Mock<ObjectTypeFactory> objectTypeFactory = new Mock<ObjectTypeFactory>();
+            var locker = Substitute.For<ILocker>();
+            locker.Lock(1, out cityObj).Returns(x =>
+                {
+                    x[1] = city;
+                    return Substitute.For<IMultiObjectLock>();
+                });
 
             CityPassiveAction action = new CityPassiveAction(1,
-                                                             objectTypeFactory.Object,
-                                                             locker.Object,
-                                                             formula.Object,
-                                                             new Mock<IActionFactory>().Object);
-            action.WorkerObject = cityObj;
+                                                             Substitute.For<ObjectTypeFactory>(),
+                                                             locker,
+                                                             Substitute.For<Formula>(),
+                                                             Substitute.For<IActionFactory>(),
+                                                             Substitute.For<Procedure>()) {WorkerObject = city};
 
             for (int i = 0; i < cycles; i++)
             {
                 action.Callback(null);
             }
 
-            city.Object.AlignmentPoint.Should().Be(expectedValue);
+            city.AlignmentPoint.Should().Be(expectedValue);
         }
     }
 }

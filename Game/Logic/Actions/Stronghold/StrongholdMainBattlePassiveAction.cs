@@ -398,7 +398,7 @@ namespace Game.Logic.Actions
                 stronghold.BeginUpdate();
                 stronghold.GateOpenTo = null;
                 stronghold.MainBattle = null;
-                stronghold.Gate = formula.GetGateHealHp(stronghold.StrongholdState, stronghold.Lvl);
+                stronghold.Gate = Math.Max(stronghold.Gate, formula.GetGateHealHp(stronghold.StrongholdState, stronghold.Lvl));
                 stronghold.State = GameObjectState.NormalState();
                 stronghold.EndUpdate();
 

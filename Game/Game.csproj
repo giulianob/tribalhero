@@ -233,6 +233,7 @@
     <Compile Include="Data\IXYPosition.cs" />
     <Compile Include="Data\LazyValue.cs" />
     <Compile Include="Data\PlayerRights.cs" />
+    <Compile Include="Data\Stats\IBaseUnitStats.cs" />
     <Compile Include="Data\BarbarianTribe\IBarbarianTribe.cs" />
     <Compile Include="Data\BarbarianTribe\BarbarianTribe.cs" />
     <Compile Include="Data\Stats\TroopStats.cs" />
@@ -270,6 +271,7 @@
     <Compile Include="Data\Troop\ITroopObject.cs" />
     <Compile Include="Data\Troop\ITroopStub.cs" />
     <Compile Include="Data\Troop\ITroopStubFactory.cs" />
+    <Compile Include="Data\Troop\IUnitTemplate.cs" />
     <Compile Include="Data\Troop\SimpleStub.cs" />
     <Compile Include="Data\Troop\Unit.cs" />
     <Compile Include="Data\Troop\Formation.cs" />

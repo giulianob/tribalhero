@@ -7,10 +7,12 @@ namespace Game.Logic.Formulas
     {
         public void StrongholdUpkeep(byte level, out int upkeep, out byte unitLevel)
         {
-            int[] sUnitLevel = new[] {1, 1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10};
+            int[] unitLevels = new[] {1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10};
+            int[] upkeeps = {1000, 1400, 1796, 2189, 2579, 2965, 3347, 3726, 4102, 4474, 
+                                4842, 5207, 5568, 5926, 6281, 6632, 6979, 7323, 7663, 8000};
 
-            upkeep = Config.stronghold_npc_base_upkeep + level * Config.stronghold_npc_per_lvl_upkeep;
-            unitLevel = (byte)sUnitLevel[level];
+            upkeep = Config.stronghold_fixed_upkeep == 0 ? upkeeps[level-1] : Config.stronghold_fixed_upkeep;
+            unitLevel = (byte)unitLevels[level-1];
         }
 
         public double[,] StrongholdUnitRatio()

@@ -21,7 +21,7 @@ namespace Game.Battle.CombatObjects
 
         private readonly byte lvl;
 
-        private readonly BaseUnitStats baseStats;
+        private readonly IBaseUnitStats baseStats;
 
         private readonly BattleStats battleStats;
 
@@ -36,7 +36,7 @@ namespace Game.Battle.CombatObjects
                                     ushort type,
                                     byte lvl,
                                     ushort count,
-                                    BaseUnitStats unitBaseStats,
+                                    IBaseUnitStats unitBaseStats,
                                     IBarbarianTribe barbarianTribe,                                    
                                     BattleFormulas battleFormulas,
                                     Formula formula)

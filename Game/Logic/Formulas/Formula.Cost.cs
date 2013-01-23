@@ -204,6 +204,13 @@ namespace Game.Logic.Formulas
                                 sendRate[structure.Lvl]);
         }
 
+        public virtual Resource GetContributeCapacity(IStructure structure)
+        {
+            //Maximum amount of resources that can be contribute from the specified structure    
+            return GetSendCapacity(structure) * 2;
+        }
+
+
         public virtual ushort CalculateCityValue(ICity city)
         {
             return
@@ -212,19 +219,20 @@ namespace Game.Logic.Formulas
                         .Sum(x => x.Lvl);
         }
 
-        public virtual int GetWeaponExportLaborProduce(int weaponExport, int labor)
+        public virtual int GetWeaponExportLaborProduce(int weaponExport, int labor, int currentGold)
         {
+            var isOverLimit = weaponExport * 2000 < currentGold;
             labor = Math.Min(labor, weaponExport * 60);
             switch(weaponExport)
             {
                 case 1:
                 case 2:
-                    return labor / 3;
+                    return labor / (isOverLimit? 15: 3);
                 case 3:
                 case 4:
-                    return labor * 2 / 5;
+                    return labor * 2 / (isOverLimit ? 25 : 5);
                 case 5:
-                    return labor / 2;
+                    return labor / (isOverLimit ? 10 : 2);
                 default:
                     return 0;
             }

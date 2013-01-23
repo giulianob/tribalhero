@@ -50,6 +50,7 @@ STR_MANAGE,Manage
 STR_ATTACKING,Attacking
 STR_DEFENDING,Defending
 STR_BARBARIAN_TRIBE,Barbarian Tribe
+STR_SAVE,Save
 ,
 CITY_OVERVIEW_TITLE,City Overview
 CITY_OVERVIEW_INFLUENCE_POINTS_LABEL,{0} influence points.
@@ -234,3 +235,8 @@ TRADE_DIALOG_SET_MAX,Set to max
 BARBARIAN_TRIBE_CAMP_COUNT,Camps Remain
 BARBARIAN_TRIBE_UPKEEP,Upkeep
 BARBARIAN_ASSIGNMENT_ERROR,Tribe Assignment does not support attacking or defending Barbarian Tribe.
+,
+UNIT_MANAGE_DIALOG_TITLE,Assign Units
+UNIT_MANAGE_DIALOG_TIP,Units in hiding will consume an extra 25% upkeep.
+UNIT_MANAGE_HIDE_NEW_UNITS,Hide newly trained units
+UNIT_MANAGE_HIDE_NEW_UNITS_TOOLTIP,"If selected, all newly trained units will go directly into hiding and will not defend your city if it is attacked. Units in hiding consume an extra 25% upkeep."

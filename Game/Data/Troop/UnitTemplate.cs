@@ -13,7 +13,7 @@ using Persistance;
 
 namespace Game.Data.Troop
 {
-    public class UnitTemplate : IEnumerable<KeyValuePair<ushort, BaseUnitStats>>, IPersistableList
+    public class UnitTemplate : IUnitTemplate
     {
         #region Event
 
@@ -31,7 +31,7 @@ namespace Game.Data.Troop
 
         private readonly ICity city;
 
-        private readonly Dictionary<ushort, BaseUnitStats> dict = new Dictionary<ushort, BaseUnitStats>();
+        private readonly Dictionary<ushort, IBaseUnitStats> dict = new Dictionary<ushort, IBaseUnitStats>();
 
         private bool isUpdating;
 
@@ -48,11 +48,11 @@ namespace Game.Data.Troop
             }
         }
 
-        public BaseUnitStats this[ushort type]
+        public IBaseUnitStats this[ushort type]
         {
             get
             {
-                BaseUnitStats ret;
+                IBaseUnitStats ret;
                 if (dict.TryGetValue(type, out ret))
                 {
                     return ret;
@@ -80,7 +80,7 @@ namespace Game.Data.Troop
 
         #region IEnumerable<KeyValuePair<ushort,BaseUnitStats>> Members
 
-        public IEnumerator<KeyValuePair<ushort, BaseUnitStats>> GetEnumerator()
+        public IEnumerator<KeyValuePair<ushort, IBaseUnitStats>> GetEnumerator()
         {
             return dict.GetEnumerator();
         }
@@ -138,7 +138,7 @@ namespace Game.Data.Troop
 
         public IEnumerable<DbColumn[]> DbListValues()
         {
-            Dictionary<ushort, BaseUnitStats>.Enumerator itr = dict.GetEnumerator();
+            Dictionary<ushort, IBaseUnitStats>.Enumerator itr = dict.GetEnumerator();
             while (itr.MoveNext())
             {
                 yield return
@@ -168,7 +168,7 @@ namespace Game.Data.Troop
             UpdateClient();
         }
 
-        public void DbLoaderAdd(ushort type, BaseUnitStats stats)
+        public void DbLoaderAdd(ushort type, IBaseUnitStats stats)
         {
             dict[type] = stats;
         }

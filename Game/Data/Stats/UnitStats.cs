@@ -1,6 +1,6 @@
 ﻿namespace Game.Data.Stats
 {
-    public class BaseUnitStats
+    public class BaseUnitStats : IBaseUnitStats
     {
         public BaseUnitStats(string name,
                              string spriteClass,

@@ -112,7 +112,7 @@ namespace DatabaseGenerator
                 {
                     ProcessUnit(type);
 
-                    BaseUnitStats stats = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, 1);
+                    IBaseUnitStats stats = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, 1);
                     writer.WriteLine("'{2}_UNIT' => array('name' => '{1}', 'sprite' => '{0}'),",
                                      stats.SpriteClass,
                                      lang[stats.Name + "_UNIT"],
@@ -314,7 +314,7 @@ namespace DatabaseGenerator
             string requirementTemplate = @"'#REQUIREMENT#',";
 
             // Get basic information
-            BaseUnitStats stats = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, 1);
+            IBaseUnitStats stats = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, 1);
 
             generalTemplate = generalTemplate.Replace("#DATE#", DateTime.Now.ToString());
             generalTemplate = generalTemplate.Replace("#UNIT#", stats.Name + "_UNIT");
@@ -334,7 +334,7 @@ namespace DatabaseGenerator
             // Level info
             byte level = 1;
             var levelsWriter = new StringWriter(new StringBuilder());
-            BaseUnitStats currentStats = stats;
+            IBaseUnitStats currentStats = stats;
             do
             {
                 string currentLevel = levelTemplate.Replace("#TIME#", currentStats.UpgradeTime.ToString());

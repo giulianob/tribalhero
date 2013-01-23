@@ -9,6 +9,7 @@ using Game.Data.Stats;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
 using Game.Logic.Actions;
+using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
@@ -24,15 +25,19 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IGameObjectLocator gameObjectLocator;
 
+        private readonly Formula formula;
+
         private readonly StructureFactory structureFactory;
 
         public TroopCommandsModule(IActionFactory actionFactory,
                                    StructureFactory structureFactory,
-                                   IGameObjectLocator gameObjectLocator)
+                                   IGameObjectLocator gameObjectLocator,
+                                   Formula formula)
         {
             this.actionFactory = actionFactory;
             this.structureFactory = structureFactory;
             this.gameObjectLocator = gameObjectLocator;
+            this.formula = formula;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -47,6 +52,78 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.TroopRetreat, Retreat);
             processor.RegisterCommand(Command.TroopLocalSet, LocalTroopSet);
             processor.RegisterCommand(Command.TroopAttackBarbarianTribe, AttackBarbarianTribe);
+            processor.RegisterCommand(Command.TroopModeSwitch, ModeSwitch);
+        }
+
+        private void ModeSwitch(Session session, Packet packet)
+        {
+            uint cityId;
+            byte stubId;
+            AttackMode mode;
+            try
+            {
+                cityId = packet.GetUInt32();
+                stubId = packet.GetByte();
+                mode = (AttackMode)packet.GetByte();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            ICity city;
+            IStation station;
+
+            //we need to find out the stationed city first then reacquire local + stationed city locks            
+            using (Concurrency.Current.Lock(cityId, out city))
+            {
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                ITroopStub stub;
+
+                if (!city.Troops.TryGetStub(stubId, out stub) || stub.Station == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                station = stub.Station;
+            }
+
+            using (Concurrency.Current.Lock(city, station))
+            {
+                ITroopStub stub;
+
+                if (!city.Troops.TryGetStub(stubId, out stub))
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                if (stub.InitialCount == 0)
+                {
+                    ReplyError(session, packet, Error.NewFeature);
+                    return;
+                }
+
+                if (stub.State != TroopState.Stationed)
+                {
+                    ReplyError(session, packet, Error.TroopNotStationed);
+                    return;
+                }
+
+                stub.BeginUpdate();
+                stub.RetreatCount = (ushort)formula.GetAttackModeTolerance(stub.InitialCount, mode);
+                stub.AttackMode = mode;
+                stub.EndUpdate();
+
+                ReplySuccess(session, packet);
+            }
         }
 
         private void GetTroopInfo(Session session, Packet packet)
@@ -102,10 +179,10 @@ namespace Game.Comm.ProcessorCommands
                     }
 
                     reply.AddUInt16((ushort)template.Size);
-                    IEnumerator<KeyValuePair<ushort, BaseUnitStats>> templateIter = template.GetEnumerator();
+                    IEnumerator<KeyValuePair<ushort, IBaseUnitStats>> templateIter = template.GetEnumerator();
                     while (templateIter.MoveNext())
                     {
-                        KeyValuePair<ushort, BaseUnitStats> kvp = templateIter.Current;
+                        KeyValuePair<ushort, IBaseUnitStats> kvp = templateIter.Current;
                         reply.AddUInt16(kvp.Key);
                         reply.AddByte(kvp.Value.Lvl);
                     }

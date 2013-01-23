@@ -215,6 +215,8 @@ namespace Game.Comm
         TroopDefendStronghold = 617,
 
         TroopAttackBarbarianTribe = 618,
+		
+        TroopModeSwitch = 619,
 
         TroopLocalSet = 621,
 

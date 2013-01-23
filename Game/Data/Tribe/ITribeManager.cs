@@ -14,6 +14,8 @@ namespace Game.Map
 
         void DbLoaderAdd(ITribe tribe);
 
+        void DbLoaderSetIdUsed(uint id);
+
         Error Remove(ITribe tribe);
 
         bool TribeNameTaken(string name);

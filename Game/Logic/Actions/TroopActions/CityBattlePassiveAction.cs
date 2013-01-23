@@ -155,12 +155,9 @@ namespace Game.Logic.Actions
                     Math.Min(defUpkeep == 0 ? Config.ap_max_per_battle : (atkUpkeep / defUpkeep - 1),
                              Config.ap_max_per_battle) * numberOfRounds / 20m;
 
-            foreach (
-                    ITroopStub stub in
-                            attackers.Where(p => p is CityOffensiveCombatGroup)
-                                     .Select(
-                                             offensiveCombatGroup =>
-                                             ((CityOffensiveCombatGroup)offensiveCombatGroup).TroopObject.Stub))
+            foreach (ITroopStub stub in
+                    attackers.Where(p => p is CityOffensiveCombatGroup)
+                             .Select(offensiveCombatGroup => ((CityOffensiveCombatGroup)offensiveCombatGroup).TroopObject.Stub))
             {
                 stub.City.BeginUpdate();
                 stub.City.AlignmentPoint -= stub.Upkeep / atkUpkeep * points;

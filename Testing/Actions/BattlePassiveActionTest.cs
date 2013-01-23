@@ -154,7 +154,7 @@ namespace Testing.Actions
             var attackerGroup2 = CreateCityOffensiveCombatGroup(attackerTroop2);
 
             var attackers = new Mock<ICombatList>();
-            attackers.SetupGet(p => p.Upkeep).Returns(150);
+            attackers.SetupGet(p => p.Upkeep).Returns(150);            
             attackers.Setup(p => p.GetEnumerator())
                      .Returns(() => new List<ICombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
 

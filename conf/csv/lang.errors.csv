@@ -4,6 +4,7 @@ ERROR_5,The game client you are using is outdated. Either refresh the page or do
 ERROR_6,Invalid username or password supplied.
 ERROR_7,You have been banned from this server.
 ERROR_8,Server is currently under maintenance. Check forums for more information.
+ERROR_9,This feature is newly developed and does not work with existing data.  Please look at release note on how this feature can be used.
 ERROR_20,"Looks like you're spamming the chat. Please wait a couple minutes before talking again. If you keep trying to chat, you will have to wait even longer."
 ERROR_21,"Message too long, shorten it and try again."
 ERROR_22,You have been muted. You may not speak in the global chat until a moderator unmutes your account.
@@ -54,6 +55,7 @@ ERROR_422,This road is required for other structures to exist and cannot be remo
 ERROR_600,You can't attack yourself!
 ERROR_601,Not allowed while city is in battle
 ERROR_602,Why would you want to defend yourself?
+ERROR_604,It doesn't look like you have enough units to do that. You can try again as your units may have changed in the last few minutes since you started this action.
 ERROR_605,You have reached the maximum number of troops allowed.
 ERROR_606,No units have been selected
 ERROR_607,Not allowed while troop is in battle
@@ -61,6 +63,7 @@ ERROR_610,This battle cannot be watched.
 ERROR_611,You aren't allowed to watch this battle unless one of your troops have participated for at least 5 rounds.
 ERROR_612,You aren't allowed to watch this battle unless one of your troops have participated for at least 5 rounds. Battle will be viewable in approximately {0} round(s)
 ERROR_613,The gate is still under attack and has {0} hp remaining.
+ERROR_614,The gate is still under attack and has {0} hp remaining. There appear to be around {1} units attacking.
 ERROR_701,Tribe is already full
 ERROR_702,You are not allowed to do this action because you aren't currently a member in a tribe
 ERROR_703,Tribe name already taken

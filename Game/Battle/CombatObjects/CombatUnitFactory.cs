@@ -2,6 +2,7 @@
 
 using System.Linq;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Data.Stats;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
@@ -20,10 +21,13 @@ namespace Game.Battle.CombatObjects
 
         private readonly ObjectTypeFactory objectTypeFactory;
 
-        public CombatUnitFactory(IKernel kernel, ObjectTypeFactory objectTypeFactory)
+        private readonly UnitFactory unitFactory;
+
+        public CombatUnitFactory(IKernel kernel, ObjectTypeFactory objectTypeFactory, UnitFactory unitFactory)
         {
             this.kernel = kernel;
             this.objectTypeFactory = objectTypeFactory;
+            this.unitFactory = unitFactory;
         }
 
         public CombatStructure CreateStructureCombatUnit(IBattleManager battleManager, IStructure structure)
@@ -142,6 +146,51 @@ namespace Game.Battle.CombatObjects
             }
             while (count > 0);
             return units;
+        }
+
+        public BarbarianTribeCombatUnit[] CreateBarbarianTribeCombatUnit(IBattleManager battleManager,
+                                                                 IBarbarianTribe barbarianTribe,
+                                                                 ushort type,
+                                                                 byte level,
+                                                                 ushort count)
+        {
+            var groupSize = kernel.Get<UnitFactory>().GetUnitStats(type, level).Battle.GroupSize;
+            var units = new BarbarianTribeCombatUnit[(count - 1) / groupSize + 1];
+            int i = 0;
+            do
+            {
+                ushort size = (groupSize > count ? count : groupSize);
+
+                var newUnit = CreateBarbarianTribeCombatUnit(battleManager.GetNextCombatObjectId(),
+                                                             battleManager.BattleId,
+                                                             type,
+                                                             level,
+                                                             size,
+                                                             barbarianTribe);
+
+                units[i++] = newUnit;
+                count -= size;
+            }
+            while (count > 0);
+            return units;
+        }
+
+        public BarbarianTribeCombatUnit CreateBarbarianTribeCombatUnit(uint id,
+                                                                       uint battleId,
+                                                                       ushort type,
+                                                                       byte level,
+                                                                       ushort count,
+                                                                       IBarbarianTribe barbarianTribe)
+        {
+            return new BarbarianTribeCombatUnit(id,
+                                                battleId,
+                                                type,
+                                                level,
+                                                count,
+                                                unitFactory.GetUnitStats(type, level),
+                                                barbarianTribe,
+                                                kernel.Get<BattleFormulas>(),
+                                                kernel.Get<Formula>());
         }
 
         public StrongholdCombatStructure CreateStrongholdGateStructure(IBattleManager battleManager,

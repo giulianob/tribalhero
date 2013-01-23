@@ -156,9 +156,12 @@ namespace Game.Data
             {
                 return new[]
                 {
-                        new DbColumn("x", X, DbType.UInt32), new DbColumn("y", Y, DbType.Int32),
-                        new DbColumn("hp", stats.Hp, DbType.Decimal), new DbColumn("type", Type, DbType.Int16),
-                        new DbColumn("level", Lvl, DbType.Byte), new DbColumn("labor", stats.Labor, DbType.UInt16),
+                        new DbColumn("x", X, DbType.UInt32), 
+                        new DbColumn("y", Y, DbType.Int32),
+                        new DbColumn("hp", stats.Hp, DbType.Decimal), 
+                        new DbColumn("type", Type, DbType.Int16),
+                        new DbColumn("level", Lvl, DbType.Byte), 
+                        new DbColumn("labor", stats.Labor, DbType.UInt16),
                         new DbColumn("is_blocked", IsBlocked, DbType.Boolean),
                         new DbColumn("in_world", InWorld, DbType.Boolean),
                         new DbColumn("state", (byte)State.Type, DbType.Boolean),

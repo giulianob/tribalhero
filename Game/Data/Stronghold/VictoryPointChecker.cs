@@ -7,7 +7,7 @@ using Persistance;
 
 namespace Game.Data.Stronghold
 {
-    class VictoryPointChecker : ISchedule
+    public class VictoryPointChecker : ISchedule
     {
         private readonly IDbManager dbManager;
 

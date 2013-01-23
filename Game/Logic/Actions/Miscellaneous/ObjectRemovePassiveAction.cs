@@ -73,16 +73,9 @@ namespace Game.Logic.Actions
                 return
                         XmlSerializer.Serialize(new[]
                         {
-                                new XmlKvPair("city_id", cityId), new XmlKvPair("object_id", objectId),
-                                new XmlKvPair("was_killed", wasKilled),
+                                new XmlKvPair("city_id", cityId), new XmlKvPair("object_id", objectId), new XmlKvPair("was_killed", wasKilled),
                                 new XmlKvPair("cancel_references",
-                                              string.Join(",",
-                                                          cancelActions.ConvertAll(
-                                                                                   t =>
-                                                                                   t.ToString(
-                                                                                              CultureInfo
-                                                                                                      .InvariantCulture))
-                                                                       .ToArray())),
+                                              string.Join(",", cancelActions.ConvertAll(t => t.ToString(CultureInfo.InvariantCulture)).ToArray())),
                         });
             }
         }

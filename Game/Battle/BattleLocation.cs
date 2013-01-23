@@ -11,7 +11,9 @@ namespace Game.Battle
 
         Stronghold = 1,
 
-        StrongholdGate = 2
+        StrongholdGate = 2,
+
+        BarbarianTribe = 3
     }
 
     public class BattleLocation

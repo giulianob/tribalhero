@@ -82,7 +82,7 @@ namespace Testing.Formulas
                     97
                 };
 
-                // Testing caps at 70% max reduction
+                // Testing caps at 30% max reduction
                 yield return new object[] { 
                     // Stubs
                     new[] { 
@@ -111,7 +111,7 @@ namespace Testing.Formulas
                             }
                     },
                     // Expected upkeep
-                    30
+                    70
                 };
 
                 // Hiding units should pay penalty

@@ -18,7 +18,7 @@ namespace Game.Logic.Actions
 {
     public class StrongholdEngageMainAttackPassiveAction : PassiveAction
     {
-        private readonly BattleProcedure battleProcedure;
+        private readonly StrongholdBattleProcedure strongholdBattleProcedure;
 
         private readonly uint cityId;
 
@@ -39,25 +39,25 @@ namespace Game.Logic.Actions
                                                        uint targetStrongholdId,
                                                        AttackMode mode,
                                                        IGameObjectLocator gameObjectLocator,
-                                                       BattleProcedure battleProcedure)
+                                                       StrongholdBattleProcedure strongholdBattleProcedure)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
             this.targetStrongholdId = targetStrongholdId;
             this.mode = mode;
             this.gameObjectLocator = gameObjectLocator;
-            this.battleProcedure = battleProcedure;
+            this.strongholdBattleProcedure = strongholdBattleProcedure;
         }
 
         public StrongholdEngageMainAttackPassiveAction(uint id,
                                                        bool isVisible,
                                                        IDictionary<string, string> properties,
                                                        IGameObjectLocator gameObjectLocator,
-                                                       BattleProcedure battleProcedure)
+                                                       StrongholdBattleProcedure strongholdBattleProcedure)
                 : base(id, isVisible)
         {
             this.gameObjectLocator = gameObjectLocator;
-            this.battleProcedure = battleProcedure;
+            this.strongholdBattleProcedure = strongholdBattleProcedure;
 
             cityId = uint.Parse(properties["troop_city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
@@ -133,7 +133,7 @@ namespace Game.Logic.Actions
             // Create the group in the battle
             uint battleId;
             ICombatGroup combatGroup;
-            battleProcedure.JoinOrCreateStrongholdMainBattle(targetStronghold,
+            strongholdBattleProcedure.JoinOrCreateStrongholdMainBattle(targetStronghold,
                                                              troopObject,
                                                              out combatGroup,
                                                              out battleId);

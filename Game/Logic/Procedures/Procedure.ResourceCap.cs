@@ -22,14 +22,16 @@ namespace Game.Logic.Procedures
         {
             if (Config.resource_cap)
             {
-                var bonus = city.Technologies.GetEffects(EffectCode.AtticStorageMod).Sum(x => (int)x.Value[0]);
-                var resourceBonus = Formula.Current.HiddenResource(city) * (double)bonus / 100;
+                var bonus =
+                        city.Technologies.GetEffects(EffectCode.AtticStorageMod, EffectInheritance.All)
+                            .Sum(x => (int)x.Value[0]);
+                var resourceBonus = formula.HiddenResource(city) * (double)bonus / 100;
 
-                city.Resource.SetLimits(cropLimit: Formula.Current.ResourceCropCap(city.Lvl) + resourceBonus.Crop,
-                                        goldLimit: 0,
-                                        ironLimit: Formula.Current.ResourceIronCap(city.Lvl) + resourceBonus.Iron,
-                                        woodLimit: Formula.Current.ResourceWoodCap(city.Lvl) + resourceBonus.Wood,
-                                        laborLimit: 0);
+                city.Resource.SetLimits(formula.ResourceCropCap(city.Lvl) + resourceBonus.Crop,
+                                        0,
+                                        formula.ResourceIronCap(city.Lvl) + resourceBonus.Iron,
+                                        formula.ResourceWoodCap(city.Lvl) + resourceBonus.Wood,
+                                        0);
             }
             else
             {
@@ -52,7 +54,7 @@ namespace Game.Logic.Procedures
                         int reduceTechSum = effects.Sum(x => BattleFormulas.Current.UnitStatModCheck(city.Template[kvp.Key].Battle,
                                                                                     TroopBattleGroup.Any,
                                                                                     (string)x.Value[1]) ? (int)x.Value[0] : 0);
-                        decimal reductionPercentage = (100m - Math.Min(reduceTechSum, 70m)) / 100m;
+                        decimal reductionPercentage = (100m - Math.Min(reduceTechSum, 30m)) / 100m;
 
                         upkeep += (int)Math.Ceiling(formationPenalty * kvp.Value * city.Template[kvp.Key].Upkeep * reductionPercentage);
                     }

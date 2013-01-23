@@ -130,8 +130,7 @@ namespace ConsoleSimulator
                             localGroup.Add(combatUnitFactory.CreateStructureCombatUnit(battleManager, structure));
                         }
                         battleManager.Add(localGroup, BattleManager.BattleSide.Defense, false);
-                        Ioc.Kernel.Get<BattleProcedure>()
-                           .MoveUnitFormation(defender.Local, FormationType.Normal, FormationType.InBattle);
+                        Ioc.Kernel.Get<CityBattleProcedure>().MoveUnitFormation(defender.Local, FormationType.Normal, FormationType.InBattle);
                         defender.Local.EndUpdate();
                     }
 
@@ -244,8 +243,7 @@ namespace ConsoleSimulator
                             localGroup.Add(combatUnitFactory.CreateStructureCombatUnit(battleManager, structure));
                         }
                         battleManager.Add(localGroup, BattleManager.BattleSide.Defense, false);
-                        Ioc.Kernel.Get<BattleProcedure>()
-                           .MoveUnitFormation(defender.Local, FormationType.Normal, FormationType.InBattle);
+                        Ioc.Kernel.Get<CityBattleProcedure>().MoveUnitFormation(defender.Local, FormationType.Normal, FormationType.InBattle);
                         defender.Local.EndUpdate();
                     }
 

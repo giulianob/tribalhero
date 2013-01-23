@@ -9,6 +9,7 @@ using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Data.Stats;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
@@ -47,7 +48,13 @@ namespace Game.Database
         public DbLoaderActionFactory ActionFactory { get; set; }
 
         [Inject]
+        public IBarbarianTribeFactory BarbarianTribeFactory { get; set; }
+
+        [Inject]
         public IBattleManagerFactory BattleManagerFactory { get; set; }
+
+        [Inject]
+        public IBarbarianTribeManager BarbarianTribeManager { get; set; }
 
         [Inject]
         public ITribeFactory TribeFactory { get; set; }
@@ -111,7 +118,8 @@ namespace Game.Database
                     LoadStructureProperties();
                     LoadTechnologies();
                     LoadForests(downTime);
-                    LoadStrongholds(downTime);
+                    LoadStrongholds();
+                    LoadBarbarianTribes();
                     LoadTroopStubs();
                     LoadTroopStubTemplates();
                     LoadTroops();
@@ -161,9 +169,9 @@ namespace Game.Database
             }
         }
 
-        private uint GetMaxId(string table)
+        private uint GetMaxId(string table, string column = "id")
         {
-            using (var reader = DbManager.ReaderQuery(string.Format("SELECT max(`id`) FROM `{0}`", table)))
+            using (var reader = DbManager.ReaderQuery(string.Format("SELECT max(`{1}`) FROM `{0}`", table, column)))
             {
                 reader.Read();
                 if (DBNull.Value.Equals(reader[0]))
@@ -177,7 +185,7 @@ namespace Game.Database
 
         private void LoadReportIds()
         {
-            BattleReport.BattleIdGenerator.Set(GetMaxId(SqlBattleReportWriter.BATTLE_DB));
+            BattleReport.BattleIdGenerator.Set(Math.Max(GetMaxId(BattleManager.DB_TABLE, "battle_id"), GetMaxId(SqlBattleReportWriter.BATTLE_DB)));
             BattleReport.ReportIdGenerator.Set(GetMaxId(SqlBattleReportWriter.BATTLE_REPORTS_DB));
             BattleReport.BattleTroopIdGenerator.Set(GetMaxId(SqlBattleReportWriter.BATTLE_REPORT_TROOPS_DB));
         }
@@ -197,11 +205,8 @@ namespace Game.Database
                         continue;
                     }
 
-                    var resource = new Resource((int)reader["crop"],
-                                                (int)reader["gold"],
-                                                (int)reader["iron"],
-                                                (int)reader["wood"],
-                                                0);
+                    var resource = new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"]);
+
                     var tribe = TribeFactory.CreateTribe(World.Players[(uint)reader["owner_player_id"]],
                                                          (string)reader["name"],
                                                          (string)reader["desc"],
@@ -233,11 +238,8 @@ namespace Game.Database
                 {
                     ITribe tribe;
                     World.TryGetObjects((uint)reader["tribe_id"], out tribe);
-                    var contribution = new Resource((int)reader["crop"],
-                                                    (int)reader["gold"],
-                                                    (int)reader["iron"],
-                                                    (int)reader["wood"],
-                                                    0);
+                    var contribution = new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"]);
+
                     var tribesman = new Tribesman(tribe,
                                                   World.Players[(uint)reader["player_id"]],
                                                   DateTime.SpecifyKind((DateTime)reader["join_date"], DateTimeKind.Utc),
@@ -494,7 +496,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadStrongholds(TimeSpan downTime)
+        private void LoadStrongholds()
         {
             #region Strongholds
 
@@ -537,12 +539,44 @@ namespace Game.Database
 
                     // Add stronghold to main manager
                     StrongholdManager.DbLoaderAdd(stronghold);
+                }
+            }
 
-                    // Add stronghold to region
-                    if (stronghold.StrongholdState != StrongholdState.Inactive)
+            #endregion
+        }
+
+        private void LoadBarbarianTribes()
+        {
+            #region Barbarian Tribes
+
+            Global.Logger.Info("Loading barbarian tribes...");
+            using (var reader = DbManager.Select(BarbarianTribe.DB_TABLE))
+            {
+                while (reader.Read())
+                {
+                    var barbarianTribe = BarbarianTribeFactory.CreateBarbarianTribe((uint)reader["id"],                                                                        
+                                                                        (byte)reader["level"],
+                                                                        (uint)reader["x"],
+                                                                        (uint)reader["y"],
+                                                                        (byte)reader["camp_remains"]);
+
+                    barbarianTribe.Resource.Clear();
+                    barbarianTribe.Resource.Add(new Resource((int)reader["resource_crop"],
+                                                             (int)reader["resource_gold"],
+                                                             (int)reader["resource_iron"],
+                                                             (int)reader["resource_wood"]));
+                    barbarianTribe.DbPersisted = true;
+                    barbarianTribe.LastAttacked = DateTime.SpecifyKind((DateTime)reader["last_attacked"], DateTimeKind.Utc);
+                    barbarianTribe.Created = DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc);
+                    barbarianTribe.InWorld = (bool)reader["in_world"];
+                    barbarianTribe.State.Type = (ObjectState)((byte)reader["state"]);
+                    foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
                     {
-                        World.Regions.Add(stronghold);
-                    }
+                        barbarianTribe.State.Parameters.Add(variable);
+                    }                    
+
+                    // Add stronghold to main manager
+                    BarbarianTribeManager.DbLoaderAdd(barbarianTribe);
                 }
             }
 
@@ -934,11 +968,7 @@ namespace Game.Database
                                     new TroopStats((int)reader["attack_point"],
                                                    (byte)reader["attack_radius"],
                                                    (byte)reader["speed"],
-                                                   new Resource((int)reader["crop"],
-                                                                (int)reader["gold"],
-                                                                (int)reader["iron"],
-                                                                (int)reader["wood"],
-                                                                0)),
+                                                   new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"])),
                             IsBlocked = (bool)reader["is_blocked"],
                             InWorld = (bool)reader["in_world"],
                     };
@@ -988,6 +1018,19 @@ namespace Game.Database
                                                                                      battleOwner,
                                                                                      city);
                             city.Battle = battleManager;
+                            break;
+                        case BattleLocationType.BarbarianTribe:
+                            IBarbarianTribe barbarianTribe;
+                            if (!World.TryGetObjects((uint)reader["location_id"], out barbarianTribe))
+                            {
+                                throw new Exception("Barbarian tribe not found");
+                            }
+
+                            battleManager = BattleManagerFactory.CreateBarbarianBattleManager((uint)reader["battle_id"],
+                                                                                              battleLocation,
+                                                                                              battleOwner,
+                                                                                              barbarianTribe);
+                            barbarianTribe.Battle = battleManager;
                             break;
                         case BattleLocationType.Stronghold:
                         case BattleLocationType.StrongholdGate:
@@ -1098,10 +1141,28 @@ namespace Game.Database
                     }
 
                     using (
+                            DbDataReader listReader = DbManager.SelectList(BarbarianTribeCombatGroup.DB_TABLE,
+                                                                           new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
+                    {
+                        while (listReader.Read())
+                        {
+                            IBarbarianTribe combatGroupBarbarianTribe;
+                            if (!World.TryGetObjects((uint)listReader["barbarian_tribe_id"], out combatGroupBarbarianTribe))
+                            {
+                                throw new Exception("Barbarian tribe not found");
+                            }
+
+                            var barbarianTribeCombatGroup = CombatGroupFactory.CreateBarbarianTribeCombatGroup((uint)listReader["battle_id"],
+                                                                                                           (uint)listReader["id"],
+                                                                                                           combatGroupBarbarianTribe);
+                            barbarianTribeCombatGroup.DbPersisted = true;
+                            battleManager.DbLoaderAddToCombatList(barbarianTribeCombatGroup, BattleManager.BattleSide.Defense);
+                        }
+                    }
+
+                    using (
                             DbDataReader listReader = DbManager.SelectList(StrongholdCombatGroup.DB_TABLE,
-                                                                           new DbColumn("battle_id",
-                                                                                        battleManager.BattleId,
-                                                                                        DbType.UInt32)))
+                                                                           new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
                     {
                         while (listReader.Read())
                         {
@@ -1111,13 +1172,11 @@ namespace Game.Database
                                 throw new Exception("Stronghold not found");
                             }
 
-                            var strongholdCombatGroup =
-                                    CombatGroupFactory.CreateStrongholdCombatGroup((uint)listReader["battle_id"],
-                                                                                   (uint)listReader["id"],
-                                                                                   combatGroupStronghold);
+                            var strongholdCombatGroup = CombatGroupFactory.CreateStrongholdCombatGroup((uint)listReader["battle_id"],
+                                                                                                       (uint)listReader["id"],
+                                                                                                       combatGroupStronghold);
                             strongholdCombatGroup.DbPersisted = true;
-                            battleManager.DbLoaderAddToCombatList(strongholdCombatGroup,
-                                                                  BattleManager.BattleSide.Defense);
+                            battleManager.DbLoaderAddToCombatList(strongholdCombatGroup, BattleManager.BattleSide.Defense);
                         }
                     }
 
@@ -1275,12 +1334,49 @@ namespace Game.Database
                         }
                     }
 
+                    // Load 
+                    using (
+                            DbDataReader listReader = DbManager.SelectList(BarbarianTribeCombatUnit.DB_TABLE,
+                                                                           new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
+                    {
+                        while (listReader.Read())
+                        {
+                            IBarbarianTribe barbarianTribe;
+                            if (!World.TryGetObjects((uint)listReader["barbarian_tribe_id"], out barbarianTribe))
+                            {
+                                throw new Exception("Stronghold not found");
+                            }
+
+                            BarbarianTribeCombatUnit combatObj = CombatUnitFactory.CreateBarbarianTribeCombatUnit((uint)listReader["id"],
+                                                                                                                  battleManager.BattleId,
+                                                                                                                  (ushort)listReader["type"],
+                                                                                                                  (byte)listReader["level"],
+                                                                                                                  (ushort)listReader["count"],
+                                                                                                                  barbarianTribe);
+
+                            combatObj.LeftOverHp = (decimal)listReader["left_over_hp"];
+                            combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
+                            combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
+                            combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
+                            combatObj.MinDmgDealt = (ushort)listReader["damage_max_received"];
+                            combatObj.HitDealt = (ushort)listReader["hits_dealt"];
+                            combatObj.HitDealtByUnit = (uint)listReader["hits_dealt_by_unit"];
+                            combatObj.HitRecv = (ushort)listReader["hits_received"];
+                            combatObj.GroupId = (uint)listReader["group_id"];
+                            combatObj.DmgDealt = (decimal)listReader["damage_dealt"];
+                            combatObj.DmgRecv = (decimal)listReader["damage_received"];
+                            combatObj.LastRound = (uint)listReader["last_round"];
+                            combatObj.RoundsParticipated = (int)listReader["rounds_participated"];
+                            combatObj.DbPersisted = true;
+
+                            battleManager.GetCombatGroup((uint)listReader["group_id"]).Add(combatObj, false);
+                        }
+                    }
+
                     // Load stronghold combat units
                     using (
                             DbDataReader listReader = DbManager.SelectList(StrongholdCombatUnit.DB_TABLE,
-                                                                           new DbColumn("battle_id",
-                                                                                        battleManager.BattleId,
-                                                                                        DbType.UInt32)))
+                                                                           new DbColumn("battle_id", battleManager.BattleId, DbType.UInt32)))
                     {
                         while (listReader.Read())
                         {
@@ -1395,7 +1491,6 @@ namespace Game.Database
                             switch(locationType)
                             {
                                 case LocationType.City:
-
                                     ICity city;
                                     if (!World.TryGetObjects(locationId, out city))
                                     {
@@ -1410,7 +1505,6 @@ namespace Game.Database
                                     return city.Worker;
 
                                 case LocationType.Stronghold:
-
                                     IStronghold stronghold;
                                     if (!World.TryGetObjects(locationId, out stronghold))
                                     {
@@ -1423,6 +1517,20 @@ namespace Game.Database
                                     }
 
                                     return stronghold.Worker;
+
+                                case LocationType.BarbarianTribe:
+                                    IBarbarianTribe barbarianTribe;
+                                    if (!World.TryGetObjects(locationId, out barbarianTribe))
+                                    {
+                                        throw new Exception("Barbarian tribe not found");
+                                    }
+
+                                    if (action != null)
+                                    {
+                                        action.WorkerObject = barbarianTribe;
+                                    }
+
+                                    return barbarianTribe.Worker;
 
                                 default:
                                     throw new Exception(string.Format("Unknown location type {0} when loading actions",
@@ -1729,6 +1837,13 @@ namespace Game.Database
                         throw new Exception("Stronghold not found");
                     }
                     return (T)stronghold;
+                case LocationType.BarbarianTribe:
+                    IBarbarianTribe barbarianTribe;
+                    if (!World.TryGetObjects(locationId, out barbarianTribe))
+                    {
+                        throw new Exception("Barbarian tribe not found");
+                    }
+                    return (T)barbarianTribe;
                 default:
                     throw new Exception("Unknown location type");
             }

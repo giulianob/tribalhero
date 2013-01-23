@@ -23,6 +23,8 @@ namespace Game.Logic.Actions
 
         private readonly BattleProcedure battleProcedure;
 
+        private readonly StrongholdBattleProcedure strongholdBattleProcedure;
+
         private readonly uint cityId;
 
         private readonly IDbManager dbManager;
@@ -41,6 +43,7 @@ namespace Game.Logic.Actions
                                                        BattleFormulas battleFormula,
                                                        IGameObjectLocator gameObjectLocator,
                                                        BattleProcedure battleProcedure,
+                                                       StrongholdBattleProcedure strongholdBattleProcedure,
                                                        IDbManager dbManager)
         {
             this.cityId = cityId;
@@ -49,6 +52,7 @@ namespace Game.Logic.Actions
             this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
             this.battleProcedure = battleProcedure;
+            this.strongholdBattleProcedure = strongholdBattleProcedure;
             this.dbManager = dbManager;
         }
 
@@ -58,12 +62,14 @@ namespace Game.Logic.Actions
                                                        BattleFormulas battleFormula,
                                                        IGameObjectLocator gameObjectLocator,
                                                        BattleProcedure battleProcedure,
+                                                       StrongholdBattleProcedure strongholdBattleProcedure,
                                                        IDbManager dbManager)
                 : base(id, isVisible)
         {
             this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
             this.battleProcedure = battleProcedure;
+            this.strongholdBattleProcedure = strongholdBattleProcedure;
             this.dbManager = dbManager;
 
             cityId = uint.Parse(properties["troop_city_id"]);
@@ -137,7 +143,7 @@ namespace Game.Logic.Actions
             // Create the group in the battle
             uint battleId;
             ICombatGroup combatGroup;
-            battleProcedure.JoinOrCreateStrongholdGateBattle(targetStronghold,
+            strongholdBattleProcedure.JoinOrCreateStrongholdGateBattle(targetStronghold,
                                                              troopObject,
                                                              out combatGroup,
                                                              out battleId);

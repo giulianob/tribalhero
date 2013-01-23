@@ -399,7 +399,7 @@ namespace Game.Battle
 
                 #region Targeting
 
-                IList<CombatList.Target> currentDefenders;
+                List<CombatList.Target> currentDefenders;
                 ICombatGroup attackerGroup;
                 ICombatObject attackerObject;
 
@@ -451,7 +451,8 @@ namespace Game.Battle
 
                     #region Find Target(s)
 
-                    var targetResult = defensiveCombatList.GetBestTargets(attackerObject,
+                    var targetResult = defensiveCombatList.GetBestTargets(BattleId,
+                                                                          attackerObject,
                                                                           out currentDefenders,
                                                                           battleFormulas.GetNumberOfHits(attackerObject));
 
@@ -649,13 +650,7 @@ namespace Game.Battle
             {
                 // Only give loot if we are attacking the first target in the list
                 Resource loot = new Resource();
-                if (attackIndex == 0)
-                {
-                    if (Round >= Config.battle_loot_begin_round)
-                    {
-                        rewardStrategy.RemoveLoot(attacker, target.CombatObject, out loot);
-                    }
-                }
+                rewardStrategy.RemoveLoot(this, attackIndex, attacker, target.CombatObject, out loot);
 
                 if (attackPoints > 0 || (loot != null && !loot.Empty))
                 {

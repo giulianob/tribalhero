@@ -14,7 +14,7 @@ namespace Game.Setup
 {
     public class Config
     {
-        public static string database_schema_version = "20130104022851";
+        public static string database_schema_version = "20130119230900";
 
         // ReSharper disable InconsistentNaming        
         public static int client_min_version;
@@ -171,7 +171,15 @@ namespace Game.Setup
 
         public static bool actions_ignore_requirements;
 
-        public static int stronghold_generate = 0;
+        public static int barbariantribe_generate = 2500;
+
+        public static int barbariantribe_camp_count = 10;
+
+        public static int barbariantribe_idle_check_interval_in_sec = 1800;
+
+        public static int barbariantribe_idle_duration_in_sec = 86400 * 3;
+
+        public static int stronghold_generate = 250;
 
         public static int stronghold_activation_check_interval_in_sec = 3600;
 
@@ -181,9 +189,11 @@ namespace Game.Setup
 
         public static int stronghold_radius_base = 100;
 
+        public static double barbarian_tribes_npc_randomness = 0.4;
+        
         public static double stronghold_npc_randomness = 0.4;
 
-        public static int stronghold_npc_per_lvl_upkeep = 0;
+        public static int stronghold_fixed_upkeep = 0;
 
         public static int stronghold_gate_limit;
 

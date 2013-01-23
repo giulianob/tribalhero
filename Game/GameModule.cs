@@ -11,6 +11,7 @@ using Game.Comm.ProcessorCommands;
 using Game.Comm.Protocol;
 using Game.Comm.Thrift;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Logic;
@@ -66,6 +67,12 @@ namespace Game
 
             #endregion
 
+            #region Action
+
+            Bind<IActionWorker>().ToMethod(c => new ActionWorker());            
+
+            #endregion
+
             #region Tribes
 
             Bind<ITribeManager>().To<TribeManager>().InSingletonScope();
@@ -74,6 +81,8 @@ namespace Game
             #endregion
 
             #region Locking
+
+            Bind<DefaultMultiObjectLock.Factory>().ToMethod(c => () => new TransactionalMultiObjectLock(new DefaultMultiObjectLock()));
 
             Bind<ILocker>().ToMethod(c =>
                 {
@@ -165,7 +174,7 @@ namespace Game
 
             Bind<IBattleReportWriter>().To<SqlBattleReportWriter>();
 
-            Bind<ICombatUnitFactory>().ToMethod(c => new CombatUnitFactory(c.Kernel, c.Kernel.Get<ObjectTypeFactory>()));
+            Bind<ICombatUnitFactory>().To<CombatUnitFactory>().InSingletonScope();
 
             Bind<ICombatList>().To<CombatList>().NamedLikeFactoryMethod((ICombatListFactory p) => p.GetCombatList());
 
@@ -211,10 +220,13 @@ namespace Game
 
             Bind<IScheduler>().To<ThreadedScheduler>().InSingletonScope();
             Bind<RadiusLocator>().ToSelf().InSingletonScope();
-            Bind<TileLocator>().ToMethod(c => new TileLocator(new Random().Next)).InSingletonScope();
-            Bind<ReverseTileLocator>().ToMethod(c => new ReverseTileLocator(new Random().Next)).InSingletonScope();
+            Bind<TileLocator>().ToMethod(c => new TileLocator(new Random().Next));
+            Bind<ReverseTileLocator>().ToMethod(c => new ReverseTileLocator(new Random().Next));
             Bind<Procedure>().ToSelf().InSingletonScope();
             Bind<BattleProcedure>().ToSelf().InSingletonScope();
+            Bind<StrongholdBattleProcedure>().ToSelf().InSingletonScope();
+            Bind<CityBattleProcedure>().ToSelf().InSingletonScope();
+            Bind<BarbarianTribeBattleProcedure>().ToSelf().InSingletonScope();
 
             #endregion
 
@@ -232,6 +244,16 @@ namespace Game
             Bind<VictoryPointChecker>().ToSelf().InSingletonScope();
 
             Bind<IStrongholdFactory>().To<StrongholdFactory>();
+
+            #endregion
+
+            #region Barbarian Tribe
+
+            Bind<IBarbarianTribeManager>().To<BarbarianTribeManager>().InSingletonScope();
+            Bind<IBarbarianTribeConfigurator>().To<BarbarianTribeConfigurator>().InSingletonScope();
+            Bind<IBarbarianTribe>().To<BarbarianTribe>();
+            Bind<IBarbarianTribeFactory>().To<BarbarianTribeFactory>();
+            Bind<BarbarianTribeChecker>().ToSelf().InSingletonScope();
 
             #endregion
 

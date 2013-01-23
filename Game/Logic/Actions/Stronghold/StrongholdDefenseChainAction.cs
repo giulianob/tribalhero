@@ -23,6 +23,8 @@ namespace Game.Logic.Actions
 
         private readonly BattleProcedure battleProcedure;
 
+        private readonly StrongholdBattleProcedure strongholdBattleProcedure;
+
         private readonly uint cityId;
 
         private readonly Formula formula;
@@ -48,6 +50,7 @@ namespace Game.Logic.Actions
                                             ILocker locker,
                                             IGameObjectLocator gameObjectLocator,
                                             BattleProcedure battleProcedure,
+                                            StrongholdBattleProcedure strongholdBattleProcedure,
                                             Formula formula)
         {
             this.cityId = cityId;
@@ -59,6 +62,7 @@ namespace Game.Logic.Actions
             this.locker = locker;
             this.gameObjectLocator = gameObjectLocator;
             this.battleProcedure = battleProcedure;
+            this.strongholdBattleProcedure = strongholdBattleProcedure;
             this.formula = formula;
         }
 
@@ -73,6 +77,7 @@ namespace Game.Logic.Actions
                                             ILocker locker,
                                             IGameObjectLocator gameObjectLocator,
                                             BattleProcedure battleProcedure,
+                                            StrongholdBattleProcedure strongholdBattleProcedure,
                                             Formula formula)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
@@ -140,7 +145,7 @@ namespace Game.Logic.Actions
                 return Error.TooManyTroops;
             }
 
-            var canStrongholdBeDefended = battleProcedure.CanStrongholdBeDefended(city, targetStronghold);
+            var canStrongholdBeDefended = strongholdBattleProcedure.CanStrongholdBeDefended(city, targetStronghold);
             if (canStrongholdBeDefended != Error.Ok)
             {
                 return canStrongholdBeDefended;
@@ -198,7 +203,7 @@ namespace Game.Logic.Actions
                 bool invalidTarget;
                 using (locker.Lock(city, targetStronghold))
                 {
-                    invalidTarget = battleProcedure.CanStrongholdBeDefended(city, targetStronghold) != Error.Ok;
+                    invalidTarget = strongholdBattleProcedure.CanStrongholdBeDefended(city, targetStronghold) != Error.Ok;
                 }
 
                 // If the stronghold is not there or we are unable to attack/defense it, then cancel the current TroopMoveAction

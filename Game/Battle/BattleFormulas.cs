@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using Game.Battle.CombatObjects;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Data.Stats;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
@@ -197,8 +198,7 @@ namespace Game.Battle
             return new Resource(Math.Min(count / 1, spaceLeft.Crop),
                                 Math.Min(count / 2, spaceLeft.Gold),
                                 Math.Min(count / Config.resource_iron_ratio, spaceLeft.Iron),
-                                Math.Min(count / 1, spaceLeft.Wood),
-                                0);
+                                Math.Min(count / 1, spaceLeft.Wood));
         }
 
         public virtual short GetStamina(ITroopStub stub, ICity city)
@@ -209,6 +209,11 @@ namespace Game.Battle
         public short GetStamina(ITroopStub stub, IStronghold targetStronghold)
         {
             return (short)(Config.battle_stamina_initial * Config.battle_stamina_gate_multiplier);
+        }
+
+        public short GetStamina(ITroopStub stub, IBarbarianTribe barbarianTribe)
+        {
+            return (short)Config.battle_stamina_initial;;
         }
 
         public virtual ushort GetStaminaReinforced(ICity city, ushort stamina, uint round)

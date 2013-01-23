@@ -6,7 +6,7 @@ namespace Game.Battle.RewardStrategies
 {
     public interface IRewardStrategy
     {
-        void RemoveLoot(ICombatObject attacker, ICombatObject defender, out Resource actualLoot);
+        void RemoveLoot(IBattleManager battleManager, int attackIndex, ICombatObject attacker, ICombatObject defender, out Resource actualLoot);
 
         void GiveAttackerRewards(ICombatObject attacker, int attackPoints, Resource loot);
 

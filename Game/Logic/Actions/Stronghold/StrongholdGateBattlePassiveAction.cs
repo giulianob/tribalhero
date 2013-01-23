@@ -23,7 +23,7 @@ namespace Game.Logic.Actions
 {
     public class StrongholdGateBattlePassiveAction : ScheduledPassiveAction
     {
-        private readonly BattleProcedure battleProcedure;
+        private readonly StrongholdBattleProcedure strongholdBattleProcedure;
 
         private readonly IDbManager dbManager;
 
@@ -42,7 +42,7 @@ namespace Game.Logic.Actions
         private uint localGroupId;
 
         public StrongholdGateBattlePassiveAction(uint strongholdId,
-                                                 BattleProcedure battleProcedure,
+                                                 StrongholdBattleProcedure strongholdBattleProcedure,
                                                  ILocker locker,
                                                  IGameObjectLocator gameObjectLocator,
                                                  IDbManager dbManager,
@@ -50,7 +50,7 @@ namespace Game.Logic.Actions
                                                  IWorld world)
         {
             this.strongholdId = strongholdId;
-            this.battleProcedure = battleProcedure;
+            this.strongholdBattleProcedure = strongholdBattleProcedure;
             this.locker = locker;
             this.gameObjectLocator = gameObjectLocator;
             this.dbManager = dbManager;
@@ -74,7 +74,7 @@ namespace Game.Logic.Actions
                                                  bool isVisible,
                                                  string nlsDescription,
                                                  IDictionary<string, string> properties,
-                                                 BattleProcedure battleProcedure,
+                                                 StrongholdBattleProcedure strongholdBattleProcedure,
                                                  ILocker locker,
                                                  IGameObjectLocator gameObjectLocator,
                                                  IDbManager dbManager,
@@ -82,7 +82,7 @@ namespace Game.Logic.Actions
                                                  IWorld world)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
-            this.battleProcedure = battleProcedure;
+            this.strongholdBattleProcedure = strongholdBattleProcedure;
             this.locker = locker;
             this.gameObjectLocator = gameObjectLocator;
             this.dbManager = dbManager;
@@ -260,7 +260,7 @@ namespace Game.Logic.Actions
             dbManager.Save(stronghold.GateBattle);
 
             //Add gate to battle
-            var combatGroup = battleProcedure.AddStrongholdGateToBattle(stronghold.GateBattle, stronghold);
+            var combatGroup = strongholdBattleProcedure.AddStrongholdGateToBattle(stronghold.GateBattle, stronghold);
             localGroupId = combatGroup.Id;
 
             stronghold.BeginUpdate();

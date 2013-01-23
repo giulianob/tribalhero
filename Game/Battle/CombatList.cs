@@ -6,6 +6,7 @@ using System.Linq;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Map;
+using Game.Util;
 using Persistance;
 
 #endregion
@@ -52,7 +53,7 @@ namespace Game.Battle
             return AllAliveCombatObjects().Any(obj => obj.InRange(attacker) && attacker.InRange(obj));
         }
 
-        public BestTargetResult GetBestTargets(ICombatObject attacker, out IList<Target> result, int maxCount)
+        public BestTargetResult GetBestTargets(uint battleId, ICombatObject attacker, out List<Target> result, int maxCount)
         {
             result = new List<Target>();
 
@@ -109,14 +110,30 @@ namespace Game.Battle
                 objectsByScore.Add(new CombatScoreItem {Target = target, Score = score});
             }
 
-            // Sort by score descending
+            if (objectsByScore.Count == 0)
+            {
+                return BestTargetResult.Ok;                
+            }
+
+            // Shuffle to get some randomization in the attack order. We pass the battleId as a seed in order to 
+            // make it so the attacker doesn't switch targets once it starts attacking them but this way
+            // they won't attack the stacks in the order they joined the battle, which usually would mean
+            // they will attack the same type of units one after another
+            // then sort by score descending
             objectsByScore.Sort((x, y) => x.Score.CompareTo(y.Score) * -1);
+            
+            var numberOfTargetsToHit = Math.Min(maxCount, objectsByScore.Count);
+            var optimalScore = objectsByScore.First().Score;
+
+            var highestScoringObjectsOnly = objectsByScore.Where(p => p.Score == optimalScore).ToList().Shuffle((int)battleId);
 
             // Get top results specified by the maxCount param
-            result =
-                    objectsByScore.GetRange(0, Math.Min(maxCount, objectsByScore.Count))
-                                  .Select(scoreItem => scoreItem.Target)
-                                  .ToList();
+            result = highestScoringObjectsOnly.Take(numberOfTargetsToHit).Select(scoreItem => scoreItem.Target).ToList();
+
+            if (result.Count < numberOfTargetsToHit)
+            {
+                result.AddRange(objectsByScore.GetRange(result.Count, numberOfTargetsToHit - result.Count).Select(scoreItem => scoreItem.Target));
+            }
 
             return BestTargetResult.Ok;
         }

@@ -28,6 +28,8 @@ namespace Game.Logic.Actions
 
         private readonly BattleProcedure battleProcedure;
 
+        private readonly StrongholdBattleProcedure strongholdBattleProcedure;
+
         private readonly IDbManager dbManager;
 
         private readonly Formula formula;
@@ -48,6 +50,7 @@ namespace Game.Logic.Actions
 
         public StrongholdMainBattlePassiveAction(uint strongholdId,
                                                  BattleProcedure battleProcedure,
+                                                 StrongholdBattleProcedure strongholdBattleProcedure,
                                                  ILocker locker,
                                                  IGameObjectLocator gameObjectLocator,
                                                  IDbManager dbManager,
@@ -58,6 +61,7 @@ namespace Game.Logic.Actions
         {
             this.strongholdId = strongholdId;
             this.battleProcedure = battleProcedure;
+            this.strongholdBattleProcedure = strongholdBattleProcedure;
             this.locker = locker;
             this.gameObjectLocator = gameObjectLocator;
             this.dbManager = dbManager;
@@ -83,6 +87,7 @@ namespace Game.Logic.Actions
                                                  string nlsDescription,
                                                  IDictionary<string, string> properties,
                                                  BattleProcedure battleProcedure,
+                                                 StrongholdBattleProcedure strongholdBattleProcedure,
                                                  ILocker locker,
                                                  IGameObjectLocator gameObjectLocator,
                                                  IDbManager dbManager,
@@ -93,6 +98,7 @@ namespace Game.Logic.Actions
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.battleProcedure = battleProcedure;
+            this.strongholdBattleProcedure = strongholdBattleProcedure;
             this.locker = locker;
             this.gameObjectLocator = gameObjectLocator;
             this.dbManager = dbManager;
@@ -430,10 +436,9 @@ namespace Game.Logic.Actions
             }
             else
             {
-                var strongholdGroup = battleProcedure.AddStrongholdUnitsToBattle(stronghold.MainBattle,
-                                                                                 stronghold,
-                                                                                 strongholdManager.GenerateNeutralStub(
-                                                                                                                       stronghold));
+                var strongholdGroup = strongholdBattleProcedure.AddStrongholdUnitsToBattle(stronghold.MainBattle,
+                                                                                           stronghold,
+                                                                                           strongholdManager.GenerateNeutralStub(stronghold));
 
                 npcGroupId = strongholdGroup.Id;
             }

@@ -22,7 +22,7 @@ namespace Game.Data.Stronghold
 
         private readonly Formula formula;
 
-        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(10000, 5000);
+        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(9999, 5000);
 
         private readonly IRegionManager regionManager;
 
@@ -48,16 +48,17 @@ namespace Game.Data.Stronghold
                                  IRegionManager regionManager,
                                  Chat chat,
                                  IDbManager dbManager,
-                                 SimpleStubGenerator simpleStubGenerator,
+                                 ISimpleStubGeneratorFactory simpleStubGeneratorFactory,
                                  Formula formula)
         {
             this.strongholdConfigurator = strongholdConfigurator;
             this.strongholdFactory = strongholdFactory;
             this.regionManager = regionManager;
             this.chat = chat;
-            this.dbManager = dbManager;
-            this.simpleStubGenerator = simpleStubGenerator;
+            this.dbManager = dbManager;            
             this.formula = formula;
+
+            simpleStubGenerator = simpleStubGeneratorFactory.CreateSimpleStubGenerator(formula.StrongholdUnitRatio(), formula.StrongholdUnitType());
         }
 
         public int Count
@@ -73,6 +74,12 @@ namespace Game.Data.Stronghold
             strongholds.AddOrUpdate(stronghold.Id, stronghold, (id, old) => stronghold);
             RegisterEvents(stronghold);
             MarkIndexDirty();
+
+            if (stronghold.StrongholdState != StrongholdState.Inactive)
+            {
+                stronghold.InWorld = true;
+                regionManager.DbLoaderAdd(stronghold);
+            }
         }
 
         public bool TryGetStronghold(uint id, out IStronghold stronghold)
@@ -156,8 +163,12 @@ namespace Game.Data.Stronghold
         public IEnumerable<Unit> GenerateNeutralStub(IStronghold stronghold)
         {
             ISimpleStub simpleStub;
+            int upkeep;
+            byte unitLevel;
+            formula.StrongholdUpkeep(stronghold.Lvl, out upkeep, out unitLevel);
             simpleStubGenerator.Generate(stronghold.Lvl,
-                                         formula.GetStrongholdUpkeep(stronghold.Lvl),
+                                         upkeep,
+                                         unitLevel,
                                          Config.stronghold_npc_randomness,
                                          (int)stronghold.Id,
                                          out simpleStub);

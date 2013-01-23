@@ -237,5 +237,11 @@ namespace Game.Setup
         StrongholdNotRepairableInBattle = 815,
 
         #endregion
+
+        #region Barbarian Tribes
+
+        BarbarianTribeNoCampsRemaining = 901
+    
+        #endregion
     }
 }

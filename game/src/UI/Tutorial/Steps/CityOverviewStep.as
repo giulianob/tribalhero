@@ -28,6 +28,7 @@ package src.UI.Tutorial.Steps
 		private var timer: Timer = new Timer(200);
 		private var openedCityOverview: Boolean = false;
 		private var resourceDescriptions: int = 0;
+        private var doneReadingOverview: Boolean = false;        
 		
 		public function CityOverviewStep() 
 		{
@@ -39,35 +40,48 @@ package src.UI.Tutorial.Steps
 				this.complete();
 				return;
 			}
+            
+			var farm: CityObject = map.cities.getByIndex(0).getStructureOfType(FARM_TYPE);
+			if (farm != null && farm.level >= 1) 
+			{
+				this.complete();
+				return;
+			}            
 						
 			timer.start();
 			onTimer();
 		}
 		
-		private function onTimer(e: Event = null): void {
-			Global.gameContainer.btnCityInfo.filters = [];
-			
+		private function onTimer(e: Event = null): void {						
 			var overviewDialog: CityEventDialog = Global.gameContainer.findDialog(CityEventDialog);
 			
 			if (overviewDialog != null) {
+                Global.gameContainer.btnCityInfo.filters = [];
+                
 				if (!this.openedCityOverview) {				
 					this.openedCityOverview = true;
 								
 					showWizardAtPosition(new IntPoint(20, 200), "CITY_OVERVIEW", [ "CITY_OVERVIEW_MSG1", "CITY_OVERVIEW_MSG2", "CITY_OVERVIEW_MSG3", "CITY_OVERVIEW_MSG4", "CITY_OVERVIEW_MSG5", "CITY_OVERVIEW_MSG6" ]);
 				}
 				return;
-			}				
+			}
+            else if (this.openedCityOverview) {
+                this.doneReadingOverview = true;
+            }
 			
 			// If user's farm has completed, this step is done
 			var farm: CityObject = map.cities.getByIndex(0).getStructureOfType(FARM_TYPE);
 			if (farm != null && farm.level >= 1) 
 			{
-				this.complete();
+                if (this.doneReadingOverview) {
+                    this.complete();
+                }
+                
 				return;
 			}
 			
 			// If user has closed the overview dialog, show a waiting message
-			if (this.openedCityOverview) {
+			if (this.doneReadingOverview) {
 				showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_WAIT_FOR_FARM");
 			}
 			else {				
@@ -82,6 +96,7 @@ package src.UI.Tutorial.Steps
 		
 		override public function dispose():void 
 		{
+            Global.gameContainer.btnCityInfo.filters = [];
 			timer.stop();
 			super.dispose();
 		}	

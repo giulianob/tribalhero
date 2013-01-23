@@ -151,13 +151,7 @@ package src.UI.Dialog
 			}
 				
 			message = StringHelper.trim(message);
-			
-			if (profanityFilter.quickValidate(message) == false)
-			{
-				log(currentChatType, 'Looks like your chat message contains some offensive terms. Please keep it classy.', false);
-				return false;
-			}
-			
+					
 			if (message.charAt(0) == '/')
 			{
 				log(currentChatType, message, true);				
@@ -169,6 +163,12 @@ package src.UI.Dialog
 			}
 			else
 			{
+                if (profanityFilter.quickValidate(message) == false)
+                {
+                    log(currentChatType, 'Looks like your chat message contains some offensive terms. Please keep it classy.', false);
+                    return false;
+                }
+            
 				Global.mapComm.General.sendChat(type, message, function(resp:String, type: int = 0):void
 					{
 						log(type, resp, false);
@@ -198,7 +198,7 @@ package src.UI.Dialog
 				resizeAndReposition();				
 			});
 			
-			frame.setSize(new IntDimension(Math.min(550, Constants.screenW * 0.5), Math.min(Constants.screenH - 300, Constants.screenH * 0.3)));
+			frame.setSize(new IntDimension(Math.min(550, Constants.screenW * 0.5), Math.min(Math.max(300, Constants.screenH - 300), Constants.screenH * 0.3)));
 			maximizedSize = frame.getSize();
 			
 			if (Constants.screenH < 600)

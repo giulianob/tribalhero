@@ -72,7 +72,7 @@
 		public function createUI(): void {
 			setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 0, AsWingConstants.TOP));
 
-			pnlResource = new TradeResourcesPanel(structure);
+			pnlResource = new TradeResourcesPanel(structure,Formula.contributeCapacity(structure.level));
 
 			pnlBottom = new JPanel();
 			pnlBottom.setSize(new IntDimension(200, 10));

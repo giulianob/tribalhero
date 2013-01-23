@@ -41,6 +41,10 @@
 			return rate[level];
 		}
 		
+		public static function contributeCapacity(level: int) : int {
+			return sendCapacity(level) * 2;
+		}
+		
 		public static function troopRadius(troop: TroopStub) : int {
 			var city: City = Global.map.cities.get(troop.cityId);
 			return Math.min(4, city.value / 40);
@@ -176,6 +180,17 @@
 			var upkeep: int = troopStub.getUpkeep();
 			return Math.min(4, upkeep / 60);
 		}
+        
+        public static function getUpkeepWithReductions(baseUpkeep: int, unitType: int, city: City): Number {
+            var reduceUpkeep: int = 0;
+			for each (var tech: EffectPrototype in city.techManager.getEffects(EffectPrototype.EFFECT_REDUCE_UPKEEP, EffectPrototype.INHERIT_ALL)) {
+				if (tech.param2.indexOf(unitType.toString()) != -1) {
+					reduceUpkeep += (int) (tech.param1);				
+				} 
+			}
+            
+            return baseUpkeep * (100.0 - Math.min(reduceUpkeep, 30)) / 100.0;
+        }
 
 		public static function laborRate(city: City) : int {
 			var laborTotal: int = city.getBusyLaborCount() + city.resources.labor.getValue();
@@ -230,7 +245,9 @@
 		 
 		public static function getGateLimit(level: int) : int
         {
-            return level * 10000;
+            var limit:Array = [0, 10000, 13500, 17300, 21500, 26200, 31300, 37100, 43400, 50300, 58000,
+                            66500, 75800, 86300, 97800, 110500, 124600, 140100, 157200, 176200, 200000];
+            return limit[level];
         }
 
         public static function getGateRepairCost(level: int, currentHp: Number) : Resources

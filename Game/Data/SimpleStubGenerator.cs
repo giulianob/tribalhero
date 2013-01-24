@@ -35,7 +35,7 @@ namespace Game.Data
             {
                 stub.AddUnit(FormationType.Normal,
                              type[i],
-                             (ushort)(upkeep * (1 - randomness) * ratio[level, i] / unitFactory.GetUnitStats(type[i], unitLevel).Upkeep));
+                             (ushort)(upkeep * (1 - randomness) * ratio[level-1, i] / unitFactory.GetUnitStats(type[i], unitLevel).Upkeep));
             }
 
             Random random = new Random(seed);

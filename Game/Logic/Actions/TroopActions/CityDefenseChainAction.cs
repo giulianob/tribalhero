@@ -19,6 +19,8 @@ namespace Game.Logic.Actions
     {
         private readonly BattleProcedure battleProcedure;
 
+        private readonly IActionFactory actionFactory;
+
         private readonly uint cityId;
 
         private readonly AttackMode mode;
@@ -31,13 +33,15 @@ namespace Game.Logic.Actions
                                       uint troopObjectId,
                                       uint targetCityId,
                                       AttackMode mode,
-                                      BattleProcedure battleProcedure)
+                                      BattleProcedure battleProcedure,
+                                      IActionFactory actionFactory)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
             this.targetCityId = targetCityId;
             this.mode = mode;
             this.battleProcedure = battleProcedure;
+            this.actionFactory = actionFactory;
         }
 
         public CityDefenseChainAction(uint id,
@@ -46,10 +50,12 @@ namespace Game.Logic.Actions
                                       ActionState chainState,
                                       bool isVisible,
                                       Dictionary<string, string> properties,
-                                      BattleProcedure battleProcedure)
+                                      BattleProcedure battleProcedure,
+                                      IActionFactory actionFactory)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
             this.battleProcedure = battleProcedure;
+            this.actionFactory = actionFactory;
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             targetCityId = uint.Parse(properties["target_city_id"]);
@@ -127,7 +133,7 @@ namespace Game.Logic.Actions
             city.References.Add(troopObject, this);
             city.Notifications.Add(troopObject, this, targetCity);
 
-            var tma = new TroopMovePassiveAction(cityId, troopObject.ObjectId, targetCity.X, targetCity.Y, false, false);
+            var tma = actionFactory.CreateTroopMovePassiveAction(cityId, troopObject.ObjectId, targetCity.X, targetCity.Y, false, false);
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
 

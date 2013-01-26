@@ -20,6 +20,14 @@ namespace Game.Logic.Actions
 
         private readonly Boolean isAttacking;
 
+        private readonly Formula formula;
+
+        private readonly TileLocator tileLocator;
+
+        private readonly IGameObjectLocator world;
+
+        private readonly ILocker locker;
+
         private readonly Boolean isReturningHome;
 
         private readonly uint troopObjectId;
@@ -41,7 +49,11 @@ namespace Game.Logic.Actions
                                       uint x,
                                       uint y,
                                       bool isReturningHome,
-                                      bool isAttacking)
+                                      bool isAttacking,
+                                      Formula formula,
+                                      TileLocator tileLocator,
+                                      IGameObjectLocator world,
+                                      ILocker locker)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
@@ -49,6 +61,10 @@ namespace Game.Logic.Actions
             this.y = y;
             this.isReturningHome = isReturningHome;
             this.isAttacking = isAttacking;
+            this.formula = formula;
+            this.tileLocator = tileLocator;
+            this.world = world;
+            this.locker = locker;
         }
 
         public TroopMovePassiveAction(uint id,
@@ -57,9 +73,17 @@ namespace Game.Logic.Actions
                                       DateTime endTime,
                                       bool isVisible,
                                       string nlsDescription,
-                                      Dictionary<string, string> properties)
+                                      Dictionary<string, string> properties,
+                                      Formula formula,
+                                      TileLocator tileLocator,
+                                      IGameObjectLocator world,
+                                      ILocker locker)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
+            this.formula = formula;
+            this.tileLocator = tileLocator;
+            this.world = world;
+            this.locker = locker;
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_id"]);
             x = uint.Parse(properties["x"]);
@@ -129,7 +153,7 @@ namespace Game.Logic.Actions
             }
 
             var recordForeach = new RecordForeach {ShortestDistance = int.MaxValue, IsShortestDistanceDiagonal = false};
-            TileLocator.Current.ForeachObject(obj.X, obj.Y, 1, false, Work, recordForeach);
+            tileLocator.ForeachObject(obj.X, obj.Y, 1, false, Work, recordForeach);
             nextX = recordForeach.X;
             nextY = recordForeach.Y;
             return true;
@@ -140,14 +164,14 @@ namespace Game.Logic.Actions
             ICity city;
             ITroopObject troopObj;
 
-            if (!World.Current.TryGetObjects(cityId, troopObjectId, out city, out troopObj))
+            if (!world.TryGetObjects(cityId, troopObjectId, out city, out troopObj))
             {
                 return Error.ObjectNotFound;
             }
 
             distanceRemaining = Math.Max(1, troopObj.TileDistance(x, y));
 
-            double moveTimeTotal = Formula.Current.MoveTimeTotal(troopObj.Stub, distanceRemaining, isAttacking);
+            double moveTimeTotal = formula.MoveTimeTotal(troopObj.Stub, distanceRemaining, isAttacking);
 
             moveTime = Config.battle_instant_move ? 0 : moveTimeTotal / distanceRemaining;
 
@@ -183,7 +207,7 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 StateChange(ActionState.Failed);
             }
@@ -194,7 +218,7 @@ namespace Game.Logic.Actions
             ICity city;
             ITroopObject troopObj;
 
-            using (Concurrency.Current.Lock(cityId, troopObjectId, out city, out troopObj))
+            using (locker.Lock(cityId, troopObjectId, out city, out troopObj))
             {
                 if (!IsValid())
                 {

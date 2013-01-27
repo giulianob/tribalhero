@@ -51,25 +51,34 @@ package src.Map.CityRegionFilters
 					break;
 			}
 		}
+        
+        protected function setupMinimapButton(obj: CityRegionObject, button: *) : void {            
+            var hitArea: Sprite = new MINIMAP_HIT_AREA();                                    
+            obj.addChild(hitArea);
+            hitArea.visible = false;
+            button.hitArea = hitArea;            
+            button.mouseEnabled = false;            
+            button.mouseChildren = false;
+            button.alpha = 0.5;
+        }
+        
 		public function applyForest(obj: CityRegionObject) : void {
-			var img: DisplayObject = ObjectFactory.getIcon("MINIMAP_FOREST_ICON");
-			obj.sprite = img;
-			obj.addChild(img);
-			
-			var icon: MINIMAP_FOREST_ICON = obj.sprite as MINIMAP_FOREST_ICON;
-			icon.lvlText.mouseEnabled = false;
-			icon.useHandCursor = true;
-			icon.lvlText.text = obj.extraProps.level.toString();
-			obj.alpha = 0.5;
+			var icon: MINIMAP_FOREST_ICON = ObjectFactory.getIcon("MINIMAP_FOREST_ICON") as MINIMAP_FOREST_ICON;
+			obj.sprite = icon;
+			obj.addChild(icon);            
+			icon.lvlText.text = obj.extraProps.level.toString();			
+            setupMinimapButton(obj, icon);
 		}
 		
 		public function applyTroop(obj: CityRegionObject) : void {
-			var img: DisplayObject = ObjectFactory.getIcon("MINIMAP_TROOP_ICON");
-			obj.sprite = img;
+			var icon: MINIMAP_TROOP_ICON = ObjectFactory.getIcon("MINIMAP_TROOP_ICON") as MINIMAP_TROOP_ICON;
+			obj.sprite = icon;
+            // Highlight friendly troops
 			if (Constants.tribeId > 0 && obj.extraProps.tribeId == Constants.tribeId) {
 				obj.transform.colorTransform = new ColorTransform(0, 0, 0, 1, 255, 255, 0);
 			}
-			obj.addChild(img);
+			obj.addChild(icon);
+            setupMinimapButton(obj, icon);
 		}
 		
 		public function applyCity(obj: CityRegionObject) : void {
@@ -98,29 +107,19 @@ package src.Map.CityRegionFilters
 			}
 		}
 		public function applyStronghold(obj: CityRegionObject) : void {
-			var img: DisplayObject = ObjectFactory.getIcon("MINIMAP_FOREST_ICON");
-			obj.sprite = img;
-			obj.sprite.transform.colorTransform = new ColorTransform(0, 0, 0, 1, 255, 255, 0);
-			obj.addChild(img);
-			
-			var icon: MINIMAP_FOREST_ICON = obj.sprite as MINIMAP_FOREST_ICON;
-			icon.lvlText.mouseEnabled = false;
-			icon.useHandCursor = true;
-			icon.lvlText.text = obj.extraProps.level.toString();
-			obj.alpha = 0.5;
+			var icon: MINIMAP_STRONGHOLD_ICON = ObjectFactory.getIcon("MINIMAP_STRONGHOLD_ICON") as MINIMAP_STRONGHOLD_ICON;
+			obj.sprite = icon;			
+			obj.addChild(icon);			
+			icon.lvlText.text = obj.extraProps.level.toString();			
+            setupMinimapButton(obj, icon);
 		}
 		
 		public function applyBarbarianTribe(obj: CityRegionObject) : void {
-			var img: DisplayObject = ObjectFactory.getIcon("MINIMAP_FOREST_ICON");
-			obj.sprite = img;
-			obj.sprite.transform.colorTransform = new ColorTransform(0, 0, 0, 1, 0, 255, 255);
-			obj.addChild(img);
-			
-			var icon: MINIMAP_FOREST_ICON = obj.sprite as MINIMAP_FOREST_ICON;
-			icon.lvlText.mouseEnabled = false;
-			icon.useHandCursor = true;
-			icon.lvlText.text = obj.extraProps.level.toString();
-			obj.alpha = 0.5;
+			var icon: MINIMAP_BARBARIAN_TRIBE_ICON = ObjectFactory.getIcon("MINIMAP_BARBARIAN_TRIBE_ICON") as MINIMAP_BARBARIAN_TRIBE_ICON;
+			obj.sprite = icon;			
+			obj.addChild(icon);
+			icon.lvlText.text = obj.extraProps.level.toString();			
+            setupMinimapButton(obj, icon);
 		}		
 		
 		public function applyLegend(legend: CityRegionLegend) : void {

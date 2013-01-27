@@ -629,8 +629,8 @@ class Battle extends AppModel {
 
         $report['BattleReportEnter'] = reset($this->BattleReport->findById($joinAndLeaveReportIds['join_battle_report_id']));
         $report['BattleReportExit'] = reset($this->BattleReport->findById($joinAndLeaveReportIds['leave_battle_report_id']));
-        // For city battles only, the min round rule applies
-        if ($report['Battle']['location_type'] == 'City') {
+        // For city battles and barb tribes, the min round rule applies
+        if ($report['Battle']['location_type'] == 'City' || $report['Battle']['location_type'] == 'BarbarianTribe') {
             $roundDelta = intVal($report['BattleReportExit']['round']) - intVal($report['BattleReportEnter']['round']);
             if ($roundDelta < BATTLE_VIEW_MIN_ROUND) {
                 // Get exit troop

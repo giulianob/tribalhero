@@ -86,6 +86,7 @@ namespace Game.Logic.Actions
             this.locker = locker;
             this.gameObjectLocator = gameObjectLocator;
             this.battleProcedure = battleProcedure;
+            this.strongholdBattleProcedure = strongholdBattleProcedure;
             this.formula = formula;
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);

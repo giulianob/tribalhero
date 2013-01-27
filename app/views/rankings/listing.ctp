@@ -4,7 +4,9 @@ $paging = $paginator->params('Ranking');
 
 $results = array('pages' => $paging['pageCount'], 'page' => $paging['page'], 'rankings' => array());
 
-// Check if this is a city or a player based ranking. For player ranking, we skip the City field since it doesnt exist
+if (isset($searchRank)) {
+    $results['searchRank'] = $searchRank;
+}
 
 $isCity = count($data) > 0 && array_key_exists('City', $data[0]);
 $isPlayer = count($data) > 0 && array_key_exists('Player', $data[0]);

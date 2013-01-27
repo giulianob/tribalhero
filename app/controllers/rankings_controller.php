@@ -34,9 +34,10 @@ class RankingsController extends AppController {
             return;
         }
 
-        $this->paginate = $options;
+        $this->paginate = $options['list'];
         $data = $this->paginate($this->Ranking);
 
+        $this->set('searchRank', $options['rank']);
         $this->set('data', $data);
         $this->render('listing');
     }

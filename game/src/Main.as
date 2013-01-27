@@ -112,7 +112,7 @@
 			//Define login type and perform login action
 			if (parms.hostname)
 			{
-				siteVersion = parms.siteVersion;
+				siteVersion = parms.siteVersion;                
 				Constants.playerName = parms.playerName;
 				Constants.loginKey = parms.lsessid;
 				Constants.hostname = parms.hostname;
@@ -139,7 +139,7 @@
 					onDisconnected();
 					showConnectionError(true);
 				});
-				loader.load(new URLRequest("http://" + Constants.hostname + ":8085/data.xml?" + siteVersion));
+				loader.load(new URLRequest("http://" + Constants.hostname + ":8085/data.xml?m=" + new Date().getTime().toString() + "&v=" + siteVersion));
 			} 
 			else
 				loadLanguages();
@@ -154,7 +154,7 @@
 				}
 				else doConnect();
 			});
-			Locale.addXMLPath(Constants.defLang, "http://" + Constants.hostname + ":8085/Game_" + Constants.defLang + ".xml?" + siteVersion);
+			Locale.addXMLPath(Constants.defLang, "http://" + Constants.hostname + ":8085/Game_" + Constants.defLang + ".xml?m=" + new Date().getTime().toString() + "&v=" + siteVersion);
 			Locale.setDefaultLang(Constants.defLang);				
 			Locale.loadLanguageXML(Constants.defLang);
 		}

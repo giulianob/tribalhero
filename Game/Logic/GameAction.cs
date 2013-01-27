@@ -248,15 +248,27 @@ namespace Game.Logic
             return WorkerObject != null && !IsDone;
         }
 
+        protected double? ActionConfigTime()
+        {
+            string customTime;
+            string key = "actions_" + Type.ToString().ToUnderscore();
+            if (Config.ExtraProperties.TryGetValue(key, out customTime))
+            {
+                return double.Parse(customTime);
+            }
+
+            return null;
+        }
+
         protected double CalculateTime(double seconds)
         {
             if (!Config.server_production && Debugger.IsAttached)
             {
-                string customTime;
-                string key = "actions_" + Type.ToString().ToUnderscore();
-                if (Config.ExtraProperties.TryGetValue(key, out customTime))
+                var customTime = ActionConfigTime();
+
+                if (customTime != null)
                 {
-                    return double.Parse(customTime);
+                    return customTime.Value;
                 }
 
                 if (Config.actions_instant_time)

@@ -173,7 +173,14 @@ namespace Game.Logic.Actions
 
             double moveTimeTotal = formula.MoveTimeTotal(troopObj.Stub, distanceRemaining, isAttacking);
 
-            moveTime = Config.battle_instant_move ? 0 : moveTimeTotal / distanceRemaining;
+            if (ActionConfigTime() != null)
+            {
+                moveTime = ActionConfigTime().Value;
+            }
+            else
+            {
+                moveTime = moveTimeTotal / distanceRemaining;
+            }
 
             beginTime = DateTime.UtcNow;
             endTime = DateTime.UtcNow.AddSeconds(moveTimeTotal);

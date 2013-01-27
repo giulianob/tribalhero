@@ -75,8 +75,8 @@ namespace Game.Logic.Procedures
                                                                                battleOwner,
                                                                                targetStronghold);
 
-                targetStronghold.MainBattle.SetProperty("defense_stronghold_meter", formula.GetMainBattleMeter(targetStronghold.Lvl));
-                targetStronghold.MainBattle.SetProperty("offense_stronghold_meter", formula.GetMainBattleMeter(targetStronghold.Lvl));
+                targetStronghold.MainBattle.SetProperty("defense_stronghold_meter", formula.StrongholdMainBattleMeter(targetStronghold.Lvl));
+                targetStronghold.MainBattle.SetProperty("offense_stronghold_meter", formula.StrongholdMainBattleMeter(targetStronghold.Lvl));
 
                 combatGroup = battleProcedure.AddAttackerToBattle(targetStronghold.MainBattle, attackerTroopObject);
 

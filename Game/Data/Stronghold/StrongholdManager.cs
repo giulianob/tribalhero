@@ -115,7 +115,7 @@ namespace Game.Data.Stronghold
                                                                             level,
                                                                             x,
                                                                             y,
-                                                                            formula.GetGateLimit(level));
+                                                                            formula.StrongholdGateLimit(level));
                 using (dbManager.GetThreadTransaction())
                 {
                     Add(stronghold);
@@ -145,7 +145,7 @@ namespace Game.Data.Stronghold
             stronghold.StrongholdState = StrongholdState.Occupied;
             stronghold.Tribe = tribe;
             stronghold.GateOpenTo = null;
-            stronghold.Gate = formula.GetGateLimit(stronghold.Lvl);
+            stronghold.Gate = formula.StrongholdGateLimit(stronghold.Lvl);
             stronghold.DateOccupied = DateTime.UtcNow;
             stronghold.EndUpdate();
             MarkIndexDirty();
@@ -221,13 +221,13 @@ namespace Game.Data.Stronghold
                 return Error.StrongholdNotRepairableInBattle;
             }
 
-            var diff = formula.GetGateLimit(stronghold.Lvl) - stronghold.Gate;
+            var diff = formula.StrongholdGateLimit(stronghold.Lvl) - stronghold.Gate;
             if (diff <= 0)
             {
                 return Error.StrongholdGateFull;
             }
 
-            var cost = formula.GetGateRepairCost(stronghold.Lvl, diff);
+            var cost = formula.StrongholdGateRepairCost(stronghold.Lvl, diff);
             if (!stronghold.Tribe.Resource.HasEnough(cost))
             {
                 return Error.ResourceNotEnough;
@@ -237,7 +237,7 @@ namespace Game.Data.Stronghold
             dbManager.Save(stronghold.Tribe);
 
             stronghold.BeginUpdate();
-            stronghold.Gate = formula.GetGateLimit(stronghold.Lvl);
+            stronghold.Gate = formula.StrongholdGateLimit(stronghold.Lvl);
             stronghold.EndUpdate();
 
             return Error.Ok;

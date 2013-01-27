@@ -14,14 +14,20 @@ package src.UI.Components.BattleReport
 	 */
 	public class BattleEventRow extends JPanel
 	{
+        private static const TYPE_LABELS: * = {
+            'stronghold': '<a href="event:viewProfileByType:{0}:{1}">{2} ({3})</a>',
+            'city': '<a href="event:viewProfileByType:{0}:{1}">{2} ({3})</a>',
+            'barbariantribe': '{2}'
+        };
+        
 		private static const EVENT_STATES:Array = [
-			'<a href="event:viewProfileByType:{0}:{1}">{2} ({3})</a> has joined with <a href="event:custom:viewTroop">{4}</a> units', 
-			'<a href="event:viewProfileByType:{0}:{1}">{2} ({3})</a> remains with <a href="event:custom:viewTroop">{4}</a> units',
-			'<a href="event:viewProfileByType:{0}:{1}">{2} ({3})</a> has left with <a href="event:custom:viewTroop">{4}</a> units',
-			'<a href="event:viewProfileByType:{0}:{1}">{2} ({3})</a> has died',
-			'<a href="event:viewProfileByType:{0}:{1}">{2} ({3})</a> has retreated with <a href="event:custom:viewTroop">{4}</a> units',
-			'<a href="event:viewProfileByType:{0}:{1}">{2} ({3})</a> has been reinforced with <a href="event:custom:viewTroop">{4}</a> units',
-			'<a href="event:viewProfileByType:{0}:{1}">{2} ({3})</a> ran out of stamina, left with <a href="event:custom:viewTroop">{4}</a> units'
+			'{0} has joined with <a href="event:custom:viewTroop">{1}</a> units', 
+			'{0} remains with <a href="event:custom:viewTroop">{1}</a> units',
+			'{0} has left with <a href="event:custom:viewTroop">{1}</a> units',
+			'{0} has died',
+			'{0} has retreated with <a href="event:custom:viewTroop">{1}</a> units',
+			'{0} has been reinforced with <a href="event:custom:viewTroop">{1}</a> units',
+			'{0} ran out of stamina, left with <a href="event:custom:viewTroop">{1}</a> units'
 		];
 		
 		private var totalUnits:int = 0;
@@ -46,7 +52,8 @@ package src.UI.Components.BattleReport
 		{
 			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 			{
-				var header: String = StringUtil.substitute(EVENT_STATES[event.state], event.owner.type, event.owner.id, StringHelper.htmlEscape(event.owner.name), event.name == '[LOCAL]' ? StringHelper.localize("LOCAL_TROOP") : event.name, totalUnits);
+                var locationHtml: String = StringUtil.substitute(TYPE_LABELS[event.owner.type.toLowerCase()], event.owner.type, event.owner.id, StringHelper.htmlEscape(event.owner.name), event.name == '[LOCAL]' ? StringHelper.localize("LOCAL_TROOP") : event.name)
+				var header: String = StringUtil.substitute(EVENT_STATES[event.state], locationHtml, totalUnits);                
 				lblHeader = new RichLabel(header, 0, 30);
 				lblHeader.addEventListener(RichLabelCustomEvent.CUSTOM_EVENT_MOUSE_OVER, customEventMouseOver);
 				lblHeader.addEventListener(MouseEvent.MOUSE_OUT, eventMouseOut);

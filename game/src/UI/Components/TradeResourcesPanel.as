@@ -20,6 +20,7 @@
 		private var structure:StructureObject = null;
 		private var city:City = null;
 		private var prompt:String;
+		private var capacity: int;
 		
 		private var lblTitle1:JLabel;
 		
@@ -38,11 +39,12 @@
 		private var lblGoldAmount:JAdjuster;
         private var lblMaxOut:JLabelButton;
 		
-		public function TradeResourcesPanel(parentObj:StructureObject, prompt:String = null)
+		public function TradeResourcesPanel(parentObj:StructureObject, capacity: int, prompt:String = null)
 		{
 			this.structure = parentObj;
 			this.city = Global.map.cities.get(parentObj.cityId);
 			this.prompt = prompt;
+			this.capacity = capacity;
 			
 			setBorder(null);
 			setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 0, AsWingConstants.TOP));
@@ -64,12 +66,10 @@
 		
 		private function onResourceChange(e:Event = null):void
 		{			
-			var sendCapacity:int = Formula.sendCapacity(structure.level);
-			
-			lblWoodAmount.setMaximum(Math.min(sendCapacity, city.resources.wood.getValue()));
-			lblCropAmount.setMaximum(Math.min(sendCapacity, city.resources.crop.getValue()));
-			lblGoldAmount.setMaximum(Math.min(sendCapacity, city.resources.gold.getValue()));
-			lblIronAmount.setMaximum(Math.min(sendCapacity, city.resources.iron.getValue()));
+			lblWoodAmount.setMaximum(Math.min(capacity, city.resources.wood.getValue()));
+			lblCropAmount.setMaximum(Math.min(capacity, city.resources.crop.getValue()));
+			lblGoldAmount.setMaximum(Math.min(capacity, city.resources.gold.getValue()));
+			lblIronAmount.setMaximum(Math.min(capacity, city.resources.iron.getValue()));
 		}
 		
 		public function getResource():Resources

@@ -29,7 +29,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				var process : AttackSendProcess = new AttackSendProcess(Global.gameContainer.selectedCity, location);
+				var process : AttackSendProcess = new AttackSendProcess(Global.gameContainer.selectedCity);
 				process.execute();
 			}
 		}

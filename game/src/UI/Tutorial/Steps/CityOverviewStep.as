@@ -73,7 +73,7 @@ package src.UI.Tutorial.Steps
 			var farm: CityObject = map.cities.getByIndex(0).getStructureOfType(FARM_TYPE);
 			if (farm != null && farm.level >= 1) 
 			{
-                if (!this.doneReadingOverview) {
+                if (this.doneReadingOverview) {
                     this.complete();
                 }
                 

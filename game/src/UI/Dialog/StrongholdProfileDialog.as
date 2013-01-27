@@ -105,7 +105,7 @@
 			
 			// Left panel
 			pnlLeftContainer = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0));
-			pnlLeftContainer.setPreferredWidth(225);			
+			pnlLeftContainer.setPreferredWidth(255);			
 			pnlLeftContainer.appendAll(nameLabel, pnlButtonContainer, pnlInfoContainer);
 			
 			// Right panel			

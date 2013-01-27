@@ -32,23 +32,16 @@ package src.Objects.Process
 		public function onChoseUnits(sender: ReinforceTroopDialog): void {
 			
 			Global.gameContainer.closeAllFrames(true);
-			
-			
-			if(location==null) {
-				var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
+						
+            var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
 				
-				var cursor: GroundReinforceCursor = new GroundReinforceCursor(onChoseTarget, reinforceDialog.getTroop());
+            var cursor: GroundReinforceCursor = new GroundReinforceCursor(onChoseTarget, reinforceDialog.getTroop());
+            
+            var changeTroop: JButton = new JButton("Change Troop");
+            changeTroop.addActionListener(onChangeTroop);
+            sidebar.append(changeTroop);
 				
-				var changeTroop: JButton = new JButton("Change Troop");
-				changeTroop.addActionListener(onChangeTroop);
-				sidebar.append(changeTroop);
-				
-				Global.gameContainer.setSidebar(sidebar);
-			} else {
-				sendReinforcement(location.type, location.id);
-				Global.gameContainer.setOverlaySprite(null);
-				Global.gameContainer.setSidebar(null);
-			}
+            Global.gameContainer.setSidebar(sidebar);
 		}
 		
 		private function sendReinforcement(type : int, id : uint): void {

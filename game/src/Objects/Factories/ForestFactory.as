@@ -11,6 +11,7 @@
 	import src.Objects.AggressiveLazyValue;
 	import src.Objects.Forest;
 	import src.Objects.States.GameObjectState;
+    import src.Util.Util;
 
 	/**
 	 * ...
@@ -29,14 +30,7 @@
 
 			if (centered)
 			{
-				var item: DisplayObject;
-				for (var i: int = 0; i < sprite.numChildren; i++)
-				{
-					item = sprite.getChildAt(i);
-					var rect: Rectangle = item.getRect(item);
-					item.x -= rect.x;
-					item.y -= rect.y;
-				}
+				Util.centerSprite(sprite);
 			}
 
 			return sprite;

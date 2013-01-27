@@ -7,6 +7,7 @@
 	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
 	import src.Map.Map;
+    import src.Objects.BarbarianTribe;
 	import src.Objects.Forest;
 	import src.Objects.NewCityPlaceholder;
 	import src.Objects.Prototypes.ObjectTypePrototype;
@@ -30,6 +31,7 @@
 		public static const TYPE_STRUCTURE: int = 4;
 		public static const TYPE_NEW_CITY_PLACEHOLDER: int = 5;
 		public static const TYPE_STRONGHOLD: int = 6;
+		public static const TYPE_BARBARIAN_TRIBE: int = 7;
 
 		private static var objectTypes: BinaryList;
 
@@ -87,6 +89,8 @@
 				return TYPE_NEW_CITY_PLACEHOLDER;
 			else if (type == 300)
 				return TYPE_STRONGHOLD;
+			else if (type == 400)
+				return TYPE_BARBARIAN_TRIBE;
 			else
 				return TYPE_UNIT;
 		}
@@ -146,7 +150,9 @@
 			else if (obj is NewCityPlaceholder)
 				sprite = getNewCityPlaceholderSprite();
 			else if (obj is Stronghold)
-				sprite = StructureFactory.getSprite((obj as Stronghold).type, (obj as Stronghold).level, centered);
+				sprite = StrongholdFactory.getSprite(centered);
+			else if (obj is BarbarianTribe)
+				sprite = BarbarianTribeFactory.getSprite(centered);
 			else
 				return null;			
 

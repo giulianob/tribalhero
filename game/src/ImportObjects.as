@@ -32,9 +32,11 @@
 			ICON_HAMMER;
 			
 			//Minimap Icons
+            MINIMAP_HIT_AREA;
 			MINIMAP_TROOP_ICON;
 			MINIMAP_FOREST_ICON;
             MINIMAP_STRONGHOLD_ICON;
+            MINIMAP_BARBARIAN_TRIBE_ICON;
 			
 			//Passive Action Icons
 			PASSIVE_ATTACKING;
@@ -126,6 +128,7 @@
 			TROOP_DEFENSE_4;						
 			
 			//Structures
+            BARBARIAN_TRIBE_STRUCTURE;
 			ARMORY_STRUCTURE;
 			BARRACK_STRUCTURE;
 			DEFAULT_BUILDING;

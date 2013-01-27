@@ -4,10 +4,13 @@
 	import flash.events.*;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.sampler.NewObjectSample;
 	import flash.utils.*;
+	import src.Objects.BarbarianTribe;
 	import src.Objects.NewCityPlaceholder;
 	import src.Objects.SimpleObject;
 	import src.Objects.Stronghold.Stronghold;
+	import src.UI.Sidebars.BarbarianTribeInfo.BarbarianTribeSidebar;
 	import src.UI.Sidebars.NewCityPlaceholder.NewCityPlaceholderSidebar;
 	import src.Util.Util;
 	import flash.ui.Keyboard;
@@ -372,6 +375,8 @@
 				sidebar = new StrongholdInfoSidebar(obj as Stronghold);
 			else if (obj is NewCityPlaceholder)
 				sidebar = new NewCityPlaceholderSidebar(obj as NewCityPlaceholder);
+			else if (obj is BarbarianTribe)
+                    sidebar = new BarbarianTribeSidebar(obj as BarbarianTribe);
 
 			Global.gameContainer.setSidebar(sidebar);
 		}

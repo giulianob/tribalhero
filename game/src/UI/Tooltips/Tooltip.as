@@ -83,7 +83,6 @@ package src.UI.Tooltips {
 		}
         
         public function resize(): void {  
-            trace("RESIZE");
             container.pack();
             container.repaintAndRevalidate();
         }

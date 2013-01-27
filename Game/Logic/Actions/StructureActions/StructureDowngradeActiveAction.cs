@@ -187,7 +187,7 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        private void InterruptCatchAll(bool wasKilled)
+        private void InterruptCatchAll()
         {
             ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
@@ -209,12 +209,12 @@ namespace Game.Logic.Actions
 
         public override void UserCancelled()
         {
-            InterruptCatchAll(false);
+            InterruptCatchAll();
         }
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            InterruptCatchAll(wasKilled);
+            InterruptCatchAll();
         }
 
         #region IPersistable

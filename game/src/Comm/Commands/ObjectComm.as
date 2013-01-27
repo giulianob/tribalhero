@@ -87,6 +87,10 @@
 					obj.lvl = packet.readUByte();
 					obj.tribeId = packet.readUInt();
 					break;
+				case ObjectFactory.TYPE_BARBARIAN_TRIBE:
+					obj.lvl = packet.readUByte();
+					obj.count = packet.readUByte();
+					break;
 			}
 			
 			obj.state = readState(packet);
@@ -108,6 +112,8 @@
 					return TroopFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.playerId, obj.groupId, obj.id);
 				case ObjectFactory.TYPE_STRONGHOLD:
 					return StrongholdFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.groupId, obj.id, obj.lvl, obj.tribeId);
+				case ObjectFactory.TYPE_BARBARIAN_TRIBE:
+					return BarbarianTribeFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.groupId, obj.id, obj.lvl, obj.count);
 				default:
 					throw new Error("Trying to unread unknown object class type " + obj.type);
 			}

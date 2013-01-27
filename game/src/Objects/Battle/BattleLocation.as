@@ -5,6 +5,7 @@ package src.Objects.Battle
         public static const CITY: int = 0;
         public static const STRONGHOLD: int = 1;
         public static const STRONGHOLDGATE: int = 2;
+        public static const BARBARIANTRIBE: int = 3;
 		
 		public var name:String;
 		public var id:int;
@@ -29,6 +30,9 @@ package src.Objects.Battle
 					case "StrongholdGate":
 						this.type = STRONGHOLDGATE;
 						break;		
+					case "BarbarianTribe":
+						this.type = BARBARIANTRIBE;
+						break;		                        
 					default:
 						throw new Error("Unknown location type");						
 				}
@@ -46,8 +50,10 @@ package src.Objects.Battle
 					return "City";
 				case STRONGHOLD:
 					return "Stronghold";
-				case "StrongholdGate":
+				case STRONGHOLDGATE:
 					return "StrongholdGate";
+                case BARBARIANTRIBE:
+                    return "BarbarianTribe";                    
 				default:
 					throw new Error("Unknown location type");
 			}

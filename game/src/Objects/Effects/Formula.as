@@ -189,7 +189,7 @@
 				} 
 			}
             
-            return baseUpkeep * (100.0 - Math.min(reduceUpkeep, 70)) / 100.0;
+            return baseUpkeep * (100.0 - Math.min(reduceUpkeep, 30)) / 100.0;
         }
 
 		public static function laborRate(city: City) : int {

@@ -247,8 +247,8 @@ package src.UI.Dialog
 			var result: String = "";
 			while ((beginOfs = str.indexOf("#", index)) != -1 && (endOfs = str.indexOf("#", beginOfs + 1)) != -1) {
 				result += str.substring(index, beginOfs);
-				var values: Array =  str.substring(beginOfs + 1, endOfs).split(":");
-				if (values.length >= 2) {
+				var values: Array =  str.substring(beginOfs + 1, endOfs).split(":", 2);
+				if (values.length == 2) {
 					switch(values[0]) {
 						case "p":
 							result += StringUtil.substitute('<a href="event:viewPlayerProfileByName:{0}"><span class="global">{0}</span></a>', values[1]);

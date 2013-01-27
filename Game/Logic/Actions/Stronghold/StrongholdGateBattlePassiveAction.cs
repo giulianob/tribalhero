@@ -235,7 +235,7 @@ namespace Game.Logic.Actions
                 // Heal the gate if no one made through otherwise we let it be healed after the main battle
                 if (stronghold.GateOpenTo == null)
                 {
-                    stronghold.Gate = Math.Max(stronghold.Gate, formula.GetGateHealHp(stronghold.StrongholdState, stronghold.Lvl));
+                    stronghold.Gate = Math.Max(stronghold.Gate, formula.StrongholdGateHealHp(stronghold.StrongholdState, stronghold.Lvl));
                 }
                 stronghold.EndUpdate();
 

@@ -218,41 +218,5 @@ namespace Game.Logic.Formulas
         {
             return 50m;
         }
-
-        public virtual int GetGateLimit(byte level)
-        {
-            if (Config.stronghold_gate_limit > 0)
-            {
-                return Config.stronghold_gate_limit;
-            }
-            int[] cap = {0, 10000, 13500, 17300, 21500, 26200, 31300, 37100, 43400, 50300, 58000,
-                            66500, 75800, 86300, 97800, 110500, 124600, 140100, 157200, 176200, 200000};
-            return cap[level];
-        }
-
-        public virtual int GetGateHealHp(StrongholdState state, byte level)
-        {
-            decimal hp = GetGateLimit(level);
-            if (state != StrongholdState.Neutral)
-            {
-                hp /= 2m;
-            }
-
-            return (int)hp;
-        }
-
-        public virtual Resource GetGateRepairCost(byte level, decimal damagedGateHp)
-        {
-            return new Resource(0, (int)(damagedGateHp / 8), (int)(damagedGateHp / 16), (int)(damagedGateHp / 4));
-        }
-
-        public virtual int GetMainBattleMeter(byte level)
-        {
-            if (Config.stronghold_battle_meter > 0)
-            {
-                return Config.stronghold_battle_meter;
-            }
-            return level * 1000;
-        }
     }
 }

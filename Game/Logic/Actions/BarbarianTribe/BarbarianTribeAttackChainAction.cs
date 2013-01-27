@@ -163,7 +163,7 @@ namespace Game.Logic.Actions
             {
                 IBarbarianTribe targetBarbarianTribe;
                 // Verify the target is still good, otherwise we walk back immediately
-                if (!gameObjectLocator.TryGetObjects(targetObjectId, out targetBarbarianTribe))
+                if (!gameObjectLocator.TryGetObjects(targetObjectId, out targetBarbarianTribe) || targetBarbarianTribe.CampRemains == 0)
                 {
                     CancelCurrentChain();
                 }

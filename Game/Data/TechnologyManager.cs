@@ -157,6 +157,11 @@ namespace Game.Data
             return true;
         }
 
+        public bool Remove(uint techId)
+        {
+            return Remove(techId, true);
+        }
+
         public void Clear()
         {
             CheckUpdateMode();

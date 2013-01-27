@@ -79,7 +79,21 @@ namespace Game.Logic.Actions
                 obj.Technologies.EndUpdate();
                 Procedure.Current.OnTechnologyChange(obj);
             }
+            else
+            {
 
+                tech = new Technology(techBase);
+                obj.Technologies.BeginUpdate();
+
+                if (!obj.Technologies.Upgrade(tech))
+                {
+                    obj.EndUpdate();
+                    StateChange(ActionState.Failed);
+                    return Error.Unexpected;
+                }
+                obj.Technologies.EndUpdate();
+                Procedure.Current.OnTechnologyChange(obj);
+            }
             StateChange(ActionState.Completed);
 
             return Error.Ok;

@@ -101,6 +101,10 @@ namespace Game.Data
 
         SplashReduction = 26,
 
+        TrainTimeReduction = 27,
+
+        BuildTimeReduction = 28,
+
         BattleStatsArmoryMod = 101,
 
         BattleStatsBlacksmithMod = 102,

@@ -67,6 +67,7 @@
 
 		//On screen message component
 		public var screenMessage: ScreenMessagePanel;
+        public var screenMessageHolder: Sprite;
 
 		//Holds the tools above the minimap
 		public var minimapTools: MinimapToolsContainer = new MinimapToolsContainer();
@@ -173,7 +174,9 @@
 			
 			cmdLineHolder = new Sprite();				
 			minimapHolder = new Sprite();
+            screenMessageHolder = new Sprite();
 			
+            addChild(screenMessageHolder);
 			addChild(cmdLineHolder);								
 			addChild(minimapHolder);				
 			addChild(sidebarHolder);
@@ -553,7 +556,7 @@
 			visible = true;
 
 			// Create on screen message component, it'll auto show itself
-			screenMessage = new ScreenMessagePanel(this);
+			screenMessage = new ScreenMessagePanel(screenMessageHolder);
 			
 			// Add menu overlay
 			addChild(menuDummyOverlay);

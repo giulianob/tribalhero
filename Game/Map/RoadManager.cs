@@ -236,7 +236,7 @@ namespace Game.Map
             }
 
             // Grab the list of actual tiles based on the road type we need.
-            ushort[] types;
+            uint[] types;
 
             if (World.Current[x, y].Exists(s => s is IStructure))
             {
@@ -244,14 +244,13 @@ namespace Game.Map
             }
             else
             {
-                //TODO: Load random road set
                 types = Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("RoadSet1");
             }
 
             // Set the new road tile
-            regionManager.SetTileType(x, y, types[roadType], false);
+            regionManager.SetTileType(x, y, (ushort)types[roadType], false);
 
-            return types[roadType];
+            return (ushort)types[roadType];
         }
 
         public bool IsRoad(uint x, uint y)

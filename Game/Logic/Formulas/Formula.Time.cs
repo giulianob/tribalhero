@@ -81,7 +81,7 @@ namespace Game.Logic.Formulas
         {
             int total = 0;
             int index = 0;
-            int tiles = 0;
+            int tiles;
             while (distance > 0)
             {
                 tiles = distance > forEveryDistance ? forEveryDistance : distance;
@@ -99,13 +99,13 @@ namespace Game.Logic.Formulas
 
             foreach (var effect in stub.City.Technologies.GetEffects(EffectCode.TroopSpeedMod))
             {
-                // getting rush attack/defense bonus;
+                // Getting rush attack/defense bonus;
                 if ((((string)effect.Value[1]).ToUpper() == "ATTACK" && isAttacking) ||
                     (((string)effect.Value[1]).ToUpper() == "DEFENSE" && !isAttacking))
                 {
                     rushMod += (int)effect.Value[0];
                 }
-                        // getting double time bonus
+                // Getting double time bonus
                 else if (((string)effect.Value[1]).ToUpper() == "DISTANCE")
                 {
                     bonus = (int)effect.Value[0] > bonus ? (int)effect.Value[0] : bonus;

@@ -199,7 +199,7 @@ namespace Game.Battle.CombatObjects
         {
             return new StrongholdCombatGate(battleManager.GetNextCombatObjectId(),
                                             battleManager.BattleId,
-                                            objectTypeFactory.GetTypes("StrongholdGateStructureType")[0],
+                                            (ushort)objectTypeFactory.GetTypes("StrongholdGateStructureType")[0],
                                             stronghold.Lvl,
                                             hp,
                                             stronghold,

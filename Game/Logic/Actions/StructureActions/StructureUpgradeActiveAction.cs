@@ -79,14 +79,14 @@ namespace Game.Logic.Actions
 
             int maxConcurrentUpgrades = Formula.Current.ConcurrentBuildUpgrades(((IStructure)city[1]).Lvl);
 
-            if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("UnlimitedBuilding", type) &&
+            if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsObjectType("UnlimitedBuilding", type) &&
                 city.Worker.ActiveActions.Values.Count(
                                                        action =>
                                                        action.ActionId != ActionId &&
                                                        (action.Type == ActionType.StructureUpgradeActive ||
                                                         (action.Type == ActionType.StructureBuildActive &&
                                                          !Ioc.Kernel.Get<ObjectTypeFactory>()
-                                                             .IsStructureType("UnlimitedBuilding",
+                                                             .IsObjectType("UnlimitedBuilding",
                                                                               ((StructureBuildActiveAction)action)
                                                                                       .BuildType)))) >=
                 maxConcurrentUpgrades)

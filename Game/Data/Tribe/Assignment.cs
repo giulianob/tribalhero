@@ -348,6 +348,12 @@ namespace Game.Data.Tribe
                 stub.OnRemoved -= OnStubRemoved;
                 stub.OnStateSwitched -= StubOnStateSwitched;
                 assignmentTroops.Remove(assignmentTroop);
+
+                // Put troop back into city if it was never dispatched
+                if (!assignmentTroop.Dispatched)
+                {
+                    procedure.TroopStubDelete(stub.City, stub);
+                }
             }
         }
 
@@ -373,13 +379,13 @@ namespace Game.Data.Tribe
             ITroopObject troopObject;
             procedure.TroopObjectCreate(stub.City, stub, out troopObject);
 
-            PassiveAction action;
+            PassiveAction action = null;
             if (Target.LocationType == LocationType.City)
             {
                 IStructure structure = (IStructure)gameObjectLocator.GetObjects(X, Y).Find(z => z is IStructure);
                 if (structure == null)
                 {
-                    procedure.TroopStubDelete(stub.City, stub);
+                    RemoveStub(stub);
                     stub.City.Owner.SendSystemMessage(null,
                                                       "Assignment Failed",
                                                       string.Format(
@@ -422,15 +428,10 @@ namespace Game.Data.Tribe
                                                                               AttackMode);
                 }
             }
-            else
-            {
-                procedure.TroopObjectDelete(troopObject, true);
-                return false;
-            }
 
-            if (stub.City.Worker.DoPassive(stub.City, action, true) != Error.Ok)
+            if (action == null || stub.City.Worker.DoPassive(stub.City, action, true) != Error.Ok)
             {
-                procedure.TroopObjectDelete(troopObject, true);
+                RemoveStub(stub);
                 return false;
             }
 
@@ -514,22 +515,32 @@ namespace Game.Data.Tribe
             }
             else
             {
-                // Remove all stubs from the assignment before removing it completely                
-                var stubs = assignmentTroops.Select(x => x.Stub).ToList();
+                Delete();
+            }
+        }
 
-                foreach (var stub in stubs)
-                {
-                    RemoveStub(stub);
-                }
+        public void Delete()
+        {
+            if (IsScheduled)
+            {
+                scheduler.Remove(this);
+            }
 
-                // Call assignment complete
-                AssignmentComplete(this);
+            // Remove all stubs from the assignment before removing it completely                
+            var stubs = assignmentTroops.Select(x => x.Stub).ToList();
 
-                // Delete the obj
-                if (DbPersisted)
-                {
-                    dbManager.Delete(this);
-                }
+            foreach (var stub in stubs)
+            {
+                RemoveStub(stub);
+            }
+
+            // Call assignment complete
+            AssignmentComplete(this);
+
+            // Delete the obj
+            if (DbPersisted)
+            {
+                dbManager.Delete(this);
             }
         }
 

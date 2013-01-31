@@ -408,35 +408,25 @@ namespace Game.Data.Tribe
         {
             id = 0;
 
-            // Create troop      
-            ITroopStub stub;
-            if (
-                    !procedure.TroopStubCreate(out stub,
-                                               city,
-                                               simpleStub,
-                                               isAttack
-                                                       ? TroopState.WaitingInOffensiveAssignment
-                                                       : TroopState.WaitingInDefensiveAssignment))
+            // Make sure this player is ranked high enough
+            if (city.Owner.Tribesman == null || !city.Owner.Tribesman.Tribe.HasRight(city.Owner.PlayerId, "Assignment"))
             {
-                return Error.TroopChanged;
+                return Error.TribesmanNotAuthorized;
             }
 
             // Max of 48 hrs for planning assignments
             if (DateTime.UtcNow.AddDays(2) < time)
             {
-                Procedure.Current.TroopStubDelete(city, stub);
                 return Error.AssignmentBadTime;
             }
 
-            if (stub.TotalCount == 0)
+            if (simpleStub.TotalCount == 0)
             {
-                Procedure.Current.TroopStubDelete(city, stub);
                 return Error.TroopEmpty;
             }
 
-            if (stub.City.Owner.Tribesman == null)
+            if (city.Owner.Tribesman == null)
             {
-                Procedure.Current.TroopStubDelete(city, stub);
                 return Error.TribeNotFound;
             }
 
@@ -445,22 +435,18 @@ namespace Game.Data.Tribe
                 ICity targetCity;
                 if (!cityManager.TryGetCity(target.LocationId, out targetCity))
                 {
-                    Procedure.Current.TroopStubDelete(city, stub);
                     return Error.CityNotFound;
                 }
 
                 // Cant attack other tribesman
-                if (isAttack && targetCity.Owner.Tribesman != null &&
-                    targetCity.Owner.Tribesman.Tribe == stub.City.Owner.Tribesman.Tribe)
+                if (isAttack && targetCity.Owner.Tribesman != null && targetCity.Owner.Tribesman.Tribe == city.Owner.Tribesman.Tribe)
                 {
-                    Procedure.Current.TroopStubDelete(city, stub);
                     return Error.AssignmentCantAttackFriend;
                 }
 
                 // Cant defend the same city
-                if (targetCity == stub.City)
+                if (targetCity == city)
                 {
-                    Procedure.Current.TroopStubDelete(city, stub);
                     return Error.DefendSelf;
                 }
             }
@@ -469,20 +455,18 @@ namespace Game.Data.Tribe
                 IStronghold stronghold;
                 if (!strongholdManager.TryGetStronghold(target.LocationId, out stronghold))
                 {
-                    Procedure.Current.TroopStubDelete(city, stub);
                     return Error.StrongholdNotFound;
                 }
 
                 // Cant attack your stronghold
-                if (isAttack && stronghold.Tribe == stub.City.Owner.Tribesman.Tribe)
+                if (isAttack && stronghold.Tribe == city.Owner.Tribesman.Tribe)
                 {
-                    Procedure.Current.TroopStubDelete(city, stub);
                     return Error.AttackSelf;
                 }
+
                 // Cant defend other tribe's stronghold
-                if (!isAttack && stronghold.Tribe != stub.City.Owner.Tribesman.Tribe)
+                if (!isAttack && stronghold.Tribe != city.Owner.Tribesman.Tribe)
                 {
-                    Procedure.Current.TroopStubDelete(city, stub);
                     return Error.DefendSelf;
                 }
             }
@@ -492,12 +476,11 @@ namespace Game.Data.Tribe
             }
 
             // Player creating the assignment cannot be late (Give a few minutes lead)
-            int distance = SimpleGameObject.TileDistance(stub.City.X, stub.City.Y, x, y);
-            DateTime reachTime = DateTime.UtcNow.AddSeconds(formula.MoveTimeTotal(stub, distance, true));
+            int distance = SimpleGameObject.TileDistance(city.X, city.Y, x, y);
+            DateTime reachTime = DateTime.UtcNow.AddSeconds(formula.MoveTimeTotal(city, simpleStub, distance, true));
 
             if (reachTime.Subtract(new TimeSpan(0, 1, 0)) > time)
             {
-                Procedure.Current.TroopStubDelete(city, stub);
                 return Error.AssignmentUnitsTooSlow;
             }
 
@@ -506,6 +489,18 @@ namespace Game.Data.Tribe
             id = assignment.Id;
             assignments.Add(assignment.Id, assignment);
             assignment.AssignmentComplete += RemoveAssignment;
+
+            // Create troop      
+            ITroopStub stub;
+            if (
+                    !procedure.TroopStubCreate(out stub,
+                                               city,
+                                               simpleStub,
+                                               isAttack ? TroopState.WaitingInOffensiveAssignment : TroopState.WaitingInDefensiveAssignment))
+            {
+                return Error.TroopChanged;
+            }
+
             var result = assignment.Add(stub);
 
             if (result != Error.Ok)

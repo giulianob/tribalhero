@@ -21,21 +21,21 @@ namespace Testing.Tribe
 {
     public class AssignmentTest
     {
-        private const uint TARGET_X = 5;
+        private const uint TargetX = 5;
 
-        private const uint TARGET_Y = 10;
+        private const uint TargetY = 10;
 
-        private static readonly DateTime targetTime = new DateTime(2012, 1, 1, 10, 1, 1, 1, DateTimeKind.Utc);
+        private static readonly DateTime TargetTime = new DateTime(2012, 1, 1, 10, 1, 1, 1, DateTimeKind.Utc);
 
-        private static readonly DateTime startTime = new DateTime(2012, 1, 1, 9, 1, 1, 1, DateTimeKind.Utc);
+        private static readonly DateTime StartTime = new DateTime(2012, 1, 1, 9, 1, 1, 1, DateTimeKind.Utc);
         
         public static IEnumerable<object[]> WhenSomeoneJoinsData
         {
             get
             {
-                yield return new object[] {new[] {300, 150, 200}, targetTime.AddMinutes(-5)};
-                yield return new object[] {new[] {150, 300, 250}, targetTime.AddMinutes(-5)};
-                yield return new object[] {new[] {150, 300, 360}, targetTime.AddMinutes(-6)};
+                yield return new object[] {new[] {300, 150, 200}, TargetTime.AddMinutes(-5)};
+                yield return new object[] {new[] {150, 300, 250}, TargetTime.AddMinutes(-5)};
+                yield return new object[] {new[] {150, 300, 360}, TargetTime.AddMinutes(-6)};
             }
         }
 
@@ -60,17 +60,17 @@ namespace Testing.Tribe
             var actionFactory = Substitute.For<IActionFactory>();
             var locker = Substitute.For<ILocker>();
 
-            SystemClock.SetClock(startTime);
+            SystemClock.SetClock(StartTime);
 
             // troop should be dispatched a minute later
             formula.MoveTimeTotal(stub, Arg.Any<int>(), true).Returns(300);
 
             Assignment assignment = new Assignment(tribe,
-                                                   TARGET_X,
-                                                   TARGET_Y,
+                                                   TargetX,
+                                                   TargetY,
                                                    targetCity,
                                                    AttackMode.Normal,
-                                                   targetTime,
+                                                   TargetTime,
                                                    "Description",
                                                    true,
                                                    formula,
@@ -80,13 +80,12 @@ namespace Testing.Tribe
                                                    procedure,
                                                    tileLocator,
                                                    actionFactory,
-                                                   locker);
-            assignment.Add(stub);
+                                                   locker) {stub};
             assignment.Reschedule();
 
             scheduler.Received().Put(assignment);
             dbManager.Received().Save(assignment);
-            assignment.Time.Should().Be(targetTime.AddMinutes(-5));
+            assignment.Time.Should().Be(TargetTime.AddMinutes(-5));
         }
 
         /// <summary>
@@ -116,7 +115,7 @@ namespace Testing.Tribe
             ICity newCity2;
             var newStub2 = CreateStub(out newCity2);
 
-            SystemClock.SetClock(startTime);
+            SystemClock.SetClock(StartTime);
 
             Queue<int> moveTimeReturns = new Queue<int>();
             foreach (var moveTime in moveTimes)
@@ -126,11 +125,11 @@ namespace Testing.Tribe
             formula.MoveTimeTotal(Arg.Any<ITroopStub>(), 0, true).Returns(x => moveTimeReturns.Dequeue());
 
             Assignment assignment = new Assignment(tribe,
-                                                   TARGET_X,
-                                                   TARGET_Y,
+                                                   TargetX,
+                                                   TargetY,
                                                    targetCity,
                                                    AttackMode.Normal,
-                                                   targetTime,
+                                                   TargetTime,
                                                    "Description",
                                                    true,
                                                    formula,
@@ -140,10 +139,7 @@ namespace Testing.Tribe
                                                    procedure,
                                                    tileLocator,
                                                    actionFactory,
-                                                   locker);
-            assignment.Add(stub);
-            assignment.Add(newStub);
-            assignment.Add(newStub2);
+                                                   locker) {stub, newStub, newStub2};
 
             scheduler.Received(3).Put(assignment);
             assignment.Time.Should().Be(expectedTime);
@@ -176,11 +172,11 @@ namespace Testing.Tribe
             var troopObject = Substitute.For<ITroopObject>();
             var locker = Substitute.For<ILocker>();
 
-            SystemClock.SetClock(startTime);
+            SystemClock.SetClock(StartTime);
 
             troopObject.ObjectId.Returns((uint)95);
 
-            gameObjectLocator.GetObjects(TARGET_X, TARGET_Y).Returns(new List<ISimpleGameObject> {targetStructure});
+            gameObjectLocator.GetObjects(TargetX, TargetY).Returns(new List<ISimpleGameObject> {targetStructure});
 
             targetStructure.City.Returns(targetCity);
 
@@ -197,11 +193,11 @@ namespace Testing.Tribe
             formula.MoveTimeTotal(Arg.Any<ITroopStub>(), 0, true).Returns(300, 300, 120);
 
             Assignment assignment = new Assignment(tribe,
-                                                   TARGET_X,
-                                                   TARGET_Y,
+                                                   TargetX,
+                                                   TargetY,
                                                    targetCity,
                                                    AttackMode.Normal,
-                                                   targetTime,
+                                                   TargetTime,
                                                    "Description",
                                                    true,
                                                    formula,
@@ -213,7 +209,7 @@ namespace Testing.Tribe
                                                    actionFactory,
                                                    locker) {stub};
 
-            SystemClock.SetClock(targetTime.AddSeconds(-90));
+            SystemClock.SetClock(TargetTime.AddSeconds(-90));
 
             // Dispatch first troop
             assignment.Callback(null);
@@ -223,7 +219,7 @@ namespace Testing.Tribe
 
             formula.Received(3).MoveTimeTotal(Arg.Any<ITroopStub>(), 0, true);
             scheduler.Received(3).Put(assignment);
-            assignment.Time.Should().Be(targetTime.AddSeconds(-120));
+            assignment.Time.Should().Be(TargetTime.AddSeconds(-120));
         }
 
         /// <summary>
@@ -251,11 +247,11 @@ namespace Testing.Tribe
             var troopObject = Substitute.For<ITroopObject>();
             var locker = Substitute.For<ILocker>();
 
-            SystemClock.SetClock(startTime);
+            SystemClock.SetClock(StartTime);
 
             troopObject.ObjectId.Returns((uint)95);
 
-            gameObjectLocator.GetObjects(TARGET_X, TARGET_Y).Returns(new List<ISimpleGameObject> {targetStructure});
+            gameObjectLocator.GetObjects(TargetX, TargetY).Returns(new List<ISimpleGameObject> {targetStructure});
 
             targetStructure.City.Returns(targetCity);
 
@@ -269,14 +265,14 @@ namespace Testing.Tribe
             procedure.When(x => x.TroopObjectCreate(stubCity, stub, out outTroopObject)).Do(x =>
                 { x[2] = troopObject; });
 
-            formula.MoveTimeTotal(Arg.Any<ITroopStub>(), 0, true).Returns(300, 120);
+            formula.MoveTimeTotal(stub, 0, true).Returns(300, 120);
 
             Assignment assignment = new Assignment(tribe,
-                                                   TARGET_X,
-                                                   TARGET_Y,
+                                                   TargetX,
+                                                   TargetY,
                                                    targetCity,
                                                    AttackMode.Normal,
-                                                   targetTime,
+                                                   TargetTime,
                                                    "Description",
                                                    true,
                                                    formula,
@@ -288,14 +284,14 @@ namespace Testing.Tribe
                                                    actionFactory,
                                                    locker) {stub};
 
-            SystemClock.SetClock(targetTime.AddSeconds(-300));
+            SystemClock.SetClock(TargetTime.AddSeconds(-300));
 
             // Dispatch troop
             assignment.Callback(null);
 
             formula.Received(2).MoveTimeTotal(Arg.Any<ITroopStub>(), 0, true);
             scheduler.Received(2).Put(assignment);
-            assignment.Time.Should().Be(targetTime.AddSeconds(-120));
+            assignment.Time.Should().Be(TargetTime.AddSeconds(-120));
             procedure.Received(0).TroopObjectCreate(Arg.Any<ICity>(), Arg.Any<ITroopStub>(), out troopObject);
         }
 
@@ -325,7 +321,7 @@ namespace Testing.Tribe
 
             troopObject.ObjectId.Returns((uint)99);
 
-            gameObjectLocator.GetObjects(TARGET_X, TARGET_Y).Returns(new List<ISimpleGameObject> {targetStructure});
+            gameObjectLocator.GetObjects(TargetX, TargetY).Returns(new List<ISimpleGameObject> {targetStructure});
 
             targetStructure.City.Returns(targetCity);
 
@@ -338,7 +334,7 @@ namespace Testing.Tribe
             stubCity.Worker.Returns(actionWorker);
             stubCity.Id.Returns((uint)20);
 
-            SystemClock.SetClock(startTime);
+            SystemClock.SetClock(StartTime);
 
             // troop should be dispatched a minute later
             formula.MoveTimeTotal(stub, Arg.Any<int>(), true).Returns(300);
@@ -348,11 +344,11 @@ namespace Testing.Tribe
                 { x[2] = troopObject; });
 
             Assignment assignment = new Assignment(tribe,
-                                                   TARGET_X,
-                                                   TARGET_Y,
+                                                   TargetX,
+                                                   TargetY,
                                                    targetCity,
                                                    AttackMode.Strong,
-                                                   targetTime,
+                                                   TargetTime,
                                                    "Description",
                                                    false,
                                                    formula,
@@ -364,9 +360,9 @@ namespace Testing.Tribe
                                                    actionFactory,
                                                    locker) {stub};
             assignment.Reschedule();
-            assignment.Time.Should().Be(targetTime.AddMinutes(-5));
+            assignment.Time.Should().Be(TargetTime.AddMinutes(-5));
 
-            SystemClock.SetClock(targetTime.AddSeconds(-90));
+            SystemClock.SetClock(TargetTime.AddSeconds(-90));
 
             // Dispatch first troop
             assignment.Callback(null);

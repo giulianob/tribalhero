@@ -93,11 +93,21 @@ namespace Game.Logic.Formulas
 
         public virtual int MoveTimeTotal(ITroopStub stub, int distance, bool isAttacking)
         {
-            var moveTime = MoveTime(stub.Speed);
+            return MoveTimeTotal(stub.City, stub.Speed, distance, isAttacking);
+        }
+
+        public virtual int MoveTimeTotal(ICity city, ISimpleStub stub, int distance, bool isAttacking)
+        {
+            return MoveTimeTotal(city, GetTroopSpeed(city, stub), distance, isAttacking);
+        }
+
+        public virtual int MoveTimeTotal(ICity city, byte speed, int distance, bool isAttacking)
+        {
+            var moveTime = MoveTime(speed);
             double bonus = 0;
             double rushMod = 0;
 
-            foreach (var effect in stub.City.Technologies.GetEffects(EffectCode.TroopSpeedMod))
+            foreach (var effect in city.Technologies.GetEffects(EffectCode.TroopSpeedMod))
             {
                 // Getting rush attack/defense bonus;
                 if ((((string)effect.Value[1]).ToUpper() == "ATTACK" && isAttacking) ||

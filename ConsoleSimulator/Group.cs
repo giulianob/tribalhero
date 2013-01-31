@@ -126,7 +126,7 @@ namespace ConsoleSimulator
             TroopObject = new TroopObject(AttackStub) {X = city.X, Y = city.Y};
             TroopObject.BeginUpdate();
             TroopObject.Stats = new TroopStats(Formula.Current.GetTroopRadius(AttackStub, null),
-                                               Formula.Current.GetTroopSpeed(AttackStub));
+                                               Formula.Current.GetTroopSpeed(AttackStub.City, AttackStub));
             TroopObject.EndUpdate();
 
             city.Add(TroopObject);

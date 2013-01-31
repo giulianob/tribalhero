@@ -18,7 +18,7 @@ namespace Game.Logic.Formulas
             return (byte)Math.Min(stub.City.Value / 40, 4);
         }
 
-        public virtual byte GetTroopSpeed(ITroopStub stub)
+        public virtual byte GetTroopSpeed(ICity city, ISimpleStub stub)
         {
             if (stub.TotalCount == 0)
             {
@@ -33,7 +33,7 @@ namespace Game.Logic.Formulas
             {
                 foreach (var kvp in formation)
                 {
-                    IBaseUnitStats stats = stub.City.Template[kvp.Key];
+                    IBaseUnitStats stats = city.Template[kvp.Key];
                     // Use the slowest machine speed if available.
                     if (stats.Battle.Armor == ArmorType.Machine)
                     {

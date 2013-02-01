@@ -897,7 +897,11 @@ namespace Persistance.Managers
                 LogCommand(command, false);
             }
 
+#if DEBUG
+            throw e;
+#else
             Environment.Exit(2);
+#endif
         }
     }
 }

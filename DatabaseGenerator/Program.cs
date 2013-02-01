@@ -72,7 +72,7 @@ namespace DatabaseGenerator
 
                 foreach (var type in structureTypes)
                 {
-                    if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("DatabaseIgnoreStructures", type))
+                    if (Ioc.Kernel.Get<ObjectTypeFactory>().IsObjectType("DatabaseIgnoreStructures", type))
                     {
                         continue;
                     }
@@ -84,7 +84,7 @@ namespace DatabaseGenerator
                     var sprite = stats.SpriteClass;
 
                     // Sorry this is a bit of a hack, it's a CropField then we append the Mature status to it :)
-                    if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("CropField", type))
+                    if (Ioc.Kernel.Get<ObjectTypeFactory>().IsObjectType("CropField", type))
                     {
                         sprite =
                                 Ioc.Kernel.Get<StructureFactory>()
@@ -130,6 +130,11 @@ namespace DatabaseGenerator
                 ");
                 foreach (var type in technologyTypes)
                 {
+                    if (Ioc.Kernel.Get<ObjectTypeFactory>().IsObjectType("DatabaseIgnoreTech", (ushort)type))
+                    {
+                        continue;
+                    }
+
                     ProcessTechnology(type);
 
                     TechnologyBase stats = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(type, 1);

@@ -13,7 +13,7 @@ namespace Game.Setup
 {
     public class ObjectTypeFactory
     {
-        private readonly Dictionary<string, List<ushort>> dict = new Dictionary<string, List<ushort>>();
+        private readonly Dictionary<string, List<uint>> dict = new Dictionary<string, List<uint>>();
 
         [Obsolete("Testing only", true)]
         public ObjectTypeFactory()
@@ -31,7 +31,7 @@ namespace Game.Setup
                                                                     FileShare.ReadWrite))))
             {
                 String[] toks;
-                List<ushort> set;
+                List<uint> set;
                 while ((toks = reader.ReadRow()) != null)
                 {
                     if (toks[0].Length <= 0)
@@ -41,7 +41,7 @@ namespace Game.Setup
 
                     if (!dict.TryGetValue(toks[0], out set))
                     {
-                        set = new List<ushort>();
+                        set = new List<uint>();
                         dict.Add(toks[0], set);
                     }
 
@@ -66,36 +66,42 @@ namespace Game.Setup
 
         public virtual bool IsStructureType(string type, IStructure structure)
         {
-            List<ushort> set;
+            List<uint> set;
             return dict.TryGetValue(type, out set) && set.Contains(structure.Type);
         }
 
         public virtual bool IsStructureType(string type, ushort structureType)
         {
-            List<ushort> set;
+            List<uint> set;
             return dict.TryGetValue(type, out set) && set.Contains(structureType);
         }
 
-        public virtual ushort[] GetTypes(string type)
+        public virtual bool IsObjectType(string type, ushort objectType)
         {
-            return !dict.ContainsKey(type) ? new ushort[] {} : dict[type].ToArray();
+            List<uint> set;
+            return dict.TryGetValue(type, out set) && set.Contains(objectType);
         }
 
-        public virtual bool IsTileType(string type, ushort tileType)
+        public virtual uint[] GetTypes(string type)
         {
-            List<ushort> set;
+            return !dict.ContainsKey(type) ? new uint[] {} : dict[type].ToArray();
+        }
+
+        public virtual bool IsTileType(string type, uint tileType)
+        {
+            List<uint> set;
             return dict.TryGetValue(type, out set) && set.Contains(tileType);
         }
 
         public virtual bool HasTileType(string type, IEnumerable<ushort> tileTypes)
         {
-            List<ushort> set;
+            List<uint> set;
             return dict.TryGetValue(type, out set) && tileTypes.Any(tileType => set.Contains(tileType));
         }
 
         public virtual bool IsAllTileType(string type, IEnumerable<ushort> tileTypes)
         {
-            List<ushort> set;
+            List<uint> set;
             return dict.TryGetValue(type, out set) && tileTypes.All(tileType => set.Contains(tileType));
         }
     }

@@ -7,7 +7,6 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -15,14 +14,23 @@ namespace Game.Logic.Actions
 {
     public class ResourceGatherActiveAction : ScheduledActiveAction
     {
+        private readonly ILocker locker;
+
+        private readonly ObjectTypeFactory objectTypeFactory;
+
+        private readonly IWorld world;
+
         private readonly uint cityId;
 
         private readonly uint objectId;
 
-        public ResourceGatherActiveAction(uint cityId, uint objectId)
+        public ResourceGatherActiveAction(uint cityId, uint objectId, ILocker locker, ObjectTypeFactory objectTypeFactory, IWorld world)
         {
             this.cityId = cityId;
             this.objectId = objectId;
+            this.locker = locker;
+            this.objectTypeFactory = objectTypeFactory;
+            this.world = world;
         }
 
         public ResourceGatherActiveAction(uint id,
@@ -32,9 +40,15 @@ namespace Game.Logic.Actions
                                           int workerType,
                                           byte workerIndex,
                                           ushort actionCount,
-                                          Dictionary<string, string> properties)
+                                          Dictionary<string, string> properties,
+                                          ILocker locker,
+                                          ObjectTypeFactory objectTypeFactory,
+                                          IWorld world)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
+            this.locker = locker;
+            this.objectTypeFactory = objectTypeFactory;
+            this.world = world;
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
         }
@@ -70,7 +84,7 @@ namespace Game.Logic.Actions
             ICity city;
             IStructure structure;
 
-            using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
+            using (locker.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
                 {
@@ -87,7 +101,7 @@ namespace Game.Logic.Actions
             IStructure structure;
             object value;
 
-            if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
+            if (!world.TryGetObjects(cityId, objectId, out city, out structure))
             {
                 return Error.ObjectNotFound;
             }
@@ -132,12 +146,7 @@ namespace Game.Logic.Actions
             city.Resource.EndUpdate();
             city.EndUpdate();
 
-            var changeAction = new StructureChangePassiveAction(cityId,
-                                                                objectId,
-                                                                0,
-                                                                Ioc.Kernel.Get<ObjectTypeFactory>()
-                                                                   .GetTypes("EmptyField")[0],
-                                                                1);
+            var changeAction = new StructureChangePassiveAction(cityId, objectId, 0, (ushort)objectTypeFactory.GetTypes("EmptyField")[0], 1);
             city.Worker.DoPassive(structure, changeAction, true);
 
             StateChange(ActionState.Completed);
@@ -148,7 +157,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
 
-            if (!World.Current.TryGetObjects(cityId, out city))
+            if (!world.TryGetObjects(cityId, out city))
             {
                 return Error.ObjectNotFound;
             }
@@ -164,7 +173,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
             IStructure structure;
-            using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
+            using (locker.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
                 {

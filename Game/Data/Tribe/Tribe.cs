@@ -486,6 +486,10 @@ namespace Game.Data.Tribe
                     return Error.DefendSelf;
                 }
             }
+            else
+            {
+                return Error.ObjectNotAttackable;                
+            }
 
             // Player creating the assignment cannot be late (Give a few minutes lead)
             int distance = SimpleGameObject.TileDistance(stub.City.X, stub.City.Y, x, y);

@@ -22,6 +22,8 @@ namespace Game.Data.Stronghold
 
         private readonly Formula formula;
 
+        private readonly ICityManager cityManager;
+
         private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(10000, 5000);
 
         private readonly IRegionManager regionManager;
@@ -49,7 +51,8 @@ namespace Game.Data.Stronghold
                                  Chat chat,
                                  IDbManager dbManager,
                                  SimpleStubGenerator simpleStubGenerator,
-                                 Formula formula)
+                                 Formula formula,
+                                 ICityManager cityManager)
         {
             this.strongholdConfigurator = strongholdConfigurator;
             this.strongholdFactory = strongholdFactory;
@@ -58,6 +61,19 @@ namespace Game.Data.Stronghold
             this.dbManager = dbManager;
             this.simpleStubGenerator = simpleStubGenerator;
             this.formula = formula;
+            this.cityManager = cityManager;
+            cityManager.CityAdded += CityManagerCityAdded;
+        }
+
+        void CityManagerCityAdded(object sender, EventArgs e)
+        {
+            ICity city = sender as ICity;
+            foreach (var stronghold in strongholds.Where(x => x.Value.StrongholdState == StrongholdState.Inactive && x.Value.TileDistance(city.X, city.Y) < Config.stronghold_radius_base + Config.stronghold_radius_per_level * x.Value.Lvl))
+            {
+                stronghold.Value.BeginUpdate();
+                ++stronghold.Value.NearbyCitiesCount;
+                stronghold.Value.EndUpdate();
+            }
         }
 
         public int Count

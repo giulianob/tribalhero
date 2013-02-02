@@ -36,6 +36,8 @@ namespace Game.Data.Stronghold
 
         decimal VictoryPointRate { get; }
 
+        ushort NearbyCitiesCount { get; set; }
+
         DateTime DateOccupied { get; set; }
 
         ITribe Tribe { get; set; }
@@ -51,5 +53,6 @@ namespace Game.Data.Stronghold
         IActionWorker Worker { get; }
 
         event EventHandler<EventArgs> GateStatusChanged;
+
     }
 }

@@ -47,6 +47,8 @@ namespace Game.Data.Stronghold
             }
         }
 
+        public ushort NearbyCitiesCount { get; set; }
+
         public DateTime DateOccupied { get; set; }
 
         public ITroopManager Troops { get; private set; }
@@ -373,6 +375,7 @@ namespace Game.Data.Stronghold
                                      XmlSerializer.SerializeList(State.Parameters.ToArray()),
                                      DbType.String),
                         new DbColumn("victory_point_rate", VictoryPointRate, DbType.Decimal),
+                        new DbColumn("nearby_cities", NearbyCitiesCount, DbType.UInt16),
                 };
             }
         }

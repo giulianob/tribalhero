@@ -1,11 +1,14 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Map;
+using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using NDesk.Options;
@@ -20,6 +23,8 @@ namespace Game.Comm
 
         private readonly IStrongholdManager strongholdManager;
 
+        private readonly MapFactory mapFactory;
+
         private readonly ITribeManager tribeManager;
 
         private readonly IWorld world;
@@ -27,18 +32,46 @@ namespace Game.Comm
         public StrongholdCommandLineModule(ITribeManager tribeManager,
                                            IWorld world,
                                            ILocker locker,
-                                           IStrongholdManager strongholdManager)
+                                           IStrongholdManager strongholdManager,
+                                           MapFactory mapFactory)
         {
             this.tribeManager = tribeManager;
             this.world = world;
             this.locker = locker;
             this.strongholdManager = strongholdManager;
+            this.mapFactory = mapFactory;
         }
 
         public override void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("StrongholdTransfer", CmdStrongholdTransfer, PlayerRights.Admin);
             processor.RegisterCommand("StrongholdAddTroop", CmdStrongholdAddTroop, PlayerRights.Admin);
+            processor.RegisterCommand("StrongholdFindNearbyCities", CmdStrongholdFindNearbyCities, PlayerRights.Admin);
+        }
+
+        private string CmdStrongholdFindNearbyCities(Session session, string[] parms)
+        {
+            SystemVariable mapStartIndex;
+            int index = 0;
+            if (Global.SystemVariables.TryGetValue("Map.start_index", out mapStartIndex))
+            {
+                index = (int)mapStartIndex.Value;
+            }
+
+            var list = new List<Position>(mapFactory.Locations().Take(index));
+            foreach(var stronghold in strongholdManager.Where(s=>s.StrongholdState == StrongholdState.Inactive))
+            {
+                using(locker.Lock(stronghold))
+                {
+                    stronghold.BeginUpdate();
+                    int count = list.Count(pt => stronghold.TileDistance(pt.X, pt.Y) <= Config.stronghold_radius_base + Config.stronghold_radius_per_level * stronghold.Lvl);
+                    stronghold.NearbyCitiesCount =
+                            (ushort)
+                            count;
+                    stronghold.EndUpdate();
+                }
+            }
+            return "OK";
         }
 
         private string CmdStrongholdAddTroop(Session session, string[] parms)

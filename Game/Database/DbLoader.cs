@@ -510,6 +510,7 @@ namespace Game.Database
                                                                         (uint)reader["y"],
                                                                         (decimal)reader["gate"]);
                     stronghold.StrongholdState = (StrongholdState)((byte)reader["state"]);
+                    stronghold.NearbyCitiesCount = (ushort)reader["nearby_cities"];
                     stronghold.DbPersisted = true;
                     stronghold.State.Type = (ObjectState)((byte)reader["object_state"]);
                     foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))

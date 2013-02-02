@@ -16,6 +16,8 @@
 	import src.UI.Dialog.*;
 	import src.UI.LookAndFeel.*;
 	import src.UI.TweenPlugins.DynamicPropsPlugin;
+    import src.UI.TweenPlugins.TransformAroundCenterPlugin;
+    import src.UI.TweenPlugins.TransformAroundPointPlugin;
 	import src.Util.*;
 	import System.Linq.EnumerationExtender;
 
@@ -66,12 +68,11 @@
 			EnumerationExtender.Initialize();
 			
 			//Init ASWING			
-			//resizeHandler(null);
 			AsWingManager.initAsStandard(this);				
 			UIManager.setLookAndFeel(new GameLookAndFeel());
 			
 			//Init TweenLite
-			TweenPlugin.activate([DynamicPropsPlugin, TransformMatrixPlugin]);
+			TweenPlugin.activate([DynamicPropsPlugin, TransformMatrixPlugin, TransformAroundCenterPlugin, TransformAroundPointPlugin]);
 
 			//Init stage options
 			stage.stageFocusRect = false;

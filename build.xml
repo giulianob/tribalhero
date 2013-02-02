@@ -1,0 +1,73 @@
+<project name="gameserver" default="compile" basedir="." xmlns:dn="antlib:org.apache.ant.dotnet" xmlns="antlib:org.apache.tools.ant"  xmlns:antcontrib="antlib:net.sf.antcontrib">
+	<description>Game server build</description>
+	
+	<target name="init">
+		<echo message="Building from ${basedir}" />
+	
+		<tstamp />
+		
+		<fail unless="game.version">Version not specified</fail>
+		
+		<antcontrib:propertyregex property="major_version" input="${game.version}" regexp="^([0-9]*).([0-9]*)$" select="\1" />
+		<antcontrib:propertyregex property="revision" input="${game.version}" regexp="^([0-9]*).([0-9]*)$" select="\2" />
+	</target>
+	
+	<target name="compile" depends="init">
+		<replaceregexp file="${basedir}\Game\Setup\Config.cs" match="client_min_version(.*)" replace="client_min_version = ${major_version};" byline="true" />		
+		<replaceregexp file="${basedir}\Game\Setup\Config.cs" match="client_min_revision(.*)" replace="client_min_revision = ${revision};" byline="true" />				
+	
+		<dn:msbuild buildfile="${basedir}\Game.sln">
+			<target name="Common:Rebuild" />
+			<target name="Persistance:Rebuild" />
+			<target name="Game:Rebuild" />
+			<target name="CSVToXML:Rebuild" />
+			<target name="Tools\ConsoleSimulator:Rebuild" />
+			<target name="Tests\Common_Testing:Rebuild" />
+			<target name="Tests\Testing:Rebuild" />
+			<target name="Tools\DatabaseGenerator:Rebuild" />
+			<target name="Tools\GraphGenerator:Rebuild" />
+			<target name="Launcher:Rebuild" />
+			<target name="LauncherService:Rebuild" />			
+			
+			<property name="Configuration" value="Release" />
+			<property name="Platform" value="any cpu" />
+			<property name="BuildProjectReferences" value="false" />
+		</dn:msbuild>
+	</target>
+	
+	<target name="generate" if="deploydir" depends="compile">
+		<exec executable="${basedir}/GraphGenerator/bin/Release/GraphGenerator.exe">
+			<arg line="--output=${deploydir}/graphoutput --settings=${basedir}/conf/settings.ini --img=${basedir}/graphics/buildings --img=${basedir}/graphics/units --img=${basedir}/graphics/icons/props" />
+		</exec>
+		
+		<exec executable="${basedir}/DatabaseGenerator/bin/Release/DatabaseGenerator.exe">
+			<arg line="--output=${deploydir}/databaseoutput --settings=${basedir}/conf/settings.ini --img=${basedir}/graphics/buildings --img=${basedir}/graphics/units --img=${basedir}/graphics/icons/props" />
+		</exec>				
+	</target>
+	
+	<target name="deploy" if="deploydir" depends="compile">
+		<mkdir dir="${deploydir}" />	
+		
+		<zip destfile="${deploydir}/Launcher.zip">
+			<zipfileset dir="${basedir}/Launcher/bin/Release" prefix="bin" />
+			<zipfileset dir="${basedir}/conf" prefix="conf" />			
+		</zip>
+		 
+		<zip destfile="${deploydir}/LauncherService.zip">
+			<zipfileset dir="${basedir}/LauncherService/bin/Release" prefix="bin" />
+			<zipfileset dir="${basedir}/conf" prefix="conf" />			
+		</zip>		
+		
+	</target>
+	
+	<target name="deploydb" if="deploydir" depends="generate">
+		<mkdir dir="${deploydir}" />	
+	
+		<zip destfile="${deploydir}/Database.zip">
+			<zipfileset dir="${deploydir}/databaseoutput/"/>
+		</zip>
+		<zip destfile="${deploydir}/Graph.zip">
+			<zipfileset dir="${deploydir}/graphoutput/" includes="*.png" />			
+		</zip>
+	</target>	
+</project>

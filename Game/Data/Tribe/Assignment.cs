@@ -55,6 +55,8 @@ namespace Game.Data.Tribe
 
         private readonly TileLocator tileLocator;
 
+        private readonly ILocker locker;
+
         /// <summary>
         ///     Creates a new assignment.
         ///     An id will be assigned and the stub passed in will be added to the assignment. This will not schedule the assignment!
@@ -73,7 +75,8 @@ namespace Game.Data.Tribe
                           IScheduler scheduler,
                           Procedure procedure,
                           TileLocator tileLocator,
-                          IActionFactory actionFactory)
+                          IActionFactory actionFactory,
+                          ILocker locker)
         {
             this.formula = formula;
             this.dbManager = dbManager;
@@ -82,6 +85,7 @@ namespace Game.Data.Tribe
             this.procedure = procedure;
             this.tileLocator = tileLocator;
             this.actionFactory = actionFactory;
+            this.locker = locker;
 
             Id = IdGen.GetNext();
             Tribe = tribe;
@@ -115,7 +119,8 @@ namespace Game.Data.Tribe
                           IScheduler scheduler,
                           Procedure procedure,
                           TileLocator tileLocator,
-                          IActionFactory actionFactory)
+                          IActionFactory actionFactory,
+                          ILocker locker)
         {
             this.formula = formula;
             this.dbManager = dbManager;
@@ -124,6 +129,7 @@ namespace Game.Data.Tribe
             this.procedure = procedure;
             this.tileLocator = tileLocator;
             this.actionFactory = actionFactory;
+            this.locker = locker;
 
             Id = id;
             Tribe = tribe;
@@ -448,7 +454,7 @@ namespace Game.Data.Tribe
         {
             var now = SystemClock.Now;
             using (
-                    Concurrency.Current.Lock(c => assignmentTroops.Select(troop => troop.Stub).ToArray<ILockable>(),
+                    locker.Lock(c => assignmentTroops.Select(troop => troop.Stub).ToArray<ILockable>(),
                                              new object[] {},
                                              Tribe))
             {
@@ -458,12 +464,20 @@ namespace Game.Data.Tribe
 
                     if (troopToDispatch != null)
                     {
+                        // Make sure troop time is still valid. If not we need to put it back on the scheduler.
+                        // The time may change if the user has finished upgrading a tech/unit that improves speed since adding
+                        // it to the assignment.
+                        var departureTime = DepartureTime(troopToDispatch.Stub);
+                        if (departureTime > now)
+                        {
+                            troopToDispatch.DepartureTime = departureTime;
+                        }
                         // If a troop dispatches, then we set the troop to dispatched.
-                        if (Dispatch(troopToDispatch.Stub))
+                        else if (Dispatch(troopToDispatch.Stub))
                         {
                             troopToDispatch.Dispatched = true;
                         }
-                                // Otherwise, if dispatch fails, then we remove it.
+                        // Otherwise, if dispatch fails, then we remove it.
                         else
                         {
                             RemoveStub(troopToDispatch.Stub);

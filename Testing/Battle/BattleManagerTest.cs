@@ -104,9 +104,7 @@ namespace Testing.Battle
                 return MockInRange.Contains(attacker);
             }
 
-            public CombatList.BestTargetResult GetBestTargets(ICombatObject attacker,
-                                                              out IList<CombatList.Target> result,
-                                                              int maxCount)
+            public CombatList.BestTargetResult GetBestTargets(uint battleId, ICombatObject attacker, out List<CombatList.Target> result, int maxCount)
             {
                 var queueItem = MockGetBestTargets.Dequeue();
                 result = queueItem.Targets;
@@ -146,7 +144,7 @@ namespace Testing.Battle
             {
                 public CombatList.BestTargetResult BestTargetResult { get; set; }
 
-                public IList<CombatList.Target> Targets { get; set; }
+                public List<CombatList.Target> Targets { get; set; }
             }
         }
 

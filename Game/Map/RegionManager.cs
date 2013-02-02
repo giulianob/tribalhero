@@ -127,7 +127,7 @@ namespace Game.Map
                 obj.InWorld = true;
 
                 // If simple object, we must assign an id
-                if (!objectTypeFactory.IsStructureType("NoRoadRequired", obj.Type))
+                if (!objectTypeFactory.IsObjectType("NoRoadRequired", obj.Type))
                 {
                     // TODO: Should not have a reference to the roads from the region manager but this causes a circular dependency. RoadManager requires RegionManager. Need to figure out where the road creation logic should take place.
                     World.Current.Roads.CreateRoad(obj.X, obj.Y);
@@ -169,13 +169,13 @@ namespace Game.Map
             if (obj.InWorld)
             {
                 region.Add(obj);
-            }
 
-            // Add to minimap if needed
-            ICityRegionObject cityRegionObject = obj as ICityRegionObject;
-            if (cityRegionObject != null)
-            {
-                CityRegions.Add(cityRegionObject);
+                // Add to minimap if needed
+                ICityRegionObject cityRegionObject = obj as ICityRegionObject;
+                if (cityRegionObject != null)
+                {
+                    CityRegions.Add(cityRegionObject);
+                }
             }
         }
 

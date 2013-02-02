@@ -73,12 +73,12 @@ namespace Testing.Actions
                                                                    tribe1.Object,
                                                                    tribe2.Object);
 
-            var battleProcedure = new Mock<BattleProcedure>();
-            battleProcedure.Setup(m => m.AddStrongholdGateToBattle(battle.Object, stronghold.Object))
+            var strongholdBattleProcedure = new Mock<StrongholdBattleProcedure>();
+            strongholdBattleProcedure.Setup(m => m.AddStrongholdGateToBattle(battle.Object, stronghold.Object))
                            .Returns(gateGroup.Object);
 
             var action = new StrongholdGateBattlePassiveAction(300,
-                                                               battleProcedure.Object,
+                                                               strongholdBattleProcedure.Object,
                                                                new LockerStub(locator),
                                                                locator,
                                                                new Mock<IDbManager>().Object,
@@ -186,12 +186,12 @@ namespace Testing.Actions
                                                                    tribe1.Object,
                                                                    tribe2.Object);
 
-            var battleProcedure = new Mock<BattleProcedure>();
-            battleProcedure.Setup(m => m.AddStrongholdGateToBattle(battle.Object, stronghold.Object))
+            var strongholdBattleProcedure = new Mock<StrongholdBattleProcedure>();
+            strongholdBattleProcedure.Setup(m => m.AddStrongholdGateToBattle(battle.Object, stronghold.Object))
                            .Returns(gateGroup.Object);
 
             var action = new StrongholdGateBattlePassiveAction(300,
-                                                               battleProcedure.Object,
+                                                               strongholdBattleProcedure.Object,
                                                                new LockerStub(locator),
                                                                locator,
                                                                new Mock<IDbManager>().Object,

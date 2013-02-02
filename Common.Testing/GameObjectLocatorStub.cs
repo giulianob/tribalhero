@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Game.Battle;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
@@ -20,6 +21,8 @@ namespace Common.Testing
         private readonly Dictionary<uint, IStronghold> strongholds = new Dictionary<uint, IStronghold>();
 
         private readonly Dictionary<uint, ITribe> tribes = new Dictionary<uint, ITribe>();
+
+        private readonly Dictionary<uint, IBarbarianTribe> barbarianTribes = new Dictionary<uint, IBarbarianTribe>();
 
         public GameObjectLocatorStub(params object[] objects)
         {
@@ -53,6 +56,12 @@ namespace Common.Testing
                 if (stronghold != null)
                 {
                     strongholds.Add(stronghold.Id, stronghold);
+                }
+
+                IBarbarianTribe barbarianTribe = o as IBarbarianTribe;
+                if (barbarianTribe != null)
+                {
+                    barbarianTribes.Add(barbarianTribe.Id, barbarianTribe);
                 }
             }
         }
@@ -128,6 +137,11 @@ namespace Common.Testing
         public bool TryGetObjects(uint strongholdId, out IStronghold stronghold)
         {
             return strongholds.TryGetValue(strongholdId, out stronghold);
+        }
+
+        public bool TryGetObjects(uint barbarianTribeId, out IBarbarianTribe barbarianTribe)
+        {
+            return barbarianTribes.TryGetValue(barbarianTribeId, out barbarianTribe);
         }
     }
 }

@@ -206,18 +206,18 @@ HANZO_SWORD_TECHNOLOGY_LVL_2,"Reduce splash damage received by 10% for Fighter, 
 HANZO_SWORD_TECHNOLOGY_LVL_3,"Reduce splash damage received by 15% for Fighter, Swordsman and gladiator."
 ,
 UPKEEP_REDUCE_SWORDSMAN_TECHNOLOGY_NAME,Swordy Diet
-UPKEEP_REDUCE_SWORDSMAN_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Swordsman. (Stacks additively up to 70%)
+UPKEEP_REDUCE_SWORDSMAN_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Swordsman. (Stacks additively up to 30%)
 UPKEEP_REDUCE_ARCHER_TECHNOLOGY_NAME,Archy Diet
-UPKEEP_REDUCE_ARCHER_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Archer. (Stacks additively up to 70%)
+UPKEEP_REDUCE_ARCHER_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Archer. (Stacks additively up to 30%)
 UPKEEP_REDUCE_PIKEMAN_TECHNOLOGY_NAME,Piky Diet
-UPKEEP_REDUCE_PIKEMAN_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Pikeman. (Stacks additively up to 70%)
+UPKEEP_REDUCE_PIKEMAN_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Pikeman. (Stacks additively up to 30%)
 UPKEEP_REDUCE_GLADIATOR_TECHNOLOGY_NAME,Glady Diet
-UPKEEP_REDUCE_GLADIATOR_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Gladiator. (Stacks additively up to 70%)
+UPKEEP_REDUCE_GLADIATOR_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Gladiator. (Stacks additively up to 30%)
 UPKEEP_REDUCE_CAVALRY_TECHNOLOGY_NAME,Cavalry Diet
-UPKEEP_REDUCE_CAVALRY_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Cavalry. (Stacks additively up to 70%)
+UPKEEP_REDUCE_CAVALRY_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Cavalry. (Stacks additively up to 30%)
 UPKEEP_REDUCE_KNIGHT_TECHNOLOGY_NAME,Knight Diet
-UPKEEP_REDUCE_KNIGHT_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Knight. (Stacks additively up to 70%)
+UPKEEP_REDUCE_KNIGHT_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Knight. (Stacks additively up to 30%)
 UPKEEP_REDUCE_HELEPOLIS_TECHNOLOGY_NAME,Helepolis Diet
-UPKEEP_REDUCE_HELEPOLIS_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Helepolis. (Stacks additively up to 70%)
+UPKEEP_REDUCE_HELEPOLIS_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Helepolis. (Stacks additively up to 30%)
 UPKEEP_REDUCE_CATAPULT_TECHNOLOGY_NAME,Catapult Diet
-UPKEEP_REDUCE_CATAPULT_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Catapult. (Stacks additively up to 70%)
+UPKEEP_REDUCE_CATAPULT_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Catapult. (Stacks additively up to 30%)

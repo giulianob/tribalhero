@@ -11,7 +11,9 @@ namespace Game.Battle
 
         Stronghold = 1,
 
-        StrongholdGate = 2
+        StrongholdGate = 2,
+
+        BarbarianTribe = 3
     }
 
     public class BattleLocation
@@ -43,7 +45,8 @@ namespace Game.Battle
                 case BattleLocationType.StrongholdGate:
                     IStronghold stronghold;
                     return World.Current.TryGetObjects(Id, out stronghold) ? stronghold.Name : string.Empty;
-
+                case BattleLocationType.BarbarianTribe:
+                    return "Barbarian Tribe";
                 default:
                     return string.Empty;
             }

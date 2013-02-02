@@ -18,7 +18,7 @@ namespace Game.Data
 
             Stronghold = 10000003,
 
-            Settlement = 10000004
+            BarbarianTribe = 10000004
         }
 
         public enum Types : ushort
@@ -29,7 +29,7 @@ namespace Game.Data
 
             Stronghold = 300,
 
-            Settlement = 400,
+            BarbarianTribe = 400,
         }
 
         protected uint objectId;

@@ -11,10 +11,12 @@ namespace Game.Util.Locking
             this.lck = lck;
         }
 
-        public void Lock(params ILockable[] list)
+        public IMultiObjectLock Lock(params ILockable[] list)
         {
             lck.Lock(list);
             DbPersistance.Current.GetThreadTransaction();
+
+            return this;
         }
 
         public void UnlockAll()

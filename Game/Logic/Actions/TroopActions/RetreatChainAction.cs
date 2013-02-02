@@ -98,7 +98,7 @@ namespace Game.Logic.Actions
 
             troopObjectId = troopObject.ObjectId;
 
-            var tma = new TroopMovePassiveAction(cityId, troopObject.ObjectId, stub.City.X, stub.City.Y, true, false);
+            var tma = actionFactory.CreateTroopMovePassiveAction(cityId, troopObject.ObjectId, stub.City.X, stub.City.Y, true, false);
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
 

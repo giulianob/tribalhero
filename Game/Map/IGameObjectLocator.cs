@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Game.Battle;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
@@ -32,5 +33,7 @@ namespace Game.Map
         List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, int radius);
 
         bool TryGetObjects(uint strongholdId, out IStronghold stronghold);
+
+        bool TryGetObjects(uint barbarianTribeId, out IBarbarianTribe barbarianTribe);
     }
 }

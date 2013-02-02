@@ -7,6 +7,7 @@ using System.Data.Common;
 using System.Linq;
 using Game.Battle;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
@@ -22,6 +23,10 @@ namespace Game.Map
 {
     public class World : IWorld
     {
+        private readonly IBarbarianTribeManager barbarianTribeManager;
+
+        private readonly IStrongholdManager strongholds;
+
         #region Singleton
 
         public static IWorld Current { get; set; }
@@ -33,11 +38,13 @@ namespace Game.Map
                      IStrongholdManager strongholdManager,
                      ICityManager cityManager,
                      IRegionManager regionManager,
-                     ITribeManager tribeManager)
+                     ITribeManager tribeManager,
+                     IBarbarianTribeManager barbarianTribeManager)
         {
+            this.barbarianTribeManager = barbarianTribeManager;
             Roads = roadManager;
             Forests = forestManager;
-            Strongholds = strongholdManager;
+            strongholds = strongholdManager;
             Cities = cityManager;
             Regions = regionManager;
             Tribes = tribeManager;
@@ -60,7 +67,12 @@ namespace Game.Map
 
         public bool TryGetObjects(uint strongholdId, out IStronghold stronghold)
         {
-            return Strongholds.TryGetStronghold(strongholdId, out stronghold);
+            return strongholds.TryGetStronghold(strongholdId, out stronghold);
+        }
+
+        public bool TryGetObjects(uint barbarianTribeId, out IBarbarianTribe barbarianTribe)
+        {
+            return barbarianTribeManager.TryGetBarbarianTribe(barbarianTribeId, out barbarianTribe);
         }
 
         public bool TryGetObjects(uint cityId, out ICity city)
@@ -126,9 +138,7 @@ namespace Game.Map
             }
         }
 
-        #endregion
-
-        private IStrongholdManager Strongholds { get; set; }
+        #endregion        
 
         private ITribeManager Tribes { get; set; }
 

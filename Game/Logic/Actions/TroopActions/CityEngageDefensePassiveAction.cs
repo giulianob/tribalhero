@@ -19,6 +19,8 @@ namespace Game.Logic.Actions
     {
         private readonly BattleProcedure battleProcedure;
 
+        private readonly CityBattleProcedure cityBattleProcedure;
+
         private readonly uint cityId;
 
         private readonly IGameObjectLocator gameObjectLocator;
@@ -33,12 +35,14 @@ namespace Game.Logic.Actions
                                               uint troopObjectId,
                                               FormationType formationType,
                                               BattleProcedure battleProcedure,
+                                              CityBattleProcedure cityBattleProcedure,
                                               IGameObjectLocator gameObjectLocator)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
             this.formationType = formationType;
             this.battleProcedure = battleProcedure;
+            this.cityBattleProcedure = cityBattleProcedure;
             this.gameObjectLocator = gameObjectLocator;
         }
 
@@ -46,10 +50,12 @@ namespace Game.Logic.Actions
                                               bool isVisible,
                                               IDictionary<string, string> properties,
                                               BattleProcedure battleProcedure,
+                                              CityBattleProcedure cityBattleProcedure,
                                               IGameObjectLocator gameObjectLocator)
                 : base(id, isVisible)
         {
             this.battleProcedure = battleProcedure;
+            this.cityBattleProcedure = cityBattleProcedure;
             this.gameObjectLocator = gameObjectLocator;
             cityId = uint.Parse(properties["troop_city_id"]);
             groupId = uint.Parse(properties["group_id"]);
@@ -160,7 +166,7 @@ namespace Game.Logic.Actions
 
             // Add units to battle
             groupId = battleProcedure.AddReinforcementToBattle(city.Battle, troopObject.Stub, formationType);
-            battleProcedure.AddLocalUnitsToBattle(city.Battle, city);
+            cityBattleProcedure.AddLocalUnitsToBattle(city.Battle, city);
 
             return Error.Ok;
         }

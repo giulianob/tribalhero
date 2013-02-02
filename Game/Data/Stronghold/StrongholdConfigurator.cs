@@ -11,15 +11,15 @@ namespace Game.Data.Stronghold
     {
         private static readonly int[] LevelProbability = new[] {0, 8, 16, 23, 30, 37, 43, 49, 55, 60, 65, 70, 74, 78, 82, 85, 88, 91, 94, 97, 100};
 
-        private const int MIN_DISTANCE_AWAY_FROM_CITIES = 10;
+        private const int MinDistanceAwayFromCities = 10;
 
-        private const int MIN_DISTANCE_AWAY_FROM_STRONGHOLDS = 200;
+        private const int MinDistanceAwayFromStrongholds = 200;
 
-        private static readonly int citiesPerLevel = Config.stronghold_cities_per_level;
+        private static readonly int CitiesPerLevel = Config.stronghold_cities_per_level;
 
-        private static readonly int radiusPerLevel = Config.stronghold_radius_per_level;
+        private static readonly int RadiusPerLevel = Config.stronghold_radius_per_level;
 
-        private static readonly int radiusBase = Config.stronghold_radius_base;
+        private static readonly int RadiusBase = Config.stronghold_radius_base;
 
         private readonly MapFactory mapFactory;
 
@@ -30,17 +30,20 @@ namespace Game.Data.Stronghold
 
         private readonly TileLocator tileLocator;
 
-        public StrongholdConfigurator(MapFactory mapFactory, TileLocator tileLocator)
+        private readonly IRegionManager regionManager;
+
+        public StrongholdConfigurator(MapFactory mapFactory, TileLocator tileLocator, IRegionManager regionManager)
         {
             this.mapFactory = mapFactory;
             this.tileLocator = tileLocator;
+            this.regionManager = regionManager;
         }
 
         private bool HasEnoughCities(uint x, uint y, int level)
         {
-            int radius = radiusBase + (level - 1) * radiusPerLevel;
+            int radius = RadiusBase + (level - 1) * RadiusPerLevel;
             // basic radius 200, then every each level is 50 radius
-            int count = level * citiesPerLevel;
+            int count = level * CitiesPerLevel;
 
             return mapFactory.Locations().Count(loc => tileLocator.TileDistance(x, y, loc.X, loc.Y) < radius) > count;
         }
@@ -68,9 +71,10 @@ namespace Game.Data.Stronghold
                 return false;
             }
 
-            var ratio = count / 100m;            
+            var ratio = count / 100m;
             for (level = 1; index >= (decimal)LevelProbability[level] * ratio; level++)
             {
+                // this gets the level based on distribution
             }
 
             var limit = 0;
@@ -81,11 +85,15 @@ namespace Game.Data.Stronghold
                                 
                 if (limit++ > 10000)
                 {
+                    name = "";
+                    level = 0;
+                    x = 0;
+                    y = 0;
                     return false;
                 }
             }
-            while (!HasEnoughCities(x, y, level) || TooCloseToCities(x, y, MIN_DISTANCE_AWAY_FROM_CITIES) ||
-                   TooCloseToStrongholds(x, y, MIN_DISTANCE_AWAY_FROM_STRONGHOLDS));
+            while (!HasEnoughCities(x, y, level) || TooCloseToCities(x, y, MinDistanceAwayFromCities) ||
+                   TooCloseToStrongholds(x, y, MinDistanceAwayFromStrongholds) || regionManager.GetObjects(x, y).Count > 0);
 
             strongholds.Add(new Position(x, y));
             Global.Logger.Info(string.Format("Added stronghold[{0},{1}] Number[{2}] ", x, y, strongholds.Count));

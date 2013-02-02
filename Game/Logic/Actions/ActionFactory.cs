@@ -137,5 +137,14 @@ namespace Game.Logic.Actions
                                                                       uint troopObjectId,
                                                                       uint targetStrongholdId,
                                                                       AttackMode mode);
+
+        BarbarianTribeEngageAttackPassiveAction CreateBarbarianTribeEngageAttackPassiveAction(uint cityId,
+                                                                                              uint troopObjectId,
+                                                                                              uint targetObjectId,
+                                                                                              AttackMode mode);
+
+        BarbarianTribeAttackChainAction CreateBarbarianTribeAttackChainAction(uint cityId, uint troopObjectId, uint targetObjectId, AttackMode mode);
+
+        BarbarianTribeBattlePassiveAction CreateBarbarianTribeBattlePassiveAction(uint barbarianTribeId);
     }
 }

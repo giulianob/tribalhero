@@ -30,7 +30,7 @@ namespace Game.Logic.Procedures
             troop.City.Troops.Remove(troop.Stub.TroopId);
 
             troop.BeginUpdate();
-            World.Current.Regions.Remove(troop);
+            world.Regions.Remove(troop);
             troop.City.ScheduleRemove(troop, false);
             troop.Stub = null;
             troop.EndUpdate();

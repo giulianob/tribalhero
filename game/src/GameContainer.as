@@ -175,6 +175,8 @@
 			cmdLineHolder = new Sprite();				
 			minimapHolder = new Sprite();
             screenMessageHolder = new Sprite();
+            screenMessageHolder.mouseEnabled = false;
+            screenMessageHolder.mouseChildren = false;
 			
             addChild(screenMessageHolder);
 			addChild(cmdLineHolder);								

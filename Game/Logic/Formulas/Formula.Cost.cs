@@ -240,24 +240,13 @@ namespace Game.Logic.Formulas
 
         public virtual Resource GetTribeUpgradeCost(byte level)
         {
-            return new Resource(1000, 400, 40, 2000, 0) * Tribe.MEMBERS_PER_LEVEL * level *
-                   (1 + ((double)level * level / 20));
+            return new Resource(crop: 1000, gold: 400, iron: 40, wood: 2000) * Tribe.MEMBERS_PER_LEVEL * level * (1 + ((double)level * level / 20));
         }
 
         public virtual void GetNewCityCost(int cityCount, out int influencePoints, out int wagons)
         {
             influencePoints = (100 + 20 * (cityCount - 1)) * cityCount;
             wagons = 50 * cityCount;
-        }
-
-        public virtual int GetStrongholdUpkeep(byte level)
-        {
-
-            int[] upkeeps = {0, 1000, 1400, 1796, 2189, 2579, 2965, 3347, 3726, 4102, 4474, 
-                                4842, 5207, 5568, 5926, 6281, 6632, 6979, 7323, 7663, 8000};
-            if(Config.stronghold_npc_per_lvl_upkeep>0)
-                return Config.stronghold_npc_per_lvl_upkeep * level;
-            return upkeeps[level];
         }
     }
 }

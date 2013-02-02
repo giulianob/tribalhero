@@ -22,8 +22,6 @@ namespace Game.Logic.Actions
     {
         private readonly BattleFormulas battleFormula;
 
-        private readonly BattleProcedure battleProcedure;
-
         private readonly Resource bonus;
 
         private readonly uint cityId;
@@ -31,6 +29,8 @@ namespace Game.Logic.Actions
         private readonly IDbManager dbManager;
 
         private readonly IGameObjectLocator gameObjectLocator;
+
+        private readonly CityBattleProcedure cityBattleProcedure;
 
         private readonly AttackMode mode;
 
@@ -50,7 +50,7 @@ namespace Game.Logic.Actions
                                              AttackMode mode,
                                              BattleFormulas battleFormula,
                                              IGameObjectLocator gameObjectLocator,
-                                             BattleProcedure battleProcedure,
+                                             CityBattleProcedure cityBattleProcedure,
                                              StructureFactory structureFactory,
                                              IDbManager dbManager)
         {
@@ -60,7 +60,7 @@ namespace Game.Logic.Actions
             this.mode = mode;
             this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
-            this.battleProcedure = battleProcedure;
+            this.cityBattleProcedure = cityBattleProcedure;            
             this.structureFactory = structureFactory;
             this.dbManager = dbManager;
 
@@ -72,14 +72,14 @@ namespace Game.Logic.Actions
                                              IDictionary<string, string> properties,
                                              BattleFormulas battleFormula,
                                              IGameObjectLocator gameObjectLocator,
-                                             BattleProcedure battleProcedure,
+                                             CityBattleProcedure cityBattleProcedure,
                                              StructureFactory structureFactory,
                                              IDbManager dbManager)
                 : base(id, isVisible)
         {
             this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
-            this.battleProcedure = battleProcedure;
+            this.cityBattleProcedure = cityBattleProcedure;
             this.structureFactory = structureFactory;
             this.dbManager = dbManager;
 
@@ -183,7 +183,7 @@ namespace Game.Logic.Actions
             // Create the group in the battle
             uint battleId;
             ICombatGroup combatGroup;
-            battleProcedure.JoinOrCreateCityBattle(targetCity, troopObject, out combatGroup, out battleId);
+            cityBattleProcedure.JoinOrCreateCityBattle(targetCity, troopObject, out combatGroup, out battleId);
             groupId = combatGroup.Id;
 
             // Register the battle listeners

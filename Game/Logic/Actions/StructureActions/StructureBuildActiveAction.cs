@@ -156,13 +156,13 @@ namespace Game.Logic.Actions
 
             int maxConcurrentUpgrades = formula.ConcurrentBuildUpgrades(((IStructure)city[1]).Lvl);
 
-            if (!objectTypeFactory.IsStructureType("UnlimitedBuilding", type) &&
+            if (!objectTypeFactory.IsObjectType("UnlimitedBuilding", type) &&
                 city.Worker.ActiveActions.Values.Count(
                                                        action =>
                                                        action.ActionId != ActionId &&
                                                        (action.Type == ActionType.StructureUpgradeActive ||
                                                         (action.Type == ActionType.StructureBuildActive &&
-                                                         !objectTypeFactory.IsStructureType("UnlimitedBuilding",
+                                                         !objectTypeFactory.IsObjectType("UnlimitedBuilding",
                                                                                             ((StructureBuildActiveAction
                                                                                              )action).BuildType)))) >=
                 maxConcurrentUpgrades)
@@ -207,7 +207,7 @@ namespace Game.Logic.Actions
             }
 
             // check for road requirements       
-            bool roadRequired = !objectTypeFactory.IsStructureType("NoRoadRequired", type);
+            bool roadRequired = !objectTypeFactory.IsObjectType("NoRoadRequired", type);
             bool buildingOnRoad = world.Roads.IsRoad(x, y);
 
             if (roadRequired)
@@ -223,7 +223,7 @@ namespace Game.Logic.Actions
                             continue;
                         }
 
-                        if (objectTypeFactory.IsStructureType("NoRoadRequired", str.Type))
+                        if (objectTypeFactory.IsObjectType("NoRoadRequired", str.Type))
                         {
                             continue;
                         }

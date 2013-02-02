@@ -23,6 +23,8 @@ namespace Game.Logic.Actions
 
         private readonly BattleProcedure battleProcedure;
 
+        private readonly StrongholdBattleProcedure strongholdBattleProcedure;
+
         private readonly uint cityId;
 
         private readonly Formula formula;
@@ -48,6 +50,7 @@ namespace Game.Logic.Actions
                                            ILocker locker,
                                            IGameObjectLocator gameObjectLocator,
                                            BattleProcedure battleProcedure,
+                                           StrongholdBattleProcedure strongholdBattleProcedure,
                                            Formula formula)
         {
             this.cityId = cityId;
@@ -59,6 +62,7 @@ namespace Game.Logic.Actions
             this.locker = locker;
             this.gameObjectLocator = gameObjectLocator;
             this.battleProcedure = battleProcedure;
+            this.strongholdBattleProcedure = strongholdBattleProcedure;
             this.formula = formula;
         }
 
@@ -73,6 +77,7 @@ namespace Game.Logic.Actions
                                            ILocker locker,
                                            IGameObjectLocator gameObjectLocator,
                                            BattleProcedure battleProcedure,
+                                           StrongholdBattleProcedure strongholdBattleProcedure,
                                            Formula formula)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
@@ -81,6 +86,7 @@ namespace Game.Logic.Actions
             this.locker = locker;
             this.gameObjectLocator = gameObjectLocator;
             this.battleProcedure = battleProcedure;
+            this.strongholdBattleProcedure = strongholdBattleProcedure;
             this.formula = formula;
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
@@ -140,7 +146,7 @@ namespace Game.Logic.Actions
                 return Error.TooManyTroops;
             }
 
-            var canStrongholdBeAttacked = battleProcedure.CanStrongholdBeAttacked(city, targetStronghold);
+            var canStrongholdBeAttacked = strongholdBattleProcedure.CanStrongholdBeAttacked(city, targetStronghold);
             if (canStrongholdBeAttacked != Error.Ok)
             {
                 return canStrongholdBeAttacked;
@@ -199,8 +205,8 @@ namespace Game.Logic.Actions
                 bool invalidTarget;
                 using (locker.Lock(city, targetStronghold))
                 {
-                    invalidTarget = battleProcedure.CanStrongholdBeAttacked(city, targetStronghold) != Error.Ok &&
-                                    battleProcedure.CanStrongholdBeDefended(city, targetStronghold) != Error.Ok;
+                    invalidTarget = strongholdBattleProcedure.CanStrongholdBeAttacked(city, targetStronghold) != Error.Ok &&
+                                    strongholdBattleProcedure.CanStrongholdBeDefended(city, targetStronghold) != Error.Ok;
                 }
 
                 // If the stronghold is not there or we are unable to attack/defense it, then cancel the current TroopMoveAction
@@ -217,7 +223,9 @@ namespace Game.Logic.Actions
 
                 using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
                 {
+                    // Remove from remote stronghold and add only to this troop
                     city.Notifications.Remove(this);
+                    city.Notifications.Add(troopObject, this);
 
                     TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
                                                                                             troopObject.ObjectId,
@@ -275,6 +283,7 @@ namespace Game.Logic.Actions
                     }
 
                     city.Notifications.Remove(this);
+                    city.Notifications.Add(troopObject, this);
 
                     // Walk back to city if none of the above conditions apply
                     TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
@@ -352,6 +361,8 @@ namespace Game.Logic.Actions
                     }
                     else
                     {
+
+                        city.Notifications.Add(troopObject, this);
                         // Send troop back home
                         var tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
                                                                              troopObject.ObjectId,
@@ -419,6 +430,8 @@ namespace Game.Logic.Actions
                     {
                         //Remove notification to target once battle is over
                         city.Notifications.Remove(this);
+
+                        city.Notifications.Add(troopObject, this);
 
                         // Send troop back home
                         var tma = actionFactory.CreateTroopMovePassiveAction(city.Id,

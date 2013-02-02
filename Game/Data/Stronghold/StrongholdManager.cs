@@ -24,7 +24,7 @@ namespace Game.Data.Stronghold
 
         private readonly ICityManager cityManager;
 
-        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(10000, 5000);
+        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(9999, 5000);
 
         private readonly IRegionManager regionManager;
 
@@ -50,7 +50,7 @@ namespace Game.Data.Stronghold
                                  IRegionManager regionManager,
                                  Chat chat,
                                  IDbManager dbManager,
-                                 SimpleStubGenerator simpleStubGenerator,
+                                 ISimpleStubGeneratorFactory simpleStubGeneratorFactory,
                                  Formula formula,
                                  ICityManager cityManager)
         {
@@ -58,11 +58,11 @@ namespace Game.Data.Stronghold
             this.strongholdFactory = strongholdFactory;
             this.regionManager = regionManager;
             this.chat = chat;
-            this.dbManager = dbManager;
-            this.simpleStubGenerator = simpleStubGenerator;
+            this.dbManager = dbManager;            
             this.formula = formula;
             this.cityManager = cityManager;
             cityManager.CityAdded += CityManagerCityAdded;
+            simpleStubGenerator = simpleStubGeneratorFactory.CreateSimpleStubGenerator(formula.StrongholdUnitRatio(), formula.StrongholdUnitType());
         }
 
         void CityManagerCityAdded(object sender, EventArgs e)
@@ -89,6 +89,12 @@ namespace Game.Data.Stronghold
             strongholds.AddOrUpdate(stronghold.Id, stronghold, (id, old) => stronghold);
             RegisterEvents(stronghold);
             MarkIndexDirty();
+
+            if (stronghold.StrongholdState != StrongholdState.Inactive)
+            {
+                stronghold.InWorld = true;
+                regionManager.DbLoaderAdd(stronghold);
+            }
         }
 
         public bool TryGetStronghold(uint id, out IStronghold stronghold)
@@ -124,7 +130,7 @@ namespace Game.Data.Stronghold
                                                                             level,
                                                                             x,
                                                                             y,
-                                                                            formula.GetGateLimit(level));
+                                                                            formula.StrongholdGateLimit(level));
                 using (dbManager.GetThreadTransaction())
                 {
                     Add(stronghold);
@@ -154,7 +160,7 @@ namespace Game.Data.Stronghold
             stronghold.StrongholdState = StrongholdState.Occupied;
             stronghold.Tribe = tribe;
             stronghold.GateOpenTo = null;
-            stronghold.Gate = formula.GetGateLimit(stronghold.Lvl);
+            stronghold.Gate = formula.StrongholdGateLimit(stronghold.Lvl);
             stronghold.DateOccupied = DateTime.UtcNow;
             stronghold.EndUpdate();
             MarkIndexDirty();
@@ -172,8 +178,12 @@ namespace Game.Data.Stronghold
         public IEnumerable<Unit> GenerateNeutralStub(IStronghold stronghold)
         {
             ISimpleStub simpleStub;
+            int upkeep;
+            byte unitLevel;
+            formula.StrongholdUpkeep(stronghold.Lvl, out upkeep, out unitLevel);
             simpleStubGenerator.Generate(stronghold.Lvl,
-                                         formula.GetStrongholdUpkeep(stronghold.Lvl),
+                                         upkeep,
+                                         unitLevel,
                                          Config.stronghold_npc_randomness,
                                          (int)stronghold.Id,
                                          out simpleStub);
@@ -226,13 +236,13 @@ namespace Game.Data.Stronghold
                 return Error.StrongholdNotRepairableInBattle;
             }
 
-            var diff = formula.GetGateLimit(stronghold.Lvl) - stronghold.Gate;
+            var diff = formula.StrongholdGateLimit(stronghold.Lvl) - stronghold.Gate;
             if (diff <= 0)
             {
                 return Error.StrongholdGateFull;
             }
 
-            var cost = formula.GetGateRepairCost(stronghold.Lvl, diff);
+            var cost = formula.StrongholdGateRepairCost(stronghold.Lvl, diff);
             if (!stronghold.Tribe.Resource.HasEnough(cost))
             {
                 return Error.ResourceNotEnough;
@@ -242,7 +252,7 @@ namespace Game.Data.Stronghold
             dbManager.Save(stronghold.Tribe);
 
             stronghold.BeginUpdate();
-            stronghold.Gate = formula.GetGateLimit(stronghold.Lvl);
+            stronghold.Gate = formula.StrongholdGateLimit(stronghold.Lvl);
             stronghold.EndUpdate();
 
             return Error.Ok;

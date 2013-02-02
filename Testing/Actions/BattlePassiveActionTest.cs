@@ -51,6 +51,7 @@ namespace Testing.Actions
             var formula = new Mock<Formula>();
             var locker = new Mock<ILocker>();
             var gameObjectLocator = new Mock<IGameObjectLocator>();
+            var cityBattleProcedure = new Mock<CityBattleProcedure>();
             var dbManager = new Mock<IDbManager>();
             var battleManager = new Mock<IBattleManager>();
             var world = new Mock<IWorld>();
@@ -104,6 +105,7 @@ namespace Testing.Actions
                                                      gameObjectLocator.Object,
                                                      dbManager.Object,
                                                      formula.Object,
+                                                     cityBattleProcedure.Object,
                                                      world.Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
@@ -120,6 +122,7 @@ namespace Testing.Actions
 
             var actionFactory = new Mock<IActionFactory>();
             var battleProcedure = new Mock<BattleProcedure>();
+            var cityBattleProcedure = new Mock<CityBattleProcedure>();
             var formula = new Mock<Formula>();
             var locker = new Mock<ILocker>();
             var gameObjectLocator = new Mock<IGameObjectLocator>();
@@ -151,7 +154,7 @@ namespace Testing.Actions
             var attackerGroup2 = CreateCityOffensiveCombatGroup(attackerTroop2);
 
             var attackers = new Mock<ICombatList>();
-            attackers.SetupGet(p => p.Upkeep).Returns(150);
+            attackers.SetupGet(p => p.Upkeep).Returns(150);            
             attackers.Setup(p => p.GetEnumerator())
                      .Returns(() => new List<ICombatGroup> {attackerGroup1, attackerGroup2}.GetEnumerator());
 
@@ -176,6 +179,7 @@ namespace Testing.Actions
                                                      gameObjectLocator.Object,
                                                      dbManager.Object,
                                                      formula.Object,
+                                                     cityBattleProcedure.Object,
                                                      world.Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
@@ -193,6 +197,7 @@ namespace Testing.Actions
             var actionFactory = new Mock<IActionFactory>();
             var battleProcedure = new Mock<BattleProcedure>();
             var formula = new Mock<Formula>();
+            var cityBattleProcedure = new Mock<CityBattleProcedure>();
             var locker = new Mock<ILocker>();
             var gameObjectLocator = new Mock<IGameObjectLocator>();
             var dbManager = new Mock<IDbManager>();
@@ -246,6 +251,7 @@ namespace Testing.Actions
                                                      gameObjectLocator.Object,
                                                      dbManager.Object,
                                                      formula.Object,
+                                                     cityBattleProcedure.Object,
                                                      world.Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
@@ -266,6 +272,7 @@ namespace Testing.Actions
             var locker = new Mock<ILocker>();
             var gameObjectLocator = new Mock<IGameObjectLocator>();
             var dbManager = new Mock<IDbManager>();
+            var cityBattleProcedure = new Mock<CityBattleProcedure>();
             var battleManager = new Mock<IBattleManager>();
             var world = new Mock<IWorld>();
 
@@ -316,6 +323,7 @@ namespace Testing.Actions
                                                      gameObjectLocator.Object,
                                                      dbManager.Object,
                                                      formula.Object,
+                                                     cityBattleProcedure.Object,
                                                      world.Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
@@ -336,6 +344,7 @@ namespace Testing.Actions
             var locker = new Mock<ILocker>();
             var gameObjectLocator = new Mock<IGameObjectLocator>();
             var dbManager = new Mock<IDbManager>();
+            var cityBattleProcedure = new Mock<CityBattleProcedure>();
             var battleManager = new Mock<IBattleManager>();
             var world = new Mock<IWorld>();
 
@@ -386,6 +395,7 @@ namespace Testing.Actions
                                                      gameObjectLocator.Object,
                                                      dbManager.Object,
                                                      formula.Object,
+                                                     cityBattleProcedure.Object,
                                                      world.Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);

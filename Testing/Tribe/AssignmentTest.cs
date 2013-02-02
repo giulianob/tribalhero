@@ -12,14 +12,14 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Moq;
+using NSubstitute;
 using Persistance;
 using Xunit;
 using Xunit.Extensions;
 
 namespace Testing.Tribe
 {
-    public class AssignmentTest : IDisposable
+    public class AssignmentTest
     {
         private const uint TARGET_X = 5;
 
@@ -28,12 +28,7 @@ namespace Testing.Tribe
         private static readonly DateTime targetTime = new DateTime(2012, 1, 1, 10, 1, 1, 1, DateTimeKind.Utc);
 
         private static readonly DateTime startTime = new DateTime(2012, 1, 1, 9, 1, 1, 1, DateTimeKind.Utc);
-
-        public AssignmentTest()
-        {
-            Concurrency.Current = new Mock<ILocker>().Object;
-        }
-
+        
         public static IEnumerable<object[]> WhenSomeoneJoinsData
         {
             get
@@ -44,11 +39,6 @@ namespace Testing.Tribe
             }
         }
 
-        public void Dispose()
-        {
-            Concurrency.Current = null;
-        }
-
         /// <summary>
         ///     When an assignment is rescheduled for the first time
         ///     Then it should schedule itself at the proper time
@@ -57,43 +47,45 @@ namespace Testing.Tribe
         [Fact]
         public void WhenScheduled()
         {
-            Mock<ITribe> tribe = new Mock<ITribe>();
-            Mock<ICity> targetCity = new Mock<ICity>();
-            Mock<ICity> stubCity;
-            Mock<ITroopStub> stub = CreateStub(out stubCity);
-            Mock<Formula> formula = new Mock<Formula>();
-            Mock<IDbManager> dbManager = new Mock<IDbManager>();
-            Mock<IGameObjectLocator> gameObjectLocator = new Mock<IGameObjectLocator>();
-            Mock<IScheduler> scheduler = new Mock<IScheduler>();
-            Mock<Procedure> procedure = new Mock<Procedure>();
-            Mock<TileLocator> tileLocator = new Mock<TileLocator>();
-            Mock<IActionFactory> actionFactory = new Mock<IActionFactory>();
+            var tribe = Substitute.For<ITribe>();
+            var targetCity = Substitute.For<ICity>();
+            ICity stubCity;
+            var stub = CreateStub(out stubCity);
+            var formula = Substitute.For<Formula>();
+            var dbManager = Substitute.For<IDbManager>();
+            var gameObjectLocator = Substitute.For<IGameObjectLocator>();
+            var scheduler = Substitute.For<IScheduler>();
+            var procedure = Substitute.For<Procedure>();
+            var tileLocator = Substitute.For<TileLocator>();
+            var actionFactory = Substitute.For<IActionFactory>();
+            var locker = Substitute.For<ILocker>();
 
             SystemClock.SetClock(startTime);
 
             // troop should be dispatched a minute later
-            formula.Setup(m => m.MoveTimeTotal(stub.Object, It.IsAny<int>(), true)).Returns(300);
+            formula.MoveTimeTotal(stub, Arg.Any<int>(), true).Returns(300);
 
-            Assignment assignment = new Assignment(tribe.Object,
+            Assignment assignment = new Assignment(tribe,
                                                    TARGET_X,
                                                    TARGET_Y,
-                                                   targetCity.Object,
+                                                   targetCity,
                                                    AttackMode.Normal,
                                                    targetTime,
                                                    "Description",
                                                    true,
-                                                   formula.Object,
-                                                   dbManager.Object,
-                                                   gameObjectLocator.Object,
-                                                   scheduler.Object,
-                                                   procedure.Object,
-                                                   tileLocator.Object,
-                                                   actionFactory.Object);
-            assignment.Add(stub.Object);
+                                                   formula,
+                                                   dbManager,
+                                                   gameObjectLocator,
+                                                   scheduler,
+                                                   procedure,
+                                                   tileLocator,
+                                                   actionFactory,
+                                                   locker);
+            assignment.Add(stub);
             assignment.Reschedule();
 
-            scheduler.Verify(m => m.Put(assignment));
-            dbManager.Verify(m => m.Save(assignment));
+            scheduler.Received().Put(assignment);
+            dbManager.Received().Save(assignment);
             assignment.Time.Should().Be(targetTime.AddMinutes(-5));
         }
 
@@ -107,21 +99,22 @@ namespace Testing.Tribe
         [Theory, PropertyData("WhenSomeoneJoinsData")]
         public void WhenSomeoneJoins(IEnumerable<int> moveTimes, DateTime expectedTime)
         {
-            Mock<ITribe> tribe = new Mock<ITribe>();
-            Mock<ICity> targetCity = new Mock<ICity>();
-            Mock<ICity> stubCity;
-            Mock<ITroopStub> stub = CreateStub(out stubCity);
-            Mock<Formula> formula = new Mock<Formula>();
-            Mock<IDbManager> dbManager = new Mock<IDbManager>();
-            Mock<IGameObjectLocator> gameObjectLocator = new Mock<IGameObjectLocator>();
-            Mock<IScheduler> scheduler = new Mock<IScheduler>();
-            Mock<Procedure> procedure = new Mock<Procedure>();
-            Mock<TileLocator> tileLocator = new Mock<TileLocator>();
-            Mock<IActionFactory> actionFactory = new Mock<IActionFactory>();
-            Mock<ICity> newCity;
-            Mock<ITroopStub> newStub = CreateStub(out newCity);
-            Mock<ICity> newCity2;
-            Mock<ITroopStub> newStub2 = CreateStub(out newCity2);
+            var tribe = Substitute.For<ITribe>();
+            var targetCity = Substitute.For<ICity>();
+            ICity stubCity;
+            var stub = CreateStub(out stubCity);
+            var formula = Substitute.For<Formula>();
+            var dbManager = Substitute.For<IDbManager>();
+            var gameObjectLocator = Substitute.For<IGameObjectLocator>();
+            var scheduler = Substitute.For<IScheduler>();
+            var procedure = Substitute.For<Procedure>();
+            var tileLocator = Substitute.For<TileLocator>();
+            var actionFactory = Substitute.For<IActionFactory>();
+            var locker = Substitute.For<ILocker>();
+            ICity newCity;
+            var newStub = CreateStub(out newCity);
+            ICity newCity2;
+            var newStub2 = CreateStub(out newCity2);
 
             SystemClock.SetClock(startTime);
 
@@ -130,94 +123,95 @@ namespace Testing.Tribe
             {
                 moveTimeReturns.Enqueue(moveTime);
             }
-            formula.Setup(m => m.MoveTimeTotal(It.IsAny<ITroopStub>(), 0, true)).Returns(moveTimeReturns.Dequeue);
+            formula.MoveTimeTotal(Arg.Any<ITroopStub>(), 0, true).Returns(x => moveTimeReturns.Dequeue());
 
-            Assignment assignment = new Assignment(tribe.Object,
+            Assignment assignment = new Assignment(tribe,
                                                    TARGET_X,
                                                    TARGET_Y,
-                                                   targetCity.Object,
+                                                   targetCity,
                                                    AttackMode.Normal,
                                                    targetTime,
                                                    "Description",
                                                    true,
-                                                   formula.Object,
-                                                   dbManager.Object,
-                                                   gameObjectLocator.Object,
-                                                   scheduler.Object,
-                                                   procedure.Object,
-                                                   tileLocator.Object,
-                                                   actionFactory.Object);
-            assignment.Add(stub.Object);
-            assignment.Add(newStub.Object);
-            assignment.Add(newStub2.Object);
+                                                   formula,
+                                                   dbManager,
+                                                   gameObjectLocator,
+                                                   scheduler,
+                                                   procedure,
+                                                   tileLocator,
+                                                   actionFactory,
+                                                   locker);
+            assignment.Add(stub);
+            assignment.Add(newStub);
+            assignment.Add(newStub2);
 
-            scheduler.Verify(m => m.Put(assignment), Times.Exactly(3));
+            scheduler.Received(3).Put(assignment);
             assignment.Time.Should().Be(expectedTime);
         }
 
-        // Given original player has already been dispatched
-        // When new player joins
-        // Then assignment should reschedule
+
+        /// <summary>
+        /// Given original player has already been dispatched
+        /// When new player joins
+        /// Then assignment should reschedule
+        /// </summary>
         [Fact]
         public void WhenSomeoneAlreadyDispatched()
         {
-            Mock<ITribe> tribe = new Mock<ITribe>();
-            Mock<ICity> targetCity = new Mock<ICity>();
-            Mock<ICity> stubCity;
-            Mock<ITroopStub> stub = CreateStub(out stubCity);
-            Mock<Formula> formula = new Mock<Formula>();
-            Mock<IDbManager> dbManager = new Mock<IDbManager>();
-            Mock<IGameObjectLocator> gameObjectLocator = new Mock<IGameObjectLocator>();
-            Mock<IScheduler> scheduler = new Mock<IScheduler>();
-            Mock<Procedure> procedure = new Mock<Procedure>();
-            Mock<TileLocator> tileLocator = new Mock<TileLocator>();
-            Mock<IActionFactory> actionFactory = new Mock<IActionFactory>();
-            Mock<ICity> newCity;
-            Mock<ITroopStub> newStub = CreateStub(out newCity);
-            Mock<IStructure> targetStructure = new Mock<IStructure>();
-            Mock<IActionWorker> actionWorker = new Mock<IActionWorker>();
-            Mock<ITroopObject> troopObject = new Mock<ITroopObject>();
+            var tribe = Substitute.For<ITribe>();
+            var targetCity = Substitute.For<ICity>();
+            ICity stubCity;
+            var stub = CreateStub(out stubCity);
+            var formula = Substitute.For<Formula>();
+            var dbManager = Substitute.For<IDbManager>();
+            var gameObjectLocator = Substitute.For<IGameObjectLocator>();
+            var scheduler = Substitute.For<IScheduler>();
+            var procedure = Substitute.For<Procedure>();
+            var tileLocator = Substitute.For<TileLocator>();
+            var actionFactory = Substitute.For<IActionFactory>();
+            ICity newCity;
+            var newStub = CreateStub(out newCity);
+            var targetStructure = Substitute.For<IStructure>();
+            var actionWorker = Substitute.For<IActionWorker>();
+            var troopObject = Substitute.For<ITroopObject>();
+            var locker = Substitute.For<ILocker>();
 
             SystemClock.SetClock(startTime);
 
-            troopObject.SetupGet(p => p.ObjectId).Returns(95);
+            troopObject.ObjectId.Returns((uint)95);
 
-            gameObjectLocator.Setup(m => m.GetObjects(TARGET_X, TARGET_Y))
-                             .Returns(new List<ISimpleGameObject> {targetStructure.Object});
+            gameObjectLocator.GetObjects(TARGET_X, TARGET_Y).Returns(new List<ISimpleGameObject> {targetStructure});
 
-            targetStructure.SetupGet(p => p.City).Returns(targetCity.Object);
+            targetStructure.City.Returns(targetCity);
 
-            targetCity.SetupGet(p => p.Id).Returns(100);
+            targetCity.Id.Returns((uint)100);
 
-            actionWorker.Setup(m => m.DoPassive(It.IsAny<ICity>(), It.IsAny<PassiveAction>(), true)).Returns(Error.Ok);
+            actionWorker.DoPassive(Arg.Any<ICity>(), Arg.Any<PassiveAction>(), true).Returns(Error.Ok);
 
-            stubCity.SetupGet(p => p.Worker).Returns(actionWorker.Object);
+            stubCity.Worker.Returns(actionWorker);
 
-            // ReSharper disable RedundantAssignment
-            ITroopObject outTroopObject = troopObject.Object;
-            // ReSharper restore RedundantAssignment
-            procedure.Setup(m => m.TroopObjectCreate(stubCity.Object, stub.Object, out outTroopObject));
+            ITroopObject outTroopObject;
+            procedure.When(x => x.TroopObjectCreate(stubCity, stub, out outTroopObject)).Do(x =>
+                { x[2] = troopObject; });
 
-            Queue<int> moveTimes = new Queue<int>();
-            moveTimes.Enqueue(300);
-            moveTimes.Enqueue(120);
-            formula.Setup(m => m.MoveTimeTotal(It.IsAny<ITroopStub>(), 0, true)).Returns(moveTimes.Dequeue);
+            formula.MoveTimeTotal(Arg.Any<ITroopStub>(), 0, true).Returns(300, 300, 120);
 
-            Assignment assignment = new Assignment(tribe.Object,
+            Assignment assignment = new Assignment(tribe,
                                                    TARGET_X,
                                                    TARGET_Y,
-                                                   targetCity.Object,
+                                                   targetCity,
                                                    AttackMode.Normal,
                                                    targetTime,
                                                    "Description",
                                                    true,
-                                                   formula.Object,
-                                                   dbManager.Object,
-                                                   gameObjectLocator.Object,
-                                                   scheduler.Object,
-                                                   procedure.Object,
-                                                   tileLocator.Object,
-                                                   actionFactory.Object) {stub.Object};
+                                                   formula,
+                                                   dbManager,
+                                                   gameObjectLocator,
+                                                   scheduler,
+                                                   procedure,
+                                                   tileLocator,
+                                                   actionFactory,
+                                                   locker) {stub};
 
             SystemClock.SetClock(targetTime.AddSeconds(-90));
 
@@ -225,10 +219,84 @@ namespace Testing.Tribe
             assignment.Callback(null);
 
             // Add new troop
-            assignment.Add(newStub.Object);
+            assignment.Add(newStub);
 
-            scheduler.Verify(m => m.Put(assignment), Times.Exactly(3));
+            formula.Received(3).MoveTimeTotal(Arg.Any<ITroopStub>(), 0, true);
+            scheduler.Received(3).Put(assignment);
             assignment.Time.Should().Be(targetTime.AddSeconds(-120));
+        }
+
+        /// <summary>
+        /// Given a troop joins an assignment
+        /// And the troops speed changes before its dispatched
+        /// Then the assignment should reschedule the troop until the new time once dispatched
+        /// </summary>
+        [Fact]
+        public void WhenTroopSpeedChanges()
+        {
+            var tribe = Substitute.For<ITribe>();
+            var targetCity = Substitute.For<ICity>();
+            ICity stubCity;
+            var stub = CreateStub(out stubCity);
+            var formula = Substitute.For<Formula>();
+            var dbManager = Substitute.For<IDbManager>();
+            var gameObjectLocator = Substitute.For<IGameObjectLocator>();
+            var scheduler = Substitute.For<IScheduler>();
+            var procedure = Substitute.For<Procedure>();
+            var tileLocator = Substitute.For<TileLocator>();
+            var actionFactory = Substitute.For<IActionFactory>();
+            
+            var targetStructure = Substitute.For<IStructure>();
+            var actionWorker = Substitute.For<IActionWorker>();
+            var troopObject = Substitute.For<ITroopObject>();
+            var locker = Substitute.For<ILocker>();
+
+            SystemClock.SetClock(startTime);
+
+            troopObject.ObjectId.Returns((uint)95);
+
+            gameObjectLocator.GetObjects(TARGET_X, TARGET_Y).Returns(new List<ISimpleGameObject> {targetStructure});
+
+            targetStructure.City.Returns(targetCity);
+
+            targetCity.Id.Returns((uint)100);
+
+            actionWorker.DoPassive(Arg.Any<ICity>(), Arg.Any<PassiveAction>(), true).Returns(Error.Ok);
+
+            stubCity.Worker.Returns(actionWorker);
+
+            ITroopObject outTroopObject;
+            procedure.When(x => x.TroopObjectCreate(stubCity, stub, out outTroopObject)).Do(x =>
+                { x[2] = troopObject; });
+
+            formula.MoveTimeTotal(Arg.Any<ITroopStub>(), 0, true).Returns(300, 120);
+
+            Assignment assignment = new Assignment(tribe,
+                                                   TARGET_X,
+                                                   TARGET_Y,
+                                                   targetCity,
+                                                   AttackMode.Normal,
+                                                   targetTime,
+                                                   "Description",
+                                                   true,
+                                                   formula,
+                                                   dbManager,
+                                                   gameObjectLocator,
+                                                   scheduler,
+                                                   procedure,
+                                                   tileLocator,
+                                                   actionFactory,
+                                                   locker) {stub};
+
+            SystemClock.SetClock(targetTime.AddSeconds(-300));
+
+            // Dispatch troop
+            assignment.Callback(null);
+
+            formula.Received(2).MoveTimeTotal(Arg.Any<ITroopStub>(), 0, true);
+            scheduler.Received(2).Put(assignment);
+            assignment.Time.Should().Be(targetTime.AddSeconds(-120));
+            procedure.Received(0).TroopObjectCreate(Arg.Any<ICity>(), Arg.Any<ITroopStub>(), out troopObject);
         }
 
         /// <summary>
@@ -239,62 +307,62 @@ namespace Testing.Tribe
         [Fact]
         public void WhenDefensiveAssignmentScheduled()
         {
-            Mock<ITribe> tribe = new Mock<ITribe>();
-            Mock<ICity> targetCity = new Mock<ICity>();
-            Mock<ICity> stubCity;
-            Mock<ITroopStub> stub = CreateStub(out stubCity);
-            Mock<Formula> formula = new Mock<Formula>();
-            Mock<IDbManager> dbManager = new Mock<IDbManager>();
-            Mock<IGameObjectLocator> gameObjectLocator = new Mock<IGameObjectLocator>();
-            Mock<IScheduler> scheduler = new Mock<IScheduler>();
-            Mock<Procedure> procedure = new Mock<Procedure>();
-            Mock<TileLocator> tileLocator = new Mock<TileLocator>();
-            Mock<IActionFactory> actionFactory = new Mock<IActionFactory>();
-            Mock<IStructure> targetStructure = new Mock<IStructure>();
-            Mock<IActionWorker> actionWorker = new Mock<IActionWorker>();
-            Mock<ITroopObject> troopObject = new Mock<ITroopObject>();
+            var tribe = Substitute.For<ITribe>();
+            var targetCity = Substitute.For<ICity>();
+            ICity stubCity;
+            var stub = CreateStub(out stubCity);
+            var formula = Substitute.For<Formula>();
+            var dbManager = Substitute.For<IDbManager>();
+            var gameObjectLocator = Substitute.For<IGameObjectLocator>();
+            var scheduler = Substitute.For<IScheduler>();
+            var procedure = Substitute.For<Procedure>();
+            var tileLocator = Substitute.For<TileLocator>();
+            var actionFactory = Substitute.For<IActionFactory>();
+            var targetStructure = Substitute.For<IStructure>();
+            var actionWorker = Substitute.For<IActionWorker>();
+            var troopObject = Substitute.For<ITroopObject>();
+            var locker = Substitute.For<ILocker>();
 
-            troopObject.SetupGet(p => p.ObjectId).Returns(99);
+            troopObject.ObjectId.Returns((uint)99);
 
-            gameObjectLocator.Setup(m => m.GetObjects(TARGET_X, TARGET_Y))
-                             .Returns(new List<ISimpleGameObject> {targetStructure.Object});
+            gameObjectLocator.GetObjects(TARGET_X, TARGET_Y).Returns(new List<ISimpleGameObject> {targetStructure});
 
-            targetStructure.SetupGet(p => p.City).Returns(targetCity.Object);
+            targetStructure.City.Returns(targetCity);
 
-            targetCity.SetupGet(p => p.Id).Returns(100);
-            targetCity.SetupGet(p => p.LocationType).Returns(LocationType.City);
-            targetCity.SetupGet(p => p.LocationId).Returns(100);
+            targetCity.Id.Returns((uint)100);
+            targetCity.LocationType.Returns(LocationType.City);
+            targetCity.LocationId.Returns((uint)100);
 
-            actionWorker.Setup(m => m.DoPassive(It.IsAny<ICity>(), It.IsAny<PassiveAction>(), true)).Returns(Error.Ok);
+            actionWorker.DoPassive(Arg.Any<ICity>(), Arg.Any<PassiveAction>(), true).Returns(Error.Ok);
 
-            stubCity.SetupGet(p => p.Worker).Returns(actionWorker.Object);
-            stubCity.SetupGet(p => p.Id).Returns(20);
+            stubCity.Worker.Returns(actionWorker);
+            stubCity.Id.Returns((uint)20);
 
             SystemClock.SetClock(startTime);
 
             // troop should be dispatched a minute later
-            formula.Setup(m => m.MoveTimeTotal(stub.Object, It.IsAny<int>(), true)).Returns(300);
+            formula.MoveTimeTotal(stub, Arg.Any<int>(), true).Returns(300);
 
-            // ReSharper disable RedundantAssignment
-            ITroopObject outTroopObject = troopObject.Object;
-            // ReSharper restore RedundantAssignment
-            procedure.Setup(m => m.TroopObjectCreate(stubCity.Object, stub.Object, out outTroopObject));
+            ITroopObject outTroopObject;
+            procedure.When(m => m.TroopObjectCreate(stubCity, stub, out outTroopObject)).Do(x =>
+                { x[2] = troopObject; });
 
-            Assignment assignment = new Assignment(tribe.Object,
+            Assignment assignment = new Assignment(tribe,
                                                    TARGET_X,
                                                    TARGET_Y,
-                                                   targetCity.Object,
+                                                   targetCity,
                                                    AttackMode.Strong,
                                                    targetTime,
                                                    "Description",
                                                    false,
-                                                   formula.Object,
-                                                   dbManager.Object,
-                                                   gameObjectLocator.Object,
-                                                   scheduler.Object,
-                                                   procedure.Object,
-                                                   tileLocator.Object,
-                                                   actionFactory.Object) {stub.Object};
+                                                   formula,
+                                                   dbManager,
+                                                   gameObjectLocator,
+                                                   scheduler,
+                                                   procedure,
+                                                   tileLocator,
+                                                   actionFactory,
+                                                   locker) {stub};
             assignment.Reschedule();
             assignment.Time.Should().Be(targetTime.AddMinutes(-5));
 
@@ -302,14 +370,14 @@ namespace Testing.Tribe
 
             // Dispatch first troop
             assignment.Callback(null);
-            actionFactory.Verify(m => m.CreateCityDefenseChainAction(20, 99, 100, AttackMode.Strong));
+            actionFactory.Received().CreateCityDefenseChainAction(20, 99, 100, AttackMode.Strong);
         }
 
-        private Mock<ITroopStub> CreateStub(out Mock<ICity> stubCity)
+        private ITroopStub CreateStub(out ICity stubCity)
         {
-            stubCity = new Mock<ICity>();
-            var stub = new Mock<ITroopStub>();
-            stub.SetupGet(p => p.City).Returns(stubCity.Object);
+            stubCity = Substitute.For<ICity>();
+            var stub = Substitute.For<ITroopStub>();
+            stub.City.Returns(stubCity);
 
             return stub;
         }

@@ -2,11 +2,16 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Setup;
+using Game.Util.Locking;
 
 namespace Game.Logic
 {
     public interface IActionWorker
     {
+        ILocation Location { get; set; }
+
+        Func<ILockable> LockDelegate { get; set; }
+
         IDictionary<uint, ActiveAction> ActiveActions { get; }
 
         IDictionary<uint, PassiveAction> PassiveActions { get; }

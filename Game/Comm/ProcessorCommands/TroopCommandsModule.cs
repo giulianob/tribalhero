@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Data.Stats;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
@@ -50,6 +51,7 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.TroopDefendStronghold, DefendStronghold);
             processor.RegisterCommand(Command.TroopRetreat, Retreat);
             processor.RegisterCommand(Command.TroopLocalSet, LocalTroopSet);
+            processor.RegisterCommand(Command.TroopAttackBarbarianTribe, AttackBarbarianTribe);
             processor.RegisterCommand(Command.TroopModeSwitch, ModeSwitch);
         }
 
@@ -410,6 +412,66 @@ namespace Game.Comm.ProcessorCommands
                                                                          troopObject.ObjectId,
                                                                          targetStrongholdId,
                                                                          mode);
+                Error ret = city.Worker.DoPassive(city, aa, true);
+                if (ret != 0)
+                {
+                    Procedure.Current.TroopObjectDelete(troopObject, true);
+                    ReplyError(session, packet, ret);
+                }
+                else
+                {
+                    ReplySuccess(session, packet);
+                }
+            }
+        }
+
+        private void AttackBarbarianTribe(Session session, Packet packet)
+        {
+            uint cityId;
+            uint targetBarbarianTribeId;
+            ISimpleStub simpleStub;
+            AttackMode mode;
+
+            try
+            {
+                mode = (AttackMode)packet.GetByte();
+                cityId = packet.GetUInt32();
+                targetBarbarianTribeId = packet.GetUInt32();
+                simpleStub = PacketHelper.ReadStub(packet, FormationType.Attack);
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            IBarbarianTribe barbarianTribe;
+            ICity city;
+
+            if (!gameObjectLocator.TryGetObjects(targetBarbarianTribeId, out barbarianTribe))
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            using (Concurrency.Current.Lock(session.Player, barbarianTribe))
+            {
+                city = session.Player.GetCity(cityId);
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                // Create troop object                
+                ITroopObject troopObject;
+                if (!Procedure.Current.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+                {
+                    ReplyError(session, packet, Error.TroopChanged);
+                    return;
+                }
+
+                var aa = actionFactory.CreateBarbarianTribeAttackChainAction(cityId, troopObject.ObjectId, targetBarbarianTribeId, mode);
                 Error ret = city.Worker.DoPassive(city, aa, true);
                 if (ret != 0)
                 {

@@ -12,7 +12,9 @@ namespace Game.Battle
 
         Tribe = 1,
 
-        Stronghold = 2
+        Stronghold = 2,
+
+        BarbarianTribe = 3
     }
 
     public class BattleOwner

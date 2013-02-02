@@ -6,7 +6,6 @@ using Game.Database;
 using Game.Map;
 using Game.Setup;
 using Ninject;
-using Persistance;
 
 #endregion
 
@@ -76,7 +75,7 @@ namespace Game.Logic
             return true;
         }
 
-        public static void RandomizeNpcResource(ICity city, DbTransaction transaction)
+        public static void RandomizeNpcResource(ICity city)
         {
             byte radius = city.Radius;
             var feObject = new RandomForeach(city);

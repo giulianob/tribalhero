@@ -5,7 +5,7 @@ using Game.Util.Locking;
 
 namespace Game.Data.Stronghold
 {
-    class StrongholdActivationChecker : ISchedule
+    public class StrongholdActivationChecker : ISchedule
     {
         private readonly ILocker locker;
 

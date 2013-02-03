@@ -30,11 +30,15 @@ namespace Game.Data.Stronghold
 
         string Name { get; }
 
+        new byte Lvl { get; set; }
+
         StrongholdState StrongholdState { get; set; }
 
         decimal Gate { get; set; }
 
         decimal VictoryPointRate { get; }
+
+        ushort NearbyCitiesCount { get; set; }
 
         DateTime DateOccupied { get; set; }
 
@@ -51,5 +55,6 @@ namespace Game.Data.Stronghold
         IActionWorker Worker { get; }
 
         event EventHandler<EventArgs> GateStatusChanged;
+
     }
 }

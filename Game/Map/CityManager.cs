@@ -20,6 +20,8 @@ namespace Game.Map
 
         private readonly IRegionManager regionManager;
 
+        public event EventHandler<EventArgs> CityAdded = (sender, args) => { };
+
         public CityManager(IDbManager dbManager, IRegionManager regionManager)
         {
             this.dbManager = dbManager;
@@ -96,6 +98,7 @@ namespace Game.Map
                     region.Add(city);
                 }
             }
+            CityAdded(city, new EventArgs());
         }
 
         public void DbLoaderAdd(ICity city)
@@ -131,5 +134,6 @@ namespace Game.Map
                 return true;
             }
         }
+
     }
 }

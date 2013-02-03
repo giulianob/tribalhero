@@ -14,7 +14,7 @@ namespace Game.Setup
 {
     public class Config
     {
-        public static string database_schema_version = "20130123010556";
+        public static string database_schema_version = "20130202045301";
 
         // ReSharper disable InconsistentNaming        
         public static int client_min_version;

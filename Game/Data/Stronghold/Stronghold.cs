@@ -47,6 +47,8 @@ namespace Game.Data.Stronghold
             }
         }
 
+        public ushort NearbyCitiesCount { get; set; }
+
         public DateTime DateOccupied { get; set; }
 
         public ITroopManager Troops { get; private set; }
@@ -85,6 +87,8 @@ namespace Game.Data.Stronghold
                 return locks.Distinct();
             }
         }
+
+        public byte Lvl { get; set; }
 
         public uint WorkerId
         {
@@ -158,12 +162,6 @@ namespace Game.Data.Stronghold
                 Tribe.SendUpdate();
             }
         }
-
-        #endregion
-
-        #region Implementation of IHasLevel
-
-        public byte Lvl { get; private set; }
 
         #endregion
 
@@ -373,6 +371,7 @@ namespace Game.Data.Stronghold
                                      XmlSerializer.SerializeList(State.Parameters.ToArray()),
                                      DbType.String),
                         new DbColumn("victory_point_rate", VictoryPointRate, DbType.Decimal),
+                        new DbColumn("nearby_cities", NearbyCitiesCount, DbType.UInt16),
                 };
             }
         }

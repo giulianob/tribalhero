@@ -49,7 +49,8 @@ namespace Game.Data.Stronghold
                                  Chat chat,
                                  IDbManager dbManager,
                                  ISimpleStubGeneratorFactory simpleStubGeneratorFactory,
-                                 Formula formula)
+                                 Formula formula,
+                                 ICityManager cityManager)
         {
             this.strongholdConfigurator = strongholdConfigurator;
             this.strongholdFactory = strongholdFactory;
@@ -58,7 +59,19 @@ namespace Game.Data.Stronghold
             this.dbManager = dbManager;            
             this.formula = formula;
 
+            cityManager.CityAdded += CityManagerCityAdded;
             simpleStubGenerator = simpleStubGeneratorFactory.CreateSimpleStubGenerator(formula.StrongholdUnitRatio(), formula.StrongholdUnitType());
+        }
+
+        void CityManagerCityAdded(object sender, EventArgs e)
+        {
+            ICity city = sender as ICity;
+            foreach (var stronghold in strongholds.Where(x => x.Value.StrongholdState == StrongholdState.Inactive && x.Value.TileDistance(city.X, city.Y) < Config.stronghold_radius_base + Config.stronghold_radius_per_level * x.Value.Lvl))
+            {
+                stronghold.Value.BeginUpdate();
+                ++stronghold.Value.NearbyCitiesCount;
+                stronghold.Value.EndUpdate();
+            }
         }
 
         public int Count
@@ -145,7 +158,7 @@ namespace Game.Data.Stronghold
             stronghold.StrongholdState = StrongholdState.Occupied;
             stronghold.Tribe = tribe;
             stronghold.GateOpenTo = null;
-            stronghold.Gate = formula.StrongholdGateLimit(stronghold.Lvl);
+            stronghold.Gate = formula.StrongholdGateHealHp(stronghold.StrongholdState, stronghold.Lvl);
             stronghold.DateOccupied = DateTime.UtcNow;
             stronghold.EndUpdate();
             MarkIndexDirty();

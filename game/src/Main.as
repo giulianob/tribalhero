@@ -121,10 +121,7 @@
 			{
 				siteVersion = new Date().getTime().toString();
 				showLoginDialog();
-			}			                       
-            
-            var p: JPanel;
-            name = p.width.toString();            
+			}			                                         
 		}
 
 		private function loadData(): void

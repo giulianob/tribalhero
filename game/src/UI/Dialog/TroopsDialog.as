@@ -56,15 +56,7 @@
 			}			
 			
 			lstCities.setSelectedIndex(0);
-			for (var i: int = 0; i < lstCities.getModel().getSize(); i++) {
-				var item: * = lstCities.getModel().getElementAt(i);
-				
-				if (item.hasOwnProperty("id") && item.id == defaultCity.id) {
-					lstCities.setSelectedIndex(i);
-					break;
-				}
-			}
-			
+						
 			btnAttack.addActionListener(onClickAttack);
 			btnDefend.addActionListener(onClickReinforce);		
 			
@@ -131,7 +123,9 @@
 					
 					// Attack/defend buttons
 					btnAttack = new JLabelButton(StringHelper.localize("TROOPS_DIALOG_SEND_ATTACK"), null, AsWingConstants.RIGHT);
+                    btnAttack.setVisible(false);
 					btnDefend = new JLabelButton(StringHelper.localize("TROOPS_DIALOG_SEND_DEFENSE"), null, AsWingConstants.RIGHT);					
+                    btnDefend.setVisible(false);
 					
 					pnlRight.appendAll(lstCities, btnAttack, btnDefend);
 				}			

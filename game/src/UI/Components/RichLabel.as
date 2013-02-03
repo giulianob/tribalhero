@@ -44,7 +44,7 @@ package src.UI.Components
 		override public function setHtmlText(ht:String):void 
 		{
 			if (usingCustomSize) {
-				var removeHtml:RegExp = new RegExp(/<\/?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)\/?>/ig);
+				var removeHtml:RegExp = new RegExp("<\\\/?\\w+((\\s+\\w+(\\s*=\\s*(?:\".*?\"|'.*?'|[^'\">\\s]+))?)+\\s*|\\s*)\\\/?>", "ig");
 				setColumns(ht.replace(removeHtml, "").length + 1);
 			}
 			

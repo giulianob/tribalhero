@@ -158,7 +158,7 @@ namespace Game.Data.Stronghold
             stronghold.StrongholdState = StrongholdState.Occupied;
             stronghold.Tribe = tribe;
             stronghold.GateOpenTo = null;
-            stronghold.Gate = formula.StrongholdGateLimit(stronghold.Lvl);
+            stronghold.Gate = formula.StrongholdGateHealHp(stronghold.StrongholdState, stronghold.Lvl);
             stronghold.DateOccupied = DateTime.UtcNow;
             stronghold.EndUpdate();
             MarkIndexDirty();

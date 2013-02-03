@@ -238,7 +238,7 @@ package src.Util {
         }
          
         private function convertProfanityList(rawWordSet:Array):Array {
-            var p:RegExp = /( ){1,100}/;
+            var p:RegExp = new RegExp("( ){1,100}");
             var arr:Array = new Array();
             for (var i:uint = 0; i < rawWordSet.length; i++) {
                 var word:String = rawWordSet[i];
@@ -373,6 +373,7 @@ package src.Util {
          */
         public function escapeForeignChars(text:String):String {
             if (!foreignChars) buildForeignChars();
+            
             text = text.replace(foreignCharRegEx, function():String {
                 return foreignChars[arguments[0]];
             });

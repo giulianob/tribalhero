@@ -3,7 +3,6 @@ using System.Collections;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using NDesk.Options;
 
@@ -93,7 +92,6 @@ namespace stacktracer
             var body = File.ReadAllText(filePath);
 
             var stack = new Stack();
-            StackTraceItem lastf;
             int depth = 0;
             int retvar = 0;
             string klass = "";
@@ -108,6 +106,7 @@ namespace stacktracer
                 var endPos = match.Index + match.Length;
 
                 string line;
+                StackTraceItem lastf;
                 switch (poi.Value)
                 {
                     // Interfaces
@@ -167,7 +166,7 @@ namespace stacktracer
                                            Id = ++functionId
                                    });
 
-                        FunctionMappings.WriteLine(string.Format("{0},{1}", functionId, fname));
+                        FunctionMappings.WriteLine("{0},{1}", functionId, fname);
 
                         var brace = body.IndexOf('{', pos) + 1;
                         line = string.Format("\r\nUncaughtExceptionHandler.enterFunction({0});\r\n", functionId);

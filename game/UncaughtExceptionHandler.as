@@ -18,7 +18,6 @@ package
 		public function UncaughtExceptionHandler(loaderInfo: LoaderInfo)
 		{						           
 			if (loaderInfo.hasOwnProperty("uncaughtErrorEvents")) {
-				Util.log("Watching for errors");
 				loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, uncaughtErrorHandler);
 			}
 		}

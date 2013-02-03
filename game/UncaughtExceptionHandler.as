@@ -1,4 +1,4 @@
-package
+package 
 {
 	import flash.display.LoaderInfo;
 	import flash.display.Stage;
@@ -16,10 +16,9 @@ package
 	public class UncaughtExceptionHandler
 	{
 		public function UncaughtExceptionHandler(loaderInfo: LoaderInfo)
-		{						
-			if (!Capabilities.isDebugger && loaderInfo.hasOwnProperty("uncaughtErrorEvents")) {
-				Util.log("Watching for errors");
-				IEventDispatcher(loaderInfo["uncaughtErrorEvents"]).addEventListener("uncaughtError", uncaughtErrorHandler);
+		{						           
+			if (loaderInfo.hasOwnProperty("uncaughtErrorEvents")) {
+				loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, uncaughtErrorHandler);
 			}
 		}
 		
@@ -49,7 +48,7 @@ package
 			// Only send error if we are in web mode
 			if (Constants.loginKey == "") return;
 			
-			var url:String = "http://" + Constants.mainWebsite + "/stacktraces/game_submit";
+			var url:String = Constants.mainWebsite + "stacktraces/game_submit";
 			var request:URLRequest = new URLRequest(url);
 			var requestVars:URLVariables = new URLVariables();
 			

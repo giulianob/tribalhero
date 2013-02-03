@@ -16,6 +16,8 @@
 	import src.UI.Dialog.*;
 	import src.UI.LookAndFeel.*;
 	import src.UI.TweenPlugins.DynamicPropsPlugin;
+    import src.UI.TweenPlugins.TransformAroundCenterPlugin;
+    import src.UI.TweenPlugins.TransformAroundPointPlugin;
 	import src.Util.*;
 	import System.Linq.EnumerationExtender;
 
@@ -41,9 +43,7 @@
 		private var pnlLoading: InfoDialog;
 		public var errorAlreadyTriggered: Boolean;
         
-		private var siteVersion: String;
-		
-		private var uncaughtExceptionHandler: UncaughtExceptionHandler;
+		private var siteVersion: String;	
 		
 		public function Main()
 		{
@@ -54,11 +54,9 @@
 		}
 		
 		public function init(e: Event = null) : void {			
-			removeEventListener(Event.ADDED_TO_STAGE, init);		
-			
-			uncaughtExceptionHandler = new UncaughtExceptionHandler(loaderInfo);
-			
-			CONFIG::debug {
+			removeEventListener(Event.ADDED_TO_STAGE, init);							
+			           
+			CONFIG::debug {                
 				stage.addChild(new TheMiner());
 			}			
 			
@@ -66,12 +64,11 @@
 			EnumerationExtender.Initialize();
 			
 			//Init ASWING			
-			//resizeHandler(null);
 			AsWingManager.initAsStandard(this);				
 			UIManager.setLookAndFeel(new GameLookAndFeel());
 			
 			//Init TweenLite
-			TweenPlugin.activate([DynamicPropsPlugin, TransformMatrixPlugin]);
+			TweenPlugin.activate([DynamicPropsPlugin, TransformMatrixPlugin, TransformAroundCenterPlugin, TransformAroundPointPlugin]);
 
 			//Init stage options
 			stage.stageFocusRect = false;
@@ -109,10 +106,12 @@
 				addChild(packetCounter);
 			}
 
+            Constants.mainWebsite = parms.mainWebsite || Constants.mainWebsite;
+            
 			//Define login type and perform login action
 			if (parms.hostname)
 			{
-				siteVersion = parms.siteVersion;
+				siteVersion = parms.siteVersion;                
 				Constants.playerName = parms.playerName;
 				Constants.loginKey = parms.lsessid;
 				Constants.hostname = parms.hostname;
@@ -122,7 +121,7 @@
 			{
 				siteVersion = new Date().getTime().toString();
 				showLoginDialog();
-			}			
+			}			                                         
 		}
 
 		private function loadData(): void
@@ -139,7 +138,7 @@
 					onDisconnected();
 					showConnectionError(true);
 				});
-				loader.load(new URLRequest("http://" + Constants.hostname + ":8085/data.xml?" + siteVersion));
+				loader.load(new URLRequest("http://" + Constants.hostname + ":8085/data.xml?m=" + new Date().getTime().toString() + "&v=" + siteVersion));
 			} 
 			else
 				loadLanguages();
@@ -154,7 +153,7 @@
 				}
 				else doConnect();
 			});
-			Locale.addXMLPath(Constants.defLang, "http://" + Constants.hostname + ":8085/Game_" + Constants.defLang + ".xml?" + siteVersion);
+			Locale.addXMLPath(Constants.defLang, "http://" + Constants.hostname + ":8085/Game_" + Constants.defLang + ".xml?m=" + new Date().getTime().toString() + "&v=" + siteVersion);
 			Locale.setDefaultLang(Constants.defLang);				
 			Locale.loadLanguageXML(Constants.defLang);
 		}
@@ -199,13 +198,7 @@
 
 		public function onDisconnected(event: Event = null):void
 		{			
-            if (Constants.loginKey) {
-                try {
-                    ExternalInterface.call("clientDisconnect");
-                }
-                catch (e: Error) {                    
-                }
-            }
+            Util.triggerJavascriptEvent("clientDisconnect");
             
 			var wasStillLoading: Boolean = session == null || !session.hasLoginSuccess();
 			
@@ -239,13 +232,7 @@
 				showConnectionError(true);		
 			else
 			{
-                if (Constants.loginKey) {
-                    try {
-                        ExternalInterface.call("clientConnect");
-                    }
-                    catch (e: Error) {                    
-                    }
-                }                
+                Util.triggerJavascriptEvent("clientConnect");                            
                 
 				Global.mapComm = new MapComm(session);
 

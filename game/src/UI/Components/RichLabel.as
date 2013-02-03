@@ -44,7 +44,7 @@ package src.UI.Components
 		override public function setHtmlText(ht:String):void 
 		{
 			if (usingCustomSize) {
-				var removeHtml:RegExp = new RegExp(/<\/?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)\/?>/ig);
+				var removeHtml:RegExp = new RegExp("<\\\/?\\w+((\\s+\\w+(\\s*=\\s*(?:\".*?\"|'.*?'|[^'\">\\s]+))?)+\\s*|\\s*)\\\/?>", "ig");
 				setColumns(ht.replace(removeHtml, "").length + 1);
 			}
 			
@@ -166,7 +166,7 @@ package src.UI.Components
 				case Location.STRONGHOLD:
 					return StringHelper.localize(location.tribeId == 0 ? "RICH_LABEL_LOCATION_STRONGHOLD_NEUTRAL" : "RICH_LABEL_LOCATION_STRONGHOLD", location.strongholdId, location.strongholdName, location.tribeId, location.tribeName);
 				default:
-					return "Bad Location"
+					return "Bad Location";
 			}
 		}
 	}

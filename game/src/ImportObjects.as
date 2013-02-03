@@ -30,6 +30,8 @@
 			ICON_SINGLE_SWORD;
 			ICON_QUESTION;
 			ICON_HAMMER;
+            ICON_MINIMAP_ARROW_RED;
+            ICON_MINIMAP_ARROW_BLUE;
 			
 			//Minimap Icons
             MINIMAP_HIT_AREA;

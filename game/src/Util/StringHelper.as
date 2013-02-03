@@ -37,8 +37,8 @@ package src.Util {
 				str = htmlEscape(str);
 			}
 			
-			var url1: RegExp = /(^|&lt;|\s)(www\..+?\..+?)(\s|&gt;|$)/gi;
-			var url2: RegExp = /(^|&lt;|\s)(((https?|ftp):\/\/|mailto:).+?)(\s|&gt;|$)/gi;		
+			var url1: RegExp = new RegExp("(^|&lt;|\\s)(www\\..+?\\..+?)(\\s|&gt;|$)", "gi");
+			var url2: RegExp = new RegExp("(^|&lt;|\\s)(((https?|ftp):\\\/\\\/|mailto:).+?)(\\s|&gt;|$)", "gi");		
 			
 			str = str.replace(url1, '$1<font color="'+GameLookAndFeel.LINK_COLOR+'"><a href="http://$2" target="_blank">$2</a></font>$3');
 			str = str.replace(url2, '$1<font color="'+GameLookAndFeel.LINK_COLOR+'"><a href="$2" target="_blank">$2</a></font>$5');

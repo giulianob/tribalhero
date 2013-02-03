@@ -1,4 +1,5 @@
 ﻿package src {
+    import com.greensock.TweenMax;
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.*;
@@ -67,6 +68,7 @@
 
 		//On screen message component
 		public var screenMessage: ScreenMessagePanel;
+        public var screenMessageHolder: Sprite;
 
 		//Holds the tools above the minimap
 		public var minimapTools: MinimapToolsContainer = new MinimapToolsContainer();
@@ -173,7 +175,11 @@
 			
 			cmdLineHolder = new Sprite();				
 			minimapHolder = new Sprite();
+            screenMessageHolder = new Sprite();
+            screenMessageHolder.mouseEnabled = false;
+            screenMessageHolder.mouseChildren = false;
 			
+            addChild(screenMessageHolder);
 			addChild(cmdLineHolder);								
 			addChild(minimapHolder);				
 			addChild(sidebarHolder);
@@ -202,17 +208,17 @@
 
 		public function onLogoutClick(e: Event): void
 		{
-			navigateToURL(new URLRequest("http://" + Constants.mainWebsite + "/players/logout/session:" + Constants.sessionId), "_self");
+			navigateToURL(new URLRequest(Constants.mainWebsite + "players/logout/session:" + Constants.sessionId), "_self");
 		}
 		
 		public function onAccountOptionsClick(e: Event): void
 		{
-			navigateToURL(new URLRequest("http://" + Constants.mainWebsite + "/players/account"), "_blank");
+			navigateToURL(new URLRequest(Constants.mainWebsite + "players/account"), "_blank");
 		}		
 		
 		public function onHelpClick(e: Event): void
 		{
-			navigateToURL(new URLRequest("http://" + Constants.mainWebsite + "/database"), "_blank");
+			navigateToURL(new URLRequest(Constants.mainWebsite + "database"), "_blank");
 		}
 		
 		public function onWikiClick(e: Event): void
@@ -453,7 +459,7 @@
 		}
 
 		public function setMap(map: Map, miniMap: MiniMap):void
-		{				
+		{				             
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
 			stage.addEventListener(KeyboardEvent.KEY_UP, eventKeyUp);
@@ -553,7 +559,7 @@
 			visible = true;
 
 			// Create on screen message component, it'll auto show itself
-			screenMessage = new ScreenMessagePanel(this);
+			screenMessage = new ScreenMessagePanel(screenMessageHolder);
 			
 			// Add menu overlay
 			addChild(menuDummyOverlay);
@@ -838,18 +844,30 @@
 		public function setUnreadMessageCount(unreadMessages: int): void
 		{
 			txtUnreadMessages.visible = unreadMessages > 0;
-			if (unreadMessages > 0) txtUnreadMessages.txtUnreadCount.text = unreadMessages > 9 ? "!" : unreadMessages.toString();
+			if (unreadMessages > 0) {
+                txtUnreadMessages.txtUnreadCount.text = unreadMessages > 9 ? "!" : unreadMessages.toString();
+                                
+                Util.triggerJavascriptEvent("clientUnreadMessage");
+            }
 		}
 		
 		public function setUnreadBattleReportCount(unreadReports: int): void 
 		{
 			txtUnreadReports.visible = unreadReports > 0;				
-			if (unreadReports > 0) txtUnreadReports.txtUnreadCount.text = unreadReports > 9 ? "!" : unreadReports.toString();		
+			if (unreadReports > 0) {
+                txtUnreadReports.txtUnreadCount.text = unreadReports > 9 ? "!" : unreadReports.toString();		
+                
+                Util.triggerJavascriptEvent("clientUnreadBattleReport");
+            }
 		}
 		
 		public function setUnreadForumIcon(flag: Boolean): void
 		{
 			tribeNotificationIcon.visible = flag;
+            
+            if (flag) {
+                Util.triggerJavascriptEvent("clientUnreadForumMessage");
+            }
 		}
 	}
 

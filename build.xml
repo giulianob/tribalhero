@@ -1,5 +1,18 @@
 <project name="gameserver" default="compile" basedir="." xmlns:dn="antlib:org.apache.ant.dotnet" xmlns="antlib:org.apache.tools.ant"  xmlns:antcontrib="antlib:net.sf.antcontrib">
-	<description>Game server build</description>
+	
+    <taskdef resource="net/sf/antcontrib/antlib.xml" uri="antlib:net.sf.antcontrib">
+      <classpath>
+        <pathelement location="${basedir}/Lib/ant/ant-contrib.jar"/>
+      </classpath>
+    </taskdef>
+    
+    <taskdef resource="org/apache/ant/dotnet/antlib.xml" uri="antlib:org.apache.ant.dotnet">
+      <classpath>
+        <pathelement location="${basedir}/Lib/ant/ant-dotnet-1.1.jar"/>
+      </classpath>
+    </taskdef>        
+    
+    <description>Game server build</description>
 	
 	<target name="init">
 		<echo message="Building from ${basedir}" />

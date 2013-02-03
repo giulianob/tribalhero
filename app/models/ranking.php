@@ -121,7 +121,7 @@ class Ranking extends AppModel {
         if ($rank === false)
             return false;
 
-        return $this->getRankingListing($type, null, intval(($rank - 1) / $this->rankingsPerPage) + 1, true);
+        return array('rank' => $rank, 'list' => $this->getRankingListing($type, null, intval(($rank - 1) / $this->rankingsPerPage) + 1, true));
     }
 
     /**
@@ -146,7 +146,7 @@ class Ranking extends AppModel {
 	        if (empty($player))
 	            return false;
 	
-	        return $player['Player']['id'];
+	        return $this->getPlayerRanking($type, $player['Player']['id']);
         } else if($this->rankingTypes[$type]['group']=='tribe') {
 
 	        $tribe = $this->Tribe->findByName($search);
@@ -159,9 +159,11 @@ class Ranking extends AppModel {
 	        $stronghold = $this->Stronghold->findByName($search);
 	        if (empty($stronghold))
 	            return false;
-	
-	        return $stronghold['Stronghold']['id'];
-        } 
+
+            return $this->getStrongholdRanking($type, $stronghold['Stronghold']['id']);
+        }
+
+        return false;
     }
 
     /**
@@ -331,7 +333,7 @@ class Ranking extends AppModel {
                     'conditions' => array('City.deleted' => 0),
                     'order' => array('SUM(' . $field . ')  ' . $order, 'player_id ASC'),
                     'fields' => array('player_id', 'id', 'SUM(' . $field . ') as value'),
-                    'group' => 'player_id'
+                    'group' => 'player_id HAVING COUNT(`id`) > 0'
                 ));
 
         $itemsPerInsert = 500;

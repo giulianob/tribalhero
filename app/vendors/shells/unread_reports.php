@@ -22,7 +22,7 @@ class UnreadReportsShell extends Shell {
         $this->Thrift->initialize($this->Controller, $this->Controller->components['Thrift.Thrift']);
 
         // Finds all battles that ended within the past 65 secs (assuming cron job runs every 60 but give a few extra secs if time is a little off)
-        $battles = $this->Battle->find('all', array(
+        $localBattles = $this->Battle->find('all', array(
             'conditions' => array(
                 'Battle.ended >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 65 SECOND)',
                 'Battle.owner_type' => 'City',
@@ -36,31 +36,26 @@ class UnreadReportsShell extends Shell {
             'fields' => array('Battle.id'))
         );
 
-        if (empty($battles)) {
-            $this->out("Nothing to do");
-            return;
-        }
-
-        // Contains all of the player ids we need to send out to (first we get the local ones then the remote ones after)
-        $playerIds = Set::extract('/Player/id', $battles);
-
-        // Find all battle report views from the battles above
-        $battleIds = Set::extract('/Battle/id', $battles);
-        $battleReportIds = $this->BattleReportView->find('all', array(
+        // Find all remote battles
+        $battleReportView = $this->BattleReportView->find('all', array(
             'conditions' => array(
-                'BattleReportView.battle_id' => $battleIds,
+                'Battle.ended >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 65 SECOND)',
                 'BattleReportView.owner_type' => 'City',
             ),
             'link' => array(
                     'City' => array(
                         'fields' => array('City.id'),
-                        'Player' => array('fields' => array('Player.id')
+                        'Player' => array('fields' => array('Player.id'))
+                    ),
+                    'Battle' => array(
+                        'type' => 'INNER',
+                        'fields' => array('Battle.id')
                     )
-            )))
+            ))
         );
 
         // Get the unique ids from the local and remote reports
-        $playerIds = array_unique(array_merge($playerIds, Set::extract('/Player/id', $battleReportIds)));
+        $playerIds = array_unique(array_merge(Set::extract('/Player/id', $localBattles), Set::extract('/Player/id', $battleReportView)));
 
         // Foreach player, calculate their unread count
         $unreadCounts = array();
@@ -73,8 +68,7 @@ class UnreadReportsShell extends Shell {
             $this->out("Nothing to do");
             return;
         }
-        
-        
+
         $this->out("Reporting for .. " . implode(',', $playerIds));
 
         try {

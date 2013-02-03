@@ -26,11 +26,11 @@ package src
 		public static var tribeIncoming: int;
 		
 		/* APP CONSTANTS */
-		public static const mainWebsite: String = "tribalhero.com";
+		public static var mainWebsite: String = "http://tribalhero.com/";
 		public static const debug:int = 0;
-		public static const defLang:String = "en";
+		public static var defLang:String = "en";
 		
-		public static const alwaysEnableButtons: Boolean = false;
+		public static var alwaysEnableButtons: Boolean = false;
 
 		public static var secondsPerUnit: Number = 1;
 

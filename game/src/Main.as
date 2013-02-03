@@ -43,9 +43,7 @@
 		private var pnlLoading: InfoDialog;
 		public var errorAlreadyTriggered: Boolean;
         
-		private var siteVersion: String;
-		
-		private var uncaughtExceptionHandler: UncaughtExceptionHandler;
+		private var siteVersion: String;	
 		
 		public function Main()
 		{
@@ -56,11 +54,9 @@
 		}
 		
 		public function init(e: Event = null) : void {			
-			removeEventListener(Event.ADDED_TO_STAGE, init);		
-			
-			uncaughtExceptionHandler = new UncaughtExceptionHandler(loaderInfo);
-			
-			CONFIG::debug {
+			removeEventListener(Event.ADDED_TO_STAGE, init);							
+			           
+			CONFIG::debug {                
 				stage.addChild(new TheMiner());
 			}			
 			
@@ -110,6 +106,8 @@
 				addChild(packetCounter);
 			}
 
+            Constants.mainWebsite = parms.mainWebsite || Constants.mainWebsite;
+            
 			//Define login type and perform login action
 			if (parms.hostname)
 			{
@@ -123,7 +121,10 @@
 			{
 				siteVersion = new Date().getTime().toString();
 				showLoginDialog();
-			}			
+			}			                       
+            
+            var p: JPanel;
+            name = p.width.toString();            
 		}
 
 		private function loadData(): void
@@ -200,13 +201,7 @@
 
 		public function onDisconnected(event: Event = null):void
 		{			
-            if (Constants.loginKey) {
-                try {
-                    ExternalInterface.call("clientDisconnect");
-                }
-                catch (e: Error) {                    
-                }
-            }
+            Util.triggerJavascriptEvent("clientDisconnect");
             
 			var wasStillLoading: Boolean = session == null || !session.hasLoginSuccess();
 			
@@ -240,13 +235,7 @@
 				showConnectionError(true);		
 			else
 			{
-                if (Constants.loginKey) {
-                    try {
-                        ExternalInterface.call("clientConnect");
-                    }
-                    catch (e: Error) {                    
-                    }
-                }                
+                Util.triggerJavascriptEvent("clientConnect");                            
                 
 				Global.mapComm = new MapComm(session);
 

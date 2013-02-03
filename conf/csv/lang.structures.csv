@@ -21,7 +21,7 @@ TOWNCENTER_STRUCTURE_LVL_15,"Produces 115 Crop and 115 Wood.  Increases the maxi
 BARRACK_STRUCTURE_NAME,Barrack,
 BARRACK_STRUCTURE_NAME_PLURAL,Barracks,
 BARRACK_STRUCTURE_DESCRIPTION,Trains advanced military units without requiring laborers.,
-BARRACK_STRUCTURE_LVL_1,Allows training Swordsmen.,
+BARRACK_STRUCTURE_LVL_1,Allows training Swordsmen.\n\nWARNING: You will lose any Training Ground technologies when converting to Barracks.,
 BARRACK_STRUCTURE_LVL_2,Improves barrack strength.,
 BARRACK_STRUCTURE_LVL_3,Allows training Archers.,
 BARRACK_STRUCTURE_LVL_4,Allows upgrading units to level 3.,

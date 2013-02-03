@@ -166,7 +166,7 @@ package src.UI.Components
 				case Location.STRONGHOLD:
 					return StringHelper.localize(location.tribeId == 0 ? "RICH_LABEL_LOCATION_STRONGHOLD_NEUTRAL" : "RICH_LABEL_LOCATION_STRONGHOLD", location.strongholdId, location.strongholdName, location.tribeId, location.tribeName);
 				default:
-					return "Bad Location"
+					return "Bad Location";
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-package src
+package 
 {
 	import flash.display.LoaderInfo;
 	import flash.display.Stage;

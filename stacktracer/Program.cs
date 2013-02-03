@@ -21,7 +21,7 @@ namespace stacktracer
         private static readonly Regex ReCls = new Regex(RegCls, RegexOptions.Multiline & RegexOptions.IgnoreCase);
         private static readonly Regex ReStr = new Regex(RegStr, RegexOptions.Multiline & RegexOptions.IgnoreCase);
 
-        private static readonly string[] IgnoreFiles = new[] {"UncaughtExceptionHandler.as", "Constants.as"};
+        private static readonly List<string> IgnoreFiles = new List<string>(new[] {"UncaughtExceptionHandler.as"});
 
         private static string path;
         private static bool outputOnly = true;
@@ -47,23 +47,37 @@ namespace stacktracer
                             {"output-only=", v => outputOnly = bool.Parse(v)}, 
                             {"path=", v => path = v},
                             {"mappings-output-path=", v => mappingsOutputPath = v},
+                            {"ignored-files=", v => IgnoreFiles.AddRange(v.Split(',')) },
                     };
 
             p.Parse(Environment.GetCommandLineArgs());
 
-            var attributes = File.GetAttributes(path);
-            if ((attributes & FileAttributes.Directory) == FileAttributes.Directory)
+            var parsingFile = string.Empty;
+            try
             {
-                foreach (var file in Directory.GetFiles(path, "*.as", SearchOption.AllDirectories))
+                var attributes = File.GetAttributes(path);
+                if ((attributes & FileAttributes.Directory) == FileAttributes.Directory)
                 {
-                    string fileName = Path.GetFileName(file);                    
-                    if (IgnoreFiles.Any(x => x == fileName))
-                        continue;
+                    foreach (var file in Directory.GetFiles(path, "*.as", SearchOption.AllDirectories))
+                    {
+                        string fileName = Path.GetFileName(file);
+                        if (IgnoreFiles.Contains(fileName))
+                            continue;
 
-                    ProcessFile(file);
+                        parsingFile = file;
+                        ProcessFile(parsingFile);
+                    }
                 }
-            } else
-                ProcessFile(Path.Combine(Environment.CurrentDirectory, path));
+                else
+                {
+                    parsingFile = Path.Combine(Environment.CurrentDirectory, path);
+                    ProcessFile(parsingFile);
+                }
+            }
+            catch(Exception e)
+            {
+                Console.Out.WriteLine("Got exception while parsing. Make sure to terminate all returns with semicolons. {0}: {1} {2}", parsingFile, e.Message, e.StackTrace);
+            }
 
             if (mappingsOutputPath != string.Empty)
             {
@@ -169,6 +183,7 @@ namespace stacktracer
                     case "return":
                         lastf = (StackTraceItem)stack.Peek();
                         var semicolon = body.IndexOf(';', pos);
+                        
                         Regex retReg = new Regex(@"return\s*(.*);", RegexOptions.Singleline);
                         var matchResult = retReg.Match(body, pos, semicolon - pos + 1);
                         if (matchResult.Groups[1].Value == string.Empty)

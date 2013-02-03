@@ -314,7 +314,7 @@
 			return {
 				group: pnlGroup,
 				table: troopTable
-			}
+			};
 		}
 		
 		private function getSelectedCity(): City {

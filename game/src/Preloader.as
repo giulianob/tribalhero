@@ -11,6 +11,7 @@
 		private var _clip:MovieClip;
 		private var loadText: TextField;
 		private var loadPercentage: TextField;
+        private var uncaughtExceptionHandler: UncaughtExceptionHandler;
 
 		public function Preloader()
 		{
@@ -56,6 +57,9 @@
 			// hide loader
 			stop();
 			removeChild(_clip);
+            
+            uncaughtExceptionHandler = new UncaughtExceptionHandler(loaderInfo);
+        
 			var mainClass:Class = getDefinitionByName("src.Main") as Class;
 			stage.addChild(new mainClass() as DisplayObject);
 		}

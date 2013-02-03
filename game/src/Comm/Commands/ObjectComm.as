@@ -1,5 +1,6 @@
 ﻿package src.Comm.Commands {
 
+    import flash.external.ExternalInterface;
 	import flash.geom.*;
 	import org.aswing.*;
 	import src.*;
@@ -598,6 +599,8 @@
 				if (obj) {
 					var strPrototype: StructurePrototype = StructureFactory.getPrototype(obj.type, obj.level);
 					Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/ACTCMPT/" + city.id + "/" + objId + "/" + currentAction.id, city.name + " " + strPrototype.getName() + ": " + currentAction.toString() + " has completed", new AssetIcon(new ICON_CLOCK), 60000));
+                    
+                    Util.triggerJavascriptEvent("clientActionCompleted", currentAction.toString());
 				}
 			}
 

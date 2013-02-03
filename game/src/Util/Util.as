@@ -37,14 +37,14 @@ package src.Util {
 		}
 		
 		public static function log(msg: String) : void {					
-			if (Constants.loginKey) {
-                try {
-                    ExternalInterface.call("console.log", msg);
-                }
-                catch (e: Error) {                    
-                }
+			
+            try {
+                ExternalInterface.call("console.log", msg);                    
             }
-			else trace(msg);
+            catch (e: Error) {                    
+            }            
+			
+            trace(msg);
 		}
 		
 		public static function textfieldHasFocus(stage: Stage) : Boolean {
@@ -296,6 +296,26 @@ package src.Util {
 			return int(number * Math.pow(10, digit)) / Math.pow(10, digit);
 		}		
 
+        public static function triggerJavascriptEvent(event: String, ...rest): void {
+            if (!ExternalInterface.available) {
+                return;
+            }
+            
+            var jsVarEncode: Function = function(param: String): String {
+                return StringUtil.substitute("\"{0}\"", event.replace("\"", "\\\""));
+            };
+            
+            try {                
+                var escapedArgs: Array = [];
+                for each (var param: String in rest) {
+                    escapedArgs.push(jsVarEncode(rest));
+                }
+                
+                ExternalInterface.call(StringUtil.substitute("$(window).trigger({0})", escapedArgs.join(",")));
+            }
+            catch (e: Error) {                
+            }
+        }
 	}
 
 }

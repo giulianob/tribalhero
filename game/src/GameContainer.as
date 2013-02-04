@@ -366,7 +366,7 @@
 				minimapTools.btnZoomOut.visible = false;
 				message.showMessage("Double click to go anywhere\nPress Escape to close this map");
 				miniMap.showLegend();
-				
+				miniMap.showPointers();
 			}
 			else {
 				screenMessage.setVisible(true);
@@ -381,6 +381,7 @@
 				minimapTools.btnZoomOut.visible = true;
 				message.hide();
 				miniMap.hideLegend();
+				miniMap.hidePointers();
 			}
 
 			minimapZoomed = zoom;
@@ -526,6 +527,7 @@
 			if (selectedCity) {
 				var pt: Point = MapUtil.getScreenCoord(selectedCity.MainBuilding.x, selectedCity.MainBuilding.y);
 				src.Global.gameContainer.camera.ScrollToCenter(pt.x, pt.y);
+				miniMap.setCityPointer(selectedCity.name);
 			}
 
 			//Set minimap position and initial state
@@ -650,6 +652,7 @@
 		
 		public function addCityToUI(city: City): void {
 			(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String { return this.city.name; } } );
+			miniMap.addPointer(new MiniMapPointer(city.MainBuilding.x, city.MainBuilding.y, city.name));
 		}
 
 		private function alignMinimapTools() : void {
@@ -816,6 +819,7 @@
 					setSidebar(null);
 					selectedCity = lstCities.getSelectedItem().city;
 					displayResources();
+					miniMap.setCityPointer(selectedCity.name);
 					break;
 				}
 			}
@@ -831,6 +835,7 @@
 			displayResources();						
 			
 			stage.focus = map;
+			miniMap.setCityPointer(selectedCity.name);
 		}
 
 		private function onMinimapNavigateToPoint(e: MouseEvent) : void {

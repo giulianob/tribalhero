@@ -474,6 +474,7 @@
 				objContainer.moveWithCamera(camera.x, camera.y);
 			}
 
+			Global.gameContainer.miniMap.updatePointers(camera.miniMapCenter);
 			Global.gameContainer.miniMap.parseRegions(forceParse);
 			Global.gameContainer.miniMap.objContainer.moveWithCamera(camera.miniMapX, camera.miniMapY);
 		}

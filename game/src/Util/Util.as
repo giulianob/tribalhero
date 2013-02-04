@@ -296,21 +296,20 @@ package src.Util {
 			return int(number * Math.pow(10, digit)) / Math.pow(10, digit);
 		}		
 
-        public static function triggerJavascriptEvent(event: String, ...rest): void {
+        public static function triggerJavascriptEvent(event: String, ...rest): void {                        
             if (!ExternalInterface.available) {
                 return;
             }
             
             var jsVarEncode: Function = function(param: String): String {
-                return StringUtil.substitute("\"{0}\"", event.replace("\"", "\\\""));
+                return StringUtil.substitute("\"{0}\"", param.replace("\"", "\\\""));
             };
             
             try {                
-                var escapedArgs: Array = [];
+                var escapedArgs: Array = [ jsVarEncode(event) ];
                 for each (var param: String in rest) {
                     escapedArgs.push(jsVarEncode(rest));
-                }
-                
+                }                
                 ExternalInterface.call(StringUtil.substitute("$(window).trigger({0})", escapedArgs.join(",")));
             }
             catch (e: Error) {                

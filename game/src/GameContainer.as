@@ -313,7 +313,7 @@
 		}
 		
 		public function onSendFeedback(e: Event) : void {
-			navigateToURL(new URLRequest("http://" + Constants.mainWebsite + "/feedback"), "_blank");
+			navigateToURL(new URLRequest(Constants.mainWebsite + "feedback"), "_blank");
 		}
 		
 		public function onZoomIn(e: Event) : void {		

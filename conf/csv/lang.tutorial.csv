@@ -1,0 +1,24 @@
+Key,EN
+TUTORIAL_CLICK_TOWNCENTER,"Your city starts with the Town Center which provides the basic structures you will need to expand. Since you will need crop and wood in order to grow, lets first build a farm. Click the Town Center to see which structures it can build."
+TUTORIAL_CLICK_BUILD_FARM,"To build a Farm, click on the Farm button under Build and Upgrade."
+TUTORIAL_CLICK_CITY_OVERVIEW,You can see which actions your city is performing in the City Overview. Click to view detailed information about your city.
+,
+TUTORIAL_CITY_OVERVIEW_MSG1,"While you can see resources on the top-right of the main game screen, the city overview provides more detailed information about your resources."
+TUTORIAL_CITY_OVERVIEW_MSG2,"In Tribal Hero there are 4 basic resources: crop, wood, iron, and gold. Each of these resources are gained differently and have specific purposes."
+TUTORIAL_CITY_OVERVIEW_MSG3,"Crop is gained from farms, wood from forests, iron from refineries, and gold from markets."
+TUTORIAL_CITY_OVERVIEW_MSG4,"Many structures in the game require laborers to function, such as the farm requiring laborers to produce crop. Laborers are automatically given to your city at a predefined rate. You can mouse over your laborers in the city overview panel to see the current rate."
+TUTORIAL_CITY_OVERVIEW_MSG5,"Your city also has other attributes such as attack, defense, and influence points. Mouse over each of these in the city overview panel for more information."
+TUTORIAL_CITY_OVERVIEW_MSG6,The last thing you can do in this panel is see what your city is currently doing. You can click on any action to go it on the map.
+,
+TUTORIAL_WAIT_FOR_FARM,Your farm is currently building. Wait until it's done then assign it laborers to start gathering crop.
+TUTORIAL_CLICK_FARM,Farms require laborers to produce crop. Click on the Farm.
+TUTORIAL_CLICK_FARM_ASSIGN_LABORERS,Click Assign Laborers then choose the number of laborers to place in the farm.
+,
+TUTORIAL_CLICK_TOWNCENTER_TO_BUILD_LUMBERMILL,A Lumbermill needs to be built in order to gather wood. \nClick on the Town Center.
+TUTORIAL_CLICK_BUILD_LUMBERMILL,Click on Build Lumbermill.
+,
+TUTORIAL_WAITING_FOR_LUMBERMILL,Your lumbermill is currently being built.
+TUTORIAL_FIND_FOREST,Lumbermills gather wood from the Forests scattered throughout the world. Use the minimap to find a level 1 forest. Forests are represented by a small green circle on the minimap.
+TUTORIAL_CLICK_GATHER_WOOD,Click on Gather Lumber to assign laborers to this forest.
+,
+TUTORIAL_END,"You now have a small city producing some of the basic resources. From here you can increase your resource production by upgrading your Lumbermill and Farm, or grow your city by upgrading your Town Center. If you have any questions, visit our wiki at tribalhero.wikia.com.\nClick on the globe next to your city name to return to your city."

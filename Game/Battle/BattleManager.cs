@@ -673,6 +673,9 @@ namespace Game.Battle
             #region Object removal
 
             bool isDefenderDead = target.CombatObject.IsDead;
+
+            ActionAttacked(this, NextToAttack, attackerGroup, attacker, target.Group, target.CombatObject, actualDmg);
+
             if (isDefenderDead)
             {
                 bool isGroupDead = target.Group.IsDead();
@@ -689,8 +692,6 @@ namespace Game.Battle
                     BattleReport.WriteExitingObject(target.Group, NextToAttack != BattleSide.Attack, target.CombatObject);
                     target.Group.Remove(target.CombatObject);
                 }
-
-                ActionAttacked(this, NextToAttack, attackerGroup, attacker, target.Group, target.CombatObject, actualDmg);
 
                 UnitKilled(this,
                            NextToAttack == BattleSide.Attack ? BattleSide.Defense : BattleSide.Attack,
@@ -709,8 +710,6 @@ namespace Game.Battle
             }
             else
             {
-                ActionAttacked(this, NextToAttack, attackerGroup, attacker, target.Group, target.CombatObject, actualDmg);
-
                 if (!target.CombatObject.Disposed)
                 {
                     dbManager.Save(target.CombatObject);

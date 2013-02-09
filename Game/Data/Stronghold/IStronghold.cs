@@ -30,6 +30,8 @@ namespace Game.Data.Stronghold
 
         string Name { get; }
 
+        new byte Lvl { get; set; }
+
         StrongholdState StrongholdState { get; set; }
 
         decimal Gate { get; set; }

@@ -22,8 +22,6 @@ namespace Game.Data.Stronghold
 
         private readonly Formula formula;
 
-        private readonly ICityManager cityManager;
-
         private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(9999, 5000);
 
         private readonly IRegionManager regionManager;
@@ -60,7 +58,7 @@ namespace Game.Data.Stronghold
             this.chat = chat;
             this.dbManager = dbManager;            
             this.formula = formula;
-            this.cityManager = cityManager;
+
             cityManager.CityAdded += CityManagerCityAdded;
             simpleStubGenerator = simpleStubGeneratorFactory.CreateSimpleStubGenerator(formula.StrongholdUnitRatio(), formula.StrongholdUnitType());
         }
@@ -160,7 +158,7 @@ namespace Game.Data.Stronghold
             stronghold.StrongholdState = StrongholdState.Occupied;
             stronghold.Tribe = tribe;
             stronghold.GateOpenTo = null;
-            stronghold.Gate = formula.StrongholdGateLimit(stronghold.Lvl);
+            stronghold.Gate = formula.StrongholdGateHealHp(stronghold.StrongholdState, stronghold.Lvl);
             stronghold.DateOccupied = DateTime.UtcNow;
             stronghold.EndUpdate();
             MarkIndexDirty();

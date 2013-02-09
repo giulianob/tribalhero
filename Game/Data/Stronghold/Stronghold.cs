@@ -88,6 +88,8 @@ namespace Game.Data.Stronghold
             }
         }
 
+        public byte Lvl { get; set; }
+
         public uint WorkerId
         {
             get
@@ -160,12 +162,6 @@ namespace Game.Data.Stronghold
                 Tribe.SendUpdate();
             }
         }
-
-        #endregion
-
-        #region Implementation of IHasLevel
-
-        public byte Lvl { get; private set; }
 
         #endregion
 

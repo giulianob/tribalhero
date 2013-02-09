@@ -16,29 +16,29 @@ namespace Game.Logic.Formulas
         public Resource BarbarianTribeResources(byte level)
         {
             barbarianTribeCropCalculator = barbarianTribeCropCalculator ??
-                                           new SlotMachineCalculator(new[] {79, 179, 400, 751, 1236, 1862, 2631, 3547, 4614, 5833},
-                                                                     new[] {120, 270, 601, 1127, 1856, 2794, 3948, 5322, 6922, 8751},
+                                           new SlotMachineCalculator(new[] {92, 208, 461, 864, 1423, 2142, 3027, 4081, 5308, 6709},
+                                                                     new[] {138, 311, 692, 1296, 2134, 3213, 4540, 6122, 7961, 10064},
                                                                      new[] {1.0, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                                                                      new[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                                                      new Random());
 
             barbarianTribeWoodCalculator = barbarianTribeWoodCalculator ??
-                                           new SlotMachineCalculator(new[] {79, 179, 400, 751, 1236, 1862, 2631, 3547, 4614, 5833},
-                                                                     new[] {120, 270, 601, 1127, 1856, 2794, 3948, 5322, 6922, 8751},
+                                           new SlotMachineCalculator(new[] {92, 208, 461, 864, 1423, 2142, 3027, 4081, 5308, 6709},
+                                                                     new[] {138, 311, 692, 1296, 2134, 3213, 4540, 6122, 7961, 10064},
                                                                      new[] {1.0, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                                                                      new[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                                                      new Random());
 
             barbarianTribeGoldCalculator = barbarianTribeGoldCalculator ??
-                                           new SlotMachineCalculator(new[] {1, 1, 1, 175, 236, 258, 309, 413, 478, 437},
-                                                                     new[] {50, 75, 100, 225, 336, 408, 509, 663, 788, 827},
+                                           new SlotMachineCalculator(new[] {1, 1, 1, 207, 279, 314, 264, 498, 578, 531},
+                                                                     new[] {50, 75, 100, 257, 379, 464, 464, 748, 888, 921},
                                                                      new[] {0.01, 0.05, 0.1, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 0.95},
                                                                      new[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                                                      new Random());
 
             barbarianTribeIronCalculator = barbarianTribeIronCalculator ??
-                                           new SlotMachineCalculator(new[] {1, 1, 1, 1, 1, 12, 12, 18, 33, 54},
-                                                                     new[] {20, 30, 50, 50, 50, 22, 28, 48, 73, 124},
+                                           new SlotMachineCalculator(new[] {1, 1, 1, 1, 1, 18, 16, 27, 40, 65},
+                                                                     new[] {20, 30, 50, 50, 50, 28, 32, 57, 80, 135},
                                                                      new[] {0.0001, 0.001, 0.01, 0.05, 0.1, 0.3, 0.5, 0.6, 0.75, 0.9},
                                                                      new[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                                                      new Random());

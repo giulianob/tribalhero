@@ -1,20 +1,20 @@
 ﻿using System;
-using System.IO;
 using Game.Data;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
+using log4net;
 
 namespace Game.Comm.ProcessorCommands
 {
     class ChatCommandsModule : CommandModule
     {
-        private readonly StreamWriter writer;
+        private readonly Chat chat;
 
-        public ChatCommandsModule(StreamWriter writer)
+        public ChatCommandsModule(Chat chat)
         {
-            this.writer = writer;
+            this.chat = chat;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -44,12 +44,11 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            Packet chatPacket;
-
             string channel;
+            var chatState = session.Player.ChatState;
 
             using (Concurrency.Current.Lock(session.Player))
-            {
+            {                
                 switch(type)
                 {
                     case Module.Chat.ChatType.Tribe:
@@ -61,8 +60,7 @@ namespace Game.Comm.ProcessorCommands
                         channel = string.Format("/TRIBE/{0}", session.Player.Tribesman.Tribe.Id);
                         break;
 
-                    case Module.Chat.ChatType.Global:
-                    case Module.Chat.ChatType.Offtopic:
+                    default:
                         // If player is muted then dont let him talk in global
                         if (session.Player.Muted)
                         {
@@ -72,52 +70,37 @@ namespace Game.Comm.ProcessorCommands
 
                         // Flood chat protection
                         int secondsFromLastMessage =
-                                (int)SystemClock.Now.Subtract(session.Player.ChatLastMessage).TotalSeconds;
+                                (int)SystemClock.Now.Subtract(chatState.ChatLastMessage).TotalSeconds;
 
                         if (secondsFromLastMessage <= 10)
                         {
-                            session.Player.ChatFloodCount++;
+                            chatState.ChatFloodCount++;
                         }
                         else if (secondsFromLastMessage > 120)
                         {
-                            session.Player.ChatFloodCount = 0;
+                            chatState.ChatFloodCount = 0;
                         }
                         else if (secondsFromLastMessage > 15)
                         {
-                            session.Player.ChatFloodCount = Math.Max(0, session.Player.ChatFloodCount - 2);
+                            chatState.ChatFloodCount = Math.Max(0, chatState.ChatFloodCount - 2);
                         }
 
-                        if (session.Player.ChatFloodCount >= 15)
+                        if (chatState.ChatFloodCount >= 15)
                         {
                             ReplyError(session, packet, Error.ChatFloodWarning);
                             return;
                         }
 
-                        session.Player.ChatLastMessage = SystemClock.Now;
+                        chatState.ChatLastMessage = SystemClock.Now;
 
                         channel = "/GLOBAL";
                         break;
-
-                    default:
-                        return;
                 }
-
-                writer.WriteLine(string.Format("[{0} {1}] {2}:{3}",
-                                               SystemClock.Now,
-                                               channel,
-                                               session.Player.Name,
-                                               message));
-
-                chatPacket = new Packet(Command.Chat);
-                chatPacket.AddByte((byte)type);
-                chatPacket.AddUInt32(session.Player.PlayerId);
-                chatPacket.AddString(session.Player.Name);
-                chatPacket.AddString(message);
 
                 ReplySuccess(session, packet);
             }
 
-            Global.Channel.Post(channel, chatPacket);
+            chat.SendChat(channel, type, session.Player.PlayerId, session.Player.Name, chatState.Distinguish, message);
         }
     }
 }

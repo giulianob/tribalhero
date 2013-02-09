@@ -37,12 +37,12 @@
 
 		private var tooltip: StructureTooltip;
 
-		public function GroundAttackCursor(onAccept: Function, troop: TroopStub = null):void
+		public function GroundAttackCursor(city: City, onAccept: Function, troop: TroopStub = null):void
 		{
 			doubleClickEnabled = true;
 
 			this.troop = troop;
-			this.city = Global.gameContainer.selectedCity;
+			this.city = city;
 			this.mode = mode;
 			this.onAccept = onAccept;
 			

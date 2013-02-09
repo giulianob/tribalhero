@@ -17,7 +17,6 @@
 	import src.UI.Components.*;
 	import src.UI.Components.TableCells.*;
 	import src.UI.Components.Tribe.*;
-	import src.UI.Cursors.GroundAttackCursor;
 	import src.UI.LookAndFeel.*;
 	import src.UI.Tooltips.*;
 	import src.Map.Username;

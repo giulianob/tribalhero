@@ -35,7 +35,7 @@ package src.Objects.Process
 						
             var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
 				
-            var cursor: GroundReinforceCursor = new GroundReinforceCursor(onChoseTarget, reinforceDialog.getTroop());
+            var cursor: GroundReinforceCursor = new GroundReinforceCursor(sourceCity, onChoseTarget, reinforceDialog.getTroop());
             
             var changeTroop: JButton = new JButton("Change Troop");
             changeTroop.addActionListener(onChangeTroop);

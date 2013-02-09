@@ -24,6 +24,7 @@ using Game.Util.Locking;
 using Ninject;
 using Ninject.Extensions.Conventions;
 using Ninject.Extensions.Factory;
+using Ninject.Extensions.Logging;
 using Ninject.Extensions.Logging.Log4net.Infrastructure;
 using Ninject.Modules;
 using Persistance;
@@ -57,13 +58,12 @@ namespace Game
                               new TSimpleServer(new Notification.Processor(c.Kernel.Get<NotificationHandler>()),
                                                 new TServerSocket(46000)));
             Bind<IProtocol>().To<PacketProtocol>();
-            Bind<ChatCommandsModule>().ToMethod(c =>
+
+            Bind<Chat>().ToMethod(c =>
                 {
-                    var writer = new StreamWriter("chat.log", true, Encoding.UTF8);
-                    writer.AutoFlush = true;
-                    return new ChatCommandsModule(writer);
+                    var logFactory = c.Kernel.Get<ILoggerFactory>();
+                    return new Chat(Global.Channel, logFactory.GetLogger(typeof(Chat)));
                 });
-            Bind<Chat>().ToMethod(c => new Chat(Global.Channel));
 
             #endregion
 
@@ -184,8 +184,7 @@ namespace Game
 
             Bind<CommandLineProcessor>().ToMethod(c =>
                 {
-                    var writer = new StreamWriter("commandline.log", true, Encoding.UTF8) {AutoFlush = true};
-                    return new CommandLineProcessor(writer,
+                    return new CommandLineProcessor(c.Kernel.Get<ILoggerFactory>().GetLogger(typeof(CommandLineProcessor)),
                                                     c.Kernel.Get<AssignmentCommandLineModule>(),
                                                     c.Kernel.Get<PlayerCommandLineModule>(),
                                                     c.Kernel.Get<CityCommandLineModule>(),

@@ -23,13 +23,9 @@ namespace Game.Data
 
         PlayerRights Rights { get; set; }
 
-        DateTime ChatFloodTime { get; set; }
-
-        DateTime ChatLastMessage { get; set; }
+        PlayerChatState ChatState { get; }
 
         bool IsIdle { get; }
-
-        int ChatFloodCount { get; set; }
 
         string Description { get; set; }
 

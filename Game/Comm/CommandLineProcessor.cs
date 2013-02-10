@@ -1,12 +1,11 @@
 ﻿#region
 
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using Game.Data;
 using Game.Util;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -14,15 +13,15 @@ namespace Game.Comm
 {
     public class CommandLineProcessor
     {
+        private readonly ILogger logger;
+
         public delegate string DoWork(Session session, string[] parms);
 
         private readonly Dictionary<string, ProcessorCommand> commands = new Dictionary<string, ProcessorCommand>();
 
-        private readonly StreamWriter writer;
-
-        public CommandLineProcessor(StreamWriter writer, params CommandLineModule[] modules)
+        public CommandLineProcessor(ILogger logger, params CommandLineModule[] modules)
         {
-            this.writer = writer;
+            this.logger = logger;
 
             foreach (CommandLineModule module in modules)
             {
@@ -60,7 +59,7 @@ namespace Game.Comm
 
             if (cmdWorker.RightsRequired > PlayerRights.Basic)
             {
-                writer.WriteLine("({4}) {0}: '{1} {2}' >>>> {3}", session.Player.Name, cmd, parms, result, DateTime.Now);
+                logger.Info("{0}: '{1} {2}' >>>> {3}", session.Player.Name, cmd, parms, result);
             }
 
             return result;

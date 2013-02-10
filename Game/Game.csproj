@@ -216,6 +216,7 @@
     <Compile Include="Data\BarbarianTribe\BarbarianTribeChecker.cs" />
     <Compile Include="Data\BarbarianTribe\BarbarianTribeConfigurator.cs" />
     <Compile Include="Data\BarbarianTribe\BarbarianTribeManager.cs" />
+    <Compile Include="Data\PlayerChatState.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />
     <Compile Include="Data\ICity.cs" />
@@ -404,6 +405,7 @@
     <Compile Include="Setup\TechnologyFactory.cs" />
     <Compile Include="Util\Channel.cs" />
     <Compile Include="Util\DuplicateSubscriptionException.cs" />
+    <Compile Include="Util\FileExtension.cs" />
     <Compile Include="Util\Inflector.cs" />
     <Compile Include="Util\CmdParserExtension.cs" />
     <Compile Include="Util\HexDump.cs" />

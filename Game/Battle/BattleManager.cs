@@ -303,17 +303,23 @@ namespace Game.Battle
                 // Remove from appropriate combat list
                 if (side == BattleSide.Attack)
                 {
+                    if (!Attackers.Remove(group))
+                    {
+                        return;
+                    }
+
                     group.CombatObjectAdded -= AttackerGroupOnCombatObjectAdded;
                     group.CombatObjectRemoved -= AttackerGroupOnCombatObjectRemoved;
-
-                    Attackers.Remove(group);
                 }
                 else
                 {
+                    if (!Defenders.Remove(group))
+                    {
+                        return;
+                    }
+
                     group.CombatObjectAdded -= DefenderGroupOnCombatObjectAdded;
                     group.CombatObjectRemoved -= DefenderGroupOnCombatObjectRemoved;
-
-                    Defenders.Remove(group);
                 }
 
                 // If battle hasnt started then dont worry about cleaning anything up since nothing has happened to these objects
@@ -673,6 +679,9 @@ namespace Game.Battle
             #region Object removal
 
             bool isDefenderDead = target.CombatObject.IsDead;
+
+            ActionAttacked(this, NextToAttack, attackerGroup, attacker, target.Group, target.CombatObject, actualDmg);
+
             if (isDefenderDead)
             {
                 bool isGroupDead = target.Group.IsDead();
@@ -683,14 +692,12 @@ namespace Game.Battle
                            NextToAttack == BattleSide.Attack ? BattleSide.Defense : BattleSide.Attack,
                            ReportState.Dying);
                 }
-                else
+                else if (!target.CombatObject.Disposed)
                 {
                     // Only remove the single object
                     BattleReport.WriteExitingObject(target.Group, NextToAttack != BattleSide.Attack, target.CombatObject);
                     target.Group.Remove(target.CombatObject);
                 }
-
-                ActionAttacked(this, NextToAttack, attackerGroup, attacker, target.Group, target.CombatObject, actualDmg);
 
                 UnitKilled(this,
                            NextToAttack == BattleSide.Attack ? BattleSide.Defense : BattleSide.Attack,
@@ -709,8 +716,6 @@ namespace Game.Battle
             }
             else
             {
-                ActionAttacked(this, NextToAttack, attackerGroup, attacker, target.Group, target.CombatObject, actualDmg);
-
                 if (!target.CombatObject.Disposed)
                 {
                     dbManager.Save(target.CombatObject);

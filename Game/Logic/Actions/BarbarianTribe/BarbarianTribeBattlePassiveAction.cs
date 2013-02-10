@@ -110,7 +110,7 @@ namespace Game.Logic.Actions
                 throw new Exception();
             }
 
-            barbarianTribe.Battle.GroupKilled += BattleOnGroupKilled;
+            barbarianTribe.Battle.AboutToExitBattle -= BattleOnEnd;
         }
 
         public override ActionType Type
@@ -163,7 +163,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                barbarianTribe.Battle.GroupKilled -= BattleOnGroupKilled;
+                barbarianTribe.Battle.AboutToExitBattle -= BattleOnEnd;
 
                 // Battle has ended
                 // Delete the battle
@@ -195,7 +195,7 @@ namespace Game.Logic.Actions
             world.Add(barbarianTribe.Battle);
             dbManager.Save(barbarianTribe.Battle);
 
-            barbarianTribe.Battle.GroupKilled += BattleOnGroupKilled;
+            barbarianTribe.Battle.AboutToExitBattle += BattleOnEnd;
 
             //Add local troop            
             ISimpleStub simpleStub;
@@ -215,7 +215,7 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        private void BattleOnGroupKilled(IBattleManager battle, ICombatGroup @group)
+        private void BattleOnEnd(IBattleManager battle, ICombatList attackers, ICombatList defenders)
         {
             IBarbarianTribe barbarianTribe;
             if (!gameObjectLocator.TryGetObjects(barbarianTribeId, out barbarianTribe))
@@ -223,16 +223,18 @@ namespace Game.Logic.Actions
                 throw new Exception("Barbarian tribe should still exist");
             }
 
-            if (group.Id == localGroupId)
+            if (battle.Round == 0)
             {
-                barbarianTribe.BeginUpdate();
-                // Reset resources
-                barbarianTribe.Resource.Clear();
-                barbarianTribe.Resource.Add(formula.BarbarianTribeResources(barbarianTribe.Lvl));
-                // Lower camps remaining
-                barbarianTribe.CampRemains--;                
-                barbarianTribe.EndUpdate();
+                return;
             }
+
+            barbarianTribe.BeginUpdate();
+            // Reset resources
+            barbarianTribe.Resource.Clear();
+            barbarianTribe.Resource.Add(formula.BarbarianTribeResources(barbarianTribe.Lvl));
+            // Lower camps remaining
+            barbarianTribe.CampRemains--;
+            barbarianTribe.EndUpdate();
         }
 
         public override void UserCancelled()

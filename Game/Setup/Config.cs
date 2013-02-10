@@ -14,6 +14,8 @@ namespace Game.Setup
 {
     public class Config
     {
+        #region Game Settings
+
         public static string database_schema_version = "20130202045301";
 
         // ReSharper disable InconsistentNaming        
@@ -28,6 +30,8 @@ namespace Game.Setup
         public static bool server_admin_only;
 
         public static bool server_admin_always;
+
+        public static int scheduler_threads = 25;
 
         public static bool server_production = true;
 
@@ -143,6 +147,8 @@ namespace Game.Setup
 
         public static int database_timeout = 60;
 
+        public static int database_max_connections = 50;
+
         public static string database_host = "127.0.0.1";
 
         public static string database_username = "root";
@@ -201,6 +207,8 @@ namespace Game.Setup
         public static int idle_days = 3;
 
         public static string welcome_motd = string.Empty;
+
+        #endregion
 
         [ThreadStatic]
         private static Random random;

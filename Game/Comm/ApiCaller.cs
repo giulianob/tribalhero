@@ -125,10 +125,16 @@ namespace Game.Comm
             return MakeCall("player", "ban", parms);
         }
 
-        public static ApiResponse PlayerInfo(string name)
+        public static ApiResponse PlayerInfo(string nameOrEmail)
         {
-            var parms = new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("name", name),};
+            var parms = new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("nameOrEmail", nameOrEmail),};
             return MakeCall("player", "info", parms);
+        }
+
+        public static ApiResponse PlayerSearch(string nameOrEmail)
+        {
+            var parms = new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("nameOrEmail", nameOrEmail),};
+            return MakeCall("player", "search", parms);
         }
 
         public static ApiResponse RenamePlayer(string name, string newName)

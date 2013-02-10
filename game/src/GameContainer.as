@@ -440,7 +440,7 @@
 			if (e.charCode == Keyboard.ESCAPE)
 			{						
 				// Unzoom map
-				if (miniMap != null) zoomIntoMinimap(false, false);
+				if (miniMap != null) zoomIntoMinimap(false);
 				
 				// Deselect objects
 				clearAllSelections();

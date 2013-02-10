@@ -6,6 +6,7 @@ using Game;
 using Game.Setup;
 using NDesk.Options;
 using Ninject;
+using Ninject.Extensions.Logging.Log4net.Infrastructure;
 
 #endregion
 
@@ -34,6 +35,8 @@ namespace Launcher
                 Console.Out.WriteLine("Usage: launcher [--settings=settings.ini]");
                 Environment.Exit(0);
             }
+
+            Engine.AttachExceptionHandler(new Log4NetLogger(typeof(Engine)));
 
             Config.LoadConfigFile(settingsFile);
             Factory.CompileConfigFiles();

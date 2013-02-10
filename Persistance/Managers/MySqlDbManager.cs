@@ -45,32 +45,34 @@ namespace Persistance.Managers
 
         private long queriesRan;
 
+        private int openConnections;
+
         public MySqlDbManager(ILogger logger,
                               string hostname,
                               string username,
                               string password,
                               string database,
                               int timeout,
+                              int maxConnections,
                               bool verbose)
         {
             connectionString =
                     string.Format(
-                                  "Database={0};Host={1};User Id={2};Password={3};Connection Timeout={4};Default Command Timeout={4};",
+                                  "Database={0};Host={1};User Id={2};Password={3};Connection Timeout={4};Default Command Timeout={4};Max Pool Size={5}",
                                   database,
                                   hostname,
                                   username,
                                   password,
-                                  timeout);
+                                  timeout,
+                                  maxConnections);
             this.logger = logger;
             this.verbose = verbose;
         }
 
         public void Close(DbConnection connection)
         {
-            lock (this)
-            {
-                connection.Close();
-            }
+            Interlocked.Decrement(ref openConnections);
+            connection.Close();            
         }
 
         public void ClearThreadTransaction()
@@ -296,7 +298,7 @@ namespace Persistance.Managers
 
         DbDataReader IDbManager.SelectList(string table, params DbColumn[] primaryKeyValues)
         {
-            MySqlConnection connection = GetConnection();
+            MySqlConnection connection = GetConnection(false);
 
             MySqlCommand command = connection.CreateCommand();
 
@@ -328,7 +330,7 @@ namespace Persistance.Managers
                 parms = new DbColumn[] {};
             }
 
-            MySqlConnection connection = GetConnection();
+            MySqlConnection connection = GetConnection(false);
 
             MySqlCommand command = connection.CreateCommand();
 
@@ -431,23 +433,33 @@ namespace Persistance.Managers
             lastProbe = DateTime.UtcNow;
         }
 
-        private MySqlConnection GetConnection()
+        private MySqlConnection GetConnection(bool increaseOpenConnections = true)
         {
-            lock (this)
-            {
-                var connection = new MySqlConnection(connectionString);
+            var connection = new MySqlConnection(connectionString);
 
-                try
+            try
+            {
+                var openTime = DateTime.UtcNow;
+
+                connection.Open();
+
+                var timeToOpen = DateTime.UtcNow.Subtract(openTime).TotalMilliseconds;
+                if (timeToOpen > 1000)
                 {
-                    connection.Open();
+                    logger.Warn("Database slow connection. Took {0}ms to open a connection", DateTime.UtcNow.Subtract(openTime).TotalMilliseconds);
                 }
-                catch(Exception ex)
+
+                if (increaseOpenConnections)
                 {
-                    logger.Error(ex, "An exception was encountered while attempting to open the connection.");
-                    Environment.Exit(-1);
+                    Interlocked.Increment(ref openConnections);
                 }
-                return connection;
             }
+            catch(Exception ex)
+            {
+                logger.Error(ex, "An exception was encountered while attempting to open the connection.");
+                Environment.Exit(-1);
+            }
+            return connection;
         }
 
         private void InitPersistantTransaction()

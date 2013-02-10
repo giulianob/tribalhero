@@ -75,10 +75,10 @@ namespace Game.Data
 
         public void CreateForest(byte lvl, int capacity, double rate)
         {
-            CreateForestAt(lvl, capacity, rate, 0, 0);
+            CreateForestAt(lvl, capacity, rate);
         }
 
-        public void CreateForestAt(byte lvl, int capacity, double rate, uint x, uint y)
+        public void CreateForestAt(byte lvl, int capacity, double rate, uint x = 0, uint y = 0)
         {
             lock (forests)
             {
@@ -88,12 +88,10 @@ namespace Game.Data
                 {
                     while (true)
                     {
-                        x = (uint)Config.Random.Next(15, (int)Config.map_width - 15);
-                        y = (uint)Config.Random.Next(15, (int)Config.map_height - 15);
+                        x = (uint)Config.Random.Next(5, (int)Config.map_width - 5);
+                        y = (uint)Config.Random.Next(5, (int)Config.map_height - 5);
 
-                        if (
-                                !Ioc.Kernel.Get<ObjectTypeFactory>()
-                                    .IsTileType("TileBuildable", World.Current.Regions.GetTileType(x, y)))
+                        if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileBuildable", World.Current.Regions.GetTileType(x, y)))
                         {
                             continue;
                         }
@@ -114,7 +112,7 @@ namespace Game.Data
 
                         // check if near any other objects
                         if (World.Current.GetObjects(x, y).Exists(obj => !(obj is ITroopObject)) ||
-                            World.Current.GetObjectsWithin(x, y, 4).Exists(obj => !(obj is ITroopObject)))
+                            World.Current.GetObjectsWithin(x, y, 3).Exists(obj => !(obj is ITroopObject)))
                         {
                             World.Current.Regions.UnlockRegion(x, y);
                             continue;

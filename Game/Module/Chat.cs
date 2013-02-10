@@ -1,5 +1,6 @@
 ﻿using Game.Comm;
 using Game.Util;
+using Ninject.Extensions.Logging;
 
 namespace Game.Module
 {
@@ -11,14 +12,33 @@ namespace Game.Module
 
             Tribe = 1,
 
-            Offtopic = 2,
+            HelpDesk = 2,
+
+            Offtopic = 3,
         }
 
         private readonly Channel channel;
 
-        public Chat(Channel channel)
+        private readonly ILogger logger;
+
+        public Chat(Channel channel, ILogger logger)
         {
             this.channel = channel;
+            this.logger = logger;
+        }
+
+        public void SendChat(string channelName, ChatType type, uint playerId, string playerName, bool distinguish, string message)
+        {
+            logger.Info("[{0} {1}] {3} {2}:{4}", SystemClock.Now, channel, playerName, playerId, message);
+
+            var chatPacket = new Packet(Command.Chat);
+            chatPacket.AddByte((byte)type);
+            chatPacket.AddByte((byte)(distinguish ? 1 : 0));
+            chatPacket.AddUInt32(playerId);
+            chatPacket.AddString(playerName);
+            chatPacket.AddString(message);
+
+            channel.Post(channelName, chatPacket);
         }
 
         public void SendSystemChat(string messageId, params string[] messageArgs)

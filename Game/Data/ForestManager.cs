@@ -112,7 +112,7 @@ namespace Game.Data
 
                         // check if near any other objects
                         if (World.Current.GetObjects(x, y).Exists(obj => !(obj is ITroopObject)) ||
-                            World.Current.GetObjectsWithin(x, y, 2).Exists(obj => !(obj is ITroopObject)))
+                            World.Current.GetObjectsWithin(x, y, 3).Exists(obj => !(obj is ITroopObject)))
                         {
                             World.Current.Regions.UnlockRegion(x, y);
                             continue;

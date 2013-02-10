@@ -6,7 +6,11 @@ package src
 		public static var version: int;
 		public static var revision: int;
         
+        // Comes from server
         public static var motd:String = "";
+        
+        // Hardcoded for now
+        public static var motd_helpdesk:String = 'New player? Read the <a href="http://tribalhero.wikia.com/wiki/Frequently_Asked_Questions" target="_blank">wiki FAQ</a> for answers to common questions.';
 		
 		/* SESSION VARIABLES */
 		public static var username: String = "1234";

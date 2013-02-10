@@ -60,11 +60,12 @@
 		private function onChatMessage(packet: Packet): void
 		{
 			var type: int = packet.readByte();
+            var distinguish: Boolean = packet.readByte() == 1 ? true : false;
 			var playerId: int = packet.readUInt();
 			var playerName: String = packet.readString();
 			var message: String = packet.readString();		
 			
-			Global.gameContainer.cmdLine.logChat(type, playerId, playerName, message);					
+			Global.gameContainer.cmdLine.logChat(type, playerId, playerName, distinguish, message);					
 		}
 		
 		private function onChatSystemMessage(packet: Packet): void

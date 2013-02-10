@@ -350,7 +350,9 @@ public class BasicScrollBarUI extends BaseComponentUI{
     		return;
     	}
     	scrollThumbToCurrentMousePosition();
-    	e.updateAfterEvent();
+
+        // Commented out because it's hanging firefox
+    	// e.updateAfterEvent();
     }
     
     private function scrollThumbToCurrentMousePosition():void{

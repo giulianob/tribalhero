@@ -8,6 +8,8 @@ using Game;
 using Game.Setup;
 using NDesk.Options;
 using Ninject;
+using Ninject.Extensions.Logging.Log4net.Infrastructure;
+using log4net;
 using log4net.Config;
 
 #endregion
@@ -37,18 +39,20 @@ namespace LauncherService
             catch(Exception)
             {
                 Environment.Exit(0);
-            }
-
-            Config.LoadConfigFile(settingsFile);
-            Factory.CompileConfigFiles();
-            Engine.CreateDefaultKernel();
-            Factory.InitAll();
-            Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
-
-            engine = Ioc.Kernel.Get<Engine>();
+            }            
 
             ThreadPool.QueueUserWorkItem(o =>
                 {
+                    Engine.AttachExceptionHandler(new Log4NetLogger(typeof(Engine)));
+
+                    Config.LoadConfigFile(settingsFile);
+                    Factory.CompileConfigFiles();
+                    Engine.CreateDefaultKernel();
+                    Factory.InitAll();
+                    Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
+
+                    engine = Ioc.Kernel.Get<Engine>();
+
                     if (!engine.Start())
                     {
                         throw new Exception("Failed to load server");

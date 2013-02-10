@@ -253,7 +253,7 @@
         public static function getGateRepairCost(level: int, currentHp: Number) : Resources
         {
 			var hp: int = getGateLimit(level) - currentHp;
-            return new Resources(0, level * hp / 8, level * hp / 16, level * hp / 4, 0);
+            return new Resources(0, hp / 8, hp / 16, hp / 4, 0);
         }
 	}
 }

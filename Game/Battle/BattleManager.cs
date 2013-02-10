@@ -303,17 +303,23 @@ namespace Game.Battle
                 // Remove from appropriate combat list
                 if (side == BattleSide.Attack)
                 {
+                    if (!Attackers.Remove(group))
+                    {
+                        return;
+                    }
+
                     group.CombatObjectAdded -= AttackerGroupOnCombatObjectAdded;
                     group.CombatObjectRemoved -= AttackerGroupOnCombatObjectRemoved;
-
-                    Attackers.Remove(group);
                 }
                 else
                 {
+                    if (!Defenders.Remove(group))
+                    {
+                        return;
+                    }
+
                     group.CombatObjectAdded -= DefenderGroupOnCombatObjectAdded;
                     group.CombatObjectRemoved -= DefenderGroupOnCombatObjectRemoved;
-
-                    Defenders.Remove(group);
                 }
 
                 // If battle hasnt started then dont worry about cleaning anything up since nothing has happened to these objects
@@ -686,7 +692,7 @@ namespace Game.Battle
                            NextToAttack == BattleSide.Attack ? BattleSide.Defense : BattleSide.Attack,
                            ReportState.Dying);
                 }
-                else
+                else if (!target.CombatObject.Disposed)
                 {
                     // Only remove the single object
                     BattleReport.WriteExitingObject(target.Group, NextToAttack != BattleSide.Attack, target.CombatObject);

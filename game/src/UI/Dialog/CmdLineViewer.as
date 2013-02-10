@@ -24,11 +24,12 @@ package src.UI.Dialog
 	{
 		private const MAX_CHAT_LENGTH:int = 45000;
 		
-		public const CHANNELS: Array = [{name: "CHAT_CHANNEL_GLOBAL"}, {name: "CHAT_CHANNEL_TRIBE"}, {name: "CHAT_CHANNEL_OFFTOPIC"}];
+		public const CHANNELS: Array = [{name: "CHAT_CHANNEL_GLOBAL"}, {name: "CHAT_CHANNEL_TRIBE"}, {name: "CHAT_CHANNEL_HELPDESK"}, {name: "CHAT_CHANNEL_OFFTOPIC"}];
 		
 		public static const TYPE_GLOBAL:int = 0;
 		public static const TYPE_TRIBE:int = 1;
-		public static const TYPE_OFFTOPIC:int = 2;
+        public static const TYPE_HELPDESK:int = 2;
+		public static const TYPE_OFFTOPIC:int = 3;        
 		
 		private var pnlContent:JPanel;
 		private var txtConsole:JTextArea;
@@ -48,18 +49,19 @@ package src.UI.Dialog
 		
 		// We need to keep the chat separately from what's in the input.
 		// This means a bit more memory used for chat than what is ideal but it's what we gotta do.
-		private var chats:Array;
+		private var chats:Array;       
 		
 		public function CmdLineViewer()
 		{
 			createUI();
-			
+            
 			chats = new Array(CHANNELS.length);				
 			for (var i: int = 0; i < chats.length; i++) {
 				chats[i] = "";
 			}
            
             log(TYPE_GLOBAL, Constants.motd, false, false);
+            log(TYPE_HELPDESK, Constants.motd_helpdesk, false, false);
 			
 			new StickyScroll(scrollConsole);
 			
@@ -274,14 +276,17 @@ package src.UI.Dialog
 			return result + str.substring(index);
 		}
 		
-		public function logChat(type:int, playerId:int, playerName:String, str:String):void
+		public function logChat(type:int, playerId:int, playerName:String, distinguish: Boolean, str:String):void
 		{
 			var f:DateFormatter = new DateFormatter();
 			f.formatString = "LL:NN";
 			
 			var cssClass:String = '';
 			
-			if (playerId == Constants.playerId)
+            if (distinguish) {
+                cssClass = 'distinguished';
+            }
+			else if (playerId == Constants.playerId)
 			{
 				cssClass = 'self';
 			}
@@ -458,15 +463,15 @@ package src.UI.Dialog
 			txtConsole = new JTextArea("", 15, 0);
 			txtConsole.setWordWrap(true);
 			txtConsole.setBackgroundDecorator(null);
-			txtConsole.setEditable(false);
-			txtConsole.setConstraints("Center");
+			txtConsole.setEditable(false);			
 			
 			var consoleCss:StyleSheet = new StyleSheet();
 			consoleCss.setStyle("p", {marginBottom: '3px', leading: 3, fontFamily: 'Arial', fontSize: 12, color: '#FFFFFF'});
 			consoleCss.setStyle("a:link", {fontWeight: 'bold', textDecoration: 'none', color: '#8ecafe'});
 			consoleCss.setStyle("a:hover", {textDecoration: 'underline'});
 			
-			consoleCss.setStyle(".global", {color: '#8ecafe'});
+			consoleCss.setStyle(".global", { color: '#8ecafe' } );
+            consoleCss.setStyle(".distinguished", {color: '#fbd100'});
 			consoleCss.setStyle(".self", { color: '#aef64f' } );
 			consoleCss.setStyle(".system", { color: '#ec7600', fontWeight: 'bold' } );
 			
@@ -475,13 +480,14 @@ package src.UI.Dialog
 			txtCommand = new JTextField();
 			txtCommand.setBackgroundDecorator(null);
 			txtCommand.setConstraints("Center");
-			txtCommand.setMaxChars(Constants.admin ? 3000 : 450);
+			txtCommand.setMaxChars(Constants.admin ? 5000 : 450);
 			
 			var lblCommandCursor:JLabel = new JLabel(">");
 			lblCommandCursor.setConstraints("West");
-			
+			           
 			scrollConsole = new JScrollPane(txtConsole, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
-			
+			scrollConsole.setConstraints("Center");
+            
 			GameLookAndFeel.changeClass(txtCommand, "Console.text");
 			GameLookAndFeel.changeClass(lblCommandCursor, "Tooltip.text");
 			

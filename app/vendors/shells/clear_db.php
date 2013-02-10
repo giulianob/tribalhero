@@ -59,7 +59,7 @@ class ClearDbShell extends Shell {
         $this->out("Deleting old messages...");
         $this->Message->deleteAll(array('Message.created <' => date("Y-m-d H:i:s", strtotime('-4 weeks'))), false, false);
         $this->Message->deleteAll(array('Message.sender_player_id' => 0, 'Message.created <' => date("Y-m-d H:i:s", strtotime('-2 weeks'))), false, false);
-        $this->MessageBoardRead->deleteAll(array('MessageBoardRead.last_read <' => date("Y-m-d H:i:s", strtotime('-2 weeks'))), false, false);
+        $this->MessageBoardRead->deleteAll(array('MessageBoardRead.last_read <' => date("Y-m-d H:i:s", strtotime('-4 weeks'))), false, false);
 
         $this->out("Deleting old forum messages...");
         $this->MessageBoardThread->unbindModel(array('hasAndBelongsToMany' => array('Player')), false);

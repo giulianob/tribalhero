@@ -37,12 +37,12 @@
 		
 		private var onAccept: Function;
 
-		public function GroundReinforceCursor(onAccept: Function, troop: TroopStub):void
+		public function GroundReinforceCursor(city: City, onAccept: Function, troop: TroopStub):void
 		{
 			doubleClickEnabled = true;
 
 			this.troop = troop;
-			this.city = Global.gameContainer.selectedCity;
+			this.city = city;
 			this.onAccept = onAccept;
 
 			Global.map.selectObject(null);

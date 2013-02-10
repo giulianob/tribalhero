@@ -52,14 +52,16 @@ package src.Map.CityRegionFilters
 			}
 		}
         
-        protected function setupMinimapButton(obj: CityRegionObject, button: *) : void {            
+        protected function setupMinimapButton(obj: CityRegionObject, button: *, lowAlpha: Boolean = true) : void {            
             var hitArea: Sprite = new MINIMAP_HIT_AREA();                                    
             obj.addChild(hitArea);
             hitArea.visible = false;
             button.hitArea = hitArea;            
             button.mouseEnabled = false;            
             button.mouseChildren = false;
-            button.alpha = 0.5;
+            if (lowAlpha) {
+                button.alpha = 0.5;
+            }
         }
         
 		public function applyForest(obj: CityRegionObject) : void {
@@ -78,7 +80,7 @@ package src.Map.CityRegionFilters
 				obj.transform.colorTransform = new ColorTransform(0, 0, 0, 1, 255, 255, 0);
 			}
 			obj.addChild(icon);
-            setupMinimapButton(obj, icon);
+            setupMinimapButton(obj, icon, false);
 		}
 		
 		public function applyCity(obj: CityRegionObject) : void {

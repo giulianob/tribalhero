@@ -12,9 +12,11 @@
 	import org.aswing.graphics.SolidBrush;
 	import src.Constants;
 	import src.Map.CityRegionFilters.*;
+	import src.UI.Components.MiniMapPointer;
 	import src.Util.Util;
 	import src.Global;
 	import src.Objects.ObjectContainer;
+	import System.Linq.Enumerable;
 
 	/**
 	 * ...
@@ -37,7 +39,11 @@
 		private var mapHolder: Sprite;
 		private var bg: Sprite;
 		private var mapMask: Sprite;
-
+		
+		private var pointers: Array = new Array();
+		private var pointersVisible: Boolean = false;
+		private var cityPointer: MiniMapPointer;
+		
 		private var miniMapWidth: int;
 		private var miniMapHeight: int;
 
@@ -59,6 +65,7 @@
 			mapHolder.addChild(regionSpace);
 			mapHolder.addChild(objContainer);
 			mapHolder.addChild(screenRect);
+
 
 			bg = new Sprite();
 
@@ -317,6 +324,50 @@
 				Util.log("Required:" + requiredRegions);
 
 				Global.mapComm.Region.getCityRegion(requiredRegions);
+			}
+		}
+		
+		public function addPointer(pointer: MiniMapPointer): void {
+			pointer.visible = pointersVisible;
+			pointers.push(pointer);
+			addChild(pointer);
+		}
+		
+		public function setCityPointer(name: String): void {
+			if (cityPointer != null && cityPointer.getPointerName() != name) {
+				cityPointer.setIcon(new ICON_MINIMAP_ARROW_BLUE());
+			} else if (cityPointer!=null) {
+				return;
+			}
+			
+			cityPointer = Enumerable.from(pointers).first(function(p:MiniMapPointer):Boolean {
+				return p.getPointerName() == name;
+			});
+			if (cityPointer != null) {
+				cityPointer.setIcon(new ICON_MINIMAP_ARROW_RED());
+			}
+		}
+		
+		public function showPointers(): void {
+			if (pointersVisible) return;
+			pointersVisible = true;
+			for each(var pointer:MiniMapPointer in pointers) {
+				pointer.visible = true;
+			}
+		}
+		
+		public function hidePointers(): void {
+			if (!pointersVisible) return;
+			pointersVisible = false;
+			for each(var pointer:MiniMapPointer in pointers) {
+				pointer.visible = false
+			}
+		}
+		
+		public function updatePointers(center: Point): void {
+			if (!pointersVisible) return;
+			for each(var pointer:MiniMapPointer in pointers) {
+				pointer.update(center, miniMapWidth, miniMapHeight);
 			}
 		}
 	}

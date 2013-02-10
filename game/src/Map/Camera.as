@@ -73,6 +73,12 @@
 		{
 			return (y / Constants.tileH) * Constants.miniMapTileH;
 		}
+		
+		public function get miniMapCenter(): Point
+		{			
+			var point: Point = GetCenter();
+			return new Point((point.x / Constants.tileW) * Constants.miniMapTileW, (point.y / Constants.tileH) * Constants.miniMapTileH);
+		}
 
 		public function Camera(x: int, y: int)
 		{

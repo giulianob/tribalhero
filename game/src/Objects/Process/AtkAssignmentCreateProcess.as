@@ -49,7 +49,7 @@ package src.Objects.Process
 			
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
 			
-			var cursor: GroundAttackCursor = new GroundAttackCursor(onChoseTarget, attackDialog.getTroop());
+			var cursor: GroundAttackCursor = new GroundAttackCursor(sourceCity, onChoseTarget, attackDialog.getTroop());
 			
 			var changeTroop: JButton = new JButton("Change Troop");
 			changeTroop.addActionListener(onChangeTroop);

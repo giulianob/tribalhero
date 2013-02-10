@@ -236,6 +236,13 @@
 			if (!selectedCity) {
 				return;
 			}
+            
+            var currentDialog: TroopsDialog = findDialog(TroopsDialog);
+            
+            if (currentDialog) {
+                currentDialog.getFrame().dispose();
+                return;
+            }            
 
 			new TroopsDialog(selectedCity).show();
 		}
@@ -264,11 +271,16 @@
 
 		public function onViewCityInfo(e: MouseEvent) :void
 		{
-			if (!selectedCity)
-			return;
+			if (!selectedCity) return;
 
-			var currentEventDialog: CityEventDialog = new CityEventDialog(selectedCity);
-			currentEventDialog.show(null, false);
+            var currentEventDialog: CityEventDialog = findDialog(CityEventDialog);
+            
+            if (currentEventDialog) {
+                currentEventDialog.getFrame().dispose();
+                return;
+            }
+            
+			new CityEventDialog(selectedCity).show(null, false);
 		}
 
 		public function onViewRanking(e: MouseEvent) :void
@@ -366,7 +378,7 @@
 				minimapTools.btnZoomOut.visible = false;
 				message.showMessage("Double click to go anywhere\nPress Escape to close this map");
 				miniMap.showLegend();
-				
+				miniMap.showPointers();
 			}
 			else {
 				screenMessage.setVisible(true);
@@ -381,6 +393,7 @@
 				minimapTools.btnZoomOut.visible = true;
 				message.hide();
 				miniMap.hideLegend();
+				miniMap.hidePointers();
 			}
 
 			minimapZoomed = zoom;
@@ -427,7 +440,7 @@
 			if (e.charCode == Keyboard.ESCAPE)
 			{						
 				// Unzoom map
-				if (miniMap != null) zoomIntoMinimap(false, false);
+				if (miniMap != null) zoomIntoMinimap(false);
 				
 				// Deselect objects
 				clearAllSelections();
@@ -526,6 +539,7 @@
 			if (selectedCity) {
 				var pt: Point = MapUtil.getScreenCoord(selectedCity.MainBuilding.x, selectedCity.MainBuilding.y);
 				src.Global.gameContainer.camera.ScrollToCenter(pt.x, pt.y);
+				miniMap.setCityPointer(selectedCity.name);
 			}
 
 			//Set minimap position and initial state
@@ -650,6 +664,7 @@
 		
 		public function addCityToUI(city: City): void {
 			(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String { return this.city.name; } } );
+			miniMap.addPointer(new MiniMapPointer(city.MainBuilding.x, city.MainBuilding.y, city.name));
 		}
 
 		private function alignMinimapTools() : void {
@@ -816,6 +831,7 @@
 					setSidebar(null);
 					selectedCity = lstCities.getSelectedItem().city;
 					displayResources();
+					miniMap.setCityPointer(selectedCity.name);
 					break;
 				}
 			}
@@ -831,6 +847,7 @@
 			displayResources();						
 			
 			stage.focus = map;
+			miniMap.setCityPointer(selectedCity.name);
 		}
 
 		private function onMinimapNavigateToPoint(e: MouseEvent) : void {

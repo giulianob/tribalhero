@@ -31,7 +31,9 @@ package src.Map.CityRegionFilters
 			if (Global.map.cities.get(obj.groupId)) {
 				obj.transform.colorTransform = new ColorTransform();
 			} else if(Constants.tribeId>0 && Constants.tribeId == obj.extraProps.tribeId) {
-				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[3].r, DEFAULT_COLORS[3].g, DEFAULT_COLORS[3].b);
+				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[1].r, DEFAULT_COLORS[1].g, DEFAULT_COLORS[1].b);
+			} else if (obj.extraProps.tribeId>0) {
+				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[4].r, DEFAULT_COLORS[4].g, DEFAULT_COLORS[4].b);
 			} else {
 				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[0].r, DEFAULT_COLORS[0].g, DEFAULT_COLORS[0].b);
 			}
@@ -43,12 +45,16 @@ package src.Map.CityRegionFilters
 			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_CITY"));
 			
 			icon = new DOT_SPRITE;
-			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[3].r, DEFAULT_COLORS[3].g, DEFAULT_COLORS[3].b);
+			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[1].r, DEFAULT_COLORS[1].g, DEFAULT_COLORS[1].b);
 			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_TRIBE_SELF"));
 			
 			icon = new DOT_SPRITE;
+			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[4].r, DEFAULT_COLORS[4].g, DEFAULT_COLORS[4].b);
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_TRIBE_OTHER_IN_TRIBE"));
+			
+			icon = new DOT_SPRITE;
 			icon.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[0].r, DEFAULT_COLORS[0].g, DEFAULT_COLORS[0].b);
-			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_TRIBE_OTHER"));
+			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_TRIBE_OTHER_NO_TRIBE"));
 			
 			legend.setLegendTitle(StringHelper.localize("MINIMAP_LEGEND_TRIBE"));
 		}

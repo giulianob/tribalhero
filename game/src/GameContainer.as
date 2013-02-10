@@ -236,6 +236,13 @@
 			if (!selectedCity) {
 				return;
 			}
+            
+            var currentDialog: TroopsDialog = findDialog(TroopsDialog);
+            
+            if (currentDialog) {
+                currentDialog.getFrame().dispose();
+                return;
+            }            
 
 			new TroopsDialog(selectedCity).show();
 		}
@@ -264,11 +271,16 @@
 
 		public function onViewCityInfo(e: MouseEvent) :void
 		{
-			if (!selectedCity)
-			return;
+			if (!selectedCity) return;
 
-			var currentEventDialog: CityEventDialog = new CityEventDialog(selectedCity);
-			currentEventDialog.show(null, false);
+            var currentEventDialog: CityEventDialog = findDialog(CityEventDialog);
+            
+            if (currentEventDialog) {
+                currentEventDialog.getFrame().dispose();
+                return;
+            }
+            
+			new CityEventDialog(selectedCity).show(null, false);
 		}
 
 		public function onViewRanking(e: MouseEvent) :void

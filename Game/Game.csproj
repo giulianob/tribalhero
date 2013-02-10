@@ -405,6 +405,7 @@
     <Compile Include="Setup\TechnologyFactory.cs" />
     <Compile Include="Util\Channel.cs" />
     <Compile Include="Util\DuplicateSubscriptionException.cs" />
+    <Compile Include="Util\FileExtension.cs" />
     <Compile Include="Util\Inflector.cs" />
     <Compile Include="Util\CmdParserExtension.cs" />
     <Compile Include="Util\HexDump.cs" />

@@ -9,6 +9,7 @@ using Common;
 using Game.Data;
 using Game.Logic;
 using Game.Setup;
+using Game.Util;
 using Ninject;
 
 #endregion
@@ -107,6 +108,8 @@ namespace CSVToXML
             langDataFolder = langDataFolderIn;
 
             #region Data XML
+
+            FileExtension.DeleteLockedFile(dataOutputFolderIn + "data.xml");
 
             writer = new XmlTextWriter(new StreamWriter(File.Open(dataOutputFolderIn + "data.xml", FileMode.Create)))
             {
@@ -684,7 +687,8 @@ namespace CSVToXML
 
         private static void WriteLanguageFile()
         {
-            // TODO Hardcoded to just do English for now but later we can do all the languages
+            // TODO Hardcoded to just do English for now but later we can do all the languages            
+            FileExtension.DeleteLockedFile(dataOutputFolder + "Game_en.xml");            
             writer = new XmlTextWriter(new StreamWriter(File.Open(dataOutputFolder + "Game_en.xml", FileMode.Create)))
             {
                     Formatting = Formatting.Indented

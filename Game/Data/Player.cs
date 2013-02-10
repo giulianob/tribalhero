@@ -29,6 +29,8 @@ namespace Game.Data
 
         private ITribesman tribesman;
 
+        public PlayerChatState ChatState { get; private set; }
+
         public Player(uint playerid,
                       DateTime created,
                       DateTime lastLogin,
@@ -37,6 +39,7 @@ namespace Game.Data
                       PlayerRights playerRights)
                 : this(playerid, created, lastLogin, name, description, playerRights, string.Empty)
         {
+            ChatState = new PlayerChatState();
         }
 
         public Player(uint playerid,
@@ -47,13 +50,14 @@ namespace Game.Data
                       PlayerRights playerRights,
                       string sessionId)
         {
+            ChatState = new PlayerChatState();
             PlayerId = playerid;
             LastLogin = lastLogin;
             Created = created;
             Name = name;
             SessionId = sessionId;
             Rights = playerRights;
-            ChatFloodTime = DateTime.MinValue;
+            PlayerChatState.ChatFloodTime = DateTime.MinValue;
             this.description = description;
         }
 
@@ -70,12 +74,6 @@ namespace Game.Data
         public string SessionId { get; set; }
 
         public PlayerRights Rights { get; set; }
-
-        public DateTime ChatFloodTime { get; set; }
-
-        public DateTime ChatLastMessage { get; set; }
-
-        public int ChatFloodCount { get; set; }
 
         public bool IsIdle
         {
@@ -304,6 +302,14 @@ namespace Game.Data
         }
 
         public bool DbPersisted { get; set; }
+
+        public PlayerChatState PlayerChatState
+        {
+            get
+            {
+                return ChatState;
+            }
+        }
 
         #endregion
     }

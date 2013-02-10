@@ -109,13 +109,20 @@ namespace Game
 
         public EngineState State { get; private set; }
 
-        public bool Start()
+        public static void AttachExceptionHandler(ILogger exceptionLogger)
         {
             if (!Debugger.IsAttached)
             {
-                AppDomain.CurrentDomain.UnhandledException += CurrentDomainUnhandledException;
+                AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+                    {
+                        var ex = (Exception)e.ExceptionObject;
+                        exceptionLogger.Error(ex, "Unhandled Exception");
+                    };
             }
+        }
 
+        public bool Start()
+        {
             logger.Info(@"
 _________ _______ _________ ______   _______  _       
 \__   __/(  ____ )\__   __/(  ___ \ (  ___  )( \      
@@ -257,12 +264,6 @@ _________ _______ _________ ______   _______  _
             Procedure.Current = Ioc.Kernel.Get<Procedure>();
             Scheduler.Current = Ioc.Kernel.Get<IScheduler>();
             DbPersistance.Current = Ioc.Kernel.Get<IDbManager>();
-        }
-
-        private void CurrentDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            var ex = (Exception)e.ExceptionObject;
-            logger.Error(ex, "Unhandled Exception");
         }
 
         public void Stop()

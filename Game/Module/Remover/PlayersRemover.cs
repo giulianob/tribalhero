@@ -25,8 +25,9 @@ namespace Game.Module
         public void Start(double intervalInHours = 24)
         {
             this.intervalInHours = intervalInHours;
-            started = true;
-            Callback(null);
+            started = true;            
+            Time = DateTime.UtcNow.AddHours(intervalInHours);
+            Scheduler.Current.Put(this);
         }
 
         public void Stop()

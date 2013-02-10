@@ -96,6 +96,7 @@ CONCURRENT_UPGRADE_3,You can only build/upgrade three structures at a time
 CHAT_CHANNEL_GLOBAL,Global
 CHAT_CHANNEL_OFFTOPIC,Off topic
 CHAT_CHANNEL_TRIBE,Tribe
+CHAT_CHANNEL_HELPDESK,Help desk
 ,
 STR_MESSAGE,Message
 STR_PER_HOUR,{0} per hour

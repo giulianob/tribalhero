@@ -55,6 +55,7 @@ namespace Game.Comm
         public override void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("playerinfo", Info, PlayerRights.Moderator);
+            processor.RegisterCommand("playersearch", Search, PlayerRights.Moderator);
             processor.RegisterCommand("ban", BanPlayer, PlayerRights.Moderator);
             processor.RegisterCommand("unban", UnbanPlayer, PlayerRights.Moderator);
             processor.RegisterCommand("deleteplayer", DeletePlayer, PlayerRights.Bureaucrat);
@@ -69,6 +70,14 @@ namespace Game.Comm
             processor.RegisterCommand("setrights", SetRights, PlayerRights.Bureaucrat);
             processor.RegisterCommand("muteplayer", Mute, PlayerRights.Moderator);
             processor.RegisterCommand("unmuteplayer", Unmute, PlayerRights.Moderator);
+            processor.RegisterCommand("togglechatmod", ToggleChatMod, PlayerRights.Moderator);
+        }
+
+        private string ToggleChatMod(Session session, string[] parms)
+        {
+            session.Player.ChatState.Distinguish = !session.Player.ChatState.Distinguish;
+
+            return string.Format("OK, highlighting is now {0}", session.Player.ChatState.Distinguish ? "on" : "off");
         }
 
         private string SystemChat(Session session, string[] parms)
@@ -159,10 +168,11 @@ namespace Game.Comm
         public string Info(Session session, String[] parms)
         {
             bool help = false;
-            string playerName = string.Empty;
+            string playerName = null;
 
             try
             {
+                
                 var p = new OptionSet
                 {
                         {"?|help|h", v => help = true},
@@ -175,9 +185,9 @@ namespace Game.Comm
                 help = true;
             }
 
-            if (help || string.IsNullOrEmpty(playerName))
+            if (help || (string.IsNullOrEmpty(playerName)))
             {
-                return String.Format("playerinfo --player=player");
+                return String.Format("playerinfo --player=name|emailaddress");
             }
 
             ApiResponse response = ApiCaller.PlayerInfo(playerName);
@@ -187,18 +197,69 @@ namespace Game.Comm
                 return response.ErrorMessage;
             }
 
-            return
-                    String.Format(
-                                  "id[{0}] created[{1}] emailAddress[{2}] lastLogin[{3}] ipAddress[{4}] banned[{5}] muted[{6}] deleted[{7}]",
-                                  response.Data.id,
-                                  response.Data.created,
-                                  response.Data.emailAddress,
-                                  response.Data.lastLogin,
-                                  response.Data.ipAddress,
-                                  response.Data.banned == "1" ? "YES" : "NO",
-                                  response.Data.muted == "1" ? "YES" : "NO",
-                                  response.Data.deleted == "1" ? "YES" : "NO");
+            try
+            {
+                return
+                        String.Format(
+                                      "id[{0}] created[{1}] name[{8}] emailAddress[{2}] lastLogin[{3}] ipAddress[{4}] banned[{5}] muted[{6}] deleted[{7}]",
+                                      response.Data.id,
+                                      response.Data.created,
+                                      response.Data.emailAddress,
+                                      response.Data.lastLogin,
+                                      response.Data.ipAddress,
+                                      response.Data.banned == "1" ? "YES" : "NO",
+                                      response.Data.muted == "1" ? "YES" : "NO",
+                                      response.Data.deleted == "1" ? "YES" : "NO",
+                                      response.Data.name);
+            }
+            catch(Exception e)
+            {
+                return e.Message;
+            }
         }
+
+        public string Search(Session session, String[] parms)
+        {
+            bool help = false;
+            string playerName = null;
+            
+            try
+            {
+                
+                var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},
+                        {"player=", v => playerName = v.TrimMatchingQuotes()},
+                };
+                p.Parse(parms);
+            }
+            catch(Exception)
+            {
+                help = true;
+            }
+
+            if (help || (string.IsNullOrEmpty(playerName)))
+            {
+                return String.Format("playersearch --player=name|emailaddress");
+            }
+
+            ApiResponse response = ApiCaller.PlayerSearch(playerName);
+
+            if (!response.Success)
+            {
+                return response.ErrorMessage;
+            }
+
+            try
+            {
+                return String.Join("\n", response.Data.players);
+            }
+            catch(Exception e)
+            {
+                return e.Message;
+            }
+        }
+
 
         public string Mute(Session session, String[] parms)
         {

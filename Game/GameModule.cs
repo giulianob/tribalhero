@@ -159,6 +159,7 @@ namespace Game
                                                  Config.database_password,
                                                  Config.database_database,
                                                  Config.database_timeout,
+                                                 Config.database_max_connections,
                                                  Config.database_verbose))
                     .InSingletonScope();
 

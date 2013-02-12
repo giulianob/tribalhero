@@ -223,7 +223,7 @@ namespace Game.Logic.Actions
                 throw new Exception("Barbarian tribe should still exist");
             }
 
-            if (battle.Round == 0)
+            if (battle.Round == 0 && defenders.Upkeep > 0)
             {
                 return;
             }

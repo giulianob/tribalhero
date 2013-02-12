@@ -341,7 +341,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                // Give laborers back
+                // Give any cost associated with the camp back (laborers are not done here)
                 city.BeginUpdate();
                 city.Resource.Add(formula.GetActionCancelResource(BeginTime, formula.StructureCost(city, campType, 1)));
                 city.EndUpdate();

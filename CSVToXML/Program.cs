@@ -109,9 +109,7 @@ namespace CSVToXML
 
             #region Data XML
 
-            FileExtension.DeleteLockedFile(dataOutputFolderIn + "data.xml");
-
-            writer = new XmlTextWriter(new StreamWriter(File.Open(dataOutputFolderIn + "data.xml", FileMode.Create)))
+            writer = new XmlTextWriter(new StreamWriter(FileExtension.OverwriteLockedFile(dataOutputFolderIn + "data.xml")))
             {
                     Formatting = Formatting.None
             };
@@ -688,8 +686,7 @@ namespace CSVToXML
         private static void WriteLanguageFile()
         {
             // TODO Hardcoded to just do English for now but later we can do all the languages            
-            FileExtension.DeleteLockedFile(dataOutputFolder + "Game_en.xml");            
-            writer = new XmlTextWriter(new StreamWriter(File.Open(dataOutputFolder + "Game_en.xml", FileMode.Create)))
+            writer = new XmlTextWriter(new StreamWriter(FileExtension.OverwriteLockedFile(dataOutputFolder + "Game_en.xml")))
             {
                     Formatting = Formatting.Indented
             };

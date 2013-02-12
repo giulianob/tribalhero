@@ -5,19 +5,18 @@ namespace Game.Util
 {
     public static class FileExtension
     {
-        public static void DeleteLockedFile(string path)
+        public static FileStream OverwriteLockedFile(string path)
         {
             while (true)
             {
                 try
                 {
-                    if (!File.Exists(path))
+                    if (File.Exists(path))
                     {
-                        return;
-                    }
+                        File.Delete(path);
+                    }                    
 
-                    File.Delete(path);
-                    return;
+                    return File.Open(path, FileMode.Create);
                 }
                 catch (Exception) {}
             }

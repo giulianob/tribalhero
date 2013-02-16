@@ -16,7 +16,7 @@ namespace Game.Setup
     {
         #region Game Settings
 
-        public static string database_schema_version = "20130202045301";
+        public static string database_schema_version = "20130210212422";
 
         // ReSharper disable InconsistentNaming        
         public static int client_min_version;
@@ -92,6 +92,8 @@ namespace Game.Setup
         public static double battle_turn_interval = 20.0f;
 
         public static int battle_min_rounds = 5;
+
+        public static int battle_retreat_min_rounds = 0;
 
         public static int battle_loot_till_full = 15;
                           // percentage of total carry, 15 round to fill up. This number cannot be set 10 or under.

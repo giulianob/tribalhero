@@ -357,6 +357,7 @@ namespace Game.Logic.Actions
                 city.BeginUpdate();
                 city.Resource.Add(cost);
                 city.EndUpdate();
+                structure.EndUpdate();
 
                 world.Regions.UnlockRegion(x, y);
                 return Error.MapFull;

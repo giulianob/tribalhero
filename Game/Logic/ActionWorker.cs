@@ -180,7 +180,7 @@ namespace Game.Logic
 
         public Error DoActive(int workerType, IGameObject workerObject, ActiveAction action, IHasEffect effects)
         {
-            if (workerObject.IsBlocked)
+            if (workerObject.IsBlocked > 0)
             {
                 return Error.ObjectNotFound;
             }
@@ -258,7 +258,7 @@ namespace Game.Logic
 
         public Error DoPassive(ICanDo workerObject, PassiveAction action, bool visible)
         {
-            if (workerObject.IsBlocked)
+            if (workerObject.IsBlocked > 0)
             {
                 return Error.ObjectNotFound;
             }

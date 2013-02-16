@@ -707,7 +707,7 @@ namespace Game.Database
                     structure.Stats.Labor = (ushort)reader["labor"];
                     structure.DbPersisted = true;
                     structure.State.Type = (ObjectState)((byte)reader["state"]);
-                    structure.IsBlocked = (bool)reader["is_blocked"];
+                    structure.IsBlocked = (uint)reader["is_blocked"];
 
                     foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
                     {
@@ -970,7 +970,7 @@ namespace Game.Database
                                                    (byte)reader["attack_radius"],
                                                    (byte)reader["speed"],
                                                    new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"])),
-                            IsBlocked = (bool)reader["is_blocked"],
+                            IsBlocked = (uint)reader["is_blocked"],
                             InWorld = (bool)reader["in_world"],
                     };
 

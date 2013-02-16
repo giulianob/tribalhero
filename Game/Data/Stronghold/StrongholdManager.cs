@@ -158,7 +158,7 @@ namespace Game.Data.Stronghold
             stronghold.StrongholdState = StrongholdState.Occupied;
             stronghold.Tribe = tribe;
             stronghold.GateOpenTo = null;
-            stronghold.Gate = formula.StrongholdGateHealHp(stronghold.StrongholdState, stronghold.Lvl);
+            stronghold.Gate = formula.StrongholdGateLimit(stronghold.Lvl);
             stronghold.DateOccupied = DateTime.UtcNow;
             stronghold.EndUpdate();
             MarkIndexDirty();
@@ -321,6 +321,25 @@ namespace Game.Data.Stronghold
             if (stronghold.GateOpenTo != null)
             {
                 chat.SendSystemChat("STRONGHOLD_GATE_BROKEN", stronghold.Name, stronghold.GateOpenTo.Name);
+            }
+        }
+
+        public void Probe(out int neutralStrongholds, out int capturedStrongholds)
+        {
+            neutralStrongholds = 0;
+            capturedStrongholds = 0;
+            
+            foreach (var stronghold in strongholds)
+            {
+                if (stronghold.Value.StrongholdState == StrongholdState.Occupied)
+                {
+                    capturedStrongholds++;
+                }
+
+                if (stronghold.Value.StrongholdState == StrongholdState.Neutral)
+                {
+                    neutralStrongholds++;
+                }
             }
         }
     }

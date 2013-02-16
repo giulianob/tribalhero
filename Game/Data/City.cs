@@ -20,6 +20,7 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
+using Ninject;
 using Persistance;
 
 #endregion
@@ -552,33 +553,25 @@ namespace Game.Data
         {
             lock (objLock)
             {
-                if (!troopobjects.ContainsKey(obj.ObjectId))
+                if (!troopobjects.ContainsKey(obj.ObjectId) || obj.IsBlocked > 0)
                 {
                     return false;
                 }
 
-                obj.IsBlocked = true;
+                var removeAction = Ioc.Kernel.Get<IActionFactory>().CreateObjectRemovePassiveAction(Id, obj.ObjectId, wasKilled, new List<uint>());
 
-                var removeAction = new ObjectRemovePassiveAction(Id, obj.ObjectId, wasKilled, new List<uint>());
                 return Worker.DoPassive(this, removeAction, false) == Error.Ok;
             }
         }
 
-        public bool ScheduleRemove(IStructure obj, bool wasKilled)
-        {
-            return ScheduleRemove(obj, wasKilled, false);
-        }
-
-        public bool ScheduleRemove(IStructure obj, bool wasKilled, bool cancelReferences)
+        public bool ScheduleRemove(IStructure obj, bool wasKilled, bool cancelReferences = false)
         {
             lock (objLock)
             {
-                if (!structures.ContainsKey(obj.ObjectId) || obj.IsBlocked)
+                if (!structures.ContainsKey(obj.ObjectId) || obj.IsBlocked > 0)
                 {
                     return false;
                 }
-
-                obj.IsBlocked = true;
 
                 var actions = new List<uint>();
                 if (cancelReferences)
@@ -591,7 +584,7 @@ namespace Game.Data
 
                 References.Remove(obj);
 
-                var removeAction = new ObjectRemovePassiveAction(Id, obj.ObjectId, wasKilled, actions);
+                var removeAction = Ioc.Kernel.Get<IActionFactory>().CreateObjectRemovePassiveAction(Id, obj.ObjectId, wasKilled, actions);
                 return Worker.DoPassive(this, removeAction, false) == Error.Ok;
             }
         }
@@ -1102,7 +1095,7 @@ namespace Game.Data
             }
         }
 
-        public bool IsBlocked { get; set; }
+        public uint IsBlocked { get; set; }
 
         #endregion
 

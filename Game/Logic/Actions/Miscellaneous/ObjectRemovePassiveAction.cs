@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Game.Data;
+using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -19,18 +21,21 @@ namespace Game.Logic.Actions
     {
         private readonly List<uint> cancelActions;
 
+        private readonly IGameObjectLocator gameObjectLocator;
+
         private readonly uint cityId;
 
         private readonly uint objectId;
 
         private readonly bool wasKilled;
 
-        public ObjectRemovePassiveAction(uint cityId, uint objectId, bool wasKilled, List<uint> cancelActions)
+        public ObjectRemovePassiveAction(uint cityId, uint objectId, bool wasKilled, List<uint> cancelActions, IGameObjectLocator gameObjectLocator)
         {
             this.cityId = cityId;
             this.objectId = objectId;
             this.wasKilled = wasKilled;
             this.cancelActions = cancelActions;
+            this.gameObjectLocator = gameObjectLocator;
         }
 
         public ObjectRemovePassiveAction(uint id,
@@ -39,21 +44,18 @@ namespace Game.Logic.Actions
                                          DateTime endTime,
                                          bool isVisible,
                                          string nlsDescription,
-                                         Dictionary<string, string> properties)
+                                         Dictionary<string, string> properties,
+                                         IGameObjectLocator gameObjectLocator)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
+            this.gameObjectLocator = gameObjectLocator;
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
             wasKilled = bool.Parse(properties["was_killed"]);
 
             cancelActions = new List<uint>();
-            foreach (var actionId in properties["cancel_references"].Split(','))
+            foreach (var actionId in properties["cancel_references"].Split(',').Where(actionId => actionId != string.Empty))
             {
-                if (actionId == string.Empty)
-                {
-                    continue;
-                }
-
                 cancelActions.Add(uint.Parse(actionId));
             }
         }
@@ -89,6 +91,15 @@ namespace Game.Logic.Actions
         {
             BeginTime = DateTime.UtcNow;
             endTime = DateTime.UtcNow;
+
+            ICity city;
+            IGameObject obj;
+            if (!gameObjectLocator.TryGetObjects(cityId, out city) || !city.TryGetObject(objectId, out obj))
+            {
+                return Error.ObjectNotFound;
+            }
+
+            obj.IsBlocked = ActionId;
 
             return Error.Ok;
         }
@@ -130,8 +141,7 @@ namespace Game.Logic.Actions
                     loopCount++;
                     if (loopCount == 1000)
                     {
-                        throw new Exception(string.Format("Unable to cancel all active actions. Stuck cancelling {0}",
-                                                          action.Type));
+                        throw new Exception(string.Format("Unable to cancel all active actions. Stuck cancelling {0}", action.Type));
                     }
 
                     if (action == null)

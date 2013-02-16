@@ -90,14 +90,14 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                if (structure.IsBlocked)
+                if (structure.CheckBlocked(ActionId))
                 {
                     StateChange(ActionState.Failed);
                     return;
                 }
 
                 structure.BeginUpdate();
-                structure.IsBlocked = true;
+                structure.IsBlocked = ActionId;
                 structure.EndUpdate();
             }
 
@@ -112,15 +112,13 @@ namespace Game.Logic.Actions
 
                 city.BeginUpdate();
                 structure.BeginUpdate();
-                structure.IsBlocked = false;
+                structure.IsBlocked = 0;
                 ushort oldLabor = structure.Stats.Labor;
-                Ioc.Kernel.Get<StructureFactory>()
-                   .GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
+                Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
                 structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
                 structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);
 
-                Ioc.Kernel.Get<InitFactory>()
-                   .InitGameObject(InitCondition.OnDowngrade, structure, structure.Type, structure.Lvl);
+                Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnDowngrade, structure, structure.Type, structure.Lvl);
 
                 Procedure.Current.OnStructureUpgradeDowngrade(structure);
 

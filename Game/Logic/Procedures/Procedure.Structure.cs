@@ -13,15 +13,13 @@ namespace Game.Logic.Procedures
         /// <param name="newType">New type</param>
         /// <param name="newLvl">New lvl</param>
         public virtual void StructureChange(IStructure structure, ushort newType, byte newLvl)
-        {
+        {            
             Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, newType, newLvl);
             structure.Technologies.BeginUpdate();
             structure.Technologies.Parent = structure.City.Technologies;
             structure.Technologies.Clear();
             structure.Technologies.EndUpdate();
-            structure.IsBlocked = false;
-            Ioc.Kernel.Get<InitFactory>()
-               .InitGameObject(InitCondition.OnConvert, structure, structure.Type, structure.Lvl);
+            Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnConvert, structure, structure.Type, structure.Lvl);
 
             OnStructureUpgradeDowngrade(structure);
         }

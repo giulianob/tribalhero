@@ -225,6 +225,7 @@ namespace Game.Logic.Actions
                 city.BeginUpdate();
                 city.Resource.Add(cost);
                 city.EndUpdate();
+                structure.EndUpdate();
 
                 world.Regions.UnlockRegion(emptyX, emptyY);
                 return Error.MapFull;

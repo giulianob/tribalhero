@@ -49,12 +49,14 @@
 		{
 			name = "Main";
 			trace("TribalHero v" + Constants.version + "." + Constants.revision);
-			
-			addEventListener(Event.ADDED_TO_STAGE, init);		
-		}
+			            
+			addEventListener(Event.ADDED_TO_STAGE, init);		                       
+		}        
 		
-		public function init(e: Event = null) : void {			
+		public function init(e: Event = null) : void {			            
 			removeEventListener(Event.ADDED_TO_STAGE, init);							
+            
+            stage.showDefaultContextMenu = false;                       
 			           
 			CONFIG::debug {                
 				stage.addChild(new TheMiner());
@@ -218,7 +220,7 @@
 		}
 		
 		public function showConnectionError(wasStillLoading: Boolean) : void {
-			var unableToConnectMsg: String = "Unable to connect to server.\nIf you continue to have problems, try the following:\n\n1. Make sure your firewall allows access to ports 48888 and 8085. You may be unable to connect if you are behind a shared connection such as an office or school.\n2. Update to the latest version of Flash player.\n3. Check our main page to see if a server maintenance is in progress.\n\nIf none of these solved your problem, contact us by using the contact link on our website for more help.";
+			var unableToConnectMsg: String = "Unable to connect to server.\nIf you continue to have problems, try the following:\n\n1. Clear your browser cache.\n2. Make sure your firewall allows access to ports 48888 and 8085. You may be unable to connect if you are behind a shared connection such as an office or school.\n3. Update to the latest version of Flash player.\n4. Check our main page to see if a server maintenance is in progress.\n\nIf none of these solved your problem, contact us by using the contact link on our website for more help.";
 			
 			if (parms.hostname) InfoDialog.showMessageDialog("Connection Lost", (wasStillLoading ? unableToConnectMsg : "Connection to Server Lost") + ". Refresh the page to rejoin the battle.", null, null, true, false, 1, true);
 			else InfoDialog.showMessageDialog("Connection Lost", (wasStillLoading ? unableToConnectMsg : "Connection to Server Lost."), function(result: int):void { showLoginDialog(); }, null, true, false, 1, true);			

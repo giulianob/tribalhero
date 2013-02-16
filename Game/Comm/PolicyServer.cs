@@ -96,14 +96,14 @@ namespace Game.Comm
                     continue;
                 }
 
-                ThreadPool.QueueUserWorkItem(delegate(object state)
+                ThreadPool.UnsafeQueueUserWorkItem(delegate(object state)
                     {
                         var s = (Socket)state;
                         try
                         {
                             var buffer = new byte[128];
 
-                            s.ReceiveTimeout = 1500;
+                            s.ReceiveTimeout = 3000;
                             s.Receive(buffer, 23, SocketFlags.None);
                             s.NoDelay = true;
                             s.Send(xmlBytes);
@@ -126,7 +126,7 @@ namespace Game.Comm
                         {
                         }
                     },
-                                             newSocket);
+                                                   newSocket);
             }
 
             listener.Stop();

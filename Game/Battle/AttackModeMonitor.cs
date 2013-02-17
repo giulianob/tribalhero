@@ -39,7 +39,7 @@ namespace Game.Battle
             var remainingUnitCount = troopStub.TotalCount;
 
             // Don't return if we haven't fulfilled the minimum rounds or not below the threshold
-            if (target.RoundsParticipated <= Config.battle_retreat_min_rounds || remainingUnitCount == 0 ||
+            if (target.RoundsParticipated < Config.battle_retreat_min_rounds || remainingUnitCount == 0 ||
                 remainingUnitCount > troopStub.RetreatCount)
             {
                 return;

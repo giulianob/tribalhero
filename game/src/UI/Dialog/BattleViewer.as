@@ -1,5 +1,6 @@
 ﻿package src.UI.Dialog {
 
+    import src.Util.BinaryList.BinaryListEvent;
 	import src.Util.StringHelper;
 	import flash.display.*;
 	import flash.events.Event;
@@ -53,6 +54,7 @@
 				battle.addEventListener(BattleManager.GROUP_ADDED_DEFENSE, onAddedDefense);
 				battle.addEventListener(BattleManager.GROUP_REMOVED_DEFENSE, onRemoved);
 				battle.addEventListener(BattleManager.GROUP_UNIT_REMOVED, onGroupUnitRemoved);
+                battle.addEventListener(BattleManager.GROUP_UNIT_ADDED, onGroupUnitAdded);
 				battle.addEventListener(BattleManager.OBJECT_ATTACKED, onAttack);
 				battle.addEventListener(BattleManager.OBJECT_SKIPPED, onSkipped);
 				battle.addEventListener(BattleManager.END, onEnd);
@@ -103,7 +105,7 @@
 			if (tabsByGroup[combatGroup.id]) {
 				return;
 			}
-			
+			            
 			var grid: CombatObjectGridList = CombatObjectGridList.getGridList(combatGroup.toArray());
 			var tab: JScrollPane = new JScrollPane(grid);
 
@@ -180,6 +182,19 @@
 				removeGroup(e.combatGroup.id);
 			}
 		}		
+        
+		private function onGroupUnitAdded(e:BattleObjectEvent):void 
+		{
+			var groupUi: * = tabsByGroup[e.combatGroup.id];
+			
+			if (!groupUi) {
+				Util.log("Received unit added for unknown group");
+				return;
+			}
+			
+			var groupList: CombatObjectGridList = groupUi.grid;
+			groupList.addCombatObject(e.combatObject);		
+		}	        
 		
 		public function onSkipped(e: BattleObjectEvent) : void {
 			var groupUi: * = tabsByGroup[e.combatGroup.id];

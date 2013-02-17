@@ -155,10 +155,7 @@ namespace Game.Logic.Actions
                 {
                     // Battle continues, just save it and reschedule
                     dbManager.Save(barbarianTribe.Battle);
-                    endTime =
-                            SystemClock.Now.AddSeconds(
-                                                       formula.GetBattleInterval(barbarianTribe.Battle.Defenders.Count +
-                                                                                 barbarianTribe.Battle.Attackers.Count));
+                    endTime = SystemClock.Now.AddSeconds(formula.GetBattleInterval(barbarianTribe.Battle.Defenders, barbarianTribe.Battle.Attackers));
                     StateChange(ActionState.Fired);
                     return;
                 }
@@ -223,7 +220,7 @@ namespace Game.Logic.Actions
                 throw new Exception("Barbarian tribe should still exist");
             }
 
-            if (battle.Round == 0)
+            if (battle.Round == 0 && defenders.Upkeep > 0)
             {
                 return;
             }

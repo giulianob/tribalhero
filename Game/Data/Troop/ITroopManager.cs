@@ -18,6 +18,8 @@ namespace Game.Data.Troop
 
         event TroopManager.UpdateCallback TroopRemoved;
 
+        event TroopManager.UpdateCallback TroopUnitUpdated;
+
         bool DbLoaderAdd(byte id, ITroopStub stub);
 
         bool DbLoaderAddStation(ITroopStub stub);

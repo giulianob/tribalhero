@@ -4,7 +4,7 @@ namespace Game.Data
 {
     public interface IGameObject : ISimpleGameObject, ICanDo
     {
-        bool IsBlocked { get; set; }
+        bool CheckBlocked(uint actionId);
 
         ICity City { get; set; }
     }

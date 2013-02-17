@@ -10,9 +10,9 @@ namespace Game.Data
 {
     public abstract class GameObject : SimpleGameObject, IGameObject
     {
-        private bool isBlocked;
+        private uint isBlocked;
 
-        public bool IsBlocked
+        public uint IsBlocked
         {
             get
             {
@@ -81,7 +81,11 @@ namespace Game.Data
             City.ObjUpdateEvent(this, origX, origY);
             World.Current.Regions.ObjectUpdateEvent(this, origX, origY);
         }
-
+        
+        public bool CheckBlocked(uint actionId)
+        {
+            return isBlocked > 0 && isBlocked != actionId;
+        }
         #endregion
     }
 }

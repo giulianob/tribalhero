@@ -30,5 +30,7 @@ namespace Game.Data.Stronghold
         Error RepairGate(IStronghold stronghold);
 
         IEnumerable<IStronghold> OpenStrongholdsForTribe(ITribe tribe);
+
+        void Probe(out int neutralStrongholds, out int capturedStrongholds);
     }
 }

@@ -127,7 +127,7 @@ namespace Game.Logic.Procedures
         public virtual Error CanStructureBeAttacked(IStructure structure)
         {
             // Can't attack structures that are being built
-            if (structure.IsBlocked || structure.Stats.Hp == 0 || structure.Lvl == 0)
+            if (structure.IsBlocked != 0 || structure.Stats.Hp == 0 || structure.Lvl == 0)
             {
                 return Error.ObjectNotAttackable;
             }

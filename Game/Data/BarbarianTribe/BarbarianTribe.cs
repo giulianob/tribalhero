@@ -240,7 +240,7 @@ namespace Game.Data.BarbarianTribe
             }
         }
 
-        public bool IsBlocked { get; set; }
+        public uint IsBlocked { get; set; }
 
         public uint LocationId
         {

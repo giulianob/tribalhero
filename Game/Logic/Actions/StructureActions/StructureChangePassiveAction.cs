@@ -117,14 +117,14 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                if (structure.IsBlocked)
+                if (structure.CheckBlocked(ActionId))
                 {
                     StateChange(ActionState.Failed);
                     return;
                 }
 
                 structure.BeginUpdate();
-                structure.IsBlocked = true;
+                structure.IsBlocked = ActionId;
                 structure.EndUpdate();
             }
 
@@ -146,6 +146,7 @@ namespace Game.Logic.Actions
 
                 structure.City.BeginUpdate();
                 structure.BeginUpdate();
+                structure.IsBlocked = 0;
                 Procedure.Current.StructureChange(structure, type, lvl);
                 structure.EndUpdate();
                 structure.City.EndUpdate();

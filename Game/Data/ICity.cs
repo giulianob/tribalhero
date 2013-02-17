@@ -100,8 +100,6 @@ namespace Game.Data
 
         decimal AlignmentPoint { get; set; }
 
-        bool IsUpdating { get; }
-
         City.DeletedState Deleted { get; set; }
 
         IActionWorker Worker { get; }
@@ -133,9 +131,7 @@ namespace Game.Data
 
         bool ScheduleRemove(ITroopObject obj, bool wasKilled);
 
-        bool ScheduleRemove(IStructure obj, bool wasKilled);
-
-        bool ScheduleRemove(IStructure obj, bool wasKilled, bool cancelReferences);
+        bool ScheduleRemove(IStructure obj, bool wasKilled, bool cancelReferences = false);
 
         /// <summary>
         ///     Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
@@ -158,27 +154,9 @@ namespace Game.Data
         void Subscribe(IChannel s);
 
         void Unsubscribe(IChannel s);
-
-        void ResourceUpdateEvent();
-
-        void RadiusUpdateEvent();
-
-        void PointUpdate();
-
-        void HideNewUnitsUpdate();
-
+        
         void NewCityUpdate();
 
-        void ObjAddEvent(IGameObject obj);
-
-        void ObjRemoveEvent(IGameObject obj);
-
         void ObjUpdateEvent(IGameObject sender, uint origX, uint origY);
-
-        void UnitTemplateUnitUpdated(UnitTemplate sender);
-
-        void BattleStarted();
-
-        void BattleEnded();
     }
 }

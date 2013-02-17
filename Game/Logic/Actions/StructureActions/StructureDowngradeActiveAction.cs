@@ -140,7 +140,7 @@ namespace Game.Logic.Actions
                     city.References.Remove(structure, this);
                 }
 
-                if (structure.IsBlocked)
+                if (structure.CheckBlocked(ActionId))
                 {
                     StateChange(ActionState.Failed);
                     return;
@@ -153,7 +153,7 @@ namespace Game.Logic.Actions
                 }
 
                 structure.BeginUpdate();
-                structure.IsBlocked = true;
+                structure.IsBlocked = ActionId;
                 structure.EndUpdate();
             }
 
@@ -165,7 +165,7 @@ namespace Game.Logic.Actions
                 structure.BeginUpdate();
 
                 // Unblock structure since we're done with it in this action and ObjectRemoveAction will take it from here
-                structure.IsBlocked = false;
+                structure.IsBlocked = 0;
 
                 // Send any laborers back
                 city.Resource.Labor.Add(structure.Stats.Labor);

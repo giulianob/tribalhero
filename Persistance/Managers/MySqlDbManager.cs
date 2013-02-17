@@ -298,12 +298,6 @@ namespace Persistance.Managers
 
         DbDataReader IDbManager.SelectList(string table, params DbColumn[] primaryKeyValues)
         {
-            MySqlConnection connection = GetConnection(false);
-
-            MySqlCommand command = connection.CreateCommand();
-
-            command.Connection = connection;
-
             bool startComma = false;
             string where = "";
             foreach (var column in primaryKeyValues)
@@ -399,30 +393,31 @@ namespace Persistance.Managers
 
         public void EmptyDatabase()
         {
-            MySqlConnection connection = GetConnection();
-
-            MySqlCommand command = connection.CreateCommand();
-            command.Connection = connection;
-            command.CommandText = "SHOW TABLES";
-
-            MySqlDataReader reader = command.ExecuteReader();
-
-            while (reader.Read())
+            using (MySqlConnection connection = GetConnection(false))
             {
-                if ((String)reader[0] == "schema_migrations")
-                {
-                    continue;
+
+                MySqlCommand command = connection.CreateCommand();
+                command.Connection = connection;
+                command.CommandText = "SHOW TABLES";
+
+                using (MySqlDataReader reader = command.ExecuteReader()) {
+                    while (reader.Read())
+                    {
+                        if ((String)reader[0] == "schema_migrations")
+                        {
+                            continue;
+                        }
+
+                        using (MySqlConnection truncateConnection = GetConnection(false))
+                        {
+                            MySqlCommand truncateCommand = connection.CreateCommand();
+                            truncateCommand.CommandText = string.Format("TRUNCATE TABLE `{0}`", reader[0]);
+                            truncateCommand.Connection = truncateConnection;
+                            truncateCommand.ExecuteNonQuery();
+                        }
+                    }
                 }
-
-                MySqlConnection truncateConnection = GetConnection();
-                MySqlCommand truncateCommand = connection.CreateCommand();
-                truncateCommand.CommandText = string.Format("TRUNCATE TABLE `{0}`", reader[0]);
-                truncateCommand.Connection = truncateConnection;
-                truncateCommand.ExecuteNonQuery();
-                Close(truncateConnection);
             }
-
-            Close(connection);
         }
 
         public void Probe(out int queriesRanOut, out DateTime lastProbeOut)

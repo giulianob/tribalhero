@@ -476,7 +476,6 @@
     <Compile Include="Logic\Procedures\BattleProcedure.cs" />
     <Compile Include="Logic\Procedures\Procedure.Ranking.cs" />
     <Compile Include="Logic\Procedures\Procedure.OnActionCallback.cs" />
-    <Compile Include="Logic\Procedures\Procedure.RandomizeResource.cs" />
     <Compile Include="Logic\Procedures\Procedure.ResourceCap.cs" />
     <Compile Include="Logic\Procedures\Procedure.TroopObjectCreateFromStation.cs" />
     <Compile Include="Logic\Procedures\Procedure.TroopObjectStation.cs" />

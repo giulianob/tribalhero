@@ -142,12 +142,8 @@ namespace Game.Module
                     if (city.Any(structure => !structure.IsMainBuilding))
                     {
                         city.BeginUpdate();
-                        foreach (
-                                IStructure structure in
-                                        new List<IStructure>(city).Where(
-                                                                         structure =>
-                                                                         !structure.IsBlocked &&
-                                                                         !structure.IsMainBuilding))
+                        foreach (IStructure structure in
+                                new List<IStructure>(city).Where(structure => structure.IsBlocked == 0 && !structure.IsMainBuilding))
                         {
                             structure.BeginUpdate();
                             World.Current.Regions.Remove(structure);

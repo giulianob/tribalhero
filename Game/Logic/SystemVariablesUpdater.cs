@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using Game.Comm;
 using Game.Data;
+using Game.Data.Stronghold;
 using Game.Map;
 using Game.Module;
 using Game.Setup;
@@ -26,6 +27,8 @@ namespace Game.Logic
 
         private readonly IScheduler scheduler;
 
+        private readonly IStrongholdManager strongholdManager;
+
         private readonly ITribeManager tribeManager;
 
         private readonly IWorld world;
@@ -39,12 +42,14 @@ namespace Game.Logic
         public SystemVariablesUpdater(IWorld world,
                                       ITribeManager tribeManager,
                                       IDbManager dbManager,
-                                      IScheduler scheduler)
+                                      IScheduler scheduler,
+                                      IStrongholdManager strongholdManager)
         {
             this.world = world;
             this.tribeManager = tribeManager;
             this.dbManager = dbManager;
             this.scheduler = scheduler;
+            this.strongholdManager = strongholdManager;
         }
 
         public static SystemVariablesUpdater Current { get; set; }
@@ -84,6 +89,7 @@ namespace Game.Logic
                     Global.SystemVariables["System.time"].Value = now;
                     dbManager.Save(Global.SystemVariables["System.time"]);
 
+                    #region 5 second updates
                     if (DateTime.UtcNow.Subtract(lastUpdateScheduler).TotalMilliseconds < 5000)
                     {
                         return;
@@ -112,6 +118,11 @@ namespace Game.Logic
                     int queriesRan;
                     DateTime lastDbProbe;
                     dbManager.Probe(out queriesRan, out lastDbProbe);
+
+                    // Stronghold info
+                    int strongholdsNeutral;
+                    int strongholdsOccupied;
+                    strongholdManager.Probe(out strongholdsNeutral, out strongholdsOccupied);
 
                     var uptime = now.Subtract(systemStartTime);
 
@@ -144,6 +155,8 @@ namespace Game.Logic
                             new SystemVariable("Cities.count", world.Cities.Count),
                             new SystemVariable("Channel.subscriptions", Global.Channel.SubscriptionCount()),
                             new SystemVariable("Tribes.count", tribeManager.TribeCount),
+                            new SystemVariable("Strongholds.neutral", strongholdsNeutral),
+                            new SystemVariable("Strongholds.occupied", strongholdsOccupied),
                     };
 
                     // Max player logged in ever
@@ -202,6 +215,7 @@ namespace Game.Logic
 
                         dbManager.Save(Global.SystemVariables[variable.Key]);
                     }
+                    #endregion
                 }
             }
         }

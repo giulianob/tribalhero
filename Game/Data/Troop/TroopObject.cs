@@ -205,7 +205,7 @@ namespace Game.Data.Troop
             {
                 return new[]
                 {
-                        new DbColumn("is_blocked", IsBlocked, DbType.Boolean),
+                        new DbColumn("is_blocked", IsBlocked, DbType.UInt32),
                         new DbColumn("troop_stub_id", Stub != null ? Stub.TroopId : 0, DbType.Byte),
                         new DbColumn("gold", Stats.Loot.Gold, DbType.Int32),
                         new DbColumn("crop", Stats.Loot.Crop, DbType.Int32),

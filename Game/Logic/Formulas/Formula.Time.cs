@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using Game.Battle;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Setup;
@@ -156,8 +157,9 @@ namespace Game.Logic.Formulas
             return TimeSpan.FromSeconds(int.Parse(time));
         }
 
-        public virtual double GetBattleInterval(int count)
+        public virtual double GetBattleInterval(ICombatList defenders, ICombatList attackers)
         {
+            var count = defenders.SelectMany(o => o).Count() + attackers.SelectMany(o => o).Count();
             // at 400 objects, the reduction is cap'ed at 20% of the original speed.
             var ret = Config.battle_turn_interval * 100 / (100 + Math.Min(500, count));
             return Config.server_production ? Math.Max(4, ret) : ret;

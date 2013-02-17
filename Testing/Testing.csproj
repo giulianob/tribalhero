@@ -129,6 +129,7 @@
     <Compile Include="Database\DbLoaderActionFactoryTest.cs" />
     <Compile Include="Formulas\BarbarianTribeFormulaTest.cs" />
     <Compile Include="Formulas\CityValueTest.cs" />
+    <Compile Include="Formulas\BattleFormulaTest.cs" />
     <Compile Include="Formulas\UpkeepTest.cs" />
     <Compile Include="Formulas\NewCityResourceTest.cs" />
     <Compile Include="Formulas\ResourceFormulaTest.cs" />

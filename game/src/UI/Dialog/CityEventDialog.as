@@ -209,7 +209,7 @@
 					}
 					
 					var proto: StructurePrototype = cityObj.getStructurePrototype();
-					if (proto.maxlabor == 0) {
+					if (cityObj.labor == 0 && proto.maxlabor == 0) {
 						continue;
 					}
 					
@@ -228,6 +228,10 @@
 				return "-";
 			}
 			
+            if (proto.maxlabor == 0) {
+                return info.labor.toString();
+            }
+            
 			return info.labor + "/" + proto.maxlabor.toString();
 		}
 		

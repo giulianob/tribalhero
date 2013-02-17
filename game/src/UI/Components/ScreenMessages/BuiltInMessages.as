@@ -13,6 +13,7 @@ package src.UI.Components.ScreenMessages
 	import src.Objects.Actions.PassiveAction;
 	import src.Util.StringHelper;
 	import src.Util.Util;
+    import System.Linq.Enumerable;
 
 	public class BuiltInMessages
 	{
@@ -85,34 +86,30 @@ package src.UI.Components.ScreenMessages
 			}
 		}
 
-		public static function showIncomingAttack(city: City): void {
-
-			var inAtk: Boolean = false;
-			var inDef: Boolean = false;
-
-			if (!city.inBattle) {
-				for each (var notification: Notification in city.notifications) {
-					if (notification.cityId == city.id) continue;
-
-					if (notification.type == PassiveAction.CITY_ATTACK) {
-						Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/INATK", StringHelper.localize("MSG_INCOMING_ATTACK", city.name), new AssetIcon(new ICON_BATTLE)));
-						inAtk = true;
-					}
-
-					if (notification.type == PassiveAction.CITY_DEFENSE) {
-						Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/INDEF", StringHelper.localize("MSG_INCOMING_DEFENSE", city.name), new AssetIcon(new ICON_SHIELD)));
-						inDef = true;
-					}
-				}
-			}
-
-			if (!inAtk) {
-				Global.gameContainer.screenMessage.removeMessage("/CITY/" + city.id + "/INATK");
-			}
-
-			if (!inDef) {
-				Global.gameContainer.screenMessage.removeMessage("/CITY/" + city.id + "/INDEF");
-			}
+		public static function showIncomingAttack(city: City): void {              
+            var attacks: int = Enumerable.from(city.notifications).where(function (notification: Notification): Boolean {
+                return notification.cityId != city.id && notification.type == PassiveAction.CITY_ATTACK;
+            }).count();
+            
+            if (attacks > 0) {
+                Global.gameContainer.screenMessage.removeMessage("/CITY/" + city.id + "/INATK");
+                Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/INATK", StringHelper.localize("MSG_INCOMING_ATTACK", city.name, attacks), new AssetIcon(new ICON_BATTLE)));
+            }
+            else {
+                Global.gameContainer.screenMessage.removeMessage("/CITY/" + city.id + "/INATK");
+            }
+            
+            var defenses: int = Enumerable.from(city.notifications).where(function (notification: Notification): Boolean {
+                return notification.cityId != city.id && notification.type == PassiveAction.CITY_DEFENSE;
+            }).count();
+            
+            if (defenses > 0) {
+                Global.gameContainer.screenMessage.removeMessage("/CITY/" + city.id + "/INDEF");
+                Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/INDEF", StringHelper.localize("MSG_INCOMING_DEFENSE", city.name, defenses), new AssetIcon(new ICON_SHIELD)));
+            }
+            else {
+                Global.gameContainer.screenMessage.removeMessage("/CITY/" + city.id + "/INDEF");
+            }                                            
 		}
 		
 		public static function showTribeAssignmentIncoming(assignment:int, incoming:int, firstTime:Boolean = false):void {

@@ -157,6 +157,13 @@ package src.UI.Dialog
 			if (message.charAt(0) == '/')
 			{
 				log(currentChatType, message, true);				
+                
+                CONFIG::debug {
+                    if (message == "/togglestacktracer") {
+                        Constants.debugStacktracer = true;
+                        return true;
+                    }
+                }
 				
 				Global.mapComm.General.sendCommand(message.substr(1), function(resp:String, type: int = 0):void
 					{
@@ -250,7 +257,7 @@ package src.UI.Dialog
 			while ((beginOfs = str.indexOf("#", index)) != -1 && (endOfs = str.indexOf("#", beginOfs + 1)) != -1) {
 				result += str.substring(index, beginOfs);
 				var values: Array =  str.substring(beginOfs + 1, endOfs).split(":", 2);
-				if (values.length == 2) {
+				if (values.length == 2 && StringUtil.trim(values[1]) !== "") {
 					switch(values[0]) {
 						case "p":
 							result += StringUtil.substitute('<a href="event:viewPlayerProfileByName:{0}"><span class="global">{0}</span></a>', values[1]);

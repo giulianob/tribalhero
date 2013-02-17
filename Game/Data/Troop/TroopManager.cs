@@ -23,6 +23,8 @@ namespace Game.Data.Troop
 
         #endregion
 
+        public event UpdateCallback TroopUnitUpdated;
+
         public event UpdateCallback TroopUpdated;
 
         public event UpdateCallback TroopAdded;
@@ -85,7 +87,8 @@ namespace Game.Data.Troop
             }
             idGen.Set(id);
             dict[id] = stub;
-            stub.UnitUpdate += StubUpdateEvent;
+            stub.Update += StubUpdateEvent;
+            stub.UnitUpdate += StubUnitUpdateEvent;
             return true;
         }
 
@@ -102,7 +105,8 @@ namespace Game.Data.Troop
             stub.Station = BaseStation;
 
             dict.Add(id, stub);
-            stub.UnitUpdate += StubUpdateEvent;
+            stub.Update += StubUpdateEvent;
+            stub.UnitUpdate += StubUnitUpdateEvent;
             FireAdded(stub);
             return true;
         }
@@ -111,7 +115,8 @@ namespace Game.Data.Troop
         {
             var stub = TroopStubFactory.CreateTroopStub((byte)idGen.GetNext());
             dict.Add(stub.TroopId, stub);
-            stub.UnitUpdate += StubUpdateEvent;
+            stub.Update += StubUpdateEvent;
+            stub.UnitUpdate += StubUnitUpdateEvent;
             FireAdded(stub);
             return stub;
         }
@@ -135,7 +140,8 @@ namespace Game.Data.Troop
 
             dict.Add(id, stub);
 
-            stub.UnitUpdate += StubUpdateEvent;
+            stub.Update += StubUpdateEvent;
+            stub.UnitUpdate += StubUnitUpdateEvent;
 
             FireAdded(stub);
             return true;
@@ -157,7 +163,8 @@ namespace Game.Data.Troop
             stub.EndUpdate();
 
             dict.Add(id, stub);
-            stub.UnitUpdate += StubUpdateEvent;
+            stub.Update += StubUpdateEvent;
+            stub.UnitUpdate += StubUnitUpdateEvent;
             FireAdded(stub);
             return true;
         }
@@ -186,7 +193,8 @@ namespace Game.Data.Troop
             stub.Station = null;
             stub.EndUpdate();
 
-            stub.UnitUpdate -= StubUpdateEvent;
+            stub.Update -= StubUpdateEvent;
+            stub.UnitUpdate -= StubUnitUpdateEvent;
 
             FireRemoved(stub);
             return true;
@@ -209,7 +217,8 @@ namespace Game.Data.Troop
             stub.FireRemoved();
 
             idGen.Release(id);
-            stub.UnitUpdate -= StubUpdateEvent;
+            stub.Update -= StubUpdateEvent;
+            stub.UnitUpdate -= StubUnitUpdateEvent;
 
             FireRemoved(stub);
             return true;
@@ -278,6 +287,21 @@ namespace Game.Data.Troop
             }
         }
 
+        private void FireUnitUpdated(TroopStub stub)
+        {
+            if (!Global.FireEvents)
+            {
+                return;
+            }
+
+            CheckUpdateMode();
+
+            if (TroopUnitUpdated != null)
+            {
+                TroopUnitUpdated(stub);
+            }
+        }
+
         private void FireAdded(ITroopStub stub)
         {
             if (!Global.FireEvents)
@@ -321,6 +345,11 @@ namespace Game.Data.Troop
         public void StubUpdateEvent(TroopStub stub)
         {
             FireUpdated(stub);
+        }
+
+        public void StubUnitUpdateEvent(TroopStub stub)
+        {
+            FireUnitUpdated(stub);
         }
 
         #endregion

@@ -61,11 +61,15 @@ namespace Game.Data.Troop
 
         event TroopStub.Removed OnRemoved;
 
-        event TroopStub.OnUnitUpdate UnitUpdate;
+        event TroopStub.OnUpdate Update;
+
+        event TroopStub.OnUpdate UnitUpdate;
 
         void Starve(int percent = 5, bool bypassProtection = false);
 
         void FireUpdated();
+
+        void FireUnitUpdated();
 
         void BeginUpdate();
 

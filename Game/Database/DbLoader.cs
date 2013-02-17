@@ -114,8 +114,7 @@ namespace Game.Database
                     LoadTribes();
                     LoadTribesmen();
                     LoadUnitTemplates();
-                    LoadStructures();
-                    LoadStructureProperties();
+                    LoadStructures();                    
                     LoadTechnologies();
                     LoadForests(downTime);
                     LoadStrongholds();
@@ -720,32 +719,6 @@ namespace Game.Database
                     {
                         World.Regions.DbLoaderAdd(structure);
                     }
-                }
-            }
-
-            #endregion
-        }
-
-        private void LoadStructureProperties()
-        {
-            #region Structure Properties
-
-            Global.Logger.Info("Loading structure properties...");
-            using (var reader = DbManager.Select(StructureProperties.DB_TABLE))
-            {
-                ICity city = null;
-                while (reader.Read())
-                {
-                    // Simple optimization                        
-                    if (city == null || city.Id != (uint)reader["city_id"])
-                    {
-                        if (!World.TryGetObjects((uint)reader["city_id"], out city))
-                        {
-                            throw new Exception("City not found");
-                        }
-                    }
-
-                    var structure = (IStructure)city[(uint)reader["structure_id"]];
 
                     structure.Properties.DbPersisted = true;
 
@@ -762,7 +735,7 @@ namespace Game.Database
             }
 
             #endregion
-        }
+        }     
 
         private void LoadTechnologies()
         {

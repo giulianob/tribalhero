@@ -53,11 +53,13 @@ namespace Game.Data.Troop
 
         private bool isDirty;
 
+        private bool isUnitDirty;
+
         private bool isUpdating;
 
         #region Events
 
-        public delegate void OnUnitUpdate(TroopStub stub);
+        public delegate void OnUpdate(TroopStub stub);
 
         public delegate void Removed(ITroopStub stub);
 
@@ -67,7 +69,9 @@ namespace Game.Data.Troop
 
         public event Removed OnRemoved = delegate { };
 
-        public event OnUnitUpdate UnitUpdate = delegate { };
+        public event OnUpdate Update = delegate { };
+
+        public event OnUpdate UnitUpdate = delegate { };
 
         #endregion
 
@@ -307,7 +311,7 @@ namespace Game.Data.Troop
                     }
                 }
 
-                FireUpdated();
+                FireUnitUpdated();
             }
         }
 
@@ -436,6 +440,18 @@ namespace Game.Data.Troop
 
         #endregion
 
+        public void FireUnitUpdated()
+        {
+            if (!Global.FireEvents)
+            {
+                return;
+            }
+
+            CheckUpdateMode();
+
+            isUnitDirty = true;
+        }
+
         public void FireUpdated()
         {
             if (!Global.FireEvents)
@@ -457,6 +473,7 @@ namespace Game.Data.Troop
 
             isUpdating = true;
             isDirty = false;
+            isUnitDirty = false;
         }
 
         public void EndUpdate()
@@ -465,10 +482,21 @@ namespace Game.Data.Troop
 
             DbPersistance.Current.Save(this);
 
-            if (isDirty)
+            if (isDirty || isUnitDirty)
+            {
+                Update(this);
+            }
+
+            if (isUnitDirty)
             {
                 UnitUpdate(this);
             }
+        }
+
+        public void RemoveFormation(FormationType type)
+        {
+            data[type].OnUnitUpdated -= FormationOnUnitUpdated;
+            data.Remove(type);
         }
 
         public bool AddFormation(FormationType type)
@@ -481,10 +509,10 @@ namespace Game.Data.Troop
                     return false;
                 }
                 var formation = new Formation(type);
-                formation.OnUnitUpdated += FormationOnOnUnitUpdated;
+                formation.OnUnitUpdated += FormationOnUnitUpdated;
                 data.Add(type, formation);
 
-                FireUpdated();
+                FireUnitUpdated();
             }
 
             return true;
@@ -511,9 +539,9 @@ namespace Game.Data.Troop
                     AddUnit(newFormation, unit.Key, unit.Value);
                 }
 
-                data.Remove(originalFormation);
+                RemoveFormation(originalFormation);
 
-                FireUpdated();
+                FireUnitUpdated();
             }
         }
 
@@ -529,14 +557,14 @@ namespace Game.Data.Troop
                     if (!data.TryGetValue(stubFormation.Type, out targetFormation))
                     {
                         targetFormation = new Formation(stubFormation.Type);
-                        targetFormation.OnUnitUpdated += FormationOnOnUnitUpdated;
+                        targetFormation.OnUnitUpdated += FormationOnUnitUpdated;
                         data.Add(stubFormation.Type, targetFormation);
                     }
 
                     targetFormation.Add(stubFormation);
                 }
 
-                FireUpdated();
+                FireUnitUpdated();
             }
         }
 
@@ -550,7 +578,7 @@ namespace Game.Data.Troop
                     formation.Add(type, count);
                 }
 
-                FireUpdated();
+                FireUnitUpdated();
             }
         }
 
@@ -576,7 +604,7 @@ namespace Game.Data.Troop
                     ushort removed = formation.Remove(type, count);
                     if (removed > 0)
                     {
-                        FireUpdated();
+                        FireUnitUpdated();
                         return removed;
                     }
                 }
@@ -601,7 +629,7 @@ namespace Game.Data.Troop
                     formation.Clear();
                 }
 
-                FireUpdated();
+                FireUnitUpdated();
             }
         }
 
@@ -625,9 +653,9 @@ namespace Game.Data.Troop
             }
         }
 
-        private void FormationOnOnUnitUpdated()
+        private void FormationOnUnitUpdated()
         {
-            FireUpdated();
+            FireUnitUpdated();
         }
 
         public bool Remove(ITroopStub troop)
@@ -655,7 +683,7 @@ namespace Game.Data.Troop
                     }
                 }
 
-                FireUpdated();
+                FireUnitUpdated();
             }
 
             return true;

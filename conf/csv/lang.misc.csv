@@ -8,7 +8,7 @@ UPKEEP_DESC,Troop Upkeep\n\nAmount of crop consumed every hour by your military 
 DEFENSE_POINTS_DESC,Defense Points\n\nDefense points are acquired when your units kill enemy units. These points are not only acquired when your city is attacked but also when your units fight while stationed in other player's cities.
 ATTACK_POINTS_DESC,Attack Points\n\nAttack points are acquired when you attack and kill enemy units.
 INFLUENCE_POINTS_DESC,Influence Points\n\nYour total influence points is the sum of all building levels in all of your cities.
-NEW_CITY_DESC,Build a new city here. Requires Ox Wagons and Influence Points. Your total influence points is the sum of all building levels in all of your cities.  All Ox Wagons will be consumed to build the new city.
+NEW_CITY_DESC,Build a new city here. Requires Ox Wagons and Influence Points. Your total influence points is the sum of all building levels in all of your cities.  All Ox Wagons will be consumed and must come from a single existing city.
 UNITS_DESC,Units\n\nStatus of your military units. You can get more information about your units in the 'Unit Movement' screen.
 AP_POINTS_DESC,Alignment Rating\n\nShows how aggressive or defensive the city has lately been. Alignment rating goes down when you defeat other enemies and goes up when your city is under significant attacks. Bonuses are given when this number reaches certain thresholds.
 ,
@@ -104,8 +104,8 @@ STR_PER_HOUR,{0} per hour
 MSG_NEWBIE_PROTECTION,Under newbie protection: Expires in {0}
 MSG_UNDER_ATTACK,{0} is under attack
 MSG_TROOPS_STARVING,{0}: Troops may be starving to death
-MSG_INCOMING_ATTACK,{0}: Incoming attack
-MSG_INCOMING_DEFENSE,{0}: Incoming reinforcement
+MSG_INCOMING_ATTACK,{0}: {1} incoming attack(s)
+MSG_INCOMING_DEFENSE,{0}: {1} incoming reinforcement(s)
 MSG_TRIBE_ALERTS,"Tribe: {0} invasion alert(s), {1} pending assignment(s)"
 MSG_TRIBE_NO_ALERTS,Tribe: no more invasion alert or pending assignment
 ,
@@ -132,7 +132,8 @@ MINIMAP_LEGEND_DISTANCE_500,Over 400 tiles
 ,
 MINIMAP_LEGEND_TRIBE,Tribe
 MINIMAP_LEGEND_TRIBE_SELF,Tribesmen
-MINIMAP_LEGEND_TRIBE_OTHER,Others
+MINIMAP_LEGEND_TRIBE_OTHER_IN_TRIBE,In another tribe
+MINIMAP_LEGEND_TRIBE_OTHER_NO_TRIBE,Not in tribe
 ,
 MINIMAP_LEGEND_ALIGNMENT,Alignment
 MINIMAP_LEGEND_ALIGNMENT_90,Over 90 Alignment
@@ -169,8 +170,8 @@ ATTACK_SELF_ERROR,You can't attack your own city.
 REINFORCE_CHOOSE_TARGET,Choose a town center to defend or stronghold to defend.
 REINFORCE_DISTANCE_MESSAGE,About {0} away. Double click to defend.
 ,
-BATTLE_PROP_DEFENSE_STRONGHOLD_METER,Defenders Stamina
-BATTLE_PROP_OFFENSE_STRONGHOLD_METER,Attackers Stamina
+BATTLE_PROP_DEFENSE_STRONGHOLD_METER,Defenders Morale
+BATTLE_PROP_OFFENSE_STRONGHOLD_METER,Attackers Morale
 BATTLE_NEW_ROUND,Battle - {0} - Round {1}
 BATTLE_SIDE_LOCAL,Local
 BATTLE_CANT_REACH,couldn't reach anyone

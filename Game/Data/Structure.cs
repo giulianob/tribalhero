@@ -162,7 +162,7 @@ namespace Game.Data
                         new DbColumn("type", Type, DbType.Int16),
                         new DbColumn("level", Lvl, DbType.Byte), 
                         new DbColumn("labor", stats.Labor, DbType.UInt16),
-                        new DbColumn("is_blocked", IsBlocked, DbType.Boolean),
+                        new DbColumn("is_blocked", IsBlocked, DbType.UInt32),
                         new DbColumn("in_world", InWorld, DbType.Boolean),
                         new DbColumn("state", (byte)State.Type, DbType.Boolean),
                         new DbColumn("state_parameters",

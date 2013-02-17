@@ -114,8 +114,7 @@ namespace Game.Database
                     LoadTribes();
                     LoadTribesmen();
                     LoadUnitTemplates();
-                    LoadStructures();
-                    LoadStructureProperties();
+                    LoadStructures();                    
                     LoadTechnologies();
                     LoadForests(downTime);
                     LoadStrongholds();
@@ -707,7 +706,7 @@ namespace Game.Database
                     structure.Stats.Labor = (ushort)reader["labor"];
                     structure.DbPersisted = true;
                     structure.State.Type = (ObjectState)((byte)reader["state"]);
-                    structure.IsBlocked = (bool)reader["is_blocked"];
+                    structure.IsBlocked = (uint)reader["is_blocked"];
 
                     foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
                     {
@@ -720,32 +719,6 @@ namespace Game.Database
                     {
                         World.Regions.DbLoaderAdd(structure);
                     }
-                }
-            }
-
-            #endregion
-        }
-
-        private void LoadStructureProperties()
-        {
-            #region Structure Properties
-
-            Global.Logger.Info("Loading structure properties...");
-            using (var reader = DbManager.Select(StructureProperties.DB_TABLE))
-            {
-                ICity city = null;
-                while (reader.Read())
-                {
-                    // Simple optimization                        
-                    if (city == null || city.Id != (uint)reader["city_id"])
-                    {
-                        if (!World.TryGetObjects((uint)reader["city_id"], out city))
-                        {
-                            throw new Exception("City not found");
-                        }
-                    }
-
-                    var structure = (IStructure)city[(uint)reader["structure_id"]];
 
                     structure.Properties.DbPersisted = true;
 
@@ -762,7 +735,7 @@ namespace Game.Database
             }
 
             #endregion
-        }
+        }     
 
         private void LoadTechnologies()
         {
@@ -970,7 +943,7 @@ namespace Game.Database
                                                    (byte)reader["attack_radius"],
                                                    (byte)reader["speed"],
                                                    new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"])),
-                            IsBlocked = (bool)reader["is_blocked"],
+                            IsBlocked = (uint)reader["is_blocked"],
                             InWorld = (bool)reader["in_world"],
                     };
 

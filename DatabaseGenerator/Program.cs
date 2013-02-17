@@ -314,7 +314,7 @@ namespace DatabaseGenerator
             ";
 
             const string levelTemplate =
-                    @"array('time' => #TIME#, 'carry' => #CARRY#, 'speed' => #SPEED#, 'upkeep' => #UPKEEP#, 'trainTime' => #TRAIN_TIME#, 'trainGold' => #TRAIN_GOLD#, 'trainCrop' => #TRAIN_CROP#, 'trainIron' => #TRAIN_IRON#, 'trainLabor' => #TRAIN_LABOR#, 'trainWood' => #TRAIN_WOOD#, 'gold' => #GOLD#, 'crop' => #CROP#, 'iron' => #IRON#, 'labor' => #LABOR#, 'wood' => #WOOD#, 'hp' => #HP#, 'attack' => #ATTACK#, 'range' => #RANGE#, 'stealth' => #STEALTH#, 'armor' => '#ARMOR#', 'weapon' => '#WEAPON#', 'weaponClass' => '#WEAPONCLASS#', 'unitClass' => '#UNITCLASS#', 'requirements' => array(#REQUIREMENTS#)),";
+                    @"array('time' => #TIME#, 'carry' => #CARRY#, 'speed' => #SPEED#, 'upkeep' => #UPKEEP#, 'splash' => #SPLASH#, 'trainTime' => #TRAIN_TIME#, 'trainGold' => #TRAIN_GOLD#, 'trainCrop' => #TRAIN_CROP#, 'trainIron' => #TRAIN_IRON#, 'trainLabor' => #TRAIN_LABOR#, 'trainWood' => #TRAIN_WOOD#, 'gold' => #GOLD#, 'crop' => #CROP#, 'iron' => #IRON#, 'labor' => #LABOR#, 'wood' => #WOOD#, 'hp' => #HP#, 'attack' => #ATTACK#, 'range' => #RANGE#, 'stealth' => #STEALTH#, 'armor' => '#ARMOR#', 'weapon' => '#WEAPON#', 'weaponClass' => '#WEAPONCLASS#', 'unitClass' => '#UNITCLASS#', 'requirements' => array(#REQUIREMENTS#)),";
 
             string requirementTemplate = @"'#REQUIREMENT#',";
 
@@ -355,6 +355,7 @@ namespace DatabaseGenerator
                 currentLevel = currentLevel.Replace("#TRAIN_LABOR#", currentStats.Cost.Labor.ToString());
                 currentLevel = currentLevel.Replace("#TRAIN_WOOD#", currentStats.Cost.Wood.ToString());
                 currentLevel = currentLevel.Replace("#HP#", currentStats.Battle.MaxHp.ToString());
+                currentLevel = currentLevel.Replace("#SPLASH#", currentStats.Battle.Splash.ToString());
                 currentLevel = currentLevel.Replace("#ATTACK#", currentStats.Battle.Atk.ToString());
                 currentLevel = currentLevel.Replace("#RANGE#", currentStats.Battle.Rng.ToString());
                 currentLevel = currentLevel.Replace("#STEALTH#", currentStats.Battle.Stl.ToString());

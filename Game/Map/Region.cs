@@ -3,10 +3,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using Game.Comm;
 using Game.Data;
 using Game.Setup;
+using Game.Util.Locking;
 
 #endregion
 
@@ -24,11 +26,13 @@ namespace Game.Map
 
         private readonly byte[] map;
 
+        private readonly DefaultMultiObjectLock.Factory lockerFactory;
+
         private readonly ReaderWriterLockSlim objLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
         private readonly ObjectList objlist = new ObjectList();
 
-        private bool isDirty;
+        private bool isDirty = true;
 
         private byte[] objects;
 
@@ -44,9 +48,10 @@ namespace Game.Map
 
         #region Constructors
 
-        public Region(byte[] map)
+        public Region(byte[] map, DefaultMultiObjectLock.Factory lockerFactory)
         {
             this.map = map;
+            this.lockerFactory = lockerFactory;
         }
 
         #endregion
@@ -106,44 +111,48 @@ namespace Game.Map
         public IEnumerable<ISimpleGameObject> GetObjects()
         {
             objLock.EnterReadLock();
-            foreach (var obj in objlist)
-            {
-                yield return obj;
-            }
+            var copy = objlist.ToList();            
             objLock.ExitReadLock();
+
+            return copy;
         }
 
         public byte[] GetObjectBytes()
         {
-            if (!isDirty && objects != null)
+            if (!isDirty)
             {
                 return objects;
             }
 
             objLock.EnterWriteLock();
-            if (isDirty || objects == null)
+            if (isDirty)
             {
-                using (var ms = new MemoryStream())
+                using (var ms = new MemoryStream(map.Length))
                 {
                     var bw = new BinaryWriter(ms);
-
+                    
                     // Write map tiles
                     bw.Write(map);
 
                     // Write objects
                     bw.Write(objlist.Count);
-                    foreach (ISimpleGameObject obj in objlist)
-                    {
-                        // TODO: Make this not require a packet
-                        Packet dummyPacket = new Packet();
-                        PacketHelper.AddToPacket(obj, dummyPacket, true);
-                        bw.Write(dummyPacket.GetPayload());
-                    }
 
-                    isDirty = false;
+                    var playersInRegion = objlist.OfType<IGameObject>().Select(p => p.City.Owner).Distinct().ToArray<ILockable>();
+
+                    using (lockerFactory().Lock(playersInRegion))
+                    {
+                        foreach (ISimpleGameObject obj in objlist)
+                        {
+                            // TODO: Make this not require a packet
+                            Packet dummyPacket = new Packet();
+                            PacketHelper.AddToPacket(obj, dummyPacket, true);                            
+                            bw.Write(dummyPacket.GetPayload());
+                        }
+                    }
 
                     ms.Position = 0;
                     objects = ms.ToArray();
+                    isDirty = false;
                 }
             }
             objLock.ExitWriteLock();

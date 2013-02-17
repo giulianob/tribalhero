@@ -246,7 +246,7 @@ namespace Game.Comm
                                         break;
                                     }
 
-                                    ThreadPool.QueueUserWorkItem(session.Process, packet);
+                                    ThreadPool.UnsafeQueueUserWorkItem(session.Process, packet);
                                 }
                                 while (true);
                             }

@@ -10,6 +10,6 @@ namespace Game.Logic
     {
         uint WorkerId { get; }
 
-        bool IsBlocked { get; set; }
+        uint IsBlocked { get; set; }        
     }
 }

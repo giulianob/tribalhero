@@ -184,9 +184,6 @@ Global
 		{D1F46AEF-D56B-4744-A0DB-7AB2EA8CC729} = {DF621696-B4D1-4F10-A6F8-773F90418ECA}
 		{07693ED0-7EB9-4AE4-AF3B-F36EC85BE962} = {DF621696-B4D1-4F10-A6F8-773F90418ECA}
 	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Launcher\Launcher.csproj
 	EndGlobalSection

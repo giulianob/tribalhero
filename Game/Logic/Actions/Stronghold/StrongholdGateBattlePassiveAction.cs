@@ -214,10 +214,7 @@ namespace Game.Logic.Actions
                 {
                     // Battle continues, just save it and reschedule
                     dbManager.Save(stronghold.GateBattle);
-                    endTime =
-                            SystemClock.Now.AddSeconds(
-                                                       formula.GetBattleInterval(stronghold.GateBattle.Defenders.Count +
-                                                                                 stronghold.GateBattle.Attackers.Count));
+                    endTime = SystemClock.Now.AddSeconds(formula.GetBattleInterval(stronghold.GateBattle.Defenders, stronghold.GateBattle.Attackers));
                     StateChange(ActionState.Fired);
                     return;
                 }

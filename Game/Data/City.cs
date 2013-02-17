@@ -401,6 +401,7 @@ namespace Game.Data
 
             Troops = new TroopManager(this, new CityTroopStubFactory(this));
 
+            Troops.TroopUnitUpdated += TroopManagerTroopUnitUpdated;
             Troops.TroopUpdated += TroopManagerTroopUpdated;
             Troops.TroopRemoved += TroopManagerTroopRemoved;
             Troops.TroopAdded += TroopManagerTroopAdded;
@@ -1007,8 +1008,21 @@ namespace Game.Data
 
             Global.Channel.Post("/CITY/" + Id, packet);
         }
-
+        
         private void TroopManagerTroopUpdated(ITroopStub stub)
+        {
+            if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
+            {
+                return;
+            }
+
+            var packet = new Packet(Command.TroopUpdated);
+            packet.AddUInt32(Id);
+            PacketHelper.AddToPacket(stub, packet);
+            Global.Channel.Post("/CITY/" + Id, packet);
+        }
+
+        private void TroopManagerTroopUnitUpdated(ITroopStub stub)
         {
             if (!Global.FireEvents || Id == 0 || Deleted != DeletedState.NotDeleted)
             {
@@ -1025,11 +1039,6 @@ namespace Game.Data
             {
                 EndUpdate();
             }
-
-            var packet = new Packet(Command.TroopUpdated);
-            packet.AddUInt32(Id);
-            PacketHelper.AddToPacket(stub, packet);
-            Global.Channel.Post("/CITY/" + Id, packet);
         }
 
         private void TroopManagerTroopAdded(ITroopStub stub)

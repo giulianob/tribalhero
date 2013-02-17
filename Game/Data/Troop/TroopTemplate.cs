@@ -138,7 +138,7 @@ namespace Game.Data.Troop
         {
             stats = new Dictionary<ushort, BattleStats>();
 
-            stub.FireUpdated();
+            stub.FireUnitUpdated();
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace Game.Data.Troop
                 }
             }
 
-            stub.FireUpdated();
+            stub.FireUnitUpdated();
         }
 
         public void DbLoaderAdd(BattleStats battleStats)

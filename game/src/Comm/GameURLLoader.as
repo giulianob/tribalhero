@@ -32,11 +32,10 @@
 			try {
 				return new JSONDecoder(loader.data).getValue();
 			}
-			catch (e: Error) {
-				CONFIG::debug {
-					Util.log("Unable to convert data to object");
-					Util.log(loader.data.toString());
-				}
+			catch (e: Error) {				
+                Util.log("Unable to convert data to object");
+                Util.log(loader.data.toString());
+				
 				throw e;
 			}
 			
@@ -73,8 +72,9 @@
 			
 			request.method = URLRequestMethod.POST;
 			
-			if (showLoadingMessage)
+			if (showLoadingMessage && !pnlLoading) {
 				pnlLoading = InfoDialog.showMessageDialog("Tribal Hero", "Loading...", null, null, true, false, 0);			
+            }
 			
 			try {
 				lastURL = request.url + "?" + request.data;
@@ -86,6 +86,9 @@
 				loader.load(request);
 			}
 			catch (e: Error) {
+                Util.log("URLLoader error");
+                Util.log(e.message);
+                
 				loader.dispatchEvent(new Event(Event.COMPLETE));
 			}
 		}

@@ -119,43 +119,59 @@ namespace Game.Map
 
         public byte[] GetObjectBytes()
         {
-            if (!isDirty)
+            while (isDirty)
             {
-                return objects;
-            }
+                // Players must always be locked first
+                objLock.EnterReadLock();
+                var playersInRegion = objlist.OfType<IGameObject>().Select(p => p.City.Owner).Distinct().ToArray<ILockable>();
+                objLock.ExitReadLock();
 
-            objLock.EnterWriteLock();
-            if (isDirty)
-            {
-                using (var ms = new MemoryStream(map.Length))
+                using (lockerFactory().Lock(playersInRegion))
                 {
-                    var bw = new BinaryWriter(ms);
-                    
-                    // Write map tiles
-                    bw.Write(map);
-
-                    // Write objects
-                    bw.Write(objlist.Count);
-
-                    var playersInRegion = objlist.OfType<IGameObject>().Select(p => p.City.Owner).Distinct().ToArray<ILockable>();
-
-                    using (lockerFactory().Lock(playersInRegion))
+                    // Enter write lock but give up all locks if we cant in 1 second just to be safe
+                    if (!objLock.TryEnterWriteLock(1000))
                     {
-                        foreach (ISimpleGameObject obj in objlist)
+                        continue;
+                    }
+
+                    var lockedPlayersInRegion = objlist.OfType<IGameObject>().Select(p => p.City.Owner).Distinct().ToArray<ILockable>();
+
+                    if (!playersInRegion.SequenceEqual(lockedPlayersInRegion))
+                    {
+                        objLock.ExitWriteLock();
+                        continue;
+                    }
+
+                    if (isDirty)
+                    {
+                        using (var ms = new MemoryStream(map.Length))
                         {
-                            // TODO: Make this not require a packet
-                            Packet dummyPacket = new Packet();
-                            PacketHelper.AddToPacket(obj, dummyPacket, true);                            
-                            bw.Write(dummyPacket.GetPayload());
+                            var bw = new BinaryWriter(ms);
+
+                            // Write map tiles
+                            bw.Write(map);
+
+                            // Write objects
+                            bw.Write(objlist.Count);
+
+                            foreach (ISimpleGameObject obj in objlist)
+                            {
+                                // TODO: Make this not require a packet
+                                Packet dummyPacket = new Packet();
+                                PacketHelper.AddToPacket(obj, dummyPacket, true);
+                                bw.Write(dummyPacket.GetPayload());
+                            }
+
+                            ms.Position = 0;
+                            objects = ms.ToArray();
+                            isDirty = false;
                         }
                     }
 
-                    ms.Position = 0;
-                    objects = ms.ToArray();
-                    isDirty = false;
+                    objLock.ExitWriteLock();
+                    break;
                 }
             }
-            objLock.ExitWriteLock();
 
             return objects;
         }

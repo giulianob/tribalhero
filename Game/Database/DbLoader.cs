@@ -968,7 +968,7 @@ namespace Game.Database
                             Stats =
                                     new TroopStats((int)reader["attack_point"],
                                                    (byte)reader["attack_radius"],
-                                                   (byte)reader["speed"],
+                                                   (decimal)reader["speed"],
                                                    new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"])),
                             IsBlocked = (bool)reader["is_blocked"],
                             InWorld = (bool)reader["in_world"],

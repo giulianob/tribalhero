@@ -18,7 +18,7 @@ namespace Game.Logic.Formulas
             return (byte)Math.Min(stub.City.Value / 40, 4);
         }
 
-        public virtual byte GetTroopSpeed(ITroopStub stub)
+        public virtual decimal GetTroopSpeed(ITroopStub stub)
         {
             if (stub.TotalCount == 0)
             {
@@ -26,28 +26,23 @@ namespace Game.Logic.Formulas
             }
 
             int count = 0;
-            int totalSpeed = 0;
-            int machineSpeed = int.MaxValue;
-
+            decimal totalSpeed = 0;
+            Boolean hasMachine = false;
             foreach (var formation in stub)
             {
                 foreach (var kvp in formation)
                 {
                     IBaseUnitStats stats = stub.City.Template[kvp.Key];
-                    // Use the slowest machine speed if available.
                     if (stats.Battle.Armor == ArmorType.Machine)
                     {
-                        machineSpeed = Math.Min(stats.Battle.Spd, machineSpeed);
+                        hasMachine = true;
                     }
-                    else
-                    {
-                        count += (kvp.Value * stats.Upkeep);
-                        totalSpeed += (kvp.Value * stats.Upkeep * stats.Battle.Spd);
-                    }
+                    count += (kvp.Value * stats.Upkeep);
+                    totalSpeed += (kvp.Value * stats.Upkeep * stats.Battle.Spd);
                 }
             }
 
-            return (byte)(machineSpeed == int.MaxValue ? totalSpeed / count : machineSpeed);
+            return Math.Round(totalSpeed / count / (hasMachine ? 2 : 1), 1);
         }
 
         public virtual int GetAttackModeTolerance(int totalCount, AttackMode mode)

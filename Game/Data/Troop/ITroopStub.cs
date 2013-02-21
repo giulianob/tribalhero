@@ -44,7 +44,7 @@ namespace Game.Data.Troop
 
         decimal TotalHp { get; }
 
-        byte Speed { get; }
+        decimal Speed { get; }
 
         /// <summary>
         ///     Returns the sum of the upkeep for all units in troop stub

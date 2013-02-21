@@ -213,7 +213,7 @@ namespace Game.Data.Troop
                         new DbColumn("iron", Stats.Loot.Iron, DbType.Int32),
                         new DbColumn("attack_point", Stats.AttackPoint, DbType.Int32),
                         new DbColumn("attack_radius", Stats.AttackRadius, DbType.Byte),
-                        new DbColumn("speed", Stats.Speed, DbType.Byte), new DbColumn("x", X, DbType.UInt32),
+                        new DbColumn("speed", Stats.Speed, DbType.Decimal), new DbColumn("x", X, DbType.UInt32),
                         new DbColumn("y", Y, DbType.UInt32), new DbColumn("target_x", TargetX, DbType.UInt32),
                         new DbColumn("target_y", TargetY, DbType.UInt32),
                         new DbColumn("in_world", InWorld, DbType.Boolean),

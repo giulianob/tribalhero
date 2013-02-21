@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!DOCTYPE cross-domain-policy SYSTEM
+"http://www.adobe.com/xml/dtds/cross-domain-policy.dtd">
+
+<cross-domain-policy>
+	<site-control permitted-cross-domain-policies="master-only"/>
+	<allow-access-from domain="*.tribalhero.com" to-ports="48888,8085,8082,4888,80"/>
+</cross-domain-policy>

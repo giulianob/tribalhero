@@ -109,7 +109,7 @@ namespace Game.Logic.Formulas
                 // Getting double time bonus
                 else if (((string)effect.Value[1]).ToUpper() == "DISTANCE")
                 {
-                    bonus = (int)effect.Value[0] > bonus ? (int)effect.Value[0] : bonus;
+                    bonus += (int)effect.Value[0];
                 }
             }
 

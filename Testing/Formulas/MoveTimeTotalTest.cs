@@ -219,13 +219,12 @@ namespace Testing.Formulas
 
             // tiles at 1200
             decimal expected = formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit;
-            expected += formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit * 100 / 120;
-            expected += formula.MoveTime(20) * 200 * (decimal)Config.seconds_per_unit * 100 / 140;
+            expected += formula.MoveTime(20) * 700 * (decimal)Config.seconds_per_unit * 100 / 120;
             formula.MoveTimeTotal(CreateMockedStub(20, new List<Effect> {dummy, e}), 1200, true)
                    .Should()
                    .Be((int)expected);
 
-            // should take the max distance
+            // should take the sum distance
             Effect e2 = new Effect
             {
                     Id = EffectCode.TroopSpeedMod,
@@ -233,17 +232,16 @@ namespace Testing.Formulas
                     Location = EffectLocation.City,
                     Value = new object[] {5, "DISTANCE"}
             };
-            formula.MoveTimeTotal(CreateMockedStub(20, new List<Effect> {dummy, e, e2}), 1200, true)
+            expected = formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit;
+            expected += formula.MoveTime(20) * 700 * (decimal)Config.seconds_per_unit * 100 / 125;
+            formula.MoveTimeTotal(CreateMockedStub(20, new List<Effect> { dummy, e, e2 }), 1200, true)
                    .Should()
                    .Be((int)expected);
 
             // tiles at 3000
             expected = formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit;
-            expected += formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit * 100 / 120;
-            expected += formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit * 100 / 140;
-            expected += formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit * 100 / 160;
-            expected += formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit * 100 / 180;
-            expected += formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit * 100 / 200;
+            expected += formula.MoveTime(20) * 2500 * (decimal)Config.seconds_per_unit * 100 / 120;
+
             formula.MoveTimeTotal(CreateMockedStub(20, new List<Effect> {dummy, e}), 3000, true)
                    .Should()
                    .Be((int)expected);
@@ -280,8 +278,8 @@ namespace Testing.Formulas
 
             // with 20 attack rush
             decimal expected = formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit;
-            expected += formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit * 100 / 120;
-            expected += formula.MoveTime(20) * 200 * (decimal)Config.seconds_per_unit * 100 / 140;
+            expected += formula.MoveTime(20) * 700 * (decimal)Config.seconds_per_unit * 100 / 120;
+            expected = (int)expected;
             expected /= (decimal)1.2;
             formula.MoveTimeTotal(CreateMockedStub(20, new List<Effect> {dummy, e}), 1200, true)
                    .Should()
@@ -289,11 +287,8 @@ namespace Testing.Formulas
 
             // with 10 + 20 attack rush
             expected = formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit;
-            expected += formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit * 100 / 120;
-            expected += formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit * 100 / 140;
-            expected += formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit * 100 / 160;
-            expected += formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit * 100 / 180;
-            expected += formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit * 100 / 200;
+            expected += formula.MoveTime(20) * 2500 * (decimal)Config.seconds_per_unit * 100 / 120;
+            expected = (int)expected;
             expected /= (decimal)1.3;
             formula.MoveTimeTotal(CreateMockedStub(20, new List<Effect> {dummy, e, e2}), 3000, true)
                    .Should()

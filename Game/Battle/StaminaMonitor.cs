@@ -52,12 +52,10 @@ namespace Game.Battle
                                           ICombatObject target,
                                           decimal damage)
         {
-            if (attackerGroup != CombatGroup || target.ClassType != BattleClass.Structure || !target.IsDead)
+            if (attackingside == BattleManager.BattleSide.Attack && target.ClassType == BattleClass.Structure && target.IsDead)
             {
-                return;
+                Stamina = BattleFormulas.GetStaminaStructureDestroyed(Stamina, target);
             }
-
-            Stamina = BattleFormulas.GetStaminaStructureDestroyed(Stamina, target);
         }
 
         private void BattleWithdrawAttacker(IBattleManager battle, ICombatGroup groupWithdrawn)

@@ -114,7 +114,8 @@ namespace Game.Database
                     LoadTribes();
                     LoadTribesmen();
                     LoadUnitTemplates();
-                    LoadStructures();                    
+                    LoadStructures();
+                    LoadStructureProperties();
                     LoadTechnologies();
                     LoadForests(downTime);
                     LoadStrongholds();
@@ -721,21 +722,39 @@ namespace Game.Database
                     }
 
                     structure.Properties.DbPersisted = true;
-
-                    using (DbDataReader listReader = DbManager.SelectList(structure.Properties))
-                    {
-                        while (listReader.Read())
-                        {
-                            structure.Properties.Add(listReader["name"],
-                                                     DataTypeSerializer.Deserialize((string)listReader["value"],
-                                                                                    (byte)listReader["datatype"]));
-                        }
-                    }
                 }
             }
 
             #endregion
-        }     
+        }
+
+        private void LoadStructureProperties()
+        {
+            #region Structure Properties
+
+            Global.Logger.Info("Loading structure properties...");
+            using (var reader = DbManager.ReaderQuery(string.Format("SELECT * FROM `{0}`", StructureProperties.DB_TABLE + "_list")))
+            {
+                ICity city = null;
+                while (reader.Read())
+                {
+                    // Simple optimization                        
+                    if (city == null || city.Id != (uint)reader["city_id"])
+                    {
+                        if (!World.TryGetObjects((uint)reader["city_id"], out city))
+                        {
+                            throw new Exception("City not found");
+                        }
+                    }
+
+                    var structure = (IStructure)city[(uint)reader["structure_id"]];
+
+                    structure.Properties.Add(reader["name"], DataTypeSerializer.Deserialize((string)reader["value"], (byte)reader["datatype"]));                    
+                }
+            }            
+
+            #endregion
+        }
 
         private void LoadTechnologies()
         {

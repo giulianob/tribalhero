@@ -251,7 +251,7 @@ namespace Game.Data
                 throw new Exception("Changed state outside of begin/end update block");
             }
 
-            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(World.Current.Forests);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
         }
 
         public override void EndUpdate()
@@ -417,7 +417,7 @@ namespace Game.Data
         {
             get
             {
-                return unchecked((int)GroupId);
+                return unchecked((int)ObjectId);
             }
         }
 
@@ -425,7 +425,7 @@ namespace Game.Data
         {
             get
             {
-                return ForestManager.ForestLock;
+                return this;
             }
         }
     }

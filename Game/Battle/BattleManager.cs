@@ -58,8 +58,8 @@ namespace Game.Battle
         {
             NextToAttack = BattleSide.Defense;
 
-            groupIdGen = new LargeIdGenerator(ushort.MaxValue);
-            idGen = new LargeIdGenerator(ushort.MaxValue);
+            groupIdGen = new LargeIdGenerator(uint.MaxValue);
+            idGen = new LargeIdGenerator(uint.MaxValue);
             // Group id 1 is always reserved for local troop
             groupIdGen.Set(1);
 
@@ -189,7 +189,7 @@ namespace Game.Battle
                 Attackers.Add(group, false);
             }
 
-            groupIdGen.Set((int)group.Id);
+            groupIdGen.Set(group.Id);
         }
 
         #endregion
@@ -198,12 +198,12 @@ namespace Game.Battle
 
         public uint GetNextGroupId()
         {
-            return (uint)groupIdGen.GetNext();
+            return groupIdGen.GetNext();
         }
 
         public uint GetNextCombatObjectId()
         {
-            return (uint)idGen.GetNext();
+            return idGen.GetNext();
         }
 
         public void DbFinishedLoading()

@@ -39,6 +39,16 @@ namespace Game.Logic
 
         private readonly TaskFactory factory;
 
+        [ThreadStatic]
+        private static ISchedule actionExecuting;
+
+        public ISchedule ActionExecuting {
+            get
+            {
+                return actionExecuting;
+            }
+        }
+
         public ThreadedScheduler()
         {
             timer = new Timer(DispatchAction,
@@ -218,7 +228,11 @@ namespace Game.Logic
         {
             var job = (ScheduledJob)obj;
 
+            actionExecuting = job.Schedule;
+
             job.Schedule.Callback(null);
+
+            actionExecuting = null;
 
             lock (schedulesLock)
             {

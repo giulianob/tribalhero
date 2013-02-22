@@ -14,7 +14,7 @@ package src.Objects.Process
 				
 		public function execute():void 
 		{
-			if (troop.state == TroopStub.MOVING || troop.state == TroopStub.RETURNING_HOME) {
+			if (troop.isMoving()) {
 				Global.map.selectWhenViewable(troop.cityId, troop.objectId);
 			}
 

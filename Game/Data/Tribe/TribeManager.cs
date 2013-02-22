@@ -24,7 +24,7 @@ namespace Game.Data.Tribe
 
         private readonly IStrongholdManager strongholdManager;
 
-        private readonly LargeIdGenerator tribeIdGen = new LargeIdGenerator(200000, 100000);
+        private readonly LargeIdGenerator tribeIdGen = new LargeIdGenerator(Config.tribe_id_max, Config.tribe_id_min);
 
         public TribeManager(IDbManager dbManager, IStrongholdManager strongholdManager, IActionFactory actionFactory)
         {

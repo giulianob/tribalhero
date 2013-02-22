@@ -19,7 +19,7 @@ namespace Game.Data.BarbarianTribe
         private readonly DefaultMultiObjectLock.Factory multiObjectLockFactory;
 
         private readonly ConcurrentDictionary<uint, IBarbarianTribe> barbarianTribes = new ConcurrentDictionary<uint, IBarbarianTribe>();
-        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(50000, 10000);
+        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(Config.barbariantribe_id_max, Config.barbariantribe_id_min);
 
         public BarbarianTribeManager(IDbManager dbManager,                                     
                                      IBarbarianTribeFactory barbarianTribeFactory,
@@ -68,7 +68,7 @@ namespace Game.Data.BarbarianTribe
                     break;
                 }
 
-                IBarbarianTribe barbarianTribe = barbarianTribeFactory.CreateBarbarianTribe((uint)idGenerator.GetNext(), level, x, y, Config.barbariantribe_camp_count);
+                IBarbarianTribe barbarianTribe = barbarianTribeFactory.CreateBarbarianTribe(idGenerator.GetNext(), level, x, y, Config.barbariantribe_camp_count);
                 Add(barbarianTribe);
             }
         }

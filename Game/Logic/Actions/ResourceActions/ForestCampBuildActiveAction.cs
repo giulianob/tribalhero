@@ -265,8 +265,7 @@ namespace Game.Logic.Actions
             using (
                     locker.Lock(world.Forests.CallbackLockHandler,
                                              new object[] { forestId },
-                                             city,
-                                             world.Forests))
+                                             city))
             {
                 if (!IsValid())
                 {
@@ -335,7 +334,7 @@ namespace Game.Logic.Actions
                 throw new Exception("City is missing");
             }
 
-            using (locker.Lock(world.Forests.CallbackLockHandler, new object[] { forestId }, city, world.Forests))
+            using (locker.Lock(world.Forests.CallbackLockHandler, new object[] { forestId }, city))
             {
                 if (!IsValid())
                 {

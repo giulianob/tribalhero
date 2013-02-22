@@ -6,6 +6,7 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
+using Persistance;
 
 #endregion
 
@@ -13,8 +14,11 @@ namespace Game.Logic.Actions.ResourceActions
 {
     public class ForestCreatorAction : ISchedule
     {
-        public ForestCreatorAction()
+        private readonly IDbManager dbManager;
+
+        public ForestCreatorAction(IDbManager dbManager)
         {
+            this.dbManager = dbManager;
             Time = SystemClock.Now;
         }
 
@@ -26,25 +30,14 @@ namespace Game.Logic.Actions.ResourceActions
 
         public void Callback(object custom)
         {
-            using (Concurrency.Current.Lock(World.Current.Forests))
+            using (dbManager.GetThreadTransaction())
             {
-                for (byte i = 0; i < Config.forest_count.Length; i++)
-                {
-                    var lvl = (byte)(i + 1);
-                    int delta = Config.forest_count[i] - World.Current.Forests.ForestCount[i];
-
-                    for (int j = 0; j < delta; j++)
-                    {
-                        World.Current.Forests.CreateForest(lvl,
-                                                           Formula.Current.GetMaxForestCapacity(lvl),
-                                                           Formula.Current.GetMaxForestRate(lvl));
-                    }
-                }
-
-                // Reschedule ourselves
-                Time = SystemClock.Now.AddMinutes(5);
-                Scheduler.Current.Put(this);
+                World.Current.Forests.RegenerateForests();
             }
+
+            // Reschedule ourselves
+            Time = SystemClock.Now.AddMinutes(5);
+            Scheduler.Current.Put(this);           
         }
 
         #endregion

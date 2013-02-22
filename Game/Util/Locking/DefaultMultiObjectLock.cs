@@ -3,7 +3,9 @@
 using System;
 using System.Linq;
 using System.Threading;
-        // ReSharper disable RedundantUsingDirective
+using Game.Data;
+
+// ReSharper disable RedundantUsingDirective
 
 // ReSharper restore RedundantUsingDirective
 
@@ -71,7 +73,14 @@ namespace Game.Util.Locking
 
         private static int CompareObject(ILockable x, ILockable y)
         {
-            return x.Hash.CompareTo(y.Hash);
+            var hashDiff = x.Hash.CompareTo(y.Hash);
+            if (hashDiff != 0)
+            {
+                return hashDiff;
+            }
+
+            // Should not happen but just to be safe
+            return String.Compare(x.GetType().Name, y.GetType().Name, StringComparison.InvariantCulture);
         }
 
         public static void ThrowExceptionIfNotLocked(ILockable obj)

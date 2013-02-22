@@ -245,5 +245,21 @@ namespace Game.Data.Troop
         public bool DbPersisted { get; set; }
 
         #endregion
+
+        public int Hash
+        {
+            get
+            {
+                return City.Hash;
+            }
+        }
+
+        public object Lock
+        {
+            get
+            {
+                return City.Lock;
+            }
+        }
     }
 }

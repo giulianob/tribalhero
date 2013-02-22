@@ -453,14 +453,15 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                if (regionId >= Config.regions_count)
+                var region = world.Regions.GetRegion(regionId);
+                if (region == null)
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
                 reply.AddUInt16(regionId);
-                reply.AddBytes(world.Regions.GetRegion(regionId).GetObjectBytes());
+                reply.AddBytes(region.GetObjectBytes());
                 world.Regions.SubscribeRegion(session, regionId);
             }
 
@@ -536,14 +537,15 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                if (regionId >= Config.regions_count)
+                var region = world.Regions.CityRegions.GetCityRegion(regionId);
+                if (region == null)
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
                 reply.AddUInt16(regionId);
-                reply.AddBytes(world.Regions.CityRegions.GetCityRegion(regionId).GetCityBytes());
+                reply.AddBytes(region.GetCityBytes());
             }
 
             session.Write(reply);

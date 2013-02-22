@@ -31,7 +31,7 @@ namespace Game.Util.Locking
 
             lockedObjects = new object[list.Length];
 
-            Array.Sort(list, CompareObject);
+            SortLocks(list);
             for (int i = 0; i < list.Length; ++i)
             {
                 Monitor.Enter(list[i].Lock);
@@ -39,6 +39,11 @@ namespace Game.Util.Locking
             }
 
             return this;
+        }
+
+        public void SortLocks(ILockable[] list)
+        {
+            Array.Sort(list, CompareObject);
         }
 
         public void Dispose()

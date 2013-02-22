@@ -412,5 +412,21 @@ namespace Game.Data
                 return lvl;
             }
         }
+
+        public int Hash
+        {
+            get
+            {
+                return unchecked((int)GroupId);
+            }
+        }
+
+        public object Lock
+        {
+            get
+            {
+                return ForestManager.ForestLock;
+            }
+        }
     }
 }

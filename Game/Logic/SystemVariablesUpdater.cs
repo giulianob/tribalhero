@@ -89,8 +89,8 @@ namespace Game.Logic
                     Global.SystemVariables["System.time"].Value = now;
                     dbManager.Save(Global.SystemVariables["System.time"]);
 
-                    #region 5 second updates
-                    if (DateTime.UtcNow.Subtract(lastUpdateScheduler).TotalMilliseconds < 5000)
+                    #region 10 second updates
+                    if (DateTime.UtcNow.Subtract(lastUpdateScheduler).TotalMilliseconds < 10000)
                     {
                         return;
                     }

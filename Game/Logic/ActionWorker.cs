@@ -17,7 +17,7 @@ namespace Game.Logic
 {
     public class ActionWorker : IActionWorker
     {
-        private readonly LargeIdGenerator actionIdGen = new LargeIdGenerator(ushort.MaxValue);
+        private readonly LargeIdGenerator actionIdGen = new LargeIdGenerator(int.MaxValue);
 
         private readonly IDictionary<uint, ActiveAction> active = new Dictionary<uint, ActiveAction>();
 
@@ -185,12 +185,7 @@ namespace Game.Logic
                 return Error.ObjectNotFound;
             }
 
-            int actionId = actionIdGen.GetNext();
-
-            if (actionId == -1)
-            {
-                return Error.ActionTotalMaxReached;
-            }
+            uint actionId = actionIdGen.GetNext();
 
             ActionRequirementFactory.ActionRecord record =
                     Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(workerType);
@@ -231,7 +226,7 @@ namespace Game.Logic
 
                 SetActiveActionParams(action);
 
-                action.ActionId = (ushort)actionId;
+                action.ActionId = actionId;
                 action.WorkerIndex = actionReq.Index;
                 action.WorkerType = workerType;
                 action.WorkerObject = workerObject;
@@ -265,16 +260,10 @@ namespace Game.Logic
 
             action.IsVisible = visible;
 
-            int actionId = actionIdGen.GetNext();
-            if (actionId == -1)
-            {
-                return Error.ActionTotalMaxReached;
-            }
-
             SetPassiveActionParams(action);
 
             action.WorkerObject = workerObject;
-            action.ActionId = (uint)actionId;
+            action.ActionId = actionIdGen.GetNext();
 
             passive.Add(action.ActionId, action);
 
@@ -300,14 +289,10 @@ namespace Game.Logic
                 return;
             }
 
-            int actionId = actionIdGen.GetNext();
-            if (actionId == -1)
-            {
-                throw new Exception(Error.ActionTotalMaxReached.ToString());
-            }
+            uint actionId = actionIdGen.GetNext();
 
             action.WorkerObject = workerObject;
-            action.ActionId = (ushort)actionId;
+            action.ActionId = actionId;
 
             SetPassiveActionParams(action);
 
@@ -417,15 +402,9 @@ namespace Game.Logic
             }
         }
 
-        public int GetId()
-        {
-            int actionId = actionIdGen.GetNext();
-            if (actionId == -1)
-            {
-                throw new Exception(Error.ActionTotalMaxReached.ToString());
-            }
-
-            return actionId;
+        public uint GetId()
+        {           
+            return actionIdGen.GetNext();
         }
 
         public void ReleaseId(uint actionId)

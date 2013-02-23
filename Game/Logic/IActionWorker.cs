@@ -40,9 +40,7 @@ namespace Game.Logic
 
         IEnumerable<GameAction> GetVisibleActions();
 
-        int GetId();
-
-        void ReleaseId(uint actionId);
+        uint GetId();
 
         event ActionWorker.UpdateCallback ActionStarted;
 

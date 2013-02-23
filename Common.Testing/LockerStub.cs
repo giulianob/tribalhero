@@ -25,6 +25,10 @@ namespace Common.Testing
             public void UnlockAll()
             {
             }
+
+            public void SortLocks(ILockable[] list)
+            {                
+            }
         }
     }
 }

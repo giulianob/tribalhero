@@ -5,7 +5,6 @@ using Game.Comm;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
-using Game.Util.Locking;
 
 namespace Game.Map
 {
@@ -15,15 +14,15 @@ namespace Game.Map
 
         private readonly ObjectTypeFactory objectTypeFactory;
 
-        private readonly DefaultMultiObjectLock.Factory locker;
+        private readonly IRegionFactory regionFactory;
 
         private Region[] regions;
 
-        public RegionManager(ICityRegionManagerFactory cityRegionManagerFactory, ObjectTypeFactory objectTypeFactory, DefaultMultiObjectLock.Factory locker)
+        public RegionManager(ICityRegionManagerFactory cityRegionManagerFactory, ObjectTypeFactory objectTypeFactory, IRegionFactory regionFactory)
         {
             this.cityRegionManagerFactory = cityRegionManagerFactory;
             this.objectTypeFactory = objectTypeFactory;
-            this.locker = locker;
+            this.regionFactory = regionFactory;
         }
 
         private int RegionsCount { get; set; }
@@ -327,7 +326,7 @@ namespace Game.Map
                     }
                 }
 
-                regions[regionId] = new Region(data);
+                regions[regionId] = regionFactory.CreateRegion(data);
             }
 
             Global.Logger.Info(String.Format("map file length[{0}] position[{1}]", mapStream.Length, mapStream.Position));

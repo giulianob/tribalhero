@@ -191,15 +191,15 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(World.Current.Forests))
+            Forest forest;
+            if (!World.Current.Forests.TryGetValue(forestId, out forest))
             {
-                Forest forest;
-                if (!World.Current.Forests.TryGetValue(forestId, out forest))
-                {
-                    ReplyError(session, packet, Error.ObjectNotFound);
-                    return;
-                }
+                ReplyError(session, packet, Error.ObjectNotFound);
+                return;
+            }
 
+            using (Concurrency.Current.Lock(forest))
+            {                
                 reply.AddFloat((float)(forest.Rate / Config.seconds_per_unit));
                 reply.AddInt32(forest.Labor);
                 reply.AddUInt32(UnixDateTime.DateTimeToUnix(forest.DepleteTime.ToUniversalTime()));
@@ -716,8 +716,7 @@ namespace Game.Comm.ProcessorCommands
             using (
                     Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler,
                                              new object[] {forestId},
-                                             city,
-                                             World.Current.Forests))
+                                             city))
             {
                 // Get the lumbermill
                 IStructure lumbermill =

@@ -327,7 +327,7 @@ namespace Game.Map
                     }
                 }
 
-                regions[regionId] = new Region(data, locker);
+                regions[regionId] = new Region(data);
             }
 
             Global.Logger.Info(String.Format("map file length[{0}] position[{1}]", mapStream.Length, mapStream.Position));

@@ -3,12 +3,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using Game.Comm;
 using Game.Data;
 using Game.Setup;
-using Game.Util.Locking;
 
 #endregion
 
@@ -26,13 +24,11 @@ namespace Game.Map
 
         private readonly byte[] map;
 
-        private readonly DefaultMultiObjectLock.Factory lockerFactory;
-
         private readonly ReaderWriterLockSlim objLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
         private readonly ObjectList objlist = new ObjectList();
 
-        private bool isDirty = true;
+        private bool isDirty;
 
         private byte[] objects;
 
@@ -48,10 +44,9 @@ namespace Game.Map
 
         #region Constructors
 
-        public Region(byte[] map, DefaultMultiObjectLock.Factory lockerFactory)
+        public Region(byte[] map)
         {
             this.map = map;
-            this.lockerFactory = lockerFactory;
         }
 
         #endregion
@@ -111,67 +106,47 @@ namespace Game.Map
         public IEnumerable<ISimpleGameObject> GetObjects()
         {
             objLock.EnterReadLock();
-            var copy = objlist.ToList();            
+            foreach (var obj in objlist)
+            {
+                yield return obj;
+            }
             objLock.ExitReadLock();
-
-            return copy;
         }
 
         public byte[] GetObjectBytes()
         {
-            while (isDirty)
+            if (!isDirty && objects != null)
             {
-                // Players must always be locked first
-                objLock.EnterReadLock();
-                var playersInRegion = objlist.OfType<IGameObject>().Select(p => p.City.Owner).Distinct().ToArray<ILockable>();
-                objLock.ExitReadLock();
+                return objects;
+            }
 
-                using (lockerFactory().Lock(playersInRegion))
+            objLock.EnterWriteLock();
+            if (isDirty || objects == null)
+            {
+                using (var ms = new MemoryStream())
                 {
-                    // Enter write lock but give up all locks if we cant in 1 second just to be safe
-                    if (!objLock.TryEnterWriteLock(1000))
+                    var bw = new BinaryWriter(ms);
+
+                    // Write map tiles
+                    bw.Write(map);
+
+                    // Write objects
+                    bw.Write(objlist.Count);
+                    foreach (ISimpleGameObject obj in objlist)
                     {
-                        continue;
+                        // TODO: Make this not require a packet
+                        Packet dummyPacket = new Packet();
+                        PacketHelper.AddToPacket(obj, dummyPacket, true);
+                        bw.Write(dummyPacket.GetPayload());
                     }
 
-                    var lockedPlayersInRegion = objlist.OfType<IGameObject>().Select(p => p.City.Owner).Distinct().ToArray<ILockable>();
+                    isDirty = false;
 
-                    if (!playersInRegion.SequenceEqual(lockedPlayersInRegion))
-                    {
-                        objLock.ExitWriteLock();
-                        continue;
-                    }
-
-                    if (isDirty)
-                    {
-                        using (var ms = new MemoryStream(map.Length))
-                        {
-                            var bw = new BinaryWriter(ms);
-
-                            // Write map tiles
-                            bw.Write(map);
-
-                            // Write objects
-                            bw.Write(objlist.Count);
-
-                            foreach (ISimpleGameObject obj in objlist)
-                            {
-                                // TODO: Make this not require a packet
-                                Packet dummyPacket = new Packet();
-                                PacketHelper.AddToPacket(obj, dummyPacket, true);
-                                bw.Write(dummyPacket.GetPayload());
-                            }
-
-                            ms.Position = 0;
-                            objects = ms.ToArray();
-                            isDirty = false;
-                        }
-                    }
-
-                    objLock.ExitWriteLock();
-                    break;
+                    ms.Position = 0;
+                    objects = ms.ToArray();
                 }
             }
+            objLock.ExitWriteLock();
 
             return objects;
         }

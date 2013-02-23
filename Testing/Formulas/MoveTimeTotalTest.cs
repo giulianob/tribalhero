@@ -277,19 +277,17 @@ namespace Testing.Formulas
             };
 
             // with 20 attack rush
-            decimal expected = formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit;
-            expected += formula.MoveTime(20) * 700 * (decimal)Config.seconds_per_unit * 100 / 120;
+            decimal expected = formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit * 100 / 120;
+            expected += formula.MoveTime(20) * 700 * (decimal)Config.seconds_per_unit * 100 / 140;
             expected = (int)expected;
-            expected /= (decimal)1.2;
             formula.MoveTimeTotal(CreateMockedStub(20, new List<Effect> {dummy, e}), 1200, true)
                    .Should()
                    .Be((int)expected);
 
             // with 10 + 20 attack rush
-            expected = formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit;
-            expected += formula.MoveTime(20) * 2500 * (decimal)Config.seconds_per_unit * 100 / 120;
+            expected = formula.MoveTime(20) * 500 * (decimal)Config.seconds_per_unit * 100 / 130;
+            expected += formula.MoveTime(20) * 2500 * (decimal)Config.seconds_per_unit * 100 / 150;
             expected = (int)expected;
-            expected /= (decimal)1.3;
             formula.MoveTimeTotal(CreateMockedStub(20, new List<Effect> {dummy, e, e2}), 3000, true)
                    .Should()
                    .Be((int)expected);

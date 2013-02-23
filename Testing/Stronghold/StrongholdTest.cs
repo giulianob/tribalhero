@@ -5,6 +5,7 @@ using System.Text;
 using FluentAssertions;
 using Game.Data;
 using Game.Data.Stronghold;
+using Game.Setup;
 using Game.Util;
 using NSubstitute;
 using Ploeh.AutoFixture;
@@ -27,17 +28,23 @@ namespace Testing.Stronghold
             get
             {
                 // no bonus
-                yield return new object[] {(byte)1, 5m, 0m, 3m};
+                yield return new object[] {(byte)1, 5m, 0m, 0m, 3m};
                 // with bonus
-                yield return new object[] { (byte)5, 5m, 2.5m, 7.5m };
+                yield return new object[] {(byte)5, 5m, 2.5m, 0m, 7.5m};
                 // level 20
-                yield return new object[] { (byte)20, 5m, 2.5m, 18.75m };
+                yield return new object[] {(byte)20, 5m, 2.5m, 0m, 18.75m};
+                // level 20 with 18 server days
+                yield return new object[] {(byte)20, 5m, 2.5m, 18m, 36.75m};
+                // level 8 with 40.3 server days
+                yield return new object[] { (byte)8, 2.5m, 5m, 40.3m, 30.706m };
             }
         }
 
         [Theory, PropertyData("VictoryPointItems")]
-        public void TestVictoryPoint(byte level, decimal occupiedDays, decimal bonusDays, decimal expectedValue)
+        public void TestVictoryPoint(byte level, decimal occupiedDays, decimal bonusDays, decimal serverDays, decimal expectedValue)
         {
+            Global.SystemVariables.Clear();
+            Global.SystemVariables.Add("Server.date", new SystemVariable("Server.date", SystemClock.Now.Subtract(TimeSpan.FromDays((double)serverDays))));
             var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var stronghold = fixture.CreateAnonymous<Game.Data.Stronghold.Stronghold>();
 

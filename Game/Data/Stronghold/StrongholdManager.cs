@@ -159,6 +159,7 @@ namespace Game.Data.Stronghold
             stronghold.Tribe = tribe;
             stronghold.GateOpenTo = null;
             stronghold.Gate = formula.StrongholdGateLimit(stronghold.Lvl);
+            stronghold.BonusDays = ((decimal)DateTime.UtcNow.Subtract(stronghold.DateOccupied).TotalDays + stronghold.BonusDays) * .75m;
             stronghold.DateOccupied = DateTime.UtcNow;
             stronghold.EndUpdate();
             MarkIndexDirty();
@@ -216,6 +217,7 @@ namespace Game.Data.Stronghold
                 stronghold.StrongholdState = StrongholdState.Neutral;
                 stronghold.Tribe = null;
                 stronghold.DateOccupied = DateTime.UtcNow;
+                stronghold.BonusDays = 0;
                 stronghold.EndUpdate();
             }
 

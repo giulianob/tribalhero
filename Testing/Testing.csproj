@@ -145,6 +145,7 @@
     <Compile Include="Resources\ResourceTest.cs" />
     <Compile Include="Resources\LazyResourceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stronghold\StrongholdTest.cs" />
     <Compile Include="Tribe\AssignmentTest.cs" />
     <Compile Include="Troop\TroopStarveTest.cs" />
     <Compile Include="Troop\BattleProcedureTest.cs" />

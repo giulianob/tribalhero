@@ -5,6 +5,7 @@ using System.Data.Common;
 using Game.Data;
 using Game.Database;
 using Game.Logic.Procedures;
+using Game.Setup;
 using Game.Util;
 using Persistance;
 
@@ -14,7 +15,7 @@ namespace Game.Map
     {
         private readonly Dictionary<uint, ICity> cities = new Dictionary<uint, ICity>();
 
-        private readonly LargeIdGenerator cityIdGen = new LargeIdGenerator(300000, 200000);
+        private readonly LargeIdGenerator cityIdGen = new LargeIdGenerator(Config.city_id_max, Config.city_id_min);
 
         private readonly IDbManager dbManager;
 
@@ -76,7 +77,7 @@ namespace Game.Map
 
         public uint GetNextCityId()
         {
-            return (uint)cityIdGen.GetNext();
+            return cityIdGen.GetNext();
         }
 
         public void Add(ICity city)
@@ -105,7 +106,7 @@ namespace Game.Map
         {
             lock (cities)
             {
-                cityIdGen.Set((int)city.Id);
+                cityIdGen.Set(city.Id);
 
                 if (city.Deleted != City.DeletedState.Deleted)
                 {

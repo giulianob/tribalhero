@@ -30,6 +30,11 @@ namespace Game.Util.Locking
             lck.UnlockAll();
         }
 
+        public void SortLocks(ILockable[] list)
+        {
+            lck.SortLocks(list);
+        }
+
         public void Dispose()
         {
             UnlockAll();

@@ -210,6 +210,17 @@ namespace Game.Setup
 
         public static string welcome_motd = string.Empty;
 
+        public static uint tribe_id_min = 1000000;
+        public static uint tribe_id_max = 2999999;        
+        public static uint stronghold_id_min = 3000000;
+        public static uint stronghold_id_max = 3499999;
+        public static uint barbariantribe_id_min = 3500000;
+        public static uint barbariantribe_id_max = 3999999;
+        public static uint forest_id_min = 4000000;
+        public static uint forest_id_max = 4999999;
+        public static uint city_id_min = 4000000;
+        public static uint city_id_max = 4999999;
+
         #endregion
 
         [ThreadStatic]

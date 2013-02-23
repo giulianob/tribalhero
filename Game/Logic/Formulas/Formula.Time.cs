@@ -78,25 +78,12 @@ namespace Game.Logic.Formulas
             return Math.Round(3600 / (45 + speed * 5), 1);
         }
 
-        private int DoubleTimeTotal(decimal moveTime, int distance, decimal bonusPercentage, int doubleTimeDistance)
-        {
-            decimal total;
-
-            if(distance>doubleTimeDistance)
-            {
-                total = moveTime * doubleTimeDistance + (distance - doubleTimeDistance) * moveTime / (1 + bonusPercentage);
-            } else
-            {
-                total = moveTime * distance;
-            }
-            return (int)total;
-        }
-
         public virtual int MoveTimeTotal(ITroopStub stub, int distance, bool isAttacking)
         {
             var moveTime = MoveTime(stub.Speed);
-            decimal bonus = 0;
-            decimal rushMod = 0;
+            decimal doubleTimeBonus = 0;
+            decimal rushBonus = 0;
+            int doubleTimeDistance = 500;
 
             foreach (var effect in stub.City.Technologies.GetEffects(EffectCode.TroopSpeedMod))
             {
@@ -104,18 +91,26 @@ namespace Game.Logic.Formulas
                 if ((((string)effect.Value[1]).ToUpper() == "ATTACK" && isAttacking) ||
                     (((string)effect.Value[1]).ToUpper() == "DEFENSE" && !isAttacking))
                 {
-                    rushMod += (int)effect.Value[0];
+                    rushBonus += (int)effect.Value[0];
                 }
                 // Getting double time bonus
                 else if (((string)effect.Value[1]).ToUpper() == "DISTANCE")
                 {
-                    bonus += (int)effect.Value[0];
+                    doubleTimeBonus += (int)effect.Value[0];
                 }
             }
 
-            var bonusPercentage = bonus / 100;
-            var doubletimetotal = DoubleTimeTotal(moveTime, distance, bonusPercentage, 500);
-            return (int)(doubletimetotal * 100m * (decimal)Config.seconds_per_unit / Math.Max(1m, rushMod + 100m));
+            var rushBonusPercentage = rushBonus / 100;
+            var doubleTimeBonusPercentage =  doubleTimeBonus / 100;
+
+            if (distance <= doubleTimeDistance)
+            {
+                return (int)(moveTime * distance / (1 + rushBonusPercentage) * (decimal)Config.seconds_per_unit);
+            }
+
+            var shortDistance = moveTime * doubleTimeDistance / (1 + rushBonusPercentage);
+            var longDistance = (distance - doubleTimeDistance) * moveTime / (1 + rushBonusPercentage + doubleTimeBonusPercentage);
+            return (int)((shortDistance + longDistance) * (decimal)Config.seconds_per_unit);
         }
 
         /// <summary>

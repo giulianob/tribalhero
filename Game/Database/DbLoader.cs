@@ -536,7 +536,7 @@ namespace Game.Database
                     }
 
                     stronghold.DateOccupied = (DateTime)reader["date_occupied"];
-
+                    stronghold.BonusDays = (int)reader["bonus_days"];
                     // Add stronghold to main manager
                     StrongholdManager.DbLoaderAdd(stronghold);
                 }

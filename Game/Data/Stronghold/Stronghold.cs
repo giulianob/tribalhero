@@ -15,7 +15,7 @@ using Persistance;
 
 namespace Game.Data.Stronghold
 {
-    class Stronghold : SimpleGameObject, IStronghold
+    public class Stronghold : SimpleGameObject, IStronghold
     {
         public const string DB_TABLE = "strongholds";
 
@@ -41,15 +41,17 @@ namespace Game.Data.Stronghold
         {
             get
             {
-                return (StrongholdState == StrongholdState.Occupied
-                                ? (decimal)(DateTime.UtcNow.Subtract(DateOccupied).TotalDays / 2 + 10)
-                                : 0) * Lvl;
+                if (StrongholdState == StrongholdState.Occupied)
+                    return (((decimal)SystemClock.Now.Subtract(DateOccupied).TotalDays + BonusDays) / 2) * (1 + Lvl * .2m);
+                return 0;
             }
         }
 
         public ushort NearbyCitiesCount { get; set; }
 
         public DateTime DateOccupied { get; set; }
+
+        public decimal BonusDays { get; set; }
 
         public ITroopManager Troops { get; private set; }
 

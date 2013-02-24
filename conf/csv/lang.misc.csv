@@ -219,6 +219,7 @@ TROOPS_DIALOG_INCOMING_DEFENSE,{0} incoming defense(s)
 TROOPS_DIALOG_INCOMING_ATTACK,{0} incoming attack(s)
 TROOPS_DIALOG_ON_THE_MOVE,{0} troop(s) on the move
 TROOPS_DIALOG_RETURNING_HOME,{0} troop(s) returning home
+TROOPS_DIALOG_CHOOSE_CITY,You must choose a city in the dropdown above first.
 ,
 TROOP_NAME_COLUMN,Troop
 TROOP_LOCATION_COLUMN,Location

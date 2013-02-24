@@ -426,6 +426,10 @@ namespace Game.Logic.Actions
                         // If our city is the one that now has access to the stronghold then join the real battle
                         JoinOrCreateStrongholdMainBattle(city);
                     }
+                    else if (city.Owner.IsInTribe && targetStronghold.Tribe == city.Owner.Tribesman.Tribe)
+                    {
+                        StationTroopInStronghold(troopObject, targetStronghold);
+                    }
                     else
                     {
                         //Remove notification to target once battle is over
@@ -434,12 +438,7 @@ namespace Game.Logic.Actions
                         city.Notifications.Add(troopObject, this);
 
                         // Send troop back home
-                        var tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
-                                                                             troopObject.ObjectId,
-                                                                             city.X,
-                                                                             city.Y,
-                                                                             true,
-                                                                             true);
+                        var tma = actionFactory.CreateTroopMovePassiveAction(city.Id, troopObject.ObjectId, city.X, city.Y, true, true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
                     }
                 }

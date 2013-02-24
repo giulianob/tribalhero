@@ -101,7 +101,7 @@ namespace Game.Map
                 ILockable[] playersInRegion;
                 lock (objLock)
                 {
-                    playersInRegion = data.Distinct().ToArray<ILockable>();
+                    playersInRegion = data.ToArray<ILockable>();
                 }
 
                 using (var lck = lockerFactory().Lock(playersInRegion))

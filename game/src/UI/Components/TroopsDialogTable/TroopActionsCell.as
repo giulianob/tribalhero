@@ -30,8 +30,7 @@ package src.UI.Components.TroopsDialogTable
 				});
 				getCellPanel().append(btnManage);
 			}
-			
-			if (value.state == TroopStub.MOVING || value.state == TroopStub.BATTLE) {
+			else if (value.isMoving()) {
 				var btnLocate: JLabelButton = new JLabelButton(StringHelper.localize("STR_LOCATE"));
 				btnLocate.addActionListener(function(e: Event): void {
 					new LocateTroopProcess(value).execute();

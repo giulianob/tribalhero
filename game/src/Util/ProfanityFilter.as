@@ -29,10 +29,10 @@ package src.Util {
      * @author eric decker : firstborn : 2009
      */
     public class ProfanityFilter {
-     
+        
         //high always matches, low maches only as a seperate word
         private var defaultListHigh:String = "fuck,nigger,bullshit,spacedick,spaceclop,clopclop";
-        private var defaultListLow:String = "nigguh,nigga,bitch,bitches,cunt,jizz,shit,fag,faggot,homo,goatse,lemonparty,clop,queer,slut,twat,wetback,whore,dick,cock,nigglet";
+        private var defaultListLow:String = "nigguh,nigga,cunt,shit,fag,faggot,goatse,lemonparty,clop,slut,twat,wetback,whore,nigglet";
         private var defaultIgnoreList:String ="crap";
         private var escaped:Array;
         private var letterAssociations:Array;

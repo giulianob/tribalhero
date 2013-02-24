@@ -74,6 +74,10 @@
 		public function isLocal() : Boolean {
 			return id == 1;
 		}
+        
+        public function isMoving() : Boolean {
+            return state == RETURNING_HOME || state == BATTLE || state == MOVING;
+        }
 		
 		public function getNiceId(includeParenthesis: Boolean = false) : String {			
 			return (includeParenthesis?"(":"") + (id == 1 ? StringHelper.localize("TROOP_LOCAL") : id.toString()) + (includeParenthesis?")":"");

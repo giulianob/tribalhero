@@ -438,8 +438,16 @@
 		}
 
 		public function eventMouseMove(event: MouseEvent):void
-		{
+		{                       
 			if (!mouseDown) {
+                
+                if (event.shiftKey) {
+                    var screenMouse: Point = MapUtil.getPointWithZoomFactor(event.stageX, event.stageY);
+                    var mapPixelPos: Point = MapUtil.getActualCoord(camera.x + screenMouse.x, camera.y + screenMouse.y);
+                    var mapPos: Point = MapUtil.getMapCoord(mapPixelPos.x, mapPixelPos.y);
+                    Global.gameContainer.setLabelCoords(mapPos);
+                }
+                
 				return;
 			}
 
@@ -467,7 +475,7 @@
 
 		public function move(forceParse: Boolean = false) : void {
 			var pt: Point = MapUtil.getMapCoord(camera.x + (Constants.screenW * camera.getZoomFactorOverOne()) / 2, camera.y + (Constants.screenH * camera.getZoomFactorOverOne()) / 2);
-			Global.gameContainer.minimapTools.txtCoords.text = "(" + (pt.x) + "," + (pt.y) + ")";
+			Global.gameContainer.setLabelCoords(pt);
 
 			if (!disabledMapQueries) {
 				parseRegions(forceParse);

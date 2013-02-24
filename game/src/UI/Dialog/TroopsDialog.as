@@ -122,10 +122,8 @@
 					lstCities.setPreferredSize(new IntDimension(128, 22));
 					
 					// Attack/defend buttons
-					btnAttack = new JLabelButton(StringHelper.localize("TROOPS_DIALOG_SEND_ATTACK"), null, AsWingConstants.RIGHT);
-                    btnAttack.setVisible(false);
-					btnDefend = new JLabelButton(StringHelper.localize("TROOPS_DIALOG_SEND_DEFENSE"), null, AsWingConstants.RIGHT);					
-                    btnDefend.setVisible(false);
+					btnAttack = new JLabelButton(StringHelper.localize("TROOPS_DIALOG_SEND_ATTACK"), null, AsWingConstants.RIGHT);                    
+					btnDefend = new JLabelButton(StringHelper.localize("TROOPS_DIALOG_SEND_DEFENSE"), null, AsWingConstants.RIGHT);					                    
 					
 					pnlRight.appendAll(lstCities, btnAttack, btnDefend);
 				}			
@@ -155,9 +153,6 @@
 		private function citySelectionChanged(e:InteractiveEvent):void 
 		{		
 			update();
-			
-			btnAttack.setVisible(lstCities.getSelectedIndex() > 0);
-			btnDefend.setVisible(lstCities.getSelectedIndex() > 0);
 		}
 		
 		private function update(e: Event = null):void 
@@ -327,13 +322,25 @@
 		
 		public function onClickAttack(event: AWEvent):void
 		{
-			var attackProcess: AttackSendProcess = new AttackSendProcess(getSelectedCity());
+            var city: City = getSelectedCity();
+            if (!city) {
+                InfoDialog.showMessageDialog("Error", StringHelper.localize("TROOPS_DIALOG_CHOOSE_CITY"));
+                return;
+            }
+            
+			var attackProcess: AttackSendProcess = new AttackSendProcess(city);
 			attackProcess.execute();
 		}
 
 		public function onClickReinforce(event: AWEvent):void
 		{		
-			var reinforcementProcess: ReinforcementSendProcess = new ReinforcementSendProcess(getSelectedCity());
+            var city: City = getSelectedCity();
+            if (!city) {
+                InfoDialog.showMessageDialog("Error", StringHelper.localize("TROOPS_DIALOG_CHOOSE_CITY"));
+                return;
+            }
+            
+			var reinforcementProcess: ReinforcementSendProcess = new ReinforcementSendProcess(city);
 			reinforcementProcess.execute();
 		}
 				

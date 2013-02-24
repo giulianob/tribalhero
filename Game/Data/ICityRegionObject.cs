@@ -1,8 +1,9 @@
 ﻿using Game.Map;
+using Game.Util.Locking;
 
 namespace Game.Data
 {
-    public interface ICityRegionObject : IXYPosition
+    public interface ICityRegionObject : IXYPosition, ILockable
     {
         ushort CityRegionRelX { get; }
 

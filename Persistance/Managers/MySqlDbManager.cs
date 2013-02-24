@@ -58,7 +58,7 @@ namespace Persistance.Managers
         {
             connectionString =
                     string.Format(
-                                  "Database={0};Host={1};User Id={2};Password={3};Connection Timeout={4};Default Command Timeout={4};Max Pool Size={5}",
+                                  "Database={0};Host={1};User Id={2};Password={3};Connection Timeout={4};Default Command Timeout={4};Max Pool Size={5};MinimumPoolSize={5}",
                                   database,
                                   hostname,
                                   username,
@@ -297,21 +297,11 @@ namespace Persistance.Managers
         }
 
         DbDataReader IDbManager.SelectList(string table, params DbColumn[] primaryKeyValues)
-        {
-            bool startComma = false;
-            string where = "";
+        {                        
+            string where = "1=1";
             foreach (var column in primaryKeyValues)
             {
-                if (startComma)
-                {
-                    where += " AND ";
-                }
-                else
-                {
-                    startComma = true;
-                }
-
-                where += string.Format("`{0}`=@{0}", column.Column);
+                where += string.Format(" AND `{0}`=@{0}", column.Column);
             }
 
             return ReaderQuery(string.Format("SELECT * FROM `{0}` WHERE {1}", table, where), primaryKeyValues);
@@ -431,7 +421,7 @@ namespace Persistance.Managers
         private MySqlConnection GetConnection(bool increaseOpenConnections = true)
         {
             var connection = new MySqlConnection(connectionString);
-
+            
             try
             {
                 var openTime = DateTime.UtcNow;

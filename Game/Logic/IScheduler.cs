@@ -36,5 +36,7 @@ namespace Game.Logic
         /// <param name="schedule"></param>
         /// <returns></returns>
         bool Remove(ISchedule schedule);
+        
+        ISchedule ActionExecuting { get; }
     }
 }

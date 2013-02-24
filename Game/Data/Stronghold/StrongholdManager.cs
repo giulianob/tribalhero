@@ -22,7 +22,7 @@ namespace Game.Data.Stronghold
 
         private readonly Formula formula;
 
-        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(9999, 5000);
+        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(Config.stronghold_id_max, Config.stronghold_id_min);
 
         private readonly IRegionManager regionManager;
 

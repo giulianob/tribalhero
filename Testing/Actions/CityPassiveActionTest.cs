@@ -5,6 +5,7 @@ using Game.Data;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
 using Moq;
@@ -75,7 +76,8 @@ namespace Testing.Actions
                                                              locker,
                                                              Substitute.For<Formula>(),
                                                              Substitute.For<IActionFactory>(),
-                                                             Substitute.For<Procedure>()) {WorkerObject = city};
+                                                             Substitute.For<Procedure>(),
+                                                             Substitute.For<IGameObjectLocator>()) {WorkerObject = city};
 
             for (int i = 0; i < cycles; i++)
             {

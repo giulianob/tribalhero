@@ -165,6 +165,7 @@
     <Compile Include="Comm\ApiCaller.cs" />
     <Compile Include="Comm\CmdLine Commands\AssignmentCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\CityCommandLineModule.cs" />
+    <Compile Include="Comm\CmdLine Commands\RegionCommandsLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\StrongholdCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\TribeCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\PlayerCommandLineModule.cs" />
@@ -358,9 +359,11 @@
     <Compile Include="Map\CityManager.cs" />
     <Compile Include="Map\CityRegionManager.cs" />
     <Compile Include="Map\ICityManager.cs" />
+    <Compile Include="Map\ICityRegionFactory.cs" />
     <Compile Include="Map\ICityRegionManager.cs" />
     <Compile Include="Map\ICityRegionManagerFactory.cs" />
     <Compile Include="Map\IGameObjectLocator.cs" />
+    <Compile Include="Map\IRegionFactory.cs" />
     <Compile Include="Map\IRegionManager.cs" />
     <Compile Include="Data\Tribe\ITribeManager.cs" />
     <Compile Include="Map\IWorld.cs" />

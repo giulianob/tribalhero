@@ -886,6 +886,10 @@
                 Util.triggerJavascriptEvent("clientUnreadForumMessage");
             }
 		}
+        
+        public function setLabelCoords(pt: Point): void {
+            minimapTools.txtCoords.text = "(" + (pt.x) + "," + (pt.y) + ")";
+        }
 	}
 
 }

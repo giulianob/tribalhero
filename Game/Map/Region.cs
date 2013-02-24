@@ -100,6 +100,13 @@ namespace Game.Map
             objLock.ExitWriteLock();
         }
 
+        public void MarkAsDirty()
+        {
+            objLock.EnterWriteLock();
+            isDirty = true;
+            objLock.ExitWriteLock();
+        }
+
         public List<ISimpleGameObject> GetObjects(uint x, uint y)
         {
             objLock.EnterReadLock();

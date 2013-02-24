@@ -165,6 +165,7 @@
     <Compile Include="Comm\ApiCaller.cs" />
     <Compile Include="Comm\CmdLine Commands\AssignmentCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\CityCommandLineModule.cs" />
+    <Compile Include="Comm\CmdLine Commands\RegionCommandsLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\StrongholdCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\TribeCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\PlayerCommandLineModule.cs" />

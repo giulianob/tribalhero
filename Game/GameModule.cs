@@ -191,7 +191,8 @@ namespace Game
                                                     c.Kernel.Get<CityCommandLineModule>(),
                                                     c.Kernel.Get<ResourcesCommandLineModule>(),
                                                     c.Kernel.Get<TribeCommandLineModule>(),
-                                                    c.Kernel.Get<StrongholdCommandLineModule>());
+                                                    c.Kernel.Get<StrongholdCommandLineModule>(),
+                                                    c.Kernel.Get<RegionCommandsLineModule>());
                 }).InSingletonScope();
             Bind<Processor>()
                     .ToMethod(

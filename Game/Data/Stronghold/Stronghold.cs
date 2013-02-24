@@ -377,6 +377,7 @@ namespace Game.Data.Stronghold
                                      DbType.String),
                         new DbColumn("victory_point_rate", VictoryPointRate, DbType.Decimal),
                         new DbColumn("nearby_cities", NearbyCitiesCount, DbType.UInt16),
+                        new DbColumn("bonus_days", BonusDays, DbType.Decimal),
                 };
             }
         }

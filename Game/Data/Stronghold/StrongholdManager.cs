@@ -155,11 +155,12 @@ namespace Game.Data.Stronghold
 
             ITribe oldTribe = stronghold.Tribe;
             stronghold.BeginUpdate();
+            if (stronghold.StrongholdState == StrongholdState.Occupied)
+                stronghold.BonusDays = ((decimal)SystemClock.Now.Subtract(stronghold.DateOccupied).TotalDays + stronghold.BonusDays) * .75m;
             stronghold.StrongholdState = StrongholdState.Occupied;
             stronghold.Tribe = tribe;
             stronghold.GateOpenTo = null;
             stronghold.Gate = formula.StrongholdGateLimit(stronghold.Lvl);
-            stronghold.BonusDays = ((decimal)DateTime.UtcNow.Subtract(stronghold.DateOccupied).TotalDays + stronghold.BonusDays) * .75m;
             stronghold.DateOccupied = DateTime.UtcNow;
             stronghold.EndUpdate();
             MarkIndexDirty();

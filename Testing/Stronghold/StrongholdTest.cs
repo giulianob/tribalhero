@@ -28,15 +28,15 @@ namespace Testing.Stronghold
             get
             {
                 // no bonus
-                yield return new object[] {(byte)1, 5m, 0m, 0m, 3m};
+                yield return new object[] {(byte)1, 5m, 0m, 0m, 15m};
                 // with bonus
-                yield return new object[] {(byte)5, 5m, 2.5m, 0m, 7.5m};
+                yield return new object[] {(byte)5, 5m, 2.5m, 0m, 27.5m};
                 // level 20
-                yield return new object[] {(byte)20, 5m, 2.5m, 0m, 18.75m};
+                yield return new object[] {(byte)20, 5m, 2.5m, 0m, 68.75m};
                 // level 20 with 18 server days
-                yield return new object[] {(byte)20, 5m, 2.5m, 18m, 36.75m};
+                yield return new object[] {(byte)20, 5m, 2.5m, 18m, 86.75m};
                 // level 8 with 40.3 server days
-                yield return new object[] { (byte)8, 2.5m, 5m, 40.3m, 30.706m };
+                yield return new object[] { (byte)8, 2.5m, 5m, 40.3m, 56.706m };
             }
         }
 

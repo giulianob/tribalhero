@@ -44,7 +44,7 @@ namespace Game.Data.Stronghold
                 if (StrongholdState == StrongholdState.Occupied)
                 {
                     var serverUptime = (decimal)SystemClock.Now.Subtract((DateTime)Global.SystemVariables["Server.date"].Value).TotalDays;
-                    return (((decimal)SystemClock.Now.Subtract(DateOccupied).TotalDays + BonusDays) / 2 + serverUptime / 5) * (1 + Lvl * .2m);
+                    return (((decimal)SystemClock.Now.Subtract(DateOccupied).TotalDays + BonusDays) / 2 + serverUptime / 5 + 10) * (1 + Lvl * .2m);
                 }
                 return 0;
             }

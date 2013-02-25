@@ -215,7 +215,7 @@ namespace Game.Data.Stronghold
                 stronghold.BeginUpdate();
                 stronghold.StrongholdState = StrongholdState.Neutral;
                 stronghold.Tribe = null;
-                stronghold.DateOccupied = DateTime.UtcNow;
+                stronghold.DateOccupied = DateTime.MinValue;
                 stronghold.EndUpdate();
             }
 

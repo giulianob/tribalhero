@@ -40,6 +40,7 @@ package src.UI.Dialog
 		private var btnNewPostSubmit: JButton;
 		private var btnNewPostCancel: JLabelButton;
 		
+        private var editPostId: int = -1;
 		private var lastThreadId: int = -1;
 		private var hasLoaded:Boolean;
 		
@@ -63,17 +64,7 @@ package src.UI.Dialog
 				loadPostPage(0);
 			});					
 			
-			btnNewThread.addActionListener(function(e: Event = null) : void {
-				var afterCreate: Function = function(createDlg: * , newThreadId: int):void {
-					createDlg.getFrame().dispose();
-					
-					clearPostView();
-					lastThreadId = newThreadId;
-					threadPaging.refreshPage(0);
-					
-					Global.mapComm.MessageBoard.view(postLoader, 0, newThreadId);				
-				};			
-			
+			btnNewThread.addActionListener(function(e: Event = null) : void {			
 				var createDlg: MessageBoardThreadCreateDialog = new MessageBoardThreadCreateDialog(afterCreate);
 				createDlg.show();
 			});			
@@ -87,6 +78,8 @@ package src.UI.Dialog
 			btnNewPostCancel.addActionListener(function(e: Event = null) : void {
 				pnlNewPost.setVisible(false);
 				btnNewPost.setVisible(true);
+                editPostId = -1;
+                txtNewPostMessage.setText("");
 			});
 			
 			btnNewPostSubmit.addActionListener(function(e: Event = null) : void {		
@@ -107,6 +100,7 @@ package src.UI.Dialog
 						return;
 					}
 					
+                    editPostId = -1;
 					pnlNewPost.setVisible(false);
 					btnNewPost.setVisible(true);
 					txtNewPostMessage.setText("");
@@ -119,7 +113,7 @@ package src.UI.Dialog
 					return;
 				}				
 				
-				Global.mapComm.MessageBoard.addPost(loader, lastThreadId, txtNewPostMessage.getText());
+				Global.mapComm.MessageBoard.addPost(loader, lastThreadId, editPostId, txtNewPostMessage.getText());
 			});
 		}
 		
@@ -268,6 +262,9 @@ package src.UI.Dialog
 				}
 				else {
 					menuTools.show(btnPostTools, 0, btnPostTools.getHeight());
+                    AsWingManager.callLater(function(): void {
+                        menuTools.setVisible(false);
+                    }, 2250);
 				}
 			});			
 			
@@ -287,6 +284,20 @@ package src.UI.Dialog
 					}, null, true, true, JOptionPane.YES | JOptionPane.NO);
 				});
 			}
+            
+            if (Constants.playerId == postData.playerId) {
+				menuTools.addMenuItem("Edit").addActionListener(function(e: Event): void {
+                    if (postData.subject) {
+                        var editDialog: MessageBoardThreadCreateDialog = new MessageBoardThreadCreateDialog(afterCreate, postData.id, postData.subject, postData.message);
+                        editDialog.show();
+                    }
+                    else {
+                        editPostId = postData.id;
+                        txtNewPostMessage.setText(postData.message);
+                        btnNewPost.doClick();
+                    }
+				});                
+            }
 			
 			// Only append actions if there's something in the menu
 			if (menuTools.numChildren) 
@@ -460,6 +471,16 @@ package src.UI.Dialog
 		public function showRefreshButton(): void{
 			append(createRefreshPanel());
 		}
+        
+        public function afterCreate(createDlg: * , newThreadId: int):void {
+            createDlg.getFrame().dispose();
+            
+            clearPostView();
+            lastThreadId = newThreadId;
+            threadPaging.refreshPage(0);
+            
+            Global.mapComm.MessageBoard.view(postLoader, 0, newThreadId);				
+        }			       
 	}
 
 }

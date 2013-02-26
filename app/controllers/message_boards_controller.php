@@ -81,10 +81,11 @@ class MessageBoardsController extends AppController {
 
     function add_thread() {
         $playerId = $this->params['form']['playerId'];
+        $editThreadId = $this->params['form']['editThreadId'];
         $subject = trim($this->params['form']['subject']);
         $message = rtrim($this->params['form']['message']);
 
-        $data = $this->MessageBoardThread->addThread($playerId, $subject, $message);
+        $data = $this->MessageBoardThread->addThread($playerId, $editThreadId, $subject, $message);
         $this->MessageBoardThread->MessageBoardRead->updateLastRead($playerId, $data['id']);
  
         $this->_signalServerWithNewTribeForumPost($playerId);
@@ -96,6 +97,7 @@ class MessageBoardsController extends AppController {
     function add_post() {
         $playerId = $this->params['form']['playerId'];
         $threadId = $this->params['form']['threadId'];
+        $editPostId = $this->params['form']['editPostId'];
         $message = rtrim($this->params['form']['message']);
 
         $thread = $this->MessageBoardThread->getThreadHeader($playerId, $threadId);
@@ -103,7 +105,7 @@ class MessageBoardsController extends AppController {
         if (empty($thread)) {
             $data = array('success' => false, 'error' => 'Thread specified does not exist');
         } else {
-            $data = $this->MessageBoardPost->addPost($playerId, $threadId, $message);
+            $data = $this->MessageBoardPost->addPost($playerId, $threadId, $editPostId, $message);
             $this->MessageBoardThread->MessageBoardRead->updateLastRead($playerId, $threadId);
             $this->_signalServerWithNewTribeForumPost($playerId);
         }

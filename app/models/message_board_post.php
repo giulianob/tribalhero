@@ -37,13 +37,39 @@ class MessageBoardPost extends AppModel {
         );
     }
 
-    public function addPost($playerId, $threadId, $message) {
+    public function addPost($playerId, $threadId, $editPostId, $message) {
+
+        $tribesman = $this->Player->Tribesman->findByPlayerId($playerId);
+
+        if (empty($tribesman))
+            return array('success' => false);
+
         $newMessage = array(
             'player_id' => $playerId,
             'message_board_thread_id' => $threadId,
             'message' => $message,
             'deleted' => 0,
         );
+
+        $thread = $this->MessageBoardThread->find('first', array(
+            'conditions' => array('MessageBoardThread.id' => $threadId, 'MessageBoardThread.tribe_id' => $tribesman['Tribesman']['tribe_id'])
+        ));
+
+        if (empty($thread)) {
+            return array('success' => false);
+        }
+
+        if ($editPostId > -1) {
+            $newMessage['id'] = $editPostId;
+
+            $post = $this->find('first', array(
+                'conditions' => array('id' => $editPostId, 'message_board_thread_id' => $thread['MessageBoardThread']['id'])
+            ));
+
+            if (empty($post) || $post['MessageBoardPost']['player_id'] != $playerId) {
+                return array('success' => false);
+            }
+        }
 
         if ($this->save($newMessage)) {
 

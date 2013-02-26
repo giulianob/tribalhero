@@ -53,7 +53,7 @@ class MessageBoardThread extends AppModel {
         return $thread;
     }
 
-    public function addThread($playerId, $subject, $message) {
+    public function addThread($playerId, $editThreadId, $subject, $message) {
         $tribeId = $this->Player->getTribeId($playerId);
 
         if (!$tribeId)
@@ -69,6 +69,16 @@ class MessageBoardThread extends AppModel {
             'last_post_player_id' => $playerId,
             'tribe_id' => $tribeId
         );
+
+        if ($editThreadId > -1) {
+            $thread = $this->findById($editThreadId);
+
+            if (empty($thread) || $thread['MessageBoardThread']['player_id'] != $playerId) {
+                return array('success' => false);
+            }
+
+            $newMessage['id'] = $editThreadId;
+        }
 
         if ($this->save($newMessage)) {
             return array('success' => true, 'id' => $this->id);

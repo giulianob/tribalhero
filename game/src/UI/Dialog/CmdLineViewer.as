@@ -248,6 +248,7 @@ package src.UI.Dialog
 			return cmdIndex != -1 && cmdHistory[cmdIndex] == txtCommand.getText();
 		}
 		
+        // TODO: Move this into rich label so it can be used in more places
 		public function replaceProfileLabel(str: String): String
 		{
 			var index: int;

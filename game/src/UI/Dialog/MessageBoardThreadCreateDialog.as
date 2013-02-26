@@ -25,11 +25,14 @@
 		private var pnlFooter:JPanel;
 		private var btnCreate:JButton;
 
-		public function MessageBoardThreadCreateDialog(onAccept: Function)
+		public function MessageBoardThreadCreateDialog(onAccept: Function, editThreadId: int = -1, subject: String = "", message: String = "")
 		{			
 			createUI();				
 
-			title = "New Thread";
+			title = editThreadId > 0 ? "Edit Thread" : "New Thread";
+            
+            txtSubject.setText(subject);
+            txtMessage.setText(message);
 			
 			var self: MessageBoardThreadCreateDialog = this;
 			btnCreate.addActionListener(function():void {
@@ -38,7 +41,7 @@
 					InfoDialog.showMessageDialog("Error", "Please enter a subject.");
 					return;
 				}
-
+ 
 				if (txtMessage.getLength() == 0) {
 					InfoDialog.showMessageDialog("Error", "Please write a message.");
 					return;
@@ -67,7 +70,7 @@
 
 				var message: * = getMessage();
 				
-				Global.mapComm.MessageBoard.addThread(messageLoader, message.subject, message.message);
+				Global.mapComm.MessageBoard.addThread(messageLoader, editThreadId, message.subject, message.message);
 			});
 		}
 
@@ -140,7 +143,7 @@
 			pnlFooter.setLayout(layout4);
 
 			btnCreate = new JButton();
-			btnCreate.setText("Create Thread");
+			btnCreate.setText("Post");
 
 			//component layoution
 			append(pnlSubject);

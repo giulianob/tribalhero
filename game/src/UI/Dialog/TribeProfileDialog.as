@@ -570,7 +570,8 @@
 				var txtPlayerName: JTextField = new AutoCompleteTextField(Global.mapComm.General.autoCompletePlayer);
 				pnl.appendAll(new JLabel("Type in the name of the player you want to invite", null, AsWingConstants.LEFT), txtPlayerName);				
 				
-				var invitePlayerName: InfoDialog = InfoDialog.showMessageDialog("Invite a new tribesman", pnl, function(response: *) : void {
+				var invitePlayerName: InfoDialog = InfoDialog.showMessageDialog("Invite a new tribesman", pnl, function(response: * ) : void {
+                    if (response != JOptionPane.OK) { return; }
 					if (txtPlayerName.getLength() > 0)
 						Global.mapComm.Tribe.invitePlayer(txtPlayerName.getText());
 				});				

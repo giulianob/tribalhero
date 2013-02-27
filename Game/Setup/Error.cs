@@ -28,6 +28,8 @@ namespace Game.Setup
 
         ChatMuted = 22,
 
+        ChatDisabled = 23,
+
         #endregion
 
         #region Action Errors

@@ -68,6 +68,13 @@ namespace Game.Comm.ProcessorCommands
                             return;
                         }
 
+                        // Minimum chat privilege for controlling when chat goes out of control
+                        if (session.Player.Rights < Config.chat_min_level)
+                        {
+                            ReplyError(session, packet, Error.ChatDisabled);
+                            return;
+                        }
+
                         // Flood chat protection
                         int secondsFromLastMessage =
                                 (int)SystemClock.Now.Subtract(chatState.ChatLastMessage).TotalSeconds;

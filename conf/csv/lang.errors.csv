@@ -8,6 +8,7 @@ ERROR_9,This feature is newly developed and does not work with existing data.  P
 ERROR_20,"Looks like you're spamming the chat. Please wait a couple minutes before talking again. If you keep trying to chat, you will have to wait even longer."
 ERROR_21,"Message too long, shorten it and try again."
 ERROR_22,You have been muted. You may not speak in the global chat until a moderator unmutes your account.
+ERROR_23,Chat has been temporarily disabled.
 ERROR_100,The maximum number of allowed actions has been reached.
 ERROR_102,The maximum number of allowed actions has been reached
 ERROR_103,The maximum number of allowed actions has been reached

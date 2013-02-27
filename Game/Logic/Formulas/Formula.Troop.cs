@@ -27,22 +27,27 @@ namespace Game.Logic.Formulas
 
             int count = 0;
             decimal totalSpeed = 0;
-            Boolean hasMachine = false;
+            int machineSpeed = int.MaxValue;
+
             foreach (var formation in stub)
             {
                 foreach (var kvp in formation)
                 {
                     IBaseUnitStats stats = stub.City.Template[kvp.Key];
+                    // Use the slowest machine speed if available.
                     if (stats.Battle.Armor == ArmorType.Machine)
                     {
-                        hasMachine = true;
+                        machineSpeed = Math.Min(stats.Battle.Spd, machineSpeed);
                     }
-                    count += (kvp.Value * stats.Upkeep);
-                    totalSpeed += (kvp.Value * stats.Upkeep * stats.Battle.Spd);
+                    else
+                    {
+                        count += (kvp.Value * stats.Upkeep);
+                        totalSpeed += (kvp.Value * stats.Upkeep * stats.Battle.Spd);
+                    }
                 }
             }
 
-            return Math.Round(totalSpeed / count / (hasMachine ? 2 : 1), 1);
+            return Math.Round(machineSpeed == int.MaxValue ? totalSpeed / count : machineSpeed, 1);
         }
 
         public virtual int GetAttackModeTolerance(int totalCount, AttackMode mode)

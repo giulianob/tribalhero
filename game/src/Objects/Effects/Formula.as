@@ -6,7 +6,9 @@
 	import src.Objects.Factories.*;
 	import src.Objects.Prototypes.*;
 	import src.Objects.Troop.*;
-
+	import src.Util.StringHelper;
+	import src.Util.Util;
+	
 	public class Formula {
 		
 		public static const RESOURCE_CHUNK: int = 100;		
@@ -95,47 +97,65 @@
 			return buildTime * Constants.secondsPerUnit;
 		}
 
-		public static function doubleTimeTotal(moveTime : int, distance :int, bonusPercentage: Number, forEveryDistance: int ):int {
-			var total: int = 0;
-            var index: int = 0;
-            var tiles: int = 0;
-            while (distance > 0) {
-                tiles = distance > forEveryDistance ? forEveryDistance : distance;
-                total += (int)(moveTime * tiles / (1 + bonusPercentage * index++));
-                distance -= tiles;
-            }
-            return total;
-		}
-		
-		public static function moveTimeTotal(city: City, speed: int, distance: int, isAttacking: Boolean) : int {
-			var moveTime: int = 60 * (100 - ((speed - 12) * 5)) / 100;
-			var bonus: Number = 0;
-			var rushMod: Number = 0;
+		public static function moveTimeTotal(city: City, speed: Number, distance: int, isAttacking: Boolean) : int {
+			var moveTime: Number = moveTimePerTile(speed);
+			var doubleTimeBonus: Number = 0;
+			var rushBonus: Number = 0;
+			var doubleTimeDistance: int = 500;
 
 			for each (var tech: EffectPrototype in city.techManager.getEffects(EffectPrototype.EFFECT_TROOP_SPEED_MOD, EffectPrototype.INHERIT_ALL)) {
 				if ( (tech.param2.toUpperCase() == "ATTACK" && isAttacking) || (tech.param2.toUpperCase() == "DEFENSE" && !isAttacking)) {
-					rushMod += (int) (tech.param1);				
+					rushBonus += (int) (tech.param1);				
 				} else if (tech.param2.toUpperCase() == "DISTANCE") {
-					bonus = (int) (tech.param1) > bonus? (int) (tech.param1): bonus;
+					doubleTimeBonus += (int) (tech.param1);
 				}
 			}
 
-            var bonusPercentage: Number = bonus / 100;
-            rushMod = 100 / (Math.max(1, rushMod + 100));
-			return (int)(doubleTimeTotal(moveTime, distance, bonusPercentage, 500) * rushMod) * Constants.secondsPerUnit;
+            var rushBonusPercentage: Number = rushBonus / 100;
+            var doubleTimeBonusPercentage: Number = doubleTimeBonus / 100;
+			
+			if (distance <= doubleTimeDistance) 
+			{
+				return moveTime * distance / (1 + rushBonusPercentage) * Constants.secondsPerUnit;
+			}
+			
+            var shortDistance: Number = moveTime * doubleTimeDistance / (1 + rushBonusPercentage);
+            var longDistance: Number = (distance - doubleTimeDistance) * moveTime / (1 + rushBonusPercentage + doubleTimeBonusPercentage);
+            return (shortDistance + longDistance) * Constants.secondsPerUnit;
 		}
 		
-		public static function moveTimeString(speed: int): String{
+		public static function moveTimePerTile(speed: Number): Number {
+			return Util.roundNumber(3600.0 / (45 + speed * 5),1);
+		}
+		
+		public static function moveTimeStringSimple(speed: Number) : String {
 			if (speed <= 5) {
-				return "Very slow";
+				return StringHelper.localize("TROOP_SPEED_VERY_SLOW");
 			} else if (speed <= 10) {
-				return "Slow";
+				return StringHelper.localize("TROOP_SPEED_SLOW");
 			} else if (speed <= 15) {
-				return "Normal";
+				return StringHelper.localize("TROOP_SPEED_NORMAL");
 			} else if (speed <= 20) {
-				return "Fast";
+				return StringHelper.localize("TROOP_SPEED_FAST");
 			} else {
-				return "Very Fast";
+				return StringHelper.localize("TROOP_SPEED_VERY_FAST");
+			}			
+		}
+		public static function moveTimeStringFull(speed: Number): String {
+			var secondPerTile: Number = moveTimePerTile(speed);
+			if (Constants.debug) {
+				return speed.toFixed(1) + " speed (" + secondPerTile.toFixed(1) + " seconds per tile)";
+			}
+			if (speed <= 5) {
+				return StringHelper.localize("TROOP_SPEED_VERY_SLOW_FULL", secondPerTile.toFixed(1));
+			} else if (speed <= 10) {
+				return StringHelper.localize("TROOP_SPEED_SLOW_FULL", secondPerTile.toFixed(1));
+			} else if (speed <= 15) {
+				return StringHelper.localize("TROOP_SPEED_NORMAL_FULL", secondPerTile.toFixed(1));
+			} else if (speed <= 20) {
+				return StringHelper.localize("TROOP_SPEED_FAST_FULL", secondPerTile.toFixed(1));
+			} else {
+				return StringHelper.localize("TROOP_SPEED_VERY_FAST_FULL", secondPerTile.toFixed(1));
 			}
 		}
 

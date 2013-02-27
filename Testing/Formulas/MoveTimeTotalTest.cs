@@ -87,7 +87,7 @@ namespace Testing.Formulas
                 {3, 8},
             }};
             troopstub.GetEnumerator().Returns(formation.GetEnumerator());
-            formula.GetTroopSpeed(troopstub).Should().Be(Math.Round((10m * 12 + 5 * 16 + 4 * 24 + 40 * 5) / 59 / 2, 1));
+            formula.GetTroopSpeed(troopstub).Should().Be(5);
         }
 
         [Fact]

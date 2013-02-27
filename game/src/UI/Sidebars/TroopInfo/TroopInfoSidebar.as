@@ -70,7 +70,7 @@
 
 			if (city != null) {
 				addStatRow("Radius", troopObj.attackRadius.toString());
-				addStatRow("Speed", troopObj.speed.toString());
+				addStatRow("Speed", troopObj.speed.toFixed(1));
 				
 				buttons.push(new ViewDestinationButton(troopObj, new Point(troopObj.targetX, troopObj.targetY)));
 			}

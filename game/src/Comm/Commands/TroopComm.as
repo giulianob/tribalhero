@@ -187,7 +187,7 @@
 
 			if (obj.playerId == Constants.playerId) {
 				obj.attackRadius = packet.readUByte();
-				obj.speed = packet.readUByte();				
+				obj.speed = packet.readFloat();				
 				obj.targetX = packet.readUInt();
 				obj.targetY = packet.readUInt();
 

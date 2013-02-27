@@ -87,10 +87,10 @@
 			return "[" + STATE_NAMES[state] + "]";
 		}
 
-		public function getSpeed(city: City) : int
+		public function getSpeed(city: City) : Number
 		{			
 			var count: int = 0;
-			var totalSpeed: int = 0;
+			var totalSpeed: Number = 0;
 			var machineSpeed: int = int.MAX_VALUE;
 			
 			for each (var formation: Formation in this)
@@ -108,7 +108,7 @@
 				}
 			}
 
-			return machineSpeed == int.MAX_VALUE ? totalSpeed / count: machineSpeed;
+			return Util.roundNumber(machineSpeed == int.MAX_VALUE ? totalSpeed / count: machineSpeed, 1);
 		}
 
 		public function getIndividualUnitCount(type: int = -1): int

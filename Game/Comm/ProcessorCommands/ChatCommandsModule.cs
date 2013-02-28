@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Text;
+using System.Text.RegularExpressions;
 using Game.Data;
 using Game.Module;
 using Game.Setup;
@@ -12,9 +14,12 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly Chat chat;
 
+        private Regex clearInvalidChars;
+
         public ChatCommandsModule(Chat chat)
         {
             this.chat = chat;
+            clearInvalidChars = new Regex("\\p{M}", RegexOptions.Compiled);
         }
 
         public override void RegisterCommands(Processor processor)
@@ -30,7 +35,8 @@ namespace Game.Comm.ProcessorCommands
             try
             {
                 type = (Chat.ChatType)packet.GetByte();
-                message = packet.GetString().Trim();
+                message = clearInvalidChars.Replace(packet.GetString().Trim().Normalize(NormalizationForm.FormD), "");
+ 
             }
             catch(Exception)
             {

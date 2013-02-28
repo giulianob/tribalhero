@@ -146,7 +146,7 @@ namespace Game.Data
             // Calculate efficiency
             double playerEfficiency = structures.Count / 8d;
             double laborEfficiency = (double)totalLabor / MaxLabor;
-            double efficiency = (1 - Math.Abs(playerEfficiency - laborEfficiency)) * (structures.Count * 0.125);
+            double efficiency = (1 - Math.Abs(playerEfficiency - laborEfficiency)) * (structures.Count * 0.95);
 
             float totalRate = 0;
             // Set the appropriate rates

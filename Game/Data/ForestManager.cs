@@ -31,7 +31,7 @@ namespace Game.Data
         }
 
         public int[] ForestCount { get; private set; }
-    
+        
         public void StartForestCreator()
         {
             Scheduler.Current.Put(new ForestCreatorAction(DbPersistance.Current));
@@ -109,7 +109,7 @@ namespace Game.Data
                 forest.X = x;
                 forest.Y = y;
 
-                forest.ObjectId = (uint)objectIdGenerator.GetNext();
+                forest.ObjectId = objectIdGenerator.GetNext();
 
                 World.Current.Regions.Add(forest);
                 World.Current.Regions.UnlockRegion(x, y);

@@ -123,6 +123,7 @@
     <Compile Include="Battle\CombatGroupTest.cs" />
     <Compile Include="Battle\CombatListTest.cs" />
     <Compile Include="Battle\CombatStructureTest.cs" />
+    <Compile Include="Battle\StaminaMonitorTests.cs" />
     <Compile Include="Battle\StatsModCalculator.cs" />
     <Compile Include="Channel\ChannelTest.cs" />
     <Compile Include="City\CityTest.cs" />

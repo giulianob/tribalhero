@@ -28,6 +28,8 @@ namespace Game.Logic.Actions
 
         private readonly IDbManager dbManager;
 
+        private readonly IStaminaMonitorFactory staminaMonitorFactory;
+
         private readonly IGameObjectLocator gameObjectLocator;
 
         private readonly CityBattleProcedure cityBattleProcedure;
@@ -52,7 +54,8 @@ namespace Game.Logic.Actions
                                              IGameObjectLocator gameObjectLocator,
                                              CityBattleProcedure cityBattleProcedure,
                                              StructureFactory structureFactory,
-                                             IDbManager dbManager)
+                                             IDbManager dbManager,
+                                             IStaminaMonitorFactory staminaMonitorFactory)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
@@ -60,9 +63,10 @@ namespace Game.Logic.Actions
             this.mode = mode;
             this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
-            this.cityBattleProcedure = cityBattleProcedure;            
+            this.cityBattleProcedure = cityBattleProcedure;
             this.structureFactory = structureFactory;
             this.dbManager = dbManager;
+            this.staminaMonitorFactory = staminaMonitorFactory;
 
             bonus = new Resource();
         }
@@ -74,7 +78,8 @@ namespace Game.Logic.Actions
                                              IGameObjectLocator gameObjectLocator,
                                              CityBattleProcedure cityBattleProcedure,
                                              StructureFactory structureFactory,
-                                             IDbManager dbManager)
+                                             IDbManager dbManager,
+                                             IStaminaMonitorFactory staminaMonitorFactory)
                 : base(id, isVisible)
         {
             this.battleFormula = battleFormula;
@@ -82,6 +87,7 @@ namespace Game.Logic.Actions
             this.cityBattleProcedure = cityBattleProcedure;
             this.structureFactory = structureFactory;
             this.dbManager = dbManager;
+            this.staminaMonitorFactory = staminaMonitorFactory;
 
             cityId = uint.Parse(properties["troop_city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
@@ -106,10 +112,7 @@ namespace Game.Logic.Actions
             ICity city;
             gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject);
 
-            StaminaMonitor = new StaminaMonitor(targetCity.Battle,
-                                                combatGroup,
-                                                short.Parse(properties["stamina"]),
-                                                battleFormula);
+            StaminaMonitor = staminaMonitorFactory.CreateStaminaMonitor(targetCity.Battle, combatGroup, short.Parse(properties["stamina"]));
             StaminaMonitor.PropertyChanged += (sender, args) => dbManager.Save(this);
 
             AttackModeMonitor = new AttackModeMonitor(targetCity.Battle, combatGroup, troopObject.Stub);
@@ -190,10 +193,9 @@ namespace Game.Logic.Actions
             RegisterBattleListeners(targetCity);
 
             // Create stamina monitor
-            StaminaMonitor = new StaminaMonitor(targetCity.Battle,
-                                                combatGroup,
-                                                battleFormula.GetStamina(troopObject.Stub, targetCity),
-                                                battleFormula);
+            StaminaMonitor = staminaMonitorFactory.CreateStaminaMonitor(targetCity.Battle,
+                                                                        combatGroup,
+                                                                        battleFormula.GetStamina(troopObject.Stub, targetCity));            
             StaminaMonitor.PropertyChanged += (sender, args) => dbManager.Save(this);
 
             // Create attack mode monitor

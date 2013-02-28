@@ -28,6 +28,8 @@ namespace Game.Logic.Actions
 
         private readonly IDbManager dbManager;
 
+        private readonly IStaminaMonitorFactory staminaMonitorFactory;
+
         private readonly IGameObjectLocator gameObjectLocator;
 
         private readonly BarbarianTribeBattleProcedure barbarianTribeBattleProcedure;
@@ -52,7 +54,8 @@ namespace Game.Logic.Actions
                                                        IGameObjectLocator gameObjectLocator,
                                                        BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
                                                        Formula formula,
-                                                       IDbManager dbManager)
+                                                       IDbManager dbManager,
+                                                       IStaminaMonitorFactory staminaMonitorFactory)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
@@ -63,6 +66,7 @@ namespace Game.Logic.Actions
             this.barbarianTribeBattleProcedure = barbarianTribeBattleProcedure;
             this.formula = formula;
             this.dbManager = dbManager;
+            this.staminaMonitorFactory = staminaMonitorFactory;
         }
 
         public BarbarianTribeEngageAttackPassiveAction(uint id,
@@ -72,7 +76,8 @@ namespace Game.Logic.Actions
                                                        IGameObjectLocator gameObjectLocator,
                                                        BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
                                                        Formula formula,
-                                                       IDbManager dbManager)
+                                                       IDbManager dbManager,
+                                                       IStaminaMonitorFactory staminaMonitorFactory)
                 : base(id, isVisible)
         {
             this.battleFormula = battleFormula;
@@ -80,6 +85,7 @@ namespace Game.Logic.Actions
             this.barbarianTribeBattleProcedure = barbarianTribeBattleProcedure;
             this.formula = formula;
             this.dbManager = dbManager;
+            this.staminaMonitorFactory = staminaMonitorFactory;
 
             cityId = uint.Parse(properties["troop_city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
@@ -99,7 +105,7 @@ namespace Game.Logic.Actions
             ICity city;
             gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject);
 
-            StaminaMonitor = new StaminaMonitor(targetBarbarianTribe.Battle, combatGroup, short.Parse(properties["stamina"]), battleFormula);
+            StaminaMonitor = staminaMonitorFactory.CreateStaminaMonitor(targetBarbarianTribe.Battle, combatGroup, short.Parse(properties["stamina"]));
             StaminaMonitor.PropertyChanged += (sender, args) => dbManager.Save(this);
 
             AttackModeMonitor = new AttackModeMonitor(targetBarbarianTribe.Battle, combatGroup, troopObject.Stub);
@@ -179,10 +185,7 @@ namespace Game.Logic.Actions
             RegisterBattleListeners(barbarianTribe);
 
             // Create stamina monitor
-            StaminaMonitor = new StaminaMonitor(barbarianTribe.Battle,
-                                                combatGroup,
-                                                battleFormula.GetStamina(troopObject.Stub, barbarianTribe),
-                                                battleFormula);
+            StaminaMonitor = staminaMonitorFactory.CreateStaminaMonitor(barbarianTribe.Battle, combatGroup, battleFormula.GetStamina(troopObject.Stub, barbarianTribe));
             StaminaMonitor.PropertyChanged += (sender, args) => dbManager.Save(this);
 
             // Create attack mode monitor

@@ -142,6 +142,7 @@
     <Compile Include="Battle\IBattleManager.cs" />
     <Compile Include="Battle\IBattleManagerFactory.cs" />
     <Compile Include="Battle\ICombatList.cs" />
+    <Compile Include="Battle\IStaminaMonitorFactory.cs" />
     <Compile Include="Battle\PublicBattleManager.cs" />
     <Compile Include="Battle\Reporting\BattleReport.cs" />
     <Compile Include="Battle\Reporting\IBattleReport.cs" />

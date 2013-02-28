@@ -463,6 +463,8 @@
 		private function createIncomingAttackTab(): Container {
 			var pnlIncomingAttacks: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
 			
+            profileData.incomingAttacks.sortOn("endTime", Array.NUMERIC);
+            
 			for each (var incoming: * in profileData.incomingAttacks) {
 				pnlIncomingAttacks.append(createIncomingPanelItem(incoming));
 			}

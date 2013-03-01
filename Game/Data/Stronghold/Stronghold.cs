@@ -7,6 +7,7 @@ using Game.Battle;
 using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic;
+using Game.Logic.Formulas;
 using Game.Logic.Notifications;
 using Game.Map;
 using Game.Util;
@@ -20,6 +21,7 @@ namespace Game.Data.Stronghold
         public const string DB_TABLE = "strongholds";
 
         private readonly IDbManager dbManager;
+        private readonly Formula formula;
 
         private ITribe gateOpenTo;
 
@@ -41,12 +43,7 @@ namespace Game.Data.Stronghold
         {
             get
             {
-                if (StrongholdState == StrongholdState.Occupied)
-                {
-                    var serverUptime = (decimal)SystemClock.Now.Subtract((DateTime)Global.SystemVariables["Server.date"].Value).TotalDays;
-                    return (((decimal)SystemClock.Now.Subtract(DateOccupied).TotalDays + BonusDays) / 2 + serverUptime / 5 + 10) * (1 + Lvl * .2m);
-                }
-                return 0;
+                return formula.StrongholdVictoryPoint(this);
             }
         }
 
@@ -142,10 +139,12 @@ namespace Game.Data.Stronghold
                           IDbManager dbManager,
                           NotificationManager notificationManager,
                           ITroopManager troopManager,
-                          IActionWorker actionWorker)
+                          IActionWorker actionWorker,
+                          Formula formula)
         {
             Notifications = notificationManager;
             this.dbManager = dbManager;
+            this.formula = formula;
             Id = id;
             Name = name;
             Lvl = level;

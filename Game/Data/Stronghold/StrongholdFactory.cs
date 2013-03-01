@@ -1,5 +1,6 @@
 using Game.Data.Troop;
 using Game.Logic;
+using Game.Logic.Formulas;
 using Game.Logic.Notifications;
 using Ninject;
 using Persistance;
@@ -30,7 +31,8 @@ namespace Game.Data.Stronghold
                                             kernel.Get<IDbManager>(),
                                             notificationManager,
                                             troopManager,
-                                            actionWorker);
+                                            actionWorker,
+                                            kernel.Get<Formula>());
 
             actionWorker.LockDelegate = () => stronghold;
             actionWorker.Location = stronghold;

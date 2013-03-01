@@ -8,41 +8,39 @@ using Game.Setup;
 using Game.Util;
 using NSubstitute;
 using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.AutoNSubstitute;
 using Xunit;
 using Xunit.Extensions;
 
 namespace Testing.Formulas
 {
-    public class StrongholdFormulaTest : IDisposable
+    public class StrongholdFormulaClassicTest : IDisposable
     {
-        public StrongholdFormulaTest()
+        public StrongholdFormulaClassicTest()
         {
-            Config.stronghold_classic = false;
             SystemClock.SetClock(DateTime.UtcNow);
         }
 
         [Theory]
-        [InlineData(1, 500)]
-        [InlineData(2, 600)]
-        [InlineData(3, 700)]
-        [InlineData(4, 800)]
-        [InlineData(5, 950)]
-        [InlineData(6, 1100)]
-        [InlineData(7, 1250)]
-        [InlineData(8, 1450)]
-        [InlineData(9, 1650)]
-        [InlineData(10, 1850)]
-        [InlineData(11, 2100)]
-        [InlineData(12, 2350)]
-        [InlineData(13, 2600)]
-        [InlineData(14, 2900)]
-        [InlineData(15, 3200)]
-        [InlineData(16, 3500)]
-        [InlineData(17, 3850)]
-        [InlineData(18, 4200)]
-        [InlineData(19, 4600)]
-        [InlineData(20, 5000)]
+        [InlineData(1, 1000)]
+        [InlineData(2, 2000)]
+        [InlineData(3, 3000)]
+        [InlineData(4, 4000)]
+        [InlineData(5, 5000)]
+        [InlineData(6, 6000)]
+        [InlineData(7, 7000)]
+        [InlineData(8, 8000)]
+        [InlineData(9, 9000)]
+        [InlineData(10, 10000)]
+        [InlineData(11, 11000)]
+        [InlineData(12, 12000)]
+        [InlineData(13, 13000)]
+        [InlineData(14, 14000)]
+        [InlineData(15, 15000)]
+        [InlineData(16, 16000)]
+        [InlineData(17, 17000)]
+        [InlineData(18, 18000)]
+        [InlineData(19, 19000)]
+        [InlineData(20, 20000)]
         public void TestMeterValue(int level, int expectedValue)
         {
             var formula = new Fixture().CreateAnonymous<Formula>();
@@ -50,26 +48,26 @@ namespace Testing.Formulas
         }
 
         [Theory]
-        [InlineData(1, 5000)]
-        [InlineData(2, 6000)]
-        [InlineData(3, 7000)]
-        [InlineData(4, 8000)]
-        [InlineData(5, 9500)]
-        [InlineData(6, 11000)]
-        [InlineData(7, 12500)]
-        [InlineData(8, 14500)]
-        [InlineData(9, 16500)]
-        [InlineData(10, 18500)]
-        [InlineData(11, 21000)]
-        [InlineData(12, 23500)]
-        [InlineData(13, 26000)]
-        [InlineData(14, 29000)]
-        [InlineData(15, 32000)]
-        [InlineData(16, 35000)]
-        [InlineData(17, 38500)]
-        [InlineData(18, 42000)]
-        [InlineData(19, 46000)]
-        [InlineData(20, 50000)]
+        [InlineData(1, 10000)]
+        [InlineData(2, 13500)]
+        [InlineData(3, 17300)]
+        [InlineData(4, 21500)]
+        [InlineData(5, 26200)]
+        [InlineData(6, 31300)]
+        [InlineData(7, 37100)]
+        [InlineData(8, 43400)]
+        [InlineData(9, 50300)]
+        [InlineData(10, 58000)]
+        [InlineData(11, 66500)]
+        [InlineData(12, 75900)]
+        [InlineData(13, 86300)]
+        [InlineData(14, 97800)]
+        [InlineData(15, 110500)]
+        [InlineData(16, 124600)]
+        [InlineData(17, 140100)]
+        [InlineData(18, 157200)]
+        [InlineData(19, 176200)]
+        [InlineData(20, 200000)]
         public void TestGateValue(int level, int expectedValue)
         {
             var formula = new Fixture().CreateAnonymous<Formula>();
@@ -77,26 +75,26 @@ namespace Testing.Formulas
         }
 
         [Theory]
-        [InlineData(1, 1, 400)]
-        [InlineData(2, 1, 480)]
-        [InlineData(3, 1, 560)]
-        [InlineData(4, 2, 640)]
-        [InlineData(5, 2, 760)]
-        [InlineData(6, 3, 880)]
-        [InlineData(7, 3, 1000)]
-        [InlineData(8, 4, 1160)]
-        [InlineData(9, 4, 1320)]
-        [InlineData(10, 5, 1480)]
-        [InlineData(11, 5, 1680)]
-        [InlineData(12, 6, 1880)]
-        [InlineData(13, 6, 2080)]
-        [InlineData(14, 7, 2320)]
-        [InlineData(15, 7, 2560)]
-        [InlineData(16, 8, 2800)]
-        [InlineData(17, 8, 3080)]
-        [InlineData(18, 9, 3360)]
-        [InlineData(19, 9, 3680)]
-        [InlineData(20, 10, 4000)]
+        [InlineData(1, 1, 1000)]
+        [InlineData(2, 1, 1400)]
+        [InlineData(3, 1, 1796)]
+        [InlineData(4, 2, 2189)]
+        [InlineData(5, 2, 2579)]
+        [InlineData(6, 3, 2965)]
+        [InlineData(7, 3, 3347)]
+        [InlineData(8, 4, 3726)]
+        [InlineData(9, 4, 4102)]
+        [InlineData(10, 5, 4474)]
+        [InlineData(11, 5, 4842)]
+        [InlineData(12, 6, 5207)]
+        [InlineData(13, 6, 5568)]
+        [InlineData(14, 7, 5926)]
+        [InlineData(15, 7, 6281)]
+        [InlineData(16, 8, 6632)]
+        [InlineData(17, 8, 6979)]
+        [InlineData(18, 9, 7323)]
+        [InlineData(19, 9, 7663)]
+        [InlineData(20, 10, 8000)]
         public void TestUpkeepValue(int level, int expectedLevel, int expectedUpkeep)
         {
             byte unitLevel;
@@ -107,21 +105,20 @@ namespace Testing.Formulas
             upkeep.Should().Be(expectedUpkeep);
         }
 
-
         public static IEnumerable<object[]> VictoryPointItems
         {
             get
             {
                 // no bonus
-                yield return new object[] { (byte)1, 5m, 0m, 0m, 15m };
+                yield return new object[] { (byte)1, 5m, 0m, 0m, 12.5m };
                 // with bonus
-                yield return new object[] { (byte)5, 5m, 2.5m, 0m, 27.5m };
+                yield return new object[] { (byte)5, 5m, 2.5m, 0m, 68.75m };
                 // level 20
-                yield return new object[] { (byte)20, 5m, 2.5m, 0m, 68.75m };
+                yield return new object[] { (byte)20, 5m, 2.5m, 0m, 275m };
                 // level 20 with 18 server days
-                yield return new object[] { (byte)20, 5m, 2.5m, 18m, 86.75m };
+                yield return new object[] { (byte)20, 5m, 2.5m, 18m, 275m };
                 // level 8 with 40.3 server days
-                yield return new object[] { (byte)8, 2.5m, 5m, 40.3m, 56.706m };
+                yield return new object[] { (byte)8, 2.5m, 5m, 40.3m, 110m };
             }
         }
 
@@ -159,7 +156,6 @@ namespace Testing.Formulas
 
         public void Dispose()
         {
-            Config.stronghold_classic = true;
             SystemClock.ResyncClock();
         }
 

@@ -89,10 +89,11 @@
 			}
 		}
 		
-		public function setTribeDescription(description: String) : void {
+		public function setTribeDescription(description: String, publicDescription: String) : void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TRIBE_DESCRIPTION_SET;
 			packet.writeString(description);
+            packet.writeString(publicDescription);
 
 			mapComm.showLoading();
 			session.write(packet, showErrorOrRefreshTribePanel, { refresh: true });
@@ -141,6 +142,7 @@
 			profileData.tribeLevel = packet.readUByte();
 			profileData.tribeName = packet.readString();
 			profileData.description = packet.readString();
+            profileData.publicDescription = packet.readString();
 			profileData.victoryPoint = packet.readFloat();
 			profileData.created = packet.readUInt();			
 			
@@ -319,6 +321,7 @@
 			var profileData: * = new Object();
 			profileData.tribeId = packet.readUInt();
 			profileData.tribeName = packet.readString();
+            profileData.publicDescription = packet.readString();
 			profileData.level = packet.readUByte();
 			profileData.created = packet.readUInt();
 			profileData.members = [];

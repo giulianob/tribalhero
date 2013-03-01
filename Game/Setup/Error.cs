@@ -186,6 +186,8 @@ namespace Game.Setup
 
         TribeHasAssignment = 707,
 
+        TribeDescriptionTooLong = 708,
+
         TribesmanNotFound = 721,
 
         TribesmanAlreadyExists = 722,

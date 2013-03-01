@@ -52,9 +52,11 @@ namespace Game.Comm.ProcessorCommands
         private void SetDescription(Session session, Packet packet)
         {
             string description;
+            string publicDescription;
             try
             {
                 description = packet.GetString();
+                publicDescription = packet.GetString();
             }
             catch(Exception)
             {
@@ -76,13 +78,14 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                if (description.Length > Player.MAX_DESCRIPTION_LENGTH)
+                if (description.Length > Player.MAX_DESCRIPTION_LENGTH || publicDescription.Length > Player.MAX_DESCRIPTION_LENGTH)
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
                 session.Player.Tribesman.Tribe.Description = description;
+                session.Player.Tribesman.Tribe.PublicDescription = publicDescription;
 
                 ReplySuccess(session, packet);
             }

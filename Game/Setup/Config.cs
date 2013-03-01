@@ -195,6 +195,8 @@ namespace Game.Setup
 
         public static int stronghold_radius_base = 100;
 
+        public static bool stronghold_classic = true;
+
         public static double barbarian_tribes_npc_randomness = 0.4;
         
         public static double stronghold_npc_randomness = 0.4;

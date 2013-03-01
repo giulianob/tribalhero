@@ -130,6 +130,7 @@
     <Compile Include="Formulas\BarbarianTribeFormulaTest.cs" />
     <Compile Include="Formulas\CityValueTest.cs" />
     <Compile Include="Formulas\BattleFormulaTest.cs" />
+    <Compile Include="Formulas\StrongholdFormulaClassicTest.cs" />
     <Compile Include="Formulas\StrongholdFormulaTest.cs" />
     <Compile Include="Formulas\UpkeepTest.cs" />
     <Compile Include="Formulas\NewCityResourceTest.cs" />
@@ -145,7 +146,6 @@
     <Compile Include="Resources\ResourceTest.cs" />
     <Compile Include="Resources\LazyResourceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Stronghold\StrongholdTest.cs" />
     <Compile Include="Tribe\AssignmentTest.cs" />
     <Compile Include="Troop\TroopStarveTest.cs" />
     <Compile Include="Troop\BattleProcedureTest.cs" />

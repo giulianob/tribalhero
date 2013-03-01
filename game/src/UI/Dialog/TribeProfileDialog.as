@@ -490,8 +490,8 @@
 			var btnLeave: JLabelButton = new JLabelButton("Leave");
 			var btnTransfer: JLabelButton = new JLabelButton("Transfer Tribe");
 			
-			var pnlActions: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));				
-			
+			var pnlActions: JPanel = new JPanel(new FlowWrapLayout(200, AsWingConstants.LEFT, 10, 0, false));				
+			pnlActions.setConstraints("North");
 			// Show correct buttons depending on rank
 			switch (Constants.tribeRank) {
 				case 0: 
@@ -527,6 +527,7 @@
 				lastActiveInfoTab = pnlInfoTabs.getSelectedIndex();
 				
 			pnlInfoTabs = new JTabbedPane();
+            pnlInfoTabs.setPreferredWidth(450);
 					
 			// Put it all together
 			var pnlEast: JPanel = new JPanel(new BorderLayout(0, 5));
@@ -539,8 +540,7 @@
 
 			pnlInfoTabs.setSelectedIndex(lastActiveInfoTab);
 			
-			var pnlWest: JPanel = new JPanel(new BorderLayout(0, 5));
-			pnlActions.setConstraints("North");
+			var pnlWest: JPanel = new JPanel(new BorderLayout(0, 5));			
 			scrollDescription.setConstraints("Center");
 			
 			pnlWest.appendAll(pnlActions, scrollDescription);

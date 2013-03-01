@@ -59,7 +59,7 @@
 		}
 						
 		private function createUI():void {
-			setPreferredSize(new IntDimension(Math.min(375, Constants.screenW - GameJImagePanelBackground.getFrameWidth()) , Math.min(600, Constants.screenH - GameJImagePanelBackground.getFrameHeight())));
+			setPreferredSize(new IntDimension(Math.min(400, Constants.screenW - GameJImagePanelBackground.getFrameWidth()) , Math.min(600, Constants.screenH - GameJImagePanelBackground.getFrameHeight())));
 			
 			title = "Tribe Profile - " + profileData.tribeName;
 			setLayout(new BorderLayout(0, 15));
@@ -80,17 +80,24 @@
 			
 			// Tab panel
 			pnlTabs = new JTabbedPane();
-			pnlTabs.setPreferredSize(new IntDimension(375, 600));
+			pnlTabs.setPreferredHeight(600);
 			pnlTabs.setConstraints("Center");
 
 			// Append tabs			
-			pnlTabs.appendTab(createMembersTab(), StringUtil.substitute("Members ({0})", profileData.members.length));
+            if (profileData.publicDescription) {
+                pnlTabs.appendTab(createAnnouncementTab(), StringUtil.substitute("Announcement", profileData.members.length));
+            }
             
+			pnlTabs.appendTab(createMembersTab(), StringUtil.substitute("Members ({0})", profileData.members.length));            
             pnlTabs.appendTab(createStrongholdsTab(), StringUtil.substitute("Strongholds ({0})", profileData.strongholds.length));
 			
 			// Append main panels
 			appendAll(pnlHeader, pnlTabs);
 		}
+        
+		private function createAnnouncementTab() : Container {			
+			return new JScrollPane(new MultilineLabel(profileData.publicDescription));
+		}                
         
 		private function createMembersTab() : Container {
 			var modelMembers: VectorListModel = new VectorListModel(profileData.members);

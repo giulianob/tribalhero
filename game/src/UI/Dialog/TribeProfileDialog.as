@@ -515,11 +515,24 @@
 			btnUpgrade.mouseEnabled = true;
 			
 			// description
+            var pnlDescriptionHolder: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 			var description: String = profileData.description == "" ? "The tribe chief hasn't set an announcement yet" : profileData.description;
 			var lblDescription: MultilineLabel = new MultilineLabel(description);
 			GameLookAndFeel.changeClass(lblDescription, "Message");
+            lblDescription.setBorder(new EmptyBorder(null, new Insets(0, 0, 15)));
+                
+            pnlDescriptionHolder.append(lblDescription);
+            if (profileData.publicDescription) {
+                var lblPublicDescription: MultilineLabel = new MultilineLabel(profileData.publicDescription);
+                GameLookAndFeel.changeClass(lblPublicDescription, "Message");
+                
+                var lblPublicTitle: JLabel = new JLabel("Public Announcement", null, AsWingConstants.LEFT);
+                GameLookAndFeel.changeClass(lblPublicTitle, "darkHeader");                
+                pnlDescriptionHolder.appendAll(lblPublicTitle, lblPublicDescription);
+            }
 			
-			var scrollDescription: JScrollPane = new JScrollPane(lblDescription);
+			var scrollDescription: JScrollPane = Util.createTopAlignedScrollPane(pnlDescriptionHolder);
+            scrollDescription.pack();
 			
 			// Side tab browser
 			var lastActiveInfoTab: int = 0;
@@ -553,17 +566,28 @@
 			// Button handlers
 			btnSetDescription.addActionListener(function(e: Event = null): void {			
 				var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
-				var txtDescription: JTextArea = new JTextArea(profileData.description, 15, 10);
+				
+                var txtDescription: JTextArea = new JTextArea(profileData.description, 10, 10);
 				txtDescription.setMaxChars(3000);
 				GameLookAndFeel.changeClass(txtDescription, "Message");
-				var scrollDescription: JScrollPane = new JScrollPane(txtDescription, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);			
+                var scrollDescription: JScrollPane = new JScrollPane(txtDescription, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);			
+
+                var txtPublicDescription: JTextArea = new JTextArea(profileData.publicDescription, 10, 10);
+				txtPublicDescription.setMaxChars(3000);
+				GameLookAndFeel.changeClass(txtPublicDescription, "Message");                               
+                var scrollPublicDescription: JScrollPane = new JScrollPane(txtPublicDescription, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);			
 			
-				pnl.appendAll(new JLabel("Set a message to appears on the tribe profile. This will only be visible to your tribe members.", null, AsWingConstants.LEFT), scrollDescription);
+				pnl.appendAll(
+                    new JLabel("Private Announcement. This will only be visible to your tribe members.", null, AsWingConstants.LEFT), 
+                    scrollDescription,
+                    new JLabel("Public Announcement. This will be visible when others view your tribe profile.", null, AsWingConstants.LEFT), 
+                    scrollPublicDescription);
 				InfoDialog.showMessageDialog("Say something to your tribe", pnl, function(result: * ): void {
-					if (result == JOptionPane.CANCEL || result == JOptionPane.CLOSE)
+					if (result == JOptionPane.CANCEL || result == JOptionPane.CLOSE) {
 						return;
+                    }
 						
-					Global.mapComm.Tribe.setTribeDescription(txtDescription.getText());					
+					Global.mapComm.Tribe.setTribeDescription(txtDescription.getText(), txtPublicDescription.getText());					
 				});
 			});
 			

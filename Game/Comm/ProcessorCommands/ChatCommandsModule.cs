@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using Game.Data;
@@ -14,17 +15,31 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly Chat chat;
 
-        private Regex clearInvalidChars;
-
         public ChatCommandsModule(Chat chat)
         {
             this.chat = chat;
-            clearInvalidChars = new Regex("\\p{M}", RegexOptions.Compiled);
         }
 
         public override void RegisterCommands(Processor processor)
         {
             processor.RegisterCommand(Command.Chat, Chat);
+        }
+
+        private static string RemoveDiacritics(string stIn)
+        {
+            string stFormD = stIn.Normalize(NormalizationForm.FormD);
+            StringBuilder sb = new StringBuilder(stIn.Length);
+
+            for (int ich = 0; ich < stFormD.Length; ich++)
+            {
+                UnicodeCategory uc = CharUnicodeInfo.GetUnicodeCategory(stFormD[ich]);
+                if (uc != UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(stFormD[ich]);
+                }
+            }
+
+            return (sb.ToString().Normalize(NormalizationForm.FormC));
         }
 
         public void Chat(Session session, Packet packet)
@@ -35,7 +50,7 @@ namespace Game.Comm.ProcessorCommands
             try
             {
                 type = (Chat.ChatType)packet.GetByte();
-                message = clearInvalidChars.Replace(packet.GetString().Trim().Normalize(NormalizationForm.FormD), "");
+                message = packet.GetString().Trim();
  
             }
             catch(Exception)

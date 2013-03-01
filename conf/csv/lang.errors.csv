@@ -72,6 +72,7 @@ ERROR_704,Tribe not found
 ERROR_705,Tribe name is invalid. You can only use alphanumeric characters for your tribe name.
 ERROR_706,Tribe is already at maximum level
 ERROR_707,Tribe cannot be delete while assignments exist.
+ERROR_708,Tribe description is too long.
 ERROR_721,Tribesman not found
 ERROR_722,This player is already a member of a tribe
 ERROR_723,This action cannot be performed on the tribe's chief

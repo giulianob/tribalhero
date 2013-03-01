@@ -637,6 +637,7 @@ namespace Game.Comm
                 packet.AddByte(tribe.Level);
                 packet.AddString(tribe.Name);
                 packet.AddString(tribe.Description);
+                packet.AddString(tribe.PublicDescription);
                 packet.AddFloat((float)tribe.VictoryPoint);
                 packet.AddUInt32(UnixDateTime.DateTimeToUnix(tribe.Created));
                 AddToPacket(tribe.Resource, packet);
@@ -737,6 +738,7 @@ namespace Game.Comm
                 packet.AddByte(0);
                 packet.AddUInt32(tribe.Id);
                 packet.AddString(tribe.Name);
+                packet.AddString(tribe.PublicDescription);
                 packet.AddByte(tribe.Level);
                 packet.AddUInt32(UnixDateTime.DateTimeToUnix(tribe.Created));
                 packet.AddInt16((short)tribe.Count);

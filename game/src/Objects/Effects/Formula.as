@@ -169,11 +169,11 @@
 		}
 
 		public static function maxForestLabor(level: int) : int {
-			return level * 240;
+			return level * 320;
 		}
 
 		public static function maxForestLaborPerUser(level: int) : int {
-			return Formula.maxForestLabor(level) / 6;
+			return Formula.maxForestLabor(level) / 8;
 		}
 
 		public static function movementIconTroopSize(troopStub: TroopStub) : int {

@@ -2,6 +2,8 @@ package src.UI.Components.ScreenMessages
 {
 	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
+    import flash.events.KeyboardEvent;
+    import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	import org.aswing.border.EmptyBorder;
@@ -18,9 +20,12 @@ package src.UI.Components.ScreenMessages
 	 */
 	public class ScreenMessagePanel extends JPanel
 	{
+        private const IDLE_TIME: int = 90000;
+        
 		private var tempItems: Array = new Array();
 		private var timer: Timer = new Timer(100, 0);
 		private var frame: JFrame;
+        private var lastInteraction: int;
 
 		public function ScreenMessagePanel(owner: DisplayObjectContainer)
 		{
@@ -52,7 +57,14 @@ package src.UI.Components.ScreenMessages
 			}
 
 			frame.pack();
+            
+            stage.addEventListener(MouseEvent.MOUSE_DOWN, onInteraction, true, 0, true);            
+            stage.addEventListener(KeyboardEvent.KEY_DOWN, onInteraction, true, 0, true);                                 
 		}
+        
+        public function onInteraction(e: Event): void {
+            lastInteraction = new Date().time;
+        }
 
 		public function dispose() : void {
 			if (frame) {
@@ -68,13 +80,11 @@ package src.UI.Components.ScreenMessages
 				tempItems.push(item);
 
 				if (!timer.running) {
-					timer.start();
-					//Util.log("Timer started");
+					timer.start();					
 				}
 			}
 
-			append(item);
-			//Util.log("Added message");
+			append(item);			
 		}
 		
 		public function hasMessage(key: String) : Boolean {
@@ -93,11 +103,9 @@ package src.UI.Components.ScreenMessages
 				var item: ScreenMessageItem = getComponent(i) as ScreenMessageItem;
 				if (item.key == key) {
 					removeAt(i);
-					//Util.log("Removed message");
 					if (item.duration > 0) {
 						for (var j: int = tempItems.length - 1; j >= 0; j--) {
 							if (tempItems[j].key == key) {
-								//Util.log("Removed message from temp");
 								tempItems.splice(j, 1);
 								break;
 							}
@@ -110,9 +118,15 @@ package src.UI.Components.ScreenMessages
 		}
 
 		public function onTimer(e: Event) : void {
+            
+            var now: int = new Date().time;
+            if (now - lastInteraction > IDLE_TIME) {
+                return;
+            }
+            
 			for (var i: int = tempItems.length - 1; i >= 0; i--) {
 				var item: ScreenMessageItem = tempItems[i];
-				item.duration -= 100;
+				item.duration -= timer.delay;
 				if (item.duration <= 0) {
 					item.alpha -= 0.05;
 
@@ -125,7 +139,6 @@ package src.UI.Components.ScreenMessages
 
 			if (tempItems.length == 0) {
 				timer.stop();
-				//Util.log("Timer stopped");
 			}
 		}
 

@@ -50,7 +50,7 @@ public class CombatObjectGridCell extends JLabel implements GridListCell{
 		setIcon(new AssetIcon(value.source));		
 		
 		if (value.prototype is UnitPrototype)		
-			uiTextField.text = Math.ceil(Util.roundNumber(value.data.hp) / Util.roundNumber(value.data.maxHp)).toString();		
+			uiTextField.text = Math.ceil(value.data.hp / value.data.maxHp).toString();		
 		else if (value.prototype is StructurePrototype)
 			uiTextField.text = Math.ceil(value.data.hp) + "/" + Math.ceil(value.data.maxHp);
 			

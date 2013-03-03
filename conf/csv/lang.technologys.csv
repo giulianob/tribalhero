@@ -125,11 +125,11 @@ BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Bowman, Archer and Hel
 BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Bowman, Archer and Helepolis by 15% on attack mission . (Stacks additively up to 150%)"
 ,
 BALL_WEAPON_RESEARCH_TECHNOLOGY_NAME,Siege Units Offensive Boost
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Gladiator and Calapult by 3% on attack mission . (Stacks additively up to 150%)
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Gladiator and Calapult by 6% on attack mission . (Stacks additively up to 150%)
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Gladiator and Calapult by 9% on attack mission . (Stacks additively up to 150%)
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Gladiator and Calapult by 12% on attack mission . (Stacks additively up to 150%)
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Gladiator and Calapult by 15% on attack mission . (Stacks additively up to 150%)
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Gladiator and Catapult by 3% on attack mission . (Stacks additively up to 150%)
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Gladiator and Catapult by 6% on attack mission . (Stacks additively up to 150%)
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Gladiator and Catapult by 9% on attack mission . (Stacks additively up to 150%)
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Gladiator and Catapult by 12% on attack mission . (Stacks additively up to 150%)
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Gladiator and Catapult by 15% on attack mission . (Stacks additively up to 150%)
 ,
 ATTIC_STORAGE_TECHNOLOGY_NAME,Attic Storage
 ATTIC_STORAGE_TECHNOLOGY_LVL_1,Increase capacity of the city resources by 50% of basements' capacity.

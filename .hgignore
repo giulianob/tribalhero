@@ -1,0 +1,12 @@
+glob:bin/
+glob:obj/
+glob:sscomp.exe
+syntax: glob
+stacktracer/stacktracer.csproj.user
+stacktracer/_ReSharper.stacktracer/
+stacktracer/stacktracer.5.1.ReSharper.user
+stacktracer/stacktracer.suo
+*.apk
+*/Thumbs.db
+stacktracer/stacktracer.v11.suo
+stacktracer/stacktracer.sln.DotSettings.user

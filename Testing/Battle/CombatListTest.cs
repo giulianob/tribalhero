@@ -31,7 +31,7 @@ namespace Testing.Battle
 
             var combatObject = Substitute.For<ICombatObject>();
 
-            CombatList list = fixture.CreateAnonymous<CombatList>();
+            CombatList list = fixture.Create<CombatList>();
 
             List<CombatList.Target> result;
             CombatList.BestTargetResult targetResult = list.GetBestTargets(1, combatObject, out result, 1);
@@ -79,7 +79,7 @@ namespace Testing.Battle
             var combatGroup = Substitute.For<ICombatGroup>();
             combatGroup.GetEnumerator().Returns(x => new List<ICombatObject> {defender}.GetEnumerator());
 
-            var listSut = fixture.CreateAnonymous<CombatList>();
+            var listSut = fixture.Create<CombatList>();
             listSut.Add(combatGroup, false);
 
             List<CombatList.Target> result;
@@ -103,7 +103,7 @@ namespace Testing.Battle
 
             IDbManager dbManager = fixture.Freeze<IDbManager>();
 
-            var listSut = fixture.CreateAnonymous<CombatList>();
+            var listSut = fixture.Create<CombatList>();
             
             listSut.Add(combatGroup, false);
             listSut.Remove(combatGroup);
@@ -144,7 +144,7 @@ namespace Testing.Battle
             fixture.Register(() => battleFormulas);                        
             battleFormulas.GetDmgModifier(null, null).ReturnsForAnyArgs(1, 3, 3);
 
-            var listSut = fixture.CreateAnonymous<CombatList>();
+            var listSut = fixture.Create<CombatList>();
             listSut.Add(combatGroup, false);
 
             List<CombatList.Target> result;
@@ -188,7 +188,7 @@ namespace Testing.Battle
             fixture.Register(() => battleFormulas);                        
             battleFormulas.GetDmgModifier(null, null).ReturnsForAnyArgs(3, 1, 2);
 
-            var listSut = fixture.CreateAnonymous<CombatList>();
+            var listSut = fixture.Create<CombatList>();
             listSut.Add(combatGroup, false);
 
             List<CombatList.Target> result;

@@ -4,6 +4,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Setup;
+using Ninject;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -11,9 +14,16 @@ namespace Game.Map
 {
     public partial class ObjectList : IEnumerable<ISimpleGameObject>
     {
+        public ObjectList()
+        {
+            logger = Ioc.Kernel.Get<ILoggerFactory>().GetCurrentClassLogger();
+        }
+
         #region Members
 
-        internal readonly Dictionary<int, List<ISimpleGameObject>> Dict = new Dictionary<int, List<ISimpleGameObject>>();
+        private readonly Dictionary<int, List<ISimpleGameObject>> objects = new Dictionary<int, List<ISimpleGameObject>>();
+
+        private readonly ILogger logger;
 
         #endregion
 
@@ -34,18 +44,19 @@ namespace Game.Map
         {
             List<ISimpleGameObject> list;
 
-            if (Dict.TryGetValue(index, out list))
+            if (objects.TryGetValue(index, out list))
             {
                 if (list.Contains(obj))
                 {
-                    throw new Exception("WTF");
+                    throw new Exception("Trying to add obj that already exists");
                 }
+
                 list.Add(obj);
             }
             else
             {
                 list = new List<ISimpleGameObject> {obj};
-                Dict[index] = list;
+                objects[index] = list;
             }
 
             ++Count;
@@ -61,14 +72,22 @@ namespace Game.Map
             List<ISimpleGameObject> list;
             int index = Region.GetTileIndex(origX, origY);
 
-            if (Dict.TryGetValue(index, out list))
-            {
-                --Count;
+            if (objects.TryGetValue(index, out list))
+            {                
                 bool ret = list.Remove(obj);
+
+                if (ret)
+                {
+                    --Count;
+                }
+                else
+                {
+                    logger.Warn("Tried to remove obj that wasnt in region {0} {1}", obj.ToString(), Environment.StackTrace);
+                }
 
                 if (list.Count == 0)
                 {
-                    Dict.Remove(index); //Remove list if it is empty
+                    objects.Remove(index); //Remove list if it is empty
                 }
 
                 return ret;
@@ -83,12 +102,7 @@ namespace Game.Map
 
             int index = Region.GetTileIndex(x, y);
 
-            if (Dict.TryGetValue(index, out list))
-            {
-                return new List<ISimpleGameObject>(list);
-            }
-
-            return new List<ISimpleGameObject>();
+            return objects.TryGetValue(index, out list) ? new List<ISimpleGameObject>(list) : new List<ISimpleGameObject>();
         }
 
         #endregion

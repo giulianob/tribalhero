@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>C:\source\ninject\ninject.mockingkernel\build\mono-4.0\release\Ninject.MockingKernel</name>
+        <name>c:\source\ninject\ninject.mockingkernel\build\mono-4.0\release\Ninject.MockingKernel</name>
     </assembly>
     <members>
         <member name="T:Ninject.MockingKernel.ExtensionsForBindingSyntax">

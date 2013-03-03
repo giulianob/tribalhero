@@ -16,7 +16,7 @@ namespace Testing.Formulas
         [Fact]
         public void TestFewAttackersSingleDefender()
         {
-            var formula = new Fixture().CreateAnonymous<Formula>();
+            var formula = new Fixture().Create<Formula>();
 
             var defender1 = Substitute.For<ICombatGroup>();
             defender1.GetEnumerator().Returns(new List<ICombatObject> {Substitute.For<ICombatObject>()}.GetEnumerator());
@@ -42,7 +42,7 @@ namespace Testing.Formulas
         [InlineData(200, 300)]
         public void TestAtMaxOrOverMax(int defenderCnt, int attackerCnt)
         {
-            var formula = new Fixture().CreateAnonymous<Formula>();
+            var formula = new Fixture().Create<Formula>();
 
             var defendersCombatObjects = new List<ICombatObject>();            
             for (var i = 0; i < defenderCnt; i++)

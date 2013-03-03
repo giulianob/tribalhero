@@ -22,7 +22,7 @@ namespace Testing.Battle
         public void TestStaminaDoesntGoBelowZero()
         {
             var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());            
-            var staminaMonitor = fixture.CreateAnonymous<StaminaMonitor>();
+            var staminaMonitor = fixture.Create<StaminaMonitor>();
             staminaMonitor.Stamina = -10;
             staminaMonitor.Stamina.Should().Be(0);
             staminaMonitor.Stamina = 1;
@@ -39,7 +39,7 @@ namespace Testing.Battle
             var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var battleManager = fixture.Freeze<IBattleManager>();
             var combatGroup = fixture.Freeze<ICombatGroup>();
-            var staminaMonitor = fixture.CreateAnonymous<StaminaMonitor>();
+            var staminaMonitor = fixture.Create<StaminaMonitor>();
             staminaMonitor.Stamina = 2;
             battleManager.EnterRound += Raise.Event<BattleManager.OnRound>(battleManager,
                                                                            Substitute.For<ICombatList>(),
@@ -61,7 +61,7 @@ namespace Testing.Battle
             var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var battleManager = fixture.Freeze<IBattleManager>();
             var combatGroup = fixture.Freeze<ICombatGroup>();
-            var staminaMonitor = fixture.CreateAnonymous<StaminaMonitor>();
+            var staminaMonitor = fixture.Create<StaminaMonitor>();
             staminaMonitor.Stamina = 1;
             battleManager.ExitTurn += Raise.Event<BattleManager.OnTurn>(battleManager,
                                                                            Substitute.For<ICombatList>(),
@@ -80,12 +80,11 @@ namespace Testing.Battle
         }
 
         [Theory]
-      /*  [InlineData(BattleManager.BattleSide.Defense, BattleClass.Structure, true, false, 10)]
+        [InlineData(BattleManager.BattleSide.Defense, BattleClass.Structure, true, false, 10)]
         [InlineData(BattleManager.BattleSide.Attack, BattleClass.Unit, true, false, 10)]
         [InlineData(BattleManager.BattleSide.Attack, BattleClass.Structure, false, false, 10)]
-        [InlineData(BattleManager.BattleSide.Attack, BattleClass.Structure, true, false, 10)]
-        [InlineData(BattleManager.BattleSide.Attack, BattleClass.Structure, true, true, 10)]*/
-        [InlineData(BattleManager.BattleSide.Attack, BattleClass.Structure, true, false, 3)]
+        [InlineData(BattleManager.BattleSide.Attack, BattleClass.Structure, true, false, 7)]
+        [InlineData(BattleManager.BattleSide.Attack, BattleClass.Structure, true, true, 10)]        
         public void TestReduceStaminaWhenStructureDestroyed(BattleManager.BattleSide attackingSide,
                                                             BattleClass targetClassType,
                                                             bool targetIsDead,
@@ -105,11 +104,11 @@ namespace Testing.Battle
 
             var battleFormulas = Substitute.For<BattleFormulas>();
             battleFormulas.GetStaminaStructureDestroyed(10, target).Returns((short)7);
-            fixture.Freeze(battleFormulas);
+            fixture.Register(() => battleFormulas);
             
             var battleManager = fixture.Freeze<IBattleManager>();
 
-            var staminaMonitor = fixture.CreateAnonymous<StaminaMonitor>();
+            var staminaMonitor = fixture.Create<StaminaMonitor>();
             staminaMonitor.Stamina = 10;
 
             battleManager.ActionAttacked += Raise.Event<BattleManager.OnAttack>(battleManager,

@@ -78,17 +78,17 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\mysql.data\mysql.data.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject">
-      <HintPath>..\packages\Ninject.3.0.1.10\lib\net40\Ninject.dll</HintPath>
+    <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\ninject.mono\Ninject.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject.Extensions.Conventions">
-      <HintPath>..\packages\ninject.extensions.conventions.3.0.0.11\lib\net40\Ninject.Extensions.Conventions.dll</HintPath>
+    <Reference Include="Ninject.Extensions.Logging, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\ninject.mono\Ninject.Extensions.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject.Extensions.Logging">
-      <HintPath>..\packages\Ninject.Extensions.Logging.3.0.1.0\lib\net40\Ninject.Extensions.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Ninject.Extensions.Logging.Log4Net">
-      <HintPath>..\packages\Ninject.Extensions.Logging.Log4net.3.0.1.0\lib\net40\Ninject.Extensions.Logging.Log4Net.dll</HintPath>
+    <Reference Include="Ninject.Extensions.Logging.Log4Net, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\ninject.mono\log4net\Ninject.Extensions.Logging.Log4Net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

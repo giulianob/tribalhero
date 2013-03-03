@@ -80,6 +80,10 @@ package src.Objects.Prototypes {
 		
 		public function toString(value: *): String
 		{					
+            if (value == undefined) {
+                return "";
+            }
+            
 			return (perHour && value > 0 ? "+" : "") + (int(value) != value ? value.toFixed(2) : value.toString()) + (perHour ? "/hour" : "");
 		}
 	}

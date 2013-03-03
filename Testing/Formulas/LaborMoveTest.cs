@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using Game.Battle;
 using Game.Data;
 using Game.Logic.Formulas;
 using NSubstitute;
 using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.AutoNSubstitute;
 using Xunit.Extensions;
 using FluentAssertions;
 
@@ -12,16 +10,11 @@ namespace Testing.Formulas
 {
     public class LaborMoveTest
     {
-        [Theory]
-        [InlineData(1, 180)]
-        [InlineData(5, 900)]
-        [InlineData(200, 36000)]
+        [Theory, InlineData(1, 180), InlineData(5, 900), InlineData(200, 36000)]       
         public void TestBasicLaborMove(int labor, int expected)
         {
-           //ar fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
-          //var technologies = fixture.CreateAnonymous<TechnologyManager>();
-            var formula = new Fixture().CreateAnonymous<Formula>();
-            
+            var formula = new Fixture().Create<Formula>();
+
             var technologies = Substitute.For<ITechnologyManager>();
             var structure = Substitute.For<IStructure>();
 
@@ -29,7 +22,7 @@ namespace Testing.Formulas
             formula.LaborMoveTime(structure, (byte)labor, technologies).Should().Be(expected);
         }
 
-         public static IEnumerable<object[]> WithDifferentOvertime
+        public static IEnumerable<object[]> WithDifferentOvertime
         {
             get
             {
@@ -71,9 +64,7 @@ namespace Testing.Formulas
         [PropertyData("WithDifferentOvertime")]
         public void TestLaborMoveWithOvertime(int labor, IEnumerable<Effect> effects, int expected)
         {
-            //ar fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
-            //var technologies = fixture.CreateAnonymous<TechnologyManager>();
-            var formula = new Fixture().CreateAnonymous<Formula>();
+            var formula = new Fixture().Create<Formula>();
 
             var technologies = Substitute.For<ITechnologyManager>();
             var structure = Substitute.For<IStructure>();

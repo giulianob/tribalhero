@@ -27,7 +27,7 @@
 		private var tiles: Array = new Array();
 
 		private var troop: TroopStub;
-		private var troopSpeed: int;
+		private var troopSpeed: Number;
 		private var city: City;
 		private var mode: int;
 		
@@ -218,8 +218,10 @@
 			var targetMapDistance: Point = MapUtil.getMapCoord(gameObj.objX, gameObj.objY);
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 			var timeAwayInSeconds: int = Formula.moveTimeTotal(city, troopSpeed, distance, true);
-
-			Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_DISTANCE_MESSAGE", Util.niceTime(timeAwayInSeconds)));
+			if (Constants.debug)
+				Global.gameContainer.message.showMessage("Speed [" +troopSpeed+"] Distance [" + distance + "] in " + timeAwayInSeconds + " sec("+Util.formatTime(timeAwayInSeconds)+")");
+			else
+				Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_DISTANCE_MESSAGE", Util.niceTime(timeAwayInSeconds)));
 		}
 	}
 

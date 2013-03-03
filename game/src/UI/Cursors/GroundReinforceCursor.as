@@ -29,7 +29,7 @@
 		private var troop: TroopStub;
 		private var city: City;
 
-		private var troopSpeed: int;
+		private var troopSpeed: Number;
 
 		private var highlightedObj: SimpleGameObject;
 
@@ -192,7 +192,10 @@
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 			var timeAwayInSeconds: int = Formula.moveTimeTotal(city, troopSpeed, distance, false);			
 
-			Global.gameContainer.message.showMessage(StringHelper.localize("REINFORCE_DISTANCE_MESSAGE", Util.niceTime(timeAwayInSeconds)));
+			if (Constants.debug)
+				Global.gameContainer.message.showMessage("Speed [" +troopSpeed+"] Distance [" + distance + "] in " + timeAwayInSeconds + " sec("+Util.formatTime(timeAwayInSeconds)+")");
+			else
+				Global.gameContainer.message.showMessage(StringHelper.localize("REINFORCE_DISTANCE_MESSAGE", Util.niceTime(timeAwayInSeconds)));
 		}
 	}
 

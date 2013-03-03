@@ -88,7 +88,7 @@
 		private function init(carry: int, armor: String, weapon: String, weaponClass: String, unitClass: String, hp: Number, upkeep: int, attack: Number, splash: int, defense: int, stealth: int, range: int, speed: int) : void {
 			lblAttack.setText(attack.toString());
 			lblCarry.setText(carry.toString());		
-			lblSpeed.setText(Formula.moveTimeString(speed));
+			lblSpeed.setText(Formula.moveTimeStringSimple(speed));
 			lblSplash.setText(splash.toString() + StringHelper.makePlural(splash, " hit", " hits"));
 			lblRange.setText(Constants.stealthRangeNames[range]);
 			lblStealth.setText(Constants.stealthRangeNames[stealth]);

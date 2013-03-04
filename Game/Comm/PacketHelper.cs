@@ -268,6 +268,7 @@ namespace Game.Comm
             packet.AddByte((byte)stub.State);
             AddToPacket(stub.Station, packet);
             packet.AddByte((byte)stub.AttackMode);
+            AddToPacket(troopObject != null?troopObject.Stats.Loot: new Resource(), packet);
 
             //Add troop template
             packet.AddByte(stub.Template.Count);

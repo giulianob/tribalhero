@@ -510,7 +510,7 @@ namespace DatabaseGenerator
             ";
 
             const string levelTemplate =
-                    @"array('description' => '#DESCRIPTION#', 'time' => #TIME#, 'gold' => #GOLD#, 'crop' => #CROP#, 'iron' => #IRON#, 'labor' => #LABOR#, 'wood' => #WOOD#, 'hp' => #HP#, 'attack' => #ATTACK#, 'range' => #RANGE#, 'stealth' => #STEALTH#, 'weapon' => '#WEAPON#', 'maxLabor' => #MAXLABOR#, 'requirements' => array(#REQUIREMENTS#)),";
+                    @"array('description' => '#DESCRIPTION#', 'time' => #TIME#, 'splash' => #SPLASH#, 'gold' => #GOLD#, 'crop' => #CROP#, 'iron' => #IRON#, 'labor' => #LABOR#, 'wood' => #WOOD#, 'hp' => #HP#, 'attack' => #ATTACK#, 'range' => #RANGE#, 'stealth' => #STEALTH#, 'weapon' => '#WEAPON#', 'maxLabor' => #MAXLABOR#, 'requirements' => array(#REQUIREMENTS#)),";
 
             string requirementTemplate = @"'#REQUIREMENT#',";
 
@@ -543,7 +543,7 @@ namespace DatabaseGenerator
                                                             lang[currentStats.Name + "_STRUCTURE_LVL_" + level].Replace(
                                                                                                                         "'",
                                                                                                                         "\\'"));
-                currentLevel = currentLevel.Replace("#TIME#", currentStats.BuildTime.ToString());
+                currentLevel = currentLevel.Replace("#TIME#", currentStats.BuildTime.ToString());                
                 currentLevel = currentLevel.Replace("#GOLD#", currentStats.Cost.Gold.ToString());
                 currentLevel = currentLevel.Replace("#CROP#", currentStats.Cost.Crop.ToString());
                 currentLevel = currentLevel.Replace("#IRON#", currentStats.Cost.Iron.ToString());
@@ -553,6 +553,7 @@ namespace DatabaseGenerator
                 currentLevel = currentLevel.Replace("#ATTACK#", currentStats.Battle.Atk.ToString());
                 currentLevel = currentLevel.Replace("#RANGE#", currentStats.Battle.Rng.ToString());
                 currentLevel = currentLevel.Replace("#STEALTH#", currentStats.Battle.Stl.ToString());
+                currentLevel = currentLevel.Replace("#SPLASH#", currentStats.Battle.Splash.ToString());
                 currentLevel = currentLevel.Replace("#WEAPON#", currentStats.Battle.Weapon.ToString());
                 currentLevel = currentLevel.Replace("#MAXLABOR#", currentStats.MaxLabor.ToString());
 
@@ -693,7 +694,7 @@ namespace DatabaseGenerator
 
         private static void LoadLanguages()
         {
-            string[] files = Directory.GetFiles(Config.csv_folder, "lang.*", SearchOption.TopDirectoryOnly);
+            string[] files = Directory.GetFiles(Config.csv_folder, "lang.*.csv", SearchOption.TopDirectoryOnly);
             foreach (var file in files)
             {
                 using (var langReader = new CsvReader(new StreamReader(File.OpenRead(file))))

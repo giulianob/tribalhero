@@ -2,9 +2,11 @@
 	import adobe.utils.CustomActions;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
+	import mx.events.ResourceEvent;
 	import src.Global;
 	import src.Map.City;
 	import src.Objects.Location;
+	import src.Objects.Resources;
 	import src.Util.Util;
 	import src.Objects.Factories.UnitFactory;
 	import src.Objects.Prototypes.UnitPrototype;
@@ -52,7 +54,8 @@
 		
 		public var stationedLocation: * ;
 		
-
+		public var resources: Resources;
+		
 		public function TroopStub(id: int = 0, playerId: int = 0, cityId: int = 0)
 		{
 			super(Formation.sortOnType, Formation.compareType);

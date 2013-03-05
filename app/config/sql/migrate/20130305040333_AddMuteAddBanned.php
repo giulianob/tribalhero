@@ -1,0 +1,13 @@
+<?php
+
+class AddMuteAddBanned extends Ruckusing_BaseMigration {
+
+	public function up() {
+        $this->add_column("players", "muted", "datetime", array('null' => false, 'default' => '0001-01-01 00:00:00'));
+        $this->add_column("players", "banned", "boolean", array('default' => 0));
+	}
+
+	public function down() {
+
+	}
+}

@@ -236,14 +236,13 @@ namespace Game.Comm
             {
                 return
                         String.Format(
-                                      "id[{0}] created[{1}] name[{8}] emailAddress[{2}] lastLogin[{3}] ipAddress[{4}] banned[{5}] muted[{6}] deleted[{7}]",
+                                      "id[{0}] created[{1}] name[{7}] emailAddress[{2}] lastLogin[{3}] ipAddress[{4}] banned[{5}] deleted[{6}]",
                                       response.Data.id,
                                       response.Data.created,
                                       response.Data.emailAddress,
                                       response.Data.lastLogin,
                                       response.Data.ipAddress,
-                                      response.Data.banned == "1" ? "YES" : "NO",
-                                      response.Data.muted == "1" ? "YES" : "NO",
+                                      response.Data.banned == "1" ? "YES" : "NO",                                      
                                       response.Data.deleted == "1" ? "YES" : "NO",
                                       response.Data.name);
             }
@@ -300,6 +299,7 @@ namespace Game.Comm
         {
             bool help = false;
             string playerName = string.Empty;
+            int minutes = 10;
 
             try
             {
@@ -307,6 +307,7 @@ namespace Game.Comm
                 {
                         {"?|help|h", v => help = true},
                         {"p=|player=", v => playerName = v.TrimMatchingQuotes()},
+                        {"m=|minutes=", v => minutes = int.Parse(v.TrimMatchingQuotes()) },
                 };
                 p.Parse(parms);
             }
@@ -315,9 +316,9 @@ namespace Game.Comm
                 help = true;
             }
 
-            if (help || string.IsNullOrEmpty(playerName))
+            if (help || string.IsNullOrEmpty(playerName) || minutes <= 0)
             {
-                return String.Format("mute --player=player");
+                return String.Format("mute --player=player --minutes=##");
             }
 
             // Mute player in this world instantly
@@ -329,15 +330,15 @@ namespace Game.Comm
                 {
                     if (player != null)
                     {
-                        player.Muted = true;
-                    }
+                        player.Muted = SystemClock.Now.AddMinutes(minutes);
+                        dbManager.Save(player);
+
+                        return string.Format("OK muted player muted for {0} minutes (until {1})", minutes, player.Muted.ToString("R"));
+                    }                    
                 }
             }
 
-            // Globally mute them
-            ApiResponse response = ApiCaller.PlayerMute(playerName);
-
-            return response.Success ? "OK!" : response.ErrorMessage;
+            return "Player not found";
         }
 
         public string Unmute(Session session, String[] parms)
@@ -373,15 +374,15 @@ namespace Game.Comm
                 {
                     if (player != null)
                     {
-                        player.Muted = false;
+                        player.Muted = DateTime.MinValue;                  
+                        dbManager.Save(player);
+
+                        return "OK!";
                     }
                 }
             }
 
-            // Globally mute them
-            ApiResponse response = ApiCaller.PlayerUnmute(playerName);
-
-            return response.Success ? "OK!" : response.ErrorMessage;
+            return "Player not found";
         }
 
         public string RenameTribe(Session session, String[] parms)
@@ -691,14 +692,20 @@ namespace Game.Comm
             IPlayer player;
             using (locker.Lock(playerId, out player))
             {
-                if (player != null && player.Session != null)
+                if (player != null)
                 {
-                    try
+                    player.Banned = true;
+                    dbManager.Save(player);
+
+                    if (player.Session != null)
                     {
-                        player.Session.CloseSession();
-                    }
-                    catch(Exception)
-                    {
+                        try
+                        {
+                            player.Session.CloseSession();
+                        }
+                        catch(Exception)
+                        {
+                        }
                     }
                 }
             }
@@ -730,6 +737,22 @@ namespace Game.Comm
             if (help || string.IsNullOrEmpty(playerName))
             {
                 return "unban --player=player";
+            }            
+            
+            uint playerId;
+            if (!world.FindPlayerId(playerName, out playerId))
+            {
+                return "Player not found";
+            }
+
+            IPlayer player;
+            using (locker.Lock(playerId, out player))
+            {
+                if (player != null)
+                {
+                    player.Banned = false;
+                    dbManager.Save(player);
+                }
             }
 
             ApiResponse response = ApiCaller.Unban(playerName);

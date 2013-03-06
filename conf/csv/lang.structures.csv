@@ -307,7 +307,7 @@ TRIBAL_FAIR_STRUCTURE_LVL_1,Shorten time required to produce new laborers by 30%
 TRIBAL_CARNIVAL_STRUCTURE_NAME,Tribal Carnival,
 TRIBAL_CARNIVAL_STRUCTURE_NAME_PLURAL,Tribal Carnivals,
 TRIBAL_CARNIVAL_STRUCTURE_DESCRIPTION,"A temporary tent where tribesmen hang out, get drunk, and have a great time!",
-TRIBAL_CARNIVAL_STRUCTURE_LVL_1,Shorten time required to produce new laborers by 30% for 2 days.  Additional Tribal celebration structures shortens by another 8% each with diminishing returns.,
+TRIBAL_CARNIVAL_STRUCTURE_LVL_1,Shorten time required to produce new laborers by 30% for 3 days.  Additional Tribal celebration structures shortens by another 8% each with diminishing returns.,
 ,,
 TRIBAL_FESTIVAL_STRUCTURE_NAME,Tribal Festival,
 TRIBAL_FESTIVAL_STRUCTURE_NAME_PLURAL,Tribal Festivals,

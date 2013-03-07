@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Text;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Actions;
@@ -30,6 +32,7 @@ namespace Game.Comm.CmdLine_Commands
             processor.RegisterCommand("removestructure", RemoveStructure, PlayerRights.Bureaucrat);
             processor.RegisterCommand("deletestucktroop", DeleteStuckTroop, PlayerRights.Bureaucrat);
             processor.RegisterCommand("createcity", CreateCity, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("dumpcity", DumpCity, PlayerRights.Bureaucrat);
         }
 
         public string CreateCity(Session session, String[] parms)
@@ -259,6 +262,52 @@ namespace Game.Comm.CmdLine_Commands
             }
 
             return "OK!";
+        }
+
+        public string DumpCity(Session session, String[] parms)
+        {
+            bool help = false;
+            string cityName = string.Empty;
+
+            try
+            {
+                var p = new OptionSet {{"?|help|h", v => help = true}, {"city=", v => cityName = v.TrimMatchingQuotes()}};
+                p.Parse(parms);
+            }
+            catch(Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(cityName))
+            {
+                return "dumpcity --city=city";
+            }
+
+            uint cityId;
+            if (!World.Current.Cities.FindCityId(cityName, out cityId))
+            {
+                return "City not found";
+            }
+
+            StringWriter outString = new StringWriter();
+            ICity city;
+            using (Concurrency.Current.Lock(cityId, out city))
+            {
+                foreach (var obj in city)
+                {
+                    outString.WriteLine("id[{0}] type[{1}] level[{2}] in_world[{3}] is_blocked[{4}] x[{5}] y[{6}]",
+                                        obj.ObjectId,
+                                        obj.Type,
+                                        obj.Lvl,
+                                        obj.InWorld,
+                                        obj.IsBlocked,
+                                        obj.X,
+                                        obj.Y);
+                }
+            }
+
+            return outString.ToString();
         }
     }
 }

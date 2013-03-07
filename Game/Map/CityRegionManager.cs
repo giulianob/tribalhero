@@ -6,13 +6,13 @@ namespace Game.Map
     {
         private readonly CityRegion[] cityRegions;
 
-        public CityRegionManager(int regionCount)
+        public CityRegionManager(int regionCount, ICityRegionFactory cityRegionFactory)
         {
             cityRegions = new CityRegion[regionCount];
 
             for (int regionId = 0; regionId < regionCount; ++regionId)
             {
-                cityRegions[regionId] = new CityRegion();
+                cityRegions[regionId] = cityRegionFactory.CreateCityRegion();
             }
         }
 

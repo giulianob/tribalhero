@@ -114,7 +114,8 @@ namespace Game.Database
                     LoadTribes();
                     LoadTribesmen();
                     LoadUnitTemplates();
-                    LoadStructures();                    
+                    LoadStructures();
+                    LoadStructureProperties();
                     LoadTechnologies();
                     LoadForests(downTime);
                     LoadStrongholds();
@@ -417,7 +418,9 @@ namespace Game.Database
                                             PlayerRights.Basic)
                     {
                             DbPersisted = true,
-                            TribeRequest = (uint)reader["invitation_tribe_id"]
+                            TribeRequest = (uint)reader["invitation_tribe_id"],
+                            Muted = DateTime.SpecifyKind((DateTime)reader["muted"], DateTimeKind.Utc),
+                            Banned = (bool)reader["banned"]
                     };
                     World.Players.Add(player.PlayerId, player);
                 }
@@ -690,18 +693,20 @@ namespace Game.Database
         {
             #region Structures
 
+            var structureFactory = Ioc.Kernel.Get<StructureFactory>();
+
             Global.Logger.Info("Loading structures...");
             using (var reader = DbManager.Select(Structure.DB_TABLE))
             {
+                ICity city = null;
                 while (reader.Read())
-                {
-                    ICity city;
-                    if (!World.TryGetObjects((uint)reader["city_id"], out city))
+                {                    
+                    if ((city == null || city.Id != (uint)reader["city_id"]) && !World.TryGetObjects((uint)reader["city_id"], out city))
                     {
                         throw new Exception("City not found");
                     }
-                    IStructure structure = Ioc.Kernel.Get<StructureFactory>()
-                                              .GetNewStructure((ushort)reader["type"], (byte)reader["level"]);
+
+                    IStructure structure = structureFactory.GetNewStructure((ushort)reader["type"], (byte)reader["level"]);
                     structure.InWorld = (bool)reader["in_world"];
                     structure.Technologies.Parent = city.Technologies;
                     structure.X = (uint)reader["x"];
@@ -726,27 +731,45 @@ namespace Game.Database
                     }
 
                     structure.Properties.DbPersisted = true;
-
-                    using (DbDataReader listReader = DbManager.SelectList(structure.Properties))
-                    {
-                        while (listReader.Read())
-                        {
-                            structure.Properties.Add(listReader["name"],
-                                                     DataTypeSerializer.Deserialize((string)listReader["value"],
-                                                                                    (byte)listReader["datatype"]));
-                        }
-                    }
                 }
             }
 
             #endregion
-        }     
+        }
+
+        private void LoadStructureProperties()
+        {
+            #region Structure Properties
+
+            Global.Logger.Info("Loading structure properties...");
+            using (var reader = DbManager.ReaderQuery(string.Format("SELECT * FROM `{0}`", StructureProperties.DB_TABLE + "_list")))
+            {
+                ICity city = null;
+                while (reader.Read())
+                {
+                    // Simple optimization                        
+                    if ((city == null || city.Id != (uint)reader["city_id"]) && !World.TryGetObjects((uint)reader["city_id"], out city))
+                    {
+                        throw new Exception("City not found");
+                    }
+
+                    var structure = (IStructure)city[(uint)reader["structure_id"]];
+
+                    structure.Properties.Add(reader["name"], DataTypeSerializer.Deserialize((string)reader["value"], (byte)reader["datatype"]));                    
+                }
+            }            
+
+            #endregion
+        }
 
         private void LoadTechnologies()
         {
             #region Technologies
 
+            var technologyFactory = Ioc.Kernel.Get<TechnologyFactory>();
+            
             Global.Logger.Info("Loading technologies...");
+
             using (var reader = DbManager.Select(TechnologyManager.DB_TABLE))
             {
                 while (reader.Read())
@@ -789,10 +812,7 @@ namespace Game.Database
                     {
                         while (listReader.Read())
                         {
-                            manager.Add(
-                                        Ioc.Kernel.Get<TechnologyFactory>()
-                                           .GetTechnology((uint)listReader["type"], (byte)listReader["level"]),
-                                        false);
+                            manager.Add(technologyFactory.GetTechnology((uint)listReader["type"], (byte)listReader["level"]), false);
                         }
                     }
                 }
@@ -946,7 +966,7 @@ namespace Game.Database
                             Stats =
                                     new TroopStats((int)reader["attack_point"],
                                                    (byte)reader["attack_radius"],
-                                                   (byte)reader["speed"],
+                                                   (decimal)reader["speed"],
                                                    new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"])),
                             IsBlocked = (uint)reader["is_blocked"],
                             InWorld = (bool)reader["in_world"],

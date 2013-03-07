@@ -475,6 +475,7 @@ namespace Game.Logic.Actions
                 IStructure structure;
                 if (!city.TryGetStructure(structureId, out structure))
                 {
+                    StateChange(ActionState.Failed);
                     return;
                 }
 

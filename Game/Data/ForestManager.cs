@@ -1,11 +1,13 @@
 ﻿#region
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data.Troop;
 using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions.ResourceActions;
+using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -16,13 +18,11 @@ using Ninject;
 
 namespace Game.Data
 {
-    public class ForestManager : ILockable
+    public class ForestManager
     {
-        public static readonly object ForestLock = new object();
-
         private readonly Dictionary<uint, Forest> forests;
 
-        private readonly LargeIdGenerator objectIdGenerator = new LargeIdGenerator(int.MaxValue);
+        private readonly LargeIdGenerator objectIdGenerator = new LargeIdGenerator(Config.forest_id_max, Config.forest_id_min);
 
         public ForestManager()
         {
@@ -31,30 +31,10 @@ namespace Game.Data
         }
 
         public int[] ForestCount { get; private set; }
-
-        #region ILockable Members
-
-        public int Hash
-        {
-            get
-            {
-                return (int)Global.Locks.Forest;
-            }
-        }
-
-        public object Lock
-        {
-            get
-            {
-                return ForestLock;
-            }
-        }
-
-        #endregion
-
+        
         public void StartForestCreator()
         {
-            Scheduler.Current.Put(new ForestCreatorAction());
+            Scheduler.Current.Put(new ForestCreatorAction(DbPersistance.Current));
         }
 
         public void DbLoaderAdd(Forest forest)
@@ -129,7 +109,7 @@ namespace Game.Data
                 forest.X = x;
                 forest.Y = y;
 
-                forest.ObjectId = (uint)objectIdGenerator.GetNext();
+                forest.ObjectId = objectIdGenerator.GetNext();
 
                 World.Current.Regions.Add(forest);
                 World.Current.Regions.UnlockRegion(x, y);
@@ -162,8 +142,6 @@ namespace Game.Data
 
         /// <summary>
         ///     Locks all cities participating in this forest.
-        ///     Proper usage would be to lock the forest manager and the main city in the base objects.
-        ///     The custom[0] parameter should a uint with the forestId.
         ///     Once inside of the lock, a call to ForestManager.TryGetStronghold should be used to get the forest.
         /// </summary>
         /// <param name="custom">custom[0] should contain the forestId to lock</param>
@@ -173,17 +151,15 @@ namespace Game.Data
             return GetListOfLocks((uint)custom[0]);
         }
 
-        public ILockable[] GetListOfLocks(uint forestId)
+        private ILockable[] GetListOfLocks(uint forestId)
         {
             lock (forests)
             {
-                DefaultMultiObjectLock.ThrowExceptionIfNotLocked(World.Current.Forests);
-
                 Forest forest;
 
                 return !forests.TryGetValue(forestId, out forest)
                                ? new ILockable[] {}
-                               : forest.Select(obj => obj.City).ToArray<ILockable>();
+                               : forest.Select(obj => obj.City).Concat(new ILockable[] {forest}).ToArray();
             }
         }
 
@@ -192,6 +168,20 @@ namespace Game.Data
             lock (forests)
             {
                 return forests.TryGetValue(id, out forest);
+            }
+        }
+
+        public void RegenerateForests()
+        {
+            for (byte i = 0; i < Config.forest_count.Length; i++)
+            {
+                var lvl = (byte)(i + 1);
+                int delta = Config.forest_count[i] - ForestCount[i];
+
+                for (int j = 0; j < delta; j++)
+                {
+                    CreateForest(lvl, Formula.Current.GetMaxForestCapacity(lvl), Formula.Current.GetMaxForestRate(lvl));
+                }
             }
         }
     }

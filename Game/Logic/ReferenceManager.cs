@@ -197,6 +197,8 @@ namespace Game.Logic
 
                     if (ret)
                     {
+                        referenceIdGen.Release(referenceStub.ReferenceId);
+
                         DbPersistance.Current.Delete(referenceStub);
 
                         SendRemoveReference(referenceStub);
@@ -214,6 +216,8 @@ namespace Game.Logic
 
                     if (ret)
                     {
+                        referenceIdGen.Release(referenceStub.ReferenceId);
+
                         DbPersistance.Current.Delete(referenceStub);
 
                         SendRemoveReference(referenceStub);
@@ -231,6 +235,8 @@ namespace Game.Logic
 
                     if (ret)
                     {
+                        referenceIdGen.Release(referenceStub.ReferenceId);
+
                         DbPersistance.Current.Delete(referenceStub);
 
                         SendRemoveReference(referenceStub);

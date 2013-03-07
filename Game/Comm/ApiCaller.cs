@@ -166,17 +166,5 @@ namespace Game.Comm
             };
             return MakeCall("player", "set_password", parms);
         }
-
-        public static ApiResponse PlayerUnmute(string playerName)
-        {
-            var parms = new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("name", playerName)};
-            return MakeCall("player", "unmute", parms);
-        }
-
-        public static ApiResponse PlayerMute(string playerName)
-        {
-            var parms = new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("name", playerName)};
-            return MakeCall("player", "mute", parms);
-        }
     }
 }

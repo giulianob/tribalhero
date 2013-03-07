@@ -7,5 +7,7 @@ namespace Game.Util.Locking
         IMultiObjectLock Lock(ILockable[] list);
 
         void UnlockAll();
+
+        void SortLocks(ILockable[] list);
     }
 }

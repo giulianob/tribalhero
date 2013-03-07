@@ -26,6 +26,8 @@ namespace Game.Data.Tribe
 
         string Description { get; set; }
 
+        string PublicDescription { get; set; }
+
         Resource Resource { get; }
 
         short AssignmentCount { get; }

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Game.Data;
 using Game.Module;
 using Game.Setup;
@@ -22,6 +25,23 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.Chat, Chat);
         }
 
+        private static string RemoveDiacritics(string stIn)
+        {
+            string stFormD = stIn.Normalize(NormalizationForm.FormD);
+            StringBuilder sb = new StringBuilder(stIn.Length);
+
+            for (int ich = 0; ich < stFormD.Length; ich++)
+            {
+                UnicodeCategory uc = CharUnicodeInfo.GetUnicodeCategory(stFormD[ich]);
+                if (uc != UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(stFormD[ich]);
+                }
+            }
+
+            return (sb.ToString().Normalize(NormalizationForm.FormC));
+        }
+
         public void Chat(Session session, Packet packet)
         {
             Chat.ChatType type;
@@ -31,6 +51,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 type = (Chat.ChatType)packet.GetByte();
                 message = packet.GetString().Trim();
+ 
             }
             catch(Exception)
             {
@@ -61,10 +82,17 @@ namespace Game.Comm.ProcessorCommands
                         break;
 
                     default:
-                        // If player is muted then dont let him talk in global
-                        if (session.Player.Muted)
+                        // If player is muted then dont let him talk
+                        if (session.Player.Muted > SystemClock.Now)
                         {
                             ReplyError(session, packet, Error.ChatMuted);
+                            return;
+                        }
+
+                        // Minimum chat privilege for controlling when chat goes out of control
+                        if (session.Player.Rights < Config.chat_min_level)
+                        {
+                            ReplyError(session, packet, Error.ChatDisabled);
                             return;
                         }
 

@@ -91,8 +91,7 @@ namespace Game.Logic.Actions
             using (
                     Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler,
                                              new object[] {forestId},
-                                             city,
-                                             World.Current.Forests))
+                                             city))
             {
                 if (!IsValid())
                 {
@@ -120,8 +119,7 @@ namespace Game.Logic.Actions
             using (
                     Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler,
                                              new object[] {forestId},
-                                             city,
-                                             World.Current.Forests))
+                                             city))
             {
                 if (!IsValid())
                 {
@@ -166,8 +164,7 @@ namespace Game.Logic.Actions
             using (
                     Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler,
                                              new object[] {forestId},
-                                             city,
-                                             World.Current.Forests))
+                                             city))
             {
                 if (!IsValid())
                 {

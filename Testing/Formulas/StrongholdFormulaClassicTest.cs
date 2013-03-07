@@ -43,7 +43,7 @@ namespace Testing.Formulas
         [InlineData(20, 20000)]
         public void TestMeterValue(int level, int expectedValue)
         {
-            var formula = new Fixture().CreateAnonymous<Formula>();
+            var formula = new Fixture().Create<Formula>();
             formula.StrongholdMainBattleMeter((byte)level).Should().Be(expectedValue);
         }
 
@@ -70,7 +70,7 @@ namespace Testing.Formulas
         [InlineData(20, 200000)]
         public void TestGateValue(int level, int expectedValue)
         {
-            var formula = new Fixture().CreateAnonymous<Formula>();
+            var formula = new Fixture().Create<Formula>();
             formula.StrongholdGateLimit((byte)level).Should().Be(expectedValue);
         }
 
@@ -99,7 +99,7 @@ namespace Testing.Formulas
         {
             byte unitLevel;
             int upkeep;
-            var formula = new Fixture().CreateAnonymous<Formula>();
+            var formula = new Fixture().Create<Formula>();
             formula.StrongholdUpkeep((byte)level, out upkeep, out unitLevel);
             unitLevel.Should().Be((byte)expectedLevel);
             upkeep.Should().Be(expectedUpkeep);
@@ -127,7 +127,7 @@ namespace Testing.Formulas
         {
             Global.SystemVariables.Clear();
             Global.SystemVariables.Add("Server.date", new SystemVariable("Server.date", SystemClock.Now.Subtract(TimeSpan.FromDays((double)serverDays))));
-            var formula = new Fixture().CreateAnonymous<Formula>();
+            var formula = new Fixture().Create<Formula>();
 
             var stronghold = Substitute.For<IStronghold>();
             stronghold.StrongholdState.Returns(StrongholdState.Occupied);
@@ -141,7 +141,7 @@ namespace Testing.Formulas
         [Fact]
         public void TestNonOccupiedVictoryPoint()
         {
-            var formula = new Fixture().CreateAnonymous<Formula>();
+            var formula = new Fixture().Create<Formula>();
 
             var stronghold = Substitute.For<IStronghold>();
             stronghold.StrongholdState.Returns(StrongholdState.Neutral);

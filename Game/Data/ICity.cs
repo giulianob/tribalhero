@@ -96,7 +96,9 @@ namespace Game.Data
         /// </summary>
         int DefensePoint { get; set; }
 
-        ushort Value { get; set; }
+        ushort Value { get; }
+
+        IStructure MainBuilding { get; }
 
         decimal AlignmentPoint { get; set; }
 
@@ -124,8 +126,6 @@ namespace Game.Data
         bool Add(ITroopObject troop);
 
         bool Add(uint objId, IStructure structure, bool save);
-
-        bool Add(uint objId, IStructure structure);
 
         bool Add(IStructure structure);
 

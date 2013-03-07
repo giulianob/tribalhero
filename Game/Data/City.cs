@@ -69,7 +69,7 @@ namespace Game.Data
         /// <summary>
         ///     Returns the town center
         /// </summary>
-        private IStructure MainBuilding
+        public IStructure MainBuilding
         {
             get
             {

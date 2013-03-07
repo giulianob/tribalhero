@@ -29,7 +29,7 @@ namespace Game.Data.Tribe
         /// <summary>
         ///     Assignment id generator
         /// </summary>
-        private static readonly LargeIdGenerator IdGen = new LargeIdGenerator(long.MaxValue);
+        private static readonly LargeIdGenerator IdGen = new LargeIdGenerator(int.MaxValue);
 
         private readonly IActionFactory actionFactory;
 
@@ -87,7 +87,7 @@ namespace Game.Data.Tribe
             this.actionFactory = actionFactory;
             this.locker = locker;
 
-            Id = IdGen.GetNext();
+            Id = (int)IdGen.GetNext();
             Tribe = tribe;
             TargetTime = targetTime;
             Target = target;
@@ -142,7 +142,7 @@ namespace Game.Data.Tribe
             Description = description;
             IsAttack = isAttack;
 
-            IdGen.Set(id);
+            IdGen.Set((uint)id);
         }
 
         /// <summary>
@@ -379,7 +379,7 @@ namespace Game.Data.Tribe
                 IStructure structure = (IStructure)gameObjectLocator.GetObjects(X, Y).Find(z => z is IStructure);
                 if (structure == null)
                 {
-                    procedure.TroopStubDelete(stub.City, stub);
+                    procedure.TroopObjectDelete(troopObject, true);
                     stub.City.Owner.SendSystemMessage(null,
                                                       "Assignment Failed",
                                                       string.Format(

@@ -3,18 +3,23 @@ using System.ComponentModel;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
+using Game.Setup;
 
 namespace Game.Battle
 {
     public class StaminaMonitor
     {
+        private readonly ObjectTypeFactory objectTypeFactory;
+
         private short stamina;
 
         public StaminaMonitor(IBattleManager battleManager,
                               ICombatGroup combatGroup,
                               short initialStamina,
-                              BattleFormulas battleFormulas)
+                              BattleFormulas battleFormulas,
+                              ObjectTypeFactory objectTypeFactory)
         {
+            this.objectTypeFactory = objectTypeFactory;
             CombatGroup = combatGroup;
             Stamina = initialStamina;
             BattleFormulas = battleFormulas;
@@ -52,12 +57,11 @@ namespace Game.Battle
                                           ICombatObject target,
                                           decimal damage)
         {
-            if (attackerGroup != CombatGroup || target.ClassType != BattleClass.Structure || !target.IsDead)
+            if (attackingside == BattleManager.BattleSide.Attack && target.ClassType == BattleClass.Structure && target.IsDead &&
+                !objectTypeFactory.IsObjectType("BattleNoStaminaReduction", target.Type))
             {
-                return;
+                Stamina = BattleFormulas.GetStaminaStructureDestroyed(Stamina, target);
             }
-
-            Stamina = BattleFormulas.GetStaminaStructureDestroyed(Stamina, target);
         }
 
         private void BattleWithdrawAttacker(IBattleManager battle, ICombatGroup groupWithdrawn)

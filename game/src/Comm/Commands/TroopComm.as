@@ -35,6 +35,8 @@
 			troop.state = packet.readUByte();			
 			troop.stationedLocation = mapComm.General.readLocation(packet);
 			troop.attackMode = packet.readUByte();
+			troop.resources = new Resources(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUInt(), 0);
+
 			
 			var templateCnt: int = packet.readUByte();
 			for (var templateI: int = 0; templateI < templateCnt; templateI++) {
@@ -187,7 +189,7 @@
 
 			if (obj.playerId == Constants.playerId) {
 				obj.attackRadius = packet.readUByte();
-				obj.speed = packet.readUByte();				
+				obj.speed = packet.readFloat();				
 				obj.targetX = packet.readUInt();
 				obj.targetY = packet.readUInt();
 

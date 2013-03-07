@@ -34,12 +34,12 @@
 			loader.load("/message_boards/del_post", [ { key: "id", value: postId }]);
 		}		
 		
-		public function addThread(loader: GameURLLoader, subject: String, message: String) : void {
-			loader.load("/message_boards/add_thread", [ { key: "subject", value: subject }, { key: "message", value: message}]);
+		public function addThread(loader: GameURLLoader, editThreadId: int, subject: String, message: String) : void {
+			loader.load("/message_boards/add_thread", [ { key: "editThreadId", value: editThreadId }, { key: "subject", value: subject }, { key: "message", value: message}]);
 		}		
 		
-		public function addPost(loader: GameURLLoader, threadId: int, message: String) : void {
-			loader.load("/message_boards/add_post", [ { key: "threadId", value: threadId }, { key: "message", value: message}]);
+		public function addPost(loader: GameURLLoader, threadId: int, editPostId: int, message: String) : void {
+			loader.load("/message_boards/add_post", [ { key: "editPostId", value: editPostId }, { key: "threadId", value: threadId }, { key: "message", value: message}]);
 		}							
 	}
 

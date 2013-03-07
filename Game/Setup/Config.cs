@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Game.Data;
 using JsonFx.Json;
 using log4net;
 using log4net.Config;
@@ -16,7 +17,7 @@ namespace Game.Setup
     {
         #region Game Settings
 
-        public static string database_schema_version = "20130210212422";
+        public static string database_schema_version = "20130305040333";
 
         // ReSharper disable InconsistentNaming        
         public static int client_min_version;
@@ -195,6 +196,8 @@ namespace Game.Setup
 
         public static int stronghold_radius_base = 100;
 
+        public static bool stronghold_classic = true;
+
         public static double barbarian_tribes_npc_randomness = 0.4;
         
         public static double stronghold_npc_randomness = 0.4;
@@ -221,12 +224,14 @@ namespace Game.Setup
         public static uint city_id_min = 4000000;
         public static uint city_id_max = 4999999;
 
+        public static PlayerRights chat_min_level = PlayerRights.Basic;
+
         #endregion
 
         [ThreadStatic]
         private static Random random;
 
-        private static readonly Dictionary<string, string> extraProperties = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> extraProperties = new Dictionary<string, string>();        
 
         public static Random Random
         {

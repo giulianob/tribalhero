@@ -116,12 +116,13 @@ namespace Game.Comm
                 }
 
                 ITribe tribe = player.Tribesman.Tribe;
-                result = string.Format("Id[{0}] Owner[{1}] Lvl[{2}] Name[{3}] Desc[{4}] \n",
+                result = string.Format("Id[{0}] Owner[{1}] Lvl[{2}] Name[{3}] Desc[{4}] PublicDesc[{5}]\n",
                                        tribe.Id,
                                        tribe.Owner.Name,
                                        tribe.Level,
                                        tribe.Name,
-                                       tribe.Description);
+                                       tribe.Description,
+                                       tribe.PublicDescription);
                 result += tribe.Resource.ToNiceString();
                 result += string.Format("Member Count[{0}]\n", tribe.Count);
                 result = tribe.Tribesmen.Aggregate(result,
@@ -317,6 +318,7 @@ namespace Game.Comm
             bool help = false;
             string desc = string.Empty;
             string tribeName = string.Empty;
+            string publicDesc = string.Empty;
 
             try
             {
@@ -325,6 +327,7 @@ namespace Game.Comm
                         {"?|help|h", v => help = true},
                         {"tribe=", v => tribeName = v.TrimMatchingQuotes()},
                         {"desc=", v => desc = v.TrimMatchingQuotes()},
+                        {"publicdesc=", v => publicDesc = v.TrimMatchingQuotes()},
                 };
                 p.Parse(parms);
             }
@@ -335,7 +338,7 @@ namespace Game.Comm
 
             if (help || string.IsNullOrEmpty(tribeName) || string.IsNullOrEmpty(desc))
             {
-                return "TribesmanAdd --tribe=tribe_name --desc=desc";
+                return "TribeUpdate --tribe=tribe_name --desc=desc --publicdesc=publicdesc";
             }
 
             uint tribeId;
@@ -348,6 +351,7 @@ namespace Game.Comm
             using (locker.Lock(tribeId, out tribe))
             {
                 tribe.Description = desc;
+                tribe.PublicDescription = publicDesc;
                 dbManager.Save(tribe);
             }
             return "OK";

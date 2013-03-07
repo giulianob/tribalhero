@@ -45,6 +45,8 @@ namespace Game.Data.Tribe
 
         private string description = string.Empty;
 
+        private string publicDescription = string.Empty;
+
         public Tribe(IPlayer owner,
                      string name,
                      Procedure procedure,
@@ -185,6 +187,29 @@ namespace Game.Data.Tribe
                                     new[]
                                     {
                                             new DbColumn("desc", description, DbType.String, Player.MAX_DESCRIPTION_LENGTH),
+                                            new DbColumn("id", Id, DbType.UInt32)
+                                    });
+                }
+            }
+        }
+
+        public string PublicDescription
+        {
+            get
+            {
+                return publicDescription;
+            }
+            set
+            {
+                publicDescription = value;
+
+                if (DbPersisted)
+                {
+                    dbManager.Query(
+                                    string.Format("UPDATE `{0}` SET `public_desc` = @desc WHERE `id` = @id LIMIT 1", DB_TABLE),
+                                    new[]
+                                    {
+                                            new DbColumn("desc", publicDescription, DbType.String, Player.MAX_DESCRIPTION_LENGTH),
                                             new DbColumn("id", Id, DbType.UInt32)
                                     });
                 }

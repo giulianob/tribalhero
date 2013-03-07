@@ -86,6 +86,7 @@ namespace Game.Data
         {
             return isBlocked > 0 && isBlocked != actionId;
         }
+
         #endregion
     }
 }

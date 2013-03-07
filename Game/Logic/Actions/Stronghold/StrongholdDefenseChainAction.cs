@@ -157,6 +157,7 @@ namespace Game.Logic.Actions
             troopObject.Stub.Template.LoadStats(TroopBattleGroup.Defense);
             troopObject.Stub.InitialCount = troopObject.Stub.TotalCount;
             troopObject.Stub.RetreatCount = (ushort)formula.GetAttackModeTolerance(troopObject.Stub.TotalCount, mode);
+            troopObject.Stub.AttackMode = mode;
             troopObject.Stub.EndUpdate();
 
             city.References.Add(troopObject, this);

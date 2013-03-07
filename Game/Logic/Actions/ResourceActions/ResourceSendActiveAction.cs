@@ -180,16 +180,16 @@ namespace Game.Logic.Actions
                 target.EndUpdate();
 
                 ICity sender = cities[cityId];
-                target.Owner.SendSystemMessage(sender.Owner,
-                                               string.Format("{0}'s {1} has sent resources to {2}",
-                                                             sender.Owner.Name,
-                                                             sender.Name,
-                                                             target.Name),
-                                               string.Format("{0}'s {1} has sent you {2} to {3}.",
-                                                             sender.Owner.Name,
-                                                             sender.Name,
-                                                             resource.ToNiceString(),
-                                                             target.Name));
+                if (sender.Owner != target.Owner)
+                {
+                    target.Owner.SendSystemMessage(sender.Owner,
+                                                   string.Format("{0}'s {1} has sent resources to {2}", sender.Owner.Name, sender.Name, target.Name),
+                                                   string.Format("{0}'s {1} has sent you {2} to {3}.",
+                                                                 sender.Owner.Name,
+                                                                 sender.Name,
+                                                                 resource.ToNiceString(),
+                                                                 target.Name));
+                }
 
                 StateChange(ActionState.Completed);
             }

@@ -180,7 +180,7 @@ namespace Testing.Battle
                                                                          bool expectedResult)
         {
             var fixture = new Fixture();
-            var battleOrder = fixture.CreateAnonymous<BattleOrder>();
+            var battleOrder = fixture.Create<BattleOrder>();
 
             ICombatObject outCombatObject;
             ICombatGroup outCombatGroup;

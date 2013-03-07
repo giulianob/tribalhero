@@ -379,7 +379,7 @@ namespace Game.Data.Tribe
                 IStructure structure = (IStructure)gameObjectLocator.GetObjects(X, Y).Find(z => z is IStructure);
                 if (structure == null)
                 {
-                    procedure.TroopStubDelete(stub.City, stub);
+                    procedure.TroopObjectDelete(troopObject, true);
                     stub.City.Owner.SendSystemMessage(null,
                                                       "Assignment Failed",
                                                       string.Format(

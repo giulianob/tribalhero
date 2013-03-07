@@ -18,7 +18,7 @@ namespace Game.Logic.Formulas
             return (byte)Math.Min(stub.City.Value / 40, 4);
         }
 
-        public virtual byte GetTroopSpeed(ITroopStub stub)
+        public virtual decimal GetTroopSpeed(ITroopStub stub)
         {
             if (stub.TotalCount == 0)
             {
@@ -26,7 +26,7 @@ namespace Game.Logic.Formulas
             }
 
             int count = 0;
-            int totalSpeed = 0;
+            decimal totalSpeed = 0;
             int machineSpeed = int.MaxValue;
 
             foreach (var formation in stub)
@@ -47,7 +47,7 @@ namespace Game.Logic.Formulas
                 }
             }
 
-            return (byte)(machineSpeed == int.MaxValue ? totalSpeed / count : machineSpeed);
+            return Math.Round(machineSpeed == int.MaxValue ? totalSpeed / count : machineSpeed, 1);
         }
 
         public virtual int GetAttackModeTolerance(int totalCount, AttackMode mode)

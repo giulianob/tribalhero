@@ -77,6 +77,7 @@ namespace Game.Logic.Actions
                                        string nlsDescription,
                                        Dictionary<string, string> properties,
                                        IActionFactory actionFactory,
+                                       ICityRemoverFactory cityRemoverFactory,
                                        Formula formula,
                                        IWorld world,
                                        ILocker locker,
@@ -86,6 +87,7 @@ namespace Game.Logic.Actions
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.actionFactory = actionFactory;
+            this.cityRemoverFactory = cityRemoverFactory;
             this.formula = formula;
             this.world = world;
             this.locker = locker;
@@ -263,7 +265,7 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
             ICity city;
-            using (locker.Lock(cityId, out city))
+            using (locker.Lock(newCityId, out city))
             {
                 CityRemover remover = cityRemoverFactory.CreateCityRemover(newCityId);
                 remover.Start();

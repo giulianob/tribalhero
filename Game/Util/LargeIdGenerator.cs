@@ -8,33 +8,38 @@ namespace Game.Util
 {
     public class LargeIdGenerator
     {
-        private readonly long max;
+        private readonly uint max;
 
         private readonly object objLock = new object();
 
-        private long last;
+        private uint last;
 
-        public LargeIdGenerator(long max, long startValue = 0)
+        public LargeIdGenerator(uint max, uint startValue = 0)
         {
+            if (startValue == uint.MaxValue || startValue >= max)
+            {
+                throw new Exception("Invalid start value");
+            }
+
             this.max = max;
             Set(startValue);
         }
 
-        public int GetNext()
+        public uint GetNext()
         {
             lock (objLock)
             {
                 last++;
-                if (last > max)
+                if (last > max || last == uint.MaxValue)
                 {
                     throw new ArgumentOutOfRangeException();
                 }
 
-                return (int)last;
+                return last;
             }
         }
 
-        public void Set(long id)
+        public void Set(uint id)
         {
             lock (objLock)
             {
@@ -45,7 +50,7 @@ namespace Game.Util
             }
         }
 
-        public void Release(long id)
+        public void Release(uint id)
         {
             lock (objLock)
             {

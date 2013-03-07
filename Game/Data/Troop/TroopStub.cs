@@ -210,7 +210,7 @@ namespace Game.Data.Troop
             }
         }
 
-        public byte Speed
+        public decimal Speed
         {
             get
             {

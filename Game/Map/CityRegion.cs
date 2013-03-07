@@ -2,8 +2,10 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Game.Data;
 using Game.Setup;
+using Game.Util.Locking;
 
 #endregion
 
@@ -11,6 +13,8 @@ namespace Game.Map
 {
     public class CityRegion
     {
+        private readonly DefaultMultiObjectLock.Factory lockerFactory;
+
         #region Constants
 
         public enum ObjectType : byte
@@ -29,6 +33,11 @@ namespace Game.Map
         public const int TILE_SIZE = 2;
 
         #endregion
+
+        public CityRegion(DefaultMultiObjectLock.Factory lockerFactory)
+        {
+            this.lockerFactory = lockerFactory;
+        }
 
         #region Members
 
@@ -85,33 +94,55 @@ namespace Game.Map
 
         public byte[] GetCityBytes()
         {
-            if (isDirty || objects == null)
+
+            while (isDirty)
             {
+                // Players must always be locked first
+                ILockable[] playersInRegion;
                 lock (objLock)
                 {
-                    if (isDirty || objects == null)
+                    playersInRegion = data.ToArray<ILockable>();
+                }
+
+                using (var lck = lockerFactory().Lock(playersInRegion))
+                {
+                    // Enter write lock but give up all locks if we cant in 1 second just to be safe
+                    lock (objLock)
                     {
-                        using (var ms = new MemoryStream())
-                        {
-                            var bw = new BinaryWriter(ms);
-                            bw.Write((ushort)data.Count);
-                            foreach (var obj in data)
-                            {
-                                bw.Write((byte)obj.CityRegionType);
-                                bw.Write(obj.CityRegionRelX);
-                                bw.Write(obj.CityRegionRelY);
-                                bw.Write(obj.CityRegionGroupId);
-                                bw.Write(obj.CityRegionObjectId);
+                        var lockedPlayersInRegion = data.ToArray<ILockable>();
+                        lck.SortLocks(lockedPlayersInRegion);
 
-                                bw.Write(obj.GetCityRegionObjectBytes());
-                            }
-
-                            isDirty = false;
-
-                            ms.Position = 0;
-                            objects = ms.ToArray();
+                        if (!playersInRegion.SequenceEqual(lockedPlayersInRegion))
+                        {                            
+                            continue;
                         }
-                    }
+
+                        if (isDirty)
+                        {
+                            using (var ms = new MemoryStream())
+                            {
+                                var bw = new BinaryWriter(ms);
+                                bw.Write((ushort)data.Count);
+                                foreach (var obj in data)
+                                {
+                                    bw.Write((byte)obj.CityRegionType);
+                                    bw.Write(obj.CityRegionRelX);
+                                    bw.Write(obj.CityRegionRelY);
+                                    bw.Write(obj.CityRegionGroupId);
+                                    bw.Write(obj.CityRegionObjectId);
+
+                                    bw.Write(obj.GetCityRegionObjectBytes());
+                                }
+
+                                isDirty = false;
+
+                                ms.Position = 0;
+                                objects = ms.ToArray();
+                            }
+                        }
+
+                        break;
+                    }                    
                 }
             }
 

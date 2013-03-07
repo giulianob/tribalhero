@@ -149,18 +149,18 @@ STABLE_STRUCTURE_DESCRIPTION,Trains mounted units.,
 STABLE_STRUCTURE_LVL_1,Allows training Cavalry.,
 STABLE_STRUCTURE_LVL_2,Improved Stable strength.,
 STABLE_STRUCTURE_LVL_3,Allows upgrading units to level 3.,
-STABLE_STRUCTURE_LVL_4,Ability to research Rush Attack.,
-STABLE_STRUCTURE_LVL_5,Ability to research Rush Defense.,
-STABLE_STRUCTURE_LVL_6,Allows training Knights.,
-STABLE_STRUCTURE_LVL_7,Ability to research Double Time.,
+STABLE_STRUCTURE_LVL_4,"Ability to research Rush Attack, Rush Defense, and Double Time to level 1.",
+STABLE_STRUCTURE_LVL_5,Improved Stable strength.,
+STABLE_STRUCTURE_LVL_6,Allows training Heavy Cavalry.,
+STABLE_STRUCTURE_LVL_7,"Ability to research Rush Attack, Rush Defense, and Double Time to level 2.",
 STABLE_STRUCTURE_LVL_8,Allows upgrading units to level 6.,
 STABLE_STRUCTURE_LVL_9,Decreases training time by 5%.,
-STABLE_STRUCTURE_LVL_10,Decreases training time by 10%.,
+STABLE_STRUCTURE_LVL_10,"Decreases training time by 10%.  Ability to research Rush Attack, Rush Defense, and Double Time to level 3.",
 STABLE_STRUCTURE_LVL_11,Decreases training time by 15%.,
 STABLE_STRUCTURE_LVL_12,Allows upgrading units to level 10.,
-STABLE_STRUCTURE_LVL_13,Decreases training time by 20%.,
+STABLE_STRUCTURE_LVL_13,"Decreases training time by 20%.  Ability to research Rush Attack, Rush Defense, and Double Time to level 4.",
 STABLE_STRUCTURE_LVL_14,Decreases training time by 30%.,
-STABLE_STRUCTURE_LVL_15,Decreases training time by 40%. Allows upgrading one technology to reduce upkeep.,
+STABLE_STRUCTURE_LVL_15,"Decreases training time by 40%. Allows upgrading one technology to reduce upkeep.  Ability to research Rush Attack, Rush Defense, and Double Time to level 5.",
 ,,
 WORKSHOP_STRUCTURE_NAME,Workshop,
 WORKSHOP_STRUCTURE_NAME_PLURAL,Workshops,
@@ -189,11 +189,11 @@ UNIVERSITY_STRUCTURE_LVL_2,Allows a maximum of 28 laborers to help construction 
 UNIVERSITY_STRUCTURE_LVL_3,Allows a maximum of 37 laborers to help construction to decrease build/upgrade time (0.25% per labor) and allows building Armory.,37
 UNIVERSITY_STRUCTURE_LVL_4,Allows a maximum of 48 laborers to help construction to decrease build/upgrade time (0.25% per labor) and enables upgrading Spike Barricade to level 1.,48
 UNIVERSITY_STRUCTURE_LVL_5,"Allows a maximum of 59 laborers to help construction to decrease build/upgrade time (0.25% per labor), allows building Blacksmith and Workshop and enables upgrading Hanzo Formation to level 1.",59
-UNIVERSITY_STRUCTURE_LVL_6,Allows a maximum of 71 laborers to help construction to decrease build/upgrade time (0.25% per labor) and enables upgrading bow research to level 1.,71
+UNIVERSITY_STRUCTURE_LVL_6,Allows a maximum of 71 laborers to help construction to decrease build/upgrade time (0.25% per labor) and enables upgrading Bowshield research to level 1.,71
 UNIVERSITY_STRUCTURE_LVL_7,Allows a maximum of 85 laborers to help construction to decrease build/upgrade time (0.25% per labor) and enables upgrading Hipposandal.,85
 UNIVERSITY_STRUCTURE_LVL_8,Allows a maximum of 100 laborers to help construction to decrease build/upgrade time (0.25% per labor) and enables upgrading Spike Barricade to level 3.,100
 UNIVERSITY_STRUCTURE_LVL_9,Allows a maximum of 117 laborers to help construction to decrease build/upgrade time (0.25% per labor) and enables upgrading Hanzo Formation to level 3.,117
-UNIVERSITY_STRUCTURE_LVL_10,Allows a maximum of 135 laborers to help construction to decrease build/upgrade time (0.25% per labor) and enables upgrading bow research to level 3.,135
+UNIVERSITY_STRUCTURE_LVL_10,Allows a maximum of 135 laborers to help construction to decrease build/upgrade time (0.25% per labor) and enables upgrading Bowshield research to level 3.,135
 UNIVERSITY_STRUCTURE_LVL_11,Allows a maximum of 156 laborers to help construction to decrease build/upgrade time (0.25% per labor).,156
 UNIVERSITY_STRUCTURE_LVL_12,Allows a maximum of 178 laborers to help construction to decrease build/upgrade time (0.25% per labor).,178
 UNIVERSITY_STRUCTURE_LVL_13,Allows a maximum of 203 laborers to help construction to decrease build/upgrade time (0.25% per labor).,203
@@ -307,7 +307,7 @@ TRIBAL_FAIR_STRUCTURE_LVL_1,Shorten time required to produce new laborers by 30%
 TRIBAL_CARNIVAL_STRUCTURE_NAME,Tribal Carnival,
 TRIBAL_CARNIVAL_STRUCTURE_NAME_PLURAL,Tribal Carnivals,
 TRIBAL_CARNIVAL_STRUCTURE_DESCRIPTION,"A temporary tent where tribesmen hang out, get drunk, and have a great time!",
-TRIBAL_CARNIVAL_STRUCTURE_LVL_1,Shorten time required to produce new laborers by 30% for 2 days.  Additional Tribal celebration structures shortens by another 8% each with diminishing returns.,
+TRIBAL_CARNIVAL_STRUCTURE_LVL_1,Shorten time required to produce new laborers by 30% for 3 days.  Additional Tribal celebration structures shortens by another 8% each with diminishing returns.,
 ,,
 TRIBAL_FESTIVAL_STRUCTURE_NAME,Tribal Festival,
 TRIBAL_FESTIVAL_STRUCTURE_NAME_PLURAL,Tribal Festivals,

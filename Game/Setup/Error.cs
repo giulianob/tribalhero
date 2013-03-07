@@ -28,6 +28,8 @@ namespace Game.Setup
 
         ChatMuted = 22,
 
+        ChatDisabled = 23,
+
         #endregion
 
         #region Action Errors
@@ -183,6 +185,8 @@ namespace Game.Setup
         TribeMaxLevel = 706,
 
         TribeHasAssignment = 707,
+
+        TribeDescriptionTooLong = 708,
 
         TribesmanNotFound = 721,
 

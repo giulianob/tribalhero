@@ -6,6 +6,7 @@ using System.Linq;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -24,6 +25,8 @@ namespace Game.Logic.Actions
 
         private readonly Procedure procedure;
 
+        private readonly IGameObjectLocator locator;
+
         private readonly uint cityId;
 
         private readonly Formula formula;
@@ -41,7 +44,8 @@ namespace Game.Logic.Actions
                                  ILocker locker,
                                  Formula formula,
                                  IActionFactory actionFactory,
-                                 Procedure procedure)
+                                 Procedure procedure,
+                                 IGameObjectLocator locator)
         {
             this.cityId = cityId;
             this.objectTypeFactory = objectTypeFactory;
@@ -49,6 +53,7 @@ namespace Game.Logic.Actions
             this.formula = formula;
             this.actionFactory = actionFactory;
             this.procedure = procedure;
+            this.locator = locator;
 
             CreateSubscriptions();
         }
@@ -64,7 +69,8 @@ namespace Game.Logic.Actions
                                  ILocker locker,
                                  Formula formula,
                                  IActionFactory actionFactory,
-                                 Procedure procedure)
+                                 Procedure procedure,
+                                 IGameObjectLocator locator)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.objectTypeFactory = objectTypeFactory;
@@ -72,6 +78,7 @@ namespace Game.Logic.Actions
             this.formula = formula;
             this.actionFactory = actionFactory;
             this.procedure = procedure;
+            this.locator = locator;
             cityId = uint.Parse(properties["city_id"]);
             laborTimeRemains = int.Parse(properties["labor_time_remains"]);
 
@@ -115,6 +122,18 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
+            ICity city;
+            if (!locator.TryGetObjects(cityId, out city))
+            {
+                return Error.CityNotFound;                
+            }
+
+            var mainBuilding = city.MainBuilding;
+            if (mainBuilding == null || mainBuilding.Lvl == 0)
+            {
+                return Error.CityNotFound;                
+            }
+
             beginTime = SystemClock.Now;
             endTime = SystemClock.Now.AddSeconds(CalculateTime(INTERVAL_IN_SECONDS));
             return Error.Ok;
@@ -154,6 +173,13 @@ namespace Game.Logic.Actions
                 }
 
                 if (Config.actions_skip_city_actions && city.Owner.Session == null)
+                {
+                    StateChange(ActionState.Completed);
+                    return;
+                }
+
+                var cityPassiveCount = city.Worker.PassiveActions.Values.Count(x => x.Type == Type);
+                if (cityPassiveCount > 1)
                 {
                     StateChange(ActionState.Completed);
                     return;

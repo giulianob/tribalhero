@@ -6,6 +6,7 @@ using Game.Data.Tribe;
 using Game.Map;
 using Game.Module;
 using Game.Module.Remover;
+using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using NDesk.Options;
@@ -68,9 +69,43 @@ namespace Game.Comm
             processor.RegisterCommand("renameplayer", RenamePlayer, PlayerRights.Admin);
             processor.RegisterCommand("renametribe", RenameTribe, PlayerRights.Admin);
             processor.RegisterCommand("setrights", SetRights, PlayerRights.Bureaucrat);
-            processor.RegisterCommand("muteplayer", Mute, PlayerRights.Moderator);
-            processor.RegisterCommand("unmuteplayer", Unmute, PlayerRights.Moderator);
+            processor.RegisterCommand("mute", Mute, PlayerRights.Moderator);
+            processor.RegisterCommand("unmute", Unmute, PlayerRights.Moderator);
             processor.RegisterCommand("togglechatmod", ToggleChatMod, PlayerRights.Moderator);
+            processor.RegisterCommand("setchatlevel", SetChatLevel, PlayerRights.Admin);
+        }
+
+        public string SetChatLevel(Session session, string[] parms)
+        {
+            PlayerRights? rights = null;
+            var help = false;
+
+            try
+            {
+                var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},                        
+                        {
+                                "rights=",
+                                v =>
+                                rights = (PlayerRights?)Enum.Parse(typeof(PlayerRights), v.TrimMatchingQuotes(), true)
+                        }
+                };
+                p.Parse(parms);
+            }
+            catch(Exception)
+            {
+                help = true;
+            }
+
+            if (help || !rights.HasValue)
+            {
+                return String.Format("setchatlevel --rights={0}", String.Join("|", Enum.GetNames(typeof(PlayerRights))));
+            }
+
+            Config.chat_min_level = rights.Value;
+
+            return "OK";
         }
 
         private string ToggleChatMod(Session session, string[] parms)
@@ -90,7 +125,7 @@ namespace Game.Comm
                 var p = new OptionSet
                 {
                         {"?|help|h", v => help = true},
-                        {"message=", v => message = v.TrimMatchingQuotes()},
+                        {"m|message=", v => message = v.TrimMatchingQuotes()},
                 };
                 p.Parse(parms);
             }
@@ -120,7 +155,7 @@ namespace Game.Comm
                 var p = new OptionSet
                 {
                         {"?|help|h", v => help = true},
-                        {"player=", v => playerName = v.TrimMatchingQuotes()},
+                        {"p=|player=", v => playerName = v.TrimMatchingQuotes()},
                         {
                                 "rights=",
                                 v =>
@@ -176,7 +211,7 @@ namespace Game.Comm
                 var p = new OptionSet
                 {
                         {"?|help|h", v => help = true},
-                        {"player=", v => playerName = v.TrimMatchingQuotes()},
+                        {"p=|player=", v => playerName = v.TrimMatchingQuotes()},
                 };
                 p.Parse(parms);
             }
@@ -201,14 +236,13 @@ namespace Game.Comm
             {
                 return
                         String.Format(
-                                      "id[{0}] created[{1}] name[{8}] emailAddress[{2}] lastLogin[{3}] ipAddress[{4}] banned[{5}] muted[{6}] deleted[{7}]",
+                                      "id[{0}] created[{1}] name[{7}] emailAddress[{2}] lastLogin[{3}] ipAddress[{4}] banned[{5}] deleted[{6}]",
                                       response.Data.id,
                                       response.Data.created,
                                       response.Data.emailAddress,
                                       response.Data.lastLogin,
                                       response.Data.ipAddress,
-                                      response.Data.banned == "1" ? "YES" : "NO",
-                                      response.Data.muted == "1" ? "YES" : "NO",
+                                      response.Data.banned == "1" ? "YES" : "NO",                                      
                                       response.Data.deleted == "1" ? "YES" : "NO",
                                       response.Data.name);
             }
@@ -229,7 +263,7 @@ namespace Game.Comm
                 var p = new OptionSet
                 {
                         {"?|help|h", v => help = true},
-                        {"player=", v => playerName = v.TrimMatchingQuotes()},
+                        {"o|player=", v => playerName = v.TrimMatchingQuotes()},
                 };
                 p.Parse(parms);
             }
@@ -265,13 +299,15 @@ namespace Game.Comm
         {
             bool help = false;
             string playerName = string.Empty;
+            int minutes = 10;
 
             try
             {
                 var p = new OptionSet
                 {
                         {"?|help|h", v => help = true},
-                        {"player=", v => playerName = v.TrimMatchingQuotes()},
+                        {"p=|player=", v => playerName = v.TrimMatchingQuotes()},
+                        {"m=|minutes=", v => minutes = int.Parse(v.TrimMatchingQuotes()) },
                 };
                 p.Parse(parms);
             }
@@ -280,9 +316,9 @@ namespace Game.Comm
                 help = true;
             }
 
-            if (help || string.IsNullOrEmpty(playerName))
+            if (help || string.IsNullOrEmpty(playerName) || minutes <= 0)
             {
-                return String.Format("muteplayer --player=player");
+                return String.Format("mute --player=player --minutes=##");
             }
 
             // Mute player in this world instantly
@@ -294,15 +330,15 @@ namespace Game.Comm
                 {
                     if (player != null)
                     {
-                        player.Muted = true;
-                    }
+                        player.Muted = SystemClock.Now.AddMinutes(minutes);
+                        dbManager.Save(player);
+
+                        return string.Format("OK muted player muted for {0} minutes (until {1})", minutes, player.Muted.ToString("R"));
+                    }                    
                 }
             }
 
-            // Globally mute them
-            ApiResponse response = ApiCaller.PlayerMute(playerName);
-
-            return response.Success ? "OK!" : response.ErrorMessage;
+            return "Player not found";
         }
 
         public string Unmute(Session session, String[] parms)
@@ -315,7 +351,7 @@ namespace Game.Comm
                 var p = new OptionSet
                 {
                         {"?|help|h", v => help = true},
-                        {"player=", v => playerName = v.TrimMatchingQuotes()},
+                        {"p=|player=", v => playerName = v.TrimMatchingQuotes()},
                 };
                 p.Parse(parms);
             }
@@ -326,7 +362,7 @@ namespace Game.Comm
 
             if (help || string.IsNullOrEmpty(playerName))
             {
-                return String.Format("unmuteplayer --player=player");
+                return String.Format("unmute --player=player");
             }
 
             // Mute player in this world instantly
@@ -338,15 +374,15 @@ namespace Game.Comm
                 {
                     if (player != null)
                     {
-                        player.Muted = false;
+                        player.Muted = DateTime.MinValue;                  
+                        dbManager.Save(player);
+
+                        return "OK!";
                     }
                 }
             }
 
-            // Globally mute them
-            ApiResponse response = ApiCaller.PlayerUnmute(playerName);
-
-            return response.Success ? "OK!" : response.ErrorMessage;
+            return "Player not found";
         }
 
         public string RenameTribe(Session session, String[] parms)
@@ -417,8 +453,8 @@ namespace Game.Comm
                 var p = new OptionSet
                 {
                         {"?|help|h", v => help = true},
-                        {"subject=", v => subject = v.TrimMatchingQuotes()},
-                        {"message=", v => message = v.TrimMatchingQuotes()},
+                        {"s|subject=", v => subject = v.TrimMatchingQuotes()},
+                        {"m|message=", v => message = v.TrimMatchingQuotes()},
                 };
                 p.Parse(parms);
             }
@@ -458,7 +494,7 @@ namespace Game.Comm
                 var p = new OptionSet
                 {
                         {"?|help|h", v => help = true},
-                        {"message=", v => message = v.TrimMatchingQuotes()},
+                        {"m|message=", v => message = v.TrimMatchingQuotes()},
                 };
                 p.Parse(parms);
             }
@@ -489,7 +525,7 @@ namespace Game.Comm
                 var p = new OptionSet
                 {
                         {"?|help|h", v => help = true},
-                        {"player=", v => playerName = v.TrimMatchingQuotes()}
+                        {"p=|player=", v => playerName = v.TrimMatchingQuotes()}
                 };
                 p.Parse(parms);
             }
@@ -633,7 +669,7 @@ namespace Game.Comm
                 var p = new OptionSet
                 {
                         {"?|help|h", v => help = true},
-                        {"player=", v => playerName = v.TrimMatchingQuotes()}
+                        {"p=|player=", v => playerName = v.TrimMatchingQuotes()}
                 };
                 p.Parse(parms);
             }
@@ -656,14 +692,20 @@ namespace Game.Comm
             IPlayer player;
             using (locker.Lock(playerId, out player))
             {
-                if (player != null && player.Session != null)
+                if (player != null)
                 {
-                    try
+                    player.Banned = true;
+                    dbManager.Save(player);
+
+                    if (player.Session != null)
                     {
-                        player.Session.CloseSession();
-                    }
-                    catch(Exception)
-                    {
+                        try
+                        {
+                            player.Session.CloseSession();
+                        }
+                        catch(Exception)
+                        {
+                        }
                     }
                 }
             }
@@ -683,7 +725,7 @@ namespace Game.Comm
                 var p = new OptionSet
                 {
                         {"?|help|h", v => help = true},
-                        {"player=", v => playerName = v.TrimMatchingQuotes()}
+                        {"p=|player=", v => playerName = v.TrimMatchingQuotes()}
                 };
                 p.Parse(parms);
             }
@@ -695,6 +737,22 @@ namespace Game.Comm
             if (help || string.IsNullOrEmpty(playerName))
             {
                 return "unban --player=player";
+            }            
+            
+            uint playerId;
+            if (!world.FindPlayerId(playerName, out playerId))
+            {
+                return "Player not found";
+            }
+
+            IPlayer player;
+            using (locker.Lock(playerId, out player))
+            {
+                if (player != null)
+                {
+                    player.Banned = false;
+                    dbManager.Save(player);
+                }
             }
 
             ApiResponse response = ApiCaller.Unban(playerName);
@@ -712,7 +770,7 @@ namespace Game.Comm
                 var p = new OptionSet
                 {
                         {"?|help|h", v => help = true},
-                        {"player=", v => playerName = v.TrimMatchingQuotes()}
+                        {"p=|player=", v => playerName = v.TrimMatchingQuotes()}
                 };
                 p.Parse(parms);
             }
@@ -768,6 +826,7 @@ namespace Game.Comm
             try
             {
                 var p = new OptionSet {{"?|help|h", v => help = true}};
+
                 p.Parse(parms);
             }
             catch(Exception)

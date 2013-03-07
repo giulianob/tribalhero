@@ -23,7 +23,7 @@ namespace Testing.Troop
 
             stub.AddUnit(FormationType.Normal, 101, 10);
 
-            var cityBattleProcedure = fixture.CreateAnonymous<CityBattleProcedure>();
+            var cityBattleProcedure = fixture.Create<CityBattleProcedure>();
 
             cityBattleProcedure.MoveUnitFormation(stub, FormationType.Normal, FormationType.InBattle);
             cityBattleProcedure.MoveUnitFormation(stub, FormationType.InBattle, FormationType.Normal);

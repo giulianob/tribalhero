@@ -8,7 +8,7 @@ namespace Game.Data.Stats
 
         private byte attackRadius;
 
-        private byte speed;
+        private decimal speed;
 
         public byte AttackRadius
         {
@@ -23,7 +23,7 @@ namespace Game.Data.Stats
             }
         }
 
-        public byte Speed
+        public decimal Speed
         {
             get
             {
@@ -55,12 +55,12 @@ namespace Game.Data.Stats
 
         #region Constructors
 
-        public TroopStats(byte attackRadius, byte speed)
+        public TroopStats(byte attackRadius, decimal speed)
                 : this(0, attackRadius, speed, new Resource())
         {
         }
 
-        public TroopStats(int attackPoint, byte attackRadius, byte speed, Resource loot)
+        public TroopStats(int attackPoint, byte attackRadius, decimal speed, Resource loot)
         {
             AttackPoint = attackPoint;
             Loot = loot;

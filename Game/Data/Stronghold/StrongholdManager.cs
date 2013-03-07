@@ -22,7 +22,7 @@ namespace Game.Data.Stronghold
 
         private readonly Formula formula;
 
-        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(9999, 5000);
+        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(Config.stronghold_id_max, Config.stronghold_id_min);
 
         private readonly IRegionManager regionManager;
 
@@ -217,7 +217,7 @@ namespace Game.Data.Stronghold
                 stronghold.BeginUpdate();
                 stronghold.StrongholdState = StrongholdState.Neutral;
                 stronghold.Tribe = null;
-                stronghold.DateOccupied = DateTime.UtcNow;
+                stronghold.DateOccupied = DateTime.MinValue;
                 stronghold.BonusDays = 0;
                 stronghold.EndUpdate();
             }

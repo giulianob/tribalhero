@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>C:\source\ninject\ninject.extensions.interception\build\mono-4.0\release\DynamicProxy\Ninject.Extensions.Interception.DynamicProxy</name>
+        <name>c:\source\ninject\ninject.extensions.interception\build\mono-4.0\release\DynamicProxy\Ninject.Extensions.Interception.DynamicProxy</name>
     </assembly>
     <members>
         <member name="T:Ninject.Extensions.Interception.DynamicProxyModule">

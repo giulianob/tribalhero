@@ -40,12 +40,12 @@ namespace Game.Logic.Formulas
         /// <returns></returns>
         public virtual ushort GetForestMaxLabor(byte level)
         {
-            return (ushort)(level * 240);
+            return (ushort)(level * 320);
         }
 
         public virtual ushort GetForestMaxLaborPerUser(Forest forest)
         {
-            return (ushort)(GetForestMaxLabor(forest.Lvl) / 6);
+            return (ushort)(GetForestMaxLabor(forest.Lvl) / 8);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Game.Logic.Formulas
         /// <returns></returns>
         public virtual int GetMaxForestCapacity(byte level)
         {
-            return (int)((18000 + Config.Random.Next(-1000, 1000)) * level * (1.0 / Config.seconds_per_unit));
+            return (int)((24000 + Config.Random.Next(-3000, 3000)) * level * (1.0 / Config.seconds_per_unit));
         }
 
         /// <summary>

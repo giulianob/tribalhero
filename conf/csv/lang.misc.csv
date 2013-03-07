@@ -219,6 +219,7 @@ TROOPS_DIALOG_INCOMING_DEFENSE,{0} incoming defense(s)
 TROOPS_DIALOG_INCOMING_ATTACK,{0} incoming attack(s)
 TROOPS_DIALOG_ON_THE_MOVE,{0} troop(s) on the move
 TROOPS_DIALOG_RETURNING_HOME,{0} troop(s) returning home
+TROOPS_DIALOG_CHOOSE_CITY,You must choose a city in the dropdown above first.
 ,
 TROOP_NAME_COLUMN,Troop
 TROOP_LOCATION_COLUMN,Location
@@ -229,6 +230,16 @@ TROOP_LOCAL,Local
 TROOP_NOTIFICATION_NAME_COLUMN,Troop
 TROOP_NOTIFICATION_LOCATION_COLUMN,Location
 TROOP_NOTIFICATION_STATUS_COLUMN,Status
+TROOP_SPEED_VERY_SLOW,Very slow
+TROOP_SPEED_SLOW,Slow
+TROOP_SPEED_NORMAL,Normal
+TROOP_SPEED_FAST,Fast
+TROOP_SPEED_VERY_FAST,Very fast
+TROOP_SPEED_VERY_SLOW_FULL,Very slow ({0} seconds per tile)
+TROOP_SPEED_SLOW_FULL,Slow ({0} seconds per tile)
+TROOP_SPEED_NORMAL_FULL,Normal ({0} seconds per tile)
+TROOP_SPEED_FAST_FULL,Fast ({0} seconds per tile)
+TROOP_SPEED_VERY_FAST_FULL,Very fast ({0} seconds per tile)
 RICH_LABEL_TROOP,"<a href=""event:viewProfileByType:city:{0}"">{1}</a> ({2})"
 ,
 TRADE_DIALOG_CHOOSE_RESOURCE_AMOUNT,Choose amount of resources

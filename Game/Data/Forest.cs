@@ -146,7 +146,7 @@ namespace Game.Data
             // Calculate efficiency
             double playerEfficiency = structures.Count / 8d;
             double laborEfficiency = (double)totalLabor / MaxLabor;
-            double efficiency = (1 - Math.Abs(playerEfficiency - laborEfficiency)) * (structures.Count * 0.125);
+            double efficiency = (1 - Math.Abs(playerEfficiency - laborEfficiency)) * (structures.Count * 0.095);
 
             float totalRate = 0;
             // Set the appropriate rates
@@ -251,7 +251,7 @@ namespace Game.Data
                 throw new Exception("Changed state outside of begin/end update block");
             }
 
-            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(World.Current.Forests);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
         }
 
         public override void EndUpdate()
@@ -410,6 +410,22 @@ namespace Game.Data
             get
             {
                 return lvl;
+            }
+        }
+
+        public int Hash
+        {
+            get
+            {
+                return unchecked((int)ObjectId);
+            }
+        }
+
+        public object Lock
+        {
+            get
+            {
+                return this;
             }
         }
     }

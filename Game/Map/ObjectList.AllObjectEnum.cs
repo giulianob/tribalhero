@@ -24,7 +24,7 @@ namespace Game.Map
             public AllObjectEnum(ObjectList objectList)
             {
                 this.objectList = objectList;
-                itr = this.objectList.Dict.GetEnumerator();
+                itr = this.objectList.objects.GetEnumerator();
             }
 
             #endregion
@@ -33,7 +33,7 @@ namespace Game.Map
 
             public void Reset()
             {
-                itr = objectList.Dict.GetEnumerator();
+                itr = objectList.objects.GetEnumerator();
             }
 
             ISimpleGameObject IEnumerator<ISimpleGameObject>.Current

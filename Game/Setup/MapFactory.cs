@@ -19,14 +19,9 @@ namespace Game.Setup
 
         private int index;
 
-        public MapFactory(string filename)
+        public void Init(string filename)
         {
-            using (
-                    var reader =
-                            new StreamReader(new FileStream(filename,
-                                                            FileMode.Open,
-                                                            FileAccess.Read,
-                                                            FileShare.ReadWrite)))
+            using (var reader = new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
             {
                 String line;
                 while ((line = reader.ReadLine()) != null)

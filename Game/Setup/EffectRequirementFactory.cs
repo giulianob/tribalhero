@@ -12,12 +12,10 @@ namespace Game.Setup
 {
     public class EffectRequirementFactory
     {
-        private readonly Dictionary<uint, EffectRequirementContainer> dict;
+        private readonly Dictionary<uint, EffectRequirementContainer> dict = new Dictionary<uint, EffectRequirementContainer>();
 
-        public EffectRequirementFactory(string filename)
-        {
-            dict = new Dictionary<uint, EffectRequirementContainer>();
-
+        public void Init(string filename)
+        {            
             using (
                     var reader =
                             new CsvReader(

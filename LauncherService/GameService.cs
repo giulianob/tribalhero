@@ -33,7 +33,7 @@ namespace LauncherService
 
             try
             {
-                var p = new OptionSet {{"settings=", v => settingsFile = v},};
+                var p = new OptionSet {{"settings=", v => settingsFile = v}};
                 p.Parse(Environment.GetCommandLineArgs());
             }
             catch(Exception)
@@ -43,15 +43,15 @@ namespace LauncherService
 
             ThreadPool.QueueUserWorkItem(o =>
                 {
+                    XmlConfigurator.Configure();
                     Engine.AttachExceptionHandler(new Log4NetLogger(typeof(Engine)));
 
                     Config.LoadConfigFile(settingsFile);
-                    Factory.CompileConfigFiles();
-                    Engine.CreateDefaultKernel();
-                    Factory.InitAll();
+                    var kernel = Engine.CreateDefaultKernel();
+                    kernel.Get<FactoriesInitializer>().CompileAndInit();
                     Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
 
-                    engine = Ioc.Kernel.Get<Engine>();
+                    engine = kernel.Get<Engine>();
 
                     if (!engine.Start())
                     {

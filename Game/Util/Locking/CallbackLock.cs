@@ -34,9 +34,8 @@ namespace Game.Util.Locking
             {
                 if ((++count) % 10 == 0)
                 {
-                    Global.Logger.Info(string.Format("CallbackLock has iterated {0} times from {1}",
-                                                     count,
-                                                     Environment.StackTrace));
+                    LoggerFactory.Current.GetCurrentClassLogger()
+                                 .Warn(string.Format("CallbackLock has iterated {0} times", count));
                 }
 
                 if (count >= 10000)

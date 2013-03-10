@@ -16,19 +16,9 @@ namespace Game.Setup
     {
         private readonly Dictionary<int, IBaseUnitStats> dict = new Dictionary<int, IBaseUnitStats>();
 
-        public UnitFactory()
+        public void Init(string filename)
         {
-        }
-
-        public UnitFactory(string filename)
-        {
-            using (
-                    var reader =
-                            new CsvReader(
-                                    new StreamReader(new FileStream(filename,
-                                                                    FileMode.Open,
-                                                                    FileAccess.Read,
-                                                                    FileShare.ReadWrite))))
+            using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
             {
                 String[] toks;
                 var col = new Dictionary<string, int>();
@@ -60,14 +50,10 @@ namespace Game.Setup
 
                     var stats = new BaseBattleStats(ushort.Parse(toks[col["Type"]]),
                                                     byte.Parse(toks[col["Lvl"]]),
-                                                    (WeaponType)
-                                                    Enum.Parse(typeof(WeaponType), toks[col["Weapon"]].ToCamelCase()),
-                                                    (WeaponClass)
-                                                    Enum.Parse(typeof(WeaponClass), toks[col["WpnClass"]].ToCamelCase()),
-                                                    (ArmorType)
-                                                    Enum.Parse(typeof(ArmorType), toks[col["Armor"]].ToCamelCase()),
-                                                    (ArmorClass)
-                                                    Enum.Parse(typeof(ArmorClass), toks[col["ArmrClass"]].ToCamelCase()),
+                                                    (WeaponType)Enum.Parse(typeof(WeaponType), toks[col["Weapon"]].ToCamelCase()),
+                                                    (WeaponClass)Enum.Parse(typeof(WeaponClass), toks[col["WpnClass"]].ToCamelCase()),
+                                                    (ArmorType)Enum.Parse(typeof(ArmorType), toks[col["Armor"]].ToCamelCase()),
+                                                    (ArmorClass)Enum.Parse(typeof(ArmorClass), toks[col["ArmrClass"]].ToCamelCase()),
                                                     decimal.Parse(toks[col["Hp"]]),
                                                     decimal.Parse(toks[col["Atk"]]),
                                                     byte.Parse(toks[col["Splash"]]),

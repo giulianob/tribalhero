@@ -17,6 +17,7 @@ using Game.Map;
 using Game.Module;
 using Game.Module.Remover;
 using Game.Setup;
+using Game.Util;
 using Game.Util.Locking;
 using Ninject;
 using Ninject.Extensions.Logging;
@@ -42,7 +43,7 @@ namespace Game
     {
         private readonly DbLoader dbLoader;
 
-        private readonly ILogger logger;
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
         private readonly IPlayerSelectorFactory playerSelector;
 
@@ -72,8 +73,7 @@ namespace Game
 
         private readonly TServer thriftServer;
 
-        public Engine(ILogger logger,
-                      ITcpServer server,
+        public Engine(ITcpServer server,
                       IPolicyServer policyServer,
                       TServer thriftServer,
                       DbLoader dbLoader,
@@ -89,7 +89,6 @@ namespace Game
                       VictoryPointChecker victoryPointChecker,
                       BarbarianTribeChecker barbarianTribeChecker)
         {
-            this.logger = logger;
             this.server = server;
             this.policyServer = policyServer;
             this.thriftServer = thriftServer;
@@ -248,22 +247,25 @@ _________ _______ _________ ______   _______  _
             return true;
         }
 
-        public static void CreateDefaultKernel()
+        public static IKernel CreateDefaultKernel()
         {
-            Ioc.Kernel = new StandardKernel(new NinjectSettings {LoadExtensions = true}, new GameModule());
+            var kernel = new StandardKernel(new NinjectSettings {LoadExtensions = true}, new GameModule());
 
             // Instantiate singletons here for now until all classes are properly being injected
-            SystemVariablesUpdater.Current = Ioc.Kernel.Get<SystemVariablesUpdater>();
-            RadiusLocator.Current = Ioc.Kernel.Get<RadiusLocator>();
-            TileLocator.Current = Ioc.Kernel.Get<TileLocator>();
-            ReverseTileLocator.Current = Ioc.Kernel.Get<ReverseTileLocator>();
-            BattleFormulas.Current = Ioc.Kernel.Get<BattleFormulas>();
-            Concurrency.Current = Ioc.Kernel.Get<ILocker>();
-            Formula.Current = Ioc.Kernel.Get<Formula>();
-            World.Current = Ioc.Kernel.Get<IWorld>();
-            Procedure.Current = Ioc.Kernel.Get<Procedure>();
-            Scheduler.Current = Ioc.Kernel.Get<IScheduler>();
-            DbPersistance.Current = Ioc.Kernel.Get<IDbManager>();
+            Ioc.Kernel = kernel;
+            SystemVariablesUpdater.Current = kernel.Get<SystemVariablesUpdater>();
+            RadiusLocator.Current = kernel.Get<RadiusLocator>();
+            TileLocator.Current = kernel.Get<TileLocator>();
+            ReverseTileLocator.Current = kernel.Get<ReverseTileLocator>();
+            BattleFormulas.Current = kernel.Get<BattleFormulas>();
+            Concurrency.Current = kernel.Get<ILocker>();
+            Formula.Current = kernel.Get<Formula>();
+            World.Current = kernel.Get<IWorld>();
+            Procedure.Current = kernel.Get<Procedure>();
+            Scheduler.Current = kernel.Get<IScheduler>();
+            DbPersistance.Current = kernel.Get<IDbManager>();
+
+            return kernel;
         }
 
         public void Stop()
@@ -284,7 +286,7 @@ _________ _______ _________ ______   _______  _
             //thriftServer.Stop();
             scheduler.Pause();
             world.Regions.Unload();
-            Global.Logger.Info("Goodbye!");
+            logger.Info("Goodbye!");
 
             State = EngineState.Stopped;
         }

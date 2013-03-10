@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Map;
+using Game.Util;
 using Game.Util.Locking;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -12,6 +14,8 @@ namespace Game.Logic.Actions.ResourceActions
 {
     public class ForestDepleteAction : ISchedule
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         public ForestDepleteAction(Forest forest, DateTime time)
         {
             Forest = forest;
@@ -32,13 +36,13 @@ namespace Game.Logic.Actions.ResourceActions
                                                new object[] {Forest.ObjectId});
             using (lck)
             {
-                Global.Logger.Debug(string.Format("Destroying forest[{0}]", Forest.ObjectId));
+                logger.Debug(string.Format("Destroying forest[{0}]", Forest.ObjectId));
 
                 var camps = new List<IStructure>(Forest);
 
                 if (!Forest.InWorld)
                 {
-                    Global.Logger.Warn("Trying to remove forest that isnt even in the world");
+                    logger.Warn("Trying to remove forest that isnt even in the world");
                 }
 
                 foreach (var obj in camps)

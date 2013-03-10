@@ -4,7 +4,9 @@ using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Setup;
+using Game.Util;
 using Ninject;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -12,6 +14,8 @@ namespace Game.Battle
 {
     public class BattleViewer
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         public BattleViewer(IBattleManager battle)
         {
             battle.EnterBattle += BattleEnterBattle;
@@ -30,7 +34,7 @@ namespace Game.Battle
 
         private void Append(string str)
         {
-            Global.Logger.Info(str);
+            logger.Info(str);
         }
 
         private void PrintCombatobject(ICombatObject co)

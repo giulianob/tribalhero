@@ -19,10 +19,9 @@ namespace ConsoleSimulator
     class Program
     {
         private static void Main(string[] args)
-        {
-            Factory.CompileConfigFiles();
-            // CSVToXML.Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
-            Engine.CreateDefaultKernel();
+        {            
+            var kernel = Engine.CreateDefaultKernel();
+            kernel.Get<FactoriesInitializer>().CompileAndInit();
 
             // Load map
             using (var map = new FileStream(Config.maps_folder + "map.dat", FileMode.Open))

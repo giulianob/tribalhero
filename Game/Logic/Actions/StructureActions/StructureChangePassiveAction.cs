@@ -9,6 +9,7 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -16,6 +17,8 @@ namespace Game.Logic.Actions
 {
     public class StructureChangePassiveAction : ScheduledPassiveAction, IScriptable
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         private uint cityId;
 
         private byte lvl;
@@ -139,7 +142,7 @@ namespace Game.Logic.Actions
 
                 if (structure == null)
                 {
-                    Global.Logger.Warn("StructureChange did not find structure");
+                    logger.Warn("StructureChange did not find structure");
                     StateChange(ActionState.Completed);
                     return;
                 }

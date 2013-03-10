@@ -13,16 +13,14 @@ namespace Game.Comm
 {
     public class CommandLineProcessor
     {
-        private readonly ILogger logger;
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
         public delegate string DoWork(Session session, string[] parms);
 
         private readonly Dictionary<string, ProcessorCommand> commands = new Dictionary<string, ProcessorCommand>();
 
-        public CommandLineProcessor(ILogger logger, params CommandLineModule[] modules)
+        public CommandLineProcessor(params CommandLineModule[] modules)
         {
-            this.logger = logger;
-
             foreach (CommandLineModule module in modules)
             {
                 module.RegisterCommands(this);

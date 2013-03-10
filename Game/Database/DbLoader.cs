@@ -26,6 +26,7 @@ using Game.Setup;
 using Game.Util;
 using JsonFx.Json;
 using Ninject;
+using Ninject.Extensions.Logging;
 using Persistance;
 using DbTransaction = Persistance.DbTransaction;
 
@@ -35,6 +36,8 @@ namespace Game.Database
 {
     public class DbLoader
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         [Inject]
         public IWorld World { get; set; }
 
@@ -80,7 +83,7 @@ namespace Game.Database
             Scheduler.Current.Pause();
             Global.FireEvents = false;
 
-            Global.Logger.Info("Loading database...");
+            logger.Info("Loading database...");
 
             DateTime now = DateTime.UtcNow;
 
@@ -105,7 +108,7 @@ namespace Game.Database
                         downTime = new TimeSpan(0);
                     }
 
-                    Global.Logger.Info(string.Format("Server was down for {0}", downTime));
+                    logger.Info(string.Format("Server was down for {0}", downTime));
 
                     LoadReportIds();
                     LoadMarket();
@@ -137,13 +140,13 @@ namespace Game.Database
                 }
                 catch(Exception e)
                 {
-                    Global.Logger.Error("Database loader error", e);
+                    logger.Error("Database loader error", e);
                     transaction.Rollback();
                     return false;
                 }
             }
 
-            Global.Logger.Info("Database loading finished");
+            logger.Info("Database loading finished");
 
             SystemVariablesUpdater.Current.Resume();
             Global.FireEvents = true;
@@ -194,7 +197,7 @@ namespace Game.Database
         {
             #region Tribes
 
-            Global.Logger.Info("Loading tribes...");
+            logger.Info("Loading tribes...");
             using (var reader = DbManager.Select(Tribe.DB_TABLE))
             {
                 while (reader.Read())
@@ -231,7 +234,7 @@ namespace Game.Database
         {
             #region Tribes
 
-            Global.Logger.Info("Loading tribesmen...");
+            logger.Info("Loading tribesmen...");
             using (var reader = DbManager.Select(Tribesman.DB_TABLE))
             {
                 while (reader.Read())
@@ -258,7 +261,7 @@ namespace Game.Database
 
             IAssignmentFactory assignmentFactory = Ioc.Kernel.Get<IAssignmentFactory>();
 
-            Global.Logger.Info("Loading assignments...");
+            logger.Info("Loading assignments...");
             using (var reader = DbManager.Select(Assignment.DB_TABLE))
             {
                 while (reader.Read())
@@ -334,7 +337,7 @@ namespace Game.Database
         {
             #region System variables
 
-            Global.Logger.Info("Loading system variables...");
+            logger.Info("Loading system variables...");
             using (var reader = DbManager.Select(SystemVariable.DB_TABLE))
             {
                 while (reader.Read())
@@ -372,7 +375,7 @@ namespace Game.Database
         {
             #region Market
 
-            Global.Logger.Info("Loading market...");
+            logger.Info("Loading market...");
             using (var reader = DbManager.Select(Market.DB_TABLE))
             {
                 while (reader.Read())
@@ -405,7 +408,7 @@ namespace Game.Database
         {
             #region Players
 
-            Global.Logger.Info("Loading players...");
+            logger.Info("Loading players...");
             using (var reader = DbManager.Select(Player.DB_TABLE))
             {
                 while (reader.Read())
@@ -433,7 +436,7 @@ namespace Game.Database
         {
             #region Cities
 
-            Global.Logger.Info("Loading cities...");
+            logger.Info("Loading cities...");
             using (var reader = DbManager.Select(City.DB_TABLE))
             {
                 while (reader.Read())
@@ -507,7 +510,7 @@ namespace Game.Database
         {
             #region Strongholds
 
-            Global.Logger.Info("Loading strongholds...");
+            logger.Info("Loading strongholds...");
             using (var reader = DbManager.Select(Stronghold.DB_TABLE))
             {
                 while (reader.Read())
@@ -557,7 +560,7 @@ namespace Game.Database
         {
             #region Barbarian Tribes
 
-            Global.Logger.Info("Loading barbarian tribes...");
+            logger.Info("Loading barbarian tribes...");
             using (var reader = DbManager.Select(BarbarianTribe.DB_TABLE))
             {
                 while (reader.Read())
@@ -595,7 +598,7 @@ namespace Game.Database
         {
             #region Unit Template
 
-            Global.Logger.Info("Loading unit template...");
+            logger.Info("Loading unit template...");
             using (var reader = DbManager.Select(UnitTemplate.DB_TABLE))
             {
                 while (reader.Read())
@@ -626,7 +629,7 @@ namespace Game.Database
 
         private void LoadForests(TimeSpan downTime)
         {
-            Global.Logger.Info("Loading forests...");
+            logger.Info("Loading forests...");
             using (var reader = DbManager.Select(Forest.DB_TABLE))
             {
                 while (reader.Read())
@@ -695,7 +698,7 @@ namespace Game.Database
 
             var structureFactory = Ioc.Kernel.Get<StructureFactory>();
 
-            Global.Logger.Info("Loading structures...");
+            logger.Info("Loading structures...");
             using (var reader = DbManager.Select(Structure.DB_TABLE))
             {
                 ICity city = null;
@@ -741,7 +744,7 @@ namespace Game.Database
         {
             #region Structure Properties
 
-            Global.Logger.Info("Loading structure properties...");
+            logger.Info("Loading structure properties...");
             using (var reader = DbManager.ReaderQuery(string.Format("SELECT * FROM `{0}`", StructureProperties.DB_TABLE + "_list")))
             {
                 ICity city = null;
@@ -768,7 +771,7 @@ namespace Game.Database
 
             var technologyFactory = Ioc.Kernel.Get<TechnologyFactory>();
             
-            Global.Logger.Info("Loading technologies...");
+            logger.Info("Loading technologies...");
 
             using (var reader = DbManager.Select(TechnologyManager.DB_TABLE))
             {
@@ -827,7 +830,7 @@ namespace Game.Database
 
             List<dynamic> stationedTroops = new List<dynamic>();
 
-            Global.Logger.Info("Loading troop stubs...");
+            logger.Info("Loading troop stubs...");
             using (var reader = DbManager.Select(TroopStub.DB_TABLE))
             {
                 while (reader.Read())
@@ -894,7 +897,7 @@ namespace Game.Database
         {
             #region Troop Stub's Templates
 
-            Global.Logger.Info("Loading troop stub templates...");
+            logger.Info("Loading troop stub templates...");
             using (var reader = DbManager.Select(TroopTemplate.DB_TABLE))
             {
                 while (reader.Read())
@@ -941,7 +944,7 @@ namespace Game.Database
         {
             #region Troops
 
-            Global.Logger.Info("Loading troops...");
+            logger.Info("Loading troops...");
             using (var reader = DbManager.Select(TroopObject.DB_TABLE))
             {
                 while (reader.Read())
@@ -993,7 +996,7 @@ namespace Game.Database
         {
             #region Battle Managers
 
-            Global.Logger.Info("Loading battles...");
+            logger.Info("Loading battles...");
             using (var reader = DbManager.Select(BattleManager.DB_TABLE))
             {
                 while (reader.Read())
@@ -1539,7 +1542,7 @@ namespace Game.Database
 
             #region Active Actions
 
-            Global.Logger.Info("Loading active actions...");
+            logger.Info("Loading active actions...");
 
             using (var reader = DbManager.Select(ActiveAction.DB_TABLE))
             {
@@ -1591,7 +1594,7 @@ namespace Game.Database
 
             #region Passive Actions
 
-            Global.Logger.Info("Loading passive actions...");
+            logger.Info("Loading passive actions...");
 
             //this will hold chain actions that we encounter for the next phase
             var chainActions = new Dictionary<IActionWorker, List<PassiveAction>>();
@@ -1681,7 +1684,7 @@ namespace Game.Database
 
             #region Chain Actions
 
-            Global.Logger.Info("Loading chain actions...");
+            logger.Info("Loading chain actions...");
 
             using (var reader = DbManager.Select(ChainAction.DB_TABLE))
             {
@@ -1734,7 +1737,7 @@ namespace Game.Database
         {
             #region Action References
 
-            Global.Logger.Info("Loading action references...");
+            logger.Info("Loading action references...");
             using (var reader = DbManager.Select(ReferenceStub.DB_TABLE))
             {
                 while (reader.Read())
@@ -1779,7 +1782,7 @@ namespace Game.Database
         {
             #region Action Notifications
 
-            Global.Logger.Info("Loading action notifications...");
+            logger.Info("Loading action notifications...");
             using (var reader = DbManager.Select(Logic.Notifications.Notification.DB_TABLE))
             {
                 while (reader.Read())

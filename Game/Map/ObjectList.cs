@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Setup;
+using Game.Util;
 using Ninject;
 using Ninject.Extensions.Logging;
 
@@ -14,16 +15,11 @@ namespace Game.Map
 {
     public partial class ObjectList : IEnumerable<ISimpleGameObject>
     {
-        public ObjectList()
-        {
-            logger = Ioc.Kernel.Get<ILoggerFactory>().GetCurrentClassLogger();
-        }
-
         #region Members
 
         private readonly Dictionary<int, List<ISimpleGameObject>> objects = new Dictionary<int, List<ISimpleGameObject>>();
 
-        private readonly ILogger logger;
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
         #endregion
 

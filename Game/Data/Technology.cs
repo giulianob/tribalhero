@@ -1,6 +1,7 @@
 #region
 
 using System.Collections.Generic;
+using Game.Util;
 
 #endregion
 
@@ -156,10 +157,11 @@ namespace Game.Data
 
         public void Print()
         {
-            Global.Logger.Info(string.Format("Technology type[{0}] lvl[{1}] Location[{2}]",
+            LoggerFactory.Current.GetCurrentClassLogger().Info(string.Format("Technology type[{0}] lvl[{1}] Location[{2}]",
                                              TechBase.Techtype,
                                              TechBase.Level,
                                              OwnerLocation));
+
             foreach (var effect in TechBase.Effects)
             {
                 effect.Print();

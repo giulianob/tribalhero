@@ -15,7 +15,7 @@ namespace Game.Setup
     {
         private readonly Dictionary<uint, TechnologyBase> technologies = new Dictionary<uint, TechnologyBase>();
 
-        public TechnologyFactory(string technologyFilename, string technologyEffectsFilename)
+        public void Init(string technologyFilename, string technologyEffectsFilename)
         {
             using (
                     var reader =

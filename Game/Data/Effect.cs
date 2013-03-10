@@ -1,6 +1,7 @@
 #region
 
 using System;
+using Game.Util;
 
 #endregion
 
@@ -18,7 +19,7 @@ namespace Game.Data
 
         public void Print()
         {
-            Global.Logger.Info(string.Format("Effect[{0} isPrivate[{1}] Location[{2}]", Id, IsPrivate, Location));
+            LoggerFactory.Current.GetCurrentClassLogger().Info(string.Format("Effect[{0} isPrivate[{1}] Location[{2}]", Id, IsPrivate, Location));
         }
     }
 

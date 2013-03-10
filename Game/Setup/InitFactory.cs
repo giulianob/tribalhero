@@ -7,6 +7,7 @@ using Common;
 using Game.Data;
 using Game.Logic;
 using Game.Util;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -38,19 +39,13 @@ namespace Game.Setup
 
     public class InitFactory
     {
-        private readonly Dictionary<int, List<InitRecord>> dict;
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
-        public InitFactory(string filename)
+        private readonly Dictionary<int, List<InitRecord>> dict = new Dictionary<int, List<InitRecord>>();
+
+        public void Init(string filename)
         {
-            dict = new Dictionary<int, List<InitRecord>>();
-
-            using (
-                    var reader =
-                            new CsvReader(
-                                    new StreamReader(new FileStream(filename,
-                                                                    FileMode.Open,
-                                                                    FileAccess.Read,
-                                                                    FileShare.ReadWrite))))
+            using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
             {
                 String[] toks;
                 var col = new Dictionary<string, int>();
@@ -67,14 +62,8 @@ namespace Game.Setup
                     }
                     var record = new InitRecord
                     {
-                            Type =
-                                    Type.GetType(
-                                                 "Game.Logic.Actions." +
-                                                 (toks[col["Action"]] + "_passive_action").ToCamelCase(),
-                                                 true),
-                            Condition =
-                                    (InitCondition)
-                                    Enum.Parse(typeof(InitCondition), toks[col["Condition"]].ToCamelCase(), true),
+                            Type = Type.GetType("Game.Logic.Actions." + (toks[col["Action"]] + "_passive_action").ToCamelCase(), true),
+                            Condition = (InitCondition)Enum.Parse(typeof(InitCondition), toks[col["Condition"]].ToCamelCase(), true),
                             Parms = new string[toks.Length - 4],
                             NlsDescription = toks[col["NlsDesc"]],
                     };
@@ -84,9 +73,7 @@ namespace Game.Setup
                         record.Parms[i - 4] = toks[i].Contains("=") ? toks[i].Split('=')[1] : toks[i];
                     }
 
-                    Global.Logger.Info(string.Format("{0}:{1}",
-                                                     int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]]),
-                                                     record.Type));
+                    logger.Info(string.Format("{0}:{1}", int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]]), record.Type));
 
                     int index = int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]]);
                     List<InitRecord> tmp;

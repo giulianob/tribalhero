@@ -16,6 +16,8 @@ using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using Ninject;
+using Ninject.Extensions.Logging;
+using Persistance;
 
 #endregion
 
@@ -23,16 +25,35 @@ namespace Game.Comm.ProcessorCommands
 {
     class LoginCommandsModule : CommandModule
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         private readonly IActionFactory actionFactory;
 
         private readonly object loginLock = new object();
 
         private readonly ITribeManager tribeManager;
 
-        public LoginCommandsModule(IActionFactory actionFactory, ITribeManager tribeManager)
+        private readonly IDbManager dbManager;
+
+        private readonly ILocker locker;
+
+        private readonly IWorld world;
+
+        private readonly Procedure procedure;
+
+        public LoginCommandsModule(IActionFactory actionFactory,
+                                   ITribeManager tribeManager,
+                                   IDbManager dbManager,
+                                   ILocker locker,
+                                   IWorld world,
+                                   Procedure procedure)
         {
             this.actionFactory = actionFactory;
             this.tribeManager = tribeManager;
+            this.dbManager = dbManager;
+            this.locker = locker;
+            this.world = world;
+            this.procedure = procedure;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -104,7 +125,7 @@ namespace Game.Comm.ProcessorCommands
                 }
                 catch(Exception e)
                 {
-                    Global.Logger.Error("Error loading player", e);
+                    logger.Error("Error loading player", e);
                     ReplyError(session, packet, Error.Unexpected);
                     session.CloseSession();
                     return;
@@ -160,32 +181,26 @@ namespace Game.Comm.ProcessorCommands
             bool newPlayer;
             lock (loginLock)
             {
-                newPlayer = !World.Current.Players.TryGetValue(playerId, out player);
+                newPlayer = !world.Players.TryGetValue(playerId, out player);
 
                 //If it's a new player then add him to our session
                 if (newPlayer)
                 {
-                    Global.Logger.Info(string.Format("Creating new player {0}({1})", playerName, playerId));
+                    logger.Info(string.Format("Creating new player {0}({1})", playerName, playerId));
 
-                    player = new Player(playerId,
-                                        SystemClock.Now,
-                                        SystemClock.Now,
-                                        playerName,
-                                        string.Empty,
-                                        playerRights,
-                                        sessionId);
+                    player = new Player(playerId, SystemClock.Now, SystemClock.Now, playerName, string.Empty, playerRights, sessionId);
 
-                    World.Current.Players.Add(player.PlayerId, player);
+                    world.Players.Add(player.PlayerId, player);
                 }
                 else
                 {
-                    Global.Logger.Info(string.Format("Player login in {0}({1})", player.Name, player.PlayerId));
+                    logger.Info(string.Format("Player login in {0}({1})", player.Name, player.PlayerId));
 
                     player.Name = playerName;
                 }
             }
 
-            using (Concurrency.Current.Lock(player))
+            using (locker.Lock(player))
             {
                 // If someone is already connected as this player, kick them off
                 if (player.Session != null)
@@ -202,7 +217,7 @@ namespace Game.Comm.ProcessorCommands
                 player.LastLogin = SystemClock.Now;
                 player.Banned = banned;
 
-                DbPersistance.Current.Save(player);
+                dbManager.Save(player);
 
                 // If player was banned then kick his ass out
                 if (banned)
@@ -266,7 +281,7 @@ namespace Game.Comm.ProcessorCommands
 
         private void CreateInitialCity(Session session, Packet packet)
         {
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 string cityName;
                 try
@@ -288,16 +303,16 @@ namespace Game.Comm.ProcessorCommands
 
                 ICity city;
 
-                lock (World.Current.Lock)
+                lock (world.Lock)
                 {
                     // Verify city name is unique
-                    if (World.Current.CityNameTaken(cityName))
+                    if (world.CityNameTaken(cityName))
                     {
                         ReplyError(session, packet, Error.CityNameTaken);
                         return;
                     }
 
-                    if (!Procedure.Current.CreateCity(session.Player, cityName, out city))
+                    if (!procedure.CreateCity(session.Player, cityName, out city))
                     {
                         ReplyError(session, packet, Error.MapFull);
                         return;

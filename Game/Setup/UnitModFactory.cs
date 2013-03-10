@@ -11,12 +11,10 @@ namespace Game.Setup
 {
     public class UnitModFactory
     {
-        private readonly Dictionary<int, double> dict;
+        private readonly Dictionary<int, double> dict = new Dictionary<int, double>();
 
-        public UnitModFactory(string filename)
+        public void Init(string filename)
         {
-            dict = new Dictionary<int, double>();
-
             using (
                     var reader =
                             new CsvReader(

@@ -14,15 +14,6 @@ using Ninject.Extensions.Logging;
 
 namespace Game.Setup
 {
-    public enum ClassId : ushort
-    {
-        Resource = 50,
-
-        Structure = 100,
-
-        Unit = 200,
-    }
-
     public class StructureFactory
     {
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
@@ -31,7 +22,6 @@ namespace Game.Setup
         
         public void Init(string filename)
         {
-
             using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
             {
                 String[] toks;
@@ -87,8 +77,7 @@ namespace Game.Setup
                                                            stats,
                                                            ushort.Parse(toks[col["MaxLabor"]]),
                                                            int.Parse(toks[col["Time"]]),
-                                                           workerId,
-                                                           (ClassId)Enum.Parse(typeof(ClassId), (toks[col["Class"]]), true));
+                                                           workerId);
 
                     logger.Info(string.Format("{0}:{1}", int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]]), toks[col["Name"]]));
 

@@ -77,7 +77,7 @@ namespace Game.Database
         [Inject]
         public ICombatGroupFactory CombatGroupFactory { get; set; }
 
-        public bool LoadFromDatabase()
+        public void LoadFromDatabase()
         {
             SystemVariablesUpdater.Current.Pause();
             Scheduler.Current.Pause();
@@ -139,10 +139,9 @@ namespace Game.Database
                     DbManager.Save(Global.SystemVariables["System.time"]);
                 }
                 catch(Exception e)
-                {
-                    logger.Error("Database loader error", e);
+                {                    
                     transaction.Rollback();
-                    return false;
+                    throw e;
                 }
             }
 
@@ -150,8 +149,7 @@ namespace Game.Database
 
             SystemVariablesUpdater.Current.Resume();
             Global.FireEvents = true;
-            Scheduler.Current.Resume();
-            return true;
+            Scheduler.Current.Resume();            
         }
 
         private void CheckSchemaVersion()

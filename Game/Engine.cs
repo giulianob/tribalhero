@@ -115,12 +115,13 @@ namespace Game
                 AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
                     {
                         var ex = (Exception)e.ExceptionObject;
-                        exceptionLogger.Error(ex, "Unhandled Exception");
-                    };
+                        exceptionLogger.ErrorException("Unhandled exception", ex);
+                        Environment.Exit(1);
+                    };                
             }
         }
 
-        public bool Start()
+        public void Start()
         {
             logger.Info(@"
 _________ _______ _________ ______   _______  _       
@@ -178,8 +179,7 @@ _________ _______ _________ ______   _______  _
 #if DEBUG
             if (Config.server_production)
             {
-                logger.Error("Trying to run debug on production server");
-                return false;
+                throw new Exception("Trying to run debug on production server");                
             }
 #endif
 
@@ -192,11 +192,7 @@ _________ _______ _________ ______   _______  _
 #endif
 
             // Load database
-            if (!dbLoader.LoadFromDatabase())
-            {
-                logger.Error("Failed to load database");
-                return false;
-            }
+            dbLoader.LoadFromDatabase();
 
             // Initialize stronghold
             if (Config.stronghold_generate > 0 && strongholdManager.Count == 0) // Only generate if there is none.
@@ -243,8 +239,6 @@ _________ _______ _________ ______   _______  _
             }
 
             State = EngineState.Started;
-
-            return true;
         }
 
         public static IKernel CreateDefaultKernel()

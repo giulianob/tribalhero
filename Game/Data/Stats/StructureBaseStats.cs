@@ -22,8 +22,7 @@ namespace Game.Data.Stats
                                   BaseBattleStats baseBattleStats,
                                   ushort maxLabor,
                                   int buildTime,
-                                  int workerId,
-                                  ClassId baseClass)
+                                  int workerId)
         {
             Name = name;
             SpriteClass = spriteClass;
@@ -34,7 +33,6 @@ namespace Game.Data.Stats
             Battle = baseBattleStats;
             MaxLabor = maxLabor;
             BuildTime = buildTime;
-            BaseClass = baseClass;
             WorkerId = workerId;
         }
 
@@ -49,8 +47,6 @@ namespace Game.Data.Stats
         public virtual Resource Cost { get; private set; }
 
         public virtual int BuildTime { get; private set; }
-
-        public virtual ClassId BaseClass { get; private set; }
 
         public virtual int WorkerId { get; private set; }
 

@@ -98,8 +98,7 @@ namespace ConsoleSimulator
                                                                            baseBattleStats: baseBattleStats,
                                                                            maxLabor: 0,
                                                                            buildTime: 0,
-                                                                           workerId: 0,
-                                                                           baseClass: ClassId.Structure);
+                                                                           workerId: 0);
             StructureStats structurestats = new StructureStats(structureBaseStats);
 
             var main = new Structure(structurestats);

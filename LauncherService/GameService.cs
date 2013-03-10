@@ -53,10 +53,7 @@ namespace LauncherService
 
                     engine = kernel.Get<Engine>();
 
-                    if (!engine.Start())
-                    {
-                        throw new Exception("Failed to load server");
-                    }
+                    engine.Start();
                 });
         }
 

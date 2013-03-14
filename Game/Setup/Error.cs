@@ -188,6 +188,8 @@ namespace Game.Setup
 
         TribeDescriptionTooLong = 708,
 
+        TribeRankNotFound = 709,
+
         TribesmanNotFound = 721,
 
         TribesmanAlreadyExists = 722,

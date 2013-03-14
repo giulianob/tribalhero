@@ -1,3 +1,4 @@
+using Game.Data.Tribe;
 using Game.Logic.Formulas;
 using Game.Map;
 using Game.Util.Locking;
@@ -19,11 +20,15 @@ namespace Game.Logic.Procedures
 
         private readonly ILocker locker;
 
+        private readonly ITribeFactory tribeFactory;
+
+        private readonly ITribeManager tribeManager;
+
         public Procedure()
         {
         }
 
-        public Procedure(IRegionManager regions, Formula formula, IWorld world, TileLocator tileLocator, IDbManager dbPersistance, ILocker locker)
+        public Procedure(IRegionManager regions, Formula formula, IWorld world, TileLocator tileLocator, IDbManager dbPersistance, ILocker locker, ITribeFactory tribeFactory, ITribeManager tribeManager)
         {
             this.regions = regions;
             this.formula = formula;
@@ -31,6 +36,8 @@ namespace Game.Logic.Procedures
             this.tileLocator = tileLocator;
             this.dbPersistance = dbPersistance;
             this.locker = locker;
+            this.tribeFactory = tribeFactory;
+            this.tribeManager = tribeManager;
         }
 
         public static Procedure Current { get; set; }

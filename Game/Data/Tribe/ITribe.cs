@@ -36,6 +36,12 @@ namespace Game.Data.Tribe
 
         IEnumerable<ITribesman> Tribesmen { get; }
 
+        IEnumerable<ITribeRank> Ranks { get; }
+
+        ITribeRank DefaultRank { get; }
+
+        ITribeRank ChiefRank { get; }
+
         int Count { get; }
 
         DateTime Created { get; }
@@ -48,11 +54,15 @@ namespace Game.Data.Tribe
 
         Error RemoveTribesman(uint playerId, bool wasKicked, bool checkIfOwner = true);
 
+        void CreateRank(string name, TribePermission permission);
+
         Error SetRank(uint playerId, byte rank);
+
+        Error UpdateRank(byte rank, string name, TribePermission permission);
 
         Error Contribute(uint playerId, Resource resource);
 
-        bool HasRight(uint playerId, string action);
+        bool HasRight(uint playerId, TribePermission permission);
 
         Error CreateAssignment(ICity city,
                                ISimpleStub stub,

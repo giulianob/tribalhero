@@ -5,6 +5,7 @@ using System.Linq;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
+using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
@@ -16,6 +17,8 @@ namespace Game.Comm.ProcessorCommands
     class TribeCommandsModule : CommandModule
     {
         private readonly ILocker locker;
+
+        private readonly Procedure procedure;
 
         private readonly IStrongholdManager strongholdManager;
 
@@ -29,13 +32,15 @@ namespace Game.Comm.ProcessorCommands
                                    IStrongholdManager strongholdManager,
                                    IWorld world,
                                    ITribeManager tribeManager,
-                                   ILocker locker)
+                                   ILocker locker,
+                                   Procedure procedure)
         {
             this.tribeFactory = tribeFactory;
             this.strongholdManager = strongholdManager;
             this.world = world;
             this.tribeManager = tribeManager;
             this.locker = locker;
+            this.procedure = procedure;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -47,6 +52,43 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.TribeUpgrade, Upgrade);
             processor.RegisterCommand(Command.TribeSetDescription, SetDescription);
             processor.RegisterCommand(Command.TribeInfoByName, GetInfoByName);
+            processor.RegisterCommand(Command.TribeUpdateRank, UpdateRank);
+        }
+
+        private void UpdateRank(Session session, Packet packet)
+        {
+            byte id;
+            string name;
+            int permission;
+            try
+            {
+                id = packet.GetByte();
+                name = packet.GetString();
+                permission = packet.GetInt32();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            var tribe = session.Player.Tribesman != null ? session.Player.Tribesman.Tribe : null;
+
+            if (tribe == null)
+            {
+                ReplyError(session, packet, Error.TribeIsNull);
+                return;
+            }
+
+            using (locker.Lock(session.Player,tribe))
+            {
+                if (!session.Player.Tribesman.Tribe.HasRight(session.Player.PlayerId, TribePermission.All))
+                {
+                    ReplyError(session, packet, Error.TribesmanNotAuthorized);
+                    return;
+                }
+                ReplyWithResult(session, packet, tribe.UpdateRank(id, name, (TribePermission)permission));
+            }
         }
 
         private void SetDescription(Session session, Packet packet)
@@ -212,39 +254,23 @@ namespace Game.Comm.ProcessorCommands
 
             using (locker.Lock(session.Player))
             {
-                if (session.Player.Tribesman != null)
-                {
-                    ReplyError(session, packet, Error.TribesmanAlreadyInTribe);
-                    return;
-                }
-
-                if (tribeManager.TribeNameTaken(name))
-                {
-                    ReplyError(session, packet, Error.TribeAlreadyExists);
-                    return;
-                }
-
-                if (!Tribe.IsNameValid(name))
-                {
-                    ReplyError(session, packet, Error.TribeNameInvalid);
-                    return;
-                }
-
                 if (!session.Player.GetCityList().Any(city => city.Lvl >= 5))
                 {
                     ReplyError(session, packet, Error.EffectRequirementNotMet);
-                    return;
                 }
 
-                ITribe tribe = tribeFactory.CreateTribe(session.Player, name);
-
-                tribeManager.Add(tribe);
-
-                var tribesman = new Tribesman(tribe, session.Player, 0);
-
-                tribe.AddTribesman(tribesman);
-
-                ReplySuccess(session, packet);
+                ITribe tribe;
+                Error error = procedure.CreateTribe(session.Player, name, out tribe);
+                if (error == Error.Ok)
+                {
+                    var reply = new Packet(packet);
+                    PacketHelper.AddTribeRanksToPacket(tribe, reply);
+                    session.Write(reply);
+                } 
+                else
+                {
+                    ReplyError(session, packet, error);
+                }
             }
         }
 

@@ -27,6 +27,7 @@ using Game.Util;
 using JsonFx.Json;
 using Ninject;
 using Persistance;
+using System.Linq;
 using DbTransaction = Persistance.DbTransaction;
 
 #endregion
@@ -217,6 +218,10 @@ namespace Game.Database
                                                          resource,
                                                          DateTime.SpecifyKind((DateTime)reader["created"],
                                                                               DateTimeKind.Utc));
+                    foreach (var obj in (dynamic)new JsonReader().Read((string)reader["ranks"]))
+                    {
+                        tribe.CreateRank(obj.Name, Enum.Parse(typeof(TribePermission), obj.Permission));
+                    }
                     tribe.Id = (uint)reader["id"];
                     tribe.DbPersisted = true;
 
@@ -244,7 +249,7 @@ namespace Game.Database
                                                   World.Players[(uint)reader["player_id"]],
                                                   DateTime.SpecifyKind((DateTime)reader["join_date"], DateTimeKind.Utc),
                                                   contribution,
-                                                  (byte)reader["rank"]) {DbPersisted = true};
+                                                  tribe.Ranks.First(x=>x.Id==(byte)reader["rank"])) {DbPersisted = true};
                     tribe.AddTribesman(tribesman, false);
                 }
             }

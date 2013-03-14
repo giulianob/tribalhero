@@ -264,10 +264,12 @@
     <Compile Include="Data\Tribe\IAssignmentFactory.cs" />
     <Compile Include="Data\Tribe\ITribe.cs" />
     <Compile Include="Data\Tribe\ITribeFactory.cs" />
+    <Compile Include="Data\Tribe\ITribeRank.cs" />
     <Compile Include="Data\Tribe\ITribesman.cs" />
     <Compile Include="Data\Tribe\Tribe.cs" />
     <Compile Include="Data\Tribe\TribeEvents.cs" />
     <Compile Include="Data\Tribe\TribeManager.cs" />
+    <Compile Include="Data\Tribe\TribeRank.cs" />
     <Compile Include="Data\Tribe\Tribesman.cs" />
     <Compile Include="Data\Troop\CityTroopStubFactory.cs" />
     <Compile Include="Data\Troop\ITroopManager.cs" />
@@ -338,6 +340,7 @@
     <Compile Include="Logic\Procedures\BarbarianTribeBattleProcedure.cs" />
     <Compile Include="Logic\Procedures\Procedure.CityCreate.cs" />
     <Compile Include="Logic\Procedures\Procedure.Structure.cs" />
+    <Compile Include="Logic\Procedures\Procedure.Tribe.cs" />
     <Compile Include="Logic\Procedures\StrongholdBattleProcedure.cs" />
     <Compile Include="Logic\Requirements\EffectRequirement.cs" />
     <Compile Include="Logic\Formulas\Formula.cs" />

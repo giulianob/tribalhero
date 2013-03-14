@@ -224,6 +224,11 @@
     <Compile Include="Data\BarbarianTribe\BarbarianTribeChecker.cs" />
     <Compile Include="Data\BarbarianTribe\BarbarianTribeConfigurator.cs" />
     <Compile Include="Data\BarbarianTribe\BarbarianTribeManager.cs" />
+    <Compile Include="Data\CityFactory.cs" />
+    <Compile Include="Data\GameObjectFactory.cs" />
+    <Compile Include="Data\ICityFactory.cs" />
+    <Compile Include="Data\IGameObjectFactory.cs" />
+    <Compile Include="Data\ITechnologyManagerFactory.cs" />
     <Compile Include="Data\PlayerChatState.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />
@@ -277,10 +282,12 @@
     <Compile Include="Data\Tribe\Tribesman.cs" />
     <Compile Include="Data\Troop\CityTroopStubFactory.cs" />
     <Compile Include="Data\Troop\ITroopManager.cs" />
+    <Compile Include="Data\Troop\ITroopManagerFactory.cs" />
     <Compile Include="Data\Troop\ITroopObject.cs" />
     <Compile Include="Data\Troop\ITroopStub.cs" />
     <Compile Include="Data\Troop\ITroopStubFactory.cs" />
     <Compile Include="Data\Troop\IUnitTemplate.cs" />
+    <Compile Include="Data\Troop\IUnitTemplateFactory.cs" />
     <Compile Include="Data\Troop\SimpleStub.cs" />
     <Compile Include="Data\Troop\Unit.cs" />
     <Compile Include="Data\Troop\Formation.cs" />
@@ -333,9 +340,12 @@
     <Compile Include="Logic\ActiveAction.cs" />
     <Compile Include="Logic\IActionTime.cs" />
     <Compile Include="Logic\IActionWorker.cs" />
+    <Compile Include="Logic\IActionWorkerFactory.cs" />
     <Compile Include="Logic\IActionWorkerOwner.cs" />
+    <Compile Include="Logic\IReferenceManagerFactory.cs" />
     <Compile Include="Logic\IScheduler.cs" />
     <Compile Include="Logic\Notifications\CityNotificationManager.cs" />
+    <Compile Include="Logic\Notifications\INotificationManagerFactory.cs" />
     <Compile Include="Logic\Notifications\INotificationOwner.cs" />
     <Compile Include="Logic\Notifications\Notification.cs" />
     <Compile Include="Logic\Notifications\NotificationEventArgs.cs" />
@@ -407,7 +417,7 @@
     <Compile Include="Setup\EffectRequirementFactory.cs" />
     <Compile Include="Setup\Error.cs" />
     <Compile Include="Setup\InitFactory.cs" />
-    <Compile Include="Setup\StructureFactory.cs" />
+    <Compile Include="Setup\StructureCsvFactory.cs" />
     <Compile Include="Setup\Config.cs" />
     <Compile Include="Setup\FactoriesInitializer.cs" />
     <Compile Include="Setup\PropertyFactory.cs" />

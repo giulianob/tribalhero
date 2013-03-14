@@ -2,6 +2,6 @@
 {
     public interface ITroopStubFactory
     {
-        TroopStub CreateTroopStub(byte troopId);
+        ITroopStub CreateTroopStub(byte troopId);
     }
 }

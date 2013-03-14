@@ -17,14 +17,20 @@ namespace Game.Logic
 {
     public class ActionWorker : IActionWorker
     {
+        private readonly ILocker locker;
+
+        private readonly IScheduler scheduler;
+
         private readonly LargeIdGenerator actionIdGen = new LargeIdGenerator(int.MaxValue);
 
         private readonly IDictionary<uint, ActiveAction> active = new Dictionary<uint, ActiveAction>();
 
         private readonly IDictionary<uint, PassiveAction> passive = new Dictionary<uint, PassiveAction>();
 
-        public ActionWorker(Func<ILockable> lockDelegate = null, ILocation location = null)
+        public ActionWorker(Func<ILockable> lockDelegate, ILocation location, ILocker locker, IScheduler scheduler)
         {
+            this.locker = locker;
+            this.scheduler = scheduler;
             Location = location;
             LockDelegate = lockDelegate;
         }
@@ -67,7 +73,7 @@ namespace Game.Logic
 
             // Cancel Active actions
             IList<ActiveAction> activeList;
-            using (Concurrency.Current.Lock(LockDelegate()))
+            using (locker.Lock(LockDelegate()))
             {
                 // Very important to keep the ToList() here since we will be modifying the collection in the loop below and an IEnumerable will crash!
                 activeList = active.Values.Where(actionStub => actionStub.WorkerObject == workerObject).ToList();
@@ -85,7 +91,7 @@ namespace Game.Logic
 
             // Cancel Passive actions
             IList<PassiveAction> passiveList;
-            using (Concurrency.Current.Lock(LockDelegate()))
+            using (locker.Lock(LockDelegate()))
             {
                 // Very important to keep the ToList() here since we will be modifying the collection in the loop below and an IEnumerable will crash!
                 passiveList = passive.Values.Where(action => action.WorkerObject == workerObject).ToList();
@@ -298,7 +304,7 @@ namespace Game.Logic
 
             passive.Add(action.ActionId, action);
 
-            using (Concurrency.Current.Lock(LockDelegate()))
+            using (locker.Lock(LockDelegate()))
             {
                 action.Execute();
             }
@@ -412,14 +418,14 @@ namespace Game.Logic
             actionIdGen.Release(actionId);
         }
 
-        private static void Schedule(ScheduledActiveAction action)
+        private void Schedule(ScheduledActiveAction action)
         {
-            Scheduler.Current.Put(action);
+            scheduler.Put(action);
         }
 
-        private static void Schedule(ScheduledPassiveAction action)
+        private void Schedule(ScheduledPassiveAction action)
         {
-            Scheduler.Current.Put(action);
+            scheduler.Put(action);
         }
 
         #endregion
@@ -499,7 +505,7 @@ namespace Game.Logic
 
                     if (action is ScheduledPassiveAction)
                     {
-                        Scheduler.Current.Remove(action as ScheduledPassiveAction);
+                        scheduler.Remove(action as ScheduledPassiveAction);
                     }
 
                     if (action is PassiveAction)
@@ -529,7 +535,7 @@ namespace Game.Logic
 
                     if (action is ScheduledPassiveAction)
                     {
-                        Scheduler.Current.Remove(action as ScheduledPassiveAction);
+                        scheduler.Remove(action as ScheduledPassiveAction);
                     }
 
                     if (action is PassiveAction)
@@ -588,7 +594,7 @@ namespace Game.Logic
                     if (action is ScheduledActiveAction)
                     {
                         DbPersistance.Current.Delete(actionStub);
-                        Scheduler.Current.Remove(action as ISchedule);
+                        scheduler.Remove(action as ISchedule);
                     }
                     break;
                 case ActionState.Fired:
@@ -610,7 +616,7 @@ namespace Game.Logic
                     if (action is ScheduledActiveAction)
                     {
                         DbPersistance.Current.Delete(actionStub);
-                        Scheduler.Current.Remove(action as ISchedule);
+                        scheduler.Remove(action as ISchedule);
                     }
                     break;
             }

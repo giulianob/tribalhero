@@ -27,17 +27,25 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly Formula formula;
 
-        private readonly StructureFactory structureFactory;
+        private readonly ILocker locker;
+
+        private readonly Procedure procedure;
+
+        private readonly StructureCsvFactory structureCsvFactory;
 
         public TroopCommandsModule(IActionFactory actionFactory,
-                                   StructureFactory structureFactory,
+                                   StructureCsvFactory structureCsvFactory,
                                    IGameObjectLocator gameObjectLocator,
-                                   Formula formula)
+                                   Formula formula,
+                                   ILocker locker,
+                                   Procedure procedure)
         {
             this.actionFactory = actionFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             this.gameObjectLocator = gameObjectLocator;
             this.formula = formula;
+            this.locker = locker;
+            this.procedure = procedure;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -76,7 +84,7 @@ namespace Game.Comm.ProcessorCommands
             IStation station;
 
             //we need to find out the stationed city first then reacquire local + stationed city locks            
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -95,7 +103,7 @@ namespace Game.Comm.ProcessorCommands
                 station = stub.Station;
             }
 
-            using (Concurrency.Current.Lock(city, station))
+            using (locker.Lock(city, station))
             {
                 ITroopStub stub;
 
@@ -145,7 +153,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(cityId, objectId, out city, out troop))
+            using (locker.Lock(cityId, objectId, out city, out troop))
             {
                 if (city == null || troop == null || troop.Stub == null)
                 {
@@ -163,7 +171,7 @@ namespace Game.Comm.ProcessorCommands
                     reply.AddUInt32(troop.TargetX);
                     reply.AddUInt32(troop.TargetY);
 
-                    var template = new UnitTemplate(city);
+                    var template = new Dictionary<ushort, IBaseUnitStats>();
 
                     reply.AddByte(troop.Stub.FormationCount);
                     foreach (var formation in troop.Stub)
@@ -178,7 +186,7 @@ namespace Game.Comm.ProcessorCommands
                         }
                     }
 
-                    reply.AddUInt16((ushort)template.Size);
+                    reply.AddUInt16((ushort)template.Count);
                     IEnumerator<KeyValuePair<ushort, IBaseUnitStats>> templateIter = template.GetEnumerator();
                     while (templateIter.MoveNext())
                     {
@@ -209,7 +217,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -275,7 +283,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -292,7 +300,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var upgradeAction = actionFactory.CreateUnitUpgradeActiveAction(cityId, objectId, type);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(barrack),
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(barrack),
                                                  barrack,
                                                  upgradeAction,
                                                  barrack.Technologies);
@@ -327,7 +335,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -344,7 +352,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var trainAction = actionFactory.CreateUnitTrainActiveAction(cityId, objectId, type, count);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(barrack),
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(barrack),
                                                  barrack,
                                                  trainAction,
                                                  barrack.Technologies);
@@ -382,7 +390,7 @@ namespace Game.Comm.ProcessorCommands
             IStronghold stronghold;
             ICity city;
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 city = session.Player.GetCity(cityId);
                 if (city == null)
@@ -398,11 +406,11 @@ namespace Game.Comm.ProcessorCommands
                 }
             }
 
-            using (Concurrency.Current.Lock(city, stronghold))
+            using (locker.Lock(city, stronghold))
             {
                 // Create troop object                
                 ITroopObject troopObject;
-                if (!Procedure.Current.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.TroopChanged);
                     return;
@@ -415,7 +423,7 @@ namespace Game.Comm.ProcessorCommands
                 Error ret = city.Worker.DoPassive(city, aa, true);
                 if (ret != 0)
                 {
-                    Procedure.Current.TroopObjectDelete(troopObject, true);
+                    procedure.TroopObjectDelete(troopObject, true);
                     ReplyError(session, packet, ret);
                 }
                 else
@@ -454,7 +462,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player, barbarianTribe))
+            using (locker.Lock(session.Player, barbarianTribe))
             {
                 city = session.Player.GetCity(cityId);
                 if (city == null)
@@ -465,7 +473,7 @@ namespace Game.Comm.ProcessorCommands
 
                 // Create troop object                
                 ITroopObject troopObject;
-                if (!Procedure.Current.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.TroopChanged);
                     return;
@@ -475,7 +483,7 @@ namespace Game.Comm.ProcessorCommands
                 Error ret = city.Worker.DoPassive(city, aa, true);
                 if (ret != 0)
                 {
-                    Procedure.Current.TroopObjectDelete(troopObject, true);
+                    procedure.TroopObjectDelete(troopObject, true);
                     ReplyError(session, packet, ret);
                 }
                 else
@@ -507,7 +515,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 if (session.Player.GetCity(cityId) == null)
                 {
@@ -517,7 +525,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             Dictionary<uint, ICity> cities;
-            using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
+            using (locker.Lock(out cities, cityId, targetCityId))
             {
                 if (cities == null)
                 {
@@ -538,7 +546,7 @@ namespace Game.Comm.ProcessorCommands
 
                 // Create troop object                
                 ITroopObject troopObject;
-                if (!Procedure.Current.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.TroopChanged);
                     return;
@@ -552,7 +560,7 @@ namespace Game.Comm.ProcessorCommands
                 Error ret = city.Worker.DoPassive(city, aa, true);
                 if (ret != 0)
                 {
-                    Procedure.Current.TroopObjectDelete(troopObject, true);
+                    procedure.TroopObjectDelete(troopObject, true);
                     ReplyError(session, packet, ret);
                 }
                 else
@@ -588,7 +596,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 if (session.Player.GetCity(cityId) == null)
                 {
@@ -598,12 +606,12 @@ namespace Game.Comm.ProcessorCommands
             }
 
             Dictionary<uint, ICity> cities;
-            using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
+            using (locker.Lock(out cities, cityId, targetCityId))
             {
                 ICity city = cities[cityId];
 
                 ITroopObject troopObject;
-                if (!Procedure.Current.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.ObjectNotFound);
                     return;
@@ -613,7 +621,7 @@ namespace Game.Comm.ProcessorCommands
                 Error ret = city.Worker.DoPassive(city, da, true);
                 if (ret != 0)
                 {
-                    Procedure.Current.TroopObjectDelete(troopObject, true);
+                    procedure.TroopObjectDelete(troopObject, true);
                     ReplyError(session, packet, ret);
                 }
                 else
@@ -645,7 +653,7 @@ namespace Game.Comm.ProcessorCommands
 
             IStronghold stronghold;
             ICity city;
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 city = session.Player.GetCity(cityId);
                 if (city == null)
@@ -661,10 +669,10 @@ namespace Game.Comm.ProcessorCommands
                 }
             }
 
-            using (Concurrency.Current.Lock(city, stronghold))
+            using (locker.Lock(city, stronghold))
             {
                 ITroopObject troopObject;
-                if (!Procedure.Current.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.ObjectNotFound);
                     return;
@@ -677,7 +685,7 @@ namespace Game.Comm.ProcessorCommands
                 Error ret = city.Worker.DoPassive(city, da, true);
                 if (ret != 0)
                 {
-                    Procedure.Current.TroopObjectDelete(troopObject, true);
+                    procedure.TroopObjectDelete(troopObject, true);
                     ReplyError(session, packet, ret);
                 }
                 else
@@ -707,7 +715,7 @@ namespace Game.Comm.ProcessorCommands
             IStation station;
 
             //we need to find out the stationed city first then reacquire local + stationed city locks            
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -726,7 +734,7 @@ namespace Game.Comm.ProcessorCommands
                 station = stub.Station;
             }
 
-            using (Concurrency.Current.Lock(city, station))
+            using (locker.Lock(city, station))
             {
                 ITroopStub stub;
 

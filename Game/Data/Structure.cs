@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Game.Data.Stats;
-using Game.Database;
+using Game.Map;
 using Game.Util;
 using Persistance;
 
@@ -22,12 +22,21 @@ namespace Game.Data
 
         private StructureStats stats;
 
-        public Structure(StructureStats stats)
-        {
-            techmanager = new TechnologyManager(EffectLocation.Object, this, 0);
+        private readonly IDbManager dbManager;
 
+        public Structure(uint structureId, 
+                         StructureStats stats,
+                         ITechnologyManager technologyManager,
+                         StructureProperties structureProperties,
+                         IDbManager dbManager,
+                         IRegionManager regionmanager)
+                : base(regionmanager)
+        {
+            objectId = structureId;
             this.stats = stats;
-            properties = new StructureProperties(this);
+            this.dbManager = dbManager;
+            techmanager = technologyManager;
+            properties = structureProperties;
         }
 
         #region Indexers
@@ -69,21 +78,7 @@ namespace Game.Data
                 properties = value;
             }
         }
-
-        public override uint ObjectId
-        {
-            get
-            {
-                return base.ObjectId;
-            }
-            set
-            {
-                CheckUpdateMode();
-                techmanager.Id = value;
-                base.ObjectId = value;
-            }
-        }
-
+        
         #endregion
 
         public bool IsMainBuilding
@@ -176,8 +171,7 @@ namespace Game.Data
         {
             get
             {
-                return new[]
-                {new DbColumn("id", ObjectId, DbType.UInt32), new DbColumn("city_id", City.Id, DbType.UInt32)};
+                return new[] {new DbColumn("id", ObjectId, DbType.UInt32), new DbColumn("city_id", City.Id, DbType.UInt32)};
             }
         }
 
@@ -207,7 +201,7 @@ namespace Game.Data
                 return;
             }
 
-            DbPersistance.Current.Save(this);
+            dbManager.Save(this);
         }
     }
 }

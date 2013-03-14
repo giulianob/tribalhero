@@ -203,7 +203,7 @@ namespace Game.Battle.CombatObjects
                                             stronghold.Lvl,
                                             hp,
                                             stronghold,
-                                            kernel.Get<StructureFactory>(),
+                                            kernel.Get<StructureCsvFactory>(),
                                             kernel.Get<BattleFormulas>());
         }
     }

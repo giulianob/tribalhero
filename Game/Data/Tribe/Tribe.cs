@@ -453,6 +453,12 @@ namespace Game.Data.Tribe
                 return Error.AssignmentBadTime;
             }
 
+            if (assignments.Count > 30)
+            {
+                Procedure.Current.TroopStubDelete(city, stub);
+                return Error.AssignmentTooManyInProgress;
+            }
+
             if (stub.TotalCount == 0)
             {
                 Procedure.Current.TroopStubDelete(city, stub);

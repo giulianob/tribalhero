@@ -4,14 +4,14 @@ using Persistance;
 
 namespace Game.Logic.Notifications
 {
-    class CityNotificationManager : NotificationManager
+    public class CityNotificationManager : NotificationManager
     {
         private readonly string channelName;
 
         private readonly uint cityId;
 
-        public CityNotificationManager(IActionWorker worker, uint cityId, IDbManager actionWorker)
-                : base(worker, actionWorker)
+        public CityNotificationManager(IActionWorker worker, uint cityId, IDbManager dbManager)
+                : base(worker, dbManager)
         {
             this.cityId = cityId;
             channelName = "/CITY/" + cityId;

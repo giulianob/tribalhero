@@ -30,7 +30,7 @@ namespace Game.Logic.Actions
 
         private readonly ObjectTypeFactory objectTypeFactory;
 
-        private readonly StructureFactory structureFactory;
+        private readonly StructureCsvFactory structureCsvFactory;
 
         private readonly InitFactory initFactory;
 
@@ -50,7 +50,7 @@ namespace Game.Logic.Actions
                                            Formula formula,
                                            IWorld world,
                                            ObjectTypeFactory objectTypeFactory,
-                                           StructureFactory structureFactory,
+                                           StructureCsvFactory structureCsvFactory,
                                            InitFactory initFactory,
                                            ReverseTileLocator reverseTileLocator,
             ILocker locker)
@@ -62,7 +62,7 @@ namespace Game.Logic.Actions
             this.formula = formula;
             this.world = world;
             this.objectTypeFactory = objectTypeFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             this.initFactory = initFactory;
             this.reverseTileLocator = reverseTileLocator;
             this.locker = locker;
@@ -80,7 +80,7 @@ namespace Game.Logic.Actions
                                            Formula formula,
                                            IWorld world,
                                            ObjectTypeFactory objectTypeFactory,
-                                           StructureFactory structureFactory,
+                                           StructureCsvFactory structureCsvFactory,
                                            InitFactory initFactory,
                                            ReverseTileLocator reverseTileLocator,
             ILocker locker)
@@ -89,7 +89,7 @@ namespace Game.Logic.Actions
             this.formula = formula;
             this.world = world;
             this.objectTypeFactory = objectTypeFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             this.initFactory = initFactory;
             this.reverseTileLocator = reverseTileLocator;
             this.locker = locker;
@@ -206,18 +206,16 @@ namespace Game.Logic.Actions
             world.Regions.LockRegion(emptyX, emptyY);
 
             // add structure to the map                    
-            IStructure structure = structureFactory.GetNewStructure(campType, 0);
+            IStructure structure = city.CreateStructure(campType, 0);
+            structure.BeginUpdate();
             structure["Rate"] = 0; // Set initial rate for camp
             structure.X = emptyX;
             structure.Y = emptyY;
-
-            structure.BeginUpdate();
             structure.Stats.Labor = labors;
+
             city.BeginUpdate();
             city.Resource.Subtract(cost);
             city.EndUpdate();
-
-            city.Add(structure);
 
             if (!world.Regions.Add(structure))
             {
@@ -241,7 +239,7 @@ namespace Game.Logic.Actions
             forest.EndUpdate();
 
             // add to queue for completion
-            var actionEndTime = formula.BuildTime(structureFactory.GetTime(campType, 1), city, city.Technologies) +
+            var actionEndTime = formula.BuildTime(structureCsvFactory.GetTime(campType, 1), city, city.Technologies) +
                                 lumbermill.TileDistance(forest) * 5;
 
             endTime = DateTime.UtcNow.AddSeconds(CalculateTime(actionEndTime));
@@ -303,7 +301,7 @@ namespace Game.Logic.Actions
                 // Upgrade the camp
                 structure.BeginUpdate();
                 structure.Technologies.Parent = structure.City.Technologies;
-                structureFactory.GetUpgradedStructure(structure, structure.Type, 1);
+                structureCsvFactory.GetUpgradedStructure(structure, structure.Type, 1);
                 initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 

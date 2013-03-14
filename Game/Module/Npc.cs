@@ -168,7 +168,7 @@ namespace Game.Module
             {
                 IStructure structure = enumerator.Current.Value;
 
-                int workerType = Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure);
+                int workerType = Ioc.Kernel.Get<StructureCsvFactory>().GetActionWorkerType(structure);
                 ActionRequirementFactory.ActionRecord record =
                         Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(workerType);
                 if (record == null)
@@ -216,7 +216,7 @@ namespace Game.Module
             while (enumerator.MoveNext())
             {
                 IStructure structure = enumerator.Current.Value;
-                int workerType = Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure);
+                int workerType = Ioc.Kernel.Get<StructureCsvFactory>().GetActionWorkerType(structure);
                 ActionRequirementFactory.ActionRecord record =
                         Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(workerType);
                 if (record == null)
@@ -275,7 +275,7 @@ namespace Game.Module
             var action = new StructureUpgradeActiveAction(city.Id, structure.ObjectId);
 
             if (
-                    city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure),
+                    city.Worker.DoActive(Ioc.Kernel.Get<StructureCsvFactory>().GetActionWorkerType(structure),
                                          structure,
                                          action,
                                          structure.Technologies) == Error.Ok)
@@ -333,20 +333,20 @@ namespace Game.Module
 
                     IEnumerable<ICity> cities = npc.GetCityList();
 
+                    var city = Ioc.Kernel.Get<ICityFactory>().CreateCity(World.Current.Cities.GetNextCityId(),
+                                        npc,
+                                        string.Format("{0} {1}", npc.Name, npc.GetCityCount() + 1),
+                                        Formula.Current.GetInitialCityResources(),
+                                        Formula.Current.GetInitialCityRadius(),
+                                        0);
+                    
                     IStructure structure;
-                    if (!Randomizer.MainBuilding(out structure, Formula.Current.GetInitialCityRadius(), 2))
+                    if (!Randomizer.MainBuilding(city, out structure, Formula.Current.GetInitialCityRadius(), 2))
                     {
                         logger.Info(npc.Name);
                         break;
                     }
 
-                    var city = new City(World.Current.Cities.GetNextCityId(),
-                                        npc,
-                                        string.Format("{0} {1}", npc.Name, npc.GetCityCount() + 1),
-                                        Formula.Current.GetInitialCityResources(),
-                                        Formula.Current.GetInitialCityRadius(),
-                                        structure,
-                                        0);
                     npc.Add(city);
 
                     World.Current.Cities.Add(city);
@@ -354,7 +354,7 @@ namespace Game.Module
                     World.Current.Regions.Add(structure);
                     structure.EndUpdate();
 
-                    var defaultTroop = city.Troops.Create();
+                    var defaultTroop = city.CreateTroopStub();
                     defaultTroop.BeginUpdate();
                     defaultTroop.AddFormation(FormationType.Normal);
                     defaultTroop.AddFormation(FormationType.Garrison);
@@ -386,33 +386,30 @@ namespace Game.Module
             if (Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileTree", tileType))
             {
                 // Lumber mill
-                IStructure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2107, 1);
+                IStructure structure = city.CreateStructure(2107, 1);
                 structure.X = x;
                 structure.Y = y;
                 structure.Stats.Labor = structure.Stats.Base.MaxLabor;
 
-                city.Add(structure);
                 World.Current.Regions.Add(structure);
             }
             else if (Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileCrop", tileType))
             {
                 // Farm
-                IStructure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2106, 1);
+                IStructure structure = city.CreateStructure(2106, 1);
                 structure.X = x;
                 structure.Y = y;
                 structure.Stats.Labor = structure.Stats.Base.MaxLabor;
 
-                city.Add(structure);
                 World.Current.Regions.Add(structure);
             }
             else if (x == origX - 1 && y == origY - 1)
             {
                 // Barrack
-                IStructure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2201, 1);
+                IStructure structure = city.CreateStructure(2201, 1);
                 structure.X = x;
                 structure.Y = y;
 
-                city.Add(structure);
                 World.Current.Regions.Add(structure);
             }
 

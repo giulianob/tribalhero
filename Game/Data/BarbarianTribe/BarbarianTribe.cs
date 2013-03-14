@@ -44,7 +44,7 @@ namespace Game.Data.BarbarianTribe
 
         private readonly IDbManager dbManager;
 
-        public BarbarianTribe(uint id, byte level, uint x, uint y, int count, Resource resources, IDbManager dbManager, IActionWorker actionWorker)
+        public BarbarianTribe(uint id, byte level, uint x, uint y, int count, Resource resources, IDbManager dbManager, IActionWorker actionWorker, IRegionManager regionManager) : base(regionManager)
         {
             this.dbManager = dbManager;
             this.x = x;

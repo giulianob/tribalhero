@@ -109,7 +109,7 @@ namespace Game.Logic.Actions
                     DateTime.UtcNow.AddSeconds(
                                                CalculateTime(
                                                              Formula.Current.BuildTime(
-                                                                                       Ioc.Kernel.Get<StructureFactory>()
+                                                                                       Ioc.Kernel.Get<StructureCsvFactory>()
                                                                                           .GetTime((ushort)type, lvl),
                                                                                        city,
                                                                                        structure.Technologies)));

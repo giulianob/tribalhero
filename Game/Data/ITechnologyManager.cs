@@ -10,8 +10,6 @@ namespace Game.Data
 
         uint OwnerId { get; }
 
-        object Owner { get; }
-
         int TechnologyCount { get; }
 
         int OwnedTechnologyCount { get; }

@@ -32,6 +32,8 @@ namespace Game.Data
             BarbarianTribe = 400,
         }
 
+        protected readonly IRegionManager regionManager;
+
         protected uint objectId;
 
         protected uint x;
@@ -70,6 +72,7 @@ namespace Game.Data
             {
                 CheckUpdateMode();
                 inWorld = value;
+                SaveOrigPos();
             }
         }
 
@@ -112,7 +115,12 @@ namespace Game.Data
             set
             {
                 CheckUpdateMode();
-                origX = x;
+
+                if (inWorld)
+                {
+                    origX = x;
+                }
+
                 x = value;
             }
         }
@@ -126,7 +134,12 @@ namespace Game.Data
             set
             {
                 CheckUpdateMode();
-                origY = y;
+
+                if (inWorld)
+                {
+                    origY = y;
+                }
+
                 y = value;
             }
         }
@@ -151,14 +164,9 @@ namespace Game.Data
 
         #region Constructors
 
-        protected SimpleGameObject()
+        protected SimpleGameObject(IRegionManager regionManager)
         {
-        }
-
-        protected SimpleGameObject(uint x, uint y)
-        {
-            this.x = origX = x;
-            this.y = origY = y;
+            this.regionManager = regionManager;
         }
 
         #endregion
@@ -179,8 +187,8 @@ namespace Game.Data
             }
 
             updating = true;
-            origX = x;
-            origY = y;
+
+            SaveOrigPos();
         }
 
         public abstract void CheckUpdateMode();
@@ -199,12 +207,24 @@ namespace Game.Data
                 return;
             }
 
-            World.Current.Regions.ObjectUpdateEvent(this, origX, origY);
+            if (InWorld)
+            {
+                regionManager.ObjectUpdateEvent(this, origX, origY);
+            }
         }
 
         #endregion
 
         #region Methods
+
+        private void SaveOrigPos()
+        {
+            if (InWorld)
+            {
+                origX = x;
+                origY = y;
+            }
+        }
 
         public override string ToString()
         {

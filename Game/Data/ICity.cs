@@ -27,8 +27,6 @@ namespace Game.Data
 
         byte Lvl { get; }
 
-        NotificationManager Notifications { get; }
-
         ReferenceManager References { get; }
 
         /// <summary>
@@ -96,7 +94,7 @@ namespace Game.Data
         /// </summary>
         int DefensePoint { get; set; }
 
-        ushort Value { get; }
+        ushort Value { get; set; }
 
         IStructure MainBuilding { get; }
 
@@ -127,8 +125,6 @@ namespace Game.Data
 
         bool Add(uint objId, IStructure structure, bool save);
 
-        bool Add(IStructure structure);
-
         bool ScheduleRemove(ITroopObject obj, bool wasKilled);
 
         bool ScheduleRemove(IStructure obj, bool wasKilled, bool cancelReferences = false);
@@ -158,5 +154,9 @@ namespace Game.Data
         void NewCityUpdate();
 
         void ObjUpdateEvent(IGameObject sender, uint origX, uint origY);
+
+        ITroopStub CreateTroopStub();
+
+        IStructure CreateStructure(ushort type, byte level);
     }
 }

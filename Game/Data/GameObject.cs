@@ -10,6 +10,11 @@ namespace Game.Data
 {
     public abstract class GameObject : SimpleGameObject, IGameObject
     {
+        
+        public GameObject(IRegionManager regionManager) : base(regionManager)
+        {
+        }
+
         private uint isBlocked;
 
         public uint IsBlocked
@@ -79,7 +84,11 @@ namespace Game.Data
             }
 
             City.ObjUpdateEvent(this, origX, origY);
-            World.Current.Regions.ObjectUpdateEvent(this, origX, origY);
+
+            if (InWorld)
+            {
+                regionManager.ObjectUpdateEvent(this, origX, origY);
+            }
         }
         
         public bool CheckBlocked(uint actionId)

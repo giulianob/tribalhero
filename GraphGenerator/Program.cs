@@ -114,7 +114,7 @@ namespace GraphGenerator
             // Process
             nodeConnections = new StringWriter(new StringBuilder());
 
-            ProcessStructure(kernel.Get<StructureFactory>().GetBaseStats(MAIN_BUILDING, 1), false);
+            ProcessStructure(kernel.Get<StructureCsvFactory>().GetBaseStats(MAIN_BUILDING, 1), false);
 
             using (var b = new StringWriter(new StringBuilder()))
             {
@@ -250,7 +250,7 @@ namespace GraphGenerator
                     case ActionType.StructureBuildActive:
                     case ActionType.StructureChangeActive:
                         StructureBaseStats building =
-                                kernel.Get<StructureFactory>().GetBaseStats(ushort.Parse(action.Parms[0]), 1);
+                                kernel.Get<StructureCsvFactory>().GetBaseStats(ushort.Parse(action.Parms[0]), 1);
                         Result result = ProcessStructure(building, false);
                         if (result != Result.AlreadyProcessed)
                         {
@@ -305,7 +305,7 @@ namespace GraphGenerator
 
                             for (int i = from.Lvl; i < maxLvl; i++)
                             {
-                                StructureBaseStats to = kernel.Get<StructureFactory>()
+                                StructureBaseStats to = kernel.Get<StructureCsvFactory>()
                                                            .GetBaseStats(from.Type, (byte)(i + 1));
                                 Result result = ProcessStructure(to, true);
                                 if (result == Result.Ok || i == maxLvl - 1)

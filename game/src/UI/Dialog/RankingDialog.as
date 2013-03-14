@@ -225,7 +225,7 @@ package src.UI.Dialog{
 			} else if(rankings[type].baseOn == "player") {
 				Global.mapComm.Ranking.list(loader, Constants.playerId, type, page);
 			} else if (rankings[type].baseOn == "tribe") {
-				Global.mapComm.Ranking.list(loader, Constants.tribeId, type, page);
+				Global.mapComm.Ranking.list(loader, Constants.tribe.id, type, page);
 			} else if (rankings[type].baseOn == "stronghold") {
 				Global.mapComm.Ranking.list(loader, 0, type, page);
 			}
@@ -343,7 +343,7 @@ package src.UI.Dialog{
 				
 				rankingList.append( { "rank": rank.rank, "value": rank.value, "tribeId": rank.tribeId, "tribeName": rank.tribeName } );
 
-				if (rank.tribeId == Constants.tribeId)  {
+				if (Constants.tribe.isInTribe(rank.tribeId))  {
 					selectIdx = rankingList.size() - 1;
 				}
 			}

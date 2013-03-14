@@ -76,7 +76,7 @@ package src.Map.CityRegionFilters
 			var icon: MINIMAP_TROOP_ICON = ObjectFactory.getIcon("MINIMAP_TROOP_ICON") as MINIMAP_TROOP_ICON;
 			obj.sprite = icon;
             // Highlight friendly troops
-			if (Constants.tribeId > 0 && obj.extraProps.tribeId == Constants.tribeId) {
+			if (Constants.tribe.isInTribe(obj.extraProps.tribeId)) {
 				obj.transform.colorTransform = new ColorTransform(0, 0, 0, 1, 255, 255, 0);
 			}
 			obj.addChild(icon);

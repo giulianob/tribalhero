@@ -5,16 +5,16 @@ package src.UI.Components.Tribe
 	
 	public class TribeRankTranslator implements PropertyTranslator
 	{
-		
-		public function TribeRankTranslator() 
+		private var ranks : * ;
+		public function TribeRankTranslator(ranks : *) 
 		{
-			
+			this.ranks = ranks;
 		}
 		
 		public function translate(info:*, key:String):*
 		{
 			var rank:int = info[key];
-			return StringHelper.localize("TRIBE_RANK_" + rank);
+			return ranks[rank].name;
 		}
 	}		
 

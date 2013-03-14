@@ -134,6 +134,7 @@ package src.Comm {
 		public static const TRIBE_DESCRIPTION_SET: int = 1006;		
 		public static const TRIBE_TRANSFER: int = 1008;
 		public static const TRIBE_INFO_BY_NAME: int = 1009;
+		public static const TRIBE_UPDATE_RANK: int = 1010;
         public static const TRIBESMAN_REMOVE: int = 1012;
         public static const TRIBESMAN_UPDATE: int = 1013;
         public static const TRIBESMAN_REQUEST: int = 1014;

@@ -204,7 +204,7 @@
 			lblGate.setVerticalAlignment(AsWingConstants.TOP);
 			pnlGate.append(lblGate);
 			
-			if (stronghold.battleState == Stronghold.BATTLE_STATE_NONE && stronghold.gate < Formula.getGateLimit(stronghold.lvl) && Constants.tribeRank <= 1) {
+			if (stronghold.battleState == Stronghold.BATTLE_STATE_NONE && stronghold.gate < Formula.getGateLimit(stronghold.lvl) && Constants.tribe.hasRight(Tribe.REPAIR)) {
 				var btnGateRepair: JLabelButton = new JLabelButton(Stronghold.gateToString(stronghold.lvl, stronghold.gate), null, AsWingConstants.LEFT);
 				btnGateRepair.useHandCursor = true;
 				btnGateRepair.addEventListener(MouseEvent.CLICK, function(e: Event): void {
@@ -412,7 +412,7 @@
 			
 			pnlAssignmentHolder.appendAll(scrollAssignment, pnlFooter);
 			
-			if (Constants.tribeRank <= 1) {
+			if (Constants.tribe.hasRight(Tribe.ASSIGNMENT)) {
 				pnlFooter.append(btnCreate);
 			}
 			
@@ -441,7 +441,7 @@
 				modelMembers, 
 				["Player", "Rank", "Last Seen", ""],
 				[".", "rank", "date", "."],
-				[null, new TribeRankTranslator(), null]
+				[null, new TribeRankTranslator(Constants.tribe.ranks), null]
 			));			
 			tableMembers.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
 				tableMembers.getCellEditor().cancelCellEditing();
@@ -484,6 +484,7 @@
 			
 			var btnUpgrade: JLabelButton = new JLabelButton("Upgrade");
 			var btnDonate: JLabelButton = new JLabelButton("Contribute");
+			var btnUpdateRank: JLabelButton = new JLabelButton("Ranks");
 			var btnInvite: JLabelButton = new JLabelButton("Invite");
 			var btnSetDescription: JLabelButton = new JLabelButton("Set Announcement");
 			var btnDismantle: JLabelButton = new JLabelButton("Dismantle");
@@ -493,16 +494,16 @@
 			var pnlActions: JPanel = new JPanel(new FlowWrapLayout(200, AsWingConstants.LEFT, 10, 0, false));				
 			pnlActions.setConstraints("North");
 			// Show correct buttons depending on rank
-			switch (Constants.tribeRank) {
-				case 0: 
-					pnlActions.appendAll(btnSetDescription, btnInvite, btnDonate, btnUpgrade, btnDismantle, btnTransfer);
-					break;
-				case 1:
-					pnlActions.appendAll(btnInvite, btnDonate, btnUpgrade, btnLeave);
-					break;
-				default:
-					pnlActions.appendAll(btnDonate, btnUpgrade, btnLeave);
-					break;
+			if (Constants.tribe.hasRight(Tribe.ALL))  /// Tribe Chief
+			{
+				pnlActions.appendAll(btnSetDescription, btnInvite, btnUpgrade, btnDonate, btnDismantle, btnTransfer, btnUpdateRank);
+			} 
+			else 
+			{
+				if (Constants.tribe.hasRight(Tribe.ANNOUNCEMENT)) pnlActions.appendAll(btnSetDescription);
+				if (Constants.tribe.hasRight(Tribe.INVITE)) pnlActions.appendAll(btnInvite);
+				if (Constants.tribe.hasRight(Tribe.UPGRADE)) pnlActions.appendAll(btnUpgrade);
+				pnlActions.appendAll(btnDonate, btnLeave);
 			}
 			
 			// upgrade btn
@@ -511,7 +512,7 @@
 			btnUpgrade.addActionListener(function(e: Event): void {
 				Global.mapComm.Tribe.upgrade();
 			});
-			btnUpgrade.setEnabled(Constants.tribeRank == 0);
+			btnUpgrade.setEnabled(!Constants.tribe.isInTribe());
 			btnUpgrade.mouseEnabled = true;
 			
 			// description
@@ -633,6 +634,13 @@
 			
 			btnDonate.addActionListener(function(e: Event): void {
 				InfoDialog.showMessageDialog("Contribute to tribe", "Use a Trading Post to contribute resources.");
+			});
+			
+			btnUpdateRank.addActionListener(function(e: Event): void {
+				var dialog : TribeUpdateRankDialog = new TribeUpdateRankDialog();
+				dialog.show(null, true, function():void {
+					update();
+				});
 			});
 			
 			// First row of header panel which contains player name + ranking

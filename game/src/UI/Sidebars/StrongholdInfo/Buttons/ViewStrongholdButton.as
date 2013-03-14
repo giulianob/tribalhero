@@ -32,7 +32,7 @@ package src.UI.Sidebars.StrongholdInfo.Buttons {
 			if (isEnabled())
 			{
 				var stronghold: Stronghold = parentObj as Stronghold;
-				if (stronghold.tribeId!=0 && Constants.tribeId == stronghold.tribeId)
+				if (Constants.tribe.isInTribe(stronghold.tribeId))
 				{
 					Global.mapComm.Stronghold.viewStrongholdProfile(stronghold.id);
 				}

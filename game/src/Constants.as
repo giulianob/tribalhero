@@ -1,6 +1,7 @@
 package src
 {
 	import src.Map.CityRegionLegend;
+	import src.Objects.Tribe;
 	public class Constants
 	{
 		public static var version: int;
@@ -21,9 +22,8 @@ package src
 		public static var admin: Boolean;
 		public static var loginKey: String;
 		public static var playerId: int;
-		public static var tribeId: int;
-		public static var tribeRank: int;
 		public static var tribeInviteId: int = 3;
+		public static var tribe: Tribe = new Tribe();
 		public static var signupTime: Date;
 		public static var newbieProtectionSeconds: int;
 		public static var tribeAssignment: int;

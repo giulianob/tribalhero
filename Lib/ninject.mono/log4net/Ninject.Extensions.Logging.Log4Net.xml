@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>C:\source\ninject\ninject.extensions.logging\build\mono-4.0\release\log4net\Ninject.Extensions.Logging.Log4Net</name>
+        <name>c:\source\ninject\ninject.extensions.logging\build\mono-4.0\release\log4net\Ninject.Extensions.Logging.Log4Net</name>
     </assembly>
     <members>
         <member name="T:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger">
@@ -15,10 +15,22 @@
             </summary>
             <param name="type">The type to create a logger for.</param>
         </member>
+        <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger" /> class.
+            </summary>
+            <param name="name">A custom name to use for the logger.  If null, the type's FullName will be used.</param>
+        </member>
         <member name="F:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.log4NetLogger">
             <summary>
             The logger used by this instance.
             </summary>
+        </member>
+        <member name="P:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.Name">
+            <summary>
+            Gets the name of the logger.
+            </summary>
+            <value>The name of the logger.</value>
         </member>
         <member name="P:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.IsDebugEnabled">
             <summary>
@@ -71,6 +83,13 @@
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
         </member>
+        <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.DebugException(System.String,System.Exception)">
+            <summary>
+            Logs the specified exception with Debug severity.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="exception">The exception to log.</param>
+        </member>
         <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.Info(System.String)">
             <summary>
             Logs the specified message with Info severity.
@@ -91,6 +110,13 @@
             <param name="exception">The exception to log.</param>
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
+        </member>
+        <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.InfoException(System.String,System.Exception)">
+            <summary>
+            Logs the specified exception with Info severity.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="exception">The exception to log.</param>
         </member>
         <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.Trace(System.String)">
             <summary>
@@ -113,6 +139,13 @@
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
         </member>
+        <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.TraceException(System.String,System.Exception)">
+            <summary>
+            Logs the specified exception with Trace severity.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="exception">The exception to log.</param>
+        </member>
         <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.Warn(System.String)">
             <summary>
             Logs the specified message with Warn severity.
@@ -133,6 +166,13 @@
             <param name="exception">The exception to log.</param>
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
+        </member>
+        <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.WarnException(System.String,System.Exception)">
+            <summary>
+            Logs the specified message with Warn severity.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="exception">The exception to log.</param>
         </member>
         <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.Error(System.String)">
             <summary>
@@ -155,6 +195,13 @@
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
         </member>
+        <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.ErrorException(System.String,System.Exception)">
+            <summary>
+            Logs the specified exception with Error severity.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="exception">The exception to log.</param>
+        </member>
         <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.Fatal(System.String)">
             <summary>
             Logs the specified message with Fatal severity.
@@ -176,6 +223,13 @@
             <param name="format">The message or format template.</param>
             <param name="args">Any arguments required for the format template.</param>
         </member>
+        <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger.FatalException(System.String,System.Exception)">
+            <summary>
+            Logs the specified exception with Fatal severity.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="exception">The exception to log.</param>
+        </member>
         <member name="T:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLoggerFactory">
             <summary>
             An implementation of a logger factory that creates <see cref="T:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLogger" />s.
@@ -186,6 +240,13 @@
             Creates a logger for the specified type.
             </summary>
             <param name="type">The type to create the logger for.</param>
+            <returns>The newly-created logger.</returns>
+        </member>
+        <member name="M:Ninject.Extensions.Logging.Log4net.Infrastructure.Log4NetLoggerFactory.CreateLogger(System.String)">
+            <summary>
+            Creates a logger with the specified name.
+            </summary>
+            <param name="name">The explicit name to create the logger for.  If null, the type's FullName will be used.</param>
             <returns>The newly-created logger.</returns>
         </member>
         <member name="T:Ninject.Extensions.Logging.Log4net.Log4NetModule">

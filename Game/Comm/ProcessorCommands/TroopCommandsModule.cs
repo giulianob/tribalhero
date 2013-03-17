@@ -159,7 +159,7 @@ namespace Game.Comm.ProcessorCommands
                 if (city.Owner == session.Player)
                 {
                     reply.AddByte(troop.Stats.AttackRadius);
-                    reply.AddByte(troop.Stats.Speed);
+                    reply.AddFloat((float)troop.Stats.Speed);
                     reply.AddUInt32(troop.TargetX);
                     reply.AddUInt32(troop.TargetY);
 

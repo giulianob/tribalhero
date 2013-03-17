@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>C:\source\ninject\ninject.extensions.factory\build\mono-4.0\release\Ninject.Extensions.Factory</name>
+        <name>c:\source\ninject\ninject.extensions.factory\build\mono-4.0\release\Ninject.Extensions.Factory</name>
     </assembly>
     <members>
         <member name="T:Ninject.Extensions.Factory.FactoryInterceptor">

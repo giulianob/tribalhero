@@ -42,6 +42,8 @@ namespace Game.Data.Stronghold
 
         DateTime DateOccupied { get; set; }
 
+        decimal BonusDays { get; set; }
+
         ITribe Tribe { get; set; }
 
         ITribe GateOpenTo { get; set; }

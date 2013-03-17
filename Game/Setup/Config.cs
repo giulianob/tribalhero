@@ -17,7 +17,7 @@ namespace Game.Setup
     {
         #region Game Settings
 
-        public static string database_schema_version = "20130301022722";
+        public static string database_schema_version = "20130305040333";
 
         // ReSharper disable InconsistentNaming        
         public static int client_min_version;
@@ -195,6 +195,8 @@ namespace Game.Setup
         public static int stronghold_radius_per_level = 10;
 
         public static int stronghold_radius_base = 100;
+
+        public static bool stronghold_classic = true;
 
         public static double barbarian_tribes_npc_randomness = 0.4;
         

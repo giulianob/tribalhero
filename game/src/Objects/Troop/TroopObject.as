@@ -6,7 +6,7 @@
 
 	public class TroopObject extends GameObject {
 
-		public var speed: int;
+		public var speed: Number;
 		public var attackRadius: int;
 		public var stubId: int;
 		public var targetX: int;

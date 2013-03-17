@@ -251,7 +251,7 @@ namespace Game.Data.Troop
         {
             get
             {
-                return City.Hash;
+                return City != null ? City.Hash : int.MaxValue;
             }
         }
 
@@ -259,7 +259,7 @@ namespace Game.Data.Troop
         {
             get
             {
-                return City.Lock;
+                return City != null ? City.Lock : null;
             }
         }
     }

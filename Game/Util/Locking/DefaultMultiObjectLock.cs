@@ -15,6 +15,10 @@ namespace Game.Util.Locking
 {
     public class DefaultMultiObjectLock : IMultiObjectLock
     {
+        private readonly Action<object> lockEnter;
+
+        private readonly Action<object> lockExit;
+
         public delegate IMultiObjectLock Factory();
 
         [ThreadStatic]
@@ -22,21 +26,37 @@ namespace Game.Util.Locking
 
         private object[] lockedObjects = new object[] {};
 
-        public IMultiObjectLock Lock(ILockable[] list)
+        public DefaultMultiObjectLock()
+                : this(Monitor.Enter, Monitor.Exit)
         {
+        }
+
+        public DefaultMultiObjectLock(Action<object> lockEnter, Action<object> lockExit)
+        {
+            this.lockEnter = lockEnter;
+            this.lockExit = lockExit;
+        }
+
+        public IMultiObjectLock Lock(ILockable[] list)
+        {            
             if (currentLock != null)
             {
                 throw new LockException("Attempting to nest MultiObjectLock");
             }
 
             currentLock = this;
-
+            
             lockedObjects = new object[list.Length];
 
             SortLocks(list);
             for (int i = 0; i < list.Length; ++i)
-            {
-                Monitor.Enter(list[i].Lock);
+            {                
+                if (list[i].Lock == null)
+                {
+                    continue;
+                }
+
+                lockEnter(list[i].Lock);
                 lockedObjects[i] = list[i].Lock;
             }
 
@@ -55,14 +75,14 @@ namespace Game.Util.Locking
         }
 
         public void UnlockAll()
-        {
+        {            
             for (int i = lockedObjects.Length - 1; i >= 0; --i)
             {
-                Monitor.Exit(lockedObjects[i]);
+                lockExit(lockedObjects[i]);
             }
 
             lockedObjects = new object[] {};
-
+            
             currentLock = null;
         }
 
@@ -79,7 +99,7 @@ namespace Game.Util.Locking
                 return hashDiff;
             }
 
-            // Should not happen but just to be safe
+            // Compare types if the hashes collide
             return String.Compare(x.GetType().Name, y.GetType().Name, StringComparison.InvariantCulture);
         }
 

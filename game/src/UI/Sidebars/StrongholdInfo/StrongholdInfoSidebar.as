@@ -54,7 +54,7 @@
 
 			clear();		
 			
-			addStatRow(StringHelper.localize("STR_NAME"), new StrongholdLabel(stronghold.id, stronghold.tribeId == Constants.tribeId));			
+			addStatRow(StringHelper.localize("STR_NAME"), new StrongholdLabel(stronghold.id, Constants.tribe.isInTribe(stronghold.tribeId)));			
 						
 			if (stronghold.tribeId == 0) {
 				addStatRow(StringHelper.localize("STR_TRIBE"), StringHelper.localize("STR_NOT_OCCUPIED"));
@@ -64,7 +64,7 @@
 			
 			addStatRow(StringHelper.localize("STR_LEVEL"), stronghold.level.toString());
 
-			if (Constants.tribeId!=0 && stronghold.tribeId==Constants.tribeId) {
+			if (Constants.tribe.isInTribe(stronghold.tribeId)) {
 				pnlGroups.append(new ViewStrongholdButton(stronghold));
 				pnlGroups.append(new SendReinforcementButton(stronghold, new Location(Location.STRONGHOLD, stronghold.id)));
 			} else {

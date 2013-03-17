@@ -105,7 +105,7 @@
 				modelMembers, 
 				["Player", "Rank"],
 				[".", "rank"],
-				[null, new TribeRankTranslator()]
+				[null, new TribeRankTranslator(profileData.ranks)]
 			));			
 			tableMembers.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
 				tableMembers.getCellEditor().cancelCellEditing();

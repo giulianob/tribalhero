@@ -11,6 +11,7 @@
 	import src.*;
 	import src.Map.City;
 	import src.Objects.Effects.Formula;
+	import src.Objects.Tribe;
 	import src.UI.*;
 	import src.UI.Components.*;
 	import src.UI.LookAndFeel.*;
@@ -125,7 +126,7 @@
 				pnlActions.append(btnSetDescription);
 			else {
 				pnlActions.append(btnSendMessage);
-				if (profileData.tribeId == 0 && Constants.tribeId > 0 && Constants.tribeRank <= 1)
+				if (profileData.tribeId == 0 && Constants.tribe.hasRight(Tribe.INVITE))
 					pnlActions.append(btnInviteTribe);
 			}
 			

@@ -8,6 +8,7 @@ package src.UI.Dialog
 	import org.aswing.table.*;
 	import src.*;
 	import src.Comm.*;
+	import src.Objects.Tribe;
 	import src.UI.*;
 	import src.UI.Components.*;
 	import src.UI.Components.TableCells.*;
@@ -268,7 +269,7 @@ package src.UI.Dialog
 				}
 			});			
 			
-			if (Constants.tribeRank <= 1 || Constants.playerId == postData.playerId) {				
+			if (Constants.tribe.hasRight(Tribe.DELETE_POST) || Constants.playerId == postData.playerId) {				
 				menuTools.addMenuItem(postData.subject ? "Delete Thread" : "Delete Post").addActionListener(function(e: Event): void {
 					InfoDialog.showMessageDialog("Delete", "Are you sure?", function(result: *):void {
 						if (result != JOptionPane.YES)

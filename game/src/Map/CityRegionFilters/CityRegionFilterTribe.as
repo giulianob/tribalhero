@@ -30,7 +30,7 @@ package src.Map.CityRegionFilters
 			
 			if (Global.map.cities.get(obj.groupId)) {
 				obj.transform.colorTransform = new ColorTransform();
-			} else if(Constants.tribeId>0 && Constants.tribeId == obj.extraProps.tribeId) {
+			} else if(Constants.tribe.isInTribe(obj.extraProps.tribeId)) {
 				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[1].r, DEFAULT_COLORS[1].g, DEFAULT_COLORS[1].b);
 			} else if (obj.extraProps.tribeId>0) {
 				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[4].r, DEFAULT_COLORS[4].g, DEFAULT_COLORS[4].b);

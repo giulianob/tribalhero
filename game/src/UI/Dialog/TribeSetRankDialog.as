@@ -45,7 +45,7 @@ package src.UI.Dialog{
 		}
 		
 		public function getNewRank(): int {
-			return lstRank.getSelectedIndex() + 1;
+			return lstRank.getSelectedIndex();
 		}
 
 		private function createUI():void {
@@ -77,9 +77,14 @@ package src.UI.Dialog{
 			var lblNewRankTitle: JLabel = new JLabel("Rank");
 			lblNewRankTitle.setHorizontalAlignment(AsWingConstants.RIGHT);
 			
-			lstRank = new JComboBox(["Elder", "Tribesman"]);
+			var options : * = [];
+			var ranks : * = Constants.tribe.ranks;
+			for (var i:int = 0; i < ranks.length; ++i) {
+				options.push(ranks[i].name);
+			}
+			lstRank = new JComboBox(options);
 			lstRank.setPreferredWidth(100);
-			lstRank.setSelectedIndex(currentRank - 1);
+			lstRank.setSelectedIndex(currentRank);
 
 			var pnlButtons: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER));
 			pnlButtons.setPreferredWidth(150);

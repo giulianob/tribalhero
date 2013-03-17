@@ -137,14 +137,16 @@
 		public function readLoginInfo(packet: Packet): void
 		{
 			// Tribe info
-			Constants.tribeId = packet.readUInt();
+			Constants.tribe.id = packet.readUInt();
 			Constants.tribeInviteId = packet.readUInt();
-			Constants.tribeRank = packet.readUByte();
+			Constants.tribe.rank = packet.readUByte();
 			Global.gameContainer.tribeNotificationIcon.visible = Constants.tribeInviteId > 0;			
 			
 			var tribeName: String = packet.readString();
-			if (Constants.tribeId > 0) {
-				Global.map.usernames.tribes.add(new Username(Constants.tribeId, tribeName));
+			if (Constants.tribe.isInTribe()) {
+				Global.map.usernames.tribes.add(new Username(Constants.tribe.id, tribeName));
+
+				TribeComm.readTribeRanks(packet);
 			}
 				
 			// Cities

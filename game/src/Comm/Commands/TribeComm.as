@@ -44,9 +44,10 @@
 		}
 
 		public function onReceiveTribeUpdate(packet: Packet) : void {
-			Constants.tribeId = packet.readUInt();
+			Constants.tribe.id = packet.readUInt();
 			Constants.tribeInviteId = packet.readUInt();
-			Constants.tribeRank = packet.readUByte();
+			Constants.tribe.rank = packet.readUByte();
+
 			Global.gameContainer.tribeNotificationIcon.visible = Constants.tribeInviteId > 0;
 		}
 		
@@ -63,13 +64,30 @@
 			mapComm.showLoading();
 			session.write(packet, mapComm.catchAllErrors, callback);
 		}
-		
+		public static function readTribeRanks(packet:Packet) : * {
+			var ranks : * = [];
+			var rankCount: int = packet.readByte();
+			for (var i :int = 0; i < rankCount; i++)
+			{
+				var rankData: * = new Object();
+				rankData.name = packet.readString();
+				rankData.rights = packet.readInt();
+				ranks.push(rankData);
+			}
+			Constants.tribe.ranks = ranks;
+			return ranks;
+		}
+		private function onCreateTribe(packet: Packet) : void  {
+			 if (MapComm.tryShowError(packet)) {
+				return;
+			}
+			readTribeRanks(packet);
+		}
 		public function createTribe(name: String) : void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TRIBE_CREATE;
 			packet.writeString(name);
-
-			session.write(packet, mapComm.catchAllErrors);
+			session.write(packet, onCreateTribe);
 		}	
 		
 		public function invitationConfirm(response: Boolean) : void {
@@ -85,6 +103,7 @@
 			if(custom.response) {
 				var incoming: int = packet.readInt();
 				var assignment: int = packet.readShort();
+				readTribeRanks(packet);
 				onTribeJoin(assignment, incoming);
 			}
 		}
@@ -150,7 +169,7 @@
 			
 			profileData.members = [];
 			var memberCount: int = packet.readShort();
-			for (var i: int = 0; i < memberCount; i++) {
+			for (var i:int = 0; i < memberCount; i++) {
 				var memberData: * = new Object();
 				
 				memberData.playerId = packet.readUInt();
@@ -164,7 +183,6 @@
 					memberData.date = Util.simpleTime(Global.map.getServerTime() - lastLogin) + " ago";
 				}
 				memberData.contribution = new Resources(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUInt(), 0);
-
 				profileData.members.push(memberData);
 			
 			}
@@ -324,6 +342,16 @@
             profileData.publicDescription = packet.readString();
 			profileData.level = packet.readUByte();
 			profileData.created = packet.readUInt();
+			
+			profileData.ranks = [];
+			var rankCount: int = packet.readByte();
+			for (i = 0; i < rankCount; i++)
+			{
+				var rankData: * = new Object();
+				rankData.name = packet.readString();
+				profileData.ranks.push(rankData);
+			}
+			
 			profileData.members = [];
 			var memberCount: int = packet.readShort();
 			for (i = 0; i < memberCount; i++) {
@@ -442,6 +470,9 @@
 		public function onReceiveNotifications(packet: Packet, custom: * ):void {
 			var incoming:int = packet.readInt();
 			var assignment:int = packet.readShort();
+
+			readTribeRanks(packet);
+		
 			BuiltInMessages.showTribeAssignmentIncoming(assignment, incoming);
 		}
 		
@@ -450,6 +481,24 @@
 		}
 		public function onTribeLeave():void {
 			BuiltInMessages.hideTribeAssignmentIncoming();
+		}
+	
+		public function onUpdateRank(packet: Packet, custom: * ):void {
+			if (MapComm.tryShowError(packet))
+				return;	
+			if (custom.callback != null) {
+				custom.callback(custom.obj);
+			}
+		}
+		
+		public function updateRank(id: int, name: String, permission: int, callback: Function=null, custom : *=null) :void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBE_UPDATE_RANK;
+			packet.writeByte(id);
+			packet.writeString(name);
+			packet.writeInt(permission);
+			
+			session.write(packet, onUpdateRank, { callback: callback, obj: custom } );
 		}
 	}
 

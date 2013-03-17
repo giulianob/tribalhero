@@ -208,7 +208,7 @@ namespace Game.Data
 
         public override string ToString()
         {
-            return base.ToString() + "[" + X + "," + Y + "]";
+            return string.Format("{0} x[{1}] y[{2}] type[{3}] groupId[{4}] objId[{5}]", base.ToString(), X, Y, Type, GroupId, ObjectId);
         }
 
         public int TileDistance(uint x1, uint y1)

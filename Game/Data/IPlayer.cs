@@ -41,7 +41,9 @@ namespace Game.Data
 
         bool IsLoggedIn { get; }
 
-        bool Muted { get; set; }
+        DateTime Muted { get; set; }
+
+        bool Banned { get; set; }
 
         bool IsInTribe { get; }
 

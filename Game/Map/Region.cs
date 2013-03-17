@@ -89,11 +89,7 @@ namespace Game.Map
             objLock.EnterWriteLock();
             if (obj.X != origX || obj.Y != origY)
             {
-                if (!objlist.Remove(obj, origX, origY))
-                {
-                    throw new Exception("WTF");
-                }
-
+                objlist.Remove(obj, origX, origY);
                 objlist.AddGameObject(obj);
             }
             isDirty = true;

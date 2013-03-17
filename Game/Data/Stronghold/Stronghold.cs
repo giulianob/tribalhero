@@ -7,6 +7,7 @@ using Game.Battle;
 using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic;
+using Game.Logic.Formulas;
 using Game.Logic.Notifications;
 using Game.Map;
 using Game.Util;
@@ -15,11 +16,12 @@ using Persistance;
 
 namespace Game.Data.Stronghold
 {
-    class Stronghold : SimpleGameObject, IStronghold
+    public class Stronghold : SimpleGameObject, IStronghold
     {
         public const string DB_TABLE = "strongholds";
 
         private readonly IDbManager dbManager;
+        private readonly Formula formula;
 
         private ITribe gateOpenTo;
 
@@ -41,15 +43,15 @@ namespace Game.Data.Stronghold
         {
             get
             {
-                return (StrongholdState == StrongholdState.Occupied
-                                ? (decimal)(DateTime.UtcNow.Subtract(DateOccupied).TotalDays / 2 + 10)
-                                : 0) * Lvl;
+                return formula.StrongholdVictoryPoint(this);
             }
         }
 
         public ushort NearbyCitiesCount { get; set; }
 
         public DateTime DateOccupied { get; set; }
+
+        public decimal BonusDays { get; set; }
 
         public ITroopManager Troops { get; private set; }
 
@@ -137,10 +139,12 @@ namespace Game.Data.Stronghold
                           IDbManager dbManager,
                           NotificationManager notificationManager,
                           ITroopManager troopManager,
-                          IActionWorker actionWorker)
+                          IActionWorker actionWorker,
+                          Formula formula)
         {
             Notifications = notificationManager;
             this.dbManager = dbManager;
+            this.formula = formula;
             Id = id;
             Name = name;
             Lvl = level;
@@ -372,6 +376,7 @@ namespace Game.Data.Stronghold
                                      DbType.String),
                         new DbColumn("victory_point_rate", VictoryPointRate, DbType.Decimal),
                         new DbColumn("nearby_cities", NearbyCitiesCount, DbType.UInt16),
+                        new DbColumn("bonus_days", BonusDays, DbType.Decimal),
                 };
             }
         }

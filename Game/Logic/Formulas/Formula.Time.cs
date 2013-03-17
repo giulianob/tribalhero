@@ -15,11 +15,11 @@ namespace Game.Logic.Formulas
     {
         public virtual int SendTime(IStructure structure, int distance)
         {
-            return MoveTime(11) * distance * 100 /
-                   (100 +
-                    structure.Technologies.GetEffects(EffectCode.TradeSpeedMod, EffectInheritance.Self)
-                             .DefaultIfEmpty()
-                             .Max(x => x == null ? 0 : (int)x.Value[0]));
+            return (int)(MoveTime(11) * distance * 100 /
+                         (100 +
+                          structure.Technologies.GetEffects(EffectCode.TradeSpeedMod, EffectInheritance.Self)
+                                  .DefaultIfEmpty()
+                                  .Max(x => x == null ? 0 : (int)x.Value[0])));
         }
 
         public virtual int TradeTime(IStructure structure, Resource resource)
@@ -71,32 +71,20 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name="speed">Objects speed</param>
         /// <returns></returns>
-        public virtual int MoveTime(byte speed)
+        public virtual decimal MoveTime(decimal speed)
         {
             // 60 is second per square, 12 is the average speed for all troops
             // second per square is lowered from 80 to 60. 3/9/2011
-            return 60 * (100 - ((speed - 12) * 5)) / 100;
-        }
-
-        private int DoubleTimeTotal(int moveTime, int distance, double bonusPercentage, int forEveryDistance)
-        {
-            int total = 0;
-            int index = 0;
-            int tiles;
-            while (distance > 0)
-            {
-                tiles = distance > forEveryDistance ? forEveryDistance : distance;
-                total += (int)(moveTime * tiles / (1 + bonusPercentage * index++));
-                distance -= tiles;
-            }
-            return total;
+            // Base speed is 45 tile/hr, Each speed is extra +5 tile/hr 2/10/2013
+            return Math.Round(3600 / (45 + speed * 5), 1);
         }
 
         public virtual int MoveTimeTotal(ITroopStub stub, int distance, bool isAttacking)
         {
             var moveTime = MoveTime(stub.Speed);
-            double bonus = 0;
-            double rushMod = 0;
+            decimal doubleTimeBonus = 0;
+            decimal rushBonus = 0;
+            int doubleTimeDistance = 500;
 
             foreach (var effect in stub.City.Technologies.GetEffects(EffectCode.TroopSpeedMod))
             {
@@ -104,18 +92,26 @@ namespace Game.Logic.Formulas
                 if ((((string)effect.Value[1]).ToUpper() == "ATTACK" && isAttacking) ||
                     (((string)effect.Value[1]).ToUpper() == "DEFENSE" && !isAttacking))
                 {
-                    rushMod += (int)effect.Value[0];
+                    rushBonus += (int)effect.Value[0];
                 }
                 // Getting double time bonus
                 else if (((string)effect.Value[1]).ToUpper() == "DISTANCE")
                 {
-                    bonus = (int)effect.Value[0] > bonus ? (int)effect.Value[0] : bonus;
+                    doubleTimeBonus += (int)effect.Value[0];
                 }
             }
 
-            var bonusPercentage = bonus / 100;
-            rushMod = 100 / (Math.Max(1, rushMod + 100));
-            return (int)(DoubleTimeTotal(moveTime, distance, bonusPercentage, 500) * rushMod * Config.seconds_per_unit);
+            var rushBonusPercentage = rushBonus / 100;
+            var doubleTimeBonusPercentage =  doubleTimeBonus / 100;
+
+            if (distance <= doubleTimeDistance)
+            {
+                return (int)(moveTime * distance / (1 + rushBonusPercentage) * (decimal)Config.seconds_per_unit);
+            }
+
+            var shortDistance = moveTime * doubleTimeDistance / (1 + rushBonusPercentage);
+            var longDistance = (distance - doubleTimeDistance) * moveTime / (1 + rushBonusPercentage + doubleTimeBonusPercentage);
+            return (int)((shortDistance + longDistance) * (decimal)Config.seconds_per_unit);
         }
 
         /// <summary>

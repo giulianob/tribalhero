@@ -82,8 +82,8 @@ namespace Game.Comm.ProcessorCommands
                         break;
 
                     default:
-                        // If player is muted then dont let him talk in global
-                        if (session.Player.Muted)
+                        // If player is muted then dont let him talk
+                        if (session.Player.Muted > SystemClock.Now)
                         {
                             ReplyError(session, packet, Error.ChatMuted);
                             return;

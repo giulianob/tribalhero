@@ -60,7 +60,8 @@ namespace Game.Comm.ProcessorCommands
             string playerName;
             string playerPassword = string.Empty;
             uint playerId;
-            bool muted = false;
+            bool banned = false;
+            
             PlayerRights playerRights = PlayerRights.Basic;
 
             try
@@ -118,22 +119,13 @@ namespace Game.Comm.ProcessorCommands
 
                 playerId = uint.Parse(response.Data.player.id);
                 playerName = response.Data.player.name;
-                bool banned = int.Parse(response.Data.player.banned) == 1;
-                playerRights = (PlayerRights)Int32.Parse(response.Data.player.rights);
-                muted = int.Parse(response.Data.player.muted) == 1;
+                banned = int.Parse(response.Data.player.banned) == 1;
+                playerRights = (PlayerRights)Int32.Parse(response.Data.player.rights);                
 
                 // If we are under admin only mode then kick out non admin
                 if (Config.server_admin_only && playerRights == PlayerRights.Basic)
                 {
                     ReplyError(session, packet, Error.UnderMaintenance);
-                    session.CloseSession();
-                    return;
-                }
-
-                // If player was banned then kick his ass out
-                if (banned)
-                {
-                    ReplyError(session, packet, Error.Banned);
                     session.CloseSession();
                     return;
                 }
@@ -202,16 +194,23 @@ namespace Game.Comm.ProcessorCommands
                     player.Session = null;
                 }
 
-                player.SessionId = sessionId;
-                player.Session = session;
+                // Setup session references
+                session.Player = player;
+                player.Session = session;                
+                player.SessionId = sessionId;                
                 player.Rights = playerRights;
                 player.LastLogin = SystemClock.Now;
-                player.Muted = muted;
+                player.Banned = banned;
 
                 DbPersistance.Current.Save(player);
 
-                //User session backreference
-                session.Player = player;
+                // If player was banned then kick his ass out
+                if (banned)
+                {
+                    ReplyError(session, packet, Error.Banned);
+                    session.CloseSession();
+                    return;
+                }
 
                 var reply = new Packet(packet);
                 reply.Option |= (ushort)Packet.Options.Compressed;

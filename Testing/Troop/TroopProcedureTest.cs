@@ -4,6 +4,7 @@ using Game.Data.Troop;
 using Game.Logic.Procedures;
 using Moq;
 using Persistance;
+using Ploeh.AutoFixture;
 using Xunit;
 
 #endregion
@@ -15,7 +16,7 @@ namespace Testing.Troop
     /// </summary>
     public class TroopProcedureTest
     {
-        private ITroopStub stub;
+        private readonly ITroopStub stub;
 
         public TroopProcedureTest()
         {
@@ -28,12 +29,13 @@ namespace Testing.Troop
         [Fact]
         public void TestMoveFromBattleToNormal()
         {
-            Mock<IDbManager> dbManager = new Mock<IDbManager>();
-
             stub.AddUnit(FormationType.Normal, 101, 10);
 
-            new Procedure(dbManager.Object).MoveUnitFormation(stub, FormationType.Normal, FormationType.InBattle);
-            new Procedure(dbManager.Object).MoveUnitFormation(stub, FormationType.InBattle, FormationType.Normal);
+            var fixture = new Fixture();
+            var procedure = fixture.Create<CityBattleProcedure>();
+
+            procedure.MoveUnitFormation(stub, FormationType.Normal, FormationType.InBattle);
+            procedure.MoveUnitFormation(stub, FormationType.InBattle, FormationType.Normal);
 
             Assert.True(stub[FormationType.Normal].Type == FormationType.Normal);
             Assert.True(stub[FormationType.InBattle].Type == FormationType.InBattle);

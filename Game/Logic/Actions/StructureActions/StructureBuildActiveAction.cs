@@ -35,7 +35,7 @@ namespace Game.Logic.Actions
 
         private readonly RequirementFactory requirementFactory;
 
-        private readonly StructureFactory structureFactory;
+        private readonly StructureCsvFactory structureCsvFactory;
 
         private readonly ushort type;
 
@@ -59,7 +59,7 @@ namespace Game.Logic.Actions
                                           Formula formula,
                                           RequirementFactory requirementFactory,
                                           RadiusLocator radiusLocator,
-                                          StructureFactory structureFactory,
+                                          StructureCsvFactory structureCsvFactory,
                                           InitFactory initFactory,
                                           ILocker concurrency,
                                           Procedure procedure)
@@ -74,7 +74,7 @@ namespace Game.Logic.Actions
             this.formula = formula;
             this.requirementFactory = requirementFactory;
             this.radiusLocator = radiusLocator;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             this.initFactory = initFactory;
             this.concurrency = concurrency;
             this.procedure = procedure;
@@ -93,7 +93,7 @@ namespace Game.Logic.Actions
                                           Formula formula,
                                           RequirementFactory requirementFactory,
                                           RadiusLocator radiusLocator,
-                                          StructureFactory structureFactory,
+                                          StructureCsvFactory structureCsvFactory,
                                           InitFactory initFactory,
                                           ILocker concurrency,
                                           Procedure procedure)
@@ -104,7 +104,7 @@ namespace Game.Logic.Actions
             this.formula = formula;
             this.requirementFactory = requirementFactory;
             this.radiusLocator = radiusLocator;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             this.initFactory = initFactory;
             this.concurrency = concurrency;
             this.procedure = procedure;
@@ -340,16 +340,14 @@ namespace Game.Logic.Actions
             }
 
             // add structure to the map                    
-            IStructure structure = structureFactory.GetNewStructure(type, 0);
+            IStructure structure = city.CreateStructure(type, 0);
+            structure.BeginUpdate();
             structure.X = x;
             structure.Y = y;
 
-            structure.BeginUpdate();
             city.BeginUpdate();
             city.Resource.Subtract(cost);
             city.EndUpdate();
-
-            city.Add(structure);
 
             if (!world.Regions.Add(structure))
             {
@@ -371,7 +369,7 @@ namespace Game.Logic.Actions
             // add to queue for completion
             endTime =
                     DateTime.UtcNow.AddSeconds(
-                                               CalculateTime(formula.BuildTime(structureFactory.GetTime(type, level),
+                                               CalculateTime(formula.BuildTime(structureCsvFactory.GetTime(type, level),
                                                                                city,
                                                                                city.Technologies)));
             BeginTime = DateTime.UtcNow;
@@ -403,7 +401,7 @@ namespace Game.Logic.Actions
                 city.References.Remove(structure, this);
                 structure.BeginUpdate();
                 structure.Technologies.Parent = structure.City.Technologies;
-                structureFactory.GetUpgradedStructure(structure, structure.Type, level);
+                structureCsvFactory.GetUpgradedStructure(structure, structure.Type, level);
                 initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
 
                 structure.EndUpdate();

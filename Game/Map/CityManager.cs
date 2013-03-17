@@ -50,6 +50,9 @@ namespace Game.Map
                 // Resave city to update times
                 dbManager.Save(iter.Current);
 
+                // Recalc city resource rate
+                procedure.RecalculateCityResourceRates(iter.Current);
+
                 //Set resource cap
                 procedure.SetResourceCap(iter.Current);
 
@@ -86,8 +89,8 @@ namespace Game.Map
             {
                 cities[city.Id] = city;
 
-                //Initial save of these objects
-                dbManager.Save((IStructure)city[1]);
+                //Initial save of troops
+                // TODO: Remove this when troops are being created from the city and saved immediatelly
                 foreach (var stub in city.Troops)
                 {
                     dbManager.Save(stub);
@@ -99,6 +102,7 @@ namespace Game.Map
                     region.Add(city);
                 }
             }
+
             CityAdded(city, new EventArgs());
         }
 

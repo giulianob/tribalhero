@@ -15,7 +15,7 @@ namespace Game.Setup
     {
         private readonly ActionRequirementFactory actionRequirementFactory;
 
-        private readonly StructureFactory structureFactory;
+        private readonly StructureCsvFactory structureCsvFactory;
 
         private readonly EffectRequirementFactory effectRequirementFactory;
 
@@ -38,7 +38,7 @@ namespace Game.Setup
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
         public FactoriesInitializer(ActionRequirementFactory actionRequirementFactory,
-                                    StructureFactory structureFactory,
+                                    StructureCsvFactory structureCsvFactory,
                                     EffectRequirementFactory effectRequirementFactory,
                                     InitFactory initFactory,
                                     PropertyFactory propertyFactory,
@@ -50,7 +50,7 @@ namespace Game.Setup
                                     MapFactory mapFactory)
         {
             this.actionRequirementFactory = actionRequirementFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             this.effectRequirementFactory = effectRequirementFactory;
             this.initFactory = initFactory;
             this.propertyFactory = propertyFactory;
@@ -115,7 +115,7 @@ namespace Game.Setup
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "object_type.csv"), Config.csv_folder, "object_type.csv");
 
             actionRequirementFactory.Init(Path.Combine(Config.csv_compiled_folder, "action.csv"));
-            structureFactory.Init(Path.Combine(Config.csv_compiled_folder, "structure.csv"));
+            structureCsvFactory.Init(Path.Combine(Config.csv_compiled_folder, "structure.csv"));
             effectRequirementFactory.Init(Path.Combine(Config.csv_compiled_folder, "effect_requirement.csv"));
             initFactory.Init(Path.Combine(Config.csv_compiled_folder, "init.csv"));
             propertyFactory.Init(Path.Combine(Config.csv_compiled_folder, "property.csv"));

@@ -93,7 +93,8 @@ namespace Game.Data.Troop
 
         #region Constructors
 
-        public TroopObject(ITroopStub stub)
+        public TroopObject(ITroopStub stub, IRegionManager regionManager)
+                : base(regionManager)
         {
             Stub = stub;
         }

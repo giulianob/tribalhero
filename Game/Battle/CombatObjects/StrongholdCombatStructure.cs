@@ -36,7 +36,7 @@ namespace Game.Battle.CombatObjects
                                          byte lvl,
                                          decimal hp,
                                          IStronghold stronghold,
-                                         StructureFactory structureFactory,
+                                         StructureCsvFactory structureCsvFactory,
                                          BattleFormulas battleFormulas)
                 : base(id, battleId, battleFormulas)
         {
@@ -45,7 +45,7 @@ namespace Game.Battle.CombatObjects
             this.lvl = lvl;
             this.hp = hp;
 
-            stats = new BattleStats(structureFactory.GetBaseStats(type, lvl).Battle);
+            stats = new BattleStats(structureCsvFactory.GetBaseStats(type, lvl).Battle);
         }
 
         protected IStronghold Stronghold { get; set; }

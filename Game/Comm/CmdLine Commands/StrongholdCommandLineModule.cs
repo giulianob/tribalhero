@@ -131,7 +131,7 @@ namespace Game.Comm
                     return "No troops in the city!";
                 }
 
-                ITroopStub stub = city.Troops.Create();
+                ITroopStub stub = city.CreateTroopStub();
                 stub.BeginUpdate();
                 stub.AddFormation(FormationType.Defense);
                 foreach (var unit in city.DefaultTroop[FormationType.Normal])

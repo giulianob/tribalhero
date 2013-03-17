@@ -36,7 +36,7 @@ namespace Game.Logic.Actions
 
         private readonly AttackMode mode;
 
-        private readonly StructureFactory structureFactory;
+        private readonly StructureCsvFactory structureCsvFactory;
 
         private readonly uint targetCityId;
 
@@ -53,7 +53,7 @@ namespace Game.Logic.Actions
                                              BattleFormulas battleFormula,
                                              IGameObjectLocator gameObjectLocator,
                                              CityBattleProcedure cityBattleProcedure,
-                                             StructureFactory structureFactory,
+                                             StructureCsvFactory structureCsvFactory,
                                              IDbManager dbManager,
                                              IStaminaMonitorFactory staminaMonitorFactory)
         {
@@ -64,7 +64,7 @@ namespace Game.Logic.Actions
             this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
             this.cityBattleProcedure = cityBattleProcedure;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             this.dbManager = dbManager;
             this.staminaMonitorFactory = staminaMonitorFactory;
 
@@ -77,7 +77,7 @@ namespace Game.Logic.Actions
                                              BattleFormulas battleFormula,
                                              IGameObjectLocator gameObjectLocator,
                                              CityBattleProcedure cityBattleProcedure,
-                                             StructureFactory structureFactory,
+                                             StructureCsvFactory structureCsvFactory,
                                              IDbManager dbManager,
                                              IStaminaMonitorFactory staminaMonitorFactory)
                 : base(id, isVisible)
@@ -85,7 +85,7 @@ namespace Game.Logic.Actions
             this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
             this.cityBattleProcedure = cityBattleProcedure;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             this.dbManager = dbManager;
             this.staminaMonitorFactory = staminaMonitorFactory;
 
@@ -324,7 +324,7 @@ namespace Game.Logic.Actions
                 target.IsDead)
             {
                 // if our troop knocked down a building, we get the bonus.
-                bonus.Add(structureFactory.GetCost(target.Type, target.Lvl) / 2);
+                bonus.Add(structureCsvFactory.GetCost(target.Type, target.Lvl) / 2);
 
                 IStructure structure = ((ICombatStructure)target).Structure;
                 object value;

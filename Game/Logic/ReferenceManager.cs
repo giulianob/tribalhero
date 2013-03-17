@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Data;
 using Game.Comm;
 using Game.Data;
-using Game.Database;
 using Game.Util;
 using Game.Util.Locking;
 using Persistance;
@@ -17,14 +16,17 @@ namespace Game.Logic
 {
     public class ReferenceStub : IPersistableObject
     {
+        private readonly uint cityId;
+
         public const string DB_TABLE = "reference_stubs";
 
-        public ReferenceStub(ushort id, ICanDo obj, GameAction action, ICity city)
+        public ReferenceStub(ushort id, ICanDo obj, GameAction action, uint cityId)
         {
+            this.cityId = cityId;
             ReferenceId = id;
             WorkerObject = obj;
             Action = action;
-            City = city;
+            
         }
 
         public ushort ReferenceId { get; private set; }
@@ -32,8 +34,6 @@ namespace Game.Logic
         public ICanDo WorkerObject { get; private set; }
 
         public GameAction Action { get; private set; }
-
-        public ICity City { get; set; }
 
         #region IPersistableObject Members
 
@@ -63,7 +63,7 @@ namespace Game.Logic
             get
             {
                 return new[]
-                {new DbColumn("id", ReferenceId, DbType.UInt16), new DbColumn("city_id", City.Id, DbType.UInt32)};
+                {new DbColumn("id", ReferenceId, DbType.UInt16), new DbColumn("city_id", cityId, DbType.UInt32)};
             }
         }
 
@@ -85,17 +85,30 @@ namespace Game.Logic
     /// </summary>
     public class ReferenceManager : IEnumerable<ReferenceStub>
     {
-        private readonly ICity city;
+        private readonly uint cityId;
+
+        private readonly IActionWorker actionWorker;
+
+        private readonly ILockable lockingObj;
+
+        private readonly IDbManager dbManager;
+
+        private readonly ILocker locker;
 
         private readonly List<ReferenceStub> reference = new List<ReferenceStub>();
 
         private readonly LargeIdGenerator referenceIdGen = new LargeIdGenerator(ushort.MaxValue);
 
-        public ReferenceManager(ICity city)
+        public ReferenceManager(uint cityId, IActionWorker actionWorker, ILockable lockingObj, IDbManager dbManager, ILocker locker)
         {
-            this.city = city;
-            city.Worker.ActionsRemovedFromWorker += WorkerOnActionsRemovedFromWorker;
-            city.Worker.ActionRemoved += WorkerOnActionRemoved;
+            this.cityId = cityId;
+            this.actionWorker = actionWorker;
+            this.lockingObj = lockingObj;
+            this.dbManager = dbManager;
+            this.locker = locker;
+            
+            actionWorker.ActionsRemovedFromWorker += WorkerOnActionsRemovedFromWorker;
+            actionWorker.ActionRemoved += WorkerOnActionRemoved;
         }
 
         public ushort Count
@@ -137,12 +150,12 @@ namespace Game.Logic
             {
                 //send removal
                 var packet = new Packet(Command.ReferenceAdd);
-                packet.AddUInt32(city.Id);
+                packet.AddUInt32(cityId);
                 packet.AddUInt16(referenceObject.ReferenceId);
                 packet.AddUInt32(referenceObject.WorkerObject.WorkerId);
                 packet.AddUInt32(referenceObject.Action.ActionId);
 
-                Global.Channel.Post("/CITY/" + city.Id, packet);
+                Global.Channel.Post("/CITY/" + cityId, packet);
             }
         }
 
@@ -152,24 +165,24 @@ namespace Game.Logic
             {
                 //send removal
                 var packet = new Packet(Command.ReferenceRemove);
-                packet.AddUInt32(city.Id);
+                packet.AddUInt32(cityId);
                 packet.AddUInt16(referenceObject.ReferenceId);
 
-                Global.Channel.Post("/CITY/" + city.Id, packet);
+                Global.Channel.Post("/CITY/" + cityId, packet);
             }
         }
 
         public void Add(IGameObject referenceObject, PassiveAction action)
-        {
+        {            
             PassiveAction workingStub;
-            if (!city.Worker.PassiveActions.TryGetValue(action.ActionId, out workingStub))
+            if (!actionWorker.PassiveActions.TryGetValue(action.ActionId, out workingStub))
             {
                 throw new Exception("Action not found");
             }
 
-            var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub, city);
+            var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub, cityId);
             reference.Add(newReference);
-            DbPersistance.Current.Save(newReference);
+            dbManager.Save(newReference);
 
             SendAddReference(newReference);
         }
@@ -177,14 +190,14 @@ namespace Game.Logic
         public void Add(IGameObject referenceObject, ActiveAction action)
         {
             ActiveAction workingStub;
-            if (!city.Worker.ActiveActions.TryGetValue(action.ActionId, out workingStub))
+            if (!actionWorker.ActiveActions.TryGetValue(action.ActionId, out workingStub))
             {
                 throw new Exception("Action not found");
             }
 
-            var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub, city);
+            var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub, cityId);
             reference.Add(newReference);
-            DbPersistance.Current.Save(newReference);
+            dbManager.Save(newReference);
 
             SendAddReference(newReference);
         }
@@ -199,7 +212,7 @@ namespace Game.Logic
                     {
                         referenceIdGen.Release(referenceStub.ReferenceId);
 
-                        DbPersistance.Current.Delete(referenceStub);
+                        dbManager.Delete(referenceStub);
 
                         SendRemoveReference(referenceStub);
                     }
@@ -218,7 +231,7 @@ namespace Game.Logic
                     {
                         referenceIdGen.Release(referenceStub.ReferenceId);
 
-                        DbPersistance.Current.Delete(referenceStub);
+                        dbManager.Delete(referenceStub);
 
                         SendRemoveReference(referenceStub);
                     }
@@ -237,7 +250,7 @@ namespace Game.Logic
                     {
                         referenceIdGen.Release(referenceStub.ReferenceId);
 
-                        DbPersistance.Current.Delete(referenceStub);
+                        dbManager.Delete(referenceStub);
 
                         SendRemoveReference(referenceStub);
                     }
@@ -253,7 +266,7 @@ namespace Game.Logic
 
         private void WorkerOnActionsRemovedFromWorker(IGameObject workerObject)
         {
-            using (Concurrency.Current.Lock(city))
+            using (locker.Lock(lockingObj))
             {
                 Remove(workerObject);
             }

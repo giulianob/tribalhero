@@ -13,27 +13,18 @@ namespace Game.Data
 {
     public class StructureProperties : IPersistableList
     {
+        private readonly uint cityId;
+
+        private readonly uint structureId;
+
         public const string DB_TABLE = "structure_properties";
 
         private readonly ListDictionary properties = new ListDictionary();
 
-        private IStructure structure;
-
-        public StructureProperties(IStructure owner)
+        public StructureProperties(uint cityId, uint structureId)
         {
-            structure = owner;
-        }
-
-        public IStructure Owner
-        {
-            get
-            {
-                return structure;
-            }
-            set
-            {
-                structure = value;
-            }
+            this.cityId = cityId;
+            this.structureId = structureId;
         }
 
         #region IPersistableList Members
@@ -50,11 +41,7 @@ namespace Game.Data
         {
             get
             {
-                return new[]
-                {
-                        new DbColumn("structure_id", structure.ObjectId, DbType.UInt32),
-                        new DbColumn("city_id", structure.City.Id, DbType.UInt32)
-                };
+                return new[] {new DbColumn("structure_id", structureId, DbType.UInt32), new DbColumn("city_id", cityId, DbType.UInt32)};
             }
         }
 
@@ -113,15 +100,13 @@ namespace Game.Data
         }
 
         public void Add(object key, object value)
-        {
-            structure.CheckUpdateMode();
+        {            
             properties.Remove(key);
             properties.Add(key, value);
         }
 
         public void Remove(object key)
         {
-            structure.CheckUpdateMode();
             properties.Remove(key);
         }
 
@@ -143,7 +128,6 @@ namespace Game.Data
 
         public void Clear()
         {
-            structure.CheckUpdateMode();
             properties.Clear();
         }
     }

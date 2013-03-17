@@ -47,7 +47,7 @@ namespace Testing.Formulas
 
             var formula = new Formula(objectTypeFactory.Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<StructureFactory>(MockBehavior.Strict).Object);
+                                      new Mock<StructureCsvFactory>(MockBehavior.Strict).Object);
 
             var city = new Mock<ICity>();
             city.Setup(m => m.GetEnumerator()).Returns(structures.GetEnumerator());

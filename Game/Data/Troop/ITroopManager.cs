@@ -1,12 +1,11 @@
 using System.Collections.Generic;
+using Game.Util;
 
 namespace Game.Data.Troop
 {
     public interface ITroopManager : IEnumerable<ITroopStub>
     {
         byte Size { get; }
-
-        IStation BaseStation { get; }
 
         int Upkeep { get; }
 
@@ -20,30 +19,28 @@ namespace Game.Data.Troop
 
         event TroopManager.UpdateCallback TroopUnitUpdated;
 
-        bool DbLoaderAdd(byte id, ITroopStub stub);
+        void Add(ITroopStub stub);
 
-        bool DbLoaderAddStation(ITroopStub stub);
+        void DbLoaderAdd(byte id, ITroopStub stub);
 
-        bool Add(ITroopStub stub, out byte id);
+        void DbLoaderAddStation(ITroopStub stub);
 
         bool AddStationed(ITroopStub stub);
 
-        bool Add(ITroopStub stub);
-
         bool RemoveStationed(byte id);
 
-        bool Remove(byte id);
-
-        ITroopStub Create();
+        void Remove(byte id);
 
         bool TryGetStub(byte id, out ITroopStub stub);
 
         void Starve(int percent = 5, bool bypassProtection = false);
 
-        void StubUpdateEvent(TroopStub stub);
-
         IEnumerable<ITroopStub> StationedHere();
 
         IEnumerable<ITroopStub> MyStubs();
+
+        SmallIdGenerator IdGen { get; }
+
+        IStation BaseStation { set; }
     }
 }

@@ -13,6 +13,7 @@ using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
+using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -43,7 +44,7 @@ namespace Game
 
             Bind<IRegionManager>().To<RegionManager>().InSingletonScope();
             Bind<ICityManager>().To<CityManager>().InSingletonScope();
-            Bind<ICityRegionManager>().To<CityRegionManager>().InSingletonScope();
+            Bind<ICityRegionManager>().To<CityRegionManager>().InSingletonScope();            
 
             #endregion
 
@@ -64,13 +65,7 @@ namespace Game
                 });
 
             #endregion
-
-            #region Action
-
-            Bind<IActionWorker>().ToMethod(c => new ActionWorker());            
-
-            #endregion
-
+            
             #region Tribes
 
             Bind<ITribeManager>().To<TribeManager>().InSingletonScope();
@@ -104,7 +99,7 @@ namespace Game
 
             Bind<FactoriesInitializer>().ToSelf().InSingletonScope();
             Bind<ActionRequirementFactory>().ToSelf().InSingletonScope();
-            Bind<StructureFactory>().ToSelf().InSingletonScope();
+            Bind<StructureCsvFactory>().ToSelf().InSingletonScope();
             Bind<EffectRequirementFactory>().ToSelf().InSingletonScope();
             Bind<InitFactory>().ToSelf().InSingletonScope();
             Bind<PropertyFactory>().ToSelf().InSingletonScope();
@@ -140,8 +135,6 @@ namespace Game
 
             #region Battle
 
-            Bind<ICity>().To<City>();
-
             Bind<IBattleReport>().To<BattleReport>();
 
             Bind<IBattleManagerFactory>().To<BattleManagerFactory>();
@@ -156,16 +149,13 @@ namespace Game
 
             #region Processor
 
-            Bind<CommandLineProcessor>().ToMethod(c =>
-                {
-                    return new CommandLineProcessor(c.Kernel.Get<AssignmentCommandLineModule>(),
-                                                    c.Kernel.Get<PlayerCommandLineModule>(),
-                                                    c.Kernel.Get<CityCommandLineModule>(),
-                                                    c.Kernel.Get<ResourcesCommandLineModule>(),
-                                                    c.Kernel.Get<TribeCommandLineModule>(),
-                                                    c.Kernel.Get<StrongholdCommandLineModule>(),
-                                                    c.Kernel.Get<RegionCommandsLineModule>());
-                }).InSingletonScope();
+            Bind<CommandLineProcessor>().ToMethod(c => new CommandLineProcessor(c.Kernel.Get<AssignmentCommandLineModule>(),
+                                                                                c.Kernel.Get<PlayerCommandLineModule>(),
+                                                                                c.Kernel.Get<CityCommandLineModule>(),
+                                                                                c.Kernel.Get<ResourcesCommandLineModule>(),
+                                                                                c.Kernel.Get<TribeCommandLineModule>(),
+                                                                                c.Kernel.Get<StrongholdCommandLineModule>(),
+                                                                                c.Kernel.Get<RegionCommandsLineModule>())).InSingletonScope();
             Bind<Processor>()
                     .ToMethod(
                               c =>
@@ -227,6 +217,20 @@ namespace Game
             Bind<IBarbarianTribe>().To<BarbarianTribe>();
             Bind<IBarbarianTribeFactory>().To<BarbarianTribeFactory>();
             Bind<BarbarianTribeChecker>().ToSelf().InSingletonScope();
+
+            #endregion
+
+            #region City
+
+            Bind<ICityFactory>().To<CityFactory>().InSingletonScope();
+            Bind<IGameObjectFactory>().To<GameObjectFactory>().InSingletonScope();
+
+            Bind<ICity>().To<City>();
+            Bind<ITroopManager>().To<TroopManager>();
+            Bind<IActionWorker>().To<ActionWorker>();
+            Bind<ITechnologyManager>().To<TechnologyManager>();
+            Bind<IUnitTemplate>().To<UnitTemplate>();
+            Bind<IStructure>().To<Structure>();            
 
             #endregion
 

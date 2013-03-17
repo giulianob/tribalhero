@@ -1,11 +1,12 @@
 #region
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Game.Database;
 using Game.Util;
 using Game.Util.Locking;
+using Persistance;
 
 #endregion
 
@@ -13,7 +14,7 @@ namespace Game.Data.Troop
 {
     public class TroopManager : ITroopManager
     {
-        public ITroopStubFactory TroopStubFactory { get; set; }
+        private readonly IDbManager dbManager;
 
         #region Event
 
@@ -23,13 +24,13 @@ namespace Game.Data.Troop
 
         #endregion
 
-        public event UpdateCallback TroopUnitUpdated;
+        public event UpdateCallback TroopUnitUpdated = delegate { };
 
-        public event UpdateCallback TroopUpdated;
+        public event UpdateCallback TroopUpdated = delegate { };
 
-        public event UpdateCallback TroopAdded;
+        public event UpdateCallback TroopAdded = delegate { };
 
-        public event UpdateCallback TroopRemoved;
+        public event UpdateCallback TroopRemoved = delegate { };
 
         #endregion
 
@@ -65,10 +66,9 @@ namespace Game.Data.Troop
 
         #region Methods
 
-        public TroopManager(IStation baseStation = null, ITroopStubFactory troopStubFactory = null)
+        public TroopManager(IDbManager dbManager)
         {
-            TroopStubFactory = troopStubFactory;
-            BaseStation = baseStation;
+            this.dbManager = dbManager;
         }
 
         public int Upkeep
@@ -79,149 +79,138 @@ namespace Game.Data.Troop
             }
         }
 
-        public bool DbLoaderAdd(byte id, ITroopStub stub)
+        public SmallIdGenerator IdGen
+        {
+            get
+            {
+                return idGen;
+            }
+        }
+
+        private void RegisterStub(byte id, ITroopStub stub)
         {
             if (dict.ContainsKey(id))
             {
-                return false;
+                return;
             }
-            idGen.Set(id);
-            dict[id] = stub;
+
+            dict.Add(id, stub);
             stub.Update += StubUpdateEvent;
             stub.UnitUpdate += StubUnitUpdateEvent;
-            return true;
+            FireAdded(stub);
         }
 
-        public bool DbLoaderAddStation(ITroopStub stub)
+        private void DeregisterStub(byte id, ITroopStub stub)
         {
-            int nextId = idGen.GetNext();
+            if (!dict.ContainsKey(id))
+            {
+                return;
+            }
+
+            idGen.Release(id);
+            dict.Remove(id);
+            stub.Update -= StubUpdateEvent;
+            stub.UnitUpdate -= StubUnitUpdateEvent;
+            FireRemoved(stub);
+        }
+
+        public void DbLoaderAdd(byte id, ITroopStub stub)
+        {
+            IdGen.Set(id);
+            
+            RegisterStub(id, stub);            
+        }
+
+        public void DbLoaderAddStation(ITroopStub stub)
+        {
+            if (BaseStation == null)
+            {
+                throw new Exception("Cannot station in this troop manager");
+            }
+
+            int nextId = IdGen.GetNext();
             if (nextId == -1)
             {
-                return false;
+                return;
             }
-            var id = (byte)nextId;
 
-            stub.StationTroopId = id;
+            var stationTroopId = (byte)nextId;
+
+            stub.StationTroopId = stationTroopId;
             stub.Station = BaseStation;
 
-            dict.Add(id, stub);
-            stub.Update += StubUpdateEvent;
-            stub.UnitUpdate += StubUnitUpdateEvent;
-            FireAdded(stub);
-            return true;
+            RegisterStub(stationTroopId, stub);                     
         }
 
-        public ITroopStub Create()
-        {
-            var stub = TroopStubFactory.CreateTroopStub((byte)idGen.GetNext());
-            dict.Add(stub.TroopId, stub);
-            stub.Update += StubUpdateEvent;
-            stub.UnitUpdate += StubUnitUpdateEvent;
-            FireAdded(stub);
-            return stub;
-        }
-
-        public bool Add(ITroopStub stub, out byte id)
-        {
-            int nextId = idGen.GetNext();
-
-            if (nextId == -1)
-            {
-                id = 0;
-                return false;
-            }
-
-            id = (byte)nextId;
-
-            stub.BeginUpdate();
-            stub.TroopId = id;
-            stub.EndUpdate();
-                    // Updating inside prevents Endupate being called at higher level, causing an "Update" to be sent after "Add"
-
-            dict.Add(id, stub);
-
-            stub.Update += StubUpdateEvent;
-            stub.UnitUpdate += StubUnitUpdateEvent;
-
-            FireAdded(stub);
-            return true;
+        public void Add(ITroopStub stub)
+        {           
+            RegisterStub(stub.TroopId, stub);            
         }
 
         public bool AddStationed(ITroopStub stub)
         {
-            int nextId = idGen.GetNext();
+            if (BaseStation == null)
+            {
+                throw new Exception("Cannot station in this troop manager");
+            }
+
+            int nextId = IdGen.GetNext();
+
             if (nextId == -1)
             {
                 return false;
             }
-            var id = (byte)nextId;
+
+            var stationTroopId = (byte)nextId;
 
             stub.BeginUpdate();
-            stub.StationTroopId = id;
+            stub.StationTroopId = stationTroopId;
             stub.State = TroopState.Stationed;
             stub.Station = BaseStation;
             stub.EndUpdate();
 
-            dict.Add(id, stub);
-            stub.Update += StubUpdateEvent;
-            stub.UnitUpdate += StubUnitUpdateEvent;
-            FireAdded(stub);
+            RegisterStub(stationTroopId, stub);
             return true;
         }
 
-        public bool Add(ITroopStub stub)
-        {
-            byte id;
-            return Add(stub, out id);
-        }
-
-        public bool RemoveStationed(byte id)
+        public bool RemoveStationed(byte stationTroopId)
         {
             ITroopStub stub;
-            if (!dict.TryGetValue(id, out stub))
+            if (!dict.TryGetValue(stationTroopId, out stub))
             {
                 return false;
             }
-            if (!dict.Remove(id))
+
+            if (stub.StationTroopId != stationTroopId)
             {
-                return false;
+                throw new Exception("Trying to unstation one of the local troops");
             }
-            idGen.Release(id);
 
             stub.BeginUpdate();
             stub.StationTroopId = 0;
             stub.Station = null;
             stub.EndUpdate();
 
-            stub.Update -= StubUpdateEvent;
-            stub.UnitUpdate -= StubUnitUpdateEvent;
-
-            FireRemoved(stub);
+            DeregisterStub(stationTroopId, stub);
             return true;
         }
 
-        public bool Remove(byte id)
+        public void Remove(byte id)
         {
             ITroopStub stub;
 
             if (!dict.TryGetValue(id, out stub))
             {
-                return false;
+                return;
             }
-
-            if (!dict.Remove(id))
+            
+            if (stub.City != BaseStation)
             {
-                return false;
+                throw new Exception("Trying to remove invalid troop");
             }
 
-            stub.FireRemoved();
-
-            idGen.Release(id);
-            stub.Update -= StubUpdateEvent;
-            stub.UnitUpdate -= StubUnitUpdateEvent;
-
-            FireRemoved(stub);
-            return true;
+            DeregisterStub(id, stub);
+            dbManager.Delete(stub);
         }
 
         public bool TryGetStub(byte id, out ITroopStub stub)
@@ -296,10 +285,7 @@ namespace Game.Data.Troop
 
             CheckUpdateMode();
 
-            if (TroopUnitUpdated != null)
-            {
-                TroopUnitUpdated(stub);
-            }
+            TroopUnitUpdated(stub);
         }
 
         private void FireAdded(ITroopStub stub)
@@ -311,10 +297,7 @@ namespace Game.Data.Troop
 
             CheckUpdateMode();
 
-            if (TroopAdded != null)
-            {
-                TroopAdded(stub);
-            }
+            TroopAdded(stub);            
         }
 
         private void FireRemoved(ITroopStub stub)
@@ -325,29 +308,20 @@ namespace Game.Data.Troop
             }
 
             CheckUpdateMode();
-
-            //We don't want to delete a troopstub that doesn't belong to us.
-            if (stub.City == BaseStation)
-            {
-                DbPersistance.Current.Delete(stub);
-            }
-
-            if (TroopRemoved != null)
-            {
-                TroopRemoved(stub);
-            }
+            
+            TroopRemoved(stub);            
         }
 
         #endregion
 
         #region Callbacks
 
-        public void StubUpdateEvent(TroopStub stub)
+        private void StubUpdateEvent(TroopStub stub)
         {
             FireUpdated(stub);
         }
 
-        public void StubUnitUpdateEvent(TroopStub stub)
+        private void StubUnitUpdateEvent(TroopStub stub)
         {
             FireUnitUpdated(stub);
         }

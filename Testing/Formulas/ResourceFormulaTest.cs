@@ -72,7 +72,7 @@ namespace Testing.Formulas
             city.Setup(m => m.GetEnumerator())
                 .Returns(() => new List<IStructure> {new Mock<IStructure>().Object}.GetEnumerator());
             var unitFactory = new Mock<UnitFactory>();
-            var structureFactory = new Mock<StructureFactory>();
+            var structureFactory = new Mock<StructureCsvFactory>();
 
             var objectTypeFactory = new Mock<ObjectTypeFactory>();
             objectTypeFactory.Setup(m => m.IsStructureType("Basement", It.IsAny<IStructure>())).Returns(false);
@@ -112,7 +112,7 @@ namespace Testing.Formulas
             objectTypeFactory.Setup(m => m.IsStructureType("Basement", It.IsAny<IStructure>())).Returns(true);
 
             var unitFactory = new Mock<UnitFactory>();
-            var structureFactory = new Mock<StructureFactory>();
+            var structureFactory = new Mock<StructureCsvFactory>();
 
             var formula = new Formula(objectTypeFactory.Object, unitFactory.Object, structureFactory.Object);
 

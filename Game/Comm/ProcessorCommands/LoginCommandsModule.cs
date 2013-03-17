@@ -7,7 +7,6 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Game.Data;
-using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
@@ -15,7 +14,6 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 using Ninject.Extensions.Logging;
 using Persistance;
 
@@ -41,12 +39,18 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly Procedure procedure;
 
+        private readonly InitFactory initFactory;
+
+        private readonly ICityFactory cityFactory;
+
         public LoginCommandsModule(IActionFactory actionFactory,
                                    ITribeManager tribeManager,
                                    IDbManager dbManager,
                                    ILocker locker,
                                    IWorld world,
-                                   Procedure procedure)
+                                   Procedure procedure,
+                                   InitFactory initFactory,
+                                   ICityFactory cityFactory)
         {
             this.actionFactory = actionFactory;
             this.tribeManager = tribeManager;
@@ -54,6 +58,8 @@ namespace Game.Comm.ProcessorCommands
             this.locker = locker;
             this.world = world;
             this.procedure = procedure;
+            this.initFactory = initFactory;
+            this.cityFactory = cityFactory;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -312,7 +318,7 @@ namespace Game.Comm.ProcessorCommands
                         return;
                     }
 
-                    if (!procedure.CreateCity(session.Player, cityName, out city))
+                    if (!procedure.CreateCity(cityFactory, session.Player, cityName, out city))
                     {
                         ReplyError(session, packet, Error.MapFull);
                         return;
@@ -321,8 +327,7 @@ namespace Game.Comm.ProcessorCommands
 
                 IStructure mainBuilding = (IStructure)city[1];
 
-                Ioc.Kernel.Get<InitFactory>()
-                   .InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
+                initFactory.InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
 
                 city.Worker.DoPassive(city, actionFactory.CreateCityPassiveAction(city.Id), false);
 

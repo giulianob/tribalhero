@@ -12,9 +12,9 @@ namespace Game.Battle.CombatObjects
                                     byte lvl,
                                     decimal hp,
                                     IStronghold stronghold,
-                                    StructureFactory structureFactory,
+                                    StructureCsvFactory structureCsvFactory,
                                     BattleFormulas battleFormulas)
-                : base(id, battleId, type, lvl, hp, stronghold, structureFactory, battleFormulas)
+                : base(id, battleId, type, lvl, hp, stronghold, structureCsvFactory, battleFormulas)
         {
         }
 

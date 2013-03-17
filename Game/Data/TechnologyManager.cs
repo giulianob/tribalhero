@@ -16,22 +16,26 @@ namespace Game.Data
 {
     public class TechnologyManager : ITechnologyManager
     {
+        private readonly uint cityId;
+
+        private readonly IDbManager dbManager;
+
         public const string DB_TABLE = "technologies";
 
         private readonly List<Technology> technologies = new List<Technology>();
 
-        public TechnologyManager(EffectLocation location, object owner, uint ownerId)
+        public TechnologyManager(EffectLocation location, uint cityId, uint ownerId, IDbManager dbManager)
         {
+            this.cityId = cityId;
+            this.dbManager = dbManager;
+
             OwnerLocation = location;
-            Owner = owner;
             OwnerId = ownerId;
         }
 
         public EffectLocation OwnerLocation { get; private set; }
 
         public uint OwnerId { get; private set; }
-
-        public object Owner { get; private set; }
 
         public int TechnologyCount
         {
@@ -302,7 +306,7 @@ namespace Game.Data
                 throw new Exception("Called EndUpdate without first calling BeginUpdate");
             }
 
-            DbPersistance.Current.Save(this);
+            dbManager.Save(this);
             updating = false;
         }
 
@@ -316,19 +320,6 @@ namespace Game.Data
             if (!updating)
             {
                 throw new Exception("Changed state outside of begin/end update block");
-            }
-
-            switch(OwnerLocation)
-            {
-                case EffectLocation.City:
-                    DefaultMultiObjectLock.ThrowExceptionIfNotLocked((ICity)Owner);
-                    break;
-                case EffectLocation.Object:
-                    DefaultMultiObjectLock.ThrowExceptionIfNotLocked(((IStructure)Owner).City);
-                    break;
-                case EffectLocation.Player:
-                    DefaultMultiObjectLock.ThrowExceptionIfNotLocked((IPlayer)Owner);
-                    break;
             }
         }
 
@@ -407,12 +398,7 @@ namespace Game.Data
             {
                 return new[]
                 {
-                        new DbColumn("city_id",
-                                     Owner is IStructure
-                                             ? (Owner as IStructure).City.Id
-                                             : (Owner is ICity ? (Owner as ICity).Id : 0),
-                                     DbType.UInt32),
-                        new DbColumn("owner_id", OwnerId, DbType.UInt32),
+                        new DbColumn("city_id", cityId, DbType.UInt32), new DbColumn("owner_id", OwnerId, DbType.UInt32),
                         new DbColumn("owner_location", (byte)OwnerLocation, DbType.Byte)
                 };
             }

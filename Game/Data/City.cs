@@ -10,7 +10,6 @@ using System.Text.RegularExpressions;
 using Game.Battle;
 using Game.Comm;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
@@ -46,6 +45,8 @@ namespace Game.Data
 
         private readonly Dictionary<uint, ITroopObject> troopobjects = new Dictionary<uint, ITroopObject>();
 
+        private readonly LargeIdGenerator objectIdGen = new LargeIdGenerator(uint.MaxValue);
+
         private decimal alignmentPoint;
 
         private int attackPoint;
@@ -56,11 +57,23 @@ namespace Game.Data
 
         private bool hideNewUnits;
 
-        private string name = "Washington";
-
-        private uint nextObjectId;
+        private string name = "Washington";        
 
         private byte radius;
+
+        private readonly ITroopStubFactory troopStubFactory;
+
+        private readonly IDbManager dbManager;
+
+        private readonly ICityRegionManager cityRegionManager;
+
+        private readonly IRegionManager regionManager;
+
+        private readonly IGameObjectFactory gameObjectFactory;
+
+        private readonly Procedure procedure;
+
+        private readonly Formula formula;
 
         private ushort value;
 
@@ -359,9 +372,15 @@ namespace Game.Data
                 CheckUpdateMode();
                 this.value = value;
 
-                if (Global.FireEvents && Id > 0)
+                if (Global.FireEvents)
                 {
-                    World.Current.Regions.CityRegions.GetCityRegion(X, Y).MarkAsDirty();
+                    var cityRegion = cityRegionManager.GetCityRegion(X, Y);
+                    
+                    if (cityRegion != null)
+                    {
+                        cityRegion.MarkAsDirty();                        
+                    }
+
                     PointUpdate();
                 }
             }
@@ -369,62 +388,62 @@ namespace Game.Data
 
         #endregion
 
-        #region Constructors
-
-        public City(uint id, IPlayer owner, string name, Resource resource, byte radius, IStructure mainBuilding, decimal ap)
-                : this(
-                        id,
-                        owner,
-                        name,
-                        new LazyResource(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor),
-                        radius,
-                        mainBuilding,
-                        ap)
-        {
-        }
-
-        public City(uint id, IPlayer owner, string name, LazyResource resource, byte radius, IStructure mainBuilding, decimal ap)
+        public City(
+            uint id, 
+            IPlayer owner, 
+            string name, 
+            LazyResource resource, 
+            byte radius, 
+            decimal ap,
+            IActionWorker worker,
+            CityNotificationManager notifications,
+            ReferenceManager references,
+            ITechnologyManager technologies,
+            ITroopManager troops,
+            IUnitTemplate template,
+            ITroopStubFactory troopStubFactory,
+            IDbManager dbManager,
+            ICityRegionManager cityRegionManager,
+            IRegionManager regionManager,
+            IGameObjectFactory gameObjectFactory,
+            Procedure procedure,
+            Formula formula)
         {
             Id = id;
             Owner = owner;
             this.name = name;
             this.radius = radius;
+            this.troopStubFactory = troopStubFactory;
+            this.dbManager = dbManager;
+            this.cityRegionManager = cityRegionManager;
+            this.regionManager = regionManager;
+            this.gameObjectFactory = gameObjectFactory;
+            this.procedure = procedure;
+            this.formula = formula;
 
             AlignmentPoint = ap;
             Resource = resource;
 
-            Worker = new ActionWorker(() => this, this);
-            Notifications = new CityNotificationManager(Worker, id, DbPersistance.Current);
-            References = new ReferenceManager(this);
-
-            Technologies = new TechnologyManager(EffectLocation.City, this, id);
-
-            Troops = new TroopManager(this, new CityTroopStubFactory(this));
+            Worker = worker;
+            Notifications = notifications;
+            References = references;
+            Technologies = technologies;
+            Troops = troops;
+            Template = template;
 
             Troops.TroopUnitUpdated += TroopManagerTroopUnitUpdated;
             Troops.TroopUpdated += TroopManagerTroopUpdated;
             Troops.TroopRemoved += TroopManagerTroopRemoved;
             Troops.TroopAdded += TroopManagerTroopAdded;
-
-            Template = new UnitTemplate(this);
+            
             Template.UnitUpdated += UnitTemplateUnitUpdated;
 
             Worker.ActionRemoved += WorkerActionRemoved;
             Worker.ActionStarted += WorkerActionAdded;
             Worker.ActionRescheduled += WorkerActionRescheduled;
 
-            if (mainBuilding != null)
-            {
-                mainBuilding.ObjectId = 1;
-                Add(1, mainBuilding, false);
-                Procedure.Current.RecalculateCityResourceRates(this);
-                Procedure.Current.SetResourceCap(this);
-            }
-
             resource.ResourcesUpdate += ResourceUpdateEvent;
         }
-
-        #endregion
 
         #region Object Management
 
@@ -476,14 +495,11 @@ namespace Game.Data
 
                 troopobjects.Add(objId, troop);
 
-                if (nextObjectId < objId)
-                {
-                    nextObjectId = objId;
-                }
+                objectIdGen.Set(objId);
 
                 if (save)
                 {
-                    DbPersistance.Current.Save(troop);
+                    dbManager.Save(troop);
                 }
 
                 ObjAddEvent(troop);
@@ -496,9 +512,8 @@ namespace Game.Data
         {
             lock (objLock)
             {
-                ++nextObjectId;
-                troop.ObjectId = nextObjectId;
-                return Add(nextObjectId, troop, true);
+                troop.ObjectId = objectIdGen.GetNext();
+                return Add(troop.ObjectId, troop, true);
             }
         }
 
@@ -515,14 +530,11 @@ namespace Game.Data
 
                 structures.Add(objId, structure);
 
-                if (nextObjectId < objId)
-                {
-                    nextObjectId = objId;
-                }
+                objectIdGen.Set(objId);
 
                 if (save)
                 {
-                    DbPersistance.Current.Save(structure);
+                    dbManager.Save(structure);
                 }
 
                 structure.Technologies.TechnologyCleared += TechnologiesTechnologyCleared;
@@ -533,21 +545,6 @@ namespace Game.Data
             }
 
             return true;
-        }
-
-        public bool Add(uint objId, IStructure structure)
-        {
-            return Add(objId, structure, true);
-        }
-
-        public bool Add(IStructure structure)
-        {
-            lock (objLock)
-            {
-                ++nextObjectId;
-                structure.ObjectId = nextObjectId;
-                return Add(nextObjectId, structure);
-            }
         }
 
         public bool ScheduleRemove(ITroopObject obj, bool wasKilled)
@@ -609,7 +606,7 @@ namespace Game.Data
                 obj.Technologies.TechnologyRemoved -= TechnologiesTechnologyRemoved;
                 obj.Technologies.TechnologyUpgraded -= TechnologiesTechnologyUpgraded;
 
-                DbPersistance.Current.Delete(obj);
+                dbManager.Delete(obj);
 
                 ObjRemoveEvent(obj);
             }
@@ -625,7 +622,7 @@ namespace Game.Data
             {
                 troopobjects.Remove(obj.ObjectId);
 
-                DbPersistance.Current.Delete(obj);
+                dbManager.Delete(obj);
 
                 obj.City = null;
 
@@ -662,7 +659,7 @@ namespace Game.Data
                 throw new Exception("Called EndUpdate without first calling BeginUpdate");
             }
 
-            DbPersistance.Current.Save(this);
+            dbManager.Save(this);
             IsUpdating = false;
         }
 
@@ -684,6 +681,20 @@ namespace Game.Data
             }
 
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
+        }
+
+        public ITroopStub CreateTroopStub()
+        {
+            var stub = troopStubFactory.CreateTroopStub((byte)Troops.IdGen.GetNext());
+            Troops.Add(stub);
+            return stub;
+        }
+
+        public IStructure CreateStructure(ushort type, byte level)
+        {
+            var structure = gameObjectFactory.CreateStructure(Id, objectIdGen.GetNext(), type, level);
+            Add(structure.ObjectId, structure, true);
+            return structure;
         }
 
         #endregion
@@ -730,7 +741,7 @@ namespace Game.Data
 
             var packet = new Packet(Command.CityRadiusUpdate);
 
-            World.Current.Regions.ObjectUpdateEvent(MainBuilding, X, Y);
+            regionManager.ObjectUpdateEvent(MainBuilding, X, Y);
 
             packet.AddUInt32(Id);
             packet.AddByte(radius);
@@ -798,7 +809,7 @@ namespace Game.Data
                 BeginUpdate();
             }
 
-            Value = Formula.Current.CalculateCityValue(this);
+            Value = formula.CalculateCityValue(this);
 
             if (!doUpdate)
             {
@@ -824,7 +835,7 @@ namespace Game.Data
                 BeginUpdate();
             }
 
-            Value = Formula.Current.CalculateCityValue(this);
+            Value = formula.CalculateCityValue(this);
 
             if (!doUpdate)
             {
@@ -850,7 +861,7 @@ namespace Game.Data
                 BeginUpdate();
             }
 
-            Value = Formula.Current.CalculateCityValue(this);
+            Value = formula.CalculateCityValue(this);
 
             if (!doUpdate)
             {
@@ -870,7 +881,7 @@ namespace Game.Data
                 return;
             }
 
-            DbPersistance.Current.Save(sender);
+            dbManager.Save(sender);
 
             var packet = new Packet(Command.UnitTemplateUpgraded);
             packet.AddUInt32(Id);
@@ -1034,7 +1045,7 @@ namespace Game.Data
             {
                 BeginUpdate();
             }
-            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this);
+            Resource.Crop.Upkeep = procedure.UpkeepForCity(this);
             if (!doUpdate)
             {
                 EndUpdate();
@@ -1053,7 +1064,7 @@ namespace Game.Data
             {
                 BeginUpdate();
             }
-            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this);
+            Resource.Crop.Upkeep = procedure.UpkeepForCity(this);
             if (!doUpdate)
             {
                 EndUpdate();
@@ -1077,7 +1088,7 @@ namespace Game.Data
             {
                 BeginUpdate();
             }
-            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this);
+            Resource.Crop.Upkeep = procedure.UpkeepForCity(this);
             if (!doUpdate)
             {
                 EndUpdate();

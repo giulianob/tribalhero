@@ -101,7 +101,7 @@ namespace Game.Data
 
         #region Constructors
 
-        public Forest(byte lvl, int capacity, double rate)
+        public Forest(byte lvl, int capacity, double rate) : base(World.Current.Regions)
         {
             this.lvl = lvl;
 

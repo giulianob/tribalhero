@@ -32,15 +32,17 @@ namespace Game.Logic.Actions
 
         private readonly InitFactory initFactory;
 
-        private readonly StructureFactory structureFactory;
+        private readonly StructureCsvFactory structureCsvFactory;
+
+        private readonly ICityFactory cityFactory;
 
         private readonly uint x;
 
         private readonly uint y;
 
-        private uint newCityId; // new city id
+        private uint newCityId;
 
-        private uint newStructureId; // new mainbuilding
+        private uint newStructureId;
 
         public CityCreatePassiveAction(uint cityId,
                                        uint x,
@@ -53,7 +55,8 @@ namespace Game.Logic.Actions
                                        ILocker locker,
                                        ObjectTypeFactory objectTypeFactory,
                                        InitFactory initFactory,
-                                       StructureFactory structureFactory)
+                                       StructureCsvFactory structureCsvFactory,
+                                       ICityFactory cityFactory)
         {
             this.cityId = cityId;
             this.x = x;
@@ -66,7 +69,8 @@ namespace Game.Logic.Actions
             this.locker = locker;
             this.objectTypeFactory = objectTypeFactory;
             this.initFactory = initFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
+            this.cityFactory = cityFactory;
         }
 
         public CityCreatePassiveAction(uint id,
@@ -83,7 +87,7 @@ namespace Game.Logic.Actions
                                        ILocker locker,
                                        ObjectTypeFactory objectTypeFactory,
                                        InitFactory initFactory,
-                                       StructureFactory structureFactory)
+                                       StructureCsvFactory structureCsvFactory)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.actionFactory = actionFactory;
@@ -93,7 +97,7 @@ namespace Game.Logic.Actions
             this.locker = locker;
             this.objectTypeFactory = objectTypeFactory;
             this.initFactory = initFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             newCityId = uint.Parse(properties["new_city_id"]);
             newStructureId = uint.Parse(properties["new_structure_id"]);
         }
@@ -196,30 +200,27 @@ namespace Game.Logic.Actions
                     return Error.CityNameTaken;
                 }
 
-                // Creating Mainbuilding
-                structure = structureFactory.GetNewStructure(2000, 0);
-                structure.X = x;
-                structure.Y = y;
-
                 // Creating New City
-                newCity = new City(world.Cities.GetNextCityId(),
+                newCity = cityFactory.CreateCity(world.Cities.GetNextCityId(),
                                    city.Owner,
                                    cityName,
                                    formula.GetInitialCityResources(),
-                                   formula.GetInitialCityRadius(),
-                                   structure,
+                                   formula.GetInitialCityRadius(),                                   
                                    formula.GetInitialAp());
-                city.Owner.Add(newCity);
 
-                world.Regions.SetTileType(x, y, 0, true);
-
-                world.Cities.Add(newCity);
+                // Creating Mainbuilding
+                structure = newCity.CreateStructure(2000, 0);
                 structure.BeginUpdate();
+                structure.X = x;
+                structure.Y = y;
+                city.Owner.Add(newCity);
+                world.Regions.SetTileType(x, y, 0, true);
                 world.Regions.Add(structure);
+                world.Cities.Add(newCity);                
                 initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
-                structure.EndUpdate();
+                structure.EndUpdate();                
 
-                var defaultTroop = newCity.Troops.Create();
+                var defaultTroop = newCity.CreateTroopStub();
                 defaultTroop.BeginUpdate();
                 defaultTroop.AddFormation(FormationType.Normal);
                 defaultTroop.AddFormation(FormationType.Garrison);
@@ -249,7 +250,7 @@ namespace Game.Logic.Actions
             newStructureId = structure.ObjectId;
 
             // add to queue for completion            
-            int baseBuildTime = structureFactory.GetBaseStats((ushort)objectTypeFactory.GetTypes("MainBuilding")[0], 1).BuildTime;
+            int baseBuildTime = structureCsvFactory.GetBaseStats((ushort)objectTypeFactory.GetTypes("MainBuilding")[0], 1).BuildTime;
             EndTime = DateTime.UtcNow.AddSeconds(CalculateTime(formula.BuildTime(baseBuildTime, city, city.Technologies)));
             BeginTime = DateTime.UtcNow;
 
@@ -297,7 +298,7 @@ namespace Game.Logic.Actions
                 }
 
                 structure.BeginUpdate();
-                structureFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
+                structureCsvFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
                 initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 

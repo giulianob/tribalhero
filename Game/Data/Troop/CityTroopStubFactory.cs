@@ -1,16 +1,18 @@
-﻿namespace Game.Data.Troop
+﻿using System;
+
+namespace Game.Data.Troop
 {
     public class CityTroopStubFactory : ITroopStubFactory
     {
-        public CityTroopStubFactory(ICity city)
-        {
-            City = city;
-        }
+        public ICity City { get; set; }
 
-        private ICity City { get; set; }
-
-        public TroopStub CreateTroopStub(byte troopId)
+        public ITroopStub CreateTroopStub(byte troopId)
         {
+            if (City == null)
+            {
+                throw new Exception("City cannot be null");
+            }
+
             return new TroopStub(troopId, City);
         }
     }

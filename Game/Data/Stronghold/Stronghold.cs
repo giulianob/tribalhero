@@ -140,7 +140,9 @@ namespace Game.Data.Stronghold
                           NotificationManager notificationManager,
                           ITroopManager troopManager,
                           IActionWorker actionWorker,
-                          Formula formula)
+                          Formula formula,
+                          IRegionManager regionManager)
+                : base(regionManager)
         {
             Notifications = notificationManager;
             this.dbManager = dbManager;

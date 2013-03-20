@@ -83,18 +83,15 @@ namespace Game.Util
                     subscribersByChannel.Add(channelId, sublist);
                 }
 
-                // Check if there is already a subscription object for this session
                 if (subscribersBySession.TryGetValue(session, out sub))
                 {
-                    // If subscription already exists then throw exception
                     if (sublist.Contains(sub))
                     {
-                        throw new DuplicateSubscriptionException();
+                        return;
                     }
 
                     sub.Channels.Add(channelId);
                 }
-                        // If not we need to make an object for this session
                 else
                 {
                     sub = new Subscriber(session);

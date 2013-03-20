@@ -86,5 +86,9 @@ namespace Game.Data.Tribe
         void SendUpdate();
 
         event EventHandler<EventArgs> Updated;
+
+        void SendRanksUpdate();
+
+        event EventHandler<EventArgs> RanksUpdated;
     }
 }

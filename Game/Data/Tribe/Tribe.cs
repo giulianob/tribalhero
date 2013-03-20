@@ -13,7 +13,7 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using JsonFx.Json;
+using Newtonsoft.Json;
 using Persistance;
 
 namespace Game.Data.Tribe
@@ -113,6 +113,8 @@ namespace Game.Data.Tribe
         public event EventHandler<TribesmanRemovedEventArgs> TribesmanRemoved = (sender, args) => { };
 
         public event EventHandler<EventArgs> Updated = (sender, args) => { };
+
+        public event EventHandler<EventArgs> RanksUpdated;
 
         public uint Id { set; get; }
 
@@ -428,7 +430,7 @@ namespace Game.Data.Tribe
                 tribeRank.Permission = permission;
             }
             dbManager.Save(this);
-            SendUpdate();
+            SendRanksUpdate();
             return Error.Ok;
         }
 
@@ -654,6 +656,11 @@ namespace Game.Data.Tribe
             Updated(this, new EventArgs());
         }
 
+        public void SendRanksUpdate()
+        {
+            RanksUpdated(this, new EventArgs());
+        }
+
         #region Properties
 
         public int Count
@@ -750,7 +757,7 @@ namespace Game.Data.Tribe
                         new DbColumn("wood", Resource.Wood, DbType.Int32),
                         new DbColumn("created", Created, DbType.DateTime),
                         new DbColumn("victory_point", VictoryPoint, DbType.Int32),
-                        new DbColumn("ranks", new JsonWriter().Write(Ranks), DbType.String)
+                        new DbColumn("ranks",JsonConvert.SerializeObject(Ranks), DbType.String)
                 };
             }
         }

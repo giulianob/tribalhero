@@ -24,11 +24,12 @@ using Game.Map;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
-using JsonFx.Json;
+using Newtonsoft.Json;
 using Ninject;
 using Persistance;
 using System.Linq;
 using DbTransaction = Persistance.DbTransaction;
+using JsonReader = JsonFx.Json.JsonReader;
 
 #endregion
 
@@ -195,6 +196,8 @@ namespace Game.Database
         {
             #region Tribes
 
+            var jsonReader = new JsonReader();
+
             Global.Logger.Info("Loading tribes...");
             using (var reader = DbManager.Select(Tribe.DB_TABLE))
             {
@@ -218,9 +221,10 @@ namespace Game.Database
                                                          resource,
                                                          DateTime.SpecifyKind((DateTime)reader["created"],
                                                                               DateTimeKind.Utc));
-                    foreach (var obj in (dynamic)new JsonReader().Read((string)reader["ranks"]))
+
+                    foreach (var obj in (dynamic)JsonConvert.DeserializeObject((string)reader["ranks"]))
                     {
-                        tribe.CreateRank(obj.Name, Enum.Parse(typeof(TribePermission), obj.Permission));
+                        tribe.CreateRank(obj.Value<string>("Name"), Enum.Parse(typeof(TribePermission), obj.Value<string>("Permission")));
                     }
                     tribe.Id = (uint)reader["id"];
                     tribe.DbPersisted = true;

@@ -316,6 +316,8 @@ namespace Game.Comm
 
         TribeChannelUpdate = 1051,
 
+        TribeChannelRanksUpdate = 1052,
+
         #endregion
 
         #region Stronghold

@@ -40,6 +40,9 @@
 				case Commands.TRIBESMAN_GOT_KICKED:
 					onTribeLeave();
 					break;
+				case Commands.TRIBE_RANKS_UPDATE_CHANNEL:
+					onReceiveRanksUpdate(e.packet, null);
+					break;					
 			}
 		}
 
@@ -471,11 +474,13 @@
 			var incoming:int = packet.readInt();
 			var assignment:int = packet.readShort();
 
-			readTribeRanks(packet);
-		
 			BuiltInMessages.showTribeAssignmentIncoming(assignment, incoming);
 		}
 		
+		public function onReceiveRanksUpdate(packet: Packet, custom: * ):void {
+			readTribeRanks(packet);
+		}
+				
 		public function onTribeJoin(assignment:int, incoming:int):void {
 			BuiltInMessages.showTribeAssignmentIncoming(assignment, incoming);
 		}

@@ -202,11 +202,18 @@ namespace Game.Comm.ProcessorCommands
 
             using (locker.Lock(player))
             {
-                // If someone is already connected as this player, kick them off
+                // If someone is already connected as this player, kick them off potentially
                 if (player.Session != null)
                 {
                     player.Session.CloseSession();
                     player.Session = null;
+
+                    // Kick people off who are spamming logins
+                    if (SystemClock.Now.Subtract(player.LastLogin).TotalMilliseconds < 1500)
+                    {
+                        session.CloseSession();
+                        return;
+                    }
                 }
 
                 // Setup session references
@@ -265,7 +272,7 @@ namespace Game.Comm.ProcessorCommands
 
                 session.Write(reply);
 
-                //Restart any city actions that may have been stopped due to inactivity
+                // Restart any city actions that may have been stopped due to inactivity
                 foreach (
                         var city in
                                 player.GetCityList()

@@ -22,7 +22,7 @@ namespace Game.Data.Tribe
         SetAnnouncement = 0x100,
     }
 
-    public interface ITribeRank : ISerializable 
+    public interface ITribeRank 
     {
         byte Id { get; }
         string Name { get; set; }

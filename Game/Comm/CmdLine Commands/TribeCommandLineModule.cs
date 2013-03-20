@@ -230,7 +230,7 @@ namespace Game.Comm
                 ITribe tribe;
                 Error error = procedure.CreateTribe(player, tribeName, out tribe);
                 if(error!=Error.Ok) return error.ToString();
-                tribe.SendUpdate();
+                tribe.SendRanksUpdate();
             }
             return "OK!";
         }

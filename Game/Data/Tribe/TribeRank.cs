@@ -4,7 +4,7 @@
     {
         #region Implementation of ITribeRank
 
-        public byte Id { get; private set; }
+        public byte Id { get; set; }
         public string Name { get; set; }
         public TribePermission Permission { get; set; }
 

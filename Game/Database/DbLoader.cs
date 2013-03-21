@@ -222,9 +222,10 @@ namespace Game.Database
                                                          DateTime.SpecifyKind((DateTime)reader["created"],
                                                                               DateTimeKind.Utc));
 
-                    foreach (var obj in (dynamic)JsonConvert.DeserializeObject((string)reader["ranks"]))
+                    
+                    foreach (var obj in JsonConvert.DeserializeObject<TribeRank[]>((string)reader["ranks"]))
                     {
-                        tribe.CreateRank(obj.Value<string>("Name"), Enum.Parse(typeof(TribePermission), obj.Value<string>("Permission")));
+                        tribe.CreateRank(obj.Name, obj.Permission);
                     }
                     tribe.Id = (uint)reader["id"];
                     tribe.DbPersisted = true;

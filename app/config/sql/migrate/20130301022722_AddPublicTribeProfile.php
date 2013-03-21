@@ -7,6 +7,6 @@ class AddPublicTribeProfile extends Ruckusing_BaseMigration {
 	}
 
 	public function down() {
-
+		$this->remove_column("tribes","public_desc");
 	}
 }

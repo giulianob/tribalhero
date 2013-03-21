@@ -8,6 +8,8 @@ class AddMuteAddBanned extends Ruckusing_BaseMigration {
 	}
 
 	public function down() {
-
+        $this->remove_column("players", "muted");
+        $this->remove_column("players", "banned");
+		
 	}
 }

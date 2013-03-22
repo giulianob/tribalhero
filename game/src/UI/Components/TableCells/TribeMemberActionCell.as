@@ -35,7 +35,7 @@
 			wrapper.removeAll();
 			
 			// Only show set rank if player is chief
-			if (Constants.tribe.hasRight(Tribe.ALL)) {
+			if (Constants.tribe.hasRight(Tribe.SET_RANK)) {
 				btnSetRank = new SetRankIcon(value.playerId, value.rank);
 				wrapper.append(new AssetPane(btnSetRank.getAsset()));
 			}					

@@ -85,7 +85,7 @@ namespace Game.Comm.ProcessorCommands
             using (locker.Lock(out players, playerId, session.Player.Tribesman.Tribe.Owner.PlayerId))
             {
                 ITribe tribe = session.Player.Tribesman.Tribe;
-                if (!tribe.IsOwner(session.Player))
+                if (!tribe.HasRight(session.Player.PlayerId,TribePermission.SetRank))
                 {
                     ReplyError(session, packet, Error.TribesmanNotAuthorized);
                     return;

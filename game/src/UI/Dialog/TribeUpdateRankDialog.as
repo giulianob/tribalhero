@@ -90,7 +90,7 @@ package src.UI.Dialog{
 		private function update(): void {
 			var rankList: Array = new Array();
 			for ( var i:int = 0; i < Constants.tribe.ranks.length; ++i) {
-				rankList.push(i + 1);
+				rankList.push((i + 1) + " - " + Constants.tribe.ranks[i].name);
 			}
 			comboRankId.setListData(rankList);
 			
@@ -125,7 +125,7 @@ package src.UI.Dialog{
 			form.setHGap(20);
 			form.setVGap(20);
 			
-			form.addRow(new JLabel("Rank Id"), comboRankId);
+			form.addRow(new JLabel("Rank"), comboRankId);
 			form.addRow(new JLabel("Rank Name"), txtRankName);
 			form.addRow(new JLabel("Permissions"), rightsPanel);
 

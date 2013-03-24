@@ -52,5 +52,23 @@ namespace Game.Module
 
             channel.Post("/GLOBAL", chatPacket);
         }
+
+        public void SendSystemChat(IChannel session, string messageId, params string[] messageArgs)
+        {
+            if (session == null)
+            {
+                return;
+            }
+
+            Packet chatPacket = new Packet(Command.SystemChat);
+            chatPacket.AddString(messageId);
+            chatPacket.AddByte((byte)messageArgs.Length);
+            foreach (var messageArg in messageArgs)
+            {
+                chatPacket.AddString(messageArg);
+            }
+
+            session.OnPost(chatPacket);
+        }
     }
 }

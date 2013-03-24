@@ -57,11 +57,20 @@ namespace Game.Battle
                                           ICombatObject target,
                                           decimal damage)
         {
-            if (attackingside == BattleManager.BattleSide.Attack && target.ClassType == BattleClass.Structure && target.IsDead &&
-                !objectTypeFactory.IsObjectType("BattleNoStaminaReduction", target.Type))
+            if (target.ClassType == BattleClass.Structure && attackingside == BattleManager.BattleSide.Attack && target.IsDead)
             {
+                if (objectTypeFactory.IsObjectType("BattleNoStaminaReduction", target.Type))
+                {
+                    return;
+                }
+
+                if (objectTypeFactory.IsObjectType("BattleNoStaminaReductionEarlyLevels", target.Type) && target.Lvl < 5)
+                {
+                    return;
+                }
+
                 Stamina = BattleFormulas.GetStaminaStructureDestroyed(Stamina, target);
-            }
+            }            
         }
 
         private void BattleWithdrawAttacker(IBattleManager battle, ICombatGroup groupWithdrawn)

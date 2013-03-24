@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
+using Game.Data;
 using Game.Map;
 using Game.Util;
 using Persistance;
@@ -73,8 +74,6 @@ namespace Game.Battle
 
             uint lowestRow = objsInRange.Min(target => target.CombatObject.Stats.Stl);
 
-            var attackerLocation = attacker.Location();
-
             Target bestTarget = null;
             int bestTargetScore = 0;
             foreach (var target in objsInRange)
@@ -85,18 +84,6 @@ namespace Game.Battle
                 }
 
                 int score = 0;
-
-                Position defenderPosition = target.CombatObject.Location();
-
-                // Distance 0 gives 60% higher chance to hit, distance 1 gives 20%
-                score +=
-                        Math.Max(
-                                 3 -
-                                 radiusLocator.RadiusDistance(attackerLocation.X,
-                                                              attackerLocation.Y,
-                                                              defenderPosition.X,
-                                                              defenderPosition.Y) * 2,
-                                 0);
 
                 // Have to compare armor and weapon type here to give some sort of score
                 score += ((int)(battleFormulas.GetDmgModifier(attacker, target.CombatObject) * 10));
@@ -120,20 +107,13 @@ namespace Game.Battle
             // they won't attack the stacks in the order they joined the battle, which usually would mean
             // they will attack the same type of units one after another
             // then sort by score descending
-            objectsByScore.Sort((x, y) => x.Score.CompareTo(y.Score) * -1);
+            var shuffled = objectsByScore.Shuffle((int)battleId);
+            shuffled.Sort(new CombatScoreItemComparer(attacker, radiusLocator));
             
             var numberOfTargetsToHit = Math.Min(maxCount, objectsByScore.Count);
-            var optimalScore = objectsByScore.First().Score;
-
-            var highestScoringObjectsOnly = objectsByScore.Where(p => p.Score == optimalScore).ToList().Shuffle((int)battleId);
-
+ 
             // Get top results specified by the maxCount param
-            result = highestScoringObjectsOnly.Take(numberOfTargetsToHit).Select(scoreItem => scoreItem.Target).ToList();
-
-            if (result.Count < numberOfTargetsToHit)
-            {
-                result.AddRange(objectsByScore.GetRange(result.Count, numberOfTargetsToHit - result.Count).Select(scoreItem => scoreItem.Target));
-            }
+            result = shuffled.Take(numberOfTargetsToHit).Select(scoreItem => scoreItem.Target).ToList();
 
             return BestTargetResult.Ok;
         }
@@ -161,6 +141,48 @@ namespace Game.Battle
             public Target Target { get; set; }
         }
 
+        #endregion
+
+        #region Nexted class: CombatComparer
+        private class CombatScoreItemComparer : IComparer<CombatScoreItem>
+        {
+            private readonly ICombatObject attacker;
+            private readonly RadiusLocator radiusLocator;
+
+            public CombatScoreItemComparer(ICombatObject attacker, RadiusLocator radiusLocator)
+            {
+                this.attacker = attacker;
+                this.radiusLocator = radiusLocator;
+            }
+
+            #region Implementation of IComparer<in CombatScoreItem>
+            // return -1 if x is better target, 1 otherwise
+            public int Compare(CombatScoreItem x, CombatScoreItem y)
+            {
+                var xArmorType = x.Target.CombatObject.Stats.Base.Armor;
+                var yArmorType = y.Target.CombatObject.Stats.Base.Armor;
+                if (x.Score == y.Score && (xArmorType == ArmorType.Building3 || yArmorType == ArmorType.Building3))
+                {
+                    if (xArmorType == ArmorType.Building3 && yArmorType == ArmorType.Building3)
+                    {
+                        var xDistance = radiusLocator.RadiusDistance(attacker.Location().X,
+                                                                     attacker.Location().Y,
+                                                                     x.Target.CombatObject.Location().X,
+                                                                     x.Target.CombatObject.Location().Y);
+                        var yDistance = radiusLocator.RadiusDistance(attacker.Location().X,
+                                                                     attacker.Location().Y,
+                                                                     y.Target.CombatObject.Location().X,
+                                                                     y.Target.CombatObject.Location().Y);
+                        return xDistance.CompareTo(yDistance);
+                    }
+                    return xArmorType == ArmorType.Building3 ? 1 : -1;
+                }
+
+                return x.Score.CompareTo(y.Score) * -1;
+            }
+
+            #endregion
+        }
         #endregion
 
         #region Nested type: Target

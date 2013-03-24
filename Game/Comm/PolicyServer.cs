@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading;
 using Game.Data;
 using Game.Setup;
+using Game.Util;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -22,6 +24,8 @@ namespace Game.Comm
 
     public class PolicyServer : IPolicyServer
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         private readonly TcpListener listener;
 
         private readonly Thread listeningThread;
@@ -80,7 +84,7 @@ namespace Game.Comm
             // Write policy to data folder
             File.WriteAllText(Path.Combine(Config.data_folder, "crossdomain.xml"), policy);
 
-            Global.Logger.Info("Ready to serve policy file: " + policy);
+            logger.Info("Ready to serve policy file: " + policy);
 
             listener.Start();
 
@@ -108,7 +112,7 @@ namespace Game.Comm
                             s.NoDelay = true;
                             s.Send(xmlBytes);
 
-                            Global.Logger.Info("Served policy file to " + s.RemoteEndPoint);
+                            logger.Info("Served policy file to " + s.RemoteEndPoint);
                         }
                         catch
                         {

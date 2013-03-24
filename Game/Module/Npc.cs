@@ -13,6 +13,7 @@ using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using Ninject;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -20,6 +21,8 @@ namespace Game.Module
 {
     public class Ai : ISchedule
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         private static readonly List<ushort> allowedBuildings =
                 new List<ushort>(new ushort[] {2110, 2202, 2301, 2302, 2501, 2502, 2402});
 
@@ -119,7 +122,7 @@ namespace Game.Module
             }
 
             var timeTaken = (int)DateTime.UtcNow.Subtract(now).TotalMilliseconds;
-            Global.Logger.Info(String.Format("Took {0} ms for {1} actions. Average: {2}ms",
+            logger.Info(String.Format("Took {0} ms for {1} actions. Average: {2}ms",
                                              timeTaken,
                                              successCount,
                                              (double)timeTaken / successCount));
@@ -191,7 +194,7 @@ namespace Game.Module
                         var action = new UnitTrainActiveAction(city.Id, structure.ObjectId, unitType, count);
                         if (city.Worker.DoActive(workerType, structure, action, structure.Technologies) == Error.Ok)
                         {
-                            //Global.Logger.Info(string.Format("{0} training {1} units of type {2} at ({3},{4})", city.Name, count, unitType, structure.X, structure.Y));
+                            //logger.Info(string.Format("{0} training {1} units of type {2} at ({3},{4})", city.Name, count, unitType, structure.X, structure.Y));
                             return true;
                         }
                     }
@@ -240,7 +243,7 @@ namespace Game.Module
                                         .CreateStructureBuildActiveAction(city.Id, buildingType, x, y, 1);
                         if (city.Worker.DoActive(workerType, structure, action, structure.Technologies) == Error.Ok)
                         {
-                            //Global.Logger.Info(string.Format("{0} building {1} at ({2},{3})", city.Name, buildingType, structure.Stats.Base.Lvl, x, y));
+                            //logger.Info(string.Format("{0} building {1} at ({2},{3})", city.Name, buildingType, structure.Stats.Base.Lvl, x, y));
                             return true;
                         }
                     }
@@ -277,7 +280,7 @@ namespace Game.Module
                                          action,
                                          structure.Technologies) == Error.Ok)
             {
-                //Global.Logger.Info(string.Format("{0} upgrading {1}({2}) at ({3},{4})", city.Name, structure.Type, structure.Stats.Base.Lvl, x, y));
+                //logger.Info(string.Format("{0} upgrading {1}({2}) at ({3},{4})", city.Name, structure.Type, structure.Stats.Base.Lvl, x, y));
                 return true;
             }
 
@@ -290,13 +293,15 @@ namespace Game.Module
 
             var rand = new Random();
 
-            Global.Logger.Info("Loading AI...");
+            var logger = LoggerFactory.Current.GetCurrentClassLogger();
+
+            logger.Info("Loading AI...");
 
             for (uint i = 1; i <= Config.ai_count; ++i)
             {
                 if (i % 100 == 0)
                 {
-                    Global.Logger.Info(String.Format("Creating NPC {0}/{1}...", i, Config.ai_count));
+                    logger.Info(String.Format("Creating NPC {0}/{1}...", i, Config.ai_count));
                 }
 
                 uint idx = 50000 + i;
@@ -331,7 +336,7 @@ namespace Game.Module
                     IStructure structure;
                     if (!Randomizer.MainBuilding(out structure, Formula.Current.GetInitialCityRadius(), 2))
                     {
-                        Global.Logger.Info(npc.Name);
+                        logger.Info(npc.Name);
                         break;
                     }
 
@@ -368,7 +373,7 @@ namespace Game.Module
             Global.Ai.time = DateTime.UtcNow.AddSeconds(10);
             //Global.Scheduler.Put(Global.Ai);
 
-            Global.Logger.Info("Loading AI finished.");
+            logger.Info("Loading AI finished.");
 
             Scheduler.Current.Resume();
         }

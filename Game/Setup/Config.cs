@@ -5,9 +5,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Game.Data;
+using Game.Util;
 using JsonFx.Json;
-using log4net;
-using log4net.Config;
 
 #endregion
 
@@ -258,15 +257,11 @@ namespace Game.Setup
                 settingsFile = @"conf\settings.ini";
             }
 
-            XmlConfigurator.Configure();
-            ILog logger = LogManager.GetLogger(typeof(Config));
-
             string key = string.Empty;
 
             try
             {
                 settingsFile = Path.GetFullPath(settingsFile);
-                logger.InfoFormat("Loading settings from {0}", settingsFile);
 
                 using (var file = new StreamReader(File.Open(settingsFile, FileMode.Open, FileAccess.Read)))
                 {
@@ -275,8 +270,7 @@ namespace Game.Setup
                     {
                         line = line.Trim();
 
-                        if (line == string.Empty || line.StartsWith("#") || line.StartsWith(";") ||
-                            line.StartsWith("\\\\"))
+                        if (line == string.Empty || line.StartsWith("#") || line.StartsWith(";") || line.StartsWith("\\\\"))
                         {
                             continue;
                         }
@@ -324,7 +318,7 @@ namespace Game.Setup
             }
             catch(Exception e)
             {
-                logger.Error("Error loading settings file at " + key, e);
+                throw new Exception("Error loading settings file at " + key, e);
             }
         }
     }

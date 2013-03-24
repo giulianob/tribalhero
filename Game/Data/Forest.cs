@@ -15,6 +15,7 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
+using Ninject.Extensions.Logging;
 using Persistance;
 
 #endregion
@@ -23,6 +24,8 @@ namespace Game.Data
 {
     public class Forest : SimpleGameObject, IHasLevel, IPersistableObject, IEnumerable<IStructure>, ICityRegionObject
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         public const string DB_TABLE = "forests";
 
         private readonly byte lvl = 1;
@@ -223,7 +226,7 @@ namespace Game.Data
                 hours = Wood.Value / (Wood.Upkeep / Config.seconds_per_unit);
             }
 
-            Global.Logger.Debug(string.Format("DepleteTime in [{0}] hours Wood.Upkeep[{1}] Wood.Value[{2}]",
+            logger.Trace(string.Format("DepleteTime in [{0}] hours Wood.Upkeep[{1}] Wood.Value[{2}]",
                                               hours,
                                               Wood.Upkeep,
                                               Wood.Value));

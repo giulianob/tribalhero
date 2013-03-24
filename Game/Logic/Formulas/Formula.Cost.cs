@@ -190,6 +190,7 @@ namespace Game.Logic.Formulas
             {
                 return cost;
             }
+
             return new Resource(cost / 2);
         }
 

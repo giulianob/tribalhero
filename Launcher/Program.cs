@@ -7,6 +7,7 @@ using Game.Setup;
 using NDesk.Options;
 using Ninject;
 using Ninject.Extensions.Logging.Log4net.Infrastructure;
+using log4net.Config;
 
 #endregion
 
@@ -35,17 +36,17 @@ namespace Launcher
                 Console.Out.WriteLine("Usage: launcher [--settings=settings.ini]");
                 Environment.Exit(0);
             }
-
+            
+            XmlConfigurator.Configure();
             Engine.AttachExceptionHandler(new Log4NetLogger(typeof(Engine)));
-
             Config.LoadConfigFile(settingsFile);
-            Factory.CompileConfigFiles();
-            Engine.CreateDefaultKernel();
-            Factory.InitAll();
-            Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
 
-            // Empty db
+            var kernel = Engine.CreateDefaultKernel();                        
+            kernel.Get<FactoriesInitializer>().CompileAndInit();
+            Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
+            
 #if DEBUG
+            // Empty db
             if (Config.database_empty)
             {
                 Console.Out.Write("Are you sure you want to empty the database?(Y/N):");
@@ -57,12 +58,9 @@ namespace Launcher
 #endif
 
             // Start game engine
-            var engine = Ioc.Kernel.Get<Engine>();
+            var engine = kernel.Get<Engine>();
 
-            if (!engine.Start())
-            {
-                throw new Exception("Failed to load server");
-            }
+            engine.Start();
 
             // Quit if press alt+q
             while (true)

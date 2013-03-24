@@ -2,6 +2,8 @@
 
 using System.Collections.Generic;
 using Game.Data;
+using Game.Util;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -14,6 +16,8 @@ namespace Game.Comm
         public delegate void DoWork(Session session, Packet packet);
 
         #endregion
+
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
         private readonly Dictionary<Command, ProcessorCommand> commands = new Dictionary<Command, ProcessorCommand>();
 
@@ -40,7 +44,7 @@ namespace Game.Comm
         public void Execute(Session session, Packet packet)
         {
 #if DEBUG || CHECK_LOCKS
-            Global.Logger.Info(packet.ToString(32));
+            logger.Info(packet.ToString(32));
 #endif
 
             lock (session)
@@ -58,7 +62,7 @@ namespace Game.Comm
         public void ExecuteEvent(Session session, Packet packet)
         {
 #if DEBUG || CHECK_LOCKS
-            Global.Logger.Info("Event: " + packet.ToString(32));
+            logger.Info("Event: " + packet.ToString(32));
 #endif
 
             lock (session)

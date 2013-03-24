@@ -19,12 +19,11 @@ namespace Game.Module
 
         private readonly Channel channel;
 
-        private readonly ILogger logger;
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
-        public Chat(Channel channel, ILogger logger)
+        public Chat(Channel channel)
         {
             this.channel = channel;
-            this.logger = logger;
         }
 
         public void SendChat(string channelName, ChatType type, uint playerId, string playerName, bool distinguish, string message)
@@ -52,6 +51,24 @@ namespace Game.Module
             }
 
             channel.Post("/GLOBAL", chatPacket);
+        }
+
+        public void SendSystemChat(IChannel session, string messageId, params string[] messageArgs)
+        {
+            if (session == null)
+            {
+                return;
+            }
+
+            Packet chatPacket = new Packet(Command.SystemChat);
+            chatPacket.AddString(messageId);
+            chatPacket.AddByte((byte)messageArgs.Length);
+            foreach (var messageArg in messageArgs)
+            {
+                chatPacket.AddString(messageArg);
+            }
+
+            session.OnPost(chatPacket);
         }
     }
 }

@@ -220,6 +220,8 @@ namespace Game.Setup
 
         AssignmentNotEligible = 746,
 
+        AssignmentTooManyInProgress = 747,
+
         #endregion
 
         #region Stronghold

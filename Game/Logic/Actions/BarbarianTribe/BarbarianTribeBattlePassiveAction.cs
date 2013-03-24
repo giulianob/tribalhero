@@ -110,7 +110,7 @@ namespace Game.Logic.Actions
                 throw new Exception();
             }
 
-            barbarianTribe.Battle.AboutToExitBattle -= BattleOnEnd;
+            barbarianTribe.Battle.AboutToExitBattle += BattleOnEnd;
         }
 
         public override ActionType Type

@@ -5,11 +5,14 @@ using Game.Comm;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
+using Ninject.Extensions.Logging;
 
 namespace Game.Map
 {
     public class RegionManager : IRegionManager
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         private readonly ICityRegionManagerFactory cityRegionManagerFactory;
 
         private readonly ObjectTypeFactory objectTypeFactory;
@@ -329,8 +332,8 @@ namespace Game.Map
                 regions[regionId] = regionFactory.CreateRegion(data);
             }
 
-            Global.Logger.Info(String.Format("map file length[{0}] position[{1}]", mapStream.Length, mapStream.Position));
-            Global.Logger.Info(regions.Length + " created.");
+            logger.Info(String.Format("map file length[{0}] position[{1}]", mapStream.Length, mapStream.Position));
+            logger.Info(regions.Length + " created.");
 
             // creating city regions;
             column = (int)(inWorldWidth / cityRegionWidth);

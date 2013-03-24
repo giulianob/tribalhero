@@ -107,19 +107,11 @@ namespace Game.Setup
 
     public class PropertyFactory
     {
-        private readonly Dictionary<int, List<Property>> dict;
+        private readonly Dictionary<int, List<Property>> dict = new Dictionary<int, List<Property>>();
 
-        public PropertyFactory(string filename)
+        public void Init(string filename)
         {
-            dict = new Dictionary<int, List<Property>>();
-
-            using (
-                    var reader =
-                            new CsvReader(
-                                    new StreamReader(new FileStream(filename,
-                                                                    FileMode.Open,
-                                                                    FileAccess.Read,
-                                                                    FileShare.ReadWrite))))
+            using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
             {
                 String[] toks;
                 List<Property> properties;

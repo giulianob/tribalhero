@@ -72,6 +72,7 @@ namespace Game.Comm
             processor.RegisterCommand("mute", Mute, PlayerRights.Moderator);
             processor.RegisterCommand("unmute", Unmute, PlayerRights.Moderator);
             processor.RegisterCommand("togglechatmod", ToggleChatMod, PlayerRights.Moderator);
+            processor.RegisterCommand("warn", Warn, PlayerRights.Moderator);
             processor.RegisterCommand("setchatlevel", SetChatLevel, PlayerRights.Admin);
         }
 
@@ -239,9 +240,9 @@ namespace Game.Comm
                                       "id[{0}] created[{1}] name[{7}] emailAddress[{2}] lastLogin[{3}] ipAddress[{4}] banned[{5}] deleted[{6}]",
                                       response.Data.id,
                                       response.Data.created,
-                                      response.Data.emailAddress,
-                                      response.Data.lastLogin,
-                                      response.Data.ipAddress,
+                                      session.Player.Rights > PlayerRights.Moderator ? response.Data.emailAddress : "N/A",
+                                      session.Player.Rights > PlayerRights.Moderator ? response.Data.lastLogin : "N/A",
+                                      session.Player.Rights > PlayerRights.Moderator ? response.Data.ipAddress : "N/A",
                                       response.Data.banned == "1" ? "YES" : "NO",                                      
                                       response.Data.deleted == "1" ? "YES" : "NO",
                                       response.Data.name);
@@ -300,6 +301,7 @@ namespace Game.Comm
             bool help = false;
             string playerName = string.Empty;
             int minutes = 10;
+            string reason = string.Empty;
 
             try
             {
@@ -308,6 +310,7 @@ namespace Game.Comm
                         {"?|help|h", v => help = true},
                         {"p=|player=", v => playerName = v.TrimMatchingQuotes()},
                         {"m=|minutes=", v => minutes = int.Parse(v.TrimMatchingQuotes()) },
+                        {"r=|reason=", v => reason = v.TrimMatchingQuotes() },
                 };
                 p.Parse(parms);
             }
@@ -316,12 +319,11 @@ namespace Game.Comm
                 help = true;
             }
 
-            if (help || string.IsNullOrEmpty(playerName) || minutes <= 0)
+            if (help || string.IsNullOrEmpty(playerName) || minutes <= 0 || string.IsNullOrEmpty(reason))
             {
-                return String.Format("mute --player=player --minutes=##");
+                return String.Format("mute --player=player --reason=\"Reason for ban\" --minutes=##");
             }
 
-            // Mute player in this world instantly
             uint playerId;
             if (world.FindPlayerId(playerName, out playerId))
             {
@@ -333,7 +335,68 @@ namespace Game.Comm
                         player.Muted = SystemClock.Now.AddMinutes(minutes);
                         dbManager.Save(player);
 
-                        return string.Format("OK muted player muted for {0} minutes (until {1})", minutes, player.Muted.ToString("R"));
+                        player.SendSystemMessage(null,
+                                                 "You have been temporarily muted",
+                                                 string.Format("You have been temporarily muted for {0} minutes. Reason: {1}\n\n", minutes, reason) + 
+                                                 "Please make sure you are following all of the game rules ( http://tribalhero.com/pages/rules ). " +
+                                                 "If you have reason to believe this was an unfair judgement, you may contact the game admin directly by email at giuliano@tribalhero.com. Provide as much detail as possible and give us 24 hours to investigate and respond.");
+
+                        return string.Format("OK player notified and muted for {0} minutes (until {1})", minutes, player.Muted.ToString("R"));
+                    }                    
+                }
+            }
+
+            return "Player not found";
+        }
+
+        public string Warn(Session session, String[] parms)
+        {
+            bool help = false;
+            string playerName = string.Empty;
+            string reason = string.Empty;
+
+            try
+            {
+                var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},
+                        {"p=|player=", v => playerName = v.TrimMatchingQuotes()},
+                        {"r=|reason=", v => reason = v.TrimMatchingQuotes() },
+                };
+                p.Parse(parms);
+            }
+            catch(Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(playerName) || string.IsNullOrEmpty(reason))
+            {
+                return String.Format("warn --player=player --reason=\"Reason for warning\"");
+            }
+
+            uint playerId;
+            if (world.FindPlayerId(playerName, out playerId))
+            {
+                IPlayer player;
+                using (locker.Lock(playerId, out player))
+                {
+                    if (player != null)
+                    {
+                        var warnMessage = string.Format("You have been warned for misconduct. Reason: {0}\n", reason) +
+                                          "Please make sure you are following all of the game rules ( http://tribalhero.com/pages/rules ). If your behavior continues, you may be muted or banned. " +
+                                          "If you have reason to believe this was an unfair judgement, you may contact the game admin directly by email at giuliano@tribalhero.com. Provide as much detail as possible and give us 24 hours to investigate and respond.";
+
+                        player.SendSystemMessage(null,
+                                                 "You have been warned for misconduct",
+                                                 warnMessage);
+
+                        if (player.Session != null)
+                        {
+                            chat.SendSystemChat(player.Session, "SYSTEM_CHAT_LITERAL", warnMessage);
+                        }
+
+                        return string.Format("OK player has been warned.");
                     }                    
                 }
             }
@@ -376,6 +439,8 @@ namespace Game.Comm
                     {
                         player.Muted = DateTime.MinValue;                  
                         dbManager.Save(player);
+
+                        player.SendSystemMessage(null, "You have been unmuted", "You have now been unmuted by a moderator and may talk again in the chat.");
 
                         return "OK!";
                     }

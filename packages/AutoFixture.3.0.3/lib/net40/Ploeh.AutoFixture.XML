@@ -1301,6 +1301,34 @@
             </summary>
             <returns>The set of automaton identifiers that occur in this regular expression.</returns>
         </member>
+        <member name="F:Ploeh.AutoFixture.DataAnnotations.RegExpMatchingOptions.IgnoreCase">
+            <summary>
+            Uses case-insensitive matching.
+            </summary>
+        </member>
+        <member name="F:Ploeh.AutoFixture.DataAnnotations.RegExpMatchingOptions.Singleline">
+            <summary>
+            Use single-line mode, where the period matches every character,
+            instead of every character except <code>\n</code>.
+            </summary>
+        </member>
+        <member name="F:Ploeh.AutoFixture.DataAnnotations.RegExpMatchingOptions.Multiline">
+            <summary>
+            Use multiline mode, where <code>^</code> and <code>$</code> match
+            the beginning and end of each line, instead of the beginning and end of the input string.
+            </summary>
+        </member>
+        <member name="F:Ploeh.AutoFixture.DataAnnotations.RegExpMatchingOptions.ExplicitCapture">
+            <summary>
+            Do not capture unnamed groups.
+            </summary>
+        </member>
+        <member name="F:Ploeh.AutoFixture.DataAnnotations.RegExpMatchingOptions.IgnorePatternWhitespace">
+            <summary>
+            Exclude unescaped white space from the pattern
+            and enable comments after a hash sign <code>#</code>.
+            </summary>
+        </member>
         <member name="F:Ploeh.AutoFixture.DataAnnotations.RegExpSyntaxOptions.Intersection">
             <summary>
             Enables intersection.
@@ -8873,6 +8901,18 @@
             <typeparam name="T">The type of object to create.</typeparam>
             <param name="context">The context used to resolve the type request.</param>
             <returns>An anonymous object of type <typeparamref name="T"/>.</returns>
+        </member>
+        <member name="M:Ploeh.AutoFixture.SpecimenFactory.CreateAnonymous``1(Ploeh.AutoFixture.IFixture)">
+            <summary>
+            Creates an anonymous variable of the requested type.
+            </summary>
+            <typeparam name="T">The type of object to create.</typeparam>
+            <param name="fixture">
+            The fixture used to resolve the type request.
+            </param>
+            <returns>
+            An anonymous object of type <typeparamref name="T"/>.
+            </returns>
         </member>
         <member name="M:Ploeh.AutoFixture.SpecimenFactory.Create``1(Ploeh.AutoFixture.Kernel.ISpecimenBuilder)">
             <summary>

@@ -8,6 +8,7 @@ using System.Linq;
 using Game.Database;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
+using Game.Util;
 using Game.Util.Locking;
 using Persistance;
 
@@ -717,16 +718,17 @@ namespace Game.Data.Troop
 
         public void Print()
         {
+            var logger = LoggerFactory.Current.GetCurrentClassLogger();
             Dictionary<FormationType, Formation>.Enumerator itr = data.GetEnumerator();
             while (itr.MoveNext())
             {
-                Global.Logger.Info(
+                logger.Info(
                                    string.Format("Formation type: " +
                                                  Enum.GetName(typeof(FormationType), itr.Current.Key)));
                 Dictionary<ushort, ushort>.Enumerator itr2 = itr.Current.Value.GetEnumerator();
                 while (itr2.MoveNext())
                 {
-                    Global.Logger.Error(string.Format("\t\tType[{0}] : Count[{1}]", itr2.Current.Key, itr2.Current.Value));
+                    logger.Error(string.Format("\t\tType[{0}] : Count[{1}]", itr2.Current.Key, itr2.Current.Value));
                 }
             }
         }

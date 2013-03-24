@@ -9,6 +9,7 @@ using Common;
 using Game.Data;
 using Game.Logic;
 using Game.Util;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -16,22 +17,15 @@ namespace Game.Setup
 {
     public class ActionRequirementFactory : IEnumerable<ActionRequirementFactory.ActionRecord>
     {
-        private readonly Dictionary<int, ActionRecord> dict;
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
-        public ActionRequirementFactory(string filename)
+        private readonly Dictionary<int, ActionRecord> dict = new Dictionary<int, ActionRecord>();
+        
+        public void Init(string filename)
         {
-            dict = new Dictionary<int, ActionRecord>
-            {
-                    {0, new ActionRecord {Id = 0, List = new List<ActionRequirement>()}}
-            };
+            dict.Add(0, new ActionRecord {Id = 0, List = new List<ActionRequirement>()});
 
-            using (
-                    var reader =
-                            new CsvReader(
-                                    new StreamReader(new FileStream(filename,
-                                                                    FileMode.Open,
-                                                                    FileAccess.Read,
-                                                                    FileShare.ReadWrite))))
+            using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
             {
                 String[] toks;
 
@@ -83,11 +77,7 @@ namespace Game.Setup
                         ActionRequirement actionReq = new ActionRequirement
                         {
                                 Index = actionIndex,
-                                Type =
-                                        (ActionType)
-                                        Enum.Parse(typeof(ActionType),
-                                                   (toks[col["Action"]] + "_active").ToCamelCase(),
-                                                   true),
+                                Type = (ActionType)Enum.Parse(typeof(ActionType), (toks[col["Action"]] + "_active").ToCamelCase(), true),
                         };
 
                         // Set action options
@@ -114,15 +104,11 @@ namespace Game.Setup
                         }
                         else
                         {
-                            actionReq.EffectReqId = uint.TryParse(toks[col["EffectReq"]], out effectReqId)
-                                                            ? effectReqId
-                                                            : 0;
+                            actionReq.EffectReqId = uint.TryParse(toks[col["EffectReq"]], out effectReqId) ? effectReqId : 0;
                         }
                         if (toks[col["EffectReqInherit"]].Length > 0)
                         {
-                            actionReq.EffectReqInherit =
-                                    (EffectInheritance)
-                                    Enum.Parse(typeof(EffectInheritance), toks[col["EffectReqInherit"]], true);
+                            actionReq.EffectReqInherit = (EffectInheritance)Enum.Parse(typeof(EffectInheritance), toks[col["EffectReqInherit"]], true);
                         }
                         else
                         {
@@ -150,7 +136,7 @@ namespace Game.Setup
 
             if (lastLvl == 0)
             {
-                Global.Logger.InfoFormat("WorkerID not found for [{0}][{1}]", type, lvl);
+                logger.Info("WorkerID not found for [{0}][{1}]", type, lvl);
             }
 
             return dict[lastLvl];

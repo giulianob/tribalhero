@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Actions;

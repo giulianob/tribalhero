@@ -19,9 +19,9 @@ namespace Game.Setup
         public static string database_schema_version = "20130305040333";
 
         // ReSharper disable InconsistentNaming        
-        public static int client_min_version;
+        public static int client_min_version = 0;
 
-        public static int client_min_revision;
+        public static int client_min_revision = 64;
 
         public static int server_port = 48888;
 

@@ -15,6 +15,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Objects.GameObject;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.Dialog.InfoDialog;
+    import src.Util.Util;
 
 	public class CancelActionButton extends MovieClip  {
 
@@ -46,9 +47,9 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			
 			var actionType: int = currentAction.getType();		
 
-			var diff: int = new Date().time / 1000 - currentAction.startTime;
+			var diff: int = Global.map.getServerTime() - currentAction.startTime;
 			
-			if(diff > 60) {
+			if (diff > 60) {
 				InfoDialog.showMessageDialog("Cancel Action", "Are you sure?\n" + (Action.costsToCancelActions.indexOf(actionType) >= 0? "You will only receive half of the action cost if cancelling after 60 seconds." : ""), function(result: int) : void {
 					if (result == JOptionPane.YES) {
 						Global.mapComm.Objects.cancelAction(parentObj.cityId, parentObj.objectId, id);

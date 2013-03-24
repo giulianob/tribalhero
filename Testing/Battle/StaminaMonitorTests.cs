@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Game.Battle;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
@@ -113,6 +109,43 @@ namespace Testing.Battle
 
             battleManager.ActionAttacked += Raise.Event<BattleManager.OnAttack>(battleManager,
                                                                            attackingSide,
+                                                                           Substitute.For<ICombatGroup>(),
+                                                                           Substitute.For<ICombatObject>(),
+                                                                           Substitute.For<ICombatGroup>(),
+                                                                           target,
+                                                                           20m);
+
+            staminaMonitor.Stamina.Should().Be((short)expectedStamina);
+        }
+
+        [Theory]
+        [InlineData((byte)4, 10)]
+        [InlineData((byte)5, 7)]
+        public void TestReduceStaminaWhenStructureDestroyedAndIsNoEarlyLevelReductionType(byte level, int expectedStamina)
+        {
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
+
+            var target = Substitute.For<ICombatObject>();
+            target.Type.Returns((ushort)100);
+            target.Lvl.Returns(level);
+            target.ClassType.Returns(BattleClass.Structure);
+            target.IsDead.Returns(true);
+
+            var objectTypeFactory = Substitute.For<ObjectTypeFactory>();
+            objectTypeFactory.IsObjectType("BattleNoStaminaReductionEarlyLevels", 100).Returns(true);
+            fixture.Register(() => objectTypeFactory);
+
+            var battleFormulas = Substitute.For<BattleFormulas>();
+            battleFormulas.GetStaminaStructureDestroyed(10, target).Returns((short)7);
+            fixture.Register(() => battleFormulas);
+            
+            var battleManager = fixture.Freeze<IBattleManager>();
+
+            var staminaMonitor = fixture.Create<StaminaMonitor>();
+            staminaMonitor.Stamina = 10;
+
+            battleManager.ActionAttacked += Raise.Event<BattleManager.OnAttack>(battleManager,
+                                                                           BattleManager.BattleSide.Attack,
                                                                            Substitute.For<ICombatGroup>(),
                                                                            Substitute.For<ICombatObject>(),
                                                                            Substitute.For<ICombatGroup>(),

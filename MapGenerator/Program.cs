@@ -10,6 +10,7 @@ using System.Xml.XPath;
 using Game;
 using Game.Setup;
 using NDesk.Options;
+using Ninject;
 
 #endregion
 
@@ -37,6 +38,8 @@ namespace MapGenerator
         private static readonly List<Region> regions = new List<Region>();
 
         private static readonly ushort[,] map = new ushort[WIDTH,HEIGHT];
+
+        private static IKernel kernel;
 
         private static void LoadRegions()
         {
@@ -135,9 +138,9 @@ namespace MapGenerator
                 Environment.Exit(0);
             }
 
-            Config.LoadConfigFile(settingsFile);
-            Factory.CompileConfigFiles();
-            Engine.CreateDefaultKernel();
+            Config.LoadConfigFile(settingsFile);           
+            kernel = Engine.CreateDefaultKernel();
+            kernel.Get<FactoriesInitializer>().CompileAndInit();
 
             LoadRegions();
 

@@ -19,12 +19,11 @@ namespace Game.Module
 
         private readonly Channel channel;
 
-        private readonly ILogger logger;
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
-        public Chat(Channel channel, ILogger logger)
+        public Chat(Channel channel)
         {
             this.channel = channel;
-            this.logger = logger;
         }
 
         public void SendChat(string channelName, ChatType type, uint playerId, string playerName, bool distinguish, string message)

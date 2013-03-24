@@ -8,37 +8,21 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Util;
 using Ninject;
+using Ninject.Extensions.Logging;
 
 #endregion
 
 namespace Game.Setup
 {
-    public enum ClassId : ushort
-    {
-        Resource = 50,
-
-        Structure = 100,
-
-        Unit = 200,
-    }
-
     public class StructureFactory
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         private readonly Dictionary<int, StructureBaseStats> dict = new Dictionary<int, StructureBaseStats>();
-
-        public StructureFactory()
+        
+        public void Init(string filename)
         {
-        }
-
-        public StructureFactory(string filename)
-        {
-            using (
-                    var reader =
-                            new CsvReader(
-                                    new StreamReader(new FileStream(filename,
-                                                                    FileMode.Open,
-                                                                    FileAccess.Read,
-                                                                    FileShare.ReadWrite))))
+            using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
             {
                 String[] toks;
                 var col = new Dictionary<string, int>();
@@ -60,14 +44,10 @@ namespace Game.Setup
 
                     var stats = new BaseBattleStats(ushort.Parse(toks[col["Type"]]),
                                                     byte.Parse(toks[col["Lvl"]]),
-                                                    (WeaponType)
-                                                    Enum.Parse(typeof(WeaponType), toks[col["Weapon"]].ToCamelCase()),
-                                                    (WeaponClass)
-                                                    Enum.Parse(typeof(WeaponClass), toks[col["WpnClass"]].ToCamelCase()),
-                                                    (ArmorType)
-                                                    Enum.Parse(typeof(ArmorType), toks[col["Armor"]].ToCamelCase()),
-                                                    (ArmorClass)
-                                                    Enum.Parse(typeof(ArmorClass), toks[col["ArmrClass"]].ToCamelCase()),
+                                                    (WeaponType)Enum.Parse(typeof(WeaponType), toks[col["Weapon"]].ToCamelCase()),
+                                                    (WeaponClass)Enum.Parse(typeof(WeaponClass), toks[col["WpnClass"]].ToCamelCase()),
+                                                    (ArmorType)Enum.Parse(typeof(ArmorType), toks[col["Armor"]].ToCamelCase()),
+                                                    (ArmorClass)Enum.Parse(typeof(ArmorClass), toks[col["ArmrClass"]].ToCamelCase()),
                                                     decimal.Parse(toks[col["Hp"]]),
                                                     decimal.Parse(toks[col["Atk"]]),
                                                     byte.Parse(toks[col["Splash"]]),
@@ -84,8 +64,7 @@ namespace Game.Setup
                         workerId = byte.Parse(toks[col["Lvl"]]) == 0
                                            ? 0
                                            : Ioc.Kernel.Get<ActionRequirementFactory>()
-                                                .GetActionRequirementRecordBestFit(int.Parse(toks[col["Type"]]),
-                                                                                   byte.Parse(toks[col["Lvl"]]))
+                                                .GetActionRequirementRecordBestFit(int.Parse(toks[col["Type"]]), byte.Parse(toks[col["Lvl"]]))
                                                 .Id;
                     }
 
@@ -98,13 +77,10 @@ namespace Game.Setup
                                                            stats,
                                                            ushort.Parse(toks[col["MaxLabor"]]),
                                                            int.Parse(toks[col["Time"]]),
-                                                           workerId,
-                                                           (ClassId)
-                                                           Enum.Parse(typeof(ClassId), (toks[col["Class"]]), true));
+                                                           workerId);
 
-                    Global.Logger.Info(string.Format("{0}:{1}",
-                                                     int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]]),
-                                                     toks[col["Name"]]));
+                    logger.Info(string.Format("{0}:{1}", int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]]), toks[col["Name"]]));
+
                     dict[int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]])] = basestats;
                 }
             }

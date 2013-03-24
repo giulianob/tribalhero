@@ -7,6 +7,8 @@ using Common;
 using Game.Data;
 using Game.Logic;
 using Game.Logic.Requirements.LayoutRequirements;
+using Game.Util;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -14,12 +16,12 @@ namespace Game.Setup
 {
     public class RequirementFactory
     {
-        private readonly Dictionary<int, LayoutRequirement> dict;
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
-        public RequirementFactory(string filename)
+        private readonly Dictionary<int, LayoutRequirement> dict = new Dictionary<int, LayoutRequirement>();
+
+        public void Init(string filename)
         {
-            dict = new Dictionary<int, LayoutRequirement>();
-
             using (
                     var reader =
                             new CsvReader(
@@ -67,7 +69,7 @@ namespace Game.Setup
                                               byte.Parse(toks[col["Dmax"]]));
                     layoutReq.Add(req);
 
-                    Global.Logger.Info(string.Format("{0}",
+                    logger.Info(string.Format("{0}",
                                                      int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]])));
                     dict[index] = layoutReq;
                 }

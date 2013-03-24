@@ -7,6 +7,8 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using Game.Data;
+using Game.Util;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -14,6 +16,8 @@ namespace Game.Comm
 {
     class TcpWorker
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         private static readonly object workerLock = new object();
 
         private static readonly List<TcpWorker> workerList = new List<TcpWorker>();
@@ -196,7 +200,7 @@ namespace Game.Comm
                     }
                     catch(Exception e)
                     {
-                        Global.Logger.Info("Socket exception: " + e.Message);
+                        logger.Info("Socket exception: " + e.Message);
                         continue;
                     }
 
@@ -225,7 +229,7 @@ namespace Game.Comm
                                 var session = sessions[s];
 
 #if DEBUG
-                                Global.Logger.Debug("[" + session.Name + "]: " + data.Length);
+                                logger.Debug("[" + session.Name + "]: " + data.Length);
 #endif
 
                                 session.PacketMaker.Append(data);

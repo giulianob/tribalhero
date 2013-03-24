@@ -10,13 +10,17 @@ using Game.Logic;
 using Game.Logic.Actions;
 using Game.Map;
 using Game.Setup;
+using Game.Util;
 using Game.Util.Locking;
+using Ninject.Extensions.Logging;
 using Persistance;
 
 namespace Game.Module
 {
     public class CityRemover : ICityRemover, ISchedule
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         private const double SHORT_RETRY = 5;
 
         private const double LONG_RETRY = 90;
@@ -95,9 +99,7 @@ namespace Game.Module
                     {
                         if (RemoveForeignTroop(stub) != Error.Ok)
                         {
-                            Global.Logger.Error(String.Format("removeForeignTroop failed! cityid[{0}] stubid[{1}]",
-                                                              city.Id,
-                                                              stub.StationTroopId));
+                            logger.Error(String.Format("removeForeignTroop failed! cityid[{0}] stubid[{1}]", city.Id, stub.StationTroopId));
                         }
                     }
                 }
@@ -210,7 +212,8 @@ namespace Game.Module
                     Reschedule(SHORT_RETRY);
                     return;
                 }
-                Global.Logger.Info(string.Format("Player {0}:{1} City {2}:{3} Lvl {4} is deleted.",
+
+                logger.Info(string.Format("Player {0}:{1} City {2}:{3} Lvl {4} is deleted.",
                                                  city.Owner.Name,
                                                  city.Owner.PlayerId,
                                                  city.Name,

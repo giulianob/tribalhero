@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Game.Battle;
 using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
@@ -20,11 +19,11 @@ using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
 using Game.Setup;
+using Game.Util;
 using Game.Util.Locking;
 using Ninject;
 using Ninject.Extensions.Conventions;
 using Ninject.Extensions.Factory;
-using Ninject.Extensions.Logging;
 using Ninject.Extensions.Logging.Log4net.Infrastructure;
 using Ninject.Modules;
 using Persistance;
@@ -61,8 +60,7 @@ namespace Game
 
             Bind<Chat>().ToMethod(c =>
                 {
-                    var logFactory = c.Kernel.Get<ILoggerFactory>();
-                    return new Chat(Global.Channel, logFactory.GetLogger(typeof(Chat)));
+                    return new Chat(Global.Channel);
                 });
 
             #endregion
@@ -104,46 +102,21 @@ namespace Game
 
             #region CSV Factories
 
-            Bind<ActionRequirementFactory>()
-                    .ToMethod(
-                              ctx =>
-                              new ActionRequirementFactory(Path.Combine(Config.csv_compiled_folder, "action.csv")))
-                    .InSingletonScope();
-            Bind<StructureFactory>()
-                    .ToMethod(ctx => new StructureFactory(Path.Combine(Config.csv_compiled_folder, "structure.csv")))
-                    .InSingletonScope();
-            Bind<EffectRequirementFactory>()
-                    .ToMethod(
-                              ctx =>
-                              new EffectRequirementFactory(Path.Combine(Config.csv_compiled_folder,
-                                                                        "effect_requirement.csv")))
-                    .InSingletonScope();
-            Bind<InitFactory>()
-                    .ToMethod(ctx => new InitFactory(Path.Combine(Config.csv_compiled_folder, "init.csv")))
-                    .InSingletonScope();
-            Bind<PropertyFactory>()
-                    .ToMethod(ctx => new PropertyFactory(Path.Combine(Config.csv_compiled_folder, "property.csv")))
-                    .InSingletonScope();
-            Bind<RequirementFactory>()
-                    .ToMethod(ctx => new RequirementFactory(Path.Combine(Config.csv_compiled_folder, "layout.csv")))
-                    .InSingletonScope();
-            Bind<TechnologyFactory>()
-                    .ToMethod(
-                              ctx =>
-                              new TechnologyFactory(Path.Combine(Config.csv_compiled_folder, "technology.csv"),
-                                                    Path.Combine(Config.csv_folder, "technology_effects.csv")))
-                    .InSingletonScope();
-            Bind<UnitFactory>()
-                    .ToMethod(ctx => new UnitFactory(Path.Combine(Config.csv_compiled_folder, "unit.csv")))
-                    .InSingletonScope();
-            Bind<ObjectTypeFactory>()
-                    .ToMethod(ctx => new ObjectTypeFactory(Path.Combine(Config.csv_compiled_folder, "object_type.csv")))
-                    .InSingletonScope();
-            Bind<UnitModFactory>()
-                    .ToMethod(ctx => new UnitModFactory(Path.Combine(Config.csv_compiled_folder, "unit_modifier.csv")))
-                    .InSingletonScope();
-            Bind<MapFactory>()
-                    .ToMethod(ctx => new MapFactory(Path.Combine(Config.maps_folder, "CityLocations.txt")))
+            Bind<FactoriesInitializer>().ToSelf().InSingletonScope();
+            Bind<ActionRequirementFactory>().ToSelf().InSingletonScope();
+            Bind<StructureFactory>().ToSelf().InSingletonScope();
+            Bind<EffectRequirementFactory>().ToSelf().InSingletonScope();
+            Bind<InitFactory>().ToSelf().InSingletonScope();
+            Bind<PropertyFactory>().ToSelf().InSingletonScope();
+            Bind<RequirementFactory>().ToSelf().InSingletonScope();
+            Bind<TechnologyFactory>().ToSelf().InSingletonScope();
+            Bind<UnitFactory>().ToSelf().InSingletonScope();
+            Bind<ObjectTypeFactory>().ToSelf().InSingletonScope();
+            Bind<UnitModFactory>().ToSelf().InSingletonScope();
+            Bind<MapFactory>().ToSelf().InSingletonScope();
+            Bind<NameGenerator>()
+                    .ToMethod(c => new NameGenerator(Path.Combine(Config.maps_folder, "strongholdnames.txt")))
+                    .WhenInjectedExactlyInto<StrongholdConfigurator>()
                     .InSingletonScope();
 
             #endregion
@@ -185,8 +158,7 @@ namespace Game
 
             Bind<CommandLineProcessor>().ToMethod(c =>
                 {
-                    return new CommandLineProcessor(c.Kernel.Get<ILoggerFactory>().GetLogger(typeof(CommandLineProcessor)),
-                                                    c.Kernel.Get<AssignmentCommandLineModule>(),
+                    return new CommandLineProcessor(c.Kernel.Get<AssignmentCommandLineModule>(),
                                                     c.Kernel.Get<PlayerCommandLineModule>(),
                                                     c.Kernel.Get<CityCommandLineModule>(),
                                                     c.Kernel.Get<ResourcesCommandLineModule>(),

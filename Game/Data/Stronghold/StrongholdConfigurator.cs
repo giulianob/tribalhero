@@ -4,11 +4,14 @@ using System.Linq;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
+using Ninject.Extensions.Logging;
 
 namespace Game.Data.Stronghold
 {
     class StrongholdConfigurator : IStrongholdConfigurator
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         private static readonly int[] LevelProbability = new[] {0, 8, 16, 23, 30, 37, 43, 49, 55, 60, 65, 70, 74, 78, 82, 85, 88, 91, 94, 97, 100};
 
         private const int MinDistanceAwayFromCities = 10;
@@ -23,8 +26,7 @@ namespace Game.Data.Stronghold
 
         private readonly MapFactory mapFactory;
 
-        private readonly NameGenerator nameGenerator =
-                new NameGenerator(Path.Combine(Config.maps_folder, "strongholdnames.txt"));
+        private readonly NameGenerator nameGenerator;
 
         private readonly List<Position> strongholds = new List<Position>();
 
@@ -32,8 +34,9 @@ namespace Game.Data.Stronghold
 
         private readonly IRegionManager regionManager;
 
-        public StrongholdConfigurator(MapFactory mapFactory, TileLocator tileLocator, IRegionManager regionManager)
+        public StrongholdConfigurator(NameGenerator nameGenerator, MapFactory mapFactory, TileLocator tileLocator, IRegionManager regionManager)
         {
+            this.nameGenerator = nameGenerator;
             this.mapFactory = mapFactory;
             this.tileLocator = tileLocator;
             this.regionManager = regionManager;
@@ -96,7 +99,9 @@ namespace Game.Data.Stronghold
                    TooCloseToStrongholds(x, y, MinDistanceAwayFromStrongholds) || regionManager.GetObjects(x, y).Count > 0);
 
             strongholds.Add(new Position(x, y));
-            Global.Logger.Info(string.Format("Added stronghold[{0},{1}] Number[{2}] ", x, y, strongholds.Count));
+            
+            logger.Info(string.Format("Added stronghold[{0},{1}] Number[{2}] ", x, y, strongholds.Count));
+            
             return true;
         }
 

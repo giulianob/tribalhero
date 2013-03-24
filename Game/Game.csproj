@@ -409,7 +409,7 @@
     <Compile Include="Setup\InitFactory.cs" />
     <Compile Include="Setup\StructureFactory.cs" />
     <Compile Include="Setup\Config.cs" />
-    <Compile Include="Setup\Factory.cs" />
+    <Compile Include="Setup\FactoriesInitializer.cs" />
     <Compile Include="Setup\PropertyFactory.cs" />
     <Compile Include="Setup\RequirementFactory.cs" />
     <Compile Include="Setup\TechnologyFactory.cs" />
@@ -430,6 +430,7 @@
     <Compile Include="Util\Locking\IMultiObjectLock.cs" />
     <Compile Include="Util\Locking\LockException.cs" />
     <Compile Include="Util\Locking\TransactionalMultiObjectLock.cs" />
+    <Compile Include="Util\LoggerFactory.cs" />
     <Compile Include="Util\MathParser.cs" />
     <Compile Include="Util\Locking\DefaultMultiObjectLock.cs" />
     <Compile Include="Util\NameGenerator.cs" />

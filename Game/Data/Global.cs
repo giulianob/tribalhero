@@ -25,8 +25,6 @@ namespace Game.Data
 
         #endregion
 
-        public static readonly ILog Logger = LogManager.GetLogger(typeof(Global));
-
         public static readonly Ai Ai = new Ai();
 
         public static readonly Channel Channel = new Channel();

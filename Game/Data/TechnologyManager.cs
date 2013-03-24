@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Game.Database;
+using Game.Util;
 using Game.Util.Locking;
 using Persistance;
 
@@ -64,7 +65,7 @@ namespace Game.Data
 
         public void Print()
         {
-            Global.Logger.Info("Printing TechnologyManager Location:" + OwnerLocation);
+            LoggerFactory.Current.GetCurrentClassLogger().Info("Printing TechnologyManager Location:" + OwnerLocation);
             foreach (var tech in technologies)
             {
                 tech.Print();

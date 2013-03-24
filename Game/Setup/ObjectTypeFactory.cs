@@ -15,12 +15,7 @@ namespace Game.Setup
     {
         private readonly Dictionary<string, List<uint>> dict = new Dictionary<string, List<uint>>();
 
-        [Obsolete("Testing only", true)]
-        public ObjectTypeFactory()
-        {
-        }
-
-        public ObjectTypeFactory(string filename)
+        public void Init(string filename)
         {
             using (
                     var reader =

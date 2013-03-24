@@ -1,6 +1,5 @@
 ﻿#region
 
-using FluentAssertions;
 using Game.Comm;
 using Game.Util;
 using Moq;
@@ -171,26 +170,12 @@ namespace Testing.Channel
         }
 
         [Fact]
-        public void TestSubscribingDuplicates()
-        {
-            channel.Subscribe(session1.Object, "Channel1");
-            channel.Invoking(c => c.Subscribe(session1.Object, "Channel1"))
-                   .ShouldThrow<DuplicateSubscriptionException>();
-        }
-
-        [Fact]
         public void TestSubscribingDuplicatesThenPosting()
         {
             channel.Subscribe(session1.Object, "Channel1");
 
-            try
-            {
-                channel.Subscribe(session1.Object, "Channel1");
-            }
-            catch(DuplicateSubscriptionException)
-            {
-            }
-
+            channel.Subscribe(session1.Object, "Channel1");
+            
             channel.Post("Channel1", msg1);
 
             session1.Verify(foo => foo.OnPost(msg1), Times.Once());

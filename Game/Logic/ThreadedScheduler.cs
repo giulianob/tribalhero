@@ -10,6 +10,7 @@ using Game.Data;
 using Game.Database;
 using Game.Setup;
 using Game.Util;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -17,6 +18,8 @@ namespace Game.Logic
 {
     public class ThreadedScheduler : IScheduler
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         private readonly ScheduleComparer comparer = new ScheduleComparer();
 
         private readonly Dictionary<int, ManualResetEvent> doneEvents = new Dictionary<int, ManualResetEvent>();
@@ -85,7 +88,7 @@ namespace Game.Logic
             lock (schedulesLock)
             {
                 Paused = true;
-                Global.Logger.Info("Scheduler paused");
+                logger.Info("Scheduler paused");
                 SetTimer(Timeout.Infinite);
                 events = new ManualResetEvent[doneEvents.Count];
                 doneEvents.Values.CopyTo(events, 0);
@@ -102,7 +105,7 @@ namespace Game.Logic
             lock (schedulesLock)
             {
                 Paused = false;
-                Global.Logger.Info("Scheduler resumed");
+                logger.Info("Scheduler resumed");
                 SetNextActionTime();
             }
         }
@@ -130,10 +133,10 @@ namespace Game.Logic
 
                 schedule.IsScheduled = true;
 
-                /*if (Global.Logger.IsDebugEnabled)
+                if (logger.IsTraceEnabled)
                 {
-                    Global.Logger.Debug(String.Format("Schedule added index[{0}] total[{1}].", index, schedules.Count));
-                }*/
+                    logger.Trace(String.Format("Schedule added index[{0}] total[{1}].", index, schedules.Count));
+                }
 
                 if (index == 0)
                 {
@@ -158,7 +161,7 @@ namespace Game.Logic
                     return true;
                 }
 
-                Global.Logger.Warn("Action was said to be scheduled but was not found in scheduler during a remove");
+                logger.Warn("Action was said to be scheduled but was not found in scheduler during a remove");
 
                 return false;
             }
@@ -168,14 +171,14 @@ namespace Game.Logic
         {
             if (ms == Timeout.Infinite)
             {
-                Global.Logger.Debug(String.Format("Timer sleeping"));
+                logger.Debug(String.Format("Timer sleeping"));
                 nextFire = DateTime.MinValue;
             }
             else
             {
-                /*if (Global.Logger.IsDebugEnabled && ms > 0)
+                /*if (logger.IsDebugEnabled && ms > 0)
                 {
-                    Global.Logger.Debug(String.Format("Next schedule in {0} milliseconds.", ms));
+                    logger.Debug(String.Format("Next schedule in {0} milliseconds.", ms));
                 }*/
 
                 nextFire = SystemClock.Now.AddMilliseconds(ms);
@@ -191,7 +194,7 @@ namespace Game.Logic
             {
                 if (schedules.Count == 0 || Paused)
                 {
-                    Global.Logger.Debug("In DispatchAction but no schedules");
+                    logger.Debug("In DispatchAction but no schedules");
                     return;
                 }
 
@@ -253,7 +256,7 @@ namespace Game.Logic
 
             if (schedules.Count == 0)
             {
-                Global.Logger.Debug("No actions available.");
+                logger.Debug("No actions available.");
                 SetTimer(Timeout.Infinite);
                 return;
             }

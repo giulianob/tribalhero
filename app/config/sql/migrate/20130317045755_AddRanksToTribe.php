@@ -4,7 +4,7 @@ class AddRanksToTribe extends Ruckusing_BaseMigration {
 
 	public function up() {
 		$json = <<<EOT
-[{"Id":0,"Name":"Chief","Permission":"All"},{"Id":1,"Name":"Elder","Permission":"AssignmentCreate, Repair, Kick, Invite"},{"Id":2,"Name":"Protector","Permission":"AssignmentCreate, Repair"},{"Id":3,"Name":"Aggressor","Permission":"AssignmentCreate"},{"Id":4,"Name":"Tribesman","Permission":"None"}]
+[{"Id":0,"Name":"Chief","Permission":1},{"Id":1,"Name":"Elder","Permission":86},{"Id":2,"Name":"Protector","Permission":80},{"Id":3,"Name":"Aggressor","Permission":64},{"Id":4,"Name":"Tribesman","Permission":0}]
 EOT;
 		$this->add_column("tribes", "ranks", "string", array('limit' => 4096, 'default' =>$json));
 		

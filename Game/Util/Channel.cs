@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -49,6 +50,14 @@ namespace Game.Util
 
         public void Post(string channelId, Packet message)
         {
+            Post(channelId, () => message);
+        }
+
+        public void Post(string channelId, Func<Packet> message)
+        {
+            var hasPacket = false;
+            Packet packet = null;
+
             channelLock.EnterReadLock();
             try
             {
@@ -59,7 +68,13 @@ namespace Game.Util
 
                 foreach (var sub in subscribersByChannel[channelId])
                 {
-                    sub.Session.OnPost(message);
+                    if (!hasPacket)
+                    {
+                        hasPacket = true;
+                        packet = message();
+                    }
+
+                    sub.Session.OnPost(packet);
                 }
             }
             finally

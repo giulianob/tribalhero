@@ -141,7 +141,7 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
-            if (!City.IsNameValid(cityName))
+            if (!CityManager.IsNameValid(cityName))
             {
                 return Error.CityNameInvalid;
             }
@@ -238,6 +238,7 @@ namespace Game.Logic.Actions
                 city.DefaultTroop.EndUpdate();
                 city.EndUpdate();
 
+                // TODO: Make it so city manager takes care of doing this when the city is added
                 // send new city channel notification
                 if (newCity.Owner.Session != null)
                 {

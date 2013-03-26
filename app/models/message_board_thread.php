@@ -113,7 +113,7 @@ class MessageBoardThread extends AppModel {
     }
 
     public function markDeleted($playerId, $threadId) {
-        $tribesman = $this->Player->Tribesman->findByPlayerId($playerId);
+        $tribesman = $this->Player->Tribesman->Tribe->findTribesman($playerId);
 
         if (empty($tribesman))
             return false;
@@ -127,7 +127,7 @@ class MessageBoardThread extends AppModel {
             return false;
 
         // Player should be either poster or high rank enough to delete this post
-        if ($thread['MessageBoardThread']['player_id'] !== $playerId && $tribesman['Tribesman']['rank'] > 1)
+        if ($thread['MessageBoardThread']['player_id'] !== $playerId && !$this->Player->Tribesman->Tribe->hasRight('post_delete', $tribesman))
             return false;
 
         $this->id = $threadId;

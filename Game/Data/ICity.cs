@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using Game.Battle;
 using Game.Data.Troop;
 using Game.Logic;
@@ -13,7 +14,8 @@ namespace Game.Data
                              IPersistableObject,
                              ICityRegionObject,
                              IStation,
-                             INotificationOwner
+                             INotificationOwner,
+                             INotifyPropertyChanged
     {
         /// <summary>
         ///     Enumerates only through structures in this city
@@ -143,6 +145,8 @@ namespace Game.Data
 
         List<IGameObject> GetInRange(uint x, uint y, uint inRadius);
 
+        bool IsUpdating { get; }
+
         void BeginUpdate();
 
         void EndUpdate();
@@ -151,10 +155,6 @@ namespace Game.Data
 
         void Unsubscribe(IChannel s);
         
-        void NewCityUpdate();
-
-        void ObjUpdateEvent(IGameObject sender, uint origX, uint origY);
-
         ITroopStub CreateTroopStub();
 
         IStructure CreateStructure(ushort type, byte level);

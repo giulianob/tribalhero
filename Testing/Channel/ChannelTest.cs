@@ -250,5 +250,23 @@ namespace Testing.Channel
             session1.Verify(foo => foo.OnPost(msg1), Times.Once());
             session2.Verify(foo => foo.OnPost(msg1), Times.Once());
         }
+
+        [Fact]
+        public void PostWithExpression_ShouldLoadExpressionOnlyOnce()
+        {
+            channel.Subscribe(session1.Object, "Channel2");
+            channel.Subscribe(session2.Object, "Channel2");
+
+            int called = 0;
+            channel.Post("Channel2", () =>
+                {
+                    called++;
+                    return msg1;
+                });
+
+            called.Should().Be(1);
+            session1.Verify(foo => foo.OnPost(msg1), Times.Once());
+            session2.Verify(foo => foo.OnPost(msg1), Times.Once());
+        }
     }
 }

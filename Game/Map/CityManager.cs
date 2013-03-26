@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Text.RegularExpressions;
 using Game.Data;
 using Game.Database;
 using Game.Logic.Procedures;
@@ -101,6 +102,8 @@ namespace Game.Map
                 {
                     region.Add(city);
                 }
+
+
             }
 
             CityAdded(city, new EventArgs());
@@ -140,5 +143,10 @@ namespace Game.Map
             }
         }
 
+        public static bool IsNameValid(string cityName)
+        {
+            return cityName != String.Empty && cityName.Length >= 3 && cityName.Length <= 16 &&
+                   Regex.IsMatch(cityName, "^([a-z][a-z0-9\\s].*)$", RegexOptions.IgnoreCase);
+        }
     }
 }

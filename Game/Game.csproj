@@ -170,6 +170,7 @@
     <Compile Include="Battle\BattleViewer.cs" />
     <Compile Include="Battle\CombatList.cs" />
     <Compile Include="Comm\ApiCaller.cs" />
+    <Compile Include="Comm\Channel\CityChannel.cs" />
     <Compile Include="Comm\CmdLine Commands\AssignmentCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\CityCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\RegionCommandsLineModule.cs" />

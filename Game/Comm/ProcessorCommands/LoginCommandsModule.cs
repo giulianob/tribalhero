@@ -301,7 +301,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 // Verify city name is valid
-                if (!City.IsNameValid(cityName))
+                if (!CityManager.IsNameValid(cityName))
                 {
                     ReplyError(session, packet, Error.CityNameInvalid);
                     return;

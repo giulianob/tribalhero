@@ -85,10 +85,7 @@ namespace Game.Data
                                 troopStubFactory,
                                 kernel.Get<IDbManager>(),
                                 kernel.Get<ICityRegionManager>(),
-                                kernel.Get<IRegionManager>(),
-                                kernel.Get<IGameObjectFactory>(),
-                                kernel.Get<Procedure>(),
-                                kernel.Get<Formula>());
+                                kernel.Get<IGameObjectFactory>());
 
             // TODO: We should figure a cleaner way so we dont need to have this circular dependency
             troops.BaseStation = city;

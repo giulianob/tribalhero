@@ -1,5 +1,6 @@
 using System;
 using Game.Data;
+using Game.Data.Events;
 using Game.Logic.Procedures;
 
 namespace Game.Map
@@ -22,6 +23,8 @@ namespace Game.Map
 
         bool FindCityId(string name, out uint cityId);
 
-        event EventHandler<EventArgs> CityAdded;
+        event EventHandler<NewCityEventArgs> CityAdded;
+
+        event EventHandler<EventArgs> CityRemoved;
     }
 }

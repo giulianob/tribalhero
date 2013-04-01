@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Data.Events;
 using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
@@ -63,8 +64,13 @@ namespace Game.Data.Stronghold
             simpleStubGenerator = simpleStubGeneratorFactory.CreateSimpleStubGenerator(formula.StrongholdUnitRatio(), formula.StrongholdUnitType());
         }
 
-        void CityManagerCityAdded(object sender, EventArgs e)
+        void CityManagerCityAdded(object sender, NewCityEventArgs e)
         {
+            if (!e.IsNew)
+            {
+                return;
+            }
+
             ICity city = sender as ICity;
             foreach (var stronghold in strongholds.Where(x => x.Value.StrongholdState == StrongholdState.Inactive && x.Value.TileDistance(city.X, city.Y) < Config.stronghold_radius_base + Config.stronghold_radius_per_level * x.Value.Lvl))
             {

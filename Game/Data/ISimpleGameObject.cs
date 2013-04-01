@@ -1,7 +1,12 @@
+using System;
+using Game.Data.Events;
+
 namespace Game.Data
 {
     public interface ISimpleGameObject : IXYPosition
     {
+        event EventHandler<SimpleGameObjectArgs> ObjectUpdated;
+
         bool InWorld { get; set; }
 
         GameObjectState State { get; set; }
@@ -17,8 +22,6 @@ namespace Game.Data
         uint RelY { get; }
 
         void BeginUpdate();
-
-        void CheckUpdateMode();
 
         void EndUpdate();
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Game.Data;
-using Game.Data.Troop;
+using Game.Data.Events;
 using Game.Logic;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -9,10 +9,8 @@ using Game.Map;
 
 namespace Game.Comm.Channel
 {
-    public class CityChannel
+    public class CityChannel : ICityChannel
     {
-        private readonly ICity city;
-
         private readonly Util.Channel channel;
 
         private readonly Procedure procedure;
@@ -21,85 +19,134 @@ namespace Game.Comm.Channel
 
         private readonly IRegionManager regionManager;
 
-        private readonly string channelName;
-
-        public CityChannel(ICity city, Util.Channel channel, Procedure procedure, Formula formula, IRegionManager regionManager)
+        public CityChannel(Util.Channel channel, Procedure procedure, Formula formula, IRegionManager regionManager)
         {
-            this.city = city;
             this.channel = channel;
             this.procedure = procedure;
             this.formula = formula;
             this.regionManager = regionManager;
-
-            channelName = "/CITY/" + city.Id;
         }
 
-        public void Subscribe()
+        public void Register(ICityManager cityManager)
         {
-            city.Troops.TroopUnitUpdated += TroopManagerTroopUnitUpdated;
-            city.Troops.TroopUpdated += TroopManagerTroopUpdated;
-            city.Troops.TroopRemoved += TroopManagerTroopRemoved;
-            city.Troops.TroopAdded += TroopManagerTroopAdded;
-            
-            city.Template.UnitUpdated += UnitTemplateUnitUpdated;
-
-            city.Worker.ActionRemoved += WorkerActionRemoved;
-            city.Worker.ActionStarted += WorkerActionAdded;
-            city.Worker.ActionRescheduled += WorkerActionRescheduled;
-
-            city.Resource.ResourcesUpdate += ResourceUpdateEvent;          
-  
-            city.PropertyChanged += CityOnPropertyChanged;
+            cityManager.CityAdded += CityAdded;
+            cityManager.CityRemoved += CityRemoved;
         }
 
-        private void CityOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        private void CityAdded(object sender, EventArgs args)
+        {
+            Subscribe((City)sender);
+        }
+
+        private void CityRemoved(object sender, EventArgs args)
+        {
+            Unsubscribe((City)sender);
+        }
+
+        private void Subscribe(ICity city)
+        {
+            city.TroopUnitUpdated += TroopManagerTroopUnitUpdated;
+            city.TroopUpdated += TroopManagerTroopUpdated;
+            city.TroopRemoved += TroopManagerTroopRemoved;
+            city.TroopAdded += TroopManagerTroopAdded;
+            
+            city.ActionRemoved += WorkerActionRemoved;
+            city.ActionStarted += WorkerActionAdded;
+            city.ActionRescheduled += WorkerActionRescheduled;
+
+            city.ResourcesUpdated += ResourceUpdateEvent;     
+                   
+            city.UnitTemplateUpdated += UnitTemplateUnitUpdated;      
+            
+            city.PropertyChanged += CityOnPropertyChanged;
+
+            city.TechnologyCleared += TechnologiesTechnologyCleared;
+            city.TechnologyAdded += TechnologiesTechnologyAdded;
+            city.TechnologyRemoved += TechnologiesTechnologyRemoved;
+            city.TechnologyUpgraded += TechnologiesTechnologyUpgraded;
+
+            city.ObjectAdded += ObjectAdded;
+            city.ObjectRemoved += ObjectRemoved;
+            city.ObjectUpdated += ObjectUpdated;
+
+            city.ReferenceAdded += ReferenceAdded;
+            city.ReferenceRemoved += ReferenceRemoved;
+
+            NewCityUpdate(city);
+        }
+
+        private void Unsubscribe(ICity city)
+        {
+            city.TroopUnitUpdated -= TroopManagerTroopUnitUpdated;
+            city.TroopUpdated -= TroopManagerTroopUpdated;
+            city.TroopRemoved -= TroopManagerTroopRemoved;
+            city.TroopAdded -= TroopManagerTroopAdded;
+            
+            city.ActionRemoved -= WorkerActionRemoved;
+            city.ActionStarted -= WorkerActionAdded;
+            city.ActionRescheduled -= WorkerActionRescheduled;
+
+            city.ResourcesUpdated -= ResourceUpdateEvent;       
+                 
+            city.UnitTemplateUpdated -= UnitTemplateUnitUpdated;      
+            
+            city.PropertyChanged -= CityOnPropertyChanged;
+
+            city.TechnologyCleared -= TechnologiesTechnologyCleared;
+            city.TechnologyAdded -= TechnologiesTechnologyAdded;
+            city.TechnologyRemoved -= TechnologiesTechnologyRemoved;
+            city.TechnologyUpgraded -= TechnologiesTechnologyUpgraded;
+
+            city.ObjectAdded -= ObjectAdded;
+            city.ObjectRemoved -= ObjectRemoved;
+            city.ObjectUpdated -= ObjectUpdated;
+
+            city.ReferenceAdded -= ReferenceAdded;
+            city.ReferenceRemoved -= ReferenceRemoved;
+
+            if (city.Owner.Session != null)
+            {
+                channel.Unsubscribe(city.Owner.Session, GetChannelName(city));
+            }
+        }
+
+        private string GetChannelName(ICity city)
+        {
+            return "/PLAYER/" + city.Owner.PlayerId;
+        }
+
+        private void CityOnPropertyChanged(ICity city, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             switch(propertyChangedEventArgs.PropertyName)
             {
                 case "Radius":
-                    RadiusUpdateEvent();
+                    RadiusUpdateEvent(city);
                     break;
                 case "Battle":
                     if (city.Battle == null)
                     {
-                        BattleEnded();
+                        BattleEnded(city);
                     }
                     else
                     {
-                        BattleStarted();
+                        BattleStarted(city);
                     }
                     break;
                 case "HideNewUnits":
-                    HideNewUnitsUpdate();
+                    HideNewUnitsUpdate(city);
                     break;
                 case "AttackPoint":
                 case "DefensePoint":
                 case "AlignmentPoint":
                 case "Value":
-                    PointUpdate();
+                    PointUpdate(city);
                     break;
             }
         }
 
-        public void Unsubscribe()
+        private void TroopManagerTroopRemoved(ICity city, TroopStubEventArgs args)
         {
-            city.Troops.TroopUnitUpdated -= TroopManagerTroopUnitUpdated;
-            city.Troops.TroopUpdated -= TroopManagerTroopUpdated;
-            city.Troops.TroopRemoved -= TroopManagerTroopRemoved;
-            city.Troops.TroopAdded -= TroopManagerTroopAdded;
-            
-            city.Template.UnitUpdated -= UnitTemplateUnitUpdated;
-
-            city.Worker.ActionRemoved -= WorkerActionRemoved;
-            city.Worker.ActionStarted -= WorkerActionAdded;
-            city.Worker.ActionRescheduled -= WorkerActionRescheduled;
-
-            city.Resource.ResourcesUpdate -= ResourceUpdateEvent;                        
-        }
-
-        private void TroopManagerTroopRemoved(ITroopStub stub)
-        {
-            if (!ShouldUpdate())
+            if (!ShouldUpdate(city))
             {
                 return;
             }
@@ -115,24 +162,60 @@ namespace Game.Comm.Channel
                 city.EndUpdate();
             }
 
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
             {
                 var packet = new Packet(Command.TroopRemoved);
                 packet.AddUInt32(city.Id);
-                packet.AddUInt32(stub.City.Id);
-                packet.AddByte(stub.TroopId);
+                packet.AddUInt32(args.Stub.City.Id);
+                packet.AddByte(args.Stub.TroopId);
                 return packet;
             });
         }
 
-        private void ResourceUpdateEvent()
+        private void ReferenceAdded(ICity city, ActionReferenceArgs args)
         {
-            if (!ShouldUpdate())
+            if (!ShouldUpdate(city))
             {
                 return;
             }
 
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
+                {
+                    var packet = new Packet(Command.ReferenceAdd);
+                    packet.AddUInt32(city.Id);
+                    packet.AddUInt16(args.ReferenceStub.ReferenceId);
+                    packet.AddUInt32(args.ReferenceStub.WorkerObject.WorkerId);
+                    packet.AddUInt32(args.ReferenceStub.Action.ActionId);
+                    return packet;
+                });
+        }
+
+        private void ReferenceRemoved(ICity city, ActionReferenceArgs args)
+        {
+            if (!ShouldUpdate(city))
+            {
+                return;
+            }
+
+            channel.Post(GetChannelName(city),
+                         () => 
+                             {
+                                 var packet = new Packet(Command.ReferenceRemove);
+                                 packet.AddUInt32(city.Id);
+                                 packet.AddUInt16(args.ReferenceStub.ReferenceId);
+
+                                 return packet;
+                             });
+        }
+
+        private void ResourceUpdateEvent(ICity city, EventArgs args)
+        {
+            if (!ShouldUpdate(city))
+            {
+                return;
+            }
+
+            channel.Post(GetChannelName(city), () =>
             {
                 var packet = new Packet(Command.CityResourcesUpdate);
                 packet.AddUInt32(city.Id);
@@ -141,16 +224,16 @@ namespace Game.Comm.Channel
             });
         }
 
-        private void RadiusUpdateEvent()
+        private void RadiusUpdateEvent(ICity city)
         {
-            if (!ShouldUpdate())
+            if (!ShouldUpdate(city))
             {
                 return;
             }
 
             regionManager.ObjectUpdateEvent(city.MainBuilding, city.X, city.Y);
 
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.CityRadiusUpdate);
                     packet.AddUInt32(city.Id);
@@ -159,14 +242,14 @@ namespace Game.Comm.Channel
                 });
         }
 
-        private void PointUpdate()
+        private void PointUpdate(ICity city)
         {
-            if (!ShouldUpdate())
+            if (!ShouldUpdate(city))
             {
                 return;
             }
 
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.CityPointUpdate);
                     packet.AddUInt32(city.Id);
@@ -178,14 +261,14 @@ namespace Game.Comm.Channel
                 });
         }
 
-        private void HideNewUnitsUpdate()
+        private void HideNewUnitsUpdate(ICity city)
         {
-            if (!Global.FireEvents || city.Deleted != City.DeletedState.NotDeleted)
+            if (!ShouldUpdate(city))
             {
                 return;
             }
 
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.CityHideNewUnitsUpdate);
                     packet.AddUInt32(city.Id);
@@ -194,112 +277,79 @@ namespace Game.Comm.Channel
                 });
         }
 
-        private void NewCityUpdate()
+        private void ObjectAdded(ICity city, GameObjectArgs args)
         {
-            if (!ShouldUpdate())
+            if (!ShouldUpdate(city))
             {
                 return;
             }
 
-            channel.Post("/PLAYER/" + city.Owner.PlayerId, () =>
-                {
-                    var packet = new Packet(Command.CityNewUpdate);
-                    PacketHelper.AddToPacket(city, packet);
-                    return packet;
-                });
-        }
+            RecalculateValue(city, args.Object);
 
-        private void ObjAddEvent(IGameObject obj)
-        {
-            if (!ShouldUpdate())
-            {
-                return;
-            }
-
-            RecalculateValue(obj);
-
-            var structure = obj as IStructure;
-            if (structure != null)
-            {
-                structure.Technologies.TechnologyCleared += TechnologiesTechnologyCleared;
-                structure.Technologies.TechnologyAdded += TechnologiesTechnologyAdded;
-                structure.Technologies.TechnologyRemoved += TechnologiesTechnologyRemoved;
-                structure.Technologies.TechnologyUpgraded += TechnologiesTechnologyUpgraded;
-            }
-
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.CityObjectAdd);
-                    packet.AddUInt16(Region.GetRegionIndex(obj));
-                    PacketHelper.AddToPacket(obj, packet);
+                    packet.AddUInt16(Region.GetRegionIndex(args.Object));
+                    PacketHelper.AddToPacket(args.Object, packet);
                     return packet;
                 });
         }
 
-        private void ObjRemoveEvent(IGameObject obj)
+        private void ObjectRemoved(ICity city, GameObjectArgs args)
         {
-            if (!ShouldUpdate())
+            if (!ShouldUpdate(city))
             {
                 return;
             }
 
-            RecalculateValue(obj);
+            RecalculateValue(city, args.Object);
 
-            var structure = obj as IStructure;
-            if (structure != null)
-            {
-                structure.Technologies.TechnologyCleared -= TechnologiesTechnologyCleared;
-                structure.Technologies.TechnologyAdded -= TechnologiesTechnologyAdded;
-                structure.Technologies.TechnologyRemoved -= TechnologiesTechnologyRemoved;
-                structure.Technologies.TechnologyUpgraded -= TechnologiesTechnologyUpgraded;
-            }
-
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.CityObjectRemove);
                     packet.AddUInt32(city.Id);
-                    packet.AddUInt32(obj.ObjectId);
+                    packet.AddUInt32(args.Object.ObjectId);
                     return packet;
                 });
         }
 
-        private void ObjUpdateEvent(IGameObject sender, uint origX, uint origY)
+        private void ObjectUpdated(ICity city, GameObjectArgs args)
         {
-            if (!Global.FireEvents || city.Deleted != City.DeletedState.NotDeleted)
+            if (!ShouldUpdate(city))
             {
                 return;
             }
 
-            RecalculateValue(sender);
+            RecalculateValue(city, args.Object);
             
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.CityObjectUpdate);
-                    packet.AddUInt16(Region.GetRegionIndex(sender));
-                    PacketHelper.AddToPacket(sender, packet);
+                    packet.AddUInt16(Region.GetRegionIndex(args.Object));
+                    PacketHelper.AddToPacket(args.Object, packet);
                     return packet;
                 });
         }
 
-        private void UnitTemplateUnitUpdated(UnitTemplate sender)
+        private void UnitTemplateUnitUpdated(ICity city, EventArgs args)
         {
-            if (!ShouldUpdate())
+            if (!ShouldUpdate(city))
             {
                 return;
             }
 
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.UnitTemplateUpgraded);
                     packet.AddUInt32(city.Id);
-                    PacketHelper.AddToPacket(sender, packet);
+                    PacketHelper.AddToPacket(city.Template, packet);
                     return packet;
                 });
         }
 
-        private void BattleStarted()
+        private void BattleStarted(ICity city)
         {
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.CityBattleStarted);
                     packet.AddUInt32(city.Id);
@@ -307,9 +357,9 @@ namespace Game.Comm.Channel
                 });
         }
 
-        private void BattleEnded()
+        private void BattleEnded(ICity city)
         {
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.CityBattleEnded);
                     packet.AddUInt32(city.Id);
@@ -317,190 +367,208 @@ namespace Game.Comm.Channel
                 });
         }
 
-        private void WorkerActionRescheduled(GameAction stub, ActionState state)
+        private void WorkerActionRescheduled(ICity city, ActionWorkerEventArgs args)
         {
-            if (!ShouldUpdate())
+            if (!ShouldUpdate(city))
             {
                 return;
             }
 
-            if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
+            var passiveAction = args.Stub as PassiveAction;
+            if (passiveAction != null && !passiveAction.IsVisible)
             {
                 return;
             }
 
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.ActionRescheduled);
                     packet.AddUInt32(city.Id);
-                    PacketHelper.AddToPacket(stub, packet, true);
+                    PacketHelper.AddToPacket(args.Stub, packet, true);
                     return packet;
                 });
         }
 
-        private void WorkerActionAdded(GameAction stub, ActionState state)
+        private void WorkerActionAdded(ICity city, ActionWorkerEventArgs args)
         {
-            if (!ShouldUpdate())
+            if (!ShouldUpdate(city))
             {
                 return;
             }
 
-            if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
+            var passiveAction = args.Stub as PassiveAction;
+            if (passiveAction != null && !passiveAction.IsVisible)
             {
                 return;
             }
 
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.ActionStarted);
                     packet.AddUInt32(city.Id);
-                    PacketHelper.AddToPacket(stub, packet, true);
+                    PacketHelper.AddToPacket(args.Stub, packet, true);
                     return packet;
                 });
         }
 
-        private void WorkerActionRemoved(GameAction stub, ActionState state)
+        private void WorkerActionRemoved(ICity city, ActionWorkerEventArgs args)
         {
-            if (!ShouldUpdate())
+            if (!ShouldUpdate(city))
             {
                 return;
             }
 
-            if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
+            var passiveAction = args.Stub as PassiveAction;
+            if (passiveAction != null && !passiveAction.IsVisible)
             {
                 return;
             }
 
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.ActionCompleted);
-                    packet.AddInt32((int)state);
+                    packet.AddInt32((int)args.State);
                     packet.AddUInt32(city.Id);
-                    PacketHelper.AddToPacket(stub, packet, true);
+                    PacketHelper.AddToPacket(args.Stub, packet, true);
                     return packet;
                 });
         }
 
-        private void TechnologiesTechnologyUpgraded(Technology tech)
+        private void TechnologiesTechnologyUpgraded(ICity city, TechnologyEventArgs args)
         {
-            if (!ShouldUpdate())
+            if (!ShouldUpdate(city))
             {
                 return;
             }
 
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.TechUpgraded);
                     packet.AddUInt32(city.Id);
-                    packet.AddUInt32(tech.OwnerLocation == EffectLocation.City ? 0 : tech.OwnerId);
-                    packet.AddUInt32(tech.Type);
-                    packet.AddByte(tech.Level);
+                    packet.AddUInt32(args.Technology.OwnerLocation == EffectLocation.City ? 0 : args.Technology.OwnerId);
+                    packet.AddUInt32(args.Technology.Type);
+                    packet.AddByte(args.Technology.Level);
                     return packet;
                 });
         }
 
-        private void TechnologiesTechnologyRemoved(Technology tech)
+        private void TechnologiesTechnologyRemoved(ICity city, TechnologyEventArgs args)
         {
-            if (!ShouldUpdate())
+            if (!ShouldUpdate(city))
             {
                 return;
             }
 
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.TechRemoved);
                     packet.AddUInt32(city.Id);
-                    packet.AddUInt32(tech.OwnerLocation == EffectLocation.City ? 0 : tech.OwnerId);
-                    packet.AddUInt32(tech.Type);
-                    packet.AddByte(tech.Level);
+                    packet.AddUInt32(args.Technology.OwnerLocation == EffectLocation.City ? 0 : args.Technology.OwnerId);
+                    packet.AddUInt32(args.Technology.Type);
+                    packet.AddByte(args.Technology.Level);
                     return packet;
                 });
         }
 
-        private void TechnologiesTechnologyCleared(ITechnologyManager manager)
+        private void TechnologiesTechnologyCleared(ICity city, TechnologyEventArgs args)
         {
-            if (!ShouldUpdate())
+            if (!ShouldUpdate(city))
             {
                 return;
             }
 
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.TechCleared);
                     packet.AddUInt32(city.Id);
-                    packet.AddUInt32(manager.OwnerLocation == EffectLocation.City ? 0 : manager.OwnerId);
+                    packet.AddUInt32(args.TechnologyManager.OwnerLocation == EffectLocation.City ? 0 : args.TechnologyManager.OwnerId);
                     return packet;
                 });
         }
 
-        private void TechnologiesTechnologyAdded(Technology tech)
+        private void TechnologiesTechnologyAdded(ICity city, TechnologyEventArgs args)
         {
-            if (!ShouldUpdate())
+            if (!ShouldUpdate(city))
             {
                 return;
             }
 
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.TechAdded);
                     packet.AddUInt32(city.Id);
-                    packet.AddUInt32(tech.OwnerLocation == EffectLocation.City ? 0 : tech.OwnerId);
-                    packet.AddUInt32(tech.Type);
-                    packet.AddByte(tech.Level);
+                    packet.AddUInt32(args.Technology.OwnerLocation == EffectLocation.City ? 0 : args.Technology.OwnerId);
+                    packet.AddUInt32(args.Technology.Type);
+                    packet.AddByte(args.Technology.Level);
                     return packet;
                 });
         }
         
-        private void TroopManagerTroopUpdated(ITroopStub stub)
+        private void TroopManagerTroopUpdated(ICity city, TroopStubEventArgs args)
         {
-            if (!ShouldUpdate())
+            if (!ShouldUpdate(city))
             {
                 return;
             }
 
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.TroopUpdated);
                     packet.AddUInt32(city.Id);
-                    PacketHelper.AddToPacket(stub, packet);
+                    PacketHelper.AddToPacket(args.Stub, packet);
                     return packet;
                 });
         }
 
-        private void TroopManagerTroopUnitUpdated(ITroopStub stub)
+        private void TroopManagerTroopUnitUpdated(ICity city, TroopStubEventArgs args)
         {
-            if (!ShouldUpdate())
+            if (!ShouldUpdate(city))
             {
                 return;
             }
 
-            RecalculateUpkeep();
+            RecalculateUpkeep(city);
         }
 
-        private void TroopManagerTroopAdded(ITroopStub stub)
+        private void TroopManagerTroopAdded(ICity city, TroopStubEventArgs args)
         {
-            if (!ShouldUpdate())
+            if (!ShouldUpdate(city))
             {
                 return;
             }
 
-            RecalculateUpkeep();
+            RecalculateUpkeep(city);
 
-            channel.Post(channelName, () =>
+            channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.TroopAdded);
                     packet.AddUInt32(city.Id);
-                    PacketHelper.AddToPacket(stub, packet);
+                    PacketHelper.AddToPacket(args.Stub, packet);
                     return packet;
                 });
         }
 
-        private bool ShouldUpdate()
+        private bool ShouldUpdate(ICity city)
         {
-            return Global.FireEvents && city.Deleted == City.DeletedState.NotDeleted;
+            return Global.Current.FireEvents && city.Deleted == City.DeletedState.NotDeleted;
         }
 
-        private void RecalculateValue(IGameObject gameObject)
+        private void NewCityUpdate(ICity city)
+        {
+            if (city.Owner.Session == null)
+            {
+                return;
+            }
+
+            channel.Post(GetChannelName(city), () =>
+                {
+                    var packet = new Packet(Command.CityNewUpdate);
+                    PacketHelper.AddToPacket(city, packet);
+                    return packet;
+                });
+        }
+
+        private void RecalculateValue(ICity city, IGameObject gameObject)
         {
             if (!(gameObject is IStructure))
             {
@@ -521,7 +589,7 @@ namespace Game.Comm.Channel
             }
         }
 
-        private void RecalculateUpkeep()
+        private void RecalculateUpkeep(ICity city)
         {
             bool doUpdate = city.IsUpdating;
             if (!doUpdate)

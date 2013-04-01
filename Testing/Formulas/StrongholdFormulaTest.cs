@@ -128,8 +128,8 @@ namespace Testing.Formulas
         [Theory, PropertyData("VictoryPointItems")]
         public void TestVictoryPoint(byte level, decimal occupiedDays, decimal bonusDays, decimal serverDays, decimal expectedValue)
         {
-            Global.SystemVariables.Clear();
-            Global.SystemVariables.Add("Server.date", new SystemVariable("Server.date", SystemClock.Now.Subtract(TimeSpan.FromDays((double)serverDays))));
+            Global.Current.SystemVariables.Clear();
+            Global.Current.SystemVariables.Add("Server.date", new SystemVariable("Server.date", SystemClock.Now.Subtract(TimeSpan.FromDays((double)serverDays))));
             var formula = new Fixture().Create<Formula>();
 
             var stronghold = Substitute.For<IStronghold>();

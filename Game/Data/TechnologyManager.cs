@@ -312,7 +312,7 @@ namespace Game.Data
 
         private void CheckUpdateMode()
         {
-            if (!Global.FireEvents)
+            if (!Global.Current.FireEvents)
             {
                 return;
             }

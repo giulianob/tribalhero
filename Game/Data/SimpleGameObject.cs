@@ -1,8 +1,10 @@
 #region
 
 using System;
+using Game.Data.Events;
 using Game.Map;
 using Game.Setup;
+using Game.Util;
 
 #endregion
 
@@ -10,6 +12,8 @@ namespace Game.Data
 {
     public abstract class SimpleGameObject : ISimpleGameObject
     {
+        public event EventHandler<SimpleGameObjectArgs> ObjectUpdated;
+
         public enum SystemGroupIds : uint
         {
             NewCityStartTile = 10000001,
@@ -173,44 +177,57 @@ namespace Game.Data
 
         #region Update Events
 
-        protected uint origX;
+        private uint origX;
 
-        protected uint origY;
+        private uint origY;
 
-        protected bool updating;
+        protected bool Updating;
 
         public virtual void BeginUpdate()
         {
-            if (updating)
+            if (Updating)
             {
                 throw new Exception("Nesting beginupdate");
             }
 
-            updating = true;
+            Updating = true;
 
             SaveOrigPos();
         }
 
-        public abstract void CheckUpdateMode();
+        protected abstract void CheckUpdateMode();
 
-        public abstract void EndUpdate();
-
-        protected virtual void Update()
+        public void EndUpdate()
         {
-            if (!Global.FireEvents)
+            if (!Updating)
             {
-                return;
+                throw new Exception("Called endupdate without first calling begin update");
             }
 
-            if (updating)
+            Updating = false;
+            Update();
+        }
+
+        protected virtual bool Update()
+        {
+            if (!Global.Current.FireEvents)
             {
-                return;
+                return false;
             }
 
+            if (Updating)
+            {
+                return false;
+            }
+
+            ObjectUpdated.Raise(this, new SimpleGameObjectArgs(this) {OriginalX = origX, OriginalY = origY});
+            
             if (InWorld)
             {
                 regionManager.ObjectUpdateEvent(this, origX, origY);
             }
+
+            return true;
         }
 
         #endregion

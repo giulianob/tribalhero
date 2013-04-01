@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
 using System.Text.RegularExpressions;
 using Game.Data;
+using Game.Data.Events;
 using Game.Database;
 using Game.Logic.Procedures;
 using Game.Setup;
@@ -22,7 +24,8 @@ namespace Game.Map
 
         private readonly IRegionManager regionManager;
 
-        public event EventHandler<EventArgs> CityAdded = (sender, args) => { };
+        public event EventHandler<NewCityEventArgs> CityAdded = (sender, args) => { };
+        public event EventHandler<EventArgs> CityRemoved = (sender, args) => { };
 
         public CityManager(IDbManager dbManager, IRegionManager regionManager)
         {
@@ -76,7 +79,11 @@ namespace Game.Map
                 city.EndUpdate();
 
                 cities.Remove(city.Id);
+
+                DeregisterEvents(city);
             }
+
+            CityRemoved(city, new EventArgs());
         }
 
         public uint GetNextCityId()
@@ -103,10 +110,10 @@ namespace Game.Map
                     region.Add(city);
                 }
 
-
+                RegisterEvents(city);
             }
 
-            CityAdded(city, new EventArgs());
+            CityAdded(city, new NewCityEventArgs(true));
         }
 
         public void DbLoaderAdd(ICity city)
@@ -118,6 +125,32 @@ namespace Game.Map
                 if (city.Deleted != City.DeletedState.Deleted)
                 {
                     cities.Add(city.Id, city);
+                    RegisterEvents(city);
+                }
+            }
+
+            CityAdded(city, new NewCityEventArgs(false));
+        }
+
+        private void RegisterEvents(ICity city)
+        {
+            city.PropertyChanged += CityPropertyChanged;
+        }
+
+        private void DeregisterEvents(ICity city)
+        {
+            city.PropertyChanged -= CityPropertyChanged;
+        }
+
+        private void CityPropertyChanged(ICity city, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Value" && Global.Current.FireEvents)
+            {
+                var cityRegion = regionManager.CityRegions.GetCityRegion(city.X, city.Y);
+
+                if (cityRegion != null)
+                {
+                    cityRegion.MarkAsDirty();
                 }
             }
         }
@@ -125,13 +158,9 @@ namespace Game.Map
         public bool FindCityId(string name, out uint cityId)
         {
             cityId = UInt16.MaxValue;
-            using (
-                    DbDataReader reader =
-                            DbPersistance.Current.ReaderQuery(
-                                                              String.Format(
-                                                                            "SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1",
-                                                                            City.DB_TABLE),
-                                                              new[] {new DbColumn("name", name, DbType.String)}))
+
+            var query = String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE);
+            using (DbDataReader reader = dbManager.ReaderQuery(query, new[] {new DbColumn("name", name, DbType.String)}))
             {
                 if (!reader.HasRows)
                 {

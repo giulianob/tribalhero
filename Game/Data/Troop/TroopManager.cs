@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using Persistance;
@@ -258,16 +259,16 @@ namespace Game.Data.Troop
 
         private void CheckUpdateMode()
         {
+            if (!Global.Current.FireEvents)
+            {
+                return;
+            }
+
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(BaseStation);
         }
 
         private void FireUpdated(TroopStub stub)
         {
-            if (!Global.FireEvents)
-            {
-                return;
-            }
-
             CheckUpdateMode();
 
             if (TroopUpdated != null)
@@ -278,11 +279,6 @@ namespace Game.Data.Troop
 
         private void FireUnitUpdated(TroopStub stub)
         {
-            if (!Global.FireEvents)
-            {
-                return;
-            }
-
             CheckUpdateMode();
 
             TroopUnitUpdated(stub);
@@ -290,11 +286,6 @@ namespace Game.Data.Troop
 
         private void FireAdded(ITroopStub stub)
         {
-            if (!Global.FireEvents)
-            {
-                return;
-            }
-
             CheckUpdateMode();
 
             TroopAdded(stub);            
@@ -302,11 +293,6 @@ namespace Game.Data.Troop
 
         private void FireRemoved(ITroopStub stub)
         {
-            if (!Global.FireEvents)
-            {
-                return;
-            }
-
             CheckUpdateMode();
             
             TroopRemoved(stub);            

@@ -496,7 +496,7 @@ namespace Game.Comm.ProcessorCommands
                 world.Regions.UnsubscribeRegion(session, regionId);
             }
 
-            if (Global.Channel.SubscriptionCount(session) > 30)
+            if (Global.Current.Channel.SubscriptionCount(session) > 30)
             {
                 session.CloseSession();
             }

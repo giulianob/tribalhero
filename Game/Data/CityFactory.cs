@@ -1,5 +1,6 @@
 ﻿using Game.Data.Troop;
 using Game.Logic;
+using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Notifications;
 using Game.Logic.Procedures;
@@ -63,7 +64,7 @@ namespace Game.Data
         public ICity CreateCity(uint id, IPlayer owner, string name, LazyResource resource, byte radius, decimal ap)
         {
             var worker = actionWorkerFactory.CreateActionWorker(() => owner, new SimpleLocation(LocationType.City, id));
-            var notifications = notificationManagerFactory.CreateCityNotificationManager(worker, id);
+            var notifications = notificationManagerFactory.CreateCityNotificationManager(worker, id, "/PLAYER/" + owner.PlayerId);
             var references = referenceManagerFactory.CreateReferenceManager(id, worker, owner);
             var technologies = technologyManagerFactory.CreateTechnologyManager(EffectLocation.City, id, id);
             var troops = troopManagerFactory.CreateTroopManager();
@@ -84,8 +85,8 @@ namespace Game.Data
                                 template,
                                 troopStubFactory,
                                 kernel.Get<IDbManager>(),
-                                kernel.Get<ICityRegionManager>(),
-                                kernel.Get<IGameObjectFactory>());
+                                kernel.Get<IGameObjectFactory>(),
+                                kernel.Get<IActionFactory>());
 
             // TODO: We should figure a cleaner way so we dont need to have this circular dependency
             troops.BaseStation = city;

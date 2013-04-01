@@ -10,18 +10,18 @@ namespace Game.Logic.Notifications
 
         private readonly uint cityId;
 
-        public CityNotificationManager(IActionWorker worker, uint cityId, IDbManager dbManager)
+        public CityNotificationManager(IActionWorker worker, uint cityId, string channelName, IDbManager dbManager)
                 : base(worker, dbManager)
         {
             this.cityId = cityId;
-            channelName = "/CITY/" + cityId;
+            this.channelName = channelName;
         }
 
         protected override void RemoveNotification(Notification notification)
         {
             base.RemoveNotification(notification);
 
-            if (Global.FireEvents)
+            if (Global.Current.FireEvents)
             {
                 //send removal
                 var packet = new Packet(Command.NotificationRemove);
@@ -29,7 +29,7 @@ namespace Game.Logic.Notifications
                 packet.AddUInt32(notification.GameObject.City.Id);
                 packet.AddUInt32(notification.Action.ActionId);
 
-                Global.Channel.Post(channelName, packet);
+                Global.Current.Channel.Post(channelName, packet);
             }
         }
 
@@ -37,12 +37,12 @@ namespace Game.Logic.Notifications
         {
             base.UpdateNotification(notification);
 
-            if (Global.FireEvents)
+            if (Global.Current.FireEvents)
             {
                 var packet = new Packet(Command.NotificationUpdate);
                 packet.AddUInt32(cityId);
                 PacketHelper.AddToPacket(notification, packet);
-                Global.Channel.Post(channelName, packet);
+                Global.Current.Channel.Post(channelName, packet);
             }
         }
 
@@ -50,14 +50,14 @@ namespace Game.Logic.Notifications
         {
             if (base.AddNotification(notification))
             {
-                if (Global.FireEvents)
+                if (Global.Current.FireEvents)
                 {
                     //send add
                     var packet = new Packet(Command.NotificationAdd);
                     packet.AddUInt32(cityId);
                     PacketHelper.AddToPacket(notification, packet);
 
-                    Global.Channel.Post(channelName, packet);
+                    Global.Current.Channel.Post(channelName, packet);
                 }
 
                 return true;

@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Game.Battle;
+using Game.Data.Events;
 using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Notifications;
-using Game.Util;
 using Persistance;
 
 namespace Game.Data
@@ -14,9 +15,50 @@ namespace Game.Data
                              IPersistableObject,
                              ICityRegionObject,
                              IStation,
-                             INotificationOwner,
-                             INotifyPropertyChanged
+                             INotificationOwner
     {
+        #region Events
+
+        event City.CityEventHandler<PropertyChangedEventArgs> PropertyChanged;
+
+        event City.CityEventHandler<TroopStubEventArgs> TroopUnitUpdated;
+
+        event City.CityEventHandler<TroopStubEventArgs> TroopUpdated;
+
+        event City.CityEventHandler<TroopStubEventArgs> TroopRemoved;
+
+        event City.CityEventHandler<TroopStubEventArgs> TroopAdded;
+
+        event City.CityEventHandler<ActionWorkerEventArgs> ActionRemoved;
+ 
+        event City.CityEventHandler<ActionWorkerEventArgs> ActionStarted;
+
+        event City.CityEventHandler<ActionWorkerEventArgs> ActionRescheduled;
+
+        event City.CityEventHandler<EventArgs> ResourcesUpdated;
+ 
+        event City.CityEventHandler<EventArgs> UnitTemplateUpdated;
+
+        event City.CityEventHandler<TechnologyEventArgs> TechnologyCleared;
+
+        event City.CityEventHandler<TechnologyEventArgs> TechnologyAdded;
+
+        event City.CityEventHandler<TechnologyEventArgs> TechnologyRemoved;
+
+        event City.CityEventHandler<TechnologyEventArgs> TechnologyUpgraded;        
+
+        event City.CityEventHandler<GameObjectArgs> ObjectAdded;
+
+        event City.CityEventHandler<GameObjectArgs> ObjectRemoved;
+
+        event City.CityEventHandler<GameObjectArgs> ObjectUpdated;
+
+        event City.CityEventHandler<ActionReferenceArgs> ReferenceAdded;
+
+        event City.CityEventHandler<ActionReferenceArgs> ReferenceRemoved;
+
+        #endregion
+
         /// <summary>
         ///     Enumerates only through structures in this city
         /// </summary>
@@ -134,14 +176,14 @@ namespace Game.Data
         /// <summary>
         ///     Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
         /// </summary>
-        /// <param name="obj"></param>
-        void DoRemove(IStructure obj);
+        /// <param name="structure"></param>
+        void DoRemove(IStructure structure);
 
         /// <summary>
         ///     Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
         /// </summary>
-        /// <param name="obj"></param>
-        void DoRemove(ITroopObject obj);
+        /// <param name="troop"></param>
+        void DoRemove(ITroopObject troop);
 
         List<IGameObject> GetInRange(uint x, uint y, uint inRadius);
 
@@ -151,10 +193,6 @@ namespace Game.Data
 
         void EndUpdate();
 
-        void Subscribe(IChannel s);
-
-        void Unsubscribe(IChannel s);
-        
         ITroopStub CreateTroopStub();
 
         IStructure CreateStructure(ushort type, byte level);

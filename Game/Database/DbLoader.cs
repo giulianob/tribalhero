@@ -84,7 +84,7 @@ namespace Game.Database
         {
             SystemVariablesUpdater.Current.Pause();
             Scheduler.Current.Pause();
-            Global.FireEvents = false;
+            Global.Current.FireEvents = false;
 
             logger.Info("Loading database...");
 
@@ -105,7 +105,7 @@ namespace Game.Database
                     LoadSystemVariables();
 
                     // Calculate how long server was down
-                    TimeSpan downTime = now.Subtract((DateTime)Global.SystemVariables["System.time"].Value);
+                    TimeSpan downTime = now.Subtract((DateTime)Global.Current.SystemVariables["System.time"].Value);
                     if (downTime.TotalMilliseconds < 0)
                     {
                         downTime = new TimeSpan(0);
@@ -138,8 +138,8 @@ namespace Game.Database
                     World.AfterDbLoaded(Procedure);
 
                     //Ok data all loaded. We can get the system going now.
-                    Global.SystemVariables["System.time"].Value = now;
-                    DbManager.Save(Global.SystemVariables["System.time"]);
+                    Global.Current.SystemVariables["System.time"].Value = now;
+                    DbManager.Save(Global.Current.SystemVariables["System.time"]);
                 }
                 catch(Exception e)
                 {                    
@@ -151,7 +151,7 @@ namespace Game.Database
             logger.Info("Database loading finished");
 
             SystemVariablesUpdater.Current.Resume();
-            Global.FireEvents = true;
+            Global.Current.FireEvents = true;
             Scheduler.Current.Resume();            
         }
 
@@ -336,25 +336,25 @@ namespace Game.Database
                     {
                             DbPersisted = true
                     };
-                    Global.SystemVariables.Add(systemVariable.Key, systemVariable);
+                    Global.Current.SystemVariables.Add(systemVariable.Key, systemVariable);
                 }
             }
 
             // Set system variable defaults
-            if (!Global.SystemVariables.ContainsKey("System.time"))
+            if (!Global.Current.SystemVariables.ContainsKey("System.time"))
             {
-                Global.SystemVariables.Add("System.time", new SystemVariable("System.time", DateTime.UtcNow));
+                Global.Current.SystemVariables.Add("System.time", new SystemVariable("System.time", DateTime.UtcNow));
             }
 
-            if (!Global.SystemVariables.ContainsKey("Map.start_index"))
+            if (!Global.Current.SystemVariables.ContainsKey("Map.start_index"))
             {
-                Global.SystemVariables.Add("Map.start_index", new SystemVariable("Map.start_index", 0));
+                Global.Current.SystemVariables.Add("Map.start_index", new SystemVariable("Map.start_index", 0));
             }
 
-            if (!Global.SystemVariables.ContainsKey("Server.date"))
+            if (!Global.Current.SystemVariables.ContainsKey("Server.date"))
             {
-                Global.SystemVariables.Add("Server.date", new SystemVariable("Server.date", DateTime.UtcNow));
-                DbManager.Save(Global.SystemVariables["Server.date"]);
+                Global.Current.SystemVariables.Add("Server.date", new SystemVariable("Server.date", DateTime.UtcNow));
+                DbManager.Save(Global.Current.SystemVariables["Server.date"]);
             }
             #endregion
         }

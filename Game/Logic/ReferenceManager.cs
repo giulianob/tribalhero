@@ -4,8 +4,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using Game.Comm;
 using Game.Data;
+using Game.Data.Events;
 using Game.Util;
 using Game.Util.Locking;
 using Persistance;
@@ -85,6 +85,10 @@ namespace Game.Logic
     /// </summary>
     public class ReferenceManager : IEnumerable<ReferenceStub>
     {
+        public event EventHandler<ActionReferenceArgs> ReferenceAdded = (sender, args) => { };
+
+        public event EventHandler<ActionReferenceArgs> ReferenceRemoved = (sender, args) => { };
+
         private readonly uint cityId;
 
         private readonly IActionWorker actionWorker;
@@ -144,34 +148,6 @@ namespace Game.Logic
             reference.Add(referenceObject);
         }
 
-        private void SendAddReference(ReferenceStub referenceObject)
-        {
-            if (Global.FireEvents)
-            {
-                //send removal
-                var packet = new Packet(Command.ReferenceAdd);
-                packet.AddUInt32(cityId);
-                packet.AddUInt16(referenceObject.ReferenceId);
-                packet.AddUInt32(referenceObject.WorkerObject.WorkerId);
-                packet.AddUInt32(referenceObject.Action.ActionId);
-
-                Global.Channel.Post("/CITY/" + cityId, packet);
-            }
-        }
-
-        private void SendRemoveReference(ReferenceStub referenceObject)
-        {
-            if (Global.FireEvents)
-            {
-                //send removal
-                var packet = new Packet(Command.ReferenceRemove);
-                packet.AddUInt32(cityId);
-                packet.AddUInt16(referenceObject.ReferenceId);
-
-                Global.Channel.Post("/CITY/" + cityId, packet);
-            }
-        }
-
         public void Add(IGameObject referenceObject, PassiveAction action)
         {            
             PassiveAction workingStub;
@@ -184,7 +160,7 @@ namespace Game.Logic
             reference.Add(newReference);
             dbManager.Save(newReference);
 
-            SendAddReference(newReference);
+            ReferenceAdded(this, new ActionReferenceArgs { ReferenceStub = newReference });
         }
 
         public void Add(IGameObject referenceObject, ActiveAction action)
@@ -199,7 +175,7 @@ namespace Game.Logic
             reference.Add(newReference);
             dbManager.Save(newReference);
 
-            SendAddReference(newReference);
+            ReferenceAdded(this, new ActionReferenceArgs { ReferenceStub = newReference });
         }
 
         public void Remove(IGameObject referenceObject, GameAction action)
@@ -214,7 +190,7 @@ namespace Game.Logic
 
                         dbManager.Delete(referenceStub);
 
-                        SendRemoveReference(referenceStub);
+                        ReferenceRemoved(this, new ActionReferenceArgs { ReferenceStub = referenceStub });
                     }
 
                     return ret;
@@ -233,14 +209,14 @@ namespace Game.Logic
 
                         dbManager.Delete(referenceStub);
 
-                        SendRemoveReference(referenceStub);
+                        ReferenceRemoved(this, new ActionReferenceArgs { ReferenceStub = referenceStub });
                     }
 
                     return ret;
                 });
         }
 
-        public void Remove(GameAction action)
+        private void Remove(GameAction action)
         {
             reference.RemoveAll(referenceStub =>
                 {
@@ -252,7 +228,7 @@ namespace Game.Logic
 
                         dbManager.Delete(referenceStub);
 
-                        SendRemoveReference(referenceStub);
+                        ReferenceRemoved(this, new ActionReferenceArgs { ReferenceStub = referenceStub });
                     }
 
                     return ret;

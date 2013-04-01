@@ -272,7 +272,7 @@ namespace Game.Data.Tribe
 
             if (tribesman.Player.Session != null)
             {
-                Global.Channel.Subscribe(tribesman.Player.Session, "/TRIBE/" + Id);
+                Global.Current.Channel.Subscribe(tribesman.Player.Session, "/TRIBE/" + Id);
             }
 
             return Error.Ok;
@@ -309,7 +309,7 @@ namespace Game.Data.Tribe
 
             if (player.Session != null)
             {
-                Global.Channel.Unsubscribe(player.Session, "/TRIBE/" + Id);
+                Global.Current.Channel.Unsubscribe(player.Session, "/TRIBE/" + Id);
 
                 if (wasKicked)
                 {

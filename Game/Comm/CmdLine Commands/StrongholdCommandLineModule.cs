@@ -59,7 +59,7 @@ namespace Game.Comm
         {
             SystemVariable mapStartIndex;
             int index = 0;
-            if (Global.SystemVariables.TryGetValue("Map.start_index", out mapStartIndex))
+            if (Global.Current.SystemVariables.TryGetValue("Map.start_index", out mapStartIndex))
             {
                 index = (int)mapStartIndex.Value;
             }

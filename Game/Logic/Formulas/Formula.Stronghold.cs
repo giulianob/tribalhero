@@ -110,7 +110,7 @@ namespace Game.Logic.Formulas
             {
                 return (((decimal)SystemClock.Now.Subtract(stronghold.DateOccupied).TotalDays + stronghold.BonusDays) / 2 + 10) * stronghold.Lvl;
             }
-            var serverUptime = (decimal)SystemClock.Now.Subtract((DateTime)Global.SystemVariables["Server.date"].Value).TotalDays;
+            var serverUptime = (decimal)SystemClock.Now.Subtract((DateTime)Global.Current.SystemVariables["Server.date"].Value).TotalDays;
             return (((decimal)SystemClock.Now.Subtract(stronghold.DateOccupied).TotalDays + stronghold.BonusDays) / 2 + serverUptime / 5 + 10) * (1 + stronghold.Lvl * .2m);
         }
     }

@@ -287,7 +287,7 @@ namespace Game.Module
             return false;
         }
 
-        public static void Init()
+        public static void Init(Ai ai)
         {
             Scheduler.Current.Pause();
 
@@ -322,12 +322,12 @@ namespace Game.Module
                     {
                         World.Current.Players.Add(idx, npc);
                         DbPersistance.Current.Save(npc);
-                        Global.Ai.playerList.Add(intelligence);
+                        ai.playerList.Add(intelligence);
                     }
                     else
                     {
                         intelligence.player = World.Current.Players[idx];
-                        Global.Ai.playerList.Add(intelligence);
+                        ai.playerList.Add(intelligence);
                         continue;
                     }
 
@@ -370,7 +370,7 @@ namespace Game.Module
                 }
             }
 
-            Global.Ai.time = DateTime.UtcNow.AddSeconds(10);
+            ai.time = DateTime.UtcNow.AddSeconds(10);
             //Global.Scheduler.Put(Global.Ai);
 
             logger.Info("Loading AI finished.");

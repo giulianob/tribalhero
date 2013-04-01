@@ -171,6 +171,7 @@
     <Compile Include="Battle\CombatList.cs" />
     <Compile Include="Comm\ApiCaller.cs" />
     <Compile Include="Comm\Channel\CityChannel.cs" />
+    <Compile Include="Comm\Channel\ICityChannel.cs" />
     <Compile Include="Comm\CmdLine Commands\AssignmentCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\CityCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\RegionCommandsLineModule.cs" />
@@ -226,6 +227,13 @@
     <Compile Include="Data\BarbarianTribe\BarbarianTribeConfigurator.cs" />
     <Compile Include="Data\BarbarianTribe\BarbarianTribeManager.cs" />
     <Compile Include="Data\CityFactory.cs" />
+    <Compile Include="Data\Events\ActionReferenceArgs.cs" />
+    <Compile Include="Data\Events\ActionWorkerEventArgs.cs" />
+    <Compile Include="Data\Events\GameObjectArgs.cs" />
+    <Compile Include="Data\Events\NewCityEventArgs.cs" />
+    <Compile Include="Data\Events\SimpleGameObjectArgs.cs" />
+    <Compile Include="Data\Events\TechnologyEventArgs.cs" />
+    <Compile Include="Data\Events\TroopStubEventArgs.cs" />
     <Compile Include="Data\GameObjectFactory.cs" />
     <Compile Include="Data\ICityFactory.cs" />
     <Compile Include="Data\IGameObjectFactory.cs" />
@@ -426,6 +434,7 @@
     <Compile Include="Setup\TechnologyFactory.cs" />
     <Compile Include="Util\Channel.cs" />
     <Compile Include="Util\DuplicateSubscriptionException.cs" />
+    <Compile Include="Util\EventHandlerExtensions.cs" />
     <Compile Include="Util\FileExtension.cs" />
     <Compile Include="Util\Inflector.cs" />
     <Compile Include="Util\CmdParserExtension.cs" />

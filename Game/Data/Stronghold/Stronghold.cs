@@ -265,14 +265,14 @@ namespace Game.Data.Stronghold
             }
         }
 
-        public override void CheckUpdateMode()
+        protected override void CheckUpdateMode()
         {
-            if (!Global.FireEvents)
+            if (!Global.Current.FireEvents)
             {
                 return;
             }
 
-            if (!updating)
+            if (!Updating)
             {
                 throw new Exception("Changed state outside of begin/end update block");
             }
@@ -280,33 +280,16 @@ namespace Game.Data.Stronghold
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
         }
 
-        public override void EndUpdate()
+        protected override bool Update()
         {
-            if (!updating)
+            var updated = base.Update();
+
+            if (updated)
             {
-                throw new Exception("Called an endupdate without first calling a beginupdate");
+                dbManager.Save(this);
             }
 
-            updating = false;
-
-            Update();
-        }
-
-        protected override void Update()
-        {
-            base.Update();
-
-            if (!Global.FireEvents)
-            {
-                return;
-            }
-
-            if (updating)
-            {
-                return;
-            }
-
-            dbManager.Save(this);
+            return updated;
         }
 
         #endregion

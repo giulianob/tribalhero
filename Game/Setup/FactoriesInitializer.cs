@@ -79,7 +79,7 @@ namespace Game.Setup
                 {
                     string fullFilename = filename;
 
-                    if (Global.IsRunningOnMono())
+                    if (Global.Current.IsRunningOnMono())
                     {
                         fullFilename = Path.Combine(dir, filename);
                     }

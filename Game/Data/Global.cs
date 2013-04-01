@@ -13,33 +13,22 @@ namespace Game.Data
 {
     public class Global
     {
-        #region Locks enum
+        public static Global Current { get; set; }
 
-        /// <summary>
-        ///     List of global locks. These should all have negative ids so they do not conflict with player locks.
-        /// </summary>
-        public enum Locks
+        public Channel Channel { get; private set; }
+
+        public Global(Channel channel)
         {
-            Forest = -1
-        }
-
-        #endregion
-
-        public static readonly Ai Ai = new Ai();
-
-        public static readonly Channel Channel = new Channel();
-
-        static Global()
-        {
+            Channel = channel;
             FireEvents = true;
             SystemVariables = new Dictionary<string, SystemVariable>();
         }
 
-        public static Dictionary<string, SystemVariable> SystemVariables { get; private set; }
+        public Dictionary<string, SystemVariable> SystemVariables { get; private set; }
 
-        public static bool FireEvents { get; set; }
+        public bool FireEvents { get; set; }
 
-        public static bool IsRunningOnMono()
+        public bool IsRunningOnMono()
         {
             return Type.GetType("Mono.Runtime") != null;
         }

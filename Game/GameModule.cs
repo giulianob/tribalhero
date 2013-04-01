@@ -5,6 +5,7 @@ using Game.Battle;
 using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
 using Game.Comm;
+using Game.Comm.Channel;
 using Game.Comm.CmdLine_Commands;
 using Game.Comm.ProcessorCommands;
 using Game.Comm.Protocol;
@@ -50,6 +51,7 @@ namespace Game
 
             #region General Comms
 
+            Bind<Channel>().ToSelf().InSingletonScope();
             Bind<IPolicyServer>().To<PolicyServer>().InSingletonScope();
             Bind<ITcpServer>().To<TcpServer>().InSingletonScope();
             Bind<TServer>()
@@ -59,10 +61,7 @@ namespace Game
                                                 new TServerSocket(46000)));
             Bind<IProtocol>().To<PacketProtocol>();
 
-            Bind<Chat>().ToMethod(c =>
-                {
-                    return new Chat(Global.Channel);
-                });
+            Bind<Chat>().ToSelf().InSingletonScope();
 
             #endregion
             
@@ -222,6 +221,7 @@ namespace Game
 
             #region City
 
+            Bind<ICityChannel>().To<CityChannel>().InSingletonScope();
             Bind<ICityFactory>().To<CityFactory>().InSingletonScope();
             Bind<IGameObjectFactory>().To<GameObjectFactory>().InSingletonScope();
 

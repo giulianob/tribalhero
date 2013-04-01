@@ -46,7 +46,7 @@ namespace Game.Setup
             y = 0;
 
             SystemVariable mapStartIndex;
-            if (Global.SystemVariables.TryGetValue("Map.start_index", out mapStartIndex) && index == 0)
+            if (Global.Current.SystemVariables.TryGetValue("Map.start_index", out mapStartIndex) && index == 0)
             {
                 index = (int)mapStartIndex.Value;
             }

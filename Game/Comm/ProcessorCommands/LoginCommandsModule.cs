@@ -342,16 +342,16 @@ namespace Game.Comm.ProcessorCommands
         private void SubscribeDefaultChannels(Session session, IPlayer player)
         {
             // Subscribe him to the player channel
-            Global.Channel.Subscribe(session, "/PLAYER/" + player.PlayerId);
+            Global.Current.Channel.Subscribe(session, "/PLAYER/" + player.PlayerId);
 
             // Subscribe him to the tribe channel if available
             if (player.Tribesman != null)
             {
-                Global.Channel.Subscribe(session, "/TRIBE/" + player.Tribesman.Tribe.Id);
+                Global.Current.Channel.Subscribe(session, "/TRIBE/" + player.Tribesman.Tribe.Id);
             }
 
             // Subscribe to global channel
-            Global.Channel.Subscribe(session, "/GLOBAL");
+            Global.Current.Channel.Subscribe(session, "/GLOBAL");
         }
     }
 }

@@ -194,7 +194,7 @@ namespace Game.Data.Tribe
             Packet packet = new Packet(Command.TribeChannelNotification);
             packet.AddInt32(GetIncomingList(tribe).Count());
             packet.AddInt16(tribe.AssignmentCount);
-            Global.Channel.Post("/TRIBE/" + tribe.Id, packet);
+            Global.Current.Channel.Post("/TRIBE/" + tribe.Id, packet);
         }
 
         private void UnsubscribeEvents(ITribe tribe)

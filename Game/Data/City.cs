@@ -8,6 +8,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using Game.Battle;
+using Game.Data.Events;
 using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Actions;
@@ -17,7 +18,6 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 using Persistance;
 
 #endregion
@@ -35,7 +35,49 @@ namespace Game.Data
             Deleted,
         }
 
-        public event PropertyChangedEventHandler PropertyChanged = (sender, args) => { };
+        #region Events
+
+        public delegate void CityEventHandler<TEventArgs>(ICity city, TEventArgs e);
+        
+        public event CityEventHandler<PropertyChangedEventArgs> PropertyChanged = (sender, args) => { };
+                     
+        public event CityEventHandler<TroopStubEventArgs> TroopUnitUpdated = (sender, args) => { };
+                     
+        public event CityEventHandler<TroopStubEventArgs> TroopUpdated = (sender, args) => { };
+                     
+        public event CityEventHandler<TroopStubEventArgs> TroopRemoved = (sender, args) => { };
+                     
+        public event CityEventHandler<TroopStubEventArgs> TroopAdded = (sender, args) => { };
+                     
+        public event CityEventHandler<ActionWorkerEventArgs> ActionRemoved = (sender, args) => { };
+                     
+        public event CityEventHandler<ActionWorkerEventArgs> ActionStarted = (sender, args) => { };
+                     
+        public event CityEventHandler<ActionWorkerEventArgs> ActionRescheduled = (sender, args) => { };
+                     
+        public event CityEventHandler<EventArgs> ResourcesUpdated = (sender, args) => { };
+                     
+        public event CityEventHandler<EventArgs> UnitTemplateUpdated = (sender, args) => { };
+                     
+        public event CityEventHandler<TechnologyEventArgs> TechnologyCleared = (sender, args) => { };
+                     
+        public event CityEventHandler<TechnologyEventArgs> TechnologyAdded = (sender, args) => { };
+                     
+        public event CityEventHandler<TechnologyEventArgs> TechnologyRemoved = (sender, args) => { };
+                     
+        public event CityEventHandler<TechnologyEventArgs> TechnologyUpgraded = (sender, args) => { };
+                     
+        public event CityEventHandler<GameObjectArgs> ObjectAdded = (sender, args) => { };
+                     
+        public event CityEventHandler<GameObjectArgs> ObjectRemoved = (sender, args) => { };
+
+        public event CityEventHandler<GameObjectArgs> ObjectUpdated = (sender, args) => { };
+
+        public event CityEventHandler<ActionReferenceArgs> ReferenceRemoved = (sender, args) => { };
+
+        public event CityEventHandler<ActionReferenceArgs> ReferenceAdded = (sender, args) => { };
+
+        #endregion
 
         public const string DB_TABLE = "cities";
 
@@ -65,9 +107,9 @@ namespace Game.Data
 
         private readonly IDbManager dbManager;
 
-        private readonly ICityRegionManager cityRegionManager;
-
         private readonly IGameObjectFactory gameObjectFactory;
+
+        private readonly IActionFactory actionFactory;
 
         private ushort value;
 
@@ -360,39 +402,28 @@ namespace Game.Data
                 CheckUpdateMode();
                 this.value = value;
 
-                if (Global.FireEvents)
-                {
-                    var cityRegion = cityRegionManager.GetCityRegion(X, Y);
-                    
-                    if (cityRegion != null)
-                    {
-                        cityRegion.MarkAsDirty();                        
-                    }
-
-                    PropertyChanged(this, new PropertyChangedEventArgs("Value"));
-                }
+                PropertyChanged(this, new PropertyChangedEventArgs("Value"));                
             }
         }
 
         #endregion
 
-        public City(
-            uint id, 
-            IPlayer owner, 
-            string name, 
-            LazyResource resource, 
-            byte radius, 
-            decimal ap,
-            IActionWorker worker,
-            CityNotificationManager notifications,
-            ReferenceManager references,
-            ITechnologyManager technologies,
-            ITroopManager troops,
-            IUnitTemplate template,
-            ITroopStubFactory troopStubFactory,
-            IDbManager dbManager,
-            ICityRegionManager cityRegionManager,
-            IGameObjectFactory gameObjectFactory)
+        public City(uint id,
+                    IPlayer owner,
+                    string name,
+                    LazyResource resource,
+                    byte radius,
+                    decimal ap,
+                    IActionWorker worker,
+                    CityNotificationManager notifications,
+                    ReferenceManager references,
+                    ITechnologyManager technologies,
+                    ITroopManager troops,
+                    IUnitTemplate template,
+                    ITroopStubFactory troopStubFactory,
+                    IDbManager dbManager,
+                    IGameObjectFactory gameObjectFactory,
+                    IActionFactory actionFactory)
         {
             Id = id;
             Owner = owner;
@@ -400,8 +431,8 @@ namespace Game.Data
             this.radius = radius;
             this.troopStubFactory = troopStubFactory;
             this.dbManager = dbManager;
-            this.cityRegionManager = cityRegionManager;
             this.gameObjectFactory = gameObjectFactory;
+            this.actionFactory = actionFactory;
 
             AlignmentPoint = ap;
             Resource = resource;
@@ -413,15 +444,42 @@ namespace Game.Data
             Troops = troops;
             Template = template;
 
+            #region Event Proxies
+
             Template.UnitUpdated += evtTemplate =>
                 {
-                    if (Global.FireEvents && DbPersisted)
+                    if (Global.Current.FireEvents && DbPersisted)
                     {
                         dbManager.Save(evtTemplate);
                     }
+
+                    UnitTemplateUpdated(this, new EventArgs());
                 };
 
-            Resource.ResourcesUpdate += CheckUpdateMode;
+            Troops.TroopAdded += stub => TroopAdded(this, new TroopStubEventArgs {Stub = stub});
+            Troops.TroopRemoved += stub => TroopRemoved(this, new TroopStubEventArgs {Stub = stub});
+            Troops.TroopUpdated += stub => TroopUpdated(this, new TroopStubEventArgs {Stub = stub});
+            Troops.TroopUnitUpdated += stub => TroopUnitUpdated(this, new TroopStubEventArgs {Stub = stub});
+
+            Worker.ActionRemoved += (stub, state) => ActionRemoved(this, new ActionWorkerEventArgs {State = state, Stub = stub});
+            Worker.ActionStarted += (stub, state) => ActionStarted(this, new ActionWorkerEventArgs {State = state, Stub = stub});
+            Worker.ActionRescheduled += (stub, state) => ActionRescheduled(this, new ActionWorkerEventArgs {State = state, Stub = stub});
+
+            Resource.ResourcesUpdate += () =>
+                {
+                    CheckUpdateMode();
+                    ResourcesUpdated(this, new EventArgs());
+                };
+
+            Technologies.TechnologyCleared += OnTechnologyCleared;
+            Technologies.TechnologyAdded += OnTechnologyAdded;
+            Technologies.TechnologyRemoved += OnTechnologyRemoved;
+            Technologies.TechnologyUpgraded += OnTechnologyUpgraded;
+
+            References.ReferenceAdded += (sender, args) => ReferenceAdded(this, args);
+            References.ReferenceRemoved += (sender, args) => ReferenceRemoved(this, args);
+
+            #endregion
         }
 
         #region Object Management
@@ -481,10 +539,17 @@ namespace Game.Data
                     dbManager.Save(troop);
                 }
 
-                ObjAddEvent(troop);
+                troop.ObjectUpdated += OnObjectUpdated;
+
+                ObjectAdded(this, new GameObjectArgs { Object = troop });
             }
 
             return true;
+        }
+
+        private void OnObjectUpdated(object sender, SimpleGameObjectArgs e)
+        {
+            ObjectUpdated(this, new GameObjectArgs {Object = (IGameObject)e.SimpleGameObject, OriginalX = e.OriginalX, OriginalY = e.OriginalY});
         }
 
         public bool Add(ITroopObject troop)
@@ -516,10 +581,36 @@ namespace Game.Data
                     dbManager.Save(structure);
                 }
                 
-                ObjAddEvent(structure);
+                structure.ObjectUpdated += OnObjectUpdated;
+                structure.Technologies.TechnologyCleared += OnTechnologyCleared;
+                structure.Technologies.TechnologyAdded += OnTechnologyAdded;
+                structure.Technologies.TechnologyRemoved += OnTechnologyRemoved;
+                structure.Technologies.TechnologyUpgraded += OnTechnologyUpgraded;
+
+                ObjectAdded(this, new GameObjectArgs { Object = structure });
             }
 
             return true;
+        }
+
+        private void OnTechnologyUpgraded(Technology tech)
+        {
+            TechnologyUpgraded(this, new TechnologyEventArgs {TechnologyManager = Technologies, Technology = tech});
+        }
+
+        private void OnTechnologyRemoved(Technology tech)
+        {
+            TechnologyRemoved(this, new TechnologyEventArgs {TechnologyManager = Technologies, Technology = tech});
+        }
+
+        private void OnTechnologyAdded(Technology tech)
+        {
+            TechnologyAdded(this, new TechnologyEventArgs {TechnologyManager = Technologies, Technology = tech});
+        }
+
+        private void OnTechnologyCleared(ITechnologyManager manager)
+        {
+            TechnologyCleared(this, new TechnologyEventArgs {TechnologyManager = manager});
         }
 
         public bool ScheduleRemove(ITroopObject obj, bool wasKilled)
@@ -531,7 +622,7 @@ namespace Game.Data
                     return false;
                 }
 
-                var removeAction = Ioc.Kernel.Get<IActionFactory>().CreateObjectRemovePassiveAction(Id, obj.ObjectId, wasKilled, new List<uint>());
+                var removeAction = actionFactory.CreateObjectRemovePassiveAction(Id, obj.ObjectId, wasKilled, new List<uint>());
 
                 return Worker.DoPassive(this, removeAction, false) == Error.Ok;
             }
@@ -557,7 +648,7 @@ namespace Game.Data
 
                 References.Remove(obj);
 
-                var removeAction = Ioc.Kernel.Get<IActionFactory>().CreateObjectRemovePassiveAction(Id, obj.ObjectId, wasKilled, actions);
+                var removeAction = actionFactory.CreateObjectRemovePassiveAction(Id, obj.ObjectId, wasKilled, actions);
                 return Worker.DoPassive(this, removeAction, false) == Error.Ok;
             }
         }
@@ -565,38 +656,46 @@ namespace Game.Data
         /// <summary>
         ///     Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
         /// </summary>
-        /// <param name="obj"></param>
-        public void DoRemove(IStructure obj)
+        /// <param name="structure"></param>
+        public void DoRemove(IStructure structure)
         {
             lock (objLock)
             {
-                obj.Technologies.BeginUpdate();
-                obj.Technologies.Clear();
-                obj.Technologies.EndUpdate();
+                structure.Technologies.BeginUpdate();
+                structure.Technologies.Clear();
+                structure.Technologies.EndUpdate();
 
-                structures.Remove(obj.ObjectId);
+                structures.Remove(structure.ObjectId);
 
-                dbManager.Delete(obj);
+                dbManager.Delete(structure);
 
-                ObjRemoveEvent(obj);
+                structure.ObjectUpdated -= OnObjectUpdated;
+                structure.Technologies.TechnologyCleared -= OnTechnologyCleared;
+                structure.Technologies.TechnologyAdded -= OnTechnologyAdded;
+                structure.Technologies.TechnologyRemoved -= OnTechnologyRemoved;
+                structure.Technologies.TechnologyUpgraded -= OnTechnologyUpgraded;
+
+                ObjectRemoved(this, new GameObjectArgs { Object = structure });
             }
         }
 
         /// <summary>
         ///     Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
         /// </summary>
-        /// <param name="obj"></param>
-        public void DoRemove(ITroopObject obj)
+        /// <param name="troop"></param>
+        public void DoRemove(ITroopObject troop)
         {
             lock (objLock)
             {
-                troopobjects.Remove(obj.ObjectId);
+                troopobjects.Remove(troop.ObjectId);
 
-                dbManager.Delete(obj);
+                dbManager.Delete(troop);
 
-                obj.City = null;
+                troop.City = null;
 
-                ObjRemoveEvent(obj);
+                troop.ObjectUpdated -= OnObjectUpdated;
+
+                ObjectRemoved(this, new GameObjectArgs { Object = troop });
             }
         }
 
@@ -635,12 +734,7 @@ namespace Game.Data
 
         private void CheckUpdateMode()
         {
-            if (!Global.FireEvents)
-            {
-                return;
-            }
-
-            if (Id == 0 || !DbPersisted)
+            if (!Global.Current.FireEvents || Id == 0 || !DbPersisted)
             {
                 return;
             }
@@ -669,29 +763,7 @@ namespace Game.Data
 
         #endregion
 
-        #region Channel Events
-
-        public void Subscribe(IChannel s)
-        {
-            try
-            {
-                Global.Channel.Subscribe(s, "/CITY/" + Id);
-            }
-            catch(DuplicateSubscriptionException)
-            {
-            }
-        }
-
-        public void Unsubscribe(IChannel s)
-        {
-            Global.Channel.Unsubscribe(s, "/CITY/" + Id);
-        }
-        
-        #endregion
-
         public IActionWorker Worker { get; private set; }
-
-        #region ICanDo Members
 
         public uint WorkerId
         {
@@ -703,10 +775,6 @@ namespace Game.Data
 
         public uint IsBlocked { get; set; }
 
-        #endregion
-
-        #region IEnumerable<Structure> Members
-
         IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable)structures.Values).GetEnumerator();
@@ -716,10 +784,6 @@ namespace Game.Data
         {
             return ((IEnumerable<IStructure>)structures.Values).GetEnumerator();
         }
-
-        #endregion
-
-        #region ILockable Members
 
         public int Hash
         {
@@ -736,8 +800,6 @@ namespace Game.Data
                 return Owner;
             }
         }
-
-        #endregion
 
         #region IPersistableObject Members
 
@@ -869,20 +931,6 @@ namespace Game.Data
             }
         }
 
-        #region Implementation of IStation
-
-        public ITroopManager TroopManager
-        {
-            get
-            {
-                return Troops;
-            }
-        }
-
-        #endregion
-
-        #region Implementation of ILocation
-
         public uint LocationId
         {
             get
@@ -898,7 +946,5 @@ namespace Game.Data
                 return LocationType.City;
             }
         }
-
-        #endregion
     }
 }

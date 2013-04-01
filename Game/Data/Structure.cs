@@ -124,17 +124,6 @@ namespace Game.Data
             }
         }
 
-        public override void EndUpdate()
-        {
-            if (!updating)
-            {
-                throw new Exception("Called endupdate without first calling begin update");
-            }
-
-            updating = false;
-            Update();
-        }
-
         #region IPersistableObject Members
 
         public string DbTable
@@ -187,21 +176,16 @@ namespace Game.Data
 
         #endregion
 
-        protected new void Update()
+        protected override bool Update()
         {
-            base.Update();
+            var update = base.Update();
 
-            if (!Global.FireEvents)
+            if (update)
             {
-                return;
+                dbManager.Save(this);
             }
 
-            if (updating)
-            {
-                return;
-            }
-
-            dbManager.Save(this);
+            return update;
         }
     }
 }

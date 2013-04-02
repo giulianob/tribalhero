@@ -257,6 +257,7 @@ namespace Game.Comm.ProcessorCommands
                 if (!session.Player.GetCityList().Any(city => city.Lvl >= 5))
                 {
                     ReplyError(session, packet, Error.EffectRequirementNotMet);
+                    return;
                 }
 
                 ITribe tribe;

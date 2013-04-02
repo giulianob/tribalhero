@@ -2,6 +2,9 @@ package src.UI.Dialog{
 
 	import com.google.analytics.ecommerce.Item;
 	import fl.lang.Locale;
+    import flash.events.Event;
+    import org.aswing.event.AWEvent;
+    import org.aswing.event.InteractiveEvent;
 	import src.Constants;
 	import src.Global;
 	import src.Objects.Tribe;
@@ -16,29 +19,54 @@ package src.UI.Dialog{
 	public class TribeUpdateRankDialog extends GameJPanel {
 		
 		private var permissions : Array = [
-			new JCheckBox("Invite"),
-			new JCheckBox("Kick"),
-			new JCheckBox("Set Rank"),
-			new JCheckBox("Repair"),
-			new JCheckBox("Upgrade"),
-			new JCheckBox("Assignment Create"),
-			new JCheckBox("Delete Post")
+			new JCheckBox("Invite Tribesman"),
+			new JCheckBox("Kick Tribesman"),
+			new JCheckBox("Set Tribesman Rank"),
+			new JCheckBox("Repair Stronghold Gate"),
+			new JCheckBox("Upgrade Tribe"),
+			new JCheckBox("Create Assignments"),
+			new JCheckBox("Delete Message Board Posts")
 		];
 		
 		private var comboRankId: JComboBox;
 		private var txtRankName: JTextField;
 		private var rightsPanel : JPanel;
 		private var currentId: int = 0;
+        private var btnSave:JButton;
+        private var btnCancel:JButton;
+        private var btnEdit:JButton;
+        private var pnlRanks: JPanel;
+        private var pnlEditor: JPanel;
 		
 		public function TribeUpdateRankDialog() {
 			createUI();			
 			
+			btnSave.addActionListener(function() :void {
+				onSave();
+			});            
+            
+            btnCancel.addActionListener(function():void {
+                showEditor(false);
+            });
+            
+            btnEdit.addActionListener(function():void {
+                var rank :* = Constants.tribe.ranks[comboRankId.getSelectedIndex()];
+                txtRankName.setText(rank.name);
+                setPermissions(rank.rights);                
+                
+                showEditor(true);
+            });
 		}
+        
+        private function showEditor(show: Boolean) {
+            pnlEditor.setVisible(show);
+            pnlRanks.setVisible(!show);
+        }
 		
 		private function setPermissions(value: int) : void {
 			for (var i:int = 0; i < this.permissions.length; ++i) {
 				var checkbox: JCheckBox = this.permissions[i];
-				if ( Tribe.ALL & value) {
+				if (Tribe.ALL & value) {
 					checkbox.setSelected(true);
 					checkbox.setEnabled(false);
 				} else if ((1 << (i+1)) & value) {
@@ -70,12 +98,6 @@ package src.UI.Dialog{
 			return frame;
 		}
 		
-		private function onChangeRankId() :void {
-			var rank :* = Constants.tribe.ranks[comboRankId.getSelectedIndex()];
-			txtRankName.setText(rank.name);
-			setPermissions(rank.rights);
-		}
-		
 		private function onSaveComplete(rank: *) : void {
 			InfoDialog.showMessageDialog("Info", Locale.loadString("TRIBE_RANK_UPDATED"), function():void {
 				update();
@@ -95,47 +117,57 @@ package src.UI.Dialog{
 			comboRankId.setListData(rankList);
 			
 			comboRankId.setSelectedIndex(currentId);
+            
+            showEditor(false);
 		}
 		
-		private function createUI():void {
+		private function createUI():void {        
 			title = "Update Tribe Rank";
+						
+			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 20));
 			
-			var border0:EmptyBorder = new EmptyBorder();
-			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS,20));
-			border0.setTop(20);
-			border0.setLeft(20);
-			border0.setBottom(20);
-			border0.setRight(20);
-			setBorder(border0);
-			
-			comboRankId = new JComboBox();
-			comboRankId.addActionListener(function():void {
-				onChangeRankId();
-			});
-			
-			txtRankName = new JTextField();
-			rightsPanel = new JPanel(new GridLayout(0, 3, 10 , 10));
-			
-			for each( var checkbox:JCheckBox in permissions) {
-				checkbox.setHorizontalAlignment(AsWingConstants.LEFT);
-				rightsPanel.append(checkbox);
-			}
-			
-			var form:Form = new Form();
-			form.setHGap(20);
-			form.setVGap(20);
-			
-			form.addRow(new JLabel("Rank"), comboRankId);
-			form.addRow(new JLabel("Rank Name"), txtRankName);
-			form.addRow(new JLabel("Permissions"), rightsPanel);
+            pnlRanks = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
+            {
+                comboRankId = new JComboBox();
+                comboRankId.setPreferredWidth(175);
+            
+                btnEdit = new JButton("Edit");
+                
+                pnlRanks.append(comboRankId);
+                pnlRanks.append(AsWingUtils.createPaneToHold(btnEdit, new FlowLayout()));
+            }
 
-			append(form);
-			var btnSave: JButton = new JButton("Save");
-			btnSave.setWidth(80);
-			btnSave.addActionListener(function() :void {
-				onSave();
-			});
-			append(btnSave);
+
+			pnlEditor = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
+            {
+                txtRankName = new JTextField();
+                txtRankName.setPreferredWidth(175);
+                rightsPanel = new JPanel(new GridLayout(0, 3, 10 , 10));
+                
+                for each( var checkbox:JCheckBox in permissions) {
+                    checkbox.setHorizontalAlignment(AsWingConstants.LEFT);
+                    rightsPanel.append(checkbox);
+                }
+                
+                var form:Form = new Form();
+                form.setHGap(20);
+                form.setVGap(20);
+                
+                form.addRow(new JLabel("Rank"), AsWingUtils.createPaneToHold(comboRankId, new FlowLayout()));
+                form.addRow(new JLabel("Rank Name"), AsWingUtils.createPaneToHold(txtRankName, new FlowLayout()));
+                form.addRow(new JLabel("Permissions"), rightsPanel);
+      
+                btnSave = new JButton("Save");                       
+                
+                var pnlButtons: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER));
+                pnlButtons.appendAll(btnSave);
+                
+                pnlEditor.append(form);			
+                pnlEditor.append(pnlButtons);
+            }
+            
+            appendAll(pnlRanks, pnlEditor);
+            
 			update();
 		}
 	}

@@ -448,12 +448,12 @@
 			});			
 			tableMembers.setRowSelectionAllowed(false);
 			tableMembers.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-			tableMembers.getColumnAt(0).setPreferredWidth(145);
+			tableMembers.getColumnAt(0).setPreferredWidth(135);
 			tableMembers.getColumnAt(0).setCellFactory(new GeneralTableCellFactory(PlayerLabelCell));
 			tableMembers.getColumnAt(1).setPreferredWidth(100);
 			tableMembers.getColumnAt(2).setPreferredWidth(100);
 			tableMembers.getColumnAt(3).setCellFactory(new GeneralTableCellFactory(TribeMemberActionCell));
-			tableMembers.getColumnAt(3).setPreferredWidth(70);
+			tableMembers.getColumnAt(3).setPreferredWidth(80);
 			
 			var scrollMembers: JScrollPane = new JScrollPane(tableMembers, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
 			

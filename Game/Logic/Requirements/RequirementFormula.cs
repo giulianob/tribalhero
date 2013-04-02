@@ -194,21 +194,5 @@ namespace Game.Logic
             return count < maxCount ? Error.Ok : Error.EffectRequirementNotMet;
         }
 
-        public static Error TribeRanking(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
-        {
-            if (!obj.City.Owner.IsInTribe)
-            {
-                return Error.TribesmanNotPartOfTribe;
-            }
-            if (obj.City.Owner.Tribesman.Rank < byte.Parse(parms[0]))
-            {
-                return Error.TribesmanRankingTooLow;
-            }
-            if (obj.City.Owner.Tribesman.Rank > byte.Parse(parms[1]))
-            {
-                return Error.TribesmanRankingTooHigh;
-            }
-            return Error.Ok;
-        }
     }
 }

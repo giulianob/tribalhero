@@ -85,7 +85,7 @@ namespace Game.Comm.ProcessorCommands
             using (locker.Lock(out players, playerId, session.Player.Tribesman.Tribe.Owner.PlayerId))
             {
                 ITribe tribe = session.Player.Tribesman.Tribe;
-                if (!tribe.IsOwner(session.Player))
+                if (!tribe.HasRight(session.Player.PlayerId,TribePermission.SetRank))
                 {
                     ReplyError(session, packet, Error.TribesmanNotAuthorized);
                     return;
@@ -182,7 +182,7 @@ namespace Game.Comm.ProcessorCommands
             ITribe tribe = session.Player.Tribesman.Tribe;
             using (locker.Lock(out players, playerId, tribe.Owner.PlayerId))
             {
-                if (!tribe.HasRight(session.Player.PlayerId, "Request"))
+                if (!tribe.HasRight(session.Player.PlayerId, TribePermission.Invite))
                 {
                     ReplyError(session, packet, Error.TribesmanNotAuthorized);
                     return;
@@ -253,7 +253,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var tribesman = new Tribesman(tribe, session.Player, 2);
+                var tribesman = new Tribesman(tribe, session.Player, tribe.DefaultRank);
 
                 var error = tribe.AddTribesman(tribesman);
 
@@ -266,6 +266,7 @@ namespace Game.Comm.ProcessorCommands
                 var reply = new Packet(packet);
                 reply.AddInt32(tribeManager.GetIncomingList(tribe).Count());
                 reply.AddInt16(tribe.AssignmentCount);
+                PacketHelper.AddTribeRanksToPacket(tribe, reply);
                 session.Write(reply);
             }
         }
@@ -319,7 +320,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 ITribe tribe = session.Player.Tribesman.Tribe;
-                if (!tribe.HasRight(session.Player.PlayerId, "Kick"))
+                if (!tribe.HasRight(session.Player.PlayerId, TribePermission.Kick))
                 {
                     ReplyError(session, packet, Error.TribesmanNotAuthorized);
                     return;

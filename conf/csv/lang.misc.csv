@@ -65,6 +65,7 @@ CITY_OVERVIEW_LABORERS_WORKING_COLUMN,Working/Maximum Laborers
 CITY_OVERVIEW_UNITS_STATUS_LABEL,"{0} idle, {1} busy."
 CITY_OVERVIEW_AP_POINTS_LABEL,{0} alignment rating
 ,
+TRIBE_RANK_UPDATED,Tribe rank is saved!
 TRIBE_RANK_0,Chief
 TRIBE_RANK_1,Elder
 TRIBE_RANK_2,Tribesman

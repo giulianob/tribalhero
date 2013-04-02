@@ -9,7 +9,7 @@ namespace Game.Data.Tribe
     {
         public const string DB_TABLE = "tribesmen";
 
-        public Tribesman(ITribe tribe, IPlayer player, byte rank)
+        public Tribesman(ITribe tribe, IPlayer player, ITribeRank rank)
         {
             Tribe = tribe;
             Player = player;
@@ -18,7 +18,7 @@ namespace Game.Data.Tribe
             Contribution = new Resource();
         }
 
-        public Tribesman(ITribe tribe, IPlayer player, DateTime joinDate, Resource contribution, byte rank)
+        public Tribesman(ITribe tribe, IPlayer player, DateTime joinDate, Resource contribution, ITribeRank rank)
         {
             Tribe = tribe;
             Player = player;
@@ -66,7 +66,7 @@ namespace Game.Data.Tribe
                 return new[]
                 {
                         new DbColumn("tribe_id", Tribe.Id, DbType.UInt32), new DbColumn("join_date", JoinDate, DbType.DateTime)
-                        , new DbColumn("rank", Rank, DbType.Byte), new DbColumn("crop", Contribution.Crop, DbType.Int32)
+                        , new DbColumn("rank", Rank.Id, DbType.Byte), new DbColumn("crop", Contribution.Crop, DbType.Int32)
                         , new DbColumn("gold", Contribution.Gold, DbType.Int32),
                         new DbColumn("iron", Contribution.Iron, DbType.Int32),
                         new DbColumn("wood", Contribution.Wood, DbType.Int32),
@@ -104,6 +104,6 @@ namespace Game.Data.Tribe
 
         public Resource Contribution { get; set; }
 
-        public byte Rank { get; set; }
+        public ITribeRank Rank { get; set; }
     }
 }

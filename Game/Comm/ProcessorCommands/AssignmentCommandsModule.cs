@@ -108,7 +108,7 @@ namespace Game.Comm.ProcessorCommands
 
                 // Make sure this player is ranked high enough
                 if (city.Owner.Tribesman == null ||
-                    !city.Owner.Tribesman.Tribe.HasRight(city.Owner.PlayerId, "Assignment"))
+                    !city.Owner.Tribesman.Tribe.HasRight(city.Owner.PlayerId, TribePermission.AssignmentCreate))
                 {
                     ReplyError(session, packet, Error.TribesmanNotAuthorized);
                     return;
@@ -203,7 +203,7 @@ namespace Game.Comm.ProcessorCommands
 
                 // Make sure this player is ranked high enough
                 if (city.Owner.Tribesman == null ||
-                    !city.Owner.Tribesman.Tribe.HasRight(city.Owner.PlayerId, "Assignment"))
+                    !city.Owner.Tribesman.Tribe.HasRight(city.Owner.PlayerId, TribePermission.AssignmentCreate))
                 {
                     ReplyError(session, packet, Error.TribesmanNotAuthorized);
                     return;

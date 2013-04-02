@@ -109,9 +109,6 @@ class MessageBoardPost extends AppModel {
                     'conditions' => array('MessageBoardPost.id' => $postId, 'MessageBoardPost.deleted' => 0)
                 ));
 
-        debug("post_delete");
-        $ret=$this->Player->Tribesman->Tribe->hasRight('post_delete', $tribesman);
-        
         if (empty($post))
             return false;
 

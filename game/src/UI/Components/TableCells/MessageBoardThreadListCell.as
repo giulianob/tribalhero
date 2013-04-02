@@ -36,7 +36,7 @@
 			super.setTableCellStatus(table, isSelected, row, column);
 			
 			if (isSelected && getCellValue()) {
-                getCellValue().lastReadTimestamp = Util.getServerTime();
+                getCellValue().lastReadTimestamp = Global.map.getServerTime();
 				GameLookAndFeel.changeClass(lblSubject, "Message.read");			
 			}
 		}

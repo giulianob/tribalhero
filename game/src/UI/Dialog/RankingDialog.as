@@ -289,6 +289,7 @@ package src.UI.Dialog{
 
 			if (selectIdx > -1) {
 				rankingTable.setRowSelectionInterval(selectIdx, selectIdx, true);
+                rankingTable.ensureCellIsVisible(selectIdx, 0);
 			}
 		}
 		private function onCityRanking(data: Object) : void {
@@ -324,6 +325,7 @@ package src.UI.Dialog{
 			// Select player 
 			if (selectIdx > -1) {
 				rankingTable.setRowSelectionInterval(selectIdx, selectIdx, true);
+                rankingTable.ensureCellIsVisible(selectIdx, 0);
 			}
 		}
 		private function onTribeRanking(data: Object) : void {
@@ -359,6 +361,7 @@ package src.UI.Dialog{
 
 			if (selectIdx > -1) {
 				rankingTable.setRowSelectionInterval(selectIdx, selectIdx, true);
+                rankingTable.ensureCellIsVisible(selectIdx, 0);
 			}
 		}
 		
@@ -392,6 +395,7 @@ package src.UI.Dialog{
 
 			if (selectIdx > -1) {
 				rankingTable.setRowSelectionInterval(selectIdx, selectIdx, true);
+                rankingTable.ensureCellIsVisible(selectIdx, 0);
 			}
 		}
 

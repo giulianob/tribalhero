@@ -22,18 +22,20 @@ package src.Objects
 		public var rank: int = 0;
 		public var ranks: * = null;
 
-		public function hasRight(right : int) :Boolean
+		public function hasRight(right: int) :Boolean
 		{
 			if (id == 0 || ranks == null) return false;
 			if ((ranks[rank].rights & ALL) == ALL) return true;
+            
 			return (ranks[rank].rights & right) == right;
 		}
 		
-		public function isInTribe(id : int =0): Boolean
+		public function isInTribe(id: int = 0): Boolean
 		{
-			if ( id == 0 ) return this.id != 0;
+            // If id is 0 then just return true if the user is in a tribe at all
+			if (id == 0) return this.id != 0;
+
 			return this.id == id;
 		}
 	}
-
 }

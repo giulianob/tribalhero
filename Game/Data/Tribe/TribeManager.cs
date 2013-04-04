@@ -186,6 +186,16 @@ namespace Game.Data.Tribe
         {
             tribe.TribesmanRemoved += TribeOnTribesmanRemoved;
             tribe.Updated += TribeOnUpdated;
+            tribe.RanksUpdated += TribeOnRanksUpdated;
+        }
+
+        private void TribeOnRanksUpdated(object sender, EventArgs eventArgs)
+        {
+            ITribe tribe = (ITribe)sender;
+            Packet packet = new Packet(Command.TribeChannelRanksUpdate);
+            PacketHelper.AddTribeRanksToPacket(tribe, packet);
+
+            Global.Channel.Post("/TRIBE/" + tribe.Id, packet);
         }
 
         private void TribeOnUpdated(object sender, EventArgs eventArgs)
@@ -194,6 +204,7 @@ namespace Game.Data.Tribe
             Packet packet = new Packet(Command.TribeChannelNotification);
             packet.AddInt32(GetIncomingList(tribe).Count());
             packet.AddInt16(tribe.AssignmentCount);
+            
             Global.Channel.Post("/TRIBE/" + tribe.Id, packet);
         }
 

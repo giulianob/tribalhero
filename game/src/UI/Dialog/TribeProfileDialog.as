@@ -453,7 +453,7 @@
 			tableMembers.getColumnAt(1).setPreferredWidth(100);
 			tableMembers.getColumnAt(2).setPreferredWidth(100);
 			tableMembers.getColumnAt(3).setCellFactory(new GeneralTableCellFactory(TribeMemberActionCell));
-			tableMembers.getColumnAt(3).setPreferredWidth(80);
+			tableMembers.getColumnAt(3).setPreferredWidth(70);
 			
 			var scrollMembers: JScrollPane = new JScrollPane(tableMembers, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
 			

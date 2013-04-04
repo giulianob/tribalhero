@@ -15,6 +15,7 @@ package src.UI.Dialog{
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
 	import src.UI.LookAndFeel.GameLookAndFeel;
+    import src.Util.Util;
 
 	public class TribeUpdateRankDialog extends GameJPanel {
 		
@@ -58,9 +59,14 @@ package src.UI.Dialog{
             });
 		}
         
-        private function showEditor(show: Boolean) {
+        private function showEditor(show: Boolean): void {
             pnlEditor.setVisible(show);
             pnlRanks.setVisible(!show);
+                       
+            if (getFrame()) {
+                getFrame().pack();
+                Util.centerFrame(getFrame());
+            }
         }
 		
 		private function setPermissions(value: int) : void {
@@ -99,9 +105,7 @@ package src.UI.Dialog{
 		}
 		
 		private function onSaveComplete(rank: *) : void {
-			InfoDialog.showMessageDialog("Info", Locale.loadString("TRIBE_RANK_UPDATED"), function():void {
-				update();
-			});
+			update();
 		}
 		
 		private function onSave() : void {
@@ -129,18 +133,24 @@ package src.UI.Dialog{
             pnlRanks = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
             {
                 comboRankId = new JComboBox();
-                comboRankId.setPreferredWidth(175);
-            
+                comboRankId.setPreferredWidth(150);
+                
+                var form:Form = new Form();
+                form.setHGap(20);
+                form.setVGap(20);
+                
+                form.addRow(new JLabel("Rank"), comboRankId);
+                
                 btnEdit = new JButton("Edit");
                 
-                pnlRanks.append(comboRankId);
-                pnlRanks.append(AsWingUtils.createPaneToHold(btnEdit, new FlowLayout()));
+                pnlRanks.append(form);
+                pnlRanks.append(AsWingUtils.createPaneToHold(btnEdit, new FlowLayout(AsWingConstants.CENTER)));
             }
-
 
 			pnlEditor = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
             {
                 txtRankName = new JTextField();
+                txtRankName.setMaxChars(15);
                 txtRankName.setPreferredWidth(175);
                 rightsPanel = new JPanel(new GridLayout(0, 3, 10 , 10));
                 
@@ -149,20 +159,20 @@ package src.UI.Dialog{
                     rightsPanel.append(checkbox);
                 }
                 
-                var form:Form = new Form();
-                form.setHGap(20);
-                form.setVGap(20);
+                var editorForm:Form = new Form();
+                editorForm.setHGap(20);
+                editorForm.setVGap(20);
                 
-                form.addRow(new JLabel("Rank"), AsWingUtils.createPaneToHold(comboRankId, new FlowLayout()));
-                form.addRow(new JLabel("Rank Name"), AsWingUtils.createPaneToHold(txtRankName, new FlowLayout()));
-                form.addRow(new JLabel("Permissions"), rightsPanel);
-      
-                btnSave = new JButton("Save");                       
+                editorForm.addRow(new JLabel("Rank Name"), AsWingUtils.createPaneToHold(txtRankName, new FlowLayout()));
+                editorForm.addRow(new JLabel("Permissions"), rightsPanel);
+                
+                btnSave = new JButton("Save");
+                btnCancel = new JButton("Cancel");
                 
                 var pnlButtons: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER));
-                pnlButtons.appendAll(btnSave);
+                pnlButtons.appendAll(btnCancel, btnSave);
                 
-                pnlEditor.append(form);			
+                pnlEditor.append(editorForm);			
                 pnlEditor.append(pnlButtons);
             }
             

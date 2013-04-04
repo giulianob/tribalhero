@@ -423,9 +423,17 @@ namespace Game.Data.Tribe
         {
             ITribeRank tribeRank;
             if (!ranks.TryGetValue(rank, out tribeRank))
+            {
                 return Error.TribeRankNotFound;
+            }
+
+            if (!TribeRank.IsNameValid(name))
+            {
+                return Error.TribeRankInvalidName;
+            }
+
             tribeRank.Name = name;
-            if (tribeRank!=ChiefRank)
+            if (tribeRank != ChiefRank)
             {
                 tribeRank.Permission = permission;
             }

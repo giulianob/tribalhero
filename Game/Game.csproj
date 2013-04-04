@@ -84,6 +84,9 @@
     <Reference Include="NDesk.Options">
       <HintPath>..\Lib\ndesk.options\NDesk.Options.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\ninject.mono\Ninject.dll</HintPath>
@@ -270,10 +273,13 @@
     <Compile Include="Data\Tribe\IAssignmentFactory.cs" />
     <Compile Include="Data\Tribe\ITribe.cs" />
     <Compile Include="Data\Tribe\ITribeFactory.cs" />
+    <Compile Include="Data\Tribe\ITribeRank.cs" />
     <Compile Include="Data\Tribe\ITribesman.cs" />
     <Compile Include="Data\Tribe\Tribe.cs" />
     <Compile Include="Data\Tribe\TribeEvents.cs" />
     <Compile Include="Data\Tribe\TribeManager.cs" />
+    <Compile Include="Data\Tribe\TribePermission.cs" />
+    <Compile Include="Data\Tribe\TribeRank.cs" />
     <Compile Include="Data\Tribe\Tribesman.cs" />
     <Compile Include="Data\Troop\CityTroopStubFactory.cs" />
     <Compile Include="Data\Troop\ITroopManager.cs" />
@@ -344,6 +350,7 @@
     <Compile Include="Logic\Procedures\BarbarianTribeBattleProcedure.cs" />
     <Compile Include="Logic\Procedures\Procedure.CityCreate.cs" />
     <Compile Include="Logic\Procedures\Procedure.Structure.cs" />
+    <Compile Include="Logic\Procedures\Procedure.Tribe.cs" />
     <Compile Include="Logic\Procedures\StrongholdBattleProcedure.cs" />
     <Compile Include="Logic\Requirements\EffectRequirement.cs" />
     <Compile Include="Logic\Formulas\Formula.cs" />

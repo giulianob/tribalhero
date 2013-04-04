@@ -237,7 +237,8 @@ namespace Game.Data
             var packet = new Packet(Command.TribeChannelUpdate);
             packet.AddUInt32(Tribesman == null ? 0 : Tribesman.Tribe.Id);
             packet.AddUInt32(TribeRequest);
-            packet.AddByte((byte)(Tribesman == null ? 0 : tribesman.Rank));
+            packet.AddByte((byte)(Tribesman == null ? 0 : tribesman.Rank.Id));
+
             Global.Channel.Post("/PLAYER/" + PlayerId, packet);
         }
 

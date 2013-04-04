@@ -287,6 +287,8 @@ namespace Game.Comm
         TribeTransfer = 1008,
 
         TribeInfoByName = 1009,
+        
+        TribeUpdateRank = 1010,
 
         TribesmanRemove = 1012,
 
@@ -313,6 +315,8 @@ namespace Game.Comm
         TribeChannelNotification = 1031,
 
         TribeChannelUpdate = 1051,
+
+        TribeChannelRanksUpdate = 1052,
 
         #endregion
 

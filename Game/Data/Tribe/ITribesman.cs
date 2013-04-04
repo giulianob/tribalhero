@@ -14,6 +14,7 @@ namespace Game.Data.Tribe
 
         Resource Contribution { get; set; }
 
-        byte Rank { get; set; }
+        ITribeRank Rank { get; set; }
+
     }
 }

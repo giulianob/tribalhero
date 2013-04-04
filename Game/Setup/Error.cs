@@ -190,6 +190,8 @@ namespace Game.Setup
 
         TribeRankNotFound = 709,
 
+        TribeRankInvalidName = 710,
+
         TribesmanNotFound = 721,
 
         TribesmanAlreadyExists = 722,

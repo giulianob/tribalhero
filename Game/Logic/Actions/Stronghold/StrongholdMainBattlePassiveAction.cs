@@ -439,12 +439,15 @@ namespace Game.Logic.Actions
 
                 npcGroupId = strongholdGroup.Id;
             }
+
             stronghold.BeginUpdate();
             stronghold.State = GameObjectState.BattleState(stronghold.MainBattle.BattleId);
             stronghold.EndUpdate();
 
             beginTime = SystemClock.Now;
-            endTime = SystemClock.Now;
+            // We give sometime here so that the troops coming from the gate battle have time to join
+            // before this battle begins
+            endTime = SystemClock.Now.AddSeconds(3);
 
             return Error.Ok;
         }

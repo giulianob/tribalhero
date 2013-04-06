@@ -185,8 +185,7 @@ namespace Game.Logic.Actions
         {
             if (state == ActionState.Fired)
             {
-                // Verify the target is still good, otherwise we walk back immediately
-
+                // Verify the target is still good, otherwise we walk back immediately                
                 ICity city;
                 IStronghold targetStronghold;
                 ITroopObject troopObject;
@@ -202,6 +201,10 @@ namespace Game.Logic.Actions
                     return;
                 }
 
+                /*
+                 * Commenting out this logic to return if stronghold is not attackable/defendable until we are able to correctly cancel assignments. At the moment, 
+                 * there are cases where when troops are in an assignment and a stronghold is taken over,
+                 * the ones that are on the walk will return and then the ones that are dispatched will be sent to the stronghold
                 bool invalidTarget;
                 using (locker.Lock(city, targetStronghold))
                 {
@@ -214,6 +217,7 @@ namespace Game.Logic.Actions
                 {
                     CancelCurrentChain();
                 }
+                 */
             }
             else if (state == ActionState.Failed)
             {

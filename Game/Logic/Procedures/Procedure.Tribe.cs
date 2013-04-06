@@ -32,11 +32,11 @@ namespace Game.Logic.Procedures
 
             tribe = tribeFactory.CreateTribe(player, name);
 
-            tribe.CreateRank("Chief", TribePermission.All);
-            tribe.CreateRank("Elder", TribePermission.Invite | TribePermission.Kick | TribePermission.Repair | TribePermission.AssignmentCreate);
-            tribe.CreateRank("Protector", TribePermission.Repair | TribePermission.AssignmentCreate);
-            tribe.CreateRank("Aggressor", TribePermission.AssignmentCreate);
-            tribe.CreateRank("Tribesmen", TribePermission.None);
+            tribe.CreateRank(0, "Chief", TribePermission.All);
+            tribe.CreateRank(1, "Elder", TribePermission.Invite | TribePermission.Kick | TribePermission.Repair | TribePermission.AssignmentCreate);
+            tribe.CreateRank(2, "Protector", TribePermission.Repair | TribePermission.AssignmentCreate);
+            tribe.CreateRank(3, "Aggressor", TribePermission.AssignmentCreate);
+            tribe.CreateRank(4, "Tribesmen", TribePermission.None);
 
             tribeManager.Add(tribe);
 

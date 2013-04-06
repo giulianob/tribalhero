@@ -230,8 +230,9 @@ namespace Game.Database
                     
                     foreach (var obj in JsonConvert.DeserializeObject<TribeRank[]>((string)reader["ranks"]))
                     {
-                        tribe.CreateRank(obj.Name, obj.Permission);
+                        tribe.CreateRank(obj.Id, obj.Name, obj.Permission);
                     }
+
                     tribe.Id = (uint)reader["id"];
                     tribe.DbPersisted = true;
 

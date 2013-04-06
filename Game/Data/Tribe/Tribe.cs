@@ -379,9 +379,9 @@ namespace Game.Data.Tribe
             return Error.Ok;
         }
 
-        public void CreateRank(string name, TribePermission permission)
+        public void CreateRank(byte id, string name, TribePermission permission)
         {
-            var rank = new TribeRank((byte)ranks.Count) {Name = name, Permission = permission};
+            var rank = new TribeRank(id) {Name = name, Permission = permission};
             ranks[rank.Id] = rank;
         }
 

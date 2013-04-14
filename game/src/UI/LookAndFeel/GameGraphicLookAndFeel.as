@@ -102,285 +102,285 @@ package src.UI.LookAndFeel
 		//----------------------------------------------------------------------
 		//___________________________ Gamebar ___________________________________
 		//======================================================================
-		[Embed(source="assets/Game-bar.png", scaleGridTop="5", scaleGridBottom="40",
+		[Embed(source="../../../../graphics/ui/Game-bar.png", scaleGridTop="5", scaleGridBottom="40",
 		scaleGridLeft="190", scaleGridRight="675")]
 		private var GameContainer_gameBar:Class;
 
 		//----------------------------------------------------------------------
 		//___________________________ System ___________________________________
 		//======================================================================
-		[Embed(source="assets/System_hResizeCursor.png")]
+		[Embed(source="../../../../graphics/ui/System_hResizeCursor.png")]
 		private var System_hResizeCursor:Class;
 
-		[Embed(source="assets/System_vResizeCursor.png")]
+		[Embed(source="../../../../graphics/ui/System_vResizeCursor.png")]
 		private var System_vResizeCursor:Class;
 
-		[Embed(source="assets/System_hMoveCursor.png")]
+		[Embed(source="../../../../graphics/ui/System_hMoveCursor.png")]
 		private var System_hMoveCursor:Class;
 
-		[Embed(source="assets/System_vMoveCursor.png")]
+		[Embed(source="../../../../graphics/ui/System_vMoveCursor.png")]
 		private var System_vMoveCursor:Class;
 
 		//----------------------------------------------------------------------
 		//___________________________ Button scale-9 ___________________________
 		//======================================================================
-		[Embed(source="assets/Button_defaultImage.png", scaleGridTop="7", scaleGridBottom="19",
+		[Embed(source="../../../../graphics/ui/Button_defaultImage.png", scaleGridTop="7", scaleGridBottom="19",
 		scaleGridLeft="7", scaleGridRight="124")]
 		private var Button_defaultImage:Class;
 
-		[Embed(source="assets/Button_pressedImage.png", scaleGridTop="7", scaleGridBottom="19",
+		[Embed(source="../../../../graphics/ui/Button_pressedImage.png", scaleGridTop="7", scaleGridBottom="19",
 		scaleGridLeft="7", scaleGridRight="124")]
 		private var Button_pressedImage:Class;
 
-		[Embed(source="assets/Button_rolloverImage.png", scaleGridTop="7", scaleGridBottom="19",
+		[Embed(source="../../../../graphics/ui/Button_rolloverImage.png", scaleGridTop="7", scaleGridBottom="19",
 		scaleGridLeft="7", scaleGridRight="124")]
 		private var Button_rolloverImage:Class;
 
-		[Embed(source="assets/Button_disabledImage.png", scaleGridTop="7", scaleGridBottom="19",
+		[Embed(source="../../../../graphics/ui/Button_disabledImage.png", scaleGridTop="7", scaleGridBottom="19",
 		scaleGridLeft="7", scaleGridRight="124")]
 		private var Button_disabledImage:Class;
 
-		[Embed(source="assets/Button_DefaultButton_defaultImage.png", scaleGridTop="7", scaleGridBottom="19",
+		[Embed(source="../../../../graphics/ui/Button_DefaultButton_defaultImage.png", scaleGridTop="7", scaleGridBottom="19",
 		scaleGridLeft="7", scaleGridRight="124")]
 		private var Button_DefaultButton_defaultImage:Class;
 
 		//----------------------------------------------------------------------------
 		//___________________________ ToggleButton scale-9 ___________________________
 		//============================================================================
-		[Embed(source="assets/ToggleButton_defaultImage.png", scaleGridTop="7", scaleGridBottom="19",
+		[Embed(source="../../../../graphics/ui/ToggleButton_defaultImage.png", scaleGridTop="7", scaleGridBottom="19",
 		scaleGridLeft="7", scaleGridRight="124")]
 		private var ToggleButton_defaultImage:Class;
 
-		[Embed(source="assets/ToggleButton_pressedImage.png", scaleGridTop="7", scaleGridBottom="19",
+		[Embed(source="../../../../graphics/ui/ToggleButton_pressedImage.png", scaleGridTop="7", scaleGridBottom="19",
 		scaleGridLeft="7", scaleGridRight="124")]
 		private var ToggleButton_pressedImage:Class;
 
-		[Embed(source="assets/ToggleButton_disabledImage.png", scaleGridTop="7", scaleGridBottom="19",
+		[Embed(source="../../../../graphics/ui/ToggleButton_disabledImage.png", scaleGridTop="7", scaleGridBottom="19",
 		scaleGridLeft="7", scaleGridRight="124")]
 		private var ToggleButton_disabledImage:Class;
 
-		[Embed(source="assets/ToggleButton_selectedImage.png", scaleGridTop="7", scaleGridBottom="19",
+		[Embed(source="../../../../graphics/ui/ToggleButton_selectedImage.png", scaleGridTop="7", scaleGridBottom="19",
 		scaleGridLeft="7", scaleGridRight="124")]
 		private var ToggleButton_selectedImage:Class;
 
-		[Embed(source="assets/ToggleButton_disabledSelectedImage.png", scaleGridTop="7", scaleGridBottom="19",
+		[Embed(source="../../../../graphics/ui/ToggleButton_disabledSelectedImage.png", scaleGridTop="7", scaleGridBottom="19",
 		scaleGridLeft="7", scaleGridRight="124")]
 		private var ToggleButton_disabledSelectedImage:Class;
 
-		[Embed(source="assets/ToggleButton_rolloverImage.png", scaleGridTop="7", scaleGridBottom="19",
+		[Embed(source="../../../../graphics/ui/ToggleButton_rolloverImage.png", scaleGridTop="7", scaleGridBottom="19",
 		scaleGridLeft="7", scaleGridRight="124")]
 		private var ToggleButton_rolloverImage:Class;
 
-		[Embed(source="assets/ToggleButton_rolloverSelectedImage.png", scaleGridTop="7", scaleGridBottom="19",
+		[Embed(source="../../../../graphics/ui/ToggleButton_rolloverSelectedImage.png", scaleGridTop="7", scaleGridBottom="19",
 		scaleGridLeft="7", scaleGridRight="124")]
 		private var ToggleButton_rolloverSelectedImage:Class;
 
 		//-------------------------------------------------------------------
 		//___________________________ RadioButton ___________________________
 		//===================================================================
-		[Embed(source="assets/RadioButton_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/RadioButton_defaultImage.png")]
 		private var RadioButton_defaultImage:Class;
 
-		[Embed(source="assets/RadioButton_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/RadioButton_pressedImage.png")]
 		private var RadioButton_pressedImage:Class;
 
-		[Embed(source="assets/RadioButton_pressedSelectedImage.png")]
+		[Embed(source="../../../../graphics/ui/RadioButton_pressedSelectedImage.png")]
 		private var RadioButton_pressedSelectedImage:Class;
 
-		[Embed(source="assets/RadioButton_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/RadioButton_disabledImage.png")]
 		private var RadioButton_disabledImage:Class;
 
-		[Embed(source="assets/RadioButton_selectedImage.png")]
+		[Embed(source="../../../../graphics/ui/RadioButton_selectedImage.png")]
 		private var RadioButton_selectedImage:Class;
 
-		[Embed(source="assets/RadioButton_disabledSelectedImage.png")]
+		[Embed(source="../../../../graphics/ui/RadioButton_disabledSelectedImage.png")]
 		private var RadioButton_disabledSelectedImage:Class;
 
-		[Embed(source="assets/RadioButton_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/RadioButton_rolloverImage.png")]
 		private var RadioButton_rolloverImage:Class;
 
-		[Embed(source="assets/RadioButton_rolloverSelectedImage.png")]
+		[Embed(source="../../../../graphics/ui/RadioButton_rolloverSelectedImage.png")]
 		private var RadioButton_rolloverSelectedImage:Class;
 
 		//----------------------------------------------------------------
 		//___________________________ CheckBox ___________________________
 		//================================================================
-		[Embed(source="assets/CheckBox_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/CheckBox_defaultImage.png")]
 		private var CheckBox_defaultImage:Class;
 
-		[Embed(source="assets/CheckBox_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/CheckBox_pressedImage.png")]
 		private var CheckBox_pressedImage:Class;
 
-		[Embed(source="assets/CheckBox_pressedSelectedImage.png")]
+		[Embed(source="../../../../graphics/ui/CheckBox_pressedSelectedImage.png")]
 		private var CheckBox_pressedSelectedImage:Class;
 
-		[Embed(source="assets/CheckBox_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/CheckBox_disabledImage.png")]
 		private var CheckBox_disabledImage:Class;
 
-		[Embed(source="assets/CheckBox_selectedImage.png")]
+		[Embed(source="../../../../graphics/ui/CheckBox_selectedImage.png")]
 		private var CheckBox_selectedImage:Class;
 
-		[Embed(source="assets/CheckBox_disabledSelectedImage.png")]
+		[Embed(source="../../../../graphics/ui/CheckBox_disabledSelectedImage.png")]
 		private var CheckBox_disabledSelectedImage:Class;
 
-		[Embed(source="assets/CheckBox_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/CheckBox_rolloverImage.png")]
 		private var CheckBox_rolloverImage:Class;
 
-		[Embed(source="assets/CheckBox_rolloverSelectedImage.png")]
+		[Embed(source="../../../../graphics/ui/CheckBox_rolloverSelectedImage.png")]
 		private var CheckBox_rolloverSelectedImage:Class;
 
 		//------------------------------------------------------------------
 		//___________________________ ScrollBar ____________________________
 		//==================================================================
 		//========= Left Arrow Images =======
-		[Embed(source="assets/ScrollBar_arrowLeft_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_arrowLeft_defaultImage.png")]
 		private var ScrollBar_arrowLeft_defaultImage:Class;
 
-		[Embed(source="assets/ScrollBar_arrowLeft_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_arrowLeft_pressedImage.png")]
 		private var ScrollBar_arrowLeft_pressedImage:Class;
 
-		[Embed(source="assets/ScrollBar_arrowLeft_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_arrowLeft_disabledImage.png")]
 		private var ScrollBar_arrowLeft_disabledImage:Class;
 
-		[Embed(source="assets/ScrollBar_arrowLeft_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_arrowLeft_rolloverImage.png")]
 		private var ScrollBar_arrowLeft_rolloverImage:Class;
 
 		//========= Right Arrow Images =======
-		[Embed(source="assets/ScrollBar_arrowRight_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_arrowRight_defaultImage.png")]
 		private var ScrollBar_arrowRight_defaultImage:Class;
 
-		[Embed(source="assets/ScrollBar_arrowRight_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_arrowRight_pressedImage.png")]
 		private var ScrollBar_arrowRight_pressedImage:Class;
 
-		[Embed(source="assets/ScrollBar_arrowRight_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_arrowRight_disabledImage.png")]
 		private var ScrollBar_arrowRight_disabledImage:Class;
 
-		[Embed(source="assets/ScrollBar_arrowRight_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_arrowRight_rolloverImage.png")]
 		private var ScrollBar_arrowRight_rolloverImage:Class;
 
 		//========= Up Arrow Images =======
-		[Embed(source="assets/ScrollBar_arrowUp_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_arrowUp_defaultImage.png")]
 		private var ScrollBar_arrowUp_defaultImage:Class;
 
-		[Embed(source="assets/ScrollBar_arrowUp_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_arrowUp_pressedImage.png")]
 		private var ScrollBar_arrowUp_pressedImage:Class;
 
-		[Embed(source="assets/ScrollBar_arrowUp_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_arrowUp_disabledImage.png")]
 		private var ScrollBar_arrowUp_disabledImage:Class;
 
-		[Embed(source="assets/ScrollBar_arrowUp_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_arrowUp_rolloverImage.png")]
 		private var ScrollBar_arrowUp_rolloverImage:Class;
 
 		//========= Down Arrow Images =======
-		[Embed(source="assets/ScrollBar_arrowDown_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_arrowDown_defaultImage.png")]
 		private var ScrollBar_arrowDown_defaultImage:Class;
 
-		[Embed(source="assets/ScrollBar_arrowDown_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_arrowDown_pressedImage.png")]
 		private var ScrollBar_arrowDown_pressedImage:Class;
 
-		[Embed(source="assets/ScrollBar_arrowDown_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_arrowDown_disabledImage.png")]
 		private var ScrollBar_arrowDown_disabledImage:Class;
 
-		[Embed(source="assets/ScrollBar_arrowDown_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_arrowDown_rolloverImage.png")]
 		private var ScrollBar_arrowDown_rolloverImage:Class;
 
 		//========= Background Images scale-9 =======
-		[Embed(source="assets/ScrollBar_verticalBGImage.png", scaleGridTop="3", scaleGridBottom="158",
+		[Embed(source="../../../../graphics/ui/ScrollBar_verticalBGImage.png", scaleGridTop="3", scaleGridBottom="158",
 		scaleGridLeft="7", scaleGridRight="9")]
 		private var ScrollBar_verticalBGImage:Class;
 
-		[Embed(source="assets/ScrollBar_horizotalBGImage.png", scaleGridTop="7", scaleGridBottom="9",
+		[Embed(source="../../../../graphics/ui/ScrollBar_horizotalBGImage.png", scaleGridTop="7", scaleGridBottom="9",
 		scaleGridLeft="3", scaleGridRight="158")]
 		private var ScrollBar_horizotalBGImage:Class;
 		//by default the disabled bg state is null(means same to normal state), but you can add it by remove the comments
-		//[Embed(source="assets/ScrollBar_verticalBGDisabledImage.png", scaleGridTop="10", scaleGridBottom="223",
+		//[Embed(source="../../../../graphics/ui/ScrollBar_verticalBGDisabledImage.png", scaleGridTop="10", scaleGridBottom="223",
 		//	scaleGridLeft="7", scaleGridRight="9")]
 		private var ScrollBar_verticalBGDisabledImage:Class;
 
-		//[Embed(source="assets/ScrollBar_horizotalBGDisabledImage.png", scaleGridTop="7", scaleGridBottom="9",
+		//[Embed(source="../../../../graphics/ui/ScrollBar_horizotalBGDisabledImage.png", scaleGridTop="7", scaleGridBottom="9",
 		//	scaleGridLeft="10", scaleGridRight="223")]
 		private var ScrollBar_horizotalBGDisabledImage:Class;
 
 		//========= Thumb Images scale-9 =======
 		//vertical
-		[Embed(source="assets/ScrollBar_thumbVertical_defaultImage.png", scaleGridTop="3", scaleGridBottom="122",
+		[Embed(source="../../../../graphics/ui/ScrollBar_thumbVertical_defaultImage.png", scaleGridTop="3", scaleGridBottom="122",
 		scaleGridLeft="3", scaleGridRight="16")]
 		private var ScrollBar_thumbVertical_defaultImage:Class;
 
-		[Embed(source="assets/ScrollBar_thumbVertical_pressedImage.png", scaleGridTop="3", scaleGridBottom="122",
+		[Embed(source="../../../../graphics/ui/ScrollBar_thumbVertical_pressedImage.png", scaleGridTop="3", scaleGridBottom="122",
 		scaleGridLeft="3", scaleGridRight="16")]
 		private var ScrollBar_thumbVertical_pressedImage:Class;
 
-		[Embed(source="assets/ScrollBar_thumbVertical_rolloverImage.png", scaleGridTop="3", scaleGridBottom="122",
+		[Embed(source="../../../../graphics/ui/ScrollBar_thumbVertical_rolloverImage.png", scaleGridTop="3", scaleGridBottom="122",
 		scaleGridLeft="3", scaleGridRight="16")]
 		private var ScrollBar_thumbVertical_rolloverImage:Class;
 
-		[Embed(source="assets/ScrollBar_thumbVertical_disabledImage.png", scaleGridTop="3", scaleGridBottom="122",
+		[Embed(source="../../../../graphics/ui/ScrollBar_thumbVertical_disabledImage.png", scaleGridTop="3", scaleGridBottom="122",
 		scaleGridLeft="3", scaleGridRight="16")]
 		private var ScrollBar_thumbVertical_disabledImage:Class;
 
-		[Embed(source="assets/ScrollBar_thumbVertical_iconImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_thumbVertical_iconImage.png")]
 		private var ScrollBar_thumbVertical_iconImage:Class;
-		[Embed(source="assets/ScrollBar_thumbVertical_iconPressedImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_thumbVertical_iconPressedImage.png")]
 		private var ScrollBar_thumbVertical_iconPressedImage:Class;
-		[Embed(source="assets/ScrollBar_thumbVertical_iconDisabledImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_thumbVertical_iconDisabledImage.png")]
 		private var ScrollBar_thumbVertical_iconDisabledImage:Class;
-		[Embed(source="assets/ScrollBar_thumbVertical_iconRolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_thumbVertical_iconRolloverImage.png")]
 		private var ScrollBar_thumbVertical_iconRolloverImage:Class;
 
 		//horizontal
-		[Embed(source="assets/ScrollBar_thumbHorizontal_defaultImage.png", scaleGridTop="3", scaleGridBottom="16",
+		[Embed(source="../../../../graphics/ui/ScrollBar_thumbHorizontal_defaultImage.png", scaleGridTop="3", scaleGridBottom="16",
 		scaleGridLeft="3", scaleGridRight="122")]
 		private var ScrollBar_thumbHorizontal_defaultImage:Class;
 
-		[Embed(source="assets/ScrollBar_thumbHorizontal_pressedImage.png", scaleGridTop="3", scaleGridBottom="16",
+		[Embed(source="../../../../graphics/ui/ScrollBar_thumbHorizontal_pressedImage.png", scaleGridTop="3", scaleGridBottom="16",
 		scaleGridLeft="3", scaleGridRight="122")]
 		private var ScrollBar_thumbHorizontal_pressedImage:Class;
 
-		[Embed(source="assets/ScrollBar_thumbHorizontal_rolloverImage.png", scaleGridTop="3", scaleGridBottom="16",
+		[Embed(source="../../../../graphics/ui/ScrollBar_thumbHorizontal_rolloverImage.png", scaleGridTop="3", scaleGridBottom="16",
 		scaleGridLeft="3", scaleGridRight="122")]
 		private var ScrollBar_thumbHorizontal_rolloverImage:Class;
 
-		[Embed(source="assets/ScrollBar_thumbHorizontal_disabledImage.png", scaleGridTop="3", scaleGridBottom="16",
+		[Embed(source="../../../../graphics/ui/ScrollBar_thumbHorizontal_disabledImage.png", scaleGridTop="3", scaleGridBottom="16",
 		scaleGridLeft="3", scaleGridRight="122")]
 		private var ScrollBar_thumbHorizontal_disabledImage:Class;
 
-		[Embed(source="assets/ScrollBar_thumbHorizontal_iconImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_thumbHorizontal_iconImage.png")]
 		private var ScrollBar_thumbHorizontal_iconImage:Class;
-		[Embed(source="assets/ScrollBar_thumbHorizontal_iconPressedImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_thumbHorizontal_iconPressedImage.png")]
 		private var ScrollBar_thumbHorizontal_iconPressedImage:Class;
-		[Embed(source="assets/ScrollBar_thumbHorizontal_iconDisabledImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_thumbHorizontal_iconDisabledImage.png")]
 		private var ScrollBar_thumbHorizontal_iconDisabledImage:Class;
-		[Embed(source="assets/ScrollBar_thumbHorizontal_iconRolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/ScrollBar_thumbHorizontal_iconRolloverImage.png")]
 		private var ScrollBar_thumbHorizontal_iconRolloverImage:Class;
 
 		//---------------------------------------------------------------------
 		//___________________________ TextField scale-9 _______________________
 		//=====================================================================
-		[Embed(source="assets/TextField_defaultImage.png", scaleGridTop="4", scaleGridBottom="20",
+		[Embed(source="../../../../graphics/ui/TextField_defaultImage.png", scaleGridTop="4", scaleGridBottom="20",
 		scaleGridLeft="4", scaleGridRight="87")]
 		private var TextField_defaultImage:Class;
 
-		[Embed(source="assets/TextField_uneditableImage.png", scaleGridTop="4", scaleGridBottom="20",
+		[Embed(source="../../../../graphics/ui/TextField_uneditableImage.png", scaleGridTop="4", scaleGridBottom="20",
 		scaleGridLeft="4", scaleGridRight="87")]
 		private var TextField_uneditableImage:Class;
 
-		[Embed(source="assets/TextField_disabledImage.png", scaleGridTop="4", scaleGridBottom="20",
+		[Embed(source="../../../../graphics/ui/TextField_disabledImage.png", scaleGridTop="4", scaleGridBottom="20",
 		scaleGridLeft="4", scaleGridRight="87")]
 		private var TextField_disabledImage:Class;
 
 		//------------------------------------------------------------------------
 		//___________________________ TextArea scale-9 ___________________________
 		//========================================================================
-		[Embed(source="assets/TextArea_defaultImage.png", scaleGridTop="4", scaleGridBottom="21",
+		[Embed(source="../../../../graphics/ui/TextArea_defaultImage.png", scaleGridTop="4", scaleGridBottom="21",
 		scaleGridLeft="4", scaleGridRight="126")]
 		private var TextArea_defaultImage:Class;
 
-		[Embed(source="assets/TextArea_uneditableImage.png", scaleGridTop="4", scaleGridBottom="21",
+		[Embed(source="../../../../graphics/ui/TextArea_uneditableImage.png", scaleGridTop="4", scaleGridBottom="21",
 		scaleGridLeft="4", scaleGridRight="126")]
 		private var TextArea_uneditableImage:Class;
 
-		[Embed(source="assets/TextArea_disabledImage.png", scaleGridTop="4", scaleGridBottom="21",
+		[Embed(source="../../../../graphics/ui/TextArea_disabledImage.png", scaleGridTop="4", scaleGridBottom="21",
 		scaleGridLeft="4", scaleGridRight="126")]
 		private var TextArea_disabledImage:Class;
 
@@ -388,7 +388,7 @@ package src.UI.LookAndFeel
 		//___________________________ Sidebar BG ____________________________
 		//==============================================================
 		//Backgorund scale-9 (Include title bar background all in one picture)
-		[Embed(source="assets/Sidebar_frame_activeBG.png", scaleGridTop="45", scaleGridBottom="374",
+		[Embed(source="../../../../graphics/ui/Sidebar_frame_activeBG.png", scaleGridTop="45", scaleGridBottom="374",
 		scaleGridLeft="29", scaleGridRight="146")]
 		private var Sidebar_frame_activeBG:Class;
 
@@ -396,116 +396,116 @@ package src.UI.LookAndFeel
 		//___________________________ Frame ____________________________
 		//==============================================================
 		//Backgorund scale-9 (Include title bar background all in one picture)
-		[Embed(source="assets/Frame_activeBG.png", scaleGridTop="66", scaleGridBottom="350",
+		[Embed(source="../../../../graphics/ui/Frame_activeBG.png", scaleGridTop="66", scaleGridBottom="350",
 		scaleGridLeft="128", scaleGridRight="668")]
 		private var Frame_activeBG:Class;
 
 		//========= Frame_iconifiedIcon Images =======
-		[Embed(source="assets/Frame_iconifiedIcon_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_iconifiedIcon_defaultImage.png")]
 		private var Frame_iconifiedIcon_defaultImage:Class;
 
-		[Embed(source="assets/Frame_iconifiedIcon_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_iconifiedIcon_pressedImage.png")]
 		private var Frame_iconifiedIcon_pressedImage:Class;
 
-		[Embed(source="assets/Frame_iconifiedIcon_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_iconifiedIcon_disabledImage.png")]
 		private var Frame_iconifiedIcon_disabledImage:Class;
 
-		[Embed(source="assets/Frame_iconifiedIcon_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_iconifiedIcon_rolloverImage.png")]
 		private var Frame_iconifiedIcon_rolloverImage:Class;
 
 		//========= Frame_normalIcon Images =======
-		[Embed(source="assets/Frame_normalIcon_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_normalIcon_defaultImage.png")]
 		private var Frame_normalIcon_defaultImage:Class;
 
-		[Embed(source="assets/Frame_normalIcon_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_normalIcon_pressedImage.png")]
 		private var Frame_normalIcon_pressedImage:Class;
 
-		[Embed(source="assets/Frame_normalIcon_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_normalIcon_disabledImage.png")]
 		private var Frame_normalIcon_disabledImage:Class;
 
-		[Embed(source="assets/Frame_normalIcon_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_normalIcon_rolloverImage.png")]
 		private var Frame_normalIcon_rolloverImage:Class;
 
 		//========= Frame_maximizeIcon Images =======
-		[Embed(source="assets/Frame_maximizeIcon_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_maximizeIcon_defaultImage.png")]
 		private var Frame_maximizeIcon_defaultImage:Class;
 
-		[Embed(source="assets/Frame_maximizeIcon_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_maximizeIcon_pressedImage.png")]
 		private var Frame_maximizeIcon_pressedImage:Class;
 
-		[Embed(source="assets/Frame_maximizeIcon_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_maximizeIcon_disabledImage.png")]
 		private var Frame_maximizeIcon_disabledImage:Class;
 
-		[Embed(source="assets/Frame_maximizeIcon_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_maximizeIcon_rolloverImage.png")]
 		private var Frame_maximizeIcon_rolloverImage:Class;
 
 		//========= Close Icon Images =======
-		[Embed(source="assets/Frame_closeIcon_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_closeIcon_defaultImage.png")]
 		private var Frame_closeIcon_defaultImage:Class;
 
-		[Embed(source="assets/Frame_closeIcon_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_closeIcon_pressedImage.png")]
 		private var Frame_closeIcon_pressedImage:Class;
 
-		[Embed(source="assets/Frame_closeIcon_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_closeIcon_disabledImage.png")]
 		private var Frame_closeIcon_disabledImage:Class;
 
-		[Embed(source="assets/Frame_closeIcon_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_closeIcon_rolloverImage.png")]
 		private var Frame_closeIcon_rolloverImage:Class;
 		
-		[Embed(source="assets/Frame_largeCloseIcon_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_largeCloseIcon_defaultImage.png")]
 		private var Frame_largeCloseIcon_defaultImage:Class;
 
-		[Embed(source="assets/Frame_largeCloseIcon_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_largeCloseIcon_pressedImage.png")]
 		private var Frame_largeCloseIcon_pressedImage:Class;
 
-		[Embed(source="assets/clear.png")]
+		[Embed(source="../../../../graphics/ui/clear.png")]
 		private var Frame_largeCloseIcon_disabledImage:Class;
 
-		[Embed(source="assets/Frame_largeCloseIcon_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/Frame_largeCloseIcon_rolloverImage.png")]
 		private var Frame_largeCloseIcon_rolloverImage:Class;		
 		
 		//========= Chat Image =======
-		[Embed(source="assets/chat_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/chat_defaultImage.png")]
 		private var Frame_chatIcon_defaultImage:Class;
 
-		[Embed(source="assets/chat_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/chat_defaultImage.png")]
 		private var Frame_chatIcon_pressedImage:Class;
 
-		[Embed(source="assets/chat_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/chat_defaultImage.png")]
 		private var Frame_chatIcon_disabledImage:Class;
 
-		[Embed(source="assets/chat_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/chat_rolloverImage.png")]
 		private var Frame_chatIcon_rolloverImage:Class;	
 		
 		//========= Chat Enabled Image =======
-		[Embed(source="assets/chat_enabled_icon.png")]
+		[Embed(source="../../../../graphics/ui/chat_enabled_icon.png")]
 		private var Frame_chatEnabledIcon_defaultImage:Class;
 
-		[Embed(source="assets/chat_enabled_icon.png")]
+		[Embed(source="../../../../graphics/ui/chat_enabled_icon.png")]
 		private var Frame_chatEnabledIcon_pressedImage:Class;
 
-		[Embed(source="assets/chat_enabled_icon.png")]
+		[Embed(source="../../../../graphics/ui/chat_enabled_icon.png")]
 		private var Frame_chatEnabledIcon_disabledImage:Class;
 
-		[Embed(source="assets/chat_enabled_icon.png")]
+		[Embed(source="../../../../graphics/ui/chat_enabled_icon.png")]
 		private var Frame_chatEnabledIcon_rolloverImage:Class;				
 		
 		//========= Chat Enabled Image =======
-		[Embed(source="assets/chat_disabled_icon.png")]
+		[Embed(source="../../../../graphics/ui/chat_disabled_icon.png")]
 		private var Frame_chatDisabledIcon_defaultImage:Class;
 
-		[Embed(source="assets/chat_disabled_icon.png")]
+		[Embed(source="../../../../graphics/ui/chat_disabled_icon.png")]
 		private var Frame_chatDisabledIcon_pressedImage:Class;
 
-		[Embed(source="assets/chat_disabled_icon.png")]
+		[Embed(source="../../../../graphics/ui/chat_disabled_icon.png")]
 		private var Frame_chatDisabledIcon_disabledImage:Class;
 
-		[Embed(source="assets/chat_disabled_icon.png")]
+		[Embed(source="../../../../graphics/ui/chat_disabled_icon.png")]
 		private var Frame_chatDisabledIcon_rolloverImage:Class;	
 		//----------------------------------------------------------------------
 		//___________________________ ToolTip scale-9 __________________________
 		//======================================================================
-		[Embed(source="assets/ToolTip_bgImage.png", scaleGridTop="3", scaleGridBottom="16",
+		[Embed(source="../../../../graphics/ui/ToolTip_bgImage.png", scaleGridTop="3", scaleGridBottom="16",
 		scaleGridLeft="3", scaleGridRight="39")]
 		private var ToolTip_bgImage:Class;
 
@@ -514,64 +514,64 @@ package src.UI.LookAndFeel
 		//========================================================================
 
 		//========= Background Images =======
-		[Embed(source="assets/ComboBox_defaultImage.png", scaleGridTop="4", scaleGridBottom="17",
+		[Embed(source="../../../../graphics/ui/ComboBox_defaultImage.png", scaleGridTop="4", scaleGridBottom="17",
 		scaleGridLeft="4", scaleGridRight="73")]
 		private var ComboBox_defaultImage:Class;
 
-		[Embed(source="assets/ComboBox_uneditableImage.png", scaleGridTop="4", scaleGridBottom="17",
+		[Embed(source="../../../../graphics/ui/ComboBox_uneditableImage.png", scaleGridTop="4", scaleGridBottom="17",
 		scaleGridLeft="4", scaleGridRight="73")]
 		private var ComboBox_uneditableImage:Class;
 		//by default the rollover state is null(means same to normal state), but you can add it by remove the comments
-		//[Embed(source="assets/ComboBox_defaultRolloverImage.png", scaleGridTop="3", scaleGridBottom="20",
+		//[Embed(source="../../../../graphics/ui/ComboBox_defaultRolloverImage.png", scaleGridTop="3", scaleGridBottom="20",
 		//	scaleGridLeft="3", scaleGridRight="131")]
 		private var ComboBox_defaultRolloverImage:Class;
-		//[Embed(source="assets/ComboBox_uneditableRolloverImage.png", scaleGridTop="3", scaleGridBottom="20",
+		//[Embed(source="../../../../graphics/ui/ComboBox_uneditableRolloverImage.png", scaleGridTop="3", scaleGridBottom="20",
 		//	scaleGridLeft="3", scaleGridRight="131")]
 		private var ComboBox_uneditableRolloverImage:Class;
-		//[Embed(source="assets/ComboBox_defaultPressedImage.png", scaleGridTop="3", scaleGridBottom="20",
+		//[Embed(source="../../../../graphics/ui/ComboBox_defaultPressedImage.png", scaleGridTop="3", scaleGridBottom="20",
 		//	scaleGridLeft="3", scaleGridRight="131")]
 		private var ComboBox_defaultPressedImage:Class;
-		//[Embed(source="assets/ComboBox_uneditablePressedImage.png", scaleGridTop="3", scaleGridBottom="20",
+		//[Embed(source="../../../../graphics/ui/ComboBox_uneditablePressedImage.png", scaleGridTop="3", scaleGridBottom="20",
 		//	scaleGridLeft="3", scaleGridRight="131")]
 		private var ComboBox_uneditablePressedImage:Class;
 
-		[Embed(source="assets/ComboBox_disabledImage.png", scaleGridTop="4", scaleGridBottom="17",
+		[Embed(source="../../../../graphics/ui/ComboBox_disabledImage.png", scaleGridTop="4", scaleGridBottom="17",
 		scaleGridLeft="4", scaleGridRight="73")]
 		private var ComboBox_disabledImage:Class;
 
 		//========= Arrow Button Images =======
-		[Embed(source="assets/ComboBox_arrowButton_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/ComboBox_arrowButton_defaultImage.png")]
 		private var ComboBox_arrowButton_defaultImage:Class;
 
-		[Embed(source="assets/ComboBox_arrowButton_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/ComboBox_arrowButton_pressedImage.png")]
 		private var ComboBox_arrowButton_pressedImage:Class;
 
-		[Embed(source="assets/ComboBox_arrowButton_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/ComboBox_arrowButton_disabledImage.png")]
 		private var ComboBox_arrowButton_disabledImage:Class;
 
-		[Embed(source="assets/ComboBox_arrowButton_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/ComboBox_arrowButton_rolloverImage.png")]
 		private var ComboBox_arrowButton_rolloverImage:Class;
 
 		//----------------------------------------------------------------------
 		//___________________________ 51 header scale-9 ___________________________
 		//======================================================================
-		[Embed(source="assets/Accordion_header_defaultImage.png", scaleGridTop="11", scaleGridBottom="12",
+		[Embed(source="../../../../graphics/ui/Accordion_header_defaultImage.png", scaleGridTop="11", scaleGridBottom="12",
 		scaleGridLeft="5", scaleGridRight="75")]
 		private var Accordion_header_defaultImage:Class;
 
-		[Embed(source="assets/Accordion_header_pressedImage.png", scaleGridTop="11", scaleGridBottom="12",
+		[Embed(source="../../../../graphics/ui/Accordion_header_pressedImage.png", scaleGridTop="11", scaleGridBottom="12",
 		scaleGridLeft="5", scaleGridRight="75")]
 		private var Accordion_header_pressedImage:Class;
 
-		[Embed(source="assets/Accordion_header_rolloverImage.png", scaleGridTop="11", scaleGridBottom="12",
+		[Embed(source="../../../../graphics/ui/Accordion_header_rolloverImage.png", scaleGridTop="11", scaleGridBottom="12",
 		scaleGridLeft="5", scaleGridRight="75")]
 		private var Accordion_header_rolloverImage:Class;
 
-		[Embed(source="assets/Accordion_header_disabledImage.png", scaleGridTop="11", scaleGridBottom="12",
+		[Embed(source="../../../../graphics/ui/Accordion_header_disabledImage.png", scaleGridTop="11", scaleGridBottom="12",
 		scaleGridLeft="5", scaleGridRight="75")]
 		private var Accordion_header_disabledImage:Class;
 
-		[Embed(source="assets/Accordion_header_selectedImage.png", scaleGridTop="11", scaleGridBottom="12",
+		[Embed(source="../../../../graphics/ui/Accordion_header_selectedImage.png", scaleGridTop="11", scaleGridBottom="12",
 		scaleGridLeft="5", scaleGridRight="75")]
 		private var Accordion_header_selectedImage:Class;
 
@@ -579,184 +579,184 @@ package src.UI.LookAndFeel
 		//___________________________ TabbedPane _______________________________
 		//======================================================================
 		//========= header top scale-9 =======
-		[Embed(source="assets/TabbedPane_top_tab_defaultImage.png", scaleGridTop="5", scaleGridBottom="18",
+		[Embed(source="../../../../graphics/ui/TabbedPane_top_tab_defaultImage.png", scaleGridTop="5", scaleGridBottom="18",
 		scaleGridLeft="5", scaleGridRight="61")]
 		private var TabbedPane_top_tab_defaultImage:Class;
 
-		[Embed(source="assets/TabbedPane_top_tab_pressedImage.png", scaleGridTop="5", scaleGridBottom="18",
+		[Embed(source="../../../../graphics/ui/TabbedPane_top_tab_pressedImage.png", scaleGridTop="5", scaleGridBottom="18",
 		scaleGridLeft="5", scaleGridRight="61")]
 		private var TabbedPane_top_tab_pressedImage:Class;
 
-		[Embed(source="assets/TabbedPane_top_tab_rolloverImage.png", scaleGridTop="5", scaleGridBottom="18",
+		[Embed(source="../../../../graphics/ui/TabbedPane_top_tab_rolloverImage.png", scaleGridTop="5", scaleGridBottom="18",
 		scaleGridLeft="5", scaleGridRight="61")]
 		private var TabbedPane_top_tab_rolloverImage:Class;
 
-		[Embed(source="assets/TabbedPane_top_tab_disabledImage.png", scaleGridTop="5", scaleGridBottom="18",
+		[Embed(source="../../../../graphics/ui/TabbedPane_top_tab_disabledImage.png", scaleGridTop="5", scaleGridBottom="18",
 		scaleGridLeft="5", scaleGridRight="61")]
 		private var TabbedPane_top_tab_disabledImage:Class;
 
-		[Embed(source="assets/TabbedPane_top_tab_selectedImage.png", scaleGridTop="5", scaleGridBottom="18",
+		[Embed(source="../../../../graphics/ui/TabbedPane_top_tab_selectedImage.png", scaleGridTop="5", scaleGridBottom="18",
 		scaleGridLeft="5", scaleGridRight="61")]
 		private var TabbedPane_top_tab_selectedImage:Class;
 
-		[Embed(source="assets/TabbedPane_top_tab_rolloverSelectedImage.png", scaleGridTop="5", scaleGridBottom="18",
+		[Embed(source="../../../../graphics/ui/TabbedPane_top_tab_rolloverSelectedImage.png", scaleGridTop="5", scaleGridBottom="18",
 		scaleGridLeft="5", scaleGridRight="61")]
 		private var TabbedPane_top_tab_rolloverSelectedImage:Class;
 
-		[Embed(source="assets/TabbedPane_top_tab_pressedSelectedImage.png", scaleGridTop="5", scaleGridBottom="18",
+		[Embed(source="../../../../graphics/ui/TabbedPane_top_tab_pressedSelectedImage.png", scaleGridTop="5", scaleGridBottom="18",
 		scaleGridLeft="5", scaleGridRight="61")]
 		private var TabbedPane_top_tab_pressedSelectedImage:Class;
 
 		//========= header bottom scale-9 =======
-		[Embed(source="assets/TabbedPane_bottom_tab_defaultImage.png", scaleGridTop="12", scaleGridBottom="14",
+		[Embed(source="../../../../graphics/ui/TabbedPane_bottom_tab_defaultImage.png", scaleGridTop="12", scaleGridBottom="14",
 		scaleGridLeft="8", scaleGridRight="58")]
 		private var TabbedPane_bottom_tab_defaultImage:Class;
 
-		[Embed(source="assets/TabbedPane_bottom_tab_pressedImage.png", scaleGridTop="12", scaleGridBottom="14",
+		[Embed(source="../../../../graphics/ui/TabbedPane_bottom_tab_pressedImage.png", scaleGridTop="12", scaleGridBottom="14",
 		scaleGridLeft="8", scaleGridRight="58")]
 		private var TabbedPane_bottom_tab_pressedImage:Class;
 
-		[Embed(source="assets/TabbedPane_bottom_tab_rolloverImage.png", scaleGridTop="12", scaleGridBottom="14",
+		[Embed(source="../../../../graphics/ui/TabbedPane_bottom_tab_rolloverImage.png", scaleGridTop="12", scaleGridBottom="14",
 		scaleGridLeft="8", scaleGridRight="58")]
 		private var TabbedPane_bottom_tab_rolloverImage:Class;
 
-		[Embed(source="assets/TabbedPane_bottom_tab_disabledImage.png", scaleGridTop="12", scaleGridBottom="14",
+		[Embed(source="../../../../graphics/ui/TabbedPane_bottom_tab_disabledImage.png", scaleGridTop="12", scaleGridBottom="14",
 		scaleGridLeft="8", scaleGridRight="58")]
 		private var TabbedPane_bottom_tab_disabledImage:Class;
 
-		[Embed(source="assets/TabbedPane_bottom_tab_selectedImage.png", scaleGridTop="12", scaleGridBottom="14",
+		[Embed(source="../../../../graphics/ui/TabbedPane_bottom_tab_selectedImage.png", scaleGridTop="12", scaleGridBottom="14",
 		scaleGridLeft="8", scaleGridRight="58")]
 		private var TabbedPane_bottom_tab_selectedImage:Class;
 
-		[Embed(source="assets/TabbedPane_bottom_tab_rolloverSelectedImage.png", scaleGridTop="12", scaleGridBottom="14",
+		[Embed(source="../../../../graphics/ui/TabbedPane_bottom_tab_rolloverSelectedImage.png", scaleGridTop="12", scaleGridBottom="14",
 		scaleGridLeft="8", scaleGridRight="58")]
 		private var TabbedPane_bottom_tab_rolloverSelectedImage:Class;
 
-		[Embed(source="assets/TabbedPane_bottom_tab_pressedSelectedImage.png", scaleGridTop="12", scaleGridBottom="14",
+		[Embed(source="../../../../graphics/ui/TabbedPane_bottom_tab_pressedSelectedImage.png", scaleGridTop="12", scaleGridBottom="14",
 		scaleGridLeft="8", scaleGridRight="58")]
 		private var TabbedPane_bottom_tab_pressedSelectedImage:Class;
 
 		//========= header left scale-9 =======
-		[Embed(source="assets/TabbedPane_left_tab_defaultImage.png", scaleGridTop="8", scaleGridBottom="58",
+		[Embed(source="../../../../graphics/ui/TabbedPane_left_tab_defaultImage.png", scaleGridTop="8", scaleGridBottom="58",
 		scaleGridLeft="12", scaleGridRight="14")]
 		private var TabbedPane_left_tab_defaultImage:Class;
 
-		[Embed(source="assets/TabbedPane_left_tab_pressedImage.png", scaleGridTop="8", scaleGridBottom="58",
+		[Embed(source="../../../../graphics/ui/TabbedPane_left_tab_pressedImage.png", scaleGridTop="8", scaleGridBottom="58",
 		scaleGridLeft="12", scaleGridRight="14")]
 		private var TabbedPane_left_tab_pressedImage:Class;
 
-		[Embed(source="assets/TabbedPane_left_tab_rolloverImage.png", scaleGridTop="8", scaleGridBottom="58",
+		[Embed(source="../../../../graphics/ui/TabbedPane_left_tab_rolloverImage.png", scaleGridTop="8", scaleGridBottom="58",
 		scaleGridLeft="12", scaleGridRight="14")]
 		private var TabbedPane_left_tab_rolloverImage:Class;
 
-		[Embed(source="assets/TabbedPane_left_tab_disabledImage.png", scaleGridTop="8", scaleGridBottom="58",
+		[Embed(source="../../../../graphics/ui/TabbedPane_left_tab_disabledImage.png", scaleGridTop="8", scaleGridBottom="58",
 		scaleGridLeft="12", scaleGridRight="14")]
 		private var TabbedPane_left_tab_disabledImage:Class;
 
-		[Embed(source="assets/TabbedPane_left_tab_selectedImage.png", scaleGridTop="8", scaleGridBottom="58",
+		[Embed(source="../../../../graphics/ui/TabbedPane_left_tab_selectedImage.png", scaleGridTop="8", scaleGridBottom="58",
 		scaleGridLeft="12", scaleGridRight="14")]
 		private var TabbedPane_left_tab_selectedImage:Class;
 
-		[Embed(source="assets/TabbedPane_left_tab_rolloverSelectedImage.png", scaleGridTop="8", scaleGridBottom="58",
+		[Embed(source="../../../../graphics/ui/TabbedPane_left_tab_rolloverSelectedImage.png", scaleGridTop="8", scaleGridBottom="58",
 		scaleGridLeft="12", scaleGridRight="14")]
 		private var TabbedPane_left_tab_rolloverSelectedImage:Class;
 
-		[Embed(source="assets/TabbedPane_left_tab_pressedSelectedImage.png", scaleGridTop="8", scaleGridBottom="58",
+		[Embed(source="../../../../graphics/ui/TabbedPane_left_tab_pressedSelectedImage.png", scaleGridTop="8", scaleGridBottom="58",
 		scaleGridLeft="12", scaleGridRight="14")]
 		private var TabbedPane_left_tab_pressedSelectedImage:Class;
 
 		//========= header right scale-9 =======
-		[Embed(source="assets/TabbedPane_right_tab_defaultImage.png", scaleGridTop="8", scaleGridBottom="58",
+		[Embed(source="../../../../graphics/ui/TabbedPane_right_tab_defaultImage.png", scaleGridTop="8", scaleGridBottom="58",
 		scaleGridLeft="12", scaleGridRight="14")]
 		private var TabbedPane_right_tab_defaultImage:Class;
 
-		[Embed(source="assets/TabbedPane_right_tab_pressedImage.png", scaleGridTop="8", scaleGridBottom="58",
+		[Embed(source="../../../../graphics/ui/TabbedPane_right_tab_pressedImage.png", scaleGridTop="8", scaleGridBottom="58",
 		scaleGridLeft="12", scaleGridRight="14")]
 		private var TabbedPane_right_tab_pressedImage:Class;
 
-		[Embed(source="assets/TabbedPane_right_tab_rolloverImage.png", scaleGridTop="8", scaleGridBottom="58",
+		[Embed(source="../../../../graphics/ui/TabbedPane_right_tab_rolloverImage.png", scaleGridTop="8", scaleGridBottom="58",
 		scaleGridLeft="12", scaleGridRight="14")]
 		private var TabbedPane_right_tab_rolloverImage:Class;
 
-		[Embed(source="assets/TabbedPane_right_tab_disabledImage.png", scaleGridTop="8", scaleGridBottom="58",
+		[Embed(source="../../../../graphics/ui/TabbedPane_right_tab_disabledImage.png", scaleGridTop="8", scaleGridBottom="58",
 		scaleGridLeft="12", scaleGridRight="14")]
 		private var TabbedPane_right_tab_disabledImage:Class;
 
-		[Embed(source="assets/TabbedPane_right_tab_selectedImage.png", scaleGridTop="8", scaleGridBottom="58",
+		[Embed(source="../../../../graphics/ui/TabbedPane_right_tab_selectedImage.png", scaleGridTop="8", scaleGridBottom="58",
 		scaleGridLeft="12", scaleGridRight="14")]
 		private var TabbedPane_right_tab_selectedImage:Class;
 
-		[Embed(source="assets/TabbedPane_right_tab_rolloverSelectedImage.png", scaleGridTop="8", scaleGridBottom="58",
+		[Embed(source="../../../../graphics/ui/TabbedPane_right_tab_rolloverSelectedImage.png", scaleGridTop="8", scaleGridBottom="58",
 		scaleGridLeft="12", scaleGridRight="14")]
 		private var TabbedPane_right_tab_pressedSelectedImage:Class;
 
-		[Embed(source="assets/TabbedPane_right_tab_pressedSelectedImage.png", scaleGridTop="8", scaleGridBottom="58",
+		[Embed(source="../../../../graphics/ui/TabbedPane_right_tab_pressedSelectedImage.png", scaleGridTop="8", scaleGridBottom="58",
 		scaleGridLeft="12", scaleGridRight="14")]
 		private var TabbedPane_right_tab_rolloverSelectedImage:Class;
 
 		//========= Background Image scale-9 =======
-		[Embed(source="assets/TabbedPane_top_contentRoundImage.png", scaleGridTop="20", scaleGridBottom="325",
+		[Embed(source="../../../../graphics/ui/TabbedPane_top_contentRoundImage.png", scaleGridTop="20", scaleGridBottom="325",
 		scaleGridLeft="25", scaleGridRight="655")]
 		private var TabbedPane_top_contentRoundImage:Class;
-		[Embed(source="assets/TabbedPane_bottom_contentRoundImage.png", scaleGridTop="20", scaleGridBottom="80",
+		[Embed(source="../../../../graphics/ui/TabbedPane_bottom_contentRoundImage.png", scaleGridTop="20", scaleGridBottom="80",
 		scaleGridLeft="20", scaleGridRight="80")]
 		private var TabbedPane_bottom_contentRoundImage:Class;
-		[Embed(source="assets/TabbedPane_left_contentRoundImage.png", scaleGridTop="20", scaleGridBottom="80",
+		[Embed(source="../../../../graphics/ui/TabbedPane_left_contentRoundImage.png", scaleGridTop="20", scaleGridBottom="80",
 		scaleGridLeft="20", scaleGridRight="80")]
 		private var TabbedPane_left_contentRoundImage:Class;
-		[Embed(source="assets/TabbedPane_right_contentRoundImage.png", scaleGridTop="20", scaleGridBottom="80",
+		[Embed(source="../../../../graphics/ui/TabbedPane_right_contentRoundImage.png", scaleGridTop="20", scaleGridBottom="80",
 		scaleGridLeft="20", scaleGridRight="80")]
 		private var TabbedPane_right_contentRoundImage:Class;
 
 		//========= Left Arrow Images =======
-		[Embed(source="assets/TabbedPane_arrowLeft_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/TabbedPane_arrowLeft_defaultImage.png")]
 		private var TabbedPane_arrowLeft_defaultImage:Class;
 
-		[Embed(source="assets/TabbedPane_arrowLeft_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/TabbedPane_arrowLeft_pressedImage.png")]
 		private var TabbedPane_arrowLeft_pressedImage:Class;
 
-		[Embed(source="assets/TabbedPane_arrowLeft_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/TabbedPane_arrowLeft_disabledImage.png")]
 		private var TabbedPane_arrowLeft_disabledImage:Class;
 
-		[Embed(source="assets/TabbedPane_arrowLeft_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/TabbedPane_arrowLeft_rolloverImage.png")]
 		private var TabbedPane_arrowLeft_rolloverImage:Class;
 
 		//========= Right Arrow Images =======
-		[Embed(source="assets/TabbedPane_arrowRight_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/TabbedPane_arrowRight_defaultImage.png")]
 		private var TabbedPane_arrowRight_defaultImage:Class;
 
-		[Embed(source="assets/TabbedPane_arrowRight_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/TabbedPane_arrowRight_pressedImage.png")]
 		private var TabbedPane_arrowRight_pressedImage:Class;
 
-		[Embed(source="assets/TabbedPane_arrowRight_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/TabbedPane_arrowRight_disabledImage.png")]
 		private var TabbedPane_arrowRight_disabledImage:Class;
 
-		[Embed(source="assets/TabbedPane_arrowRight_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/TabbedPane_arrowRight_rolloverImage.png")]
 		private var TabbedPane_arrowRight_rolloverImage:Class;
 
 		//========= Close Button Images =======
-		[Embed(source="assets/TabbedPane_closeButton_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/TabbedPane_closeButton_defaultImage.png")]
 		private var TabbedPane_closeButton_defaultImage:Class;
 
-		[Embed(source="assets/TabbedPane_closeButton_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/TabbedPane_closeButton_pressedImage.png")]
 		private var TabbedPane_closeButton_pressedImage:Class;
 
-		[Embed(source="assets/TabbedPane_closeButton_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/TabbedPane_closeButton_disabledImage.png")]
 		private var TabbedPane_closeButton_disabledImage:Class;
 
-		[Embed(source="assets/TabbedPane_closeButton_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/TabbedPane_closeButton_rolloverImage.png")]
 		private var TabbedPane_closeButton_rolloverImage:Class;
 		
 		//============ Chat Tab Images ===========
-		[Embed(source="assets/ChatTabbedPane_top_tab_defaultImage.png", scaleGridTop="5", scaleGridBottom="15",
+		[Embed(source="../../../../graphics/ui/ChatTabbedPane_top_tab_defaultImage.png", scaleGridTop="5", scaleGridBottom="15",
 		scaleGridLeft="8", scaleGridRight="58")]
 		private var Chat_tab_defaultImage:Class;
 
-		[Embed(source="assets/ChatTabbedPane_top_tab_light.png", scaleGridTop="5", scaleGridBottom="15",
+		[Embed(source="../../../../graphics/ui/ChatTabbedPane_top_tab_light.png", scaleGridTop="5", scaleGridBottom="15",
 		scaleGridLeft="8", scaleGridRight="58")]
 		private var Chat_tab_rolloverImage:Class;
 
-		[Embed(source="assets/ChatTabbedPane_top_tab_dark.png", scaleGridTop="5", scaleGridBottom="15",
+		[Embed(source="../../../../graphics/ui/ChatTabbedPane_top_tab_dark.png", scaleGridTop="5", scaleGridBottom="15",
 		scaleGridLeft="8", scaleGridRight="58")]
 		private var Chat_tab_selectedImage:Class;
 		
@@ -764,150 +764,150 @@ package src.UI.LookAndFeel
 		//_______________________________ Slider _______________________________
 		//======================================================================
 		//========= track scale-9 or not=======
-		[Embed(source="assets/Slider_vertical_trackImage.png", scaleGridTop="7", scaleGridBottom="93",
+		[Embed(source="../../../../graphics/ui/Slider_vertical_trackImage.png", scaleGridTop="7", scaleGridBottom="93",
 		scaleGridLeft="3", scaleGridRight="13")]
 		private var Slider_vertical_trackImage:Class;
-		[Embed(source="assets/Slider_vertical_trackDisabledImage.png", scaleGridTop="7", scaleGridBottom="93",
+		[Embed(source="../../../../graphics/ui/Slider_vertical_trackDisabledImage.png", scaleGridTop="7", scaleGridBottom="93",
 		scaleGridLeft="3", scaleGridRight="13")]
 		private var Slider_vertical_trackDisabledImage:Class;
 
-		[Embed(source="assets/Slider_vertical_trackProgressImage.png", scaleGridTop="3", scaleGridBottom="90",
+		[Embed(source="../../../../graphics/ui/Slider_vertical_trackProgressImage.png", scaleGridTop="3", scaleGridBottom="90",
 		scaleGridLeft="3", scaleGridRight="13")]
 		private var Slider_vertical_trackProgressImage:Class;
-		[Embed(source="assets/Slider_vertical_trackProgressDisabledImage.png", scaleGridTop="3", scaleGridBottom="90",
+		[Embed(source="../../../../graphics/ui/Slider_vertical_trackProgressDisabledImage.png", scaleGridTop="3", scaleGridBottom="90",
 		scaleGridLeft="3", scaleGridRight="13")]
 		private var Slider_vertical_trackProgressDisabledImage:Class;
 
-		[Embed(source="assets/Slider_horizontal_trackImage.png", scaleGridTop="3", scaleGridBottom="12",
+		[Embed(source="../../../../graphics/ui/Slider_horizontal_trackImage.png", scaleGridTop="3", scaleGridBottom="12",
 		scaleGridLeft="7", scaleGridRight="93")]
 		private var Slider_horizontal_trackImage:Class;
-		[Embed(source="assets/Slider_horizontal_trackDisabledImage.png", scaleGridTop="3", scaleGridBottom="12",
+		[Embed(source="../../../../graphics/ui/Slider_horizontal_trackDisabledImage.png", scaleGridTop="3", scaleGridBottom="12",
 		scaleGridLeft="7", scaleGridRight="93")]
 		private var Slider_horizontal_trackDisabledImage:Class;
 
-		[Embed(source="assets/Slider_horizontal_trackProgressImage.png", scaleGridTop="3", scaleGridBottom="12",
+		[Embed(source="../../../../graphics/ui/Slider_horizontal_trackProgressImage.png", scaleGridTop="3", scaleGridBottom="12",
 		scaleGridLeft="3", scaleGridRight="90")]
 		private var Slider_horizontal_trackProgressImage:Class;
-		[Embed(source="assets/Slider_horizontal_trackProgressDisabledImage.png", scaleGridTop="3", scaleGridBottom="12",
+		[Embed(source="../../../../graphics/ui/Slider_horizontal_trackProgressDisabledImage.png", scaleGridTop="3", scaleGridBottom="12",
 		scaleGridLeft="3", scaleGridRight="90")]
 		private var Slider_horizontal_trackProgressDisabledImage:Class;
 
 		//========= Thumb Images =======
-		[Embed(source="assets/Slider_thumbHorizontal_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/Slider_thumbHorizontal_defaultImage.png")]
 		private var Slider_thumbHorizontal_defaultImage:Class;
 
-		[Embed(source="assets/Slider_thumbHorizontal_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/Slider_thumbHorizontal_pressedImage.png")]
 		private var Slider_thumbHorizontal_pressedImage:Class;
 
-		[Embed(source="assets/Slider_thumbHorizontal_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/Slider_thumbHorizontal_disabledImage.png")]
 		private var Slider_thumbHorizontal_disabledImage:Class;
 
-		[Embed(source="assets/Slider_thumbHorizontal_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/Slider_thumbHorizontal_rolloverImage.png")]
 		private var Slider_thumbHorizontal_rolloverImage:Class;
 
-		[Embed(source="assets/Slider_thumbVertical_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/Slider_thumbVertical_defaultImage.png")]
 		private var Slider_thumbVertical_defaultImage:Class;
 
-		[Embed(source="assets/Slider_thumbVertical_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/Slider_thumbVertical_pressedImage.png")]
 		private var Slider_thumbVertical_pressedImage:Class;
 
-		[Embed(source="assets/Slider_thumbVertical_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/Slider_thumbVertical_disabledImage.png")]
 		private var Slider_thumbVertical_disabledImage:Class;
 
-		[Embed(source="assets/Slider_thumbVertical_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/Slider_thumbVertical_rolloverImage.png")]
 		private var Slider_thumbVertical_rolloverImage:Class;
 
 		//----------------------------------------------------------------------
 		//___________________________ TabbedPane _______________________________
 		//======================================================================
 		//========= Icon Images =======
-		[Embed(source="assets/Tree_leafImage.png")]
+		[Embed(source="../../../../graphics/ui/Tree_leafImage.png")]
 		private var Tree_leafImage:Class;
 
-		[Embed(source="assets/Tree_folderExpandedImage.png")]
+		[Embed(source="../../../../graphics/ui/Tree_folderExpandedImage.png")]
 		private var Tree_folderExpandedImage:Class;
 
-		[Embed(source="assets/Tree_folderCollapsedImage.png")]
+		[Embed(source="../../../../graphics/ui/Tree_folderCollapsedImage.png")]
 		private var Tree_folderCollapsedImage:Class;
 
 		//========= Control Images =======
-		[Embed(source="assets/Tree_leafControlImage.png")]
+		[Embed(source="../../../../graphics/ui/Tree_leafControlImage.png")]
 		private var Tree_leafControlImage:Class;
 
-		[Embed(source="assets/Tree_folderExpandedControlImage.png")]
+		[Embed(source="../../../../graphics/ui/Tree_folderExpandedControlImage.png")]
 		private var Tree_folderExpandedControlImage:Class;
 
-		[Embed(source="assets/Tree_folderCollapsedControlImage.png")]
+		[Embed(source="../../../../graphics/ui/Tree_folderCollapsedControlImage.png")]
 		private var Tree_folderCollapsedControlImage:Class;
 
 		//------------------------------------------------------------------
 		//___________________________ SplitPane ____________________________
 		//==================================================================
 		//========= Left Arrow Images =======
-		[Embed(source="assets/SplitPane_arrowLeft_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/SplitPane_arrowLeft_defaultImage.png")]
 		private var SplitPane_arrowLeft_defaultImage:Class;
 
-		[Embed(source="assets/SplitPane_arrowLeft_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/SplitPane_arrowLeft_pressedImage.png")]
 		private var SplitPane_arrowLeft_pressedImage:Class;
 
-		[Embed(source="assets/SplitPane_arrowLeft_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/SplitPane_arrowLeft_disabledImage.png")]
 		private var SplitPane_arrowLeft_disabledImage:Class;
 
-		[Embed(source="assets/SplitPane_arrowLeft_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/SplitPane_arrowLeft_rolloverImage.png")]
 		private var SplitPane_arrowLeft_rolloverImage:Class;
 
 		//========= Right Arrow Images =======
-		[Embed(source="assets/SplitPane_arrowRight_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/SplitPane_arrowRight_defaultImage.png")]
 		private var SplitPane_arrowRight_defaultImage:Class;
 
-		[Embed(source="assets/SplitPane_arrowRight_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/SplitPane_arrowRight_pressedImage.png")]
 		private var SplitPane_arrowRight_pressedImage:Class;
 
-		[Embed(source="assets/SplitPane_arrowRight_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/SplitPane_arrowRight_disabledImage.png")]
 		private var SplitPane_arrowRight_disabledImage:Class;
 
-		[Embed(source="assets/SplitPane_arrowRight_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/SplitPane_arrowRight_rolloverImage.png")]
 		private var SplitPane_arrowRight_rolloverImage:Class;
 
 		//========= Up Arrow Images =======
-		[Embed(source="assets/SplitPane_arrowUp_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/SplitPane_arrowUp_defaultImage.png")]
 		private var SplitPane_arrowUp_defaultImage:Class;
 
-		[Embed(source="assets/SplitPane_arrowUp_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/SplitPane_arrowUp_pressedImage.png")]
 		private var SplitPane_arrowUp_pressedImage:Class;
 
-		[Embed(source="assets/SplitPane_arrowUp_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/SplitPane_arrowUp_disabledImage.png")]
 		private var SplitPane_arrowUp_disabledImage:Class;
 
-		[Embed(source="assets/SplitPane_arrowUp_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/SplitPane_arrowUp_rolloverImage.png")]
 		private var SplitPane_arrowUp_rolloverImage:Class;
 
 		//========= Down Arrow Images =======
-		[Embed(source="assets/SplitPane_arrowDown_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/SplitPane_arrowDown_defaultImage.png")]
 		private var SplitPane_arrowDown_defaultImage:Class;
 
-		[Embed(source="assets/SplitPane_arrowDown_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/SplitPane_arrowDown_pressedImage.png")]
 		private var SplitPane_arrowDown_pressedImage:Class;
 
-		[Embed(source="assets/SplitPane_arrowDown_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/SplitPane_arrowDown_disabledImage.png")]
 		private var SplitPane_arrowDown_disabledImage:Class;
 
-		[Embed(source="assets/SplitPane_arrowDown_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/SplitPane_arrowDown_rolloverImage.png")]
 		private var SplitPane_arrowDown_rolloverImage:Class;
 
 		//========= Background Images scale-9 =======
-		[Embed(source="assets/SplitPane_divider_verticalBGImage.png")]
+		[Embed(source="../../../../graphics/ui/SplitPane_divider_verticalBGImage.png")]
 		private var SplitPane_divider_verticalBGImage:Class;
 
-		[Embed(source="assets/SplitPane_divider_horizotalBGImage.png")]
+		[Embed(source="../../../../graphics/ui/SplitPane_divider_horizotalBGImage.png")]
 		private var SplitPane_divider_horizotalBGImage:Class;
 
 		//by default the disabled bg state is null(means same to normal state), but you can add it by remove the comments
-		//[Embed(source="assets/SplitPane_divider_verticalBGDisabledImage.png", scaleGridTop="6", scaleGridBottom="18",
+		//[Embed(source="../../../../graphics/ui/SplitPane_divider_verticalBGDisabledImage.png", scaleGridTop="6", scaleGridBottom="18",
 		//scaleGridLeft="6", scaleGridRight="67")]
 		private var SplitPane_divider_verticalBGDisabledImage:Class;
 
-		//[Embed(source="assets/SplitPane_divider_horizotalBGDisabledImage.png", scaleGridTop="6", scaleGridBottom="18",
+		//[Embed(source="../../../../graphics/ui/SplitPane_divider_horizotalBGDisabledImage.png", scaleGridTop="6", scaleGridBottom="18",
 		//scaleGridLeft="6", scaleGridRight="67")]
 		private var SplitPane_divider_horizotalBGDisabledImage:Class;
 
@@ -915,108 +915,108 @@ package src.UI.LookAndFeel
 		//___________________________ ProgressBar __________________________
 		//==================================================================
 		//========= Background Images scale-9 or not =======
-		[Embed(source="assets/ProgressBar_verticalBGImage.png", scaleGridTop="4", scaleGridBottom="157",
+		[Embed(source="../../../../graphics/ui/ProgressBar_verticalBGImage.png", scaleGridTop="4", scaleGridBottom="157",
 		scaleGridLeft="4", scaleGridRight="11")]
 		private var ProgressBar_verticalBGImage:Class;
 
-		[Embed(source="assets/ProgressBar_horizotalBGImage.png", scaleGridTop="4", scaleGridBottom="11",
+		[Embed(source="../../../../graphics/ui/ProgressBar_horizotalBGImage.png", scaleGridTop="4", scaleGridBottom="11",
 		scaleGridLeft="4", scaleGridRight="157")]
 		private var ProgressBar_horizotalBGImage:Class;
 
 		//========= Foreground Images scale-9 or not =======
-		[Embed(source="assets/ProgressBar_verticalFGImage.png")]
+		[Embed(source="../../../../graphics/ui/ProgressBar_verticalFGImage.png")]
 		private var ProgressBar_verticalFGImage:Class;
 
-		[Embed(source="assets/ProgressBar_horizotalFGImage.png")]
+		[Embed(source="../../../../graphics/ui/ProgressBar_horizotalFGImage.png")]
 		private var ProgressBar_horizotalFGImage:Class;
 
 		//----------------------------------------------------------------------
 		//_______________________________ Adjuster _____________________________
 		//======================================================================
 		//========= Arrow Images =======
-		[Embed(source="assets/Adjuster_arrowButton_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/Adjuster_arrowButton_defaultImage.png")]
 		private var Adjuster_arrowButton_defaultImage:Class;
 
-		[Embed(source="assets/Adjuster_arrowButton_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/Adjuster_arrowButton_pressedImage.png")]
 		private var Adjuster_arrowButton_pressedImage:Class;
 
-		[Embed(source="assets/Adjuster_arrowButton_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/Adjuster_arrowButton_disabledImage.png")]
 		private var Adjuster_arrowButton_disabledImage:Class;
 
-		[Embed(source="assets/Adjuster_arrowButton_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/Adjuster_arrowButton_rolloverImage.png")]
 		private var Adjuster_arrowButton_rolloverImage:Class;
 
 		//========= Track scale-9 or not =======
-		[Embed(source="assets/Adjuster_Slider_vertical_trackImage.png", scaleGridTop="7", scaleGridBottom="93",
+		[Embed(source="../../../../graphics/ui/Adjuster_Slider_vertical_trackImage.png", scaleGridTop="7", scaleGridBottom="93",
 		scaleGridLeft="3", scaleGridRight="13")]
 		private var Adjuster_Slider_vertical_trackImage:Class;
-		[Embed(source="assets/Adjuster_Slider_vertical_trackDisabledImage.png", scaleGridTop="7", scaleGridBottom="93",
+		[Embed(source="../../../../graphics/ui/Adjuster_Slider_vertical_trackDisabledImage.png", scaleGridTop="7", scaleGridBottom="93",
 		scaleGridLeft="3", scaleGridRight="13")]
 		private var Adjuster_Slider_vertical_trackDisabledImage:Class;
 
-		[Embed(source="assets/Adjuster_Slider_vertical_trackProgressImage.png", scaleGridTop="3", scaleGridBottom="90",
+		[Embed(source="../../../../graphics/ui/Adjuster_Slider_vertical_trackProgressImage.png", scaleGridTop="3", scaleGridBottom="90",
 		scaleGridLeft="3", scaleGridRight="13")]
 		private var Adjuster_Slider_vertical_trackProgressImage:Class;
-		[Embed(source="assets/Adjuster_Slider_vertical_trackProgressDisabledImage.png", scaleGridTop="3", scaleGridBottom="90",
+		[Embed(source="../../../../graphics/ui/Adjuster_Slider_vertical_trackProgressDisabledImage.png", scaleGridTop="3", scaleGridBottom="90",
 		scaleGridLeft="3", scaleGridRight="13")]
 		private var Adjuster_Slider_vertical_trackProgressDisabledImage:Class;
 
-		[Embed(source="assets/Adjuster_Slider_horizontal_trackImage.png", scaleGridTop="3", scaleGridBottom="13",
+		[Embed(source="../../../../graphics/ui/Adjuster_Slider_horizontal_trackImage.png", scaleGridTop="3", scaleGridBottom="13",
 		scaleGridLeft="7", scaleGridRight="93")]
 		private var Adjuster_Slider_horizontal_trackImage:Class;
-		[Embed(source="assets/Adjuster_Slider_horizontal_trackDisabledImage.png", scaleGridTop="3", scaleGridBottom="13",
+		[Embed(source="../../../../graphics/ui/Adjuster_Slider_horizontal_trackDisabledImage.png", scaleGridTop="3", scaleGridBottom="13",
 		scaleGridLeft="7", scaleGridRight="93")]
 		private var Adjuster_Slider_horizontal_trackDisabledImage:Class;
 
-		[Embed(source="assets/Adjuster_Slider_horizontal_trackProgressImage.png", scaleGridTop="3", scaleGridBottom="13",
+		[Embed(source="../../../../graphics/ui/Adjuster_Slider_horizontal_trackProgressImage.png", scaleGridTop="3", scaleGridBottom="13",
 		scaleGridLeft="3", scaleGridRight="90")]
 		private var Adjuster_Slider_horizontal_trackProgressImage:Class;
-		[Embed(source="assets/Adjuster_Slider_horizontal_trackProgressDisabledImage.png", scaleGridTop="3", scaleGridBottom="13",
+		[Embed(source="../../../../graphics/ui/Adjuster_Slider_horizontal_trackProgressDisabledImage.png", scaleGridTop="3", scaleGridBottom="13",
 		scaleGridLeft="3", scaleGridRight="90")]
 		private var Adjuster_Slider_horizontal_trackProgressDisabledImage:Class;
 
 		//========= Thumb Images =======
-		[Embed(source="assets/Adjuster_Slider_thumbHorizontal_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/Adjuster_Slider_thumbHorizontal_defaultImage.png")]
 		private var Adjuster_Slider_thumbHorizontal_defaultImage:Class;
 
-		[Embed(source="assets/Adjuster_Slider_thumbHorizontal_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/Adjuster_Slider_thumbHorizontal_pressedImage.png")]
 		private var Adjuster_Slider_thumbHorizontal_pressedImage:Class;
 
-		[Embed(source="assets/Adjuster_Slider_thumbHorizontal_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/Adjuster_Slider_thumbHorizontal_disabledImage.png")]
 		private var Adjuster_Slider_thumbHorizontal_disabledImage:Class;
 
-		[Embed(source="assets/Adjuster_Slider_thumbHorizontal_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/Adjuster_Slider_thumbHorizontal_rolloverImage.png")]
 		private var Adjuster_Slider_thumbHorizontal_rolloverImage:Class;
 
-		[Embed(source="assets/Adjuster_Slider_thumbVertical_defaultImage.png")]
+		[Embed(source="../../../../graphics/ui/Adjuster_Slider_thumbVertical_defaultImage.png")]
 		private var Adjuster_Slider_thumbVertical_defaultImage:Class;
 
-		[Embed(source="assets/Adjuster_Slider_thumbVertical_pressedImage.png")]
+		[Embed(source="../../../../graphics/ui/Adjuster_Slider_thumbVertical_pressedImage.png")]
 		private var Adjuster_Slider_thumbVertical_pressedImage:Class;
 
-		[Embed(source="assets/Adjuster_Slider_thumbVertical_disabledImage.png")]
+		[Embed(source="../../../../graphics/ui/Adjuster_Slider_thumbVertical_disabledImage.png")]
 		private var Adjuster_Slider_thumbVertical_disabledImage:Class;
 
-		[Embed(source="assets/Adjuster_Slider_thumbVertical_rolloverImage.png")]
+		[Embed(source="../../../../graphics/ui/Adjuster_Slider_thumbVertical_rolloverImage.png")]
 		private var Adjuster_Slider_thumbVertical_rolloverImage:Class;
 
 		//----------------------------------------------------------------------
 		//_______________________________ Table Header _________________________
 		//======================================================================
 		//========= Cell Background Images =======
-		[Embed(source="assets/TableHeader_cell_defaultImage.png", scaleGridTop="2", scaleGridBottom="17",
+		[Embed(source="../../../../graphics/ui/TableHeader_cell_defaultImage.png", scaleGridTop="2", scaleGridBottom="17",
 		scaleGridLeft="2", scaleGridRight="122")]
 		private var TableHeader_cell_defaultImage:Class;
 
-		[Embed(source="assets/TableHeader_cell_pressedImage.png", scaleGridTop="2", scaleGridBottom="17",
+		[Embed(source="../../../../graphics/ui/TableHeader_cell_pressedImage.png", scaleGridTop="2", scaleGridBottom="17",
 		scaleGridLeft="2", scaleGridRight="122")]
 		private var TableHeader_cell_pressedImage:Class;
 
-		[Embed(source="assets/TableHeader_cell_disabledImage.png", scaleGridTop="2", scaleGridBottom="17",
+		[Embed(source="../../../../graphics/ui/TableHeader_cell_disabledImage.png", scaleGridTop="2", scaleGridBottom="17",
 		scaleGridLeft="2", scaleGridRight="122")]
 		private var TableHeader_cell_disabledImage:Class;
 
-		[Embed(source="assets/TableHeader_cell_rolloverImage.png", scaleGridTop="2", scaleGridBottom="17",
+		[Embed(source="../../../../graphics/ui/TableHeader_cell_rolloverImage.png", scaleGridTop="2", scaleGridBottom="17",
 		scaleGridLeft="2", scaleGridRight="122")]
 		private var TableHeader_cell_rolloverImage:Class;
 
@@ -1024,9 +1024,9 @@ package src.UI.LookAndFeel
 		//___________________ Menu containers scale-9 or not ___________________
 		//======================================================================
 		//not specified a image, so it will be solid bg, however, you can add the image
-		//[Embed(source="assets/MenuBar_bgImage.png")]
+		//[Embed(source="../../../../graphics/ui/MenuBar_bgImage.png")]
 		private var MenuBar_bgImage:Class;
-		[Embed(source="assets/PopupMenu_bgImage.png", scaleGridTop="6", scaleGridBottom="274",
+		[Embed(source="../../../../graphics/ui/PopupMenu_bgImage.png", scaleGridTop="6", scaleGridBottom="274",
 		scaleGridLeft="6", scaleGridRight="169")]
 		private var PopupMenu_bgImage:Class;
 
@@ -1034,29 +1034,29 @@ package src.UI.LookAndFeel
 		//______________________ MenuItemss scale-9 or not _____________________
 		//======================================================================
 		//Just defined roll over image, however, you can add other state images.
-		[Embed(source="assets/Menu_rolloverImage.png", scaleGridTop="2", scaleGridBottom="16",
+		[Embed(source="../../../../graphics/ui/Menu_rolloverImage.png", scaleGridTop="2", scaleGridBottom="16",
 		scaleGridLeft="2", scaleGridRight="165")]
 		private var Menu_rolloverImage:Class;
 
-		[Embed(source="assets/MenuItem_rolloverImage.png", scaleGridTop="2", scaleGridBottom="16",
+		[Embed(source="../../../../graphics/ui/MenuItem_rolloverImage.png", scaleGridTop="2", scaleGridBottom="16",
 		scaleGridLeft="2", scaleGridRight="165")]
 		private var MenuItem_rolloverImage:Class;
 
-		[Embed(source="assets/CheckBoxMenuItem_rolloverImage.png", scaleGridTop="2", scaleGridBottom="16",
+		[Embed(source="../../../../graphics/ui/CheckBoxMenuItem_rolloverImage.png", scaleGridTop="2", scaleGridBottom="16",
 		scaleGridLeft="2", scaleGridRight="165")]
 		private var CheckBoxMenuItem_rolloverImage:Class;
 
-		[Embed(source="assets/RadioButtonMenuItem_rolloverImage.png", scaleGridTop="2", scaleGridBottom="16",
+		[Embed(source="../../../../graphics/ui/RadioButtonMenuItem_rolloverImage.png", scaleGridTop="2", scaleGridBottom="16",
 		scaleGridLeft="2", scaleGridRight="165")]
 		private var RadioButtonMenuItem_rolloverImage:Class;
 
-		[Embed(source="assets/Menu_arrowIconImage.png")]
+		[Embed(source="../../../../graphics/ui/Menu_arrowIconImage.png")]
 		private var Menu_arrowIconImage:Class;
 
-		[Embed(source="assets/RadioButtonMenuItem_checkIconImage.png")]
+		[Embed(source="../../../../graphics/ui/RadioButtonMenuItem_checkIconImage.png")]
 		private var RadioButtonMenuItem_checkIconImage:Class;
 
-		[Embed(source="assets/CheckBoxMenuItem_checkIconImage.png")]
+		[Embed(source="../../../../graphics/ui/CheckBoxMenuItem_checkIconImage.png")]
 		private var CheckBoxMenuItem_checkIconImage:Class;
 
 		//-----------------------------------------------------------------------------

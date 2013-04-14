@@ -49,7 +49,7 @@
 		{
 			name = "Main";
 			trace("TribalHero v" + Constants.version + "." + Constants.revision);
-			            
+			
 			addEventListener(Event.ADDED_TO_STAGE, init);		                       
 		}        
 		
@@ -57,7 +57,7 @@
 			removeEventListener(Event.ADDED_TO_STAGE, init);							
             
             stage.showDefaultContextMenu = false;                       
-			           
+			
 			CONFIG::debug {                
 				stage.addChild(new TheMiner());
 			}			

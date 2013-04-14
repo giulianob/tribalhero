@@ -31,6 +31,7 @@ using Persistance;
 using System.Linq;
 using DbTransaction = Persistance.DbTransaction;
 using JsonReader = JsonFx.Json.JsonReader;
+using System.Globalization;
 
 #endregion
 
@@ -100,45 +101,29 @@ namespace Game.Database
 
                     // Load sys vars
                     LoadSystemVariables();
-
-                    // Calculate how long server was down
-                    TimeSpan downTime = DateTime.UtcNow.Subtract((DateTime)Global.SystemVariables["System.time"].Value);
-                    if (downTime.TotalMilliseconds < 0)
-                    {
-                        downTime = new TimeSpan(0);
-                    }
-
-                    logger.Info(string.Format("Server was down for {0}", downTime));
-
+                    UpdateTimestampsFromDowntime((DateTime)Global.SystemVariables["System.time"].Value);
                     LoadReportIds();
                     LoadMarket();
                     LoadPlayers();
-                    LoadCities(downTime);
+                    LoadAchievements();
+                    LoadCities();
                     LoadTribes();
                     LoadTribesmen();
                     LoadUnitTemplates();
                     LoadStructures();
                     LoadStructureProperties();
                     LoadTechnologies();
-                    LoadForests(downTime);
+                    LoadForests();
                     LoadStrongholds();
                     LoadBarbarianTribes();
                     LoadTroopStubs();
                     LoadTroopStubTemplates();
                     LoadTroops();
                     LoadBattleManagers();
-
-                    // Recalculate downTime so actions are less likely to drift 
-                    downTime = DateTime.UtcNow.Subtract((DateTime)Global.SystemVariables["System.time"].Value);
-                    if (downTime.TotalMilliseconds < 0)
-                    {
-                        downTime = new TimeSpan(0);
-                    }
-
-                    LoadActions(downTime);
+                    LoadActions();
                     LoadActionReferences();
                     LoadActionNotifications();
-                    LoadAssignments(downTime);
+                    LoadAssignments();
 
                     World.AfterDbLoaded(Procedure);
 
@@ -190,6 +175,38 @@ namespace Game.Database
 
                 return (uint)reader[0];
             }
+        }
+
+        private void UpdateTimestampsFromDowntime(DateTime serverTime)
+        {
+            // Calculate how long server was down
+            TimeSpan downTime = SystemClock.Now.Subtract(serverTime);
+            if (downTime.TotalMilliseconds < 0)
+            {
+                return;
+            }
+
+            logger.Info(string.Format("Server was down for {0}", downTime));
+            
+            Action<string, string[]> pushTime = (table, columns) =>
+                {
+                    foreach (var column in columns)
+                    {
+                        var query = string.Format("UPDATE `{0}` SET `{1}` = DATE_ADD(`{1}`, INTERVAL {2} SECOND) WHERE `{1}` > '0001-01-01 00:00:00'",
+                                                  table,
+                                                  column,
+                                                  downTime.TotalSeconds.ToString("0"));
+
+                        DbManager.Query(query, new DbColumn[] {});
+                    }
+                };
+
+            // Update all the timestamps
+            pushTime(City.DB_TABLE, new[] {"crop_realize_time", "wood_realize_time", "iron_realize_time", "labor_realize_time", "gold_realize_time"});
+            pushTime(Forest.DB_TABLE, new[] {"deplete_time", "last_realize_time"});
+            pushTime(ActiveAction.DB_TABLE, new[] {"begin_time", "next_time", "end_time"});
+            pushTime(PassiveAction.DB_TABLE, new[] {"begin_time", "next_time", "end_time"});
+            pushTime(Assignment.DB_TABLE, new[] {"attack_time"});
         }
 
         private void LoadReportIds()
@@ -268,13 +285,27 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadAssignments(TimeSpan downTime)
+        private void LoadAssignments()
         {
             #region Assignments
 
             IAssignmentFactory assignmentFactory = Ioc.Kernel.Get<IAssignmentFactory>();
 
             logger.Info("Loading assignments...");
+
+            ILookup<int, dynamic> stubLookup;
+            using (var listReader = DbManager.SelectList(Assignment.DB_TABLE))
+            {
+                stubLookup = ReaderToLookUp(listReader,
+                                            reader => new {
+                                                Id = (int)reader["id"],
+                                                CityId = (uint)reader["city_id"],
+                                                StubId = (byte)reader["stub_id"],
+                                                Dispatched = (byte)reader["dispatched"] == 1
+                                            },
+                                            key => (int)key.Id);
+            }
+
             using (var reader = DbManager.Select(Assignment.DB_TABLE))
             {
                 while (reader.Read())
@@ -282,55 +313,41 @@ namespace Game.Database
                     ITribe tribe;
                     World.TryGetObjects((uint)reader["tribe_id"], out tribe);
 
-                    Assignment assignment = assignmentFactory.CreateAssignmentFromDb((int)reader["id"],
+                    var location = new SimpleLocation(
+                        (LocationType)Enum.Parse(typeof(LocationType), (string)reader["location_type"], true), 
+                        (uint)reader["location_id"]);
+
+                    var attackMode = (AttackMode)Enum.Parse(typeof(AttackMode), (string)reader["mode"]);
+
+                    DateTime targetTime = DateTime.SpecifyKind((DateTime)reader["attack_time"], DateTimeKind.Utc);
+
+                    var id = (int)reader["id"];
+                    Assignment assignment = assignmentFactory.CreateAssignmentFromDb(id,
                                                                                      tribe,
                                                                                      (uint)reader["x"],
                                                                                      (uint)reader["y"],
-                                                                                     new SimpleLocation(
-                                                                                             (LocationType)
-                                                                                             Enum.Parse(
-                                                                                                        typeof(
-                                                                                                                LocationType
-                                                                                                                ),
-                                                                                                        (string)
-                                                                                                        reader[
-                                                                                                               "location_type"
-                                                                                                                ],
-                                                                                                        true),
-                                                                                             (uint)reader["location_id"]),
-                                                                                     (AttackMode)
-                                                                                     Enum.Parse(typeof(AttackMode),
-                                                                                                (string)reader["mode"]),
-                                                                                     DateTime.SpecifyKind(
-                                                                                                          (DateTime)
-                                                                                                          reader[
-                                                                                                                 "attack_time"
-                                                                                                                  ],
-                                                                                                          DateTimeKind
-                                                                                                                  .Utc)
-                                                                                             .Add(downTime),
+                                                                                     location,
+                                                                                     attackMode,
+                                                                                     targetTime,
                                                                                      (uint)reader["dispatch_count"],
                                                                                      (string)reader["description"],
                                                                                      ((byte)reader["is_attack"]) == 1);
 
-                    using (DbDataReader listReader = DbManager.SelectList(assignment))
+                    foreach (var stub in stubLookup[id])
                     {
-                        while (listReader.Read())
+                        ICity city;
+                        if (!World.TryGetObjects((uint)stub.CityId, out city))
                         {
-                            ICity city;
-                            if (!World.TryGetObjects((uint)listReader["city_id"], out city))
-                            {
-                                throw new Exception("City not found");
-                            }
-
-                            ITroopStub assignmentStub;
-                            if (!city.Troops.TryGetStub((byte)listReader["stub_id"], out assignmentStub))
-                            {
-                                throw new Exception("Stub not found");
-                            }
-
-                            assignment.DbLoaderAdd(assignmentStub, (byte)listReader["dispatched"] == 1);
+                            throw new Exception("City not found");
                         }
+
+                        ITroopStub assignmentStub;
+                        if (!city.Troops.TryGetStub((byte)stub.StubId, out assignmentStub))
+                        {
+                            throw new Exception("Stub not found");
+                        }
+
+                        assignment.DbLoaderAdd(assignmentStub, stub.Dispatched);
                     }
 
                     assignment.DbPersisted = true;
@@ -338,7 +355,7 @@ namespace Game.Database
                     // Add assignment to tribe
                     tribe.DbLoaderAddAssignment(assignment);
 
-                    // Reschedule and save assignment
+                    // Reschedule assignment
                     assignment.Reschedule();
                 }
             }
@@ -445,7 +462,47 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadCities(TimeSpan downTime)
+        private void LoadAchievements()
+        {
+            logger.Info("Loading achievements...");
+            using (var reader = DbManager.Select(AchievementList.DB_TABLE))
+            {
+                IPlayer player;
+                while (reader.Read())
+                {
+                    if (!World.Players.TryGetValue((uint)reader["player_id"], out player))
+                    {
+                        throw new Exception("Player not found");
+                    }
+
+                    player.Achievements.DbPersisted = true;
+                }
+            }
+
+            using (var reader = DbManager.SelectList(AchievementList.DB_TABLE))
+            {
+                IPlayer player;
+                while (reader.Read())
+                {
+                    if (!World.Players.TryGetValue((uint)reader["player_id"], out player))
+                    {
+                        throw new Exception("Player not found");
+                    }
+
+                    player.Achievements.Add(new Achievement
+                    {
+                            Id = (int)reader["id"],
+                            Tier = (AchievementTier)((byte)reader["tier"]),
+                            Title = (string)reader["title"],
+                            Description = (string)reader["description"],
+                            Icon = (string)reader["icon"],
+                            Type = (string)reader["type"]
+                    });                    
+                }
+            }
+        }
+
+        private void LoadCities()
         {
             #region Cities
 
@@ -454,16 +511,11 @@ namespace Game.Database
             {
                 while (reader.Read())
                 {
-                    DateTime cropRealizeTime =
-                            DateTime.SpecifyKind((DateTime)reader["crop_realize_time"], DateTimeKind.Utc).Add(downTime);
-                    DateTime woodRealizeTime =
-                            DateTime.SpecifyKind((DateTime)reader["wood_realize_time"], DateTimeKind.Utc).Add(downTime);
-                    DateTime ironRealizeTime =
-                            DateTime.SpecifyKind((DateTime)reader["iron_realize_time"], DateTimeKind.Utc).Add(downTime);
-                    DateTime laborRealizeTime =
-                            DateTime.SpecifyKind((DateTime)reader["labor_realize_time"], DateTimeKind.Utc).Add(downTime);
-                    DateTime goldRealizeTime =
-                            DateTime.SpecifyKind((DateTime)reader["gold_realize_time"], DateTimeKind.Utc).Add(downTime);
+                    DateTime cropRealizeTime = DateTime.SpecifyKind((DateTime)reader["crop_realize_time"], DateTimeKind.Utc);
+                    DateTime woodRealizeTime = DateTime.SpecifyKind((DateTime)reader["wood_realize_time"], DateTimeKind.Utc);
+                    DateTime ironRealizeTime = DateTime.SpecifyKind((DateTime)reader["iron_realize_time"], DateTimeKind.Utc);
+                    DateTime laborRealizeTime = DateTime.SpecifyKind((DateTime)reader["labor_realize_time"], DateTimeKind.Utc);
+                    DateTime goldRealizeTime = DateTime.SpecifyKind((DateTime)reader["gold_realize_time"], DateTimeKind.Utc);
 
                     var resource = new LazyResource((int)reader["crop"],
                                                     cropRealizeTime,
@@ -611,36 +663,46 @@ namespace Game.Database
         {
             #region Unit Template
 
+            var unitFactory = Ioc.Kernel.Get<UnitFactory>();
+
             logger.Info("Loading unit template...");
+
+            ILookup<uint, dynamic> unitLookup;
+            using (DbDataReader listReader = DbManager.SelectList(UnitTemplate.DB_TABLE))
+            {
+                unitLookup = ReaderToLookUp(listReader, 
+                                            reader => new {
+                                                CityId = (uint)reader["city_id"],
+                                                Type = (ushort)reader["type"],
+                                                Level = (byte)reader["level"]
+                                            }, 
+                                            key => (uint)key.CityId);
+            }
+
             using (var reader = DbManager.Select(UnitTemplate.DB_TABLE))
             {
                 while (reader.Read())
                 {
                     ICity city;
-                    if (!World.TryGetObjects((uint)reader["city_id"], out city))
+                    var cityId = (uint)reader["city_id"];
+                    if (!World.TryGetObjects(cityId, out city))
                     {
                         throw new Exception("City not found");
                     }
 
                     city.Template.DbPersisted = true;
-
-                    using (DbDataReader listReader = DbManager.SelectList(city.Template))
+                    
+                    foreach (var unit in unitLookup[cityId])
                     {
-                        while (listReader.Read())
-                        {
-                            city.Template.DbLoaderAdd((ushort)listReader["type"],
-                                                      Ioc.Kernel.Get<UnitFactory>()
-                                                         .GetUnitStats((ushort)listReader["type"],
-                                                                       (byte)listReader["level"]));
-                        }
-                    }
+                        city.Template.DbLoaderAdd(unit.Type, unitFactory.GetUnitStats(unit.Type, unit.Level));
+                    }                    
                 }
             }
 
             #endregion
         }
 
-        private void LoadForests(TimeSpan downTime)
+        private void LoadForests()
         {
             logger.Info("Loading forests...");
             using (var reader = DbManager.Select(Forest.DB_TABLE))
@@ -655,15 +717,11 @@ namespace Game.Database
                             Labor = (ushort)reader["labor"],
                             ObjectId = (uint)reader["id"],
                             State = {Type = (ObjectState)((byte)reader["state"])},
-                            Wood =
-                                    new AggressiveLazyValue((int)reader["lumber"],
-                                                            DateTime.SpecifyKind((DateTime)reader["last_realize_time"],
-                                                                                 DateTimeKind.Utc).Add(downTime),
+                            Wood = new AggressiveLazyValue((int)reader["lumber"], 
+                                                            DateTime.SpecifyKind((DateTime)reader["last_realize_time"], DateTimeKind.Utc),
                                                             0,
                                                             (int)reader["upkeep"]) {Limit = (int)reader["capacity"]},
-                            DepleteTime =
-                                    DateTime.SpecifyKind((DateTime)reader["deplete_time"], DateTimeKind.Utc)
-                                            .Add(downTime),
+                            DepleteTime = DateTime.SpecifyKind((DateTime)reader["deplete_time"], DateTimeKind.Utc),
                             InWorld = (bool)reader["in_world"]
                     };
 
@@ -698,9 +756,6 @@ namespace Game.Database
                         World.Regions.DbLoaderAdd(forest);
                         World.Forests.DbLoaderAdd(forest);
                     }
-
-                    // Resave to include new time
-                    DbManager.Save(forest);
                 }
             }
         }
@@ -758,7 +813,7 @@ namespace Game.Database
             #region Structure Properties
 
             logger.Info("Loading structure properties...");
-            using (var reader = DbManager.ReaderQuery(string.Format("SELECT * FROM `{0}`", StructureProperties.DB_TABLE + "_list")))
+            using (var reader = DbManager.SelectList(StructureProperties.DB_TABLE))
             {
                 ICity city = null;
                 while (reader.Read())
@@ -787,9 +842,9 @@ namespace Game.Database
             logger.Info("Loading technologies...");
 
             // Creates a lookup for speed
-            ILookup<uint, dynamic> techs;
+            ILookup<Tuple<uint, uint, byte>, dynamic> techs;
             
-            using (var reader = DbManager.ReaderQuery(string.Format("SELECT * FROM `{0}`", TechnologyManager.DB_TABLE + "_list")))
+            using (var reader = DbManager.SelectList(TechnologyManager.DB_TABLE))
             {
                 techs = ReaderToLookUp(reader, 
                     row => new {
@@ -799,7 +854,7 @@ namespace Game.Database
                         type = (uint)row["type"],
                         level = (byte)row["level"]
                     },
-                    row => (uint)row.cityId);
+                    row => new Tuple<uint, uint, byte>(row.cityId, row.ownerId, row.ownerLocation));
             }
 
             using (var reader = DbManager.Select(TechnologyManager.DB_TABLE))
@@ -831,7 +886,7 @@ namespace Game.Database
 
                     manager.DbPersisted = true;
 
-                    foreach (var tech in techs[city.Id].Where(p => p.ownerId == ownerId && p.ownerLocation == (byte)ownerLocation))
+                    foreach (var tech in techs[new Tuple<uint, uint, byte>(city.Id, ownerId, (byte)ownerLocation)])
                     {
                         manager.Add(technologyFactory.GetTechnology((uint)tech.type, (byte)tech.level), false);
                     }
@@ -844,6 +899,21 @@ namespace Game.Database
         private void LoadTroopStubs()
         {
             #region Troop Stubs
+            ILookup<Tuple<uint, byte>, dynamic> troopStubUnits;
+
+            using (var listReader = DbManager.SelectList(TroopStub.DB_TABLE))
+            {
+                troopStubUnits = ReaderToLookUp(listReader,
+                                                reader => new
+                                                {
+                                                        id = (byte)reader["id"],
+                                                        cityId = (uint)reader["city_id"],
+                                                        formationType = (FormationType)((byte)reader["formation_type"]),
+                                                        type = (ushort)reader["type"],
+                                                        count = (ushort)reader["count"]
+                                                },
+                                                key => new Tuple<uint, byte>(key.cityId, key.id));
+            }
 
             List<dynamic> stationedTroops = new List<dynamic>();
 
@@ -852,13 +922,16 @@ namespace Game.Database
             {
                 while (reader.Read())
                 {
+                    byte id = (byte)reader["id"];
+                    uint cityId = (uint)reader["city_id"];
+
                     ICity city;
-                    if (!World.TryGetObjects((uint)reader["city_id"], out city))
+                    if (!World.TryGetObjects(cityId, out city))
                     {
                         throw new Exception("City not found");
                     }
-
-                    var stub = new TroopStub((byte)reader["id"], city)
+                    
+                    var stub = new TroopStub(id, city)
                     {
                             State = (TroopState)Enum.Parse(typeof(TroopState), reader["state"].ToString(), true),
                             DbPersisted = true,
@@ -877,14 +950,9 @@ namespace Game.Database
                         }
                     }
 
-                    using (DbDataReader listReader = DbManager.SelectList(stub))
+                    foreach (var unit in troopStubUnits[new Tuple<uint, byte>(cityId, id)])
                     {
-                        while (listReader.Read())
-                        {
-                            stub.AddUnit((FormationType)((byte)listReader["formation_type"]),
-                                         (ushort)listReader["type"],
-                                         (ushort)listReader["count"]);
-                        }
+                        stub.AddUnit(unit.formationType, unit.type, unit.count);
                     }
 
                     city.Troops.DbLoaderAdd((byte)reader["id"], stub);
@@ -914,42 +982,63 @@ namespace Game.Database
         {
             #region Troop Stub's Templates
 
+            var unitFactory = Ioc.Kernel.Get<UnitFactory>();
+
             logger.Info("Loading troop stub templates...");
+
+            ILookup<Tuple<uint, byte>, dynamic> unitLookup;
+            using (DbDataReader listReader = DbManager.SelectList(TroopTemplate.DB_TABLE))
+            {
+                unitLookup = ReaderToLookUp(listReader,
+                                            reader => new {
+                                                TroopStubId = (byte)reader["troop_stub_id"],
+                                                CityId = (uint)reader["city_id"],
+                                                Type = (ushort)reader["type"], 
+                                                Level = (byte)reader["level"],
+                                                MaxHp = (decimal)reader["max_hp"],
+                                                Atk = (decimal)reader["attack"],
+                                                Splash = (byte)reader["splash"],
+                                                Rng = (byte)reader["range"],
+                                                Stl = (byte)reader["stealth"],
+                                                Spd = (byte)reader["speed"],
+                                                Carry = (ushort)reader["carry"],
+                                                NormalizedCost = (decimal)reader["normalized_cost"]                                                    
+                                            },
+                                            key => new Tuple<uint, byte>(key.CityId, key.TroopStubId));
+            }
+
             using (var reader = DbManager.Select(TroopTemplate.DB_TABLE))
             {
                 while (reader.Read())
                 {
                     ICity city;
-                    if (!World.TryGetObjects((uint)reader["city_id"], out city))
+                    var cityId = (uint)reader["city_id"];
+                    var troopStubId = (byte)reader["troop_stub_id"];
+
+                    if (!World.TryGetObjects(cityId, out city))
                     {
                         throw new Exception("City not found");
-                    }
-                    ITroopStub stub = city.Troops[(byte)reader["troop_stub_id"]];
+                    }                    
+                    ITroopStub stub = city.Troops[troopStubId];
                     stub.Template.DbPersisted = true;
 
-                    using (DbDataReader listReader = DbManager.SelectList(stub.Template))
+                    foreach (var unit in unitLookup[new Tuple<uint, byte>(cityId, troopStubId)])
                     {
-                        while (listReader.Read())
+                        //First we load the BaseBattleStats and pass it into the BattleStats
+                        //The BattleStats constructor will copy the basic values then we have to manually apply the values from the db
+                        var battleStats = new BattleStats(unitFactory.GetBattleStats(unit.Type, unit.Level))
                         {
-                            //First we load the BaseBattleStats and pass it into the BattleStats
-                            //The BattleStats constructor will copy the basic values then we have to manually apply the values from the db
-                            var battleStats =
-                                    new BattleStats(
-                                            Ioc.Kernel.Get<UnitFactory>()
-                                               .GetBattleStats((ushort)listReader["type"], (byte)listReader["level"]))
-                                    {
-                                            MaxHp = (decimal)listReader["max_hp"],
-                                            Atk = (decimal)listReader["attack"],
-                                            Splash = (byte)listReader["splash"],
-                                            Rng = (byte)listReader["range"],
-                                            Stl = (byte)listReader["stealth"],
-                                            Spd = (byte)listReader["speed"],
-                                            Carry = (ushort)listReader["carry"],
-                                            NormalizedCost = (decimal)listReader["normalized_cost"]
-                                    };
-
-                            stub.Template.DbLoaderAdd(battleStats);
-                        }
+                                MaxHp = unit.MaxHp,
+                                Atk = unit.Atk,
+                                Splash = unit.Splash,
+                                Rng = unit.Rng,
+                                Stl = unit.Stl,
+                                Spd = unit.Spd,
+                                Carry = unit.Carry,
+                                NormalizedCost = unit.NormalizedCost
+                        };
+                        
+                        stub.Template.DbLoaderAdd(battleStats);
                     }
                 }
             }
@@ -1501,7 +1590,7 @@ namespace Game.Database
             #endregion
         }
 
-        private void LoadActions(TimeSpan downTime)
+        private void LoadActions()
         {
             // Used to help get the proper action worker
             Func<GameAction, uint, LocationType, uint, IActionWorker> resolveWorker =
@@ -1566,21 +1655,12 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     var actionType = (ActionType)((int)reader["type"]);
-                    Type type = Type.GetType("Game.Logic.Actions." + actionType.ToString().Replace("_", "") + "Action",
-                                             true,
-                                             true);
+                    
+                    Type type = Type.GetType("Game.Logic.Actions." + actionType.ToString().Replace("_", "") + "Action", true, true);
 
-                    DateTime beginTime =
-                            DateTime.SpecifyKind((DateTime)reader["begin_time"], DateTimeKind.Utc).Add(downTime);
-
+                    DateTime beginTime = DateTime.SpecifyKind((DateTime)reader["begin_time"], DateTimeKind.Utc);
                     DateTime nextTime = DateTime.SpecifyKind((DateTime)reader["next_time"], DateTimeKind.Utc);
-                    if (nextTime != DateTime.MinValue)
-                    {
-                        nextTime = nextTime.Add(downTime);
-                    }
-
-                    DateTime endTime = DateTime.SpecifyKind((DateTime)reader["end_time"], DateTimeKind.Utc)
-                                               .Add(downTime);
+                    DateTime endTime = DateTime.SpecifyKind((DateTime)reader["end_time"], DateTimeKind.Utc);
 
                     Dictionary<string, string> properties = XmlSerializer.Deserialize((string)reader["properties"]);
 
@@ -1595,15 +1675,12 @@ namespace Game.Database
                                                                            properties);
                     action.DbPersisted = true;
 
-                    var locationType =
-                            (LocationType)Enum.Parse(typeof(LocationType), (string)reader["location_type"], true);
+                    var locationType = (LocationType)Enum.Parse(typeof(LocationType), (string)reader["location_type"], true);
                     var locationId = (uint)reader["location_id"];
 
                     IActionWorker worker = resolveWorker(action, (uint)reader["object_id"], locationType, locationId);
 
                     worker.DbLoaderDoActive(action);
-
-                    DbManager.Save(action);
                 }
             }
 
@@ -1621,9 +1698,7 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     var actionType = (ActionType)((int)reader["type"]);
-                    Type type = Type.GetType("Game.Logic.Actions." + actionType.ToString().Replace("_", "") + "Action",
-                                             true,
-                                             true);
+                    Type type = Type.GetType("Game.Logic.Actions." + actionType.ToString().Replace("_", "") + "Action", true, true);
 
                     Dictionary<string, string> properties = XmlSerializer.Deserialize((string)reader["properties"]);
 
@@ -1632,20 +1707,10 @@ namespace Game.Database
                     if ((bool)reader["is_scheduled"])
                     {
                         DateTime beginTime = DateTime.SpecifyKind((DateTime)reader["begin_time"], DateTimeKind.Utc);
-                        beginTime = beginTime.Add(downTime);
-
                         DateTime nextTime = DateTime.SpecifyKind((DateTime)reader["next_time"], DateTimeKind.Utc);
-                        if (nextTime != DateTime.MinValue)
-                        {
-                            nextTime = nextTime.Add(downTime);
-                        }
-
                         DateTime endTime = DateTime.SpecifyKind((DateTime)reader["end_time"], DateTimeKind.Utc);
-                        endTime = endTime.Add(downTime);
 
-                        string nlsDescription = DBNull.Value.Equals(reader["nls_description"])
-                                                        ? string.Empty
-                                                        : (string)reader["nls_description"];
+                        string nlsDescription = DBNull.Value.Equals(reader["nls_description"]) ? string.Empty : (string)reader["nls_description"];
 
                         action = ActionFactory.CreateScheduledPassiveAction(type,
                                                                             (uint)reader["id"],
@@ -1666,8 +1731,7 @@ namespace Game.Database
 
                     action.DbPersisted = true;
 
-                    var locationType =
-                            (LocationType)Enum.Parse(typeof(LocationType), (string)reader["location_type"], true);
+                    var locationType = (LocationType)Enum.Parse(typeof(LocationType), (string)reader["location_type"], true);
                     var locationId = (uint)reader["location_id"];
 
                     IActionWorker worker = resolveWorker(action, (uint)reader["object_id"], locationType, locationId);
@@ -1691,9 +1755,6 @@ namespace Game.Database
 
                         chainList.Add(action);
                     }
-
-                    // Resave city to update times
-                    DbManager.Save(action);
                 }
             }
 
@@ -1714,8 +1775,7 @@ namespace Game.Database
                                                   ? 0
                                                   : (uint)reader["current_action_id"];
 
-                    var locationType =
-                            (LocationType)Enum.Parse(typeof(LocationType), (string)reader["location_type"], true);
+                    var locationType = (LocationType)Enum.Parse(typeof(LocationType), (string)reader["location_type"], true);
                     var locationId = (uint)reader["location_id"];
 
                     IActionWorker worker = resolveWorker(null, (uint)reader["object_id"], locationType, locationId);
@@ -1742,8 +1802,6 @@ namespace Game.Database
                     worker = resolveWorker(action, (uint)reader["object_id"], locationType, locationId);
 
                     worker.DbLoaderDoPassive(action);
-
-                    DbManager.Save(action);
                 }
             }
 

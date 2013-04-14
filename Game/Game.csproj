@@ -219,6 +219,9 @@
     <Compile Include="Database\DbLoader.cs" />
     <Compile Include="Database\DbLoaderActionFactory.cs" />
     <Compile Include="Database\Persistance.cs" />
+    <Compile Include="Data\Achievement.cs" />
+    <Compile Include="Data\AchievementList.cs" />
+    <Compile Include="Data\AchievementTier.cs" />
     <Compile Include="Data\AggressiveLazyValue.cs" />
     <Compile Include="Data\BarbarianTribe\BarbarianTribeFactory.cs" />
     <Compile Include="Data\BarbarianTribe\IBarbarianTribeConfigurator.cs" />
@@ -422,6 +425,7 @@
     <Compile Include="Setup\TechnologyFactory.cs" />
     <Compile Include="Util\Channel.cs" />
     <Compile Include="Util\DuplicateSubscriptionException.cs" />
+    <Compile Include="Util\EnumExtension.cs" />
     <Compile Include="Util\FileExtension.cs" />
     <Compile Include="Util\Inflector.cs" />
     <Compile Include="Util\CmdParserExtension.cs" />

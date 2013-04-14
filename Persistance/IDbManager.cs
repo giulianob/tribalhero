@@ -42,5 +42,7 @@ namespace Persistance
         void EmptyDatabase();
 
         void Probe(out int queriesRanOut, out DateTime lastProbeOut);
+
+        DbDataReader SelectList(string table);
     }
 }

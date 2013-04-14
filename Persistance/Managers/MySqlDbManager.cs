@@ -257,6 +257,11 @@ namespace Persistance.Managers
             return ReaderQuery(string.Format("SELECT * FROM `{0}`", table));
         }
 
+        DbDataReader IDbManager.SelectList(string table)
+        {
+            return ReaderQuery(string.Format("SELECT * FROM `{0}_list`", table));
+        }
+
         DbDataReader IDbManager.SelectList(IPersistableList obj)
         {
             bool startComma = false;
@@ -599,7 +604,10 @@ namespace Persistance.Managers
 
             bool startColumnsComma = false;
             bool empty = true;
+            int row = 0;
 
+            MySqlCommand command = connection.CreateCommand();
+            
             foreach (var columns in obj.DbListValues())
             {
                 empty = false;
@@ -627,7 +635,9 @@ namespace Persistance.Managers
                         startComma = true;
                     }
 
-                    builder.Append("'" + column.Value + "'");
+                    var param = string.Format("@{0}__{1}", column.Column, row);
+                    builder.Append(param);                    
+                    command.Parameters.AddWithValue(param, column.Value);
                 }
 
                 foreach (var column in columns)
@@ -641,17 +651,19 @@ namespace Persistance.Managers
                         startComma = true;
                     }
 
-                    builder.Append("'" + column.Value + "'");
+                    var param = string.Format("@{0}__{1}", column.Column, row);
+                    builder.Append(param);
+                    command.Parameters.AddWithValue(param, column.Value);                    
                 }
                 builder.Append(")");
+
+                row++;
             }
 
             if (empty)
             {
                 return null;
             }
-
-            MySqlCommand command = connection.CreateCommand();
 
             if (transaction != null)
             {

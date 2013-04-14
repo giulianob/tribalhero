@@ -374,7 +374,10 @@ namespace Game.Data.Troop
             get
             {
                 return new[]
-                {new DbColumn("id", troopId, DbType.UInt32), new DbColumn("city_id", City.Id, DbType.UInt32)};
+                {
+                        new DbColumn("id", troopId, DbType.UInt32), 
+                        new DbColumn("city_id", City.Id, DbType.UInt32)
+                };
             }
         }
 

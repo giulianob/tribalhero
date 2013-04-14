@@ -17,8 +17,6 @@ namespace Game.Logic.Actions
 {
     public class CityPassiveAction : ScheduledPassiveAction
     {
-        public const int PLAYER_IDLE_DAYS = 2;
-
         private const int INTERVAL_IN_SECONDS = 1800;
 
         private readonly IActionFactory actionFactory;

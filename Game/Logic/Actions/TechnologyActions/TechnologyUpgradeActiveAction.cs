@@ -238,9 +238,10 @@ namespace Game.Logic.Actions
                 }
 
                 Technology tech;
+                TechnologyBase techBase;
                 if (structure.Technologies.TryGetTechnology(techId, out tech))
                 {
-                    TechnologyBase techBase = Ioc.Kernel.Get<TechnologyFactory>()
+                    techBase = Ioc.Kernel.Get<TechnologyFactory>()
                                                  .GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
 
                     if (techBase == null)
@@ -261,7 +262,7 @@ namespace Game.Logic.Actions
                 }
                 else
                 {
-                    TechnologyBase techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(techId, 1);
+                    techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(techId, 1);
 
                     if (techBase == null)
                     {
@@ -279,7 +280,7 @@ namespace Game.Logic.Actions
 
                     structure.Technologies.EndUpdate();
                 }
-                Procedure.Current.OnTechnologyChange(structure);
+                Procedure.Current.OnTechnologyUpgrade(structure, techBase);
                 StateChange(ActionState.Completed);
             }
         }

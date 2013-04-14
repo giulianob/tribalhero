@@ -59,8 +59,6 @@ namespace Game.Logic.Actions
 
         StructureSelfDestroyActiveAction CreateStructureSelfDestroyActiveAction(uint cityId, uint objectId);
 
-        TechnologyDeletePassiveAction CreateTechnologyDeletePassiveAction();
-
         StructureDowngradePassiveAction CreateStructureDowngradePassiveAction(uint cityId, uint structureId);
 
         ForestCampBuildActiveAction CreateForestCampBuildActiveAction(uint cityId,

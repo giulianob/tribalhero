@@ -218,6 +218,7 @@ namespace Game.Logic.Actions
                 world.Regions.Add(structure);
                 initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
                 structure.EndUpdate();
+                
 
                 var defaultTroop = newCity.Troops.Create();
                 defaultTroop.BeginUpdate();

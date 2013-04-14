@@ -77,7 +77,7 @@ namespace Game.Logic.Actions
                 obj.Technologies.BeginUpdate();
                 obj.Technologies.Add(tech);
                 obj.Technologies.EndUpdate();
-                Procedure.Current.OnTechnologyChange(obj);
+                Procedure.Current.OnTechnologyUpgrade(obj, tech.TechBase);
             }
 
             StateChange(ActionState.Completed);

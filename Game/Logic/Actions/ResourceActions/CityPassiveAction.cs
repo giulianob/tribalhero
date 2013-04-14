@@ -157,7 +157,6 @@ namespace Game.Logic.Actions
             Repair();
             Labor();
             Upkeep();
-            WeaponExport();
             FastIncome();
             AlignmentPoint();
         }
@@ -249,6 +248,7 @@ namespace Game.Logic.Actions
                 {
                     if (city.Owner.IsIdle)
                     {
+                        city.Resource.Gold.Rate = formula.GetGoldRate(city);
                         return;
                     }
 
@@ -256,17 +256,20 @@ namespace Game.Logic.Actions
                     int laborRate = formula.GetLaborRate(laborTotal, city);
                     if (laborRate <= 0)
                     {
+                        city.Resource.Gold.Rate = formula.GetGoldRate(city);
                         return;
                     }
 
                     int laborProduction = laborTimeRemains / laborRate;
                     if (laborProduction <= 0)
                     {
+                        city.Resource.Gold.Rate = formula.GetGoldRate(city);
                         return;
                     }
 
                     laborTimeRemains -= laborProduction * laborRate;
                     city.Resource.Labor.Add(laborProduction);
+                    city.Resource.Gold.Rate = formula.GetGoldRate(city);
                 };
         }
 
@@ -349,23 +352,6 @@ namespace Game.Logic.Actions
 
                     var resource = new Resource(15000, city.Resource.Gold.Value < 99999 ? 99999 : 0, 15000, 15000, 0);
                     city.Resource.Add(resource);
-                };
-        }
-
-        private void WeaponExport()
-        {
-            PostFirstLoop += city =>
-                {
-                    var weaponExportMax =
-                            city.Technologies.GetEffects(EffectCode.WeaponExport)
-                                .DefaultIfEmpty()
-                                .Max(x => x == null ? 0 : (int)x.Value[0]);
-                    int gold = formula.GetWeaponExportLaborProduce(weaponExportMax, city.Resource.Labor.Value, city.Resource.Gold.Value);
-                    if (gold <= 0)
-                    {
-                        return;
-                    }
-                    city.Resource.Gold.Add(gold);
                 };
         }
 

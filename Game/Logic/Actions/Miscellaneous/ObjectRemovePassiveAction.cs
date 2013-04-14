@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Game.Data;
-using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic.Procedures;
 using Game.Map;
@@ -231,17 +230,29 @@ namespace Game.Logic.Actions
                 }
                 else if (obj is IStructure)
                 {
+                    var structure = obj as IStructure;
+
+                    // Save technogies for "on technology delete" event.
+                    var techs = new List<Technology>(structure.Technologies.Where(x => x.OwnerLocation == EffectLocation.Object && x.OwnerId == obj.ObjectId));
+
                     city.BeginUpdate();
+
                     if (!wasKilled)
                     {
                         // Give laborers back to the city if obj was not killed off
-                        ushort laborers = ((IStructure)obj).Stats.Labor;
+                        ushort laborers = structure.Stats.Labor;
                         city.Resource.Labor.Add(laborers);
                     }
 
-                    city.DoRemove(((IStructure)obj));
-                    Procedure.Current.OnStructureUpgradeDowngrade((IStructure)obj);
+                    city.DoRemove(structure);
+                    Procedure.Current.OnStructureUpgradeDowngrade(structure);
                     city.EndUpdate();
+
+                    foreach (var tech in techs)
+                    {
+                        Procedure.Current.OnTechnologyDelete(structure, tech.TechBase);
+                    }
+
                 }
                 StateChange(ActionState.Completed);
             }

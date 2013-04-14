@@ -16,6 +16,7 @@ using Game.Data.Tribe;
 using Game.Logic;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Logic.Triggers;
 using Game.Map;
 using Game.Module;
 using Game.Setup;
@@ -107,6 +108,7 @@ namespace Game
             Bind<StructureFactory>().ToSelf().InSingletonScope();
             Bind<EffectRequirementFactory>().ToSelf().InSingletonScope();
             Bind<InitFactory>().ToSelf().InSingletonScope();
+            Bind<CityTriggerManager>().ToSelf().InSingletonScope();
             Bind<PropertyFactory>().ToSelf().InSingletonScope();
             Bind<RequirementFactory>().ToSelf().InSingletonScope();
             Bind<TechnologyFactory>().ToSelf().InSingletonScope();

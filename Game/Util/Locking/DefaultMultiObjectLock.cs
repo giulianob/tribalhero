@@ -1,0 +1,120 @@
+#region
+
+using System;
+using System.Linq;
+using System.Threading;
+using Game.Data;
+
+// ReSharper disable RedundantUsingDirective
+
+// ReSharper restore RedundantUsingDirective
+
+#endregion
+
+namespace Game.Util.Locking
+{
+    public class DefaultMultiObjectLock : IMultiObjectLock
+    {
+        private readonly Action<object> lockEnter;
+
+        private readonly Action<object> lockExit;
+
+        public delegate IMultiObjectLock Factory();
+
+        [ThreadStatic]
+        private static DefaultMultiObjectLock currentLock;
+
+        private object[] lockedObjects = new object[] {};
+
+        public DefaultMultiObjectLock()
+                : this(Monitor.Enter, Monitor.Exit)
+        {
+        }
+
+        public DefaultMultiObjectLock(Action<object> lockEnter, Action<object> lockExit)
+        {
+            this.lockEnter = lockEnter;
+            this.lockExit = lockExit;
+        }
+
+        public IMultiObjectLock Lock(ILockable[] list)
+        {            
+            if (currentLock != null)
+            {
+                throw new LockException("Attempting to nest MultiObjectLock");
+            }
+
+            currentLock = this;
+            
+            lockedObjects = new object[list.Length];
+
+            SortLocks(list);
+            for (int i = 0; i < list.Length; ++i)
+            {                
+                if (list[i].Lock == null)
+                {
+                    continue;
+                }
+
+                lockEnter(list[i].Lock);
+                lockedObjects[i] = list[i].Lock;
+            }
+
+            return this;
+        }
+
+        public void SortLocks(ILockable[] list)
+        {
+            Array.Sort(list, CompareObject);
+        }
+
+        public void Dispose()
+        {
+            UnlockAll();
+            GC.SuppressFinalize(this);
+        }
+
+        public void UnlockAll()
+        {            
+            for (int i = lockedObjects.Length - 1; i >= 0; --i)
+            {
+                lockExit(lockedObjects[i]);
+            }
+
+            lockedObjects = new object[] {};
+            
+            currentLock = null;
+        }
+
+        public static bool IsLocked(ILockable obj)
+        {
+            return currentLock != null && currentLock.lockedObjects.Any(lck => lck == obj.Lock);
+        }
+
+        private static int CompareObject(ILockable x, ILockable y)
+        {
+            var hashDiff = x.Hash.CompareTo(y.Hash);
+            if (hashDiff != 0)
+            {
+                return hashDiff;
+            }
+
+            // Compare types if the hashes collide
+            return String.Compare(x.GetType().Name, y.GetType().Name, StringComparison.InvariantCulture);
+        }
+
+        public static void ThrowExceptionIfNotLocked(ILockable obj)
+        {
+#if DEBUG
+            if (!IsLocked(obj))
+            {
+                throw new LockException("Object not locked");
+            }
+
+#elif CHECK_LOCKS
+            if (!IsLocked(obj)) 
+                Global.Logger.Error(string.Format("Object not locked id[{0}] {1}", obj.Hash, Environment.StackTrace));
+#endif
+        }
+    }
+}

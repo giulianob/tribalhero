@@ -95,7 +95,7 @@
 		
 		private function createAchievement(achievement: Achievement):Component {
 			var lbl: JLabel = new JLabel(achievement.title, new AssetIcon(achievement.getSprite()));
-			lbl.setPreferredWidth(125);
+			lbl.setPreferredWidth(120);
 			lbl.setVerticalTextPosition(AsWingConstants.BOTTOM);
 			lbl.setHorizontalTextPosition(AsWingConstants.CENTER);
 			new SimpleTooltip(lbl, achievement.description, achievement.title);
@@ -107,6 +107,7 @@
 			profileData.achievements.sortOn(["tier", "id"], [Array.NUMERIC, Array.NUMERIC | Array.DESCENDING]);
 			
 			var pnlAchievements: JPanel = new JPanel(new FlowWrapLayout(375 /* Achie. Width Above times 3 */, AsWingConstants.LEFT, 15, 10, false));
+			pnlAchievements.setBorder(new EmptyBorder(null, new Insets(15, 0, 0, 15)));
 			
 			for each (var achievement: Achievement in profileData.achievements) {
 				pnlAchievements.append(createAchievement(achievement));

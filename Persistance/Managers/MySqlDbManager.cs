@@ -319,11 +319,25 @@ namespace Persistance.Managers
                 parms = new DbColumn[] {};
             }
 
-            MySqlConnection connection = GetConnection(false);
+            MySqlCommand command;
 
-            MySqlCommand command = connection.CreateCommand();
+            // If we are inside of a transaction use it, otherwise run by itself.
+            var inTransaction = persistantTransaction != null;
 
-            command.Connection = connection;
+            if (inTransaction)
+            {
+                InitPersistantTransaction();
+                command = ((MySqlTransaction)persistantTransaction.Transaction).Connection.CreateCommand();
+                command.Connection = ((MySqlTransaction)persistantTransaction.Transaction).Connection;
+                command.Transaction = (persistantTransaction.Transaction as MySqlTransaction);
+            }
+            else
+            {
+                MySqlConnection connection = GetConnection(false);            
+                command = connection.CreateCommand();
+                command.Connection = connection;                
+            }
+            
             command.CommandText = query;
             foreach (var parm in parms)
             {
@@ -332,10 +346,10 @@ namespace Persistance.Managers
 
             LogCommand(command);
 
-            return command.ExecuteReader(CommandBehavior.CloseConnection);
+            return command.ExecuteReader(inTransaction ? CommandBehavior.Default : CommandBehavior.CloseConnection);
         }
 
-        public void Query(string query, DbColumn[] parms)
+        public void Query(string query, params DbColumn[] parms)
         {
             if (paused)
             {
@@ -353,9 +367,12 @@ namespace Persistance.Managers
             command.Transaction = (persistantTransaction.Transaction as MySqlTransaction);
 
             command.CommandText = query;
-            foreach (var parm in parms)
+            if (parms != null)
             {
-                AddParameter(command, parm);
+                foreach (var parm in parms)
+                {
+                    AddParameter(command, parm);
+                }
             }
 
             ExecuteNonQuery(command);

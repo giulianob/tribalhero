@@ -3,6 +3,7 @@
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.utils.getDefinitionByName;
+	import src.Util.Util;
 	
 	/**
 	 * Required to have the compiler include these items in the final build
@@ -171,8 +172,17 @@
 		
 		public static function getInstance(spriteName: String): DisplayObject
 		{
-			var sprite: Class = ImportObjects[spriteName.replace('-', '_').toUpperCase()] as Class;
-			return (DisplayObject)(new sprite());
+			try {
+				spriteName = spriteName.replace('-', '_').toUpperCase();				
+				var sprite: Class = ImportObjects[spriteName] as Class;
+				return (DisplayObject)(new sprite());
+			}
+			catch (e: Error) 
+			{				
+			}
+			
+			Util.log("Could not find sprite: " + spriteName);
+			return new Sprite();			
 		}
 		
 		// Achievement Icons

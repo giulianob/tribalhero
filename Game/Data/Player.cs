@@ -42,9 +42,7 @@ namespace Game.Data
                       string description,
                       PlayerRights playerRights)
                 : this(playerid, created, lastLogin, name, description, playerRights, string.Empty)
-        {
-            ChatState = new PlayerChatState();
-            Achievements = new AchievementList(playerid);
+        {                        
         }
 
         public Player(uint playerid,
@@ -56,6 +54,7 @@ namespace Game.Data
                       string sessionId)
         {
             ChatState = new PlayerChatState();
+            Achievements = new AchievementList(playerid);
             PlayerId = playerid;
             LastLogin = lastLogin;
             Created = created;

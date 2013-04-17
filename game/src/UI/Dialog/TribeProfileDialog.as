@@ -626,7 +626,7 @@
 			});					
 			
 			btnLeave.addActionListener(function(e: Event): void {
-				InfoDialog.showMessageDialog("Leave tribe", "Do you really want to leave the tribe?", function(result: *) : void {
+				InfoDialog.showMessageDialog("Leave tribe", StringHelper.localize("TRIBE_LEAVE_WARNING"), function(result: *) : void {
 					if (result == JOptionPane.YES)
 						Global.mapComm.Tribe.leave();
 				}, null, true, true, JOptionPane.YES | JOptionPane.NO);				

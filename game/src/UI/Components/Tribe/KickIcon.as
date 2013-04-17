@@ -10,6 +10,8 @@
 	import src.UI.Dialog.InfoDialog;
 	import src.UI.Dialog.MessageCreateDialog;
 	import src.UI.Dialog.TribeSetRankDialog;
+	import src.Util.StringHelper;
+	import src.Util.Util;
 
 	public class KickIcon extends AssetIcon
 	{		
@@ -23,7 +25,7 @@
 			icon.mouseEnabled = true;
 			new SimpleTooltip(icon, "Kick Out");
 			icon.addEventListener(MouseEvent.MOUSE_DOWN, function(e: MouseEvent) : void {		
-				InfoDialog.showMessageDialog("Kick tribesman", "Are you sure you want to remove this player from the tribe?", function(result: int): void {
+				InfoDialog.showMessageDialog("Kick tribesman", StringHelper.localize("TRIBE_KICK_WARNING"), function(result: int): void {
 					if (result == JOptionPane.YES)
 						Global.mapComm.Tribe.kick(playerId);
 						

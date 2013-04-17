@@ -737,7 +737,7 @@ namespace Game.Data.Tribe
         public static bool IsNameValid(string tribeName)
         {
             return tribeName != string.Empty && tribeName.Length >= 3 && tribeName.Length <= 20 &&
-                   Regex.IsMatch(tribeName, "^([a-z][a-z0-9\\s].*)$", RegexOptions.IgnoreCase);
+                   Regex.IsMatch(tribeName, Global.ALPHANUMERIC_NAME, RegexOptions.IgnoreCase);
         }
 
         public void RemoveAssignment(Assignment assignment)

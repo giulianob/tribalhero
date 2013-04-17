@@ -16,7 +16,7 @@ namespace Game.Setup
     {
         #region Game Settings
 
-        public static string database_schema_version = "20130317045755";
+        public static string database_schema_version = "20130416035947";
 
         // ReSharper disable InconsistentNaming        
         public static int client_min_version = 0;
@@ -224,6 +224,8 @@ namespace Game.Setup
         public static uint city_id_max = 4999999;
 
         public static PlayerRights chat_min_level = PlayerRights.Basic;
+
+        public static bool locks_check;
 
         #endregion
 

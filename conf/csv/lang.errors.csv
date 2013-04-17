@@ -65,7 +65,7 @@ ERROR_611,You aren't allowed to watch this battle unless one of your troops have
 ERROR_612,You aren't allowed to watch this battle unless one of your troops have participated for at least 5 rounds. Battle will be viewable in approximately {0} round(s)
 ERROR_613,The gate is still under attack and has {0} hp remaining.
 ERROR_614,The gate is still under attack and has {0} hp remaining. There appear to be around {1} units attacking.
-ERROR_701,Tribe is already full
+ERROR_701,Tribe is currently full. If someone was recently removed from the tribe, a slot will be open for new members after 8 hours.
 ERROR_702,You are not allowed to do this action because you aren't currently a member in a tribe
 ERROR_703,Tribe name already taken
 ERROR_704,Tribe not found
@@ -83,8 +83,7 @@ ERROR_725,You are not authorized to do that
 ERROR_726,This tribesman already has a pending invitation from another tribe. They must decline the current request before you can invite them.
 ERROR_727,You don't currently have any invitations to join a tribe
 ERROR_728,You must be part of a tribe to use this feature.
-ERROR_729,Your ranking in the tribe is too low.
-ERROR_730,Your ranking in the tribe is too high.
+ERROR_729,You cannot rejoin the same tribe for 48 hours after being kicked or leaving the tribe.
 ERROR_741,It's too late to join this assignment
 ERROR_742,Assignment not found
 ERROR_743,Invalid assignment dispatch time.

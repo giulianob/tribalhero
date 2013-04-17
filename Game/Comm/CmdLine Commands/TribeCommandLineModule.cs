@@ -437,8 +437,9 @@ namespace Game.Comm
             {
                 ITribe tribe = players[tribeId].Tribesman.Tribe;
                 var tribesman = new Tribesman(tribe, players[playerId], tribe.DefaultRank);
-                tribe.AddTribesman(tribesman);
+                tribe.AddTribesman(tribesman, true);
             }
+
             return "OK";
         }
 

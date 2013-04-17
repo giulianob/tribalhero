@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using Game.Data;
+using Game.Setup;
 
 // ReSharper disable RedundantUsingDirective
 
@@ -99,21 +100,27 @@ namespace Game.Util.Locking
                 return hashDiff;
             }
 
-            // Compare types if the hashes collide
-            return String.Compare(x.GetType().Name, y.GetType().Name, StringComparison.InvariantCulture);
+            var xType = x.GetType();
+            var yType = y.GetType();
+
+            return String.Compare(xType.AssemblyQualifiedName, yType.AssemblyQualifiedName, StringComparison.InvariantCulture);
         }
 
         public static void ThrowExceptionIfNotLocked(ILockable obj)
         {
+            if (!Config.locks_check)
+            {
+                return;
+            }
 #if DEBUG
             if (!IsLocked(obj))
             {
                 throw new LockException("Object not locked");
             }
-
-#elif CHECK_LOCKS
-            if (!IsLocked(obj)) 
+#else
+            if (!IsLocked(obj)) {
                 Global.Logger.Error(string.Format("Object not locked id[{0}] {1}", obj.Hash, Environment.StackTrace));
+            }
 #endif
         }
     }

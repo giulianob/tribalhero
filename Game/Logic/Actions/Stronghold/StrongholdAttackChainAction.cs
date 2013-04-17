@@ -204,20 +204,21 @@ namespace Game.Logic.Actions
                 /*
                  * Commenting out this logic to return if stronghold is not attackable/defendable until we are able to correctly cancel assignments. At the moment, 
                  * there are cases where when troops are in an assignment and a stronghold is taken over,
-                 * the ones that are on the walk will return and then the ones that are dispatched will be sent to the stronghold
+                 * the ones that are on the walk will return and then the ones that are dispatched will be sent to the stronghold.
+                 * 
                 bool invalidTarget;
                 using (locker.Lock(city, targetStronghold))
                 {
                     invalidTarget = strongholdBattleProcedure.CanStrongholdBeAttacked(city, targetStronghold) != Error.Ok &&
                                     strongholdBattleProcedure.CanStrongholdBeDefended(city, targetStronghold) != Error.Ok;
                 }
-
-                // If the stronghold is not there or we are unable to attack/defense it, then cancel the current TroopMoveAction
-                if (invalidTarget)
+                */
+                
+                // If player is no longer in a tribe, return
+                if (!city.Owner.IsInTribe)
                 {
                     CancelCurrentChain();
-                }
-                 */
+                }                 
             }
             else if (state == ActionState.Failed)
             {

@@ -326,7 +326,7 @@
 					return;
 			
 				var dialog: TribeProfileDialog = new TribeProfileDialog(profileData);
-				dialog.show();		
+				dialog.show(null, false);
 			}		
 		}
 		

@@ -90,7 +90,7 @@ namespace Testing.Lock
 
             locker.Lock(new[] {lock1, lock2});
 
-            enterObjects.Should().Equal(lock2);
+            enterObjects.Should().Equal(lock2.Lock);
         }
 
         [Theory, AutoNSubstituteData]

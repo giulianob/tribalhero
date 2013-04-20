@@ -278,6 +278,7 @@
     <Compile Include="Data\Tribe\ITribeFactory.cs" />
     <Compile Include="Data\Tribe\ITribeRank.cs" />
     <Compile Include="Data\Tribe\ITribesman.cs" />
+    <Compile Include="Data\Tribe\LeavingTribesmate.cs" />
     <Compile Include="Data\Tribe\Tribe.cs" />
     <Compile Include="Data\Tribe\TribeEvents.cs" />
     <Compile Include="Data\Tribe\TribeManager.cs" />

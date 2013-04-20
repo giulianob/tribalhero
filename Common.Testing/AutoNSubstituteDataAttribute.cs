@@ -9,6 +9,7 @@ namespace Common.Testing
         public AutoNSubstituteDataAttribute()
                 : base(new Fixture().Customize(new AutoNSubstituteCustomization()))
         {
+            Fixture.OmitAutoProperties = true;
         }
     }
 }

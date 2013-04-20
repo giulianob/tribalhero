@@ -290,8 +290,11 @@ namespace Game.Logic.Actions
             // - defensive meter is 0
             // - occupied state and there is no one left defending it
             // - neutral state and the attacker killed the main group
+
+            var hasDefendingUnitsLeft = stronghold.Troops.StationedHere().Any(p => p.TotalCount > 0);
+
             if (defensiveMeter <= 0 ||
-                (stronghold.StrongholdState == StrongholdState.Occupied && !stronghold.Troops.StationedHere().Any()) ||
+                (stronghold.StrongholdState == StrongholdState.Occupied && !hasDefendingUnitsLeft) ||
                 (stronghold.StrongholdState == StrongholdState.Neutral && npcGroupKilled))
             {
                 strongholdManager.TransferTo(stronghold, stronghold.GateOpenTo);

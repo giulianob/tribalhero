@@ -147,6 +147,7 @@
     <Compile Include="MapMath\ForeachTest.cs" />
     <Compile Include="MapMath\RadiusTest.cs" />
     <Compile Include="Misc\XmlSerializerTest.cs" />
+    <Compile Include="StrongholdTests\StrongholdManagerTests.cs" />
     <Compile Include="Resources\AggressiveLazyResourceTest.cs" />
     <Compile Include="Resources\ResourceTest.cs" />
     <Compile Include="Resources\LazyResourceTest.cs" />

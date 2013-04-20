@@ -1,102 +1,101 @@
-Key,EN
-ERROR_-1,An unexpected error has occurred
-ERROR_5,The game client you are using is outdated. Either refresh the page or download the newest client to continue playing.
-ERROR_6,Invalid username or password supplied.
-ERROR_7,You have been banned from this server.
-ERROR_8,Server is currently under maintenance. Check forums for more information.
-ERROR_9,This feature is newly developed and does not work with existing data.  Please look at release note on how this feature can be used.
-ERROR_20,"Looks like you're spamming the chat. Please wait a couple minutes before talking again. If you keep trying to chat, you will have to wait even longer."
-ERROR_21,"Message too long, shorten it and try again."
-ERROR_22,You have been muted. You may not speak in any public chats until your mute expires.
-ERROR_23,Chat has been temporarily disabled.
-ERROR_100,The maximum number of allowed actions has been reached.
-ERROR_102,The maximum number of allowed actions has been reached
-ERROR_103,The maximum number of allowed actions has been reached
-ERROR_104,The specified action was not found
-ERROR_105,The specified action is invalid
-ERROR_106,The specified action is already in progress
-ERROR_107,Invalid action count specified
-ERROR_108,This action cannot be cancelled
-ERROR_109,You cannot perform this action on yourself
-ERROR_200,You do not have enough resources to do that
-ERROR_201,The specified resource is not tradable
-ERROR_202,Not enough laborers to do that
-ERROR_203,This building can't support that many laborers
-ERROR_204,This forest is already full
-ERROR_205,You must build a lumbermill first
-ERROR_206,You are already gathering from this forest
-ERROR_207,"This forest is too high level for your lumbermill.  Check your lumbermill's description, it says what level forest they can gather from."
-ERROR_208,You must upgrade your lumbermill before you can gather from more forests at this time
-ERROR_209,You are not allowed to send this many resources
-ERROR_210,"Lumbermill is busy. Check your lumbermill, it could be upgrading or building another outpost at the moment."
-ERROR_250,The requirements for this action have not been met
-ERROR_251,The requirements for this action have not been met
-ERROR_300,The market prices has changed since you opened the market dialog. Close the dialog and try again.
-ERROR_301,An invalid quantity was specified
-ERROR_400,The selected object no longer exists
-ERROR_401,The specified structure does not exist
-ERROR_402,The specified player does not exist
-ERROR_403,The specified city was not found
-ERROR_404`,Structure not found
-ERROR_405,Technology not found
-ERROR_406,Technology is already at the maximum level
-ERROR_410,The map is full!
-ERROR_411,Unable to build on the specified tile
-ERROR_412,A structure already exists there.
-ERROR_413,This city name has already been used.
-ERROR_414,The city name must start with a letter and can only contain alpha numeric characters.
-ERROR_415,This object cannot be attacked.
-ERROR_416,You must perform this action within your city walls
-ERROR_417,This player is still under newbie protection and cannot be attacked yet
-ERROR_418,This structure cannot be destroyed or attacked when its level 1.
-ERROR_419,This structure cannot be removed.
-ERROR_420,There must be an available road to perform this action
-ERROR_421,A road already exists there
-ERROR_422,This road is required for other structures to exist and cannot be removed
-ERROR_600,You can't attack yourself!
-ERROR_601,Not allowed while city is in battle
-ERROR_602,Why would you want to defend yourself?
-ERROR_604,It doesn't look like you have enough units to do that. You can try again as your units may have changed in the last few minutes since you started this action.
-ERROR_605,You have reached the maximum number of troops allowed.
-ERROR_606,No units have been selected
-ERROR_607,Not allowed while troop is in battle
-ERROR_610,This battle cannot be watched.
-ERROR_611,You aren't allowed to watch this battle unless one of your troops have participated for at least 5 rounds.
-ERROR_612,You aren't allowed to watch this battle unless one of your troops have participated for at least 5 rounds. Battle will be viewable in approximately {0} round(s)
-ERROR_613,The gate is still under attack and has {0} hp remaining.
-ERROR_614,The gate is still under attack and has {0} hp remaining. There appear to be around {1} units attacking.
-ERROR_701,Tribe is already full
-ERROR_702,You are not allowed to do this action because you aren't currently a member in a tribe
-ERROR_703,Tribe name already taken
-ERROR_704,Tribe not found
-ERROR_705,Tribe name is invalid. You can only use alphanumeric characters for your tribe name.
-ERROR_706,Tribe is already at maximum level
-ERROR_707,Tribe cannot be delete while assignments exist.
-ERROR_708,Tribe description is too long.
-ERROR_709,Rank not found
-ERROR_710,Please specify a name
-ERROR_721,Tribesman not found
-ERROR_722,This player is already a member of a tribe
-ERROR_723,This action cannot be performed on the tribe's chief
-ERROR_724,This player is already part of a tribe
-ERROR_725,You are not authorized to do that
-ERROR_726,This tribesman already has a pending invitation from another tribe. They must decline the current request before you can invite them.
-ERROR_727,You don't currently have any invitations to join a tribe
-ERROR_728,You must be part of a tribe to use this feature.
-ERROR_729,Your ranking in the tribe is too low.
-ERROR_730,Your ranking in the tribe is too high.
-ERROR_741,It's too late to join this assignment
-ERROR_742,Assignment not found
-ERROR_743,Invalid assignment dispatch time.
-ERROR_744,You are not allowed to attack a member of your own tribe.
-ERROR_745,Your units are too slow for the specified attack time.
-ERROR_746,You cannot join this assignment.
-ERROR_801,Stronghold not found.
-ERROR_802,Stronghold is not occupied.
-ERROR_810,You are not allowed to attack a stronghold of your own tribe.
-ERROR_811,Stronghold's gate is not opened to your tribe.
-ERROR_812,Stronghold is owned by another tribe.
-ERROR_813,Stronghold is inactive.
-ERROR_814,Stronghold gate is already at full health.
-ERROR_815,Stronghold gate cannot be repaired while its under attack
-ERROR_901,This barbarian tribe has already been completely defeated.
+Key,EN,
+ERROR_-1,An unexpected error has occurred,
+ERROR_5,The game client you are using is outdated. Either refresh the page or download the newest client to continue playing.,
+ERROR_6,Invalid username or password supplied.,
+ERROR_7,You have been banned from this server.,
+ERROR_8,Server is currently under maintenance. Check forums for more information.,
+ERROR_9,This feature is newly developed and does not work with existing data.  Please look at release note on how this feature can be used.,
+ERROR_20,"Looks like you're spamming the chat. Please wait a couple minutes before talking again. If you keep trying to chat, you will have to wait even longer.",
+ERROR_21,"Message too long, shorten it and try again.",
+ERROR_22,You have been muted. You may not speak in any public chats until your mute expires.,
+ERROR_23,Chat has been temporarily disabled.,
+ERROR_100,The maximum number of allowed actions has been reached.,
+ERROR_102,The maximum number of allowed actions has been reached,
+ERROR_103,The maximum number of allowed actions has been reached,
+ERROR_104,The specified action was not found,
+ERROR_105,The specified action is invalid,
+ERROR_106,The specified action is already in progress,
+ERROR_107,Invalid action count specified,
+ERROR_108,This action cannot be cancelled,
+ERROR_109,You cannot perform this action on yourself,
+ERROR_200,You do not have enough resources to do that,
+ERROR_201,The specified resource is not tradable,
+ERROR_202,Not enough laborers to do that,
+ERROR_203,This building can't support that many laborers,
+ERROR_204,This forest is already full,
+ERROR_205,You must build a lumbermill first,
+ERROR_206,You are already gathering from this forest,
+ERROR_207,"This forest is too high level for your lumbermill.  Check your lumbermill's description, it says what level forest they can gather from.",
+ERROR_208,You must upgrade your lumbermill before you can gather from more forests at this time,
+ERROR_209,You are not allowed to send this many resources,
+ERROR_210,"Lumbermill is busy. Check your lumbermill, it could be upgrading or building another outpost at the moment.",
+ERROR_250,The requirements for this action have not been met,
+ERROR_251,The requirements for this action have not been met,
+ERROR_300,The market prices has changed since you opened the market dialog. Close the dialog and try again.,
+ERROR_301,An invalid quantity was specified,
+ERROR_400,The selected object no longer exists,
+ERROR_401,The specified structure does not exist,
+ERROR_402,The specified player does not exist,
+ERROR_403,The specified city was not found,
+ERROR_404`,Structure not found,
+ERROR_405,Technology not found,
+ERROR_406,Technology is already at the maximum level,
+ERROR_410,The map is full!,
+ERROR_411,Unable to build on the specified tile,
+ERROR_412,A structure already exists there.,
+ERROR_413,This city name has already been used.,
+ERROR_414,The city name must start with a letter and can only contain alpha numeric characters.,
+ERROR_415,This object cannot be attacked.,
+ERROR_416,You must perform this action within your city walls,
+ERROR_417,This player is still under newbie protection and cannot be attacked yet,
+ERROR_418,This structure cannot be destroyed or attacked when its level 1.,
+ERROR_419,This structure cannot be removed.,
+ERROR_420,There must be an available road to perform this action,
+ERROR_421,A road already exists there,
+ERROR_422,This road is required for other structures to exist and cannot be removed,
+ERROR_600,You can't attack yourself!,
+ERROR_601,Not allowed while city is in battle,
+ERROR_602,Why would you want to defend yourself?,
+ERROR_604,It doesn't look like you have enough units to do that. You can try again as your units may have changed in the last few minutes since you started this action.,
+ERROR_605,You have reached the maximum number of troops allowed.,
+ERROR_606,No units have been selected,
+ERROR_607,Not allowed while troop is in battle,
+ERROR_610,This battle cannot be watched.,
+ERROR_611,You aren't allowed to watch this battle unless one of your troops have participated for at least 5 rounds.,
+ERROR_612,You aren't allowed to watch this battle unless one of your troops have participated for at least 5 rounds. Battle will be viewable in approximately {0} round(s),
+ERROR_613,The gate is still under attack and has {0} hp remaining.,
+ERROR_614,The gate is still under attack and has {0} hp remaining. There appear to be around {1} units attacking.,
+ERROR_701,Tribe is currently full. If someone was recently removed from the tribe, a slot will be open for new members after 8 hours.
+ERROR_702,You are not allowed to do this action because you aren't currently a member in a tribe,
+ERROR_703,Tribe name already taken,
+ERROR_704,Tribe not found,
+ERROR_705,Tribe name is invalid. You can only use alphanumeric characters for your tribe name.,
+ERROR_706,Tribe is already at maximum level,
+ERROR_707,Tribe cannot be delete while assignments exist.,
+ERROR_708,Tribe description is too long.,
+ERROR_709,Rank not found,
+ERROR_710,"Please specify a valid name.\nNames can only contain letters, numbers, and spaces.\nIt cannot end or begin with a space.",
+ERROR_721,Tribesman not found,
+ERROR_722,This player is already a member of a tribe,
+ERROR_723,This action cannot be performed on the tribe's chief,
+ERROR_724,This player is already part of a tribe,
+ERROR_725,You are not authorized to do that,
+ERROR_726,This tribesman already has a pending invitation from another tribe. They must decline the current request before you can invite them.,
+ERROR_727,You don't currently have any invitations to join a tribe,
+ERROR_728,You must be part of a tribe to use this feature.,
+ERROR_729,You cannot rejoin the same tribe for 48 hours after being kicked or leaving the tribe.,
+ERROR_741,It's too late to join this assignment,
+ERROR_742,Assignment not found,
+ERROR_743,Invalid assignment dispatch time.,
+ERROR_744,You are not allowed to attack a member of your own tribe.,
+ERROR_745,Your units are too slow for the specified attack time.,
+ERROR_746,You cannot join this assignment.,
+ERROR_801,Stronghold not found.,
+ERROR_802,Stronghold is not occupied.,
+ERROR_810,You are not allowed to attack a stronghold of your own tribe.,
+ERROR_811,Stronghold's gate is not opened to your tribe.,
+ERROR_812,Stronghold is owned by another tribe.,
+ERROR_813,Stronghold is inactive.,
+ERROR_814,Stronghold gate is already at full health.,
+ERROR_815,Stronghold gate cannot be repaired while its under attack,
+ERROR_901,This barbarian tribe has already been completely defeated.,

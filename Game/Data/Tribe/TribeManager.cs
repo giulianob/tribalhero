@@ -219,10 +219,10 @@ namespace Game.Data.Tribe
             {
                 // Retreat all stationed troops in strongholds that are idle.
                 // If they are in battle, then the battle action will take care of removing them. If they are walking to a stronghold, then the attack/reinforce action will walk them back as well.
-                foreach (
-                        var stub in
-                                city.Troops.MyStubs()
-                                    .Where(stub => stub.Station is IStronghold && stub.State == TroopState.Stationed))
+                foreach (var stub in city.Troops.MyStubs().Where(stub =>
+                                                                 stub.Station is IStronghold &&
+                                                                 ((IStronghold)stub.Station).MainBattle == null &&
+                                                                 stub.State == TroopState.Stationed))
                 {
                     var retreatAction = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
                     stub.City.Worker.DoPassive(stub.City, retreatAction, true);

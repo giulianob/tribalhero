@@ -208,9 +208,7 @@ namespace Game.Setup
 
         TribesmanNotPartOfTribe = 728,
 
-        TribesmanRankingTooLow = 729,
-
-        TribesmanRankingTooHigh = 730,
+        TribeCannotRejoinYet = 729,
 
         AssignmentDone = 741,
 

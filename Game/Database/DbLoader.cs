@@ -248,6 +248,13 @@ namespace Game.Database
                         tribe.CreateRank(obj.Id, obj.Name, obj.Permission);
                     }
 
+                    tribe.LeavingTribesmates.AddRange(JsonConvert.DeserializeObject<LeavingTribesmate[]>((string)reader["leaving_tribesmates"]));
+
+                    foreach (var obj in JsonConvert.DeserializeObject<TribeRank[]>((string)reader["ranks"]))
+                    {
+                        tribe.CreateRank(obj.Id, obj.Name, obj.Permission);
+                    }
+
                     tribe.Id = (uint)reader["id"];
                     tribe.DbPersisted = true;
 
@@ -276,7 +283,7 @@ namespace Game.Database
                                                   DateTime.SpecifyKind((DateTime)reader["join_date"], DateTimeKind.Utc),
                                                   contribution,
                                                   tribe.Ranks.First(x=>x.Id==(byte)reader["rank"])) {DbPersisted = true};
-                    tribe.AddTribesman(tribesman, false);
+                    tribe.DbLoaderAdd(tribesman);
                 }
             }
 

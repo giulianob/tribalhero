@@ -374,8 +374,12 @@ namespace Game.Comm
             // Tribal info
             packet.AddUInt32(session.Player.Tribesman == null ? 0 : session.Player.Tribesman.Tribe.Id);
             packet.AddUInt32(session.Player.TribeRequest);
-            packet.AddByte((byte)(session.Player.Tribesman == null ? 0 : session.Player.Tribesman.Rank));
+            packet.AddByte((byte)(session.Player.Tribesman == null ? 0 : session.Player.Tribesman.Rank.Id));
             packet.AddString(session.Player.Tribesman == null ? string.Empty : session.Player.Tribesman.Tribe.Name);
+            if(session.Player.Tribesman != null)
+            {
+                AddTribeRanksToPacket(session.Player.Tribesman.Tribe, packet);
+            }
 
             //Cities
             IEnumerable<ICity> list = session.Player.GetCityList();
@@ -384,6 +388,16 @@ namespace Game.Comm
             {
                 city.Subscribe(session);
                 AddToPacket(city, packet);
+            }
+        }
+
+        public static void AddTribeRanksToPacket(ITribe tribe, Packet packet)
+        {
+            packet.AddByte((byte)tribe.Ranks.Count());
+            foreach (var rank in tribe.Ranks)
+            {
+                packet.AddString(rank.Name);
+                packet.AddInt32((int)rank.Permission);
             }
         }
 
@@ -580,7 +594,7 @@ namespace Game.Comm
 
             reply.AddUInt32(player.Tribesman != null ? player.Tribesman.Tribe.Id : 0);
             reply.AddString(player.Tribesman != null ? player.Tribesman.Tribe.Name : string.Empty);
-            reply.AddByte((byte)(player.Tribesman != null ? player.Tribesman.Rank : 0));
+            reply.AddString(player.Tribesman != null ? player.Tribesman.Rank.Name : string.Empty);
 
             // Ranking info
             List<dynamic> ranks = new List<dynamic>();
@@ -649,7 +663,7 @@ namespace Game.Comm
                     packet.AddUInt32(tribesman.Player.PlayerId);
                     packet.AddString(tribesman.Player.Name);
                     packet.AddInt32(tribesman.Player.GetCityCount());
-                    packet.AddByte(tribesman.Rank);
+                    packet.AddByte(tribesman.Rank.Id);
                     packet.AddUInt32(tribesman.Player.IsLoggedIn ? 0 : UnixDateTime.DateTimeToUnix(tribesman.Player.LastLogin));
                     AddToPacket(tribesman.Contribution, packet);
                 }
@@ -742,13 +756,20 @@ namespace Game.Comm
                 packet.AddString(tribe.PublicDescription);
                 packet.AddByte(tribe.Level);
                 packet.AddUInt32(UnixDateTime.DateTimeToUnix(tribe.Created));
+
+                packet.AddByte((byte)tribe.Ranks.Count());
+                foreach (var rank in tribe.Ranks)
+                {
+                    packet.AddString(rank.Name);
+                }
+
                 packet.AddInt16((short)tribe.Count);
                 foreach (var tribesman in tribe.Tribesmen)
                 {
                     packet.AddUInt32(tribesman.Player.PlayerId);
                     packet.AddString(tribesman.Player.Name);
                     packet.AddInt32(tribesman.Player.GetCityCount());
-                    packet.AddByte(tribesman.Rank);
+                    packet.AddByte(tribesman.Rank.Id);
                 }
 
                 var strongholds = strongholdManager.StrongholdsForTribe(tribe).ToList();

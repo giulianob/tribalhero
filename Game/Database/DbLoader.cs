@@ -24,11 +24,13 @@ using Game.Map;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
-using JsonFx.Json;
+using Newtonsoft.Json;
 using Ninject;
 using Ninject.Extensions.Logging;
 using Persistance;
+using System.Linq;
 using DbTransaction = Persistance.DbTransaction;
+using JsonReader = JsonFx.Json.JsonReader;
 
 #endregion
 
@@ -85,8 +87,6 @@ namespace Game.Database
 
             logger.Info("Loading database...");
 
-            DateTime now = DateTime.UtcNow;
-
             using (DbTransaction transaction = DbManager.GetThreadTransaction())
             {
                 try
@@ -102,7 +102,7 @@ namespace Game.Database
                     LoadSystemVariables();
 
                     // Calculate how long server was down
-                    TimeSpan downTime = now.Subtract((DateTime)Global.SystemVariables["System.time"].Value);
+                    TimeSpan downTime = DateTime.UtcNow.Subtract((DateTime)Global.SystemVariables["System.time"].Value);
                     if (downTime.TotalMilliseconds < 0)
                     {
                         downTime = new TimeSpan(0);
@@ -127,6 +127,14 @@ namespace Game.Database
                     LoadTroopStubTemplates();
                     LoadTroops();
                     LoadBattleManagers();
+
+                    // Recalculate downTime so actions are less likely to drift 
+                    downTime = DateTime.UtcNow.Subtract((DateTime)Global.SystemVariables["System.time"].Value);
+                    if (downTime.TotalMilliseconds < 0)
+                    {
+                        downTime = new TimeSpan(0);
+                    }
+
                     LoadActions(downTime);
                     LoadActionReferences();
                     LoadActionNotifications();
@@ -135,7 +143,7 @@ namespace Game.Database
                     World.AfterDbLoaded(Procedure);
 
                     //Ok data all loaded. We can get the system going now.
-                    Global.SystemVariables["System.time"].Value = now;
+                    Global.SystemVariables["System.time"].Value = DateTime.UtcNow;
                     DbManager.Save(Global.SystemVariables["System.time"]);
                 }
                 catch(Exception e)
@@ -218,6 +226,20 @@ namespace Game.Database
                                                          resource,
                                                          DateTime.SpecifyKind((DateTime)reader["created"],
                                                                               DateTimeKind.Utc));
+
+                    
+                    foreach (var obj in JsonConvert.DeserializeObject<TribeRank[]>((string)reader["ranks"]))
+                    {
+                        tribe.CreateRank(obj.Id, obj.Name, obj.Permission);
+                    }
+
+                    tribe.LeavingTribesmates.AddRange(JsonConvert.DeserializeObject<LeavingTribesmate[]>((string)reader["leaving_tribesmates"]));
+
+                    foreach (var obj in JsonConvert.DeserializeObject<TribeRank[]>((string)reader["ranks"]))
+                    {
+                        tribe.CreateRank(obj.Id, obj.Name, obj.Permission);
+                    }
+
                     tribe.Id = (uint)reader["id"];
                     tribe.DbPersisted = true;
 
@@ -245,8 +267,8 @@ namespace Game.Database
                                                   World.Players[(uint)reader["player_id"]],
                                                   DateTime.SpecifyKind((DateTime)reader["join_date"], DateTimeKind.Utc),
                                                   contribution,
-                                                  (byte)reader["rank"]) {DbPersisted = true};
-                    tribe.AddTribesman(tribesman, false);
+                                                  tribe.Ranks.First(x=>x.Id==(byte)reader["rank"])) {DbPersisted = true};
+                    tribe.DbLoaderAdd(tribesman);
                 }
             }
 
@@ -771,37 +793,44 @@ namespace Game.Database
             
             logger.Info("Loading technologies...");
 
+            // Creates a lookup for speed
+            ILookup<uint, dynamic> techs;
+            
+            using (var reader = DbManager.ReaderQuery(string.Format("SELECT * FROM `{0}`", TechnologyManager.DB_TABLE + "_list")))
+            {
+                techs = ReaderToLookUp(reader, 
+                    row => new {
+                        cityId = (uint)row["city_id"],
+                        ownerId = (uint)row["owner_id"],
+                        ownerLocation = (byte)row["owner_location"],
+                        type = (uint)row["type"],
+                        level = (byte)row["level"]
+                    },
+                    row => (uint)row.cityId);
+            }
+
             using (var reader = DbManager.Select(TechnologyManager.DB_TABLE))
             {
                 while (reader.Read())
                 {
                     var ownerLocation = (EffectLocation)((byte)reader["owner_location"]);
+                    var ownerId = (uint)reader["owner_id"];
 
                     ITechnologyManager manager;
+
+                    ICity city;
+                    if (!World.TryGetObjects((uint)reader["city_id"], out city))
+                    {
+                        throw new Exception("City not found");
+                    }
 
                     switch(ownerLocation)
                     {
                         case EffectLocation.Object:
-                        {
-                            ICity city;
-                            if (!World.TryGetObjects((uint)reader["city_id"], out city))
-                            {
-                                throw new Exception("City not found");
-                            }
-
-                            var structure = (IStructure)city[(uint)reader["owner_id"]];
-                            manager = structure.Technologies;
-                        }
+                            manager = ((IStructure)city[ownerId]).Technologies;
                             break;
                         case EffectLocation.City:
-                        {
-                            ICity city;
-                            if (!World.TryGetObjects((uint)reader["city_id"], out city))
-                            {
-                                throw new Exception("City not found");
-                            }
-                            manager = city.Technologies;
-                        }
+                            manager = city.Technologies;                            
                             break;
                         default:
                             throw new Exception("Unknown effect location?");
@@ -809,12 +838,9 @@ namespace Game.Database
 
                     manager.DbPersisted = true;
 
-                    using (DbDataReader listReader = DbManager.SelectList(manager))
+                    foreach (var tech in techs[city.Id].Where(p => p.ownerId == ownerId && p.ownerLocation == (byte)ownerLocation))
                     {
-                        while (listReader.Read())
-                        {
-                            manager.Add(technologyFactory.GetTechnology((uint)listReader["type"], (byte)listReader["level"]), false);
-                        }
+                        manager.Add(technologyFactory.GetTechnology((uint)tech.type, (byte)tech.level), false);
                     }
                 }
             }
@@ -1847,6 +1873,17 @@ namespace Game.Database
                 default:
                     throw new Exception("Unknown location type");
             }
+        }
+
+        private ILookup<T, dynamic> ReaderToLookUp<T>(DbDataReader reader, Func<DbDataReader, dynamic> projection, Func<dynamic, T> keySelector)
+        {
+            var list = new List<dynamic>();
+            while (reader.Read())
+            {
+                list.Add(projection(reader));
+            }
+
+            return list.ToLookup(keySelector);
         }
     }
 }

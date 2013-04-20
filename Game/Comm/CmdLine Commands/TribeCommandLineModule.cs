@@ -7,6 +7,7 @@ using System.Text;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
+using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -25,6 +26,7 @@ namespace Game.Comm
         private readonly ILocker locker;
 
         private readonly IStrongholdManager strongholdManager;
+        private readonly Procedure procedure;
 
         private readonly ITribeFactory tribeFactory;
 
@@ -37,7 +39,8 @@ namespace Game.Comm
                                       ILocker locker,
                                       ITribeManager tribeManager,
                                       IWorld world,
-                                      IStrongholdManager strongholdManager)
+                                      IStrongholdManager strongholdManager,
+                                      Procedure procedure)
         {
             this.tribeFactory = tribeFactory;
             this.dbManager = dbManager;
@@ -45,6 +48,7 @@ namespace Game.Comm
             this.tribeManager = tribeManager;
             this.world = world;
             this.strongholdManager = strongholdManager;
+            this.procedure = procedure;
         }
 
         public override void RegisterCommands(CommandLineProcessor processor)
@@ -58,6 +62,56 @@ namespace Game.Comm
             processor.RegisterCommand("TribesmanUpdate", TribesmanUpdate, PlayerRights.Bureaucrat);
             processor.RegisterCommand("TribeIncomingList", IncomingList, PlayerRights.Bureaucrat);
             processor.RegisterCommand("TribeTransfer", Transfer, PlayerRights.Admin);
+            processor.RegisterCommand("TribeRankUpdate", RankUpdate, PlayerRights.Admin);
+        }
+
+        private string RankUpdate(Session session, string[] parms)
+        {
+            bool help = false;
+            string tribeName = string.Empty;
+            string rank = string.Empty;
+            string name = string.Empty;
+            string permission = string.Empty;
+
+            try
+            {
+                var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},
+                        {"tribe=", v => tribeName = v.TrimMatchingQuotes()},
+                        {"rank=", v => rank = v.TrimMatchingQuotes()},
+                        {"name=", v => name = v.TrimMatchingQuotes()},
+                        {"permission=", v => permission = v.TrimMatchingQuotes()},
+                };
+                p.Parse(parms);
+            }
+            catch (Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(tribeName) || string.IsNullOrEmpty(rank))
+            {
+                var str = Enum.GetNames(typeof(TribePermission)).Aggregate((s, s1) => s + "," + s1);
+                return "TribeRankUpdate --rank=rank_id --tribe=tribe_name [--name=rank_name] [--Permission=Permission("+str+")]";
+            }
+
+            uint tribeId;
+            if (!tribeManager.FindTribeId(tribeName, out tribeId))
+            {
+                return "Tribe not found";
+            }
+            ITribe tribe;
+            using (locker.Lock(tribeId, out tribe))
+            {
+                ITribeRank tribeRank = tribe.Ranks.First(x=>x.Id==byte.Parse(rank));
+                if(tribeRank==null) return "Rank not found";
+                tribe.UpdateRank(tribeRank.Id,
+                                 name == string.Empty ? tribeRank.Name : name,
+                                 permission == string.Empty ? tribeRank.Permission : (TribePermission)Enum.Parse(typeof(TribePermission), permission, true));
+
+            }
+            return "OK";
         }
 
         private string Info(Session session, string[] parms)
@@ -173,27 +227,10 @@ namespace Game.Comm
             IPlayer player;
             using (locker.Lock(playerId, out player))
             {
-                if (player.Tribesman != null)
-                {
-                    return "Player already in tribe";
-                }
-
-                if (tribeManager.TribeNameTaken(tribeName))
-                {
-                    return "Tribe name already taken";
-                }
-
-                if (!Tribe.IsNameValid(tribeName))
-                {
-                    return "Tribe name is not allowed";
-                }
-
-                ITribe tribe = tribeFactory.CreateTribe(player, tribeName);
-
-                tribeManager.Add(tribe);
-
-                var tribesman = new Tribesman(tribe, player, 0);
-                tribe.AddTribesman(tribesman);
+                ITribe tribe;
+                Error error = procedure.CreateTribe(player, tribeName, out tribe);
+                if(error!=Error.Ok) return error.ToString();
+                tribe.SendRanksUpdate();
             }
             return "OK!";
         }
@@ -399,9 +436,10 @@ namespace Game.Comm
             using (locker.Lock(out players, playerId, tribeId))
             {
                 ITribe tribe = players[tribeId].Tribesman.Tribe;
-                var tribesman = new Tribesman(tribe, players[playerId], 2);
-                tribe.AddTribesman(tribesman);
+                var tribesman = new Tribesman(tribe, players[playerId], tribe.DefaultRank);
+                tribe.AddTribesman(tribesman, true);
             }
+
             return "OK";
         }
 

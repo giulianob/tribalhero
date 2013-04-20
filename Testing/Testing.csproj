@@ -147,11 +147,13 @@
     <Compile Include="MapMath\ForeachTest.cs" />
     <Compile Include="MapMath\RadiusTest.cs" />
     <Compile Include="Misc\XmlSerializerTest.cs" />
+    <Compile Include="StrongholdTests\StrongholdManagerTests.cs" />
     <Compile Include="Resources\AggressiveLazyResourceTest.cs" />
     <Compile Include="Resources\ResourceTest.cs" />
     <Compile Include="Resources\LazyResourceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tribe\AssignmentTest.cs" />
+    <Compile Include="Tribe\TribeTest.cs" />
     <Compile Include="Troop\TroopProcedureTest.cs" />
     <Compile Include="Troop\TroopStarveTest.cs" />
     <Compile Include="Troop\BattleProcedureTest.cs" />

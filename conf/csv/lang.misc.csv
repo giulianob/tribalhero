@@ -65,9 +65,7 @@ CITY_OVERVIEW_LABORERS_WORKING_COLUMN,Working/Maximum Laborers
 CITY_OVERVIEW_UNITS_STATUS_LABEL,"{0} idle, {1} busy."
 CITY_OVERVIEW_AP_POINTS_LABEL,{0} alignment rating
 ,
-TRIBE_RANK_0,Chief
-TRIBE_RANK_1,Elder
-TRIBE_RANK_2,Tribesman
+TRIBE_RANK_UPDATED,Tribe rank is saved!
 ,
 TRIBE_LVL_1,Allows 5 members to join the tribe
 TRIBE_LVL_2,Allows 10 members to join the tribe
@@ -195,6 +193,8 @@ TROOP_CREATE_DRAG_HINT,Hint: Drag units to assign to the different troops. Hold 
 LOCATION_CITY_LABEL,<a href='event:viewProfile:{0}'>{1}</a> (<a href='event:goToCity:{2}'>{3}</a>)
 LOCATION_STRONGHOLD_LABEL,"<a href=""event:viewStronghold:{0}"">{1}</a>"
 ,
+TRIBE_LEAVE_WARNING,Do you really want to leave the tribe? You will not be able to rejoin this tribe for 48 hours.
+TRIBE_KICK_WARNING,Are you sure you want to remove this player from the tribe? A new player will not be able to replace this tribesmate for 8 hours and the player being kicked will not be able to rejoin the tribe for 48 hours.
 TRIBE_NO_STRONGHOLDS_OWNED,Your tribe doesn't control any strongholds right now.
 TRIBE_NO_STRONGHOLDS_OPEN,Your tribe hasn't broken through the gate of any strongholds.
 TRIBE_INCOMING_ATK,{0} is being attacked by {1}

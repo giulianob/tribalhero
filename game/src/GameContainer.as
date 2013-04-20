@@ -249,8 +249,15 @@
 		
 		public function onViewTribe(e: MouseEvent) :void
 		{			
-			if (Constants.tribeId != 0) {				
-				Global.mapComm.Tribe.viewTribeProfile(Constants.tribeId);
+			if (Constants.tribe.isInTribe()) {				
+				var currentTribeDialog: TribeProfileDialog = findDialog(TribeProfileDialog);
+            
+				if (currentTribeDialog) {
+					currentTribeDialog.getFrame().dispose();
+					return;
+				}
+				
+				Global.mapComm.Tribe.viewTribeProfile(Constants.tribe.id);
 			}
 			else if (Constants.tribeInviteId != 0) {
 				var tribeInviteDialog: TribeInviteRequestDialog = new TribeInviteRequestDialog(function(sender: TribeInviteRequestDialog) : void {

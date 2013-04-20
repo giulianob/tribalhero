@@ -5,6 +5,7 @@
 	import org.aswing.event.*;
 	import org.aswing.table.*;
 	import src.*;
+	import src.Objects.Tribe;
 	import src.UI.Components.*;
 	import src.UI.Components.Messaging.MessagingIcon;
 	import src.UI.Components.Tribe.KickIcon;
@@ -17,13 +18,15 @@
 		protected var btnKick: KickIcon;
 		
 		protected var wrapper: JPanel;
-
+		private var profileData: * 
+		;
 		public function TribeMemberActionCell()
 		{
 			super();
 			
 			wrapper = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 5, 0, true));
 			wrapper.setOpaque(true);
+			this.profileData = profileData;
 		}
 
 		override public function setCellValue(value:*):void
@@ -32,14 +35,14 @@
 			wrapper.removeAll();
 			
 			// Only show set rank if player is chief
-			if (Constants.tribeRank == 0 && value.rank > 0) {
+			if (Constants.tribe.hasRight(Tribe.SET_RANK)) {
 				btnSetRank = new SetRankIcon(value.playerId, value.rank);
 				wrapper.append(new AssetPane(btnSetRank.getAsset()));
 			}					
 			
 			// Show icons that aren't for yourself
 			if (Constants.playerId != value.playerId) {
-				if (Constants.tribeRank <= 1 && value.rank > 0) {
+				if (Constants.tribe.hasRight(Tribe.KICK)) {
 					btnKick = new KickIcon(value.playerId);
 					wrapper.append(new AssetPane(btnKick.getAsset()));					
 				}

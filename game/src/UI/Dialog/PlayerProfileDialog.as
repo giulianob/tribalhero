@@ -201,7 +201,12 @@
 			pnlHeader.appendAll(lblPlayerName);
 			
 			if (profileData.tribeId > 0) {
-				var lblTribe: RichLabel = new RichLabel(StringUtil.substitute('<a href="event:viewTribeProfile:{0}">{1}</a> ({2})', profileData.tribeId, profileData.tribeName, StringHelper.localize("TRIBE_RANK_" + profileData.tribeRank)));
+				var lblTribe: RichLabel = new RichLabel(StringUtil.substitute(
+					'<a href="event:viewTribeProfile:{0}">{1}</a> ({2})', 
+					profileData.tribeId, 
+					profileData.tribeName, 
+					profileData.tribeRank));
+					
 				pnlHeader.append(lblTribe);
 			}
 			

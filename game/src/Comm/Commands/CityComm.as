@@ -297,6 +297,19 @@
 			for (var i:int = 0; i < rankCount; i++)
 				profileData.ranks.push({cityId: packet.readUInt(), rank: packet.readInt(), type: packet.readUByte()});
 			
+			profileData.achievements = [];
+			var achievementCount:int = packet.readUShort();
+			for (i = 0; i < achievementCount; i++) {
+				profileData.achievements.push(new Achievement(
+					packet.readInt(),
+					packet.readString(),
+					packet.readUByte(),
+					packet.readString(),
+					packet.readString(),
+					packet.readString()
+				));
+			}
+			
 			profileData.cities = [];
 			var citiesCount:int = packet.readUByte();
 			for (i = 0; i < citiesCount; i++)

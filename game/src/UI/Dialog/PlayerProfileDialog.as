@@ -1,5 +1,6 @@
 ﻿package src.UI.Dialog 
 {
+	import com.greensock.loading.core.DisplayObjectLoader;
 	import fl.lang.*;
 	import flash.events.*;
 	import mx.utils.StringUtil;
@@ -10,6 +11,7 @@
 	import org.aswing.geom.*;
 	import src.*;
 	import src.Map.City;
+	import src.Objects.Achievement;
 	import src.Objects.Effects.Formula;
 	import src.Objects.Tribe;
 	import src.UI.*;
@@ -91,6 +93,72 @@
 			return lblRanking;
 		}
 		
+		private function createAchievement(achievement: Achievement):Component {
+			var lbl: JLabel = new JLabel(achievement.title, new AssetIcon(achievement.getSprite()));
+			lbl.setPreferredWidth(120);
+			lbl.setVerticalTextPosition(AsWingConstants.BOTTOM);
+			lbl.setHorizontalTextPosition(AsWingConstants.CENTER);
+			new SimpleTooltip(lbl, achievement.description, achievement.title);
+			
+			return lbl;			
+		}
+		
+		private function createAchievementsTab():Component {
+			profileData.achievements.sortOn(["tier", "id"], [Array.NUMERIC, Array.NUMERIC | Array.DESCENDING]);
+			
+			var pnlAchievements: JPanel = new JPanel(new FlowWrapLayout(375 /* Achie. Width Above times 3 */, AsWingConstants.LEFT, 15, 10, false));
+			pnlAchievements.setBorder(new EmptyBorder(null, new Insets(15, 0, 0, 15)));
+			
+			for each (var achievement: Achievement in profileData.achievements) {
+				pnlAchievements.append(createAchievement(achievement));
+			}
+			
+			return Util.createTopAlignedScrollPane(pnlAchievements);
+		}
+		
+		private function createCitiesTab():Component {
+			var pnlCities: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
+			
+			for each (var city: * in profileData.cities) {
+				var pnlCity: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 5, false));
+				var lblCityName: CityLabel = new CityLabel(city.id, city.name);
+				GameLookAndFeel.changeClass(lblCityName, "darkHeader");
+				lblCityName.setPreferredWidth(125);
+				
+				// Build the list of "City1 - About 10 min away"
+				var distanceMsg: String = "";
+				
+				for each (var myCity: City in Global.map.cities) {
+					var distance: int = myCity.MainBuilding.distance(city.x, city.y);
+					var timeAwayInSeconds: int = Formula.moveTimeTotal(myCity, 12, distance, true);
+		
+					distanceMsg += StringHelper.localize("PLAYER_PROFILE_DIALOG_CITY_DISTANCE", myCity.name, Util.niceTime(timeAwayInSeconds)) + "\n";
+				}
+				
+				var cityDistanceTooltip: SimpleTooltip = new SimpleTooltip(lblCityName, distanceMsg);
+				var footerDistanceTooltipLabel: MultilineLabel = new MultilineLabel(StringHelper.localize("PLAYER_PROFILE_DIALOG_CITY_DISTANCE_FOOTER"), 0, 20);
+				GameLookAndFeel.changeClass(footerDistanceTooltipLabel, "Tooltip.italicsText");
+				cityDistanceTooltip.append(footerDistanceTooltipLabel);				
+				
+				var pnlCityRanking: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 0, false));
+				for each (var rank: * in profileData.ranks) {
+					if (rank.cityId != city.id) 
+						continue;
+					
+					var lblRanking: JLabel = createRanking(rank);
+					pnlCityRanking.append(lblRanking);
+				}
+				
+				lblCityName.setConstraints("Center");
+				pnlCityRanking.setConstraints("East");
+				pnlCity.appendAll(lblCityName, pnlCityRanking);
+				
+				pnlCities.append(pnlCity);
+			}
+			
+			return Util.createTopAlignedScrollPane(pnlCities);
+		}
+		
 		private function createUI():void {
 			setPreferredSize(new IntDimension(825, 375));
 			title = "User Profile - " + profileData.username;
@@ -168,51 +236,10 @@
 			pnlTabs.setPreferredSize(new IntDimension(400, 350));
 			pnlTabs.setConstraints("Center");
 			
-			// Cities tab
-			var pnlCities: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
-			
-			for each (var city: * in profileData.cities) {
-				var pnlCity: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 5, false));
-				var lblCityName: CityLabel = new CityLabel(city.id, city.name);
-				GameLookAndFeel.changeClass(lblCityName, "darkHeader");
-				lblCityName.setPreferredWidth(125);
-				
-				// Build the list of "City1 - About 10 min away"
-				var distanceMsg: String = "";
-				
-				for each (var myCity: City in Global.map.cities) {
-					var distance: int = myCity.MainBuilding.distance(city.x, city.y);
-					var timeAwayInSeconds: int = Formula.moveTimeTotal(myCity, 12, distance, true);
-		
-					distanceMsg += StringHelper.localize("PLAYER_PROFILE_DIALOG_CITY_DISTANCE", myCity.name, Util.niceTime(timeAwayInSeconds)) + "\n";
-				}
-				
-				var cityDistanceTooltip: SimpleTooltip = new SimpleTooltip(lblCityName, distanceMsg);
-				var footerDistanceTooltipLabel: MultilineLabel = new MultilineLabel(StringHelper.localize("PLAYER_PROFILE_DIALOG_CITY_DISTANCE_FOOTER"), 0, 20);
-				GameLookAndFeel.changeClass(footerDistanceTooltipLabel, "Tooltip.italicsText");
-				cityDistanceTooltip.append(footerDistanceTooltipLabel);				
-				
-				var pnlCityRanking: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 0, false));
-				for each (rank in profileData.ranks) {
-					if (rank.cityId != city.id) 
-						continue;
-					
-					lblRanking = createRanking(rank);
-					pnlCityRanking.append(lblRanking);
-				}
-				
-				lblCityName.setConstraints("Center");
-				pnlCityRanking.setConstraints("East");
-				pnlCity.appendAll(lblCityName, pnlCityRanking);
-				
-				pnlCities.append(pnlCity);
-			}
-			
-			var scrollCities: JScrollPane = new JScrollPane(new JViewport(pnlCities, true, false), JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_NEVER);
-			(scrollCities.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
 			
 			// Append tabs			
-			pnlTabs.appendTab(scrollCities, "Cities (" + profileData.cities.length + ")");			
+			pnlTabs.appendTab(createCitiesTab(), "Cities (" + profileData.cities.length + ")");			
+			pnlTabs.appendTab(createAchievementsTab(), "Achievements (" + profileData.achievements.length + ")");			
 			
 			// Append main panels
 			append(pnlWest);

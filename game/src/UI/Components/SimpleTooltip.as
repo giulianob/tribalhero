@@ -8,20 +8,16 @@
 	import org.aswing.Component;
 	import src.UI.Tooltips.TextTooltip;
 	
-	/**
-	 * ...
-	 * @author 
-	 */
 	public class SimpleTooltip
 	{
 		private var ui: DisplayObject;
 		private var tooltip: TextTooltip;
 		private var enabled: Boolean = true;
 		
-		public function SimpleTooltip(ui: DisplayObject, tooltip: String = "")
+		public function SimpleTooltip(ui: DisplayObject, tooltip: String = "", header: String = "")
 		{		
 			this.ui = ui;
-			this.tooltip = new TextTooltip(tooltip);
+			this.tooltip = new TextTooltip(tooltip, header);
 			ui.addEventListener(MouseEvent.MOUSE_MOVE, onRollOver);
 			ui.addEventListener(MouseEvent.ROLL_OUT, onRollOut);
 			ui.addEventListener(Event.REMOVED_FROM_STAGE, parentHidden);
@@ -36,9 +32,9 @@
 			this.enabled = enable;
 		}
 		
-		public function setText(tooltip: String) : void {
+		public function setText(tooltip: String, header: String = "") : void {
 			this.tooltip.hide();
-			this.tooltip = new TextTooltip(tooltip);
+			this.tooltip = new TextTooltip(tooltip, header);
 		}
 		
 		public function append(label: Component): void {

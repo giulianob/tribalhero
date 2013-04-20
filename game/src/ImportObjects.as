@@ -1,5 +1,9 @@
 ﻿package src 
 {
+	import flash.display.DisplayObject;
+	import flash.display.Sprite;
+	import flash.utils.getDefinitionByName;
+	import src.Util.Util;
 	
 	/**
 	 * Required to have the compiler include these items in the final build
@@ -166,6 +170,129 @@
 			FIELD_STRUCTURE;
 		}
 		
+		public static function getInstance(spriteName: String): DisplayObject
+		{
+			try {
+				spriteName = spriteName.replace('-', '_').toUpperCase();				
+				var sprite: Class = ImportObjects[spriteName] as Class;
+				return (DisplayObject)(new sprite());
+			}
+			catch (e: Error) 
+			{				
+			}
+			
+			Util.log("Could not find sprite: " + spriteName);
+			return new Sprite();			
+		}
+		
+		// Achievement Icons
+		[Embed(source = "../../graphics/icons/achievements/anvil-gold.png")]		
+		public static var ICON_ACHIEVEMENT_ANVIL_GOLD: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/arrowshield-gold.png")]
+		public static var ICON_ACHIEVEMENT_ARROWSHIELD_GOLD: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/axe-gold.png")]
+		public static var ICON_ACHIEVEMENT_AXE_GOLD: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/bar-gold.png")]
+		public static var ICON_ACHIEVEMENT_BAR_GOLD: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/chalice-gold.png")]
+		public static var ICON_ACHIEVEMENT_CHALIVE_GOLD: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/chest-gold.png")]
+		public static var ICON_ACHIEVEMENT_CHEST_GOLD: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/coins-gold.png")]
+		public static var ICON_ACHIEVEMENT_COINS_GOLD: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/tower-gold.png")]
+		public static var ICON_ACHIEVEMENT_TOWER_GOLD: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/wing-man-gold.png")]
+		public static var ICON_ACHIEVEMENT_WING_MAN_GOLD: Class;	
+		
+		[Embed(source = "../../graphics/icons/achievements/anvil-silver.png")]		
+		public static var ICON_ACHIEVEMENT_ANVIL_SILVER: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/arrowshield-silver.png")]
+		public static var ICON_ACHIEVEMENT_ARROWSHIELD_SILVER: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/axe-silver.png")]
+		public static var ICON_ACHIEVEMENT_AXE_SILVER: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/bar-silver.png")]
+		public static var ICON_ACHIEVEMENT_BAR_SILVER: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/chalice-silver.png")]
+		public static var ICON_ACHIEVEMENT_CHALIVE_SILVER: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/chest-silver.png")]
+		public static var ICON_ACHIEVEMENT_CHEST_SILVER: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/coins-silver.png")]
+		public static var ICON_ACHIEVEMENT_COINS_SILVER: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/tower-silver.png")]
+		public static var ICON_ACHIEVEMENT_TOWER_SILVER: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/wing-man-silver.png")]
+		public static var ICON_ACHIEVEMENT_WING_MAN_SILVER: Class;		
+		
+		[Embed(source = "../../graphics/icons/achievements/anvil-bronze.png")]		
+		public static var ICON_ACHIEVEMENT_ANVIL_BRONZE: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/arrowshield-bronze.png")]
+		public static var ICON_ACHIEVEMENT_ARROWSHIELD_BRONZE: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/axe-bronze.png")]
+		public static var ICON_ACHIEVEMENT_AXE_BRONZE: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/bar-bronze.png")]
+		public static var ICON_ACHIEVEMENT_BAR_BRONZE: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/chalice-bronze.png")]
+		public static var ICON_ACHIEVEMENT_CHALIVE_BRONZE: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/chest-bronze.png")]
+		public static var ICON_ACHIEVEMENT_CHEST_BRONZE: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/coins-bronze.png")]
+		public static var ICON_ACHIEVEMENT_COINS_BRONZE: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/tower-bronze.png")]
+		public static var ICON_ACHIEVEMENT_TOWER_BRONZE: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/wing-man-bronze.png")]
+		public static var ICON_ACHIEVEMENT_WING_MAN_BRONZE: Class;	
+		
+		[Embed(source = "../../graphics/icons/achievements/anvil-honorary.png")]		
+		public static var ICON_ACHIEVEMENT_ANVIL_HONORARY: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/arrowshield-honorary.png")]
+		public static var ICON_ACHIEVEMENT_ARROWSHIELD_HONORARY: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/axe-honorary.png")]
+		public static var ICON_ACHIEVEMENT_AXE_HONORARY: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/bar-honorary.png")]
+		public static var ICON_ACHIEVEMENT_BAR_HONORARY: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/chalice-honorary.png")]
+		public static var ICON_ACHIEVEMENT_CHALIVE_HONORARY: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/chest-honorary.png")]
+		public static var ICON_ACHIEVEMENT_CHEST_HONORARY: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/coins-honorary.png")]
+		public static var ICON_ACHIEVEMENT_COINS_HONORARY: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/tower-honorary.png")]
+		public static var ICON_ACHIEVEMENT_TOWER_HONORARY: Class;
+		
+		[Embed(source = "../../graphics/icons/achievements/wing-man-honorary.png")]
+		public static var ICON_ACHIEVEMENT_WING_MAN_HONORARY: Class;			
 	}
 	
 }

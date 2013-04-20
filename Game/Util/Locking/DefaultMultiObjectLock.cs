@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using Game.Data;
 using Game.Setup;
+using Ninject.Extensions.Logging;
 
 // ReSharper disable RedundantUsingDirective
 
@@ -16,6 +17,8 @@ namespace Game.Util.Locking
 {
     public class DefaultMultiObjectLock : IMultiObjectLock
     {
+        private static ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         private readonly Action<object> lockEnter;
 
         private readonly Action<object> lockExit;
@@ -119,7 +122,7 @@ namespace Game.Util.Locking
             }
 #else
             if (!IsLocked(obj)) {
-                Global.Logger.Error(string.Format("Object not locked id[{0}] {1}", obj.Hash, Environment.StackTrace));
+                logger.Error(string.Format("Object not locked id[{0}] {1}", obj.Hash, Environment.StackTrace));
             }
 #endif
         }

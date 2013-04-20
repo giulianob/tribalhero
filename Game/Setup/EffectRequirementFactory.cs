@@ -60,10 +60,17 @@ namespace Game.Setup
                             parms[i - 2] = toks[i];
                         }
                     }
+
                     req.Parms = parms;
                     req.Method = type.GetMethod(toks[col["Method"]]);
                     req.Description = toks[col["Description"]].Trim();
                     req.WebsiteDescription = toks[col["Website Description"]].Trim();
+
+                    if (req.Method == null)
+                    {
+                        throw new Exception(string.Format("Could not find effect requirement method {0}", toks[col["Method"]]));
+                    }
+
                     container.Add(req);
                 }
             }

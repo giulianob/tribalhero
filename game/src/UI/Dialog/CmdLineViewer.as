@@ -284,7 +284,7 @@ package src.UI.Dialog
 			return result + str.substring(index);
 		}
 		
-		public function logChat(type:int, playerId:int, playerName:String, distinguish: Boolean, str:String):void
+		public function logChat(type:int, playerId:int, playerName:String, achievements: *, distinguish: Boolean, str:String):void
 		{
 			var f:DateFormatter = new DateFormatter();
 			f.formatString = "LL:NN";
@@ -303,7 +303,26 @@ package src.UI.Dialog
 				cssClass = 'global';
 			}
 			
-			log(type, StringUtil.substitute('[{0}] {1}<a href="event:viewPlayerProfile:{3}"><span class="{2}">{4}</span></a>: {5}', f.format(new Date()), "", cssClass, playerId, StringHelper.htmlEscape(playerName), StringHelper.linkify(str)), false, false);
+			var i: int;
+			var achievementStars: Array = [];
+			for (i = 0; i < Math.min(3, Math.ceil(achievements.gold/3.0)); i++) {
+				achievementStars.push('<span class="rank-gold">♦</span>');
+			}
+			for (i = 0; i < Math.min(3 - achievementStars.length, Math.ceil(achievements.silver/3.0)); i++) {
+				achievementStars.push('<span class="rank-silver">♦</span>');
+			}
+			for (i = 0; i < Math.min(3 - achievementStars.length, Math.ceil(achievements.bronze/3.0)); i++) {
+				achievementStars.push('<span class="rank-bronze">♦</span>');
+			}			
+			
+			log(type, StringUtil.substitute('[{0}] {5} <a href="event:viewPlayerProfile:{2}"><span class="{1}">{3}</span></a>: {4}', 
+									  f.format(new Date()),
+									  cssClass,
+									  playerId,
+									  StringHelper.htmlEscape(playerName),
+									  StringHelper.linkify(str),
+									  achievementStars.join("")
+				), false,  false);			
 			
 			if (type != currentChatType) {
 				var button: JToggleButton = CHANNELS[type].button;
@@ -482,6 +501,10 @@ package src.UI.Dialog
             consoleCss.setStyle(".distinguished", {color: '#fbd100'});
 			consoleCss.setStyle(".self", { color: '#aef64f' } );
 			consoleCss.setStyle(".system", { color: '#ec7600', fontWeight: 'bold' } );
+			
+			consoleCss.setStyle(".rank-bronze", { color: '#B87C37' } );
+			consoleCss.setStyle(".rank-silver", { color: '#C9C9B6' } );
+			consoleCss.setStyle(".rank-gold", { color: '#fbd100' } );
 			
 			txtConsole.setCSS(consoleCss);
 			

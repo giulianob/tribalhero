@@ -32,6 +32,8 @@ package src.Objects
 			switch (tier) {
 				case TIER_GOLD:
 					return "GOLD";
+				case TIER_SILVER:
+					return "SILVER";					
 				case TIER_BRONZE:
 					return "BRONZE";
 				case TIER_HONORARY:

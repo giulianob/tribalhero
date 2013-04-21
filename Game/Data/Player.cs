@@ -40,18 +40,8 @@ namespace Game.Data
                       DateTime lastLogin,
                       string name,
                       string description,
-                      PlayerRights playerRights)
-                : this(playerid, created, lastLogin, name, description, playerRights, string.Empty)
-        {                        
-        }
-
-        public Player(uint playerid,
-                      DateTime created,
-                      DateTime lastLogin,
-                      string name,
-                      string description,
                       PlayerRights playerRights,
-                      string sessionId)
+                      string sessionId = "")
         {
             ChatState = new PlayerChatState();
             Achievements = new AchievementList(playerid);

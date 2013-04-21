@@ -1,4 +1,7 @@
-﻿using Game.Comm;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Game.Comm;
+using Game.Data;
 using Game.Util;
 using Ninject.Extensions.Logging;
 
@@ -26,12 +29,30 @@ namespace Game.Module
             this.channel = channel;
         }
 
-        public void SendChat(string channelName, ChatType type, uint playerId, string playerName, bool distinguish, string message)
+        public void SendChat(string channelName,
+                             ChatType type,
+                             uint playerId,
+                             string playerName,
+                             IDictionary<AchievementTier, byte> achievements,
+                             bool distinguish,
+                             string message)
         {
             logger.Info("[{0} {1}] {3} {2}:{4}", SystemClock.Now, channel, playerName, playerId, message);
 
+            byte goldAchievements;
+            achievements.TryGetValue(AchievementTier.Gold, out goldAchievements);
+
+            byte silverAchievements;
+            achievements.TryGetValue(AchievementTier.Silver, out silverAchievements);
+
+            byte bronzeAchievements;
+            achievements.TryGetValue(AchievementTier.Bronze, out bronzeAchievements);
+
             var chatPacket = new Packet(Command.Chat);
             chatPacket.AddByte((byte)type);
+            chatPacket.AddByte(goldAchievements);
+            chatPacket.AddByte(silverAchievements);
+            chatPacket.AddByte(bronzeAchievements);
             chatPacket.AddByte((byte)(distinguish ? 1 : 0));
             chatPacket.AddUInt32(playerId);
             chatPacket.AddString(playerName);

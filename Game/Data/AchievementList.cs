@@ -67,6 +67,15 @@ namespace Game.Data
                 };
             }
         }
+        
+        public IDictionary<AchievementTier, byte> GetAchievementCountByTier()
+        {
+            return this.GroupBy(p => p.Tier).ToDictionary(p => p.Key, p =>
+                {
+                    var cnt = p.Count();
+                    return cnt > byte.MaxValue ? byte.MaxValue : (byte)cnt;
+                });
+        }
 
         public bool DbPersisted { get; set; }
 

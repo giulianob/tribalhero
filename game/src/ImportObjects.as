@@ -1,5 +1,8 @@
 ﻿package src 
 {
+	import com.greensock.loading.core.DisplayObjectLoader;
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.utils.getDefinitionByName;
@@ -174,8 +177,11 @@
 		{
 			try {
 				spriteName = spriteName.replace('-', '_').toUpperCase();				
-				var sprite: Class = ImportObjects[spriteName] as Class;
-				return (DisplayObject)(new sprite());
+				var spriteClass: Class = ImportObjects[spriteName] as Class;
+				var sprite: DisplayObject = (DisplayObject)(new spriteClass());
+				(sprite as Bitmap).smoothing = true;
+				sprite.scaleY = 1.001;
+				return sprite;
 			}
 			catch (e: Error) 
 			{				

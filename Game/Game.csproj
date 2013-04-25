@@ -248,9 +248,13 @@
     <Compile Include="Data\IXYPosition.cs" />
     <Compile Include="Data\LazyValue.cs" />
     <Compile Include="Data\PlayerRights.cs" />
+    <Compile Include="Data\Stats\IBaseBattleStats.cs" />
     <Compile Include="Data\Stats\IBaseUnitStats.cs" />
     <Compile Include="Data\BarbarianTribe\IBarbarianTribe.cs" />
     <Compile Include="Data\BarbarianTribe\BarbarianTribe.cs" />
+    <Compile Include="Data\Stats\IBattleStats.cs" />
+    <Compile Include="Data\Stats\IStructureBaseStats.cs" />
+    <Compile Include="Data\Stats\IStructureStats.cs" />
     <Compile Include="Data\Stats\TroopStats.cs" />
     <Compile Include="Data\Effect.cs" />
     <Compile Include="Data\Global.cs" />

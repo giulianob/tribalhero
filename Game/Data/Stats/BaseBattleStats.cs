@@ -52,7 +52,7 @@ namespace Game.Data
         Elemental = 1
     }
 
-    public class BaseBattleStats
+    public class BaseBattleStats : IBaseBattleStats
     {
         #region Base Stats
 

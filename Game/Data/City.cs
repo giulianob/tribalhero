@@ -1094,6 +1094,11 @@ namespace Game.Data
 
         public IActionWorker Worker { get; private set; }
 
+        public int GetTotalLaborers()
+        {
+            return this.Sum(structure => (int)structure.Stats.Labor) + Resource.Labor.Value;
+        }
+
         #region ICanDo Members
 
         public uint WorkerId

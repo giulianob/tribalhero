@@ -231,18 +231,6 @@ namespace Game.Logic.Actions
 
         private void Labor()
         {
-            int laborTotal = 0;
-
-            InitVars += city => { laborTotal = city.Resource.Labor.Value; };
-
-            FirstLoop += (city, structure) =>
-                {
-                    if (structure.Stats.Labor > 0)
-                    {
-                        laborTotal += structure.Stats.Labor;
-                    }
-                };
-
             PostFirstLoop += city =>
                 {
                     if (city.Owner.IsIdle)
@@ -251,7 +239,7 @@ namespace Game.Logic.Actions
                     }
 
                     laborTimeRemains += (int)CalculateTime(INTERVAL_IN_SECONDS);
-                    int laborRate = formula.GetLaborRate(laborTotal, city);
+                    int laborRate = formula.GetLaborRate(city.GetTotalLaborers(), city);
                     if (laborRate <= 0)
                     {
                         return;

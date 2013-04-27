@@ -31,13 +31,12 @@
 			troop.playerId = packet.readUInt();
 			troop.cityId = packet.readUInt();
 
-			troop.id = packet.readUByte();
+			troop.id = packet.readUShort();
 			troop.state = packet.readUByte();			
 			troop.stationedLocation = mapComm.General.readLocation(packet);
 			troop.attackMode = packet.readUByte();
 			troop.resources = new Resources(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUInt(), 0);
 
-			
 			var templateCnt: int = packet.readUByte();
 			for (var templateI: int = 0; templateI < templateCnt; templateI++) {
 				troop.template.add(new TroopTemplate(packet.readUShort(), packet.readUByte(), packet.readUShort(), packet.readUShort(), packet.readUByte(), packet.readUShort(), packet.readUByte(), packet.readUByte(), packet.readUByte()), false);
@@ -158,7 +157,7 @@
 			var cityId: int = packet.readUInt();
 
 			var troopCityId: int = packet.readUInt();
-			var troopId: int = packet.readUByte();
+			var troopId: int = packet.readUShort();
 
 			var city: City = Global.map.cities.get(cityId);
 			if (city == null)
@@ -185,7 +184,7 @@
 			var obj: TroopObject = custom as TroopObject;
 
 			obj.troop = new TroopStub();
-			obj.stubId = packet.readUByte();
+			obj.stubId = packet.readUShort();
 
 			if (obj.playerId == Constants.playerId) {
 				obj.attackRadius = packet.readUByte();
@@ -244,12 +243,12 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 
-		public function retreat(city: int, troop: int):void
+		public function retreat(city: int, troopId: int):void
 		{
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TROOP_RETREAT;
 			packet.writeUInt(city);
-			packet.writeUByte(troop);
+			packet.writeUShort(troopId);
 
 			session.write(packet, mapComm.catchAllErrors);
 		}
@@ -398,7 +397,7 @@
 			packet.cmd = Commands.TROOP_SWITCH_MODE;
 			
 			packet.writeUInt(troopStub.cityId);
-			packet.writeByte(troopStub.id);
+			packet.writeUShort(troopStub.id);
 			packet.writeByte(mode);
 			
 			session.write(packet, onSwitchAttackMode, { stub:troopStub, mode:mode } );

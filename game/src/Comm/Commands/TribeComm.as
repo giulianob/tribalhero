@@ -230,7 +230,7 @@
 						stub: null
 					};
 					
-					troop.stub = new TroopStub(packet.readByte(), troop.playerId, troop.cityId);
+					troop.stub = new TroopStub(packet.readUShort(), troop.playerId, troop.cityId);
 					
 					Global.map.usernames.players.add(new Username(troop.playerId, troop.playerName));
 					Global.map.usernames.cities.add(new Username(troop.cityId, troop.cityName));
@@ -378,11 +378,12 @@
 				});
             }
             
-            profileData.members.sortOn("rank", [Array.NUMERIC]);
+            profileData.members.sortOn("rank", "playerName", [Array.NUMERIC]);
             profileData.strongholds.sortOn("strongholdLevel", [Array.NUMERIC | Array.DESCENDING]);
 			
-			if (custom.callback)
+			if (custom.callback) {
 				custom.callback(profileData);
+			}
 			else
 			{			
 				if (!profileData) 

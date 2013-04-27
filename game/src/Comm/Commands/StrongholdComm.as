@@ -70,7 +70,7 @@ package src.Comm.Commands
 			}
 			
 			profileData.troops = [];
-			var troopCount: int = packet.readByte();
+			var troopCount: int = packet.readUShort();
 			for (var i: int = 0; i < troopCount; i++) {
 				var troop: * = {
 					playerId: packet.readUInt(),
@@ -80,7 +80,7 @@ package src.Comm.Commands
 					stub: null
 				};
 				
-				troop.stub = new TroopStub(packet.readByte(), troop.playerId, troop.cityId);
+				troop.stub = new TroopStub(packet.readUShort(), troop.playerId, troop.cityId);
 				
 				Global.map.usernames.players.add(new Username(troop.playerId, troop.playerName));
 				Global.map.usernames.cities.add(new Username(troop.cityId, troop.cityName));

@@ -176,7 +176,7 @@
 		
 		private function readGroup(packet: Packet): CombatGroup {
 			var combatGroupId: int = packet.readUInt();
-			var troopId: int = packet.readUByte();
+			var troopId: int = packet.readUShort();
 			var ownerType: int = packet.readUByte();
 			var ownerId: int = packet.readUInt();
 			var ownerName: String = packet.readString();

@@ -527,6 +527,7 @@ class Battle extends AppModel {
                 'BattleReportView.is_attacker',
                 'BattleReportView.troop_stub_id',
                 'BattleReportView.read',
+                'Battle.ended',
                 'Battle.location_type',
                 'Battle.location_id',
             ),

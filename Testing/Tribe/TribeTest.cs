@@ -165,7 +165,7 @@ namespace Testing.Tribe
             tribe.AddTribesman(tribesman);
             tribe.RemoveTribesman(1234, false, false);
 
-            SystemClock.SetClock(new DateTime(2000, 1, 1, 1, 1, 2));
+            SystemClock.SetClock(new DateTime(2001, 1, 1, 1, 1, 2));
             tribe.AddTribesman(tribesman);
             tribe.RemoveTribesman(1234, false, false);
 

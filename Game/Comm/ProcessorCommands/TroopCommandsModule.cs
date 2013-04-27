@@ -58,12 +58,12 @@ namespace Game.Comm.ProcessorCommands
         private void ModeSwitch(Session session, Packet packet)
         {
             uint cityId;
-            byte stubId;
+            ushort stubId;
             AttackMode mode;
             try
             {
                 cityId = packet.GetUInt32();
-                stubId = packet.GetByte();
+                stubId = packet.GetUInt16();
                 mode = (AttackMode)packet.GetByte();
             }
             catch(Exception)
@@ -154,7 +154,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var reply = new Packet(packet);
-                reply.AddByte(troop.Stub.TroopId);
+                reply.AddUInt16(troop.Stub.TroopId);
 
                 if (city.Owner == session.Player)
                 {
@@ -690,12 +690,12 @@ namespace Game.Comm.ProcessorCommands
         private void Retreat(Session session, Packet packet)
         {
             uint cityId;
-            byte troopId;
+            ushort troopId;
 
             try
             {
                 cityId = packet.GetUInt32();
-                troopId = packet.GetByte();
+                troopId = packet.GetUInt16();
             }
             catch(Exception)
             {

@@ -9,7 +9,7 @@
 
         private ICity City { get; set; }
 
-        public TroopStub CreateTroopStub(byte troopId)
+        public TroopStub CreateTroopStub(ushort troopId)
         {
             return new TroopStub(troopId, City);
         }

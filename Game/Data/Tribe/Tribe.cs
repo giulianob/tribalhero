@@ -28,6 +28,8 @@ namespace Game.Data.Tribe
 
         public const int HOURS_BEFORE_SLOT_REOPENS = 8;
 
+        public const int ASSIGNMENT_MIN_UPKEEP = 40;
+
         private readonly IAssignmentFactory assignmentFactory;
 
         private readonly Dictionary<int, Assignment> assignments = new Dictionary<int, Assignment>();
@@ -510,10 +512,14 @@ namespace Game.Data.Tribe
         {
             id = 0;
 
-            // Create troop      
+            if (assignments.Count > 20)
+            {
+                return Error.AssignmentTooManyInProgress;                
+            }
+
+            // Create troop
             ITroopStub stub;
-            if (
-                    !procedure.TroopStubCreate(out stub,
+            if (!procedure.TroopStubCreate(out stub,
                                                city,
                                                simpleStub,
                                                isAttack
@@ -529,11 +535,11 @@ namespace Game.Data.Tribe
                 Procedure.Current.TroopStubDelete(city, stub);
                 return Error.AssignmentBadTime;
             }
-
-            if (stub.TotalCount == 0)
+            
+            if (stub.Upkeep < ASSIGNMENT_MIN_UPKEEP)
             {
                 Procedure.Current.TroopStubDelete(city, stub);
-                return Error.TroopEmpty;
+                return Error.AssignmentTooFewTroops;
             }
 
             if (stub.City.Owner.Tribesman == null)
@@ -590,6 +596,7 @@ namespace Game.Data.Tribe
             }
             else
             {
+                Procedure.Current.TroopStubDelete(city, stub);
                 return Error.ObjectNotAttackable;                
             }
 
@@ -628,27 +635,27 @@ namespace Game.Data.Tribe
                 return Error.AssignmentNotFound;
             }
 
-            if (simpleStub.TotalCount == 0)
-            {
-                return Error.TroopEmpty;
-            }
-
             if (assignment.Target == city)
             {
                 return Error.AssignmentNotEligible;
             }
 
             ITroopStub stub;
-            if (
-                    !procedure.TroopStubCreate(out stub,
-                                               city,
-                                               simpleStub,
-                                               assignment.IsAttack
-                                                       ? TroopState.WaitingInOffensiveAssignment
-                                                       : TroopState.WaitingInDefensiveAssignment,
-                                               assignment.IsAttack ? FormationType.Attack : FormationType.Defense))
+            if (!procedure.TroopStubCreate(out stub,
+                                           city,
+                                           simpleStub,
+                                           assignment.IsAttack 
+                                                   ? TroopState.WaitingInOffensiveAssignment
+                                                   : TroopState.WaitingInDefensiveAssignment,
+                                           assignment.IsAttack ? FormationType.Attack : FormationType.Defense))
             {
                 return Error.TroopChanged;
+            }
+
+            if (stub.Upkeep < ASSIGNMENT_MIN_UPKEEP)
+            {
+                Procedure.Current.TroopStubDelete(city, stub);
+                return Error.AssignmentTooFewTroops;
             }
 
             var error = assignment.Add(stub);

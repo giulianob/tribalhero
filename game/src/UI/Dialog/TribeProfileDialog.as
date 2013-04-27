@@ -430,7 +430,7 @@
 				menu.show(btnCreate, 0, btnCreate.height);
 			});
 
-			new SimpleTooltip(btnCreate, "An assignment is an organized attack/defense used by the tribe to dispatch troops automatically at different times, so all of them can start the battle at the same time regardless of the distance/speed.");
+			new SimpleTooltip(btnCreate, "An assignment is an organized attack/defense used by the tribe to dispatch troops automatically so they all reach the target at the same time regardless of the distance/speed of each troop. NOTE: Troops must have at least 40 upkeep to be part of an assignment.");
 			
 			return pnlAssignmentHolder;
 		}

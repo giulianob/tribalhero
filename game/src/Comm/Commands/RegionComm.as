@@ -178,7 +178,7 @@
 					}
 					// Troop objects
 					else if (objType == ObjectFactory.TYPE_TROOP_OBJ) {
-						extraProps.troopId = packet.readUByte();
+						extraProps.troopId = packet.readUShort();
 						extraProps.tribeId = packet.readUInt();
 					}
 					// Stronghold objects

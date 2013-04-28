@@ -138,6 +138,10 @@ namespace Game.Setup
 
         RoadDestroyUniquePath = 422,
 
+        FriendMapFull = 423,
+
+        PlayerHashNotFound = 424,
+
         #endregion
 
         #region Troop Errors

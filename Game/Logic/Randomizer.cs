@@ -4,6 +4,7 @@ using System;
 using Game.Data;
 using Game.Database;
 using Game.Map;
+using Game.Map.LocationStrategies;
 using Game.Setup;
 using Ninject;
 
@@ -31,18 +32,19 @@ namespace Game.Logic
             }
         }
 
-        public static bool MainBuilding(out IStructure structure, byte radius, byte lvl)
+        public static Error MainBuilding(out IStructure structure, ILocationStrategy strategy, byte lvl)
         {
             structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2000, lvl);
-            uint x, y;
-            if (!Ioc.Kernel.Get<MapFactory>().NextLocation(out x, out y, radius))
+            Position position;
+            var error = strategy.NextLocation(out position);
+            if(error != Error.Ok)
             {
                 structure = null;
-                return false;
+                return error;
             }
-            structure.X = x;
-            structure.Y = y;
-            return true;
+            structure.X = position.X;
+            structure.Y = position.Y;
+            return Error.Ok;
         }
 
         private static bool RandomizeNpcResourceWork(uint ox, uint oy, uint x, uint y, object custom)

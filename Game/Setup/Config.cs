@@ -208,6 +208,8 @@ namespace Game.Setup
         public static int stronghold_battle_meter;
         public static bool stronghold_bypass_activation = false;
 
+        public static int friend_radius = 250;
+
         public static int idle_days = 3;
 
         public static string welcome_motd = string.Empty;

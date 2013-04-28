@@ -15,6 +15,8 @@ namespace Game.Data
 
         uint PlayerId { get; }
 
+        string PlayerHash { get; }
+
         DateTime Created { get; }
 
         DateTime LastLogin { get; set; }

@@ -3,6 +3,8 @@ using Game.Data.Troop;
 using Game.Database;
 using Game.Logic.Formulas;
 using Game.Map;
+using Game.Map.LocationStrategies;
+using Game.Setup;
 
 namespace Game.Logic.Procedures
 {
@@ -13,18 +15,20 @@ namespace Game.Logic.Procedures
         /// </summary>
         /// <param name="player"></param>
         /// <param name="cityName"></param>
+        /// <param name="strategy"></param>
         /// <param name="city"></param>
         /// <returns></returns>
-        public virtual bool CreateCity(IPlayer player, string cityName, out ICity city)
+        public virtual Error CreateCity(IPlayer player, string cityName, ILocationStrategy strategy, out ICity city)
         {
             city = null;
             IStructure mainBuilding;
-            if (!Randomizer.MainBuilding(out mainBuilding, formula.GetInitialCityRadius(), 1))
+            Error error = Randomizer.MainBuilding(out mainBuilding, strategy, 1);
+            if (error != Error.Ok)
             {
                 world.Players.Remove(player.PlayerId);
                 dbPersistance.Rollback();
                 // If this happens I'll be a very happy game developer
-                return false;
+                return error;
             }
 
             city = new City(world.Cities.GetNextCityId(),
@@ -48,7 +52,7 @@ namespace Game.Logic.Procedures
             defaultTroop.AddFormation(FormationType.InBattle);
             defaultTroop.EndUpdate();
 
-            return true;
+            return Error.Ok;
         }
     }
 }

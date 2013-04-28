@@ -110,8 +110,7 @@ package src.UI.Dialog{
 				lblRate.setText((newRate == 0 ? "0" : "+" + newRate) + " per hour");
 			}
 			
-			var moveTime: int = Formula.laborMoveTime(structure, Math.abs(laborDelta), city.techManager);
-			if (laborDelta < 0) moveTime /= 20;
+			var moveTime: int = Formula.laborMoveTime(structure, Math.abs(laborDelta), laborDelta >= 0, city, city.techManager);			
 			
 			lblTime.setText(Util.formatTime(moveTime));
 			lblCount.setText(sldCount.getValue().toString() + " out of " + sldCount.getMaximum().toString());

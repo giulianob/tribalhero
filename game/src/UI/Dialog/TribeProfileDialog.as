@@ -430,7 +430,7 @@
 				menu.show(btnCreate, 0, btnCreate.height);
 			});
 
-			new SimpleTooltip(btnCreate, "An assignment is an organized attack/defense used by the tribe to dispatch troops automatically at different times, so all of them can start the battle at the same time regardless of the distance/speed.");
+			new SimpleTooltip(btnCreate, "An assignment is an organized attack/defense used by the tribe to dispatch troops automatically so they all reach the target at the same time regardless of the distance/speed of each troop. NOTE: Troops must have at least 40 upkeep to be part of an assignment.");
 			
 			return pnlAssignmentHolder;
 		}
@@ -626,7 +626,7 @@
 			});					
 			
 			btnLeave.addActionListener(function(e: Event): void {
-				InfoDialog.showMessageDialog("Leave tribe", "Do you really want to leave the tribe?", function(result: *) : void {
+				InfoDialog.showMessageDialog("Leave tribe", StringHelper.localize("TRIBE_LEAVE_WARNING"), function(result: *) : void {
 					if (result == JOptionPane.YES)
 						Global.mapComm.Tribe.leave();
 				}, null, true, true, JOptionPane.YES | JOptionPane.NO);				

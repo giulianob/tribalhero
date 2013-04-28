@@ -247,7 +247,7 @@
 			city.objects.sort();
 			
 			// Troop stubs
-			troopCnt = packet.readUByte();
+			troopCnt = packet.readUShort();
 			for (var troopI: int = 0; troopI < troopCnt; troopI++)
 			{
 				var troop: TroopStub = mapComm.Troop.readTroop(packet);

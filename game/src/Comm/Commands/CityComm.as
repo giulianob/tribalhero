@@ -294,7 +294,7 @@
 			
 			profileData.tribeId = packet.readUInt();
 			profileData.tribeName = packet.readString();
-			profileData.tribeRank = packet.readUByte();
+			profileData.tribeRank = packet.readString();
 			
 			profileData.ranks = [];
 			var rankCount:int = packet.readUShort();

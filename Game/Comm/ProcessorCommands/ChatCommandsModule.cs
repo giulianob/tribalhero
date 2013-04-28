@@ -1,13 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using System.Text.RegularExpressions;
 using Game.Data;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using log4net;
 
 namespace Game.Comm.ProcessorCommands
 {
@@ -15,9 +14,12 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly Chat chat;
 
-        public ChatCommandsModule(Chat chat)
+        private readonly ILocker locker;
+
+        public ChatCommandsModule(Chat chat, ILocker locker)
         {
             this.chat = chat;
+            this.locker = locker;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -68,7 +70,9 @@ namespace Game.Comm.ProcessorCommands
             string channel;
             var chatState = session.Player.ChatState;
 
-            using (Concurrency.Current.Lock(session.Player))
+            IDictionary<AchievementTier, byte> achievements;
+
+            using (locker.Lock(session.Player))
             {                
                 switch(type)
                 {
@@ -125,10 +129,12 @@ namespace Game.Comm.ProcessorCommands
                         break;
                 }
 
+                achievements = session.Player.Achievements.GetAchievementCountByTier();
+
                 ReplySuccess(session, packet);
             }
 
-            chat.SendChat(channel, type, session.Player.PlayerId, session.Player.Name, chatState.Distinguish, message);
+            chat.SendChat(channel, type, session.Player.PlayerId, session.Player.Name, achievements, chatState.Distinguish, message);
         }
     }
 }

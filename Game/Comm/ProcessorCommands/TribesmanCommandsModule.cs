@@ -310,7 +310,7 @@ namespace Game.Comm.ProcessorCommands
                     return locks.ToArray();
                 };
 
-            using (locker.Lock(lockHandler, new object[] {}, session.Player))
+            using (locker.Lock(lockHandler, new object[] {}, session.Player, playerToBeRemoved))
             {
                 if (!session.Player.IsInTribe || !playerToBeRemoved.IsInTribe ||
                     playerToBeRemoved.Tribesman.Tribe != session.Player.Tribesman.Tribe)

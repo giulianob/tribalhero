@@ -62,5 +62,7 @@ namespace Game.Data
         void SendSystemMessage(IPlayer from, String subject, String message);
 
         void TribeUpdate();
+
+        AchievementList Achievements { get; } 
     }
 }

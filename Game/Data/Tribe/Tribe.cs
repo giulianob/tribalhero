@@ -24,6 +24,10 @@ namespace Game.Data.Tribe
 
         public const int MEMBERS_PER_LEVEL = 5;
 
+        public const int DAYS_BEFORE_REJOIN_ALLOWED = 2;
+
+        public const int HOURS_BEFORE_SLOT_REOPENS = 8;
+
         private readonly IAssignmentFactory assignmentFactory;
 
         private readonly Dictionary<int, Assignment> assignments = new Dictionary<int, Assignment>();
@@ -41,6 +45,8 @@ namespace Game.Data.Tribe
         private readonly Dictionary<uint, ITribesman> tribesmen = new Dictionary<uint, ITribesman>();
 
         private readonly SortedDictionary<byte, ITribeRank> ranks = new SortedDictionary<byte, ITribeRank>();
+
+        public List<LeavingTribesmate> LeavingTribesmates { get; private set; }
 
         private int attackPoint;
 
@@ -93,6 +99,8 @@ namespace Game.Data.Tribe
                      ICityManager cityManager,
                      IStrongholdManager strongholdManager)
         {
+            LeavingTribesmates = new List<LeavingTribesmate>();
+
             this.procedure = procedure;
             this.dbManager = dbManager;
             this.formula = formula;
@@ -278,26 +286,41 @@ namespace Game.Data.Tribe
             return player == Owner;
         }
 
-        public Error AddTribesman(ITribesman tribesman, bool save = true)
+        public void DbLoaderAdd(ITribesman tribesman)
+        {
+            tribesman.Player.Tribesman = tribesman;
+            tribesmen.Add(tribesman.Player.PlayerId, tribesman);
+        }
+
+        public Error AddTribesman(ITribesman tribesman, bool ignoreRequirements = false)
         {
             if (tribesmen.ContainsKey(tribesman.Player.PlayerId))
             {
-                return Error.TribesmanAlreadyExists;
+                return Error.TribesmanAlreadyInTribe;
             }
 
-            if (tribesmen.Count >= Level * MEMBERS_PER_LEVEL)
+            if (!ignoreRequirements)
             {
-                return Error.TribeFull;
+                if (LeavingTribesmates.Any(p =>
+                                            p.PlayerId == tribesman.Player.PlayerId &&
+                                            SystemClock.Now.Subtract(p.TimeLeft).TotalDays < DAYS_BEFORE_REJOIN_ALLOWED))
+                {
+                    return Error.TribeCannotRejoinYet;
+                }
+
+                var totalSlots = Level * MEMBERS_PER_LEVEL -
+                                 LeavingTribesmates.Count(p => SystemClock.Now.Subtract(p.TimeLeft).TotalHours < HOURS_BEFORE_SLOT_REOPENS);
+
+                if (tribesmen.Count >= totalSlots)
+                {
+                    return Error.TribeFull;
+                }
             }
 
-            tribesman.Player.Tribesman = tribesman;
-            tribesmen.Add(tribesman.Player.PlayerId, tribesman);
+            DbLoaderAdd(tribesman);
 
-            if (save)
-            {
-                DefaultMultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
-                dbManager.Save(tribesman);
-            }
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
+            dbManager.Save(tribesman);            
 
             if (tribesman.Player.Session != null)
             {
@@ -325,17 +348,22 @@ namespace Game.Data.Tribe
                 }
 
                 Owner = null;
-                dbManager.Save(this);
             }
 
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
 
             player.Tribesman = null;
-
             dbManager.Delete(tribesman);
-
             tribesmen.Remove(playerId);
+            
+            // Keep logs of who entered/left tribe. First clean up the list of no longer needed records though.
+            LeavingTribesmates.RemoveAll(p => p.PlayerId == player.PlayerId || SystemClock.Now.Subtract(p.TimeLeft).TotalDays > DAYS_BEFORE_REJOIN_ALLOWED);
+            LeavingTribesmates.Add(new LeavingTribesmate {PlayerId = player.PlayerId, TimeLeft = SystemClock.Now});
 
+            // Save to save owner and leaving tribesmates
+            dbManager.Save(this);
+
+            // TODO: Move event out
             if (player.Session != null)
             {
                 Global.Channel.Unsubscribe(player.Session, "/TRIBE/" + Id);
@@ -344,7 +372,7 @@ namespace Game.Data.Tribe
                 {
                     player.Session.Write(new Packet(Command.TribesmanKicked));
                 }
-            }
+            }                        
 
             TribesmanRemoved(this, new TribesmanRemovedEventArgs {Player = player});
 
@@ -709,7 +737,7 @@ namespace Game.Data.Tribe
         public static bool IsNameValid(string tribeName)
         {
             return tribeName != string.Empty && tribeName.Length >= 3 && tribeName.Length <= 20 &&
-                   Regex.IsMatch(tribeName, "^([a-z][a-z0-9\\s].*)$", RegexOptions.IgnoreCase);
+                   Regex.IsMatch(tribeName, Global.ALPHANUMERIC_NAME, RegexOptions.IgnoreCase);
         }
 
         public void RemoveAssignment(Assignment assignment)
@@ -765,7 +793,8 @@ namespace Game.Data.Tribe
                         new DbColumn("wood", Resource.Wood, DbType.Int32),
                         new DbColumn("created", Created, DbType.DateTime),
                         new DbColumn("victory_point", VictoryPoint, DbType.Int32),
-                        new DbColumn("ranks",JsonConvert.SerializeObject(Ranks), DbType.String)
+                        new DbColumn("ranks", JsonConvert.SerializeObject(Ranks), DbType.String),
+                        new DbColumn("leaving_tribesmates", JsonConvert.SerializeObject(LeavingTribesmates), DbType.String)
                 };
             }
         }

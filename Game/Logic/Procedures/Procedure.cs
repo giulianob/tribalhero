@@ -14,8 +14,6 @@ namespace Game.Logic.Procedures
 
         private readonly IWorld world;
 
-        private readonly TileLocator tileLocator;
-
         private readonly IDbManager dbPersistance;
 
         private readonly ILocker locker;
@@ -28,12 +26,11 @@ namespace Game.Logic.Procedures
         {
         }
 
-        public Procedure(IRegionManager regions, Formula formula, IWorld world, TileLocator tileLocator, IDbManager dbPersistance, ILocker locker, ITribeFactory tribeFactory, ITribeManager tribeManager)
+        public Procedure(IRegionManager regions, Formula formula, IWorld world, IDbManager dbPersistance, ILocker locker, ITribeFactory tribeFactory, ITribeManager tribeManager)
         {
             this.regions = regions;
             this.formula = formula;
             this.world = world;
-            this.tileLocator = tileLocator;
             this.dbPersistance = dbPersistance;
             this.locker = locker;
             this.tribeFactory = tribeFactory;

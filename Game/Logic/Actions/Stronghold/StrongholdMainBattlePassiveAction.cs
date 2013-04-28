@@ -184,6 +184,7 @@ namespace Game.Logic.Actions
             {
                 var cityCombatGroup = defender as CityDefensiveCombatGroup;
 
+                // If cityCombatGroup is null then we're dealing w/ a NPC unit
                 if (cityCombatGroup == null)
                 {
                     if (defensiveMeter > 0)
@@ -193,6 +194,7 @@ namespace Game.Logic.Actions
 
                     battle.Remove(defender, BattleManager.BattleSide.Defense, ReportState.OutOfStamina);
                 }
+                // Else we're dealing w/ a player unit
                 else
                 {
                     if (defensiveMeter > 0 && stronghold.Tribe != null && defender.Tribe == stronghold.Tribe)
@@ -214,6 +216,13 @@ namespace Game.Logic.Actions
                     cityCombatGroup.TroopStub.BeginUpdate();
                     cityCombatGroup.TroopStub.State = TroopState.Stationed;
                     cityCombatGroup.TroopStub.EndUpdate();
+                    
+                    var retreatChainAction = actionFactory.CreateRetreatChainAction(cityCombatGroup.TroopStub.City.Id, cityCombatGroup.TroopStub.TroopId);
+                    var result = cityCombatGroup.TroopStub.City.Worker.DoPassive(cityCombatGroup.TroopStub.City, retreatChainAction, true);
+                    if (result != Error.Ok)
+                    {
+                        throw new Exception("Unexpected failure when retreating a unit from stronghold");
+                    }
                 }
             }
 
@@ -281,8 +290,11 @@ namespace Game.Logic.Actions
             // - defensive meter is 0
             // - occupied state and there is no one left defending it
             // - neutral state and the attacker killed the main group
+
+            var hasDefendingUnitsLeft = stronghold.Troops.StationedHere().Any(p => p.TotalCount > 0);
+
             if (defensiveMeter <= 0 ||
-                (stronghold.StrongholdState == StrongholdState.Occupied && !stronghold.Troops.StationedHere().Any()) ||
+                (stronghold.StrongholdState == StrongholdState.Occupied && !hasDefendingUnitsLeft) ||
                 (stronghold.StrongholdState == StrongholdState.Neutral && npcGroupKilled))
             {
                 strongholdManager.TransferTo(stronghold, stronghold.GateOpenTo);

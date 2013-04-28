@@ -1,6 +1,6 @@
 namespace Game.Data.Stats
 {
-    public class BattleStats : BaseStats
+    public class BattleStats : BaseStats, IBattleStats
     {
         #region Base Stats
 
@@ -20,7 +20,7 @@ namespace Game.Data.Stats
 
         public virtual decimal NormalizedCost { get; set; }
 
-        public virtual BaseBattleStats Base { get; private set; }
+        public virtual IBaseBattleStats Base { get; private set; }
 
         #endregion
 
@@ -30,7 +30,7 @@ namespace Game.Data.Stats
         {
         }
 
-        public BattleStats(BaseBattleStats baseStats)
+        public BattleStats(IBaseBattleStats baseStats)
         {
             Base = baseStats;
             MaxHp = baseStats.MaxHp;

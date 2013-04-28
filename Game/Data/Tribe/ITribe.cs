@@ -38,6 +38,8 @@ namespace Game.Data.Tribe
 
         IEnumerable<ITribeRank> Ranks { get; }
 
+        List<LeavingTribesmate> LeavingTribesmates { get; }
+
         ITribeRank DefaultRank { get; }
 
         ITribeRank ChiefRank { get; }
@@ -50,7 +52,9 @@ namespace Game.Data.Tribe
 
         bool IsOwner(IPlayer player);
 
-        Error AddTribesman(ITribesman tribesman, bool save = true);
+        void DbLoaderAdd(ITribesman tribesman);
+
+        Error AddTribesman(ITribesman tribesman, bool ignoreRequirements = false);
 
         Error RemoveTribesman(uint playerId, bool wasKicked, bool checkIfOwner = true);
 

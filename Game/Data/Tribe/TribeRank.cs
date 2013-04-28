@@ -17,7 +17,7 @@ namespace Game.Data.Tribe
 
         public static bool IsNameValid(string name)
         {
-            return !string.IsNullOrEmpty(name) && name.Length <= 16 && Regex.IsMatch(name, "^([a-z0-9\\s].*)$", RegexOptions.IgnoreCase);
+            return !string.IsNullOrEmpty(name) && name.Length <= 16 && Regex.IsMatch(name, Global.ALPHANUMERIC_NAME, RegexOptions.IgnoreCase);
         }
     }
 }

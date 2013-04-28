@@ -17,6 +17,10 @@ namespace Game.Logic.Actions
 {
     public class UnitTrainActiveAction : ScheduledActiveAction
     {
+        private readonly UnitFactory unitFactory;
+
+        private readonly Formula formula;
+
         private readonly uint cityId;
 
         private readonly ushort count;
@@ -29,12 +33,19 @@ namespace Game.Logic.Actions
 
         private int timePerUnit;
 
-        public UnitTrainActiveAction(uint cityId, uint structureId, ushort type, ushort count)
+        public UnitTrainActiveAction(uint cityId,
+                                     uint structureId,
+                                     ushort type,
+                                     ushort count,
+                                     UnitFactory unitFactory,
+                                     Formula formula)
         {
             this.cityId = cityId;
             this.structureId = structureId;
             this.type = type;
             this.count = count;
+            this.unitFactory = unitFactory;
+            this.formula = formula;
         }
 
         public UnitTrainActiveAction(uint id,
@@ -44,9 +55,14 @@ namespace Game.Logic.Actions
                                      int workerType,
                                      byte workerIndex,
                                      ushort actionCount,
-                                     Dictionary<string, string> properties)
+                                     Dictionary<string, string> properties,
+                                     UnitFactory unitFactory,
+                                     Formula formula)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
+            this.unitFactory = unitFactory;
+            this.formula = formula;
+
             type = ushort.Parse(properties["type"]);
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
@@ -92,11 +108,11 @@ namespace Game.Logic.Actions
             }
 
             var unitLvl = template.Lvl;
-            var unitTime = Ioc.Kernel.Get<UnitFactory>().GetTime(type, unitLvl);
+            var unitTime = unitFactory.GetTime(type, unitLvl);
 
-            cost = Formula.Current.UnitTrainCost(structure.City, type, unitLvl);
+            cost = formula.UnitTrainCost(structure.City, type, unitLvl);
             Resource totalCost = cost * count;
-            ActionCount = (ushort)(count + count / Formula.Current.GetXForOneCount(structure.Technologies));
+            ActionCount = (ushort)(count + count / formula.GetXForOneCount(structure.Technologies));
 
             if (!structure.City.Resource.HasEnough(totalCost))
             {
@@ -107,7 +123,7 @@ namespace Game.Logic.Actions
             structure.City.Resource.Subtract(totalCost);
             structure.City.EndUpdate();
 
-            timePerUnit = (int)CalculateTime(Formula.Current.TrainTime(unitTime, structure.Lvl, structure.Technologies));
+            timePerUnit = (int)CalculateTime(formula.TrainTime(unitTime, structure.Lvl, structure.Technologies));
 
             // add to queue for completion
             nextTime = DateTime.UtcNow.AddSeconds(timePerUnit);
@@ -130,7 +146,6 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            IStructure structure;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
@@ -138,22 +153,21 @@ namespace Game.Logic.Actions
                     return;
                 }
 
+                IStructure structure;
                 if (!city.TryGetStructure(structureId, out structure))
                 {
                     StateChange(ActionState.Failed);
                     return;
                 }
 
-                if (Ioc.Kernel.Get<UnitFactory>().GetName(type, 1) == null)
+                if (unitFactory.GetName(type, 1) == null)
                 {
                     StateChange(ActionState.Failed);
                     return;
                 }
 
                 structure.City.DefaultTroop.BeginUpdate();
-                structure.City.DefaultTroop.AddUnit(city.HideNewUnits ? FormationType.Garrison : FormationType.Normal,
-                                                    type,
-                                                    1);
+                structure.City.DefaultTroop.AddUnit(city.HideNewUnits ? FormationType.Garrison : FormationType.Normal, type, 1);
                 structure.City.DefaultTroop.EndUpdate();
 
                 --ActionCount;
@@ -173,7 +187,6 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll(bool wasKilled)
         {
             ICity city;
-            IStructure structure;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
@@ -181,6 +194,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
+                IStructure structure;
                 if (!city.TryGetStructure(structureId, out structure))
                 {
                     StateChange(ActionState.Failed);
@@ -189,7 +203,7 @@ namespace Game.Logic.Actions
 
                 if (!wasKilled)
                 {
-                    int xfor1 = Formula.Current.GetXForOneCount(structure.Technologies);
+                    int xfor1 = formula.GetXForOneCount(structure.Technologies);
                     int totalordered = count + count / xfor1;
                     int totaltrained = totalordered - ActionCount;
                     int totalpaidunit = totaltrained - (totaltrained - 1) / xfor1;
@@ -197,7 +211,7 @@ namespace Game.Logic.Actions
                     Resource totalCost = cost * totalrefund;
 
                     structure.City.BeginUpdate();
-                    structure.City.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, totalCost));
+                    structure.City.Resource.Add(formula.GetActionCancelResource(BeginTime, totalCost));
                     structure.City.EndUpdate();
                 }
 
@@ -224,11 +238,16 @@ namespace Game.Logic.Actions
                 return
                         XmlSerializer.Serialize(new[]
                         {
-                                new XmlKvPair("type", type), new XmlKvPair("city_id", cityId),
-                                new XmlKvPair("structure_id", structureId), new XmlKvPair("wood", cost.Wood),
-                                new XmlKvPair("crop", cost.Crop), new XmlKvPair("iron", cost.Iron),
-                                new XmlKvPair("gold", cost.Gold), new XmlKvPair("labor", cost.Labor),
-                                new XmlKvPair("count", count), new XmlKvPair("time_per_unit", timePerUnit)
+                                new XmlKvPair("type", type),
+                                new XmlKvPair("city_id", cityId),
+                                new XmlKvPair("structure_id", structureId),
+                                new XmlKvPair("wood", cost.Wood),
+                                new XmlKvPair("crop", cost.Crop),
+                                new XmlKvPair("iron", cost.Iron),
+                                new XmlKvPair("gold", cost.Gold),
+                                new XmlKvPair("labor", cost.Labor),
+                                new XmlKvPair("count", count),
+                                new XmlKvPair("time_per_unit", timePerUnit)
                         });
             }
         }

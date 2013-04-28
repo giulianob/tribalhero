@@ -118,7 +118,7 @@ namespace Game.Setup
             }
 
             //Calculate the different in MAXHP between the new and old structures and Add it to the current hp if the new one is greater.
-            StructureStats oldStats = structure.Stats;
+            var oldStats = structure.Stats;
 
             decimal newHp = oldStats.Hp;
             if (baseStats.Battle.MaxHp > oldStats.Base.Battle.MaxHp)

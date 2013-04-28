@@ -7,7 +7,7 @@ using Game.Logic.Conditons;
 
 namespace Game.Logic.Triggers.Events
 {
-    class StructureDowngradeEvent : ICityEvent 
+    public class StructureDowngradeEvent : ICityEvent 
     {
         private readonly IStructure structure;
         private readonly int type;

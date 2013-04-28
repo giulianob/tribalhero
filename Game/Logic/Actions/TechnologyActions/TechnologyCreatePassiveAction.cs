@@ -3,6 +3,7 @@
 using System;
 using Game.Data;
 using Game.Logic.Procedures;
+using Game.Logic.Triggers;
 using Game.Setup;
 using Ninject;
 
@@ -12,13 +13,17 @@ namespace Game.Logic.Actions
 {
     public class TechnologyCreatePassiveAction : PassiveAction, IScriptable
     {
+        private readonly ICityTriggerManager cityTriggerManager;
+
+        private readonly ICityEventFactory cityEventFactory;
+
+        private readonly Procedure procedure;
+
         private byte lvl;
 
         private IStructure obj;
 
         private uint techId;
-
-        private TimeSpan ts;
 
         public override ActionType Type
         {
@@ -36,17 +41,25 @@ namespace Game.Logic.Actions
             }
         }
 
+        public TechnologyCreatePassiveAction(ICityTriggerManager cityTriggerManager, ICityEventFactory cityEventFactory, Procedure procedure)
+        {
+            this.cityTriggerManager = cityTriggerManager;
+            this.cityEventFactory = cityEventFactory;
+            this.procedure = procedure;
+        }
+
         #region IScriptable Members
 
         public void ScriptInit(IGameObject obj, string[] parms)
         {
-            if ((this.obj = obj as IStructure) == null)
+            this.obj = obj as IStructure;
+            if (this.obj == null)
             {
-                throw new Exception();
+                throw new Exception("Invalid script init obj");
             }
+
             techId = uint.Parse(parms[0]);
             lvl = byte.Parse(parms[1]);
-            ts = TimeSpan.FromSeconds(int.Parse(parms[2]));
             Execute();
         }
 
@@ -77,7 +90,7 @@ namespace Game.Logic.Actions
                 obj.Technologies.BeginUpdate();
                 obj.Technologies.Add(tech);
                 obj.Technologies.EndUpdate();
-                Procedure.Current.OnTechnologyUpgrade(obj, tech.TechBase);
+                procedure.OnTechnologyUpgrade(obj, tech.TechBase, cityTriggerManager, cityEventFactory);
             }
 
             StateChange(ActionState.Completed);

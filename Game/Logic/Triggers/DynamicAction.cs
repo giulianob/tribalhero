@@ -1,22 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Game.Data;
+using Ninject;
 
 namespace Game.Logic.Triggers
 {
-    public class DynamicAction
+    public class DynamicAction : IDynamicAction
     {
-        public Type Type { get; set; }
+        private readonly IKernel kernel;
 
-        public string[] Parms { get; set; }
+        private Type ActionType { get; set; }
 
-        public string NlsDescription { get; set; }
+        private string NlsDescription { get; set; }
+
+        public string[] Parms { get; private set; }
+
+        public DynamicAction(Type actionType, string nlsDescription, IKernel kernel)
+        {
+            ActionType = actionType;
+            this.NlsDescription = nlsDescription;
+            this.kernel = kernel;
+            Parms = new string[5];
+
+            try
+            {
+                kernel.Get(ActionType);
+            }
+            catch(Exception e)
+            {
+                throw new Exception(string.Format("Cannot resolve dynamic action {0}", actionType.FullName), e);
+            }
+        }
 
         public void Execute(IGameObject obj)
         {
-            var action = (IScriptable)Activator.CreateInstance(Type, new object[] {});
+            var action = (IScriptable)kernel.Get(ActionType);
 
             // TODO: This needs to be more generic to support more types of actions. Since this is init and all init actions are passive, then this is okay for now.
             if (action is ScheduledPassiveAction)

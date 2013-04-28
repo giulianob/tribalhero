@@ -11,7 +11,14 @@ namespace Game.Logic.Actions
 {
     public class ResourceRateUpdatePassiveAction : PassiveAction, IScriptable
     {
+        private readonly Procedure procedure;
+
         private IStructure obj;
+
+        public ResourceRateUpdatePassiveAction(Procedure procedure)
+        {
+            this.procedure = procedure;
+        }
 
         public override ActionType Type
         {
@@ -50,7 +57,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             obj.City.BeginUpdate();
-            Procedure.Current.RecalculateCityResourceRates(obj.City);
+            procedure.RecalculateCityResourceRates(obj.City);
             obj.City.EndUpdate();
             return Error.Ok;
         }

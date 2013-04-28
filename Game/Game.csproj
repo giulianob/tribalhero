@@ -340,6 +340,9 @@
     <Compile Include="Logic\Triggers\Events\TechnologyUpgradeEvent.cs" />
     <Compile Include="Logic\Triggers\ICityEvent.cs" />
     <Compile Include="Logic\Triggers\ICityEventFactory.cs" />
+    <Compile Include="Logic\Triggers\ICityTriggerManager.cs" />
+    <Compile Include="Logic\Triggers\IDynamicAction.cs" />
+    <Compile Include="Logic\Triggers\IDynamicActionFactory.cs" />
     <Compile Include="Logic\Triggers\IDynamicCondition.cs" />
     <Compile Include="Logic\Formulas\Formula.Stronghold.cs" />
     <Compile Include="Logic\Formulas\Formula.BarbarianTribe.cs" />

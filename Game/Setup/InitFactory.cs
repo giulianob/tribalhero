@@ -34,13 +34,20 @@ namespace Game.Setup
 
     public class InitFactory
     {
-        private readonly CityTriggerManager cityTriggerManager;
+        private readonly ICityTriggerManager cityTriggerManager;
 
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly IDynamicActionFactory dynamicActionFactory;
 
-        public InitFactory(CityTriggerManager cityTriggerManager)
+        private readonly IKernel kernel;
+
+        private readonly ICityEventFactory cityEventFactory;
+
+        public InitFactory(ICityTriggerManager cityTriggerManager, IDynamicActionFactory dynamicActionFactory, IKernel kernel, ICityEventFactory cityEventFactory)
         {
             this.cityTriggerManager = cityTriggerManager;
+            this.dynamicActionFactory = dynamicActionFactory;
+            this.kernel = kernel;
+            this.cityEventFactory = cityEventFactory;
         }
 
         public void Init(string filename)
@@ -60,11 +67,9 @@ namespace Game.Setup
                     {
                         continue;
                     }
-
-                    var condition =
-                            (IDynamicCondition)
-                            Activator.CreateInstance(Type.GetType("Game.Logic.Triggers.Conditions." + (toks[col["Condition"]] + "_condition").ToCamelCase(), true),
-                                                     new object[] {});
+                    
+                    var conditionType = Type.GetType("Game.Logic.Triggers.Conditions." + (toks[col["Condition"]] + "_condition").ToCamelCase(), true);
+                    var condition = (IDynamicCondition)kernel.Get(conditionType);
 
                     string[] conditionParms = new string[5];
                     for (int i = 0; i <= 4; ++i)
@@ -73,20 +78,17 @@ namespace Game.Setup
                     }
                     condition.SetParameters(conditionParms);
 
-                    var action = new DynamicAction
-                    {
-                            Type = Type.GetType("Game.Logic.Actions." + (toks[col["Action"]] + "_passive_action").ToCamelCase(), true),
-                            Parms = new string[5],
-                            NlsDescription = toks[col["NlsDesc"]],
-                    };
+                    var actionType = Type.GetType("Game.Logic.Actions." + (toks[col["Action"]] + "_passive_action").ToCamelCase(), true);
+                    var actionNlsDescription = toks[col["NlsDesc"]];
 
+                    var action = dynamicActionFactory.CreateDynamicAction(actionType, actionNlsDescription);
+                             
                     for (int i = 0; i <= 4; ++i)
                     {
                         action.Parms[i] = toks[i + 7].Contains("=") ? toks[i + 7].Split('=')[1] : toks[i + 7];
                     }
 
-                   // logger.Info(string.Format("{0}:{1}", int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]]), record.Type));
-                    Ioc.Kernel.Get<CityTriggerManager>().AddTrigger(condition, action);
+                    cityTriggerManager.AddTrigger(condition, action);
                 }
             }
         }
@@ -96,16 +98,16 @@ namespace Game.Setup
             switch (condition)
             {
                 case InitCondition.OnInit:
-                    cityTriggerManager.Process(new StructureInitEvent(structure, type, lvl));
+                    cityTriggerManager.Process(cityEventFactory.CreateStructureInitEvent(structure, type, lvl));
                     break;
                 case InitCondition.OnUpgrade:
-                    cityTriggerManager.Process(new StructureUpgradeEvent(structure, type, lvl));
+                    cityTriggerManager.Process(cityEventFactory.CreateStructureUpgradeEvent(structure, type, lvl));
                     break;
                 case InitCondition.OnDowngrade:
-                    cityTriggerManager.Process(new StructureDowngradeEvent(structure, type, lvl));
+                    cityTriggerManager.Process(cityEventFactory.CreateStructureDowngradeEvent(structure, type, lvl));
                     break;
                 case InitCondition.OnConvert:
-                    cityTriggerManager.Process(new StructureConvertEvent(structure, type, lvl));
+                    cityTriggerManager.Process(cityEventFactory.CreateStructureConvertEvent(structure, type, lvl));
                     break;
             }
         }

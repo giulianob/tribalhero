@@ -5,19 +5,17 @@ using Game.Logic.Conditons;
 
 namespace Game.Logic.Triggers
 {
-    public class CityTriggerManager
+    public class CityTriggerManager : ICityTriggerManager
     {
         class Trigger
         {
             public IDynamicCondition DynamicCondition { get; set; }
-            public DynamicAction Action { get; set; }
+            public IDynamicAction Action { get; set; }
         }
 
         private readonly Dictionary<Type, List<Trigger>> triggers = new Dictionary<Type, List<Trigger>>();
 
-        #region Implementation of ICityTriggerManager
-
-        public void AddTrigger(IDynamicCondition dynamicCondition, DynamicAction action)
+        public void AddTrigger(IDynamicCondition dynamicCondition, IDynamicAction action)
         {
             foreach (var type in dynamicCondition.EventType)
             {
@@ -42,7 +40,5 @@ namespace Game.Logic.Triggers
                 }
             }
         }
-
-        #endregion
     }
 }

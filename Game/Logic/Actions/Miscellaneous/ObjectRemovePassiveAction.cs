@@ -7,6 +7,7 @@ using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Procedures;
+using Game.Logic.Triggers;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -22,19 +23,39 @@ namespace Game.Logic.Actions
 
         private readonly IGameObjectLocator gameObjectLocator;
 
+        private readonly ILocker locker;
+
+        private readonly Procedure procedure;
+
+        private readonly ICityTriggerManager cityTriggerManager;
+
+        private readonly ICityEventFactory cityEventFactory;
+
         private readonly uint cityId;
 
         private readonly uint objectId;
 
         private readonly bool wasKilled;
 
-        public ObjectRemovePassiveAction(uint cityId, uint objectId, bool wasKilled, List<uint> cancelActions, IGameObjectLocator gameObjectLocator)
+        public ObjectRemovePassiveAction(uint cityId,
+                                         uint objectId,
+                                         bool wasKilled,
+                                         List<uint> cancelActions,
+                                         IGameObjectLocator gameObjectLocator,
+                                         ILocker locker,
+                                         Procedure procedure,
+                                         ICityTriggerManager cityTriggerManager,
+                                         ICityEventFactory cityEventFactory)
         {
             this.cityId = cityId;
             this.objectId = objectId;
             this.wasKilled = wasKilled;
             this.cancelActions = cancelActions;
             this.gameObjectLocator = gameObjectLocator;
+            this.locker = locker;
+            this.procedure = procedure;
+            this.cityTriggerManager = cityTriggerManager;
+            this.cityEventFactory = cityEventFactory;
         }
 
         public ObjectRemovePassiveAction(uint id,
@@ -44,10 +65,18 @@ namespace Game.Logic.Actions
                                          bool isVisible,
                                          string nlsDescription,
                                          Dictionary<string, string> properties,
-                                         IGameObjectLocator gameObjectLocator)
+                                         IGameObjectLocator gameObjectLocator,
+                                         ILocker locker,
+                                         Procedure procedure,
+                                         ICityTriggerManager cityTriggerManager,
+                                         ICityEventFactory cityEventFactory)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.gameObjectLocator = gameObjectLocator;
+            this.locker = locker;
+            this.procedure = procedure;
+            this.cityTriggerManager = cityTriggerManager;
+            this.cityEventFactory = cityEventFactory;
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
             wasKilled = bool.Parse(properties["was_killed"]);
@@ -74,9 +103,10 @@ namespace Game.Logic.Actions
                 return
                         XmlSerializer.Serialize(new[]
                         {
-                                new XmlKvPair("city_id", cityId), new XmlKvPair("object_id", objectId), new XmlKvPair("was_killed", wasKilled),
-                                new XmlKvPair("cancel_references",
-                                              string.Join(",", cancelActions.ConvertAll(t => t.ToString(CultureInfo.InvariantCulture)).ToArray())),
+                                new XmlKvPair("city_id", cityId),
+                                new XmlKvPair("object_id", objectId),
+                                new XmlKvPair("was_killed", wasKilled),
+                                new XmlKvPair("cancel_references", string.Join(",", cancelActions.ConvertAll(t => t.ToString(CultureInfo.InvariantCulture)).ToArray())),
                         });
             }
         }
@@ -108,7 +138,7 @@ namespace Game.Logic.Actions
             ICity city;
             IGameObject obj;
 
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -127,7 +157,7 @@ namespace Game.Logic.Actions
             {
                 GameAction action;
 
-                using (Concurrency.Current.Lock(cityId, out city))
+                using (locker.Lock(cityId, out city))
                 {
                     if (city == null)
                     {
@@ -137,15 +167,15 @@ namespace Game.Logic.Actions
                     IGameObject obj1 = obj;
                     action = city.Worker.ActiveActions.Values.FirstOrDefault(x => x.WorkerObject == obj1);
 
+                    if (action == null)
+                    {
+                        break;
+                    }
+
                     loopCount++;
                     if (loopCount == 1000)
                     {
                         throw new Exception(string.Format("Unable to cancel all active actions. Stuck cancelling {0}", action.Type));
-                    }
-
-                    if (action == null)
-                    {
-                        break;
                     }
                 }
 
@@ -158,7 +188,7 @@ namespace Game.Logic.Actions
             {
                 GameAction action;
 
-                using (Concurrency.Current.Lock(cityId, out city))
+                using (locker.Lock(cityId, out city))
                 {
                     if (city == null)
                     {
@@ -168,16 +198,15 @@ namespace Game.Logic.Actions
                     IGameObject obj1 = obj;
                     action = city.Worker.PassiveActions.Values.FirstOrDefault(x => x.WorkerObject == obj1);
 
-                    loopCount++;
-                    if (loopCount == 1000)
-                    {
-                        throw new Exception(string.Format("Unable to cancel all passive actions. Stuck cancelling {0}",
-                                                          action.Type));
-                    }
-
                     if (action == null)
                     {
                         break;
+                    }
+
+                    loopCount++;
+                    if (loopCount == 1000)
+                    {
+                        throw new Exception(string.Format("Unable to cancel all passive actions. Stuck cancelling {0}", action.Type)); 
                     }
                 }
 
@@ -188,7 +217,7 @@ namespace Game.Logic.Actions
             foreach (var actionId in cancelActions)
             {
                 GameAction action;
-                using (Concurrency.Current.Lock(cityId, out city))
+                using (locker.Lock(cityId, out city))
                 {
                     if (city == null)
                     {
@@ -206,7 +235,7 @@ namespace Game.Logic.Actions
                 action.WorkerRemoved(wasKilled);
             }
 
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -245,15 +274,15 @@ namespace Game.Logic.Actions
                     }
 
                     city.DoRemove(structure);
-                    Procedure.Current.OnStructureUpgradeDowngrade(structure);
+                    procedure.OnStructureUpgradeDowngrade(structure);
                     city.EndUpdate();
 
                     foreach (var tech in techs)
                     {
-                        Procedure.Current.OnTechnologyDelete(structure, tech.TechBase);
+                        procedure.OnTechnologyDelete(structure, tech.TechBase, cityTriggerManager, cityEventFactory);
                     }
-
                 }
+
                 StateChange(ActionState.Completed);
             }
         }
@@ -264,7 +293,7 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            throw new Exception("City was destroyed?");
+            throw new Exception("Cannot remove worker while deleting objects");
         }
     }
 }

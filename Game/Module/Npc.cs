@@ -9,6 +9,7 @@ using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Map;
+using Game.Map.LocationStrategies;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -334,7 +335,11 @@ namespace Game.Module
                     IEnumerable<ICity> cities = npc.GetCityList();
 
                     IStructure structure;
-                    if (!Randomizer.MainBuilding(out structure, Formula.Current.GetInitialCityRadius(), 2))
+                    Error error = Randomizer.MainBuilding(out structure,
+                                                          new CityTileNextAvailableLocationStrategy(Ioc.Kernel.Get<MapFactory>(),
+                                                              Ioc.Kernel.Get<Formula>()),
+                                                          2);
+                    if (error != Error.Ok)
                     {
                         logger.Info(npc.Name);
                         break;

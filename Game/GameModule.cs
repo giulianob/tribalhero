@@ -200,7 +200,7 @@ namespace Game
             Bind<StrongholdBattleProcedure>().ToSelf().InSingletonScope();
             Bind<CityBattleProcedure>().ToSelf().InSingletonScope();
             Bind<BarbarianTribeBattleProcedure>().ToSelf().InSingletonScope();
-
+            Bind<Random>().ToSelf().InSingletonScope();
             #endregion
 
             #region Stronghold

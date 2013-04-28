@@ -17,8 +17,6 @@ namespace Game.Setup
 
         private readonly List<Position> dict = new List<Position>();
 
-        private int index;
-
         public void Init(string filename)
         {
             using (var reader = new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
@@ -40,59 +38,25 @@ namespace Game.Setup
             return dict;
         }
 
-        public bool NextLocation(out uint x, out uint y, byte radius)
+        private SystemVariable index;
+        public int Index
         {
-            x = 0;
-            y = 0;
-
-            SystemVariable mapStartIndex;
-            if (Global.SystemVariables.TryGetValue("Map.start_index", out mapStartIndex) && index == 0)
+            get
             {
-                index = (int)mapStartIndex.Value;
+                if(index==null)
+                {
+                    if (!Global.SystemVariables.TryGetValue("Map.start_index", out index))
+                    {
+                        return 0;
+                    }
+                }
+                return (int)index.Value;
             }
-
-            do
+            set
             {
-                if (index >= dict.Count)
-                {
-                    return false;
-                }
-
-                Position point = dict[index];
-                index += SKIP;
-
-                // Check if objects already on that point
-                List<ISimpleGameObject> objects = World.Current.GetObjects(point.X, point.Y);
-
-                if (objects == null)
-                {
-                    continue;
-                }
-
-                if (objects.Count != 0)
-                {
-                    continue;
-                }
-
-                if (ForestManager.HasForestNear(point.X, point.Y, radius))
-                {
-                    continue;
-                }
-
-                x = point.X;
-                y = point.Y;
-
-                break;
+                index.Value = value;
+                DbPersistance.Current.Save(index);
             }
-            while (true);
-
-            if (mapStartIndex != null)
-            {
-                mapStartIndex.Value = index;
-                DbPersistance.Current.Save(mapStartIndex);
-            }
-
-            return true;
         }
     }
 }

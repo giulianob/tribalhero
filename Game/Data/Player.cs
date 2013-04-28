@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Game.Comm;
 using Game.Data.Tribe;
 using Game.Database;
@@ -66,6 +68,14 @@ namespace Game.Data
         public string Name { get; set; }
 
         public uint PlayerId { get; private set; }
+
+        public string PlayerHash
+        {
+            get
+            {
+                return BitConverter.ToString(SHA1.Create().ComputeHash(Encoding.ASCII.GetBytes(Config.api_id + Name)), 0, 3).Replace("-", String.Empty);
+            }
+        }
 
         public DateTime Created { get; private set; }
 

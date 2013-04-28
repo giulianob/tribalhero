@@ -264,7 +264,9 @@
 			else {
 				// Need to make the createInitialCity static and pass in the session
 				var createCityDialog: InitialCityDialog = new InitialCityDialog(function(sender: InitialCityDialog): void {
-					Global.mapComm.General.createInitialCity(sender.getCityName(), function(packet: Packet):void {						
+					Global.mapComm.General.createInitialCity(sender.getCityName(),
+															 sender.getLocationParameter(),
+															 function(packet: Packet):void {						
 						completeLogin(packet, true);
 					});
 				});

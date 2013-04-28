@@ -65,9 +65,12 @@ package src.UI.Tooltips {
 
 		public function show(obj: DisplayObject):void
 		{
-			this.position = new IntPoint(Global.map.stage.mouseX, Global.map.stage.mouseY);
-						
-			Global.map.camera.addEventListener(Camera.ON_MOVE, onCameraMove, false, 0, true);
+			if(Global.map!=null) {
+				this.position = new IntPoint(Global.map.stage.mouseX, Global.map.stage.mouseY);
+				Global.map.camera.addEventListener(Camera.ON_MOVE, onCameraMove, false, 0, true);
+			} else {
+				this.position = new IntPoint(obj.stage.mouseX, obj.stage.mouseY);
+			}
 			
 			if (this.viewObj == null || this.viewObj != obj) {
 				this.viewObj = obj;
@@ -158,7 +161,9 @@ package src.UI.Tooltips {
 
 		public function hide():void
 		{
-			Global.map.camera.removeEventListener(Camera.ON_MOVE, onCameraMove);			                                  
+			if(Global.map) {
+				Global.map.camera.removeEventListener(Camera.ON_MOVE, onCameraMove);	
+			}
             
 			if (this.viewObj != null)
 			{

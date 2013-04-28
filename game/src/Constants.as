@@ -22,6 +22,7 @@ package src
 		public static var admin: Boolean;
 		public static var loginKey: String;
 		public static var playerId: int;
+		public static var playerHash: String;
 		public static var tribeInviteId: int = 3;
 		public static var tribe: Tribe = new Tribe();
 		public static var signupTime: Date;

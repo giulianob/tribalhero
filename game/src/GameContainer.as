@@ -211,6 +211,11 @@
 			navigateToURL(new URLRequest(Constants.mainWebsite + "players/logout/session:" + Constants.sessionId), "_self");
 		}
 		
+		public function onProfileClick(e: Event): void
+		{
+			Global.mapComm.City.viewPlayerProfile(Constants.playerId);
+		}		
+
 		public function onAccountOptionsClick(e: Event): void
 		{
 			navigateToURL(new URLRequest(Constants.mainWebsite + "players/account"), "_blank");
@@ -557,6 +562,7 @@
 		public function show() : void {
 			// Create popup menu now that we have all the player info
 			menu = new JPopupMenu();
+			menu.addMenuItem("Profile").addActionListener(onProfileClick);
 			menu.addMenuItem("Account Options").addActionListener(onAccountOptionsClick);
 			menu.addMenuItem("Forums").addActionListener(onForumsClick);
 			menu.addMenuItem("Wiki").addActionListener(onWikiClick);

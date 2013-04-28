@@ -131,7 +131,12 @@
 			}
 			
 			pnlHeader.appendAll(lblPlayerName);
-			
+			if (Constants.playerId == profileData.playerId) {
+				var invitationCode: JLabel = new JLabel("Invitation Code: " + Constants.playerHash);
+				new SimpleTooltip(invitationCode, StringHelper.localize("PLAYER_PROFILE_INVITATION_TOOLTIP"));
+				invitationCode.setHorizontalAlignment(AsWingConstants.LEFT);
+				pnlHeader.append(invitationCode);
+			}
 			if (profileData.tribeId > 0) {
 				var lblTribe: RichLabel = new RichLabel(StringUtil.substitute('<a href="event:viewTribeProfile:{0}">{1}</a> ({2})', profileData.tribeId, profileData.tribeName, StringHelper.localize("TRIBE_RANK_" + profileData.tribeRank)));
 				pnlHeader.append(lblTribe);

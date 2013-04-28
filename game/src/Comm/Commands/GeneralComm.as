@@ -87,13 +87,17 @@
 			session.write(packet, callback, custom);
 		}
 
-		public function createInitialCity(name: String, onCityCreated: Function) : void {
+		public function createInitialCity(name: String, locationParms: *, onCityCreated: Function) : void {
 			var pnlLoading: InfoDialog = InfoDialog.showMessageDialog("Creating city", "We're creating your city...", null, null, true, false, 0);
 
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.CITY_CREATE_INITIAL;
 			packet.writeString(name);
-
+			packet.writeByte(locationParms.method);
+			if(locationParms.method==1) {
+				packet.writeString(locationParms.playerName);
+				packet.writeString(locationParms.playerHash);
+			}
 			session.write(packet, onCreateInitialCity, [pnlLoading, onCityCreated]);
 		}
 
@@ -112,6 +116,7 @@
 		{
             Constants.motd = packet.readString();
 			Constants.playerId = packet.readUInt();
+			Constants.playerHash = packet.readString();
 			Constants.admin = packet.readByte() == 1;
 			Constants.sessionId = packet.readString();			
 			Constants.playerName = packet.readString();			

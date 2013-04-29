@@ -4,13 +4,13 @@ namespace Game.Data.Troop
 {
     public interface ITroopManager : IEnumerable<ITroopStub>
     {
-        byte Size { get; }
+        ushort Size { get; }
 
         IStation BaseStation { get; }
 
         int Upkeep { get; }
 
-        ITroopStub this[byte index] { get; set; }
+        ITroopStub this[ushort index] { get; set; }
 
         event TroopManager.UpdateCallback TroopUpdated;
 
@@ -20,23 +20,23 @@ namespace Game.Data.Troop
 
         event TroopManager.UpdateCallback TroopUnitUpdated;
 
-        bool DbLoaderAdd(byte id, ITroopStub stub);
+        bool DbLoaderAdd(ushort id, ITroopStub stub);
 
         bool DbLoaderAddStation(ITroopStub stub);
 
-        bool Add(ITroopStub stub, out byte id);
+        bool Add(ITroopStub stub, out ushort id);
 
         bool AddStationed(ITroopStub stub);
 
         bool Add(ITroopStub stub);
 
-        bool RemoveStationed(byte id);
+        bool RemoveStationed(ushort id);
 
-        bool Remove(byte id);
+        bool Remove(ushort id);
 
         ITroopStub Create();
 
-        bool TryGetStub(byte id, out ITroopStub stub);
+        bool TryGetStub(ushort id, out ITroopStub stub);
 
         void Starve(int percent = 5, bool bypassProtection = false);
 

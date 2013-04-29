@@ -54,7 +54,7 @@ namespace Game.Battle.CombatGroups
             {
                 return new[]
                 {
-                        new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.UInt32),
+                        new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.UInt16),
                         new DbColumn("city_id", TroopStub.City.Id, DbType.UInt32)
                 };
             }
@@ -64,7 +64,7 @@ namespace Game.Battle.CombatGroups
 
         public ITroopStub TroopStub { get; private set; }
 
-        public override byte TroopId
+        public override ushort TroopId
         {
             get
             {

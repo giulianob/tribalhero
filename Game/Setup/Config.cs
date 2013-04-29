@@ -16,7 +16,7 @@ namespace Game.Setup
     {
         #region Game Settings
 
-        public static string database_schema_version = "20130416035947";
+        public static string database_schema_version = "20130427002657";
 
         // ReSharper disable InconsistentNaming        
         public static int client_min_version = 0;

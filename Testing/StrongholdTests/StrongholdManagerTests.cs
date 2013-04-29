@@ -63,7 +63,7 @@ namespace Testing.StrongholdTests
             stub.State.Returns(TroopState.Stationed);
             stub.City.Owner.IsInTribe.Returns(false);
             stub.City.Id.Returns<uint>(1234);
-            stub.TroopId.Returns<byte>(2);                        
+            stub.TroopId.Returns<ushort>(2);                        
 
             actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId).Returns(retreatAction);
 
@@ -85,7 +85,7 @@ namespace Testing.StrongholdTests
             stub.State.Returns(TroopState.Stationed);
             stub.City.Owner.IsInTribe.Returns(true);
             stub.City.Id.Returns<uint>(1234);
-            stub.TroopId.Returns<byte>(2);
+            stub.TroopId.Returns<ushort>(2);
             stub.City.Owner.Tribesman.Tribe.Returns(tribe);
 
             stronghold.MainBattle.Returns((IBattleManager)null);

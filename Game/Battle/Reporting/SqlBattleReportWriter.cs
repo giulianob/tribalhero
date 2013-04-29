@@ -131,14 +131,16 @@ namespace Game.Battle.Reporting
             return battleTroopId;
         }
 
-        public void SnapBattleAccess(uint battleId, BattleOwner owner, byte troopId, uint groupId, bool isAttacker)
+        public void SnapBattleAccess(uint battleId, BattleOwner owner, ushort troopId, uint groupId, bool isAttacker)
         {
             dbManager.Query(string.Format(@"INSERT INTO `{0}`
                                           VALUES ('', @owner_type, @owner_id, @troop_id, @battle_id, @object_id, @is_attacker, 0, 0, 0, 0, 0, 0, 0, 0, 0, UTC_TIMESTAMP())", BATTLE_REPORT_VIEWS_DB), new[
                                                                                                                                                                                                                                                                              ]
             {
-                    new DbColumn("owner_type", owner.Type, DbType.String), new DbColumn("owner_id", owner.Id, DbType.UInt32),
-                    new DbColumn("troop_id", troopId, DbType.Byte), new DbColumn("battle_id", battleId, DbType.UInt32),
+                    new DbColumn("owner_type", owner.Type, DbType.String), 
+                    new DbColumn("owner_id", owner.Id, DbType.UInt32),
+                    new DbColumn("troop_id", troopId, DbType.UInt16), 
+                    new DbColumn("battle_id", battleId, DbType.UInt32),
                     new DbColumn("object_id", groupId, DbType.UInt32),
                     new DbColumn("is_attacker", isAttacker, DbType.Boolean)
             });

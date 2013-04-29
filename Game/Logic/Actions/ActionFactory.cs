@@ -116,7 +116,7 @@ namespace Game.Logic.Actions
 
         CityPassiveAction CreateCityPassiveAction(uint cityId);
 
-        RetreatChainAction CreateRetreatChainAction(uint cityId, byte stubId);
+        RetreatChainAction CreateRetreatChainAction(uint cityId, ushort stubId);
 
         TribeContributeActiveAction CreateTribeContributeActiveAction(uint cityId, uint structureId, Resource resource);
 

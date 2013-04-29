@@ -44,20 +44,11 @@ namespace Game.Battle.Reporting
         {
         }
 
-        public void SnapBattleAccess(uint battleId, BattleOwner owner, byte troopId, uint groupId, bool isAttacker)
+        public void SnapBattleAccess(uint battleId, BattleOwner owner, ushort troopId, uint groupId, bool isAttacker)
         {
         }
 
         public void SnapTribeToBattle(uint battleId, uint tribeId, bool isAttacker)
-        {
-        }
-
-        public void SnapBattleReportCityView(uint cityId,
-                                             byte troopId,
-                                             uint battleId,
-                                             uint groupId,
-                                             bool isAttacker,
-                                             uint enterBattleReportId)
         {
         }
     }

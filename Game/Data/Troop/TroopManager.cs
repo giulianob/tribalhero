@@ -35,21 +35,21 @@ namespace Game.Data.Troop
 
         #region Properties
 
-        private readonly Dictionary<byte, ITroopStub> dict = new Dictionary<byte, ITroopStub>();
+        private readonly Dictionary<ushort, ITroopStub> dict = new Dictionary<ushort, ITroopStub>();
 
-        private readonly SmallIdGenerator idGen = new SmallIdGenerator(byte.MaxValue, true);
+        private readonly SmallIdGenerator idGen = new SmallIdGenerator(ushort.MaxValue, true);
 
-        public byte Size
+        public ushort Size
         {
             get
             {
-                return (byte)dict.Count;
+                return (ushort)dict.Count;
             }
         }
 
         public IStation BaseStation { get; set; }
 
-        public ITroopStub this[byte index]
+        public ITroopStub this[ushort index]
         {
             get
             {
@@ -79,7 +79,7 @@ namespace Game.Data.Troop
             }
         }
 
-        public bool DbLoaderAdd(byte id, ITroopStub stub)
+        public bool DbLoaderAdd(ushort id, ITroopStub stub)
         {
             if (dict.ContainsKey(id))
             {
@@ -99,7 +99,7 @@ namespace Game.Data.Troop
             {
                 return false;
             }
-            var id = (byte)nextId;
+            var id = (ushort)nextId;
 
             stub.StationTroopId = id;
             stub.Station = BaseStation;
@@ -113,7 +113,7 @@ namespace Game.Data.Troop
 
         public ITroopStub Create()
         {
-            var stub = TroopStubFactory.CreateTroopStub((byte)idGen.GetNext());
+            var stub = TroopStubFactory.CreateTroopStub((ushort)idGen.GetNext());
             dict.Add(stub.TroopId, stub);
             stub.Update += StubUpdateEvent;
             stub.UnitUpdate += StubUnitUpdateEvent;
@@ -121,7 +121,7 @@ namespace Game.Data.Troop
             return stub;
         }
 
-        public bool Add(ITroopStub stub, out byte id)
+        public bool Add(ITroopStub stub, out ushort id)
         {
             int nextId = idGen.GetNext();
 
@@ -131,7 +131,7 @@ namespace Game.Data.Troop
                 return false;
             }
 
-            id = (byte)nextId;
+            id = (ushort)nextId;
 
             stub.BeginUpdate();
             stub.TroopId = id;
@@ -154,7 +154,7 @@ namespace Game.Data.Troop
             {
                 return false;
             }
-            var id = (byte)nextId;
+            var id = (ushort)nextId;
 
             stub.BeginUpdate();
             stub.StationTroopId = id;
@@ -171,11 +171,11 @@ namespace Game.Data.Troop
 
         public bool Add(ITroopStub stub)
         {
-            byte id;
+            ushort id;
             return Add(stub, out id);
         }
 
-        public bool RemoveStationed(byte id)
+        public bool RemoveStationed(ushort id)
         {
             ITroopStub stub;
             if (!dict.TryGetValue(id, out stub))
@@ -200,7 +200,7 @@ namespace Game.Data.Troop
             return true;
         }
 
-        public bool Remove(byte id)
+        public bool Remove(ushort id)
         {
             ITroopStub stub;
 
@@ -224,7 +224,7 @@ namespace Game.Data.Troop
             return true;
         }
 
-        public bool TryGetStub(byte id, out ITroopStub stub)
+        public bool TryGetStub(ushort id, out ITroopStub stub)
         {
             return dict.TryGetValue(id, out stub);
         }

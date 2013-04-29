@@ -1,7 +1,9 @@
 #region
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data;
 using System.Linq;
 using Game.Comm;
@@ -31,16 +33,7 @@ namespace Game.Data
 
         public PlayerChatState ChatState { get; private set; }
 
-        public Player(uint playerid,
-                      DateTime created,
-                      DateTime lastLogin,
-                      string name,
-                      string description,
-                      PlayerRights playerRights)
-                : this(playerid, created, lastLogin, name, description, playerRights, string.Empty)
-        {
-            ChatState = new PlayerChatState();
-        }
+        public AchievementList Achievements { get; private set; }
 
         public Player(uint playerid,
                       DateTime created,
@@ -48,16 +41,17 @@ namespace Game.Data
                       string name,
                       string description,
                       PlayerRights playerRights,
-                      string sessionId)
+                      string sessionId = "")
         {
             ChatState = new PlayerChatState();
+            Achievements = new AchievementList(playerid);
             PlayerId = playerid;
             LastLogin = lastLogin;
             Created = created;
             Name = name;
             SessionId = sessionId;
             Rights = playerRights;
-            PlayerChatState.ChatFloodTime = DateTime.MinValue;
+            ChatState.ChatFloodTime = DateTime.MinValue;
             this.description = description;
         }
 
@@ -96,14 +90,12 @@ namespace Game.Data
                 if (DbPersisted)
                 {
                     DbPersistance.Current.Query(
-                                                string.Format(
-                                                              "UPDATE `{0}` SET `description` = @description WHERE `id` = @id LIMIT 1",
-                                                              DB_TABLE),
-                                                new[]
-                                                {
-                                                        new DbColumn("description", description, DbType.String),
-                                                        new DbColumn("id", PlayerId, DbType.UInt32)
-                                                });
+                        string.Format("UPDATE `{0}` SET `description` = @description WHERE `id` = @id LIMIT 1", DB_TABLE),
+                        new[]
+                        {
+                                new DbColumn("description", description, DbType.String),
+                                new DbColumn("id", PlayerId, DbType.UInt32)
+                        });
                 }
             }
         }
@@ -237,7 +229,8 @@ namespace Game.Data
             var packet = new Packet(Command.TribeChannelUpdate);
             packet.AddUInt32(Tribesman == null ? 0 : Tribesman.Tribe.Id);
             packet.AddUInt32(TribeRequest);
-            packet.AddByte((byte)(Tribesman == null ? 0 : tribesman.Rank));
+            packet.AddByte((byte)(Tribesman == null ? 0 : tribesman.Rank.Id));
+
             Global.Channel.Post("/PLAYER/" + PlayerId, packet);
         }
 
@@ -277,15 +270,15 @@ namespace Game.Data
             {
                 return new[]
                 {
-                        new DbColumn("name", Name, DbType.String, 32), 
-                        new DbColumn("created", Created, DbType.DateTime),
-                        new DbColumn("muted", Muted, DbType.DateTime),
-                        new DbColumn("banned", Banned, DbType.Boolean),
-                        new DbColumn("last_login", LastLogin, DbType.DateTime),
-                        new DbColumn("session_id", SessionId, DbType.String, 128),
-                        new DbColumn("rights", (int)Rights, DbType.UInt16),
-                        new DbColumn("online", Session != null, DbType.Boolean),
-                        new DbColumn("invitation_tribe_id", TribeRequest, DbType.UInt32),
+                    new DbColumn("name", Name, DbType.String, 32), 
+                    new DbColumn("created", Created, DbType.DateTime),
+                    new DbColumn("muted", Muted, DbType.DateTime),
+                    new DbColumn("banned", Banned, DbType.Boolean),
+                    new DbColumn("last_login", LastLogin, DbType.DateTime),
+                    new DbColumn("session_id", SessionId, DbType.String, 128),
+                    new DbColumn("rights", (int)Rights, DbType.UInt16),
+                    new DbColumn("online", Session != null, DbType.Boolean),
+                    new DbColumn("invitation_tribe_id", TribeRequest, DbType.UInt32),
                 };
             }
         }
@@ -302,19 +295,14 @@ namespace Game.Data
         {
             get
             {
-                return new DbDependency[] {};
+                return new[]
+                {
+                    new DbDependency("Achievements", true, true)
+                };
             }
         }
 
         public bool DbPersisted { get; set; }
-
-        public PlayerChatState PlayerChatState
-        {
-            get
-            {
-                return ChatState;
-            }
-        }
 
         #endregion
     }

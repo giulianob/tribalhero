@@ -264,7 +264,7 @@ namespace Game.Comm
             packet.AddUInt32(stub.City.Owner.PlayerId);
             packet.AddUInt32(stub.City.Id);
 
-            packet.AddByte(stub.TroopId);
+            packet.AddUInt16(stub.TroopId);
             packet.AddByte((byte)stub.State);
             AddToPacket(stub.Station, packet);
             packet.AddByte((byte)stub.AttackMode);
@@ -347,7 +347,7 @@ namespace Game.Comm
         internal static void AddToPacket(ICombatGroup combatGroup, Packet packet)
         {
             packet.AddUInt32(combatGroup.Id);
-            packet.AddByte(combatGroup.TroopId);
+            packet.AddUInt16(combatGroup.TroopId);
             packet.AddByte((byte)combatGroup.Owner.Type);
             packet.AddUInt32(combatGroup.Owner.Id);
             packet.AddString(combatGroup.Owner.GetName());
@@ -374,8 +374,12 @@ namespace Game.Comm
             // Tribal info
             packet.AddUInt32(session.Player.Tribesman == null ? 0 : session.Player.Tribesman.Tribe.Id);
             packet.AddUInt32(session.Player.TribeRequest);
-            packet.AddByte((byte)(session.Player.Tribesman == null ? 0 : session.Player.Tribesman.Rank));
+            packet.AddByte((byte)(session.Player.Tribesman == null ? 0 : session.Player.Tribesman.Rank.Id));
             packet.AddString(session.Player.Tribesman == null ? string.Empty : session.Player.Tribesman.Tribe.Name);
+            if(session.Player.Tribesman != null)
+            {
+                AddTribeRanksToPacket(session.Player.Tribesman.Tribe, packet);
+            }
 
             //Cities
             IEnumerable<ICity> list = session.Player.GetCityList();
@@ -384,6 +388,16 @@ namespace Game.Comm
             {
                 city.Subscribe(session);
                 AddToPacket(city, packet);
+            }
+        }
+
+        public static void AddTribeRanksToPacket(ITribe tribe, Packet packet)
+        {
+            packet.AddByte((byte)tribe.Ranks.Count());
+            foreach (var rank in tribe.Ranks)
+            {
+                packet.AddString(rank.Name);
+                packet.AddInt32((int)rank.Permission);
             }
         }
 
@@ -449,7 +463,7 @@ namespace Game.Comm
             }
 
             //City Troops
-            packet.AddByte(city.Troops.Size);
+            packet.AddUInt16(city.Troops.Size);
             foreach (var stub in city.Troops)
             {
                 AddToPacket(stub, packet);
@@ -477,7 +491,7 @@ namespace Game.Comm
                 packet.AddUInt32(assignmentTroop.Stub.City.Id);
                 packet.AddString(assignmentTroop.Stub.City.Owner.Name);
                 packet.AddString(assignmentTroop.Stub.City.Name);
-                packet.AddByte(assignmentTroop.Stub.TroopId);
+                packet.AddUInt16(assignmentTroop.Stub.TroopId);
 
                 //Actual formation and unit counts
                 packet.AddByte(assignmentTroop.Stub.FormationCount);
@@ -580,19 +594,13 @@ namespace Game.Comm
 
             reply.AddUInt32(player.Tribesman != null ? player.Tribesman.Tribe.Id : 0);
             reply.AddString(player.Tribesman != null ? player.Tribesman.Tribe.Name : string.Empty);
-            reply.AddByte((byte)(player.Tribesman != null ? player.Tribesman.Rank : 0));
+            reply.AddString(player.Tribesman != null ? player.Tribesman.Rank.Name : string.Empty);
 
             // Ranking info
             List<dynamic> ranks = new List<dynamic>();
 
-            using (
-                    DbDataReader reader =
-                            DbPersistance.Current.ReaderQuery(
-                                                              string.Format(
-                                                                            "SELECT `city_id`, `rank`, `type` FROM `rankings` WHERE player_id = @playerId ORDER BY `type` ASC"),
-                                                              new[]
-                                                              {new DbColumn("playerId", player.PlayerId, DbType.String)})
-                    )
+            string rankingQuery = string.Format("SELECT `city_id`, `rank`, `type` FROM `rankings` WHERE player_id = @playerId ORDER BY `type` ASC");
+            using (var reader = DbPersistance.Current.ReaderQuery(rankingQuery, new[] {new DbColumn("playerId", player.PlayerId, DbType.String)}))
             {
                 while (reader.Read())
                 {
@@ -610,6 +618,18 @@ namespace Game.Comm
                 reply.AddUInt32(rank.CityId);
                 reply.AddInt32(rank.Rank);
                 reply.AddByte(rank.Type);
+            }
+
+            // Achievement
+            reply.AddUInt16((ushort)player.Achievements.Count);
+            foreach (var achievement in player.Achievements)
+            {
+                reply.AddInt32(achievement.Id);
+                reply.AddString(achievement.Type);
+                reply.AddByte((byte)achievement.Tier);
+                reply.AddString(achievement.Icon);
+                reply.AddString(achievement.Title);
+                reply.AddString(achievement.Description);
             }
 
             // City info
@@ -649,7 +669,7 @@ namespace Game.Comm
                     packet.AddUInt32(tribesman.Player.PlayerId);
                     packet.AddString(tribesman.Player.Name);
                     packet.AddInt32(tribesman.Player.GetCityCount());
-                    packet.AddByte(tribesman.Rank);
+                    packet.AddByte(tribesman.Rank.Id);
                     packet.AddUInt32(tribesman.Player.IsLoggedIn ? 0 : UnixDateTime.DateTimeToUnix(tribesman.Player.LastLogin));
                     AddToPacket(tribesman.Contribution, packet);
                 }
@@ -742,13 +762,20 @@ namespace Game.Comm
                 packet.AddString(tribe.PublicDescription);
                 packet.AddByte(tribe.Level);
                 packet.AddUInt32(UnixDateTime.DateTimeToUnix(tribe.Created));
+
+                packet.AddByte((byte)tribe.Ranks.Count());
+                foreach (var rank in tribe.Ranks)
+                {
+                    packet.AddString(rank.Name);
+                }
+
                 packet.AddInt16((short)tribe.Count);
                 foreach (var tribesman in tribe.Tribesmen)
                 {
                     packet.AddUInt32(tribesman.Player.PlayerId);
                     packet.AddString(tribesman.Player.Name);
                     packet.AddInt32(tribesman.Player.GetCityCount());
-                    packet.AddByte(tribesman.Rank);
+                    packet.AddByte(tribesman.Rank.Id);
                 }
 
                 var strongholds = strongholdManager.StrongholdsForTribe(tribe).ToList();
@@ -786,14 +813,14 @@ namespace Game.Comm
                 packet.AddUInt32(stronghold.Y);
                 AddToPacket(stronghold.State, packet);
 
-                packet.AddByte(stronghold.Troops.Size);
+                packet.AddUInt16(stronghold.Troops.Size);
                 foreach (var troop in stronghold.Troops)
                 {
                     packet.AddUInt32(troop.City.Owner.PlayerId);
                     packet.AddUInt32(troop.City.Id);
                     packet.AddString(troop.City.Owner.Name);
                     packet.AddString(troop.City.Name);
-                    packet.AddByte(troop.TroopId);
+                    packet.AddUInt16(troop.TroopId);
 
                     //Actual formation and unit counts
                     packet.AddByte(troop.FormationCount);

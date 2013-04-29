@@ -20,13 +20,13 @@ namespace Game.Data
 
         private StructureProperties properties;
 
-        private StructureStats stats;
+        private IStructureStats stats;
 
-        public Structure(StructureStats stats)
+        public Structure(IStructureStats stats)
         {
-            techmanager = new TechnologyManager(EffectLocation.Object, this, 0);
-
             this.stats = stats;
+
+            techmanager = new TechnologyManager(EffectLocation.Object, this, 0);            
             properties = new StructureProperties(this);
         }
 
@@ -94,7 +94,7 @@ namespace Game.Data
             }
         }
 
-        public StructureStats Stats
+        public IStructureStats Stats
         {
             get
             {

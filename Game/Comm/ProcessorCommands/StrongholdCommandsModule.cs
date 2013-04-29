@@ -2,6 +2,7 @@
 
 using System;
 using Game.Data.Stronghold;
+using Game.Data.Tribe;
 using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
@@ -227,7 +228,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                if (!tribe.HasRight(session.Player.PlayerId, "Repair"))
+                if (!tribe.HasRight(session.Player.PlayerId, TribePermission.Repair))
                 {
                     ReplyError(session, packet, Error.TribesmanNotAuthorized);
                     return;

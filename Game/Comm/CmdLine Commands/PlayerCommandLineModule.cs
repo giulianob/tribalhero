@@ -74,6 +74,7 @@ namespace Game.Comm
             processor.RegisterCommand("togglechatmod", ToggleChatMod, PlayerRights.Moderator);
             processor.RegisterCommand("warn", Warn, PlayerRights.Moderator);
             processor.RegisterCommand("setchatlevel", SetChatLevel, PlayerRights.Admin);
+            processor.RegisterCommand("giveachievement", GiveAchievement, PlayerRights.Admin);
         }
 
         public string SetChatLevel(Session session, string[] parms)
@@ -908,6 +909,52 @@ namespace Game.Comm
                     playerRemoverFactory.CreatePlayersRemover(playerSelectorFactory.CreateNewbieIdleSelector());
 
             return string.Format("OK! Deleting {0} players.", playersRemover.DeletePlayers());
+        }
+
+        public string GiveAchievement(Session session, String[] parms)
+        {
+            bool help = false;
+            string playerName = string.Empty;
+            string icon = string.Empty;
+            string title = string.Empty;
+            string type = string.Empty;
+            string description = string.Empty;
+            AchievementTier? tier = null;
+
+            try
+            {
+                var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},
+                        {"p=|player=", v => playerName = v.TrimMatchingQuotes()},
+                        {"title=", v => title = v.TrimMatchingQuotes() },
+                        {"description=", v => description = v.TrimMatchingQuotes() },
+                        {"icon=", v => icon = v.TrimMatchingQuotes() },
+                        {"type=", v => type = v.TrimMatchingQuotes() },
+                        {"tier=", v => tier = EnumExtension.Parse<AchievementTier>(v.TrimMatchingQuotes()) },
+                };
+                p.Parse(parms);
+            }
+            catch(Exception)
+            {
+                help = true;
+            }
+
+            if (help || 
+                string.IsNullOrEmpty(playerName) || 
+                string.IsNullOrEmpty(icon) || 
+                string.IsNullOrEmpty(title) || 
+                string.IsNullOrEmpty(description) || 
+                string.IsNullOrEmpty(type) ||
+                !tier.HasValue)
+            {
+                return String.Format("giveachievement --player=player --type=type --tier={0} --icon=icon --title=title --description=description",
+                                     String.Join("|", Enum.GetNames(typeof(AchievementTier))));
+            }
+
+            ApiResponse response = ApiCaller.GiveAchievement(playerName, tier.Value, type, icon, title, description);
+
+            return response.Success ? "OK!" : response.ErrorMessage;
         }
     }
 }

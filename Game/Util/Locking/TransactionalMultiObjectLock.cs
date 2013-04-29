@@ -1,9 +1,14 @@
-﻿using Game.Database;
+﻿using System;
+using System.Runtime.InteropServices;
+using Game.Database;
+using Ninject.Extensions.Logging;
 
 namespace Game.Util.Locking
 {
     class TransactionalMultiObjectLock : IMultiObjectLock
     {
+        private static readonly ILogger Logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         private readonly IMultiObjectLock lck;
 
         public TransactionalMultiObjectLock(IMultiObjectLock lck)
@@ -21,9 +26,15 @@ namespace Game.Util.Locking
 
         public void UnlockAll()
         {
+            if (Marshal.GetExceptionPointers() != IntPtr.Zero || Marshal.GetExceptionCode() != 0)
+            {
+                Logger.Warn("Not unlocking because of exception.");
+                return;
+            }
+
             var transaction = DbPersistance.Current.GetThreadTransaction(true);
             if (transaction != null)
-            {
+            {                
                 transaction.Dispose();
             }
 

@@ -430,7 +430,7 @@
 				menu.show(btnCreate, 0, btnCreate.height);
 			});
 
-			new SimpleTooltip(btnCreate, "An assignment is an organized attack/defense used by the tribe to dispatch troops automatically at different times, so all of them can start the battle at the same time regardless of the distance/speed.");
+			new SimpleTooltip(btnCreate, "An assignment is an organized attack/defense used by the tribe to dispatch troops automatically so they all reach the target at the same time regardless of the distance/speed of each troop. NOTE: Troops must have at least 40 upkeep to be part of an assignment.");
 			
 			return pnlAssignmentHolder;
 		}
@@ -502,17 +502,16 @@
 			{
 				if (Constants.tribe.hasRight(Tribe.ANNOUNCEMENT)) pnlActions.appendAll(btnSetDescription);
 				if (Constants.tribe.hasRight(Tribe.INVITE)) pnlActions.appendAll(btnInvite);
-				if (Constants.tribe.hasRight(Tribe.UPGRADE)) pnlActions.appendAll(btnUpgrade);
-				pnlActions.appendAll(btnDonate, btnLeave);
+				pnlActions.appendAll(btnUpgrade, btnDonate, btnLeave);
 			}
 			
-			// upgrade btn
+			// upgrade btn (Always show it and disable if person doesnt have right so they can see resources amt)
 			var upgradeTooltip: TribeUpgradeTooltip = new TribeUpgradeTooltip(profileData.tribeLevel, profileData.resources);
 			upgradeTooltip.bind(btnUpgrade);
 			btnUpgrade.addActionListener(function(e: Event): void {
 				Global.mapComm.Tribe.upgrade();
 			});
-			btnUpgrade.setEnabled(!Constants.tribe.isInTribe());
+			btnUpgrade.setEnabled(Constants.tribe.hasRight(Tribe.UPGRADE));
 			btnUpgrade.mouseEnabled = true;
 			
 			// description

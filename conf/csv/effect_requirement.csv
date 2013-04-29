@@ -66,4 +66,3 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 25012,HaveNoStructure,3003,minlvl=0,maxlvl=15,count=2,,,You can only have 2 tribal fairs.,You can only have 2 tribal gathering of the same type.
 25013,HaveNoStructure,3004,minlvl=0,maxlvl=15,count=2,,,You can only have 2 tribal carnivals.,You can only have 2 tribal gathering of the same type
 25014,HaveNoStructure,3005,minlvl=0,maxlvl=15,count=2,,,You can only have 2 tribal festivals.,You can only have 2 tribal gathering of the same type
-25015,TribeRanking,minlvl=0,maxlvl=99,,,,,You must be in a tribe.,You must be in a tribe to contribute

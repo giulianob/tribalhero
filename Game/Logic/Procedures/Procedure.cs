@@ -1,3 +1,4 @@
+using Game.Data.Tribe;
 using Game.Logic.Formulas;
 using Game.Map;
 using Game.Util.Locking;
@@ -16,7 +17,7 @@ namespace Game.Logic.Procedures
         private readonly IDbManager dbPersistance;
 
         private readonly ILocker locker;
-
+        
         public Procedure()
         {
         }

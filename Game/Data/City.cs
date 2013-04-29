@@ -1086,7 +1086,7 @@ namespace Game.Data
             var packet = new Packet(Command.TroopRemoved);
             packet.AddUInt32(Id);
             packet.AddUInt32(stub.City.Id);
-            packet.AddByte(stub.TroopId);
+            packet.AddUInt16(stub.TroopId);
             Global.Channel.Post("/CITY/" + Id, packet);
         }
 
@@ -1211,7 +1211,7 @@ namespace Game.Data
         public static bool IsNameValid(string cityName)
         {
             return cityName != string.Empty && cityName.Length >= 3 && cityName.Length <= 16 &&
-                   Regex.IsMatch(cityName, "^([a-z][a-z0-9\\s].*)$", RegexOptions.IgnoreCase);
+                   Regex.IsMatch(cityName, Global.ALPHANUMERIC_NAME, RegexOptions.IgnoreCase);
         }
 
         #region Implementation of ICityRegionObject

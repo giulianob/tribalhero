@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -82,6 +83,7 @@ namespace Game.Comm.ProcessorCommands
             string playerPassword = string.Empty;
             uint playerId;
             bool banned = false;
+            var achievements = new List<Achievement>();
             
             PlayerRights playerRights = PlayerRights.Basic;
 
@@ -141,7 +143,23 @@ namespace Game.Comm.ProcessorCommands
                 playerId = uint.Parse(response.Data.player.id);
                 playerName = response.Data.player.name;
                 banned = int.Parse(response.Data.player.banned) == 1;
-                playerRights = (PlayerRights)Int32.Parse(response.Data.player.rights);                
+                playerRights = (PlayerRights)Int32.Parse(response.Data.player.rights);
+
+                if (((IDictionary<string, Object>)response.Data).ContainsKey("achievements"))
+                {
+                    foreach (var achievement in response.Data.achievements)
+                    {
+                        achievements.Add(new Achievement
+                        {
+                                Id = int.Parse(achievement.id),
+                                Type = achievement.type,
+                                Tier = Enum.Parse(typeof(AchievementTier), achievement.tier),
+                                Description = achievement.description,
+                                Title = achievement.title,
+                                Icon = achievement.icon
+                        });
+                    }
+                }
 
                 // If we are under admin only mode then kick out non admin
                 if (Config.server_admin_only && playerRights == PlayerRights.Basic)
@@ -223,6 +241,8 @@ namespace Game.Comm.ProcessorCommands
                 player.Rights = playerRights;
                 player.LastLogin = SystemClock.Now;
                 player.Banned = banned;
+                player.Achievements.Clear();
+                achievements.ForEach(player.Achievements.Add);
 
                 dbManager.Save(player);
 

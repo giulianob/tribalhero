@@ -35,12 +35,14 @@ namespace Persistance
 
         DbDataReader SelectList(string table, params DbColumn[] primaryKeyValues);
 
-        void Query(string query, DbColumn[] parms);
+        void Query(string query, params DbColumn[] parms);
 
         DbDataReader ReaderQuery(string query, DbColumn[] parms = null);
 
         void EmptyDatabase();
 
         void Probe(out int queriesRanOut, out DateTime lastProbeOut);
+
+        DbDataReader SelectList(string table);
     }
 }

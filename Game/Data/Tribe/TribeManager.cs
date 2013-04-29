@@ -20,18 +20,21 @@ namespace Game.Data.Tribe
     {
         private readonly IActionFactory actionFactory;
 
+        private readonly ITribeFactory tribeFactory;
+
         private readonly IDbManager dbManager;
 
         private readonly IStrongholdManager strongholdManager;
 
         private readonly LargeIdGenerator tribeIdGen = new LargeIdGenerator(Config.tribe_id_max, Config.tribe_id_min);
 
-        public TribeManager(IDbManager dbManager, IStrongholdManager strongholdManager, IActionFactory actionFactory)
+        public TribeManager(IDbManager dbManager, IStrongholdManager strongholdManager, IActionFactory actionFactory, ITribeFactory tribeFactory)
         {
             Tribes = new ConcurrentDictionary<uint, ITribe>();
             this.dbManager = dbManager;
             this.strongholdManager = strongholdManager;
             this.actionFactory = actionFactory;
+            this.tribeFactory = tribeFactory;
         }
 
         private ConcurrentDictionary<uint, ITribe> Tribes { get; set; }
@@ -182,10 +185,56 @@ namespace Game.Data.Tribe
             return incomingTroops.OrderBy(i => i.EndTime);
         }
 
+        public Error CreateTribe(IPlayer player, string name, out ITribe tribe)
+        {
+            tribe = null;
+
+            if (player.Tribesman != null)
+            {
+                return Error.TribesmanAlreadyInTribe;
+            }
+
+            if (TribeNameTaken(name))
+            {
+                return Error.TribeAlreadyExists;
+            }
+
+            if (!Tribe.IsNameValid(name))
+            {
+                return Error.TribeNameInvalid;
+            }
+
+            tribe = tribeFactory.CreateTribe(player, name);
+
+            tribe.CreateRank(0, "Chief", TribePermission.All);
+            tribe.CreateRank(1, "Elder", TribePermission.Invite | TribePermission.Kick | TribePermission.Repair | TribePermission.AssignmentCreate);
+            tribe.CreateRank(2, "Protector", TribePermission.Repair | TribePermission.AssignmentCreate);
+            tribe.CreateRank(3, "Aggressor", TribePermission.AssignmentCreate);
+            tribe.CreateRank(4, "Tribesmen", TribePermission.None);
+
+            Add(tribe);
+
+            var tribesman = new Tribesman(tribe, player, tribe.ChiefRank);
+
+            tribe.AddTribesman(tribesman);
+
+            return Error.Ok;
+        }
+
         private void SubscribeEvents(ITribe tribe)
         {
             tribe.TribesmanRemoved += TribeOnTribesmanRemoved;
             tribe.Updated += TribeOnUpdated;
+            tribe.RanksUpdated += TribeOnRanksUpdated;
+        }
+
+        private void TribeOnRanksUpdated(object sender, EventArgs eventArgs)
+        {
+            ITribe tribe = (ITribe)sender;
+            Packet packet = new Packet(Command.TribeChannelRanksUpdate);
+            PacketHelper.AddTribeRanksToPacket(tribe, packet);
+
+            Global.Channel.Post("/TRIBE/" + tribe.Id, packet);
         }
 
         private void TribeOnUpdated(object sender, EventArgs eventArgs)
@@ -194,6 +243,7 @@ namespace Game.Data.Tribe
             Packet packet = new Packet(Command.TribeChannelNotification);
             packet.AddInt32(GetIncomingList(tribe).Count());
             packet.AddInt16(tribe.AssignmentCount);
+            
             Global.Channel.Post("/TRIBE/" + tribe.Id, packet);
         }
 
@@ -208,10 +258,10 @@ namespace Game.Data.Tribe
             {
                 // Retreat all stationed troops in strongholds that are idle.
                 // If they are in battle, then the battle action will take care of removing them. If they are walking to a stronghold, then the attack/reinforce action will walk them back as well.
-                foreach (
-                        var stub in
-                                city.Troops.MyStubs()
-                                    .Where(stub => stub.Station is IStronghold && stub.State == TroopState.Stationed))
+                foreach (var stub in city.Troops.MyStubs().Where(stub =>
+                                                                 stub.Station is IStronghold &&
+                                                                 ((IStronghold)stub.Station).MainBattle == null &&
+                                                                 stub.State == TroopState.Stationed))
                 {
                     var retreatAction = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
                     stub.City.Worker.DoPassive(stub.City, retreatAction, true);

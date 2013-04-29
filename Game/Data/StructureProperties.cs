@@ -24,18 +24,6 @@ namespace Game.Data
             structure = owner;
         }
 
-        public IStructure Owner
-        {
-            get
-            {
-                return structure;
-            }
-            set
-            {
-                structure = value;
-            }
-        }
-
         #region IPersistableList Members
 
         public string DbTable
@@ -52,8 +40,8 @@ namespace Game.Data
             {
                 return new[]
                 {
-                        new DbColumn("structure_id", structure.ObjectId, DbType.UInt32),
-                        new DbColumn("city_id", structure.City.Id, DbType.UInt32)
+                        new DbColumn("city_id", structure.City.Id, DbType.UInt32),
+                        new DbColumn("structure_id", structure.ObjectId, DbType.UInt32)
                 };
             }
         }
@@ -80,7 +68,8 @@ namespace Game.Data
             {
                 return new[]
                 {
-                        new DbColumn("name", DbType.String), new DbColumn("value", DbType.String),
+                        new DbColumn("name", DbType.String), 
+                        new DbColumn("value", DbType.String),
                         new DbColumn("datatype", DbType.Byte)
                 };
             }
@@ -99,7 +88,8 @@ namespace Game.Data
                 yield return
                         new[]
                         {
-                                new DbColumn("name", itr.Key, DbType.String), new DbColumn("value", itr.Value, DbType.String),
+                                new DbColumn("name", itr.Key, DbType.String), 
+                                new DbColumn("value", itr.Value, DbType.String),
                                 new DbColumn("datatype", datatype, DbType.Byte)
                         };
             }

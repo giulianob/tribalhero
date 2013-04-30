@@ -30,10 +30,10 @@ package src.Objects
 			return (ranks[rank].rights & right) == right;
 		}
 		
-		public function isInTribe(id: int = 0): Boolean
+		public function isInTribe(id: int = -1): Boolean
 		{
             // If id is 0 then just return true if the user is in a tribe at all
-			if (id == 0) return this.id != 0;
+			if (id == -1) return this.id != 0;
 
 			return this.id == id;
 		}

@@ -59,13 +59,18 @@
 		
 		private function onChatMessage(packet: Packet): void
 		{
-			var type: int = packet.readByte();
-            var distinguish: Boolean = packet.readByte() == 1 ? true : false;
+			var type: int = packet.readUByte();
+			var achievements: * = {
+				gold: packet.readUByte(),
+				silver: packet.readUByte(),
+				bronze: packet.readUByte()
+			};
+            var distinguish: Boolean = packet.readUByte() == 1 ? true : false;
 			var playerId: int = packet.readUInt();
 			var playerName: String = packet.readString();
 			var message: String = packet.readString();		
 			
-			Global.gameContainer.cmdLine.logChat(type, playerId, playerName, distinguish, message);					
+			Global.gameContainer.cmdLine.logChat(type, playerId, playerName, achievements, distinguish, message);					
 		}
 		
 		private function onChatSystemMessage(packet: Packet): void

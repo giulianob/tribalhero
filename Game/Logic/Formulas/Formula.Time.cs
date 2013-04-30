@@ -36,16 +36,34 @@ namespace Game.Logic.Formulas
                              .Max(x => x == null ? 0 : (int)x.Value[0]));
         }
 
-        public virtual int LaborMoveTime(IStructure structure, byte count, ITechnologyManager technologyManager)
+        public virtual int LaborMoveTime(IStructure structure, ushort count, bool cityToStructure)
         {
-            var effects = structure.City.Technologies.GetEffects(EffectCode.LaborMoveTimeMod, EffectInheritance.All);
-            int overtime = 0;
-            if (effects.Count > 0)
+            const int secondsPerLaborer = 180;
+
+            int totalLaborers = structure.City.GetTotalLaborers();
+            int moveTime;
+            if (cityToStructure && totalLaborers < 100)
             {
-                overtime = effects.Max(x => (int)x.Value[0]);
+                moveTime = secondsPerLaborer * (totalLaborers / 100) * count;
+            }
+            else
+            {
+                var effects = structure.City.Technologies.GetEffects(EffectCode.LaborMoveTimeMod);
+                int overtime = 0;
+                if (effects.Count > 0)
+                {
+                    overtime = effects.Max(x => (int)x.Value[0]);
+                }
+
+                moveTime = (100 - overtime * 10) * count * secondsPerLaborer / 100;
             }
 
-            return (100 - overtime * 10) * count * 180 / 100;
+            if (!cityToStructure)
+            {
+                moveTime = moveTime / 20;
+            }
+
+            return moveTime;
         }
 
         private int TimeDiscount(int lvl)
@@ -134,8 +152,7 @@ namespace Game.Logic.Formulas
                 rateBonus = (effects.Min(x => (int)x.Value[0]) * 10) / 100f;
                 if (effects.Count > 1)
                 {
-                    rateBonus *= Math.Pow(0.92, effects.Count - 1);
-                            // for every extra tribal gathering, you gain 8 % each
+                    rateBonus *= Math.Pow(0.92, effects.Count - 1); // for every extra tribal gathering, you gain 8 % each
                 }
             }
             double newMultiplier = Math.Min(2, 3 - (double)laborTotal / 400);

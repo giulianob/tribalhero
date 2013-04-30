@@ -113,7 +113,11 @@ namespace Game.Data
         /// <returns></returns>
         IGameObject this[uint objectId] { get; }
 
-        ITroopObject GetTroop(uint objectId);
+        /// <summary>
+        /// Gets total number of laborers in the city (includes ones in structures).
+        /// </summary>
+        /// <returns></returns>
+        int GetTotalLaborers();
 
         bool TryGetObject(uint objectId, out IGameObject obj);
 

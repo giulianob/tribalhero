@@ -10,11 +10,13 @@
 
 		private var text: String = "";
 		private var label: Component;
+		private var headerLabel:JLabel;
+		private var header: String;
 		
-		public function TextTooltip(text: String) {							
+		public function TextTooltip(text: String, header: String = "") {										
 			ui.setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 5));			
 			
-			createUI(text);			
+			createUI(text, header);			
 		}
 		
 		public function append(label: Component): void {
@@ -25,27 +27,41 @@
 			return text;
 		}
 		
-		public function setText(text: String): void {
-			if (this.text == text) {
+		public function setText(text: String, header: String = ""): void {
+			if (this.text == text && this.header == header) {
 				return;
 			}
 			
 			ui.remove(label);
-			createUI(text);
+			label = null;
+			
+			if (headerLabel) {
+				ui.remove(headerLabel);
+				headerLabel = null;
+			}
+			
+			createUI(text, header);
 		}
 		
-		private function createUI(text: String): void {
+		private function createUI(text: String, header: String): void {
 			if (text.length < 40) {
 				label = new JLabel(text, null, AsWingConstants.LEFT);
 			} else {
 				label = new MultilineLabel(text, 0, 20);
 			}			
-						
+			
 			GameLookAndFeel.changeClass(label, "Tooltip.text");
 			
 			this.text = text;
+			this.header = header;
 			
 			ui.insert(0, label);
+			
+			if (header != "") {
+				headerLabel = new JLabel(header, null, AsWingConstants.LEFT);
+				GameLookAndFeel.changeClass(headerLabel, "header");
+				ui.insert(0, headerLabel);
+			}
 		}
 	}
 

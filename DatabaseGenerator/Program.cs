@@ -45,7 +45,11 @@ namespace DatabaseGenerator
             {
             }
 
-            Config.LoadConfigFile(settings);            
+            if (!string.IsNullOrEmpty(settings))
+            {
+                Config.LoadConfigFile(settings);
+            }
+
             kernel = Engine.CreateDefaultKernel();
             kernel.Get<FactoriesInitializer>().CompileAndInit();
 

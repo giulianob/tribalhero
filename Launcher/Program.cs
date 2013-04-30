@@ -38,7 +38,7 @@ namespace Launcher
             }
             
             XmlConfigurator.Configure();
-            Engine.AttachExceptionHandler(new Log4NetLogger(typeof(Engine)));
+            Engine.AttachExceptionHandler();
             Config.LoadConfigFile(settingsFile);
 
             var kernel = Engine.CreateDefaultKernel();                        
@@ -46,6 +46,9 @@ namespace Launcher
             Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
             
 #if DEBUG
+            // Always enable lock checking in debug mode
+            Config.locks_check = true;
+
             // Empty db
             if (Config.database_empty)
             {

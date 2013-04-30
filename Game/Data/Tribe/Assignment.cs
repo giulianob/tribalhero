@@ -220,7 +220,7 @@ namespace Game.Data.Tribe
                         new[]
                         {
                                 new DbColumn("city_id", itr.Current.Stub.City.Id, DbType.UInt32),
-                                new DbColumn("stub_id", itr.Current.Stub.TroopId, DbType.Byte),
+                                new DbColumn("stub_id", itr.Current.Stub.TroopId, DbType.UInt16),
                                 new DbColumn("dispatched", itr.Current.Dispatched ? (byte)1 : (byte)0, DbType.Byte)
                         };
             }
@@ -543,7 +543,8 @@ namespace Game.Data.Tribe
             {
                 return new[]
                 {
-                        new DbColumn("city_id", DbType.UInt32), new DbColumn("stub_id", DbType.Byte),
+                        new DbColumn("city_id", DbType.UInt32), 
+                        new DbColumn("stub_id", DbType.UInt16),
                         new DbColumn("dispatched", DbType.Byte)
                 };
             }

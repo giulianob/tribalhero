@@ -49,12 +49,12 @@
 	</target>
 	
 	<target name="generate" if="deploydir" depends="compile">
-		<exec executable="${basedir}/GraphGenerator/bin/Release/GraphGenerator.exe">
-			<arg line="--output=${deploydir}/graphoutput --settings=${basedir}/conf/settings.ini --img=${basedir}/graphics/buildings --img=${basedir}/graphics/units --img=${basedir}/graphics/icons/props" />
+		<exec dir="${basedir}" executable="${basedir}/GraphGenerator/bin/Release/GraphGenerator.exe">
+			<arg line="--output=${deploydir}/graphoutput  --img=${basedir}/graphics/buildings --img=${basedir}/graphics/units --img=${basedir}/graphics/icons/props" />
 		</exec>
 		
-		<exec executable="${basedir}/DatabaseGenerator/bin/Release/DatabaseGenerator.exe">
-			<arg line="--output=${deploydir}/databaseoutput --settings=${basedir}/conf/settings.ini --img=${basedir}/graphics/buildings --img=${basedir}/graphics/units --img=${basedir}/graphics/icons/props" />
+		<exec dir="${basedir}" executable="${basedir}/DatabaseGenerator/bin/Release/DatabaseGenerator.exe">
+			<arg line="--output=${deploydir}/databaseoutput --img=${basedir}/graphics/buildings --img=${basedir}/graphics/units --img=${basedir}/graphics/icons/props" />
 		</exec>				
 	</target>
 	

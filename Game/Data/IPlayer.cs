@@ -15,6 +15,8 @@ namespace Game.Data
 
         uint PlayerId { get; }
 
+        string PlayerHash { get; }
+
         DateTime Created { get; }
 
         DateTime LastLogin { get; set; }
@@ -60,5 +62,7 @@ namespace Game.Data
         void SendSystemMessage(IPlayer from, String subject, String message);
 
         void TribeUpdate();
+
+        AchievementList Achievements { get; } 
     }
 }

@@ -93,7 +93,7 @@ namespace Game.Comm.CmdLine_Commands
         public string DeleteStuckTroop(Session session, String[] parms)
         {
             bool help = false;
-            byte stubId = 0;
+            ushort stubId = 0;
             string cityName = string.Empty;
 
             try
@@ -102,7 +102,7 @@ namespace Game.Comm.CmdLine_Commands
                 {
                         {"?|help|h", v => help = true},
                         {"city=", v => cityName = v.TrimMatchingQuotes()},
-                        {"stubId=", v => stubId = byte.Parse(v.TrimMatchingQuotes())}
+                        {"stubId=", v => stubId = ushort.Parse(v.TrimMatchingQuotes())}
                 };
                 p.Parse(parms);
             }

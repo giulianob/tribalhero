@@ -20,11 +20,11 @@ TUNNEL_EXCAVATION_TECHNOLOGY_LVL_2,"Reduces distance requirement by 2 for Tower,
 TUNNEL_EXCAVATION_TECHNOLOGY_LVL_3,"Reduces distance requirement by 3 for Tower, Cannon Tower and Basement. (Does not stack)"
 ,
 SENSE_OF_URGENCY_TECHNOLOGY_NAME,Sense of Urgency
-SENSE_OF_URGENCY_TECHNOLOGY_LVL_1,"If any structure is destroyed in battle, all other buildings are repaired by 4% of the destroyed buildings HP. (Stacks additively up to 100%)"
-SENSE_OF_URGENCY_TECHNOLOGY_LVL_2,"If any structure is destroyed in battle, all other buildings are repaired by 8% of the destroyed buildings HP. (Stacks additively up to 100%)"
-SENSE_OF_URGENCY_TECHNOLOGY_LVL_3,"If any structure is destroyed in battle, all other buildings are repaired by 12% of the destroyed buildings HP. (Stacks additively up to 100%)"
-SENSE_OF_URGENCY_TECHNOLOGY_LVL_4,"If any structure is destroyed in battle, all other buildings are repaired by 16% of the destroyed buildings HP. (Stacks additively up to 100%)"
-SENSE_OF_URGENCY_TECHNOLOGY_LVL_5,"If any structure is destroyed in battle, all other buildings are repaired by 20% of the destroyed buildings HP. (Stacks additively up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_1,"If any structure is destroyed in battle, all other buildings are repaired by 4% of the destroyed buildings HP after the battle. (Stacks additively up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_2,"If any structure is destroyed in battle, all other buildings are repaired by 8% of the destroyed buildings HP after the battle. (Stacks additively up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_3,"If any structure is destroyed in battle, all other buildings are repaired by 12% of the destroyed buildings HP after the battle. (Stacks additively up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_4,"If any structure is destroyed in battle, all other buildings are repaired by 16% of the destroyed buildings HP after the battle. (Stacks additively up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_5,"If any structure is destroyed in battle, all other buildings are repaired by 20% of the destroyed buildings HP after the battle. (Stacks additively up to 100%)"
 ,
 LAST_STAND_TECHNOLOGY_NAME,Last Stand
 LAST_STAND_TECHNOLOGY_LVL_1,Hoplite receives 10% less damage when team is about to die. (Does not stack)
@@ -210,7 +210,7 @@ UPKEEP_REDUCE_SWORDSMAN_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Swordsman. (St
 UPKEEP_REDUCE_ARCHER_TECHNOLOGY_NAME,Archy Diet
 UPKEEP_REDUCE_ARCHER_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Archer. (Stacks additively up to 30%)
 UPKEEP_REDUCE_PIKEMAN_TECHNOLOGY_NAME,Piky Diet
-UPKEEP_REDUCE_PIKEMAN_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Pikeman. (Stacks additively up to 30%)
+UPKEEP_REDUCE_PIKEMAN_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Hoplite. (Stacks additively up to 30%)
 UPKEEP_REDUCE_GLADIATOR_TECHNOLOGY_NAME,Glady Diet
 UPKEEP_REDUCE_GLADIATOR_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Gladiator. (Stacks additively up to 30%)
 UPKEEP_REDUCE_CAVALRY_TECHNOLOGY_NAME,Cavalry Diet

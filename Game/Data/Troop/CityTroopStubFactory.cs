@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Game.Data.Troop
 {
@@ -6,7 +6,7 @@ namespace Game.Data.Troop
     {
         public ICity City { get; set; }
 
-        public ITroopStub CreateTroopStub(byte troopId)
+        public ITroopStub CreateTroopStub(ushort troopId)
         {
             if (City == null)
             {

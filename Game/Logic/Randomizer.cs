@@ -4,6 +4,7 @@ using System;
 using Game.Data;
 using Game.Database;
 using Game.Map;
+using Game.Map.LocationStrategies;
 using Game.Setup;
 using Ninject;
 
@@ -30,29 +31,20 @@ namespace Game.Logic
                 return (uint)Random.Next(Config.height_margin, 50 - Config.height_margin);
             }
         }
-
-        public static bool MainBuilding(ICity city, out IStructure structure, byte radius, byte lvl)
-        {
-            uint x, y;
-            if (!Ioc.Kernel.Get<MapFactory>().NextLocation(out x, out y, radius))
+        
+        public static Error MainBuilding(ICity city, ILocationStrategy strategy, byte lvl, out IStructure structure)
+        {            
+            structure = city.CreateStructure(2000, lvl);
+            Position position;
+            var error = strategy.NextLocation(out position);
+            if(error != Error.Ok)
             {
                 structure = null;
-                return false;
+                return error;
             }
-
-            structure = city.CreateStructure(2000, lvl);
-
-            if (structure.ObjectId != 1)
-            {
-                throw new Exception("Created main building but it did not have object id 1");
-            }
-
-            structure.BeginUpdate();
-            structure.X = x;
-            structure.Y = y;
-            structure.EndUpdate();
-
-            return true;
+            structure.X = position.X;
+            structure.Y = position.Y;
+            return Error.Ok;
         }
     }
 }

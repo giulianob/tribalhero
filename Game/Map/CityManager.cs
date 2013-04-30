@@ -175,7 +175,7 @@ namespace Game.Map
         public static bool IsNameValid(string cityName)
         {
             return cityName != String.Empty && cityName.Length >= 3 && cityName.Length <= 16 &&
-                   Regex.IsMatch(cityName, "^([a-z][a-z0-9\\s].*)$", RegexOptions.IgnoreCase);
+                   Regex.IsMatch(cityName, Global.ALPHANUMERIC_NAME, RegexOptions.IgnoreCase);
         }
     }
 }

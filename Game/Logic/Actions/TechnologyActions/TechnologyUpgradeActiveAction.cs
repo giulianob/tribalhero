@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Logic.Triggers;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -23,17 +23,41 @@ namespace Game.Logic.Actions
 
         private readonly uint techId;
 
-        private bool isSelfInit = false;
+        private readonly IWorld world;
 
-        public TechnologyUpgradeActiveAction()
-        {
-        }
+        private readonly Formula formula;
 
-        public TechnologyUpgradeActiveAction(uint cityId, uint structureId, uint techId)
+        private readonly ILocker locker;
+
+        private readonly TechnologyFactory technologyFactory;
+
+        private readonly Procedure procedure;
+
+        private readonly ICityTriggerManager cityTriggerManager;
+
+        private readonly ICityEventFactory cityEventFactory;
+
+        public TechnologyUpgradeActiveAction(uint cityId,
+                                             uint structureId,
+                                             uint techId,
+                                             IWorld world,
+                                             Formula formula,
+                                             ILocker locker,
+                                             TechnologyFactory technologyFactory,
+                                             Procedure procedure,
+                                             ICityTriggerManager cityTriggerManager,
+                                             ICityEventFactory cityEventFactory)
         {
             this.cityId = cityId;
             this.structureId = structureId;
             this.techId = techId;
+            this.world = world;
+            this.formula = formula;
+            this.locker = locker;
+            this.technologyFactory = technologyFactory;
+            this.procedure = procedure;
+            this.cityTriggerManager = cityTriggerManager;
+            this.cityEventFactory = cityEventFactory;
         }
 
         public TechnologyUpgradeActiveAction(uint id,
@@ -43,9 +67,23 @@ namespace Game.Logic.Actions
                                              int workerType,
                                              byte workerIndex,
                                              ushort actionCount,
-                                             Dictionary<string, string> properties)
+                                             Dictionary<string, string> properties,
+                                             IWorld world,
+                                             Formula formula,
+                                             ILocker locker,
+                                             TechnologyFactory technologyFactory,
+                                             Procedure procedure,
+                                             ICityTriggerManager cityTriggerManager,
+                                             ICityEventFactory cityEventFactory)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
+            this.world = world;
+            this.formula = formula;
+            this.locker = locker;
+            this.technologyFactory = technologyFactory;
+            this.procedure = procedure;
+            this.cityTriggerManager = cityTriggerManager;
+            this.cityEventFactory = cityEventFactory;
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
             techId = uint.Parse(properties["tech_id"]);
@@ -76,7 +114,8 @@ namespace Game.Logic.Actions
                 return
                         XmlSerializer.Serialize(new[]
                         {
-                                new XmlKvPair("tech_id", techId), new XmlKvPair("city_id", cityId),
+                                new XmlKvPair("tech_id", techId), 
+                                new XmlKvPair("city_id", cityId),
                                 new XmlKvPair("structure_id", structureId)
                         });
             }
@@ -95,7 +134,7 @@ namespace Game.Logic.Actions
 
             ICity city;
             IStructure structure;
-            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!world.TryGetObjects(cityId, structureId, out city, out structure))
             {
                 return Error.ObjectNotFound;
             }
@@ -118,7 +157,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
             IStructure structure;
-            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!world.TryGetObjects(cityId, structureId, out city, out structure))
             {
                 return Error.ObjectNotFound;
             }
@@ -127,11 +166,11 @@ namespace Game.Logic.Actions
             TechnologyBase techBase;
             if (structure.Technologies.TryGetTechnology(techId, out tech))
             {
-                techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
+                techBase = technologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
             }
             else
             {
-                techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(techId, 1);
+                techBase = technologyFactory.GetTechnologyBase(techId, 1);
             }
 
             if (techBase == null)
@@ -139,29 +178,17 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
-            if (isSelfInit)
+            if (!city.Resource.HasEnough(techBase.Resources))
             {
-                BeginTime = DateTime.UtcNow;
-                endTime = DateTime.UtcNow;
+                return Error.ResourceNotEnough;
             }
-            else
-            {
-                if (!city.Resource.HasEnough(techBase.Resources))
-                {
-                    return Error.ResourceNotEnough;
-                }
 
-                city.BeginUpdate();
-                city.Resource.Subtract(techBase.Resources);
-                city.EndUpdate();
+            city.BeginUpdate();
+            city.Resource.Subtract(techBase.Resources);
+            city.EndUpdate();
 
-                BeginTime = DateTime.UtcNow;
-                endTime =
-                        DateTime.UtcNow.AddSeconds(
-                                                   CalculateTime(Formula.Current.BuildTime((int)techBase.Time,
-                                                                                           city,
-                                                                                           city.Technologies)));
-            }
+            BeginTime = DateTime.UtcNow;
+            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(formula.BuildTime((int)techBase.Time, city, city.Technologies)));
 
             return Error.Ok;
         }
@@ -169,7 +196,7 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll(bool wasKilled)
         {
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (!IsValid())
                 {
@@ -177,7 +204,7 @@ namespace Game.Logic.Actions
                 }
 
                 IStructure structure;
-                if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+                if (!world.TryGetObjects(cityId, structureId, out city, out structure))
                 {
                     return;
                 }
@@ -186,11 +213,11 @@ namespace Game.Logic.Actions
                 TechnologyBase techBase;
                 if (structure.Technologies.TryGetTechnology(techId, out tech))
                 {
-                    techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
+                    techBase = technologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
                 }
                 else
                 {
-                    techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(techId, 1);
+                    techBase = technologyFactory.GetTechnologyBase(techId, 1);
                 }
 
                 if (techBase == null)
@@ -202,7 +229,7 @@ namespace Game.Logic.Actions
                 if (!wasKilled)
                 {
                     city.BeginUpdate();
-                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, techBase.Resources));
+                    city.Resource.Add(formula.GetActionCancelResource(BeginTime, techBase.Resources));
                     city.EndUpdate();
                 }
 
@@ -223,14 +250,14 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            IStructure structure;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (!IsValid())
                 {
                     return;
                 }
 
+                IStructure structure;
                 if (!city.TryGetStructure(structureId, out structure))
                 {
                     StateChange(ActionState.Failed);
@@ -238,9 +265,10 @@ namespace Game.Logic.Actions
                 }
 
                 Technology tech;
+                TechnologyBase techBase;
                 if (structure.Technologies.TryGetTechnology(techId, out tech))
                 {
-                    TechnologyBase techBase = Ioc.Kernel.Get<TechnologyFactory>()
+                    techBase = technologyFactory
                                                  .GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
 
                     if (techBase == null)
@@ -261,7 +289,7 @@ namespace Game.Logic.Actions
                 }
                 else
                 {
-                    TechnologyBase techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(techId, 1);
+                    techBase = technologyFactory.GetTechnologyBase(techId, 1);
 
                     if (techBase == null)
                     {
@@ -279,7 +307,8 @@ namespace Game.Logic.Actions
 
                     structure.Technologies.EndUpdate();
                 }
-                Procedure.Current.OnTechnologyChange(structure);
+
+                procedure.OnTechnologyUpgrade(structure, techBase, cityTriggerManager, cityEventFactory);
                 StateChange(ActionState.Completed);
             }
         }

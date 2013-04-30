@@ -2,7 +2,7 @@ using System;
 
 namespace Game.Data.Stats
 {
-    public class StructureStats : BaseStats
+    public class StructureStats : BaseStats, IStructureStats
     {
         private decimal hp;
 
@@ -45,6 +45,6 @@ namespace Game.Data.Stats
             }
         }
 
-        public virtual StructureBaseStats Base { get; private set; }
+        public virtual IStructureBaseStats Base { get; private set; }
     }
 }

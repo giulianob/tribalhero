@@ -167,7 +167,7 @@ namespace Game.Comm.Channel
                 var packet = new Packet(Command.TroopRemoved);
                 packet.AddUInt32(city.Id);
                 packet.AddUInt32(args.Stub.City.Id);
-                packet.AddByte(args.Stub.TroopId);
+                packet.AddUInt16(args.Stub.TroopId);
                 return packet;
             });
         }

@@ -1,5 +1,7 @@
-﻿using Game.Data;
+using Game.Data;
 using Game.Data.Troop;
+using Game.Map.LocationStrategies;
+using Game.Setup;
 
 namespace Game.Logic.Procedures
 {
@@ -8,7 +10,7 @@ namespace Game.Logic.Procedures
         /// <summary>
         ///     Creates a city under the specified player with initial troop and main building
         /// </summary>
-        public virtual bool CreateCity(ICityFactory cityFactory, IPlayer player, string cityName, out ICity city)
+        public virtual Error CreateCity(ICityFactory cityFactory, IPlayer player, string cityName, ILocationStrategy strategy, out ICity city)
         {
             city = cityFactory.CreateCity(world.Cities.GetNextCityId(),
                             player,
@@ -19,12 +21,13 @@ namespace Game.Logic.Procedures
 
             IStructure mainBuilding;
 
-            if (!Randomizer.MainBuilding(city, out mainBuilding, formula.GetInitialCityRadius(), 1))
+            Error error = Randomizer.MainBuilding(city, strategy, 1, out mainBuilding);
+            if (error != Error.Ok)
             {
-                city = null;
                 world.Players.Remove(player.PlayerId);
                 dbPersistance.Rollback();                
-                return false;
+
+                return error;
             }
 
             player.Add(city);
@@ -42,7 +45,7 @@ namespace Game.Logic.Procedures
             defaultTroop.AddFormation(FormationType.InBattle);
             defaultTroop.EndUpdate();
 
-            return true;
+            return Error.Ok;
         }
     }
 }

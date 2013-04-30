@@ -10,7 +10,7 @@ namespace Game.Battle.CombatGroups
     {
         uint Id { get; }
 
-        byte TroopId { get; }
+        ushort TroopId { get; }
 
         Resource GroupLoot { get; }
 

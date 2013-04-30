@@ -20,12 +20,12 @@ namespace Game.Data
 
         private StructureProperties properties;
 
-        private StructureStats stats;
+        private IStructureStats stats;
 
         private readonly IDbManager dbManager;
 
         public Structure(uint structureId, 
-                         StructureStats stats,
+                         IStructureStats stats,
                          ITechnologyManager technologyManager,
                          StructureProperties structureProperties,
                          IDbManager dbManager,
@@ -89,7 +89,7 @@ namespace Game.Data
             }
         }
 
-        public StructureStats Stats
+        public IStructureStats Stats
         {
             get
             {
@@ -164,16 +164,6 @@ namespace Game.Data
             }
         }
 
-        public IEnumerable<DbDependency> DbDependencies
-        {
-            get
-            {
-                return new[] {new DbDependency("Properties", true, true), new DbDependency("Technologies", false, true)};
-            }
-        }
-
-        public bool DbPersisted { get; set; }
-
         #endregion
 
         protected override bool Update()
@@ -187,5 +177,15 @@ namespace Game.Data
 
             return update;
         }
+
+        public IEnumerable<DbDependency> DbDependencies
+        {
+            get
+            {
+                return new[] {new DbDependency("Properties", true, true), new DbDependency("Technologies", false, true)};
+            }
+        }
+
+        public bool DbPersisted { get; set; }
     }
 }

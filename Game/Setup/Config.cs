@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Game.Data;
-using Game.Util;
 using JsonFx.Json;
 
 #endregion
@@ -16,12 +15,12 @@ namespace Game.Setup
     {
         #region Game Settings
 
-        public static string database_schema_version = "20130305040333";
+        public static string database_schema_version = "20130427002657";
 
         // ReSharper disable InconsistentNaming        
-        public static int client_min_version;
+        public static int client_min_version = 0;
 
-        public static int client_min_revision;
+        public static int client_min_revision = 64;
 
         public static int server_port = 48888;
 
@@ -208,6 +207,8 @@ namespace Game.Setup
         public static int stronghold_battle_meter;
         public static bool stronghold_bypass_activation = false;
 
+        public static int friend_radius = 250;
+
         public static int idle_days = 3;
 
         public static string welcome_motd = string.Empty;
@@ -224,6 +225,8 @@ namespace Game.Setup
         public static uint city_id_max = 4999999;
 
         public static PlayerRights chat_min_level = PlayerRights.Basic;
+
+        public static bool locks_check;
 
         #endregion
 

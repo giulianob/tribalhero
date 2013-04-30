@@ -194,7 +194,7 @@ namespace Game.Battle.CombatObjects
                         new DbColumn("level", lvl, DbType.Byte), new DbColumn("count", count, DbType.UInt16),
                         new DbColumn("type", type, DbType.UInt16),
                         new DbColumn("troop_stub_city_id", TroopStub.City.Id, DbType.UInt32),
-                        new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.Byte),
+                        new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.UInt16),
                         new DbColumn("left_over_hp", leftOverHp, DbType.Decimal),
                         new DbColumn("damage_min_dealt", MinDmgDealt, DbType.UInt16),
                         new DbColumn("damage_max_dealt", MaxDmgDealt, DbType.UInt16),

@@ -41,7 +41,10 @@ namespace Game.Data
         {
             get
             {
-                return new[] {new DbColumn("structure_id", structureId, DbType.UInt32), new DbColumn("city_id", cityId, DbType.UInt32)};
+                return new[] {
+			new DbColumn("city_id", cityId, DbType.UInt32),
+			new DbColumn("structure_id", structureId, DbType.UInt32)
+		};
             }
         }
 
@@ -67,7 +70,8 @@ namespace Game.Data
             {
                 return new[]
                 {
-                        new DbColumn("name", DbType.String), new DbColumn("value", DbType.String),
+                        new DbColumn("name", DbType.String), 
+                        new DbColumn("value", DbType.String),
                         new DbColumn("datatype", DbType.Byte)
                 };
             }
@@ -86,7 +90,8 @@ namespace Game.Data
                 yield return
                         new[]
                         {
-                                new DbColumn("name", itr.Key, DbType.String), new DbColumn("value", itr.Value, DbType.String),
+                                new DbColumn("name", itr.Key, DbType.String), 
+                                new DbColumn("value", itr.Value, DbType.String),
                                 new DbColumn("datatype", datatype, DbType.Byte)
                         };
             }

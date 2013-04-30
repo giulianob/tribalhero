@@ -179,6 +179,11 @@ namespace Game.Data
                 {
                     Parent.RemoveChildCopy(tech, false);
                 }
+
+                if (TechnologyRemoved != null)
+                {
+                    TechnologyRemoved(tech);
+                }
             }
 
             if (TechnologyCleared != null)

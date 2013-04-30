@@ -255,7 +255,7 @@ namespace Game.Battle
             return 100 - stealth < Config.Random.Next(0, 100);
         }
 
-        public virtual bool UnitStatModCheck(BaseBattleStats stats, TroopBattleGroup group, string value)
+        public virtual bool UnitStatModCheck(IBaseBattleStats stats, TroopBattleGroup group, string value)
         {
             string[] conditions = value.Split('=', '|');
             int success = 0;
@@ -322,7 +322,7 @@ namespace Game.Battle
             return success == conditions.Length / 2;
         }
 
-        public virtual BattleStats LoadStats(BaseBattleStats stats, ICity city, TroopBattleGroup group)
+        public virtual BattleStats LoadStats(IBaseBattleStats stats, ICity city, TroopBattleGroup group)
         {
             var calculator = new BattleStatsModCalculator(stats);
             foreach (var effect in city.Technologies.GetAllEffects())

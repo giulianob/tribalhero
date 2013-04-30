@@ -88,27 +88,20 @@ namespace Game.Logic.Procedures
         /// </summary>
         /// <param name="city"></param>
         /// <param name="maxHp"></param>
-        internal virtual void SenseOfUrgency(ICity city, uint maxHp)
+        public virtual void SenseOfUrgency(ICity city, uint maxHp)
         {
-            // Prevent overflow, just to be safe
-            maxHp = Math.Min(50000, maxHp);
-
-            int healPercent = Math.Min(100,
-                                       city.Technologies.GetEffects(EffectCode.SenseOfUrgency).Sum(x => (int)x.Value[0]));
+            int healPercent = Math.Min(100, city.Technologies.GetEffects(EffectCode.SenseOfUrgency).Sum(x => (int)x.Value[0]));
 
             if (healPercent == 0)
             {
                 return;
             }
 
-            ushort restore = (ushort)(maxHp * (healPercent / 100f));
+            var restore = Math.Floor(maxHp * (healPercent / 100m));
 
-            foreach (
-                    IStructure structure in
-                            city.Where(
-                                       structure =>
-                                       structure.State.Type != ObjectState.Battle &&
-                                       structure.Stats.Hp != structure.Stats.Base.Battle.MaxHp))
+            foreach (var structure in city.Where(structure =>
+                                                 structure.State.Type == ObjectState.Normal &&
+                                                 structure.Stats.Hp != structure.Stats.Base.Battle.MaxHp))
             {
                 structure.BeginUpdate();
                 structure.Stats.Hp += restore;

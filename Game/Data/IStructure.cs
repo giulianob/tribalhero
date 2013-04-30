@@ -13,6 +13,6 @@ namespace Game.Data
 
         bool IsMainBuilding { get; }
 
-        StructureStats Stats { get; set; }
+        IStructureStats Stats { get; set; }
     }
 }

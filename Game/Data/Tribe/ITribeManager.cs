@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game.Data;
 using Game.Data.Tribe;
 using Game.Setup;
 
@@ -23,5 +24,7 @@ namespace Game.Map
         bool FindTribeId(string name, out uint tribeId);
 
         IEnumerable<Tribe.IncomingListItem> GetIncomingList(ITribe tribe);
+
+        Error CreateTribe(IPlayer player, string name, out ITribe tribe);
     }
 }

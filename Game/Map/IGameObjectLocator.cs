@@ -18,7 +18,7 @@ namespace Game.Map
 
         bool TryGetObjects(uint tribeId, out ITribe tribe);
 
-        bool TryGetObjects(uint cityId, byte troopStubId, out ICity city, out ITroopStub troopStub);
+        bool TryGetObjects(uint cityId, ushort troopStubId, out ICity city, out ITroopStub troopStub);
 
         bool TryGetObjects(uint battleId, out IBattleManager battleManager);
 

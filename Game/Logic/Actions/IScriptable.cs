@@ -6,7 +6,7 @@ using Game.Data;
 
 namespace Game.Logic
 {
-    interface IScriptable
+    public interface IScriptable
     {
         void ScriptInit(IGameObject obj, string[] parms);
     }

@@ -38,7 +38,7 @@ namespace Launcher
             }
             
             XmlConfigurator.Configure();
-            Engine.AttachExceptionHandler(new Log4NetLogger(typeof(Engine)));
+            Engine.AttachExceptionHandler();
             Config.LoadConfigFile(settingsFile);
 
             var kernel = Engine.CreateDefaultKernel();                        

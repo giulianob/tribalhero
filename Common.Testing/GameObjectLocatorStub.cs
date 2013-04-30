@@ -81,7 +81,7 @@ namespace Common.Testing
             return tribes.TryGetValue(tribeId, out tribe);
         }
 
-        public bool TryGetObjects(uint cityId, byte troopStubId, out ICity city, out ITroopStub troopStub)
+        public bool TryGetObjects(uint cityId, ushort troopStubId, out ICity city, out ITroopStub troopStub)
         {
             troopStub = null;
             return cities.TryGetValue(cityId, out city) && city.Troops.TryGetStub(troopStubId, out troopStub);

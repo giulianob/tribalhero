@@ -264,7 +264,7 @@ namespace Game.Comm
             packet.AddUInt32(stub.City.Owner.PlayerId);
             packet.AddUInt32(stub.City.Id);
 
-            packet.AddByte(stub.TroopId);
+            packet.AddUInt16(stub.TroopId);
             packet.AddByte((byte)stub.State);
             AddToPacket(stub.Station, packet);
             packet.AddByte((byte)stub.AttackMode);
@@ -347,7 +347,7 @@ namespace Game.Comm
         internal static void AddToPacket(ICombatGroup combatGroup, Packet packet)
         {
             packet.AddUInt32(combatGroup.Id);
-            packet.AddByte(combatGroup.TroopId);
+            packet.AddUInt16(combatGroup.TroopId);
             packet.AddByte((byte)combatGroup.Owner.Type);
             packet.AddUInt32(combatGroup.Owner.Id);
             packet.AddString(combatGroup.Owner.GetName());
@@ -463,7 +463,7 @@ namespace Game.Comm
             }
 
             //City Troops
-            packet.AddByte(city.Troops.Size);
+            packet.AddUInt16(city.Troops.Size);
             foreach (var stub in city.Troops)
             {
                 AddToPacket(stub, packet);
@@ -491,7 +491,7 @@ namespace Game.Comm
                 packet.AddUInt32(assignmentTroop.Stub.City.Id);
                 packet.AddString(assignmentTroop.Stub.City.Owner.Name);
                 packet.AddString(assignmentTroop.Stub.City.Name);
-                packet.AddByte(assignmentTroop.Stub.TroopId);
+                packet.AddUInt16(assignmentTroop.Stub.TroopId);
 
                 //Actual formation and unit counts
                 packet.AddByte(assignmentTroop.Stub.FormationCount);
@@ -813,14 +813,14 @@ namespace Game.Comm
                 packet.AddUInt32(stronghold.Y);
                 AddToPacket(stronghold.State, packet);
 
-                packet.AddByte(stronghold.Troops.Size);
+                packet.AddUInt16(stronghold.Troops.Size);
                 foreach (var troop in stronghold.Troops)
                 {
                     packet.AddUInt32(troop.City.Owner.PlayerId);
                     packet.AddUInt32(troop.City.Id);
                     packet.AddString(troop.City.Owner.Name);
                     packet.AddString(troop.City.Name);
-                    packet.AddByte(troop.TroopId);
+                    packet.AddUInt16(troop.TroopId);
 
                     //Actual formation and unit counts
                     packet.AddByte(troop.FormationCount);

@@ -30,7 +30,7 @@ namespace Game.Data.Troop
 
         ICity City { get; }
 
-        byte StationTroopId { get; set; }
+        ushort StationTroopId { get; set; }
 
         IStation Station { get; set; }
 
@@ -40,7 +40,7 @@ namespace Game.Data.Troop
 
         AttackMode AttackMode { get; set; }
 
-        byte TroopId { get; set; }
+        ushort TroopId { get; set; }
 
         decimal TotalHp { get; }
 

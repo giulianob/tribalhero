@@ -20,17 +20,20 @@ namespace Game.Logic.Actions
 
         private readonly IWorld world;
 
+        private readonly IActionFactory actionFactory;
+
         private readonly uint cityId;
 
         private readonly uint objectId;
 
-        public ResourceGatherActiveAction(uint cityId, uint objectId, ILocker locker, ObjectTypeFactory objectTypeFactory, IWorld world)
+        public ResourceGatherActiveAction(uint cityId, uint objectId, ILocker locker, ObjectTypeFactory objectTypeFactory, IWorld world, IActionFactory actionFactory)
         {
             this.cityId = cityId;
             this.objectId = objectId;
             this.locker = locker;
             this.objectTypeFactory = objectTypeFactory;
             this.world = world;
+            this.actionFactory = actionFactory;
         }
 
         public ResourceGatherActiveAction(uint id,
@@ -43,12 +46,14 @@ namespace Game.Logic.Actions
                                           Dictionary<string, string> properties,
                                           ILocker locker,
                                           ObjectTypeFactory objectTypeFactory,
-                                          IWorld world)
+                                          IWorld world, 
+                                          IActionFactory actionFactory)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             this.locker = locker;
             this.objectTypeFactory = objectTypeFactory;
             this.world = world;
+            this.actionFactory = actionFactory;
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
         }
@@ -146,7 +151,7 @@ namespace Game.Logic.Actions
             city.Resource.EndUpdate();
             city.EndUpdate();
 
-            var changeAction = new StructureChangePassiveAction(cityId, objectId, 0, (ushort)objectTypeFactory.GetTypes("EmptyField")[0], 1);
+            var changeAction = actionFactory.CreateStructureChangePassiveAction(cityId, objectId, 0, (ushort)objectTypeFactory.GetTypes("EmptyField")[0], 1);
             city.Worker.DoPassive(structure, changeAction, true);
 
             StateChange(ActionState.Completed);

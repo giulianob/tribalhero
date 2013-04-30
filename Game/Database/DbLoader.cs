@@ -239,9 +239,7 @@ namespace Game.Database
                                                          (int)reader["attack_point"],
                                                          (int)reader["defense_point"],
                                                          resource,
-                                                         DateTime.SpecifyKind((DateTime)reader["created"],
-                                                                              DateTimeKind.Utc));
-
+                                                         DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc));
                     
                     foreach (var obj in JsonConvert.DeserializeObject<TribeRank[]>((string)reader["ranks"]))
                     {
@@ -255,9 +253,10 @@ namespace Game.Database
                         tribe.CreateRank(obj.Id, obj.Name, obj.Permission);
                     }
 
-                    tribe.Id = (uint)reader["id"];
-                    tribe.DbPersisted = true;
+                    tribe.Id = (uint)reader["id"];                    
+                    tribe.PublicDescription = (string)reader["public_desc"];
 
+                    tribe.DbPersisted = true;
                     Tribes.DbLoaderAdd(tribe);
                 }
             }
@@ -305,7 +304,7 @@ namespace Game.Database
                                             reader => new {
                                                 Id = (int)reader["id"],
                                                 CityId = (uint)reader["city_id"],
-                                                StubId = (byte)reader["stub_id"],
+                                                StubId = (ushort)reader["stub_id"],
                                                 Dispatched = (byte)reader["dispatched"] == 1
                                             },
                                             key => (int)key.Id);
@@ -344,7 +343,7 @@ namespace Game.Database
                     }
 
                     ITroopStub assignmentStub;
-                    if (!city.Troops.TryGetStub((byte)stub.StubId, out assignmentStub))
+                    if (!city.Troops.TryGetStub((ushort)stub.StubId, out assignmentStub))
                     {
                         throw new Exception("Stub not found");
                     }
@@ -900,20 +899,20 @@ namespace Game.Database
         private void LoadTroopStubs()
         {
             #region Troop Stubs
-            ILookup<Tuple<uint, byte>, dynamic> troopStubUnits;
+            ILookup<Tuple<uint, ushort>, dynamic> troopStubUnits;
 
             using (var listReader = DbManager.SelectList(TroopStub.DB_TABLE))
             {
                 troopStubUnits = ReaderToLookUp(listReader,
                                                 reader => new
                                                 {
-                                                        id = (byte)reader["id"],
+                                                        id = (ushort)reader["id"],
                                                         cityId = (uint)reader["city_id"],
                                                         formationType = (FormationType)((byte)reader["formation_type"]),
                                                         type = (ushort)reader["type"],
                                                         count = (ushort)reader["count"]
                                                 },
-                                                key => new Tuple<uint, byte>(key.cityId, key.id));
+                                                key => new Tuple<uint, ushort>(key.cityId, key.id));
             }
 
             List<dynamic> stationedTroops = new List<dynamic>();
@@ -923,7 +922,7 @@ namespace Game.Database
             {
                 while (reader.Read())
                 {
-                    byte id = (byte)reader["id"];
+                    ushort id = (ushort)reader["id"];
                     uint cityId = (uint)reader["city_id"];
 
                     ICity city;
@@ -951,12 +950,12 @@ namespace Game.Database
                         }
                     }
 
-                    foreach (var unit in troopStubUnits[new Tuple<uint, byte>(cityId, id)])
+                    foreach (var unit in troopStubUnits[new Tuple<uint, ushort>(cityId, id)])
                     {
                         stub.AddUnit(unit.formationType, unit.type, unit.count);
                     }
 
-                    city.Troops.DbLoaderAdd((byte)reader["id"], stub);
+                    city.Troops.DbLoaderAdd(id, stub);
 
                     var stationType = (byte)reader["station_type"];
                     if (stationType != 0)
@@ -987,12 +986,12 @@ namespace Game.Database
 
             logger.Info("Loading troop stub templates...");
 
-            ILookup<Tuple<uint, byte>, dynamic> unitLookup;
+            ILookup<Tuple<uint, ushort>, dynamic> unitLookup;
             using (var listReader = DbManager.SelectList(TroopTemplate.DB_TABLE))
             {
                 unitLookup = ReaderToLookUp(listReader,
                                             reader => new {
-                                                TroopStubId = (byte)reader["troop_stub_id"],
+                                                TroopStubId = (ushort)reader["troop_stub_id"],
                                                 CityId = (uint)reader["city_id"],
                                                 Type = (ushort)reader["type"], 
                                                 Level = (byte)reader["level"],
@@ -1005,7 +1004,7 @@ namespace Game.Database
                                                 Carry = (ushort)reader["carry"],
                                                 NormalizedCost = (decimal)reader["normalized_cost"]                                                    
                                             },
-                                            key => new Tuple<uint, byte>(key.CityId, key.TroopStubId));
+                                            key => new Tuple<uint, ushort>(key.CityId, key.TroopStubId));
             }
 
             using (var reader = DbManager.Select(TroopTemplate.DB_TABLE))
@@ -1014,7 +1013,7 @@ namespace Game.Database
                 {
                     ICity city;
                     var cityId = (uint)reader["city_id"];
-                    var troopStubId = (byte)reader["troop_stub_id"];
+                    var troopStubId = (ushort)reader["troop_stub_id"];
 
                     if (!World.TryGetObjects(cityId, out city))
                     {
@@ -1023,7 +1022,7 @@ namespace Game.Database
                     ITroopStub stub = city.Troops[troopStubId];
                     stub.Template.DbPersisted = true;
 
-                    foreach (var unit in unitLookup[new Tuple<uint, byte>(cityId, troopStubId)])
+                    foreach (var unit in unitLookup[new Tuple<uint, ushort>(cityId, troopStubId)])
                     {
                         //First we load the BaseBattleStats and pass it into the BattleStats
                         //The BattleStats constructor will copy the basic values then we have to manually apply the values from the db
@@ -1061,9 +1060,13 @@ namespace Game.Database
                     {
                         throw new Exception("City not found");
                     }
-                    ITroopStub stub = (byte)reader["troop_stub_id"] != 0
-                                              ? city.Troops[(byte)reader["troop_stub_id"]]
+                    var troopStubid = (ushort)reader["troop_stub_id"];
+
+                    ITroopStub stub = troopStubid != 0
+                                              ? city.Troops[troopStubid]
                                               : null;
+
+
                     var obj = new TroopObject(stub)
                     {
                             X = (uint)reader["x"],
@@ -1225,7 +1228,7 @@ namespace Game.Database
                         }
 
                         ITroopStub troopStub;
-                        if (!combatGroupCity.Troops.TryGetStub((byte)listReader["troop_stub_id"], out troopStub))
+                            if (!combatGroupCity.Troops.TryGetStub((ushort)listReader["troop_stub_id"], out troopStub))
                         {
                             throw new Exception("Troop stub not found");
                         }
@@ -1389,7 +1392,7 @@ namespace Game.Database
                             throw new Exception("City not found");
                         }
 
-                        ITroopStub troopStub = troopStubCity.Troops[(byte)listReader["troop_stub_id"]];
+                            ITroopStub troopStub = troopStubCity.Troops[(ushort)listReader["troop_stub_id"]];
 
                         ICombatObject combatObj = new DefenseCombatUnit((uint)listReader["id"],
                                                                         battleManager.BattleId,

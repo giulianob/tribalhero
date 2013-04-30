@@ -43,7 +43,7 @@ namespace Game
     {
         private readonly DbLoader dbLoader;
 
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private static readonly ILogger Logger = LoggerFactory.Current.GetCurrentClassLogger();
 
         private readonly IPlayerSelectorFactory playerSelector;
 
@@ -108,22 +108,21 @@ namespace Game
 
         public EngineState State { get; private set; }
 
-        public static void AttachExceptionHandler(ILogger exceptionLogger)
+        public static void AttachExceptionHandler()
         {
-            if (!Debugger.IsAttached)
-            {
-                AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
-                    {
-                        var ex = (Exception)e.ExceptionObject;
-                        exceptionLogger.ErrorException("Unhandled exception", ex);
-                        Environment.Exit(1);
-                    };                
-            }
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) => UnhandledExceptionHandler(e);
+        }
+
+        public static void UnhandledExceptionHandler(UnhandledExceptionEventArgs e)
+        {
+            var ex = (Exception)e.ExceptionObject;
+            Logger.ErrorException("Unhandled exception", ex);
+            Environment.FailFast("Unhandled exception");
         }
 
         public void Start()
         {
-            logger.Info(@"
+            Logger.Info(@"
 _________ _______ _________ ______   _______  _       
 \__   __/(  ____ )\__   __/(  ___ \ (  ___  )( \      
    ) (   | (    )|   ) (   | (   ) )| (   ) || (      
@@ -272,15 +271,15 @@ _________ _______ _________ ______   _______  _
             State = EngineState.Stopping;
 
             systemVariablesUpdater.Pause();
-            logger.Info("Stopping TCP server...");
+            Logger.Info("Stopping TCP server...");
             server.Stop();
-            logger.Info("Stopping policy server...");
+            Logger.Info("Stopping policy server...");
             policyServer.Stop();
-            logger.Info("Waiting for scheduler to end...");
+            Logger.Info("Waiting for scheduler to end...");
             //thriftServer.Stop();
             scheduler.Pause();
             world.Regions.Unload();
-            logger.Info("Goodbye!");
+            Logger.Info("Goodbye!");
 
             State = EngineState.Stopped;
         }

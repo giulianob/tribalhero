@@ -228,6 +228,8 @@ namespace Game.Setup
 
         AssignmentTooManyInProgress = 747,
 
+        AssignmentTooFewTroops = 748,
+
         #endregion
 
         #region Stronghold

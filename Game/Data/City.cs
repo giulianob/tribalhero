@@ -1086,7 +1086,7 @@ namespace Game.Data
             var packet = new Packet(Command.TroopRemoved);
             packet.AddUInt32(Id);
             packet.AddUInt32(stub.City.Id);
-            packet.AddByte(stub.TroopId);
+            packet.AddUInt16(stub.TroopId);
             Global.Channel.Post("/CITY/" + Id, packet);
         }
 

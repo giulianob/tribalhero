@@ -80,7 +80,7 @@ namespace Game.Battle.CombatGroups
 
         public ITroopObject TroopObject { get; private set; }
 
-        public override byte TroopId
+        public override ushort TroopId
         {
             get
             {

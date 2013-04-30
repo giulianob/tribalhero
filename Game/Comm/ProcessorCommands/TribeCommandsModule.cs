@@ -261,7 +261,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 ITribe tribe;
-                Error error = procedure.CreateTribe(session.Player, name, out tribe);
+                Error error = tribeManager.CreateTribe(session.Player, name, out tribe);
                 if (error == Error.Ok)
                 {
                     var reply = new Packet(packet);

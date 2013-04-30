@@ -95,7 +95,7 @@ namespace Game.Map
             return Battles.TryGetValue(battleId, out battleManager);
         }
 
-        public bool TryGetObjects(uint cityId, byte troopStubId, out ICity city, out ITroopStub troopStub)
+        public bool TryGetObjects(uint cityId, ushort troopStubId, out ICity city, out ITroopStub troopStub)
         {
             troopStub = null;
 

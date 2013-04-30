@@ -88,7 +88,7 @@ namespace Game.Data.Troop
 
         private IStation station;
 
-        private byte troopId;
+        private ushort troopId;
 
         //private ITroopObject troopObject;
         public TroopTemplate Template { get; private set; }
@@ -123,7 +123,7 @@ namespace Game.Data.Troop
 
         public ICity City { get; set; }
 
-        public byte StationTroopId { get; set; }
+        public ushort StationTroopId { get; set; }
 
         public IStation Station
         {
@@ -177,7 +177,7 @@ namespace Game.Data.Troop
             }          
         }
 
-        public byte TroopId
+        public ushort TroopId
         {
             get
             {
@@ -323,7 +323,7 @@ namespace Game.Data.Troop
 
         #endregion
 
-        public TroopStub(byte troopId, ICity city)
+        public TroopStub(ushort troopId, ICity city)
         {
             City = city;
             this.troopId = troopId;
@@ -373,9 +373,8 @@ namespace Game.Data.Troop
         {
             get
             {
-                return new[]
-                {
-                        new DbColumn("id", troopId, DbType.UInt32), 
+                return new[] {
+                        new DbColumn("id", troopId, DbType.UInt16), 
                         new DbColumn("city_id", City.Id, DbType.UInt32)
                 };
             }
@@ -412,7 +411,8 @@ namespace Game.Data.Troop
             {
                 return new[]
                 {
-                        new DbColumn("formation_type", DbType.Byte), new DbColumn("type", DbType.UInt16),
+                        new DbColumn("formation_type", DbType.Byte), 
+                        new DbColumn("type", DbType.UInt16),
                         new DbColumn("count", DbType.UInt16)
                 };
             }

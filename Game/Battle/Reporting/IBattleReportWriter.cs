@@ -26,7 +26,7 @@ namespace Game.Battle.Reporting
                                  Resource lootResource,
                                  Resource bonusResource);
 
-        void SnapBattleAccess(uint battleId, BattleOwner owner, byte troopId, uint groupId, bool isAttacker);
+        void SnapBattleAccess(uint battleId, BattleOwner owner, ushort troopId, uint groupId, bool isAttacker);
 
         void SnapTribeToBattle(uint battleId, uint tribeId, bool isAttacker);
     }

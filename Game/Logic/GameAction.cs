@@ -83,6 +83,8 @@ namespace Game.Logic
 
         ResourceGatherActive = 311,
 
+        ResourceRateUpdatePassive = 312,
+
         TechnologyCreatePassive = 400,
 
         TechnologyDeletePassive = 401,
@@ -92,6 +94,8 @@ namespace Game.Logic
         CityPassive = 502,
 
         CityRadiusChangePassive = 503,
+
+        CityResourceCapUpdatePassive = 504,
 
         CityCreatePassive = 505,
 

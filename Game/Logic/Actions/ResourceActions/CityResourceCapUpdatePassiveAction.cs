@@ -1,4 +1,4 @@
-#region
+﻿#region
 
 using System;
 using Game.Data;
@@ -9,7 +9,7 @@ using Game.Setup;
 
 namespace Game.Logic.Actions
 {
-    public class TechnologyDeletePassiveAction : PassiveAction, IScriptable
+    public class CityResourceCapUpdatePassiveAction : PassiveAction, IScriptable
     {
         private IStructure obj;
 
@@ -17,7 +17,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.TechnologyDeletePassive;
+                return ActionType.CityResourceCapUpdatePassive;
             }
         }
 
@@ -31,13 +31,12 @@ namespace Game.Logic.Actions
 
         #region IScriptable Members
 
-        public void ScriptInit(IGameObject obj, string[] parms)
+        public void ScriptInit(IGameObject gameObject, string[] parms)
         {
-            if ((this.obj = obj as IStructure) == null)
+            if ((obj = gameObject as IStructure) == null)
             {
                 throw new Exception();
             }
-
             Execute();
         }
 
@@ -45,30 +44,22 @@ namespace Game.Logic.Actions
 
         public override Error Validate(string[] parms)
         {
-            return Error.Ok;
+            return Error.ActionNotFound;
         }
 
         public override Error Execute()
         {
-            if (obj == null)
-            {
-                return Error.ObjectNotFound;
-            }
-
-            obj.Technologies.BeginUpdate();
-            obj.Technologies.Clear();
-            obj.Technologies.EndUpdate();
-            Procedure.Current.OnTechnologyChange(obj);
-            StateChange(ActionState.Completed);
-
+            obj.City.BeginUpdate();
+            Procedure.Current.SetResourceCap(obj.City);
+            obj.City.EndUpdate();
             return Error.Ok;
         }
 
-        public override void WorkerRemoved(bool wasKilled)
+        public override void UserCancelled()
         {
         }
 
-        public override void UserCancelled()
+        public override void WorkerRemoved(bool wasKilled)
         {
         }
     }

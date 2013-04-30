@@ -1,12 +1,18 @@
 #region
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Common;
 using Game.Data;
 using Game.Logic;
+using Game.Logic.Conditons;
+using Game.Logic.Triggers;
+using Game.Logic.Triggers.Events;
 using Game.Util;
+using Ninject;
 using Ninject.Extensions.Logging;
 
 #endregion
@@ -26,22 +32,23 @@ namespace Game.Setup
         OnConvert = 5,
     }
 
-    class InitRecord
-    {
-        public InitCondition Condition { get; set; }
-
-        public string[] Parms { get; set; }
-
-        public Type Type { get; set; }
-
-        public string NlsDescription { get; set; }
-    }
-
     public class InitFactory
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ICityTriggerManager cityTriggerManager;
 
-        private readonly Dictionary<int, List<InitRecord>> dict = new Dictionary<int, List<InitRecord>>();
+        private readonly IDynamicActionFactory dynamicActionFactory;
+
+        private readonly IKernel kernel;
+
+        private readonly ICityEventFactory cityEventFactory;
+
+        public InitFactory(ICityTriggerManager cityTriggerManager, IDynamicActionFactory dynamicActionFactory, IKernel kernel, ICityEventFactory cityEventFactory)
+        {
+            this.cityTriggerManager = cityTriggerManager;
+            this.dynamicActionFactory = dynamicActionFactory;
+            this.kernel = kernel;
+            this.cityEventFactory = cityEventFactory;
+        }
 
         public void Init(string filename)
         {
@@ -60,61 +67,49 @@ namespace Game.Setup
                     {
                         continue;
                     }
-                    var record = new InitRecord
-                    {
-                            Type = Type.GetType("Game.Logic.Actions." + (toks[col["Action"]] + "_passive_action").ToCamelCase(), true),
-                            Condition = (InitCondition)Enum.Parse(typeof(InitCondition), toks[col["Condition"]].ToCamelCase(), true),
-                            Parms = new string[toks.Length - 4],
-                            NlsDescription = toks[col["NlsDesc"]],
-                    };
+                    
+                    var conditionType = Type.GetType("Game.Logic.Triggers.Conditions." + (toks[col["Condition"]] + "_condition").ToCamelCase(), true);
+                    var condition = (IDynamicCondition)kernel.Get(conditionType);
 
-                    for (int i = 4; i <= 8; ++i)
+                    string[] conditionParms = new string[5];
+                    for (int i = 0; i <= 4; ++i)
                     {
-                        record.Parms[i - 4] = toks[i].Contains("=") ? toks[i].Split('=')[1] : toks[i];
+                        conditionParms[i] = toks[i + 1].Contains("=") ? toks[i + 1].Split('=')[1] : toks[i + 1];
+                    }
+                    condition.SetParameters(conditionParms);
+
+                    var actionType = Type.GetType("Game.Logic.Actions." + (toks[col["Action"]] + "_passive_action").ToCamelCase(), true);
+                    var actionNlsDescription = toks[col["NlsDesc"]];
+
+                    var action = dynamicActionFactory.CreateDynamicAction(actionType, actionNlsDescription);
+                             
+                    for (int i = 0; i <= 4; ++i)
+                    {
+                        action.Parms[i] = toks[i + 7].Contains("=") ? toks[i + 7].Split('=')[1] : toks[i + 7];
                     }
 
-                    logger.Info(string.Format("{0}:{1}", int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]]), record.Type));
-
-                    int index = int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]]);
-                    List<InitRecord> tmp;
-                    if (!dict.TryGetValue(index, out tmp))
-                    {
-                        tmp = new List<InitRecord>();
-                        dict[index] = tmp;
-                    }
-                    tmp.Add(record);
+                    cityTriggerManager.AddTrigger(condition, action);
                 }
             }
         }
-
-        public void InitGameObject(InitCondition condition, IGameObject obj, int type, int lvl)
+        
+        public void InitGameObject(InitCondition condition, IStructure structure, ushort type, byte lvl)
         {
-            if (dict == null)
+            switch (condition)
             {
-                return;
+                case InitCondition.OnInit:
+                    cityTriggerManager.Process(cityEventFactory.CreateStructureInitEvent(structure, type, lvl));
+                    break;
+                case InitCondition.OnUpgrade:
+                    cityTriggerManager.Process(cityEventFactory.CreateStructureUpgradeEvent(structure, type, lvl));
+                    break;
+                case InitCondition.OnDowngrade:
+                    cityTriggerManager.Process(cityEventFactory.CreateStructureDowngradeEvent(structure, type, lvl));
+                    break;
+                case InitCondition.OnConvert:
+                    cityTriggerManager.Process(cityEventFactory.CreateStructureConvertEvent(structure, type, lvl));
+                    break;
             }
-            List<InitRecord> tmp;
-            if (dict.TryGetValue(type * 100 + lvl, out tmp))
-            {
-                foreach (var each in tmp)
-                {
-                    if (each.Condition != condition)
-                    {
-                        continue;
-                    }
-
-                    var action = (IScriptable)Activator.CreateInstance(each.Type, new object[] {});
-
-                    // TODO: This needs to be more generic to support more types of actions. Since this is init and all init actions are passive, then this is okay for now.
-                    if (action is ScheduledPassiveAction)
-                    {
-                        ((ScheduledPassiveAction)action).NlsDescription = each.NlsDescription;
-                    }
-
-                    action.ScriptInit(obj, each.Parms);
-                }
-            }
-            return;
         }
     }
 }

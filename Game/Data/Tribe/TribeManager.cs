@@ -20,18 +20,21 @@ namespace Game.Data.Tribe
     {
         private readonly IActionFactory actionFactory;
 
+        private readonly ITribeFactory tribeFactory;
+
         private readonly IDbManager dbManager;
 
         private readonly IStrongholdManager strongholdManager;
 
         private readonly LargeIdGenerator tribeIdGen = new LargeIdGenerator(Config.tribe_id_max, Config.tribe_id_min);
 
-        public TribeManager(IDbManager dbManager, IStrongholdManager strongholdManager, IActionFactory actionFactory)
+        public TribeManager(IDbManager dbManager, IStrongholdManager strongholdManager, IActionFactory actionFactory, ITribeFactory tribeFactory)
         {
             Tribes = new ConcurrentDictionary<uint, ITribe>();
             this.dbManager = dbManager;
             this.strongholdManager = strongholdManager;
             this.actionFactory = actionFactory;
+            this.tribeFactory = tribeFactory;
         }
 
         private ConcurrentDictionary<uint, ITribe> Tribes { get; set; }
@@ -180,6 +183,42 @@ namespace Game.Data.Tribe
                                             });
 
             return incomingTroops.OrderBy(i => i.EndTime);
+        }
+
+        public Error CreateTribe(IPlayer player, string name, out ITribe tribe)
+        {
+            tribe = null;
+
+            if (player.Tribesman != null)
+            {
+                return Error.TribesmanAlreadyInTribe;
+            }
+
+            if (TribeNameTaken(name))
+            {
+                return Error.TribeAlreadyExists;
+            }
+
+            if (!Tribe.IsNameValid(name))
+            {
+                return Error.TribeNameInvalid;
+            }
+
+            tribe = tribeFactory.CreateTribe(player, name);
+
+            tribe.CreateRank(0, "Chief", TribePermission.All);
+            tribe.CreateRank(1, "Elder", TribePermission.Invite | TribePermission.Kick | TribePermission.Repair | TribePermission.AssignmentCreate);
+            tribe.CreateRank(2, "Protector", TribePermission.Repair | TribePermission.AssignmentCreate);
+            tribe.CreateRank(3, "Aggressor", TribePermission.AssignmentCreate);
+            tribe.CreateRank(4, "Tribesmen", TribePermission.None);
+
+            Add(tribe);
+
+            var tribesman = new Tribesman(tribe, player, tribe.ChiefRank);
+
+            tribe.AddTribesman(tribesman);
+
+            return Error.Ok;
         }
 
         private void SubscribeEvents(ITribe tribe)

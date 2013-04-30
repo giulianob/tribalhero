@@ -220,6 +220,11 @@ namespace Game.Logic.Formulas
                         .Sum(x => x.Lvl);
         }
 
+        public virtual bool IsWeaponExportOverLimit(int weaponExport, int currentGold)
+        {
+            return weaponExport * 2000 < currentGold;
+        }
+
         public virtual int GetWeaponExportLaborProduce(int weaponExport, int labor, int currentGold)
         {
             var isOverLimit = weaponExport * 2000 < currentGold;

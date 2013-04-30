@@ -34,7 +34,7 @@ namespace Game.Battle.CombatGroups
 
         public virtual uint Id { get; private set; }
 
-        public abstract byte TroopId { get; }
+        public abstract ushort TroopId { get; }
 
         public abstract Resource GroupLoot { get; }
 

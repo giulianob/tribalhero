@@ -60,7 +60,7 @@ namespace Game.Battle.CombatGroups
 
         #endregion
 
-        public override byte TroopId
+        public override ushort TroopId
         {
             get
             {

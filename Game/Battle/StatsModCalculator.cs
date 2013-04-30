@@ -163,9 +163,9 @@ namespace Game.Battle
 
     public class BattleStatsModCalculator
     {
-        private readonly BaseBattleStats baseStats;
+        private readonly IBaseBattleStats baseStats;
 
-        public BattleStatsModCalculator(BaseBattleStats baseStats)
+        public BattleStatsModCalculator(IBaseBattleStats baseStats)
         {
             MaxHp = new DoubleStatsModCalculator((double)baseStats.MaxHp);
             Atk = new AtkDmgModCalculator((double)baseStats.Atk);

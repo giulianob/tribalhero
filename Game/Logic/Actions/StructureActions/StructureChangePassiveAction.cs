@@ -17,6 +17,14 @@ namespace Game.Logic.Actions
 {
     public class StructureChangePassiveAction : ScheduledPassiveAction, IScriptable
     {
+        private readonly Formula formula;
+
+        private readonly IWorld world;
+
+        private readonly ILocker locker;
+
+        private readonly Procedure procedure;
+
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
         private uint cityId;
@@ -29,17 +37,33 @@ namespace Game.Logic.Actions
 
         private ushort type;
 
-        public StructureChangePassiveAction()
+        public StructureChangePassiveAction(Formula formula, IWorld world, ILocker locker, Procedure procedure)
         {
+            this.formula = formula;
+            this.world = world;
+            this.locker = locker;
+            this.procedure = procedure;
         }
 
-        public StructureChangePassiveAction(uint cityId, uint objectId, int seconds, ushort newType, byte newLvl)
+        public StructureChangePassiveAction(uint cityId,
+                                            uint objectId,
+                                            int seconds,
+                                            ushort newType,
+                                            byte newLvl,
+                                            Formula formula,
+                                            IWorld world,
+                                            ILocker locker,
+                                            Procedure procedure)
         {
             this.cityId = cityId;
             this.objectId = objectId;
             ts = TimeSpan.FromSeconds(seconds);
             type = newType;
             lvl = newLvl;
+            this.formula = formula;
+            this.world = world;
+            this.locker = locker;
+            this.procedure = procedure;
         }
 
         public StructureChangePassiveAction(uint id,
@@ -48,9 +72,17 @@ namespace Game.Logic.Actions
                                             DateTime endTime,
                                             bool isVisible,
                                             string nlsDescription,
-                                            Dictionary<string, string> properties)
+                                            Dictionary<string, string> properties,
+                                            Formula formula,
+                                            IWorld world,
+                                            ILocker locker,
+                                            Procedure procedure)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
+            this.formula = formula;
+            this.world = world;
+            this.locker = locker;
+            this.procedure = procedure;
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
             type = ushort.Parse(properties["type"]);
@@ -93,11 +125,11 @@ namespace Game.Logic.Actions
             cityId = obj.City.Id;
             objectId = obj.ObjectId;
 
-            ts = Formula.Current.ReadCsvTimeFormat(parms[0]);
+            ts = formula.ReadCsvTimeFormat(parms[0]);
             type = ushort.Parse(parms[1]);
             lvl = byte.Parse(parms[2]);
 
-            if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
+            if (!world.TryGetObjects(cityId, objectId, out city, out structure))
             {
                 return;
             }
@@ -113,7 +145,7 @@ namespace Game.Logic.Actions
             IStructure structure;
 
             // Block structure
-            using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
+            using (locker.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
                 {
@@ -133,7 +165,7 @@ namespace Game.Logic.Actions
 
             structure.City.Worker.Remove(structure, new GameAction[] {this});
 
-            using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
+            using (locker.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
                 {
@@ -150,7 +182,7 @@ namespace Game.Logic.Actions
                 structure.City.BeginUpdate();
                 structure.BeginUpdate();
                 structure.IsBlocked = 0;
-                Procedure.Current.StructureChange(structure, type, lvl);
+                procedure.StructureChange(structure, type, lvl);
                 structure.EndUpdate();
                 structure.City.EndUpdate();
 
@@ -171,7 +203,7 @@ namespace Game.Logic.Actions
             endTime = SystemClock.Now.AddSeconds(CalculateTime(ts.TotalSeconds));
             BeginTime = SystemClock.Now;
 
-            if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
+            if (!world.TryGetObjects(cityId, objectId, out city, out structure))
             {
                 return Error.ObjectNotFound;
             }
@@ -187,7 +219,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
             IStructure structure;
-            using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
+            using (locker.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
                 {

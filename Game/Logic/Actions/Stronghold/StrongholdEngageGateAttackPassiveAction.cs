@@ -21,8 +21,6 @@ namespace Game.Logic.Actions
     {
         private readonly BattleFormulas battleFormula;
 
-        private readonly BattleProcedure battleProcedure;
-
         private readonly StrongholdBattleProcedure strongholdBattleProcedure;
 
         private readonly uint cityId;
@@ -44,7 +42,6 @@ namespace Game.Logic.Actions
                                                        uint targetStrongholdId,
                                                        BattleFormulas battleFormula,
                                                        IGameObjectLocator gameObjectLocator,
-                                                       BattleProcedure battleProcedure,
                                                        StrongholdBattleProcedure strongholdBattleProcedure,
                                                        IDbManager dbManager,
                                                        IStaminaMonitorFactory staminaMonitorFactory)
@@ -54,7 +51,6 @@ namespace Game.Logic.Actions
             this.targetStrongholdId = targetStrongholdId;
             this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
-            this.battleProcedure = battleProcedure;
             this.strongholdBattleProcedure = strongholdBattleProcedure;
             this.dbManager = dbManager;
             this.staminaMonitorFactory = staminaMonitorFactory;
@@ -65,7 +61,6 @@ namespace Game.Logic.Actions
                                                        IDictionary<string, string> properties,
                                                        BattleFormulas battleFormula,
                                                        IGameObjectLocator gameObjectLocator,
-                                                       BattleProcedure battleProcedure,
                                                        StrongholdBattleProcedure strongholdBattleProcedure,
                                                        IDbManager dbManager,
                                                        IStaminaMonitorFactory staminaMonitorFactory)
@@ -73,7 +68,6 @@ namespace Game.Logic.Actions
         {
             this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
-            this.battleProcedure = battleProcedure;
             this.strongholdBattleProcedure = strongholdBattleProcedure;
             this.dbManager = dbManager;
             this.staminaMonitorFactory = staminaMonitorFactory;

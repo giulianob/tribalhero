@@ -6,6 +6,7 @@ using System.Linq;
 using Game.Data.Events;
 using Game.Data.Tribe;
 using Game.Data.Troop;
+using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Map;
 using Game.Module;
@@ -15,7 +16,7 @@ using Persistance;
 
 namespace Game.Data.Stronghold
 {
-    class StrongholdManager : IStrongholdManager
+    public class StrongholdManager : IStrongholdManager
     {
         private readonly Chat chat;
 
@@ -23,7 +24,9 @@ namespace Game.Data.Stronghold
 
         private readonly Formula formula;
 
-        private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(Config.stronghold_id_max, Config.stronghold_id_min);
+        private readonly IActionFactory actionFactory;
+
+        private readonly LargeIdGenerator idGenerator;
 
         private readonly IRegionManager regionManager;
 
@@ -33,8 +36,7 @@ namespace Game.Data.Stronghold
 
         private readonly IStrongholdFactory strongholdFactory;
 
-        private readonly ConcurrentDictionary<uint, IStronghold> strongholds =
-                new ConcurrentDictionary<uint, IStronghold>();
+        private readonly ConcurrentDictionary<uint, IStronghold> strongholds;
 
         private ILookup<ITribe, IStronghold> gateOpenToIndex;
 
@@ -51,14 +53,19 @@ namespace Game.Data.Stronghold
                                  IDbManager dbManager,
                                  ISimpleStubGeneratorFactory simpleStubGeneratorFactory,
                                  Formula formula,
-                                 ICityManager cityManager)
+                                 ICityManager cityManager,
+                                 IActionFactory actionFactory)
         {
+            idGenerator = new LargeIdGenerator(Config.stronghold_id_max, Config.stronghold_id_min);
+            strongholds = new ConcurrentDictionary<uint, IStronghold>();
+
             this.strongholdConfigurator = strongholdConfigurator;
             this.strongholdFactory = strongholdFactory;
             this.regionManager = regionManager;
             this.chat = chat;
             this.dbManager = dbManager;            
             this.formula = formula;
+            this.actionFactory = actionFactory;
 
             cityManager.CityAdded += CityManagerCityAdded;
             simpleStubGenerator = simpleStubGeneratorFactory.CreateSimpleStubGenerator(formula.StrongholdUnitRatio(), formula.StrongholdUnitType());
@@ -129,7 +136,7 @@ namespace Game.Data.Stronghold
                     break;
                 }
 
-                IStronghold stronghold = strongholdFactory.CreateStronghold((uint)idGenerator.GetNext(),
+                IStronghold stronghold = strongholdFactory.CreateStronghold(idGenerator.GetNext(),
                                                                             name,
                                                                             level,
                                                                             x,
@@ -162,7 +169,10 @@ namespace Game.Data.Stronghold
             ITribe oldTribe = stronghold.Tribe;
             stronghold.BeginUpdate();
             if (stronghold.StrongholdState == StrongholdState.Occupied)
+            {
                 stronghold.BonusDays = ((decimal)SystemClock.Now.Subtract(stronghold.DateOccupied).TotalDays + stronghold.BonusDays) * .75m;
+            }
+
             stronghold.StrongholdState = StrongholdState.Occupied;
             stronghold.Tribe = tribe;
             stronghold.GateOpenTo = null;
@@ -170,6 +180,8 @@ namespace Game.Data.Stronghold
             stronghold.DateOccupied = DateTime.UtcNow;
             stronghold.EndUpdate();
             MarkIndexDirty();
+
+            RetreatUnits(stronghold);
 
             if (oldTribe != null)
             {
@@ -349,6 +361,27 @@ namespace Game.Data.Stronghold
                 {
                     neutralStrongholds++;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Retreats all the stubs in the stronghold that no longer belong there if the stronghold is not in battle.
+        /// </summary>
+        public void RetreatUnits(IStronghold stronghold)
+        {
+            if (stronghold.MainBattle != null)
+            {
+                return;
+            }
+
+            var stationedStubs = stronghold.Troops.StationedHere().Where(stub =>
+                                                                         (!stub.City.Owner.IsInTribe || stub.City.Owner.Tribesman.Tribe != stronghold.Tribe) &&
+                                                                         stub.State == TroopState.Stationed).ToList();
+
+            foreach (var stub in stationedStubs)
+            {
+                var retreatAction = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
+                stub.City.Worker.DoPassive(stub.City, retreatAction, true);
             }
         }
     }

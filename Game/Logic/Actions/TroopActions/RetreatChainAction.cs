@@ -20,11 +20,11 @@ namespace Game.Logic.Actions
 
         private readonly uint cityId;
 
-        private readonly byte stubId;
+        private readonly ushort stubId;
 
         private uint troopObjectId;
 
-        public RetreatChainAction(uint cityId, byte stubId, IActionFactory actionFactory)
+        public RetreatChainAction(uint cityId, ushort stubId, IActionFactory actionFactory)
         {
             this.cityId = cityId;
             this.stubId = stubId;
@@ -65,9 +65,11 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return
-                        XmlSerializer.Serialize(new[]
-                        {new XmlKvPair("city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId)});
+                return XmlSerializer.Serialize(new[]
+                {
+                        new XmlKvPair("city_id", cityId), 
+                        new XmlKvPair("troop_object_id", troopObjectId)
+                });
             }
         }
 

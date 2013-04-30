@@ -87,9 +87,9 @@ namespace Game.Data
 
         private readonly Dictionary<uint, ITroopObject> troopobjects = new Dictionary<uint, ITroopObject>();
 
-        private readonly LargeIdGenerator objectIdGen = new LargeIdGenerator(uint.MaxValue);
-
         private decimal alignmentPoint;
+
+        private readonly LargeIdGenerator objectIdGen = new LargeIdGenerator(uint.MaxValue);
 
         private int attackPoint;
 
@@ -406,6 +406,112 @@ namespace Game.Data
             }
         }
 
+        #region Object Management
+
+        public ITroopObject GetTroop(uint objectId)
+        {
+            return troopobjects[objectId];
+        }
+
+        public bool TryGetObject(uint objectId, out IGameObject obj)
+        {
+            IStructure structure;
+            if (structures.TryGetValue(objectId, out structure))
+            {
+                obj = structure;
+                return true;
+            }
+
+            ITroopObject troop;
+            if (troopobjects.TryGetValue(objectId, out troop))
+            {
+                obj = troop;
+                return true;
+            }
+
+            obj = null;
+            return false;
+        }
+
+        public bool TryGetStructure(uint objectId, out IStructure structure)
+        {
+            return structures.TryGetValue(objectId, out structure);
+        }
+
+        public bool TryGetTroop(uint objectId, out ITroopObject troop)
+        {
+            return troopobjects.TryGetValue(objectId, out troop);
+        }
+
+        public bool Add(uint objId, ITroopObject troop, bool save)
+        {
+            lock (objLock)
+            {
+                if (troopobjects.ContainsKey(objId))
+                {
+                    return false;
+                }
+
+                troop.City = this;
+
+                troopobjects.Add(objId, troop);
+
+                objectIdGen.Set(objId);
+
+                if (save)
+                {
+                    dbManager.Save(troop);
+                }
+
+                troop.ObjectUpdated += OnObjectUpdated;
+
+                ObjectAdded(this, new GameObjectArgs { Object = troop });
+            }
+
+            return true;
+        }
+
+        public bool Add(ITroopObject troop)
+        {
+            lock (objLock)
+            {
+                troop.ObjectId = objectIdGen.GetNext();
+                return Add(troop.ObjectId, troop, true);
+            }
+        }
+
+        public bool Add(uint objId, IStructure structure, bool save)
+        {
+            lock (objLock)
+            {
+                if (structures.ContainsKey(objId))
+                {
+                    return false;
+                }
+
+                structure.City = this;
+
+                structures.Add(objId, structure);
+
+                objectIdGen.Set(objId);
+
+                if (save)
+                {
+                    dbManager.Save(structure);
+                }
+                
+                structure.ObjectUpdated += OnObjectUpdated;
+                structure.Technologies.TechnologyCleared += OnTechnologyCleared;
+                structure.Technologies.TechnologyAdded += OnTechnologyAdded;
+                structure.Technologies.TechnologyRemoved += OnTechnologyRemoved;
+                structure.Technologies.TechnologyUpgraded += OnTechnologyUpgraded;
+
+                ObjectAdded(this, new GameObjectArgs { Object = structure });
+            }
+
+            return true;
+        }
+
         #endregion
 
         public City(uint id,
@@ -482,137 +588,6 @@ namespace Game.Data
             #endregion
         }
 
-        #region Object Management
-
-        public ITroopObject GetTroop(uint objectId)
-        {
-            return troopobjects[objectId];
-        }
-
-        public bool TryGetObject(uint objectId, out IGameObject obj)
-        {
-            IStructure structure;
-            if (structures.TryGetValue(objectId, out structure))
-            {
-                obj = structure;
-                return true;
-            }
-
-            ITroopObject troop;
-            if (troopobjects.TryGetValue(objectId, out troop))
-            {
-                obj = troop;
-                return true;
-            }
-
-            obj = null;
-            return false;
-        }
-
-        public bool TryGetStructure(uint objectId, out IStructure structure)
-        {
-            return structures.TryGetValue(objectId, out structure);
-        }
-
-        public bool TryGetTroop(uint objectId, out ITroopObject troop)
-        {
-            return troopobjects.TryGetValue(objectId, out troop);
-        }
-
-        public bool Add(uint objId, ITroopObject troop, bool save)
-        {
-            lock (objLock)
-            {
-                if (troopobjects.ContainsKey(objId))
-                {
-                    return false;
-                }
-
-                troop.City = this;
-
-                troopobjects.Add(objId, troop);
-
-                objectIdGen.Set(objId);
-
-                if (save)
-                {
-                    dbManager.Save(troop);
-                }
-
-                troop.ObjectUpdated += OnObjectUpdated;
-
-                ObjectAdded(this, new GameObjectArgs { Object = troop });
-            }
-
-            return true;
-        }
-
-        private void OnObjectUpdated(object sender, SimpleGameObjectArgs e)
-        {
-            ObjectUpdated(this, new GameObjectArgs {Object = (IGameObject)e.SimpleGameObject, OriginalX = e.OriginalX, OriginalY = e.OriginalY});
-        }
-
-        public bool Add(ITroopObject troop)
-        {
-            lock (objLock)
-            {
-                troop.ObjectId = objectIdGen.GetNext();
-                return Add(troop.ObjectId, troop, true);
-            }
-        }
-
-        public bool Add(uint objId, IStructure structure, bool save)
-        {
-            lock (objLock)
-            {
-                if (structures.ContainsKey(objId))
-                {
-                    return false;
-                }
-
-                structure.City = this;
-
-                structures.Add(objId, structure);
-
-                objectIdGen.Set(objId);
-
-                if (save)
-                {
-                    dbManager.Save(structure);
-                }
-                
-                structure.ObjectUpdated += OnObjectUpdated;
-                structure.Technologies.TechnologyCleared += OnTechnologyCleared;
-                structure.Technologies.TechnologyAdded += OnTechnologyAdded;
-                structure.Technologies.TechnologyRemoved += OnTechnologyRemoved;
-                structure.Technologies.TechnologyUpgraded += OnTechnologyUpgraded;
-
-                ObjectAdded(this, new GameObjectArgs { Object = structure });
-            }
-
-            return true;
-        }
-
-        private void OnTechnologyUpgraded(Technology tech)
-        {
-            TechnologyUpgraded(this, new TechnologyEventArgs {TechnologyManager = Technologies, Technology = tech});
-        }
-
-        private void OnTechnologyRemoved(Technology tech)
-        {
-            TechnologyRemoved(this, new TechnologyEventArgs {TechnologyManager = Technologies, Technology = tech});
-        }
-
-        private void OnTechnologyAdded(Technology tech)
-        {
-            TechnologyAdded(this, new TechnologyEventArgs {TechnologyManager = Technologies, Technology = tech});
-        }
-
-        private void OnTechnologyCleared(ITechnologyManager manager)
-        {
-            TechnologyCleared(this, new TechnologyEventArgs {TechnologyManager = manager});
-        }
-
         public bool ScheduleRemove(ITroopObject obj, bool wasKilled)
         {
             lock (objLock)
@@ -651,6 +626,79 @@ namespace Game.Data
                 var removeAction = actionFactory.CreateObjectRemovePassiveAction(Id, obj.ObjectId, wasKilled, actions);
                 return Worker.DoPassive(this, removeAction, false) == Error.Ok;
             }
+        }
+
+        public List<IGameObject> GetInRange(uint x, uint y, uint inRadius)
+        {
+            return this.Where(structure => structure.TileDistance(x, y) <= inRadius).Cast<IGameObject>().ToList();
+        }
+
+        #endregion
+
+        #region Updates
+
+        public bool IsUpdating { get; private set; }
+
+        public DeletedState Deleted { get; set; }
+
+        public void BeginUpdate()
+        {
+            if (IsUpdating)
+            {
+                throw new Exception("Nesting beginupdate");
+            }
+            IsUpdating = true;
+        }
+
+        private void OnObjectUpdated(object sender, SimpleGameObjectArgs e)
+        {
+            ObjectUpdated(this, new GameObjectArgs {Object = (IGameObject)e.SimpleGameObject, OriginalX = e.OriginalX, OriginalY = e.OriginalY});
+        }
+
+        public void EndUpdate()
+        {
+            if (!IsUpdating)
+            {
+                throw new Exception("Called EndUpdate without first calling BeginUpdate");
+            }
+
+            dbManager.Save(this);
+            IsUpdating = false;
+        }
+
+        private void CheckUpdateMode()
+        {
+            if (!Global.Current.FireEvents || Id == 0 || !DbPersisted)
+            {
+                return;
+            }
+
+            if (!IsUpdating)
+            {
+                throw new Exception("Changed state outside of begin/end update block");
+            }
+
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
+        }
+
+        private void OnTechnologyUpgraded(Technology tech)
+        {
+            TechnologyUpgraded(this, new TechnologyEventArgs {TechnologyManager = Technologies, Technology = tech});
+        }
+
+        private void OnTechnologyRemoved(Technology tech)
+        {
+            TechnologyRemoved(this, new TechnologyEventArgs {TechnologyManager = Technologies, Technology = tech});
+        }
+
+        private void OnTechnologyAdded(Technology tech)
+        {
+            TechnologyAdded(this, new TechnologyEventArgs {TechnologyManager = Technologies, Technology = tech});
+        }
+
+        private void OnTechnologyCleared(ITechnologyManager manager)
+        {
+            TechnologyCleared(this, new TechnologyEventArgs {TechnologyManager = manager});
         }
 
         /// <summary>
@@ -697,54 +745,6 @@ namespace Game.Data
 
                 ObjectRemoved(this, new GameObjectArgs { Object = troop });
             }
-        }
-
-        public List<IGameObject> GetInRange(uint x, uint y, uint inRadius)
-        {
-            return this.Where(structure => structure.TileDistance(x, y) <= inRadius).Cast<IGameObject>().ToList();
-        }
-
-        #endregion
-
-        #region Updates
-
-        public bool IsUpdating { get; private set; }
-
-        public DeletedState Deleted { get; set; }
-
-        public void BeginUpdate()
-        {
-            if (IsUpdating)
-            {
-                throw new Exception("Nesting beginupdate");
-            }
-            IsUpdating = true;
-        }
-
-        public void EndUpdate()
-        {
-            if (!IsUpdating)
-            {
-                throw new Exception("Called EndUpdate without first calling BeginUpdate");
-            }
-
-            dbManager.Save(this);
-            IsUpdating = false;
-        }
-
-        private void CheckUpdateMode()
-        {
-            if (!Global.Current.FireEvents || Id == 0 || !DbPersisted)
-            {
-                return;
-            }
-
-            if (!IsUpdating)
-            {
-                throw new Exception("Changed state outside of begin/end update block");
-            }
-
-            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
         }
 
         public ITroopStub CreateTroopStub()

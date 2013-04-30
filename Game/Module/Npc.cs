@@ -9,6 +9,7 @@ using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Map;
+using Game.Map.LocationStrategies;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -191,7 +192,7 @@ namespace Game.Module
                                                 (ushort)
                                                 (city.Resource.FindMaxAffordable(costPerUnit) * intelligence.military));
 
-                        var action = new UnitTrainActiveAction(city.Id, structure.ObjectId, unitType, count);
+                        var action = Ioc.Kernel.Get<IActionFactory>().CreateUnitTrainActiveAction(city.Id, structure.ObjectId, unitType, count);
                         if (city.Worker.DoActive(workerType, structure, action, structure.Technologies) == Error.Ok)
                         {
                             //logger.Info(string.Format("{0} training {1} units of type {2} at ({3},{4})", city.Name, count, unitType, structure.X, structure.Y));
@@ -341,7 +342,11 @@ namespace Game.Module
                                         0);
                     
                     IStructure structure;
-                    if (!Randomizer.MainBuilding(city, out structure, Formula.Current.GetInitialCityRadius(), 2))
+                    Error error = Randomizer.MainBuilding(city,
+                                                          new CityTileNextAvailableLocationStrategy(Ioc.Kernel.Get<MapFactory>(), Ioc.Kernel.Get<Formula>()),
+                                                          2,
+                                                          out structure);
+                    if (error != Error.Ok)
                     {
                         logger.Info(npc.Name);
                         break;

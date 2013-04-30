@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
@@ -219,6 +219,7 @@ namespace Game.Logic.Actions
                 world.Cities.Add(newCity);                
                 initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
                 structure.EndUpdate();                
+                
 
                 var defaultTroop = newCity.CreateTroopStub();
                 defaultTroop.BeginUpdate();

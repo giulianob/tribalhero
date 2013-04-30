@@ -138,6 +138,10 @@ namespace Game.Setup
 
         RoadDestroyUniquePath = 422,
 
+        FriendMapFull = 423,
+
+        PlayerHashNotFound = 424,
+
         #endregion
 
         #region Troop Errors
@@ -188,6 +192,10 @@ namespace Game.Setup
 
         TribeDescriptionTooLong = 708,
 
+        TribeRankNotFound = 709,
+
+        TribeRankInvalidName = 710,
+
         TribesmanNotFound = 721,
 
         TribesmanAlreadyExists = 722,
@@ -204,9 +212,7 @@ namespace Game.Setup
 
         TribesmanNotPartOfTribe = 728,
 
-        TribesmanRankingTooLow = 729,
-
-        TribesmanRankingTooHigh = 730,
+        TribeCannotRejoinYet = 729,
 
         AssignmentDone = 741,
 
@@ -221,6 +227,8 @@ namespace Game.Setup
         AssignmentNotEligible = 746,
 
         AssignmentTooManyInProgress = 747,
+
+        AssignmentTooFewTroops = 748,
 
         #endregion
 

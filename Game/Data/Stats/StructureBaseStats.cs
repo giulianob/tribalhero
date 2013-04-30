@@ -6,7 +6,7 @@ using Game.Setup;
 
 namespace Game.Data.Stats
 {
-    public class StructureBaseStats
+    public class StructureBaseStats : IStructureBaseStats
     {
         public StructureBaseStats(BaseBattleStats baseBattleStats)
         {
@@ -54,7 +54,7 @@ namespace Game.Data.Stats
 
         public virtual byte Radius { get; private set; }
 
-        public virtual BaseBattleStats Battle { get; private set; }
+        public virtual IBaseBattleStats Battle { get; private set; }
 
         public virtual int StructureHash
         {

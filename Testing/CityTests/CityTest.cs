@@ -27,7 +27,7 @@ namespace Testing.CityTests
         [Fact]
         public void TestStartWithNumber()
         {
-            Game.Data.City.IsNameValid("1Hello World").Should().BeFalse();
+            Game.Data.City.IsNameValid("1Hello World").Should().BeTrue();
         }
 
         [Fact]

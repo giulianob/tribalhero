@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using Game.Battle;
 using Game.Data;
+using Game.Data.Forest;
 using Game.Data.Troop;
 using Game.Setup;
 
@@ -42,9 +43,9 @@ namespace Game.Logic.Formulas
 
             int totalLaborers = structure.City.GetTotalLaborers();
             int moveTime;
-            if (cityToStructure && totalLaborers < 100)
+            if (cityToStructure && totalLaborers < 160)
             {
-                moveTime = secondsPerLaborer * (totalLaborers / 100) * count;
+                moveTime = (int)(0.95 * Math.Exp(0.033 * totalLaborers)) * count;
             }
             else
             {
@@ -176,6 +177,12 @@ namespace Game.Logic.Formulas
             // at 400 objects, the reduction is cap'ed at 20% of the original speed.
             var ret = Config.battle_turn_interval * 100 / (100 + Math.Min(500, count));
             return Config.server_production ? Math.Max(4, ret) : ret;
+        }
+
+        public double GetLumbermillCampBuildTime(IStructure lumbermill, IForest forest)
+        {
+            var distance = lumbermill.TileDistance(forest);
+            return BuildTime(lumbermill.Stats.Base.BuildTime, lumbermill.City, lumbermill.City.Technologies) + distance * 5;
         }
     }
 }

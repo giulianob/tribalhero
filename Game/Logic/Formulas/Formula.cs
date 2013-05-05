@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
+using Game.Data.Forest;
 using Game.Data.Stats;
 using Game.Data.Stronghold;
 using Game.Setup;
@@ -192,7 +193,7 @@ namespace Game.Logic.Formulas
         /// <param name="stats"></param>
         /// <param name="efficiency"></param>
         /// <returns></returns>
-        public virtual int GetWoodRateForForest(Forest forest, IStructureStats stats, double efficiency)
+        public virtual int GetWoodRateForForest(IForest forest, IStructureStats stats, double efficiency)
         {
             return (int)(stats.Labor * forest.Rate * (1d + efficiency));
         }

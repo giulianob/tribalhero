@@ -8,6 +8,7 @@ using System.Linq;
 using Game.Battle;
 using Game.Data;
 using Game.Data.BarbarianTribe;
+using Game.Data.Forest;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;

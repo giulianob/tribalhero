@@ -1,6 +1,7 @@
 #region
 
 using Game.Data;
+using Game.Data.Forest;
 using Game.Setup;
 
 #endregion
@@ -43,7 +44,7 @@ namespace Game.Logic.Formulas
             return (ushort)(level * 320);
         }
 
-        public virtual ushort GetForestMaxLaborPerUser(Forest forest)
+        public virtual ushort GetForestMaxLaborPerUser(IForest forest)
         {
             return (ushort)(GetForestMaxLabor(forest.Lvl) / 8);
         }

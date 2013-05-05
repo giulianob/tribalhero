@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Game.Data;
+using Game.Data.Forest;
 using Game.Logic.Formulas;
 using Game.Setup;
 
@@ -11,16 +10,19 @@ namespace Game.Map.LocationStrategies
     public class CityTileNextAvailableLocationStrategy : ILocationStrategy
     {
         private const int SKIP = 1;
+        
         private readonly MapFactory mapFactory;
+
         private readonly Formula formula;
 
-        public CityTileNextAvailableLocationStrategy(MapFactory mapFactory, Formula formula)
+        private readonly IForestManager forestManager;
+
+        public CityTileNextAvailableLocationStrategy(MapFactory mapFactory, Formula formula, IForestManager forestManager)
         {
             this.mapFactory = mapFactory;
             this.formula = formula;
+            this.forestManager = forestManager;
         }
-
-        #region Implementation of ILocationStrategy
 
         public Error NextLocation(out Position position)
         {
@@ -50,7 +52,7 @@ namespace Game.Map.LocationStrategies
                     continue;
                 }
 
-                if (ForestManager.HasForestNear(point.X, point.Y, formula.GetInitialCityRadius()))
+                if (forestManager.HasForestNear(point.X, point.Y, formula.GetInitialCityRadius()))
                 {
                     continue;
                 }
@@ -68,7 +70,5 @@ namespace Game.Map.LocationStrategies
             return Error.Ok;
         
         }
-
-        #endregion
     }
 }

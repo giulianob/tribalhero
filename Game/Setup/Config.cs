@@ -164,10 +164,6 @@ namespace Game.Setup
 
         public static bool database_dump;
 
-        public static bool ai_enabled;
-
-        public static int ai_count = 100;
-
         public static bool actions_instant_time;
 
         public static bool actions_skip_city_actions;

@@ -20,15 +20,17 @@ using Persistance;
 
 #endregion
 
-namespace Game.Data
+namespace Game.Data.Forest
 {
-    public class Forest : SimpleGameObject, IHasLevel, IPersistableObject, IEnumerable<IStructure>, ICityRegionObject
+    public class Forest : SimpleGameObject, IForest
     {
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
         public const string DB_TABLE = "forests";
 
         private readonly byte lvl = 1;
+
+        private readonly IActionFactory actionFactory;
 
         /// <summary>
         ///     The structures currently getting wood from this forest
@@ -101,9 +103,10 @@ namespace Game.Data
 
         #region Constructors
 
-        public Forest(byte lvl, int capacity, double rate)
+        public Forest(byte lvl, int capacity, double rate, IActionFactory actionFactory)
         {
             this.lvl = lvl;
+            this.actionFactory = actionFactory;
 
             Wood = new AggressiveLazyValue(capacity) {Limit = capacity};
 
@@ -190,20 +193,19 @@ namespace Game.Data
 
             SetDepleteAction();
 
+            // TODO: See if we should fire an event here and let the forest manager handle the harvest action
             //Reset the harvest actions
             foreach (var obj in this.Where(obj => obj.Lvl > 0))
             {
-                var action =
-                        (ForestCampHarvestPassiveAction)
-                        obj.City.Worker.FindAction(obj, typeof(ForestCampHarvestPassiveAction));
+                var action = obj.City.Worker.FindAction<ForestCampHarvestPassiveAction>(obj);
                 if (action != null)
                 {
                     action.Reschedule();
                 }
                 else
                 {
-                    // Set new harvesting action                             
-                    action = new ForestCampHarvestPassiveAction(obj.City.Id, ObjectId);
+                    // Set new harvesting action
+                    action = actionFactory.CreateForestCampHarvestPassiveAction(obj.City.Id, ObjectId);
                     obj.City.Worker.DoPassive(obj, action, true);
                 }
             }

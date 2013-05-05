@@ -11,6 +11,7 @@ using Game.Comm.Protocol;
 using Game.Comm.Thrift;
 using Game.Data;
 using Game.Data.BarbarianTribe;
+using Game.Data.Forest;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Logic;
@@ -45,6 +46,7 @@ namespace Game
             Bind<IRegionManager>().To<RegionManager>().InSingletonScope();
             Bind<ICityManager>().To<CityManager>().InSingletonScope();
             Bind<ICityRegionManager>().To<CityRegionManager>().InSingletonScope();
+            Bind<IForestManager>().To<ForestManager>().InSingletonScope();
 
             #endregion
 
@@ -52,17 +54,10 @@ namespace Game
 
             Bind<IPolicyServer>().To<PolicyServer>().InSingletonScope();
             Bind<ITcpServer>().To<TcpServer>().InSingletonScope();
-            Bind<TServer>()
-                    .ToMethod(
-                              c =>
-                              new TSimpleServer(new Notification.Processor(c.Kernel.Get<NotificationHandler>()),
-                                                new TServerSocket(46000)));
+            Bind<TServer>().ToMethod(c => new TSimpleServer(new Notification.Processor(c.Kernel.Get<NotificationHandler>()), new TServerSocket(46000)));
             Bind<IProtocol>().To<PacketProtocol>();
 
-            Bind<Chat>().ToMethod(c =>
-                {
-                    return new Chat(Global.Channel);
-                });
+            Bind<Chat>().ToMethod(c => new Chat(Global.Channel)).InSingletonScope();
 
             #endregion
 

@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using Game.Data;
+using Game.Data.Forest;
 using Game.Logic.Actions;
 using Game.Map;
 using Game.Setup;
@@ -191,7 +192,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            Forest forest;
+            IForest forest;
             if (!World.Current.Forests.TryGetValue(forestId, out forest))
             {
                 ReplyError(session, packet, Error.ObjectNotFound);

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Game.Battle;
 using Game.Data;
+using Game.Data.Forest;
 using Game.Logic.Procedures;
 
 namespace Game.Map

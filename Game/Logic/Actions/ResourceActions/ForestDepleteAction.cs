@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Data.Forest;
 using Game.Map;
 using Game.Util;
 using Game.Util.Locking;
@@ -16,13 +17,13 @@ namespace Game.Logic.Actions.ResourceActions
     {
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
-        public ForestDepleteAction(Forest forest, DateTime time)
+        public ForestDepleteAction(IForest forest, DateTime time)
         {
             Forest = forest;
             Time = time;
         }
 
-        public Forest Forest { get; private set; }
+        public IForest Forest { get; private set; }
 
         #region ISchedule Members
 

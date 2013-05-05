@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
+using Game.Data.Forest;
 using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
@@ -121,7 +122,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
             IStructure lumbermill;
-            Forest forest;
+            IForest forest;
 
             if (!world.TryGetObjects(cityId, lumbermillId, out city, out lumbermill) || !world.Forests.TryGetValue(forestId, out forest))
             {
@@ -177,7 +178,7 @@ namespace Game.Logic.Actions
                                              forest.Y,
                                              1,
                                              false,
-                                             delegate(uint ox, uint oy, uint x, uint y, object custom)
+                                             (ox, oy, x, y, custom) =>
                                                  {
                                                      // Check tile type                
                                                      if (!objectTypeFactory.IsTileType("TileBuildable", world.Regions.GetTileType(x, y)))
@@ -195,8 +196,7 @@ namespace Game.Logic.Actions
                                                      emptyY = y;
 
                                                      return false;
-                                                 },
-                                             null);
+                                                 });
 
             if (emptyX == 0 || emptyY == 0)
             {
@@ -241,11 +241,10 @@ namespace Game.Logic.Actions
             forest.EndUpdate();
 
             // add to queue for completion
-            var actionEndTime = formula.BuildTime(structureFactory.GetTime(campType, 1), city, city.Technologies) +
-                                lumbermill.TileDistance(forest) * 5;
+            var actionEndTime = formula.GetLumbermillCampBuildTime(lumbermill, forest);          
 
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(actionEndTime));
-            BeginTime = DateTime.UtcNow;
+            endTime = SystemClock.Now.AddSeconds(CalculateTime(actionEndTime));
+            BeginTime = SystemClock.Now;
 
             city.References.Add(structure, this);
 
@@ -287,7 +286,7 @@ namespace Game.Logic.Actions
                 city.References.Remove(structure, this);
 
                 // Get forest. If it doesn't exist, we need to delete the structure.
-                Forest forest;
+                IForest forest;
                 if (!world.Forests.TryGetValue(forestId, out forest))
                 {
                     // Remove the camp
@@ -357,7 +356,7 @@ namespace Game.Logic.Actions
                 city.References.Remove(structure, this);
 
                 // Remove camp from forest and recalculate forest
-                Forest forest;
+                IForest forest;
                 if (world.Forests.TryGetValue(forestId, out forest))
                 {
                     forest.BeginUpdate();

@@ -85,6 +85,9 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
+            // Calculate move time before transferring laborers so they are considered when calculating the value
+            int moveTime = formula.LaborMoveTime(structure, ActionCount, cityToStructure);
+
             if (cityToStructure)
             {
                 structure.City.BeginUpdate();
@@ -98,15 +101,12 @@ namespace Game.Logic.Actions
                 structure.EndUpdate();
 
                 structure.City.BeginUpdate();
-                procedure.RecalculateCityResourceRates(structure.City);
-                // labor got taken out immediately                
+                procedure.RecalculateCityResourceRates(structure.City);                
                 structure.City.EndUpdate();
             }
 
             // add to queue for completion
-            BeginTime = DateTime.UtcNow;
-
-            int moveTime = formula.LaborMoveTime(structure, ActionCount, cityToStructure);
+            BeginTime = DateTime.UtcNow;            
             
             endTime = DateTime.UtcNow.AddSeconds(CalculateTime(moveTime));
             

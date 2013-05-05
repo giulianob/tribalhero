@@ -30,8 +30,6 @@ namespace Game.Data
 
         #endregion
 
-        public static readonly Ai Ai = new Ai();
-
         public static readonly Channel Channel = new Channel();
 
         static Global()

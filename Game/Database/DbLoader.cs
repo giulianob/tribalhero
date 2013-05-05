@@ -10,6 +10,7 @@ using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
 using Game.Data;
 using Game.Data.BarbarianTribe;
+using Game.Data.Forest;
 using Game.Data.Stats;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
@@ -78,6 +79,9 @@ namespace Game.Database
 
         [Inject]
         public ICombatGroupFactory CombatGroupFactory { get; set; }
+
+        [Inject]
+        public IForestFactory ForestFactory { get; set; }
 
         public void LoadFromDatabase()
         {
@@ -709,21 +713,20 @@ namespace Game.Database
             {
                 while (reader.Read())
                 {
-                    var forest = new Forest((byte)reader["level"], (int)reader["capacity"], (float)reader["rate"])
-                    {
-                            DbPersisted = true,
-                            X = (uint)reader["x"],
-                            Y = (uint)reader["y"],
-                            Labor = (ushort)reader["labor"],
-                            ObjectId = (uint)reader["id"],
-                            State = {Type = (ObjectState)((byte)reader["state"])},
-                            Wood = new AggressiveLazyValue((int)reader["lumber"], 
-                                                            DateTime.SpecifyKind((DateTime)reader["last_realize_time"], DateTimeKind.Utc),
-                                                            0,
-                                                            (int)reader["upkeep"]) {Limit = (int)reader["capacity"]},
-                            DepleteTime = DateTime.SpecifyKind((DateTime)reader["deplete_time"], DateTimeKind.Utc),
-                            InWorld = (bool)reader["in_world"]
-                    };
+                    var forest = ForestFactory.CreateForest((byte)reader["level"], (int)reader["capacity"], (float)reader["rate"]);
+
+                    forest.DbPersisted = true;
+                    forest.X = (uint)reader["x"];
+                    forest.Y = (uint)reader["y"];
+                    forest.Labor = (ushort)reader["labor"];
+                    forest.ObjectId = (uint)reader["id"];
+                    forest.State.Type = (ObjectState)((byte)reader["state"]);
+                    forest.Wood = new AggressiveLazyValue((int)reader["lumber"],
+                                                          DateTime.SpecifyKind((DateTime)reader["last_realize_time"], DateTimeKind.Utc),
+                                                          0,
+                                                          (int)reader["upkeep"]) {Limit = (int)reader["capacity"]};
+                    forest.DepleteTime = DateTime.SpecifyKind((DateTime)reader["deplete_time"], DateTimeKind.Utc);
+                    forest.InWorld = (bool)reader["in_world"];
 
                     foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
                     {

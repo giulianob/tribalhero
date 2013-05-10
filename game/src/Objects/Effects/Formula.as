@@ -8,6 +8,7 @@
 	import src.Objects.Troop.*;
 	import src.Util.StringHelper;
 	import src.Util.Util;
+	import System.Linq.Enumerable;
 	
 	public class Formula {
 		
@@ -51,21 +52,16 @@
 			var city: City = Global.map.cities.get(troop.cityId);
 			return Math.min(4, city.value / 40);
 		}
-		
-		private static function timeDiscount(level: int) : int {
-			var discount: Array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 15, 15, 20, 30, 40];
-			return discount[level];
-		}
-		
+			
 		public static function laborMoveTime(parentObj: GameObject, count: int, cityToStructure:Boolean, city: City, techManager: TechnologyManager): int
 		{
 			const secondsPerLaborer: int = 180;
 			
             var totalLaborers: int = city.getBusyLaborCount() + city.resources.labor.getValue();
-			var moveTime: int;
-            if (cityToStructure && totalLaborers < 100)
+			var moveTime: int;	
+            if (cityToStructure && totalLaborers < 160)
             {
-                moveTime = secondsPerLaborer * (totalLaborers / 100) * count;
+                moveTime = Math.floor(0.95 * Math.exp(0.033 * totalLaborers)) * count;
             }
 			else {
 				var overtime: int = 0;
@@ -84,9 +80,26 @@
 			return moveTime;
 		}
 		
-		public static function trainTime(parentObj: StructureObject, baseValue: int, techManager: TechnologyManager): int
+		public static function trainTime(structureLvl: int, unitCount: int, unitPrototype: UnitPrototype, city: City, techManager: TechnologyManager, ignoreUnitCountDiscounts: Boolean): int
 		{			
-			return (baseValue * Constants.secondsPerUnit) * (100 - timeDiscount(parentObj.level)) / 100;
+			var structureDiscountByLevel: Array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 15, 15, 20, 30, 40];
+			
+            var currentCityUpkeep: Number = city.troops.getUpkeep();
+            var structureLevelDiscount: Number = (100.0 - structureDiscountByLevel[Math.min(structureLvl, structureDiscountByLevel.length - 1)]) / 100.0;
+            var trainTimePerUnit: Number = unitPrototype.trainTime * structureLevelDiscount;
+
+            if (currentCityUpkeep < 15)
+            {						
+				var trainFirst15Discount: Number = (100.0 - Enumerable.from(techManager.getEffects(EffectPrototype.EFFECT_UNIT_TRAIN_FIRST_15_REDUCTION, EffectPrototype.INHERIT_ALL))
+															  .sum(function(p: EffectPrototype): int {
+																	return int(p.param1);
+															  })) / 100.0;
+
+                var discountedUnits: int = Math.min(15 - currentCityUpkeep, unitCount);
+                return (int)(((trainTimePerUnit * trainFirst15Discount * discountedUnits) + (trainTimePerUnit * (unitCount - discountedUnits))) * Constants.secondsPerUnit);
+            }
+            
+            return (int)(trainTimePerUnit * unitCount) * Constants.secondsPerUnit;
 		}
 		
 		public static function buildTime(parentObjOrCity: *, baseValue: int, techManager:TechnologyManager): int

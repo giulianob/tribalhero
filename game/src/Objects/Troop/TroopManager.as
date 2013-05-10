@@ -1,6 +1,7 @@
 ﻿package src.Objects.Troop {
 	import src.Map.City;
 	import src.Util.BinaryList.*;
+	import System.Linq.Enumerable;
 
 	/**
 	 * ...
@@ -19,6 +20,17 @@
 		public function getDefaultTroop(): TroopStub
 		{
 			return get([city.id, 1]);
+		}
+		
+		public function getUpkeep(): int
+		{
+			return Enumerable.from(this)
+				      .where(function(p: TroopStub): Boolean { 
+							return p.cityId == city.id;
+					  })
+					  .sum(function(p: TroopStub): int {
+							return p.getUpkeep();
+					  });
 		}
 		
 		public function getUnitTotalsByStatus(): * {

@@ -8,6 +8,8 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Objects.*;
 	import src.Objects.Actions.ActionButton;
 	import src.Objects.Effects.Formula;
+	import src.Objects.Factories.StructureFactory;
+	import src.Objects.Prototypes.StructurePrototype;
 	import src.Util.Util;
 	import src.Objects.Prototypes.UnitPrototype;
 	import src.UI.Cursors.*;
@@ -63,8 +65,8 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 					disable();
 					return;
 				}
-
-				var inputDialog: UnitTrainDialog = new UnitTrainDialog(parentObj as StructureObject, unitPrototype, onAcceptDialog, Formula.trainTime(parentObj as StructureObject, unitPrototype.trainTime, (parentObj as StructureObject).getCorrespondingCityObj().techManager));
+					
+				var inputDialog: UnitTrainDialog = new UnitTrainDialog(parentObj as StructureObject, unitPrototype, onAcceptDialog);
 
 				inputDialog.show();
 			}

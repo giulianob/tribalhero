@@ -281,9 +281,8 @@
 		 
 		public static function getGateLimit(level: int) : int
         {
-            var limit:Array = [0, 10000, 13500, 17300, 21500, 26200, 31300, 37100, 43400, 50300, 58000,
-                            66500, 75900, 86300, 97800, 110500, 124600, 140100, 157200, 176200, 200000];
-            return limit[level];
+            var limit:Array = [0, 500, 600, 700, 800, 950, 1100, 1250, 1450, 1650, 1850, 2100, 2350, 2600, 2900, 3200, 3500, 3850, 4200, 4600, 5000];
+            return limit[level] * 10;
         }
 
         public static function getGateRepairCost(level: int, currentHp: Number) : Resources

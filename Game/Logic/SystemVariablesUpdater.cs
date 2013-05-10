@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using Game.Comm;
 using Game.Data;
+using Game.Data.Forest;
 using Game.Data.Stronghold;
 using Game.Map;
 using Game.Module;
@@ -29,6 +30,8 @@ namespace Game.Logic
 
         private readonly IStrongholdManager strongholdManager;
 
+        private readonly IForestManager forestManager;
+
         private readonly ITribeManager tribeManager;
 
         private readonly IWorld world;
@@ -43,13 +46,15 @@ namespace Game.Logic
                                       ITribeManager tribeManager,
                                       IDbManager dbManager,
                                       IScheduler scheduler,
-                                      IStrongholdManager strongholdManager)
+                                      IStrongholdManager strongholdManager,
+                                      IForestManager forestManager)
         {
             this.world = world;
             this.tribeManager = tribeManager;
             this.dbManager = dbManager;
             this.scheduler = scheduler;
             this.strongholdManager = strongholdManager;
+            this.forestManager = forestManager;
         }
 
         public static SystemVariablesUpdater Current { get; set; }
@@ -195,11 +200,8 @@ namespace Game.Logic
                     }
 
                     // Forest cnt
-                    variables.AddRange(
-                                       world.Forests.ForestCount.Select(
-                                                                        (t, i) =>
-                                                                        new SystemVariable(
-                                                                                "Forests.lvl" + (i + 1) + "_count", t)));
+                    variables.AddRange(forestManager.ForestCount.Select((t, i) =>
+                                                                        new SystemVariable("Forests.lvl" + (i + 1) + "_count", t)));
 
                     // Update vars
                     foreach (var variable in variables)

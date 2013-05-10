@@ -5,8 +5,10 @@ using System.Linq;
 using Game.Battle;
 using Game.Data;
 using Game.Data.Forest;
+using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Setup;
+using Game.Util;
 
 #endregion
 
@@ -67,21 +69,31 @@ namespace Game.Logic.Formulas
             return moveTime;
         }
 
-        private int TimeDiscount(int lvl)
+        public virtual int TrainTime(int structureLvl, int unitCount, IBaseUnitStats stats, ICity city, ITechnologyManager techManager)
         {
-            int[] discount = {0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 15, 15, 20, 30, 40};
-            return discount[lvl];
-        }
+            int[] structureDiscountByLevel = new[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 15, 15, 20, 30, 40};
+            
+            var currentCityUpkeep = city.Troops.Upkeep;
+            var structureLevelDiscount = structureDiscountByLevel[Math.Min(structureLvl, structureDiscountByLevel.Length - 1)].FromPercentageDiscount();
+            var trainTimePerUnit = stats.BuildTime * structureLevelDiscount;
 
-        public virtual int TrainTime(int baseValue, int structureLvl, ITechnologyManager em)
-        {
-            return baseValue * (100 - TimeDiscount(structureLvl)) / 100;
+            if (currentCityUpkeep < 15)
+            {
+                var trainFirst15Discount = techManager.GetEffects(EffectCode.UnitTrainTimeFirst15Reduction)
+                                                      .DefaultIfEmpty()
+                                                      .Max(e => e == null ? 0 : int.Parse((string)e.Value[0]))
+                                                      .FromPercentageDiscount();
+
+                var discountedUnits = Math.Min(15 - currentCityUpkeep, unitCount);
+                return (int)((trainTimePerUnit * trainFirst15Discount * discountedUnits) + (trainTimePerUnit * (unitCount - discountedUnits)));
+            }
+            
+            return (int)(trainTimePerUnit * unitCount);
         }
 
         public virtual int BuildTime(int baseValue, ICity city, ITechnologyManager em)
         {
-            IStructure university =
-                    city.FirstOrDefault(structure => ObjectTypeFactory.IsStructureType("University", structure));
+            IStructure university = city.FirstOrDefault(structure => ObjectTypeFactory.IsStructureType("University", structure));
             return (int)(baseValue * (100 - (university == null ? 0 : university.Stats.Labor) * 0.25) / 100);
         }
 

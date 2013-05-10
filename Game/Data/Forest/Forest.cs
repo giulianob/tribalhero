@@ -235,7 +235,7 @@ namespace Game.Data.Forest
 
             DepleteTime = DateTime.UtcNow.AddSeconds(hours * 3600);
 
-            DepleteAction = new ForestDepleteAction(this, DepleteTime);
+            DepleteAction = actionFactory.CreateForestDepleteAction(this, DepleteTime);
 
             Scheduler.Current.Put(DepleteAction);
         }

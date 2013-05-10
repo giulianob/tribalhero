@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Data.Troop;
 using Game.Logic;
+using Game.Logic.Actions;
 using Game.Logic.Actions.ResourceActions;
 using Game.Logic.Formulas;
 using Game.Map;
@@ -30,6 +31,8 @@ namespace Game.Data.Forest
 
         private readonly ObjectTypeFactory objectTypeFactory;
 
+        private readonly IActionFactory actionFactory;
+
         private readonly Dictionary<uint, IForest> forests;
 
         private readonly LargeIdGenerator objectIdGenerator = new LargeIdGenerator(Config.forest_id_max, Config.forest_id_min);
@@ -39,7 +42,8 @@ namespace Game.Data.Forest
                              IDbManager dbManager,
                              Formula formula,
                              IForestFactory forestFactory,
-                             ObjectTypeFactory objectTypeFactory)
+                             ObjectTypeFactory objectTypeFactory,
+                             IActionFactory actionFactory)
         {
             this.scheduler = scheduler;
             this.world = world;
@@ -47,6 +51,7 @@ namespace Game.Data.Forest
             this.formula = formula;
             this.forestFactory = forestFactory;
             this.objectTypeFactory = objectTypeFactory;
+            this.actionFactory = actionFactory;
             ForestCount = new int[Config.forest_count.Length];
             forests = new Dictionary<uint, IForest>();
         }
@@ -55,7 +60,7 @@ namespace Game.Data.Forest
         
         public void StartForestCreator()
         {
-            scheduler.Put(new ForestCreatorAction(dbManager));
+            scheduler.Put(actionFactory.CreateForestCreatorAction());
         }
 
         public void DbLoaderAdd(IForest forest)

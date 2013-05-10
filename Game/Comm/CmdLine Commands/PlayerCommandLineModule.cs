@@ -1,6 +1,9 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Map;
@@ -26,6 +29,10 @@ namespace Game.Comm
 
         private readonly ILocker locker;
 
+        private readonly StructureFactory structureFactory;
+
+        private readonly TechnologyFactory technologyFactory;
+
         private readonly IPlayersRemoverFactory playerRemoverFactory;
 
         private readonly IPlayerSelectorFactory playerSelectorFactory;
@@ -41,7 +48,9 @@ namespace Game.Comm
                                        IDbManager dbManager,
                                        ITribeManager tribeManager,
                                        IWorld world,
-                                       ILocker locker)
+                                       ILocker locker,
+                                       StructureFactory structureFactory,
+                                       TechnologyFactory technologyFactory)
         {
             this.playerRemoverFactory = playerRemoverFactory;
             this.playerSelectorFactory = playerSelectorFactory;
@@ -51,6 +60,8 @@ namespace Game.Comm
             this.tribeManager = tribeManager;
             this.world = world;
             this.locker = locker;
+            this.structureFactory = structureFactory;
+            this.technologyFactory = technologyFactory;
         }
 
         public override void RegisterCommands(CommandLineProcessor processor)
@@ -75,6 +86,44 @@ namespace Game.Comm
             processor.RegisterCommand("warn", Warn, PlayerRights.Moderator);
             processor.RegisterCommand("setchatlevel", SetChatLevel, PlayerRights.Admin);
             processor.RegisterCommand("giveachievement", GiveAchievement, PlayerRights.Admin);
+            processor.RegisterCommand("calculateexpensivecities", CalculateExpensiveCities, PlayerRights.Bureaucrat);
+        }
+
+        public string CalculateExpensiveCities(Session session, string[] parms)
+        {
+            var values = new List<dynamic>();
+            
+            foreach (var city in world.Cities.AllCities())
+            {
+                decimal expenses = 0m;
+
+                foreach (var structure in city)
+                {
+                    for (var lvl = 0; lvl <= structure.Lvl; lvl++)
+                    {
+                        expenses += structureFactory.GetCost(structure.Type, lvl).NormalizedCost;
+                    }
+                    
+                    foreach (var technology in structure.Technologies)
+                    {
+                        for (var lvl = 0; lvl <= technology.Level; lvl++)
+                        {
+                            expenses += technologyFactory.GetTechnology(technology.Type, (byte)lvl).TechBase.Resources.NormalizedCost;
+                        }
+                    }
+                }
+
+                values.Add(new {City = city, Expenses = expenses});
+            }
+
+            var result = new StringBuilder();
+            foreach (var value in values.OrderByDescending(v => v.Expenses).Take(50))
+            {
+                result.AppendFormat("{0},{1},{2}", (string)value.City.Owner.Name, (string)value.City.Name, (decimal)value.Expenses * 100m);
+                result.AppendLine();
+            }
+
+            return result.ToString();
         }
 
         public string SetChatLevel(Session session, string[] parms)

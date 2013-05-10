@@ -47,6 +47,7 @@ namespace Game
             Bind<ICityManager>().To<CityManager>().InSingletonScope();
             Bind<ICityRegionManager>().To<CityRegionManager>().InSingletonScope();
             Bind<IForestManager>().To<ForestManager>().InSingletonScope();
+            Bind<IForest>().To<Forest>();
 
             #endregion
 
@@ -154,36 +155,31 @@ namespace Game
 
             #region Processor
 
-            Bind<CommandLineProcessor>().ToMethod(c =>
-                {
-                    return new CommandLineProcessor(c.Kernel.Get<AssignmentCommandLineModule>(),
-                                                    c.Kernel.Get<PlayerCommandLineModule>(),
-                                                    c.Kernel.Get<CityCommandLineModule>(),
-                                                    c.Kernel.Get<ResourcesCommandLineModule>(),
-                                                    c.Kernel.Get<TribeCommandLineModule>(),
-                                                    c.Kernel.Get<StrongholdCommandLineModule>(),
-                                                    c.Kernel.Get<RegionCommandsLineModule>());
-                }).InSingletonScope();
-            Bind<Processor>()
-                    .ToMethod(
-                              c =>
-                              new Processor(c.Kernel.Get<AssignmentCommandsModule>(),
-                                            c.Kernel.Get<BattleCommandsModule>(),
-                                            c.Kernel.Get<EventCommandsModule>(),
-                                            c.Kernel.Get<ChatCommandsModule>(),
-                                            c.Kernel.Get<CommandLineCommandsModule>(),
-                                            c.Kernel.Get<LoginCommandsModule>(),
-                                            c.Kernel.Get<MarketCommandsModule>(),
-                                            c.Kernel.Get<MiscCommandsModule>(),
-                                            c.Kernel.Get<PlayerCommandsModule>(),
-                                            c.Kernel.Get<RegionCommandsModule>(),
-                                            c.Kernel.Get<StructureCommandsModule>(),
-                                            c.Kernel.Get<TribeCommandsModule>(),
-                                            c.Kernel.Get<TribesmanCommandsModule>(),
-                                            c.Kernel.Get<StrongholdCommandsModule>(),
-                                            c.Kernel.Get<ProfileCommandsModule>(),
-                                            c.Kernel.Get<TroopCommandsModule>()))
-                    .InSingletonScope();
+            Bind<CommandLineProcessor>().ToMethod(c => new CommandLineProcessor(c.Kernel.Get<AssignmentCommandLineModule>(),
+                                                                                c.Kernel.Get<PlayerCommandLineModule>(),
+                                                                                c.Kernel.Get<CityCommandLineModule>(),
+                                                                                c.Kernel.Get<ResourcesCommandLineModule>(),
+                                                                                c.Kernel.Get<TribeCommandLineModule>(),
+                                                                                c.Kernel.Get<StrongholdCommandLineModule>(),
+                                                                                c.Kernel.Get<RegionCommandsLineModule>())).InSingletonScope();
+
+            Bind<Processor>().ToMethod(c => new Processor(c.Kernel.Get<AssignmentCommandsModule>(),
+                                                          c.Kernel.Get<BattleCommandsModule>(),
+                                                          c.Kernel.Get<EventCommandsModule>(),
+                                                          c.Kernel.Get<ChatCommandsModule>(),
+                                                          c.Kernel.Get<CommandLineCommandsModule>(),
+                                                          c.Kernel.Get<LoginCommandsModule>(),
+                                                          c.Kernel.Get<MarketCommandsModule>(),
+                                                          c.Kernel.Get<MiscCommandsModule>(),
+                                                          c.Kernel.Get<PlayerCommandsModule>(),
+                                                          c.Kernel.Get<RegionCommandsModule>(),
+                                                          c.Kernel.Get<StructureCommandsModule>(),
+                                                          c.Kernel.Get<TribeCommandsModule>(),
+                                                          c.Kernel.Get<TribesmanCommandsModule>(),
+                                                          c.Kernel.Get<StrongholdCommandsModule>(),
+                                                          c.Kernel.Get<ProfileCommandsModule>(),
+                                                          c.Kernel.Get<TroopCommandsModule>()))
+                             .InSingletonScope();
 
             #endregion
 

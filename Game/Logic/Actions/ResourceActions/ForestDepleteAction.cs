@@ -15,10 +15,23 @@ namespace Game.Logic.Actions.ResourceActions
 {
     public class ForestDepleteAction : ISchedule
     {
+        private readonly IForestManager forestManager;
+
+        private readonly IRegionManager regionManager;
+
+        private readonly ILocker locker;
+
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
-        public ForestDepleteAction(IForest forest, DateTime time)
+        public ForestDepleteAction(IForest forest,
+                                   DateTime time,
+                                   IForestManager forestManager,
+                                   IRegionManager regionManager,
+                                   ILocker locker)
         {
+            this.forestManager = forestManager;
+            this.regionManager = regionManager;
+            this.locker = locker;
             Forest = forest;
             Time = time;
         }
@@ -33,8 +46,7 @@ namespace Game.Logic.Actions.ResourceActions
 
         public void Callback(object custom)
         {
-            var lck = Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler,
-                                               new object[] {Forest.ObjectId});
+            var lck = locker.Lock(forestManager.CallbackLockHandler, new object[] {Forest.ObjectId});
             using (lck)
             {
                 logger.Debug(string.Format("Destroying forest[{0}]", Forest.ObjectId));
@@ -54,18 +66,17 @@ namespace Game.Logic.Actions.ResourceActions
 
                     obj.City.Owner.SendSystemMessage(null,
                                                      string.Format("{0}: Forest depleted", obj.City.Name),
-                                                     string.Format(
-                                                                   "{0}: One of your lumbermill outposts have finished gathering wood from a forest. All laborers have returned to your city and are now idle.",
+                                                     string.Format("{0}: One of your lumbermill outposts have finished gathering wood from a forest. All laborers have returned to your city and are now idle.",
                                                                    obj.City.Name));
 
                     // Remove structure from city
                     obj.BeginUpdate();
-                    World.Current.Regions.Remove(obj);
+                    regionManager.Remove(obj);
                     obj.City.ScheduleRemove(obj, false, true);
                     obj.EndUpdate();
                 }
 
-                World.Current.Forests.RemoveForest(Forest);
+                forestManager.RemoveForest(Forest);
                 lck.Dispose();
             }
         }

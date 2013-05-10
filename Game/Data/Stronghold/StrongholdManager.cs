@@ -255,7 +255,7 @@ namespace Game.Data.Stronghold
                 return Error.StrongholdGateFull;
             }
 
-            var cost = formula.StrongholdGateRepairCost(stronghold.Lvl, diff);
+            var cost = formula.StrongholdGateRepairCost(diff);
             if (!stronghold.Tribe.Resource.HasEnough(cost))
             {
                 return Error.ResourceNotEnough;

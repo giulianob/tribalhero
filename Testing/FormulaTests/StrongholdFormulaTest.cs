@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Common.Testing;
 using FluentAssertions;
 using Game.Data;
 using Game.Data.Stronghold;
@@ -17,7 +18,7 @@ namespace Testing.FormulaTests
     {
         public StrongholdFormulaTest()
         {
-            SystemClock.SetClock(DateTime.UtcNow);
+            SystemClock.SetClock(new DateTime(2013, 1, 1, 1, 1, 1, 1));
         }
 
         [Theory]
@@ -112,6 +113,7 @@ namespace Testing.FormulaTests
             {
                 // no bonus
                 yield return new object[] { (byte)1, 5m, 0m, 0m, 15m };
+                yield return new object[] { (byte)1, 60m, 0m, 0m, 15m };
                 // with bonus
                 yield return new object[] { (byte)5, 5m, 2.5m, 0m, 27.5m };
                 // level 20
@@ -126,15 +128,19 @@ namespace Testing.FormulaTests
         [Theory, PropertyData("VictoryPointItems")]
         public void TestVictoryPoint(byte level, decimal occupiedDays, decimal bonusDays, decimal serverDays, decimal expectedValue)
         {
+            var serverDate = SystemClock.Now.Subtract(TimeSpan.FromDays((double)serverDays));
+
             Global.SystemVariables.Clear();
-            Global.SystemVariables.Add("Server.date", new SystemVariable("Server.date", SystemClock.Now.Subtract(TimeSpan.FromDays((double)serverDays))));
+            Global.SystemVariables.Add("Server.date", new SystemVariable("Server.date", serverDate));
+            
             var formula = new Fixture().Create<Formula>();
 
             var stronghold = Substitute.For<IStronghold>();
             stronghold.StrongholdState.Returns(StrongholdState.Occupied);
             stronghold.Lvl.Returns(level);
             stronghold.BonusDays.Returns(bonusDays);
-            stronghold.DateOccupied.Returns(SystemClock.Now.Subtract(TimeSpan.FromDays((double)occupiedDays)));
+            var occupiedDate = SystemClock.Now.Subtract(TimeSpan.FromDays((double)occupiedDays));
+            stronghold.DateOccupied.Returns(occupiedDate);
 
             formula.StrongholdVictoryPoint(stronghold).Should().Be(expectedValue);
         }

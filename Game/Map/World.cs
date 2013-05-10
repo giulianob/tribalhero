@@ -35,7 +35,6 @@ namespace Game.Map
         #endregion
 
         public World(RoadManager roadManager,
-                     ForestManager forestManager,
                      IStrongholdManager strongholdManager,
                      ICityManager cityManager,
                      IRegionManager regionManager,
@@ -44,7 +43,6 @@ namespace Game.Map
         {
             this.barbarianTribeManager = barbarianTribeManager;
             Roads = roadManager;
-            Forests = forestManager;
             strongholds = strongholdManager;
             Cities = cityManager;
             Regions = regionManager;
@@ -151,8 +149,6 @@ namespace Game.Map
 
         public RoadManager Roads { get; private set; }
 
-        public ForestManager Forests { get; private set; }
-
         public object Lock { get; private set; }
 
         public Dictionary<uint, IPlayer> Players { get; private set; }
@@ -186,12 +182,12 @@ namespace Game.Map
             }
         }
 
-        public void AfterDbLoaded(Procedure procedure)
+        public void AfterDbLoaded(Procedure procedure, IForestManager forestManager)
         {
             Cities.AfterDbLoaded(procedure);
 
             // Launch forest creator
-            Forests.StartForestCreator();
+            forestManager.StartForestCreator();
         }
 
         public bool FindPlayerId(string name, out uint playerId)

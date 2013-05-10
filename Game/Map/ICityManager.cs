@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Procedures;
 
@@ -13,6 +14,8 @@ namespace Game.Map
         bool TryGetCity(uint cityId, out ICity city);
 
         void AfterDbLoaded(Procedure procedure);
+
+        IEnumerable<ICity> AllCities();
 
         void Remove(ICity city);
 

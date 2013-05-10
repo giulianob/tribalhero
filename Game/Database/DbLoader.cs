@@ -51,7 +51,10 @@ namespace Game.Database
         public ITribeManager Tribes { get; set; }
 
         [Inject]
-        public DbLoaderActionFactory ActionFactory { get; set; }
+        public DbLoaderActionFactory DbLoaderActionFactory { get; set; }
+
+        [Inject]
+        public IActionFactory ActionFactory { get; set; }
 
         [Inject]
         public IBarbarianTribeFactory BarbarianTribeFactory { get; set; }
@@ -127,7 +130,7 @@ namespace Game.Database
                     LoadActionNotifications();
                     LoadAssignments();
 
-                    World.AfterDbLoaded(Procedure);
+                    World.AfterDbLoaded(Procedure, Ioc.Kernel.Get<IForestManager>());
 
                     //Ok data all loaded. We can get the system going now.
                     Global.SystemVariables["System.time"].Value = DateTime.UtcNow;
@@ -708,6 +711,7 @@ namespace Game.Database
 
         private void LoadForests()
         {
+            var forestManager = Ioc.Kernel.Get<IForestManager>();
             logger.Info("Loading forests...");
             using (var reader = DbManager.Select(Forest.DB_TABLE))
             {
@@ -754,10 +758,10 @@ namespace Game.Database
                     if (forest.InWorld)
                     {
                         // Create deplete time
-                        forest.DepleteAction = new ForestDepleteAction(forest, forest.DepleteTime);
+                        forest.DepleteAction = ActionFactory.CreateForestDepleteAction(forest, forest.DepleteTime);
                         Scheduler.Current.Put(forest.DepleteAction);
                         World.Regions.DbLoaderAdd(forest);
-                        World.Forests.DbLoaderAdd(forest);
+                        forestManager.DbLoaderAdd(forest);
                     }
                 }
             }
@@ -1643,7 +1647,7 @@ namespace Game.Database
 
                     Dictionary<string, string> properties = XmlSerializer.Deserialize((string)reader["properties"]);
 
-                    var action = ActionFactory.CreateScheduledActiveAction(type,
+                    var action = DbLoaderActionFactory.CreateScheduledActiveAction(type,
                                                                            (uint)reader["id"],
                                                                            beginTime,
                                                                            nextTime,
@@ -1691,7 +1695,7 @@ namespace Game.Database
 
                         string nlsDescription = DBNull.Value.Equals(reader["nls_description"]) ? string.Empty : (string)reader["nls_description"];
 
-                        action = ActionFactory.CreateScheduledPassiveAction(type,
+                        action = DbLoaderActionFactory.CreateScheduledPassiveAction(type,
                                                                             (uint)reader["id"],
                                                                             beginTime,
                                                                             nextTime,
@@ -1702,7 +1706,7 @@ namespace Game.Database
                     }
                     else
                     {
-                        action = ActionFactory.CreatePassiveAction(type,
+                        action = DbLoaderActionFactory.CreatePassiveAction(type,
                                                                    (uint)reader["id"],
                                                                    (bool)reader["is_visible"],
                                                                    properties);
@@ -1768,7 +1772,7 @@ namespace Game.Database
                     }
 
                     Dictionary<string, string> properties = XmlSerializer.Deserialize((string)reader["properties"]);
-                    var action = ActionFactory.CreateChainAction(type,
+                    var action = DbLoaderActionFactory.CreateChainAction(type,
                                                                  (uint)reader["id"],
                                                                  (string)reader["chain_callback"],
                                                                  currentAction,

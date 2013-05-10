@@ -26,18 +26,22 @@ namespace Game.Logic.Actions
 
         private readonly IWorld world;
 
+        private readonly IForestManager forestManager;
+
         private readonly ILocker locker;
 
         public ForestCampHarvestPassiveAction(uint cityId,
                                               uint forestId,
                                               IScheduler scheduler,
                                               IWorld world,
+                                              IForestManager forestManager,
                                               ILocker locker)
         {
             IsCancellable = true;
             this.forestId = forestId;
             this.scheduler = scheduler;
             this.world = world;
+            this.forestManager = forestManager;
             this.locker = locker;
             this.cityId = cityId;
         }
@@ -51,11 +55,13 @@ namespace Game.Logic.Actions
                                               Dictionary<string, string> properties,
                                               IScheduler scheduler,
                                               IWorld world,
+                                              IForestManager forestManager,
                                               ILocker locker)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.scheduler = scheduler;
             this.world = world;
+            this.forestManager = forestManager;
             this.locker = locker;
             IsCancellable = true;
             forestId = uint.Parse(properties["forest_id"]);
@@ -74,7 +80,7 @@ namespace Game.Logic.Actions
         {
             IForest forest;
 
-            if (!world.Forests.TryGetValue(forestId, out forest))
+            if (!forestManager.TryGetValue(forestId, out forest))
             {
                 return Error.ObjectNotFound;
             }
@@ -89,7 +95,7 @@ namespace Game.Logic.Actions
         public void Reschedule()
         {
             IForest forest;
-            if (!world.Forests.TryGetValue(forestId, out forest))
+            if (!forestManager.TryGetValue(forestId, out forest))
             {
                 throw new Exception("Forest is missing");
             }
@@ -111,7 +117,7 @@ namespace Game.Logic.Actions
                 throw new Exception("City is missing");
             }
 
-            using (locker.Lock(world.Forests.CallbackLockHandler, new object[] {forestId}, city))
+            using (locker.Lock(forestManager.CallbackLockHandler, new object[] {forestId}, city))
             {
                 if (!IsValid())
                 {
@@ -136,7 +142,7 @@ namespace Game.Logic.Actions
                 throw new Exception("City is missing");
             }
 
-            using (locker.Lock(world.Forests.CallbackLockHandler, new object[] {forestId}, city))
+            using (locker.Lock(forestManager.CallbackLockHandler, new object[] {forestId}, city))
             {
                 if (!IsValid())
                 {
@@ -146,7 +152,7 @@ namespace Game.Logic.Actions
                 var structure = (IStructure)WorkerObject;
 
                 IForest forest;
-                if (world.Forests.TryGetValue(forestId, out forest))
+                if (forestManager.TryGetValue(forestId, out forest))
                 {
                     // Recalculate the forest
                     forest.BeginUpdate();
@@ -178,7 +184,7 @@ namespace Game.Logic.Actions
                 throw new Exception("City is missing");
             }
 
-            using (locker.Lock(world.Forests.CallbackLockHandler, new object[] {forestId}, city))
+            using (locker.Lock(forestManager.CallbackLockHandler, new object[] {forestId}, city))
             {
                 if (!IsValid())
                 {
@@ -188,7 +194,7 @@ namespace Game.Logic.Actions
                 var structure = (IStructure)WorkerObject;
 
                 IForest forest;
-                if (world.Forests.TryGetValue(forestId, out forest))
+                if (forestManager.TryGetValue(forestId, out forest))
                 {
                     // Recalculate the forest
                     forest.BeginUpdate();

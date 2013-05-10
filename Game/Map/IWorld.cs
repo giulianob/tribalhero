@@ -15,8 +15,6 @@ namespace Game.Map
 
         RoadManager Roads { get; }
 
-        ForestManager Forests { get; }
-
         object Lock { get; }
 
         Dictionary<uint, IPlayer> Players { get; }
@@ -29,7 +27,7 @@ namespace Game.Map
 
         void DbLoaderAdd(IBattleManager battleManager);
 
-        void AfterDbLoaded(Procedure procedure);
+        void AfterDbLoaded(Procedure procedure, IForestManager forestManager);
 
         bool FindStrongholdId(string name, out uint strongholdId);
 

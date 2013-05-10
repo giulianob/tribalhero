@@ -232,6 +232,7 @@
     <Compile Include="Data\BarbarianTribe\BarbarianTribeManager.cs" />
     <Compile Include="Data\Forest\IForest.cs" />
     <Compile Include="Data\Forest\IForestFactory.cs" />
+    <Compile Include="Data\Forest\IForestManager.cs" />
     <Compile Include="Data\PlayerChatState.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />
@@ -475,6 +476,7 @@
     <Compile Include="Util\MathParser.cs" />
     <Compile Include="Util\Locking\DefaultMultiObjectLock.cs" />
     <Compile Include="Util\NameGenerator.cs" />
+    <Compile Include="Util\NumberExtensions.cs" />
     <Compile Include="Util\UnixDateTime.cs" />
     <Compile Include="Util\XMLSerializer.cs" />
   </ItemGroup>
@@ -531,7 +533,6 @@
     <Compile Include="Logic\SystemVariablesUpdater.cs" />
     <Compile Include="Map\CityRegion.cs" />
     <Compile Include="Map\RoadManager.cs" />
-    <Compile Include="Module\Npc.cs" />
     <Compile Include="Logic\Randomizer.cs" />
     <Compile Include="Setup\MapFactory.cs" />
     <Compile Include="Setup\ObjectTypeFactory.cs" />

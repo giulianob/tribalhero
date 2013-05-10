@@ -599,14 +599,8 @@ namespace Game.Comm
             // Ranking info
             List<dynamic> ranks = new List<dynamic>();
 
-            using (
-                    DbDataReader reader =
-                            DbPersistance.Current.ReaderQuery(
-                                                              string.Format(
-                                                                            "SELECT `city_id`, `rank`, `type` FROM `rankings` WHERE player_id = @playerId ORDER BY `type` ASC"),
-                                                              new[]
-                                                              {new DbColumn("playerId", player.PlayerId, DbType.String)})
-                    )
+            string rankingQuery = string.Format("SELECT `city_id`, `rank`, `type` FROM `rankings` WHERE player_id = @playerId ORDER BY `type` ASC");
+            using (var reader = DbPersistance.Current.ReaderQuery(rankingQuery, new[] {new DbColumn("playerId", player.PlayerId, DbType.String)}))
             {
                 while (reader.Read())
                 {
@@ -624,6 +618,18 @@ namespace Game.Comm
                 reply.AddUInt32(rank.CityId);
                 reply.AddInt32(rank.Rank);
                 reply.AddByte(rank.Type);
+            }
+
+            // Achievement
+            reply.AddUInt16((ushort)player.Achievements.Count);
+            foreach (var achievement in player.Achievements)
+            {
+                reply.AddInt32(achievement.Id);
+                reply.AddString(achievement.Type);
+                reply.AddByte((byte)achievement.Tier);
+                reply.AddString(achievement.Icon);
+                reply.AddString(achievement.Title);
+                reply.AddString(achievement.Description);
             }
 
             // City info

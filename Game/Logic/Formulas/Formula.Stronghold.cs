@@ -8,19 +8,13 @@ namespace Game.Logic.Formulas
 {
     public partial class Formula
     {
-        
         public virtual int StrongholdGateLimit(byte level)
         {
             if (Config.stronghold_gate_limit > 0)
             {
                 return Config.stronghold_gate_limit;
             }
-            if(Config.stronghold_classic)
-            {
-                int[] cap = {0, 10000, 13500, 17300, 21500, 26200, 31300, 37100, 43400, 50300, 58000,
-                            66500, 75900, 86300, 97800, 110500, 124600, 140100, 157200, 176200, 200000};
-                return cap[level];
-            }
+
             return StrongholdMainBattleMeter(level) * 10;
         }
 
@@ -35,37 +29,28 @@ namespace Game.Logic.Formulas
             return (int)hp;
         }
 
-        public virtual Resource StrongholdGateRepairCost(byte level, decimal damagedGateHp)
+        public virtual Resource StrongholdGateRepairCost(decimal damagedGateHp)
         {
             return new Resource(0, (int)(damagedGateHp / 8), (int)(damagedGateHp / 16), (int)(damagedGateHp / 4));
         }
 
         public virtual int StrongholdMainBattleMeter(byte level)
         {
+            int[] meters = new[] { 0, 500, 600, 700, 800, 950, 1100, 1250, 1450, 1650, 1850, 2100, 2350, 2600, 2900, 3200, 3500, 3850, 4200, 4600, 5000 };
+
             if (Config.stronghold_battle_meter > 0)
             {
                 return Config.stronghold_battle_meter;
             }
-            if (Config.stronghold_classic)
-            {
-                return level * 1000;
-            }
-            int[] meters = new[] { 0, 500, 600, 700, 800, 950, 1100, 1250, 1450, 1650, 1850, 2100, 2350, 2600, 2900, 3200, 3500, 3850, 4200, 4600, 5000 };
+            
             return meters[level];
         }
 
         public void StrongholdUpkeep(byte level, out int upkeep, out byte unitLevel)
         {
             int[] unitLevels = new[] {1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10};
-            if (Config.stronghold_classic)
-            {
-                int[] upkeeps = {1000, 1400, 1796, 2189, 2579, 2965, 3347, 3726, 4102, 4474, 4842, 5207, 5568, 5926, 6281, 6632, 6979, 7323, 7663, 8000};
-                upkeep = Config.stronghold_fixed_upkeep == 0 ? upkeeps[level - 1] : Config.stronghold_fixed_upkeep;
-            }
-            else
-            {
-                upkeep = Config.stronghold_fixed_upkeep == 0 ? (int)(StrongholdMainBattleMeter(level) * .8) : Config.stronghold_fixed_upkeep;
-            }
+
+            upkeep = Config.stronghold_fixed_upkeep == 0 ? (int)(StrongholdMainBattleMeter(level) * .8) : Config.stronghold_fixed_upkeep;
             unitLevel = (byte)unitLevels[level-1];
         }
 
@@ -106,12 +91,10 @@ namespace Game.Logic.Formulas
             {
                 return 0;
             }
-            if (Config.stronghold_classic)
-            {
-                return (((decimal)SystemClock.Now.Subtract(stronghold.DateOccupied).TotalDays + stronghold.BonusDays) / 2 + 10) * stronghold.Lvl;
-            }
+
             var serverUptime = (decimal)SystemClock.Now.Subtract((DateTime)Global.SystemVariables["Server.date"].Value).TotalDays;
-            return (((decimal)SystemClock.Now.Subtract(stronghold.DateOccupied).TotalDays + stronghold.BonusDays) / 2 + serverUptime / 5 + 10) * (1 + stronghold.Lvl * .2m);
+            var daysOccupied = (decimal)SystemClock.Now.Subtract(stronghold.DateOccupied).TotalDays;
+            return ((daysOccupied + stronghold.BonusDays) / 2m + serverUptime / 5 + 10) * (5 + stronghold.Lvl * 5m);
         }
     }
 }

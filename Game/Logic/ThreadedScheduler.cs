@@ -221,7 +221,10 @@ namespace Game.Logic
 
                 doneEvents.Add(job.Id, job.ResetEvent);
 
-                factory.StartNew(() => ExecuteAction(job));                
+                factory.StartNew(() =>
+                    {
+                        ExecuteAction(job);
+                    });                
 
                 SetNextActionTime();
             }
@@ -321,6 +324,10 @@ namespace Game.Logic
                 // delegates currently queued or running to process tasks, schedule another.
                 lock (_tasks)
                 {
+                    task.ContinueWith(continuation => 
+                        Engine.UnhandledExceptionHandler(new UnhandledExceptionEventArgs(continuation.Exception, true)), 
+                        TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted);
+
                     _tasks.AddLast(task);
                     if (_delegatesQueuedOrRunning < _maxDegreeOfParallelism)
                     {
@@ -362,7 +369,7 @@ namespace Game.Logic
                                 }
 
                                 // Execute the task we pulled out of the queue
-                                base.TryExecuteTask(item);
+                                base.TryExecuteTask(item);                                
                             }
                         }
                                 // We're done processing items on the current thread
@@ -370,8 +377,7 @@ namespace Game.Logic
                         {
                             _currentThreadIsProcessingItems = false;
                         }
-                    },
-                                                   null);
+                    }, null);
             }
 
             /// <summary>Attempts to execute the specified task on the current thread.</summary>

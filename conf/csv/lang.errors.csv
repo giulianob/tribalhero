@@ -53,6 +53,8 @@ ERROR_419,This structure cannot be removed.,
 ERROR_420,There must be an available road to perform this action,
 ERROR_421,A road already exists there,
 ERROR_422,This road is required for other structures to exist and cannot be removed,
+ERROR_423,"Sorry, we cannot find any spot close to your friend."
+ERROR_424,Player name and player invitation code do not match.
 ERROR_600,You can't attack yourself!,
 ERROR_601,Not allowed while city is in battle,
 ERROR_602,Why would you want to defend yourself?,
@@ -101,3 +103,4 @@ ERROR_813,Stronghold is inactive.,
 ERROR_814,Stronghold gate is already at full health.,
 ERROR_815,Stronghold gate cannot be repaired while its under attack,
 ERROR_901,This barbarian tribe has already been completely defeated.,
+

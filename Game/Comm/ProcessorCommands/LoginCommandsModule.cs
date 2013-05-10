@@ -1,17 +1,18 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Game.Data;
-using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
 using Game.Map;
+using Game.Map.LocationStrategies;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -41,12 +42,15 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly Procedure procedure;
 
+        private readonly ILocationStrategyFactory locationStrategyFactory;
+
         public LoginCommandsModule(IActionFactory actionFactory,
                                    ITribeManager tribeManager,
                                    IDbManager dbManager,
                                    ILocker locker,
                                    IWorld world,
-                                   Procedure procedure)
+                                   Procedure procedure,
+                                   ILocationStrategyFactory locationStrategyFactory)
         {
             this.actionFactory = actionFactory;
             this.tribeManager = tribeManager;
@@ -54,6 +58,7 @@ namespace Game.Comm.ProcessorCommands
             this.locker = locker;
             this.world = world;
             this.procedure = procedure;
+            this.locationStrategyFactory = locationStrategyFactory;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -82,6 +87,7 @@ namespace Game.Comm.ProcessorCommands
             string playerPassword = string.Empty;
             uint playerId;
             bool banned = false;
+            var achievements = new List<Achievement>();
             
             PlayerRights playerRights = PlayerRights.Basic;
 
@@ -141,7 +147,23 @@ namespace Game.Comm.ProcessorCommands
                 playerId = uint.Parse(response.Data.player.id);
                 playerName = response.Data.player.name;
                 banned = int.Parse(response.Data.player.banned) == 1;
-                playerRights = (PlayerRights)Int32.Parse(response.Data.player.rights);                
+                playerRights = (PlayerRights)Int32.Parse(response.Data.player.rights);
+
+                if (((IDictionary<string, Object>)response.Data).ContainsKey("achievements"))
+                {
+                    foreach (var achievement in response.Data.achievements)
+                    {
+                        achievements.Add(new Achievement
+                        {
+                                Id = int.Parse(achievement.id),
+                                Type = achievement.type,
+                                Tier = Enum.Parse(typeof(AchievementTier), achievement.tier),
+                                Description = achievement.description,
+                                Title = achievement.title,
+                                Icon = achievement.icon
+                        });
+                    }
+                }
 
                 // If we are under admin only mode then kick out non admin
                 if (Config.server_admin_only && playerRights == PlayerRights.Basic)
@@ -178,10 +200,9 @@ namespace Game.Comm.ProcessorCommands
                 sessionId = BitConverter.ToString(hash).Replace("-", String.Empty);
             }
 
-            bool newPlayer;
             lock (loginLock)
             {
-                newPlayer = !world.Players.TryGetValue(playerId, out player);
+                bool newPlayer = !world.Players.TryGetValue(playerId, out player);
 
                 //If it's a new player then add him to our session
                 if (newPlayer)
@@ -223,6 +244,8 @@ namespace Game.Comm.ProcessorCommands
                 player.Rights = playerRights;
                 player.LastLogin = SystemClock.Now;
                 player.Banned = banned;
+                player.Achievements.Clear();
+                achievements.ForEach(player.Achievements.Add);
 
                 dbManager.Save(player);
 
@@ -241,6 +264,7 @@ namespace Game.Comm.ProcessorCommands
 
                 //Player Info
                 reply.AddUInt32(player.PlayerId);
+                reply.AddString(player.PlayerHash);
                 reply.AddByte((byte)(player.Rights >= PlayerRights.Admin ? 1 : 0));
                 reply.AddString(sessionId);
                 reply.AddString(player.Name);
@@ -290,10 +314,23 @@ namespace Game.Comm.ProcessorCommands
         {
             using (locker.Lock(session.Player))
             {
-                string cityName;
+                string cityName, playerName = null, playerHash = null;
+                byte method;
                 try
                 {
                     cityName = packet.GetString().Trim();
+                    method = packet.GetByte();
+                    if(method==1)
+                    {
+                        playerName = packet.GetString();
+                        playerHash = packet.GetString();
+                        if(playerName.Length==0 || playerHash.Length==0)
+                        {
+                            ReplyError(session, packet, Error.PlayerNotFound);
+                            return;
+                        }
+                    } 
+
                 }
                 catch(Exception)
                 {
@@ -312,6 +349,28 @@ namespace Game.Comm.ProcessorCommands
 
                 lock (world.Lock)
                 {
+                    ILocationStrategy strategy;
+                    if(method==1)
+                    {
+                        uint playerId;
+                        if(!world.FindPlayerId(playerName, out playerId))
+                        {
+                            ReplyError(session, packet, Error.PlayerNotFound);
+                            return;
+                        }
+                        
+                        var player = world.Players[playerId];
+                        if (String.Compare(player.PlayerHash, playerHash, StringComparison.OrdinalIgnoreCase) != 0)
+                        {
+                            ReplyError(session, packet, Error.PlayerHashNotFound);
+                            return;
+                        }
+                        strategy = locationStrategyFactory.CreateCityTileNextToFriendLocationStrategy(Config.friend_invite_radius, player);
+                    }
+                    else
+                    {
+                        strategy = locationStrategyFactory.CreateCityTileNextAvailableLocationStrategy();
+                    }
                     // Verify city name is unique
                     if (world.CityNameTaken(cityName))
                     {
@@ -319,9 +378,10 @@ namespace Game.Comm.ProcessorCommands
                         return;
                     }
 
-                    if (!procedure.CreateCity(session.Player, cityName, out city))
+                    var error = procedure.CreateCity(session.Player, cityName, strategy, out city);
+                    if(error!=Error.Ok)
                     {
-                        ReplyError(session, packet, Error.MapFull);
+                        ReplyError(session, packet, error);
                         return;
                     }
                 }

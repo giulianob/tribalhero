@@ -261,7 +261,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 ITribe tribe;
-                Error error = procedure.CreateTribe(session.Player, name, out tribe);
+                Error error = tribeManager.CreateTribe(session.Player, name, out tribe);
                 if (error == Error.Ok)
                 {
                     var reply = new Packet(packet);
@@ -312,7 +312,7 @@ namespace Game.Comm.ProcessorCommands
 
         private void Upgrade(Session session, Packet packet)
         {
-            if (!session.Player.Tribesman.Tribe.IsOwner(session.Player))
+            if (!session.Player.Tribesman.Tribe.HasRight(session.Player.PlayerId, TribePermission.Upgrade))
             {
                 ReplyError(session, packet, Error.TribesmanNotAuthorized);
                 return;

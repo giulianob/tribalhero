@@ -2,6 +2,8 @@
 
 using Game.Data;
 using Game.Logic.Formulas;
+using Game.Logic.Triggers;
+using Game.Logic.Triggers.Events;
 
 #endregion
 
@@ -23,11 +25,14 @@ namespace Game.Logic.Procedures
             RecalculateCityResourceRates(structure.City);
         }
 
-        public virtual void OnTechnologyChange(IStructure structure)
+        public virtual void OnTechnologyUpgrade(IStructure structure, TechnologyBase technologyBase, ICityTriggerManager cityTriggerManager, ICityEventFactory cityEventFactory)
         {
-            structure.City.BeginUpdate();
-            SetResourceCap(structure.City);
-            structure.City.EndUpdate();
+            cityTriggerManager.Process(cityEventFactory.CreateTechnologyUpgradeEvent(structure, technologyBase.Techtype, technologyBase.Level));
+        }
+
+        public virtual void OnTechnologyDelete(IStructure structure, TechnologyBase technologyBase, ICityTriggerManager cityTriggerManager, ICityEventFactory cityEventFactory)
+        {
+            cityTriggerManager.Process(cityEventFactory.CreateTechnologyDeleteEvent(structure, technologyBase.Techtype, technologyBase.Level));
         }
     }
 }

@@ -112,6 +112,8 @@ MSG_AP_STRUCTURE_DEFENSE_BONUS,{0} Alignment Rating Bonus: Damage to structures 
 ,
 PLAYER_PROFILE_DIALOG_CITY_DISTANCE,{0} - About {1} away
 PLAYER_PROFILE_DIALOG_CITY_DISTANCE_FOOTER,*Based on an average speed troop on an attack mission
+PLAYER_PROFILE_INVITATION_TOOLTIP,This code can be given to your friends when they sign up if you would like them to start playing near your main city.
+PLAYER_PROFILE_INVITATION_TOOLTIP_LOCATION,Ask your friend for their invitation code if you want to start near them. Your friend can find this code in their profile.
 ,
 SEND_ATTACK_AP_BONUS,The city you are attacking currently has alignment rating bonuses since they have been attacked a lot lately. You may receive less loot than usual and this city's defenses may be temporarily increased.\n\nAre you sure you want to still attack?
 ,

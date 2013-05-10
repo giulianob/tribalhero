@@ -228,7 +228,7 @@ namespace Game.Comm
             using (locker.Lock(playerId, out player))
             {
                 ITribe tribe;
-                Error error = procedure.CreateTribe(player, tribeName, out tribe);
+                Error error = tribeManager.CreateTribe(player, tribeName, out tribe);
                 if(error!=Error.Ok) return error.ToString();
                 tribe.SendRanksUpdate();
             }

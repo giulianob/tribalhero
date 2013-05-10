@@ -157,6 +157,16 @@ namespace Game.Logic.Formulas
         public virtual int GetGoldRate(ICity city)
         {
             int value = 0;
+            
+            var weaponExportMax =
+                            city.Technologies.GetEffects(EffectCode.WeaponExport)
+                                .DefaultIfEmpty()
+                                .Max(x => x == null ? 0 : (int)x.Value[0]);
+            if(weaponExportMax>0)
+            {
+                value += GetWeaponExportLaborProduce(weaponExportMax, city.Resource.Labor.Value, city.Resource.Gold.Value);
+            }
+
             foreach (Structure structure in city.Where(x => ObjectTypeFactory.IsStructureType("Market", x)))
             {
                 if (structure.Lvl >= 10)
@@ -182,7 +192,7 @@ namespace Game.Logic.Formulas
         /// <param name="stats"></param>
         /// <param name="efficiency"></param>
         /// <returns></returns>
-        public virtual int GetWoodRateForForest(Forest forest, StructureStats stats, double efficiency)
+        public virtual int GetWoodRateForForest(Forest forest, IStructureStats stats, double efficiency)
         {
             return (int)(stats.Labor * forest.Rate * (1d + efficiency));
         }

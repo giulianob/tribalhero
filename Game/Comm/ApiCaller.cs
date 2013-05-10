@@ -166,5 +166,20 @@ namespace Game.Comm
             };
             return MakeCall("player", "set_password", parms);
         }
+
+        public static ApiResponse GiveAchievement(string name, AchievementTier tier, string type, string icon, string title, string description)
+        {
+            var parms = new List<KeyValuePair<string, string>>
+            {
+                    new KeyValuePair<string, string>("name", name),
+                    new KeyValuePair<string, string>("tier", ((byte)tier).ToString()),
+                    new KeyValuePair<string, string>("icon", icon),
+                    new KeyValuePair<string, string>("type", type),
+                    new KeyValuePair<string, string>("title", title),
+                    new KeyValuePair<string, string>("description", description),
+            };
+
+            return MakeCall("player", "give_achievement", parms);
+        }
     }
 }

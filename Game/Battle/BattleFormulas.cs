@@ -187,9 +187,9 @@ namespace Game.Battle
             // spaceleft is the maxcarry.
             var spaceLeft = new Resource(totalCarry / 1,
                                          totalCarry / 2,
-                                         totalCarry / Config.resource_iron_ratio,
+                                         totalCarry / Config.battle_loot_resource_iron_ratio,
                                          totalCarry / 1,
-                                         totalCarry / Config.resource_labor_ratio);
+                                         totalCarry / Config.battle_loot_resource_labor_ratio);
 
             // maxcarry minus current resource is the empty space left.
             spaceLeft.Subtract(attacker.Loot);
@@ -197,7 +197,7 @@ namespace Game.Battle
             // returning lesser value between the count and the empty space.
             return new Resource(Math.Min(count / 1, spaceLeft.Crop),
                                 Math.Min(count / 2, spaceLeft.Gold),
-                                Math.Min(count / Config.resource_iron_ratio, spaceLeft.Iron),
+                                Math.Min(count / Config.battle_loot_resource_iron_ratio, spaceLeft.Iron),
                                 Math.Min(count / 1, spaceLeft.Wood));
         }
 
@@ -255,7 +255,7 @@ namespace Game.Battle
             return 100 - stealth < Config.Random.Next(0, 100);
         }
 
-        public virtual bool UnitStatModCheck(BaseBattleStats stats, TroopBattleGroup group, string value)
+        public virtual bool UnitStatModCheck(IBaseBattleStats stats, TroopBattleGroup group, string value)
         {
             string[] conditions = value.Split('=', '|');
             int success = 0;
@@ -322,7 +322,7 @@ namespace Game.Battle
             return success == conditions.Length / 2;
         }
 
-        public virtual BattleStats LoadStats(BaseBattleStats stats, ICity city, TroopBattleGroup group)
+        public virtual BattleStats LoadStats(IBaseBattleStats stats, ICity city, TroopBattleGroup group)
         {
             var calculator = new BattleStatsModCalculator(stats);
             foreach (var effect in city.Technologies.GetAllEffects())

@@ -17,24 +17,21 @@ namespace Game.Logic.Procedures
         private readonly IDbManager dbPersistance;
 
         private readonly ILocker locker;
-
-        private readonly ITribeFactory tribeFactory;
-
-        private readonly ITribeManager tribeManager;
-
+        
         public Procedure()
         {
         }
 
-        public Procedure(IRegionManager regions, Formula formula, IWorld world, IDbManager dbPersistance, ILocker locker, ITribeFactory tribeFactory, ITribeManager tribeManager)
+        // Do not add more parameters to this class. If it needs anything pass it in with the method that needs the dependency.
+        // We should try to move some of the logic outside of this class since it's getting big and becoming a bag for random methods.
+        // Maybe split it up into more specific types.
+        public Procedure(IRegionManager regions, Formula formula, IWorld world, IDbManager dbPersistance, ILocker locker)
         {
             this.regions = regions;
             this.formula = formula;
             this.world = world;
             this.dbPersistance = dbPersistance;
             this.locker = locker;
-            this.tribeFactory = tribeFactory;
-            this.tribeManager = tribeManager;
         }
 
         public static Procedure Current { get; set; }

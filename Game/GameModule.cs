@@ -16,6 +16,7 @@ using Game.Data.Tribe;
 using Game.Logic;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Logic.Triggers;
 using Game.Map;
 using Game.Module;
 using Game.Setup;
@@ -67,7 +68,9 @@ namespace Game
 
             #region Action
 
-            Bind<IActionWorker>().ToMethod(c => new ActionWorker());            
+            Bind<IActionWorker>().ToMethod(c => new ActionWorker());
+            Bind<IDynamicAction>().To<DynamicAction>();
+            Bind<ICityTriggerManager>().To<CityTriggerManager>().InSingletonScope();
 
             #endregion
 
@@ -106,7 +109,7 @@ namespace Game
             Bind<ActionRequirementFactory>().ToSelf().InSingletonScope();
             Bind<StructureFactory>().ToSelf().InSingletonScope();
             Bind<EffectRequirementFactory>().ToSelf().InSingletonScope();
-            Bind<InitFactory>().ToSelf().InSingletonScope();
+            Bind<InitFactory>().ToSelf().InSingletonScope();            
             Bind<PropertyFactory>().ToSelf().InSingletonScope();
             Bind<RequirementFactory>().ToSelf().InSingletonScope();
             Bind<TechnologyFactory>().ToSelf().InSingletonScope();
@@ -200,7 +203,7 @@ namespace Game
             Bind<StrongholdBattleProcedure>().ToSelf().InSingletonScope();
             Bind<CityBattleProcedure>().ToSelf().InSingletonScope();
             Bind<BarbarianTribeBattleProcedure>().ToSelf().InSingletonScope();
-
+            Bind<Random>().ToSelf().InSingletonScope();
             #endregion
 
             #region Stronghold

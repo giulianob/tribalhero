@@ -17,7 +17,6 @@ namespace Testing.FormulaTests
     {
         public StrongholdFormulaTest()
         {
-            Config.stronghold_classic = false;
             SystemClock.SetClock(DateTime.UtcNow);
         }
 
@@ -158,7 +157,6 @@ namespace Testing.FormulaTests
 
         public void Dispose()
         {
-            Config.stronghold_classic = true;
             SystemClock.ResyncClock();
         }
 

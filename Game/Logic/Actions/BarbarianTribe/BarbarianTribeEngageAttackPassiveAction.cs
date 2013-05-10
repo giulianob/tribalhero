@@ -285,9 +285,9 @@ namespace Game.Logic.Actions
             Resource actual;
             Resource cap = new Resource(troopObject.Stub.Carry / 1,
                                         troopObject.Stub.Carry / 2,
-                                        troopObject.Stub.Carry / Config.resource_iron_ratio,
+                                        troopObject.Stub.Carry / Config.battle_loot_resource_iron_ratio,
                                         troopObject.Stub.Carry / 1,
-                                        troopObject.Stub.Carry / Config.resource_labor_ratio);
+                                        troopObject.Stub.Carry / Config.battle_loot_resource_labor_ratio);
 
             troopObject.Stats.Loot.Add(resource, cap, out actual, out returning);
 

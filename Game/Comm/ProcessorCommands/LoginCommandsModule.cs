@@ -365,7 +365,7 @@ namespace Game.Comm.ProcessorCommands
                             ReplyError(session, packet, Error.PlayerHashNotFound);
                             return;
                         }
-                        strategy = locationStrategyFactory.CreateCityTileNextToFriendLocationStrategy(Config.friend_radius, player);
+                        strategy = locationStrategyFactory.CreateCityTileNextToFriendLocationStrategy(Config.friend_invite_radius, player);
                     }
                     else
                     {

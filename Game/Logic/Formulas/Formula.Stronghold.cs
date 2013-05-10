@@ -8,7 +8,6 @@ namespace Game.Logic.Formulas
 {
     public partial class Formula
     {
-        
         public virtual int StrongholdGateLimit(byte level)
         {
             if (Config.stronghold_gate_limit > 0)
@@ -30,19 +29,20 @@ namespace Game.Logic.Formulas
             return (int)hp;
         }
 
-        public virtual Resource StrongholdGateRepairCost(byte level, decimal damagedGateHp)
+        public virtual Resource StrongholdGateRepairCost(decimal damagedGateHp)
         {
             return new Resource(0, (int)(damagedGateHp / 8), (int)(damagedGateHp / 16), (int)(damagedGateHp / 4));
         }
 
         public virtual int StrongholdMainBattleMeter(byte level)
         {
+            int[] meters = new[] { 0, 500, 600, 700, 800, 950, 1100, 1250, 1450, 1650, 1850, 2100, 2350, 2600, 2900, 3200, 3500, 3850, 4200, 4600, 5000 };
+
             if (Config.stronghold_battle_meter > 0)
             {
                 return Config.stronghold_battle_meter;
             }
-
-            int[] meters = new[] { 0, 500, 600, 700, 800, 950, 1100, 1250, 1450, 1650, 1850, 2100, 2350, 2600, 2900, 3200, 3500, 3850, 4200, 4600, 5000 };
+            
             return meters[level];
         }
 
@@ -50,9 +50,7 @@ namespace Game.Logic.Formulas
         {
             int[] unitLevels = new[] {1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10};
 
-
             upkeep = Config.stronghold_fixed_upkeep == 0 ? (int)(StrongholdMainBattleMeter(level) * .8) : Config.stronghold_fixed_upkeep;
-            
             unitLevel = (byte)unitLevels[level-1];
         }
 
@@ -93,12 +91,10 @@ namespace Game.Logic.Formulas
             {
                 return 0;
             }
-/*            if (Config.stronghold_classic)
-            {
-                return (((decimal)SystemClock.Now.Subtract(stronghold.DateOccupied).TotalDays + stronghold.BonusDays) / 2 + 10) * (5 + stronghold.Lvl * 5);
-            }*/
+
             var serverUptime = (decimal)SystemClock.Now.Subtract((DateTime)Global.SystemVariables["Server.date"].Value).TotalDays;
-            return (((decimal)SystemClock.Now.Subtract(stronghold.DateOccupied).TotalDays + stronghold.BonusDays) / 2 + serverUptime / 5 + 10) * (1 + stronghold.Lvl * .2m);
+            var daysOccupied = (decimal)SystemClock.Now.Subtract(stronghold.DateOccupied).TotalDays;
+            return ((daysOccupied + stronghold.BonusDays) / 2m + serverUptime / 5 + 10) * (5 + stronghold.Lvl * 5m);
         }
     }
 }

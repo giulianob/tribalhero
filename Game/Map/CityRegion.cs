@@ -155,7 +155,7 @@ namespace Game.Map
 
         public static ushort GetRegionIndex(uint x, uint y)
         {
-            return (ushort)(x / Config.city_region_width + (y / Config.city_region_height) * Config.city_region_column);
+            return (ushort)(x / Config.city_region_width + (y / Config.city_region_height) * (int)(Config.map_width / Config.city_region_width));
         }
 
         #endregion

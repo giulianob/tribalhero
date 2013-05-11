@@ -59,29 +59,13 @@
 		
 		public static function laborMoveTime(parentObj: GameObject, count: int, cityToStructure:Boolean, city: City, techManager: TechnologyManager): int
 		{
-			const secondsPerLaborer: int = 180;
-			
-            var totalLaborers: int = city.getBusyLaborCount() + city.resources.labor.getValue();
-			var moveTime: int;
-            if (cityToStructure && totalLaborers < 100)
-            {
-                moveTime = secondsPerLaborer * (totalLaborers / 100) * count;
-            }
-			else {
-				var overtime: int = 0;
-				for each (var tech: EffectPrototype in techManager.getEffects(EffectPrototype.EFFECT_LABOR_MOVE_TIME_MOD, EffectPrototype.INHERIT_ALL)) {
-					overtime = Math.max(overtime, (int)(tech.param1));
-				}
-				overtime = Math.min(100, overtime);
-			
-				moveTime = (int)((100 - overtime * 10) * count * secondsPerLaborer * Constants.secondsPerUnit / 100);
+			var overtime: int = 0;
+			for each (var tech: EffectPrototype in techManager.getEffects(EffectPrototype.EFFECT_LABOR_MOVE_TIME_MOD, EffectPrototype.INHERIT_ALL)) {
+				overtime = Math.max(overtime, (int)(tech.param1));
 			}
+			overtime = Math.min(100, overtime);
 			
-			if (!cityToStructure) {
-				moveTime = moveTime / 20;
-			}
-			
-			return moveTime;
+            		return (int)((100 - overtime*10) * count * 180 * Constants.secondsPerUnit / 100);
 		}
 		
 		public static function trainTime(parentObj: StructureObject, baseValue: int, techManager: TechnologyManager): int

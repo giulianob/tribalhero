@@ -162,6 +162,8 @@ namespace Game.Setup
 
         TroopNotStationed = 608,
 
+        TroopNotStationedStronghold = 609,
+
         BattleNotViewable = 610,
 
         BattleViewableNoTroopsInBattle = 611,
@@ -171,6 +173,7 @@ namespace Game.Setup
         BattleViewableGateHp = 613,
 
         BattleViewableGateAttackingUnits = 614,
+
 
         #endregion
 

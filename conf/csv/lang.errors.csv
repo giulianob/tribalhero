@@ -53,7 +53,7 @@ ERROR_419,This structure cannot be removed.,
 ERROR_420,There must be an available road to perform this action,
 ERROR_421,A road already exists there,
 ERROR_422,This road is required for other structures to exist and cannot be removed,
-ERROR_423,"Sorry, we cannot find any spot close to your friend."
+ERROR_423,"Sorry, we cannot find any spot close to your friend.",
 ERROR_424,Player name and player invitation code do not match.
 ERROR_600,You can't attack yourself!,
 ERROR_601,Not allowed while city is in battle,
@@ -62,6 +62,7 @@ ERROR_604,It doesn't look like you have enough units to do that. You can try aga
 ERROR_605,You have reached the maximum number of troops allowed.,
 ERROR_606,No units have been selected,
 ERROR_607,Not allowed while troop is in battle,
+ERROR_609,Troop is not stationed in a stronghold.,
 ERROR_610,This battle cannot be watched.,
 ERROR_611,You aren't allowed to watch this battle unless one of your troops have participated for at least 5 rounds.,
 ERROR_612,You aren't allowed to watch this battle unless one of your troops have participated for at least 5 rounds. Battle will be viewable in approximately {0} round(s),
@@ -92,8 +93,8 @@ ERROR_743,Invalid assignment dispatch time.,
 ERROR_744,You are not allowed to attack a member of your own tribe.,
 ERROR_745,Your units are too slow for the specified attack time.,
 ERROR_746,You cannot join this assignment.,
-ERROR_747,Your tribe has reached the maximum of 20 concurrent assignments.
-ERROR_748,Your troop must have at least 40 upkeep to join an assignment.
+ERROR_747,Your tribe has reached the maximum of 20 concurrent assignments.,
+ERROR_748,Your troop must have at least 40 upkeep to join an assignment.,
 ERROR_801,Stronghold not found.,
 ERROR_802,Stronghold is not occupied.,
 ERROR_810,You are not allowed to attack a stronghold of your own tribe.,
@@ -103,4 +104,3 @@ ERROR_813,Stronghold is inactive.,
 ERROR_814,Stronghold gate is already at full health.,
 ERROR_815,Stronghold gate cannot be repaired while its under attack,
 ERROR_901,This barbarian tribe has already been completely defeated.,
-

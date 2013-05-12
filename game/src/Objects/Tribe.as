@@ -34,6 +34,8 @@ package src.Objects
 		{
             // If id is 0 then just return true if the user is in a tribe at all
 			if (id == -1) return this.id != 0;
+			
+			if (this.id <= 0) return false;
 
 			return this.id == id;
 		}

@@ -80,11 +80,12 @@
 			Constants.tribe.ranks = ranks;
 			return ranks;
 		}
-		private function onCreateTribe(packet: Packet) : void  {
+		private function onCreateTribe(packet: Packet, custom: *) : void  {
 			 if (MapComm.tryShowError(packet)) {
 				return;
 			}
 			readTribeRanks(packet);
+			Global.mapComm.Tribe.viewTribeProfile(Constants.tribe.id);			
 		}
 		public function createTribe(name: String) : void {
 			var packet: Packet = new Packet();

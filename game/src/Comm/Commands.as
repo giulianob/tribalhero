@@ -102,8 +102,9 @@ package src.Comm {
 		public static const TROOP_ATTACK_STRONGHOLD: int = 615;
 		public static const TROOP_REINFORCE_CITY: int = 616;
 		public static const TROOP_REINFORCE_STRONGHOLD: int = 617;
-	        public static const TROOP_ATTACK_BARBARIAN_TRIBE: int = 618;
+	    public static const TROOP_ATTACK_BARBARIAN_TRIBE: int = 618;
 		public static const TROOP_SWITCH_MODE: int = 619;
+		public static const TROOP_TRANSFER: int = 620;
 		public static const LOCAL_TROOP_MOVE: int = 621;	
 		
         public static const BATTLE_SUBSCRIBE: int = 700;
@@ -155,6 +156,7 @@ package src.Comm {
 		public static const STRONGHOLD_LOCATE: int = 1103;
 		public static const STRONGHOLD_GATE_REPAIR: int = 1104;
 		public static const STRONGHOLD_LOCATE_BY_NAME: int = 1105;
+		public static const STRONGHOLD_LIST: int = 1106;
 		
 	}
 	

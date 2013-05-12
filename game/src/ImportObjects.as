@@ -205,7 +205,7 @@
 		public static var ICON_ACHIEVEMENT_BAR_GOLD: Class;
 		
 		[Embed(source = "../../graphics/icons/achievements/chalice-gold.png")]
-		public static var ICON_ACHIEVEMENT_CHALIVE_GOLD: Class;
+		public static var ICON_ACHIEVEMENT_CHALICE_GOLD: Class;
 		
 		[Embed(source = "../../graphics/icons/achievements/chest-gold.png")]
 		public static var ICON_ACHIEVEMENT_CHEST_GOLD: Class;
@@ -232,7 +232,7 @@
 		public static var ICON_ACHIEVEMENT_BAR_SILVER: Class;
 		
 		[Embed(source = "../../graphics/icons/achievements/chalice-silver.png")]
-		public static var ICON_ACHIEVEMENT_CHALIVE_SILVER: Class;
+		public static var ICON_ACHIEVEMENT_CHALICE_SILVER: Class;
 		
 		[Embed(source = "../../graphics/icons/achievements/chest-silver.png")]
 		public static var ICON_ACHIEVEMENT_CHEST_SILVER: Class;
@@ -259,7 +259,7 @@
 		public static var ICON_ACHIEVEMENT_BAR_BRONZE: Class;
 		
 		[Embed(source = "../../graphics/icons/achievements/chalice-bronze.png")]
-		public static var ICON_ACHIEVEMENT_CHALIVE_BRONZE: Class;
+		public static var ICON_ACHIEVEMENT_CHALICE_BRONZE: Class;
 		
 		[Embed(source = "../../graphics/icons/achievements/chest-bronze.png")]
 		public static var ICON_ACHIEVEMENT_CHEST_BRONZE: Class;
@@ -286,7 +286,7 @@
 		public static var ICON_ACHIEVEMENT_BAR_HONORARY: Class;
 		
 		[Embed(source = "../../graphics/icons/achievements/chalice-honorary.png")]
-		public static var ICON_ACHIEVEMENT_CHALIVE_HONORARY: Class;
+		public static var ICON_ACHIEVEMENT_CHALICE_HONORARY: Class;
 		
 		[Embed(source = "../../graphics/icons/achievements/chest-honorary.png")]
 		public static var ICON_ACHIEVEMENT_CHEST_HONORARY: Class;

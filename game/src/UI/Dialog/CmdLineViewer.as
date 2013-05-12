@@ -224,7 +224,7 @@ package src.UI.Dialog
 		
 		private function channelHotkeys(e: KeyboardEvent): void {
 			// Allow switching channels by pressing CTRL+#
-			if (e.ctrlKey) {				
+			if (e.ctrlKey && !e.altKey) {				
 				for (var i: int = 0; i < CHANNELS.length; i++) {
 					if (e.keyCode == Keyboard.NUMBER_1 + i) {
 						var button:JToggleButton = CHANNELS[i].button;
@@ -305,13 +305,16 @@ package src.UI.Dialog
 			
 			var i: int;
 			var achievementStars: Array = [];
-			for (i = 0; i < Math.min(3, Math.ceil(achievements.gold/3.0)); i++) {
+			var goldAchievements: int = Math.min(3, Math.ceil(achievements.gold / 3.0));
+			for (i = 0; i < goldAchievements; i++) {
 				achievementStars.push('<span class="rank-gold">♦</span>');
 			}
-			for (i = 0; i < Math.min(3 - achievementStars.length, Math.ceil(achievements.silver/3.0)); i++) {
+			var silverAchievements: int = Math.min(3 - achievementStars.length, Math.ceil(achievements.silver / 3.0));
+			for (i = 0; i < silverAchievements; i++) {
 				achievementStars.push('<span class="rank-silver">♦</span>');
 			}
-			for (i = 0; i < Math.min(3 - achievementStars.length, Math.ceil(achievements.bronze/3.0)); i++) {
+			var bronzeAchievements: int = Math.min(3 - achievementStars.length, Math.ceil(achievements.bronze / 3.0));
+			for (i = 0; i < bronzeAchievements; i++) {
 				achievementStars.push('<span class="rank-bronze">♦</span>');
 			}			
 			

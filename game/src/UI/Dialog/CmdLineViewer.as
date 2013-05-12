@@ -224,7 +224,7 @@ package src.UI.Dialog
 		
 		private function channelHotkeys(e: KeyboardEvent): void {
 			// Allow switching channels by pressing CTRL+#
-			if (e.ctrlKey) {				
+			if (e.ctrlKey && !e.altKey) {				
 				for (var i: int = 0; i < CHANNELS.length; i++) {
 					if (e.keyCode == Keyboard.NUMBER_1 + i) {
 						var button:JToggleButton = CHANNELS[i].button;

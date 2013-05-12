@@ -27,17 +27,25 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly Formula formula;
 
+        private readonly ILocker locker;
+
+        private readonly ITroopObjectInitializerFactory troopObjectInitializerFactory;
+
         private readonly StructureFactory structureFactory;
 
         public TroopCommandsModule(IActionFactory actionFactory,
                                    StructureFactory structureFactory,
                                    IGameObjectLocator gameObjectLocator,
-                                   Formula formula)
+                                   Formula formula,
+                                   ILocker locker,
+                                   ITroopObjectInitializerFactory troopObjectInitializerFactory)
         {
             this.actionFactory = actionFactory;
             this.structureFactory = structureFactory;
             this.gameObjectLocator = gameObjectLocator;
             this.formula = formula;
+            this.locker = locker;
+            this.troopObjectInitializerFactory = troopObjectInitializerFactory;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -53,6 +61,83 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.TroopLocalSet, LocalTroopSet);
             processor.RegisterCommand(Command.TroopAttackBarbarianTribe, AttackBarbarianTribe);
             processor.RegisterCommand(Command.TroopModeSwitch, ModeSwitch);
+            processor.RegisterCommand(Command.TroopTransfer, Transfer);
+        }
+
+        private void Transfer(Session session, Packet packet)
+        {
+            uint cityId;
+            ushort troopId;
+            uint strongholdId;
+
+            try
+            {
+                cityId = packet.GetUInt32();
+                troopId = packet.GetUInt16();
+                strongholdId = packet.GetUInt32();
+            }
+            catch (Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            ICity city;
+            IStation station;
+
+            //we need to find out the stationed city first then reacquire local + stationed stronghold locks            
+            using (Concurrency.Current.Lock(cityId, out city))
+            {
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                ITroopStub stub;
+
+                if (!city.Troops.TryGetStub(troopId, out stub) || stub.Station == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                station = stub.Station;
+            }
+
+            using (locker.Lock(city, station))
+            {
+                ITroopStub stub;
+
+                if (!city.Troops.TryGetStub(troopId, out stub))
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                //Make sure that the person sending the retreat is either the guy who owns the troop and it's stationed.
+                if ((city.Owner != session.Player) || stub.Station == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                if (stub.Station.LocationType != LocationType.Stronghold)
+                {
+                    ReplyError(session, packet, Error.TroopNotStationedStronghold);
+                    return;
+                }
+
+                var ra = actionFactory.CreateStrongholdDefenseChainAction(cityId,
+                                                                          troopObjectInitializerFactory.CreateStationedTroopObjectInitializer(stub),
+                                                                          strongholdId);
+
+                Error ret = city.Worker.DoPassive(city, ra, true);
+
+                ReplyWithResult(session, packet, ret);
+            }
+
+
         }
 
         private void ModeSwitch(Session session, Packet packet)
@@ -663,27 +748,11 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(city, stronghold))
             {
-                ITroopObject troopObject;
-                if (!Procedure.Current.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
-                {
-                    ReplyError(session, packet, Error.ObjectNotFound);
-                    return;
-                }
-
-                var da = actionFactory.CreateStrongholdDefenseChainAction(cityId,
-                                                                          troopObject.ObjectId,
-                                                                          targetStrongholdId,
-                                                                          mode);
+                var initializer = troopObjectInitializerFactory.CreateCityTroopObjectInitializer(cityId, simpleStub, TroopBattleGroup.Defense, mode);
+                var da = actionFactory.CreateStrongholdDefenseChainAction(cityId, initializer, targetStrongholdId);
                 Error ret = city.Worker.DoPassive(city, da, true);
-                if (ret != 0)
-                {
-                    Procedure.Current.TroopObjectDelete(troopObject, true);
-                    ReplyError(session, packet, ret);
-                }
-                else
-                {
-                    ReplySuccess(session, packet);
-                }
+
+                ReplyWithResult(session, packet, ret);
             }
         }
 

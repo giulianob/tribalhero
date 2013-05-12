@@ -218,6 +218,8 @@ namespace Game.Comm
 		
         TroopModeSwitch = 619,
 
+        TroopTransfer = 620,
+
         TroopLocalSet = 621,
 
         #endregion
@@ -331,6 +333,8 @@ namespace Game.Comm
         StrongholdGateRepair = 1104,
 
         StrongholdLocateByName = 1105,
+
+        StrongholdList = 1106,
 
         #endregion
 

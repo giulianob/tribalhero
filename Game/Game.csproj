@@ -412,8 +412,6 @@
     <Compile Include="Map\ICityRegionManager.cs" />
     <Compile Include="Map\ICityRegionManagerFactory.cs" />
     <Compile Include="Map\IGameObjectLocator.cs" />
-    <Compile Include="Map\IIsometricPosition.cs" />
-    <Compile Include="Map\IPathBresenham.cs" />
     <Compile Include="Map\IRegionFactory.cs" />
     <Compile Include="Map\IRegionManager.cs" />
     <Compile Include="Data\Tribe\ITribeManager.cs" />

@@ -153,9 +153,10 @@ namespace Game.Data
 
         protected SimpleGameObject()
         {
+            state = GameObjectState.NormalState();
         }
 
-        protected SimpleGameObject(uint x, uint y)
+        protected SimpleGameObject(uint x, uint y) : this()
         {
             this.x = origX = x;
             this.y = origY = y;

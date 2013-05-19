@@ -5,7 +5,6 @@ using System.Linq;
 using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Actions;
-using Game.Logic.Actions.ResourceActions;
 using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
@@ -103,26 +102,19 @@ namespace Game.Data.Forest
                         }
 
                         // check if tile is safe
-                        List<ushort> tiles = world.Regions.GetTilesWithin(x, y, 7);
+                        List<ushort> tiles = world.Regions.GetTilesWithin(x, y, 6);
                         if (objectTypeFactory.HasTileType("CityStartTile", tiles))
                         {
                             continue;
                         }
 
-                        if (!objectTypeFactory.IsAllTileType("TileBuildable", tiles))
+                        List<ushort> buildtableTiles = world.Regions.GetTilesWithin(x, y, 2);
+                        if (!objectTypeFactory.IsAllTileType("TileBuildable", buildtableTiles))
                         {
                             continue;
                         }
 
                         world.Regions.LockRegion(x, y);
-
-                        // check if near any other objects
-                        if (world.GetObjects(x, y).Exists(obj => !(obj is ITroopObject)) ||
-                            world.GetObjectsWithin(x, y, 3).Exists(obj => !(obj is ITroopObject)))
-                        {
-                            world.Regions.UnlockRegion(x, y);
-                            continue;
-                        }
 
                         break;
                     }

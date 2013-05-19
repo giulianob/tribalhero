@@ -15,7 +15,7 @@ namespace Game.Data.BarbarianTribe
 
         private readonly IRegionManager regionManager;
 
-        private const int MinDistanceAwayFromCities = 10;
+        private const int MinDistanceAwayFromCities = 7;
 
         private readonly Random random = new Random();
         
@@ -47,8 +47,8 @@ namespace Game.Data.BarbarianTribe
                     return false;
                 }
             }
-            while (TooCloseToCities(x, y, MinDistanceAwayFromCities) || regionManager.GetObjectsWithin(x, y, 5).Count > 0);
-         
+            while (!IsLocationAvailable(x, y));
+            
             var ratio = count / 100m;
             var index = random.Next(count);
             for (level = 1; index >= (decimal)LevelProbability[level] * ratio; level++)
@@ -57,6 +57,11 @@ namespace Game.Data.BarbarianTribe
             }
             
             return true;
+        }
+
+        public bool IsLocationAvailable(uint x, uint y)
+        {
+            return !TooCloseToCities(x, y, MinDistanceAwayFromCities) && regionManager.GetObjectsWithin(x, y, 2).Count <= 0;
         }
     }
 }

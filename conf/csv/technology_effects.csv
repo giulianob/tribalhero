@@ -195,6 +195,8 @@ TechType,Lvl,Effect,Location,IsPrivate,P1,P2,P3,P4,P5
 22013,1,XFOR1,Object,TRUE,2,,,,
 22013,1,HaveTechnology,Object,TRUE,22013,1,,,
 22014,1,XFOR1,Object,TRUE,1,,,,
+22015,1,HaveTechnology,Object,TRUE,22015,1,,,
+22015,1,UnitTrainTimeFirst15Reduction,Object,TRUE,90,,,,
 ,,,,,,,,,
 //tribal festival,,,,,,,,,
 30021,1,LaborTrainTimeMod,City,FALSE,7,,,,

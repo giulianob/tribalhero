@@ -211,7 +211,7 @@ namespace Game.Map
 
         public static ushort GetRegionIndex(uint x, uint y)
         {
-            return (ushort)(x / Config.region_width + (y / Config.region_height) * Config.column);
+            return (ushort)(x / Config.region_width + (y / Config.region_height) * (int)(Config.map_width / Config.region_width));
         }
 
         public static int GetTileIndex(ISimpleGameObject obj)

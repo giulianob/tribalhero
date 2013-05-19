@@ -318,20 +318,20 @@ namespace Game.Battle.CombatObjects
                 int totalCarry = Stats.Carry * Count;
                 returning =
                         new Resource(
-                                loot.Crop > totalCarry / Config.resource_crop_ratio
-                                        ? loot.Crop - totalCarry / Config.resource_crop_ratio
+                                loot.Crop > totalCarry / Config.battle_loot_resource_crop_ratio
+                                        ? loot.Crop - totalCarry / Config.battle_loot_resource_crop_ratio
                                         : 0,
-                                loot.Gold > totalCarry / Config.resource_gold_ratio
-                                        ? loot.Gold - totalCarry / Config.resource_gold_ratio
+                                loot.Gold > totalCarry / Config.battle_loot_resource_gold_ratio
+                                        ? loot.Gold - totalCarry / Config.battle_loot_resource_gold_ratio
                                         : 0,
-                                loot.Iron > totalCarry / Config.resource_iron_ratio
-                                        ? loot.Iron - totalCarry / Config.resource_iron_ratio
+                                loot.Iron > totalCarry / Config.battle_loot_resource_iron_ratio
+                                        ? loot.Iron - totalCarry / Config.battle_loot_resource_iron_ratio
                                         : 0,
-                                loot.Wood > totalCarry / Config.resource_wood_ratio
-                                        ? loot.Wood - totalCarry / Config.resource_wood_ratio
+                                loot.Wood > totalCarry / Config.battle_loot_resource_wood_ratio
+                                        ? loot.Wood - totalCarry / Config.battle_loot_resource_wood_ratio
                                         : 0,
-                                loot.Labor > totalCarry / Config.resource_labor_ratio
-                                        ? loot.Wood - totalCarry / Config.resource_labor_ratio
+                                loot.Labor > totalCarry / Config.battle_loot_resource_labor_ratio
+                                        ? loot.Wood - totalCarry / Config.battle_loot_resource_labor_ratio
                                         : 0);
 
                 // Remove it from our loot

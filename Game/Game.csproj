@@ -292,13 +292,18 @@
     <Compile Include="Data\Tribe\TribePermission.cs" />
     <Compile Include="Data\Tribe\TribeRank.cs" />
     <Compile Include="Data\Tribe\Tribesman.cs" />
+    <Compile Include="Data\Troop\Initializers\AssignmentTroopObjectInitializer.cs" />
+    <Compile Include="Data\Troop\Initializers\CityTroopObjectInitializer.cs" />
     <Compile Include="Data\Troop\CityTroopStubFactory.cs" />
     <Compile Include="Data\Troop\ITroopManager.cs" />
     <Compile Include="Data\Troop\ITroopObject.cs" />
+    <Compile Include="Data\Troop\ITroopObjectInitializer.cs" />
+    <Compile Include="Data\Troop\ITroopObjectInitializerFactory.cs" />
     <Compile Include="Data\Troop\ITroopStub.cs" />
     <Compile Include="Data\Troop\ITroopStubFactory.cs" />
     <Compile Include="Data\Troop\IUnitTemplate.cs" />
     <Compile Include="Data\Troop\SimpleStub.cs" />
+    <Compile Include="Data\Troop\Initializers\StationedTroopObjectInitializer.cs" />
     <Compile Include="Data\Troop\Unit.cs" />
     <Compile Include="Data\Troop\Formation.cs" />
     <Compile Include="Data\Troop\TroopManager.cs" />
@@ -407,6 +412,8 @@
     <Compile Include="Map\ICityRegionManager.cs" />
     <Compile Include="Map\ICityRegionManagerFactory.cs" />
     <Compile Include="Map\IGameObjectLocator.cs" />
+    <Compile Include="Map\IIsometricPosition.cs" />
+    <Compile Include="Map\IPathBresenham.cs" />
     <Compile Include="Map\IRegionFactory.cs" />
     <Compile Include="Map\IRegionManager.cs" />
     <Compile Include="Data\Tribe\ITribeManager.cs" />

@@ -43,6 +43,7 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 22012,HaveTechnology,22012,lvl=1,count=1,,,,Requires 4 for Price of 3 Technology.,
 22013,HaveTechnology,22013,lvl=1,count=1,,,,Requires 3 for Price of 2 Technology.,
 22014,HaveTechnology,id=23011,minlvl=1,count=1,,,,Requires Archery Research.,Require Archery Class level 1.
+22015,HaveTechnology,22015,lvl=1,count=1,,,,Requires Basic Training Technology.,
 ,,,,,,,,,
 //barrack & stable & workshop,,,,,,,,,
 22041,CountLessThan,id=2204,count=1,,,,Only one unit can be on diet per structure.,,

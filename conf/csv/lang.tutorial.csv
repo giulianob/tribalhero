@@ -21,12 +21,12 @@ TUTORIAL_WAITING_FOR_LUMBERMILL,Your lumbermill is currently being built.
 TUTORIAL_FIND_FOREST,Lumbermills gather wood from the Forests scattered throughout the world. Click on the World View icon above the minimap and find a level 1 forest. Forests are represented by small green circles on the minimap.
 TUTORIAL_CLICK_GATHER_WOOD,Click on Gather Lumber to assign laborers to this forest.
 ,
-TUTORIAL_BACK_TO_CITY_AFTER_FOREST,Your city is now producing crop and wood. Let's go back to your city and start training troops. Click the globe on the top-left of the screen to return home.
+TUTORIAL_BACK_TO_CITY_AFTER_FOREST,Your city is now producing crop and will soon be producing wood. Let's go back to your city and start training troops. Click the globe on the top-left of the screen to return home.
 TUTORIAL_UPGRADE_TC,The Training Grounds will be the place where you can train your first troop. It is built by a level 2 Town Center. Click on the Town Center and choose to upgrade it.
 TUTORIAL_BUILD_TRAINING_GROUND,"Most structures, such as Training Grounds, need to be connected to a road. Click on the Town Center and build some roads. Then build a Training Ground."
-TUTORIAL_TRAIN_SWORD_TECH_CLICK_TG,You must first research Sword Fighting before you can train units. Click on the Training Ground and choose to research Sword Fighting.
+TUTORIAL_RESEARCH_BASIC_TRAINING_TECH_CLICK_TG,You must first research Basic Training before you can train units. Click on the Training Ground and choose to research Basic Training.
 TUTORIAL_TRAIN_FIGHTER,Great now you have the ability to train Fighters. Click on the Training Ground and train at least 15 Fighters.
-TUTORIAL_WAIT_FOR_FIGHTERS,Your laborers are now being trained into Fighters. Each Fighter will consume 1 crop per hour. Wait until all your Fighters are trained.
+TUTORIAL_WAIT_FOR_FIGHTERS,Your laborers are now being trained into Fighters. Each Fighter will consume 1 crop per hour. We'll attack the barbarians once your Fighters are trained.
 TUTORIAL_FIND_BARBARIANS,Your Fighters are now ready to attack the barbarians. Find the Level 1 Barbarian Camp near your city.
 TUTORIAL_ATTACK_BARBARIANS,Click the attack button and send at least 15 Fighters to attack the Barbarian Camp.
 ,

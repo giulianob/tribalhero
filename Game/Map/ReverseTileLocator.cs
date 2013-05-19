@@ -1,3 +1,5 @@
+using System;
+
 namespace Game.Map
 {
     public class ReverseTileLocator
@@ -13,6 +15,7 @@ namespace Game.Map
             this.getRandom = getRandom;
         }
 
+        [Obsolete("Inject ReverseTileLocator instead")]
         public static ReverseTileLocator Current { get; set; }
 
         #region Delegates

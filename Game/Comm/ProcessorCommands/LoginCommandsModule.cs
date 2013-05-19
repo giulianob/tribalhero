@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
@@ -44,13 +45,16 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly ILocationStrategyFactory locationStrategyFactory;
 
+        private readonly IBarbarianTribeManager barbarianTribeManager;
+
         public LoginCommandsModule(IActionFactory actionFactory,
                                    ITribeManager tribeManager,
                                    IDbManager dbManager,
                                    ILocker locker,
                                    IWorld world,
                                    Procedure procedure,
-                                   ILocationStrategyFactory locationStrategyFactory)
+                                   ILocationStrategyFactory locationStrategyFactory,
+                                   IBarbarianTribeManager barbarianTribeManager)
         {
             this.actionFactory = actionFactory;
             this.tribeManager = tribeManager;
@@ -59,6 +63,7 @@ namespace Game.Comm.ProcessorCommands
             this.world = world;
             this.procedure = procedure;
             this.locationStrategyFactory = locationStrategyFactory;
+            this.barbarianTribeManager = barbarianTribeManager;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -265,6 +270,7 @@ namespace Game.Comm.ProcessorCommands
                 //Player Info
                 reply.AddUInt32(player.PlayerId);
                 reply.AddString(player.PlayerHash);
+                reply.AddUInt32(player.TutorialStep);
                 reply.AddByte((byte)(player.Rights >= PlayerRights.Admin ? 1 : 0));
                 reply.AddString(sessionId);
                 reply.AddString(player.Name);
@@ -365,7 +371,7 @@ namespace Game.Comm.ProcessorCommands
                             ReplyError(session, packet, Error.PlayerHashNotFound);
                             return;
                         }
-                        strategy = locationStrategyFactory.CreateCityTileNextToFriendLocationStrategy(Config.friend_radius, player);
+                        strategy = locationStrategyFactory.CreateCityTileNextToFriendLocationStrategy(Config.friend_invite_radius, player);
                     }
                     else
                     {
@@ -378,7 +384,7 @@ namespace Game.Comm.ProcessorCommands
                         return;
                     }
 
-                    var error = procedure.CreateCity(session.Player, cityName, strategy, out city);
+                    var error = procedure.CreateCity(session.Player, cityName, strategy, barbarianTribeManager, out city);
                     if(error!=Error.Ok)
                     {
                         ReplyError(session, packet, error);

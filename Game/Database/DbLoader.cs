@@ -136,10 +136,10 @@ namespace Game.Database
                     Global.SystemVariables["System.time"].Value = DateTime.UtcNow;
                     DbManager.Save(Global.SystemVariables["System.time"]);
                 }
-                catch(Exception e)
+                catch(Exception)
                 {                    
                     transaction.Rollback();
-                    throw e;
+                    throw;
                 }
             }
 
@@ -458,6 +458,7 @@ namespace Game.Database
                                             PlayerRights.Basic)
                     {
                             DbPersisted = true,
+                            TutorialStep = (uint)reader["tutorial_step"],
                             TribeRequest = (uint)reader["invitation_tribe_id"],
                             Muted = DateTime.SpecifyKind((DateTime)reader["muted"], DateTimeKind.Utc),
                             Banned = (bool)reader["banned"]
@@ -474,9 +475,10 @@ namespace Game.Database
             logger.Info("Loading achievements...");
             using (var reader = DbManager.Select(AchievementList.DB_TABLE))
             {
-                IPlayer player;
                 while (reader.Read())
                 {
+                    IPlayer player;
+
                     if (!World.Players.TryGetValue((uint)reader["player_id"], out player))
                     {
                         throw new Exception("Player not found");
@@ -488,9 +490,10 @@ namespace Game.Database
 
             using (var reader = DbManager.SelectList(AchievementList.DB_TABLE))
             {
-                IPlayer player;
                 while (reader.Read())
                 {
+                    IPlayer player;
+
                     if (!World.Players.TryGetValue((uint)reader["player_id"], out player))
                     {
                         throw new Exception("Player not found");

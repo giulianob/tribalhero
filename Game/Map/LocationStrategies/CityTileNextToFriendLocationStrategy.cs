@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
@@ -47,7 +47,7 @@ namespace Game.Map.LocationStrategies
 
         public Error NextLocation(out Position position)
         {
-            var city = player.GetCityList().First();
+            var city = player.GetCityList().FirstOrDefault();
 
             if (city == null)
             {

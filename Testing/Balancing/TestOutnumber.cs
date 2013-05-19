@@ -1,6 +1,5 @@
 ﻿#region
 
-using ConsoleSimulator;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Setup;
@@ -50,6 +49,7 @@ namespace Testing.Balancing
 
         private static void TestMultiplier(int baseCount, double multiplier, double expectAdvantage)
         {
+            /*
             Group defender = new Group();
             defender.AddToLocal(UnitType.Swordsman, 1, (ushort)(baseCount * multiplier));
             Group attacker = new Group();
@@ -73,6 +73,7 @@ namespace Testing.Balancing
                                       baseCount * multiplier,
                                       defender.Upkeep(),
                                       multiplier * baseCount * expectAdvantage));
+             */
         }
 
         [Fact(Skip = "For Anthony only")]

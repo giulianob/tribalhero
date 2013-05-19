@@ -15,6 +15,8 @@ namespace Game.Data
 
         uint PlayerId { get; }
 
+        uint TutorialStep { get; set; }
+
         string PlayerHash { get; }
 
         DateTime Created { get; }
@@ -56,8 +58,6 @@ namespace Game.Data
         IEnumerable<ICity> GetCityList(bool includeDeleted = false);
 
         ICity GetCity(uint id);
-
-        string ToString();
 
         void SendSystemMessage(IPlayer from, String subject, String message);
 

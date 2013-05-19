@@ -56,7 +56,7 @@ namespace Testing.FormulaTests
             
             techManager.GetEffects(EffectCode.UnitTrainTimeFirst15Reduction).Returns(new List<Effect>
             {
-                    new Effect {Value = new[] {"90"}}
+                    new Effect {Value = new[] {(object)90}}
             });
 
             // Act
@@ -96,7 +96,7 @@ namespace Testing.FormulaTests
             
             techManager.GetEffects(EffectCode.UnitTrainTimeFirst15Reduction).Returns(new List<Effect>
             {
-                    new Effect {Value = new[] {"90"}}
+                    new Effect {Value = new[] {(object)90}}
             });
 
             // Act

@@ -134,7 +134,6 @@
     <Compile Include="FormulaTests\CityValueTest.cs" />
     <Compile Include="FormulaTests\BattleFormulaTest.cs" />
     <Compile Include="FormulaTests\LaborMoveTest.cs" />
-    <Compile Include="FormulaTests\StrongholdFormulaClassicTest.cs" />
     <Compile Include="FormulaTests\StrongholdFormulaTest.cs" />
     <Compile Include="FormulaTests\TimeTest.cs" />
     <Compile Include="FormulaTests\UpkeepTest.cs" />

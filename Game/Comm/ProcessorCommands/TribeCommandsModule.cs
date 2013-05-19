@@ -312,7 +312,7 @@ namespace Game.Comm.ProcessorCommands
 
         private void Upgrade(Session session, Packet packet)
         {
-            if (!session.Player.Tribesman.Tribe.IsOwner(session.Player))
+            if (!session.Player.Tribesman.Tribe.HasRight(session.Player.PlayerId, TribePermission.Upgrade))
             {
                 ReplyError(session, packet, Error.TribesmanNotAuthorized);
                 return;

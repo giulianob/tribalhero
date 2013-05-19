@@ -97,9 +97,8 @@ namespace Game.Logic.Actions
                                                             AttackMode mode);
 
         StrongholdDefenseChainAction CreateStrongholdDefenseChainAction(uint cityId,
-                                                                        uint troopObjectId,
-                                                                        uint targetStrongholdId,
-                                                                        AttackMode mode);
+                                                                        ITroopObjectInitializer troopObjectInitializer,
+                                                                        uint targetStrongholdId);
 
         TroopMovePassiveAction CreateTroopMovePassiveAction(uint cityId,
                                                             uint troopObjectId,

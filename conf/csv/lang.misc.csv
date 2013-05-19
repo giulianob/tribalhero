@@ -112,8 +112,8 @@ MSG_AP_STRUCTURE_DEFENSE_BONUS,{0} Alignment Rating Bonus: Damage to structures 
 ,
 PLAYER_PROFILE_DIALOG_CITY_DISTANCE,{0} - About {1} away
 PLAYER_PROFILE_DIALOG_CITY_DISTANCE_FOOTER,*Based on an average speed troop on an attack mission
-PLAYER_PROFILE_INVITATION_TOOLTIP,This code is used when a friend of you wants to create the initial city next to you.
-PLAYER_PROFILE_INVITATION_TOOLTIP_LOCATION,This code can be found under your friend's profile dialog.
+PLAYER_PROFILE_INVITATION_TOOLTIP,This code can be given to your friends when they sign up if you would like them to start playing near your main city.
+PLAYER_PROFILE_INVITATION_TOOLTIP_LOCATION,Ask your friend for their invitation code if you want to start near them. Your friend can find this code in their profile.
 ,
 SEND_ATTACK_AP_BONUS,The city you are attacking currently has alignment rating bonuses since they have been attacked a lot lately. You may receive less loot than usual and this city's defenses may be temporarily increased.\n\nAre you sure you want to still attack?
 ,
@@ -255,3 +255,11 @@ UNIT_MANAGE_DIALOG_TITLE,Assign Units
 UNIT_MANAGE_DIALOG_TIP,Units in hiding will consume an extra 25% upkeep.
 UNIT_MANAGE_HIDE_NEW_UNITS,Hide newly trained units
 UNIT_MANAGE_HIDE_NEW_UNITS_TOOLTIP,"If selected, all newly trained units will go directly into hiding and will not defend your city if it is attacked. Units in hiding consume an extra 25% upkeep."
+,
+TRANSFER_TITLE,Troop transfer
+TRANSFER_NO_OTHER_STRONGHOLD,Your tribe has no other stronghold!
+TRANSFER_CHOOSE_STRONGHOLD,Choose a stronghold:
+TRANSFER_ARRIVE_IN,Arrive in {0}
+TRANSFER_SEND,Send
+TRANSFER_CANCEL,Cancel
+TRANSFER_WARNING,"If the stronghold is lost to another tribe before the troop arrives, the troop will be sent back to its city."

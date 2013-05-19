@@ -27,7 +27,7 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 // Farm,,,,,,,,,,,,
 2106,1,0,1,,,,,,,,,
 2106,1,1,1,,labor_move,,,,,,,
-2106,1,2,1,,structure_Upgrade,10,,,,,,
+2106,1,2,1,,structure_Upgrade,10,,,,,21062,SELF
 2106,1,5,1,,structure_build,3011,,1,,,21061,SELF
 2106,2,5,1,,structure_build,3011,,2,,,21061,SELF
 2106,3,5,1,,structure_build,3011,,3,,,21061,SELF
@@ -51,7 +51,7 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 ,,,,,,,,,,,,
 // Lumbermill,,,,,,,,,,,,
 2107,1,0,2,,,,,,,,,
-2107,1,1,1,,structure_Upgrade,10,,,,,,
+2107,1,1,1,,structure_Upgrade,10,,,,,210712,SELF
 2107,1,2,1,,forest_camp_build,2108,,,,,,
 2107,2,3,1,,structure_build,2111,,,,,210711,SELF
 2107,5,4,1,,technology_upgrade,21071,8,,,,,

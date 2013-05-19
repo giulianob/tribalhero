@@ -1,0 +1,33 @@
+Key,EN
+TUTORIAL_CLICK_TOWNCENTER,A group of barbarians have been spotted near your new city. You can gain loot by attacking and killing the barbarians. First you will need a farm in order to feed your troops. Click the Town Center.
+TUTORIAL_CLICK_BUILD_FARM,"To build a Farm, click on the Farm button under Build and Upgrade."
+TUTORIAL_CLICK_CITY_OVERVIEW,You can see which actions your city is performing in the City Overview. Click to view detailed information about your city.
+,
+TUTORIAL_CITY_OVERVIEW_MSG1,"While you can see resources on the top-right of the main game screen, the city overview provides more detailed information about your resources."
+TUTORIAL_CITY_OVERVIEW_MSG2,"In Tribal Hero there are 4 basic resources: crop, wood, iron, and gold. Each of these resources are gained differently and have specific purposes."
+TUTORIAL_CITY_OVERVIEW_MSG3,"Crop is gained from farms, wood from forests, iron from refineries, and gold from markets."
+TUTORIAL_CITY_OVERVIEW_MSG4,"Many structures in the game require laborers to function, such as the farm requiring laborers to produce crop. Laborers are automatically given to your city at a predefined rate. You can mouse over your laborers in the city overview panel to see the current rate."
+TUTORIAL_CITY_OVERVIEW_MSG5,"Your city also has other attributes such as attack, defense, and influence points. Mouse over each of these in the city overview panel for more information."
+TUTORIAL_CITY_OVERVIEW_MSG6,You can also view what your city is currently doing. You can click on any action to go it on the map.
+,
+TUTORIAL_WAIT_FOR_FARM,Your farm is currently building. Wait until it's done then assign it laborers to start gathering crop.
+TUTORIAL_CLICK_FARM,Farms require laborers to produce crop. Click on the Farm.
+TUTORIAL_CLICK_FARM_ASSIGN_LABORERS,Click Assign Laborers then choose the number of laborers to place in the farm.
+,
+TUTORIAL_CLICK_TOWNCENTER_TO_BUILD_LUMBERMILL,A Lumbermill needs to be built in order to gather wood. \nClick on the Town Center.
+TUTORIAL_CLICK_BUILD_LUMBERMILL,Click on Build Lumbermill.
+,
+TUTORIAL_WAITING_FOR_LUMBERMILL,Your lumbermill is currently being built.
+TUTORIAL_FIND_FOREST,Lumbermills gather wood from the Forests scattered throughout the world. Click on the World View icon above the minimap and find a level 1 forest. Forests are represented by small green circles on the minimap.
+TUTORIAL_CLICK_GATHER_WOOD,Click on Gather Lumber to assign laborers to this forest.
+,
+TUTORIAL_BACK_TO_CITY_AFTER_FOREST,Your city is now producing crop and wood. Let's go back to your city and start training troops. Click the globe on the top-left of the screen to return home.
+TUTORIAL_UPGRADE_TC,The Training Grounds will be the place where you can train your first troop. It is built by a level 2 Town Center. Click on the Town Center and choose to upgrade it.
+TUTORIAL_BUILD_TRAINING_GROUND,"Most structures, such as Training Grounds, need to be connected to a road. Click on the Town Center and build some roads. Then build a Training Ground."
+TUTORIAL_TRAIN_SWORD_TECH_CLICK_TG,You must first research Sword Fighting before you can train units. Click on the Training Ground and choose to research Sword Fighting.
+TUTORIAL_TRAIN_FIGHTER,Great now you have the ability to train Fighters. Click on the Training Ground and train at least 15 Fighters.
+TUTORIAL_WAIT_FOR_FIGHTERS,Your laborers are now being trained into Fighters. Each Fighter will consume 1 crop per hour. Wait until all your Fighters are trained.
+TUTORIAL_FIND_BARBARIANS,Your Fighters are now ready to attack the barbarians. Find the Level 1 Barbarian Camp near your city.
+TUTORIAL_ATTACK_BARBARIANS,Click the attack button and send at least 15 Fighters to attack the Barbarian Camp.
+,
+TUTORIAL_END,"Your Fighters are now marching towards the barbarians. Once the battle is over, you will receive a report with the outcome of the battle. You will receive some loot once your fighters return to your town if they survive. You should now continue to build up your city."

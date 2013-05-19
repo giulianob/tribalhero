@@ -223,4 +223,4 @@ UPKEEP_REDUCE_CATAPULT_TECHNOLOGY_NAME,Catapult Diet
 UPKEEP_REDUCE_CATAPULT_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Catapult. (Stacks additively up to 30%)
 ,
 BASIC_TRAINING_TECHNOLOGY_NAME,Basic Training
-BASIC_TRAINING_TECHNOLOGY_LVL_1,Increase train time of the first 15 units in the city.
+BASIC_TRAINING_TECHNOLOGY_LVL_1,Allows training Fighters. Also makes it so the 15 units in the city are trained extremely quickly.

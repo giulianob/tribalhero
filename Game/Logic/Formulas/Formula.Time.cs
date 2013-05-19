@@ -81,7 +81,7 @@ namespace Game.Logic.Formulas
             {
                 var trainFirst15Discount = techManager.GetEffects(EffectCode.UnitTrainTimeFirst15Reduction)
                                                       .DefaultIfEmpty()
-                                                      .Max(e => e == null ? 0 : int.Parse((string)e.Value[0]))
+                                                      .Max(e => e == null ? 0 : (int)e.Value[0])
                                                       .FromPercentageDiscount();
 
                 var discountedUnits = Math.Min(15 - currentCityUpkeep, unitCount);

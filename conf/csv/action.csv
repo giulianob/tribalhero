@@ -78,8 +78,9 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 ,,,,,,,,,,,,
 //training ground,,,,,,,,,,,,
 2201,1,0,1,,,,,,,,,
-2201,1,1,1,,unit_train,11,,,,,,
+2201,1,1,1,,unit_train,11,,,,,22015,INVISIBLE
 2201,1,2,1,,structure_Upgrade,15,,,,,,
+2201,1,12,1,,technology_Upgrade,22015,1,,,,,
 2201,2,3,1,,structure_Build,2402,,,,,,
 2201,3,4,1,,unit_train,12,,,,,22014,UPWARD
 2201,4,5,1,,unit_upgrade,11,3,,,,,

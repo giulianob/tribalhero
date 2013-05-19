@@ -30,6 +30,7 @@ namespace Game.Map
 
         #region Singleton
 
+        [Obsolete("Inject IWorld instead")]
         public static IWorld Current { get; set; }
 
         #endregion

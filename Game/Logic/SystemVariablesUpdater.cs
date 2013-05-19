@@ -57,6 +57,7 @@ namespace Game.Logic
             this.forestManager = forestManager;
         }
 
+        [Obsolete("Inject SystemVariablesUpdater instead")]
         public static SystemVariablesUpdater Current { get; set; }
 
         public void Resume()

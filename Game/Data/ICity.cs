@@ -27,8 +27,6 @@ namespace Game.Data
 
         byte Lvl { get; }
 
-        NotificationManager Notifications { get; }
-
         ReferenceManager References { get; }
 
         /// <summary>

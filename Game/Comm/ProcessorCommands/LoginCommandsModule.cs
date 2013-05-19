@@ -265,6 +265,7 @@ namespace Game.Comm.ProcessorCommands
                 //Player Info
                 reply.AddUInt32(player.PlayerId);
                 reply.AddString(player.PlayerHash);
+                reply.AddUInt32(player.TutorialStep);
                 reply.AddByte((byte)(player.Rights >= PlayerRights.Admin ? 1 : 0));
                 reply.AddString(sessionId);
                 reply.AddString(player.Name);

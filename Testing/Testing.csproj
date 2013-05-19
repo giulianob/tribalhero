@@ -114,12 +114,12 @@
     <Compile Include="ActionsTests\CityPassiveActionTest.cs" />
     <Compile Include="ActionsTests\StrongholdGateBattlePassiveActionTest.cs" />
     <Compile Include="ActionsTests\TribeContributeActiveActionTest.cs" />
-    <Compile Include="Balancing\TestUserBattles.cs" />
     <Compile Include="Balancing\TestSwordsman.cs" />
     <Compile Include="Balancing\TestUtility.cs" />
     <Compile Include="Balancing\TestCavalry.cs" />
     <Compile Include="Balancing\TestOutnumber.cs" />
     <Compile Include="Balancing\TestArcher.cs" />
+    <Compile Include="Balancing\UnitType.cs" />
     <Compile Include="BattleTests\BattleManagerTest.cs" />
     <Compile Include="BattleTests\BattleOrderTest.cs" />
     <Compile Include="BattleTests\CombatGroupTest.cs" />
@@ -165,10 +165,6 @@
     <ProjectReference Include="..\Common.Testing\Common.Testing.csproj">
       <Project>{07693ED0-7EB9-4AE4-AF3B-F36EC85BE962}</Project>
       <Name>Common.Testing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ConsoleSimulator\ConsoleSimulator.csproj">
-      <Project>{831301A1-D65D-4DD6-AB67-23FBBE59145A}</Project>
-      <Name>ConsoleSimulator</Name>
     </ProjectReference>
     <ProjectReference Include="..\Game\Game.csproj">
       <Project>{93D46B65-B2E0-46C9-8BAA-518B3DB64DC0}</Project>

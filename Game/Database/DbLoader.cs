@@ -458,6 +458,7 @@ namespace Game.Database
                                             PlayerRights.Basic)
                     {
                             DbPersisted = true,
+                            TutorialStep = (uint)reader["tutorial_step"],
                             TribeRequest = (uint)reader["invitation_tribe_id"],
                             Muted = DateTime.SpecifyKind((DateTime)reader["muted"], DateTimeKind.Utc),
                             Banned = (bool)reader["banned"]

@@ -15,7 +15,7 @@ namespace Game.Data.BarbarianTribe
 
         private readonly IRegionManager regionManager;
 
-        private const int MinDistanceAwayFromCities = 7;
+        private const int MinDistanceAwayFromCities = 8;
 
         private readonly Random random = new Random();
         
@@ -28,7 +28,7 @@ namespace Game.Data.BarbarianTribe
 
         private bool TooCloseToCities(uint x, uint y, int minDistance)
         {
-            return mapFactory.Locations().Any(loc => tileLocator.TileDistance(x, y, loc.X, loc.Y) < minDistance);
+            return mapFactory.Locations().Any(loc => tileLocator.TileDistance(x, y, loc.X, loc.Y) <= minDistance);
         }
 
         public bool Next(int count, out byte level, out uint x, out uint y)

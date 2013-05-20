@@ -57,8 +57,8 @@ package src.UI.Dialog {
 			updateTime();
 		}
 
-		private function updateTime(e: Event = null) : void {				
-			var trainTime: int = Formula.trainTime(structure.level, sldAmount.getValue(), unitPrototype, city, city.techManager, false);
+		private function updateTime(e: Event = null) : void {			
+			var trainTime: int = Formula.trainTime(structure.level, sldAmount.getValue(), unitPrototype, city, structure.getCorrespondingCityObj().techManager, false);
 
 			lblTime.setText(Util.formatTime(trainTime));
 		}

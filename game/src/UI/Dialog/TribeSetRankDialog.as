@@ -92,7 +92,7 @@ package src.UI.Dialog{
 			btnAccept = new JButton();
 			btnAccept.setText("Set New Rank");
 
-			lblMessage = new MultilineLabel("Since you are the chief of your tribe, you are the only one that can change the rank of your members. Elders have the ability to recruit/kick tribesmen and can moderate the message board. The Tribesman rank has no administrative privilege.", 5);
+			lblMessage = new MultilineLabel("Choose the new rank for this tribesman.", 5);
 
 			//component layout
 			append(lblMessage);

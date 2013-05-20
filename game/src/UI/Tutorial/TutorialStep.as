@@ -35,7 +35,7 @@ package src.UI.Tutorial
 			this.messageId = messageId;			
 		}
 		
-		protected function showWizardAtPosition(position: IntPoint, wizardId: String, messageIds: Array): void {
+		protected function showWizardAtPosition(position: IntPoint, wizardId: String, messageIds: Array, completionCallback: Function = null): void {
 			wizardId += "_WIZARD";
 			
 			if (wizardId == this.messageId) {
@@ -51,7 +51,7 @@ package src.UI.Tutorial
 				messages.push(text == null ? "[" + messageId + "]" : text);
 			}
 			
-			var wizardTooltip: WizardTooltip = new WizardTooltip(messages);			
+			var wizardTooltip: WizardTooltip = new WizardTooltip(messages, completionCallback);			
 			this.messageTooltip = wizardTooltip;
 			this.messageTooltip.showFixed(position);
 			this.messageId = wizardId;			

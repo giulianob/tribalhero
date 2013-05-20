@@ -563,7 +563,7 @@
 
 			// Begin game tutorial
 			tutorial = new GameTutorial();
-			tutorial.start(map);
+			tutorial.start(Constants.tutorialStep, map, Global.mapComm.General);
 		}
 
 		public function show() : void {

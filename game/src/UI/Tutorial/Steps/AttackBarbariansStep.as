@@ -7,24 +7,26 @@ package src.UI.Tutorial.Steps
 	import src.Global;
 	import src.Map.City;
 	import src.Map.CityObject;
+	import src.Objects.Actions.Action;
+	import src.Objects.BarbarianTribe;
+	import src.UI.Dialog.InfoDialog;
 	import src.UI.GameJSidebar;
+	import src.UI.Sidebars.BarbarianTribeInfo.BarbarianTribeSidebar;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
 	import src.UI.Sidebars.ObjectInfo.ObjectInfoSidebar;
 	import src.UI.Tutorial.TutorialStep;
+	import src.Util.StringHelper;
 	
 	/**
 	 * This step does the following:
-	 * - Show message telling user what TC is and to click it.
-	 * - Show message telling user to build Farm.
+	 * - Show message telling user to find the barbarian tribe
+	 * - Show message telling user to attack barbarian tribe
 	 */
-	public class BuildFarmStep extends TutorialStep 
+	public class AttackBarbariansStep extends TutorialStep 
 	{
-		private const TOWNCENTER_TYPE: int = 2000;
-		private const FARM_TYPE: int = 2106;
-		
 		private var timer: Timer = new Timer(200);
 		
-		public function BuildFarmStep() 
+		public function AttackBarbariansStep() 
 		{
 			timer.addEventListener(TimerEvent.TIMER, onTimer);
 		}		
@@ -35,10 +37,13 @@ package src.UI.Tutorial.Steps
 		}
 		
 		private function onTimer(e: Event = null): void {
-			// If user has a farm, this step is done
-			var farm: CityObject = map.cities.getByIndex(0).getStructureOfType(FARM_TYPE);
-			if (farm != null) 
+			// If user has an attack action then this step is done
+			var city: City = map.cities.getByIndex(0);
+			var hasAttackTroops: Boolean = city.currentActions.getActions(Action.BARBARIAN_TRIBE_ATTACK_CHAIN).length > 0;
+
+			if (hasAttackTroops) 
 			{
+				InfoDialog.showMessageDialog("Tribal Hero", StringHelper.localize("TUTORIAL_END"));
 				this.complete();
 				return;
 			}
@@ -50,14 +55,14 @@ package src.UI.Tutorial.Steps
 				return;
 			}
 			
-			// If build sidebar is up then tell user to build the farm
-			var objectInfoSidebar: ObjectInfoSidebar = sidebar as ObjectInfoSidebar;			
-			if (objectInfoSidebar && objectInfoSidebar.gameObject.type == TOWNCENTER_TYPE) {				
-				showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_CLICK_BUILD_FARM");
+			// If barbarian sidebar is up
+			var barbarianTribeSidebar: BarbarianTribeSidebar = sidebar as BarbarianTribeSidebar;			
+			if (barbarianTribeSidebar) {				
+				showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_ATTACK_BARBARIANS");
 				return;
 			}
 			
-			showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_CLICK_TOWNCENTER");
+			showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_FIND_BARBARIANS");
 		}
 		
 		override public function dispose():void 

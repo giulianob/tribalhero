@@ -3,6 +3,7 @@ using System.Linq;
 using Game.Battle;
 using Game.Battle.CombatGroups;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 
 namespace Game.Logic.Formulas
 {
@@ -79,7 +80,7 @@ namespace Game.Logic.Formulas
             return new ushort[] {101, 102, 105, 103, 104, 106};
         }
 
-        public Resource BarbarianTribeBonus(byte level, IBattleManager battle, ICombatGroup combatGroup)
+        public Resource BarbarianTribeBonus(byte level, IBattleManager battle, ICombatGroup combatGroup, IBarbarianTribe barbarianTribe)
         {
             var bonusAmt = new[] {15, 34, 75, 141, 232, 349, 493, 665, 865, 1094};
 
@@ -100,7 +101,14 @@ namespace Game.Logic.Formulas
                 return new Resource();
             }
 
-            return new Resource(wood: bonusAmt[level - 1], crop: bonusAmt[level - 1]) * (double)(myTotal / total);
+            var myPercentage = myTotal / total;
+
+            var bonus = new Resource(wood: bonusAmt[level - 1], crop: bonusAmt[level - 1]) * (double)myPercentage;
+
+            // Add remaining barb resources as well
+            bonus.Add(barbarianTribe.Resource * (double)myPercentage);
+
+            return bonus;
         }
     }
 }

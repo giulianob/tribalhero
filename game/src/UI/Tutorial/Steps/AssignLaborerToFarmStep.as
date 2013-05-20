@@ -30,11 +30,6 @@ package src.UI.Tutorial.Steps
 		}		
 		
 		override public function execute(): void {		
-			if (map.cities.size() > 1) {
-				this.complete();
-				return;
-			}
-			
 			timer.start();
 			onTimer();
 		}

@@ -1,5 +1,7 @@
 package src.UI.Tutorial.Steps 
 {
+	import flash.geom.Point;
+	import src.Map.MapUtil;
 	import src.Util.StringHelper;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
@@ -23,7 +25,6 @@ package src.UI.Tutorial.Steps
 	 */
 	public class GatherWoodStep extends TutorialStep 
 	{		
-		private const LUMBERMILL_TYPE: int = 2107;
 		private const FORESTCAMP_TYPE: int = 2108;
 		
 		private var shouldShowTutorialEndMsg: Boolean = false;
@@ -35,25 +36,24 @@ package src.UI.Tutorial.Steps
 			timer.addEventListener(TimerEvent.TIMER, onTimer);
 		}		
 		
-		override public function execute(): void {		
-			if (map.cities.size() > 1) {
-				this.complete();
-				return;
-			}
-						
+		override public function execute(): void {								
 			timer.start();			
 			onTimer();
 		}
 		
 		private function onTimer(e: Event = null): void {
-			// If user has a forest or higher than level 1 lumbermill then this step is done
+			// If user has a forest
 			var city: City = map.cities.getByIndex(0);
-			var lumbermill: CityObject = city.getStructureOfType(LUMBERMILL_TYPE);
 			var forestCamp: CityObject = city.getStructureOfType(FORESTCAMP_TYPE);
-			if ((lumbermill != null && lumbermill.level > 1) || forestCamp != null) {
+			if (forestCamp != null) {
 				
 				if (shouldShowTutorialEndMsg) {
-					InfoDialog.showMessageDialog(StringHelper.localize("STR_MESSAGE"), StringHelper.localize("TUTORIAL_END"));
+					showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_BACK_TO_CITY_AFTER_FOREST");
+					
+					var mainBuildingScreenPos: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
+					if (!Global.gameContainer.camera.CameraRectangle().containsPoint(mainBuildingScreenPos)) {
+						return;
+					}					
 				}
 				
 				this.complete();

@@ -7,37 +7,49 @@ package src.UI.Tutorial.Steps
 	import src.Global;
 	import src.Map.City;
 	import src.Map.CityObject;
+	import src.Objects.Prototypes.TechnologyPrototype;
+	import src.Objects.TechnologyStats;
 	import src.UI.GameJSidebar;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
 	import src.UI.Sidebars.ObjectInfo.ObjectInfoSidebar;
 	import src.UI.Tutorial.TutorialStep;
+	import System.Linq.Enumerable;
 	
 	/**
 	 * This step does the following:
-	 * - Show message telling user what TC is and to click it.
-	 * - Show message telling user to build Farm.
+	 * - Show message telling user to train Sword Tech.
 	 */
-	public class BuildFarmStep extends TutorialStep 
+	public class UpgradeSwordTechStep extends TutorialStep 
 	{
-		private const TOWNCENTER_TYPE: int = 2000;
-		private const FARM_TYPE: int = 2106;
+		private const TRAINING_GROUND_TYPE: int = 2201;
+		private const BASIC_TECH_TYPE: int = 22015;
 		
 		private var timer: Timer = new Timer(200);
 		
-		public function BuildFarmStep() 
+		public function UpgradeSwordTechStep() 
 		{
 			timer.addEventListener(TimerEvent.TIMER, onTimer);
 		}		
 		
 		override public function execute(): void {					
+			if (map.cities.size() > 1) {
+				this.complete();
+				return;
+			}
+						
 			timer.start();
 			onTimer();
 		}
 		
 		private function onTimer(e: Event = null): void {
-			// If user has a farm, this step is done
-			var farm: CityObject = map.cities.getByIndex(0).getStructureOfType(FARM_TYPE);
-			if (farm != null) 
+			// If user has basic training tech then this step is done
+			var city: City = map.cities.getByIndex(0);			
+			var trainingGround: CityObject = city.getStructureOfType(TRAINING_GROUND_TYPE);
+			var hasSwordTech: Boolean = Enumerable.from(trainingGround.techManager.technologies).any(function (tech: TechnologyStats): Boolean {
+				return tech.prototype.techtype == BASIC_TECH_TYPE;
+			});					
+						
+			if (hasSwordTech) 
 			{
 				this.complete();
 				return;
@@ -48,16 +60,9 @@ package src.UI.Tutorial.Steps
 			if (sidebar is CursorCancelSidebar || Global.gameContainer.frames.length) {
 				hideAllMessages();
 				return;
-			}
-			
-			// If build sidebar is up then tell user to build the farm
-			var objectInfoSidebar: ObjectInfoSidebar = sidebar as ObjectInfoSidebar;			
-			if (objectInfoSidebar && objectInfoSidebar.gameObject.type == TOWNCENTER_TYPE) {				
-				showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_CLICK_BUILD_FARM");
-				return;
-			}
-			
-			showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_CLICK_TOWNCENTER");
+			}			
+
+			showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_RESEARCH_BASIC_TRAINING_TECH_CLICK_TG");
 		}
 		
 		override public function dispose():void 

@@ -1,8 +1,10 @@
 ﻿package src.Map
 {
+	import com.greensock.motionPaths.RectanglePath2D;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import src.Constants;
 
 	public class Camera extends EventDispatcher
@@ -172,6 +174,11 @@
 			return new Point(x + (Constants.screenW * zoomFactorOverOne) / 2.0, y + (Constants.screenH * zoomFactorOverOne) / 2.0);
 		}
 
+		public function CameraRectangle() : Rectangle
+		{
+			return new Rectangle(x, y, Constants.screenW * zoomFactorOverOne, Constants.screenH * zoomFactorOverOne);
+		}
+				
 		public function ScrollTo(x: int, y: int): void
 		{
 			if (x < 0) x = 0;

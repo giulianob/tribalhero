@@ -32,9 +32,11 @@ package src.UI.Tooltips
 		private var btnPrevious: JButton;
 		private var btnDone: JButton;		
 		private var messages: Array;
+		private var completionCallback:Function;
 		
-		public function WizardTooltip(messages: Array) 
+		public function WizardTooltip(messages: Array, completionCallback: Function) 
 		{
+			this.completionCallback = completionCallback;
 			this.messages = messages;
 			
 			label = new MultilineLabel("", 0, 20);
@@ -61,6 +63,9 @@ package src.UI.Tooltips
 			btnDone = new JButton("Ok");
 			btnDone.addActionListener(function(e: Event): void {
 				hide();
+				if (this.completionCallback) {
+					this.completionCallback();
+				}
 			});
 			
 			ui.appendAll(label, pnlFooter);

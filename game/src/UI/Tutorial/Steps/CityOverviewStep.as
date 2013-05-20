@@ -36,11 +36,6 @@ package src.UI.Tutorial.Steps
 		}		
 		
 		override public function execute(): void {		
-			if (map.cities.size() > 1) {
-				this.complete();
-				return;
-			}
-            
 			var farm: CityObject = map.cities.getByIndex(0).getStructureOfType(FARM_TYPE);
 			if (farm != null && farm.level >= 1) 
 			{

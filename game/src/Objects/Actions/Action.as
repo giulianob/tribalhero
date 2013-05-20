@@ -89,6 +89,7 @@ package src.Objects.Actions {
 		public static const ROAD_DESTROY: int = 511;
         public static const UNIT_TRAIN: int = 601;
         public static const UNIT_UPGRADE: int = 602;
+		public static const BARBARIAN_TRIBE_ATTACK_CHAIN: int = 710;
 		public static const DEFAULT_ACTION: int = 801;
 		public static const TRIBE_CONTRIBUTE: int = 1018;
 		

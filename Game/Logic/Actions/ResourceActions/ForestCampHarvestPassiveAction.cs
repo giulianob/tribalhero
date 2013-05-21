@@ -3,10 +3,12 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Data.Forest;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -14,14 +16,33 @@ namespace Game.Logic.Actions
 {
     public class ForestCampHarvestPassiveAction : ScheduledPassiveAction
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         private readonly uint cityId;
 
         private readonly uint forestId;
 
-        public ForestCampHarvestPassiveAction(uint cityId, uint forestId)
+        private readonly IScheduler scheduler;
+
+        private readonly IWorld world;
+
+        private readonly IForestManager forestManager;
+
+        private readonly ILocker locker;
+
+        public ForestCampHarvestPassiveAction(uint cityId,
+                                              uint forestId,
+                                              IScheduler scheduler,
+                                              IWorld world,
+                                              IForestManager forestManager,
+                                              ILocker locker)
         {
             IsCancellable = true;
             this.forestId = forestId;
+            this.scheduler = scheduler;
+            this.world = world;
+            this.forestManager = forestManager;
+            this.locker = locker;
             this.cityId = cityId;
         }
 
@@ -31,9 +52,17 @@ namespace Game.Logic.Actions
                                               DateTime endTime,
                                               bool isVisible,
                                               string nlsDescription,
-                                              Dictionary<string, string> properties)
+                                              Dictionary<string, string> properties,
+                                              IScheduler scheduler,
+                                              IWorld world,
+                                              IForestManager forestManager,
+                                              ILocker locker)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
+            this.scheduler = scheduler;
+            this.world = world;
+            this.forestManager = forestManager;
+            this.locker = locker;
             IsCancellable = true;
             forestId = uint.Parse(properties["forest_id"]);
             cityId = uint.Parse(properties["city_id"]);
@@ -49,9 +78,9 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            Forest forest;
+            IForest forest;
 
-            if (!World.Current.Forests.TryGetValue(forestId, out forest))
+            if (!forestManager.TryGetValue(forestId, out forest))
             {
                 return Error.ObjectNotFound;
             }
@@ -65,15 +94,15 @@ namespace Game.Logic.Actions
 
         public void Reschedule()
         {
-            Forest forest;
-            if (!World.Current.Forests.TryGetValue(forestId, out forest))
+            IForest forest;
+            if (!forestManager.TryGetValue(forestId, out forest))
             {
                 throw new Exception("Forest is missing");
             }
 
             if (IsScheduled)
             {
-                Scheduler.Current.Remove(this);
+                scheduler.Remove(this);
             }
 
             endTime = forest.DepleteTime.AddSeconds(30);
@@ -83,15 +112,12 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            if (!World.Current.TryGetObjects(cityId, out city))
+            if (!world.TryGetObjects(cityId, out city))
             {
                 throw new Exception("City is missing");
             }
 
-            using (
-                    Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler,
-                                             new object[] {forestId},
-                                             city))
+            using (locker.Lock(forestManager.CallbackLockHandler, new object[] {forestId}, city))
             {
                 if (!IsValid())
                 {
@@ -111,15 +137,12 @@ namespace Game.Logic.Actions
         public override void UserCancelled()
         {
             ICity city;
-            if (!World.Current.TryGetObjects(cityId, out city))
+            if (!world.TryGetObjects(cityId, out city))
             {
                 throw new Exception("City is missing");
             }
 
-            using (
-                    Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler,
-                                             new object[] {forestId},
-                                             city))
+            using (locker.Lock(forestManager.CallbackLockHandler, new object[] {forestId}, city))
             {
                 if (!IsValid())
                 {
@@ -128,8 +151,8 @@ namespace Game.Logic.Actions
 
                 var structure = (IStructure)WorkerObject;
 
-                Forest forest;
-                if (World.Current.Forests.TryGetValue(forestId, out forest))
+                IForest forest;
+                if (forestManager.TryGetValue(forestId, out forest))
                 {
                     // Recalculate the forest
                     forest.BeginUpdate();
@@ -145,7 +168,7 @@ namespace Game.Logic.Actions
 
                 // Remove ourselves
                 structure.BeginUpdate();
-                World.Current.Regions.Remove(structure);
+                world.Regions.Remove(structure);
                 city.ScheduleRemove(structure, false);
                 structure.EndUpdate();
 
@@ -156,15 +179,12 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
             ICity city;
-            if (!World.Current.TryGetObjects(cityId, out city))
+            if (!world.TryGetObjects(cityId, out city))
             {
                 throw new Exception("City is missing");
             }
 
-            using (
-                    Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler,
-                                             new object[] {forestId},
-                                             city))
+            using (locker.Lock(forestManager.CallbackLockHandler, new object[] {forestId}, city))
             {
                 if (!IsValid())
                 {
@@ -173,8 +193,8 @@ namespace Game.Logic.Actions
 
                 var structure = (IStructure)WorkerObject;
 
-                Forest forest;
-                if (World.Current.Forests.TryGetValue(forestId, out forest))
+                IForest forest;
+                if (forestManager.TryGetValue(forestId, out forest))
                 {
                     // Recalculate the forest
                     forest.BeginUpdate();
@@ -185,7 +205,12 @@ namespace Game.Logic.Actions
 
                 // Reset the rate
                 city.BeginUpdate();
-                city.Resource.Wood.Rate -= (int)structure["Rate"];
+                var newRate = city.Resource.Wood.Rate - (int)structure["Rate"];
+                if (newRate < 0)
+                {
+                    logger.Warn("Forest rate going below 0 for forest id[{0}]", forestId);
+                }
+                city.Resource.Wood.Rate = Math.Max(0, newRate);
                 city.EndUpdate();
 
                 StateChange(ActionState.Failed);
@@ -198,9 +223,11 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return
-                        XmlSerializer.Serialize(new[]
-                        {new XmlKvPair("forest_id", forestId), new XmlKvPair("city_id", cityId)});
+                return XmlSerializer.Serialize(new[]
+                {
+                        new XmlKvPair("forest_id", forestId),
+                        new XmlKvPair("city_id", cityId)
+                });
             }
         }
 

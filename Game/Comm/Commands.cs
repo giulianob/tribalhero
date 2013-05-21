@@ -34,6 +34,8 @@ namespace Game.Comm
 
         ProfileByType = 22,
 
+        SaveTutorialStep = 23,
+
         #endregion
 
         #region Action

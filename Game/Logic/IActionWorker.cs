@@ -16,7 +16,7 @@ namespace Game.Logic
 
         IDictionary<uint, PassiveAction> PassiveActions { get; }
 
-        PassiveAction FindAction(IGameObject workerObject, Type type);
+        T FindAction<T>(IGameObject workerObject) where T : PassiveAction;
 
         void Remove(IGameObject workerObject, params GameAction[] ignoreActions);
 

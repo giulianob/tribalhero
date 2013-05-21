@@ -16,17 +16,28 @@ namespace Game.Logic.Actions
 {
     public class LaborMoveActiveAction : ScheduledActiveAction
     {
+        private readonly Formula formula;
+
+        private readonly Procedure procedure;
+
         private readonly uint cityId;
 
         private readonly bool cityToStructure;
 
         private readonly uint structureId;
 
-        public LaborMoveActiveAction(uint cityId, uint structureId, bool cityToStructure, ushort count)
+        public LaborMoveActiveAction(uint cityId,
+                                     uint structureId,
+                                     bool cityToStructure,
+                                     ushort count,
+                                     Formula formula,
+                                     Procedure procedure)
         {
             this.cityId = cityId;
             this.structureId = structureId;
             this.cityToStructure = cityToStructure;
+            this.formula = formula;
+            this.procedure = procedure;
             ActionCount = count;
         }
 
@@ -37,9 +48,13 @@ namespace Game.Logic.Actions
                                      int workerType,
                                      byte workerIndex,
                                      ushort actionCount,
-                                     IDictionary<string, string> properties)
+                                     IDictionary<string, string> properties,
+                                     Formula formula,
+                                     Procedure procedure)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
+            this.formula = formula;
+            this.procedure = procedure;
             cityToStructure = bool.Parse(properties["city_to_structure"]);
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
@@ -70,6 +85,9 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
+            // Calculate move time before transferring laborers so they are considered when calculating the value
+            int moveTime = formula.LaborMoveTime(structure, ActionCount, cityToStructure);
+
             if (cityToStructure)
             {
                 structure.City.BeginUpdate();
@@ -83,33 +101,15 @@ namespace Game.Logic.Actions
                 structure.EndUpdate();
 
                 structure.City.BeginUpdate();
-                Procedure.Current.RecalculateCityResourceRates(structure.City);
-                // labor got taken out immediately                
+                procedure.RecalculateCityResourceRates(structure.City);                
                 structure.City.EndUpdate();
             }
 
             // add to queue for completion
-            BeginTime = DateTime.UtcNow;
-
-            if (cityToStructure)
-            {
-                endTime =
-                        DateTime.UtcNow.AddSeconds(
-                                                   CalculateTime(Formula.Current.LaborMoveTime(structure,
-                                                                                               (byte)ActionCount,
-                                                                                               structure.Technologies)));
-            }
-            else
-            {
-                endTime =
-                        DateTime.UtcNow.AddSeconds(
-                                                   CalculateTime(
-                                                                 Formula.Current.LaborMoveTime(structure,
-                                                                                               (byte)ActionCount,
-                                                                                               structure.Technologies) /
-                                                                 20));
-            }
-
+            BeginTime = DateTime.UtcNow;            
+            
+            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(moveTime));
+            
             return Error.Ok;
         }
 
@@ -130,8 +130,6 @@ namespace Game.Logic.Actions
         public override void UserCancelled()
         {
             ICity city;
-            IStructure structure;
-
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
@@ -139,6 +137,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
+                IStructure structure;
                 if (!city.TryGetStructure(structureId, out structure))
                 {
                     StateChange(ActionState.Failed);
@@ -158,7 +157,7 @@ namespace Game.Logic.Actions
                     structure.EndUpdate();
 
                     structure.City.BeginUpdate();
-                    Procedure.Current.RecalculateCityResourceRates(structure.City);
+                    procedure.RecalculateCityResourceRates(structure.City);
                     structure.City.EndUpdate();
                 }
 
@@ -176,7 +175,7 @@ namespace Game.Logic.Actions
             }
             if (cityToStructure)
             {
-                if (ActionCount > Formula.Current.LaborMoveMax(structure))
+                if (ActionCount > formula.LaborMoveMax(structure))
                 {
                     return Error.ActionCountInvalid;
                 }
@@ -187,7 +186,6 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            IStructure structure;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
@@ -195,6 +193,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
+                IStructure structure;
                 if (!city.TryGetStructure(structureId, out structure))
                 {
                     StateChange(ActionState.Failed);
@@ -208,7 +207,7 @@ namespace Game.Logic.Actions
                     structure.EndUpdate();
 
                     structure.City.BeginUpdate();
-                    Procedure.Current.RecalculateCityResourceRates(structure.City);
+                    procedure.RecalculateCityResourceRates(structure.City);
                     structure.City.EndUpdate();
                 }
                 else
@@ -217,8 +216,8 @@ namespace Game.Logic.Actions
                     structure.City.Resource.Labor.Add(ActionCount);
                     structure.City.EndUpdate();
                 }
+
                 StateChange(ActionState.Completed);
-                return;
             }
         }
 

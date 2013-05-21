@@ -230,6 +230,9 @@
     <Compile Include="Data\BarbarianTribe\BarbarianTribeChecker.cs" />
     <Compile Include="Data\BarbarianTribe\BarbarianTribeConfigurator.cs" />
     <Compile Include="Data\BarbarianTribe\BarbarianTribeManager.cs" />
+    <Compile Include="Data\Forest\IForest.cs" />
+    <Compile Include="Data\Forest\IForestFactory.cs" />
+    <Compile Include="Data\Forest\IForestManager.cs" />
     <Compile Include="Data\PlayerChatState.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />
@@ -478,6 +481,7 @@
     <Compile Include="Util\MathParser.cs" />
     <Compile Include="Util\Locking\DefaultMultiObjectLock.cs" />
     <Compile Include="Util\NameGenerator.cs" />
+    <Compile Include="Util\NumberExtensions.cs" />
     <Compile Include="Util\UnixDateTime.cs" />
     <Compile Include="Util\XMLSerializer.cs" />
   </ItemGroup>
@@ -485,7 +489,7 @@
     <Compile Include="Battle\StatsModCalculator.cs" />
     <Compile Include="Comm\ProcessorCommands\MarketCommandsModule.cs" />
     <Compile Include="Data\GameObject.cs" />
-    <Compile Include="Data\ForestManager.cs" />
+    <Compile Include="Data\Forest\ForestManager.cs" />
     <Compile Include="Data\GameObjectState.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -497,7 +501,7 @@
     <Compile Include="Data\Stats\StructureStats.cs" />
     <Compile Include="Data\Stats\UnitStats.cs" />
     <Compile Include="Data\StructureProperties.cs" />
-    <Compile Include="Data\Forest.cs" />
+    <Compile Include="Data\Forest\Forest.cs" />
     <Compile Include="Data\Troop\TroopTemplate.cs" />
     <Compile Include="Logic\Actions\TroopActions\CityDefenseChainAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\RetreatChainAction.cs" />
@@ -534,7 +538,6 @@
     <Compile Include="Logic\SystemVariablesUpdater.cs" />
     <Compile Include="Map\CityRegion.cs" />
     <Compile Include="Map\RoadManager.cs" />
-    <Compile Include="Module\Npc.cs" />
     <Compile Include="Logic\Randomizer.cs" />
     <Compile Include="Setup\MapFactory.cs" />
     <Compile Include="Setup\ObjectTypeFactory.cs" />

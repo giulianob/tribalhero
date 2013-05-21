@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Game.Battle;
 using Game.Data;
+using Game.Data.Forest;
 using Game.Logic.Procedures;
 
 namespace Game.Map
@@ -14,8 +15,6 @@ namespace Game.Map
 
         RoadManager Roads { get; }
 
-        ForestManager Forests { get; }
-
         object Lock { get; }
 
         Dictionary<uint, IPlayer> Players { get; }
@@ -28,7 +27,7 @@ namespace Game.Map
 
         void DbLoaderAdd(IBattleManager battleManager);
 
-        void AfterDbLoaded(Procedure procedure);
+        void AfterDbLoaded(Procedure procedure, IForestManager forestManager);
 
         bool FindStrongholdId(string name, out uint strongholdId);
 

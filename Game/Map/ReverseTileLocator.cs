@@ -1,3 +1,5 @@
+using System;
+
 namespace Game.Map
 {
     public class ReverseTileLocator
@@ -13,6 +15,7 @@ namespace Game.Map
             this.getRandom = getRandom;
         }
 
+        [Obsolete("Inject ReverseTileLocator instead")]
         public static ReverseTileLocator Current { get; set; }
 
         #region Delegates
@@ -80,7 +83,7 @@ namespace Game.Map
             while (!doSelf && (x == ox && y == oy));
         }
 
-        public virtual void ForeachObject(uint ox, uint oy, byte radius, bool doSelf, DoWork work, object custom)
+        public virtual void ForeachObject(uint ox, uint oy, byte radius, bool doSelf, DoWork work, object custom = null)
         {
             var mode = (byte)(oy % 2 == 0 ? 0 : 1);
 

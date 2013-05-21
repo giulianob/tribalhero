@@ -1,3 +1,4 @@
+using System;
 using Game.Data.Tribe;
 using Game.Logic.Formulas;
 using Game.Map;
@@ -34,6 +35,7 @@ namespace Game.Logic.Procedures
             this.locker = locker;
         }
 
+        [Obsolete("Inject Procedure instead")]
         public static Procedure Current { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using Game.Data;
 using Game.Database;
 using Game.Logic.Procedures;
@@ -136,5 +137,12 @@ namespace Game.Map
             }
         }
 
+        public IEnumerable<ICity> AllCities()
+        {
+            lock (cities)
+            {
+                return cities.Values.ToList();
+            }
+        }
     }
 }

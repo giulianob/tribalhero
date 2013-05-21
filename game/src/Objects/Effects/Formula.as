@@ -65,22 +65,15 @@
                 moveTime = Math.floor(0.95 * Math.exp(0.033 * totalLaborers)) * count;
             }
 			else {
-				var overtime: int = 0;
+			var overtime: int = 0;
 				
-				for each (var tech: EffectPrototype in techManager.getEffects(EffectPrototype.EFFECT_LABOR_MOVE_TIME_MOD, EffectPrototype.INHERIT_ALL)) {
-					overtime = Math.max(overtime, (int)(tech.param1));
-				}
-				
-				overtime = Math.min(100, overtime);
-				
-				moveTime = (int)((100 - overtime * 10) * count * secondsPerLaborer * Constants.secondsPerUnit / 100);
+			for each (var tech: EffectPrototype in techManager.getEffects(EffectPrototype.EFFECT_LABOR_MOVE_TIME_MOD, EffectPrototype.INHERIT_ALL)) {
+				overtime = Math.max(overtime, (int)(tech.param1));
 			}
-			
-			if (!cityToStructure) {
-				moveTime = moveTime / 20;
-			}
-			
-			return moveTime;
+				
+			overtime = Math.min(100, overtime);
+				
+            		return (int)((100 - overtime*10) * count * 180 * Constants.secondsPerUnit / 100);
 		}
 		
 		public static function trainTime(structureLvl: int, unitCount: int, unitPrototype: UnitPrototype, city: City, techManager: TechnologyManager, ignoreUnitCountDiscounts: Boolean): int
@@ -297,9 +290,8 @@
 		 
 		public static function getGateLimit(level: int) : int
         {
-            var limit:Array = [0, 10000, 13500, 17300, 21500, 26200, 31300, 37100, 43400, 50300, 58000,
-                            66500, 75900, 86300, 97800, 110500, 124600, 140100, 157200, 176200, 200000];
-            return limit[level];
+            var limit:Array = [0, 500, 600, 700, 800, 950, 1100, 1250, 1450, 1650, 1850, 2100, 2350, 2600, 2900, 3200, 3500, 3850, 4200, 4600, 5000];
+            return limit[level] * 10;
         }
 
         public static function getGateRepairCost(level: int, currentHp: Number) : Resources

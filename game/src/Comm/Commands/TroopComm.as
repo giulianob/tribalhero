@@ -402,6 +402,18 @@
 			
 			session.write(packet, onSwitchAttackMode, { stub:troopStub, mode:mode } );
 		}
+		
+		public function troopTransfer(troopStub: TroopStub, strongholdId: int): void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TROOP_TRANSFER;
+			
+			packet.writeUInt(troopStub.cityId);
+			packet.writeUShort(troopStub.id);
+			packet.writeUInt(strongholdId);
+			
+			session.write(packet, mapComm.catchAllErrors);
+			
+		}
 	}
 
 }

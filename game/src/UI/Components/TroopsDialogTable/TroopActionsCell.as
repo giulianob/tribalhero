@@ -7,7 +7,9 @@ package src.UI.Components.TroopsDialogTable
 	import src.Objects.Troop.*;
 	import src.UI.Components.TableCells.*;
 	import src.UI.Dialog.TroopAttackModeDialog;
+	import src.UI.Dialog.TroopTransferDialog;
 	import src.Util.*;
+	import src.Comm.Commands.*;
 	
 	public class TroopActionsCell extends AbstractPanelTableCell 
 	{				
@@ -52,6 +54,17 @@ package src.UI.Components.TroopsDialogTable
 						dialog.show();
 					});				
 					getCellPanel().append(btnSwitch);
+					
+					if((value as TroopStub).stationedLocation.type==2) {
+						var btnTransfer: JLabelButton = new JLabelButton("Transfer");
+						btnTransfer.addActionListener(function(e: Event): void {
+							Global.mapComm.Stronghold.listStrongholds(function(strongholds:*):void {
+								var dialog : TroopTransferDialog = new TroopTransferDialog(value,strongholds);
+								dialog.show();
+							});
+						});				
+						getCellPanel().append(btnTransfer);
+					}
 				}
 			}
 		}		

@@ -21,7 +21,7 @@ package src.UI.Components.TroopsDialogTable
 			{ name: "TROOP_LOCATION_COLUMN", property: ".", cellType: TroopLocationCell, width: 200 },
 			{ name: "TROOP_STATUS_COLUMN", property: ".", cellType: TroopStatusCell, width: 0.3 },
 			{ name: "TROOP_UNITS_COLUMN", property: ".", cellType: TroopUnitsCell, width: 0.5 },
-            { name: "", property: ".", cellType: TroopActionsCell , width: 90 },
+            { name: "", property: ".", cellType: TroopActionsCell , width: 140 },
             
             { name: "TROOP_NOTIFICATION_NAME_COLUMN", property: ".", cellType: TroopNotificationNameCell, width: 125 },
             { name: "TROOP_NOTIFICATION_LOCATION_COLUMN", property: ".", cellType: TroopNotificationLocationCell, width: 200 },

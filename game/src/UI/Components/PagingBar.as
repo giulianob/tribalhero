@@ -76,7 +76,7 @@ package src.UI.Components
 			btnFirst.setEnabled(page > 1);
 			btnPrevious.setEnabled(page > 1);
 			btnNext.setEnabled(page < data.pages);
-			btnLast.setEnabled(page < (data.pages - 1));
+			btnLast.setEnabled(page < data.pages);
 			lblPages.setText(data.page + " of " + data.pages);
 		}
 		

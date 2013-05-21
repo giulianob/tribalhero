@@ -1,9 +1,7 @@
-﻿using Game.Data;
+﻿using System.Linq;
+using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Troop;
-using Game.Database;
-using Game.Logic.Formulas;
-using Game.Map;
 using Game.Map.LocationStrategies;
 using Game.Setup;
 
@@ -48,8 +46,8 @@ namespace Game.Logic.Procedures
             defaultTroop.AddFormation(FormationType.InBattle);
             defaultTroop.EndUpdate();
 
-            barbarianTribeManager.CreateBarbarianTribeNear(1, 3, city.X, city.Y);
-
+            barbarianTribeManager.CreateBarbarianTribeNear(1, 1, city.X, city.Y);
+            
             return Error.Ok;
         }
     }

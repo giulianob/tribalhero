@@ -217,7 +217,7 @@ namespace Game.Logic.Formulas
 
         public virtual Resource GetInitialCityResources()
         {
-            return new Resource(800, 0, 0, 800, 65);
+            return new Resource(800, 0, 0, 800, 80);
         }
 
         public virtual byte GetInitialCityRadius()

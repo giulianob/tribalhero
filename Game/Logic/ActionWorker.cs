@@ -53,12 +53,9 @@ namespace Game.Logic
 
         public Func<ILockable> LockDelegate { get; set; }
 
-        public PassiveAction FindAction(IGameObject workerObject, Type type)
+        public T FindAction<T>(IGameObject workerObject) where T : PassiveAction
         {
-            return
-                    passive.Values.FirstOrDefault(
-                                                  action =>
-                                                  action.WorkerObject == workerObject && action.GetType() == type);
+            return passive.Values.OfType<T>().FirstOrDefault(action => action.WorkerObject == workerObject);
         }
 
         public void Remove(IGameObject workerObject, params GameAction[] ignoreActions)

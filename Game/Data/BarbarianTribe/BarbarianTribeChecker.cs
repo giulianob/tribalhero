@@ -1,5 +1,6 @@
 using System;
 using Game.Logic;
+using Persistance;
 
 namespace Game.Data.BarbarianTribe
 {
@@ -9,10 +10,13 @@ namespace Game.Data.BarbarianTribe
         private readonly IBarbarianTribeManager manager;
         private readonly IScheduler scheduler;
 
-        public BarbarianTribeChecker(IBarbarianTribeManager manager, IScheduler scheduler)
+        private readonly IDbManager dbManager;
+
+        public BarbarianTribeChecker(IBarbarianTribeManager manager, IScheduler scheduler, IDbManager dbManager)
         {
             this.manager = manager;
             this.scheduler = scheduler;
+            this.dbManager = dbManager;
         }
 
         /// <summary>
@@ -33,9 +37,12 @@ namespace Game.Data.BarbarianTribe
 
         public void Callback(object custom)
         {
-            manager.RelocateAsNeeded();
-            Time = DateTime.UtcNow.Add(interval);
-            scheduler.Put(this);
+            using (dbManager.GetThreadTransaction())
+            {
+                manager.RelocateAsNeeded();
+                Time = DateTime.UtcNow.Add(interval);
+                scheduler.Put(this);
+            }
         }
 
         #endregion

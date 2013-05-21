@@ -16,6 +16,9 @@ namespace Game.Battle
 {
     public class BattleFormulas
     {
+        [Obsolete("Inject BattleFormulas instead")]
+        public static BattleFormulas Current { get; set; }
+
         private readonly UnitFactory unitFactory;
 
         private readonly UnitModFactory unitModFactory;
@@ -28,9 +31,7 @@ namespace Game.Battle
         {
             this.unitModFactory = unitModFactory;
             this.unitFactory = unitFactory;
-        }
-
-        public static BattleFormulas Current { get; set; }
+        }        
 
         public virtual decimal GetDmgWithMissChance(int attackersUpkeep, int defendersUpkeep, decimal dmg)
         {

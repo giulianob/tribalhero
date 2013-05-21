@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using Game.Data.Forest;
 using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
@@ -16,9 +17,12 @@ namespace Game.Logic.Actions.ResourceActions
     {
         private readonly IDbManager dbManager;
 
-        public ForestCreatorAction(IDbManager dbManager)
+        private readonly IForestManager forestManager;
+
+        public ForestCreatorAction(IDbManager dbManager, IForestManager forestManager)
         {
             this.dbManager = dbManager;
+            this.forestManager = forestManager;
             Time = SystemClock.Now;
         }
 
@@ -32,7 +36,7 @@ namespace Game.Logic.Actions.ResourceActions
         {
             using (dbManager.GetThreadTransaction())
             {
-                World.Current.Forests.RegenerateForests();
+                forestManager.RegenerateForests();
             }
 
             // Reschedule ourselves

@@ -65,7 +65,7 @@ package src.UI.Tutorial
 			hideAllMessages();			
 			
 			var text: String = StringHelper.localize(messageId);
-			this.messageTooltip = new TextTooltip(text == null ? "[" + messageId + "]" : text);
+			this.messageTooltip = new TextTooltip(text == null ? "[" + messageId + "]" : text, "Tutorial");
 			this.messageTooltip.showFixed(position);	
 			this.messageId = messageId;
 		}

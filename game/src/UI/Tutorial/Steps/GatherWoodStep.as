@@ -1,5 +1,6 @@
 package src.UI.Tutorial.Steps 
 {
+	import flash.filters.GlowFilter;
 	import flash.geom.Point;
 	import src.Map.MapUtil;
 	import src.Util.StringHelper;
@@ -56,6 +57,7 @@ package src.UI.Tutorial.Steps
 					}					
 				}
 				
+				Global.gameContainer.minimapTools.btnMinimapZoom.filters = [];
 				this.complete();
 				return;				
 			}				
@@ -76,6 +78,12 @@ package src.UI.Tutorial.Steps
 				return;
 			}
 			
+			if (Global.gameContainer.minimapTools.btnMinimapZoom.filters.length == 0) {
+				Global.gameContainer.minimapTools.btnMinimapZoom.filters = [
+					new GlowFilter(0xFFFFFF, 1, 8, 8, 5)
+				];
+			}
+				
 			showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_FIND_FOREST");
 		}
 		

@@ -25,7 +25,7 @@
 			ui.getFrame().parent.mouseChildren = false;
 			
 			ui.getFrame().pack();
-			ui.getFrame().setLocationXY(Constants.screenW / 2 - ui.getFrame().getWidth() / 2, Constants.screenH - ui.getFrame().getHeight() - 50);
+			reposition();
 		}
 
 		public function onResize(event: Event = null) : void {
@@ -35,14 +35,14 @@
 		public function reposition() : void {
 			if (!ui.getFrame()) return;
 
-			ui.getFrame().setLocationXY(Constants.screenW / 2 - ui.getFrame().getWidth() / 2, Constants.screenH - ui.getFrame().getHeight() - 50);
+			ui.getFrame().setLocationXY(Constants.screenW / 2 - ui.getFrame().getWidth() / 2, 42);
 		}
 
 		public function hide() : void {
 			if (ui.getFrame())
 			ui.getFrame().dispose();
 		}
-
+		
 		public function showMessage(text: String, icon: Icon = null) : void {
 			hide();
 

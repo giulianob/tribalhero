@@ -37,12 +37,9 @@ namespace Game.Data.BarbarianTribe
 
         public void Callback(object custom)
         {
-            using (dbManager.GetThreadTransaction())
-            {
-                manager.RelocateAsNeeded();
-                Time = DateTime.UtcNow.Add(interval);
-                scheduler.Put(this);
-            }
+            manager.RelocateAsNeeded();
+            Time = DateTime.UtcNow.Add(interval);
+            scheduler.Put(this);
         }
 
         #endregion

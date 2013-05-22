@@ -65,15 +65,22 @@
                 moveTime = Math.floor(0.95 * Math.exp(0.033 * totalLaborers)) * count;
             }
 			else {
-			var overtime: int = 0;
+				var overtime: int = 0;
 				
-			for each (var tech: EffectPrototype in techManager.getEffects(EffectPrototype.EFFECT_LABOR_MOVE_TIME_MOD, EffectPrototype.INHERIT_ALL)) {
-				overtime = Math.max(overtime, (int)(tech.param1));
+				for each (var tech: EffectPrototype in techManager.getEffects(EffectPrototype.EFFECT_LABOR_MOVE_TIME_MOD, EffectPrototype.INHERIT_ALL)) {
+					overtime = Math.max(overtime, (int)(tech.param1));
+				}
+				
+				overtime = Math.min(100, overtime);
+				
+				moveTime = (int)((100 - overtime * 10) * count * secondsPerLaborer * Constants.secondsPerUnit / 100);
 			}
-				
-			overtime = Math.min(100, overtime);
-				
-            		return (int)((100 - overtime*10) * count * 180 * Constants.secondsPerUnit / 100);
+			
+			if (!cityToStructure) {
+				moveTime = moveTime / 20;
+			}
+			
+			return moveTime;
 		}
 		
 		public static function trainTime(structureLvl: int, unitCount: int, unitPrototype: UnitPrototype, city: City, techManager: TechnologyManager, ignoreUnitCountDiscounts: Boolean): int

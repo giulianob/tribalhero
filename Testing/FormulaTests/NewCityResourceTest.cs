@@ -16,7 +16,7 @@ namespace Testing.FormulaTests
 
             var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<StructureFactory>(MockBehavior.Strict).Object);
+                                      new Mock<StructureCsvFactory>(MockBehavior.Strict).Object);
 
             formula.GetNewCityCost(1, out influencePoints, out wagons);
             influencePoints.Should().Be(100);

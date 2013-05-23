@@ -1,8 +1,10 @@
 #region
 
 using System;
+using Game.Data.Events;
 using Game.Map;
 using Game.Setup;
+using Game.Util;
 
 #endregion
 
@@ -10,6 +12,8 @@ namespace Game.Data
 {
     public abstract class SimpleGameObject : ISimpleGameObject
     {
+        public event EventHandler<SimpleGameObjectArgs> ObjectUpdated;
+
         public enum SystemGroupIds : uint
         {
             NewCityStartTile = 10000001,
@@ -31,6 +35,8 @@ namespace Game.Data
 
             BarbarianTribe = 400,
         }
+
+        protected readonly IRegionManager regionManager;
 
         protected uint objectId;
 
@@ -70,6 +76,7 @@ namespace Game.Data
             {
                 CheckUpdateMode();
                 inWorld = value;
+                SaveOrigPos();
             }
         }
 
@@ -112,7 +119,12 @@ namespace Game.Data
             set
             {
                 CheckUpdateMode();
-                origX = x;
+
+                if (inWorld)
+                {
+                    origX = x;
+                }
+
                 x = value;
             }
         }
@@ -126,7 +138,12 @@ namespace Game.Data
             set
             {
                 CheckUpdateMode();
-                origY = y;
+
+                if (inWorld)
+                {
+                    origY = y;
+                }
+
                 y = value;
             }
         }
@@ -151,61 +168,81 @@ namespace Game.Data
 
         #region Constructors
 
-        protected SimpleGameObject()
+        protected SimpleGameObject(IRegionManager regionManager)
         {
-            state = GameObjectState.NormalState();
-        }
-
-        protected SimpleGameObject(uint x, uint y) : this()
-        {
-            this.x = origX = x;
-            this.y = origY = y;
+            state = GameObjectState.NormalState();	
+            this.regionManager = regionManager;
         }
 
         #endregion
 
         #region Update Events
 
-        protected uint origX;
+        private uint origX;
 
-        protected uint origY;
+        private uint origY;
 
-        protected bool updating;
+        protected bool Updating;
 
         public virtual void BeginUpdate()
         {
-            if (updating)
+            if (Updating)
             {
                 throw new Exception("Nesting beginupdate");
             }
 
-            updating = true;
-            origX = x;
-            origY = y;
+            Updating = true;
+
+            SaveOrigPos();
         }
 
-        public abstract void CheckUpdateMode();
+        protected abstract void CheckUpdateMode();
 
-        public abstract void EndUpdate();
-
-        protected virtual void Update()
+        public void EndUpdate()
         {
-            if (!Global.FireEvents)
+            if (!Updating)
             {
-                return;
+                throw new Exception("Called endupdate without first calling begin update");
             }
 
-            if (updating)
+            Updating = false;
+            Update();
+        }
+
+        protected virtual bool Update()
+        {
+            if (!Global.Current.FireEvents)
             {
-                return;
+                return false;
             }
 
-            World.Current.Regions.ObjectUpdateEvent(this, origX, origY);
+            if (Updating)
+            {
+                return false;
+            }
+
+            ObjectUpdated.Raise(this, new SimpleGameObjectArgs(this) {OriginalX = origX, OriginalY = origY});
+            
+            if (InWorld)
+            {
+                regionManager.ObjectUpdateEvent(this, origX, origY);
+            }
+
+            return true;
         }
 
         #endregion
 
         #region Methods
+
+        private void SaveOrigPos()
+        {
+            if (InWorld)
+            {
+                origX = x;
+                origY = y;
+            }
+        }
 
         public override string ToString()
         {

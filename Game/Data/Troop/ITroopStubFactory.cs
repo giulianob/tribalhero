@@ -1,7 +1,7 @@
-﻿namespace Game.Data.Troop
+namespace Game.Data.Troop
 {
     public interface ITroopStubFactory
     {
-        TroopStub CreateTroopStub(ushort troopId);
+        ITroopStub CreateTroopStub(ushort troopId);
     }
 }

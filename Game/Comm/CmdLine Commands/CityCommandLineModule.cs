@@ -241,7 +241,7 @@ namespace Game.Comm.CmdLine_Commands
                 }
 
                 // Verify city name is valid
-                if (!City.IsNameValid(newCityName))
+                if (!CityManager.IsNameValid(newCityName))
                 {
                     return "City name is invalid";
                 }

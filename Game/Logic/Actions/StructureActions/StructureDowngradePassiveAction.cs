@@ -114,7 +114,7 @@ namespace Game.Logic.Actions
                 structure.BeginUpdate();
                 structure.IsBlocked = 0;
                 ushort oldLabor = structure.Stats.Labor;
-                Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
+                Ioc.Kernel.Get<StructureCsvFactory>().GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
                 structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
                 structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);
 

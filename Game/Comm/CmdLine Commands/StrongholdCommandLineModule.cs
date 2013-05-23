@@ -59,7 +59,7 @@ namespace Game.Comm
         {
             SystemVariable mapStartIndex;
             int index = 0;
-            if (Global.SystemVariables.TryGetValue("Map.start_index", out mapStartIndex))
+            if (Global.Current.SystemVariables.TryGetValue("Map.start_index", out mapStartIndex))
             {
                 index = (int)mapStartIndex.Value;
             }
@@ -131,7 +131,7 @@ namespace Game.Comm
                     return "No troops in the city!";
                 }
 
-                ITroopStub stub = city.Troops.Create();
+                ITroopStub stub = city.CreateTroopStub();
                 stub.BeginUpdate();
                 stub.AddFormation(FormationType.Defense);
                 foreach (var unit in city.DefaultTroop[FormationType.Normal])

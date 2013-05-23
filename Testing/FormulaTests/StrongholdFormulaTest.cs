@@ -130,8 +130,8 @@ namespace Testing.FormulaTests
         {
             var serverDate = SystemClock.Now.Subtract(TimeSpan.FromDays((double)serverDays));
 
-            Global.SystemVariables.Clear();
-            Global.SystemVariables.Add("Server.date", new SystemVariable("Server.date", serverDate));
+            Global.Current.SystemVariables.Clear();
+            Global.Current.SystemVariables.Add("Server.date", new SystemVariable("Server.date", serverDate));
             
             var formula = new Fixture().Create<Formula>();
 

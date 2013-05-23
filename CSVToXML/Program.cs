@@ -710,7 +710,7 @@ namespace CSVToXML
             {
                 String fullFilename = file;
 
-                if (Global.IsRunningOnMono())
+                if (Global.Current.IsRunningOnMono())
                 {
                     fullFilename = Path.Combine(langDataFolder, file);
                 }

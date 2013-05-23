@@ -33,7 +33,7 @@ namespace Game.Logic.Procedures
                 return false;
             }
 
-            troopObject = new TroopObject(stub) {X = x, Y = y + 1};
+            troopObject = new TroopObject(stub, World.Current.Regions) {X = x, Y = y + 1};
 
             stub.City.Add(troopObject);
 

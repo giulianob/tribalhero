@@ -92,7 +92,7 @@ namespace Game.Logic.Formulas
                 return 0;
             }
 
-            var serverUptime = (decimal)SystemClock.Now.Subtract((DateTime)Global.SystemVariables["Server.date"].Value).TotalDays;
+            var serverUptime = (decimal)SystemClock.Now.Subtract((DateTime)Global.Current.SystemVariables["Server.date"].Value).TotalDays;
             var daysOccupied = (decimal)SystemClock.Now.Subtract(stronghold.DateOccupied).TotalDays;
             return ((daysOccupied + stronghold.BonusDays) / 2m + serverUptime / 5 + 10) * (5 + stronghold.Lvl * 5m);
         }

@@ -37,7 +37,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player))
             {
-                Global.Channel.Unsubscribe(session);
+                Global.Current.Channel.Unsubscribe(session);
 
                 // If player is logged in under new session already, then don't bother changing their session info
                 if (session.Player.Session != session)

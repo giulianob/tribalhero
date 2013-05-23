@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Game.Data.Stats;
-using Game.Database;
+using Game.Map;
 using Game.Util;
 using Persistance;
 
@@ -22,12 +22,21 @@ namespace Game.Data
 
         private IStructureStats stats;
 
-        public Structure(IStructureStats stats)
-        {
-            this.stats = stats;
+        private readonly IDbManager dbManager;
 
-            techmanager = new TechnologyManager(EffectLocation.Object, this, 0);            
-            properties = new StructureProperties(this);
+        public Structure(uint structureId, 
+                         IStructureStats stats,
+                         ITechnologyManager technologyManager,
+                         StructureProperties structureProperties,
+                         IDbManager dbManager,
+                         IRegionManager regionmanager)
+                : base(regionmanager)
+        {
+            objectId = structureId;
+            this.stats = stats;
+            this.dbManager = dbManager;
+            techmanager = technologyManager;
+            properties = structureProperties;
         }
 
         #region Indexers
@@ -69,21 +78,7 @@ namespace Game.Data
                 properties = value;
             }
         }
-
-        public override uint ObjectId
-        {
-            get
-            {
-                return base.ObjectId;
-            }
-            set
-            {
-                CheckUpdateMode();
-                techmanager.Id = value;
-                base.ObjectId = value;
-            }
-        }
-
+        
         #endregion
 
         public bool IsMainBuilding
@@ -129,17 +124,6 @@ namespace Game.Data
             }
         }
 
-        public override void EndUpdate()
-        {
-            if (!updating)
-            {
-                throw new Exception("Called endupdate without first calling begin update");
-            }
-
-            updating = false;
-            Update();
-        }
-
         #region IPersistableObject Members
 
         public string DbTable
@@ -176,9 +160,22 @@ namespace Game.Data
         {
             get
             {
-                return new[]
-                {new DbColumn("id", ObjectId, DbType.UInt32), new DbColumn("city_id", City.Id, DbType.UInt32)};
+                return new[] {new DbColumn("id", ObjectId, DbType.UInt32), new DbColumn("city_id", City.Id, DbType.UInt32)};
             }
+        }
+
+        #endregion
+
+        protected override bool Update()
+        {
+            var update = base.Update();
+
+            if (update)
+            {
+                dbManager.Save(this);
+            }
+
+            return update;
         }
 
         public IEnumerable<DbDependency> DbDependencies
@@ -190,24 +187,5 @@ namespace Game.Data
         }
 
         public bool DbPersisted { get; set; }
-
-        #endregion
-
-        protected new void Update()
-        {
-            base.Update();
-
-            if (!Global.FireEvents)
-            {
-                return;
-            }
-
-            if (updating)
-            {
-                return;
-            }
-
-            DbPersistance.Current.Save(this);
-        }
     }
 }

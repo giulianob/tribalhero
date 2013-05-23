@@ -626,7 +626,7 @@ namespace Game.Comm
             var packet = new Packet(Command.MessageBox);
             packet.AddString(message);
 
-            Global.Channel.Post("/GLOBAL", packet);
+            Global.Current.Channel.Post("/GLOBAL", packet);
             return "OK!";
         }
 

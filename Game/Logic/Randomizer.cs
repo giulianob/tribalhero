@@ -12,9 +12,10 @@ namespace Game.Logic
 {
     public class Randomizer
     {
-        public static Error MainBuilding(out IStructure structure, ILocationStrategy strategy, byte lvl)
-        {
-            structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2000, lvl);
+
+        public static Error MainBuilding(ICity city, ILocationStrategy strategy, byte lvl, out IStructure structure)
+        {            
+            structure = city.CreateStructure(2000, lvl);
             Position position;
             var error = strategy.NextLocation(out position);
             if(error != Error.Ok)

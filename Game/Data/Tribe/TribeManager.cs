@@ -234,7 +234,7 @@ namespace Game.Data.Tribe
             Packet packet = new Packet(Command.TribeChannelRanksUpdate);
             PacketHelper.AddTribeRanksToPacket(tribe, packet);
 
-            Global.Channel.Post("/TRIBE/" + tribe.Id, packet);
+            Global.Current.Channel.Post("/TRIBE/" + tribe.Id, packet);
         }
 
         private void TribeOnUpdated(object sender, EventArgs eventArgs)
@@ -244,7 +244,7 @@ namespace Game.Data.Tribe
             packet.AddInt32(GetIncomingList(tribe).Count());
             packet.AddInt16(tribe.AssignmentCount);
             
-            Global.Channel.Post("/TRIBE/" + tribe.Id, packet);
+            Global.Current.Channel.Post("/TRIBE/" + tribe.Id, packet);
         }
 
         private void UnsubscribeEvents(ITribe tribe)

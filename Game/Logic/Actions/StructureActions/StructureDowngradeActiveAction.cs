@@ -19,19 +19,19 @@ namespace Game.Logic.Actions
 
         private readonly ObjectTypeFactory objectTypeFactory;
 
-        private readonly StructureFactory structureFactory;
+        private readonly StructureCsvFactory structureCsvFactory;
 
         private readonly uint structureId;
 
         public StructureDowngradeActiveAction(uint cityId,
                                               uint structureId,
                                               ObjectTypeFactory objectTypeFactory,
-                                              StructureFactory structureFactory)
+                                              StructureCsvFactory structureCsvFactory)
         {
             this.cityId = cityId;
             this.structureId = structureId;
             this.objectTypeFactory = objectTypeFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
         }
 
         public StructureDowngradeActiveAction(uint id,
@@ -43,11 +43,11 @@ namespace Game.Logic.Actions
                                               ushort actionCount,
                                               Dictionary<string, string> properties,
                                               ObjectTypeFactory objectTypeFactory,
-                                              StructureFactory structureFactory)
+                                              StructureCsvFactory structureCsvFactory)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             this.objectTypeFactory = objectTypeFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
         }
@@ -97,7 +97,7 @@ namespace Game.Logic.Actions
                     DateTime.UtcNow.AddSeconds(
                                                CalculateTime(
                                                              Formula.Current.BuildTime(
-                                                                                       structureFactory.GetTime(
+                                                                                       structureCsvFactory.GetTime(
                                                                                                                 structure
                                                                                                                         .Type,
                                                                                                                 (byte)

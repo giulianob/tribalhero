@@ -1,27 +1,14 @@
 package src.UI.Dialog 
 {
-	import mx.utils.StringUtil;
-	import org.aswing.AssetIcon;
-	import org.aswing.AsWingConstants;
-	import org.aswing.ext.MultilineLabel;
-	import org.aswing.geom.IntDimension;
-	import org.aswing.JButton;
-	import org.aswing.JComboBox;
-	import org.aswing.JFrame;
-	import org.aswing.JLabel;
-	import org.aswing.JPanel;
-	import org.aswing.SoftBoxLayout;
-	import org.aswing.util.StringUtils;
-	import src.Global;
-	import src.Main;
-	import src.Map.City;
-	import src.Map.Map;
-	import src.Map.MapUtil;
-	import src.Objects.Troop.TroopStub;
-	import src.UI.GameJPanel;
-	import src.Util.StringHelper;
-	import src.Objects.Effects.Formula;
-	import src.Util.Util;
+	import mx.utils.*;
+	import org.aswing.*;
+	import org.aswing.ext.*;
+	import src.*;
+	import src.Map.*;
+	import src.Objects.Effects.*;
+	import src.Objects.Troop.*;
+	import src.UI.*;
+	import src.Util.*;
 	
 	/**
 	 * ...
@@ -38,6 +25,7 @@ package src.UI.Dialog
 		public function TroopTransferDialog(stub: TroopStub, strongholds : Array) 
 		{
 			this.strongholds = strongholds;
+			this.strongholds.sortOn("name");
 			this.stub = stub;
 			this.city = Global.map.cities.get(stub.cityId);
 			
@@ -51,12 +39,12 @@ package src.UI.Dialog
 		}
 		
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame
-		{
+		{			
 			var options : * = [];
 			for (var i:int = 0; i < strongholds.length; ++i) {
-				options.push(StringUtil.substitute("Lvl {0} - {1} ({2},{3})",strongholds[i].lvl,strongholds[i].name,strongholds[i].x,strongholds[i].y));
+				options.push(StringUtil.substitute("Lvl {0} - {1} ({2},{3})", strongholds[i].lvl, strongholds[i].name, strongholds[i].x, strongholds[i].y));
 			}
-
+			
 			if (options.length == 0) {
 				InfoDialog.showMessageDialog(StringHelper.localize("TRANSFER_TITLE"), StringHelper.localize("TRANSFER_NO_OTHER_STRONGHOLD"));
 				return null;

@@ -14,6 +14,8 @@ using Game.Data.BarbarianTribe;
 using Game.Data.Forest;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
+using Game.Data.Troop;
+using Game.Data.Troop.Initializers;
 using Game.Logic;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -23,6 +25,7 @@ using Game.Module;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
+using Game.Util.Ninject;
 using Ninject;
 using Ninject.Extensions.Conventions;
 using Ninject.Extensions.Factory;
@@ -182,7 +185,7 @@ namespace Game
                              .InSingletonScope();
 
             #endregion
-
+            
             #region Utils
 
             Bind<IScheduler>().To<ThreadedScheduler>().InSingletonScope();
@@ -195,6 +198,7 @@ namespace Game
             Bind<CityBattleProcedure>().ToSelf().InSingletonScope();
             Bind<BarbarianTribeBattleProcedure>().ToSelf().InSingletonScope();
             Bind<Random>().ToSelf().InSingletonScope();
+
             #endregion
 
             #region Stronghold
@@ -203,10 +207,14 @@ namespace Game
 
             Bind<IStrongholdConfigurator>().To<StrongholdConfigurator>().InSingletonScope();
             Bind<IStronghold>().To<Stronghold>();
-            if (Config.stronghold_bypass_activation) 
+            if (Config.stronghold_bypass_activation)
+            {
                 Bind<IStrongholdActivationCondition>().To<DummyActivationCondition>();
+            }
             else
+            {
                 Bind<IStrongholdActivationCondition>().To<StrongholdActivationCondition>();
+            }
             Bind<StrongholdActivationChecker>().ToSelf().InSingletonScope();
             Bind<VictoryPointChecker>().ToSelf().InSingletonScope();
 
@@ -236,7 +244,7 @@ namespace Game
                        .SelectAllInterfaces()
                        .EndingWith("Factory")
                        .Where(t => !explicitFactoryBindings.Contains(t.AssemblyQualifiedName))
-                       .BindToFactory());
+                       .BindToFactory(() => new FactoryMethodNameProvider()));
 
             #endregion
         }

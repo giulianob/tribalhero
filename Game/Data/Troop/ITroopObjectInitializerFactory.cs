@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Game.Data.Troop.Initializers;
+﻿using Game.Data.Troop.Initializers;
 using Game.Logic.Actions;
+using Game.Util.Ninject;
 
 namespace Game.Data.Troop
 {
     public interface ITroopObjectInitializerFactory
     {
-        StationedTroopObjectInitializer CreateStationedTroopObjectInitializer(ITroopStub stub);
-        CityTroopObjectInitializer CreateCityTroopObjectInitializer(uint cityId, ISimpleStub simpleStub, TroopBattleGroup group, AttackMode mode);
-        AssignmentTroopObjectInitializer CreateAssignmentTroopObjectInitializer(ITroopObject troopObject, TroopBattleGroup group, AttackMode mode);
+        [FactoryReturns(typeof(StationedTroopObjectInitializer))]
+        ITroopObjectInitializer CreateStationedTroopObjectInitializer(ITroopStub stub);
+
+        [FactoryReturns(typeof(CityTroopObjectInitializer))]
+        ITroopObjectInitializer CreateCityTroopObjectInitializer(uint cityId, ISimpleStub simpleStub, TroopBattleGroup group, AttackMode mode);
+
+        [FactoryReturns(typeof(AssignmentTroopObjectInitializer))]
+        ITroopObjectInitializer CreateAssignmentTroopObjectInitializer(ITroopObject troopObject, TroopBattleGroup group, AttackMode mode);
     }
 }

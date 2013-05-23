@@ -39,23 +39,28 @@ namespace Game.Comm.ProcessorCommands
 
         private void ListAll(Session session, Packet packet)
         {
-            if (!session.Player.IsInTribe)
+            using (locker.Lock(session.Player))
             {
-                ReplyError(session, packet, Error.TribesmanNotPartOfTribe);
-                return;
+                if (!session.Player.IsInTribe)
+                {
+                    ReplyError(session, packet, Error.TribesmanNotPartOfTribe);
+                    return;
+                }
+
+                var reply = new Packet(packet);
+                var strongholds = strongholdManager.StrongholdsForTribe(session.Player.Tribesman.Tribe).ToList();
+                reply.AddInt16((short)strongholds.Count);
+                foreach (var stronghold in strongholds)
+                {
+                    reply.AddUInt32(stronghold.Id);
+                    reply.AddString(stronghold.Name);
+                    reply.AddByte(stronghold.Lvl);
+                    reply.AddUInt32(stronghold.X);
+                    reply.AddUInt32(stronghold.Y);
+                }
+
+                session.Write(reply);
             }
-            var reply = new Packet(packet);
-            var strongholds = strongholdManager.StrongholdsForTribe(session.Player.Tribesman.Tribe).ToList();
-            reply.AddInt16((short)strongholds.Count);
-            foreach (var stronghold in strongholds)
-            {
-                reply.AddUInt32(stronghold.Id);
-                reply.AddString(stronghold.Name);
-                reply.AddByte(stronghold.Lvl);
-                reply.AddUInt32(stronghold.X);
-                reply.AddUInt32(stronghold.Y);
-            }
-            session.Write(reply);
         }
 
         private void Locate(Session session, Packet packet)

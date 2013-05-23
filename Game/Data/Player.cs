@@ -63,6 +63,8 @@ namespace Game.Data
 
         public uint PlayerId { get; private set; }
 
+        public uint TutorialStep { get; set; }
+
         public string PlayerHash
         {
             get
@@ -200,11 +202,6 @@ namespace Game.Data
             return list.Find(city => city.Id == id && city.Deleted == City.DeletedState.NotDeleted);
         }
 
-        public override string ToString()
-        {
-            return Name;
-        }
-
         public void SendSystemMessage(IPlayer from, String subject, String message)
         {
             subject = String.Format("(System) {0}", subject);
@@ -289,6 +286,7 @@ namespace Game.Data
                     new DbColumn("rights", (int)Rights, DbType.UInt16),
                     new DbColumn("online", Session != null, DbType.Boolean),
                     new DbColumn("invitation_tribe_id", TribeRequest, DbType.UInt32),
+                    new DbColumn("tutorial_step", TutorialStep, DbType.UInt32),
                 };
             }
         }

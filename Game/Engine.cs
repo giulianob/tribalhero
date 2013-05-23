@@ -219,12 +219,6 @@ _________ _______ _________ ______   _______  _
             // Initialize game market
             Market.Init();
 
-            // Create NPC if specified
-            if (Config.ai_enabled)
-            {
-                Ai.Init(null);
-            }
-
             // Start command processor
             server.Start();
 

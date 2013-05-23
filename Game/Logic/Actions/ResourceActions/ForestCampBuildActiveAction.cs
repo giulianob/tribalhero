@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
+using Game.Data.Forest;
 using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
@@ -36,6 +37,8 @@ namespace Game.Logic.Actions
 
         private readonly ReverseTileLocator reverseTileLocator;
 
+        private readonly IForestManager forestManager;
+
         private readonly ILocker locker;
 
         private readonly uint lumbermillId;
@@ -53,7 +56,8 @@ namespace Game.Logic.Actions
                                            StructureCsvFactory structureCsvFactory,
                                            InitFactory initFactory,
                                            ReverseTileLocator reverseTileLocator,
-            ILocker locker)
+                                           IForestManager forestManager,
+                                           ILocker locker)
         {
             this.cityId = cityId;
             this.lumbermillId = lumbermillId;
@@ -65,6 +69,7 @@ namespace Game.Logic.Actions
             this.structureCsvFactory = structureCsvFactory;
             this.initFactory = initFactory;
             this.reverseTileLocator = reverseTileLocator;
+            this.forestManager = forestManager;
             this.locker = locker;
             this.campType = campType;
         }
@@ -82,8 +87,9 @@ namespace Game.Logic.Actions
                                            ObjectTypeFactory objectTypeFactory,
                                            StructureCsvFactory structureCsvFactory,
                                            InitFactory initFactory,
+                                           IForestManager forestManager,
                                            ReverseTileLocator reverseTileLocator,
-            ILocker locker)
+                                           ILocker locker)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             this.formula = formula;
@@ -91,6 +97,7 @@ namespace Game.Logic.Actions
             this.objectTypeFactory = objectTypeFactory;
             this.structureCsvFactory = structureCsvFactory;
             this.initFactory = initFactory;
+            this.forestManager = forestManager;
             this.reverseTileLocator = reverseTileLocator;
             this.locker = locker;
             cityId = uint.Parse(properties["city_id"]);
@@ -121,9 +128,9 @@ namespace Game.Logic.Actions
         {
             ICity city;
             IStructure lumbermill;
-            Forest forest;
+            IForest forest;
 
-            if (!world.TryGetObjects(cityId, lumbermillId, out city, out lumbermill) || !world.Forests.TryGetValue(forestId, out forest))
+            if (!world.TryGetObjects(cityId, lumbermillId, out city, out lumbermill) || !forestManager.TryGetValue(forestId, out forest))
             {
                 return Error.ObjectNotFound;
             }
@@ -177,7 +184,7 @@ namespace Game.Logic.Actions
                                              forest.Y,
                                              1,
                                              false,
-                                             delegate(uint ox, uint oy, uint x, uint y, object custom)
+                                             (ox, oy, x, y, custom) =>
                                                  {
                                                      // Check tile type                
                                                      if (!objectTypeFactory.IsTileType("TileBuildable", world.Regions.GetTileType(x, y)))
@@ -195,8 +202,7 @@ namespace Game.Logic.Actions
                                                      emptyY = y;
 
                                                      return false;
-                                                 },
-                                             null);
+                                                 });
 
             if (emptyX == 0 || emptyY == 0)
             {
@@ -239,11 +245,10 @@ namespace Game.Logic.Actions
             forest.EndUpdate();
 
             // add to queue for completion
-            var actionEndTime = formula.BuildTime(structureCsvFactory.GetTime(campType, 1), city, city.Technologies) +
-                                lumbermill.TileDistance(forest) * 5;
+            var actionEndTime = formula.GetLumbermillCampBuildTime(lumbermill, forest);          
 
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(actionEndTime));
-            BeginTime = DateTime.UtcNow;
+            endTime = SystemClock.Now.AddSeconds(CalculateTime(actionEndTime));
+            BeginTime = SystemClock.Now;
 
             city.References.Add(structure, this);
 
@@ -261,7 +266,7 @@ namespace Game.Logic.Actions
             }
 
             using (
-                    locker.Lock(world.Forests.CallbackLockHandler,
+                    locker.Lock(forestManager.CallbackLockHandler,
                                              new object[] { forestId },
                                              city))
             {
@@ -285,8 +290,8 @@ namespace Game.Logic.Actions
                 city.References.Remove(structure, this);
 
                 // Get forest. If it doesn't exist, we need to delete the structure.
-                Forest forest;
-                if (!world.Forests.TryGetValue(forestId, out forest))
+                IForest forest;
+                if (!forestManager.TryGetValue(forestId, out forest))
                 {
                     // Remove the camp
                     structure.BeginUpdate();
@@ -332,7 +337,7 @@ namespace Game.Logic.Actions
                 throw new Exception("City is missing");
             }
 
-            using (locker.Lock(world.Forests.CallbackLockHandler, new object[] { forestId }, city))
+            using (locker.Lock(forestManager.CallbackLockHandler, new object[] { forestId }, city))
             {
                 if (!IsValid())
                 {
@@ -355,8 +360,8 @@ namespace Game.Logic.Actions
                 city.References.Remove(structure, this);
 
                 // Remove camp from forest and recalculate forest
-                Forest forest;
-                if (world.Forests.TryGetValue(forestId, out forest))
+                IForest forest;
+                if (forestManager.TryGetValue(forestId, out forest))
                 {
                     forest.BeginUpdate();
                     forest.RemoveLumberjack(structure);

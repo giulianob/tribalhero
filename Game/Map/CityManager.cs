@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Game.Data;
 using Game.Data.Events;
@@ -137,6 +138,23 @@ namespace Game.Map
             city.PropertyChanged += CityPropertyChanged;
         }
 
+        public bool FindCityId(string name, out uint cityId)
+        {
+            cityId = UInt16.MaxValue;
+
+            var query = String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE);
+            using (DbDataReader reader = dbManager.ReaderQuery(query, new[] {new DbColumn("name", name, DbType.String)}))
+            {
+                if (!reader.HasRows)
+                {
+                    return false;
+                }
+                reader.Read();
+                cityId = (uint)reader[0];
+                return true;
+            }
+        }
+
         private void DeregisterEvents(ICity city)
         {
             city.PropertyChanged -= CityPropertyChanged;
@@ -155,20 +173,11 @@ namespace Game.Map
             }
         }
 
-        public bool FindCityId(string name, out uint cityId)
+        public IEnumerable<ICity> AllCities()
         {
-            cityId = UInt16.MaxValue;
-
-            var query = String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE);
-            using (DbDataReader reader = dbManager.ReaderQuery(query, new[] {new DbColumn("name", name, DbType.String)}))
+            lock (cities)
             {
-                if (!reader.HasRows)
-                {
-                    return false;
-                }
-                reader.Read();
-                cityId = (uint)reader[0];
-                return true;
+                return cities.Values.ToList();
             }
         }
 

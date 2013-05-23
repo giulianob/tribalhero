@@ -56,8 +56,6 @@ namespace Game.Data
 
         TrainTimeMultiplier = 3,
 
-        BuildNinja = 4,
-
         CanBuild = 5,
 
         HarvestSurprise = 6,
@@ -106,6 +104,8 @@ namespace Game.Data
 
         BattleStatsBlacksmithMod = 102,
 
-        UpkeepReduce = 103
+        UpkeepReduce = 103,
+
+        UnitTrainTimeFirst15Reduction = 104
     }
 }

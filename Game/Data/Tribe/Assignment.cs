@@ -57,6 +57,8 @@ namespace Game.Data.Tribe
 
         private readonly ILocker locker;
 
+        private readonly ITroopObjectInitializerFactory troopObjectInitializerFactory;
+
         /// <summary>
         ///     Creates a new assignment.
         ///     An id will be assigned and the stub passed in will be added to the assignment. This will not schedule the assignment!
@@ -76,7 +78,8 @@ namespace Game.Data.Tribe
                           Procedure procedure,
                           TileLocator tileLocator,
                           IActionFactory actionFactory,
-                          ILocker locker)
+                          ILocker locker,
+                          ITroopObjectInitializerFactory troopObjectInitializerFactory)
         {
             this.formula = formula;
             this.dbManager = dbManager;
@@ -86,6 +89,7 @@ namespace Game.Data.Tribe
             this.tileLocator = tileLocator;
             this.actionFactory = actionFactory;
             this.locker = locker;
+            this.troopObjectInitializerFactory = troopObjectInitializerFactory;
 
             Id = (int)IdGen.GetNext();
             Tribe = tribe;
@@ -120,7 +124,8 @@ namespace Game.Data.Tribe
                           Procedure procedure,
                           TileLocator tileLocator,
                           IActionFactory actionFactory,
-                          ILocker locker)
+                          ILocker locker,
+                          ITroopObjectInitializerFactory troopObjectInitializerFactory)
         {
             this.formula = formula;
             this.dbManager = dbManager;
@@ -130,6 +135,7 @@ namespace Game.Data.Tribe
             this.tileLocator = tileLocator;
             this.actionFactory = actionFactory;
             this.locker = locker;
+            this.troopObjectInitializerFactory = troopObjectInitializerFactory;
 
             Id = id;
             Tribe = tribe;
@@ -417,9 +423,8 @@ namespace Game.Data.Tribe
                 else
                 {
                     action = actionFactory.CreateStrongholdDefenseChainAction(stub.City.Id,
-                                                                              troopObject.ObjectId,
-                                                                              Target.LocationId,
-                                                                              AttackMode);
+                                                                              troopObjectInitializerFactory.CreateAssignmentTroopObjectInitializer(troopObject, TroopBattleGroup.Defense, AttackMode),
+                                                                              Target.LocationId);
                 }
             }
             else

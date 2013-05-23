@@ -78,6 +78,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\ninject.mono\Ninject.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject.Extensions.Factory, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\ninject.mono\Ninject.Extensions.Factory.dll</HintPath>
+    </Reference>
     <Reference Include="NSubstitute, Version=1.5.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NSubstitute.1.5.0.0\lib\NET40\NSubstitute.dll</HintPath>
@@ -114,12 +118,12 @@
     <Compile Include="ActionsTests\CityPassiveActionTest.cs" />
     <Compile Include="ActionsTests\StrongholdGateBattlePassiveActionTest.cs" />
     <Compile Include="ActionsTests\TribeContributeActiveActionTest.cs" />
-    <Compile Include="Balancing\TestUserBattles.cs" />
     <Compile Include="Balancing\TestSwordsman.cs" />
     <Compile Include="Balancing\TestUtility.cs" />
     <Compile Include="Balancing\TestCavalry.cs" />
     <Compile Include="Balancing\TestOutnumber.cs" />
     <Compile Include="Balancing\TestArcher.cs" />
+    <Compile Include="Balancing\UnitType.cs" />
     <Compile Include="BattleTests\BattleManagerTest.cs" />
     <Compile Include="BattleTests\BattleOrderTest.cs" />
     <Compile Include="BattleTests\CombatGroupTest.cs" />
@@ -134,8 +138,8 @@
     <Compile Include="FormulaTests\CityValueTest.cs" />
     <Compile Include="FormulaTests\BattleFormulaTest.cs" />
     <Compile Include="FormulaTests\LaborMoveTest.cs" />
-    <Compile Include="FormulaTests\StrongholdFormulaClassicTest.cs" />
     <Compile Include="FormulaTests\StrongholdFormulaTest.cs" />
+    <Compile Include="FormulaTests\TimeTest.cs" />
     <Compile Include="FormulaTests\UpkeepTest.cs" />
     <Compile Include="FormulaTests\NewCityResourceTest.cs" />
     <Compile Include="FormulaTests\ResourceFormulaTest.cs" />
@@ -146,6 +150,7 @@
     <Compile Include="MapMathTests\SimpleGameObjectTest.cs" />
     <Compile Include="MapMathTests\ForeachTest.cs" />
     <Compile Include="MapMathTests\RadiusTest.cs" />
+    <Compile Include="NinjectTests\FactoryMethodNameProviderTests.cs" />
     <Compile Include="PlayerTests\AchievementListTest.cs" />
     <Compile Include="UtilTests\XmlSerializerTest.cs" />
     <Compile Include="StrongholdTests\StrongholdManagerTests.cs" />
@@ -164,10 +169,6 @@
     <ProjectReference Include="..\Common.Testing\Common.Testing.csproj">
       <Project>{07693ED0-7EB9-4AE4-AF3B-F36EC85BE962}</Project>
       <Name>Common.Testing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ConsoleSimulator\ConsoleSimulator.csproj">
-      <Project>{831301A1-D65D-4DD6-AB67-23FBBE59145A}</Project>
-      <Name>ConsoleSimulator</Name>
     </ProjectReference>
     <ProjectReference Include="..\Game\Game.csproj">
       <Project>{93D46B65-B2E0-46C9-8BAA-518B3DB64DC0}</Project>

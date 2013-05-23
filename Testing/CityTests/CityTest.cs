@@ -28,7 +28,7 @@ namespace Testing.CityTests
         [Fact]
         public void TestStartWithNumber()
         {
-            CityManager.IsNameValid("1Hello World").Should().BeFalse();
+            CityManager.IsNameValid("1Hello World").Should().BeTrue();
         }
 
         [Fact]

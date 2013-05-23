@@ -1,4 +1,6 @@
+using System.Linq;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Data.Troop;
 using Game.Map.LocationStrategies;
 using Game.Setup;
@@ -10,7 +12,7 @@ namespace Game.Logic.Procedures
         /// <summary>
         ///     Creates a city under the specified player with initial troop and main building
         /// </summary>
-        public virtual Error CreateCity(ICityFactory cityFactory, IPlayer player, string cityName, ILocationStrategy strategy, out ICity city)
+        public virtual Error CreateCity(ICityFactory cityFactory, IPlayer player, string cityName, ILocationStrategy strategy, IBarbarianTribeManager barbarianTribeManager, out ICity city)
         {
             city = cityFactory.CreateCity(world.Cities.GetNextCityId(),
                             player,
@@ -45,6 +47,8 @@ namespace Game.Logic.Procedures
             defaultTroop.AddFormation(FormationType.InBattle);
             defaultTroop.EndUpdate();
 
+            barbarianTribeManager.CreateBarbarianTribeNear(1, 1, city.X, city.Y);
+            
             return Error.Ok;
         }
     }

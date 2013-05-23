@@ -8,6 +8,7 @@ using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
 using Ninject;
+using Persistance;
 
 #endregion
 
@@ -15,6 +16,19 @@ namespace Game.Comm.ProcessorCommands
 {
     class PlayerCommandsModule : CommandModule
     {
+        private readonly ILocker locker;
+
+        private readonly IWorld world;
+
+        private readonly IDbManager dbManager;
+
+        public PlayerCommandsModule(ILocker locker, IWorld world, IDbManager dbManager)
+        {
+            this.locker = locker;
+            this.world = world;
+            this.dbManager = dbManager;
+        }
+
         public override void RegisterCommands(Processor processor)
         {
             processor.RegisterCommand(Command.PlayerProfile, ViewProfile);
@@ -22,6 +36,29 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.PlayerUsernameGet, GetUsername);
             processor.RegisterCommand(Command.PlayerNameFromCityName, GetCityOwnerName);
             processor.RegisterCommand(Command.CityResourceSend, SendResources);
+            processor.RegisterCommand(Command.SaveTutorialStep, SaveTutorialStep);
+        }
+
+        private void SaveTutorialStep(Session session, Packet packet)
+        {
+            uint stepIndex;
+            try
+            {
+                stepIndex = packet.GetUInt32();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            using (locker.Lock(session.Player))
+            {
+                session.Player.TutorialStep = stepIndex;
+                dbManager.Save(session.Player);
+
+                ReplySuccess(session, packet);
+            }
         }
 
         private void SetDescription(Session session, Packet packet)
@@ -37,7 +74,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 if (description.Length > Player.MAX_DESCRIPTION_LENGTH)
                 {
@@ -73,7 +110,7 @@ namespace Game.Comm.ProcessorCommands
 
             if (playerId == 0)
             {
-                if (!World.Current.FindPlayerId(playerName, out playerId))
+                if (!world.FindPlayerId(playerName, out playerId))
                 {
                     ReplyError(session, packet, Error.PlayerNotFound);
                     return;
@@ -81,7 +118,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             IPlayer player;
-            using (Concurrency.Current.Lock(playerId, out player))
+            using (locker.Lock(playerId, out player))
             {
                 if (player == null)
                 {
@@ -120,7 +157,7 @@ namespace Game.Comm.ProcessorCommands
             foreach (var playerId in playerIds)
             {
                 IPlayer player;
-                if (!World.Current.Players.TryGetValue(playerId, out player))
+                if (!world.Players.TryGetValue(playerId, out player))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
@@ -149,14 +186,14 @@ namespace Game.Comm.ProcessorCommands
             }
 
             uint cityId;
-            if (!World.Current.Cities.FindCityId(cityName, out cityId))
+            if (!world.Cities.FindCityId(cityName, out cityId))
             {
                 ReplyError(session, packet, Error.CityNotFound);
                 return;
             }
 
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 reply.AddString(city.Owner.Name);
             }
@@ -187,7 +224,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             uint targetCityId;
-            if (!World.Current.Cities.FindCityId(targetCityName, out targetCityId))
+            if (!world.Cities.FindCityId(targetCityName, out targetCityId))
             {
                 ReplyError(session, packet, Error.CityNotFound);
                 return;
@@ -199,7 +236,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 if (session.Player.GetCity(cityId) == null)
                 {
@@ -209,7 +246,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             Dictionary<uint, ICity> cities;
-            using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
+            using (locker.Lock(out cities, cityId, targetCityId))
             {
                 if (cities == null)
                 {

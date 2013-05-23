@@ -170,6 +170,7 @@ namespace Game.Data
 
         protected SimpleGameObject(IRegionManager regionManager)
         {
+            state = GameObjectState.NormalState();	
             this.regionManager = regionManager;
         }
 

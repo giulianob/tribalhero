@@ -58,6 +58,10 @@ namespace Game.Data
         public event CityEventHandler<EventArgs> ResourcesUpdated = (sender, args) => { };
                      
         public event CityEventHandler<EventArgs> UnitTemplateUpdated = (sender, args) => { };
+
+        #endregion
+
+        public const string DB_TABLE = "cities";
                      
         public event CityEventHandler<TechnologyEventArgs> TechnologyCleared = (sender, args) => { };
                      
@@ -77,10 +81,6 @@ namespace Game.Data
 
         public event CityEventHandler<ActionReferenceArgs> ReferenceAdded = (sender, args) => { };
 
-        #endregion
-
-        public const string DB_TABLE = "cities";
-
         private readonly object objLock = new object();
 
         private readonly Dictionary<uint, IStructure> structures = new Dictionary<uint, IStructure>();
@@ -89,9 +89,9 @@ namespace Game.Data
 
         private decimal alignmentPoint;
 
-        private readonly LargeIdGenerator objectIdGen = new LargeIdGenerator(uint.MaxValue);
-
         private int attackPoint;
+
+        private readonly LargeIdGenerator objectIdGen = new LargeIdGenerator(uint.MaxValue);
 
         private IBattleManager battle;
 
@@ -512,6 +512,94 @@ namespace Game.Data
             return true;
         }
 
+        public bool ScheduleRemove(ITroopObject obj, bool wasKilled)
+        {
+            lock (objLock)
+            {
+                if (!troopobjects.ContainsKey(obj.ObjectId) || obj.IsBlocked > 0)
+                {
+                    return false;
+                }
+
+                var removeAction = actionFactory.CreateObjectRemovePassiveAction(Id, obj.ObjectId, wasKilled, new List<uint>());
+
+                return Worker.DoPassive(this, removeAction, false) == Error.Ok;
+            }
+        }
+
+        public bool ScheduleRemove(IStructure obj, bool wasKilled, bool cancelReferences = false)
+        {
+            lock (objLock)
+            {
+                if (!structures.ContainsKey(obj.ObjectId) || obj.IsBlocked > 0)
+                {
+                    return false;
+                }
+
+                var actions = new List<uint>();
+                if (cancelReferences)
+                {
+                    actions =
+                            (from reference in References
+                             where reference.WorkerObject == obj
+                             select reference.Action.ActionId).ToList();
+                }
+
+                References.Remove(obj);
+
+                var removeAction = actionFactory.CreateObjectRemovePassiveAction(Id, obj.ObjectId, wasKilled, actions);
+                return Worker.DoPassive(this, removeAction, false) == Error.Ok;
+            }
+        }
+
+        public List<IGameObject> GetInRange(uint x, uint y, uint inRadius)
+        {
+            return this.Where(structure => structure.TileDistance(x, y) <= inRadius).Cast<IGameObject>().ToList();
+        }
+
+        #endregion
+
+        #region Updates
+
+        public bool IsUpdating { get; private set; }
+
+        public DeletedState Deleted { get; set; }
+
+        public void BeginUpdate()
+        {
+            if (IsUpdating)
+            {
+                throw new Exception("Nesting beginupdate");
+            }
+            IsUpdating = true;
+        }
+
+        public void EndUpdate()
+        {
+            if (!IsUpdating)
+            {
+                throw new Exception("Called EndUpdate without first calling BeginUpdate");
+            }
+
+            dbManager.Save(this);
+            IsUpdating = false;
+        }
+
+        private void CheckUpdateMode()
+        {
+            if (!Global.Current.FireEvents || Id == 0 || !DbPersisted)
+            {
+                return;
+            }
+
+            if (!IsUpdating)
+            {
+                throw new Exception("Changed state outside of begin/end update block");
+            }
+
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
+        }
+
         #endregion
 
         public City(uint id,
@@ -588,97 +676,9 @@ namespace Game.Data
             #endregion
         }
 
-        public bool ScheduleRemove(ITroopObject obj, bool wasKilled)
-        {
-            lock (objLock)
-            {
-                if (!troopobjects.ContainsKey(obj.ObjectId) || obj.IsBlocked > 0)
-                {
-                    return false;
-                }
-
-                var removeAction = actionFactory.CreateObjectRemovePassiveAction(Id, obj.ObjectId, wasKilled, new List<uint>());
-
-                return Worker.DoPassive(this, removeAction, false) == Error.Ok;
-            }
-        }
-
-        public bool ScheduleRemove(IStructure obj, bool wasKilled, bool cancelReferences = false)
-        {
-            lock (objLock)
-            {
-                if (!structures.ContainsKey(obj.ObjectId) || obj.IsBlocked > 0)
-                {
-                    return false;
-                }
-
-                var actions = new List<uint>();
-                if (cancelReferences)
-                {
-                    actions =
-                            (from reference in References
-                             where reference.WorkerObject == obj
-                             select reference.Action.ActionId).ToList();
-                }
-
-                References.Remove(obj);
-
-                var removeAction = actionFactory.CreateObjectRemovePassiveAction(Id, obj.ObjectId, wasKilled, actions);
-                return Worker.DoPassive(this, removeAction, false) == Error.Ok;
-            }
-        }
-
-        public List<IGameObject> GetInRange(uint x, uint y, uint inRadius)
-        {
-            return this.Where(structure => structure.TileDistance(x, y) <= inRadius).Cast<IGameObject>().ToList();
-        }
-
-        #endregion
-
-        #region Updates
-
-        public bool IsUpdating { get; private set; }
-
-        public DeletedState Deleted { get; set; }
-
-        public void BeginUpdate()
-        {
-            if (IsUpdating)
-            {
-                throw new Exception("Nesting beginupdate");
-            }
-            IsUpdating = true;
-        }
-
         private void OnObjectUpdated(object sender, SimpleGameObjectArgs e)
         {
             ObjectUpdated(this, new GameObjectArgs {Object = (IGameObject)e.SimpleGameObject, OriginalX = e.OriginalX, OriginalY = e.OriginalY});
-        }
-
-        public void EndUpdate()
-        {
-            if (!IsUpdating)
-            {
-                throw new Exception("Called EndUpdate without first calling BeginUpdate");
-            }
-
-            dbManager.Save(this);
-            IsUpdating = false;
-        }
-
-        private void CheckUpdateMode()
-        {
-            if (!Global.Current.FireEvents || Id == 0 || !DbPersisted)
-            {
-                return;
-            }
-
-            if (!IsUpdating)
-            {
-                throw new Exception("Changed state outside of begin/end update block");
-            }
-
-            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
         }
 
         private void OnTechnologyUpgraded(Technology tech)
@@ -696,10 +696,29 @@ namespace Game.Data
             TechnologyAdded(this, new TechnologyEventArgs {TechnologyManager = Technologies, Technology = tech});
         }
 
+        #endregion
+
+        public IActionWorker Worker { get; private set; }
+
         private void OnTechnologyCleared(ITechnologyManager manager)
         {
             TechnologyCleared(this, new TechnologyEventArgs {TechnologyManager = manager});
         }
+
+        public int GetTotalLaborers()
+        {
+            return this.Sum(structure => (int)structure.Stats.Labor) + Resource.Labor.Value;
+        }
+
+        public uint WorkerId
+        {
+            get
+            {
+                return 0;
+            }
+        }
+
+        public uint IsBlocked { get; set; }
 
         /// <summary>
         ///     Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
@@ -760,20 +779,6 @@ namespace Game.Data
             Add(structure.ObjectId, structure, true);
             return structure;
         }
-
-        #endregion
-
-        public IActionWorker Worker { get; private set; }
-
-        public uint WorkerId
-        {
-            get
-            {
-                return 0;
-            }
-        }
-
-        public uint IsBlocked { get; set; }
 
         IEnumerator IEnumerable.GetEnumerator()
         {

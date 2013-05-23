@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using Game.Data;
+using Game.Data.Forest;
 using Game.Logic.Actions;
 using Game.Map;
 using Game.Setup;
@@ -24,15 +25,27 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly StructureCsvFactory structureCsvFactory;
 
+        private readonly IForestManager forestManager;
+
+        private readonly IWorld world;
+
+        private readonly ILocker locker;
+
         public StructureCommandsModule(IActionFactory actionFactory,
                                        StructureCsvFactory structureCsvFactory,
                                        ObjectTypeFactory objectTypeFactory,
-                                       PropertyFactory propertyFactory)
+                                       PropertyFactory propertyFactory,
+                                       IForestManager forestManager,
+                                       IWorld world,
+                                       ILocker locker)
         {
             this.actionFactory = actionFactory;
             this.structureCsvFactory = structureCsvFactory;
             this.objectTypeFactory = objectTypeFactory;
             this.propertyFactory = propertyFactory;
+            this.forestManager = forestManager;
+            this.world = world;
+            this.locker = locker;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -68,7 +81,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -102,7 +115,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
+            using (locker.Lock(cityId, objectId, out city, out structure))
             {
                 if (city == null || structure == null)
                 {
@@ -191,14 +204,14 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            Forest forest;
-            if (!World.Current.Forests.TryGetValue(forestId, out forest))
+            IForest forest;
+            if (!forestManager.TryGetValue(forestId, out forest))
             {
                 ReplyError(session, packet, Error.ObjectNotFound);
                 return;
             }
 
-            using (Concurrency.Current.Lock(forest))
+            using (locker.Lock(forest))
             {                
                 reply.AddFloat((float)(forest.Rate / Config.seconds_per_unit));
                 reply.AddInt32(forest.Labor);
@@ -236,7 +249,7 @@ namespace Game.Comm.ProcessorCommands
                 uint cityId = cityIds[i];
                 ICity city;
 
-                if (!World.Current.TryGetObjects(cityId, out city))
+                if (!world.TryGetObjects(cityId, out city))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
@@ -267,7 +280,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -343,7 +356,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -389,7 +402,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -434,7 +447,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -485,7 +498,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -542,13 +555,13 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            if (!World.Current.Regions.IsValidXandY(x, y))
+            if (!world.Regions.IsValidXandY(x, y))
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -601,7 +614,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -653,7 +666,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -713,8 +726,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (
-                    Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler,
+            using (locker.Lock(forestManager.CallbackLockHandler,
                                              new object[] {forestId},
                                              city))
             {

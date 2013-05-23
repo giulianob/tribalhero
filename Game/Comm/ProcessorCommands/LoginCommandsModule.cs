@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
@@ -41,11 +42,15 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly Procedure procedure;
 
-        private readonly InitFactory initFactory;
+        private readonly ILocationStrategyFactory locationStrategyFactory;
 
         private readonly ICityFactory cityFactory;
 
-        private readonly ILocationStrategyFactory locationStrategyFactory;
+        private readonly IBarbarianTribeManager barbarianTribeManager;
+
+        private readonly IRegionManager regionManager;
+
+        private readonly InitFactory initFactory;
 
         public LoginCommandsModule(IActionFactory actionFactory,
                                    ITribeManager tribeManager,
@@ -55,7 +60,10 @@ namespace Game.Comm.ProcessorCommands
                                    Procedure procedure,
                                    InitFactory initFactory,
                                    ICityFactory cityFactory,
-                                   ILocationStrategyFactory locationStrategyFactory)
+                                   ILocationStrategyFactory locationStrategyFactory,
+                                   IBarbarianTribeManager barbarianTribeManager,
+                                   IRegionManager regionManager,
+                                   InitFactory initFactory)
         {
             this.actionFactory = actionFactory;
             this.tribeManager = tribeManager;
@@ -66,6 +74,9 @@ namespace Game.Comm.ProcessorCommands
             this.initFactory = initFactory;
             this.cityFactory = cityFactory;
             this.locationStrategyFactory = locationStrategyFactory;
+            this.barbarianTribeManager = barbarianTribeManager;
+            this.regionManager = regionManager;
+            this.initFactory = initFactory;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -272,6 +283,7 @@ namespace Game.Comm.ProcessorCommands
                 //Player Info
                 reply.AddUInt32(player.PlayerId);
                 reply.AddString(player.PlayerHash);
+                reply.AddUInt32(player.TutorialStep);
                 reply.AddByte((byte)(player.Rights >= PlayerRights.Admin ? 1 : 0));
                 reply.AddString(sessionId);
                 reply.AddString(player.Name);
@@ -372,12 +384,13 @@ namespace Game.Comm.ProcessorCommands
                             ReplyError(session, packet, Error.PlayerHashNotFound);
                             return;
                         }
-                        strategy = locationStrategyFactory.CreateCityTileNextToFriendLocationStrategy(Config.friend_radius, player);
+                        strategy = locationStrategyFactory.CreateCityTileNextToFriendLocationStrategy(Config.friend_invite_radius, player);
                     }
                     else
                     {
                         strategy = locationStrategyFactory.CreateCityTileNextAvailableLocationStrategy();
                     }
+
                     // Verify city name is unique
                     if (world.CityNameTaken(cityName))
                     {
@@ -385,8 +398,8 @@ namespace Game.Comm.ProcessorCommands
                         return;
                     }
 
-                    var error = procedure.CreateCity(cityFactory, session.Player, cityName, strategy, out city);
-                    if(error != Error.Ok)
+                    var error = procedure.CreateCity(cityFactory, session.Player, cityName, strategy, barbarianTribeManager, out city);
+                    if(error!=Error.Ok)
                     {
                         ReplyError(session, packet, error);
                         return;

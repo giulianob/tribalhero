@@ -1,5 +1,4 @@
-﻿using ConsoleSimulator;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Game.Setup;
 using Ninject;
 
@@ -13,6 +12,7 @@ namespace Testing.Balancing
                                              double expectAdvantage,
                                              double errorMargin = .15)
         {
+            /*
             ushort typeUpkeep = Ioc.Kernel.Get<UnitFactory>().GetUnitStats((ushort)type, 1).Upkeep;
             ushort targetUpkeep = Ioc.Kernel.Get<UnitFactory>().GetUnitStats((ushort)target, 1).Upkeep;
             int count = (int)(typeUpkeep * targetUpkeep * multiplier);
@@ -81,6 +81,7 @@ namespace Testing.Balancing
                                                                                                                          )
                                                                                                                          count /
                                                                                                                          targetUpkeep));
+             * */
         }
     }
 }

@@ -244,6 +244,9 @@
     <Compile Include="Data\ICityFactory.cs" />
     <Compile Include="Data\IGameObjectFactory.cs" />
     <Compile Include="Data\ITechnologyManagerFactory.cs" />
+    <Compile Include="Data\Forest\IForest.cs" />
+    <Compile Include="Data\Forest\IForestFactory.cs" />
+    <Compile Include="Data\Forest\IForestManager.cs" />
     <Compile Include="Data\PlayerChatState.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />
@@ -303,15 +306,20 @@
     <Compile Include="Data\Tribe\TribePermission.cs" />
     <Compile Include="Data\Tribe\TribeRank.cs" />
     <Compile Include="Data\Tribe\Tribesman.cs" />
+    <Compile Include="Data\Troop\Initializers\AssignmentTroopObjectInitializer.cs" />
+    <Compile Include="Data\Troop\Initializers\CityTroopObjectInitializer.cs" />
     <Compile Include="Data\Troop\CityTroopStubFactory.cs" />
     <Compile Include="Data\Troop\ITroopManager.cs" />
     <Compile Include="Data\Troop\ITroopManagerFactory.cs" />
     <Compile Include="Data\Troop\ITroopObject.cs" />
+    <Compile Include="Data\Troop\ITroopObjectInitializer.cs" />
+    <Compile Include="Data\Troop\ITroopObjectInitializerFactory.cs" />
     <Compile Include="Data\Troop\ITroopStub.cs" />
     <Compile Include="Data\Troop\ITroopStubFactory.cs" />
     <Compile Include="Data\Troop\IUnitTemplate.cs" />
     <Compile Include="Data\Troop\IUnitTemplateFactory.cs" />
     <Compile Include="Data\Troop\SimpleStub.cs" />
+    <Compile Include="Data\Troop\Initializers\StationedTroopObjectInitializer.cs" />
     <Compile Include="Data\Troop\Unit.cs" />
     <Compile Include="Data\Troop\Formation.cs" />
     <Compile Include="Data\Troop\TroopManager.cs" />
@@ -493,6 +501,9 @@
     <Compile Include="Util\MathParser.cs" />
     <Compile Include="Util\Locking\DefaultMultiObjectLock.cs" />
     <Compile Include="Util\NameGenerator.cs" />
+    <Compile Include="Util\Ninject\FactoryMethodNameProvider.cs" />
+    <Compile Include="Util\Ninject\FactoryReturns.cs" />
+    <Compile Include="Util\NumberExtensions.cs" />
     <Compile Include="Util\UnixDateTime.cs" />
     <Compile Include="Util\XMLSerializer.cs" />
   </ItemGroup>
@@ -500,7 +511,7 @@
     <Compile Include="Battle\StatsModCalculator.cs" />
     <Compile Include="Comm\ProcessorCommands\MarketCommandsModule.cs" />
     <Compile Include="Data\GameObject.cs" />
-    <Compile Include="Data\ForestManager.cs" />
+    <Compile Include="Data\Forest\ForestManager.cs" />
     <Compile Include="Data\GameObjectState.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -512,7 +523,7 @@
     <Compile Include="Data\Stats\StructureStats.cs" />
     <Compile Include="Data\Stats\UnitStats.cs" />
     <Compile Include="Data\StructureProperties.cs" />
-    <Compile Include="Data\Forest.cs" />
+    <Compile Include="Data\Forest\Forest.cs" />
     <Compile Include="Data\Troop\TroopTemplate.cs" />
     <Compile Include="Logic\Actions\TroopActions\CityDefenseChainAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\RetreatChainAction.cs" />
@@ -549,7 +560,6 @@
     <Compile Include="Logic\SystemVariablesUpdater.cs" />
     <Compile Include="Map\CityRegion.cs" />
     <Compile Include="Map\RoadManager.cs" />
-    <Compile Include="Module\Npc.cs" />
     <Compile Include="Logic\Randomizer.cs" />
     <Compile Include="Setup\MapFactory.cs" />
     <Compile Include="Setup\ObjectTypeFactory.cs" />

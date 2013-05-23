@@ -95,9 +95,9 @@ namespace Game.Data.BarbarianTribe
             }            
         }
 
-        protected override void CheckUpdateMode()
+        public override void CheckUpdateMode()
         {
-            if (!Global.Current.FireEvents)
+            if (!DbPersisted || !Global.Current.FireEvents)
             {
                 return;
             }

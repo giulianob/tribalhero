@@ -58,12 +58,10 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 ,,,,,,,,,
 //lumbermill,,,,,,,,,
 210711,HaveNoStructure,2111,minlvl=0,maxlvl=3,count=1,,All other basements need to be at least level 4 before you can build a new basement.,All other basements need to be upgraded level 4.,
-210712,HaveStructure,2201,minlvl=1,maxlvl=15,,,,Requires a Level 1 Training Ground.,
 ,,,,,,,,,
 //farm,,,,,,,,,
 21061,HaveNoStructure,3011,minlvl=0,maxlvl=15,count=2,,,You can only have 2 grape farming fields.,2 grape farming field per city
 21061,HaveStructure,2000,minlvl=2,maxlvl=15,,,,Requires a Town Center Level 2,Require towncenter Lvl 2
-21062,HaveStructure,2201,minlvl=1,maxlvl=15,,,,Requires a Level 1 Training Ground.,
 ,,,,,,,,,
 //trading post,,,,,,,,,
 25011,HaveNoStructure,3002,minlvl=0,maxlvl=15,count=2,,,You can only have 2 tribal gatherings.,You can only have 2 tribal gathering of the same type.

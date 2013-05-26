@@ -1,6 +1,5 @@
 ﻿#region
 
-using ConsoleSimulator;
 using Xunit;
 
 #endregion

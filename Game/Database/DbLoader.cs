@@ -10,6 +10,7 @@ using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
 using Game.Data;
 using Game.Data.BarbarianTribe;
+using Game.Data.Forest;
 using Game.Data.Stats;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
@@ -50,7 +51,10 @@ namespace Game.Database
         public ITribeManager Tribes { get; set; }
 
         [Inject]
-        public DbLoaderActionFactory ActionFactory { get; set; }
+        public DbLoaderActionFactory DbLoaderActionFactory { get; set; }
+
+        [Inject]
+        public IActionFactory ActionFactory { get; set; }
 
         [Inject]
         public IBarbarianTribeFactory BarbarianTribeFactory { get; set; }
@@ -78,6 +82,9 @@ namespace Game.Database
 
         [Inject]
         public ICombatGroupFactory CombatGroupFactory { get; set; }
+
+        [Inject]
+        public IForestFactory ForestFactory { get; set; }
 
         public void LoadFromDatabase()
         {
@@ -123,7 +130,7 @@ namespace Game.Database
                     LoadActionNotifications();
                     LoadAssignments();
 
-                    World.AfterDbLoaded(Procedure);
+                    World.AfterDbLoaded(Procedure, Ioc.Kernel.Get<IForestManager>());
 
                     //Ok data all loaded. We can get the system going now.
                     Global.SystemVariables["System.time"].Value = DateTime.UtcNow;
@@ -451,6 +458,7 @@ namespace Game.Database
                                             PlayerRights.Basic)
                     {
                             DbPersisted = true,
+                            TutorialStep = (uint)reader["tutorial_step"],
                             TribeRequest = (uint)reader["invitation_tribe_id"],
                             Muted = DateTime.SpecifyKind((DateTime)reader["muted"], DateTimeKind.Utc),
                             Banned = (bool)reader["banned"]
@@ -706,26 +714,26 @@ namespace Game.Database
 
         private void LoadForests()
         {
+            var forestManager = Ioc.Kernel.Get<IForestManager>();
             logger.Info("Loading forests...");
             using (var reader = DbManager.Select(Forest.DB_TABLE))
             {
                 while (reader.Read())
                 {
-                    var forest = new Forest((byte)reader["level"], (int)reader["capacity"], (float)reader["rate"])
-                    {
-                            DbPersisted = true,
-                            X = (uint)reader["x"],
-                            Y = (uint)reader["y"],
-                            Labor = (ushort)reader["labor"],
-                            ObjectId = (uint)reader["id"],
-                            State = {Type = (ObjectState)((byte)reader["state"])},
-                            Wood = new AggressiveLazyValue((int)reader["lumber"], 
-                                                            DateTime.SpecifyKind((DateTime)reader["last_realize_time"], DateTimeKind.Utc),
-                                                            0,
-                                                            (int)reader["upkeep"]) {Limit = (int)reader["capacity"]},
-                            DepleteTime = DateTime.SpecifyKind((DateTime)reader["deplete_time"], DateTimeKind.Utc),
-                            InWorld = (bool)reader["in_world"]
-                    };
+                    var forest = ForestFactory.CreateForest((byte)reader["level"], (int)reader["capacity"], (float)reader["rate"]);
+
+                    forest.DbPersisted = true;
+                    forest.X = (uint)reader["x"];
+                    forest.Y = (uint)reader["y"];
+                    forest.Labor = (ushort)reader["labor"];
+                    forest.ObjectId = (uint)reader["id"];
+                    forest.State.Type = (ObjectState)((byte)reader["state"]);
+                    forest.Wood = new AggressiveLazyValue((int)reader["lumber"],
+                                                          DateTime.SpecifyKind((DateTime)reader["last_realize_time"], DateTimeKind.Utc),
+                                                          0,
+                                                          (int)reader["upkeep"]) {Limit = (int)reader["capacity"]};
+                    forest.DepleteTime = DateTime.SpecifyKind((DateTime)reader["deplete_time"], DateTimeKind.Utc);
+                    forest.InWorld = (bool)reader["in_world"];
 
                     foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
                     {
@@ -753,10 +761,10 @@ namespace Game.Database
                     if (forest.InWorld)
                     {
                         // Create deplete time
-                        forest.DepleteAction = new ForestDepleteAction(forest, forest.DepleteTime);
+                        forest.DepleteAction = ActionFactory.CreateForestDepleteAction(forest, forest.DepleteTime);
                         Scheduler.Current.Put(forest.DepleteAction);
                         World.Regions.DbLoaderAdd(forest);
-                        World.Forests.DbLoaderAdd(forest);
+                        forestManager.DbLoaderAdd(forest);
                     }
                 }
             }
@@ -1642,7 +1650,7 @@ namespace Game.Database
 
                     Dictionary<string, string> properties = XmlSerializer.Deserialize((string)reader["properties"]);
 
-                    var action = ActionFactory.CreateScheduledActiveAction(type,
+                    var action = DbLoaderActionFactory.CreateScheduledActiveAction(type,
                                                                            (uint)reader["id"],
                                                                            beginTime,
                                                                            nextTime,
@@ -1690,7 +1698,7 @@ namespace Game.Database
 
                         string nlsDescription = DBNull.Value.Equals(reader["nls_description"]) ? string.Empty : (string)reader["nls_description"];
 
-                        action = ActionFactory.CreateScheduledPassiveAction(type,
+                        action = DbLoaderActionFactory.CreateScheduledPassiveAction(type,
                                                                             (uint)reader["id"],
                                                                             beginTime,
                                                                             nextTime,
@@ -1701,7 +1709,7 @@ namespace Game.Database
                     }
                     else
                     {
-                        action = ActionFactory.CreatePassiveAction(type,
+                        action = DbLoaderActionFactory.CreatePassiveAction(type,
                                                                    (uint)reader["id"],
                                                                    (bool)reader["is_visible"],
                                                                    properties);
@@ -1767,7 +1775,7 @@ namespace Game.Database
                     }
 
                     Dictionary<string, string> properties = XmlSerializer.Deserialize((string)reader["properties"]);
-                    var action = ActionFactory.CreateChainAction(type,
+                    var action = DbLoaderActionFactory.CreateChainAction(type,
                                                                  (uint)reader["id"],
                                                                  (string)reader["chain_callback"],
                                                                  currentAction,

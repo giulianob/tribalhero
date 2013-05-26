@@ -18,6 +18,8 @@ namespace Game.Data.BarbarianTribe
 
         private readonly DefaultMultiObjectLock.Factory multiObjectLockFactory;
 
+        private readonly TileLocator tileLocator;
+
         private readonly ConcurrentDictionary<uint, IBarbarianTribe> barbarianTribes = new ConcurrentDictionary<uint, IBarbarianTribe>();
         private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(Config.barbariantribe_id_max, Config.barbariantribe_id_min);
 
@@ -25,13 +27,15 @@ namespace Game.Data.BarbarianTribe
                                      IBarbarianTribeFactory barbarianTribeFactory,
                                      IBarbarianTribeConfigurator barbarianTribeConfigurator,
                                      IRegionManager regionManager,
-                                     DefaultMultiObjectLock.Factory multiObjectLockFactory)
+                                     DefaultMultiObjectLock.Factory multiObjectLockFactory,
+                                     TileLocator tileLocator)
         {
             this.dbManager = dbManager;            
             this.barbarianTribeFactory = barbarianTribeFactory;
             this.barbarianTribeConfigurator = barbarianTribeConfigurator;
             this.regionManager = regionManager;
             this.multiObjectLockFactory = multiObjectLockFactory;
+            this.tileLocator = tileLocator;
         }
 
         public int Count
@@ -69,23 +73,37 @@ namespace Game.Data.BarbarianTribe
                 }
 
                 IBarbarianTribe barbarianTribe = barbarianTribeFactory.CreateBarbarianTribe(idGenerator.GetNext(), level, x, y, Config.barbariantribe_camp_count);
-                Add(barbarianTribe);
+                using (multiObjectLockFactory().Lock(new ILockable[] {barbarianTribe}))
+                {
+                    Add(barbarianTribe);
+                }
             }
+        }
+
+        public void CreateBarbarianTribeNear(byte level, int campCount, uint x, uint y)
+        {
+            uint barbarianCampX;
+            uint barbarianCampY;
+
+            do
+            {
+                tileLocator.RandomPoint(x, y, 10, false, out barbarianCampX, out barbarianCampY);
+            }
+            while (!barbarianTribeConfigurator.IsLocationAvailable(barbarianCampX, barbarianCampY));
+            
+            IBarbarianTribe barbarianTribe = barbarianTribeFactory.CreateBarbarianTribe(idGenerator.GetNext(), level, barbarianCampX, barbarianCampY, campCount);
+            Add(barbarianTribe);
         }
 
         private void Add(IBarbarianTribe barbarianTribe)
         {
             barbarianTribes.AddOrUpdate(barbarianTribe.Id, barbarianTribe, (id, old) => barbarianTribe);
 
-            using (multiObjectLockFactory().Lock(new ILockable[] {barbarianTribe}))
-            {
-                barbarianTribe.BeginUpdate();
-                barbarianTribe.State = GameObjectState.NormalState();
-                regionManager.Add(barbarianTribe);
-                barbarianTribe.EndUpdate();
+            barbarianTribe.BeginUpdate();
+            regionManager.Add(barbarianTribe);
+            barbarianTribe.EndUpdate();
 
-                barbarianTribe.CampRemainsChanged += BarbarianTribeOnCampRemainsChanged;
-            }            
+            barbarianTribe.CampRemainsChanged += BarbarianTribeOnCampRemainsChanged;
         }
 
         private void BarbarianTribeOnCampRemainsChanged(object sender, EventArgs eventArgs)
@@ -135,7 +153,7 @@ namespace Game.Data.BarbarianTribe
                 }
             }
 
-            Generate(Math.Max(0, Config.barbariantribe_generate - barbarianTribes.Count));
+            Generate(barbarianTribesToDelete.Count());
         }
     }
 }

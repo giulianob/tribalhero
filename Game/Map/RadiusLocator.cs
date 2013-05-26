@@ -9,6 +9,7 @@ namespace Game.Map
         private readonly ConcurrentDictionary<RadiusCache, bool> overlappingCache =
                 new ConcurrentDictionary<RadiusCache, bool>();
 
+        [Obsolete("Inject RadiusLocator instead")]
         public static RadiusLocator Current { get; set; }
 
         #region Delegates

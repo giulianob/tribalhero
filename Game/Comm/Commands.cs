@@ -34,6 +34,8 @@ namespace Game.Comm
 
         ProfileByType = 22,
 
+        SaveTutorialStep = 23,
+
         #endregion
 
         #region Action
@@ -218,6 +220,8 @@ namespace Game.Comm
 		
         TroopModeSwitch = 619,
 
+        TroopTransfer = 620,
+
         TroopLocalSet = 621,
 
         #endregion
@@ -331,6 +335,8 @@ namespace Game.Comm
         StrongholdGateRepair = 1104,
 
         StrongholdLocateByName = 1105,
+
+        StrongholdList = 1106,
 
         #endregion
 

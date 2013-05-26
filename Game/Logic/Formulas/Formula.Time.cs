@@ -4,8 +4,11 @@ using System;
 using System.Linq;
 using Game.Battle;
 using Game.Data;
+using Game.Data.Forest;
+using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Setup;
+using Game.Util;
 
 #endregion
 
@@ -36,33 +39,61 @@ namespace Game.Logic.Formulas
                              .Max(x => x == null ? 0 : (int)x.Value[0]));
         }
 
-        public virtual int LaborMoveTime(IStructure structure, byte count, ITechnologyManager technologyManager)
+        public virtual int LaborMoveTime(IStructure structure, ushort count, bool cityToStructure)
         {
-            var effects = structure.City.Technologies.GetEffects(EffectCode.LaborMoveTimeMod, EffectInheritance.All);
-            int overtime = 0;
-            if (effects.Count > 0)
+            const int secondsPerLaborer = 180;
+
+            int totalLaborers = structure.City.GetTotalLaborers();
+            int moveTime;
+            if (cityToStructure && totalLaborers < 160)
             {
-                overtime = effects.Max(x => (int)x.Value[0]);
+                moveTime = (int)Math.Ceiling(0.95 * Math.Exp(0.033 * totalLaborers)) * count;
+            }
+            else
+            {
+                var effects = structure.City.Technologies.GetEffects(EffectCode.LaborMoveTimeMod);
+                int overtime = 0;
+                if (effects.Count > 0)
+                {
+                    overtime = effects.Max(x => (int)x.Value[0]);
+                }
+
+                moveTime = (100 - overtime * 10) * count * secondsPerLaborer / 100;
             }
 
-            return (100 - overtime * 10) * count * 180 / 100;
+            if (!cityToStructure)
+            {
+                moveTime = moveTime / 20;
+            }
+
+            return moveTime;
         }
 
-        private int TimeDiscount(int lvl)
+        public virtual int TrainTime(int structureLvl, int unitCount, IBaseUnitStats stats, ICity city, ITechnologyManager techManager)
         {
-            int[] discount = {0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 15, 15, 20, 30, 40};
-            return discount[lvl];
-        }
+            int[] structureDiscountByLevel = new[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 15, 15, 20, 30, 40};
+            
+            var currentCityUpkeep = city.Troops.Upkeep;
+            var structureLevelDiscount = structureDiscountByLevel[Math.Min(structureLvl, structureDiscountByLevel.Length - 1)].FromPercentageDiscount();
+            var trainTimePerUnit = stats.BuildTime * structureLevelDiscount;
 
-        public virtual int TrainTime(int baseValue, int structureLvl, ITechnologyManager em)
-        {
-            return baseValue * (100 - TimeDiscount(structureLvl)) / 100;
+            if (currentCityUpkeep < 15)
+            {
+                var trainFirst15Discount = techManager.GetEffects(EffectCode.UnitTrainTimeFirst15Reduction)
+                                                      .DefaultIfEmpty()
+                                                      .Max(e => e == null ? 0 : (int)e.Value[0])
+                                                      .FromPercentageDiscount();
+
+                var discountedUnits = Math.Min(15 - currentCityUpkeep, unitCount);
+                return (int)((trainTimePerUnit * trainFirst15Discount * discountedUnits) + (trainTimePerUnit * (unitCount - discountedUnits)));
+            }
+            
+            return (int)(trainTimePerUnit * unitCount);
         }
 
         public virtual int BuildTime(int baseValue, ICity city, ITechnologyManager em)
         {
-            IStructure university =
-                    city.FirstOrDefault(structure => ObjectTypeFactory.IsStructureType("University", structure));
+            IStructure university = city.FirstOrDefault(structure => ObjectTypeFactory.IsStructureType("University", structure));
             return (int)(baseValue * (100 - (university == null ? 0 : university.Stats.Labor) * 0.25) / 100);
         }
 
@@ -134,8 +165,7 @@ namespace Game.Logic.Formulas
                 rateBonus = (effects.Min(x => (int)x.Value[0]) * 10) / 100f;
                 if (effects.Count > 1)
                 {
-                    rateBonus *= Math.Pow(0.92, effects.Count - 1);
-                            // for every extra tribal gathering, you gain 8 % each
+                    rateBonus *= Math.Pow(0.92, effects.Count - 1); // for every extra tribal gathering, you gain 8 % each
                 }
             }
             double newMultiplier = Math.Min(2, 3 - (double)laborTotal / 400);
@@ -159,6 +189,12 @@ namespace Game.Logic.Formulas
             // at 400 objects, the reduction is cap'ed at 20% of the original speed.
             var ret = Config.battle_turn_interval * 100 / (100 + Math.Min(500, count));
             return Config.server_production ? Math.Max(4, ret) : ret;
+        }
+
+        public double GetLumbermillCampBuildTime(IStructure lumbermill, IForest forest)
+        {
+            var distance = lumbermill.TileDistance(forest);
+            return BuildTime(lumbermill.Stats.Base.BuildTime, lumbermill.City, lumbermill.City.Technologies) + distance * 5;
         }
     }
 }

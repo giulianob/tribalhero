@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Linq;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Map;
@@ -33,6 +34,33 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.StrongholdInfoByName, GetInfoByName);
             processor.RegisterCommand(Command.StrongholdLocate, Locate);
             processor.RegisterCommand(Command.StrongholdGateRepair, GateRepair);
+            processor.RegisterCommand(Command.StrongholdList, ListAll);
+        }
+
+        private void ListAll(Session session, Packet packet)
+        {
+            using (locker.Lock(session.Player))
+            {
+                if (!session.Player.IsInTribe)
+                {
+                    ReplyError(session, packet, Error.TribesmanNotPartOfTribe);
+                    return;
+                }
+
+                var reply = new Packet(packet);
+                var strongholds = strongholdManager.StrongholdsForTribe(session.Player.Tribesman.Tribe).ToList();
+                reply.AddInt16((short)strongholds.Count);
+                foreach (var stronghold in strongholds)
+                {
+                    reply.AddUInt32(stronghold.Id);
+                    reply.AddString(stronghold.Name);
+                    reply.AddByte(stronghold.Lvl);
+                    reply.AddUInt32(stronghold.X);
+                    reply.AddUInt32(stronghold.Y);
+                }
+
+                session.Write(reply);
+            }
         }
 
         private void Locate(Session session, Packet packet)

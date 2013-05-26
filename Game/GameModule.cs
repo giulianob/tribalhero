@@ -11,8 +11,11 @@ using Game.Comm.Protocol;
 using Game.Comm.Thrift;
 using Game.Data;
 using Game.Data.BarbarianTribe;
+using Game.Data.Forest;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
+using Game.Data.Troop;
+using Game.Data.Troop.Initializers;
 using Game.Logic;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -22,6 +25,7 @@ using Game.Module;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
+using Game.Util.Ninject;
 using Ninject;
 using Ninject.Extensions.Conventions;
 using Ninject.Extensions.Factory;
@@ -45,6 +49,8 @@ namespace Game
             Bind<IRegionManager>().To<RegionManager>().InSingletonScope();
             Bind<ICityManager>().To<CityManager>().InSingletonScope();
             Bind<ICityRegionManager>().To<CityRegionManager>().InSingletonScope();
+            Bind<IForestManager>().To<ForestManager>().InSingletonScope();
+            Bind<IForest>().To<Forest>();
 
             #endregion
 
@@ -52,17 +58,10 @@ namespace Game
 
             Bind<IPolicyServer>().To<PolicyServer>().InSingletonScope();
             Bind<ITcpServer>().To<TcpServer>().InSingletonScope();
-            Bind<TServer>()
-                    .ToMethod(
-                              c =>
-                              new TSimpleServer(new Notification.Processor(c.Kernel.Get<NotificationHandler>()),
-                                                new TServerSocket(46000)));
+            Bind<TServer>().ToMethod(c => new TSimpleServer(new Notification.Processor(c.Kernel.Get<NotificationHandler>()), new TServerSocket(46000)));
             Bind<IProtocol>().To<PacketProtocol>();
 
-            Bind<Chat>().ToMethod(c =>
-                {
-                    return new Chat(Global.Channel);
-                });
+            Bind<Chat>().ToMethod(c => new Chat(Global.Channel)).InSingletonScope();
 
             #endregion
 
@@ -159,39 +158,34 @@ namespace Game
 
             #region Processor
 
-            Bind<CommandLineProcessor>().ToMethod(c =>
-                {
-                    return new CommandLineProcessor(c.Kernel.Get<AssignmentCommandLineModule>(),
-                                                    c.Kernel.Get<PlayerCommandLineModule>(),
-                                                    c.Kernel.Get<CityCommandLineModule>(),
-                                                    c.Kernel.Get<ResourcesCommandLineModule>(),
-                                                    c.Kernel.Get<TribeCommandLineModule>(),
-                                                    c.Kernel.Get<StrongholdCommandLineModule>(),
-                                                    c.Kernel.Get<RegionCommandsLineModule>());
-                }).InSingletonScope();
-            Bind<Processor>()
-                    .ToMethod(
-                              c =>
-                              new Processor(c.Kernel.Get<AssignmentCommandsModule>(),
-                                            c.Kernel.Get<BattleCommandsModule>(),
-                                            c.Kernel.Get<EventCommandsModule>(),
-                                            c.Kernel.Get<ChatCommandsModule>(),
-                                            c.Kernel.Get<CommandLineCommandsModule>(),
-                                            c.Kernel.Get<LoginCommandsModule>(),
-                                            c.Kernel.Get<MarketCommandsModule>(),
-                                            c.Kernel.Get<MiscCommandsModule>(),
-                                            c.Kernel.Get<PlayerCommandsModule>(),
-                                            c.Kernel.Get<RegionCommandsModule>(),
-                                            c.Kernel.Get<StructureCommandsModule>(),
-                                            c.Kernel.Get<TribeCommandsModule>(),
-                                            c.Kernel.Get<TribesmanCommandsModule>(),
-                                            c.Kernel.Get<StrongholdCommandsModule>(),
-                                            c.Kernel.Get<ProfileCommandsModule>(),
-                                            c.Kernel.Get<TroopCommandsModule>()))
-                    .InSingletonScope();
+            Bind<CommandLineProcessor>().ToMethod(c => new CommandLineProcessor(c.Kernel.Get<AssignmentCommandLineModule>(),
+                                                                                c.Kernel.Get<PlayerCommandLineModule>(),
+                                                                                c.Kernel.Get<CityCommandLineModule>(),
+                                                                                c.Kernel.Get<ResourcesCommandLineModule>(),
+                                                                                c.Kernel.Get<TribeCommandLineModule>(),
+                                                                                c.Kernel.Get<StrongholdCommandLineModule>(),
+                                                                                c.Kernel.Get<RegionCommandsLineModule>())).InSingletonScope();
+
+            Bind<Processor>().ToMethod(c => new Processor(c.Kernel.Get<AssignmentCommandsModule>(),
+                                                          c.Kernel.Get<BattleCommandsModule>(),
+                                                          c.Kernel.Get<EventCommandsModule>(),
+                                                          c.Kernel.Get<ChatCommandsModule>(),
+                                                          c.Kernel.Get<CommandLineCommandsModule>(),
+                                                          c.Kernel.Get<LoginCommandsModule>(),
+                                                          c.Kernel.Get<MarketCommandsModule>(),
+                                                          c.Kernel.Get<MiscCommandsModule>(),
+                                                          c.Kernel.Get<PlayerCommandsModule>(),
+                                                          c.Kernel.Get<RegionCommandsModule>(),
+                                                          c.Kernel.Get<StructureCommandsModule>(),
+                                                          c.Kernel.Get<TribeCommandsModule>(),
+                                                          c.Kernel.Get<TribesmanCommandsModule>(),
+                                                          c.Kernel.Get<StrongholdCommandsModule>(),
+                                                          c.Kernel.Get<ProfileCommandsModule>(),
+                                                          c.Kernel.Get<TroopCommandsModule>()))
+                             .InSingletonScope();
 
             #endregion
-
+            
             #region Utils
 
             Bind<IScheduler>().To<ThreadedScheduler>().InSingletonScope();
@@ -204,6 +198,7 @@ namespace Game
             Bind<CityBattleProcedure>().ToSelf().InSingletonScope();
             Bind<BarbarianTribeBattleProcedure>().ToSelf().InSingletonScope();
             Bind<Random>().ToSelf().InSingletonScope();
+
             #endregion
 
             #region Stronghold
@@ -212,10 +207,14 @@ namespace Game
 
             Bind<IStrongholdConfigurator>().To<StrongholdConfigurator>().InSingletonScope();
             Bind<IStronghold>().To<Stronghold>();
-            if (Config.stronghold_bypass_activation) 
+            if (Config.stronghold_bypass_activation)
+            {
                 Bind<IStrongholdActivationCondition>().To<DummyActivationCondition>();
+            }
             else
+            {
                 Bind<IStrongholdActivationCondition>().To<StrongholdActivationCondition>();
+            }
             Bind<StrongholdActivationChecker>().ToSelf().InSingletonScope();
             Bind<VictoryPointChecker>().ToSelf().InSingletonScope();
 
@@ -245,7 +244,7 @@ namespace Game
                        .SelectAllInterfaces()
                        .EndingWith("Factory")
                        .Where(t => !explicitFactoryBindings.Contains(t.AssemblyQualifiedName))
-                       .BindToFactory());
+                       .BindToFactory(() => new FactoryMethodNameProvider()));
 
             #endregion
         }

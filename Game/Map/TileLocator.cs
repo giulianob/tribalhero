@@ -1,3 +1,5 @@
+using System;
+
 namespace Game.Map
 {
     public class TileLocator
@@ -13,6 +15,7 @@ namespace Game.Map
             this.getRandom = getRandom;
         }
 
+        [Obsolete("Inject TileLocator instead")]
         public static TileLocator Current { get; set; }
 
         #region Delegates

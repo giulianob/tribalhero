@@ -89,8 +89,6 @@ namespace Game.Comm.ProcessorCommands
             }
 
             // First need to find all the objects that should be locked
-            uint[] playerIds;
-            Dictionary<uint, ICity> cities;
             using (locker.Lock(city, stronghold))
             {
                 if (city == null || stronghold == null)

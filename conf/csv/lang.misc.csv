@@ -28,6 +28,7 @@ STR_OCCUPIED,Occupied
 STR_VP_RATE,Victory Point Rate
 STR_VICTORY_POINT,Victory Point
 STR_PER_DAY_RATE,{0} per day
+STR_PER_HOUR_RATE,{0} per hour
 STR_TOTAL_TROOPS,Total Troops
 STR_NONE_DEFENDING,None defending
 STR_GO_TO,Go there
@@ -255,3 +256,11 @@ UNIT_MANAGE_DIALOG_TITLE,Assign Units
 UNIT_MANAGE_DIALOG_TIP,Units in hiding will consume an extra 25% upkeep.
 UNIT_MANAGE_HIDE_NEW_UNITS,Hide newly trained units
 UNIT_MANAGE_HIDE_NEW_UNITS_TOOLTIP,"If selected, all newly trained units will go directly into hiding and will not defend your city if it is attacked. Units in hiding consume an extra 25% upkeep."
+,
+TRANSFER_TITLE,Troop transfer
+TRANSFER_NO_OTHER_STRONGHOLD,Your tribe has no other stronghold!
+TRANSFER_CHOOSE_STRONGHOLD,Choose a stronghold:
+TRANSFER_ARRIVE_IN,Arrive in {0}
+TRANSFER_SEND,Send
+TRANSFER_CANCEL,Cancel
+TRANSFER_WARNING,"If the stronghold is lost to another tribe before the troop arrives, the troop will be sent back to its city."

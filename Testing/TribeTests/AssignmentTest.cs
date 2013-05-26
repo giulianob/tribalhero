@@ -59,6 +59,7 @@ namespace Testing.TribeTests
             var tileLocator = Substitute.For<TileLocator>();
             var actionFactory = Substitute.For<IActionFactory>();
             var locker = Substitute.For<ILocker>();
+            var initializer = Substitute.For<ITroopObjectInitializerFactory>();
 
             SystemClock.SetClock(startTime);
 
@@ -80,7 +81,8 @@ namespace Testing.TribeTests
                                                    procedure,
                                                    tileLocator,
                                                    actionFactory,
-                                                   locker);
+                                                   locker,
+                                                   initializer);
             assignment.Add(stub);
             assignment.Reschedule();
 
@@ -111,6 +113,7 @@ namespace Testing.TribeTests
             var tileLocator = Substitute.For<TileLocator>();
             var actionFactory = Substitute.For<IActionFactory>();
             var locker = Substitute.For<ILocker>();
+            var initializer = Substitute.For<ITroopObjectInitializerFactory>();
             ICity newCity;
             var newStub = CreateStub(out newCity);
             ICity newCity2;
@@ -140,7 +143,8 @@ namespace Testing.TribeTests
                                                    procedure,
                                                    tileLocator,
                                                    actionFactory,
-                                                   locker);
+                                                   locker,
+                                                   initializer);
             assignment.Add(stub);
             assignment.Add(newStub);
             assignment.Add(newStub2);
@@ -175,6 +179,7 @@ namespace Testing.TribeTests
             var actionWorker = Substitute.For<IActionWorker>();
             var troopObject = Substitute.For<ITroopObject>();
             var locker = Substitute.For<ILocker>();
+            var initializer = Substitute.For<ITroopObjectInitializerFactory>();
 
             SystemClock.SetClock(startTime);
 
@@ -211,7 +216,8 @@ namespace Testing.TribeTests
                                                    procedure,
                                                    tileLocator,
                                                    actionFactory,
-                                                   locker) {stub};
+                                                   locker,
+                                                   initializer) { stub };
 
             SystemClock.SetClock(targetTime.AddSeconds(-90));
 
@@ -250,6 +256,7 @@ namespace Testing.TribeTests
             var actionWorker = Substitute.For<IActionWorker>();
             var troopObject = Substitute.For<ITroopObject>();
             var locker = Substitute.For<ILocker>();
+            var initializer = Substitute.For<ITroopObjectInitializerFactory>();
 
             SystemClock.SetClock(startTime);
 
@@ -286,7 +293,8 @@ namespace Testing.TribeTests
                                                    procedure,
                                                    tileLocator,
                                                    actionFactory,
-                                                   locker) {stub};
+                                                   locker,
+                                                   initializer) {stub};
 
             SystemClock.SetClock(targetTime.AddSeconds(-300));
 
@@ -322,6 +330,7 @@ namespace Testing.TribeTests
             var actionWorker = Substitute.For<IActionWorker>();
             var troopObject = Substitute.For<ITroopObject>();
             var locker = Substitute.For<ILocker>();
+            var initializer = Substitute.For<ITroopObjectInitializerFactory>();
 
             troopObject.ObjectId.Returns((uint)99);
 
@@ -362,7 +371,8 @@ namespace Testing.TribeTests
                                                    procedure,
                                                    tileLocator,
                                                    actionFactory,
-                                                   locker) {stub};
+                                                   locker,
+                                                   initializer) { stub };
             assignment.Reschedule();
             assignment.Time.Should().Be(targetTime.AddMinutes(-5));
 

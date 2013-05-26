@@ -17,8 +17,6 @@ namespace Game.Setup
 
         public static double seconds_per_unit = 1.0;
         public static int[] forest_count = new[] {550, 750, 1200, 1000};
-        public static bool ai_enabled;
-        public static int ai_count = 100;
 
         #endregion        
 
@@ -61,7 +59,7 @@ namespace Game.Setup
 
         #region Database Settings
 
-        public static readonly string database_schema_version = "20130427002657"; 
+        public static string database_schema_version = "20130522224113";
         public static bool database_verbose;
         public static bool database_empty;
         public static bool database_load_players = true;

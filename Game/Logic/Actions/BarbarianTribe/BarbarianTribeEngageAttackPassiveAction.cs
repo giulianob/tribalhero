@@ -275,7 +275,7 @@ namespace Game.Logic.Actions
                                                                 troopObject.Stub.TotalCount);
             
             // Add barbarian tribe bonus
-            resource.Add(formula.BarbarianTribeBonus(barbarianTribe.Lvl, battle, combatGroup));
+            resource.Add(formula.BarbarianTribeBonus(barbarianTribe.Lvl, battle, combatGroup, barbarianTribe));
 
             // Copy looted resources since we'll be modifying the troop's loot variable
             var looted = new Resource(troopObject.Stats.Loot);

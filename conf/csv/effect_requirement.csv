@@ -8,6 +8,7 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 //20004,HaveStructure,2301,minlvl=1,maxlvl=15,,,,Requires a University.,Require University Lvl 1. For Upgrading mainbuilding to lvl 4
 //20005,HaveStructure,2202,minlvl=1,maxlvl=15,,,,Requires a Stable.,Require Stable Lvl 1. For building Stable
 20006,PlayerAttackPoint,gt,49,,,,,Requires 50 or more attack points.,Requires 50 or more attack points. For upgrading main building to lvl 7.
+20007,HaveNoStructure,2201,minlvl=0,maxlvl=3,count=1,,All other Training Ground need to be at least level 4 before you can build a new one.,All other Training Grounds need to be upgraded level 4.,
 210601,HaveNoStructure,2106,minlvl=0,maxlvl=15,count=1,,,,Require Lvl6 Main building for 2nd Farm
 210602,HaveNoStructure,2106,minlvl=0,maxlvl=15,count=2,,,,2 Farm per city Max
 210701,HaveNoStructure,2107,minlvl=0,maxlvl=15,count=1,,,,1 Lumbermill per city Max
@@ -43,6 +44,7 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 22012,HaveTechnology,22012,lvl=1,count=1,,,,Requires 4 for Price of 3 Technology.,
 22013,HaveTechnology,22013,lvl=1,count=1,,,,Requires 3 for Price of 2 Technology.,
 22014,HaveTechnology,id=23011,minlvl=1,count=1,,,,Requires Archery Research.,Require Archery Class level 1.
+22015,HaveTechnology,22015,lvl=1,count=1,,,,Requires Basic Training Technology.,
 ,,,,,,,,,
 //barrack & stable & workshop,,,,,,,,,
 22041,CountLessThan,id=2204,count=1,,,,Only one unit can be on diet per structure.,,
@@ -56,10 +58,12 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 ,,,,,,,,,
 //lumbermill,,,,,,,,,
 210711,HaveNoStructure,2111,minlvl=0,maxlvl=3,count=1,,All other basements need to be at least level 4 before you can build a new basement.,All other basements need to be upgraded level 4.,
+210712,HaveStructure,2201,minlvl=1,maxlvl=15,,,,Requires a Level 1 Training Ground.,
 ,,,,,,,,,
 //farm,,,,,,,,,
 21061,HaveNoStructure,3011,minlvl=0,maxlvl=15,count=2,,,You can only have 2 grape farming fields.,2 grape farming field per city
 21061,HaveStructure,2000,minlvl=2,maxlvl=15,,,,Requires a Town Center Level 2,Require towncenter Lvl 2
+21062,HaveStructure,2201,minlvl=1,maxlvl=15,,,,Requires a Level 1 Training Ground.,
 ,,,,,,,,,
 //trading post,,,,,,,,,
 25011,HaveNoStructure,3002,minlvl=0,maxlvl=15,count=2,,,You can only have 2 tribal gatherings.,You can only have 2 tribal gathering of the same type.

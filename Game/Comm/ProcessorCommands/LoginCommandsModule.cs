@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
@@ -16,7 +17,6 @@ using Game.Map.LocationStrategies;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 using Ninject.Extensions.Logging;
 using Persistance;
 
@@ -44,13 +44,22 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly ILocationStrategyFactory locationStrategyFactory;
 
+        private readonly IBarbarianTribeManager barbarianTribeManager;
+
+        private readonly IRegionManager regionManager;
+
+        private readonly InitFactory initFactory;
+
         public LoginCommandsModule(IActionFactory actionFactory,
                                    ITribeManager tribeManager,
                                    IDbManager dbManager,
                                    ILocker locker,
                                    IWorld world,
                                    Procedure procedure,
-                                   ILocationStrategyFactory locationStrategyFactory)
+                                   ILocationStrategyFactory locationStrategyFactory,
+                                   IBarbarianTribeManager barbarianTribeManager,
+                                   IRegionManager regionManager,
+                                   InitFactory initFactory)
         {
             this.actionFactory = actionFactory;
             this.tribeManager = tribeManager;
@@ -59,6 +68,9 @@ namespace Game.Comm.ProcessorCommands
             this.world = world;
             this.procedure = procedure;
             this.locationStrategyFactory = locationStrategyFactory;
+            this.barbarianTribeManager = barbarianTribeManager;
+            this.regionManager = regionManager;
+            this.initFactory = initFactory;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -265,6 +277,7 @@ namespace Game.Comm.ProcessorCommands
                 //Player Info
                 reply.AddUInt32(player.PlayerId);
                 reply.AddString(player.PlayerHash);
+                reply.AddUInt32(player.TutorialStep);
                 reply.AddByte((byte)(player.Rights >= PlayerRights.Admin ? 1 : 0));
                 reply.AddString(sessionId);
                 reply.AddString(player.Name);
@@ -371,6 +384,7 @@ namespace Game.Comm.ProcessorCommands
                     {
                         strategy = locationStrategyFactory.CreateCityTileNextAvailableLocationStrategy();
                     }
+
                     // Verify city name is unique
                     if (world.CityNameTaken(cityName))
                     {
@@ -378,8 +392,8 @@ namespace Game.Comm.ProcessorCommands
                         return;
                     }
 
-                    var error = procedure.CreateCity(session.Player, cityName, strategy, out city);
-                    if(error!=Error.Ok)
+                    var error = procedure.CreateCity(session.Player, cityName, strategy, barbarianTribeManager, out city);
+                    if (error != Error.Ok)
                     {
                         ReplyError(session, packet, error);
                         return;
@@ -388,8 +402,7 @@ namespace Game.Comm.ProcessorCommands
 
                 IStructure mainBuilding = (IStructure)city[1];
 
-                Ioc.Kernel.Get<InitFactory>()
-                   .InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
+                initFactory.InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
 
                 city.Worker.DoPassive(city, actionFactory.CreateCityPassiveAction(city.Id), false);
 

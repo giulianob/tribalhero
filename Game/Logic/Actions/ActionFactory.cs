@@ -1,12 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Game.Data;
+using Game.Data.Forest;
 using Game.Data.Troop;
+using Game.Logic.Actions.ResourceActions;
 
 namespace Game.Logic.Actions
 {
     // TODO: Change this factory to use custom instance provider. Every method should just return IAction and the method name can be used to return the correct type. This will aid testing.
     public interface IActionFactory
     {
+        ForestCreatorAction CreateForestCreatorAction();
+
+        ForestDepleteAction CreateForestDepleteAction(IForest forest, DateTime time);
+
         CityAttackChainAction CreateCityAttackChainAction(uint cityId,
                                                           uint troopObjectId,
                                                           uint targetCityId,
@@ -90,9 +97,8 @@ namespace Game.Logic.Actions
                                                             AttackMode mode);
 
         StrongholdDefenseChainAction CreateStrongholdDefenseChainAction(uint cityId,
-                                                                        uint troopObjectId,
-                                                                        uint targetStrongholdId,
-                                                                        AttackMode mode);
+                                                                        ITroopObjectInitializer troopObjectInitializer,
+                                                                        uint targetStrongholdId);
 
         TroopMovePassiveAction CreateTroopMovePassiveAction(uint cityId,
                                                             uint troopObjectId,

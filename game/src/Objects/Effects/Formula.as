@@ -62,7 +62,7 @@
 			// Assign faster during beginning of the game
             if (cityToStructure && totalLaborers < 160)
             {
-                moveTime = Math.floor(0.95 * Math.exp(0.033 * totalLaborers)) * count;
+                moveTime = Math.ceil(0.95 * Math.exp(0.033 * totalLaborers)) * count;
             }
 			else {
 				var overtime: int = 0;
@@ -283,10 +283,10 @@
 		
 		public static function getResourceNewCity() : *
 		{
-			var size:Number = Global.map.cities.size();
-			var wagonRequired:Number = 50 * size;
+			var numberOfCities:Number = Global.map.cities.size();
+			var wagonRequired:Number = 50 * numberOfCities;
 			var wagonCurrent:Number = Global.gameContainer.selectedCity.troops.getDefaultTroop().getIndividualUnitCount(ObjectFactory.getFirstType("Wagon"));
-			var influenceRequired:Number = size * (100 + 20 * (size-1));
+			var influenceRequired:Number = (60 + 40 * numberOfCities) * numberOfCities;
 			var influenceCurrent:Number = 0;
 			for each(var city: City in Global.map.cities)
 			{

@@ -2,6 +2,8 @@ package src.UI.Tutorial
 {
 	import flash.utils.getDefinitionByName;
 	import org.aswing.AsWingManager;
+	import src.Comm.Commands.GeneralComm;
+	import src.Global;
 	import src.Map.Map;
 	import src.UI.Tutorial.Steps.*;
 	 
@@ -12,21 +14,28 @@ package src.UI.Tutorial
 			CityOverviewStep,
 			AssignLaborerToFarmStep,
 			BuildLumbermillStep,
-			GatherWoodStep
+			GatherWoodStep,
+			UpgradeTownCenterStep,
+			BuildTrainingGroundStep,
+			UpgradeSwordTechStep,
+			TrainFightersStep,
+			AttackBarbariansStep
 		];
 		
 		private var currentStepIndex: int = 0;
 		private var currentStep: TutorialStep;
 		private var map: Map;		
+		private var generalComm:GeneralComm;
 		
 		/**
 		 * Starts the game tutorial
 		 * @param	map
 		 */
-		public function start(map: Map): void {
+		public function start(startStep: int, map: Map, generalComm: GeneralComm): void {
+			this.generalComm = generalComm;
 			this.map = map;
-			currentStepIndex = 0;
-			executeStep(0);
+			currentStepIndex = startStep;
+			executeStep(currentStepIndex);
 		}
 		
 		public function stop(): void {
@@ -39,11 +48,13 @@ package src.UI.Tutorial
 		/**
 		 * Executes the next step in the sequence
 		 */
-		private function resume(): void {
+		private function resume(): void {					
 			currentStepIndex++;
-			if (currentStepIndex < steps.length) {
+							
+			generalComm.saveTutorialStep(currentStepIndex);
+			if (currentStepIndex < steps.length) {				
 				executeStep(currentStepIndex);
-			}			
+			}
 		}
 		
 		/**
@@ -51,6 +62,10 @@ package src.UI.Tutorial
 		 * @param	step The step index to execute
 		 */
 		private function executeStep(step: int): void {
+			if (currentStepIndex >= steps.length) {
+				return;
+			}
+			
 			var tutorialStepClass:Class = steps[step] as Class;
 			var tutorialStep: TutorialStep = new tutorialStepClass();
 			tutorialStep.resume = resume;

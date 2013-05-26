@@ -27,14 +27,9 @@ package src.UI.Tutorial.Steps
 		public function BuildLumbermillStep() 
 		{
 			timer.addEventListener(TimerEvent.TIMER, onTimer);
-		}		
+		}
 		
 		override public function execute(): void {					
-			if (map.cities.size() > 1) {
-				this.complete();
-				return;
-			}
-						
 			timer.start();
 			onTimer();
 		}

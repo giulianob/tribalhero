@@ -191,7 +191,7 @@
 			
 			var grid: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));
 			grid.append(simpleLabelMaker(StringHelper.localize("STR_LEVEL_VALUE", stronghold.lvl), StringHelper.localize("STR_LEVEL"), new AssetIcon(new ICON_UPGRADE())));
-			grid.append(simpleLabelMaker(StringHelper.localize("STR_PER_DAY_RATE", Util.roundNumber(stronghold.victoryPointRate)), StringHelper.localize("STR_VP_RATE"), new AssetIcon(new ICON_STAR())));
+			grid.append(simpleLabelMaker(StringHelper.localize("STR_PER_HOUR_RATE", Util.roundNumber(stronghold.victoryPointRate)), StringHelper.localize("STR_VP_RATE"), new AssetIcon(new ICON_STAR())));
 			var timediff :int = Global.map.getServerTime() - stronghold.dateOccupied;
 			grid.append(simpleLabelMaker(Util.niceDays(timediff), StringHelper.localize("STR_DAYS_OCCUPIED"), new AssetIcon(new ICON_SHIELD())));
 			

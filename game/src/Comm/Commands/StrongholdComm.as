@@ -179,6 +179,40 @@ package src.Comm.Commands
 				custom.callback();
 			}
 		}
+		
+		public function onListStrongholds(packet: Packet, custom: *): void {
+			if (!MapComm.tryShowError(packet)) {
+							// Strongholds
+				var stronghold: *;
+				var strongholds: * = [];
+				
+				var strongholdCount: int = packet.readShort();
+				for (var i:int = 0; i < strongholdCount; i++) {
+					stronghold = {
+						id: packet.readUInt(),
+						name: packet.readString(),
+						lvl: packet.readByte(),
+						x: packet.readUInt(),
+						y: packet.readUInt()
+					};
+					
+					if (!Global.map.usernames.strongholds.get(stronghold.id)) {
+						Global.map.usernames.strongholds.add(new Username(stronghold.id, stronghold.name));
+					}
+					
+					strongholds.push(stronghold);
+				}
+			
+				if (custom.callback) {
+					custom.callback(strongholds);
+				}
+			}
+		}
+		
+		public function listStrongholds(callback: Function = null): void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.STRONGHOLD_LIST;
+			session.write(packet, onListStrongholds, { callback: callback });
+		}
 	}
-
 }

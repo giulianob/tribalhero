@@ -1,16 +1,11 @@
 ﻿package src.Objects.Prototypes {
 	
-	/**
-	* ...
-	* @author Default
-	*/
 	public class EffectPrototype {
 		
 		public static const EFFECT_BUILD_TIME_MULTIPLIER: int = 0;
 		public static const EFFECT_RESOURCE_RATE: int = 1;
 		public static const EFFECT_BUILD_HEAVY_TANK: int = 2;
 		public static const EFFECT_TRAIN_TIME_MULTIPLIER: int = 3;
-		public static const EFFECT_BUILD_NINJA: int = 4;
 		public static const EFFECT_CAN_BUILD: int = 5;
 		public static const EFFECT_HARVEST_SURPRISE: int = 6;	
 		public static const EFFECT_OVER_DIGGING: int = 7;
@@ -24,6 +19,7 @@
         public static const EFFECT_LABOR_MOVE_TIME_MOD: int = 20;
 		public static const EFFECT_LABOR_TRAIN_TIME_MOD: int = 22;
 		public static const EFFECT_REDUCE_UPKEEP: int = 103;
+		public static const EFFECT_UNIT_TRAIN_FIRST_15_REDUCTION:int = 104;
 		
 		public static const LOCATION_OBJECT: int = 0;
 		public static const LOCATION_CITY: int = 1;

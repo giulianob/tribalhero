@@ -251,7 +251,7 @@ namespace Game.Logic.Formulas
 
         public virtual void GetNewCityCost(int cityCount, out int influencePoints, out int wagons)
         {
-            influencePoints = (100 + 20 * (cityCount - 1)) * cityCount;
+            influencePoints = (60 + 40 * cityCount) * cityCount;
             wagons = 50 * cityCount;
         }
     }

@@ -12,12 +12,15 @@ namespace Testing.FormulaTests
     public class LaborMoveTest
     {
         [Theory]
-        [InlineAutoNSubstituteData(1, 180)]
-        [InlineAutoNSubstituteData(5, 900)]
-        [InlineAutoNSubstituteData(200, 36000)]       
-        public void TestBasicLaborMove(int labor, int expected, IStructure structure, Formula formula)
+        [InlineAutoNSubstituteData(160, 1, 180)]
+        [InlineAutoNSubstituteData(160, 5, 900)]
+        [InlineAutoNSubstituteData(160, 200, 36000)]       
+        [InlineAutoNSubstituteData(1, 1, 1)]
+        [InlineAutoNSubstituteData(100, 5, 130)]
+        [InlineAutoNSubstituteData(150, 10, 1350)]       
+        public void TestBasicLaborMove(int currentLaborers, int labor, int expected, IStructure structure, Formula formula)
         {
-            structure.City.GetTotalLaborers().Returns(101);
+            structure.City.GetTotalLaborers().Returns(currentLaborers);
             structure.City.Technologies.GetEffects(EffectCode.LaborMoveTimeMod).Returns(new List<Effect>());
 
             formula.LaborMoveTime(structure, (ushort)labor, true).Should().Be(expected);
@@ -67,7 +70,7 @@ namespace Testing.FormulaTests
         {
             var formula = new Fixture().Create<Formula>();
             var structure = Substitute.For<IStructure>();
-            structure.City.GetTotalLaborers().Returns(101);
+            structure.City.GetTotalLaborers().Returns(160);
             structure.City.Technologies.GetEffects(EffectCode.LaborMoveTimeMod).Returns(effects);
 
             formula.LaborMoveTime(structure, (ushort)labor, true).Should().Be(expected);

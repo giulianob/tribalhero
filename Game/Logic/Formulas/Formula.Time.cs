@@ -47,7 +47,7 @@ namespace Game.Logic.Formulas
             int moveTime;
             if (cityToStructure && totalLaborers < 160)
             {
-                moveTime = (int)(0.95 * Math.Exp(0.033 * totalLaborers)) * count;
+                moveTime = (int)Math.Ceiling(0.95 * Math.Exp(0.033 * totalLaborers)) * count;
             }
             else
             {

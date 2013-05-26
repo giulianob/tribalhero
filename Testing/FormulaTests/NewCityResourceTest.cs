@@ -1,32 +1,24 @@
-﻿using FluentAssertions;
+﻿using Common.Testing;
+using FluentAssertions;
 using Game.Logic.Formulas;
-using Game.Setup;
-using Moq;
-using Xunit;
+using Xunit.Extensions;
 
 namespace Testing.FormulaTests
 {
     public class NewCityResourceTest
     {
-        [Fact]
-        public void TestNewCityResource()
+        [Theory]
+        [InlineAutoNSubstituteData(1, 100, 50)]
+        [InlineAutoNSubstituteData(10, 4600, 500)]
+        [InlineAutoNSubstituteData(30, 37800, 1500)]
+        public void TestNewCityResource(int cityCount, int expectedIp, int expectedWagons, Formula formula)
         {
             int influencePoints;
             int wagons;
 
-            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
-                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<StructureFactory>(MockBehavior.Strict).Object);
-
-            formula.GetNewCityCost(1, out influencePoints, out wagons);
-            influencePoints.Should().Be(100);
-            wagons.Should().Be(50);
-            formula.GetNewCityCost(10, out influencePoints, out wagons);
-            influencePoints.Should().Be(4600);
-            wagons.Should().Be(500);
-            formula.GetNewCityCost(30, out influencePoints, out wagons);
-            influencePoints.Should().Be(37800);
-            wagons.Should().Be(1500);
+            formula.GetNewCityCost(cityCount, out influencePoints, out wagons);
+            influencePoints.Should().Be(expectedIp);
+            wagons.Should().Be(expectedWagons);
         }
     }
 }

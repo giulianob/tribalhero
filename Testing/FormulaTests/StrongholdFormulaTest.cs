@@ -112,16 +112,16 @@ namespace Testing.FormulaTests
             get
             {
                 // no bonus
-                yield return new object[] { (byte)1, 5m, 0m, 0m, 15m };
-                yield return new object[] { (byte)1, 60m, 0m, 0m, 15m };
+                yield return new object[] { (byte)1, 5m, 0m, 0m, 125m };
+                yield return new object[] { (byte)1, 60m, 0m, 0m, 400m };
                 // with bonus
-                yield return new object[] { (byte)5, 5m, 2.5m, 0m, 27.5m };
+                yield return new object[] { (byte)5, 5m, 2.5m, 0m, 412.50m };
                 // level 20
-                yield return new object[] { (byte)20, 5m, 2.5m, 0m, 68.75m };
+                yield return new object[] { (byte)20, 5m, 2.5m, 0m, 1443.75m };
                 // level 20 with 18 server days
-                yield return new object[] { (byte)20, 5m, 2.5m, 18m, 86.75m };
+                yield return new object[] { (byte)20, 5m, 2.5m, 18m, 1821.75m };
                 // level 8 with 40.3 server days
-                yield return new object[] { (byte)8, 2.5m, 5m, 40.3m, 56.706m };
+                yield return new object[] { (byte)8, 2.5m, 5m, 40.3m, 981.45m };
             }
         }
 

@@ -48,8 +48,6 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IBarbarianTribeManager barbarianTribeManager;
 
-        private readonly IRegionManager regionManager;
-
         private readonly InitFactory initFactory;
 
         public LoginCommandsModule(IActionFactory actionFactory,
@@ -58,11 +56,9 @@ namespace Game.Comm.ProcessorCommands
                                    ILocker locker,
                                    IWorld world,
                                    Procedure procedure,
-                                   InitFactory initFactory,
                                    ICityFactory cityFactory,
                                    ILocationStrategyFactory locationStrategyFactory,
                                    IBarbarianTribeManager barbarianTribeManager,
-                                   IRegionManager regionManager,
                                    InitFactory initFactory)
         {
             this.actionFactory = actionFactory;
@@ -75,7 +71,6 @@ namespace Game.Comm.ProcessorCommands
             this.cityFactory = cityFactory;
             this.locationStrategyFactory = locationStrategyFactory;
             this.barbarianTribeManager = barbarianTribeManager;
-            this.regionManager = regionManager;
             this.initFactory = initFactory;
         }
 

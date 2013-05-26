@@ -147,7 +147,7 @@ namespace Game.Map
                 }
 
                 // Send obj add event
-                if (Global.FireEvents)
+                if (Global.Current.FireEvents)
                 {
                     ushort regionId = Region.GetRegionIndex(obj);
 
@@ -155,7 +155,7 @@ namespace Game.Map
                     packet.AddUInt16(regionId);
                     PacketHelper.AddToPacket(obj, packet);
 
-                    Global.Channel.Post("/WORLD/" + regionId, packet);
+                    Global.Current.Channel.Post("/WORLD/" + regionId, packet);
                 }
 
                 return true;
@@ -236,7 +236,7 @@ namespace Game.Map
                 var packet = new Packet(Command.ObjectUpdate);
                 packet.AddUInt16(newRegionId);
                 PacketHelper.AddToPacket(sender, packet);
-                Global.Channel.Post("/WORLD/" + newRegionId, packet);
+                Global.Current.Channel.Post("/WORLD/" + newRegionId, packet);
             }
             else
             {
@@ -247,12 +247,12 @@ namespace Game.Map
                 packet.AddUInt16(oldRegionId);
                 packet.AddUInt16(newRegionId);
                 PacketHelper.AddToPacket(sender, packet);
-                Global.Channel.Post("/WORLD/" + oldRegionId, packet);
+                Global.Current.Channel.Post("/WORLD/" + oldRegionId, packet);
 
                 packet = new Packet(Command.ObjectAdd);
                 packet.AddUInt16(newRegionId);
                 PacketHelper.AddToPacket(sender, packet);
-                Global.Channel.Post("/WORLD/" + newRegionId, packet);
+                Global.Current.Channel.Post("/WORLD/" + newRegionId, packet);
             }
         }
 
@@ -381,7 +381,7 @@ namespace Game.Map
                 region.SetTileType(x, y, tileType);
             }
 
-            if (sendEvent && Global.FireEvents)
+            if (sendEvent && Global.Current.FireEvents)
             {
                 var packet = new Packet(Command.RegionSetTile);
                 packet.AddUInt16(1);
@@ -389,7 +389,7 @@ namespace Game.Map
                 packet.AddUInt32(y);
                 packet.AddUInt16(tileType);
 
-                Global.Channel.Post("/WORLD/" + regionId, packet);
+                Global.Current.Channel.Post("/WORLD/" + regionId, packet);
             }
 
             return tileType;
@@ -411,7 +411,7 @@ namespace Game.Map
                 region.SetTileType(x, y, tileType);
             }
 
-            if (sendEvent && Global.FireEvents)
+            if (sendEvent && Global.Current.FireEvents)
             {
                 var packet = new Packet(Command.RegionSetTile);
                 packet.AddUInt16(1);
@@ -419,7 +419,7 @@ namespace Game.Map
                 packet.AddUInt32(y);
                 packet.AddUInt16(tileType);
 
-                Global.Channel.Post("/WORLD/" + regionId, packet);
+                Global.Current.Channel.Post("/WORLD/" + regionId, packet);
             }
         }
 
@@ -431,7 +431,7 @@ namespace Game.Map
         {
             try
             {
-                Global.Channel.Subscribe(session, "/WORLD/" + id);
+                Global.Current.Channel.Subscribe(session, "/WORLD/" + id);
             }
             catch(DuplicateSubscriptionException)
             {
@@ -440,7 +440,7 @@ namespace Game.Map
 
         public void UnsubscribeRegion(Session session, ushort id)
         {
-            Global.Channel.Unsubscribe(session, "/WORLD/" + id);
+            Global.Current.Channel.Unsubscribe(session, "/WORLD/" + id);
         }
 
         #endregion
@@ -477,14 +477,14 @@ namespace Game.Map
             }
 
             // Send remove update
-            if (Global.FireEvents)
+            if (Global.Current.FireEvents)
             {
                 var packet = new Packet(Command.ObjectRemove);
                 packet.AddUInt16(regionId);
                 packet.AddUInt32(obj.GroupId);
                 packet.AddUInt32(obj.ObjectId);
 
-                Global.Channel.Post("/WORLD/" + regionId, packet);
+                Global.Current.Channel.Post("/WORLD/" + regionId, packet);
             }
         }
     }

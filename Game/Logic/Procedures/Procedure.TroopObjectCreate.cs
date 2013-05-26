@@ -25,7 +25,7 @@ namespace Game.Logic.Procedures
                 troopStub = null;
                 return false;
             }
-            troopStub = city.Troops.Create();
+            troopStub = city.CreateTroopStub();
             troopStub.BeginUpdate();
             troopStub.Add(stub);
             troopStub.State = initialState;
@@ -41,7 +41,7 @@ namespace Game.Logic.Procedures
 
         public virtual void TroopObjectCreate(ICity city, ITroopStub stub, out ITroopObject troopObject)
         {
-            troopObject = new TroopObject(stub) {X = city.X, Y = city.Y};
+            troopObject = new TroopObject(stub, World.Current.Regions) {X = city.X, Y = city.Y};
             city.Add(troopObject);
 
             troopObject.BeginUpdate();
@@ -63,12 +63,12 @@ namespace Game.Logic.Procedures
                 return false;
             }
 
-            var troopStub = city.Troops.Create();
+            var troopStub = city.CreateTroopStub();
             troopStub.BeginUpdate();
             troopStub.Add(stub);
             troopStub.EndUpdate();
 
-            troopObject = new TroopObject(troopStub) {X = x, Y = y + 1};
+            troopObject = new TroopObject(troopStub, World.Current.Regions) {X = x, Y = y + 1};
             city.Add(troopObject);
 
             troopObject.BeginUpdate();

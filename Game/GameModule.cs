@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using Game.Battle;
 using Game.Battle.CombatObjects;
 using Game.Battle.Reporting;
 using Game.Comm;
+using Game.Comm.Channel;
 using Game.Comm.CmdLine_Commands;
 using Game.Comm.ProcessorCommands;
 using Game.Comm.Protocol;
@@ -48,7 +49,7 @@ namespace Game
 
             Bind<IRegionManager>().To<RegionManager>().InSingletonScope();
             Bind<ICityManager>().To<CityManager>().InSingletonScope();
-            Bind<ICityRegionManager>().To<CityRegionManager>().InSingletonScope();
+            Bind<ICityRegionManager>().To<CityRegionManager>().InSingletonScope();            
             Bind<IForestManager>().To<ForestManager>().InSingletonScope();
             Bind<IForest>().To<Forest>();
 
@@ -56,23 +57,18 @@ namespace Game
 
             #region General Comms
 
+            Bind<Channel>().ToSelf().InSingletonScope();
             Bind<IPolicyServer>().To<PolicyServer>().InSingletonScope();
             Bind<ITcpServer>().To<TcpServer>().InSingletonScope();
             Bind<TServer>().ToMethod(c => new TSimpleServer(new Notification.Processor(c.Kernel.Get<NotificationHandler>()), new TServerSocket(46000)));
             Bind<IProtocol>().To<PacketProtocol>();
 
-            Bind<Chat>().ToMethod(c => new Chat(Global.Channel)).InSingletonScope();
-
-            #endregion
-
-            #region Action
-
-            Bind<IActionWorker>().ToMethod(c => new ActionWorker());
+            Bind<Chat>().ToSelf().InSingletonScope();
             Bind<IDynamicAction>().To<DynamicAction>();
             Bind<ICityTriggerManager>().To<CityTriggerManager>().InSingletonScope();
 
             #endregion
-
+            
             #region Tribes
 
             Bind<ITribeManager>().To<TribeManager>().InSingletonScope();
@@ -106,7 +102,7 @@ namespace Game
 
             Bind<FactoriesInitializer>().ToSelf().InSingletonScope();
             Bind<ActionRequirementFactory>().ToSelf().InSingletonScope();
-            Bind<StructureFactory>().ToSelf().InSingletonScope();
+            Bind<StructureCsvFactory>().ToSelf().InSingletonScope();
             Bind<EffectRequirementFactory>().ToSelf().InSingletonScope();
             Bind<InitFactory>().ToSelf().InSingletonScope();            
             Bind<PropertyFactory>().ToSelf().InSingletonScope();
@@ -141,8 +137,6 @@ namespace Game
             #endregion
 
             #region Battle
-
-            Bind<ICity>().To<City>();
 
             Bind<IBattleReport>().To<BattleReport>();
 
@@ -229,6 +223,21 @@ namespace Game
             Bind<IBarbarianTribe>().To<BarbarianTribe>();
             Bind<IBarbarianTribeFactory>().To<BarbarianTribeFactory>();
             Bind<BarbarianTribeChecker>().ToSelf().InSingletonScope();
+
+            #endregion
+
+            #region City
+
+            Bind<ICityChannel>().To<CityChannel>().InSingletonScope();
+            Bind<ICityFactory>().To<CityFactory>().InSingletonScope();
+            Bind<IGameObjectFactory>().To<GameObjectFactory>().InSingletonScope();
+
+            Bind<ICity>().To<City>();
+            Bind<ITroopManager>().To<TroopManager>();
+            Bind<IActionWorker>().To<ActionWorker>();
+            Bind<ITechnologyManager>().To<TechnologyManager>();
+            Bind<IUnitTemplate>().To<UnitTemplate>();
+            Bind<IStructure>().To<Structure>();            
 
             #endregion
 

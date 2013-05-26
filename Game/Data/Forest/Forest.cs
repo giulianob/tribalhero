@@ -103,7 +103,7 @@ namespace Game.Data.Forest
 
         #region Constructors
 
-        public Forest(byte lvl, int capacity, double rate, IActionFactory actionFactory)
+        public Forest(byte lvl, int capacity, double rate, IActionFactory actionFactory) : base(World.Current.Regions)
         {
             this.lvl = lvl;
             this.actionFactory = actionFactory;
@@ -244,14 +244,14 @@ namespace Game.Data.Forest
 
         #region Updates
 
-        public override void CheckUpdateMode()
+        protected override void CheckUpdateMode()
         {
-            if (!Global.FireEvents || !DbPersisted)
+            if (!Global.Current.FireEvents || !DbPersisted)
             {
                 return;
             }
 
-            if (!updating)
+            if (!Updating)
             {
                 throw new Exception("Changed state outside of begin/end update block");
             }
@@ -259,36 +259,16 @@ namespace Game.Data.Forest
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
         }
 
-        public override void EndUpdate()
+        protected override bool Update()
         {
-            if (!updating)
-            {
-                throw new Exception("Called an endupdate without first calling a beginupdate");
-            }
+            var update = base.Update();
 
-            updating = false;
-
-            Update();
-        }
-
-        protected new void Update()
-        {
-            base.Update();
-
-            if (!Global.FireEvents)
-            {
-                return;
-            }
-
-            if (updating)
-            {
-                return;
-            }
-
-            if (objectId > 0)
+            if (update && objectId > 0)
             {
                 DbPersistance.Current.Save(this);
             }
+
+            return update;
         }
 
         #endregion

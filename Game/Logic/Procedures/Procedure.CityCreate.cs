@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Troop;
@@ -12,34 +12,35 @@ namespace Game.Logic.Procedures
         /// <summary>
         ///     Creates a city under the specified player with initial troop and main building
         /// </summary>
-        public virtual Error CreateCity(IPlayer player, string cityName, ILocationStrategy strategy, IBarbarianTribeManager barbarianTribeManager, out ICity city)
+        public virtual Error CreateCity(ICityFactory cityFactory, IPlayer player, string cityName, ILocationStrategy strategy, IBarbarianTribeManager barbarianTribeManager, out ICity city)
         {
-            city = null;
-            IStructure mainBuilding;
-            Error error = Randomizer.MainBuilding(out mainBuilding, strategy, 1);
-            if (error != Error.Ok)
-            {
-                world.Players.Remove(player.PlayerId);
-                dbPersistance.Rollback();
-                // If this happens I'll be a very happy game developer
-                return error;
-            }
-
-            city = new City(world.Cities.GetNextCityId(),
+            city = cityFactory.CreateCity(world.Cities.GetNextCityId(),
                             player,
                             cityName,
                             formula.GetInitialCityResources(),
                             formula.GetInitialCityRadius(),
-                            mainBuilding,
                             formula.GetInitialAp());
+
+            IStructure mainBuilding;
+
+            Error error = Randomizer.MainBuilding(city, strategy, 1, out mainBuilding);
+            if (error != Error.Ok)
+            {
+                world.Players.Remove(player.PlayerId);
+                dbPersistance.Rollback();                
+
+                return error;
+            }
+
             player.Add(city);
 
             world.Cities.Add(city);
+
             mainBuilding.BeginUpdate();
             world.Regions.Add(mainBuilding);
             mainBuilding.EndUpdate();
 
-            var defaultTroop = city.Troops.Create();
+            var defaultTroop = city.CreateTroopStub();
             defaultTroop.BeginUpdate();
             defaultTroop.AddFormation(FormationType.Normal);
             defaultTroop.AddFormation(FormationType.Garrison);

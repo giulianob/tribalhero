@@ -446,7 +446,7 @@ namespace Game.Data.Troop
 
         public void FireUnitUpdated()
         {
-            if (!Global.FireEvents)
+            if (!Global.Current.FireEvents)
             {
                 return;
             }
@@ -458,7 +458,7 @@ namespace Game.Data.Troop
 
         public void FireUpdated()
         {
-            if (!Global.FireEvents)
+            if (!Global.Current.FireEvents)
             {
                 return;
             }
@@ -639,7 +639,7 @@ namespace Game.Data.Troop
 
         private void CheckUpdateMode(bool checkStationedCity = true)
         {
-            if (!Global.FireEvents || City == null)
+            if (!Global.Current.FireEvents || City == null)
             {
                 return;
             }

@@ -93,7 +93,8 @@ namespace Game.Data.Troop
 
         #region Constructors
 
-        public TroopObject(ITroopStub stub)
+        public TroopObject(ITroopStub stub, IRegionManager regionManager)
+                : base(regionManager)
         {
             Stub = stub;
         }
@@ -102,41 +103,21 @@ namespace Game.Data.Troop
 
         #region Updates
 
-        public override void EndUpdate()
-        {
-            if (!updating)
-            {
-                throw new Exception("Called an endupdate without first calling a beginupdate");
-            }
-
-            updating = false;
-
-            Update();
-        }
-
         private void StatsStatsUpdate()
         {
             CheckUpdateMode();
         }
 
-        protected new void Update()
+        protected override bool Update()
         {
-            base.Update();
+            var update = base.Update();
 
-            if (!Global.FireEvents)
-            {
-                return;
-            }
-
-            if (updating)
-            {
-                return;
-            }
-
-            if (objectId > 0)
+            if (update && objectId > 0)
             {
                 DbPersistance.Current.Save(this);
             }
+
+            return update;
         }
 
         #endregion

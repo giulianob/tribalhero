@@ -56,7 +56,7 @@ namespace DatabaseGenerator
             LoadLanguages();
 
             // Get types
-            structureTypes = from structure in kernel.Get<StructureFactory>().AllStructures()
+            structureTypes = from structure in kernel.Get<StructureCsvFactory>().AllStructures()
                              group structure by structure.Type
                              into types orderby types.Key select types.Key;
 
@@ -85,7 +85,7 @@ namespace DatabaseGenerator
 
                     ProcessStructure(type);
 
-                    StructureBaseStats stats = kernel.Get<StructureFactory>().GetBaseStats(type, 1);
+                    StructureBaseStats stats = kernel.Get<StructureCsvFactory>().GetBaseStats(type, 1);
 
                     var sprite = stats.SpriteClass;
 
@@ -93,7 +93,7 @@ namespace DatabaseGenerator
                     if (kernel.Get<ObjectTypeFactory>().IsObjectType("CropField", type))
                     {
                         sprite =
-                                kernel.Get<StructureFactory>()
+                                kernel.Get<StructureCsvFactory>()
                                    .AllStructures()
                                    .First(structure => structure.Lvl == 1 && structure.Name == "MATURE_" + stats.Name)
                                    .SpriteClass;
@@ -245,7 +245,7 @@ namespace DatabaseGenerator
                 byte structureLevel = 1;
                 StructureBaseStats stats;
 
-                while ((stats = kernel.Get<StructureFactory>().GetBaseStats(builderType, structureLevel)) != null)
+                while ((stats = kernel.Get<StructureCsvFactory>().GetBaseStats(builderType, structureLevel)) != null)
                 {
                     structureLevel++;
 
@@ -411,7 +411,7 @@ namespace DatabaseGenerator
                 byte structureLevel = 1;
                 StructureBaseStats stats;
 
-                while ((stats = kernel.Get<StructureFactory>().GetBaseStats(builderType, structureLevel)) != null)
+                while ((stats = kernel.Get<StructureCsvFactory>().GetBaseStats(builderType, structureLevel)) != null)
                 {
                     structureLevel++;
 
@@ -521,7 +521,7 @@ namespace DatabaseGenerator
             string requirementTemplate = @"'#REQUIREMENT#',";
 
             // Get basic information
-            StructureBaseStats stats = kernel.Get<StructureFactory>().GetBaseStats(type, 1);
+            StructureBaseStats stats = kernel.Get<StructureCsvFactory>().GetBaseStats(type, 1);
 
             generalTemplate = generalTemplate.Replace("#DATE#", DateTime.Now.ToString());
             generalTemplate = generalTemplate.Replace("#STRUCTURE#", stats.Name + "_STRUCTURE");
@@ -581,7 +581,7 @@ namespace DatabaseGenerator
                 level++;
                 FindStructureBuilder(type, level, out builder, out converted);
             }
-            while ((currentStats = kernel.Get<StructureFactory>().GetBaseStats(type, level)) != null);
+            while ((currentStats = kernel.Get<StructureCsvFactory>().GetBaseStats(type, level)) != null);
 
             generalTemplate = generalTemplate.Replace("#LEVELS#", levelsWriter.ToString());
 
@@ -645,7 +645,7 @@ namespace DatabaseGenerator
         {
             if (level > 1)
             {
-                builder = kernel.Get<StructureFactory>().GetBaseStats(type, (byte)(level - 1));
+                builder = kernel.Get<StructureCsvFactory>().GetBaseStats(type, (byte)(level - 1));
                 convert = false;
                 return;
             }
@@ -660,7 +660,7 @@ namespace DatabaseGenerator
                 byte structureLevel = 1;
                 StructureBaseStats stats;
 
-                while ((stats = kernel.Get<StructureFactory>().GetBaseStats(builderType, structureLevel)) != null)
+                while ((stats = kernel.Get<StructureCsvFactory>().GetBaseStats(builderType, structureLevel)) != null)
                 {
                     structureLevel++;
 

@@ -37,7 +37,7 @@ namespace Persistance.Managers
 
         private readonly ConcurrentDictionary<Type, String> saveCommands = new ConcurrentDictionary<Type, String>();
 
-        private readonly bool verbose;
+        private bool verbose;
 
         private DateTime lastProbe;
 

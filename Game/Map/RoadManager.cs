@@ -33,7 +33,7 @@ namespace Game.Map
                     packet.AddUInt16(update.TileType);
                 }
 
-                Global.Channel.Post("/WORLD/" + list.Key, packet);
+                Global.Current.Channel.Post("/WORLD/" + list.Key, packet);
             }
         }
 

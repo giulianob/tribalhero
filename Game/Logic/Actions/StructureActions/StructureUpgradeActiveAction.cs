@@ -124,7 +124,7 @@ namespace Game.Logic.Actions
                     DateTime.UtcNow.AddSeconds(
                                                CalculateTime(
                                                              Formula.Current.BuildTime(
-                                                                                       Ioc.Kernel.Get<StructureFactory>()
+                                                                                       Ioc.Kernel.Get<StructureCsvFactory>()
                                                                                           .GetTime(structure.Type,
                                                                                                    (byte)
                                                                                                    (structure.Lvl + 1)),
@@ -153,7 +153,7 @@ namespace Game.Logic.Actions
                 }
 
                 structure.BeginUpdate();
-                Ioc.Kernel.Get<StructureFactory>()
+                Ioc.Kernel.Get<StructureCsvFactory>()
                    .GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
                 Ioc.Kernel.Get<InitFactory>()
                    .InitGameObject(InitCondition.OnUpgrade, structure, structure.Type, structure.Lvl);

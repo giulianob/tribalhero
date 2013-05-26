@@ -24,10 +24,10 @@ namespace Game.Logic.Formulas
         {
             if (city.Battle == null)
             {
-                return StructureFactory.GetCost((int)type, lvl);
+                return StructureCsvFactory.GetCost((int)type, lvl);
             }
 
-            return StructureFactory.GetCost((int)type, lvl) * Config.battle_cost_penalty;
+            return StructureCsvFactory.GetCost((int)type, lvl) * Config.battle_cost_penalty;
         }
 
         /// <summary>

@@ -14,7 +14,7 @@ using Ninject.Extensions.Logging;
 
 namespace Game.Setup
 {
-    public class StructureFactory
+    public class StructureCsvFactory
     {
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
@@ -96,17 +96,6 @@ namespace Game.Setup
         {
             StructureBaseStats tmp;
             return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp.BuildTime : -1;
-        }
-
-        public IStructure GetNewStructure(ushort type, byte lvl)
-        {
-            StructureBaseStats baseStats;
-            if (!dict.TryGetValue(type * 100 + lvl, out baseStats))
-            {
-                throw new Exception(String.Format("Structure not found in csv type[{0}] lvl[{1}]!", type, lvl));
-            }
-
-            return new Structure(new StructureStats(baseStats));
         }
 
         public void GetUpgradedStructure(IStructure structure, ushort type, byte lvl)

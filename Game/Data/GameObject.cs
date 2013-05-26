@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using Game.Data.Events;
 using Game.Map;
 using Game.Util.Locking;
 
@@ -10,6 +11,10 @@ namespace Game.Data
 {
     public abstract class GameObject : SimpleGameObject, IGameObject
     {
+        public GameObject(IRegionManager regionManager) : base(regionManager)
+        {
+        }
+
         private uint isBlocked;
 
         public uint IsBlocked
@@ -45,15 +50,15 @@ namespace Game.Data
 
         #region Update Events
 
-        public override void CheckUpdateMode()
+        protected override void CheckUpdateMode()
         {
             //If city is null then we dont care about being inside of a begin/end update block
-            if (!Global.FireEvents || City == null)
+            if (!Global.Current.FireEvents || City == null)
             {
                 return;
             }
 
-            if (!updating)
+            if (!Updating)
             {
                 throw new Exception("Changed state outside of begin/end update block");
             }
@@ -61,27 +66,16 @@ namespace Game.Data
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(City);
         }
 
-        protected override void Update()
+        protected override bool Update()
         {
-            if (!Global.FireEvents)
-            {
-                return;
-            }
-
-            if (updating)
-            {
-                return;
-            }
-
             if (City == null)
             {
-                return;
+                return false;
             }
 
-            City.ObjUpdateEvent(this, origX, origY);
-            World.Current.Regions.ObjectUpdateEvent(this, origX, origY);
+            return base.Update();
         }
-        
+
         public bool CheckBlocked(uint actionId)
         {
             return isBlocked > 0 && isBlocked != actionId;

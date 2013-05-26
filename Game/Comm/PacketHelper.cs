@@ -386,7 +386,6 @@ namespace Game.Comm
             packet.AddByte((byte)session.Player.GetCityCount());
             foreach (var city in list)
             {
-                city.Subscribe(session);
                 AddToPacket(city, packet);
             }
         }

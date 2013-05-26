@@ -64,6 +64,8 @@
 			});
 			
 			btnSendReinforcement.addActionListener(function(e:Event): void {
+				var point: Point = MapUtil.getScreenCoord(self.profileData.strongholdX, self.profileData.strongholdY);
+				Global.gameContainer.camera.ScrollToCenter(point.x, point.y);
 				var process : ReinforcementSendProcess = new ReinforcementSendProcess(Global.gameContainer.selectedCity, new Location(Location.STRONGHOLD, self.profileData.strongholdId));
 				process.execute();
 			});			

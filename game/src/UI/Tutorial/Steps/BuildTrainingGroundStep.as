@@ -14,17 +14,15 @@ package src.UI.Tutorial.Steps
 	
 	/**
 	 * This step does the following:
-	 * - Show message telling user what TC is and to click it.
-	 * - Show message telling user to build Farm.
+	 * - Show message telling user to build TG.
 	 */
-	public class BuildFarmStep extends TutorialStep 
+	public class BuildTrainingGroundStep extends TutorialStep 
 	{
-		private const TOWNCENTER_TYPE: int = 2000;
-		private const FARM_TYPE: int = 2106;
+		private const TRAINING_GROUND_TYPE: int = 2201;
 		
 		private var timer: Timer = new Timer(200);
 		
-		public function BuildFarmStep() 
+		public function BuildTrainingGroundStep() 
 		{
 			timer.addEventListener(TimerEvent.TIMER, onTimer);
 		}		
@@ -35,9 +33,9 @@ package src.UI.Tutorial.Steps
 		}
 		
 		private function onTimer(e: Event = null): void {
-			// If user has a farm, this step is done
-			var farm: CityObject = map.cities.getByIndex(0).getStructureOfType(FARM_TYPE);
-			if (farm != null) 
+			var trainingGround: CityObject = map.cities.getByIndex(0).getStructureOfType(TRAINING_GROUND_TYPE);
+			
+			if (trainingGround != null)
 			{
 				this.complete();
 				return;
@@ -49,15 +47,8 @@ package src.UI.Tutorial.Steps
 				hideAllMessages();
 				return;
 			}
-			
-			// If build sidebar is up then tell user to build the farm
-			var objectInfoSidebar: ObjectInfoSidebar = sidebar as ObjectInfoSidebar;			
-			if (objectInfoSidebar && objectInfoSidebar.gameObject.type == TOWNCENTER_TYPE) {				
-				showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_CLICK_BUILD_FARM");
-				return;
-			}
-			
-			showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_CLICK_TOWNCENTER");
+						
+			showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_BUILD_TRAINING_GROUND");
 		}
 		
 		override public function dispose():void 

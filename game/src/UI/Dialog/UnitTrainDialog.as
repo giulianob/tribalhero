@@ -1,30 +1,25 @@
 package src.UI.Dialog {
 
-	import flash.events.Event;
-    import src.Constants;
-	import src.Global;
-	import src.Map.City;
-	import src.Objects.Effects.Formula;
-	import src.Objects.GameObject;
-	import src.Objects.LazyResources;
-	import src.Objects.Prototypes.UnitPrototype;
-	import src.Objects.Resources;
-	import src.UI.Components.SimpleResourcesPanel;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.GameJPanel;
-    import src.Util.StringHelper;
-	import src.Util.Util;
-	import src.Objects.Prototypes.EffectPrototype;
-
+	import flash.events.*;
 	import org.aswing.*;
 	import org.aswing.border.*;
-	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
+	import org.aswing.geom.*;
+	import src.*;
+	import src.Map.*;
+	import src.Objects.*;
+	import src.Objects.Effects.*;
+	import src.Objects.Factories.*;
+	import src.Objects.Prototypes.*;
+	import src.UI.*;
+	import src.UI.Components.*;
+	import src.Util.*;
+
 
 	public class UnitTrainDialog extends GameJPanel {
 
-		private var parentObj:GameObject;
+		private var structure:StructureObject;
 		private var city: City;
 		private var txtTitle:JLabel;
 		private var panel4:JPanel;
@@ -36,14 +31,12 @@ package src.UI.Dialog {
 		private var lblUpkeep: JLabel;
 		private var btnOk:JButton;
 		private var unitPrototype: UnitPrototype;
-		private var trainTime: int;
 		private var lblUpkeepMsg: MultilineLabel;
 
-		public function UnitTrainDialog(parentObj: GameObject, unitPrototype: UnitPrototype, onAccept: Function, trainTime: int):void {
+		public function UnitTrainDialog(structure: StructureObject, unitPrototype: UnitPrototype, onAccept: Function):void {
 			this.unitPrototype = unitPrototype;
-			this.trainTime = trainTime;
-			this.parentObj = parentObj;
-			this.city = Global.map.cities.get(parentObj.cityId);		
+			this.structure = structure;
+			this.city = Global.map.cities.get(structure.cityId);		
 
 			createUI();
 
@@ -64,10 +57,10 @@ package src.UI.Dialog {
 			updateTime();
 		}
 
-		private function updateTime(e: Event = null) : void {
-			if (trainTime <= 0) return;
+		private function updateTime(e: Event = null) : void {			
+			var trainTime: int = Formula.trainTime(structure.level, sldAmount.getValue(), unitPrototype, city, structure.getCorrespondingCityObj().techManager, false);
 
-			lblTime.setText(Util.formatTime(trainTime * sldAmount.getValue()));
+			lblTime.setText(Util.formatTime(trainTime));
 		}
 
 		private function updateResources(e: Event = null) : void {			

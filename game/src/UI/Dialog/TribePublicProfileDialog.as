@@ -96,7 +96,9 @@
 		}
         
 		private function createAnnouncementTab() : Container {			
-			return new JScrollPane(new MultilineLabel(profileData.publicDescription));
+			var announcement: MultilineLabel = new MultilineLabel(profileData.publicDescription);
+			GameLookAndFeel.changeClass(announcement, "Message");
+			return new JScrollPane(announcement);
 		}                
         
 		private function createMembersTab() : Container {

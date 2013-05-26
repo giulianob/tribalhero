@@ -1,23 +1,16 @@
 ﻿package src.Comm.Commands {
-	import flash.events.Event;
-	import mx.formatters.DateFormatter;
-	import org.aswing.AssetIcon;
+	import flash.events.*;
+	import src.*;
 	import src.Comm.*;
-	import src.Constants;
-	import src.Global;
-	import src.UI.Dialog.CmdLineViewer;
-	import src.Util.Util;
 	import src.Map.*;
 	import src.Objects.*;
-	import src.Objects.Prototypes.*;
-	import src.Objects.Factories.*;
 	import src.Objects.Actions.*;
+	import src.Objects.Factories.*;
+	import src.Objects.Prototypes.*;
 	import src.Objects.Troop.*;
-	import src.UI.Components.ScreenMessages.BuiltInMessages;
-	import src.UI.Components.ScreenMessages.ScreenMessageItem;
-	import src.UI.Dialog.InfoDialog;
-	import src.UI.Dialog.TribeProfileDialog;
-	import src.UI.Components.ScreenMessages.BuiltInMessages;
+	import src.UI.Components.ScreenMessages.*;
+	import src.UI.Dialog.*;
+	import src.Util.*;
 	
 	public class GeneralComm {
 
@@ -122,6 +115,7 @@
             Constants.motd = packet.readString();
 			Constants.playerId = packet.readUInt();
 			Constants.playerHash = packet.readString();
+			Constants.tutorialStep = packet.readUInt();
 			Constants.admin = packet.readByte() == 1;
 			Constants.sessionId = packet.readString();			
 			Constants.playerName = packet.readString();			
@@ -406,6 +400,15 @@
 				default:
 					new Error("Unknown location type " + targetType);					
 			}
+		}
+		
+		public function saveTutorialStep(currentStepIndex: int):void 
+		{
+			var packet:Packet = new Packet();
+			packet.cmd = Commands.SAVE_TUTORIAL_STEP;
+			packet.writeUInt(currentStepIndex);
+			
+			session.write(packet, mapComm.catchAllErrors);
 		}
 	}
 }

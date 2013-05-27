@@ -74,7 +74,7 @@ namespace Game.Module
             channel.Post("/GLOBAL", chatPacket);
         }
 
-        public void SendSystemChat(IChannel session, string messageId, params string[] messageArgs)
+        public void SendSystemChat(IChannelListener session, string messageId, params string[] messageArgs)
         {
             if (session == null)
             {

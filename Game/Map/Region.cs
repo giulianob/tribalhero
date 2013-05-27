@@ -58,14 +58,12 @@ namespace Game.Map
 
         #region Methods
 
-        public bool Add(ISimpleGameObject obj)
+        public void Add(ISimpleGameObject obj)
         {
             objLock.EnterWriteLock();
             objlist.AddGameObject(obj);
             isDirty = true;
             objLock.ExitWriteLock();
-
-            return true;
         }
 
         public void Remove(ISimpleGameObject obj)
@@ -212,11 +210,6 @@ namespace Game.Map
         public static ushort GetRegionIndex(uint x, uint y)
         {
             return (ushort)(x / Config.region_width + (y / Config.region_height) * (int)(Config.map_width / Config.region_width));
-        }
-
-        public static int GetTileIndex(ISimpleGameObject obj)
-        {
-            return GetTileIndex(obj.X, obj.Y);
         }
 
         public static int GetTileIndex(uint x, uint y)

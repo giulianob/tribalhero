@@ -140,9 +140,8 @@ namespace Game.Data.Stronghold
                           NotificationManager notificationManager,
                           ITroopManager troopManager,
                           IActionWorker actionWorker,
-                          Formula formula,
-                          IRegionManager regionManager)
-                : base(regionManager)
+                          Formula formula)
+                : base(x, y)
         {
             Notifications = notificationManager;
             this.dbManager = dbManager;
@@ -150,8 +149,6 @@ namespace Game.Data.Stronghold
             Id = id;
             Name = name;
             Lvl = level;
-            this.x = x;
-            this.y = y;
             Worker = actionWorker;
             Troops = troopManager;
             Gate = gate;

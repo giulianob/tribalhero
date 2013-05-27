@@ -2,7 +2,6 @@
 
 using System;
 using Game.Data.Events;
-using Game.Map;
 using Game.Util.Locking;
 
 #endregion
@@ -11,7 +10,7 @@ namespace Game.Data
 {
     public abstract class GameObject : SimpleGameObject, IGameObject
     {
-        public GameObject(IRegionManager regionManager) : base(regionManager)
+        protected GameObject(uint x, uint y) : base(x, y)
         {
         }
 

@@ -408,11 +408,6 @@ namespace Game.Data
 
         #region Object Management
 
-        public ITroopObject GetTroop(uint objectId)
-        {
-            return troopobjects[objectId];
-        }
-
         public bool TryGetObject(uint objectId, out IGameObject obj)
         {
             IStructure structure;
@@ -773,9 +768,16 @@ namespace Game.Data
             return stub;
         }
 
-        public IStructure CreateStructure(ushort type, byte level)
+        public ITroopObject CreateTroopObject(ITroopStub stub, uint x, uint y)
         {
-            var structure = gameObjectFactory.CreateStructure(Id, objectIdGen.GetNext(), type, level);
+            var troopObject = gameObjectFactory.CreateTroopObject(objectIdGen.GetNext(), stub, x, y);
+            Add(troopObject.ObjectId, troopObject, true);
+            return troopObject;
+        }
+
+        public IStructure CreateStructure(ushort type, byte level, uint x, uint y)
+        {
+            var structure = gameObjectFactory.CreateStructure(Id, objectIdGen.GetNext(), type, level, x, y);
             Add(structure.ObjectId, structure, true);
             return structure;
         }

@@ -189,8 +189,6 @@ namespace Game.Data
         /// <param name="troop"></param>
         void DoRemove(ITroopObject troop);
 
-        List<IGameObject> GetInRange(uint x, uint y, uint inRadius);
-
         bool IsUpdating { get; }
 
         void BeginUpdate();
@@ -199,6 +197,8 @@ namespace Game.Data
 
         ITroopStub CreateTroopStub();
 
-        IStructure CreateStructure(ushort type, byte level);
+        ITroopObject CreateTroopObject(ITroopStub stub, uint x, uint y);
+
+        IStructure CreateStructure(ushort type, byte level, uint x, uint y);
     }
 }

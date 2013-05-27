@@ -1,10 +1,8 @@
 ﻿using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Actions;
-using Game.Logic.Formulas;
 using Game.Logic.Notifications;
 using Game.Logic.Procedures;
-using Game.Map;
 using Ninject;
 using Persistance;
 

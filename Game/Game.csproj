@@ -434,11 +434,13 @@
     <Compile Include="Map\IRegionFactory.cs" />
     <Compile Include="Map\IRegionManager.cs" />
     <Compile Include="Data\Tribe\ITribeManager.cs" />
+    <Compile Include="Map\IRoadPathFinder.cs" />
     <Compile Include="Map\IWorld.cs" />
     <Compile Include="Map\LocationStrategies\CityTileNextToFriendLocationStrategy.cs" />
     <Compile Include="Map\LocationStrategies\CityTileNextAvailableLocationStrategy.cs" />
     <Compile Include="Map\LocationStrategies\ILocationStrategyFactory.cs" />
     <Compile Include="Map\LocationStrategies\ILocationStrategy.cs" />
+    <Compile Include="Map\ObjectEvent.cs" />
     <Compile Include="Map\Position.cs" />
     <Compile Include="Map\MapMath.cs" />
     <Compile Include="Map\ObjectLink.cs" />
@@ -486,7 +488,7 @@
     <Compile Include="Util\Inflector.cs" />
     <Compile Include="Util\CmdParserExtension.cs" />
     <Compile Include="Util\HexDump.cs" />
-    <Compile Include="Util\IChannel.cs" />
+    <Compile Include="Util\IChannelListener.cs" />
     <Compile Include="Util\IdGenerator.cs" />
     <Compile Include="Util\ListExtension.cs" />
     <Compile Include="Util\Locking\CallbackLock.cs" />
@@ -560,7 +562,6 @@
     <Compile Include="Logic\SystemVariablesUpdater.cs" />
     <Compile Include="Map\CityRegion.cs" />
     <Compile Include="Map\RoadManager.cs" />
-    <Compile Include="Logic\Randomizer.cs" />
     <Compile Include="Setup\MapFactory.cs" />
     <Compile Include="Setup\ObjectTypeFactory.cs" />
     <Compile Include="Setup\SystemVariable.cs" />

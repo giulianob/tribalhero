@@ -1,5 +1,5 @@
 using Game.Data.Stats;
-using Game.Map;
+using Game.Data.Troop;
 using Game.Setup;
 using Ninject;
 using Persistance;
@@ -21,7 +21,7 @@ namespace Game.Data
             this.technologyManagerFactory = technologyManagerFactory;
         }
 
-        public IStructure CreateStructure(uint cityId, uint structureId, ushort type, byte level)
+        public IStructure CreateStructure(uint cityId, uint structureId, ushort type, byte level, uint x, uint y)
         {
             var baseStats = structureCsvFactory.GetBaseStats(type, level);
             var technologyManager = technologyManagerFactory.CreateTechnologyManager(EffectLocation.Object, cityId, structureId);
@@ -29,12 +29,18 @@ namespace Game.Data
 
             var structure = new Structure(structureId,
                                           new StructureStats(baseStats),
+                                          x,
+                                          y,
                                           technologyManager,
                                           structureProperties,
-                                          kernel.Get<IDbManager>(),
-                                          kernel.Get<IRegionManager>());
+                                          kernel.Get<IDbManager>());
             
             return structure;
+        }
+
+        public ITroopObject CreateTroopObject(uint id, ITroopStub stub, uint x, uint y)
+        {
+            return new TroopObject(id, stub, x, y, kernel.Get<IDbManager>());            
         }
     }
 }

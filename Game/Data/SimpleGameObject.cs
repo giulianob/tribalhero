@@ -36,8 +36,6 @@ namespace Game.Data
             BarbarianTribe = 400,
         }
 
-        protected readonly IRegionManager regionManager;
-
         protected uint objectId;
 
         protected uint x;
@@ -168,10 +166,11 @@ namespace Game.Data
 
         #region Constructors
 
-        protected SimpleGameObject(IRegionManager regionManager)
+        protected SimpleGameObject(uint x, uint y)
         {
-            state = GameObjectState.NormalState();	
-            this.regionManager = regionManager;
+            this.x = x;
+            this.y = y;
+            this.state = GameObjectState.NormalState();
         }
 
         #endregion
@@ -222,11 +221,6 @@ namespace Game.Data
             }
 
             ObjectUpdated.Raise(this, new SimpleGameObjectArgs(this) {OriginalX = origX, OriginalY = origY});
-            
-            if (InWorld)
-            {
-                regionManager.ObjectUpdateEvent(this, origX, origY);
-            }
 
             return true;
         }

@@ -1,11 +1,9 @@
 #region
 
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using Game.Data.Stats;
-using Game.Database;
 using Game.Map;
 using Game.Util;
 using Persistance;
@@ -16,6 +14,8 @@ namespace Game.Data.Troop
 {
     public class TroopObject : GameObject, ITroopObject
     {
+        private readonly IDbManager dbManager;
+
         public const string DB_TABLE = "troops";
 
         private TroopStats stats = new TroopStats(0, 0);
@@ -93,9 +93,10 @@ namespace Game.Data.Troop
 
         #region Constructors
 
-        public TroopObject(ITroopStub stub, IRegionManager regionManager)
-                : base(regionManager)
+        public TroopObject(uint id, ITroopStub stub, uint x, uint y, IDbManager dbManager) : base(x, y)
         {
+            objectId = id;
+            this.dbManager = dbManager;
             Stub = stub;
         }
 
@@ -114,7 +115,7 @@ namespace Game.Data.Troop
 
             if (update && objectId > 0)
             {
-                DbPersistance.Current.Save(this);
+                dbManager.Save(this);
             }
 
             return update;
@@ -194,14 +195,14 @@ namespace Game.Data.Troop
                         new DbColumn("iron", Stats.Loot.Iron, DbType.Int32),
                         new DbColumn("attack_point", Stats.AttackPoint, DbType.Int32),
                         new DbColumn("attack_radius", Stats.AttackRadius, DbType.Byte),
-                        new DbColumn("speed", Stats.Speed, DbType.Decimal), new DbColumn("x", X, DbType.UInt32),
-                        new DbColumn("y", Y, DbType.UInt32), new DbColumn("target_x", TargetX, DbType.UInt32),
+                        new DbColumn("speed", Stats.Speed, DbType.Decimal), 
+                        new DbColumn("x", X, DbType.UInt32),
+                        new DbColumn("y", Y, DbType.UInt32), 
+                        new DbColumn("target_x", TargetX, DbType.UInt32),
                         new DbColumn("target_y", TargetY, DbType.UInt32),
                         new DbColumn("in_world", InWorld, DbType.Boolean),
                         new DbColumn("state", (byte)State.Type, DbType.Boolean),
-                        new DbColumn("state_parameters",
-                                     XmlSerializer.SerializeList(State.Parameters.ToArray()),
-                                     DbType.String)
+                        new DbColumn("state_parameters", XmlSerializer.SerializeList(State.Parameters.ToArray()), DbType.String)
                 };
             }
         }
@@ -211,7 +212,10 @@ namespace Game.Data.Troop
             get
             {
                 return new[]
-                {new DbColumn("id", ObjectId, DbType.UInt32), new DbColumn("city_id", City.Id, DbType.UInt32)};
+                {
+                        new DbColumn("id", ObjectId, DbType.UInt32),
+                        new DbColumn("city_id", City.Id, DbType.UInt32)
+                };
             }
         }
 

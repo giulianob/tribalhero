@@ -2,7 +2,7 @@ using Game.Comm;
 
 namespace Game.Util
 {
-    public interface IChannel
+    public interface IChannelListener
     {
         void OnPost(Packet message);
     }

@@ -21,21 +21,21 @@ namespace Testing.ChannelTests
 
         private readonly Packet msg2 = new Packet();
 
-        private readonly Mock<IChannel> session1;
+        private readonly Mock<IChannelListener> session1;
 
-        private readonly Mock<IChannel> session2;
+        private readonly Mock<IChannelListener> session2;
 
         public ChannelTest()
         {
             channel = new Game.Util.Channel();
-            session1 = new Mock<IChannel>();
-            session2 = new Mock<IChannel>();
+            session1 = new Mock<IChannelListener>();
+            session2 = new Mock<IChannelListener>();
         }
 
         [Fact]
         public void TestSinglePost()
         {
-            var session = new Mock<IChannel>();
+            var session = new Mock<IChannelListener>();
 
             channel.Subscribe(session.Object, "Channel1");
             channel.Post("Channel1", msg1);

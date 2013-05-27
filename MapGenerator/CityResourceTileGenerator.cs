@@ -6,9 +6,9 @@ namespace MapGenerator
 {
     public class CityResourceTileGenerator
     {
-        private const ushort FARM_TILE = 220;
+        private const ushort FARM_TILE = 17;
 
-        private const ushort WOODLAND_TILE = 220;
+        private const ushort WOODLAND_TILE = 17;
 
         private static int numberOfTiles = 10;
 

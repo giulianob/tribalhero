@@ -16,13 +16,13 @@ namespace Game.Util
 
         private class Subscriber
         {
-            public Subscriber(IChannel session)
+            public Subscriber(IChannelListener session)
             {
                 Session = session;
                 Channels = new List<string>();
             }
 
-            public IChannel Session { get; private set; }
+            public IChannelListener Session { get; private set; }
 
             public List<string> Channels { get; private set; }
         }
@@ -36,13 +36,13 @@ namespace Game.Util
         private readonly Dictionary<string, List<Subscriber>> subscribersByChannel =
                 new Dictionary<string, List<Subscriber>>();
 
-        private readonly Dictionary<IChannel, Subscriber> subscribersBySession = new Dictionary<IChannel, Subscriber>();
+        private readonly Dictionary<IChannelListener, Subscriber> subscribersBySession = new Dictionary<IChannelListener, Subscriber>();
 
         #endregion
 
         #region Events
 
-        public delegate void OnPost(IChannel session, object custom);
+        public delegate void OnPost(IChannelListener session, object custom);
 
         #endregion
 
@@ -83,7 +83,7 @@ namespace Game.Util
             }
         }
 
-        public void Subscribe(IChannel session, string channelId)
+        public void Subscribe(IChannelListener session, string channelId)
         {
             channelLock.EnterWriteLock();
             try
@@ -122,7 +122,7 @@ namespace Game.Util
             }
         }
 
-        public bool Unsubscribe(IChannel session, string channelId)
+        public bool Unsubscribe(IChannelListener session, string channelId)
         {
             channelLock.EnterWriteLock();
             try
@@ -157,7 +157,7 @@ namespace Game.Util
             return false;
         }
 
-        public int SubscriptionCount(IChannel session = null)
+        public int SubscriptionCount(IChannelListener session = null)
         {
             channelLock.EnterReadLock();
             try
@@ -182,7 +182,7 @@ namespace Game.Util
             return 0;
         }
 
-        public bool Unsubscribe(IChannel session)
+        public bool Unsubscribe(IChannelListener session)
         {
             channelLock.EnterWriteLock();
             try

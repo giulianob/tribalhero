@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Game.Comm;
@@ -7,17 +8,13 @@ namespace Game.Map
 {
     public interface IRegionManager
     {
+        event EventHandler<ObjectEvent> ObjectAdded;
+
         ICityRegionManager CityRegions { get; }
-
-        uint WorldWidth { get; }
-
-        uint WorldHeight { get; }
 
         List<ISimpleGameObject> this[uint x, uint y] { get; }
 
         bool IsValidXandY(uint x, uint y);
-
-        IEnumerable<ISimpleGameObject> GetObjectsFromSurroundingRegions(uint x, uint y, int radius);
 
         List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, int radius);
 

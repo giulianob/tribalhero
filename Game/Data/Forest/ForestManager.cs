@@ -87,8 +87,6 @@ namespace Game.Data.Forest
         {
             lock (forests)
             {
-                var forest = forestFactory.CreateForest(lvl, capacity, rate);
-
                 if (x == 0 || y == 0)
                 {
                     while (true)
@@ -124,17 +122,12 @@ namespace Game.Data.Forest
                     world.Regions.LockRegion(x, y);
                 }
 
-                forest.X = x;
-                forest.Y = y;
-
-                forest.ObjectId = objectIdGenerator.GetNext();
-
-                world.Regions.Add(forest);
-                world.Regions.UnlockRegion(x, y);
-
-                forests.Add(forest.ObjectId, forest);
+                var forest = forestFactory.CreateForest(objectIdGenerator.GetNext(), lvl, capacity, rate, x, y);
 
                 forest.BeginUpdate();
+                world.Regions.Add(forest);
+                world.Regions.UnlockRegion(x, y);
+                forests.Add(forest.ObjectId, forest);                
                 forest.RecalculateForest();
                 forest.EndUpdate();
 

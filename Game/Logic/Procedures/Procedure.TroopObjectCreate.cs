@@ -6,7 +6,6 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
-using Game.Map;
 
 #endregion
 
@@ -41,12 +40,10 @@ namespace Game.Logic.Procedures
 
         public virtual void TroopObjectCreate(ICity city, ITroopStub stub, out ITroopObject troopObject)
         {
-            troopObject = new TroopObject(stub, World.Current.Regions) {X = city.X, Y = city.Y};
-            city.Add(troopObject);
+            troopObject = city.CreateTroopObject(stub, city.X, city.Y);
 
             troopObject.BeginUpdate();
-            troopObject.Stats = new TroopStats(formula.GetTroopRadius(stub, null),
-                                               formula.GetTroopSpeed(stub));
+            troopObject.Stats = new TroopStats(formula.GetTroopRadius(stub, null), formula.GetTroopSpeed(stub));
             world.Regions.Add(troopObject);
             troopObject.EndUpdate();
         }
@@ -68,8 +65,7 @@ namespace Game.Logic.Procedures
             troopStub.Add(stub);
             troopStub.EndUpdate();
 
-            troopObject = new TroopObject(troopStub, World.Current.Regions) {X = x, Y = y + 1};
-            city.Add(troopObject);
+            troopObject = city.CreateTroopObject(troopStub, x, y + 1);
 
             troopObject.BeginUpdate();
             troopObject.Stats = new TroopStats(formula.GetTroopRadius(troopStub, null),

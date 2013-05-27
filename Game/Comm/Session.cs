@@ -7,7 +7,7 @@ using Game.Util;
 
 namespace Game.Comm
 {
-    public abstract class Session : IChannel
+    public abstract class Session : IChannelListener
     {
         #region Delegates        
 
@@ -17,7 +17,7 @@ namespace Game.Comm
 
         #endregion
 
-        protected Processor processor;
+        private readonly Processor processor;
 
         protected Session(string name, Processor processor)
         {
@@ -30,7 +30,7 @@ namespace Game.Comm
 
         public string Name { get; private set; }
 
-        public bool IsLoggedIn
+        private bool IsLoggedIn
         {
             get
             {
@@ -40,7 +40,7 @@ namespace Game.Comm
 
         public IPlayer Player { get; set; }
 
-        #region IChannel Members
+        #region IChannelListener Members
 
         public void OnPost(Packet message)
         {
@@ -52,11 +52,6 @@ namespace Game.Comm
         public abstract bool Write(Packet packet);
 
         public void CloseSession()
-        {
-            Close();
-        }
-
-        protected void Close()
         {
             if (OnClose != null)
             {

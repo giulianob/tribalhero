@@ -31,6 +31,8 @@ namespace Game.Logic.Actions
 
         private readonly Procedure procedure;
 
+        private readonly IRoadPathFinder roadPathFinder;
+
         private readonly RadiusLocator radiusLocator;
 
         private readonly RequirementFactory requirementFactory;
@@ -62,7 +64,8 @@ namespace Game.Logic.Actions
                                           StructureCsvFactory structureCsvFactory,
                                           InitFactory initFactory,
                                           ILocker concurrency,
-                                          Procedure procedure)
+                                          Procedure procedure,
+                                          IRoadPathFinder roadPathFinder)
         {
             this.cityId = cityId;
             this.type = type;
@@ -78,6 +81,7 @@ namespace Game.Logic.Actions
             this.initFactory = initFactory;
             this.concurrency = concurrency;
             this.procedure = procedure;
+            this.roadPathFinder = roadPathFinder;
         }
 
         public StructureBuildActiveAction(uint id,
@@ -228,11 +232,10 @@ namespace Game.Logic.Actions
                             continue;
                         }
 
-                        if (
-                                !RoadPathFinder.HasPath(new Position(str.X, str.Y),
-                                                        new Position(city.X, city.Y),
-                                                        city,
-                                                        new Position(x, y)))
+                        if (!roadPathFinder.HasPath(new Position(str.X, str.Y),
+                                                    new Position(city.X, city.Y),
+                                                    city,
+                                                    new Position(x, y)))
                         {
                             breaksRoad = true;
                             break;
@@ -251,7 +254,7 @@ namespace Game.Logic.Actions
                                                 y,
                                                 1,
                                                 false,
-                                                delegate(uint origX, uint origY, uint x1, uint y1, object custom)
+                                                (origX, origY, x1, y1, custom) =>
                                                     {
                                                         if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1)
                                                         {
@@ -265,11 +268,10 @@ namespace Game.Logic.Actions
 
                                                         if (world.Roads.IsRoad(x1, y1))
                                                         {
-                                                            if (
-                                                                    !RoadPathFinder.HasPath(new Position(x1, y1),
-                                                                                            new Position(city.X, city.Y),
-                                                                                            city,
-                                                                                            new Position(origX, origY)))
+                                                            if (!roadPathFinder.HasPath(new Position(x1, y1),
+                                                                                        new Position(city.X, city.Y),
+                                                                                        city,
+                                                                                        new Position(origX, origY)))
                                                             {
                                                                 allNeighborsHaveOtherPaths = false;
                                                                 return false;
@@ -309,11 +311,10 @@ namespace Game.Logic.Actions
                                                     // Make sure we have a road around this building
                                                     if (!hasRoad && !hasStructure && world.Roads.IsRoad(x1, y1))
                                                     {
-                                                        if (!buildingOnRoad ||
-                                                            RoadPathFinder.HasPath(new Position(x1, y1),
-                                                                                   new Position(city.X, city.Y),
-                                                                                   city,
-                                                                                   new Position(origX, origY)))
+                                                        if (!buildingOnRoad || roadPathFinder.HasPath(new Position(x1, y1),
+                                                                                                      new Position(city.X, city.Y),
+                                                                                                      city,
+                                                                                                      new Position(origX, origY)))
                                                         {
                                                             hasRoad = true;
                                                         }
@@ -340,14 +341,13 @@ namespace Game.Logic.Actions
             }
 
             // add structure to the map                    
-            IStructure structure = city.CreateStructure(type, 0);
-            structure.BeginUpdate();
-            structure.X = x;
-            structure.Y = y;
-
+            IStructure structure = city.CreateStructure(type, 0, x, y);
+            
             city.BeginUpdate();
             city.Resource.Subtract(cost);
             city.EndUpdate();
+
+            structure.BeginUpdate();
 
             if (!world.Regions.Add(structure))
             {

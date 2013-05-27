@@ -209,14 +209,13 @@ namespace Game.Logic.Actions
                                    formula.GetInitialAp());
 
                 // Creating Mainbuilding
-                structure = newCity.CreateStructure(2000, 0);
+                structure = newCity.CreateStructure(2000, 0, x, y);                
+                
                 structure.BeginUpdate();
-                structure.X = x;
-                structure.Y = y;
                 city.Owner.Add(newCity);
                 world.Regions.SetTileType(x, y, 0, true);
                 world.Regions.Add(structure);
-                world.Cities.Add(newCity);                
+                world.Cities.Add(newCity);                                
                 initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
                 structure.EndUpdate();                
                 

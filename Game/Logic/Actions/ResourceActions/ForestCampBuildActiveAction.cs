@@ -212,11 +212,10 @@ namespace Game.Logic.Actions
             world.Regions.LockRegion(emptyX, emptyY);
 
             // add structure to the map                    
-            IStructure structure = city.CreateStructure(campType, 0);
+            IStructure structure = city.CreateStructure(campType, 0, emptyX, emptyY);
+
             structure.BeginUpdate();
             structure["Rate"] = 0; // Set initial rate for camp
-            structure.X = emptyX;
-            structure.Y = emptyY;
             structure.Stats.Labor = labors;
 
             city.BeginUpdate();

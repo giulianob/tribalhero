@@ -3,7 +3,6 @@
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
-using Game.Map;
 
 #endregion
 
@@ -33,7 +32,9 @@ namespace Game.Logic.Procedures
                 return false;
             }
 
-            troopObject = new TroopObject(stub, World.Current.Regions) {X = x, Y = y + 1};
+            troopObject = stub.City.CreateTroopObject(stub, x, y + 1);
+            troopObject.X = x;
+            troopObject.Y = y + 1;
 
             stub.City.Add(troopObject);
 

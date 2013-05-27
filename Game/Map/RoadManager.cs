@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Comm;
@@ -15,9 +16,24 @@ namespace Game.Map
     {
         private readonly IRegionManager regionManager;
 
-        public RoadManager(IRegionManager regionManager)
+        private readonly ObjectTypeFactory objectTypeFactory;
+
+        public RoadManager(IRegionManager regionManager, ObjectTypeFactory objectTypeFactory)
         {
             this.regionManager = regionManager;
+            this.objectTypeFactory = objectTypeFactory;
+
+            regionManager.ObjectAdded += RegionManagerOnObjectAdded;
+        }
+
+        private void RegionManagerOnObjectAdded(object sender, ObjectEvent e)
+        {
+            if (objectTypeFactory.IsObjectType("NoRoadRequired", e.GameObject.Type))
+            {
+                return;
+            }
+
+            CreateRoad(e.GameObject.X, e.GameObject.Y);
         }
 
         private void SendUpdate(Dictionary<ushort, List<TileUpdate>> updates)

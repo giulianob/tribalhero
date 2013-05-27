@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Game.Data.Stats;
-using Game.Map;
 using Game.Util;
 using Persistance;
 
@@ -26,11 +25,11 @@ namespace Game.Data
 
         public Structure(uint structureId, 
                          IStructureStats stats,
+                         uint x,
+                         uint y,
                          ITechnologyManager technologyManager,
                          StructureProperties structureProperties,
-                         IDbManager dbManager,
-                         IRegionManager regionmanager)
-                : base(regionmanager)
+                         IDbManager dbManager) : base(x, y)
         {
             objectId = structureId;
             this.stats = stats;
@@ -187,5 +186,7 @@ namespace Game.Data
         }
 
         public bool DbPersisted { get; set; }
+
+
     }
 }

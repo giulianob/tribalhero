@@ -2,7 +2,6 @@ using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Formulas;
 using Game.Logic.Notifications;
-using Game.Map;
 using Ninject;
 using Persistance;
 
@@ -47,8 +46,7 @@ namespace Game.Data.Stronghold
                                         notificationManager,
                                         troopManager,
                                         actionWorker,
-                                        kernel.Get<Formula>(),
-                                        kernel.Get<IRegionManager>());
+                                        kernel.Get<Formula>());
 
             // TODO: Remove circular dependency
             actionWorker.LockDelegate = () => stronghold;            

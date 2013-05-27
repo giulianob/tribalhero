@@ -16,7 +16,6 @@ using Game.Data.Forest;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
-using Game.Data.Troop.Initializers;
 using Game.Logic;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -52,6 +51,8 @@ namespace Game
             Bind<ICityRegionManager>().To<CityRegionManager>().InSingletonScope();            
             Bind<IForestManager>().To<ForestManager>().InSingletonScope();
             Bind<IForest>().To<Forest>();
+            Bind<RoadManager>().ToSelf().InSingletonScope();
+            Bind<IRoadPathFinder>().To<RoadPathFinder>();
 
             #endregion
 

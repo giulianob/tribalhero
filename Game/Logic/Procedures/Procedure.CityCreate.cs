@@ -2,6 +2,7 @@ using System.Linq;
 using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Troop;
+using Game.Map;
 using Game.Map.LocationStrategies;
 using Game.Setup;
 
@@ -21,16 +22,16 @@ namespace Game.Logic.Procedures
                             formula.GetInitialCityRadius(),
                             formula.GetInitialAp());
 
-            IStructure mainBuilding;
-
-            Error error = Randomizer.MainBuilding(city, strategy, 1, out mainBuilding);
-            if (error != Error.Ok)
+            Position position;
+            var error = strategy.NextLocation(out position);
+            if(error != Error.Ok)
             {
                 world.Players.Remove(player.PlayerId);
                 dbPersistance.Rollback();                
-
                 return error;
             }
+        
+            IStructure mainBuilding = city.CreateStructure(2000, 1, position.X, position.Y);
 
             player.Add(city);
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Game.Comm;
 using Game.Data;
+using Game.Data.Events;
 using Game.Setup;
 using Game.Util;
 using Ninject.Extensions.Logging;
@@ -13,19 +14,27 @@ namespace Game.Map
     {
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
-        private readonly ICityRegionManagerFactory cityRegionManagerFactory;
+        public event EventHandler<ObjectEvent> ObjectAdded;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly ICityRegionManagerFactory cityRegionManagerFactory;
 
         private readonly IRegionFactory regionFactory;
 
+        private readonly TileLocator tileLocator;
+
+        private readonly Channel channel;
+
         private Region[] regions;
 
-        public RegionManager(ICityRegionManagerFactory cityRegionManagerFactory, ObjectTypeFactory objectTypeFactory, IRegionFactory regionFactory)
+        public RegionManager(ICityRegionManagerFactory cityRegionManagerFactory,
+                             IRegionFactory regionFactory,
+                             TileLocator tileLocator,
+                             Channel channel)
         {
             this.cityRegionManagerFactory = cityRegionManagerFactory;
-            this.objectTypeFactory = objectTypeFactory;
             this.regionFactory = regionFactory;
+            this.tileLocator = tileLocator;
+            this.channel = channel;
         }
 
         private int RegionsCount { get; set; }
@@ -34,13 +43,13 @@ namespace Game.Map
 
         private Stream RegionChanges { get; set; }
 
-        private byte[] MapData { get; set; }
+        private byte[] MapData { get; set; }        
 
-        public ICityRegionManager CityRegions { get; set; }
+        public ICityRegionManager CityRegions { get; private set; }
 
-        public uint WorldWidth { get; private set; }
+        private uint WorldWidth { get; set; }
 
-        public uint WorldHeight { get; private set; }
+        private uint WorldHeight { get; set; }
 
         public List<ISimpleGameObject> this[uint x, uint y]
         {
@@ -66,38 +75,10 @@ namespace Game.Map
             GetRegion(x, y).Lock.ExitWriteLock();
         }
 
-        public IEnumerable<ISimpleGameObject> GetObjectsFromSurroundingRegions(uint x, uint y, int radius)
-        {
-            int xRegionDiameter = (int)Math.Ceiling((decimal)radius / Config.region_width);
-            int yRegionDiameter = (int)Math.Ceiling((decimal)radius / Config.region_height);
-            int xRegionRadius = (int)Math.Ceiling(xRegionDiameter / 2m);
-            int yRegionRadius = (int)Math.Ceiling(yRegionDiameter / 2m);
-
-            for (uint xRegion = 0; xRegion < xRegionDiameter; xRegion++)
-            {
-                for (uint yRegion = 0; yRegion < yRegionDiameter; yRegion++)
-                {
-                    var xRegionPoint = (uint)(x + (xRegion - xRegionRadius) * Config.region_width);
-                    var yRegionPoint = (uint)(y + (yRegion - yRegionRadius) * Config.region_height);
-                    var region = GetRegion(xRegionPoint, yRegionPoint);
-
-                    if (region == null)
-                    {
-                        continue;
-                    }
-
-                    foreach (var s in region.GetObjects())
-                    {
-                        yield return s;
-                    }
-                }
-            }
-        }
-
         public List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, int radius)
         {
             var list = new List<ISimpleGameObject>();
-            TileLocator.Current.ForeachObject(x,
+            tileLocator.ForeachObject(x,
                                               y,
                                               radius,
                                               false,
@@ -115,53 +96,63 @@ namespace Game.Map
         public List<ushort> GetTilesWithin(uint x, uint y, byte radius)
         {
             var list = new List<ushort>();
-            TileLocator.Current.ForeachObject(x, y, radius, false, GetTilesForeach, list);
+            tileLocator.ForeachObject(x, y, radius, false, GetTilesForeach, list);
             return list;
         }
 
         public bool Add(ISimpleGameObject obj)
         {
-            Region region = GetRegion(obj.X, obj.Y);
+            var region = GetRegion(obj.X, obj.Y);
+
             if (region == null)
             {
                 return false;
             }
 
-            if (region.Add(obj))
+            region.Add(obj);
+
+            // Keeps track of objects that exist in the map
+            obj.InWorld = true;
+
+            RegisterObjectEventListeners(obj);
+
+            // Add appropriate objects to the minimap
+            ICityRegionObject cityRegionObject = obj as ICityRegionObject;
+            if (cityRegionObject != null)
             {
-                // Keeps track of objects that exist in the map
-                obj.InWorld = true;
+                CityRegions.Add(cityRegionObject);
+            }
 
-                // If simple object, we must assign an id
-                if (!objectTypeFactory.IsObjectType("NoRoadRequired", obj.Type))
+            // Post to channel
+            ushort regionId = Region.GetRegionIndex(obj);
+
+            channel.Post("/WORLD/" + regionId, () =>
                 {
-                    // TODO: Should not have a reference to the roads from the region manager but this causes a circular dependency. RoadManager requires RegionManager. Need to figure out where the road creation logic should take place.
-                    World.Current.Roads.CreateRoad(obj.X, obj.Y);
-                }
-
-                // Add appropriate objects to the minimap
-                ICityRegionObject cityRegionObject = obj as ICityRegionObject;
-                if (cityRegionObject != null)
-                {
-                    CityRegions.Add(cityRegionObject);
-                }
-
-                // Send obj add event
-                if (Global.Current.FireEvents)
-                {
-                    ushort regionId = Region.GetRegionIndex(obj);
-
                     var packet = new Packet(Command.ObjectAdd);
                     packet.AddUInt16(regionId);
                     PacketHelper.AddToPacket(obj, packet);
+                    return packet;
+                });
 
-                    Global.Current.Channel.Post("/WORLD/" + regionId, packet);
-                }
+            // Raise event
+            ObjectAdded.Raise(this, new ObjectEvent(obj));
 
-                return true;
-            }
+            return true;
+        }
 
-            return false;
+        private void RegisterObjectEventListeners(ISimpleGameObject simpleGameObject)
+        {
+            simpleGameObject.ObjectUpdated += SimpleGameObjectOnObjectUpdated;
+        }
+
+        private void DeregisterObjectEventListeners(ISimpleGameObject simpleGameObject)
+        {
+            simpleGameObject.ObjectUpdated -= SimpleGameObjectOnObjectUpdated;
+        }
+
+        private void SimpleGameObjectOnObjectUpdated(object sender, SimpleGameObjectArgs e)
+        {
+            ObjectUpdateEvent(e.SimpleGameObject, e.OriginalX, e.OriginalY);
         }
 
         public void DbLoaderAdd(ISimpleGameObject obj)
@@ -174,6 +165,8 @@ namespace Game.Map
 
             if (obj.InWorld)
             {
+                RegisterObjectEventListeners(obj);
+
                 region.Add(obj);
 
                 // Add to minimap if needed
@@ -218,11 +211,10 @@ namespace Game.Map
         public void ObjectUpdateEvent(ISimpleGameObject sender, uint origX, uint origY)
         {
             // If object is a city region object, we need to update that
-            if (sender is ICityRegionObject)
+            var cityRegionObject = sender as ICityRegionObject;
+            if (cityRegionObject != null)
             {
-                var senderAsCityRegionObject = (ICityRegionObject)sender;
-
-                CityRegions.UpdateObjectRegion(senderAsCityRegionObject, origX, origY);
+                CityRegions.UpdateObjectRegion(cityRegionObject, origX, origY);
             }
 
             //if object has moved then we need to do some logic to see if it has changed regions
@@ -236,7 +228,7 @@ namespace Game.Map
                 var packet = new Packet(Command.ObjectUpdate);
                 packet.AddUInt16(newRegionId);
                 PacketHelper.AddToPacket(sender, packet);
-                Global.Current.Channel.Post("/WORLD/" + newRegionId, packet);
+                channel.Post("/WORLD/" + newRegionId, packet);
             }
             else
             {
@@ -247,12 +239,12 @@ namespace Game.Map
                 packet.AddUInt16(oldRegionId);
                 packet.AddUInt16(newRegionId);
                 PacketHelper.AddToPacket(sender, packet);
-                Global.Current.Channel.Post("/WORLD/" + oldRegionId, packet);
+                channel.Post("/WORLD/" + oldRegionId, packet);
 
                 packet = new Packet(Command.ObjectAdd);
                 packet.AddUInt16(newRegionId);
                 PacketHelper.AddToPacket(sender, packet);
-                Global.Current.Channel.Post("/WORLD/" + newRegionId, packet);
+                channel.Post("/WORLD/" + newRegionId, packet);
             }
         }
 
@@ -389,7 +381,7 @@ namespace Game.Map
                 packet.AddUInt32(y);
                 packet.AddUInt16(tileType);
 
-                Global.Current.Channel.Post("/WORLD/" + regionId, packet);
+                channel.Post("/WORLD/" + regionId, packet);
             }
 
             return tileType;
@@ -419,7 +411,7 @@ namespace Game.Map
                 packet.AddUInt32(y);
                 packet.AddUInt16(tileType);
 
-                Global.Current.Channel.Post("/WORLD/" + regionId, packet);
+                channel.Post("/WORLD/" + regionId, packet);
             }
         }
 
@@ -431,7 +423,7 @@ namespace Game.Map
         {
             try
             {
-                Global.Current.Channel.Subscribe(session, "/WORLD/" + id);
+                channel.Subscribe(session, "/WORLD/" + id);
             }
             catch(DuplicateSubscriptionException)
             {
@@ -440,7 +432,7 @@ namespace Game.Map
 
         public void UnsubscribeRegion(Session session, ushort id)
         {
-            Global.Current.Channel.Unsubscribe(session, "/WORLD/" + id);
+            channel.Unsubscribe(session, "/WORLD/" + id);
         }
 
         #endregion
@@ -457,6 +449,7 @@ namespace Game.Map
         private void Remove(ISimpleGameObject obj, uint origX, uint origY)
         {
             obj.InWorld = false;
+            DeregisterObjectEventListeners(obj);
 
             Region region = GetRegion(origX, origY);
 
@@ -476,16 +469,14 @@ namespace Game.Map
                 CityRegions.Remove(cityRegionObject);
             }
 
-            // Send remove update
-            if (Global.Current.FireEvents)
-            {
-                var packet = new Packet(Command.ObjectRemove);
-                packet.AddUInt16(regionId);
-                packet.AddUInt32(obj.GroupId);
-                packet.AddUInt32(obj.ObjectId);
-
-                Global.Current.Channel.Post("/WORLD/" + regionId, packet);
-            }
+            channel.Post("/WORLD/" + regionId, () =>
+                {
+                    var packet = new Packet(Command.ObjectRemove);
+                    packet.AddUInt16(regionId);
+                    packet.AddUInt32(obj.GroupId);
+                    packet.AddUInt32(obj.ObjectId);
+                    return packet;
+                });
         }
     }
 }

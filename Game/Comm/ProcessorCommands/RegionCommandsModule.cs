@@ -19,10 +19,31 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IWorld world;
 
-        public RegionCommandsModule(RadiusLocator radiusLocator, IWorld world)
+        private readonly ObjectTypeFactory objectTypeFactory;
+
+        private readonly IRoadPathFinder roadPathFinder;
+
+        private readonly ILocker locker;
+
+        private readonly Util.Channel channel;
+
+        private readonly TileLocator tileLocator;
+
+        public RegionCommandsModule(RadiusLocator radiusLocator,
+                                    IWorld world,
+                                    ObjectTypeFactory objectTypeFactory,
+                                    IRoadPathFinder roadPathFinder,
+                                    ILocker locker,
+                                    Util.Channel channel,
+                                    TileLocator tileLocator)
         {
             this.radiusLocator = radiusLocator;
             this.world = world;
+            this.objectTypeFactory = objectTypeFactory;
+            this.roadPathFinder = roadPathFinder;
+            this.locker = locker;
+            this.channel = channel;
+            this.tileLocator = tileLocator;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -63,19 +84,17 @@ namespace Game.Comm.ProcessorCommands
             }
 
             // Make sure there is no structure at this point that has no road requirement
-            if (
-                    world.Regions[x, y].Any(
-                                            s =>
-                                            s is IStructure &&
-                                            Ioc.Kernel.Get<ObjectTypeFactory>()
-                                               .IsStructureType("NoRoadRequired", (IStructure)s)))
+            if (world.Regions[x, y].Any(
+                                        s =>
+                                        s is IStructure &&
+                                        objectTypeFactory.IsStructureType("NoRoadRequired", (IStructure)s)))
             {
                 ReplyError(session, packet, Error.StructureExists);
                 return;
             }
 
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -84,7 +103,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 // Make sure user is building road within city walls
-                if (SimpleGameObject.TileDistance(city.X, city.Y, x, y) >= city.Radius)
+                if (tileLocator.TileDistance(city.X, city.Y, x, y) >= city.Radius)
                 {
                     ReplyError(session, packet, Error.NotWithinWalls);
                     return;
@@ -106,9 +125,9 @@ namespace Game.Comm.ProcessorCommands
                                             y,
                                             1,
                                             false,
-                                            delegate(uint origX, uint origY, uint x1, uint y1, object custom)
+                                            (origX, origY, x1, y1, custom) =>
                                                 {
-                                                    if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1)
+                                                    if (radiusLocator.RadiusDistance(origX, origY, x1, y1) != 1)
                                                     {
                                                         return true;
                                                     }
@@ -119,8 +138,7 @@ namespace Game.Comm.ProcessorCommands
                                                         return false;
                                                     }
 
-                                                    if (world.Roads.IsRoad(x1, y1) &&
-                                                        !world.Regions[x1, y1].Exists(s => s is IStructure))
+                                                    if (world.Roads.IsRoad(x1, y1) && !world.Regions[x1, y1].Exists(s => s is IStructure))
                                                     {
                                                         hasRoad = true;
                                                         return false;
@@ -137,7 +155,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileBuildable", world.Regions.GetTileType(x, y)))
+                if (!objectTypeFactory.IsTileType("TileBuildable", world.Regions.GetTileType(x, y)))
                 {
                     world.Regions.UnlockRegion(x, y);
                     ReplyError(session, packet, Error.TileMismatch);
@@ -179,7 +197,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -188,7 +206,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 // Make sure user is building road within city walls
-                if (SimpleGameObject.TileDistance(city.X, city.Y, x, y) >= city.Radius)
+                if (tileLocator.TileDistance(city.X, city.Y, x, y) >= city.Radius)
                 {
                     ReplyError(session, packet, Error.NotWithinWalls);
                     return;
@@ -213,25 +231,9 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 // Make sure there is a road next to this tile
-                bool breaksRoad = false;
-
-                foreach (var str in city)
-                {
-                    if (str.IsMainBuilding || Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("NoRoadRequired", str))
-                    {
-                        continue;
-                    }
-
-                    if (
-                            !RoadPathFinder.HasPath(new Position(str.X, str.Y),
-                                                    new Position(city.X, city.Y),
-                                                    city,
-                                                    new Position(x, y)))
-                    {
-                        breaksRoad = true;
-                        break;
-                    }
-                }
+                bool breaksRoad = city
+                        .Where(str => !str.IsMainBuilding && !objectTypeFactory.IsStructureType("NoRoadRequired", str))
+                        .Any(str => !roadPathFinder.HasPath(new Position(str.X, str.Y), new Position(city.X, city.Y), city, new Position(x, y)));
 
                 if (breaksRoad)
                 {
@@ -248,7 +250,7 @@ namespace Game.Comm.ProcessorCommands
                                             false,
                                             delegate(uint origX, uint origY, uint x1, uint y1, object custom)
                                                 {
-                                                    if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1)
+                                                    if (radiusLocator.RadiusDistance(origX, origY, x1, y1) != 1)
                                                     {
                                                         return true;
                                                     }
@@ -258,20 +260,21 @@ namespace Game.Comm.ProcessorCommands
                                                         return true;
                                                     }
 
-                                                    if (world.Roads.IsRoad(x1, y1))
+                                                    if (!world.Roads.IsRoad(x1, y1))
                                                     {
-                                                        if (
-                                                                !RoadPathFinder.HasPath(new Position(x1, y1),
-                                                                                        new Position(city.X, city.Y),
-                                                                                        city,
-                                                                                        new Position(origX, origY)))
-                                                        {
-                                                            allNeighborsHaveOtherPaths = false;
-                                                            return false;
-                                                        }
+                                                        return true;
                                                     }
 
-                                                    return true;
+                                                    if (roadPathFinder.HasPath(new Position(x1, y1),
+                                                                               new Position(city.X, city.Y),
+                                                                               city,
+                                                                               new Position(origX, origY)))
+                                                    {
+                                                        return true;
+                                                    }
+
+                                                    allNeighborsHaveOtherPaths = false;
+                                                    return false;
                                                 },
                                             null);
 
@@ -306,7 +309,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -345,7 +348,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -381,7 +384,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             //check to make sure that the city belongs to us
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 if (session.Player.GetCity(cityId) == null && session.Player.GetCity(srcCityId) == null)
                 {
@@ -391,7 +394,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             Dictionary<uint, ICity> cities;
-            using (Concurrency.Current.Lock(out cities, srcCityId, cityId))
+            using (locker.Lock(out cities, srcCityId, cityId))
             {
                 if (cities == null)
                 {
@@ -496,7 +499,7 @@ namespace Game.Comm.ProcessorCommands
                 world.Regions.UnsubscribeRegion(session, regionId);
             }
 
-            if (Global.Current.Channel.SubscriptionCount(session) > 30)
+            if (channel.SubscriptionCount(session) > 30)
             {
                 session.CloseSession();
             }
@@ -509,8 +512,6 @@ namespace Game.Comm.ProcessorCommands
         private void CmdGetCityRegion(Session session, Packet packet)
         {
             var reply = new Packet(packet);
-
-            ushort regionId;
 
             byte regionSubscribeCount;
             try
@@ -527,6 +528,7 @@ namespace Game.Comm.ProcessorCommands
 
             for (uint i = 0; i < regionSubscribeCount; ++i)
             {
+                ushort regionId;
                 try
                 {
                     regionId = packet.GetUInt16();

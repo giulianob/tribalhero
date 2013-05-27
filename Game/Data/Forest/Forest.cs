@@ -103,8 +103,9 @@ namespace Game.Data.Forest
 
         #region Constructors
 
-        public Forest(byte lvl, int capacity, double rate, IActionFactory actionFactory) : base(World.Current.Regions)
+        public Forest(uint id, byte lvl, int capacity, double rate, uint x, uint y, IActionFactory actionFactory) : base(x, y)
         {
+            this.objectId = id;
             this.lvl = lvl;
             this.actionFactory = actionFactory;
 

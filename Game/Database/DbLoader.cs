@@ -724,13 +724,15 @@ namespace Game.Database
             {
                 while (reader.Read())
                 {
-                    var forest = ForestFactory.CreateForest((byte)reader["level"], (int)reader["capacity"], (float)reader["rate"]);
+                    var forest = ForestFactory.CreateForest((uint)reader["id"],
+                                                            (byte)reader["level"],
+                                                            (int)reader["capacity"],
+                                                            (float)reader["rate"],
+                                                            (uint)reader["x"],
+                                                            (uint)reader["y"]);
 
                     forest.DbPersisted = true;
-                    forest.X = (uint)reader["x"];
-                    forest.Y = (uint)reader["y"];
                     forest.Labor = (ushort)reader["labor"];
-                    forest.ObjectId = (uint)reader["id"];
                     forest.State.Type = (ObjectState)((byte)reader["state"]);
                     forest.Wood = new AggressiveLazyValue((int)reader["lumber"],
                                                           DateTime.SpecifyKind((DateTime)reader["last_realize_time"], DateTimeKind.Utc),
@@ -792,11 +794,14 @@ namespace Game.Database
                     }
                 }
 
-                    IStructure structure = gameObjectFactory.CreateStructure((uint)reader["city_id"], (uint)reader["id"], (ushort)reader["type"], (byte)reader["level"]);
+                IStructure structure = gameObjectFactory.CreateStructure((uint)reader["city_id"], 
+                    (uint)reader["id"], 
+                    (ushort)reader["type"],
+                    (byte)reader["level"],
+                    (uint)reader["x"],
+                    (uint)reader["y"]);
                 structure.InWorld = (bool)reader["in_world"];
                 structure.Technologies.Parent = city.Technologies;
-                structure.X = (uint)reader["x"];
-                structure.Y = (uint)reader["y"];
                 structure.Stats.Hp = (decimal)reader["hp"];
                 structure.Stats.Labor = (ushort)reader["labor"];
                 structure.DbPersisted = true;
@@ -1063,6 +1068,8 @@ namespace Game.Database
         {
             #region Troops
 
+            var gameObjectFactory = Kernel.Get<IGameObjectFactory>();
+
             logger.Info("Loading troops...");
             using (var reader = DbManager.Select(TroopObject.DB_TABLE))
             {
@@ -1079,35 +1086,33 @@ namespace Game.Database
                                               ? city.Troops[troopStubid]
                                               : null;
 
-
-                    var obj = new TroopObject(stub, World.Regions)
-                    {
-                            X = (uint)reader["x"],
-                            Y = (uint)reader["y"],
-                            TargetX = (uint)reader["target_x"],
-                            TargetY = (uint)reader["target_y"],
-                            ObjectId = (uint)reader["id"],
-                            DbPersisted = true,
-                            State = {Type = (ObjectState)((byte)reader["state"])},
-                            Stats =
-                                    new TroopStats((int)reader["attack_point"],
-                                                   (byte)reader["attack_radius"],
-                                                   (decimal)reader["speed"],
-                                                   new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"])),
-                            IsBlocked = (uint)reader["is_blocked"],
-                            InWorld = (bool)reader["in_world"],
-                    };
+                    var troopObject = gameObjectFactory.CreateTroopObject((uint)reader["id"],
+                                                                          stub,
+                                                                          (uint)reader["x"],
+                                                                          (uint)reader["y"]);
+                    troopObject.TargetX = (uint)reader["target_x"];
+                    troopObject.TargetY = (uint)reader["target_y"];
+                    troopObject.DbPersisted = true;
+                    troopObject.State.Type = (ObjectState)((byte)reader["state"]);
+                    troopObject.Stats =
+                            new TroopStats((int)reader["attack_point"],
+                                           (byte)reader["attack_radius"],
+                                           (decimal)reader["speed"],
+                                           new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"]));
+                    troopObject.IsBlocked = (uint)reader["is_blocked"];
+                    troopObject.InWorld = (bool)reader["in_world"];
+                    
 
                     foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
                     {
-                        obj.State.Parameters.Add(variable);
+                        troopObject.State.Parameters.Add(variable);
                     }
 
-                    city.Add(obj.ObjectId, obj, false);
+                    city.Add(troopObject.ObjectId, troopObject, false);
 
-                    if (obj.InWorld)
+                    if (troopObject.InWorld)
                     {
-                        World.Regions.DbLoaderAdd(obj);
+                        World.Regions.DbLoaderAdd(troopObject);
                     }
                 }
             }

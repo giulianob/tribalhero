@@ -92,7 +92,7 @@
 					if (Constants.debug>=3)
 						Util.log("Creating region part: " + (a * Constants.regionBitmapTileW) + "," + (b * Constants.regionBitmapTileH));
 
-					createRegionPart(Constants.tileset, a * Constants.regionBitmapTileW, b * Constants.regionBitmapTileH);
+					createRegionPart(Constants.tileset.bitmapData, a * Constants.regionBitmapTileW, b * Constants.regionBitmapTileH);
 					break;
 				}
 				break;
@@ -121,7 +121,7 @@
 			createRegion();
 		}
 
-		public function createRegionPart(tileset:TileSet, x: int, y:int):void
+		public function createRegionPart(tileset: BitmapData, x: int, y:int):void
 		{
 			var bg:Bitmap = new Bitmap(new BitmapData(Constants.regionBitmapW + Constants.tileW / 2, Constants.regionBitmapH / 2 + Constants.tileH / 2, true, 0));
 			bg.smoothing = false;

@@ -1,14 +1,17 @@
 ﻿package src.UI.Components {
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.events.Event;
-	import flash.geom.Point;
-	import src.Constants;
-	import src.Map.MapUtil;
-	import src.Objects.SimpleObject;
-	import src.UI.SmartMovieClip;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.DisplayObject;
+import flash.events.Event;
+import flash.geom.Point;
 
-	public class GroundCallbackCircle extends SimpleObject
+import src.Constants;
+import src.ImportObjects;
+import src.Map.MapUtil;
+import src.Objects.SimpleObject;
+import src.UI.SmartMovieClip;
+
+public class GroundCallbackCircle extends SimpleObject
 	{
 		private var size: int;
 		private var circle: SmartMovieClip;
@@ -72,7 +75,7 @@
 
 		public function addTileCallback(x: int, y: int, custom: *):void
 		{
-			var tiledata: MASK_TILE = new MASK_TILE(Constants.tileW, Constants.tileH);
+			var tiledata: DisplayObject = ImportObjects.getInstance("MASK_TILE");
 
 			var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH, true, 0x000000));
 			tile.smoothing = true;

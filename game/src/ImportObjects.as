@@ -14,7 +14,6 @@
 	 */
 	public class ImportObjects 
 	{
-		
 		public function ImportObjects() 
 		{					
 			//Icons
@@ -57,7 +56,6 @@
 			DOT_SPRITE_ORANGE;
 			DOT_SPRITE_BLACK;
 			DOT_SPRITE_WHITE;
-			MASK_TILE;
 			TILE_MINI;
 			
 			//Walls
@@ -190,7 +188,14 @@
 			Util.log("Could not find sprite: " + spriteName);
 			return new Sprite();			
 		}
-		
+
+        // Tileset
+        [Embed(source = "../../graphics/MaskTile.png")]
+        public static var MASK_TILE: Class;
+
+        [Embed(source = "../../graphics/Tilemap.png")]
+        public static var TILESET: Class;
+
 		// Achievement Icons
 		[Embed(source = "../../graphics/icons/achievements/anvil-gold.png")]		
 		public static var ICON_ACHIEVEMENT_ANVIL_GOLD: Class;

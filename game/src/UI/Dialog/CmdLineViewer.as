@@ -1,6 +1,8 @@
 package src.UI.Dialog
 {
-	import src.Util.StringHelper;
+import flash.system.Capabilities;
+
+import src.Util.StringHelper;
 	import flash.events.*;
 	import flash.text.*;
 	import flash.ui.*;
@@ -158,7 +160,7 @@ package src.UI.Dialog
 			{
 				log(currentChatType, message, true);				
                 
-                CONFIG::debug {
+                if (Capabilities.isDebugger) {
                     if (message == "/togglestacktracer") {
                         Constants.debugStacktracer = true;
                         return true;

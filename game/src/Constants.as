@@ -1,6 +1,10 @@
 package src
 {
-	import src.Map.CityRegionLegend;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.Sprite;
+
+import src.Map.CityRegionLegend;
 	import src.Objects.Tribe;
 	public class Constants
 	{
@@ -24,7 +28,7 @@ package src
 		public static var playerId: int;
 		public static var playerHash: String;
 		public static var tutorialStep: int;
-		public static var tribeInviteId: int = 3;
+		public static var tribeInviteId: int;
 		public static var tribe: Tribe = new Tribe();
 		public static var signupTime: Date;
 		public static var newbieProtectionSeconds: int;
@@ -45,18 +49,17 @@ package src
 		public static const headerSize: int = 8;
 
 		/* ROAD CONSTANTS */
-		public static const road_start_tile_id: int = 224;
-		public static const road_end_tile_id: int = 255;
+		public static const road_start_tile_id: int = 26;
+		public static const road_end_tile_id: int = 41;
 
 		/* MAP CONSTANTS */					
-		public static const tileW:int = 108;
-		public static const tileH:int = 54;
+		public static const tileW:int = 160;
+		public static const tileH:int = 80;
 
-		public static const tileSetW:int = 1728;
-		public static const tileSetH:int = 1944;
+		public static const tileSetW:int = 2080;
+		public static const tileSetH:int = 1200;
 
 		public static const tileSetTileW:int = tileSetW / tileW;
-		public static const tileSetTileH:int = tileSetH / tileH;
 
 		public static const mapW:int = 3400 * tileW;
 		public static const mapH:int = 6200 * tileH;
@@ -85,9 +88,9 @@ package src
 		public static var screenW:int = origScreenW;
 		public static var screenH:int = origScreenH;
 		
-		public static const tileset:TileSet = new TileSet(Constants.tileSetW, Constants.tileSetH);
+		public static const tileset: Bitmap = new ImportObjects.TILESET();
 		
-		public static const cityStartTile: int = 209;
+		public static const cityStartTile: int = 16;
 
 		/* MINI MAP CONSTANTS */
 		public static const miniMapTileW: int = 4;
@@ -104,9 +107,6 @@ package src
 
 		public static const cityRegionBitmapW: int = cityRegionW;
 		public static const cityRegionBitmapH: int = cityRegionH;
-
-		public static const cityRegionBitmapTileW: int = cityRegionBitmapW / miniMapTileW;
-		public static const cityRegionBitmapTileH: int = cityRegionBitmapH / miniMapTileH;
 
 		// Compact mini map constants
 		public static const miniMapScreenW: int = 288;

@@ -30,8 +30,9 @@
 
 			var obj: SimpleGameObject = region.getObject(newObj.groupId, newObj.objectId);
 
-			if (obj == null)
+			if (obj == null) {
 				return null;
+            }
 			
 			var objChanged: Boolean = !newObj.equalsOnMap(obj);
 			

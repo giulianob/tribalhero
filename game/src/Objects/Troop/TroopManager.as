@@ -29,7 +29,7 @@
 							return p.cityId == city.id;
 					  })
 					  .sum(function(p: TroopStub): int {
-							return p.getUpkeep();
+							return p.getUpkeep(true);
 					  });
 		}
 		

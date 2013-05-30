@@ -29,6 +29,7 @@
         <compiler-options>
           <map>
             <entry key="compiler.debug.swf" value="true" />
+            <entry key="compiler.define" value="CONFIG::debug&#9;true" />
           </map>
           <option name="additionalOptions" value="-frame=start,src.Main" />
         </compiler-options>

@@ -1,29 +1,32 @@
 ﻿package src
 {
-	import com.greensock.plugins.TransformMatrixPlugin;
-	import com.greensock.plugins.TweenPlugin;
-	import fl.lang.*;
-	import flash.display.*;
-	import flash.events.*;
-    import flash.external.ExternalInterface;
-	import flash.net.*;
-	import flash.ui.*;
-	import org.aswing.*;
-	import src.Comm.*;
-	import src.Map.*;
-	import src.Objects.Factories.*;
-	import src.UI.Components.*;
-	import src.UI.Dialog.*;
-	import src.UI.LookAndFeel.*;
-	import src.UI.TweenPlugins.DynamicPropsPlugin;
+    import System.Linq.EnumerationExtender;
+
+    import com.greensock.plugins.TransformMatrixPlugin;
+    import com.greensock.plugins.TweenPlugin;
+
+    import fl.lang.*;
+
+    import flash.display.*;
+    import flash.events.*;
+    import flash.net.*;
+    import flash.ui.*;
+
+    import org.aswing.*;
+
+    import src.Comm.*;
+    import src.Map.*;
+    import src.Objects.Factories.*;
+    import src.UI.Dialog.*;
+    import src.UI.LookAndFeel.*;
+    import src.UI.TweenPlugins.DynamicPropsPlugin;
     import src.UI.TweenPlugins.TransformAroundCenterPlugin;
     import src.UI.TweenPlugins.TransformAroundPointPlugin;
-	import src.Util.*;
-	import System.Linq.EnumerationExtender;
+    import src.Util.*;
 
-	CONFIG::debug {
-		import com.sociodox.theminer.TheMiner;
-	}
+    CONFIG::debug {
+        import com.sociodox.theminer.TheMiner;
+    }
 
 	public class Main extends MovieClip
 	{
@@ -58,7 +61,7 @@
             
             stage.showDefaultContextMenu = false;                       
 			
-			CONFIG::debug {                
+			CONFIG::debug {
 				stage.addChild(new TheMiner());
 			}			
 			
@@ -321,4 +324,3 @@
 		}
 	}
 }
-

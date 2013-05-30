@@ -25,6 +25,9 @@
     import src.UI.TweenPlugins.TransformAroundCenterPlugin;
     import src.UI.TweenPlugins.TransformAroundPointPlugin;
     import src.Util.*;
+	CONFIG::debug {
+		import com.sociodox.theminer.TheMiner;
+	}
 
     public class Main extends MovieClip
 	{
@@ -59,7 +62,7 @@
             
             stage.showDefaultContextMenu = false;
 
-            if (Capabilities.isDebugger) {
+			CONFIG::debug {
 			    stage.addChild(new TheMiner());
             }
 			
@@ -304,4 +307,3 @@
 		}
 	}
 }
-

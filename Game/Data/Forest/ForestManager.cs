@@ -116,6 +116,13 @@ namespace Game.Data.Forest
 
                         world.Regions.LockRegion(x, y);
 
+                        // check if near any other objects
+                        if (world.GetObjects(x, y).Exists(obj => !(obj is ITroopObject)) || world.GetObjectsWithin(x, y, 1).Exists(obj => !(obj is ITroopObject)))
+                        {
+                            world.Regions.UnlockRegion(x, y);
+                            continue;
+                        }
+
                         break;
                     }
                 }

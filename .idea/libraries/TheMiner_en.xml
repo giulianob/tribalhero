@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="TheMiner_en" type="flex">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/swc/theminer/TheMiner_en.swc!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

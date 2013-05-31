@@ -24,6 +24,9 @@
 	import src.UI.LookAndFeel.*;
 	import src.UI.Tooltips.*;
 	import src.Util.*;
+	import System.Collection.Generic.IEqualityComparer;
+	import System.Collection.Generic.IGrouping;
+	import System.Linq.Enumerable;
 	
 	public class TribeProfileDialog extends GameJPanel
 	{
@@ -332,16 +335,16 @@
 		}
 		
 		private function createIncomingPanelItem(incoming: *): JPanel {
-			var pnlContainer: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0));
-			
+			var pnlContainer: JPanel = new JPanel(new BorderLayout());
 			var pnlHeader: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));
 			
-			pnlHeader.append(new RichLabel(StringHelper.localize("TRIBE_INCOMING_ATK", RichLabel.getHtmlForLocation(incoming.target), RichLabel.getHtmlForLocation(incoming.source)), 2, 50));
-						
+			pnlHeader.append(new RichLabel(RichLabel.getHtmlForLocation(incoming.source), 1));			
+			pnlHeader.setConstraints("Center");
+			
 			var lblCountdown: CountDownLabel = new CountDownLabel(incoming.endTime, StringHelper.localize("STR_BATTLE_IN_PROGRESS"));
+			lblCountdown.setConstraints("East");
 			
 			pnlContainer.appendAll(pnlHeader, lblCountdown);
-			
 			return pnlContainer;
 		}
 		
@@ -460,13 +463,64 @@
 			return scrollMembers;
 		}
 		
+		private function createIncomingSection(grouping: IGrouping):* {
+			var pnlHeader: JPanel = new JPanel(new BorderLayout());
+			var pnlCounter: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS,5));
+			var pnlGroup: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+
+			//  Detail panel
+			for each(var item:* in grouping) {
+				pnlGroup.append(createIncomingPanelItem(item));
+			}
+			pnlGroup.setVisible(false);
+
+			//  Section Panel
+			var lblTarget: RichLabel = new RichLabel(RichLabel.getHtmlForLocation(grouping.first().target), 1);
+			lblTarget.setConstraints("Center");
+			
+			var lblAttackers: JLabel = new JLabel(grouping.count().toString(), new AssetIcon(new ICON_SINGLE_SWORD()));
+
+			var lblCountdown: CountDownLabel = new CountDownLabel(grouping.first().endTime, StringHelper.localize("STR_BATTLE_IN_PROGRESS"));
+			lblCountdown.setConstraints("East");
+			
+			var btnExpand: JLabel = new JLabel("", new AssetIcon(new ICON_EXPAND), AsWingConstants.LEFT);
+			btnExpand.useHandCursor = true;
+			btnExpand.addEventListener(MouseEvent.CLICK, function (e: Event): void {				
+				if (pnlGroup.isVisible()) {
+					pnlGroup.setVisible(false);
+					btnExpand.setIcon(new AssetIcon(new ICON_EXPAND));
+					pnlCounter.setVisible(true);
+				}
+				else {
+					pnlGroup.setVisible(true);
+					btnExpand.setIcon(new AssetIcon(new ICON_COLLAPSE));
+					pnlCounter.setVisible(false);
+				}				
+			});			
+			btnExpand.setConstraints("West");
+			
+			pnlCounter.appendAll(lblAttackers, lblCountdown);
+			pnlCounter.setConstraints("East");
+			pnlHeader.appendAll(btnExpand, lblTarget, pnlCounter);
+			
+			return { label: pnlHeader, panel: pnlGroup };
+		}
+		
 		private function createIncomingAttackTab(): Container {
 			var pnlIncomingAttacks: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
-			
+
             profileData.incomingAttacks.sortOn("endTime", Array.NUMERIC);
-            
-			for each (var incoming: * in profileData.incomingAttacks) {
-				pnlIncomingAttacks.append(createIncomingPanelItem(incoming));
+			
+				for each(var grouping: IGrouping in Enumerable.from(profileData.incomingAttacks).groupBy(function(incoming:*):int { 
+				return incoming.target.cityId;
+				} ).orderBy(function(grouping:IGrouping):int {
+					return grouping.min(function(item:*):int {
+						return item.endTime;
+					});
+				})) {
+				var group:* = createIncomingSection(grouping);	
+				
+				pnlIncomingAttacks.appendAll(group.label, group.panel);
 			}
 			
 			var scrollIncomingAttacks: JScrollPane = new JScrollPane(new JViewport(pnlIncomingAttacks, true), JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
@@ -678,5 +732,5 @@
 			messageBoard.showRefreshButton();
 		}
 	}
-	
+		
 }

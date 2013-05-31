@@ -102,7 +102,7 @@ namespace Game.Data.Forest
                         }
 
                         // check if tile is safe
-                        List<ushort> tiles = world.Regions.GetTilesWithin(x, y, 6);
+                        List<ushort> tiles = world.Regions.GetTilesWithin(x, y, 7);
                         if (objectTypeFactory.HasTileType("CityStartTile", tiles))
                         {
                             continue;

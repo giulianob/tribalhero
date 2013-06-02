@@ -1,34 +1,37 @@
 ﻿package src.UI.Dialog 
 {
-	import fl.lang.*;
-	import flash.events.*;
-	import flash.utils.*;
-	import mx.utils.*;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.event.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import org.aswing.table.*;
-	import src.*;
-	import src.Objects.*;
-	import src.Objects.Effects.*;
-	import src.Objects.Process.*;
-	import src.Objects.Stronghold.*;
-	import src.UI.*;
-	import src.UI.Components.*;
-	import src.UI.Components.BattleReport.*;
-	import src.UI.Components.TableCells.*;
-	import src.UI.Components.Tribe.*;
-	import src.UI.LookAndFeel.*;
-	import src.UI.Tooltips.*;
-	import src.Util.*;
-	import System.Collection.Generic.IEqualityComparer;
-	import System.Collection.Generic.IGrouping;
-	import System.Linq.Enumerable;
-	
-	public class TribeProfileDialog extends GameJPanel
+import System.Collection.Generic.IGrouping;
+import System.Linq.Enumerable;
+
+import fl.lang.*;
+
+import flash.events.*;
+import flash.utils.*;
+
+import mx.utils.*;
+
+import org.aswing.*;
+import org.aswing.border.*;
+import org.aswing.event.*;
+import org.aswing.ext.*;
+import org.aswing.geom.*;
+import org.aswing.table.*;
+
+import src.*;
+import src.Objects.*;
+import src.Objects.Effects.*;
+import src.Objects.Process.*;
+import src.Objects.Stronghold.*;
+import src.UI.*;
+import src.UI.Components.*;
+import src.UI.Components.BattleReport.*;
+import src.UI.Components.TableCells.*;
+import src.UI.Components.Tribe.*;
+import src.UI.LookAndFeel.*;
+import src.UI.Tooltips.*;
+import src.Util.*;
+
+public class TribeProfileDialog extends GameJPanel
 	{
 		private var profileData: * ;
 		
@@ -162,7 +165,7 @@
 				grid.append(simpleLabelMaker(StringHelper.localize("STR_NEUTRAL"), StringHelper.localize("STR_NEUTRAL"), new AssetIcon(new ICON_SHIELD())));
 			}			
 			else {
-				var tribeLabel: TribeLabel = new TribeLabel(stronghold.tribeId, stronghold.tribeName)
+				var tribeLabel:TribeLabel = new TribeLabel(stronghold.tribeId, stronghold.tribeName);
 				tribeLabel.setIcon(new AssetIcon(new ICON_SHIELD()));
 				grid.append(tribeLabel);
 			}
@@ -300,8 +303,7 @@
 			localReports = new LocalReportList(BattleReportViewer.REPORT_TRIBE_LOCAL, [BattleReportListTable.COLUMN_DATE, BattleReportListTable.COLUMN_LOCATION, BattleReportListTable.COLUMN_ATTACK_TRIBES], null);
 			localReports.setBorder(localReportBorder);
 
-			var pnlRemote: JPanel = new JPanel();			
-			var remoteReportBorder:TitledBorder = new TitledBorder(null, "Foreign Reports", 1, AsWingConstants.LEFT, 0, 10);
+            var remoteReportBorder:TitledBorder = new TitledBorder(null, "Foreign Reports", 1, AsWingConstants.LEFT, 0, 10);
 			remoteReportBorder.setColor(new ASColor(0x0, 1));			
 			remoteReportBorder.setBeveled(true);
 
@@ -485,6 +487,7 @@
 			
 			var btnExpand: JLabel = new JLabel("", new AssetIcon(new ICON_EXPAND), AsWingConstants.LEFT);
 			btnExpand.useHandCursor = true;
+            btnExpand.buttonMode = true;
 			btnExpand.addEventListener(MouseEvent.CLICK, function (e: Event): void {				
 				if (pnlGroup.isVisible()) {
 					pnlGroup.setVisible(false);
@@ -650,7 +653,7 @@
 				var txtPlayerName: JTextField = new AutoCompleteTextField(Global.mapComm.General.autoCompletePlayer);
 				pnl.appendAll(new JLabel("Type in the name of the player you want to invite", null, AsWingConstants.LEFT), txtPlayerName);				
 				
-				var invitePlayerName: InfoDialog = InfoDialog.showMessageDialog("Invite a new tribesman", pnl, function(response: * ) : void {
+				InfoDialog.showMessageDialog("Invite a new tribesman", pnl, function(response: * ) : void {
                     if (response != JOptionPane.OK) { return; }
 					if (txtPlayerName.getLength() > 0)
 						Global.mapComm.Tribe.invitePlayer(txtPlayerName.getText());

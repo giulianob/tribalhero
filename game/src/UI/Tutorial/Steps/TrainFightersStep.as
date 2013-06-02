@@ -38,12 +38,13 @@ package src.UI.Tutorial.Steps
 		}
 		
 		private function onTimer(e: Event = null): void {
-			// If user has at least 15 fighters and he is not currently training any then this step is done
+			// If user has at least 15 fighters or sends out an attack against a barb tribe then this step is done
 			var city: City = map.cities.getByIndex(0);
 			var fighterCount: int = city.troops.getIndividualUnitCount(FIGHTER_TYPE);
 			var hasTrainingAction: Boolean = city.currentActions.getActions(Action.UNIT_TRAIN).length > 0;
+			var hasAttackTroops: Boolean = city.currentActions.getActions(Action.BARBARIAN_TRIBE_ATTACK_CHAIN).length > 0;
 			
-			if (fighterCount >= 15 && !hasTrainingAction)
+			if (fighterCount >= 15 || hasAttackTroops)
 			{
 				this.complete();
 				return;

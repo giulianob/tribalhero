@@ -5,6 +5,7 @@
 	import flash.text.*;
 	import flash.utils.*;
 
+    [SWF(width="976", height="640", backgroundColor="#E8E2BE",frameRate=30)]
 	public dynamic class Preloader extends MovieClip
 	{
 

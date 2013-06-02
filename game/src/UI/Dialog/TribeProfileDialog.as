@@ -1,31 +1,37 @@
 ﻿package src.UI.Dialog 
 {
-	import fl.lang.*;
-	import flash.events.*;
-	import flash.utils.*;
-	import mx.utils.*;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.event.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import org.aswing.table.*;
-	import src.*;
-	import src.Objects.*;
-	import src.Objects.Effects.*;
-	import src.Objects.Process.*;
-	import src.Objects.Stronghold.*;
-	import src.UI.*;
-	import src.UI.Components.*;
-	import src.UI.Components.BattleReport.*;
-	import src.UI.Components.TableCells.*;
-	import src.UI.Components.Tribe.*;
-	import src.UI.LookAndFeel.*;
-	import src.UI.Tooltips.*;
-	import src.Util.*;
-	
-	public class TribeProfileDialog extends GameJPanel
+import System.Collection.Generic.IGrouping;
+import System.Linq.Enumerable;
+
+import fl.lang.*;
+
+import flash.events.*;
+import flash.utils.*;
+
+import mx.utils.*;
+
+import org.aswing.*;
+import org.aswing.border.*;
+import org.aswing.event.*;
+import org.aswing.ext.*;
+import org.aswing.geom.*;
+import org.aswing.table.*;
+
+import src.*;
+import src.Objects.*;
+import src.Objects.Effects.*;
+import src.Objects.Process.*;
+import src.Objects.Stronghold.*;
+import src.UI.*;
+import src.UI.Components.*;
+import src.UI.Components.BattleReport.*;
+import src.UI.Components.TableCells.*;
+import src.UI.Components.Tribe.*;
+import src.UI.LookAndFeel.*;
+import src.UI.Tooltips.*;
+import src.Util.*;
+
+public class TribeProfileDialog extends GameJPanel
 	{
 		private var profileData: * ;
 		
@@ -159,7 +165,7 @@
 				grid.append(simpleLabelMaker(StringHelper.localize("STR_NEUTRAL"), StringHelper.localize("STR_NEUTRAL"), new AssetIcon(new ICON_SHIELD())));
 			}			
 			else {
-				var tribeLabel: TribeLabel = new TribeLabel(stronghold.tribeId, stronghold.tribeName)
+				var tribeLabel:TribeLabel = new TribeLabel(stronghold.tribeId, stronghold.tribeName);
 				tribeLabel.setIcon(new AssetIcon(new ICON_SHIELD()));
 				grid.append(tribeLabel);
 			}
@@ -297,8 +303,7 @@
 			localReports = new LocalReportList(BattleReportViewer.REPORT_TRIBE_LOCAL, [BattleReportListTable.COLUMN_DATE, BattleReportListTable.COLUMN_LOCATION, BattleReportListTable.COLUMN_ATTACK_TRIBES], null);
 			localReports.setBorder(localReportBorder);
 
-			var pnlRemote: JPanel = new JPanel();			
-			var remoteReportBorder:TitledBorder = new TitledBorder(null, "Foreign Reports", 1, AsWingConstants.LEFT, 0, 10);
+            var remoteReportBorder:TitledBorder = new TitledBorder(null, "Foreign Reports", 1, AsWingConstants.LEFT, 0, 10);
 			remoteReportBorder.setColor(new ASColor(0x0, 1));			
 			remoteReportBorder.setBeveled(true);
 
@@ -332,16 +337,16 @@
 		}
 		
 		private function createIncomingPanelItem(incoming: *): JPanel {
-			var pnlContainer: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0));
-			
+			var pnlContainer: JPanel = new JPanel(new BorderLayout());
 			var pnlHeader: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));
 			
-			pnlHeader.append(new RichLabel(StringHelper.localize("TRIBE_INCOMING_ATK", RichLabel.getHtmlForLocation(incoming.target), RichLabel.getHtmlForLocation(incoming.source)), 2, 50));
-						
+			pnlHeader.append(new RichLabel(RichLabel.getHtmlForLocation(incoming.source), 1));			
+			pnlHeader.setConstraints("Center");
+			
 			var lblCountdown: CountDownLabel = new CountDownLabel(incoming.endTime, StringHelper.localize("STR_BATTLE_IN_PROGRESS"));
+			lblCountdown.setConstraints("East");
 			
 			pnlContainer.appendAll(pnlHeader, lblCountdown);
-			
 			return pnlContainer;
 		}
 		
@@ -460,13 +465,65 @@
 			return scrollMembers;
 		}
 		
+		private function createIncomingSection(grouping: IGrouping):* {
+			var pnlHeader: JPanel = new JPanel(new BorderLayout());
+			var pnlCounter: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS,5));
+			var pnlGroup: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+
+			//  Detail panel
+			for each(var item:* in grouping) {
+				pnlGroup.append(createIncomingPanelItem(item));
+			}
+			pnlGroup.setVisible(false);
+
+			//  Section Panel
+			var lblTarget: RichLabel = new RichLabel(RichLabel.getHtmlForLocation(grouping.first().target), 1);
+			lblTarget.setConstraints("Center");
+			
+			var lblAttackers: JLabel = new JLabel(grouping.count().toString(), new AssetIcon(new ICON_SINGLE_SWORD()));
+
+			var lblCountdown: CountDownLabel = new CountDownLabel(grouping.first().endTime, StringHelper.localize("STR_BATTLE_IN_PROGRESS"));
+			lblCountdown.setConstraints("East");
+			
+			var btnExpand: JLabel = new JLabel("", new AssetIcon(new ICON_EXPAND), AsWingConstants.LEFT);
+			btnExpand.useHandCursor = true;
+            btnExpand.buttonMode = true;
+			btnExpand.addEventListener(MouseEvent.CLICK, function (e: Event): void {				
+				if (pnlGroup.isVisible()) {
+					pnlGroup.setVisible(false);
+					btnExpand.setIcon(new AssetIcon(new ICON_EXPAND));
+					pnlCounter.setVisible(true);
+				}
+				else {
+					pnlGroup.setVisible(true);
+					btnExpand.setIcon(new AssetIcon(new ICON_COLLAPSE));
+					pnlCounter.setVisible(false);
+				}				
+			});			
+			btnExpand.setConstraints("West");
+			
+			pnlCounter.appendAll(lblAttackers, lblCountdown);
+			pnlCounter.setConstraints("East");
+			pnlHeader.appendAll(btnExpand, lblTarget, pnlCounter);
+			
+			return { label: pnlHeader, panel: pnlGroup };
+		}
+		
 		private function createIncomingAttackTab(): Container {
 			var pnlIncomingAttacks: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
-			
+
             profileData.incomingAttacks.sortOn("endTime", Array.NUMERIC);
-            
-			for each (var incoming: * in profileData.incomingAttacks) {
-				pnlIncomingAttacks.append(createIncomingPanelItem(incoming));
+			
+				for each(var grouping: IGrouping in Enumerable.from(profileData.incomingAttacks).groupBy(function(incoming:*):int { 
+				return incoming.target.cityId;
+				} ).orderBy(function(grouping:IGrouping):int {
+					return grouping.min(function(item:*):int {
+						return item.endTime;
+					});
+				})) {
+				var group:* = createIncomingSection(grouping);	
+				
+				pnlIncomingAttacks.appendAll(group.label, group.panel);
 			}
 			
 			var scrollIncomingAttacks: JScrollPane = new JScrollPane(new JViewport(pnlIncomingAttacks, true), JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
@@ -596,7 +653,7 @@
 				var txtPlayerName: JTextField = new AutoCompleteTextField(Global.mapComm.General.autoCompletePlayer);
 				pnl.appendAll(new JLabel("Type in the name of the player you want to invite", null, AsWingConstants.LEFT), txtPlayerName);				
 				
-				var invitePlayerName: InfoDialog = InfoDialog.showMessageDialog("Invite a new tribesman", pnl, function(response: * ) : void {
+				InfoDialog.showMessageDialog("Invite a new tribesman", pnl, function(response: * ) : void {
                     if (response != JOptionPane.OK) { return; }
 					if (txtPlayerName.getLength() > 0)
 						Global.mapComm.Tribe.invitePlayer(txtPlayerName.getText());
@@ -678,5 +735,5 @@
 			messageBoard.showRefreshButton();
 		}
 	}
-	
+		
 }

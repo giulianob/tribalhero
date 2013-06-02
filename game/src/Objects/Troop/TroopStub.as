@@ -129,6 +129,20 @@
 			return total;
 		}
 
+        public function addTroop(troop: TroopStub) : void {
+            for each (var formation: Formation in troop)
+            {
+                var local: Formation = this.get(formation.type);
+                if(!local)      {
+                    local = new Formation(formation.type)
+                    this.add(local);
+                }
+                for each (var unit: Unit in formation) {
+                    local.add(new Unit(unit.type,unit.count));
+                }
+            }
+        }
+
 		public function getUpkeep(forceUsingCityTemplate: Boolean = false): int
 		{
 			var total: int = 0;

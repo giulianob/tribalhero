@@ -463,7 +463,11 @@ namespace Game.Database
                             Muted = DateTime.SpecifyKind((DateTime)reader["muted"], DateTimeKind.Utc),
                             Banned = (bool)reader["banned"]
                     };
-                    World.Players.Add(player.PlayerId, player);
+
+                    if (!World.Players.TryAdd(player.PlayerId, player))
+                    {
+                        throw new Exception("Failed to load players");
+                    }
                 }
             }
 

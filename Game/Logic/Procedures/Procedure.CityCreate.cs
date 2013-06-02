@@ -19,9 +19,6 @@ namespace Game.Logic.Procedures
             Error error = Randomizer.MainBuilding(out mainBuilding, strategy, 1);
             if (error != Error.Ok)
             {
-                world.Players.Remove(player.PlayerId);
-                dbPersistance.Rollback();
-                // If this happens I'll be a very happy game developer
                 return error;
             }
 

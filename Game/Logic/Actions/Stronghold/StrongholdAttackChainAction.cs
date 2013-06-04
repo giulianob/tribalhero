@@ -35,6 +35,8 @@ namespace Game.Logic.Actions
 
         private readonly AttackMode mode;
 
+        private readonly bool tempForceAttack;
+
         private readonly Procedure procedure;
 
         private readonly uint targetStrongholdId;
@@ -45,6 +47,7 @@ namespace Game.Logic.Actions
                                            uint troopObjectId,
                                            uint targetStrongholdId,
                                            AttackMode mode,
+                                           bool forceAttack,
                                            IActionFactory actionFactory,
                                            Procedure procedure,
                                            ILocker locker,
@@ -57,6 +60,7 @@ namespace Game.Logic.Actions
             this.targetStrongholdId = targetStrongholdId;
             this.troopObjectId = troopObjectId;
             this.mode = mode;
+            this.tempForceAttack = forceAttack;
             this.actionFactory = actionFactory;
             this.procedure = procedure;
             this.locker = locker;
@@ -146,7 +150,7 @@ namespace Game.Logic.Actions
                 return Error.TooManyTroops;
             }
 
-            var canStrongholdBeAttacked = strongholdBattleProcedure.CanStrongholdBeAttacked(city, targetStronghold);
+            var canStrongholdBeAttacked = strongholdBattleProcedure.CanStrongholdBeAttacked(city, targetStronghold, this.tempForceAttack);
             if (canStrongholdBeAttacked != Error.Ok)
             {
                 return canStrongholdBeAttacked;

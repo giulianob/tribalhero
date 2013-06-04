@@ -46,7 +46,7 @@ package src.UI.Tutorial.Steps
 			var city: City = map.cities.getByIndex(0);			
 			var trainingGround: CityObject = city.getStructureOfType(TRAINING_GROUND_TYPE);
 			var hasSwordTech: Boolean = Enumerable.from(trainingGround.techManager.technologies).any(function (tech: TechnologyStats): Boolean {
-				return tech.prototype.techtype == BASIC_TECH_TYPE;
+				return tech.techPrototype.techtype == BASIC_TECH_TYPE;
 			});					
 						
 			if (hasSwordTech) 

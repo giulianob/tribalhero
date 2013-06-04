@@ -33,7 +33,7 @@
 			{
 				if (!obj.isSelectable()) continue;
 
-				var icon: SmartMovieClip = ObjectFactory.getSprite(obj, true, true) as SmartMovieClip;
+				var icon: SmartMovieClip = ObjectFactory.getSprite(obj) as SmartMovieClip;
 				icon.useHandCursor = true;
 				icon.buttonMode = true;
 				icon.tag = obj;

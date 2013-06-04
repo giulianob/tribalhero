@@ -138,7 +138,7 @@
 				troop.add(newFormation);
 			}
 
-			var tilelists: Array = new Array();
+			var tilelists: Array = [];
 
 			for each(formation in troop)
 			{

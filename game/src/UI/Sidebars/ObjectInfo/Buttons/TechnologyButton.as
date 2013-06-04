@@ -20,17 +20,14 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.UI.Tooltips.TechnologyTooltip;
 
 	public class TechnologyButton extends ActionButton {
-		private var structPrototype: StructurePrototype;
 		private var techPrototype: TechnologyPrototype;
 
 		private var techToolTip: TechnologyTooltip;
 
-		public function TechnologyButton(parentObj: StructureObject, structPrototype: StructurePrototype, techPrototype: TechnologyPrototype )
-		{
+        public function TechnologyButton(parentObj:StructureObject, techPrototype: TechnologyPrototype) {
 			super(parentObj, techPrototype.getName());
 
 			this.techPrototype = techPrototype;
-			this.structPrototype = structPrototype;
 
 			techToolTip = new TechnologyTooltip(parentObj, techPrototype);
 

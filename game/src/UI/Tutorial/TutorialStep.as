@@ -44,7 +44,7 @@ package src.UI.Tutorial
 			
 			hideAllMessages();
 			
-			var messages: Array = new Array();
+			var messages: Array = [];
 			
 			for each (var messageId: String in messageIds) {
 				var text: String = StringHelper.localize("TUTORIAL_" + messageId);

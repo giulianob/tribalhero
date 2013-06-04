@@ -225,7 +225,7 @@
 			packet.writeUByte(1); //just doing 1 username now
 			packet.writeUInt(id);
 
-			var pass: Array = new Array();
+			var pass: Array = [];
 			pass.push(callback);
 			pass.push(custom);
 
@@ -254,7 +254,7 @@
 			packet.writeUByte(1); //just doing 1 username now
 			packet.writeUInt(id);
 
-			var pass: Array = new Array();
+			var pass: Array = [];
 			pass.push(callback);
 			pass.push(custom);
 			pass.push(id);
@@ -285,7 +285,7 @@
 			packet.writeUByte(1); //just doing 1 username now
 			packet.writeUInt(id);
 
-			var pass: Array = new Array();
+			var pass: Array = [];
 			pass.push(callback);
 			pass.push(custom);
 			pass.push(id);
@@ -315,7 +315,7 @@
 			packet.writeUByte(1); //just doing 1 username now
 			packet.writeUInt(id);
 
-			var pass: Array = new Array();
+			var pass: Array = [];
 			pass.push(callback);
 			pass.push(custom);
 

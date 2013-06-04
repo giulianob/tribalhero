@@ -22,7 +22,7 @@
 
 	public class BattleComm {
 
-		private var battles: Array = new Array();
+		private var battles: Array = [];
 		private var mapComm: MapComm;
 		private var session: Session;
 

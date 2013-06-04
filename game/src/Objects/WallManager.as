@@ -322,7 +322,7 @@
         // Controls how many different wall styles we have for the same wall tile (e.g. one w/ vines, one w/o vines)
 		private static const WALL_VARIATIONS: int = 2;
 
-		public var objects: Array = new Array();
+		public var objects: Array = [];
 
 		private var parent: SimpleGameObject;
 		public var radius: int = 0;
@@ -345,7 +345,7 @@
 			for each(var obj: DisplayObject in objects)
 				Global.map.objContainer.removeObject(obj);			
 
-			objects = new Array();
+			objects = [];
 		}
 
 		public function draw(radius: int):void {						

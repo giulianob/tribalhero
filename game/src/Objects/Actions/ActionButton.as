@@ -22,7 +22,7 @@ package src.Objects.Actions {
 		public var parentAction: Action = new Action();
 		public var currentCount: int;
 
-		public function ActionButton(parentObj: SimpleGameObject, buttonText: String, icon: Icon = null)
+		function ActionButton(parentObj: SimpleGameObject, buttonText: String, icon: Icon = null)
 		{
 			super(buttonText, icon);
 

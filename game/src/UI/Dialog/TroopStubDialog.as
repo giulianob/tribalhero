@@ -61,7 +61,7 @@ package src.UI.Dialog {
 			createUI();
 
 			//Buttons
-			var buttons: Array = new Array();
+			var buttons: Array = [];
 
 			btnLocate.addActionListener(onClickLocate);
 			btnRetreat.addActionListener(onClickRetreat);

@@ -1,14 +1,12 @@
 ﻿package src.Objects {
-	
-	import flash.events.Event;
-	import src.Objects.Factories.StructureFactory;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.States.GameObjectState;
-	
-	public class StructureObject extends GameObject {
+
+import src.Objects.Factories.StructureFactory;
+import src.Objects.Prototypes.StructurePrototype;
+import src.Objects.States.GameObjectState;
+
+public class StructureObject extends GameObject {
 		
-		public var properties: Array = new Array();		
+		public var properties: Array = [];
 		public var level: int;
 		public var labor: int;
 		public var hp: int;
@@ -46,20 +44,15 @@
 		
 		public function clearProperties():void
 		{
-			properties = new Array();
+			properties = [];
 		}
 		
 		public function addProperty(value: * ):void
 		{
 			properties.push(value);
-		}	
-		
-		public function ToSprite(): Object
-		{
-			return StructureFactory.getSprite(type, level);
 		}
-		
-		override public function equalsOnMap(obj:SimpleObject):Boolean
+
+        override public function equalsOnMap(obj:SimpleObject):Boolean
 		{
 			if (!(obj is StructureObject))
 				return false;

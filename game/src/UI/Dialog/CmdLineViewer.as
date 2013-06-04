@@ -36,7 +36,7 @@ import src.Util.StringHelper;
 		private var pnlContent:JPanel;
 		private var txtConsole:JTextArea;
 		private var txtCommand:JTextField;
-		private var cmdHistory:Array = new Array();
+		private var cmdHistory:Array = [];
 		private var cmdIndex:int = -1;
 		private var scrollConsole:JScrollPane;
 		private var channelTabs: JPanel;
@@ -363,7 +363,7 @@ import src.Util.StringHelper;
 		public function logSystem(messageId:String, params:Array):void 
 		{
 			if (Global.gameContainer.cmdLine == null) return;
-			var substituteArgs: Array = new Array();
+			var substituteArgs: Array = [];
 			substituteArgs.push('<span class="system">' + StringHelper.localize(messageId) + '</span>');
 			
 			for each (var str: String in params) {

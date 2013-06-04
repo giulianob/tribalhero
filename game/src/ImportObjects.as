@@ -1,14 +1,13 @@
 ﻿package src 
 {
-	import com.greensock.loading.core.DisplayObjectLoader;
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.DisplayObject;
-	import flash.display.Sprite;
-	import flash.utils.getDefinitionByName;
-	import src.Util.Util;
-	
-	/**
+import flash.display.Bitmap;
+import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
+import flash.display.Sprite;
+
+import src.Util.Util;
+
+    /**
 	 * Required to have the compiler include these items in the final build
 	 * @author Giuliano
 	 */
@@ -132,71 +131,33 @@
 			TROOP_DEFENSE_1;
 			TROOP_DEFENSE_2;
 			TROOP_DEFENSE_3;
-			TROOP_DEFENSE_4;						
-			
-			//Structures
-            BARBARIAN_TRIBE_STRUCTURE;
-			ARMORY_STRUCTURE;
-			BARRACK_STRUCTURE;
-			DEFAULT_BUILDING;
-			DEFAULT_BUILDING_ANIM;
-			DEFAULT_STRUCTURE_SIMPLE;
-			DEFAULT_STRUCTURE_COMPLEX;
-			EMBASSY_STRUCTURE;
-			FOUNDRY_STRUCTURE;
-			TRIBAL_CARNIVAL_STRUCTURE;
-			TRIBAL_FAIR_STRUCTURE;
-			TRIBAL_FESTIVAL_STRUCTURE;
-            STRONGHOLD_STRUCTURE;
-			TRIBAL_GATHERING_STRUCTURE;
-			STABLE_STRUCTURE;
-			FARM_STRUCTURE;
-			BLACKSMITH_STRUCTURE
-			MARKET_STRUCTURE;
-			REFINERY_STRUCTURE;
-			STABLE_STRUCTURE;
-			TOWER_STRUCTURE;
-			TOWNCENTER_STRUCTURE;
-			TRADING_POST_STRUCTURE;
-			UNIVERSITY_STRUCTURE;
-			LUMBERMILL_STRUCTURE
-			WORKSHOP_STRUCTURE;			
-			TRAINING_GROUND_STRUCTURE;
-			CANNON_TOWER_STRUCTURE;
-			BLACKSMITH_STRUCTURE;
-			BASEMENT_STRUCTURE;
-			FOREST_CAMP_STRUCTURE;
-			DEAD_FIELD_STRUCTURE;
-			GRAPE_FIELD_STRUCTURE;
-			FIELD_STRUCTURE;
+			TROOP_DEFENSE_4;
 		}
 		
-		public static function getInstance(spriteName: String): DisplayObject
+		public static function getInstance(spriteName: String): Bitmap
 		{
 			try {
 				spriteName = spriteName.replace('-', '_').toUpperCase();				
 				var spriteClass: Class = ImportObjects[spriteName] as Class;
-				var sprite: DisplayObject = (DisplayObject)(new spriteClass());
+				var sprite: Bitmap = (Bitmap)(new spriteClass());
 				(sprite as Bitmap).smoothing = true;
 				sprite.scaleY = 1.001;
 				return sprite;
 			}
 			catch (e: Error) 
-			{				
+			{
+
 			}
 			
 			Util.log("Could not find sprite: " + spriteName);
-			return new Sprite();			
+			return new Bitmap();
 		}
 
         // Tileset
         [Embed(source = "../../graphics/MaskTile.png")]
         public static var MASK_TILE: Class;
 
-        [Embed(source = "../../graphics/Tilemap.png")]
-        public static var TILESET: Class;
-
-		// Achievement Icons
+        // Achievement Icons
 		[Embed(source = "../../graphics/icons/achievements/anvil-gold.png")]		
 		public static var ICON_ACHIEVEMENT_ANVIL_GOLD: Class;
 		
@@ -301,9 +262,105 @@
 		
 		[Embed(source = "../../graphics/icons/achievements/tower-honorary.png")]
 		public static var ICON_ACHIEVEMENT_TOWER_HONORARY: Class;
-		
+
 		[Embed(source = "../../graphics/icons/achievements/wing-man-honorary.png")]
-		public static var ICON_ACHIEVEMENT_WING_MAN_HONORARY: Class;			
+		public static var ICON_ACHIEVEMENT_WING_MAN_HONORARY: Class;
+
+        // Structures
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var BARBARIAN_TRIBE_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var ARMORY_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var FIELD_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var BARRACK_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var DEFAULT_BUILDING: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var DEFAULT_BUILDING_ANIM: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var DEFAULT_STRUCTURE_SIMPLE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var DEFAULT_STRUCTURE_COMPLEX: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var EMBASSY_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var FOUNDRY_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var TRIBAL_CARNIVAL_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var TRIBAL_FAIR_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var TRIBAL_FESTIVAL_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var STRONGHOLD_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var TRIBAL_GATHERING_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var FARM_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var MARKET_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var REFINERY_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var STABLE_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var TOWER_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var TOWNCENTER_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var TRADING_POST_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var UNIVERSITY_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var LUMBERMILL_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var WORKSHOP_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var TRAINING_GROUND_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var CANNON_TOWER_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var BLACKSMITH_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var BASEMENT_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var FOREST_CAMP_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var DEAD_FIELD_STRUCTURE: Class;
+
+        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        public static var GRAPE_FIELD_STRUCTURE: Class;
 	}
-	
 }

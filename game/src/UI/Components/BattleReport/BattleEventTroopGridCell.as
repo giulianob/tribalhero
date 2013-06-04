@@ -24,7 +24,7 @@
 			this.value = data;
 
 			// Get Icon
-			var icon:DisplayObject = ObjectFactory.getSpriteEx(data.type, 1, true, true);
+			var icon:DisplayObject = ObjectFactory.getSpriteEx(data.type, 1, true);
 			var scale:Number = 40 / icon.height;
 			if (scale < 1)
 			{

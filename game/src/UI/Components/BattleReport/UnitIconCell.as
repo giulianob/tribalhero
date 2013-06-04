@@ -22,7 +22,7 @@
 		{
 			// Get Icon
 			var prototype:* = ObjectFactory.getPrototype(data.type, data.level);
-			var icon:DisplayObject = ObjectFactory.getSpriteEx(prototype.type, prototype.level, true);
+			var icon:DisplayObject = ObjectFactory.getSpriteEx(prototype.type, prototype.level);
 			new SimpleTooltip(icon, prototype.getName());
 			var scale:Number = 42 / icon.height;
 			if (scale < 1)

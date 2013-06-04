@@ -43,7 +43,7 @@ package src.UI.Sidebars.ObjectInfo {
 
 		public var gameObject: StructureObject;
 
-		public var buttons: Array = new Array();
+		public var buttons: Array = [];
 		private var t:Timer = new Timer(1000);
 
 		public function ObjectInfoSidebar(obj: StructureObject)
@@ -79,7 +79,7 @@ package src.UI.Sidebars.ObjectInfo {
 
 			clear();
 
-			buttons = new Array();
+			buttons = [];
 
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(gameObject.type, gameObject.level);
 
@@ -151,9 +151,9 @@ package src.UI.Sidebars.ObjectInfo {
 
 			var buttonsCache: Array = buttons.concat();
 			for each(var group: Object in Action.groups) {
-				var groupedButtons: Array = new Array();
+				var groupedButtons: Array = [];
 				for each (var type: * in group.actions) {
-					var tmp: Array = new Array();
+					var tmp: Array = [];
 					for (i = buttonsCache.length - 1; i >= 0; i--) {
 						var button: ActionButton = buttonsCache[i];
 						if (!(button is type)) continue;

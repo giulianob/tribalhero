@@ -15,7 +15,7 @@
 	*/
 	public class TileListDragDropHandler {				
 		
-		private var tilelists: Array = new Array();
+		private var tilelists: Array = [];
 		
 		private var parent: DisplayObject;
 		

@@ -45,7 +45,7 @@
 			streamingPacket = null;
 			headerPacket = null;
 			
-			pending = new Array();
+			pending = [];
 			
 			socket.addEventListener(Event.CLOSE,closeHandler);
 			socket.addEventListener(Event.CONNECT, connectHandler);			

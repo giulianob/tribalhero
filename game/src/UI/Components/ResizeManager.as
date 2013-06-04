@@ -19,7 +19,7 @@ package src.UI.Components
 	{
 		private var dispatcher: EventDispatcher;
 		
-		private var objects: Array = new Array();
+		private var objects: Array = [];
 
 		private var stage: Stage;
 		private var lastSize: IntDimension;
@@ -111,7 +111,7 @@ package src.UI.Components
 		}
 
 		public function removeAllObjects() : void {
-			objects = new Array();
+			objects = [];
 		}
 
 		public function forceMove() : void {

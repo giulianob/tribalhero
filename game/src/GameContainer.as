@@ -58,7 +58,7 @@
 		public var message: MessageContainer = new MessageContainer();
 
 		//Holds all currently open aswing frames
-		public var frames: Array = new Array();
+		public var frames: Array = [];
 
 		public var selectedCity: City;
 		public var camera: Camera = new Camera(0, 0);

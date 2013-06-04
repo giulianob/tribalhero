@@ -9,7 +9,7 @@
 
 	public class TechnologyManager {
 
-		public var technologies: Array = new Array();
+		public var technologies: Array = [];
 		public var location: int;
 		public var parent: TechnologyManager;
 
@@ -32,7 +32,7 @@
 			var dupe: Boolean = false;
 			for each(var currTech: TechnologyStats in technologies)
 			{
-				if (currTech.ownerId == tech.ownerId && currTech.ownerLocation == tech.ownerLocation && currTech.prototype.techtype == tech.prototype.techtype)
+				if (currTech.ownerId == tech.ownerId && currTech.ownerLocation == tech.ownerLocation && currTech.techPrototype.techtype == tech.techPrototype.techtype)
 				{
 					dupe = true;
 					break;
@@ -53,7 +53,7 @@
 				if (currTech.ownerLocation != EffectPrototype.LOCATION_OBJECT)
 				continue;
 
-				if (currTech.prototype.techtype == techtype)
+				if (currTech.techPrototype.techtype == techtype)
 				return currTech;
 			}
 
@@ -65,7 +65,7 @@
 			for (var i: int = 0; i < technologies.length; i++)
 			{
 				var currentTechStats: TechnologyStats = technologies[i];
-				if (currentTechStats.prototype.techtype == tech.prototype.techtype && currentTechStats.ownerId == tech.ownerId && currentTechStats.ownerLocation == tech.ownerLocation)
+				if (currentTechStats.techPrototype.techtype == tech.techPrototype.techtype && currentTechStats.ownerId == tech.ownerId && currentTechStats.ownerLocation == tech.ownerLocation)
 				{
 					technologies.splice(i, 1);
 					break;
@@ -81,7 +81,7 @@
 			for each (var tech: TechnologyStats in technologies)
 				parent.remove(tech);
 			
-			technologies = new Array();
+			technologies = [];
 		}
 
 		public function update(technologyStats: TechnologyStats):void
@@ -95,7 +95,7 @@
 
 		public function getAllEffects(inheritance: int): Array
 		{
-			var ret: Array = new Array();
+			var ret: Array = [];
 
 			var i: int;
 			var f: Array;
@@ -124,7 +124,7 @@
 
 		public function getEffects(effectCode: int, inheritance: int): Array
 		{
-			var ret: Array = new Array();
+			var ret: Array = [];
 
 			var i: int;
 			var f: Array;

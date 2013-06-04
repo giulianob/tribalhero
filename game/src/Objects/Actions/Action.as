@@ -106,8 +106,8 @@ package src.Objects.Actions {
 		
 		public function getMissingRequirements(parentObj: SimpleGameObject, effects: Array): Array
 		{
-			if (!(parentObj is GameObject)) return new Array();
-			if (effectReq == null) return new Array();
+			if (!(parentObj is GameObject)) return [];
+			if (effectReq == null) return [];
 			
 			return effectReq.validate(parentObj as GameObject, effects);
 		}

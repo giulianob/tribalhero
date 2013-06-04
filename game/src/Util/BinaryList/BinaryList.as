@@ -13,7 +13,7 @@
 		private var sortFunc: Function;
 		private var compareFunc: Function;
 
-		private var list: Array = new Array();
+		private var list: Array = [];
 
 		public function BinaryList(sortFunc: Function, compareFunc: Function) {
 			this.dispatcher = new EventDispatcher(this);
@@ -32,7 +32,7 @@
 
 		public function clear():void
 		{
-			list = new Array();
+			list = [];
 			dispatcher.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED));
 		}
 
@@ -127,7 +127,7 @@
 		{
 			var idxs: Array = Util.binarySearchRange(list, compareFunc, val);
 
-			var objs: Array = new Array();
+			var objs: Array = [];
 
 			for each(var idx: int in idxs)
 				objs.push(list[idx]);

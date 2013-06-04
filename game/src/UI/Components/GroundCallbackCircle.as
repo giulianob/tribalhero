@@ -49,7 +49,7 @@ public class GroundCallbackCircle extends SimpleObject
 			dispose();
 
 			circle = new SmartMovieClip();
-			tiles = new Array();
+			tiles = [];
 			MapUtil.foreach_object(size, size * 2 + 1, size, this.addTileCallback, true, null);
 			addChild(circle);
 		}

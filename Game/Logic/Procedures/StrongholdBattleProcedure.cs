@@ -91,7 +91,7 @@ namespace Game.Logic.Procedures
             battleId = targetStronghold.MainBattle.BattleId;
         }
 
-        public virtual Error CanStrongholdBeAttacked(ICity city, IStronghold stronghold)
+        public virtual Error CanStrongholdBeAttacked(ICity city, IStronghold stronghold, bool forceAttack)
         {
             if (stronghold.StrongholdState == StrongholdState.Inactive)
             {
@@ -103,14 +103,17 @@ namespace Game.Logic.Procedures
                 return Error.TribesmanNotPartOfTribe;
             }
 
-            if (city.Owner.Tribesman.Tribe == stronghold.Tribe)
+            if (!forceAttack)
             {
-                return Error.StrongholdCantAttackSelf;
-            }
+                if (city.Owner.Tribesman.Tribe == stronghold.Tribe)
+                {
+                    return Error.StrongholdCantAttackSelf;
+                }
 
-            if (stronghold.GateOpenTo != null && stronghold.GateOpenTo != city.Owner.Tribesman.Tribe)
-            {
-                return Error.StrongholdGateNotOpenToTribe;
+                if (stronghold.GateOpenTo != null && stronghold.GateOpenTo != city.Owner.Tribesman.Tribe)
+                {
+                    return Error.StrongholdGateNotOpenToTribe;
+                }
             }
 
             return Error.Ok;

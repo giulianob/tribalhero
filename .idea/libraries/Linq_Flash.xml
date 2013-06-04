@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Linq_Flash" type="flex">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/swc/actionlinq/Linq_Flash.swc!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

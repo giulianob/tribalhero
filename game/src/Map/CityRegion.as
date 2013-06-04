@@ -18,7 +18,7 @@
 		public var id: int;
 		private var globalX: int;
 		private var globalY: int;
-		private var objects: Array = new Array();
+		private var objects: Array = [];
 		private var filter: CityRegionFilter;
 
 		public function CityRegion(id: int, filter: CityRegionFilter)
@@ -51,7 +51,7 @@
 			for each(var obj: * in objects)			
 				Global.gameContainer.miniMap.objContainer.removeObject(obj);
 
-			objects = new Array();
+			objects = [];
 		}
 		
 		public function addRegionObject(type: int, groupId: int, objectId: int, objX: int, objY: int, extraProps: *) : CityRegionObject {		

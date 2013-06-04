@@ -134,7 +134,7 @@ package src.Util {
 		{
 			var idx: int = binarySearchAlg(array, compare, value, 0, array.length - 1);
 
-			var ret: Array = new Array();
+			var ret: Array = [];
 
 			if (idx <= -1) return ret;
 
@@ -280,7 +280,7 @@ package src.Util {
 		}
 
 		public static function implode(glue: String, arr: Array) : String {
-			var s: String = new String();
+			var s: String = '';
 			for (var i: int = 0; i < arr.length; i++) {
 				s += arr[i];
 				if ( i != arr.length - 1 ) s += glue;
@@ -309,14 +309,22 @@ package src.Util {
             try {                
                 var escapedArgs: Array = [ jsVarEncode(event) ];
                 for each (var param: String in rest) {
-                    escapedArgs.push(jsVarEncode(rest));
+                    escapedArgs.push(jsVarEncode(param));
                 }                
                 ExternalInterface.call(StringUtil.substitute("$(window).trigger({0})", escapedArgs.join(",")));
             }
             catch (e: Error) {                
             }
         }
-	}
+
+        public static function multitileCenter(obj:DisplayObjectContainer):void {
+            for (var i: int = 0; i < obj.numChildren; i++)
+            {
+                var item: DisplayObject = obj.getChildAt(i);
+                item.y = int(item.y - item.height/2.0);
+            }
+        }
+    }
 
 }
 

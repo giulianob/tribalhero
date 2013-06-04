@@ -70,7 +70,7 @@ package src.Map {
 
 		public function nearObjectsByRadius(mindist: int, maxdist: int, x: int, y: int, type: int = -1): Array
 		{
-			var ret: Array = new Array();
+			var ret: Array = [];
 
 			var pos: Point = MapUtil.getMapCoord(x, y);
 
@@ -104,7 +104,7 @@ package src.Map {
 		
 		public function hasStructureAt(mapPos: Point): Boolean
 		{
-			var ret: Array = new Array();
+			var ret: Array = [];
 
 			for each(var obj: CityObject in objects)
 			{
@@ -122,7 +122,7 @@ package src.Map {
 
 		public function getStructureAt(mapPos: Point): CityObject
 		{
-			var ret: Array = new Array();
+			var ret: Array = [];
 
 			for each(var obj: CityObject in objects)
 			{
@@ -140,7 +140,7 @@ package src.Map {
 
 		public function nearObjectsByRadius2(mindist: int, maxdist: int, mapPos: Point, classType: int): Array
 		{
-			var ret: Array = new Array();
+			var ret: Array = [];
 
 			for each(var obj: CityObject in objects)
 			{
@@ -158,7 +158,7 @@ package src.Map {
 
 		public function nearObjects(mindist: int, maxdist: int, x: int, y: int, type: int = -1): Array
 		{
-			var ret: Array = new Array();
+			var ret: Array = [];
 
 			var pos: Point = MapUtil.getMapCoord(x, y);
 

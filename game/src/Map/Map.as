@@ -75,7 +75,7 @@
 			addChild(objContainer);
 			addChild(overlayerSpace);
 
-			pendingRegions = new Array();
+			pendingRegions = [];
 			regions = new RegionList();
 
 			usernames = new UsernameManager();
@@ -174,8 +174,8 @@
 			if (!force && !Math.abs(lastParseRegionLoc.x - camera.x) > 10 && !Math.abs(lastParseRegionLoc.y - camera.y) > 10) return;
 
 			//calculate which regions we need to render
-			var requiredRegions: Array = new Array();
-			var outdatedRegions: Array = new Array();
+			var requiredRegions: Array = [];
+			var outdatedRegions: Array = [];
 
 			// Get list of required regions
 			const offset:int = 200;

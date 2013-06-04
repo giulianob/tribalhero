@@ -82,7 +82,7 @@ package src.UI.Sidebars.BarbarianTribeInfo
 			
 			pnlGroups.append(new SendAttackButton(tribe,new Location(Location.BARBARIAN_TRIBE, tribe.objectId)));
 
-			var buttons: Array = new Array();
+			var buttons: Array = [];
 
 			//Special Case Buttons
 			switch(tribe.state.getStateType())

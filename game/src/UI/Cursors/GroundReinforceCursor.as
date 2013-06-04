@@ -24,7 +24,7 @@
 
 		private var cursor: GroundCircle;
 
-		private var tiles: Array = new Array();
+		private var tiles: Array = [];
 
 		private var troop: TroopStub;
 		private var city: City;

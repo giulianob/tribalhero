@@ -15,7 +15,7 @@
 		}
 
 		public function getByObject(objectId: int) : Array {
-			var ret: Array = new Array();
+			var ret: Array = [];
 
 			for each (var reference: CurrentActionReference in this) {
 				if (reference.objectId == objectId)

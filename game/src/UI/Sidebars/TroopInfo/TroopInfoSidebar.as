@@ -64,7 +64,7 @@
 			
 			var cityLabel: CityLabel = addStatRow("City", new CityLabel(troopObj.cityId));
 
-			var buttons: Array = new Array();
+			var buttons: Array = [];
 
 			var city: City = Global.map.cities.get(troopObj.cityId);
 
@@ -85,9 +85,9 @@
 
 			//Add buttons to UI
 			for each(var group: Object in Action.groups) {
-				var groupedButtons: Array = new Array();
+				var groupedButtons: Array = [];
 				for each (var type: * in group.actions) {
-					var tmp: Array = new Array();
+					var tmp: Array = [];
 					for (var i: int = buttons.length - 1; i >= 0; i--) {
 						var button: ActionButton = buttons[i];
 						if (!(button is type)) continue;

@@ -90,7 +90,7 @@
 				var cityObj: CityObject = city.objects.get(currentAction.workerId);
 
 				var prototype: * = ObjectFactory.getPrototype(cityObj.type, cityObj.level);
-				var icon: DisplayObjectContainer = ObjectFactory.getSpriteEx(cityObj.type, cityObj.level, true);
+				var icon: DisplayObjectContainer = ObjectFactory.getSpriteEx(cityObj.type, cityObj.level);
 				if (prototype is StructurePrototype) icon = ObjectFactory.makeSpriteSmall(icon);
 
 				(getModel() as VectorListModel).append( { 'cityObj': cityObj, 'source': icon, 'cityId': city.id , 'prototype': prototype, 'currentAction': currentAction } );

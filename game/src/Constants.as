@@ -1,12 +1,10 @@
 package src
 {
-import flash.display.Bitmap;
-import flash.display.BitmapData;
-import flash.display.Sprite;
-
+import src.Graphics.Tileset;
 import src.Map.CityRegionLegend;
-	import src.Objects.Tribe;
-	public class Constants
+import src.Objects.Tribe;
+
+public class Constants
 	{
 		public static var version: int;
 		public static var revision: int;
@@ -88,7 +86,7 @@ import src.Map.CityRegionLegend;
 		public static var screenW:int = origScreenW;
 		public static var screenH:int = origScreenH;
 		
-		public static const tileset: Bitmap = new ImportObjects.TILESET();
+		public static const tileset: Tileset = new Tileset();
 		
 		public static const cityStartTile: int = 16;
 

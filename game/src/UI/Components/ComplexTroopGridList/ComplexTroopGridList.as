@@ -92,7 +92,7 @@
 		{
 			//If we ever have this do drag and drop or modify the troop in anyway, it needs to copy it first just like in the SimpleTroopGridlist
 
-			var tilelists: Array = new Array();
+			var tilelists: Array = [];
 
 			for each(var formation: Formation in troop)
 			{

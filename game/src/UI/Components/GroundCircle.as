@@ -53,7 +53,7 @@ public class GroundCircle extends SimpleObject
 			dispose();
 
 			circle = new SmartMovieClip();
-			tiles = new Array();
+			tiles = [];
 
 			MapUtil.radius_foreach_object(Math.ceil(size / 2.0), Math.ceil(size / 2.0) * 2 + 1, size, this.addTileCallback, true, null);
 

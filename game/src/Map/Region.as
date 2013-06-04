@@ -1,16 +1,17 @@
 ﻿package src.Map
 {
-	import flash.display.*;
-	import flash.geom.*;
-	import flash.text.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Factories.*;
-	import src.Util.*;
-	import src.Util.BinaryList.*;
+import flash.display.*;
+import flash.geom.*;
+import flash.text.*;
 
-	public class Region extends Sprite
+import src.*;
+import src.Graphics.Tileset;
+import src.Objects.*;
+import src.Objects.Factories.*;
+import src.Util.*;
+import src.Util.BinaryList.*;
+
+public class Region extends Sprite
 	{
 		public var id: int;
 		private var tiles: Array;
@@ -30,7 +31,7 @@
 			this.map = map;			
 			this.tiles = data;
 			
-			bitmapParts = new Array();			
+			bitmapParts = [];
 
 			globalX = (id % Constants.mapRegionW) * Constants.regionW;
 			globalY = int(id / Constants.mapRegionW) * (Constants.regionH / 2);
@@ -57,7 +58,7 @@
 				bitmapParts[i] = null;
 			}
 
-			bitmapParts = new Array();
+			bitmapParts = [];
 		}
 
 		public function disposeData():void
@@ -92,7 +93,10 @@
 					if (Constants.debug>=3)
 						Util.log("Creating region part: " + (a * Constants.regionBitmapTileW) + "," + (b * Constants.regionBitmapTileH));
 
-					createRegionPart(Constants.tileset.bitmapData, a * Constants.regionBitmapTileW, b * Constants.regionBitmapTileH);
+                    var icon: * = new ImportObjects.ICON_ACHIEVEMENT_ANVIL_BRONZE();
+                    var tileset: * = new Tileset();
+
+					createRegionPart(Constants.tileset, a * Constants.regionBitmapTileW, b * Constants.regionBitmapTileH);
 					break;
 				}
 				break;
@@ -121,7 +125,7 @@
 			createRegion();
 		}
 
-		public function createRegionPart(tileset: BitmapData, x: int, y:int):void
+		public function createRegionPart(tileset:Tileset, x:int, y:int):void
 		{
 			var bg:Bitmap = new Bitmap(new BitmapData(Constants.regionBitmapW + Constants.tileW / 2, Constants.regionBitmapH / 2 + Constants.tileH / 2, true, 0));
 			bg.smoothing = false;
@@ -159,7 +163,7 @@
 					var drawTo:Point = new Point(xcoord + tileWDiv2, (ycoord + tileHDiv2) - (Constants.tileH));
 					var srcRect:Rectangle = new Rectangle(tilesetsrcX, tilesetsrcY, Constants.tileW, tileHTimes2);
 
-					bg.bitmapData.copyPixels(tileset, srcRect, drawTo, null, null, true);
+					bg.bitmapData.copyPixels(tileset.bitmapData, srcRect, drawTo, null, null, true);
 					
 					if (Constants.debug >= 2)
 					{
@@ -228,7 +232,7 @@
 
 		public function getObjectsAt(x: int, y: int, objClass: * = null): Array
 		{
-			var objs: Array = new Array();
+			var objs: Array = [];
 			for each(var gameObj: SimpleGameObject in objects)
 			{
 				if (objClass != null) {

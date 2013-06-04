@@ -33,7 +33,7 @@ package src.Objects.Prototypes {
 		public var maxlabor: int;
 		public var weapon: String;
 
-		public var layouts: Array = new Array();
+		public var layouts: Array = [];
 
 		public function StructurePrototype() {
 

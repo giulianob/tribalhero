@@ -71,7 +71,7 @@
 				pnlGroups.append(new SendAttackButton(stronghold,new Location(Location.STRONGHOLD, stronghold.id)));
 			}
 
-			var buttons: Array = new Array();
+			var buttons: Array = [];
 
 			//Special Case Buttons
 			switch(stronghold.state.getStateType())

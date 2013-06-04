@@ -24,7 +24,7 @@
 		private var chkHideNewUnits:JCheckBox;
 
 		private var city: City;
-		private var tilelists: Array = new Array();
+		private var tilelists: Array = [];
 
 		public function UnitMoveDialog(city: City, onAccept: Function)
 		{
@@ -38,7 +38,7 @@
 
 			chkHideNewUnits.setSelected(city.hideNewUnits);
 
-			tilelists = new Array();
+			tilelists = [];
 
 			var troop: TroopStub = city.troops.getDefaultTroop();
 

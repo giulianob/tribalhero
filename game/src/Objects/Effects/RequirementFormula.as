@@ -83,7 +83,7 @@
 
 		public static function getMessages(parentObj: GameObject, effectReqs: Array): Array
 		{
-			var ret: Array = new Array();
+			var ret: Array = [];
 
 			for each (var effectReq: EffectReqPrototype in effectReqs)
 			ret.push(getMessage(parentObj, effectReq));
@@ -408,7 +408,7 @@
 				if (obj.objectId == parentObj.objectId) continue;
 
 				for each (var tech: TechnologyStats in obj.techManager.technologies) {
-					if (tech.prototype.level > 0 && tech.prototype.techtype == type)
+					if (tech.techPrototype.level > 0 && tech.techPrototype.techtype == type)
 					return false;
 				}
 			}

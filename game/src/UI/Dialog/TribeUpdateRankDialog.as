@@ -114,7 +114,7 @@ package src.UI.Dialog{
 		}
 		
 		private function update(): void {
-			var rankList: Array = new Array();
+			var rankList: Array = [];
 			for ( var i:int = 0; i < Constants.tribe.ranks.length; ++i) {
 				rankList.push((i + 1) + " - " + Constants.tribe.ranks[i].name);
 			}

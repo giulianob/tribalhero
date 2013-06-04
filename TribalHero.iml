@@ -2,7 +2,7 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="TribalHero">
     <configurations>
-      <configuration name="TribalHero" pure-as="true" main-class="src.Preloader" output-file="TribalHero.swf" output-folder="$MODULE_DIR$/bin">
+      <configuration name="TribalHero" pure-as="true" main-class="src.Preloader" output-file="Game.swf" output-folder="$MODULE_DIR$/bin">
         <dependencies target-player="11.1">
           <entries>
             <entry library-name="TheMiner_en" library-level="project">

@@ -500,7 +500,8 @@ namespace Game.Comm.ProcessorCommands
                 var aa = actionFactory.CreateStrongholdAttackChainAction(cityId,
                                                                          troopObject.ObjectId,
                                                                          targetStrongholdId,
-                                                                         mode);
+                                                                         mode,
+                                                                         false);
                 Error ret = city.Worker.DoPassive(city, aa, true);
                 if (ret != 0)
                 {

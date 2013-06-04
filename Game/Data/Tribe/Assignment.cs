@@ -418,7 +418,8 @@ namespace Game.Data.Tribe
                     action = actionFactory.CreateStrongholdAttackChainAction(stub.City.Id,
                                                                              troopObject.ObjectId,
                                                                              Target.LocationId,
-                                                                             AttackMode);
+                                                                             AttackMode,
+                                                                             true);
                 }
                 else
                 {

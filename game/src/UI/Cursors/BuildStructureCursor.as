@@ -1,18 +1,19 @@
 ﻿
 package src.UI.Cursors {
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.UI.Components.*;
-	import src.UI.Sidebars.CursorCancel.*;
-	import src.Util.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
 
-	public class BuildStructureCursor extends MovieClip implements IDisposable
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Factories.*;
+    import src.Objects.Prototypes.*;
+    import src.UI.Components.*;
+    import src.UI.Sidebars.CursorCancel.*;
+    import src.Util.*;
+
+    public class BuildStructureCursor extends MovieClip implements IDisposable
 	{		
 		private var objX: int;
 		private var objY: int;
@@ -45,7 +46,7 @@ package src.UI.Cursors {
 
 			city = Global.map.cities.get(parentObj.groupId);
 
-			src.Global.gameContainer.setOverlaySprite(this);
+			Global.gameContainer.setOverlaySprite(this);
 			Global.map.selectObject(null);
 
 			structPrototype = StructureFactory.getPrototype(type, level);
@@ -71,7 +72,7 @@ package src.UI.Cursors {
 			Global.map.objContainer.addObject(buildableArea, ObjectContainer.LOWER);
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
-			src.Global.gameContainer.setSidebar(sidebar);
+			Global.gameContainer.setSidebar(sidebar);
 
 			addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);
 			addEventListener(MouseEvent.CLICK, onMouseStop, true);
@@ -80,17 +81,17 @@ package src.UI.Cursors {
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 
 			if (!hasRoadNearby) {
-				src.Global.gameContainer.message.showMessage("This building must be connected to a road and there are no roads available. Build roads first by using your Town Center then try again.");
+				Global.gameContainer.message.showMessage("This building must be connected to a road and there are no roads available. Build roads first by using your Town Center then try again.");
 			} else if (!hasBuildableArea) {
-				src.Global.gameContainer.message.showMessage("There are no spaces available to build on.");
+				Global.gameContainer.message.showMessage("There are no spaces available to build on.");
 			} else {
-				src.Global.gameContainer.message.showMessage("Double click on a green square to build a " + structPrototype.getName().toLowerCase() + ".");
+				Global.gameContainer.message.showMessage("Double click on a green square to build a " + structPrototype.getName().toLowerCase() + ".");
 			}
 		}
 
 		public function dispose():void
 		{
-			src.Global.gameContainer.message.hide();
+			Global.gameContainer.message.hide();
 
 			if (cursor != null)
 			{
@@ -124,8 +125,8 @@ package src.UI.Cursors {
 			var pos: Point = MapUtil.getMapCoord(objX, objY);
 			Global.mapComm.Objects.buildStructure(parentObj.groupId, parentObj.objectId, type, level, pos.x, pos.y);
 
-			src.Global.gameContainer.setOverlaySprite(null);
-			src.Global.gameContainer.setSidebar(null);
+			Global.gameContainer.setOverlaySprite(null);
+			Global.gameContainer.setSidebar(null);
 			Global.map.selectObject(parentObj, false);
 		}
 
@@ -139,7 +140,7 @@ package src.UI.Cursors {
 			if (event.buttonDown) return;
 
 			var mousePos: Point = MapUtil.getPointWithZoomFactor(Math.max(0, event.stageX), Math.max(0, event.stageY));
-			var pos: Point = MapUtil.getActualCoord(src.Global.gameContainer.camera.x + mousePos.x, src.Global.gameContainer.camera.y + mousePos.y);
+			var pos: Point = MapUtil.getActualCoord(Global.gameContainer.camera.x + mousePos.x, Global.gameContainer.camera.y + mousePos.y);
 
 			if (pos.x != objX || pos.y != objY)
 			{
@@ -263,7 +264,7 @@ package src.UI.Cursors {
 			// Set global variable to identify if we have buildable road. This is used for the on screen message
 			if (hasRoad) this.hasRoadNearby = true;
 
-			if (!hasRoad) return false
+			if (!hasRoad) return false;
 
 			//Set other global variable to identify we have a buildable spot.
 			hasBuildableArea = true;
@@ -297,7 +298,6 @@ package src.UI.Cursors {
 				hideCursors();
 				return false;
 			}
-			
 			
 			showCursors();
 			return true;

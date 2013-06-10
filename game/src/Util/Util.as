@@ -316,14 +316,6 @@ package src.Util {
             catch (e: Error) {                
             }
         }
-
-        public static function multitileCenter(obj:DisplayObjectContainer):void {
-            for (var i: int = 0; i < obj.numChildren; i++)
-            {
-                var item: DisplayObject = obj.getChildAt(i);
-                item.y = int(item.y - item.height/2.0);
-            }
-        }
     }
 
 }

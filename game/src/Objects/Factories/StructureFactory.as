@@ -1,19 +1,19 @@
 ﻿package src.Objects.Factories {
 
-import flash.display.*;
+    import flash.display.*;
 
-import src.Global;
-import src.ImportObjects;
-import src.Map.*;
-import src.Objects.*;
-import src.Objects.Actions.TechUpgradeAction;
-import src.Objects.Prototypes.*;
-import src.Objects.States.GameObjectState;
-import src.UI.Sidebars.ObjectInfo.Buttons.TechnologyButton;
-import src.Util.BinaryList.*;
-import src.Util.Util;
+    import src.Global;
+    import src.Assets;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Actions.TechUpgradeAction;
+    import src.Objects.Prototypes.*;
+    import src.Objects.States.GameObjectState;
+    import src.UI.Sidebars.ObjectInfo.Buttons.TechnologyButton;
+    import src.Util.BinaryList.*;
+    import src.Util.Util;
 
-public class StructureFactory {
+    public class StructureFactory {
 
 		private static var map: Map;
 		private static var structurePrototypes: BinaryList;
@@ -45,6 +45,7 @@ public class StructureFactory {
 				strctObj.buildTime = structNode.@time;
 				strctObj.weapon = structNode.@weapon;
 				strctObj.workerid = structNode.@workerid;
+                strctObj.size = structNode.@size;
 
 				for each (var layoutNode: XML in structNode.Layout.*)
 				{
@@ -86,7 +87,7 @@ public class StructureFactory {
 			return structPrototype;
 		}
 
-		public static function getSprite(type: int, level: int): DisplayObjectContainer
+		public static function getSprite(type: int, level: int, withPosition: String = ""): DisplayObjectContainer
 		{
 			var strPrototype: StructurePrototype = getPrototype(type, level);
 			var typeName: String;
@@ -110,22 +111,19 @@ public class StructureFactory {
 				}
 			}
 
-            var bitmap: Bitmap = ImportObjects.getInstance(typeName);
-
 			var sprite: Sprite = new Sprite();
-            sprite.addChild(bitmap);
+            sprite.addChild(Assets.getInstance(typeName, withPosition));
 
 			return sprite;
 		}
 
 		public static function getSimpleObject(type: int, level:int, x: int, y: int): SimpleObject
 		{
-			var sprite: DisplayObjectContainer = getSprite(type, level) as DisplayObjectContainer;
+			var sprite: DisplayObjectContainer = getSprite(type, level, "map") as DisplayObjectContainer;
 			var simpleObject: SimpleObject = new SimpleObject(x, y);
 			
 			if (sprite != null) {
 				simpleObject.spriteContainer.addChild(sprite);
-                Util.multitileCenter(simpleObject.spriteContainer);
 			}
 
 			return simpleObject;
@@ -136,9 +134,7 @@ public class StructureFactory {
 			var structureObj: StructureObject = new StructureObject(type, state, objX, objY, playerId, cityId, objectId, level, wallRadius);
 		
 			//structureObj.spriteContainer.addChild(ObjectFactory.makeIntoShadow(getSprite(type, level)));
-
-			structureObj.spriteContainer.addChild(getSprite(type, level));
-            Util.multitileCenter(structureObj.spriteContainer);
+			structureObj.spriteContainer.addChild(getSprite(type, level, "map"));
 			
 			structureObj.setOnSelect(Global.map.selectObject);
 

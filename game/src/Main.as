@@ -31,7 +31,7 @@
 
     public class Main extends MovieClip
 	{
-		private var importObjects: ImportObjects;
+		private var importObjects: Assets;
 
 		private var gameContainer: GameContainer;
 

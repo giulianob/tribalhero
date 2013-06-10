@@ -1,7 +1,7 @@
 package src.Objects 
 {
 	import flash.display.DisplayObject;
-	import src.ImportObjects;
+	import src.Assets;
 	
 	public class Achievement 
 	{
@@ -45,7 +45,7 @@ package src.Objects
 		
 		public function getSprite(): DisplayObject
 		{
-			return ImportObjects.getInstance("ICON_ACHIEVEMENT_" + icon + "_" + getTierName());
+			return Assets.getInstance("ICON_ACHIEVEMENT_" + icon + "_" + getTierName());
 		}
 	}
 

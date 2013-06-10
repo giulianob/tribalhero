@@ -93,7 +93,7 @@ public class Region extends Sprite
 					if (Constants.debug>=3)
 						Util.log("Creating region part: " + (a * Constants.regionBitmapTileW) + "," + (b * Constants.regionBitmapTileH));
 
-                    var icon: * = new ImportObjects.ICON_ACHIEVEMENT_ANVIL_BRONZE();
+                    var icon: * = new Assets.ICON_ACHIEVEMENT_ANVIL_BRONZE();
                     var tileset: * = new Tileset();
 
 					createRegionPart(Constants.tileset, a * Constants.regionBitmapTileW, b * Constants.regionBitmapTileH);

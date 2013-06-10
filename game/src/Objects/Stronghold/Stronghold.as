@@ -35,12 +35,7 @@ package src.Objects.Stronghold
             wallManager = new WallManager(this, 2);
 		}
 		
-		public function ToSprite(): Object
-		{
-			return StrongholdFactory.getSprite();
-		}
-		
-		override public function copy(obj:SimpleObject):void 
+		override public function copy(obj:SimpleObject):void
 		{
 			super.copy(obj);
 			var strongholdObj: Stronghold = obj as Stronghold;

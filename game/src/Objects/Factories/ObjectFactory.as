@@ -1,26 +1,25 @@
 ﻿package src.Objects.Factories {
-import flash.display.DisplayObject;
-import flash.display.DisplayObjectContainer;
-import flash.display.Sprite;
-import flash.filters.BlurFilter;
-import flash.geom.ColorTransform;
-import flash.geom.Matrix;
-import flash.utils.getDefinitionByName;
+    import flash.display.DisplayObject;
+    import flash.display.DisplayObjectContainer;
+    import flash.display.Sprite;
+    import flash.filters.BlurFilter;
+    import flash.geom.ColorTransform;
+    import flash.geom.Matrix;
+    import flash.utils.getDefinitionByName;
 
-import src.Map.Map;
-import src.Objects.BarbarianTribe;
-import src.Objects.Forest;
-import src.Objects.NewCityPlaceholder;
-import src.Objects.Prototypes.ObjectTypePrototype;
-import src.Objects.SimpleObject;
-import src.Objects.Stronghold.Stronghold;
-import src.Objects.StructureObject;
-import src.Objects.Troop.*;
-import src.UI.SmartMovieClip;
-import src.Util.BinaryList.*;
-import src.Util.Util;
+    import src.Map.Map;
+    import src.Objects.BarbarianTribe;
+    import src.Objects.Forest;
+    import src.Objects.NewCityPlaceholder;
+    import src.Objects.Prototypes.ObjectTypePrototype;
+    import src.Objects.SimpleObject;
+    import src.Objects.Stronghold.Stronghold;
+    import src.Objects.StructureObject;
+    import src.Objects.Troop.*;
+    import src.Util.BinaryList.*;
+    import src.Util.Util;
 
-public class ObjectFactory {
+    public class ObjectFactory {
 
 		public static const TYPE_CITY: int = 0;
 		public static const TYPE_FOREST: int = 1;
@@ -141,11 +140,13 @@ public class ObjectFactory {
 			return new objRef() as DisplayObject;
 		}
 
-		public static function getSprite(obj: SimpleObject):DisplayObjectContainer
+		public static function getSprite(obj: SimpleObject, withPosition: String = ""):DisplayObjectContainer
 		{
 			var sprite: DisplayObjectContainer;
-			if (obj is StructureObject) 
-				sprite = StructureFactory.getSprite((obj as StructureObject).type, (obj as StructureObject).level);
+			if (obj is StructureObject) {
+                var structure: StructureObject = (obj as StructureObject);
+				sprite = StructureFactory.getSprite(structure.type, structure.level, withPosition);
+            }
 			else if (obj is TroopObject)
 				sprite = TroopFactory.getSprite();
 			else if (obj is Forest)
@@ -153,17 +154,13 @@ public class ObjectFactory {
 			else if (obj is NewCityPlaceholder)
 				sprite = getNewCityPlaceholderSprite();
 			else if (obj is Stronghold)
-				sprite = StrongholdFactory.getSprite();
+				sprite = StrongholdFactory.getSprite(withPosition);
 			else if (obj is BarbarianTribe)
 				sprite = BarbarianTribeFactory.getSprite();
 			else
 				return null;			
 
-            Util.centerSprite(sprite);
-
-            var holder: SmartMovieClip = new SmartMovieClip();
-            holder.addChild(sprite);
-            return holder;
+            return sprite;
 		}
 
 		public static function getSimpleObject(name: String, x: int, y: int, addShadow: Boolean = true): SimpleObject {
@@ -193,12 +190,11 @@ public class ObjectFactory {
 			return obj;
 		}
 
-		public static function makeIntoShadow(shadow: DisplayObjectContainer) : DisplayObjectContainer {
+		public static function makeIntoShadow(shadow: DisplayObject) : DisplayObject {
 			shadow.transform.colorTransform = new ColorTransform(0, 0, 0);
 			shadow.transform.matrix = new Matrix(1, 0, -0.7, 0.5, 20, 15);
 			shadow.alpha = 0.4;
 			shadow.filters = [new BlurFilter(5, 5)];
-			shadow.mouseEnabled = false;
 
 			return shadow;
 		}

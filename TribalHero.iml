@@ -31,7 +31,7 @@
             <entry key="compiler.debug.swf" value="true" />
             <entry key="compiler.define" value="CONFIG::debug&#9;true" />
           </map>
-          <option name="additionalOptions" value="-frame=start,src.Main" />
+          <option name="additionalOptions" value="-frame=start,src.Main -keep-as3-metadata+=EmbedPosition" />
         </compiler-options>
         <packaging-air-desktop />
         <packaging-android />

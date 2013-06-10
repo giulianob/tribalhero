@@ -1,24 +1,18 @@
 
 package src.Objects {
 
-	import com.greensock.easing.Ease;
-	import com.greensock.easing.Elastic;
-	import com.greensock.TweenMax;
-	import flash.display.Bitmap;
-	import flash.display.DisplayObject;
-	import flash.display.MovieClip;
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.TimerEvent;
-	import flash.filters.GlowFilter;
-	import flash.geom.Point;
-	import flash.utils.Timer;
-	import src.Constants;
-	import src.Map.Camera;
-	import src.UI.SmartMovieClip;
-	
-	public class SimpleObject extends SmartMovieClip {
+    import com.greensock.TweenMax;
+
+    import flash.display.DisplayObject;
+    import flash.display.MovieClip;
+    import flash.display.Sprite;
+    import flash.events.Event;
+    import flash.filters.GlowFilter;
+    import flash.geom.Point;
+
+    import src.Constants;
+
+    public class SimpleObject extends MovieClip {
 		
 		public static const DISPOSED: String = "DISPOSED";
 		

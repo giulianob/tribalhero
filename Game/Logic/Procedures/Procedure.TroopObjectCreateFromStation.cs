@@ -33,10 +33,6 @@ namespace Game.Logic.Procedures
             }
 
             troopObject = stub.City.CreateTroopObject(stub, x, y + 1);
-            troopObject.X = x;
-            troopObject.Y = y + 1;
-
-            stub.City.Add(troopObject);
 
             troopObject.BeginUpdate();
             troopObject.Stats = new TroopStats(formula.GetTroopRadius(stub, null),

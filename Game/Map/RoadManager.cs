@@ -12,16 +12,19 @@ using Ninject;
 
 namespace Game.Map
 {
-    public class RoadManager
+    public class RoadManager : IRoadManager
     {
         private readonly IRegionManager regionManager;
 
         private readonly ObjectTypeFactory objectTypeFactory;
 
-        public RoadManager(IRegionManager regionManager, ObjectTypeFactory objectTypeFactory)
+        private readonly RadiusLocator radiusLocator;
+
+        public RoadManager(IRegionManager regionManager, ObjectTypeFactory objectTypeFactory, RadiusLocator radiusLocator)
         {
             this.regionManager = regionManager;
             this.objectTypeFactory = objectTypeFactory;
+            this.radiusLocator = radiusLocator;
 
             regionManager.ObjectAdded += RegionManagerOnObjectAdded;
         }
@@ -274,7 +277,7 @@ namespace Game.Map
             return IsRoad(regionManager.GetTileType(x, y));
         }
 
-        public static bool IsRoad(ushort tileId)
+        private bool IsRoad(ushort tileId)
         {
             return (tileId >= Config.road_start_tile_id && tileId <= Config.road_end_tile_id);
         }

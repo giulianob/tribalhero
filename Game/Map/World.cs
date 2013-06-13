@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Linq;
 using Game.Battle;
 using Game.Data;
@@ -12,7 +11,6 @@ using Game.Data.Forest;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic.Procedures;
 using Game.Module.Remover;
 using Game.Setup;
@@ -26,6 +24,8 @@ namespace Game.Map
     {
         private readonly IBarbarianTribeManager barbarianTribeManager;
 
+        private readonly IDbManager dbManager;
+
         private readonly IStrongholdManager strongholds;
 
         #region Singleton
@@ -35,14 +35,16 @@ namespace Game.Map
 
         #endregion
 
-        public World(RoadManager roadManager,
+        public World(IRoadManager roadManager,
                      IStrongholdManager strongholdManager,
                      ICityManager cityManager,
                      IRegionManager regionManager,
                      ITribeManager tribeManager,
-                     IBarbarianTribeManager barbarianTribeManager)
+                     IBarbarianTribeManager barbarianTribeManager,
+                     IDbManager dbManager)
         {
             this.barbarianTribeManager = barbarianTribeManager;
+            this.dbManager = dbManager;
             Roads = roadManager;
             strongholds = strongholdManager;
             Cities = cityManager;
@@ -148,7 +150,7 @@ namespace Game.Map
 
         public IRegionManager Regions { get; private set; }
 
-        public RoadManager Roads { get; private set; }
+        public IRoadManager Roads { get; private set; }
 
         public object Lock { get; private set; }
 
@@ -194,13 +196,8 @@ namespace Game.Map
         public bool FindPlayerId(string name, out uint playerId)
         {
             playerId = UInt16.MaxValue;
-            using (
-                    DbDataReader reader =
-                            DbPersistance.Current.ReaderQuery(
-                                                              String.Format(
-                                                                            "SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1",
-                                                                            Player.DB_TABLE),
-                                                              new[] {new DbColumn("name", name, DbType.String)}))
+            using (var reader = dbManager.ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Player.DB_TABLE),
+                                                      new[] {new DbColumn("name", name, DbType.String)}))
             {
                 if (!reader.HasRows)
                 {
@@ -215,18 +212,14 @@ namespace Game.Map
         public bool FindStrongholdId(string name, out uint strongholdId)
         {
             strongholdId = UInt16.MaxValue;
-            using (
-                    DbDataReader reader =
-                            DbPersistance.Current.ReaderQuery(
-                                                              String.Format(
-                                                                            "SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1",
-                                                                            Stronghold.DB_TABLE),
-                                                              new[] {new DbColumn("name", name, DbType.String)}))
+            using (var reader = dbManager.ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Stronghold.DB_TABLE),
+                                                      new[] {new DbColumn("name", name, DbType.String)}))
             {
                 if (!reader.HasRows)
                 {
                     return false;
                 }
+         
                 reader.Read();
                 strongholdId = (uint)reader[0];
                 return true;
@@ -235,13 +228,8 @@ namespace Game.Map
 
         public bool CityNameTaken(string name)
         {
-            using (
-                    DbDataReader reader =
-                            DbPersistance.Current.ReaderQuery(
-                                                              String.Format(
-                                                                            "SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1",
-                                                                            City.DB_TABLE),
-                                                              new[] {new DbColumn("name", name, DbType.String)}))
+            using (var reader = dbManager.ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE),
+                                                      new[] {new DbColumn("name", name, DbType.String)}))
             {
                 return reader.HasRows;
             }

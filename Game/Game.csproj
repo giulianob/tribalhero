@@ -434,6 +434,7 @@
     <Compile Include="Map\IRegionFactory.cs" />
     <Compile Include="Map\IRegionManager.cs" />
     <Compile Include="Data\Tribe\ITribeManager.cs" />
+    <Compile Include="Map\IRoadManager.cs" />
     <Compile Include="Map\IRoadPathFinder.cs" />
     <Compile Include="Map\IWorld.cs" />
     <Compile Include="Map\LocationStrategies\CityTileNextToFriendLocationStrategy.cs" />

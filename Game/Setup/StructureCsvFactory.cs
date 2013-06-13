@@ -77,7 +77,8 @@ namespace Game.Setup
                                                            stats,
                                                            ushort.Parse(toks[col["MaxLabor"]]),
                                                            int.Parse(toks[col["Time"]]),
-                                                           workerId);
+                                                           workerId,
+                                                           byte.Parse(toks[col["Size"]]));
 
                     logger.Info(string.Format("{0}:{1}", int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]]), toks[col["Name"]]));
 

@@ -51,7 +51,7 @@ namespace Game
             Bind<ICityRegionManager>().To<CityRegionManager>().InSingletonScope();            
             Bind<IForestManager>().To<ForestManager>().InSingletonScope();
             Bind<IForest>().To<Forest>();
-            Bind<RoadManager>().ToSelf().InSingletonScope();
+            Bind<IRoadManager>().To<RoadManager>().InSingletonScope();
             Bind<IRoadPathFinder>().To<RoadPathFinder>();
 
             #endregion

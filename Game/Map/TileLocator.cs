@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Game.Map
 {
@@ -43,15 +44,6 @@ namespace Game.Map
 
         public virtual int TileDistance(uint x, uint y, uint x1, uint y1)
         {
-            /*
-					             13,12  |  14,12 
-			                12,13  |  13,13  |  14,13  |  15,13
-                       12,14  | (13,14) |  14,14  |  15,14  | 16,14
-                  11,15  |  12,15  |  13,15  |  14,15
-                       12,16  |  13,16  |  14,16
-                            12,17  |  13,17  | 14,17
-			                     13,18     14,18
-            */
             int offset = GetOffset(x, y, x1, y1);
             var dist = (int)((x1 > x ? x1 - x : x - x1) + (y1 > y ? y1 - y : y - y1) / 2 + offset);
 
@@ -113,6 +105,23 @@ namespace Game.Map
                 }
             }
             while (!doSelf && (x == ox && y == oy));
+        }
+
+        public virtual IEnumerable<Position> ForeachMultitile(uint ox, uint oy, byte size)
+        {
+            var position = new Position(ox, oy);
+            for (uint i = 0; i < size; i++)
+            {
+                var rowPosition = position;
+                for (uint j = 0; j < size; j++)
+                {
+                    yield return rowPosition;
+
+                    rowPosition = rowPosition.TopRight();
+                }
+
+                position = position.BottomRight();
+            }
         }
 
         public virtual void ForeachObject(uint ox, uint oy, int radius, bool doSelf, DoWork work, object custom = null)

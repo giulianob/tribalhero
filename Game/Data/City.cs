@@ -466,15 +466,6 @@ namespace Game.Data
             return true;
         }
 
-        public bool Add(ITroopObject troop)
-        {
-            lock (objLock)
-            {
-                troop.ObjectId = objectIdGen.GetNext();
-                return Add(troop.ObjectId, troop, true);
-            }
-        }
-
         public bool Add(uint objId, IStructure structure, bool save)
         {
             lock (objLock)

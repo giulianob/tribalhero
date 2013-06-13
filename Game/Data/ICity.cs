@@ -169,8 +169,6 @@ namespace Game.Data
 
         bool Add(uint objId, ITroopObject troop, bool save);
 
-        bool Add(ITroopObject troop);
-
         bool Add(uint objId, IStructure structure, bool save);
 
         bool ScheduleRemove(ITroopObject obj, bool wasKilled);

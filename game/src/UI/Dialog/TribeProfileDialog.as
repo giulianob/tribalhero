@@ -668,7 +668,7 @@
             });
 
             btnDismantle.addActionListener(function(e: Event): void {
-                InfoDialog.showInputDialog("Dismantle tribe", "If you really want to dismantle your tribe then type 'delete' below and click ok.", function(input: *) : void {
+                InfoDialog.showInputDialog("Dismantle tribe", "If you really want to dismantle your tribe then type 'delete' below and click ok. You will not be able to create a new tribe for 24 hours.", function(input: *) : void {
                     if (input == "'delete'" || input == "delete")
                         Global.mapComm.Tribe.dismantle();
                 });

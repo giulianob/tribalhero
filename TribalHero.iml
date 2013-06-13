@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="Flex" version="4">
-  <component name="FlexBuildConfigurationManager" active="TribalHero">
+  <component name="FlexBuildConfigurationManager" active="TribalHeroMobile">
     <configurations>
       <configuration name="TribalHero" pure-as="true" main-class="src.Preloader" output-file="TribalHero.swf" output-folder="$MODULE_DIR$/bin">
-        <dependencies target-player="11.1">
+        <dependencies target-player="11.6">
           <entries>
             <entry library-name="TheMiner_en" library-level="project">
               <dependency linkage="Merged" />
@@ -36,6 +36,45 @@
         <packaging-air-desktop />
         <packaging-android />
         <packaging-ios />
+      </configuration>
+      <configuration name="TribalHeroMobile" target-platform="Mobile" pure-as="true" main-class="src.Preloader" output-file="TribalHeroMobile.swf" output-folder="$MODULE_DIR$/bin">
+        <dependencies>
+          <entries>
+            <entry library-name="TheMiner_en" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="Linq_Flash" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="greensock" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="flash" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="as3corelib" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="Game" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
+          <sdk name="flexsdk" />
+        </dependencies>
+        <compiler-options>
+          <map>
+            <entry key="compiler.debug.swf" value="true" />
+            <entry key="compiler.define" value="CONFIG::debug&#9;true" />
+            <entry key="metadata.creator" value="Tribal Hero" />
+            <entry key="metadata.description" value="http://tribalhero.com" />
+            <entry key="metadata.publisher" value="Tribal Hero Studios LLC" />
+            <entry key="metadata.title" value="Tribal Hero" />
+          </map>
+          <option name="additionalOptions" value="-frame=start,src.Main" />
+        </compiler-options>
+        <packaging-air-desktop />
+        <packaging-android enabled="true" use-generated-descriptor="false" custom-descriptor-path="$MODULE_DIR$/TribalHero-app.xml" package-file-name="TribalHeroMobile2" />
+        <packaging-ios package-file-name="TribalHeroMobile" />
       </configuration>
     </configurations>
     <compiler-options />

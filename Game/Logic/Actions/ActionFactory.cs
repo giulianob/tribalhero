@@ -140,7 +140,8 @@ namespace Game.Logic.Actions
         StrongholdAttackChainAction CreateStrongholdAttackChainAction(uint cityId,
                                                                       uint troopObjectId,
                                                                       uint targetStrongholdId,
-                                                                      AttackMode mode);
+                                                                      AttackMode mode,
+                                                                      bool forceAttack);
 
         BarbarianTribeEngageAttackPassiveAction CreateBarbarianTribeEngageAttackPassiveAction(uint cityId,
                                                                                               uint troopObjectId,

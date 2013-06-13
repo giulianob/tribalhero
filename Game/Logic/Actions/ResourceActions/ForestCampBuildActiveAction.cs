@@ -244,7 +244,8 @@ namespace Game.Logic.Actions
             forest.EndUpdate();
 
             // add to queue for completion
-            var actionEndTime = formula.GetLumbermillCampBuildTime(lumbermill, forest);          
+            var campBuildTime = structureFactory.GetTime(campType, 1);
+            var actionEndTime = formula.GetLumbermillCampBuildTime(campBuildTime, lumbermill, forest);
 
             endTime = SystemClock.Now.AddSeconds(CalculateTime(actionEndTime));
             BeginTime = SystemClock.Now;

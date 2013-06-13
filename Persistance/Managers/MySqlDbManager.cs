@@ -290,6 +290,11 @@ namespace Persistance.Managers
                 return;
             }
 
+            logger.Info("{0}", GetCommandTextForLogging(command));
+        }
+
+        private string GetCommandTextForLogging(DbCommand command)
+        {
             var sqlwriter = new StringWriter();
             sqlwriter.Write("({0} {1} (", Thread.CurrentThread.ManagedThreadId, command.CommandText);
             foreach (MySqlParameter param in command.Parameters)
@@ -298,7 +303,7 @@ namespace Persistance.Managers
             }
             sqlwriter.Write(")");
 
-            logger.Info("{0}", sqlwriter.ToString());
+            return sqlwriter.ToString();
         }
 
         DbDataReader IDbManager.SelectList(string table, params DbColumn[] primaryKeyValues)
@@ -916,18 +921,14 @@ namespace Persistance.Managers
 
         internal void HandleGeneralException(Exception e, DbCommand command = null)
         {
-            logger.Error(e, "General database error on thread {0}", Thread.CurrentThread.ManagedThreadId);
+            logger.ErrorException(string.Format("General database error on thread {0}", Thread.CurrentThread.ManagedThreadId), e);
 
             if (command != null)
             {
-                LogCommand(command, false);
+                logger.Error("Command that failed {0}", GetCommandTextForLogging(command));
             }
 
-#if DEBUG
             throw e;
-#else
-            Environment.Exit(2);
-#endif
         }
     }
 }

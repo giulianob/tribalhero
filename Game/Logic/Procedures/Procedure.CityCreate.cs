@@ -26,8 +26,6 @@ namespace Game.Logic.Procedures
             var error = strategy.NextLocation(out position);
             if(error != Error.Ok)
             {
-                world.Players.Remove(player.PlayerId);
-                dbPersistance.Rollback();                
                 return error;
             }
         

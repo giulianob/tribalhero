@@ -217,6 +217,8 @@ namespace Game.Setup
 
         TribeCannotRejoinYet = 729,
 
+        TribeCannotCreateYet = 730,
+
         AssignmentDone = 741,
 
         AssignmentNotFound = 742,

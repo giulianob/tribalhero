@@ -3,7 +3,8 @@
 	import fl.events.ListEvent;
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
-	import flash.events.Event;
+    import flash.display.DisplayObjectContainer;
+    import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.display.Sprite;
 	import flash.geom.Point;
@@ -90,7 +91,7 @@
 			draggingSprite = (dditem.tilelist as IDraggableTileList).getDragIcon(dditem.mouseOverItem);
 			draggingItem = dditem.mouseOverItem;
 			draggingTilelist = dditem.tilelist;			
-			parent.stage.addChild(draggingSprite);
+            (parent.root as DisplayObjectContainer).addChild(draggingSprite);
 			draggingSprite.alpha = 0.80;
 			
 			draggingSprite.x = parent.stage.mouseX + 5;

@@ -1,7 +1,8 @@
 package src.UI.Tooltips {
 	import com.greensock.loading.core.DisplayObjectLoader;
 	import flash.display.DisplayObject;
-	import flash.display.InteractiveObject;
+    import flash.display.DisplayObjectContainer;
+    import flash.display.InteractiveObject;
 	import flash.events.Event;
     import flash.events.EventDispatcher;
     import flash.events.IEventDispatcher;
@@ -21,8 +22,9 @@ package src.UI.Tooltips {
 	import src.Map.Camera;
 	import src.UI.GameJBox;
     import src.UI.GameJBoxBackground;
+    import src.Util.Util;
 
-	public class Tooltip implements IEventDispatcher
+    public class Tooltip implements IEventDispatcher
 	{
         private var dispatcher: EventDispatcher;
         
@@ -97,7 +99,7 @@ package src.UI.Tooltips {
 		}
 		
 		protected function showFrame(obj: DisplayObject = null): void {		
-            Global.gameContainer.stage.addChild(container);
+            (Global.gameContainer.root as DisplayObjectContainer).addChild(container);
             Global.gameContainer.stage.addEventListener(Event.ENTER_FRAME, enterFrame);
             
             if (!mouseInteractive()) {
@@ -137,8 +139,8 @@ package src.UI.Tooltips {
 			var boxWidth: Number = ui.getPreferredWidth();
 			var boxHeight: Number = ui.getPreferredHeight();
 
-			var stageWidth: Number = container.stage.stageWidth;
-			var stageHeight: Number = container.stage.stageHeight;
+			var stageWidth: Number = Util.stageWidth();
+			var stageHeight: Number = Util.stageHeight();
 
 			if (boxX + boxWidth > stageWidth) {
 				boxX = posX - boxWidth + 5;

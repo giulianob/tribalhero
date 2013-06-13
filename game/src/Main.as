@@ -59,8 +59,15 @@
 		public function init(e: Event = null) : void {			            
 			removeEventListener(Event.ADDED_TO_STAGE, init);							
             
-            stage.showDefaultContextMenu = false;                       
-			
+            stage.showDefaultContextMenu = false;
+
+            Constants.stage = stage;
+            scaleX = Constants.scaleX;
+            scaleY = Constants.scaleY;
+
+            Constants.screenW = Util.stageWidth();
+            Constants.screenH = Util.stageHeight();
+
 			CONFIG::debug {
 				stage.addChild(new TheMiner());
 			}			
@@ -69,7 +76,7 @@
 			EnumerationExtender.Initialize();
 			
 			//Init ASWING			
-			AsWingManager.initAsStandard(this);				
+			AsWingManager.initAsStandard(this);
 			UIManager.setLookAndFeel(new GameLookAndFeel());
 			
 			//Init TweenLite
@@ -102,6 +109,7 @@
 
 			//GameContainer
 			Global.gameContainer = gameContainer = new GameContainer();
+
 			addChild(gameContainer);
 
 			//Packet Counter

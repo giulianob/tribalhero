@@ -27,7 +27,8 @@ package src.Util {
 	import flash.external.ExternalInterface;
 	import org.aswing.JViewport;
 	import src.Constants;
-	import src.UI.GameJImagePanelBackground;
+    import src.Objects.Location;
+    import src.UI.GameJImagePanelBackground;
 
 	public class Util {
                
@@ -97,7 +98,7 @@ package src.Util {
 		}
 
 		public static function centerFrame(frame: JFrame ):void {
-			var location:IntPoint = AsWingUtils.getScreenCenterPosition();
+			var location:IntPoint = new IntPoint(stageWidth(), stageHeight());
 			location.x = Math.round(location.x - frame.getWidth()/2);
 			location.y = Math.max(0, Math.round(location.y - frame.getHeight()/2));
 			frame.setLocation(location);
@@ -315,6 +316,14 @@ package src.Util {
             }
             catch (e: Error) {                
             }
+        }
+
+        public static function stageWidth() {
+            return Constants.stage.stageWidth / Constants.scaleX;
+        }
+
+        public static function stageHeight() {
+            return Constants.stage.stageHeight / Constants.scaleY;
         }
 	}
 

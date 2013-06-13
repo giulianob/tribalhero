@@ -1,6 +1,8 @@
 package src
 {
-	import src.Map.CityRegionLegend;
+    import flash.display.Stage;
+
+    import src.Map.CityRegionLegend;
 	import src.Objects.Tribe;
 	public class Constants
 	{
@@ -14,8 +16,8 @@ package src
         public static var motd_helpdesk:String = 'New player? Read the <a href="http://tribalhero.wikia.com/wiki/Frequently_Asked_Questions" target="_blank">wiki FAQ</a> for answers to common questions.';
 		
 		/* SESSION VARIABLES */
-		public static var username: String = "1234";
-		public static var hostname: String = "local.tribalhero.com";
+		public static var username: String = "giulianob";
+		public static var hostname: String = "tribblez.tribalhero.com";
 		public static var sessionId: String;
 		public static var playerName: String;
 		public static var timeDelta: int;
@@ -84,7 +86,11 @@ package src
 		
 		public static var screenW:int = origScreenW;
 		public static var screenH:int = origScreenH;
-		
+
+        public static var stage:Stage;
+        public static var scaleX:Number = 1.5;
+        public static var scaleY:Number = 1.5;
+
 		public static const tileset:TileSet = new TileSet(Constants.tileSetW, Constants.tileSetH);
 		
 		public static const cityStartTile: int = 209;

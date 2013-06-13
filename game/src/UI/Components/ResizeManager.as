@@ -11,7 +11,9 @@ package src.UI.Components
 	import org.aswing.JFrame;
 	import org.aswing.JPanel;
 	import src.Constants;
-	/**
+    import src.Util.Util;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */
@@ -53,10 +55,10 @@ package src.UI.Components
 
 			resizeDelay.stop();
 
-			Constants.screenW = stage.stageWidth;
-			Constants.screenH = stage.stageHeight;
+			Constants.screenW = Util.stageWidth();
+			Constants.screenH = Util.stageHeight();
 
-			var delta: IntDimension = new IntDimension(stage.stageWidth - lastSize.width, stage.stageHeight - lastSize.height);
+			var delta: IntDimension = new IntDimension(Util.stageWidth() - lastSize.width, Util.stageHeight() - lastSize.height);
 
 			for each (var def: * in objects) {
 				var obj: DisplayObject = def.obj;
@@ -75,8 +77,8 @@ package src.UI.Components
 				var origWidth: int = obj.width / obj.scaleX;
 				var origHeight: int = obj.height / obj.scaleY;
 
-				var stageScaleX: Number = stage.stageWidth / originalStageSize.width;
-				var stageScaleY: Number = stage.stageHeight / originalStageSize.height;
+				var stageScaleX: Number = Util.stageWidth() / originalStageSize.width;
+				var stageScaleY: Number = Util.stageHeight() / originalStageSize.height;
 
 				if ((anchors & ANCHOR_LEFT) == ANCHOR_LEFT && (anchors & ANCHOR_RIGHT) == ANCHOR_RIGHT) {
 					obj.width = stageScaleX * (obj.width / obj.scaleX);
@@ -92,7 +94,7 @@ package src.UI.Components
 				}
 			}
 
-			lastSize = new IntDimension(stage.stageWidth, stage.stageHeight);
+			lastSize = new IntDimension(Util.stageWidth(), Util.stageHeight());
 
 			dispatchEvent(new Event(Event.RESIZE));
 		}

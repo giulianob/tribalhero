@@ -17,7 +17,7 @@
 	{
 		public function BattleEventTroopGridList(units:*)
 		{
-			var validUnits: Array = new Array();
+			var validUnits: Array = [];
 			for each (var unit: * in units) {
 				// TODO: Don't show dead units. In the future this should be changed to show the delta.
 				if (unit.count == 0) { 

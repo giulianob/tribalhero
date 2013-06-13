@@ -30,7 +30,7 @@ package src.Objects {
 
 		public var objects: BinaryList = new BinaryList(SimpleObject.sortOnXandY, SimpleObject.compareXAndY);
 		
-		private var dimmedObjects: Array = new Array();
+		private var dimmedObjects: Array = [];
 		private var highlightedObject: SimpleObject;
 
 		private var originClick: Point = new Point(0, 0);
@@ -93,7 +93,7 @@ package src.Objects {
 			if (highlightedObject && !ignoreClick)
 			{
 				var idxs: Array = Util.binarySearchRange(objects.toArray(), SimpleObject.compareXAndY, [highlightedObject.objX, highlightedObject.objY]);
-				var multiObjects: Array = new Array();
+				var multiObjects: Array = [];
 				for each(var idx: int in idxs) {
 					var obj: SimpleObject = objects.getByIndex(idx);
 					if (obj.isSelectable())
@@ -156,11 +156,11 @@ package src.Objects {
 			tilePos = MapUtil.getMapCoord(tilePos.x, tilePos.y);
 
 			var selectableCnt: int = 0;
-			var overlapping: Array = new Array();
+			var overlapping: Array = [];
 			var found: Boolean = false;
 			var highestObj: SimpleObject = null;
 			var obj: SimpleObject;
-			var objects: Array = new Array();
+			var objects: Array = [];
 			
 			var i: int;
 			for (i = 0; i < objSpace.numChildren; i++)
@@ -300,7 +300,7 @@ package src.Objects {
 				}
 			}
 
-			dimmedObjects = new Array();
+			dimmedObjects = [];
 		}
 
 		private function getLayer(layer: int): Sprite

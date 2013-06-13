@@ -34,8 +34,8 @@
 		
 		protected var hasAttackStrength: Boolean;
 
-		protected var tilelists: Array = new Array();
-		protected var attackTilelists: Array = new Array();
+		protected var tilelists: Array = [];
+		protected var attackTilelists: Array = [];
 
 		public function AttackTroopDialog(city: City, onAccept: Function, hasAttackStrength: Boolean = true):void
 		{

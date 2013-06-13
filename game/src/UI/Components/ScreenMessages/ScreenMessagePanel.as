@@ -22,7 +22,7 @@ package src.UI.Components.ScreenMessages
 	{
         private const IDLE_TIME: int = 90000;
         
-		private var tempItems: Array = new Array();
+		private var tempItems: Array = [];
 		private var timer: Timer = new Timer(100, 0);
 		private var frame: JFrame;
         private var lastInteraction: int;

@@ -30,7 +30,7 @@ package src.Map
 
 			if (start.x == end.x && start.y == end.y) return true;
 
-			var visited: Array = new Array();
+			var visited: Array = [];
 
 			visited.push(start);
 
@@ -38,7 +38,7 @@ package src.Map
 
 			var ret: * = breadthFirst(new Point(end.x, end.y), visited, function(node : Point) : Array
 			{
-				var neighbors: Array = new Array();
+				var neighbors: Array = [];
 				var possibleNeighbors: Array;
 				if (node.y % 2 == 0)
 				{

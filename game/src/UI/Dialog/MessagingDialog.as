@@ -105,7 +105,7 @@ package src.UI.Dialog{
 		}
 
 		private function deleteMessage(id: int) : void {
-			var ids: Array = new Array();
+			var ids: Array = [];
 			ids.push(id);
 			Global.mapComm.Messaging.del(actionLoader, ids);
 		}
@@ -173,7 +173,7 @@ package src.UI.Dialog{
 		}
 
 		private function getCheckedMessagesIds() : Array {
-			var ids: Array = new Array();
+			var ids: Array = [];
 
 			for (var i: int = 0; i < messageTable.getRowCount(); i++) {
 				if (messageTable.getValueAt(i, 0).checked) {

@@ -1,6 +1,8 @@
 package src.UI.Dialog
 {
-	import src.Util.StringHelper;
+import flash.system.Capabilities;
+
+import src.Util.StringHelper;
 	import flash.events.*;
 	import flash.text.*;
 	import flash.ui.*;
@@ -34,7 +36,7 @@ package src.UI.Dialog
 		private var pnlContent:JPanel;
 		private var txtConsole:JTextArea;
 		private var txtCommand:JTextField;
-		private var cmdHistory:Array = new Array();
+		private var cmdHistory:Array = [];
 		private var cmdIndex:int = -1;
 		private var scrollConsole:JScrollPane;
 		private var channelTabs: JPanel;
@@ -158,7 +160,7 @@ package src.UI.Dialog
 			{
 				log(currentChatType, message, true);				
                 
-                CONFIG::debug {
+                if (Capabilities.isDebugger) {
                     if (message == "/togglestacktracer") {
                         Constants.debugStacktracer = true;
                         return true;
@@ -361,7 +363,7 @@ package src.UI.Dialog
 		public function logSystem(messageId:String, params:Array):void 
 		{
 			if (Global.gameContainer.cmdLine == null) return;
-			var substituteArgs: Array = new Array();
+			var substituteArgs: Array = [];
 			substituteArgs.push('<span class="system">' + StringHelper.localize(messageId) + '</span>');
 			
 			for each (var str: String in params) {

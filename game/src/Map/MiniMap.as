@@ -31,7 +31,7 @@
 		private var regions: CityRegionList;
 		private var filter: CityRegionFilter = new CityRegionFilter();
 		private var legend: CityRegionLegend = new CityRegionLegend();
-		private var pendingRegions: Array = new Array();
+		private var pendingRegions: Array = [];
 
 		public var objContainer: ObjectContainer;
 
@@ -40,7 +40,7 @@
 		private var bg: Sprite;
 		private var mapMask: Sprite;
 		
-		private var pointers: Array = new Array();
+		private var pointers: Array = [];
 		private var pointersVisible: Boolean = false;
 		private var cityPointer: MiniMapPointer;
 		
@@ -239,7 +239,7 @@
 			}
 
 			//calculate which regions we need to render
-			var requiredRegions: Array = new Array();
+			var requiredRegions: Array = [];
 
 			var camX: int = Global.gameContainer.camera.miniMapX - mapHolder.x;
 			var camY: int = Global.gameContainer.camera.miniMapY - mapHolder.y;

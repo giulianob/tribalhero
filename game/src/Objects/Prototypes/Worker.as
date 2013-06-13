@@ -17,8 +17,8 @@ package src.Objects.Prototypes {
 		public var type: int;
 		public var maxCount: int;
 
-		private var actions: Array = new Array();
-		private var techUpgradeActions: Array = new Array();
+		private var actions: Array = [];
+		private var techUpgradeActions: Array = [];
 
 		public function Worker() {
 		}
@@ -44,7 +44,7 @@ package src.Objects.Prototypes {
 
 		public function getTechUpgradeActions(): Array
 		{
-			var upgradeActions: Array = new Array();
+			var upgradeActions: Array = [];
 			for each (var technology: TechUpgradeAction in techUpgradeActions)
 			{
 				upgradeActions.push(technology);
@@ -55,7 +55,7 @@ package src.Objects.Prototypes {
 
 		public function getButtons(parentObj: SimpleGameObject, structPrototype: StructurePrototype): Array
 		{
-			var ret: Array = new Array();
+			var ret: Array = [];
 
 			for each (var action: IAction in actions)
 			{

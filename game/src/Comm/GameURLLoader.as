@@ -4,7 +4,9 @@
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	import flash.net.*;
-	import org.aswing.JPanel;
+import flash.system.Capabilities;
+
+import org.aswing.JPanel;
 	import src.Constants;	
 	import src.UI.Dialog.InfoDialog;
 	import src.Util.Util;
@@ -79,7 +81,7 @@
 			try {
 				lastURL = request.url + "?" + request.data;
 				
-				CONFIG::debug {
+				if (Capabilities.isDebugger) {
 					Util.log("Loading url: " + lastURL);
 				}
 				

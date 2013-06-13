@@ -69,7 +69,7 @@
 
 		public function addCombatObject(combatObj: CombatObject):void {
 			var prototype: * = ObjectFactory.getPrototype(combatObj.type, combatObj.level);
-			var icon: DisplayObject = ObjectFactory.getSpriteEx(combatObj.type, combatObj.level, true);
+			var icon: DisplayObject = ObjectFactory.getSpriteEx(combatObj.type, combatObj.level);
 			if (prototype is StructurePrototype)
 			{
 				icon.scaleX = 0.50;

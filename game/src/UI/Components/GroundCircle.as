@@ -1,18 +1,22 @@
 ﻿package src.UI.Components {
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.events.Event;
-	import flash.geom.ColorTransform;
-	import flash.geom.Point;
-	import src.Constants;
-	import src.Map.MapUtil;
-	import src.Objects.SimpleObject;
-	import src.UI.SmartMovieClip;
+    import flash.display.Bitmap;
+    import flash.display.BitmapData;
+    import flash.display.DisplayObject;
+    import flash.display.DisplayObjectContainer;
+    import flash.display.MovieClip;
+    import flash.events.Event;
+    import flash.geom.ColorTransform;
+    import flash.geom.Point;
 
-	public class GroundCircle extends SimpleObject
+    import src.Constants;
+    import src.Assets;
+    import src.Map.MapUtil;
+    import src.Objects.SimpleObject;
+
+    public class GroundCircle extends SimpleObject
 	{
 		private var size: int;
-		private var circle: SmartMovieClip;
+		private var circle: DisplayObjectContainer;
 		private var tiles: Array;
 		private var colorTransform: ColorTransform;
 		private var skipCenter: Boolean;
@@ -49,8 +53,8 @@
 			if (circle != null)
 			dispose();
 
-			circle = new SmartMovieClip();
-			tiles = new Array();
+			circle = new MovieClip();
+			tiles = [];
 
 			MapUtil.radius_foreach_object(Math.ceil(size / 2.0), Math.ceil(size / 2.0) * 2 + 1, size, this.addTileCallback, true, null);
 
@@ -78,7 +82,7 @@
 
 		public function addTileCallback(x: int, y: int, custom: *):void
 		{
-			var tiledata: MASK_TILE = new MASK_TILE(Constants.tileW, Constants.tileH);
+			var tiledata: DisplayObject = Assets.getInstance("MASK_TILE");
 			var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH, true, 0x000000));
 			tile.smoothing = true;
 

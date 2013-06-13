@@ -18,7 +18,7 @@
 		
 		public function Packet(incomingBytes: ByteArray = null)
 		{
-			parameters = new Array();
+			parameters = [];
 			bytes = new ByteArray();			
 			bytes.endian = Endian.LITTLE_ENDIAN;
 			
@@ -100,10 +100,10 @@
 		
 		public function read2dShortArray(w: int, h: int): Array
 		{
-			var rows:Array = new Array();
+			var rows:Array = [];
 			for (var a:int = 0; a < h; a++)
 			{
-				var cols: Array = new Array();
+				var cols: Array = [];
 				for (var b:int = 0; b < w; b++)
 					cols.push(bytes.readUnsignedShort());
 				rows.push(cols);

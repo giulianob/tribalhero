@@ -239,7 +239,7 @@ package src.Util {
          
         private function convertProfanityList(rawWordSet:Array):Array {
             var p:RegExp = new RegExp("( ){1,100}");
-            var arr:Array = new Array();
+            var arr:Array = [];
             for (var i:uint = 0; i < rawWordSet.length; i++) {
                 var word:String = rawWordSet[i];
                 if (word && !p.test(word)) {
@@ -250,7 +250,7 @@ package src.Util {
         }
          
         private function buildLetterAssociations():void {
-            letterAssociations = new Array();
+            letterAssociations = [];
             letterAssociations.push( ["a", "@"] );
             letterAssociations.push( ["e", "3"] );
             letterAssociations.push( ["i", "l", "1", "|"]);

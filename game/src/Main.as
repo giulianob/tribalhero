@@ -4,12 +4,14 @@
 
     import com.greensock.plugins.TransformMatrixPlugin;
     import com.greensock.plugins.TweenPlugin;
+    import com.sociodox.theminer.TheMiner;
 
     import fl.lang.*;
 
     import flash.display.*;
     import flash.events.*;
     import flash.net.*;
+    import flash.system.Capabilities;
     import flash.ui.*;
 
     import org.aswing.*;
@@ -23,14 +25,13 @@
     import src.UI.TweenPlugins.TransformAroundCenterPlugin;
     import src.UI.TweenPlugins.TransformAroundPointPlugin;
     import src.Util.*;
+	CONFIG::debug {
+		import com.sociodox.theminer.TheMiner;
+	}
 
-    CONFIG::debug {
-        import com.sociodox.theminer.TheMiner;
-    }
-
-	public class Main extends MovieClip
+    public class Main extends MovieClip
 	{
-		private var importObjects: ImportObjects;
+		private var importObjects: Assets;
 
 		private var gameContainer: GameContainer;
 
@@ -56,14 +57,14 @@
 			addEventListener(Event.ADDED_TO_STAGE, init);		                       
 		}        
 		
-		public function init(e: Event = null) : void {			            
+		public function init(e: Event = null) : void {
 			removeEventListener(Event.ADDED_TO_STAGE, init);							
             
-            stage.showDefaultContextMenu = false;                       
-			
+            stage.showDefaultContextMenu = false;
+
 			CONFIG::debug {
-				stage.addChild(new TheMiner());
-			}			
+			    stage.addChild(new TheMiner());
+            }
 			
 			//Init actionLinq
 			EnumerationExtender.Initialize();
@@ -278,16 +279,7 @@
 			}
 		}
 
-		public function onReceiveXML(e: Event):void
-		{
-			var str: String = e.target.data;
-
-			Constants.objData = XML(e.target.data);
-
-			doConnect();
-		}
-
-		private function completeLogin(packet: Packet, newPlayer: Boolean):void
+        private function completeLogin(packet: Packet, newPlayer: Boolean):void
 		{
 			Global.map = map = new Map();
 			miniMap = new MiniMap(Constants.miniMapScreenW, Constants.miniMapScreenH);
@@ -310,16 +302,7 @@
 			gameContainer.setMap(map, miniMap);
 		}
 
-		public function onReceive(packet: Packet):void
-		{
-			if (Constants.debug >= 2)
-			{
-				Util.log("Received packet to main processor");
-				Util.log(packet.toString());
-			}
-		}
-
-		private function resizeHandler(event:Event):void {
+        private function resizeHandler(event:Event):void {
 			
 		}
 	}

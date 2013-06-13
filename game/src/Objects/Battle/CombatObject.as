@@ -22,7 +22,7 @@
 		}
 		
 		public function getIcon(): DisplayObjectContainer {
-			return ObjectFactory.getSpriteEx(type, level, true);					
+			return ObjectFactory.getSpriteEx(type, level);
 		}		
 		
 		public static function sortOnId(a:CombatObject, b:CombatObject):Number 

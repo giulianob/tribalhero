@@ -18,7 +18,7 @@
 	 */
 	public class SimpleTroopGridDragHandler implements DragListener
 	{
-		private var tilelists: Array = new Array();
+		private var tilelists: Array = [];
 
 		public function SimpleTroopGridDragHandler(tilelists: Array) {
 			for each (var tilelist: SimpleTroopGridList in tilelists)

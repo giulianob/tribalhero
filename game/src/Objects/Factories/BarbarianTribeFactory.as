@@ -2,13 +2,15 @@
 
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
-	import flash.filters.BlurFilter;
+    import flash.display.Sprite;
+    import flash.filters.BlurFilter;
 	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import flash.utils.getDefinitionByName;
 	import src.Global;
-	import src.Objects.AggressiveLazyValue;
+    import src.Assets;
+    import src.Objects.AggressiveLazyValue;
 	import src.Objects.BarbarianTribe;
 	import src.Objects.SimpleGameObject;
 	import src.Objects.States.GameObjectState;
@@ -19,16 +21,12 @@
 		public function BarbarianTribeFactory() {
 		}
 
-		public static function getSprite(centered: Boolean = false): DisplayObjectContainer
+		public static function getSprite(): DisplayObjectContainer
 		{
-			var objRef: Class = getDefinitionByName("BARBARIAN_TRIBE_STRUCTURE") as Class;
+			var image: DisplayObject = new Assets.BARBARIAN_TRIBE_STRUCTURE() as DisplayObject;
 
-			var sprite: DisplayObjectContainer = new objRef() as DisplayObjectContainer;
-
-			if (centered)
-			{
-				Util.centerSprite(sprite);
-            }
+            var sprite: Sprite = new Sprite();
+            sprite.addChild(image);
 
 			return sprite;
 		}

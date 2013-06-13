@@ -25,8 +25,8 @@ package src.UI {
 	{		
 		private var defaultFormat: TextFormat;
 		
-		private var events: Array = new Array();
-		private var tooltips: Array = new Array();
+		private var events: Array = [];
+		private var tooltips: Array = [];
 		
 		public function PaintBox(xml: XML, staticObjects: Array = null, mouseEnabled: Boolean = false) {
 			this.mouseEnabled = mouseEnabled;
@@ -57,8 +57,8 @@ package src.UI {
 				var widthUsed: int = 0;
 				var align: String = "left";								
 				var colHeight: int = 0;
-				var colObjs: Array = new Array();
-				var colVAligns: Array = new Array();
+				var colObjs: Array = [];
+				var colVAligns: Array = [];
 				
 				if (rowNode.@align.toString() != '')
 					align = String(rowNode.@align).toLowerCase();													

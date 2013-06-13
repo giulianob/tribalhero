@@ -70,7 +70,7 @@
 		{
 			var messageId: String = packet.readString();
 			var paramsCount: int = packet.readUByte();
-			var params: Array = new Array();
+			var params: Array = [];
 			for (var i: int = 0; i < paramsCount; i++) {
 				params.push(packet.readString());
 			}

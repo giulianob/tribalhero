@@ -30,10 +30,11 @@ package src.Objects.Prototypes {
 		public var buildResources: Resources = new Resources(0, 0, 0, 0, 0);
 		public var buildTime: int;
 		public var workerid: int;
+        public var size: int;
 		public var maxlabor: int;
 		public var weapon: String;
 
-		public var layouts: Array = new Array();
+		public var layouts: Array = [];
 
 		public function StructurePrototype() {
 

@@ -35,8 +35,8 @@
 
 		protected var hasAttackStrength: Boolean;
 		
-		private var tilelists: Array = new Array();
-		private var attackTilelists: Array = new Array();
+		private var tilelists: Array = [];
+		private var attackTilelists: Array = [];
 
 		public function ReinforceTroopDialog(city: City, onAccept: Function, hasAttackStrength: Boolean = true):void
 		{

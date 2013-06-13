@@ -56,7 +56,7 @@ namespace Game.Data.Tribe
 
         Error AddTribesman(ITribesman tribesman, bool ignoreRequirements = false);
 
-        Error RemoveTribesman(uint playerId, bool wasKicked, bool checkIfOwner = true);
+        Error RemoveTribesman(uint playerId, bool wasKicked, bool doNotRemoveIfOwner = true);
 
         void CreateRank(byte id, string name, TribePermission permission);
 

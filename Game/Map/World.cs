@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -52,7 +53,7 @@ namespace Game.Map
             Tribes = tribeManager;
             Battles = new Dictionary<uint, IBattleManager>();
             Lock = new object();
-            Players = new Dictionary<uint, IPlayer>();
+            Players = new ConcurrentDictionary<uint, IPlayer>();
         }
 
         #region Object Locator
@@ -154,7 +155,7 @@ namespace Game.Map
 
         public object Lock { get; private set; }
 
-        public Dictionary<uint, IPlayer> Players { get; private set; }
+        public ConcurrentDictionary<uint, IPlayer> Players { get; private set; }
 
         public int GetActivePlayerCount()
         {

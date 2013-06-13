@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using Game.Battle;
 using Game.Data;
 using Game.Data.Forest;
@@ -17,7 +17,7 @@ namespace Game.Map
 
         object Lock { get; }
 
-        Dictionary<uint, IPlayer> Players { get; }
+        ConcurrentDictionary<uint, IPlayer> Players { get; }
 
         int GetActivePlayerCount();
 

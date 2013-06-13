@@ -224,7 +224,11 @@ namespace Game.Comm.ProcessorCommands
 
                     player = new Player(playerId, SystemClock.Now, SystemClock.Now, playerName, string.Empty, playerRights, sessionId);
 
-                    world.Players.Add(player.PlayerId, player);
+                    if (!world.Players.TryAdd(player.PlayerId, player))
+                    {
+                        session.CloseSession();
+                        return;
+                    }
                 }
                 else
                 {
@@ -334,17 +338,16 @@ namespace Game.Comm.ProcessorCommands
                 {
                     cityName = packet.GetString().Trim();
                     method = packet.GetByte();
-                    if(method==1)
+                    if (method == 1)
                     {
                         playerName = packet.GetString();
                         playerHash = packet.GetString();
-                        if(playerName.Length==0 || playerHash.Length==0)
+                        if (playerName.Length == 0 || playerHash.Length == 0)
                         {
                             ReplyError(session, packet, Error.PlayerNotFound);
                             return;
                         }
-                    } 
-
+                    }
                 }
                 catch(Exception)
                 {

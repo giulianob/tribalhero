@@ -1,9 +1,7 @@
 #region
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Data;
 using System.Linq;
 using System.Security.Cryptography;
@@ -36,6 +34,8 @@ namespace Game.Data
         public PlayerChatState ChatState { get; private set; }
 
         public AchievementList Achievements { get; private set; }
+
+        public DateTime LastDeletedTribe { get; set; }
 
         public Player(uint playerid,
                       DateTime created,
@@ -287,10 +287,11 @@ namespace Game.Data
                     new DbColumn("online", Session != null, DbType.Boolean),
                     new DbColumn("invitation_tribe_id", TribeRequest, DbType.UInt32),
                     new DbColumn("tutorial_step", TutorialStep, DbType.UInt32),
+                    new DbColumn("last_deleted_tribe", LastDeletedTribe, DbType.DateTime)
                 };
             }
         }
-
+        
         public DbColumn[] DbPrimaryKey
         {
             get

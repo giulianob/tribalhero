@@ -33,9 +33,7 @@ package src.UI.Cursors {
 		private var hasBuildableArea: Boolean;
 		private var hasRoadNearby: Boolean;
 
-		public function BuildStructureCursor() { }
-
-		public function init(type: int, level: int, tilerequirement: String, parentObject: SimpleGameObject):void
+		public function BuildStructureCursor(type: int, level: int, tilerequirement: String, parentObject: SimpleGameObject):void
 		{
 			doubleClickEnabled = true;
 
@@ -68,7 +66,7 @@ package src.UI.Cursors {
 			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
 			buildableArea.objX = point.x; 
 			buildableArea.objY = point.y;
-						
+
 			Global.map.objContainer.addObject(buildableArea, ObjectContainer.LOWER);
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
@@ -179,7 +177,9 @@ package src.UI.Cursors {
 			var requiredRoad: Boolean = !ObjectFactory.isType("NoRoadRequired", type);
 
 			// Set flag so that buildings that dont require roads dont screw up the on screen msg
-			if (!requiredRoad) this.hasRoadNearby = true;
+			if (!requiredRoad) {
+                this.hasRoadNearby = true;
+            }
 
 			// Validate any layouts
 			var builder: CityObject = city.objects.get(parentObj.objectId);
@@ -193,82 +193,15 @@ package src.UI.Cursors {
 			// Check for tile requirement
 			if (tilerequirement != "" && !ObjectFactory.isType(tilerequirement, tileType)) return false;
 
-			var buildingOnRoad: Boolean = RoadPathFinder.isRoad(tileType);
+            var hasRoad: Boolean = RoadPathFinder.CanBuild(mapPos, city, requiredRoad);
 
-			if (!requiredRoad) {
-				// Don't allow structures that don't need roads to be built on top of roads
-				if (buildingOnRoad) return false;
+            hasRoadNearby = !requiredRoad || hasRoad;
 
-				this.hasBuildableArea = true;
-				return true;
-			}
+            if (!hasRoad) {
+                return false;
+            }
 
-			// Keep non road related checks above this
-			// Check for road requirement
-			if (buildingOnRoad) {
-				var breaksPath: Boolean = false;
-				for each(var cityObject: CityObject in city.objects) {
-					if (cityObject.x == city.MainBuilding.x && cityObject.y == city.MainBuilding.y) continue;
-					if (ObjectFactory.isType("NoRoadRequired", cityObject.type)) continue;
-
-					if (!RoadPathFinder.hasPath(new Point(cityObject.x, cityObject.y), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
-						breaksPath = true;
-						break;
-					}
-				}
-
-				if (breaksPath) return false;
-
-				// Make sure all neighbors have a different path
-				var allNeighborsHaveOtherPaths: Boolean = true;
-				MapUtil.foreach_object(mapPos.x, mapPos.y, 1, function(x1: int, y1: int, custom: *) : Boolean
-				{
-					if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) != 1) return true;
-
-					if (city.MainBuilding.x == x1 && city.MainBuilding.y == y1) return true;
-
-					if (RoadPathFinder.isRoadByMapPosition(x1, y1)) {
-						if (!RoadPathFinder.hasPath(new Point(x1, y1), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
-							allNeighborsHaveOtherPaths = false;
-							return false;
-						}
-					}
-
-					return true;
-				}, false, null);
-
-				if (!allNeighborsHaveOtherPaths) return false;
-			}
-
-			var hasRoad: Boolean = false;
-
-			MapUtil.foreach_object(mapPos.x, mapPos.y, 1, function(x1: int, y1: int, custom: *) : Boolean
-			{
-				if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) != 1) return true;
-
-				var structure: CityObject = city.getStructureAt(new Point(x1, y1));
-
-				var hasStructure: Boolean = structure != null;
-
-				// Make sure we have a road around this building
-				if (!hasRoad && !hasStructure && RoadPathFinder.isRoadByMapPosition(x1, y1)) {
-					// If we are building on road, we need to check that all neighbor tiles have another connection to the main building
-					if (!buildingOnRoad || RoadPathFinder.hasPath(new Point(x1, y1), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
-						hasRoad = true;
-					}
-				}
-
-				return true;
-			}, false, null);
-
-			// Set global variable to identify if we have buildable road. This is used for the on screen message
-			if (hasRoad) this.hasRoadNearby = true;
-
-			if (!hasRoad) return false;
-
-			//Set other global variable to identify we have a buildable spot.
 			hasBuildableArea = true;
-
 			return true;
 		}
 

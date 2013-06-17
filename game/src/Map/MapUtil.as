@@ -66,15 +66,7 @@ package src.Map {
 			return id;
 		}
 
-		public static function getTileId(x: int, y: int): int // from screen coord to tile id
-		{
-			var rX: int = x / Constants.tileW;
-			var rY: int = y / Constants.tileH;
-
-			return int(rX % Constants.regionTileW + (rY % Constants.regionTileH) * Constants.regionTileW);
-		}
-
-		public static function getMapCoord(x: int, y: int): Point // from screen coord to map coord
+        public static function getMapCoord(x: int, y: int): Point // from screen coord to map coord
 		{
 			var xcoord: int = int(Math.max(x + int(Constants.tileW / 2), 0) / Constants.tileW);
 			var ycoord: int = Math.round(Math.max(y + (Constants.tileH / 2), 0) / (Constants.tileH / 2));

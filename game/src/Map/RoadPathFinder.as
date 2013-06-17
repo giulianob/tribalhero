@@ -3,8 +3,9 @@ package src.Map
 	import flash.geom.Point;
 	import src.Constants;
 	import src.Global;
+    import src.Objects.Factories.ObjectFactory;
 
-	public class RoadPathFinder
+    public class RoadPathFinder
 	{
 		private static function hasPoint(arr: Array, point: Point) : Boolean {
 
@@ -17,6 +18,77 @@ package src.Map
 
 			return false;
 		}
+
+        public static function CanBuild(mapPos: Point, city: City, requiredRoad: Boolean): Boolean {
+            return true;
+
+            var buildingOnRoad: Boolean = RoadPathFinder.isRoad(Global.map.regions.getTileAt(mapPos.x, mapPos.y));
+
+            if (!requiredRoad) {
+                // Don't allow structures that don't need roads to be built on top of roads
+                return !buildingOnRoad;
+            }
+
+            // Keep non road related checks above this
+            // Check for road requirement
+            if (buildingOnRoad) {
+                var breaksPath: Boolean = false;
+                for each(var cityObject: CityObject in city.objects) {
+                    if (cityObject.x == city.MainBuilding.x && cityObject.y == city.MainBuilding.y) continue;
+                    if (ObjectFactory.isType("NoRoadRequired", cityObject.type)) continue;
+
+                    if (!RoadPathFinder.hasPath(new Point(cityObject.x, cityObject.y), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
+                        breaksPath = true;
+                        break;
+                    }
+                }
+
+                if (breaksPath) return false;
+
+                // Make sure all neighbors have a different path
+                var allNeighborsHaveOtherPaths: Boolean = true;
+                MapUtil.foreach_object(mapPos.x, mapPos.y, 1, function(x1: int, y1: int, custom: *) : Boolean
+                {
+                    if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) != 1) return true;
+
+                    if (city.MainBuilding.x == x1 && city.MainBuilding.y == y1) return true;
+
+                    if (RoadPathFinder.isRoadByMapPosition(x1, y1)) {
+                        if (!RoadPathFinder.hasPath(new Point(x1, y1), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
+                            allNeighborsHaveOtherPaths = false;
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }, false, null);
+
+                if (!allNeighborsHaveOtherPaths) return false;
+            }
+
+            var hasRoad: Boolean = false;
+
+            MapUtil.foreach_object(mapPos.x, mapPos.y, 1, function(x1: int, y1: int, custom: *) : Boolean
+            {
+                if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) != 1) return true;
+
+                var structure: CityObject = city.getStructureAt(new Point(x1, y1));
+
+                var hasStructure: Boolean = structure != null;
+
+                // Make sure we have a road around this building
+                if (!hasRoad && !hasStructure && RoadPathFinder.isRoadByMapPosition(x1, y1)) {
+                    // If we are building on road, we need to check that all neighbor tiles have another connection to the main building
+                    if (!buildingOnRoad || RoadPathFinder.hasPath(new Point(x1, y1), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
+                        hasRoad = true;
+                    }
+                }
+
+                return true;
+            }, false, null);
+
+            return hasRoad;
+        }
 
 		public static function isRoadByMapPosition(x: int, y: int) : Boolean {
 			return isRoad(Global.map.regions.getTileAt(x, y));

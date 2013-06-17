@@ -90,16 +90,15 @@ public class Region extends Sprite
 			{
 				for (var b:int = 0; b < Math.ceil(Constants.regionH / Constants.regionBitmapH); b++)
 				{
-					if (Constants.debug>=3)
+					if (Constants.debug>=3) {
 						Util.log("Creating region part: " + (a * Constants.regionBitmapTileW) + "," + (b * Constants.regionBitmapTileH));
+                    }
 
                     var icon: * = new Assets.ICON_ACHIEVEMENT_ANVIL_BRONZE();
                     var tileset: * = new Tileset();
 
 					createRegionPart(Constants.tileset, a * Constants.regionBitmapTileW, b * Constants.regionBitmapTileH);
-					break;
 				}
-				break;
 			}
 		}
 
@@ -287,7 +286,10 @@ public class Region extends Sprite
 					return null;
 				}
 			}
-			
+
+            var objMapPos: Point = MapUtil.getMapCoord(gameObj.objX, gameObj.objY);
+            clearPlaceholders(objMapPos.x, objMapPos.y);
+
 			//add to object container and to internal list
 			map.objContainer.addObject(gameObj);
 			objects.add(gameObj, sorted);

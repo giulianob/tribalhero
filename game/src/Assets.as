@@ -359,7 +359,7 @@
         public static const TOWER_STRUCTURE: Class;
 
         [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 124, y = 34)]
+        [EmbedPosition(name = "map", x = 124, y = "-50")]
         public static const TOWNCENTER_STRUCTURE: Class;
 
         [Embed(source = "../../graphics/buildings/TRADING_POST_STRUCTURE.png")]

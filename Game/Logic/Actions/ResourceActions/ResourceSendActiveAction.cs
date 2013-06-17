@@ -23,11 +23,30 @@ namespace Game.Logic.Actions
 
         private readonly uint targetCityId;
 
-        public ResourceSendActiveAction(uint cityId, uint structureId, uint targetCityId, Resource resource)
+        private readonly TileLocator tileLocator;
+
+        private IWorld world;
+
+        private Formula formula;
+
+        private ILocker locker;
+
+        public ResourceSendActiveAction(uint cityId,
+                                        uint structureId,
+                                        uint targetCityId,
+                                        Resource resource,
+                                        TileLocator tileLocator,
+                                        IWorld world,
+                                        Formula formula,
+                                        ILocker locker)
         {
             this.cityId = cityId;
             this.structureId = structureId;
             this.targetCityId = targetCityId;
+            this.tileLocator = tileLocator;
+            this.world = world;
+            this.formula = formula;
+            this.locker = locker;
             this.resource = new Resource(resource);
         }
 
@@ -38,9 +57,17 @@ namespace Game.Logic.Actions
                                         int workerType,
                                         byte workerIndex,
                                         ushort actionCount,
-                                        Dictionary<string, string> properties)
+                                        Dictionary<string, string> properties,
+                                        TileLocator tileLocator,
+                                        IWorld world,
+                                        Formula formula,
+                                        ILocker locker)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
+            this.tileLocator = tileLocator;
+            this.world = world;
+            this.formula = formula;
+            this.locker = locker;
             cityId = uint.Parse(properties["city_id"]);
             targetCityId = uint.Parse(properties["target_city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
@@ -72,12 +99,12 @@ namespace Game.Logic.Actions
             ICity city, targetCity;
             IStructure structure;
 
-            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!world.TryGetObjects(cityId, structureId, out city, out structure))
             {
                 return Error.ObjectNotFound;
             }
 
-            if (!World.Current.TryGetObjects(targetCityId, out targetCity))
+            if (!world.TryGetObjects(targetCityId, out targetCity))
             {
                 return Error.ObjectNotFound;
             }
@@ -89,7 +116,7 @@ namespace Game.Logic.Actions
             }
 
             // Make sure we aren't exceeding our trade capacity
-            if (!Formula.Current.GetSendCapacity(structure).HasEnough(resource))
+            if (!formula.GetSendCapacity(structure).HasEnough(resource))
             {
                 return Error.ResourceExceedTradeLimit;
             }
@@ -117,13 +144,10 @@ namespace Game.Logic.Actions
 
         public int CalculateTradeTime(IStructure structure, ICity targetCity)
         {
-            return
-                    (int)
-                    CalculateTime(Formula.Current.SendTime(structure,
-                                                           SimpleGameObject.TileDistance(structure.X,
-                                                                                         structure.Y,
-                                                                                         targetCity.X,
-                                                                                         targetCity.Y)));
+            return (int)CalculateTime(formula.SendTime(structure, tileLocator.TileDistance(structure.X,
+                                                                                           structure.Y,
+                                                                                           targetCity.X,
+                                                                                           targetCity.Y)));
         }
 
         public override void UserCancelled()
@@ -140,7 +164,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
             IStructure structure;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (!IsValid())
                 {
@@ -156,7 +180,7 @@ namespace Game.Logic.Actions
                 if (!wasKilled)
                 {
                     city.BeginUpdate();
-                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, resource));
+                    city.Resource.Add(formula.GetActionCancelResource(BeginTime, resource));
                     city.EndUpdate();
                 }
 
@@ -167,7 +191,7 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             Dictionary<uint, ICity> cities;
-            using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
+            using (locker.Lock(out cities, cityId, targetCityId))
             {
                 if (!IsValid())
                 {

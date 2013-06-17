@@ -49,7 +49,7 @@ namespace Game.Data.Tribe
 
         public void Add(ITribe tribe)
         {
-            tribe.Id = (uint)tribeIdGen.GetNext();
+            tribe.Id = tribeIdGen.GetNext();
             if (!Tribes.TryAdd(tribe.Id, tribe))
             {
                 return;

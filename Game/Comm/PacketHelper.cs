@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Dynamic;
 using System.Linq;
 using Game.Battle;
@@ -16,7 +15,6 @@ using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Database;
 using Game.Logic;
-using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -66,8 +64,9 @@ namespace Game.Comm
         public static void AddToPacket(ISimpleGameObject obj, Packet packet, bool forRegion = false)
         {
             packet.AddUInt16(obj.Type);
-            packet.AddUInt16((ushort)(obj.RelX));
-            packet.AddUInt16((ushort)(obj.RelY));
+
+            packet.AddUInt16((ushort)(obj.X % Config.region_width));
+            packet.AddUInt16((ushort)(obj.Y % Config.region_height));
 
             packet.AddUInt32(obj.GroupId);
             packet.AddUInt32(obj.ObjectId);
@@ -507,7 +506,7 @@ namespace Game.Comm
             }
         }
 
-        public static void AddToPacket(ILocation location, Packet packet)
+        private static void AddToPacket(ILocation location, Packet packet)
         {
             if (location == null)
             {
@@ -535,7 +534,7 @@ namespace Game.Comm
                     if (targetStronghold != null ||
                         Ioc.Kernel.Get<IStrongholdManager>().TryGetStronghold(location.LocationId, out targetStronghold))
                     {
-                        packet.AddUInt32(targetStronghold.Id);
+                        packet.AddUInt32(targetStronghold.ObjectId);
                         packet.AddString(targetStronghold.Name);
                         packet.AddUInt32(targetStronghold.Tribe == null ? 0 : targetStronghold.Tribe.Id);
                         packet.AddString(targetStronghold.Tribe == null ? "" : targetStronghold.Tribe.Name);
@@ -554,7 +553,7 @@ namespace Game.Comm
         {
             var simpleStub = new SimpleStub();
 
-            foreach (FormationType t in formations)
+            for (int i = 0; i < formations.Length; i++)
             {
                 FormationType formationType = (FormationType)packet.GetByte();
                 if (!formations.Contains(formationType))
@@ -696,7 +695,7 @@ namespace Game.Comm
                 packet.AddInt16((short)strongholds.Count);
                 foreach (var stronghold in strongholds)
                 {
-                    packet.AddUInt32(stronghold.Id);
+                    packet.AddUInt32(stronghold.ObjectId);
                     packet.AddString(stronghold.Name);
                     packet.AddByte((byte)stronghold.StrongholdState);
                     packet.AddByte(stronghold.Lvl);
@@ -729,7 +728,7 @@ namespace Game.Comm
                 packet.AddInt16((short)strongholds.Count);
                 foreach (var stronghold in strongholds)
                 {
-                    packet.AddUInt32(stronghold.Id);
+                    packet.AddUInt32(stronghold.ObjectId);
                     packet.AddString(stronghold.Name);
                     packet.AddUInt32(stronghold.Tribe == null ? 0 : stronghold.Tribe.Id);
                     packet.AddString(stronghold.Tribe == null ? string.Empty : stronghold.Tribe.Name);
@@ -781,7 +780,7 @@ namespace Game.Comm
                 packet.AddInt16((short)strongholds.Count);
                 foreach (var stronghold in strongholds)
                 {
-                    packet.AddUInt32(stronghold.Id);                    
+                    packet.AddUInt32(stronghold.ObjectId);                    
                     packet.AddString(stronghold.Name);
                     packet.AddByte(stronghold.Lvl);
                     packet.AddUInt32(stronghold.X);
@@ -802,7 +801,7 @@ namespace Game.Comm
             else
             {
                 packet.AddByte(1);
-                packet.AddUInt32(stronghold.Id);
+                packet.AddUInt32(stronghold.ObjectId);
                 packet.AddString(stronghold.Name);
                 packet.AddByte(stronghold.Lvl);
                 packet.AddFloat((float)stronghold.Gate);
@@ -834,9 +833,6 @@ namespace Game.Comm
                         }
                     }
                 }
-
-                // Incoming List
-                // Reports
             }
         }
     }

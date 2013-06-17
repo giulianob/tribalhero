@@ -48,9 +48,9 @@ namespace Game.Data.BarbarianTribe
 
         public void DbLoaderAdd(IBarbarianTribe barbarianTribe)
         {
-            idGenerator.Set(barbarianTribe.Id);
+            idGenerator.Set(barbarianTribe.ObjectId);
 
-            barbarianTribes.AddOrUpdate(barbarianTribe.Id, barbarianTribe, (id, old) => barbarianTribe);            
+            barbarianTribes.AddOrUpdate(barbarianTribe.ObjectId, barbarianTribe, (id, old) => barbarianTribe);            
             regionManager.DbLoaderAdd(barbarianTribe);
             barbarianTribe.CampRemainsChanged += BarbarianTribeOnCampRemainsChanged;
         }
@@ -97,7 +97,7 @@ namespace Game.Data.BarbarianTribe
 
         private void Add(IBarbarianTribe barbarianTribe)
         {
-            barbarianTribes.AddOrUpdate(barbarianTribe.Id, barbarianTribe, (id, old) => barbarianTribe);
+            barbarianTribes.AddOrUpdate(barbarianTribe.ObjectId, barbarianTribe, (id, old) => barbarianTribe);
 
             barbarianTribe.BeginUpdate();
             regionManager.Add(barbarianTribe);
@@ -123,7 +123,7 @@ namespace Game.Data.BarbarianTribe
             }            
 
             IBarbarianTribe obj;
-            if (!barbarianTribes.TryRemove(barbarianTribe.Id, out obj))
+            if (!barbarianTribes.TryRemove(barbarianTribe.ObjectId, out obj))
             {
                 return;
             }

@@ -118,8 +118,8 @@ namespace Game.Map
                 offset = 1;
             }
 
-            int xDistance = (int)new MapMath().AbsDiff(x, x1) - xoffset;
-            var yDistance = (int)new MapMath().AbsDiff(y, y1);
+            int xDistance = (int)(x > x1 ? x - x1 : x1 - x) - xoffset;
+            var yDistance = (int)(y > y1 ? y - y1 : y1 - y);
             int yhalf = yDistance / 2;
             int x05 = Math.Min(xDistance, yhalf);
             int x15 = xDistance > yhalf ? xDistance - yhalf : 0;

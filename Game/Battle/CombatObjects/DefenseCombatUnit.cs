@@ -331,14 +331,6 @@ namespace Game.Battle.CombatObjects
             }
         }
 
-        public bool IsAttacker
-        {
-            get
-            {
-                return false;
-            }
-        }
-
         public override Resource Loot
         {
             get

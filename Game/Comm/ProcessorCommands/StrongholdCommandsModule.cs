@@ -52,7 +52,7 @@ namespace Game.Comm.ProcessorCommands
                 reply.AddInt16((short)strongholds.Count);
                 foreach (var stronghold in strongholds)
                 {
-                    reply.AddUInt32(stronghold.Id);
+                    reply.AddUInt32(stronghold.ObjectId);
                     reply.AddString(stronghold.Name);
                     reply.AddByte(stronghold.Lvl);
                     reply.AddUInt32(stronghold.X);

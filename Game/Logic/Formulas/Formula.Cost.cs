@@ -17,7 +17,7 @@ namespace Game.Logic.Formulas
         /// <summary>
         ///     Returns the cost for building the specified structure
         /// </summary>
-        public virtual Resource StructureCost(ICity city, uint type, byte lvl, StructureBaseStats stats)
+        public virtual Resource StructureCost(ICity city, IStructureBaseStats stats)
         {
             if (city.Battle == null)
             {

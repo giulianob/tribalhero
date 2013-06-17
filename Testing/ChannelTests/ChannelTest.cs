@@ -15,7 +15,7 @@ namespace Testing.ChannelTests
     /// </summary>
     public class ChannelTest
     {
-        private readonly Game.Util.Channel channel;
+        private readonly Game.Util.IChannel channel;
 
         private readonly Packet msg1 = new Packet();
 

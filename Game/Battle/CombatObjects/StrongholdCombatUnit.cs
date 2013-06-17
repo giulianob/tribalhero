@@ -198,7 +198,7 @@ namespace Game.Battle.CombatObjects
             {
                 return new[]
                 {
-                        new DbColumn("stronghold_id", Stronghold.Id, DbType.UInt32),
+                        new DbColumn("stronghold_id", Stronghold.ObjectId, DbType.UInt32),
                         new DbColumn("group_id", GroupId, DbType.UInt32), new DbColumn("level", lvl, DbType.Byte),
                         new DbColumn("count", count, DbType.UInt16), new DbColumn("type", type, DbType.UInt16),
                         new DbColumn("left_over_hp", LeftOverHp, DbType.Decimal),
@@ -222,14 +222,6 @@ namespace Game.Battle.CombatObjects
             get
             {
                 return new Resource();
-            }
-        }
-
-        public bool IsAttacker
-        {
-            get
-            {
-                return false;
             }
         }
 

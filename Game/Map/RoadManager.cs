@@ -6,6 +6,7 @@ using System.Linq;
 using Game.Comm;
 using Game.Data;
 using Game.Setup;
+using Game.Util;
 using Ninject;
 
 #endregion
@@ -18,15 +19,15 @@ namespace Game.Map
 
         private readonly ObjectTypeFactory objectTypeFactory;
 
-        private readonly RadiusLocator radiusLocator;
+        private readonly IChannel channel;
 
-        public RoadManager(IRegionManager regionManager, ObjectTypeFactory objectTypeFactory, RadiusLocator radiusLocator)
+        public RoadManager(IRegionManager regionManager, ObjectTypeFactory objectTypeFactory, IChannel channel)
         {
             this.regionManager = regionManager;
             this.objectTypeFactory = objectTypeFactory;
-            this.radiusLocator = radiusLocator;
+            this.channel = channel;
 
-            regionManager.ObjectAdded += RegionManagerOnObjectAdded;
+            //regionManager.ObjectAdded += RegionManagerOnObjectAdded;
         }
 
         private void RegionManagerOnObjectAdded(object sender, ObjectEvent e)
@@ -52,7 +53,7 @@ namespace Game.Map
                     packet.AddUInt16(update.TileType);
                 }
 
-                Global.Current.Channel.Post("/WORLD/" + list.Key, packet);
+                channel.Post("/WORLD/" + list.Key, packet);
             }
         }
 
@@ -140,6 +141,7 @@ namespace Game.Map
                 {
                     continue; // Not a road here
                 }
+
                 List<TileUpdate> list;
                 if (!updates.TryGetValue(regionId, out list))
                 {
@@ -257,13 +259,13 @@ namespace Game.Map
             // Grab the list of actual tiles based on the road type we need.
             uint[] types;
 
-            if (World.Current[x, y].Exists(s => s is IStructure))
+            if (regionManager[x, y].Exists(s => s is IStructure))
             {
-                types = Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("RoadSetStructures");
+                types = objectTypeFactory.GetTypes("RoadSetStructures");
             }
             else
             {
-                types = Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("RoadSet1");
+                types = objectTypeFactory.GetTypes("RoadSet1");
             }
 
             // Set the new road tile

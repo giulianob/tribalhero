@@ -17,8 +17,6 @@ namespace Game.Data.BarbarianTribe
 
         public const string DB_TABLE = "barbarian_tribes";
 
-        public uint Id { get; private set; }
-
         public IActionWorker Worker { get; private set; }
 
         public Resource Resource { private set; get; }
@@ -44,22 +42,22 @@ namespace Game.Data.BarbarianTribe
 
         private readonly IDbManager dbManager;
 
-        public BarbarianTribe(uint id, 
-            byte level, 
-            uint x, 
-            uint y, 
-            int count, 
-            Resource resources, 
-            IDbManager dbManager, 
-            IActionWorker actionWorker) : base(x, y)
+        public BarbarianTribe(uint id,
+                              byte level,
+                              uint x,
+                              uint y,
+                              int count,
+                              Resource resources,
+                              IDbManager dbManager,
+                              IActionWorker actionWorker) 
+            : base(id, x, y)
         {
             this.dbManager = dbManager;
 
-            Id = id;
             Lvl = level;
             Worker = actionWorker;
-            Resource = resources;            
-            CampRemains = (byte)count;            
+            Resource = resources;
+            CampRemains = (byte)count;
             Created = DateTime.UtcNow;
             LastAttacked = DateTime.MinValue;
 
@@ -90,14 +88,6 @@ namespace Game.Data.BarbarianTribe
             {
                 return (uint)SystemGroupIds.BarbarianTribe;
             }
-        }
-
-        public override uint ObjectId
-        {
-            get
-            {
-                return Id;
-            }            
         }
 
         protected override void CheckUpdateMode()
@@ -154,7 +144,7 @@ namespace Game.Data.BarbarianTribe
         {
             get
             {
-                return Id;
+                return ObjectId;
             }
         }
 
@@ -191,7 +181,7 @@ namespace Game.Data.BarbarianTribe
         {
             get
             {
-                return new[] {new DbColumn("id", Id, DbType.UInt32)};
+                return new[] {new DbColumn("id", ObjectId, DbType.UInt32)};
             }
         }
 
@@ -203,8 +193,8 @@ namespace Game.Data.BarbarianTribe
                 {
                         new DbColumn("level", Lvl, DbType.Byte), 
                         new DbColumn("camp_remains", CampRemains, DbType.Byte), 
-                        new DbColumn("x", x, DbType.UInt32), 
-                        new DbColumn("y", y, DbType.UInt32),
+                        new DbColumn("x", X, DbType.UInt32), 
+                        new DbColumn("y", Y, DbType.UInt32),
                         new DbColumn("state", (byte)State.Type, DbType.Boolean),
                         new DbColumn("state_parameters", XmlSerializer.SerializeList(State.Parameters.ToArray()), DbType.String),
                         new DbColumn("resource_crop", Resource.Crop, DbType.Int32),
@@ -224,7 +214,7 @@ namespace Game.Data.BarbarianTribe
         {
             get
             {
-                return Id;
+                return ObjectId;
             }
         }
 
@@ -234,7 +224,7 @@ namespace Game.Data.BarbarianTribe
         {
             get
             {
-                return Id;
+                return ObjectId;
             }
         }
 
@@ -252,7 +242,7 @@ namespace Game.Data.BarbarianTribe
         {
             get
             {
-                return (int)Id;
+                return (int)ObjectId;
             }
         }
 

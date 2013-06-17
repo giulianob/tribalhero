@@ -55,13 +55,13 @@ namespace Common.Testing
                 IStronghold stronghold = o as IStronghold;
                 if (stronghold != null)
                 {
-                    strongholds.Add(stronghold.Id, stronghold);
+                    strongholds.Add(stronghold.ObjectId, stronghold);
                 }
 
                 IBarbarianTribe barbarianTribe = o as IBarbarianTribe;
                 if (barbarianTribe != null)
                 {
-                    barbarianTribes.Add(barbarianTribe.Id, barbarianTribe);
+                    barbarianTribes.Add(barbarianTribe.ObjectId, barbarianTribe);
                 }
             }
         }

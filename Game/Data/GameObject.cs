@@ -10,7 +10,7 @@ namespace Game.Data
 {
     public abstract class GameObject : SimpleGameObject, IGameObject
     {
-        protected GameObject(uint x, uint y) : base(x, y)
+        protected GameObject(uint objectId, uint x, uint y) : base(objectId, x, y)
         {
         }
 
@@ -43,7 +43,7 @@ namespace Game.Data
         {
             get
             {
-                return objectId;
+                return ObjectId;
             }
         }
 

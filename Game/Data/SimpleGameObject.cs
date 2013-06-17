@@ -1,6 +1,8 @@
 #region
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using Game.Data.Events;
 using Game.Map;
 using Game.Setup;
@@ -16,8 +18,6 @@ namespace Game.Data
 
         public enum SystemGroupIds : uint
         {
-            NewCityStartTile = 10000001,
-
             Forest = 10000002,
 
             Stronghold = 10000003,
@@ -36,11 +36,7 @@ namespace Game.Data
             BarbarianTribe = 400,
         }
 
-        protected uint objectId;
-
-        protected uint x;
-
-        protected uint y;
+        private uint objectId;
 
         #region Properties
 
@@ -52,7 +48,7 @@ namespace Game.Data
         {
             get
             {
-                return (ushort)(x % Config.city_region_width);
+                return (ushort)(PrimaryPosition.X % Config.city_region_width);
             }
         }
 
@@ -60,7 +56,7 @@ namespace Game.Data
         {
             get
             {
-                return (ushort)(y % Config.city_region_height);
+                return (ushort)(PrimaryPosition.Y % Config.city_region_height);
             }
         }
 
@@ -91,39 +87,29 @@ namespace Game.Data
             }
         }
 
+        public Position PrimaryPosition { get; private set; }
+
         public abstract ushort Type { get; }
 
         public abstract uint GroupId { get; }
 
-        public virtual uint ObjectId
+        public uint ObjectId
         {
             get
             {
                 return objectId;
-            }
-            set
-            {
-                CheckUpdateMode();
-                objectId = value;
-            }
+            }          
         }
 
         public uint X
         {
             get
             {
-                return x;
+                return PrimaryPosition.X;
             }
             set
             {
-                CheckUpdateMode();
-
-                if (inWorld)
-                {
-                    origX = x;
-                }
-
-                x = value;
+                PrimaryPosition.X = value;
             }
         }
 
@@ -131,34 +117,11 @@ namespace Game.Data
         {
             get
             {
-                return y;
+                return PrimaryPosition.Y;
             }
             set
             {
-                CheckUpdateMode();
-
-                if (inWorld)
-                {
-                    origY = y;
-                }
-
-                y = value;
-            }
-        }
-
-        public uint RelX
-        {
-            get
-            {
-                return x % Config.region_width;
-            }
-        }
-
-        public uint RelY
-        {
-            get
-            {
-                return y % Config.region_height;
+                PrimaryPosition.Y = value;
             }
         }
 
@@ -166,20 +129,20 @@ namespace Game.Data
 
         #region Constructors
 
-        protected SimpleGameObject(uint x, uint y)
+        protected SimpleGameObject(uint objectId, uint x, uint y)
         {
-            this.x = x;
-            this.y = y;
+            this.objectId = objectId;
+            this.PrimaryPosition = new Position(x, y);
             this.state = GameObjectState.NormalState();
+
+            this.PrimaryPosition.PropertyChanged += PrimaryPositionOnPropertyChanged;
         }
 
         #endregion
 
         #region Update Events
 
-        private uint origX;
-
-        private uint origY;
+        private Position originalPosition = new Position();
 
         protected bool Updating;
 
@@ -220,21 +183,37 @@ namespace Game.Data
                 return false;
             }
 
-            ObjectUpdated.Raise(this, new SimpleGameObjectArgs(this) {OriginalX = origX, OriginalY = origY});
+            ObjectUpdated.Raise(this, new SimpleGameObjectArgs(this) {OriginalX = originalPosition.X, OriginalY = originalPosition.Y});
 
             return true;
         }
 
-        #endregion
+        private void PrimaryPositionOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            CheckUpdateMode();
 
-        #region Methods
+            if (!inWorld)
+            {
+                return;
+            }
+
+            if (propertyChangedEventArgs.PropertyName == "X")
+            {
+                originalPosition.X = PrimaryPosition.X;
+            }
+            else if (propertyChangedEventArgs.PropertyName == "Y")
+            {
+                originalPosition.Y = PrimaryPosition.Y;
+            }
+        }
+
+        #endregion
 
         private void SaveOrigPos()
         {
             if (InWorld)
             {
-                origX = x;
-                origY = y;
+                originalPosition = PrimaryPosition.Clone();
             }
         }
 
@@ -243,64 +222,9 @@ namespace Game.Data
             return string.Format("{0} x[{1}] y[{2}] type[{3}] groupId[{4}] objId[{5}]", base.ToString(), X, Y, Type, GroupId, ObjectId);
         }
 
-        public int TileDistance(uint x1, uint y1)
+        public IEnumerable<Position> Positions()
         {
-            return TileDistance(x, y, x1, y1);
+            throw new NotImplementedException();
         }
-
-        public int TileDistance(ISimpleGameObject obj)
-        {
-            return TileDistance(obj.X, obj.Y);
-        }
-
-        public int RadiusDistance(uint x1, uint y1)
-        {
-            return RadiusDistance(x, y, x1, y1);
-        }
-
-        public int RadiusDistance(ISimpleGameObject obj)
-        {
-            return RadiusDistance(obj.X, obj.Y);
-        }
-
-        /// <summary>
-        ///     Returns whether the two tiles are diagonal to one another.
-        ///     NOTE: This function only handles case where the distance between both tiles is 1. If the distance is greater, you will get invalid results.
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="x1"></param>
-        /// <param name="y1"></param>
-        /// <returns></returns>
-        public static bool IsDiagonal(uint x, uint y, uint x1, uint y1)
-        {
-            return y % 2 != y1 % 2;
-        }
-
-        /// <summary>
-        ///     Returns whether two tiles are perpendicular. This means that they are on the same lines if you were to just draw
-        ///     lines going up/down and left/right from a tile.
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="x1"></param>
-        /// <param name="y1"></param>
-        /// <returns></returns>
-        public static bool IsPerpendicular(uint x, uint y, uint x1, uint y1)
-        {
-            return y == y1 || (x == x1 && y % 2 == y1 % 2);
-        }
-
-        public static int TileDistance(uint x, uint y, uint x1, uint y1)
-        {
-            return TileLocator.Current.TileDistance(x, y, x1, y1);
-        }
-
-        public static int RadiusDistance(uint x, uint y, uint x1, uint y1)
-        {
-            return RadiusLocator.Current.RadiusDistance(x, y, x1, y1);
-        }
-
-        #endregion
     }
 }

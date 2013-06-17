@@ -16,6 +16,8 @@ namespace MapGenerator
 
         private static int numberOfWoodland = 2;
 
+        private static MapMath mapMath = new MapMath();
+
         private static bool AreaClear(uint ox, uint oy, uint x, uint y, object custom)
         {
             var map = (ushort[])custom;
@@ -50,8 +52,8 @@ namespace MapGenerator
                 }
                 while (map[y * Program.REGION_WIDTH + x] == FARM_TILE ||
                        map[y * Program.REGION_WIDTH + x] == WOODLAND_TILE ||
-                       SimpleGameObject.TileDistance(x, y, cityLocation.X, cityLocation.Y) <= 1 ||
-                       !SimpleGameObject.IsPerpendicular(x, y, cityLocation.X, cityLocation.Y));
+                       TileLocator.Current.TileDistance(x, y, cityLocation.X, cityLocation.Y) <= 1 ||
+                       !mapMath.IsPerpendicular(x, y, cityLocation.X, cityLocation.Y));
 
                 map[y * Program.REGION_WIDTH + x] = FARM_TILE;
             }
@@ -67,10 +69,10 @@ namespace MapGenerator
                                                     out x,
                                                     out y);
                 }
-                while (SimpleGameObject.TileDistance(x, y, cityLocation.X, cityLocation.Y) <= 1 ||
+                while (TileLocator.Current.TileDistance(x, y, cityLocation.X, cityLocation.Y) <= 1 ||
                        map[y * Program.REGION_WIDTH + x] == FARM_TILE ||
                        map[y * Program.REGION_WIDTH + x] == WOODLAND_TILE ||
-                       !SimpleGameObject.IsPerpendicular(x, y, cityLocation.X, cityLocation.Y));
+                       !mapMath.IsPerpendicular(x, y, cityLocation.X, cityLocation.Y));
                 map[y * Program.REGION_WIDTH + x] = WOODLAND_TILE;
             }
         }

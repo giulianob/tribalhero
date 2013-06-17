@@ -87,7 +87,7 @@ namespace Game.Setup
             }
         }
 
-        public Resource GetCost(int type, int lvl)
+        public Resource GetCost(ushort type, int lvl)
         {
             StructureBaseStats tmp;
             return dict.TryGetValue(type * 100 + lvl, out tmp) ? new Resource(tmp.Cost) : null;

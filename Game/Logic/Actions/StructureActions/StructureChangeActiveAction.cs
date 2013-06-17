@@ -27,12 +27,27 @@ namespace Game.Logic.Actions
 
         private Resource cost;
 
-        public StructureChangeActiveAction(uint cityId, uint structureId, uint type, byte lvl)
+        private readonly StructureCsvFactory structureCsvFactory;
+
+        private readonly Formula formula;
+
+        private readonly IWorld world;
+
+        private readonly Procedure procedure;
+
+        private readonly ILocker locker;
+
+        public StructureChangeActiveAction(uint cityId, uint structureId, uint type, byte lvl, StructureCsvFactory structureCsvFactory, Formula formula, IWorld world, Procedure procedure, ILocker locker)
         {
             this.cityId = cityId;
             this.structureId = structureId;
             this.type = type;
             this.lvl = lvl;
+            this.structureCsvFactory = structureCsvFactory;
+            this.formula = formula;
+            this.world = world;
+            this.procedure = procedure;
+            this.locker = locker;
         }
 
         public StructureChangeActiveAction(uint id,
@@ -42,9 +57,19 @@ namespace Game.Logic.Actions
                                            int workerType,
                                            byte workerIndex,
                                            ushort actionCount,
-                                           IDictionary<string, string> properties)
+                                           IDictionary<string, string> properties,
+                                           StructureCsvFactory structureCsvFactory,
+                                           Formula formula,
+                                           IWorld world,
+                                           Procedure procedure,
+                                           ILocker locker)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
+            this.structureCsvFactory = structureCsvFactory;
+            this.formula = formula;
+            this.world = world;
+            this.procedure = procedure;
+            this.locker = locker;
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
             lvl = byte.Parse(properties["lvl"]);
@@ -85,12 +110,12 @@ namespace Game.Logic.Actions
         {
             ICity city;
             IStructure structure;
-            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!world.TryGetObjects(cityId, structureId, out city, out structure))
             {
                 return Error.ObjectNotFound;
             }
 
-            cost = Formula.Current.StructureCost(structure.City, type, lvl);
+            cost = formula.StructureCost(structure.City, structureCsvFactory.GetBaseStats((ushort)type, lvl));
             if (cost == null)
             {
                 return Error.ObjectNotFound;
@@ -105,15 +130,10 @@ namespace Game.Logic.Actions
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            endTime =
-                    DateTime.UtcNow.AddSeconds(
-                                               CalculateTime(
-                                                             Formula.Current.BuildTime(
-                                                                                       Ioc.Kernel.Get<StructureCsvFactory>()
-                                                                                          .GetTime((ushort)type, lvl),
-                                                                                       city,
-                                                                                       structure.Technologies)));
-            BeginTime = DateTime.UtcNow;
+            var buildTime = formula.BuildTime(structureCsvFactory.GetTime((ushort)type, lvl), city, structure.Technologies);
+
+            endTime = SystemClock.Now.AddSeconds(CalculateTime(buildTime));
+            BeginTime = SystemClock.Now;
 
             return Error.Ok;
         }
@@ -121,7 +141,7 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll(bool wasKilled)
         {
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (!IsValid())
                 {
@@ -131,7 +151,7 @@ namespace Game.Logic.Actions
                 if (!wasKilled)
                 {
                     city.BeginUpdate();
-                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, cost));
+                    city.Resource.Add(formula.GetActionCancelResource(BeginTime, cost));
                     city.EndUpdate();
                 }
 
@@ -155,7 +175,7 @@ namespace Game.Logic.Actions
             IStructure structure;
 
             // Block structure
-            using (Concurrency.Current.Lock(cityId, structureId, out city, out structure))
+            using (locker.Lock(cityId, structureId, out city, out structure))
             {
                 if (!IsValid())
                 {
@@ -175,7 +195,7 @@ namespace Game.Logic.Actions
 
             structure.City.Worker.Remove(structure, new GameAction[] {this});
 
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (!IsValid())
                 {
@@ -191,7 +211,7 @@ namespace Game.Logic.Actions
                 city.BeginUpdate();
                 structure.BeginUpdate();
                 structure.IsBlocked = 0;
-                Procedure.Current.StructureChange(structure, (ushort)type, lvl);
+                procedure.StructureChange(structure, (ushort)type, lvl);
                 structure.EndUpdate();
                 city.EndUpdate();
 

@@ -70,19 +70,6 @@ namespace Game.Data.Troop
             }
         }
 
-        public override uint ObjectId
-        {
-            get
-            {
-                return objectId;
-            }
-            set
-            {
-                CheckUpdateMode();
-                objectId = value;
-            }
-        }
-
         public override ushort Type
         {
             get
@@ -93,9 +80,9 @@ namespace Game.Data.Troop
 
         #region Constructors
 
-        public TroopObject(uint id, ITroopStub stub, uint x, uint y, IDbManager dbManager) : base(x, y)
+        public TroopObject(uint id, ITroopStub stub, uint x, uint y, IDbManager dbManager) 
+            : base(id, x, y)
         {
-            objectId = id;
             this.dbManager = dbManager;
             Stub = stub;
         }
@@ -113,7 +100,7 @@ namespace Game.Data.Troop
         {
             var update = base.Update();
 
-            if (update && objectId > 0)
+            if (update && ObjectId > 0)
             {
                 dbManager.Save(this);
             }
@@ -145,7 +132,7 @@ namespace Game.Data.Troop
         {
             get
             {
-                return objectId;
+                return ObjectId;
             }
         }
 

@@ -29,9 +29,8 @@ namespace Game.Data
                          uint y,
                          ITechnologyManager technologyManager,
                          StructureProperties structureProperties,
-                         IDbManager dbManager) : base(x, y)
+                         IDbManager dbManager) : base(structureId, x, y)
         {
-            objectId = structureId;
             this.stats = stats;
             this.dbManager = dbManager;
             techmanager = technologyManager;

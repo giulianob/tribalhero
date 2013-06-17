@@ -58,6 +58,8 @@ namespace Game.Data.Tribe
 
         private string publicDescription = string.Empty;
 
+        private readonly TileLocator tileLocator;
+
         public Tribe(IPlayer owner,
                      string name,
                      Procedure procedure,
@@ -65,7 +67,8 @@ namespace Game.Data.Tribe
                      Formula formula,
                      IAssignmentFactory assignmentFactory,
                      ICityManager cityManager,
-                     IStrongholdManager strongholdManager)
+                     IStrongholdManager strongholdManager, 
+                     TileLocator tileLocator)
                 : this(
                         owner: owner,
                         name: name,
@@ -81,7 +84,8 @@ namespace Game.Data.Tribe
                         formula: formula,
                         assignmentFactory: assignmentFactory,
                         cityManager: cityManager,
-                        strongholdManager: strongholdManager)
+                        strongholdManager: strongholdManager, 
+                        tileLocator: tileLocator)
         {
         }
 
@@ -99,7 +103,8 @@ namespace Game.Data.Tribe
                      Formula formula,
                      IAssignmentFactory assignmentFactory,
                      ICityManager cityManager,
-                     IStrongholdManager strongholdManager)
+                     IStrongholdManager strongholdManager, 
+                     TileLocator tileLocator)
         {
             LeavingTribesmates = new List<LeavingTribesmate>();
 
@@ -109,6 +114,7 @@ namespace Game.Data.Tribe
             this.assignmentFactory = assignmentFactory;
             this.cityManager = cityManager;
             this.strongholdManager = strongholdManager;
+            this.tileLocator = tileLocator;
             Owner = owner;
             Level = level;
             Resource = resource;
@@ -607,7 +613,7 @@ namespace Game.Data.Tribe
             }
 
             // Player creating the assignment cannot be late (Give a few minutes lead)
-            int distance = SimpleGameObject.TileDistance(stub.City.X, stub.City.Y, x, y);
+            int distance = tileLocator.TileDistance(stub.City.X, stub.City.Y, x, y);
             DateTime reachTime = DateTime.UtcNow.AddSeconds(formula.MoveTimeTotal(stub, distance, true));
 
             if (reachTime.Subtract(new TimeSpan(0, 1, 0)) > time)

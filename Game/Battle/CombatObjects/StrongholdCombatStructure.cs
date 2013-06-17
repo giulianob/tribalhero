@@ -15,22 +15,22 @@ using Persistance;
 namespace Game.Battle.CombatObjects
 {
     /// <summary>
-    ///     TODO: This class cant be used directly since the DbLoader is always creating a StrongholdCombatGate when loading from this table
+    ///     NOTE: This class cant be used directly since the DbLoader is always creating a StrongholdCombatGate when loading from this table
     ///     If we need to use this class then make the DbLoader load either a StrongholdCombatStructure or StrongholdCombatGate depending on what was created.
     /// </summary>
-    public class StrongholdCombatStructure : CombatObject
+    public abstract class StrongholdCombatStructure : CombatObject
     {
         public const string DB_TABLE = "stronghold_combat_structures";
 
-        protected readonly byte lvl;
+        private readonly byte lvl;
 
-        protected readonly BattleStats stats;
+        private readonly BattleStats stats;
 
-        protected readonly ushort type;
+        private readonly ushort type;
 
         protected decimal hp;
 
-        public StrongholdCombatStructure(uint id,
+        protected StrongholdCombatStructure(uint id,
                                          uint battleId,
                                          ushort type,
                                          byte lvl,
@@ -48,7 +48,7 @@ namespace Game.Battle.CombatObjects
             stats = new BattleStats(structureCsvFactory.GetBaseStats(type, lvl).Battle);
         }
 
-        protected IStronghold Stronghold { get; set; }
+        protected IStronghold Stronghold { get; private set; }
 
         public override BattleClass ClassType
         {
@@ -70,8 +70,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return (ushort)(Hp > 0 ? 1 : 0);
-                ;
+                return (ushort)(Hp > 0 ? 1 : 0);                
             }
         }
 
@@ -169,9 +168,11 @@ namespace Game.Battle.CombatObjects
             {
                 return new[]
                 {
-                        new DbColumn("stronghold_id", Stronghold.Id, DbType.UInt32),
-                        new DbColumn("group_id", GroupId, DbType.UInt32), new DbColumn("level", lvl, DbType.Byte),
-                        new DbColumn("type", type, DbType.UInt16), new DbColumn("hp", hp, DbType.Decimal),
+                        new DbColumn("stronghold_id", Stronghold.ObjectId, DbType.UInt32),
+                        new DbColumn("group_id", GroupId, DbType.UInt32), 
+                        new DbColumn("level", lvl, DbType.Byte),
+                        new DbColumn("type", type, DbType.UInt16), 
+                        new DbColumn("hp", hp, DbType.Decimal),
                         new DbColumn("last_round", LastRound, DbType.UInt32),
                         new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
                         new DbColumn("damage_min_dealt", MinDmgDealt, DbType.UInt16),
@@ -192,14 +193,6 @@ namespace Game.Battle.CombatObjects
             get
             {
                 return new Resource();
-            }
-        }
-
-        public bool IsAttacker
-        {
-            get
-            {
-                return false;
             }
         }
 

@@ -126,21 +126,21 @@ namespace Game.Logic.Actions
         private bool Work(uint ox, uint oy, uint x, uint y, object custom)
         {
             var recordForeach = (RecordForeach)custom;
-            int distance = SimpleGameObject.TileDistance(x, y, this.x, this.y);
+            int distance = tileLocator.TileDistance(x, y, this.x, this.y);
 
             if (distance < recordForeach.ShortestDistance)
             {
                 recordForeach.ShortestDistance = distance;
                 recordForeach.X = x;
                 recordForeach.Y = y;
-                recordForeach.IsShortestDistanceDiagonal = SimpleGameObject.IsDiagonal(x, y, ox, oy);
+                recordForeach.IsShortestDistanceDiagonal = IsDiagonal(y, ox, oy);
             }
             else if (distance == recordForeach.ShortestDistance && !recordForeach.IsShortestDistanceDiagonal)
             {
                 recordForeach.ShortestDistance = distance;
                 recordForeach.X = x;
                 recordForeach.Y = y;
-                recordForeach.IsShortestDistanceDiagonal = SimpleGameObject.IsDiagonal(x, y, ox, oy);
+                recordForeach.IsShortestDistanceDiagonal = IsDiagonal(y, ox, oy);
             }
             return true;
         }
@@ -169,13 +169,14 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
-            distanceRemaining = Math.Max(1, troopObj.TileDistance(x, y));
+            distanceRemaining = Math.Max(1, tileLocator.TileDistance(troopObj.X, troopObj.Y, x, y));
 
             double moveTimeTotal = formula.MoveTimeTotal(troopObj.Stub, distanceRemaining, isAttacking);
 
-            if (ActionConfigTime() != null)
+            var actionConfigTime = ActionConfigTime();
+            if (actionConfigTime != null)
             {
-                moveTime = ActionConfigTime().Value;
+                moveTime = actionConfigTime.Value;
             }
             else
             {
@@ -260,6 +261,11 @@ namespace Game.Logic.Actions
                 nextTime = DateTime.UtcNow.AddSeconds(moveTime);
                 StateChange(ActionState.Fired);
             }
+        }
+
+        private bool IsDiagonal(uint y, uint x1, uint y1)
+        {
+            return y % 2 != y1 % 2;
         }
 
         #region Nested type: RecordForeach

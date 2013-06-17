@@ -10,7 +10,7 @@ using Game.Comm;
 
 namespace Game.Util
 {
-    public class Channel
+    public class Channel : IChannel
     {
         #region Structs
 

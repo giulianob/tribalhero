@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using Game.Data;
+using Game.Map;
 
 #endregion
 
@@ -38,32 +39,18 @@ namespace Game.Logic.Requirements.LayoutRequirements
         {
             foreach (var obj in objects)
             {
-                if (req.Type != obj.Type)
+                if (req.Type != obj.Type || obj.Lvl > req.MaxLvl || obj.Lvl < req.MinLvl)
                 {
                     continue;
                 }
 
-                if (obj.Lvl > req.MaxLvl)
+                int dist = RadiusLocator.Current.RadiusDistance(obj.X, obj.Y, x, y);
+
+                if (dist > req.MaxDist || dist < req.MinDist)
                 {
                     continue;
                 }
 
-                if (obj.Lvl < req.MinLvl)
-                {
-                    continue;
-                }
-
-                int dist = obj.RadiusDistance(x, y);
-
-                if (dist > req.MaxDist)
-                {
-                    continue;
-                }
-
-                if (dist < req.MinDist)
-                {
-                    continue;
-                }
                 return false;
             }
             return true;
@@ -73,34 +60,21 @@ namespace Game.Logic.Requirements.LayoutRequirements
         {
             foreach (var obj in objects)
             {
-                if (req.Type != obj.Type)
+                if (req.Type != obj.Type || obj.Lvl > req.MaxLvl || obj.Lvl < req.MinLvl)
                 {
                     continue;
                 }
 
-                if (obj.Lvl > req.MaxLvl)
+                int dist = RadiusLocator.Current.RadiusDistance(obj.X, obj.Y, x, y);
+
+                if (dist > req.MaxDist || dist < req.MinDist)
                 {
                     continue;
                 }
 
-                if (obj.Lvl < req.MinLvl)
-                {
-                    continue;
-                }
-
-                int dist = obj.RadiusDistance(x, y);
-
-                if (dist > req.MaxDist)
-                {
-                    continue;
-                }
-
-                if (dist < req.MinDist)
-                {
-                    continue;
-                }
                 return true;
             }
+
             return false;
         }
     }

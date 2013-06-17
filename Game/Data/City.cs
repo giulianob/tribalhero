@@ -537,12 +537,7 @@ namespace Game.Data
                 return Worker.DoPassive(this, removeAction, false) == Error.Ok;
             }
         }
-
-        public List<IGameObject> GetInRange(uint x, uint y, uint inRadius)
-        {
-            return this.Where(structure => structure.TileDistance(x, y) <= inRadius).Cast<IGameObject>().ToList();
-        }
-
+        
         #endregion
 
         #region Updates

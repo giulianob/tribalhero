@@ -147,11 +147,13 @@
     <Compile Include="FormulaTests\ResourceFormulaTest.cs" />
     <Compile Include="FormulaTests\WeaponExportTest.cs" />
     <Compile Include="FormulaTests\MoveTimeTotalTest.cs" />
+    <Compile Include="GameObjectTests\SimpleGameObjectTests.cs" />
     <Compile Include="LockingTests\CallbackLockTest.cs" />
     <Compile Include="LockingTests\DefaultMultiObjectLockTests.cs" />
-    <Compile Include="MapMathTests\SimpleGameObjectTest.cs" />
+    <Compile Include="MapMathTests\MapMathTests.cs" />
     <Compile Include="MapMathTests\TileLocatorTests.cs" />
     <Compile Include="MapMathTests\RadiusTest.cs" />
+    <Compile Include="MapTests\PositionTests.cs" />
     <Compile Include="NinjectTests\FactoryMethodNameProviderTests.cs" />
     <Compile Include="PlayerTests\AchievementListTest.cs" />
     <Compile Include="TribeTests\TribeManagerTests.cs" />

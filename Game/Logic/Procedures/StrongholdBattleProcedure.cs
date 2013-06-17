@@ -66,12 +66,12 @@ namespace Game.Logic.Procedures
             else
             {
                 var battleOwner = targetStronghold.Tribe == null
-                                          ? new BattleOwner(BattleOwnerType.Stronghold, targetStronghold.Id)
+                                          ? new BattleOwner(BattleOwnerType.Stronghold, targetStronghold.ObjectId)
                                           : new BattleOwner(BattleOwnerType.Tribe, targetStronghold.Tribe.Id);
 
                 targetStronghold.MainBattle =
                         battleManagerFactory.CreateStrongholdMainBattleManager(
-                                                                               new BattleLocation(BattleLocationType.Stronghold, targetStronghold.Id),
+                                                                               new BattleLocation(BattleLocationType.Stronghold, targetStronghold.ObjectId),
                                                                                battleOwner,
                                                                                targetStronghold);
 
@@ -80,7 +80,7 @@ namespace Game.Logic.Procedures
 
                 combatGroup = battleProcedure.AddAttackerToBattle(targetStronghold.MainBattle, attackerTroopObject);
 
-                var battlePassiveAction = actionFactory.CreateStrongholdMainBattlePassiveAction(targetStronghold.Id);
+                var battlePassiveAction = actionFactory.CreateStrongholdMainBattlePassiveAction(targetStronghold.ObjectId);
                 Error result = targetStronghold.Worker.DoPassive(targetStronghold, battlePassiveAction, false);
                 if (result != Error.Ok)
                 {
@@ -153,19 +153,19 @@ namespace Game.Logic.Procedures
             else
             {
                 var battleOwner = targetStronghold.Tribe == null
-                                          ? new BattleOwner(BattleOwnerType.Stronghold, targetStronghold.Id)
+                                          ? new BattleOwner(BattleOwnerType.Stronghold, targetStronghold.ObjectId)
                                           : new BattleOwner(BattleOwnerType.Tribe, targetStronghold.Tribe.Id);
 
                 targetStronghold.GateBattle =
                         battleManagerFactory.CreateStrongholdGateBattleManager(
                                                                                new BattleLocation(BattleLocationType.StrongholdGate,
-                                                                                                  targetStronghold.Id),
+                                                                                                  targetStronghold.ObjectId),
                                                                                battleOwner,
                                                                                targetStronghold);
 
                 combatGroup = battleProcedure.AddAttackerToBattle(targetStronghold.GateBattle, attackerTroopObject);
 
-                var battlePassiveAction = actionFactory.CreateStrongholdGateBattlePassiveAction(targetStronghold.Id);
+                var battlePassiveAction = actionFactory.CreateStrongholdGateBattlePassiveAction(targetStronghold.ObjectId);
                 Error result = targetStronghold.Worker.DoPassive(targetStronghold, battlePassiveAction, false);
                 if (result != Error.Ok)
                 {

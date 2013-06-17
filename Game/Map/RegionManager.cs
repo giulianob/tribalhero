@@ -22,14 +22,14 @@ namespace Game.Map
 
         private readonly TileLocator tileLocator;
 
-        private readonly Channel channel;
+        private readonly IChannel channel;
 
         private Region[] regions;
 
         public RegionManager(ICityRegionManagerFactory cityRegionManagerFactory,
                              IRegionFactory regionFactory,
                              TileLocator tileLocator,
-                             Channel channel)
+                             IChannel channel)
         {
             this.cityRegionManagerFactory = cityRegionManagerFactory;
             this.regionFactory = regionFactory;

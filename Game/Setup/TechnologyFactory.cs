@@ -146,7 +146,8 @@ namespace Game.Setup
             {
                 return new Resource();
             }
-            Resource ret = Ioc.Kernel.Get<StructureCsvFactory>().GetCost(buildType, buildLvl) * 1 / 3;
+
+            Resource ret = Ioc.Kernel.Get<StructureCsvFactory>().GetCost((ushort)buildType, buildLvl) * 1 / 3;
             ret /= 10;
             return ret * 10;
         }

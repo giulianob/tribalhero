@@ -29,6 +29,8 @@ namespace Game.Map
 
         public Error CanBuild(uint x, uint y, ICity city, bool requiresRoad)
         {
+            return Error.Ok;
+
             bool buildingOnRoad = world.Roads.IsRoad(x, y);
 
             if (requiresRoad)
@@ -73,7 +75,7 @@ namespace Game.Map
                                                 false,
                                                 (origX, origY, x1, y1, custom) =>
                                                     {
-                                                        if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1)
+                                                        if (radiusLocator.RadiusDistance(origX, origY, x1, y1) != 1)
                                                         {
                                                             return true;
                                                         }
@@ -114,7 +116,7 @@ namespace Game.Map
                                             false,
                                             delegate(uint origX, uint origY, uint x1, uint y1, object custom)
                                                 {
-                                                    if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1)
+                                                    if (radiusLocator.RadiusDistance(origX, origY, x1, y1) != 1)
                                                     {
                                                         return true;
                                                     }

@@ -25,7 +25,7 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly ILocker locker;
 
-        private readonly Util.Channel channel;
+        private readonly Util.IChannel channel;
 
         private readonly TileLocator tileLocator;
 
@@ -34,7 +34,7 @@ namespace Game.Comm.ProcessorCommands
                                     ObjectTypeFactory objectTypeFactory,
                                     IRoadPathFinder roadPathFinder,
                                     ILocker locker,
-                                    Util.Channel channel,
+                                    Util.IChannel channel,
                                     TileLocator tileLocator)
         {
             this.radiusLocator = radiusLocator;

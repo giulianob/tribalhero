@@ -45,6 +45,8 @@ namespace Game.Logic.Actions
 
         private uint campId;
 
+        private readonly TileLocator tileLocator;
+
         public ForestCampBuildActiveAction(uint cityId,
                                            uint lumbermillId,
                                            uint forestId,
@@ -57,7 +59,8 @@ namespace Game.Logic.Actions
                                            InitFactory initFactory,
                                            ReverseTileLocator reverseTileLocator,
                                            IForestManager forestManager,
-                                           ILocker locker)
+                                           ILocker locker, 
+                                           TileLocator tileLocator)
         {
             this.cityId = cityId;
             this.lumbermillId = lumbermillId;
@@ -71,6 +74,7 @@ namespace Game.Logic.Actions
             this.reverseTileLocator = reverseTileLocator;
             this.forestManager = forestManager;
             this.locker = locker;
+            this.tileLocator = tileLocator;
             this.campType = campType;
         }
 
@@ -89,7 +93,8 @@ namespace Game.Logic.Actions
                                            InitFactory initFactory,
                                            IForestManager forestManager,
                                            ReverseTileLocator reverseTileLocator,
-                                           ILocker locker)
+                                           ILocker locker, 
+                                           TileLocator tileLocator)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             this.formula = formula;
@@ -100,6 +105,7 @@ namespace Game.Logic.Actions
             this.forestManager = forestManager;
             this.reverseTileLocator = reverseTileLocator;
             this.locker = locker;
+            this.tileLocator = tileLocator;
             cityId = uint.Parse(properties["city_id"]);
             lumbermillId = uint.Parse(properties["lumbermill_id"]);
             campId = uint.Parse(properties["camp_id"]);
@@ -161,7 +167,7 @@ namespace Game.Logic.Actions
             }
 
             // Cost requirement
-            Resource cost = formula.StructureCost(city, campType, 1);
+            Resource cost = formula.StructureCost(city, structureCsvFactory.GetBaseStats(campType, 1));
 
             // Add labor count to the total cost
             cost.Labor += labors;
@@ -244,8 +250,8 @@ namespace Game.Logic.Actions
             forest.EndUpdate();
 
             // add to queue for completion
-            var campBuildTime = structureFactory.GetTime(campType, 1);
-            var actionEndTime = formula.GetLumbermillCampBuildTime(campBuildTime, lumbermill, forest);
+            var campBuildTime = structureCsvFactory.GetTime(campType, 1);
+            var actionEndTime = formula.GetLumbermillCampBuildTime(campBuildTime, lumbermill, forest, tileLocator);
 
             endTime = SystemClock.Now.AddSeconds(CalculateTime(actionEndTime));
             BeginTime = SystemClock.Now;
@@ -344,11 +350,6 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                // Give any cost associated with the camp back (laborers are not done here)
-                city.BeginUpdate();
-                city.Resource.Add(formula.GetActionCancelResource(BeginTime, formula.StructureCost(city, campType, 1)));
-                city.EndUpdate();
-
                 // Get camp
                 IStructure structure;
                 if (!city.TryGetStructure(campId, out structure))
@@ -356,6 +357,11 @@ namespace Game.Logic.Actions
                     StateChange(ActionState.Failed);
                     return;
                 }
+
+                // Give any cost associated with the camp back (laborers are not done here)
+                city.BeginUpdate();
+                city.Resource.Add(formula.GetActionCancelResource(BeginTime, formula.StructureCost(city, structure.Stats.Base)));
+                city.EndUpdate();
 
                 city.References.Remove(structure, this);
 

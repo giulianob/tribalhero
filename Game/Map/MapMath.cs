@@ -2,11 +2,13 @@ namespace Game.Map
 {
     public class MapMath
     {
-        public delegate byte Distance(uint x, uint y, uint x1, uint y1);
-
-        public uint AbsDiff(uint val1, uint val2)
+        /// <summary>
+        ///     Returns whether two tiles are perpendicular. This means that they are on the same lines if you were to just draw
+        ///     lines going up/down and left/right from a tile.
+        /// </summary>
+        public virtual bool IsPerpendicular(uint x, uint y, uint x1, uint y1)
         {
-            return (val1 > val2 ? val1 - val2 : val2 - val1);
+            return y == y1 || (x == x1 && y % 2 == y1 % 2);
         }
     }
 }

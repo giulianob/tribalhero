@@ -317,7 +317,7 @@ namespace Game.Database
                                                 StubId = (ushort)reader["stub_id"],
                                                 Dispatched = (byte)reader["dispatched"] == 1
                                             },
-                                            key => (int)key.Id);
+                                            key => (int)key.ObjectId);
             }
 
             foreach (var reader in DbManager.Select(Assignment.DB_TABLE).ReadAll())

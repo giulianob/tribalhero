@@ -185,7 +185,7 @@ namespace Game.Logic.Actions
             var structureBaseStats = structureCsvFactory.GetBaseStats(type, level);
 
             // cost requirement
-            cost = formula.StructureCost(city, type, level, structureBaseStats);
+            cost = formula.StructureCost(city, structureBaseStats);
             if (!city.Resource.HasEnough(cost))
             {
                 world.Regions.UnlockRegion(x, y);
@@ -328,13 +328,11 @@ namespace Game.Logic.Actions
                 {
                     string[] tokens = parms[1].Split('|');
                     ushort tileType = world.Regions.GetTileType(x, y);
-                    foreach (var str in tokens)
+                    if (tokens.Any(str => objectTypeFactory.IsTileType(str, tileType)))
                     {
-                        if (objectTypeFactory.IsTileType(str, tileType))
-                        {
-                            return Error.Ok;
-                        }
+                        return Error.Ok;
                     }
+
                     return Error.TileMismatch;
                 }
             }

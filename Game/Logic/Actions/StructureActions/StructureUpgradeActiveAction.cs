@@ -26,10 +26,43 @@ namespace Game.Logic.Actions
 
         private ushort type;
 
-        public StructureUpgradeActiveAction(uint cityId, uint structureId)
+        private readonly StructureCsvFactory structureCsvFactory;
+
+        private readonly Formula formula;
+
+        private readonly IWorld world;
+
+        private readonly Procedure procedure;
+
+        private readonly ILocker locker;
+
+        private readonly RequirementFactory requirementFactory;
+
+        private readonly ObjectTypeFactory objectTypeFactory;
+
+        private readonly InitFactory initFactory;
+
+        public StructureUpgradeActiveAction(uint cityId,
+                                            uint structureId,
+                                            StructureCsvFactory structureCsvFactory,
+                                            Formula formula,
+                                            IWorld world,
+                                            Procedure procedure,
+                                            ILocker locker,
+                                            RequirementFactory requirementFactory,
+                                            ObjectTypeFactory objectTypeFactory,
+                                            InitFactory initFactory)
         {
             this.cityId = cityId;
             this.structureId = structureId;
+            this.structureCsvFactory = structureCsvFactory;
+            this.formula = formula;
+            this.world = world;
+            this.procedure = procedure;
+            this.locker = locker;
+            this.requirementFactory = requirementFactory;
+            this.objectTypeFactory = objectTypeFactory;
+            this.initFactory = initFactory;
         }
 
         public StructureUpgradeActiveAction(uint id,
@@ -39,9 +72,25 @@ namespace Game.Logic.Actions
                                             int workerType,
                                             byte workerIndex,
                                             ushort actionCount,
-                                            Dictionary<string, string> properties)
+                                            Dictionary<string, string> properties,
+                                            StructureCsvFactory structureCsvFactory,
+                                            Formula formula,
+                                            IWorld world,
+                                            Procedure procedure,
+                                            ILocker locker,
+                                            RequirementFactory requirementFactory,
+                                            ObjectTypeFactory objectTypeFactory,
+                                            InitFactory initFactory)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
+            this.structureCsvFactory = structureCsvFactory;
+            this.formula = formula;
+            this.world = world;
+            this.procedure = procedure;
+            this.locker = locker;
+            this.requirementFactory = requirementFactory;
+            this.objectTypeFactory = objectTypeFactory;
+            this.initFactory = initFactory;
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
             cost = new Resource(int.Parse(properties["crop"]),
@@ -72,29 +121,29 @@ namespace Game.Logic.Actions
             ICity city;
             IStructure structure;
 
-            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!world.TryGetObjects(cityId, structureId, out city, out structure))
             {
                 return Error.ObjectNotFound;
             }
 
-            int maxConcurrentUpgrades = Formula.Current.ConcurrentBuildUpgrades(((IStructure)city[1]).Lvl);
+            int maxConcurrentUpgrades = formula.ConcurrentBuildUpgrades(((IStructure)city[1]).Lvl);
 
-            if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsObjectType("UnlimitedBuilding", type) &&
+            if (!objectTypeFactory.IsObjectType("UnlimitedBuilding", type) &&
                 city.Worker.ActiveActions.Values.Count(
                                                        action =>
                                                        action.ActionId != ActionId &&
                                                        (action.Type == ActionType.StructureUpgradeActive ||
                                                         (action.Type == ActionType.StructureBuildActive &&
-                                                         !Ioc.Kernel.Get<ObjectTypeFactory>()
-                                                             .IsObjectType("UnlimitedBuilding",
-                                                                              ((StructureBuildActiveAction)action)
-                                                                                      .BuildType)))) >=
+                                                         objectTypeFactory
+                                                                 .IsObjectType("UnlimitedBuilding",
+                                                                               ((StructureBuildActiveAction)action)
+                                                                                       .BuildType)))) >=
                 maxConcurrentUpgrades)
             {
                 return Error.ActionTotalMaxReached;
             }
 
-            cost = Formula.Current.StructureCost(city, structure.Type, (byte)(structure.Lvl + 1));
+            cost = formula.StructureCost(city, structureCsvFactory.GetBaseStats(structure.Type, (byte)(structure.Lvl + 1)));
             type = structure.Type;
 
             if (cost == null)
@@ -103,10 +152,9 @@ namespace Game.Logic.Actions
             }
 
             // layout requirement
-            if (
-                    !Ioc.Kernel.Get<RequirementFactory>()
-                        .GetLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1))
-                        .Validate(structure, structure.Type, structure.X, structure.Y))
+            if (!requirementFactory
+                         .GetLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1))
+                         .Validate(structure, structure.Type, structure.X, structure.Y))
             {
                 return Error.LayoutNotFullfilled;
             }
@@ -120,17 +168,9 @@ namespace Game.Logic.Actions
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            endTime =
-                    DateTime.UtcNow.AddSeconds(
-                                               CalculateTime(
-                                                             Formula.Current.BuildTime(
-                                                                                       Ioc.Kernel.Get<StructureCsvFactory>()
-                                                                                          .GetTime(structure.Type,
-                                                                                                   (byte)
-                                                                                                   (structure.Lvl + 1)),
-                                                                                       city,
-                                                                                       structure.Technologies)));
-            BeginTime = DateTime.UtcNow;
+            var buildTime = formula.BuildTime(structureCsvFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)), city, structure.Technologies);
+            endTime = SystemClock.Now.AddSeconds(CalculateTime(buildTime));
+            BeginTime = SystemClock.Now;
 
             return Error.Ok;
         }
@@ -138,14 +178,14 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            IStructure structure;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (!IsValid())
                 {
                     return;
                 }
 
+                IStructure structure;
                 if (!city.TryGetStructure(structureId, out structure))
                 {
                     StateChange(ActionState.Failed);
@@ -153,14 +193,12 @@ namespace Game.Logic.Actions
                 }
 
                 structure.BeginUpdate();
-                Ioc.Kernel.Get<StructureCsvFactory>()
-                   .GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
-                Ioc.Kernel.Get<InitFactory>()
-                   .InitGameObject(InitCondition.OnUpgrade, structure, structure.Type, structure.Lvl);
+                structureCsvFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
+                initFactory.InitGameObject(InitCondition.OnUpgrade, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 
                 structure.City.BeginUpdate();
-                Procedure.Current.OnStructureUpgradeDowngrade(structure);
+                procedure.OnStructureUpgradeDowngrade(structure);
                 structure.City.EndUpdate();
 
                 StateChange(ActionState.Completed);
@@ -175,14 +213,14 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll(bool wasKilled)
         {
             ICity city;
-            IStructure structure;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (!IsValid())
                 {
                     return;
                 }
 
+                IStructure structure;
                 if (!city.TryGetStructure(structureId, out structure))
                 {
                     StateChange(ActionState.Failed);
@@ -192,7 +230,7 @@ namespace Game.Logic.Actions
                 if (!wasKilled)
                 {
                     city.BeginUpdate();
-                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, cost));
+                    city.Resource.Add(formula.GetActionCancelResource(BeginTime, cost));
                     city.EndUpdate();
                 }
 
@@ -219,9 +257,12 @@ namespace Game.Logic.Actions
                 return
                         XmlSerializer.Serialize(new[]
                         {
-                                new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId),
-                                new XmlKvPair("wood", cost.Wood), new XmlKvPair("crop", cost.Crop),
-                                new XmlKvPair("iron", cost.Iron), new XmlKvPair("gold", cost.Gold),
+                                new XmlKvPair("city_id", cityId), 
+                                new XmlKvPair("structure_id", structureId),
+                                new XmlKvPair("wood", cost.Wood), 
+                                new XmlKvPair("crop", cost.Crop),
+                                new XmlKvPair("iron", cost.Iron), 
+                                new XmlKvPair("gold", cost.Gold),
                                 new XmlKvPair("labor", cost.Labor)
                         });
             }

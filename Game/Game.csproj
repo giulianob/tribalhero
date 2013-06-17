@@ -243,6 +243,8 @@
     <Compile Include="Data\GameObjectFactory.cs" />
     <Compile Include="Data\ICityFactory.cs" />
     <Compile Include="Data\IGameObjectFactory.cs" />
+    <Compile Include="Data\IGlobal.cs" />
+    <Compile Include="Data\IMapPosition.cs" />
     <Compile Include="Data\ITechnologyManagerFactory.cs" />
     <Compile Include="Data\Forest\IForest.cs" />
     <Compile Include="Data\Forest\IForestFactory.cs" />
@@ -486,6 +488,7 @@
     <Compile Include="Util\EventHandlerExtensions.cs" />
     <Compile Include="Util\EnumExtension.cs" />
     <Compile Include="Util\FileExtension.cs" />
+    <Compile Include="Util\IChannel.cs" />
     <Compile Include="Util\Inflector.cs" />
     <Compile Include="Util\CmdParserExtension.cs" />
     <Compile Include="Util\HexDump.cs" />

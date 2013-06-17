@@ -36,13 +36,16 @@ namespace Game.Data.Forest
 
         private readonly LargeIdGenerator objectIdGenerator = new LargeIdGenerator(Config.forest_id_max, Config.forest_id_min);
 
+        private readonly TileLocator tileLocator;
+
         public ForestManager(IScheduler scheduler,
                              IWorld world,
                              IDbManager dbManager,
                              Formula formula,
                              IForestFactory forestFactory,
                              ObjectTypeFactory objectTypeFactory,
-                             IActionFactory actionFactory)
+                             IActionFactory actionFactory,
+                             TileLocator tileLocator)
         {
             this.scheduler = scheduler;
             this.world = world;
@@ -51,6 +54,8 @@ namespace Game.Data.Forest
             this.forestFactory = forestFactory;
             this.objectTypeFactory = objectTypeFactory;
             this.actionFactory = actionFactory;
+            this.tileLocator = tileLocator;
+
             ForestCount = new int[Config.forest_count.Length];
             forests = new Dictionary<uint, IForest>();
         }
@@ -75,7 +80,7 @@ namespace Game.Data.Forest
             return world.Regions.GetRegion(x, y)
                         .GetObjects()
                         .OfType<IForest>()
-                        .Any(forest => forest.TileDistance(x, y) <= radius);
+                        .Any(forest => tileLocator.TileDistance(forest.X, forest.Y, x, y) <= radius);
         }
 
         public void CreateForest(byte lvl, int capacity, double rate)

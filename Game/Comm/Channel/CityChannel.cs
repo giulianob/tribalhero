@@ -11,7 +11,7 @@ namespace Game.Comm.Channel
 {
     public class CityChannel : ICityChannel
     {
-        private readonly Util.Channel channel;
+        private readonly Util.IChannel channel;
 
         private readonly Procedure procedure;
 
@@ -19,7 +19,7 @@ namespace Game.Comm.Channel
 
         private readonly IRegionManager regionManager;
 
-        public CityChannel(Util.Channel channel, Procedure procedure, Formula formula, IRegionManager regionManager)
+        public CityChannel(Util.IChannel channel, Procedure procedure, Formula formula, IRegionManager regionManager)
         {
             this.channel = channel;
             this.procedure = procedure;

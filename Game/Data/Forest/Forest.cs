@@ -32,25 +32,16 @@ namespace Game.Data.Forest
 
         private readonly IActionFactory actionFactory;
 
+        private readonly IScheduler scheduler;
+
+        private readonly IDbManager dbManager;
+
         /// <summary>
         ///     The structures currently getting wood from this forest
         /// </summary>
         private readonly List<IStructure> structures = new List<IStructure>();
 
         public ForestDepleteAction DepleteAction { get; set; }
-
-        public override uint ObjectId
-        {
-            get
-            {
-                return objectId;
-            }
-            set
-            {
-                CheckUpdateMode();
-                objectId = value;
-            }
-        }
 
         public override ushort Type
         {
@@ -103,11 +94,13 @@ namespace Game.Data.Forest
 
         #region Constructors
 
-        public Forest(uint id, byte lvl, int capacity, double rate, uint x, uint y, IActionFactory actionFactory) : base(x, y)
+        public Forest(uint id, byte lvl, int capacity, double rate, uint x, uint y, IActionFactory actionFactory, IScheduler scheduler, IDbManager dbManager) 
+            : base(id, x, y)
         {
-            this.objectId = id;
             this.lvl = lvl;
             this.actionFactory = actionFactory;
+            this.scheduler = scheduler;
+            this.dbManager = dbManager;
 
             Wood = new AggressiveLazyValue(capacity) {Limit = capacity};
 
@@ -219,7 +212,7 @@ namespace Game.Data.Forest
         {
             if (DepleteAction != null)
             {
-                Scheduler.Current.Remove(DepleteAction);
+                scheduler.Remove(DepleteAction);
             }
 
             double hours = 2 * 24 + Config.Random.NextDouble() * 24;
@@ -238,7 +231,7 @@ namespace Game.Data.Forest
 
             DepleteAction = actionFactory.CreateForestDepleteAction(this, DepleteTime);
 
-            Scheduler.Current.Put(DepleteAction);
+            scheduler.Put(DepleteAction);
         }
 
         #endregion
@@ -264,9 +257,9 @@ namespace Game.Data.Forest
         {
             var update = base.Update();
 
-            if (update && objectId > 0)
+            if (update && ObjectId > 0)
             {
-                DbPersistance.Current.Save(this);
+                dbManager.Save(this);
             }
 
             return update;

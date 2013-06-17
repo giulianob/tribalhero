@@ -2,13 +2,14 @@
 
 using FluentAssertions;
 using Game.Data;
+using Game.Map;
 using Xunit.Extensions;
 
 #endregion
 
 namespace Testing.MapMathTests
 {
-    public class SimpleGameObjectTest
+    public class MapMathTests
     {
         [Theory, InlineData(13, 11, 11, 8, false), InlineData(13, 11, 11, 10, false), InlineData(13, 11, 11, 12, false),
          InlineData(13, 11, 12, 9, false), InlineData(13, 11, 12, 10, false), InlineData(13, 11, 13, 12, false),
@@ -23,15 +24,11 @@ namespace Testing.MapMathTests
          InlineData(12, 15, 13, 19, false), InlineData(12, 15, 13, 20, false), InlineData(12, 15, 10, 17, false),
          InlineData(13, 18, 12, 15, false), InlineData(13, 18, 12, 16, false), InlineData(13, 18, 13, 17, false),
          InlineData(1689, 3118, 1691, 3117, false)]
-        // Odd-Odd
-        // Even-Odd
-        // Even-Even
-        // Odd-Even
-        // Special
-        
         public void TestPerpendicular(int x, int y, int x1, int y1, bool expected)
         {
-            SimpleGameObject.IsPerpendicular((uint)x, (uint)y, (uint)x1, (uint)y1).Should().Be(expected);
+            new MapMath().IsPerpendicular((uint)x, (uint)y, (uint)x1, (uint)y1).Should().Be(expected);
         }
+
+
     }
 }

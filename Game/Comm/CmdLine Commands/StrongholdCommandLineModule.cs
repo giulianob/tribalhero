@@ -32,12 +32,15 @@ namespace Game.Comm
 
         private readonly IWorld world;
 
+        private readonly TileLocator tileLocator;
+
         public StrongholdCommandLineModule(ITribeManager tribeManager,
                                            IWorld world,
                                            ILocker locker,
                                            IStrongholdManager strongholdManager,
                                            MapFactory mapFactory,
-                                           Formula formula)
+                                           Formula formula,
+                                           TileLocator tileLocator)
         {
             this.tribeManager = tribeManager;
             this.world = world;
@@ -45,6 +48,7 @@ namespace Game.Comm
             this.strongholdManager = strongholdManager;
             this.mapFactory = mapFactory;
             this.formula = formula;
+            this.tileLocator = tileLocator;
         }
 
         public override void RegisterCommands(CommandLineProcessor processor)
@@ -70,7 +74,7 @@ namespace Game.Comm
                 using(locker.Lock(stronghold))
                 {
                     stronghold.BeginUpdate();
-                    int count = list.Count(pt => stronghold.TileDistance(pt.X, pt.Y) <= Config.stronghold_radius_base + Config.stronghold_radius_per_level * stronghold.Lvl);
+                    int count = list.Count(pt => tileLocator.TileDistance(stronghold.X, stronghold.Y, pt.X, pt.Y) <= Config.stronghold_radius_base + Config.stronghold_radius_per_level * stronghold.Lvl);
                     stronghold.NearbyCitiesCount =
                             (ushort)
                             count;

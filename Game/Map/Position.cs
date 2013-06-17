@@ -1,18 +1,50 @@
 using System;
+using System.ComponentModel;
+using Game.Util;
 
 namespace Game.Map
 {
     public class Position : IEquatable<Position>, IComparable<Position>, IComparable
     {
-        public Position(uint x, uint y)
+        public event EventHandler<PropertyChangedEventArgs> PropertyChanged;
+
+        private uint x;
+
+        private uint y;
+
+        public Position(uint x = 0, uint y = 0)
         {
-            X = x;
-            Y = y;
+            this.x = x;
+            this.y = y;
         }
 
-        public uint X { get; set; }
+        public uint X
+        {
+            get
+            {
+                return x;
+            }
 
-        public uint Y { get; set; }
+            set
+            {
+                x = value;
+                PropertyChanged.Raise(this, new PropertyChangedEventArgs("X"));
+            }
+        }
+        
+        public uint Y
+        {
+            get
+            {
+                return y;
+            }
+
+            set
+            {
+                y = value;
+                PropertyChanged.Raise(this, new PropertyChangedEventArgs("Y"));
+            }
+        }
 
         public virtual Position Top()
         {
@@ -135,6 +167,11 @@ namespace Game.Map
         public int CompareTo(object obj)
         {
             return CompareTo(obj as Position);
+        }
+
+        public Position Clone()
+        {
+            return new Position(x, y);
         }
     }
 }

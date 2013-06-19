@@ -23,7 +23,7 @@ namespace Game.Logic
                 Requirement req1 = req; // Copy for local closure
                 if (builder.City.Any(structure =>
                                      structure.Type == req1.Type && structure.Lvl >= req1.MinLvl && structure.Lvl <= req1.MaxLvl &&
-                                     RadiusLocator.Current.RadiusDistance(structure.X, structure.Y, x, y) < radius + 1))
+                                     TileLocator.Current.RadiusDistance(structure.X, structure.Y, x, y) < radius + 1))
                 {
                     return false;
                 }

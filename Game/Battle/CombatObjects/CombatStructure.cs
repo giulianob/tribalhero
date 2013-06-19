@@ -234,7 +234,7 @@ namespace Game.Battle.CombatObjects
         {
             if (obj.ClassType == BattleClass.Unit)
             {
-                return RadiusLocator.Current.IsOverlapping(obj.Location(),
+                return TileLocator.Current.IsOverlapping(obj.Location(),
                                                            obj.AttackRadius(),
                                                            new Position(Structure.X, Structure.Y),
                                                            Structure.Stats.Base.Radius);

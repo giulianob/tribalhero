@@ -67,7 +67,7 @@ namespace Game.Data.Tribe
                      Formula formula,
                      IAssignmentFactory assignmentFactory,
                      ICityManager cityManager,
-                     IStrongholdManager strongholdManager, 
+                     IStrongholdManager strongholdManager,
                      TileLocator tileLocator)
                 : this(
                         owner: owner,
@@ -84,7 +84,7 @@ namespace Game.Data.Tribe
                         formula: formula,
                         assignmentFactory: assignmentFactory,
                         cityManager: cityManager,
-                        strongholdManager: strongholdManager, 
+                        strongholdManager: strongholdManager,
                         tileLocator: tileLocator)
         {
         }

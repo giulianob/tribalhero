@@ -5,6 +5,7 @@ using FluentAssertions;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using NSubstitute;
@@ -18,7 +19,13 @@ namespace Testing.FormulaTests
     {
         public StrongholdFormulaTest()
         {
-            SystemClock.SetClock(new DateTime(2013, 1, 1, 1, 1, 1, 1));
+            SystemClock.SetClock(new DateTime(2013, 1, 1, 1, 1, 1, 1));            
+        }
+
+        public void Dispose()
+        {
+            SystemClock.ResyncClock();
+            Global.Current = null;
         }
 
         [Theory]
@@ -130,11 +137,10 @@ namespace Testing.FormulaTests
         {
             var serverDate = SystemClock.Now.Subtract(TimeSpan.FromDays((double)serverDays));
 
-            Global.Current.SystemVariables.Clear();
+            Global.Current = Substitute.For<IGlobal>();
+            Global.Current.SystemVariables.Returns(new Dictionary<string, SystemVariable>());
             Global.Current.SystemVariables.Add("Server.date", new SystemVariable("Server.date", serverDate));
             
-            var formula = new Fixture().Create<Formula>();
-
             var stronghold = Substitute.For<IStronghold>();
             stronghold.StrongholdState.Returns(StrongholdState.Occupied);
             stronghold.Lvl.Returns(level);
@@ -142,6 +148,7 @@ namespace Testing.FormulaTests
             var occupiedDate = SystemClock.Now.Subtract(TimeSpan.FromDays((double)occupiedDays));
             stronghold.DateOccupied.Returns(occupiedDate);
 
+            var formula = new Fixture().Create<Formula>();
             formula.StrongholdVictoryPoint(stronghold).Should().Be(expectedValue);
         }
 
@@ -158,14 +165,5 @@ namespace Testing.FormulaTests
 
             formula.StrongholdVictoryPoint(stronghold).Should().Be(0);
         }
-
-        #region Implementation of IDisposable
-
-        public void Dispose()
-        {
-            SystemClock.ResyncClock();
-        }
-
-        #endregion
     }
 }

@@ -184,9 +184,7 @@ namespace Game
             #region Utils
 
             Bind<IScheduler>().To<ThreadedScheduler>().InSingletonScope();
-            Bind<RadiusLocator>().ToSelf().InSingletonScope();
             Bind<TileLocator>().ToMethod(c => new TileLocator(new Random().Next));
-            Bind<ReverseTileLocator>().ToMethod(c => new ReverseTileLocator(new Random().Next));
             Bind<Procedure>().ToSelf().InSingletonScope();
             Bind<BattleProcedure>().ToSelf().InSingletonScope();
             Bind<StrongholdBattleProcedure>().ToSelf().InSingletonScope();

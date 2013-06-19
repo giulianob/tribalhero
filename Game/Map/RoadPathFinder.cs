@@ -17,19 +17,16 @@ namespace Game.Map
 
         private readonly ObjectTypeFactory objectTypeFactory;
 
-        private readonly RadiusLocator radiusLocator;
-
-        public RoadPathFinder(IWorld world, TileLocator tileLocator, ObjectTypeFactory objectTypeFactory, RadiusLocator radiusLocator)
+        public RoadPathFinder(IWorld world, TileLocator tileLocator, ObjectTypeFactory objectTypeFactory)
         {
             this.world = world;
             this.tileLocator = tileLocator;
             this.objectTypeFactory = objectTypeFactory;
-            this.radiusLocator = radiusLocator;
         }
 
         public Error CanBuild(uint x, uint y, ICity city, bool requiresRoad)
         {
-            return Error.Ok;
+            //return Error.Ok;
 
             bool buildingOnRoad = world.Roads.IsRoad(x, y);
 
@@ -41,12 +38,7 @@ namespace Game.Map
 
                     foreach (var str in city)
                     {
-                        if (str.IsMainBuilding)
-                        {
-                            continue;
-                        }
-
-                        if (objectTypeFactory.IsObjectType("NoRoadRequired", str.Type))
+                        if (str.IsMainBuilding || objectTypeFactory.IsObjectType("NoRoadRequired", str.Type))
                         {
                             continue;
                         }
@@ -69,37 +61,25 @@ namespace Game.Map
 
                     // Make sure all neighboring roads have a diff path
                     bool allNeighborsHaveOtherPaths = true;
-                    radiusLocator.ForeachObject(x,
-                                                y,
-                                                1,
-                                                false,
-                                                (origX, origY, x1, y1, custom) =>
-                                                    {
-                                                        if (radiusLocator.RadiusDistance(origX, origY, x1, y1) != 1)
-                                                        {
-                                                            return true;
-                                                        }
+                    foreach (var position in tileLocator.ForeachRadius(x, y, 1, false))
+                    {
 
-                                                        if (city.X == x1 && city.Y == y1)
-                                                        {
-                                                            return true;
-                                                        }
+                        if (tileLocator.RadiusDistance(x, y, position.X, position.Y) != 1 ||
+                            (city.X == position.X && city.Y == position.Y) ||
+                            !world.Roads.IsRoad(position.X, position.Y))
+                        {
+                            continue;
+                        }
 
-                                                        if (world.Roads.IsRoad(x1, y1))
-                                                        {
-                                                            if (!HasPath(new Position(x1, y1),
-                                                                                        new Position(city.X, city.Y),
-                                                                                        city,
-                                                                                        new Position(origX, origY)))
-                                                            {
-                                                                allNeighborsHaveOtherPaths = false;
-                                                                return false;
-                                                            }
-                                                        }
-
-                                                        return true;
-                                                    },
-                                                null);
+                        if (!HasPath(new Position(position.X, position.Y),
+                                     new Position(city.X, city.Y),
+                                     city,
+                                     new Position(x, y)))
+                        {
+                            allNeighborsHaveOtherPaths = false;
+                            break;
+                        }
+                    }
 
                     if (!allNeighborsHaveOtherPaths)
                     {
@@ -110,38 +90,31 @@ namespace Game.Map
 
                 bool hasRoad = false;
 
-                radiusLocator.ForeachObject(x,
-                                            y,
-                                            1,
-                                            false,
-                                            delegate(uint origX, uint origY, uint x1, uint y1, object custom)
-                                                {
-                                                    if (radiusLocator.RadiusDistance(origX, origY, x1, y1) != 1)
-                                                    {
-                                                        return true;
-                                                    }
+                foreach (var position in tileLocator.ForeachRadius(x, y, 1, false))
+                {
+                    if (tileLocator.RadiusDistance(x, y, position.X, position.Y) != 1)
+                    {
+                        continue;
+                    }
 
-                                                    var curStruct =
-                                                            (IStructure)
-                                                            world[x1, y1].FirstOrDefault(obj => obj is IStructure);
+                    var curStruct = (IStructure)world[position.X, position.Y].FirstOrDefault(obj => obj is IStructure);
 
-                                                    bool hasStructure = curStruct != null;
+                    bool hasStructure = curStruct != null;
 
-                                                    // Make sure we have a road around this building
-                                                    if (!hasRoad && !hasStructure && world.Roads.IsRoad(x1, y1))
-                                                    {
-                                                        if (!buildingOnRoad || HasPath(new Position(x1, y1),
-                                                                                                      new Position(city.X, city.Y),
-                                                                                                      city,
-                                                                                                      new Position(origX, origY)))
-                                                        {
-                                                            hasRoad = true;
-                                                        }
-                                                    }
+                    // Make sure we have a road around this building
+                    if (hasRoad || hasStructure || !world.Roads.IsRoad(position.X, position.Y))
+                    {
+                        continue;
+                    }
 
-                                                    return true;
-                                                },
-                                            null);
+                    if (!buildingOnRoad || HasPath(new Position(position.X, position.Y),
+                                                   new Position(city.X, city.Y),
+                                                   city,
+                                                   new Position(x, y)))
+                    {
+                        hasRoad = true;
+                    }
+                }
 
                 if (!hasRoad)
                 {

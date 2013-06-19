@@ -36,7 +36,7 @@ namespace Game.Data
             BarbarianTribe = 400,
         }
 
-        private uint objectId;
+        private readonly uint objectId;
 
         #region Properties
 

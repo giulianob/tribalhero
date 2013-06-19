@@ -44,7 +44,7 @@ namespace Game.Logic.Requirements.LayoutRequirements
                     continue;
                 }
 
-                int dist = RadiusLocator.Current.RadiusDistance(obj.X, obj.Y, x, y);
+                int dist = TileLocator.Current.RadiusDistance(obj.X, obj.Y, x, y);
 
                 if (dist > req.MaxDist || dist < req.MinDist)
                 {
@@ -65,7 +65,7 @@ namespace Game.Logic.Requirements.LayoutRequirements
                     continue;
                 }
 
-                int dist = RadiusLocator.Current.RadiusDistance(obj.X, obj.Y, x, y);
+                int dist = TileLocator.Current.RadiusDistance(obj.X, obj.Y, x, y);
 
                 if (dist > req.MaxDist || dist < req.MinDist)
                 {

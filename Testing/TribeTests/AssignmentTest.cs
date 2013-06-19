@@ -56,7 +56,7 @@ namespace Testing.TribeTests
             var gameObjectLocator = Substitute.For<IGameObjectLocator>();
             var scheduler = Substitute.For<IScheduler>();
             var procedure = Substitute.For<Procedure>();
-            var tileLocator = Substitute.For<TileLocator>();
+            var radiusLocator = Substitute.For<TileLocator>();
             var actionFactory = Substitute.For<IActionFactory>();
             var locker = Substitute.For<ILocker>();
             var initializer = Substitute.For<ITroopObjectInitializerFactory>();
@@ -79,7 +79,7 @@ namespace Testing.TribeTests
                                                    gameObjectLocator,
                                                    scheduler,
                                                    procedure,
-                                                   tileLocator,
+                                                   radiusLocator,
                                                    actionFactory,
                                                    locker,
                                                    initializer);
@@ -110,7 +110,7 @@ namespace Testing.TribeTests
             var gameObjectLocator = Substitute.For<IGameObjectLocator>();
             var scheduler = Substitute.For<IScheduler>();
             var procedure = Substitute.For<Procedure>();
-            var tileLocator = Substitute.For<TileLocator>();
+            var radiusLocator = Substitute.For<TileLocator>();
             var actionFactory = Substitute.For<IActionFactory>();
             var locker = Substitute.For<ILocker>();
             var initializer = Substitute.For<ITroopObjectInitializerFactory>();
@@ -141,7 +141,7 @@ namespace Testing.TribeTests
                                                    gameObjectLocator,
                                                    scheduler,
                                                    procedure,
-                                                   tileLocator,
+                                                   radiusLocator,
                                                    actionFactory,
                                                    locker,
                                                    initializer);
@@ -171,7 +171,7 @@ namespace Testing.TribeTests
             var gameObjectLocator = Substitute.For<IGameObjectLocator>();
             var scheduler = Substitute.For<IScheduler>();
             var procedure = Substitute.For<Procedure>();
-            var tileLocator = Substitute.For<TileLocator>();
+            var radiusLocator = Substitute.For<TileLocator>();
             var actionFactory = Substitute.For<IActionFactory>();
             ICity newCity;
             var newStub = CreateStub(out newCity);
@@ -214,7 +214,7 @@ namespace Testing.TribeTests
                                                    gameObjectLocator,
                                                    scheduler,
                                                    procedure,
-                                                   tileLocator,
+                                                   radiusLocator,
                                                    actionFactory,
                                                    locker,
                                                    initializer) { stub };
@@ -249,7 +249,7 @@ namespace Testing.TribeTests
             var gameObjectLocator = Substitute.For<IGameObjectLocator>();
             var scheduler = Substitute.For<IScheduler>();
             var procedure = Substitute.For<Procedure>();
-            var tileLocator = Substitute.For<TileLocator>();
+            var radiusLocator = Substitute.For<TileLocator>();
             var actionFactory = Substitute.For<IActionFactory>();
             
             var targetStructure = Substitute.For<IStructure>();
@@ -291,7 +291,7 @@ namespace Testing.TribeTests
                                                    gameObjectLocator,
                                                    scheduler,
                                                    procedure,
-                                                   tileLocator,
+                                                   radiusLocator,
                                                    actionFactory,
                                                    locker,
                                                    initializer) {stub};
@@ -324,7 +324,7 @@ namespace Testing.TribeTests
             var gameObjectLocator = Substitute.For<IGameObjectLocator>();
             var scheduler = Substitute.For<IScheduler>();
             var procedure = Substitute.For<Procedure>();
-            var tileLocator = Substitute.For<TileLocator>();
+            var radiusLocator = Substitute.For<TileLocator>();
             var actionFactory = Substitute.For<IActionFactory>();
             var targetStructure = Substitute.For<IStructure>();
             var actionWorker = Substitute.For<IActionWorker>();
@@ -369,7 +369,7 @@ namespace Testing.TribeTests
                                                    gameObjectLocator,
                                                    scheduler,
                                                    procedure,
-                                                   tileLocator,
+                                                   radiusLocator,
                                                    actionFactory,
                                                    locker,
                                                    initializer) { stub };

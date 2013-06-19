@@ -19,8 +19,11 @@ namespace Testing.TroopTests
     public class BattleProcedureTest
     {
         [Theory, AutoNSubstituteData]
-        public void MoveFromBattleToNormal(CityBattleProcedure cityBattleProcedure)
+        public void MoveFromBattleToNormal(CityBattleProcedure cityBattleProcedure, IGlobal global)
         {
+            Global.Current = global;
+            Global.Current.FireEvents.Returns(false);
+
             var stub = new TroopStub(0, null);
             stub.AddFormation(FormationType.Normal);
             stub.AddFormation(FormationType.Garrison);

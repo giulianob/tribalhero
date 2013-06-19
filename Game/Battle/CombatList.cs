@@ -21,7 +21,7 @@ namespace Game.Battle
     {
         private readonly BattleFormulas battleFormulas;
 
-        private readonly RadiusLocator radiusLocator;
+        private readonly TileLocator tileLocator;
 
         #region BestTargetResult enum
 
@@ -34,10 +34,10 @@ namespace Game.Battle
 
         #endregion
 
-        public CombatList(IDbManager manager, RadiusLocator radiusLocator, BattleFormulas battleFormulas)
+        public CombatList(IDbManager manager, TileLocator tileLocator, BattleFormulas battleFormulas)
                 : base(manager)
         {
-            this.radiusLocator = radiusLocator;
+            this.tileLocator = tileLocator;
             this.battleFormulas = battleFormulas;
         }
 
@@ -108,7 +108,7 @@ namespace Game.Battle
             // they will attack the same type of units one after another
             // then sort by score descending
             var shuffled = objectsByScore.Shuffle((int)battleId);
-            shuffled.Sort(new CombatScoreItemComparer(attacker, radiusLocator));
+            shuffled.Sort(new CombatScoreItemComparer(attacker, tileLocator));
             
             var numberOfTargetsToHit = Math.Min(maxCount, objectsByScore.Count);
  
@@ -147,12 +147,12 @@ namespace Game.Battle
         private class CombatScoreItemComparer : IComparer<CombatScoreItem>
         {
             private readonly ICombatObject attacker;
-            private readonly RadiusLocator radiusLocator;
+            private readonly TileLocator tileLocator;
 
-            public CombatScoreItemComparer(ICombatObject attacker, RadiusLocator radiusLocator)
+            public CombatScoreItemComparer(ICombatObject attacker, TileLocator tileLocator)
             {
                 this.attacker = attacker;
-                this.radiusLocator = radiusLocator;
+                this.tileLocator = tileLocator;
             }
 
             #region Implementation of IComparer<in CombatScoreItem>
@@ -165,11 +165,11 @@ namespace Game.Battle
                 {
                     if (xArmorType == ArmorType.Building3 && yArmorType == ArmorType.Building3)
                     {
-                        var xDistance = radiusLocator.RadiusDistance(attacker.Location().X,
+                        var xDistance = tileLocator.RadiusDistance(attacker.Location().X,
                                                                      attacker.Location().Y,
                                                                      x.Target.CombatObject.Location().X,
                                                                      x.Target.CombatObject.Location().Y);
-                        var yDistance = radiusLocator.RadiusDistance(attacker.Location().X,
+                        var yDistance = tileLocator.RadiusDistance(attacker.Location().X,
                                                                      attacker.Location().Y,
                                                                      y.Target.CombatObject.Location().X,
                                                                      y.Target.CombatObject.Location().Y);

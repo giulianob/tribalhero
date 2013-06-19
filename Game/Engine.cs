@@ -251,9 +251,7 @@ _________ _______ _________ ______   _______  _
 
             Global.Current = kernel.Get<Global>();
             SystemVariablesUpdater.Current = kernel.Get<SystemVariablesUpdater>();
-            RadiusLocator.Current = kernel.Get<RadiusLocator>();
             TileLocator.Current = kernel.Get<TileLocator>();
-            ReverseTileLocator.Current = kernel.Get<ReverseTileLocator>();
             BattleFormulas.Current = kernel.Get<BattleFormulas>();
             Concurrency.Current = kernel.Get<ILocker>();
             Formula.Current = kernel.Get<Formula>();

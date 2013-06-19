@@ -78,25 +78,28 @@ namespace Game.Map
         public List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, int radius)
         {
             var list = new List<ISimpleGameObject>();
-            tileLocator.ForeachObject(x,
-                                              y,
-                                              radius,
-                                              false,
-                                              (ox, oy, x1, y1, custom) =>
-                                                  {
-                                                      if (x1 < WorldWidth && y1 < WorldHeight)
-                                                      {
-                                                          list.AddRange(GetObjects(x1, y1));
-                                                      }
-                                                      return true;
-                                                  });
+            foreach (var position in tileLocator.ForeachTile(x, y, radius, false))
+            {
+                if (position.X < WorldWidth && position.Y < WorldHeight)
+                {
+                    list.AddRange(GetObjects(position.X, position.Y));
+                }
+            }
+
             return list;
         }
 
         public List<ushort> GetTilesWithin(uint x, uint y, byte radius)
         {
             var list = new List<ushort>();
-            tileLocator.ForeachObject(x, y, radius, false, GetTilesForeach, list);
+            foreach (var position in tileLocator.ForeachTile(x, y, radius, false))
+            {
+                if (position.X < WorldWidth && position.Y < WorldHeight)
+                {
+                    list.Add(GetTileType(position.X, position.Y));
+                }
+            }
+
             return list;
         }
 
@@ -436,15 +439,6 @@ namespace Game.Map
         }
 
         #endregion
-
-        private bool GetTilesForeach(uint ox, uint oy, uint x, uint y, object custom)
-        {
-            if (x < WorldWidth && y < WorldHeight)
-            {
-                ((List<ushort>)custom).Add(GetTileType(x, y));
-            }
-            return true;
-        }
 
         private void Remove(ISimpleGameObject obj, uint origX, uint origY)
         {

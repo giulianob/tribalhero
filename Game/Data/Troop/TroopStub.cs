@@ -8,7 +8,6 @@ using System.Linq;
 using Game.Database;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
-using Game.Util;
 using Game.Util.Locking;
 using Persistance;
 
@@ -662,80 +661,6 @@ namespace Game.Data.Troop
             FireUnitUpdated();
         }
 
-        public bool Remove(ITroopStub troop)
-        {
-            lock (objLock)
-            {
-                CheckUpdateMode();
-
-                if (!HasEnough(troop))
-                {
-                    return false;
-                }
-
-                foreach (Formation formation in troop)
-                {
-                    Formation targetFormation;
-                    if (!data.TryGetValue(formation.Type, out targetFormation))
-                    {
-                        return false;
-                    }
-
-                    foreach (var unit in formation)
-                    {
-                        targetFormation.Remove(unit.Key, unit.Value);
-                    }
-                }
-
-                FireUnitUpdated();
-            }
-
-            return true;
-        }
-
-        public bool HasEnough(ITroopStub troop)
-        {
-            lock (objLock)
-            {
-                foreach (var formation in troop)
-                {
-                    Formation targetFormation;
-                    if (!data.TryGetValue(formation.Type, out targetFormation))
-                    {
-                        return false;
-                    }
-
-                    foreach (var unit in formation)
-                    {
-                        ushort count;
-
-                        if (!targetFormation.TryGetValue(unit.Key, out count) || count < unit.Value)
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-            return true;
-        }
-
-        public void Print()
-        {
-            var logger = LoggerFactory.Current.GetCurrentClassLogger();
-            Dictionary<FormationType, Formation>.Enumerator itr = data.GetEnumerator();
-            while (itr.MoveNext())
-            {
-                logger.Info(
-                                   string.Format("Formation type: " +
-                                                 Enum.GetName(typeof(FormationType), itr.Current.Key)));
-                Dictionary<ushort, ushort>.Enumerator itr2 = itr.Current.Value.GetEnumerator();
-                while (itr2.MoveNext())
-                {
-                    logger.Error(string.Format("\t\tType[{0}] : Count[{1}]", itr2.Current.Key, itr2.Current.Value));
-                }
-            }
-        }
-
         public bool TryGetValue(FormationType formationType, out Formation formation)
         {
             return data.TryGetValue(formationType, out formation);
@@ -749,16 +674,6 @@ namespace Game.Data.Troop
                 mask += (ushort)Math.Pow(2, (double)type);
             }
             return mask;
-        }
-
-        public void KeepFormations(params FormationType[] formations)
-        {
-            var currentFormations = data.Keys.ToList();
-
-            foreach (FormationType formation in currentFormations.Where(formation => !formations.Contains(formation)))
-            {
-                data.Remove(formation);
-            }
         }
     }
 }

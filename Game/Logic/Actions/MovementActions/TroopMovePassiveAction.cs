@@ -123,28 +123,6 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        private bool Work(uint ox, uint oy, uint x, uint y, object custom)
-        {
-            var recordForeach = (RecordForeach)custom;
-            int distance = tileLocator.TileDistance(x, y, this.x, this.y);
-
-            if (distance < recordForeach.ShortestDistance)
-            {
-                recordForeach.ShortestDistance = distance;
-                recordForeach.X = x;
-                recordForeach.Y = y;
-                recordForeach.IsShortestDistanceDiagonal = IsDiagonal(y, ox, oy);
-            }
-            else if (distance == recordForeach.ShortestDistance && !recordForeach.IsShortestDistanceDiagonal)
-            {
-                recordForeach.ShortestDistance = distance;
-                recordForeach.X = x;
-                recordForeach.Y = y;
-                recordForeach.IsShortestDistanceDiagonal = IsDiagonal(y, ox, oy);
-            }
-            return true;
-        }
-
         private bool CalculateNextPosition(ITroopObject obj)
         {
             if (distanceRemaining <= 0)
@@ -153,7 +131,26 @@ namespace Game.Logic.Actions
             }
 
             var recordForeach = new RecordForeach {ShortestDistance = int.MaxValue, IsShortestDistanceDiagonal = false};
-            tileLocator.ForeachObject(obj.X, obj.Y, 1, false, Work, recordForeach);
+            foreach (var position in tileLocator.ForeachTile(obj.X, obj.Y, 1, false))
+            {
+                int distance = tileLocator.TileDistance(position.X, position.Y, this.x, this.y);
+
+                if (distance < recordForeach.ShortestDistance)
+                {
+                    recordForeach.ShortestDistance = distance;
+                    recordForeach.X = position.X;
+                    recordForeach.Y = position.Y;
+                    recordForeach.IsShortestDistanceDiagonal = IsDiagonal(position.Y, obj.X, obj.Y);
+                }
+                else if (distance == recordForeach.ShortestDistance && !recordForeach.IsShortestDistanceDiagonal)
+                {
+                    recordForeach.ShortestDistance = distance;
+                    recordForeach.X = position.X;
+                    recordForeach.Y = position.Y;
+                    recordForeach.IsShortestDistanceDiagonal = IsDiagonal(position.Y, obj.X, obj.Y);
+                }
+            }
+
             nextX = recordForeach.X;
             nextY = recordForeach.Y;
             return true;

@@ -26,14 +26,14 @@ namespace Game.Logic.Procedures
 
         private readonly ObjectTypeFactory objectTypeFactory;
 
-        private readonly RadiusLocator radiusLocator;
+        private readonly TileLocator tileLocator;
 
         [Obsolete("For testing only", true)]
         public CityBattleProcedure()
         {
         }
 
-        public CityBattleProcedure(RadiusLocator radiusLocator,
+        public CityBattleProcedure(TileLocator tileLocator,
                                    IBattleManagerFactory battleManagerFactory,
                                    IActionFactory actionFactory,
                                    ObjectTypeFactory objectTypeFactory,
@@ -41,7 +41,7 @@ namespace Game.Logic.Procedures
                                    ICombatGroupFactory combatGroupFactory,
                                    ICombatUnitFactory combatUnitFactory)
         {
-            this.radiusLocator = radiusLocator;
+            this.tileLocator = tileLocator;
             this.battleManagerFactory = battleManagerFactory;
             this.actionFactory = actionFactory;
             this.objectTypeFactory = objectTypeFactory;
@@ -94,7 +94,7 @@ namespace Game.Logic.Procedures
             return
                     structures.Where(
                                      structure =>
-                                     radiusLocator.IsOverlapping(troopPosition,
+                                     tileLocator.IsOverlapping(troopPosition,
                                                                  troopObject.Stats.AttackRadius,
                                                                  new Position(structure.X, structure.Y),
                                                                  structure.Stats.Base.Radius));

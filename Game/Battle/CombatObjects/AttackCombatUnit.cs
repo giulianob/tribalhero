@@ -230,7 +230,7 @@ namespace Game.Battle.CombatObjects
                 case BattleClass.Unit:
                     return true;
                 case BattleClass.Structure:
-                    return RadiusLocator.Current.IsOverlapping(Location(),
+                    return TileLocator.Current.IsOverlapping(Location(),
                                                                AttackRadius(),
                                                                obj.Location(),
                                                                obj.AttackRadius());

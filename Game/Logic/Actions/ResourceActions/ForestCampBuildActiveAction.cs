@@ -35,8 +35,6 @@ namespace Game.Logic.Actions
 
         private readonly InitFactory initFactory;
 
-        private readonly ReverseTileLocator reverseTileLocator;
-
         private readonly IForestManager forestManager;
 
         private readonly ILocker locker;
@@ -57,7 +55,6 @@ namespace Game.Logic.Actions
                                            ObjectTypeFactory objectTypeFactory,
                                            StructureCsvFactory structureCsvFactory,
                                            InitFactory initFactory,
-                                           ReverseTileLocator reverseTileLocator,
                                            IForestManager forestManager,
                                            ILocker locker, 
                                            TileLocator tileLocator)
@@ -71,7 +68,6 @@ namespace Game.Logic.Actions
             this.objectTypeFactory = objectTypeFactory;
             this.structureCsvFactory = structureCsvFactory;
             this.initFactory = initFactory;
-            this.reverseTileLocator = reverseTileLocator;
             this.forestManager = forestManager;
             this.locker = locker;
             this.tileLocator = tileLocator;
@@ -92,7 +88,6 @@ namespace Game.Logic.Actions
                                            StructureCsvFactory structureCsvFactory,
                                            InitFactory initFactory,
                                            IForestManager forestManager,
-                                           ReverseTileLocator reverseTileLocator,
                                            ILocker locker, 
                                            TileLocator tileLocator)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
@@ -103,7 +98,6 @@ namespace Game.Logic.Actions
             this.structureCsvFactory = structureCsvFactory;
             this.initFactory = initFactory;
             this.forestManager = forestManager;
-            this.reverseTileLocator = reverseTileLocator;
             this.locker = locker;
             this.tileLocator = tileLocator;
             cityId = uint.Parse(properties["city_id"]);
@@ -186,29 +180,25 @@ namespace Game.Logic.Actions
             // find an open space around the forest
             uint emptyX = 0;
             uint emptyY = 0;
-            reverseTileLocator.ForeachObject(forest.X,
-                                             forest.Y,
-                                             1,
-                                             false,
-                                             (ox, oy, x, y, custom) =>
-                                                 {
-                                                     // Check tile type                
-                                                     if (!objectTypeFactory.IsTileType("TileBuildable", world.Regions.GetTileType(x, y)))
-                                                     {
-                                                         return true;
-                                                     }
+            foreach (var position in tileLocator.ForeachTile(forest.X, forest.Y, 1, false).Reverse())
+            {
+                // Check tile type                
+                if (!objectTypeFactory.IsTileType("TileBuildable", world.Regions.GetTileType(position.X, position.Y)))
+                {
+                    continue;
+                }
 
-                                                     // Make sure it's not taken
-                                                     if (world[x, y].Count > 0)
-                                                     {
-                                                         return true;
-                                                     }
+                // Make sure it's not taken
+                if (world[position.X, position.Y].Count > 0)
+                {
+                    continue;
+                }
 
-                                                     emptyX = x;
-                                                     emptyY = y;
+                emptyX = position.X;
+                emptyY = position.Y;
 
-                                                     return false;
-                                                 });
+                break;
+            }
 
             if (emptyX == 0 || emptyY == 0)
             {

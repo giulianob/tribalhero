@@ -449,11 +449,9 @@
     <Compile Include="Map\ObjectLink.cs" />
     <Compile Include="Map\ObjectList.AllObjectEnum.cs" />
     <Compile Include="Map\ObjectList.cs" />
-    <Compile Include="Map\RadiusLocator.cs" />
-    <Compile Include="Map\RegionManager.cs" />
-    <Compile Include="Map\ReverseTileLocator.cs" />
-    <Compile Include="Map\RoadPathFinder.cs" />
     <Compile Include="Map\TileLocator.cs" />
+    <Compile Include="Map\RegionManager.cs" />
+    <Compile Include="Map\RoadPathFinder.cs" />
     <Compile Include="Logic\IGameTask.cs" />
     <Compile Include="Module\Chat.cs" />
     <Compile Include="Module\Remover\CityRemover.cs" />
@@ -488,6 +486,7 @@
     <Compile Include="Util\EventHandlerExtensions.cs" />
     <Compile Include="Util\EnumExtension.cs" />
     <Compile Include="Util\FileExtension.cs" />
+    <Compile Include="Util\GetRandom.cs" />
     <Compile Include="Util\IChannel.cs" />
     <Compile Include="Util\Inflector.cs" />
     <Compile Include="Util\CmdParserExtension.cs" />

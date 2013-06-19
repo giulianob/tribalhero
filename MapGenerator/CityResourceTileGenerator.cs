@@ -18,13 +18,9 @@ namespace MapGenerator
 
         private static MapMath mapMath = new MapMath();
 
-        private static bool AreaClear(uint ox, uint oy, uint x, uint y, object custom)
+        private static bool AreaClear(uint ox, uint oy, uint positionX, uint positionY, object custom)
         {
-            var map = (ushort[])custom;
-            while (map[y * Program.REGION_WIDTH + x] == FARM_TILE || map[y * Program.REGION_WIDTH + x] == WOODLAND_TILE)
-            {
-                map[y * Program.REGION_WIDTH + x] = (ushort)Program.Random.Next(1, numberOfTiles);
-            }
+
             return true;
         }
 
@@ -33,12 +29,14 @@ namespace MapGenerator
             uint x;
             uint y;
 
-            TileLocator.Current.ForeachObject(cityLocation.X,
-                                              cityLocation.Y,
-                                              Formula.Current.GetInitialCityRadius(),
-                                              true,
-                                              AreaClear,
-                                              map);
+            foreach (var position in TileLocator.Current.ForeachTile(cityLocation.X, cityLocation.Y, Formula.Current.GetInitialCityRadius()))
+            {
+                while (map[position.Y * Program.REGION_WIDTH + position.X] == FARM_TILE || map[position.Y * Program.REGION_WIDTH + position.X] == WOODLAND_TILE)
+                {
+                    map[position.Y * Program.REGION_WIDTH + position.X] = (ushort)Program.Random.Next(1, numberOfTiles);
+                }
+            }
+            
             for (int i = 0; i < numberOfFarm; ++i)
             {
                 do

@@ -16,7 +16,7 @@ using Persistance;
 
 namespace Game.Data.Tribe
 {
-    class TribeManager : ITribeManager
+    public class TribeManager : ITribeManager
     {
         private readonly IActionFactory actionFactory;
 
@@ -94,9 +94,12 @@ namespace Game.Data.Tribe
 
             strongholdManager.RemoveStrongholdsFromTribe(tribe);
 
+            tribe.Owner.LastDeletedTribe = SystemClock.Now;
+            dbManager.Save(tribe.Owner);
+
             foreach (var tribesman in new List<ITribesman>(tribe.Tribesmen))
             {
-                tribe.RemoveTribesman(tribesman.Player.PlayerId, false, false);
+                tribe.RemoveTribesman(tribesman.Player.PlayerId, wasKicked: false, doNotRemoveIfOwner: false);
             }
 
             UnsubscribeEvents(tribe);
@@ -197,6 +200,11 @@ namespace Game.Data.Tribe
                 return Error.TribesmanAlreadyInTribe;
             }
 
+            if (SystemClock.Now.Subtract(player.LastDeletedTribe).TotalDays < 1)
+            {
+                return Error.TribeCannotCreateYet;                
+            }
+
             if (TribeNameTaken(name))
             {
                 return Error.TribeAlreadyExists;
@@ -205,7 +213,7 @@ namespace Game.Data.Tribe
             if (!Tribe.IsNameValid(name))
             {
                 return Error.TribeNameInvalid;
-            }
+            }            
 
             tribe = tribeFactory.CreateTribe(player, name);
 
@@ -218,7 +226,6 @@ namespace Game.Data.Tribe
             Add(tribe);
 
             var tribesman = new Tribesman(tribe, player, tribe.ChiefRank);
-
             tribe.AddTribesman(tribesman);
 
             return Error.Ok;

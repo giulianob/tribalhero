@@ -35,6 +35,8 @@ namespace Game.Data
 
         ITribesman Tribesman { get; set; }
 
+        DateTime LastDeletedTribe { get; set;  }
+
         uint TribeRequest { get; set; }
 
         int AttackPoint { get; }

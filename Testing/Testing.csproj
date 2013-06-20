@@ -102,6 +102,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="xunit, Version=1.9.1.1600, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
@@ -152,6 +153,7 @@
     <Compile Include="MapMathTests\RadiusTest.cs" />
     <Compile Include="NinjectTests\FactoryMethodNameProviderTests.cs" />
     <Compile Include="PlayerTests\AchievementListTest.cs" />
+    <Compile Include="TribeTests\TribeManagerTests.cs" />
     <Compile Include="UtilTests\XmlSerializerTest.cs" />
     <Compile Include="StrongholdTests\StrongholdManagerTests.cs" />
     <Compile Include="ResourcesTests\AggressiveLazyResourceTest.cs" />

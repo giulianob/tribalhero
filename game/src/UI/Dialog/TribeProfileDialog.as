@@ -3,9 +3,14 @@
     import System.Collection.Generic.IGrouping;
     import System.Linq.Enumerable;
 
+import com.adobe.serialization.json.JSONDecoder;
+
     import fl.lang.*;
 
     import flash.events.*;
+import flash.globalization.DateTimeFormatter;
+import flash.globalization.DateTimeStyle;
+import flash.globalization.LocaleID;
     import flash.utils.*;
 
     import mx.utils.*;
@@ -18,6 +23,7 @@
     import org.aswing.table.*;
 
     import src.*;
+import src.Comm.GameURLLoader;
     import src.Objects.*;
     import src.Objects.Effects.*;
     import src.Objects.Process.*;
@@ -51,10 +57,17 @@
         private var messageBoardTab:JPanel;
         private var pnlOngoingAttacks:JPanel;
 
+        private var logTab: JPanel;
+        private var logLoader: GameURLLoader;
+        private var txtArea : JPanel;
+        private var pagingBar: PagingBar;
+
         public function TribeProfileDialog(profileData: *)
         {
             this.profileData = profileData;
 
+            logLoader = new GameURLLoader();
+            logLoader.addEventListener(Event.COMPLETE, onReceiveLogs);
             createUI();
 
             // Refreshes the general tribe info
@@ -73,6 +86,8 @@
                     messageBoard.loadInitially();
                 }
             });
+
+
         }
 
         private function dispose():void {
@@ -125,6 +140,7 @@
 
             // Append main panels
             appendAll(pnlHeader, pnlTabs);
+
         }
 
         private function createMessageBoardTab(): JPanel {
@@ -440,6 +456,71 @@
             return pnlAssignmentHolder;
         }
 
+        private function onReceiveLogs(e: Event): void {
+            var data: Object;
+            try
+            {
+                data = logLoader.getDataAsObject();
+            }
+            catch (e: Error) {
+                InfoDialog.showMessageDialog("Error", "Unable to perform this action. Try again later.");
+                return;
+            }
+
+            if (data.error != null) {
+                InfoDialog.showMessageDialog("Info", data.error);
+                return;
+            }
+            txtArea.removeAll();
+            pagingBar.setData(data);
+
+            var df:DateTimeFormatter = new DateTimeFormatter(LocaleID.DEFAULT, DateTimeStyle.SHORT, DateTimeStyle.SHORT);
+            for each(var log:* in data.tribelogs) {
+                var panel: JPanel = new JPanel(new SoftBoxLayout());
+                var params: * = new JSONDecoder(log.parameters).getValue();
+                var date:JLabel = new JLabel(df.format(new Date(1000*log.created)));
+                date.setVerticalAlignment(AsWingConstants.TOP);
+                panel.append(date);
+
+                var icon:AssetIcon;
+                switch((int)(log.type)) {
+                    case 1: icon = new AssetIcon(new ICON_UPGRADE()); break;
+                    case 2: icon = new AssetIcon(new ICON_GOLD()); break;
+                    case 3: icon = new AssetIcon(new ICON_LABOR()); break;
+                    case 4: icon = new AssetIcon(new ICON_STAR()); break;
+                    case 5: icon = new AssetIcon(new ICON_UNFRIEND()); break;
+                    case 6: icon = new AssetIcon(new ICON_UNFRIEND()); break;
+                    case 7: icon = new AssetIcon(new ICON_SINGLE_SWORD()); break;
+                    case 8: icon = new AssetIcon(new ICON_SHIELD()); break;
+                    case 9: icon = new AssetIcon(new ICON_SINGLE_SWORD()); break;
+                    default: icon = new AssetIcon(new ICON_STAR()); break;
+                }
+                var iconLabel: JLabel = new JLabel("",icon);
+                iconLabel.setVerticalAlignment(AsWingConstants.TOP);
+                panel.append(iconLabel);
+                panel.append(new RichLabel(StringHelper.localize("TRIBE_LOG_"+log.type,params),0,40));
+                txtArea.append(panel);
+            }
+        }
+
+        private function createLogTab() : Container {
+            if(!logTab) {
+                logTab = new JPanel(new BorderLayout());
+                txtArea = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+                txtArea.setConstraints("Center");
+                txtArea.setBackground(ASColor.BLUE);
+
+                pagingBar = new PagingBar(function(page: int = 0): void {
+                    Global.mapComm.Tribe.logListing(logLoader, page);
+                });
+                pagingBar.setConstraints("South");
+
+                logTab.appendAll(Util.createTopAlignedScrollPane(txtArea), pagingBar);
+                pagingBar.refreshPage();
+            }
+            return logTab;
+        }
+
         private function createMembersTab() : Container {
             var modelMembers: VectorListModel = new VectorListModel(profileData.members);
             var tableMembers: JTable = new JTable(new PropertyTableModel(
@@ -614,6 +695,7 @@
             pnlInfoTabs.appendTab(createMembersTab(), "Members (" + profileData.members.length + ")");
             pnlInfoTabs.appendTab(createIncomingAttackTab(), "Invasions (" + profileData.incomingAttacks.length + ")");
             pnlInfoTabs.appendTab(createAssignmentTab(), "Assignments (" + profileData.assignments.length + ")");
+            pnlInfoTabs.appendTab(createLogTab(),"Log");
 
             pnlInfoTabs.setSelectedIndex(lastActiveInfoTab);
 

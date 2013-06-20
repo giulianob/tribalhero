@@ -109,7 +109,7 @@ namespace Game.Data.Tribe
         StrongholdOccupied = 9
     }
 
-    interface ITribeLogger
+    public interface ITribeLogger
     {
         void Listen(ITribe tribe);
         void Unlisten(ITribe tribe);

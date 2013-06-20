@@ -362,7 +362,7 @@ namespace Game.Data.Tribe
             return error;
         }
 
-        public Error RemoveTribesman(uint playerId, bool wasKicked, bool checkIfOwner = true)
+        public Error RemoveTribesman(uint playerId, bool wasKicked, bool doNotRemoveIfOwner = true)
         {
             ITribesman tribesman;
             if (!tribesmen.TryGetValue(playerId, out tribesman))
@@ -374,7 +374,7 @@ namespace Game.Data.Tribe
 
             if (IsOwner(player))
             {
-                if (checkIfOwner)
+                if (doNotRemoveIfOwner)
                 {
                     return Error.TribesmanIsOwner;
                 }

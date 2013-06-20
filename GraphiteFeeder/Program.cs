@@ -29,6 +29,8 @@ namespace GraphiteFeeder
 
             // Obtain the file system entries in the directory path. 
             var dir = @"C:\source\gamemetric\";
+            if (args.Length > 0)
+                dir = args[0];
 
             foreach (var filename in Directory.GetFiles(dir, "*", SearchOption.AllDirectories))
             {

@@ -461,6 +461,7 @@ namespace Game.Database
                             TutorialStep = (uint)reader["tutorial_step"],
                             TribeRequest = (uint)reader["invitation_tribe_id"],
                             Muted = DateTime.SpecifyKind((DateTime)reader["muted"], DateTimeKind.Utc),
+                            LastDeletedTribe = DateTime.SpecifyKind((DateTime)reader["last_deleted_tribe"], DateTimeKind.Utc),
                             Banned = (bool)reader["banned"]
                     };
 

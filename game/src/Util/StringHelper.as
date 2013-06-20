@@ -1,5 +1,6 @@
 package src.Util {
-	import fl.lang.Locale;
+    import fl.lang.Locale;
+    import System.Linq.Enumerable;
 	import flash.text.*;
 	import flash.xml.*;
 	import mx.utils.StringUtil;
@@ -120,9 +121,19 @@ package src.Util {
 			if (localizedStr == null) {
 				return "[" + msgId + "]";				
 			}
-			
+
 			params.unshift(localizedStr);
-			return StringUtil.substitute.apply(undefined, params);
+
+            var newParams:* = Enumerable.from(params).aggregate(new Array(), function(a:Array, item:*): * {
+                if(item is Array) {
+                    return a.concat(item);
+                } else {
+                    a.push(item);
+                    return a;
+                }
+            }).toArray();
+
+			return StringUtil.substitute.apply(undefined, newParams);
 		}
 		
 		public static function calculateTextWidth(font: ASFont, str: String): Number {

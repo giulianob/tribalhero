@@ -3,9 +3,14 @@
 import System.Collection.Generic.IGrouping;
 import System.Linq.Enumerable;
 
+import com.adobe.serialization.json.JSONDecoder;
+
 import fl.lang.*;
 
 import flash.events.*;
+import flash.globalization.DateTimeFormatter;
+import flash.globalization.DateTimeStyle;
+import flash.globalization.LocaleID;
 import flash.utils.*;
 
 import mx.utils.*;
@@ -18,6 +23,7 @@ import org.aswing.geom.*;
 import org.aswing.table.*;
 
 import src.*;
+import src.Comm.GameURLLoader;
 import src.Objects.*;
 import src.Objects.Effects.*;
 import src.Objects.Process.*;
@@ -50,12 +56,19 @@ public class TribeProfileDialog extends GameJPanel
 		private var strongholdTab:JPanel;
 		private var messageBoardTab:JPanel;
 		private var pnlOngoingAttacks:JPanel;
-		
-		public function TribeProfileDialog(profileData: *) 
+
+        private var logTab: JPanel;
+        private var logLoader: GameURLLoader;
+        private var txtArea : JPanel;
+        private var pagingBar: PagingBar;
+
+        public function TribeProfileDialog(profileData: *)
 		{
 			this.profileData = profileData;
-			
-			createUI();				
+
+            logLoader = new GameURLLoader();
+            logLoader.addEventListener(Event.COMPLETE, onReceiveLogs);
+			createUI();
 			
 			// Refreshes the general tribe info
 			updateTimer = new Timer(120 * 1000);
@@ -73,7 +86,9 @@ public class TribeProfileDialog extends GameJPanel
 					messageBoard.loadInitially();
 				}
 			});
-		}
+
+
+        }
 		
 		private function dispose():void {
 			updateTimer.stop();
@@ -125,6 +140,7 @@ public class TribeProfileDialog extends GameJPanel
 			
 			// Append main panels
 			appendAll(pnlHeader, pnlTabs);
+
 		}
 	
 		private function createMessageBoardTab(): JPanel {		
@@ -439,18 +455,83 @@ public class TribeProfileDialog extends GameJPanel
 			
 			return pnlAssignmentHolder;
 		}
-		
+
+        private function onReceiveLogs(e: Event): void {
+            var data: Object;
+            try
+            {
+                data = logLoader.getDataAsObject();
+            }
+            catch (e: Error) {
+                InfoDialog.showMessageDialog("Error", "Unable to perform this action. Try again later.");
+                return;
+            }
+
+            if (data.error != null) {
+                InfoDialog.showMessageDialog("Info", data.error);
+                return;
+            }
+            txtArea.removeAll();
+            pagingBar.setData(data);
+
+            var df:DateTimeFormatter = new DateTimeFormatter(LocaleID.DEFAULT, DateTimeStyle.SHORT, DateTimeStyle.SHORT);
+            for each(var log:* in data.tribelogs) {
+                var panel: JPanel = new JPanel(new SoftBoxLayout());
+                var params: * = new JSONDecoder(log.parameters).getValue();
+                var date:JLabel = new JLabel(df.format(new Date(1000*log.created)));
+                date.setVerticalAlignment(AsWingConstants.TOP);
+                panel.append(date);
+
+                var icon:AssetIcon;
+                switch((int)(log.type)) {
+                    case 1: icon = new AssetIcon(new ICON_UPGRADE()); break;
+                    case 2: icon = new AssetIcon(new ICON_GOLD()); break;
+                    case 3: icon = new AssetIcon(new ICON_LABOR()); break;
+                    case 4: icon = new AssetIcon(new ICON_STAR()); break;
+                    case 5: icon = new AssetIcon(new ICON_UNFRIEND()); break;
+                    case 6: icon = new AssetIcon(new ICON_UNFRIEND()); break;
+                    case 7: icon = new AssetIcon(new ICON_SINGLE_SWORD()); break;
+                    case 8: icon = new AssetIcon(new ICON_SHIELD()); break;
+                    case 9: icon = new AssetIcon(new ICON_SINGLE_SWORD()); break;
+                    default: icon = new AssetIcon(new ICON_STAR()); break;
+                }
+                var iconLabel: JLabel = new JLabel("",icon);
+                iconLabel.setVerticalAlignment(AsWingConstants.TOP);
+                panel.append(iconLabel);
+                panel.append(new RichLabel(StringHelper.localize("TRIBE_LOG_"+log.type,params),0,40));
+                txtArea.append(panel);
+            }
+        }
+
+        private function createLogTab() : Container {
+            if(!logTab) {
+                logTab = new JPanel(new BorderLayout());
+                txtArea = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+                txtArea.setConstraints("Center");
+                txtArea.setBackground(ASColor.BLUE);
+
+                pagingBar = new PagingBar(function(page: int = 0): void {
+                    Global.mapComm.Tribe.logListing(logLoader, page);
+                });
+                pagingBar.setConstraints("South");
+
+                logTab.appendAll(Util.createTopAlignedScrollPane(txtArea), pagingBar);
+                pagingBar.refreshPage();
+            }
+            return logTab;
+        }
+
 		private function createMembersTab() : Container {
 			var modelMembers: VectorListModel = new VectorListModel(profileData.members);
 			var tableMembers: JTable = new JTable(new PropertyTableModel(
-				modelMembers, 
+				modelMembers,
 				["Player", "Rank", "Last Seen", ""],
 				[".", "rank", "date", "."],
 				[null, new TribeRankTranslator(Constants.tribe.ranks), null]
-			));			
+			));
 			tableMembers.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
 				tableMembers.getCellEditor().cancelCellEditing();
-			});			
+			});
 			tableMembers.setRowSelectionAllowed(false);
 			tableMembers.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 			tableMembers.getColumnAt(0).setPreferredWidth(135);
@@ -459,12 +540,12 @@ public class TribeProfileDialog extends GameJPanel
 			tableMembers.getColumnAt(2).setPreferredWidth(100);
 			tableMembers.getColumnAt(3).setCellFactory(new GeneralTableCellFactory(TribeMemberActionCell));
 			tableMembers.getColumnAt(3).setPreferredWidth(70);
-			
+
 			var scrollMembers: JScrollPane = new JScrollPane(tableMembers, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
-			
+
 			return scrollMembers;
 		}
-		
+
 		private function createIncomingSection(grouping: IGrouping):* {
 			var pnlHeader: JPanel = new JPanel(new BorderLayout());
 			var pnlCounter: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS,5));
@@ -479,16 +560,16 @@ public class TribeProfileDialog extends GameJPanel
 			//  Section Panel
 			var lblTarget: RichLabel = new RichLabel(RichLabel.getHtmlForLocation(grouping.first().target), 1);
 			lblTarget.setConstraints("Center");
-			
+
 			var lblAttackers: JLabel = new JLabel(grouping.count().toString(), new AssetIcon(new ICON_SINGLE_SWORD()));
 
 			var lblCountdown: CountDownLabel = new CountDownLabel(grouping.first().endTime, StringHelper.localize("STR_BATTLE_IN_PROGRESS"));
 			lblCountdown.setConstraints("East");
-			
+
 			var btnExpand: JLabel = new JLabel("", new AssetIcon(new ICON_EXPAND), AsWingConstants.LEFT);
 			btnExpand.useHandCursor = true;
             btnExpand.buttonMode = true;
-			btnExpand.addEventListener(MouseEvent.CLICK, function (e: Event): void {				
+			btnExpand.addEventListener(MouseEvent.CLICK, function (e: Event): void {
 				if (pnlGroup.isVisible()) {
 					pnlGroup.setVisible(false);
 					btnExpand.setIcon(new AssetIcon(new ICON_EXPAND));
@@ -498,47 +579,47 @@ public class TribeProfileDialog extends GameJPanel
 					pnlGroup.setVisible(true);
 					btnExpand.setIcon(new AssetIcon(new ICON_COLLAPSE));
 					pnlCounter.setVisible(false);
-				}				
-			});			
+				}
+			});
 			btnExpand.setConstraints("West");
-			
+
 			pnlCounter.appendAll(lblAttackers, lblCountdown);
 			pnlCounter.setConstraints("East");
 			pnlHeader.appendAll(btnExpand, lblTarget, pnlCounter);
-			
+
 			return { label: pnlHeader, panel: pnlGroup };
 		}
-		
+
 		private function createIncomingAttackTab(): Container {
 			var pnlIncomingAttacks: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
 
             profileData.incomingAttacks.sortOn("endTime", Array.NUMERIC);
-			
-				for each(var grouping: IGrouping in Enumerable.from(profileData.incomingAttacks).groupBy(function(incoming:*):int { 
+
+				for each(var grouping: IGrouping in Enumerable.from(profileData.incomingAttacks).groupBy(function(incoming:*):int {
 				return incoming.target.cityId;
 				} ).orderBy(function(grouping:IGrouping):int {
 					return grouping.min(function(item:*):int {
 						return item.endTime;
 					});
 				})) {
-				var group:* = createIncomingSection(grouping);	
-				
+				var group:* = createIncomingSection(grouping);
+
 				pnlIncomingAttacks.appendAll(group.label, group.panel);
 			}
-			
+
 			var scrollIncomingAttacks: JScrollPane = new JScrollPane(new JViewport(pnlIncomingAttacks, true), JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
 			(scrollIncomingAttacks.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
-			
-			return scrollIncomingAttacks;			
+
+			return scrollIncomingAttacks;
 		}
-		
+
 		private function createInfoTab(): Container {
 			// Clear out container if it already exists instead of recreating it
 			if (!pnlInfoContainer)
-				pnlInfoContainer = new JPanel(new BorderLayout(10, 10));			
+				pnlInfoContainer = new JPanel(new BorderLayout(10, 10));
 			else
 				pnlInfoContainer.removeAll();
-			
+
 			var btnUpgrade: JLabelButton = new JLabelButton("Upgrade");
 			var btnDonate: JLabelButton = new JLabelButton("Contribute");
 			var btnUpdateRank: JLabelButton = new JLabelButton("Ranks");
@@ -547,21 +628,21 @@ public class TribeProfileDialog extends GameJPanel
 			var btnDismantle: JLabelButton = new JLabelButton("Dismantle");
 			var btnLeave: JLabelButton = new JLabelButton("Leave");
 			var btnTransfer: JLabelButton = new JLabelButton("Transfer Tribe");
-			
-			var pnlActions: JPanel = new JPanel(new FlowWrapLayout(200, AsWingConstants.LEFT, 10, 0, false));				
+
+			var pnlActions: JPanel = new JPanel(new FlowWrapLayout(200, AsWingConstants.LEFT, 10, 0, false));
 			pnlActions.setConstraints("North");
 			// Show correct buttons depending on rank
 			if (Constants.tribe.hasRight(Tribe.ALL))  /// Tribe Chief
 			{
 				pnlActions.appendAll(btnSetDescription, btnInvite, btnUpgrade, btnDonate, btnDismantle, btnTransfer, btnUpdateRank);
-			} 
-			else 
+			}
+			else
 			{
 				if (Constants.tribe.hasRight(Tribe.ANNOUNCEMENT)) pnlActions.appendAll(btnSetDescription);
 				if (Constants.tribe.hasRight(Tribe.INVITE)) pnlActions.appendAll(btnInvite);
 				pnlActions.appendAll(btnUpgrade, btnDonate, btnLeave);
 			}
-			
+
 			// upgrade btn (Always show it and disable if person doesnt have right so they can see resources amt)
 			var upgradeTooltip: TribeUpgradeTooltip = new TribeUpgradeTooltip(profileData.tribeLevel, profileData.resources);
 			upgradeTooltip.bind(btnUpgrade);
@@ -570,14 +651,14 @@ public class TribeProfileDialog extends GameJPanel
 			});
 			btnUpgrade.setEnabled(Constants.tribe.hasRight(Tribe.UPGRADE));
 			btnUpgrade.mouseEnabled = true;
-			
+
 			// description
             var pnlDescriptionHolder: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 			var description: String = profileData.description == "" ? "The tribe chief hasn't set an announcement yet" : profileData.description;
 			var lblDescription: MultilineLabel = new MultilineLabel(description);
 			GameLookAndFeel.changeClass(lblDescription, "Message");
             lblDescription.setBorder(new EmptyBorder(null, new Insets(0, 0, 15)));
-                
+
             pnlDescriptionHolder.append(lblDescription);
             if (profileData.publicDescription) {
                 var lblPublicDescription: MultilineLabel = new MultilineLabel(profileData.publicDescription);
@@ -607,6 +688,7 @@ public class TribeProfileDialog extends GameJPanel
 			pnlInfoTabs.appendTab(createMembersTab(), "Members (" + profileData.members.length + ")");
 			pnlInfoTabs.appendTab(createIncomingAttackTab(), "Invasions (" + profileData.incomingAttacks.length + ")");
 			pnlInfoTabs.appendTab(createAssignmentTab(), "Assignments (" + profileData.assignments.length + ")");
+            pnlInfoTabs.appendTab(createLogTab(),"Log");
 
 			pnlInfoTabs.setSelectedIndex(lastActiveInfoTab);
 			
@@ -647,7 +729,7 @@ public class TribeProfileDialog extends GameJPanel
 					Global.mapComm.Tribe.setTribeDescription(txtDescription.getText(), txtPublicDescription.getText());					
 				});
 			});
-			
+
 			btnInvite.addActionListener(function(e: Event): void {
 				var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));			
 				var txtPlayerName: JTextField = new AutoCompleteTextField(Global.mapComm.General.autoCompletePlayer);
@@ -727,8 +809,8 @@ public class TribeProfileDialog extends GameJPanel
 			// Needed since gets called after the panel has already been rendered (for updates)
 			pnlHeader.repaintAndRevalidate();
 			pnlInfoContainer.repaintAndRevalidate();
-			
-			return pnlInfoContainer;
+
+            return pnlInfoContainer;
 		}
 		
 		public function ReceiveNewMessage(): void{

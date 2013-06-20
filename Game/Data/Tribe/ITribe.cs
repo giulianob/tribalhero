@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Game.Data.Tribe.EventArguments;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Setup;
@@ -56,6 +57,10 @@ namespace Game.Data.Tribe
 
         Error AddTribesman(ITribesman tribesman, bool ignoreRequirements = false);
 
+        Error KickTribesman(IPlayer player, IPlayer kicker);
+
+        Error LeaveTribesman(IPlayer player);
+
         Error RemoveTribesman(uint playerId, bool wasKicked, bool checkIfOwner = true);
 
         void CreateRank(byte id, string name, TribePermission permission);
@@ -94,5 +99,19 @@ namespace Game.Data.Tribe
         void SendRanksUpdate();
 
         event EventHandler<EventArgs> RanksUpdated;
+
+        event EventHandler<TribesmanEventArgs> TribesmanJoined;
+
+        event EventHandler<TribesmanEventArgs> TribesmanLeft;
+
+        event EventHandler<TribesmanKickedEventArgs> TribesmanKicked;
+
+        event EventHandler<TribesmanContributedEventArgs> TribesmanContributed;
+
+        event EventHandler<TribesmanEventArgs> TribesmanRankChanged;
+
+        event EventHandler<EventArgs> Upgraded;
+
     }
+
 }

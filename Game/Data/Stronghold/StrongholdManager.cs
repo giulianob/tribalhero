@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data.Tribe;
+using Game.Data.Tribe.EventArguments;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
@@ -166,6 +167,10 @@ namespace Game.Data.Stronghold
             {
                 stronghold.BonusDays = ((decimal)SystemClock.Now.Subtract(stronghold.DateOccupied).TotalDays + stronghold.BonusDays) * .75m;
             }
+            else
+            {
+                
+            }
 
             stronghold.StrongholdState = StrongholdState.Occupied;
             stronghold.Tribe = tribe;
@@ -180,10 +185,13 @@ namespace Game.Data.Stronghold
             if (oldTribe != null)
             {
                 chat.SendSystemChat("STRONGHOLD_TAKEN_OVER", stronghold.Name, tribe.Name, oldTribe.Name);
+                StrongholdGained(this, new StrongholdGainedEventArgs {Tribe = tribe, OwnBy = oldTribe, Stronghold = stronghold});
+                StrongholdLost(this, new StrongholdLostEventArgs { Tribe = oldTribe, AttackedBy = tribe, Stronghold = stronghold });
             }
             else
             {
                 chat.SendSystemChat("STRONGHOLD_NEUTRAL_TAKEN_OVER", stronghold.Name, tribe.Name);
+                StrongholdGained(this, new StrongholdGainedEventArgs {Tribe = tribe, Stronghold = stronghold});
             }
         }
 
@@ -378,5 +386,8 @@ namespace Game.Data.Stronghold
                 stub.City.Worker.DoPassive(stub.City, retreatAction, true);
             }
         }
+
+        public event EventHandler<StrongholdGainedEventArgs> StrongholdGained = (sender, args) => { };
+        public event EventHandler<StrongholdLostEventArgs> StrongholdLost = (sender, args) => { };
     }
 }

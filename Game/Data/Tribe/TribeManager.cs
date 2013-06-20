@@ -22,19 +22,22 @@ namespace Game.Data.Tribe
 
         private readonly ITribeFactory tribeFactory;
 
+        private readonly ITribeLogger tribeLogger;
+
         private readonly IDbManager dbManager;
 
         private readonly IStrongholdManager strongholdManager;
 
         private readonly LargeIdGenerator tribeIdGen = new LargeIdGenerator(Config.tribe_id_max, Config.tribe_id_min);
 
-        public TribeManager(IDbManager dbManager, IStrongholdManager strongholdManager, IActionFactory actionFactory, ITribeFactory tribeFactory)
+        public TribeManager(IDbManager dbManager, IStrongholdManager strongholdManager, IActionFactory actionFactory, ITribeFactory tribeFactory, ITribeLogger tribeLogger)
         {
             Tribes = new ConcurrentDictionary<uint, ITribe>();
             this.dbManager = dbManager;
             this.strongholdManager = strongholdManager;
             this.actionFactory = actionFactory;
             this.tribeFactory = tribeFactory;
+            this.tribeLogger = tribeLogger;
         }
 
         private ConcurrentDictionary<uint, ITribe> Tribes { get; set; }
@@ -226,6 +229,7 @@ namespace Game.Data.Tribe
             tribe.TribesmanRemoved += TribeOnTribesmanRemoved;
             tribe.Updated += TribeOnUpdated;
             tribe.RanksUpdated += TribeOnRanksUpdated;
+            tribeLogger.Listen(tribe);
         }
 
         private void TribeOnRanksUpdated(object sender, EventArgs eventArgs)
@@ -249,7 +253,10 @@ namespace Game.Data.Tribe
 
         private void UnsubscribeEvents(ITribe tribe)
         {
-            tribe.TribesmanRemoved += TribeOnTribesmanRemoved;
+            tribe.TribesmanRemoved -= TribeOnTribesmanRemoved;
+            tribe.Updated -= TribeOnUpdated;
+            tribe.RanksUpdated += TribeOnRanksUpdated;
+            tribeLogger.Unlisten(tribe);
         }
 
         private void TribeOnTribesmanRemoved(object sender, TribesmanRemovedEventArgs e)

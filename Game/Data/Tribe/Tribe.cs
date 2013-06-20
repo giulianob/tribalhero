@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Game.Comm;
 using Game.Data.Stronghold;
+using Game.Data.Tribe.EventArguments;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
@@ -124,7 +125,15 @@ namespace Game.Data.Tribe
 
         public event EventHandler<EventArgs> Updated = (sender, args) => { };
 
-        public event EventHandler<EventArgs> RanksUpdated;
+        public event EventHandler<EventArgs> RanksUpdated = (sender, args) => { };
+        public event EventHandler<TribesmanEventArgs> TribesmanJoined = (sender, args) => { };
+        public event EventHandler<TribesmanEventArgs> TribesmanLeft = (sender, args) => { };
+        public event EventHandler<TribesmanKickedEventArgs> TribesmanKicked = (sender, args) => { };
+        public event EventHandler<TribesmanContributedEventArgs> TribesmanContributed = (sender, args) => { };
+        public event EventHandler<TribesmanEventArgs> TribesmanRankChanged = (sender, args) => { };
+        public event EventHandler<StrongholdGainedEventArgs> StrongholdGained = (sender, args) => { };
+        public event EventHandler<StrongholdLostEventArgs> StrongholdLost = (sender, args) => { };
+        public event EventHandler<EventArgs> Upgraded = (sender, args) => { };
 
         public uint Id { set; get; }
 
@@ -329,7 +338,28 @@ namespace Game.Data.Tribe
                 Global.Channel.Subscribe(tribesman.Player.Session, "/TRIBE/" + Id);
             }
 
+            TribesmanJoined(this, new TribesmanEventArgs {Player = tribesman.Player});
             return Error.Ok;
+        }
+
+        public Error KickTribesman(IPlayer player, IPlayer kicker)
+        {
+            Error error = RemoveTribesman(player.PlayerId, true);
+            if (error == Error.Ok)
+            {
+                TribesmanKicked(this, new TribesmanKickedEventArgs {Kickee = player, Kicker = kicker});
+            }
+            return error;
+        }
+
+        public Error LeaveTribesman(IPlayer player)
+        {
+            Error error = RemoveTribesman(player.PlayerId, false);
+            if (error == Error.Ok)
+            {
+                TribesmanLeft(this, new TribesmanEventArgs {Player = player});
+            }
+            return error;
         }
 
         public Error RemoveTribesman(uint playerId, bool wasKicked, bool checkIfOwner = true)
@@ -446,6 +476,7 @@ namespace Game.Data.Tribe
             dbManager.Save(tribesman);
             tribesman.Player.TribeUpdate();
 
+            TribesmanRankChanged(this, new TribesmanEventArgs {Player = tribesman.Player});
             return Error.Ok;
         }
 
@@ -485,6 +516,7 @@ namespace Game.Data.Tribe
             Resource += resource;
             dbManager.Save(tribesman, this);
 
+            TribesmanContributed(this, new TribesmanContributedEventArgs {Player = tribesman.Player, Resource = resource});
             return Error.Ok;
         }
 
@@ -691,6 +723,7 @@ namespace Game.Data.Tribe
             Level++;
             dbManager.Save(this);
 
+            Upgraded(this, new EventArgs());
             return Error.Ok;
         }
 

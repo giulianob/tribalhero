@@ -264,3 +264,13 @@ TRANSFER_ARRIVE_IN,Arrive in {0}
 TRANSFER_SEND,Send
 TRANSFER_CANCEL,Cancel
 TRANSFER_WARNING,"If the stronghold is lost to another tribe before the troop arrives, the troop will be sent back to its city."
+,
+TRIBE_LOG_1,Tribe is upgraded to Level {0}.
+TRIBE_LOG_2,{0} contributed Crop[{1}] Gold[{2}] Iron[{3}] Wood[{4}].
+TRIBE_LOG_3,{0} Joined.
+TRIBE_LOG_4,{0}'s rank is changed to {1}.
+TRIBE_LOG_5,{0} Kicked by {1}.
+TRIBE_LOG_6,{0} Left.
+TRIBE_LOG_7,Took over Stronghold {0} from Tribe {1}.
+TRIBE_LOG_8,Lost Stronghold {0} to Tribe {1}.
+TRIBE_LOG_9,Occupied neutral Stronghold {0}.

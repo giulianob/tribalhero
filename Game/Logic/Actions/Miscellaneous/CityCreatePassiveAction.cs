@@ -32,7 +32,7 @@ namespace Game.Logic.Actions
 
         private readonly InitFactory initFactory;
 
-        private readonly StructureCsvFactory structureCsvFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         private readonly ICityFactory cityFactory;
 
@@ -55,7 +55,7 @@ namespace Game.Logic.Actions
                                        ILocker locker,
                                        ObjectTypeFactory objectTypeFactory,
                                        InitFactory initFactory,
-                                       StructureCsvFactory structureCsvFactory,
+                                       IStructureCsvFactory structureCsvFactory,
                                        ICityFactory cityFactory)
         {
             this.cityId = cityId;
@@ -87,7 +87,7 @@ namespace Game.Logic.Actions
                                        ILocker locker,
                                        ObjectTypeFactory objectTypeFactory,
                                        InitFactory initFactory,
-                                       StructureCsvFactory structureCsvFactory)
+                                       IStructureCsvFactory structureCsvFactory)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.actionFactory = actionFactory;

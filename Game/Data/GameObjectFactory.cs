@@ -10,11 +10,11 @@ namespace Game.Data
     {
         private readonly IKernel kernel;
 
-        private readonly StructureCsvFactory structureCsvFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         private readonly ITechnologyManagerFactory technologyManagerFactory;
 
-        public GameObjectFactory(IKernel kernel, StructureCsvFactory structureCsvFactory, ITechnologyManagerFactory technologyManagerFactory)
+        public GameObjectFactory(IKernel kernel, IStructureCsvFactory structureCsvFactory, ITechnologyManagerFactory technologyManagerFactory)
         {
             this.kernel = kernel;
             this.structureCsvFactory = structureCsvFactory;

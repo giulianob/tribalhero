@@ -270,7 +270,7 @@ namespace Game.Comm.ProcessorCommands
                 // If actually send then we perform the action, otherwise, we send the player information about the trade.
                 if (actuallySend)
                 {
-                    Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureCsvFactory>().GetActionWorkerType(structure),
+                    Error ret = city.Worker.DoActive(Ioc.Kernel.Get<IStructureCsvFactory>().GetActionWorkerType(structure),
                                                      structure,
                                                      action,
                                                      structure.Technologies);

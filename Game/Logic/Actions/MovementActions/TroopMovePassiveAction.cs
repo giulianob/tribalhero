@@ -22,7 +22,7 @@ namespace Game.Logic.Actions
 
         private readonly Formula formula;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         private readonly IGameObjectLocator world;
 
@@ -51,7 +51,7 @@ namespace Game.Logic.Actions
                                       bool isReturningHome,
                                       bool isAttacking,
                                       Formula formula,
-                                      TileLocator tileLocator,
+                                      ITileLocator tileLocator,
                                       IGameObjectLocator world,
                                       ILocker locker)
         {
@@ -75,7 +75,7 @@ namespace Game.Logic.Actions
                                       string nlsDescription,
                                       Dictionary<string, string> properties,
                                       Formula formula,
-                                      TileLocator tileLocator,
+                                      ITileLocator tileLocator,
                                       IGameObjectLocator world,
                                       ILocker locker)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)

@@ -34,11 +34,11 @@ namespace Game.Module
 
         private readonly ILocker locker;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         private readonly IDbManager dbManager;
 
-        public CityRemover(uint cityId, IActionFactory actionFactory, IWorld world, IScheduler scheduler, ILocker locker, TileLocator tileLocator, IDbManager dbManager)
+        public CityRemover(uint cityId, IActionFactory actionFactory, IWorld world, IScheduler scheduler, ILocker locker, ITileLocator tileLocator, IDbManager dbManager)
         {
             this.cityId = cityId;
             this.actionFactory = actionFactory;

@@ -20,7 +20,7 @@ namespace Game.Map
 
         private readonly IRegionFactory regionFactory;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         private readonly IChannel channel;
 
@@ -28,7 +28,7 @@ namespace Game.Map
 
         public RegionManager(ICityRegionManagerFactory cityRegionManagerFactory,
                              IRegionFactory regionFactory,
-                             TileLocator tileLocator,
+                             ITileLocator tileLocator,
                              IChannel channel)
         {
             this.cityRegionManagerFactory = cityRegionManagerFactory;

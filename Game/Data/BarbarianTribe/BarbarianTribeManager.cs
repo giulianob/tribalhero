@@ -18,7 +18,7 @@ namespace Game.Data.BarbarianTribe
 
         private readonly DefaultMultiObjectLock.Factory multiObjectLockFactory;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         private readonly ConcurrentDictionary<uint, IBarbarianTribe> barbarianTribes = new ConcurrentDictionary<uint, IBarbarianTribe>();
         private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(Config.barbariantribe_id_max, Config.barbariantribe_id_min);
@@ -28,7 +28,7 @@ namespace Game.Data.BarbarianTribe
                                      IBarbarianTribeConfigurator barbarianTribeConfigurator,
                                      IRegionManager regionManager,
                                      DefaultMultiObjectLock.Factory multiObjectLockFactory,
-                                     TileLocator tileLocator)
+                                     ITileLocator tileLocator)
         {
             this.dbManager = dbManager;            
             this.barbarianTribeFactory = barbarianTribeFactory;

@@ -221,10 +221,5 @@ namespace Game.Data
         {
             return string.Format("{0} x[{1}] y[{2}] type[{3}] groupId[{4}] objId[{5}]", base.ToString(), X, Y, Type, GroupId, ObjectId);
         }
-
-        public IEnumerable<Position> Positions()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

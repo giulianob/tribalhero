@@ -26,14 +26,14 @@ namespace Game.Logic.Procedures
 
         private readonly ObjectTypeFactory objectTypeFactory;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         [Obsolete("For testing only", true)]
         public CityBattleProcedure()
         {
         }
 
-        public CityBattleProcedure(TileLocator tileLocator,
+        public CityBattleProcedure(ITileLocator tileLocator,
                                    IBattleManagerFactory battleManagerFactory,
                                    IActionFactory actionFactory,
                                    ObjectTypeFactory objectTypeFactory,

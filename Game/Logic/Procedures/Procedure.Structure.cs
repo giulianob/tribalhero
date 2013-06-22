@@ -14,7 +14,7 @@ namespace Game.Logic.Procedures
         /// <param name="newLvl">New lvl</param>
         public virtual void StructureChange(IStructure structure, ushort newType, byte newLvl)
         {            
-            Ioc.Kernel.Get<StructureCsvFactory>().GetUpgradedStructure(structure, newType, newLvl);
+            Ioc.Kernel.Get<IStructureCsvFactory>().GetUpgradedStructure(structure, newType, newLvl);
             structure.Technologies.BeginUpdate();
             structure.Technologies.Parent = structure.City.Technologies;
             structure.Technologies.Clear();

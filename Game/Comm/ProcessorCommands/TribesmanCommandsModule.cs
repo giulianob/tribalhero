@@ -26,14 +26,14 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IStrongholdManager strongholdManager;
 
-        private readonly StructureCsvFactory structureCsvFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         private readonly ITribeManager tribeManager;
 
         private readonly IWorld world;
 
         public TribesmanCommandsModule(IActionFactory actionFactory,
-                                       StructureCsvFactory structureCsvFactory,
+                                       IStructureCsvFactory structureCsvFactory,
                                        ILocker locker,
                                        IWorld world,
                                        IDbManager dbManager,

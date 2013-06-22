@@ -36,7 +36,7 @@ namespace Game.Logic.Actions
 
         private readonly AttackMode mode;
 
-        private readonly StructureCsvFactory structureCsvFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         private readonly uint targetCityId;
 
@@ -53,7 +53,7 @@ namespace Game.Logic.Actions
                                              BattleFormulas battleFormula,
                                              IGameObjectLocator gameObjectLocator,
                                              CityBattleProcedure cityBattleProcedure,
-                                             StructureCsvFactory structureCsvFactory,
+                                             IStructureCsvFactory structureCsvFactory,
                                              IDbManager dbManager,
                                              IStaminaMonitorFactory staminaMonitorFactory)
         {
@@ -77,7 +77,7 @@ namespace Game.Logic.Actions
                                              BattleFormulas battleFormula,
                                              IGameObjectLocator gameObjectLocator,
                                              CityBattleProcedure cityBattleProcedure,
-                                             StructureCsvFactory structureCsvFactory,
+                                             IStructureCsvFactory structureCsvFactory,
                                              IDbManager dbManager,
                                              IStaminaMonitorFactory staminaMonitorFactory)
                 : base(id, isVisible)

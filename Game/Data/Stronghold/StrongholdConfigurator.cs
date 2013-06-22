@@ -30,11 +30,11 @@ namespace Game.Data.Stronghold
 
         private readonly List<Position> strongholds = new List<Position>();
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         private readonly IRegionManager regionManager;
 
-        public StrongholdConfigurator(NameGenerator nameGenerator, MapFactory mapFactory, TileLocator tileLocator, IRegionManager regionManager)
+        public StrongholdConfigurator(NameGenerator nameGenerator, MapFactory mapFactory, ITileLocator tileLocator, IRegionManager regionManager)
         {
             this.nameGenerator = nameGenerator;
             this.mapFactory = mapFactory;

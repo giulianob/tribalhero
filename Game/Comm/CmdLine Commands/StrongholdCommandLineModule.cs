@@ -32,7 +32,7 @@ namespace Game.Comm
 
         private readonly IWorld world;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         public StrongholdCommandLineModule(ITribeManager tribeManager,
                                            IWorld world,
@@ -40,7 +40,7 @@ namespace Game.Comm
                                            IStrongholdManager strongholdManager,
                                            MapFactory mapFactory,
                                            Formula formula,
-                                           TileLocator tileLocator)
+                                           ITileLocator tileLocator)
         {
             this.tribeManager = tribeManager;
             this.world = world;

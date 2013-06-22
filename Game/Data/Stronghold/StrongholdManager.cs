@@ -46,7 +46,7 @@ namespace Game.Data.Stronghold
 
         private ILookup<ITribe, IStronghold> tribeIndex;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         public StrongholdManager(IStrongholdConfigurator strongholdConfigurator,
                                  IStrongholdFactory strongholdFactory,
@@ -57,7 +57,7 @@ namespace Game.Data.Stronghold
                                  Formula formula,
                                  ICityManager cityManager,
                                  IActionFactory actionFactory, 
-                                 TileLocator tileLocator)
+                                 ITileLocator tileLocator)
         {
             idGenerator = new LargeIdGenerator(Config.stronghold_id_max, Config.stronghold_id_min);
             strongholds = new ConcurrentDictionary<uint, IStronghold>();

@@ -25,27 +25,27 @@ namespace Game.Logic.Actions
 
         private readonly InitFactory initFactory;
 
-        private readonly byte level;
-
         private readonly ObjectTypeFactory objectTypeFactory;
 
         private readonly Procedure procedure;
 
         private readonly IRoadPathFinder roadPathFinder;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         private readonly RequirementFactory requirementFactory;
 
-        private readonly StructureCsvFactory structureCsvFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         private readonly ushort type;
 
         private readonly IWorld world;
 
-        private readonly uint x;
+        private readonly byte level;
 
-        private readonly uint y;
+        public uint X { get; private set; }
+
+        public uint Y { get; private set; }
 
         private Resource cost;
 
@@ -60,17 +60,17 @@ namespace Game.Logic.Actions
                                           IWorld world,
                                           Formula formula,
                                           RequirementFactory requirementFactory,
-                                          StructureCsvFactory structureCsvFactory,
+                                          IStructureCsvFactory structureCsvFactory,
                                           InitFactory initFactory,
                                           ILocker concurrency,
                                           Procedure procedure,
                                           IRoadPathFinder roadPathFinder,
-                                          TileLocator tileLocator)
+                                          ITileLocator tileLocator)
         {
             this.cityId = cityId;
             this.type = type;
-            this.x = x;
-            this.y = y;
+            this.X = x;
+            this.Y = y;
             this.level = level;
             this.objectTypeFactory = objectTypeFactory;
             this.world = world;
@@ -96,11 +96,11 @@ namespace Game.Logic.Actions
                                           IWorld world,
                                           Formula formula,
                                           RequirementFactory requirementFactory,
-                                          StructureCsvFactory structureCsvFactory,
+                                          IStructureCsvFactory structureCsvFactory,
                                           InitFactory initFactory,
                                           ILocker concurrency,
                                           Procedure procedure,
-                                          TileLocator tileLocator)
+                                          ITileLocator tileLocator)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             this.objectTypeFactory = objectTypeFactory;
@@ -115,8 +115,8 @@ namespace Game.Logic.Actions
 
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
-            x = uint.Parse(properties["x"]);
-            y = uint.Parse(properties["y"]);
+            X = uint.Parse(properties["x"]);
+            Y = uint.Parse(properties["y"]);
             type = ushort.Parse(properties["type"]);
             cost = new Resource(int.Parse(properties["crop"]),
                                 int.Parse(properties["gold"]),
@@ -159,70 +159,84 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
-            int maxConcurrentUpgrades = formula.ConcurrentBuildUpgrades(((IStructure)city[1]).Lvl);
+            int maxConcurrentUpgrades = formula.ConcurrentBuildUpgrades(city.MainBuilding.Lvl);
 
             if (!objectTypeFactory.IsObjectType("UnlimitedBuilding", type) &&
-                city.Worker.ActiveActions.Values.Count(
-                                                       action =>
-                                                       action.ActionId != ActionId &&
-                                                       (action.Type == ActionType.StructureUpgradeActive ||
-                                                        (action.Type == ActionType.StructureBuildActive &&
-                                                         !objectTypeFactory.IsObjectType("UnlimitedBuilding",
-                                                                                            ((StructureBuildActiveAction
-                                                                                             )action).BuildType)))) >=
-                maxConcurrentUpgrades)
+                city.Worker.ActiveActions.Values.Count(action =>
+                    {
+                        if (action.ActionId == ActionId)
+                        {
+                            return false;
+                        }
+
+                        if (action is StructureUpgradeActiveAction)
+                        {
+                            return true;
+                        }
+
+                        var buildAction = action as StructureBuildActiveAction;
+                        if (buildAction == null)
+                        {
+                            return false;
+                        }
+
+                        return !objectTypeFactory.IsObjectType("UnlimitedBuilding", buildAction.BuildType);
+                    }) >= maxConcurrentUpgrades)
             {
                 return Error.ActionTotalMaxReached;
             }
-
-            if (!world.Regions.IsValidXandY(x, y))
+            
+            var structureBaseStats = structureCsvFactory.GetBaseStats(type, level);
+            
+            foreach (var position in tileLocator.ForeachMultitile(X, Y, structureBaseStats.Size))
             {
-                return Error.ActionInvalid;
+                if (!world.Regions.IsValidXandY(position.X, position.Y))
+                {
+                    return Error.ActionInvalid;
+                }
             }
 
-            world.Regions.LockRegion(x, y);
-
-            var structureBaseStats = structureCsvFactory.GetBaseStats(type, level);
+            world.Regions.LockRegion(X, Y);
 
             // cost requirement
             cost = formula.StructureCost(city, structureBaseStats);
             if (!city.Resource.HasEnough(cost))
             {
-                world.Regions.UnlockRegion(x, y);
+                world.Regions.UnlockRegion(X, Y);
                 return Error.ResourceNotEnough;
             }
 
             // radius requirements
-            if (tileLocator.TileDistance(city.X, city.Y, x, y) >= city.Radius)
+            if (tileLocator.TileDistance(city.X, city.Y, X, Y) >= city.Radius)
             {
-                world.Regions.UnlockRegion(x, y);
+                world.Regions.UnlockRegion(X, Y);
                 return Error.LayoutNotFullfilled;
             }
 
             // layout requirement
-            if (!requirementFactory.GetLayoutRequirement(type, level).Validate(WorkerObject as IStructure, type, x, y))
+            if (!requirementFactory.GetLayoutRequirement(type, level).Validate(WorkerObject as IStructure, type, X, Y))
             {
-                world.Regions.UnlockRegion(x, y);
+                world.Regions.UnlockRegion(X, Y);
                 return Error.LayoutNotFullfilled;
             }
 
             // check if tile is occupied
-            if (world[x, y].Exists(obj => obj is IStructure))
+            if (world[X, Y].Exists(obj => obj is IStructure))
             {
-                world.Regions.UnlockRegion(x, y);
+                world.Regions.UnlockRegion(X, Y);
                 return Error.StructureExists;
             }
 
             // check for road requirements       
             var requiresRoad = !objectTypeFactory.IsObjectType("NoRoadRequired", type);
-            var canBuild = roadPathFinder.CanBuild(x, y, city, requiresRoad);
+            var canBuild = roadPathFinder.CanBuild(X, Y, city, requiresRoad);
             if (canBuild != Error.Ok)
             {
                 return canBuild;
             }
 
             // add structure to the map                    
-            IStructure structure = city.CreateStructure(type, 0, x, y);
+            IStructure structure = city.CreateStructure(type, 0, X, Y);
             
             city.BeginUpdate();
             city.Resource.Subtract(cost);
@@ -238,7 +252,7 @@ namespace Game.Logic.Actions
                 city.EndUpdate();
                 structure.EndUpdate();
 
-                world.Regions.UnlockRegion(x, y);
+                world.Regions.UnlockRegion(X, Y);
                 return Error.MapFull;
             }
 
@@ -248,16 +262,13 @@ namespace Game.Logic.Actions
             structureId = structure.ObjectId;
 
             // add to queue for completion
-            endTime =
-                    DateTime.UtcNow.AddSeconds(
-                                               CalculateTime(formula.BuildTime(structureCsvFactory.GetTime(type, level),
-                                                                               city,
-                                                                               city.Technologies)));
-            BeginTime = DateTime.UtcNow;
+            var buildTime = formula.BuildTime(structureBaseStats.BuildTime, city, city.Technologies);
+            endTime = SystemClock.Now.AddSeconds(CalculateTime(buildTime));
+            BeginTime = SystemClock.Now;
 
             city.References.Add(structure, this);
 
-            world.Regions.UnlockRegion(x, y);
+            world.Regions.UnlockRegion(X, Y);
 
             return Error.Ok;
         }
@@ -316,8 +327,8 @@ namespace Game.Logic.Actions
             {
                 if (parms[1].Length == 0)
                 {
-                    ushort tileType = world.Regions.GetTileType(x, y);
-                    if (world.Roads.IsRoad(x, y) || objectTypeFactory.IsTileType("TileBuildable", tileType))
+                    ushort tileType = world.Regions.GetTileType(X, Y);
+                    if (world.Roads.IsRoad(X, Y) || objectTypeFactory.IsTileType("TileBuildable", tileType))
                     {
                         return Error.Ok;
                     }
@@ -327,7 +338,7 @@ namespace Game.Logic.Actions
                 else
                 {
                     string[] tokens = parms[1].Split('|');
-                    ushort tileType = world.Regions.GetTileType(x, y);
+                    ushort tileType = world.Regions.GetTileType(X, Y);
                     if (tokens.Any(str => objectTypeFactory.IsTileType(str, tileType)))
                     {
                         return Error.Ok;
@@ -393,7 +404,7 @@ namespace Game.Logic.Actions
                 return
                         XmlSerializer.Serialize(new[]
                         {
-                                new XmlKvPair("type", type), new XmlKvPair("x", x), new XmlKvPair("y", y),
+                                new XmlKvPair("type", type), new XmlKvPair("x", X), new XmlKvPair("y", Y),
                                 new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId),
                                 new XmlKvPair("wood", cost.Wood), new XmlKvPair("crop", cost.Crop),
                                 new XmlKvPair("iron", cost.Iron), new XmlKvPair("gold", cost.Gold),

@@ -31,7 +31,7 @@ namespace Game.Logic.Actions
 
         private readonly ObjectTypeFactory objectTypeFactory;
 
-        private readonly StructureCsvFactory structureCsvFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         private readonly InitFactory initFactory;
 
@@ -43,7 +43,7 @@ namespace Game.Logic.Actions
 
         private uint campId;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         public ForestCampBuildActiveAction(uint cityId,
                                            uint lumbermillId,
@@ -53,11 +53,11 @@ namespace Game.Logic.Actions
                                            Formula formula,
                                            IWorld world,
                                            ObjectTypeFactory objectTypeFactory,
-                                           StructureCsvFactory structureCsvFactory,
+                                           IStructureCsvFactory structureCsvFactory,
                                            InitFactory initFactory,
                                            IForestManager forestManager,
                                            ILocker locker, 
-                                           TileLocator tileLocator)
+                                           ITileLocator tileLocator)
         {
             this.cityId = cityId;
             this.lumbermillId = lumbermillId;
@@ -85,11 +85,11 @@ namespace Game.Logic.Actions
                                            Formula formula,
                                            IWorld world,
                                            ObjectTypeFactory objectTypeFactory,
-                                           StructureCsvFactory structureCsvFactory,
+                                           IStructureCsvFactory structureCsvFactory,
                                            InitFactory initFactory,
                                            IForestManager forestManager,
                                            ILocker locker, 
-                                           TileLocator tileLocator)
+                                           ITileLocator tileLocator)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             this.formula = formula;

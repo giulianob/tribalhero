@@ -12,7 +12,7 @@ namespace Testing.MapMathTests
 {
     public class RadiusTest
     {
-        private readonly TileLocator cacheForTestIsOverlappingWithCache;
+        private readonly ITileLocator cacheForTestIsOverlappingWithCache;
 
         public RadiusTest()
         {

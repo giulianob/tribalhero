@@ -1543,7 +1543,7 @@ namespace Game.Database
                                                                            (byte)listReader["level"],
                                                                            (decimal)listReader["hp"],
                                                                            stronghold,
-                                                                               Kernel.Get<StructureCsvFactory>(),
+                                                                               Kernel.Get<IStructureCsvFactory>(),
                                                                                Kernel.Get<BattleFormulas>());
 
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];

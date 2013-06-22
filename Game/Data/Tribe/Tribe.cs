@@ -58,7 +58,7 @@ namespace Game.Data.Tribe
 
         private string publicDescription = string.Empty;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         public Tribe(IPlayer owner,
                      string name,
@@ -68,7 +68,7 @@ namespace Game.Data.Tribe
                      IAssignmentFactory assignmentFactory,
                      ICityManager cityManager,
                      IStrongholdManager strongholdManager,
-                     TileLocator tileLocator)
+                     ITileLocator tileLocator)
                 : this(
                         owner: owner,
                         name: name,
@@ -104,7 +104,7 @@ namespace Game.Data.Tribe
                      IAssignmentFactory assignmentFactory,
                      ICityManager cityManager,
                      IStrongholdManager strongholdManager, 
-                     TileLocator tileLocator)
+                     ITileLocator tileLocator)
         {
             LeavingTribesmates = new List<LeavingTribesmate>();
 

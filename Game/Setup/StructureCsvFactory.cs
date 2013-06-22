@@ -14,7 +14,7 @@ using Ninject.Extensions.Logging;
 
 namespace Game.Setup
 {
-    public class StructureCsvFactory
+    public class StructureCsvFactory : IStructureCsvFactory
     {
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
@@ -141,13 +141,13 @@ namespace Game.Setup
             return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp.Name : null;
         }
 
-        public StructureBaseStats GetBaseStats(ushort type, byte lvl)
+        public virtual IStructureBaseStats GetBaseStats(ushort type, byte lvl)
         {
             StructureBaseStats tmp;
             return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp : null;
         }
 
-        public IEnumerable<StructureBaseStats> AllStructures()
+        public IEnumerable<IStructureBaseStats> AllStructures()
         {
             return dict.Values;
         }

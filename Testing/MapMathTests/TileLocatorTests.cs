@@ -16,19 +16,19 @@ namespace Testing.MapMathTests
         #region ForeachMultiple
 
         [Theory, AutoNSubstituteData]
-        public void ForeachMultiple_WhenYIsEvenAndSizeIs1(TileLocator tileLocator)
+        public void ForeachMultiple_WhenYIsEvenAndSizeIs1(ITileLocator tileLocator)
         {
             tileLocator.ForeachMultitile(0, 2, 1).Should().Equal(new Position(0, 2));
         }
 
         [Theory, AutoNSubstituteData]
-        public void ForeachMultiple_WhenYIsOddAndSizeIs1(TileLocator tileLocator)
+        public void ForeachMultiple_WhenYIsOddAndSizeIs1(ITileLocator tileLocator)
         {
             tileLocator.ForeachMultitile(0, 1, 1).Should().Equal(new Position(0, 1));
         }
 
         [Theory, AutoNSubstituteData]
-        public void ForeachMultiple_WhenXAndYAreEvenAndSizeIs2(TileLocator tileLocator)
+        public void ForeachMultiple_WhenXAndYAreEvenAndSizeIs2(ITileLocator tileLocator)
         {
             var positions = tileLocator.ForeachMultitile(50, 46, 2);
 
@@ -42,7 +42,7 @@ namespace Testing.MapMathTests
         }
 
         [Theory, AutoNSubstituteData]
-        public void ForeachMultiple_WhenXIsOddAndYIsEvenAndSizeIs2(TileLocator tileLocator)
+        public void ForeachMultiple_WhenXIsOddAndYIsEvenAndSizeIs2(ITileLocator tileLocator)
         {
             tileLocator.ForeachMultitile(49, 46, 2).Should().HaveCount(4).
                         And.Contain(new[]
@@ -56,7 +56,7 @@ namespace Testing.MapMathTests
         }
 
         [Theory, AutoNSubstituteData]
-        public void ForeachMultiple_WhenXIsOddAndYIsOddAndSizeIs2(TileLocator tileLocator)
+        public void ForeachMultiple_WhenXIsOddAndYIsOddAndSizeIs2(ITileLocator tileLocator)
         {
             tileLocator.ForeachMultitile(49, 47, 2).Should().HaveCount(4).
                         And.Contain(new[]
@@ -70,7 +70,7 @@ namespace Testing.MapMathTests
         }
 
         [Theory, AutoNSubstituteData]
-        public void ForeachMultiple_WhenXIsEvenAndYIsOddAndSizeIs2(TileLocator tileLocator)
+        public void ForeachMultiple_WhenXIsEvenAndYIsOddAndSizeIs2(ITileLocator tileLocator)
         {
             tileLocator.ForeachMultitile(48, 47, 2).Should().HaveCount(4).
                         And.Contain(new[]
@@ -84,7 +84,7 @@ namespace Testing.MapMathTests
         }
 
         [Theory, AutoNSubstituteData]
-        public void ForeachMultiple_WhenXIsEvenAndYIsOddAndSizeIs3(TileLocator tileLocator)
+        public void ForeachMultiple_WhenXIsEvenAndYIsOddAndSizeIs3(ITileLocator tileLocator)
         {
             tileLocator.ForeachMultitile(48, 47, 3).Should().HaveCount(9).
                         And.Contain(new[]
@@ -103,7 +103,7 @@ namespace Testing.MapMathTests
         }
 
         [Theory, AutoNSubstituteData]
-        public void ForeachMultiple_WhenXIsOddAndYIsOddAndSizeIs3(TileLocator tileLocator)
+        public void ForeachMultiple_WhenXIsOddAndYIsOddAndSizeIs3(ITileLocator tileLocator)
         {
             tileLocator.ForeachMultitile(49, 47, 3).Should().HaveCount(9).
                         And.Contain(new[]
@@ -122,7 +122,7 @@ namespace Testing.MapMathTests
         }
 
         [Theory, AutoNSubstituteData]
-        public void ForeachMultiple_WhenXIsOddAndYIsEvenAndSizeIs3(TileLocator tileLocator)
+        public void ForeachMultiple_WhenXIsOddAndYIsEvenAndSizeIs3(ITileLocator tileLocator)
         {
             var positions = tileLocator.ForeachMultitile(49, 46, 3);
 
@@ -143,7 +143,7 @@ namespace Testing.MapMathTests
         }
 
         [Theory, AutoNSubstituteData]
-        public void ForeachMultiple_WhenXIsEvenAndYIsEvenAndSizeIs3(TileLocator tileLocator)
+        public void ForeachMultiple_WhenXIsEvenAndYIsEvenAndSizeIs3(ITileLocator tileLocator)
         {
             tileLocator.ForeachMultitile(50, 46, 3).Should().HaveCount(9).
                         And.Contain(new[]

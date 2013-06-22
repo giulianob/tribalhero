@@ -27,7 +27,7 @@ namespace Game.Logic.Actions
 
         private Resource cost;
 
-        private readonly StructureCsvFactory structureCsvFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         private readonly Formula formula;
 
@@ -37,7 +37,7 @@ namespace Game.Logic.Actions
 
         private readonly ILocker locker;
 
-        public StructureChangeActiveAction(uint cityId, uint structureId, uint type, byte lvl, StructureCsvFactory structureCsvFactory, Formula formula, IWorld world, Procedure procedure, ILocker locker)
+        public StructureChangeActiveAction(uint cityId, uint structureId, uint type, byte lvl, IStructureCsvFactory structureCsvFactory, Formula formula, IWorld world, Procedure procedure, ILocker locker)
         {
             this.cityId = cityId;
             this.structureId = structureId;
@@ -58,7 +58,7 @@ namespace Game.Logic.Actions
                                            byte workerIndex,
                                            ushort actionCount,
                                            IDictionary<string, string> properties,
-                                           StructureCsvFactory structureCsvFactory,
+                                           IStructureCsvFactory structureCsvFactory,
                                            Formula formula,
                                            IWorld world,
                                            Procedure procedure,

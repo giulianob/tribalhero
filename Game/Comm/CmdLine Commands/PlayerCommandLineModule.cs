@@ -29,7 +29,7 @@ namespace Game.Comm
 
         private readonly ILocker locker;
 
-        private readonly StructureCsvFactory structureFactory;
+        private readonly IStructureCsvFactory structureFactory;
 
         private readonly TechnologyFactory technologyFactory;
 
@@ -49,7 +49,7 @@ namespace Game.Comm
                                        ITribeManager tribeManager,
                                        IWorld world,
                                        ILocker locker,
-                                       StructureCsvFactory structureFactory,
+                                       IStructureCsvFactory structureFactory,
                                        TechnologyFactory technologyFactory)
         {
             this.playerRemoverFactory = playerRemoverFactory;

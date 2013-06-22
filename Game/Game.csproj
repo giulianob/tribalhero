@@ -244,11 +244,11 @@
     <Compile Include="Data\ICityFactory.cs" />
     <Compile Include="Data\IGameObjectFactory.cs" />
     <Compile Include="Data\IGlobal.cs" />
-    <Compile Include="Data\IMapPosition.cs" />
     <Compile Include="Data\ITechnologyManagerFactory.cs" />
     <Compile Include="Data\Forest\IForest.cs" />
     <Compile Include="Data\Forest\IForestFactory.cs" />
     <Compile Include="Data\Forest\IForestManager.cs" />
+    <Compile Include="Data\IXYPosition.cs" />
     <Compile Include="Data\PlayerChatState.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />
@@ -264,7 +264,6 @@
     <Compile Include="Data\IStation.cs" />
     <Compile Include="Data\IStructure.cs" />
     <Compile Include="Data\ITechnologyManager.cs" />
-    <Compile Include="Data\IXYPosition.cs" />
     <Compile Include="Data\LazyValue.cs" />
     <Compile Include="Data\PlayerRights.cs" />
     <Compile Include="Data\Stats\IBaseBattleStats.cs" />
@@ -438,6 +437,7 @@
     <Compile Include="Data\Tribe\ITribeManager.cs" />
     <Compile Include="Map\IRoadManager.cs" />
     <Compile Include="Map\IRoadPathFinder.cs" />
+    <Compile Include="Map\ITileLocator.cs" />
     <Compile Include="Map\IWorld.cs" />
     <Compile Include="Map\LocationStrategies\CityTileNextToFriendLocationStrategy.cs" />
     <Compile Include="Map\LocationStrategies\CityTileNextAvailableLocationStrategy.cs" />
@@ -470,6 +470,7 @@
     <Compile Include="Map\World.cs" />
     <Compile Include="Setup\ActionRequirementFactory.cs" />
     <Compile Include="Setup\Ioc.cs" />
+    <Compile Include="Setup\IStructureCsvFactory.cs" />
     <Compile Include="Setup\UnitModFactory.cs" />
     <Compile Include="Setup\UnitFactory.cs" />
     <Compile Include="Setup\EffectRequirementFactory.cs" />

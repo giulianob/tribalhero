@@ -74,7 +74,7 @@ namespace Game.Comm.ProcessorCommands
                     var rba = new ResourceBuyActiveAction(cityId, objectId, price, quantity, type);
                     if (
                             (ret =
-                             city.Worker.DoActive(Ioc.Kernel.Get<StructureCsvFactory>().GetActionWorkerType(obj),
+                             city.Worker.DoActive(Ioc.Kernel.Get<IStructureCsvFactory>().GetActionWorkerType(obj),
                                                   obj,
                                                   rba,
                                                   obj.Technologies)) == 0)
@@ -135,7 +135,7 @@ namespace Game.Comm.ProcessorCommands
                     var rsa = new ResourceSellActiveAction(cityId, objectId, price, quantity, type);
                     if (
                             (ret =
-                             city.Worker.DoActive(Ioc.Kernel.Get<StructureCsvFactory>().GetActionWorkerType(obj),
+                             city.Worker.DoActive(Ioc.Kernel.Get<IStructureCsvFactory>().GetActionWorkerType(obj),
                                                   obj,
                                                   rsa,
                                                   obj.Technologies)) == 0)

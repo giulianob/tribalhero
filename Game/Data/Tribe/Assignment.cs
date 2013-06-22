@@ -53,7 +53,7 @@ namespace Game.Data.Tribe
 
         private readonly IScheduler scheduler;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         private readonly ILocker locker;
 
@@ -76,7 +76,7 @@ namespace Game.Data.Tribe
                           IGameObjectLocator gameObjectLocator,
                           IScheduler scheduler,
                           Procedure procedure,
-                          TileLocator tileLocator,
+                          ITileLocator tileLocator,
                           IActionFactory actionFactory,
                           ILocker locker,
                           ITroopObjectInitializerFactory troopObjectInitializerFactory)
@@ -122,7 +122,7 @@ namespace Game.Data.Tribe
                           IGameObjectLocator gameObjectLocator,
                           IScheduler scheduler,
                           Procedure procedure,
-                          TileLocator tileLocator,
+                          ITileLocator tileLocator,
                           IActionFactory actionFactory,
                           ILocker locker,
                           ITroopObjectInitializerFactory troopObjectInitializerFactory)

@@ -23,7 +23,7 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly PropertyFactory propertyFactory;
 
-        private readonly StructureCsvFactory structureCsvFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         private readonly IForestManager forestManager;
 
@@ -32,7 +32,7 @@ namespace Game.Comm.ProcessorCommands
         private readonly ILocker locker;
 
         public StructureCommandsModule(IActionFactory actionFactory,
-                                       StructureCsvFactory structureCsvFactory,
+                                       IStructureCsvFactory structureCsvFactory,
                                        ObjectTypeFactory objectTypeFactory,
                                        PropertyFactory propertyFactory,
                                        IForestManager forestManager,

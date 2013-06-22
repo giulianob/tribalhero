@@ -16,7 +16,7 @@ namespace Game.Map.LocationStrategies
         
         private readonly MapFactory mapFactory;
         
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
         
         private readonly Random random;
 
@@ -29,7 +29,7 @@ namespace Game.Map.LocationStrategies
         public CityTileNextToFriendLocationStrategy(int distance,
                                                     IPlayer player,
                                                     MapFactory mapFactory,
-                                                    TileLocator tileLocator,
+                                                    ITileLocator tileLocator,
                                                     Random random,
                                                     Formula formula,
                                                     IForestManager forestManager,

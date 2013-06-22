@@ -23,7 +23,7 @@ namespace Game.Logic.Actions
 
         private readonly uint targetCityId;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         private IWorld world;
 
@@ -35,7 +35,7 @@ namespace Game.Logic.Actions
                                         uint structureId,
                                         uint targetCityId,
                                         Resource resource,
-                                        TileLocator tileLocator,
+                                        ITileLocator tileLocator,
                                         IWorld world,
                                         Formula formula,
                                         ILocker locker)
@@ -58,7 +58,7 @@ namespace Game.Logic.Actions
                                         byte workerIndex,
                                         ushort actionCount,
                                         Dictionary<string, string> properties,
-                                        TileLocator tileLocator,
+                                        ITileLocator tileLocator,
                                         IWorld world,
                                         Formula formula,
                                         ILocker locker)

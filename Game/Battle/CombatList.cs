@@ -21,7 +21,7 @@ namespace Game.Battle
     {
         private readonly BattleFormulas battleFormulas;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         #region BestTargetResult enum
 
@@ -34,7 +34,7 @@ namespace Game.Battle
 
         #endregion
 
-        public CombatList(IDbManager manager, TileLocator tileLocator, BattleFormulas battleFormulas)
+        public CombatList(IDbManager manager, ITileLocator tileLocator, BattleFormulas battleFormulas)
                 : base(manager)
         {
             this.tileLocator = tileLocator;
@@ -147,9 +147,9 @@ namespace Game.Battle
         private class CombatScoreItemComparer : IComparer<CombatScoreItem>
         {
             private readonly ICombatObject attacker;
-            private readonly TileLocator tileLocator;
+            private readonly ITileLocator tileLocator;
 
-            public CombatScoreItemComparer(ICombatObject attacker, TileLocator tileLocator)
+            public CombatScoreItemComparer(ICombatObject attacker, ITileLocator tileLocator)
             {
                 this.attacker = attacker;
                 this.tileLocator = tileLocator;

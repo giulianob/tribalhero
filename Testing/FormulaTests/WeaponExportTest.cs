@@ -13,7 +13,7 @@ namespace Testing.FormulaTests
         {
             var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<StructureCsvFactory>(MockBehavior.Strict).Object);
+                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
             formula.GetWeaponExportLaborProduce(1, 0, 0).Should().Be(0);
             formula.GetWeaponExportLaborProduce(2, 0, 0).Should().Be(0);
@@ -27,7 +27,7 @@ namespace Testing.FormulaTests
         {
             var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<StructureCsvFactory>(MockBehavior.Strict).Object);
+                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
             formula.GetWeaponExportLaborProduce(1, 30, 0).Should().Be(10);
             formula.GetWeaponExportLaborProduce(2, 60, 0).Should().Be(20);
@@ -41,7 +41,7 @@ namespace Testing.FormulaTests
         {
             var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<StructureCsvFactory>(MockBehavior.Strict).Object);
+                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
             formula.GetWeaponExportLaborProduce(1, 10, 0).Should().Be(3);
             formula.GetWeaponExportLaborProduce(2, 10, 0).Should().Be(3);
@@ -55,7 +55,7 @@ namespace Testing.FormulaTests
         {
             var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<StructureCsvFactory>(MockBehavior.Strict).Object);
+                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
             formula.GetWeaponExportLaborProduce(7, 30, 0).Should().Be(0);
         }
@@ -65,7 +65,7 @@ namespace Testing.FormulaTests
         {
             var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<StructureCsvFactory>(MockBehavior.Strict).Object);
+                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
             formula.GetWeaponExportLaborProduce(1, 30, 2001).Should().Be(2);
             formula.GetWeaponExportLaborProduce(2, 60, 4001).Should().Be(4);
@@ -79,7 +79,7 @@ namespace Testing.FormulaTests
         {
             var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<StructureCsvFactory>(MockBehavior.Strict).Object);
+                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
             formula.GetWeaponExportLaborProduce(3, 3, 0).Should().Be(1);
             formula.GetWeaponExportLaborProduce(3, 15, 6001).Should().Be(1);

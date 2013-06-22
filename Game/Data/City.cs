@@ -171,6 +171,14 @@ namespace Game.Data
             }
         }
 
+        public Position PrimaryPosition
+        {
+            get
+            {
+                return MainBuilding.PrimaryPosition;
+            }
+        }
+
         /// <summary>
         ///     Returns the city's center point which is the town centers position
         /// </summary>

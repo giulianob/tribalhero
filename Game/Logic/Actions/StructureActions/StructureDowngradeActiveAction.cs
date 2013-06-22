@@ -19,7 +19,7 @@ namespace Game.Logic.Actions
 
         private readonly ObjectTypeFactory objectTypeFactory;
 
-        private readonly StructureCsvFactory structureCsvFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         private readonly World world;
 
@@ -32,7 +32,7 @@ namespace Game.Logic.Actions
         public StructureDowngradeActiveAction(uint cityId,
                                               uint structureId,
                                               ObjectTypeFactory objectTypeFactory,
-                                              StructureCsvFactory structureCsvFactory,
+                                              IStructureCsvFactory structureCsvFactory,
                                               World world,
                                               ILocker locker,
                                               Formula formula)
@@ -55,7 +55,7 @@ namespace Game.Logic.Actions
                                               ushort actionCount,
                                               Dictionary<string, string> properties,
                                               ObjectTypeFactory objectTypeFactory,
-                                              StructureCsvFactory structureCsvFactory,
+                                              IStructureCsvFactory structureCsvFactory,
                                               World world,
                                               ILocker locker,
                                               Formula formula)

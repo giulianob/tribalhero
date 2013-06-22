@@ -15,7 +15,7 @@ namespace Game.Comm.ProcessorCommands
 {
     class RegionCommandsModule : CommandModule
     {
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         private readonly IWorld world;
 
@@ -27,7 +27,7 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly Util.IChannel channel;
 
-        public RegionCommandsModule(TileLocator tileLocator,
+        public RegionCommandsModule(ITileLocator tileLocator,
                                     IWorld world,
                                     ObjectTypeFactory objectTypeFactory,
                                     IRoadPathFinder roadPathFinder,

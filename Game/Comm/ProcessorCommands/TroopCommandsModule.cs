@@ -31,12 +31,12 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly ITroopObjectInitializerFactory troopObjectInitializerFactory;
 
-        private readonly StructureCsvFactory structureCsvFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         private readonly Procedure procedure;
 
         public TroopCommandsModule(IActionFactory actionFactory,
-                                   StructureCsvFactory structureCsvFactory,
+                                   IStructureCsvFactory structureCsvFactory,
                                    IGameObjectLocator gameObjectLocator,
                                    Formula formula,
                                    ILocker locker,

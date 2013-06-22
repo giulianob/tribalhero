@@ -11,7 +11,7 @@ namespace Game.Data.BarbarianTribe
 
         private readonly MapFactory mapFactory;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         private readonly IRegionManager regionManager;
 
@@ -19,7 +19,7 @@ namespace Game.Data.BarbarianTribe
 
         private readonly Random random = new Random();
         
-        public BarbarianTribeConfigurator(MapFactory mapFactory, TileLocator tileLocator, IRegionManager regionManager)
+        public BarbarianTribeConfigurator(MapFactory mapFactory, ITileLocator tileLocator, IRegionManager regionManager)
         {
             this.mapFactory = mapFactory;            
             this.tileLocator = tileLocator;

@@ -26,7 +26,7 @@ namespace Game.Logic.Actions
 
         private ushort type;
 
-        private readonly StructureCsvFactory structureCsvFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         private readonly Formula formula;
 
@@ -44,7 +44,7 @@ namespace Game.Logic.Actions
 
         public StructureUpgradeActiveAction(uint cityId,
                                             uint structureId,
-                                            StructureCsvFactory structureCsvFactory,
+                                            IStructureCsvFactory structureCsvFactory,
                                             Formula formula,
                                             IWorld world,
                                             Procedure procedure,
@@ -73,7 +73,7 @@ namespace Game.Logic.Actions
                                             byte workerIndex,
                                             ushort actionCount,
                                             Dictionary<string, string> properties,
-                                            StructureCsvFactory structureCsvFactory,
+                                            IStructureCsvFactory structureCsvFactory,
                                             Formula formula,
                                             IWorld world,
                                             Procedure procedure,

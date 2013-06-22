@@ -15,7 +15,7 @@ namespace Game.Setup
     {
         private readonly ActionRequirementFactory actionRequirementFactory;
 
-        private readonly StructureCsvFactory structureCsvFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         private readonly EffectRequirementFactory effectRequirementFactory;
 
@@ -38,7 +38,7 @@ namespace Game.Setup
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
         public FactoriesInitializer(ActionRequirementFactory actionRequirementFactory,
-                                    StructureCsvFactory structureCsvFactory,
+                                    IStructureCsvFactory structureCsvFactory,
                                     EffectRequirementFactory effectRequirementFactory,
                                     InitFactory initFactory,
                                     PropertyFactory propertyFactory,

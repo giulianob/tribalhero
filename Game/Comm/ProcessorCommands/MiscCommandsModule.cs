@@ -14,9 +14,9 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly IActionFactory actionFactory;
 
-        private readonly StructureCsvFactory structureCsvFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
-        public MiscCommandsModule(IActionFactory actionFactory, StructureCsvFactory structureCsvFactory)
+        public MiscCommandsModule(IActionFactory actionFactory, IStructureCsvFactory structureCsvFactory)
         {
             this.actionFactory = actionFactory;
             this.structureCsvFactory = structureCsvFactory;

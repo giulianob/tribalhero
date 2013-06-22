@@ -18,7 +18,7 @@ namespace Testing.FormulaTests
         {
             var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<StructureCsvFactory>(MockBehavior.Strict).Object);
+                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
             formula.MoveTime(5).Should().Be(51.4m);
             formula.MoveTime(11).Should().Be(36);
             formula.MoveTime(23).Should().Be(22.5m);
@@ -30,7 +30,7 @@ namespace Testing.FormulaTests
         {
             var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<StructureCsvFactory>(MockBehavior.Strict).Object);
+                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
             ITroopStub troopstub = Substitute.For<ITroopStub>();
             troopstub.TotalCount.Returns((ushort)1);
 
@@ -95,7 +95,7 @@ namespace Testing.FormulaTests
         {
             var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<StructureCsvFactory>(MockBehavior.Strict).Object);
+                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
             formula.MoveTimeTotal(CreateMockedStub(4, new List<Effect>()), 400, true)
                    .Should()
@@ -113,7 +113,7 @@ namespace Testing.FormulaTests
         {
             var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<StructureCsvFactory>(MockBehavior.Strict).Object);
+                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
             Effect e = new Effect
             {
@@ -154,7 +154,7 @@ namespace Testing.FormulaTests
         {
             var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<StructureCsvFactory>(MockBehavior.Strict).Object);
+                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
             Effect e = new Effect
             {
@@ -197,7 +197,7 @@ namespace Testing.FormulaTests
         {
             var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<StructureCsvFactory>(MockBehavior.Strict).Object);
+                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
             var dummy = new Effect
             {
@@ -252,7 +252,7 @@ namespace Testing.FormulaTests
         {
             var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<StructureCsvFactory>(MockBehavior.Strict).Object);
+                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
             var dummy = new Effect
             {

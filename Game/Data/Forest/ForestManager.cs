@@ -36,7 +36,7 @@ namespace Game.Data.Forest
 
         private readonly LargeIdGenerator objectIdGenerator = new LargeIdGenerator(Config.forest_id_max, Config.forest_id_min);
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         public ForestManager(IScheduler scheduler,
                              IWorld world,
@@ -45,7 +45,7 @@ namespace Game.Data.Forest
                              IForestFactory forestFactory,
                              ObjectTypeFactory objectTypeFactory,
                              IActionFactory actionFactory,
-                             TileLocator tileLocator)
+                             ITileLocator tileLocator)
         {
             this.scheduler = scheduler;
             this.world = world;

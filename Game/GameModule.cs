@@ -103,7 +103,7 @@ namespace Game
 
             Bind<FactoriesInitializer>().ToSelf().InSingletonScope();
             Bind<ActionRequirementFactory>().ToSelf().InSingletonScope();
-            Bind<StructureCsvFactory>().ToSelf().InSingletonScope();
+            Bind<IStructureCsvFactory>().To<StructureCsvFactory>().InSingletonScope();
             Bind<EffectRequirementFactory>().ToSelf().InSingletonScope();
             Bind<InitFactory>().ToSelf().InSingletonScope();            
             Bind<PropertyFactory>().ToSelf().InSingletonScope();
@@ -184,7 +184,7 @@ namespace Game
             #region Utils
 
             Bind<IScheduler>().To<ThreadedScheduler>().InSingletonScope();
-            Bind<TileLocator>().ToMethod(c => new TileLocator(new Random().Next));
+            Bind<ITileLocator>().ToMethod(c => new TileLocator(new Random().Next));
             Bind<Procedure>().ToSelf().InSingletonScope();
             Bind<BattleProcedure>().ToSelf().InSingletonScope();
             Bind<StrongholdBattleProcedure>().ToSelf().InSingletonScope();

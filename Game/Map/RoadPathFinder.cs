@@ -13,11 +13,11 @@ namespace Game.Map
     {
         private readonly IWorld world;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         private readonly ObjectTypeFactory objectTypeFactory;
 
-        public RoadPathFinder(IWorld world, TileLocator tileLocator, ObjectTypeFactory objectTypeFactory)
+        public RoadPathFinder(IWorld world, ITileLocator tileLocator, ObjectTypeFactory objectTypeFactory)
         {
             this.world = world;
             this.tileLocator = tileLocator;

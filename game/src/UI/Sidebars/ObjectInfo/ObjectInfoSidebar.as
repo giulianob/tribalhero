@@ -23,7 +23,8 @@ package src.UI.Sidebars.ObjectInfo {
 	import src.UI.Components.StarRating;
 	import src.UI.Sidebars.ObjectInfo.Buttons.*;
 	import src.Util.BinaryList.*;
-	import src.Util.Util;
+    import src.Util.DateUtil;
+    import src.Util.Util;
 
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -296,7 +297,7 @@ package src.UI.Sidebars.ObjectInfo {
 				var astCancel: AssetPane = new AssetPane(cancelButton);
 				astCancel.setConstraints("East");
 
-				var lblTime: JLabel = new JLabel(Util.formatTime(timeLeft));
+				var lblTime: JLabel = new JLabel(DateUtil.formatTime(timeLeft));
 				lblTime.setHorizontalAlignment(AsWingConstants.RIGHT);
 				lblTime.setIcon(new AssetIcon(new ICON_CLOCK()));
 				lblTime.setConstraints("South");

@@ -8,7 +8,8 @@
 	import src.Objects.Troop.*;
 	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.UI.LookAndFeel.GamePanelBackgroundDecorator;
-	import src.Util.StringHelper;
+    import src.Util.DateUtil;
+    import src.Util.StringHelper;
 
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -45,7 +46,7 @@
 			
 			txtMessage.setHtmlText(StringHelper.linkify(message.message));
 			txtSubject.setText(message.subject);
-			txtDate.setText(message.date);
+			txtDate.setText(DateUtil.niceShort(message.date));
 
 			if (message.isRecipient) {
 				title = "Message from " + message.name;

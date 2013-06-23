@@ -15,7 +15,8 @@
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.Components.TradeResourcesPanel;
 	import src.UI.GameJPanel;
-	import src.Util.Util;
+    import src.Util.DateUtil;
+    import src.Util.Util;
 
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -84,7 +85,7 @@
 			var tradeTime: int = packet.readInt();
 			
 			var infoPanel: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
-			infoPanel.append(new JLabel(Util.formatTime(tradeTime), new AssetIcon(new ICON_CLOCK()), AsWingConstants.RIGHT));
+			infoPanel.append(new JLabel(DateUtil.formatTime(tradeTime), new AssetIcon(new ICON_CLOCK()), AsWingConstants.RIGHT));
 			infoPanel.append(new JLabel("You have chosen to send " + amount().toNiceString() + " to " + playerName + " " + txtCityName.getText() + "\n\nAre you sure?"));			
 			
 			InfoDialog.showMessageDialog("Confirm", infoPanel, onUserConfirms, null, true, false, JOptionPane.YES | JOptionPane.NO);

@@ -10,7 +10,8 @@
 	import org.aswing.table.DefaultTextCell;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.Util.StringHelper;
+    import src.Util.DateUtil;
+    import src.Util.StringHelper;
 
 	public class DatePlainTextCell extends AbstractTableCell
 	{			
@@ -33,7 +34,7 @@
 			
 			lbl.setFont(GameLookAndFeel.getClassAttribute("Message.read", "LabelButton.font"));
 
-			lbl.setText(value);
+			lbl.setText(DateUtil.niceShort(value));
 		}
 		
 

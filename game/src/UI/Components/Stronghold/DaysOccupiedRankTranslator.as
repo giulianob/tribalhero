@@ -3,7 +3,8 @@ package src.UI.Components.Stronghold
 	import fl.lang.Locale;
 	import org.aswing.table.PropertyTranslator;
 	import src.Global;
-	import src.Util.Util;
+    import src.Util.DateUtil;
+    import src.Util.Util;
 	
 	public class DaysOccupiedRankTranslator implements PropertyTranslator
 	{
@@ -18,7 +19,7 @@ package src.UI.Components.Stronghold
 			var occupiedSince:int = info[key];
 			if (occupiedSince == 0) return "";
 			var timediff :int = Global.map.getServerTime() - occupiedSince;
-			return Util.niceDays(timediff);
+			return DateUtil.niceDays(timediff);
 		}
 	}		
 

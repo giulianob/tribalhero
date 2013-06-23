@@ -165,7 +165,7 @@
 			lblIron = resourceLabelMaker(StringHelper.localize("IRON_DESC"), new AssetIcon(new ICON_IRON()));
 			lblUnits = simpleLabelMaker(StringHelper.localize("UNITS_DESC"), new AssetIcon(new ICON_SINGLE_SWORD()));			
 			
-			var laborTime:String = Util.niceTime(Formula.laborRate(city), false);
+			var laborTime:String = DateUtil.niceTime(Formula.laborRate(city));
 			
 			lblLabor = simpleLabelMaker(StringHelper.localize("LABOR_DESC", laborTime), new AssetIcon(new ICON_LABOR()));
 			

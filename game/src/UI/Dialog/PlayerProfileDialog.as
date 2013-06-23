@@ -17,7 +17,8 @@
 	import src.UI.*;
 	import src.UI.Components.*;
 	import src.UI.LookAndFeel.*;
-	import src.Util.StringHelper;
+    import src.Util.DateUtil;
+    import src.Util.StringHelper;
 	import src.Util.Util;
 	
 	public class PlayerProfileDialog extends GameJPanel
@@ -132,7 +133,7 @@
 					var distance: int = myCity.MainBuilding.distance(city.x, city.y);
 					var timeAwayInSeconds: int = Formula.moveTimeTotal(myCity, 12, distance, true);
 		
-					distanceMsg += StringHelper.localize("PLAYER_PROFILE_DIALOG_CITY_DISTANCE", myCity.name, Util.niceTime(timeAwayInSeconds)) + "\n";
+					distanceMsg += StringHelper.localize("PLAYER_PROFILE_DIALOG_CITY_DISTANCE", myCity.name, DateUtil.niceTime(timeAwayInSeconds)) + "\n";
 				}
 				
 				var cityDistanceTooltip: SimpleTooltip = new SimpleTooltip(lblCityName, distanceMsg);

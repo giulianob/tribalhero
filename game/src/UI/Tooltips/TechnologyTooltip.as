@@ -8,7 +8,8 @@ package src.UI.Tooltips {
 	import src.Objects.StructureObject;
 	import src.UI.Components.ResourcesPanel;
 	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.Util.Util;
+    import src.Util.DateUtil;
+    import src.Util.Util;
 
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -80,7 +81,7 @@ package src.UI.Tooltips {
 				ui.append(pnlNextLvl);
 
 				lblNextLvlDescription.setText(nextTechPrototype.getDescription());
-				lblNextLvlTime.setText(Util.formatTime(Formula.buildTime(parentObj, nextTechPrototype.time, parentObj.getCorrespondingCityObj().techManager)));
+				lblNextLvlTime.setText(DateUtil.formatTime(Formula.buildTime(parentObj, nextTechPrototype.time, parentObj.getCorrespondingCityObj().techManager)));
 
 				if (missingRequirements != null && missingRequirements.length > 0)
 				{

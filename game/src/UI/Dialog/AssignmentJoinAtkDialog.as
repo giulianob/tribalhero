@@ -1,6 +1,7 @@
 ﻿package src.UI.Dialog {
 
-	import src.Util.StringHelper;
+    import src.Util.DateUtil;
+    import src.Util.StringHelper;
 	import flash.events.Event;
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -45,7 +46,7 @@
 				var moveTime: int = Formula.moveTimeTotal(city, stub.getSpeed(city), distance, true);
 				if (Global.map.getServerTime() + moveTime > assignment.endTime) {
 					var diff: int = Global.map.getServerTime() + moveTime - assignment.endTime;
-					lblTroopSpeed.setText("Your units will be "+ Util.niceTime(diff)+" late. Choose faster units to arrive on time.");
+					lblTroopSpeed.setText("Your units will be "+ DateUtil.niceTime(diff)+" late. Choose faster units to arrive on time.");
 				}
 				else {
 					lblTroopSpeed.setText(StringHelper.localize("TROOP_CREATE_DRAG_HINT"));

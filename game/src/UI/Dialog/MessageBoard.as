@@ -13,7 +13,8 @@ package src.UI.Dialog
 	import src.UI.Components.*;
 	import src.UI.Components.TableCells.*;
 	import src.UI.LookAndFeel.*;
-	import src.Util.StringHelper;
+    import src.Util.DateUtil;
+    import src.Util.StringHelper;
 
 	public class MessageBoard extends GameJPanel
 	{
@@ -230,7 +231,7 @@ package src.UI.Dialog
 			
 			var pnlHeader: JPanel = new JPanel(new BorderLayout(5));
 			
-			var lblCreated: JLabel = new JLabel(postData.createdInWords, null, AsWingConstants.LEFT);
+			var lblCreated: JLabel = new JLabel(DateUtil.getRelativeFromTimestamp(postData.createdTimestamp), null, AsWingConstants.LEFT);
 			
 			if (!lastRead || lastRead < postData.createdTimestamp) {
 				GameLookAndFeel.changeClass(lblCreated, "Message.unread");

@@ -11,7 +11,8 @@ package src.UI.Tooltips {
 	import src.UI.Components.ResourcesPanel;
 	import src.UI.Components.StructureStatBox;
 	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.Util.Util;
+    import src.Util.DateUtil;
+    import src.Util.Util;
 	import src.Objects.Effects.Formula;
 
 	import org.aswing.*;
@@ -66,7 +67,7 @@ package src.UI.Tooltips {
 
 			lblTitle.setText("Convert to level 1 " + nextStructPrototype.getName());
 
-			lblTime.setText(Util.formatTime(Formula.buildTime(parentObj, nextStructPrototype.buildTime, parentObj.getCorrespondingCityObj().techManager)));
+			lblTime.setText(DateUtil.formatTime(Formula.buildTime(parentObj, nextStructPrototype.buildTime, parentObj.getCorrespondingCityObj().techManager)));
 
 			lblDescription.setText(nextStructPrototype.getGeneralDescription());
 

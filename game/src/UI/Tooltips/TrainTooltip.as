@@ -49,7 +49,7 @@
 			var city: City = Global.map.cities.get(structure.cityId);
 			var trainTime: int = Formula.trainTime(structure.level, 1, unitPrototype, city, city.techManager, true);
 						
-			lblTime.setText(Util.formatTime(trainTime));
+			lblTime.setText(DateUtil.formatTime(trainTime));
 			
 			var labelMaker: Function = function(text: String, icon: Icon = null) : JLabel {
 				var label: JLabel = new JLabel(text, icon);

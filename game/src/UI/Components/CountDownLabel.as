@@ -8,7 +8,8 @@ package src.UI.Components
 	import org.aswing.Component;
 	import org.aswing.JLabel;
 	import src.Global;
-	import src.Util.Util;
+    import src.Util.DateUtil;
+    import src.Util.Util;
 		
 	public class CountDownLabel extends JLabel
 	{
@@ -56,7 +57,7 @@ package src.UI.Components
 				timer.stop();
 			}
 			else
-				setText(Util.formatTime(timeLeft));
+				setText(DateUtil.formatTime(timeLeft));
 		}
 		
 	}

@@ -215,7 +215,7 @@ import src.Comm.GameURLLoader;
             grid.append(simpleLabelMaker(StringHelper.localize("STR_LEVEL_VALUE", stronghold.lvl), StringHelper.localize("STR_LEVEL"), new AssetIcon(new ICON_UPGRADE())));
             grid.append(simpleLabelMaker(StringHelper.localize("STR_PER_HOUR_RATE", Util.roundNumber(stronghold.victoryPointRate)), StringHelper.localize("STR_VP_RATE"), new AssetIcon(new ICON_STAR())));
             var timediff :int = Global.map.getServerTime() - stronghold.dateOccupied;
-            grid.append(simpleLabelMaker(Util.niceDays(timediff), StringHelper.localize("STR_DAYS_OCCUPIED"), new AssetIcon(new ICON_SHIELD())));
+            grid.append(simpleLabelMaker(DateUtil.niceDays(timediff), StringHelper.localize("STR_DAYS_OCCUPIED"), new AssetIcon(new ICON_SHIELD())));
 
             var lblTroop: JLabel = new JLabel(StringHelper.localize("STR_UNIT_SINGULAR_PLURAL", stronghold.upkeep));
             lblTroop.setHorizontalAlignment(AsWingConstants.RIGHT);
@@ -474,11 +474,10 @@ import src.Comm.GameURLLoader;
             txtArea.removeAll();
             pagingBar.setData(data);
 
-            var df:DateTimeFormatter = new DateTimeFormatter(LocaleID.DEFAULT, DateTimeStyle.SHORT, DateTimeStyle.SHORT);
             for each(var log:* in data.tribelogs) {
                 var panel: JPanel = new JPanel(new SoftBoxLayout());
                 var params: * = new JSONDecoder(log.parameters).getValue();
-                var date:JLabel = new JLabel(df.format(new Date(1000*log.created)));
+                var date:JLabel = new JLabel(DateUtil.niceShort(log.created));
                 date.setVerticalAlignment(AsWingConstants.TOP);
                 panel.append(date);
 
@@ -794,7 +793,7 @@ import src.Comm.GameURLLoader;
             var lblTribeName: JLabel = new JLabel(profileData.tribeName + " (Level " + profileData.tribeLevel + ")", null, AsWingConstants.LEFT);
             GameLookAndFeel.changeClass(lblTribeName, "darkHeader");
 
-            var lblEstablished: JLabel = new JLabel(StringHelper.localize("STR_ESTABLISHED_WITH_TIME", Util.niceDays(Global.map.getServerTime() - profileData.created)));
+            var lblEstablished: JLabel = new JLabel(StringHelper.localize("STR_ESTABLISHED_WITH_TIME", DateUtil.niceDays(Global.map.getServerTime() - profileData.created)));
 
             var pnlHeaderTitle: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 0, false));
             pnlHeaderTitle.setConstraints("Center");

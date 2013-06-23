@@ -14,7 +14,7 @@
 
 	public class UnreadTextCell extends AbstractTableCell
 	{			
-		private var lbl: JLabelButton = new JLabelButton("", null, AsWingConstants.LEFT);
+		protected var lbl: JLabelButton = new JLabelButton("", null, AsWingConstants.LEFT);
 		private var pnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));
 		
 		public function UnreadTextCell() 

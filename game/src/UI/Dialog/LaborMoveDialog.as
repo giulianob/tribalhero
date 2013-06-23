@@ -19,7 +19,8 @@ package src.UI.Dialog{
 	import src.Objects.Resources;
 	import src.Objects.StructureObject;
 	import src.UI.GameJPanel;
-	import src.Util.Util;
+    import src.Util.DateUtil;
+    import src.Util.Util;
 
 	public class LaborMoveDialog extends GameJPanel{
 
@@ -112,7 +113,7 @@ package src.UI.Dialog{
 			
 			var moveTime: int = Formula.laborMoveTime(structure, Math.abs(laborDelta), laborDelta >= 0, city, city.techManager);			
 			
-			lblTime.setText(Util.formatTime(moveTime));
+			lblTime.setText(DateUtil.formatTime(moveTime));
 			lblCount.setText(sldCount.getValue().toString() + " out of " + sldCount.getMaximum().toString());
 
 			if (getFrame() != null) {

@@ -222,7 +222,7 @@
 				var astCancel: AssetPane = new AssetPane(cancelButton);
 				astCancel.setConstraints("East");
 
-				var lblTime: JLabel = new JLabel(Util.formatTime(timeLeft));
+				var lblTime: JLabel = new JLabel(DateUtil.formatTime(timeLeft));
 				lblTime.setHorizontalAlignment(AsWingConstants.RIGHT);
 				lblTime.setIcon(new AssetIcon(new ICON_CLOCK()));
 				lblTime.setConstraints("South");

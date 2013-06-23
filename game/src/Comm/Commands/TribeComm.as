@@ -184,7 +184,7 @@
 				if (lastLogin == 0) {
 					memberData.date = "Now";
 				} else {
-					memberData.date = Util.simpleTime(Global.map.getServerTime() - lastLogin) + " ago";
+					memberData.date = DateUtil.simpleTime(Global.map.getServerTime() - lastLogin) + " ago";
 				}
 				memberData.contribution = new Resources(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUInt(), 0);
 				profileData.members.push(memberData);

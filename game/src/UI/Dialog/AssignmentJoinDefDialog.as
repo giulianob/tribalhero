@@ -16,7 +16,8 @@
 	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
 	import src.UI.GameJPanel;
 	import src.Objects.Troop.*;
-	import src.Util.StringHelper;
+    import src.Util.DateUtil;
+    import src.Util.StringHelper;
 	import src.Util.Util;
 
 	public class AssignmentJoinDefDialog extends ReinforceTroopDialog {
@@ -45,7 +46,7 @@
 				var moveTime: int = Formula.moveTimeTotal(city, stub.getSpeed(city), distance, false);
 				if (Global.map.getServerTime() + moveTime > assignment.endTime) {
 					var diff: int = Global.map.getServerTime() + moveTime - assignment.endTime;
-					lblTroopSpeed.setText("Your units will be "+ Util.niceTime(diff)+" late. Choose faster units to arrive on time.");
+					lblTroopSpeed.setText("Your units will be "+ DateUtil.niceTime(diff) + " late. Choose faster units to arrive on time.");
 				}
 				else {
 					lblTroopSpeed.setText(StringHelper.localize("TROOP_CREATE_DRAG_HINT"));

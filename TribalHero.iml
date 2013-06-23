@@ -3,7 +3,7 @@
   <component name="FlexBuildConfigurationManager" active="TribalHero">
     <configurations>
       <configuration name="TribalHero" pure-as="true" main-class="src.Preloader" output-file="TribalHero.swf" output-folder="$MODULE_DIR$/bin">
-        <dependencies target-player="11.7">
+        <dependencies target-player="11.1">
           <entries>
             <entry library-name="TheMiner_en" library-level="project">
               <dependency linkage="Merged" />

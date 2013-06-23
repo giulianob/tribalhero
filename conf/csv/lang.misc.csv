@@ -274,3 +274,6 @@ TRIBE_LOG_6,{0} has left.
 TRIBE_LOG_7,Took over Stronghold {0} from the tribe {1}.
 TRIBE_LOG_8,Lost Stronghold {0} to tribe {1}.
 TRIBE_LOG_9,Occupied the neutral Stronghold {0}.
+,
+STR_NICE_SHORT_TODAY,"Today, {0}"
+STR_NICE_SHORT_YESTERDAY,"Yesterday, {0}"

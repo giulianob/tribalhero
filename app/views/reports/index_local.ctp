@@ -19,7 +19,7 @@ foreach ($battle_reports as $battle_report) {
 
     $results['snapshots'][] = array(
         'id' => $battle_report['Battle']['id'],
-        'date' => $time->niceShort($battle_report['Battle']['created']),
+        'date' => strtotime($battle_report['Battle']['created']),
         'location' => array(
             'type' => $battle_report['Battle']['location_type'],
             'id' => $battle_report['Battle']['location_id'],

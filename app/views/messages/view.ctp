@@ -12,7 +12,7 @@ $data = array('message' => array(
                 'id' => $message['Message']['id'],
                 'subject' => $message['Message']['subject'],
                 'message' => $message['Message']['message'],
-                'date' => $time->niceShort($message['Message']['created'])
+                'date' => strtotime($message['Message']['created'])
         ),
         'refreshOnClose' => $refreshOnClose
 );

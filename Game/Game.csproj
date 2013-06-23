@@ -270,6 +270,7 @@
     <Compile Include="Data\Stronghold\IStrongholdConfigurator.cs" />
     <Compile Include="Data\Stronghold\IStrongholdManager.cs" />
     <Compile Include="Data\SimpleStubGenerator.cs" />
+    <Compile Include="Data\Stronghold\IStrongholdManagerLogger.cs" />
     <Compile Include="Data\Stronghold\Stronghold.cs" />
     <Compile Include="Data\Stronghold\StrongholdActivationCondition.cs" />
     <Compile Include="Data\Stronghold\StrongholdConfigurator.cs" />
@@ -285,12 +286,14 @@
     <Compile Include="Data\Tribe\IAssignmentFactory.cs" />
     <Compile Include="Data\Tribe\ITribe.cs" />
     <Compile Include="Data\Tribe\ITribeFactory.cs" />
+    <Compile Include="Data\Tribe\ITribeLogger.cs" />
     <Compile Include="Data\Tribe\ITribeRank.cs" />
     <Compile Include="Data\Tribe\ITribesman.cs" />
     <Compile Include="Data\Tribe\LeavingTribesmate.cs" />
     <Compile Include="Data\Tribe\Tribe.cs" />
     <Compile Include="Data\Tribe\TribeEvents.cs" />
     <Compile Include="Data\Tribe\TribeLogger.cs" />
+    <Compile Include="Data\Tribe\TribeLogType.cs" />
     <Compile Include="Data\Tribe\TribeManager.cs" />
     <Compile Include="Data\Tribe\TribePermission.cs" />
     <Compile Include="Data\Tribe\TribeRank.cs" />
@@ -465,6 +468,7 @@
     <Compile Include="Util\Channel.cs" />
     <Compile Include="Util\DuplicateSubscriptionException.cs" />
     <Compile Include="Util\EnumExtension.cs" />
+    <Compile Include="Util\EventHandlerExtensions.cs" />
     <Compile Include="Util\FileExtension.cs" />
     <Compile Include="Util\Inflector.cs" />
     <Compile Include="Util\CmdParserExtension.cs" />

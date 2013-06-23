@@ -6,6 +6,7 @@ using System.Data.Common;
 using System.Linq;
 using Game.Comm;
 using Game.Data.Stronghold;
+using Game.Data.Tribe.EventArguments;
 using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Actions;
@@ -239,23 +240,21 @@ namespace Game.Data.Tribe
             tribeLogger.Listen(tribe);
         }
 
-        private void TribeOnRanksUpdated(object sender, EventArgs eventArgs)
+        private void TribeOnRanksUpdated(object sender, TribeEventArgs e)
         {
-            ITribe tribe = (ITribe)sender;
             Packet packet = new Packet(Command.TribeChannelRanksUpdate);
-            PacketHelper.AddTribeRanksToPacket(tribe, packet);
+            PacketHelper.AddTribeRanksToPacket(e.Tribe, packet);
 
-            Global.Channel.Post("/TRIBE/" + tribe.Id, packet);
+            Global.Channel.Post("/TRIBE/" + e.Tribe.Id, packet);
         }
 
-        private void TribeOnUpdated(object sender, EventArgs eventArgs)
-        {
-            ITribe tribe = (ITribe)sender;
+        private void TribeOnUpdated(object sender, TribeEventArgs e)
+        {            
             Packet packet = new Packet(Command.TribeChannelNotification);
-            packet.AddInt32(GetIncomingList(tribe).Count());
-            packet.AddInt16(tribe.AssignmentCount);
+            packet.AddInt32(GetIncomingList(e.Tribe).Count());
+            packet.AddInt16(e.Tribe.AssignmentCount);
             
-            Global.Channel.Post("/TRIBE/" + tribe.Id, packet);
+            Global.Channel.Post("/TRIBE/" + e.Tribe.Id, packet);
         }
 
         private void UnsubscribeEvents(ITribe tribe)

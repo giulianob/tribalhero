@@ -249,10 +249,10 @@ package src.UI.Dialog
 			message.setColumns(50);
 			message.setHtmlText(StringHelper.linkify(postData.message));
 			message.pack();			
-			
-			var scrollMessage: JScrollPane = new JScrollPane(message);						
-			scrollMessage.setPreferredHeight(Math.min(500, message.getHeight() + 20));
-			
+
+			var scrollMessage: JScrollPane = new JScrollPane(message);
+			scrollMessage.setPreferredHeight(Math.min(2500, message.getHeight() + 20));
+
 			var pnlPostTools: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT));
 			
 			var menuTools: JPopupMenu = new JPopupMenu();			

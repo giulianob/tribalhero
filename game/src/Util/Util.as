@@ -5,35 +5,37 @@
  */
 
 package src.Util {
-import flash.display.DisplayObject;
-import flash.display.DisplayObjectContainer;
-import flash.display.Stage;
-import flash.external.ExternalInterface;
-import flash.geom.Rectangle;
-import flash.utils.getQualifiedClassName;
+    import flash.display.DisplayObject;
+    import flash.display.DisplayObjectContainer;
+    import flash.display.Stage;
+    import flash.external.ExternalInterface;
+    import flash.geom.Rectangle;
+    import flash.utils.getQualifiedClassName;
 
-import mx.utils.StringUtil;
+    import mx.utils.StringUtil;
 
-import org.aswing.AsWingConstants;
-import org.aswing.AsWingUtils;
-import org.aswing.Component;
-import org.aswing.Container;
-import org.aswing.FocusManager;
-import org.aswing.JFrame;
-import org.aswing.JPanel;
-import org.aswing.JScrollPane;
-import org.aswing.JTextComponent;
-import org.aswing.JViewport;
-import org.aswing.geom.IntPoint;
+    import org.aswing.AsWingConstants;
+    import org.aswing.AsWingManager;
+    import org.aswing.AsWingUtils;
+    import org.aswing.Component;
+    import org.aswing.Container;
+    import org.aswing.FocusManager;
+    import org.aswing.JFrame;
+    import org.aswing.JPanel;
+    import org.aswing.JScrollPane;
+    import org.aswing.JTextComponent;
+    import org.aswing.JViewport;
+    import org.aswing.geom.IntPoint;
 
-import src.Constants;
-import src.UI.GameJImagePanelBackground;
+    import src.Constants;
+    import src.UI.GameJImagePanelBackground;
 
-public class Util {
+    public class Util {
                
 		public static function createTopAlignedScrollPane(pnl: JPanel): JScrollPane {
 			var scrollPane: JScrollPane = new JScrollPane(new JViewport(pnl, true), JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);
-			(scrollPane.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);			
+			(scrollPane.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
+
 			return scrollPane;
 		}
 		

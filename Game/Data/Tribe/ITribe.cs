@@ -94,11 +94,11 @@ namespace Game.Data.Tribe
 
         void SendUpdate();
 
-        event EventHandler<EventArgs> Updated;
+        event EventHandler<TribeEventArgs> Updated;
 
         void SendRanksUpdate();
 
-        event EventHandler<EventArgs> RanksUpdated;
+        event EventHandler<TribeEventArgs> RanksUpdated;
 
         event EventHandler<TribesmanEventArgs> TribesmanJoined;
 
@@ -110,7 +110,7 @@ namespace Game.Data.Tribe
 
         event EventHandler<TribesmanEventArgs> TribesmanRankChanged;
 
-        event EventHandler<EventArgs> Upgraded;
+        event EventHandler<TribeEventArgs> Upgraded;
 
     }
 

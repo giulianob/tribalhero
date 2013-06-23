@@ -18,6 +18,10 @@ namespace Game.Data.Stronghold
 {
     public class StrongholdManager : IStrongholdManager
     {
+        public event EventHandler<StrongholdGainedEventArgs> StrongholdGained;
+
+        public event EventHandler<StrongholdLostEventArgs> StrongholdLost;
+
         private readonly Chat chat;
 
         private readonly IDbManager dbManager;
@@ -185,13 +189,13 @@ namespace Game.Data.Stronghold
             if (oldTribe != null)
             {
                 chat.SendSystemChat("STRONGHOLD_TAKEN_OVER", stronghold.Name, tribe.Name, oldTribe.Name);
-                StrongholdGained(this, new StrongholdGainedEventArgs {Tribe = tribe, OwnBy = oldTribe, Stronghold = stronghold});
-                StrongholdLost(this, new StrongholdLostEventArgs { Tribe = oldTribe, AttackedBy = tribe, Stronghold = stronghold });
+                StrongholdGained.Raise(this, new StrongholdGainedEventArgs {Tribe = tribe, OwnBy = oldTribe, Stronghold = stronghold});
+                StrongholdLost.Raise(this, new StrongholdLostEventArgs { Tribe = oldTribe, AttackedBy = tribe, Stronghold = stronghold });
             }
             else
             {
                 chat.SendSystemChat("STRONGHOLD_NEUTRAL_TAKEN_OVER", stronghold.Name, tribe.Name);
-                StrongholdGained(this, new StrongholdGainedEventArgs {Tribe = tribe, Stronghold = stronghold});
+                StrongholdGained.Raise(this, new StrongholdGainedEventArgs {Tribe = tribe, Stronghold = stronghold});
             }
         }
 
@@ -386,8 +390,5 @@ namespace Game.Data.Stronghold
                 stub.City.Worker.DoPassive(stub.City, retreatAction, true);
             }
         }
-
-        public event EventHandler<StrongholdGainedEventArgs> StrongholdGained = (sender, args) => { };
-        public event EventHandler<StrongholdLostEventArgs> StrongholdLost = (sender, args) => { };
     }
 }

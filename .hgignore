@@ -19,5 +19,5 @@ syntax: glob
 vendors/ruckusing/logs/development.log
 .git/
 nbproject/
-.idea/
 app/webroot/tmp/Game.swf
+.idea/workspace.xml

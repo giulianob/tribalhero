@@ -11,10 +11,11 @@ class AddTribeLogs extends Ruckusing_BaseMigration {
         $table->column("parameters", "text", array('null' => false));
         $table->finish();
 
-	}//up()
+        $this->add_index('tribe_logs', 'created', array('name' => 'idx_created'));
+        $this->add_index('tribe_logs', 'tribe_id', array('name' => 'idx_tribe_id'));
+	}
 
 	public function down() {
-       $this->drop_table('tribe_logs');
- 	}//down()
+        $this->drop_table('tribe_logs');
+    }
 }
-?>

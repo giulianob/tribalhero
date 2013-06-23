@@ -3,14 +3,11 @@
     import System.Collection.Generic.IGrouping;
     import System.Linq.Enumerable;
 
-import com.adobe.serialization.json.JSONDecoder;
+    import com.adobe.serialization.json.JSONDecoder;
 
     import fl.lang.*;
 
     import flash.events.*;
-import flash.globalization.DateTimeFormatter;
-import flash.globalization.DateTimeStyle;
-import flash.globalization.LocaleID;
     import flash.utils.*;
 
     import mx.utils.*;
@@ -23,7 +20,7 @@ import flash.globalization.LocaleID;
     import org.aswing.table.*;
 
     import src.*;
-import src.Comm.GameURLLoader;
+    import src.Comm.GameURLLoader;
     import src.Objects.*;
     import src.Objects.Effects.*;
     import src.Objects.Process.*;
@@ -60,7 +57,8 @@ import src.Comm.GameURLLoader;
         private var logTab: JPanel;
         private var logLoader: GameURLLoader;
         private var txtArea : JPanel;
-        private var pagingBar: PagingBar;
+        private var tribeLogPagingBar: PagingBar;
+        private var tribeLogTab: Container;
 
         public function TribeProfileDialog(profileData: *)
         {
@@ -69,13 +67,6 @@ import src.Comm.GameURLLoader;
             logLoader = new GameURLLoader();
             logLoader.addEventListener(Event.COMPLETE, onReceiveLogs);
             createUI();
-
-            // Refreshes the general tribe info
-            updateTimer = new Timer(120 * 1000);
-            updateTimer.addEventListener(TimerEvent.TIMER, function(e: Event = null): void {
-                update();
-            });
-            updateTimer.start();
 
             pnlTabs.addStateListener(function (e: InteractiveEvent): void {
                 if (pnlTabs.getSelectedComponent() == strongholdTab) {
@@ -86,12 +77,9 @@ import src.Comm.GameURLLoader;
                     messageBoard.loadInitially();
                 }
             });
-
-
         }
 
         private function dispose():void {
-            updateTimer.stop();
         }
 
         public function update(): void {
@@ -472,7 +460,7 @@ import src.Comm.GameURLLoader;
                 return;
             }
             txtArea.removeAll();
-            pagingBar.setData(data);
+            tribeLogPagingBar.setData(data);
 
             for each(var log:* in data.tribelogs) {
                 var panel: JPanel = new JPanel(new SoftBoxLayout());
@@ -509,14 +497,14 @@ import src.Comm.GameURLLoader;
                 txtArea.setConstraints("Center");
                 txtArea.setBackground(ASColor.BLUE);
 
-                pagingBar = new PagingBar(function(page: int = 0): void {
+                tribeLogPagingBar = new PagingBar(function(page: int = 0): void {
                     Global.mapComm.Tribe.logListing(logLoader, page);
                 });
-                pagingBar.setConstraints("South");
+                tribeLogPagingBar.setConstraints("South");
 
-                logTab.appendAll(Util.createTopAlignedScrollPane(txtArea), pagingBar);
-                pagingBar.refreshPage();
+                logTab.appendAll(Util.createTopAlignedScrollPane(txtArea), tribeLogPagingBar);
             }
+
             return logTab;
         }
 
@@ -676,7 +664,6 @@ import src.Comm.GameURLLoader;
             }
 
             var scrollDescription: JScrollPane = Util.createTopAlignedScrollPane(pnlDescriptionHolder);
-            scrollDescription.pack();
 
             // Side tab browser
             var lastActiveInfoTab: int = 0;
@@ -694,7 +681,9 @@ import src.Comm.GameURLLoader;
             pnlInfoTabs.appendTab(createMembersTab(), "Members (" + profileData.members.length + ")");
             pnlInfoTabs.appendTab(createIncomingAttackTab(), "Invasions (" + profileData.incomingAttacks.length + ")");
             pnlInfoTabs.appendTab(createAssignmentTab(), "Assignments (" + profileData.assignments.length + ")");
-            pnlInfoTabs.appendTab(createLogTab(),"Log");
+            
+            tribeLogTab = createLogTab();
+            pnlInfoTabs.appendTab(tribeLogTab, "Log");
 
             pnlInfoTabs.setSelectedIndex(lastActiveInfoTab);
 
@@ -812,9 +801,17 @@ import src.Comm.GameURLLoader;
             pnlHeader.removeAll();
             pnlHeader.append(pnlHeaderFirstRow);
 
-            // Needed since gets called after the panel has already been rendered (for updates)
-            pnlHeader.repaintAndRevalidate();
-            pnlInfoContainer.repaintAndRevalidate();
+            AsWingManager.callLater(function(): void {
+                pnlHeader.repaintAndRevalidate();
+                pnlInfoContainer.repaintAndRevalidate();
+                scrollDescription.repaintAndRevalidate();
+            });
+
+            pnlInfoTabs.addStateListener(function (e: InteractiveEvent): void {
+                if (pnlInfoTabs.getSelectedComponent() == tribeLogTab) {
+                    tribeLogPagingBar.loadInitially();
+                }
+            }, 0, true);
 
             return pnlInfoContainer;
         }

@@ -28,6 +28,8 @@
 		private var btnSendMessage: JLabelButton;
 		private var btnInviteTribe: JLabelButton;
 		private var btnSetDescription: JLabelButton;
+        private var scrollDescription: JScrollPane;
+        private var pnlWest: JPanel;
 		
 		public function PlayerProfileDialog(profileData: *) 
 		{
@@ -49,9 +51,9 @@
 				var txtDescription: JTextArea = new JTextArea(profileData.description, 10, 10);
 				GameLookAndFeel.changeClass(txtDescription, "Message");
 				txtDescription.setMaxChars(3000);
-				
-				var scrollDescription: JScrollPane = new JScrollPane(txtDescription, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);			
-			
+
+				var scrollDescription: JScrollPane = new JScrollPane(txtDescription, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);
+
 				pnl.appendAll(new JLabel("Set a message to appears on your profile. This will be visible to everyone.", null, AsWingConstants.LEFT), scrollDescription);
 				InfoDialog.showMessageDialog("Say something about yourself", pnl, function(result: *): void {			
 					if (result == JOptionPane.CANCEL || result == JOptionPane.CLOSE)
@@ -81,6 +83,13 @@
 			super.showSelf(owner, modal, onClose);
 			Global.gameContainer.closeAllFramesByType(PlayerProfileDialog);
 			Global.gameContainer.showFrame(frame);
+
+            // There's a problem w/ the scroll panel .. it needs to be revalidated
+            AsWingManager.callLater(function(): void {
+                pnlWest.repaintAndRevalidate();
+                scrollDescription.repaintAndRevalidate();
+            });
+
 			return frame;
 		}		
 		
@@ -225,14 +234,13 @@
 			lblDescription.setPreferredWidth(325);
 			lblDescription.setBackgroundDecorator(new GamePanelBackgroundDecorator("TabbedPane.top.contentRoundImage"));
 			lblDescription.setBorder(new EmptyBorder(null, UIManager.get("TabbedPane.contentMargin") as Insets));
-			
-			var scrollDescription: JScrollPane = new JScrollPane(new JViewport(lblDescription));
-			(scrollDescription.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
-			(scrollDescription.getViewport() as JViewport).setHorizontalAlignment(AsWingConstants.LEFT);
+            lblDescription.pack();
+
+            scrollDescription = Util.createTopAlignedScrollPane(JPanel(AsWingUtils.createPaneToHold(lblDescription, new BorderLayout(), "center")));
 			scrollDescription.setConstraints("Center");
 			
 			// Create west panel
-			var pnlWest: JPanel = new JPanel(new BorderLayout());
+            pnlWest = new JPanel(new BorderLayout());
 			pnlWest.setConstraints("West");
 			pnlWest.append(pnlHeader);
 			pnlWest.append(scrollDescription);

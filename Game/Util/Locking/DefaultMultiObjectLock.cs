@@ -54,14 +54,16 @@ namespace Game.Util.Locking
 
             SortLocks(list);
             for (int i = 0; i < list.Length; ++i)
-            {                
-                if (list[i].Lock == null)
+            {
+                var lockObj = list[i].Lock;
+                if (lockObj == null)
                 {
+                    logger.Warn("Received a null Lock obj when trying to lock object type {0} with hash {1}", list[i].GetType().FullName, list[i].Hash);
                     continue;
                 }
 
-                lockEnter(list[i].Lock);
-                lockedObjects[i] = list[i].Lock;
+                lockEnter(lockObj);
+                lockedObjects[i] = lockObj;
             }
 
             return this;

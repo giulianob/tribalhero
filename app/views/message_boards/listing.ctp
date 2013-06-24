@@ -19,8 +19,6 @@ foreach ($messages as $message) {
 
     $data[] = array(
         'id' => $message['MessageBoardThread']['id'],
-        'lastPostAgoInWords' => $time->timeAgoInWords($message['MessageBoardThread']['last_post_date'], 'n/j/y'),
-        'lastPostDate' => $time->niceShort($message['MessageBoardThread']['last_post_date']),
         'lastPostTimestamp' => $lastPostDate,
         'postCount' => $message['MessageBoardThread']['message_board_post_count'],
         'subject' => $message['MessageBoardThread']['subject'],

@@ -205,7 +205,7 @@
             var timediff :int = Global.map.getServerTime() - stronghold.dateOccupied;
             grid.append(simpleLabelMaker(DateUtil.niceDays(timediff), StringHelper.localize("STR_DAYS_OCCUPIED"), new AssetIcon(new ICON_SHIELD())));
 
-            var lblTroop: JLabel = new JLabel(StringHelper.localize("STR_UNIT_SINGULAR_PLURAL", stronghold.upkeep));
+            var lblTroop: JLabel = new JLabel(StringHelper.localize("STR_UPKEEP_COUNT", stronghold.upkeep));
             lblTroop.setHorizontalAlignment(AsWingConstants.RIGHT);
 
             var pnlGate: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 0, AsWingConstants.RIGHT));

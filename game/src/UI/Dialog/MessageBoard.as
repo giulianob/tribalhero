@@ -251,7 +251,7 @@ package src.UI.Dialog
 			message.pack();			
 
 			var scrollMessage: JScrollPane = new JScrollPane(message);
-			scrollMessage.setPreferredHeight(Math.min(2500, message.getHeight() + 20));
+			scrollMessage.setPreferredHeight(Math.min(2000, message.getHeight() + 40));
 
 			var pnlPostTools: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT));
 			

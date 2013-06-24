@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Game.Comm;
 using Game.Data.Stronghold;
+using Game.Data.Tribe.EventArguments;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
@@ -120,11 +121,15 @@ namespace Game.Data.Tribe
             Created = created;
         }
 
-        public event EventHandler<TribesmanRemovedEventArgs> TribesmanRemoved = (sender, args) => { };
-
-        public event EventHandler<EventArgs> Updated = (sender, args) => { };
-
-        public event EventHandler<EventArgs> RanksUpdated;
+        public event EventHandler<TribesmanRemovedEventArgs> TribesmanRemoved;
+        public event EventHandler<TribeEventArgs> Updated;
+        public event EventHandler<TribeEventArgs> RanksUpdated;
+        public event EventHandler<TribesmanEventArgs> TribesmanJoined;
+        public event EventHandler<TribesmanEventArgs> TribesmanLeft;
+        public event EventHandler<TribesmanKickedEventArgs> TribesmanKicked;
+        public event EventHandler<TribesmanContributedEventArgs> TribesmanContributed;
+        public event EventHandler<TribesmanEventArgs> TribesmanRankChanged;
+        public event EventHandler<TribeEventArgs> Upgraded;
 
         public uint Id { set; get; }
 
@@ -329,10 +334,31 @@ namespace Game.Data.Tribe
                 Global.Channel.Subscribe(tribesman.Player.Session, "/TRIBE/" + Id);
             }
 
+            TribesmanJoined.Raise(this, new TribesmanEventArgs {Tribe = this, Player = tribesman.Player});
             return Error.Ok;
         }
 
-        public Error RemoveTribesman(uint playerId, bool wasKicked, bool checkIfOwner = true)
+        public Error KickTribesman(IPlayer player, IPlayer kicker)
+        {
+            Error error = RemoveTribesman(player.PlayerId, true);
+            if (error == Error.Ok)
+            {
+                TribesmanKicked.Raise(this, new TribesmanKickedEventArgs {Tribe = this, Kickee = player, Kicker = kicker});
+            }
+            return error;
+        }
+
+        public Error LeaveTribesman(IPlayer player)
+        {
+            Error error = RemoveTribesman(player.PlayerId, false);
+            if (error == Error.Ok)
+            {
+                TribesmanLeft.Raise(this, new TribesmanEventArgs {Tribe = this, Player = player});
+            }
+            return error;
+        }
+
+        public Error RemoveTribesman(uint playerId, bool wasKicked, bool doNotRemoveIfOwner = true)
         {
             ITribesman tribesman;
             if (!tribesmen.TryGetValue(playerId, out tribesman))
@@ -344,7 +370,7 @@ namespace Game.Data.Tribe
 
             if (IsOwner(player))
             {
-                if (checkIfOwner)
+                if (doNotRemoveIfOwner)
                 {
                     return Error.TribesmanIsOwner;
                 }
@@ -376,7 +402,7 @@ namespace Game.Data.Tribe
                 }
             }                        
 
-            TribesmanRemoved(this, new TribesmanRemovedEventArgs {Player = player});
+            TribesmanRemoved.Raise(this, new TribesmanRemovedEventArgs {Player = player});
 
             return Error.Ok;
         }
@@ -446,6 +472,7 @@ namespace Game.Data.Tribe
             dbManager.Save(tribesman);
             tribesman.Player.TribeUpdate();
 
+            TribesmanRankChanged.Raise(this, new TribesmanEventArgs {Tribe = this, Player = tribesman.Player});
             return Error.Ok;
         }
 
@@ -485,6 +512,7 @@ namespace Game.Data.Tribe
             Resource += resource;
             dbManager.Save(tribesman, this);
 
+            TribesmanContributed.Raise(this, new TribesmanContributedEventArgs {Tribe = this, Player = tribesman.Player, Resource = resource});
             return Error.Ok;
         }
 
@@ -532,19 +560,19 @@ namespace Game.Data.Tribe
             // Max of 48 hrs for planning assignments
             if (DateTime.UtcNow.AddDays(2) < time)
             {
-                Procedure.Current.TroopStubDelete(city, stub);
+                procedure.TroopStubDelete(city, stub);
                 return Error.AssignmentBadTime;
             }
             
             if (stub.Upkeep < ASSIGNMENT_MIN_UPKEEP)
             {
-                Procedure.Current.TroopStubDelete(city, stub);
+                procedure.TroopStubDelete(city, stub);
                 return Error.AssignmentTooFewTroops;
             }
 
             if (stub.City.Owner.Tribesman == null)
             {
-                Procedure.Current.TroopStubDelete(city, stub);
+                procedure.TroopStubDelete(city, stub);
                 return Error.TribeNotFound;
             }
 
@@ -553,7 +581,7 @@ namespace Game.Data.Tribe
                 ICity targetCity;
                 if (!cityManager.TryGetCity(target.LocationId, out targetCity))
                 {
-                    Procedure.Current.TroopStubDelete(city, stub);
+                    procedure.TroopStubDelete(city, stub);
                     return Error.CityNotFound;
                 }
 
@@ -561,14 +589,14 @@ namespace Game.Data.Tribe
                 if (isAttack && targetCity.Owner.Tribesman != null &&
                     targetCity.Owner.Tribesman.Tribe == stub.City.Owner.Tribesman.Tribe)
                 {
-                    Procedure.Current.TroopStubDelete(city, stub);
+                    procedure.TroopStubDelete(city, stub);
                     return Error.AssignmentCantAttackFriend;
                 }
 
                 // Cant defend the same city
                 if (targetCity == stub.City)
                 {
-                    Procedure.Current.TroopStubDelete(city, stub);
+                    procedure.TroopStubDelete(city, stub);
                     return Error.DefendSelf;
                 }
             }
@@ -577,26 +605,26 @@ namespace Game.Data.Tribe
                 IStronghold stronghold;
                 if (!strongholdManager.TryGetStronghold(target.LocationId, out stronghold))
                 {
-                    Procedure.Current.TroopStubDelete(city, stub);
+                    procedure.TroopStubDelete(city, stub);
                     return Error.StrongholdNotFound;
                 }
 
                 // Cant attack your stronghold
                 if (isAttack && stronghold.Tribe == stub.City.Owner.Tribesman.Tribe)
                 {
-                    Procedure.Current.TroopStubDelete(city, stub);
+                    procedure.TroopStubDelete(city, stub);
                     return Error.AttackSelf;
                 }
                 // Cant defend other tribe's stronghold
                 if (!isAttack && stronghold.Tribe != stub.City.Owner.Tribesman.Tribe)
                 {
-                    Procedure.Current.TroopStubDelete(city, stub);
+                    procedure.TroopStubDelete(city, stub);
                     return Error.DefendSelf;
                 }
             }
             else
             {
-                Procedure.Current.TroopStubDelete(city, stub);
+                procedure.TroopStubDelete(city, stub);
                 return Error.ObjectNotAttackable;                
             }
 
@@ -606,7 +634,7 @@ namespace Game.Data.Tribe
 
             if (reachTime.Subtract(new TimeSpan(0, 1, 0)) > time)
             {
-                Procedure.Current.TroopStubDelete(city, stub);
+                procedure.TroopStubDelete(city, stub);
                 return Error.AssignmentUnitsTooSlow;
             }
 
@@ -619,7 +647,7 @@ namespace Game.Data.Tribe
 
             if (result != Error.Ok)
             {
-                Procedure.Current.TroopStubDelete(city, stub);
+                procedure.TroopStubDelete(city, stub);
             }
 
             SendUpdate();
@@ -654,7 +682,7 @@ namespace Game.Data.Tribe
 
             if (stub.Upkeep < ASSIGNMENT_MIN_UPKEEP)
             {
-                Procedure.Current.TroopStubDelete(city, stub);
+                procedure.TroopStubDelete(city, stub);
                 return Error.AssignmentTooFewTroops;
             }
 
@@ -662,7 +690,7 @@ namespace Game.Data.Tribe
 
             if (error != Error.Ok)
             {
-                Procedure.Current.TroopStubDelete(city, stub);
+                procedure.TroopStubDelete(city, stub);
             }
 
             return error;
@@ -691,17 +719,18 @@ namespace Game.Data.Tribe
             Level++;
             dbManager.Save(this);
 
+            Upgraded.Raise(this, new TribeEventArgs { Tribe = this });
             return Error.Ok;
         }
 
         public void SendUpdate()
         {
-            Updated(this, new EventArgs());
+            Updated.Raise(this, new TribeEventArgs { Tribe = this });
         }
 
         public void SendRanksUpdate()
         {
-            RanksUpdated(this, new EventArgs());
+            RanksUpdated.Raise(this, new TribeEventArgs { Tribe = this });
         }
 
         #region Properties

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Game.Data.Tribe;
+using Game.Data.Tribe.EventArguments;
 using Game.Data.Troop;
 using Game.Setup;
 
@@ -34,5 +36,10 @@ namespace Game.Data.Stronghold
         void Probe(out int neutralStrongholds, out int capturedStrongholds);
 
         void RetreatUnits(IStronghold stronghold);
+
+        event EventHandler<StrongholdGainedEventArgs> StrongholdGained;
+
+        event EventHandler<StrongholdLostEventArgs> StrongholdLost;
+
     }
 }

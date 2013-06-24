@@ -332,7 +332,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var result = session.Player.Tribesman.Tribe.RemoveTribesman(playerId, true);
+                var result = session.Player.Tribesman.Tribe.KickTribesman(playerToBeRemoved, session.Player);
 
                 ReplyWithResult(session, packet, result);
             }
@@ -366,7 +366,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var result = tribe.RemoveTribesman(session.Player.PlayerId, false);
+                var result = tribe.LeaveTribesman(session.Player);
 
                 ReplyWithResult(session, packet, result);
             }

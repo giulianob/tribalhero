@@ -22,7 +22,7 @@ foreach ($messages as $message) {
             'id' => $message['Message']['id'],
             'subject' => $message['Message']['subject'],
             'preview' => $text->truncate($message['Message']['message'], $messageAllowedLength),
-            'date' => $time->niceShort($message['Message']['created']),
+            'date' => strtotime($message['Message']['created']),
             'unread' => $isRecipient ? ($message['Message']['recipient_state'] == 0) : false
     );
 }

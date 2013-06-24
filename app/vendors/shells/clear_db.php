@@ -75,6 +75,9 @@ class ClearDbShell extends Shell {
         }
         $this->MessageBoardThread->resetAssociations();
 
+        $this->out("Deleting old messages...");
+        $this->$TribeLog->deleteAll(array('TribeLog.created <' => date("Y-m-d H:i:s", strtotime('-2 weeks'))), false, false);
+
         $this->out("Done");
     }
 

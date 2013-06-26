@@ -15,14 +15,14 @@ namespace Game.Data
         {
         }
 
-        protected override int GetCalculatedRate()
+        protected override decimal GetCalculatedRate()
         {
             int deltaRate = Rate - Upkeep;
             if (deltaRate == 0)
             {
                 return 0;
             }
-            return (int)((3600000f / deltaRate) * Config.seconds_per_unit);
+            return (3600m / deltaRate) * (decimal)Config.seconds_per_unit;
         }
     }
 }

@@ -43,10 +43,10 @@
 		public function getValue(): int
 		{
 			var delta: int = 0;
-			var calculatedRate: int = getCalculatedRate();
+			var calculatedRate: Number = getCalculatedRate();
 
 			if (calculatedRate != 0) {
-				var elapsed: int = (Global.map.getServerTime() - lastRealizeTime) * 1000;
+				var elapsed: int = Global.map.getServerTime() - lastRealizeTime;
 				delta = int(elapsed / calculatedRate);
 			}
 
@@ -57,9 +57,9 @@
 			return Math.min(99999, Math.max(0, value + delta));
 		}
 
-		protected function getCalculatedRate(): int {
+		protected function getCalculatedRate(): Number {
 			if ((rate - upkeep) == 0) return 0;
-			return Math.max(0, (int)((3600000.0 / (rate - upkeep)) * Constants.secondsPerUnit));
+			return Math.max(0, (3600.0 / (rate - upkeep)) * Constants.secondsPerUnit);
 		}
 
 		public function getHourlyRate(): int

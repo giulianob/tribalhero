@@ -15,8 +15,8 @@
 			super(value, rate, upkeep, limit, lastRealizeTime);
 		}		
 		
-		protected override function getCalculatedRate(): int {
-			return (int)((3600000.0 / (getRate() - getUpkeep())) * Constants.secondsPerUnit);
+		protected override function getCalculatedRate(): Number {
+			return (3600000.0 / (getRate() - getUpkeep())) * Constants.secondsPerUnit;
 		}		
 		
 	}

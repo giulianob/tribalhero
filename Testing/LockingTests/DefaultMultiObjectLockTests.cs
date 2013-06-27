@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Common.Testing;
 using FluentAssertions;
 using Game.Util.Locking;
@@ -20,8 +21,18 @@ namespace Testing.LockingTests
         {
             enterObjects = new List<object>();
             exitObjects = new List<object>();
-            
-            locker = new DefaultMultiObjectLock(enterObjects.Add, exitObjects.Add);
+
+            locker = new DefaultMultiObjectLock(
+                    item =>
+                        {
+                            Monitor.Enter(item);
+                            enterObjects.Add(item);
+                        },
+                    item =>
+                        {
+                            Monitor.Exit(item);
+                            exitObjects.Add(item);
+                        });
         }
 
         public void Dispose()
@@ -184,6 +195,51 @@ namespace Testing.LockingTests
 
             locker.Dispose();
 
+            exitObjects.Should().Equal(cLock.Lock, bLock.Lock, aLock.Lock);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void Lock_Integration(ALock aLock, BLock bLock, CLock cLock, ALock nullLock)
+        {
+            nullLock.Lock = null;
+            nullLock.Hash = 0;
+            aLock.Lock = new object();
+            aLock.Hash = 1;
+            bLock.Lock = new object();
+            bLock.Hash = 2;
+            cLock.Lock = new object();
+            cLock.Hash = 3;
+            
+            Monitor.Enter(cLock.Lock);
+
+            bool locked = false;
+            bool hasException = false;
+            var thread = new Thread(() =>
+                {
+                    try
+                    {
+                        using (locker.Lock(new ILockable[] {cLock, nullLock, bLock, aLock}))
+                        {
+                            locked = true;
+                        }
+                    }
+                    catch(Exception)
+                    {
+                        hasException = true;
+                    }
+                });
+
+            thread.Start();
+            Thread.Sleep(200);
+
+            locked.Should().BeFalse();
+            enterObjects.Should().Equal(aLock.Lock, bLock.Lock);
+
+            Monitor.Exit(cLock.Lock);
+            thread.Join(1000);
+
+            hasException.Should().BeFalse();
+            enterObjects.Should().Equal(aLock.Lock, bLock.Lock, cLock.Lock);
             exitObjects.Should().Equal(cLock.Lock, bLock.Lock, aLock.Lock);
         }
 

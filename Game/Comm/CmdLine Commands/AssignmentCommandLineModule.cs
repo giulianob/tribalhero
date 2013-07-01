@@ -150,7 +150,7 @@ namespace Game.Comm
             }
 
             ITribe tribe = city.Owner.Tribesman.Tribe;
-            IStructure targetStructure = world.GetObjects(x, y).OfType<IStructure>().FirstOrDefault();
+            IStructure targetStructure = world.Regions.GetObjectsInTile(x, y).OfType<IStructure>().FirstOrDefault();
             if (targetStructure == null)
             {
                 return "Could not find a structure for the given coordinates";
@@ -163,7 +163,7 @@ namespace Game.Comm
                     return "No troops in the city!";
                 }
 
-                targetStructure = world.GetObjects(x, y).OfType<IStructure>().First();
+                targetStructure = world.Regions.GetObjectsInTile(x, y).OfType<IStructure>().First();
 
                 if (targetStructure == null)
                 {

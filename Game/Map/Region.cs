@@ -7,18 +7,21 @@ using System.Linq;
 using System.Threading;
 using Game.Comm;
 using Game.Data;
-using Game.Setup;
+using Game.Util;
 using Game.Util.Locking;
+using Ninject.Extensions.Logging;
 
 #endregion
 
 namespace Game.Map
 {
-    public class Region
+    public class Region : IRegion
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         #region Constants
 
-        public const int TILE_SIZE = 2;
+        public const int TILE_SIZE = sizeof(ushort);
 
         #endregion
 
@@ -28,21 +31,17 @@ namespace Game.Map
 
         private readonly DefaultMultiObjectLock.Factory lockerFactory;
 
-        private readonly ReaderWriterLockSlim objLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        private readonly ReaderWriterLockSlim primaryLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
-        private readonly ObjectList objlist = new ObjectList();
+        private readonly ReaderWriterLockSlim tileLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+
+        private readonly RegionObjectList tileObjects = new RegionObjectList();
+
+        private readonly RegionObjectList primaryObjects = new RegionObjectList();
 
         private bool isDirty = true;
 
         private byte[] objects;
-
-        public ReaderWriterLockSlim Lock
-        {
-            get
-            {
-                return objLock;
-            }
-        }
 
         #endregion
 
@@ -58,63 +57,84 @@ namespace Game.Map
 
         #region Methods
 
+        public void AddObjectToTile(ISimpleGameObject obj, uint x, uint y)
+        {
+            tileLock.EnterWriteLock();
+            if (Global.Current.FireEvents)
+            {
+                logger.Info("Region.AddObjectToTile tileX[{0}] tileY[{1}] {2}", x, y, obj.ToString());
+            }
+            tileObjects.Add(obj, x, y);
+            tileLock.ExitWriteLock();
+        }
+
+        public void RemoveObjectFromTile(ISimpleGameObject obj, uint x, uint y)
+        {
+            tileLock.EnterWriteLock();
+            if (Global.Current.FireEvents)
+            {
+                logger.Info("Region.RemoveObjectToTile tileX[{0}] tileY[{1}] {2}", x, y, obj.ToString());
+            }
+            tileObjects.Remove(obj, x, y);
+            tileLock.ExitWriteLock();
+        }
+
         public void Add(ISimpleGameObject obj)
         {
-            objLock.EnterWriteLock();
-            objlist.AddGameObject(obj);
+            primaryLock.EnterWriteLock();
+            if (Global.Current.FireEvents)
+            {
+                logger.Info("Region.Add {0}", obj.ToString());
+            }
+            primaryObjects.Add(obj, obj.PrimaryPosition.X, obj.PrimaryPosition.Y);
             isDirty = true;
-            objLock.ExitWriteLock();
+            primaryLock.ExitWriteLock();
         }
 
         public void Remove(ISimpleGameObject obj)
         {
-            objLock.EnterWriteLock();
-            objlist.Remove(obj);
+            primaryLock.EnterWriteLock();
+            if (Global.Current.FireEvents)
+            {
+                logger.Info("Region.Remove {0}", obj.ToString());
+            }
+            primaryObjects.Remove(obj, obj.PrimaryPosition.X, obj.PrimaryPosition.Y);
             isDirty = true;
-            objLock.ExitWriteLock();
+            primaryLock.ExitWriteLock();
         }
 
         public void Remove(ISimpleGameObject obj, uint origX, uint origY)
         {
-            objLock.EnterWriteLock();
-            objlist.Remove(obj, origX, origY);
-            isDirty = true;
-            objLock.ExitWriteLock();
-        }
-
-        public void Update(ISimpleGameObject obj, uint origX, uint origY)
-        {
-            objLock.EnterWriteLock();
-            if (obj.X != origX || obj.Y != origY)
+            primaryLock.EnterWriteLock();
+            if (Global.Current.FireEvents)
             {
-                objlist.Remove(obj, origX, origY);
-                objlist.AddGameObject(obj);
+                logger.Info("Region.Remove origX[{0}] origY[{1}] {2}", origX, origY, obj.ToString());
             }
+            primaryObjects.Remove(obj, origX, origY);
             isDirty = true;
-            objLock.ExitWriteLock();
+            primaryLock.ExitWriteLock();
         }
 
         public void MarkAsDirty()
         {
-            objLock.EnterWriteLock();
+            primaryLock.EnterWriteLock();
             isDirty = true;
-            objLock.ExitWriteLock();
+            primaryLock.ExitWriteLock();
         }
 
-        public List<ISimpleGameObject> GetObjects(uint x, uint y)
+        public IEnumerable<ISimpleGameObject> GetObjectsInTile(uint x, uint y)
         {
-            objLock.EnterReadLock();
-            var gameObjects = objlist.Get(x, y);
-            objLock.ExitReadLock();
-            return gameObjects;
+            tileLock.EnterReadLock();
+            var copy = tileObjects.Get(x, y).ToArray();
+            tileLock.ExitReadLock();
+            return copy;
         }
 
-        public IEnumerable<ISimpleGameObject> GetObjects()
+        public IEnumerable<ISimpleGameObject> GetPrimaryObjects()
         {
-            objLock.EnterReadLock();
-            var copy = objlist.ToList();            
-            objLock.ExitReadLock();
-
+            primaryLock.EnterReadLock();
+            var copy = primaryObjects.ToArray();            
+            primaryLock.ExitReadLock();
             return copy;
         }
 
@@ -123,24 +143,24 @@ namespace Game.Map
             while (isDirty)
             {
                 // Players must always be locked first
-                objLock.EnterReadLock();
-                var playersInRegion = objlist.OfType<IGameObject>().Select(p => p.City.Owner).Where(p => p != null).Distinct().ToArray<ILockable>();
-                objLock.ExitReadLock();
+                primaryLock.EnterReadLock();
+                var playersInRegion = primaryObjects.OfType<IGameObject>().Select(p => p.City.Owner).Where(p => p != null).Distinct().ToArray<ILockable>();
+                primaryLock.ExitReadLock();
 
                 using (var lck = lockerFactory().Lock(playersInRegion))
                 {
                     // Enter write lock but give up all locks if we cant in 1 second just to be safe
-                    if (!objLock.TryEnterWriteLock(1000))
+                    if (!primaryLock.TryEnterWriteLock(1000))
                     {
                         continue;
                     }
 
-                    var lockedPlayersInRegion = objlist.OfType<IGameObject>().Select(p => p.City.Owner).Where(p => p != null).Distinct().ToArray<ILockable>();
+                    var lockedPlayersInRegion = primaryObjects.OfType<IGameObject>().Select(p => p.City.Owner).Where(p => p != null).Distinct().ToArray<ILockable>();
                     lck.SortLocks(lockedPlayersInRegion);
 
                     if (!playersInRegion.SequenceEqual(lockedPlayersInRegion))
                     {
-                        objLock.ExitWriteLock();
+                        primaryLock.ExitWriteLock();
                         continue;
                     }
 
@@ -154,9 +174,9 @@ namespace Game.Map
                             bw.Write(map);
 
                             // Write objects
-                            bw.Write(objlist.Count);
+                            bw.Write(primaryObjects.Count);
 
-                            foreach (ISimpleGameObject obj in objlist)
+                            foreach (ISimpleGameObject obj in primaryObjects)
                             {
                                 // TODO: Make this not require a packet
                                 Packet dummyPacket = new Packet();
@@ -170,7 +190,7 @@ namespace Game.Map
                         }
                     }
 
-                    objLock.ExitWriteLock();
+                    primaryLock.ExitWriteLock();
                     break;
                 }
             }
@@ -180,41 +200,65 @@ namespace Game.Map
 
         public ushort GetTileType(uint x, uint y)
         {
-            objLock.EnterReadLock();
+            primaryLock.EnterReadLock();
             var tileType = BitConverter.ToUInt16(map, GetTileIndex(x, y) * 2);
-            objLock.ExitReadLock();
+            primaryLock.ExitReadLock();
             return tileType;
         }
 
         public void SetTileType(uint x, uint y, ushort tileType)
         {
-            objLock.EnterWriteLock();
+            primaryLock.EnterWriteLock();
+
             int idx = GetTileIndex(x, y) * TILE_SIZE;
             byte[] ushortArr = BitConverter.GetBytes(tileType);
-            map[idx] = ushortArr[0];
-            map[idx + 1] = ushortArr[1];
+            Array.Copy(ushortArr, 0, map, idx, ushortArr.Length);
 
             isDirty = true;
-            objLock.ExitWriteLock();
+            primaryLock.ExitWriteLock();
+        }
+
+        public void EnterWriteLock()
+        {
+            primaryLock.EnterWriteLock();
+        }
+
+        public void ExitWriteLock()
+        {
+            primaryLock.ExitWriteLock();
         }
 
         #endregion
 
         #region Static Util Methods
 
+        private static IRegionLocator regionLocator = new RegionLocator();
+
+        public static IRegionLocator RegionLocator
+        {
+            get
+            {
+                return regionLocator;
+            }
+            set
+            {
+                regionLocator = value;
+            }
+        }
+
         public static ushort GetRegionIndex(ISimpleGameObject obj)
         {
-            return GetRegionIndex(obj.X, obj.Y);
+            return regionLocator.GetRegionIndex(obj.X, obj.Y);
         }
 
         public static ushort GetRegionIndex(uint x, uint y)
         {
-            return (ushort)(x / Config.region_width + (y / Config.region_height) * (int)(Config.map_width / Config.region_width));
+            return regionLocator.GetRegionIndex(x, y);
         }
 
         public static int GetTileIndex(uint x, uint y)
         {
-            return (int)(x % Config.region_width + (y % Config.region_height) * Config.region_width);
+            return regionLocator.GetTileIndex(x, y);
         }
 
         #endregion

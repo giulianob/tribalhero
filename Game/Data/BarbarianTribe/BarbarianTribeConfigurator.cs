@@ -61,7 +61,7 @@ namespace Game.Data.BarbarianTribe
 
         public bool IsLocationAvailable(uint x, uint y)
         {
-            return !TooCloseToCities(x, y, MinDistanceAwayFromCities) && regionManager.GetObjectsWithin(x, y, 2).Count <= 0;
+            return !TooCloseToCities(x, y, MinDistanceAwayFromCities) && !regionManager.GetObjectsWithin(x, y, 2).Any();
         }
     }
 }

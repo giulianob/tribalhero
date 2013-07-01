@@ -94,7 +94,7 @@ namespace Testing.BattleTests
             target.ClassType.Returns(targetClassType);
             target.IsDead.Returns(targetIsDead);
 
-            var objectTypeFactory = Substitute.For<ObjectTypeFactory>();
+            var objectTypeFactory = Substitute.For<IObjectTypeFactory>();
             objectTypeFactory.IsObjectType("BattleNoStaminaReduction", 100).Returns(isNoReductionType);
             fixture.Register(() => objectTypeFactory);
 
@@ -131,7 +131,7 @@ namespace Testing.BattleTests
             target.ClassType.Returns(BattleClass.Structure);
             target.IsDead.Returns(true);
 
-            var objectTypeFactory = Substitute.For<ObjectTypeFactory>();
+            var objectTypeFactory = Substitute.For<IObjectTypeFactory>();
             objectTypeFactory.IsObjectType("BattleNoStaminaReductionEarlyLevels", 100).Returns(true);
             fixture.Register(() => objectTypeFactory);
 

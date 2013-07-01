@@ -19,7 +19,7 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly IActionFactory actionFactory;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly PropertyFactory propertyFactory;
 
@@ -33,7 +33,7 @@ namespace Game.Comm.ProcessorCommands
 
         public StructureCommandsModule(IActionFactory actionFactory,
                                        IStructureCsvFactory structureCsvFactory,
-                                       ObjectTypeFactory objectTypeFactory,
+                                       IObjectTypeFactory objectTypeFactory,
                                        PropertyFactory propertyFactory,
                                        IForestManager forestManager,
                                        IWorld world,

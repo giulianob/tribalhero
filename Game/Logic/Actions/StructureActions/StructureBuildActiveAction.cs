@@ -25,7 +25,7 @@ namespace Game.Logic.Actions
 
         private readonly InitFactory initFactory;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly Procedure procedure;
 
@@ -56,7 +56,7 @@ namespace Game.Logic.Actions
                                           uint x,
                                           uint y,
                                           byte level,
-                                          ObjectTypeFactory objectTypeFactory,
+                                          IObjectTypeFactory objectTypeFactory,
                                           IWorld world,
                                           Formula formula,
                                           RequirementFactory requirementFactory,
@@ -92,7 +92,7 @@ namespace Game.Logic.Actions
                                           byte workerIndex,
                                           ushort actionCount,
                                           Dictionary<string, string> properties,
-                                          ObjectTypeFactory objectTypeFactory,
+                                          IObjectTypeFactory objectTypeFactory,
                                           IWorld world,
                                           Formula formula,
                                           RequirementFactory requirementFactory,
@@ -187,44 +187,46 @@ namespace Game.Logic.Actions
             }
             
             var structureBaseStats = structureCsvFactory.GetBaseStats(type, level);
-            
+
+            var lockedRegions = world.Regions.LockRegions(X, Y, structureBaseStats.Size);
+
             foreach (var position in tileLocator.ForeachMultitile(X, Y, structureBaseStats.Size))
             {
+                // dont allow building on edge of world
                 if (!world.Regions.IsValidXandY(position.X, position.Y))
                 {
+                    world.Regions.UnlockRegions(lockedRegions);
                     return Error.ActionInvalid;
                 }
-            }
 
-            world.Regions.LockRegion(X, Y);
+                // radius requirements
+                if (tileLocator.TileDistance(city.X, city.Y, position.X, position.Y) >= city.Radius)
+                {
+                    world.Regions.UnlockRegions(lockedRegions);
+                    return Error.NotWithinWalls;
+                }
+
+                // check if tile is occupied
+                if (world.Regions.GetObjectsInTile(position.X, position.Y).Any(obj => obj is IStructure))
+                {
+                    world.Regions.UnlockRegions(lockedRegions);
+                    return Error.StructureExists;
+                }
+            }
 
             // cost requirement
             cost = formula.StructureCost(city, structureBaseStats);
             if (!city.Resource.HasEnough(cost))
             {
-                world.Regions.UnlockRegion(X, Y);
+                world.Regions.UnlockRegions(lockedRegions);
                 return Error.ResourceNotEnough;
             }
 
-            // radius requirements
-            if (tileLocator.TileDistance(city.X, city.Y, X, Y) >= city.Radius)
-            {
-                world.Regions.UnlockRegion(X, Y);
-                return Error.LayoutNotFullfilled;
-            }
-
             // layout requirement
-            if (!requirementFactory.GetLayoutRequirement(type, level).Validate(WorkerObject as IStructure, type, X, Y))
+            if (!requirementFactory.GetLayoutRequirement(type, level).Validate(WorkerObject as IStructure, type, X, Y, structureBaseStats.Size))
             {
-                world.Regions.UnlockRegion(X, Y);
+                world.Regions.UnlockRegions(lockedRegions);
                 return Error.LayoutNotFullfilled;
-            }
-
-            // check if tile is occupied
-            if (world[X, Y].Exists(obj => obj is IStructure))
-            {
-                world.Regions.UnlockRegion(X, Y);
-                return Error.StructureExists;
             }
 
             // check for road requirements       
@@ -252,7 +254,7 @@ namespace Game.Logic.Actions
                 city.EndUpdate();
                 structure.EndUpdate();
 
-                world.Regions.UnlockRegion(X, Y);
+                world.Regions.UnlockRegions(lockedRegions);
                 return Error.MapFull;
             }
 
@@ -268,8 +270,7 @@ namespace Game.Logic.Actions
 
             city.References.Add(structure, this);
 
-            world.Regions.UnlockRegion(X, Y);
-
+            world.Regions.UnlockRegions(lockedRegions);
             return Error.Ok;
         }
 

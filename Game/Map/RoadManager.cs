@@ -17,11 +17,11 @@ namespace Game.Map
     {
         private readonly IRegionManager regionManager;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly IChannel channel;
 
-        public RoadManager(IRegionManager regionManager, ObjectTypeFactory objectTypeFactory, IChannel channel)
+        public RoadManager(IRegionManager regionManager, IObjectTypeFactory objectTypeFactory, IChannel channel)
         {
             this.regionManager = regionManager;
             this.objectTypeFactory = objectTypeFactory;
@@ -259,7 +259,7 @@ namespace Game.Map
             // Grab the list of actual tiles based on the road type we need.
             uint[] types;
 
-            if (regionManager[x, y].Exists(s => s is IStructure))
+            if (regionManager.GetObjectsInTile(x, y).Any(s => s is IStructure))
             {
                 types = objectTypeFactory.GetTypes("RoadSetStructures");
             }

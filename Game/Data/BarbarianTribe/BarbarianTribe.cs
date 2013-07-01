@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using Game.Battle;
 using Game.Logic;
 using Game.Map;
@@ -73,6 +74,14 @@ namespace Game.Data.BarbarianTribe
         }
 
         public IBattleManager Battle { get; set; }
+
+        public override byte Size
+        {
+            get
+            {
+                return 2;
+            }
+        }
 
         public override ushort Type
         {

@@ -9,7 +9,7 @@ namespace Game.Battle
 {
     public class StaminaMonitor
     {
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private short stamina;
 
@@ -17,7 +17,7 @@ namespace Game.Battle
                               ICombatGroup combatGroup,
                               short initialStamina,
                               BattleFormulas battleFormulas,
-                              ObjectTypeFactory objectTypeFactory)
+                              IObjectTypeFactory objectTypeFactory)
         {
             this.objectTypeFactory = objectTypeFactory;
             CombatGroup = combatGroup;

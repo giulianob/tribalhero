@@ -66,6 +66,8 @@ namespace Common.Testing
             }
         }
 
+        public IRegionManager Regions { get; set; }
+
         public bool TryGetObjects(uint cityId, out ICity city)
         {
             return cities.TryGetValue(cityId, out city);

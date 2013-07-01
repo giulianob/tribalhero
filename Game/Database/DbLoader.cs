@@ -317,7 +317,7 @@ namespace Game.Database
                                                 StubId = (ushort)reader["stub_id"],
                                                 Dispatched = (byte)reader["dispatched"] == 1
                                             },
-                                            key => (int)key.ObjectId);
+                                            key => (int)key.Id);
             }
 
             foreach (var reader in DbManager.Select(Assignment.DB_TABLE).ReadAll())
@@ -609,10 +609,7 @@ namespace Game.Database
                     stronghold.NearbyCitiesCount = (ushort)reader["nearby_cities"];
                     stronghold.DbPersisted = true;
                     stronghold.State.Type = (ObjectState)((byte)reader["object_state"]);
-                    foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
-                    {
-                        stronghold.State.Parameters.Add(variable);
-                    }
+                    stronghold.State.Parameters = XmlSerializer.DeserializeList((string)reader["state_parameters"]);                    
 
                     // Load owner tribe
                     var tribeId = (uint)reader["tribe_id"];
@@ -665,10 +662,7 @@ namespace Game.Database
                     barbarianTribe.Created = DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc);
                     barbarianTribe.InWorld = (bool)reader["in_world"];
                     barbarianTribe.State.Type = (ObjectState)((byte)reader["state"]);
-                    foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
-                    {
-                        barbarianTribe.State.Parameters.Add(variable);
-                    }                    
+                    barbarianTribe.State.Parameters = XmlSerializer.DeserializeList((string)reader["state_parameters"]);
 
                     // Add stronghold to main manager
                     BarbarianTribeManager.DbLoaderAdd(barbarianTribe);
@@ -746,10 +740,7 @@ namespace Game.Database
                     forest.DepleteTime = DateTime.SpecifyKind((DateTime)reader["deplete_time"], DateTimeKind.Utc);
                     forest.InWorld = (bool)reader["in_world"];
 
-                    foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
-                    {
-                        forest.State.Parameters.Add(variable);
-                    }
+                    forest.State.Parameters = XmlSerializer.DeserializeList((string)reader["state_parameters"]);
 
                     // Add lumberjacks
                     foreach (var vars in XmlSerializer.DeserializeComplexList((string)reader["structures"]))
@@ -813,10 +804,7 @@ namespace Game.Database
                 structure.State.Type = (ObjectState)((byte)reader["state"]);
                 structure.IsBlocked = (uint)reader["is_blocked"];
 
-                foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
-                {
-                    structure.State.Parameters.Add(variable);
-                }
+                structure.State.Parameters = XmlSerializer.DeserializeList((string)reader["state_parameters"]);
 
                 city.Add(structure.ObjectId, structure, false);
 
@@ -1106,12 +1094,8 @@ namespace Game.Database
                                            new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"]));
                     troopObject.IsBlocked = (uint)reader["is_blocked"];
                     troopObject.InWorld = (bool)reader["in_world"];
-                    
 
-                    foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
-                    {
-                        troopObject.State.Parameters.Add(variable);
-                    }
+                    troopObject.State.Parameters = XmlSerializer.DeserializeList((string)reader["state_parameters"]);
 
                     city.Add(troopObject.ObjectId, troopObject, false);
 

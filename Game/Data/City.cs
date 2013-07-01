@@ -161,7 +161,7 @@ namespace Game.Data
 
         public NotificationManager Notifications { get; private set; }
 
-        public ReferenceManager References { get; private set; }
+        public IReferenceManager References { get; private set; }
 
         public byte Lvl
         {
@@ -599,7 +599,7 @@ namespace Game.Data
                     decimal ap,
                     IActionWorker worker,
                     CityNotificationManager notifications,
-                    ReferenceManager references,
+                    IReferenceManager references,
                     ITechnologyManager technologies,
                     ITroopManager troops,
                     IUnitTemplate template,
@@ -746,8 +746,6 @@ namespace Game.Data
                 troopobjects.Remove(troop.ObjectId);
 
                 dbManager.Delete(troop);
-
-                troop.City = null;
 
                 troop.ObjectUpdated -= OnObjectUpdated;
 

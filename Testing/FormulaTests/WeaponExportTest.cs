@@ -11,7 +11,7 @@ namespace Testing.FormulaTests
         [Fact]
         public void TestNoLaborer()
         {
-            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
                                       new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
@@ -25,7 +25,7 @@ namespace Testing.FormulaTests
         [Fact]
         public void TestHalfLaborers()
         {
-            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
                                       new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
@@ -39,7 +39,7 @@ namespace Testing.FormulaTests
         [Fact]
         public void TestTenLaborers()
         {
-            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
                                       new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
@@ -53,7 +53,7 @@ namespace Testing.FormulaTests
         [Fact]
         public void TestBadLevel()
         {
-            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
                                       new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
@@ -63,7 +63,7 @@ namespace Testing.FormulaTests
         [Fact]
         public void TestHalfLaborersOverLimit()
         {
-            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
                                       new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
@@ -77,7 +77,7 @@ namespace Testing.FormulaTests
         [Fact]
         public void TestWeirdNumber()
         {
-            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
                                       new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 

@@ -20,7 +20,7 @@ namespace Game.Logic.Formulas
         {
         }
 
-        public Formula(ObjectTypeFactory objectTypeFactory, UnitFactory unitFactory, IStructureCsvFactory structureCsvFactory)
+        public Formula(IObjectTypeFactory objectTypeFactory, UnitFactory unitFactory, IStructureCsvFactory structureCsvFactory)
         {
             ObjectTypeFactory = objectTypeFactory;
             UnitFactory = unitFactory;
@@ -29,7 +29,7 @@ namespace Game.Logic.Formulas
 
         public static Formula Current { get; set; }
 
-        public ObjectTypeFactory ObjectTypeFactory { get; set; }
+        public IObjectTypeFactory ObjectTypeFactory { get; set; }
 
         public UnitFactory UnitFactory { get; set; }
 

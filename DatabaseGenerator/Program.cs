@@ -78,7 +78,7 @@ namespace DatabaseGenerator
 
                 foreach (var type in structureTypes)
                 {
-                    if (kernel.Get<ObjectTypeFactory>().IsObjectType("DatabaseIgnoreStructures", type))
+                    if (kernel.Get<IObjectTypeFactory>().IsObjectType("DatabaseIgnoreStructures", type))
                     {
                         continue;
                     }
@@ -90,7 +90,7 @@ namespace DatabaseGenerator
                     var sprite = stats.SpriteClass;
 
                     // Sorry this is a bit of a hack, it's a CropField then we append the Mature status to it :)
-                    if (kernel.Get<ObjectTypeFactory>().IsObjectType("CropField", type))
+                    if (kernel.Get<IObjectTypeFactory>().IsObjectType("CropField", type))
                     {
                         sprite =
                                 kernel.Get<IStructureCsvFactory>()
@@ -136,7 +136,7 @@ namespace DatabaseGenerator
                 ");
                 foreach (var type in technologyTypes)
                 {
-                    if (kernel.Get<ObjectTypeFactory>().IsObjectType("DatabaseIgnoreTech", (ushort)type))
+                    if (kernel.Get<IObjectTypeFactory>().IsObjectType("DatabaseIgnoreTech", (ushort)type))
                     {
                         continue;
                     }

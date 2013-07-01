@@ -24,7 +24,7 @@ namespace Game.Logic.Procedures
 
         private readonly IBattleManagerFactory battleManagerFactory;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly ITileLocator tileLocator;
 
@@ -36,7 +36,7 @@ namespace Game.Logic.Procedures
         public CityBattleProcedure(ITileLocator tileLocator,
                                    IBattleManagerFactory battleManagerFactory,
                                    IActionFactory actionFactory,
-                                   ObjectTypeFactory objectTypeFactory,
+                                   IObjectTypeFactory objectTypeFactory,
                                    BattleProcedure battleProcedure,
                                    ICombatGroupFactory combatGroupFactory,
                                    ICombatUnitFactory combatUnitFactory)
@@ -163,7 +163,7 @@ namespace Game.Logic.Procedures
                             .Where(structure => structure.State.Type == ObjectState.Normal && CanStructureBeAttacked(structure) == Error.Ok))
             {
                 structure.BeginUpdate();
-                structure.State = GameObjectState.BattleState(battleManager.BattleId);
+                structure.State = GameObjectStateFactory.BattleState(battleManager.BattleId);
                 structure.EndUpdate();
 
                 localGroup.Add(combatUnitFactory.CreateStructureCombatUnit(battleManager, structure));

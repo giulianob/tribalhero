@@ -4,9 +4,6 @@ using FluentAssertions;
 using Game.Data;
 using Game.Data.Events;
 using NSubstitute;
-using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.Xunit;
-using Xunit;
 using Xunit.Extensions;
 
 namespace Testing.GameObjectTests
@@ -25,12 +22,12 @@ namespace Testing.GameObjectTests
         }
 
         [Theory, AutoNSubstituteData]
-        public void PrimaryPosition_WhenXSet_OriginalPositionXIsSaved(SimpleGameObjectStub gameObject)
+        public void PrimaryPosition_WhenXSetAndObjIsNotYetInWorld_OriginalPositionXIsSaved(SimpleGameObjectStub gameObject)
         {
             gameObject.MonitorEvents();
 
             gameObject.BeginUpdate();
-            gameObject.InWorld = true;
+            gameObject.InWorld = false;
             gameObject.PrimaryPosition.X = 10;
             gameObject.EndUpdate();
 
@@ -40,12 +37,12 @@ namespace Testing.GameObjectTests
         }
 
         [Theory, AutoNSubstituteData]
-        public void PrimaryPosition_WhenYSet_OriginalPositionYIsSaved(SimpleGameObjectStub gameObject)
+        public void PrimaryPosition_WhenYSetAndObjIsNotYetInWorld_OriginalPositionYIsSaved(SimpleGameObjectStub gameObject)
         {
             gameObject.MonitorEvents();
 
             gameObject.BeginUpdate();
-            gameObject.InWorld = true;
+            gameObject.InWorld = false;
             gameObject.PrimaryPosition.Y = 10;
             gameObject.EndUpdate();
 
@@ -58,6 +55,14 @@ namespace Testing.GameObjectTests
         {
             public SimpleGameObjectStub(uint objectId, uint x, uint y) : base(objectId, x, y)
             {
+            }
+
+            public override byte Size
+            {
+                get
+                {
+                    return 2;
+                }
             }
 
             public override ushort Type

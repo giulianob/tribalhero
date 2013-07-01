@@ -43,6 +43,14 @@ namespace Game.Data.Forest
 
         public ForestDepleteAction DepleteAction { get; set; }
 
+        public override byte Size
+        {
+            get
+            {
+                return 1;
+            }
+        }
+
         public override ushort Type
         {
             get

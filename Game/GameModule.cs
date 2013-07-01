@@ -45,7 +45,7 @@ namespace Game
             #region World/Map
 
             Bind<IWorld, IGameObjectLocator>().To<World>().InSingletonScope();
-
+            Bind<IRegion>().To<Region>();
             Bind<IRegionManager>().To<RegionManager>().InSingletonScope();
             Bind<ICityManager>().To<CityManager>().InSingletonScope();
             Bind<ICityRegionManager>().To<CityRegionManager>().InSingletonScope();            
@@ -110,7 +110,7 @@ namespace Game
             Bind<RequirementFactory>().ToSelf().InSingletonScope();
             Bind<TechnologyFactory>().ToSelf().InSingletonScope();
             Bind<UnitFactory>().ToSelf().InSingletonScope();
-            Bind<ObjectTypeFactory>().ToSelf().InSingletonScope();
+            Bind<IObjectTypeFactory>().To<ObjectTypeFactory>().InSingletonScope();
             Bind<UnitModFactory>().ToSelf().InSingletonScope();
             Bind<MapFactory>().ToSelf().InSingletonScope();
             Bind<NameGenerator>()
@@ -227,6 +227,7 @@ namespace Game
 
             #region City
 
+            Bind<IReferenceManager>().To<ReferenceManager>();
             Bind<ICityChannel>().To<CityChannel>().InSingletonScope();
             Bind<ICityFactory>().To<CityFactory>().InSingletonScope();
             Bind<IGameObjectFactory>().To<GameObjectFactory>().InSingletonScope();

@@ -7,8 +7,6 @@ using Common;
 using Game.Data;
 using Game.Logic;
 using Game.Logic.Requirements.LayoutRequirements;
-using Game.Util;
-using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -16,16 +14,18 @@ namespace Game.Setup
 {
     public class RequirementFactory
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private readonly ILayoutRequirementFactory layoutRequirementFactory;
 
         private readonly Dictionary<int, LayoutRequirement> dict = new Dictionary<int, LayoutRequirement>();
 
+        public RequirementFactory(ILayoutRequirementFactory layoutRequirementFactory)
+        {
+            this.layoutRequirementFactory = layoutRequirementFactory;
+        }
+
         public void Init(string filename)
         {
-            using (
-                    var reader =
-                            new CsvReader(
-                                    new StreamReader(new FileStream(filename,
+            using (var reader = new CsvReader(new StreamReader(new FileStream(filename,
                                                                     FileMode.Open,
                                                                     FileAccess.Read,
                                                                     FileShare.ReadWrite))))
@@ -50,13 +50,13 @@ namespace Game.Setup
                         switch(toks[col["Layout"]])
                         {
                             case "Simple":
-                                layoutReq = new SimpleLayout();
+                                layoutReq = layoutRequirementFactory.CreateSimpleLayout();
                                 break;
                             case "AwayFrom":
-                                layoutReq = new AwayFromLayout();
+                                layoutReq = layoutRequirementFactory.CreateAwayFromLayout();
                                 break;
                             default:
-                                layoutReq = new SimpleLayout();
+                                layoutReq = layoutRequirementFactory.CreateSimpleLayout();
                                 break;
                         }
                     }
@@ -68,9 +68,7 @@ namespace Game.Setup
                                               byte.Parse(toks[col["Dmin"]]),
                                               byte.Parse(toks[col["Dmax"]]));
                     layoutReq.Add(req);
-
-                    logger.Info(string.Format("{0}",
-                                                     int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]])));
+                    
                     dict[index] = layoutReq;
                 }
             }
@@ -90,7 +88,7 @@ namespace Game.Setup
                 return tmp;
             }
 
-            return new SimpleLayout();
+            return layoutRequirementFactory.CreateSimpleLayout();
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Testing.FormulaTests
         [Theory, PropertyData("WithDifferentCities")]
         public void CityValueShouldReturnProperValue(IEnumerable<IStructure> structures, int expected)
         {
-            Mock<ObjectTypeFactory> objectTypeFactory = new Mock<ObjectTypeFactory>(MockBehavior.Strict);
+            Mock<IObjectTypeFactory> objectTypeFactory = new Mock<IObjectTypeFactory>(MockBehavior.Strict);
             // Structures with id less than 100 count towards Influence, others dont
             objectTypeFactory.Setup(m => m.IsStructureType("NoInfluencePoint", It.IsAny<IStructure>()))
                              .Returns((string type, IStructure s) => s.Type >= 100);

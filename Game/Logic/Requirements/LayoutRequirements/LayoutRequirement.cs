@@ -7,22 +7,15 @@ using Game.Data;
 
 namespace Game.Logic.Requirements.LayoutRequirements
 {
-    enum LayoutComparison : byte
+    public abstract class LayoutRequirement : ILayoutRequirement
     {
-        NotContains = 0,
+        protected List<Requirement> Requirements = new List<Requirement>();
 
-        Contains = 1
-    }
-
-    public abstract class LayoutRequirement
-    {
-        protected List<Requirement> requirements = new List<Requirement>();
-
-        public abstract bool Validate(IStructure builder, ushort type, uint x, uint y);
+        public abstract bool Validate(IStructure builder, ushort type, uint x, uint y, byte size);
 
         public void Add(Requirement req)
         {
-            requirements.Add(req);
+            Requirements.Add(req);
         }
     }
 }

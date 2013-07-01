@@ -29,7 +29,7 @@ namespace Game.Setup
 
         private readonly UnitFactory unitFactory;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly UnitModFactory unitModFactory;
 
@@ -45,7 +45,7 @@ namespace Game.Setup
                                     RequirementFactory requirementFactory,
                                     TechnologyFactory technologyFactory,
                                     UnitFactory unitFactory,
-                                    ObjectTypeFactory objectTypeFactory,
+                                    IObjectTypeFactory objectTypeFactory,
                                     UnitModFactory unitModFactory,
                                     MapFactory mapFactory)
         {

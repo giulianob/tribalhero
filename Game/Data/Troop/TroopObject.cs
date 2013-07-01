@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using Game.Data.Stats;
 using Game.Map;
 using Game.Util;
@@ -67,6 +68,14 @@ namespace Game.Data.Troop
 
                 stats = value;
                 stats.StatsUpdate += StatsStatsUpdate;
+            }
+        }
+
+        public override byte Size
+        {
+            get
+            {
+                return 1;
             }
         }
 

@@ -19,11 +19,11 @@ namespace Game.Battle.CombatObjects
     {
         private readonly IKernel kernel;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly UnitFactory unitFactory;
 
-        public CombatUnitFactory(IKernel kernel, ObjectTypeFactory objectTypeFactory, UnitFactory unitFactory)
+        public CombatUnitFactory(IKernel kernel, IObjectTypeFactory objectTypeFactory, UnitFactory unitFactory)
         {
             this.kernel = kernel;
             this.objectTypeFactory = objectTypeFactory;

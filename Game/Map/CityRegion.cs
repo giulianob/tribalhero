@@ -1,11 +1,14 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Game.Data;
 using Game.Setup;
+using Game.Util;
 using Game.Util.Locking;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -13,6 +16,8 @@ namespace Game.Map
 {
     public class CityRegion
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         private readonly DefaultMultiObjectLock.Factory lockerFactory;
 
         #region Constants
@@ -61,6 +66,11 @@ namespace Game.Map
                 isDirty = true;
             }
 
+            if (Global.Current.FireEvents)
+            {
+                logger.Info("Added city region obj: {0}", obj.ToString());
+            }
+
             return true;
         }
 
@@ -68,7 +78,16 @@ namespace Game.Map
         {
             lock (objLock)
             {
-                data.Remove(obj);
+                var remove = data.Remove(obj);
+                if (!remove)
+                {
+                    logger.Warn("Tried to remove nonexistant object from city region: {0}", obj.ToString());
+
+                    throw new Exception("Tried to remove obj from wrong region");
+                }
+                
+                logger.Info("Removed city region obj: {0}", obj.ToString());
+                
                 isDirty = true;
             }
         }
@@ -125,6 +144,14 @@ namespace Game.Map
                                 bw.Write((ushort)data.Count);
                                 foreach (var obj in data)
                                 {
+                                    // TODO: Remove this at some point.. added this to check an existing issue
+                                    var simpleObj = obj as ISimpleGameObject;
+                                    if (simpleObj != null && !simpleObj.InWorld)
+                                    {
+                                        logger.Warn("Tried to get bytes from an obj that is not in world {0}", simpleObj.ToString());
+                                        throw new Exception("Object not being removed properly...");
+                                    }
+
                                     bw.Write((byte)obj.CityRegionType);
                                     bw.Write(obj.CityRegionRelX);
                                     bw.Write(obj.CityRegionRelY);

@@ -10,6 +10,7 @@ using Game.Setup;
 using Game.Util;
 using NSubstitute;
 using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.AutoNSubstitute;
 using Xunit;
 using Xunit.Extensions;
 
@@ -51,7 +52,7 @@ namespace Testing.FormulaTests
         [InlineData(20, 5000)]
         public void TestMeterValue(int level, int expectedValue)
         {
-            var formula = new Fixture().Create<Formula>();
+            var formula = new Fixture().Customize(new AutoNSubstituteCustomization()).Create<Formula>();
             formula.StrongholdMainBattleMeter((byte)level).Should().Be(expectedValue);
         }
 
@@ -78,7 +79,7 @@ namespace Testing.FormulaTests
         [InlineData(20, 50000)]
         public void TestGateValue(int level, int expectedValue)
         {
-            var formula = new Fixture().Create<Formula>();
+            var formula = new Fixture().Customize(new AutoNSubstituteCustomization()).Create<Formula>();
             formula.StrongholdGateLimit((byte)level).Should().Be(expectedValue);
         }
 
@@ -107,7 +108,7 @@ namespace Testing.FormulaTests
         {
             byte unitLevel;
             int upkeep;
-            var formula = new Fixture().Create<Formula>();
+            var formula = new Fixture().Customize(new AutoNSubstituteCustomization()).Create<Formula>();
             formula.StrongholdUpkeep((byte)level, out upkeep, out unitLevel);
             unitLevel.Should().Be((byte)expectedLevel);
             upkeep.Should().Be(expectedUpkeep);
@@ -148,14 +149,14 @@ namespace Testing.FormulaTests
             var occupiedDate = SystemClock.Now.Subtract(TimeSpan.FromDays((double)occupiedDays));
             stronghold.DateOccupied.Returns(occupiedDate);
 
-            var formula = new Fixture().Create<Formula>();
+            var formula = new Fixture().Customize(new AutoNSubstituteCustomization()).Create<Formula>();
             formula.StrongholdVictoryPoint(stronghold).Should().Be(expectedValue);
         }
 
         [Fact]
         public void TestNonOccupiedVictoryPoint()
         {
-            var formula = new Fixture().Create<Formula>();
+            var formula = new Fixture().Customize(new AutoNSubstituteCustomization()).Create<Formula>();
 
             var stronghold = Substitute.For<IStronghold>();
             stronghold.StrongholdState.Returns(StrongholdState.Neutral);

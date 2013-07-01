@@ -382,7 +382,7 @@ namespace Game.Data.Tribe
             PassiveAction action;
             if (Target.LocationType == LocationType.City)
             {
-                IStructure structure = (IStructure)gameObjectLocator.GetObjects(X, Y).Find(z => z is IStructure);
+                IStructure structure = (IStructure)gameObjectLocator.Regions.GetObjectsInTile(X, Y).FirstOrDefault(z => z is IStructure);
                 if (structure == null)
                 {
                     procedure.TroopObjectDelete(troopObject, true);

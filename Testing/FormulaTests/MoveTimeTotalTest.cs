@@ -16,7 +16,7 @@ namespace Testing.FormulaTests
         [Fact]
         public void TestMoveTime()
         {
-            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
                                       new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
             formula.MoveTime(5).Should().Be(51.4m);
@@ -28,7 +28,7 @@ namespace Testing.FormulaTests
         [Fact]
         public void TestTroopSpeed()
         {
-            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
                                       new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
             ITroopStub troopstub = Substitute.For<ITroopStub>();
@@ -93,7 +93,7 @@ namespace Testing.FormulaTests
         [Fact]
         public void TestEmptyEffect()
         {
-            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
                                       new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
@@ -111,7 +111,7 @@ namespace Testing.FormulaTests
         [Fact]
         public void TestRushAttack()
         {
-            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
                                       new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
@@ -152,7 +152,7 @@ namespace Testing.FormulaTests
         [Fact]
         public void TestRushDefense()
         {
-            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
                                       new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
@@ -195,7 +195,7 @@ namespace Testing.FormulaTests
         [Fact]
         public void TestDoubleTime()
         {
-            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
                                       new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
@@ -250,7 +250,7 @@ namespace Testing.FormulaTests
         [Fact]
         public void TestDoubleTimeWithRush()
         {
-            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
                                       new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 

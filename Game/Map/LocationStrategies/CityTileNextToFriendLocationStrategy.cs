@@ -76,9 +76,9 @@ namespace Game.Map.LocationStrategies
             }
 
             // Check if objects already on that point
-            List<ISimpleGameObject> objects = world.GetObjects(position.X, position.Y);
+            var objects = world.Regions.GetObjectsInTile(position.X, position.Y);
 
-            return objects.Count == 0 && !forestManager.HasForestNear(position.X, position.Y, formula.GetInitialCityRadius());
+            return !objects.Any() && !forestManager.HasForestNear(position.X, position.Y, formula.GetInitialCityRadius());
         }
     }
 }

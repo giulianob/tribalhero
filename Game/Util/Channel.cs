@@ -61,12 +61,13 @@ namespace Game.Util
             channelLock.EnterReadLock();
             try
             {
-                if (!subscribersByChannel.ContainsKey(channelId))
+                List<Subscriber> subscribers;
+                if (!subscribersByChannel.TryGetValue(channelId, out subscribers))
                 {
                     return;
                 }
 
-                foreach (var sub in subscribersByChannel[channelId])
+                foreach (var sub in subscribers)
                 {
                     if (!hasPacket)
                     {

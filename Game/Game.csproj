@@ -84,8 +84,9 @@
     <Reference Include="NDesk.Options">
       <HintPath>..\Lib\ndesk.options\NDesk.Options.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -364,6 +365,10 @@
     <Compile Include="Logic\Actions\TroopActions\UnitUpgradeActiveAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\StructureUpgradeActiveAction.cs" />
     <Compile Include="Logic\ActionWorker.cs" />
+    <Compile Include="Logic\IReferenceManager.cs" />
+    <Compile Include="Logic\Requirements\LayoutRequirements\ILayoutRequirement.cs" />
+    <Compile Include="Logic\Requirements\LayoutRequirements\ILayoutRequirementFactory.cs" />
+    <Compile Include="Logic\Requirements\LayoutRequirements\LayoutComparison.cs" />
     <Compile Include="Logic\Triggers\CityTriggerManager.cs" />
     <Compile Include="Logic\Triggers\Conditions\StructureInitCondition.cs" />
     <Compile Include="Logic\Triggers\Conditions\StructureDowngradeCondition.cs" />
@@ -432,7 +437,9 @@
     <Compile Include="Map\ICityRegionManager.cs" />
     <Compile Include="Map\ICityRegionManagerFactory.cs" />
     <Compile Include="Map\IGameObjectLocator.cs" />
+    <Compile Include="Map\IRegion.cs" />
     <Compile Include="Map\IRegionFactory.cs" />
+    <Compile Include="Map\IRegionLocator.cs" />
     <Compile Include="Map\IRegionManager.cs" />
     <Compile Include="Data\Tribe\ITribeManager.cs" />
     <Compile Include="Map\IRoadManager.cs" />
@@ -446,9 +453,9 @@
     <Compile Include="Map\ObjectEvent.cs" />
     <Compile Include="Map\Position.cs" />
     <Compile Include="Map\MapMath.cs" />
-    <Compile Include="Map\ObjectLink.cs" />
     <Compile Include="Map\ObjectList.AllObjectEnum.cs" />
-    <Compile Include="Map\ObjectList.cs" />
+    <Compile Include="Map\RegionObjectList.cs" />
+    <Compile Include="Map\RegionLocator.cs" />
     <Compile Include="Map\TileLocator.cs" />
     <Compile Include="Map\RegionManager.cs" />
     <Compile Include="Map\RoadPathFinder.cs" />
@@ -469,6 +476,7 @@
     <Compile Include="Map\Region.cs" />
     <Compile Include="Map\World.cs" />
     <Compile Include="Setup\ActionRequirementFactory.cs" />
+    <Compile Include="Setup\IObjectTypeFactory.cs" />
     <Compile Include="Setup\Ioc.cs" />
     <Compile Include="Setup\IStructureCsvFactory.cs" />
     <Compile Include="Setup\UnitModFactory.cs" />

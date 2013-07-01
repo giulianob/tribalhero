@@ -199,7 +199,7 @@ namespace Game.Logic.Actions
             troopObj.BeginUpdate();
             troopObj.TargetX = x;
             troopObj.TargetY = y;
-            troopObj.State = GameObjectState.MovingState();
+            troopObj.State = GameObjectStateFactory.MovingState();
             troopObj.EndUpdate();
 
             return Error.Ok;
@@ -249,7 +249,7 @@ namespace Game.Logic.Actions
                     troopObj.Stub.EndUpdate();
 
                     troopObj.BeginUpdate();
-                    troopObj.State = GameObjectState.NormalState();
+                    troopObj.State = GameObjectStateFactory.NormalState();
                     troopObj.EndUpdate();
                     StateChange(ActionState.Completed);
                     return;

@@ -73,7 +73,7 @@ namespace Game.Logic.Procedures
 
                 barbarianTribe.BeginUpdate();
                 barbarianTribe.LastAttacked = DateTime.UtcNow;
-                barbarianTribe.State = GameObjectState.BattleState(barbarianTribe.Battle.BattleId);
+                barbarianTribe.State = GameObjectStateFactory.BattleState(barbarianTribe.Battle.BattleId);
                 barbarianTribe.EndUpdate();
             }
 

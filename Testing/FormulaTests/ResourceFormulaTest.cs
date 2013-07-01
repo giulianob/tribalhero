@@ -74,7 +74,7 @@ namespace Testing.FormulaTests
             var unitFactory = new Mock<UnitFactory>();
             var structureFactory = new Mock<IStructureCsvFactory>();
 
-            var objectTypeFactory = new Mock<ObjectTypeFactory>();
+            var objectTypeFactory = new Mock<IObjectTypeFactory>();
             objectTypeFactory.Setup(m => m.IsStructureType("Basement", It.IsAny<IStructure>())).Returns(false);
 
             var formula = new Formula(objectTypeFactory.Object, unitFactory.Object, structureFactory.Object);
@@ -108,7 +108,7 @@ namespace Testing.FormulaTests
             city.SetupGet(p => p.Resource.Labor.Limit).Returns(cityResourceLimit.Labor);
             city.SetupGet(p => p.AlignmentPoint).Returns(ap);
 
-            var objectTypeFactory = new Mock<ObjectTypeFactory>();
+            var objectTypeFactory = new Mock<IObjectTypeFactory>();
             objectTypeFactory.Setup(m => m.IsStructureType("Basement", It.IsAny<IStructure>())).Returns(true);
 
             var unitFactory = new Mock<UnitFactory>();

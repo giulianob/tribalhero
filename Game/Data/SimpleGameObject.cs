@@ -42,7 +42,7 @@ namespace Game.Data
 
         private bool inWorld;
 
-        private GameObjectState state = GameObjectState.NormalState();
+        private GameObjectState state = GameObjectStateFactory.NormalState();
 
         public ushort CityRegionRelX
         {
@@ -89,6 +89,8 @@ namespace Game.Data
 
         public Position PrimaryPosition { get; private set; }
 
+        public abstract byte Size { get; }
+
         public abstract ushort Type { get; }
 
         public abstract uint GroupId { get; }
@@ -133,7 +135,7 @@ namespace Game.Data
         {
             this.objectId = objectId;
             this.PrimaryPosition = new Position(x, y);
-            this.state = GameObjectState.NormalState();
+            this.state = GameObjectStateFactory.NormalState();
 
             this.PrimaryPosition.PropertyChanged += PrimaryPositionOnPropertyChanged;
         }
@@ -192,7 +194,7 @@ namespace Game.Data
         {
             CheckUpdateMode();
 
-            if (!inWorld)
+            if (inWorld)
             {
                 return;
             }
@@ -219,7 +221,7 @@ namespace Game.Data
 
         public override string ToString()
         {
-            return string.Format("{0} x[{1}] y[{2}] type[{3}] groupId[{4}] objId[{5}]", base.ToString(), X, Y, Type, GroupId, ObjectId);
+            return string.Format("{0} x[{1}] y[{2}] origX[{7}] origY[{8}] type[{3}] groupId[{4}] objId[{5}] inWorld[{6}]", base.ToString(), X, Y, Type, GroupId, ObjectId, inWorld, originalPosition.X, originalPosition.Y);
         }
     }
 }

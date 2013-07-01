@@ -1,6 +1,8 @@
 #region
 
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Game.Data;
 using Game.Map;
 
@@ -8,34 +10,46 @@ using Game.Map;
 
 namespace Game.Logic.Requirements.LayoutRequirements
 {
-    class SimpleLayout : LayoutRequirement
+    public class SimpleLayout : LayoutRequirement
     {
-        public override bool Validate(IStructure builder, ushort type, uint x, uint y)
+        private readonly ITileLocator tileLocator;
+
+        public SimpleLayout(ITileLocator tileLocator)
         {
-            foreach (var req in requirements)
+            this.tileLocator = tileLocator;
+        }
+
+        public override bool Validate(IStructure builder, ushort type, uint x, uint y, byte size)
+        {
+            foreach (var req in Requirements)
             {
-                switch(req.Cmp)
+                LayoutComparison comparison;
+                if (!Enum.TryParse(req.Cmp.ToString(CultureInfo.InvariantCulture), out comparison))
                 {
-                    case 1:
-                        if (!HaveBuilding(req, builder.City, x, y))
+                    throw new Exception(string.Format("Invalid comparison type specified for SimpleLayout: {0}", req.Cmp));
+                }
+
+                switch((LayoutComparison)req.Cmp)
+                {
+                    case LayoutComparison.Contains:
+                        if (!HaveBuilding(req, builder.City, x, y, size))
                         {
                             return false;
                         }
                         break;
-                    case 2:
-                        if (!HaveNoBuilding(req, builder.City, x, y))
+                    case LayoutComparison.NotContains:
+                        if (!HaveNoBuilding(req, builder.City, x, y, size))
                         {
                             return false;
                         }
                         break;
-                    default:
-                        return false;
                 }
             }
+
             return true;
         }
 
-        private bool HaveNoBuilding(Requirement req, IEnumerable<IStructure> objects, uint x, uint y)
+        private bool HaveNoBuilding(Requirement req, IEnumerable<IStructure> objects, uint x, uint y, byte size)
         {
             foreach (var obj in objects)
             {
@@ -44,7 +58,7 @@ namespace Game.Logic.Requirements.LayoutRequirements
                     continue;
                 }
 
-                int dist = TileLocator.Current.RadiusDistance(obj.X, obj.Y, x, y);
+                int dist = tileLocator.RadiusDistance(obj.X, obj.Y, obj.Size, x, y, size);
 
                 if (dist > req.MaxDist || dist < req.MinDist)
                 {
@@ -56,7 +70,7 @@ namespace Game.Logic.Requirements.LayoutRequirements
             return true;
         }
 
-        private bool HaveBuilding(Requirement req, IEnumerable<IStructure> objects, uint x, uint y)
+        private bool HaveBuilding(Requirement req, IEnumerable<IStructure> objects, uint x, uint y, byte size)
         {
             foreach (var obj in objects)
             {
@@ -65,7 +79,7 @@ namespace Game.Logic.Requirements.LayoutRequirements
                     continue;
                 }
 
-                int dist = TileLocator.Current.RadiusDistance(obj.X, obj.Y, x, y);
+                int dist = tileLocator.RadiusDistance(obj.X, obj.Y, obj.Size, x, y, size);
 
                 if (dist > req.MaxDist || dist < req.MinDist)
                 {

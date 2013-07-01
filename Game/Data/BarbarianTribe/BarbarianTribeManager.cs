@@ -130,9 +130,12 @@ namespace Game.Data.BarbarianTribe
 
             barbarianTribe.CampRemainsChanged -= BarbarianTribeOnCampRemainsChanged;
 
-            barbarianTribe.BeginUpdate();
-            regionManager.Remove(barbarianTribe);
-            barbarianTribe.EndUpdate();
+            if (barbarianTribe.InWorld)
+            {
+                barbarianTribe.BeginUpdate();
+                regionManager.Remove(barbarianTribe);
+                barbarianTribe.EndUpdate();
+            }
 
             dbManager.Delete(barbarianTribe);
         }

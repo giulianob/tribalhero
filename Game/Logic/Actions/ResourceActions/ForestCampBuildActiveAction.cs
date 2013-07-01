@@ -29,7 +29,7 @@ namespace Game.Logic.Actions
 
         private readonly IWorld world;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly IStructureCsvFactory structureCsvFactory;
 
@@ -52,7 +52,7 @@ namespace Game.Logic.Actions
                                            byte labors,
                                            Formula formula,
                                            IWorld world,
-                                           ObjectTypeFactory objectTypeFactory,
+                                           IObjectTypeFactory objectTypeFactory,
                                            IStructureCsvFactory structureCsvFactory,
                                            InitFactory initFactory,
                                            IForestManager forestManager,
@@ -84,7 +84,7 @@ namespace Game.Logic.Actions
                                            Dictionary<string, string> properties,
                                            Formula formula,
                                            IWorld world,
-                                           ObjectTypeFactory objectTypeFactory,
+                                           IObjectTypeFactory objectTypeFactory,
                                            IStructureCsvFactory structureCsvFactory,
                                            InitFactory initFactory,
                                            IForestManager forestManager,
@@ -189,7 +189,7 @@ namespace Game.Logic.Actions
                 }
 
                 // Make sure it's not taken
-                if (world[position.X, position.Y].Count > 0)
+                if (world.Regions.GetObjectsInTile(position.X, position.Y).Any())
                 {
                     continue;
                 }

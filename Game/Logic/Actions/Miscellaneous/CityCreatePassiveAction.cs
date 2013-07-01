@@ -28,7 +28,7 @@ namespace Game.Logic.Actions
 
         private readonly ILocker locker;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly InitFactory initFactory;
 
@@ -53,7 +53,7 @@ namespace Game.Logic.Actions
                                        Formula formula,
                                        IWorld world,
                                        ILocker locker,
-                                       ObjectTypeFactory objectTypeFactory,
+                                       IObjectTypeFactory objectTypeFactory,
                                        InitFactory initFactory,
                                        IStructureCsvFactory structureCsvFactory,
                                        ICityFactory cityFactory)
@@ -85,7 +85,7 @@ namespace Game.Logic.Actions
                                        Formula formula,
                                        IWorld world,
                                        ILocker locker,
-                                       ObjectTypeFactory objectTypeFactory,
+                                       IObjectTypeFactory objectTypeFactory,
                                        InitFactory initFactory,
                                        IStructureCsvFactory structureCsvFactory)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
@@ -184,7 +184,7 @@ namespace Game.Logic.Actions
             }
 
             // check if tile is occupied
-            if (world[x, y].Exists(obj => obj is IStructure))
+            if (world.Regions.GetObjectsInTile(x, y).Any(obj => obj is IStructure))
             {
                 world.Regions.UnlockRegion(x, y);
                 return Error.StructureExists;

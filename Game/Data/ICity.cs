@@ -71,7 +71,7 @@ namespace Game.Data
 
         byte Lvl { get; }
 
-        ReferenceManager References { get; }
+        IReferenceManager References { get; }
 
         /// <summary>
         ///     City's battle manager. Maybe null if city is not in battle.

@@ -203,7 +203,7 @@ namespace Game.Logic.Actions
 
             // Set the attacking troop object to the correct state and stamina
             troopObject.BeginUpdate();
-            troopObject.State = GameObjectState.BattleState(battleId);
+            troopObject.State = GameObjectStateFactory.BattleState(battleId);
             troopObject.EndUpdate();
 
             // Set the troop stub to the correct state
@@ -235,7 +235,7 @@ namespace Game.Logic.Actions
             troopObject.BeginUpdate();
             SetLootedResources(targetCity.Battle, troopObject, group);
             troopObject.Stub.BeginUpdate();
-            troopObject.State = GameObjectState.NormalState();
+            troopObject.State = GameObjectStateFactory.NormalState();
             troopObject.Stub.State = TroopState.Idle;
             troopObject.Stub.EndUpdate();
             troopObject.EndUpdate();
@@ -266,7 +266,7 @@ namespace Game.Logic.Actions
             DeregisterBattleListeners(targetCity);
 
             troopObject.BeginUpdate();
-            troopObject.State = GameObjectState.NormalState();
+            troopObject.State = GameObjectStateFactory.NormalState();
             troopObject.EndUpdate();
 
             StateChange(ActionState.Completed);

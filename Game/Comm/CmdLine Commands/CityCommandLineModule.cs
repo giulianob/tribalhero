@@ -19,10 +19,19 @@ namespace Game.Comm.CmdLine_Commands
 
         private readonly Procedure procedure;
 
-        public CityCommandLineModule(Procedure procedure, IActionFactory actionFactory)
+        private IWorld world;
+
+        private ILocker locker;
+
+        public CityCommandLineModule(Procedure procedure,
+                                     IActionFactory actionFactory,
+                                     ILocker locker,
+                                     IWorld world)
         {
             this.procedure = procedure;
             this.actionFactory = actionFactory;
+            this.locker = locker;
+            this.world = world;
         }
 
         public override void RegisterCommands(CommandLineProcessor processor)
@@ -65,13 +74,13 @@ namespace Game.Comm.CmdLine_Commands
             }
 
             uint playerId;
-            if (!World.Current.FindPlayerId(playerName, out playerId))
+            if (!world.FindPlayerId(playerName, out playerId))
             {
                 return "Player not found";
             }
 
             IPlayer player;
-            using (Concurrency.Current.Lock(playerId, out player))
+            using (locker.Lock(playerId, out player))
             {
                 if (player == null)
                 {
@@ -117,13 +126,13 @@ namespace Game.Comm.CmdLine_Commands
             }
 
             uint cityId;
-            if (!World.Current.Cities.FindCityId(cityName, out cityId))
+            if (!world.Cities.FindCityId(cityName, out cityId))
             {
                 return "City not found";
             }
 
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -173,20 +182,20 @@ namespace Game.Comm.CmdLine_Commands
                 return "removestructure --x=### --y=###";
             }
 
-            Region region = World.Current.Regions.GetRegion(x, y);
+            IRegion region = world.Regions.GetRegion(x, y);
             if (region == null)
             {
                 return "Invalid coordinates";
             }
 
-            var structure = region.GetObjects(x, y).OfType<IStructure>().FirstOrDefault();
+            var structure = region.GetObjectsInTile(x, y).OfType<IStructure>().FirstOrDefault();
 
             if (structure == null)
             {
                 return "No structures found at specified coordinates";
             }
 
-            using (Concurrency.Current.Lock(structure.City))
+            using (locker.Lock(structure.City))
             {
                 var removeAction = new StructureSelfDestroyPassiveAction(structure.City.Id, structure.ObjectId);
                 var result = structure.City.Worker.DoPassive(structure.City, removeAction, false);
@@ -227,13 +236,13 @@ namespace Game.Comm.CmdLine_Commands
             }
 
             uint cityId;
-            if (!World.Current.Cities.FindCityId(cityName, out cityId))
+            if (!world.Cities.FindCityId(cityName, out cityId))
             {
                 return "City not found";
             }
 
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -246,10 +255,10 @@ namespace Game.Comm.CmdLine_Commands
                     return "City name is invalid";
                 }
 
-                lock (World.Current.Lock)
+                lock (world.Lock)
                 {
                     // Verify city name is unique
-                    if (World.Current.CityNameTaken(newCityName))
+                    if (world.CityNameTaken(newCityName))
                     {
                         return "City name is already taken";
                     }
@@ -284,14 +293,14 @@ namespace Game.Comm.CmdLine_Commands
             }
 
             uint cityId;
-            if (!World.Current.Cities.FindCityId(cityName, out cityId))
+            if (!world.Cities.FindCityId(cityName, out cityId))
             {
                 return "City not found";
             }
 
             StringWriter outString = new StringWriter();
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 foreach (var obj in city)
                 {

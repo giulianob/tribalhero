@@ -153,7 +153,7 @@ namespace Game.Logic.Actions
 
                 barbarianTribe.BeginUpdate();               
                 barbarianTribe.Battle = null;                
-                barbarianTribe.State = GameObjectState.NormalState();                
+                barbarianTribe.State = GameObjectStateFactory.NormalState();                
                 // Reset resources
                 barbarianTribe.Resource.Clear();
                 barbarianTribe.Resource.Add(formula.BarbarianTribeResources(barbarianTribe.Lvl));

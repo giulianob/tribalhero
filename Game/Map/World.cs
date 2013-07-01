@@ -58,16 +58,6 @@ namespace Game.Map
 
         #region Object Locator
 
-        public List<ISimpleGameObject> GetObjects(uint x, uint y)
-        {
-            return Regions.GetObjects(x, y);
-        }
-
-        public List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, int radius)
-        {
-            return Regions.GetObjectsWithin(x, y, radius);
-        }
-
         public bool TryGetObjects(uint strongholdId, out IStronghold stronghold)
         {
             return strongholds.TryGetStronghold(strongholdId, out stronghold);
@@ -131,14 +121,6 @@ namespace Game.Map
                 }
             }
             return false;
-        }
-
-        public List<ISimpleGameObject> this[uint x, uint y]
-        {
-            get
-            {
-                return Regions[x, y];
-            }
         }
 
         #endregion        

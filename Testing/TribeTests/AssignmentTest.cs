@@ -56,7 +56,7 @@ namespace Testing.TribeTests
             var gameObjectLocator = Substitute.For<IGameObjectLocator>();
             var scheduler = Substitute.For<IScheduler>();
             var procedure = Substitute.For<Procedure>();
-            var radiusLocator = Substitute.For<TileLocator>();
+            var radiusLocator = Substitute.For<ITileLocator>();
             var actionFactory = Substitute.For<IActionFactory>();
             var locker = Substitute.For<ILocker>();
             var initializer = Substitute.For<ITroopObjectInitializerFactory>();
@@ -110,7 +110,7 @@ namespace Testing.TribeTests
             var gameObjectLocator = Substitute.For<IGameObjectLocator>();
             var scheduler = Substitute.For<IScheduler>();
             var procedure = Substitute.For<Procedure>();
-            var radiusLocator = Substitute.For<TileLocator>();
+            var radiusLocator = Substitute.For<ITileLocator>();
             var actionFactory = Substitute.For<IActionFactory>();
             var locker = Substitute.For<ILocker>();
             var initializer = Substitute.For<ITroopObjectInitializerFactory>();
@@ -171,7 +171,7 @@ namespace Testing.TribeTests
             var gameObjectLocator = Substitute.For<IGameObjectLocator>();
             var scheduler = Substitute.For<IScheduler>();
             var procedure = Substitute.For<Procedure>();
-            var radiusLocator = Substitute.For<TileLocator>();
+            var radiusLocator = Substitute.For<ITileLocator>();
             var actionFactory = Substitute.For<IActionFactory>();
             ICity newCity;
             var newStub = CreateStub(out newCity);
@@ -185,7 +185,7 @@ namespace Testing.TribeTests
 
             troopObject.ObjectId.Returns((uint)95);
 
-            gameObjectLocator.GetObjects(TARGET_X, TARGET_Y).Returns(new List<ISimpleGameObject> {targetStructure});
+            gameObjectLocator.Regions.GetObjectsInTile(TARGET_X, TARGET_Y).Returns(new List<ISimpleGameObject> {targetStructure});
 
             targetStructure.City.Returns(targetCity);
 
@@ -249,7 +249,7 @@ namespace Testing.TribeTests
             var gameObjectLocator = Substitute.For<IGameObjectLocator>();
             var scheduler = Substitute.For<IScheduler>();
             var procedure = Substitute.For<Procedure>();
-            var radiusLocator = Substitute.For<TileLocator>();
+            var radiusLocator = Substitute.For<ITileLocator>();
             var actionFactory = Substitute.For<IActionFactory>();
             
             var targetStructure = Substitute.For<IStructure>();
@@ -262,7 +262,7 @@ namespace Testing.TribeTests
 
             troopObject.ObjectId.Returns((uint)95);
 
-            gameObjectLocator.GetObjects(TARGET_X, TARGET_Y).Returns(new List<ISimpleGameObject> {targetStructure});
+            gameObjectLocator.Regions.GetObjectsInTile(TARGET_X, TARGET_Y).Returns(new List<ISimpleGameObject> {targetStructure});
 
             targetStructure.City.Returns(targetCity);
 
@@ -324,7 +324,7 @@ namespace Testing.TribeTests
             var gameObjectLocator = Substitute.For<IGameObjectLocator>();
             var scheduler = Substitute.For<IScheduler>();
             var procedure = Substitute.For<Procedure>();
-            var radiusLocator = Substitute.For<TileLocator>();
+            var radiusLocator = Substitute.For<ITileLocator>();
             var actionFactory = Substitute.For<IActionFactory>();
             var targetStructure = Substitute.For<IStructure>();
             var actionWorker = Substitute.For<IActionWorker>();
@@ -334,7 +334,7 @@ namespace Testing.TribeTests
 
             troopObject.ObjectId.Returns((uint)99);
 
-            gameObjectLocator.GetObjects(TARGET_X, TARGET_Y).Returns(new List<ISimpleGameObject> {targetStructure});
+            gameObjectLocator.Regions.GetObjectsInTile(TARGET_X, TARGET_Y).Returns(new List<ISimpleGameObject> {targetStructure});
 
             targetStructure.City.Returns(targetCity);
 

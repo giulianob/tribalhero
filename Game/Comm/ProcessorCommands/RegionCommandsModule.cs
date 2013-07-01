@@ -19,7 +19,7 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IWorld world;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly IRoadPathFinder roadPathFinder;
 
@@ -29,7 +29,7 @@ namespace Game.Comm.ProcessorCommands
 
         public RegionCommandsModule(ITileLocator tileLocator,
                                     IWorld world,
-                                    ObjectTypeFactory objectTypeFactory,
+                                    IObjectTypeFactory objectTypeFactory,
                                     IRoadPathFinder roadPathFinder,
                                     ILocker locker,
                                     Util.IChannel channel)
@@ -80,7 +80,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             // Make sure there is no structure at this point that has no road requirement
-            if (world.Regions[x, y].Any(
+            if (world.Regions.GetObjectsInTile(x, y).Any(
                                         s =>
                                         s is IStructure &&
                                         objectTypeFactory.IsStructureType("NoRoadRequired", (IStructure)s)))
@@ -126,7 +126,8 @@ namespace Game.Comm.ProcessorCommands
                     }
 
                     if ((city.X == position.X && city.Y == position.Y) ||
-                        (world.Roads.IsRoad(position.X, position.Y) && !world.Regions[position.X, position.Y].Exists(s => s is IStructure)))
+                        (world.Roads.IsRoad(position.X, position.Y) && 
+                        !world.Regions.GetObjectsInTile(position.X, position.Y).Any(s => s is IStructure)))
                     {
                         hasRoad = true;
                         break;
@@ -208,7 +209,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 // Make sure there is no structure at this point
-                if (world.Regions[x, y].Exists(s => s is IStructure))
+                if (world.Regions.GetObjectsInTile(x, y).Any(s => s is IStructure))
                 {
                     world.Regions.UnlockRegion(x, y);
                     ReplyError(session, packet, Error.StructureExists);

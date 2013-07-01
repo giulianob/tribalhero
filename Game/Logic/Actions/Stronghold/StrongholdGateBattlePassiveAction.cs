@@ -228,7 +228,7 @@ namespace Game.Logic.Actions
                 dbManager.Delete(stronghold.GateBattle);
                 stronghold.BeginUpdate();
                 stronghold.GateBattle = null;
-                stronghold.State = GameObjectState.NormalState();
+                stronghold.State = GameObjectStateFactory.NormalState();
                 // Heal the gate if no one made through otherwise we let it be healed after the main battle
                 if (stronghold.GateOpenTo == null)
                 {
@@ -261,7 +261,7 @@ namespace Game.Logic.Actions
             localGroupId = combatGroup.Id;
 
             stronghold.BeginUpdate();
-            stronghold.State = GameObjectState.BattleState(stronghold.GateBattle.BattleId);
+            stronghold.State = GameObjectStateFactory.BattleState(stronghold.GateBattle.BattleId);
             stronghold.EndUpdate();
 
             beginTime = SystemClock.Now;

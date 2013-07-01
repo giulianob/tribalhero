@@ -15,9 +15,9 @@ namespace Game.Map
 
         private readonly ITileLocator tileLocator;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
-        public RoadPathFinder(IWorld world, ITileLocator tileLocator, ObjectTypeFactory objectTypeFactory)
+        public RoadPathFinder(IWorld world, ITileLocator tileLocator, IObjectTypeFactory objectTypeFactory)
         {
             this.world = world;
             this.tileLocator = tileLocator;
@@ -26,7 +26,7 @@ namespace Game.Map
 
         public Error CanBuild(uint x, uint y, ICity city, bool requiresRoad)
         {
-            //return Error.Ok;
+            return Error.Ok;
 
             bool buildingOnRoad = world.Roads.IsRoad(x, y);
 
@@ -97,7 +97,7 @@ namespace Game.Map
                         continue;
                     }
 
-                    var curStruct = (IStructure)world[position.X, position.Y].FirstOrDefault(obj => obj is IStructure);
+                    var curStruct = (IStructure)world.Regions.GetObjectsInTile(position.X, position.Y).FirstOrDefault(obj => obj is IStructure);
 
                     bool hasStructure = curStruct != null;
 
@@ -137,7 +137,7 @@ namespace Game.Map
 
         public bool HasPath(Position start, Position end, ICity city, Position excludedPoint)
         {
-            bool fromStructure = world[start.X, start.Y].Exists(s => s is IStructure);
+            bool fromStructure = world.Regions.GetObjectsInTile(start.X, start.Y).Any(s => s is IStructure);
 
             return BreadthFirst(new Position(end.X, end.Y),
                                 new List<Position> {new Position(start.X, start.Y)},
@@ -168,7 +168,7 @@ namespace Game.Map
                                             {
                                                 if (!location.Equals(end))
                                                 {
-                                                    if (world[location.X, location.Y].Exists(s => s is IStructure))
+                                                    if (world.Regions.GetObjectsInTile(location.X, location.Y).Any(s => s is IStructure))
                                                     {
                                                         return false;
                                                     }

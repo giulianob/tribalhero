@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Data;
 using Game.Util;
 
 namespace Game.Map
@@ -103,6 +104,26 @@ namespace Game.Map
         }
 
         #endregion
+
+        public int RadiusDistance(ISimpleGameObject obj1, ISimpleGameObject obj2)
+        {
+            return RadiusDistance(obj1.PrimaryPosition.X,
+                                  obj1.PrimaryPosition.Y,
+                                  obj1.Size,
+                                  obj2.PrimaryPosition.X,
+                                  obj2.PrimaryPosition.Y,
+                                  obj2.Size);
+        }
+        
+        public int RadiusDistance(uint x, uint y, byte size, uint x1, uint y1, byte size1)
+        {
+            var positions = ForeachMultitile(x, y, size).ToArray();
+            var positions1 = ForeachMultitile(x1, y1, size1).ToArray();
+
+            return (from position in positions
+                    from position1 in positions1
+                    select RadiusDistance(position.X, position.Y, position1.X, position1.Y)).Min();
+        }
 
         public int RadiusDistance(uint x, uint y, uint x1, uint y1)
         {
@@ -241,7 +262,12 @@ namespace Game.Map
             }
             while (!doSelf && (x == ox && y == oy));
         }
-               
+        
+        public IEnumerable<Position> ForeachMultitile(ISimpleGameObject obj)
+        {
+            return ForeachMultitile(obj.PrimaryPosition.X, obj.PrimaryPosition.Y, obj.Size);
+        }
+
         public IEnumerable<Position> ForeachMultitile(uint ox, uint oy, byte size)
         {
             var position = new Position(ox, oy);

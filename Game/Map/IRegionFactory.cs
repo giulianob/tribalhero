@@ -2,6 +2,6 @@
 {
     public interface IRegionFactory
     {
-        Region CreateRegion(byte[] map);
+        IRegion CreateRegion(byte[] map);
     }
 }

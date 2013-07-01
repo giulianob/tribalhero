@@ -82,21 +82,21 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\ninject.mono\Ninject.Extensions.Factory.dll</HintPath>
     </Reference>
-    <Reference Include="NSubstitute, Version=1.5.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
+    <Reference Include="NSubstitute, Version=1.6.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NSubstitute.1.5.0.0\lib\NET40\NSubstitute.dll</HintPath>
+      <HintPath>..\packages\NSubstitute.1.6.0.0\lib\NET40\NSubstitute.dll</HintPath>
     </Reference>
-    <Reference Include="Ploeh.AutoFixture, Version=3.0.3.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+    <Reference Include="Ploeh.AutoFixture, Version=3.4.1.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AutoFixture.3.0.3\lib\net40\Ploeh.AutoFixture.dll</HintPath>
+      <HintPath>..\packages\AutoFixture.3.4.1\lib\net40\Ploeh.AutoFixture.dll</HintPath>
     </Reference>
-    <Reference Include="Ploeh.AutoFixture.AutoNSubstitute, Version=3.0.3.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+    <Reference Include="Ploeh.AutoFixture.AutoNSubstitute, Version=3.4.1.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AutoFixture.AutoNSubstitute.3.0.3\lib\net40\Ploeh.AutoFixture.AutoNSubstitute.dll</HintPath>
+      <HintPath>..\packages\AutoFixture.AutoNSubstitute.3.4.1\lib\net40\Ploeh.AutoFixture.AutoNSubstitute.dll</HintPath>
     </Reference>
-    <Reference Include="Ploeh.AutoFixture.Xunit, Version=3.0.3.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+    <Reference Include="Ploeh.AutoFixture.Xunit, Version=3.4.1.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AutoFixture.Xunit.3.0.3\lib\net40\Ploeh.AutoFixture.Xunit.dll</HintPath>
+      <HintPath>..\packages\AutoFixture.Xunit.3.4.1\lib\net40\Ploeh.AutoFixture.Xunit.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -118,6 +118,7 @@
     <Compile Include="ActionsTests\BattlePassiveActionTest.cs" />
     <Compile Include="ActionsTests\CityPassiveActionTest.cs" />
     <Compile Include="ActionsTests\StrongholdGateBattlePassiveActionTest.cs" />
+    <Compile Include="ActionsTests\StructureBuildActiveActionExecuteBuilder.cs" />
     <Compile Include="ActionsTests\StructureBuildActiveActionTests.cs" />
     <Compile Include="ActionsTests\TribeContributeActiveActionTest.cs" />
     <Compile Include="Balancing\TestSwordsman.cs" />
@@ -153,7 +154,9 @@
     <Compile Include="MapMathTests\MapMathTests.cs" />
     <Compile Include="MapMathTests\TileLocatorTests.cs" />
     <Compile Include="MapMathTests\RadiusTest.cs" />
+    <Compile Include="MapTests\ObjectListTests.cs" />
     <Compile Include="MapTests\PositionTests.cs" />
+    <Compile Include="MapTests\RegionManagerTests.cs" />
     <Compile Include="NinjectTests\FactoryMethodNameProviderTests.cs" />
     <Compile Include="PlayerTests\AchievementListTest.cs" />
     <Compile Include="TribeTests\TribeManagerTests.cs" />

@@ -234,6 +234,14 @@ namespace Game.Data.Stronghold
 
         #region Overrides of SimpleGameObject
 
+        public override byte Size
+        {
+            get
+            {
+                return 2;
+            }
+        }
+
         public override ushort Type
         {
             get

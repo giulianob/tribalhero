@@ -4,21 +4,28 @@ using Game.Util;
 
 namespace Game.Map
 {
+    /// <summary>
+    /// NOTE: Make all methods/properties virtual so that recursive mocks work by default without an interface
+    /// </summary>
     public class Position : IEquatable<Position>, IComparable<Position>, IComparable
     {
-        public event EventHandler<PropertyChangedEventArgs> PropertyChanged;
+        public virtual event EventHandler<PropertyChangedEventArgs> PropertyChanged;
 
         private uint x;
 
         private uint y;
+        
+        public Position()
+        {            
+        }
 
-        public Position(uint x = 0, uint y = 0)
+        public Position(uint x, uint y)
         {
             this.x = x;
             this.y = y;
         }
 
-        public uint X
+        public virtual uint X
         {
             get
             {
@@ -32,7 +39,7 @@ namespace Game.Map
             }
         }
         
-        public uint Y
+        public virtual uint Y
         {
             get
             {
@@ -78,7 +85,7 @@ namespace Game.Map
 
         public virtual Position BottomLeft()
         {
-                return Y % 2 == 0 ? new Position(X - 1, Y + 1) : new Position(X, Y + 1);
+            return Y % 2 == 0 ? new Position(X - 1, Y + 1) : new Position(X, Y + 1);
         }
 
         public virtual Position BottomRight()
@@ -91,7 +98,7 @@ namespace Game.Map
             return X == other.X && Y == other.Y;
         }
 
-        public bool Equals(Position other)
+        public virtual bool Equals(Position other)
         {
             if (ReferenceEquals(null, other))
             {
@@ -106,7 +113,7 @@ namespace Game.Map
             return other.X == X && other.Y == Y;
         }
 
-        public int CompareTo(Position other)
+        public virtual int CompareTo(Position other)
         {
             if (other == null)
             {
@@ -164,12 +171,12 @@ namespace Game.Map
             }
         }
 
-        public int CompareTo(object obj)
+        public virtual int CompareTo(object obj)
         {
             return CompareTo(obj as Position);
         }
 
-        public Position Clone()
+        public virtual Position Clone()
         {
             return new Position(x, y);
         }

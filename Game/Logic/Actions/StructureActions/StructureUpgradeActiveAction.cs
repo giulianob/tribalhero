@@ -38,7 +38,7 @@ namespace Game.Logic.Actions
 
         private readonly RequirementFactory requirementFactory;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly InitFactory initFactory;
 
@@ -50,7 +50,7 @@ namespace Game.Logic.Actions
                                             Procedure procedure,
                                             ILocker locker,
                                             RequirementFactory requirementFactory,
-                                            ObjectTypeFactory objectTypeFactory,
+                                            IObjectTypeFactory objectTypeFactory,
                                             InitFactory initFactory)
         {
             this.cityId = cityId;
@@ -79,7 +79,7 @@ namespace Game.Logic.Actions
                                             Procedure procedure,
                                             ILocker locker,
                                             RequirementFactory requirementFactory,
-                                            ObjectTypeFactory objectTypeFactory,
+                                            IObjectTypeFactory objectTypeFactory,
                                             InitFactory initFactory)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
@@ -154,7 +154,7 @@ namespace Game.Logic.Actions
             // layout requirement
             if (!requirementFactory
                          .GetLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1))
-                         .Validate(structure, structure.Type, structure.X, structure.Y))
+                         .Validate(structure, structure.Type, structure.X, structure.Y, structure.Size))
             {
                 return Error.LayoutNotFullfilled;
             }

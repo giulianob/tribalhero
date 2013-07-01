@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Game.Data.Stats;
 using Game.Util;
 using Persistance;
@@ -103,6 +104,14 @@ namespace Game.Data
                 CheckUpdateMode();
                 stats = value;
                 stats.StatsUpdate += CheckUpdateMode;
+            }
+        }
+
+        public override byte Size
+        {
+            get
+            {
+                return stats.Base.Size;
             }
         }
 

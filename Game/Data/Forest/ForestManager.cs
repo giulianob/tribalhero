@@ -28,7 +28,7 @@ namespace Game.Data.Forest
 
         private readonly IForestFactory forestFactory;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly IActionFactory actionFactory;
 
@@ -43,7 +43,7 @@ namespace Game.Data.Forest
                              IDbManager dbManager,
                              Formula formula,
                              IForestFactory forestFactory,
-                             ObjectTypeFactory objectTypeFactory,
+                             IObjectTypeFactory objectTypeFactory,
                              IActionFactory actionFactory,
                              ITileLocator tileLocator)
         {
@@ -78,7 +78,7 @@ namespace Game.Data.Forest
         public bool HasForestNear(uint x, uint y, int radius)
         {
             return world.Regions.GetRegion(x, y)
-                        .GetObjects()
+                        .GetPrimaryObjects()
                         .OfType<IForest>()
                         .Any(forest => tileLocator.TileDistance(forest.X, forest.Y, x, y) <= radius);
         }
@@ -105,13 +105,13 @@ namespace Game.Data.Forest
                         }
 
                         // check if tile is safe
-                        List<ushort> tiles = world.Regions.GetTilesWithin(x, y, 7);
+                        var tiles = world.Regions.GetTilesWithin(x, y, 7);
                         if (objectTypeFactory.HasTileType("CityStartTile", tiles))
                         {
                             continue;
                         }
 
-                        List<ushort> buildtableTiles = world.Regions.GetTilesWithin(x, y, 2);
+                        var buildtableTiles = world.Regions.GetTilesWithin(x, y, 2);
                         if (!objectTypeFactory.IsAllTileType("TileBuildable", buildtableTiles))
                         {
                             continue;
@@ -120,7 +120,8 @@ namespace Game.Data.Forest
                         world.Regions.LockRegion(x, y);
 
                         // check if near any other objects
-                        if (world.GetObjects(x, y).Exists(obj => !(obj is ITroopObject)) || world.GetObjectsWithin(x, y, 1).Exists(obj => !(obj is ITroopObject)))
+                        if (world.Regions.GetObjectsInTile(x, y).Any(obj => !(obj is ITroopObject)) || 
+                            world.Regions.GetObjectsWithin(x, y, 1).Any(obj => !(obj is ITroopObject)))
                         {
                             world.Regions.UnlockRegion(x, y);
                             continue;

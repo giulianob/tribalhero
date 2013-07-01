@@ -58,15 +58,15 @@ namespace Testing.TroopTests
                 IStructure hurtStructure,
                 BattleProcedure battleProcedure)
         {
-            inBattleStructure.State = GameObjectState.BattleState(0);
+            inBattleStructure.State = GameObjectStateFactory.BattleState(0);
             inBattleStructure.Stats.Hp.Returns(50m);
             inBattleStructure.Stats.Base.Battle.MaxHp.Returns(100m);
 
-            fullyHealedStructure.State = GameObjectState.NormalState();
+            fullyHealedStructure.State = GameObjectStateFactory.NormalState();
             fullyHealedStructure.Stats.Hp.Returns(75m);
             fullyHealedStructure.Stats.Base.Battle.MaxHp.Returns(75m);
 
-            hurtStructure.State = GameObjectState.NormalState();
+            hurtStructure.State = GameObjectStateFactory.NormalState();
             hurtStructure.Stats.Hp.Returns(100m);
             hurtStructure.Stats.Base.Battle.MaxHp.Returns(200m);
 
@@ -99,7 +99,7 @@ namespace Testing.TroopTests
                 IStructure structure,
                 BattleProcedure battleProcedure)
         {
-            structure.State = GameObjectState.NormalState();
+            structure.State = GameObjectStateFactory.NormalState();
             structure.Stats.Hp.Returns(50m);
             structure.Stats.Base.Battle.MaxHp.Returns(200m);
 

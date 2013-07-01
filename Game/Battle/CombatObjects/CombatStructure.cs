@@ -301,7 +301,7 @@ namespace Game.Battle.CombatObjects
             base.ExitBattle();
 
             Structure.BeginUpdate();
-            Structure.State = GameObjectState.NormalState();
+            Structure.State = GameObjectStateFactory.NormalState();
             Structure.EndUpdate();
 
             // Remove structure from the world if our combat object died

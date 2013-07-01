@@ -18,6 +18,8 @@ namespace Game.Data
 
         uint ObjectId { get; }
 
+        byte Size { get; }
+
         void BeginUpdate();
 
         void EndUpdate();

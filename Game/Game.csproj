@@ -311,6 +311,7 @@
     <Compile Include="Data\Troop\Initializers\AssignmentTroopObjectInitializer.cs" />
     <Compile Include="Data\Troop\Initializers\CityTroopObjectInitializer.cs" />
     <Compile Include="Data\Troop\CityTroopStubFactory.cs" />
+    <Compile Include="Data\Troop\ISimpleStub.cs" />
     <Compile Include="Data\Troop\ITroopManager.cs" />
     <Compile Include="Data\Troop\ITroopManagerFactory.cs" />
     <Compile Include="Data\Troop\ITroopObject.cs" />
@@ -478,6 +479,7 @@
     <Compile Include="Setup\ActionRequirementFactory.cs" />
     <Compile Include="Setup\IObjectTypeFactory.cs" />
     <Compile Include="Setup\Ioc.cs" />
+    <Compile Include="Setup\IRequirementCsvFactory.cs" />
     <Compile Include="Setup\IStructureCsvFactory.cs" />
     <Compile Include="Setup\UnitModFactory.cs" />
     <Compile Include="Setup\UnitFactory.cs" />
@@ -488,7 +490,7 @@
     <Compile Include="Setup\Config.cs" />
     <Compile Include="Setup\FactoriesInitializer.cs" />
     <Compile Include="Setup\PropertyFactory.cs" />
-    <Compile Include="Setup\RequirementFactory.cs" />
+    <Compile Include="Setup\RequirementCsvFactory.cs" />
     <Compile Include="Setup\TechnologyFactory.cs" />
     <Compile Include="Util\Channel.cs" />
     <Compile Include="Util\DuplicateSubscriptionException.cs" />

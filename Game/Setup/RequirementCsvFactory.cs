@@ -12,13 +12,13 @@ using Game.Logic.Requirements.LayoutRequirements;
 
 namespace Game.Setup
 {
-    public class RequirementFactory
+    public class RequirementCsvFactory : IRequirementCsvFactory
     {
         private readonly ILayoutRequirementFactory layoutRequirementFactory;
 
-        private readonly Dictionary<int, LayoutRequirement> dict = new Dictionary<int, LayoutRequirement>();
+        private readonly Dictionary<int, ILayoutRequirement> dict = new Dictionary<int, ILayoutRequirement>();
 
-        public RequirementFactory(ILayoutRequirementFactory layoutRequirementFactory)
+        public RequirementCsvFactory(ILayoutRequirementFactory layoutRequirementFactory)
         {
             this.layoutRequirementFactory = layoutRequirementFactory;
         }
@@ -44,7 +44,7 @@ namespace Game.Setup
                         continue;
                     }
                     int index = int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]]);
-                    LayoutRequirement layoutReq;
+                    ILayoutRequirement layoutReq;
                     if (!dict.TryGetValue(index, out layoutReq))
                     {
                         switch(toks[col["Layout"]])
@@ -74,14 +74,14 @@ namespace Game.Setup
             }
         }
 
-        public LayoutRequirement GetLayoutRequirement(ushort type, byte lvl)
+        public ILayoutRequirement GetLayoutRequirement(ushort type, byte lvl)
         {
             if (dict == null)
             {
                 return null;
             }
 
-            LayoutRequirement tmp;
+            ILayoutRequirement tmp;
 
             if (dict.TryGetValue(type * 100 + lvl, out tmp))
             {

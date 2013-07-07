@@ -107,7 +107,7 @@ namespace Game
             Bind<EffectRequirementFactory>().ToSelf().InSingletonScope();
             Bind<InitFactory>().ToSelf().InSingletonScope();            
             Bind<PropertyFactory>().ToSelf().InSingletonScope();
-            Bind<RequirementFactory>().ToSelf().InSingletonScope();
+            Bind<IRequirementCsvFactory>().To<RequirementCsvFactory>().InSingletonScope();
             Bind<TechnologyFactory>().ToSelf().InSingletonScope();
             Bind<UnitFactory>().ToSelf().InSingletonScope();
             Bind<IObjectTypeFactory>().To<ObjectTypeFactory>().InSingletonScope();

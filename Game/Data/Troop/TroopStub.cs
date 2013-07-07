@@ -89,6 +89,10 @@ namespace Game.Data.Troop
 
         private ushort troopId;
 
+        private readonly Formula formula;
+
+        private readonly IDbManager dbManager;
+
         //private ITroopObject troopObject;
         public TroopTemplate Template { get; private set; }
 
@@ -214,7 +218,7 @@ namespace Game.Data.Troop
         {
             get
             {
-                return Formula.Current.GetTroopSpeed(this);
+                return formula.GetTroopSpeed(this);
             }
         }
 
@@ -322,9 +326,11 @@ namespace Game.Data.Troop
 
         #endregion
 
-        public TroopStub(ushort troopId, ICity city)
+        public TroopStub(ushort troopId, ICity city, Formula formula, IDbManager dbManager)
         {
             City = city;
+            this.formula = formula;
+            this.dbManager = dbManager;
             this.troopId = troopId;
             Template = new TroopTemplate(this);
         }
@@ -483,7 +489,7 @@ namespace Game.Data.Troop
         {
             isUpdating = false;
 
-            DbPersistance.Current.Save(this);
+            dbManager.Save(this);
 
             if (isDirty || isUnitDirty)
             {

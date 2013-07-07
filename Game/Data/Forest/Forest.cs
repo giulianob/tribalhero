@@ -41,6 +41,8 @@ namespace Game.Data.Forest
         /// </summary>
         private readonly List<IStructure> structures = new List<IStructure>();
 
+        private Formula formula;
+
         public ForestDepleteAction DepleteAction { get; set; }
 
         public override byte Size
@@ -74,7 +76,7 @@ namespace Game.Data.Forest
         {
             get
             {
-                return Formula.Current.GetForestMaxLabor(lvl);
+                return formula.GetForestMaxLabor(lvl);
             }
         }
 
@@ -102,13 +104,14 @@ namespace Game.Data.Forest
 
         #region Constructors
 
-        public Forest(uint id, byte lvl, int capacity, double rate, uint x, uint y, IActionFactory actionFactory, IScheduler scheduler, IDbManager dbManager) 
+        public Forest(uint id, byte lvl, int capacity, double rate, uint x, uint y, IActionFactory actionFactory, IScheduler scheduler, IDbManager dbManager, Formula formula) 
             : base(id, x, y)
         {
             this.lvl = lvl;
             this.actionFactory = actionFactory;
             this.scheduler = scheduler;
             this.dbManager = dbManager;
+            this.formula = formula;
 
             Wood = new AggressiveLazyValue(capacity) {Limit = capacity};
 
@@ -169,7 +172,7 @@ namespace Game.Data.Forest
                 // Get the current rate. This will be figure out how much we need to adjust the rate.
                 var oldRate = (int)obj["Rate"];
 
-                var newRate = Formula.Current.GetWoodRateForForest(this, obj.Stats, efficiency);
+                var newRate = formula.GetWoodRateForForest(this, obj.Stats, efficiency);
 
                 if (newRate != oldRate)
                 {

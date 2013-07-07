@@ -94,13 +94,6 @@ namespace Game.Data.Troop
             FireRemoved(stub);
         }
 
-        public void DbLoaderAdd(ushort id, ITroopStub stub)
-        {
-            IdGen.Set(id);
-            
-            RegisterStub(id, stub);            
-        }
-
         public int Upkeep
         {
             get
@@ -170,7 +163,9 @@ namespace Game.Data.Troop
         }
 
         public void Add(ITroopStub stub)
-        {           
+        {
+            idGen.Set(stub.TroopId);
+
             RegisterStub(stub.TroopId, stub);            
         }
 
@@ -222,7 +217,7 @@ namespace Game.Data.Troop
         public void Starve(int percent = 5, bool bypassProtection = false)
         {
             // Make a copy of the stub list since it might change during the foreach loop
-            var troopStubs = new TroopStub[dict.Values.Count];
+            var troopStubs = new ITroopStub[dict.Values.Count];
             dict.Values.CopyTo(troopStubs, 0);
 
             foreach (var stub in troopStubs)

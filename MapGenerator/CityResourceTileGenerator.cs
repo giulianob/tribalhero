@@ -1,6 +1,8 @@
 ﻿using Game.Data;
 using Game.Logic.Formulas;
 using Game.Map;
+using Game.Setup;
+using Ninject;
 
 namespace MapGenerator
 {
@@ -29,7 +31,7 @@ namespace MapGenerator
             uint x;
             uint y;
 
-            foreach (var position in TileLocator.Current.ForeachTile(cityLocation.X, cityLocation.Y, Formula.Current.GetInitialCityRadius()))
+            foreach (var position in TileLocator.Current.ForeachTile(cityLocation.X, cityLocation.Y, Ioc.Kernel.Get<Formula>().GetInitialCityRadius()))
             {
                 while (map[position.Y * Program.REGION_WIDTH + position.X] == FARM_TILE || map[position.Y * Program.REGION_WIDTH + position.X] == WOODLAND_TILE)
                 {
@@ -43,7 +45,7 @@ namespace MapGenerator
                 {
                     TileLocator.Current.RandomPoint(cityLocation.X,
                                                     cityLocation.Y,
-                                                    (byte)(Formula.Current.GetInitialCityRadius() - 1),
+                                                    (byte)(Ioc.Kernel.Get<Formula>().GetInitialCityRadius() - 1),
                                                     false,
                                                     out x,
                                                     out y);
@@ -62,7 +64,7 @@ namespace MapGenerator
                 {
                     TileLocator.Current.RandomPoint(cityLocation.X,
                                                     cityLocation.Y,
-                                                    (byte)(Formula.Current.GetInitialCityRadius() - 1),
+                                                    (byte)(Ioc.Kernel.Get<Formula>().GetInitialCityRadius() - 1),
                                                     false,
                                                     out x,
                                                     out y);

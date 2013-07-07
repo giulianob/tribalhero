@@ -323,11 +323,6 @@ namespace Game.Map
 
             if (previousPrimaryRegionId == newPrimaryRegionId)
             {
-//                logger.Info("Updated region obj: {0} eventOrigX[{1}] eventOrigY[{2}]",
-//                            sender.ToString(),
-//                            origX,
-//                            origY);
-                
                 var packet = new Packet(Command.ObjectUpdate);
                 packet.AddUInt16(newPrimaryRegionId);
                 PacketHelper.AddToPacket(sender, packet);
@@ -335,11 +330,6 @@ namespace Game.Map
             }
             else
             {
-//                logger.Info("Moved region obj: {0} eventOrigX[{1}] eventOrigY[{2}]",
-//                            sender.ToString(),
-//                            origX,
-//                            origY);
-
                 var packet = new Packet(Command.ObjectMove);
                 packet.AddUInt16(previousPrimaryRegionId);
                 packet.AddUInt16(newPrimaryRegionId);

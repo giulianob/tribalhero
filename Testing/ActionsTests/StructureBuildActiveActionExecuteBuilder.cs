@@ -30,9 +30,17 @@ namespace Testing.ActionsTests
 
         private IRoadPathFinder roadPathFinder;
 
+        private IRequirementCsvFactory requirementCsvFactory;
+
         public StructureBuildActiveActionExecuteBuilder(IFixture fixture)
         {
             this.fixture = fixture;
+
+            requirementCsvFactory = fixture.Freeze<IRequirementCsvFactory>();
+            requirementCsvFactory
+                    .GetLayoutRequirement(Arg.Any<ushort>(), Arg.Any<byte>())
+                    .Validate(Arg.Any<IStructure>(), Arg.Any<ushort>(), Arg.Any<uint>(), Arg.Any<uint>(), Arg.Any<byte>())
+                    .Returns(true);
 
             structureBaseStats = fixture.Freeze<IStructureBaseStats>();
             structureBaseStats.Size.Returns<byte>(0);
@@ -43,7 +51,6 @@ namespace Testing.ActionsTests
             structure.Stats.Base.Returns(structureBaseStats);
 
             objectTypeFactory = fixture.Freeze<IObjectTypeFactory>();
-            objectTypeFactory.IsObjectType("UnlimitedBuilding", Arg.Any<ushort>()).Returns(true);
             objectTypeFactory.IsObjectType("NoRoadRequired", Arg.Any<ushort>()).Returns(true);
 
             city = fixture.Create<ICity>();
@@ -74,6 +81,7 @@ namespace Testing.ActionsTests
             structureCsvFactory.GetBaseStats(0, 0).ReturnsForAnyArgs(structureBaseStats);
 
             formula = Substitute.For<Formula>();
+            formula.CityMaxConcurrentBuildActions(0, 0, null, null).ReturnsForAnyArgs(Error.Ok);
             formula.StructureCost(null, null).ReturnsForAnyArgs(structureCost);
             fixture.Register(() => formula);    
         }

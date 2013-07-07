@@ -33,7 +33,7 @@ namespace Game.Logic.Actions
 
         private readonly ITileLocator tileLocator;
 
-        private readonly RequirementFactory requirementFactory;
+        private readonly IRequirementCsvFactory requirementCsvFactory;
 
         private readonly IStructureCsvFactory structureCsvFactory;
 
@@ -59,7 +59,7 @@ namespace Game.Logic.Actions
                                           IObjectTypeFactory objectTypeFactory,
                                           IWorld world,
                                           Formula formula,
-                                          RequirementFactory requirementFactory,
+                                          IRequirementCsvFactory requirementCsvFactory,
                                           IStructureCsvFactory structureCsvFactory,
                                           InitFactory initFactory,
                                           ILocker concurrency,
@@ -75,7 +75,7 @@ namespace Game.Logic.Actions
             this.objectTypeFactory = objectTypeFactory;
             this.world = world;
             this.formula = formula;
-            this.requirementFactory = requirementFactory;
+            this.requirementCsvFactory = requirementCsvFactory;
             this.structureCsvFactory = structureCsvFactory;
             this.initFactory = initFactory;
             this.concurrency = concurrency;
@@ -95,7 +95,7 @@ namespace Game.Logic.Actions
                                           IObjectTypeFactory objectTypeFactory,
                                           IWorld world,
                                           Formula formula,
-                                          RequirementFactory requirementFactory,
+                                          IRequirementCsvFactory requirementCsvFactory,
                                           IStructureCsvFactory structureCsvFactory,
                                           InitFactory initFactory,
                                           ILocker concurrency,
@@ -106,7 +106,7 @@ namespace Game.Logic.Actions
             this.objectTypeFactory = objectTypeFactory;
             this.world = world;
             this.formula = formula;
-            this.requirementFactory = requirementFactory;
+            this.requirementCsvFactory = requirementCsvFactory;
             this.structureCsvFactory = structureCsvFactory;
             this.initFactory = initFactory;
             this.concurrency = concurrency;
@@ -159,31 +159,11 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
-            int maxConcurrentUpgrades = formula.ConcurrentBuildUpgrades(city.MainBuilding.Lvl);
+            var maxConcurrentUpgradesResult = formula.CityMaxConcurrentBuildActions(type, ActionId, city, objectTypeFactory);
 
-            if (!objectTypeFactory.IsObjectType("UnlimitedBuilding", type) &&
-                city.Worker.ActiveActions.Values.Count(action =>
-                    {
-                        if (action.ActionId == ActionId)
-                        {
-                            return false;
-                        }
-
-                        if (action is StructureUpgradeActiveAction)
-                        {
-                            return true;
-                        }
-
-                        var buildAction = action as StructureBuildActiveAction;
-                        if (buildAction == null)
-                        {
-                            return false;
-                        }
-
-                        return !objectTypeFactory.IsObjectType("UnlimitedBuilding", buildAction.BuildType);
-                    }) >= maxConcurrentUpgrades)
+            if (maxConcurrentUpgradesResult != Error.Ok)
             {
-                return Error.ActionTotalMaxReached;
+                return maxConcurrentUpgradesResult;
             }
             
             var structureBaseStats = structureCsvFactory.GetBaseStats(type, level);
@@ -223,7 +203,7 @@ namespace Game.Logic.Actions
             }
 
             // layout requirement
-            if (!requirementFactory.GetLayoutRequirement(type, level).Validate(WorkerObject as IStructure, type, X, Y, structureBaseStats.Size))
+            if (!requirementCsvFactory.GetLayoutRequirement(type, level).Validate(WorkerObject as IStructure, type, X, Y, structureBaseStats.Size))
             {
                 world.Regions.UnlockRegions(lockedRegions);
                 return Error.LayoutNotFullfilled;
@@ -234,6 +214,7 @@ namespace Game.Logic.Actions
             var canBuild = roadPathFinder.CanBuild(X, Y, city, requiresRoad);
             if (canBuild != Error.Ok)
             {
+                world.Regions.UnlockRegions(lockedRegions);
                 return canBuild;
             }
 
@@ -272,7 +253,7 @@ namespace Game.Logic.Actions
 
             world.Regions.UnlockRegions(lockedRegions);
             return Error.Ok;
-        }
+        }       
 
         public override void Callback(object custom)
         {

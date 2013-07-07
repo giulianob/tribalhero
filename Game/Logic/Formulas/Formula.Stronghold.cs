@@ -46,7 +46,7 @@ namespace Game.Logic.Formulas
             return meters[level];
         }
 
-        public void StrongholdUpkeep(byte level, out int upkeep, out byte unitLevel)
+        public virtual void StrongholdUpkeep(byte level, out int upkeep, out byte unitLevel)
         {
             int[] unitLevels = new[] {1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10};
 
@@ -54,7 +54,7 @@ namespace Game.Logic.Formulas
             unitLevel = (byte)unitLevels[level-1];
         }
 
-        public double[,] StrongholdUnitRatio()
+        public virtual double[,] StrongholdUnitRatio()
         {
             return new[,] {
                     {1.00, .00, .00, .00, .00, .00, .00, .00,}, 
@@ -80,12 +80,12 @@ namespace Game.Logic.Formulas
             };
         }
 
-        public ushort[] StrongholdUnitType()
+        public virtual ushort[] StrongholdUnitType()
         {
             return new ushort[] {101, 102, 105, 103, 104, 107, 106, 108};
         }
 
-        public decimal StrongholdVictoryPoint(IStronghold stronghold)
+        public virtual decimal StrongholdVictoryPoint(IStronghold stronghold)
         {
             if (stronghold.StrongholdState != StrongholdState.Occupied)
             {

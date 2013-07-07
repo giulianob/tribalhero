@@ -21,8 +21,6 @@ namespace Game.Data.Troop
 
         void Add(ITroopStub stub);
 
-        void DbLoaderAdd(ushort id, ITroopStub stub);
-
         void DbLoaderAddStation(ITroopStub stub);
 
         bool AddStationed(ITroopStub stub);

@@ -60,10 +60,6 @@ namespace Game.Map
         public void AddObjectToTile(ISimpleGameObject obj, uint x, uint y)
         {
             tileLock.EnterWriteLock();
-            if (Global.Current.FireEvents)
-            {
-                logger.Info("Region.AddObjectToTile tileX[{0}] tileY[{1}] {2}", x, y, obj.ToString());
-            }
             tileObjects.Add(obj, x, y);
             tileLock.ExitWriteLock();
         }
@@ -71,10 +67,6 @@ namespace Game.Map
         public void RemoveObjectFromTile(ISimpleGameObject obj, uint x, uint y)
         {
             tileLock.EnterWriteLock();
-            if (Global.Current.FireEvents)
-            {
-                logger.Info("Region.RemoveObjectToTile tileX[{0}] tileY[{1}] {2}", x, y, obj.ToString());
-            }
             tileObjects.Remove(obj, x, y);
             tileLock.ExitWriteLock();
         }
@@ -82,10 +74,6 @@ namespace Game.Map
         public void Add(ISimpleGameObject obj)
         {
             primaryLock.EnterWriteLock();
-            if (Global.Current.FireEvents)
-            {
-                logger.Info("Region.Add {0}", obj.ToString());
-            }
             primaryObjects.Add(obj, obj.PrimaryPosition.X, obj.PrimaryPosition.Y);
             isDirty = true;
             primaryLock.ExitWriteLock();
@@ -94,10 +82,6 @@ namespace Game.Map
         public void Remove(ISimpleGameObject obj)
         {
             primaryLock.EnterWriteLock();
-            if (Global.Current.FireEvents)
-            {
-                logger.Info("Region.Remove {0}", obj.ToString());
-            }
             primaryObjects.Remove(obj, obj.PrimaryPosition.X, obj.PrimaryPosition.Y);
             isDirty = true;
             primaryLock.ExitWriteLock();
@@ -106,10 +90,6 @@ namespace Game.Map
         public void Remove(ISimpleGameObject obj, uint origX, uint origY)
         {
             primaryLock.EnterWriteLock();
-            if (Global.Current.FireEvents)
-            {
-                logger.Info("Region.Remove origX[{0}] origY[{1}] {2}", origX, origY, obj.ToString());
-            }
             primaryObjects.Remove(obj, origX, origY);
             isDirty = true;
             primaryLock.ExitWriteLock();

@@ -96,6 +96,14 @@ namespace Game.Battle.CombatObjects
             }
         }
 
+        public override byte Size
+        {
+            get
+            {
+                return 1;
+            }
+        }
+
         public override ushort Count
         {
             get
@@ -237,7 +245,7 @@ namespace Game.Battle.CombatObjects
 
         public override Position Location()
         {
-            return new Position(Stronghold.X, Stronghold.Y);
+            return Stronghold.PrimaryPosition;
         }
 
         public override byte AttackRadius()

@@ -69,6 +69,8 @@ namespace Game.Battle.CombatObjects
 
         #region Abstract Properties
 
+        public abstract byte Size { get; }
+
         public abstract int Upkeep { get; }
 
         public abstract bool IsDead { get; }

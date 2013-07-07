@@ -30,6 +30,8 @@ namespace Game.Battle.CombatObjects
 
         protected decimal hp;
 
+        private IStructureBaseStats structureBaseStats;
+
         protected StrongholdCombatStructure(uint id,
                                          uint battleId,
                                          ushort type,
@@ -45,7 +47,8 @@ namespace Game.Battle.CombatObjects
             this.lvl = lvl;
             this.hp = hp;
 
-            stats = new BattleStats(structureCsvFactory.GetBaseStats(type, lvl).Battle);
+            structureBaseStats = structureCsvFactory.GetBaseStats(type, lvl);
+            stats = new BattleStats(structureBaseStats.Battle);
         }
 
         protected IStronghold Stronghold { get; private set; }
@@ -55,6 +58,14 @@ namespace Game.Battle.CombatObjects
             get
             {
                 return BattleClass.Structure;
+            }
+        }
+
+        public override byte Size
+        {
+            get
+            {
+                return structureBaseStats.Size;
             }
         }
 
@@ -208,7 +219,7 @@ namespace Game.Battle.CombatObjects
 
         public override Position Location()
         {
-            return new Position(Stronghold.X, Stronghold.Y);
+            return Stronghold.PrimaryPosition;
         }
 
         public override byte AttackRadius()

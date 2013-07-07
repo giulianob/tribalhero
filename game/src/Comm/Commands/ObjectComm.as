@@ -62,8 +62,8 @@
 		public function readObject(packet: Packet, regionId: int, forRegion: Boolean = false) : * {
 			var obj: * = {
 				type: packet.readUShort(),
-				x: packet.readUShort() + MapUtil.regionXOffset(regionId),
-				y: packet.readUShort() + MapUtil.regionYOffset(regionId),	
+				x: packet.readUShort() + TileLocator.regionXOffset(regionId),
+				y: packet.readUShort() + TileLocator.regionYOffset(regionId),
 				groupId: packet.readUInt(),
 				id: packet.readUInt()
 			};
@@ -102,7 +102,7 @@
 		public function readObjectInstance(packet: Packet, regionId: int, forRegion: Boolean = false): SimpleGameObject {
 			var obj: * = readObject(packet, regionId, forRegion);
 			
-			var coord: Point = MapUtil.getScreenCoord(obj.x, obj.y);
+			var coord: Point = TileLocator.getScreenCoord(obj.x, obj.y);
 			
 			switch(ObjectFactory.getClassType(obj.type)) {
 				case ObjectFactory.TYPE_STRUCTURE:

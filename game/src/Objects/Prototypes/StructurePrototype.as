@@ -5,7 +5,8 @@
  */
 
 package src.Objects.Prototypes {
-	import src.Util.StringHelper;
+    import src.Map.Position;
+    import src.Util.StringHelper;
 	import src.Global;
 	import src.Map.City;
 	import src.Map.CityObject;
@@ -45,17 +46,17 @@ package src.Objects.Prototypes {
 			layouts.push(layout);
 		}
 
-		public function validateLayout(builder: CityObject, city: City, x: int, y: int): Boolean
+		public function validateLayout(builder: CityObject, city: City, position: Position): Boolean
 		{
 			if (!builder) return false;
 
-			if (Global.map.regions.getObjectsAt(x, y, StructureObject).length > 0) {
+			if (Global.map.regions.getObjectsAt(position.toScreenPosition(), StructureObject).length > 0) {
 				return false;
 			}
 			
 			for each(var layout: ILayout in layouts)
 			{
-				if (!layout.validate(builder, city, x, y))
+				if (!layout.validate(builder, city, position))
 					return false;
 			}
 

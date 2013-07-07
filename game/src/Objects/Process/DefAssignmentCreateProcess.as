@@ -5,7 +5,7 @@ package src.Objects.Process
 	import org.aswing.JButton;
 	import src.Global;
 	import src.Map.City;
-	import src.Map.MapUtil;
+	import src.Map.TileLocator;
 	import src.Objects.Effects.Formula;
 	import src.Objects.GameObject;
 	import src.Objects.SimpleGameObject;
@@ -59,7 +59,7 @@ package src.Objects.Process
 			Global.gameContainer.setSidebar(null);
 			
 			var troop: TroopStub = troopDialog.getTroop();
-			var targetMapDistance: Point = MapUtil.getMapCoord(target.objX, target.objY);
+			var targetMapDistance: Point = TileLocator.getMapCoord(target.objX, target.objY);
 			var distance: int = sourceCity.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 			
 			var assignmentDialog: AssignmentCreateDialog = new AssignmentCreateDialog(Formula.moveTimeTotal(sourceCity, troop.getSpeed(sourceCity), distance, true), onChoseTime);

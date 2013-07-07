@@ -8,7 +8,7 @@
 	import org.aswing.ext.*;
 	import src.Global;
 	import src.Map.City;
-	import src.Map.MapUtil;
+	import src.Map.TileLocator;
 	import src.Objects.Effects.Formula;
 	import src.Objects.GameError;
 	import src.UI.Components.SimpleTooltip;
@@ -32,7 +32,7 @@
 			title = "Join Assignment";
 			
 			this.assignment = assignment;
-			this.distance = MapUtil.distance(city.MainBuilding.x, city.MainBuilding.y, assignment.x, assignment.y);
+			this.distance = TileLocator.distance(city.MainBuilding.x, city.MainBuilding.y, assignment.x, assignment.y);
 		}
 
 		override protected function updateSpeedInfo(e:Event = null):void 

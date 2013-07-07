@@ -249,7 +249,7 @@
 
 			for (var c: int = 0; c <= regionsW; c++) {
 				for (var r: int = 0; r <= regionsH; r++) {
-					var requiredId: int = MapUtil.getCityRegionId(camX + Constants.cityRegionW * c, camY + (Constants.cityRegionH / 2) * r);
+					var requiredId: int = TileLocator.getCityRegionId(camX + Constants.cityRegionW * c, camY + (Constants.cityRegionH / 2) * r);
 					if (requiredId == -1 || requiredRegions.indexOf(requiredId) > -1) continue;
 					requiredRegions.push(requiredId);
 				}

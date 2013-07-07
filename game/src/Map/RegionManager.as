@@ -12,11 +12,11 @@
 	import src.Objects.SimpleGameObject;
 	import src.Util.BinaryList.*;
 
-	public class RegionList extends BinaryList
+	public class RegionManager extends BinaryList
 	{
 		public static const REGION_UPDATED: String = "REGION_UPDATED";
 
-		public function RegionList()
+		public function RegionManager()
 		{
 			super(Region.sortOnId, Region.compare);
 		}
@@ -92,20 +92,20 @@
 			return obj;
 		}
 
-		public function getObjectsAt(x: int, y: int, objClass: * = null): Array
+		public function getObjectsAt(screenPosition: ScreenPosition, objClass: * = null): Array
 		{
-			var regionId: int = MapUtil.getRegionId(x, y);
+			var regionId: int = TileLocator.getRegionId(screenPosition);
 			var region: Region = get(regionId);
 
 			if (region == null)
 				return null;
 
-			return region.getObjectsAt(x, y, objClass);
+			return region.getObjectsAt(screenPosition, objClass);
 		}
 
 		public function getTileAt(x: int, y: int): int
 		{
-			var regionId: int = MapUtil.getRegionIdFromMapCoord(x, y);
+			var regionId: int = TileLocator.getRegionIdFromMapCoord(x, y);
 			var region: Region = get(regionId);
 
 			if (region == null)
@@ -115,7 +115,7 @@
 		}
 
 		public function setTileType(x: int, y: int, tileType: int, redraw: Boolean = false) : void {
-			var regionId: int = MapUtil.getRegionIdFromMapCoord(x, y);
+			var regionId: int = TileLocator.getRegionIdFromMapCoord(x, y);
 			var region: Region = get(regionId);
 			
 			if (region == null)

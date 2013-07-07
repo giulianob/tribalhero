@@ -8,7 +8,7 @@ package src.Objects.Process
 	import org.aswing.UIDefaults;
 	import src.Global;
 	import src.Map.City;
-	import src.Map.MapUtil;
+	import src.Map.TileLocator;
 	import src.Objects.BarbarianTribe;
 	import src.Objects.Effects.Formula;
 	import src.Objects.GameObject;
@@ -76,7 +76,7 @@ package src.Objects.Process
 			Global.gameContainer.setSidebar(null);
 			
 			var troop: TroopStub = attackDialog.getTroop();			
-			var targetMapDistance: Point = MapUtil.getMapCoord(target.objX, target.objY);
+			var targetMapDistance: Point = TileLocator.getMapCoord(target.objX, target.objY);
 			var distance: int = sourceCity.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 			
 			var assignmentDialog: AssignmentCreateDialog = new AssignmentCreateDialog(Formula.moveTimeTotal(sourceCity, troop.getSpeed(sourceCity), distance, true), onChoseTime);

@@ -17,8 +17,7 @@
 
 	public class GroundAttackCursor extends MovieClip implements IDisposable
 	{
-		private var objX: int;
-		private var objY: int;
+		private var objPosition: ScreenPosition = new ScreenPosition();
 
 		private var originPoint: Point;
 
@@ -106,7 +105,7 @@
 
 		public function onMouseDoubleClick(event: MouseEvent):void
 		{
-			if (Point.distance(MapUtil.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > 4) return;
+			if (Point.distance(TileLocator.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > 4) return;
 
 			event.stopImmediatePropagation();
 
@@ -119,30 +118,29 @@
 
 		public function onMouseDown(event: MouseEvent):void
 		{
-			originPoint = MapUtil.getPointWithZoomFactor(event.stageX, event.stageY);
+			originPoint = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
 		}
 
 		public function onMouseMove(event: MouseEvent):void
 		{
 			if (event.buttonDown) return;
 
-			var mousePos: Point = MapUtil.getPointWithZoomFactor(event.stageX, event.stageY);
+			var mousePos: Point = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
 			moveTo(mousePos.x, mousePos.y);
 		}
 
 		public function moveTo(x: int, y: int):void
 		{
-			var pos: Point = MapUtil.getActualCoord(Global.gameContainer.camera.x + Math.max(x, 0), Global.gameContainer.camera.y + Math.max(y, 0));
+			var pos: ScreenPosition = TileLocator.getActualCoord(Global.gameContainer.camera.x + Math.max(x, 0), Global.gameContainer.camera.y + Math.max(y, 0));
 
-			if (pos.x != objX || pos.y != objY)
+			if (!pos.equals(objPosition))
 			{
 				Global.map.objContainer.removeObject(cursor, ObjectContainer.LOWER);
 
-				objX = pos.x;
-				objY = pos.y;
+				objPosition = pos;
 
-				cursor.objX = objX;
-				cursor.objY = objY;
+				cursor.objX = pos.x;
+				cursor.objY = pos.y;
 
 				Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
 
@@ -163,7 +161,7 @@
 				tooltip = null;			
 			}			
 
-			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, [StructureObject, Stronghold, BarbarianTribe]);
+			var objects: Array = Global.map.regions.getObjectsAt(objPosition, [StructureObject, Stronghold, BarbarianTribe]);
 
 			if (objects.length == 0) {
 				Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_CHOOSE_TARGET"));
@@ -215,7 +213,7 @@
 			gameObj.setHighlighted(true);
 			highlightedObj = gameObj;
 			
-			var targetMapDistance: Point = MapUtil.getMapCoord(gameObj.objX, gameObj.objY);
+			var targetMapDistance: Point = TileLocator.getMapCoord(gameObj.objX, gameObj.objY);
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 			var timeAwayInSeconds: int = Formula.moveTimeTotal(city, troopSpeed, distance, true);
 			if (Constants.debug)

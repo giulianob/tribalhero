@@ -53,7 +53,7 @@ package src.UI.Sidebars.ForestInfo.Buttons {
 					var laborDialog: ForestLaborDialog = new ForestLaborDialog(Global.gameContainer.selectedCity.id, parentObj as Forest, onSetLabor);
 					laborDialog.show();
 				} else {									
-					var cursor: GroundForestCursor = new GroundForestCursor(parentObj.groupId, function(forest: Forest) : void {
+					var cursor: GroundForestCursor = new GroundForestCursor(function(forest: Forest) : void {
 						var laborDialog: ForestLaborDialog = new ForestLaborDialog(parentObj.groupId, forest, onSetLabor);
 						laborDialog.show();
 					});

@@ -7,7 +7,7 @@ package src.UI.Components
 	import flash.geom.Point;
 	import org.aswing.JLabel;
 	import src.Constants;
-	import src.Map.MapUtil;
+	import src.Map.TileLocator;
 	import com.greensock.*;
 	import com.greensock.easing.*;
 	import src.UI.Tooltips.Tooltip;
@@ -37,7 +37,7 @@ package src.UI.Components
 		
 		public function MiniMapPointer(x:int, y:int, name:String)
 		{
-			cityMinimapPoint = MapUtil.getMiniMapScreenCoord(x, y);
+			cityMinimapPoint = TileLocator.getMiniMapScreenCoord(x, y);
 			pointerName = name;
 			pointer = new ICON_MINIMAP_ARROW_BLUE();
 			addChild(pointer);
@@ -69,7 +69,7 @@ package src.UI.Components
 		
 		private function onRollOver(e:Event):void
 		{
-			var distance:int = MapUtil.distance(cityMinimapPoint.x / Constants.miniMapTileW, cityMinimapPoint.y, (center.x + x - lastWidth / 2) / Constants.miniMapTileW, (center.y + y - lastHeight / 2));
+			var distance:int = TileLocator.distance(cityMinimapPoint.x / Constants.miniMapTileW, cityMinimapPoint.y, (center.x + x - lastWidth / 2) / Constants.miniMapTileW, (center.y + y - lastHeight / 2));
 			tooltipDistanceLabel.setText(distance + " tiles away");
 			tooltip.show(pointer);
 		}

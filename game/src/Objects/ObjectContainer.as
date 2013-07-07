@@ -1,24 +1,23 @@
 ﻿
 package src.Objects {
 
-	import com.greensock.TweenMax;
-	import fl.motion.Color;
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import flash.utils.Dictionary;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Stronghold.Stronghold;
-	import src.Objects.Troop.TroopObject;
-	import src.UI.Dialog.*;
-	import src.UI.Tooltips.*;
-	import src.Util.*;
-	import src.Util.BinaryList.*;
+    import com.greensock.TweenMax;
 
-	public class ObjectContainer extends Sprite {
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
+
+    import src.*;
+    import src.Map.*;
+    import src.Objects.Factories.*;
+    import src.Objects.Stronghold.Stronghold;
+    import src.Objects.Troop.TroopObject;
+    import src.UI.Dialog.*;
+    import src.UI.Tooltips.*;
+    import src.Util.*;
+    import src.Util.BinaryList.*;
+
+    public class ObjectContainer extends Sprite {
 
 		public static const NORMAL: int = 2;
 		public static const LOWER: int = 1;
@@ -149,15 +148,15 @@ package src.Objects {
 				ignoreClick = true;
 			}
 
-			var tilePos: Point = MapUtil.getActualCoord(e.stageX * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.x, e.stageY * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.y);
+			var screenPos: ScreenPosition = TileLocator.getActualCoord(e.stageX * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.x, e.stageY * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.y);
 
-			if (tilePos.x < 0 || tilePos.y < 0) return;
+			if (screenPos.x < 0 || screenPos.y < 0) return;
 
-			tilePos = MapUtil.getMapCoord(tilePos.x, tilePos.y);
+			var tilePos: Position = screenPos.toPosition();
 
 			var selectableCnt: int = 0;
-			var overlapping: Array = [];
-			var found: Boolean = false;
+
+            var found: Boolean = false;
 			var highestObj: SimpleObject = null;
 			var obj: SimpleObject;
 			var objects: Array = [];
@@ -174,7 +173,7 @@ package src.Objects {
 				if (obj is GameObject) 
 				{
 					// If mouse is over this object's tile then it automatically gets chosen as the best object
-					var objMapPos: Point = MapUtil.getMapCoord(obj.objX, obj.objY);
+					var objMapPos: Point = TileLocator.getMapCoord(obj.objX, obj.objY);
 					if (objMapPos.x == tilePos.x && objMapPos.y == tilePos.y)
 					{					
 						highestObj = obj;
@@ -213,7 +212,7 @@ package src.Objects {
 			resetHighlightedObject();
 			resetDimmedObjects();
 			
-			var highestObjMapPos: Point = MapUtil.getMapCoord(highestObj.objX, highestObj.objY);
+			var highestObjMapPos: Point = TileLocator.getMapCoord(highestObj.objX, highestObj.objY);
 			
 			// Apply dimming to objects that might be over the one currently moused over
 			for (i = 0; i < objSpace.numChildren; i++)
@@ -226,8 +225,8 @@ package src.Objects {
 				
 				if (Math.abs(highestObj.objX - obj.objX) < Constants.tileW)
 				{
-					objMapPos = MapUtil.getMapCoord(obj.objX, obj.objY);
-					if (MapUtil.distance(highestObjMapPos.x, highestObjMapPos.y, objMapPos.x, objMapPos.y) <= 1)
+					objMapPos = TileLocator.getMapCoord(obj.objX, obj.objY);
+					if (TileLocator.distance(highestObjMapPos.x, highestObjMapPos.y, objMapPos.x, objMapPos.y) <= 1)
 					{
 						dimmedObjects.push(obj);
 						TweenMax.to(obj, 1, { alpha: 0.25 } );
@@ -321,7 +320,7 @@ package src.Objects {
 		
 		public function addObject(obj: DisplayObject, layer: int = 0):void
 		{
-			var simpleObj: SimpleObject = obj as SimpleObject
+			var simpleObj: SimpleObject = obj as SimpleObject;
 			if (layer == 0 && simpleObj)
 			{
 				getLayer(layer).addChildAt(simpleObj, calculateDepth(simpleObj.objY, getLayer(layer)));
@@ -472,17 +471,8 @@ package src.Objects {
 
 			return low;
 		}
-		
-		public function hasStructureAt(x: int, y: int) : Boolean {
-			var objs: Array = objects.getRange([x, y]);
-			for each (var obj: SimpleObject in objs) {
-				if (obj is StructureObject) 
-					return true;
-			}
-			
-			return false;
-		}
-	}
+
+    }
 
 }
 

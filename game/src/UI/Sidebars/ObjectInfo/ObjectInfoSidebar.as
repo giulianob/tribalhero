@@ -408,7 +408,7 @@ package src.UI.Sidebars.ObjectInfo {
 
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(gameObject.type, gameObject.level);
 			if (structPrototype) {
-				var pt: Point = MapUtil.getMapCoord(gameObject.objX, gameObject.objY);
+				var pt: Point = TileLocator.getMapCoord(gameObject.objX, gameObject.objY);
 				frame.getTitleBar().setText(structPrototype.getName() + " (" + pt.x + "," + pt.y + ")");
 			}
 

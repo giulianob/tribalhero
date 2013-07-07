@@ -83,7 +83,7 @@
 		{
 			super.showSelf(owner, onClose, dispose);
 
-			var pt: Point = MapUtil.getMapCoord(newCityPlaceholderObj.objX, newCityPlaceholderObj.objY);
+			var pt: Point = TileLocator.getMapCoord(newCityPlaceholderObj.objX, newCityPlaceholderObj.objY);
 			frame.getTitleBar().setText("New City Foundation");
 
 			frame.show();

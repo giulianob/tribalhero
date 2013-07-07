@@ -75,7 +75,7 @@
 
 				Global.map.regions.setTileType(x, y, tileType, false);
 
-				regionId = MapUtil.getRegionIdFromMapCoord(x, y);
+				regionId = TileLocator.getRegionIdFromMapCoord(x, y);
 			}
 
 			Global.map.regions.redrawRegion(regionId);
@@ -161,7 +161,7 @@
 					var objId: int = packet.readUInt();
 					var extraProps : Object = new Object();
 					
-					var coord: Point = MapUtil.getMiniMapScreenCoord(objX, objY);
+					var coord: Point = TileLocator.getMiniMapScreenCoord(objX, objY);
 					
 					// City objects
 					if (objType == ObjectFactory.TYPE_CITY) {

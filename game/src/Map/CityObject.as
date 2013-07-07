@@ -65,12 +65,12 @@
 
 		public function distance(x_1: int, y_1: int): int
 		{
-			return MapUtil.distance(x, y, x_1, y_1);
+			return TileLocator.distance(x, y, x_1, y_1);
 		}
 
 		public function radiusDistance(x_1: int, y_1: int): int
 		{
-			return MapUtil.radiusDistance(x, y, x_1, y_1);
+			return TileLocator.radiusDistance(x, y, x_1, y_1);
 		}
 		
 		public function getStructurePrototype(): StructurePrototype 

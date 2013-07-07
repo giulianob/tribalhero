@@ -35,7 +35,7 @@ public class Constants
 		
 		/* APP CONSTANTS */
 		public static var mainWebsite: String = "http://tribalhero.com/";
-		public static const debug:int = 0;
+		public static const debug:int = 3;
         public static var debugStacktracer: Boolean = false;
 		public static var defLang:String = "en";
 		
@@ -55,7 +55,6 @@ public class Constants
 		public static const tileH:int = 80;
 
 		public static const tileSetW:int = 2080;
-		public static const tileSetH:int = 1200;
 
 		public static const tileSetTileW:int = tileSetW / tileW;
 
@@ -70,12 +69,6 @@ public class Constants
 
 		public static const regionTileW:int = regionW / tileW;
 		public static const regionTileH:int = regionH / tileH;
-
-		public static const regionBitmapW: int = regionW;
-		public static const regionBitmapH: int = regionH;
-
-		public static const regionBitmapTileW: int = regionBitmapW / tileW;
-		public static const regionBitmapTileH: int = regionBitmapH / tileH;
 
 		public static const mapRegionW: int = mapW / regionW;
 		public static const mapRegionH: int = mapH / regionH;
@@ -103,19 +96,17 @@ public class Constants
 		public static const miniMapRegionW: int = int(mapTileW / cityRegionTileW);
 		public static const miniMapRegionH: int = int(mapTileH / cityRegionTileH);
 
-		public static const cityRegionBitmapW: int = cityRegionW;
-		public static const cityRegionBitmapH: int = cityRegionH;
-
 		// Compact mini map constants
 		public static const miniMapScreenW: int = 288;
 		public static const miniMapScreenH: int = 138;
 
 		public static const miniMapScreenX: Function = function(width: int) : int {
 			return screenW - width - 6;
-		}
+		};
+
 		public static const miniMapScreenY: Function = function(height: int) : int {
 			return screenH - height - 5;
-		}
+		};
 
 		// Expanded mini map constants
 		public static const miniMapLargeScreenW: int = 800;
@@ -128,28 +119,15 @@ public class Constants
 				return x - delta;
 			}
 			return x;
-		}
+		};
+
 		public static const miniMapLargeScreenY: Function = function(height: int) : int {
 			return (screenH / 2) - (height / 2) + 30;
-		}
+		};
 
 		/* GAME DATA */
 		public static const queryData: Boolean = true;
 
-		/* TROOP */
-		public static const troopWorkerId: int = 100;
-
-		/* STAT RANGES */
-		public static const unitStatRanges: * = {
-			"attack": { min: 5, max: 100 },
-			"speed": { min: 2, max: 22 },
-			"carry": { min: 0, max: 352 }
-		};
-
-		public static const structureStatRanges: * = {
-			"attack": { min: 0, max: 800 }
-		};
-		
 		public static const stealthRangeNames: Array = ["", "1st row", "2nd row", "3rd row", "4th row"];
 
 		/* Ranking Types */

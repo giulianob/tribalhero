@@ -281,7 +281,7 @@
 		{
 			super.showSelf(owner, onClose, dispose);
 
-			var pt: Point = MapUtil.getMapCoord(troopObj.objX, troopObj.objY);
+			var pt: Point = TileLocator.getMapCoord(troopObj.objX, troopObj.objY);
 			frame.getTitleBar().setText("Troop (" + pt.x + "," + pt.y + ")");
 
 			frame.show();

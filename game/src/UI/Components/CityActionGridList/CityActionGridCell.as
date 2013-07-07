@@ -9,7 +9,7 @@
 	import org.aswing.ext.*;
 	import src.Global;
 	import src.Map.CityObject;
-	import src.Map.MapUtil;
+	import src.Map.TileLocator;
 	import src.Objects.Actions.CurrentAction;
 	import src.Objects.Actions.CurrentActiveAction;
 	import src.Objects.Actions.CurrentPassiveAction;
@@ -39,7 +39,7 @@
 				if (value != null)
 				{
 					var cityObj: CityObject = value.cityObj;
-					var pt: Point = MapUtil.getScreenCoord(cityObj.x, cityObj.y);
+					var pt: Point = TileLocator.getScreenCoord(cityObj.x, cityObj.y);
 					Global.map.selectWhenViewable(cityObj.city.id, cityObj.objectId);
 					Global.map.camera.ScrollToCenter(pt.x, pt.y);					
 					Util.getFrame(getParent()).dispose();

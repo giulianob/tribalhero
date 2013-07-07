@@ -124,7 +124,7 @@ package src.UI.Sidebars.BarbarianTribeInfo
 		{
 			super.showSelf(owner, onClose, dispose);
 
-			var pt: Point = MapUtil.getMapCoord(tribe.objX, tribe.objY);
+			var pt: Point = TileLocator.getMapCoord(tribe.objX, tribe.objY);
 			frame.getTitleBar().setText("Barbarian Tribe (" + pt.x + "," + pt.y + ")");
 
 			frame.show();

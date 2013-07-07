@@ -4,7 +4,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import src.Global;
-	import src.Map.MapUtil;
+	import src.Map.TileLocator;
 	import src.Objects.Factories.*;
 	import src.Objects.GameObject;
 	import src.Objects.Actions.ActionButton;
@@ -51,7 +51,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				var pt: Point = MapUtil.getScreenCoord(mapDestinationPos.x, mapDestinationPos.y);
+				var pt: Point = TileLocator.getScreenCoord(mapDestinationPos.x, mapDestinationPos.y);
 				Global.map.camera.ScrollToCenter(pt.x, pt.y);
 			}
 

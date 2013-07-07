@@ -1,30 +1,26 @@
 ﻿package src {
-    import com.greensock.TweenMax;
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import flash.net.*;
-	import flash.text.TextField;
-	import flash.ui.*;
-	import flash.utils.*;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.event.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Effects.*;
-	import src.UI.*;
-	import src.UI.Components.*;
-	import src.UI.Components.ScreenMessages.*;
-	import src.UI.Dialog.*;
-	import src.UI.Tutorial.GameTutorial;
-	import src.Util.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
+    import flash.net.*;
+    import flash.text.TextField;
+    import flash.ui.*;
+    import flash.utils.*;
 
+    import org.aswing.*;
+    import org.aswing.event.*;
+    import org.aswing.geom.*;
 
-	public class GameContainer extends GameContainer_base {
+    import src.Map.*;
+    import src.Objects.*;
+    import src.UI.*;
+    import src.UI.Components.*;
+    import src.UI.Components.ScreenMessages.*;
+    import src.UI.Dialog.*;
+    import src.UI.Tutorial.GameTutorial;
+    import src.Util.*;
+
+    public class GameContainer extends GameContainer_base {
 
 		//Popup menu
 		private var menu: JPopupMenu;
@@ -92,6 +88,7 @@
 		
 		// Game tutorial handler
 		private var tutorial: GameTutorial;
+        private var lblCoords: JLabel;
 
 		public function GameContainer()
 		{							
@@ -126,8 +123,12 @@
 			// Hide the connecting chains for the sidebar (this is just a graphic)
 			chains.visible = false;
 
-			// Disable mouse for coordinates
-			minimapTools.txtCoords.mouseEnabled = false;
+			// Manually add coords.
+            // TODO: Change minimap tools into a regular JPanel
+            lblCoords = new JLabel("", null, AsWingConstants.LEFT);
+            lblCoords.mouseEnabled = false;
+            lblCoords.setLocationXY(60, -20);
+            minimapTools.addChild(lblCoords);
 
 			// Set up tooltips
 			minimapZoomTooltip = new SimpleTooltip(minimapTools.btnMinimapZoom);
@@ -327,7 +328,7 @@
 		public function onGoToCity(e: Event) : void {
 			if (selectedCity == null) return;
 
-			var pt: Point = MapUtil.getScreenCoord(selectedCity.MainBuilding.x, selectedCity.MainBuilding.y);
+			var pt: Point = TileLocator.getScreenCoord(selectedCity.MainBuilding.x, selectedCity.MainBuilding.y);
 			Global.gameContainer.map.camera.ScrollToCenter(pt.x, pt.y);
 		}
 
@@ -344,7 +345,7 @@
 			if (camera.getZoomFactor() >= 0.99 || minimapZoomed) return;
 			var center: Point = camera.GetCenter();
 			camera.setZoomFactor(Math.min(1, camera.getZoomFactor() + 0.1));
-			map.scrollRate = 1 * camera.getZoomFactorOverOne();
+			map.scrollRate = camera.getZoomFactorOverOne();
 			mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();
 			miniMap.redraw();
 			camera.ScrollToCenter(center.x, center.y);
@@ -354,7 +355,7 @@
 			if (camera.getZoomFactor() <= 0.61 || minimapZoomed) return;
 			var center: Point = camera.GetCenter();
 			camera.setZoomFactor(Math.max(0.6, camera.getZoomFactor() - 0.1));
-			map.scrollRate = 1 * camera.getZoomFactorOverOne();
+			map.scrollRate = camera.getZoomFactorOverOne();
 			mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();			
 			miniMap.redraw();
 			camera.ScrollToCenter(center.x, center.y);
@@ -400,7 +401,7 @@
 				minimapZoomTooltip.setText("World view");
 				miniMap.setScreenRectHidden(false);
 				map.disableMapQueries(false);
-				map.scrollRate = 1 * camera.getZoomFactorOverOne();
+				map.scrollRate = camera.getZoomFactorOverOne();
 				minimapTools.btnZoomIn.visible = true;
 				minimapTools.btnZoomOut.visible = true;
 				message.hide();
@@ -477,11 +478,6 @@
 				}
 			}
 		}
-		
-		public function getSelectedCityIndex(): int
-		{
-			return lstCities.getSelectedIndex();
-		}
 
 		public function setMap(map: Map, miniMap: MiniMap):void
 		{				             
@@ -549,8 +545,8 @@
 
 			// Scroll to city center
 			if (selectedCity) {
-				var pt: Point = MapUtil.getScreenCoord(selectedCity.MainBuilding.x, selectedCity.MainBuilding.y);
-				src.Global.gameContainer.camera.ScrollToCenter(pt.x, pt.y);
+				var pt: Point = TileLocator.getScreenCoord(selectedCity.MainBuilding.x, selectedCity.MainBuilding.y);
+				Global.gameContainer.camera.ScrollToCenter(pt.x, pt.y);
 				miniMap.setCityPointer(selectedCity.name);
 			}
 
@@ -714,17 +710,6 @@
 			stage.focus = map;
 		}
 		
-		public function closeTopmostFrame(onlyIfClosable: Boolean = true) : void {
-			if (frames.length == 0)
-				return;
-			
-			var frame: JFrame = frames[frames.length-1] as JFrame;
-			if (onlyIfClosable && !frame.isClosable())
-				return;
-			
-			frame.dispose();
-		}
-
 		public function closeAllFrames(onlyClosableFrames: Boolean = false) : void {
 			var framesCopy: Array = frames.concat();
 
@@ -901,7 +886,8 @@
 		}
         
         public function setLabelCoords(pt: Point): void {
-            minimapTools.txtCoords.text = "(" + (pt.x) + "," + (pt.y) + ")";
+            lblCoords.setText("(" + (pt.x) + "," + (pt.y) + ")");
+            lblCoords.pack();
         }
 	}
 

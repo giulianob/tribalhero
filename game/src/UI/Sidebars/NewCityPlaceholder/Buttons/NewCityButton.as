@@ -7,7 +7,7 @@ package src.UI.Sidebars.NewCityPlaceholder.Buttons {
 	import src.Constants;
 	import src.Global;
 	import src.Map.City;
-	import src.Map.MapUtil;
+	import src.Map.TileLocator;
 	import src.Objects.Actions.ForestCampBuildAction;
 	import src.Objects.Factories.*;
 	import src.Objects.Forest;
@@ -76,7 +76,7 @@ package src.UI.Sidebars.NewCityPlaceholder.Buttons {
 			if (isEnabled())
 			{
 				var dlg: CreateCityDialog = new CreateCityDialog(function(sender: CreateCityDialog) : void {				
-					var mapPos: Point = MapUtil.getMapCoord(newCityPlaceholder.objX, newCityPlaceholder.objY);
+					var mapPos: Point = TileLocator.getMapCoord(newCityPlaceholder.objX, newCityPlaceholder.objY);
 					Global.mapComm.Region.createCity(Global.gameContainer.selectedCity.id, mapPos.x, mapPos.y, sender.getCityName());
 					sender.getFrame().dispose();
 				});						

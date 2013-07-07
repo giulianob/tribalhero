@@ -69,7 +69,7 @@ package src.UI.Dialog
 			
 			pickList = new JComboBox();
 			pickList.addActionListener(function():void {
-				var distance: int = MapUtil.distance(strongholds[pickList.getSelectedIndex()].x, strongholds[pickList.getSelectedIndex()].y, stub.x, stub.y);
+				var distance: int = TileLocator.distance(strongholds[pickList.getSelectedIndex()].x, strongholds[pickList.getSelectedIndex()].y, stub.x, stub.y);
 				var timeAwayInSeconds: int = Formula.moveTimeTotal(city, stub.getSpeed(city), distance, false);
 				lblTime.setText(StringHelper.localize("TRANSFER_ARRIVE_IN", Util.niceTime(timeAwayInSeconds)));
 				lblTime.setIcon(new AssetIcon(new ICON_CLOCK()));

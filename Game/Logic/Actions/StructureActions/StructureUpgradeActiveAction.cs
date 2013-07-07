@@ -36,7 +36,7 @@ namespace Game.Logic.Actions
 
         private readonly ILocker locker;
 
-        private readonly RequirementFactory requirementFactory;
+        private readonly IRequirementCsvFactory requirementCsvFactory;
 
         private readonly IObjectTypeFactory objectTypeFactory;
 
@@ -49,7 +49,7 @@ namespace Game.Logic.Actions
                                             IWorld world,
                                             Procedure procedure,
                                             ILocker locker,
-                                            RequirementFactory requirementFactory,
+                                            IRequirementCsvFactory requirementCsvFactory,
                                             IObjectTypeFactory objectTypeFactory,
                                             InitFactory initFactory)
         {
@@ -60,7 +60,7 @@ namespace Game.Logic.Actions
             this.world = world;
             this.procedure = procedure;
             this.locker = locker;
-            this.requirementFactory = requirementFactory;
+            this.requirementCsvFactory = requirementCsvFactory;
             this.objectTypeFactory = objectTypeFactory;
             this.initFactory = initFactory;
         }
@@ -78,7 +78,7 @@ namespace Game.Logic.Actions
                                             IWorld world,
                                             Procedure procedure,
                                             ILocker locker,
-                                            RequirementFactory requirementFactory,
+                                            IRequirementCsvFactory requirementCsvFactory,
                                             IObjectTypeFactory objectTypeFactory,
                                             InitFactory initFactory)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
@@ -88,7 +88,7 @@ namespace Game.Logic.Actions
             this.world = world;
             this.procedure = procedure;
             this.locker = locker;
-            this.requirementFactory = requirementFactory;
+            this.requirementCsvFactory = requirementCsvFactory;
             this.objectTypeFactory = objectTypeFactory;
             this.initFactory = initFactory;
             cityId = uint.Parse(properties["city_id"]);
@@ -126,7 +126,7 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
-            int maxConcurrentUpgrades = formula.ConcurrentBuildUpgrades(((IStructure)city[1]).Lvl);
+            int maxConcurrentUpgrades = formula.ConcurrentBuildUpgrades(city.MainBuilding.Lvl);
 
             if (!objectTypeFactory.IsObjectType("UnlimitedBuilding", type) &&
                 city.Worker.ActiveActions.Values.Count(
@@ -152,7 +152,7 @@ namespace Game.Logic.Actions
             }
 
             // layout requirement
-            if (!requirementFactory
+            if (!requirementCsvFactory
                          .GetLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1))
                          .Validate(structure, structure.Type, structure.X, structure.Y, structure.Size))
             {

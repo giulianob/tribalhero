@@ -8,6 +8,7 @@ using Game.Data.Stronghold;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Setup;
 using Ninject;
 
@@ -72,7 +73,9 @@ namespace Game.Battle.CombatObjects
                                                                 template.Lvl,
                                                                 size,
                                                                 kernel.Get<UnitFactory>(),
-                                                                kernel.Get<BattleFormulas>());
+                                                                kernel.Get<BattleFormulas>(),
+                                                                kernel.Get<Formula>(),
+                                                                kernel.Get<ITileLocator>());
 
                 units[i++] = newUnit;
                 count -= size;
@@ -110,7 +113,8 @@ namespace Game.Battle.CombatObjects
                                                                   type,
                                                                   template.Lvl,
                                                                   size,
-                                                                  kernel.Get<BattleFormulas>());
+                                                                  kernel.Get<BattleFormulas>(),
+                                                                  kernel.Get<Formula>());
                 units[i++] = newUnit;
                 count -= size;
             }

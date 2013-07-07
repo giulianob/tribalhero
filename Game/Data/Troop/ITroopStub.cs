@@ -1,27 +1,9 @@
-using System.Collections.Generic;
 using Game.Logic.Actions;
 using Game.Util.Locking;
 using Persistance;
 
 namespace Game.Data.Troop
 {
-    public interface ISimpleStub : IEnumerable<Formation>
-    {
-        byte FormationCount { get; }
-
-        ushort TotalCount { get; }
-
-        void AddUnit(FormationType formationType, ushort type, ushort count);
-
-        /// <summary>
-        ///     Returns a list of units for specified formations.
-        ///     If formation is empty, will return all units.
-        /// </summary>
-        /// <param name="formations"></param>
-        /// <returns></returns>
-        List<Unit> ToUnitList(params FormationType[] formations);
-    }
-
     public interface ITroopStub : IPersistableList, ILockable, ISimpleStub
     {
         TroopTemplate Template { get; }
@@ -90,5 +72,7 @@ namespace Game.Data.Troop
         void RemoveAllUnits(params FormationType[] formations);
 
         int UpkeepForFormation(FormationType inBattle);
+
+        bool IsDefault();
     }
 }

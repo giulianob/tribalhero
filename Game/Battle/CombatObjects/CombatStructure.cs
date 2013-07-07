@@ -99,6 +99,14 @@ namespace Game.Battle.CombatObjects
             }
         }
 
+        public override byte Size
+        {
+            get
+            {
+                return Structure.Stats.Base.Size;
+            }
+        }
+
         public IStructure Structure { get; private set; }
 
         public override BattleStats Stats
@@ -246,7 +254,7 @@ namespace Game.Battle.CombatObjects
 
         public override Position Location()
         {
-            return new Position(Structure.X, Structure.Y);
+            return Structure.PrimaryPosition;
         }
 
         public override byte AttackRadius()
@@ -312,7 +320,7 @@ namespace Game.Battle.CombatObjects
 
             ICity city = Structure.City;
 
-            World.Current.Regions.LockRegion(Structure.X, Structure.Y);
+            var lockedRegions = World.Current.Regions.LockRegions(Structure.X, Structure.Y, Structure.Size);
             if (Structure.Lvl > 1)
             {
                 Structure.City.Worker.DoPassive(Structure.City,
@@ -327,7 +335,7 @@ namespace Game.Battle.CombatObjects
                 city.ScheduleRemove(Structure, true);
                 Structure.EndUpdate();
             }
-            World.Current.Regions.UnlockRegion(Structure.X, Structure.Y);
+            World.Current.Regions.UnlockRegions(lockedRegions);
         }
 
         public override void ReceiveReward(int reward, Resource resource)

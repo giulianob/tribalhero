@@ -82,6 +82,14 @@ namespace Game.Battle.CombatObjects
             }
         }
 
+        public override byte Size
+        {
+            get
+            {
+                return BarbarianTribe.Size;
+            }
+        }
+
         public override ushort Type
         {
             get
@@ -221,7 +229,7 @@ namespace Game.Battle.CombatObjects
 
         public override Position Location()
         {
-            return new Position(BarbarianTribe.X, BarbarianTribe.Y);
+            return BarbarianTribe.PrimaryPosition;
         }
 
         public override byte AttackRadius()

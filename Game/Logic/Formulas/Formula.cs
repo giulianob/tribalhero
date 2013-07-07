@@ -7,6 +7,7 @@ using Game.Data;
 using Game.Data.Forest;
 using Game.Data.Stats;
 using Game.Data.Stronghold;
+using Game.Logic.Actions;
 using Game.Setup;
 
 #endregion
@@ -15,8 +16,7 @@ namespace Game.Logic.Formulas
 {
     public partial class Formula
     {
-        [Obsolete("Used for testing only", true)]
-        public Formula()
+        protected Formula()
         {
         }
 
@@ -27,13 +27,11 @@ namespace Game.Logic.Formulas
             StructureCsvFactory = structureCsvFactory;
         }
 
-        public static Formula Current { get; set; }
+        public virtual IObjectTypeFactory ObjectTypeFactory { get; set; }
 
-        public IObjectTypeFactory ObjectTypeFactory { get; set; }
+        public virtual UnitFactory UnitFactory { get; set; }
 
-        public UnitFactory UnitFactory { get; set; }
-
-        public IStructureCsvFactory StructureCsvFactory { get; set; }
+        public virtual IStructureCsvFactory StructureCsvFactory { get; set; }
 
         /// <summary>
         ///     Applies the specified effects to the specified radius. This is used by AwayFromLayout for building validation.
@@ -61,6 +59,38 @@ namespace Game.Logic.Formulas
         public virtual int ConcurrentBuildUpgrades(int mainstructureLevel)
         {
             return mainstructureLevel >= 11 ? 3 : 2;
+        }
+
+        public virtual Error CityMaxConcurrentBuildActions(ushort structureType, uint currentActionId, ICity city, IObjectTypeFactory objectTypeFactory)
+        {
+            int maxConcurrentUpgrades = ConcurrentBuildUpgrades(city.MainBuilding.Lvl);
+
+            if (!objectTypeFactory.IsObjectType("UnlimitedBuilding", structureType) &&
+                city.Worker.ActiveActions.Values.Count(action =>
+                    {
+                        if (action.ActionId == currentActionId)
+                        {
+                            return false;
+                        }
+
+                        if (action is StructureUpgradeActiveAction)
+                        {
+                            return true;
+                        }
+
+                        var buildAction = action as StructureBuildActiveAction;
+                        if (buildAction == null)
+                        {
+                            return false;
+                        }
+
+                        return !objectTypeFactory.IsObjectType("UnlimitedBuilding", buildAction.BuildType);
+                    }) >= maxConcurrentUpgrades)
+            {
+                return Error.ActionTotalMaxReached;
+            }
+
+            return Error.Ok;
         }
 
         /// <summary>

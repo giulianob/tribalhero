@@ -166,13 +166,18 @@ namespace Game.Battle
                     if (xArmorType == ArmorType.Building3 && yArmorType == ArmorType.Building3)
                     {
                         var xDistance = tileLocator.RadiusDistance(attacker.Location().X,
-                                                                     attacker.Location().Y,
-                                                                     x.Target.CombatObject.Location().X,
-                                                                     x.Target.CombatObject.Location().Y);
+                                                                   attacker.Location().Y,
+                                                                   attacker.Size,
+                                                                   x.Target.CombatObject.Location().X,
+                                                                   x.Target.CombatObject.Location().Y,
+                                                                   x.Target.CombatObject.Size);
+
                         var yDistance = tileLocator.RadiusDistance(attacker.Location().X,
-                                                                     attacker.Location().Y,
-                                                                     y.Target.CombatObject.Location().X,
-                                                                     y.Target.CombatObject.Location().Y);
+                                                                   attacker.Location().Y,
+                                                                   attacker.Size,
+                                                                   y.Target.CombatObject.Location().X,
+                                                                   y.Target.CombatObject.Location().Y,
+                                                                   y.Target.CombatObject.Size);
                         return xDistance.CompareTo(yDistance);
                     }
                     return xArmorType == ArmorType.Building3 ? 1 : -1;

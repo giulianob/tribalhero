@@ -912,6 +912,8 @@ namespace Game.Database
             #region Troop Stubs
             ILookup<Tuple<uint, ushort>, dynamic> troopStubUnits;
 
+            var troopStubFactory = Ioc.Kernel.Get<CityTroopStubFactory>();
+
             using (var listReader = DbManager.SelectList(TroopStub.DB_TABLE))
             {
                 troopStubUnits = ReaderToLookUp(listReader,
@@ -941,15 +943,15 @@ namespace Game.Database
                     {
                         throw new Exception("City not found");
                     }
+
                     
-                    var stub = new TroopStub(id, city)
-                    {
-                            State = (TroopState)Enum.Parse(typeof(TroopState), reader["state"].ToString(), true),
-                            DbPersisted = true,
-                            InitialCount = (ushort)reader["initial_count"],
-                            RetreatCount = (ushort)reader["retreat_count"],
-                            AttackMode = (AttackMode)((byte)reader["attack_mode"]),
-                    };
+                    troopStubFactory.City = city;
+                    var stub = troopStubFactory.CreateTroopStub(id);
+                    stub.State = (TroopState)Enum.Parse(typeof(TroopState), reader["state"].ToString(), true);
+                    stub.DbPersisted = true;
+                    stub.InitialCount = (ushort)reader["initial_count"];
+                    stub.RetreatCount = (ushort)reader["retreat_count"];
+                    stub.AttackMode = (AttackMode)((byte)reader["attack_mode"]);
 
                     var formationMask = (ushort)reader["formations"];
                     var formations = (FormationType[])Enum.GetValues(typeof(FormationType));
@@ -963,10 +965,10 @@ namespace Game.Database
 
                     foreach (var unit in troopStubUnits[new Tuple<uint, ushort>(cityId, id)])
                     {
-                        stub.AddUnit(unit.formationType, unit.type, unit.count);
+                        stub.AddUnit((FormationType)unit.formationType, (ushort)unit.type, (ushort)unit.count);
                     }
 
-                    city.Troops.DbLoaderAdd(id, stub);
+                    city.Troops.Add(stub);
 
                     var stationType = (byte)reader["station_type"];
                     if (stationType != 0)
@@ -1365,8 +1367,10 @@ namespace Game.Database
                                                                                     (int)listReader["loot_iron"],
                                                                                     (int)listReader["loot_wood"],
                                                                                     (int)listReader["loot_labor"]),
-                                                                           Kernel.Get<UnitFactory>(),
-                                                                           Kernel.Get<BattleFormulas>());
+                                                                       Kernel.Get<UnitFactory>(),
+                                                                       Kernel.Get<BattleFormulas>(),
+                                                                       Kernel.Get<Formula>(),
+                                                                       Kernel.Get<ITileLocator>());
 
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
@@ -1409,7 +1413,8 @@ namespace Game.Database
                                                                         (byte)listReader["level"],
                                                                         (ushort)listReader["count"],
                                                                         (decimal)listReader["left_over_hp"],
-                                                                            Kernel.Get<BattleFormulas>());
+                                                                        Kernel.Get<BattleFormulas>(),
+                                                                        Kernel.Get<Formula>());
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
                         combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];

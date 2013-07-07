@@ -67,7 +67,7 @@ namespace Game.Data
             var technologies = technologyManagerFactory.CreateTechnologyManager(EffectLocation.City, id, id);
             var troops = troopManagerFactory.CreateTroopManager();
             var template = unitTemplateFactory.CreateUnitTemplate(id);
-            var troopStubFactory = new CityTroopStubFactory();
+            var troopStubFactory = new CityTroopStubFactory(kernel);
 
             var city = new City(id,
                                 owner,

@@ -254,7 +254,6 @@ _________ _______ _________ ______   _______  _
             TileLocator.Current = kernel.Get<TileLocator>();
             BattleFormulas.Current = kernel.Get<BattleFormulas>();
             Concurrency.Current = kernel.Get<ILocker>();
-            Formula.Current = kernel.Get<Formula>();
             World.Current = kernel.Get<IWorld>();
             Procedure.Current = kernel.Get<Procedure>();
             Scheduler.Current = kernel.Get<IScheduler>();

@@ -192,7 +192,7 @@ namespace Game.Logic.Formulas
             return Config.server_production ? Math.Max(4, ret) : ret;
         }
 
-        public double GetLumbermillCampBuildTime(int campBuildTime, IStructure lumbermill, IForest forest, ITileLocator tileLocator)
+        public virtual double GetLumbermillCampBuildTime(int campBuildTime, IStructure lumbermill, IForest forest, ITileLocator tileLocator)
         {
             var distance = tileLocator.TileDistance(lumbermill.X, lumbermill.Y, forest.X, forest.Y);
             return BuildTime(campBuildTime, lumbermill.City, lumbermill.City.Technologies) + distance * 5;

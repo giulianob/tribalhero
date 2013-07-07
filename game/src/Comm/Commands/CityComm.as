@@ -581,7 +581,7 @@
 		
 		public function onReceiveNotificationLocation(packet:Packet, custom:*):void
 		{
-			var pt:Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
+			var pt:Point = TileLocator.getScreenCoord(packet.readUInt(), packet.readUInt());
 			Global.map.camera.ScrollToCenter(pt.x, pt.y);
 		}
 			
@@ -608,7 +608,7 @@
 			if (MapComm.tryShowError(packet)) {
 				return;
 			}
-			var pt:Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
+			var pt:Point = TileLocator.getScreenCoord(packet.readUInt(), packet.readUInt());
 			Global.map.camera.ScrollToCenter(pt.x, pt.y);
 			Global.gameContainer.closeAllFrames(true);
 		}

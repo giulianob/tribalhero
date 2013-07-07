@@ -9,10 +9,11 @@ package src.Map {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import src.Constants;
-	import src.Util.Util;
+    import src.Map.ScreenPosition;
+    import src.Util.Util;
 	import src.Global;
 
-	public class MapUtil {
+	public class TileLocator {
 
 		public static function getCityRegionId(rX: int, rY: int): int // from screen coord to region id
 		{
@@ -35,7 +36,7 @@ package src.Map {
 		public static function getRegionIdFromMapCoord(rX: int, rY: int): int
 		{
 			var p: Point = getScreenCoord(rX, rY);
-			return getRegionId(p.x, p.y);
+			return getRegionId(new ScreenPosition(p.x, p.y));
 		}
 		
 		public static function getRegionRect(id: int): Rectangle
@@ -45,10 +46,10 @@ package src.Map {
 			return new Rectangle(x, y, Constants.regionW, Constants.regionH / 2);
 		}
 
-		public static function getRegionId(rX: int, rY: int): int // from screen coord to region id
+		public static function getRegionId(screenPosition: ScreenPosition): int
 		{
-			rX += Constants.tileW / 2;
-			rY += Constants.tileH / 2;
+			var rX: int = screenPosition.x + Constants.tileW / 2;
+			var rY: int = screenPosition.y + Constants.tileH / 2;
 
 			var xId: int = int(rX / Constants.regionW);
 			var yId: int = int(rY / int(Constants.regionH / 2));
@@ -81,16 +82,13 @@ package src.Map {
 
 			return new Point(xcoord, ycoord);
 		}
-		
+
 		public static function getScreenCoord(x: int, y: int) : Point // from map coord to where it belongs on screen
 		{
-			var xadd:int = 0;
+			var xadd:int = (Math.abs(y % 2) == 1) ? (Constants.tileW / 2) : 0;
 
-			if (Math.abs(y % 2) == 1) //odd tile
-			xadd =+ (Constants.tileW / 2);
-
-			var xcoord:int = Math.floor(x * Constants.tileW + xadd - int(Constants.tileW / 2));
-			var ycoord:int = Math.floor(y * (Constants.tileH / 2) - (Constants.tileH / 2));
+			var xcoord:int = int(x * Constants.tileW + xadd - int(Constants.tileW / 2));
+			var ycoord:int = int(y * (Constants.tileH / 2) - (Constants.tileH / 2));
 
 			return new Point(xcoord, ycoord);
 		}
@@ -108,12 +106,12 @@ package src.Map {
 			return new Point(xcoord, ycoord);
 		}
 
-		public static function getActualCoord(x: int, y: int) : Point //takes in screen coord and returns where obj belongs on screen (basically just rounds input screen pos to real screen pos)
+		public static function getActualCoord(x: int, y: int) : ScreenPosition //takes in screen coord and returns where obj belongs on screen (basically just rounds input screen pos to real screen pos)
 		{
 			y = Math.round(y / (Constants.tileH / 2));
 			x = int((x + ( y % 2 == 0 ? Constants.tileW / 2 : 0)) / Constants.tileW);
 
-			return getScreenCoord(x, y);
+			return getScreenPosition(x, y);
 		}
 		
 		public static function getPointWithZoomFactor(x: int, y: int): Point //takes in coords (usually the stageX/stageY which are mouse coords and returns with zoom factor calculated)
@@ -170,16 +168,22 @@ package src.Map {
 			return Math.max(0, int(radius * 2) - 1);
 		}
 
-		public static function radius_foreach_object(ox: int, oy: int, radius: int, work: Function, do_self: Boolean = true, custom: * = null):void {
-			var tileRadius: int = Math.ceil(radius / 2.0);
-			foreach_object(ox, oy, tileRadius, function(_x: int, _y: int, _custom: * ) : void {
-				if (radiusDistance(ox, oy, _x, _y) <= radius) {
-					work(_x, _y, _custom);
-				}
-			}, do_self, custom);
-		}
+        public static function foreachRadius(ox: int, oy: int, radius: int, do_self: Boolean = true):Array {
+            var positions: Array = [];
 
-		public static function foreach_object(ox: int, oy: int, radius: int, work: Function, do_self: Boolean = true, custom: * = null):void {
+            var tileRadius: int = Math.ceil(radius / 2.0);
+            for each(var position: Position in foreachTile(ox, oy, tileRadius, do_self)) {
+                if (radiusDistance(ox, oy, position.x, position.y) <= radius) {
+                    positions.push(position);
+                }
+            }
+
+            return positions;
+        }
+
+		public static function foreachTile(ox: int, oy: int, radius: int, do_self: Boolean = true): Array {
+            var positions: Array = [];
+
 			var mode: int;
 			if (ox % 2 == 0) {
 				if (oy % 2 == 0) {
@@ -203,10 +207,10 @@ package src.Map {
 
 					if ((row % 2 == 0 && mode == 0) || (row % 2 != 0 && mode == 1)) {
 						if (!do_self && ox == cx + (count / 2) && oy == cy + count) continue;
-						work(cx + (count / 2), cy + count, custom);
+						positions.push(new Position(cx + (count / 2), cy + count));
 					} else {
 						if (!do_self && ox == cx + ((count+1) / 2) && oy == cy + count) continue;
-						work(cx + ((count + 1) / 2), cy + count, custom);
+                        positions.push(new Position(cx + ((count + 1) / 2), cy + count));
 					}
 
 				}
@@ -219,7 +223,40 @@ package src.Map {
 
 				++cy;
 			}
+
+            return positions;
 		}
-	}
+
+
+        public function foreachMultitile(ox: int, oy: int, size: int): Array {
+            var positions: Array = [];
+
+            var position: Position = new Position(ox, oy);
+            for (var i: int = 0; i < size; i++)
+            {
+                var rowPosition: Position = position;
+                for (var j: int = 0; j < size; j++)
+                {
+                    positions.push(rowPosition);
+
+                    rowPosition = rowPosition.topRight();
+                }
+
+                position = position.bottomRight();
+            }
+
+            return positions;
+        }
+
+        public static function getMapPosition(x: Number, y: Number): Position {
+            var pt: Point = getMapCoord(x, y);
+            return new Position(pt.x, pt.y);
+        }
+
+        public static function getScreenPosition(x: Number, y: Number): ScreenPosition {
+            var pt: Point = getScreenCoord(x, y);
+            return new ScreenPosition(pt.x, pt.y);
+        }
+    }
 }
 

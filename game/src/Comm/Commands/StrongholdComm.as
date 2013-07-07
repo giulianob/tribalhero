@@ -7,7 +7,7 @@ package src.Comm.Commands
 	import src.Comm.Commands;
 	import src.Comm.Session;
 	import src.Map.MapComm;
-	import src.Map.MapUtil;
+	import src.Map.TileLocator;
 	import src.Objects.SimpleGameObject;
 	import src.Objects.Stronghold.Stronghold;
 	import src.UI.Dialog.InfoDialog;
@@ -44,7 +44,7 @@ package src.Comm.Commands
 		
 		private function readStrongholdPublicProfile(packet: Packet, custom: * ): void {
 			// We don't actually have a public profile we just send the map there
-			var pt:Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
+			var pt:Point = TileLocator.getScreenCoord(packet.readUInt(), packet.readUInt());
 			Global.map.camera.ScrollToCenter(pt.x, pt.y);
 			Global.gameContainer.closeAllFrames(true);
 			
@@ -158,7 +158,7 @@ package src.Comm.Commands
 			if (MapComm.tryShowError(packet)) {
 				return;
 			}
-			var pt:Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
+			var pt:Point = TileLocator.getScreenCoord(packet.readUInt(), packet.readUInt());
 			Global.map.camera.ScrollToCenter(pt.x, pt.y);
 			Global.gameContainer.closeAllFrames(true);
 		}		

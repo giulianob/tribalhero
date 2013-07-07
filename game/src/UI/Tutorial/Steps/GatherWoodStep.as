@@ -2,7 +2,7 @@ package src.UI.Tutorial.Steps
 {
 	import flash.filters.GlowFilter;
 	import flash.geom.Point;
-	import src.Map.MapUtil;
+	import src.Map.TileLocator;
 	import src.Util.StringHelper;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
@@ -51,7 +51,7 @@ package src.UI.Tutorial.Steps
 				if (shouldShowTutorialEndMsg) {
 					showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_BACK_TO_CITY_AFTER_FOREST");
 					
-					var mainBuildingScreenPos: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
+					var mainBuildingScreenPos: Point = TileLocator.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
 					if (!Global.gameContainer.camera.CameraRectangle().containsPoint(mainBuildingScreenPos)) {
 						return;
 					}					

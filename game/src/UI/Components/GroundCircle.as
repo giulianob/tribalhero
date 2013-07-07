@@ -10,7 +10,8 @@
 
     import src.Constants;
     import src.Assets;
-    import src.Map.MapUtil;
+    import src.Map.Position;
+    import src.Map.TileLocator;
     import src.Objects.SimpleObject;
 
     public class GroundCircle extends SimpleObject
@@ -56,7 +57,26 @@
 			circle = new MovieClip();
 			tiles = [];
 
-			MapUtil.radius_foreach_object(Math.ceil(size / 2.0), Math.ceil(size / 2.0) * 2 + 1, size, this.addTileCallback, true, null);
+			for each (var position: Position in TileLocator.foreachRadius(Math.ceil(size / 2.0), Math.ceil(size / 2.0) * 2 + 1, size)) {
+                var tiledata: DisplayObject = Assets.getInstance("MASK_TILE");
+                var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH, true, 0x000000));
+                tile.smoothing = true;
+
+                var tileRadius: int = Math.ceil(size / 2.0);
+                var point: Point = TileLocator.getScreenCoord(position.x, position.y);
+                tile.x = point.x - tileRadius * Constants.tileW;
+                tile.y = point.y - tileRadius * Constants.tileH;
+
+                if (tile.x == 0 && tile.y == 0 && skipCenter) {
+                    continue;
+                }
+
+                tile.bitmapData.draw(tiledata, null, colorTransform);
+
+                circle.addChild(tile);
+
+                tiles.push(tile);
+            }
 
 			addChild(circle);
 		}
@@ -79,29 +99,6 @@
 				tiles = null;
 			}
 		}
-
-		public function addTileCallback(x: int, y: int, custom: *):void
-		{
-			var tiledata: DisplayObject = Assets.getInstance("MASK_TILE");
-			var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH, true, 0x000000));
-			tile.smoothing = true;
-
-			var tileRadius: int = Math.ceil(size / 2.0);
-			var point: Point = MapUtil.getScreenCoord(x, y);
-			tile.x = point.x - tileRadius * Constants.tileW;
-			tile.y = point.y - tileRadius * Constants.tileH;
-
-			if (tile.x == 0 && tile.y == 0 && skipCenter) {
-				return;
-			}
-
-			tile.bitmapData.draw(tiledata, null, colorTransform);
-
-			circle.addChild(tile);
-
-			tiles.push(tile);
-		}
-
 	}
 
 }

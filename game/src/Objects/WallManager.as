@@ -5,7 +5,7 @@
 	import flash.geom.Point;
 	import src.Global;
 	import src.Map.Map;
-	import src.Map.MapUtil;
+	import src.Map.TileLocator;
 	import src.Objects.Factories.ObjectFactory;
 
 	public class WallManager
@@ -361,7 +361,7 @@
 				return;
 			}
 
-			var pos: Point = MapUtil.getMapCoord(parent.objX, parent.objY);
+			var pos: Point = TileLocator.getMapCoord(parent.objX, parent.objY);
 
 			var typeHash: int = wallTypeHash(pos.x, pos.y, radius);
 
@@ -381,9 +381,9 @@
 
 		public function addWallCallback(x: int, y: int, custom: *):void
 		{
-			var parentPos: Point = MapUtil.getMapCoord(parent.objX, parent.objY);
+			var parentPos: Point = TileLocator.getMapCoord(parent.objX, parent.objY);
 
-			var dist: int = MapUtil.distance(parentPos.x, parentPos.y, x, y);
+			var dist: int = TileLocator.distance(parentPos.x, parentPos.y, x, y);
 
 			if (dist != custom) {
 				return;
@@ -429,7 +429,7 @@
 		}
 
 		private function pushWall(wallName: String, x: int, y: int) : void {
-			var pos: Point = MapUtil.getScreenCoord(x, y);
+			var pos: Point = TileLocator.getScreenCoord(x, y);
 			var wallName: String = "WALL_" + wallName + (wallName.charAt(0) == 'O' ? "" : "_" + wallHash(x, y).toString());
 			var wall: SimpleObject = ObjectFactory.getSimpleObject(wallName, pos.x, pos.y, false);
 

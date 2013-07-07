@@ -137,7 +137,7 @@
 		{
 			super.showSelf(owner, onClose, dispose);
 
-			var pt: Point = MapUtil.getMapCoord(stronghold.objX, stronghold.objY);
+			var pt: Point = TileLocator.getMapCoord(stronghold.objX, stronghold.objY);
 			frame.getTitleBar().setText("Stronghold (" + pt.x + "," + pt.y + ")");
 
 			frame.show();

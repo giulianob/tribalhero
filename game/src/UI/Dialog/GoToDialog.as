@@ -9,7 +9,7 @@
 	import org.aswing.ext.*;
 	import src.Constants;
 	import src.Global;
-	import src.Map.MapUtil;
+	import src.Map.TileLocator;
 	import src.UI.Components.AutoCompleteTextField;
 	import src.UI.GameJPanel;
 	
@@ -75,7 +75,7 @@
 				return;
 			}
 			
-			var pt: Point = MapUtil.getScreenCoord(getCoordX(), getCoordY());
+			var pt: Point = TileLocator.getScreenCoord(getCoordX(), getCoordY());
 			Global.gameContainer.map.camera.ScrollToCenter(pt.x, pt.y);
 			
 			getFrame().dispose();

@@ -9,7 +9,8 @@
 
     import src.Constants;
     import src.Assets;
-    import src.Map.MapUtil;
+    import src.Map.Position;
+    import src.Map.TileLocator;
     import src.Objects.SimpleObject;
 
     public class GroundCallbackCircle extends SimpleObject
@@ -51,7 +52,22 @@
 
 			circle = new MovieClip();
 			tiles = [];
-			MapUtil.foreach_object(size, size * 2 + 1, size, this.addTileCallback, true, null);
+			for each (var position: Position in TileLocator.foreachTile(size, size * 2 + 1, size)) {
+                var tiledata: DisplayObject = Assets.getInstance("MASK_TILE");
+                var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH, true, 0x000000));
+                tile.smoothing = true;
+                var point: Point = TileLocator.getScreenCoord(position.x, position.y);
+                tile.x = point.x - size * Constants.tileW;
+                tile.y = point.y - (size * Constants.tileH);
+                var colorTransform: * = callback(tile.x, tile.y);
+                if (colorTransform == false) {
+                    continue;
+                }
+                tile.bitmapData.draw(tiledata, null, colorTransform);
+                circle.addChild(tile);
+                tiles.push(tile);
+            }
+
 			addChild(circle);
 		}
 
@@ -74,30 +90,7 @@
 			}
 		}
 
-		public function addTileCallback(x: int, y: int, custom: *):void
-		{
-			var tiledata: DisplayObject = Assets.getInstance("MASK_TILE");
-
-			var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH, true, 0x000000));
-			tile.smoothing = true;
-
-			var point: Point = MapUtil.getScreenCoord(x, y);
-
-			tile.x = point.x - size * Constants.tileW;
-			tile.y = point.y - (size * Constants.tileH);
-
-			var colorTransform: * = callback(tile.x, tile.y, tile.x == 0 && tile.y == 0);
-
-			if (colorTransform == false) return;
-
-			tile.bitmapData.draw(tiledata, null, colorTransform);
-
-			circle.addChild(tile);
-
-			tiles.push(tile);
-		}
-
-	}
+    }
 
 }
 

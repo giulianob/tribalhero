@@ -55,7 +55,7 @@
 		}
 		
 		public function addRegionObject(type: int, groupId: int, objectId: int, objX: int, objY: int, extraProps: *) : CityRegionObject {		
-			var coord: Point = MapUtil.getMiniMapScreenCoord(objX, objY);
+			var coord: Point = TileLocator.getMiniMapScreenCoord(objX, objY);
 
 			var regionObject: CityRegionObject = new CityRegionObject(type, groupId, objectId);
 			regionObject.x = objX;

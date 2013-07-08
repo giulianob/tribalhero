@@ -119,8 +119,8 @@
 		}
 		
 		public static function makeSpriteSmall(obj: DisplayObjectContainer, scale: Number = 0.5) : DisplayObjectContainer {
-			obj.scaleX = 0.5;
-			obj.scaleY = 0.5;
+			obj.scaleX = scale;
+			obj.scaleY = scale;
 
 			return obj;
 		}

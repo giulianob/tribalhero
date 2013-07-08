@@ -23,15 +23,7 @@
 			radiusManager = new RadiusManager(this);			
 		}
 
-		public function getNiceStubId(includeParenthesis: Boolean = false) : String {
-			if (stubId == 1) {
-				if (includeParenthesis) return "(Local Troop)";
-				else return "Local Troop";
-			}
-			else return (includeParenthesis?"(":"") + stubId.toString()  + (includeParenthesis?")":"");
-		}
-		
-		override public function dispose():void 
+        override public function dispose():void
 		{
 			super.dispose();
 			
@@ -48,10 +40,6 @@
 				radiusManager.hideRadius();
 		}
 
-		public function ToSprite(): Object
-		{
-			return TroopFactory.getSprite();
-		}
-	}
+    }
 
 }

@@ -35,7 +35,7 @@ public class Constants
 		
 		/* APP CONSTANTS */
 		public static var mainWebsite: String = "http://tribalhero.com/";
-		public static const debug:int = 3;
+		public static const debug:int = 0;
         public static var debugStacktracer: Boolean = false;
 		public static var defLang:String = "en";
 		

@@ -1,28 +1,18 @@
 ﻿package src.UI.Dialog {
 
-	import flash.events.Event;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.TileLocator;
-	import src.Objects.Effects.Formula;
-	import src.Objects.GameError;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Components.SimpleTroopGridList.*;
-	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
-	import src.UI.GameJPanel;
-	import src.Objects.Troop.*;
-	import src.Util.StringHelper;
-	import src.Util.Util;
+    import flash.events.Event;
 
-	public class AssignmentJoinDefDialog extends ReinforceTroopDialog {
-		private var sourceCity:City;
+    import src.Global;
+    import src.Map.City;
+    import src.Map.TileLocator;
+    import src.Objects.Effects.Formula;
+    import src.Objects.Troop.*;
+    import src.Util.StringHelper;
+    import src.Util.Util;
 
-		protected var assignment: *;
+    public class AssignmentJoinDefDialog extends ReinforceTroopDialog {
+
+        protected var assignment: *;
 		protected var distance: int;
 	
 		public function AssignmentJoinDefDialog(city: City, onAccept: Function, assignment: *):void

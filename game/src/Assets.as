@@ -75,15 +75,6 @@
 			WALL_O3;
 			WALL_O4;
 			
-			//Forest
-			FOREST_LVL_1;
-			FOREST_LVL_2;
-			FOREST_LVL_3;
-			FOREST_LVL_4;
-			
-			//Troops
-			DEFAULT_TROOP;			
-			
 			//UNITS
 			DEFAULT_UNIT;
 			ARCHER_DARK_UNIT;			
@@ -108,26 +99,6 @@
 			PIKEMAN_UNIT;
 			SWORDSMAN_UNIT;
 			WAGON_UNIT;
-			
-			//Dialog
-			MOVEMENT_DIALOG_BG;
-			
-			//MOVEMENT TROOP ICONS
-			TROOP_ATTACK_0;
-			TROOP_ATTACK_1;
-			TROOP_ATTACK_2;
-			TROOP_ATTACK_3;
-			TROOP_ATTACK_4;
-			TROOP_IDLE_0;
-			TROOP_IDLE_1;
-			TROOP_IDLE_2;
-			TROOP_IDLE_3;
-			TROOP_IDLE_4;
-			TROOP_DEFENSE_0;
-			TROOP_DEFENSE_1;
-			TROOP_DEFENSE_2;
-			TROOP_DEFENSE_3;
-			TROOP_DEFENSE_4;
 		}
 
         private static var embedPositionCache: Dictionary;
@@ -313,11 +284,17 @@
         [EmbedPosition(name = "map", x = 93, y = "-16")]
         public static const BARRACK_STRUCTURE: Class;
 
-        [Embed(source = "../../graphics/buildings/DEFAULT_BUILDING_ANIM.png")]
-        public static const DEFAULT_BUILDING: Class;
+        [Embed(source = "../../graphics/buildings/CONSTRUCTION.png")]
+        [EmbedPosition(name = "map", x = 17, y = "-14")]
+        public static const DEFAULT_BUILDING_1: Class;
 
-        [Embed(source = "../../graphics/buildings/DEFAULT_BUILDING_ANIM.png")]
-        public static const DEFAULT_BUILDING_ANIM: Class;
+        [Embed(source = "../../graphics/buildings/CONSTRUCTION.png")]
+        [EmbedPosition(name = "map", x = 102, y = "-3")]
+        public static const DEFAULT_BUILDING_2: Class;
+
+        [Embed(source = "../../graphics/buildings/CONSTRUCTION.png")]
+        [EmbedPosition(name = "map", x = 177, y = "68")]
+        public static const DEFAULT_BUILDING_3: Class;
 
         [Embed(source = "../../graphics/buildings/TRIBAL_GATHERING_STRUCTURE.png")]
         public static const DEFAULT_STRUCTURE_SIMPLE: Class;
@@ -370,6 +347,7 @@
         public static const STABLE_STRUCTURE: Class;
 
         [Embed(source = "../../graphics/buildings/TOWER_STRUCTURE.png")]
+        [EmbedPosition(name = "map", x = 46, y = "-18")]
         public static const TOWER_STRUCTURE: Class;
 
         [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
@@ -419,5 +397,27 @@
         [Embed(source = "../../graphics/buildings/GRAPE_FIELD_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "25", y = "4")]
         public static const GRAPE_FIELD_STRUCTURE: Class;
-	}
+
+        // Forests
+        [Embed(source = "../../graphics/objects/FOREST_LVL_1.png")]
+        [EmbedPosition(name = "map", x = "22", y = "-4")]
+        public static const FOREST_LVL_1: Class;
+
+        [Embed(source = "../../graphics/objects/FOREST_LVL_2.png")]
+        [EmbedPosition(name = "map", x = "23", y = "-7")]
+        public static const FOREST_LVL_2: Class;
+
+        [Embed(source = "../../graphics/objects/FOREST_LVL_3.png")]
+        [EmbedPosition(name = "map", x = "12", y = "-3")]
+        public static const FOREST_LVL_3: Class;
+
+        [Embed(source = "../../graphics/objects/FOREST_LVL_4.png")]
+        [EmbedPosition(name = "map", x = "4", y = "-19")]
+        public static const FOREST_LVL_4: Class;
+
+        [Embed(source = "../../graphics/objects/TROOP.png")]
+        [EmbedPosition(name = "map", x = "7", y = "2")]
+        public static const DEFAULT_TROOP: Class;
+
+    }
 }

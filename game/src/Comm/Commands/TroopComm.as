@@ -1,15 +1,13 @@
 ﻿package src.Comm.Commands {
 
-	import src.Comm.*;
-	import src.Constants;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Actions.*;
-	import src.Objects.Troop.*;
-	import src.Global;
-	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
+    import src.Comm.*;
+    import src.Constants;
+    import src.Global;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Troop.*;
 
-	public class TroopComm {
+    public class TroopComm {
 
 		private var mapComm: MapComm;		
 		private var session: Session;
@@ -57,9 +55,8 @@
 			}
 
 			var formationCnt: int = packet.readUByte();
-			var unitType: int;
 
-			for (var formationsI: int = 0; formationsI < formationCnt; formationsI++)
+            for (var formationsI: int = 0; formationsI < formationCnt; formationsI++)
 			{
 				var formation: Formation = new Formation(packet.readUByte());
 

@@ -228,10 +228,6 @@ namespace Game.Comm
 
                                 var session = sessions[s];
 
-#if DEBUG
-                                logger.Debug("[" + session.Name + "]: " + data.Length);
-#endif
-
                                 session.PacketMaker.Append(data);
 
                                 do

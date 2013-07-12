@@ -1,0 +1,1 @@
+../../cake/console/cake -app ../ clear_db

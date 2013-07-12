@@ -143,7 +143,11 @@
 		public function hasData(): Boolean {
 			return bytes.bytesAvailable > 0;
 		}
-		
+
+        public function hasError(): Boolean {
+            return (option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED;
+        }
+
 		/******************************************************************/
 	
 		public function getBytes():ByteArray {

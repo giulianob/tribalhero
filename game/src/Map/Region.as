@@ -37,7 +37,7 @@
 			
 			createRegion();
 
-			if (Constants.debug == 3)
+			if (Constants.debug >= 4)
 			{
 				/* adds an outline to this region */
 				graphics.beginFill(0x000000, 0);
@@ -161,7 +161,7 @@
 
 					bg.bitmapData.copyPixels(tileset, srcRect, drawTo, null, null, true);
 					
-					if (Constants.debug >= 2)
+					if (Constants.debug >= 4)
 					{
 						var txtCoords: TextField = new TextField();
 						txtCoords.text = (tileX + regionStartingX) + "," + (tileY + regionStartingY);

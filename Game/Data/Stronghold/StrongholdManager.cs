@@ -171,10 +171,6 @@ namespace Game.Data.Stronghold
             {
                 stronghold.BonusDays = ((decimal)SystemClock.Now.Subtract(stronghold.DateOccupied).TotalDays + stronghold.BonusDays) * .75m;
             }
-            else
-            {
-                
-            }
 
             stronghold.StrongholdState = StrongholdState.Occupied;
             stronghold.Tribe = tribe;

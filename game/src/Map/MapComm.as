@@ -77,10 +77,8 @@
 		public function catchAllErrors(packet: Packet, custom: * = null):void
 		{
 			hideLoading();
-			
-			var hasError: Boolean = (packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED;
-			
-			if (hasError)
+
+			if (packet.hasError())
 			{
 				var err: int = packet.readUInt();
 
@@ -90,7 +88,7 @@
 			if (custom != null) {
 				if (custom is Function)
 					custom();			
-				else if (custom is Object && !hasError && (custom as Object).hasOwnProperty("message"))
+				else if (custom is Object && !packet.hasError() && (custom as Object).hasOwnProperty("message"))
 					InfoDialog.showMessageDialog(custom.message.title, custom.message.content);
 			}
 		}

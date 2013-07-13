@@ -83,7 +83,7 @@ namespace Game.Comm
 
                 s.Blocking = false;
 
-                var session = socketFactory.CreateSocketSession(s.LocalEndPoint.ToString(), s);
+                var session = socketFactory.CreateSocketSession(s.RemoteEndPoint.ToString(), s);
 
                 TcpWorker.Add(session);
             }

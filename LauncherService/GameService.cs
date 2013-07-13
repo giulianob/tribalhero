@@ -20,6 +20,8 @@ namespace LauncherService
     {
         private Engine engine;
 
+        private static readonly ILog Log = LogManager.GetLogger(typeof(GameService));
+
         public GameService()
         {
             InitializeComponent();
@@ -43,7 +45,8 @@ namespace LauncherService
 
             ThreadPool.QueueUserWorkItem(o =>
                 {
-                    XmlConfigurator.Configure();
+                    Log.Info("The game has begun");
+
                     Engine.AttachExceptionHandler();
 
                     Config.LoadConfigFile(settingsFile);

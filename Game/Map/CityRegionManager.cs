@@ -16,20 +16,15 @@ namespace Game.Map
             }
         }
 
-        public CityRegion GetCityRegion(uint x, uint y)
+        public bool TryGetCityRegion(uint x, uint y, out CityRegion cityRegion)
         {
-            if (x == 0 && y == 0)
-            {
-                return null;
-            }
-
-            return GetCityRegion(CityRegion.GetRegionIndex(x, y));
+            return TryGetCityRegion(CityRegion.GetRegionIndex(x, y), out cityRegion);
         }
 
         public void Add(ICityRegionObject obj)
         {
-            CityRegion cityRegion = GetCityRegion(obj.X, obj.Y);
-            if (cityRegion != null)
+            CityRegion cityRegion;
+            if (TryGetCityRegion(obj.X, obj.Y, out cityRegion))
             {
                 cityRegion.Add(obj);
             }
@@ -53,16 +48,23 @@ namespace Game.Map
 
         public void Remove(ICityRegionObject obj)
         {
-            CityRegion cityRegion = GetCityRegion(obj.X, obj.Y);
-            if (cityRegion != null)
+            CityRegion cityRegion;
+            if (TryGetCityRegion(obj.X, obj.Y, out cityRegion))
             {
                 cityRegion.Remove(obj);
             }
         }
 
-        public CityRegion GetCityRegion(ushort id)
+        public bool TryGetCityRegion(ushort id, out CityRegion cityRegion)
         {
-            return cityRegions[id];
+            cityRegion = null;
+            if (id >= cityRegions.Length)
+            {
+                return false;
+            }
+
+            cityRegion = cityRegions[id];
+            return true;
         }
     }
 }

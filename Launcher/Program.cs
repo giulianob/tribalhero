@@ -7,6 +7,7 @@ using Game.Setup;
 using NDesk.Options;
 using Ninject;
 using Ninject.Extensions.Logging.Log4net.Infrastructure;
+using log4net;
 using log4net.Config;
 
 #endregion
@@ -15,6 +16,8 @@ namespace Launcher
 {
     public class Program
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
+
         public static void Main(string[] args)
         {
             bool help = false;
@@ -36,8 +39,8 @@ namespace Launcher
                 Console.Out.WriteLine("Usage: launcher [--settings=settings.ini]");
                 Environment.Exit(0);
             }
-            
-            XmlConfigurator.Configure();
+
+            Log.Info("The game has begun");
             Engine.AttachExceptionHandler();
             Config.LoadConfigFile(settingsFile);
 

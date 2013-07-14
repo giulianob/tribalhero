@@ -38,6 +38,7 @@ STR_ESTABLISHED,Established
 STR_LEVEL_VALUE,Level {0}
 STR_DAYS_OCCUPIED,Total Days Occupied
 STR_UNIT_SINGULAR_PLURAL,{0} unit(s)
+STR_UPKEEP_COUNT,{0} upkeep
 STR_BATTLE_IN_PROGRESS,Battle In Progress
 STR_VIEW_REPORT,View Report
 STR_NEUTRAL,Neutral
@@ -263,4 +264,17 @@ TRANSFER_CHOOSE_STRONGHOLD,Choose a stronghold:
 TRANSFER_ARRIVE_IN,Arrive in {0}
 TRANSFER_SEND,Send
 TRANSFER_CANCEL,Cancel
-TRANSFER_WARNING,"If the stronghold is lost to another tribe before the troop arrives, the troop will be sent back to its city."
+TRANSFER_WARNING,"If the stronghold is lost to another tribe before the troop arrives, the troop will be sent back to its home city."
+,
+TRIBE_LOG_1,Tribe upgraded to level {0}.
+TRIBE_LOG_2,"{0} contributed {1} crop, {2} gold, {3} iron, and {4} wood."
+TRIBE_LOG_3,{0} has joined the tribe.
+TRIBE_LOG_4,{0} has been given the rank of {1}.
+TRIBE_LOG_5,{0} was kicked by {1}.
+TRIBE_LOG_6,{0} has left.
+TRIBE_LOG_7,Took over Stronghold {0} from the tribe {1}.
+TRIBE_LOG_8,Lost Stronghold {0} to tribe {1}.
+TRIBE_LOG_9,Occupied the neutral Stronghold {0}.
+,
+STR_NICE_SHORT_TODAY,"Today, {0}"
+STR_NICE_SHORT_YESTERDAY,"Yesterday, {0}"

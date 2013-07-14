@@ -62,6 +62,8 @@ namespace Game.Data
         #endregion
 
         public const string DB_TABLE = "cities";
+
+        private readonly object objLock = new object();
                      
         public event CityEventHandler<TechnologyEventArgs> TechnologyCleared = (sender, args) => { };
                      
@@ -81,8 +83,6 @@ namespace Game.Data
 
         public event CityEventHandler<ActionReferenceArgs> ReferenceAdded = (sender, args) => { };
 
-        private readonly object objLock = new object();
-
         private readonly Dictionary<uint, IStructure> structures = new Dictionary<uint, IStructure>();
 
         private readonly Dictionary<uint, ITroopObject> troopobjects = new Dictionary<uint, ITroopObject>();
@@ -91,9 +91,9 @@ namespace Game.Data
 
         private int attackPoint;
 
-        private readonly LargeIdGenerator objectIdGen = new LargeIdGenerator(uint.MaxValue);
-
         private IBattleManager battle;
+
+        private readonly LargeIdGenerator objectIdGen = new LargeIdGenerator(uint.MaxValue);
 
         private int defensePoint;
 
@@ -171,14 +171,6 @@ namespace Game.Data
             }
         }
 
-        public Position PrimaryPosition
-        {
-            get
-            {
-                return MainBuilding.PrimaryPosition;
-            }
-        }
-
         /// <summary>
         ///     Returns the city's center point which is the town centers position
         /// </summary>
@@ -223,6 +215,14 @@ namespace Game.Data
                 battle = value;
 
                 PropertyChanged(this, new PropertyChangedEventArgs("Battle"));
+            }
+        }
+
+        public Position PrimaryPosition
+        {
+            get
+            {
+                return MainBuilding.PrimaryPosition;
             }
         }
 
@@ -685,14 +685,14 @@ namespace Game.Data
             TechnologyAdded(this, new TechnologyEventArgs {TechnologyManager = Technologies, Technology = tech});
         }
 
-        #endregion
-
-        public IActionWorker Worker { get; private set; }
-
         private void OnTechnologyCleared(ITechnologyManager manager)
         {
             TechnologyCleared(this, new TechnologyEventArgs {TechnologyManager = manager});
         }
+
+        #endregion
+
+        public IActionWorker Worker { get; private set; }
 
         public int GetTotalLaborers()
         {
@@ -708,6 +708,16 @@ namespace Game.Data
         }
 
         public uint IsBlocked { get; set; }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable)structures.Values).GetEnumerator();
+        }
+
+        IEnumerator<IStructure> IEnumerable<IStructure>.GetEnumerator()
+        {
+            return ((IEnumerable<IStructure>)structures.Values).GetEnumerator();
+        }
 
         /// <summary>
         ///     Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
@@ -732,6 +742,14 @@ namespace Game.Data
                 structure.Technologies.TechnologyUpgraded -= OnTechnologyUpgraded;
 
                 ObjectRemoved(this, new GameObjectArgs { Object = structure });
+            }
+        }
+
+        public int Hash
+        {
+            get
+            {
+                return unchecked((int)Owner.PlayerId);
             }
         }
 
@@ -772,24 +790,6 @@ namespace Game.Data
             var structure = gameObjectFactory.CreateStructure(Id, objectIdGen.GetNext(), type, level, x, y);
             Add(structure.ObjectId, structure, true);
             return structure;
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)structures.Values).GetEnumerator();
-        }
-
-        IEnumerator<IStructure> IEnumerable<IStructure>.GetEnumerator()
-        {
-            return ((IEnumerable<IStructure>)structures.Values).GetEnumerator();
-        }
-
-        public int Hash
-        {
-            get
-            {
-                return unchecked((int)Owner.PlayerId);
-            }
         }
 
         public object Lock

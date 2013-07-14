@@ -365,7 +365,7 @@ namespace Game.Data.Tribe
         private DateTime DepartureTime(ITroopStub stub)
         {
             int distance = tileLocator.TileDistance(stub.City.X, stub.City.Y, X, Y);
-            return TargetTime.Subtract(TimeSpan.FromSeconds(formula.MoveTimeTotal(stub, distance, true)));
+            return TargetTime.Subtract(TimeSpan.FromSeconds(formula.MoveTimeTotal(stub, distance, IsAttack)));
         }
 
         /// <summary>

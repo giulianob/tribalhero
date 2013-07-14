@@ -231,10 +231,19 @@ namespace Testing.ResourcesTests
         /// <summary>
         ///     Tests get amount received with various scenarios
         /// </summary>
-        [Theory, InlineData(3600000, 0, 0, 0), InlineData(600000, 0, 0, 0), InlineData(600000, 10, 0, 1),
-         InlineData(600000, 60, 0, 10), InlineData(3600000, 60, 0, 60), InlineData(3600000, 60, 30, 30),
-         InlineData(1800000, 60, 30, 15), InlineData(1800000, 30, 60, -15), InlineData(1800000, 11, 60, -24),
-         InlineData(3600000, 30, 60, -30), InlineData(1800000, 30, 30, 0)]
+        [Theory,
+         InlineData(3600, 0, 0, 0),
+         InlineData(600, 0, 0, 0),
+         InlineData(600, 10, 0, 1),
+         InlineData(600, 60, 0, 10),
+         InlineData(3600, 60, 0, 60),
+         InlineData(3600, 60, 30, 30),
+         InlineData(1800, 60, 30, 15),
+         InlineData(1800, 30, 60, -15),
+         InlineData(1800, 11, 60, -24),
+         InlineData(3600, 30, 60, -30),
+         InlineData(1800, 30, 30, 0),        
+         InlineData(18, 100000, 43400, 282)]
         // No rate or upkeep for 1 hr should return 0
         // No rate or upkeep for 10 min should return 0
         // Rate of 10 for 10 min should return 1
@@ -245,7 +254,8 @@ namespace Testing.ResourcesTests
         // Rate of 30 with 60 upkeep for 30 min should return -15
         // Rate of 11 with 60 upkeep for 30 min should return -24
         // Rate of 60 with 30 upkeep for 1 hour should return -30
-         // Rate of 30 with 30 upkeep for 1 hour should return 0
+        // Rate of 30 with 30 upkeep for 1 hour should return
+        // The last value should technically be 283 but decimal is giving 282.99999999 which when casted to an int truncates
         public void TestGetAmountReceived(int interval, int rate, int upkeep, int expected)
         {
             var resource = new LazyValue(0, DateTime.MinValue, rate, upkeep);

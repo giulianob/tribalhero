@@ -70,6 +70,8 @@ namespace Game
 
         private readonly ICityChannel cityChannel;
 
+        private readonly IStrongholdManagerLogger strongholdManagerLogger;
+
         private readonly IPolicyServer policyServer;
 
         private readonly ITcpServer server;
@@ -91,7 +93,8 @@ namespace Game
                       StrongholdActivationChecker strongholdActivationChecker,
                       VictoryPointChecker victoryPointChecker,
                       BarbarianTribeChecker barbarianTribeChecker,
-                      ICityChannel cityChannel)
+                      ICityChannel cityChannel,
+                      IStrongholdManagerLogger strongholdManagerLogger)
         {
             this.server = server;
             this.policyServer = policyServer;
@@ -109,6 +112,7 @@ namespace Game
             this.victoryPointChecker = victoryPointChecker;
             this.barbarianTribeChecker = barbarianTribeChecker;
             this.cityChannel = cityChannel;
+            this.strongholdManagerLogger = strongholdManagerLogger;
         }
 
         public EngineState State { get; private set; }
@@ -208,6 +212,7 @@ _________ _______ _________ ______   _______  _
             }            
             strongholdActivationChecker.Start(TimeSpan.FromSeconds(Config.stronghold_activation_check_interval_in_sec));            
             victoryPointChecker.Start();
+            strongholdManagerLogger.Listen(strongholdManager);
 
             // Initialize barbarian tribes
             if (Config.barbariantribe_generate > 0 && barbarianTribeManager.Count < Config.barbariantribe_generate) // Only generate if there is none.

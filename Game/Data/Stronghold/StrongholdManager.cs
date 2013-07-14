@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Data.Events;
 using Game.Data.Tribe;
+using Game.Data.Tribe.EventArguments;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
@@ -18,6 +19,10 @@ namespace Game.Data.Stronghold
 {
     public class StrongholdManager : IStrongholdManager
     {
+        public event EventHandler<StrongholdGainedEventArgs> StrongholdGained;
+
+        public event EventHandler<StrongholdLostEventArgs> StrongholdLost;
+
         private readonly Chat chat;
 
         private readonly IDbManager dbManager;
@@ -191,10 +196,13 @@ namespace Game.Data.Stronghold
             if (oldTribe != null)
             {
                 chat.SendSystemChat("STRONGHOLD_TAKEN_OVER", stronghold.Name, tribe.Name, oldTribe.Name);
+                StrongholdGained.Raise(this, new StrongholdGainedEventArgs {Tribe = tribe, OwnBy = oldTribe, Stronghold = stronghold});
+                StrongholdLost.Raise(this, new StrongholdLostEventArgs { Tribe = oldTribe, AttackedBy = tribe, Stronghold = stronghold });
             }
             else
             {
                 chat.SendSystemChat("STRONGHOLD_NEUTRAL_TAKEN_OVER", stronghold.Name, tribe.Name);
+                StrongholdGained.Raise(this, new StrongholdGainedEventArgs {Tribe = tribe, Stronghold = stronghold});
             }
         }
 

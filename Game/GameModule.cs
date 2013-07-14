@@ -74,6 +74,7 @@ namespace Game
 
             Bind<ITribeManager>().To<TribeManager>().InSingletonScope();
             Bind<ITribe>().To<Tribe>();
+            Bind<ITribeLogger>().To<TribeLogger>();
 
             #endregion
 
@@ -212,6 +213,7 @@ namespace Game
             Bind<VictoryPointChecker>().ToSelf().InSingletonScope();
 
             Bind<IStrongholdFactory>().To<StrongholdFactory>();
+            Bind<IStrongholdManagerLogger>().To<StrongholdManagerLogger>();
 
             #endregion
 

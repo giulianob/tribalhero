@@ -8,8 +8,8 @@ using System.Threading;
 using Game.Comm;
 using Game.Data;
 using Game.Util;
-using Game.Util.Locking;
 using Ninject.Extensions.Logging;
+using Game.Util.Locking;
 
 #endregion
 
@@ -45,16 +45,6 @@ namespace Game.Map
 
         #endregion
 
-        #region Constructors
-
-        public Region(byte[] map, DefaultMultiObjectLock.Factory lockerFactory)
-        {
-            this.map = map;
-            this.lockerFactory = lockerFactory;
-        }
-
-        #endregion
-
         #region Methods
 
         public void AddObjectToTile(ISimpleGameObject obj, uint x, uint y)
@@ -69,6 +59,16 @@ namespace Game.Map
             tileLock.EnterWriteLock();
             tileObjects.Remove(obj, x, y);
             tileLock.ExitWriteLock();
+        }
+
+        #endregion
+
+        #region Constructors
+
+        public Region(byte[] map, DefaultMultiObjectLock.Factory lockerFactory)
+        {
+            this.map = map;
+            this.lockerFactory = lockerFactory;
         }
 
         public void Add(ISimpleGameObject obj)
@@ -87,6 +87,14 @@ namespace Game.Map
             primaryLock.ExitWriteLock();
         }
 
+        public IEnumerable<ISimpleGameObject> GetObjectsInTile(uint x, uint y)
+        {
+            tileLock.EnterReadLock();
+            var copy = tileObjects.Get(x, y).ToArray();
+            tileLock.ExitReadLock();
+            return copy;
+        }
+
         public void Remove(ISimpleGameObject obj, uint origX, uint origY)
         {
             primaryLock.EnterWriteLock();
@@ -102,12 +110,32 @@ namespace Game.Map
             primaryLock.ExitWriteLock();
         }
 
-        public IEnumerable<ISimpleGameObject> GetObjectsInTile(uint x, uint y)
+        public void EnterWriteLock()
         {
-            tileLock.EnterReadLock();
-            var copy = tileObjects.Get(x, y).ToArray();
-            tileLock.ExitReadLock();
-            return copy;
+            primaryLock.EnterWriteLock();
+        }
+
+        public void ExitWriteLock()
+        {
+            primaryLock.ExitWriteLock();
+        }
+
+        #endregion
+
+        #region Static Util Methods
+
+        private static IRegionLocator regionLocator = new RegionLocator();
+
+        public static IRegionLocator RegionLocator
+        {
+            get
+            {
+                return regionLocator;
+            }
+            set
+            {
+                regionLocator = value;
+            }
         }
 
         public IEnumerable<ISimpleGameObject> GetPrimaryObjects()
@@ -125,6 +153,10 @@ namespace Game.Map
                 // Players must always be locked first
                 primaryLock.EnterReadLock();
                 var playersInRegion = primaryObjects.OfType<IGameObject>().Select(p => p.City.Owner).Where(p => p != null).Distinct().ToArray<ILockable>();
+                                             .Select(p => p.City.Owner)
+                                             .Where(p => p != null)
+                                             .Distinct(new LockableComparer())
+                                             .ToArray();
                 primaryLock.ExitReadLock();
 
                 using (var lck = lockerFactory().Lock(playersInRegion))
@@ -136,9 +168,15 @@ namespace Game.Map
                     }
 
                     var lockedPlayersInRegion = primaryObjects.OfType<IGameObject>().Select(p => p.City.Owner).Where(p => p != null).Distinct().ToArray<ILockable>();
-                    lck.SortLocks(lockedPlayersInRegion);
+                                                       .Select(p => p.City.Owner)
+                                                       .Where(p => p != null)
+                                                       .Distinct(new LockableComparer())
+                                                       .ToArray();
 
-                    if (!playersInRegion.SequenceEqual(lockedPlayersInRegion))
+                    lck.SortLocks(lockedPlayersInRegion);
+                    lck.SortLocks(playersInRegion);
+
+                    if (!playersInRegion.SequenceEqual(lockedPlayersInRegion, new LockableComparer()))
                     {
                         primaryLock.ExitWriteLock();
                         continue;
@@ -196,34 +234,6 @@ namespace Game.Map
 
             isDirty = true;
             primaryLock.ExitWriteLock();
-        }
-
-        public void EnterWriteLock()
-        {
-            primaryLock.EnterWriteLock();
-        }
-
-        public void ExitWriteLock()
-        {
-            primaryLock.ExitWriteLock();
-        }
-
-        #endregion
-
-        #region Static Util Methods
-
-        private static IRegionLocator regionLocator = new RegionLocator();
-
-        public static IRegionLocator RegionLocator
-        {
-            get
-            {
-                return regionLocator;
-            }
-            set
-            {
-                regionLocator = value;
-            }
         }
 
         public static ushort GetRegionIndex(ISimpleGameObject obj)

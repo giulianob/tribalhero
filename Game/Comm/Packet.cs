@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -44,7 +45,7 @@ namespace Game.Comm
 
         #region Members
 
-        private readonly MemoryStream sendBuffer;
+        private readonly MemoryStream sendBuffer = new MemoryStream();
 
         private byte[] readBuffer;
 
@@ -55,21 +56,16 @@ namespace Game.Comm
         #region Constructors
 
         public Packet()
-        {
-            sendBuffer = new MemoryStream();
+        {            
         }
 
         public Packet(Command cmd)
         {
-            sendBuffer = new MemoryStream();
-
             this.cmd = cmd;
         }
 
         public Packet(Packet request)
         {
-            sendBuffer = new MemoryStream();
-
             cmd = request.cmd;
             seq = request.seq;
             option = (ushort)(request.option | (ushort)Options.Reply);
@@ -91,7 +87,7 @@ namespace Game.Comm
 
             seq = BitConverter.ToUInt16(data, 0);
             option = BitConverter.ToUInt16(data, 2);
-            cmd = (Command)Enum.Parse(typeof(Command), BitConverter.ToUInt16(data, 4).ToString(), true);
+            cmd = (Command)Enum.Parse(typeof(Command), BitConverter.ToUInt16(data, 4).ToString(CultureInfo.InvariantCulture), true);
             Length = BitConverter.ToUInt16(data, 6);
 
             readOffset = HEADER_SIZE;
@@ -354,17 +350,24 @@ namespace Game.Comm
             return ret;
         }
 
-        public string ToString(int maxLength)
+        public string ToString(int maxLength = -1)
         {
-            string str = "<Too Large To Display>";
-            byte[] dump = GetBytes();
-
-            if (dump.Length <= maxLength)
+            string str = string.Empty;
+            
+            if (sendBuffer.Length <= maxLength)
             {
+                byte[] dump = GetBytes();
                 str = HexDump.GetString(dump, 8, 16);
             }
 
-            return "Cmd[" + cmd + "] Len[" + dump.Length + "]:" + Environment.NewLine + str;
+            return string.Format("Cmd[{0}] Seq[{1}] Reply[{2}] ReadBufferLen[{3}] SendBufferLen[{4}]:{5}{6}", 
+                cmd, 
+                seq, 
+                (option & (int)Options.Reply) == (int)Options.Reply, 
+                readBuffer != null ? readBuffer.Length.ToString(CultureInfo.InvariantCulture) : "N/A",
+                sendBuffer.Length,                 
+                string.IsNullOrEmpty(str) ? string.Empty : Environment.NewLine,
+                str);
         }
 
         #endregion

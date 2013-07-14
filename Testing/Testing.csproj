@@ -135,6 +135,7 @@
     <Compile Include="BattleTests\StaminaMonitorTests.cs" />
     <Compile Include="BattleTests\StatsModCalculator.cs" />
     <Compile Include="ChannelTests\ChannelTest.cs" />
+    <Compile Include="CityRegionTests\CityRegionTest.cs" />
     <Compile Include="CityTests\CityTest.cs" />
     <Compile Include="DatabaseTests\DbLoaderActionFactoryTest.cs" />
     <Compile Include="FormulaTests\BarbarianTribeFormulaTest.cs" />
@@ -219,6 +220,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

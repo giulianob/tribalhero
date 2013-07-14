@@ -12,8 +12,6 @@ namespace Game.Comm
 {
     public class SocketSession : Session
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
-
         public SocketSession(string name, Socket socket, Processor processor)
                 : base(name, processor)
         {
@@ -24,21 +22,42 @@ namespace Game.Comm
 
         public override bool Write(Packet packet)
         {
-#if DEBUG || CHECK_LOCKS
-            logger.Info("Sending: " + packet.ToString(32));
-#endif
+            if (Logger.IsDebugEnabled)
+            {
+                Logger.Debug("Sending IP[{0}] {1}", Name, packet.ToString());
+            }
 
             byte[] packetBytes = packet.GetBytes();
             int ret;
 
-            try
+            while (true)
             {
-                ret = Socket.Send(packetBytes, packetBytes.Length, SocketFlags.None);
+                try
+                {
+                    ret = Socket.Send(packetBytes, packetBytes.Length, SocketFlags.None);
+                    break;
+                }
+                catch(SocketException e)
+                {
+                    if (e.SocketErrorCode == SocketError.WouldBlock)
+                    {
+                        Socket.Blocking = true;
+                        continue;
+                    }
+                    
+                    return false;
+                }
+                catch(Exception)
+                {
+                    return false;
+                }
             }
-            catch(Exception)
+
+            if (Socket.Blocking)
             {
-                return false;
+                Socket.Blocking = false;
             }
+
             return ret > 0;
         }
     }

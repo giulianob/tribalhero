@@ -6,6 +6,7 @@ using System.Data.Common;
 using System.Linq;
 using Game.Comm;
 using Game.Data.Stronghold;
+using Game.Data.Tribe.EventArguments;
 using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Actions;
@@ -22,19 +23,22 @@ namespace Game.Data.Tribe
 
         private readonly ITribeFactory tribeFactory;
 
+        private readonly ITribeLogger tribeLogger;
+
         private readonly IDbManager dbManager;
 
         private readonly IStrongholdManager strongholdManager;
 
         private readonly LargeIdGenerator tribeIdGen = new LargeIdGenerator(Config.tribe_id_max, Config.tribe_id_min);
 
-        public TribeManager(IDbManager dbManager, IStrongholdManager strongholdManager, IActionFactory actionFactory, ITribeFactory tribeFactory)
+        public TribeManager(IDbManager dbManager, IStrongholdManager strongholdManager, IActionFactory actionFactory, ITribeFactory tribeFactory, ITribeLogger tribeLogger)
         {
             Tribes = new ConcurrentDictionary<uint, ITribe>();
             this.dbManager = dbManager;
             this.strongholdManager = strongholdManager;
             this.actionFactory = actionFactory;
             this.tribeFactory = tribeFactory;
+            this.tribeLogger = tribeLogger;
         }
 
         private ConcurrentDictionary<uint, ITribe> Tribes { get; set; }
@@ -233,30 +237,32 @@ namespace Game.Data.Tribe
             tribe.TribesmanRemoved += TribeOnTribesmanRemoved;
             tribe.Updated += TribeOnUpdated;
             tribe.RanksUpdated += TribeOnRanksUpdated;
+            tribeLogger.Listen(tribe);
         }
 
-        private void TribeOnRanksUpdated(object sender, EventArgs eventArgs)
+        private void TribeOnRanksUpdated(object sender, TribeEventArgs eventArgs)
         {
-            ITribe tribe = (ITribe)sender;
             Packet packet = new Packet(Command.TribeChannelRanksUpdate);
-            PacketHelper.AddTribeRanksToPacket(tribe, packet);
+            PacketHelper.AddTribeRanksToPacket(e.Tribe, packet);
 
-            Global.Current.Channel.Post("/TRIBE/" + tribe.Id, packet);
+            Global.Current.Channel.Post("/TRIBE/" + e.Tribe.Id, packet);
         }
 
-        private void TribeOnUpdated(object sender, EventArgs eventArgs)
-        {
-            ITribe tribe = (ITribe)sender;
+        private void TribeOnUpdated(object sender, TribeEventArgs e)
+        {            
             Packet packet = new Packet(Command.TribeChannelNotification);
-            packet.AddInt32(GetIncomingList(tribe).Count());
-            packet.AddInt16(tribe.AssignmentCount);
+            packet.AddInt32(GetIncomingList(e.Tribe).Count());
+            packet.AddInt16(e.Tribe.AssignmentCount);
             
-            Global.Current.Channel.Post("/TRIBE/" + tribe.Id, packet);
+            Global.Current.Channel.Post("/TRIBE/" + e.Tribe.Id, packet);
         }
 
         private void UnsubscribeEvents(ITribe tribe)
         {
-            tribe.TribesmanRemoved += TribeOnTribesmanRemoved;
+            tribe.TribesmanRemoved -= TribeOnTribesmanRemoved;
+            tribe.Updated -= TribeOnUpdated;
+            tribe.RanksUpdated += TribeOnRanksUpdated;
+            tribeLogger.Unlisten(tribe);
         }
 
         private void TribeOnTribesmanRemoved(object sender, TribesmanRemovedEventArgs e)

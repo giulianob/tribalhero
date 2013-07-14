@@ -130,8 +130,9 @@ namespace Game.Map
                     {
                         var lockedPlayersInRegion = data.ToArray<ILockable>();
                         lck.SortLocks(lockedPlayersInRegion);
+                        lck.SortLocks(playersInRegion);
 
-                        if (!playersInRegion.SequenceEqual(lockedPlayersInRegion))
+                        if (!playersInRegion.SequenceEqual(lockedPlayersInRegion, new LockableComparer()))
                         {                            
                             continue;
                         }

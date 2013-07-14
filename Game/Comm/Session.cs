@@ -2,6 +2,7 @@
 
 using Game.Data;
 using Game.Util;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -9,7 +10,9 @@ namespace Game.Comm
 {
     public abstract class Session : IChannelListener
     {
-        #region Delegates        
+        protected readonly ILogger Logger = LoggerFactory.Current.GetCurrentClassLogger();
+
+        #region Delegates
 
         public delegate void CloseCallback(Session sender);
 
@@ -22,7 +25,7 @@ namespace Game.Comm
         protected Session(string name, Processor processor)
         {
             Name = name;
-            this.processor = processor;
+            Processor = processor;
             PacketMaker = new PacketMaker();
         }
 
@@ -61,37 +64,42 @@ namespace Game.Comm
 
         public void Process(object obj)
         {
-            var p = (Packet)obj;
+            var packet = (Packet)obj;
 
-            if (!IsLoggedIn && p.Cmd != Command.Login)
+            if (!IsLoggedIn && packet.Cmd != Command.Login)
             {
                 return;
             }
 
             if (IsLoggedIn)
             {
-                if (p.Cmd == Command.Login)
+                if (packet.Cmd == Command.Login)
                 {
                     return;
                 }
 
-                if (Player.GetCityCount() == 0 && p.Cmd != Command.CityCreateInitial)
+                if (Player.GetCityCount() == 0 && packet.Cmd != Command.CityCreateInitial)
                 {
                     return;
                 }
             }
 
-            if (processor != null)
+            if (Processor != null)
             {
-                processor.Execute(this, p);
+                if (Logger.IsDebugEnabled)
+                {
+                    Logger.Debug("Processing IP[{0}] {1}", Name, packet.ToString());
+                }
+
+                Processor.Execute(this, packet);
             }
         }
 
         public void ProcessEvent(object obj)
         {
-            if (processor != null)
+            if (Processor != null)
             {
-                processor.ExecuteEvent(this, (Packet)obj);
+                Processor.ExecuteEvent(this, (Packet)obj);
             }
         }
     }

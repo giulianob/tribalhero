@@ -537,8 +537,8 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var region = world.Regions.CityRegions.GetCityRegion(regionId);
-                if (region == null)
+                CityRegion region;
+                if (!world.Regions.CityRegions.TryGetCityRegion(regionId, out region))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;

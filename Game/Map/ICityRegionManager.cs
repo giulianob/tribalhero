@@ -4,9 +4,9 @@ namespace Game.Map
 {
     public interface ICityRegionManager
     {
-        CityRegion GetCityRegion(uint x, uint y);
+        bool TryGetCityRegion(uint x, uint y, out CityRegion cityRegion);
 
-        CityRegion GetCityRegion(ushort id);
+        bool TryGetCityRegion(ushort id, out CityRegion cityRegion);
 
         void Add(ICityRegionObject cityRegionObject);
 

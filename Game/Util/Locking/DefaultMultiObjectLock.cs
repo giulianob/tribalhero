@@ -98,7 +98,7 @@ namespace Game.Util.Locking
             return currentLock != null && currentLock.lockedObjects.Any(lck => lck == obj.Lock);
         }
 
-        private static int CompareObject(ILockable x, ILockable y)
+        public static int CompareObject(ILockable x, ILockable y)
         {
             var hashDiff = x.Hash.CompareTo(y.Hash);
             if (hashDiff != 0)

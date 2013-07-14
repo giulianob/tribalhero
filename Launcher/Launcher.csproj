@@ -123,6 +123,9 @@
       <SubType>Designer</SubType>
     </None>
     <BaseApplicationManifest Include="Properties\app.manifest" />
+    <None Include="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

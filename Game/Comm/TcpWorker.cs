@@ -236,9 +236,9 @@ namespace Game.Comm
 
                                     if (packet == null)
                                     {
-                                        // Remove the player if after processing packets we still have over 64k of data remaining.
+                                        // Remove the player if after processing packets we still have over 1MB of data remaining.
                                         // This probably means the player is spamming the server with an invalid client that doesn't speak our protocol
-                                        if (session.PacketMaker.Length > 65536)
+                                        if (session.PacketMaker.Length > 1048576)
                                         {
                                             SocketDisconnect(s);
                                         }

@@ -126,7 +126,11 @@ namespace Game.Map
             {
                 // Players must always be locked first
                 objLock.EnterReadLock();
-                var playersInRegion = objlist.OfType<IGameObject>().Select(p => p.City.Owner).Where(p => p != null).Distinct().ToArray<ILockable>();
+                var playersInRegion = objlist.OfType<IGameObject>()
+                                             .Select(p => p.City.Owner)
+                                             .Where(p => p != null)
+                                             .Distinct(new LockableComparer())
+                                             .ToArray();
                 objLock.ExitReadLock();
 
                 using (var lck = lockerFactory().Lock(playersInRegion))
@@ -137,10 +141,16 @@ namespace Game.Map
                         continue;
                     }
 
-                    var lockedPlayersInRegion = objlist.OfType<IGameObject>().Select(p => p.City.Owner).Where(p => p != null).Distinct().ToArray<ILockable>();
-                    lck.SortLocks(lockedPlayersInRegion);
+                    var lockedPlayersInRegion = objlist.OfType<IGameObject>()
+                                                       .Select(p => p.City.Owner)
+                                                       .Where(p => p != null)
+                                                       .Distinct(new LockableComparer())
+                                                       .ToArray();
 
-                    if (!playersInRegion.SequenceEqual(lockedPlayersInRegion))
+                    lck.SortLocks(lockedPlayersInRegion);
+                    lck.SortLocks(playersInRegion);
+
+                    if (!playersInRegion.SequenceEqual(lockedPlayersInRegion, new LockableComparer()))
                     {
                         objLock.ExitWriteLock();
                         continue;

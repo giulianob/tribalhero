@@ -60,7 +60,7 @@ package src.UI.Dialog {
 		private function updateTime(e: Event = null) : void {			
 			var trainTime: int = Formula.trainTime(structure.level, sldAmount.getValue(), unitPrototype, city, structure.getCorrespondingCityObj().techManager, false);
 
-			lblTime.setText(Util.formatTime(trainTime));
+			lblTime.setText(DateUtil.formatTime(trainTime));
 		}
 
 		private function updateResources(e: Event = null) : void {			

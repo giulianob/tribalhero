@@ -1,6 +1,7 @@
 ﻿package src.UI.Tooltips {
 
-	import src.Util.StringHelper;
+    import src.Util.DateUtil;
+    import src.Util.StringHelper;
 	import src.Global;
 	import src.Map.City;
 	import src.Objects.Effects.RequirementFormula;
@@ -65,7 +66,7 @@
 				return label;
 			};
 
-			lblTime.setText(Util.formatTime(Formula.buildTime(city, structPrototype.buildTime, city.techManager)));
+			lblTime.setText(DateUtil.formatTime(Formula.buildTime(city, structPrototype.buildTime, city.techManager)));
 
 			pnlResources.removeAll();
 			

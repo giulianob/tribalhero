@@ -23,6 +23,7 @@ package src.UI.Components
 		private var loadPage: Function;
 		
 		private var includeCaption: Boolean;
+        private var hasLoaded: Boolean;
 		
 		public function PagingBar(loadPage: Function, includeCaption: Boolean = true, firstTitle: * = "<< First", previousTitle: * = "<< Previous", nextTitle: * = "Next >", lastTitle: * = "Last >>", refreshTitle: * = "Refresh")
 		{
@@ -69,8 +70,15 @@ package src.UI.Components
 				loadPage(page);
 			});
 		}
+
+        public function loadInitially() : void {
+            if (!this.hasLoaded) {
+                loadPage(1);
+            }
+        }
 		
 		public function setData(data: * ) : void {
+            this.hasLoaded = true;
 			page = data.page;
 			totalPages = data.pages;
 			btnFirst.setEnabled(page > 1);

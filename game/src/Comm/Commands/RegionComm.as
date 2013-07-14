@@ -159,7 +159,7 @@
 					var objY: int = packet.readUShort() + int(id / Constants.miniMapRegionW) * Constants.cityRegionTileH;
 					var objGroupId: int = packet.readUInt();
 					var objId: int = packet.readUInt();
-					var extraProps : Object = new Object();
+					var extraProps : Object = {};
 					
 					var coord: Point = TileLocator.getMiniMapScreenCoord(objX, objY);
 					

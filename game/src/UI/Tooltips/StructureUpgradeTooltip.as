@@ -11,7 +11,8 @@ package src.UI.Tooltips {
 	import src.UI.Components.ResourcesPanel;
 	import src.UI.Components.StructureStatBox;
 	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.Util.StringHelper;
+    import src.Util.DateUtil;
+    import src.Util.StringHelper;
 	import src.Util.Util;
 	import src.Objects.Effects.Formula;
 
@@ -76,7 +77,7 @@ package src.UI.Tooltips {
 			if (nextStructPrototype != null)
 			{
 				lblNextLvlDescription.setText(nextStructPrototype.getDescription());
-				lblNextLvlTime.setText(Util.formatTime(Formula.buildTime(parentObj, nextStructPrototype.buildTime, parentObj.getCorrespondingCityObj().techManager)));
+				lblNextLvlTime.setText(DateUtil.formatTime(Formula.buildTime(parentObj, nextStructPrototype.buildTime, parentObj.getCorrespondingCityObj().techManager)));
 
 				if (nextStructPrototype.layouts.length > 0 || (missingRequirements != null && missingRequirements.length > 0))
 				{

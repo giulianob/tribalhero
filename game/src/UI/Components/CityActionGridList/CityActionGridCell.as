@@ -17,7 +17,8 @@
 	import src.Objects.Factories.WorkerFactory;
 	import src.Objects.Prototypes.Worker;
 	import src.UI.Components.SimpleTooltip;
-	import src.Util.Util;
+    import src.Util.DateUtil;
+    import src.Util.Util;
 
 	public class CityActionGridCell extends JPanel implements GridListCell{
 
@@ -91,7 +92,7 @@
 
 			var time: Number = Math.max(0, currentAction.endTime - Global.map.getServerTime());
 
-			lblTime.setText(time > 0 ? Util.formatTime(time) : '');
+			lblTime.setText(time > 0 ? DateUtil.formatTime(time) : '');
 		}
 
 		public function getCellValue():*{

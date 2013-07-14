@@ -1,7 +1,9 @@
 ﻿package src.UI.Dialog 
 {
 	import adobe.utils.CustomActions;
-	import src.Util.StringHelper;
+
+    import src.Util.DateUtil;
+    import src.Util.StringHelper;
 	import flash.events.*;
 	import flash.utils.*;
 	import mx.utils.StringUtil;
@@ -74,7 +76,7 @@
 			
 			var establishedDiff:int = Global.map.getServerTime() - profileData.created;
 			addInfo(stats, StringHelper.localize("STR_LEVEL"), profileData.level);
-			addInfo(stats, StringHelper.localize("STR_ESTABLISHED"), Util.niceDays(establishedDiff));
+			addInfo(stats, StringHelper.localize("STR_ESTABLISHED"), DateUtil.niceDays(establishedDiff));
 			
 			pnlHeader.appendAll(lblTribeName, stats);
 			

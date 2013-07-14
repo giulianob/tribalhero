@@ -165,7 +165,7 @@
 			addInfo(form, StringHelper.localize("STR_GATE"), Stronghold.gateToString(profileData.strongholdLevel, profileData.strongholdGate));
 			
 			var timediff :int = Global.map.getServerTime() - profileData.strongholdDateOccupied;
-			addInfo(form, StringHelper.localize("STR_OCCUPIED"), Util.niceDays(timediff));
+			addInfo(form, StringHelper.localize("STR_OCCUPIED"), DateUtil.niceDays(timediff));
 			addInfo(form, StringHelper.localize("STR_VP_RATE"), StringHelper.localize("STR_PER_DAY_RATE", Util.roundNumber(profileData.strongholdVictoryPointRate).toString()));
 		
 			var s:TroopStub = new TroopStub();

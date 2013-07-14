@@ -7,6 +7,7 @@
     import src.Map.TileLocator;
     import src.Objects.Effects.Formula;
     import src.Objects.Troop.*;
+    import src.Util.DateUtil;
     import src.Util.StringHelper;
     import src.Util.Util;
 
@@ -35,7 +36,7 @@
 				var moveTime: int = Formula.moveTimeTotal(city, stub.getSpeed(city), distance, false);
 				if (Global.map.getServerTime() + moveTime > assignment.endTime) {
 					var diff: int = Global.map.getServerTime() + moveTime - assignment.endTime;
-					lblTroopSpeed.setText("Your units will be "+ Util.niceTime(diff)+" late. Choose faster units to arrive on time.");
+					lblTroopSpeed.setText("Your units will be "+ DateUtil.niceTime(diff) + " late. Choose faster units to arrive on time.");
 				}
 				else {
 					lblTroopSpeed.setText(StringHelper.localize("TROOP_CREATE_DRAG_HINT"));

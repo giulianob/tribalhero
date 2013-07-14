@@ -43,7 +43,7 @@
 
             createRegion();
 
-            if (Constants.debug == 3)
+			if (Constants.debug >= 4)
             {
                 /* adds an outline to this region */
                 graphics.beginFill(0x000000, 0);
@@ -129,7 +129,7 @@
                             null,
                             true);
 
-                    if (Constants.debug >= 2)
+                    if (Constants.debug >= 4)
                     {
                         var txtCoords: TextField = new TextField();
                         txtCoords.text = mapTilePosition.x + "," + mapTilePosition.y;

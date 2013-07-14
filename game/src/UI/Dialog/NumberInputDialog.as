@@ -17,7 +17,8 @@ import src.Global;
 import src.Objects.Resources;
 import src.UI.Components.SimpleResourcesPanel;
 import src.UI.GameJPanel;
-import src.Util.Util;
+    import src.Util.DateUtil;
+    import src.Util.Util;
 
 import org.aswing.*;
 import org.aswing.border.*;
@@ -71,7 +72,7 @@ public class NumberInputDialog extends GameJPanel {
 	private function updateTime(e: Event = null) : void {	
 		if (timePerUnit <= 0) return;
 		
-		lblTime.setText(Util.formatTime(timePerUnit * sldAmount.getValue()));
+		lblTime.setText(DateUtil.formatTime(timePerUnit * sldAmount.getValue()));
 	}
 	
 	private function updateResources(e: Event = null) : void {

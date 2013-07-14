@@ -10,7 +10,8 @@
 	import src.UI.Components.ResourcesPanel;
 	import src.UI.Components.StructureStatBox;
 	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.Util.StringHelper;
+    import src.Util.DateUtil;
+    import src.Util.StringHelper;
 	import src.Util.Util;
 	import src.Objects.Effects.Formula;
 
@@ -69,7 +70,7 @@
 				return label;
 			};
 
-			lblTime.setText(Util.formatTime(Formula.buildTime(parentObj, structPrototype.buildTime, parentObj.getCorrespondingCityObj().techManager)));
+			lblTime.setText(DateUtil.formatTime(Formula.buildTime(parentObj, structPrototype.buildTime, parentObj.getCorrespondingCityObj().techManager)));
 
 			if (structPrototype.layouts.length > 0 || (missingRequirements != null && missingRequirements.length > 0))
 			{

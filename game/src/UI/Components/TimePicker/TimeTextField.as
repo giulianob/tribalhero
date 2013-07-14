@@ -4,7 +4,9 @@ package src.UI.Components.TimePicker
 	import flash.events.FocusEvent;
 	import flash.events.KeyboardEvent;
 	import org.aswing.JTextField;
-	import src.Util.Util;
+
+    import src.Util.DateUtil;
+    import src.Util.Util;
 	
 	/**
 	 * ...
@@ -27,7 +29,7 @@ package src.UI.Components.TimePicker
 		override public function setText(text:String):void 
 		{			
 			value = parseInt(text);			
-			super.setText(Util.formatTime(value));
+			super.setText(DateUtil.formatTime(value));
 		}
 		
 		override public function getText():String 

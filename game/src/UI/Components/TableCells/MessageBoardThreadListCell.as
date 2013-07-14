@@ -9,7 +9,8 @@
 	import src.UI.Components.Messaging.MessagingIcon;
 	import src.UI.Components.Tribe.SetRankIcon;
 	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.Util.StringHelper;
+    import src.Util.DateUtil;
+    import src.Util.StringHelper;
 	import src.Util.Util;
 
 	public class MessageBoardThreadListCell extends AbstractTableCell
@@ -50,7 +51,7 @@
             }            
             
             lblSubject.setText(StringHelper.truncate(value.subject, 100));
-            lblLastPost.setText("Last post " + value.lastPostAgoInWords + " by " + value.lastPostPlayerName);                                         
+            lblLastPost.setText("Last post " + DateUtil.getRelativeFromTimestamp(value.lastPostTimestamp) + " by " + value.lastPostPlayerName);
             
 			wrapper.removeAll();				
 			

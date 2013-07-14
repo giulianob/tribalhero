@@ -3,6 +3,8 @@
     import System.Collection.Generic.IGrouping;
     import System.Linq.Enumerable;
 
+    import com.adobe.serialization.json.JSONDecoder;
+
     import fl.lang.*;
 
     import flash.events.*;
@@ -18,6 +20,7 @@
     import org.aswing.table.*;
 
     import src.*;
+    import src.Comm.GameURLLoader;
     import src.Objects.*;
     import src.Objects.Effects.*;
     import src.Objects.Process.*;
@@ -51,18 +54,19 @@
         private var messageBoardTab:JPanel;
         private var pnlOngoingAttacks:JPanel;
 
+        private var logTab: JPanel;
+        private var logLoader: GameURLLoader;
+        private var txtArea : JPanel;
+        private var tribeLogPagingBar: PagingBar;
+        private var tribeLogTab: Container;
+
         public function TribeProfileDialog(profileData: *)
         {
             this.profileData = profileData;
 
+            logLoader = new GameURLLoader();
+            logLoader.addEventListener(Event.COMPLETE, onReceiveLogs);
             createUI();
-
-            // Refreshes the general tribe info
-            updateTimer = new Timer(120 * 1000);
-            updateTimer.addEventListener(TimerEvent.TIMER, function(e: Event = null): void {
-                update();
-            });
-            updateTimer.start();
 
             pnlTabs.addStateListener(function (e: InteractiveEvent): void {
                 if (pnlTabs.getSelectedComponent() == strongholdTab) {
@@ -76,7 +80,6 @@
         }
 
         private function dispose():void {
-            updateTimer.stop();
         }
 
         public function update(): void {
@@ -125,6 +128,7 @@
 
             // Append main panels
             appendAll(pnlHeader, pnlTabs);
+
         }
 
         private function createMessageBoardTab(): JPanel {
@@ -199,9 +203,9 @@
             grid.append(simpleLabelMaker(StringHelper.localize("STR_LEVEL_VALUE", stronghold.lvl), StringHelper.localize("STR_LEVEL"), new AssetIcon(new ICON_UPGRADE())));
             grid.append(simpleLabelMaker(StringHelper.localize("STR_PER_HOUR_RATE", Util.roundNumber(stronghold.victoryPointRate)), StringHelper.localize("STR_VP_RATE"), new AssetIcon(new ICON_STAR())));
             var timediff :int = Global.map.getServerTime() - stronghold.dateOccupied;
-            grid.append(simpleLabelMaker(Util.niceDays(timediff), StringHelper.localize("STR_DAYS_OCCUPIED"), new AssetIcon(new ICON_SHIELD())));
+            grid.append(simpleLabelMaker(DateUtil.niceDays(timediff), StringHelper.localize("STR_DAYS_OCCUPIED"), new AssetIcon(new ICON_SHIELD())));
 
-            var lblTroop: JLabel = new JLabel(StringHelper.localize("STR_UNIT_SINGULAR_PLURAL", stronghold.upkeep));
+            var lblTroop: JLabel = new JLabel(StringHelper.localize("STR_UPKEEP_COUNT", stronghold.upkeep));
             lblTroop.setHorizontalAlignment(AsWingConstants.RIGHT);
 
             var pnlGate: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 0, AsWingConstants.RIGHT));
@@ -440,6 +444,70 @@
             return pnlAssignmentHolder;
         }
 
+        private function onReceiveLogs(e: Event): void {
+            var data: Object;
+            try
+            {
+                data = logLoader.getDataAsObject();
+            }
+            catch (e: Error) {
+                InfoDialog.showMessageDialog("Error", "Unable to perform this action. Try again later.");
+                return;
+            }
+
+            if (data.error != null) {
+                InfoDialog.showMessageDialog("Info", data.error);
+                return;
+            }
+            txtArea.removeAll();
+            tribeLogPagingBar.setData(data);
+
+            for each(var log:* in data.tribelogs) {
+                var panel: JPanel = new JPanel(new SoftBoxLayout());
+                var params: * = new JSONDecoder(log.parameters).getValue();
+                var date:JLabel = new JLabel(DateUtil.niceShort(log.created));
+                date.setVerticalAlignment(AsWingConstants.TOP);
+                panel.append(date);
+
+                var icon:AssetIcon;
+                switch((int)(log.type)) {
+                    case 1: icon = new AssetIcon(new ICON_UPGRADE()); break;
+                    case 2: icon = new AssetIcon(new ICON_GOLD()); break;
+                    case 3: icon = new AssetIcon(new ICON_LABOR()); break;
+                    case 4: icon = new AssetIcon(new ICON_STAR()); break;
+                    case 5: icon = new AssetIcon(new ICON_UNFRIEND()); break;
+                    case 6: icon = new AssetIcon(new ICON_UNFRIEND()); break;
+                    case 7: icon = new AssetIcon(new ICON_SINGLE_SWORD()); break;
+                    case 8: icon = new AssetIcon(new ICON_SHIELD()); break;
+                    case 9: icon = new AssetIcon(new ICON_SINGLE_SWORD()); break;
+                    default: icon = new AssetIcon(new ICON_STAR()); break;
+                }
+                var iconLabel: JLabel = new JLabel("",icon);
+                iconLabel.setVerticalAlignment(AsWingConstants.TOP);
+                panel.append(iconLabel);
+                panel.append(new RichLabel(StringHelper.localize("TRIBE_LOG_"+log.type,params),0,40));
+                txtArea.append(panel);
+            }
+        }
+
+        private function createLogTab() : Container {
+            if(!logTab) {
+                logTab = new JPanel(new BorderLayout());
+                txtArea = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+                txtArea.setConstraints("Center");
+                txtArea.setBackground(ASColor.BLUE);
+
+                tribeLogPagingBar = new PagingBar(function(page: int = 0): void {
+                    Global.mapComm.Tribe.logListing(logLoader, page);
+                });
+                tribeLogPagingBar.setConstraints("South");
+
+                logTab.appendAll(Util.createTopAlignedScrollPane(txtArea), tribeLogPagingBar);
+            }
+
+            return logTab;
+        }
+
         private function createMembersTab() : Container {
             var modelMembers: VectorListModel = new VectorListModel(profileData.members);
             var tableMembers: JTable = new JTable(new PropertyTableModel(
@@ -596,7 +664,6 @@
             }
 
             var scrollDescription: JScrollPane = Util.createTopAlignedScrollPane(pnlDescriptionHolder);
-            scrollDescription.pack();
 
             // Side tab browser
             var lastActiveInfoTab: int = 0;
@@ -614,6 +681,9 @@
             pnlInfoTabs.appendTab(createMembersTab(), "Members (" + profileData.members.length + ")");
             pnlInfoTabs.appendTab(createIncomingAttackTab(), "Invasions (" + profileData.incomingAttacks.length + ")");
             pnlInfoTabs.appendTab(createAssignmentTab(), "Assignments (" + profileData.assignments.length + ")");
+            
+            tribeLogTab = createLogTab();
+            pnlInfoTabs.appendTab(tribeLogTab, "Log");
 
             pnlInfoTabs.setSelectedIndex(lastActiveInfoTab);
 
@@ -712,7 +782,7 @@
             var lblTribeName: JLabel = new JLabel(profileData.tribeName + " (Level " + profileData.tribeLevel + ")", null, AsWingConstants.LEFT);
             GameLookAndFeel.changeClass(lblTribeName, "darkHeader");
 
-            var lblEstablished: JLabel = new JLabel(StringHelper.localize("STR_ESTABLISHED_WITH_TIME", Util.niceDays(Global.map.getServerTime() - profileData.created)));
+            var lblEstablished: JLabel = new JLabel(StringHelper.localize("STR_ESTABLISHED_WITH_TIME", DateUtil.niceDays(Global.map.getServerTime() - profileData.created)));
 
             var pnlHeaderTitle: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 0, false));
             pnlHeaderTitle.setConstraints("Center");
@@ -731,9 +801,17 @@
             pnlHeader.removeAll();
             pnlHeader.append(pnlHeaderFirstRow);
 
-            // Needed since gets called after the panel has already been rendered (for updates)
-            pnlHeader.repaintAndRevalidate();
-            pnlInfoContainer.repaintAndRevalidate();
+            AsWingManager.callLater(function(): void {
+                pnlHeader.repaintAndRevalidate();
+                pnlInfoContainer.repaintAndRevalidate();
+                scrollDescription.repaintAndRevalidate();
+            });
+
+            pnlInfoTabs.addStateListener(function (e: InteractiveEvent): void {
+                if (pnlInfoTabs.getSelectedComponent() == tribeLogTab) {
+                    tribeLogPagingBar.loadInitially();
+                }
+            }, 0, true);
 
             return pnlInfoContainer;
         }

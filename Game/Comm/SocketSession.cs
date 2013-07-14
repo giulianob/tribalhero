@@ -30,14 +30,34 @@ namespace Game.Comm
             byte[] packetBytes = packet.GetBytes();
             int ret;
 
-            try
+            while (true)
             {
-                ret = Socket.Send(packetBytes, packetBytes.Length, SocketFlags.None);
+                try
+                {
+                    ret = Socket.Send(packetBytes, packetBytes.Length, SocketFlags.None);
+                    break;
+                }
+                catch(SocketException e)
+                {
+                    if (e.SocketErrorCode == SocketError.WouldBlock)
+                    {
+                        Socket.Blocking = true;
+                        continue;
+                    }
+                    
+                    return false;
+                }
+                catch(Exception)
+                {
+                    return false;
+                }
             }
-            catch(Exception)
+
+            if (Socket.Blocking)
             {
-                return false;
+                Socket.Blocking = false;
             }
+
             return ret > 0;
         }
     }

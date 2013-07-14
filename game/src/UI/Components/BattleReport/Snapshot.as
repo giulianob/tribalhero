@@ -59,7 +59,7 @@
 					}
 					else
 					{
-						lblTitle.setText(StringUtil.substitute("Round {1}, Turn {2}: {0} into the battle.", StringHelper.firstToUpper(Util.niceTime(snapshot.time)), int(snapshot.round) + 1, int(snapshot.turn) + 1));
+						lblTitle.setText(StringUtil.substitute("Round {1}, Turn {2}: {0} into the battle.", StringHelper.firstToUpper(DateUtil.niceTime(snapshot.time)), int(snapshot.round) + 1, int(snapshot.turn) + 1));
 					}
 					
 					GameLookAndFeel.changeClass(lblTitle, "darkHeader");

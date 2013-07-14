@@ -203,7 +203,7 @@
 		public function addCityRegion(id:int) : CityRegion
 		{
 			if (Constants.debug >= 2)
-			Util.log("Adding region: " + id);
+			Util.log("Adding city region: " + id);
 
 			var newRegion: CityRegion = new CityRegion(id,filter);
 
@@ -227,6 +227,10 @@
 			if (Constants.debug >= 4) {
 				Util.log("on move: " + Global.gameContainer.camera.miniMapX + "," + Global.gameContainer.camera.miniMapY);
 			}
+
+            if (Constants.debug >= 3) {
+                Util.log("Parsing city regions.. Pending:" + pendingRegions.length);
+            }
 			
 			// Remove all regions if we are forcing
 			if (forceParse) {
@@ -284,8 +288,10 @@
 				else
 				{
 					//region is outdated, remove it from buffer
-					if (Constants.debug >= 4)
-					Util.log("Discarded: " + region.id);
+					if (Constants.debug >= 3) {
+					    Util.log("Discarded: " + region.id);
+                    }
+
 					region.disposeData();
 					regionSpace.removeChild(region);
 					regions.removeByIndex(i);
@@ -320,8 +326,9 @@
 			//regions that we still need, query server
 			if (requiredRegions.length > 0)
 			{
-				if (Constants.debug >= 3)
-				Util.log("Required:" + requiredRegions);
+				if (Constants.debug >= 3) {
+				    Util.log("Required city region:" + requiredRegions);
+                }
 
 				Global.mapComm.Region.getCityRegion(requiredRegions);
 			}

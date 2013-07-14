@@ -29,7 +29,7 @@
 			globalX = (id % Constants.miniMapRegionW) * Constants.cityRegionW;
 			globalY = int(id / Constants.miniMapRegionW) * (Constants.cityRegionH / 2);
 			
-			if (Constants.debug == 3)
+			if (Constants.debug >= 4)
 			{
 				/* adds an outline to this region */
 				graphics.beginFill(0x000000, 0);

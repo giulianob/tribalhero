@@ -71,7 +71,7 @@ package src.UI.Dialog
 			pickList.addActionListener(function():void {
 				var distance: int = TileLocator.distance(strongholds[pickList.getSelectedIndex()].x, strongholds[pickList.getSelectedIndex()].y, stub.x, stub.y);
 				var timeAwayInSeconds: int = Formula.moveTimeTotal(city, stub.getSpeed(city), distance, false);
-				lblTime.setText(StringHelper.localize("TRANSFER_ARRIVE_IN", Util.niceTime(timeAwayInSeconds)));
+				lblTime.setText(StringHelper.localize("TRANSFER_ARRIVE_IN", DateUtil.niceTime(timeAwayInSeconds)));
 				lblTime.setIcon(new AssetIcon(new ICON_CLOCK()));
 			});
 			append(pickList);

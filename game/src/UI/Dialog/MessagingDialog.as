@@ -18,7 +18,9 @@ package src.UI.Dialog{
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
 
-	public class MessagingDialog extends GameJPanel {
+    import src.Util.DateUtil;
+
+    public class MessagingDialog extends GameJPanel {
 
 		private var loader: GameURLLoader;
 		private var actionLoader: GameURLLoader;
@@ -266,6 +268,10 @@ package src.UI.Dialog{
 			}
 		}
 
+        private function dateTranslator(message: *, key: String) : String {
+            return DateUtil.niceShort(message.date);
+        }
+
 		private function createUI():void {
 			title = "Messages";
 			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
@@ -276,7 +282,7 @@ package src.UI.Dialog{
 			messageModel = new PropertyTableModel(messageList,
 			["", "Player", "Subject", "Date"],
 			[".", "name", ".", "date"],
-			[null, nameTranslator, null, null]
+			[null, nameTranslator, null, dateTranslator]
 			);
 
 			messageTable = new JTable(messageModel);
@@ -293,8 +299,8 @@ package src.UI.Dialog{
 
 			messageTable.getColumnAt(0).setPreferredWidth(25);
 			messageTable.getColumnAt(1).setPreferredWidth(110);
-			messageTable.getColumnAt(2).setPreferredWidth(460);
-			messageTable.getColumnAt(3).setPreferredWidth(100);
+			messageTable.getColumnAt(2).setPreferredWidth(435);
+			messageTable.getColumnAt(3).setPreferredWidth(125);
 
 			// Inbox buttons
 			btnInboxMarkAsRead = new JButton("Mark as Read");

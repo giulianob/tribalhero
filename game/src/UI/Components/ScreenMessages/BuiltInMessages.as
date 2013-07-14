@@ -1,6 +1,7 @@
 package src.UI.Components.ScreenMessages
 {
-	import src.Util.StringHelper;
+    import src.Util.DateUtil;
+    import src.Util.StringHelper;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
@@ -61,7 +62,7 @@ package src.UI.Components.ScreenMessages
 			if (Constants.signupTime.time / 1000 + Constants.newbieProtectionSeconds > Global.map.getServerTime()) {
 				var timediff :Number = Constants.newbieProtectionSeconds + Constants.signupTime.time / 1000 - Global.map.getServerTime();
 				Global.gameContainer.screenMessage.removeMessage("/NEWBIE_PROTECTION/");
-				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/NEWBIE_PROTECTION/", StringHelper.localize("MSG_NEWBIE_PROTECTION", Util.niceTime(timediff)), new AssetIcon(new ICON_STAR)));
+				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/NEWBIE_PROTECTION/", StringHelper.localize("MSG_NEWBIE_PROTECTION", DateUtil.niceTime(timediff)), new AssetIcon(new ICON_STAR)));
 			}
 			else {
 				Global.gameContainer.screenMessage.removeMessage("/NEWBIE_PROTECTION/");

@@ -13,7 +13,8 @@ package src.UI.Dialog
 	import src.UI.Components.*;
 	import src.UI.Components.TableCells.*;
 	import src.UI.LookAndFeel.*;
-	import src.Util.StringHelper;
+    import src.Util.DateUtil;
+    import src.Util.StringHelper;
 
 	public class MessageBoard extends GameJPanel
 	{
@@ -230,7 +231,7 @@ package src.UI.Dialog
 			
 			var pnlHeader: JPanel = new JPanel(new BorderLayout(5));
 			
-			var lblCreated: JLabel = new JLabel(postData.createdInWords, null, AsWingConstants.LEFT);
+			var lblCreated: JLabel = new JLabel(DateUtil.getRelativeFromTimestamp(postData.createdTimestamp), null, AsWingConstants.LEFT);
 			
 			if (!lastRead || lastRead < postData.createdTimestamp) {
 				GameLookAndFeel.changeClass(lblCreated, "Message.unread");
@@ -248,10 +249,10 @@ package src.UI.Dialog
 			message.setColumns(50);
 			message.setHtmlText(StringHelper.linkify(postData.message));
 			message.pack();			
-			
-			var scrollMessage: JScrollPane = new JScrollPane(message);						
-			scrollMessage.setPreferredHeight(Math.min(500, message.getHeight() + 20));
-			
+
+			var scrollMessage: JScrollPane = new JScrollPane(message);
+			scrollMessage.setPreferredHeight(Math.min(2000, message.getHeight() + 40));
+
 			var pnlPostTools: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT));
 			
 			var menuTools: JPopupMenu = new JPopupMenu();			

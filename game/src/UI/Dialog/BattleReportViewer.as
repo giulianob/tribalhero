@@ -154,7 +154,7 @@
 				lblBattleStatsAttackUnits.setText("Attack lost " + (data.battleOutcome.attackerJoinCount - data.battleOutcome.attackerLeaveCount) + " out of " + (data.battleOutcome.attackerJoinCount) + " units");
 				lblBattleStatsDefenseUnits.setText("Defender lost " + (data.battleOutcome.defenderJoinCount - data.battleOutcome.defenderLeaveCount) + " out of " + (data.battleOutcome.defenderJoinCount) + " units");
 				lblBattleStatsStructuresDestroyed.setText(StringHelper.makePlural(data.battleOutcome.destroyedStructures, "1 structure was", data.battleOutcome.destroyedStructures + " structures were", "No structures were") + " knocked down");
-				lblBattleStatsTime.setText("Battle lasted " + Util.niceTime(data.battleOutcome.timeLasted, false));
+				lblBattleStatsTime.setText("Battle lasted " + DateUtil.niceTime(data.battleOutcome.timeLasted));
 				
 				var tribesCount: int = data.battleOutcome.attackerTribes.length + data.battleOutcome.defenderTribes.length;
 				lblBattleStatsTribes.setText(tribesCount + " tribe(s) participated");

@@ -1191,7 +1191,7 @@ namespace Game.Database
                     battleManager.DbPersisted = true;
                     battleManager.BattleStarted = (bool)reader["battle_started"];
                     battleManager.Round = (uint)reader["round"];
-                    battleManager.Turn = (uint)reader["round"];
+                    battleManager.Turn = (uint)reader["turn"];
                     battleManager.NextToAttack = (BattleManager.BattleSide)((byte)reader["next_to_attack"]);
 
                     battleManager.BattleReport.ReportStarted = (bool)reader["report_started"];

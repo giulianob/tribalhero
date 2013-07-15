@@ -159,7 +159,7 @@ package src.UI.Cursors {
 			if (!RoadPathFinder.isRoad(tileType)) 
 				return false;
 
-			if (Global.map.regions.getObjectsAt(screenPos, StructureObject).length > 0)
+			if (Global.map.regions.getObjectsInTile(mapPos, StructureObject).length > 0)
 				return false;
 
 			// Make sure that buildings have a path back to the city without this point				

@@ -1,6 +1,8 @@
 ﻿package src.Comm.Commands {
 
-	import flash.geom.Point;
+    import System.Linq.Enumerable;
+
+    import flash.geom.Point;
 	import src.Comm.*;
 	import src.Map.*;
 	import src.Objects.*;
@@ -66,19 +68,20 @@
 
 		public function onRegionSetTile(packet: Packet):void {
 			var cnt: int = packet.readUShort();
-			var regionId: int;
 
+            var regionIds: Array = [];
 			for (var i: int = 0; i < cnt; i++) {
-				var x: int = packet.readUInt();
-				var y: int = packet.readUInt();
+                var pos: Position = new Position(packet.readUInt(), packet.readUInt());
 				var tileType: int = packet.readUShort();
 
-				Global.map.regions.setTileType(x, y, tileType, false);
+				Global.map.regions.setTileType(pos.x, pos.y, tileType, false);
 
-				regionId = TileLocator.getRegionIdFromMapCoord(x, y);
+                regionIds.push(TileLocator.getRegionIdFromMapCoord(pos));
 			}
 
-			Global.map.regions.redrawRegion(regionId);
+            for each (var regionId: int in Enumerable.from(regionIds).distinct().toArray()) {
+			    Global.map.regions.redrawRegion(regionId);
+            }
 		}
 
 		public function getRegion(ids: Array, outdatedIds: Array):void
@@ -116,11 +119,8 @@
 
 				for (var j: int = 0; j < objCnt; j++)
 				{
-					var obj: SimpleGameObject = mapComm.Objects.readObjectInstance(packet, newRegion.id, true);
-					newRegion.addObject(obj, false);					
+                    newRegion.addObject(mapComm.Objects.readObjectInstance(packet, newRegion.id, true));
 				}
-				
-				newRegion.sortObjects();
 			}
 
 			Global.map.objContainer.moveWithCamera(Global.gameContainer.camera.x, Global.gameContainer.camera.y);

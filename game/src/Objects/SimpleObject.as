@@ -11,6 +11,7 @@ package src.Objects {
     import flash.geom.Point;
 
     import src.Constants;
+    import src.Map.ScreenPosition;
 
     public class SimpleObject extends MovieClip {
 		
@@ -25,9 +26,8 @@ package src.Objects {
 		
 		// This is the container where the objects sprite/image should go
 		public var spriteContainer: Sprite;
-		
-		private var _objX: int;
-		private var _objY: int;
+
+        public var primaryPosition: ScreenPosition = new ScreenPosition();
 					
 		public function SimpleObject(objX: int, objY: int) {
 			super();
@@ -36,7 +36,7 @@ package src.Objects {
 			addChild(spriteContainer);
 			
 			this.objX = objX;
-			this.objY = objY;			
+            this.objY = objY;
 		}
 		
 		public function copy(obj: SimpleObject): void {
@@ -55,8 +55,6 @@ package src.Objects {
 		}
 		
 		public function setObjectCount(count: int) : void {
-			var simpleObj: SimpleGameObject = this as SimpleGameObject;
-		
 			if (objectCount != null) {
 				removeChild(objectCount);			
 				objectCount = null;
@@ -173,28 +171,28 @@ package src.Objects {
 				return yDelta;
 			else
 				return 0;
-		}			
+		}
 		
 		public function get objX():int 
 		{
-			return _objX;
+			return primaryPosition.x;
 		}
 		
 		public function set objX(value:int):void 
 		{
-			_objX = value;
+			primaryPosition.x = value;
 			x = value;
 		}
 		
 		public function get objY():int 
 		{
-			return _objY;
+			return primaryPosition.y;
 		}
 		
 		public function set objY(value:int):void 
 		{
-			_objY = value;
-			y = value;
+			primaryPosition.y = value;
+            y = value;
 		}
 	}
 	

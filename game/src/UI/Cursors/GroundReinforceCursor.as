@@ -22,9 +22,6 @@
 
 		private var cursor: GroundCircle;
 
-		private var tiles: Array = [];
-
-		private var troop: TroopStub;
 		private var city: City;
 
 		private var troopSpeed: Number;
@@ -35,35 +32,33 @@
 		
 		private var onAccept: Function;
 
-		public function GroundReinforceCursor(city: City, onAccept: Function, troop: TroopStub):void
-		{
-			doubleClickEnabled = true;
+		public function GroundReinforceCursor(city: City, onAccept: Function, troop: TroopStub):void {
+            doubleClickEnabled = true;
 
-			this.troop = troop;
-			this.city = city;
-			this.onAccept = onAccept;
+            this.city = city;
+            this.onAccept = onAccept;
 
-			Global.map.selectObject(null);
-			Global.map.objContainer.resetObjects();
+            Global.map.selectObject(null);
+            Global.map.objContainer.resetObjects();
 
-			troopSpeed = troop.getSpeed(city);
+            troopSpeed = troop.getSpeed(city);
 
-			var size: int = 0;
+            var size: int = 0;
 
-			cursor = new GroundCircle(size);
-			cursor.alpha = 0.6;
+            cursor = new GroundCircle(size);
+            cursor.alpha = 0.6;
 
-			Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
+            Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
 
-			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-			addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);
-			addEventListener(MouseEvent.CLICK, onMouseStop, true);
-			addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-			addEventListener(MouseEvent.MOUSE_OVER, onMouseStop);
-			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+            addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+            addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);
+            addEventListener(MouseEvent.CLICK, onMouseStop, true);
+            addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+            addEventListener(MouseEvent.MOUSE_OVER, onMouseStop);
+            addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 
-			Global.gameContainer.setOverlaySprite(this);
-		}
+            Global.gameContainer.setOverlaySprite(this);
+        }
 		
 		public function getTargetObject(): SimpleGameObject
 		{
@@ -159,7 +154,7 @@
 				tooltip = null;			
 			}						
 
-			var objects: Array = Global.map.regions.getObjectsAt(objPosition, [StructureObject, Stronghold]);
+			var objects: Array = Global.map.regions.getObjectsInTile(objPosition.toPosition(), [StructureObject, Stronghold]);
 		
 			if (objects.length == 0) {
 				Global.gameContainer.message.showMessage(StringHelper.localize("REINFORCE_CHOOSE_TARGET"));

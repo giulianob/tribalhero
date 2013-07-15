@@ -33,10 +33,9 @@ package src.Map {
 			return id;
 		}
 
-		public static function getRegionIdFromMapCoord(rX: int, rY: int): int
+		public static function getRegionIdFromMapCoord(position: Position): int
 		{
-			var p: Point = getScreenCoord(rX, rY);
-			return getRegionId(new ScreenPosition(p.x, p.y));
+            return int(position.x / Constants.regionTileW) + int(position.y / Constants.regionTileH) * int(Constants.mapTileW / Constants.regionTileW);
 		}
 		
 		public static function getRegionRect(id: int): Rectangle
@@ -45,6 +44,11 @@ package src.Map {
 			var y: int = int(id / Constants.mapRegionW) * (Constants.regionH / 2);			
 			return new Rectangle(x, y, Constants.regionW, Constants.regionH / 2);
 		}
+
+        public static function getTileIndex(position: Position): int
+        {
+            return (int)(position.x % Constants.regionTileW + (position.y % Constants.regionTileH) * Constants.regionTileW);
+        }
 
 		public static function getRegionId(screenPosition: ScreenPosition): int
 		{
@@ -60,9 +64,6 @@ package src.Map {
 			return -1;
 
 			var id: int = int(xId + yId * Constants.mapRegionW);
-
-			if (Constants.debug >= 4)
-			Util.log(rX + "," + rY + "(" + xId + "," + yId + ") =" + id);
 
 			return id;
 		}
@@ -129,14 +130,14 @@ package src.Map {
 			return int(regionId / Constants.mapRegionW) * Constants.regionTileH;
 		}
 
-		public static function distance(x_1: int, y_1: int, x_2: int, y_2: int): int
+		public static function distance(x1: int, y1: int, x2: int, y2: int): int
 		{
 			var offset: int = 0;
 
-			if (y_2 % 2 == 1 && y_1 % 2 == 0 && x_1 <= x_2) offset = 1;
-			if (y_2 % 2 == 0 && y_1 % 2 == 1 && x_1 >= x_2) offset = 1;
+			if (y2 % 2 == 1 && y1 % 2 == 0 && x1 <= x2) offset = 1;
+			if (y2 % 2 == 0 && y1 % 2 == 1 && x1 >= x2) offset = 1;
 
-			return ((x_1 > x_2 ? x_1 - x_2 : x_2 - x_1) + (y_1 > y_2 ? y_1 - y_2 : y_2 - y_1) / 2 + offset);
+			return ((x1 > x2 ? x1 - x2 : x2 - x1) + (y1 > y2 ? y1 - y2 : y2 - y1) / 2 + offset);
 		}
 
 		public static function radiusDistance(x: int, y: int, x1: int, y1: int) : int
@@ -226,7 +227,6 @@ package src.Map {
 
             return positions;
 		}
-
 
         public function foreachMultitile(ox: int, oy: int, size: int): Array {
             var positions: Array = [];

@@ -50,7 +50,7 @@ package src.Objects.Prototypes {
 		{
 			if (!builder) return false;
 
-			if (Global.map.regions.getObjectsAt(position.toScreenPosition(), StructureObject).length > 0) {
+			if (Global.map.regions.getObjectsInTile(position, StructureObject).length > 0) {
 				return false;
 			}
 			

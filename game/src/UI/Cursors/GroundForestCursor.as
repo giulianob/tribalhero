@@ -87,7 +87,7 @@
 
 			event.stopImmediatePropagation();
 
-			var objects: Array = Global.map.regions.getObjectsAt(objPosition);
+			var objects: Array = Global.map.regions.getObjectsInTile(objPosition.toPosition());
 
 			if (objects.length == 0) return;
 
@@ -144,7 +144,7 @@
 				highlightedObj = null;
 			}
 
-			var objects: Array = Global.map.regions.getObjectsAt(objPosition, Forest);
+			var objects: Array = Global.map.regions.getObjectsInTile(objPosition.toPosition(), Forest);
 
 			if (objects.length == 0) {
 				Global.gameContainer.message.showMessage("Choose a forest to gather wood from.");

@@ -1,18 +1,16 @@
 ﻿package src.Map
 {
-	import com.greensock.easing.Elastic;
-	import com.greensock.easing.Linear;
-	import com.greensock.TweenMax;
-	import flash.events.Event;
-	import flash.geom.Point;
-	import src.Global;
-	import src.Objects.GameObject;
-	import src.Objects.SimpleObject;
-	import src.Util.Util;
-	import src.Objects.SimpleGameObject;
-	import src.Util.BinaryList.*;
+    import com.greensock.TweenMax;
 
-	public class RegionManager extends BinaryList
+    import flash.events.Event;
+    import flash.geom.Point;
+
+    import src.Global;
+    import src.Objects.SimpleGameObject;
+    import src.Util.BinaryList.*;
+    import src.Util.Util;
+
+    public class RegionManager extends BinaryList
 	{
 		public static const REGION_UPDATED: String = "REGION_UPDATED";
 
@@ -20,6 +18,31 @@
 		{
 			super(Region.sortOnId, Region.compare);
 		}
+
+//        private function AddToPrimaryRegionAndTiles(obj: SimpleGameObject): Boolean
+//        {
+//            var regionId: int = TileLocator.getRegionId(obj.primaryPosition);
+//            var primaryRegion: Region = get(regionId);
+//
+//            if (primaryRegion == null)
+//            {
+//                return false;
+//            }
+//
+//            primaryRegion.add(obj);
+//
+//            foreach (var position in tileLocator.ForeachMultitile(obj))
+//            {
+//                var region = GetRegion(position.X, position.Y);
+//
+//                if (region != null)
+//                {
+//                    region.AddObjectToTile(obj, position.X, position.Y);
+//                }
+//            }
+//
+//            return true;
+//        }
 
 		public function updateObject(regionId: int, newObj: SimpleGameObject): SimpleGameObject
 		{
@@ -57,10 +80,11 @@
 		{
 			var region: Region = get(regionId);
 
-			if (region == null)
+			if (region == null) {
 				return;
+            }
 			
-			var obj: SimpleGameObject = region.removeObject(groupId, objId);
+			region.removeObject(groupId, objId);
 		}
 
 		public function moveObject(oldRegionId: int, newRegionId: int, newObj: SimpleGameObject): SimpleGameObject
@@ -92,20 +116,21 @@
 			return obj;
 		}
 
-		public function getObjectsAt(screenPosition: ScreenPosition, objClass: * = null): Array
+		public function getObjectsInTile(position: Position, objClass: * = null): Array
 		{
-			var regionId: int = TileLocator.getRegionId(screenPosition);
+			var regionId: int = TileLocator.getRegionIdFromMapCoord(position);
 			var region: Region = get(regionId);
 
-			if (region == null)
+			if (region == null) {
 				return null;
+            }
 
-			return region.getObjectsAt(screenPosition, objClass);
+			return region.getObjectsInTile(position, objClass);
 		}
 
 		public function getTileAt(x: int, y: int): int
 		{
-			var regionId: int = TileLocator.getRegionIdFromMapCoord(x, y);
+			var regionId: int = TileLocator.getRegionIdFromMapCoord(new Position(x, y));
 			var region: Region = get(regionId);
 
 			if (region == null)
@@ -115,7 +140,7 @@
 		}
 
 		public function setTileType(x: int, y: int, tileType: int, redraw: Boolean = false) : void {
-			var regionId: int = TileLocator.getRegionIdFromMapCoord(x, y);
+			var regionId: int = TileLocator.getRegionIdFromMapCoord(new Position(x, y));
 			var region: Region = get(regionId);
 			
 			if (region == null)
@@ -147,7 +172,8 @@
 
 			var obj:SimpleGameObject = region.addObject(obj);			
 			
-			if (obj && fadeIn) {
+			if (obj && fadeIn)
+            {
 				obj.fadeIn();
 			}
 			

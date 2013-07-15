@@ -143,7 +143,7 @@ package src.UI.Cursors {
 
 			if (!ObjectFactory.isType("TileBuildable", tileType)) return false;
 
-			if (Global.map.regions.getObjectsAt(screenPos, StructureObject).length > 0) return false;
+			if (Global.map.regions.getObjectsInTile(mapPosition, StructureObject).length > 0) return false;
 
 			// Make sure there is a road next to this tile
 			for each (var position: Position in TileLocator.foreachRadius(mapPosition.x, mapPosition.y, 1, false))

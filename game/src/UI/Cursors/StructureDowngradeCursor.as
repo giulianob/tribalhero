@@ -93,7 +93,7 @@
 
 			event.stopImmediatePropagation();
 
-			var objects: Array = Global.map.regions.getObjectsAt(objPosition, StructureObject);
+			var objects: Array = Global.map.regions.getObjectsInTile(objPosition.toPosition(), StructureObject);
 
 			if (objects.length == 0) return;
 
@@ -154,7 +154,7 @@
 				highlightedObj = null;
 			}
 
-			var objects: Array = Global.map.regions.getObjectsAt(objPosition, StructureObject);
+			var objects: Array = Global.map.regions.getObjectsInTile(objPosition.toPosition(), StructureObject);
 
 			if (objects.length == 0 || objects[0].cityId != parentObj.cityId) {
 				Global.gameContainer.message.showMessage("Choose a structure to remove");

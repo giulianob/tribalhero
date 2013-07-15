@@ -1,24 +1,13 @@
 ﻿
 package src.Objects {
-	import com.greensock.easing.Circ;
-	import com.greensock.easing.Elastic;
-	import com.greensock.TweenLite;
-	import com.greensock.TweenMax;
-	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.geom.Point;
-	import flash.text.TextField;
-	import src.Constants;
-	import src.Global;
-	import src.Map.Camera;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Map.Map;
-	import src.Objects.States.GameObjectState;
-	import src.UI.Components.GroundCircle;
-	import src.Util.BinaryList.*;
+    import com.greensock.TweenMax;
 
-	public class SimpleGameObject extends SimpleObject {
+    import flash.display.DisplayObject;
+    import flash.events.Event;
+
+    import src.Objects.States.GameObjectState;
+
+    public class SimpleGameObject extends SimpleObject {
 		
 		public static var OBJECT_UPDATE: String = "OBJECT_UPDATE";
 		
@@ -110,16 +99,6 @@ package src.Objects {
 			else
 				return 0;
 		}
-		
-		public function equalById(obj: SimpleObject) : Boolean
-		{
-			var gameObj: SimpleGameObject = obj as SimpleGameObject;
-			
-			if (gameObj == null)
-				return false;
-				
-			return groupId == gameObj.groupId && objectId == gameObj.objectId;
-		}
 
 		override public function copy(obj:SimpleObject):void 
 		{
@@ -152,11 +131,6 @@ package src.Objects {
 				return idDelta;
 			else
 				return 0;
-		}
-
-		public static function compareObjId(a: SimpleGameObject, value: int):int
-		{
-			return a.objectId - value;
 		}
 	}
 

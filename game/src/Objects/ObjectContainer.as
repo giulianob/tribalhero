@@ -457,8 +457,8 @@ package src.Objects {
 				var currentObj: DisplayObject = layer.getChildAt(mid) as DisplayObject;
 				var simpleObj: SimpleObject = currentObj as SimpleObject;
 				var objY: Number = simpleObj == null ? currentObj.y : simpleObj.objY;
-				
-				if (objY > y) {
+
+                if (objY > y) {
 					high = mid - 1;
 				}
 				else if (objY < y) {

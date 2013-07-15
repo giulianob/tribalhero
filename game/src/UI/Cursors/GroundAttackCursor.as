@@ -161,7 +161,7 @@
 				tooltip = null;			
 			}			
 
-			var objects: Array = Global.map.regions.getObjectsAt(objPosition, [StructureObject, Stronghold, BarbarianTribe]);
+			var objects: Array = Global.map.regions.getObjectsInTile(objPosition.toPosition(), [StructureObject, Stronghold, BarbarianTribe]);
 
 			if (objects.length == 0) {
 				Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_CHOOSE_TARGET"));

@@ -3,7 +3,7 @@ using Game.Setup;
 
 namespace Game.Map
 {
-    class RegionLocator : IRegionLocator
+    public class RegionLocator : IRegionLocator
     {
         public ushort GetRegionIndex(ISimpleGameObject obj)
         {

@@ -3,11 +3,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Game.Data;
-using Game.Setup;
 using Game.Util;
-using Ninject;
 using Ninject.Extensions.Logging;
 
 #endregion
@@ -86,8 +83,6 @@ namespace Game.Map
                 {
                     objects.Remove(index);
                 }
-
-                return ret;
             }
 
             return true;

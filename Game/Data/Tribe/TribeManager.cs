@@ -240,7 +240,7 @@ namespace Game.Data.Tribe
             tribeLogger.Listen(tribe);
         }
 
-        private void TribeOnRanksUpdated(object sender, TribeEventArgs eventArgs)
+        private void TribeOnRanksUpdated(object sender, TribeEventArgs e)
         {
             Packet packet = new Packet(Command.TribeChannelRanksUpdate);
             PacketHelper.AddTribeRanksToPacket(e.Tribe, packet);

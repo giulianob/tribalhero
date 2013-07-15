@@ -164,9 +164,8 @@ namespace Game.Map
         {
             if (e.PropertyName == "Value" && Global.Current.FireEvents)
             {
-                var cityRegion = regionManager.CityRegions.GetCityRegion(city.X, city.Y);
-
-                if (cityRegion != null)
+                CityRegion cityRegion;
+                if (regionManager.CityRegions.TryGetCityRegion(city.X, city.Y, out cityRegion))
                 {
                     cityRegion.MarkAsDirty();
                 }

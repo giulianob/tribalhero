@@ -500,7 +500,6 @@
     <Compile Include="Setup\TechnologyFactory.cs" />
     <Compile Include="Util\Channel.cs" />
     <Compile Include="Util\DuplicateSubscriptionException.cs" />
-    <Compile Include="Util\EventHandlerExtensions.cs" />
     <Compile Include="Util\EnumExtension.cs" />
     <Compile Include="Util\EventHandlerExtensions.cs" />
     <Compile Include="Util\FileExtension.cs" />

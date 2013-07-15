@@ -152,7 +152,7 @@ namespace Game.Map
             {
                 // Players must always be locked first
                 primaryLock.EnterReadLock();
-                var playersInRegion = primaryObjects.OfType<IGameObject>().Select(p => p.City.Owner).Where(p => p != null).Distinct().ToArray<ILockable>();
+                var playersInRegion = primaryObjects.OfType<IGameObject>()
                                              .Select(p => p.City.Owner)
                                              .Where(p => p != null)
                                              .Distinct(new LockableComparer())
@@ -167,7 +167,7 @@ namespace Game.Map
                         continue;
                     }
 
-                    var lockedPlayersInRegion = primaryObjects.OfType<IGameObject>().Select(p => p.City.Owner).Where(p => p != null).Distinct().ToArray<ILockable>();
+                    var lockedPlayersInRegion = primaryObjects.OfType<IGameObject>()
                                                        .Select(p => p.City.Owner)
                                                        .Where(p => p != null)
                                                        .Distinct(new LockableComparer())

@@ -25,7 +25,7 @@ namespace Game.Comm
         protected Session(string name, Processor processor)
         {
             Name = name;
-            Processor = processor;
+            this.processor = processor;
             PacketMaker = new PacketMaker();
         }
 
@@ -84,22 +84,22 @@ namespace Game.Comm
                 }
             }
 
-            if (Processor != null)
+            if (processor != null)
             {
                 if (Logger.IsDebugEnabled)
                 {
                     Logger.Debug("Processing IP[{0}] {1}", Name, packet.ToString());
                 }
 
-                Processor.Execute(this, packet);
+                processor.Execute(this, packet);
             }
         }
 
         public void ProcessEvent(object obj)
         {
-            if (Processor != null)
+            if (processor != null)
             {
-                Processor.ExecuteEvent(this, (Packet)obj);
+                processor.ExecuteEvent(this, (Packet)obj);
             }
         }
     }

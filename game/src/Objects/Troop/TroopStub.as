@@ -1,20 +1,16 @@
 ﻿package src.Objects.Troop {
-	import adobe.utils.CustomActions;
-	import flash.utils.ByteArray;
-	import flash.utils.Dictionary;
-	import mx.events.ResourceEvent;
-	import src.Global;
-	import src.Map.City;
-	import src.Objects.Location;
-	import src.Objects.Resources;
-	import src.Util.Util;
-	import src.Objects.Factories.UnitFactory;
-	import src.Objects.Prototypes.UnitPrototype;
-	import src.Util.BinaryList.*;    
-	import src.Util.StringHelper;
-    import System.Collection.Generic.IEqualityComparer;
+    import flash.utils.Dictionary;
 
-	public class TroopStub extends BinaryList {
+    import src.Global;
+    import src.Map.City;
+    import src.Objects.Factories.UnitFactory;
+    import src.Objects.Prototypes.UnitPrototype;
+    import src.Objects.Resources;
+    import src.Util.BinaryList.*;
+    import src.Util.StringHelper;
+    import src.Util.Util;
+
+    public class TroopStub extends BinaryList {
 
 		public static const IDLE: int = 0;
 		public static const BATTLE: int = 1;
@@ -68,7 +64,7 @@
 		{
 			return state == BATTLE_STATIONED || state == STATIONED;
 		}
-		
+
 		public function isStationedNotInBattle() : Boolean
 		{
 			return state == STATIONED;
@@ -77,7 +73,7 @@
 		public function isLocal() : Boolean {
 			return id == 1;
 		}
-        
+
         public function isMoving() : Boolean {
             return state == RETURNING_HOME || state == BATTLE || state == MOVING;
         }
@@ -134,7 +130,7 @@
             {
                 var local: Formation = this.get(formation.type);
                 if(!local)      {
-                    local = new Formation(formation.type)
+                    local = new Formation(formation.type);
                     this.add(local);
                 }
                 for each (var unit: Unit in formation) {
@@ -172,10 +168,10 @@
 			{
 				for each(var unit: Unit in formation)
 				{
-					if (!units.hasOwnProperty(unit.type)) {
+					if (!units[unit.type]) {
 						units[unit.type] = 0;
 					}
-					
+
 					units[unit.type] += unit.count;
 				}
 			}

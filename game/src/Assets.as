@@ -7,7 +7,7 @@
 
     import src.Util.Util;
 
-	public class Assets
+    public class Assets
 	{
 		public function Assets()
 		{					

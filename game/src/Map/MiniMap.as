@@ -1,24 +1,24 @@
 ﻿package src.Map
 {
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import mx.messaging.ConsumerMessageDispatcher;
-	import org.aswing.ASColor;
-    import org.aswing.AsWingManager;
-    import org.aswing.AsWingUtils;
-	import org.aswing.graphics.Graphics2D;
-	import org.aswing.graphics.SolidBrush;
-	import src.Constants;
-	import src.Map.CityRegionFilters.*;
-	import src.UI.Components.MiniMapPointer;
-	import src.Util.Util;
-	import src.Global;
-	import src.Objects.ObjectContainer;
-	import System.Linq.Enumerable;
+    import System.Linq.Enumerable;
 
-	/**
+    import flash.display.Sprite;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
+    import flash.geom.Point;
+
+    import org.aswing.ASColor;
+    import org.aswing.graphics.Graphics2D;
+    import org.aswing.graphics.SolidBrush;
+
+    import src.Constants;
+    import src.Global;
+    import src.Map.CityRegionFilters.*;
+    import src.Objects.ObjectContainer;
+    import src.UI.Components.MiniMapPointer;
+    import src.Util.Util;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 *

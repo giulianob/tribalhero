@@ -2,8 +2,8 @@
 
     import flash.display.*;
 
-    import src.Global;
     import src.Assets;
+    import src.Global;
     import src.Map.*;
     import src.Objects.*;
     import src.Objects.Actions.TechUpgradeAction;
@@ -117,10 +117,10 @@
 			return sprite;
 		}
 
-		public static function getSimpleObject(type: int, level:int, x: int, y: int): SimpleObject
+		public static function getSimpleObject(type: int, level:int, x: int, y: int, size: int): SimpleObject
 		{
 			var sprite: DisplayObjectContainer = getSprite(type, level, "map") as DisplayObjectContainer;
-			var simpleObject: SimpleObject = new SimpleObject(x, y);
+			var simpleObject: SimpleObject = new SimpleObject(x, y, size);
 			
 			if (sprite != null) {
 				simpleObject.spriteContainer.addChild(sprite);
@@ -129,9 +129,9 @@
 			return simpleObject;
 		}
 
-		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int): StructureObject
+		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int): StructureObject
 		{
-			var structureObj: StructureObject = new StructureObject(type, state, objX, objY, playerId, cityId, objectId, level, wallRadius);
+			var structureObj: StructureObject = new StructureObject(type, state, objX, objY, size, playerId, cityId, objectId, level, wallRadius);
 		
 			//structureObj.spriteContainer.addChild(ObjectFactory.makeIntoShadow(getSprite(type, level)));
 			structureObj.spriteContainer.addChild(getSprite(type, level, "map"));

@@ -1,21 +1,17 @@
 package src.UI.Components
 {
-	import flash.events.MouseEvent;
-	import flash.events.TextEvent;
-	import flash.text.StyleSheet;
-	import flash.text.TextFormat;
-	import mx.utils.StringUtil;
-	import org.aswing.AsWingManager;
-	import org.aswing.ext.MultilineLabel;
-	import org.aswing.plaf.ASColorUIResource;
-	import src.Constants;
-	import src.Global;
-	import src.Objects.Location;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.UI.Tooltips.TextTooltip;
-	import src.Util.StringHelper;
-	
-	public class RichLabel extends MultilineLabel
+    import flash.events.MouseEvent;
+    import flash.text.StyleSheet;
+    import flash.text.TextFormat;
+
+    import org.aswing.ext.MultilineLabel;
+
+    import src.Global;
+    import src.Objects.Location;
+    import src.UI.Tooltips.TextTooltip;
+    import src.Util.StringHelper;
+
+    public class RichLabel extends MultilineLabel
 	{		
 		
 		private var usingCustomSize: Boolean = false;

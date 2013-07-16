@@ -1,23 +1,15 @@
 ﻿package src.Objects.Factories {
 
     import flash.display.Bitmap;
-    import flash.display.DisplayObject;
-	import flash.display.DisplayObjectContainer;
+    import flash.display.DisplayObjectContainer;
     import flash.display.Sprite;
-    import flash.filters.BlurFilter;
-	import flash.geom.ColorTransform;
-	import flash.geom.Matrix;
-	import flash.geom.Rectangle;
-	import flash.utils.getDefinitionByName;
-	import src.Global;
-    import src.Assets;
-    import src.Objects.AggressiveLazyValue;
-	import src.Objects.Forest;
-	import src.Objects.States.GameObjectState;
-	import src.Objects.Stronghold.Stronghold;
-    import src.Util.Util;
 
-	public class StrongholdFactory {
+    import src.Assets;
+    import src.Global;
+    import src.Objects.States.GameObjectState;
+    import src.Objects.Stronghold.Stronghold;
+
+    public class StrongholdFactory {
 
 		public function StrongholdFactory() {
 		}
@@ -32,9 +24,9 @@
 			return sprite;
 		}
 
-		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, groupId: int, objectId: int, level: int, tribeId: int): Stronghold
+		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, size: int, groupId: int, objectId: int, level: int, tribeId: int): Stronghold
 		{
-			var strongholdObj: Stronghold = new Stronghold(type, state, objX, objY, groupId, objectId, level, tribeId);
+			var strongholdObj: Stronghold = new Stronghold(type, state, objX, objY, size, groupId, objectId, level, tribeId);
 
 			strongholdObj.spriteContainer.addChild(getSprite("map"));
 

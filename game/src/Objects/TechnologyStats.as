@@ -5,10 +5,10 @@
 */
 package src.Objects {
 
-import src.Objects.Prototypes.EffectPrototype;
-import src.Objects.Prototypes.TechnologyPrototype;
+    import src.Objects.Prototypes.EffectPrototype;
+    import src.Objects.Prototypes.TechnologyPrototype;
 
-public class TechnologyStats {
+    public class TechnologyStats {
 		
 		public var techPrototype: TechnologyPrototype;
 		

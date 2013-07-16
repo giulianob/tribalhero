@@ -1,21 +1,20 @@
 ﻿package src.UI.Cursors {
-	import fl.lang.*;
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import mx.utils.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Effects.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Stronghold.*;
-	import src.Objects.Troop.*;
-	import src.UI.Components.*;
-	import src.UI.Tooltips.*;
-	import src.Util.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
 
-	public class GroundAttackCursor extends MovieClip implements IDisposable
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Effects.*;
+    import src.Objects.Factories.*;
+    import src.Objects.Stronghold.*;
+    import src.Objects.Troop.*;
+    import src.UI.Components.*;
+    import src.UI.Tooltips.*;
+    import src.Util.*;
+
+    public class GroundAttackCursor extends MovieClip implements IDisposable
 	{
 		private var objPosition: ScreenPosition = new ScreenPosition();
 

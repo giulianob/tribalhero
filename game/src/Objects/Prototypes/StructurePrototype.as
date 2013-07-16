@@ -5,15 +5,15 @@
  */
 
 package src.Objects.Prototypes {
+    import src.Global;
+    import src.Map.City;
+    import src.Map.CityObject;
     import src.Map.Position;
+    import src.Objects.Resources;
+    import src.Objects.StructureObject;
     import src.Util.StringHelper;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.Resources;
-	import src.Objects.StructureObject;
 
-	public class StructurePrototype {
+    public class StructurePrototype {
 
 		public var name: String;
 		public var type: int;

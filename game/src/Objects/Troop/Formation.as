@@ -5,11 +5,11 @@
  */
 
 package src.Objects.Troop {
-	import src.Objects.Factories.UnitFactory;
-	import src.Objects.Prototypes.UnitPrototype;
-	import src.Util.BinaryList.*;
+    import src.Objects.Factories.UnitFactory;
+    import src.Objects.Prototypes.UnitPrototype;
+    import src.Util.BinaryList.*;
 
-	public class Formation extends BinaryList {
+    public class Formation extends BinaryList {
 
 		public static const Normal: int = 1;
 		public static const Attack: int = 2;
@@ -75,7 +75,6 @@ package src.Objects.Troop {
 
 			if (unit == null) {
 				super.add(obj, resort);
-				unit = obj as Unit;
 			} else {
 				unit.count += ((obj as Unit).count);
 			}

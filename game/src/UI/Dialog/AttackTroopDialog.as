@@ -1,21 +1,21 @@
 ﻿package src.UI.Dialog {
 
-	import flash.events.*;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.Effects.*;
-	import src.Objects.Troop.*;
-	import src.UI.*;
-	import src.UI.Components.*;
-	import src.UI.Components.SimpleTroopGridList.*;
-	import src.Util.*;
+    import flash.events.*;
 
-	public class AttackTroopDialog extends GameJPanel {
+    import org.aswing.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
+
+    import src.*;
+    import src.Map.*;
+    import src.Objects.Effects.*;
+    import src.Objects.Troop.*;
+    import src.UI.*;
+    import src.UI.Components.*;
+    import src.UI.Components.SimpleTroopGridList.*;
+    import src.Util.*;
+
+    public class AttackTroopDialog extends GameJPanel {
 
 		//members define
 		protected var pnlAttackStrength:JPanel;

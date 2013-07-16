@@ -4,14 +4,12 @@
 
     import com.greensock.plugins.TransformMatrixPlugin;
     import com.greensock.plugins.TweenPlugin;
-    import com.sociodox.theminer.TheMiner;
 
     import fl.lang.*;
 
     import flash.display.*;
     import flash.events.*;
     import flash.net.*;
-    import flash.system.Capabilities;
     import flash.ui.*;
 
     import org.aswing.*;
@@ -25,9 +23,10 @@
     import src.UI.TweenPlugins.TransformAroundCenterPlugin;
     import src.UI.TweenPlugins.TransformAroundPointPlugin;
     import src.Util.*;
-	CONFIG::debug {
-		import com.sociodox.theminer.TheMiner;
-	}
+
+    CONFIG::debug {
+        import com.sociodox.theminer.TheMiner;
+    }
 
     public class Main extends MovieClip
 	{

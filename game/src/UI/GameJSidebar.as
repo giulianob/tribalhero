@@ -1,17 +1,18 @@
 ﻿package src.UI
 {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.border.EmptyBorder;
-	import org.aswing.event.FrameEvent;
-	import org.aswing.geom.IntPoint;
-	import org.aswing.Insets;
-	import org.aswing.JFrame;
-	import org.aswing.JPanel;
-	import src.Constants;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class GameJSidebar extends JPanel
+    import org.aswing.Insets;
+    import org.aswing.JFrame;
+    import org.aswing.JPanel;
+    import org.aswing.border.EmptyBorder;
+    import org.aswing.event.FrameEvent;
+
+    import src.Constants;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    public class GameJSidebar extends JPanel
 	{
 		protected var frame: GameJFrame = null;
 

@@ -9,7 +9,7 @@
     import src.Objects.States.GameObjectState;
     import src.Objects.Troop.TroopObject;
 
-	public class TroopFactory {
+    public class TroopFactory {
 
 		public function TroopFactory() {
 		}
@@ -24,9 +24,9 @@
             return sprite;
 		}
 
-		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, playerId: int, cityId: int, objectId: int): TroopObject
+		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int): TroopObject
 		{
-			var troopObject: TroopObject = new TroopObject(type, state, objX, objY, playerId, cityId, objectId);
+			var troopObject: TroopObject = new TroopObject(type, state, objX, objY, size, playerId, cityId, objectId);
 			
 			troopObject.spriteContainer.addChild(ObjectFactory.makeIntoShadow(getSprite("map")));
 			troopObject.spriteContainer.addChild(getSprite("map"));

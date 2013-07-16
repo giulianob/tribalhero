@@ -5,16 +5,14 @@
  */
 
 package src.UI.Dialog {
-	import flash.display.*
-	import org.aswing.JFrame;
-	import src.Global;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Troop.*;
-	import src.UI.Components.SimpleTroopGridList.SimpleTroopGridList;
-	import src.UI.GameJPanel;
+    import org.aswing.JFrame;
 
-	public class TroopInfoDialog extends GameJPanel {
+    import src.Global;
+    import src.Objects.Troop.*;
+    import src.UI.Components.SimpleTroopGridList.SimpleTroopGridList;
+    import src.UI.GameJPanel;
+
+    public class TroopInfoDialog extends GameJPanel {
 
 		private var troopObj: TroopObject;
 

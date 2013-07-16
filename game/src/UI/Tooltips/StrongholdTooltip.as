@@ -1,17 +1,13 @@
 ﻿package src.UI.Tooltips {
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.Stronghold.*;
-	import src.UI.LookAndFeel.*;
-	import src.Util.StringHelper;
+    import org.aswing.*;
 
+    import src.*;
+    import src.Map.*;
+    import src.Objects.Stronghold.*;
+    import src.UI.LookAndFeel.*;
+    import src.Util.StringHelper;
 
-	public class StrongholdTooltip extends Tooltip{
+    public class StrongholdTooltip extends Tooltip{
 
 		private var lblName: JLabel;
 		private var lblLevel: JLabel;

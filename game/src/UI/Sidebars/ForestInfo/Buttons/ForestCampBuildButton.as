@@ -1,21 +1,19 @@
 ﻿
 package src.UI.Sidebars.ForestInfo.Buttons {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import src.Global;
-	import src.Objects.Actions.ForestCampBuildAction;
-	import src.Objects.Factories.*;
-	import src.Objects.Forest;
-	import src.Objects.GameObject;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.Troop.*;
-	import src.UI.Cursors.*;
-	import src.UI.Dialog.ForestLaborDialog;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
-	import src.UI.Tooltips.TextTooltip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class ForestCampBuildButton extends ActionButton
+    import src.Global;
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.Actions.ForestCampBuildAction;
+    import src.Objects.Factories.*;
+    import src.Objects.Forest;
+    import src.Objects.SimpleGameObject;
+    import src.UI.Cursors.*;
+    import src.UI.Dialog.ForestLaborDialog;
+    import src.UI.Tooltips.TextTooltip;
+
+    public class ForestCampBuildButton extends ActionButton
 	{
 		private var tooltip: TextTooltip;
 
@@ -48,12 +46,11 @@ package src.UI.Sidebars.ForestInfo.Buttons {
 				// Check to see if this is being called from the forest or from the lumbermill. If this is from the forest, then the parent action will be null
 				var forestCampBuildAction: ForestCampBuildAction = parentAction as ForestCampBuildAction;
 
-				var campTypes: Array = ObjectFactory.getList("ForestCamp");
-				if (forestCampBuildAction == null) {
+                if (forestCampBuildAction == null) {
 					var laborDialog: ForestLaborDialog = new ForestLaborDialog(Global.gameContainer.selectedCity.id, parentObj as Forest, onSetLabor);
 					laborDialog.show();
 				} else {									
-					var cursor: GroundForestCursor = new GroundForestCursor(function(forest: Forest) : void {
+					new GroundForestCursor(function(forest: Forest) : void {
 						var laborDialog: ForestLaborDialog = new ForestLaborDialog(parentObj.groupId, forest, onSetLabor);
 						laborDialog.show();
 					});

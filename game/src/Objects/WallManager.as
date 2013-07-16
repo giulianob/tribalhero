@@ -1,14 +1,14 @@
 ﻿package src.Objects
 {
-	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.geom.Point;
-	import src.Global;
-	import src.Map.Map;
-	import src.Map.TileLocator;
-	import src.Objects.Factories.ObjectFactory;
+    import flash.display.DisplayObject;
+    import flash.events.Event;
+    import flash.geom.Point;
 
-	public class WallManager
+    import src.Global;
+    import src.Map.TileLocator;
+    import src.Objects.Factories.ObjectFactory;
+
+    public class WallManager
 	{
 		private static const WALL_WIDTH: int = 11;
 
@@ -379,47 +379,6 @@
 			}
 		}
 
-		public function addWallCallback(x: int, y: int, custom: *):void
-		{
-			var parentPos: Point = TileLocator.getMapCoord(parent.objX, parent.objY);
-
-			var dist: int = TileLocator.distance(parentPos.x, parentPos.y, x, y);
-
-			if (dist != custom) {
-				return;
-			}
-
-			var wall: String = "";
-
-			if (parentPos.y % 2 == 0)
-			{
-				if (x < parentPos.x && y < parentPos.y)
-				wall = "WALL_NW";
-				else if (x < parentPos.x && y > parentPos.y)
-				wall = "WALL_SW";
-				else if ((x > parentPos.x && y > parentPos.y) || (x== parentPos.x && y%2==1 && y > parentPos.y))
-				wall = "WALL_SE";
-				else if ((x > parentPos.x && y < parentPos.y) || (x == parentPos.x && y%2==1 && y < parentPos.y))
-				wall = "WALL_NE";
-			}
-			else
-			{
-				if ((x < parentPos.x && y < parentPos.y) || (x == parentPos.x && y%2==0 && y < parentPos.y))
-				wall = "WALL_NW";
-				else if (x < parentPos.x && y > parentPos.y || (x == parentPos.x && y%2==0 && y > parentPos.y))
-				wall = "WALL_SW";
-				else if (x > parentPos.x && y > parentPos.y)
-				wall = "WALL_SE";
-				else if (x > parentPos.x && y < parentPos.y || (parentPos.y%2 == 0 && x == parentPos.x && y < parentPos.y))
-				wall = "WALL_NE";
-			}
-
-			if (wall == "")
-			return;
-
-			pushWall(wall, x, y);
-		}
-
 		private function wallTypeHash(x: int, y: int, wallIdx: int) : int {
 			return Math.max(0, ((x * parent.groupId * 0x1f1f1f1f) ^ y) % WALLS[wallIdx].length);
 		}
@@ -430,8 +389,8 @@
 
 		private function pushWall(wallName: String, x: int, y: int) : void {
 			var pos: Point = TileLocator.getScreenCoord(x, y);
-			var wallName: String = "WALL_" + wallName + (wallName.charAt(0) == 'O' ? "" : "_" + wallHash(x, y).toString());
-			var wall: SimpleObject = ObjectFactory.getSimpleObject(wallName, pos.x, pos.y, false);
+			wallName = "WALL_" + wallName + (wallName.charAt(0) == 'O' ? "" : "_" + wallHash(x, y).toString());
+			var wall: SimpleObject = ObjectFactory.getSimpleObject(wallName, pos.x, pos.y, 1, false);
 
 			Global.map.objContainer.addObject(wall);
 

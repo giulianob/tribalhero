@@ -1,17 +1,14 @@
 package src.Map.CityRegionFilters 
 {
-	import src.Util.StringHelper;
-	import src.Constants;
-	import src.Map.CityRegionFilters.CityRegionFilter;
-	import src.Map.CityRegionLegend;
-	import src.Map.CityRegionObject;
-	import src.Objects.Factories.ObjectFactory;
-	import flash.geom.*;
-	import src.UI.Tooltips.MinimapInfoTooltip;
-	import flash.events.*;
-	import src.Global;
-	import flash.display.*;
-	/**
+    import flash.display.*;
+    import flash.geom.*;
+
+    import src.Global;
+    import src.Map.CityRegionLegend;
+    import src.Map.CityRegionObject;
+    import src.Util.StringHelper;
+
+    /**
 	 * ...
 	 * @author Anthony Lam
 	 */

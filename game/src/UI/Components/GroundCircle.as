@@ -8,22 +8,21 @@
     import flash.geom.ColorTransform;
     import flash.geom.Point;
 
-    import src.Constants;
     import src.Assets;
+    import src.Constants;
     import src.Map.Position;
     import src.Map.TileLocator;
     import src.Objects.SimpleObject;
 
     public class GroundCircle extends SimpleObject
 	{
-		private var size: int;
 		private var circle: DisplayObjectContainer;
 		private var tiles: Array;
 		private var colorTransform: ColorTransform;
 		private var skipCenter: Boolean;
 
 		public function GroundCircle(size: int, skipCenter: Boolean = false, colorTransform: ColorTransform = null) {
-			super( -10, -10);
+			super( -10, -10, size);
 			
 			if (colorTransform == null) {
 				colorTransform = new ColorTransform(1.0, 1.0, 1.0, 1.0, 0, 100, 0);

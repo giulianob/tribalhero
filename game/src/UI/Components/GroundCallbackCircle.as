@@ -7,21 +7,20 @@
     import flash.events.Event;
     import flash.geom.Point;
 
-    import src.Constants;
     import src.Assets;
+    import src.Constants;
     import src.Map.Position;
     import src.Map.TileLocator;
     import src.Objects.SimpleObject;
 
     public class GroundCallbackCircle extends SimpleObject
 	{
-		private var size: int;
 		private var circle: DisplayObjectContainer;
 		private var tiles: Array;
 		private var callback: Function;
 
 		public function GroundCallbackCircle(size: int, callback: Function) {
-			super( -10, -10);
+			super( -10, -10, size);
 			
 			this.size = size;
 			this.callback = callback;

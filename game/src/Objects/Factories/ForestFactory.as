@@ -9,7 +9,7 @@
     import src.Objects.Forest;
     import src.Objects.States.GameObjectState;
 
-	public class ForestFactory {
+    public class ForestFactory {
 
 		public function ForestFactory() {
 		}
@@ -24,9 +24,9 @@
             return sprite;
         }
 
-		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, groupId: int, objectId: int, level: int): Forest
+		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, size: int, groupId: int, objectId: int, level: int): Forest
 		{
-			var forestObj: Forest = new Forest(type, state, objX, objY, groupId, objectId, level);
+			var forestObj: Forest = new Forest(type, state, objX, objY, size, groupId, objectId, level);
 
 			forestObj.spriteContainer.addChild(ObjectFactory.makeIntoShadow(getSprite(level, "map")));
 			forestObj.spriteContainer.addChild(getSprite(level, "map"));

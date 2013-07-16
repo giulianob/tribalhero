@@ -1,15 +1,13 @@
 package src.UI.Components.ScreenMessages
 {
-	import org.aswing.AssetIcon;
-	import org.aswing.AssetPane;
-	import org.aswing.AsWingConstants;
-	import org.aswing.ext.MultilineLabel;
-	import org.aswing.FlowLayout;
-	import org.aswing.Icon;
-	import org.aswing.JLabel;
-	import org.aswing.JPanel;
+    import org.aswing.AsWingConstants;
+    import org.aswing.AssetIcon;
+    import org.aswing.AssetPane;
+    import org.aswing.FlowLayout;
+    import org.aswing.JPanel;
+    import org.aswing.ext.MultilineLabel;
 
-	public class ScreenMessageItem extends JPanel
+    public class ScreenMessageItem extends JPanel
 	{
 		public var key: String;
 		public var duration: int;

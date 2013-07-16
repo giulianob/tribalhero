@@ -1,16 +1,14 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import flash.display.SimpleButton;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import src.Global;
-	import src.Objects.Factories.*;
-	import src.Objects.*;
-	import src.Objects.Actions.ActionButton;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Cursors.*;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class DestroyRoadButton extends ActionButton
+    import src.Objects.*;
+    import src.Objects.Actions.ActionButton;
+    import src.UI.Components.SimpleTooltip;
+    import src.UI.Cursors.*;
+
+    public class DestroyRoadButton extends ActionButton
 	{
 		public function DestroyRoadButton(parentObj: SimpleGameObject)
 		{

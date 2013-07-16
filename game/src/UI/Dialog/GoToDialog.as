@@ -1,19 +1,17 @@
 ﻿package src.UI.Dialog 
 {
-	import flash.events.Event;
-	import flash.geom.Point;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.Constants;
-	import src.Global;
-	import src.Map.TileLocator;
-	import src.UI.Components.AutoCompleteTextField;
-	import src.UI.GameJPanel;
-	
-	public class GoToDialog extends GameJPanel
+    import flash.events.Event;
+    import flash.geom.Point;
+
+    import org.aswing.*;
+    import org.aswing.geom.*;
+
+    import src.Global;
+    import src.Map.TileLocator;
+    import src.UI.Components.AutoCompleteTextField;
+    import src.UI.GameJPanel;
+
+    public class GoToDialog extends GameJPanel
 	{
 		//members define
 		private var txtX:JTextField;

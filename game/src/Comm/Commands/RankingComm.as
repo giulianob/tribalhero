@@ -1,9 +1,9 @@
 ﻿package src.Comm.Commands
 {
-	import src.Comm.*;
-	import src.Map.MapComm;
+    import src.Comm.*;
+    import src.Map.MapComm;
 
-	public class RankingComm
+    public class RankingComm
 	{
 		private var mapComm: MapComm;
 		private var session: Session;

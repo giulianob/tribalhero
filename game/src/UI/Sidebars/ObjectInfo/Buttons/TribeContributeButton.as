@@ -1,25 +1,18 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.*;
-	import src.Constants;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.*;
-	import src.Objects.Effects.Formula;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Cursors.*;
-	import src.UI.Dialog.InfoDialog;
-	import src.UI.Dialog.TribeContributeDialog;
-	import src.UI.GameJPanel;
-	import src.UI.Tooltips.SimpleRequirementTooltip;
-	import src.UI.Tooltips.TextTooltip;
-	
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class TribeContributeButton extends ActionButton
+    import src.Global;
+    import src.Map.City;
+    import src.Map.CityObject;
+    import src.Objects.*;
+    import src.Objects.Actions.ActionButton;
+    import src.UI.Dialog.InfoDialog;
+    import src.UI.Dialog.TribeContributeDialog;
+    import src.UI.Tooltips.SimpleRequirementTooltip;
+
+    public class TribeContributeButton extends ActionButton
 	{
 		private var toolTip: SimpleRequirementTooltip;
 		private var pnlGetPrices: InfoDialog;

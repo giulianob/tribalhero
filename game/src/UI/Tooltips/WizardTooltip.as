@@ -1,28 +1,14 @@
 package src.UI.Tooltips 
 {
-	import flash.display.DisplayObject;
-	import flash.display.Sprite;
-	import flash.display.Stage;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TimerEvent;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.utils.Timer;
-	import org.aswing.*;
-	import org.aswing.event.FrameEvent;
-	import org.aswing.event.PopupEvent;
-	import org.aswing.ext.MultilineLabel;
-	import org.aswing.graphics.Graphics2D;
-	import org.aswing.graphics.Pen;
-	import org.aswing.graphics.SolidBrush;
-	import src.Constants;
-	import src.Global;
-	import src.UI.Components.ResizeManager;
-	import src.UI.GameJFrame;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import flash.display.Sprite;
+    import flash.events.Event;
 
-	public class WizardTooltip extends Tooltip 
+    import org.aswing.*;
+    import org.aswing.ext.MultilineLabel;
+
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    public class WizardTooltip extends Tooltip
 	{
 		private var bg: Sprite;
 		private var cursor: int;

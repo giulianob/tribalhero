@@ -1,25 +1,24 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import src.Util.StringHelper;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.Actions.Action;
-	import src.Objects.Actions.BuildAction;
-	import src.Objects.Actions.CurrentActiveAction;
-	import src.Objects.Actions.StructureUpgradeAction;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Factories.*;
-	import src.Objects.*;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.Prototypes.*
-	import src.Util.Util;
-	import src.UI.Cursors.*;
-	import src.UI.Tooltips.StructureBuildTooltip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class BuildButton extends ActionButton
+    import src.Global;
+    import src.Map.City;
+    import src.Map.CityObject;
+    import src.Objects.*;
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.Actions.BuildAction;
+    import src.Objects.Actions.StructureUpgradeAction;
+    import src.Objects.Effects.Formula;
+    import src.Objects.Factories.*;
+    import src.Objects.Prototypes.*;
+    import src.UI.Cursors.*;
+    import src.UI.Tooltips.StructureBuildTooltip;
+    import src.Util.StringHelper;
+    import src.Util.Util;
+
+    public class BuildButton extends ActionButton
 	{
 		private var structPrototype: StructurePrototype;
 		private var buildToolTip: StructureBuildTooltip;

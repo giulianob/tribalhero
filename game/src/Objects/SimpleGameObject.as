@@ -21,9 +21,9 @@ package src.Objects {
 		
 		private var icon: DisplayObject;		
 				
-		public function SimpleGameObject(type: int, state: GameObjectState, objX: int, objY: int, groupId: int, objectId: int)
+		public function SimpleGameObject(type: int, state: GameObjectState, objX: int, objY: int, size: int, groupId: int, objectId: int)
 		{
-			super(objX, objY);
+			super(objX, objY, size);
 			
 			this.type = type;
 			this.groupId = groupId;
@@ -81,26 +81,7 @@ package src.Objects {
 				return 0;
 		}
 
-		public static function sortOnGroupIdAndObjId(a:SimpleGameObject, b:SimpleGameObject):Number {
-			var aGroupId:Number = a.groupId;
-			var bGroupId:Number = b.groupId;
-
-			var aObjId:Number = a.objectId;
-			var bObjId:Number = b.objectId;
-
-			if (aGroupId > bGroupId)
-				return 1;
-			else if (aGroupId < bGroupId)
-				return -1;
-			else if (aObjId > bObjId)
-				return 1;
-			else if (aObjId < bObjId)
-				return -1;
-			else
-				return 0;
-		}
-
-		override public function copy(obj:SimpleObject):void 
+        override public function copy(obj:SimpleObject):void
 		{
 			super.copy(obj);
 

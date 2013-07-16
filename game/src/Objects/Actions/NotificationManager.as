@@ -1,8 +1,8 @@
 ﻿package src.Objects.Actions 
 {
-	import src.Util.BinaryList.*;
-	
-	/**
+    import src.Util.BinaryList.*;
+
+    /**
 	 * ...
 	 * @author Giuliano
 	 */

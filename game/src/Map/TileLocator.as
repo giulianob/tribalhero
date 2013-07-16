@@ -6,14 +6,15 @@
 
 package src.Map {
 
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import src.Constants;
-    import src.Map.ScreenPosition;
-    import src.Util.Util;
-	import src.Global;
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
 
-	public class TileLocator {
+    import src.Constants;
+    import src.Global;
+    import src.Objects.SimpleObject;
+    import src.Util.Util;
+
+    public class TileLocator {
 
 		public static function getCityRegionId(rX: int, rY: int): int // from screen coord to region id
 		{
@@ -202,8 +203,8 @@ package src.Map {
 
 			var cx: int = ox;
 			var cy: int = oy - (2 * radius);
-			var last: int = cx;
-			for (var row: int = 0; row < radius * 2 + 1; ++row) {
+
+            for (var row: int = 0; row < radius * 2 + 1; ++row) {
 				for (var count: int = 0; count < radius * 2 + 1; ++count) {
 
 					if ((row % 2 == 0 && mode == 0) || (row % 2 != 0 && mode == 1)) {
@@ -228,7 +229,11 @@ package src.Map {
             return positions;
 		}
 
-        public function foreachMultitile(ox: int, oy: int, size: int): Array {
+        public static function foreachMultitileObject(obj: SimpleObject): Array {
+            return foreachMultitile(obj.primaryPosition.x, obj.primaryPosition.y, obj.size);
+        }
+
+        public static function foreachMultitile(ox: int, oy: int, size: int): Array {
             var positions: Array = [];
 
             var position: Position = new Position(ox, oy);

@@ -1,20 +1,21 @@
 ﻿package src.UI.Tooltips
 {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import org.aswing.AsWingConstants;
-	import org.aswing.JLabel;
-	import org.aswing.SoftBoxLayout;
-	import src.Global;
-	import src.Map.CityRegionObject;
-	import src.Map.TileLocator;
-	import src.Map.Username;
-	import src.Objects.Factories.ObjectFactory;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.UI.Tooltips.TextTooltip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
+    import flash.geom.Point;
 
-	/**
+    import org.aswing.AsWingConstants;
+    import org.aswing.JLabel;
+    import org.aswing.SoftBoxLayout;
+
+    import src.Global;
+    import src.Map.CityRegionObject;
+    import src.Map.TileLocator;
+    import src.Map.Username;
+    import src.Objects.Factories.ObjectFactory;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    /**
 	 * ...
 	 * @author
 	 */

@@ -1,31 +1,23 @@
 ﻿package src.UI.Sidebars.ForestInfo {
-	import flash.events.*;
-	import flash.geom.Point;
-	import flash.utils.Timer;
-	import src.Map.*;
-	import flash.text.*;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.Objects.*;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Dialog.*;
-	import src.UI.GameJSidebar;
-	import src.UI.Sidebars.ForestInfo.Buttons.ForestCampBuildButton;
-	import src.UI.Sidebars.ObjectInfo.Buttons.*;
-	import src.Util.*;
-	import flash.display.*;
-	import src.Objects.Actions.*;
-	import src.*;
-	import src.Objects.Troop.*;
+    import flash.events.*;
+    import flash.geom.Point;
+    import flash.utils.Timer;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
 
-	public class ForestInfoSidebar extends GameJSidebar
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Effects.Formula;
+    import src.UI.Components.SimpleTooltip;
+    import src.UI.GameJSidebar;
+    import src.UI.Sidebars.ForestInfo.Buttons.ForestCampBuildButton;
+    import src.Util.*;
+
+    public class ForestInfoSidebar extends GameJSidebar
 	{
 		//UI
 		private var lblName:JLabel;

@@ -5,16 +5,17 @@
  */
 
 package src.Objects.Prototypes {
-	import src.Map.*;
-	import src.Objects.Factories.StructureFactory;
+    import src.Map.*;
+    import src.Objects.Factories.StructureFactory;
 
-	public class AwayFromLayout implements ILayout {
+    public class AwayFromLayout implements ILayout {
 
 		public var type: int;
 		public var minlevel: int;
 		public var maxlevel: int;
 		public var mindist: int;
-		public var maxdist: int;
+        //noinspection JSUnusedGlobalSymbols
+        public var maxdist: int;
 		public var compare: int;
 
 		private var structPrototype: StructurePrototype;

@@ -15,7 +15,6 @@ package src.Util {
     import mx.utils.StringUtil;
 
     import org.aswing.AsWingConstants;
-    import org.aswing.AsWingManager;
     import org.aswing.AsWingUtils;
     import org.aswing.Component;
     import org.aswing.Container;

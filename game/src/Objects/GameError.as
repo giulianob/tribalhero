@@ -1,11 +1,9 @@
 ﻿package src.Objects
 {
-	import src.Util.StringHelper;
-	import org.aswing.*;
-	import src.Constants;
-	import src.UI.Dialog.InfoDialog;
+    import src.UI.Dialog.InfoDialog;
+    import src.Util.StringHelper;
 
-	public class GameError
+    public class GameError
 	{
 		public static function getMessage(errorCode: int, params: Array = null): String
 		{

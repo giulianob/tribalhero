@@ -1,17 +1,18 @@
 package src.UI.Components.TroopsDialogTable 
 {
-	import flash.events.*;
-	import org.aswing.*;
-	import src.*;
-	import src.Objects.Process.*;
-	import src.Objects.Troop.*;
-	import src.UI.Components.TableCells.*;
-	import src.UI.Dialog.TroopAttackModeDialog;
-	import src.UI.Dialog.TroopTransferDialog;
-	import src.Util.*;
-	import src.Comm.Commands.*;
-	
-	public class TroopActionsCell extends AbstractPanelTableCell 
+    import flash.events.*;
+
+    import org.aswing.*;
+
+    import src.*;
+    import src.Objects.Process.*;
+    import src.Objects.Troop.*;
+    import src.UI.Components.TableCells.*;
+    import src.UI.Dialog.TroopAttackModeDialog;
+    import src.UI.Dialog.TroopTransferDialog;
+    import src.Util.*;
+
+    public class TroopActionsCell extends AbstractPanelTableCell
 	{				
 		override protected function getCellLayout():LayoutManager 
 		{
@@ -22,44 +23,46 @@ package src.UI.Components.TroopsDialogTable
 		{
 			super.setCellValue(value);
 			getCellPanel().removeAll();
-			
-			if (value.isLocal()) {
+
+            var troop: TroopStub = value;
+
+			if (troop.isLocal()) {
 				var btnManage: JLabelButton = new JLabelButton(StringHelper.localize("STR_MANAGE"));
 				btnManage.setOpaque(true);
 				btnManage.setBackground(ASColor.getASColor(0, 0, 0, 0));
 				btnManage.addActionListener(function(e: Event): void {
-					new ManageLocalTroopsProcess(Global.map.cities.get(value.cityId)).execute();
+					new ManageLocalTroopsProcess(Global.map.cities.get(troop.cityId)).execute();
 				});
 				getCellPanel().append(btnManage);
 			}
-			else if (value.isMoving()) {
+			else if (troop.isMoving()) {
 				var btnLocate: JLabelButton = new JLabelButton(StringHelper.localize("STR_LOCATE"));
 				btnLocate.addActionListener(function(e: Event): void {
-					new LocateTroopProcess(value).execute();
+					new LocateTroopProcess(troop).execute();
 				});
 				getCellPanel().append(btnLocate);
 			}
 			
-			if (value.isStationed()) {
+			if (troop.isStationed()) {
 				var btnRetreat: JLabelButton = new JLabelButton(StringHelper.localize("STR_RETREAT"));
 				btnRetreat.addActionListener(function(e: Event): void {
-					new RetreatTroopProcess(value).execute();
+					new RetreatTroopProcess(troop).execute();
 				});				
 				getCellPanel().append(btnRetreat);
                 
-				if(value.isStationedNotInBattle() && value.playerId == Constants.playerId) {
+				if(troop.isStationedNotInBattle() && troop.playerId == Constants.playerId) {
 					var btnSwitch: JLabelButton = new JLabelButton(StringHelper.localize("STR_MANAGE"));
 					btnSwitch.addActionListener(function(e: Event): void {
-						var dialog : TroopAttackModeDialog = new TroopAttackModeDialog(value);
+						var dialog : TroopAttackModeDialog = new TroopAttackModeDialog(troop);
 						dialog.show();
 					});				
 					getCellPanel().append(btnSwitch);
 					
-					if((value as TroopStub).stationedLocation.type==2) {
+					if(troop.stationedLocation.type==2) {
 						var btnTransfer: JLabelButton = new JLabelButton("Transfer");
 						btnTransfer.addActionListener(function(e: Event): void {
 							Global.mapComm.Stronghold.listStrongholds(function(strongholds:*):void {
-								var dialog : TroopTransferDialog = new TroopTransferDialog(value,strongholds);
+								var dialog : TroopTransferDialog = new TroopTransferDialog(troop,strongholds);
 								dialog.show();
 							});
 						});				

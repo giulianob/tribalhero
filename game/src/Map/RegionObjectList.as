@@ -16,7 +16,7 @@ package src.Map {
         {
             var index: int = TileLocator.getTileIndex(position);
 
-            if (objects[index] === undefined) {
+            if (objects[index] == null) {
                 objects[index] = [obj];
             }
             else {
@@ -26,7 +26,30 @@ package src.Map {
             count++;
         }
 
-        public function remove(groupId: int, objectId: int): SimpleGameObject
+        public function remove(obj: SimpleGameObject, position: Position): SimpleGameObject {
+            var index: int = TileLocator.getTileIndex(position);
+
+            var tileObjects: Array = objects[index];
+            if (tileObjects == null) {
+                return null;
+            }
+
+            for (var i: int = 0; i < tileObjects.length; i++)
+            {
+                var tileObject: SimpleGameObject = tileObjects[i];
+
+                if (obj.groupId != tileObject.groupId || obj.objectId != tileObject.objectId) {
+                    continue;
+                }
+
+                tileObjects.splice(i, 1);
+                return tileObject;
+            }
+
+            return null;
+        }
+
+        public function removeById(groupId: int, objectId: int): SimpleGameObject
         {
             for each (var tileList:Array in objects) {
                 for (var itemIndex: int = 0; itemIndex < tileList.length; itemIndex++) {

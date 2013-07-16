@@ -1,17 +1,13 @@
 ﻿package src.UI.Tooltips {
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.Troop.*;
-	import src.UI.Components.ComplexTroopGridList.*;
-	import src.UI.LookAndFeel.*;
+    import org.aswing.*;
 
+    import src.*;
+    import src.Map.*;
+    import src.Objects.Troop.*;
+    import src.UI.Components.ComplexTroopGridList.*;
+    import src.UI.LookAndFeel.*;
 
-	public class SimpleTroopStubTooltip extends Tooltip {
+    public class SimpleTroopStubTooltip extends Tooltip {
 		private var pnlHeader: JPanel;
 		private var pnlTop: JPanel;
 		private var lblName: JLabel;

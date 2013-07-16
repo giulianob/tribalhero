@@ -1,9 +1,9 @@
 ﻿package src.Objects.Factories {
-	import src.Map.Map;
-	import src.Util.BinaryList.*;
-	import src.Objects.Prototypes.PropertyPrototype;
+    import src.Map.Map;
+    import src.Objects.Prototypes.PropertyPrototype;
+    import src.Util.BinaryList.*;
 
-	/**
+    /**
 	 * ...
 	 * @author Default
 	 */

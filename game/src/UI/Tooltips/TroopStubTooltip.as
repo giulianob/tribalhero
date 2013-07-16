@@ -1,22 +1,15 @@
 ﻿package src.UI.Tooltips {
-	import src.Global;
-	import src.Map.City;
-	import src.Map.Username;
-	import src.Objects.Actions.Notification;
-	import src.Objects.Troop.*;
-	import src.UI.Components.ComplexTroopGridList.ComplexTroopGridList;
-	import src.UI.Components.NotificationBox;
-	import src.UI.Components.ReferenceBox;
-	import src.UI.Components.SimpleResourcesPanel;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import org.aswing.*;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
+    import src.Global;
+    import src.Map.City;
+    import src.Map.Username;
+    import src.Objects.Troop.*;
+    import src.UI.Components.ComplexTroopGridList.ComplexTroopGridList;
+    import src.UI.Components.SimpleResourcesPanel;
+    import src.UI.LookAndFeel.GameLookAndFeel;
 
-	public class TroopStubTooltip extends Tooltip {
+    public class TroopStubTooltip extends Tooltip {
 		private var lblName: JLabel;
 		private var troop: TroopStub;
 		private var city: City;

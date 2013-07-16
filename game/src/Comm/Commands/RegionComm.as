@@ -3,16 +3,14 @@
     import System.Linq.Enumerable;
 
     import flash.geom.Point;
-	import src.Comm.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Constants;
-	import src.Global;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.States.BattleState;
-	import src.Objects.States.GameObjectState;
 
-	public class RegionComm {
+    import src.Comm.*;
+    import src.Constants;
+    import src.Global;
+    import src.Map.*;
+    import src.Objects.Factories.ObjectFactory;
+
+    public class RegionComm {
 
 		private var mapComm: MapComm;
 		private var session: Session;

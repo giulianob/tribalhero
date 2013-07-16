@@ -1,13 +1,12 @@
 package src.UI.Tutorial 
 {
-	import flash.utils.getDefinitionByName;
-	import org.aswing.AsWingManager;
-	import src.Comm.Commands.GeneralComm;
-	import src.Global;
-	import src.Map.Map;
-	import src.UI.Tutorial.Steps.*;
-	 
-	public class GameTutorial 
+    import org.aswing.AsWingManager;
+
+    import src.Comm.Commands.GeneralComm;
+    import src.Map.Map;
+    import src.UI.Tutorial.Steps.*;
+
+    public class GameTutorial
 	{		
 		private const steps: Array = [
 			BuildFarmStep,

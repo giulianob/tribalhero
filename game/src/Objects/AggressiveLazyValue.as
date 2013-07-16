@@ -1,9 +1,8 @@
 ﻿package src.Objects 
 {
-	import src.Constants;
-	import src.Objects.LazyValue;
-	
-	/**
+    import src.Constants;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */

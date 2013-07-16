@@ -1,10 +1,11 @@
 package src.UI.Components.TableCells 
 {
-	import flash.events.*;
-	import org.aswing.*;
-	import org.aswing.table.*;
-	
-	public class AbstractPanelTableCell extends AbstractTableCell 
+    import flash.events.*;
+
+    import org.aswing.*;
+    import org.aswing.table.*;
+
+    public class AbstractPanelTableCell extends AbstractTableCell
 	{
 		protected var pnl: JPanel;
 		

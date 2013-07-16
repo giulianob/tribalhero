@@ -1,12 +1,13 @@
 ﻿package src.Comm.Commands
 {
-	import flash.events.Event;
-	import src.Comm.*;
-	import src.Global;
-	import src.Map.MapComm;
-	import src.UI.Dialog.TribeProfileDialog;
+    import flash.events.Event;
 
-	public class MessagingComm
+    import src.Comm.*;
+    import src.Global;
+    import src.Map.MapComm;
+    import src.UI.Dialog.TribeProfileDialog;
+
+    public class MessagingComm
 	{
 		private var mapComm: MapComm;
 		private var session: Session;

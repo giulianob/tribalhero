@@ -1,19 +1,17 @@
 ﻿package src.UI.Components.Tribe
 {
-	import flash.display.MovieClip;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.AssetIcon;
-	import org.aswing.JOptionPane;
-	import src.Global;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Dialog.InfoDialog;
-	import src.UI.Dialog.MessageCreateDialog;
-	import src.UI.Dialog.TribeSetRankDialog;
-	import src.Util.StringHelper;
-	import src.Util.Util;
+    import flash.display.MovieClip;
+    import flash.events.MouseEvent;
 
-	public class KickIcon extends AssetIcon
+    import org.aswing.AssetIcon;
+    import org.aswing.JOptionPane;
+
+    import src.Global;
+    import src.UI.Components.SimpleTooltip;
+    import src.UI.Dialog.InfoDialog;
+    import src.Util.StringHelper;
+
+    public class KickIcon extends AssetIcon
 	{		
 		private var icon: MovieClip = new ICON_UNFRIEND();
 

@@ -5,10 +5,10 @@
  */
 
 package src.Objects.Prototypes {
-	import src.Map.*;
-	import src.Objects.Factories.StructureFactory;
+    import src.Map.*;
+    import src.Objects.Factories.StructureFactory;
 
-	public class SimpleLayout implements ILayout {
+    public class SimpleLayout implements ILayout {
 
 		public var type: int;
 		public var minlevel: int;

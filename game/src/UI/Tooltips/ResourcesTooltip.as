@@ -1,23 +1,17 @@
 ﻿package src.UI.Tooltips
 {
 
-	import src.Util.StringHelper;
-	import flash.events.Event;
-	import mx.utils.StringUtil;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.Map.City;
-	import src.Objects.LazyValue;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.Util.BinaryList.BinaryList;
-	import src.Util.BinaryList.BinaryListEvent;
-	import src.Util.StringHelper;
-	import src.Util.Util;
+    import flash.events.Event;
 
-	public class ResourcesTooltip extends Tooltip
+    import org.aswing.*;
+
+    import src.Map.City;
+    import src.Objects.LazyValue;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+    import src.Util.BinaryList.BinaryListEvent;
+    import src.Util.StringHelper;
+
+    public class ResourcesTooltip extends Tooltip
 	{
 
 		private var city: City;

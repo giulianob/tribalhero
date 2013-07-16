@@ -1,13 +1,13 @@
 ﻿
 package src.Objects.Actions {
-	import src.Objects.Effects.EffectReqManager;
-	import src.Objects.GameObject;
-	import src.Objects.SimpleGameObject;
-	import src.UI.Sidebars.ObjectInfo.Buttons.*;
-	import src.UI.Sidebars.ForestInfo.Buttons.*;
-	import src.UI.Sidebars.TroopInfo.Buttons.*;
-	
-	/**
+    import src.Objects.Effects.EffectReqManager;
+    import src.Objects.GameObject;
+    import src.Objects.SimpleGameObject;
+    import src.UI.Sidebars.ForestInfo.Buttons.*;
+    import src.UI.Sidebars.ObjectInfo.Buttons.*;
+    import src.UI.Sidebars.TroopInfo.Buttons.*;
+
+    /**
 	* ...
 	* @author Default
 	*/

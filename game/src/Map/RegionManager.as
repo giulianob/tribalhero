@@ -19,30 +19,31 @@
 			super(Region.sortOnId, Region.compare);
 		}
 
-//        private function AddToPrimaryRegionAndTiles(obj: SimpleGameObject): Boolean
-//        {
-//            var regionId: int = TileLocator.getRegionId(obj.primaryPosition);
-//            var primaryRegion: Region = get(regionId);
-//
-//            if (primaryRegion == null)
-//            {
-//                return false;
-//            }
-//
-//            primaryRegion.add(obj);
-//
-//            foreach (var position in tileLocator.ForeachMultitile(obj))
-//            {
-//                var region = GetRegion(position.X, position.Y);
-//
-//                if (region != null)
-//                {
-//                    region.AddObjectToTile(obj, position.X, position.Y);
-//                }
-//            }
-//
-//            return true;
-//        }
+        private function addToPrimaryRegionAndTiles(obj: SimpleGameObject): Boolean
+        {
+            var regionId: int = TileLocator.getRegionId(obj.primaryPosition);
+            var primaryRegion: Region = get(regionId);
+
+            if (primaryRegion == null)
+            {
+                return false;
+            }
+
+            primaryRegion.addObject(obj);
+
+            for each (var position: Position in TileLocator.foreachMultitileObject(obj))
+            {
+                regionId = TileLocator.getRegionId(obj.primaryPosition);
+                var region: Region = get(regionId);
+
+                if (region != null)
+                {
+                    region.addObjectToTile(obj, position);
+                }
+            }
+
+            return true;
+        }
 
 		public function updateObject(regionId: int, newObj: SimpleGameObject): SimpleGameObject
 		{

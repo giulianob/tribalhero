@@ -1,11 +1,12 @@
 ﻿package src.Objects.Battle {
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.utils.Dictionary;
-	import src.Util.BinaryList.*;
-	import src.Util.Util;
-	
-	public class BattleManager extends EventDispatcher
+    import flash.events.Event;
+    import flash.events.EventDispatcher;
+    import flash.utils.Dictionary;
+
+    import src.Util.BinaryList.*;
+    import src.Util.Util;
+
+    public class BattleManager extends EventDispatcher
 	{		
 		public static const GROUP_UNIT_REMOVED: String = "BATTLE_GROUP_UNIT_REMOVED";
 		public static const GROUP_UNIT_ADDED: String = "BATTLE_GROUP_UNIT_ADDED";

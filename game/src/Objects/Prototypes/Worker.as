@@ -5,19 +5,17 @@
  */
 
 package src.Objects.Prototypes {
-	import src.Objects.Actions.Action;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.Actions.IAction;
-	import src.Objects.Actions.TechUpgradeAction;
-	import src.Objects.GameObject;
-	import src.Objects.SimpleGameObject;
+    import src.Objects.Actions.Action;
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.Actions.IAction;
+    import src.Objects.Actions.TechUpgradeAction;
+    import src.Objects.SimpleGameObject;
 
-	public class Worker {
+    public class Worker {
 
 		public var type: int;
-		public var maxCount: int;
 
-		private var actions: Array = [];
+        private var actions: Array = [];
 		private var techUpgradeActions: Array = [];
 
 		public function Worker() {

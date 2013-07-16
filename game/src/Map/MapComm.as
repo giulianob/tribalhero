@@ -1,11 +1,11 @@
 ﻿package src.Map {
 
-	import src.Comm.*;
-	import src.Comm.Commands.*;
-	import src.Objects.*;
-	import src.UI.Dialog.*;
+    import src.Comm.*;
+    import src.Comm.Commands.*;
+    import src.Objects.*;
+    import src.UI.Dialog.*;
 
-	public class MapComm {
+    public class MapComm {
 
 		public var Battle: BattleComm;
 		public var City: CityComm;
@@ -39,8 +39,8 @@
 			Ranking = new RankingComm(this);
 			Messaging = new MessagingComm(this);
 			Tribe = new TribeComm(this);
-			Stronghold = new src.Comm.Commands.StrongholdComm(this);
-			MessageBoard = new src.Comm.Commands.MessageBoardComm(this);
+			Stronghold = new StrongholdComm(this);
+			MessageBoard = new MessageBoardComm(this);
 		}
 
 		public function dispose() : void {

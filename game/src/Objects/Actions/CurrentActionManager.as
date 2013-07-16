@@ -1,8 +1,8 @@
 ﻿package src.Objects.Actions {
-	import src.Global;
-	import src.Util.BinaryList.*;
+    import src.Global;
+    import src.Util.BinaryList.*;
 
-	public class CurrentActionManager extends BinaryList
+    public class CurrentActionManager extends BinaryList
 	{
 
 		public function CurrentActionManager() {

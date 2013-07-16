@@ -1,9 +1,10 @@
 package src.Objects 
 {
-	import flash.display.DisplayObject;
-	import src.Assets;
-	
-	public class Achievement 
+    import flash.display.DisplayObject;
+
+    import src.Assets;
+
+    public class Achievement
 	{
 		public static const TIER_GOLD: int = 0;
 		public static const TIER_SILVER: int = 1;

@@ -1,11 +1,9 @@
 ﻿package src.Objects.Actions
 {
-	import src.Objects.Factories.StructureFactory;
-	import src.Objects.Factories.WorkerFactory;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.Prototypes.Worker;
+    import src.Objects.Factories.WorkerFactory;
+    import src.Objects.Prototypes.Worker;
 
-	public class CurrentActiveAction extends CurrentAction
+    public class CurrentActiveAction extends CurrentAction
 	{
 		public var workerType: int;
 		public var index: int;
@@ -26,17 +24,17 @@
 			
 			return action;
 		}
-		
-		override public function isCancellable():Boolean 
+
+		override public function isCancellable():Boolean
 		{
 			var action: Action = getAction();
-			
-			if (action == null) 
+
+			if (action == null)
 				return true;
-			
+
 			return !((action.options & Action.OPTION_UNCANCELABLE) == Action.OPTION_UNCANCELABLE);
 		}
-		
+
 		public override function toString() : String 
 		{		
 			var action: IAction = getAction();

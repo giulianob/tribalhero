@@ -1,28 +1,25 @@
 ﻿package src.UI.Dialog {
 
-    import src.Util.BinaryList.BinaryListEvent;
-	import src.Util.StringHelper;
-	import flash.display.*;
-	import flash.events.Event;
-	import flash.utils.Dictionary;
-	import mx.utils.*;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.event.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.Battle.*;
-	import src.Objects.Factories.*;
-	import src.UI.*;
-	import src.UI.Components.CombatObjectGridList.*;
-	import src.UI.Components.StickyScroll;
-	import src.UI.LookAndFeel.*;
-	import src.Util.*;
-	
-	public class BattleViewer extends GameJPanel {
+    import flash.display.*;
+    import flash.events.Event;
+    import flash.utils.Dictionary;
+
+    import mx.utils.*;
+
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.event.*;
+    import org.aswing.geom.*;
+
+    import src.*;
+    import src.Objects.Battle.*;
+    import src.UI.*;
+    import src.UI.Components.CombatObjectGridList.*;
+    import src.UI.Components.StickyScroll;
+    import src.UI.LookAndFeel.*;
+    import src.Util.*;
+
+    public class BattleViewer extends GameJPanel {
 
 		private var tabDefensive:JTabbedPane;
 		private var pnlLog: JPanel;

@@ -1,29 +1,27 @@
 ﻿package src.UI.Dialog
 {
-	
-	import fl.lang.*;
-	import flash.events.*;
-	import mx.utils.StringUtil;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.event.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import org.aswing.table.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Effects.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.UI.*;
-	import src.UI.Components.*;
-	import src.UI.Components.CityActionGridList.*;
-	import src.UI.Components.TableCells.*;
-	import src.Util.*;
-	
-	public class CityEventDialog extends GameJPanel
+
+    import flash.events.*;
+
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.event.*;
+    import org.aswing.geom.*;
+    import org.aswing.table.*;
+
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Effects.*;
+    import src.Objects.Factories.*;
+    import src.Objects.Prototypes.*;
+    import src.UI.*;
+    import src.UI.Components.*;
+    import src.UI.Components.CityActionGridList.*;
+    import src.UI.Components.TableCells.*;
+    import src.Util.*;
+
+    public class CityEventDialog extends GameJPanel
 	{
 		private var pnlResources:JPanel;
 		private var pnlTabs:JTabbedPane;
@@ -154,7 +152,7 @@
 		{
 			var value:int = resource.getValue();
 			
-			return value + (includeLimit ? "/" + resource.getLimit() : "") + (includeRate ? " (" + StringHelper.localize("STR_PER_HOUR", "+" + resource.getHourlyRate()) + ")" : "");
+			return value.toString() + (includeLimit ? "/" + resource.getLimit() : "") + (includeRate ? " (" + StringHelper.localize("STR_PER_HOUR", "+" + resource.getHourlyRate()) + ")" : "");
 		}
 		
 		private function recreateResourcesPanel():void {

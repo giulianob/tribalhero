@@ -1,17 +1,15 @@
 ﻿package src.UI.Components.TableCells
 {
-	import flash.events.*;
-	import org.aswing.*;
-	import org.aswing.event.*;
-	import org.aswing.table.*;
-	import src.*;
-	import src.Objects.Tribe;
-	import src.UI.Components.*;
-	import src.UI.Components.Messaging.MessagingIcon;
-	import src.UI.Components.Tribe.KickIcon;
-	import src.UI.Components.Tribe.SetRankIcon;
+    import org.aswing.*;
+    import org.aswing.table.*;
 
-	public class TribeMemberActionCell extends AbstractTableCell
+    import src.*;
+    import src.Objects.Tribe;
+    import src.UI.Components.Messaging.MessagingIcon;
+    import src.UI.Components.Tribe.KickIcon;
+    import src.UI.Components.Tribe.SetRankIcon;
+
+    public class TribeMemberActionCell extends AbstractTableCell
 	{
 		protected var btnSendMessage: MessagingIcon;
 		protected var btnSetRank: SetRankIcon;

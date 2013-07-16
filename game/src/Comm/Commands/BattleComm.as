@@ -1,26 +1,23 @@
 ﻿package src.Comm.Commands {
 
-	import flash.utils.Dictionary;
-    import mx.utils.StringUtil;
-	import src.Comm.*;
-	import src.GameContainer;
-	import src.Global;
-	import src.Map.MapComm;
-	import src.Objects.Battle.BattleLocation;
-	import src.Objects.Battle.BattleManager;
-	import src.Objects.Battle.BattleObjectEvent;
-	import src.Objects.Battle.BattleOwner;
-	import src.Objects.Battle.CombatGroup;
-	import src.Objects.Battle.CombatObject;
-	import src.Objects.Battle.CombatStructure;
-	import src.Objects.Battle.CombatUnit;
-	import src.Objects.GameError;
-	import src.UI.Dialog.BattleViewer;
-	import src.UI.Dialog.InfoDialog;
-    import src.Util.StringHelper;
-	import src.Util.Util;
+    import flash.utils.Dictionary;
 
-	public class BattleComm {
+    import src.Comm.*;
+    import src.Global;
+    import src.Map.MapComm;
+    import src.Objects.Battle.BattleLocation;
+    import src.Objects.Battle.BattleManager;
+    import src.Objects.Battle.BattleOwner;
+    import src.Objects.Battle.CombatGroup;
+    import src.Objects.Battle.CombatObject;
+    import src.Objects.Battle.CombatStructure;
+    import src.Objects.Battle.CombatUnit;
+    import src.Objects.GameError;
+    import src.UI.Dialog.BattleViewer;
+    import src.UI.Dialog.InfoDialog;
+    import src.Util.Util;
+
+    public class BattleComm {
 
 		private var battles: Array = [];
 		private var mapComm: MapComm;

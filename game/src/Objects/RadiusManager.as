@@ -1,9 +1,11 @@
 package src.Objects 
 {
-	import flash.events.Event;
-	import src.Global;
-	import src.UI.Components.GroundCircle;
-	/**
+    import flash.events.Event;
+
+    import src.Global;
+    import src.UI.Components.GroundCircle;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */

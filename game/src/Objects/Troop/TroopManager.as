@@ -1,9 +1,10 @@
 ﻿package src.Objects.Troop {
-	import src.Map.City;
-	import src.Util.BinaryList.*;
-	import System.Linq.Enumerable;
+    import System.Linq.Enumerable;
 
-	/**
+    import src.Map.City;
+    import src.Util.BinaryList.*;
+
+    /**
 	 * ...
 	 * @author Default
 	 */

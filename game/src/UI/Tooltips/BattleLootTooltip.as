@@ -1,18 +1,19 @@
 ﻿package src.UI.Tooltips
 {
-	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.AsWingConstants;
-	import org.aswing.JLabel;
-	import org.aswing.JPanel;
-	import org.aswing.SoftBoxLayout;
-	import src.Objects.Resources;
-	import src.UI.Components.SimpleResourcesPanel;
-	import src.UI.GameJBox;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import flash.display.DisplayObject;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	/**
+    import org.aswing.AsWingConstants;
+    import org.aswing.JLabel;
+    import org.aswing.JPanel;
+    import org.aswing.SoftBoxLayout;
+
+    import src.Objects.Resources;
+    import src.UI.Components.SimpleResourcesPanel;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    /**
 	 * ...
 	 * @author
 	 */

@@ -9,7 +9,6 @@
     import src.Objects.Troop.*;
     import src.Util.DateUtil;
     import src.Util.StringHelper;
-    import src.Util.Util;
 
     public class AssignmentJoinDefDialog extends ReinforceTroopDialog {
 

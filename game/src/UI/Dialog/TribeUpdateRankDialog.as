@@ -1,23 +1,15 @@
 package src.UI.Dialog{
 
-	import com.google.analytics.ecommerce.Item;
-	import fl.lang.Locale;
-    import flash.events.Event;
-    import org.aswing.event.AWEvent;
-    import org.aswing.event.InteractiveEvent;
-	import src.Constants;
-	import src.Global;
-	import src.Objects.Tribe;
-	import src.UI.GameJPanel;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import org.aswing.*;
+    import org.aswing.ext.*;
+
+    import src.Constants;
+    import src.Global;
+    import src.Objects.Tribe;
+    import src.UI.GameJPanel;
     import src.Util.Util;
 
-	public class TribeUpdateRankDialog extends GameJPanel {
+    public class TribeUpdateRankDialog extends GameJPanel {
 		
 		private var permissions : Array = [
 			new JCheckBox("Invite Tribesman"),

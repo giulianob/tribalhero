@@ -23,8 +23,9 @@
 */
  
 package src.Util {
- 
+
     import flash.utils.Dictionary;
+
     /**
      * @author eric decker : firstborn : 2009
      */

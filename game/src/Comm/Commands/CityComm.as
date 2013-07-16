@@ -1,22 +1,21 @@
 ﻿package src.Comm.Commands
 {
-	import flash.geom.Point;
-	import src.Comm.*;
-	import src.Constants;
-	import src.Global;
-	import src.UI.Dialog.PlayerProfileDialog;
-	import src.Util.Util;
-	import src.Map.*;
-	import src.Objects.*;
-	import flash.events.Event;
-	import src.Objects.Actions.CurrentActionReference;
-	import src.Objects.Actions.Notification;
-	import src.Objects.Prototypes.*;
-	import src.Objects.Effects.*;
-	import src.Objects.Factories.*;
-	import src.UI.Components.ScreenMessages.BuiltInMessages;
-	
-	public class CityComm
+    import flash.events.Event;
+    import flash.geom.Point;
+
+    import src.Comm.*;
+    import src.Global;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Actions.CurrentActionReference;
+    import src.Objects.Actions.Notification;
+    import src.Objects.Factories.*;
+    import src.Objects.Prototypes.*;
+    import src.UI.Components.ScreenMessages.BuiltInMessages;
+    import src.UI.Dialog.PlayerProfileDialog;
+    import src.Util.Util;
+
+    public class CityComm
 	{
 		
 		private var mapComm:MapComm;
@@ -287,7 +286,7 @@
 				return;
 			}
 			
-			var profileData:* = new Object();
+			var profileData:* = {};
 			profileData.playerId = packet.readUInt();
 			profileData.username = packet.readString();
 			profileData.description = packet.readString();

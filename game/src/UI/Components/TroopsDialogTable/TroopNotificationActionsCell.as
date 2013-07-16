@@ -1,14 +1,14 @@
 package src.UI.Components.TroopsDialogTable 
 {
-	import flash.events.*;
-	import org.aswing.*;
-	import src.*;
-	import src.Objects.Process.*;
-	import src.Objects.Troop.*;
-	import src.UI.Components.TableCells.*;
-	import src.Util.*;
-	
-	public class TroopNotificationActionsCell extends AbstractPanelTableCell 
+    import flash.events.*;
+
+    import org.aswing.*;
+
+    import src.Objects.Process.*;
+    import src.UI.Components.TableCells.*;
+    import src.Util.*;
+
+    public class TroopNotificationActionsCell extends AbstractPanelTableCell
 	{				
 		override protected function getCellLayout():LayoutManager 
 		{

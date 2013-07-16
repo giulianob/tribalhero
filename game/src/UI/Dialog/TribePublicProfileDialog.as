@@ -1,30 +1,22 @@
 ﻿package src.UI.Dialog 
 {
-	import adobe.utils.CustomActions;
+    import mx.utils.StringUtil;
 
+    import org.aswing.*;
+    import org.aswing.event.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
+    import org.aswing.table.*;
+
+    import src.*;
+    import src.UI.*;
+    import src.UI.Components.TableCells.*;
+    import src.UI.Components.Tribe.*;
+    import src.UI.LookAndFeel.*;
     import src.Util.DateUtil;
     import src.Util.StringHelper;
-	import flash.events.*;
-	import flash.utils.*;
-	import mx.utils.StringUtil;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.event.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import org.aswing.table.*;
-	import src.*;
-	import src.UI.*;
-	import src.UI.Components.*;
-	import src.UI.Components.TableCells.*;
-	import src.UI.Components.Tribe.*;
-	import src.UI.LookAndFeel.*;
-	import src.UI.Tooltips.*;
-	import src.Map.Username;
-	import src.Util.Util;
-	
-	public class TribePublicProfileDialog extends GameJPanel
+
+    public class TribePublicProfileDialog extends GameJPanel
 	{
 		private var profileData: * ;
 		

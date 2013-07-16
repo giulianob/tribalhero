@@ -1,23 +1,22 @@
 package src.UI.Tutorial.Steps 
 {
-	import flash.events.Event;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	import org.aswing.geom.IntPoint;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.Actions.Action;
-	import src.Objects.BarbarianTribe;
-	import src.UI.Dialog.InfoDialog;
-	import src.UI.GameJSidebar;
-	import src.UI.Sidebars.BarbarianTribeInfo.BarbarianTribeSidebar;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
-	import src.UI.Sidebars.ObjectInfo.ObjectInfoSidebar;
-	import src.UI.Tutorial.TutorialStep;
-	import src.Util.StringHelper;
-	
-	/**
+    import flash.events.Event;
+    import flash.events.TimerEvent;
+    import flash.utils.Timer;
+
+    import org.aswing.geom.IntPoint;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Objects.Actions.Action;
+    import src.UI.Dialog.InfoDialog;
+    import src.UI.GameJSidebar;
+    import src.UI.Sidebars.BarbarianTribeInfo.BarbarianTribeSidebar;
+    import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
+    import src.UI.Tutorial.TutorialStep;
+    import src.Util.StringHelper;
+
+    /**
 	 * This step does the following:
 	 * - Show message telling user to find the barbarian tribe
 	 * - Show message telling user to attack barbarian tribe

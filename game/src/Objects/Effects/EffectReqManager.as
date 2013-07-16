@@ -1,8 +1,8 @@
 ﻿package src.Objects.Effects {
-	import src.Objects.GameObject;
-	import src.Objects.Prototypes.EffectReqPrototype;
+    import src.Objects.GameObject;
+    import src.Objects.Prototypes.EffectReqPrototype;
 
-	/**
+    /**
 	 * ...
 	 * @author Default
 	 */

@@ -1,19 +1,16 @@
 ﻿package src.Map
 {
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import flash.text.TextField;
-	import src.*;
-	import src.Map.*;
-	import src.Map.CityRegionFilters.CityRegionFilter;
-	import src.Objects.Factories.*;
-	import src.UI.Tooltips.*;
-	import src.Util.BinaryList.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
 
-	public class CityRegion extends Sprite
+    import src.*;
+    import src.Map.CityRegionFilters.CityRegionFilter;
+    import src.UI.Tooltips.*;
+
+    public class CityRegion extends Sprite
 	{
-		public static const DOT_SPRITE: String = "DOT_SPRITE_BLACK";
+
 
 		public var id: int;
 		private var globalX: int;

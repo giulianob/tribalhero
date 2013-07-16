@@ -1,7 +1,8 @@
 package src.Objects.Battle 
 {
-	import src.Util.BinaryList.*;
-	public class CombatGroup extends BinaryList
+    import src.Util.BinaryList.*;
+
+    public class CombatGroup extends BinaryList
 	{
 		public var troopId:int;
 		public var owner:BattleOwner;

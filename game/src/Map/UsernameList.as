@@ -1,11 +1,10 @@
 ﻿package src.Map {
-	import org.aswing.Component;
-	import org.aswing.Container;
-	import org.aswing.JLabel;
-	import src.Objects.Troop.*;
-	import src.Util.BinaryList.*;
+    import org.aswing.Component;
+    import org.aswing.JLabel;
 
-	/**
+    import src.Util.BinaryList.*;
+
+    /**
 	 * ...
 	 * @author Default
 	 */

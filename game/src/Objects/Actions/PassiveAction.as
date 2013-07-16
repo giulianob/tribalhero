@@ -1,14 +1,13 @@
 ﻿package src.Objects.Actions 
 {
-	import flash.display.DisplayObject;
-	import flash.display.DisplayObjectContainer;
-	import flash.display.Sprite;
-	import flash.utils.getDefinitionByName;
-	import src.Global;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Util.Util;
+    import flash.display.DisplayObject;
+    import flash.display.Sprite;
 
-	public class PassiveAction 
+    import src.Global;
+    import src.Objects.Factories.ObjectFactory;
+    import src.Util.Util;
+
+    public class PassiveAction
 	{
 		public static const STRUCTURE_SELF_DESTROY: int = 108;
 		public static const CITY_ATTACK: int = 250;

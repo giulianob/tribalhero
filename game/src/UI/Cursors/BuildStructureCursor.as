@@ -48,7 +48,7 @@ package src.UI.Cursors {
 			Global.map.selectObject(null);
 
 			structPrototype = StructureFactory.getPrototype(type, level);
-			cursor = StructureFactory.getSimpleObject(type, level, 0, 0);
+			cursor = StructureFactory.getSimpleObject(type, level, 0, 0, structPrototype.size);
 
 			if (cursor == null)
 			{

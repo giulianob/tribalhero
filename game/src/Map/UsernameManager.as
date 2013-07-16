@@ -1,8 +1,8 @@
 ﻿package src.Map 
 {
-	import src.Global;
-	
-	/**
+    import src.Global;
+
+    /**
 	* ...
 	* @author DefaultUser (Tools -> Custom Arguments...)
 	*/

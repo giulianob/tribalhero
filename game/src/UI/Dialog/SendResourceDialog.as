@@ -1,30 +1,23 @@
 ﻿package src.UI.Dialog
 {
-	import flash.events.Event;
-	import org.aswing.event.PopupEvent;
-	import src.Comm.Packet;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.Username;
-	import src.Objects.Effects.Formula;
-	import src.Objects.GameError;
-	import src.Objects.GameObject;
-	import src.Objects.Resources;
-	import src.Objects.StructureObject;
-	import src.UI.Components.AutoCompleteTextField;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Components.TradeResourcesPanel;
-	import src.UI.GameJPanel;
+    import flash.events.Event;
+
+    import org.aswing.*;
+    import org.aswing.geom.*;
+
+    import src.Comm.Packet;
+    import src.Global;
+    import src.Map.City;
+    import src.Objects.Effects.Formula;
+    import src.Objects.GameError;
+    import src.Objects.Resources;
+    import src.Objects.StructureObject;
+    import src.UI.Components.AutoCompleteTextField;
+    import src.UI.Components.TradeResourcesPanel;
+    import src.UI.GameJPanel;
     import src.Util.DateUtil;
-    import src.Util.Util;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-
-	public class SendResourceDialog extends GameJPanel
+    public class SendResourceDialog extends GameJPanel
 	{
 		private var lblCityTitle: JLabel;		
 		private var txtCityName: AutoCompleteTextField;

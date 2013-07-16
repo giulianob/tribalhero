@@ -1,17 +1,18 @@
 ﻿package src.UI.Components
 {
-	import flash.events.Event;
-	import org.aswing.AsWingConstants;
-	import org.aswing.Icon;
-	import org.aswing.JLabel;
-	import org.aswing.JPanel;
-	import org.aswing.SoftBoxLayout;
-	import src.Constants;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.UI.GameJBox;
-	import src.UI.Tooltips.*;
+    import flash.events.Event;
 
-	public class MessageContainer
+    import org.aswing.AsWingConstants;
+    import org.aswing.Icon;
+    import org.aswing.JLabel;
+    import org.aswing.JPanel;
+    import org.aswing.SoftBoxLayout;
+
+    import src.Constants;
+    import src.UI.GameJBox;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    public class MessageContainer
 	{
 		private var ui: GameJBox = new GameJBox();
 

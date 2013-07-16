@@ -1,19 +1,19 @@
 ﻿package src.UI.Dialog
 {
-	import flash.events.*;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.event.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Effects.*;
-	import src.UI.*;
-	
-	public class MarketSellDialog extends GameJPanel
+    import flash.events.*;
+
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.event.*;
+    import org.aswing.geom.*;
+
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Effects.*;
+    import src.UI.*;
+
+    public class MarketSellDialog extends GameJPanel
 	{
 		private var lblTitle1:JLabel;
 		private var pnlResourcePrices:JPanel;

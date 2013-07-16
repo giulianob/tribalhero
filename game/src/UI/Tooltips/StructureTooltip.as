@@ -1,24 +1,13 @@
 ﻿package src.UI.Tooltips {
-	import flash.events.Event;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	import org.aswing.JLabel;
-	import org.aswing.JPanel;
-	import org.aswing.SoftBoxLayout;
-	import src.Global;
-	import src.Map.Username;
-	import src.Objects.Actions.StructureChangeAction;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.StructureObject;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import org.aswing.*;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
+    import src.Global;
+    import src.Map.Username;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.Objects.StructureObject;
+    import src.UI.LookAndFeel.GameLookAndFeel;
 
-	public class StructureTooltip extends Tooltip{
+    public class StructureTooltip extends Tooltip{
 
 		private var structurePrototype: StructurePrototype;
 	

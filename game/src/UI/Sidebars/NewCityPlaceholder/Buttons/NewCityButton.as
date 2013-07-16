@@ -1,34 +1,21 @@
 ﻿
 package src.UI.Sidebars.NewCityPlaceholder.Buttons {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import src.Comm.Commands;
-	import src.Constants;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.TileLocator;
-	import src.Objects.Actions.ForestCampBuildAction;
-	import src.Objects.Factories.*;
-	import src.Objects.Forest;
-	import src.Objects.GameObject;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.NewCityPlaceholder;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.SimpleObject;
-	import src.Objects.Troop.*;
-	import src.Objects.Effects.Formula;
-	import src.UI.Cursors.*;
-	import src.UI.Dialog.CreateCityDialog;
-	import src.UI.Dialog.ForestLaborDialog;
-	import src.UI.GameJPanel;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
-	import src.UI.Sidebars.NewCityPlaceholder.NewCityPlaceholderSidebar;
-	import src.UI.Tooltips.NewCityTooltip;
-	import src.UI.Tooltips.TextTooltip;
-	import src.Util.Util;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
+    import flash.geom.Point;
 
-	public class NewCityButton extends ActionButton
+    import src.Constants;
+    import src.Global;
+    import src.Map.TileLocator;
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.Effects.Formula;
+    import src.Objects.Factories.*;
+    import src.Objects.NewCityPlaceholder;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.UI.Dialog.CreateCityDialog;
+    import src.UI.Tooltips.NewCityTooltip;
+
+    public class NewCityButton extends ActionButton
 	{
 		private var tooltip: NewCityTooltip;
 		private var mainBuildingPrototype: StructurePrototype;

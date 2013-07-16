@@ -5,9 +5,9 @@
 	 * @author Default
 	 */
 
-	import src.Objects.Prototypes.EffectPrototype;
+    import src.Objects.Prototypes.EffectPrototype;
 
-	public class TechnologyManager {
+    public class TechnologyManager {
 
 		public var technologies: Array = [];
 		public var location: int;
@@ -22,10 +22,9 @@
 		{
 			if (tech.ownerLocation != location)
 			{
-				var effects: Array = tech.getAllEffects(EffectPrototype.INHERIT_SELF, location);
-
-				if (effects.length == 0)
-				return; //do not add effects that do not affect this location
+                if (tech.getAllEffects(EffectPrototype.INHERIT_SELF, location).length == 0) {
+				    return; //do not add effects that do not affect this location
+                }
 			}
 
 			//check for duplicates
@@ -150,15 +149,6 @@
 			return ret;
 		}
 
-		public function sum(effectCode: int, inherit: int) : int {
-			var ret: int = 0;
-			for each (var e: EffectPrototype in getEffects(effectCode, inherit)) {
-				//ret += e....
-			}
-			
-			return ret;
-		}
-
-	}
+    }
 
 }

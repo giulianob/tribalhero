@@ -1,8 +1,8 @@
 package src.UI.Components.TimePicker 
 {
-	import org.aswing.JAdjuster;
-	
-	/**
+    import org.aswing.JAdjuster;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */

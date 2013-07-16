@@ -1,10 +1,10 @@
 ﻿package src.Objects {
 
-import src.Objects.Factories.StructureFactory;
-import src.Objects.Prototypes.StructurePrototype;
-import src.Objects.States.GameObjectState;
+    import src.Objects.Factories.StructureFactory;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.Objects.States.GameObjectState;
 
-public class StructureObject extends GameObject {
+    public class StructureObject extends GameObject {
 		
 		public var properties: Array = [];
 		public var level: int;
@@ -14,8 +14,8 @@ public class StructureObject extends GameObject {
 		public var wallManager: WallManager;
 		public var radiusManager: RadiusManager;
 		
-		public function StructureObject(type: int, state: GameObjectState, objX: int, objY: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int) {
-			super(type, state, objX, objY, playerId, cityId, objectId);
+		public function StructureObject(type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int) {
+			super(type, state, objX, objY, size, playerId, cityId, objectId);
 			
 			this.level = level;
 			

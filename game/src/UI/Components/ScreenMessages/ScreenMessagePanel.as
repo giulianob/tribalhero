@@ -1,20 +1,20 @@
 package src.UI.Components.ScreenMessages
 {
-	import flash.display.DisplayObjectContainer;
-	import flash.events.Event;
+    import flash.display.DisplayObjectContainer;
+    import flash.events.Event;
     import flash.events.KeyboardEvent;
     import flash.events.MouseEvent;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	import org.aswing.border.EmptyBorder;
-	import org.aswing.geom.IntDimension;
-	import org.aswing.Insets;
-	import org.aswing.JFrame;
-	import org.aswing.JPanel;
-	import fl.transitions.easing.*;
-	import org.aswing.SoftBoxLayout;
+    import flash.events.TimerEvent;
+    import flash.utils.Timer;
 
-	/**
+    import org.aswing.Insets;
+    import org.aswing.JFrame;
+    import org.aswing.JPanel;
+    import org.aswing.SoftBoxLayout;
+    import org.aswing.border.EmptyBorder;
+    import org.aswing.geom.IntDimension;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */

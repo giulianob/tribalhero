@@ -1,7 +1,7 @@
 ﻿package src.Objects.Battle {
-	import flash.events.Event;
-	
-	/**
+    import flash.events.Event;
+
+    /**
 	* ...
 	* @author Default
 	*/

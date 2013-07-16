@@ -1,15 +1,14 @@
 ﻿package src.UI.Components
 {
-	import flash.display.MovieClip;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.AssetIcon;
-	import org.aswing.event.AWEvent;
-	import src.Constants;
-	import src.Global;
-	import src.UI.Components.SimpleTooltip;
+    import flash.display.MovieClip;
+    import flash.events.MouseEvent;
 
-	/**
+    import org.aswing.AssetIcon;
+    import org.aswing.event.AWEvent;
+
+    import src.Global;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */

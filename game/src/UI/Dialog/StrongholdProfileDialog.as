@@ -1,16 +1,12 @@
 ﻿package src.UI.Dialog 
 {
-    import fl.lang.*;
     import flash.events.*;
     import flash.geom.*;
-    import flash.utils.*;
+
     import org.aswing.*;
     import org.aswing.border.*;
-    import org.aswing.colorchooser.*;
-    import org.aswing.event.*;
     import org.aswing.ext.*;
-    import org.aswing.geom.*;
-    import org.aswing.table.*;
+
     import src.*;
     import src.Map.*;
     import src.Objects.*;
@@ -21,15 +17,11 @@
     import src.UI.*;
     import src.UI.Components.*;
     import src.UI.Components.BattleReport.*;
-    import src.UI.Components.ComplexTroopGridList.*;
-    import src.UI.Components.TableCells.*;
-    import src.UI.Components.Tribe.*;
     import src.UI.Components.TroopCompositionGridList.*;
     import src.UI.LookAndFeel.*;
-    import src.UI.Tooltips.*;
     import src.Util.*;
-	
-	public class StrongholdProfileDialog extends GameJPanel
+
+    public class StrongholdProfileDialog extends GameJPanel
 	{
 		private var profileData: * ;
 		

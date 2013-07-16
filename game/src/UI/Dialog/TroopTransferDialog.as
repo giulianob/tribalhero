@@ -1,16 +1,18 @@
 package src.UI.Dialog 
 {
-	import mx.utils.*;
-	import org.aswing.*;
-	import org.aswing.ext.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.Effects.*;
-	import src.Objects.Troop.*;
-	import src.UI.*;
-	import src.Util.*;
-	
-	/**
+    import mx.utils.*;
+
+    import org.aswing.*;
+    import org.aswing.ext.*;
+
+    import src.*;
+    import src.Map.*;
+    import src.Objects.Effects.*;
+    import src.Objects.Troop.*;
+    import src.UI.*;
+    import src.Util.*;
+
+    /**
 	 * ...
 	 * @author Anthony Lam
 	 */

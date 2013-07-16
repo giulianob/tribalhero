@@ -5,21 +5,21 @@
  */
 
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import src.Global;
-	import src.Map.CityObject;
-	import src.Objects.Actions.ActionButton;
-	import flash.display.SimpleButton;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import src.Map.City;
-	import src.Objects.Actions.TechUpgradeAction;
-	import src.Objects.Factories.TechnologyFactory;
-	import src.Objects.Prototypes.*;
-	import src.Util.Util;
-	import src.Objects.StructureObject;
-	import src.UI.Tooltips.TechnologyTooltip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class TechnologyButton extends ActionButton {
+    import src.Global;
+    import src.Map.City;
+    import src.Map.CityObject;
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.Actions.TechUpgradeAction;
+    import src.Objects.Factories.TechnologyFactory;
+    import src.Objects.Prototypes.*;
+    import src.Objects.StructureObject;
+    import src.UI.Tooltips.TechnologyTooltip;
+    import src.Util.Util;
+
+    public class TechnologyButton extends ActionButton {
 		private var techPrototype: TechnologyPrototype;
 
 		private var techToolTip: TechnologyTooltip;

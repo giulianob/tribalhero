@@ -1,21 +1,21 @@
 ﻿package src.Comm.Commands {
 
-    import flash.external.ExternalInterface;
-	import flash.geom.*;
-	import org.aswing.*;
-	import src.*;
-	import src.Comm.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Actions.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.Objects.States.*;
-	import src.Objects.Troop.*;
-	import src.UI.Components.ScreenMessages.*;
-	import src.Util.*;
+    import flash.geom.*;
 
-	public class ObjectComm {
+    import org.aswing.*;
+
+    import src.*;
+    import src.Comm.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Actions.*;
+    import src.Objects.Factories.*;
+    import src.Objects.Prototypes.*;
+    import src.Objects.States.*;
+    import src.UI.Components.ScreenMessages.*;
+    import src.Util.*;
+
+    public class ObjectComm {
 
 		private var mapComm: MapComm;
 		private var session: Session;
@@ -64,6 +64,7 @@
 				type: packet.readUShort(),
 				x: packet.readUShort() + TileLocator.regionXOffset(regionId),
 				y: packet.readUShort() + TileLocator.regionYOffset(regionId),
+                size: packet.readUByte(),
 				groupId: packet.readUInt(),
 				id: packet.readUInt()
 			};
@@ -106,15 +107,15 @@
 			
 			switch(ObjectFactory.getClassType(obj.type)) {
 				case ObjectFactory.TYPE_STRUCTURE:
-					return StructureFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.playerId, obj.groupId, obj.id, obj.lvl, obj.wallRadius);
+					return StructureFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.playerId, obj.groupId, obj.id, obj.lvl, obj.wallRadius);
 				case ObjectFactory.TYPE_FOREST:
-					return ForestFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.groupId, obj.id, obj.lvl);
+					return ForestFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.groupId, obj.id, obj.lvl);
 				case ObjectFactory.TYPE_TROOP_OBJ:
-					return TroopFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.playerId, obj.groupId, obj.id);
+					return TroopFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.playerId, obj.groupId, obj.id);
 				case ObjectFactory.TYPE_STRONGHOLD:
-					return StrongholdFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.groupId, obj.id, obj.lvl, obj.tribeId);
+					return StrongholdFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.groupId, obj.id, obj.lvl, obj.tribeId);
 				case ObjectFactory.TYPE_BARBARIAN_TRIBE:
-					return BarbarianTribeFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.groupId, obj.id, obj.lvl, obj.count);
+					return BarbarianTribeFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.size, obj.groupId, obj.id, obj.lvl, obj.count);
 				default:
 					throw new Error("Trying to unread unknown object class type " + obj.type);
 			}
@@ -135,16 +136,9 @@
 				default:
 					throw new Error("Unknown object state in onReceiveRegion:" + objState);
 			}
-			
-			return null;
 		}
 
-		public function readWall(obj: StructureObject, packet: Packet) : void {
-			if (obj.objectId == 1)
-				obj.wallManager.draw(packet.readUByte());			
-		}
-
-		public function defaultAction(city: int, objectid: int, command: int):void {
+        public function defaultAction(city: int, objectid: int, command: int):void {
 			var packet: Packet = new Packet();
 			packet.cmd = command;
 			packet.writeUInt(city);
@@ -210,15 +204,7 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 
-		public function getPlayerUsernameFromCityName(cityName: String, callback: Function) : void {
-			var packet: Packet = new Packet();
-			packet.cmd = Commands.PLAYER_NAME_FROM_CITY_NAME;
-			packet.writeString(cityName);
-			
-			session.write(packet, callback);
-		}
-
-		public function getTribeUsername(id: int, callback: Function, custom: * = null) : void
+        public function getTribeUsername(id: int, callback: Function, custom: * = null) : void
 		{
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TRIBE_USERNAME_GET;
@@ -263,17 +249,7 @@
 		
 		}
 
-		public function onReceiveStrongholdUsername(packet: Packet, custom: *):void
-		{
-			packet.readUByte(); //just doing 1 username now
-
-			var id: int = packet.readUInt();
-			var username: String = packet.readString();
-
-			custom[0](id, username, custom[1]);
-		}
-		
-		public function getPlayerUsername(id: int, callback: Function, custom: * = null) : void
+        public function getPlayerUsername(id: int, callback: Function, custom: * = null) : void
 		{
 			if (id <= 0) {
 				callback(id, "System", custom);
@@ -476,6 +452,7 @@
 						break;
 						case "FLOAT":
 							obj.addProperty(packet.readFloat());
+                        break;
 						default:
 							Util.log("Unknown datatype " + prop.datatype + " in object type " + obj.type);
 						break;

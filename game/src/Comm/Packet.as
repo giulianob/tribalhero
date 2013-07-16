@@ -1,10 +1,10 @@
 ﻿package src.Comm {
-	import flash.utils.*;
-	import src.Util.Util;
-	
-	import src.Constants;
+    import flash.utils.*;
 
-	public class Packet {
+    import src.Constants;
+    import src.Util.Util;
+
+    public class Packet {
 		public var seq:int=0;
 		public var option:int=0;
 		public var cmd:int=0;

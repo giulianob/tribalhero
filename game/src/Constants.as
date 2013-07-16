@@ -1,10 +1,10 @@
 package src
 {
-import src.Graphics.Tileset;
-import src.Map.CityRegionLegend;
-import src.Objects.Tribe;
+    import src.Graphics.Tileset;
+    import src.Map.CityRegionLegend;
+    import src.Objects.Tribe;
 
-public class Constants
+    public class Constants
 	{
 		public static var version: int;
 		public static var revision: int;

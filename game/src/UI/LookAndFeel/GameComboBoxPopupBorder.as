@@ -1,11 +1,10 @@
 package src.UI.LookAndFeel
 {
-import org.aswing.Border;
-import org.aswing.border.LineBorder;
-import org.aswing.ASColor;
-import org.aswing.plaf.UIResource;
+    import org.aswing.ASColor;
+    import org.aswing.border.LineBorder;
+    import org.aswing.plaf.UIResource;
 
-public class GameComboBoxPopupBorder extends LineBorder implements UIResource
+    public class GameComboBoxPopupBorder extends LineBorder implements UIResource
 {
 	public function GameComboBoxPopupBorder()
 	{

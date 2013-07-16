@@ -1,7 +1,7 @@
 ﻿package src.Objects.Battle {
-	import flash.events.Event;
-	
-	public class BattleAttackEvent extends Event
+    import flash.events.Event;
+
+    public class BattleAttackEvent extends Event
 	{
 		public var attackerSide:int;
 		public var dmg:Number;

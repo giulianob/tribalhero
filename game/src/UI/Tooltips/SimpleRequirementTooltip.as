@@ -1,24 +1,22 @@
 ﻿package src.UI.Tooltips 
 {
-	import flash.display.DisplayObject;
-	import flash.display.SimpleButton;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.AssetPane;
-	import org.aswing.AsWingConstants;
-	import org.aswing.Component;
-	import org.aswing.ext.MultilineLabel;
-	import org.aswing.Icon;
-	import org.aswing.JLabel;
-	import org.aswing.SoftBoxLayout;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.Effects.RequirementFormula;
-	import src.Objects.GameObject;
-	import src.Objects.Prototypes.EffectReqPrototype;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.UI.Tooltips.TextTooltip;
-	
-	public class SimpleRequirementTooltip extends ActionButtonTooltip
+    import flash.events.Event;
+    import flash.events.MouseEvent;
+
+    import org.aswing.AsWingConstants;
+    import org.aswing.Component;
+    import org.aswing.Icon;
+    import org.aswing.JLabel;
+    import org.aswing.SoftBoxLayout;
+    import org.aswing.ext.MultilineLabel;
+
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.Effects.RequirementFormula;
+    import src.Objects.GameObject;
+    import src.Objects.Prototypes.EffectReqPrototype;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    public class SimpleRequirementTooltip extends ActionButtonTooltip
 	{
 		private var button: ActionButton;
 		private var requirements: Array;

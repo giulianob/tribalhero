@@ -1,25 +1,22 @@
 package src.UI.Tutorial.Steps 
 {
-	import flash.filters.GlowFilter;
-	import flash.geom.Point;
-	import src.Map.TileLocator;
-	import src.Util.StringHelper;
-	import flash.events.Event;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	import org.aswing.geom.IntPoint;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.Actions.Action;
-	import src.UI.Dialog.InfoDialog;
-	import src.UI.GameJSidebar;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
-	import src.UI.Sidebars.ForestInfo.ForestInfoSidebar;
-	import src.UI.Sidebars.ObjectInfo.ObjectInfoSidebar;
-	import src.UI.Tutorial.TutorialStep;
-	
-	/**
+    import flash.events.Event;
+    import flash.events.TimerEvent;
+    import flash.filters.GlowFilter;
+    import flash.geom.Point;
+    import flash.utils.Timer;
+
+    import org.aswing.geom.IntPoint;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Map.CityObject;
+    import src.Map.TileLocator;
+    import src.UI.GameJSidebar;
+    import src.UI.Sidebars.ForestInfo.ForestInfoSidebar;
+    import src.UI.Tutorial.TutorialStep;
+
+    /**
 	 * This step does the following:
 	 * - Show message telling user to find a level 1 Forest.
 	 * - Show message telling user to gather wood from Forest.

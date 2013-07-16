@@ -1,24 +1,15 @@
 ﻿package src.UI.Dialog
 {
-	import flash.events.Event;
-	import flash.events.TimerEvent;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.event.InteractiveEvent;
-	import org.aswing.event.PopupEvent;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.Global;
-	import src.Map.City;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Resources;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.StructureObject;
-	import src.UI.Components.TimePicker.TimeAdjuster;
-	import src.UI.GameJPanel;
+    import flash.events.Event;
 
-	public class AssignmentCreateDialog extends GameJPanel
+    import org.aswing.*;
+    import org.aswing.ext.*;
+
+    import src.Global;
+    import src.UI.Components.TimePicker.TimeAdjuster;
+    import src.UI.GameJPanel;
+
+    public class AssignmentCreateDialog extends GameJPanel
 	{
 		private var troopTravelTime: int;
 		

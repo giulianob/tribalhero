@@ -1,22 +1,23 @@
 ﻿package src.UI.Components.CombatObjectGridList
 {
-	import flash.display.DisplayObject;
-	import org.aswing.border.EmptyBorder;
-	import org.aswing.ext.GeneralGridListCellFactory;
-	import org.aswing.ext.GridList;
-	import org.aswing.ext.GridListItemEvent;
-	import org.aswing.Insets;
-	import org.aswing.VectorListModel;
-	import src.Objects.Battle.CombatObject;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.Prototypes.UnitPrototype;
-	import src.UI.Tooltips.StructureTooltip;
-	import src.UI.Tooltips.Tooltip;
-	import src.UI.Tooltips.UnitTooltip;
-	import src.Objects.Troop.*;
+    import flash.display.DisplayObject;
 
-	/**
+    import org.aswing.Insets;
+    import org.aswing.VectorListModel;
+    import org.aswing.border.EmptyBorder;
+    import org.aswing.ext.GeneralGridListCellFactory;
+    import org.aswing.ext.GridList;
+    import org.aswing.ext.GridListItemEvent;
+
+    import src.Objects.Battle.CombatObject;
+    import src.Objects.Factories.ObjectFactory;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.Objects.Prototypes.UnitPrototype;
+    import src.UI.Tooltips.StructureTooltip;
+    import src.UI.Tooltips.Tooltip;
+    import src.UI.Tooltips.UnitTooltip;
+
+    /**
 	 * ...
 	 * @author Giuliano
 	 */

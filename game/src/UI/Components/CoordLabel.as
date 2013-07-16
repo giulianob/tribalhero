@@ -1,16 +1,15 @@
 ﻿package src.UI.Components
 {
-	import flash.events.*;
-	import flash.geom.Point;
-	import org.aswing.*;
-	import org.aswing.border.EmptyBorder;
-	import org.aswing.event.*;
-	import src.*;
-	import src.Map.TileLocator;
-	import src.Map.Username;
-	import src.UI.Components.*;
+    import flash.events.*;
+    import flash.geom.Point;
 
-	public class CoordLabel extends JLabelButton
+    import org.aswing.*;
+    import org.aswing.border.EmptyBorder;
+
+    import src.*;
+    import src.Map.TileLocator;
+
+    public class CoordLabel extends JLabelButton
 	{
 		public function CoordLabel(x: int, y: int)
 		{

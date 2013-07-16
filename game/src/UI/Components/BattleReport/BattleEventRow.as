@@ -1,14 +1,16 @@
 package src.UI.Components.BattleReport
 {
-	import src.Util.StringHelper;
-	import flash.events.*;
-	import mx.utils.*;
-	import org.aswing.*;
-	import src.UI.Components.*;
-	import src.UI.Tooltips.*;
-	import src.Util.StringHelper;
-	
-	/**
+    import flash.events.*;
+
+    import mx.utils.*;
+
+    import org.aswing.*;
+
+    import src.UI.Components.*;
+    import src.UI.Tooltips.*;
+    import src.Util.StringHelper;
+
+    /**
 	 * Represents a single item in the battle overview event. E.g.
 	 * "Blabla has left the battle"
 	 */
@@ -52,7 +54,7 @@ package src.UI.Components.BattleReport
 		{
 			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 			{
-                var locationHtml: String = StringUtil.substitute(TYPE_LABELS[event.owner.type.toLowerCase()], event.owner.type, event.owner.id, StringHelper.htmlEscape(event.owner.name), event.name == '[LOCAL]' ? StringHelper.localize("LOCAL_TROOP") : event.name)
+                var locationHtml: String = StringUtil.substitute(TYPE_LABELS[event.owner.type.toLowerCase()], event.owner.type, event.owner.id, StringHelper.htmlEscape(event.owner.name), event.name == '[LOCAL]' ? StringHelper.localize("LOCAL_TROOP") : event.name);
 				var header: String = StringUtil.substitute(EVENT_STATES[event.state], locationHtml, totalUnits);                
 				lblHeader = new RichLabel(header, 0, 30);
 				lblHeader.addEventListener(RichLabelCustomEvent.CUSTOM_EVENT_MOUSE_OVER, customEventMouseOver);

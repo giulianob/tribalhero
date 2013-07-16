@@ -1,9 +1,10 @@
-﻿package src.Objects.Battle {	
-	import flash.display.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
+﻿package src.Objects.Battle {
+    import flash.display.*;
 
-	public class CombatStructure extends CombatObject
+    import src.Objects.Factories.*;
+    import src.Objects.Prototypes.*;
+
+    public class CombatStructure extends CombatObject
 	{		
 		private var prototype: StructurePrototype;
 		

@@ -1,16 +1,15 @@
 ﻿
 package src.UI.Sidebars.TroopInfo.Buttons {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import src.Objects.Factories.*;
-	import src.Objects.GameObject;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.Troop.*;
-	import src.UI.Cursors.*;
-	import src.UI.Dialog.TroopInfoDialog;
-	import src.UI.Tooltips.TextTooltip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class ViewUnitsButton extends ActionButton
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.GameObject;
+    import src.Objects.Troop.*;
+    import src.UI.Dialog.TroopInfoDialog;
+    import src.UI.Tooltips.TextTooltip;
+
+    public class ViewUnitsButton extends ActionButton
 	{
 		private var tooltip: TextTooltip;
 

@@ -163,8 +163,8 @@
             return sprite;
 		}
 
-		public static function getSimpleObject(name: String, x: int, y: int, addShadow: Boolean = true): SimpleObject {
-			var obj: SimpleObject = new SimpleObject(x, y);
+		public static function getSimpleObject(name: String, x: int, y: int, size: int, addShadow: Boolean = true): SimpleObject {
+			var obj: SimpleObject = new SimpleObject(x, y, size);
 			var objRef: Class = getDefinitionByName(name) as Class;
 
 			if (addShadow) {

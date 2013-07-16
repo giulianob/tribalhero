@@ -1,13 +1,11 @@
 package src.Objects.Process 
 {
-	import adobe.utils.CustomActions;
-	import src.Global;
-	import src.Map.City;
-	import src.Objects.GameObject;
-	import src.UI.Dialog.AssignmentJoinAtkDialog;
-	import src.UI.Dialog.AssignmentJoinDefDialog;
+    import src.Global;
+    import src.Map.City;
+    import src.UI.Dialog.AssignmentJoinAtkDialog;
+    import src.UI.Dialog.AssignmentJoinDefDialog;
 
-	public class AssignmentJoinProcess implements IProcess
+    public class AssignmentJoinProcess implements IProcess
 	{		
 		private var attackDialog: AssignmentJoinAtkDialog;
 		private var reinforceDialog: AssignmentJoinDefDialog;
@@ -25,10 +23,10 @@ package src.Objects.Process
 		public function execute(): void 
 		{
 			if(isAttack) {
-				attackDialog = new AssignmentJoinAtkDialog(sourceCity, onChoseUnits, assignment)
+				attackDialog = new AssignmentJoinAtkDialog(sourceCity, onChoseUnits, assignment);
 				attackDialog.show();
 			} else {
-				reinforceDialog = new AssignmentJoinDefDialog(sourceCity, onChoseUnits, assignment)
+				reinforceDialog = new AssignmentJoinDefDialog(sourceCity, onChoseUnits, assignment);
 				reinforceDialog.show();
 			}
 		}

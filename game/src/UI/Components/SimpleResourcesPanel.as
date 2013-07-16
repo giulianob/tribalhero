@@ -1,18 +1,13 @@
 ﻿package src.UI.Components 
 {
-	import flash.events.Event;
-	import org.aswing.event.AWEvent;
-	import src.Map.City;
-	import src.Objects.*;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;	
-	
-	public class SimpleResourcesPanel extends JPanel
+    import flash.events.Event;
+
+    import org.aswing.*;
+
+    import src.Objects.*;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    public class SimpleResourcesPanel extends JPanel
 	{
 		private var resources: Resources = null;
 		private var showLabor: Boolean;		

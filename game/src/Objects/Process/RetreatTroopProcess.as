@@ -1,10 +1,12 @@
 package src.Objects.Process 
 {
-	import org.aswing.JOptionPane;
-	import src.Global;
-	import src.Objects.Troop.TroopStub;
-	import src.UI.Dialog.InfoDialog;
-	public class RetreatTroopProcess implements IProcess 
+    import org.aswing.JOptionPane;
+
+    import src.Global;
+    import src.Objects.Troop.TroopStub;
+    import src.UI.Dialog.InfoDialog;
+
+    public class RetreatTroopProcess implements IProcess
 	{
 		private var troop:TroopStub;
 		

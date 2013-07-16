@@ -1,15 +1,12 @@
 package src.UI.Components
 {
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.UI.GameJFrame;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import org.aswing.*;
+    import org.aswing.border.*;
 
-	/**
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */

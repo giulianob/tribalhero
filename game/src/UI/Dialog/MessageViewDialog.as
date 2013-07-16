@@ -1,23 +1,20 @@
 ﻿package src.UI.Dialog {
-	import flash.events.Event;
-	import src.Global;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.UI.Components.PlayerLabel;
-	import src.UI.GameJPanel;
-	import src.Objects.Troop.*;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.UI.LookAndFeel.GamePanelBackgroundDecorator;
+    import flash.events.Event;
+
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
+
+    import src.Global;
+    import src.UI.Components.PlayerLabel;
+    import src.UI.GameJPanel;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+    import src.UI.LookAndFeel.GamePanelBackgroundDecorator;
     import src.Util.DateUtil;
     import src.Util.StringHelper;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-
-	public class MessageViewDialog extends GameJPanel {
+    public class MessageViewDialog extends GameJPanel {
 
 		private var pnlName:JPanel;
 		private var lblName:JLabel;

@@ -28,8 +28,10 @@ package src.Objects {
 		public var spriteContainer: Sprite;
 
         public var primaryPosition: ScreenPosition = new ScreenPosition();
+
+        public var size: int;
 					
-		public function SimpleObject(objX: int, objY: int) {
+		public function SimpleObject(objX: int, objY: int, size: int) {
 			super();
 			
 			spriteContainer = new Sprite();
@@ -37,6 +39,7 @@ package src.Objects {
 			
 			this.objX = objX;
             this.objY = objY;
+            this.size = size;
 		}
 		
 		public function copy(obj: SimpleObject): void {
@@ -172,7 +175,7 @@ package src.Objects {
 			else
 				return 0;
 		}
-		
+
 		public function get objX():int 
 		{
 			return primaryPosition.x;

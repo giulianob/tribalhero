@@ -1,8 +1,9 @@
 package src.Map
 {
-	import flash.geom.Point;
-	import src.Constants;
-	import src.Global;
+    import flash.geom.Point;
+
+    import src.Constants;
+    import src.Global;
     import src.Objects.Factories.ObjectFactory;
 
     public class RoadPathFinder

@@ -1,13 +1,15 @@
 ﻿package src.UI.Components.BattleReport
 {
-	import flash.display.DisplayObject;
-	import org.aswing.*;
-	import org.aswing.table.*;
-	import src.Objects.Factories.ObjectFactory;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	
-	public class UnitIconCell extends AbstractTableCell
+    import flash.display.DisplayObject;
+
+    import org.aswing.*;
+    import org.aswing.table.*;
+
+    import src.Objects.Factories.ObjectFactory;
+    import src.UI.Components.SimpleTooltip;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    public class UnitIconCell extends AbstractTableCell
 	{
 		protected var panel:JPanel;
 		protected var tooltip:SimpleTooltip;

@@ -1,15 +1,15 @@
 package src.UI.Components 
 {
-	import flash.events.Event;
-	import org.aswing.event.TableCellEditEvent;
-	import org.aswing.JTable;
-	import org.aswing.table.GeneralTableCellFactory;
-	import org.aswing.table.PropertyTableModel;
-	import org.aswing.table.TableCell;
-	import org.aswing.table.TableColumn;
-	import org.aswing.VectorListModel;
-	import src.Util.StringHelper;
-	public class DynamicTable extends JTable 
+    import org.aswing.JTable;
+    import org.aswing.VectorListModel;
+    import org.aswing.event.TableCellEditEvent;
+    import org.aswing.table.GeneralTableCellFactory;
+    import org.aswing.table.PropertyTableModel;
+    import org.aswing.table.TableColumn;
+
+    import src.Util.StringHelper;
+
+    public class DynamicTable extends JTable
 	{
 
 		private var combinedWeight:Number = 0;

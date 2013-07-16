@@ -1,28 +1,27 @@
 package src.UI.Dialog
 {
-import flash.system.Capabilities;
+    import flash.events.*;
+    import flash.system.Capabilities;
+    import flash.text.*;
+    import flash.ui.*;
+    import flash.utils.*;
 
-import src.Util.StringHelper;
-	import flash.events.*;
-	import flash.text.*;
-	import flash.ui.*;
-	import flash.utils.*;
-	import mx.formatters.*;
-	import mx.utils.StringUtil;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.event.*;
-	import org.aswing.geom.IntDimension;
-	import org.aswing.plaf.basic.BasicComboBoxUI;
-	import org.aswing.skinbuilder.*;
-	import src.*;
-	import src.UI.*;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Components.StickyScroll;
-	import src.UI.LookAndFeel.*;
-	import src.Util.*;
-	
-	public class CmdLineViewer extends GameJBox
+    import mx.formatters.*;
+    import mx.utils.StringUtil;
+
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.event.*;
+    import org.aswing.geom.IntDimension;
+    import org.aswing.skinbuilder.*;
+
+    import src.*;
+    import src.UI.*;
+    import src.UI.Components.StickyScroll;
+    import src.UI.LookAndFeel.*;
+    import src.Util.*;
+
+    public class CmdLineViewer extends GameJBox
 	{
 		private const MAX_CHAT_LENGTH:int = 45000;
 		
@@ -39,13 +38,11 @@ import src.Util.StringHelper;
 		private var cmdHistory:Array = [];
 		private var cmdIndex:int = -1;
 		private var scrollConsole:JScrollPane;
-		private var channelTabs: JPanel;
 		private var btnClose:JButton;
 		private var btnOpen:JButton;
 		private var currentChatType:int;
-		private var tabbedPanel:int;
-		
-		private var profanityFilter:ProfanityFilter = new ProfanityFilter();		
+
+        private var profanityFilter:ProfanityFilter = new ProfanityFilter();
 		
 		private var maximizedSize: IntDimension;
 		
@@ -253,7 +250,7 @@ import src.Util.StringHelper;
         // TODO: Move this into rich label so it can be used in more places
 		public function replaceProfileLabel(str: String): String
 		{
-			var index: int;
+			var index: int = 0;
 			var beginOfs: int;
 			var endOfs: int;
 			var result: String = "";
@@ -459,92 +456,91 @@ import src.Util.StringHelper;
 			return button;
 		}
 		
-		private function createUI():void
-		{						
-			setLayout(new BorderLayout());
-			
-			pnlContent = new JPanel(new BorderLayout(SoftBoxLayout.Y_AXIS));
-			pnlContent.setConstraints("Center");
-			pnlContent.setBorder(new EmptyBorder(null, new Insets(5, 5, 5, 5)));
-			
-			var pnlToolbar:JPanel = new JPanel(new BorderLayout(0, 0));
-			pnlToolbar.setConstraints("North");
-			
-			var pnlToolbarButtons:JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 0, 0, false));
-			pnlToolbarButtons.setConstraints("East");
-			
-			btnClose = new JButton("", new SkinFrameCloseIcon());
-			btnClose.setMargin(new Insets(3, 0, 0, 0));
-			btnClose.setStyleTune(null);
-			btnClose.setBackground(null);
-			btnClose.setForeground(null);
-			btnClose.setMideground(null);
-			btnClose.setBackgroundDecorator(null);
-			
-			btnOpen = new JButton("", new SkinCustomIcon("Frame.chatIcon"));
-			btnOpen.setBackgroundDecorator(null);			
-			
-			// Create channel tabs
-			channelTabs = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 0, false));			
-			channelTabs.setConstraints("Center")			
-			GameLookAndFeel.changeClass(channelTabs, "ChatTabbedPane");
-			for (var i: int = 0; i < CHANNELS.length; i++) {
-				channelTabs.append(createTab(i));
-			}
-			
-			txtConsole = new JTextArea("", 15, 0);
-			txtConsole.setWordWrap(true);
-			txtConsole.setBackgroundDecorator(null);
-			txtConsole.setEditable(false);			
-			
-			var consoleCss:StyleSheet = new StyleSheet();
-			consoleCss.setStyle("p", {marginBottom: '3px', leading: 3, fontFamily: 'Arial', fontSize: 12, color: '#FFFFFF'});
-			consoleCss.setStyle("a:link", {fontWeight: 'bold', textDecoration: 'none', color: '#8ecafe'});
-			consoleCss.setStyle("a:hover", {textDecoration: 'underline'});
-			
-			consoleCss.setStyle(".global", { color: '#8ecafe' } );
+		private function createUI():void {
+            setLayout(new BorderLayout());
+
+            pnlContent = new JPanel(new BorderLayout(SoftBoxLayout.Y_AXIS));
+            pnlContent.setConstraints("Center");
+            pnlContent.setBorder(new EmptyBorder(null, new Insets(5, 5, 5, 5)));
+
+            var pnlToolbar: JPanel = new JPanel(new BorderLayout(0, 0));
+            pnlToolbar.setConstraints("North");
+
+            var pnlToolbarButtons: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 0, 0, false));
+            pnlToolbarButtons.setConstraints("East");
+
+            btnClose = new JButton("", new SkinFrameCloseIcon());
+            btnClose.setMargin(new Insets(3, 0, 0, 0));
+            btnClose.setStyleTune(null);
+            btnClose.setBackground(null);
+            btnClose.setForeground(null);
+            btnClose.setMideground(null);
+            btnClose.setBackgroundDecorator(null);
+
+            btnOpen = new JButton("", new SkinCustomIcon("Frame.chatIcon"));
+            btnOpen.setBackgroundDecorator(null);
+
+            // Create channel tabs
+            var channelTabs: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 0, false));
+            channelTabs.setConstraints("Center");
+            GameLookAndFeel.changeClass(channelTabs, "ChatTabbedPane");
+            for (var i: int = 0; i < CHANNELS.length; i++) {
+                channelTabs.append(createTab(i));
+            }
+
+            txtConsole = new JTextArea("", 15, 0);
+            txtConsole.setWordWrap(true);
+            txtConsole.setBackgroundDecorator(null);
+            txtConsole.setEditable(false);
+
+            var consoleCss: StyleSheet = new StyleSheet();
+            consoleCss.setStyle("p", {marginBottom: '3px', leading: 3, fontFamily: 'Arial', fontSize: 12, color: '#FFFFFF'});
+            consoleCss.setStyle("a:link", {fontWeight: 'bold', textDecoration: 'none', color: '#8ecafe'});
+            consoleCss.setStyle("a:hover", {textDecoration: 'underline'});
+
+            consoleCss.setStyle(".global", { color: '#8ecafe' });
             consoleCss.setStyle(".distinguished", {color: '#fbd100'});
-			consoleCss.setStyle(".self", { color: '#aef64f' } );
-			consoleCss.setStyle(".system", { color: '#ec7600', fontWeight: 'bold' } );
-			
-			consoleCss.setStyle(".rank-bronze", { color: '#B87C37' } );
-			consoleCss.setStyle(".rank-silver", { color: '#C9C9B6' } );
-			consoleCss.setStyle(".rank-gold", { color: '#fbd100' } );
-			
-			txtConsole.setCSS(consoleCss);
-			
-			txtCommand = new JTextField();
-			txtCommand.setBackgroundDecorator(null);
-			txtCommand.setConstraints("Center");
-			txtCommand.setMaxChars(Constants.admin ? 5000 : 450);
-			
-			var lblCommandCursor:JLabel = new JLabel(">");
-			lblCommandCursor.setConstraints("West");
-			           
-			scrollConsole = new JScrollPane(txtConsole, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
-			scrollConsole.setConstraints("Center");
-            
-			GameLookAndFeel.changeClass(txtCommand, "Console.text");
-			GameLookAndFeel.changeClass(lblCommandCursor, "Tooltip.text");
-			
-			var pnlCommandLineHolder:JPanel = new JPanel(new BorderLayout());
-			pnlCommandLineHolder.setConstraints("Center");
-			pnlCommandLineHolder.appendAll(lblCommandCursor, txtCommand);
-			
-			var pnlCommandHolder:JPanel = new JPanel(new BorderLayout());
-			pnlCommandHolder.setConstraints("South");
-			
-			pnlCommandHolder.appendAll(pnlCommandLineHolder);
-			
-			pnlToolbar.appendAll(channelTabs, pnlToolbarButtons);
-			pnlToolbarButtons.appendAll(btnClose);
-			
-			pnlContent.append(pnlToolbar);
-			pnlContent.append(scrollConsole);
-			pnlContent.append(pnlCommandHolder);
-			
-			append(pnlContent);
-		}
+            consoleCss.setStyle(".self", { color: '#aef64f' });
+            consoleCss.setStyle(".system", { color: '#ec7600', fontWeight: 'bold' });
+
+            consoleCss.setStyle(".rank-bronze", { color: '#B87C37' });
+            consoleCss.setStyle(".rank-silver", { color: '#C9C9B6' });
+            consoleCss.setStyle(".rank-gold", { color: '#fbd100' });
+
+            txtConsole.setCSS(consoleCss);
+
+            txtCommand = new JTextField();
+            txtCommand.setBackgroundDecorator(null);
+            txtCommand.setConstraints("Center");
+            txtCommand.setMaxChars(Constants.admin ? 5000 : 450);
+
+            var lblCommandCursor: JLabel = new JLabel(">");
+            lblCommandCursor.setConstraints("West");
+
+            scrollConsole = new JScrollPane(txtConsole, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
+            scrollConsole.setConstraints("Center");
+
+            GameLookAndFeel.changeClass(txtCommand, "Console.text");
+            GameLookAndFeel.changeClass(lblCommandCursor, "Tooltip.text");
+
+            var pnlCommandLineHolder: JPanel = new JPanel(new BorderLayout());
+            pnlCommandLineHolder.setConstraints("Center");
+            pnlCommandLineHolder.appendAll(lblCommandCursor, txtCommand);
+
+            var pnlCommandHolder: JPanel = new JPanel(new BorderLayout());
+            pnlCommandHolder.setConstraints("South");
+
+            pnlCommandHolder.appendAll(pnlCommandLineHolder);
+
+            pnlToolbar.appendAll(channelTabs, pnlToolbarButtons);
+            pnlToolbarButtons.appendAll(btnClose);
+
+            pnlContent.append(pnlToolbar);
+            pnlContent.append(scrollConsole);
+            pnlContent.append(pnlCommandHolder);
+
+            append(pnlContent);
+        }
 	}
 
 }

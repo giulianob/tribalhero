@@ -1,13 +1,13 @@
 ﻿package src.Map
 {
-	import com.greensock.motionPaths.RectanglePath2D;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import src.Constants;
+    import flash.events.Event;
+    import flash.events.EventDispatcher;
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
 
-	public class Camera extends EventDispatcher
+    import src.Constants;
+
+    public class Camera extends EventDispatcher
 	{
 		public static const ON_MOVE: String = "ON_MOVE";
 

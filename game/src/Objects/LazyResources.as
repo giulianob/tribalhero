@@ -5,9 +5,9 @@
 */
 
 package src.Objects {
-	import src.Constants;
+    import src.Constants;
 
-	public class LazyResources {
+    public class LazyResources {
 				
 		public var gold: LazyValue;
 		public var wood: LazyValue;
@@ -22,13 +22,13 @@ package src.Objects {
 			this.wood = wood;
 			this.labor = labor;
 		}
-		
+
 		public function toResources(): Resources
 		{
 			return new Resources(crop.getValue(), gold.getValue(), iron.getValue(), wood.getValue(), labor.getValue());
 		}
-		
-		public function Div(resource: Resources): int
+
+        public function Div(resource: Resources): int
 		{
 			var cropDelta: int;
 			if (resource.crop == 0) 

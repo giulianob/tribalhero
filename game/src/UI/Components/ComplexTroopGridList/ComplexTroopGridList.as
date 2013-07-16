@@ -1,28 +1,30 @@
 ﻿package src.UI.Components.ComplexTroopGridList
 {
-	import flash.display.DisplayObject;
-	import org.aswing.AsWingConstants;
-	import org.aswing.border.EmptyBorder;
-	import org.aswing.border.SimpleTitledBorder;
-	import org.aswing.ext.GeneralGridListCellFactory;
-	import org.aswing.ext.GridList;
-	import org.aswing.ext.GridListItemEvent;
-	import org.aswing.geom.IntDimension;
-	import org.aswing.Insets;
-	import org.aswing.JPanel;
-	import org.aswing.JTabbedPane;
-	import org.aswing.SoftBoxLayout;
-	import org.aswing.VectorListModel;
-	import src.Global;
-	import src.Map.City;
-	import src.Objects.Factories.UnitFactory;
-	import src.Objects.Prototypes.UnitPrototype;
-	import src.Objects.Troop.*;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.UI.Tooltips.ComplexUnitTooltip;
-	import src.UI.Tooltips.Tooltip;
+    import flash.display.DisplayObject;
 
-	/**
+    import org.aswing.AsWingConstants;
+    import org.aswing.Insets;
+    import org.aswing.JPanel;
+    import org.aswing.JTabbedPane;
+    import org.aswing.SoftBoxLayout;
+    import org.aswing.VectorListModel;
+    import org.aswing.border.EmptyBorder;
+    import org.aswing.border.SimpleTitledBorder;
+    import org.aswing.ext.GeneralGridListCellFactory;
+    import org.aswing.ext.GridList;
+    import org.aswing.ext.GridListItemEvent;
+    import org.aswing.geom.IntDimension;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Objects.Factories.UnitFactory;
+    import src.Objects.Prototypes.UnitPrototype;
+    import src.Objects.Troop.*;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+    import src.UI.Tooltips.ComplexUnitTooltip;
+    import src.UI.Tooltips.Tooltip;
+
+    /**
 	 *
 	 * The ComplexTroopGridlist is used to show troopstubs in tooltips and panels. It will take in consideration the
 	 * troop id and formation, and automatically use either the city's template or the troop's template to display the appropriate level info
@@ -145,20 +147,7 @@
 			return tilelists;
 		}
 
-		public static function tabGridLists(tilelists: Array) : JPanel {
-			var panel: JPanel = new JPanel();
-
-			var tabbedPane: JTabbedPane = new JTabbedPane();
-
-			for each(var ts: ComplexTroopGridList in tilelists)
-			tabbedPane.appendTab(ts, Formation.TypeStrings[ts.getFormation().type]);
-
-			panel.append(tabbedPane);
-
-			return panel;
-		}
-
-		public static function stackGridLists(tilelists: Array, tooltipMode: Boolean = false) : JPanel {
+        public static function stackGridLists(tilelists: Array, tooltipMode: Boolean = false) : JPanel {
 			var panel: JPanel = new JPanel();
 
 			var layout0: SoftBoxLayout = new SoftBoxLayout();

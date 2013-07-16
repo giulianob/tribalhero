@@ -1,21 +1,8 @@
 ﻿package src.Map
 {
-	import flash.display.*;
-	import flash.events.MouseEvent;
-	import flash.filters.GlowFilter;
-	import flash.geom.ColorTransform;
-	import flash.geom.Point;
-	import src.Global;
-	import src.Objects.Factories.ObjectFactory;
-	import src.UI.Tooltips.MinimapInfoTooltip;
-	import src.Util.BinaryList.*;
-	import src.Util.Util;
-	import src.Constants;
-	import src.Map.Map;
-	import src.Map.Camera;
-	import src.Objects.SimpleGameObject;
+    import flash.display.*;
 
-	public class CityRegionObject extends Sprite
+    public class CityRegionObject extends Sprite
 	{
 		public var type: int;
 		public var groupId: int;

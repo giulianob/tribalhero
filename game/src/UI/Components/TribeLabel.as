@@ -1,19 +1,18 @@
 package src.UI.Components
 {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.AsWingConstants;
-	import org.aswing.border.EmptyBorder;
-	import org.aswing.Insets;
-	import org.aswing.JLabelButton;
-	import org.aswing.JPanel;
-	import src.Constants;
-	import src.Global;
-	import src.Map.Username;
-	import src.UI.Dialog.InfoDialog;
-	import src.UI.Dialog.TribePublicProfileDialog;
-	
-	public class TribeLabel extends JLabelButton
+    import flash.events.Event;
+    import flash.events.MouseEvent;
+
+    import org.aswing.AsWingConstants;
+    import org.aswing.Insets;
+    import org.aswing.JLabelButton;
+    import org.aswing.border.EmptyBorder;
+
+    import src.Global;
+    import src.Map.Username;
+    import src.UI.Dialog.InfoDialog;
+
+    public class TribeLabel extends JLabelButton
 	{
 		private var tribeId:int = 0;
 		private var tribeName:String = "Not Loaded";

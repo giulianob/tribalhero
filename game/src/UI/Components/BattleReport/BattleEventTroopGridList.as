@@ -1,19 +1,10 @@
 ﻿package src.UI.Components.BattleReport
 {
-	import flash.display.*;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.Objects.Troop.*;
-	import src.UI.LookAndFeel.*;
-	import src.UI.Tooltips.*;
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.ext.*;
 
-	public class BattleEventTroopGridList extends GridList
+    public class BattleEventTroopGridList extends GridList
 	{
 		public function BattleEventTroopGridList(units:*)
 		{

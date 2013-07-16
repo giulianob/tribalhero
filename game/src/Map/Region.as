@@ -255,6 +255,14 @@
             return new Position(x, y);
         }
 
+        public function addObjectToTile(gameObj: SimpleGameObject, pos: Position): void {
+            tileObjects.add(gameObj, pos);
+        }
+
+        public function removeObjectFromTile(gameObj: SimpleGameObject, pos: Position): SimpleGameObject {
+            return tileObjects.remove(gameObj, pos);
+        }
+
         public function addObject(gameObj: SimpleGameObject) : SimpleGameObject
         {
             var objMapPos: Position = gameObj.primaryPosition.toPosition();
@@ -273,7 +281,7 @@
 
         public function removeObject(groupId: int, objectId: int, dispose: Boolean = true): SimpleGameObject
         {
-            var gameObj: SimpleGameObject = primaryObjects.remove(groupId, objectId);
+            var gameObj: SimpleGameObject = primaryObjects.removeById(groupId, objectId);
 
             if (gameObj == null) {
                 return null;

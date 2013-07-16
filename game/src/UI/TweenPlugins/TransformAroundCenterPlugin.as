@@ -5,11 +5,11 @@
  * UPDATES AND DOCS AT: http://www.greensock.com
  **/
 package src.UI.TweenPlugins {
-	import com.greensock.*;
+    import com.greensock.*;
 
-	import flash.display.*;
-	import flash.geom.*;
-/**
+    import flash.geom.*;
+
+    /**
  * Normally, all transformations (scale, rotation, and position) are based on the DisplayObject's registration
  * point (most often its upper left corner), but TransformAroundCenter allows you to make the 2D transformations
  * occur around the DisplayObject's center.  Keep in mind, though, that Flash doesn't factor in any masks when

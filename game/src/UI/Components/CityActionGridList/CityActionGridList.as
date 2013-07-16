@@ -1,21 +1,23 @@
 ﻿package src.UI.Components.CityActionGridList
 {
-	import flash.display.DisplayObjectContainer;
-	import flash.events.Event;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	import org.aswing.ext.GeneralGridListCellFactory;
-	import org.aswing.ext.GridList;
-	import org.aswing.VectorListModel;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.Actions.CurrentAction;
-	import src.Objects.Actions.CurrentActionReference;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Util.BinaryList.*;
+    import flash.display.DisplayObjectContainer;
+    import flash.events.Event;
+    import flash.events.TimerEvent;
+    import flash.utils.Timer;
 
-	/**
+    import org.aswing.VectorListModel;
+    import org.aswing.ext.GeneralGridListCellFactory;
+    import org.aswing.ext.GridList;
+
+    import src.Map.City;
+    import src.Map.CityObject;
+    import src.Objects.Actions.CurrentAction;
+    import src.Objects.Actions.CurrentActionReference;
+    import src.Objects.Factories.ObjectFactory;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.Util.BinaryList.*;
+
+    /**
 	 * ...
 	 * @author Giuliano
 	 */

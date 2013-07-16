@@ -1,23 +1,20 @@
 package src.UI.Dialog{
 
-	import com.adobe.serialization.json.JSONParseError;
-	import flash.events.Event;
-	import org.aswing.event.AWEvent;
-	import org.aswing.event.TableCellEditEvent;
-	import org.aswing.table.GeneralTableCellFactory;
-	import org.aswing.table.PropertyTableModel;
-	import src.Comm.GameURLLoader;
-	import src.Global;
-	import src.UI.Components.Messaging.PreviewTextCell;
-	import src.UI.Components.PagingBar;
-	import src.UI.Components.TableCells.CheckboxTextCell;
-	import src.UI.GameJPanel;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
+    import flash.events.Event;
 
+    import org.aswing.*;
+    import org.aswing.event.AWEvent;
+    import org.aswing.event.TableCellEditEvent;
+    import org.aswing.geom.*;
+    import org.aswing.table.GeneralTableCellFactory;
+    import org.aswing.table.PropertyTableModel;
+
+    import src.Comm.GameURLLoader;
+    import src.Global;
+    import src.UI.Components.Messaging.PreviewTextCell;
+    import src.UI.Components.PagingBar;
+    import src.UI.Components.TableCells.CheckboxTextCell;
+    import src.UI.GameJPanel;
     import src.Util.DateUtil;
 
     public class MessagingDialog extends GameJPanel {

@@ -1,13 +1,14 @@
 ﻿package src.UI.Components.BattleReport
 {
-	import src.Util.StringHelper;
-	import flash.events.MouseEvent;
-	import org.aswing.*;
-	import org.aswing.table.*;
-	import src.Objects.Battle.BattleLocation;
-	import src.UI.Components.*;
+    import flash.events.MouseEvent;
 
-	public class BattleLocationTableCell extends AbstractTableCell
+    import org.aswing.*;
+    import org.aswing.table.*;
+
+    import src.Objects.Battle.BattleLocation;
+    import src.UI.Components.*;
+
+    public class BattleLocationTableCell extends AbstractTableCell
 	{		
 		private var pnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));
 		

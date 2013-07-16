@@ -4,20 +4,18 @@ Copyright aswing.org, see the LICENCE.txt.
 
 package src.UI{
 
-	import flash.display.DisplayObject;
-	import flash.display.Sprite;
-	import org.aswing.plaf.ComponentUI;
-	import org.aswing.skinbuilder.SkinEmptyBorder;
+    import flash.display.DisplayObject;
+    import flash.display.Sprite;
 
-	import org.aswing.*;
-	import org.aswing.Component;
-	import org.aswing.GroundDecorator;
-	import org.aswing.geom.IntRectangle;
-	import org.aswing.graphics.Graphics2D;
-	import org.aswing.plaf.UIResource;
-	import org.aswing.plaf.DefaultsDecoratorBase;
+    import org.aswing.*;
+    import org.aswing.geom.IntRectangle;
+    import org.aswing.graphics.Graphics2D;
+    import org.aswing.plaf.ComponentUI;
+    import org.aswing.plaf.DefaultsDecoratorBase;
+    import org.aswing.plaf.UIResource;
+    import org.aswing.skinbuilder.SkinEmptyBorder;
 
-	/**
+    /**
 	 * @private
 	 */
 	public class GameJImagePanelBackground extends DefaultsDecoratorBase implements GroundDecorator, UIResource{

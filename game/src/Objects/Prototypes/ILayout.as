@@ -5,8 +5,8 @@
  */
 
 package src.Objects.Prototypes {
-	import src.Map.City;
-	import src.Map.CityObject;
+    import src.Map.City;
+    import src.Map.CityObject;
     import src.Map.Position;
 
     public interface ILayout {

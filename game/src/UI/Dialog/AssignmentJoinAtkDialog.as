@@ -1,6 +1,5 @@
 ﻿package src.UI.Dialog {
 
-    import src.Util.DateUtil;
     import flash.events.Event;
 
     import src.Global;
@@ -8,8 +7,8 @@
     import src.Map.TileLocator;
     import src.Objects.Effects.Formula;
     import src.Objects.Troop.*;
+    import src.Util.DateUtil;
     import src.Util.StringHelper;
-    import src.Util.Util;
 
     public class AssignmentJoinAtkDialog extends AttackTroopDialog {
 

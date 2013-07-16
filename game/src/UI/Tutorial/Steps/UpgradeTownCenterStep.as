@@ -1,15 +1,16 @@
 package src.UI.Tutorial.Steps 
 {
-	import flash.events.*;
-	import flash.utils.*;
-	import org.aswing.geom.*;
-	import src.*;
-	import src.Map.*;
-	import src.UI.*;
-	import src.UI.Sidebars.CursorCancel.*;
-	import src.UI.Tutorial.*;
-	
-	/**
+    import flash.events.*;
+    import flash.utils.*;
+
+    import org.aswing.geom.*;
+
+    import src.*;
+    import src.Map.*;
+    import src.UI.*;
+    import src.UI.Tutorial.*;
+
+    /**
 	 * This step does the following:
 	 * - Show message telling user to upgrade it.
 	 */

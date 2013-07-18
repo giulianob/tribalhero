@@ -67,6 +67,7 @@ namespace Game.Comm
 
             packet.AddUInt16((ushort)(obj.X % Config.region_width));
             packet.AddUInt16((ushort)(obj.Y % Config.region_height));
+            packet.AddByte(obj.Size);
 
             packet.AddUInt32(obj.GroupId);
             packet.AddUInt32(obj.ObjectId);

@@ -303,16 +303,6 @@ namespace Game.Battle.CombatObjects
             returning = null;
         }
 
-        public override int CompareTo(object other)
-        {
-            if (other is ITroopStub)
-            {
-                return other == TroopStub ? 0 : 1;
-            }
-
-            return -1;
-        }
-
         #region ICombatUnit Members
 
         public override ITroopStub TroopStub

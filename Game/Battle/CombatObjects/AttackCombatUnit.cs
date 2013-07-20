@@ -36,6 +36,8 @@ namespace Game.Battle.CombatObjects
 
         private ushort count;
 
+        private int upkeep;
+
         public AttackCombatUnit(uint id,
                                 uint battleId,
                                 ITroopObject troopObject,
@@ -56,6 +58,7 @@ namespace Game.Battle.CombatObjects
 
             stats = troopObject.Stub.Template[type];
             LeftOverHp = stats.MaxHp;
+            upkeep = unitFactory.GetUnitStats(type, lvl).Upkeep * count;
         }
 
         /// <summary>
@@ -75,8 +78,8 @@ namespace Game.Battle.CombatObjects
                 : this(id, battleId, troopObject, formation, type, lvl, count, unitFactory, battleFormulas)
         {
             LeftOverHp = leftOverHp;
-
             this.loot = loot;
+            upkeep = unitFactory.GetUnitStats(type, lvl).Upkeep * count;
         }
 
         public decimal LeftOverHp { get; set; }
@@ -117,7 +120,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return unitFactory.GetUnitStats(type, lvl).Upkeep * count;
+                return upkeep;
             }
         }
 
@@ -352,16 +355,6 @@ namespace Game.Battle.CombatObjects
             troopObject.Stats.AttackPoint += attackPoint;
             troopObject.Stats.Loot.Add(resource);
             troopObject.EndUpdate();
-        }
-
-        public override int CompareTo(object other)
-        {
-            if (other is ITroopStub)
-            {
-                return other == TroopStub ? 0 : 1;
-            }
-
-            return -1;
         }
 
         #region ICombatUnit Members

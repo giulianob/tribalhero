@@ -333,15 +333,5 @@ namespace Game.Battle.CombatObjects
         public override void ReceiveReward(int reward, Resource resource)
         {
         }
-
-        public override int CompareTo(object other)
-        {
-            if (other is IStructure)
-            {
-                return other == Structure ? 0 : 1;
-            }
-
-            return -1;
-        }
     }
 }

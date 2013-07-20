@@ -9,6 +9,8 @@ namespace Game.Battle
     {
         int Upkeep { get; }
 
+        int UpkeepNotParticipated(uint round);
+
         bool HasInRange(ICombatObject attacker);
 
         CombatList.BestTargetResult GetBestTargets(uint battleId, ICombatObject attacker, out List<CombatList.Target> result, int maxCount);

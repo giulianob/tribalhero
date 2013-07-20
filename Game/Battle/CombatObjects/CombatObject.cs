@@ -119,11 +119,6 @@ namespace Game.Battle.CombatObjects
 
         #region IComparable<object> Members
 
-        public virtual int CompareTo(object other)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
-
         #endregion
 
         #region Persistable Members

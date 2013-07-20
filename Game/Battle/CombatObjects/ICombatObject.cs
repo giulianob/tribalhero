@@ -7,7 +7,7 @@ using Persistance;
 
 namespace Game.Battle.CombatObjects
 {
-    public interface ICombatObject : IComparable<object>, IPersistableObject, ILockable
+    public interface ICombatObject : IPersistableObject, ILockable
     {
         ushort MaxDmgRecv { get; set; }
 

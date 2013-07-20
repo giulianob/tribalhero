@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
-
+using Game.Util;
 #endregion
 
 namespace Game.Battle
@@ -14,7 +14,7 @@ namespace Game.Battle
     ///     returns the next unit in the combat list that hasnt participated
     ///     in the round. It doesn't care if its the same group or not.
     /// </summary>
-    public class BattleOrder
+    public class BattleOrder : IBattleOrder
     {
         /// <summary>
         ///     Returns the next object from the primary group that should attack.
@@ -22,17 +22,18 @@ namespace Game.Battle
         /// </summary>
         /// <returns>True if got an object from the current round. False if had to look into next round.</returns>
         public bool NextObject(uint round,
-                               IEnumerable<ICombatGroup> attacker,
-                               IEnumerable<ICombatGroup> defender,
-                               BattleManager.BattleSide sideAttacking,
+                               uint turn,
+                               ICombatList attacker,
+                               ICombatList defender,
                                out ICombatObject outCombatObject,
                                out ICombatGroup outCombatGroup,
                                out BattleManager.BattleSide foundInGroup)
         {
-            var offensiveCombatList = sideAttacking == BattleManager.BattleSide.Attack ? attacker : defender;
-            var defensiveCombatList = sideAttacking == BattleManager.BattleSide.Attack ? defender : attacker;
-            var offensiveSide = sideAttacking;
-            var defensiveSide = sideAttacking == BattleManager.BattleSide.Attack
+            var sideAttack = NextSideAttacking(turn, attacker.UpkeepNotParticipated(round), defender.UpkeepNotParticipated(round));
+            var offensiveCombatList = sideAttack == BattleManager.BattleSide.Attack ? attacker : defender;
+            var defensiveCombatList = sideAttack == BattleManager.BattleSide.Attack ? defender : attacker;
+            var offensiveSide = sideAttack;
+            var defensiveSide = sideAttack == BattleManager.BattleSide.Attack
                                         ? BattleManager.BattleSide.Defense
                                         : BattleManager.BattleSide.Attack;
 
@@ -124,6 +125,26 @@ namespace Game.Battle
             outObj = null;
             outGroup = null;
             return false;
+        }
+
+        private BattleManager.BattleSide NextSideAttacking(uint turn, int attackerUpkeep, int defenderUpkeep)
+        {
+            /* I have to use the inverse ratio because i wanted the extra hits happening at the end of the cycle
+             * 50(atk) vs 200(def), ratio is 0.25, the 1 is the base %.
+             * Assume that turn is 0 based, we need to add 1 for the logic to work
+             * if (turn +1) % (ratio+1)< 1
+             *      then the side with higher count attacks
+             * turn 0 = 1.00 attacker
+             * turn 1 = 0.75 defender
+             * turn 2 = 0.50 defender
+             * turn 3 = 0.25 defender
+             * turn 4 = 0.00 defender
+             * turn 5 = 1.00 attacker
+             */
+            var sideWithMoreUnits = attackerUpkeep >= defenderUpkeep ? BattleManager.BattleSide.Attack : BattleManager.BattleSide.Defense;
+            var sideWithLessUnits = attackerUpkeep >= defenderUpkeep ? BattleManager.BattleSide.Defense : BattleManager.BattleSide.Attack;
+            double ratio = (attackerUpkeep > defenderUpkeep ? (double)defenderUpkeep / attackerUpkeep : (double)attackerUpkeep / defenderUpkeep);
+            return (turn + 1) % (ratio + 1) < 1 ? sideWithMoreUnits : sideWithLessUnits;
         }
     }
 }

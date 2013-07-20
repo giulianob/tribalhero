@@ -53,6 +53,7 @@ namespace Testing.BattleTests
             public StubbedAttackTargetBattleManager CreateStubbedAttackBattleManager(uint battleId,
                                                                                      BattleLocation location,
                                                                                      BattleOwner owner,
+                                                                                     IBattleOrder battleOrder,
                                                                                      Action
                                                                                              <ICombatList, ICombatList,
                                                                                              ICombatObject,
@@ -67,6 +68,7 @@ namespace Testing.BattleTests
                                                             MockBattleReport.Object,
                                                             MockCombatListFactory.Object,
                                                             MockBattleFormulas.Object,
+                                                            battleOrder,
                                                             attackTargetCallback);
             }
         }
@@ -98,6 +100,11 @@ namespace Testing.BattleTests
             ///     Set the upkeep manually in tests
             /// </summary>
             public int Upkeep { get; private set; }
+
+            public int UpkeepNotParticipated(uint round)
+            {
+                return MockInRange.Where(x => x.LastRound <= round).Sum(x => x.Upkeep);
+            }
 
             public bool HasInRange(ICombatObject attacker)
             {
@@ -161,6 +168,7 @@ namespace Testing.BattleTests
                                                     IBattleReport battleReport,
                                                     ICombatListFactory combatListFactory,
                                                     BattleFormulas battleFormulas,
+                                                    IBattleOrder battleOrder,
                                                     Action
                                                             <ICombatList, ICombatList, ICombatObject, CombatList.Target,
                                                             int> attackTargetCallback)
@@ -172,7 +180,8 @@ namespace Testing.BattleTests
                             dbManager,
                             battleReport,
                             combatListFactory,
-                            battleFormulas)
+                            battleFormulas,
+                            battleOrder)
             {
                 this.attackTargetCallback = attackTargetCallback;
             }
@@ -181,6 +190,7 @@ namespace Testing.BattleTests
                                                  ICombatList defensiveCombatList,
                                                  ICombatGroup attackerGroup,
                                                  ICombatObject attacker,
+                                                 BattleSide sideAttacking,
                                                  CombatList.Target target,
                                                  int attackIndex)
             {
@@ -204,6 +214,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
+                                                              new BattleOrder(),
                                                               delegate { });
 
             var defender = new Mock<ICombatObject>();
@@ -240,6 +251,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
+                                                              new BattleOrder(),
                                                               delegate { });
 
             var attacker = new Mock<ICombatObject>();
@@ -277,6 +289,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
+                                                              new BattleOrder(),
                                                               delegate { });
 
             var defender = new Mock<ICombatObject>();
@@ -313,6 +326,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
+                                                              new BattleOrder(),
                                                               delegate { });
 
             var enterBattleRaised = false;
@@ -344,6 +358,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
+                                                              new BattleOrder(),
                                                               delegate { });
 
             var attacker = new Mock<ICombatObject>();
@@ -380,6 +395,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
+                                                              new BattleOrder(),
                                                               delegate { });
 
             var defender = new Mock<ICombatObject>();
@@ -418,6 +434,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
+                                                              new BattleOrder(),
                                                               delegate { });
 
             var defender = new Mock<ICombatObject>();
@@ -462,6 +479,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
+                                                              new BattleOrder(),
                                                               delegate { });
 
             var defender = new Mock<ICombatObject>();
@@ -510,6 +528,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
+                                                              new BattleOrder(),
                                                               delegate { });
 
             var defender = new Mock<ICombatObject>();
@@ -562,6 +581,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
+                                                              new BattleOrder(),
                                                               delegate { });
 
             var defender = new Mock<ICombatObject>();
@@ -620,7 +640,7 @@ namespace Testing.BattleTests
         /// <summary>
         ///     When an attacker has no one in range
         ///     And ExecuteTurn is called
-        ///     Then he should be removed
+        ///     Then he should be removed from the battle
         /// </summary>
         [Fact]
         public void TestExecuteWhenAttackerHasNoneInRangeIsRemoved()
@@ -643,6 +663,21 @@ namespace Testing.BattleTests
             sut.MockAttackers.Add(attackerWithoutInRangeGroup);
             sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker.Object};
 
+            // ReSharper disable RedundantAssignment
+            var attackerBattleSide = BattleManager.BattleSide.Attack;
+            var attackerObject = attacker.Object;
+            // ReSharper restore RedundantAssignment
+            var battleOrder = new Mock<IBattleOrder>();
+            battleOrder.Setup(
+                                       m =>
+                                       m.NextObject(It.IsAny<uint>(),
+                                                    It.IsAny<uint>(),
+                                                    It.IsAny<ICombatList>(),
+                                                    It.IsAny<ICombatList>(),
+                                                    out attackerObject,
+                                                    out attacker1Group,
+                                                    out attackerBattleSide)).Returns(true);
+
             sut.MockDefenders.MockGetBestTargets.Enqueue(new StubCombatList.GetBestTargetQueueItem
             {
                     BestTargetResult = CombatList.BestTargetResult.Ok,
@@ -657,6 +692,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
+                                                              battleOrder.Object,
                                                               delegate { });
 
             var withdrawCalled = false;
@@ -667,7 +703,8 @@ namespace Testing.BattleTests
                 };
 
             battle.BattleStarted = true;
-            battle.NextToAttack = BattleManager.BattleSide.Attack;
+            
+          //  //battle.NextToAttack = BattleManager.BattleSide.Attack;
             battle.ExecuteTurn().Should().BeTrue();
 
             withdrawCalled.Should().BeTrue();
@@ -714,11 +751,27 @@ namespace Testing.BattleTests
                             }
             });
 
+            // ReSharper disable RedundantAssignment
+            var attackerBattleSide = BattleManager.BattleSide.Defense;
+            var attackerOutObject = attacker.Object;
+            // ReSharper restore RedundantAssignment
+            var battleOrder = new Mock<IBattleOrder>();
+            battleOrder.Setup(
+                              m =>
+                              m.NextObject(It.IsAny<uint>(),
+                                           It.IsAny<uint>(),
+                                           It.IsAny<ICombatList>(),
+                                           It.IsAny<ICombatList>(),
+                                           out attackerOutObject,
+                                           out attackerGroup,
+                                           out attackerBattleSide)).Returns(true);
+
             var attackTargetCallCount = 0;
 
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
+                                                              new BattleOrder(),
                                                               (offensiveCombatList,
                                                                defensiveCombatList,
                                                                attackerObject,
@@ -751,7 +804,7 @@ namespace Testing.BattleTests
                 };
 
             battle.BattleStarted = true;
-            battle.NextToAttack = BattleManager.BattleSide.Attack;
+           // battle.NextToAttack = BattleManager.BattleSide.Attack;
             battle.ExecuteTurn().Should().BeTrue();
 
             battle.Turn.Should().Be(1);
@@ -800,11 +853,26 @@ namespace Testing.BattleTests
                             }
             });
 
+            // ReSharper disable RedundantAssignment
+            var defenderBattleSide = BattleManager.BattleSide.Defense;
+            var defenderOutObject = defender.Object;
+            // ReSharper restore RedundantAssignment
+            var battleOrder = new Mock<IBattleOrder>();
+            battleOrder.Setup(
+                              m =>
+                              m.NextObject(It.IsAny<uint>(),
+                                           It.IsAny<uint>(),
+                                           It.IsAny<ICombatList>(),
+                                           It.IsAny<ICombatList>(),
+                                           out defenderOutObject,
+                                           out defenderGroup,
+                                           out defenderBattleSide)).Returns(true);
             var attackTargetCallCount = 0;
 
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
+                                                              battleOrder.Object,
                                                               (offensiveCombatList,
                                                                defensiveCombatList,
                                                                attackerObject,
@@ -837,7 +905,7 @@ namespace Testing.BattleTests
                 };
 
             battle.BattleStarted = true;
-            battle.NextToAttack = BattleManager.BattleSide.Defense;
+           // battle.NextToAttack = BattleManager.BattleSide.Defense;
             battle.ExecuteTurn().Should().BeTrue();
 
             battle.Turn.Should().Be(1);
@@ -863,12 +931,15 @@ namespace Testing.BattleTests
             var attacker1 = new Mock<ICombatObject>();
             attacker1.SetupProperty(p => p.Stats.Atk, 10m);
             attacker1.SetupProperty(p => p.LastRound, (uint)3);
+            attacker1.SetupGet(p => p.Upkeep).Returns(1);
 
             var attacker2 = new Mock<ICombatObject>();
             attacker2.SetupProperty(p => p.Stats.Atk, 10m);
             attacker2.SetupProperty(p => p.LastRound, (uint)0);
+            attacker2.SetupGet(p => p.Upkeep).Returns(1);
             
             var defender1 = new Mock<ICombatObject>();
+            defender1.SetupGet(p => p.Upkeep).Returns(1);
 
             var attackerGroup = CreateGroup(attacker1.Object, attacker2.Object);
             var defenderGroup = CreateGroup(defender1.Object);
@@ -887,9 +958,12 @@ namespace Testing.BattleTests
                             }
             });
 
+
+
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
+                                                              new BattleOrder(),
                                                               delegate { });
             battle.Round = 2;
             battle.Turn = 2;
@@ -902,7 +976,7 @@ namespace Testing.BattleTests
                 };
 
             battle.BattleStarted = true;
-            battle.NextToAttack = BattleManager.BattleSide.Attack;
+            //battle.NextToAttack = BattleManager.BattleSide.Attack;
             battle.ExecuteTurn().Should().BeTrue();
 
             battle.Turn.Should().Be(3);

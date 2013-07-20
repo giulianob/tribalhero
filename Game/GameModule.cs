@@ -155,6 +155,8 @@ namespace Game
 
             Bind<ICombatList>().To<CombatList>().NamedLikeFactoryMethod((ICombatListFactory p) => p.GetCombatList());
 
+            Bind<IBattleOrder>().To<BattleOrder>().InSingletonScope();
+
             #endregion
 
             #region Processor

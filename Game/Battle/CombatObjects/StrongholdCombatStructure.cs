@@ -244,15 +244,5 @@ namespace Game.Battle.CombatObjects
         public override void ReceiveReward(int attackPoint, Resource resource)
         {
         }
-
-        public override int CompareTo(object other)
-        {
-            if (other is StrongholdCombatStructure)
-            {
-                return other == this ? 0 : 1;
-            }
-
-            return -1;
-        }
     }
 }

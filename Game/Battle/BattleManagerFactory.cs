@@ -30,7 +30,8 @@ namespace Game.Battle
                                        kernel.Get<IDbManager>(),
                                        kernel.Get<IBattleReport>(),
                                        kernel.Get<ICombatListFactory>(),
-                                       kernel.Get<BattleFormulas>());
+                                       kernel.Get<BattleFormulas>(),
+                                       kernel.Get<IBattleOrder>());
 
             new BattleChannel(bm);
 
@@ -56,7 +57,8 @@ namespace Game.Battle
                                              kernel.Get<IDbManager>(),
                                              kernel.Get<IBattleReport>(),
                                              kernel.Get<ICombatListFactory>(),
-                                             kernel.Get<BattleFormulas>());
+                                             kernel.Get<BattleFormulas>(),
+                                             kernel.Get<IBattleOrder>());
 
             new BattleChannel(bm);
 
@@ -98,7 +100,8 @@ namespace Game.Battle
                                              kernel.Get<IDbManager>(),
                                              kernel.Get<IBattleReport>(),
                                              kernel.Get<ICombatListFactory>(),
-                                             kernel.Get<BattleFormulas>());
+                                             kernel.Get<BattleFormulas>(),
+                                             kernel.Get<IBattleOrder>());
 
             new BattleChannel(bm);
 
@@ -119,7 +122,8 @@ namespace Game.Battle
                                            kernel.Get<IDbManager>(),
                                            new BattleReport(new NullBattleReportWriter()),
                                            kernel.Get<ICombatListFactory>(),
-                                           kernel.Get<BattleFormulas>());
+                                           kernel.Get<BattleFormulas>(),
+                                           kernel.Get<IBattleOrder>());
 
             new BattleChannel(bm);
 

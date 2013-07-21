@@ -14,16 +14,16 @@ using Game.Setup;
 
 namespace Game.Battle
 {
-    public class BattleFormulas
+    public class BattleFormulas : IBattleFormulas
     {
         [Obsolete("Inject BattleFormulas instead")]
-        public static BattleFormulas Current { get; set; }
+        public static IBattleFormulas Current { get; set; }
 
         private readonly UnitFactory unitFactory;
 
         private readonly UnitModFactory unitModFactory;
 
-        public BattleFormulas()
+        protected BattleFormulas()
         {
         }
 
@@ -93,7 +93,7 @@ namespace Game.Battle
             return units[Math.Min(level, units.Length - 1)];
         }
 
-        public virtual decimal GetAttackerDmgToDefender(ICombatObject attacker, ICombatObject target, bool useDefAsAtk)
+        public virtual decimal GetAttackerDmgToDefender(ICombatObject attacker, ICombatObject target)
         {
             decimal atk = attacker.Stats.Atk;
             decimal rawDmg = (atk * attacker.Count);
@@ -207,14 +207,14 @@ namespace Game.Battle
             return (short)Config.battle_stamina_initial;
         }
 
-        public short GetStamina(ITroopStub stub, IStronghold targetStronghold)
+        public virtual short GetStamina(ITroopStub stub, IStronghold targetStronghold)
         {
             return (short)(Config.battle_stamina_initial * Config.battle_stamina_gate_multiplier);
         }
 
-        public short GetStamina(ITroopStub stub, IBarbarianTribe barbarianTribe)
+        public virtual short GetStamina(ITroopStub stub, IBarbarianTribe barbarianTribe)
         {
-            return (short)Config.battle_stamina_initial;;
+            return (short)Config.battle_stamina_initial;
         }
 
         public virtual ushort GetStaminaReinforced(ICity city, ushort stamina, uint round)
@@ -404,7 +404,7 @@ namespace Game.Battle
         public virtual decimal SplashReduction(CityCombatObject defender, decimal dmg, int attackIndex)
         {
             // Splash damage reduction doesnt apply to the first attack
-            if (attackIndex <= 0)
+            if (attackIndex == 0)
             {
                 return dmg;
             }

@@ -12,7 +12,7 @@ namespace Game.Battle.RewardStrategies
 {
     public class CityRewardStrategy : IRewardStrategy
     {
-        private readonly BattleFormulas battleFormulas;
+        private readonly IBattleFormulas battleFormulas;
 
         private readonly ICity city;
 
@@ -20,7 +20,7 @@ namespace Game.Battle.RewardStrategies
 
         private readonly ILocker locker;
 
-        public CityRewardStrategy(ICity city, BattleFormulas battleFormulas, Formula formula, ILocker locker)
+        public CityRewardStrategy(ICity city, IBattleFormulas battleFormulas, Formula formula, ILocker locker)
         {
             this.city = city;
             this.battleFormulas = battleFormulas;

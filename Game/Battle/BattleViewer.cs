@@ -66,7 +66,9 @@ namespace Game.Battle
                                           ICombatObject source,
                                           ICombatGroup defenderGroup,
                                           ICombatObject target,
-                                          decimal damage)
+                                          decimal damage,
+                                          int attackerCount,
+                                          int targetCount)
         {
             Append("**************************************");
             Append("Attacker: ");

@@ -291,8 +291,10 @@
 			var defenderGroupId: int = packet.readUInt();
 			var defenderObjId: int = packet.readUInt();
 			var dmg: Number = Util.roundNumber(packet.readFloat());
+            var attackerCount: int = packet.readInt();
+            var targetCount: int = packet.readInt();
 
-			battle.attack(side, attackerGroupId, attackerObjId, defenderGroupId, defenderObjId, dmg);
+			battle.attack(side, attackerGroupId, attackerObjId, defenderGroupId, defenderObjId, dmg, attackerCount, targetCount);
 		}
 
 		public function onReceiveNewRound(packet: Packet):void

@@ -247,8 +247,8 @@
 
 			var pnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER, 7, 0, false));
 			
-			var attackerPnl: Component = getCombatObjectPanel(e.attackerCombatGroup, e.attackerCombatObj);
-			var targetPnl: Component = getCombatObjectPanel(e.targetCombatGroup, e.targetCombatObj);
+			var attackerPnl: Component = getCombatObjectPanel(e.attackerCombatGroup, e.attackerCombatObj, e.attackerCount);
+			var targetPnl: Component = getCombatObjectPanel(e.targetCombatGroup, e.targetCombatObj, e.targetCount);
 			
 			// Always keep defensive obj on the left and attacker on the right
 			if (e.attackerSide == BattleManager.SIDE_DEFENSE) {
@@ -272,10 +272,26 @@
 			targetGroupUi.grid.getModel().valueChanged(defenseObj);
 		}
 		
-		private function getCombatObjectPanel(combatGroup: CombatGroup, combatObj: CombatObject) : Component {
-			var text: String = StringUtil.substitute("{0}({1}):{2}", combatGroup.owner.name, combatGroup.troopId == 1 ? StringHelper.localize("BATTLE_SIDE_LOCAL") : combatGroup.troopId, combatObj.name);
-			var icon: DisplayObjectContainer = combatObj.getIcon();
-			return new JLabel(text, (icon != null ? new AssetIcon(icon) : null));
+		private function getCombatObjectPanel(combatGroup: CombatGroup, combatObj: CombatObject, count: int = 0) : Component {
+			var text: String = StringUtil.substitute("{0}({1}):{2}",
+                    combatGroup.owner.name,
+                    combatGroup.troopId == 1 ? StringHelper.localize("BATTLE_SIDE_LOCAL") : combatGroup.troopId,
+                    combatObj.name
+            );
+
+            var pnl: JPanel = new JPanel(new SoftBoxLayout());
+            if (count > 0) {
+                var lblCount: JLabel = new JLabel(count.toString(), null, AsWingConstants.LEFT);
+                lblCount.setVerticalAlignment(AsWingConstants.CENTER);
+                GameLookAndFeel.changeClass(lblCount, "Label.small");
+                pnl.append(lblCount);
+            }
+
+            var icon: DisplayObjectContainer = combatObj.getIcon();
+            var assetIcon: AssetIcon = (icon != null ? new AssetIcon(icon) : null);
+            pnl.append(new JLabel(text, assetIcon));
+
+            return pnl;
 		}
 
 		private function logStr(string: String, icon: Icon = null, header: Boolean = false) : void {

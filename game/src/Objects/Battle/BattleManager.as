@@ -104,7 +104,7 @@
 			dispatchEvent(new BattleObjectEvent(OBJECT_SKIPPED, group, combatObject));
 		}
 		
-		public function attack(attackingSide: int, attackerGroupId: int, attackerCombatId: int, defenderGroupId: int, defenderCombatId: int, dmg: Number):void
+		public function attack(attackingSide: int, attackerGroupId: int, attackerCombatId: int, defenderGroupId: int, defenderCombatId: int, dmg: Number, attackerCount: int, targetCount: int): void
 		{
 			var attackerGroup: CombatGroup = attackers.get(attackerGroupId) || defenders.get(attackerGroupId);
 			var defenderGroup: CombatGroup = attackers.get(defenderGroupId) || defenders.get(defenderGroupId);
@@ -127,7 +127,7 @@
 			defender.hp -= dmg;
 			defender.hp = Util.roundNumber(defender.hp);
 			
-			dispatchEvent(new BattleAttackEvent(OBJECT_ATTACKED, attackingSide, attackerGroup, attacker, defenderGroup, defender, dmg));
+			dispatchEvent(new BattleAttackEvent(OBJECT_ATTACKED, attackingSide, attackerGroup, attacker, defenderGroup, defender, dmg, attackerCount, targetCount));
 			
 			if (defender.hp <= 0)
 			{

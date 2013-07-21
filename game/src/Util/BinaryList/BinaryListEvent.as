@@ -1,8 +1,8 @@
 ﻿package src.Util.BinaryList 
 {
-	import flash.events.Event;
-	
-	public class BinaryListEvent extends Event
+    import flash.events.Event;
+
+    public class BinaryListEvent extends Event
 	{
 		
 		public static const CHANGED: String = "CHANGED";

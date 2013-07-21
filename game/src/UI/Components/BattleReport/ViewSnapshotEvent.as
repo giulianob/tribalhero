@@ -1,8 +1,8 @@
 package src.UI.Components.BattleReport 
 {
-	import flash.events.Event;
-	
-	public class ViewSnapshotEvent extends Event 
+    import flash.events.Event;
+
+    public class ViewSnapshotEvent extends Event
 	{
 		private var _reportId:int;
 		

@@ -1,20 +1,16 @@
 ﻿
 package src.UI.Sidebars.StrongholdInfo.Buttons {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import src.Constants;
-	import src.Global;
-	import src.Objects.Factories.*;
-	import src.Objects.GameObject;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.Stronghold.Stronghold;
-	import src.Objects.Troop.*;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Cursors.*;
-	import src.UI.Dialog.TroopInfoDialog;
-	import src.UI.Tooltips.TextTooltip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class ViewStrongholdButton extends ActionButton
+    import src.Constants;
+    import src.Global;
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.Stronghold.Stronghold;
+    import src.UI.Components.SimpleTooltip;
+    import src.UI.Tooltips.TextTooltip;
+
+    public class ViewStrongholdButton extends ActionButton
 	{
 		private var tooltip: TextTooltip;
 

@@ -1,17 +1,17 @@
 package src.UI.Components 
 {
-	import flash.events.Event;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	import org.aswing.AssetIcon;
-	import org.aswing.AsWingConstants;
-	import org.aswing.Component;
-	import org.aswing.JLabel;
-	import src.Global;
+    import flash.events.Event;
+    import flash.events.TimerEvent;
+    import flash.utils.Timer;
+
+    import org.aswing.AsWingConstants;
+    import org.aswing.AssetIcon;
+    import org.aswing.JLabel;
+
+    import src.Global;
     import src.Util.DateUtil;
-    import src.Util.Util;
-		
-	public class CountDownLabel extends JLabel
+
+    public class CountDownLabel extends JLabel
 	{
 		private var time: int;
 		private var timer: Timer;

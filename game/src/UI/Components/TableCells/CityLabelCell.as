@@ -1,13 +1,11 @@
 ﻿package src.UI.Components.TableCells
 {
-	import flash.events.*;
-	import org.aswing.*;
-	import org.aswing.event.*;
-	import org.aswing.table.*;
-	import src.*;
-	import src.UI.Components.*;
+    import org.aswing.*;
+    import org.aswing.table.*;
 
-	public class CityLabelCell extends AbstractTableCell
+    import src.UI.Components.*;
+
+    public class CityLabelCell extends AbstractTableCell
 	{
 		// We have to create a wrapper because the cells ui will be forced to the entire area of the container
 		protected var wrapper: JPanel;

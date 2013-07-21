@@ -1,10 +1,9 @@
 ﻿package src.Objects.Troop {
 
-	import src.Objects.Factories.TroopFactory;
-	import src.Objects.*;
-	import src.Objects.States.GameObjectState;
+    import src.Objects.*;
+    import src.Objects.States.GameObjectState;
 
-	public class TroopObject extends GameObject {
+    public class TroopObject extends GameObject {
 
 		public var speed: Number;
 		public var attackRadius: int;
@@ -17,21 +16,13 @@
 		
 		private var radiusManager: RadiusManager;
 
-		public function TroopObject(type: int, state: GameObjectState, objX: int, objY: int, playerId: int, cityId: int, objectId: int) {
-			super(type, state, objX, objY, playerId, cityId, objectId);
+		public function TroopObject(type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int) {
+			super(type, state, objX, objY, size, playerId, cityId, objectId);
 			
 			radiusManager = new RadiusManager(this);			
 		}
 
-		public function getNiceStubId(includeParenthesis: Boolean = false) : String {
-			if (stubId == 1) {
-				if (includeParenthesis) return "(Local Troop)";
-				else return "Local Troop";
-			}
-			else return (includeParenthesis?"(":"") + stubId.toString()  + (includeParenthesis?")":"");
-		}
-		
-		override public function dispose():void 
+        override public function dispose():void
 		{
 			super.dispose();
 			
@@ -48,10 +39,6 @@
 				radiusManager.hideRadius();
 		}
 
-		public function ToSprite(): Object
-		{
-			return TroopFactory.getSprite();
-		}
-	}
+    }
 
 }

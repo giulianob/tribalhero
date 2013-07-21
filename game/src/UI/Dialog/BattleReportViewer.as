@@ -1,24 +1,21 @@
 ﻿package src.UI.Dialog
 {
-	import flash.events.*;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import org.aswing.plaf.*;
-	import src.*;
-	import src.Comm.*;
-	import src.Objects.*;
-	import src.Objects.Troop.*;
-	import src.UI.*;
-	import src.UI.Components.*;
-	import src.UI.Components.BattleReport.*;
-	import src.UI.LookAndFeel.*;
-	import src.UI.Tooltips.*;
-	import src.Util.*;
-	
-	public class BattleReportViewer extends GameJPanel
+    import flash.events.*;
+
+    import org.aswing.*;
+    import org.aswing.border.*;
+
+    import src.*;
+    import src.Comm.*;
+    import src.Objects.*;
+    import src.UI.*;
+    import src.UI.Components.*;
+    import src.UI.Components.BattleReport.*;
+    import src.UI.LookAndFeel.*;
+    import src.UI.Tooltips.*;
+    import src.Util.*;
+
+    public class BattleReportViewer extends GameJPanel
 	{
 		public static const REPORT_CITY_LOCAL: int = 1;
 		public static const REPORT_CITY_FOREIGN: int = 2;

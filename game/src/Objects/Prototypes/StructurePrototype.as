@@ -5,14 +5,15 @@
  */
 
 package src.Objects.Prototypes {
-	import src.Util.StringHelper;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.Resources;
-	import src.Objects.StructureObject;
+    import src.Global;
+    import src.Map.City;
+    import src.Map.CityObject;
+    import src.Map.Position;
+    import src.Objects.Resources;
+    import src.Objects.StructureObject;
+    import src.Util.StringHelper;
 
-	public class StructurePrototype {
+    public class StructurePrototype {
 
 		public var name: String;
 		public var type: int;
@@ -30,10 +31,11 @@ package src.Objects.Prototypes {
 		public var buildResources: Resources = new Resources(0, 0, 0, 0, 0);
 		public var buildTime: int;
 		public var workerid: int;
+        public var size: int;
 		public var maxlabor: int;
 		public var weapon: String;
 
-		public var layouts: Array = new Array();
+		public var layouts: Array = [];
 
 		public function StructurePrototype() {
 
@@ -44,17 +46,17 @@ package src.Objects.Prototypes {
 			layouts.push(layout);
 		}
 
-		public function validateLayout(builder: CityObject, city: City, x: int, y: int): Boolean
+		public function validateLayout(builder: CityObject, city: City, position: Position): Boolean
 		{
 			if (!builder) return false;
 
-			if (Global.map.regions.getObjectsAt(x, y, StructureObject).length > 0) {
+			if (Global.map.regions.getObjectsInTile(position, StructureObject).length > 0) {
 				return false;
 			}
 			
 			for each(var layout: ILayout in layouts)
 			{
-				if (!layout.validate(builder, city, x, y))
+				if (!layout.validate(builder, city, position))
 					return false;
 			}
 

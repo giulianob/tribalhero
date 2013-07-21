@@ -1,44 +1,36 @@
 ﻿package src.Objects.Factories {
 
-	import flash.display.DisplayObject;
-	import flash.display.DisplayObjectContainer;
-	import flash.filters.BlurFilter;
-	import flash.geom.ColorTransform;
-	import flash.geom.Matrix;
-	import flash.geom.Rectangle;
-	import flash.utils.getDefinitionByName;
-	import src.Global;
-	import src.Objects.AggressiveLazyValue;
-	import src.Objects.BarbarianTribe;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.States.GameObjectState;
-    import src.Util.Util;
+    import flash.display.DisplayObject;
+    import flash.display.DisplayObjectContainer;
+    import flash.display.Sprite;
 
-	public class BarbarianTribeFactory {
+    import src.Assets;
+    import src.Global;
+    import src.Objects.BarbarianTribe;
+    import src.Objects.SimpleGameObject;
+    import src.Objects.States.GameObjectState;
+
+    public class BarbarianTribeFactory {
 
 		public function BarbarianTribeFactory() {
 		}
 
-		public static function getSprite(centered: Boolean = false): DisplayObjectContainer
+		public static function getSprite(withPosition: String = ""): DisplayObjectContainer
 		{
-			var objRef: Class = getDefinitionByName("BARBARIAN_TRIBE_STRUCTURE") as Class;
+			var image: DisplayObject = Assets.getInstance("BARBARIAN_TRIBE_STRUCTURE", withPosition);
 
-			var sprite: DisplayObjectContainer = new objRef() as DisplayObjectContainer;
-
-			if (centered)
-			{
-				Util.centerSprite(sprite);
-            }
+            var sprite: Sprite = new Sprite();
+            sprite.addChild(image);
 
 			return sprite;
 		}
 
-		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, groupId: int, objectId: int, level: int, count: int): SimpleGameObject
+		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, size: int, groupId: int, objectId: int, level: int, count: int): SimpleGameObject
 		{
-			var obj: BarbarianTribe = new BarbarianTribe(type, state, objX, objY, groupId, objectId, level, count);
+			var obj: BarbarianTribe = new BarbarianTribe(type, state, objX, objY, size, groupId, objectId, level, count);
 
-			obj.spriteContainer.addChild(ObjectFactory.makeIntoShadow(getSprite()));
-			obj.spriteContainer.addChild(getSprite());
+			obj.spriteContainer.addChild(ObjectFactory.makeIntoShadow(getSprite("map")));
+			obj.spriteContainer.addChild(getSprite("map"));
 
 			obj.setOnSelect(Global.map.selectObject);
 			

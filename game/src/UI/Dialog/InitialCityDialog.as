@@ -1,21 +1,19 @@
 package src.UI.Dialog{
 
-	import com.junkbyte.console.core.CcCallbackDispatcher;
-	import org.aswing.util.StringUtils;
-	import src.Global;
-	import src.UI.Components.AutoCompleteTextField;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.GameJPanel;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.Util.ProfanityFilter;
-	import src.Util.StringHelper;
-	import src.Util.Util;
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
 
-	/**
+    import src.Global;
+    import src.UI.Components.AutoCompleteTextField;
+    import src.UI.Components.SimpleTooltip;
+    import src.UI.GameJPanel;
+    import src.Util.ProfanityFilter;
+    import src.Util.StringHelper;
+    import src.Util.Util;
+
+    /**
 	 * ConnectionDialog
 	 */
 	public class InitialCityDialog extends GameJPanel {
@@ -71,12 +69,8 @@ package src.UI.Dialog{
 			obj.playerHash = txtPlayerHash.getText();
 			return obj;
 		}
-		
-		public function getPlayerHash(): String {
-			return txtPlayerHash.getText();
-		}
 
-		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null) :JFrame
+        public function show(owner:* = null, modal:Boolean = true, onClose: Function = null) :JFrame
 		{
 			super.showSelf(owner, modal, onClose);
 			frame.setClosable(false);

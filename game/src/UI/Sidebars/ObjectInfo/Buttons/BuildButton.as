@@ -1,25 +1,24 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import src.Util.StringHelper;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.Actions.Action;
-	import src.Objects.Actions.BuildAction;
-	import src.Objects.Actions.CurrentActiveAction;
-	import src.Objects.Actions.StructureUpgradeAction;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Factories.*;
-	import src.Objects.*;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.Prototypes.*
-	import src.Util.Util;
-	import src.UI.Cursors.*;
-	import src.UI.Tooltips.StructureBuildTooltip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class BuildButton extends ActionButton
+    import src.Global;
+    import src.Map.City;
+    import src.Map.CityObject;
+    import src.Objects.*;
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.Actions.BuildAction;
+    import src.Objects.Actions.StructureUpgradeAction;
+    import src.Objects.Effects.Formula;
+    import src.Objects.Factories.*;
+    import src.Objects.Prototypes.*;
+    import src.UI.Cursors.*;
+    import src.UI.Tooltips.StructureBuildTooltip;
+    import src.Util.StringHelper;
+    import src.Util.Util;
+
+    public class BuildButton extends ActionButton
 	{
 		private var structPrototype: StructurePrototype;
 		private var buildToolTip: StructureBuildTooltip;
@@ -52,8 +51,8 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				var cursor: BuildStructureCursor = new BuildStructureCursor();
-				cursor.init((parentAction as BuildAction).type, (parentAction as BuildAction).level, (parentAction as BuildAction).tilerequirement, parentObj);//hardcoded here to always create level 1
+                var buildAction: BuildAction = parentAction as BuildAction;
+				new BuildStructureCursor(buildAction.type, buildAction.level, buildAction.tilerequirement, parentObj);
 			}
 		}
 
@@ -86,20 +85,21 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				var currentBuildActions: Array = city.currentActions.getActions();
 				var currentCount: int = 0;
 				for each (var currentAction: * in currentBuildActions) {		
-					if (!(currentAction is CurrentActiveAction))
-						continue;
-					else if (currentAction.getAction() is BuildAction) {
+					if (currentAction.getAction() is BuildAction) {
 						var buildAction: BuildAction = currentAction.getAction();
-						if (!ObjectFactory.isType("UnlimitedBuilding", buildAction.type))
+						if (!ObjectFactory.isType("UnlimitedBuilding", buildAction.type)) {
 							currentCount++;
+                        }
 					}
-					else if (currentAction.getAction() is StructureUpgradeAction)
+					else if (currentAction.getAction() is StructureUpgradeAction) {
 						currentCount++;
+                    }
 				}
 				
 				var concurrentUpgrades: int = Formula.concurrentBuildUpgrades(city.MainBuilding.level);				
-				if (currentCount >= concurrentUpgrades)
-					missingReqs.push(EffectReqPrototype.asMessage(StringHelper.localize("CONCURRENT_UPGRADE_" + concurrentUpgrades)));					
+				if (currentCount >= concurrentUpgrades) {
+					missingReqs.push(EffectReqPrototype.asMessage(StringHelper.localize("CONCURRENT_UPGRADE_" + concurrentUpgrades)));
+                }
 			}
 
 			buildToolTip.missingRequirements = missingReqs;
@@ -113,6 +113,4 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			return city.resources.GreaterThanOrEqual(Formula.buildCost(city, structPrototype));
 		}
 	}
-
 }
-

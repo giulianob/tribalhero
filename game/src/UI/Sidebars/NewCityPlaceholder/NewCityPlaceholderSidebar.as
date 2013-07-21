@@ -1,31 +1,18 @@
 ﻿package src.UI.Sidebars.NewCityPlaceholder {
-	import flash.events.*;
-	import flash.geom.Point;
-	import flash.utils.Timer;
-	import src.Map.*;
-	import flash.text.*;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.Objects.*;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Dialog.*;
-	import src.UI.GameJSidebar;
-	import src.UI.Sidebars.NewCityPlaceholder.Buttons.NewCityButton;
-	import src.UI.Sidebars.ObjectInfo.Buttons.*;
-	import src.Util.*;
-	import flash.display.*;
-	import src.Objects.Actions.*;
-	import src.*;
-	import src.Objects.Troop.*;
+    import flash.events.*;
+    import flash.geom.Point;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.geom.*;
 
-	public class NewCityPlaceholderSidebar extends GameJSidebar
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.UI.GameJSidebar;
+    import src.UI.Sidebars.NewCityPlaceholder.Buttons.NewCityButton;
+
+    public class NewCityPlaceholderSidebar extends GameJSidebar
 	{
 		private var pnlGroups: JPanel;		
 		private var newCityPlaceholderObj: NewCityPlaceholder;
@@ -83,7 +70,7 @@
 		{
 			super.showSelf(owner, onClose, dispose);
 
-			var pt: Point = MapUtil.getMapCoord(newCityPlaceholderObj.objX, newCityPlaceholderObj.objY);
+			var pt: Point = TileLocator.getMapCoord(newCityPlaceholderObj.objX, newCityPlaceholderObj.objY);
 			frame.getTitleBar().setText("New City Foundation");
 
 			frame.show();

@@ -1,12 +1,13 @@
 package src.UI.LookAndFeel
 {
-	import org.aswing.graphics.Graphics2D;
-	import org.aswing.Icon;
-	import org.aswing.Component;
-	import org.aswing.plaf.UIResource;
-	import flash.display.*;
+    import flash.display.*;
 
-	public class GameFrameIcon implements Icon, UIResource
+    import org.aswing.Component;
+    import org.aswing.Icon;
+    import org.aswing.graphics.Graphics2D;
+    import org.aswing.plaf.UIResource;
+
+    public class GameFrameIcon implements Icon, UIResource
 	{
 
 		public function GameFrameIcon(){

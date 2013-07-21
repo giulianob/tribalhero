@@ -1,19 +1,20 @@
 ﻿
 package src.UI.Cursors {
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Factories.*;
-	import src.UI.Components.*;
-	import src.UI.Sidebars.CursorCancel.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
 
-	public class BuildRoadCursor extends MovieClip implements IDisposable
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Factories.*;
+    import src.UI.Components.*;
+    import src.UI.Sidebars.CursorCancel.*;
+
+    public class BuildRoadCursor extends MovieClip implements IDisposable
 	{
-		private var objX: int;
-		private var objY: int;
+		private var objPosition: ScreenPosition = new ScreenPosition();
+
 		private var city: City;
 
 		private var originPoint: Point;
@@ -40,14 +41,14 @@ package src.UI.Cursors {
 
 			buildableArea = new GroundCallbackCircle(city.radius - 1, validateTileCallback);
 			buildableArea.alpha = 0.3;
-			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
+			var point: Point = TileLocator.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
 			buildableArea.objX = point.x; 
 			buildableArea.objY = point.y;
 			
 			Global.map.objContainer.addObject(buildableArea, ObjectContainer.LOWER);
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
-			src.Global.gameContainer.setSidebar(sidebar);
+			Global.gameContainer.setSidebar(sidebar);
 
 			addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);
 			addEventListener(MouseEvent.CLICK, onMouseStop, true);
@@ -55,9 +56,9 @@ package src.UI.Cursors {
 			addEventListener(MouseEvent.MOUSE_OVER, onMouseStop);
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 
-			Global.map.regions.addEventListener(RegionList.REGION_UPDATED, update);
+			Global.map.regions.addEventListener(RegionManager.REGION_UPDATED, update);
 
-			src.Global.gameContainer.message.showMessage("Double click on the green squares to build roads.");
+			Global.gameContainer.message.showMessage("Double click on the green squares to build roads.");
 		}
 
 		public function update(e: Event = null) : void {
@@ -67,14 +68,14 @@ package src.UI.Cursors {
 
 		public function dispose():void
 		{
-			Global.map.regions.removeEventListener(RegionList.REGION_UPDATED, update);
+			Global.map.regions.removeEventListener(RegionManager.REGION_UPDATED, update);
 
-			src.Global.gameContainer.message.hide();
+			Global.gameContainer.message.hide();
 
 			if (cursor != null)
 			{
 				if (cursor.stage != null) 
-					Global.map.objContainer.removeObject(cursor);
+					Global.map.objContainer.removeObject(cursor, ObjectContainer.LOWER);
 					
 				if (buildableArea.stage != null) 
 					Global.map.objContainer.removeObject(buildableArea, ObjectContainer.LOWER);
@@ -97,102 +98,87 @@ package src.UI.Cursors {
 		public function onMouseDoubleClick(event: MouseEvent):void
 		{
 			if (!cursor.visible) return;
-			if (Point.distance(MapUtil.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > city.radius) return;
+			if (Point.distance(TileLocator.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > city.radius) return;
 
 			event.stopImmediatePropagation();
 
-			var pos: Point = MapUtil.getMapCoord(objX, objY);
-			Global.mapComm.Region.buildRoad(parentObj.groupId, pos.x, pos.y);
+			var mapPos: Position = objPosition.toPosition();
+			Global.mapComm.Region.buildRoad(parentObj.groupId, mapPos.x, mapPos.y);
 		}
 
 		public function onMouseDown(event: MouseEvent):void
 		{
-			originPoint = MapUtil.getPointWithZoomFactor(event.stageX, event.stageY);
+			originPoint = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
 		}
 
 		public function onMouseMove(event: MouseEvent) : void
 		{
 			if (event.buttonDown) return;
 			
-			var mousePos: Point = MapUtil.getPointWithZoomFactor(Math.max(0, stage.mouseX), Math.max(0, stage.mouseY));
-			var pos: Point = MapUtil.getActualCoord(src.Global.gameContainer.camera.x + mousePos.x, src.Global.gameContainer.camera.y + mousePos.y);
+			var mousePos: Point = TileLocator.getPointWithZoomFactor(Math.max(0, stage.mouseX), Math.max(0, stage.mouseY));
+			var pos: ScreenPosition = TileLocator.getActualCoord(Global.gameContainer.camera.x + mousePos.x, Global.gameContainer.camera.y + mousePos.y);
 
-			if (pos.x != objX || pos.y != objY)
+			if (!pos.equals(objPosition))
 			{
-				objX = pos.x;
-				objY = pos.y;
+				objPosition = pos;
 
 				//Object cursor
 				if (cursor.stage != null) 
-					Global.map.objContainer.removeObject(cursor);
+					Global.map.objContainer.removeObject(cursor, ObjectContainer.LOWER);
 				
-				cursor.objX = objX;
-				cursor.objY = objY;
+				cursor.objX = pos.x;
+				cursor.objY = pos.y;
 				
-				Global.map.objContainer.addObject(cursor);
+				Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
 				
 				validateBuilding();
 			}
 		}
 
-		private function validateTile(screenPos: Point) : Boolean {
-			var mapPos: Point = MapUtil.getMapCoord(screenPos.x, screenPos.y);
-			var tileType: int = Global.map.regions.getTileAt(mapPos.x, mapPos.y);
+		private function validateTile(screenPos: ScreenPosition) : Boolean {
+			var mapPosition: Position = screenPos.toPosition();
+			var tileType: int = Global.map.regions.getTileAt(mapPosition.x, mapPosition.y);
 
 			if (RoadPathFinder.isRoad(tileType)) return false;
 
 			if (!ObjectFactory.isType("TileBuildable", tileType)) return false;
 
-			if (Global.map.regions.getObjectsAt(screenPos.x, screenPos.y, StructureObject).length > 0) return false;
+			if (Global.map.regions.getObjectsInTile(mapPosition, StructureObject).length > 0) return false;
 
 			// Make sure there is a road next to this tile
-			var hasRoad: Boolean = false;
-			MapUtil.foreach_object(mapPos.x, mapPos.y, 1, function(x1: int, y1: int, custom: *) : Boolean
+			for each (var position: Position in TileLocator.foreachRadius(mapPosition.x, mapPosition.y, 1, false))
 			{
-				if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) != 1) return true;					
-				
-				if (city.MainBuilding.x == x1 && city.MainBuilding.y == y1) {
-					hasRoad = true;
-					return false;
-				}
-
-				if (RoadPathFinder.isRoadByMapPosition(x1, y1) && !city.hasStructureAt(new Point(x1, y1)))
+				if (city.MainBuilding.x == position.x && city.MainBuilding.y == position.y ||
+                        (RoadPathFinder.isRoadByMapPosition(position.x, position.y) &&
+                         !city.hasStructureAt(position)))
 				{
-					hasRoad = true;
-					return false;
-				}
+					return true;
+                }
+            }
 
-				return true;
-			}, false, null);
-
-			if (!hasRoad) return false;
-
-			return true;
+			return false;
 		}
 
-		private function validateTileCallback(x: int, y: int, isCenter: Boolean) : * {
+        private function validateTileCallback(x: int, y: int): * {
+            // Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
+			var point: Point = TileLocator.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
 
-			// Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
-			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
-
-			if (!validateTile(new Point(point.x + x, point.y + y))) return false;
+			if (!validateTile(new ScreenPosition(point.x + x, point.y + y))) return false;
 
 			return new ColorTransform(1.0, 1.0, 1.0, 1.0, 0, 100);
 		}
 
 		public function validateBuilding():void
 		{
-			var msg: XML;
-
-			var city: City = Global.map.cities.get(parentObj.groupId);
-			var mapObjPos: Point = MapUtil.getMapCoord(objX, objY);
+            var city: City = Global.map.cities.get(parentObj.groupId);
+			var mapObjPos: Position = objPosition.toPosition();
 
 			// Check if cursor is inside city walls
-			if (city != null && MapUtil.distance(city.MainBuilding.x, city.MainBuilding.y, mapObjPos.x, mapObjPos.y) >= city.radius) {
+			if (city != null && TileLocator.distance(city.MainBuilding.x, city.MainBuilding.y, mapObjPos.x, mapObjPos.y) >= city.radius) {
 				hideCursors();
 			}
 			// Perform other validations
-			else if (!validateTile(new Point(objX, objY))) {
+			else if (!validateTile(objPosition)) {
 				hideCursors();
 			}
 			else {

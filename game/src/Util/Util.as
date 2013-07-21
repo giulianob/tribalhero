@@ -15,7 +15,6 @@ package src.Util {
     import mx.utils.StringUtil;
 
     import org.aswing.AsWingConstants;
-    import org.aswing.AsWingManager;
     import org.aswing.AsWingUtils;
     import org.aswing.Component;
     import org.aswing.Container;
@@ -136,7 +135,7 @@ package src.Util {
 		{
 			var idx: int = binarySearchAlg(array, compare, value, 0, array.length - 1);
 
-			var ret: Array = new Array();
+			var ret: Array = [];
 
 			if (idx <= -1) return ret;
 
@@ -165,7 +164,7 @@ package src.Util {
 		}
 
 		public static function implode(glue: String, arr: Array) : String {
-			var s: String = new String();
+			var s: String = '';
 			for (var i: int = 0; i < arr.length; i++) {
 				s += arr[i];
 				if ( i != arr.length - 1 ) s += glue;
@@ -202,7 +201,7 @@ package src.Util {
             catch (e: Error) {                
             }
         }
-	}
+    }
 
 }
 

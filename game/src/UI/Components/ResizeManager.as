@@ -1,17 +1,20 @@
 package src.UI.Components
 {
-	import flash.display.DisplayObject;
-	import flash.display.Stage;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	import org.aswing.geom.IntDimension;
-	import org.aswing.JFrame;
-	import org.aswing.JPanel;
-	import src.Constants;
-	/**
+    import flash.display.DisplayObject;
+    import flash.display.Stage;
+    import flash.events.Event;
+    import flash.events.EventDispatcher;
+    import flash.events.IEventDispatcher;
+    import flash.events.TimerEvent;
+    import flash.utils.Timer;
+
+    import org.aswing.JFrame;
+    import org.aswing.JPanel;
+    import org.aswing.geom.IntDimension;
+
+    import src.Constants;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */
@@ -19,7 +22,7 @@ package src.UI.Components
 	{
 		private var dispatcher: EventDispatcher;
 		
-		private var objects: Array = new Array();
+		private var objects: Array = [];
 
 		private var stage: Stage;
 		private var lastSize: IntDimension;
@@ -111,7 +114,7 @@ package src.UI.Components
 		}
 
 		public function removeAllObjects() : void {
-			objects = new Array();
+			objects = [];
 		}
 
 		public function forceMove() : void {

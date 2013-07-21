@@ -161,9 +161,6 @@ package src.Util {
          * and "2 hours from now". For any date beyond 3 days difference
          * from now, then a standard format is returned.
          *
-         * @param date The date for which to compare against.
-         *
-         * @return Human-readable String representing the time elapsed.
          */
         public static function getRelativeFromTimestamp(unixTime:int, capitalizeFirstLetter:Boolean = false):String
         {
@@ -228,7 +225,7 @@ package src.Util {
                     relativeDate = com.adobe.utils.DateUtil.getFullDayName(firstDate) + " at " + com.adobe.utils.DateUtil.getShortHour(firstDate) + ":" + getMinutesString(firstDate) + com.adobe.utils.DateUtil.getAMPM(firstDate).toLowerCase();
                     break;
                 default:
-                    relativeDate = com.adobe.utils.DateUtil.getFullMonthName(firstDate) + " " + firstDate.getDate() + " at " + com.adobe.utils.DateUtil.getShortHour(firstDate) + ":" + getMinutesString(firstDate) + com.adobe.utils.DateUtil.getAMPM(firstDate).toLowerCase()
+                    relativeDate = com.adobe.utils.DateUtil.getFullMonthName(firstDate) + " " + firstDate.getDate() + " at " + com.adobe.utils.DateUtil.getShortHour(firstDate) + ":" + getMinutesString(firstDate) + com.adobe.utils.DateUtil.getAMPM(firstDate).toLowerCase();
                     break;
             }
 

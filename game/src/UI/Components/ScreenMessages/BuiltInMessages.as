@@ -1,22 +1,22 @@
 package src.UI.Components.ScreenMessages
 {
-    import src.Util.DateUtil;
-    import src.Util.StringHelper;
-	import flash.events.Event;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	import mx.utils.StringUtil;
-	import org.aswing.AssetIcon;
-	import src.Constants;
-	import src.Global;
-	import src.Map.City;
-	import src.Objects.Actions.Notification;
-	import src.Objects.Actions.PassiveAction;
-	import src.Util.StringHelper;
-	import src.Util.Util;
     import System.Linq.Enumerable;
 
-	public class BuiltInMessages
+    import flash.events.Event;
+    import flash.events.TimerEvent;
+    import flash.utils.Timer;
+
+    import org.aswing.AssetIcon;
+
+    import src.Constants;
+    import src.Global;
+    import src.Map.City;
+    import src.Objects.Actions.Notification;
+    import src.Objects.Actions.PassiveAction;
+    import src.Util.DateUtil;
+    import src.Util.StringHelper;
+
+    public class BuiltInMessages
 	{
 		private var timer: Timer;
 		

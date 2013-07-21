@@ -1,14 +1,13 @@
 ﻿package src.UI.Components.ComplexTroopGridList
 {
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.Objects.Troop.Unit;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import org.aswing.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
 
-	public class ComplexTroopGridCell extends JLabel implements GridListCell{
+    import src.Objects.Troop.Unit;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    public class ComplexTroopGridCell extends JLabel implements GridListCell{
 
 		protected var value: *;
 

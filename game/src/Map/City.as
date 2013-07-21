@@ -5,19 +5,19 @@
  */
 
 package src.Map {
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.geom.Point;
-	import src.Objects.Actions.*;
-	import src.Objects.Battle.BattleManager;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.Prototypes.EffectPrototype;
-	import src.Objects.*;
-	import src.Objects.Troop.*;
-	import src.Util.BinaryList.*;
-	import src.Util.Util;
+    import flash.events.Event;
+    import flash.events.EventDispatcher;
 
-	public class City extends EventDispatcher
+    import src.Objects.*;
+    import src.Objects.Actions.*;
+    import src.Objects.Battle.BattleManager;
+    import src.Objects.Factories.ObjectFactory;
+    import src.Objects.Prototypes.EffectPrototype;
+    import src.Objects.Troop.*;
+    import src.Util.BinaryList.*;
+    import src.Util.Util;
+
+    public class City extends EventDispatcher
 	{
 		public static var RESOURCES_UPDATE: String = "RESOURCES_UPDATE";
 		public static var RADIUS_UPDATE: String = "RADIUS_UPDATE";
@@ -68,18 +68,16 @@ package src.Map {
 			dispatchEvent(new Event(RESOURCES_UPDATE));
 		}
 
-		public function nearObjectsByRadius(mindist: int, maxdist: int, x: int, y: int, type: int = -1): Array
+		public function nearObjectsByRadius(mindist: int, maxdist: int, position: Position, type: int = -1): Array
 		{
-			var ret: Array = new Array();
-
-			var pos: Point = MapUtil.getMapCoord(x, y);
+			var ret: Array = [];
 
 			for each(var obj: CityObject in objects)
 			{
 				if (type != -1 && obj.type != type)
 				continue;
 
-				var dist: Number = obj.radiusDistance(pos.x, pos.y);
+				var dist: Number = obj.radiusDistance(position.x, position.y);
 
 				if (mindist <= dist && (maxdist == -1 || maxdist >= dist))
 				ret.push(obj);
@@ -102,9 +100,9 @@ package src.Map {
 			return null;
 		}
 		
-		public function hasStructureAt(mapPos: Point): Boolean
+		public function hasStructureAt(mapPos: Position): Boolean
 		{
-			var ret: Array = new Array();
+			var ret: Array = [];
 
 			for each(var obj: CityObject in objects)
 			{
@@ -120,9 +118,9 @@ package src.Map {
 			return false;
 		}
 
-		public function getStructureAt(mapPos: Point): CityObject
+		public function getStructureAt(mapPos: Position): CityObject
 		{
-			var ret: Array = new Array();
+			var ret: Array = [];
 
 			for each(var obj: CityObject in objects)
 			{
@@ -138,45 +136,7 @@ package src.Map {
 			return null;
 		}
 
-		public function nearObjectsByRadius2(mindist: int, maxdist: int, mapPos: Point, classType: int): Array
-		{
-			var ret: Array = new Array();
-
-			for each(var obj: CityObject in objects)
-			{
-				if (ObjectFactory.getClassType(obj.type) != classType)
-				continue;
-
-				var dist: Number = obj.radiusDistance(mapPos.x, mapPos.y);
-
-				if (mindist <= dist && maxdist >= dist)
-				ret.push(obj);
-			}
-
-			return ret;
-		}
-
-		public function nearObjects(mindist: int, maxdist: int, x: int, y: int, type: int = -1): Array
-		{
-			var ret: Array = new Array();
-
-			var pos: Point = MapUtil.getMapCoord(x, y);
-
-			for each(var obj: CityObject in objects)
-			{
-				if (type != -1 && obj.type != type)
-				continue;
-
-				var dist: Number = obj.distance(pos.x, pos.y);
-
-				if (mindist <= dist && maxdist >= dist)
-				ret.push(obj);
-			}
-
-			return ret;
-		}
-
-		public function getBusyLaborCount() : int {
+        public function getBusyLaborCount() : int {
 			var labors: int = 0;
 
 			for each(var obj: CityObject in objects)

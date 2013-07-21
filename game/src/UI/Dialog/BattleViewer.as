@@ -30,7 +30,7 @@
 		private var battle: BattleManager;
 		private var battleId: int;
 
-		private var combat: Array = new Array();
+		private var combat: Array = [];
 		
 		private var tabsByGroup: Dictionary = new Dictionary();
 

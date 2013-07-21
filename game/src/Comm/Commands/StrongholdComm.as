@@ -1,23 +1,22 @@
 package src.Comm.Commands 
 {
-	import fl.lang.Locale;
-	import flash.geom.Point;
-	import org.aswing.AsWingConstants;
-	import src.Comm.Packet;
-	import src.Comm.Commands;
-	import src.Comm.Session;
-	import src.Map.MapComm;
-	import src.Map.MapUtil;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.Stronghold.Stronghold;
-	import src.UI.Dialog.InfoDialog;
-	import src.UI.Dialog.StrongholdProfileDialog;
-	import src.Objects.Troop.*;
-	import src.Global;
-	import src.Map.Username;
-	import src.Util.Util;
+    import fl.lang.Locale;
 
-	public class StrongholdComm 
+    import flash.geom.Point;
+
+    import src.Comm.Commands;
+    import src.Comm.Packet;
+    import src.Comm.Session;
+    import src.Global;
+    import src.Map.MapComm;
+    import src.Map.TileLocator;
+    import src.Map.Username;
+    import src.Objects.SimpleGameObject;
+    import src.Objects.Troop.*;
+    import src.UI.Dialog.InfoDialog;
+    import src.UI.Dialog.StrongholdProfileDialog;
+
+    public class StrongholdComm
 	{
 		private var mapComm: MapComm;
 		private var session: Session;
@@ -44,7 +43,7 @@ package src.Comm.Commands
 		
 		private function readStrongholdPublicProfile(packet: Packet, custom: * ): void {
 			// We don't actually have a public profile we just send the map there
-			var pt:Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
+			var pt:Point = TileLocator.getScreenCoord(packet.readUInt(), packet.readUInt());
 			Global.map.camera.ScrollToCenter(pt.x, pt.y);
 			Global.gameContainer.closeAllFrames(true);
 			
@@ -54,7 +53,7 @@ package src.Comm.Commands
 		}
 		
 		private function readStrongholdPrivateProfile(packet: Packet, custom: * ): void {
-			var profileData: * = new Object();			
+			var profileData: * = {};
 			profileData.strongholdId = packet.readUInt();
 			profileData.strongholdName = packet.readString();
 			profileData.strongholdLevel = packet.readByte();
@@ -125,16 +124,8 @@ package src.Comm.Commands
 				readStrongholdPublicProfile(packet, custom);
 			}			
 		}
-		
-		public function viewStrongholdProfileByName(name: String , callback: Function = null):void {
-			var packet: Packet = new Packet();
-			packet.cmd = Commands.STRONGHOLD_PUBLIC_INFO_BY_NAME;
-			packet.writeString(name);
-			session.write(packet, onReceiveStrongholdProfile, { callback: callback } );
-			mapComm.showLoading();
-		}
-		
-		public function gotoStrongholdLocation(strongholdId:int):void
+
+        public function gotoStrongholdLocation(strongholdId:int):void
 		{
 			var packet:Packet = new Packet();
 			packet.cmd = Commands.STRONGHOLD_LOCATE;
@@ -158,7 +149,7 @@ package src.Comm.Commands
 			if (MapComm.tryShowError(packet)) {
 				return;
 			}
-			var pt:Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
+			var pt:Point = TileLocator.getScreenCoord(packet.readUInt(), packet.readUInt());
 			Global.map.camera.ScrollToCenter(pt.x, pt.y);
 			Global.gameContainer.closeAllFrames(true);
 		}		

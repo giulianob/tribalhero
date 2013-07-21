@@ -5,19 +5,20 @@
  */
 
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import flash.display.MovieClip;
-	import flash.events.MouseEvent;
-	import org.aswing.JOptionPane;
-	import src.Global;
-	import src.Map.City;
-	import src.Objects.Actions.Action;
-	import src.Objects.Actions.CurrentAction;
-	import src.Objects.GameObject;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Dialog.InfoDialog;
-    import src.Util.Util;
+    import flash.display.MovieClip;
+    import flash.events.MouseEvent;
 
-	public class CancelActionButton extends MovieClip  {
+    import org.aswing.JOptionPane;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Objects.Actions.Action;
+    import src.Objects.Actions.CurrentAction;
+    import src.Objects.GameObject;
+    import src.UI.Components.SimpleTooltip;
+    import src.UI.Dialog.InfoDialog;
+
+    public class CancelActionButton extends MovieClip  {
 
 		private var ui: CancelActionButton_base = new CancelActionButton_base();
 		private var id: int;

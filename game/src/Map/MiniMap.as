@@ -1,24 +1,24 @@
 ﻿package src.Map
 {
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import mx.messaging.ConsumerMessageDispatcher;
-	import org.aswing.ASColor;
-    import org.aswing.AsWingManager;
-    import org.aswing.AsWingUtils;
-	import org.aswing.graphics.Graphics2D;
-	import org.aswing.graphics.SolidBrush;
-	import src.Constants;
-	import src.Map.CityRegionFilters.*;
-	import src.UI.Components.MiniMapPointer;
-	import src.Util.Util;
-	import src.Global;
-	import src.Objects.ObjectContainer;
-	import System.Linq.Enumerable;
+    import System.Linq.Enumerable;
 
-	/**
+    import flash.display.Sprite;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
+    import flash.geom.Point;
+
+    import org.aswing.ASColor;
+    import org.aswing.graphics.Graphics2D;
+    import org.aswing.graphics.SolidBrush;
+
+    import src.Constants;
+    import src.Global;
+    import src.Map.CityRegionFilters.*;
+    import src.Objects.ObjectContainer;
+    import src.UI.Components.MiniMapPointer;
+    import src.Util.Util;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 *
@@ -31,7 +31,7 @@
 		private var regions: CityRegionList;
 		private var filter: CityRegionFilter = new CityRegionFilter();
 		private var legend: CityRegionLegend = new CityRegionLegend();
-		private var pendingRegions: Array = new Array();
+		private var pendingRegions: Array = [];
 
 		public var objContainer: ObjectContainer;
 
@@ -40,7 +40,7 @@
 		private var bg: Sprite;
 		private var mapMask: Sprite;
 		
-		private var pointers: Array = new Array();
+		private var pointers: Array = [];
 		private var pointersVisible: Boolean = false;
 		private var cityPointer: MiniMapPointer;
 		
@@ -253,7 +253,7 @@
 
 			for (var c: int = 0; c <= regionsW; c++) {
 				for (var r: int = 0; r <= regionsH; r++) {
-					var requiredId: int = MapUtil.getCityRegionId(camX + Constants.cityRegionW * c, camY + (Constants.cityRegionH / 2) * r);
+					var requiredId: int = TileLocator.getCityRegionId(camX + Constants.cityRegionW * c, camY + (Constants.cityRegionH / 2) * r);
 					if (requiredId == -1 || requiredRegions.indexOf(requiredId) > -1) continue;
 					requiredRegions.push(requiredId);
 				}

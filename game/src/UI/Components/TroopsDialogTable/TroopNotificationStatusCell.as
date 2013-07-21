@@ -1,15 +1,13 @@
 package src.UI.Components.TroopsDialogTable 
 {
     import org.aswing.*;
-    import src.*;
-    import src.Map.*;
+
     import src.Objects.Actions.*;
-    import src.Objects.Troop.*;
     import src.UI.Components.*;
     import src.UI.Components.TableCells.*;
     import src.Util.StringHelper;
-	
-	public class TroopNotificationStatusCell extends AbstractPanelTableCell
+
+    public class TroopNotificationStatusCell extends AbstractPanelTableCell
 	{			
 		private var lblState:JLabel;
 		private var lblCountdown: CountDownLabel;

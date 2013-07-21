@@ -1,11 +1,11 @@
 ﻿package src.Objects.Factories {
-	import src.Map.Map;
-	import src.Objects.Resources;
-	import src.Objects.Prototypes.TechnologyPrototype;
-	import src.Objects.Prototypes.EffectPrototype;
-	import src.Util.BinaryList.*;
+    import src.Map.Map;
+    import src.Objects.Prototypes.EffectPrototype;
+    import src.Objects.Prototypes.TechnologyPrototype;
+    import src.Objects.Resources;
+    import src.Util.BinaryList.*;
 
-	public class TechnologyFactory {
+    public class TechnologyFactory {
 
 		private static var map: Map;
 		private static var technologies: BinaryList;

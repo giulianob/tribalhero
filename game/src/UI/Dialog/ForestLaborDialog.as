@@ -1,19 +1,18 @@
 package src.UI.Dialog{
 
-	import flash.events.Event;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.event.InteractiveEvent;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.Global;
-	import src.Map.City;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Forest;
-	import src.UI.GameJPanel;
+    import flash.events.Event;
 
-	public class ForestLaborDialog extends GameJPanel{
+    import org.aswing.*;
+    import org.aswing.event.InteractiveEvent;
+    import org.aswing.geom.*;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Objects.Effects.Formula;
+    import src.Objects.Forest;
+    import src.UI.GameJPanel;
+
+    public class ForestLaborDialog extends GameJPanel{
 
 		//members define
 		private var label81:JLabel;

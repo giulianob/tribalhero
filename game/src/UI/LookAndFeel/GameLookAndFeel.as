@@ -1,14 +1,10 @@
 ﻿package src.UI.LookAndFeel
 {
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import org.aswing.plaf.*;
-	import org.aswing.plaf.basic.background.*;
+    import org.aswing.*;
+    import org.aswing.plaf.*;
+    import org.aswing.plaf.basic.background.*;
 
-	public class GameLookAndFeel extends GameGraphicLookAndFeel
+    public class GameLookAndFeel extends GameGraphicLookAndFeel
 	{
 		public static const LINK_COLOR: String = "#0066cc";
 		
@@ -56,12 +52,8 @@
 
 			return null;
 		}
-		
-		public static function getDefaultAttribute(attribute: String) : * {
-			return UIManager.getDefaults().get(attribute);
-		}
 
-		override protected function initComponentDefaults(table:UIDefaults):void{
+        override protected function initComponentDefaults(table:UIDefaults):void{
 			super.initComponentDefaults(table);
 
 			var comDefaults:Array = [

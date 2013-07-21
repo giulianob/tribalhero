@@ -1,7 +1,7 @@
 package src.Util
 {
     import flash.utils.ByteArray;
- 
+
     /**
     * @author Björn Acker | www.bjoernacker.de
     */

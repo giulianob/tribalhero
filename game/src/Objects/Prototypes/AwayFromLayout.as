@@ -5,16 +5,17 @@
  */
 
 package src.Objects.Prototypes {
-	import src.Map.*;
-	import src.Objects.Factories.StructureFactory;
+    import src.Map.*;
+    import src.Objects.Factories.StructureFactory;
 
-	public class AwayFromLayout implements ILayout {
+    public class AwayFromLayout implements ILayout {
 
 		public var type: int;
 		public var minlevel: int;
 		public var maxlevel: int;
 		public var mindist: int;
-		public var maxdist: int;
+        //noinspection JSUnusedGlobalSymbols
+        public var maxdist: int;
 		public var compare: int;
 
 		private var structPrototype: StructurePrototype;
@@ -22,7 +23,7 @@ package src.Objects.Prototypes {
 		public function AwayFromLayout() {
 		}
 
-		public function validate(builder: CityObject, city: City, x: int, y: int): Boolean
+		public function validate(builder: CityObject, city: City, position: Position): Boolean
 		{		
 			var radius: int = mindist;
 			var reduction: int = 0;
@@ -34,7 +35,7 @@ package src.Objects.Prototypes {
 				}
 			}			
 
-			var objects: Array = city.nearObjectsByRadius(0, radius + reduction, x, y, type);
+			var objects: Array = city.nearObjectsByRadius(0, radius + reduction, position, type);
 			
 			for each (var obj: CityObject in objects)
 			{

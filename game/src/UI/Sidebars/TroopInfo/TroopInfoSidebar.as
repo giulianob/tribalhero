@@ -1,38 +1,30 @@
 ﻿package src.UI.Sidebars.TroopInfo {
-	import flash.events.*;
-	import flash.geom.Point;
-	import src.Map.*;
-	import flash.text.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.Objects.*;
-	import src.UI.Components.CityLabel;
-	import src.UI.Components.GoToCityIcon;
-	import src.UI.Components.Messaging.MessagingIcon;
-	import src.UI.Components.PlayerLabel;
-	import src.UI.Dialog.*;
-	import src.UI.GameJSidebar;
-	import src.UI.Sidebars.ObjectInfo.Buttons.*;
-	import src.Util.*;
-	import flash.display.*;
-	import flash.utils.Timer;
-	import src.Objects.Actions.*;
-	import src.*;
-	import src.Objects.Troop.*;
+    import flash.events.*;
+    import flash.geom.Point;
+    import flash.utils.Timer;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
 
-	public class TroopInfoSidebar extends GameJSidebar
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Actions.*;
+    import src.Objects.Troop.*;
+    import src.UI.Components.CityLabel;
+    import src.UI.Components.PlayerLabel;
+    import src.UI.GameJSidebar;
+    import src.UI.Sidebars.ObjectInfo.Buttons.*;
+    import src.Util.*;
+
+    public class TroopInfoSidebar extends GameJSidebar
 	{
 		//UI
-		private var lblName:JLabel;
 		private var pnlStats:Form;
-		private var pnlUpgrades:JPanel;
-		private var pnlGroups:JPanel;
+
+        private var pnlGroups:JPanel;
 		private var pnlActions:JPanel;
 
 		private var troopObj: TroopObject;
@@ -60,11 +52,11 @@
 
 			clear();
 
-			var usernameLabel: PlayerLabel = addStatRow("Player", new PlayerLabel(troopObj.playerId));
+			addStatRow("Player", new PlayerLabel(troopObj.playerId));
 			
-			var cityLabel: CityLabel = addStatRow("City", new CityLabel(troopObj.cityId));
+			addStatRow("City", new CityLabel(troopObj.cityId));
 
-			var buttons: Array = new Array();
+			var buttons: Array = [];
 
 			var city: City = Global.map.cities.get(troopObj.cityId);
 
@@ -85,9 +77,9 @@
 
 			//Add buttons to UI
 			for each(var group: Object in Action.groups) {
-				var groupedButtons: Array = new Array();
+				var groupedButtons: Array = [];
 				for each (var type: * in group.actions) {
-					var tmp: Array = new Array();
+					var tmp: Array = [];
 					for (var i: int = buttons.length - 1; i >= 0; i--) {
 						var button: ActionButton = buttons[i];
 						if (!(button is type)) continue;
@@ -185,21 +177,26 @@
 
 			for (var i: int = 0; i < actions.length; i++)
 			{
-				var currentAction: * = actions[i];
+				var currentAction: CurrentAction;
 
-				var actionDescription: String = currentAction.toString();
+                actionReference = actions[i] as CurrentActionReference;
+                if (actionReference) {
+                    currentAction = actionReference.getAction();
+                    if (!currentAction) {
+                        continue;
+                    }
+                }
+                else {
+                    currentAction = actions[i];
+                }
 
-				if (currentAction is CurrentActionReference) {					
-					currentAction = currentAction.getAction();
-					if (!currentAction) continue;
-				}
+                var actionDescription: String = currentAction.toString();
 
-				var cancelButton: CancelActionButton = new CancelActionButton(troopObj, currentAction.id);
+                var cancelButton: CancelActionButton = new CancelActionButton(troopObj, currentAction.id);
 
 				var timeLeft: int = currentAction.endTime > 0 ? currentAction.endTime - Global.map.getServerTime() : 0;
 
 				var finishedAction: Boolean = false;
-				var color: String = "0x000000";
 
 				if (timeLeft < 0)
 				{
@@ -248,40 +245,39 @@
 			t = null;
 		}
 
-		private function createUI() : void
-		{
-			//component creation
-			setSize(new IntDimension(288, 180));
-			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+		private function createUI() : void {
+            //component creation
+            setSize(new IntDimension(288, 180));
+            setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 
-			lblName = new JLabel();
-			lblName.setFont(new ASFont("Tahoma", 11, true, false, false, false));
-			lblName.setSize(new IntDimension(400, 17));
-			lblName.setText("Name (x,y)");
-			lblName.setHorizontalAlignment(AsWingConstants.LEFT);
+            var lblName: JLabel = new JLabel();
+            lblName.setFont(new ASFont("Tahoma", 11, true, false, false, false));
+            lblName.setSize(new IntDimension(400, 17));
+            lblName.setText("Name (x,y)");
+            lblName.setHorizontalAlignment(AsWingConstants.LEFT);
 
-			pnlStats = new Form();
+            pnlStats = new Form();
 
-			pnlGroups = new JPanel();
-			pnlGroups.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 3));
-			pnlGroups.setBorder(new EmptyBorder(null, new Insets(0, 0, 20, 0)));
+            pnlGroups = new JPanel();
+            pnlGroups.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 3));
+            pnlGroups.setBorder(new EmptyBorder(null, new Insets(0, 0, 20, 0)));
 
-			pnlActions = new JPanel();
-			pnlActions.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
-			pnlActions.setSize(new IntDimension(288, 10));
+            pnlActions = new JPanel();
+            pnlActions.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
+            pnlActions.setSize(new IntDimension(288, 10));
 
-			//component layoution
-			//append(lblName);
-			append(pnlStats);
-			append(pnlGroups);
-			append(pnlActions);
-		}
+            //component layoution
+            //append(lblName);
+            append(pnlStats);
+            append(pnlGroups);
+            append(pnlActions);
+        }
 
 		override public function show(owner:* = null, onClose:Function = null):JFrame
 		{
 			super.showSelf(owner, onClose, dispose);
 
-			var pt: Point = MapUtil.getMapCoord(troopObj.objX, troopObj.objY);
+			var pt: Point = TileLocator.getMapCoord(troopObj.objX, troopObj.objY);
 			frame.getTitleBar().setText("Troop (" + pt.x + "," + pt.y + ")");
 
 			frame.show();

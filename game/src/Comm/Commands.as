@@ -158,7 +158,5 @@ package src.Comm {
 		public static const STRONGHOLD_GATE_REPAIR: int = 1104;
 		public static const STRONGHOLD_LOCATE_BY_NAME: int = 1105;
 		public static const STRONGHOLD_LIST: int = 1106;
-		
 	}
-	
 }

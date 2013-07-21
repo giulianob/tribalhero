@@ -1,18 +1,19 @@
 ﻿package src.Comm.Commands {
-	import flash.events.*;
-	import src.*;
-	import src.Comm.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Actions.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.Objects.Troop.*;
-	import src.UI.Components.ScreenMessages.*;
-	import src.UI.Dialog.*;
-	import src.Util.*;
-	
-	public class GeneralComm {
+    import flash.events.*;
+
+    import src.*;
+    import src.Comm.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Actions.*;
+    import src.Objects.Factories.*;
+    import src.Objects.Prototypes.*;
+    import src.Objects.Troop.*;
+    import src.UI.Components.ScreenMessages.*;
+    import src.UI.Dialog.*;
+    import src.Util.*;
+
+    public class GeneralComm {
 
 		private var mapComm: MapComm;
 		private var session: Session;		
@@ -70,22 +71,15 @@
 		{
 			var messageId: String = packet.readString();
 			var paramsCount: int = packet.readUByte();
-			var params: Array = new Array();
+			var params: Array = [];
 			for (var i: int = 0; i < paramsCount; i++) {
 				params.push(packet.readString());
 			}
 			
 			Global.gameContainer.cmdLine.logSystem(messageId, params);
 		}
-		
-		public function queryXML(callback: Function, custom: * ):void
-		{
-			var packet: Packet = new Packet();
-			packet.cmd = Commands.QUERY_XML;
-			session.write(packet, callback, custom);
-		}
 
-		public function createInitialCity(name: String, locationParms: *, onCityCreated: Function) : void {
+        public function createInitialCity(name: String, locationParms: *, onCityCreated: Function) : void {
 			var pnlLoading: InfoDialog = InfoDialog.showMessageDialog("Creating city", "We're creating your city...", null, null, true, false, 0);
 
 			var packet: Packet = new Packet();

@@ -1,15 +1,16 @@
 package src.UI.Tutorial 
-{	
-	import src.Util.StringHelper;
-	import flash.display.DisplayObject;
-	import org.aswing.geom.IntPoint;
-	import org.aswing.plaf.basic.adjuster.PopupSliderThumbIcon;
-	import src.Map.Map;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Tooltips.TextTooltip;
-	import src.UI.Tooltips.Tooltip;
-	import src.UI.Tooltips.WizardTooltip;
-	public class TutorialStep 
+{
+    import flash.display.DisplayObject;
+
+    import org.aswing.geom.IntPoint;
+
+    import src.Map.Map;
+    import src.UI.Tooltips.TextTooltip;
+    import src.UI.Tooltips.Tooltip;
+    import src.UI.Tooltips.WizardTooltip;
+    import src.Util.StringHelper;
+
+    public class TutorialStep
 	{
 		public var resume: Function;
 		public var map: Map;
@@ -44,7 +45,7 @@ package src.UI.Tutorial
 			
 			hideAllMessages();
 			
-			var messages: Array = new Array();
+			var messages: Array = [];
 			
 			for each (var messageId: String in messageIds) {
 				var text: String = StringHelper.localize("TUTORIAL_" + messageId);

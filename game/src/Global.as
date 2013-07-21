@@ -1,10 +1,9 @@
 ﻿package src 
 {
-	import src.Comm.Session;
-	import src.Map.Map;
-	import src.Map.MapComm;
-	
-	public class Global 
+    import src.Map.Map;
+    import src.Map.MapComm;
+
+    public class Global
 	{
 		
 		public static var gameContainer: GameContainer;

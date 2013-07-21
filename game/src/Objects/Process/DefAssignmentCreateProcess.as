@@ -1,23 +1,24 @@
 package src.Objects.Process 
 {
-	import flash.events.Event;
-	import flash.geom.Point;
-	import org.aswing.JButton;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.MapUtil;
-	import src.Objects.Effects.Formula;
-	import src.Objects.GameObject;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.Stronghold.Stronghold;
-	import src.Objects.StructureObject;
-	import src.Objects.Troop.TroopStub;
-	import src.UI.Cursors.GroundReinforceCursor;
-	import src.UI.Dialog.AssignmentCreateDialog;
-	import src.UI.Dialog.ReinforceTroopDialog;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
+    import flash.events.Event;
+    import flash.geom.Point;
 
-	public class DefAssignmentCreateProcess implements IProcess
+    import org.aswing.JButton;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Map.TileLocator;
+    import src.Objects.Effects.Formula;
+    import src.Objects.SimpleGameObject;
+    import src.Objects.Stronghold.Stronghold;
+    import src.Objects.StructureObject;
+    import src.Objects.Troop.TroopStub;
+    import src.UI.Cursors.GroundReinforceCursor;
+    import src.UI.Dialog.AssignmentCreateDialog;
+    import src.UI.Dialog.ReinforceTroopDialog;
+    import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
+
+    public class DefAssignmentCreateProcess implements IProcess
 	{		
 		private var troopDialog: ReinforceTroopDialog;
 		private var target: SimpleGameObject;
@@ -59,7 +60,7 @@ package src.Objects.Process
 			Global.gameContainer.setSidebar(null);
 			
 			var troop: TroopStub = troopDialog.getTroop();
-			var targetMapDistance: Point = MapUtil.getMapCoord(target.objX, target.objY);
+			var targetMapDistance: Point = TileLocator.getMapCoord(target.objX, target.objY);
 			var distance: int = sourceCity.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 			
 			var assignmentDialog: AssignmentCreateDialog = new AssignmentCreateDialog(Formula.moveTimeTotal(sourceCity, troop.getSpeed(sourceCity), distance, true), onChoseTime);

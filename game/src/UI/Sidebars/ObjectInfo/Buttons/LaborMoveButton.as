@@ -1,18 +1,18 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import src.Util.StringHelper;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import src.Global;
-	import src.Objects.*;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.Factories.StructureFactory;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.UI.Cursors.*;
-	import src.UI.Dialog.LaborMoveDialog;
-	import src.UI.Tooltips.TextTooltip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class LaborMoveButton extends ActionButton
+    import src.Global;
+    import src.Objects.*;
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.Factories.StructureFactory;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.UI.Dialog.LaborMoveDialog;
+    import src.UI.Tooltips.TextTooltip;
+    import src.Util.StringHelper;
+
+    public class LaborMoveButton extends ActionButton
 	{
 		private var textToolTip: TextTooltip;
 

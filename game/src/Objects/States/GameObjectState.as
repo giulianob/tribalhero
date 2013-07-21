@@ -1,8 +1,8 @@
 package src.Objects.States
 {
-	import flash.display.*;
+    import flash.display.*;
 
-	public class GameObjectState
+    public class GameObjectState
 	{
 
 		public function GameObjectState()

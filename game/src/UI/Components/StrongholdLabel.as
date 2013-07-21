@@ -1,14 +1,14 @@
 ﻿package src.UI.Components
 {
-	import flash.events.*;
-	import org.aswing.*;
-	import org.aswing.border.EmptyBorder;
-	import org.aswing.event.*;
-	import src.*;
-	import src.Map.Username;
-	import src.UI.Components.*;
+    import flash.events.*;
 
-	public class StrongholdLabel extends JLabelButton
+    import org.aswing.*;
+    import org.aswing.border.EmptyBorder;
+
+    import src.*;
+    import src.Map.Username;
+
+    public class StrongholdLabel extends JLabelButton
 	{
 		public var strongholdId: int;
 

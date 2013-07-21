@@ -1,18 +1,16 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import src.Global;
-	import src.Map.MapUtil;
-	import src.Objects.Factories.*;
-	import src.Objects.GameObject;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.States.MovingState;
-	import src.UI.Cursors.*;
-	import src.UI.Tooltips.TextTooltip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
+    import flash.geom.Point;
 
-	public class ViewDestinationButton extends ActionButton
+    import src.Global;
+    import src.Map.TileLocator;
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.GameObject;
+    import src.UI.Tooltips.TextTooltip;
+
+    public class ViewDestinationButton extends ActionButton
 	{
 		private var tooltip: TextTooltip;
 
@@ -51,7 +49,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				var pt: Point = MapUtil.getScreenCoord(mapDestinationPos.x, mapDestinationPos.y);
+				var pt: Point = TileLocator.getScreenCoord(mapDestinationPos.x, mapDestinationPos.y);
 				Global.map.camera.ScrollToCenter(pt.x, pt.y);
 			}
 

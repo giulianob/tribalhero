@@ -1,13 +1,13 @@
 ﻿
 package src.Objects.Actions {
-	import src.Objects.Effects.EffectReqManager;
-	import src.Objects.GameObject;
-	import src.Objects.SimpleGameObject;
-	import src.UI.Sidebars.ObjectInfo.Buttons.*;
-	import src.UI.Sidebars.ForestInfo.Buttons.*;
-	import src.UI.Sidebars.TroopInfo.Buttons.*;
-	
-	/**
+    import src.Objects.Effects.EffectReqManager;
+    import src.Objects.GameObject;
+    import src.Objects.SimpleGameObject;
+    import src.UI.Sidebars.ForestInfo.Buttons.*;
+    import src.UI.Sidebars.ObjectInfo.Buttons.*;
+    import src.UI.Sidebars.TroopInfo.Buttons.*;
+
+    /**
 	* ...
 	* @author Default
 	*/
@@ -106,8 +106,8 @@ package src.Objects.Actions {
 		
 		public function getMissingRequirements(parentObj: SimpleGameObject, effects: Array): Array
 		{
-			if (!(parentObj is GameObject)) return new Array();
-			if (effectReq == null) return new Array();
+			if (!(parentObj is GameObject)) return [];
+			if (effectReq == null) return [];
 			
 			return effectReq.validate(parentObj as GameObject, effects);
 		}

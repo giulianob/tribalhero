@@ -1,32 +1,30 @@
 ﻿package src.UI.Components.CityActionGridList
 {
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.Global;
-	import src.Map.CityObject;
-	import src.Map.MapUtil;
-	import src.Objects.Actions.CurrentAction;
-	import src.Objects.Actions.CurrentActiveAction;
-	import src.Objects.Actions.CurrentPassiveAction;
-	import src.Objects.Actions.PassiveAction;
-	import src.Objects.Factories.WorkerFactory;
-	import src.Objects.Prototypes.Worker;
-	import src.UI.Components.SimpleTooltip;
+    import flash.events.MouseEvent;
+    import flash.geom.Point;
+
+    import org.aswing.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
+
+    import src.Global;
+    import src.Map.CityObject;
+    import src.Map.TileLocator;
+    import src.Objects.Actions.CurrentAction;
+    import src.Objects.Actions.CurrentActiveAction;
+    import src.Objects.Actions.CurrentPassiveAction;
+    import src.Objects.Factories.WorkerFactory;
+    import src.Objects.Prototypes.Worker;
+    import src.UI.Components.SimpleTooltip;
     import src.Util.DateUtil;
     import src.Util.Util;
 
-	public class CityActionGridCell extends JPanel implements GridListCell{
+    public class CityActionGridCell extends JPanel implements GridListCell{
 
 		private var value: * ;
 
 		private var panel2:JPanel;
 		private var icon:JPanel;
-		private var panel6:JPanel;
 		private var lblAction:JLabel;
 		private var lblTime:JLabel;
 		private var tooltip: SimpleTooltip;
@@ -40,7 +38,7 @@
 				if (value != null)
 				{
 					var cityObj: CityObject = value.cityObj;
-					var pt: Point = MapUtil.getScreenCoord(cityObj.x, cityObj.y);
+					var pt: Point = TileLocator.getScreenCoord(cityObj.x, cityObj.y);
 					Global.map.selectWhenViewable(cityObj.city.id, cityObj.objectId);
 					Global.map.camera.ScrollToCenter(pt.x, pt.y);					
 					Util.getFrame(getParent()).dispose();
@@ -106,45 +104,44 @@
 		public function setGridListCellStatus(gridList:GridList, selected:Boolean, index:int):void {
 		}
 
-		private function createUI() : void
-		{
-			var layout0:GridLayout= new GridLayout();
-			layout0.setRows(1);
-			layout0.setColumns(2);
-			setLayout(layout0);
+		private function createUI() : void {
+            var layout0: GridLayout = new GridLayout();
+            layout0.setRows(1);
+            layout0.setColumns(2);
+            setLayout(layout0);
 
-			panel2 = new JPanel();
-			var layout1:FlowLayout = new FlowLayout();
-			panel2.setLayout(layout1);
+            panel2 = new JPanel();
+            var layout1: FlowLayout = new FlowLayout();
+            panel2.setLayout(layout1);
 
-			icon = new JPanel();
-			icon.setPreferredWidth(50);
-			
-			tooltip = new SimpleTooltip(this, "Click to go to event");
-			tooltip.setEnabled(false);
-			
-			panel6 = new JPanel();
-			panel6.setPreferredSize(new IntDimension(175, 50));
-			var layout2:SoftBoxLayout = new SoftBoxLayout();
-			layout2.setAxis(AsWingConstants.VERTICAL);
-			layout2.setAlign(AsWingConstants.LEFT);
-			panel6.setLayout(layout2);
+            icon = new JPanel();
+            icon.setPreferredWidth(50);
 
-			lblAction = new JLabel();
-			lblAction.setHorizontalAlignment(AsWingConstants.LEFT);
+            tooltip = new SimpleTooltip(this, "Click to go to event");
+            tooltip.setEnabled(false);
 
-			lblTime = new JLabel();
-			lblTime.setHorizontalAlignment(AsWingConstants.LEFT);
+            var panel6: JPanel = new JPanel();
+            panel6.setPreferredSize(new IntDimension(175, 50));
+            var layout2: SoftBoxLayout = new SoftBoxLayout();
+            layout2.setAxis(AsWingConstants.VERTICAL);
+            layout2.setAlign(AsWingConstants.LEFT);
+            panel6.setLayout(layout2);
 
-			//component layout
-			panel2.append(icon);
-			panel2.append(panel6);
+            lblAction = new JLabel();
+            lblAction.setHorizontalAlignment(AsWingConstants.LEFT);
 
-			panel6.append(lblAction);
-			panel6.append(lblTime);
+            lblTime = new JLabel();
+            lblTime.setHorizontalAlignment(AsWingConstants.LEFT);
 
-			append(panel2);
-		}
+            //component layout
+            panel2.append(icon);
+            panel2.append(panel6);
+
+            panel6.append(lblAction);
+            panel6.append(lblTime);
+
+            append(panel2);
+        }
 	}
 
 }

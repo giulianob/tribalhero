@@ -1,26 +1,26 @@
 ﻿package src.UI.Dialog {
-	import flash.events.*;	
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.event.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Actions.Action;
-	import src.Objects.Actions.Notification;
-	import src.Objects.Actions.NotificationManager;
-	import src.Objects.Process.*;
-	import src.Objects.Troop.*;
-	import src.UI.*;
-	import src.UI.Components.TroopsDialogTable.*;
-	import src.Util.*;
-	import src.Util.BinaryList.BinaryListEvent;
-	import System.Linq.Enumerable;
-            
-	public class TroopsDialog extends GameJPanel {
+    import System.Linq.Enumerable;
+
+    import flash.events.*;
+
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.event.*;
+    import org.aswing.geom.*;
+
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Actions.Action;
+    import src.Objects.Actions.Notification;
+    import src.Objects.Process.*;
+    import src.Objects.Troop.*;
+    import src.UI.*;
+    import src.UI.Components.TroopsDialogTable.*;
+    import src.Util.*;
+    import src.Util.BinaryList.BinaryListEvent;
+
+    public class TroopsDialog extends GameJPanel {
 		
 		private var lstCities:JComboBox;			
 		private var btnAttack: JLabelButton;		
@@ -224,15 +224,19 @@
 				}
 			}                       
             
-            var addTroopsToList: Function = function(list: VectorListModel, items: Array): void {
+            var addTroopsToList: Function = function (list: VectorListModel, items: Array): void {
                 list.clear();
                 list.appendAll(Enumerable.from(items)
-                    .distinct(new TroopStubComparer())
-                    .orderBy(function (stub: *): * { return stub.id; } )
-                    .thenBy(function (stub: *): * { return stub.cityId; } )
-                    .toArray()
-                );                
-            }
+                        .distinct(new TroopStubComparer())
+                        .orderBy(function (stub: *): * {
+                            return stub.id;
+                        })
+                        .thenBy(function (stub: *): * {
+                            return stub.cityId;
+                        })
+                        .toArray()
+                );
+            };
             
             addTroopsToList(localTroops, localTroopsTemp);
 			addTroopsToList(onTheMoveTroops, onTheMoveTroopsTemp);			

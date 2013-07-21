@@ -1,11 +1,12 @@
 ﻿package src.Objects.Battle {
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.utils.Dictionary;
-	import src.Util.BinaryList.*;
-	import src.Util.Util;
-	
-	public class BattleManager extends EventDispatcher
+    import flash.events.Event;
+    import flash.events.EventDispatcher;
+    import flash.utils.Dictionary;
+
+    import src.Util.BinaryList.*;
+    import src.Util.Util;
+
+    public class BattleManager extends EventDispatcher
 	{		
 		public static const GROUP_UNIT_REMOVED: String = "BATTLE_GROUP_UNIT_REMOVED";
 		public static const GROUP_UNIT_ADDED: String = "BATTLE_GROUP_UNIT_ADDED";
@@ -103,7 +104,7 @@
 			dispatchEvent(new BattleObjectEvent(OBJECT_SKIPPED, group, combatObject));
 		}
 		
-		public function attack(attackingSide: int, attackerGroupId: int, attackerCombatId: int, defenderGroupId: int, defenderCombatId: int, dmg: Number):void
+		public function attack(attackingSide: int, attackerGroupId: int, attackerCombatId: int, defenderGroupId: int, defenderCombatId: int, dmg: Number, attackerCount: int, targetCount: int): void
 		{
 			var attackerGroup: CombatGroup = attackers.get(attackerGroupId) || defenders.get(attackerGroupId);
 			var defenderGroup: CombatGroup = attackers.get(defenderGroupId) || defenders.get(defenderGroupId);
@@ -126,7 +127,7 @@
 			defender.hp -= dmg;
 			defender.hp = Util.roundNumber(defender.hp);
 			
-			dispatchEvent(new BattleAttackEvent(OBJECT_ATTACKED, attackingSide, attackerGroup, attacker, defenderGroup, defender, dmg));
+			dispatchEvent(new BattleAttackEvent(OBJECT_ATTACKED, attackingSide, attackerGroup, attacker, defenderGroup, defender, dmg, attackerCount, targetCount));
 			
 			if (defender.hp <= 0)
 			{

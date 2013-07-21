@@ -269,7 +269,18 @@ namespace Game.Logic.Actions
                     {
                         if (targetStronghold.Tribe == city.Owner.Tribesman.Tribe)
                         {
-                            StationTroopInStronghold(troopObject, targetStronghold);
+                            if (targetStronghold.MainBattle != null)
+                            {
+                                MoveFromAttackToDefenseFormation(troopObject);
+                                battleProcedure.AddReinforcementToBattle(targetStronghold.MainBattle, troopObject.Stub, FormationType.Defense);
+                                StationTroopInStronghold(troopObject, targetStronghold, TroopState.BattleStationed);
+                            }
+                            else
+                            {
+                                MoveFromAttackToDefenseFormation(troopObject);
+                                StationTroopInStronghold(troopObject, targetStronghold);
+                            }
+
                             return;
                         }
 
@@ -385,13 +396,22 @@ namespace Game.Logic.Actions
             }
         }
 
-        private void StationTroopInStronghold(ITroopObject troopObject, IStronghold stronghold)
+        private void MoveFromAttackToDefenseFormation(ITroopObject troopObject)
         {
             troopObject.Stub.BeginUpdate();
             troopObject.Stub.ChangeFormation(FormationType.Attack, FormationType.Defense);
             troopObject.Stub.EndUpdate();
+        }
 
+        private void StationTroopInStronghold(ITroopObject troopObject, IStronghold stronghold, TroopState stubState = TroopState.Stationed)
+        {
             procedure.TroopObjectStation(troopObject, stronghold);
+            if (troopObject.Stub.State != stubState)
+            {
+                troopObject.Stub.BeginUpdate();
+                troopObject.Stub.State = stubState;
+                troopObject.Stub.EndUpdate();
+            }
 
             StateChange(ActionState.Completed);
         }
@@ -436,7 +456,7 @@ namespace Game.Logic.Actions
                         JoinOrCreateStrongholdMainBattle(city);
                     }
                     else if (city.Owner.IsInTribe && targetStronghold.Tribe == city.Owner.Tribesman.Tribe)
-                    {
+                    {                        
                         StationTroopInStronghold(troopObject, targetStronghold);
                     }
                     else

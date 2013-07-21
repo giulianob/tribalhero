@@ -16,7 +16,7 @@ namespace Game.Battle
         public StaminaMonitor(IBattleManager battleManager,
                               ICombatGroup combatGroup,
                               short initialStamina,
-                              BattleFormulas battleFormulas,
+                              IBattleFormulas battleFormulas,
                               IObjectTypeFactory objectTypeFactory)
         {
             this.objectTypeFactory = objectTypeFactory;
@@ -45,7 +45,7 @@ namespace Game.Battle
             }
         }
 
-        private BattleFormulas BattleFormulas { get; set; }
+        private IBattleFormulas BattleFormulas { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
@@ -55,7 +55,9 @@ namespace Game.Battle
                                           ICombatObject attacker,
                                           ICombatGroup targetGroup,
                                           ICombatObject target,
-                                          decimal damage)
+                                          decimal damage,
+                                          int attackerCount,
+                                          int targetCount)
         {
             if (target.ClassType == BattleClass.Structure && attackingside == BattleManager.BattleSide.Attack && target.IsDead)
             {
@@ -70,7 +72,7 @@ namespace Game.Battle
                 }
 
                 Stamina = BattleFormulas.GetStaminaStructureDestroyed(Stamina, target);
-            }            
+            }
         }
 
         private void BattleWithdrawAttacker(IBattleManager battle, ICombatGroup groupWithdrawn)

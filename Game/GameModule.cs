@@ -150,6 +150,10 @@ namespace Game
 
             Bind<ICombatList>().To<CombatList>().NamedLikeFactoryMethod((ICombatListFactory p) => p.GetCombatList());
 
+            Bind<IBattleOrder>().To<BattleOrder>();
+
+            Bind<IBattleFormulas>().To<BattleFormulas>();
+
             #endregion
 
             #region Processor

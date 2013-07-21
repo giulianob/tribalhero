@@ -38,7 +38,7 @@ namespace Game.Battle.CombatObjects
                                     ushort count,
                                     IStronghold stronghold,
                                     UnitFactory unitFactory,
-                                    BattleFormulas battleFormulas,
+                                    IBattleFormulas battleFormulas,
                                     Formula formula)
                 : base(id, battleId, battleFormulas)
         {
@@ -61,7 +61,7 @@ namespace Game.Battle.CombatObjects
                                     IStronghold stronghold,
                                     decimal leftOverHp,
                                     UnitFactory unitFactory,
-                                    BattleFormulas battleFormulas,
+                                    IBattleFormulas battleFormulas,
                                     Formula formula)
                 : base(id, battleId, battleFormulas)
         {

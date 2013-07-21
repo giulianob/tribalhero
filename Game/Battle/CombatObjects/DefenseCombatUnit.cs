@@ -46,7 +46,7 @@ namespace Game.Battle.CombatObjects
                                  ushort type,
                                  byte lvl,
                                  ushort count,
-                                 BattleFormulas battleFormulas,
+                                 IBattleFormulas battleFormulas)
                                  Formula formula)
                 : base(id, battleId, battleFormulas)
         {
@@ -70,7 +70,7 @@ namespace Game.Battle.CombatObjects
                                  byte lvl,
                                  ushort count,
                                  decimal leftOverHp,
-                                 BattleFormulas battleFormulas,
+                                 IBattleFormulas battleFormulas)
                                  Formula formula)
                 : this(id, battleId, stub, formation, type, lvl, count, battleFormulas, formula)
         {

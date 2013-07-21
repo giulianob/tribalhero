@@ -19,7 +19,7 @@ namespace Game.Logic.Actions
 {
     public class StrongholdEngageGateAttackPassiveAction : PassiveAction
     {
-        private readonly BattleFormulas battleFormula;
+        private readonly IBattleFormulas battleFormula;
 
         private readonly StrongholdBattleProcedure strongholdBattleProcedure;
 
@@ -40,7 +40,7 @@ namespace Game.Logic.Actions
         public StrongholdEngageGateAttackPassiveAction(uint cityId,
                                                        uint troopObjectId,
                                                        uint targetStrongholdId,
-                                                       BattleFormulas battleFormula,
+                                                       IBattleFormulas battleFormula,
                                                        IGameObjectLocator gameObjectLocator,
                                                        StrongholdBattleProcedure strongholdBattleProcedure,
                                                        IDbManager dbManager,
@@ -59,7 +59,7 @@ namespace Game.Logic.Actions
         public StrongholdEngageGateAttackPassiveAction(uint id,
                                                        bool isVisible,
                                                        IDictionary<string, string> properties,
-                                                       BattleFormulas battleFormula,
+                                                       IBattleFormulas battleFormula,
                                                        IGameObjectLocator gameObjectLocator,
                                                        StrongholdBattleProcedure strongholdBattleProcedure,
                                                        IDbManager dbManager,

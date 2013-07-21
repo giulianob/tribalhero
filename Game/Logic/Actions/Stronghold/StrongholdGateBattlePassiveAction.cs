@@ -91,7 +91,7 @@ namespace Game.Logic.Actions
 
             localGroupId = uint.Parse(properties["local_group_id"]);
 
-            tribeDamageDealt =
+            tribeDamageDealt = 
                     new JsonReader().Read<Dictionary<string, decimal>>(properties["tribe_damage_dealt"])
                                     .ToDictionary(k => uint.Parse(k.Key), v => v.Value);
 
@@ -134,7 +134,9 @@ namespace Game.Logic.Actions
                                             ICombatObject attacker,
                                             ICombatGroup targetGroup,
                                             ICombatObject target,
-                                            decimal damage)
+                                            decimal damage,
+                                            int attackerCount,
+                                            int targetCount)
         {
             if (attackingSide != BattleManager.BattleSide.Attack || attackerGroup.Owner.Type != BattleOwnerType.City)
             {

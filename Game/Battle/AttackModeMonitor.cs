@@ -27,7 +27,9 @@ namespace Game.Battle
                                           ICombatObject attacker,
                                           ICombatGroup targetGroup,
                                           ICombatObject target,
-                                          decimal damage)
+                                          decimal damage,
+                                          int attackerCount,
+                                          int targetCount)
         {
             // Check if the unit being attacked belongs to us
             if (targetGroup.Id != combatGroup.Id)

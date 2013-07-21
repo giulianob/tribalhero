@@ -48,7 +48,7 @@ namespace Game.Battle.CombatObjects
                                 byte lvl,
                                 ushort count,
                                 UnitFactory unitFactory,
-                                IBattleFormulas battleFormulas)
+                                IBattleFormulas battleFormulas,
                                 Formula formula,
                                 ITileLocator tileLocator)
                 : base(id, battleId, battleFormulas)
@@ -79,7 +79,7 @@ namespace Game.Battle.CombatObjects
                                 decimal leftOverHp,
                                 Resource loot,
                                 UnitFactory unitFactory,
-                                IBattleFormulas battleFormulas)
+                                IBattleFormulas battleFormulas,
                                 Formula formula,
                                 ITileLocator tileLocator)
                 : this(id, battleId, troopObject, formation, type, lvl, count, unitFactory, battleFormulas, formula, tileLocator)

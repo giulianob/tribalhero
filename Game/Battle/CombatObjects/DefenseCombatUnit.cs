@@ -35,8 +35,6 @@ namespace Game.Battle.CombatObjects
 
         private decimal leftOverHp;
 
-        private readonly BattleFormulas battleFormulas;
-
         private readonly Formula formula;
 
         public DefenseCombatUnit(uint id,
@@ -46,7 +44,7 @@ namespace Game.Battle.CombatObjects
                                  ushort type,
                                  byte lvl,
                                  ushort count,
-                                 IBattleFormulas battleFormulas)
+                                 IBattleFormulas battleFormulas,
                                  Formula formula)
                 : base(id, battleId, battleFormulas)
         {
@@ -54,7 +52,6 @@ namespace Game.Battle.CombatObjects
             this.formation = formation;
             this.type = type;
             this.count = count;
-            this.battleFormulas = battleFormulas;
             this.formula = formula;
             this.lvl = lvl;
 
@@ -70,7 +67,7 @@ namespace Game.Battle.CombatObjects
                                  byte lvl,
                                  ushort count,
                                  decimal leftOverHp,
-                                 IBattleFormulas battleFormulas)
+                                 IBattleFormulas battleFormulas,
                                  Formula formula)
                 : this(id, battleId, stub, formation, type, lvl, count, battleFormulas, formula)
         {
@@ -266,12 +263,12 @@ namespace Game.Battle.CombatObjects
 
             // Splash dmg reduction
             actualDmg = BattleFormulas.SplashReduction(this, actualDmg, attackIndex);
-
+            
             // if hp is less than 20% of the original total HP(entire group), lastStand kicks in.
             if (Hp < (Hp + DmgRecv) / 5)
             {
                 var percent = TroopStub.City.Technologies
-                                       .GetEffects(EffectCode.LastStand).Where(tech => battleFormulas.UnitStatModCheck(Stats.Base,
+                                       .GetEffects(EffectCode.LastStand).Where(tech => BattleFormulas.UnitStatModCheck(Stats.Base,
                                                                                                                        TroopBattleGroup.Attack,
                                                                                                                        (string)tech.Value[1]))
                                        .DefaultIfEmpty()

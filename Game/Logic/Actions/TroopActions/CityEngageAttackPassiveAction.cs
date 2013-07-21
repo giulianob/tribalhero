@@ -20,7 +20,7 @@ namespace Game.Logic.Actions
 {
     public class CityEngageAttackPassiveAction : PassiveAction
     {
-        private readonly BattleFormulas battleFormula;
+        private readonly IBattleFormulas battleFormula;
 
         private readonly Resource bonus;
 
@@ -50,7 +50,7 @@ namespace Game.Logic.Actions
                                              uint troopObjectId,
                                              uint targetCityId,
                                              AttackMode mode,
-                                             BattleFormulas battleFormula,
+                                             IBattleFormulas battleFormula,
                                              IGameObjectLocator gameObjectLocator,
                                              CityBattleProcedure cityBattleProcedure,
                                              IStructureCsvFactory structureCsvFactory,
@@ -74,7 +74,7 @@ namespace Game.Logic.Actions
         public CityEngageAttackPassiveAction(uint id,
                                              bool isVisible,
                                              IDictionary<string, string> properties,
-                                             BattleFormulas battleFormula,
+                                             IBattleFormulas battleFormula,
                                              IGameObjectLocator gameObjectLocator,
                                              CityBattleProcedure cityBattleProcedure,
                                              IStructureCsvFactory structureCsvFactory,
@@ -311,7 +311,9 @@ namespace Game.Logic.Actions
                                           ICombatObject attacker,
                                           ICombatGroup targetGroup,
                                           ICombatObject target,
-                                          decimal damage)
+                                          decimal damage,
+                                          int attackerCount,
+                                          int targetCount)
         {
             ICity city;
             ITroopObject troopObject;

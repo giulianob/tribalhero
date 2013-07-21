@@ -14,7 +14,7 @@ namespace Game.Battle
     ///     returns the next unit in the combat list that hasnt participated
     ///     in the round. It doesn't care if its the same group or not.
     /// </summary>
-    public class BattleOrder
+    public class BattleOrder : IBattleOrder
     {
         /// <summary>
         ///     Returns the next object from the primary group that should attack.

@@ -13,7 +13,7 @@ namespace Game.Battle.CombatObjects
                                     decimal hp,
                                     IStronghold stronghold,
                                     IStructureCsvFactory structureCsvFactory,
-                                    BattleFormulas battleFormulas)
+                                    IBattleFormulas battleFormulas)
                 : base(id, battleId, type, lvl, hp, stronghold, structureCsvFactory, battleFormulas)
         {
         }

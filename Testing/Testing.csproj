@@ -128,6 +128,7 @@
     <Compile Include="Balancing\TestArcher.cs" />
     <Compile Include="Balancing\UnitType.cs" />
     <Compile Include="BattleTests\BattleManagerTest.cs" />
+    <Compile Include="BattleTests\BattleManagerTest2.cs" />
     <Compile Include="BattleTests\BattleOrderTest.cs" />
     <Compile Include="BattleTests\CombatGroupTest.cs" />
     <Compile Include="BattleTests\CombatListTest.cs" />

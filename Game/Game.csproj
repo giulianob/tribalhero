@@ -149,8 +149,10 @@
     <Compile Include="Battle\CombatObjects\ICombatStructure.cs" />
     <Compile Include="Battle\CombatObjects\ICombatUnitFactory.cs" />
     <Compile Include="Battle\AttackModeMonitor.cs" />
+    <Compile Include="Battle\IBattleFormulas.cs" />
     <Compile Include="Battle\IBattleManager.cs" />
     <Compile Include="Battle\IBattleManagerFactory.cs" />
+    <Compile Include="Battle\IBattleOrder.cs" />
     <Compile Include="Battle\ICombatList.cs" />
     <Compile Include="Battle\IStaminaMonitorFactory.cs" />
     <Compile Include="Battle\PublicBattleManager.cs" />

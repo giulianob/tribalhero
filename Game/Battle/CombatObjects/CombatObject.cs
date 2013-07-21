@@ -14,7 +14,7 @@ namespace Game.Battle.CombatObjects
 {
     public abstract class CombatObject : ICombatObject
     {
-        protected readonly BattleFormulas BattleFormulas;
+        protected readonly IBattleFormulas BattleFormulas;
 
         protected readonly uint BattleId;
 
@@ -26,7 +26,7 @@ namespace Game.Battle.CombatObjects
         {
         }
 
-        protected CombatObject(uint id, uint battleId, BattleFormulas battleFormulas)
+        protected CombatObject(uint id, uint battleId, IBattleFormulas battleFormulas)
         {
             Id = id;
             MinDmgDealt = ushort.MaxValue;

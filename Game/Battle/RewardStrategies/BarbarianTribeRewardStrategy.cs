@@ -7,11 +7,11 @@ namespace Game.Battle.RewardStrategies
 {
     public class BarbarianTribeRewardStrategy : IRewardStrategy
     {
-        private readonly BattleFormulas battleFormulas;
+        private readonly IBattleFormulas battleFormulas;
 
         private readonly IBarbarianTribe barbarianTribe;
 
-        public BarbarianTribeRewardStrategy(IBarbarianTribe barbarianTribe, BattleFormulas battleFormulas)
+        public BarbarianTribeRewardStrategy(IBarbarianTribe barbarianTribe, IBattleFormulas battleFormulas)
         {
             this.barbarianTribe = barbarianTribe;
             this.battleFormulas = battleFormulas;

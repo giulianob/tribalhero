@@ -242,7 +242,9 @@ namespace Game.Logic.Actions
                                                 ICombatObject attacker,
                                                 ICombatGroup targetGroup,
                                                 ICombatObject target,
-                                                decimal damage)
+                                                decimal damage,
+                                                int attackerCount,
+                                                int targetCount)
         {
             IStronghold stronghold;
             if (!gameObjectLocator.TryGetObjects(strongholdId, out stronghold))

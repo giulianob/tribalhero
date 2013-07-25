@@ -44,6 +44,7 @@ namespace Game
         {
             #region World/Map
 
+            Bind<IGlobal>().To<Global>().InSingletonScope();
             Bind<IWorld, IGameObjectLocator>().To<World>().InSingletonScope();
             Bind<IRegion>().To<Region>();
             Bind<IRegionManager>().To<RegionManager>().InSingletonScope();

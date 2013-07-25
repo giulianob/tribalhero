@@ -20,6 +20,8 @@ namespace Game.Map
 
         private readonly DefaultMultiObjectLock.Factory lockerFactory;
 
+        private readonly IGlobal global;
+
         #region Constants
 
         public enum ObjectType : byte
@@ -39,9 +41,10 @@ namespace Game.Map
 
         #endregion
 
-        public CityRegion(DefaultMultiObjectLock.Factory lockerFactory)
+        public CityRegion(DefaultMultiObjectLock.Factory lockerFactory, IGlobal global)
         {
             this.lockerFactory = lockerFactory;
+            this.global = global;
         }
 
         #region Members
@@ -66,7 +69,7 @@ namespace Game.Map
                 isDirty = true;
             }
 
-            if (Global.Current.FireEvents)
+            if (global.FireEvents)
             {
                 logger.Info("Added city region obj: {0}", obj.ToString());
             }

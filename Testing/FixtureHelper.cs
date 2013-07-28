@@ -7,9 +7,7 @@ namespace Testing
     {
         public static IFixture Create()
         {
-            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
-            fixture.OmitAutoProperties = true;
-            return fixture;
+            return new Fixture().Customize(new AutoNSubstituteCustomization());            
         } 
     }
 }

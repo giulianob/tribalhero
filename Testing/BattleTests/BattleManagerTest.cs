@@ -671,7 +671,6 @@ namespace Testing.BattleTests
             battleOrder.Setup(
                                        m =>
                                        m.NextObject(It.IsAny<uint>(),
-                                                    It.IsAny<uint>(),
                                                     It.IsAny<ICombatList>(),
                                                     It.IsAny<ICombatList>(),
                                                     out attackerObject,
@@ -759,7 +758,6 @@ namespace Testing.BattleTests
             battleOrder.Setup(
                               m =>
                               m.NextObject(It.IsAny<uint>(),
-                                           It.IsAny<uint>(),
                                            It.IsAny<ICombatList>(),
                                            It.IsAny<ICombatList>(),
                                            out attackerOutObject,
@@ -861,7 +859,6 @@ namespace Testing.BattleTests
             battleOrder.Setup(
                               m =>
                               m.NextObject(It.IsAny<uint>(),
-                                           It.IsAny<uint>(),
                                            It.IsAny<ICombatList>(),
                                            It.IsAny<ICombatList>(),
                                            out defenderOutObject,

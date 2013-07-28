@@ -34,6 +34,7 @@ namespace Game.Battle
                                        kernel.Get<IBattleOrder>());
 
             new BattleChannel(bm);
+            new BattleViewer(bm);
 
             bm.BattleReport.Battle = bm;
             return bm;
@@ -104,6 +105,7 @@ namespace Game.Battle
                                              kernel.Get<IBattleOrder>());
 
             new BattleChannel(bm);
+            new BattleViewer(bm);
 
             bm.BattleReport.Battle = bm;
             return bm;

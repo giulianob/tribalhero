@@ -21,7 +21,7 @@ namespace Testing.BattleTests
                 yield return
                         new object[]
                         {
-                            CreateList(5,CreateGroup(CreateCombatObject(0,5))),
+                            CreateList(5,CreateGroup(CreateCombatObject(0,1),CreateCombatObject(0,1),CreateCombatObject(0,1),CreateCombatObject(0,1),CreateCombatObject(0,1))),
                             CreateList(1,CreateGroup(CreateCombatObject(0,1))),
                             new []
                             {
@@ -45,7 +45,7 @@ namespace Testing.BattleTests
                         new object[]
                         {
                             CreateList(1,CreateGroup(CreateCombatObject(0,1))),
-                            CreateList(5,CreateGroup(CreateCombatObject(0,5))),
+                            CreateList(5,CreateGroup(CreateCombatObject(0,1),CreateCombatObject(0,1),CreateCombatObject(0,1),CreateCombatObject(0,1),CreateCombatObject(0,1))),
                             new []
                             {
                                 BattleManager.BattleSide.Attack,
@@ -73,31 +73,61 @@ namespace Testing.BattleTests
                 yield return
                         new object[]
                         {
-                            CreateList(15,CreateGroup(CreateCombatObject(0,15))),
-                            CreateList(4,CreateGroup(CreateCombatObject(0,4))),
-                            new []
-                            {
-                                BattleManager.BattleSide.Defense,
-                                BattleManager.BattleSide.Attack,
-                                BattleManager.BattleSide.Attack,
-                                BattleManager.BattleSide.Attack,
-                                BattleManager.BattleSide.Defense,
-                                BattleManager.BattleSide.Attack,
-                                BattleManager.BattleSide.Attack,
-                                BattleManager.BattleSide.Attack,
-                                BattleManager.BattleSide.Attack,
-                                BattleManager.BattleSide.Defense,
-                                BattleManager.BattleSide.Attack,
-                                BattleManager.BattleSide.Attack,
-                                BattleManager.BattleSide.Attack,
-                                BattleManager.BattleSide.Attack,
-                                BattleManager.BattleSide.Defense,
-                                BattleManager.BattleSide.Attack,
-                                BattleManager.BattleSide.Attack,
-                                BattleManager.BattleSide.Attack,
-                                BattleManager.BattleSide.Attack,
-                                BattleManager.BattleSide.Defense,
-                            }
+                                CreateList(15,
+                                           CreateGroup(CreateCombatObject(0, 3),
+                                                       CreateCombatObject(0, 3),
+                                                       CreateCombatObject(0, 3),
+                                                       CreateCombatObject(0, 3),
+                                                       CreateCombatObject(0, 3))),
+                                CreateList(4,
+                                           CreateGroup(CreateCombatObject(0, 2), CreateCombatObject(0, 2))),
+                                new[]
+                                {
+                                        BattleManager.BattleSide.Defense, // +50%
+                                        BattleManager.BattleSide.Attack,  // -20%
+                                        BattleManager.BattleSide.Attack,  // -20%
+                                        BattleManager.BattleSide.Attack,  // -20%
+                                        BattleManager.BattleSide.Defense, // +50%
+                                        BattleManager.BattleSide.Attack,  // +20%
+                                        BattleManager.BattleSide.Attack,  // +20%
+                                        BattleManager.BattleSide.Defense,
+                                        BattleManager.BattleSide.Attack, 
+                                        BattleManager.BattleSide.Attack,
+                                        BattleManager.BattleSide.Attack, 
+                                        BattleManager.BattleSide.Defense,
+                                        BattleManager.BattleSide.Attack,
+                                        BattleManager.BattleSide.Attack,
+                                }
+                        };
+                //  Attacker 4 vs Defender 5
+                yield return
+                        new object[]
+                        {
+                                CreateList(4,
+                                           CreateGroup(CreateCombatObject(0, 2), CreateCombatObject(0, 2))),
+                                CreateList(15,
+                                           CreateGroup(CreateCombatObject(0, 3),
+                                                       CreateCombatObject(0, 3),
+                                                       CreateCombatObject(0, 3),
+                                                       CreateCombatObject(0, 3),
+                                                       CreateCombatObject(0, 3))),
+                                new[]
+                                {
+                                        BattleManager.BattleSide.Attack,   // +50%
+                                        BattleManager.BattleSide.Defense,  // -20%
+                                        BattleManager.BattleSide.Defense,  // -20%
+                                        BattleManager.BattleSide.Defense,  // -20%
+                                        BattleManager.BattleSide.Attack,   // +50%
+                                        BattleManager.BattleSide.Defense,  // +20%
+                                        BattleManager.BattleSide.Defense,  // +20%
+                                        BattleManager.BattleSide.Attack,
+                                        BattleManager.BattleSide.Defense, 
+                                        BattleManager.BattleSide.Defense,
+                                        BattleManager.BattleSide.Defense, 
+                                        BattleManager.BattleSide.Attack,
+                                        BattleManager.BattleSide.Defense,
+                                        BattleManager.BattleSide.Defense,
+                                }
                         };
             }
         }
@@ -192,25 +222,16 @@ namespace Testing.BattleTests
         
         private void TestSequence(ICombatList attackers, ICombatList defenders, IEnumerable<BattleManager.BattleSide> patterns)
         {
-            var fixture = new Fixture();
+            var fixture = FixtureHelper.Create();
             var battleOrder = fixture.Create<BattleOrder>();
-
-            uint round = 0;
-            uint turn = 0;
+            battleOrder.Meter = 0;
             foreach (BattleManager.BattleSide side in patterns)
             {
                 ICombatObject outCombatObject;
                 ICombatGroup outCombatGroup;
                 BattleManager.BattleSide foundInGroup;
-                if (battleOrder.NextObject(round, turn++, attackers, defenders, out outCombatObject, out outCombatGroup, out foundInGroup))
-                {
-                    foundInGroup.Should().Be(side);
-                }
-                else
-                {
-                    round++;
-                    turn = 0;
-                }
+                battleOrder.NextObject(0, attackers, defenders, out outCombatObject, out outCombatGroup, out foundInGroup);
+                foundInGroup.Should().Be(side);
             }
         }
 
@@ -221,7 +242,6 @@ namespace Testing.BattleTests
             ICombatGroup outCombatGroup;
             BattleManager.BattleSide foundInGroup;
             battleOrder.NextObject(0,
-                                   2,
                                    CreateList(0, CreateGroup(CreateCombatObject(1, 1))),
                                    CreateList(0, CreateGroup(CreateCombatObject(1, 1))),
                                    out outCombatObject,
@@ -243,7 +263,6 @@ namespace Testing.BattleTests
             BattleManager.BattleSide foundInGroup;
             var expectedObject = CreateCombatObject(0, 3);
             var result = battleOrder.NextObject(0,
-                                   0,
                                    CreateList(1, CreateGroup(CreateCombatObject(1, 1), expectedObject, CreateCombatObject(0, 2))),
                                    CreateList(1, CreateGroup(CreateCombatObject(1, 1))),
                                    out outCombatObject,
@@ -268,7 +287,6 @@ namespace Testing.BattleTests
             var expectedObject = CreateCombatObject(0, 3);
             var expectedGroup = CreateGroup(CreateCombatObject(1, 1), expectedObject, CreateCombatObject(0, 2));
             battleOrder.NextObject(0,
-                                   1,
                                    CreateList(1, CreateGroup(CreateCombatObject(1, 1))),
                                    CreateList(1, expectedGroup),
                                    out outCombatObject,
@@ -277,6 +295,13 @@ namespace Testing.BattleTests
             outCombatObject.Should().Be(expectedObject);
             foundInGroup.Should().Be(BattleManager.BattleSide.Defense);
 
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void TestMeterValues(BattleOrder battleOrder)
+        {
+         //   battleOrder.Meter = -0.5;
+           // battleOrder.NextObject(0,
         }
 
         private static ICombatObject CreateCombatObject(uint round, int upkeep)
@@ -297,7 +322,7 @@ namespace Testing.BattleTests
         private static ICombatList CreateList(int upkeepNotParticipated, params ICombatGroup[] combatGroups)
         {
             var combatList = Substitute.For<ICombatList>();
-            combatList.GetEnumerator().Returns(combatGroups.ToList().GetEnumerator());
+            combatList.GetEnumerator().Returns(args => combatGroups.ToList().GetEnumerator());
             combatList.UpkeepNotParticipated(0).ReturnsForAnyArgs(upkeepNotParticipated);
             return combatList;
         }

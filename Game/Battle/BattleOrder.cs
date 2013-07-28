@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Battle.CombatGroups;
@@ -16,20 +17,36 @@ namespace Game.Battle
     /// </summary>
     public class BattleOrder : IBattleOrder
     {
+        public decimal Meter { get; set; }
+
+        public BattleOrder(int meter = 0)
+        {
+            Meter = meter;
+        }
+
         /// <summary>
         ///     Returns the next object from the primary group that should attack.
         ///     If primary group has no one able to attack, it will look into the secondary group instead.
         /// </summary>
         /// <returns>True if got an object from the current round. False if had to look into next round.</returns>
         public bool NextObject(uint round,
-                               uint turn,
                                ICombatList attacker,
                                ICombatList defender,
                                out ICombatObject outCombatObject,
                                out ICombatGroup outCombatGroup,
                                out BattleManager.BattleSide foundInGroup)
         {
-            var sideAttack = NextSideAttacking(turn, attacker.UpkeepNotParticipated(round), defender.UpkeepNotParticipated(round));
+            BattleManager.BattleSide sideAttack;
+            if (Meter == 0)
+            {
+                sideAttack = attacker.UpkeepNotParticipated(round) < defender.UpkeepNotParticipated(round)
+                                     ? BattleManager.BattleSide.Attack
+                                     : BattleManager.BattleSide.Defense;
+            }
+            else
+            {
+                sideAttack = Meter > 0 ? BattleManager.BattleSide.Defense : BattleManager.BattleSide.Attack;
+            }
             var offensiveCombatList = sideAttack == BattleManager.BattleSide.Attack ? attacker : defender;
             var defensiveCombatList = sideAttack == BattleManager.BattleSide.Attack ? defender : attacker;
             var offensiveSide = sideAttack;
@@ -45,6 +62,7 @@ namespace Game.Battle
                 foundInGroup = offensiveSide;
                 outCombatGroup = outCombatGroupAttacker;
                 outCombatObject = outCombatObjectAttacker;
+                UpdateMeter(round, foundInGroup, offensiveCombatList, outCombatObject);
                 return true;
             }
 
@@ -56,6 +74,7 @@ namespace Game.Battle
                 foundInGroup = defensiveSide;
                 outCombatGroup = outCombatGroupDefender;
                 outCombatObject = outCombatObjectDefender;
+                UpdateMeter(round, foundInGroup, defensiveCombatList, outCombatObject);
                 return true;
             }
 
@@ -66,12 +85,14 @@ namespace Game.Battle
                 foundInGroup = offensiveSide;
                 outCombatGroup = outCombatGroupAttacker;
                 outCombatObject = outCombatObjectAttacker;
+                UpdateMeter(round + 1, foundInGroup, foundInGroup == BattleManager.BattleSide.Attack ? attacker : defender, outCombatObject);
             }
             else if (outCombatObjectDefender != null)
             {
                 foundInGroup = defensiveSide;
                 outCombatGroup = outCombatGroupDefender;
                 outCombatObject = outCombatObjectDefender;
+                UpdateMeter(round + 1, foundInGroup, foundInGroup == BattleManager.BattleSide.Attack ? attacker : defender, outCombatObject);
             }
                     // If this happens then it means there is no one in the battle or the battle is prolly over
             else
@@ -127,24 +148,25 @@ namespace Game.Battle
             return false;
         }
 
-        private BattleManager.BattleSide NextSideAttacking(uint turn, int attackerUpkeep, int defenderUpkeep)
+        private void UpdateMeter(uint round, BattleManager.BattleSide foundInGroup, ICombatList combatList, ICombatObject combatObject)
         {
-            /* I have to use the inverse ratio because i wanted the extra hits happening at the end of the cycle
-             * 50(atk) vs 200(def), ratio is 0.25, the 1 is the base %.
-             * Assume that turn is 0 based, we need to add 1 for the logic to work
-             * if (turn +1) % (ratio+1)< 1
-             *      then the side with higher count attacks
-             * turn 0 = 1.00 attacker
-             * turn 1 = 0.75 defender
-             * turn 2 = 0.50 defender
-             * turn 3 = 0.25 defender
-             * turn 4 = 0.00 defender
-             * turn 5 = 1.00 attacker
+            /*
+             * when meter is 0 or higher defender hits
+             * when a defender hits, the meter go down by it's %
+             * when an attacker hits, the meter go up by it's %
              */
-            var sideWithMoreUnits = attackerUpkeep >= defenderUpkeep ? BattleManager.BattleSide.Attack : BattleManager.BattleSide.Defense;
-            var sideWithLessUnits = attackerUpkeep >= defenderUpkeep ? BattleManager.BattleSide.Defense : BattleManager.BattleSide.Attack;
-            double ratio = (attackerUpkeep > defenderUpkeep ? (double)defenderUpkeep / attackerUpkeep : (double)attackerUpkeep / defenderUpkeep);
-            return (turn + 1) % (ratio + 1) < 1 ? sideWithMoreUnits : sideWithLessUnits;
+            var totalUpkeep = combatList.UpkeepNotParticipated(round);
+            if (totalUpkeep <= 0)
+                throw new Exception("How can this happen!");
+
+            if (foundInGroup == BattleManager.BattleSide.Defense)
+            {
+                Meter -= (decimal)combatObject.Upkeep / totalUpkeep;
+            }
+            else
+            {
+                Meter += (decimal)combatObject.Upkeep / totalUpkeep;
+            }
         }
     }
 }

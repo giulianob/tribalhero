@@ -11,11 +11,12 @@ namespace Game.Battle
         /// </summary>
         /// <returns>True if got an object from the current round. False if had to look into next round.</returns>
         bool NextObject(uint round,
-                                        uint turn,
-                                        ICombatList attacker,
-                                        ICombatList defender,
-                                        out ICombatObject outCombatObject,
-                                        out ICombatGroup outCombatGroup,
-                                        out BattleManager.BattleSide foundInGroup);
+                        ICombatList attacker,
+                        ICombatList defender,
+                        out ICombatObject outCombatObject,
+                        out ICombatGroup outCombatGroup,
+                        out BattleManager.BattleSide foundInGroup);
+
+        decimal Meter { get; set; }
     }
 }

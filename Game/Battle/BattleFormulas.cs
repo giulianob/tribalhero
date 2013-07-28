@@ -9,6 +9,8 @@ using Game.Data.Stats;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
 using Game.Setup;
+using Game.Util;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -37,7 +39,7 @@ namespace Game.Battle
         {
             double delta = Math.Max(0, (double)attackersUpkeep / defendersUpkeep);
             double effectiveness = attackersUpkeep > 200 ? 1 : (double)attackersUpkeep / 200;
-
+            ILogger logger = LoggerFactory.Current.GetLogger("Game.Battle.BattleViewer");
             int missChance;
             if (delta < 1)
             {
@@ -82,7 +84,7 @@ namespace Game.Battle
             {
                 return dmg;
             }
-
+            logger.Info("Attacker[{0}] Missed Defender[{1}] original dmg[{2}]", attackersUpkeep, defendersUpkeep, dmg);
             return dmg / 2m;
         }
 

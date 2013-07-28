@@ -33,8 +33,6 @@ namespace Game.Battle
 
         private readonly BattleFormulas battleFormulas;
 
-        private readonly IBattleOrder battleOrder;
-
         private readonly object battleLock = new object();
 
         private readonly IDbManager dbManager;
@@ -55,7 +53,7 @@ namespace Game.Battle
                              IBattleReport battleReport,
                              ICombatListFactory combatListFactory,
                              BattleFormulas battleFormulas,
-                             IBattleOrder battleOrder)
+                             IBattleOrder battlerOrder)
         {
 
             groupIdGen = new LargeIdGenerator(uint.MaxValue);
@@ -73,7 +71,7 @@ namespace Game.Battle
             this.rewardStrategy = rewardStrategy;
             this.dbManager = dbManager;
             this.battleFormulas = battleFormulas;
-            this.battleOrder = battleOrder;
+            BattleOrder = battlerOrder;
         }
 
         public uint BattleId { get; private set; }
@@ -113,6 +111,8 @@ namespace Game.Battle
                 return locks;
             }
         }
+
+        public IBattleOrder BattleOrder { get; private set; }
 
         public ICombatObject GetCombatObject(uint id)
         {
@@ -415,8 +415,7 @@ namespace Game.Battle
                     #region Find Attacker
 
                     var newRound =
-                            !battleOrder.NextObject(Round,
-                                                    Turn,
+                            !BattleOrder.NextObject(Round,
                                                     Attackers,
                                                     Defenders,
                                                     out attackerObject,

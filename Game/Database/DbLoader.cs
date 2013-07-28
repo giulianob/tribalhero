@@ -1192,6 +1192,7 @@ namespace Game.Database
                     battleManager.BattleStarted = (bool)reader["battle_started"];
                     battleManager.Round = (uint)reader["round"];
                     battleManager.Turn = (uint)reader["turn"];
+                    battleManager.BattleOrder.Meter = (decimal)reader["battle_order_meter"];
 
                     battleManager.BattleReport.ReportStarted = (bool)reader["report_started"];
                     battleManager.BattleReport.ReportId = (uint)reader["report_id"];

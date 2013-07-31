@@ -180,7 +180,7 @@ namespace Game.Logic.Actions
                 }
 
                 // radius requirements
-                if (tileLocator.TileDistance(city.X, city.Y, position.X, position.Y) >= city.Radius)
+                if (tileLocator.TileDistance(city.X, city.Y, 1, position.X, position.Y, 1) >= city.Radius)
                 {
                     world.Regions.UnlockRegions(lockedRegions);
                     return Error.NotWithinWalls;

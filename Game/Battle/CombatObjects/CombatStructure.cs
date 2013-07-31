@@ -21,6 +21,8 @@ namespace Game.Battle.CombatObjects
 
         private readonly IActionFactory actionFactory;
 
+        private readonly ITileLocator tileLocator;
+
         private readonly Formula formula;
 
         private readonly byte lvl;
@@ -42,12 +44,14 @@ namespace Game.Battle.CombatObjects
                                BattleStats stats,
                                Formula formula,
                                IActionFactory actionFactory,
-                               IBattleFormulas battleFormulas)
+                               IBattleFormulas battleFormulas,
+                               ITileLocator tileLocator)
                 : base(id, battleId, battleFormulas)
         {
             this.stats = stats;
             this.formula = formula;
             this.actionFactory = actionFactory;
+            this.tileLocator = tileLocator;
             Structure = structure;
             type = structure.Type;
             lvl = structure.Lvl;
@@ -63,12 +67,14 @@ namespace Game.Battle.CombatObjects
                                byte lvl,
                                Formula formula,
                                IActionFactory actionFactory,
-                               IBattleFormulas battleFormulas)
+                               IBattleFormulas battleFormulas,
+                               ITileLocator tileLocator)
                 : base(id, battleId, battleFormulas)
         {
             Structure = structure;
             this.formula = formula;
             this.actionFactory = actionFactory;
+            this.tileLocator = tileLocator;
             this.stats = stats;
             this.hp = hp;
             this.type = type;
@@ -218,23 +224,27 @@ namespace Game.Battle.CombatObjects
             get
             {
                 return new[]
-                {
-                        new DbColumn("last_round", LastRound, DbType.UInt32),
-                        new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
-                        new DbColumn("damage_dealt", DmgDealt, DbType.Decimal),
-                        new DbColumn("damage_received", DmgRecv, DbType.Decimal),
-                        new DbColumn("group_id", GroupId, DbType.UInt32),
-                        new DbColumn("structure_city_id", Structure.City.Id, DbType.UInt32),
-                        new DbColumn("structure_id", Structure.ObjectId, DbType.UInt32),
-                        new DbColumn("hp", hp, DbType.Decimal), new DbColumn("type", type, DbType.UInt16),
-                        new DbColumn("level", lvl, DbType.Byte), new DbColumn("max_hp", stats.MaxHp, DbType.Decimal),
-                        new DbColumn("attack", stats.Atk, DbType.Decimal),
-                        new DbColumn("splash", stats.Splash, DbType.Byte), new DbColumn("range", stats.Rng, DbType.Byte)
-                        , new DbColumn("stealth", stats.Stl, DbType.Byte), new DbColumn("speed", stats.Spd, DbType.Byte)
-                        , new DbColumn("hits_dealt", HitDealt, DbType.UInt16),
-                        new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
-                        new DbColumn("hits_received", HitRecv, DbType.UInt16)
-                };
+                       {
+                               new DbColumn("last_round", LastRound, DbType.UInt32),
+                               new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
+                               new DbColumn("damage_dealt", DmgDealt, DbType.Decimal),
+                               new DbColumn("damage_received", DmgRecv, DbType.Decimal),
+                               new DbColumn("group_id", GroupId, DbType.UInt32),
+                               new DbColumn("structure_city_id", Structure.City.Id, DbType.UInt32),
+                               new DbColumn("structure_id", Structure.ObjectId, DbType.UInt32),
+                               new DbColumn("hp", hp, DbType.Decimal),
+                               new DbColumn("type", type, DbType.UInt16),
+                               new DbColumn("level", lvl, DbType.Byte),
+                               new DbColumn("max_hp", stats.MaxHp, DbType.Decimal),
+                               new DbColumn("attack", stats.Atk, DbType.Decimal),
+                               new DbColumn("splash", stats.Splash, DbType.Byte),
+                               new DbColumn("range", stats.Rng, DbType.Byte),
+                               new DbColumn("stealth", stats.Stl, DbType.Byte),
+                               new DbColumn("speed", stats.Spd, DbType.Byte),
+                               new DbColumn("hits_dealt", HitDealt, DbType.UInt16),
+                               new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
+                               new DbColumn("hits_received", HitRecv, DbType.UInt16)
+                       };
             }
         }
 
@@ -242,10 +252,12 @@ namespace Game.Battle.CombatObjects
         {
             if (obj.ClassType == BattleClass.Unit)
             {
-                return TileLocator.Current.IsOverlapping(obj.Location(),
-                                                           obj.AttackRadius(),
-                                                           new Position(Structure.X, Structure.Y),
-                                                           Structure.Stats.Base.Radius);
+                return tileLocator.IsOverlapping(obj.Location(),
+                                                 obj.AttackRadius(),
+                                                 obj.Size,
+                                                 Structure.PrimaryPosition,
+                                                 Structure.Stats.Base.Radius,
+                                                 Structure.Size);
             }
 
             throw new Exception(string.Format("Why is a structure trying to kill a unit of type {0}?",

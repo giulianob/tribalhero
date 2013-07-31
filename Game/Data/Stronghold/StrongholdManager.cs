@@ -87,9 +87,10 @@ namespace Game.Data.Stronghold
                 return;
             }
 
-            ICity city = sender as ICity;
+            var city = (ICity)sender;
+
             foreach (var stronghold in strongholds.Values.Where(s => s.StrongholdState == StrongholdState.Inactive 
-                && tileLocator.TileDistance(s.X, s.Y, city.X, city.Y) < Config.stronghold_radius_base + Config.stronghold_radius_per_level * s.Lvl))
+                && tileLocator.TileDistance(s.X, s.Y, s.Size, city.X, city.Y, 1) < Config.stronghold_radius_base + Config.stronghold_radius_per_level * s.Lvl))
             {
                 stronghold.BeginUpdate();
                 ++stronghold.NearbyCitiesCount;

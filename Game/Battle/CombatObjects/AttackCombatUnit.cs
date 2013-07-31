@@ -250,12 +250,12 @@ namespace Game.Battle.CombatObjects
                 case BattleClass.Structure:
                     return tileLocator.IsOverlapping(Location(),
                                                      AttackRadius(),
+                                                     Size,
                                                      obj.Location(),
-                                                     obj.AttackRadius());
+                                                     obj.AttackRadius(),
+                                                     obj.Size);
                 default:
-                    throw new Exception(string.Format(
-                                                      "Why is an attack combat unit trying to kill a unit of type {0}?",
-                                                      obj.GetType().FullName));
+                    throw new Exception(string.Format("Why is an attack combat unit trying to kill a unit of type {0}?", obj.GetType().FullName));
             }
         }
 

@@ -21,7 +21,7 @@ namespace Game.Logic.Actions
 
         private readonly IStructureCsvFactory structureCsvFactory;
 
-        private readonly World world;
+        private readonly IWorld world;
 
         private readonly ILocker locker;
 
@@ -33,7 +33,7 @@ namespace Game.Logic.Actions
                                               uint structureId,
                                               IObjectTypeFactory objectTypeFactory,
                                               IStructureCsvFactory structureCsvFactory,
-                                              World world,
+                                              IWorld world,
                                               ILocker locker,
                                               Formula formula)
         {

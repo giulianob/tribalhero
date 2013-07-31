@@ -641,7 +641,7 @@ namespace Game.Data.Tribe
             }
 
             // Player creating the assignment cannot be late (Give a few minutes lead)
-            int distance = tileLocator.TileDistance(stub.City.X, stub.City.Y, x, y);
+            int distance = tileLocator.TileDistance(stub.City.X, stub.City.Y, 1, x, y, 1);
             DateTime reachTime = DateTime.UtcNow.AddSeconds(formula.MoveTimeTotal(stub, distance, true));
 
             if (reachTime.Subtract(new TimeSpan(0, 1, 0)) > time)

@@ -1329,16 +1329,17 @@ namespace Game.Database
                                                                   (decimal)listReader["hp"],
                                                                   (ushort)listReader["type"],
                                                                   (byte)listReader["level"],
-                                                                      Kernel.Get<Formula>(),
-                                                                      Kernel.Get<IActionFactory>(),
-                                                                      Kernel.Get<BattleFormulas>())
+                                                                  Kernel.Get<Formula>(),
+                                                                  Kernel.Get<IActionFactory>(),
+                                                                  Kernel.Get<BattleFormulas>(),
+                                                                  Kernel.Get<ITileLocator>())
                         {
-                                GroupId = (uint)listReader["group_id"],
-                                DmgDealt = (decimal)listReader["damage_dealt"],
-                                DmgRecv = (decimal)listReader["damage_received"],
-                                LastRound = (uint)listReader["last_round"],
-                                RoundsParticipated = (int)listReader["rounds_participated"],
-                                DbPersisted = true
+                            GroupId = (uint)listReader["group_id"],
+                            DmgDealt = (decimal)listReader["damage_dealt"],
+                            DmgRecv = (decimal)listReader["damage_received"],
+                            LastRound = (uint)listReader["last_round"],
+                            RoundsParticipated = (int)listReader["rounds_participated"],
+                            DbPersisted = true
                         };
 
                         battleManager.GetCombatGroup((uint)listReader["group_id"]).Add(combatStructure, false);

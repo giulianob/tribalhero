@@ -28,7 +28,7 @@ namespace Game.Data.BarbarianTribe
 
         private bool TooCloseToCities(uint x, uint y, int minDistance)
         {
-            return mapFactory.Locations().Any(loc => tileLocator.TileDistance(x, y, loc.X, loc.Y) <= minDistance);
+            return mapFactory.Locations().Any(loc => tileLocator.TileDistance(x, y, 1, loc.X, loc.Y, 1) <= minDistance);
         }
 
         public bool Next(int count, out byte level, out uint x, out uint y)

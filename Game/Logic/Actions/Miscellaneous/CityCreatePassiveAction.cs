@@ -175,18 +175,20 @@ namespace Game.Logic.Actions
                 return Error.ResourceNotEnough;
             }
 
-            world.Regions.LockRegion(x, y);
+            var mainBuildingType = (ushort)objectTypeFactory.GetTypes("MainBuilding").First();
+
+            var lockedRegions = world.Regions.LockRegions(x, y, formula.GetInitialCityRadius());
 
             if (!objectTypeFactory.IsTileType("CityStartTile", world.Regions.GetTileType(x, y)))
             {
-                world.Regions.UnlockRegion(x, y);
+                world.Regions.UnlockRegions(lockedRegions);
                 return Error.TileMismatch;
             }
 
             // check if tile is occupied
             if (world.Regions.GetObjectsInTile(x, y).Any(obj => obj is IStructure))
             {
-                world.Regions.UnlockRegion(x, y);
+                world.Regions.UnlockRegions(lockedRegions);
                 return Error.StructureExists;
             }
 
@@ -196,7 +198,7 @@ namespace Game.Logic.Actions
                 // Verify city name is unique
                 if (world.CityNameTaken(cityName))
                 {
-                    world.Regions.UnlockRegion(x, y);
+                    world.Regions.UnlockRegions(lockedRegions);
                     return Error.CityNameTaken;
                 }
 
@@ -209,7 +211,7 @@ namespace Game.Logic.Actions
                                    formula.GetInitialAp());
 
                 // Creating Mainbuilding
-                structure = newCity.CreateStructure(2000, 0, x, y);                
+                structure = newCity.CreateStructure(mainBuildingType, 0, x, y);                
                 
                 structure.BeginUpdate();
                 city.Owner.Add(newCity);
@@ -247,7 +249,7 @@ namespace Game.Logic.Actions
             EndTime = DateTime.UtcNow.AddSeconds(CalculateTime(formula.BuildTime(baseBuildTime, city, city.Technologies)));
             BeginTime = DateTime.UtcNow;
 
-            world.Regions.UnlockRegion(x, y);
+            world.Regions.UnlockRegions(lockedRegions);
 
             return Error.Ok;
         }

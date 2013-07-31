@@ -70,15 +70,13 @@ namespace Game.Comm
             }
 
             var list = new List<Position>(mapFactory.Locations().Take(index));
-            foreach(var stronghold in strongholdManager.Where(s=>s.StrongholdState == StrongholdState.Inactive))
+            foreach (var stronghold in strongholdManager.Where(s => s.StrongholdState == StrongholdState.Inactive))
             {
-                using(locker.Lock(stronghold))
+                using (locker.Lock(stronghold))
                 {
                     stronghold.BeginUpdate();
-                    int count = list.Count(pt => tileLocator.TileDistance(stronghold.X, stronghold.Y, pt.X, pt.Y) <= Config.stronghold_radius_base + Config.stronghold_radius_per_level * stronghold.Lvl);
-                    stronghold.NearbyCitiesCount =
-                            (ushort)
-                            count;
+                    int count = list.Count(pt => tileLocator.TileDistance(stronghold.X, stronghold.Y, 3, pt.X, pt.Y, 1) <= Config.stronghold_radius_base + Config.stronghold_radius_per_level * stronghold.Lvl);
+                    stronghold.NearbyCitiesCount = (ushort)count;
                     stronghold.EndUpdate();
                 }
             }

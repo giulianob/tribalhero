@@ -18,10 +18,6 @@ package src.UI.Components
     import src.UI.LookAndFeel.GameLookAndFeel;
     import src.UI.Tooltips.Tooltip;
 
-    /**
-	 * ...
-	 * @author Anthony Lam
-	 */
 	public class MiniMapPointer extends Sprite
 	{
 		private var cityMinimapPoint:Point;
@@ -33,26 +29,24 @@ package src.UI.Components
 		private var pointerName:String;
 		
 		private var tooltip:Tooltip;
-		private var tooltipCityLabel:JLabel;
 		private var tooltipDistanceLabel:JLabel;
 		
-		public function MiniMapPointer(x:int, y:int, name:String)
-		{
-			cityMinimapPoint = TileLocator.getMiniMapScreenCoord(x, y);
-			pointerName = name;
-			pointer = new ICON_MINIMAP_ARROW_BLUE();
-			addChild(pointer);
-			
-			tooltip = new Tooltip();
-			tooltipCityLabel = new JLabel(name, null, AsWingConstants.LEFT);
-			GameLookAndFeel.changeClass(tooltipCityLabel, "header");
-			tooltipDistanceLabel = new JLabel("", null, AsWingConstants.LEFT);
-			GameLookAndFeel.changeClass(tooltipDistanceLabel, "Tooltip.italicsText");
-			tooltip.getUI().setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL));
-			tooltip.getUI().appendAll(tooltipCityLabel, tooltipDistanceLabel);
-			addEventListener(MouseEvent.MOUSE_MOVE, onRollOver);
-			addEventListener(MouseEvent.ROLL_OUT, onRollOut);
-		}
+		public function MiniMapPointer(x:int, y:int, name:String) {
+            cityMinimapPoint = TileLocator.getMiniMapScreenCoord(x, y);
+            pointerName = name;
+            pointer = new ICON_MINIMAP_ARROW_BLUE();
+            addChild(pointer);
+
+            tooltip = new Tooltip();
+            var tooltipCityLabel: JLabel = new JLabel(name, null, AsWingConstants.LEFT);
+            GameLookAndFeel.changeClass(tooltipCityLabel, "header");
+            tooltipDistanceLabel = new JLabel("", null, AsWingConstants.LEFT);
+            GameLookAndFeel.changeClass(tooltipDistanceLabel, "Tooltip.italicsText");
+            tooltip.getUI().setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL));
+            tooltip.getUI().appendAll(tooltipCityLabel, tooltipDistanceLabel);
+            addEventListener(MouseEvent.MOUSE_MOVE, onRollOver);
+            addEventListener(MouseEvent.ROLL_OUT, onRollOut);
+        }
 		
 		public function getPointerName():String
 		{
@@ -70,7 +64,10 @@ package src.UI.Components
 		
 		private function onRollOver(e:Event):void
 		{
-			var distance:int = TileLocator.distance(cityMinimapPoint.x / Constants.miniMapTileW, cityMinimapPoint.y, (center.x + x - lastWidth / 2) / Constants.miniMapTileW, (center.y + y - lastHeight / 2));
+			var distance:int = TileLocator.distance(
+                    cityMinimapPoint.x / Constants.miniMapTileW, cityMinimapPoint.y, 1,
+                    (center.x + x - lastWidth / 2) / Constants.miniMapTileW, (center.y + y - lastHeight / 2), 1);
+
 			tooltipDistanceLabel.setText(distance + " tiles away");
 			tooltip.show(pointer);
 		}

@@ -11,6 +11,7 @@
 
     import src.*;
     import src.Map.City;
+    import src.Map.TileLocator;
     import src.Objects.Achievement;
     import src.Objects.Effects.Formula;
     import src.Objects.Tribe;
@@ -139,7 +140,7 @@
 				var distanceMsg: String = "";
 				
 				for each (var myCity: City in Global.map.cities) {
-					var distance: int = myCity.MainBuilding.distance(city.x, city.y);
+					var distance: int = TileLocator.distance(myCity.MainBuilding.x, myCity.MainBuilding.y, 1, city.x, city.y, 1);
 					var timeAwayInSeconds: int = Formula.moveTimeTotal(myCity, 12, distance, true);
 		
 					distanceMsg += StringHelper.localize("PLAYER_PROFILE_DIALOG_CITY_DISTANCE", myCity.name, DateUtil.niceTime(timeAwayInSeconds)) + "\n";

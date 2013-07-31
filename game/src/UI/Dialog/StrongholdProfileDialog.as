@@ -1,7 +1,6 @@
 ﻿package src.UI.Dialog 
 {
     import flash.events.*;
-    import flash.geom.*;
 
     import org.aswing.*;
     import org.aswing.border.*;
@@ -24,18 +23,15 @@
     public class StrongholdProfileDialog extends GameJPanel
 	{
 		private var profileData: * ;
-		
+
 		private var pnlInfoContainer: Container;
 		private var pnlButtonContainer: Container;
 		private var pnlLeftContainer: Container;
 
 		private var pnlTroopPanel: JPanel;
 		private var pnlReportPanel: Container;
-		private var pnlRightContainer: Container;
-		
-		private var lblStrongholdName: JLabel;
-		
-		private var reports: LocalReportList;
+
+        private var reports: LocalReportList;
 		private var nameLabel: JLabel;
 		
 		private var btnGoTo: JLabelButton;
@@ -51,13 +47,13 @@
 			var self: StrongholdProfileDialog = this;
 			btnGoTo.addActionListener(function(e: Event):void {
 				Global.gameContainer.closeAllFrames(true);
-				var pt:Point = TileLocator.getScreenCoord(self.profileData.strongholdX, self.profileData.strongholdY);
-				Global.map.camera.ScrollToCenter(pt.x, pt.y);
+				var pt:ScreenPosition = TileLocator.getScreenCoord(new Position(self.profileData.strongholdX, self.profileData.strongholdY));
+				Global.map.camera.ScrollToCenter(pt);
 			});
 			
 			btnSendReinforcement.addActionListener(function(e:Event): void {
-				var point: Point = TileLocator.getScreenCoord(self.profileData.strongholdX, self.profileData.strongholdY);
-				Global.gameContainer.camera.ScrollToCenter(point.x, point.y);
+				var point: ScreenPosition = TileLocator.getScreenCoord(new Position(self.profileData.strongholdX, self.profileData.strongholdY));
+				Global.gameContainer.camera.ScrollToCenter(point);
 				var process : ReinforcementSendProcess = new ReinforcementSendProcess(Global.gameContainer.selectedCity, new Location(Location.STRONGHOLD, self.profileData.strongholdId));
 				process.execute();
 			});			

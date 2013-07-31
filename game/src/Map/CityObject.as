@@ -9,15 +9,14 @@
 
 		public var type: int;
 		public var level: int;
-		public var x: int;
-		public var y: int;
 		public var objectId: int;
 		public var city: City;
 		public var labor: int;
-
+        public var size: int;
+        public var primaryPosition: Position = new Position();
 		public var techManager: TechnologyManager;
 
-		public function CityObject(city: City, objectId: int, type: int, level: int, state: GameObjectState, x: int, y: int, labor: int) {
+		public function CityObject(city: City, objectId: int, type: int, level: int, state: GameObjectState, x: int, y: int, size: int, labor: int) {
 			this.state = state;
 			this.city = city;
 			this.objectId = objectId;
@@ -26,6 +25,8 @@
 			this.x = x;
 			this.y = y;
 			this.labor = labor;
+            this.size = size;
+
 			techManager = new TechnologyManager(EffectPrototype.LOCATION_OBJECT, city.techManager);
 		}
 
@@ -43,17 +44,7 @@
 			}
 		}
 
-        public function distance(x_1: int, y_1: int): int
-		{
-			return TileLocator.distance(x, y, x_1, y_1);
-		}
-
-		public function radiusDistance(x_1: int, y_1: int): int
-		{
-			return TileLocator.radiusDistance(x, y, x_1, y_1);
-		}
-		
-		public function getStructurePrototype(): StructurePrototype 
+		public function getStructurePrototype(): StructurePrototype
 		{
 			return StructureFactory.getPrototype(type, level);
 		}
@@ -62,6 +53,26 @@
 		{
 			return a.objectId - value;
 		}
+
+        public function get x():int
+        {
+            return primaryPosition.x;
+        }
+
+        public function set x(value:int):void
+        {
+            primaryPosition.x = value;
+        }
+
+        public function get y():int
+        {
+            return primaryPosition.y;
+        }
+
+        public function set y(value:int):void
+        {
+            primaryPosition.y = value;
+        }
 	}
 
 }

@@ -148,9 +148,11 @@ package src.Objects {
 				ignoreClick = true;
 			}
 
-			var screenPos: ScreenPosition = TileLocator.getActualCoord(e.stageX * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.x, e.stageY * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.y);
+            var screenPos: ScreenPosition = TileLocator.getActualCoord(
+                    e.stageX * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.currentPosition.x,
+                    e.stageY * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.currentPosition.y);
 
-			if (screenPos.x < 0 || screenPos.y < 0) return;
+            if (screenPos.x < 0 || screenPos.y < 0) return;
 
 			var tilePos: Position = screenPos.toPosition();
 
@@ -173,7 +175,7 @@ package src.Objects {
 				if (obj is GameObject) 
 				{
 					// If mouse is over this object's tile then it automatically gets chosen as the best object
-					var objMapPos: Point = TileLocator.getMapCoord(obj.objX, obj.objY);
+					var objMapPos: Position = obj.primaryPosition.toPosition();
 					if (objMapPos.x == tilePos.x && objMapPos.y == tilePos.y)
 					{					
 						highestObj = obj;
@@ -212,7 +214,7 @@ package src.Objects {
 			resetHighlightedObject();
 			resetDimmedObjects();
 			
-			var highestObjMapPos: Point = TileLocator.getMapCoord(highestObj.objX, highestObj.objY);
+			var highestObjMapPos: Position = highestObj.primaryPosition.toPosition();
 			
 			// Apply dimming to objects that might be over the one currently moused over
 			for (i = 0; i < objSpace.numChildren; i++)
@@ -225,8 +227,8 @@ package src.Objects {
 				
 				if (Math.abs(highestObj.objX - obj.objX) < Constants.tileW)
 				{
-					objMapPos = TileLocator.getMapCoord(obj.objX, obj.objY);
-					if (TileLocator.distance(highestObjMapPos.x, highestObjMapPos.y, objMapPos.x, objMapPos.y) <= 1)
+					objMapPos = obj.primaryPosition.toPosition();
+					if (TileLocator.distance(highestObjMapPos.x, highestObjMapPos.y, highestObj.size, objMapPos.x, objMapPos.y, obj.size) <= 1)
 					{
 						dimmedObjects.push(obj);
 						TweenMax.to(obj, 1, { alpha: 0.25 } );
@@ -440,8 +442,8 @@ package src.Objects {
 
 		private function moveLayerWithCamera(camera: Camera, layer: Sprite):void
 		{
-			layer.x = -camera.x;
-			layer.y = -camera.y;
+			layer.x = -camera.currentPosition.x;
+			layer.y = -camera.currentPosition.y;
 		}
 
 		private function calculateDepth(y: Number, layer: Sprite): int

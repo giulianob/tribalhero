@@ -6,11 +6,11 @@
     import flash.display.MovieClip;
     import flash.events.Event;
     import flash.geom.ColorTransform;
-    import flash.geom.Point;
 
     import src.Assets;
     import src.Constants;
     import src.Map.Position;
+    import src.Map.ScreenPosition;
     import src.Map.TileLocator;
     import src.Objects.SimpleObject;
 
@@ -62,7 +62,7 @@
                 tile.smoothing = true;
 
                 var tileRadius: int = Math.ceil(size / 2.0);
-                var point: Point = TileLocator.getScreenCoord(position.x, position.y);
+                var point: ScreenPosition = position.toScreenPosition();
                 tile.x = point.x - tileRadius * Constants.tileW;
                 tile.y = point.y - tileRadius * Constants.tileH;
 

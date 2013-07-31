@@ -2,7 +2,6 @@
 package src.UI.Sidebars.ObjectInfo {
 
     import flash.events.*;
-    import flash.geom.Point;
     import flash.utils.Timer;
 
     import org.aswing.*;
@@ -388,7 +387,7 @@ package src.UI.Sidebars.ObjectInfo {
 
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(gameObject.type, gameObject.level);
 			if (structPrototype) {
-				var pt: Point = TileLocator.getMapCoord(gameObject.objX, gameObject.objY);
+				var pt: Position = gameObject.primaryPosition.toPosition();
 				frame.getTitleBar().setText(structPrototype.getName() + " (" + pt.x + "," + pt.y + ")");
 			}
 

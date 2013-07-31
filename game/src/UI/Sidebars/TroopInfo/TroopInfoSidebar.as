@@ -1,6 +1,5 @@
 ﻿package src.UI.Sidebars.TroopInfo {
     import flash.events.*;
-    import flash.geom.Point;
     import flash.utils.Timer;
 
     import org.aswing.*;
@@ -64,7 +63,7 @@
 				addStatRow("Radius", troopObj.attackRadius.toString());
 				addStatRow("Speed", troopObj.speed.toFixed(1));
 				
-				buttons.push(new ViewDestinationButton(troopObj, new Point(troopObj.targetX, troopObj.targetY)));
+				buttons.push(new ViewDestinationButton(troopObj, new Position(troopObj.targetX, troopObj.targetY)));
 			}
 
 			//Special Case Buttons
@@ -277,7 +276,7 @@
 		{
 			super.showSelf(owner, onClose, dispose);
 
-			var pt: Point = TileLocator.getMapCoord(troopObj.objX, troopObj.objY);
+			var pt: Position = troopObj.primaryPosition.toPosition();
 			frame.getTitleBar().setText("Troop (" + pt.x + "," + pt.y + ")");
 
 			frame.show();

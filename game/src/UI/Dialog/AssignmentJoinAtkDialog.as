@@ -22,7 +22,7 @@
 			title = "Join Assignment";
 			
 			this.assignment = assignment;
-			this.distance = TileLocator.distance(city.MainBuilding.x, city.MainBuilding.y, assignment.x, assignment.y);
+			this.distance = TileLocator.distance(city.MainBuilding.x, city.MainBuilding.y, 1, assignment.x, assignment.y, 1);
 		}
 
 		override protected function updateSpeedInfo(e:Event = null):void 

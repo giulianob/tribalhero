@@ -23,7 +23,7 @@ package src.Map
         public static function CanBuild(mapPos: Position, city: City, requiredRoad: Boolean): Boolean {
             return true;
 
-            var buildingOnRoad: Boolean = RoadPathFinder.isRoad(Global.map.regions.getTileAt(mapPos.x, mapPos.y));
+            var buildingOnRoad: Boolean = RoadPathFinder.isRoad(Global.map.regions.getTileAt(mapPos));
 
             if (!requiredRoad) {
                 // Don't allow structures that don't need roads to be built on top of roads
@@ -49,7 +49,7 @@ package src.Map
                 // Make sure all neighbors have a different path
                 for each (var position: Position in TileLocator.foreachTile(mapPos.x, mapPos.y, 1, false))
                 {
-                    if (TileLocator.radiusDistance(mapPos.x, mapPos.y, position.x, position.y) != 1) {
+                    if (TileLocator.radiusDistance(mapPos.x, mapPos.y, 1, position.x, position.y, 1) != 1) {
                         continue;
                     }
 
@@ -57,7 +57,7 @@ package src.Map
                         continue;
                     }
 
-                    if (RoadPathFinder.isRoadByMapPosition(position.x, position.y)) {
+                    if (RoadPathFinder.isRoadByMapPosition(position)) {
                         if (!RoadPathFinder.hasPath(new Position(position.x, position.y), new Position(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
                             return false;
                         }
@@ -67,8 +67,8 @@ package src.Map
 
             var hasRoad: Boolean = false;
 
-            for each (var position: Position in TileLocator.foreachTile(mapPos.x, mapPos.y, 1, false)) {
-                if (TileLocator.radiusDistance(mapPos.x, mapPos.y, position.x, position.y) != 1) {
+            for each (position in TileLocator.foreachTile(mapPos.x, mapPos.y, 1, false)) {
+                if (TileLocator.radiusDistance(mapPos.x, mapPos.y, 1, position.x, position.y, 1) != 1) {
                     continue;
                 }
 
@@ -77,7 +77,7 @@ package src.Map
                 var hasStructure: Boolean = structure != null;
 
                 // Make sure we have a road around this building
-                if (!hasRoad && !hasStructure && RoadPathFinder.isRoadByMapPosition(position.x, position.y)) {
+                if (!hasRoad && !hasStructure && RoadPathFinder.isRoadByMapPosition(position)) {
                     // If we are building on road, we need to check that all neighbor tiles have another connection to the main building
                     if (!buildingOnRoad || RoadPathFinder.hasPath(new Position(position.x, position.y), new Position(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
                         hasRoad = true;
@@ -88,8 +88,8 @@ package src.Map
             return hasRoad;
         }
 
-		public static function isRoadByMapPosition(x: int, y: int) : Boolean {
-			return isRoad(Global.map.regions.getTileAt(x, y));
+		public static function isRoadByMapPosition(position: Position) : Boolean {
+			return isRoad(Global.map.regions.getTileAt(position));
 		}
 
 		public static function isRoad(tileId: int) : Boolean {
@@ -132,9 +132,9 @@ package src.Map
 				for each (var location: Position in possibleNeighbors) {
 					if ((location.x != end.x || location.y != end.y)) {
 						if (hasPoint(visited, location)) continue;
-						if (!isRoadByMapPosition(location.x, location.y)) continue;
+						if (!isRoadByMapPosition(location)) continue;
 						if (city.hasStructureAt(location)) continue;
-						if (TileLocator.distance(location.x, location.y, city.MainBuilding.x, city.MainBuilding.y) > city.radius) continue;
+						if (TileLocator.distance(location.x, location.y, 1, city.MainBuilding.x, city.MainBuilding.y, 1) > city.radius) continue;
 					} else if (fromStructure && node.x == start.x && node.y == start.y) {
 						continue;
 					}
@@ -163,8 +163,8 @@ package src.Map
 
 			// Sort neighbors by distance. Helps out a bit.
 			nodes.sort(function (a:Point, b:Point):Number {
-				var aDist: Number = TileLocator.distance(a.x, a.y, end.x, end.y);
-				var bDist: Number = TileLocator.distance(b.x, b.y, end.x, end.y);
+				var aDist: Number = TileLocator.distance(a.x, a.y, 1, end.x, end.y, 1);
+				var bDist: Number = TileLocator.distance(b.x, b.y, 1, end.x, end.y, 1);
 
 				if(aDist > bDist) return 1;
 				if (aDist < bDist) return -1;

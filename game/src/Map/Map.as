@@ -158,11 +158,11 @@
 		}
 
 		public function parseRegions(force: Boolean = false):void {
-            if (Constants.debug >= 3) Util.log("On move: " + camera.x + "," + camera.y);
+            if (Constants.debug >= 3) Util.log("On move: " + camera.currentPosition.x + "," + camera.currentPosition.y);
 
             // Don't parse every single pixel we move
             var lastParseRegionLoc: Point = new Point();
-            if (!force && !Math.abs(lastParseRegionLoc.x - camera.x) > 10 && !Math.abs(lastParseRegionLoc.y - camera.y) > 10) return;
+            if (!force && !Math.abs(lastParseRegionLoc.x - camera.currentPosition.x) > 10 && !Math.abs(lastParseRegionLoc.y - camera.currentPosition.y) > 10) return;
 
             //calculate which regions we need to render
             var requiredRegions: Array = [];
@@ -171,11 +171,14 @@
             // Get list of required regions
             const offset: int = 200;
 
-            var screenRect: Rectangle = new Rectangle(camera.x - offset, camera.y - offset, Constants.screenW * camera.getZoomFactorOverOne() + offset * 2.0, Constants.screenH * camera.getZoomFactorOverOne() + offset * 2.0);
+            var screenRect: Rectangle = new Rectangle(
+                    camera.currentPosition.x - offset, camera.currentPosition.y - offset,
+                    Constants.screenW * camera.getZoomFactorOverOne() + offset * 2.0, Constants.screenH * camera.getZoomFactorOverOne() + offset * 2.0);
+
             for (var reqX: int = -1; reqX <= Math.ceil((Constants.screenW * camera.getZoomFactorOverOne()) / Constants.regionW); reqX++) {
                 for (var reqY: int = -1; reqY <= Math.ceil((Constants.screenH * camera.getZoomFactorOverOne()) / (Constants.regionH / 2)); reqY++) {
-                    var screenPos: ScreenPosition = new ScreenPosition(camera.x + (Constants.regionW * reqX),
-                            camera.y + (Constants.regionH / 2 * reqY));
+                    var screenPos: ScreenPosition = new ScreenPosition(camera.currentPosition.x + (Constants.regionW * reqX),
+                            camera.currentPosition.y + (Constants.regionH / 2 * reqY));
                     var requiredId: int = TileLocator.getRegionId(screenPos);
 
                     var regionRect: Rectangle = TileLocator.getRegionRect(requiredId);
@@ -413,8 +416,8 @@
                 
                 if (event.shiftKey) {
                     var screenMouse: Point = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
-                    var mapPixelPos: ScreenPosition = TileLocator.getActualCoord(camera.x + screenMouse.x, camera.y + screenMouse.y);
-                    var mapPos: Point = TileLocator.getMapCoord(mapPixelPos.x, mapPixelPos.y);
+                    var mapPixelPos: ScreenPosition = TileLocator.getActualCoord(camera.currentPosition.x + screenMouse.x, camera.currentPosition.y + screenMouse.y);
+                    var mapPos: Position = mapPixelPos.toPosition();
                     Global.gameContainer.setLabelCoords(mapPos);
                 }
                 
@@ -444,12 +447,15 @@
 		}
 
 		public function move(forceParse: Boolean = false) : void {
-			var pt: Point = TileLocator.getMapCoord(camera.x + (Constants.screenW * camera.getZoomFactorOverOne()) / 2, camera.y + (Constants.screenH * camera.getZoomFactorOverOne()) / 2);
+			var pt: Position = new ScreenPosition(
+                    camera.currentPosition.x + (Constants.screenW * camera.getZoomFactorOverOne()) / 2,
+                    camera.currentPosition.y + (Constants.screenH * camera.getZoomFactorOverOne()) / 2).toPosition();
+
 			Global.gameContainer.setLabelCoords(pt);
 
 			if (!disabledMapQueries) {
 				parseRegions(forceParse);
-				objContainer.moveWithCamera(camera.x, camera.y);
+				objContainer.moveWithCamera(camera.currentPosition.x, camera.currentPosition.y);
 			}
 
 			Global.gameContainer.miniMap.updatePointers(camera.miniMapCenter);

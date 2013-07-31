@@ -1,7 +1,6 @@
 ﻿package src.Comm.Commands
 {
     import flash.events.Event;
-    import flash.geom.Point;
 
     import src.Comm.*;
     import src.Global;
@@ -243,7 +242,7 @@
 				}
 			}
 			
-			return new CityObject(city, obj.id, obj.type, obj.lvl, obj.state, obj.x, obj.y, obj.labor);
+			return new CityObject(city, obj.id, obj.type, obj.lvl, obj.state, obj.x, obj.y, obj.size, obj.labor);
 		}
 		
 		public function setPlayerDescription(description:String):void
@@ -580,8 +579,8 @@
 		
 		public function onReceiveNotificationLocation(packet:Packet, custom:*):void
 		{
-			var pt:Point = TileLocator.getScreenCoord(packet.readUInt(), packet.readUInt());
-			Global.map.camera.ScrollToCenter(pt.x, pt.y);
+			var pt:ScreenPosition = TileLocator.getScreenCoord(new Position(packet.readUInt(), packet.readUInt()));
+			Global.map.camera.ScrollToCenter(pt);
 		}
 			
 		public function gotoCityLocationByName(cityName:String):void
@@ -607,8 +606,8 @@
 			if (MapComm.tryShowError(packet)) {
 				return;
 			}
-			var pt:Point = TileLocator.getScreenCoord(packet.readUInt(), packet.readUInt());
-			Global.map.camera.ScrollToCenter(pt.x, pt.y);
+			var pt:ScreenPosition = TileLocator.getScreenCoord(new Position(packet.readUInt(), packet.readUInt()));
+			Global.map.camera.ScrollToCenter(pt);
 			Global.gameContainer.closeAllFrames(true);
 		}
 		

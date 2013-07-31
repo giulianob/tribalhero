@@ -41,7 +41,7 @@ package src.UI.Cursors {
 
 			buildableArea = new GroundCallbackCircle(city.radius - 1, validateTileCallback);
 			buildableArea.alpha = 0.3;
-			var point: Point = TileLocator.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
+			var point: ScreenPosition = city.MainBuilding.primaryPosition.toScreenPosition();
 			buildableArea.objX = point.x; 
 			buildableArea.objY = point.y;
 			
@@ -116,7 +116,7 @@ package src.UI.Cursors {
 			if (event.buttonDown) return;
 			
 			var mousePos: Point = TileLocator.getPointWithZoomFactor(Math.max(0, stage.mouseX), Math.max(0, stage.mouseY));
-			var pos: ScreenPosition = TileLocator.getActualCoord(Global.gameContainer.camera.x + mousePos.x, Global.gameContainer.camera.y + mousePos.y);
+			var pos: ScreenPosition = TileLocator.getActualCoord(Global.gameContainer.camera.currentPosition.x + mousePos.x, Global.gameContainer.camera.currentPosition.y + mousePos.y);
 
 			if (!pos.equals(objPosition))
 			{
@@ -137,7 +137,7 @@ package src.UI.Cursors {
 
 		private function validateTile(screenPos: ScreenPosition) : Boolean {
 			var mapPosition: Position = screenPos.toPosition();
-			var tileType: int = Global.map.regions.getTileAt(mapPosition.x, mapPosition.y);
+			var tileType: int = Global.map.regions.getTileAt(mapPosition);
 
 			if (RoadPathFinder.isRoad(tileType)) return false;
 
@@ -149,7 +149,7 @@ package src.UI.Cursors {
 			for each (var position: Position in TileLocator.foreachRadius(mapPosition.x, mapPosition.y, 1, false))
 			{
 				if (city.MainBuilding.x == position.x && city.MainBuilding.y == position.y ||
-                        (RoadPathFinder.isRoadByMapPosition(position.x, position.y) &&
+                        (RoadPathFinder.isRoadByMapPosition(position) &&
                          !city.hasStructureAt(position)))
 				{
 					return true;
@@ -161,7 +161,7 @@ package src.UI.Cursors {
 
         private function validateTileCallback(x: int, y: int): * {
             // Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
-			var point: Point = TileLocator.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
+			var point: ScreenPosition = city.MainBuilding.primaryPosition.toScreenPosition();
 
 			if (!validateTile(new ScreenPosition(point.x + x, point.y + y))) return false;
 
@@ -174,7 +174,7 @@ package src.UI.Cursors {
 			var mapObjPos: Position = objPosition.toPosition();
 
 			// Check if cursor is inside city walls
-			if (city != null && TileLocator.distance(city.MainBuilding.x, city.MainBuilding.y, mapObjPos.x, mapObjPos.y) >= city.radius) {
+			if (city != null && TileLocator.distance(city.MainBuilding.x, city.MainBuilding.y, 1, mapObjPos.x, mapObjPos.y, 1) >= city.radius) {
 				hideCursors();
 			}
 			// Perform other validations

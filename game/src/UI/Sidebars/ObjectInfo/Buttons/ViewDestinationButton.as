@@ -2,10 +2,10 @@
 package src.UI.Sidebars.ObjectInfo.Buttons {
     import flash.events.Event;
     import flash.events.MouseEvent;
-    import flash.geom.Point;
 
     import src.Global;
-    import src.Map.TileLocator;
+    import src.Map.Position;
+    import src.Map.ScreenPosition;
     import src.Objects.Actions.ActionButton;
     import src.Objects.GameObject;
     import src.UI.Tooltips.TextTooltip;
@@ -14,9 +14,9 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	{
 		private var tooltip: TextTooltip;
 
-		private var mapDestinationPos: Point;
+		private var mapDestinationPos: Position;
 
-		public function ViewDestinationButton(parentObj: GameObject, mapDestinationPos: Point)
+		public function ViewDestinationButton(parentObj: GameObject, mapDestinationPos: Position)
 		{
 			super(parentObj, "View Destination");
 
@@ -49,8 +49,8 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				var pt: Point = TileLocator.getScreenCoord(mapDestinationPos.x, mapDestinationPos.y);
-				Global.map.camera.ScrollToCenter(pt.x, pt.y);
+				var pt: ScreenPosition = mapDestinationPos.toScreenPosition();
+				Global.map.camera.ScrollToCenter(pt);
 			}
 
 			event.stopImmediatePropagation();

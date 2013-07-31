@@ -12,6 +12,7 @@
     import org.aswing.geom.*;
 
     import src.Map.*;
+    import src.Map.ScreenPosition;
     import src.Objects.*;
     import src.UI.*;
     import src.UI.Components.*;
@@ -328,8 +329,8 @@
 		public function onGoToCity(e: Event) : void {
 			if (selectedCity == null) return;
 
-			var pt: Point = TileLocator.getScreenCoord(selectedCity.MainBuilding.x, selectedCity.MainBuilding.y);
-			Global.gameContainer.map.camera.ScrollToCenter(pt.x, pt.y);
+			var pt: ScreenPosition = TileLocator.getScreenCoord(selectedCity.MainBuilding.primaryPosition);
+			Global.gameContainer.map.camera.ScrollToCenter(pt);
 		}
 
 		public function onGoToCoords(e: Event) : void {
@@ -343,22 +344,22 @@
 		
 		public function onZoomIn(e: Event) : void {		
 			if (camera.getZoomFactor() >= 0.99 || minimapZoomed) return;
-			var center: Point = camera.GetCenter();
+			var center: ScreenPosition = camera.GetCenter();
 			camera.setZoomFactor(Math.min(1, camera.getZoomFactor() + 0.1));
 			map.scrollRate = camera.getZoomFactorOverOne();
 			mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();
 			miniMap.redraw();
-			camera.ScrollToCenter(center.x, center.y);
+			camera.ScrollToCenter(center);
 		}		
 		
 		public function onZoomOut(e: Event) : void {
 			if (camera.getZoomFactor() <= 0.61 || minimapZoomed) return;
-			var center: Point = camera.GetCenter();
+			var center: ScreenPosition = camera.GetCenter();
 			camera.setZoomFactor(Math.max(0.6, camera.getZoomFactor() - 0.1));
 			map.scrollRate = camera.getZoomFactorOverOne();
 			mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();			
 			miniMap.redraw();
-			camera.ScrollToCenter(center.x, center.y);
+			camera.ScrollToCenter(center);
 		}			
 
 		public function onZoomIntoMinimap(e: Event):void {
@@ -545,8 +546,8 @@
 
 			// Scroll to city center
 			if (selectedCity) {
-				var pt: Point = TileLocator.getScreenCoord(selectedCity.MainBuilding.x, selectedCity.MainBuilding.y);
-				Global.gameContainer.camera.ScrollToCenter(pt.x, pt.y);
+				var pt: ScreenPosition = TileLocator.getScreenCoord(selectedCity.MainBuilding.primaryPosition);
+				Global.gameContainer.camera.ScrollToCenter(pt);
 				miniMap.setCityPointer(selectedCity.name);
 			}
 
@@ -853,7 +854,7 @@
 				zoomIntoMinimap(false);
 			}
 
-			Global.map.camera.ScrollToCenter(e.localX, e.localY);
+			Global.map.camera.ScrollToCenter(new ScreenPosition(e.localX, e.localY));
 		}
 		
 		public function setUnreadMessageCount(unreadMessages: int): void
@@ -885,7 +886,7 @@
             }
 		}
         
-        public function setLabelCoords(pt: Point): void {
+        public function setLabelCoords(pt: Position): void {
             lblCoords.setText("(" + (pt.x) + "," + (pt.y) + ")");
             lblCoords.pack();
         }

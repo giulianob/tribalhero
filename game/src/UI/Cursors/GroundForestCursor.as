@@ -119,7 +119,9 @@
 
 		public function moveTo(x: int, y: int):void
 		{
-			var pos: ScreenPosition = TileLocator.getActualCoord(Global.gameContainer.camera.x + Math.max(x, 0), Global.gameContainer.camera.y + Math.max(y, 0));
+			var pos: ScreenPosition = TileLocator.getActualCoord(
+                    Global.gameContainer.camera.currentPosition.x + Math.max(x, 0),
+                    Global.gameContainer.camera.currentPosition.y + Math.max(y, 0));
 
 			if (!pos.equals(objPosition))
 			{

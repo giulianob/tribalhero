@@ -11,7 +11,7 @@ package src.UI.Tutorial.Steps
     import src.Global;
     import src.Map.City;
     import src.Map.CityObject;
-    import src.Map.TileLocator;
+    import src.Map.ScreenPosition;
     import src.UI.GameJSidebar;
     import src.UI.Sidebars.ForestInfo.ForestInfoSidebar;
     import src.UI.Tutorial.TutorialStep;
@@ -48,8 +48,9 @@ package src.UI.Tutorial.Steps
 				if (shouldShowTutorialEndMsg) {
 					showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_BACK_TO_CITY_AFTER_FOREST");
 					
-					var mainBuildingScreenPos: Point = TileLocator.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
-					if (!Global.gameContainer.camera.CameraRectangle().containsPoint(mainBuildingScreenPos)) {
+					var mainBuildingScreenPos: ScreenPosition = city.MainBuilding.primaryPosition.toScreenPosition();
+                    var mainBuildingPoint: Point = new Point(mainBuildingScreenPos.x, mainBuildingScreenPos.y);
+					if (!Global.gameContainer.camera.CameraRectangle().containsPoint(mainBuildingPoint)) {
 						return;
 					}					
 				}

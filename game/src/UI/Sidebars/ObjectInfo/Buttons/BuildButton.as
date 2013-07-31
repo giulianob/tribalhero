@@ -9,6 +9,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
     import src.Objects.*;
     import src.Objects.Actions.ActionButton;
     import src.Objects.Actions.BuildAction;
+    import src.Objects.Actions.CurrentActiveAction;
     import src.Objects.Actions.StructureUpgradeAction;
     import src.Objects.Effects.Formula;
     import src.Objects.Factories.*;
@@ -84,15 +85,23 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			if (!ObjectFactory.isType("UnlimitedBuilding", structPrototype.type)) {
 				var currentBuildActions: Array = city.currentActions.getActions();
 				var currentCount: int = 0;
-				for each (var currentAction: * in currentBuildActions) {		
+				for each (var currentAction: * in currentBuildActions) {
+                    if (!(currentAction is CurrentActiveAction)) {
+                        continue;
+                    }
+
 					if (currentAction.getAction() is BuildAction) {
 						var buildAction: BuildAction = currentAction.getAction();
 						if (!ObjectFactory.isType("UnlimitedBuilding", buildAction.type)) {
 							currentCount++;
                         }
+
+                        continue;
 					}
-					else if (currentAction.getAction() is StructureUpgradeAction) {
+					
+                    if (currentAction.getAction() is StructureUpgradeAction) {
 						currentCount++;
+                        continue;
                     }
 				}
 				

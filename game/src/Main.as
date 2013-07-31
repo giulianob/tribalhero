@@ -300,9 +300,5 @@
 			Global.mapComm.General.readLoginInfo(packet);
 			gameContainer.setMap(map, miniMap);
 		}
-
-        private function resizeHandler(event:Event):void {
-			
-		}
-	}
+    }
 }

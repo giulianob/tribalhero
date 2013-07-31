@@ -5,11 +5,11 @@
     import flash.display.DisplayObjectContainer;
     import flash.display.MovieClip;
     import flash.events.Event;
-    import flash.geom.Point;
 
     import src.Assets;
     import src.Constants;
     import src.Map.Position;
+    import src.Map.ScreenPosition;
     import src.Map.TileLocator;
     import src.Objects.SimpleObject;
 
@@ -55,7 +55,7 @@
                 var tiledata: DisplayObject = Assets.getInstance("MASK_TILE");
                 var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH, true, 0x000000));
                 tile.smoothing = true;
-                var point: Point = TileLocator.getScreenCoord(position.x, position.y);
+                var point: ScreenPosition = position.toScreenPosition();
                 tile.x = point.x - size * Constants.tileW;
                 tile.y = point.y - (size * Constants.tileH);
                 var colorTransform: * = callback(tile.x, tile.y);

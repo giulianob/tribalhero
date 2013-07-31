@@ -1,12 +1,12 @@
 package src.Objects.Process 
 {
     import flash.events.Event;
-    import flash.geom.Point;
 
     import org.aswing.JButton;
 
     import src.Global;
     import src.Map.City;
+    import src.Map.Position;
     import src.Map.TileLocator;
     import src.Objects.Effects.Formula;
     import src.Objects.SimpleGameObject;
@@ -43,7 +43,7 @@ package src.Objects.Process
 			
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
 			
-			var cursor: GroundReinforceCursor = new GroundReinforceCursor(sourceCity, onChoseTarget, troopDialog.getTroop());
+			new GroundReinforceCursor(sourceCity, onChoseTarget, troopDialog.getTroop());
 			
 			var changeTroop: JButton = new JButton("Change Troop");
 			changeTroop.addActionListener(onChangeTroop);
@@ -60,8 +60,8 @@ package src.Objects.Process
 			Global.gameContainer.setSidebar(null);
 			
 			var troop: TroopStub = troopDialog.getTroop();
-			var targetMapDistance: Point = TileLocator.getMapCoord(target.objX, target.objY);
-			var distance: int = sourceCity.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
+			var targetMapDistance: Position = target.primaryPosition.toPosition();
+			var distance: int = TileLocator.distance(sourceCity.MainBuilding.x, sourceCity.MainBuilding.y, 1, targetMapDistance.x, targetMapDistance.y, 1);
 			
 			var assignmentDialog: AssignmentCreateDialog = new AssignmentCreateDialog(Formula.moveTimeTotal(sourceCity, troop.getSpeed(sourceCity), distance, true), onChoseTime);
 			assignmentDialog.show();

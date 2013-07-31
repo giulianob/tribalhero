@@ -9,6 +9,7 @@
     import src.Global;
     import src.Map.*;
     import src.Objects.Factories.ObjectFactory;
+    import src.Objects.SimpleGameObject;
 
     public class RegionComm {
 
@@ -72,7 +73,7 @@
                 var pos: Position = new Position(packet.readUInt(), packet.readUInt());
 				var tileType: int = packet.readUShort();
 
-				Global.map.regions.setTileType(pos.x, pos.y, tileType, false);
+				Global.map.regions.setTileType(pos, tileType, false);
 
                 regionIds.push(TileLocator.getRegionIdFromMapCoord(pos));
 			}
@@ -105,6 +106,8 @@
 
 		public function onReceiveRegion(packet:Packet, custom: *):void
 		{
+            var objectsToAdd: Array = [];
+
 			var regionCnt: int = packet.readUByte();
 			for (var i:int = 0; i < regionCnt; i++)
 			{
@@ -117,11 +120,15 @@
 
 				for (var j: int = 0; j < objCnt; j++)
 				{
-                    newRegion.addObject(mapComm.Objects.readObjectInstance(packet, newRegion.id, true));
+                    objectsToAdd.push(mapComm.Objects.readObjectInstance(packet, newRegion.id, true));
 				}
 			}
 
-			Global.map.objContainer.moveWithCamera(Global.gameContainer.camera.x, Global.gameContainer.camera.y);
+            for each (var obj: SimpleGameObject in objectsToAdd) {
+                Global.map.regions.addObject(obj);
+            }
+
+			Global.map.objContainer.moveWithCamera(Global.gameContainer.camera.currentPosition.x, Global.gameContainer.camera.currentPosition.y);
 		}
 
 		public function getCityRegion(ids: Array):void

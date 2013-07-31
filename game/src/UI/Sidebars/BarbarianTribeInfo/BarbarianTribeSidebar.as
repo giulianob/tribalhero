@@ -1,14 +1,13 @@
 package src.UI.Sidebars.BarbarianTribeInfo 
 {
     import flash.events.*;
-    import flash.geom.*;
 
     import org.aswing.*;
     import org.aswing.border.*;
     import org.aswing.ext.*;
     import org.aswing.geom.*;
 
-    import src.Map.*;
+    import src.Map.Position;
     import src.Objects.*;
     import src.UI.*;
     import src.UI.Sidebars.ObjectInfo.Buttons.*;
@@ -114,7 +113,7 @@ package src.UI.Sidebars.BarbarianTribeInfo
 		{
 			super.showSelf(owner, onClose, dispose);
 
-			var pt: Point = TileLocator.getMapCoord(tribe.objX, tribe.objY);
+			var pt: Position = tribe.primaryPosition.toPosition();
 			frame.getTitleBar().setText("Barbarian Tribe (" + pt.x + "," + pt.y + ")");
 
 			frame.show();

@@ -6,6 +6,8 @@
 
 package src.Map {
 
+    import System.Linq.Enumerable;
+
     import flash.geom.Point;
     import flash.geom.Rectangle;
 
@@ -69,30 +71,30 @@ package src.Map {
 			return id;
 		}
 
-        public static function getMapCoord(x: int, y: int): Point // from screen coord to map coord
+        public static function getMapCoord(screenPos: ScreenPosition): Position // from screen coord to map coord
 		{
-			var xcoord: int = int(Math.max(x + int(Constants.tileW / 2), 0) / Constants.tileW);
-			var ycoord: int = Math.round(Math.max(y + (Constants.tileH / 2), 0) / (Constants.tileH / 2));
+			var xcoord: int = int(Math.max(screenPos.x + int(Constants.tileW / 2), 0) / Constants.tileW);
+			var ycoord: int = Math.round(Math.max(screenPos.y + (Constants.tileH / 2), 0) / (Constants.tileH / 2));
 
-			return new Point(xcoord, ycoord);
+			return new Position(xcoord, ycoord);
 		}
 		
-		public static function getScreenMinimapToMapCoord(x: int, y: int): Point // from screen minimap coord (e.g. obj.x ) to the true map coord
+		public static function getScreenMinimapToMapCoord(x: int, y: int): Position // from screen minimap coord (e.g. obj.x ) to the true map coord
 		{
 			var xcoord: int = int(Math.max(x + int(Constants.miniMapTileW / 2), 0) / Constants.miniMapTileW);
 			var ycoord: int = Math.round(Math.max(y + (Constants.miniMapTileH / 2), 0) / (Constants.miniMapTileH / 2));
 
-			return new Point(xcoord, ycoord);
+			return new Position(xcoord, ycoord);
 		}
 
-		public static function getScreenCoord(x: int, y: int) : Point // from map coord to where it belongs on screen
+		public static function getScreenCoord(position: Position) : ScreenPosition // from map coord to where it belongs on screen
 		{
-			var xadd:int = (Math.abs(y % 2) == 1) ? (Constants.tileW / 2) : 0;
+			var xadd:int = (Math.abs(position.y % 2) == 1) ? (Constants.tileW / 2) : 0;
 
-			var xcoord:int = int(x * Constants.tileW + xadd - int(Constants.tileW / 2));
-			var ycoord:int = int(y * (Constants.tileH / 2) - (Constants.tileH / 2));
+			var xcoord:int = int(position.x * Constants.tileW + xadd - int(Constants.tileW / 2));
+			var ycoord:int = int(position.y * (Constants.tileH / 2) - (Constants.tileH / 2));
 
-			return new Point(xcoord, ycoord);
+			return new ScreenPosition(xcoord, ycoord);
 		}
 
 		public static function getMiniMapScreenCoord(x: int, y: int) : Point // from map coord to where it belongs on screen
@@ -131,8 +133,21 @@ package src.Map {
 			return int(regionId / Constants.mapRegionW) * Constants.regionTileH;
 		}
 
-		public static function distance(x1: int, y1: int, x2: int, y2: int): int
+		public static function distance(x: int, y: int, size: int, x2: int, y2: int, size2: int): int
 		{
+            var min: int = int.MAX_VALUE;
+            for each (var position: Position in foreachMultitile(x, y, size))
+            {
+                for each (var position1: Position in foreachMultitile(x2, y2, size2)) {
+                    min = Math.min(min, distanceSingle(position.x, position.y, position1.x, position1.y));
+                }
+            }
+
+            return min;
+        }
+
+        private static function distanceSingle(x1: int, y1: int, x2: int, y2: int): int
+        {
 			var offset: int = 0;
 
 			if (y2 % 2 == 1 && y1 % 2 == 0 && x1 <= x2) offset = 1;
@@ -141,7 +156,20 @@ package src.Map {
 			return ((x1 > x2 ? x1 - x2 : x2 - x1) + (y1 > y2 ? y1 - y2 : y2 - y1) / 2 + offset);
 		}
 
-		public static function radiusDistance(x: int, y: int, x1: int, y1: int) : int
+        public static function radiusDistance(x: int, y: int, size: int, x2: int, y2: int, size2: int): int
+        {
+            var min: int = int.MAX_VALUE;
+            for each (var position: Position in foreachMultitile(x, y, size))
+            {
+                for each (var position1: Position in foreachMultitile(x2, y2, size2)) {
+                    min = Math.min(min, radiusDistanceSingle(position.x, position.y, position1.x, position1.y));
+                }
+            }
+
+            return min;
+        }
+
+		private static function radiusDistanceSingle(x: int, y: int, x1: int, y1: int) : int
 		{
 			if (x == x1 && y == y1) return 0;
 
@@ -175,7 +203,7 @@ package src.Map {
 
             var tileRadius: int = Math.ceil(radius / 2.0);
             for each(var position: Position in foreachTile(ox, oy, tileRadius, do_self)) {
-                if (radiusDistance(ox, oy, position.x, position.y) <= radius) {
+                if (radiusDistanceSingle(ox, oy, position.x, position.y) <= radius) {
                     positions.push(position);
                 }
             }
@@ -230,7 +258,9 @@ package src.Map {
 		}
 
         public static function foreachMultitileObject(obj: SimpleObject): Array {
-            return foreachMultitile(obj.primaryPosition.x, obj.primaryPosition.y, obj.size);
+            var mapPosition: Position = obj.primaryPosition.toPosition();
+
+            return foreachMultitile(mapPosition.x, mapPosition.y, obj.size);
         }
 
         public static function foreachMultitile(ox: int, oy: int, size: int): Array {
@@ -253,14 +283,8 @@ package src.Map {
             return positions;
         }
 
-        public static function getMapPosition(x: Number, y: Number): Position {
-            var pt: Point = getMapCoord(x, y);
-            return new Position(pt.x, pt.y);
-        }
-
         public static function getScreenPosition(x: Number, y: Number): ScreenPosition {
-            var pt: Point = getScreenCoord(x, y);
-            return new ScreenPosition(pt.x, pt.y);
+            return getScreenCoord(new Position(x, y));
         }
     }
 }

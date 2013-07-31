@@ -23,7 +23,7 @@ package src.Objects.Prototypes {
 		public function AwayFromLayout() {
 		}
 
-		public function validate(builder: CityObject, city: City, position: Position): Boolean
+		public function validate(builder: CityObject, city: City, position: Position, size: int): Boolean
 		{		
 			var radius: int = mindist;
 			var reduction: int = 0;
@@ -35,7 +35,7 @@ package src.Objects.Prototypes {
 				}
 			}			
 
-			var objects: Array = city.nearObjectsByRadius(0, radius + reduction, position, type);
+			var objects: Array = city.nearObjectsByRadius(0, radius + reduction, position, size, type);
 			
 			for each (var obj: CityObject in objects)
 			{

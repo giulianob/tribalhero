@@ -22,13 +22,13 @@ package src.Objects.Prototypes {
 		public function SimpleLayout() {
 		}
 
-		public function validate(builder: CityObject, city: City, position: Position): Boolean
+		public function validate(builder: CityObject, city: City, position: Position, size: int): Boolean
 		{
 			var objects: Array;
 			if (mindist == -1) {
 			    objects = city.objects.toArray();
             } else {
-			    objects = city.nearObjectsByRadius(mindist, maxdist, position, type);
+			    objects = city.nearObjectsByRadius(mindist, maxdist, position, type, size);
             }
 
 			for each (var obj: CityObject in objects)

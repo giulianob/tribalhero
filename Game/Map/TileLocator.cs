@@ -125,7 +125,7 @@ namespace Game.Map
                     select RadiusDistance(position.X, position.Y, position1.X, position1.Y)).Min();
         }
 
-        public int RadiusDistance(uint x, uint y, uint x1, uint y1)
+        private int RadiusDistance(uint x, uint y, uint x1, uint y1)
         {
             // Calculate the x and y distances
             int offset = 0;
@@ -158,10 +158,18 @@ namespace Game.Map
 
             return Math.Max(0, (int)(radius * 2) - 1);
         }
-               
-        public bool IsOverlapping(Position location1, byte r1, Position location2, byte r2)
+
+        public bool IsOverlapping(Position location1, byte size1, byte r1, Position location2, byte size2, byte r2)
         {
-            var distance = RadiusDistance(location1.X, location1.Y, location2.X, location2.Y);
+            return (from position1 in ForeachMultitile(location1.X, location1.Y, size1)
+                    from position2 in ForeachMultitile(location2.X, location2.Y, size2)
+                    where IsOverlapping(position1, r1, position2, r2)
+                    select position1).Any();
+        }
+
+        private bool IsOverlapping(Position location1, byte r1, Position location2, byte r2)
+        {
+            var distance = RadiusDistance(location1.X, location1.Y, 1, location2.X, location2.Y, 1);
 
             var sumEqualToDistance = distance - 1 == r1 + r2;
 
@@ -193,8 +201,23 @@ namespace Game.Map
 
             return overlapping;
         }
-               
-        public int TileDistance(uint x, uint y, uint x1, uint y1)
+
+        public int TileDistance(ISimpleGameObject obj1, ISimpleGameObject obj2)
+        {
+            return TileDistance(obj1.X, obj1.Y, obj1.Size, obj2.X, obj2.Y, obj2.Size);
+        }
+
+        public int TileDistance(uint x, uint y, byte size, uint x1, uint y1, byte size1)
+        {
+            var positions = ForeachMultitile(x, y, size).ToArray();
+            var positions1 = ForeachMultitile(x1, y1, size1).ToArray();
+
+            return (from position in positions
+                    from position1 in positions1
+                    select TileDistance(position.X, position.Y, position1.X, position1.Y)).Min();
+        }
+
+        private int TileDistance(uint x, uint y, uint x1, uint y1) 
         {
             var offset = 0;
             if ((y % 2 == 1 && y1 % 2 == 0 && x1 <= x) ||
@@ -291,7 +314,6 @@ namespace Game.Map
 
             uint cx = ox;
             uint cy = oy - (uint)(2 * radius);
-            bool done = false;
             for (uint row = 0; row < radius * 2 + 1; ++row)
             {
                 for (uint count = 0; count < radius * 2 + 1; ++count)
@@ -356,7 +378,7 @@ namespace Game.Map
                
         public IEnumerable<Position> ForeachRadius(uint ox, uint oy, byte radius, bool includeCenter = true)
         {
-            return ForeachTile(ox, oy, radius, includeCenter).Where(position => RadiusDistance(ox, oy, position.X, position.Y) <= radius);
+            return ForeachTile(ox, oy, radius, includeCenter).Where(position => RadiusDistance(ox, oy, 1, position.X, position.Y, 1) <= radius);
         }
 
     }

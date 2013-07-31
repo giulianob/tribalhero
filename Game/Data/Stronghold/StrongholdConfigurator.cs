@@ -48,17 +48,17 @@ namespace Game.Data.Stronghold
             // basic radius 200, then every each level is 50 radius
             int count = level * CitiesPerLevel;
 
-            return mapFactory.Locations().Count(loc => tileLocator.TileDistance(x, y, loc.X, loc.Y) < radius) > count;
+            return mapFactory.Locations().Count(loc => tileLocator.TileDistance(x, y, 1, loc.X, loc.Y, 1) < radius) > count;
         }
 
         private bool TooCloseToCities(uint x, uint y, int minDistance)
         {
-            return mapFactory.Locations().Any(loc => tileLocator.TileDistance(x, y, loc.X, loc.Y) < minDistance);
+            return mapFactory.Locations().Any(loc => tileLocator.TileDistance(x, y, 1, loc.X, loc.Y, 1) < minDistance);
         }
 
         private bool TooCloseToStrongholds(uint x, uint y, int minDistance)
         {
-            return strongholds.Any(loc => tileLocator.TileDistance(x, y, loc.X, loc.Y) < minDistance);
+            return strongholds.Any(loc => tileLocator.TileDistance(x, y, 1, loc.X, loc.Y, 1) < minDistance);
         }
 
         #region Implementation of IStrongholdConfigurator

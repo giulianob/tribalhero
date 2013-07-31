@@ -80,7 +80,7 @@ namespace Game.Data.Forest
             return world.Regions.GetRegion(x, y)
                         .GetPrimaryObjects()
                         .OfType<IForest>()
-                        .Any(forest => tileLocator.TileDistance(forest.X, forest.Y, x, y) <= radius);
+                        .Any(forest => tileLocator.TileDistance(forest.X, forest.Y, 1, x, y, 1) <= radius);
         }
 
         public void CreateForest(byte lvl, int capacity, double rate)

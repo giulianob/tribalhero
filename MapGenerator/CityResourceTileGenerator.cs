@@ -52,7 +52,7 @@ namespace MapGenerator
                 }
                 while (map[y * Program.REGION_WIDTH + x] == FARM_TILE ||
                        map[y * Program.REGION_WIDTH + x] == WOODLAND_TILE ||
-                       TileLocator.Current.TileDistance(x, y, cityLocation.X, cityLocation.Y) <= 1 ||
+                       TileLocator.Current.TileDistance(x, y, 1, cityLocation.X, cityLocation.Y, 1) <= 1 ||
                        !mapMath.IsPerpendicular(x, y, cityLocation.X, cityLocation.Y));
 
                 map[y * Program.REGION_WIDTH + x] = FARM_TILE;
@@ -69,7 +69,7 @@ namespace MapGenerator
                                                     out x,
                                                     out y);
                 }
-                while (TileLocator.Current.TileDistance(x, y, cityLocation.X, cityLocation.Y) <= 1 ||
+                while (TileLocator.Current.TileDistance(x, y, 1, cityLocation.X, cityLocation.Y, 1) <= 1 ||
                        map[y * Program.REGION_WIDTH + x] == FARM_TILE ||
                        map[y * Program.REGION_WIDTH + x] == WOODLAND_TILE ||
                        !mapMath.IsPerpendicular(x, y, cityLocation.X, cityLocation.Y));

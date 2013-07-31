@@ -194,7 +194,7 @@ namespace Game.Logic.Formulas
 
         public virtual double GetLumbermillCampBuildTime(int campBuildTime, IStructure lumbermill, IForest forest, ITileLocator tileLocator)
         {
-            var distance = tileLocator.TileDistance(lumbermill.X, lumbermill.Y, forest.X, forest.Y);
+            var distance = tileLocator.TileDistance(lumbermill, forest);
             return BuildTime(campBuildTime, lumbermill.City, lumbermill.City.Technologies) + distance * 5;
         }
     }

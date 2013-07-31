@@ -55,7 +55,18 @@ namespace Game.Map.LocationStrategies
                 return Error.CityNotFound;
             }
 
-            var positions = mapFactory.Locations().Where(loc =>Predicate(loc,city)).ToList();
+            var positions = mapFactory.Locations().Where(loc =>
+                                                         {
+                                                             if (tileLocator.TileDistance(city.X, city.Y, 1, loc.X, loc.Y, 1) > distance)
+                                                             {
+                                                                 return false;
+                                                             }
+
+                                                             // Check if objects already on that point
+                                                             var objects = world.Regions.GetObjectsInTile(loc.X, loc.Y);
+
+                                                             return !objects.Any() && !forestManager.HasForestNear(loc.X, loc.Y, formula.GetInitialCityRadius());
+                                                         }).ToList();
 
             if (positions.Count == 0)
             {
@@ -65,20 +76,6 @@ namespace Game.Map.LocationStrategies
 
             position = positions[random.Next(positions.Count)];
             return Error.Ok;
-        }
-
-        private bool Predicate(Position position, ICity city)
-        {
-
-            if (tileLocator.TileDistance(city.X, city.Y, position.X, position.Y) > distance)
-            {
-                return false;
-            }
-
-            // Check if objects already on that point
-            var objects = world.Regions.GetObjectsInTile(position.X, position.Y);
-
-            return !objects.Any() && !forestManager.HasForestNear(position.X, position.Y, formula.GetInitialCityRadius());
         }
     }
 }

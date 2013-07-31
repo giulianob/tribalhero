@@ -62,8 +62,8 @@ namespace Testing.ActionsTests
             structureBaseStats.Size.Returns<byte>(11);
             
             tileLocator.ForeachMultitile(action.X, action.Y, 11).Returns(new[] {new Position(1, 1), new Position(1, 2)});
-            tileLocator.TileDistance(city.X, city.Y, 1, 1).Returns(5);
-            tileLocator.TileDistance(city.X, city.Y, 1, 2).Returns(6);
+            tileLocator.TileDistance(city.X, city.Y, 1, 1, 1, 1).Returns(5);
+            tileLocator.TileDistance(city.X, city.Y, 1, 1, 2, 1).Returns(6);
 
             city.Radius.Returns<byte>(6);
 

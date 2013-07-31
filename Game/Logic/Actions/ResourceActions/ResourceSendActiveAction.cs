@@ -144,10 +144,12 @@ namespace Game.Logic.Actions
 
         public int CalculateTradeTime(IStructure structure, ICity targetCity)
         {
-            return (int)CalculateTime(formula.SendTime(structure, tileLocator.TileDistance(structure.X,
+            return (int)CalculateTime(formula.SendTime(structure, tileLocator.TileDistance(structure.X, 
                                                                                            structure.Y,
+                                                                                           structure.Size,
                                                                                            targetCity.X,
-                                                                                           targetCity.Y)));
+                                                                                           targetCity.Y,
+                                                                                           1)));
         }
 
         public override void UserCancelled()

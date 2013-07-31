@@ -89,15 +89,12 @@ namespace Game.Logic.Procedures
 
         private IEnumerable<IStructure> GetStructuresInRadius(IEnumerable<IStructure> structures, ITroopObject troopObject)
         {
-            Position troopPosition = new Position(troopObject.X, troopObject.Y);
-
-            return
-                    structures.Where(
-                                     structure =>
-                                     tileLocator.IsOverlapping(troopPosition,
-                                                                 troopObject.Stats.AttackRadius,
-                                                                 new Position(structure.X, structure.Y),
-                                                                 structure.Stats.Base.Radius));
+            return structures.Where(structure => tileLocator.IsOverlapping(troopObject.PrimaryPosition,
+                    troopObject.Size,
+                    troopObject.Stats.AttackRadius,
+                    new Position(structure.X, structure.Y),
+                    structure.Stats.Base.Radius,
+                    structure.Size));
         }
 
         public virtual Error CanCityBeAttacked(ICity attackerCity, ICity targetCity)

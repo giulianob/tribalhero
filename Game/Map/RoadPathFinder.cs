@@ -64,7 +64,7 @@ namespace Game.Map
                     foreach (var position in tileLocator.ForeachRadius(x, y, 1, false))
                     {
 
-                        if (tileLocator.RadiusDistance(x, y, position.X, position.Y) != 1 ||
+                        if (tileLocator.RadiusDistance(x, y, 1, position.X, position.Y, 1) != 1 ||
                             (city.X == position.X && city.Y == position.Y) ||
                             !world.Roads.IsRoad(position.X, position.Y))
                         {
@@ -92,7 +92,7 @@ namespace Game.Map
 
                 foreach (var position in tileLocator.ForeachRadius(x, y, 1, false))
                 {
-                    if (tileLocator.RadiusDistance(x, y, position.X, position.Y) != 1)
+                    if (tileLocator.RadiusDistance(x, y, 1, position.X, position.Y, 1) != 1)
                     {
                         continue;
                     }
@@ -165,32 +165,31 @@ namespace Game.Map
                                         }
 
                                         neighbors.AddRange(possibleNeighbors.Where(location =>
+                                        {
+                                            if (!location.Equals(end))
                                             {
-                                                if (!location.Equals(end))
-                                                {
-                                                    if (world.Regions.GetObjectsInTile(location.X, location.Y).Any(s => s is IStructure))
-                                                    {
-                                                        return false;
-                                                    }
-                                                    if (!world.Roads.IsRoad(location.X, location.Y))
-                                                    {
-                                                        return false;
-                                                    }
-                                                    if (tileLocator.TileDistance(location.X,
-                                                                                          location.Y,
-                                                                                          city.X,
-                                                                                          city.Y) > city.Radius)
-                                                    {
-                                                        return false;
-                                                    }
-                                                }
-                                                else if (fromStructure && node.Equals(start))
+                                                if (world.Regions.GetObjectsInTile(location.X, location.Y).Any(s => s is IStructure))
                                                 {
                                                     return false;
                                                 }
 
-                                                return true;
-                                            }));
+                                                if (!world.Roads.IsRoad(location.X, location.Y))
+                                                {
+                                                    return false;
+                                                }
+
+                                                if (tileLocator.TileDistance(location.X, location.Y, 1, city.X, city.Y, 1) > city.Radius)
+                                                {
+                                                    return false;
+                                                }
+                                            }
+                                            else if (fromStructure && node.Equals(start))
+                                            {
+                                                return false;
+                                            }
+
+                                            return true;
+                                        }));
 
                                         return neighbors;
                                     });

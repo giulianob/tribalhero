@@ -115,7 +115,7 @@
                     // The position of this tile for the entire world
                     var mapTilePosition: Position = new Position(tileX + regionPosition.x, tileY + regionPosition.y);
 
-                    addPlaceholderObjects(tileid, mapTilePosition.toScreenPosition());
+                    addPlaceholderObjects(tileid, mapTilePosition);
 
                     var tilesetsrcX:int = int(tileid % Constants.tileSetTileW) * Constants.tileW;
                     var tilesetsrcY:int = int(tileid / Constants.tileSetTileW) * tileHTimes2;
@@ -159,13 +159,13 @@
             addChild(bg);
         }
 
-        public function setTile(x: int, y: int, tileType: int, redraw: Boolean = true): void {
+        public function setTile(position: Position, tileType: int, redraw: Boolean = true): void {
             var pt: Position = getTilePos(x, y);
 
             tiles[pt.y][pt.x] = tileType;
 
-            clearPlaceholders(x, y);
-            addPlaceholderObjects(tileType, new ScreenPosition(x, y));
+            clearPlaceholders(position.toScreenPosition());
+            addPlaceholderObjects(tileType, position);
 
             if (redraw)
                 this.redraw();
@@ -176,16 +176,15 @@
             createRegion();
         }
 
-        private function clearPlaceholders(x: int, y: int) : void
+        private function clearPlaceholders(position: ScreenPosition) : void
         {
-            var coord: Point = TileLocator.getScreenCoord(x, y);
-            var objs: Array = placeHolders.getRange([coord.x, coord.y]);
+            var objs: Array = placeHolders.getRange([position.x, position.y]);
 
             for each (var obj: SimpleObject in objs) {
                 map.objContainer.removeObject(obj);
             }
 
-            placeHolders.removeRange([coord.x, coord.y]);
+            placeHolders.removeRange([position.x, position.y]);
         }
 
         private function clearAllPlaceholders() : void
@@ -196,9 +195,11 @@
             placeHolders.clear();
         }
 
-        private function addPlaceholderObjects(tileId: int, screenPosition: ScreenPosition) : void
+        private function addPlaceholderObjects(tileId: int, position: Position) : void
         {
             if (tileId == Constants.cityStartTile) {
+                var screenPosition: ScreenPosition = position.toScreenPosition();
+
                 if (getObjectsInTile(screenPosition.toPosition()).length > 0) {
                     return;
                 }
@@ -242,10 +243,11 @@
             return objs;
         }
 
-        public function getTileAt(x: int, y: int) : int {
-            var pt: Position = getTilePos(x, y);
+        public function getTileAt(position: Position) : int {
+            var x: int = position.x - regionPosition.x;
+            var y: int = position.y - regionPosition.y;
 
-            return tiles[pt.y][pt.x];
+            return tiles[y][x];
         }
 
         private function getTilePos(x: int, y: int) : Position {
@@ -263,10 +265,10 @@
             return tileObjects.remove(gameObj, pos);
         }
 
-        public function addObject(gameObj: SimpleGameObject) : SimpleGameObject
+        public function addObject(gameObj: SimpleGameObject) : void
         {
             var objMapPos: Position = gameObj.primaryPosition.toPosition();
-            clearPlaceholders(objMapPos.x, objMapPos.y);
+            clearPlaceholders(gameObj.primaryPosition);
 
             //add to object container and to internal list
             map.objContainer.addObject(gameObj);
@@ -275,21 +277,19 @@
             //select object if the map is waiting for it to be selected
             if (map.selectViewable != null && map.selectViewable.groupId == gameObj.groupId && map.selectViewable.objectId == gameObj.objectId)
                 map.selectObject(gameObj as GameObject);
-
-            return gameObj;
         }
 
-        public function removeObject(groupId: int, objectId: int, dispose: Boolean = true): SimpleGameObject
+        public function removeObject(obj: SimpleGameObject, dispose: Boolean = true): SimpleGameObject
         {
-            var gameObj: SimpleGameObject = primaryObjects.removeById(groupId, objectId);
+            var removedObj: SimpleGameObject = primaryObjects.remove(obj, obj.primaryPosition.toPosition());
 
-            if (gameObj == null) {
+            if (removedObj == null) {
                 return null;
             }
 
-            map.objContainer.removeObject(gameObj, 0, dispose);
+            map.objContainer.removeObject(removedObj, 0, dispose);
 
-            return gameObj;
+            return removedObj;
         }
 
         public function getObject(groupId: int, objectId: int): SimpleGameObject
@@ -299,8 +299,8 @@
 
         public function moveWithCamera(camera: Camera):void
         {
-            x = globalX - camera.x - int(Constants.tileW / 2);
-            y = globalY - camera.y - int(Constants.tileH / 2);
+            x = globalX - camera.currentPosition.x - int(Constants.tileW / 2);
+            y = globalY - camera.currentPosition.y - int(Constants.tileH / 2);
         }
 
         public static function sortOnId(a:Region, b:Region):Number

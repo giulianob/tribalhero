@@ -130,7 +130,7 @@
 
 		public function moveTo(x: int, y: int):void
 		{
-			var pos: ScreenPosition = TileLocator.getActualCoord(Global.gameContainer.camera.x + Math.max(x, 0), Global.gameContainer.camera.y + Math.max(y, 0));
+			var pos: ScreenPosition = TileLocator.getActualCoord(Global.gameContainer.camera.currentPosition.x + Math.max(x, 0), Global.gameContainer.camera.currentPosition.y + Math.max(y, 0));
 
 			if (!pos.equals(objPosition))
 			{
@@ -212,8 +212,8 @@
 			gameObj.setHighlighted(true);
 			highlightedObj = gameObj;
 			
-			var targetMapDistance: Point = TileLocator.getMapCoord(gameObj.objX, gameObj.objY);
-			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
+			var targetMapDistance: Position = gameObj.primaryPosition.toPosition();
+			var distance: int = TileLocator.distance(city.MainBuilding.x, city.MainBuilding.y, 1, targetMapDistance.x, targetMapDistance.y, 1);
 			var timeAwayInSeconds: int = Formula.moveTimeTotal(city, troopSpeed, distance, true);
 			if (Constants.debug)
 				Global.gameContainer.message.showMessage("Speed [" +troopSpeed+"] Distance [" + distance + "] in " + timeAwayInSeconds + " sec("+DateUtil.formatTime(timeAwayInSeconds)+")");

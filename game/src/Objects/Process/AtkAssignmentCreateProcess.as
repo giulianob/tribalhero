@@ -1,12 +1,12 @@
 package src.Objects.Process 
 {
     import flash.events.Event;
-    import flash.geom.Point;
 
     import org.aswing.JButton;
 
     import src.Global;
     import src.Map.City;
+    import src.Map.Position;
     import src.Map.TileLocator;
     import src.Objects.BarbarianTribe;
     import src.Objects.Effects.Formula;
@@ -72,8 +72,8 @@ package src.Objects.Process
 			Global.gameContainer.setSidebar(null);
 			
 			var troop: TroopStub = attackDialog.getTroop();			
-			var targetMapDistance: Point = TileLocator.getMapCoord(target.objX, target.objY);
-			var distance: int = sourceCity.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
+			var targetMapDistance: Position = target.primaryPosition.toPosition();
+			var distance: int = TileLocator.distance(sourceCity.MainBuilding.x, sourceCity.MainBuilding.y, 1, targetMapDistance.x, targetMapDistance.y, 1);
 			
 			var assignmentDialog: AssignmentCreateDialog = new AssignmentCreateDialog(Formula.moveTimeTotal(sourceCity, troop.getSpeed(sourceCity), distance, true), onChoseTime);
 			assignmentDialog.show();

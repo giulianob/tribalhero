@@ -2,9 +2,10 @@
 {
     import flash.display.DisplayObject;
     import flash.events.Event;
-    import flash.geom.Point;
 
     import src.Global;
+    import src.Map.Position;
+    import src.Map.ScreenPosition;
     import src.Map.TileLocator;
     import src.Objects.Factories.ObjectFactory;
 
@@ -361,7 +362,7 @@
 				return;
 			}
 
-			var pos: Point = TileLocator.getMapCoord(parent.objX, parent.objY);
+			var pos: Position = parent.primaryPosition.toPosition();
 
 			var typeHash: int = wallTypeHash(pos.x, pos.y, radius);
 
@@ -388,7 +389,7 @@
 		}
 
 		private function pushWall(wallName: String, x: int, y: int) : void {
-			var pos: Point = TileLocator.getScreenCoord(x, y);
+			var pos: ScreenPosition = TileLocator.getScreenCoord(new Position(x, y));
 			wallName = "WALL_" + wallName + (wallName.charAt(0) == 'O' ? "" : "_" + wallHash(x, y).toString());
 			var wall: SimpleObject = ObjectFactory.getSimpleObject(wallName, pos.x, pos.y, 1, false);
 

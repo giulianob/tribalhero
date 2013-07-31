@@ -1,12 +1,13 @@
 ﻿package src.UI.Dialog 
 {
     import flash.events.Event;
-    import flash.geom.Point;
 
     import org.aswing.*;
     import org.aswing.geom.*;
 
     import src.Global;
+    import src.Map.Position;
+    import src.Map.ScreenPosition;
     import src.Map.TileLocator;
     import src.UI.Components.AutoCompleteTextField;
     import src.UI.GameJPanel;
@@ -73,8 +74,8 @@
 				return;
 			}
 			
-			var pt: Point = TileLocator.getScreenCoord(getCoordX(), getCoordY());
-			Global.gameContainer.map.camera.ScrollToCenter(pt.x, pt.y);
+			var pt: ScreenPosition = TileLocator.getScreenCoord(new Position(getCoordX(), getCoordY()));
+			Global.gameContainer.map.camera.ScrollToCenter(pt);
 			
 			getFrame().dispose();
 		}

@@ -2,13 +2,13 @@ package src.Comm.Commands
 {
     import fl.lang.Locale;
 
-    import flash.geom.Point;
-
     import src.Comm.Commands;
     import src.Comm.Packet;
     import src.Comm.Session;
     import src.Global;
     import src.Map.MapComm;
+    import src.Map.Position;
+    import src.Map.ScreenPosition;
     import src.Map.TileLocator;
     import src.Map.Username;
     import src.Objects.SimpleGameObject;
@@ -43,8 +43,8 @@ package src.Comm.Commands
 		
 		private function readStrongholdPublicProfile(packet: Packet, custom: * ): void {
 			// We don't actually have a public profile we just send the map there
-			var pt:Point = TileLocator.getScreenCoord(packet.readUInt(), packet.readUInt());
-			Global.map.camera.ScrollToCenter(pt.x, pt.y);
+			var pt:ScreenPosition = TileLocator.getScreenCoord(new Position(packet.readUInt(), packet.readUInt()));
+			Global.map.camera.ScrollToCenter(pt);
 			Global.gameContainer.closeAllFrames(true);
 			
 			if (custom && custom.callback) {
@@ -149,8 +149,8 @@ package src.Comm.Commands
 			if (MapComm.tryShowError(packet)) {
 				return;
 			}
-			var pt:Point = TileLocator.getScreenCoord(packet.readUInt(), packet.readUInt());
-			Global.map.camera.ScrollToCenter(pt.x, pt.y);
+			var pt:ScreenPosition = TileLocator.getScreenCoord(new Position(packet.readUInt(), packet.readUInt()));
+			Global.map.camera.ScrollToCenter(pt);
 			Global.gameContainer.closeAllFrames(true);
 		}		
 		

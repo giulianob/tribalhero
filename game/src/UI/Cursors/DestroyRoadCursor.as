@@ -48,7 +48,7 @@ package src.UI.Cursors {
 			destroyableArea = new GroundCallbackCircle(city.radius - 1, validateTileCallback);						
 			
 			destroyableArea.alpha = 0.3;
-			var point: Point = TileLocator.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
+			var point: ScreenPosition = city.MainBuilding.primaryPosition.toScreenPosition();
 			destroyableArea.objX = point.x; 
 			destroyableArea.objY = point.y;
 			
@@ -133,16 +133,19 @@ package src.UI.Cursors {
 				return;
 
 			var mousePos: Point = TileLocator.getPointWithZoomFactor(Math.max(0, event.stageX), Math.max(0, event.stageY));
-			var pos: ScreenPosition = TileLocator.getActualCoord(Global.gameContainer.camera.x + mousePos.x, Global.gameContainer.camera.y + mousePos.y);
+			var pos: ScreenPosition = TileLocator.getActualCoord(
+                    Global.gameContainer.camera.currentPosition.x + mousePos.x,
+                    Global.gameContainer.camera.currentPosition.y + mousePos.y);
 
 			if (!pos.equals(objPosition))
 			{
 				objPosition = pos;
 
 				//Object cursor
-				if (cursor.stage != null) 
+				if (cursor.stage != null) {
 					Global.map.objContainer.removeObject(cursor);
-					
+                }
+
 				cursor.objX = pos.x;
 				cursor.objY = pos.y;
 				
@@ -154,7 +157,7 @@ package src.UI.Cursors {
 
 		private function validateTile(screenPos: ScreenPosition) : Boolean {
 			var mapPos: Position = screenPos.toPosition();
-			var tileType: int = Global.map.regions.getTileAt(mapPos.x, mapPos.y);
+			var tileType: int = Global.map.regions.getTileAt(mapPos);
 
 			if (!RoadPathFinder.isRoad(tileType)) 
 				return false;
@@ -186,7 +189,7 @@ package src.UI.Cursors {
 			// Make sure all neighbors have a different path
 			for each (var position: Position in TileLocator.foreachTile(mapPos.x, mapPos.y, 1, false))
 			{
-				if (TileLocator.radiusDistance(mapPos.x, mapPos.y, position.x, position.y) != 1)
+				if (TileLocator.radiusDistance(mapPos.x, mapPos.y, 1, position.x, position.y, 1) != 1)
                 {
                     continue;
                 }
@@ -196,7 +199,7 @@ package src.UI.Cursors {
                     continue;
                 }
 				
-				if (RoadPathFinder.isRoadByMapPosition(position.x, position.y)) {					
+				if (RoadPathFinder.isRoadByMapPosition(position)) {
 					if (!RoadPathFinder.hasPath(position, new Position(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
 						return false;
 					}
@@ -224,14 +227,18 @@ package src.UI.Cursors {
 			var mapObjPos: Position = objPosition.toPosition();
 
 			// Check if cursor is inside city walls
-			if (city != null && TileLocator.distance(city.MainBuilding.x, city.MainBuilding.y, mapObjPos.x, mapObjPos.y) >= city.radius)
+			if (city != null && TileLocator.distance(city.MainBuilding.x, city.MainBuilding.y, 1, mapObjPos.x, mapObjPos.y, 1) >= city.radius)
+            {
 				hideCursors();
-			
+            }
 			// Perform other validations
 			else if (!validateTile(objPosition))
+            {
 				hideCursors();
-			else
-				showCursors();			
+            }
+			else {
+				showCursors();
+            }
 		}
 	}
 }

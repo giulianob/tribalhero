@@ -1,7 +1,5 @@
 ﻿package src.Comm.Commands {
 
-    import flash.geom.*;
-
     import org.aswing.*;
 
     import src.*;
@@ -103,7 +101,7 @@
 		public function readObjectInstance(packet: Packet, regionId: int, forRegion: Boolean = false): SimpleGameObject {
 			var obj: * = readObject(packet, regionId, forRegion);
 			
-			var coord: Point = TileLocator.getScreenCoord(obj.x, obj.y);
+			var coord: ScreenPosition = TileLocator.getScreenCoord(new Position(obj.x, obj.y));
 			
 			switch(ObjectFactory.getClassType(obj.type)) {
 				case ObjectFactory.TYPE_STRUCTURE:
@@ -478,7 +476,7 @@
 
 			var obj: SimpleGameObject = readObjectInstance(packet, regionId);
 			
-			Global.map.regions.addObject(regionId, obj);			
+			Global.map.regions.addObject(obj);
 		}
 
 		public function onRemoveObject(packet: Packet):void
@@ -497,7 +495,7 @@
 			
 			var obj: SimpleGameObject = readObjectInstance(packet, newRegionId);
 			
-			Global.map.regions.moveObject(oldRegionId, newRegionId, obj);
+			Global.map.regions.moveObject(oldRegionId, obj);
 		}
 
 		public function onReceiveStartObjectAction(packet: Packet):void

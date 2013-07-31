@@ -1,7 +1,6 @@
 ﻿package src.UI.Components.CityActionGridList
 {
     import flash.events.MouseEvent;
-    import flash.geom.Point;
 
     import org.aswing.*;
     import org.aswing.ext.*;
@@ -9,6 +8,7 @@
 
     import src.Global;
     import src.Map.CityObject;
+    import src.Map.ScreenPosition;
     import src.Map.TileLocator;
     import src.Objects.Actions.CurrentAction;
     import src.Objects.Actions.CurrentActiveAction;
@@ -38,9 +38,8 @@
 				if (value != null)
 				{
 					var cityObj: CityObject = value.cityObj;
-					var pt: Point = TileLocator.getScreenCoord(cityObj.x, cityObj.y);
 					Global.map.selectWhenViewable(cityObj.city.id, cityObj.objectId);
-					Global.map.camera.ScrollToCenter(pt.x, pt.y);					
+					Global.map.camera.ScrollToCenter(cityObj.primaryPosition.toScreenPosition());
 					Util.getFrame(getParent()).dispose();
 				}
 			});
@@ -63,7 +62,7 @@
 			var actionDescription: String = "N/A";
 			if (currentAction is CurrentActiveAction)
 			{
-				var actionWorkerPrototype: Worker = WorkerFactory.getPrototype(value.prototype.workerid);
+				var actionWorkerPrototype: Worker = WorkerFactory.getPrototype(value.objPrototype.workerid);
 				if (actionWorkerPrototype != null)
 				actionDescription = actionWorkerPrototype.getAction((currentAction as CurrentActiveAction).index).toString();
 			}

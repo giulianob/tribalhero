@@ -8,7 +8,6 @@
     import src.Global;
     import src.Objects.SimpleGameObject;
     import src.Util.BinaryList.*;
-    import src.Util.Util;
 
     public class RegionManager extends BinaryList
 	{
@@ -19,7 +18,7 @@
 			super(Region.sortOnId, Region.compare);
 		}
 
-        private function addToPrimaryRegionAndTiles(obj: SimpleGameObject): Boolean
+        private function removeFromPrimaryRegionAndTiles(obj: SimpleGameObject, dispose: Boolean): Boolean
         {
             var regionId: int = TileLocator.getRegionId(obj.primaryPosition);
             var primaryRegion: Region = get(regionId);
@@ -29,7 +28,7 @@
                 return false;
             }
 
-            primaryRegion.addObject(obj);
+            primaryRegion.removeObject(obj, dispose);
 
             for each (var position: Position in TileLocator.foreachMultitileObject(obj))
             {
@@ -38,11 +37,40 @@
 
                 if (region != null)
                 {
-                    region.addObjectToTile(obj, position);
+                    region.removeObjectFromTile(obj, position);
                 }
             }
 
             return true;
+        }
+
+        public function addObject(obj: SimpleGameObject, fadeIn: Boolean = true): void
+        {
+            var regionId: int = TileLocator.getRegionIdFromMapCoord(obj.primaryPosition.toPosition());
+            var primaryRegion: Region = get(regionId);
+
+            if (primaryRegion == null)
+            {
+                return;
+            }
+
+            primaryRegion.addObject(obj);
+
+            for each (var position: Position in TileLocator.foreachMultitileObject(obj))
+            {
+                regionId = TileLocator.getRegionIdFromMapCoord(position);
+                var region: Region = get(regionId);
+
+                if (region != null)
+                {
+                    region.addObjectToTile(obj, position);
+                }
+            }
+
+            if (fadeIn)
+            {
+                obj.fadeIn();
+            }
         }
 
 		public function updateObject(regionId: int, newObj: SimpleGameObject): SimpleGameObject
@@ -61,12 +89,12 @@
 			var objChanged: Boolean = !newObj.equalsOnMap(obj);
 			
 			var prevPosition: Point = new Point(obj.x, obj.y);
-						
-			region.removeObject(obj.groupId, obj.objectId, false);
+
+            removeFromPrimaryRegionAndTiles(obj, false);
 			
 			obj.copy(newObj);
 			
-			addObject(regionId, obj, objChanged);
+			addObject(obj, objChanged);
 			
 			TweenMax.from(obj, 0.75, { x: prevPosition.x, y: prevPosition.y });
 			
@@ -77,44 +105,47 @@
 			return obj;
 		}
 
-		public function removeObject(regionId: int, groupId: int, objId: int):void
+		public function removeObject(regionId: int, groupId: int, objectId: int):void
 		{
 			var region: Region = get(regionId);
 
 			if (region == null) {
 				return;
             }
-			
-			region.removeObject(groupId, objId);
+
+            var obj: SimpleGameObject = region.getObject(groupId, objectId);
+
+            removeFromPrimaryRegionAndTiles(obj, true);
 		}
 
-		public function moveObject(oldRegionId: int, newRegionId: int, newObj: SimpleGameObject): SimpleGameObject
+		public function moveObject(oldRegionId: int, newObj: SimpleGameObject): SimpleGameObject
 		{
 			var oldRegion: Region = get(oldRegionId);
 
 			if (oldRegion == null)
 				return null;
-			
-			var obj: SimpleGameObject = oldRegion.removeObject(newObj.groupId, newObj.objectId, false);
 
-			if (obj == null) {
+            var currentObj: SimpleGameObject = oldRegion.getObject(newObj.groupId, newObj.objectId);
+            removeFromPrimaryRegionAndTiles(currentObj, false);
+
+			if (currentObj == null) {
 				return null; 
 			}
 			
-			var objChanged: Boolean = !newObj.equalsOnMap(obj);
+			var objChanged: Boolean = !newObj.equalsOnMap(currentObj);
 			
-			var prevPosition: Point = new Point(obj.x, obj.y);
+			var prevPosition: Point = new Point(currentObj.x, currentObj.y);
+
+            currentObj.copy(newObj);
+			addObject(currentObj, objChanged);
 			
-			obj.copy(newObj);
-			addObject(newRegionId, obj, objChanged);
-			
-			TweenMax.from(obj, 0.75, { x: prevPosition.x, y: prevPosition.y });
+			TweenMax.from(currentObj, 0.75, { x: prevPosition.x, y: prevPosition.y });
 				
-			Global.map.requeryIfSelected(obj);
-			
-			obj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
+			Global.map.requeryIfSelected(currentObj);
+
+            currentObj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
 					
-			return obj;
+			return currentObj;
 		}
 
 		public function getObjectsInTile(position: Position, objClass: * = null): Array
@@ -129,25 +160,25 @@
 			return region.getObjectsInTile(position, objClass);
 		}
 
-		public function getTileAt(x: int, y: int): int
+		public function getTileAt(position: Position): int
 		{
-			var regionId: int = TileLocator.getRegionIdFromMapCoord(new Position(x, y));
+			var regionId: int = TileLocator.getRegionIdFromMapCoord(position);
 			var region: Region = get(regionId);
 
 			if (region == null)
 				return -1;			
 
-			return region.getTileAt(x, y);
+			return region.getTileAt(position);
 		}
 
-		public function setTileType(x: int, y: int, tileType: int, redraw: Boolean = false) : void {
-			var regionId: int = TileLocator.getRegionIdFromMapCoord(new Position(x, y));
+		public function setTileType(position: Position, tileType: int, redraw: Boolean = false) : void {
+			var regionId: int = TileLocator.getRegionIdFromMapCoord(position);
 			var region: Region = get(regionId);
 			
 			if (region == null)
 				return;			
 			
-			region.setTile(x, y, tileType, redraw);
+			region.setTile(position, tileType, redraw);
 			
 			dispatchEvent(new Event(REGION_UPDATED));
 		}
@@ -159,26 +190,6 @@
 				return;
 
 			region.redraw();
-		}
-
-		public function addObject(regionId: int, obj: SimpleGameObject, fadeIn: Boolean = true): SimpleGameObject
-		{
-			var region: Region = get(regionId);
-
-			if (region == null)
-			{
-				Util.log("Invalid region at map.addObject. Region received: " + regionId);
-				return null;
-			}
-
-			var obj:SimpleGameObject = region.addObject(obj);			
-			
-			if (obj && fadeIn)
-            {
-				obj.fadeIn();
-			}
-			
-			return obj;
 		}
 	}
 

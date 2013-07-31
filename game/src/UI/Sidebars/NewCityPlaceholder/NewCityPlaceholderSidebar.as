@@ -1,6 +1,5 @@
 ﻿package src.UI.Sidebars.NewCityPlaceholder {
     import flash.events.*;
-    import flash.geom.Point;
 
     import org.aswing.*;
     import org.aswing.border.*;
@@ -70,7 +69,6 @@
 		{
 			super.showSelf(owner, onClose, dispose);
 
-			var pt: Point = TileLocator.getMapCoord(newCityPlaceholderObj.objX, newCityPlaceholderObj.objY);
 			frame.getTitleBar().setText("New City Foundation");
 
 			frame.show();

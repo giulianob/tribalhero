@@ -2,11 +2,10 @@
 package src.UI.Sidebars.NewCityPlaceholder.Buttons {
     import flash.events.Event;
     import flash.events.MouseEvent;
-    import flash.geom.Point;
 
     import src.Constants;
     import src.Global;
-    import src.Map.TileLocator;
+    import src.Map.Position;
     import src.Objects.Actions.ActionButton;
     import src.Objects.Effects.Formula;
     import src.Objects.Factories.*;
@@ -41,11 +40,10 @@ package src.UI.Sidebars.NewCityPlaceholder.Buttons {
 		override public function validateButton():Boolean 
 		{
 			var data:* = Formula.getResourceNewCity();
-			if (Constants.alwaysEnableButtons) return true;
-			if (data.influenceRequired > data.influenceCurrent || data.wagonRequired > data.wagonCurrent)
-				return false;
 
-			return true;
+            if (Constants.alwaysEnableButtons) return true;
+
+			return !(data.influenceRequired > data.influenceCurrent || data.wagonRequired > data.wagonCurrent);
 		}
 
 		public function onMouseOver(event: MouseEvent):void
@@ -63,7 +61,7 @@ package src.UI.Sidebars.NewCityPlaceholder.Buttons {
 			if (isEnabled())
 			{
 				var dlg: CreateCityDialog = new CreateCityDialog(function(sender: CreateCityDialog) : void {				
-					var mapPos: Point = TileLocator.getMapCoord(newCityPlaceholder.objX, newCityPlaceholder.objY);
+					var mapPos: Position = newCityPlaceholder.primaryPosition.toPosition();
 					Global.mapComm.Region.createCity(Global.gameContainer.selectedCity.id, mapPos.x, mapPos.y, sender.getCityName());
 					sender.getFrame().dispose();
 				});						

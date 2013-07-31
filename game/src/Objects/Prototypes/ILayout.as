@@ -11,7 +11,7 @@ package src.Objects.Prototypes {
 
     public interface ILayout {
 		function toString(): String;
-		function validate(builder: CityObject, city: City, position: Position): Boolean;
+		function validate(builder: CityObject, city: City, position: Position, size: int): Boolean;
 	}
 
 }

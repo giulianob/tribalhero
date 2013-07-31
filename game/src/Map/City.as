@@ -68,19 +68,21 @@ package src.Map {
 			dispatchEvent(new Event(RESOURCES_UPDATE));
 		}
 
-		public function nearObjectsByRadius(mindist: int, maxdist: int, position: Position, type: int = -1): Array
+		public function nearObjectsByRadius(mindist: int, maxdist: int, position: Position, size: int, type: int): Array
 		{
 			var ret: Array = [];
 
 			for each(var obj: CityObject in objects)
 			{
-				if (type != -1 && obj.type != type)
-				continue;
+				if (type != -1 && obj.type != type) {
+				    continue;
+                }
 
-				var dist: Number = obj.radiusDistance(position.x, position.y);
+				var dist: Number = TileLocator.radiusDistance(obj.x, obj.y, obj.size, position.x, position.y, size);
 
-				if (mindist <= dist && (maxdist == -1 || maxdist >= dist))
-				ret.push(obj);
+				if (mindist <= dist && (maxdist == -1 || maxdist >= dist)) {
+				    ret.push(obj);
+                }
 			}
 
 			return ret;
@@ -102,15 +104,15 @@ package src.Map {
 		
 		public function hasStructureAt(mapPos: Position): Boolean
 		{
-			var ret: Array = [];
-
 			for each(var obj: CityObject in objects)
 			{
-				if (ObjectFactory.getClassType(obj.type) != ObjectFactory.TYPE_STRUCTURE)
-				continue;
+				if (ObjectFactory.getClassType(obj.type) != ObjectFactory.TYPE_STRUCTURE) {
+				    continue;
+                }
 
-				if (obj.x != mapPos.x || obj.y != mapPos.y)
-				continue;
+				if (obj.x != mapPos.x || obj.y != mapPos.y) {
+				    continue;
+                }
 
 				return true;
 			}
@@ -120,15 +122,15 @@ package src.Map {
 
 		public function getStructureAt(mapPos: Position): CityObject
 		{
-			var ret: Array = [];
-
 			for each(var obj: CityObject in objects)
 			{
-				if (ObjectFactory.getClassType(obj.type) != ObjectFactory.TYPE_STRUCTURE)
-				continue;
+				if (ObjectFactory.getClassType(obj.type) != ObjectFactory.TYPE_STRUCTURE) {
+				    continue;
+                }
 
-				if (obj.x != mapPos.x || obj.y != mapPos.y)
-				continue;
+				if (obj.x != mapPos.x || obj.y != mapPos.y) {
+				    continue;
+                }
 
 				return obj;
 			}

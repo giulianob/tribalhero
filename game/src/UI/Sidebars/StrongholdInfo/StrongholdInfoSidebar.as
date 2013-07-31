@@ -1,6 +1,5 @@
 ﻿package src.UI.Sidebars.StrongholdInfo {
     import flash.events.*;
-    import flash.geom.*;
 
     import org.aswing.*;
     import org.aswing.border.*;
@@ -8,7 +7,7 @@
     import org.aswing.geom.*;
 
     import src.*;
-    import src.Map.*;
+    import src.Map.Position;
     import src.Objects.*;
     import src.Objects.Stronghold.*;
     import src.UI.*;
@@ -129,7 +128,7 @@
 		{
 			super.showSelf(owner, onClose, dispose);
 
-			var pt: Point = TileLocator.getMapCoord(stronghold.objX, stronghold.objY);
+			var pt: Position = stronghold.primaryPosition.toPosition();
 			frame.getTitleBar().setText("Stronghold (" + pt.x + "," + pt.y + ")");
 
 			frame.show();

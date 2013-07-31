@@ -129,45 +129,40 @@
 
 		public function moveTo(x: int, y: int):void
 		{
-			var pos: ScreenPosition = TileLocator.getActualCoord(Global.gameContainer.camera.x + Math.max(x, 0), Global.gameContainer.camera.y + Math.max(y, 0));
+			var pos: ScreenPosition = TileLocator.getActualCoord(Global.gameContainer.camera.currentPosition.x + Math.max(x, 0), Global.gameContainer.camera.currentPosition.y + Math.max(y, 0));
 
-			if (!pos.equals(objPosition))
-			{
-				Global.map.objContainer.removeObject(cursor, ObjectContainer.LOWER);
+            // Don't do anything if position hasn't changed since last time the mouse moved
+            if (pos.equals(objPosition)) {
+                return;
+            }
 
-				objPosition = pos;
+            Global.map.objContainer.removeObject(cursor, ObjectContainer.LOWER);
 
-				cursor.objX = pos.x;
-				cursor.objY = pos.y;
+            objPosition = pos;
 
-				Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
+            cursor.objX = pos.x;
+            cursor.objY = pos.y;
+            Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
 
-				validate();
-			}
+            if (highlightedObj) {
+                highlightedObj.setHighlighted(false);
+                highlightedObj = null;
+            }
+
+            var objects: Array = Global.map.regions.getObjectsInTile(objPosition.toPosition(), StructureObject);
+            if (objects.length == 0 || objects[0].cityId != parentObj.cityId) {
+                Global.gameContainer.message.showMessage("Choose a structure to remove");
+                return;
+            }
+
+            var gameObj: StructureObject = objects[0];
+            gameObj.setHighlighted(true);
+            highlightedObj = gameObj;
+
+            Global.gameContainer.message.showMessage("Double click to remove this structure.");
 		}
 
-		public function validate():void
-		{
-			if (highlightedObj)
-			{
-				highlightedObj.setHighlighted(false);
-				highlightedObj = null;
-			}
-
-			var objects: Array = Global.map.regions.getObjectsInTile(objPosition.toPosition(), StructureObject);
-
-			if (objects.length == 0 || objects[0].cityId != parentObj.cityId) {
-				Global.gameContainer.message.showMessage("Choose a structure to remove");
-				return;
-			}
-
-			var gameObj: StructureObject = objects[0];
-			gameObj.setHighlighted(true);
-			highlightedObj = gameObj;
-
-			Global.gameContainer.message.showMessage("Double click to remove this structure.");
-		}
-	}
+    }
 
 }
 

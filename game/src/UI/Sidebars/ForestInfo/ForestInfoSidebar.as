@@ -1,6 +1,5 @@
 ﻿package src.UI.Sidebars.ForestInfo {
     import flash.events.*;
-    import flash.geom.Point;
     import flash.utils.Timer;
 
     import org.aswing.*;
@@ -9,7 +8,7 @@
     import org.aswing.geom.*;
 
     import src.*;
-    import src.Map.*;
+    import src.Map.Position;
     import src.Objects.*;
     import src.Objects.Effects.Formula;
     import src.UI.Components.SimpleTooltip;
@@ -118,7 +117,7 @@
 		{
 			super.showSelf(owner, onClose, dispose);
 
-			var pt: Point = TileLocator.getMapCoord(forestObj.objX, forestObj.objY);
+			var pt: Position = forestObj.primaryPosition.toPosition();
 			frame.getTitleBar().setText("Forest (" + pt.x + "," + pt.y + ")");
 
 			frame.show();

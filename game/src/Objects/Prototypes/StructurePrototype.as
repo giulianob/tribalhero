@@ -1,10 +1,4 @@
-﻿/**
- * ...
- * @author Default
- * @version 0.1
- */
-
-package src.Objects.Prototypes {
+﻿package src.Objects.Prototypes {
     import src.Global;
     import src.Map.City;
     import src.Map.CityObject;
@@ -56,7 +50,7 @@ package src.Objects.Prototypes {
 			
 			for each(var layout: ILayout in layouts)
 			{
-				if (!layout.validate(builder, city, position))
+				if (!layout.validate(builder, city, position, size))
 					return false;
 			}
 

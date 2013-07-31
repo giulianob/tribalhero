@@ -17,9 +17,11 @@ package src.Map {
 
         public function toPosition(): Position
         {
-            var pt: Point = TileLocator.getMapCoord(x, y);
+            return TileLocator.getMapCoord(this);
+        }
 
-            return new Position(pt.x, pt.y);
+        public function copy(): ScreenPosition {
+            return new ScreenPosition(x, y);
         }
     }
 }

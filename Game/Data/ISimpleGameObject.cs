@@ -1,6 +1,8 @@
+using Game.Util.Locking;
+
 namespace Game.Data
 {
-    public interface ISimpleGameObject : IXYPosition
+    public interface ISimpleGameObject : ILockable, IXYPosition
     {
         bool InWorld { get; set; }
 

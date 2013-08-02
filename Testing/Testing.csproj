@@ -133,6 +133,7 @@
     <Compile Include="BattleTests\CombatStructureTest.cs" />
     <Compile Include="BattleTests\StaminaMonitorTests.cs" />
     <Compile Include="BattleTests\StatsModCalculator.cs" />
+    <Compile Include="BattleTests\StrongholdBattleManagerTests.cs" />
     <Compile Include="ChannelTests\ChannelTest.cs" />
     <Compile Include="CityRegionTests\CityRegionTest.cs" />
     <Compile Include="CityTests\CityTest.cs" />

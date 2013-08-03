@@ -17,6 +17,5 @@ namespace Game.Battle
                         out ICombatGroup outCombatGroup,
                         out BattleManager.BattleSide foundInGroup);
 
-        decimal Meter { get; set; }
     }
 }

@@ -17,11 +17,11 @@ namespace Game.Battle
     /// </summary>
     public class BattleOrder : IBattleOrder
     {
-        public decimal Meter { get; set; }
+        private readonly Random random;
 
-        public BattleOrder(int meter = 0)
+        public BattleOrder(Random random)
         {
-            Meter = meter;
+            this.random = random;
         }
 
         /// <summary>
@@ -36,17 +36,16 @@ namespace Game.Battle
                                out ICombatGroup outCombatGroup,
                                out BattleManager.BattleSide foundInGroup)
         {
-            BattleManager.BattleSide sideAttack;
-            if (Meter == 0)
+            var attackerUpkeep = attacker.UpkeepNotParticipated(round);
+            var defenderUpkeep = defender.UpkeepNotParticipated(round);
+            if (attackerUpkeep == 0 && defenderUpkeep == 0)
             {
-                sideAttack = attacker.UpkeepNotParticipated(round) < defender.UpkeepNotParticipated(round)
-                                     ? BattleManager.BattleSide.Attack
-                                     : BattleManager.BattleSide.Defense;
+                attackerUpkeep = attacker.UpkeepNotParticipated(round + 1);
+                defenderUpkeep = defender.UpkeepNotParticipated(round + 1);
             }
-            else
-            {
-                sideAttack = Meter > 0 ? BattleManager.BattleSide.Defense : BattleManager.BattleSide.Attack;
-            }
+            BattleManager.BattleSide sideAttack = random.Next(attackerUpkeep + defenderUpkeep) < attackerUpkeep
+                                                          ? BattleManager.BattleSide.Attack
+                                                          : BattleManager.BattleSide.Defense;
             var offensiveCombatList = sideAttack == BattleManager.BattleSide.Attack ? attacker : defender;
             var defensiveCombatList = sideAttack == BattleManager.BattleSide.Attack ? defender : attacker;
             var offensiveSide = sideAttack;
@@ -62,7 +61,6 @@ namespace Game.Battle
                 foundInGroup = offensiveSide;
                 outCombatGroup = outCombatGroupAttacker;
                 outCombatObject = outCombatObjectAttacker;
-                UpdateMeter(round, foundInGroup, offensiveCombatList, outCombatObject);
                 return true;
             }
 
@@ -74,7 +72,6 @@ namespace Game.Battle
                 foundInGroup = defensiveSide;
                 outCombatGroup = outCombatGroupDefender;
                 outCombatObject = outCombatObjectDefender;
-                UpdateMeter(round, foundInGroup, defensiveCombatList, outCombatObject);
                 return true;
             }
 
@@ -85,14 +82,12 @@ namespace Game.Battle
                 foundInGroup = offensiveSide;
                 outCombatGroup = outCombatGroupAttacker;
                 outCombatObject = outCombatObjectAttacker;
-                UpdateMeter(round + 1, foundInGroup, foundInGroup == BattleManager.BattleSide.Attack ? attacker : defender, outCombatObject);
             }
             else if (outCombatObjectDefender != null)
             {
                 foundInGroup = defensiveSide;
                 outCombatGroup = outCombatGroupDefender;
                 outCombatObject = outCombatObjectDefender;
-                UpdateMeter(round + 1, foundInGroup, foundInGroup == BattleManager.BattleSide.Attack ? attacker : defender, outCombatObject);
             }
                     // If this happens then it means there is no one in the battle or the battle is prolly over
             else
@@ -146,27 +141,6 @@ namespace Game.Battle
             outObj = null;
             outGroup = null;
             return false;
-        }
-
-        private void UpdateMeter(uint round, BattleManager.BattleSide foundInGroup, ICombatList combatList, ICombatObject combatObject)
-        {
-            /*
-             * when meter is 0 or higher defender hits
-             * when a defender hits, the meter go down by it's %
-             * when an attacker hits, the meter go up by it's %
-             */
-            var totalUpkeep = combatList.UpkeepNotParticipated(round);
-            if (totalUpkeep <= 0)
-                throw new Exception("How can this happen!");
-
-            if (foundInGroup == BattleManager.BattleSide.Defense)
-            {
-                Meter -= (decimal)combatObject.Upkeep / totalUpkeep;
-            }
-            else
-            {
-                Meter += (decimal)combatObject.Upkeep / totalUpkeep;
-            }
         }
     }
 }

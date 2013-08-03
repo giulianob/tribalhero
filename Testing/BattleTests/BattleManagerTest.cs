@@ -214,7 +214,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
-                                                              new BattleOrder(),
+                                                              new BattleOrder(new Random()),
                                                               delegate { });
 
             var defender = new Mock<ICombatObject>();
@@ -251,7 +251,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
-                                                              new BattleOrder(),
+                                                              new BattleOrder(new Random()),
                                                               delegate { });
 
             var attacker = new Mock<ICombatObject>();
@@ -289,7 +289,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
-                                                              new BattleOrder(),
+                                                              new BattleOrder(new Random()),
                                                               delegate { });
 
             var defender = new Mock<ICombatObject>();
@@ -326,7 +326,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
-                                                              new BattleOrder(),
+                                                              new BattleOrder(new Random()),
                                                               delegate { });
 
             var enterBattleRaised = false;
@@ -358,7 +358,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
-                                                              new BattleOrder(),
+                                                              new BattleOrder(new Random()),
                                                               delegate { });
 
             var attacker = new Mock<ICombatObject>();
@@ -395,7 +395,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
-                                                              new BattleOrder(),
+                                                              new BattleOrder(new Random()),
                                                               delegate { });
 
             var defender = new Mock<ICombatObject>();
@@ -434,7 +434,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
-                                                              new BattleOrder(),
+                                                              new BattleOrder(new Random()),
                                                               delegate { });
 
             var defender = new Mock<ICombatObject>();
@@ -479,7 +479,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
-                                                              new BattleOrder(),
+                                                              new BattleOrder(new Random()),
                                                               delegate { });
 
             var defender = new Mock<ICombatObject>();
@@ -528,7 +528,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
-                                                              new BattleOrder(),
+                                                              new BattleOrder(new Random()),
                                                               delegate { });
 
             var defender = new Mock<ICombatObject>();
@@ -581,7 +581,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
-                                                              new BattleOrder(),
+                                                              new BattleOrder(new Random()),
                                                               delegate { });
 
             var defender = new Mock<ICombatObject>();
@@ -769,7 +769,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
-                                                              new BattleOrder(),
+                                                              new BattleOrder(new Random()),
                                                               (offensiveCombatList,
                                                                defensiveCombatList,
                                                                attackerObject,
@@ -960,7 +960,7 @@ namespace Testing.BattleTests
             var battle = sut.CreateStubbedAttackBattleManager(1,
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
-                                                              new BattleOrder(),
+                                                              new BattleOrder(new Random()),
                                                               delegate { });
             battle.Round = 2;
             battle.Turn = 2;

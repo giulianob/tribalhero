@@ -231,7 +231,7 @@ namespace Game.Comm.Channel
                 return;
             }
 
-            regionManager.ObjectUpdateEvent(city.MainBuilding, city.X, city.Y);
+            regionManager.ObjectUpdateEvent(city.MainBuilding, city.PrimaryPosition.X, city.PrimaryPosition.Y);
 
             channel.Post(GetChannelName(city), () =>
                 {

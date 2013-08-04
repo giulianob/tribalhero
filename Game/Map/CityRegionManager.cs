@@ -29,7 +29,7 @@ namespace Game.Map
         public void Add(ICityRegionObject obj)
         {
             CityRegion cityRegion;
-            if (TryGetCityRegion(obj.X, obj.Y, out cityRegion))
+            if (TryGetCityRegion(obj.PrimaryPosition.X, obj.PrimaryPosition.Y, out cityRegion))
             {
                 cityRegion.Add(obj);
             }
@@ -54,7 +54,7 @@ namespace Game.Map
             }
 
             ushort oldCityRegionId = CityRegion.GetRegionIndex(origX, origY);
-            ushort newCityRegionId = CityRegion.GetRegionIndex(obj.X, obj.Y);
+            ushort newCityRegionId = CityRegion.GetRegionIndex(obj.PrimaryPosition.X, obj.PrimaryPosition.Y);
 
             if (oldCityRegionId == newCityRegionId)
             {
@@ -91,7 +91,7 @@ namespace Game.Map
         public void Remove(ICityRegionObject obj)
         {
             CityRegion cityRegion;
-            if (TryGetCityRegion(obj.X, obj.Y, out cityRegion))
+            if (TryGetCityRegion(obj.PrimaryPosition.X, obj.PrimaryPosition.Y, out cityRegion))
             {
                 cityRegion.Remove(obj);
             }

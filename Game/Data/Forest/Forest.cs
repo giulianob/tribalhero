@@ -311,9 +311,12 @@ namespace Game.Data.Forest
 
                 return new[]
                 {
-                        new DbColumn("labor", Labor, DbType.UInt16), new DbColumn("x", X, DbType.UInt32),
-                        new DbColumn("y", Y, DbType.Int32), new DbColumn("level", Lvl, DbType.Byte),
-                        new DbColumn("rate", Rate, DbType.Single), new DbColumn("capacity", Wood.Limit, DbType.Int32),
+                        new DbColumn("labor", Labor, DbType.UInt16), 
+                        new DbColumn("x", PrimaryPosition.X, DbType.UInt32),
+                        new DbColumn("y", PrimaryPosition.Y, DbType.Int32), 
+                        new DbColumn("level", Lvl, DbType.Byte),
+                        new DbColumn("rate", Rate, DbType.Single), 
+                        new DbColumn("capacity", Wood.Limit, DbType.Int32),
                         new DbColumn("last_realize_time", Wood.LastRealizeTime, DbType.DateTime),
                         new DbColumn("lumber", Wood.RawValue, DbType.Int32),
                         new DbColumn("upkeep", Wood.Upkeep, DbType.Int32),
@@ -354,7 +357,7 @@ namespace Game.Data.Forest
         {
             get
             {
-                return new Position(X, Y);
+                return new Position(PrimaryPosition.X, PrimaryPosition.Y);
             }
         }
 

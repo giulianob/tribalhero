@@ -148,8 +148,8 @@ namespace Game.Comm
                                     obj.ObjectId,
                                     obj.Type,
                                     obj.InWorld,
-                                    obj.X,
-                                    obj.Y);
+                                    obj.PrimaryPosition.X,
+                                    obj.PrimaryPosition.Y);
             }
 
             return outString.ToString();

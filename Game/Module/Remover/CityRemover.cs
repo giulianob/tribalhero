@@ -168,7 +168,7 @@ namespace Game.Module
                     }
 
                     // remove all customized tiles
-                    foreach (var position in tileLocator.ForeachTile(city.X, city.Y, city.Radius))
+                    foreach (var position in tileLocator.ForeachTile(city.PrimaryPosition.X, city.PrimaryPosition.Y, city.Radius))
                     {
                         world.Regions.RevertTileType(position.X, position.Y, true);                        
                     }

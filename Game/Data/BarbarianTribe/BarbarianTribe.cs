@@ -130,7 +130,7 @@ namespace Game.Data.BarbarianTribe
         {
             get
             {
-                return new Position(X, Y);
+                return new Position(PrimaryPosition.X, PrimaryPosition.Y);
             }
         }
 
@@ -202,8 +202,8 @@ namespace Game.Data.BarbarianTribe
                 {
                         new DbColumn("level", Lvl, DbType.Byte), 
                         new DbColumn("camp_remains", CampRemains, DbType.Byte), 
-                        new DbColumn("x", X, DbType.UInt32), 
-                        new DbColumn("y", Y, DbType.UInt32),
+                        new DbColumn("x", PrimaryPosition.X, DbType.UInt32), 
+                        new DbColumn("y", PrimaryPosition.Y, DbType.UInt32),
                         new DbColumn("state", (byte)State.Type, DbType.Boolean),
                         new DbColumn("state_parameters", XmlSerializer.SerializeList(State.Parameters.ToArray()), DbType.String),
                         new DbColumn("resource_crop", Resource.Crop, DbType.Int32),

@@ -103,18 +103,6 @@ namespace Game.Data
             }          
         }
 
-        public uint X
-        {
-            get
-            {
-                return PrimaryPosition.X;
-            }
-            set
-            {
-                PrimaryPosition.X = value;
-            }
-        }
-
         public uint Y
         {
             get
@@ -221,7 +209,7 @@ namespace Game.Data
 
         public override string ToString()
         {
-            return string.Format("{0} x[{1}] y[{2}] origX[{7}] origY[{8}] type[{3}] groupId[{4}] objId[{5}] inWorld[{6}]", base.ToString(), X, Y, Type, GroupId, ObjectId, inWorld, originalPosition.X, originalPosition.Y);
+            return string.Format("{0} x[{1}] y[{2}] origX[{7}] origY[{8}] type[{3}] groupId[{4}] objId[{5}] inWorld[{6}]", base.ToString(), PrimaryPosition.X, PrimaryPosition.Y, Type, GroupId, ObjectId, inWorld, originalPosition.X, originalPosition.Y);
         }
     }
 }

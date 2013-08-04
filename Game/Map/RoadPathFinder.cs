@@ -43,8 +43,8 @@ namespace Game.Map
                             continue;
                         }
 
-                        if (!HasPath(new Position(str.X, str.Y),
-                                                    new Position(city.X, city.Y),
+                        if (!HasPath(new Position(str.PrimaryPosition.X, str.PrimaryPosition.Y),
+                                                    new Position(city.PrimaryPosition.X, city.PrimaryPosition.Y),
                                                     city,
                                                     new Position(x, y)))
                         {
@@ -65,14 +65,14 @@ namespace Game.Map
                     {
 
                         if (tileLocator.RadiusDistance(new Position(x, y), 1, position, 1) != 1 ||
-                            (city.X == position.X && city.Y == position.Y) ||
+                            (city.PrimaryPosition.X == position.X && city.PrimaryPosition.Y == position.Y) ||
                             !world.Roads.IsRoad(position.X, position.Y))
                         {
                             continue;
                         }
 
                         if (!HasPath(new Position(position.X, position.Y),
-                                     new Position(city.X, city.Y),
+                                     new Position(city.PrimaryPosition.X, city.PrimaryPosition.Y),
                                      city,
                                      new Position(x, y)))
                         {
@@ -108,7 +108,7 @@ namespace Game.Map
                     }
 
                     if (!buildingOnRoad || HasPath(new Position(position.X, position.Y),
-                                                   new Position(city.X, city.Y),
+                                                   new Position(city.PrimaryPosition.X, city.PrimaryPosition.Y),
                                                    city,
                                                    new Position(x, y)))
                     {

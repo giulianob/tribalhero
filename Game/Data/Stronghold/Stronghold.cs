@@ -170,7 +170,7 @@ namespace Game.Data.Stronghold
         {
             get
             {
-                return new Position(X, Y);
+                return new Position(PrimaryPosition.X, PrimaryPosition.Y);
             }
         }
 
@@ -344,8 +344,8 @@ namespace Game.Data.Stronghold
                         new DbColumn("level", Lvl, DbType.Byte),
                         new DbColumn("state", (byte)StrongholdState, DbType.Byte),
                         new DbColumn("gate", Gate, DbType.Decimal), 
-                        new DbColumn("x", X, DbType.UInt32),
-                        new DbColumn("y", Y, DbType.UInt32),
+                        new DbColumn("x", PrimaryPosition.X, DbType.UInt32),
+                        new DbColumn("y", PrimaryPosition.Y, DbType.UInt32),
                         new DbColumn("gate_open_to", GateOpenTo == null ? 0 : GateOpenTo.Id, DbType.UInt32),
                         new DbColumn("date_occupied", DateOccupied, DbType.DateTime),
                         new DbColumn("gate_battle_id", GateBattle != null ? GateBattle.BattleId : 0, DbType.UInt32),

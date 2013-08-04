@@ -125,7 +125,7 @@ namespace Game.Comm.ProcessorCommands
                         continue;
                     }
 
-                    if ((city.X == position.X && city.Y == position.Y) ||
+                    if ((city.PrimaryPosition.X == position.X && city.PrimaryPosition.Y == position.Y) ||
                         (world.Roads.IsRoad(position.X, position.Y) && 
                         !world.Regions.GetObjectsInTile(position.X, position.Y).Any(s => s is IStructure)))
                     {
@@ -219,7 +219,10 @@ namespace Game.Comm.ProcessorCommands
                 // Make sure there is a road next to this tile
                 bool breaksRoad = city
                         .Where(str => !str.IsMainBuilding && !objectTypeFactory.IsStructureType("NoRoadRequired", str))
-                        .Any(str => !roadPathFinder.HasPath(new Position(str.X, str.Y), new Position(city.X, city.Y), city, new Position(x, y)));
+                        .Any(str => !roadPathFinder.HasPath(start: new Position(str.PrimaryPosition.X, str.PrimaryPosition.Y),
+                                                            end: new Position(city.PrimaryPosition.X, city.PrimaryPosition.Y),
+                                                            city: city,
+                                                            excludedPoint: new Position(x, y)));
 
                 if (breaksRoad)
                 {
@@ -237,7 +240,7 @@ namespace Game.Comm.ProcessorCommands
                         continue;
                     }
 
-                    if (city.X == position.X && city.Y == position.Y)
+                    if (city.PrimaryPosition.X == position.X && city.PrimaryPosition.Y == position.Y)
                     {
                         continue;
                     }
@@ -248,7 +251,7 @@ namespace Game.Comm.ProcessorCommands
                     }
 
                     if (roadPathFinder.HasPath(new Position(position.X, position.Y),
-                                               new Position(city.X, city.Y),
+                                               new Position(city.PrimaryPosition.X, city.PrimaryPosition.Y),
                                                city,
                                                new Position(x, y)))
                     {
@@ -298,8 +301,8 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                reply.AddUInt32(city.X);
-                reply.AddUInt32(city.Y);
+                reply.AddUInt32(city.PrimaryPosition.X);
+                reply.AddUInt32(city.PrimaryPosition.Y);
 
                 session.Write(reply);
             }
@@ -337,8 +340,8 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                reply.AddUInt32(city.X);
-                reply.AddUInt32(city.Y);
+                reply.AddUInt32(city.PrimaryPosition.X);
+                reply.AddUInt32(city.PrimaryPosition.Y);
 
                 session.Write(reply);
             }
@@ -393,8 +396,8 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                reply.AddUInt32(notification.GameObject.X);
-                reply.AddUInt32(notification.GameObject.Y);
+                reply.AddUInt32(notification.GameObject.PrimaryPosition.X);
+                reply.AddUInt32(notification.GameObject.PrimaryPosition.Y);
 
                 session.Write(reply);
             }

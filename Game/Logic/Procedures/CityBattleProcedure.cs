@@ -92,7 +92,7 @@ namespace Game.Logic.Procedures
             return structures.Where(structure => tileLocator.IsOverlapping(troopObject.PrimaryPosition,
                     troopObject.Size,
                     troopObject.Stats.AttackRadius,
-                    new Position(structure.X, structure.Y),
+                    new Position(structure.PrimaryPosition.X, structure.PrimaryPosition.Y),
                     structure.Stats.Base.Radius,
                     structure.Size));
         }

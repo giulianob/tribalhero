@@ -55,8 +55,8 @@ namespace Game.Comm.ProcessorCommands
                     reply.AddUInt32(stronghold.ObjectId);
                     reply.AddString(stronghold.Name);
                     reply.AddByte(stronghold.Lvl);
-                    reply.AddUInt32(stronghold.X);
-                    reply.AddUInt32(stronghold.Y);
+                    reply.AddUInt32(stronghold.PrimaryPosition.X);
+                    reply.AddUInt32(stronghold.PrimaryPosition.Y);
                 }
 
                 session.Write(reply);
@@ -102,8 +102,8 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                reply.AddUInt32(stronghold.X);
-                reply.AddUInt32(stronghold.Y);
+                reply.AddUInt32(stronghold.PrimaryPosition.X);
+                reply.AddUInt32(stronghold.PrimaryPosition.Y);
 
                 session.Write(reply);
             }

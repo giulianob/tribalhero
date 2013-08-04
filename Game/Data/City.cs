@@ -174,26 +174,11 @@ namespace Game.Data
         /// <summary>
         ///     Returns the city's center point which is the town centers position
         /// </summary>
-        public uint X
-        {
-            get
-            {
-                return MainBuilding == null ? 0 : MainBuilding.X;
-            }
-            set
-            {
-                throw new NotSupportedException("Cannot set city X");
-            }
-        }
-
-        /// <summary>
-        ///     Returns the city's center point which is the town centers position
-        /// </summary>
         public uint Y
         {
             get
             {
-                return MainBuilding == null ? 0 : MainBuilding.Y;
+                return PrimaryPosition.Y;
             }
             set
             {
@@ -218,13 +203,7 @@ namespace Game.Data
             }
         }
 
-        public Position PrimaryPosition
-        {
-            get
-            {
-                return MainBuilding.PrimaryPosition;
-            }
-        }
+        public Position PrimaryPosition { get; private set; }
 
         /// <summary>
         ///     Enumerates through all troop objects in this city
@@ -816,8 +795,9 @@ namespace Game.Data
             {
                 return new[]
                 {
-                        new DbColumn("player_id", Owner.PlayerId, DbType.UInt32), new DbColumn("name", Name, DbType.String, 32)
-                        , new DbColumn("value", Value, DbType.UInt16),
+                        new DbColumn("player_id", Owner.PlayerId, DbType.UInt32), 
+                        new DbColumn("name", Name, DbType.String, 32), 
+                        new DbColumn("value", Value, DbType.UInt16),
                         new DbColumn("alignment_point", AlignmentPoint, DbType.Decimal),
                         new DbColumn("radius", Radius, DbType.Byte),
                         new DbColumn("hide_new_units", HideNewUnits, DbType.Boolean),
@@ -840,7 +820,8 @@ namespace Game.Data
                         new DbColumn("labor", Resource.Labor.RawValue, DbType.Int32),
                         new DbColumn("labor_realize_time", Resource.Labor.LastRealizeTime, DbType.DateTime),
                         new DbColumn("labor_production_rate", Resource.Labor.Rate, DbType.Int32),
-                        new DbColumn("x", X, DbType.UInt32), new DbColumn("y", Y, DbType.UInt32),
+                        new DbColumn("x", PrimaryPosition.X, DbType.UInt32), 
+                        new DbColumn("y", PrimaryPosition.Y, DbType.UInt32),
                         new DbColumn("deleted", Deleted, DbType.Int32)
                 };
             }
@@ -870,7 +851,7 @@ namespace Game.Data
         {
             get
             {
-                return new Position(X, Y);
+                return new Position(PrimaryPosition.X, PrimaryPosition.Y);
             }
         }
 
@@ -902,7 +883,7 @@ namespace Game.Data
         {
             get
             {
-                return (ushort)(X % Config.city_region_width);
+                return (ushort)(PrimaryPosition.X % Config.city_region_width);
             }
         }
 
@@ -910,7 +891,7 @@ namespace Game.Data
         {
             get
             {
-                return (ushort)(Y % Config.city_region_height);
+                return (ushort)(PrimaryPosition.Y % Config.city_region_height);
             }
         }
 

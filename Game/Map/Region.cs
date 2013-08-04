@@ -234,7 +234,7 @@ namespace Game.Map
 
         public static ushort GetRegionIndex(ISimpleGameObject obj)
         {
-            return regionLocator.GetRegionIndex(obj.X, obj.Y);
+            return regionLocator.GetRegionIndex(obj.PrimaryPosition.X, obj.PrimaryPosition.Y);
         }
 
         public static ushort GetRegionIndex(uint x, uint y)

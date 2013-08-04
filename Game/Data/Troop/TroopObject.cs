@@ -125,7 +125,7 @@ namespace Game.Data.Troop
         {
             get
             {
-                return new Position(X, Y);
+                return new Position(PrimaryPosition.X, PrimaryPosition.Y);
             }
         }
 
@@ -192,8 +192,8 @@ namespace Game.Data.Troop
                         new DbColumn("attack_point", Stats.AttackPoint, DbType.Int32),
                         new DbColumn("attack_radius", Stats.AttackRadius, DbType.Byte),
                         new DbColumn("speed", Stats.Speed, DbType.Decimal), 
-                        new DbColumn("x", X, DbType.UInt32),
-                        new DbColumn("y", Y, DbType.UInt32), 
+                        new DbColumn("x", PrimaryPosition.X, DbType.UInt32),
+                        new DbColumn("y", PrimaryPosition.Y, DbType.UInt32), 
                         new DbColumn("target_x", TargetX, DbType.UInt32),
                         new DbColumn("target_y", TargetY, DbType.UInt32),
                         new DbColumn("in_world", InWorld, DbType.Boolean),

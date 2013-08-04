@@ -310,8 +310,8 @@ namespace Game.Comm.CmdLine_Commands
                                         obj.Lvl,
                                         obj.InWorld,
                                         obj.IsBlocked,
-                                        obj.X,
-                                        obj.Y);
+                                        obj.PrimaryPosition.X,
+                                        obj.PrimaryPosition.Y);
                 }
             }
 

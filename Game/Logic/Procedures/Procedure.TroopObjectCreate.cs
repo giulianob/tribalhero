@@ -40,7 +40,7 @@ namespace Game.Logic.Procedures
 
         public virtual void TroopObjectCreate(ICity city, ITroopStub stub, out ITroopObject troopObject)
         {
-            troopObject = city.CreateTroopObject(stub, city.X, city.Y);
+            troopObject = city.CreateTroopObject(stub, city.PrimaryPosition.X, city.PrimaryPosition.Y);
 
             troopObject.BeginUpdate();
             troopObject.Stats = new TroopStats(formula.GetTroopRadius(stub, null), formula.GetTroopSpeed(stub));

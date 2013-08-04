@@ -147,8 +147,8 @@ namespace Game.Data
             {
                 return new[]
                 {
-                        new DbColumn("x", X, DbType.UInt32), 
-                        new DbColumn("y", Y, DbType.Int32),
+                        new DbColumn("x", PrimaryPosition.X, DbType.UInt32), 
+                        new DbColumn("y", PrimaryPosition.Y, DbType.Int32),
                         new DbColumn("hp", stats.Hp, DbType.Decimal), 
                         new DbColumn("type", Type, DbType.Int16),
                         new DbColumn("level", Lvl, DbType.Byte), 

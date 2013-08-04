@@ -338,7 +338,7 @@ namespace Game.Battle.CombatObjects
 
             ICity city = Structure.City;
 
-            var lockedRegions = regionManager.LockRegions(Structure.X, Structure.Y, Structure.Size);
+            var lockedRegions = regionManager.LockRegions(Structure.PrimaryPosition.X, Structure.PrimaryPosition.Y, Structure.Size);
             if (Structure.Lvl > 1)
             {
                 Structure.City.Worker.DoPassive(Structure.City,

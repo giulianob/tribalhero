@@ -37,7 +37,7 @@ namespace Game.Map
                 return;
             }
 
-            CreateRoad(e.GameObject.X, e.GameObject.Y);
+            CreateRoad(e.GameObject.PrimaryPosition.X, e.GameObject.PrimaryPosition.Y);
         }
 
         private void SendUpdate(Dictionary<ushort, List<TileUpdate>> updates)

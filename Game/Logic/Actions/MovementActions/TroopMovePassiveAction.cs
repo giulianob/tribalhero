@@ -131,7 +131,7 @@ namespace Game.Logic.Actions
             }
 
             var recordForeach = new RecordForeach {ShortestDistance = int.MaxValue, IsShortestDistanceDiagonal = false};
-            foreach (var position in tileLocator.ForeachTile(obj.X, obj.Y, 1, false))
+            foreach (var position in tileLocator.ForeachTile(obj.PrimaryPosition.X, obj.PrimaryPosition.Y, 1, false))
             {
                 int distance = tileLocator.TileDistance(position, 1, new Position(x, y), 1);
 
@@ -140,14 +140,14 @@ namespace Game.Logic.Actions
                     recordForeach.ShortestDistance = distance;
                     recordForeach.X = position.X;
                     recordForeach.Y = position.Y;
-                    recordForeach.IsShortestDistanceDiagonal = IsDiagonal(position.Y, obj.X, obj.Y);
+                    recordForeach.IsShortestDistanceDiagonal = IsDiagonal(position.Y, obj.PrimaryPosition.X, obj.PrimaryPosition.Y);
                 }
                 else if (distance == recordForeach.ShortestDistance && !recordForeach.IsShortestDistanceDiagonal)
                 {
                     recordForeach.ShortestDistance = distance;
                     recordForeach.X = position.X;
                     recordForeach.Y = position.Y;
-                    recordForeach.IsShortestDistanceDiagonal = IsDiagonal(position.Y, obj.X, obj.Y);
+                    recordForeach.IsShortestDistanceDiagonal = IsDiagonal(position.Y, obj.PrimaryPosition.X, obj.PrimaryPosition.Y);
                 }
             }
 
@@ -233,8 +233,8 @@ namespace Game.Logic.Actions
                 --distanceRemaining;
 
                 troopObj.BeginUpdate();
-                troopObj.X = nextX;
-                troopObj.Y = nextY;
+                troopObj.PrimaryPosition.X = nextX;
+                troopObj.PrimaryPosition.Y = nextY;
                 troopObj.EndUpdate();
 
                 // Fire updated to force sending new position

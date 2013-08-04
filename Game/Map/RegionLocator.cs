@@ -7,7 +7,7 @@ namespace Game.Map
     {
         public ushort GetRegionIndex(ISimpleGameObject obj)
         {
-            return GetRegionIndex(obj.X, obj.Y);
+            return GetRegionIndex(obj.PrimaryPosition.X, obj.PrimaryPosition.Y);
         }
 
         public ushort GetRegionIndex(uint x, uint y)

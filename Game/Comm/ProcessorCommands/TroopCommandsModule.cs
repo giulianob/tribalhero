@@ -491,7 +491,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 // Create troop object                
                 ITroopObject troopObject;
-                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.PrimaryPosition.X, city.PrimaryPosition.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.TroopChanged);
                     return;
@@ -555,7 +555,7 @@ namespace Game.Comm.ProcessorCommands
 
                 // Create troop object                
                 ITroopObject troopObject;
-                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.PrimaryPosition.X, city.PrimaryPosition.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.TroopChanged);
                     return;
@@ -628,7 +628,7 @@ namespace Game.Comm.ProcessorCommands
 
                 // Create troop object                
                 ITroopObject troopObject;
-                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.PrimaryPosition.X, city.PrimaryPosition.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.TroopChanged);
                     return;
@@ -693,7 +693,7 @@ namespace Game.Comm.ProcessorCommands
                 ICity city = cities[cityId];
 
                 ITroopObject troopObject;
-                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.PrimaryPosition.X, city.PrimaryPosition.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.ObjectNotFound);
                     return;

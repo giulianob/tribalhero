@@ -36,7 +36,7 @@ namespace Game.Data.Troop.Initializers
                 return false;
             }
 
-            if (!Procedure.Current.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+            if (!Procedure.Current.TroopObjectCreateFromCity(city, simpleStub, city.PrimaryPosition.X, city.PrimaryPosition.Y, out troopObject))
             {
                 troopObject = null;
                 return false;

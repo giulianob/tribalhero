@@ -154,8 +154,8 @@ namespace Game.Logic.Actions
 
             var tma = actionFactory.CreateTroopMovePassiveAction(cityId,
                                                                  troopObject.ObjectId,
-                                                                 targetStronghold.X,
-                                                                 targetStronghold.Y,
+                                                                 targetStronghold.PrimaryPosition.X,
+                                                                 targetStronghold.PrimaryPosition.Y,
                                                                  false,
                                                                  false);
 
@@ -212,8 +212,8 @@ namespace Game.Logic.Actions
                 {
                     TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
                                                                                             troopObject.ObjectId,
-                                                                                            city.X,
-                                                                                            city.Y,
+                                                                                            city.PrimaryPosition.X,
+                                                                                            city.PrimaryPosition.Y,
                                                                                             true,
                                                                                             false);
                     ExecuteChainAndWait(tma, AfterTroopMovedHome);
@@ -257,8 +257,8 @@ namespace Game.Logic.Actions
                     // Walk back to city if we dont own it anymore
                     TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
                                                                                             troopObject.ObjectId,
-                                                                                            city.X,
-                                                                                            city.Y,
+                                                                                            city.PrimaryPosition.X,
+                                                                                            city.PrimaryPosition.Y,
                                                                                             true,
                                                                                             false);
                     ExecuteChainAndWait(tma, AfterTroopMovedHome);

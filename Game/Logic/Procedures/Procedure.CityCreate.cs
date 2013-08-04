@@ -46,7 +46,7 @@ namespace Game.Logic.Procedures
             defaultTroop.AddFormation(FormationType.InBattle);
             defaultTroop.EndUpdate();
 
-            barbarianTribeManager.CreateBarbarianTribeNear(1, 1, city.X, city.Y);
+            barbarianTribeManager.CreateBarbarianTribeNear(1, 1, city.PrimaryPosition.X, city.PrimaryPosition.Y);
             
             return Error.Ok;
         }

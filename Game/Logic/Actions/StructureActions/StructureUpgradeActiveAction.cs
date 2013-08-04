@@ -154,7 +154,7 @@ namespace Game.Logic.Actions
             // layout requirement
             if (!requirementCsvFactory
                          .GetLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1))
-                         .Validate(structure, structure.Type, structure.X, structure.Y, structure.Size))
+                         .Validate(structure, structure.Type, structure.PrimaryPosition.X, structure.PrimaryPosition.Y, structure.Size))
             {
                 return Error.LayoutNotFullfilled;
             }

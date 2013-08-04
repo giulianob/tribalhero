@@ -65,8 +65,8 @@ namespace Game.Comm
         {
             packet.AddUInt16(obj.Type);
 
-            packet.AddUInt16((ushort)(obj.X % Config.region_width));
-            packet.AddUInt16((ushort)(obj.Y % Config.region_height));
+            packet.AddUInt16((ushort)(obj.PrimaryPosition.X % Config.region_width));
+            packet.AddUInt16((ushort)(obj.PrimaryPosition.Y % Config.region_height));
             packet.AddByte(obj.Size);
 
             packet.AddUInt32(obj.GroupId);
@@ -293,8 +293,8 @@ namespace Game.Comm
                 case TroopState.Moving:
                 case TroopState.ReturningHome:
                     packet.AddUInt32(troopObject.ObjectId);
-                    packet.AddUInt32(troopObject.X);
-                    packet.AddUInt32(troopObject.Y);
+                    packet.AddUInt32(troopObject.PrimaryPosition.X);
+                    packet.AddUInt32(troopObject.PrimaryPosition.Y);
                     break;
                 case TroopState.Battle:
                     // If the stub is in battle, determine whether there is a troop object attached to it or not.
@@ -303,21 +303,21 @@ namespace Game.Comm
                     if (troopObject != null)
                     {
                         packet.AddUInt32(troopObject.ObjectId);
-                        packet.AddUInt32(troopObject.X);
-                        packet.AddUInt32(troopObject.Y);
+                        packet.AddUInt32(troopObject.PrimaryPosition.X);
+                        packet.AddUInt32(troopObject.PrimaryPosition.Y);
                     }
                     else
                     {
                         packet.AddUInt32(1); // Main building id
-                        packet.AddUInt32(stub.City.X);
-                        packet.AddUInt32(stub.City.Y);
+                        packet.AddUInt32(stub.City.PrimaryPosition.X);
+                        packet.AddUInt32(stub.City.PrimaryPosition.Y);
                     }
                     break;
                 case TroopState.Stationed:
                 case TroopState.BattleStationed:
                     packet.AddUInt32(1); // Main building id
-                    packet.AddUInt32(stub.Station.X);
-                    packet.AddUInt32(stub.Station.Y);
+                    packet.AddUInt32(stub.Station.PrimaryPosition.X);
+                    packet.AddUInt32(stub.Station.PrimaryPosition.Y);
                     break;
             }
 
@@ -638,8 +638,8 @@ namespace Game.Comm
             {
                 reply.AddUInt32(city.Id);
                 reply.AddString(city.Name);
-                reply.AddUInt32(city.X);
-                reply.AddUInt32(city.Y);
+                reply.AddUInt32(city.PrimaryPosition.X);
+                reply.AddUInt32(city.PrimaryPosition.Y);
             }
         }
 
@@ -701,8 +701,8 @@ namespace Game.Comm
                     packet.AddByte((byte)stronghold.StrongholdState);
                     packet.AddByte(stronghold.Lvl);
                     packet.AddFloat((float)stronghold.Gate);
-                    packet.AddUInt32(stronghold.X);
-                    packet.AddUInt32(stronghold.Y);
+                    packet.AddUInt32(stronghold.PrimaryPosition.X);
+                    packet.AddUInt32(stronghold.PrimaryPosition.Y);
                     packet.AddInt32(stronghold.Troops.StationedHere().Sum(x => x.Upkeep));
                     packet.AddFloat((float)stronghold.VictoryPointRate);
                     packet.AddUInt32(UnixDateTime.DateTimeToUnix(stronghold.DateOccupied.ToUniversalTime()));
@@ -735,8 +735,8 @@ namespace Game.Comm
                     packet.AddString(stronghold.Tribe == null ? string.Empty : stronghold.Tribe.Name);
                     packet.AddByte((byte)stronghold.StrongholdState);
                     packet.AddByte(stronghold.Lvl);
-                    packet.AddUInt32(stronghold.X);
-                    packet.AddUInt32(stronghold.Y);
+                    packet.AddUInt32(stronghold.PrimaryPosition.X);
+                    packet.AddUInt32(stronghold.PrimaryPosition.Y);
                     if (stronghold.GateBattle != null)
                     {
                         packet.AddByte(1);
@@ -784,8 +784,8 @@ namespace Game.Comm
                     packet.AddUInt32(stronghold.ObjectId);                    
                     packet.AddString(stronghold.Name);
                     packet.AddByte(stronghold.Lvl);
-                    packet.AddUInt32(stronghold.X);
-                    packet.AddUInt32(stronghold.Y);
+                    packet.AddUInt32(stronghold.PrimaryPosition.X);
+                    packet.AddUInt32(stronghold.PrimaryPosition.Y);
                 }
             }
         }
@@ -796,8 +796,8 @@ namespace Game.Comm
                 session.Player.Tribesman.Tribe.Id != stronghold.Tribe.Id)
             {
                 packet.AddByte(0);
-                packet.AddUInt32(stronghold.X);
-                packet.AddUInt32(stronghold.Y);
+                packet.AddUInt32(stronghold.PrimaryPosition.X);
+                packet.AddUInt32(stronghold.PrimaryPosition.Y);
             }
             else
             {
@@ -808,8 +808,8 @@ namespace Game.Comm
                 packet.AddFloat((float)stronghold.Gate);
                 packet.AddFloat((float)stronghold.VictoryPointRate);
                 packet.AddUInt32(UnixDateTime.DateTimeToUnix(stronghold.DateOccupied.ToUniversalTime()));
-                packet.AddUInt32(stronghold.X);
-                packet.AddUInt32(stronghold.Y);
+                packet.AddUInt32(stronghold.PrimaryPosition.X);
+                packet.AddUInt32(stronghold.PrimaryPosition.Y);
                 AddToPacket(stronghold.State, packet);
 
                 packet.AddUInt16(stronghold.Troops.Size);

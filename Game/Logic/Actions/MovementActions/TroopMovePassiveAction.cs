@@ -133,7 +133,7 @@ namespace Game.Logic.Actions
             var recordForeach = new RecordForeach {ShortestDistance = int.MaxValue, IsShortestDistanceDiagonal = false};
             foreach (var position in tileLocator.ForeachTile(obj.X, obj.Y, 1, false))
             {
-                int distance = tileLocator.TileDistance(position.X, position.Y, 1, x, y, 1);
+                int distance = tileLocator.TileDistance(position, 1, new Position(x, y), 1);
 
                 if (distance < recordForeach.ShortestDistance)
                 {
@@ -166,7 +166,7 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
-            distanceRemaining = Math.Max(1, tileLocator.TileDistance(troopObj.X, troopObj.Y, troopObj.Size, x, y, 1));
+            distanceRemaining = Math.Max(1, tileLocator.TileDistance(troopObj.PrimaryPosition, troopObj.Size, new Position(x, y), 1));
 
             double moveTimeTotal = formula.MoveTimeTotal(troopObj.Stub, distanceRemaining, isAttacking);
 

@@ -38,6 +38,8 @@ namespace Game.Battle.CombatObjects
         /// </summary>
         private decimal hp;
 
+        private IRegionManager regionManager;
+
         public CombatStructure(uint id,
                                uint battleId,
                                IStructure structure,
@@ -45,13 +47,15 @@ namespace Game.Battle.CombatObjects
                                Formula formula,
                                IActionFactory actionFactory,
                                IBattleFormulas battleFormulas,
-                               ITileLocator tileLocator)
+                               ITileLocator tileLocator,
+                               IRegionManager regionManager)
                 : base(id, battleId, battleFormulas)
         {
             this.stats = stats;
             this.formula = formula;
             this.actionFactory = actionFactory;
             this.tileLocator = tileLocator;
+            this.regionManager = regionManager;
             Structure = structure;
             type = structure.Type;
             lvl = structure.Lvl;
@@ -68,13 +72,15 @@ namespace Game.Battle.CombatObjects
                                Formula formula,
                                IActionFactory actionFactory,
                                IBattleFormulas battleFormulas,
-                               ITileLocator tileLocator)
+                               ITileLocator tileLocator,
+                               IRegionManager regionManager)
                 : base(id, battleId, battleFormulas)
         {
             Structure = structure;
             this.formula = formula;
             this.actionFactory = actionFactory;
             this.tileLocator = tileLocator;
+            this.regionManager = regionManager;
             this.stats = stats;
             this.hp = hp;
             this.type = type;
@@ -332,7 +338,7 @@ namespace Game.Battle.CombatObjects
 
             ICity city = Structure.City;
 
-            var lockedRegions = World.Current.Regions.LockRegions(Structure.X, Structure.Y, Structure.Size);
+            var lockedRegions = regionManager.LockRegions(Structure.X, Structure.Y, Structure.Size);
             if (Structure.Lvl > 1)
             {
                 Structure.City.Worker.DoPassive(Structure.City,
@@ -343,11 +349,11 @@ namespace Game.Battle.CombatObjects
             else
             {
                 Structure.BeginUpdate();
-                World.Current.Regions.Remove(Structure);
+                regionManager.Remove(Structure);
                 city.ScheduleRemove(Structure, true);
                 Structure.EndUpdate();
             }
-            World.Current.Regions.UnlockRegions(lockedRegions);
+            regionManager.UnlockRegions(lockedRegions);
         }
 
         public override void ReceiveReward(int reward, Resource resource)

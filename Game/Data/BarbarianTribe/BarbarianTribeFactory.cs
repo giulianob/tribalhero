@@ -1,5 +1,6 @@
 using Game.Logic;
 using Game.Logic.Formulas;
+using Game.Map;
 using Ninject;
 using Persistance;
 
@@ -20,10 +21,10 @@ namespace Game.Data.BarbarianTribe
             this.actionWorkerFactory = actionWorkerFactory;
         }
 
-        public BarbarianTribe CreateBarbarianTribe(uint id, byte level, uint x, uint y, int count)
+        public BarbarianTribe CreateBarbarianTribe(uint id, byte level, Position position, int count)
         {
             var worker = actionWorkerFactory.CreateActionWorker(null, new SimpleLocation(LocationType.BarbarianTribe, id));
-            var barbarianTribe = new BarbarianTribe(id, level, x, y, count, formula.BarbarianTribeResources(level), kernel.Get<IDbManager>(), worker);
+            var barbarianTribe = new BarbarianTribe(id, level, position.X, position.Y, count, formula.BarbarianTribeResources(level), kernel.Get<IDbManager>(), worker);
             worker.LockDelegate = () => barbarianTribe;
             return barbarianTribe;
         }

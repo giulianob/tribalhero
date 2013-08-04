@@ -18,113 +18,105 @@ namespace Testing.MapMathTests
         {
             cacheForTestIsOverlappingWithCache = new TileLocator();
         }
-
+        
         [Fact]
         public void TestSelf()
         {
-            new TileLocator().RadiusDistance(13, 13, 1, 13, 13, 1).Should().Be(0);
-            new TileLocator().RadiusDistance(13, 14, 1, 13, 14, 1).Should().Be(0);
-            new TileLocator().RadiusDistance(14, 13, 1, 14, 13, 1).Should().Be(0);
-            new TileLocator().RadiusDistance(14, 14, 1, 14, 14, 1).Should().Be(0);
+            new TileLocator().RadiusDistance(new Position(13, 13), 1, new Position(13, 13), 1).Should().Be(0);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(13, 14), 1).Should().Be(0);
+            new TileLocator().RadiusDistance(new Position(14, 13), 1, new Position(14, 13), 1).Should().Be(0);
+            new TileLocator().RadiusDistance(new Position(14, 14), 1, new Position(14, 14), 1).Should().Be(0);
         }
 
         [Fact]
         public void TestEvenyEveny1()
         {
             //Even y Even y1
-            new TileLocator().RadiusDistance(13, 14, 1, 12, 14, 1).Should().Be(2);
-            new TileLocator().RadiusDistance(13, 14, 1, 14, 14, 1).Should().Be(2);
-            new TileLocator().RadiusDistance(13, 14, 1, 13, 12, 1).Should().Be(2);
-            new TileLocator().RadiusDistance(13, 14, 1, 13, 16, 1).Should().Be(2);
-            new TileLocator().RadiusDistance(13, 14, 1, 14, 16, 1).Should().Be(3);
-            new TileLocator().RadiusDistance(13, 14, 1, 13, 18, 1).Should().Be(5);
-            new TileLocator().RadiusDistance(13, 14, 1, 16, 14, 1).Should().Be(8);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(12, 14), 1).Should().Be(2);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(14, 14), 1).Should().Be(2);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(13, 12), 1).Should().Be(2);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(13, 16), 1).Should().Be(2);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(14, 16), 1).Should().Be(3);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(13, 18), 1).Should().Be(5);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(16, 14), 1).Should().Be(8);
         }
 
         [Fact]
         public void TestOddyOddy1()
         {
             //Odd y Odd y1
-            new TileLocator().RadiusDistance(13, 15, 1, 12, 15, 1).Should().Be(2);
-            new TileLocator().RadiusDistance(13, 15, 1, 14, 15, 1).Should().Be(2);
-            new TileLocator().RadiusDistance(13, 15, 1, 13, 13, 1).Should().Be(2);
-            new TileLocator().RadiusDistance(13, 15, 1, 13, 17, 1).Should().Be(2);
-            new TileLocator().RadiusDistance(13, 15, 1, 14, 17, 1).Should().Be(3);
-            new TileLocator().RadiusDistance(13, 15, 1, 13, 19, 1).Should().Be(5);
-            new TileLocator().RadiusDistance(13, 15, 1, 16, 15, 1).Should().Be(8);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(12, 15), 1).Should().Be(2);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(14, 15), 1).Should().Be(2);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(13, 13), 1).Should().Be(2);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(13, 17), 1).Should().Be(2);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(14, 17), 1).Should().Be(3);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(13, 19), 1).Should().Be(5);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(16, 15), 1).Should().Be(8);
         }
 
         [Fact]
         public void TestEvenyOddy1()
         {
             //Even y Odd y1
-            new TileLocator().RadiusDistance(13, 14, 1, 12, 13, 1).Should().Be(1);
-            new TileLocator().RadiusDistance(13, 14, 1, 13, 13, 1).Should().Be(1);
-            new TileLocator().RadiusDistance(13, 14, 1, 12, 15, 1).Should().Be(1);
-            new TileLocator().RadiusDistance(13, 14, 1, 13, 15, 1).Should().Be(1);
-            new TileLocator().RadiusDistance(13, 14, 1, 13, 17, 1).Should().Be(4);
-            new TileLocator().RadiusDistance(13, 14, 1, 13, 19, 1).Should().Be(7);
-            new TileLocator().RadiusDistance(13, 14, 1, 14, 15, 1).Should().Be(4);
-            new TileLocator().RadiusDistance(13, 14, 1, 15, 15, 1).Should().Be(7);
-            new TileLocator().RadiusDistance(13, 14, 1, 14, 13, 1).Should().Be(4);
-            new TileLocator().RadiusDistance(13, 14, 1, 15, 13, 1).Should().Be(7);
-            new TileLocator().RadiusDistance(13, 14, 1, 11, 17, 1).Should().Be(5);
-            new TileLocator().RadiusDistance(13, 14, 1, 13, 11, 1).Should().Be(4);
-            new TileLocator().RadiusDistance(13, 14, 1, 13, 9, 1).Should().Be(7);
-            new TileLocator().RadiusDistance(13, 14, 1, 11, 13, 1).Should().Be(4);
-            new TileLocator().RadiusDistance(13, 14, 1, 10, 13, 1).Should().Be(7);
-            new TileLocator().RadiusDistance(13, 14, 1, 12, 11, 1).Should().Be(4);
-            new TileLocator().RadiusDistance(13, 14, 1, 12, 9, 1).Should().Be(7);
-            new TileLocator().RadiusDistance(13, 14, 1, 12, 17, 1).Should().Be(4);
-            new TileLocator().RadiusDistance(13, 14, 1, 11, 13, 1).Should().Be(4);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(12, 13), 1).Should().Be(1);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(13, 13), 1).Should().Be(1);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(12, 15), 1).Should().Be(1);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(13, 15), 1).Should().Be(1);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(13, 17), 1).Should().Be(4);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(13, 19), 1).Should().Be(7);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(14, 15), 1).Should().Be(4);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(15, 15), 1).Should().Be(7);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(14, 13), 1).Should().Be(4);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(15, 13), 1).Should().Be(7);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(11, 17), 1).Should().Be(5);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(13, 11), 1).Should().Be(4);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(13, 9), 1).Should().Be(7);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(11, 13), 1).Should().Be(4);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(10, 13), 1).Should().Be(7);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(12, 11), 1).Should().Be(4);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(12, 9), 1).Should().Be(7);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(12, 17), 1).Should().Be(4);
+            new TileLocator().RadiusDistance(new Position(13, 14), 1, new Position(11, 13), 1).Should().Be(4);
         }
 
         [Fact]
         public void TestTileRadius()
         {
-            new TileLocator().RadiusDistance(12, 16, 1, 11, 13, 1).Should().Be(4);
-            new TileLocator().RadiusDistance(12, 16, 1, 12, 13, 1).Should().Be(4);
-
-            new TileLocator().RadiusDistance(13, 15, 1, 13, 14, 1).Should().Be(1);
-            new TileLocator().RadiusDistance(13, 15, 1, 14, 14, 1).Should().Be(1);
-            new TileLocator().RadiusDistance(13, 15, 1, 14, 16, 1).Should().Be(1);
-            new TileLocator().RadiusDistance(13, 15, 1, 13, 16, 1).Should().Be(1);
-
-            new TileLocator().RadiusDistance(13, 15, 1, 13, 12, 1).Should().Be(4);
-            new TileLocator().RadiusDistance(13, 15, 1, 12, 14, 1).Should().Be(4);
-            new TileLocator().RadiusDistance(13, 15, 1, 14, 12, 1).Should().Be(4);
-            new TileLocator().RadiusDistance(13, 15, 1, 15, 14, 1).Should().Be(4);
-            new TileLocator().RadiusDistance(13, 15, 1, 12, 16, 1).Should().Be(4);
-            new TileLocator().RadiusDistance(13, 15, 1, 13, 18, 1).Should().Be(4);
-            new TileLocator().RadiusDistance(13, 15, 1, 14, 18, 1).Should().Be(4);
-            new TileLocator().RadiusDistance(13, 15, 1, 15, 16, 1).Should().Be(4);
-
-            new TileLocator().RadiusDistance(13, 15, 1, 16, 14, 1).Should().Be(7);
-            new TileLocator().RadiusDistance(13, 15, 1, 14, 20, 1).Should().Be(7);
-            new TileLocator().RadiusDistance(13, 15, 1, 13, 20, 1).Should().Be(7);
-            new TileLocator().RadiusDistance(13, 15, 1, 11, 14, 1).Should().Be(7);
+            new TileLocator().RadiusDistance(new Position(12, 16), 1, new Position(11, 13), 1).Should().Be(4);
+            new TileLocator().RadiusDistance(new Position(12, 16), 1, new Position(12, 13), 1).Should().Be(4);
+                                                                
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(13, 14), 1).Should().Be(1);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(14, 14), 1).Should().Be(1);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(14, 16), 1).Should().Be(1);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(13, 16), 1).Should().Be(1);
+                                                                
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(13, 12), 1).Should().Be(4);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(12, 14), 1).Should().Be(4);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(14, 12), 1).Should().Be(4);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(15, 14), 1).Should().Be(4);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(12, 16), 1).Should().Be(4);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(13, 18), 1).Should().Be(4);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(14, 18), 1).Should().Be(4);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(15, 16), 1).Should().Be(4);
+                                                                
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(16, 14), 1).Should().Be(7);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(14, 20), 1).Should().Be(7);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(13, 20), 1).Should().Be(7);
+            new TileLocator().RadiusDistance(new Position(13, 15), 1, new Position(11, 14), 1).Should().Be(7);
         }
 
         [Theory(Skip = "Intensive test.. only run if you need to"), CsvData("MapMath/overlapping_test_data.csv")]        
-        public void TestGeneratedValues(uint x1,
-                                        uint y1,
-                                        byte r1,
-                                        uint x2,
-                                        uint y2,
-                                        byte r2,
+        public void TestGeneratedValues(uint x1, uint y1, byte r1,
+                                        uint x2, uint y2, byte r2,
                                         bool overlapping,
                                         byte distance)
         {
-            new TileLocator().RadiusDistance(x1, y1, 1, x2, y2, 1).Should().Be(distance);
+            new TileLocator().RadiusDistance(new Position(x1, y1), 1, new Position(x2, y2), 1).Should().Be(distance);
         }
 
         [Theory(Skip = "Intensive test.. only run if you need to"), CsvData("MapMath/overlapping_test_data.csv")]
-        public void TestIsOverlapping(uint x1,
-                                      uint y1,
-                                      byte r1,
-                                      uint x2,
-                                      uint y2,
-                                      byte r2,
+        public void TestIsOverlapping(uint x1, uint y1, byte r1,
+                                      uint x2, uint y2, byte r2,
                                       bool overlapping,
                                       byte distance)
         {

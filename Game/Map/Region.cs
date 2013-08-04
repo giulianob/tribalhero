@@ -7,8 +7,6 @@ using System.Linq;
 using System.Threading;
 using Game.Comm;
 using Game.Data;
-using Game.Util;
-using Ninject.Extensions.Logging;
 using Game.Util.Locking;
 
 #endregion
@@ -17,8 +15,6 @@ namespace Game.Map
 {
     public class Region : IRegion
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
-
         #region Constants
 
         public const int TILE_SIZE = sizeof(ushort);

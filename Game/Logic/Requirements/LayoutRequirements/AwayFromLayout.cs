@@ -35,7 +35,7 @@ namespace Game.Logic.Requirements.LayoutRequirements
                                      structure.Type == req1.Type &&
                                      structure.Lvl >= req1.MinLvl &&
                                      structure.Lvl <= req1.MaxLvl &&
-                                     tileLocator.RadiusDistance(structure.X, structure.Y, structure.Size, x, y, size) < radius + 1))
+                                     tileLocator.RadiusDistance(structure.PrimaryPosition, structure.Size, new Position(x, y), size) < radius + 1))
                 {
                     return false;
                 }

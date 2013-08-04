@@ -64,7 +64,7 @@ namespace Game.Map
                     foreach (var position in tileLocator.ForeachRadius(x, y, 1, false))
                     {
 
-                        if (tileLocator.RadiusDistance(x, y, 1, position.X, position.Y, 1) != 1 ||
+                        if (tileLocator.RadiusDistance(new Position(x, y), 1, position, 1) != 1 ||
                             (city.X == position.X && city.Y == position.Y) ||
                             !world.Roads.IsRoad(position.X, position.Y))
                         {
@@ -92,7 +92,7 @@ namespace Game.Map
 
                 foreach (var position in tileLocator.ForeachRadius(x, y, 1, false))
                 {
-                    if (tileLocator.RadiusDistance(x, y, 1, position.X, position.Y, 1) != 1)
+                    if (tileLocator.RadiusDistance(new Position(x, y), 1, position, 1) != 1)
                     {
                         continue;
                     }
@@ -178,7 +178,7 @@ namespace Game.Map
                                                     return false;
                                                 }
 
-                                                if (tileLocator.TileDistance(location.X, location.Y, 1, city.X, city.Y, 1) > city.Radius)
+                                                if (tileLocator.TileDistance(location, 1, city.PrimaryPosition, 1) > city.Radius)
                                                 {
                                                     return false;
                                                 }

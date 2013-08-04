@@ -33,12 +33,6 @@ namespace Game.Map
             this.getRandom = getRandom;
         }
 
-        #region Delegates
-
-        public delegate bool DoWork(uint origX, uint origY, uint x, uint y, object custom);
-
-        #endregion
-
         #region RadiusCache Item
 
         public class RadiusCache : IEquatable<RadiusCache>
@@ -107,22 +101,20 @@ namespace Game.Map
 
         public int RadiusDistance(ISimpleGameObject obj1, ISimpleGameObject obj2)
         {
-            return RadiusDistance(obj1.PrimaryPosition.X,
-                                  obj1.PrimaryPosition.Y,
+            return RadiusDistance(obj1.PrimaryPosition,
                                   obj1.Size,
-                                  obj2.PrimaryPosition.X,
-                                  obj2.PrimaryPosition.Y,
+                                  obj2.PrimaryPosition,
                                   obj2.Size);
         }
         
-        public int RadiusDistance(uint x, uint y, byte size, uint x1, uint y1, byte size1)
+        public int RadiusDistance(Position position, byte size, Position position1, byte size1)
         {
-            var positions = ForeachMultitile(x, y, size).ToArray();
-            var positions1 = ForeachMultitile(x1, y1, size1).ToArray();
+            var positions = ForeachMultitile(position.X, position.Y, size).ToArray();
+            var positions1 = ForeachMultitile(position1.X, position1.Y, size1).ToArray();
 
-            return (from position in positions
-                    from position1 in positions1
-                    select RadiusDistance(position.X, position.Y, position1.X, position1.Y)).Min();
+            return (from eachPosition in positions
+                    from eachPosition1 in positions1
+                    select RadiusDistance(eachPosition.X, eachPosition.Y, eachPosition1.X, eachPosition1.Y)).Min();
         }
 
         private int RadiusDistance(uint x, uint y, uint x1, uint y1)
@@ -169,7 +161,7 @@ namespace Game.Map
 
         private bool IsOverlapping(Position location1, byte r1, Position location2, byte r2)
         {
-            var distance = RadiusDistance(location1.X, location1.Y, 1, location2.X, location2.Y, 1);
+            var distance = RadiusDistance(location1, 1, location2, 1);
 
             var sumEqualToDistance = distance - 1 == r1 + r2;
 
@@ -204,17 +196,17 @@ namespace Game.Map
 
         public int TileDistance(ISimpleGameObject obj1, ISimpleGameObject obj2)
         {
-            return TileDistance(obj1.X, obj1.Y, obj1.Size, obj2.X, obj2.Y, obj2.Size);
+            return TileDistance(obj1.PrimaryPosition, obj1.Size, obj2.PrimaryPosition, obj2.Size);
         }
 
-        public int TileDistance(uint x, uint y, byte size, uint x1, uint y1, byte size1)
+        public int TileDistance(Position position, byte size, Position position1, byte size1)
         {
-            var positions = ForeachMultitile(x, y, size).ToArray();
-            var positions1 = ForeachMultitile(x1, y1, size1).ToArray();
+            var positions = ForeachMultitile(position.X, position.Y, size).ToArray();
+            var positions1 = ForeachMultitile(position1.X, position1.Y, size1).ToArray();
 
-            return (from position in positions
-                    from position1 in positions1
-                    select TileDistance(position.X, position.Y, position1.X, position1.Y)).Min();
+            return (from eachPosition in positions
+                    from eachPosition1 in positions1
+                    select TileDistance(eachPosition.X, eachPosition.Y, eachPosition1.X, eachPosition1.Y)).Min();
         }
 
         private int TileDistance(uint x, uint y, uint x1, uint y1) 
@@ -229,14 +221,14 @@ namespace Game.Map
             return (int)((x1 > x ? x1 - x : x - x1) + (y1 > y ? y1 - y : y - y1) / 2 + offset);
         }
                
-        public void RandomPoint(uint ox, uint oy, byte radius, bool doSelf, out uint x, out uint y)
+        public void RandomPoint(Position position, byte radius, bool doSelf, out Position randomPosition)
         {
-            byte mode = (byte)(oy % 2 == 0 ? 0 : 1);
+            byte mode = (byte)(position.Y % 2 == 0 ? 0 : 1);
 
             do
             {
-                uint cx = ox;
-                uint cy = oy - (uint)(2 * radius);
+                uint cx = position.X;
+                uint cy = position.Y - (uint)(2 * radius);
 
                 var row = (byte)getRandom(0, radius * 2 + 1);
                 var count = (byte)getRandom(0, radius * 2 + 1);
@@ -259,13 +251,11 @@ namespace Game.Map
                 {
                     if (mode == 0)
                     {
-                        x = cx + (uint)((count) / 2);
-                        y = cy + count;
+                        randomPosition = new Position(cx + (uint)((count) / 2), cy + count);
                     }
                     else
                     {
-                        x = cx + (uint)((count + 1) / 2);
-                        y = cy + count;
+                        randomPosition = new Position(cx + (uint)((count + 1) / 2), cy + count);
                     }
                 }
                 else
@@ -273,17 +263,15 @@ namespace Game.Map
                     // alternate row
                     if (mode == 0)
                     {
-                        x = cx + (uint)((count + 1) / 2);
-                        y = cy + count;
+                        randomPosition = new Position(cx + (uint)((count + 1) / 2), cy + count);
                     }
                     else
                     {
-                        x = cx + (uint)((count) / 2);
-                        y = cy + count;
+                        randomPosition = new Position(cx + (uint)((count) / 2), cy + count);
                     }
                 }
             }
-            while (!doSelf && (x == ox && y == oy));
+            while (!doSelf && (position.X == randomPosition.X && position.Y == randomPosition.Y));
         }
         
         public IEnumerable<Position> ForeachMultitile(ISimpleGameObject obj)
@@ -378,7 +366,7 @@ namespace Game.Map
                
         public IEnumerable<Position> ForeachRadius(uint ox, uint oy, byte radius, bool includeCenter = true)
         {
-            return ForeachTile(ox, oy, radius, includeCenter).Where(position => RadiusDistance(ox, oy, 1, position.X, position.Y, 1) <= radius);
+            return ForeachTile(ox, oy, radius, includeCenter).Where(position => RadiusDistance(new Position(ox, oy), 1, new Position(position.X, position.Y), 1) <= radius);
         }
 
     }

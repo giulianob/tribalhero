@@ -57,7 +57,7 @@ namespace Game.Map.LocationStrategies
 
             var positions = mapFactory.Locations().Where(loc =>
                                                          {
-                                                             if (tileLocator.TileDistance(city.X, city.Y, 1, loc.X, loc.Y, 1) > distance)
+                                                             if (tileLocator.TileDistance(city.PrimaryPosition, 1, loc, 1) > distance)
                                                              {
                                                                  return false;
                                                              }

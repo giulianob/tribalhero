@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using Game.Database;
 using Ninject.Extensions.Logging;
+using Persistance;
 
 namespace Game.Util.Locking
 {
@@ -11,15 +12,18 @@ namespace Game.Util.Locking
 
         private readonly IMultiObjectLock lck;
 
-        public TransactionalMultiObjectLock(IMultiObjectLock lck)
+        private readonly IDbManager dbManager;
+
+        public TransactionalMultiObjectLock(IMultiObjectLock lck, IDbManager dbManager)
         {
             this.lck = lck;
+            this.dbManager = dbManager;
         }
 
         public IMultiObjectLock Lock(params ILockable[] list)
         {
             lck.Lock(list);
-            DbPersistance.Current.GetThreadTransaction();
+            dbManager.GetThreadTransaction();
 
             return this;
         }
@@ -32,7 +36,7 @@ namespace Game.Util.Locking
                 return;
             }
 
-            var transaction = DbPersistance.Current.GetThreadTransaction(true);
+            var transaction = dbManager.GetThreadTransaction(true);
             if (transaction != null)
             {                
                 transaction.Dispose();

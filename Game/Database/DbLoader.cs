@@ -133,7 +133,7 @@ namespace Game.Database
                     LoadActionNotifications();
                     LoadAssignments();
 
-                    World.AfterDbLoaded(Procedure, Ioc.Kernel.Get<IForestManager>());
+                    World.AfterDbLoaded(Procedure, Kernel.Get<IForestManager>());
 
                     //Ok data all loaded. We can get the system going now.
                     Global.Current.SystemVariables["System.time"].Value = DateTime.UtcNow;
@@ -148,9 +148,9 @@ namespace Game.Database
 
             logger.Info("Database loading finished");
 
-            SystemVariablesUpdater.Current.Resume();
+            Kernel.Get<SystemVariablesUpdater>().Resume();
             Global.Current.FireEvents = true;
-            Scheduler.Current.Resume();            
+            Kernel.Get<IScheduler>().Resume();            
         }
 
         private void CheckSchemaVersion()
@@ -646,11 +646,10 @@ namespace Game.Database
             {
                 while (reader.Read())
                 {
-                    var barbarianTribe = BarbarianTribeFactory.CreateBarbarianTribe((uint)reader["id"],                                                                        
-                                                                        (byte)reader["level"],
-                                                                        (uint)reader["x"],
-                                                                        (uint)reader["y"],
-                                                                        (byte)reader["camp_remains"]);
+                    var barbarianTribe = BarbarianTribeFactory.CreateBarbarianTribe((uint)reader["id"],
+                                                                                    (byte)reader["level"],
+                                                                                    new Position((uint)reader["x"], (uint)reader["y"]),
+                                                                                    (byte)reader["camp_remains"]);
 
                     barbarianTribe.Resource.Clear();
                     barbarianTribe.Resource.Add(new Resource((int)reader["resource_crop"],
@@ -676,7 +675,7 @@ namespace Game.Database
         {
             #region Unit Template
 
-            var unitFactory = Ioc.Kernel.Get<UnitFactory>();
+            var unitFactory = Kernel.Get<UnitFactory>();
 
             logger.Info("Loading unit template...");
 
@@ -717,7 +716,8 @@ namespace Game.Database
 
         private void LoadForests()
         {
-            var forestManager = Ioc.Kernel.Get<IForestManager>();
+            var scheduler = Kernel.Get<IScheduler>();
+            var forestManager = Kernel.Get<IForestManager>();
             logger.Info("Loading forests...");
             using (var reader = DbManager.Select(Forest.DB_TABLE))
             {
@@ -764,7 +764,7 @@ namespace Game.Database
                     {
                         // Create deplete time
                         forest.DepleteAction = ActionFactory.CreateForestDepleteAction(forest, forest.DepleteTime);
-                        Scheduler.Current.Put(forest.DepleteAction);
+                        scheduler.Put(forest.DepleteAction);
                         World.Regions.DbLoaderAdd(forest);
                         forestManager.DbLoaderAdd(forest);
                     }
@@ -912,7 +912,7 @@ namespace Game.Database
             #region Troop Stubs
             ILookup<Tuple<uint, ushort>, dynamic> troopStubUnits;
 
-            var troopStubFactory = Ioc.Kernel.Get<CityTroopStubFactory>();
+            var troopStubFactory = Kernel.Get<CityTroopStubFactory>();
 
             using (var listReader = DbManager.SelectList(TroopStub.DB_TABLE))
             {
@@ -995,7 +995,7 @@ namespace Game.Database
         {
             #region Troop Stub's Templates
 
-            var unitFactory = Ioc.Kernel.Get<UnitFactory>();
+            var unitFactory = Kernel.Get<UnitFactory>();
 
             logger.Info("Loading troop stub templates...");
 
@@ -1332,7 +1332,8 @@ namespace Game.Database
                                                                   Kernel.Get<Formula>(),
                                                                   Kernel.Get<IActionFactory>(),
                                                                   Kernel.Get<BattleFormulas>(),
-                                                                  Kernel.Get<ITileLocator>())
+                                                                  Kernel.Get<ITileLocator>(),
+                                                                  Kernel.Get<IRegionManager>())
                         {
                             GroupId = (uint)listReader["group_id"],
                             DmgDealt = (decimal)listReader["damage_dealt"],

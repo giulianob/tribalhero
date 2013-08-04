@@ -12,7 +12,7 @@ namespace Game.Data.Stronghold
     {
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
-        private static readonly int[] LevelProbability = new[] {0, 8, 16, 23, 30, 37, 43, 49, 55, 60, 65, 70, 74, 78, 82, 85, 88, 91, 94, 97, 100};
+        private static readonly int[] LevelProbability = {0, 8, 16, 23, 30, 37, 43, 49, 55, 60, 65, 70, 74, 78, 82, 85, 88, 91, 94, 97, 100};
 
         private const int MinDistanceAwayFromCities = 10;
 
@@ -48,17 +48,17 @@ namespace Game.Data.Stronghold
             // basic radius 200, then every each level is 50 radius
             int count = level * CitiesPerLevel;
 
-            return mapFactory.Locations().Count(loc => tileLocator.TileDistance(x, y, 1, loc.X, loc.Y, 1) < radius) > count;
+            return mapFactory.Locations().Count(loc => tileLocator.TileDistance(new Position(x, y), 1, loc, 1) < radius) > count;
         }
 
         private bool TooCloseToCities(uint x, uint y, int minDistance)
         {
-            return mapFactory.Locations().Any(loc => tileLocator.TileDistance(x, y, 1, loc.X, loc.Y, 1) < minDistance);
+            return mapFactory.Locations().Any(loc => tileLocator.TileDistance(new Position(x, y), 1, loc, 1) < minDistance);
         }
 
         private bool TooCloseToStrongholds(uint x, uint y, int minDistance)
         {
-            return strongholds.Any(loc => tileLocator.TileDistance(x, y, 1, loc.X, loc.Y, 1) < minDistance);
+            return strongholds.Any(loc => tileLocator.TileDistance(new Position(x, y), 1, loc, 1) < minDistance);
         }
 
         #region Implementation of IStrongholdConfigurator

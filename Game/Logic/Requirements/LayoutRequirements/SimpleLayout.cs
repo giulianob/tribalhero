@@ -58,7 +58,7 @@ namespace Game.Logic.Requirements.LayoutRequirements
                     continue;
                 }
 
-                int dist = tileLocator.RadiusDistance(obj.X, obj.Y, obj.Size, x, y, size);
+                int dist = tileLocator.RadiusDistance(obj.PrimaryPosition, obj.Size, new Position(x, y), size);
 
                 if (dist > req.MaxDist || dist < req.MinDist)
                 {
@@ -79,7 +79,7 @@ namespace Game.Logic.Requirements.LayoutRequirements
                     continue;
                 }
 
-                int dist = tileLocator.RadiusDistance(obj.X, obj.Y, obj.Size, x, y, size);
+                int dist = tileLocator.RadiusDistance(obj.PrimaryPosition, obj.Size, new Position(x, y), size);
 
                 if (dist > req.MaxDist || dist < req.MinDist)
                 {

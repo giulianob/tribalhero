@@ -75,7 +75,7 @@ namespace Game.Comm
                 using (locker.Lock(stronghold))
                 {
                     stronghold.BeginUpdate();
-                    int count = list.Count(pt => tileLocator.TileDistance(stronghold.X, stronghold.Y, 3, pt.X, pt.Y, 1) <= Config.stronghold_radius_base + Config.stronghold_radius_per_level * stronghold.Lvl);
+                    int count = list.Count(pt => tileLocator.TileDistance(stronghold.PrimaryPosition, 3, pt, 1) <= Config.stronghold_radius_base + Config.stronghold_radius_per_level * stronghold.Lvl);
                     stronghold.NearbyCitiesCount = (ushort)count;
                     stronghold.EndUpdate();
                 }

@@ -144,12 +144,7 @@ namespace Game.Logic.Actions
 
         public int CalculateTradeTime(IStructure structure, ICity targetCity)
         {
-            return (int)CalculateTime(formula.SendTime(structure, tileLocator.TileDistance(structure.X, 
-                                                                                           structure.Y,
-                                                                                           structure.Size,
-                                                                                           targetCity.X,
-                                                                                           targetCity.Y,
-                                                                                           1)));
+            return (int)CalculateTime(formula.SendTime(structure, tileLocator.TileDistance(structure.PrimaryPosition, structure.Size, targetCity.PrimaryPosition, 1)));
         }
 
         public override void UserCancelled()
@@ -165,7 +160,6 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll(bool wasKilled)
         {
             ICity city;
-            IStructure structure;
             using (locker.Lock(cityId, out city))
             {
                 if (!IsValid())
@@ -173,6 +167,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
+                IStructure structure;
                 if (!city.TryGetStructure(structureId, out structure))
                 {
                     StateChange(ActionState.Failed);

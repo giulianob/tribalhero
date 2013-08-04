@@ -337,8 +337,8 @@ namespace Testing.BattleTests
             // defender2 is closer than defender 1
             var radiusLocator = Substitute.For<ITileLocator>();
             fixture.Register(() => radiusLocator);
-            radiusLocator.RadiusDistance(0, 0, Arg.Any<byte>(), 1, 1, Arg.Any<byte>()).Returns(1);
-            radiusLocator.RadiusDistance(0, 0, Arg.Any<byte>(), 2, 2, Arg.Any<byte>()).Returns(0);
+            radiusLocator.RadiusDistance(new Position(0, 0), Arg.Any<byte>(), new Position(1, 1), Arg.Any<byte>()).Returns(1);
+            radiusLocator.RadiusDistance(new Position(0, 0), Arg.Any<byte>(), new Position(2, 2), Arg.Any<byte>()).Returns(0);
 
             var listSut = fixture.Create<CombatList>();
             listSut.Add(combatGroup, false);

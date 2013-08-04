@@ -81,16 +81,17 @@ namespace Game
 
             #region Locking
 
-            Bind<DefaultMultiObjectLock.Factory>().ToMethod(c => () => new TransactionalMultiObjectLock(new DefaultMultiObjectLock()));
+            Bind<DefaultMultiObjectLock.Factory>().ToMethod(c => () => new TransactionalMultiObjectLock(new DefaultMultiObjectLock(), c.Kernel.Get<IDbManager>()));
 
             Bind<ILocker>().ToMethod(c =>
-                {
-                    DefaultMultiObjectLock.Factory multiObjectLockFactory =
-                            () => new TransactionalMultiObjectLock(new DefaultMultiObjectLock());
-                    return new DefaultLocker(multiObjectLockFactory,
-                                             () => new CallbackLock(multiObjectLockFactory),
-                                             c.Kernel.Get<IGameObjectLocator>());
-                }).InSingletonScope();
+            {
+                DefaultMultiObjectLock.Factory multiObjectLockFactory =
+                        () => new TransactionalMultiObjectLock(new DefaultMultiObjectLock(), c.Kernel.Get<IDbManager>());
+
+                return new DefaultLocker(multiObjectLockFactory,
+                                         () => new CallbackLock(multiObjectLockFactory),
+                                         c.Kernel.Get<IGameObjectLocator>());
+            }).InSingletonScope();
 
             #endregion
 

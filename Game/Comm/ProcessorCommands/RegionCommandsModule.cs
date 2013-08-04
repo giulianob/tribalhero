@@ -99,7 +99,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 // Make sure user is building road within city walls
-                if (tileLocator.TileDistance(city.X, city.Y, 1, x, y, 1) >= city.Radius)
+                if (tileLocator.TileDistance(city.PrimaryPosition, 1, new Position(x, y), 1) >= city.Radius)
                 {
                     ReplyError(session, packet, Error.NotWithinWalls);
                     return;
@@ -120,7 +120,7 @@ namespace Game.Comm.ProcessorCommands
 
                 foreach (var position in tileLocator.ForeachRadius(x, y, 1, false))
                 {
-                    if (tileLocator.RadiusDistance(x, y, 1, position.X, position.Y, 1) != 1)
+                    if (tileLocator.RadiusDistance(new Position(x, y), 1, position, 1) != 1)
                     {
                         continue;
                     }
@@ -192,7 +192,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 // Make sure user is building road within city walls
-                if (tileLocator.TileDistance(city.X, city.Y, 1, x, y, 1) >= city.Radius)
+                if (tileLocator.TileDistance(city.PrimaryPosition, 1, new Position(x, y), 1) >= city.Radius)
                 {
                     ReplyError(session, packet, Error.NotWithinWalls);
                     return;
@@ -232,7 +232,7 @@ namespace Game.Comm.ProcessorCommands
                 bool allNeighborsHaveOtherPaths = true;
                 foreach (var position in tileLocator.ForeachRadius(x, y, 1, false))
                 {
-                    if (tileLocator.RadiusDistance(x, y, 1, position.X, position.Y, 1) != 1)
+                    if (tileLocator.RadiusDistance(new Position(x, y), 1, position, 1) != 1)
                     {
                         continue;
                     }

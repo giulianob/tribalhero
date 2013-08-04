@@ -90,7 +90,7 @@ namespace Game.Data.Stronghold
             var city = (ICity)sender;
 
             foreach (var stronghold in strongholds.Values.Where(s => s.StrongholdState == StrongholdState.Inactive 
-                && tileLocator.TileDistance(s.X, s.Y, s.Size, city.X, city.Y, 1) < Config.stronghold_radius_base + Config.stronghold_radius_per_level * s.Lvl))
+                && tileLocator.TileDistance(s.PrimaryPosition, s.Size, city.PrimaryPosition, 1) < Config.stronghold_radius_base + Config.stronghold_radius_per_level * s.Lvl))
             {
                 stronghold.BeginUpdate();
                 ++stronghold.NearbyCitiesCount;

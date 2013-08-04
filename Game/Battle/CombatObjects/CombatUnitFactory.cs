@@ -40,7 +40,8 @@ namespace Game.Battle.CombatObjects
                                        kernel.Get<Formula>(),
                                        kernel.Get<IActionFactory>(),
                                        kernel.Get<BattleFormulas>(),
-                                       kernel.Get<ITileLocator>());
+                                       kernel.Get<ITileLocator>(),
+                                       kernel.Get<IRegionManager>());
         }
 
         public AttackCombatUnit[] CreateAttackCombatUnit(IBattleManager battleManager,

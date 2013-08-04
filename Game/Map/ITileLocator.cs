@@ -5,13 +5,13 @@ namespace Game.Map
 {
     public interface ITileLocator
     {
-        int RadiusDistance(uint x, uint y, byte size, uint x1, uint y1, byte size1);
+        int RadiusDistance(Position position, byte size, Position position1, byte size1);
 
         bool IsOverlapping(Position location1, byte size1, byte r1, Position location2, byte size2, byte r2);
 
-        int TileDistance(uint x, uint y, byte size1, uint x1, uint y1, byte size2);
+        int TileDistance(Position position, byte size1, Position position1, byte size2);
 
-        void RandomPoint(uint ox, uint oy, byte radius, bool doSelf, out uint x, out uint y);
+        void RandomPoint(Position position, byte radius, bool doSelf, out Position randomPosition);
 
         IEnumerable<Position> ForeachMultitile(ISimpleGameObject obj);
 

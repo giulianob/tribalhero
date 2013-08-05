@@ -82,6 +82,9 @@ namespace Game.Comm
                 }
 
                 s.Blocking = false;
+                s.NoDelay = true;
+                s.SendTimeout = 1000;
+                s.SendBufferSize = 16384;
 
                 var session = socketFactory.CreateSocketSession(s.RemoteEndPoint.ToString(), s);
 

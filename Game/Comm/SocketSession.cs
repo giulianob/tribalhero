@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Linq.Expressions;
 using System.Net.Sockets;
 using Game.Data;
 using Game.Util;
@@ -41,8 +42,21 @@ namespace Game.Comm
                 {
                     if (e.SocketErrorCode == SocketError.WouldBlock)
                     {
-                        Socket.Blocking = true;
+                        try
+                        {
+                            Socket.Blocking = true;
+                        }
+                        catch(Exception)
+                        {                            
+                            return false;
+                        }
+
                         continue;
+                    }
+                    
+                    if (e.SocketErrorCode == SocketError.TimedOut)
+                    {
+                        Logger.Warn(e, "Socket send timed out packetLength[{0}]", packetBytes.Length);
                     }
                     
                     return false;
@@ -53,9 +67,16 @@ namespace Game.Comm
                 }
             }
 
-            if (Socket.Blocking)
+            try
             {
-                Socket.Blocking = false;
+                if (Socket.Blocking)
+                {
+                    Socket.Blocking = false;
+                }
+            }
+            catch(Exception e)
+            {
+                Logger.Warn(e, "Failed to reset socket blocking status");
             }
 
             return ret > 0;

@@ -42,7 +42,7 @@ namespace Game.Battle.CombatObjects
                                BattleStats stats,
                                Formula formula,
                                IActionFactory actionFactory,
-                               BattleFormulas battleFormulas)
+                               IBattleFormulas battleFormulas)
                 : base(id, battleId, battleFormulas)
         {
             this.stats = stats;
@@ -63,7 +63,7 @@ namespace Game.Battle.CombatObjects
                                byte lvl,
                                Formula formula,
                                IActionFactory actionFactory,
-                               BattleFormulas battleFormulas)
+                               IBattleFormulas battleFormulas)
                 : base(id, battleId, battleFormulas)
         {
             Structure = structure;

@@ -89,7 +89,7 @@ namespace Game.Logic.Actions
                                        Formula formula,
                                        CityBattleProcedure cityBattleProcedure,
                                        IWorld world)
-                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
+            : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.actionFactory = actionFactory;
             this.battleProcedure = battleProcedure;
@@ -127,8 +127,7 @@ namespace Game.Logic.Actions
             get
             {
                 return
-                        XmlSerializer.Serialize(new[]
-                        {new XmlKvPair("city_id", cityId), new XmlKvPair("destroyed_hp", destroyedHp)});
+                        XmlSerializer.Serialize(new[] { new XmlKvPair("city_id", cityId), new XmlKvPair("destroyed_hp", destroyedHp) });
             }
         }
 
@@ -197,7 +196,7 @@ namespace Game.Logic.Actions
                 {
                     // Battle continues, just save it and reschedule
                     dbManager.Save(city.Battle);
-                    endTime = SystemClock.Now.AddSeconds(formula.GetBattleInterval(city.Battle.Defenders, city.Battle.Attackers));                  
+                    endTime = SystemClock.Now.AddSeconds(formula.GetBattleInterval(city.Battle.Defenders, city.Battle.Attackers));
                     StateChange(ActionState.Fired);
                     return;
                 }
@@ -296,7 +295,9 @@ namespace Game.Logic.Actions
                                           ICombatObject source,
                                           ICombatGroup targetGroup,
                                           ICombatObject target,
-                                          decimal damage)
+                                          decimal damage,
+                                          int attackerCount,
+                                          int targetCount)
         {
             ICity city;
             if (!gameObjectLocator.TryGetObjects(cityId, out city))

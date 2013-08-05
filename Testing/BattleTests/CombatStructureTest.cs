@@ -41,7 +41,7 @@ namespace Testing.BattleTests
             Mock<IStructure> structure = new Mock<IStructure>();
             Mock<BattleStats> battleStats = new Mock<BattleStats>();
             Mock<Formula> formula = new Mock<Formula>();
-            Mock<BattleFormulas> battleFormula = new Mock<BattleFormulas>();
+            Mock<IBattleFormulas> battleFormula = new Mock<IBattleFormulas>();
             Mock<IActionFactory> actionFactory = new Mock<IActionFactory>();
 
             structureStats.SetupAllProperties();
@@ -78,7 +78,7 @@ namespace Testing.BattleTests
             Mock<IStructure> structure = new Mock<IStructure>();
             Mock<BattleStats> battleStats = new Mock<BattleStats>();
             Mock<Formula> formula = new Mock<Formula>();
-            Mock<BattleFormulas> battleFormula = new Mock<BattleFormulas>();
+            Mock<IBattleFormulas> battleFormula = new Mock<IBattleFormulas>();
             Mock<IActionFactory> actionFactory = new Mock<IActionFactory>();
 
             structureStats.SetupAllProperties();

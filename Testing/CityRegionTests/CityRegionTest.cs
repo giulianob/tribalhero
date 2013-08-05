@@ -5,7 +5,6 @@ using Game.Data;
 using Game.Map;
 using Game.Util.Locking;
 using NSubstitute;
-using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Xunit;
 using Xunit.Extensions;
 using System.Linq;

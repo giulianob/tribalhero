@@ -22,7 +22,7 @@ namespace Game.Logic.Actions
 {
     public class BarbarianTribeEngageAttackPassiveAction : PassiveAction
     {
-        private readonly BattleFormulas battleFormula;
+        private readonly IBattleFormulas battleFormula;
 
         private readonly uint cityId;
 
@@ -50,7 +50,7 @@ namespace Game.Logic.Actions
                                                        uint troopObjectId,
                                                        uint targetObjectId,
                                                        AttackMode mode,
-                                                       BattleFormulas battleFormula,
+                                                       IBattleFormulas battleFormula,
                                                        IGameObjectLocator gameObjectLocator,
                                                        BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
                                                        Formula formula,
@@ -72,7 +72,7 @@ namespace Game.Logic.Actions
         public BarbarianTribeEngageAttackPassiveAction(uint id,
                                                        bool isVisible,
                                                        IDictionary<string, string> properties,
-                                                       BattleFormulas battleFormula,
+                                                       IBattleFormulas battleFormula,
                                                        IGameObjectLocator gameObjectLocator,
                                                        BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
                                                        Formula formula,

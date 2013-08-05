@@ -38,7 +38,7 @@ namespace Game.Battle.CombatObjects
                                     ushort count,
                                     IBaseUnitStats unitBaseStats,
                                     IBarbarianTribe barbarianTribe,                                    
-                                    BattleFormulas battleFormulas,
+                                    IBattleFormulas battleFormulas,
                                     Formula formula)
                 : base(id, battleId, battleFormulas)
         {

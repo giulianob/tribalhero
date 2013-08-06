@@ -166,14 +166,6 @@ namespace Game.Data.Stronghold
 
         #region Implementation of ICityRegionObject
 
-        public Position CityRegionLocation
-        {
-            get
-            {
-                return new Position(PrimaryPosition.X, PrimaryPosition.Y);
-            }
-        }
-
         public CityRegion.ObjectType CityRegionType
         {
             get

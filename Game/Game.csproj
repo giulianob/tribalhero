@@ -247,11 +247,11 @@
     <Compile Include="Data\ICityFactory.cs" />
     <Compile Include="Data\IGameObjectFactory.cs" />
     <Compile Include="Data\IGlobal.cs" />
+    <Compile Include="Data\IPrimaryPosition.cs" />
     <Compile Include="Data\ITechnologyManagerFactory.cs" />
     <Compile Include="Data\Forest\IForest.cs" />
     <Compile Include="Data\Forest\IForestFactory.cs" />
     <Compile Include="Data\Forest\IForestManager.cs" />
-    <Compile Include="Data\IXYPosition.cs" />
     <Compile Include="Data\PlayerChatState.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />

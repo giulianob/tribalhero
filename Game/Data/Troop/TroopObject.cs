@@ -121,14 +121,6 @@ namespace Game.Data.Troop
 
         #region Implementation of ICityRegionObject
 
-        public Position CityRegionLocation
-        {
-            get
-            {
-                return new Position(PrimaryPosition.X, PrimaryPosition.Y);
-            }
-        }
-
         public uint CityRegionGroupId
         {
             get

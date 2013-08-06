@@ -1,4 +1,5 @@
 ﻿using Game.Data.Troop;
+using Game.Map;
 using Game.Util.Locking;
 
 namespace Game.Data
@@ -12,7 +13,7 @@ namespace Game.Data
         BarbarianTribe = 3
     }
 
-    public interface IStation : ILocation, ILockable, IXYPosition
+    public interface IStation : ILocation, IPrimaryPosition, ILockable
     {
         ITroopManager Troops { get; }
     }

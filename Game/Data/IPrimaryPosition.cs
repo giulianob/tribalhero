@@ -1,8 +1,8 @@
-using Game.Map;
+﻿using Game.Map;
 
 namespace Game.Data
 {
-    public interface IXYPosition
+    public interface IPrimaryPosition
     {
         Position PrimaryPosition { get; }
     }

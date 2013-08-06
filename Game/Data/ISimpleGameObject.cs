@@ -4,7 +4,7 @@ using Game.Map;
 
 namespace Game.Data
 {
-    public interface ISimpleGameObject : IXYPosition
+    public interface ISimpleGameObject : IPrimaryPosition
     {
         event EventHandler<SimpleGameObjectArgs> ObjectUpdated;
 

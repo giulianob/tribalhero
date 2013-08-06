@@ -126,14 +126,6 @@ namespace Game.Data.BarbarianTribe
             return updated;
         }
 
-        public Position CityRegionLocation
-        {
-            get
-            {
-                return new Position(PrimaryPosition.X, PrimaryPosition.Y);
-            }
-        }
-
         public CityRegion.ObjectType CityRegionType {
             get
             {

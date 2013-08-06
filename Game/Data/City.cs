@@ -847,14 +847,6 @@ namespace Game.Data
 
         #endregion
 
-        public Position CityRegionLocation
-        {
-            get
-            {
-                return new Position(PrimaryPosition.X, PrimaryPosition.Y);
-            }
-        }
-
         public byte[] GetCityRegionObjectBytes()
         {
             using (var ms = new MemoryStream())

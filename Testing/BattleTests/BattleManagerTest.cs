@@ -710,8 +710,7 @@ namespace Testing.BattleTests
         }
 
         /// <summary>
-        ///     When an object has targets
-        ///     And NextToAttack is Defense
+        ///     When an object has targets        
         ///     And ExecuteTurn is called
         ///     Then he should attack all the targets
         ///     And ExitTurn should be called
@@ -748,18 +747,16 @@ namespace Testing.BattleTests
             });
 
             // ReSharper disable RedundantAssignment
-            var attackerBattleSide = BattleManager.BattleSide.Defense;
+            var attackerBattleSide = BattleManager.BattleSide.Attack;
             var attackerOutObject = attacker.Object;
-            // ReSharper restore RedundantAssignment
+            // ReSharper restore RedundantAssignment            
             var battleOrder = new Mock<IBattleOrder>();
-            battleOrder.Setup(
-                              m =>
-                              m.NextObject(It.IsAny<uint>(),
-                                           It.IsAny<ICombatList>(),
-                                           It.IsAny<ICombatList>(),
-                                           out attackerOutObject,
-                                           out attackerGroup,
-                                           out attackerBattleSide)).Returns(true);
+            battleOrder.Setup(m => m.NextObject(It.IsAny<uint>(),
+                    It.IsAny<ICombatList>(),
+                    It.IsAny<ICombatList>(),
+                    out attackerOutObject,
+                    out attackerGroup,
+                    out attackerBattleSide)).Returns(true);
 
             var attackTargetCallCount = 0;
 
@@ -777,12 +774,10 @@ namespace Testing.BattleTests
                                                                       switch(attackIndex)
                                                                       {
                                                                           case 0:
-                                                                              attackerObject.Should()
-                                                                                            .Be(defender1.Object);
+                                                                              defenderObject.CombatObject.Should().Be(defender1.Object);
                                                                               break;
                                                                           case 1:
-                                                                              attackerObject.Should()
-                                                                                            .Be(defender2.Object);
+                                                                              defenderObject.CombatObject.Should().Be(defender2.Object);
                                                                               break;
                                                                           default:
                                                                               throw new Exception(
@@ -798,7 +793,7 @@ namespace Testing.BattleTests
                 };
 
             battle.BattleStarted = true;
-           // battle.NextToAttack = BattleManager.BattleSide.Attack;
+           
             battle.ExecuteTurn().Should().BeTrue();
 
             battle.Turn.Should().Be(1);
@@ -809,8 +804,7 @@ namespace Testing.BattleTests
         }
 
         /// <summary>
-        ///     When an object has targets
-        ///     And NextToAttack is Defense
+        ///     When defense should be next one to attack
         ///     And ExecuteTurn is called
         ///     Then he should attack all the targets
         ///     And ExitTurn should be called
@@ -876,12 +870,10 @@ namespace Testing.BattleTests
                                                                       switch(attackIndex)
                                                                       {
                                                                           case 0:
-                                                                              attackerObject.Should()
-                                                                                            .Be(attacker1.Object);
+                                                                              defenderObject.CombatObject.Should().Be(attacker1.Object);
                                                                               break;
                                                                           case 1:
-                                                                              attackerObject.Should()
-                                                                                            .Be(attacker2.Object);
+                                                                              defenderObject.CombatObject.Should().Be(attacker2.Object);
                                                                               break;
                                                                           default:
                                                                               throw new Exception(
@@ -905,75 +897,6 @@ namespace Testing.BattleTests
             exitTurnCalled.Should().BeTrue();
             defender.Verify(m => m.ParticipatedInRound(0), Times.Once());
             sut.MockDbManager.Verify(m => m.Save(defender.Object), Times.Once());
-        }
-
-        /// <summary>
-        ///     When a attacker has entered the battle late
-        ///     And NextToAttack is Defense
-        ///     And ExecuteTurn is called
-        ///     Then attacker should attack
-        ///     And ExitTurn should be called
-        ///     And ParticipatedInRound should be called on the attacker
-        /// </summary>
-        [Fact]
-        public void TestExecuteWhenObjectJoinedLateShouldAttack()
-        {
-            var sut = new BattleManagerSut();
-
-            var attacker1 = new Mock<ICombatObject>();
-            attacker1.SetupProperty(p => p.Stats.Atk, 10m);
-            attacker1.SetupProperty(p => p.LastRound, (uint)3);
-            attacker1.SetupGet(p => p.Upkeep).Returns(1);
-
-            var attacker2 = new Mock<ICombatObject>();
-            attacker2.SetupProperty(p => p.Stats.Atk, 10m);
-            attacker2.SetupProperty(p => p.LastRound, (uint)0);
-            attacker2.SetupGet(p => p.Upkeep).Returns(1);
-            
-            var defender1 = new Mock<ICombatObject>();
-            defender1.SetupGet(p => p.Upkeep).Returns(1);
-
-            var attackerGroup = CreateGroup(attacker1.Object, attacker2.Object);
-            var defenderGroup = CreateGroup(defender1.Object);
-
-            sut.MockDefenders.Add(defenderGroup);
-            sut.MockAttackers.Add(attackerGroup);
-            sut.MockDefenders.MockInRange = new List<ICombatObject> {attacker1.Object, attacker2.Object};
-
-            sut.MockDefenders.MockGetBestTargets.Enqueue(new StubCombatList.GetBestTargetQueueItem
-            {
-                    BestTargetResult = CombatList.BestTargetResult.Ok,
-                    Targets =
-                            new List<CombatList.Target>
-                            {
-                                    new CombatList.Target {CombatObject = defender1.Object, Group = defenderGroup}                                    
-                            }
-            });
-
-
-
-            var battle = sut.CreateStubbedAttackBattleManager(1,
-                                                              new BattleLocation(BattleLocationType.City, 100),
-                                                              new BattleOwner(BattleOwnerType.City, 200),
-                                                              delegate { });
-            battle.Round = 2;
-            battle.Turn = 2;
-
-            var exitTurnCalled = false;
-            battle.ExitTurn += (manager, attackers, defenders, round, turn) =>
-                {
-                    turn.Should().Be(2);
-                    exitTurnCalled = true;
-                };
-
-            battle.BattleStarted = true;
-            //battle.NextToAttack = BattleManager.BattleSide.Attack;
-            battle.ExecuteTurn().Should().BeTrue();
-
-            battle.Turn.Should().Be(3);
-            attacker2.Verify(p => p.ParticipatedInRound(2), Times.Once());
-            exitTurnCalled.Should().BeTrue();            
-            sut.MockDbManager.Verify(m => m.Save(attacker2.Object), Times.Once());
-        }
+        }        
     }
 }

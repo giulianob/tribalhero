@@ -156,6 +156,7 @@
 		public function readCity(packet: Packet) : City {
 			var id: int = packet.readUInt();
 			var name: String = packet.readString();
+            var position: Position = new Position(packet.readUInt(), packet.readUInt());
 			var resources: LazyResources = new LazyResources(
 			new LazyValue(packet.readInt(), packet.readInt(), packet.readInt(), packet.readInt(), packet.readUInt()),
 			new LazyValue(packet.readInt(), packet.readInt(), 0, packet.readInt(), packet.readUInt()),
@@ -177,7 +178,7 @@
 			
 			var hideNewUnits: Boolean = packet.readByte() == 1;
 
-			var city: City = new City(id, name, radius, resources, attackPoint, defensePoint, cityValue, inBattle, hideNewUnits, ap);
+			var city: City = new City(id, name, position, radius, resources, attackPoint, defensePoint, cityValue, inBattle, hideNewUnits, ap);
 
 			// Add the name of this city to the list of city names
 			Global.map.usernames.cities.add(new Username(id, name));

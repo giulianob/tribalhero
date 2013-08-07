@@ -11,6 +11,7 @@ package src.Objects {
     import flash.geom.Point;
 
     import src.Constants;
+    import src.Map.Position;
     import src.Map.ScreenPosition;
 
     public class SimpleObject extends MovieClip {

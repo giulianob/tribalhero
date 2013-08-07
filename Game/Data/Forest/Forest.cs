@@ -32,23 +32,24 @@ namespace Game.Data.Forest
 
         private readonly IActionFactory actionFactory;
 
+        private readonly IScheduler scheduler;
+
+        private readonly IDbManager dbManager;
+
         /// <summary>
         ///     The structures currently getting wood from this forest
         /// </summary>
         private readonly List<IStructure> structures = new List<IStructure>();
 
+        private Formula formula;
+
         public ForestDepleteAction DepleteAction { get; set; }
 
-        public override uint ObjectId
+        public override byte Size
         {
             get
             {
-                return objectId;
-            }
-            set
-            {
-                CheckUpdateMode();
-                objectId = value;
+                return 1;
             }
         }
 
@@ -75,7 +76,7 @@ namespace Game.Data.Forest
         {
             get
             {
-                return Formula.Current.GetForestMaxLabor(lvl);
+                return formula.GetForestMaxLabor(lvl);
             }
         }
 
@@ -103,10 +104,14 @@ namespace Game.Data.Forest
 
         #region Constructors
 
-        public Forest(byte lvl, int capacity, double rate, IActionFactory actionFactory)
+        public Forest(uint id, byte lvl, int capacity, double rate, uint x, uint y, IActionFactory actionFactory, IScheduler scheduler, IDbManager dbManager, Formula formula) 
+            : base(id, x, y)
         {
             this.lvl = lvl;
             this.actionFactory = actionFactory;
+            this.scheduler = scheduler;
+            this.dbManager = dbManager;
+            this.formula = formula;
 
             Wood = new AggressiveLazyValue(capacity) {Limit = capacity};
 
@@ -167,7 +172,7 @@ namespace Game.Data.Forest
                 // Get the current rate. This will be figure out how much we need to adjust the rate.
                 var oldRate = (int)obj["Rate"];
 
-                var newRate = Formula.Current.GetWoodRateForForest(this, obj.Stats, efficiency);
+                var newRate = formula.GetWoodRateForForest(this, obj.Stats, efficiency);
 
                 if (newRate != oldRate)
                 {
@@ -218,7 +223,7 @@ namespace Game.Data.Forest
         {
             if (DepleteAction != null)
             {
-                Scheduler.Current.Remove(DepleteAction);
+                scheduler.Remove(DepleteAction);
             }
 
             double hours = 2 * 24 + Config.Random.NextDouble() * 24;
@@ -237,21 +242,21 @@ namespace Game.Data.Forest
 
             DepleteAction = actionFactory.CreateForestDepleteAction(this, DepleteTime);
 
-            Scheduler.Current.Put(DepleteAction);
+            scheduler.Put(DepleteAction);
         }
 
         #endregion
 
         #region Updates
 
-        public override void CheckUpdateMode()
+        protected override void CheckUpdateMode()
         {
-            if (!Global.FireEvents || !DbPersisted)
+            if (!Global.Current.FireEvents || !DbPersisted)
             {
                 return;
             }
 
-            if (!updating)
+            if (!Updating)
             {
                 throw new Exception("Changed state outside of begin/end update block");
             }
@@ -259,36 +264,16 @@ namespace Game.Data.Forest
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
         }
 
-        public override void EndUpdate()
+        protected override bool Update()
         {
-            if (!updating)
+            var update = base.Update();
+
+            if (update && ObjectId > 0)
             {
-                throw new Exception("Called an endupdate without first calling a beginupdate");
+                dbManager.Save(this);
             }
 
-            updating = false;
-
-            Update();
-        }
-
-        protected new void Update()
-        {
-            base.Update();
-
-            if (!Global.FireEvents)
-            {
-                return;
-            }
-
-            if (updating)
-            {
-                return;
-            }
-
-            if (objectId > 0)
-            {
-                DbPersistance.Current.Save(this);
-            }
+            return update;
         }
 
         #endregion
@@ -326,9 +311,12 @@ namespace Game.Data.Forest
 
                 return new[]
                 {
-                        new DbColumn("labor", Labor, DbType.UInt16), new DbColumn("x", X, DbType.UInt32),
-                        new DbColumn("y", Y, DbType.Int32), new DbColumn("level", Lvl, DbType.Byte),
-                        new DbColumn("rate", Rate, DbType.Single), new DbColumn("capacity", Wood.Limit, DbType.Int32),
+                        new DbColumn("labor", Labor, DbType.UInt16), 
+                        new DbColumn("x", PrimaryPosition.X, DbType.UInt32),
+                        new DbColumn("y", PrimaryPosition.Y, DbType.Int32), 
+                        new DbColumn("level", Lvl, DbType.Byte),
+                        new DbColumn("rate", Rate, DbType.Single), 
+                        new DbColumn("capacity", Wood.Limit, DbType.Int32),
                         new DbColumn("last_realize_time", Wood.LastRealizeTime, DbType.DateTime),
                         new DbColumn("lumber", Wood.RawValue, DbType.Int32),
                         new DbColumn("upkeep", Wood.Upkeep, DbType.Int32),
@@ -364,14 +352,6 @@ namespace Game.Data.Forest
         #endregion
 
         #region Implementation of ICityRegionObject
-
-        public Position CityRegionLocation
-        {
-            get
-            {
-                return new Position(X, Y);
-            }
-        }
 
         public byte[] GetCityRegionObjectBytes()
         {

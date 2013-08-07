@@ -22,11 +22,23 @@ namespace Game.Logic.Actions
 
         private readonly uint structureId;
 
-        public UnitUpgradeActiveAction(uint cityId, uint structureId, ushort type)
+        private readonly ILocker locker;
+
+        private readonly IWorld world;
+
+        private readonly Formula formula;
+
+        private readonly UnitFactory unitFactory;
+
+        public UnitUpgradeActiveAction(uint cityId, uint structureId, ushort type, ILocker locker, IWorld world, Formula formula, UnitFactory unitFactory)
         {
             this.cityId = cityId;
             this.structureId = structureId;
             UnitType = type;
+            this.locker = locker;
+            this.world = world;
+            this.formula = formula;
+            this.unitFactory = unitFactory;
         }
 
         public UnitUpgradeActiveAction(uint id,
@@ -36,9 +48,17 @@ namespace Game.Logic.Actions
                                        int workerType,
                                        byte workerIndex,
                                        ushort actionCount,
-                                       Dictionary<string, string> properties)
+                                       Dictionary<string, string> properties,
+                                       ILocker locker,
+                                       IWorld world,
+                                       Formula formula,
+                                       UnitFactory unitFactory)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
+            this.locker = locker;
+            this.world = world;
+            this.formula = formula;
+            this.unitFactory = unitFactory;
             UnitType = ushort.Parse(properties["type"]);
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
@@ -66,7 +86,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
             IStructure structure;
-            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!world.TryGetObjects(cityId, structureId, out city, out structure))
             {
                 return Error.ActionInvalid;
             }
@@ -83,7 +103,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
             IStructure structure;
-            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!world.TryGetObjects(cityId, structureId, out city, out structure))
             {
                 return Error.ObjectNotFound;
             }
@@ -104,7 +124,7 @@ namespace Game.Logic.Actions
                 return Error.Unexpected;
             }
 
-            Resource cost = Formula.Current.UnitUpgradeCost(city, UnitType, (byte)(unitStats.Lvl + 1));
+            Resource cost = formula.UnitUpgradeCost(city, UnitType, (byte)(unitStats.Lvl + 1));
 
             if (cost == null)
             {
@@ -120,12 +140,9 @@ namespace Game.Logic.Actions
             city.Resource.Subtract(cost);
             city.EndUpdate();
 
-            var upgradeTime =
-                    Formula.Current.BuildTime(
-                                              Ioc.Kernel.Get<UnitFactory>()
-                                                 .GetUpgradeTime(UnitType, (byte)(unitStats.Lvl + 1)),
-                                              city,
-                                              structure.Technologies);
+            var upgradeTime = formula.BuildTime(unitFactory.GetUpgradeTime(UnitType, (byte)(unitStats.Lvl + 1)),
+                                                city,
+                                                structure.Technologies);
             endTime = DateTime.UtcNow.AddSeconds(CalculateTime(upgradeTime));
             BeginTime = DateTime.UtcNow;
 
@@ -135,7 +152,7 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll(bool wasKilled)
         {
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (!IsValid())
                 {
@@ -145,11 +162,9 @@ namespace Game.Logic.Actions
                 if (!wasKilled)
                 {
                     city.BeginUpdate();
-                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime,
-                                                                              Ioc.Kernel.Get<UnitFactory>()
-                                                                                 .GetUpgradeCost(UnitType,
-                                                                                                 city.Template[UnitType]
-                                                                                                         .Lvl + 1)));
+                    city.Resource.Add(formula.GetActionCancelResource(BeginTime, unitFactory.GetUpgradeCost(UnitType,
+                                                                                                            city.Template[UnitType]
+                                                                                                                    .Lvl + 1)));
                     city.EndUpdate();
                 }
 
@@ -171,7 +186,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
             IStructure structure;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (!IsValid())
                 {
@@ -184,9 +199,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                structure.City.Template[UnitType] = Ioc.Kernel.Get<UnitFactory>()
-                                                       .GetUnitStats(UnitType,
-                                                                     (byte)(structure.City.Template[UnitType].Lvl + 1));
+                structure.City.Template[UnitType] = unitFactory.GetUnitStats(UnitType, (byte)(structure.City.Template[UnitType].Lvl + 1));
 
                 StateChange(ActionState.Completed);
             }

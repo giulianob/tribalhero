@@ -20,11 +20,11 @@ namespace Game.Module
             Offtopic = 3,
         }
 
-        private readonly Channel channel;
+        private readonly IChannel channel;
 
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
-        public Chat(Channel channel)
+        public Chat(IChannel channel)
         {
             this.channel = channel;
         }
@@ -74,7 +74,7 @@ namespace Game.Module
             channel.Post("/GLOBAL", chatPacket);
         }
 
-        public void SendSystemChat(IChannel session, string messageId, params string[] messageArgs)
+        public void SendSystemChat(IChannelListener session, string messageId, params string[] messageArgs)
         {
             if (session == null)
             {

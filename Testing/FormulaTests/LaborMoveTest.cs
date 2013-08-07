@@ -4,6 +4,7 @@ using Game.Data;
 using Game.Logic.Formulas;
 using NSubstitute;
 using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.AutoNSubstitute;
 using Xunit.Extensions;
 using FluentAssertions;
 
@@ -68,7 +69,7 @@ namespace Testing.FormulaTests
         [PropertyData("WithDifferentOvertime")]
         public void TestLaborMoveWithOvertime(int labor, IEnumerable<Effect> effects, int expected)
         {
-            var formula = new Fixture().Create<Formula>();
+            var formula = new Fixture().Customize(new AutoNSubstituteCustomization()).Create<Formula>();
             var structure = Substitute.For<IStructure>();
             structure.City.GetTotalLaborers().Returns(160);
             structure.City.Technologies.GetEffects(EffectCode.LaborMoveTimeMod).Returns(effects);

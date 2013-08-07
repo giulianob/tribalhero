@@ -68,7 +68,7 @@ namespace Game.Setup
 
             if (Origin == PropertyOrigin.System)
             {
-                return Global.SystemVariables[Name].Value;
+                return Global.Current.SystemVariables[Name].Value;
             }
 
             return structure[Name];

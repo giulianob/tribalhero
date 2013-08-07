@@ -124,7 +124,7 @@ namespace Game.Logic.Actions
             DeregisterBattleListeners(city);
 
             troopObject.BeginUpdate();
-            troopObject.State = GameObjectState.NormalState();
+            troopObject.State = GameObjectStateFactory.NormalState();
             troopObject.EndUpdate();
 
             troopObject.Stub.BeginUpdate();            
@@ -158,7 +158,7 @@ namespace Game.Logic.Actions
             RegisterBattleListeners(city);
 
             troopObject.BeginUpdate();
-            troopObject.State = GameObjectState.BattleState(city.Battle.BattleId);
+            troopObject.State = GameObjectStateFactory.BattleState(city.Battle.BattleId);
             troopObject.EndUpdate();
             troopObject.Stub.BeginUpdate();
             troopObject.Stub.State = TroopState.Battle;
@@ -183,7 +183,7 @@ namespace Game.Logic.Actions
             DeregisterBattleListeners(city);
 
             troopObject.BeginUpdate();
-            troopObject.State = GameObjectState.NormalState();
+            troopObject.State = GameObjectStateFactory.NormalState();
             troopObject.EndUpdate();
 
             troopObject.Stub.BeginUpdate();            

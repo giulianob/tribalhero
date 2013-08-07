@@ -222,13 +222,13 @@ namespace Game.Data
             if (Session != null)
             {
                 var packet = new Packet(Command.RefreshUnread);
-                Global.Channel.Post("/PLAYER/" + PlayerId, packet);
+                Global.Current.Channel.Post("/PLAYER/" + PlayerId, packet);
             }
         }
 
         public void TribeUpdate()
         {
-            if (!Global.FireEvents)
+            if (!Global.Current.FireEvents)
             {
                 return;
             }
@@ -238,7 +238,7 @@ namespace Game.Data
             packet.AddUInt32(TribeRequest);
             packet.AddByte((byte)(Tribesman == null ? 0 : tribesman.Rank.Id));
 
-            Global.Channel.Post("/PLAYER/" + PlayerId, packet);
+            Global.Current.Channel.Post("/PLAYER/" + PlayerId, packet);
         }
 
         #region ILockable Members

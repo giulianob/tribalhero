@@ -1,17 +1,29 @@
-﻿namespace Game.Data.Troop
+using System;
+using Game.Logic.Formulas;
+using Ninject;
+using Persistance;
+
+namespace Game.Data.Troop
 {
     public class CityTroopStubFactory : ITroopStubFactory
     {
-        public CityTroopStubFactory(ICity city)
+        private readonly IKernel kernel;
+
+        public ICity City { get; set; }
+
+        public CityTroopStubFactory(IKernel kernel)
         {
-            City = city;
+            this.kernel = kernel;
         }
 
-        private ICity City { get; set; }
-
-        public TroopStub CreateTroopStub(ushort troopId)
+        public ITroopStub CreateTroopStub(ushort troopId)
         {
-            return new TroopStub(troopId, City);
+            if (City == null)
+            {
+                throw new Exception("City cannot be null");
+            }
+
+            return new TroopStub(troopId, City, kernel.Get<Formula>(), kernel.Get<IDbManager>());
         }
     }
 }

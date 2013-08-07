@@ -21,6 +21,8 @@ namespace Game.Battle.CombatObjects
 
         private readonly IActionFactory actionFactory;
 
+        private readonly ITileLocator tileLocator;
+
         private readonly Formula formula;
 
         private readonly byte lvl;
@@ -36,18 +38,24 @@ namespace Game.Battle.CombatObjects
         /// </summary>
         private decimal hp;
 
+        private IRegionManager regionManager;
+
         public CombatStructure(uint id,
                                uint battleId,
                                IStructure structure,
                                BattleStats stats,
                                Formula formula,
                                IActionFactory actionFactory,
-                               IBattleFormulas battleFormulas)
+                               IBattleFormulas battleFormulas,
+                               ITileLocator tileLocator,
+                               IRegionManager regionManager)
                 : base(id, battleId, battleFormulas)
         {
             this.stats = stats;
             this.formula = formula;
             this.actionFactory = actionFactory;
+            this.tileLocator = tileLocator;
+            this.regionManager = regionManager;
             Structure = structure;
             type = structure.Type;
             lvl = structure.Lvl;
@@ -63,12 +71,16 @@ namespace Game.Battle.CombatObjects
                                byte lvl,
                                Formula formula,
                                IActionFactory actionFactory,
-                               IBattleFormulas battleFormulas)
+                               IBattleFormulas battleFormulas,
+                               ITileLocator tileLocator,
+                               IRegionManager regionManager)
                 : base(id, battleId, battleFormulas)
         {
             Structure = structure;
             this.formula = formula;
             this.actionFactory = actionFactory;
+            this.tileLocator = tileLocator;
+            this.regionManager = regionManager;
             this.stats = stats;
             this.hp = hp;
             this.type = type;
@@ -96,6 +108,14 @@ namespace Game.Battle.CombatObjects
             get
             {
                 return -1;
+            }
+        }
+
+        public override byte Size
+        {
+            get
+            {
+                return Structure.Stats.Base.Size;
             }
         }
 
@@ -210,23 +230,27 @@ namespace Game.Battle.CombatObjects
             get
             {
                 return new[]
-                {
-                        new DbColumn("last_round", LastRound, DbType.UInt32),
-                        new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
-                        new DbColumn("damage_dealt", DmgDealt, DbType.Decimal),
-                        new DbColumn("damage_received", DmgRecv, DbType.Decimal),
-                        new DbColumn("group_id", GroupId, DbType.UInt32),
-                        new DbColumn("structure_city_id", Structure.City.Id, DbType.UInt32),
-                        new DbColumn("structure_id", Structure.ObjectId, DbType.UInt32),
-                        new DbColumn("hp", hp, DbType.Decimal), new DbColumn("type", type, DbType.UInt16),
-                        new DbColumn("level", lvl, DbType.Byte), new DbColumn("max_hp", stats.MaxHp, DbType.Decimal),
-                        new DbColumn("attack", stats.Atk, DbType.Decimal),
-                        new DbColumn("splash", stats.Splash, DbType.Byte), new DbColumn("range", stats.Rng, DbType.Byte)
-                        , new DbColumn("stealth", stats.Stl, DbType.Byte), new DbColumn("speed", stats.Spd, DbType.Byte)
-                        , new DbColumn("hits_dealt", HitDealt, DbType.UInt16),
-                        new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
-                        new DbColumn("hits_received", HitRecv, DbType.UInt16)
-                };
+                       {
+                               new DbColumn("last_round", LastRound, DbType.UInt32),
+                               new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
+                               new DbColumn("damage_dealt", DmgDealt, DbType.Decimal),
+                               new DbColumn("damage_received", DmgRecv, DbType.Decimal),
+                               new DbColumn("group_id", GroupId, DbType.UInt32),
+                               new DbColumn("structure_city_id", Structure.City.Id, DbType.UInt32),
+                               new DbColumn("structure_id", Structure.ObjectId, DbType.UInt32),
+                               new DbColumn("hp", hp, DbType.Decimal),
+                               new DbColumn("type", type, DbType.UInt16),
+                               new DbColumn("level", lvl, DbType.Byte),
+                               new DbColumn("max_hp", stats.MaxHp, DbType.Decimal),
+                               new DbColumn("attack", stats.Atk, DbType.Decimal),
+                               new DbColumn("splash", stats.Splash, DbType.Byte),
+                               new DbColumn("range", stats.Rng, DbType.Byte),
+                               new DbColumn("stealth", stats.Stl, DbType.Byte),
+                               new DbColumn("speed", stats.Spd, DbType.Byte),
+                               new DbColumn("hits_dealt", HitDealt, DbType.UInt16),
+                               new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
+                               new DbColumn("hits_received", HitRecv, DbType.UInt16)
+                       };
             }
         }
 
@@ -234,10 +258,12 @@ namespace Game.Battle.CombatObjects
         {
             if (obj.ClassType == BattleClass.Unit)
             {
-                return RadiusLocator.Current.IsOverlapping(obj.Location(),
-                                                           obj.AttackRadius(),
-                                                           new Position(Structure.X, Structure.Y),
-                                                           Structure.Stats.Base.Radius);
+                return tileLocator.IsOverlapping(obj.Location(),
+                                                 obj.AttackRadius(),
+                                                 obj.Size,
+                                                 Structure.PrimaryPosition,
+                                                 Structure.Stats.Base.Radius,
+                                                 Structure.Size);
             }
 
             throw new Exception(string.Format("Why is a structure trying to kill a unit of type {0}?",
@@ -246,7 +272,7 @@ namespace Game.Battle.CombatObjects
 
         public override Position Location()
         {
-            return new Position(Structure.X, Structure.Y);
+            return Structure.PrimaryPosition;
         }
 
         public override byte AttackRadius()
@@ -301,7 +327,7 @@ namespace Game.Battle.CombatObjects
             base.ExitBattle();
 
             Structure.BeginUpdate();
-            Structure.State = GameObjectState.NormalState();
+            Structure.State = GameObjectStateFactory.NormalState();
             Structure.EndUpdate();
 
             // Remove structure from the world if our combat object died
@@ -312,7 +338,7 @@ namespace Game.Battle.CombatObjects
 
             ICity city = Structure.City;
 
-            World.Current.Regions.LockRegion(Structure.X, Structure.Y);
+            var lockedRegions = regionManager.LockRegions(Structure.PrimaryPosition.X, Structure.PrimaryPosition.Y, Structure.Size);
             if (Structure.Lvl > 1)
             {
                 Structure.City.Worker.DoPassive(Structure.City,
@@ -323,11 +349,11 @@ namespace Game.Battle.CombatObjects
             else
             {
                 Structure.BeginUpdate();
-                World.Current.Regions.Remove(Structure);
+                regionManager.Remove(Structure);
                 city.ScheduleRemove(Structure, true);
                 Structure.EndUpdate();
             }
-            World.Current.Regions.UnlockRegion(Structure.X, Structure.Y);
+            regionManager.UnlockRegions(lockedRegions);
         }
 
         public override void ReceiveReward(int reward, Resource resource)

@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.Collections.Generic;
@@ -43,9 +43,9 @@ namespace Game.Setup
         {
             get
             {
-                if(index==null)
+                if (index == null)
                 {
-                    if (!Global.SystemVariables.TryGetValue("Map.start_index", out index))
+                    if (!Global.Current.SystemVariables.TryGetValue("Map.start_index", out index))
                     {
                         return 0;
                     }

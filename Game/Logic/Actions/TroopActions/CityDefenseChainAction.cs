@@ -29,12 +29,24 @@ namespace Game.Logic.Actions
 
         private readonly uint troopObjectId;
 
+        private readonly ILocker locker;
+
+        private readonly IWorld world;
+
+        private readonly Formula formula;
+
+        private readonly Procedure procedure;
+
         public CityDefenseChainAction(uint cityId,
                                       uint troopObjectId,
                                       uint targetCityId,
                                       AttackMode mode,
                                       BattleProcedure battleProcedure,
-                                      IActionFactory actionFactory)
+                                      IActionFactory actionFactory,
+                                      ILocker locker,
+                                      IWorld world,
+                                      Formula formula,
+                                      Procedure procedure)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
@@ -42,6 +54,10 @@ namespace Game.Logic.Actions
             this.mode = mode;
             this.battleProcedure = battleProcedure;
             this.actionFactory = actionFactory;
+            this.locker = locker;
+            this.world = world;
+            this.formula = formula;
+            this.procedure = procedure;
         }
 
         public CityDefenseChainAction(uint id,
@@ -51,11 +67,19 @@ namespace Game.Logic.Actions
                                       bool isVisible,
                                       Dictionary<string, string> properties,
                                       BattleProcedure battleProcedure,
-                                      IActionFactory actionFactory)
+                                      IActionFactory actionFactory,
+                                      ILocker locker,
+                                      IWorld world,
+                                      Formula formula,
+                                      Procedure procedure)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
             this.battleProcedure = battleProcedure;
             this.actionFactory = actionFactory;
+            this.locker = locker;
+            this.world = world;
+            this.formula = formula;
+            this.procedure = procedure;
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             targetCityId = uint.Parse(properties["target_city_id"]);
@@ -94,7 +118,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
             ITroopObject troopObject;
-            if (!World.Current.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
+            if (!world.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
             {
                 return Error.ObjectNotFound;
             }
@@ -105,7 +129,7 @@ namespace Game.Logic.Actions
             }
 
             ICity targetCity;
-            if (!World.Current.TryGetObjects(targetCityId, out targetCity))
+            if (!world.TryGetObjects(targetCityId, out targetCity))
             {
                 return Error.ObjectNotFound;
             }
@@ -126,14 +150,14 @@ namespace Game.Logic.Actions
             troopObject.Stub.BeginUpdate();
             troopObject.Stub.Template.LoadStats(TroopBattleGroup.Defense);
             troopObject.Stub.InitialCount = troopObject.Stub.TotalCount;
-            troopObject.Stub.RetreatCount = (ushort)Formula.Current.GetAttackModeTolerance(troopObject.Stub.InitialCount, mode);
+            troopObject.Stub.RetreatCount = (ushort)formula.GetAttackModeTolerance(troopObject.Stub.InitialCount, mode);
             troopObject.Stub.AttackMode = mode;
             troopObject.Stub.EndUpdate();
 
             city.References.Add(troopObject, this);
             city.Notifications.Add(troopObject, this, targetCity);
 
-            var tma = actionFactory.CreateTroopMovePassiveAction(cityId, troopObject.ObjectId, targetCity.X, targetCity.Y, false, false);
+            var tma = actionFactory.CreateTroopMovePassiveAction(cityId, troopObject.ObjectId, targetCity.PrimaryPosition.X, targetCity.PrimaryPosition.Y, false, false);
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
 
@@ -146,7 +170,7 @@ namespace Game.Logic.Actions
             {
                 Dictionary<uint, ICity> cities;
 
-                using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
+                using (locker.Lock(out cities, cityId, targetCityId))
                 {
                     if (cities == null)
                     {
@@ -164,7 +188,7 @@ namespace Game.Logic.Actions
                     city.References.Remove(troopObject, this);
                     city.Notifications.Remove(this);
 
-                    Procedure.Current.TroopObjectStation(troopObject, targetCity);
+                    procedure.TroopObjectStation(troopObject, targetCity);
 
                     if (targetCity.Battle != null)
                     {

@@ -15,7 +15,7 @@ namespace Game.Setup
     {
         private readonly ActionRequirementFactory actionRequirementFactory;
 
-        private readonly StructureFactory structureFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         private readonly EffectRequirementFactory effectRequirementFactory;
 
@@ -23,13 +23,13 @@ namespace Game.Setup
 
         private readonly PropertyFactory propertyFactory;
 
-        private readonly RequirementFactory requirementFactory;
+        private readonly IRequirementCsvFactory requirementCsvFactory;
 
         private readonly TechnologyFactory technologyFactory;
 
         private readonly UnitFactory unitFactory;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly UnitModFactory unitModFactory;
 
@@ -38,23 +38,23 @@ namespace Game.Setup
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
         public FactoriesInitializer(ActionRequirementFactory actionRequirementFactory,
-                                    StructureFactory structureFactory,
+                                    IStructureCsvFactory structureCsvFactory,
                                     EffectRequirementFactory effectRequirementFactory,
                                     InitFactory initFactory,
                                     PropertyFactory propertyFactory,
-                                    RequirementFactory requirementFactory,
+                                    IRequirementCsvFactory requirementCsvFactory,
                                     TechnologyFactory technologyFactory,
                                     UnitFactory unitFactory,
-                                    ObjectTypeFactory objectTypeFactory,
+                                    IObjectTypeFactory objectTypeFactory,
                                     UnitModFactory unitModFactory,
                                     MapFactory mapFactory)
         {
             this.actionRequirementFactory = actionRequirementFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             this.effectRequirementFactory = effectRequirementFactory;
             this.initFactory = initFactory;
             this.propertyFactory = propertyFactory;
-            this.requirementFactory = requirementFactory;
+            this.requirementCsvFactory = requirementCsvFactory;
             this.technologyFactory = technologyFactory;
             this.unitFactory = unitFactory;
             this.objectTypeFactory = objectTypeFactory;
@@ -79,7 +79,7 @@ namespace Game.Setup
                 {
                     string fullFilename = filename;
 
-                    if (Global.IsRunningOnMono())
+                    if (Global.Current.IsRunningOnMono())
                     {
                         fullFilename = Path.Combine(dir, filename);
                     }
@@ -115,11 +115,11 @@ namespace Game.Setup
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "object_type.csv"), Config.csv_folder, "object_type.csv");
 
             actionRequirementFactory.Init(Path.Combine(Config.csv_compiled_folder, "action.csv"));
-            structureFactory.Init(Path.Combine(Config.csv_compiled_folder, "structure.csv"));
+            structureCsvFactory.Init(Path.Combine(Config.csv_compiled_folder, "structure.csv"));
             effectRequirementFactory.Init(Path.Combine(Config.csv_compiled_folder, "effect_requirement.csv"));
             initFactory.Init(Path.Combine(Config.csv_compiled_folder, "init.csv"));
             propertyFactory.Init(Path.Combine(Config.csv_compiled_folder, "property.csv"));
-            requirementFactory.Init(Path.Combine(Config.csv_compiled_folder, "layout.csv"));
+            requirementCsvFactory.Init(Path.Combine(Config.csv_compiled_folder, "layout.csv"));
             technologyFactory.Init(Path.Combine(Config.csv_compiled_folder, "technology.csv"),
                                    Path.Combine(Config.csv_folder, "technology_effects.csv"));
             unitFactory.Init(Path.Combine(Config.csv_compiled_folder, "unit.csv"));

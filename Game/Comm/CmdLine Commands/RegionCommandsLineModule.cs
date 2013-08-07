@@ -141,15 +141,15 @@ namespace Game.Comm
 
             StringWriter outString = new StringWriter();
 
-            foreach (var obj in region.GetObjects())
+            foreach (var obj in region.GetPrimaryObjects())
             {
                 outString.WriteLine("groupid[{0}] objectid[{1}] type[{2}] in_world[{3}] x[{4}] y[{5}]",
                                     obj.GroupId,
                                     obj.ObjectId,
                                     obj.Type,
                                     obj.InWorld,
-                                    obj.X,
-                                    obj.Y);
+                                    obj.PrimaryPosition.X,
+                                    obj.PrimaryPosition.Y);
             }
 
             return outString.ToString();

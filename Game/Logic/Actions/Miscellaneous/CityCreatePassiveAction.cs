@@ -1,9 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
 using Game.Setup;
@@ -28,19 +30,25 @@ namespace Game.Logic.Actions
 
         private readonly ILocker locker;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly InitFactory initFactory;
 
-        private readonly StructureFactory structureFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
+
+        private readonly ICityFactory cityFactory;
+
+        private readonly Procedure procedure;
+
+        private readonly IBarbarianTribeManager barbarianTribeManager;
 
         private readonly uint x;
 
         private readonly uint y;
 
-        private uint newCityId; // new city id
+        private uint newCityId;
 
-        private uint newStructureId; // new mainbuilding
+        private uint newStructureId;
 
         public CityCreatePassiveAction(uint cityId,
                                        uint x,
@@ -51,9 +59,12 @@ namespace Game.Logic.Actions
                                        Formula formula,
                                        IWorld world,
                                        ILocker locker,
-                                       ObjectTypeFactory objectTypeFactory,
+                                       IObjectTypeFactory objectTypeFactory,
                                        InitFactory initFactory,
-                                       StructureFactory structureFactory)
+                                       IStructureCsvFactory structureCsvFactory,
+                                       ICityFactory cityFactory,
+                                       Procedure procedure,
+                                       IBarbarianTribeManager barbarianTribeManager)
         {
             this.cityId = cityId;
             this.x = x;
@@ -66,7 +77,10 @@ namespace Game.Logic.Actions
             this.locker = locker;
             this.objectTypeFactory = objectTypeFactory;
             this.initFactory = initFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
+            this.cityFactory = cityFactory;
+            this.procedure = procedure;
+            this.barbarianTribeManager = barbarianTribeManager;
         }
 
         public CityCreatePassiveAction(uint id,
@@ -81,9 +95,11 @@ namespace Game.Logic.Actions
                                        Formula formula,
                                        IWorld world,
                                        ILocker locker,
-                                       ObjectTypeFactory objectTypeFactory,
+                                       IObjectTypeFactory objectTypeFactory,
                                        InitFactory initFactory,
-                                       StructureFactory structureFactory)
+                                       IStructureCsvFactory structureCsvFactory,
+                                       Procedure procedure,
+                                       IBarbarianTribeManager barbarianTribeManager)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.actionFactory = actionFactory;
@@ -93,7 +109,9 @@ namespace Game.Logic.Actions
             this.locker = locker;
             this.objectTypeFactory = objectTypeFactory;
             this.initFactory = initFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
+            this.procedure = procedure;
+            this.barbarianTribeManager = barbarianTribeManager;
             newCityId = uint.Parse(properties["new_city_id"]);
             newStructureId = uint.Parse(properties["new_structure_id"]);
         }
@@ -130,14 +148,13 @@ namespace Game.Logic.Actions
         {
             ICity city;
             ICity newCity;
-            IStructure structure;
 
             if (!world.TryGetObjects(cityId, out city))
             {
                 return Error.ObjectNotFound;
             }
 
-            if (!City.IsNameValid(cityName))
+            if (!CityManager.IsNameValid(cityName))
             {
                 return Error.CityNameInvalid;
             }
@@ -157,32 +174,32 @@ namespace Game.Logic.Actions
             }
 
             var totalWagons = city.DefaultTroop.Sum(f =>
+            {
+                if (f.Type != FormationType.Normal && f.Type != FormationType.Garrison)
                 {
-                    if (f.Type != FormationType.Normal && f.Type != FormationType.Garrison)
-                    {
-                        return 0;
-                    }
+                    return 0;
+                }
 
-                    return f.ContainsKey(wagonType) ? f[wagonType] : 0;
-                });
+                return f.ContainsKey(wagonType) ? f[wagonType] : 0;
+            });
 
             if (totalWagons < wagons && !Config.actions_ignore_requirements)
             {
                 return Error.ResourceNotEnough;
             }
 
-            world.Regions.LockRegion(x, y);
+            var lockedRegions = world.Regions.LockRegions(x, y, formula.GetInitialCityRadius());
 
             if (!objectTypeFactory.IsTileType("CityStartTile", world.Regions.GetTileType(x, y)))
             {
-                world.Regions.UnlockRegion(x, y);
+                world.Regions.UnlockRegions(lockedRegions);
                 return Error.TileMismatch;
             }
 
             // check if tile is occupied
-            if (world[x, y].Exists(obj => obj is IStructure))
+            if (world.Regions.GetObjectsInTile(x, y).Any(obj => obj is IStructure))
             {
-                world.Regions.UnlockRegion(x, y);
+                world.Regions.UnlockRegions(lockedRegions);
                 return Error.StructureExists;
             }
 
@@ -192,42 +209,21 @@ namespace Game.Logic.Actions
                 // Verify city name is unique
                 if (world.CityNameTaken(cityName))
                 {
-                    world.Regions.UnlockRegion(x, y);
+                    world.Regions.UnlockRegions(lockedRegions);
                     return Error.CityNameTaken;
                 }
 
-                // Creating Mainbuilding
-                structure = structureFactory.GetNewStructure(2000, 0);
-                structure.X = x;
-                structure.Y = y;
+                var cityPosition = new Position(x, y);
 
                 // Creating New City
-                newCity = new City(world.Cities.GetNextCityId(),
-                                   city.Owner,
-                                   cityName,
-                                   formula.GetInitialCityResources(),
-                                   formula.GetInitialCityRadius(),
-                                   structure,
-                                   formula.GetInitialAp());
-                city.Owner.Add(newCity);
+                procedure.CreateCity(cityFactory, city.Owner, cityName, cityPosition, barbarianTribeManager, out newCity);                
 
                 world.Regions.SetTileType(x, y, 0, true);
 
-                world.Cities.Add(newCity);
-                structure.BeginUpdate();
-                world.Regions.Add(structure);
-                initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
-                structure.EndUpdate();
+                var mainBuilding = newCity.MainBuilding;
+                initFactory.InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
                 
-
-                var defaultTroop = newCity.Troops.Create();
-                defaultTroop.BeginUpdate();
-                defaultTroop.AddFormation(FormationType.Normal);
-                defaultTroop.AddFormation(FormationType.Garrison);
-                defaultTroop.AddFormation(FormationType.InBattle);
-                defaultTroop.EndUpdate();
-
-                // taking resource from the old city
+                // Take resource from the old city
                 city.BeginUpdate();
                 city.DefaultTroop.BeginUpdate();
                 wagons -= city.DefaultTroop.RemoveUnit(FormationType.Normal, wagonType, (ushort)wagons);
@@ -238,23 +234,17 @@ namespace Game.Logic.Actions
                 city.DefaultTroop.EndUpdate();
                 city.EndUpdate();
 
-                // send new city channel notification
-                if (newCity.Owner.Session != null)
-                {
-                    newCity.Subscribe(newCity.Owner.Session);
-                    newCity.NewCityUpdate();
-                }
+                newStructureId = mainBuilding.ObjectId;
             }
 
-            newCityId = newCity.Id;
-            newStructureId = structure.ObjectId;
+            world.Regions.UnlockRegions(lockedRegions);
+
+            newCityId = newCity.Id;            
 
             // add to queue for completion            
-            int baseBuildTime = structureFactory.GetBaseStats((ushort)objectTypeFactory.GetTypes("MainBuilding")[0], 1).BuildTime;
+            int baseBuildTime = structureCsvFactory.GetBaseStats((ushort)objectTypeFactory.GetTypes("MainBuilding")[0], 1).BuildTime;
             EndTime = DateTime.UtcNow.AddSeconds(CalculateTime(formula.BuildTime(baseBuildTime, city, city.Technologies)));
             BeginTime = DateTime.UtcNow;
-
-            world.Regions.UnlockRegion(x, y);
 
             return Error.Ok;
         }
@@ -298,9 +288,10 @@ namespace Game.Logic.Actions
                 }
 
                 structure.BeginUpdate();
-                structureFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
-                initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
+                structureCsvFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
                 structure.EndUpdate();
+
+                procedure.InitCity(newCity, initFactory, actionFactory);
 
                 newCity.Worker.DoPassive(newCity, actionFactory.CreateCityPassiveAction(newCity.Id), false);
                 StateChange(ActionState.Completed);

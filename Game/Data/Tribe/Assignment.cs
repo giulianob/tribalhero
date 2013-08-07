@@ -53,7 +53,7 @@ namespace Game.Data.Tribe
 
         private readonly IScheduler scheduler;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         private readonly ILocker locker;
 
@@ -76,7 +76,7 @@ namespace Game.Data.Tribe
                           IGameObjectLocator gameObjectLocator,
                           IScheduler scheduler,
                           Procedure procedure,
-                          TileLocator tileLocator,
+                          ITileLocator tileLocator,
                           IActionFactory actionFactory,
                           ILocker locker,
                           ITroopObjectInitializerFactory troopObjectInitializerFactory)
@@ -122,7 +122,7 @@ namespace Game.Data.Tribe
                           IGameObjectLocator gameObjectLocator,
                           IScheduler scheduler,
                           Procedure procedure,
-                          TileLocator tileLocator,
+                          ITileLocator tileLocator,
                           IActionFactory actionFactory,
                           ILocker locker,
                           ITroopObjectInitializerFactory troopObjectInitializerFactory)
@@ -364,7 +364,7 @@ namespace Game.Data.Tribe
         /// <returns></returns>
         private DateTime DepartureTime(ITroopStub stub)
         {
-            int distance = tileLocator.TileDistance(stub.City.X, stub.City.Y, X, Y);
+            int distance = tileLocator.TileDistance(stub.City.PrimaryPosition, 1, new Position(X, Y), 1);
             return TargetTime.Subtract(TimeSpan.FromSeconds(formula.MoveTimeTotal(stub, distance, IsAttack)));
         }
 
@@ -382,7 +382,7 @@ namespace Game.Data.Tribe
             PassiveAction action;
             if (Target.LocationType == LocationType.City)
             {
-                IStructure structure = (IStructure)gameObjectLocator.GetObjects(X, Y).Find(z => z is IStructure);
+                IStructure structure = (IStructure)gameObjectLocator.Regions.GetObjectsInTile(X, Y).FirstOrDefault(z => z is IStructure);
                 if (structure == null)
                 {
                     procedure.TroopObjectDelete(troopObject, true);

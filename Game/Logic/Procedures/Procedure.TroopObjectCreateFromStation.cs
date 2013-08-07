@@ -3,7 +3,6 @@
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
-using Game.Map;
 
 #endregion
 
@@ -24,8 +23,8 @@ namespace Game.Logic.Procedures
                 return false;
             }
 
-            uint x = stub.Station.X;
-            uint y = stub.Station.Y;
+            uint x = stub.Station.PrimaryPosition.X;
+            uint y = stub.Station.PrimaryPosition.Y;
 
             if (!stub.Station.Troops.RemoveStationed(stub.StationTroopId))
             {
@@ -33,9 +32,7 @@ namespace Game.Logic.Procedures
                 return false;
             }
 
-            troopObject = new TroopObject(stub) {X = x, Y = y + 1};
-
-            stub.City.Add(troopObject);
+            troopObject = stub.City.CreateTroopObject(stub, x, y + 1);
 
             troopObject.BeginUpdate();
             troopObject.Stats = new TroopStats(formula.GetTroopRadius(stub, null),

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Common.Testing;
 using FluentAssertions;
 using Game.Data;
 using Game.Data.Tribe;
@@ -14,6 +15,8 @@ using Game.Util;
 using Game.Util.Locking;
 using NSubstitute;
 using Persistance;
+using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.Xunit;
 using Xunit;
 using Xunit.Extensions;
 
@@ -56,7 +59,7 @@ namespace Testing.TribeTests
             var gameObjectLocator = Substitute.For<IGameObjectLocator>();
             var scheduler = Substitute.For<IScheduler>();
             var procedure = Substitute.For<Procedure>();
-            var tileLocator = Substitute.For<TileLocator>();
+            var radiusLocator = Substitute.For<ITileLocator>();
             var actionFactory = Substitute.For<IActionFactory>();
             var locker = Substitute.For<ILocker>();
             var initializer = Substitute.For<ITroopObjectInitializerFactory>();
@@ -79,7 +82,7 @@ namespace Testing.TribeTests
                                                    gameObjectLocator,
                                                    scheduler,
                                                    procedure,
-                                                   tileLocator,
+                                                   radiusLocator,
                                                    actionFactory,
                                                    locker,
                                                    initializer);
@@ -110,7 +113,7 @@ namespace Testing.TribeTests
             var gameObjectLocator = Substitute.For<IGameObjectLocator>();
             var scheduler = Substitute.For<IScheduler>();
             var procedure = Substitute.For<Procedure>();
-            var tileLocator = Substitute.For<TileLocator>();
+            var radiusLocator = Substitute.For<ITileLocator>();
             var actionFactory = Substitute.For<IActionFactory>();
             var locker = Substitute.For<ILocker>();
             var initializer = Substitute.For<ITroopObjectInitializerFactory>();
@@ -141,7 +144,7 @@ namespace Testing.TribeTests
                                                    gameObjectLocator,
                                                    scheduler,
                                                    procedure,
-                                                   tileLocator,
+                                                   radiusLocator,
                                                    actionFactory,
                                                    locker,
                                                    initializer);
@@ -171,7 +174,7 @@ namespace Testing.TribeTests
             var gameObjectLocator = Substitute.For<IGameObjectLocator>();
             var scheduler = Substitute.For<IScheduler>();
             var procedure = Substitute.For<Procedure>();
-            var tileLocator = Substitute.For<TileLocator>();
+            var radiusLocator = Substitute.For<ITileLocator>();
             var actionFactory = Substitute.For<IActionFactory>();
             ICity newCity;
             var newStub = CreateStub(out newCity);
@@ -185,7 +188,7 @@ namespace Testing.TribeTests
 
             troopObject.ObjectId.Returns((uint)95);
 
-            gameObjectLocator.GetObjects(TARGET_X, TARGET_Y).Returns(new List<ISimpleGameObject> {targetStructure});
+            gameObjectLocator.Regions.GetObjectsInTile(TARGET_X, TARGET_Y).Returns(new List<ISimpleGameObject> {targetStructure});
 
             targetStructure.City.Returns(targetCity);
 
@@ -214,7 +217,7 @@ namespace Testing.TribeTests
                                                    gameObjectLocator,
                                                    scheduler,
                                                    procedure,
-                                                   tileLocator,
+                                                   radiusLocator,
                                                    actionFactory,
                                                    locker,
                                                    initializer) { stub };
@@ -237,71 +240,43 @@ namespace Testing.TribeTests
         /// And the troops speed changes before its dispatched
         /// Then the assignment should reschedule the troop until the new time once dispatched
         /// </summary>
-        [Fact]
-        public void WhenTroopSpeedChanges()
+        [Theory, AutoNSubstituteData]
+        public void WhenTroopSpeedChanges([Frozen] ICity targetCity, [Frozen] IScheduler scheduler, [Frozen] IGameObjectLocator gameObjectLocator, IFixture fixture)
         {
-            var tribe = Substitute.For<ITribe>();
-            var targetCity = Substitute.For<ICity>();
-            ICity stubCity;
-            var stub = CreateStub(out stubCity);
-            var formula = Substitute.For<Formula>();
-            var dbManager = Substitute.For<IDbManager>();
-            var gameObjectLocator = Substitute.For<IGameObjectLocator>();
-            var scheduler = Substitute.For<IScheduler>();
+            fixture.Register(() => targetTime);
+
             var procedure = Substitute.For<Procedure>();
-            var tileLocator = Substitute.For<TileLocator>();
-            var actionFactory = Substitute.For<IActionFactory>();
+            fixture.Register(() => procedure);
+
+            var formula = Substitute.For<Formula>();
+            fixture.Register(() => formula);
+
+            var assignment = fixture.Create<Assignment>();
+
+            ICity stubCity;
+            var stub = CreateStub(out stubCity);            
             
             var targetStructure = Substitute.For<IStructure>();
-            var actionWorker = Substitute.For<IActionWorker>();
             var troopObject = Substitute.For<ITroopObject>();
-            var locker = Substitute.For<ILocker>();
-            var initializer = Substitute.For<ITroopObjectInitializerFactory>();
 
             SystemClock.SetClock(startTime);
 
-            troopObject.ObjectId.Returns((uint)95);
+            gameObjectLocator.Regions.GetObjectsInTile(0, 0).ReturnsForAnyArgs(new List<ISimpleGameObject> {targetStructure});
 
-            gameObjectLocator.GetObjects(TARGET_X, TARGET_Y).Returns(new List<ISimpleGameObject> {targetStructure});
-
-            targetStructure.City.Returns(targetCity);
-
-            targetCity.Id.Returns((uint)100);
-
-            actionWorker.DoPassive(Arg.Any<ICity>(), Arg.Any<PassiveAction>(), true).Returns(Error.Ok);
-
-            stubCity.Worker.Returns(actionWorker);
+            stubCity.Worker.DoPassive(null, null, true).ReturnsForAnyArgs(Error.Ok);
 
             ITroopObject outTroopObject;
-            procedure.When(x => x.TroopObjectCreate(stubCity, stub, out outTroopObject)).Do(x =>
-                { x[2] = troopObject; });
+            procedure.When(x => x.TroopObjectCreate(stubCity, stub, out outTroopObject)).Do(x => { x[2] = troopObject; });
 
-            formula.MoveTimeTotal(Arg.Any<ITroopStub>(), 0, true).Returns(300, 120);
+            formula.MoveTimeTotal(Arg.Any<ITroopStub>(), 0, true).ReturnsForAnyArgs(300, 120);
 
-            Assignment assignment = new Assignment(tribe,
-                                                   TARGET_X,
-                                                   TARGET_Y,
-                                                   targetCity,
-                                                   AttackMode.Normal,
-                                                   targetTime,
-                                                   "Description",
-                                                   true,
-                                                   formula,
-                                                   dbManager,
-                                                   gameObjectLocator,
-                                                   scheduler,
-                                                   procedure,
-                                                   tileLocator,
-                                                   actionFactory,
-                                                   locker,
-                                                   initializer) {stub};
+            assignment.Add(stub);
 
             SystemClock.SetClock(targetTime.AddSeconds(-300));
 
             // Dispatch troop
             assignment.Callback(null);
 
-            formula.Received(2).MoveTimeTotal(Arg.Any<ITroopStub>(), 0, true);
             scheduler.Received(2).Put(assignment);
             assignment.Time.Should().Be(targetTime.AddSeconds(-120));
             procedure.Received(0).TroopObjectCreate(Arg.Any<ICity>(), Arg.Any<ITroopStub>(), out troopObject);
@@ -324,7 +299,7 @@ namespace Testing.TribeTests
             var gameObjectLocator = Substitute.For<IGameObjectLocator>();
             var scheduler = Substitute.For<IScheduler>();
             var procedure = Substitute.For<Procedure>();
-            var tileLocator = Substitute.For<TileLocator>();
+            var radiusLocator = Substitute.For<ITileLocator>();
             var actionFactory = Substitute.For<IActionFactory>();
             var targetStructure = Substitute.For<IStructure>();
             var actionWorker = Substitute.For<IActionWorker>();
@@ -334,7 +309,7 @@ namespace Testing.TribeTests
 
             troopObject.ObjectId.Returns((uint)99);
 
-            gameObjectLocator.GetObjects(TARGET_X, TARGET_Y).Returns(new List<ISimpleGameObject> {targetStructure});
+            gameObjectLocator.Regions.GetObjectsInTile(TARGET_X, TARGET_Y).Returns(new List<ISimpleGameObject> {targetStructure});
 
             targetStructure.City.Returns(targetCity);
 
@@ -350,7 +325,7 @@ namespace Testing.TribeTests
             SystemClock.SetClock(startTime);
 
             // troop should be dispatched a minute later
-            formula.MoveTimeTotal(stub, Arg.Any<int>(), true).Returns(300);
+            formula.MoveTimeTotal(null, 0, true).ReturnsForAnyArgs(300);
 
             ITroopObject outTroopObject;
             procedure.When(m => m.TroopObjectCreate(stubCity, stub, out outTroopObject)).Do(x =>
@@ -369,7 +344,7 @@ namespace Testing.TribeTests
                                                    gameObjectLocator,
                                                    scheduler,
                                                    procedure,
-                                                   tileLocator,
+                                                   radiusLocator,
                                                    actionFactory,
                                                    locker,
                                                    initializer) { stub };

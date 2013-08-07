@@ -115,8 +115,8 @@ namespace Game.Comm.ProcessorCommands
                 int id;
                 Error ret = session.Player.Tribesman.Tribe.CreateAssignment(city,
                                                                             simpleStub,
-                                                                            stronghold.X,
-                                                                            stronghold.Y,
+                                                                            stronghold.PrimaryPosition.X,
+                                                                            stronghold.PrimaryPosition.Y,
                                                                             stronghold,
                                                                             time,
                                                                             mode,
@@ -218,8 +218,8 @@ namespace Game.Comm.ProcessorCommands
                 int id;
                 Error ret = session.Player.Tribesman.Tribe.CreateAssignment(city,
                                                                             simpleStub,
-                                                                            targetStructure.X,
-                                                                            targetStructure.Y,
+                                                                            targetStructure.PrimaryPosition.X,
+                                                                            targetStructure.PrimaryPosition.Y,
                                                                             targetCity,
                                                                             time,
                                                                             mode,

@@ -5,7 +5,6 @@ using System.Linq;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Map;
@@ -25,20 +24,35 @@ namespace Game.Module
 
         private const double LONG_RETRY = 90;
 
-        private readonly IActionFactory actionFactory;
-
         private readonly uint cityId;
 
-        public CityRemover(uint cityId, IActionFactory actionFactory)
+        private readonly IActionFactory actionFactory;
+
+        private readonly IWorld world;
+
+        private readonly IScheduler scheduler;
+
+        private readonly ILocker locker;
+
+        private readonly ITileLocator tileLocator;
+
+        private readonly IDbManager dbManager;
+
+        public CityRemover(uint cityId, IActionFactory actionFactory, IWorld world, IScheduler scheduler, ILocker locker, ITileLocator tileLocator, IDbManager dbManager)
         {
             this.cityId = cityId;
             this.actionFactory = actionFactory;
+            this.world = world;
+            this.scheduler = scheduler;
+            this.locker = locker;
+            this.tileLocator = tileLocator;
+            this.dbManager = dbManager;
         }
 
         public bool Start(bool force = false)
         {
             ICity city;
-            if (!World.Current.TryGetObjects(cityId, out city))
+            if (!world.TryGetObjects(cityId, out city))
             {
                 throw new Exception("City not found");
             }
@@ -56,7 +70,7 @@ namespace Game.Module
             }
 
             Time = DateTime.UtcNow;
-            Scheduler.Current.Put(this);
+            scheduler.Put(this);
             return true;
         }
 
@@ -71,12 +85,12 @@ namespace Game.Module
             ICity city;
             IStructure mainBuilding;
 
-            if (!World.Current.TryGetObjects(cityId, out city))
+            if (!world.TryGetObjects(cityId, out city))
             {
                 throw new Exception("City not found");
             }
 
-            using (Concurrency.Current.Lock(GetForeignTroopLockList, new[] {city}, city))
+            using (locker.Lock(GetForeignTroopLockList, new object[] {city}, city))
             {
                 if (city == null)
                 {
@@ -105,12 +119,8 @@ namespace Game.Module
                 }
 
                 // If city is being targetted by an assignment, try again later
-                var reader =
-                        DbPersistance.Current.ReaderQuery(
-                                                          string.Format(
-                                                                        "SELECT id FROM `{0}` WHERE `location_type` = 'City' AND `location_id` = @locationId  LIMIT 1",
-                                                                        Assignment.DB_TABLE),
-                                                          new[] {new DbColumn("locationId", city.Id, DbType.UInt32)});
+                var reader = dbManager.ReaderQuery(string.Format("SELECT id FROM `{0}` WHERE `location_type` = 'City' AND `location_id` = @locationId  LIMIT 1", Assignment.DB_TABLE),
+                                                   new[] {new DbColumn("locationId", city.Id, DbType.UInt32)});
                 bool beingTargetted = reader.HasRows;
                 reader.Close();
                 if (beingTargetted)
@@ -120,7 +130,7 @@ namespace Game.Module
                 }
             }
 
-            using (Concurrency.Current.Lock(GetLocalTroopLockList, new[] {city}, city))
+            using (locker.Lock(GetLocalTroopLockList, new object[] {city}, city))
             {
                 if (city.TryGetStructure(1, out mainBuilding))
                 {
@@ -148,7 +158,7 @@ namespace Game.Module
                                 new List<IStructure>(city).Where(structure => structure.IsBlocked == 0 && !structure.IsMainBuilding))
                         {
                             structure.BeginUpdate();
-                            World.Current.Regions.Remove(structure);
+                            world.Regions.Remove(structure);
                             city.ScheduleRemove(structure, false);
                             structure.EndUpdate();
                         }
@@ -158,16 +168,10 @@ namespace Game.Module
                     }
 
                     // remove all customized tiles
-                    TileLocator.Current.ForeachObject(city.X,
-                                                      city.Y,
-                                                      city.Radius,
-                                                      true,
-                                                      delegate(uint origX, uint origY, uint x1, uint y1, object c)
-                                                          {
-                                                              World.Current.Regions.RevertTileType(x1, y1, true);
-                                                              return true;
-                                                          },
-                                                      null);
+                    foreach (var position in tileLocator.ForeachTile(city.PrimaryPosition.X, city.PrimaryPosition.Y, city.Radius))
+                    {
+                        world.Regions.RevertTileType(position.X, position.Y, true);                        
+                    }
                 }
             }
 
@@ -180,7 +184,7 @@ namespace Game.Module
                 }
             }
 
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (city.Notifications.Count > 0)
                 {
@@ -195,10 +199,10 @@ namespace Game.Module
                     city.Troops.Remove(1);
 
                     // remove city from the region
-                    World.Current.Regions.CityRegions.Remove(city);
+                    world.Regions.CityRegions.Remove(city);
 
                     mainBuilding.BeginUpdate();
-                    World.Current.Regions.Remove(mainBuilding);
+                    world.Regions.Remove(mainBuilding);
                     city.ScheduleRemove(mainBuilding, false);
                     mainBuilding.EndUpdate();
 
@@ -219,14 +223,14 @@ namespace Game.Module
                                                  city.Name,
                                                  city.Id,
                                                  city.Lvl));
-                World.Current.Cities.Remove(city);
+                world.Cities.Remove(city);
             }
         }
 
         private void Reschedule(double interval)
         {
             Time = DateTime.UtcNow.AddMinutes(interval * Config.seconds_per_unit);
-            Scheduler.Current.Put(this);
+            scheduler.Put(this);
         }
 
         private static ILockable[] GetForeignTroopLockList(object[] custom)

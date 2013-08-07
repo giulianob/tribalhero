@@ -31,12 +31,12 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly ITroopObjectInitializerFactory troopObjectInitializerFactory;
 
+        private readonly IStructureCsvFactory structureCsvFactory;
+
         private readonly Procedure procedure;
 
-        private readonly StructureFactory structureFactory;
-
         public TroopCommandsModule(IActionFactory actionFactory,
-                                   StructureFactory structureFactory,
+                                   IStructureCsvFactory structureCsvFactory,
                                    IGameObjectLocator gameObjectLocator,
                                    Formula formula,
                                    ILocker locker,
@@ -44,7 +44,7 @@ namespace Game.Comm.ProcessorCommands
                                    Procedure procedure)
         {
             this.actionFactory = actionFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             this.gameObjectLocator = gameObjectLocator;
             this.formula = formula;
             this.locker = locker;
@@ -252,7 +252,7 @@ namespace Game.Comm.ProcessorCommands
                     reply.AddUInt32(troop.TargetX);
                     reply.AddUInt32(troop.TargetY);
 
-                    var template = new UnitTemplate(city);
+                    var template = new Dictionary<ushort, IBaseUnitStats>();
 
                     reply.AddByte(troop.Stub.FormationCount);
                     foreach (var formation in troop.Stub)
@@ -267,7 +267,7 @@ namespace Game.Comm.ProcessorCommands
                         }
                     }
 
-                    reply.AddUInt16((ushort)template.Size);
+                    reply.AddUInt16((ushort)template.Count);
                     IEnumerator<KeyValuePair<ushort, IBaseUnitStats>> templateIter = template.GetEnumerator();
                     while (templateIter.MoveNext())
                     {
@@ -381,7 +381,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var upgradeAction = actionFactory.CreateUnitUpgradeActiveAction(cityId, objectId, type);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(barrack),
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(barrack),
                                                  barrack,
                                                  upgradeAction,
                                                  barrack.Technologies);
@@ -433,7 +433,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var trainAction = actionFactory.CreateUnitTrainActiveAction(cityId, objectId, type, count);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(barrack),
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(barrack),
                                                  barrack,
                                                  trainAction,
                                                  barrack.Technologies);
@@ -491,7 +491,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 // Create troop object                
                 ITroopObject troopObject;
-                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.PrimaryPosition.X, city.PrimaryPosition.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.TroopChanged);
                     return;
@@ -555,7 +555,7 @@ namespace Game.Comm.ProcessorCommands
 
                 // Create troop object                
                 ITroopObject troopObject;
-                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.PrimaryPosition.X, city.PrimaryPosition.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.TroopChanged);
                     return;
@@ -628,7 +628,7 @@ namespace Game.Comm.ProcessorCommands
 
                 // Create troop object                
                 ITroopObject troopObject;
-                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.PrimaryPosition.X, city.PrimaryPosition.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.TroopChanged);
                     return;
@@ -693,7 +693,7 @@ namespace Game.Comm.ProcessorCommands
                 ICity city = cities[cityId];
 
                 ITroopObject troopObject;
-                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.PrimaryPosition.X, city.PrimaryPosition.Y, out troopObject))
                 {
                     ReplyError(session, packet, Error.ObjectNotFound);
                     return;

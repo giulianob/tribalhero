@@ -1,0 +1,226 @@
+Key,EN
+OVERTIME_TECHNOLOGY_NAME,Overtime
+OVERTIME_TECHNOLOGY_LVL_1,Decrease laborer assigning time by 10%
+OVERTIME_TECHNOLOGY_LVL_2,Decrease laborer assigning time by 20%
+OVERTIME_TECHNOLOGY_LVL_3,Decrease laborer assigning time by 30%
+OVERTIME_TECHNOLOGY_LVL_4,Decrease laborer assigning time by 40%
+OVERTIME_TECHNOLOGY_LVL_5,Decrease laborer assigning time by 50%
+,
+A_CALL_TO_ARMS_TECHNOLOGY_NAME,A Call To Arms
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_1,Order idle laborers to provide up to 3% damage bonus with 60 laborers when the town is under attack. (Does not stack)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_2,Order idle laborers to provide up to 6% damage bonus with 110 laborers when the town is under attack. (Does not stack)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_3,Order idle laborers to provide up to 9% damage bonus with 150 laborers when the town is under attack. (Does not stack)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_4,Order idle laborers to provide up to 12% damage bonus with 180 laborers when the town is under attack. (Does not stack)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_5,Order idle laborers to provide up to 15% damage bonus with 200 laborers when the town is under attack. (Does not stack)
+,
+,
+TUNNEL_EXCAVATION_TECHNOLOGY_NAME,Tunnel Excavation
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_1,"Reduces distance requirement by 1 for Tower, Cannon Tower and Basement. (Does not stack)"
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_2,"Reduces distance requirement by 2 for Tower, Cannon Tower and Basement. (Does not stack)"
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_3,"Reduces distance requirement by 3 for Tower, Cannon Tower and Basement. (Does not stack)"
+,
+SENSE_OF_URGENCY_TECHNOLOGY_NAME,Sense of Urgency
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_1,"If any structure is destroyed in battle, all other buildings are repaired by 4% of the destroyed buildings HP after the battle. (Stacks additively up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_2,"If any structure is destroyed in battle, all other buildings are repaired by 8% of the destroyed buildings HP after the battle. (Stacks additively up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_3,"If any structure is destroyed in battle, all other buildings are repaired by 12% of the destroyed buildings HP after the battle. (Stacks additively up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_4,"If any structure is destroyed in battle, all other buildings are repaired by 16% of the destroyed buildings HP after the battle. (Stacks additively up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_5,"If any structure is destroyed in battle, all other buildings are repaired by 20% of the destroyed buildings HP after the battle. (Stacks additively up to 100%)"
+,
+LAST_STAND_TECHNOLOGY_NAME,Last Stand
+LAST_STAND_TECHNOLOGY_LVL_1,Hoplite receives 10% less damage when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_2,Hoplite receives 20% less damage when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_3,Hoplite receives 30% less damage when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_4,Hoplite receives 40% less damage when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_5,Hoplite receives 50% less damage when team is about to die. (Does not stack)
+,
+,
+RUSH_ATTACK_TECHNOLOGY_NAME,Rush Attack
+RUSH_ATTACK_TECHNOLOGY_LVL_1,Increases travel speed of troops by 4% on an attack mission. (Stacks additively)
+RUSH_ATTACK_TECHNOLOGY_LVL_2,Increases travel speed of troops by 8% on an attack mission. (Stacks additively)
+RUSH_ATTACK_TECHNOLOGY_LVL_3,Increases travel speed of troops by 12% on an attack mission. (Stacks additively)
+RUSH_ATTACK_TECHNOLOGY_LVL_4,Increases travel speed of troops by 16% on an attack mission. (Stacks additively)
+RUSH_ATTACK_TECHNOLOGY_LVL_5,Increases travel speed of troops by 20% on an attack mission. (Stacks additively)
+,
+RUSH_DEFENSE_TECHNOLOGY_NAME,Rush Defense
+RUSH_DEFENSE_TECHNOLOGY_LVL_1,Increases troop's travel speed by 4% on a defense mission. (Stacks additively)
+RUSH_DEFENSE_TECHNOLOGY_LVL_2,Increases troop's travel speed by 8% on a defense mission. (Stacks additively)
+RUSH_DEFENSE_TECHNOLOGY_LVL_3,Increases troops' travel speed by 12% on a defense mission. (Stacks additively)
+RUSH_DEFENSE_TECHNOLOGY_LVL_4,Increases troops' travel speed by 16% on a defense mission. (Stacks additively)
+RUSH_DEFENSE_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% on a defense mission. (Stacks additively)
+,
+DOUBLE_TIME_TECHNOLOGY_NAME,Double Time
+DOUBLE_TIME_TECHNOLOGY_LVL_1,Increases troop's travel speed by 30% when distance is greater than 500 tiles. (Stacks additively)
+DOUBLE_TIME_TECHNOLOGY_LVL_2,Increases troop's travel speed by 60% when distance is greater than 500 tiles. (Stacks additively)
+DOUBLE_TIME_TECHNOLOGY_LVL_3,Increases troop's travel speed by 90% when distance is greater than 500 tiles. (Stacks additively)
+DOUBLE_TIME_TECHNOLOGY_LVL_4,Increases troop's travel speed by 120% when distance is greater than 500 tiles. (Stacks additively)
+DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases troop's travel speed by 150% when distance is greater than 500 tiles. (Stacks additively)
+,
+ARCHERY_RESEARCH_TECHNOLOGY_NAME,Archery Research
+ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow wielding units.
+,
+BOW_RESEARCH_TECHNOLOGY_NAME,Bowshield  Research
+BOW_RESEARCH_TECHNOLOGY_LVL_1,"Increases Bowman, Archer and Helepolis's Max HP by 4%. (Does not stack)"
+BOW_RESEARCH_TECHNOLOGY_LVL_2,"Increases Bowman, Archer and Helepolis's Max HP by 8%. (Does not stack)"
+BOW_RESEARCH_TECHNOLOGY_LVL_3,"Increases Bowman, Archer and Helepolis's Max HP by 12%. (Does not stack)"
+,
+HIPPOSANDAL_TECHNOLOGY_NAME,Hipposandal
+HIPPOSANDAL_TECHNOLOGY_LVL_1,Equips mounts with horseshoes.  Increase base Carry for mount unit by 15. (Does not stack)
+HIPPOSANDAL_TECHNOLOGY_LVL_2,Equips mounts with horseshoes.  Increase base Carry for mount unit by 30. (Does not stack)
+HIPPOSANDAL_TECHNOLOGY_LVL_3,Equips mounts with horseshoes.  Increase base Carry for mount unit by 45. (Does not stack)
+,
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_NAME,Sword Units Defensive Boost
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Fighter, Swordsman, and Hoplite by 3% on defense mission . (Stacks additively up to 150%)"
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Fighter, Swordsman, and Hoplite by 6% on defense mission . (Stacks additively up to 150%)"
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Fighter, Swordsman, and Hoplite by 9% on defense mission . (Stacks additively up to 150%)"
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Fighter, Swordsman, and Hoplite by 12% on defense mission . (Stacks additively up to 150%)"
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Fighter, Swordsman, and Hoplite by 15% on defense mission . (Stacks additively up to 150%)"
+,
+BOW_ARMOR_RESEARCH_TECHNOLOGY_NAME,Bow Units Defensive Boost
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Bowman, Archer and Helepolis by 3% on defense mission . (Stacks additively up to 150%)"
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Bowman, Archer and Helepolis by 6% on defense mission . (Stacks additively up to 150%)"
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Bowman, Archer and Helepolis by 9% on defense mission . (Stacks additively up to 150%)"
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Bowman, Archer and Helepolis by 12% on defense mission . (Stacks additively up to 150%)"
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Bowman, Archer and Helepolis by 15% on defense mission . (Stacks additively up to 150%)"
+,
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Pike Units Defensive Boost
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Cavalry and Knight by 3% on defense mission . (Stacks additively up to 150%)
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Cavalry and Knight by 6% on defense mission . (Stacks additively up to 150%)
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Cavalry and Knight by 9% on defense mission . (Stacks additively up to 150%)
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Cavalry and Knight by 12% on defense mission . (Stacks additively up to 150%)
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Cavalry and Knight by 15% on defense mission . (Stacks additively up to 150%)
+,
+BALL_ARMOR_RESEARCH_TECHNOLOGY_NAME,Siege Units Defensive Boost
+BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Gladiator and Catapult by 3% on defense mission . (Stacks additively up to 150%)
+BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Gladiator and Catapult by 6% on defense mission . (Stacks additively up to 150%)
+BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Gladiator and Catapult by 9% on defense mission . (Stacks additively up to 150%)
+BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Gladiator and Catapult by 12% on defense mission . (Stacks additively up to 150%)
+BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Gladiator and Catapult by 15% on defense mission . (Stacks additively up to 150%)
+,
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Structure Defensive Boost
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all structures by 3% on defense. (Stacks additively up to 150%)
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all structures by 6% on defense. (Stacks additively up to 150%)
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all structures by 9% on defense. (Stacks additively up to 150%)
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all structures by 12% on defense. (Stacks additively up to 150%)
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all structures by 15% on defense. (Stacks additively up to 150%)
+,
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_NAME,Sword Units Offensive Boost
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Fighter, Swordsman and Hoplite  by 3% on attack mission . (Stacks additively up to 150%)"
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Fighter, Swordsman and Hoplite  by 6% on attack mission . (Stacks additively up to 150%)"
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Fighter, Swordsman and Hoplite  by 9% on attack mission . (Stacks additively up to 150%)"
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Fighter, Swordsman and Hoplite  by 12% on attack mission . (Stacks additively up to 150%)"
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Fighter, Swordsman and Hoplite  by 15% on attack mission . (Stacks additively up to 150%)"
+,
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_NAME,Pike Units Offensive Boost
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Cavalry and Knight by 3% on attack mission . (Stacks additively up to 150%)
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Cavalry and Knight by 6% on attack mission . (Stacks additively up to 150%)
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Cavalry and Knight by 9% on attack mission . (Stacks additively up to 150%)
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Cavalry and Knight by 12% on attack mission . (Stacks additively up to 150%)
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Cavalry and Knight by 15% on attack mission . (Stacks additively up to 150%)
+,
+BOW_WEAPON_RESEARCH_TECHNOLOGY_NAME,Bow Units Offensive Boost
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Bowman, Archer and Helepolis by 3% on attack mission . (Stacks additively up to 150%)"
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Bowman, Archer and Helepolis by 6% on attack mission . (Stacks additively up to 150%)"
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Bowman, Archer and Helepolis by 9% on attack mission . (Stacks additively up to 150%)"
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Bowman, Archer and Helepolis by 12% on attack mission . (Stacks additively up to 150%)"
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Bowman, Archer and Helepolis by 15% on attack mission . (Stacks additively up to 150%)"
+,
+BALL_WEAPON_RESEARCH_TECHNOLOGY_NAME,Siege Units Offensive Boost
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Gladiator and Catapult by 3% on attack mission . (Stacks additively up to 150%)
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Gladiator and Catapult by 6% on attack mission . (Stacks additively up to 150%)
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Gladiator and Catapult by 9% on attack mission . (Stacks additively up to 150%)
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Gladiator and Catapult by 12% on attack mission . (Stacks additively up to 150%)
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Gladiator and Catapult by 15% on attack mission . (Stacks additively up to 150%)
+,
+ATTIC_STORAGE_TECHNOLOGY_NAME,Attic Storage
+ATTIC_STORAGE_TECHNOLOGY_LVL_1,Increase capacity of the city resources by 50% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_2,Increase capacity of the city resources by 100% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_3,Increase capacity of the city resources by 150% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_4,Increase capacity of the city resources by 200% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_5,Increase capacity of the city resources by 250% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_6,Increase capacity of the city resources by 300% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_7,Increase capacity of the city resources by 350% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_8,Increase capacity of the city resources by 400% of basements' capacity.
+,
+FIVE_FOR_FOUR_TECHNOLOGY_NAME,Five For Four
+FIVE_FOR_FOUR_TECHNOLOGY_LVL_1,Receive the 5th unit free for every 4 units that are trained for this structure only.
+FOUR_FOR_THREE_TECHNOLOGY_NAME,Four For Three
+FOUR_FOR_THREE_TECHNOLOGY_LVL_1,Receive the 4th unit free for every 3 units that are trained for this structure only.
+THREE_FOR_TWO_TECHNOLOGY_NAME,Three For Two
+THREE_FOR_TWO_TECHNOLOGY_LVL_1,Receive the 3rd unit free for every 2 units that are trained for this structure only.
+TWO_FOR_ONE_TECHNOLOGY_NAME,Two For One
+TWO_FOR_ONE_TECHNOLOGY_LVL_1,Receive the 2nd unit free for every 1 unit that is trained for this structure only.
+,
+HAPPYHOUR_TECHNOLOGY_NAME,Happy Hour
+HAPPYHOUR_TECHNOLOGY_LVL_1,Increases the laborer production rate by 30%. (8% for every addition)
+,
+SUNDANCE_TECHNOLOGY_NAME,Sun Dance
+SUNDANCE_TECHNOLOGY_LVL_1,Increase maximum loot bonus by 10% (Stacks additively)
+SUNDANCE_TECHNOLOGY_LVL_2,Increase maximum loot bonus by 20% (Stacks additively)
+SUNDANCE_TECHNOLOGY_LVL_3,Increase maximum loot bonus by 30% (Stacks additively)
+SUNDANCE_TECHNOLOGY_LVL_4,Increase maximum loot bonus by 40% (Stacks additively)
+SUNDANCE_TECHNOLOGY_LVL_5,Increase maximum loot bonus by 50% (Stacks additively)
+,
+GREED_IS_GOOD_TECHNOLOGY_NAME,Greed Is Good
+GREED_IS_GOOD_TECHNOLOGY_LVL_1,Reduce time to load up loot by 1 Round (Stacks additively up to 10 Rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_2,Reduce time to load up loot by 2 Rounds (Stacks additively up to 10 Rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_3,Reduce time to load up loot by 3 Rounds (Stacks additively up to 10 Rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_4,Reduce time to load up loot by 4 Rounds (Stacks additively up to 10 Rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_5,Reduce time to load up loot by 5 Rounds (Stacks additively up to 10 Rounds)
+,
+COORDINATED_DEFENSE_TECHNOLOGY_NAME,Coordinated Defense
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_1,Defensive Reinforcement Troops gain 2% Max HP but travel speed is REDUCED by 3%. (Stacks additively)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_2,Defensive Reinforcement Troops gains 4% Max HP but travel speed is REDUCED by 6%. (Stacks additively)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_3,Defensive Reinforcement Troops gains 6% Max HP but travel speed is REDUCED by 9%. (Stacks additively)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_4,Defensive Reinforcement Troops gains 8% Max HP but travel speed is REDUCED by 12%. (Stacks additively)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_5,Defensive Reinforcement Troops gains 10% Max HP but travel speed is REDUCED by 15%. (Stacks additively)
+,
+COORDINATED_ATTACK_TECHNOLOGY_NAME,Coordinated Attack
+COORDINATED_ATTACK_TECHNOLOGY_LVL_1,Offensive Troops gains 2% Max HP but travel speed is REDUCED by 3%. (Stacks additively)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_2,Offensive Troops gains 4% Max HP but travel speed is REDUCED by 6%. (Stacks additively)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_3,Offensive Troops gains 6% Max HP but travel speed is REDUCED by 9%. (Stacks additively)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_4,Offensive Troops gains 8% Max HP but travel speed is REDUCED by 12%. (Stacks additively)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_5,Offensive Troops gains 10% Max HP but travel speed is REDUCED by 15%. (Stacks additively)
+,
+REINVENT_WHEEL_TECHNOLOGY_NAME,Reinvent the Wheel
+REINVENT_WHEEL_TECHNOLOGY_LVL_1,Increase send/trade resource speed by 8% for this structure only.
+REINVENT_WHEEL_TECHNOLOGY_LVL_2,Increase send/trade resource speed by 16% for this structure only.
+REINVENT_WHEEL_TECHNOLOGY_LVL_3,Increase send/trade resource speed by 24% for this structure only.
+REINVENT_WHEEL_TECHNOLOGY_LVL_4,Increase send/trade resource speed by 32% for this structure only.
+REINVENT_WHEEL_TECHNOLOGY_LVL_5,Increase send/trade resource speed by 40% for this structure only.
+,
+WEAPON_EXPORT_TECHNOLOGY_NAME,Weapon Export
+WEAPON_EXPORT_TECHNOLOGY_LVL_1,"Every 3 idle laborers produce 1 gold per hour for up to 60 laborers.  Once gold reserves go over 2000, production is reduced to 1 gold per hour for every 15 idle laborers.  (Does not stack)"
+WEAPON_EXPORT_TECHNOLOGY_LVL_2,"Every 3 idle laborers produce 1 gold per hour for up to 120 laborers.  Once gold reserves go over 4000, production is reduced to 1 gold per hour for every 15 idle laborers.  (Does not stack)"
+WEAPON_EXPORT_TECHNOLOGY_LVL_3,"Every 5 idle laborers produce 2 gold per hour for up to 180 laborers.  Once gold reserves go over 6000, production is reduced to 2 gold per hour for every 25 idle laborers.  (Does not stack)"
+WEAPON_EXPORT_TECHNOLOGY_LVL_4,"Every 5 idle laborers produce 2 gold per hour for up to 240 laborers.  Once gold reserves go over 8000, production is reduced to 2 gold per hour for every 25 idle laborers.  (Does not stack)"
+WEAPON_EXPORT_TECHNOLOGY_LVL_5,"Every 2 idle laborers produce 1 gold per hour for up to 300 laborers.  Once gold reserves go over 10000, production is reduced to 1 gold per hour for every 10 idle laborers.  (Does not stack)"
+,
+SPIKE_BARRICADE_TECHNOLOGY_NAME,Spike Barricade
+SPIKE_BARRICADE_TECHNOLOGY_LVL_1,Increases building's splash damage by 1.
+SPIKE_BARRICADE_TECHNOLOGY_LVL_2,Increases building's splash damage by 2.
+SPIKE_BARRICADE_TECHNOLOGY_LVL_3,Increases building's splash damage by 3.
+,
+HANZO_SWORD_TECHNOLOGY_NAME,Hanzo Formation
+HANZO_SWORD_TECHNOLOGY_LVL_1,"Reduce splash damage received by 5% for Fighter, Swordsman and gladiator."
+HANZO_SWORD_TECHNOLOGY_LVL_2,"Reduce splash damage received by 10% for Fighter, Swordsman and gladiator."
+HANZO_SWORD_TECHNOLOGY_LVL_3,"Reduce splash damage received by 15% for Fighter, Swordsman and gladiator."
+,
+UPKEEP_REDUCE_SWORDSMAN_TECHNOLOGY_NAME,Swordy Diet
+UPKEEP_REDUCE_SWORDSMAN_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Swordsman. (Stacks additively up to 30%)
+UPKEEP_REDUCE_ARCHER_TECHNOLOGY_NAME,Archy Diet
+UPKEEP_REDUCE_ARCHER_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Archer. (Stacks additively up to 30%)
+UPKEEP_REDUCE_PIKEMAN_TECHNOLOGY_NAME,Piky Diet
+UPKEEP_REDUCE_PIKEMAN_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Hoplite. (Stacks additively up to 30%)
+UPKEEP_REDUCE_GLADIATOR_TECHNOLOGY_NAME,Glady Diet
+UPKEEP_REDUCE_GLADIATOR_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Gladiator. (Stacks additively up to 30%)
+UPKEEP_REDUCE_CAVALRY_TECHNOLOGY_NAME,Cavalry Diet
+UPKEEP_REDUCE_CAVALRY_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Cavalry. (Stacks additively up to 30%)
+UPKEEP_REDUCE_KNIGHT_TECHNOLOGY_NAME,Knight Diet
+UPKEEP_REDUCE_KNIGHT_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Knight. (Stacks additively up to 30%)
+UPKEEP_REDUCE_HELEPOLIS_TECHNOLOGY_NAME,Helepolis Diet
+UPKEEP_REDUCE_HELEPOLIS_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Helepolis. (Stacks additively up to 30%)
+UPKEEP_REDUCE_CATAPULT_TECHNOLOGY_NAME,Catapult Diet
+UPKEEP_REDUCE_CATAPULT_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Catapult. (Stacks additively up to 30%)
+,
+BASIC_TRAINING_TECHNOLOGY_NAME,Basic Training
+BASIC_TRAINING_TECHNOLOGY_LVL_1,Allows training Fighters. Also makes it so the first 15 units in the city are trained extremely quickly.

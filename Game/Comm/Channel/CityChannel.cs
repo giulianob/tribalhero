@@ -166,13 +166,13 @@ namespace Game.Comm.Channel
             }
 
             channel.Post(GetChannelName(city), () =>
-            {
-                var packet = new Packet(Command.TroopRemoved);
-                packet.AddUInt32(city.Id);
-                packet.AddUInt32(args.Stub.City.Id);
-                packet.AddUInt16(args.Stub.TroopId);
-                return packet;
-            });
+                {
+                    var packet = new Packet(Command.TroopRemoved);
+                    packet.AddUInt32(city.Id);
+                    packet.AddUInt32(args.Stub.City.Id);
+                    packet.AddUInt16(args.Stub.TroopId);
+                    return packet;
+                });
         }
 
         private void ReferenceAdded(ICity city, ActionReferenceArgs args)
@@ -200,15 +200,14 @@ namespace Game.Comm.Channel
                 return;
             }
 
-            channel.Post(GetChannelName(city),
-                         () => 
-                             {
-                                 var packet = new Packet(Command.ReferenceRemove);
-                                 packet.AddUInt32(city.Id);
-                                 packet.AddUInt16(args.ReferenceStub.ReferenceId);
+            channel.Post(GetChannelName(city), () =>
+                {
+                    var packet = new Packet(Command.ReferenceRemove);
+                    packet.AddUInt32(city.Id);
+                    packet.AddUInt16(args.ReferenceStub.ReferenceId);
 
-                                 return packet;
-                             });
+                    return packet;
+                });
         }
 
         private void ResourceUpdateEvent(ICity city, EventArgs args)
@@ -237,12 +236,12 @@ namespace Game.Comm.Channel
             regionManager.ObjectUpdateEvent(city.MainBuilding, city.PrimaryPosition.X, city.PrimaryPosition.Y);
 
             channel.Post(GetChannelName(city), () =>
-                {
-                    var packet = new Packet(Command.CityRadiusUpdate);
-                    packet.AddUInt32(city.Id);
-                    packet.AddByte(city.Radius);
-                    return packet;
-                });
+            {
+                var packet = new Packet(Command.CityRadiusUpdate);
+                packet.AddUInt32(city.Id);
+                packet.AddByte(city.Radius);
+                return packet;
+            });
         }
 
         private void PointUpdate(ICity city)

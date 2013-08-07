@@ -44,22 +44,6 @@ namespace Game.Data
 
         private GameObjectState state = GameObjectStateFactory.NormalState();
 
-        public ushort CityRegionRelX
-        {
-            get
-            {
-                return (ushort)(PrimaryPosition.X % Config.city_region_width);
-            }
-        }
-
-        public ushort CityRegionRelY
-        {
-            get
-            {
-                return (ushort)(PrimaryPosition.Y % Config.city_region_height);
-            }
-        }
-
         public bool InWorld
         {
             get
@@ -101,18 +85,6 @@ namespace Game.Data
             {
                 return objectId;
             }          
-        }
-
-        public uint Y
-        {
-            get
-            {
-                return PrimaryPosition.Y;
-            }
-            set
-            {
-                PrimaryPosition.Y = value;
-            }
         }
 
         #endregion

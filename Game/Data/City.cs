@@ -172,21 +172,6 @@ namespace Game.Data
         }
 
         /// <summary>
-        ///     Returns the city's center point which is the town centers position
-        /// </summary>
-        public uint Y
-        {
-            get
-            {
-                return PrimaryPosition.Y;
-            }
-            set
-            {
-                throw new NotSupportedException("Cannot set city Y");
-            }
-        }
-
-        /// <summary>
         ///     City's battle manager. Maybe null if city is not in battle.
         /// </summary>
         public IBattleManager Battle
@@ -854,22 +839,6 @@ namespace Game.Data
             get
             {
                 return CityRegion.ObjectType.City;
-            }
-        }
-
-        public ushort CityRegionRelX
-        {
-            get
-            {
-                return (ushort)(PrimaryPosition.X % Config.city_region_width);
-            }
-        }
-
-        public ushort CityRegionRelY
-        {
-            get
-            {
-                return (ushort)(PrimaryPosition.Y % Config.city_region_height);
             }
         }
 

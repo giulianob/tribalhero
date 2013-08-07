@@ -170,8 +170,8 @@ namespace Game.Map
                                     }
 
                                 bw.Write((byte)obj.CityRegionType);
-                                bw.Write(obj.CityRegionRelX);
-                                bw.Write(obj.CityRegionRelY);
+                                bw.Write((ushort)(obj.PrimaryPosition.X % Config.city_region_width));
+                                bw.Write((ushort)(obj.PrimaryPosition.Y % Config.city_region_height));
                                 bw.Write(obj.CityRegionGroupId);
                                 bw.Write(obj.CityRegionObjectId);
 

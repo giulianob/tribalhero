@@ -84,6 +84,22 @@ namespace Testing.GameObjectTests
             protected override void CheckUpdateMode()
             {
             }
+
+            public override int Hash
+            {
+                get
+                {
+                    return (int)ObjectId;
+                }
+            }
+
+            public override object Lock
+            {
+                get
+                {
+                    return this;
+                }
+            }
         }
 
     }

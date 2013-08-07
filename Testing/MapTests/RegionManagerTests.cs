@@ -18,7 +18,7 @@ namespace Testing.MapTests
             IRegion region2,
             IRegion region3,
             IRegion region4,
-            IRegionLocator regionLocator,
+            [Frozen] IRegionLocator regionLocator,
             RegionManager regionManager)
         {
             var lockedRegions = new List<IRegion>();
@@ -32,7 +32,6 @@ namespace Testing.MapTests
             regionManager.AddRegion(region3);
             regionManager.AddRegion(region4);
 
-            Region.RegionLocator = regionLocator;
             regionLocator.GetRegionIndex(0, 0).ReturnsForAnyArgs<ushort>(3);
             regionLocator.GetRegionIndex(0, 1).Returns<ushort>(0);
             regionLocator.GetRegionIndex(0, 2).Returns<ushort>(0);
@@ -56,12 +55,11 @@ namespace Testing.MapTests
         [Theory, AutoNSubstituteData]
         public void LockRegions_WhenCalledWithInvalidPosition_IgnoresInvalidRegion(
             [Frozen] ITileLocator tileLocator,
-            IRegionLocator regionLocator,
+            [Frozen] IRegionLocator regionLocator,
             RegionManager regionManager)
         {
             var lockedRegions = new List<IRegion>();
 
-            Region.RegionLocator = regionLocator;
             regionLocator.GetRegionIndex(0, 0).ReturnsForAnyArgs<ushort>(0);
 
             tileLocator.ForeachMultitile(10, 20, 3).Returns(new[]
@@ -81,7 +79,7 @@ namespace Testing.MapTests
             IRegion region2,
             IRegion region3,
             IRegion region4,
-            IRegionLocator regionLocator,
+            [Frozen] IRegionLocator regionLocator,
             RegionManager regionManager)
         {
             var lockedRegions = new List<IRegion>();
@@ -95,7 +93,6 @@ namespace Testing.MapTests
             regionManager.AddRegion(region3);
             regionManager.AddRegion(region4);
 
-            Region.RegionLocator = regionLocator;
             regionLocator.GetRegionIndex(0, 0).ReturnsForAnyArgs<ushort>(3);
             regionLocator.GetRegionIndex(0, 1).Returns<ushort>(0);
             regionLocator.GetRegionIndex(0, 2).Returns<ushort>(0);
@@ -118,12 +115,11 @@ namespace Testing.MapTests
         [Theory, AutoNSubstituteData]
         public void UnlockRegions_WhenCalledWithInvalidPosition_IgnoresInvalidRegion(
             [Frozen] ITileLocator tileLocator,
-            IRegionLocator regionLocator,
+            [Frozen] IRegionLocator regionLocator,
             RegionManager regionManager)
         {
             var lockedRegions = new List<IRegion>();
 
-            Region.RegionLocator = regionLocator;
             regionLocator.GetRegionIndex(0, 0).ReturnsForAnyArgs<ushort>(0);
 
             tileLocator.ForeachMultitile(10, 20, 3).Returns(new[]
@@ -139,12 +135,11 @@ namespace Testing.MapTests
         [Theory, AutoNSubstituteData]
         public void Add_ShouldAddObjectToPrimaryRegion(
                 ISimpleGameObject simpleGameObject,
-                IRegionLocator regionLocator,
+                [Frozen] IRegionLocator regionLocator,
                 IRegion region0,
                 IRegion region1,
                 RegionManager regionManager)
         {            
-            Region.RegionLocator = regionLocator;
             simpleGameObject.PrimaryPosition.Returns(new Position(1, 2));
             regionLocator.GetRegionIndex(simpleGameObject.PrimaryPosition.X, simpleGameObject.PrimaryPosition.Y).Returns<ushort>(1);
 
@@ -160,14 +155,13 @@ namespace Testing.MapTests
         [Theory, AutoNSubstituteData]
         public void Add_ShouldAddObjectToAllTiles(
                 ISimpleGameObject simpleGameObject,
-                IRegionLocator regionLocator,
+                [Frozen] IRegionLocator regionLocator,
                 IRegion region0,
                 IRegion region1,
                 IRegion region2,
                 [Frozen] ITileLocator tileLocator,
                 RegionManager regionManager)
         {            
-            Region.RegionLocator = regionLocator;
             simpleGameObject.PrimaryPosition.Returns(new Position(1, 2));
             regionLocator.GetRegionIndex(0, 0).ReturnsForAnyArgs<ushort>(2);
 
@@ -197,12 +191,11 @@ namespace Testing.MapTests
         [Theory, AutoNSubstituteData]
         public void Add_WhenSomeTilesAreInInvalidRegion_ShouldIgnoreRegions(
                 ISimpleGameObject simpleGameObject,
-                IRegionLocator regionLocator,
+                [Frozen] IRegionLocator regionLocator,
                 IRegion region0,
                 [Frozen] ITileLocator tileLocator,
                 RegionManager regionManager)
         {            
-            Region.RegionLocator = regionLocator;
             simpleGameObject.PrimaryPosition.Returns(new Position(1, 1));
             regionLocator.GetRegionIndex(0, 0).ReturnsForAnyArgs<ushort>(2);
 
@@ -225,14 +218,13 @@ namespace Testing.MapTests
         [Theory, AutoNSubstituteData]
         public void Remove_RemovesObjectFromAllTiles(
             ISimpleGameObject simpleGameObject,
-                IRegionLocator regionLocator,
+                [Frozen] IRegionLocator regionLocator,
                 IRegion region0,
                 IRegion region1,
                 IRegion region2,
                 [Frozen] ITileLocator tileLocator,
                 RegionManager regionManager)
         {            
-            Region.RegionLocator = regionLocator;
             simpleGameObject.InWorld.Returns(true);
             simpleGameObject.PrimaryPosition.Returns(new Position(1, 2));
             simpleGameObject.Size.Returns<byte>(10);
@@ -265,14 +257,13 @@ namespace Testing.MapTests
         [Theory, AutoNSubstituteData]
         public void Remove_ProperlyLocksRegions(
                 ISimpleGameObject simpleGameObject,
-                IRegionLocator regionLocator,
+                [Frozen] IRegionLocator regionLocator,
                 IRegion region0,
                 IRegion region1,
                 IRegion region2,
                 [Frozen] ITileLocator tileLocator,
                 RegionManager regionManager)
         {
-            Region.RegionLocator = regionLocator;
             simpleGameObject.InWorld.Returns(true);
             regionLocator.GetRegionIndex(0, 0).ReturnsForAnyArgs<ushort>(2);
 
@@ -302,12 +293,11 @@ namespace Testing.MapTests
         [Theory, AutoNSubstituteData]
         public void Remove_WhenATileIsInInvalidRegion_RemovesFromAllOtherTilesAndIgnoresInvalidTile(
                 ISimpleGameObject simpleGameObject,
-                IRegionLocator regionLocator,
+                [Frozen] IRegionLocator regionLocator,
                 IRegion region0,
                 [Frozen] ITileLocator tileLocator,
                 RegionManager regionManager)
         {
-            Region.RegionLocator = regionLocator;
             simpleGameObject.InWorld.Returns(true);
             simpleGameObject.PrimaryPosition.Returns(new Position(1, 2));
 
@@ -331,13 +321,12 @@ namespace Testing.MapTests
         [Theory, AutoNSubstituteData]
         public void ObjectUpdateEvent_LocksBothPreviousAndCurrentRegions(
                 ISimpleGameObject simpleGameObject,
-                IRegionLocator regionLocator,
+                [Frozen] IRegionLocator regionLocator,
                 IRegion region0,
                 IRegion region1,
                 [Frozen] ITileLocator tileLocator,
                 RegionManager regionManager)
         {
-            Region.RegionLocator = regionLocator;
             simpleGameObject.InWorld.Returns(true);
             simpleGameObject.Size.Returns<byte>(11);
             simpleGameObject.PrimaryPosition.Returns(new Position(1, 2));

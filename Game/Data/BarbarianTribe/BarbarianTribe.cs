@@ -239,7 +239,7 @@ namespace Game.Data.BarbarianTribe
 
         #region Implementation of ILockable
 
-        public int Hash
+        public override int Hash
         {
             get
             {
@@ -247,7 +247,7 @@ namespace Game.Data.BarbarianTribe
             }
         }
 
-        public object Lock
+        public override object Lock
         {
             get
             {

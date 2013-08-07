@@ -195,6 +195,22 @@ namespace Game.Data
 
         public bool DbPersisted { get; set; }
 
+        public override int Hash
+        {
+            get
+            {
+                return City != null ? City.Hash : int.MaxValue;
+            }
+        }
+
+        public override object Lock
+        {
+            get
+            {
+                return City != null ? City.Lock : null;
+            }
+        }
+
 
     }
 }

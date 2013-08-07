@@ -21,11 +21,14 @@ namespace Game.Map
 
         private readonly IChannel channel;
 
-        public RoadManager(IRegionManager regionManager, IObjectTypeFactory objectTypeFactory, IChannel channel)
+        private readonly IRegionLocator regionLocator;
+
+        public RoadManager(IRegionManager regionManager, IObjectTypeFactory objectTypeFactory, IChannel channel, IRegionLocator regionLocator)
         {
             this.regionManager = regionManager;
             this.objectTypeFactory = objectTypeFactory;
             this.channel = channel;
+            this.regionLocator = regionLocator;
 
             //regionManager.ObjectAdded += RegionManagerOnObjectAdded;
         }
@@ -80,7 +83,7 @@ namespace Game.Map
 
             for (int i = 0; i < tiles.Count; i++)
             {
-                ushort regionId = Region.GetRegionIndex(tiles[i].X, tiles[i].Y);
+                ushort regionId = regionLocator.GetRegionIndex(tiles[i].X, tiles[i].Y);
                 var update = new TileUpdate(tiles[i].X, tiles[i].Y, CalculateRoad(tiles[i].X, tiles[i].Y, i == 0));
                 if (update.TileType == ushort.MaxValue)
                 {
@@ -124,7 +127,7 @@ namespace Game.Map
 
             for (int i = 0; i < tiles.Count; i++)
             {
-                ushort regionId = Region.GetRegionIndex(tiles[i].X, tiles[i].Y);
+                ushort regionId = regionLocator.GetRegionIndex(tiles[i].X, tiles[i].Y);
 
                 TileUpdate update;
                 if (i == 0)

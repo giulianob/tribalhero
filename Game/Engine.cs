@@ -254,6 +254,7 @@ _________ _______ _________ ______   _______  _
             // Instantiate singletons here for now until all classes are properly being injected
             Ioc.Kernel = kernel;
 
+            PacketHelper.RegionLocator = kernel.Get<IRegionLocator>();
             Global.Current = kernel.Get<Global>();
             SystemVariablesUpdater.Current = kernel.Get<SystemVariablesUpdater>();
             TileLocator.Current = kernel.Get<TileLocator>();

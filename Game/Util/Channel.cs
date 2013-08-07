@@ -55,9 +55,8 @@ namespace Game.Util
 
         public void Post(string channelId, Func<Packet> message)
         {
-            var hasPacket = false;
-            Packet packet = null;
-
+			IChannelListener[] sessionsToPost;
+            
             channelLock.EnterReadLock();
             try
             {
@@ -67,21 +66,25 @@ namespace Game.Util
                     return;
                 }
 
-                foreach (var sub in subscribers)
-                {
-                    if (!hasPacket)
-                    {
-                        hasPacket = true;
-                        packet = message();
-                    }
-
-                    sub.Session.OnPost(packet);
-                }
+				sessionsToPost = subscribersByChannel[channelId].Select(s => s.Session).ToArray();
             }
             finally
             {
                 channelLock.ExitReadLock();
             }
+			
+			var hasPacket = false;
+			Packet packet = null;
+            foreach (var session in sessionsToPost)
+            {
+                if (!hasPacket)
+                {
+                    hasPacket = true;
+                    packet = message();
+                }			
+				
+                session.OnPost(packet);
+            }			
         }
 
         public void Subscribe(IChannelListener session, string channelId)

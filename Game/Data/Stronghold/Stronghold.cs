@@ -206,7 +206,7 @@ namespace Game.Data.Stronghold
 
         #region Implementation of ILockable
 
-        public int Hash
+        public override int Hash
         {
             get
             {
@@ -214,7 +214,7 @@ namespace Game.Data.Stronghold
             }
         }
 
-        public object Lock
+        public override object Lock
         {
             get
             {

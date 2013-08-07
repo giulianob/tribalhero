@@ -25,17 +25,21 @@ namespace Game.Map
 
         private readonly IChannel channel;
 
+        private readonly IRegionLocator regionLocator;
+
         private List<IRegion> regions = new List<IRegion>();
 
         public RegionManager(ICityRegionManagerFactory cityRegionManagerFactory,
                              IRegionFactory regionFactory,
                              ITileLocator tileLocator,
-                             IChannel channel)
+                             IChannel channel,
+                             IRegionLocator regionLocator)
         {
             this.cityRegionManagerFactory = cityRegionManagerFactory;
             this.regionFactory = regionFactory;
             this.tileLocator = tileLocator;
             this.channel = channel;
+            this.regionLocator = regionLocator;
         }
 
         private int RegionsCount { get; set; }
@@ -60,7 +64,7 @@ namespace Game.Map
         public IEnumerable<ushort> GetRegionIds(uint x, uint y, byte size)
         {
             return tileLocator.ForeachMultitile(x, y, size)
-                              .Select(p => Region.GetRegionIndex(p.X, p.Y))
+                              .Select(p => regionLocator.GetRegionIndex(p.X, p.Y))
                               .Distinct()
                               .OrderBy(p => p);
         }
@@ -90,7 +94,7 @@ namespace Game.Map
         public void UnlockRegions(uint x, uint y, byte size)
         {
             UnlockRegions(tileLocator.ForeachMultitile(x, y, size)
-                                     .Select(p => Region.GetRegionIndex(p.X, p.Y))
+                                     .Select(p => regionLocator.GetRegionIndex(p.X, p.Y))
                                      .Distinct());
         }
 
@@ -158,7 +162,7 @@ namespace Game.Map
             }
 
             // Post to channel
-            ushort regionId = Region.GetRegionIndex(obj);
+            ushort regionId = regionLocator.GetRegionIndex(obj);
 
             channel.Post("/WORLD/" + regionId, () =>
                 {
@@ -242,7 +246,7 @@ namespace Game.Map
                     CityRegions.Remove(cityRegionObject);
                 }
 
-                ushort regionId = Region.GetRegionIndex(obj);
+                ushort regionId = regionLocator.GetRegionIndex(obj);
                 channel.Post("/WORLD/" + regionId, () =>
                     {
                         var packet = new Packet(Command.ObjectRemove);
@@ -287,7 +291,7 @@ namespace Game.Map
 
         public IRegion GetRegion(uint x, uint y)
         {
-            return GetRegion(Region.GetRegionIndex(x, y));
+            return GetRegion(regionLocator.GetRegionIndex(x, y));
         }
 
         public IRegion GetRegion(ushort id)
@@ -315,8 +319,8 @@ namespace Game.Map
             var lockedRegions = LockRegions(GetRegionIds(sender.PrimaryPosition.X, sender.PrimaryPosition.Y, sender.Size)
                                                     .Concat(GetRegionIds(origX, origY, sender.Size)));
 
-            ushort previousPrimaryRegionId = Region.GetRegionIndex(origX, origY);
-            ushort newPrimaryRegionId = Region.GetRegionIndex(sender);
+            ushort previousPrimaryRegionId = regionLocator.GetRegionIndex(origX, origY);
+            ushort newPrimaryRegionId = regionLocator.GetRegionIndex(sender);
 
             RemoveFromPrimaryRegionAndAllTiles(sender, origX, origY);
             AddToPrimaryRegionAndTiles(sender);
@@ -452,14 +456,14 @@ namespace Game.Map
 
         public ushort RevertTileType(uint x, uint y, bool sendEvent)
         {
-            ushort regionId = Region.GetRegionIndex(x, y);
+            ushort regionId = regionLocator.GetRegionIndex(x, y);
             ushort tileType;
 
             lock (RegionChanges)
             {
                 IRegion region = GetRegion(x, y);
 
-                long idx = (Region.GetTileIndex(x, y) * Region.TILE_SIZE) + (Region.TILE_SIZE * RegionSize * regionId);
+                long idx = (regionLocator.GetTileIndex(x, y) * Region.TILE_SIZE) + (Region.TILE_SIZE * RegionSize * regionId);
                 tileType = MapData[idx];
 
                 // Check if it's actually changed
@@ -491,13 +495,13 @@ namespace Game.Map
 
         public void SetTileType(uint x, uint y, ushort tileType, bool sendEvent)
         {
-            ushort regionId = Region.GetRegionIndex(x, y);
+            ushort regionId = regionLocator.GetRegionIndex(x, y);
 
             lock (RegionChanges)
             {
                 IRegion region = GetRegion(x, y);
 
-                long idx = (Region.GetTileIndex(x, y) * Region.TILE_SIZE) + (Region.TILE_SIZE * RegionSize * regionId);
+                long idx = (regionLocator.GetTileIndex(x, y) * Region.TILE_SIZE) + (Region.TILE_SIZE * RegionSize * regionId);
                 RegionChanges.Seek(idx, SeekOrigin.Begin);
                 RegionChanges.Write(BitConverter.GetBytes(tileType), 0, 2);
                 RegionChanges.Flush();

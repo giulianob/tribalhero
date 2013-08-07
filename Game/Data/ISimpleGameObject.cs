@@ -1,10 +1,11 @@
 using System;
 using Game.Data.Events;
 using Game.Map;
+using Game.Util.Locking;
 
 namespace Game.Data
 {
-    public interface ISimpleGameObject : IPrimaryPosition
+    public interface ISimpleGameObject : ILockable, IPrimaryPosition
     {
         event EventHandler<SimpleGameObjectArgs> ObjectUpdated;
 

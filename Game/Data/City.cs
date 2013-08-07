@@ -570,22 +570,7 @@ namespace Game.Data
 
         #endregion
 
-        public City(uint id,
-                    IPlayer owner,
-                    string name,
-                    LazyResource resource,
-                    byte radius,
-                    decimal ap,
-                    IActionWorker worker,
-                    CityNotificationManager notifications,
-                    IReferenceManager references,
-                    ITechnologyManager technologies,
-                    ITroopManager troops,
-                    IUnitTemplate template,
-                    ITroopStubFactory troopStubFactory,
-                    IDbManager dbManager,
-                    IGameObjectFactory gameObjectFactory,
-                    IActionFactory actionFactory)
+        public City(uint id, IPlayer owner, string name, Position position, LazyResource resource, byte radius, decimal ap, IActionWorker worker, CityNotificationManager notifications, IReferenceManager references, ITechnologyManager technologies, ITroopManager troops, IUnitTemplate template, ITroopStubFactory troopStubFactory, IDbManager dbManager, IGameObjectFactory gameObjectFactory, IActionFactory actionFactory)
         {
             Id = id;
             Owner = owner;
@@ -596,6 +581,7 @@ namespace Game.Data
             this.gameObjectFactory = gameObjectFactory;
             this.actionFactory = actionFactory;
 
+            PrimaryPosition = position;
             AlignmentPoint = ap;
             Resource = resource;
 

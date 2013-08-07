@@ -367,15 +367,15 @@ namespace Game.Comm.ProcessorCommands
                 lock (world.Lock)
                 {
                     ILocationStrategy strategy;
-                    if(method==1)
+                    if (method == 1)
                     {
                         uint playerId;
-                        if(!world.FindPlayerId(playerName, out playerId))
+                        if (!world.FindPlayerId(playerName, out playerId))
                         {
                             ReplyError(session, packet, Error.PlayerNotFound);
                             return;
                         }
-                        
+
                         var player = world.Players[playerId];
                         if (String.Compare(player.PlayerHash, playerHash, StringComparison.OrdinalIgnoreCase) != 0)
                         {
@@ -396,19 +396,19 @@ namespace Game.Comm.ProcessorCommands
                         return;
                     }
 
-                    var error = procedure.CreateCity(cityFactory, session.Player, cityName, strategy, barbarianTribeManager, out city);
-                    if(error!=Error.Ok)
+                    Position cityPosition;
+                    var locationStrategyResult = strategy.NextLocation(out cityPosition);
+
+                    if (locationStrategyResult != Error.Ok)
                     {
-                        ReplyError(session, packet, error);
+                        ReplyError(session, packet, locationStrategyResult);
                         return;
                     }
+
+                    procedure.CreateCity(cityFactory, session.Player, cityName, cityPosition, barbarianTribeManager, out city);
                 }
 
-                IStructure mainBuilding = (IStructure)city[1];
-
-                initFactory.InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
-
-                city.Worker.DoPassive(city, actionFactory.CreateCityPassiveAction(city.Id), false);
+                procedure.InitCity(city, initFactory, actionFactory);
 
                 var reply = new Packet(packet);
                 reply.Option |= (ushort)Packet.Options.Compressed;

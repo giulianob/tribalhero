@@ -7,6 +7,7 @@ using System.Linq;
 using Game.Data.Stats;
 using Game.Map;
 using Game.Util;
+using Game.Util.Locking;
 using Persistance;
 
 #endregion
@@ -219,7 +220,7 @@ namespace Game.Data.Troop
 
         #endregion
 
-        public int Hash
+        public override int Hash
         {
             get
             {
@@ -227,7 +228,7 @@ namespace Game.Data.Troop
             }
         }
 
-        public object Lock
+        public override object Lock
         {
             get
             {

@@ -3,6 +3,7 @@ using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Notifications;
 using Game.Logic.Procedures;
+using Game.Map;
 using Ninject;
 using Persistance;
 
@@ -45,11 +46,12 @@ namespace Game.Data
             this.unitTemplateFactory = unitTemplateFactory;
         }
 
-        public ICity CreateCity(uint id, IPlayer owner, string name, Resource resource, byte radius, decimal ap)
+        public ICity CreateCity(uint id, IPlayer owner, string name, Position position, Resource resource, byte radius, decimal ap)
         {
             return CreateCity(id,
                               owner,
-                              name,
+                              name, 
+                              position,
                               new LazyResource(crop: resource.Crop,
                                                gold: resource.Gold,
                                                iron: resource.Iron,
@@ -59,7 +61,7 @@ namespace Game.Data
                               ap);
         }
 
-        public ICity CreateCity(uint id, IPlayer owner, string name, LazyResource resource, byte radius, decimal ap)
+        public ICity CreateCity(uint id, IPlayer owner, string name, Position position, LazyResource resource, byte radius, decimal ap)
         {
             var worker = actionWorkerFactory.CreateActionWorker(() => owner, new SimpleLocation(LocationType.City, id));
             var notifications = notificationManagerFactory.CreateCityNotificationManager(worker, id, "/PLAYER/" + owner.PlayerId);
@@ -72,6 +74,7 @@ namespace Game.Data
             var city = new City(id,
                                 owner,
                                 name,
+                                position,
                                 resource,
                                 radius,
                                 ap,

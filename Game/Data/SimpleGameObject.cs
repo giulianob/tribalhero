@@ -117,6 +117,12 @@ namespace Game.Data
 
         #endregion
 
+        #region Update Events
+
+        private Position originalPosition = new Position();
+
+        #endregion
+
         #region Constructors
 
         protected SimpleGameObject(uint objectId, uint x, uint y)
@@ -127,12 +133,6 @@ namespace Game.Data
 
             this.PrimaryPosition.PropertyChanged += PrimaryPositionOnPropertyChanged;
         }
-
-        #endregion
-
-        #region Update Events
-
-        private Position originalPosition = new Position();
 
         protected bool Updating;
 
@@ -178,6 +178,16 @@ namespace Game.Data
             return true;
         }
 
+        #endregion
+
+        private void SaveOrigPos()
+        {
+            if (InWorld)
+            {
+                originalPosition = PrimaryPosition.Clone();
+            }
+        }
+
         private void PrimaryPositionOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             CheckUpdateMode();
@@ -197,19 +207,13 @@ namespace Game.Data
             }
         }
 
-        #endregion
-
-        private void SaveOrigPos()
-        {
-            if (InWorld)
-            {
-                originalPosition = PrimaryPosition.Clone();
-            }
-        }
-
         public override string ToString()
         {
             return string.Format("{0} x[{1}] y[{2}] origX[{7}] origY[{8}] type[{3}] groupId[{4}] objId[{5}] inWorld[{6}]", base.ToString(), PrimaryPosition.X, PrimaryPosition.Y, Type, GroupId, ObjectId, inWorld, originalPosition.X, originalPosition.Y);
         }
+
+        public abstract int Hash { get; }
+
+        public abstract object Lock { get; }
     }
 }

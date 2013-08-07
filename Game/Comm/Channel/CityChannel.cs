@@ -19,12 +19,15 @@ namespace Game.Comm.Channel
 
         private readonly IRegionManager regionManager;
 
-        public CityChannel(Util.IChannel channel, Procedure procedure, Formula formula, IRegionManager regionManager)
+        private readonly IRegionLocator regionLocator;
+
+        public CityChannel(Util.IChannel channel, Procedure procedure, Formula formula, IRegionManager regionManager, IRegionLocator regionLocator)
         {
             this.channel = channel;
             this.procedure = procedure;
             this.formula = formula;
             this.regionManager = regionManager;
+            this.regionLocator = regionLocator;
         }
 
         public void Register(ICityManager cityManager)
@@ -289,7 +292,7 @@ namespace Game.Comm.Channel
             channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.CityObjectAdd);
-                    packet.AddUInt16(Region.GetRegionIndex(args.Object));
+                    packet.AddUInt16(regionLocator.GetRegionIndex(args.Object));
                     PacketHelper.AddToPacket(args.Object, packet);
                     return packet;
                 });
@@ -325,7 +328,7 @@ namespace Game.Comm.Channel
             channel.Post(GetChannelName(city), () =>
                 {
                     var packet = new Packet(Command.CityObjectUpdate);
-                    packet.AddUInt16(Region.GetRegionIndex(args.Object));
+                    packet.AddUInt16(regionLocator.GetRegionIndex(args.Object));
                     PacketHelper.AddToPacket(args.Object, packet);
                     return packet;
                 });

@@ -13,6 +13,13 @@ namespace Game.Map
 {
     public partial class RegionObjectList : IEnumerable<ISimpleGameObject>
     {
+        private readonly IRegionLocator regionLocator;
+
+        public RegionObjectList(IRegionLocator regionLocator)
+        {
+            this.regionLocator = regionLocator;
+        }
+
         #region Members
 
         private readonly Dictionary<int, List<ISimpleGameObject>> objects = new Dictionary<int, List<ISimpleGameObject>>();
@@ -31,7 +38,7 @@ namespace Game.Map
 
         public void Add(ISimpleGameObject obj, uint x, uint y)
         {
-            int index = Region.GetTileIndex(x, y);
+            int index = regionLocator.GetTileIndex(x, y);
 
             List<ISimpleGameObject> list;
 
@@ -56,7 +63,7 @@ namespace Game.Map
         public bool Remove(ISimpleGameObject obj, uint x, uint y)
         {
             List<ISimpleGameObject> list;
-            int index = Region.GetTileIndex(x, y);
+            int index = regionLocator.GetTileIndex(x, y);
 
             if (objects.TryGetValue(index, out list))
             {                
@@ -92,7 +99,7 @@ namespace Game.Map
         {
             List<ISimpleGameObject> list;
 
-            int index = Region.GetTileIndex(x, y);
+            int index = regionLocator.GetTileIndex(x, y);
 
             return objects.TryGetValue(index, out list) ? new List<ISimpleGameObject>(list) : new List<ISimpleGameObject>();
         }

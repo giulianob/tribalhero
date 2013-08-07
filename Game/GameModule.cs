@@ -48,6 +48,8 @@ namespace Game
             Bind<IWorld, IGameObjectLocator>().To<World>().InSingletonScope();
             Bind<IRegion>().To<Region>();
             Bind<IRegionManager>().To<RegionManager>().InSingletonScope();
+            Bind<IRegionLocator>().To<RegionLocator>().InSingletonScope();
+            Bind<RegionObjectList>().ToSelf();
             Bind<ICityManager>().To<CityManager>().InSingletonScope();
             Bind<ICityRegionManager>().To<CityRegionManager>().InSingletonScope();            
             Bind<IForestManager>().To<ForestManager>().InSingletonScope();

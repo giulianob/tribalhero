@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
+using Game.Data.BarbarianTribe;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
 using Game.Setup;
@@ -36,6 +38,10 @@ namespace Game.Logic.Actions
 
         private readonly ICityFactory cityFactory;
 
+        private readonly Procedure procedure;
+
+        private readonly IBarbarianTribeManager barbarianTribeManager;
+
         private readonly uint x;
 
         private readonly uint y;
@@ -56,7 +62,9 @@ namespace Game.Logic.Actions
                                        IObjectTypeFactory objectTypeFactory,
                                        InitFactory initFactory,
                                        IStructureCsvFactory structureCsvFactory,
-                                       ICityFactory cityFactory)
+                                       ICityFactory cityFactory,
+                                       Procedure procedure,
+                                       IBarbarianTribeManager barbarianTribeManager)
         {
             this.cityId = cityId;
             this.x = x;
@@ -71,6 +79,8 @@ namespace Game.Logic.Actions
             this.initFactory = initFactory;
             this.structureCsvFactory = structureCsvFactory;
             this.cityFactory = cityFactory;
+            this.procedure = procedure;
+            this.barbarianTribeManager = barbarianTribeManager;
         }
 
         public CityCreatePassiveAction(uint id,
@@ -87,7 +97,9 @@ namespace Game.Logic.Actions
                                        ILocker locker,
                                        IObjectTypeFactory objectTypeFactory,
                                        InitFactory initFactory,
-                                       IStructureCsvFactory structureCsvFactory)
+                                       IStructureCsvFactory structureCsvFactory,
+                                       Procedure procedure,
+                                       IBarbarianTribeManager barbarianTribeManager)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.actionFactory = actionFactory;
@@ -98,6 +110,8 @@ namespace Game.Logic.Actions
             this.objectTypeFactory = objectTypeFactory;
             this.initFactory = initFactory;
             this.structureCsvFactory = structureCsvFactory;
+            this.procedure = procedure;
+            this.barbarianTribeManager = barbarianTribeManager;
             newCityId = uint.Parse(properties["new_city_id"]);
             newStructureId = uint.Parse(properties["new_structure_id"]);
         }
@@ -134,7 +148,6 @@ namespace Game.Logic.Actions
         {
             ICity city;
             ICity newCity;
-            IStructure structure;
 
             if (!world.TryGetObjects(cityId, out city))
             {
@@ -161,21 +174,19 @@ namespace Game.Logic.Actions
             }
 
             var totalWagons = city.DefaultTroop.Sum(f =>
+            {
+                if (f.Type != FormationType.Normal && f.Type != FormationType.Garrison)
                 {
-                    if (f.Type != FormationType.Normal && f.Type != FormationType.Garrison)
-                    {
-                        return 0;
-                    }
+                    return 0;
+                }
 
-                    return f.ContainsKey(wagonType) ? f[wagonType] : 0;
-                });
+                return f.ContainsKey(wagonType) ? f[wagonType] : 0;
+            });
 
             if (totalWagons < wagons && !Config.actions_ignore_requirements)
             {
                 return Error.ResourceNotEnough;
             }
-
-            var mainBuildingType = (ushort)objectTypeFactory.GetTypes("MainBuilding").First();
 
             var lockedRegions = world.Regions.LockRegions(x, y, formula.GetInitialCityRadius());
 
@@ -202,34 +213,17 @@ namespace Game.Logic.Actions
                     return Error.CityNameTaken;
                 }
 
+                var cityPosition = new Position(x, y);
+
                 // Creating New City
-                newCity = cityFactory.CreateCity(world.Cities.GetNextCityId(),
-                                   city.Owner,
-                                   cityName,
-                                   formula.GetInitialCityResources(),
-                                   formula.GetInitialCityRadius(),                                   
-                                   formula.GetInitialAp());
+                procedure.CreateCity(cityFactory, city.Owner, cityName, cityPosition, barbarianTribeManager, out newCity);                
 
-                // Creating Mainbuilding
-                structure = newCity.CreateStructure(mainBuildingType, 0, x, y);                
-                
-                structure.BeginUpdate();
-                city.Owner.Add(newCity);
                 world.Regions.SetTileType(x, y, 0, true);
-                world.Regions.Add(structure);
-                world.Cities.Add(newCity);                                
-                initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
-                structure.EndUpdate();                
+
+                var mainBuilding = newCity.MainBuilding;
+                initFactory.InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
                 
-
-                var defaultTroop = newCity.CreateTroopStub();
-                defaultTroop.BeginUpdate();
-                defaultTroop.AddFormation(FormationType.Normal);
-                defaultTroop.AddFormation(FormationType.Garrison);
-                defaultTroop.AddFormation(FormationType.InBattle);
-                defaultTroop.EndUpdate();
-
-                // taking resource from the old city
+                // Take resource from the old city
                 city.BeginUpdate();
                 city.DefaultTroop.BeginUpdate();
                 wagons -= city.DefaultTroop.RemoveUnit(FormationType.Normal, wagonType, (ushort)wagons);
@@ -239,17 +233,18 @@ namespace Game.Logic.Actions
                 }
                 city.DefaultTroop.EndUpdate();
                 city.EndUpdate();
+
+                newStructureId = mainBuilding.ObjectId;
             }
 
-            newCityId = newCity.Id;
-            newStructureId = structure.ObjectId;
+            world.Regions.UnlockRegions(lockedRegions);
+
+            newCityId = newCity.Id;            
 
             // add to queue for completion            
             int baseBuildTime = structureCsvFactory.GetBaseStats((ushort)objectTypeFactory.GetTypes("MainBuilding")[0], 1).BuildTime;
             EndTime = DateTime.UtcNow.AddSeconds(CalculateTime(formula.BuildTime(baseBuildTime, city, city.Technologies)));
             BeginTime = DateTime.UtcNow;
-
-            world.Regions.UnlockRegions(lockedRegions);
 
             return Error.Ok;
         }
@@ -294,8 +289,9 @@ namespace Game.Logic.Actions
 
                 structure.BeginUpdate();
                 structureCsvFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
-                initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
+
+                procedure.InitCity(newCity, initFactory, actionFactory);
 
                 newCity.Worker.DoPassive(newCity, actionFactory.CreateCityPassiveAction(newCity.Id), false);
                 StateChange(ActionState.Completed);

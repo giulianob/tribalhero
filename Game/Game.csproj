@@ -169,6 +169,7 @@
     <Compile Include="Battle\RewardStrategies\IRewardStrategy.cs" />
     <Compile Include="Battle\RewardStrategies\IRewardStrategyFactory.cs" />
     <Compile Include="Battle\StaminaMonitor.cs" />
+    <Compile Include="Battle\StrongholdMainBattleManager.cs" />
     <Compile Include="Comm\Channel\BattleChannel.cs" />
     <Compile Include="Battle\BattleFormulas.cs" />
     <Compile Include="Battle\BattleManager.cs" />
@@ -451,6 +452,7 @@
     <Compile Include="Map\IRegionLocator.cs" />
     <Compile Include="Map\IRegionManager.cs" />
     <Compile Include="Data\Tribe\ITribeManager.cs" />
+    <Compile Include="Map\IRegionObjectListFactory.cs" />
     <Compile Include="Map\IRoadManager.cs" />
     <Compile Include="Map\IRoadPathFinder.cs" />
     <Compile Include="Map\ITileLocator.cs" />

@@ -27,6 +27,20 @@ namespace Game.Comm
 {
     public class PacketHelper
     {
+        private static IRegionLocator regionLocator;
+
+        public static IRegionLocator RegionLocator
+        {
+            get
+            {
+                return regionLocator;
+            }
+            set
+            {
+                regionLocator = value;
+            }
+        }
+
         public static void AddToPacket(IUnitTemplate template, Packet packet)
         {
             packet.AddUInt16((ushort)template.Size);
@@ -404,6 +418,8 @@ namespace Game.Comm
         {
             packet.AddUInt32(city.Id);
             packet.AddString(city.Name);
+            packet.AddUInt32(city.PrimaryPosition.X);
+            packet.AddUInt32(city.PrimaryPosition.Y);
             AddToPacket(city.Resource, packet);
             packet.AddByte(city.Radius);
             packet.AddInt32(city.AttackPoint);
@@ -437,7 +453,7 @@ namespace Game.Comm
             packet.AddUInt16((ushort)structs.Count);
             foreach (var structure in structs)
             {
-                packet.AddUInt16(Region.GetRegionIndex(structure));
+                packet.AddUInt16(regionLocator.GetRegionIndex(structure));
                 AddToPacket(structure, packet);
 
                 packet.AddUInt16((ushort)structure.Technologies.OwnedTechnologyCount);
@@ -457,7 +473,7 @@ namespace Game.Comm
             packet.AddUInt16((ushort)troops.Count);
             foreach (var troop in troops)
             {
-                packet.AddUInt16(Region.GetRegionIndex(troop));
+                packet.AddUInt16(regionLocator.GetRegionIndex(troop));
                 AddToPacket(troop, packet);
             }
 

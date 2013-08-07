@@ -556,7 +556,8 @@ namespace Game.Database
 
                     ICity city = cityFactory.CreateCity((uint)reader["id"],
                                                         World.Players[(uint)reader["player_id"]],
-                                                        (string)reader["name"],
+                                                        (string)reader["name"], 
+                                                        new Position((uint)reader["x"], (uint) reader["y"]),
                                                         resource,
                                                         (byte)reader["radius"],
                                                         (decimal)reader["alignment_point"]);

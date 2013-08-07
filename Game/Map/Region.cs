@@ -31,13 +31,11 @@ namespace Game.Map
 
         private readonly ReaderWriterLockSlim tileLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
-        private readonly RegionObjectList tileObjects = new RegionObjectList();
+        private readonly RegionObjectList tileObjects;
 
-        private readonly RegionObjectList primaryObjects = new RegionObjectList();
+        private readonly RegionObjectList primaryObjects;
 
         private bool isDirty = true;
-
-        private byte[] objects;
 
         #endregion
 
@@ -57,31 +55,9 @@ namespace Game.Map
             tileLock.ExitWriteLock();
         }
 
-        #endregion
+        private byte[] objects;
 
-        #region Constructors
-
-        public Region(byte[] map, DefaultMultiObjectLock.Factory lockerFactory)
-        {
-            this.map = map;
-            this.lockerFactory = lockerFactory;
-        }
-
-        public void Add(ISimpleGameObject obj)
-        {
-            primaryLock.EnterWriteLock();
-            primaryObjects.Add(obj, obj.PrimaryPosition.X, obj.PrimaryPosition.Y);
-            isDirty = true;
-            primaryLock.ExitWriteLock();
-        }
-
-        public void Remove(ISimpleGameObject obj)
-        {
-            primaryLock.EnterWriteLock();
-            primaryObjects.Remove(obj, obj.PrimaryPosition.X, obj.PrimaryPosition.Y);
-            isDirty = true;
-            primaryLock.ExitWriteLock();
-        }
+        private int regionLastUpdated;
 
         public IEnumerable<ISimpleGameObject> GetObjectsInTile(uint x, uint y)
         {
@@ -91,18 +67,25 @@ namespace Game.Map
             return copy;
         }
 
-        public void Remove(ISimpleGameObject obj, uint origX, uint origY)
+        #endregion
+
+        #region Constructors
+
+        public Region(byte[] map, DefaultMultiObjectLock.Factory lockerFactory, IRegionLocator regionLocator, IRegionObjectListFactory regionObjectListFactory)
         {
-            primaryLock.EnterWriteLock();
-            primaryObjects.Remove(obj, origX, origY);
-            isDirty = true;
-            primaryLock.ExitWriteLock();
+            this.map = map;
+            this.lockerFactory = lockerFactory;
+            this.regionLocator = regionLocator;
+
+            tileObjects = regionObjectListFactory.CreateRegionObjectList();
+            primaryObjects = regionObjectListFactory.CreateRegionObjectList();
         }
 
-        public void MarkAsDirty()
+        public void Add(ISimpleGameObject obj)
         {
             primaryLock.EnterWriteLock();
-            isDirty = true;
+            primaryObjects.Add(obj, obj.PrimaryPosition.X, obj.PrimaryPosition.Y);
+            MarkAsDirty();
             primaryLock.ExitWriteLock();
         }
 
@@ -120,18 +103,37 @@ namespace Game.Map
 
         #region Static Util Methods
 
-        private static IRegionLocator regionLocator = new RegionLocator();
+        private readonly IRegionLocator regionLocator;
 
-        public static IRegionLocator RegionLocator
+        public void Remove(ISimpleGameObject obj)
         {
-            get
+            primaryLock.EnterWriteLock();
+            primaryObjects.Remove(obj, obj.PrimaryPosition.X, obj.PrimaryPosition.Y);
+            MarkAsDirty();
+            primaryLock.ExitWriteLock();
+        }
+
+        public void Remove(ISimpleGameObject obj, uint origX, uint origY)
+        {
+            primaryLock.EnterWriteLock();
+            primaryObjects.Remove(obj, origX, origY);
+            MarkAsDirty();
+            primaryLock.ExitWriteLock();
+        }
+
+        public void MarkAsDirty()
+        {
+            primaryLock.EnterWriteLock();
+            isDirty = true;
+
+            if (regionLastUpdated == int.MaxValue)
             {
-                return regionLocator;
+                regionLastUpdated = 0;
             }
-            set
-            {
-                regionLocator = value;
-            }
+
+            regionLastUpdated++;
+
+            primaryLock.ExitWriteLock();
         }
 
         public IEnumerable<ISimpleGameObject> GetPrimaryObjects()
@@ -148,14 +150,11 @@ namespace Game.Map
             {
                 // Players must always be locked first
                 primaryLock.EnterReadLock();
-                var playersInRegion = primaryObjects.OfType<IGameObject>()
-                                             .Select(p => p.City.Owner)
-                                             .Where(p => p != null)
-                                             .Distinct(new LockableComparer())
-                                             .ToArray();
+                var playersInRegion = primaryObjects.ToArray<ILockable>();
+                var currentLastUpdated = regionLastUpdated;
                 primaryLock.ExitReadLock();
 
-                using (var lck = lockerFactory().Lock(playersInRegion))
+                using (lockerFactory().Lock(playersInRegion))
                 {
                     // Enter write lock but give up all locks if we cant in 1 second just to be safe
                     if (!primaryLock.TryEnterWriteLock(1000))
@@ -163,45 +162,43 @@ namespace Game.Map
                         continue;
                     }
 
-                    var lockedPlayersInRegion = primaryObjects.OfType<IGameObject>()
-                                                       .Select(p => p.City.Owner)
-                                                       .Where(p => p != null)
-                                                       .Distinct(new LockableComparer())
-                                                       .ToArray();
+                    // ReSharper disable ConditionIsAlwaysTrueOrFalse
+                    // ReSharper disable HeuristicUnreachableCode
+                    if (!isDirty)
+                    {
+                        primaryLock.ExitWriteLock();
+                        break;
+                    }
+                    // ReSharper restore HeuristicUnreachableCode
+                    // ReSharper restore ConditionIsAlwaysTrueOrFalse
 
-                    lck.SortLocks(lockedPlayersInRegion);
-                    lck.SortLocks(playersInRegion);
-
-                    if (!playersInRegion.SequenceEqual(lockedPlayersInRegion, new LockableComparer()))
+                    if (currentLastUpdated != regionLastUpdated)
                     {
                         primaryLock.ExitWriteLock();
                         continue;
                     }
 
-                    if (isDirty)
+                    using (var ms = new MemoryStream(map.Length))
                     {
-                        using (var ms = new MemoryStream(map.Length))
+                        var bw = new BinaryWriter(ms);
+
+                        // Write map tiles
+                        bw.Write(map);
+
+                        // Write objects
+                        bw.Write(primaryObjects.Count);
+
+                        foreach (ISimpleGameObject obj in primaryObjects)
                         {
-                            var bw = new BinaryWriter(ms);
-
-                            // Write map tiles
-                            bw.Write(map);
-
-                            // Write objects
-                            bw.Write(primaryObjects.Count);
-
-                            foreach (ISimpleGameObject obj in primaryObjects)
-                            {
-                                // TODO: Make this not require a packet
-                                Packet dummyPacket = new Packet();
-                                PacketHelper.AddToPacket(obj, dummyPacket, true);
-                                bw.Write(dummyPacket.GetPayload());
-                            }
-
-                            ms.Position = 0;
-                            objects = ms.ToArray();
-                            isDirty = false;
+                            // TODO: Make this not require a packet
+                            Packet dummyPacket = new Packet();
+                            PacketHelper.AddToPacket(obj, dummyPacket, true);
+                            bw.Write(dummyPacket.GetPayload());
                         }
+
+                        ms.Position = 0;
+                        objects = ms.ToArray();
+                        isDirty = false;
                     }
 
                     primaryLock.ExitWriteLock();
@@ -215,7 +212,7 @@ namespace Game.Map
         public ushort GetTileType(uint x, uint y)
         {
             primaryLock.EnterReadLock();
-            var tileType = BitConverter.ToUInt16(map, GetTileIndex(x, y) * 2);
+            var tileType = BitConverter.ToUInt16(map, regionLocator.GetTileIndex(x, y) * 2);
             primaryLock.ExitReadLock();
             return tileType;
         }
@@ -224,27 +221,12 @@ namespace Game.Map
         {
             primaryLock.EnterWriteLock();
 
-            int idx = GetTileIndex(x, y) * TILE_SIZE;
+            int idx = regionLocator.GetTileIndex(x, y) * TILE_SIZE;
             byte[] ushortArr = BitConverter.GetBytes(tileType);
             Array.Copy(ushortArr, 0, map, idx, ushortArr.Length);
 
-            isDirty = true;
+            MarkAsDirty();
             primaryLock.ExitWriteLock();
-        }
-
-        public static ushort GetRegionIndex(ISimpleGameObject obj)
-        {
-            return regionLocator.GetRegionIndex(obj.PrimaryPosition.X, obj.PrimaryPosition.Y);
-        }
-
-        public static ushort GetRegionIndex(uint x, uint y)
-        {
-            return regionLocator.GetRegionIndex(x, y);
-        }
-
-        public static int GetTileIndex(uint x, uint y)
-        {
-            return regionLocator.GetTileIndex(x, y);
         }
 
         #endregion

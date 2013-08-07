@@ -39,6 +39,8 @@ namespace Game.Map
 
         public const int TILE_SIZE = 2;
 
+        private int regionLastUpdated;
+
         #endregion
 
         public CityRegion(DefaultMultiObjectLock.Factory lockerFactory, IGlobal global)
@@ -66,7 +68,7 @@ namespace Game.Map
             lock (objLock)
             {
                 data.Add(obj);
-                isDirty = true;
+                MarkAsDirty();
             }
 
             if (global.FireEvents)
@@ -91,13 +93,20 @@ namespace Game.Map
                 
                 logger.Info("Removed city region obj: {0}", obj.ToString());
                 
-                isDirty = true;
+                MarkAsDirty();
             }
         }
 
         public void MarkAsDirty()
         {
             isDirty = true;
+
+            if (regionLastUpdated == int.MaxValue)
+            {
+                regionLastUpdated = 0;
+            }
+
+            regionLastUpdated++;            
         }
 
         public void Update(ICityRegionObject obj, uint origX, uint origY)
@@ -110,7 +119,8 @@ namespace Game.Map
                     Remove(obj);
                     Add(obj);
                 }
-                isDirty = true;
+
+                MarkAsDirty();
             }
         }
 
@@ -121,33 +131,36 @@ namespace Game.Map
             {
                 // Players must always be locked first
                 ILockable[] playersInRegion;
+                decimal currentUpdatedVersion;
                 lock (objLock)
                 {
                     playersInRegion = data.ToArray<ILockable>();
+                    currentUpdatedVersion = regionLastUpdated;
                 }
 
-                using (var lck = lockerFactory().Lock(playersInRegion))
+                using (lockerFactory().Lock(playersInRegion))
                 {
-                    // Enter write lock but give up all locks if we cant in 1 second just to be safe
                     lock (objLock)
                     {
-                        var lockedPlayersInRegion = data.ToArray<ILockable>();
-                        lck.SortLocks(lockedPlayersInRegion);
-                        lck.SortLocks(playersInRegion);
+                        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                        // ReSharper disable HeuristicUnreachableCode
+                        if (!isDirty)                                                        
+                        {
+                            break;
+                        }
+                        // ReSharper restore HeuristicUnreachableCode
 
-                        if (!playersInRegion.SequenceEqual(lockedPlayersInRegion, new LockableComparer()))
-                        {                            
+                        if (currentUpdatedVersion != regionLastUpdated)
+                        {
                             continue;
                         }
 
-                        if (isDirty)
+                        using (var ms = new MemoryStream())
                         {
-                            using (var ms = new MemoryStream())
+                            var bw = new BinaryWriter(ms);
+                            bw.Write((ushort)data.Count);
+                            foreach (var obj in data)
                             {
-                                var bw = new BinaryWriter(ms);
-                                bw.Write((ushort)data.Count);
-                                foreach (var obj in data)
-                                {
                                     // TODO: Remove this at some point.. added this to check an existing issue
                                     var simpleObj = obj as ISimpleGameObject;
                                     if (simpleObj != null && !simpleObj.InWorld)
@@ -156,24 +169,23 @@ namespace Game.Map
                                         throw new Exception("Object not being removed properly...");
                                     }
 
-                                    bw.Write((byte)obj.CityRegionType);
-                                    bw.Write(obj.CityRegionRelX);
-                                    bw.Write(obj.CityRegionRelY);
-                                    bw.Write(obj.CityRegionGroupId);
-                                    bw.Write(obj.CityRegionObjectId);
+                                bw.Write((byte)obj.CityRegionType);
+                                bw.Write(obj.CityRegionRelX);
+                                bw.Write(obj.CityRegionRelY);
+                                bw.Write(obj.CityRegionGroupId);
+                                bw.Write(obj.CityRegionObjectId);
 
-                                    bw.Write(obj.GetCityRegionObjectBytes());
-                                }
-
-                                isDirty = false;
-
-                                ms.Position = 0;
-                                objects = ms.ToArray();
+                                bw.Write(obj.GetCityRegionObjectBytes());
                             }
-                        }
 
-                        break;
-                    }                    
+                            isDirty = false;
+
+                            ms.Position = 0;
+                            objects = ms.ToArray();
+                        }
+                    }
+
+                    break;
                 }
             }
 

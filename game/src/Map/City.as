@@ -46,17 +46,29 @@ package src.Map {
 		public var troops: TroopManager;
 		public var objects: BinaryList = new BinaryList(CityObject.sortOnId, CityObject.compareObjId);
 		public var template: UnitTemplateManager = new UnitTemplateManager();
+        public var primaryPosition: Position;
 
 		public function get MainBuilding() : CityObject {
 			return objects.get(1);
 		}
 
-		public function City(id: int, name: String, radius: int, resources: LazyResources, attackPoint: int, defensePoint: int, value: int, inBattle: Boolean, hideNewUnits : Boolean, ap: Number) {
+		public function City(id: int,
+                             name: String,
+                             position: Position,
+                             radius: int,
+                             resources: LazyResources,
+                             attackPoint: int,
+                             defensePoint: int,
+                             value: int,
+                             inBattle: Boolean,
+                             hideNewUnits : Boolean,
+                             ap: Number) {
 			this.id = id;
 			this.resources = resources;
 			this.radius = radius;
 			this.ap = ap;
 			this.name = name;
+            this.primaryPosition = position;
 			this.attackPoint = attackPoint;
 			this.defensePoint = defensePoint;
 			this.inBattle = inBattle;

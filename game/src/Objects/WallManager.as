@@ -362,7 +362,13 @@
 				return;
 			}
 
-			var pos: Position = parent.primaryPosition.toPosition();
+            var pos: Position = parent.primaryPosition.toPosition();
+
+            // For city wqlls just manually center it.. It's a bit ugly but we dont
+            // have the city info for the SImpleGameObject so we cant easily get the real city x/y at the moment
+            if (parent.size == 3) {
+                pos = pos.right();
+            }
 
 			var typeHash: int = wallTypeHash(pos.x, pos.y, radius);
 

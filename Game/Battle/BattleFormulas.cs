@@ -35,7 +35,7 @@ namespace Game.Battle
             this.unitFactory = unitFactory;
         }        
 
-        public virtual decimal GetDmgWithMissChance(int attackersUpkeep, int defendersUpkeep, decimal dmg)
+        public virtual decimal GetDmgWithMissChance(int attackersUpkeep, int defendersUpkeep, decimal dmg, IBattleRandom random)
         {
             double delta = Math.Max(0, (double)attackersUpkeep / defendersUpkeep);
             double effectiveness = attackersUpkeep > 200 ? 1 : (double)attackersUpkeep / 200;
@@ -78,7 +78,7 @@ namespace Game.Battle
                 missChance = (int)(60 * effectiveness);
             }
 
-            var rand = (int)(Config.Random.NextDouble() * 100);
+            var rand = (int)(random.NextDouble() * 100);
 
             if (missChance <= 0 || rand > missChance)
             {
@@ -251,11 +251,6 @@ namespace Game.Battle
             }
 
             return --stamina;
-        }
-
-        public virtual bool IsAttackMissed(byte stealth)
-        {
-            return 100 - stealth < Config.Random.Next(0, 100);
         }
 
         public virtual bool UnitStatModCheck(IBaseBattleStats stats, TroopBattleGroup group, string value)

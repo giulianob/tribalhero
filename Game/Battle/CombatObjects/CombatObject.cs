@@ -101,6 +101,7 @@ namespace Game.Battle.CombatObjects
 
         public abstract void CalcActualDmgToBeTaken(ICombatList attackers,
                                                     ICombatList defenders,
+                                                    IBattleRandom random,
                                                     decimal baseDmg,
                                                     int attackIndex,
                                                     out decimal actualDmg);

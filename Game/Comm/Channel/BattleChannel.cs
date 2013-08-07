@@ -30,10 +30,7 @@ namespace Game.Comm.Channel
             battleManager.ExitTurn += BattleManagerOnExitTurn;
         }
 
-        private void BattleManagerOnExitTurn(IBattleManager battle,
-                                             ICombatList attackers,
-                                             ICombatList defenders,
-                                             int turn)
+        private void BattleManagerOnExitTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, uint round, uint turn)
         {
             var properties = battle.ListProperties();
             if (properties.Count == 0)

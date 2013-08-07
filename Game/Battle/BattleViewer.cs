@@ -93,7 +93,7 @@ namespace Game.Battle
             PrintCombatobject(obj);
         }
 
-        private void BattleExitTurn(IBattleManager battle, ICombatList atk, ICombatList def, int turn)
+        private void BattleExitTurn(IBattleManager battle, ICombatList atk, ICombatList def, uint round, uint turn)
         {
             Append("Turn[" + turn + "] Ended with atk_upkeep[" + atk.Upkeep + "] def_upkeep[" + def.Upkeep + "]");
             Append("Turn[" + turn + "] Ended with atk_upkeep_active[" + atk.UpkeepNotParticipated(currentRound) + "] def_upkeep_active[" + def.UpkeepNotParticipated(currentRound) + "]\n");

@@ -29,7 +29,7 @@ namespace Testing.BattleTests
         [Theory, PropertyData("TestRandomness")]
         public void TestRandomessLessThanAttackerUpkeep(int randomness, int attackerUpkeep, int defenderUpkeep, BattleManager.BattleSide side)
         {
-            var random = Substitute.For<Random>();
+            var random = Substitute.For<IBattleRandom>();
             random.Next(Arg.Any<int>()).Returns(randomness);
             BattleOrder battleOrder = new BattleOrder(random);
 

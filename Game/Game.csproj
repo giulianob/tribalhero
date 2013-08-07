@@ -125,6 +125,7 @@
     <Compile Include="Battle\BattleLocation.cs" />
     <Compile Include="Battle\BattleManagerFactory.cs" />
     <Compile Include="Battle\BattleManagerGate.cs" />
+    <Compile Include="Battle\BattleRandom.cs" />
     <Compile Include="Battle\CombatGroups\CityOffensiveCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\CityDefensiveCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\CombatGroup.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="Battle\IBattleManagerFactory.cs" />
     <Compile Include="Battle\IBattleOrder.cs" />
     <Compile Include="Battle\ICombatList.cs" />
+    <Compile Include="Battle\IBattleRandom.cs" />
     <Compile Include="Battle\IStaminaMonitorFactory.cs" />
     <Compile Include="Battle\PublicBattleManager.cs" />
     <Compile Include="Battle\Reporting\BattleReport.cs" />
@@ -492,6 +494,7 @@
     <Compile Include="Util\Ninject\FactoryMethodNameProvider.cs" />
     <Compile Include="Util\Ninject\FactoryReturns.cs" />
     <Compile Include="Util\NumberExtensions.cs" />
+    <Compile Include="Util\PersistableRandom.cs" />
     <Compile Include="Util\UnixDateTime.cs" />
     <Compile Include="Util\XMLSerializer.cs" />
   </ItemGroup>

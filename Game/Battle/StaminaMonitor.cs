@@ -97,7 +97,7 @@ namespace Game.Battle
             }
         }
 
-        private void BattleExitTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, int turn)
+        private void BattleExitTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, uint round, uint turn)
         {
             // Remove troop from battle if he is out of stamina, we need to check here because he might have lost
             // some stamina after knocking down a building

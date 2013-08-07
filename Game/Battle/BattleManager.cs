@@ -32,6 +32,7 @@ namespace Game.Battle
         public const string DB_TABLE = "battle_managers";
 
         private readonly BattleFormulas battleFormulas;
+        private readonly IBattleRandom battleRandom;
 
         private readonly object battleLock = new object();
 
@@ -53,7 +54,8 @@ namespace Game.Battle
                              IBattleReport battleReport,
                              ICombatListFactory combatListFactory,
                              BattleFormulas battleFormulas,
-                             IBattleOrder battlerOrder)
+                             IBattleOrder battlerOrder,
+                             IBattleRandom battleRandom)
         {
 
             groupIdGen = new LargeIdGenerator(uint.MaxValue);
@@ -71,6 +73,7 @@ namespace Game.Battle
             this.rewardStrategy = rewardStrategy;
             this.dbManager = dbManager;
             this.battleFormulas = battleFormulas;
+            this.battleRandom = battleRandom;
             BattleOrder = battlerOrder;
         }
 
@@ -481,6 +484,8 @@ namespace Game.Battle
 
                 #endregion
 
+                battleRandom.UpdateSeed(Round, Turn);
+
                 int attackIndex = 0;
                 foreach (var defender in currentDefenders)
                 {
@@ -514,7 +519,7 @@ namespace Game.Battle
 
                 dbManager.Save(attackerObject);
 
-                ExitTurn(this, Attackers, Defenders, (int)Turn++);
+                ExitTurn(this, Attackers, Defenders, Round, Turn++);
 
                 if (!IsBattleValid())
                 {
@@ -607,6 +612,7 @@ namespace Game.Battle
             decimal actualDmg;
             target.CombatObject.CalcActualDmgToBeTaken(offensiveCombatList,
                                                        defensiveCombatList,
+                                                       battleRandom,
                                                        dmg,
                                                        attackIndex,
                                                        out actualDmg);
@@ -735,7 +741,7 @@ namespace Game.Battle
 
         public delegate void OnRound(IBattleManager battle, ICombatList attackers, ICombatList defenders, uint round);
 
-        public delegate void OnTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, int turn);
+        public delegate void OnTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, uint round, uint turn);
 
         public delegate void OnUnitCountChange(
                 IBattleManager battle,
@@ -769,6 +775,11 @@ namespace Game.Battle
         ///     Fired when a new round starts
         /// </summary>
         public event OnRound EnterRound = delegate { };
+
+        /// <summary>
+        ///     Fired everytime a unit enters its turn
+        /// </summary>
+        public event OnTurn EnterTurn = delegate { };
 
         /// <summary>
         ///     Fired everytime a unit exits its turn

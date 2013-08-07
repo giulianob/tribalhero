@@ -17,9 +17,9 @@ namespace Game.Battle
     /// </summary>
     public class BattleOrder : IBattleOrder
     {
-        private readonly Random random;
+        private readonly IBattleRandom random;
 
-        public BattleOrder(Random random)
+        public BattleOrder(IBattleRandom random)
         {
             this.random = random;
         }

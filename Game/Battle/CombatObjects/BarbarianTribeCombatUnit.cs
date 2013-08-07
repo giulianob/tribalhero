@@ -235,12 +235,13 @@ namespace Game.Battle.CombatObjects
 
         public override void CalcActualDmgToBeTaken(ICombatList attackers,
                                                     ICombatList defenders,
+                                                    IBattleRandom random,
                                                     decimal baseDmg,
                                                     int attackIndex,
                                                     out decimal actualDmg)
         {
             // Miss chance
-            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg);
+            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg, random);
         }
 
         public override void TakeDamage(decimal dmg, out Resource returning, out int attackPoints)

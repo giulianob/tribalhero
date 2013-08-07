@@ -82,6 +82,11 @@ namespace Game.Battle
         event BattleManager.OnRound EnterRound;
 
         /// <summary>
+        ///     Fired everytime a unit enters its turn
+        /// </summary>
+        event BattleManager.OnTurn EnterTurn;
+
+        /// <summary>
         ///     Fired everytime a unit exits its turn
         /// </summary>
         event BattleManager.OnTurn ExitTurn;

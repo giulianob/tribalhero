@@ -13,6 +13,8 @@ namespace Game.Map
 
         public CityRegionManager(int regionCount, ICityRegionFactory cityRegionFactory)
         {
+            logger.Info("Creating city regions");
+
             cityRegions = new CityRegion[regionCount];
 
             for (int regionId = 0; regionId < regionCount; ++regionId)

@@ -73,7 +73,7 @@ namespace Game.Map
 
             if (global.FireEvents)
             {
-                logger.Info("Added city region obj: {0}", obj.ToString());
+                logger.Debug("Added city region obj: {0}", obj.ToString());
             }
 
             return true;
@@ -91,7 +91,7 @@ namespace Game.Map
                     throw new Exception("Tried to remove obj from wrong region");
                 }
                 
-                logger.Info("Removed city region obj: {0}", obj.ToString());
+                logger.Debug("Removed city region obj: {0}", obj.ToString());
                 
                 MarkAsDirty();
             }

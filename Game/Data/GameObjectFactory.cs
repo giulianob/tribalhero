@@ -14,11 +14,15 @@ namespace Game.Data
 
         private readonly ITechnologyManagerFactory technologyManagerFactory;
 
+        private readonly IDbManager dbManager;
+
         public GameObjectFactory(IKernel kernel, IStructureCsvFactory structureCsvFactory, ITechnologyManagerFactory technologyManagerFactory)
         {
             this.kernel = kernel;
             this.structureCsvFactory = structureCsvFactory;
             this.technologyManagerFactory = technologyManagerFactory;
+            
+            dbManager = kernel.Get<IDbManager>();
         }
 
         public IStructure CreateStructure(uint cityId, uint structureId, ushort type, byte level, uint x, uint y)
@@ -33,7 +37,7 @@ namespace Game.Data
                                           y,
                                           technologyManager,
                                           structureProperties,
-                                          kernel.Get<IDbManager>());
+                                          dbManager);
             
             return structure;
         }

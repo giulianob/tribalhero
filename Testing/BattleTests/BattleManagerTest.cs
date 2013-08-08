@@ -302,6 +302,20 @@ namespace Testing.BattleTests
 
             sut.MockDefenders.Add(defenderGroup);
 
+            // ReSharper disable RedundantAssignment
+            var battleSide = BattleManager.BattleSide.Attack;
+            ICombatObject nullOutObject = null;
+            ICombatGroup nullOutGroup = null;
+            // ReSharper restore RedundantAssignment
+            sut.MockBattleOrder.Setup(
+                              m =>
+                              m.NextObject(It.IsAny<uint>(),
+                                           It.IsAny<ICombatList>(),
+                                           It.IsAny<ICombatList>(),
+                                           out nullOutObject,
+                                           out nullOutGroup,
+                                           out battleSide)).Returns(true);
+
             var enterBattleRaised = false;
             battle.EnterBattle += delegate { enterBattleRaised = true; };
             var exitBattleRaised = false;
@@ -332,6 +346,19 @@ namespace Testing.BattleTests
                                                               new BattleLocation(BattleLocationType.City, 100),
                                                               new BattleOwner(BattleOwnerType.City, 200),
                                                               delegate { });
+            // ReSharper disable RedundantAssignment
+            var battleSide = BattleManager.BattleSide.Attack;
+            ICombatObject nullOutObject = null;
+            ICombatGroup nullOutGroup = null;
+            // ReSharper restore RedundantAssignment
+            sut.MockBattleOrder.Setup(
+                              m =>
+                              m.NextObject(It.IsAny<uint>(),
+                                           It.IsAny<ICombatList>(),
+                                           It.IsAny<ICombatList>(),
+                                           out nullOutObject,
+                                           out nullOutGroup,
+                                           out battleSide)).Returns(true);
 
             var enterBattleRaised = false;
             battle.EnterBattle += delegate { enterBattleRaised = true; };
@@ -551,6 +578,14 @@ namespace Testing.BattleTests
                                     new CombatList.Target {CombatObject = attacker.Object, Group = attackerGroup}
                             }
             });
+            var attackerObject = attacker.Object;
+            var attackerBattleSide = BattleManager.BattleSide.Defense;
+            sut.MockBattleOrder.Setup(m => m.NextObject(It.IsAny<uint>(),
+                    It.IsAny<ICombatList>(),
+                    It.IsAny<ICombatList>(),
+                    out attackerObject,
+                    out defenderGroup,
+                    out attackerBattleSide)).Returns(true);
 
             var skippedAttackerCalled = false;
             battle.SkippedAttacker += (manager, side, group, o) =>
@@ -665,8 +700,7 @@ namespace Testing.BattleTests
             var attackerBattleSide = BattleManager.BattleSide.Attack;
             var attackerObject = attacker.Object;
             // ReSharper restore RedundantAssignment
-            var battleOrder = new Mock<IBattleOrder>();
-            battleOrder.Setup(
+            sut.MockBattleOrder.Setup(
                                        m =>
                                        m.NextObject(It.IsAny<uint>(),
                                                     It.IsAny<ICombatList>(),
@@ -750,8 +784,7 @@ namespace Testing.BattleTests
             var attackerBattleSide = BattleManager.BattleSide.Attack;
             var attackerOutObject = attacker.Object;
             // ReSharper restore RedundantAssignment            
-            var battleOrder = new Mock<IBattleOrder>();
-            battleOrder.Setup(m => m.NextObject(It.IsAny<uint>(),
+            sut.MockBattleOrder.Setup(m => m.NextObject(It.IsAny<uint>(),
                     It.IsAny<ICombatList>(),
                     It.IsAny<ICombatList>(),
                     out attackerOutObject,
@@ -845,8 +878,7 @@ namespace Testing.BattleTests
             var defenderBattleSide = BattleManager.BattleSide.Defense;
             var defenderOutObject = defender.Object;
             // ReSharper restore RedundantAssignment
-            var battleOrder = new Mock<IBattleOrder>();
-            battleOrder.Setup(
+            sut.MockBattleOrder.Setup(
                               m =>
                               m.NextObject(It.IsAny<uint>(),
                                            It.IsAny<ICombatList>(),

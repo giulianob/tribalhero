@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Game.Database;
 using Ninject.Extensions.Logging;
 using Persistance;
 

@@ -16,6 +16,7 @@ using Game.Data.Forest;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
+using Game.Database;
 using Game.Logic;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -64,7 +65,8 @@ namespace Game
             Bind<IChannel>().To<Channel>().InSingletonScope();
             Bind<IPolicyServer>().To<PolicyServer>().InSingletonScope();
             Bind<ITcpServer>().To<TcpServer>().InSingletonScope();
-            Bind<TServer>().ToMethod(c => new TSimpleServer(new Notification.Processor(c.Kernel.Get<NotificationHandler>()), new TServerSocket(46000)));
+            Bind<TServer>().ToMethod(c => new TSimpleServer(new Notification.Processor(c.Kernel.Get<NotificationHandler>()), new TServerSocket(46000)))
+                           .InSingletonScope();
             Bind<IProtocol>().To<PacketProtocol>();
 
             Bind<Chat>().ToSelf().InSingletonScope();
@@ -83,12 +85,13 @@ namespace Game
 
             #region Locking
 
-            Bind<DefaultMultiObjectLock.Factory>().ToMethod(c => () => new TransactionalMultiObjectLock(new DefaultMultiObjectLock(), c.Kernel.Get<IDbManager>()));
+            Bind<DefaultMultiObjectLock.Factory>().ToMethod(c => () => new TransactionalMultiObjectLock(new DefaultMultiObjectLock(),
+                                                                                                        c.Kernel.Get<IDbManager>()))
+                                                  .InSingletonScope();
 
             Bind<ILocker>().ToMethod(c =>
             {
-                DefaultMultiObjectLock.Factory multiObjectLockFactory =
-                        () => new TransactionalMultiObjectLock(new DefaultMultiObjectLock(), c.Kernel.Get<IDbManager>());
+                DefaultMultiObjectLock.Factory multiObjectLockFactory = () => new TransactionalMultiObjectLock(new DefaultMultiObjectLock(), c.Kernel.Get<IDbManager>());
 
                 return new DefaultLocker(multiObjectLockFactory,
                                          () => new CallbackLock(multiObjectLockFactory),
@@ -127,18 +130,7 @@ namespace Game
 
             #region Database
 
-            Bind<IDbManager>()
-                    .ToMethod(
-                              context =>
-                              new MySqlDbManager(new Log4NetLoggerFactory().GetLogger(typeof(IDbManager)),
-                                                 Config.database_host,
-                                                 Config.database_username,
-                                                 Config.database_password,
-                                                 Config.database_database,
-                                                 Config.database_timeout,
-                                                 Config.database_max_connections,
-                                                 Config.database_verbose))
-                    .InSingletonScope();
+            Bind<IDbManager>().ToProvider(new DbManagerProvider()).InSingletonScope();
 
             #endregion
 
@@ -168,7 +160,8 @@ namespace Game
                                                                                 c.Kernel.Get<ResourcesCommandLineModule>(),
                                                                                 c.Kernel.Get<TribeCommandLineModule>(),
                                                                                 c.Kernel.Get<StrongholdCommandLineModule>(),
-                                                                                c.Kernel.Get<RegionCommandsLineModule>())).InSingletonScope();
+                                                                                c.Kernel.Get<RegionCommandsLineModule>()))
+                                        .InSingletonScope();
 
             Bind<Processor>().ToMethod(c => new Processor(c.Kernel.Get<AssignmentCommandsModule>(),
                                                           c.Kernel.Get<BattleCommandsModule>(),
@@ -193,7 +186,8 @@ namespace Game
             #region Utils
 
             Bind<IScheduler>().To<ThreadedScheduler>().InSingletonScope();
-            Bind<ITileLocator>().ToMethod(c => new TileLocator(new Random().Next));
+            Bind<ITileLocator>().To<TileLocator>();
+            Bind<GetRandom>().ToMethod(c => new Random().Next);
             Bind<Procedure>().ToSelf().InSingletonScope();
             Bind<BattleProcedure>().ToSelf().InSingletonScope();
             Bind<StrongholdBattleProcedure>().ToSelf().InSingletonScope();

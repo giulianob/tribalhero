@@ -43,7 +43,7 @@ namespace Game.Map
             var simpleObj = obj as ISimpleGameObject;
             if (simpleObj != null && !simpleObj.InWorld)
             {
-                logger.Info("Removed update for obj that is not in world: groupId[{0}] objectId[{1}] type[{2}] currentX[{3}] currentY[{4}] origX[{5}] origY[{6}]",
+                logger.Debug("Removed update for obj that is not in world: groupId[{0}] objectId[{1}] type[{2}] currentX[{3}] currentY[{4}] origX[{5}] origY[{6}]",
                          obj.CityRegionGroupId,
                          obj.CityRegionObjectId,
                          obj.CityRegionType,
@@ -60,7 +60,7 @@ namespace Game.Map
 
             if (oldCityRegionId == newCityRegionId)
             {
-                logger.Info("Updated city region obj: groupId[{0}] objectId[{1}] type[{2}] regionId[{3}] currentX[{4}] currentY[{5}] origX[{6}] origY[{7}]",
+                logger.Debug("Updated city region obj: groupId[{0}] objectId[{1}] type[{2}] regionId[{3}] currentX[{4}] currentY[{5}] origX[{6}] origY[{7}]",
                          obj.CityRegionGroupId,
                          obj.CityRegionObjectId,
                          obj.CityRegionType,
@@ -74,7 +74,7 @@ namespace Game.Map
             }
             else
             {
-                logger.Info("Moved city region obj: groupId[{0}] objectId[{1}] type[{2}] oldRegionId[{3}] newRegionId[{4}] currentX[{5}] currentY[{6}] origX[{7}] origY[{8}]",
+                logger.Debug("Moved city region obj: groupId[{0}] objectId[{1}] type[{2}] oldRegionId[{3}] newRegionId[{4}] currentX[{5}] currentY[{6}] origX[{7}] origY[{8}]",
                          obj.CityRegionGroupId,
                          obj.CityRegionObjectId,
                          obj.CityRegionType,

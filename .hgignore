@@ -16,3 +16,5 @@ glob:output/
 syntax: glob
 ratio.csv
 NDependOut/
+*.vspx
+*.psess

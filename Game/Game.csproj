@@ -224,6 +224,7 @@
     <Compile Include="Comm\Thrift\PlayerUnreadCount.cs" />
     <Compile Include="Database\DbLoader.cs" />
     <Compile Include="Database\DbLoaderActionFactory.cs" />
+    <Compile Include="Database\DbManagerProvider.cs" />
     <Compile Include="Database\Persistance.cs" />
     <Compile Include="Data\Achievement.cs" />
     <Compile Include="Data\AchievementList.cs" />

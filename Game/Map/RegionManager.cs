@@ -364,6 +364,8 @@ namespace Game.Map
                          uint cityRegionWidth,
                          uint cityRegionHeight)
         {
+            logger.Info("Loading map...");
+
             if (mapStream == null)
             {
                 throw new Exception("Missing map");
@@ -430,8 +432,7 @@ namespace Game.Map
                 AddRegion(regionFactory.CreateRegion(data));
             }
 
-            logger.Info(String.Format("map file length[{0}] position[{1}]", mapStream.Length, mapStream.Position));
-            logger.Info(regions.Count + " created.");
+            logger.Info(String.Format("Loaded map file length[{0}] position[{1}] regions[{2}]", mapStream.Length, mapStream.Position, regions.Count));            
 
             // creating city regions;
             column = (int)(inWorldWidth / cityRegionWidth);

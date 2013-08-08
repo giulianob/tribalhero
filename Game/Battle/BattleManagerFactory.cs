@@ -66,7 +66,7 @@ namespace Game.Battle
                                              kernel.Get<IBattleReport>(),
                                              kernel.Get<ICombatListFactory>(),
                                              kernel.Get<BattleFormulas>(),
-                                             kernel.Get<IBattleOrder>(),
+                                             new BattleOrder(battleRandom),
                                              battleRandom);
 
             new BattleChannel(bm);
@@ -112,7 +112,7 @@ namespace Game.Battle
                                              kernel.Get<IBattleReport>(),
                                              kernel.Get<ICombatListFactory>(),
                                              kernel.Get<BattleFormulas>(),
-                                             kernel.Get<IBattleOrder>(),
+                                             new BattleOrder(battleRandom),
                                              battleRandom);
 
             new BattleChannel(bm);
@@ -127,7 +127,7 @@ namespace Game.Battle
                                                                 BattleOwner battleOwner,
                                                                 IStronghold stronghold)
         {
-            var battle = new BattleRandom(battleId);
+            var battleRandom = new BattleRandom(battleId);
 
             var bm = new BattleManagerGate(battleId,
                                            stronghold,
@@ -138,8 +138,8 @@ namespace Game.Battle
                                            new BattleReport(new NullBattleReportWriter()),
                                            kernel.Get<ICombatListFactory>(),
                                            kernel.Get<BattleFormulas>(),
-                                           kernel.Get<IBattleOrder>(),
-                                           battle);
+                                           new BattleOrder(battleRandom),
+                                           battleRandom);
 
             new BattleChannel(bm);
 

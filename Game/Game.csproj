@@ -494,7 +494,6 @@
     <Compile Include="Util\Ninject\FactoryMethodNameProvider.cs" />
     <Compile Include="Util\Ninject\FactoryReturns.cs" />
     <Compile Include="Util\NumberExtensions.cs" />
-    <Compile Include="Util\PersistableRandom.cs" />
     <Compile Include="Util\UnixDateTime.cs" />
     <Compile Include="Util\XMLSerializer.cs" />
   </ItemGroup>

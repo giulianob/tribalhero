@@ -63,7 +63,7 @@
 			GameLookAndFeel.changeClass(lblLvl, "Tooltip.text");
 			
 			var mapPos: Position = TileLocator.getScreenMinimapToMapCoord(obj.x, obj.y);
-			var distance: int = TileLocator.distance(mapPos.x, mapPos.y, 1, Global.gameContainer.selectedCity.MainBuilding.x, Global.gameContainer.selectedCity.MainBuilding.y, 1);
+			var distance: int = TileLocator.distance(mapPos.x, mapPos.y, 1, Global.gameContainer.selectedCity.primaryPosition.x, Global.gameContainer.selectedCity.primaryPosition.y, 1);
 			
 			var lblDistance: JLabel = new JLabel(distance + " tiles away", null, AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblDistance, "Tooltip.italicsText");			
@@ -88,7 +88,7 @@
 			GameLookAndFeel.changeClass(lblLvl, "Tooltip.text");
 			
 			var mapPos: Position = TileLocator.getScreenMinimapToMapCoord(obj.x, obj.y);
-			var distance: int = TileLocator.distance(mapPos.x, mapPos.y, 1, Global.gameContainer.selectedCity.MainBuilding.x, Global.gameContainer.selectedCity.MainBuilding.y, 1);
+			var distance: int = TileLocator.distance(mapPos.x, mapPos.y, 1, Global.gameContainer.selectedCity.primaryPosition.x, Global.gameContainer.selectedCity.primaryPosition.y, 1);
 			
 			var lblDistance: JLabel = new JLabel(distance + " tiles away", null, AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblDistance, "Tooltip.italicsText");			
@@ -119,7 +119,7 @@
 			GameLookAndFeel.changeClass(lblLvl, "Tooltip.text");
 			
 			var mapPos: Position = TileLocator.getScreenMinimapToMapCoord(obj.x, obj.y);
-			var distance: int = TileLocator.distance(mapPos.x, mapPos.y, 1, Global.gameContainer.selectedCity.MainBuilding.x, Global.gameContainer.selectedCity.MainBuilding.y, 1);
+			var distance: int = TileLocator.distance(mapPos.x, mapPos.y, 1, Global.gameContainer.selectedCity.primaryPosition.x, Global.gameContainer.selectedCity.primaryPosition.y, 1);
 			
 			var lblDistance: JLabel = new JLabel(distance + " tiles away", null, AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblDistance, "Tooltip.italicsText");			
@@ -149,7 +149,7 @@
 			GameLookAndFeel.changeClass(lblName, "header");
 			
 			var mapPos: Position = TileLocator.getScreenMinimapToMapCoord(obj.x, obj.y);
-			var distance: int = TileLocator.distance(mapPos.x, mapPos.y, 1, Global.gameContainer.selectedCity.MainBuilding.x, Global.gameContainer.selectedCity.MainBuilding.y, 1);
+			var distance: int = TileLocator.distance(mapPos.x, mapPos.y, 1, Global.gameContainer.selectedCity.primaryPosition.x, Global.gameContainer.selectedCity.primaryPosition.y, 1);
 			
 			var lblDistance: JLabel = new JLabel(distance + " tiles away", null, AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblDistance, "Tooltip.italicsText");			
@@ -176,7 +176,7 @@
 			GameLookAndFeel.changeClass(lblCampsRemain, "Tooltip.text");
 
 			var mapPos: Position = TileLocator.getScreenMinimapToMapCoord(obj.x, obj.y);
-			var distance: int = TileLocator.distance(mapPos.x, mapPos.y, 1, Global.gameContainer.selectedCity.MainBuilding.x, Global.gameContainer.selectedCity.MainBuilding.y, 1);
+			var distance: int = TileLocator.distance(mapPos.x, mapPos.y, 1, Global.gameContainer.selectedCity.primaryPosition.x, Global.gameContainer.selectedCity.primaryPosition.y, 1);
 			
 			var lblDistance: JLabel = new JLabel(distance + " tiles away", null, AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblDistance, "Tooltip.italicsText");			

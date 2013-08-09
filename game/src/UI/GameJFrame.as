@@ -1,5 +1,7 @@
 ﻿package src.UI
 {
+    import com.greensock.TweenMax;
+
     import flash.events.Event;
     import flash.events.KeyboardEvent;
     import flash.events.MouseEvent;
@@ -47,18 +49,22 @@
 			getTitleBar().setRestoreButton(null);
 			getTitleBar().setIconifiedButton(null);	
 		}		
-		
-		
+
 		override public function dispose():void
 		{
 			super.dispose();
 			if (onDispose != null) onDispose();
 		}
-		
+
 		public function resizeToContents():void
 		{
 			setPreferredHeight(Math.min(getHeight(), Constants.screenH));
 			pack();
 		}
+
+        override public function show():void {
+            super.show();
+            TweenMax.from(this, 0.55, { immediateRender: true, alpha: 0 });
+        }
 	}
 }

@@ -7,6 +7,8 @@
     import flash.geom.Matrix;
     import flash.utils.getDefinitionByName;
 
+    import src.Assets;
+
     import src.Map.Map;
     import src.Objects.BarbarianTribe;
     import src.Objects.Forest;
@@ -179,7 +181,7 @@
 		public static function getNewCityPlaceholderSprite() : DisplayObjectContainer
 		{
 			var obj: Sprite = new Sprite();
-			obj.addChild(getIcon("DEFAULT_BUILDING_ANIM"));
+			obj.addChild(Assets.getInstance("DEFAULT_BUILDING_1"));
 			return obj;
 		}
 		

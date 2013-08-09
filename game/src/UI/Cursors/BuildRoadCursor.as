@@ -41,7 +41,7 @@ package src.UI.Cursors {
 
 			buildableArea = new GroundCallbackCircle(city.radius - 1, validateTileCallback);
 			buildableArea.alpha = 0.3;
-			var point: ScreenPosition = city.MainBuilding.primaryPosition.toScreenPosition();
+			var point: ScreenPosition = city.primaryPosition.toScreenPosition();
 			buildableArea.objX = point.x; 
 			buildableArea.objY = point.y;
 			
@@ -160,8 +160,8 @@ package src.UI.Cursors {
 		}
 
         private function validateTileCallback(x: int, y: int): * {
-            // Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
-			var point: ScreenPosition = city.MainBuilding.primaryPosition.toScreenPosition();
+            // Get the screen position of the city center then we'll add the current tile x and y to get the point of this tile on the screen
+			var point: ScreenPosition = city.primaryPosition.toScreenPosition();
 
 			if (!validateTile(new ScreenPosition(point.x + x, point.y + y))) return false;
 
@@ -174,7 +174,7 @@ package src.UI.Cursors {
 			var mapObjPos: Position = objPosition.toPosition();
 
 			// Check if cursor is inside city walls
-			if (city != null && TileLocator.distance(city.MainBuilding.x, city.MainBuilding.y, 1, mapObjPos.x, mapObjPos.y, 1) >= city.radius) {
+			if (city != null && TileLocator.distance(city.primaryPosition.x, city.primaryPosition.y, 1, mapObjPos.x, mapObjPos.y, 1) >= city.radius) {
 				hideCursors();
 			}
 			// Perform other validations

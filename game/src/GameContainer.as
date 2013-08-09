@@ -1,4 +1,6 @@
 ﻿package src {
+    import com.greensock.TweenMax;
+
     import flash.display.*;
     import flash.events.*;
     import flash.geom.*;
@@ -329,7 +331,7 @@
 		public function onGoToCity(e: Event) : void {
 			if (selectedCity == null) return;
 
-			var pt: ScreenPosition = TileLocator.getScreenCoord(selectedCity.MainBuilding.primaryPosition);
+			var pt: ScreenPosition = TileLocator.getScreenCoord(selectedCity.primaryPosition);
 			Global.gameContainer.map.camera.ScrollToCenter(pt);
 		}
 
@@ -343,24 +345,34 @@
 		}
 		
 		public function onZoomIn(e: Event) : void {		
-			if (camera.getZoomFactor() >= 0.99 || minimapZoomed) return;
-			var center: ScreenPosition = camera.GetCenter();
-			camera.setZoomFactor(Math.min(1, camera.getZoomFactor() + 0.1));
-			map.scrollRate = camera.getZoomFactorOverOne();
-			mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();
-			miniMap.redraw();
-			camera.ScrollToCenter(center);
+			if (camera.getZoomFactor() >= 1 || minimapZoomed) return;
+
+            var center: ScreenPosition = camera.GetCenter();
+            TweenMax.to(camera, 0.2, {
+                zoomFactor: Math.min(1, camera.zoomFactor + 0.1),
+                onUpdate: function(): void {
+                    map.scrollRate = camera.getZoomFactorOverOne();
+                    miniMap.redraw();
+                    mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();
+                    camera.ScrollToCenter(center);
+                }
+            });
 		}		
 		
 		public function onZoomOut(e: Event) : void {
-			if (camera.getZoomFactor() <= 0.61 || minimapZoomed) return;
-			var center: ScreenPosition = camera.GetCenter();
-			camera.setZoomFactor(Math.max(0.6, camera.getZoomFactor() - 0.1));
-			map.scrollRate = camera.getZoomFactorOverOne();
-			mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();			
-			miniMap.redraw();
-			camera.ScrollToCenter(center);
-		}			
+			if (camera.getZoomFactor() <= 0.5 || minimapZoomed) return;
+
+            var center: ScreenPosition = camera.GetCenter();
+            TweenMax.to(camera, 0.2, {
+                zoomFactor: Math.max(0.5, camera.zoomFactor - 0.1),
+                onUpdate: function(): void {
+                    map.scrollRate = camera.getZoomFactorOverOne();
+                    miniMap.redraw();
+                    mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();
+                    camera.ScrollToCenter(center);
+                }
+            });
+		}
 
 		public function onZoomIntoMinimap(e: Event):void {
 			zoomIntoMinimap(!minimapZoomed);
@@ -546,7 +558,7 @@
 
 			// Scroll to city center
 			if (selectedCity) {
-				var pt: ScreenPosition = TileLocator.getScreenCoord(selectedCity.MainBuilding.primaryPosition);
+				var pt: ScreenPosition = TileLocator.getScreenCoord(selectedCity.primaryPosition);
 				Global.gameContainer.camera.ScrollToCenter(pt);
 				miniMap.setCityPointer(selectedCity.name);
 			}
@@ -674,7 +686,7 @@
 		
 		public function addCityToUI(city: City): void {
 			(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String { return this.city.name; } } );
-			miniMap.addPointer(new MiniMapPointer(city.MainBuilding.x, city.MainBuilding.y, city.name));
+			miniMap.addPointer(new MiniMapPointer(city.primaryPosition.x, city.primaryPosition.y, city.name));
 		}
 
 		private function alignMinimapTools() : void {

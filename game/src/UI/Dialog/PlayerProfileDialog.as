@@ -140,7 +140,7 @@
 				var distanceMsg: String = "";
 				
 				for each (var myCity: City in Global.map.cities) {
-					var distance: int = TileLocator.distance(myCity.MainBuilding.x, myCity.MainBuilding.y, 1, city.x, city.y, 1);
+					var distance: int = TileLocator.distance(myCity.primaryPosition.x, myCity.primaryPosition.y, 1, city.x, city.y, 1);
 					var timeAwayInSeconds: int = Formula.moveTimeTotal(myCity, 12, distance, true);
 		
 					distanceMsg += StringHelper.localize("PLAYER_PROFILE_DIALOG_CITY_DISTANCE", myCity.name, DateUtil.niceTime(timeAwayInSeconds)) + "\n";

@@ -73,7 +73,7 @@ package src.Objects.Process
 			
 			var troop: TroopStub = attackDialog.getTroop();			
 			var targetMapDistance: Position = target.primaryPosition.toPosition();
-			var distance: int = TileLocator.distance(sourceCity.MainBuilding.x, sourceCity.MainBuilding.y, 1, targetMapDistance.x, targetMapDistance.y, 1);
+			var distance: int = TileLocator.distance(sourceCity.primaryPosition.x, sourceCity.primaryPosition.y, 1, targetMapDistance.x, targetMapDistance.y, 1);
 			
 			var assignmentDialog: AssignmentCreateDialog = new AssignmentCreateDialog(Formula.moveTimeTotal(sourceCity, troop.getSpeed(sourceCity), distance, true), onChoseTime);
 			assignmentDialog.show();

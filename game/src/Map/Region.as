@@ -200,7 +200,7 @@
             if (tileId == Constants.cityStartTile) {
                 var screenPosition: ScreenPosition = position.toScreenPosition();
 
-                if (getObjectsInTile(screenPosition.toPosition()).length > 0) {
+                if (getObjectsInTile(position).length > 0) {
                     return;
                 }
 

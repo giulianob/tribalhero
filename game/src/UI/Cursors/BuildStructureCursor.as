@@ -60,7 +60,7 @@ package src.UI.Cursors {
 
             // Validate all tiles
             var size: int = city.radius - 1;
-            for each (var position: Position in TileLocator.foreachTile(city.MainBuilding.x, city.MainBuilding.y, size)) {
+            for each (var position: Position in TileLocator.foreachTile(city.primaryPosition.x, city.primaryPosition.y, size)) {
                 validateTile(position);
             }
 
@@ -72,7 +72,7 @@ package src.UI.Cursors {
 			buildableArea = new GroundCallbackCircle(size, validateTileCallback);
 			buildableArea.alpha = 0.3;
 
-			var point: ScreenPosition = city.MainBuilding.primaryPosition.toScreenPosition();
+			var point: ScreenPosition = city.primaryPosition.toScreenPosition();
 			buildableArea.objX = point.x; 
 			buildableArea.objY = point.y;
 
@@ -197,7 +197,7 @@ package src.UI.Cursors {
                 }
 
                 // Within city walls?
-                if (TileLocator.distance(city.MainBuilding.x, city.MainBuilding.y, 1, tilePosition.x, tilePosition.y, 1) >= city.radius) {
+                if (TileLocator.distance(city.primaryPosition.x, city.primaryPosition.y, 1, tilePosition.x, tilePosition.y, 1) >= city.radius) {
                     return false;
                 }
             }
@@ -234,7 +234,7 @@ package src.UI.Cursors {
         private function validateTileCallback(x: int, y: int): * {
 
             // Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
-			var point: ScreenPosition = city.MainBuilding.primaryPosition.toScreenPosition();
+			var point: ScreenPosition = city.primaryPosition.toScreenPosition();
 
             if (buildableTiles.get(new ScreenPosition(point.x + x, point.y + y).toPosition()) == null) {
                 return new ColorTransform(1, 1, 1, 0.5, 255, 215);
@@ -249,7 +249,7 @@ package src.UI.Cursors {
 			var mapPosition: Position = objPosition.toPosition();
 
 			// Check if cursor is inside city walls
-			if (city != null && TileLocator.distance(city.MainBuilding.x, city.MainBuilding.y, 1, mapPosition.x, mapPosition.y, 1) >= city.radius) {
+			if (city != null && TileLocator.distance(city.primaryPosition.x, city.primaryPosition.y, 1, mapPosition.x, mapPosition.y, 1) >= city.radius) {
 				hideCursors();
 				return false;
 			}

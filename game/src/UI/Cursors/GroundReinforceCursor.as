@@ -183,7 +183,7 @@
 			highlightedObj = gameObj;
 
 			var targetMapDistance: Position = gameObj.primaryPosition.toPosition();
-			var distance: int = TileLocator.distance(city.MainBuilding.x, city.MainBuilding.y, 1, targetMapDistance.x, targetMapDistance.y, 1);
+			var distance: int = TileLocator.distance(city.primaryPosition.x, city.primaryPosition.y, 1, targetMapDistance.x, targetMapDistance.y, 1);
 			var timeAwayInSeconds: int = Formula.moveTimeTotal(city, troopSpeed, distance, false);			
 
 			if (Constants.debug)

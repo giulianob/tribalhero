@@ -93,7 +93,6 @@ namespace Game.Data.Troop
 
         private readonly IDbManager dbManager;
 
-        //private ITroopObject troopObject;
         public TroopTemplate Template { get; private set; }
 
         public Formation this[FormationType type]

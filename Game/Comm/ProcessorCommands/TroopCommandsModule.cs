@@ -780,7 +780,7 @@ namespace Game.Comm.ProcessorCommands
             ICity city;
             IStation station;
 
-            //we need to find out the stationed city first then reacquire local + stationed city locks            
+            //we need to find out the stationed location first then reacquire local + stationed locks            
             using (locker.Lock(cityId, out city))
             {
                 if (city == null)
@@ -811,8 +811,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 //Make sure that the person sending the retreat is either the guy who owns the troop or the guy who owns the stationed city
-                if (city.Owner != session.Player && stub.Station != null &&
-                    session.Player.GetCityList().All(x => x != stub.Station))
+                if (city.Owner != session.Player && session.Player.GetCityList().All(x => x != stub.Station))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;

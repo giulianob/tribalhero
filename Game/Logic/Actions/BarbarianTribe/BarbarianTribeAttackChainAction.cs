@@ -112,34 +112,33 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city;
-            ITroopObject troopObject;
+            
             IBarbarianTribe barbarianTribe;
-
-            if (!troopObjectInitializer.GetTroopObject(out troopObject))
-            {
-                return Error.TroopChanged;
-            }
-
-            troopObjectId = troopObject.ObjectId;
 
             if (!gameObjectLocator.TryGetObjects(cityId, out city) || !gameObjectLocator.TryGetObjects(targetObjectId, out barbarianTribe))
             {
-                troopObjectInitializer.DeleteTroopObject(troopObject);
                 return Error.ObjectNotFound;
             }
 
             if (battleProcedure.HasTooManyAttacks(city))
             {
-                troopObjectInitializer.DeleteTroopObject(troopObject);
                 return Error.TooManyTroops;
             }
 
             if (barbarianTribe.CampRemains == 0 || !barbarianTribe.InWorld)
             {
-                troopObjectInitializer.DeleteTroopObject(troopObject);
                 return Error.BarbarianTribeNoCampsRemaining;
             }
 
+            ITroopObject troopObject;
+            var troopInitializeResult = troopObjectInitializer.GetTroopObject(out troopObject);
+            if (troopInitializeResult != Error.Ok)
+            {
+                return troopInitializeResult;
+            }
+
+            troopObjectId = troopObject.ObjectId;
+            
             city.References.Add(troopObject, this);
             city.Notifications.Add(troopObject, this);
 

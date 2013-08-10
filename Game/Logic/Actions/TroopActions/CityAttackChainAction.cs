@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
-using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
@@ -49,7 +48,6 @@ namespace Game.Logic.Actions
                                      ILocker locker,
                                      IGameObjectLocator gameObjectLocator,
                                      CityBattleProcedure cityBattleProcedure,
-                                     Formula formula,
                                      BattleProcedure battleProcedure)
         {
             this.cityId = cityId;
@@ -75,7 +73,6 @@ namespace Game.Logic.Actions
                                      ILocker locker,
                                      IGameObjectLocator gameObjectLocator,
                                      CityBattleProcedure cityBattleProcedure,
-                                     Formula formula,
                                      BattleProcedure battleProcedure)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
@@ -157,9 +154,10 @@ namespace Game.Logic.Actions
             }
 
             ITroopObject troopObject;
-            if (!troopObjectInitializer.GetTroopObject(out troopObject))
+            var troopInitializeResult = troopObjectInitializer.GetTroopObject(out troopObject);
+            if (troopInitializeResult != Error.Ok)
             {
-                return Error.Unexpected;
+                return troopInitializeResult;
             }
 
             troopObjectId = troopObject.ObjectId;

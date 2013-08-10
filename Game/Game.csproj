@@ -544,7 +544,6 @@
     <Compile Include="Logic\Procedures\Procedure.Ranking.cs" />
     <Compile Include="Logic\Procedures\Procedure.OnActionCallback.cs" />
     <Compile Include="Logic\Procedures\Procedure.ResourceCap.cs" />
-    <Compile Include="Logic\Procedures\Procedure.TroopObjectCreateFromStation.cs" />
     <Compile Include="Logic\Procedures\Procedure.TroopObjectStation.cs" />
     <Compile Include="Logic\ReferenceManager.cs" />
     <Compile Include="Logic\Requirements\LayoutRequirements\AwayFromLayout.cs" />

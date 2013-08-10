@@ -34,8 +34,6 @@ namespace Game.Logic.Actions
 
         private readonly CityBattleProcedure cityBattleProcedure;
 
-        private readonly AttackMode mode;
-
         private readonly StructureFactory structureFactory;
 
         private readonly uint targetCityId;
@@ -49,7 +47,6 @@ namespace Game.Logic.Actions
         public CityEngageAttackPassiveAction(uint cityId,
                                              uint troopObjectId,
                                              uint targetCityId,
-                                             AttackMode mode,
                                              IBattleFormulas battleFormula,
                                              IGameObjectLocator gameObjectLocator,
                                              CityBattleProcedure cityBattleProcedure,
@@ -60,7 +57,6 @@ namespace Game.Logic.Actions
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
             this.targetCityId = targetCityId;
-            this.mode = mode;
             this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
             this.cityBattleProcedure = cityBattleProcedure;
@@ -93,7 +89,6 @@ namespace Game.Logic.Actions
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             groupId = uint.Parse(properties["group_id"]);
 
-            mode = (AttackMode)(byte.Parse(properties["mode"]));
             originalUnitCount = int.Parse(properties["original_count"]);
 
             targetCityId = uint.Parse(properties["target_city_id"]);
@@ -137,12 +132,17 @@ namespace Game.Logic.Actions
                 return
                         XmlSerializer.Serialize(new[]
                         {
-                                new XmlKvPair("target_city_id", targetCityId), new XmlKvPair("troop_city_id", cityId),
-                                new XmlKvPair("troop_object_id", troopObjectId), new XmlKvPair("mode", (byte)mode),
-                                new XmlKvPair("original_count", originalUnitCount), new XmlKvPair("crop", bonus.Crop),
-                                new XmlKvPair("gold", bonus.Gold), new XmlKvPair("iron", bonus.Iron),
-                                new XmlKvPair("wood", bonus.Wood), new XmlKvPair("labor", bonus.Labor),
-                                new XmlKvPair("group_id", groupId), new XmlKvPair("stamina", StaminaMonitor.Stamina)
+                                new XmlKvPair("target_city_id", targetCityId), 
+                                new XmlKvPair("troop_city_id", cityId),
+                                new XmlKvPair("troop_object_id", troopObjectId), 
+                                new XmlKvPair("original_count", originalUnitCount), 
+                                new XmlKvPair("crop", bonus.Crop),
+                                new XmlKvPair("gold", bonus.Gold), 
+                                new XmlKvPair("iron", bonus.Iron),
+                                new XmlKvPair("wood", bonus.Wood), 
+                                new XmlKvPair("labor", bonus.Labor),
+                                new XmlKvPair("group_id", groupId), 
+                                new XmlKvPair("stamina", StaminaMonitor.Stamina)
                         });
             }
         }

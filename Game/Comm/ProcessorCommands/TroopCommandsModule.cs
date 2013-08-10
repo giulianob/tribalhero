@@ -489,29 +489,15 @@ namespace Game.Comm.ProcessorCommands
 
             using (locker.Lock(city, stronghold))
             {
-                // Create troop object                
-                ITroopObject troopObject;
-                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
-                {
-                    ReplyError(session, packet, Error.TroopChanged);
-                    return;
-                }
+                var troopInitializer = troopObjectInitializerFactory.CreateCityTroopObjectInitializer(cityId, simpleStub, TroopBattleGroup.Attack, mode);
 
-                var aa = actionFactory.CreateStrongholdAttackChainAction(cityId,
-                                                                         troopObject.ObjectId,
-                                                                         targetStrongholdId,
-                                                                         mode,
-                                                                         false);
-                Error ret = city.Worker.DoPassive(city, aa, true);
-                if (ret != 0)
-                {
-                    procedure.TroopObjectDelete(troopObject, true);
-                    ReplyError(session, packet, ret);
-                }
-                else
-                {
-                    ReplySuccess(session, packet);
-                }
+                var attackAction = actionFactory.CreateStrongholdAttackChainAction(cityId,
+                                                                                   troopInitializer,
+                                                                                   targetStrongholdId, 
+                                                                                   forceAttack: false);
+                var result = city.Worker.DoPassive(city, attackAction, true);
+
+                ReplyWithResult(session, packet, result);
             }
         }
 
@@ -536,7 +522,6 @@ namespace Game.Comm.ProcessorCommands
             }
 
             IBarbarianTribe barbarianTribe;
-            ICity city;
 
             if (!gameObjectLocator.TryGetObjects(targetBarbarianTribeId, out barbarianTribe))
             {
@@ -546,32 +531,20 @@ namespace Game.Comm.ProcessorCommands
 
             using (locker.Lock(session.Player, barbarianTribe))
             {
-                city = session.Player.GetCity(cityId);
+                var city = session.Player.GetCity(cityId);
                 if (city == null)
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
-                // Create troop object                
-                ITroopObject troopObject;
-                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
-                {
-                    ReplyError(session, packet, Error.TroopChanged);
-                    return;
-                }
+                var troopObjectInitializer = troopObjectInitializerFactory.CreateCityTroopObjectInitializer(cityId, simpleStub, TroopBattleGroup.Attack, mode);
 
-                var aa = actionFactory.CreateBarbarianTribeAttackChainAction(cityId, troopObject.ObjectId, targetBarbarianTribeId, mode);
-                Error ret = city.Worker.DoPassive(city, aa, true);
-                if (ret != 0)
-                {
-                    procedure.TroopObjectDelete(troopObject, true);
-                    ReplyError(session, packet, ret);
-                }
-                else
-                {
-                    ReplySuccess(session, packet);
-                }
+                var attackAction = actionFactory.CreateBarbarianTribeAttackChainAction(cityId, targetBarbarianTribeId, troopObjectInitializer);
+                
+                var result = city.Worker.DoPassive(city, attackAction, true);
+
+                ReplyWithResult(session, packet, result);                
             }
         }
 
@@ -626,29 +599,19 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                // Create troop object                
-                ITroopObject troopObject;
-                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
-                {
-                    ReplyError(session, packet, Error.TroopChanged);
-                    return;
-                }
+                var troopInitializer = troopObjectInitializerFactory.CreateCityTroopObjectInitializer(cityId,
+                                                                                                      simpleStub,
+                                                                                                      TroopBattleGroup.Attack,
+                                                                                                      mode);
 
-                var aa = actionFactory.CreateCityAttackChainAction(cityId,
-                                                                   troopObject.ObjectId,
-                                                                   targetCityId,
-                                                                   targetObjectId,
-                                                                   mode);
-                Error ret = city.Worker.DoPassive(city, aa, true);
-                if (ret != 0)
-                {
-                    procedure.TroopObjectDelete(troopObject, true);
-                    ReplyError(session, packet, ret);
-                }
-                else
-                {
-                    ReplySuccess(session, packet);
-                }
+                var attackAction = actionFactory.CreateCityAttackChainAction(cityId,
+                                                                             troopInitializer,
+                                                                             targetCityId,
+                                                                             targetObjectId);
+
+                var result = city.Worker.DoPassive(city, attackAction, true);
+
+                ReplyWithResult(session, packet, result);
             }
         }
 
@@ -692,24 +655,14 @@ namespace Game.Comm.ProcessorCommands
             {
                 ICity city = cities[cityId];
 
-                ITroopObject troopObject;
-                if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
-                {
-                    ReplyError(session, packet, Error.ObjectNotFound);
-                    return;
-                }
+                var troopInitializer = troopObjectInitializerFactory.CreateCityTroopObjectInitializer(cityId,
+                                                                                                      simpleStub,
+                                                                                                      TroopBattleGroup.Defense,
+                                                                                                      mode);
 
-                var da = actionFactory.CreateCityDefenseChainAction(cityId, troopObject.ObjectId, targetCityId, mode);
-                Error ret = city.Worker.DoPassive(city, da, true);
-                if (ret != 0)
-                {
-                    procedure.TroopObjectDelete(troopObject, true);
-                    ReplyError(session, packet, ret);
-                }
-                else
-                {
-                    ReplySuccess(session, packet);
-                }
+                var da = actionFactory.CreateCityDefenseChainAction(cityId, troopInitializer, targetCityId);
+                var result = city.Worker.DoPassive(city, da, true);
+                ReplyWithResult(session, packet, result);
             }
         }
 

@@ -1,9 +1,7 @@
-﻿using System;
-using Game.Logic.Actions;
+﻿using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
-using Game.Setup;
 
 namespace Game.Data.Troop.Initializers
 {
@@ -15,8 +13,15 @@ namespace Game.Data.Troop.Initializers
         private readonly AttackMode mode;
         private readonly IGameObjectLocator gameObjectLocator;
         private readonly Formula formula;
+        private readonly Procedure procedure;
 
-        public CityTroopObjectInitializer(uint cityId, ISimpleStub simpleStub, TroopBattleGroup group, AttackMode mode, IGameObjectLocator gameObjectLocator, Formula formula)
+        public CityTroopObjectInitializer(uint cityId,
+                                          ISimpleStub simpleStub,
+                                          TroopBattleGroup group,
+                                          AttackMode mode,
+                                          IGameObjectLocator gameObjectLocator,
+                                          Formula formula,
+                                          Procedure procedure)
         {
             this.cityId = cityId;
             this.simpleStub = simpleStub;
@@ -24,11 +29,11 @@ namespace Game.Data.Troop.Initializers
             this.mode = mode;
             this.gameObjectLocator = gameObjectLocator;
             this.formula = formula;
+            this.procedure = procedure;
         }
 
         public bool GetTroopObject(out ITroopObject troopObject)
         {
-
             ICity city;
             if (!gameObjectLocator.TryGetObjects(cityId, out city))
             {
@@ -36,7 +41,7 @@ namespace Game.Data.Troop.Initializers
                 return false;
             }
 
-            if (!Procedure.Current.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+            if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
             {
                 troopObject = null;
                 return false;
@@ -54,7 +59,7 @@ namespace Game.Data.Troop.Initializers
 
         public void DeleteTroopObject(ITroopObject troopObject)
         {
-            Procedure.Current.TroopObjectDelete(troopObject, true);
+            procedure.TroopObjectDelete(troopObject, true);
         }
     }
 }

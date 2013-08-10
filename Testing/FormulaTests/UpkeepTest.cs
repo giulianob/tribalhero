@@ -181,7 +181,7 @@ namespace Testing.FormulaTests
             }
         }        
 
-        public static ITroopStub MockStub(IEnumerable<Formation> formations)
+        public static ITroopStub MockStub(IEnumerable<IFormation> formations)
         {
             var stub = Substitute.For<ITroopStub>();
 

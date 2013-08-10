@@ -674,8 +674,7 @@ namespace Game.Data.Tribe
                                            simpleStub,
                                            assignment.IsAttack 
                                                    ? TroopState.WaitingInOffensiveAssignment
-                                                   : TroopState.WaitingInDefensiveAssignment,
-                                           assignment.IsAttack ? FormationType.Attack : FormationType.Defense))
+                                                   : TroopState.WaitingInDefensiveAssignment))
             {
                 return Error.TroopChanged;
             }

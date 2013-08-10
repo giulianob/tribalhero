@@ -22,20 +22,20 @@ namespace Game.Data.Troop.Initializers
 
         public StationedTroopObjectInitializer(ITroopStub stub, Procedure procedure, Formula formula, IWorld world)
         {
-            this.stub = stub;
+            this.stub = stub;            
             this.procedure = procedure;
             this.formula = formula;
             this.world = world;
         }
 
         public Error GetTroopObject(out ITroopObject troopObject)
-        {
+        {            
             if (newTroopObject != null)
             {
                 troopObject = newTroopObject;
                 return Error.Ok;
             }
-
+            
             if (stub.State != TroopState.Stationed)
             {
                 troopObject = null;
@@ -43,8 +43,6 @@ namespace Game.Data.Troop.Initializers
             }
 
             originalStation = stub.Station;
-            uint x = stub.Station.X;
-            uint y = stub.Station.Y;
 
             if (!stub.Station.Troops.RemoveStationed(stub.StationTroopId))
             {
@@ -52,7 +50,11 @@ namespace Game.Data.Troop.Initializers
                 return Error.TroopNotStationed;
             }
 
-            troopObject = new TroopObject(stub) {X = x, Y = y + 1};
+            troopObject = new TroopObject(stub)
+            {
+                X = originalStation.X,
+                Y = originalStation.Y + 1
+            };
             newTroopObject = troopObject;
             
             stub.City.Add(troopObject);
@@ -61,8 +63,8 @@ namespace Game.Data.Troop.Initializers
             troopObject.Stats = new TroopStats(formula.GetTroopRadius(stub, null), formula.GetTroopSpeed(stub));
             world.Regions.Add(troopObject);
             troopObject.EndUpdate();
-
-            return Error.Ok;
+            
+            return Error.Ok;            
         }
 
         public void DeleteTroopObject()

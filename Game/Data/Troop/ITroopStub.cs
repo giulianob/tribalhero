@@ -1,27 +1,9 @@
-using System.Collections.Generic;
 using Game.Logic.Actions;
 using Game.Util.Locking;
 using Persistance;
 
 namespace Game.Data.Troop
 {
-    public interface ISimpleStub : IEnumerable<Formation>
-    {
-        byte FormationCount { get; }
-
-        ushort TotalCount { get; }
-
-        void AddUnit(FormationType formationType, ushort type, ushort count);
-
-        /// <summary>
-        ///     Returns a list of units for specified formations.
-        ///     If formation is empty, will return all units.
-        /// </summary>
-        /// <param name="formations"></param>
-        /// <returns></returns>
-        List<Unit> ToUnitList(params FormationType[] formations);
-    }
-
     public interface ITroopStub : IPersistableList, ILockable, ISimpleStub
     {
         TroopTemplate Template { get; }
@@ -42,20 +24,11 @@ namespace Game.Data.Troop
 
         ushort TroopId { get; set; }
 
-        decimal TotalHp { get; }
-
         decimal Speed { get; }
-
-        /// <summary>
-        ///     Returns the sum of the upkeep for all units in troop stub
-        /// </summary>
-        int Value { get; }
 
         int Upkeep { get; }
 
         int Carry { get; }
-
-        Formation this[FormationType type] { get; set; }
 
         event TroopStub.StateSwitched OnStateSwitched;
 
@@ -81,8 +54,6 @@ namespace Game.Data.Troop
 
         void Add(ISimpleStub stub);
 
-        bool HasFormation(FormationType formation);
-
         void FireRemoved();
 
         ushort RemoveUnit(FormationType formationType, ushort type, ushort count);
@@ -90,5 +61,7 @@ namespace Game.Data.Troop
         void RemoveAllUnits(params FormationType[] formations);
 
         int UpkeepForFormation(FormationType inBattle);
+
+        void AddAllToFormation(FormationType formation, ISimpleStub unitsToAdd);
     }
 }

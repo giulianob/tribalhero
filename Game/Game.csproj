@@ -301,9 +301,12 @@
     <Compile Include="Data\Tribe\TribePermission.cs" />
     <Compile Include="Data\Tribe\TribeRank.cs" />
     <Compile Include="Data\Tribe\Tribesman.cs" />
+    <Compile Include="Data\Troop\IFormation.cs" />
     <Compile Include="Data\Troop\Initializers\AssignmentTroopObjectInitializer.cs" />
     <Compile Include="Data\Troop\Initializers\CityTroopObjectInitializer.cs" />
     <Compile Include="Data\Troop\CityTroopStubFactory.cs" />
+    <Compile Include="Data\Troop\Initializers\StationedPartialTroopObjectInitializer.cs" />
+    <Compile Include="Data\Troop\ISimpleStub.cs" />
     <Compile Include="Data\Troop\ITroopManager.cs" />
     <Compile Include="Data\Troop\ITroopObject.cs" />
     <Compile Include="Data\Troop\ITroopObjectInitializer.cs" />

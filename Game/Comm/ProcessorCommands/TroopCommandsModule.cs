@@ -718,11 +718,19 @@ namespace Game.Comm.ProcessorCommands
         {
             uint cityId;
             ushort troopId;
+            bool completeRetreat;
+            ISimpleStub unitsToRetreat = null;
 
             try
             {
                 cityId = packet.GetUInt32();
                 troopId = packet.GetUInt16();
+                completeRetreat = packet.GetByte() == 1;
+
+                if (!completeRetreat)
+                {
+                    unitsToRetreat = PacketHelper.ReadStub(packet, FormationType.Defense);
+                }
             }
             catch(Exception)
             {
@@ -771,7 +779,16 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var troopInitializer = troopObjectInitializerFactory.CreateStationedTroopObjectInitializer(stub);
+                ITroopObjectInitializer troopInitializer;
+
+                if (completeRetreat)
+                {
+                    troopInitializer = troopObjectInitializerFactory.CreateStationedTroopObjectInitializer(stub);
+                }
+                else
+                {
+                    troopInitializer = troopObjectInitializerFactory.CreateStationedPartialTroopObjectInitializer(stub, unitsToRetreat);                    
+                }
 
                 var ra = actionFactory.CreateRetreatChainAction(cityId, troopInitializer);
 

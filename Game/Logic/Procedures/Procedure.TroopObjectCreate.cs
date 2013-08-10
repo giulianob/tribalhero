@@ -25,6 +25,7 @@ namespace Game.Logic.Procedures
                 troopStub = null;
                 return false;
             }
+
             troopStub = city.Troops.Create();
             troopStub.BeginUpdate();
             troopStub.Add(stub);

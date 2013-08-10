@@ -142,16 +142,17 @@ namespace Game.Logic.Actions
             }
 
             ITroopObject troopObject;
-            if (!troopObjectInitializer.GetTroopObject(out troopObject))
+            var troopInitializeResult = troopObjectInitializer.GetTroopObject(out troopObject);
+            if (troopInitializeResult != Error.Ok)
             {
-                return Error.Unexpected;
+                return troopInitializeResult;
             }
 
             troopObjectId = troopObject.ObjectId;
 
             if (!troopObject.Stub.HasFormation(FormationType.Attack))
             {
-                troopObjectInitializer.DeleteTroopObject(troopObject);
+                troopObjectInitializer.DeleteTroopObject();
                 return Error.Unexpected;                
             }
 

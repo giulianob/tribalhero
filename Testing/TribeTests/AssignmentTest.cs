@@ -360,22 +360,22 @@ namespace Testing.TribeTests
                 { x[2] = troopObject; });
 
             var assignment = new Assignment(tribe,
-                                                   TARGET_X,
-                                                   TARGET_Y,
-                                                   targetCity,
-                                                   AttackMode.Strong,
-                                                   targetTime,
-                                                   "Description",
-                                                   false,
-                                                   formula,
-                                                   dbManager,
-                                                   gameObjectLocator,
-                                                   scheduler,
-                                                   procedure,
-                                                   tileLocator,
-                                                   actionFactory,
-                                                   locker,
-                                                   troopInitializerFactory)
+                                            TARGET_X,
+                                            TARGET_Y,
+                                            targetCity,
+                                            AttackMode.Strong,
+                                            targetTime,
+                                            "Description",
+                                            false,
+                                            formula,
+                                            dbManager,
+                                            gameObjectLocator,
+                                            scheduler,
+                                            procedure,
+                                            tileLocator,
+                                            actionFactory,
+                                            locker,
+                                            troopInitializerFactory)
             {
                 stub
             };

@@ -113,7 +113,7 @@ namespace Game.Logic.Actions
 
         CityPassiveAction CreateCityPassiveAction(uint cityId);
 
-        RetreatChainAction CreateRetreatChainAction(uint cityId, ushort stubId);
+        RetreatChainAction CreateRetreatChainAction(uint cityId, ITroopObjectInitializer troopObjectInitializer);
 
         TribeContributeActiveAction CreateTribeContributeActiveAction(uint cityId, uint structureId, Resource resource);
 

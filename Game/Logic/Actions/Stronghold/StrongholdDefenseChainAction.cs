@@ -136,14 +136,15 @@ namespace Game.Logic.Actions
                 return canStrongholdBeDefended;
             }
 
-            if (!troopObjectInitializer.GetTroopObject(out troopObject))
+            var troopInitializeResult = troopObjectInitializer.GetTroopObject(out troopObject);
+            if (troopInitializeResult != Error.Ok)
             {
-                return Error.Unexpected;
+                return troopInitializeResult;
             }
 
             if (!troopObject.Stub.HasFormation(FormationType.Defense))
             {
-                troopObjectInitializer.DeleteTroopObject(troopObject);
+                troopObjectInitializer.DeleteTroopObject();
                 return Error.Unexpected;
             }
             troopObjectId = troopObject.ObjectId;

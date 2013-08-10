@@ -2,6 +2,7 @@
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
+using Game.Setup;
 
 namespace Game.Data.Troop.Initializers
 {
@@ -14,6 +15,8 @@ namespace Game.Data.Troop.Initializers
         private readonly IGameObjectLocator gameObjectLocator;
         private readonly Formula formula;
         private readonly Procedure procedure;
+
+        private ITroopObject newTroopObject;
 
         public CityTroopObjectInitializer(uint cityId,
                                           ISimpleStub simpleStub,
@@ -32,20 +35,28 @@ namespace Game.Data.Troop.Initializers
             this.procedure = procedure;
         }
 
-        public bool GetTroopObject(out ITroopObject troopObject)
+        public Error GetTroopObject(out ITroopObject troopObject)
         {
+            if (newTroopObject != null)
+            {
+                troopObject = newTroopObject;
+                return Error.Ok;
+            }
+
             ICity city;
             if (!gameObjectLocator.TryGetObjects(cityId, out city))
             {
                 troopObject = null;
-                return false;
+                return Error.ObjectNotFound;
             }
 
             if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
             {
                 troopObject = null;
-                return false;
+                return Error.TroopChanged;
             }
+
+            newTroopObject = troopObject;
 
             //Load the units stats into the stub
             troopObject.Stub.BeginUpdate();
@@ -54,12 +65,13 @@ namespace Game.Data.Troop.Initializers
             troopObject.Stub.RetreatCount = (ushort)formula.GetAttackModeTolerance(troopObject.Stub.TotalCount, mode);
             troopObject.Stub.AttackMode = mode;
             troopObject.Stub.EndUpdate();
-            return true;
+
+            return Error.Ok;
         }
 
-        public void DeleteTroopObject(ITroopObject troopObject)
+        public void DeleteTroopObject()
         {
-            procedure.TroopObjectDelete(troopObject, true);
+            procedure.TroopObjectDelete(newTroopObject, true);
         }
     }
 }

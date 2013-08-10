@@ -771,7 +771,9 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var ra = actionFactory.CreateRetreatChainAction(cityId, troopId);
+                var troopInitializer = troopObjectInitializerFactory.CreateStationedTroopObjectInitializer(stub);
+
+                var ra = actionFactory.CreateRetreatChainAction(cityId, troopInitializer);
 
                 Error ret = city.Worker.DoPassive(city, ra, true);
                 ReplyWithResult(session, packet, ret);

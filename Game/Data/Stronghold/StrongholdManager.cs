@@ -42,6 +42,8 @@ namespace Game.Data.Stronghold
 
         private readonly ConcurrentDictionary<uint, IStronghold> strongholds;
 
+        private readonly ITroopObjectInitializerFactory troopInitializerFactory;
+
         private ILookup<ITribe, IStronghold> gateOpenToIndex;
 
         private bool indexDirty = true;
@@ -49,7 +51,7 @@ namespace Game.Data.Stronghold
         private Dictionary<string, IStronghold> nameIndex;
 
         private ILookup<ITribe, IStronghold> tribeIndex;
-
+        
         public StrongholdManager(IStrongholdConfigurator strongholdConfigurator,
                                  IStrongholdFactory strongholdFactory,
                                  IRegionManager regionManager,
@@ -58,7 +60,8 @@ namespace Game.Data.Stronghold
                                  ISimpleStubGeneratorFactory simpleStubGeneratorFactory,
                                  Formula formula,
                                  ICityManager cityManager,
-                                 IActionFactory actionFactory)
+                                 IActionFactory actionFactory, 
+            ITroopObjectInitializerFactory troopInitializerFactory)
         {
             idGenerator = new LargeIdGenerator(Config.stronghold_id_max, Config.stronghold_id_min);
             strongholds = new ConcurrentDictionary<uint, IStronghold>();
@@ -70,6 +73,7 @@ namespace Game.Data.Stronghold
             this.dbManager = dbManager;            
             this.formula = formula;
             this.actionFactory = actionFactory;
+            this.troopInitializerFactory = troopInitializerFactory;
 
             cityManager.CityAdded += CityManagerCityAdded;
             simpleStubGenerator = simpleStubGeneratorFactory.CreateSimpleStubGenerator(formula.StrongholdUnitRatio(), formula.StrongholdUnitType());
@@ -382,7 +386,8 @@ namespace Game.Data.Stronghold
 
             foreach (var stub in stationedStubs)
             {
-                var retreatAction = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
+                var troopInitializer = troopInitializerFactory.CreateStationedTroopObjectInitializer(stub);
+                var retreatAction = actionFactory.CreateRetreatChainAction(stub.City.Id, troopInitializer);
                 stub.City.Worker.DoPassive(stub.City, retreatAction, true);
             }
         }

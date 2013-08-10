@@ -1,9 +1,11 @@
-﻿namespace Game.Data.Troop
+﻿using Game.Setup;
+
+namespace Game.Data.Troop
 {
     public interface ITroopObjectInitializer
     {
-        bool GetTroopObject(out ITroopObject troopObject);
+        Error GetTroopObject(out ITroopObject troopObject);
 
-        void DeleteTroopObject(ITroopObject troopObject);
+        void DeleteTroopObject();
     }
 }

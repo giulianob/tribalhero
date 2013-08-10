@@ -106,7 +106,8 @@ namespace Testing.ActionsTests
                                                      dbManager.Object,
                                                      formula.Object,
                                                      cityBattleProcedure.Object,
-                                                     world.Object);
+                                                     world.Object,
+                                                     new Mock<ITroopObjectInitializerFactory>().Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
@@ -180,7 +181,8 @@ namespace Testing.ActionsTests
                                                      dbManager.Object,
                                                      formula.Object,
                                                      cityBattleProcedure.Object,
-                                                     world.Object);
+                                                     world.Object,
+                                                     new Mock<ITroopObjectInitializerFactory>().Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
@@ -252,7 +254,8 @@ namespace Testing.ActionsTests
                                                      dbManager.Object,
                                                      formula.Object,
                                                      cityBattleProcedure.Object,
-                                                     world.Object);
+                                                     world.Object,
+                                                     new Mock<ITroopObjectInitializerFactory>().Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
@@ -324,7 +327,8 @@ namespace Testing.ActionsTests
                                                      dbManager.Object,
                                                      formula.Object,
                                                      cityBattleProcedure.Object,
-                                                     world.Object);
+                                                     world.Object,
+                                                     new Mock<ITroopObjectInitializerFactory>().Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 
@@ -396,7 +400,8 @@ namespace Testing.ActionsTests
                                                      dbManager.Object,
                                                      formula.Object,
                                                      cityBattleProcedure.Object,
-                                                     world.Object);
+                                                     world.Object,
+                                                     new Mock<ITroopObjectInitializerFactory>().Object);
 
             action.BattleEnterRound(battleManager.Object, attackers.Object, defenders.Object, 1);
 

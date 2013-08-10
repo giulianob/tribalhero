@@ -21,20 +21,20 @@ namespace Game.Logic.Actions
 
         private readonly IActionFactory actionFactory;
 
-        private readonly uint cityId;
-
         private readonly ITroopObjectInitializer troopObjectInitializer;
 
-        private readonly uint targetCityId;
+        private readonly ILocker locker;
 
+        private readonly IWorld world;
+
+        private readonly Procedure procedure;
+
+        private readonly uint cityId;
+        
         private uint troopObjectId;
-
-        private ILocker locker;
-
-        private IWorld world;
-
-        private Procedure procedure;
-
+        
+        private readonly uint targetCityId;
+        
         public CityDefenseChainAction(uint cityId,
                                       ITroopObjectInitializer troopObjectInitializer,
                                       uint targetCityId,
@@ -139,9 +139,10 @@ namespace Game.Logic.Actions
             }
 
             ITroopObject troopObject;
-            if (!troopObjectInitializer.GetTroopObject(out troopObject))
+            var troopInitializeResult = troopObjectInitializer.GetTroopObject(out troopObject);
+            if (troopInitializeResult != Error.Ok)
             {
-                return Error.Unexpected;
+                return troopInitializeResult;
             }
 
             troopObjectId = troopObject.ObjectId;

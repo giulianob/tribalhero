@@ -157,6 +157,9 @@
     <Compile Include="NinjectTests\FactoryMethodNameProviderTests.cs" />
     <Compile Include="PlayerTests\AchievementListTest.cs" />
     <Compile Include="TribeTests\TribeManagerTests.cs" />
+    <Compile Include="TroopTests\StationedPartialTroopObjectInitializerTests.cs" />
+    <Compile Include="TroopTests\SimpleStubTests.cs" />
+    <Compile Include="TroopTests\StationedTroopObjectInitializerTests.cs" />
     <Compile Include="UtilTests\XmlSerializerTest.cs" />
     <Compile Include="StrongholdTests\StrongholdManagerTests.cs" />
     <Compile Include="ResourcesTests\AggressiveLazyResourceTest.cs" />

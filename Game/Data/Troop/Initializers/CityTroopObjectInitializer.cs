@@ -1,4 +1,5 @@
-﻿using Game.Logic.Actions;
+﻿using Game.Data.Stats;
+using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
@@ -16,6 +17,8 @@ namespace Game.Data.Troop.Initializers
         private readonly Formula formula;
         private readonly Procedure procedure;
 
+        private readonly IWorld world;
+
         private ITroopObject newTroopObject;
 
         public CityTroopObjectInitializer(uint cityId,
@@ -24,7 +27,8 @@ namespace Game.Data.Troop.Initializers
                                           AttackMode mode,
                                           IGameObjectLocator gameObjectLocator,
                                           Formula formula,
-                                          Procedure procedure)
+                                          Procedure procedure,
+                                          IWorld world)
         {
             this.cityId = cityId;
             this.simpleStub = simpleStub;
@@ -33,6 +37,7 @@ namespace Game.Data.Troop.Initializers
             this.gameObjectLocator = gameObjectLocator;
             this.formula = formula;
             this.procedure = procedure;
+            this.world = world;
         }
 
         public Error GetTroopObject(out ITroopObject troopObject)
@@ -50,7 +55,7 @@ namespace Game.Data.Troop.Initializers
                 return Error.ObjectNotFound;
             }
 
-            if (!procedure.TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+            if (!TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
             {
                 troopObject = null;
                 return Error.TroopChanged;
@@ -72,6 +77,35 @@ namespace Game.Data.Troop.Initializers
         public void DeleteTroopObject()
         {
             procedure.TroopObjectDelete(newTroopObject, true);
+        }
+
+        private bool TroopObjectCreateFromCity(ICity city,
+                                                      ISimpleStub stub,
+                                                      uint x,
+                                                      uint y,
+                                                      out ITroopObject troopObject)
+        {
+            if (stub.TotalCount == 0 || !city.DefaultTroop.RemoveFromFormation(FormationType.Normal, stub))
+            {
+                troopObject = null;
+                return false;
+            }
+
+            var troopStub = city.Troops.Create();
+            troopStub.BeginUpdate();
+            troopStub.Add(stub);
+            troopStub.EndUpdate();
+
+            troopObject = new TroopObject(troopStub) {X = x, Y = y + 1};
+            city.Add(troopObject);
+
+            troopObject.BeginUpdate();
+            troopObject.Stats = new TroopStats(formula.GetTroopRadius(troopStub, null),
+                                               formula.GetTroopSpeed(troopStub));
+            world.Regions.Add(troopObject);
+            troopObject.EndUpdate();
+
+            return true;
         }
     }
 }

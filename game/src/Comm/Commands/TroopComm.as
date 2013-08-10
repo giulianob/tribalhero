@@ -243,12 +243,16 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 
-		public function retreat(city: int, troopId: int):void
+		public function retreat(city: int, troopId: int, retreatAll: Boolean, unitsToRetreat: TroopStub):void
 		{
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TROOP_RETREAT;
 			packet.writeUInt(city);
 			packet.writeUShort(troopId);
+            packet.writeByte(retreatAll ? 1: 0);
+            if (!retreatAll) {
+                writeTroop(unitsToRetreat, packet);
+            }
 
 			session.write(packet, mapComm.catchAllErrors);
 		}

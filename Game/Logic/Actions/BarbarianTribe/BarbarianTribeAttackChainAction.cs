@@ -21,44 +21,38 @@ namespace Game.Logic.Actions
     {
         private readonly IActionFactory actionFactory;
 
-        private readonly Formula formula;
-
         private readonly BattleProcedure battleProcedure;
 
         private readonly uint cityId;
 
-        private readonly uint troopObjectId;
+        private uint troopObjectId;
 
         private readonly IGameObjectLocator gameObjectLocator;
 
         private readonly ILocker locker;
 
-        private readonly AttackMode mode;
-
         private readonly Procedure procedure;
 
         private readonly uint targetObjectId;
 
+        private readonly ITroopObjectInitializer troopObjectInitializer;
+
         public BarbarianTribeAttackChainAction(uint cityId,
-                                               uint troopObjectId,
                                                uint targetObjectId,
-                                               AttackMode mode,
+                                               ITroopObjectInitializer troopObjectInitializer,
                                                IActionFactory actionFactory,
                                                Procedure procedure,
                                                ILocker locker,
                                                IGameObjectLocator gameObjectLocator,
-                                               Formula formula,
                                                BattleProcedure battleProcedure)
         {
             this.cityId = cityId;
-            this.troopObjectId = troopObjectId;
             this.targetObjectId = targetObjectId;
-            this.mode = mode;
+            this.troopObjectInitializer = troopObjectInitializer;
             this.actionFactory = actionFactory;
             this.procedure = procedure;
             this.locker = locker;
             this.gameObjectLocator = gameObjectLocator;
-            this.formula = formula;
             this.battleProcedure = battleProcedure;
         }
 
@@ -72,7 +66,6 @@ namespace Game.Logic.Actions
                                                Procedure procedure,
                                                ILocker locker,
                                                IGameObjectLocator gameObjectLocator,
-                                               Formula formula,
                                                BattleProcedure battleProcedure)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
@@ -80,11 +73,9 @@ namespace Game.Logic.Actions
             this.procedure = procedure;
             this.locker = locker;
             this.gameObjectLocator = gameObjectLocator;
-            this.formula = formula;
             this.battleProcedure = battleProcedure;
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
-            mode = (AttackMode)uint.Parse(properties["mode"]);
             targetObjectId = uint.Parse(properties["target_object_id"]);
         }
 
@@ -105,8 +96,7 @@ namespace Game.Logic.Actions
                         {
                                 new XmlKvPair("city_id", cityId), 
                                 new XmlKvPair("troop_object_id", troopObjectId),                                
-                                new XmlKvPair("target_object_id", targetObjectId),
-                                new XmlKvPair("mode", (byte)mode)
+                                new XmlKvPair("target_object_id", targetObjectId)
                         });
             }
         }
@@ -123,36 +113,44 @@ namespace Game.Logic.Actions
         {
             ICity city;
             ITroopObject troopObject;
-            IBarbarianTribe barbarianTribe;            
+            IBarbarianTribe barbarianTribe;
 
-            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) ||
-                !gameObjectLocator.TryGetObjects(targetObjectId, out barbarianTribe))
+            if (!troopObjectInitializer.GetTroopObject(out troopObject))
             {
+                return Error.TroopChanged;
+            }
+
+            troopObjectId = troopObject.ObjectId;
+
+            if (!gameObjectLocator.TryGetObjects(cityId, out city) || !gameObjectLocator.TryGetObjects(targetObjectId, out barbarianTribe))
+            {
+                troopObjectInitializer.DeleteTroopObject(troopObject);
                 return Error.ObjectNotFound;
             }
 
             if (battleProcedure.HasTooManyAttacks(city))
             {
+                troopObjectInitializer.DeleteTroopObject(troopObject);
                 return Error.TooManyTroops;
             }
 
             if (barbarianTribe.CampRemains == 0 || !barbarianTribe.InWorld)
             {
+                troopObjectInitializer.DeleteTroopObject(troopObject);
                 return Error.BarbarianTribeNoCampsRemaining;
             }
-
-            //Load the units stats into the stub
-            troopObject.Stub.BeginUpdate();
-            troopObject.Stub.Template.LoadStats(TroopBattleGroup.Attack);
-            troopObject.Stub.RetreatCount = (ushort)formula.GetAttackModeTolerance(troopObject.Stub.TotalCount, mode);
-            troopObject.Stub.EndUpdate();
 
             city.References.Add(troopObject, this);
             city.Notifications.Add(troopObject, this);
 
-            var tma = actionFactory.CreateTroopMovePassiveAction(cityId, troopObject.ObjectId, barbarianTribe.X, barbarianTribe.Y, false, true);
+            var moveAction = actionFactory.CreateTroopMovePassiveAction(cityId,
+                                                                        troopObject.ObjectId,
+                                                                        barbarianTribe.X,
+                                                                        barbarianTribe.Y,
+                                                                        isReturningHome: false,
+                                                                        isAttacking: true);
 
-            ExecuteChainAndWait(tma, AfterTroopMoved);
+            ExecuteChainAndWait(moveAction, AfterTroopMoved);
 
             return Error.Ok;
         }
@@ -209,7 +207,7 @@ namespace Game.Logic.Actions
 
                 using (locker.Lock(city, targetBarbarianTribe))
                 {
-                    var bea = actionFactory.CreateBarbarianTribeEngageAttackPassiveAction(cityId, troopObject.ObjectId, targetObjectId, mode);
+                    var bea = actionFactory.CreateBarbarianTribeEngageAttackPassiveAction(cityId, troopObject.ObjectId, targetObjectId);
                     ExecuteChainAndWait(bea, AfterBattle);
                 }
             }

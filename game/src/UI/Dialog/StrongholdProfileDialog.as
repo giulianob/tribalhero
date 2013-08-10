@@ -212,11 +212,7 @@
 				var cityId: uint = troop.cityId;
 				var troopId: int = troop.stub.id;
 				retreatButton.addActionListener(function(e: Event):void {
-					InfoDialog.showMessageDialog("Confirm", "Are you sure? Retreating will send troops back to their home cities.", function(result: int): void {				
-						if (result == JOptionPane.YES) {
-							Global.mapComm.Troop.retreat(cityId, troopId);
-						}
-					}, null, true, true, JOptionPane.YES | JOptionPane.NO);		
+					new RetreatTroopProcess(troop.stub).execute();
 				},0, true);
 				
 				var pnlButtons: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 5, 0, false));

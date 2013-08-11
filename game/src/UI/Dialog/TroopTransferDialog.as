@@ -1,43 +1,60 @@
 package src.UI.Dialog 
 {
+    import flash.events.Event;
+
     import mx.utils.*;
 
     import org.aswing.*;
+    import org.aswing.event.InteractiveEvent;
     import org.aswing.ext.*;
 
     import src.*;
     import src.Map.*;
     import src.Objects.Effects.*;
+    import src.Objects.Stronghold.Stronghold;
     import src.Objects.Troop.*;
     import src.UI.*;
+    import src.UI.Components.TroopPartialRetreatPanel;
     import src.Util.*;
 
-    /**
-	 * ...
-	 * @author Anthony Lam
-	 */
-	public class TroopTransferDialog extends GameJPanel
+    public class TroopTransferDialog extends GameJPanel
 	{
 		private var strongholds:Array;
-		private var stub:TroopStub;
 		private var city: City;
 		private var pickList: JComboBox;
 		private var lblTime: JLabel;
+        private var pnlPartialRetreat: TroopPartialRetreatPanel;
+        private var originalStub: TroopStub;
 		
-		public function TroopTransferDialog(stub: TroopStub, strongholds : Array) 
+		public function TroopTransferDialog(originalStub: TroopStub, strongholds : Array)
 		{
+            this.originalStub = originalStub;
 			this.strongholds = strongholds;
 			this.strongholds.sortOn("name");
-			this.stub = stub;
-			this.city = Global.map.cities.get(stub.cityId);
-			
+			this.city = Global.map.cities.get(originalStub.cityId);
+			this.pnlPartialRetreat = new TroopPartialRetreatPanel(originalStub, "TRANSFER");
+
 			for (var i:int = 0; i < this.strongholds.length; ++i) {
-				if (this.strongholds[i].id == stub.stationedLocation.strongholdId) {
+				if (this.strongholds[i].id == originalStub.stationedLocation.strongholdId) {
 					this.strongholds.splice(i, 1);
+                    break;
 				}
 			}
 			
 			createUI();
+
+            this.pnlPartialRetreat.addEventListener(InteractiveEvent.SELECTION_CHANGED, function(e: Event): void {
+                if (getFrame()) {
+                    getFrame().pack();
+                    Util.centerFrame(getFrame());
+                }
+
+                recalculateTime();
+            });
+
+            this.pnlPartialRetreat.addChangeListener(function(e: Event): void {
+                recalculateTime();
+            });
 		}
 		
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame
@@ -59,7 +76,20 @@ package src.UI.Dialog
 			Global.gameContainer.showFrame(frame);
 			return frame;
 		}
-	
+
+        private function recalculateTime(): void
+        {
+            var stub: TroopStub = pnlPartialRetreat.getTroop();
+            if (stub.getIndividualUnitCount() == 0) {
+                lblTime.setText("--");
+                return;
+            }
+
+            var distance: int = TileLocator.distance(strongholds[pickList.getSelectedIndex()].x, strongholds[pickList.getSelectedIndex()].y, Stronghold.SIZE, originalStub.x, originalStub.y, 1);
+            var timeAwayInSeconds: int = Formula.moveTimeTotal(city, stub.getSpeed(city), distance, false);
+            lblTime.setText(StringHelper.localize("TRANSFER_ARRIVE_IN", DateUtil.niceTime(timeAwayInSeconds)));
+        }
+
 		private function createUI(): void
 		{
 			title = StringHelper.localize("TRANSFER_TITLE");
@@ -70,25 +100,32 @@ package src.UI.Dialog
 			append(new JLabel(StringHelper.localize("TRANSFER_CHOOSE_STRONGHOLD"),null,AsWingConstants.LEFT));
 			
 			pickList = new JComboBox();
-			pickList.addActionListener(function():void {
-				var distance: int = TileLocator.distance(strongholds[pickList.getSelectedIndex()].x, strongholds[pickList.getSelectedIndex()].y, 1, stub.x, stub.y, 1);
-				var timeAwayInSeconds: int = Formula.moveTimeTotal(city, stub.getSpeed(city), distance, false);
-				lblTime.setText(StringHelper.localize("TRANSFER_ARRIVE_IN", DateUtil.niceTime(timeAwayInSeconds)));
-				lblTime.setIcon(new AssetIcon(new ICON_CLOCK()));
-			});
+			pickList.addActionListener(function (e: Event): void {
+                recalculateTime();
+            });
 			append(pickList);
 
 			var warning: MultilineLabel = new MultilineLabel(StringHelper.localize("TRANSFER_WARNING"), 3, 0);
 			append(warning);
-			
+
+            append(pnlPartialRetreat);
+
 			lblTime = new JLabel();
+            lblTime.setIcon(new AssetIcon(new ICON_CLOCK()));
 			lblTime.setHorizontalAlignment(AsWingConstants.RIGHT);
 			append(lblTime);
 			
 			var pnlButtons: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 10, AsWingConstants.CENTER));
 			var btnSend: JButton = new JButton(StringHelper.localize("TRANSFER_SEND"));
 			btnSend.addActionListener(function():void {
-				Global.mapComm.Troop.troopTransfer(stub, strongholds[pickList.getSelectedIndex()].id);
+
+                if (pnlPartialRetreat.getTroop().getIndividualUnitCount() == 0) {
+                    InfoDialog.showMessageDialog(StringHelper.localize("STR_ERROR"), StringHelper.localize("TRANSFER_REQUIRED_ERROR"));
+                    return;
+                }
+
+                Global.mapComm.Troop.troopTransfer(pnlPartialRetreat.shouldRetreatAll(), pnlPartialRetreat.getTroop(), originalStub.cityId, originalStub.id, strongholds[pickList.getSelectedIndex()].id);
+
 				if (getFrame()) {
 					getFrame().dispose();
 				}
@@ -99,10 +136,9 @@ package src.UI.Dialog
 			btnCancel.addActionListener(function():void {
 				getFrame().dispose();
 			});
-			pnlButtons.append(btnCancel);			
-		
+			pnlButtons.append(btnCancel);
+
 			append(pnlButtons);
 		}
 	}
-
 }

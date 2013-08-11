@@ -10,6 +10,8 @@ package src.Objects.Stronghold
 
     public class Stronghold extends SimpleGameObject
 	{
+        public static const SIZE: int = 3;
+
 		public static const BATTLE_STATE_NONE: int = 0;
 		public static const BATTLE_STATE_GATE: int = 1;
 		public static const BATTLE_STATE_MAIN: int = 2;

@@ -53,6 +53,7 @@ namespace Game.Comm
             processor.RegisterCommand("StrongholdAddTroop", CmdStrongholdAddTroop, PlayerRights.Admin);
             processor.RegisterCommand("StrongholdFindNearbyCities", CmdStrongholdFindNearbyCities, PlayerRights.Admin);
             processor.RegisterCommand("StrongholdChangeLevel", CmdStrongholdChangeLevel, PlayerRights.Admin);
+            processor.RegisterCommand("StrongholdActivate", CmdStrongholdActivate, PlayerRights.Admin);
         }
 
         private string CmdStrongholdFindNearbyCities(Session session, string[] parms)
@@ -146,6 +147,49 @@ namespace Game.Comm
                     return "Error Adding to Station";
                 }
             }
+            return "OK!";
+        }
+
+          private string CmdStrongholdActivate(Session session, string[] parms)
+        {
+            bool help = false;
+            string strongholdName = string.Empty;
+
+            try
+            {
+                var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},
+                        {"stronghold=", v => strongholdName = v.TrimMatchingQuotes()},                        
+                };
+                p.Parse(parms);
+            }
+            catch(Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(strongholdName))
+            {
+                return "StrongholdActivate --stronghold=stronghold_name";
+            }
+
+            IStronghold stronghold;
+            if (!strongholdManager.TryGetStronghold(strongholdName, out stronghold))
+            {
+                return "Stronghold not found";
+            }
+
+            using (locker.Lock(stronghold))
+            {
+                if (stronghold.StrongholdState != StrongholdState.Inactive)
+                {
+                    return "Stronghold already active.";
+                }
+
+                strongholdManager.Activate(stronghold);
+            }
+
             return "OK!";
         }
 

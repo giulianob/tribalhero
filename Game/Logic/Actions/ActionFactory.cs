@@ -7,18 +7,13 @@ using Game.Logic.Actions.ResourceActions;
 
 namespace Game.Logic.Actions
 {
-    // TODO: Change this factory to use custom instance provider. Every method should just return IAction and the method name can be used to return the correct type. This will aid testing.
     public interface IActionFactory
     {
         ForestCreatorAction CreateForestCreatorAction();
 
         ForestDepleteAction CreateForestDepleteAction(IForest forest, DateTime time);
 
-        CityAttackChainAction CreateCityAttackChainAction(uint cityId,
-                                                          uint troopObjectId,
-                                                          uint targetCityId,
-                                                          uint targetStructureId,
-                                                          AttackMode mode);
+        CityAttackChainAction CreateCityAttackChainAction(uint cityId, ITroopObjectInitializer troopObjectInitializer, uint targetCityId, uint targetStructureId);
 
         StructureBuildActiveAction CreateStructureBuildActiveAction(uint cityId, ushort type, uint x, uint y, byte level);
 
@@ -45,8 +40,7 @@ namespace Game.Logic.Actions
 
         CityEngageAttackPassiveAction CreateCityEngageAttackPassiveAction(uint cityId,
                                                                           uint troopObjectId,
-                                                                          uint targetCityId,
-                                                                          AttackMode mode);
+                                                                          uint targetCityId);
 
         StructureSelfDestroyPassiveAction CreateStructureSelfDestroyPassiveAction(uint cityId, uint objectId);
 
@@ -92,9 +86,8 @@ namespace Game.Logic.Actions
         ForestCampHarvestPassiveAction CreateForestCampHarvestPassiveAction(uint cityId, uint forestId);
 
         CityDefenseChainAction CreateCityDefenseChainAction(uint cityId,
-                                                            uint troopObjectId,
-                                                            uint targetCityId,
-                                                            AttackMode mode);
+                                                            ITroopObjectInitializer troopObjectInitializer,
+                                                            uint targetCityId);
 
         StrongholdDefenseChainAction CreateStrongholdDefenseChainAction(uint cityId,
                                                                         ITroopObjectInitializer troopObjectInitializer,
@@ -120,7 +113,7 @@ namespace Game.Logic.Actions
 
         CityPassiveAction CreateCityPassiveAction(uint cityId);
 
-        RetreatChainAction CreateRetreatChainAction(uint cityId, ushort stubId);
+        RetreatChainAction CreateRetreatChainAction(uint cityId, ITroopObjectInitializer troopObjectInitializer);
 
         TribeContributeActiveAction CreateTribeContributeActiveAction(uint cityId, uint structureId, Resource resource);
 
@@ -130,25 +123,22 @@ namespace Game.Logic.Actions
 
         StrongholdEngageMainAttackPassiveAction CreateStrongholdEngageMainAttackPassiveAction(uint cityId,
                                                                                               uint troopObjectId,
-                                                                                              uint targetStrongholdId,
-                                                                                              AttackMode mode);
+                                                                                              uint targetStrongholdId);
 
         StrongholdGateBattlePassiveAction CreateStrongholdGateBattlePassiveAction(uint strongholdId);
 
         StrongholdMainBattlePassiveAction CreateStrongholdMainBattlePassiveAction(uint strongholdId);
 
         StrongholdAttackChainAction CreateStrongholdAttackChainAction(uint cityId,
-                                                                      uint troopObjectId,
+                                                                      ITroopObjectInitializer troopObjectInitializer,
                                                                       uint targetStrongholdId,
-                                                                      AttackMode mode,
                                                                       bool forceAttack);
 
         BarbarianTribeEngageAttackPassiveAction CreateBarbarianTribeEngageAttackPassiveAction(uint cityId,
                                                                                               uint troopObjectId,
-                                                                                              uint targetObjectId,
-                                                                                              AttackMode mode);
+                                                                                              uint targetObjectId);
 
-        BarbarianTribeAttackChainAction CreateBarbarianTribeAttackChainAction(uint cityId, uint troopObjectId, uint targetObjectId, AttackMode mode);
+        BarbarianTribeAttackChainAction CreateBarbarianTribeAttackChainAction(uint cityId, uint targetObjectId, ITroopObjectInitializer troopObjectInitializer);
 
         BarbarianTribeBattlePassiveAction CreateBarbarianTribeBattlePassiveAction(uint barbarianTribeId);
     }

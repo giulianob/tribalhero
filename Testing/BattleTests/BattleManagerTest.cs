@@ -29,7 +29,7 @@ namespace Testing.BattleTests
         {
             public readonly StubCombatList MockAttackers = new StubCombatList();
 
-            public readonly Mock<BattleFormulas> MockBattleFormulas = new Mock<BattleFormulas>();
+            public readonly Mock<IBattleFormulas> MockBattleFormulas = new Mock<IBattleFormulas>();
 
             public readonly Mock<IBattleReport> MockBattleReport = new Mock<IBattleReport>();
 
@@ -173,12 +173,10 @@ namespace Testing.BattleTests
                                                     IDbManager dbManager,
                                                     IBattleReport battleReport,
                                                     ICombatListFactory combatListFactory,
-                                                    BattleFormulas battleFormulas,
+                                                    IBattleFormulas battleFormulas,
                                                     IBattleOrder battleOrder,
                                                     IBattleRandom battleRandom,
-                                                    Action
-                                                            <ICombatList, ICombatList, ICombatObject, CombatList.Target,
-                                                            int> attackTargetCallback)
+                                                    Action<ICombatList, ICombatList, ICombatObject, CombatList.Target, int> attackTargetCallback)
                     : base(
                             battleId,
                             location,
@@ -200,9 +198,11 @@ namespace Testing.BattleTests
                                                  ICombatObject attacker,
                                                  BattleSide sideAttacking,
                                                  CombatList.Target target,
-                                                 int attackIndex)
+                                                 int attackIndex,
+                                                 out decimal carryOverDmg)
             {
                 attackTargetCallback(offensiveCombatList, defensiveCombatList, attacker, target, attackIndex);
+                carryOverDmg = 0;
             }
         }
 

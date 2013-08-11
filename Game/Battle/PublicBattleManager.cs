@@ -14,10 +14,10 @@ namespace Game.Battle
                                    IDbManager dbManager,
                                    IBattleReport battleReport,
                                    ICombatListFactory combatListFactory,
-                                   BattleFormulas battleFormulas,
+                                   IBattleFormulas battleFormulas,
                                    IBattleOrder battleOrder,
                                    IBattleRandom battleRandom)
-            : base(battleId, location, owner, rewardStrategy, dbManager, battleReport, combatListFactory, battleFormulas, battleOrder, battleRandom)
+                : base(battleId, location, owner, rewardStrategy, dbManager, battleReport, combatListFactory, battleFormulas, battleOrder, battleRandom)
         {
         }
 

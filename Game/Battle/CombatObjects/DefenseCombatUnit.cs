@@ -42,7 +42,7 @@ namespace Game.Battle.CombatObjects
                                  ushort type,
                                  byte lvl,
                                  ushort count,
-                                 BattleFormulas battleFormulas)
+                                 IBattleFormulas battleFormulas)
                 : base(id, battleId, battleFormulas)
         {
             troopStub = stub;
@@ -63,7 +63,7 @@ namespace Game.Battle.CombatObjects
                                  byte lvl,
                                  ushort count,
                                  decimal leftOverHp,
-                                 BattleFormulas battleFormulas)
+                                 IBattleFormulas battleFormulas)
                 : this(id, battleId, stub, formation, type, lvl, count, battleFormulas)
         {
             this.leftOverHp = leftOverHp;
@@ -259,7 +259,7 @@ namespace Game.Battle.CombatObjects
                         TroopStub.City.Technologies.GetEffects(EffectCode.LastStand)
                                  .Where(
                                         tech =>
-                                        BattleFormulas.Current.UnitStatModCheck(Stats.Base,
+                                        BattleFormulas.UnitStatModCheck(Stats.Base,
                                                                                 TroopBattleGroup.Attack,
                                                                                 (string)tech.Value[1]))
                                  .DefaultIfEmpty()

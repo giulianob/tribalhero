@@ -5,6 +5,7 @@ using Game.Comm.Channel;
 using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Stronghold;
+using Game.Map;
 using Ninject;
 using Persistance;
 
@@ -38,6 +39,7 @@ namespace Game.Battle
                                        new BattleOrder(battleRandom),
                                        battleRandom);
 
+            // ReSharper disable once ObjectCreationAsStatement
             new BattleChannel(bm);
 
             bm.BattleReport.Battle = bm;
@@ -46,7 +48,7 @@ namespace Game.Battle
 
         public IBattleManager CreateBattleManager(BattleLocation location, BattleOwner owner, ICity city)
         {
-            var battleId = (uint)BattleReport.BattleIdGenerator.GetNext();
+            var battleId = BattleReport.BattleIdGenerator.GetNext();
             return CreateBattleManager(battleId, location, owner, city);
         }
 
@@ -57,17 +59,19 @@ namespace Game.Battle
         {
             var battleRandom = new BattleRandom(battleId);
 
-            var bm = new PublicBattleManager(battleId,
+            var bm = new StrongholdMainBattleManager(battleId,
                                              battleLocation,
                                              battleOwner,
                                              kernel.Get<IRewardStrategyFactory>().CreateStrongholdRewardStrategy(stronghold),
                                              kernel.Get<IDbManager>(),
                                              kernel.Get<IBattleReport>(),
                                              kernel.Get<ICombatListFactory>(),
-                                             kernel.Get<BattleFormulas>(),
-                                             new BattleOrder(battleRandom),
+                                             kernel.Get<IGameObjectLocator>(),                                             
+                                             new BattleOrder(battleRandom),   
+                                             kernel.Get<IBattleFormulas>(),
                                              battleRandom);
 
+            // ReSharper disable once ObjectCreationAsStatement
             new BattleChannel(bm);
 
             bm.BattleReport.Battle = bm;
@@ -78,7 +82,7 @@ namespace Game.Battle
                                                                 BattleOwner battleOwner,
                                                                 IStronghold stronghold)
         {
-            var battleId = (uint)BattleReport.BattleIdGenerator.GetNext();
+            var battleId = BattleReport.BattleIdGenerator.GetNext();
             return CreateStrongholdMainBattleManager(battleId, battleLocation, battleOwner, stronghold);
         }
 
@@ -86,13 +90,13 @@ namespace Game.Battle
                                                                 BattleOwner battleOwner,
                                                                 IStronghold stronghold)
         {
-            var battleId = (uint)BattleReport.BattleIdGenerator.GetNext();
+            var battleId = BattleReport.BattleIdGenerator.GetNext();
             return CreateStrongholdGateBattleManager(battleId, battleLocation, battleOwner, stronghold);
         }
 
         public IBattleManager CreateBarbarianBattleManager(BattleLocation battleLocation, BattleOwner battleOwner, IBarbarianTribe barbarianTribe)
         {
-            var battleId = (uint)BattleReport.BattleIdGenerator.GetNext();
+            var battleId = BattleReport.BattleIdGenerator.GetNext();
             return CreateBarbarianBattleManager(battleId, battleLocation, battleOwner, barbarianTribe);
         }
 
@@ -110,10 +114,12 @@ namespace Game.Battle
                                              kernel.Get<IDbManager>(),
                                              kernel.Get<IBattleReport>(),
                                              kernel.Get<ICombatListFactory>(),
+
                                              kernel.Get<BattleFormulas>(),
                                              new BattleOrder(battleRandom),
                                              battleRandom);
 
+            // ReSharper disable once ObjectCreationAsStatement
             new BattleChannel(bm);
 
             bm.BattleReport.Battle = bm;
@@ -135,10 +141,12 @@ namespace Game.Battle
                                            kernel.Get<IDbManager>(),
                                            new BattleReport(new NullBattleReportWriter()),
                                            kernel.Get<ICombatListFactory>(),
+
                                            kernel.Get<BattleFormulas>(),
                                            new BattleOrder(battleRandom),
                                            battleRandom);
 
+            // ReSharper disable once ObjectCreationAsStatement
             new BattleChannel(bm);
 
             bm.BattleReport.Battle = bm;

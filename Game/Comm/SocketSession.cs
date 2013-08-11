@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Linq.Expressions;
 using System.Net.Sockets;
 using Game.Data;
 using Game.Util;
@@ -12,8 +13,6 @@ namespace Game.Comm
 {
     public class SocketSession : Session
     {
-        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
-
         public SocketSession(string name, Socket socket, Processor processor)
                 : base(name, processor)
         {
@@ -24,21 +23,62 @@ namespace Game.Comm
 
         public override bool Write(Packet packet)
         {
-#if DEBUG || CHECK_LOCKS
-            logger.Info("Sending: " + packet.ToString(32));
-#endif
+            if (Logger.IsDebugEnabled)
+            {
+                Logger.Debug("Sending IP[{0}] {1}", Name, packet.ToString());
+            }
 
             byte[] packetBytes = packet.GetBytes();
             int ret;
 
+            while (true)
+            {
+                try
+                {
+                    ret = Socket.Send(packetBytes, packetBytes.Length, SocketFlags.None);
+                    break;
+                }
+                catch(SocketException e)
+                {
+                    if (e.SocketErrorCode == SocketError.WouldBlock)
+                    {
+                        try
+                        {
+                            Socket.Blocking = true;
+                        }
+                        catch(Exception)
+                        {                            
+                            return false;
+                        }
+
+                        continue;
+                    }
+                    
+                    if (e.SocketErrorCode == SocketError.TimedOut)
+                    {
+                        Logger.Warn(e, "Socket send timed out packetLength[{0}]", packetBytes.Length);
+                    }
+                    
+                    return false;
+                }
+                catch(Exception)
+                {
+                    return false;
+                }
+            }
+
             try
             {
-                ret = Socket.Send(packetBytes, packetBytes.Length, SocketFlags.None);
+                if (Socket.Blocking)
+                {
+                    Socket.Blocking = false;
+                }
             }
-            catch(Exception)
+            catch(Exception e)
             {
-                return false;
+                Logger.Warn(e, "Failed to reset socket blocking status");
             }
+
             return ret > 0;
         }
     }

@@ -418,7 +418,7 @@ namespace Game.Data.Forest
             }
         }
 
-        public int Hash
+        public override int Hash
         {
             get
             {
@@ -426,7 +426,7 @@ namespace Game.Data.Forest
             }
         }
 
-        public object Lock
+        public override object Lock
         {
             get
             {

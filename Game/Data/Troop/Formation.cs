@@ -29,7 +29,7 @@ namespace Game.Data.Troop
         Killed = 13
     }
 
-    public class Formation : Dictionary<ushort, ushort>
+    public class Formation : Dictionary<ushort, ushort>, IFormation
     {
         #region Events
 
@@ -80,12 +80,13 @@ namespace Game.Data.Troop
             return 0;
         }
 
-        internal void Add(Formation formation)
+        public void Add(IFormation formation)
         {
             foreach (var kvp in formation)
             {
                 Add(kvp.Key, kvp.Value);
             }
+
             OnUnitUpdated();
         }
     }

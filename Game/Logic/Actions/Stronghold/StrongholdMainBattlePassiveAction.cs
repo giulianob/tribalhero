@@ -48,6 +48,8 @@ namespace Game.Logic.Actions
 
         private bool npcGroupKilled;
 
+        private readonly ITroopObjectInitializerFactory troopInitializerFactory;
+
         public StrongholdMainBattlePassiveAction(uint strongholdId,
                                                  BattleProcedure battleProcedure,
                                                  StrongholdBattleProcedure strongholdBattleProcedure,
@@ -57,7 +59,8 @@ namespace Game.Logic.Actions
                                                  Formula formula,
                                                  IWorld world,
                                                  IStrongholdManager strongholdManager,
-                                                 IActionFactory actionFactory)
+                                                 IActionFactory actionFactory,
+                                                 ITroopObjectInitializerFactory troopInitializerFactory)
         {
             this.strongholdId = strongholdId;
             this.battleProcedure = battleProcedure;
@@ -69,6 +72,7 @@ namespace Game.Logic.Actions
             this.world = world;
             this.strongholdManager = strongholdManager;
             this.actionFactory = actionFactory;
+            this.troopInitializerFactory = troopInitializerFactory;
 
             IStronghold stronghold;
             if (!gameObjectLocator.TryGetObjects(strongholdId, out stronghold))
@@ -94,7 +98,8 @@ namespace Game.Logic.Actions
                                                  Formula formula,
                                                  IWorld world,
                                                  IStrongholdManager strongholdManager,
-                                                 IActionFactory actionFactory)
+                                                 IActionFactory actionFactory,
+                                                 ITroopObjectInitializerFactory troopInitializerFactory)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.battleProcedure = battleProcedure;
@@ -106,6 +111,7 @@ namespace Game.Logic.Actions
             this.world = world;
             this.strongholdManager = strongholdManager;
             this.actionFactory = actionFactory;
+            this.troopInitializerFactory = troopInitializerFactory;
 
             strongholdId = uint.Parse(properties["stronghold_id"]);
             npcGroupId = uint.Parse(properties["npc_group_id"]);
@@ -135,8 +141,8 @@ namespace Game.Logic.Actions
                 return
                         XmlSerializer.Serialize(new[]
                         {
-                                new XmlKvPair("stronghold_id", strongholdId), new XmlKvPair("npc_group_id", npcGroupId),
-                                new XmlKvPair("npc_group_killed", npcGroupKilled)
+                            new XmlKvPair("stronghold_id", strongholdId), new XmlKvPair("npc_group_id", npcGroupId),
+                            new XmlKvPair("npc_group_killed", npcGroupKilled)
                         });
             }
         }
@@ -194,7 +200,7 @@ namespace Game.Logic.Actions
 
                     battle.Remove(defender, BattleManager.BattleSide.Defense, ReportState.OutOfStamina);
                 }
-                // Else we're dealing w/ a player unit
+                        // Else we're dealing w/ a player unit
                 else
                 {
                     if (defensiveMeter > 0 && stronghold.Tribe != null && defender.Tribe == stronghold.Tribe)
@@ -216,8 +222,9 @@ namespace Game.Logic.Actions
                     cityCombatGroup.TroopStub.BeginUpdate();
                     cityCombatGroup.TroopStub.State = TroopState.Stationed;
                     cityCombatGroup.TroopStub.EndUpdate();
-                    
-                    var retreatChainAction = actionFactory.CreateRetreatChainAction(cityCombatGroup.TroopStub.City.Id, cityCombatGroup.TroopStub.TroopId);
+
+                    var troopInitializer = troopInitializerFactory.CreateStationedTroopObjectInitializer(cityCombatGroup.TroopStub);
+                    var retreatChainAction = actionFactory.CreateRetreatChainAction(cityCombatGroup.TroopStub.City.Id, troopInitializer);
                     var result = cityCombatGroup.TroopStub.City.Worker.DoPassive(cityCombatGroup.TroopStub.City, retreatChainAction, true);
                     if (result != Error.Ok)
                     {
@@ -242,7 +249,9 @@ namespace Game.Logic.Actions
                                                 ICombatObject attacker,
                                                 ICombatGroup targetGroup,
                                                 ICombatObject target,
-                                                decimal damage)
+                                                decimal damage,
+                                                int attackerCount,
+                                                int targetCount)
         {
             IStronghold stronghold;
             if (!gameObjectLocator.TryGetObjects(strongholdId, out stronghold))
@@ -269,7 +278,8 @@ namespace Game.Logic.Actions
             stub.EndUpdate();
 
             // Send the defender back to their city
-            var retreatChainAction = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
+            var troopInitializer = troopInitializerFactory.CreateStationedTroopObjectInitializer(stub);
+            var retreatChainAction = actionFactory.CreateRetreatChainAction(stub.City.Id, troopInitializer);
             var result = stub.City.Worker.DoPassive(stub.City, retreatChainAction, true);
             if (result != Error.Ok)
             {
@@ -393,8 +403,9 @@ namespace Game.Logic.Actions
                     {
                         continue;
                     }
-                   
-                    var retreatChainAction = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
+
+                    var troopInitializer = troopInitializerFactory.CreateStationedTroopObjectInitializer(stub);
+                    var retreatChainAction = actionFactory.CreateRetreatChainAction(stub.City.Id, troopInitializer);
                     var result = stub.City.Worker.DoPassive(stub.City, retreatChainAction, true);
                     if (result != Error.Ok)
                     {

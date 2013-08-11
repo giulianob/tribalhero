@@ -19,7 +19,7 @@ namespace Game.Battle
     /// </summary>
     public class CombatList : PersistableObjectList<ICombatGroup>, ICombatList
     {
-        private readonly BattleFormulas battleFormulas;
+        private readonly IBattleFormulas battleFormulas;
 
         private readonly RadiusLocator radiusLocator;
 
@@ -34,7 +34,7 @@ namespace Game.Battle
 
         #endregion
 
-        public CombatList(IDbManager manager, RadiusLocator radiusLocator, BattleFormulas battleFormulas)
+        public CombatList(IDbManager manager, RadiusLocator radiusLocator, IBattleFormulas battleFormulas)
                 : base(manager)
         {
             this.radiusLocator = radiusLocator;
@@ -199,6 +199,8 @@ namespace Game.Battle
             public ICombatObject CombatObject { get; set; }
 
             public ICombatGroup Group { get; set; }
+
+            public decimal? DamageCarryOverPercentage { get; set; } 
         }
 
         #endregion

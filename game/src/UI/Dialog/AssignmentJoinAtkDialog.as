@@ -1,27 +1,16 @@
 ﻿package src.UI.Dialog {
 
+    import flash.events.Event;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Map.MapUtil;
+    import src.Objects.Effects.Formula;
+    import src.Objects.Troop.*;
     import src.Util.DateUtil;
     import src.Util.StringHelper;
-	import flash.events.Event;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.MapUtil;
-	import src.Objects.Effects.Formula;
-	import src.Objects.GameError;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Components.SimpleTroopGridList.*;
-	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
-	import src.UI.GameJPanel;
-	import src.Objects.Troop.*;
-	import src.Util.StringHelper;
-	import src.Util.Util;
 
-	public class AssignmentJoinAtkDialog extends AttackTroopDialog {
+    public class AssignmentJoinAtkDialog extends AttackTroopDialog {
 
 		protected var assignment: *;
 		protected var distance: int;

@@ -1,15 +1,13 @@
 ﻿package src.Comm.Commands {
 
-	import src.Comm.*;
-	import src.Constants;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Actions.*;
-	import src.Objects.Troop.*;
-	import src.Global;
-	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
+    import src.Comm.*;
+    import src.Constants;
+    import src.Global;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Troop.*;
 
-	public class TroopComm {
+    public class TroopComm {
 
 		private var mapComm: MapComm;		
 		private var session: Session;

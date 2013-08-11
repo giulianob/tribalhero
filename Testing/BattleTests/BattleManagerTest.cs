@@ -736,7 +736,6 @@ namespace Testing.BattleTests
 
             battle.BattleStarted = true;
             
-          //  //battle.NextToAttack = BattleManager.BattleSide.Attack;
             battle.ExecuteTurn().Should().BeTrue();
 
             withdrawCalled.Should().BeTrue();
@@ -923,7 +922,6 @@ namespace Testing.BattleTests
                 };
 
             battle.BattleStarted = true;
-           // battle.NextToAttack = BattleManager.BattleSide.Defense;
             battle.ExecuteTurn().Should().BeTrue();
 
             battle.Turn.Should().Be(1);

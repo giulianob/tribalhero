@@ -43,10 +43,6 @@ namespace Game.Comm
 
         public void Execute(Session session, Packet packet)
         {
-#if DEBUG || CHECK_LOCKS
-            logger.Info(packet.ToString(32));
-#endif
-
             lock (session)
             {
                 ProcessorCommand command;
@@ -61,10 +57,6 @@ namespace Game.Comm
 
         public void ExecuteEvent(Session session, Packet packet)
         {
-#if DEBUG || CHECK_LOCKS
-            logger.Info("Event: " + packet.ToString(32));
-#endif
-
             lock (session)
             {
                 events[packet.Cmd].Function(session, packet);

@@ -365,7 +365,7 @@ namespace Game.Data.Tribe
         private DateTime DepartureTime(ITroopStub stub)
         {
             int distance = tileLocator.TileDistance(stub.City.X, stub.City.Y, X, Y);
-            return TargetTime.Subtract(TimeSpan.FromSeconds(formula.MoveTimeTotal(stub, distance, true)));
+            return TargetTime.Subtract(TimeSpan.FromSeconds(formula.MoveTimeTotal(stub, distance, IsAttack)));
         }
 
         /// <summary>
@@ -397,34 +397,37 @@ namespace Game.Data.Tribe
 
                 if (IsAttack)
                 {
+                    var troopObjectInitializer = troopObjectInitializerFactory.CreateAssignmentTroopObjectInitializer(troopObject, TroopBattleGroup.Attack, AttackMode);
                     action = actionFactory.CreateCityAttackChainAction(stub.City.Id,
-                                                                       troopObject.ObjectId,
+                                                                       troopObjectInitializer,
                                                                        structure.City.Id,
-                                                                       structure.ObjectId,
-                                                                       AttackMode);
+                                                                       structure.ObjectId);
                 }
                 else
                 {
+                    var troopObjectInitializer = troopObjectInitializerFactory.CreateAssignmentTroopObjectInitializer(troopObject, TroopBattleGroup.Defense, AttackMode);
+
                     action = actionFactory.CreateCityDefenseChainAction(stub.City.Id,
-                                                                        troopObject.ObjectId,
-                                                                        structure.City.Id,
-                                                                        AttackMode);
+                                                                        troopObjectInitializer,
+                                                                        structure.City.Id);
                 }
             }
             else if (Target.LocationType == LocationType.Stronghold)
             {
                 if (IsAttack)
                 {
+                    var troopObjectInitializer = troopObjectInitializerFactory.CreateAssignmentTroopObjectInitializer(troopObject, TroopBattleGroup.Attack, AttackMode);
+
                     action = actionFactory.CreateStrongholdAttackChainAction(stub.City.Id,
-                                                                             troopObject.ObjectId,
+                                                                             troopObjectInitializer,
                                                                              Target.LocationId,
-                                                                             AttackMode,
-                                                                             true);
+                                                                             forceAttack: true);
                 }
                 else
                 {
+                    var troopObjectInitializer = troopObjectInitializerFactory.CreateAssignmentTroopObjectInitializer(troopObject, TroopBattleGroup.Defense, AttackMode);
                     action = actionFactory.CreateStrongholdDefenseChainAction(stub.City.Id,
-                                                                              troopObjectInitializerFactory.CreateAssignmentTroopObjectInitializer(troopObject, TroopBattleGroup.Defense, AttackMode),
+                                                                              troopObjectInitializer,
                                                                               Target.LocationId);
                 }
             }

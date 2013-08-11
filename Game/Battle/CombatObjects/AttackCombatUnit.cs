@@ -44,7 +44,7 @@ namespace Game.Battle.CombatObjects
                                 byte lvl,
                                 ushort count,
                                 UnitFactory unitFactory,
-                                BattleFormulas battleFormulas)
+                                IBattleFormulas battleFormulas)
                 : base(id, battleId, battleFormulas)
         {
             this.troopObject = troopObject;
@@ -71,7 +71,7 @@ namespace Game.Battle.CombatObjects
                                 decimal leftOverHp,
                                 Resource loot,
                                 UnitFactory unitFactory,
-                                BattleFormulas battleFormulas)
+                                IBattleFormulas battleFormulas)
                 : this(id, battleId, troopObject, formation, type, lvl, count, unitFactory, battleFormulas)
         {
             LeftOverHp = leftOverHp;

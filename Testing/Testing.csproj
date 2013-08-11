@@ -126,13 +126,16 @@
     <Compile Include="Balancing\TestArcher.cs" />
     <Compile Include="Balancing\UnitType.cs" />
     <Compile Include="BattleTests\BattleManagerTest.cs" />
+    <Compile Include="BattleTests\BattleManagerTest2.cs" />
     <Compile Include="BattleTests\BattleOrderTest.cs" />
     <Compile Include="BattleTests\CombatGroupTest.cs" />
     <Compile Include="BattleTests\CombatListTest.cs" />
     <Compile Include="BattleTests\CombatStructureTest.cs" />
     <Compile Include="BattleTests\StaminaMonitorTests.cs" />
     <Compile Include="BattleTests\StatsModCalculator.cs" />
+    <Compile Include="BattleTests\StrongholdBattleManagerTests.cs" />
     <Compile Include="ChannelTests\ChannelTest.cs" />
+    <Compile Include="CityRegionTests\CityRegionTest.cs" />
     <Compile Include="CityTests\CityTest.cs" />
     <Compile Include="DatabaseTests\DbLoaderActionFactoryTest.cs" />
     <Compile Include="FixtureHelper.cs" />
@@ -155,6 +158,9 @@
     <Compile Include="NinjectTests\FactoryMethodNameProviderTests.cs" />
     <Compile Include="PlayerTests\AchievementListTest.cs" />
     <Compile Include="TribeTests\TribeManagerTests.cs" />
+    <Compile Include="TroopTests\StationedPartialTroopObjectInitializerTests.cs" />
+    <Compile Include="TroopTests\SimpleStubTests.cs" />
+    <Compile Include="TroopTests\StationedTroopObjectInitializerTests.cs" />
     <Compile Include="UtilTests\XmlSerializerTest.cs" />
     <Compile Include="StrongholdTests\StrongholdManagerTests.cs" />
     <Compile Include="ResourcesTests\AggressiveLazyResourceTest.cs" />
@@ -213,6 +219,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

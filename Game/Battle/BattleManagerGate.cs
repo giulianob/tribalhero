@@ -28,7 +28,7 @@ namespace Game.Battle
                                  BattleFormulas battleFormulas,
                                  IBattleOrder battleOrder,
                                  IBattleRandom battleRandom)
-            : base(battleId, location, owner, rewardStrategy, dbManager, battleReport, combatListFactory, battleFormulas, battleOrder, battleRandom)
+                : base(battleId, location, owner, rewardStrategy, dbManager, battleReport, combatListFactory, battleFormulas, battleOrder, battleRandom)
         {
             this.stronghold = stronghold;
 

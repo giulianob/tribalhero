@@ -55,8 +55,8 @@ namespace Game.Map
                 procedure.SetResourceCap(iter.Current);
 
                 //Set up the city region (for minimap)
-                CityRegion region = regionManager.CityRegions.GetCityRegion(iter.Current.X, iter.Current.Y);
-                if (region != null)
+                CityRegion region;
+                if (regionManager.CityRegions.TryGetCityRegion(iter.Current.X, iter.Current.Y, out region))
                 {
                     region.Add(iter.Current);
                 }
@@ -94,12 +94,13 @@ namespace Game.Map
                     dbManager.Save(stub);
                 }
 
-                CityRegion region = regionManager.CityRegions.GetCityRegion(city.X, city.Y);
-                if (region != null)
+                CityRegion region;
+                if (regionManager.CityRegions.TryGetCityRegion(city.X, city.Y, out region))
                 {
                     region.Add(city);
                 }
             }
+
             CityAdded(city, new EventArgs());
         }
 

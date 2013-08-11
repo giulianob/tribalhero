@@ -23,6 +23,7 @@ using Game.Logic.Notifications;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
+using Game.Module.Remover;
 using Game.Setup;
 using Game.Util;
 using Newtonsoft.Json;
@@ -1130,8 +1131,13 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     IBattleManager battleManager;
-                    var battleOwner = new BattleOwner((string)reader["owner_type"], (uint)reader["owner_id"]);
-                    var battleLocation = new BattleLocation((string)reader["location_type"], (uint)reader["location_id"]);
+                    var battleOwner = new BattleOwner(
+                            (BattleOwnerType)Enum.Parse(typeof(BattleOwnerType), (string)reader["owner_type"]),
+                            (uint)reader["owner_id"]);
+
+                    var battleLocation = new BattleLocation(
+                            (BattleLocationType)Enum.Parse(typeof(BattleLocationType), (string)reader["location_type"], true),
+                            (uint)reader["location_id"]);
 
                     switch(battleLocation.Type)
                     {

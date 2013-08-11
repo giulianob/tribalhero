@@ -53,12 +53,12 @@ namespace Game.Data
             get
             {
                 int delta = 0;
-                int calculatedRate = GetCalculatedRate();
+                decimal calculatedRate = GetCalculatedRate();
 
                 if (calculatedRate != 0)
                 {
-                    int elapsed = Math.Max(0, (int)SystemClock.Now.Subtract(LastRealizeTime).TotalMilliseconds);
-                    delta = elapsed / calculatedRate;
+                    int elapsed = Math.Max(0, (int)SystemClock.Now.Subtract(LastRealizeTime).TotalSeconds);
+                    delta = (int)(elapsed / calculatedRate);
                 }
 
                 if (limit > 0 && (RawValue + delta) > limit)
@@ -139,9 +139,9 @@ namespace Game.Data
         ///     Returns the amount of resources received for the given timeframe.
         ///     NOTE: This can return a negative amount if upkeep is higher than rate.
         /// </summary>
-        /// <param name="millisecondInterval"></param>
+        /// <param name="secondInterval"></param>
         /// <returns></returns>
-        public int GetAmountReceived(int millisecondInterval)
+        public int GetAmountReceived(int secondInterval)
         {
             int deltaRate = rate - upkeep;
             if (deltaRate == 0)
@@ -149,8 +149,8 @@ namespace Game.Data
                 return 0;
             }
 
-            double effectiveRate = (3600000f / deltaRate) * Config.seconds_per_unit;
-            return (int)(millisecondInterval / effectiveRate);
+            decimal effectiveRate = (3600m / deltaRate) * (decimal)Config.seconds_per_unit;
+            return (int)(secondInterval / effectiveRate);
         }
 
         private void Update()
@@ -163,17 +163,17 @@ namespace Game.Data
 
         private void Realize()
         {
-            int calculatedRate = GetCalculatedRate();
+            decimal calculatedRate = GetCalculatedRate();
 
             if (calculatedRate != 0)
             {
                 DateTime now = SystemClock.Now;
-                int elapsed = Math.Max(0, (int)now.Subtract(LastRealizeTime).TotalMilliseconds);
-                int delta = elapsed / calculatedRate;
+                int elapsed = Math.Max(0, (int)now.Subtract(LastRealizeTime).TotalSeconds);
+                int delta = (int)(elapsed / calculatedRate);
 
                 RawValue += delta;
 
-                int leftOver = elapsed % calculatedRate;
+                int leftOver = (int)(elapsed % calculatedRate);
 
                 LastRealizeTime = now.Subtract(new TimeSpan(0, 0, 0, 0, leftOver));
 
@@ -204,14 +204,14 @@ namespace Game.Data
             }
         }
 
-        protected virtual int GetCalculatedRate()
+        protected virtual decimal GetCalculatedRate()
         {
             int deltaRate = rate - upkeep;
             if (deltaRate <= 0)
             {
                 return 0;
             }
-            return (int)((3600000f / deltaRate) * Config.seconds_per_unit);
+            return (3600m / deltaRate) * (decimal)Config.seconds_per_unit;
         }
     }
 }

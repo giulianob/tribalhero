@@ -96,7 +96,9 @@ namespace Testing.ActionsTests
                          new Mock<ICombatObject>().Object,
                          gateGroup.Object,
                          new Mock<ICombatObject>().Object,
-                         31m);
+                         31m,
+                         1,
+                         1);
 
             battle.Raise(m => m.ActionAttacked += null,
                          battle.Object,
@@ -105,7 +107,9 @@ namespace Testing.ActionsTests
                          new Mock<ICombatObject>().Object,
                          gateGroup.Object,
                          new Mock<ICombatObject>().Object,
-                         35m);
+                         35m,
+                         1,
+                         1);
 
             battle.Raise(m => m.ActionAttacked += null,
                          battle.Object,
@@ -114,7 +118,9 @@ namespace Testing.ActionsTests
                          new Mock<ICombatObject>().Object,
                          gateGroup.Object,
                          new Mock<ICombatObject>().Object,
-                         5m);
+                         5m,
+                         1,
+                         1);
 
             // Attack from defense which should be totally ignored
             battle.Raise(m => m.ActionAttacked += null,
@@ -124,7 +130,9 @@ namespace Testing.ActionsTests
                          new Mock<ICombatObject>().Object,
                          attackGroup1.Object,
                          new Mock<ICombatObject>().Object,
-                         5000m);
+                         5000m,
+                         1,
+                         1);
 
             // Send event that gate is dead
             battle.Raise(m => m.GroupKilled += null, battle.Object, gateGroup.Object);
@@ -209,7 +217,9 @@ namespace Testing.ActionsTests
                          new Mock<ICombatObject>().Object,
                          gateGroup.Object,
                          new Mock<ICombatObject>().Object,
-                         31m);
+                         31m,
+                         1,
+                         1);
 
             battle.Raise(m => m.ActionAttacked += null,
                          battle.Object,
@@ -218,7 +228,9 @@ namespace Testing.ActionsTests
                          new Mock<ICombatObject>().Object,
                          gateGroup.Object,
                          new Mock<ICombatObject>().Object,
-                         35m);
+                         35m,
+                         1,
+                         1);
 
             battle.Raise(m => m.ActionAttacked += null,
                          battle.Object,
@@ -227,7 +239,9 @@ namespace Testing.ActionsTests
                          new Mock<ICombatObject>().Object,
                          gateGroup.Object,
                          new Mock<ICombatObject>().Object,
-                         5m);
+                         5m,
+                         1,
+                         1);
 
             // Attack from defense which should be totally ignored
             battle.Raise(m => m.ActionAttacked += null,
@@ -237,7 +251,9 @@ namespace Testing.ActionsTests
                          new Mock<ICombatObject>().Object,
                          attackGroup1.Object,
                          new Mock<ICombatObject>().Object,
-                         5000m);
+                         5000m,
+                         1,
+                         1);
 
             // Send event that gate is dead
             battle.Raise(m => m.GroupKilled += null, battle.Object, gateGroup.Object);

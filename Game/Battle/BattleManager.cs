@@ -31,11 +31,11 @@ namespace Game.Battle
 
         public const string DB_TABLE = "battle_managers";
 
-        private readonly BattleFormulas battleFormulas;
-
-        private readonly IBattleOrder battleOrder;
+        private readonly IBattleFormulas battleFormulas;
 
         private readonly IBattleRandom battleRandom;
+
+        private readonly IBattleOrder battleOrder;
 
         private readonly object battleLock = new object();
 
@@ -60,8 +60,8 @@ namespace Game.Battle
                              IDbManager dbManager,
                              IBattleReport battleReport,
                              ICombatListFactory combatListFactory,
-                             BattleFormulas battleFormulas,
-                             IBattleOrder battlerOrder,
+                             IBattleFormulas battleFormulas,
+                             IBattleOrder battleOrder,
                              IBattleRandom battleRandom)
         {
 
@@ -79,9 +79,9 @@ namespace Game.Battle
 
             this.rewardStrategy = rewardStrategy;
             this.dbManager = dbManager;
+            this.battleOrder = battleOrder;
             this.battleFormulas = battleFormulas;
             this.battleRandom = battleRandom;
-            battleOrder = battlerOrder;
         }
 
         public uint BattleId { get; private set; }
@@ -200,7 +200,7 @@ namespace Game.Battle
                 }
 
                 roundsLeft = Math.Max(roundsLeft, 1);
-                errorParams = new[] {roundsLeft.ToString()};
+                errorParams = new[] {roundsLeft.ToString(CultureInfo.InvariantCulture)};
                 return Error.BattleViewableInRounds;
             }
         }
@@ -511,9 +511,10 @@ namespace Game.Battle
 
                 #endregion
 
-                int attackIndex = 0;
-                foreach (var defender in currentDefenders)
+                for (int attackIndex = 0; attackIndex < currentDefenders.Count; attackIndex++)
                 {
+                    var defender = currentDefenders[attackIndex];
+
                     // Make sure the target is still in the battle (they can leave if someone else in the group took dmg and caused the entire group to leave)
                     // We just skip incase they left while we were attacking
                     // which means if the attacker is dealing splash they may deal less hits in this fringe case
@@ -523,15 +524,32 @@ namespace Game.Battle
                     }
 
                     // Target is still in battle, attack it
+                    decimal carryOverDmg;
                     AttackTarget(offensiveCombatList,
                                  defensiveCombatList,
                                  attackerGroup,
                                  attackerObject,
                                  sideAttacking,
                                  defender,
-                                 attackIndex);
+                                 attackIndex,
+                                 out carryOverDmg);
 
-                    attackIndex++;
+                    // Add another target if we have to carry over some dmg and our current hit isnt from a carry over already
+                    if (carryOverDmg > 0m && !defender.DamageCarryOverPercentage.HasValue)
+                    {
+                        List<CombatList.Target> carryOverDefender;
+                        defensiveCombatList.GetBestTargets(BattleId,
+                                                           attackerObject,
+                                                           out carryOverDefender,
+                                                           1);
+
+                        if (carryOverDefender.Count > 0)
+                        {
+                            var target = carryOverDefender.First();
+                            target.DamageCarryOverPercentage = carryOverDmg;
+                            currentDefenders.Insert(attackIndex + 1, target);
+                        }
+                    }
                 }
 
                 // Just a safety check
@@ -624,13 +642,22 @@ namespace Game.Battle
                                             ICombatList defensiveCombatList,
                                             ICombatGroup attackerGroup,
                                             ICombatObject attacker,
-                                            BattleManager.BattleSide sideAttacking,
+                                            BattleSide sideAttacking,
                                             CombatList.Target target,
-                                            int attackIndex)
+                                            int attackIndex,
+                                            out decimal carryOverDmg)
         {
-            #region Damage
+            var attackerCount = attacker.Count;
+            var targetCount = target.CombatObject.Count;
+
+            #region Damage            
 
             decimal dmg = battleFormulas.GetAttackerDmgToDefender(attacker, target.CombatObject);
+            
+            if (target.DamageCarryOverPercentage.HasValue)
+            {
+                dmg *= target.DamageCarryOverPercentage.Value;
+            }
 
             decimal actualDmg;
             target.CombatObject.CalcActualDmgToBeTaken(offensiveCombatList,
@@ -639,11 +666,19 @@ namespace Game.Battle
                                                        dmg,
                                                        attackIndex,
                                                        out actualDmg);
-            actualDmg = Math.Min(target.CombatObject.Hp, actualDmg);
-
+            
             Resource defenderDroppedLoot;
             int attackPoints;
             int initialCount = target.CombatObject.Count;
+
+            carryOverDmg = 0;
+            if (dmg > 0 && target.CombatObject.Hp - actualDmg < 0m)
+            {
+                carryOverDmg = (actualDmg - target.CombatObject.Hp) / dmg;
+            }
+
+            actualDmg = Math.Min(target.CombatObject.Hp, actualDmg);
+
             target.CombatObject.TakeDamage(actualDmg, out defenderDroppedLoot, out attackPoints);
             if (initialCount > target.CombatObject.Count)
             {
@@ -675,7 +710,7 @@ namespace Game.Battle
             if (sideAttacking == BattleSide.Attack)
             {
                 // Only give loot if we are attacking the first target in the list
-                Resource loot = new Resource();
+                Resource loot;
                 rewardStrategy.RemoveLoot(this, attackIndex, attacker, target.CombatObject, out loot);
 
                 if (attackPoints > 0 || (loot != null && !loot.Empty))
@@ -700,7 +735,7 @@ namespace Game.Battle
 
             bool isDefenderDead = target.CombatObject.IsDead;
 
-            ActionAttacked(this, sideAttacking, attackerGroup, attacker, target.Group, target.CombatObject, actualDmg);
+            ActionAttacked(this, sideAttacking, attackerGroup, attacker, target.Group, target.CombatObject, actualDmg, attackerCount, targetCount);
 
             if (isDefenderDead)
             {
@@ -756,7 +791,9 @@ namespace Game.Battle
                 ICombatObject attacker,
                 ICombatGroup targetGroup,
                 ICombatObject target,
-                decimal damage);
+                decimal damage,
+                int attackerCount,
+                int targetCount);
 
         public delegate void OnBattle(IBattleManager battle, ICombatList attackers, ICombatList defenders);
 

@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Game.Data;
@@ -28,7 +29,7 @@ namespace Game.Util.Locking
         [ThreadStatic]
         private static DefaultMultiObjectLock currentLock;
 
-        private object[] lockedObjects = new object[] {};
+        private List<object> lockedObjects = new List<object>(0);
 
         public DefaultMultiObjectLock()
                 : this(Monitor.Enter, Monitor.Exit)
@@ -50,7 +51,7 @@ namespace Game.Util.Locking
 
             currentLock = this;
             
-            lockedObjects = new object[list.Length];
+            lockedObjects = new List<object>(list.Length);
 
             SortLocks(list);
             for (int i = 0; i < list.Length; ++i)
@@ -63,7 +64,7 @@ namespace Game.Util.Locking
                 }
 
                 lockEnter(lockObj);
-                lockedObjects[i] = lockObj;
+                lockedObjects.Add(lockObj);
             }
 
             return this;
@@ -82,12 +83,12 @@ namespace Game.Util.Locking
 
         public void UnlockAll()
         {            
-            for (int i = lockedObjects.Length - 1; i >= 0; --i)
+            for (int i = lockedObjects.Count - 1; i >= 0; --i)
             {
                 lockExit(lockedObjects[i]);
             }
 
-            lockedObjects = new object[] {};
+            lockedObjects = new List<object>(0);
             
             currentLock = null;
         }
@@ -97,7 +98,7 @@ namespace Game.Util.Locking
             return currentLock != null && currentLock.lockedObjects.Any(lck => lck == obj.Lock);
         }
 
-        private static int CompareObject(ILockable x, ILockable y)
+        public static int CompareObject(ILockable x, ILockable y)
         {
             var hashDiff = x.Hash.CompareTo(y.Hash);
             if (hashDiff != 0)

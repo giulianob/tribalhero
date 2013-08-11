@@ -361,7 +361,12 @@ namespace Game.Data
 
                 if (Global.FireEvents && Id > 0)
                 {
-                    World.Current.Regions.CityRegions.GetCityRegion(X, Y).MarkAsDirty();
+                    CityRegion cityRegion;
+                    if (World.Current.Regions.CityRegions.TryGetCityRegion(X, Y, out cityRegion))
+                    {
+                        cityRegion.MarkAsDirty();
+                    }
+
                     PointUpdate();
                 }
             }

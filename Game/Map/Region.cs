@@ -36,6 +36,8 @@ namespace Game.Map
 
         private byte[] objects;
 
+        private int regionLastUpdated;
+
         public ReaderWriterLockSlim Lock
         {
             get
@@ -62,7 +64,7 @@ namespace Game.Map
         {
             objLock.EnterWriteLock();
             objlist.AddGameObject(obj);
-            isDirty = true;
+            MarkAsDirty();
             objLock.ExitWriteLock();
 
             return true;
@@ -72,7 +74,7 @@ namespace Game.Map
         {
             objLock.EnterWriteLock();
             objlist.Remove(obj);
-            isDirty = true;
+            MarkAsDirty();
             objLock.ExitWriteLock();
         }
 
@@ -80,7 +82,7 @@ namespace Game.Map
         {
             objLock.EnterWriteLock();
             objlist.Remove(obj, origX, origY);
-            isDirty = true;
+            MarkAsDirty();
             objLock.ExitWriteLock();
         }
 
@@ -92,7 +94,7 @@ namespace Game.Map
                 objlist.Remove(obj, origX, origY);
                 objlist.AddGameObject(obj);
             }
-            isDirty = true;
+            MarkAsDirty();
             objLock.ExitWriteLock();
         }
 
@@ -100,6 +102,14 @@ namespace Game.Map
         {
             objLock.EnterWriteLock();
             isDirty = true;
+
+            if (regionLastUpdated == int.MaxValue)
+            {
+                regionLastUpdated = 0;
+            }
+
+            regionLastUpdated++;
+
             objLock.ExitWriteLock();
         }
 
@@ -126,10 +136,11 @@ namespace Game.Map
             {
                 // Players must always be locked first
                 objLock.EnterReadLock();
-                var playersInRegion = objlist.OfType<IGameObject>().Select(p => p.City.Owner).Where(p => p != null).Distinct().ToArray<ILockable>();
+                var playersInRegion = objlist.ToArray<ILockable>();
+                var currentLastUpdated = regionLastUpdated;
                 objLock.ExitReadLock();
 
-                using (var lck = lockerFactory().Lock(playersInRegion))
+                using (lockerFactory().Lock(playersInRegion))
                 {
                     // Enter write lock but give up all locks if we cant in 1 second just to be safe
                     if (!objLock.TryEnterWriteLock(1000))
@@ -137,39 +148,43 @@ namespace Game.Map
                         continue;
                     }
 
-                    var lockedPlayersInRegion = objlist.OfType<IGameObject>().Select(p => p.City.Owner).Where(p => p != null).Distinct().ToArray<ILockable>();
-                    lck.SortLocks(lockedPlayersInRegion);
+                    // ReSharper disable ConditionIsAlwaysTrueOrFalse
+                    // ReSharper disable HeuristicUnreachableCode
+                    if (!isDirty)
+                    {
+                        objLock.ExitWriteLock();
+                        break;
+                    }
+                    // ReSharper restore HeuristicUnreachableCode
+                    // ReSharper restore ConditionIsAlwaysTrueOrFalse
 
-                    if (!playersInRegion.SequenceEqual(lockedPlayersInRegion))
+                    if (currentLastUpdated != regionLastUpdated)
                     {
                         objLock.ExitWriteLock();
                         continue;
                     }
 
-                    if (isDirty)
+                    using (var ms = new MemoryStream(map.Length))
                     {
-                        using (var ms = new MemoryStream(map.Length))
+                        var bw = new BinaryWriter(ms);
+
+                        // Write map tiles
+                        bw.Write(map);
+
+                        // Write objects
+                        bw.Write(objlist.Count);
+
+                        foreach (ISimpleGameObject obj in objlist)
                         {
-                            var bw = new BinaryWriter(ms);
-
-                            // Write map tiles
-                            bw.Write(map);
-
-                            // Write objects
-                            bw.Write(objlist.Count);
-
-                            foreach (ISimpleGameObject obj in objlist)
-                            {
-                                // TODO: Make this not require a packet
-                                Packet dummyPacket = new Packet();
-                                PacketHelper.AddToPacket(obj, dummyPacket, true);
-                                bw.Write(dummyPacket.GetPayload());
-                            }
-
-                            ms.Position = 0;
-                            objects = ms.ToArray();
-                            isDirty = false;
+                            // TODO: Make this not require a packet
+                            Packet dummyPacket = new Packet();
+                            PacketHelper.AddToPacket(obj, dummyPacket, true);
+                            bw.Write(dummyPacket.GetPayload());
                         }
+
+                        ms.Position = 0;
+                        objects = ms.ToArray();
+                        isDirty = false;
                     }
 
                     objLock.ExitWriteLock();
@@ -196,7 +211,7 @@ namespace Game.Map
             map[idx] = ushortArr[0];
             map[idx + 1] = ushortArr[1];
 
-            isDirty = true;
+            MarkAsDirty();
             objLock.ExitWriteLock();
         }
 

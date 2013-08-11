@@ -18,11 +18,6 @@ namespace Game.Battle
 
     public class BattleLocation
     {
-        public BattleLocation(string type, uint id)
-                : this((BattleLocationType)Enum.Parse(typeof(BattleLocationType), type), id)
-        {
-        }
-
         public BattleLocation(BattleLocationType type, uint id)
         {
             Type = type;

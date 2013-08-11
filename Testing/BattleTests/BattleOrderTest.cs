@@ -18,15 +18,21 @@ namespace Testing.BattleTests
             get
             {
                 yield return new object[] { 0, 10, 10, BattleManager.BattleSide.Attack};
-                yield return new object[] { 9, 10, 10, BattleManager.BattleSide.Attack };
-                yield return new object[] { 10, 10, 10, BattleManager.BattleSide.Defense };
+                yield return new object[] { 9, 10, 30, BattleManager.BattleSide.Attack };
+                yield return new object[] { 10, 10, 5, BattleManager.BattleSide.Defense };
                 yield return new object[] { 11, 10, 10, BattleManager.BattleSide.Defense };
-                yield return new object[] { 19, 10, 10, BattleManager.BattleSide.Defense };
+                
+                yield return new object[] { 9, 10, 20, BattleManager.BattleSide.Attack };
+                yield return new object[] { 10, 10, 20, BattleManager.BattleSide.Defense };
+                yield return new object[] { 19, 10, 20, BattleManager.BattleSide.Defense };
+
+                yield return new object[] { 20, 20, 10, BattleManager.BattleSide.Defense };
+                yield return new object[] { 19, 20, 10, BattleManager.BattleSide.Attack };
             }
         }
 
         [Theory, PropertyData("TestRandomness")]
-        public void TestRandomessLessThanAttackerUpkeep(int randomness, int attackerUpkeep, int defenderUpkeep, BattleManager.BattleSide side)
+        public void NextObject_WhenCalled_CorrectAttackerIsReturned(int randomness, int attackerUpkeep, int defenderUpkeep, BattleManager.BattleSide side)
         {
             var random = Substitute.For<IBattleRandom>();
             random.Next(Arg.Any<int>()).Returns(randomness);
@@ -49,6 +55,7 @@ namespace Testing.BattleTests
             result.Should().Be(true);
             outCombatObject.Should().Be(side == BattleManager.BattleSide.Attack ? attackerObject : defenderObject);
             foundInGroup.Should().Be(side);
+            random.Received(1).Next(defenderUpkeep + attackerUpkeep);
         }
 
         [Theory, AutoNSubstituteData]

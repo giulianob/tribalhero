@@ -51,10 +51,9 @@ namespace Game.Battle
 
         public int UpkeepNotParticipated(uint round)
         {
-            var a =  AllAliveCombatObjects();
-            var b = a.Where(obj => obj.LastRound <= round);
-            var c = b.Sum(x => x.Upkeep);
-            return c;
+            return AllAliveCombatObjects()
+                    .Where(obj => obj.LastRound <= round)
+                    .Sum(x => x.Upkeep);
         }
 
         public bool HasInRange(ICombatObject attacker)

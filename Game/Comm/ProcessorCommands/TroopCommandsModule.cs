@@ -10,7 +10,6 @@ using Game.Data.Stronghold;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
-using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
@@ -31,8 +30,6 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly ITroopObjectInitializerFactory troopObjectInitializerFactory;
 
-        private readonly Procedure procedure;
-
         private readonly StructureFactory structureFactory;
 
         public TroopCommandsModule(IActionFactory actionFactory,
@@ -40,8 +37,7 @@ namespace Game.Comm.ProcessorCommands
                                    IGameObjectLocator gameObjectLocator,
                                    Formula formula,
                                    ILocker locker,
-                                   ITroopObjectInitializerFactory troopObjectInitializerFactory,
-                                   Procedure procedure)
+                                   ITroopObjectInitializerFactory troopObjectInitializerFactory)
         {
             this.actionFactory = actionFactory;
             this.structureFactory = structureFactory;
@@ -49,7 +45,6 @@ namespace Game.Comm.ProcessorCommands
             this.formula = formula;
             this.locker = locker;
             this.troopObjectInitializerFactory = troopObjectInitializerFactory;
-            this.procedure = procedure;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -73,12 +68,20 @@ namespace Game.Comm.ProcessorCommands
             uint cityId;
             ushort troopId;
             uint strongholdId;
+            bool completeRetreat;
+            ISimpleStub unitsToRetreat = null;
 
             try
             {
                 cityId = packet.GetUInt32();
                 troopId = packet.GetUInt16();
                 strongholdId = packet.GetUInt32();
+                completeRetreat = packet.GetByte() == 1;
+
+                if (!completeRetreat)
+                {
+                    unitsToRetreat = PacketHelper.ReadStub(packet, FormationType.Defense);
+                }
             }
             catch (Exception)
             {
@@ -132,8 +135,19 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
+                ITroopObjectInitializer troopInitializer;
+
+                if (completeRetreat || unitsToRetreat.TotalCount == stub.TotalCount)
+                {
+                    troopInitializer = troopObjectInitializerFactory.CreateStationedTroopObjectInitializer(stub);
+                }
+                else
+                {
+                    troopInitializer = troopObjectInitializerFactory.CreateStationedPartialTroopObjectInitializer(stub, unitsToRetreat);                    
+                }
+
                 var ra = actionFactory.CreateStrongholdDefenseChainAction(cityId,
-                                                                          troopObjectInitializerFactory.CreateStationedTroopObjectInitializer(stub),
+                                                                          troopInitializer,
                                                                           strongholdId);
 
                 Error ret = city.Worker.DoPassive(city, ra, true);
@@ -781,7 +795,7 @@ namespace Game.Comm.ProcessorCommands
 
                 ITroopObjectInitializer troopInitializer;
 
-                if (completeRetreat)
+                if (completeRetreat || unitsToRetreat.TotalCount == stub.TotalCount)
                 {
                     troopInitializer = troopObjectInitializerFactory.CreateStationedTroopObjectInitializer(stub);
                 }

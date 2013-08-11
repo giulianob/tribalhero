@@ -38,7 +38,13 @@ namespace Game.Data.Troop.Initializers
                 troopObject = newTroopObject;
                 return Error.Ok;
             }
-            
+
+            if (unitsToRetreat.TotalCount == 0)
+            {
+                troopObject = null;
+                return Error.TroopEmpty;
+            }
+
             if (stub.State != TroopState.Stationed)
             {
                 troopObject = null;

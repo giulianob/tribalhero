@@ -31,8 +31,6 @@ namespace Game.Battle
 
         IEnumerable<ILockable> LockList { get; }
 
-        IBattleOrder BattleOrder { get; }
-
         ICombatObject GetCombatObject(uint id);
 
         ICombatGroup GetCombatGroup(uint id);

@@ -39,7 +39,6 @@ namespace Game.Battle
                                        battleRandom);
 
             new BattleChannel(bm);
-            new BattleViewer(bm);
 
             bm.BattleReport.Battle = bm;
             return bm;
@@ -116,7 +115,6 @@ namespace Game.Battle
                                              battleRandom);
 
             new BattleChannel(bm);
-            new BattleViewer(bm);
 
             bm.BattleReport.Battle = bm;
             return bm;

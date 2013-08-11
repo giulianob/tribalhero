@@ -32,11 +32,9 @@ namespace Game.Battle.CombatObjects
 
         private readonly ushort type;
 
-        private readonly UnitFactory unitFactory;
-
         private ushort count;
 
-        private int upkeep;
+        private readonly int eachUnitUpkeep;
 
         public AttackCombatUnit(uint id,
                                 uint battleId,
@@ -53,12 +51,11 @@ namespace Game.Battle.CombatObjects
             this.formation = formation;
             this.type = type;
             this.count = count;
-            this.unitFactory = unitFactory;
             this.lvl = lvl;
 
             stats = troopObject.Stub.Template[type];
             LeftOverHp = stats.MaxHp;
-            upkeep = unitFactory.GetUnitStats(type, lvl).Upkeep * count;
+            eachUnitUpkeep = unitFactory.GetUnitStats(type, lvl).Upkeep;
         }
 
         /// <summary>
@@ -79,7 +76,7 @@ namespace Game.Battle.CombatObjects
         {
             LeftOverHp = leftOverHp;
             this.loot = loot;
-            upkeep = unitFactory.GetUnitStats(type, lvl).Upkeep * count;
+            eachUnitUpkeep = unitFactory.GetUnitStats(type, lvl).Upkeep * count;
         }
 
         public decimal LeftOverHp { get; set; }
@@ -120,7 +117,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return upkeep;
+                return eachUnitUpkeep * count;
             }
         }
 

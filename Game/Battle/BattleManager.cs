@@ -32,6 +32,9 @@ namespace Game.Battle
         public const string DB_TABLE = "battle_managers";
 
         private readonly BattleFormulas battleFormulas;
+
+        private readonly IBattleOrder battleOrder;
+
         private readonly IBattleRandom battleRandom;
 
         private readonly object battleLock = new object();
@@ -45,6 +48,10 @@ namespace Game.Battle
         private readonly Dictionary<string, object> properties = new Dictionary<string, object>();
 
         private readonly IRewardStrategy rewardStrategy;
+
+        private uint round;
+
+        private uint turn;
 
         public BattleManager(uint battleId,
                              BattleLocation location,
@@ -74,7 +81,7 @@ namespace Game.Battle
             this.dbManager = dbManager;
             this.battleFormulas = battleFormulas;
             this.battleRandom = battleRandom;
-            BattleOrder = battlerOrder;
+            battleOrder = battlerOrder;
         }
 
         public uint BattleId { get; private set; }
@@ -85,9 +92,31 @@ namespace Game.Battle
 
         public bool BattleStarted { get; set; }
 
-        public uint Round { get; set; }
+        public uint Round
+        {
+            get
+            {
+                return round;
+            }
+            set
+            {
+                round = value;
+                battleRandom.UpdateSeed(Round, Turn);
+            }
+        }
 
-        public uint Turn { get; set; }
+        public uint Turn
+        {
+            get
+            {
+                return turn;
+            }
+            set
+            {
+                turn = value;
+                battleRandom.UpdateSeed(Round, Turn);
+            }
+        }
 
         public ICombatList Attackers { get; private set; }
 
@@ -114,8 +143,6 @@ namespace Game.Battle
                 return locks;
             }
         }
-
-        public IBattleOrder BattleOrder { get; private set; }
 
         public ICombatObject GetCombatObject(uint id)
         {
@@ -418,7 +445,7 @@ namespace Game.Battle
                     #region Find Attacker
 
                     var newRound =
-                            !BattleOrder.NextObject(Round,
+                            !battleOrder.NextObject(Round,
                                                     Attackers,
                                                     Defenders,
                                                     out attackerObject,
@@ -483,8 +510,6 @@ namespace Game.Battle
                 while (true);
 
                 #endregion
-
-                battleRandom.UpdateSeed(Round, Turn);
 
                 int attackIndex = 0;
                 foreach (var defender in currentDefenders)
@@ -605,9 +630,7 @@ namespace Game.Battle
         {
             #region Damage
 
-            decimal dmg = battleFormulas.GetAttackerDmgToDefender(attacker,
-                                                                  target.CombatObject,
-                                                                  sideAttacking == BattleSide.Defense);
+            decimal dmg = battleFormulas.GetAttackerDmgToDefender(attacker, target.CombatObject);
 
             decimal actualDmg;
             target.CombatObject.CalcActualDmgToBeTaken(offensiveCombatList,

@@ -39,7 +39,7 @@ namespace Game.Battle
         {
             double delta = Math.Max(0, (double)attackersUpkeep / defendersUpkeep);
             double effectiveness = attackersUpkeep > 200 ? 1 : (double)attackersUpkeep / 200;
-            ILogger logger = LoggerFactory.Current.GetLogger("Game.Battle.BattleViewer");
+            
             int missChance;
             if (delta < 1)
             {
@@ -84,7 +84,7 @@ namespace Game.Battle
             {
                 return dmg;
             }
-            logger.Info("Attacker[{0}] Missed Defender[{1}] original dmg[{2}]", attackersUpkeep, defendersUpkeep, dmg);
+            
             return dmg / 2m;
         }
 
@@ -95,7 +95,7 @@ namespace Game.Battle
             return units[Math.Min(level, units.Length - 1)];
         }
 
-        public virtual decimal GetAttackerDmgToDefender(ICombatObject attacker, ICombatObject target, bool useDefAsAtk)
+        public virtual decimal GetAttackerDmgToDefender(ICombatObject attacker, ICombatObject target)
         {
             decimal atk = attacker.Stats.Atk;
             decimal rawDmg = (atk * attacker.Count);

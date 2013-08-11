@@ -516,7 +516,7 @@ namespace Game.Data.Troop
 
                 if (!Data.ContainsKey(originalFormation))
                 {
-                    throw new Exception("Trying to move from invalid formation");
+                    throw new ArgumentException("originalFormation does not exist");
                 }
 
                 if (!AddFormation(newFormation))

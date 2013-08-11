@@ -17,8 +17,10 @@ namespace Testing.TroopTests
         [Theory, AutoNSubstituteData]
         public void GetTroopObject_WhenStubIsNotStationed_ReturnsError(
                 [Frozen] ITroopStub stub,
+                [Frozen] ISimpleStub unitsToRetreat,
                 StationedPartialTroopObjectInitializer troopInitializer)
         {
+            unitsToRetreat.TotalCount.Returns<ushort>(1);
             stub.State.Returns(TroopState.BattleStationed);
 
             ITroopObject troopObject;
@@ -32,6 +34,7 @@ namespace Testing.TroopTests
                 [Frozen] ISimpleStub unitsToRetreat,
                 StationedPartialTroopObjectInitializer troopInitializer)
         {
+            unitsToRetreat.TotalCount.Returns<ushort>(1);
             stub.State.Returns(TroopState.Stationed);
             stub.RemoveFromFormation(FormationType.Defense, unitsToRetreat).Returns(false);
 
@@ -41,10 +44,26 @@ namespace Testing.TroopTests
         }
 
         [Theory, AutoNSubstituteData]
-        public void GetTroopObject_WhenAbleToRetreat_AddsNewTroopObjectToCity(
+        public void GetTroopObject_WhenUnitsToRetreatIsEmpty_ReturnsError(
                 [Frozen] ITroopStub stub,
+                [Frozen] ISimpleStub unitsToRetreat,
                 StationedPartialTroopObjectInitializer troopInitializer)
         {
+            stub.State.Returns(TroopState.Stationed);
+            unitsToRetreat.TotalCount.Returns<ushort>(0);
+
+            ITroopObject troopObject;
+            troopInitializer.GetTroopObject(out troopObject).Should().Be(Error.TroopEmpty);
+            troopObject.Should().BeNull();
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void GetTroopObject_WhenAbleToRetreat_AddsNewTroopObjectToCity(
+                [Frozen] ITroopStub stub,
+                [Frozen] ISimpleStub unitsToRetreat,
+                StationedPartialTroopObjectInitializer troopInitializer)
+        {
+            unitsToRetreat.TotalCount.Returns<ushort>(1);
             stub.State.Returns(TroopState.Stationed);
             stub.RemoveFromFormation(FormationType.Defense, Arg.Any<ISimpleStub>()).Returns(true);
 
@@ -63,6 +82,7 @@ namespace Testing.TroopTests
                 [Frozen] ISimpleStub unitsToRetreat,
                 StationedPartialTroopObjectInitializer troopInitializer)
         {
+            unitsToRetreat.TotalCount.Returns<ushort>(1);
             stub.State.Returns(TroopState.Stationed);
             stub.RemoveFromFormation(FormationType.Defense, unitsToRetreat).Returns(true);
 
@@ -80,8 +100,11 @@ namespace Testing.TroopTests
         public void GetTroopObject_WhenAbleToRetreat_AddsNewTroopObjectToWorld(
                 [Frozen] ITroopStub stub,
                 [Frozen] IWorld world,
+                [Frozen] ISimpleStub unitsToRetreat,
                 StationedPartialTroopObjectInitializer troopInitializer)
         {
+            unitsToRetreat.TotalCount.Returns<ushort>(1);
+
             stub.State.Returns(TroopState.Stationed);
             stub.RemoveFromFormation(FormationType.Defense, Arg.Any<ISimpleStub>()).Returns(true);
 
@@ -98,8 +121,11 @@ namespace Testing.TroopTests
         [Theory, AutoNSubstituteData]
         public void GetTroopObject_WhenAbleToRetreat_LoadsStats(
                 [Frozen] ITroopStub stub,                
+                [Frozen] ISimpleStub unitsToRetreat,
                 IFixture fixture)
         {
+            unitsToRetreat.TotalCount.Returns<ushort>(1);
+
             var formula = Substitute.For<Formula>();
             formula.GetTroopRadius(stub, null).Returns<byte>(34);
             formula.GetTroopSpeed(stub).Returns(44);
@@ -119,8 +145,11 @@ namespace Testing.TroopTests
         [Theory, AutoNSubstituteData]
         public void GetTroopObject_WhenCalledTwice_ReturnsSameInstance(
                 [Frozen] ITroopStub stub,                
+                [Frozen] ISimpleStub unitsToRetreat,
                 StationedPartialTroopObjectInitializer troopInitializer)
         {
+            unitsToRetreat.TotalCount.Returns<ushort>(1);
+
             stub.State.Returns(TroopState.Stationed);
             stub.RemoveFromFormation(FormationType.Defense, Arg.Any<ISimpleStub>()).Returns(true);
 
@@ -135,8 +164,10 @@ namespace Testing.TroopTests
         [Theory, AutoNSubstituteData]
         public void DeleteTroopObject_WhenTroopObjectCreated_AddsUnitsBackToOriginalTroop(
                 [Frozen] ITroopStub stub,                
+                [Frozen] ISimpleStub unitsToRetreat,
                 StationedPartialTroopObjectInitializer troopInitializer)
         {
+            unitsToRetreat.TotalCount.Returns<ushort>(1);
             stub.State.Returns(TroopState.Stationed);
             stub.RemoveFromFormation(FormationType.Defense, Arg.Any<ISimpleStub>()).Returns(true);
             stub.City.Troops.Remove(Arg.Any<ushort>()).Returns(true);
@@ -158,8 +189,10 @@ namespace Testing.TroopTests
         public void DeleteTroopObject_WhenTroopObjectCreated_RemovedFromWorld(
                 [Frozen] ITroopStub stub,                
                 [Frozen] IWorld world,
+                [Frozen] ISimpleStub unitsToRetreat,
                 StationedPartialTroopObjectInitializer troopInitializer)
         {
+            unitsToRetreat.TotalCount.Returns<ushort>(1);
             stub.State.Returns(TroopState.Stationed);
             stub.RemoveFromFormation(FormationType.Defense, Arg.Any<ISimpleStub>()).Returns(true);
             stub.City.Troops.Remove(Arg.Any<ushort>()).Returns(true);
@@ -175,8 +208,10 @@ namespace Testing.TroopTests
         [Theory, AutoNSubstituteData]
         public void DeleteTroopObject_WhenTroopObjectCreated_ScheduleRemovesTheTroopObject(
                 [Frozen] ITroopStub stub,                
+                [Frozen] ISimpleStub unitsToRetreat,
                 StationedPartialTroopObjectInitializer troopInitializer)
         {
+            unitsToRetreat.TotalCount.Returns<ushort>(1);
             stub.State.Returns(TroopState.Stationed);
             stub.RemoveFromFormation(FormationType.Defense, Arg.Any<ISimpleStub>()).Returns(true);
             stub.City.Troops.Remove(Arg.Any<ushort>()).Returns(true);
@@ -192,8 +227,10 @@ namespace Testing.TroopTests
         [Theory, AutoNSubstituteData]
         public void DeleteTroopObject_WhenTroopObjectFailsToRemoveFromCity_DoesNotAddUnitsBackToStub(
                 [Frozen] ITroopStub stub,                
+                [Frozen] ISimpleStub unitsToRetreat,
                 StationedPartialTroopObjectInitializer troopInitializer)
         {
+            unitsToRetreat.TotalCount.Returns<ushort>(1);
             stub.State.Returns(TroopState.Stationed);
             stub.RemoveFromFormation(FormationType.Defense, Arg.Any<ISimpleStub>()).Returns(true);
 

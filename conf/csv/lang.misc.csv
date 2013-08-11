@@ -260,12 +260,13 @@ UNIT_MANAGE_HIDE_NEW_UNITS,Hide newly trained units
 UNIT_MANAGE_HIDE_NEW_UNITS_TOOLTIP,"If selected, all newly trained units will go directly into hiding and will not defend your city if it is attacked. Units in hiding consume an extra 25% upkeep."
 ,
 TRANSFER_TITLE,Troop transfer
-TRANSFER_NO_OTHER_STRONGHOLD,Your tribe has no other stronghold!
+TRANSFER_NO_OTHER_STRONGHOLD,Your tribe has no other strongholds that this troop can be transferred to.
 TRANSFER_CHOOSE_STRONGHOLD,Choose a stronghold:
-TRANSFER_ARRIVE_IN,Arrive in {0}
+TRANSFER_ARRIVE_IN,Arrives in {0}
 TRANSFER_SEND,Send
 TRANSFER_CANCEL,Cancel
 TRANSFER_WARNING,"If the stronghold is lost to another tribe before the troop arrives, the troop will be sent back to its home city."
+TRANSFER_REQUIRED_ERROR,You have to choose at least some to transfer. Drag the units from the troop to transfer them.
 ,
 TRIBE_LOG_1,Tribe upgraded to level {0}.
 TRIBE_LOG_2,"{0} contributed {1} crop, {2} gold, {3} iron, and {4} wood."
@@ -287,3 +288,8 @@ RETREAT_PARTIAL_DIALOG_TARGET_TAB,Units to Retreat
 ,
 RETREAT_TROOP_DIALOG_TITLE,Retreat
 RETREAT_TROOP_DIALOG_REQUIRED_ERROR,You have to choose at least some to retreat. Drag the units from the troop to retreat them.
+,
+TRANSFER_PARTIAL_DIALOG_SELECT_ALL,Transfer entire troop
+TRANSFER_PARTIAL_DIALOG_SELECT_PARTIAL,Let me choose which units to transfer
+TRANSFER_PARTIAL_DIALOG_SOURCE_TAB,Stationed Troops
+TRANSFER_PARTIAL_DIALOG_TARGET_TAB,Units to Transfer

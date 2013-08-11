@@ -405,13 +405,17 @@
 			session.write(packet, onSwitchAttackMode, { stub:troopStub, mode:mode } );
 		}
 		
-		public function troopTransfer(troopStub: TroopStub, strongholdId: int): void {
+		public function troopTransfer(shouldRetreatAll: Boolean, unitsToTransfer: TroopStub, cityId: int, troopId: int, strongholdId: int): void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TROOP_TRANSFER;
 			
-			packet.writeUInt(troopStub.cityId);
-			packet.writeUShort(troopStub.id);
+			packet.writeUInt(cityId);
+			packet.writeUShort(troopId);
 			packet.writeUInt(strongholdId);
+            packet.writeByte(shouldRetreatAll ? 1 : 0);
+            if (!shouldRetreatAll) {
+                writeTroop(unitsToTransfer, packet);
+            }
 			
 			session.write(packet, mapComm.catchAllErrors);
 			

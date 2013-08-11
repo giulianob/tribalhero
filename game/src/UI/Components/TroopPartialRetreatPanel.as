@@ -8,7 +8,6 @@ package src.UI.Components {
     import org.aswing.JTabbedPane;
     import org.aswing.SoftBoxLayout;
     import org.aswing.event.InteractiveEvent;
-    import org.aswing.event.SelectionEvent;
     import org.aswing.geom.IntDimension;
 
     import src.Global;
@@ -72,7 +71,7 @@ package src.UI.Components {
 
         public function getTroop(): TroopStub
         {
-            if (rdRetreatAll.isSelected()) {
+            if (!rdRetreatPartial.isSelected()) {
                 return troop;
             }
 
@@ -122,6 +121,13 @@ package src.UI.Components {
             radioGroup.appendAll(rdRetreatAll, rdRetreatPartial);
 
             pnlRetreatQuestion.appendAll(rdRetreatAll, rdRetreatPartial);
+        }
+
+        public function addChangeListener(listener: Function): void {
+            var self: TroopPartialRetreatPanel = this;
+            for each (var tilelist: SimpleTroopGridList in tilelists) {
+                tilelist.addEventListener(SimpleTroopGridList.UNIT_CHANGED, listener);
+            }
         }
     }
 }

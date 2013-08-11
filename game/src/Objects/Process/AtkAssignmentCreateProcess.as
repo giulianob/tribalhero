@@ -1,30 +1,27 @@
 package src.Objects.Process 
 {
-	import flash.events.Event;
-	import flash.geom.Point;
-	import org.aswing.JAdjuster;
-	import org.aswing.JButton;
-	import org.aswing.plaf.basic.BasicAdjusterUI;
-	import org.aswing.UIDefaults;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.MapUtil;
-	import src.Objects.BarbarianTribe;
-	import src.Objects.Effects.Formula;
-	import src.Objects.GameObject;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.Stronghold.Stronghold;
-	import src.Objects.StructureObject;
-	import src.Objects.Troop.TroopStub;
-	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
-	import src.UI.Cursors.GroundAttackCursor;
-	import src.UI.Dialog.AssignmentCreateDialog;
-	import src.UI.Dialog.AttackTroopDialog;
-	import src.UI.Dialog.InfoDialog;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
-	import src.Util.StringHelper;
-	
-	public class AtkAssignmentCreateProcess implements IProcess
+    import flash.events.Event;
+    import flash.geom.Point;
+
+    import org.aswing.JButton;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Map.MapUtil;
+    import src.Objects.BarbarianTribe;
+    import src.Objects.Effects.Formula;
+    import src.Objects.SimpleGameObject;
+    import src.Objects.Stronghold.Stronghold;
+    import src.Objects.StructureObject;
+    import src.Objects.Troop.TroopStub;
+    import src.UI.Cursors.GroundAttackCursor;
+    import src.UI.Dialog.AssignmentCreateDialog;
+    import src.UI.Dialog.AttackTroopDialog;
+    import src.UI.Dialog.InfoDialog;
+    import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
+    import src.Util.StringHelper;
+
+    public class AtkAssignmentCreateProcess implements IProcess
 	{		
 		private var attackDialog: AttackTroopDialog;		
 		private var target: SimpleGameObject;

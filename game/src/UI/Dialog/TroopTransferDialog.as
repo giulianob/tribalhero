@@ -10,10 +10,6 @@ package src.UI.Dialog
 	import src.UI.*;
 	import src.Util.*;
 	
-	/**
-	 * ...
-	 * @author Anthony Lam
-	 */
 	public class TroopTransferDialog extends GameJPanel
 	{
 		private var strongholds:Array;
@@ -57,7 +53,7 @@ package src.UI.Dialog
 			Global.gameContainer.showFrame(frame);
 			return frame;
 		}
-	
+
 		private function createUI(): void
 		{
 			title = StringHelper.localize("TRANSFER_TITLE");
@@ -97,10 +93,9 @@ package src.UI.Dialog
 			btnCancel.addActionListener(function():void {
 				getFrame().dispose();
 			});
-			pnlButtons.append(btnCancel);			
-		
+			pnlButtons.append(btnCancel);
+
 			append(pnlButtons);
 		}
 	}
-
 }

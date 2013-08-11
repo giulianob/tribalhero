@@ -1,16 +1,15 @@
 ﻿package src.UI.Components.BattleReport
 {
-	import flash.display.*;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.Troop.*;
-	import src.UI.LookAndFeel.*;
+    import flash.display.*;
 
-	public class BattleEventTroopGridCell extends JPanel implements GridListCell{
+    import org.aswing.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
+
+    import src.Objects.Factories.ObjectFactory;
+    import src.UI.LookAndFeel.*;
+
+    public class BattleEventTroopGridCell extends JPanel implements GridListCell{
 
 		protected var value: * ;
 		
@@ -24,7 +23,7 @@
 			this.value = data;
 
 			// Get Icon
-			var icon:DisplayObject = ObjectFactory.getSpriteEx(data.type, 1, true, true);
+			var icon:DisplayObject = ObjectFactory.getSpriteEx(data.type, 1, true);
 			var scale:Number = 40 / icon.height;
 			if (scale < 1)
 			{

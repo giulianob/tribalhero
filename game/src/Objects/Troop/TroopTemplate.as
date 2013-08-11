@@ -1,8 +1,9 @@
 ﻿package src.Objects.Troop
 {
-	import src.Objects.Factories.UnitFactory;
-	import src.Objects.Prototypes.UnitPrototype;
-	/**
+    import src.Objects.Factories.UnitFactory;
+    import src.Objects.Prototypes.UnitPrototype;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */

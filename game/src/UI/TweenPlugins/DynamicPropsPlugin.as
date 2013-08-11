@@ -6,10 +6,11 @@ package src.UI.TweenPlugins
  * AS3
  * UPDATES AND DOCUMENTATION AT: http://www.GreenSock.com
  **/
-		import com.greensock.*;
-		import com.greensock.core.*;
-		import com.greensock.plugins.TweenPlugin;
-/**
+
+    import com.greensock.*;
+    import com.greensock.plugins.TweenPlugin;
+
+    /**
  * If you'd like to tween something to a destination value that may change at any time,
  * DynamicPropsPlugin allows you to simply associate a function with a property so that
  * every time the tween is rendered, it calls that function to get the new destination value 

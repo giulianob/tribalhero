@@ -5,9 +5,7 @@
 */
 
 package src.Objects.Actions {
-	import src.Objects.SimpleGameObject;
-
-	public class CurrentAction {
+    public class CurrentAction {
 		
 		public var workerId: int;
 		public var startTime: int;
@@ -39,14 +37,10 @@ package src.Objects.Actions {
 		public static function compareId(a: *, value: int):int
 		{
 			return a.id - value;
-		}	
-		
-		public static function compareEndTime(a: *, value: int):int
-		{
-			return a.endTime - value;
-		}	
-		
-		public function toString() : String
+		}
+
+
+        public function toString() : String
 		{
 			return "";
 		}
@@ -55,11 +49,11 @@ package src.Objects.Actions {
 		{
 			return 0;
 		}
-		
-		public function isCancellable() : Boolean 
+
+		public function isCancellable() : Boolean
 		{
 			return true;
 		}
-	}
+    }
 	
 }

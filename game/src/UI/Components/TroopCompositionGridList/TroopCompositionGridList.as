@@ -1,23 +1,23 @@
 ﻿package src.UI.Components.TroopCompositionGridList
 {
-	import flash.display.*;
-	import flash.utils.Dictionary;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.ext.*;
-	import src.Map.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.Objects.Troop.*;
-	import src.UI.Tooltips.*;
-	
-	public class TroopCompositionGridList extends GridList
+    import flash.display.*;
+    import flash.utils.Dictionary;
+
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.ext.*;
+
+    import src.Map.*;
+    import src.Objects.Factories.*;
+    import src.Objects.Prototypes.*;
+    import src.Objects.Troop.*;
+    import src.UI.Tooltips.*;
+
+    public class TroopCompositionGridList extends GridList
 	{
-		private var city: City;
-		
-		private var formationType: int;
-		private var tooltip: Tooltip;
-		
+
+        private var formationType: int;
+
 		public function TroopCompositionGridList(troop: TroopStub, col: int, row: int)
 		{
 			super(new VectorListModel(), new GeneralGridListCellFactory(TroopCompositionGridCell), col, row);
@@ -43,7 +43,6 @@
 			var units: Dictionary = troop.toUnitsArray();
 			for (var unitType: Object in units)
 			{
-				var unitPrototype: UnitPrototype = UnitFactory.getPrototype(int(unitType), 1);
 				var icon: DisplayObject = UnitFactory.getSprite(int(unitType), 1, false) as DisplayObject;
 				icon.scaleX = 0.5;
 				icon.scaleY = 0.5;

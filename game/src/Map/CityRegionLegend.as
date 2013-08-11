@@ -1,29 +1,20 @@
 package src.Map 
 {
-    import org.aswing.JFrame;
-	import src.Util.StringHelper;
-	import flash.display.DisplayObject;
-	import flash.display.Sprite;
-	import flash.events.AsyncErrorEvent;
-	import org.aswing.AssetIcon;
-	import org.aswing.AssetPane;
-	import org.aswing.AsWingConstants;
-	import org.aswing.border.EmptyBorder;
-	import org.aswing.EmptyLayout;
-	import org.aswing.geom.IntDimension;
-	import org.aswing.GridLayout;
-	import org.aswing.Insets;
-	import org.aswing.JButton;
-	import org.aswing.JLabel;
-	import org.aswing.Icon;
-	import org.aswing.JPanel;
-	import org.aswing.SoftBox;
-	import org.aswing.SoftBoxLayout;
-	import src.Constants;
-	import src.Objects.Factories.ObjectFactory;
-	import src.UI.GameJBox;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	/**
+    import flash.display.DisplayObject;
+
+    import org.aswing.AsWingConstants;
+    import org.aswing.AssetIcon;
+    import org.aswing.Insets;
+    import org.aswing.JButton;
+    import org.aswing.JLabel;
+    import org.aswing.JPanel;
+    import org.aswing.SoftBoxLayout;
+    import org.aswing.border.EmptyBorder;
+
+    import src.UI.GameJBox;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    /**
 	 * ...
 	 * @author Anthony Lam
 	 */

@@ -1,23 +1,23 @@
 package src.Objects.Process 
 {
-	import src.Map.City;
-	import src.Objects.BarbarianTribe;
-	import src.Util.StringHelper;
-	import flash.events.Event;
-	import org.aswing.JButton;
-	import org.aswing.JOptionPane;
-	import src.Global;
-	import src.Objects.GameObject;
-	import src.Objects.Location;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.Stronghold.Stronghold;
-	import src.Objects.StructureObject;
-	import src.UI.Cursors.GroundAttackCursor;
-	import src.UI.Dialog.AttackTroopDialog;
-	import src.UI.Dialog.InfoDialog;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
+    import flash.events.Event;
 
-	public class AttackSendProcess implements IProcess
+    import org.aswing.JButton;
+    import org.aswing.JOptionPane;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Objects.BarbarianTribe;
+    import src.Objects.SimpleGameObject;
+    import src.Objects.Stronghold.Stronghold;
+    import src.Objects.StructureObject;
+    import src.UI.Cursors.GroundAttackCursor;
+    import src.UI.Dialog.AttackTroopDialog;
+    import src.UI.Dialog.InfoDialog;
+    import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
+    import src.Util.StringHelper;
+
+    public class AttackSendProcess implements IProcess
 	{		
 		private var attackDialog: AttackTroopDialog;		
 		private var target: SimpleGameObject;

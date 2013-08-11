@@ -1,24 +1,21 @@
 ﻿package src.Map
 {
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import flash.text.TextField;
-	import src.*;
-	import src.Map.*;
-	import src.Map.CityRegionFilters.CityRegionFilter;
-	import src.Objects.Factories.*;
-	import src.UI.Tooltips.*;
-	import src.Util.BinaryList.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
 
-	public class CityRegion extends Sprite
+    import src.*;
+    import src.Map.CityRegionFilters.CityRegionFilter;
+    import src.UI.Tooltips.*;
+
+    public class CityRegion extends Sprite
 	{
-		public static const DOT_SPRITE: String = "DOT_SPRITE_BLACK";
+
 
 		public var id: int;
 		private var globalX: int;
 		private var globalY: int;
-		private var objects: Array = new Array();
+		private var objects: Array = [];
 		private var filter: CityRegionFilter;
 
 		public function CityRegion(id: int, filter: CityRegionFilter)
@@ -51,11 +48,11 @@
 			for each(var obj: * in objects)			
 				Global.gameContainer.miniMap.objContainer.removeObject(obj);
 
-			objects = new Array();
+			objects = [];
 		}
 		
 		public function addRegionObject(type: int, groupId: int, objectId: int, objX: int, objY: int, extraProps: *) : CityRegionObject {		
-			var coord: Point = MapUtil.getMiniMapScreenCoord(objX, objY);
+			var coord: Point = TileLocator.getMiniMapScreenCoord(objX, objY);
 
 			var regionObject: CityRegionObject = new CityRegionObject(type, groupId, objectId);
 			regionObject.x = objX;

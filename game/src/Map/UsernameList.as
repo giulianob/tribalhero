@@ -1,11 +1,10 @@
 ﻿package src.Map {
-	import org.aswing.Component;
-	import org.aswing.Container;
-	import org.aswing.JLabel;
-	import src.Objects.Troop.*;
-	import src.Util.BinaryList.*;
+    import org.aswing.Component;
+    import org.aswing.JLabel;
 
-	/**
+    import src.Util.BinaryList.*;
+
+    /**
 	 * ...
 	 * @author Default
 	 */
@@ -13,7 +12,7 @@
 
 		private var commGetUsername: Function;
 
-		private var pending: Array = new Array();
+		private var pending: Array = [];
 
 		public function UsernameList(callback: Function) {
 			super(Username.sortOnId, Username.compare);
@@ -43,7 +42,7 @@
 					if (!found) {
 						var pendingObj: Object = new Object();
 						pendingObj.id = id;
-						pendingObj.callbacks = new Array();
+						pendingObj.callbacks = [];
 						(pendingObj.callbacks as Array).push(pass);
 
 						pending.push(pendingObj);

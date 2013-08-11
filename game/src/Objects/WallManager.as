@@ -1,14 +1,15 @@
 ﻿package src.Objects
 {
-	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.geom.Point;
-	import src.Global;
-	import src.Map.Map;
-	import src.Map.MapUtil;
-	import src.Objects.Factories.ObjectFactory;
+    import flash.display.DisplayObject;
+    import flash.events.Event;
 
-	public class WallManager
+    import src.Global;
+    import src.Map.Position;
+    import src.Map.ScreenPosition;
+    import src.Map.TileLocator;
+    import src.Objects.Factories.ObjectFactory;
+
+    public class WallManager
 	{
 		private static const WALL_WIDTH: int = 11;
 
@@ -322,7 +323,7 @@
         // Controls how many different wall styles we have for the same wall tile (e.g. one w/ vines, one w/o vines)
 		private static const WALL_VARIATIONS: int = 2;
 
-		public var objects: Array = new Array();
+		public var objects: Array = [];
 
 		private var parent: SimpleGameObject;
 		public var radius: int = 0;
@@ -345,7 +346,7 @@
 			for each(var obj: DisplayObject in objects)
 				Global.map.objContainer.removeObject(obj);			
 
-			objects = new Array();
+			objects = [];
 		}
 
 		public function draw(radius: int):void {						
@@ -361,7 +362,13 @@
 				return;
 			}
 
-			var pos: Point = MapUtil.getMapCoord(parent.objX, parent.objY);
+            var pos: Position = parent.primaryPosition.toPosition();
+
+            // For city wqlls just manually center it.. It's a bit ugly but we dont
+            // have the city info for the SImpleGameObject so we cant easily get the real city x/y at the moment
+            if (parent.size == 3) {
+                pos = pos.right();
+            }
 
 			var typeHash: int = wallTypeHash(pos.x, pos.y, radius);
 
@@ -379,47 +386,6 @@
 			}
 		}
 
-		public function addWallCallback(x: int, y: int, custom: *):void
-		{
-			var parentPos: Point = MapUtil.getMapCoord(parent.objX, parent.objY);
-
-			var dist: int = MapUtil.distance(parentPos.x, parentPos.y, x, y);
-
-			if (dist != custom) {
-				return;
-			}
-
-			var wall: String = "";
-
-			if (parentPos.y % 2 == 0)
-			{
-				if (x < parentPos.x && y < parentPos.y)
-				wall = "WALL_NW";
-				else if (x < parentPos.x && y > parentPos.y)
-				wall = "WALL_SW";
-				else if ((x > parentPos.x && y > parentPos.y) || (x== parentPos.x && y%2==1 && y > parentPos.y))
-				wall = "WALL_SE";
-				else if ((x > parentPos.x && y < parentPos.y) || (x == parentPos.x && y%2==1 && y < parentPos.y))
-				wall = "WALL_NE";
-			}
-			else
-			{
-				if ((x < parentPos.x && y < parentPos.y) || (x == parentPos.x && y%2==0 && y < parentPos.y))
-				wall = "WALL_NW";
-				else if (x < parentPos.x && y > parentPos.y || (x == parentPos.x && y%2==0 && y > parentPos.y))
-				wall = "WALL_SW";
-				else if (x > parentPos.x && y > parentPos.y)
-				wall = "WALL_SE";
-				else if (x > parentPos.x && y < parentPos.y || (parentPos.y%2 == 0 && x == parentPos.x && y < parentPos.y))
-				wall = "WALL_NE";
-			}
-
-			if (wall == "")
-			return;
-
-			pushWall(wall, x, y);
-		}
-
 		private function wallTypeHash(x: int, y: int, wallIdx: int) : int {
 			return Math.max(0, ((x * parent.groupId * 0x1f1f1f1f) ^ y) % WALLS[wallIdx].length);
 		}
@@ -429,9 +395,9 @@
 		}
 
 		private function pushWall(wallName: String, x: int, y: int) : void {
-			var pos: Point = MapUtil.getScreenCoord(x, y);
-			var wallName: String = "WALL_" + wallName + (wallName.charAt(0) == 'O' ? "" : "_" + wallHash(x, y).toString());
-			var wall: SimpleObject = ObjectFactory.getSimpleObject(wallName, pos.x, pos.y, false);
+			var pos: ScreenPosition = TileLocator.getScreenCoord(new Position(x, y));
+			wallName = "WALL_" + wallName + (wallName.charAt(0) == 'O' ? "" : "_" + wallHash(x, y).toString());
+			var wall: SimpleObject = ObjectFactory.getSimpleObject(wallName, pos.x, pos.y, 1, false);
 
 			Global.map.objContainer.addObject(wall);
 

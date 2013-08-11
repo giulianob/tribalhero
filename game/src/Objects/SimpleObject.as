@@ -1,24 +1,20 @@
 
 package src.Objects {
 
-	import com.greensock.easing.Ease;
-	import com.greensock.easing.Elastic;
-	import com.greensock.TweenMax;
-	import flash.display.Bitmap;
-	import flash.display.DisplayObject;
-	import flash.display.MovieClip;
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.TimerEvent;
-	import flash.filters.GlowFilter;
-	import flash.geom.Point;
-	import flash.utils.Timer;
-	import src.Constants;
-	import src.Map.Camera;
-	import src.UI.SmartMovieClip;
-	
-	public class SimpleObject extends SmartMovieClip {
+    import com.greensock.TweenMax;
+
+    import flash.display.DisplayObject;
+    import flash.display.MovieClip;
+    import flash.display.Sprite;
+    import flash.events.Event;
+    import flash.filters.GlowFilter;
+    import flash.geom.Point;
+
+    import src.Constants;
+    import src.Map.Position;
+    import src.Map.ScreenPosition;
+
+    public class SimpleObject extends MovieClip {
 		
 		public static const DISPOSED: String = "DISPOSED";
 		
@@ -31,18 +27,20 @@ package src.Objects {
 		
 		// This is the container where the objects sprite/image should go
 		public var spriteContainer: Sprite;
-		
-		private var _objX: int;
-		private var _objY: int;
+
+        public var primaryPosition: ScreenPosition = new ScreenPosition();
+
+        public var size: int;
 					
-		public function SimpleObject(objX: int, objY: int) {
+		public function SimpleObject(objX: int, objY: int, size: int) {
 			super();
 			
 			spriteContainer = new Sprite();
 			addChild(spriteContainer);
 			
 			this.objX = objX;
-			this.objY = objY;			
+            this.objY = objY;
+            this.size = size;
 		}
 		
 		public function copy(obj: SimpleObject): void {
@@ -61,8 +59,6 @@ package src.Objects {
 		}
 		
 		public function setObjectCount(count: int) : void {
-			var simpleObj: SimpleGameObject = this as SimpleGameObject;
-		
 			if (objectCount != null) {
 				removeChild(objectCount);			
 				objectCount = null;
@@ -179,28 +175,28 @@ package src.Objects {
 				return yDelta;
 			else
 				return 0;
-		}			
-		
+		}
+
 		public function get objX():int 
 		{
-			return _objX;
+			return primaryPosition.x;
 		}
 		
 		public function set objX(value:int):void 
 		{
-			_objX = value;
+			primaryPosition.x = value;
 			x = value;
 		}
 		
 		public function get objY():int 
 		{
-			return _objY;
+			return primaryPosition.y;
 		}
 		
 		public function set objY(value:int):void 
 		{
-			_objY = value;
-			y = value;
+			primaryPosition.y = value;
+            y = value;
 		}
 	}
 	

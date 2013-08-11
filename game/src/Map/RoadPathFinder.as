@@ -1,36 +1,106 @@
 package src.Map
 {
-	import flash.geom.Point;
-	import src.Constants;
-	import src.Global;
+    import flash.geom.Point;
 
-	public class RoadPathFinder
+    import src.Constants;
+    import src.Global;
+    import src.Objects.Factories.ObjectFactory;
+
+    public class RoadPathFinder
 	{
-		private static function hasPoint(arr: Array, point: Point) : Boolean {
+		private static function hasPoint(arr: Array, position: Position) : Boolean {
 
 			var cnt: int = arr.length;
 
 			for (var i: int = 0; i < cnt; i++) {
-				var item: Point = arr[i];
-				if (item.x == point.x && item.y == point.y) return true;
+				var item: Position = arr[i];
+				if (item.x == position.x && item.y == position.y) return true;
 			}
 
 			return false;
 		}
 
-		public static function isRoadByMapPosition(x: int, y: int) : Boolean {
-			return isRoad(Global.map.regions.getTileAt(x, y));
+        public static function CanBuild(mapPos: Position, city: City, requiredRoad: Boolean): Boolean {
+            return true;
+
+            var buildingOnRoad: Boolean = RoadPathFinder.isRoad(Global.map.regions.getTileAt(mapPos));
+
+            if (!requiredRoad) {
+                // Don't allow structures that don't need roads to be built on top of roads
+                return !buildingOnRoad;
+            }
+
+            // Keep non road related checks above this
+            // Check for road requirement
+            if (buildingOnRoad) {
+                var breaksPath: Boolean = false;
+                for each(var cityObject: CityObject in city.objects) {
+                    if (cityObject.x == city.MainBuilding.x && cityObject.y == city.MainBuilding.y) continue;
+                    if (ObjectFactory.isType("NoRoadRequired", cityObject.type)) continue;
+
+                    if (!RoadPathFinder.hasPath(new Position(cityObject.x, cityObject.y), new Position(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
+                        breaksPath = true;
+                        break;
+                    }
+                }
+
+                if (breaksPath) return false;
+
+                // Make sure all neighbors have a different path
+                for each (var position: Position in TileLocator.foreachTile(mapPos.x, mapPos.y, 1, false))
+                {
+                    if (TileLocator.radiusDistance(mapPos.x, mapPos.y, 1, position.x, position.y, 1) != 1) {
+                        continue;
+                    }
+
+                    if (city.MainBuilding.x == position.x && city.MainBuilding.y == position.y) {
+                        continue;
+                    }
+
+                    if (RoadPathFinder.isRoadByMapPosition(position)) {
+                        if (!RoadPathFinder.hasPath(new Position(position.x, position.y), new Position(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            var hasRoad: Boolean = false;
+
+            for each (position in TileLocator.foreachTile(mapPos.x, mapPos.y, 1, false)) {
+                if (TileLocator.radiusDistance(mapPos.x, mapPos.y, 1, position.x, position.y, 1) != 1) {
+                    continue;
+                }
+
+                var structure: CityObject = city.getStructureAt(new Position(position.x, position.y));
+
+                var hasStructure: Boolean = structure != null;
+
+                // Make sure we have a road around this building
+                if (!hasRoad && !hasStructure && RoadPathFinder.isRoadByMapPosition(position)) {
+                    // If we are building on road, we need to check that all neighbor tiles have another connection to the main building
+                    if (!buildingOnRoad || RoadPathFinder.hasPath(new Position(position.x, position.y), new Position(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
+                        hasRoad = true;
+                    }
+                }
+            }
+
+            return hasRoad;
+        }
+
+		public static function isRoadByMapPosition(position: Position) : Boolean {
+			return isRoad(Global.map.regions.getTileAt(position));
 		}
 
 		public static function isRoad(tileId: int) : Boolean {
 			return tileId >= Constants.road_start_tile_id && tileId <= Constants.road_end_tile_id;
 		}
 
-		public static function hasPath(start: Point, end: Point, city: City, excludedPoint: Point) : Boolean {
+		public static function hasPath(start: Position, end: Position, city: City, excludedPoint: Position) : Boolean {
 
 			if (start.x == end.x && start.y == end.y) return true;
 
-			var visited: Array = new Array();
+			var visited: Array = [];
 
 			visited.push(start);
 
@@ -38,33 +108,33 @@ package src.Map
 
 			var ret: * = breadthFirst(new Point(end.x, end.y), visited, function(node : Point) : Array
 			{
-				var neighbors: Array = new Array();
+				var neighbors: Array = [];
 				var possibleNeighbors: Array;
 				if (node.y % 2 == 0)
 				{
 					possibleNeighbors = new Array(
-					new Point(node.x, node.y - 1),
-					new Point(node.x, node.y + 1),
-					new Point(node.x - 1, node.y - 1),
-					new Point(node.x - 1, node.y + 1)
+					new Position(node.x, node.y - 1),
+					new Position(node.x, node.y + 1),
+					new Position(node.x - 1, node.y - 1),
+					new Position(node.x - 1, node.y + 1)
 					);
 				}
 				else
 				{
 					possibleNeighbors = new Array(
-					new Point(node.x + 1, node.y - 1),
-					new Point(node.x + 1, node.y + 1),
-					new Point(node.x, node.y - 1),
-					new Point(node.x, node.y + 1)
+					new Position(node.x + 1, node.y - 1),
+					new Position(node.x + 1, node.y + 1),
+					new Position(node.x, node.y - 1),
+					new Position(node.x, node.y + 1)
 					);
 				}
 
-				for each (var location: Point in possibleNeighbors) {
+				for each (var location: Position in possibleNeighbors) {
 					if ((location.x != end.x || location.y != end.y)) {
 						if (hasPoint(visited, location)) continue;
-						if (!isRoadByMapPosition(location.x, location.y)) continue;
+						if (!isRoadByMapPosition(location)) continue;
 						if (city.hasStructureAt(location)) continue;
-						if (MapUtil.distance(location.x, location.y, city.MainBuilding.x, city.MainBuilding.y) > city.radius) continue;
+						if (TileLocator.distance(location.x, location.y, 1, city.MainBuilding.x, city.MainBuilding.y, 1) > city.radius) continue;
 					} else if (fromStructure && node.x == start.x && node.y == start.y) {
 						continue;
 					}
@@ -78,7 +148,7 @@ package src.Map
 			return ret;
 		}
 
-		private static function breadthFirst(end: Point, visited: Array, getNeighbors: Function, excludedPoint: Point, i: int = 0) : Boolean
+		private static function breadthFirst(end: Point, visited: Array, getNeighbors: Function, excludedPoint: Position, i: int = 0) : Boolean
 		{
 			//Util.log("Checking " + visited[visited.length - 1].toString());
 
@@ -93,8 +163,8 @@ package src.Map
 
 			// Sort neighbors by distance. Helps out a bit.
 			nodes.sort(function (a:Point, b:Point):Number {
-				var aDist: Number = MapUtil.distance(a.x, a.y, end.x, end.y);
-				var bDist: Number = MapUtil.distance(b.x, b.y, end.x, end.y);
+				var aDist: Number = TileLocator.distance(a.x, a.y, 1, end.x, end.y, 1);
+				var bDist: Number = TileLocator.distance(b.x, b.y, 1, end.x, end.y, 1);
 
 				if(aDist > bDist) return 1;
 				if (aDist < bDist) return -1;

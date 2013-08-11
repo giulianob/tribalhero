@@ -1,24 +1,28 @@
 ﻿package src.UI.Components {
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.events.Event;
-	import flash.geom.ColorTransform;
-	import flash.geom.Point;
-	import src.Constants;
-	import src.Map.MapUtil;
-	import src.Objects.SimpleObject;
-	import src.UI.SmartMovieClip;
+    import flash.display.Bitmap;
+    import flash.display.BitmapData;
+    import flash.display.DisplayObject;
+    import flash.display.DisplayObjectContainer;
+    import flash.display.MovieClip;
+    import flash.events.Event;
+    import flash.geom.ColorTransform;
 
-	public class GroundCircle extends SimpleObject
+    import src.Assets;
+    import src.Constants;
+    import src.Map.Position;
+    import src.Map.ScreenPosition;
+    import src.Map.TileLocator;
+    import src.Objects.SimpleObject;
+
+    public class GroundCircle extends SimpleObject
 	{
-		private var size: int;
-		private var circle: SmartMovieClip;
+		private var circle: DisplayObjectContainer;
 		private var tiles: Array;
 		private var colorTransform: ColorTransform;
 		private var skipCenter: Boolean;
 
 		public function GroundCircle(size: int, skipCenter: Boolean = false, colorTransform: ColorTransform = null) {
-			super( -10, -10);
+			super( -10, -10, size);
 			
 			if (colorTransform == null) {
 				colorTransform = new ColorTransform(1.0, 1.0, 1.0, 1.0, 0, 100, 0);
@@ -49,10 +53,29 @@
 			if (circle != null)
 			dispose();
 
-			circle = new SmartMovieClip();
-			tiles = new Array();
+			circle = new MovieClip();
+			tiles = [];
 
-			MapUtil.radius_foreach_object(Math.ceil(size / 2.0), Math.ceil(size / 2.0) * 2 + 1, size, this.addTileCallback, true, null);
+			for each (var position: Position in TileLocator.foreachRadius(Math.ceil(size / 2.0), Math.ceil(size / 2.0) * 2 + 1, size)) {
+                var tiledata: DisplayObject = Assets.getInstance("MASK_TILE");
+                var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH, true, 0x000000));
+                tile.smoothing = true;
+
+                var tileRadius: int = Math.ceil(size / 2.0);
+                var point: ScreenPosition = position.toScreenPosition();
+                tile.x = point.x - tileRadius * Constants.tileW;
+                tile.y = point.y - tileRadius * Constants.tileH;
+
+                if (tile.x == 0 && tile.y == 0 && skipCenter) {
+                    continue;
+                }
+
+                tile.bitmapData.draw(tiledata, null, colorTransform);
+
+                circle.addChild(tile);
+
+                tiles.push(tile);
+            }
 
 			addChild(circle);
 		}
@@ -75,29 +98,6 @@
 				tiles = null;
 			}
 		}
-
-		public function addTileCallback(x: int, y: int, custom: *):void
-		{
-			var tiledata: MASK_TILE = new MASK_TILE(Constants.tileW, Constants.tileH);
-			var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH, true, 0x000000));
-			tile.smoothing = true;
-
-			var tileRadius: int = Math.ceil(size / 2.0);
-			var point: Point = MapUtil.getScreenCoord(x, y);
-			tile.x = point.x - tileRadius * Constants.tileW;
-			tile.y = point.y - tileRadius * Constants.tileH;
-
-			if (tile.x == 0 && tile.y == 0 && skipCenter) {
-				return;
-			}
-
-			tile.bitmapData.draw(tiledata, null, colorTransform);
-
-			circle.addChild(tile);
-
-			tiles.push(tile);
-		}
-
 	}
 
 }

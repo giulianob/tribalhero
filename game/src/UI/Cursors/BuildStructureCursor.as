@@ -1,21 +1,23 @@
 ﻿
 package src.UI.Cursors {
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.UI.Components.*;
-	import src.UI.Sidebars.CursorCancel.*;
-	import src.Util.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
 
-	public class BuildStructureCursor extends MovieClip implements IDisposable
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Factories.*;
+    import src.Objects.Prototypes.*;
+    import src.UI.Components.*;
+    import src.UI.Sidebars.CursorCancel.*;
+    import src.Util.*;
+    import src.Util.BinaryList.BinaryList;
+
+    public class BuildStructureCursor extends MovieClip implements IDisposable
 	{		
-		private var objX: int;
-		private var objY: int;
+		private var objPosition: ScreenPosition = new ScreenPosition();
+
 		private var city: City;
 
 		private var originPoint: Point;
@@ -29,12 +31,11 @@ package src.UI.Cursors {
 		private var level: int;
 		private var tilerequirement: String;
 
-		private var hasBuildableArea: Boolean;
 		private var hasRoadNearby: Boolean;
 
-		public function BuildStructureCursor() { }
+        private var buildableTiles: BinaryList = new BinaryList(Position.sort, Position.compare);
 
-		public function init(type: int, level: int, tilerequirement: String, parentObject: SimpleGameObject):void
+		public function BuildStructureCursor(type: int, level: int, tilerequirement: String, parentObject: SimpleGameObject):void
 		{
 			doubleClickEnabled = true;
 
@@ -45,11 +46,11 @@ package src.UI.Cursors {
 
 			city = Global.map.cities.get(parentObj.groupId);
 
-			src.Global.gameContainer.setOverlaySprite(this);
+			Global.gameContainer.setOverlaySprite(this);
 			Global.map.selectObject(null);
 
 			structPrototype = StructureFactory.getPrototype(type, level);
-			cursor = StructureFactory.getSimpleObject(type, level, 0, 0);
+			cursor = StructureFactory.getSimpleObject(type, level, 0, 0, structPrototype.size);
 
 			if (cursor == null)
 			{
@@ -57,21 +58,28 @@ package src.UI.Cursors {
 				return;
 			}
 
+            // Validate all tiles
+            var size: int = city.radius - 1;
+            for each (var position: Position in TileLocator.foreachTile(city.primaryPosition.x, city.primaryPosition.y, size)) {
+                validateTile(position);
+            }
+
 			cursor.alpha = 0.7;
 
 			rangeCursor = new GroundCircle(structPrototype.radius, true, new ColorTransform(1.0, 1.0, 1.0, 1.0, 236, 88, 0));
 			rangeCursor.alpha = 0.6;
 
-			buildableArea = new GroundCallbackCircle(city.radius - 1, validateTileCallback);
+			buildableArea = new GroundCallbackCircle(size, validateTileCallback);
 			buildableArea.alpha = 0.3;
-			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
+
+			var point: ScreenPosition = city.primaryPosition.toScreenPosition();
 			buildableArea.objX = point.x; 
 			buildableArea.objY = point.y;
-						
+
 			Global.map.objContainer.addObject(buildableArea, ObjectContainer.LOWER);
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
-			src.Global.gameContainer.setSidebar(sidebar);
+			Global.gameContainer.setSidebar(sidebar);
 
 			addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);
 			addEventListener(MouseEvent.CLICK, onMouseStop, true);
@@ -80,17 +88,17 @@ package src.UI.Cursors {
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 
 			if (!hasRoadNearby) {
-				src.Global.gameContainer.message.showMessage("This building must be connected to a road and there are no roads available. Build roads first by using your Town Center then try again.");
-			} else if (!hasBuildableArea) {
-				src.Global.gameContainer.message.showMessage("There are no spaces available to build on.");
+				Global.gameContainer.message.showMessage("This building must be connected to a road and there are no roads available. Build roads first by using your Town Center then try again.");
+			} else if (buildableTiles.size() == 0) {
+				Global.gameContainer.message.showMessage("There are no spaces available to build on.");
 			} else {
-				src.Global.gameContainer.message.showMessage("Double click on a green square to build a " + structPrototype.getName().toLowerCase() + ".");
+				Global.gameContainer.message.showMessage("Double click on a green square to build a " + structPrototype.getName().toLowerCase() + ".");
 			}
 		}
 
 		public function dispose():void
 		{
-			src.Global.gameContainer.message.hide();
+			Global.gameContainer.message.hide();
 
 			if (cursor != null)
 			{
@@ -117,43 +125,49 @@ package src.UI.Cursors {
 
 		public function onMouseDoubleClick(event: MouseEvent):void
 		{
-			if (Point.distance(MapUtil.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > city.radius) return;
+			if (Point.distance(TileLocator.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > city.radius) return;
 
 			event.stopImmediatePropagation();
 
-			var pos: Point = MapUtil.getMapCoord(objX, objY);
-			Global.mapComm.Objects.buildStructure(parentObj.groupId, parentObj.objectId, type, level, pos.x, pos.y);
+			var mapPos: Position = objPosition.toPosition();
+			Global.mapComm.Objects.buildStructure(parentObj.groupId, parentObj.objectId, type, level, mapPos.x, mapPos.y);
 
-			src.Global.gameContainer.setOverlaySprite(null);
-			src.Global.gameContainer.setSidebar(null);
+			Global.gameContainer.setOverlaySprite(null);
+			Global.gameContainer.setSidebar(null);
 			Global.map.selectObject(parentObj, false);
 		}
 
 		public function onMouseDown(event: MouseEvent):void
 		{
-			originPoint = MapUtil.getPointWithZoomFactor(event.stageX, event.stageY);
+			originPoint = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
 		}
 
 		public function onMouseMove(event: MouseEvent) : void
 		{
 			if (event.buttonDown) return;
 
-			var mousePos: Point = MapUtil.getPointWithZoomFactor(Math.max(0, event.stageX), Math.max(0, event.stageY));
-			var pos: Point = MapUtil.getActualCoord(src.Global.gameContainer.camera.x + mousePos.x, src.Global.gameContainer.camera.y + mousePos.y);
+            // Take the mouse position but center the structure to it by aligning the cursor w/ the left most side of the structure
+			var mousePos: Point = TileLocator.getPointWithZoomFactor(
+                    Math.max(0, event.stageX - ((structPrototype.size-1) * Constants.tileW)/2),
+                    event.stageY
+            );
 
-			if (pos.x != objX || pos.y != objY)
+			var pos: ScreenPosition = TileLocator.getActualCoord(
+                    Global.gameContainer.camera.currentPosition.x + mousePos.x,
+                    Global.gameContainer.camera.currentPosition.y + mousePos.y);
+
+			if (!pos.equals(objPosition))
 			{
-				objX = pos.x;
-				objY = pos.y;
+				objPosition = pos;
 			
 				if (rangeCursor.stage != null) Global.map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
 				if (cursor.stage != null) Global.map.objContainer.removeObject(cursor);
 				
-				rangeCursor.objX = objX; 
-				rangeCursor.objY = objY;
+				rangeCursor.objX = pos.x;
+				rangeCursor.objY = pos.y;
 				
-				cursor.objX = objX; 
-				cursor.objY = objY;
+				cursor.objX = pos.x;
+				cursor.objY = pos.y;
 				
 				if (validateBuilding()) {
 					Global.map.objContainer.addObject(rangeCursor, ObjectContainer.LOWER);
@@ -162,142 +176,87 @@ package src.UI.Cursors {
 			}
 		}
 
-		private function validateTile(screenPos: Point) : Boolean {
-			// Get the tile type
-			var mapPos: Point = MapUtil.getMapCoord(screenPos.x, screenPos.y);
-			var tileType: int = Global.map.regions.getTileAt(mapPos.x, mapPos.y);
+		private function validateTile(mapPosition: Position) : Boolean {
 
-			if (Constants.debug >= 4) {
-				Util.log("***");
-				Util.log("Validating:" + screenPos.x + "," + screenPos.y);
-				Util.log("Callback pos:" + x + "," + y);
-				Util.log("mapPos is" + mapPos.x + "," + mapPos.y);
-				Util.log("Tile type is: " + tileType);
-			}
+            // Check if tile is taken
+            for each (var tilePosition: Position in TileLocator.foreachMultitile(mapPosition.x, mapPosition.y, structPrototype.size)) {
+                if (Global.map.regions.getObjectsInTile(tilePosition, StructureObject).length > 0) {
+                    return false;
+                }
+
+                var tileType: int = Global.map.regions.getTileAt(tilePosition);
+
+                // Check for tile requirement
+                if (tilerequirement == "" && !RoadPathFinder.isRoad(tileType) && !ObjectFactory.isType("TileBuildable", tileType)) {
+                    return false;
+                }
+
+                // Check for tile requirement
+                if (tilerequirement != "" && !ObjectFactory.isType(tilerequirement, tileType)) {
+                    return false;
+                }
+
+                // Within city walls?
+                if (TileLocator.distance(city.primaryPosition.x, city.primaryPosition.y, 1, tilePosition.x, tilePosition.y, 1) >= city.radius) {
+                    return false;
+                }
+            }
 
 			var requiredRoad: Boolean = !ObjectFactory.isType("NoRoadRequired", type);
 
 			// Set flag so that buildings that dont require roads dont screw up the on screen msg
-			if (!requiredRoad) this.hasRoadNearby = true;
+			if (!requiredRoad) {
+                this.hasRoadNearby = true;
+            }
 
 			// Validate any layouts
 			var builder: CityObject = city.objects.get(parentObj.objectId);
-			if (!structPrototype.validateLayout(builder, city, screenPos.x, screenPos.y)) {
+			if (!structPrototype.validateLayout(builder, city, mapPosition)) {
 				return false;
 			}
 
-			// Check for tile requirement
-			if (tilerequirement == "" && !RoadPathFinder.isRoad(tileType) && !ObjectFactory.isType("TileBuildable", tileType)) return false;
+            var hasRoad: Boolean = RoadPathFinder.CanBuild(mapPosition, city, requiredRoad);
 
-			// Check for tile requirement
-			if (tilerequirement != "" && !ObjectFactory.isType(tilerequirement, tileType)) return false;
+            hasRoadNearby = !requiredRoad || hasRoad;
 
-			var buildingOnRoad: Boolean = RoadPathFinder.isRoad(tileType);
+            if (!hasRoad) {
+                return false;
+            }
 
-			if (!requiredRoad) {
-				// Don't allow structures that don't need roads to be built on top of roads
-				if (buildingOnRoad) return false;
-
-				this.hasBuildableArea = true;
-				return true;
-			}
-
-			// Keep non road related checks above this
-			// Check for road requirement
-			if (buildingOnRoad) {
-				var breaksPath: Boolean = false;
-				for each(var cityObject: CityObject in city.objects) {
-					if (cityObject.x == city.MainBuilding.x && cityObject.y == city.MainBuilding.y) continue;
-					if (ObjectFactory.isType("NoRoadRequired", cityObject.type)) continue;
-
-					if (!RoadPathFinder.hasPath(new Point(cityObject.x, cityObject.y), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
-						breaksPath = true;
-						break;
-					}
-				}
-
-				if (breaksPath) return false;
-
-				// Make sure all neighbors have a different path
-				var allNeighborsHaveOtherPaths: Boolean = true;
-				MapUtil.foreach_object(mapPos.x, mapPos.y, 1, function(x1: int, y1: int, custom: *) : Boolean
-				{
-					if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) != 1) return true;
-
-					if (city.MainBuilding.x == x1 && city.MainBuilding.y == y1) return true;
-
-					if (RoadPathFinder.isRoadByMapPosition(x1, y1)) {
-						if (!RoadPathFinder.hasPath(new Point(x1, y1), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
-							allNeighborsHaveOtherPaths = false;
-							return false;
-						}
-					}
-
-					return true;
-				}, false, null);
-
-				if (!allNeighborsHaveOtherPaths) return false;
-			}
-
-			var hasRoad: Boolean = false;
-
-			MapUtil.foreach_object(mapPos.x, mapPos.y, 1, function(x1: int, y1: int, custom: *) : Boolean
-			{
-				if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) != 1) return true;
-
-				var structure: CityObject = city.getStructureAt(new Point(x1, y1));
-
-				var hasStructure: Boolean = structure != null;
-
-				// Make sure we have a road around this building
-				if (!hasRoad && !hasStructure && RoadPathFinder.isRoadByMapPosition(x1, y1)) {
-					// If we are building on road, we need to check that all neighbor tiles have another connection to the main building
-					if (!buildingOnRoad || RoadPathFinder.hasPath(new Point(x1, y1), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
-						hasRoad = true;
-					}
-				}
-
-				return true;
-			}, false, null);
-
-			// Set global variable to identify if we have buildable road. This is used for the on screen message
-			if (hasRoad) this.hasRoadNearby = true;
-
-			if (!hasRoad) return false
-
-			//Set other global variable to identify we have a buildable spot.
-			hasBuildableArea = true;
+            // If this object can be built then we add all of its tiles as buildable
+            for each (tilePosition in TileLocator.foreachMultitile(mapPosition.x, mapPosition.y, structPrototype.size)) {
+                buildableTiles.add(tilePosition);
+            }
 
 			return true;
 		}
 
-		private function validateTileCallback(x: int, y: int, isCenter: Boolean) : * {
+        private function validateTileCallback(x: int, y: int): * {
 
-			// Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
-			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
+            // Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
+			var point: ScreenPosition = city.primaryPosition.toScreenPosition();
 
-			if (!validateTile(new Point(point.x + x, point.y + y))) return new ColorTransform(1, 1, 1, 0.5, 255, 215);
+            if (buildableTiles.get(new ScreenPosition(point.x + x, point.y + y).toPosition()) == null) {
+                return new ColorTransform(1, 1, 1, 0.5, 255, 215);
+            }
 
 			return new ColorTransform(1.0, 1.0, 1.0, 1.0, 0, 100);
 		}
 
 		public function validateBuilding():Boolean
 		{
-			var msg: XML;
-
-			var city: City = Global.map.cities.get(parentObj.groupId);
-			var mapObjPos: Point = MapUtil.getMapCoord(objX, objY);
+            var city: City = Global.map.cities.get(parentObj.groupId);
+			var mapPosition: Position = objPosition.toPosition();
 
 			// Check if cursor is inside city walls
-			if (city != null && MapUtil.distance(city.MainBuilding.x, city.MainBuilding.y, mapObjPos.x, mapObjPos.y) >= city.radius) {
+			if (city != null && TileLocator.distance(city.primaryPosition.x, city.primaryPosition.y, 1, mapPosition.x, mapPosition.y, 1) >= city.radius) {
 				hideCursors();
 				return false;
 			}
-			else if (!validateTile(new Point(objX, objY))) {
+			else if (!validateTile(mapPosition)) {
 				hideCursors();
 				return false;
 			}
-			
 			
 			showCursors();
 			return true;

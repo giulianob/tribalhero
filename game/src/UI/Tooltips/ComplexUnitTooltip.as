@@ -1,23 +1,19 @@
 ﻿package src.UI.Tooltips {
-	import src.Map.City;
-	import src.Objects.Factories.UnitFactory;
-	import src.Objects.Prototypes.UnitPrototype;
-	import src.Objects.Troop.TroopTemplate;
-	import src.Objects.Troop.TroopTemplateManager;
-	import src.Objects.Troop.Unit;
-	import src.Objects.Troop.UnitTemplate;
-	import src.Objects.Troop.UnitTemplateManager;
-	import src.UI.Components.UnitStatBox;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.Util.BinaryList.BinaryList;
+    import org.aswing.*;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
+    import src.Map.City;
+    import src.Objects.Factories.UnitFactory;
+    import src.Objects.Prototypes.UnitPrototype;
+    import src.Objects.Troop.TroopTemplate;
+    import src.Objects.Troop.TroopTemplateManager;
+    import src.Objects.Troop.Unit;
+    import src.Objects.Troop.UnitTemplate;
+    import src.Objects.Troop.UnitTemplateManager;
+    import src.UI.Components.UnitStatBox;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+    import src.Util.BinaryList.BinaryList;
 
-	public class ComplexUnitTooltip extends Tooltip{
+    public class ComplexUnitTooltip extends Tooltip{
 
 		private var unit: Unit;
 		private var city: City;

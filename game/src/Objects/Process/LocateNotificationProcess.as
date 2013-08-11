@@ -1,11 +1,9 @@
 package src.Objects.Process 
 {
-	import src.Constants;
-	import src.Global;
+    import src.Global;
     import src.Objects.Actions.Notification;
-	import src.Objects.Troop.TroopStub;
-    import src.Util.Util;
-	public class LocateNotificationProcess implements IProcess 
+
+    public class LocateNotificationProcess implements IProcess
 	{
         private var notification:Notification;
 		

@@ -1,19 +1,20 @@
 ﻿package src.Util.BinaryList {
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
-	import flash.utils.flash_proxy;
-	import flash.utils.Proxy;
-	import src.Util.Util;
+    import flash.events.Event;
+    import flash.events.EventDispatcher;
+    import flash.events.IEventDispatcher;
+    import flash.utils.Proxy;
+    import flash.utils.flash_proxy;
 
-	public class BinaryList extends Proxy implements IEventDispatcher {
+    import src.Util.Util;
+
+    public class BinaryList extends Proxy implements IEventDispatcher {
 
 		private var dispatcher: EventDispatcher;
 		private var dirty: Boolean;
 		private var sortFunc: Function;
 		private var compareFunc: Function;
 
-		private var list: Array = new Array();
+		private var list: Array = [];
 
 		public function BinaryList(sortFunc: Function, compareFunc: Function) {
 			this.dispatcher = new EventDispatcher(this);
@@ -21,18 +22,14 @@
 			this.compareFunc = compareFunc;
 		}
 
-		public function setArray(arr: Array) : void {
-			list = arr;
-		}
-
-		public function toArray(): Array
+        public function toArray(): Array
 		{
 			return list;
 		}
 
 		public function clear():void
 		{
-			list = new Array();
+			list = [];
 			dispatcher.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED));
 		}
 
@@ -118,16 +115,11 @@
 			return list[idx];
 		}
 
-		public function getIdx(val: *): int
-		{
-			return Util.binarySearch(list, compareFunc, val);
-		}
-
-		public function getRange(val: * ): Array
+        public function getRange(val: * ): Array
 		{
 			var idxs: Array = Util.binarySearchRange(list, compareFunc, val);
 
-			var objs: Array = new Array();
+			var objs: Array = [];
 
 			for each(var idx: int in idxs)
 				objs.push(list[idx]);

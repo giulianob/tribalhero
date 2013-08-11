@@ -1,21 +1,18 @@
 package src.UI.Components 
 {
-	import flash.events.Event;
-	import flash.events.KeyboardEvent;
-	import flash.events.TimerEvent;
-	import flash.ui.Keyboard;
-	import flash.ui.KeyLocation;
-	import flash.utils.Timer;
-	import org.aswing.AsWingManager;
-	import org.aswing.event.AWEvent;
-	import org.aswing.ext.MultilineLabel;
-	import org.aswing.JLabel;
-	import org.aswing.JMenu;
-	import org.aswing.JMenuItem;
-	import org.aswing.JPopupMenu;
-	import org.aswing.JTextField;
-	
-	public class AutoCompleteTextField extends JTextField
+    import flash.events.Event;
+    import flash.events.KeyboardEvent;
+    import flash.events.TimerEvent;
+    import flash.ui.Keyboard;
+    import flash.utils.Timer;
+
+    import org.aswing.AsWingManager;
+    import org.aswing.JMenuItem;
+    import org.aswing.JPopupMenu;
+    import org.aswing.JTextField;
+    import org.aswing.event.AWEvent;
+
+    public class AutoCompleteTextField extends JTextField
 	{		
 		private var menuDropdown: JPopupMenu = new JPopupMenu();	
 		private var previousText: String = "";
@@ -130,10 +127,6 @@ package src.UI.Components
 			
 			menuDropdown.setPreferredWidth(this.getWidth());
 			menuDropdown.show(this, 0, this.getHeight());
-		}
-		
-		public function showIfNeeded(): void {
-			
 		}
 	}
 

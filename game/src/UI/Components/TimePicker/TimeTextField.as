@@ -1,14 +1,14 @@
 package src.UI.Components.TimePicker 
 {
-	import flash.events.Event;
-	import flash.events.FocusEvent;
-	import flash.events.KeyboardEvent;
-	import org.aswing.JTextField;
+    import flash.events.Event;
+    import flash.events.FocusEvent;
+    import flash.events.KeyboardEvent;
+
+    import org.aswing.JTextField;
 
     import src.Util.DateUtil;
-    import src.Util.Util;
-	
-	/**
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */

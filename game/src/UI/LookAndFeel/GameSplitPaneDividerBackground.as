@@ -1,17 +1,17 @@
 package src.UI.LookAndFeel
 {
 
-	import flash.display.DisplayObject;
-	import flash.display.Sprite;
+    import flash.display.DisplayObject;
+    import flash.display.Sprite;
 
-	import org.aswing.*;
-	import org.aswing.geom.IntRectangle;
-	import org.aswing.graphics.Graphics2D;
-	import org.aswing.plaf.ComponentUI;
-	import org.aswing.plaf.DefaultsDecoratorBase;
-	import org.aswing.plaf.UIResource;
+    import org.aswing.*;
+    import org.aswing.geom.IntRectangle;
+    import org.aswing.graphics.Graphics2D;
+    import org.aswing.plaf.ComponentUI;
+    import org.aswing.plaf.DefaultsDecoratorBase;
+    import org.aswing.plaf.UIResource;
 
-	public class GameSplitPaneDividerBackground extends DefaultsDecoratorBase implements GroundDecorator, UIResource{
+    public class GameSplitPaneDividerBackground extends DefaultsDecoratorBase implements GroundDecorator, UIResource{
 
 		protected var verticalImage:DisplayObject;
 		protected var horizotalImage:DisplayObject;

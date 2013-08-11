@@ -1,15 +1,15 @@
 package src.UI.Dialog{
 
-	import src.Global;
-	import src.Objects.Effects.RequirementFormula;
-	import src.UI.GameJPanel;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
 
-	public class CreateTribeDialog extends GameJPanel {
+    import src.Global;
+    import src.Objects.Effects.RequirementFormula;
+    import src.UI.GameJPanel;
+
+    public class CreateTribeDialog extends GameJPanel {
 
 		private var txtName: JTextField;
 		private var btnOk: JButton;

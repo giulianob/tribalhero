@@ -1,24 +1,23 @@
 ﻿
 package src.Objects {
 
-	import com.greensock.TweenMax;
-	import fl.motion.Color;
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import flash.utils.Dictionary;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Stronghold.Stronghold;
-	import src.Objects.Troop.TroopObject;
-	import src.UI.Dialog.*;
-	import src.UI.Tooltips.*;
-	import src.Util.*;
-	import src.Util.BinaryList.*;
+    import com.greensock.TweenMax;
 
-	public class ObjectContainer extends Sprite {
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
+
+    import src.*;
+    import src.Map.*;
+    import src.Objects.Factories.*;
+    import src.Objects.Stronghold.Stronghold;
+    import src.Objects.Troop.TroopObject;
+    import src.UI.Dialog.*;
+    import src.UI.Tooltips.*;
+    import src.Util.*;
+    import src.Util.BinaryList.*;
+
+    public class ObjectContainer extends Sprite {
 
 		public static const NORMAL: int = 2;
 		public static const LOWER: int = 1;
@@ -30,7 +29,7 @@ package src.Objects {
 
 		public var objects: BinaryList = new BinaryList(SimpleObject.sortOnXandY, SimpleObject.compareXAndY);
 		
-		private var dimmedObjects: Array = new Array();
+		private var dimmedObjects: Array = [];
 		private var highlightedObject: SimpleObject;
 
 		private var originClick: Point = new Point(0, 0);
@@ -93,7 +92,7 @@ package src.Objects {
 			if (highlightedObject && !ignoreClick)
 			{
 				var idxs: Array = Util.binarySearchRange(objects.toArray(), SimpleObject.compareXAndY, [highlightedObject.objX, highlightedObject.objY]);
-				var multiObjects: Array = new Array();
+				var multiObjects: Array = [];
 				for each(var idx: int in idxs) {
 					var obj: SimpleObject = objects.getByIndex(idx);
 					if (obj.isSelectable())
@@ -149,18 +148,20 @@ package src.Objects {
 				ignoreClick = true;
 			}
 
-			var tilePos: Point = MapUtil.getActualCoord(e.stageX * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.x, e.stageY * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.y);
+            var screenPos: ScreenPosition = TileLocator.getActualCoord(
+                    e.stageX * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.currentPosition.x,
+                    e.stageY * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.currentPosition.y);
 
-			if (tilePos.x < 0 || tilePos.y < 0) return;
+            if (screenPos.x < 0 || screenPos.y < 0) return;
 
-			tilePos = MapUtil.getMapCoord(tilePos.x, tilePos.y);
+			var tilePos: Position = screenPos.toPosition();
 
 			var selectableCnt: int = 0;
-			var overlapping: Array = new Array();
-			var found: Boolean = false;
+
+            var found: Boolean = false;
 			var highestObj: SimpleObject = null;
 			var obj: SimpleObject;
-			var objects: Array = new Array();
+			var objects: Array = [];
 			
 			var i: int;
 			for (i = 0; i < objSpace.numChildren; i++)
@@ -174,7 +175,7 @@ package src.Objects {
 				if (obj is GameObject) 
 				{
 					// If mouse is over this object's tile then it automatically gets chosen as the best object
-					var objMapPos: Point = MapUtil.getMapCoord(obj.objX, obj.objY);
+					var objMapPos: Position = obj.primaryPosition.toPosition();
 					if (objMapPos.x == tilePos.x && objMapPos.y == tilePos.y)
 					{					
 						highestObj = obj;
@@ -213,7 +214,7 @@ package src.Objects {
 			resetHighlightedObject();
 			resetDimmedObjects();
 			
-			var highestObjMapPos: Point = MapUtil.getMapCoord(highestObj.objX, highestObj.objY);
+			var highestObjMapPos: Position = highestObj.primaryPosition.toPosition();
 			
 			// Apply dimming to objects that might be over the one currently moused over
 			for (i = 0; i < objSpace.numChildren; i++)
@@ -226,8 +227,8 @@ package src.Objects {
 				
 				if (Math.abs(highestObj.objX - obj.objX) < Constants.tileW)
 				{
-					objMapPos = MapUtil.getMapCoord(obj.objX, obj.objY);
-					if (MapUtil.distance(highestObjMapPos.x, highestObjMapPos.y, objMapPos.x, objMapPos.y) <= 1)
+					objMapPos = obj.primaryPosition.toPosition();
+					if (TileLocator.distance(highestObjMapPos.x, highestObjMapPos.y, highestObj.size, objMapPos.x, objMapPos.y, obj.size) <= 1)
 					{
 						dimmedObjects.push(obj);
 						TweenMax.to(obj, 1, { alpha: 0.25 } );
@@ -300,7 +301,7 @@ package src.Objects {
 				}
 			}
 
-			dimmedObjects = new Array();
+			dimmedObjects = [];
 		}
 
 		private function getLayer(layer: int): Sprite
@@ -321,7 +322,7 @@ package src.Objects {
 		
 		public function addObject(obj: DisplayObject, layer: int = 0):void
 		{
-			var simpleObj: SimpleObject = obj as SimpleObject
+			var simpleObj: SimpleObject = obj as SimpleObject;
 			if (layer == 0 && simpleObj)
 			{
 				getLayer(layer).addChildAt(simpleObj, calculateDepth(simpleObj.objY, getLayer(layer)));
@@ -441,8 +442,8 @@ package src.Objects {
 
 		private function moveLayerWithCamera(camera: Camera, layer: Sprite):void
 		{
-			layer.x = -camera.x;
-			layer.y = -camera.y;
+			layer.x = -camera.currentPosition.x;
+			layer.y = -camera.currentPosition.y;
 		}
 
 		private function calculateDepth(y: Number, layer: Sprite): int
@@ -458,8 +459,8 @@ package src.Objects {
 				var currentObj: DisplayObject = layer.getChildAt(mid) as DisplayObject;
 				var simpleObj: SimpleObject = currentObj as SimpleObject;
 				var objY: Number = simpleObj == null ? currentObj.y : simpleObj.objY;
-				
-				if (objY > y) {
+
+                if (objY > y) {
 					high = mid - 1;
 				}
 				else if (objY < y) {
@@ -472,17 +473,8 @@ package src.Objects {
 
 			return low;
 		}
-		
-		public function hasStructureAt(x: int, y: int) : Boolean {
-			var objs: Array = objects.getRange([x, y]);
-			for each (var obj: SimpleObject in objs) {
-				if (obj is StructureObject) 
-					return true;
-			}
-			
-			return false;
-		}
-	}
+
+    }
 
 }
 

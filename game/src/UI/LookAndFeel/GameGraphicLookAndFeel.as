@@ -1,14 +1,14 @@
 package src.UI.LookAndFeel
 {
 
-	import flash.filters.DropShadowFilter;
+    import flash.filters.DropShadowFilter;
 
-	import org.aswing.*;
-	import org.aswing.plaf.*;
-	import org.aswing.plaf.basic.BasicLookAndFeel;
-	import org.aswing.skinbuilder.*;
+    import org.aswing.*;
+    import org.aswing.plaf.*;
+    import org.aswing.plaf.basic.BasicLookAndFeel;
+    import org.aswing.skinbuilder.*;
 
-	/**
+    /**
 	 * Holds only definition for graphics. Colors and classes are held in the other file.
 	 */
 	public class GameGraphicLookAndFeel extends BasicLookAndFeel{

@@ -1,12 +1,13 @@
 ﻿package src.UI.Tooltips {
-	import org.aswing.AsWingConstants;
-	import org.aswing.Component;
-	import org.aswing.ext.MultilineLabel;
-	import org.aswing.JLabel;
-	import org.aswing.SoftBoxLayout;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import org.aswing.AsWingConstants;
+    import org.aswing.Component;
+    import org.aswing.JLabel;
+    import org.aswing.SoftBoxLayout;
+    import org.aswing.ext.MultilineLabel;
 
-	public class TextTooltip extends Tooltip {
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    public class TextTooltip extends Tooltip {
 
 		private var text: String = "";
 		private var label: Component;

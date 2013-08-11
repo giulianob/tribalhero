@@ -269,7 +269,6 @@ namespace Game.Logic.Actions
                             }
                             else
                             {
-                                MoveFromAttackToDefenseFormation(troopObject);
                                 StationTroopInStronghold(troopObject, targetStronghold);
                             }
 
@@ -389,13 +388,18 @@ namespace Game.Logic.Actions
 
         private void MoveFromAttackToDefenseFormation(ITroopObject troopObject)
         {
-            troopObject.Stub.BeginUpdate();
-            troopObject.Stub.ChangeFormation(FormationType.Attack, FormationType.Defense);
-            troopObject.Stub.EndUpdate();
+            if (!troopObject.Stub.HasFormation(FormationType.Defense))
+            {
+                troopObject.Stub.BeginUpdate();
+                troopObject.Stub.ChangeFormation(FormationType.Attack, FormationType.Defense);
+                troopObject.Stub.EndUpdate();
+            }
         }
 
         private void StationTroopInStronghold(ITroopObject troopObject, IStronghold stronghold, TroopState stubState = TroopState.Stationed)
         {
+            MoveFromAttackToDefenseFormation(troopObject);
+
             procedure.TroopObjectStation(troopObject, stronghold);
             if (troopObject.Stub.State != stubState)
             {

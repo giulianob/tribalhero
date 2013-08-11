@@ -163,7 +163,7 @@ namespace Game.Logic.Actions
                                           BattleManager.BattleSide.Attack);
         }
 
-        private void MainBattleOnExitTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, uint round, uint turn)
+        private void MainBattleOnExitTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, uint turn)
         {
             IStronghold stronghold;
             if (!gameObjectLocator.TryGetObjects(strongholdId, out stronghold))

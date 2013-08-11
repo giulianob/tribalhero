@@ -439,7 +439,7 @@ namespace Game.Battle
 
                         // Since the EventEnterRound can remove the object from battle, we need to make sure he's still in the battle
                         // If they aren't, then we just find a new attacker
-                        if (!offensiveCombatList.AllCombatObjects().Contains(attackerObject))
+                        if (attackerObject != null && !offensiveCombatList.AllCombatObjects().Contains(attackerObject))
                         {
                             continue;
                         }
@@ -519,7 +519,7 @@ namespace Game.Battle
 
                 dbManager.Save(attackerObject);
 
-                ExitTurn(this, Attackers, Defenders, Round, Turn++);
+                ExitTurn(this, Attackers, Defenders, Turn++);
 
                 if (!IsBattleValid())
                 {
@@ -741,7 +741,7 @@ namespace Game.Battle
 
         public delegate void OnRound(IBattleManager battle, ICombatList attackers, ICombatList defenders, uint round);
 
-        public delegate void OnTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, uint round, uint turn);
+        public delegate void OnTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, uint turn);
 
         public delegate void OnUnitCountChange(
                 IBattleManager battle,
@@ -775,11 +775,6 @@ namespace Game.Battle
         ///     Fired when a new round starts
         /// </summary>
         public event OnRound EnterRound = delegate { };
-
-        /// <summary>
-        ///     Fired everytime a unit enters its turn
-        /// </summary>
-        public event OnTurn EnterTurn = delegate { };
 
         /// <summary>
         ///     Fired everytime a unit exits its turn

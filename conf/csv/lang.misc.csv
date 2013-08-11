@@ -53,6 +53,7 @@ STR_ATTACKING,Attacking
 STR_DEFENDING,Defending
 STR_BARBARIAN_TRIBE,Barbarian Tribe
 STR_SAVE,Save
+STR_ERROR,Error
 ,
 CITY_OVERVIEW_TITLE,City Overview
 CITY_OVERVIEW_INFLUENCE_POINTS_LABEL,{0} influence points.
@@ -278,3 +279,11 @@ TRIBE_LOG_9,Occupied the neutral Stronghold {0}.
 ,
 STR_NICE_SHORT_TODAY,"Today, {0}"
 STR_NICE_SHORT_YESTERDAY,"Yesterday, {0}"
+,
+RETREAT_PARTIAL_DIALOG_SELECT_ALL,Retreat entire troop
+RETREAT_PARTIAL_DIALOG_SELECT_PARTIAL,Let me choose which units to retreat
+RETREAT_PARTIAL_DIALOG_SOURCE_TAB,Stationed Troops
+RETREAT_PARTIAL_DIALOG_TARGET_TAB,Units to Retreat
+,
+RETREAT_TROOP_DIALOG_TITLE,Retreat
+RETREAT_TROOP_DIALOG_REQUIRED_ERROR,You have to choose at least some to retreat. Drag the units from the troop to retreat them.

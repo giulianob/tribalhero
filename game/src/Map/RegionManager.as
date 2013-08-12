@@ -7,7 +7,9 @@
 
     import src.Global;
     import src.Objects.SimpleGameObject;
+    import src.Objects.SimpleGameObject;
     import src.Util.BinaryList.*;
+    import src.Util.Util;
 
     public class RegionManager extends BinaryList
 	{
@@ -35,10 +37,11 @@
                 regionId = TileLocator.getRegionId(obj.primaryPosition);
                 var region: Region = get(regionId);
 
-                if (region != null)
-                {
-                    region.removeObjectFromTile(obj, position);
+                if (region == null) {
+                    continue;
                 }
+
+                region.removeObjectFromTile(obj, position);
             }
 
             return true;
@@ -54,17 +57,23 @@
                 return;
             }
 
-            primaryRegion.addObject(obj);
+            var added: Boolean = primaryRegion.addObject(obj);
+
+            if (!added) {
+                return;
+            }
 
             for each (var position: Position in TileLocator.foreachMultitileObject(obj))
             {
                 regionId = TileLocator.getRegionIdFromMapCoord(position);
                 var region: Region = get(regionId);
 
-                if (region != null)
+                if (region == null)
                 {
-                    region.addObjectToTile(obj, position);
+                    continue;
                 }
+
+                region.addObjectToTile(obj, position);
             }
 
             if (fadeIn)
@@ -77,8 +86,9 @@
 		{
 			var region: Region = get(regionId);
 
-			if (region == null)
+			if (region == null) {
 				return null;
+            }
 
 			var obj: SimpleGameObject = region.getObject(newObj.groupId, newObj.objectId);
 
@@ -120,16 +130,18 @@
 
 		public function moveObject(oldRegionId: int, newObj: SimpleGameObject): SimpleGameObject
 		{
-			var oldRegion: Region = get(oldRegionId);
 
-			if (oldRegion == null)
-				return null;
+            var oldRegion: Region = get(oldRegionId);
+
+			if (oldRegion == null) {
+                return null;
+            }
 
             var currentObj: SimpleGameObject = oldRegion.getObject(newObj.groupId, newObj.objectId);
             removeFromPrimaryRegionAndTiles(currentObj, false);
 
 			if (currentObj == null) {
-				return null; 
+                return null;
 			}
 			
 			var objChanged: Boolean = !newObj.equalsOnMap(currentObj);

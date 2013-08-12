@@ -336,14 +336,15 @@ package src.Objects {
 
 		public function removeObject(obj: DisplayObject, layer: int = 0, dispose: Boolean = true):void
 		{
-			if (obj == null)
+			if (obj == null) {
 				return;
+            }
 			
 			var childIndex: int = getLayer(layer).getChildIndex(obj);
 			if (childIndex >= 0) {
 				getLayer(layer).removeChildAt(childIndex);
 			}
-						
+
 			var simpleObj: SimpleObject = obj as SimpleObject;
 			if (layer == 0 && simpleObj)
 			{								
@@ -373,7 +374,7 @@ package src.Objects {
 					showBestObject(simpleObj.objX, simpleObj.objY);
 				}
 				else {
-					trace("NOT FOUND");
+					Util.log("Tried to remove obj from container that was not existant");
 				}
 			}
 		}

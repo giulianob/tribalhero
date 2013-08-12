@@ -219,6 +219,7 @@ namespace Game.Logic.Actions
                 // Creating New City
                 procedure.CreateCity(cityFactory, city.Owner, cityName, cityPosition, barbarianTribeManager, out newCity);                
 
+
                 world.Regions.SetTileType(x, y, 0, true);
 
                 var mainBuilding = newCity.MainBuilding;

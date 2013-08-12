@@ -64,6 +64,8 @@ namespace Game.Data
         public const string DB_TABLE = "cities";
 
         private readonly object objLock = new object();
+
+        private readonly Dictionary<uint, IStructure> structures = new Dictionary<uint, IStructure>();
                      
         public event CityEventHandler<TechnologyEventArgs> TechnologyCleared = (sender, args) => { };
                      
@@ -79,21 +81,17 @@ namespace Game.Data
 
         public event CityEventHandler<GameObjectArgs> ObjectUpdated = (sender, args) => { };
 
-        public event CityEventHandler<ActionReferenceArgs> ReferenceRemoved = (sender, args) => { };
-
-        public event CityEventHandler<ActionReferenceArgs> ReferenceAdded = (sender, args) => { };
-
-        private readonly Dictionary<uint, IStructure> structures = new Dictionary<uint, IStructure>();
-
         private readonly Dictionary<uint, ITroopObject> troopobjects = new Dictionary<uint, ITroopObject>();
 
+        public event CityEventHandler<ActionReferenceArgs> ReferenceRemoved = (sender, args) => { };
+
         private decimal alignmentPoint;
+
+        public event CityEventHandler<ActionReferenceArgs> ReferenceAdded = (sender, args) => { };
 
         private int attackPoint;
 
         private IBattleManager battle;
-
-        private readonly LargeIdGenerator objectIdGen = new LargeIdGenerator(uint.MaxValue);
 
         private int defensePoint;
 
@@ -101,15 +99,9 @@ namespace Game.Data
 
         private string name;        
 
+        private readonly LargeIdGenerator objectIdGen = new LargeIdGenerator(uint.MaxValue);
+
         private byte radius;
-
-        private readonly ITroopStubFactory troopStubFactory;
-
-        private readonly IDbManager dbManager;
-
-        private readonly IGameObjectFactory gameObjectFactory;
-
-        private readonly IActionFactory actionFactory;
 
         private ushort value;
 
@@ -126,6 +118,14 @@ namespace Game.Data
                 return !structures.TryGetValue(1, out mainBuilding) ? null : mainBuilding;
             }
         }
+
+        private readonly ITroopStubFactory troopStubFactory;
+
+        private readonly IDbManager dbManager;
+
+        private readonly IGameObjectFactory gameObjectFactory;
+
+        private readonly IActionFactory actionFactory;
 
         /// <summary>
         ///     Enumerates only through structures in this city
@@ -188,8 +188,6 @@ namespace Game.Data
             }
         }
 
-        public Position PrimaryPosition { get; private set; }
-
         /// <summary>
         ///     Enumerates through all troop objects in this city
         /// </summary>
@@ -210,6 +208,8 @@ namespace Game.Data
         ///     Technology manager for city
         /// </summary>
         public ITechnologyManager Technologies { get; private set; }
+
+        public Position PrimaryPosition { get; private set; }
 
         /// <summary>
         ///     Returns the local troop

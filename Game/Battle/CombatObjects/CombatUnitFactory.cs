@@ -36,10 +36,10 @@ namespace Game.Battle.CombatObjects
             return new CombatStructure(battleManager.GetNextCombatObjectId(),
                                        battleManager.BattleId,
                                        structure,
-                                       kernel.Get<BattleFormulas>().LoadStats(structure),
+                                       kernel.Get<IBattleFormulas>().LoadStats(structure),
                                        kernel.Get<Formula>(),
                                        kernel.Get<IActionFactory>(),
-                                       kernel.Get<BattleFormulas>(),
+                                       kernel.Get<IBattleFormulas>(),
                                        kernel.Get<ITileLocator>(),
                                        kernel.Get<IRegionManager>());
         }
@@ -50,12 +50,14 @@ namespace Game.Battle.CombatObjects
                                                          ushort type,
                                                          ushort count)
         {
+            var battleFormulas = kernel.Get<IBattleFormulas>();
+
             IBaseUnitStats template = troop.City.Template[type];
             BattleStats stats = troop.Stub.Template[type];
             var groupSize = (from effect in troop.City.Technologies.GetEffects(EffectCode.UnitStatMod)
                              where
                                      ((string)effect.Value[0]).ToLower() == "groupsize" &&
-                                     BattleFormulas.Current.UnitStatModCheck(stats.Base,
+                                     battleFormulas.UnitStatModCheck(stats.Base,
                                                                              TroopBattleGroup.Attack,
                                                                              (string)effect.Value[3])
                              select (int)effect.Value[2]).DefaultIfEmpty<int>(0).Max() + stats.Base.GroupSize;
@@ -66,7 +68,7 @@ namespace Game.Battle.CombatObjects
             do
             {
                 ushort size = (ushort)(groupSize > count ? count : groupSize);
-
+                
                 AttackCombatUnit newUnit = new AttackCombatUnit(battleManager.GetNextCombatObjectId(),
                                                                 battleManager.BattleId,
                                                                 troop,
@@ -75,7 +77,7 @@ namespace Game.Battle.CombatObjects
                                                                 template.Lvl,
                                                                 size,
                                                                 kernel.Get<UnitFactory>(),
-                                                                kernel.Get<BattleFormulas>(),
+								battleFormulas,
                                                                 kernel.Get<Formula>(),
                                                                 kernel.Get<ITileLocator>());
 
@@ -93,12 +95,14 @@ namespace Game.Battle.CombatObjects
                                                            ushort type,
                                                            ushort count)
         {
+            var battleFormulas = kernel.Get<IBattleFormulas>();
+
             IBaseUnitStats template = stub.City.Template[type];
             BattleStats stats = stub.Template[type];
             var groupSize = (from effect in stub.City.Technologies.GetEffects(EffectCode.UnitStatMod)
                              where
                                      ((string)effect.Value[0]).ToLower() == "groupsize" &&
-                                     BattleFormulas.Current.UnitStatModCheck(stats.Base,
+                                     battleFormulas.UnitStatModCheck(stats.Base,
                                                                              TroopBattleGroup.Defense,
                                                                              (string)effect.Value[3])
                              select (int)effect.Value[2]).DefaultIfEmpty().Max() + stats.Base.GroupSize;
@@ -108,6 +112,7 @@ namespace Game.Battle.CombatObjects
             do
             {
                 ushort size = (ushort)(groupSize > count ? count : groupSize);
+                
                 DefenseCombatUnit newUnit = new DefenseCombatUnit(battleManager.GetNextCombatObjectId(),
                                                                   battleManager.BattleId,
                                                                   stub,
@@ -115,7 +120,7 @@ namespace Game.Battle.CombatObjects
                                                                   type,
                                                                   template.Lvl,
                                                                   size,
-                                                                  kernel.Get<BattleFormulas>(),
+                                                                  battleFormulas,
                                                                   kernel.Get<Formula>());
                 units[i++] = newUnit;
                 count -= size;
@@ -144,7 +149,7 @@ namespace Game.Battle.CombatObjects
                                                                         size,
                                                                         stronghold,
                                                                         kernel.Get<UnitFactory>(),
-                                                                        kernel.Get<BattleFormulas>(),
+                                                                        kernel.Get<IBattleFormulas>(),
                                                                         kernel.Get<Formula>());
 
                 units[i++] = newUnit;
@@ -195,7 +200,7 @@ namespace Game.Battle.CombatObjects
                                                 count,
                                                 unitFactory.GetUnitStats(type, level),
                                                 barbarianTribe,
-                                                kernel.Get<BattleFormulas>(),
+                                                kernel.Get<IBattleFormulas>(),
                                                 kernel.Get<Formula>());
         }
 
@@ -210,7 +215,7 @@ namespace Game.Battle.CombatObjects
                                             hp,
                                             stronghold,
                                             kernel.Get<IStructureCsvFactory>(),
-                                            kernel.Get<BattleFormulas>());
+                                            kernel.Get<IBattleFormulas>());
         }
     }
 }

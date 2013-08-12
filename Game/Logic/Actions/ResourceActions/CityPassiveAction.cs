@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Battle;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -37,13 +38,16 @@ namespace Game.Logic.Actions
 
         private int laborTimeRemains;
 
+        private readonly IBattleFormulas battleFormulas;
+
         public CityPassiveAction(uint cityId,
                                  IObjectTypeFactory objectTypeFactory,
                                  ILocker locker,
                                  Formula formula,
                                  IActionFactory actionFactory,
                                  Procedure procedure,
-                                 IGameObjectLocator locator)
+                                 IGameObjectLocator locator, 
+            IBattleFormulas battleFormulas)
         {
             this.cityId = cityId;
             this.objectTypeFactory = objectTypeFactory;
@@ -52,6 +56,7 @@ namespace Game.Logic.Actions
             this.actionFactory = actionFactory;
             this.procedure = procedure;
             this.locator = locator;
+            this.battleFormulas = battleFormulas;
 
             CreateSubscriptions();
         }
@@ -68,7 +73,8 @@ namespace Game.Logic.Actions
                                  Formula formula,
                                  IActionFactory actionFactory,
                                  Procedure procedure,
-                                 IGameObjectLocator locator)
+                                 IGameObjectLocator locator, 
+            IBattleFormulas battleFormulas)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.objectTypeFactory = objectTypeFactory;
@@ -77,6 +83,7 @@ namespace Game.Logic.Actions
             this.actionFactory = actionFactory;
             this.procedure = procedure;
             this.locator = locator;
+            this.battleFormulas = battleFormulas;
             cityId = uint.Parse(properties["city_id"]);
             laborTimeRemains = int.Parse(properties["labor_time_remains"]);
 
@@ -298,7 +305,7 @@ namespace Game.Logic.Actions
         {
             PostFirstLoop += city =>
                 {                   
-                    city.Resource.Crop.Upkeep = procedure.UpkeepForCity(city);
+                    city.Resource.Crop.Upkeep = procedure.UpkeepForCity(city, battleFormulas);
 
                     if (!Config.troop_starve)
                     {

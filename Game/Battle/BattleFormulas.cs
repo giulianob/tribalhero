@@ -16,16 +16,9 @@ namespace Game.Battle
 {
     public class BattleFormulas : IBattleFormulas
     {
-        [Obsolete("Inject BattleFormulas instead")]
-        public static IBattleFormulas Current { get; set; }
-
         private readonly UnitFactory unitFactory;
 
         private readonly UnitModFactory unitModFactory;
-
-        protected BattleFormulas()
-        {
-        }
 
         public BattleFormulas(UnitModFactory unitModFactory, UnitFactory unitFactory)
         {

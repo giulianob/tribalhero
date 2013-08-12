@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Game.Battle;
 using Game.Database;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
@@ -312,13 +313,13 @@ namespace Game.Data.Troop
 
         #endregion
 
-        public TroopStub(ushort troopId, ICity city, Formula formula, IDbManager dbManager)
+        public TroopStub(ushort troopId, ICity city, Formula formula, IDbManager dbManager, IBattleFormulas battleFormulas)
         {
             City = city;
             this.formula = formula;
             this.dbManager = dbManager;
             this.troopId = troopId;
-            Template = new TroopTemplate(this);
+            Template = new TroopTemplate(this, battleFormulas);
         }
 
         #region IEnumerable<Formation> Members

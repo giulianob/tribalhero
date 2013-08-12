@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using Game.Battle;
 using Game.Data;
 using Game.Data.Events;
 using Game.Logic;
@@ -21,13 +22,16 @@ namespace Game.Comm.Channel
 
         private readonly IRegionLocator regionLocator;
 
-        public CityChannel(Util.IChannel channel, Procedure procedure, Formula formula, IRegionManager regionManager, IRegionLocator regionLocator)
+        private readonly IBattleFormulas battleFormulas;
+
+        public CityChannel(Util.IChannel channel, Procedure procedure, Formula formula, IRegionManager regionManager, IRegionLocator regionLocator, IBattleFormulas battleFormulas)
         {
             this.channel = channel;
             this.procedure = procedure;
             this.formula = formula;
             this.regionManager = regionManager;
             this.regionLocator = regionLocator;
+            this.battleFormulas = battleFormulas;
         }
 
         public void Register(ICityManager cityManager)
@@ -159,7 +163,7 @@ namespace Game.Comm.Channel
             {
                 city.BeginUpdate();
             }
-            city.Resource.Crop.Upkeep = procedure.UpkeepForCity(city);
+            city.Resource.Crop.Upkeep = procedure.UpkeepForCity(city, battleFormulas);
             if (!doUpdate)
             {
                 city.EndUpdate();
@@ -598,7 +602,7 @@ namespace Game.Comm.Channel
             {
                 city.BeginUpdate();
             }
-            city.Resource.Crop.Upkeep = procedure.UpkeepForCity(city);
+            city.Resource.Crop.Upkeep = procedure.UpkeepForCity(city, battleFormulas);
             if (!doUpdate)
             {
                 city.EndUpdate();

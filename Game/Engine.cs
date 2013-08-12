@@ -258,10 +258,8 @@ _________ _______ _________ ______   _______  _
             Global.Current = kernel.Get<Global>();
             SystemVariablesUpdater.Current = kernel.Get<SystemVariablesUpdater>();
             TileLocator.Current = kernel.Get<TileLocator>();
-            BattleFormulas.Current = kernel.Get<BattleFormulas>();
             Concurrency.Current = kernel.Get<ILocker>();
             World.Current = kernel.Get<IWorld>();
-            Procedure.Current = kernel.Get<Procedure>();
             Scheduler.Current = kernel.Get<IScheduler>();
             DbPersistance.Current = kernel.Get<IDbManager>();
 

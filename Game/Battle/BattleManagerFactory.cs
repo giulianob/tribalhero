@@ -35,7 +35,7 @@ namespace Game.Battle
                                        kernel.Get<IDbManager>(),
                                        kernel.Get<IBattleReport>(),
                                        kernel.Get<ICombatListFactory>(),
-                                       kernel.Get<BattleFormulas>(),
+                                       kernel.Get<IBattleFormulas>(),
                                        new BattleOrder(battleRandom),
                                        battleRandom);
 
@@ -114,7 +114,7 @@ namespace Game.Battle
                                              kernel.Get<IDbManager>(),
                                              kernel.Get<IBattleReport>(),
                                              kernel.Get<ICombatListFactory>(),
-                                             kernel.Get<BattleFormulas>(),
+                                             kernel.Get<IBattleFormulas>(),
                                              new BattleOrder(battleRandom),
                                              battleRandom);
 
@@ -141,7 +141,7 @@ namespace Game.Battle
                                            new BattleReport(new NullBattleReportWriter()),
                                            kernel.Get<ICombatListFactory>(),
 
-                                           kernel.Get<BattleFormulas>(),
+                                           kernel.Get<IBattleFormulas>(),
                                            new BattleOrder(battleRandom),
                                            battleRandom);
 

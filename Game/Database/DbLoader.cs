@@ -1333,7 +1333,7 @@ namespace Game.Database
                                                                   (byte)listReader["level"],
                                                                   Kernel.Get<Formula>(),
                                                                   Kernel.Get<IActionFactory>(),
-                                                                  Kernel.Get<BattleFormulas>(),
+                                                                  Kernel.Get<IBattleFormulas>(),
                                                                   Kernel.Get<ITileLocator>(),
                                                                   Kernel.Get<IRegionManager>())
                         {
@@ -1377,7 +1377,7 @@ namespace Game.Database
                                                                                     (int)listReader["loot_wood"],
                                                                                     (int)listReader["loot_labor"]),
                                                                        Kernel.Get<UnitFactory>(),
-                                                                       Kernel.Get<BattleFormulas>(),
+                                                                       Kernel.Get<IBattleFormulas>(),
                                                                        Kernel.Get<Formula>(),
                                                                        Kernel.Get<ITileLocator>());
 
@@ -1422,7 +1422,7 @@ namespace Game.Database
                                                                         (byte)listReader["level"],
                                                                         (ushort)listReader["count"],
                                                                         (decimal)listReader["left_over_hp"],
-                                                                        Kernel.Get<BattleFormulas>(),
+                                                                        Kernel.Get<IBattleFormulas>(),
                                                                         Kernel.Get<Formula>());
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
@@ -1502,7 +1502,7 @@ namespace Game.Database
                                                                            stronghold,
                                                                            (decimal)listReader["left_over_hp"],
                                                                                Kernel.Get<UnitFactory>(),
-                                                                               Kernel.Get<BattleFormulas>(),
+                                                                               Kernel.Get<IBattleFormulas>(),
                                                                                Kernel.Get<Formula>());
 
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
@@ -1542,7 +1542,7 @@ namespace Game.Database
                                                                            (decimal)listReader["hp"],
                                                                            stronghold,
                                                                                Kernel.Get<IStructureCsvFactory>(),
-                                                                               Kernel.Get<BattleFormulas>());
+                                                                               Kernel.Get<IBattleFormulas>());
 
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];

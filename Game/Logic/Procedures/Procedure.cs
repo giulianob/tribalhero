@@ -30,8 +30,5 @@ namespace Game.Logic.Procedures
             this.world = world;
             this.locker = locker;
         }
-
-        [Obsolete("Inject Procedure instead")]
-        public static Procedure Current { get; set; }
     }
 }

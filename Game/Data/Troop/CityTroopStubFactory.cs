@@ -1,4 +1,5 @@
 using System;
+using Game.Battle;
 using Game.Logic.Formulas;
 using Ninject;
 using Persistance;
@@ -23,7 +24,7 @@ namespace Game.Data.Troop
                 throw new Exception("City cannot be null");
             }
 
-            return new TroopStub(troopId, City, kernel.Get<Formula>(), kernel.Get<IDbManager>());
+            return new TroopStub(troopId, City, kernel.Get<Formula>(), kernel.Get<IDbManager>(), kernel.Get<IBattleFormulas>());
         }
     }
 }

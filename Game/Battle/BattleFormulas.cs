@@ -9,8 +9,6 @@ using Game.Data.Stats;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
 using Game.Setup;
-using Game.Util;
-using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -18,9 +16,6 @@ namespace Game.Battle
 {
     public class BattleFormulas : IBattleFormulas
     {
-        [Obsolete("Inject BattleFormulas instead")]
-        public static IBattleFormulas Current { get; set; }
-
         private readonly UnitFactory unitFactory;
 
         private readonly UnitModFactory unitModFactory;

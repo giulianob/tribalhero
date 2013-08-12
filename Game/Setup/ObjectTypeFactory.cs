@@ -11,19 +11,16 @@ using Game.Data;
 
 namespace Game.Setup
 {
-    public class ObjectTypeFactory
+    public class ObjectTypeFactory : IObjectTypeFactory
     {
         private readonly Dictionary<string, List<uint>> dict = new Dictionary<string, List<uint>>();
 
         public void Init(string filename)
         {
-            using (
-                    var reader =
-                            new CsvReader(
-                                    new StreamReader(new FileStream(filename,
-                                                                    FileMode.Open,
-                                                                    FileAccess.Read,
-                                                                    FileShare.ReadWrite))))
+            using (var reader = new CsvReader(new StreamReader(new FileStream(filename,
+                                                                              FileMode.Open,
+                                                                              FileAccess.Read,
+                                                                              FileShare.ReadWrite))))
             {
                 String[] toks;
                 List<uint> set;
@@ -63,12 +60,6 @@ namespace Game.Setup
         {
             List<uint> set;
             return dict.TryGetValue(type, out set) && set.Contains(structure.Type);
-        }
-
-        public virtual bool IsStructureType(string type, ushort structureType)
-        {
-            List<uint> set;
-            return dict.TryGetValue(type, out set) && set.Contains(structureType);
         }
 
         public virtual bool IsObjectType(string type, ushort objectType)

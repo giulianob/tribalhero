@@ -26,14 +26,14 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IStrongholdManager strongholdManager;
 
-        private readonly StructureFactory structureFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         private readonly ITribeManager tribeManager;
 
         private readonly IWorld world;
 
         public TribesmanCommandsModule(IActionFactory actionFactory,
-                                       StructureFactory structureFactory,
+                                       IStructureCsvFactory structureCsvFactory,
                                        ILocker locker,
                                        IWorld world,
                                        IDbManager dbManager,
@@ -41,7 +41,7 @@ namespace Game.Comm.ProcessorCommands
                                        ITribeManager tribeManager)
         {
             this.actionFactory = actionFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             this.locker = locker;
             this.world = world;
             this.dbManager = dbManager;
@@ -415,7 +415,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var action = actionFactory.CreateTribeContributeActiveAction(cityId, structureId, resource);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(structure),
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(structure),
                                                  structure,
                                                  action,
                                                  structure.Technologies);

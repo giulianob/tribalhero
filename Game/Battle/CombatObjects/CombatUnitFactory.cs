@@ -8,6 +8,7 @@ using Game.Data.Stronghold;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Setup;
 using Ninject;
 
@@ -19,11 +20,11 @@ namespace Game.Battle.CombatObjects
     {
         private readonly IKernel kernel;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly UnitFactory unitFactory;
 
-        public CombatUnitFactory(IKernel kernel, ObjectTypeFactory objectTypeFactory, UnitFactory unitFactory)
+        public CombatUnitFactory(IKernel kernel, IObjectTypeFactory objectTypeFactory, UnitFactory unitFactory)
         {
             this.kernel = kernel;
             this.objectTypeFactory = objectTypeFactory;
@@ -38,7 +39,9 @@ namespace Game.Battle.CombatObjects
                                        kernel.Get<IBattleFormulas>().LoadStats(structure),
                                        kernel.Get<Formula>(),
                                        kernel.Get<IActionFactory>(),
-                                       kernel.Get<IBattleFormulas>());
+                                       kernel.Get<IBattleFormulas>(),
+                                       kernel.Get<ITileLocator>(),
+                                       kernel.Get<IRegionManager>());
         }
 
         public AttackCombatUnit[] CreateAttackCombatUnit(IBattleManager battleManager,
@@ -74,7 +77,9 @@ namespace Game.Battle.CombatObjects
                                                                 template.Lvl,
                                                                 size,
                                                                 kernel.Get<UnitFactory>(),
-                                                                battleFormulas);
+								battleFormulas,
+                                                                kernel.Get<Formula>(),
+                                                                kernel.Get<ITileLocator>());
 
                 units[i++] = newUnit;
                 count -= size;
@@ -115,7 +120,8 @@ namespace Game.Battle.CombatObjects
                                                                   type,
                                                                   template.Lvl,
                                                                   size,
-                                                                  battleFormulas);
+                                                                  battleFormulas,
+                                                                  kernel.Get<Formula>());
                 units[i++] = newUnit;
                 count -= size;
             }
@@ -208,7 +214,7 @@ namespace Game.Battle.CombatObjects
                                             stronghold.Lvl,
                                             hp,
                                             stronghold,
-                                            kernel.Get<StructureFactory>(),
+                                            kernel.Get<IStructureCsvFactory>(),
                                             kernel.Get<IBattleFormulas>());
         }
     }

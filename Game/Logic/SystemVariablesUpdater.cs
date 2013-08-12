@@ -92,8 +92,8 @@ namespace Game.Logic
                     }
 
                     //System time
-                    Global.SystemVariables["System.time"].Value = now;
-                    dbManager.Save(Global.SystemVariables["System.time"]);
+                    Global.Current.SystemVariables["System.time"].Value = now;
+                    dbManager.Save(Global.Current.SystemVariables["System.time"]);
 
                     #region 10 second updates
                     if (DateTime.UtcNow.Subtract(lastUpdateScheduler).TotalMilliseconds < 10000)
@@ -159,7 +159,7 @@ namespace Game.Logic
                             new SystemVariable("Players.count", world.Players.Count),
                             new SystemVariable("Players.logged_in", TcpWorker.GetSessionCount()),
                             new SystemVariable("Cities.count", world.Cities.Count),
-                            new SystemVariable("Channel.subscriptions", Global.Channel.SubscriptionCount()),
+                            new SystemVariable("Channel.subscriptions", Global.Current.Channel.SubscriptionCount()),
                             new SystemVariable("Tribes.count", tribeManager.TribeCount),
                             new SystemVariable("Strongholds.neutral", strongholdsNeutral),
                             new SystemVariable("Strongholds.occupied", strongholdsOccupied),
@@ -207,16 +207,16 @@ namespace Game.Logic
                     // Update vars
                     foreach (var variable in variables)
                     {
-                        if (!Global.SystemVariables.ContainsKey(variable.Key))
+                        if (!Global.Current.SystemVariables.ContainsKey(variable.Key))
                         {
-                            Global.SystemVariables.Add(variable.Key, variable);
+                            Global.Current.SystemVariables.Add(variable.Key, variable);
                         }
                         else
                         {
-                            Global.SystemVariables[variable.Key].Value = variable.Value;
+                            Global.Current.SystemVariables[variable.Key].Value = variable.Value;
                         }
 
-                        dbManager.Save(Global.SystemVariables[variable.Key]);
+                        dbManager.Save(Global.Current.SystemVariables[variable.Key]);
                     }
                     #endregion
                 }

@@ -32,12 +32,15 @@ namespace Game.Comm
 
         private readonly IWorld world;
 
+        private readonly ITileLocator tileLocator;
+
         public StrongholdCommandLineModule(ITribeManager tribeManager,
                                            IWorld world,
                                            ILocker locker,
                                            IStrongholdManager strongholdManager,
                                            MapFactory mapFactory,
-                                           Formula formula)
+                                           Formula formula,
+                                           ITileLocator tileLocator)
         {
             this.tribeManager = tribeManager;
             this.world = world;
@@ -45,6 +48,7 @@ namespace Game.Comm
             this.strongholdManager = strongholdManager;
             this.mapFactory = mapFactory;
             this.formula = formula;
+            this.tileLocator = tileLocator;
         }
 
         public override void RegisterCommands(CommandLineProcessor processor)
@@ -60,21 +64,19 @@ namespace Game.Comm
         {
             SystemVariable mapStartIndex;
             int index = 0;
-            if (Global.SystemVariables.TryGetValue("Map.start_index", out mapStartIndex))
+            if (Global.Current.SystemVariables.TryGetValue("Map.start_index", out mapStartIndex))
             {
                 index = (int)mapStartIndex.Value;
             }
 
             var list = new List<Position>(mapFactory.Locations().Take(index));
-            foreach(var stronghold in strongholdManager.Where(s=>s.StrongholdState == StrongholdState.Inactive))
+            foreach (var stronghold in strongholdManager.Where(s => s.StrongholdState == StrongholdState.Inactive))
             {
-                using(locker.Lock(stronghold))
+                using (locker.Lock(stronghold))
                 {
                     stronghold.BeginUpdate();
-                    int count = list.Count(pt => stronghold.TileDistance(pt.X, pt.Y) <= Config.stronghold_radius_base + Config.stronghold_radius_per_level * stronghold.Lvl);
-                    stronghold.NearbyCitiesCount =
-                            (ushort)
-                            count;
+                    int count = list.Count(pt => tileLocator.TileDistance(stronghold.PrimaryPosition, 3, pt, 1) <= Config.stronghold_radius_base + Config.stronghold_radius_per_level * stronghold.Lvl);
+                    stronghold.NearbyCitiesCount = (ushort)count;
                     stronghold.EndUpdate();
                 }
             }
@@ -132,7 +134,7 @@ namespace Game.Comm
                     return "No troops in the city!";
                 }
 
-                ITroopStub stub = city.Troops.Create();
+                ITroopStub stub = city.CreateTroopStub();
                 stub.BeginUpdate();
                 stub.AddFormation(FormationType.Defense);
                 foreach (var unit in city.DefaultTroop[FormationType.Normal])

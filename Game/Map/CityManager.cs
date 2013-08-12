@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Game.Data;
+using Game.Data.Events;
 using Game.Database;
 using Game.Logic.Procedures;
 using Game.Setup;
@@ -22,7 +25,8 @@ namespace Game.Map
 
         private readonly IRegionManager regionManager;
 
-        public event EventHandler<EventArgs> CityAdded = (sender, args) => { };
+        public event EventHandler<NewCityEventArgs> CityAdded = (sender, args) => { };
+        public event EventHandler<EventArgs> CityRemoved = (sender, args) => { };
 
         public CityManager(IDbManager dbManager, IRegionManager regionManager)
         {
@@ -51,12 +55,15 @@ namespace Game.Map
                 // Resave city to update times
                 dbManager.Save(iter.Current);
 
+                // Recalc city resource rate
+                procedure.RecalculateCityResourceRates(iter.Current);
+
                 //Set resource cap
                 procedure.SetResourceCap(iter.Current);
 
                 //Set up the city region (for minimap)
                 CityRegion region;
-                if (regionManager.CityRegions.TryGetCityRegion(iter.Current.X, iter.Current.Y, out region))
+                if (regionManager.CityRegions.TryGetCityRegion(iter.Current.PrimaryPosition.X, iter.Current.PrimaryPosition.Y, out region))
                 {
                     region.Add(iter.Current);
                 }
@@ -73,7 +80,11 @@ namespace Game.Map
                 city.EndUpdate();
 
                 cities.Remove(city.Id);
+
+                DeregisterEvents(city);
             }
+
+            CityRemoved(city, new EventArgs());
         }
 
         public uint GetNextCityId()
@@ -87,21 +98,23 @@ namespace Game.Map
             {
                 cities[city.Id] = city;
 
-                //Initial save of these objects
-                dbManager.Save((IStructure)city[1]);
+                //Initial save of troops
+                // TODO: Remove this when troops are being created from the city and saved immediatelly
                 foreach (var stub in city.Troops)
                 {
                     dbManager.Save(stub);
                 }
 
                 CityRegion region;
-                if (regionManager.CityRegions.TryGetCityRegion(city.X, city.Y, out region))
+                if (regionManager.CityRegions.TryGetCityRegion(city.PrimaryPosition.X, city.PrimaryPosition.Y, out region))
                 {
                     region.Add(city);
                 }
+
+                RegisterEvents(city);
             }
 
-            CityAdded(city, new EventArgs());
+            CityAdded(city, new NewCityEventArgs(true));
         }
 
         public void DbLoaderAdd(ICity city)
@@ -113,20 +126,24 @@ namespace Game.Map
                 if (city.Deleted != City.DeletedState.Deleted)
                 {
                     cities.Add(city.Id, city);
+                    RegisterEvents(city);
                 }
             }
+
+            CityAdded(city, new NewCityEventArgs(false));
+        }
+
+        private void RegisterEvents(ICity city)
+        {
+            city.PropertyChanged += CityPropertyChanged;
         }
 
         public bool FindCityId(string name, out uint cityId)
         {
             cityId = UInt16.MaxValue;
-            using (
-                    DbDataReader reader =
-                            DbPersistance.Current.ReaderQuery(
-                                                              String.Format(
-                                                                            "SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1",
-                                                                            City.DB_TABLE),
-                                                              new[] {new DbColumn("name", name, DbType.String)}))
+
+            var query = String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE);
+            using (DbDataReader reader = dbManager.ReaderQuery(query, new[] {new DbColumn("name", name, DbType.String)}))
             {
                 if (!reader.HasRows)
                 {
@@ -138,12 +155,35 @@ namespace Game.Map
             }
         }
 
+        private void DeregisterEvents(ICity city)
+        {
+            city.PropertyChanged -= CityPropertyChanged;
+        }
+
+        private void CityPropertyChanged(ICity city, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Value" && Global.Current.FireEvents)
+            {
+                CityRegion cityRegion;
+                if (regionManager.CityRegions.TryGetCityRegion(city.PrimaryPosition.X, city.PrimaryPosition.Y, out cityRegion))
+                {
+                    cityRegion.MarkAsDirty();
+                }
+            }
+        }
+
         public IEnumerable<ICity> AllCities()
         {
             lock (cities)
             {
                 return cities.Values.ToList();
             }
+        }
+
+        public static bool IsNameValid(string cityName)
+        {
+            return cityName != String.Empty && cityName.Length >= 3 && cityName.Length <= 16 &&
+                   Regex.IsMatch(cityName, Global.ALPHANUMERIC_NAME, RegexOptions.IgnoreCase);
         }
     }
 }

@@ -8,11 +8,6 @@ namespace Game.Data.Stats
 {
     public class StructureBaseStats : IStructureBaseStats
     {
-        public StructureBaseStats(BaseBattleStats baseBattleStats)
-        {
-            Battle = baseBattleStats;
-        }
-
         public StructureBaseStats(string name,
                                   string spriteClass,
                                   ushort type,
@@ -22,7 +17,8 @@ namespace Game.Data.Stats
                                   BaseBattleStats baseBattleStats,
                                   ushort maxLabor,
                                   int buildTime,
-                                  int workerId)
+                                  int workerId,
+                                  byte size)
         {
             Name = name;
             SpriteClass = spriteClass;
@@ -34,6 +30,7 @@ namespace Game.Data.Stats
             MaxLabor = maxLabor;
             BuildTime = buildTime;
             WorkerId = workerId;
+            Size = size;
         }
 
         public virtual string Name { get; private set; }
@@ -49,6 +46,8 @@ namespace Game.Data.Stats
         public virtual int BuildTime { get; private set; }
 
         public virtual int WorkerId { get; private set; }
+
+        public virtual byte Size { get; set; }
 
         public virtual ushort MaxLabor { get; private set; }
 

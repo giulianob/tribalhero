@@ -6,7 +6,9 @@ using System.IO;
 using System.Linq;
 using Game.Data;
 using Game.Setup;
+using Game.Util;
 using Game.Util.Locking;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -14,7 +16,11 @@ namespace Game.Map
 {
     public class CityRegion
     {
+        private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
         private readonly DefaultMultiObjectLock.Factory lockerFactory;
+
+        private readonly IGlobal global;
 
         #region Constants
 
@@ -37,9 +43,10 @@ namespace Game.Map
 
         #endregion
 
-        public CityRegion(DefaultMultiObjectLock.Factory lockerFactory)
+        public CityRegion(DefaultMultiObjectLock.Factory lockerFactory, IGlobal global)
         {
             this.lockerFactory = lockerFactory;
+            this.global = global;
         }
 
         #region Members
@@ -64,6 +71,11 @@ namespace Game.Map
                 MarkAsDirty();
             }
 
+            if (global.FireEvents)
+            {
+                logger.Debug("Added city region obj: {0}", obj.ToString());
+            }
+
             return true;
         }
 
@@ -71,7 +83,16 @@ namespace Game.Map
         {
             lock (objLock)
             {
-                data.Remove(obj);
+                var remove = data.Remove(obj);
+                if (!remove)
+                {
+                    logger.Warn("Tried to remove nonexistant object from city region: {0}", obj.ToString());
+
+                    throw new Exception("Tried to remove obj from wrong region");
+                }
+                
+                logger.Debug("Removed city region obj: {0}", obj.ToString());
+                
                 MarkAsDirty();
             }
         }
@@ -92,7 +113,7 @@ namespace Game.Map
         {
             lock (objLock)
             {
-                Position loc = obj.CityRegionLocation;
+                Position loc = obj.PrimaryPosition;
                 if (loc.X != origX || loc.Y != origY)
                 {
                     Remove(obj);
@@ -140,9 +161,17 @@ namespace Game.Map
                             bw.Write((ushort)data.Count);
                             foreach (var obj in data)
                             {
+                                    // TODO: Remove this at some point.. added this to check an existing issue
+                                    var simpleObj = obj as ISimpleGameObject;
+                                    if (simpleObj != null && !simpleObj.InWorld)
+                                    {
+                                        logger.Warn("Tried to get bytes from an obj that is not in world {0}", simpleObj.ToString());
+                                        throw new Exception("Object not being removed properly...");
+                                    }
+
                                 bw.Write((byte)obj.CityRegionType);
-                                bw.Write(obj.CityRegionRelX);
-                                bw.Write(obj.CityRegionRelY);
+                                bw.Write((ushort)(obj.PrimaryPosition.X % Config.city_region_width));
+                                bw.Write((ushort)(obj.PrimaryPosition.Y % Config.city_region_height));
                                 bw.Write(obj.CityRegionGroupId);
                                 bw.Write(obj.CityRegionObjectId);
 

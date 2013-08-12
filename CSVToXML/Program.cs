@@ -216,6 +216,7 @@ namespace CSVToXML
                         writer.WriteAttributeString("iron", obj[16]);
                         writer.WriteAttributeString("labor", obj[17]);
                         writer.WriteAttributeString("time", obj[18]);
+                        
                         if (int.Parse(obj[19]) != 0)
                         {
                             writer.WriteAttributeString("workerid", obj[19]);
@@ -238,6 +239,7 @@ namespace CSVToXML
                         writer.WriteAttributeString("unitclass", obj[22]);
                         writer.WriteAttributeString("armor", obj[23]);
                         writer.WriteAttributeString("maxlabor", obj[24]);
+                        writer.WriteAttributeString("size", obj[25]);
 
                         writer.WriteStartElement("Layout");
 
@@ -710,7 +712,7 @@ namespace CSVToXML
             {
                 String fullFilename = file;
 
-                if (Global.IsRunningOnMono())
+                if (Global.Current.IsRunningOnMono())
                 {
                     fullFilename = Path.Combine(langDataFolder, file);
                 }

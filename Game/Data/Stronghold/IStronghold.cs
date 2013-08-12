@@ -26,8 +26,6 @@ namespace Game.Data.Stronghold
                                    IStation,
                                    INotificationOwner
     {
-        uint Id { get; }
-
         string Name { get; }
 
         new byte Lvl { get; set; }

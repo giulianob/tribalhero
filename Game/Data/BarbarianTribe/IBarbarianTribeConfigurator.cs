@@ -1,9 +1,11 @@
+using Game.Map;
+
 namespace Game.Data.BarbarianTribe
 {
     public interface IBarbarianTribeConfigurator
     {
-        bool Next(int count, out byte level, out uint x, out uint y);
+        bool Next(int count, out byte level, out Position position);
 
-        bool IsLocationAvailable(uint x, uint y);
+        bool IsLocationAvailable(Position position);
     }
 }

@@ -5,10 +5,12 @@ using FluentAssertions;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using NSubstitute;
 using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.AutoNSubstitute;
 using Xunit;
 using Xunit.Extensions;
 
@@ -18,7 +20,13 @@ namespace Testing.FormulaTests
     {
         public StrongholdFormulaTest()
         {
-            SystemClock.SetClock(new DateTime(2013, 1, 1, 1, 1, 1, 1));
+            SystemClock.SetClock(new DateTime(2013, 1, 1, 1, 1, 1, 1));            
+        }
+
+        public void Dispose()
+        {
+            SystemClock.ResyncClock();
+            Global.Current = null;
         }
 
         [Theory]
@@ -44,7 +52,7 @@ namespace Testing.FormulaTests
         [InlineData(20, 5000)]
         public void TestMeterValue(int level, int expectedValue)
         {
-            var formula = new Fixture().Create<Formula>();
+            var formula = new Fixture().Customize(new AutoNSubstituteCustomization()).Create<Formula>();
             formula.StrongholdMainBattleMeter((byte)level).Should().Be(expectedValue);
         }
 
@@ -71,7 +79,7 @@ namespace Testing.FormulaTests
         [InlineData(20, 50000)]
         public void TestGateValue(int level, int expectedValue)
         {
-            var formula = new Fixture().Create<Formula>();
+            var formula = new Fixture().Customize(new AutoNSubstituteCustomization()).Create<Formula>();
             formula.StrongholdGateLimit((byte)level).Should().Be(expectedValue);
         }
 
@@ -100,7 +108,7 @@ namespace Testing.FormulaTests
         {
             byte unitLevel;
             int upkeep;
-            var formula = new Fixture().Create<Formula>();
+            var formula = new Fixture().Customize(new AutoNSubstituteCustomization()).Create<Formula>();
             formula.StrongholdUpkeep((byte)level, out upkeep, out unitLevel);
             unitLevel.Should().Be((byte)expectedLevel);
             upkeep.Should().Be(expectedUpkeep);
@@ -130,11 +138,10 @@ namespace Testing.FormulaTests
         {
             var serverDate = SystemClock.Now.Subtract(TimeSpan.FromDays((double)serverDays));
 
-            Global.SystemVariables.Clear();
-            Global.SystemVariables.Add("Server.date", new SystemVariable("Server.date", serverDate));
+            Global.Current = Substitute.For<IGlobal>();
+            Global.Current.SystemVariables.Returns(new Dictionary<string, SystemVariable>());
+            Global.Current.SystemVariables.Add("Server.date", new SystemVariable("Server.date", serverDate));
             
-            var formula = new Fixture().Create<Formula>();
-
             var stronghold = Substitute.For<IStronghold>();
             stronghold.StrongholdState.Returns(StrongholdState.Occupied);
             stronghold.Lvl.Returns(level);
@@ -142,13 +149,14 @@ namespace Testing.FormulaTests
             var occupiedDate = SystemClock.Now.Subtract(TimeSpan.FromDays((double)occupiedDays));
             stronghold.DateOccupied.Returns(occupiedDate);
 
+            var formula = new Fixture().Customize(new AutoNSubstituteCustomization()).Create<Formula>();
             formula.StrongholdVictoryPoint(stronghold).Should().Be(expectedValue);
         }
 
         [Fact]
         public void TestNonOccupiedVictoryPoint()
         {
-            var formula = new Fixture().Create<Formula>();
+            var formula = new Fixture().Customize(new AutoNSubstituteCustomization()).Create<Formula>();
 
             var stronghold = Substitute.For<IStronghold>();
             stronghold.StrongholdState.Returns(StrongholdState.Neutral);
@@ -158,14 +166,5 @@ namespace Testing.FormulaTests
 
             formula.StrongholdVictoryPoint(stronghold).Should().Be(0);
         }
-
-        #region Implementation of IDisposable
-
-        public void Dispose()
-        {
-            SystemClock.ResyncClock();
-        }
-
-        #endregion
     }
 }

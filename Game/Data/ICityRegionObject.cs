@@ -3,14 +3,8 @@ using Game.Util.Locking;
 
 namespace Game.Data
 {
-    public interface ICityRegionObject : IXYPosition, ILockable
+    public interface ICityRegionObject : ILockable, IPrimaryPosition
     {
-        ushort CityRegionRelX { get; }
-
-        ushort CityRegionRelY { get; }
-
-        Position CityRegionLocation { get; }
-
         CityRegion.ObjectType CityRegionType { get; }
 
         uint CityRegionGroupId { get; }

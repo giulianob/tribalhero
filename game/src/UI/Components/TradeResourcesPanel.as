@@ -1,21 +1,16 @@
 ﻿package src.UI.Components
 {
-	import flash.events.Event;
-	import org.aswing.event.AWEvent;
-	import src.Map.City;
-	import src.Objects.*;
-	import src.Objects.Effects.Formula;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.Global;
+    import flash.events.Event;
+
+    import org.aswing.*;
+    import org.aswing.geom.*;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Objects.*;
     import src.Util.StringHelper;
-	
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	
-	public class TradeResourcesPanel extends JPanel
+
+    public class TradeResourcesPanel extends JPanel
 	{
 		private var structure:StructureObject = null;
 		private var city:City = null;
@@ -53,9 +48,9 @@
 			onResourceChange();
             lblMaxOut.addActionListener(function (e: Event): void {
                 lblWoodAmount.setValue(lblWoodAmount.getMaximum());
-                lblIronAmount.setValue(lblIronAmount.getMaximum())
-                lblCropAmount.setValue(lblCropAmount.getMaximum())
-                lblGoldAmount.setValue(lblGoldAmount.getMaximum())
+                lblIronAmount.setValue(lblIronAmount.getMaximum());
+                lblCropAmount.setValue(lblCropAmount.getMaximum());
+                lblGoldAmount.setValue(lblGoldAmount.getMaximum());
             });
 		}
 		

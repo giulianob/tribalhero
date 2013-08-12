@@ -82,9 +82,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\ninject.mono\Ninject.Extensions.Factory.dll</HintPath>
     </Reference>
-    <Reference Include="NSubstitute, Version=1.6.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
+    <Reference Include="NSubstitute, Version=1.6.1.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NSubstitute.1.6.0.0\lib\NET40\NSubstitute.dll</HintPath>
+      <HintPath>..\packages\NSubstitute.1.6.1.0\lib\NET40\NSubstitute.dll</HintPath>
     </Reference>
     <Reference Include="Ploeh.AutoFixture, Version=3.4.1.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -140,6 +140,7 @@
     <Compile Include="CityRegionTests\CityRegionTest.cs" />
     <Compile Include="CityTests\CityTest.cs" />
     <Compile Include="DatabaseTests\DbLoaderActionFactoryTest.cs" />
+    <Compile Include="FixtureHelper.cs" />
     <Compile Include="FormulaTests\BarbarianTribeFormulaTest.cs" />
     <Compile Include="FormulaTests\CityValueTest.cs" />
     <Compile Include="FormulaTests\BattleFormulaTest.cs" />
@@ -164,6 +165,9 @@
     <Compile Include="NinjectTests\FactoryMethodNameProviderTests.cs" />
     <Compile Include="PlayerTests\AchievementListTest.cs" />
     <Compile Include="TribeTests\TribeManagerTests.cs" />
+    <Compile Include="TroopTests\StationedPartialTroopObjectInitializerTests.cs" />
+    <Compile Include="TroopTests\SimpleStubTests.cs" />
+    <Compile Include="TroopTests\StationedTroopObjectInitializerTests.cs" />
     <Compile Include="UtilTests\XmlSerializerTest.cs" />
     <Compile Include="StrongholdTests\StrongholdManagerTests.cs" />
     <Compile Include="ResourcesTests\AggressiveLazyResourceTest.cs" />

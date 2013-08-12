@@ -9,10 +9,13 @@ namespace Game.Data.Troop
         [FactoryReturns(typeof(StationedTroopObjectInitializer))]
         ITroopObjectInitializer CreateStationedTroopObjectInitializer(ITroopStub stub);
 
+        [FactoryReturns(typeof(StationedPartialTroopObjectInitializer))]
+        ITroopObjectInitializer CreateStationedPartialTroopObjectInitializer(ITroopStub stub, ISimpleStub unitsToRetreat);
+
         [FactoryReturns(typeof(CityTroopObjectInitializer))]
         ITroopObjectInitializer CreateCityTroopObjectInitializer(uint cityId, ISimpleStub simpleStub, TroopBattleGroup group, AttackMode mode);
 
         [FactoryReturns(typeof(AssignmentTroopObjectInitializer))]
-        ITroopObjectInitializer CreateAssignmentTroopObjectInitializer(ITroopObject troopObject, TroopBattleGroup group, AttackMode mode);
+        ITroopObjectInitializer CreateAssignmentTroopObjectInitializer(ITroopObject existingTroopObject, TroopBattleGroup group, AttackMode mode);
     }
 }

@@ -8,6 +8,7 @@ using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
+using Game.Module.Remover;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;

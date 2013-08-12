@@ -32,9 +32,9 @@ namespace Game.Battle.CombatObjects
 
         private readonly ushort type;
 
-        private readonly UnitFactory unitFactory;
-
         private ushort count;
+
+        private readonly int eachUnitUpkeep;
 
         private Formula formula;
 
@@ -57,13 +57,13 @@ namespace Game.Battle.CombatObjects
             this.formation = formation;
             this.type = type;
             this.count = count;
-            this.unitFactory = unitFactory;
             this.formula = formula;
             this.tileLocator = tileLocator;
             this.lvl = lvl;
 
             stats = troopObject.Stub.Template[type];
             LeftOverHp = stats.MaxHp;
+            eachUnitUpkeep = unitFactory.GetUnitStats(type, lvl).Upkeep;
         }
 
         /// <summary>
@@ -85,8 +85,8 @@ namespace Game.Battle.CombatObjects
                 : this(id, battleId, troopObject, formation, type, lvl, count, unitFactory, battleFormulas, formula, tileLocator)
         {
             LeftOverHp = leftOverHp;
-
             this.loot = loot;
+            eachUnitUpkeep = unitFactory.GetUnitStats(type, lvl).Upkeep * count;
         }
 
         public decimal LeftOverHp { get; set; }
@@ -135,7 +135,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return unitFactory.GetUnitStats(type, lvl).Upkeep * count;
+                return eachUnitUpkeep * count;
             }
         }
 
@@ -271,12 +271,13 @@ namespace Game.Battle.CombatObjects
 
         public override void CalcActualDmgToBeTaken(ICombatList attackers,
                                                     ICombatList defenders,
+                                                    IBattleRandom random,
                                                     decimal baseDmg,
                                                     int attackIndex,
                                                     out decimal actualDmg)
         {
             // Miss chance
-            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg);
+            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg, random);
 
             // Splash dmg reduction
             actualDmg = BattleFormulas.SplashReduction(this, actualDmg, attackIndex);
@@ -370,16 +371,6 @@ namespace Game.Battle.CombatObjects
             troopObject.Stats.AttackPoint += attackPoint;
             troopObject.Stats.Loot.Add(resource);
             troopObject.EndUpdate();
-        }
-
-        public override int CompareTo(object other)
-        {
-            if (other is ITroopStub)
-            {
-                return other == TroopStub ? 0 : 1;
-            }
-
-            return -1;
         }
 
         #region ICombatUnit Members

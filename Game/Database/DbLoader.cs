@@ -23,6 +23,7 @@ using Game.Logic.Notifications;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
+using Game.Module.Remover;
 using Game.Setup;
 using Game.Util;
 using Newtonsoft.Json;
@@ -1193,7 +1194,6 @@ namespace Game.Database
                     battleManager.BattleStarted = (bool)reader["battle_started"];
                     battleManager.Round = (uint)reader["round"];
                     battleManager.Turn = (uint)reader["turn"];
-                    battleManager.NextToAttack = (BattleManager.BattleSide)((byte)reader["next_to_attack"]);
 
                     battleManager.BattleReport.ReportStarted = (bool)reader["report_started"];
                     battleManager.BattleReport.ReportId = (uint)reader["report_id"];

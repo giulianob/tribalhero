@@ -44,7 +44,7 @@ namespace Testing.FormulaTests
             troopstub.City.Template[3].Upkeep.Returns((byte)5);
             troopstub.City.Template[3].Battle.Armor.Returns(ArmorType.Machine);
             // 10 fighters
-            IEnumerable<Formation> formation = new[] {new Formation(FormationType.Normal)
+            IEnumerable<IFormation> formation = new[] {new Formation(FormationType.Normal)
             {
                 {0, 10},
             }};

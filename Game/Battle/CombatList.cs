@@ -34,7 +34,7 @@ namespace Game.Battle
 
         #endregion
 
-        public CombatList(IDbManager manager, ITileLocator tileLocator, BattleFormulas battleFormulas)
+        public CombatList(IDbManager manager, ITileLocator tileLocator, IBattleFormulas battleFormulas)
                 : base(manager)
         {
             this.tileLocator = tileLocator;
@@ -47,6 +47,13 @@ namespace Game.Battle
             {
                 return AllCombatObjects().Sum(obj => obj.Upkeep);
             }
+        }
+
+        public int UpkeepNotParticipated(uint round)
+        {
+            return AllAliveCombatObjects()
+                    .Where(obj => obj.LastRound <= round)
+                    .Sum(x => x.Upkeep);
         }
 
         public bool HasInRange(ICombatObject attacker)

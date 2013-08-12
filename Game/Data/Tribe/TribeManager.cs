@@ -31,7 +31,13 @@ namespace Game.Data.Tribe
 
         private readonly LargeIdGenerator tribeIdGen = new LargeIdGenerator(Config.tribe_id_max, Config.tribe_id_min);
 
-        public TribeManager(IDbManager dbManager, IStrongholdManager strongholdManager, IActionFactory actionFactory, ITribeFactory tribeFactory, ITribeLogger tribeLogger)
+        private readonly ITroopObjectInitializerFactory troopInitializerFactory;
+
+        public TribeManager(IDbManager dbManager, 
+            IStrongholdManager strongholdManager, 
+            IActionFactory actionFactory, 
+            ITribeFactory tribeFactory, 
+            ITribeLogger tribeLogger, ITroopObjectInitializerFactory troopInitializerFactory)
         {
             Tribes = new ConcurrentDictionary<uint, ITribe>();
             this.dbManager = dbManager;
@@ -39,6 +45,7 @@ namespace Game.Data.Tribe
             this.actionFactory = actionFactory;
             this.tribeFactory = tribeFactory;
             this.tribeLogger = tribeLogger;
+            this.troopInitializerFactory = troopInitializerFactory;
         }
 
         private ConcurrentDictionary<uint, ITribe> Tribes { get; set; }
@@ -276,7 +283,8 @@ namespace Game.Data.Tribe
                                                                  ((IStronghold)stub.Station).MainBattle == null &&
                                                                  stub.State == TroopState.Stationed))
                 {
-                    var retreatAction = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
+                    var troopInitializer = troopInitializerFactory.CreateStationedTroopObjectInitializer(stub);
+                    var retreatAction = actionFactory.CreateRetreatChainAction(stub.City.Id, troopInitializer);
                     stub.City.Worker.DoPassive(stub.City, retreatAction, true);
                 }
             }

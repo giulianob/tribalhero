@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 
@@ -12,11 +11,11 @@ namespace Game.Battle
         /// </summary>
         /// <returns>True if got an object from the current round. False if had to look into next round.</returns>
         bool NextObject(uint round,
-                                        IEnumerable<ICombatGroup> attacker,
-                                        IEnumerable<ICombatGroup> defender,
-                                        BattleManager.BattleSide sideAttacking,
-                                        out ICombatObject outCombatObject,
-                                        out ICombatGroup outCombatGroup,
-                                        out BattleManager.BattleSide foundInGroup);
+                        ICombatList attacker,
+                        ICombatList defender,
+                        out ICombatObject outCombatObject,
+                        out ICombatGroup outCombatGroup,
+                        out BattleManager.BattleSide foundInGroup);
+
     }
 }

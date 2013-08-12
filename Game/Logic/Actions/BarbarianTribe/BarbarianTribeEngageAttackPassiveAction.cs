@@ -36,8 +36,6 @@ namespace Game.Logic.Actions
 
         private readonly Formula formula;
 
-        private readonly AttackMode mode;
-        
         private readonly uint targetObjectId;
 
         private readonly uint troopObjectId;
@@ -49,7 +47,6 @@ namespace Game.Logic.Actions
         public BarbarianTribeEngageAttackPassiveAction(uint cityId,
                                                        uint troopObjectId,
                                                        uint targetObjectId,
-                                                       AttackMode mode,
                                                        IBattleFormulas battleFormula,
                                                        IGameObjectLocator gameObjectLocator,
                                                        BarbarianTribeBattleProcedure barbarianTribeBattleProcedure,
@@ -60,7 +57,6 @@ namespace Game.Logic.Actions
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
             this.targetObjectId = targetObjectId;
-            this.mode = mode;
             this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
             this.barbarianTribeBattleProcedure = barbarianTribeBattleProcedure;
@@ -91,8 +87,6 @@ namespace Game.Logic.Actions
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             groupId = uint.Parse(properties["group_id"]);
             originalUnitCount = int.Parse(properties["original_count"]);
-
-            mode = (AttackMode)(byte.Parse(properties["mode"]));
 
             targetObjectId = uint.Parse(properties["target_object_id"]);
 
@@ -133,7 +127,6 @@ namespace Game.Logic.Actions
                                 new XmlKvPair("target_object_id", targetObjectId), 
                                 new XmlKvPair("troop_city_id", cityId),
                                 new XmlKvPair("troop_object_id", troopObjectId), 
-                                new XmlKvPair("mode", (byte)mode),
                                 new XmlKvPair("group_id", groupId), 
                                 new XmlKvPair("stamina", StaminaMonitor.Stamina),
                                 new XmlKvPair("original_count", originalUnitCount)

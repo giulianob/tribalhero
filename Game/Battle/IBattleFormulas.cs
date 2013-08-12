@@ -9,7 +9,7 @@ namespace Game.Battle
 {
     public interface IBattleFormulas
     {
-        decimal GetDmgWithMissChance(int attackersUpkeep, int defendersUpkeep, decimal dmg);
+        decimal GetDmgWithMissChance(int attackersUpkeep, int defendersUpkeep, decimal dmg, IBattleRandom random);
 
         int GetUnitsPerStructure(byte level);
 
@@ -34,8 +34,6 @@ namespace Game.Battle
         short GetStaminaStructureDestroyed(short stamina, ICombatObject combatStructure);
 
         ushort GetStaminaDefenseCombatObject(ICity city, ushort stamina, uint round);
-
-        bool IsAttackMissed(byte stealth);
 
         bool UnitStatModCheck(IBaseBattleStats stats, TroopBattleGroup group, string value);
 

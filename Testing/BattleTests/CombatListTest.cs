@@ -53,7 +53,7 @@ namespace Testing.BattleTests
         {
             var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
 
-            var battleFormulas = Substitute.For<BattleFormulas>();                 
+            var battleFormulas = Substitute.For<IBattleFormulas>();                 
             fixture.Register(() => battleFormulas);                        
             battleFormulas.GetDmgModifier(null, null).ReturnsForAnyArgs(1);
 
@@ -141,7 +141,7 @@ namespace Testing.BattleTests
             var combatGroup = Substitute.For<ICombatGroup>();
             combatGroup.GetEnumerator().Returns(x => new List<ICombatObject> {defender1, defender2, defender3}.GetEnumerator());
 
-            var battleFormulas = Substitute.For<BattleFormulas>();                 
+            var battleFormulas = Substitute.For<IBattleFormulas>();                 
             fixture.Register(() => battleFormulas);                        
             battleFormulas.GetDmgModifier(null, null).ReturnsForAnyArgs(1, 3, 3);
 
@@ -188,7 +188,7 @@ namespace Testing.BattleTests
             var combatGroup = Substitute.For<ICombatGroup>();
             combatGroup.GetEnumerator().Returns(x => new List<ICombatObject> {defender1, defender2, defender3}.GetEnumerator());
 
-            var battleFormulas = Substitute.For<BattleFormulas>();                 
+            var battleFormulas = Substitute.For<IBattleFormulas>();                 
             fixture.Register(() => battleFormulas);                        
             battleFormulas.GetDmgModifier(null, null).ReturnsForAnyArgs(3, 1, 2);
 
@@ -235,7 +235,7 @@ namespace Testing.BattleTests
             var combatGroup = Substitute.For<ICombatGroup>();
             combatGroup.GetEnumerator().Returns(x => new List<ICombatObject> { defender1, defender2, defender3 }.GetEnumerator());
 
-            var battleFormulas = Substitute.For<BattleFormulas>();
+            var battleFormulas = Substitute.For<IBattleFormulas>();
             fixture.Register(() => battleFormulas);
             battleFormulas.GetDmgModifier(null, null).ReturnsForAnyArgs(3, 1, 2);
 
@@ -283,7 +283,7 @@ namespace Testing.BattleTests
             var combatGroup = Substitute.For<ICombatGroup>();
             combatGroup.GetEnumerator().Returns(x => new List<ICombatObject> { defender1, defender2, defender3 }.GetEnumerator());
 
-            var battleFormulas = Substitute.For<BattleFormulas>();
+            var battleFormulas = Substitute.For<IBattleFormulas>();
             fixture.Register(() => battleFormulas);
             battleFormulas.GetDmgModifier(null, null).ReturnsForAnyArgs(1, 1, 2);
 
@@ -330,7 +330,7 @@ namespace Testing.BattleTests
             var combatGroup = Substitute.For<ICombatGroup>();
             combatGroup.GetEnumerator().Returns(x => new List<ICombatObject> { defender1, defender2, defender3 }.GetEnumerator());
 
-            var battleFormulas = Substitute.For<BattleFormulas>();
+            var battleFormulas = Substitute.For<IBattleFormulas>();
             fixture.Register(() => battleFormulas);
             battleFormulas.GetDmgModifier(null, null).ReturnsForAnyArgs(1, 1, 1);
 
@@ -380,7 +380,7 @@ namespace Testing.BattleTests
             var combatGroup = Substitute.For<ICombatGroup>();
             combatGroup.GetEnumerator().Returns(x => new List<ICombatObject> { defender1, defender2, defender3 }.GetEnumerator());
 
-            var battleFormulas = Substitute.For<BattleFormulas>();
+            var battleFormulas = Substitute.For<IBattleFormulas>();
             fixture.Register(() => battleFormulas);
             battleFormulas.GetDmgModifier(null, null).ReturnsForAnyArgs(1, 2, 3);
 

@@ -14,7 +14,7 @@ using Game.Util.Locking;
 using Ninject.Extensions.Logging;
 using Persistance;
 
-namespace Game.Module
+namespace Game.Module.Remover
 {
     public class CityRemover : ICityRemover, ISchedule
     {
@@ -38,15 +38,26 @@ namespace Game.Module
 
         private readonly IDbManager dbManager;
 
-        public CityRemover(uint cityId, IActionFactory actionFactory, IWorld world, IScheduler scheduler, ILocker locker, ITileLocator tileLocator, IDbManager dbManager)
+        private readonly ITroopObjectInitializerFactory troopObjectInitializerFactory;
+
+        public CityRemover(uint cityId, 
+            IActionFactory actionFactory, 
+            ITileLocator tileLocator, 
+            IWorld world, 
+            IScheduler scheduler, 
+            ILocker locker, 
+            IDbManager dbManager, 
+            ITroopObjectInitializerFactory troopObjectInitializerFactory)
         {
             this.cityId = cityId;
             this.actionFactory = actionFactory;
+
             this.world = world;
             this.scheduler = scheduler;
             this.locker = locker;
             this.tileLocator = tileLocator;
             this.dbManager = dbManager;
+            this.troopObjectInitializerFactory = troopObjectInitializerFactory;
         }
 
         public bool Start(bool force = false)
@@ -120,7 +131,7 @@ namespace Game.Module
 
                 // If city is being targetted by an assignment, try again later
                 var reader = dbManager.ReaderQuery(string.Format("SELECT id FROM `{0}` WHERE `location_type` = 'City' AND `location_id` = @locationId  LIMIT 1", Assignment.DB_TABLE),
-                                                   new[] {new DbColumn("locationId", city.Id, DbType.UInt32)});
+                                                          new[] {new DbColumn("locationId", city.Id, DbType.UInt32)});
                 bool beingTargetted = reader.HasRows;
                 reader.Close();
                 if (beingTargetted)
@@ -256,7 +267,8 @@ namespace Game.Module
 
         private Error RemoveForeignTroop(ITroopStub stub)
         {
-            var ra = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
+            var troopInitializer = troopObjectInitializerFactory.CreateStationedTroopObjectInitializer(stub);            
+            var ra = actionFactory.CreateRetreatChainAction(stub.City.Id, troopInitializer);
             return stub.City.Worker.DoPassive(stub.City, ra, true);
         }
 

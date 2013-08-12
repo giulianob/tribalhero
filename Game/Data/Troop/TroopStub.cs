@@ -95,19 +95,6 @@ namespace Game.Data.Troop
 
         public TroopTemplate Template { get; private set; }
 
-        public Formation this[FormationType type]
-        {
-            get
-            {
-                return data[type];
-            }
-            set
-            {
-                CheckUpdateMode();
-                data[type] = value;
-            }
-        }
-
         public TroopState State
         {
             get
@@ -200,7 +187,7 @@ namespace Game.Data.Troop
 
                 lock (objLock)
                 {
-                    foreach (var formation in data.Values)
+                    foreach (var formation in Data.Values)
                     {
                         foreach (var kvp in formation)
                         {
@@ -232,7 +219,7 @@ namespace Game.Data.Troop
 
                 lock (objLock)
                 {
-                    foreach (var formation in data.Values)
+                    foreach (var formation in Data.Values)
                     {
                         count += formation.Sum(kvp => City.Template[kvp.Key].Upkeep * kvp.Value);
                     }
@@ -249,7 +236,7 @@ namespace Game.Data.Troop
                 int count = 0;
                 lock (objLock)
                 {
-                    count += data.Values.Sum(formation => UpkeepForFormation(formation.Type));
+                    count += Data.Values.Sum(formation => UpkeepForFormation(formation.Type));
                 }
 
                 return count;
@@ -258,7 +245,7 @@ namespace Game.Data.Troop
 
         public int UpkeepForFormation(FormationType type)
         {
-            Formation formation;
+            IFormation formation;
             if (!TryGetValue(type, out formation))
             {
                 return 0;
@@ -274,7 +261,7 @@ namespace Game.Data.Troop
                 int count = 0;
                 lock (objLock)
                 {
-                    foreach (var formation in data.Values)
+                    foreach (var formation in Data.Values)
                     {
                         foreach (var kvp in formation)
                         {
@@ -293,7 +280,7 @@ namespace Game.Data.Troop
             {
                 CheckUpdateMode();
 
-                foreach (var formation in data.Values)
+                foreach (var formation in Data.Values)
                 {
                     if (!bypassProtection && formation.Values.Sum(x => x) <= 1)
                     {
@@ -338,7 +325,7 @@ namespace Game.Data.Troop
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return data.GetEnumerator();
+            return Data.GetEnumerator();
         }
 
         #endregion
@@ -428,10 +415,10 @@ namespace Game.Data.Troop
         {
             lock (objLock)
             {
-                Dictionary<FormationType, Formation>.Enumerator itr = data.GetEnumerator();
+                Dictionary<FormationType, IFormation>.Enumerator itr = Data.GetEnumerator();
                 while (itr.MoveNext())
                 {
-                    Dictionary<ushort, ushort>.Enumerator itr2 = itr.Current.Value.GetEnumerator();
+                    var itr2 = itr.Current.Value.GetEnumerator();
                     while (itr2.MoveNext())
                     {
                         yield return
@@ -503,8 +490,8 @@ namespace Game.Data.Troop
 
         public void RemoveFormation(FormationType type)
         {
-            data[type].OnUnitUpdated -= FormationOnUnitUpdated;
-            data.Remove(type);
+            Data[type].OnUnitUpdated -= FormationOnUnitUpdated;
+            Data.Remove(type);
         }
 
         public bool AddFormation(FormationType type)
@@ -512,13 +499,13 @@ namespace Game.Data.Troop
             lock (objLock)
             {
                 CheckUpdateMode();
-                if (data.ContainsKey(type))
+                if (Data.ContainsKey(type))
                 {
                     return false;
                 }
                 var formation = new Formation(type);
                 formation.OnUnitUpdated += FormationOnUnitUpdated;
-                data.Add(type, formation);
+                Data.Add(type, formation);
 
                 FireUnitUpdated();
             }
@@ -532,9 +519,9 @@ namespace Game.Data.Troop
             {
                 CheckUpdateMode();
 
-                if (!data.ContainsKey(originalFormation))
+                if (!Data.ContainsKey(originalFormation))
                 {
-                    throw new Exception("Trying to move from invalid formation");
+                    throw new ArgumentException("originalFormation does not exist");
                 }
 
                 if (!AddFormation(newFormation))
@@ -542,7 +529,7 @@ namespace Game.Data.Troop
                     throw new Exception("New formation already exists");
                 }
 
-                foreach (var unit in data[originalFormation])
+                foreach (var unit in Data[originalFormation])
                 {
                     AddUnit(newFormation, unit.Key, unit.Value);
                 }
@@ -553,20 +540,33 @@ namespace Game.Data.Troop
             }
         }
 
+        public void AddAllToFormation(FormationType formation, ISimpleStub unitsToAdd)
+        {
+            lock (objLock)
+            {
+                CheckUpdateMode();
+
+                foreach (var unit in unitsToAdd.ToUnitList())
+                {
+                    AddUnit(formation, unit.Type, unit.Count);
+                }
+            }
+        }
+
         public void Add(ISimpleStub stub)
         {
             lock (objLock)
             {
                 CheckUpdateMode();
 
-                foreach (Formation stubFormation in stub)
+                foreach (IFormation stubFormation in stub)
                 {
-                    Formation targetFormation;
-                    if (!data.TryGetValue(stubFormation.Type, out targetFormation))
+                    IFormation targetFormation;
+                    if (!Data.TryGetValue(stubFormation.Type, out targetFormation))
                     {
                         targetFormation = new Formation(stubFormation.Type);
                         targetFormation.OnUnitUpdated += FormationOnUnitUpdated;
-                        data.Add(stubFormation.Type, targetFormation);
+                        Data.Add(stubFormation.Type, targetFormation);
                     }
 
                     targetFormation.Add(stubFormation);
@@ -580,19 +580,14 @@ namespace Game.Data.Troop
         {
             lock (objLock)
             {
-                Formation formation;
-                if (data.TryGetValue(formationType, out formation))
+                IFormation formation;
+                if (Data.TryGetValue(formationType, out formation))
                 {
                     formation.Add(type, count);
                 }
 
                 FireUnitUpdated();
             }
-        }
-
-        public bool HasFormation(FormationType formation)
-        {
-            return data.ContainsKey(formation);
         }
 
         public void FireRemoved()
@@ -606,8 +601,8 @@ namespace Game.Data.Troop
             {
                 CheckUpdateMode();
 
-                Formation formation;
-                if (data.TryGetValue(formationType, out formation))
+                IFormation formation;
+                if (Data.TryGetValue(formationType, out formation))
                 {
                     ushort removed = formation.Remove(type, count);
                     if (removed > 0)
@@ -627,7 +622,7 @@ namespace Game.Data.Troop
             {
                 CheckUpdateMode();
 
-                foreach (var formation in data.Values)
+                foreach (var formation in Data.Values)
                 {
                     if (formations != null && formations.Length > 0 && !formations.Contains(formation.Type))
                     {
@@ -665,20 +660,29 @@ namespace Game.Data.Troop
         {
             FireUnitUpdated();
         }
-
-        public bool TryGetValue(FormationType formationType, out Formation formation)
+       
+        private bool TryGetValue(FormationType formationType, out IFormation formation)
         {
-            return data.TryGetValue(formationType, out formation);
+            return Data.TryGetValue(formationType, out formation);
         }
 
         public ushort GetFormationBits()
         {
             ushort mask = 0;
-            foreach (var type in data.Keys)
+            foreach (var type in Data.Keys)
             {
                 mask += (ushort)Math.Pow(2, (double)type);
             }
             return mask;
+        }
+        
+        public override bool RemoveFromFormation(FormationType sourceFormationType, ISimpleStub unitsToRemove)
+        {
+            BeginUpdate();
+            var result = base.RemoveFromFormation(sourceFormationType, unitsToRemove);
+            EndUpdate();
+
+            return result;
         }
     }
 }

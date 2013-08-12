@@ -254,12 +254,13 @@ namespace Game.Battle.CombatObjects
 
         public override void CalcActualDmgToBeTaken(ICombatList attackers,
                                                     ICombatList defenders,
+                                                    IBattleRandom random,
                                                     decimal baseDmg,
                                                     int attackIndex,
                                                     out decimal actualDmg)
         {
             // Miss chance
-            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg);
+            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg, random);
 
             // Splash dmg reduction
             actualDmg = BattleFormulas.SplashReduction(this, actualDmg, attackIndex);
@@ -311,16 +312,6 @@ namespace Game.Battle.CombatObjects
             }
 
             returning = null;
-        }
-
-        public override int CompareTo(object other)
-        {
-            if (other is ITroopStub)
-            {
-                return other == TroopStub ? 0 : 1;
-            }
-
-            return -1;
         }
 
         #region ICombatUnit Members

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Game.Data.Stats;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -15,8 +15,20 @@ namespace Game.Data.Troop.Initializers
         private readonly AttackMode mode;
         private readonly IGameObjectLocator gameObjectLocator;
         private readonly Formula formula;
+        private readonly Procedure procedure;
 
-        public CityTroopObjectInitializer(uint cityId, ISimpleStub simpleStub, TroopBattleGroup group, AttackMode mode, IGameObjectLocator gameObjectLocator, Formula formula)
+        private readonly IWorld world;
+
+        private ITroopObject newTroopObject;
+
+        public CityTroopObjectInitializer(uint cityId,
+                                          ISimpleStub simpleStub,
+                                          TroopBattleGroup group,
+                                          AttackMode mode,
+                                          IGameObjectLocator gameObjectLocator,
+                                          Formula formula,
+                                          Procedure procedure,
+                                          IWorld world)
         {
             this.cityId = cityId;
             this.simpleStub = simpleStub;
@@ -24,23 +36,32 @@ namespace Game.Data.Troop.Initializers
             this.mode = mode;
             this.gameObjectLocator = gameObjectLocator;
             this.formula = formula;
+            this.procedure = procedure;
+            this.world = world;
         }
 
-        public bool GetTroopObject(out ITroopObject troopObject)
+        public Error GetTroopObject(out ITroopObject troopObject)
         {
+            if (newTroopObject != null)
+            {
+                troopObject = newTroopObject;
+                return Error.Ok;
+            }
 
             ICity city;
             if (!gameObjectLocator.TryGetObjects(cityId, out city))
             {
                 troopObject = null;
-                return false;
+                return Error.ObjectNotFound;
             }
 
-            if (!Procedure.Current.TroopObjectCreateFromCity(city, simpleStub, city.PrimaryPosition.X, city.PrimaryPosition.Y, out troopObject))
+            if (!TroopObjectCreateFromCity(city, simpleStub, city.PrimaryPosition.X, city.PrimaryPosition.Y, out troopObject))
             {
                 troopObject = null;
-                return false;
+                return Error.TroopChanged;
             }
+
+            newTroopObject = troopObject;
 
             //Load the units stats into the stub
             troopObject.Stub.BeginUpdate();
@@ -49,12 +70,41 @@ namespace Game.Data.Troop.Initializers
             troopObject.Stub.RetreatCount = (ushort)formula.GetAttackModeTolerance(troopObject.Stub.TotalCount, mode);
             troopObject.Stub.AttackMode = mode;
             troopObject.Stub.EndUpdate();
-            return true;
+
+            return Error.Ok;
         }
 
-        public void DeleteTroopObject(ITroopObject troopObject)
+        public void DeleteTroopObject()
         {
-            Procedure.Current.TroopObjectDelete(troopObject, true);
+            procedure.TroopObjectDelete(newTroopObject, true);
+        }
+
+        private bool TroopObjectCreateFromCity(ICity city,
+                                                      ISimpleStub stub,
+                                                      uint x,
+                                                      uint y,
+                                                      out ITroopObject troopObject)
+        {
+            if (stub.TotalCount == 0 || !city.DefaultTroop.RemoveFromFormation(FormationType.Normal, stub))
+            {
+                troopObject = null;
+                return false;
+            }
+
+            var troopStub = city.CreateTroopStub();
+            troopStub.BeginUpdate();
+            troopStub.Add(stub);
+            troopStub.EndUpdate();
+
+            troopObject = city.CreateTroopObject(troopStub, x, y + 1);
+
+            troopObject.BeginUpdate();
+            troopObject.Stats = new TroopStats(formula.GetTroopRadius(troopStub, null),
+                                               formula.GetTroopSpeed(troopStub));
+            world.Regions.Add(troopObject);
+            troopObject.EndUpdate();
+
+            return true;
         }
     }
 }

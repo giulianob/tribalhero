@@ -10,11 +10,6 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public virtual bool TroopObjectDelete(ITroopObject troop)
-        {
-            return TroopObjectDelete(troop, true);
-        }
-
         public virtual bool TroopObjectDelete(ITroopObject troop, bool addBackToNormal)
         {
             if (addBackToNormal)

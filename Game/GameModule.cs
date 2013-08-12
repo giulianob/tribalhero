@@ -99,7 +99,6 @@ namespace Game
             #region Formulas
 
             Bind<Formula>().ToSelf().InSingletonScope();
-            Bind<BattleFormulas>().ToSelf().InSingletonScope();
 
             #endregion
 
@@ -155,8 +154,7 @@ namespace Game
 
             Bind<ICombatList>().To<CombatList>().NamedLikeFactoryMethod((ICombatListFactory p) => p.GetCombatList());
 
-
-            Bind<IBattleFormulas>().To<BattleFormulas>();
+            Bind<IBattleFormulas>().To<BattleFormulas>().InSingletonScope();
 
             #endregion
 

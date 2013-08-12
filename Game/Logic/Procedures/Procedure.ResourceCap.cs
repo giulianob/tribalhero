@@ -39,7 +39,7 @@ namespace Game.Logic.Procedures
             }
         }
 
-        public int UpkeepForCity(ICity city)
+        public int UpkeepForCity(ICity city, IBattleFormulas battleFormulas)
         {
             var upkeep = 0;
             var effects = city.Technologies.GetEffects(EffectCode.UpkeepReduce);
@@ -51,7 +51,7 @@ namespace Game.Logic.Procedures
                     foreach (var kvp in formation)
                     {
                         decimal formationPenalty = formation.Type == FormationType.Garrison ? 1.25m : 1m;
-                        int reduceTechSum = effects.Sum(x => BattleFormulas.Current.UnitStatModCheck(city.Template[kvp.Key].Battle,
+                        int reduceTechSum = effects.Sum(x => battleFormulas.UnitStatModCheck(city.Template[kvp.Key].Battle,
                                                                                     TroopBattleGroup.Any,
                                                                                     (string)x.Value[1]) ? (int)x.Value[0] : 0);
                         decimal reductionPercentage = (100m - Math.Min(reduceTechSum, 30m)) / 100m;

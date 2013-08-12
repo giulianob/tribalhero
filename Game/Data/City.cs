@@ -1039,7 +1039,7 @@ namespace Game.Data
             {
                 BeginUpdate();
             }
-            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this);
+            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, BattleFormulas.Current);
             if (!doUpdate)
             {
                 EndUpdate();
@@ -1058,7 +1058,7 @@ namespace Game.Data
             {
                 BeginUpdate();
             }
-            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this);
+            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, BattleFormulas.Current);
             if (!doUpdate)
             {
                 EndUpdate();
@@ -1082,7 +1082,7 @@ namespace Game.Data
             {
                 BeginUpdate();
             }
-            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this);
+            Resource.Crop.Upkeep = Procedure.Current.UpkeepForCity(this, BattleFormulas.Current);
             if (!doUpdate)
             {
                 EndUpdate();

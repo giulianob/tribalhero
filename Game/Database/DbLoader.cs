@@ -1337,7 +1337,7 @@ namespace Game.Database
                                                                   (byte)listReader["level"],
                                                                   Ioc.Kernel.Get<Formula>(),
                                                                   Ioc.Kernel.Get<IActionFactory>(),
-                                                                  Ioc.Kernel.Get<BattleFormulas>())
+                                                                  Ioc.Kernel.Get<IBattleFormulas>())
                         {
                                 GroupId = (uint)listReader["group_id"],
                                 DmgDealt = (decimal)listReader["damage_dealt"],
@@ -1379,7 +1379,7 @@ namespace Game.Database
                                                                                     (int)listReader["loot_wood"],
                                                                                     (int)listReader["loot_labor"]),
                                                                        Ioc.Kernel.Get<UnitFactory>(),
-                                                                       Ioc.Kernel.Get<BattleFormulas>());
+                                                                       Ioc.Kernel.Get<IBattleFormulas>());
 
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
@@ -1422,7 +1422,7 @@ namespace Game.Database
                                                                         (byte)listReader["level"],
                                                                         (ushort)listReader["count"],
                                                                         (decimal)listReader["left_over_hp"],
-                                                                        Ioc.Kernel.Get<BattleFormulas>());
+                                                                        Ioc.Kernel.Get<IBattleFormulas>());
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
                         combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
@@ -1501,7 +1501,7 @@ namespace Game.Database
                                                                            stronghold,
                                                                            (decimal)listReader["left_over_hp"],
                                                                            Ioc.Kernel.Get<UnitFactory>(),
-                                                                           Ioc.Kernel.Get<BattleFormulas>(),
+                                                                           Ioc.Kernel.Get<IBattleFormulas>(),
                                                                            Ioc.Kernel.Get<Formula>());
 
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
@@ -1541,7 +1541,7 @@ namespace Game.Database
                                                                            (decimal)listReader["hp"],
                                                                            stronghold,
                                                                            Ioc.Kernel.Get<StructureFactory>(),
-                                                                           Ioc.Kernel.Get<BattleFormulas>());
+                                                                           Ioc.Kernel.Get<IBattleFormulas>());
 
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];

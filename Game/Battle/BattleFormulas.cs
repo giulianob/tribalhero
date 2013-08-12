@@ -25,10 +25,6 @@ namespace Game.Battle
 
         private readonly UnitModFactory unitModFactory;
 
-        protected BattleFormulas()
-        {
-        }
-
         public BattleFormulas(UnitModFactory unitModFactory, UnitFactory unitFactory)
         {
             this.unitModFactory = unitModFactory;

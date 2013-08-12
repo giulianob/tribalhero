@@ -53,7 +53,7 @@ namespace Testing.BattleTests
         {
             var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
 
-            var battleFormulas = Substitute.For<BattleFormulas>();                 
+            var battleFormulas = Substitute.For<IBattleFormulas>();                 
             fixture.Register(() => battleFormulas);                        
             battleFormulas.GetDmgModifier(null, null).ReturnsForAnyArgs(1);
 

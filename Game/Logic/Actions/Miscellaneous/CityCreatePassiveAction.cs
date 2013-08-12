@@ -210,6 +210,7 @@ namespace Game.Logic.Actions
                                    formula.GetInitialCityRadius(),
                                    structure,
                                    formula.GetInitialAp());
+
                 city.Owner.Add(newCity);
 
                 world.Regions.SetTileType(x, y, 0, true);

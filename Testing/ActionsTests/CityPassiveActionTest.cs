@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
+using Game.Battle;
 using Game.Data;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
@@ -75,7 +76,11 @@ namespace Testing.ActionsTests
                                                              Substitute.For<Formula>(),
                                                              Substitute.For<IActionFactory>(),
                                                              Substitute.For<Procedure>(),
-                                                             Substitute.For<IGameObjectLocator>()) {WorkerObject = city};
+                                                             Substitute.For<IGameObjectLocator>(),
+                                                             Substitute.For<IBattleFormulas>())
+            {
+                WorkerObject = city
+            };
 
             for (int i = 0; i < cycles; i++)
             {

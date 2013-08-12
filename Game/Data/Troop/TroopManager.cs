@@ -191,13 +191,13 @@ namespace Game.Data.Troop
             return true;
         }
 
-        public void Remove(ushort id)
+        public bool Remove(ushort id)
         {
             ITroopStub stub;
 
             if (!dict.TryGetValue(id, out stub))
             {
-                return;
+                return false;
             }
             
             if (stub.City != BaseStation)
@@ -207,6 +207,8 @@ namespace Game.Data.Troop
 
             DeregisterStub(id, stub);
             dbManager.Delete(stub);
+
+            return true;
         }
 
         public bool TryGetStub(ushort id, out ITroopStub stub)

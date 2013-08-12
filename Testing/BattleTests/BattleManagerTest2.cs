@@ -30,8 +30,8 @@ namespace Testing.BattleTests
             // 16% should be carried over
             battleFormulas.GetAttackerDmgToDefender(attacker1, defender1).Returns(300);
             decimal outActualDmg;
-            defender1.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, 0, 0, out outActualDmg))
-                     .Do(args => { args[4] = 150m; });
+            defender1.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, null, 0, 0, out outActualDmg))
+                     .Do(args => { args[5] = 150m; });
             defender1.Hp.Returns(100m);
 
             battleFormulas.GetAttackerDmgToDefender(attacker1, defender2).Returns(200);
@@ -64,12 +64,12 @@ namespace Testing.BattleTests
             ICombatObject outCombatObject;
             ICombatGroup outCombatGroup;
             BattleManager.BattleSide outFoundInGroup;
-            battleOrder.NextObject(0, null, null, BattleManager.BattleSide.Attack, out outCombatObject, out outCombatGroup, out outFoundInGroup)
+            battleOrder.NextObject(0, null, null, out outCombatObject, out outCombatGroup, out outFoundInGroup)
                        .ReturnsForAnyArgs(args =>
                            {
-                               args[4] = attacker1;
-                               args[5] = attackerGroup;
-                               args[6] = BattleManager.BattleSide.Attack;
+                               args[3] = attacker1;
+                               args[4] = attackerGroup;
+                               args[5] = BattleManager.BattleSide.Attack;
                                return true;
                            });
 
@@ -77,6 +77,7 @@ namespace Testing.BattleTests
 
             defender2.Received(1).CalcActualDmgToBeTaken(Arg.Any<ICombatList>(),
                                                          Arg.Any<ICombatList>(),
+                                                         Arg.Any<IBattleRandom>(),
                                                          Arg.Is<decimal>(dmg => dmg > 33 && dmg < 34),
                                                          1,
                                                          out outActualDmg);
@@ -99,12 +100,12 @@ namespace Testing.BattleTests
 
             battleFormulas.GetAttackerDmgToDefender(null, null).ReturnsForAnyArgs(100m);
             decimal outActualDmg;
-            defender1.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, 0, 0, out outActualDmg))
-                     .Do(args => { args[4] = 100m; });
+            defender1.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, null, 0, 0, out outActualDmg))
+                     .Do(args => { args[5] = 100m; });
             defender1.Hp.Returns(10m);
 
-            defender2.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, 0, 0, out outActualDmg))
-                     .Do(args => { args[4] = 100m; });
+            defender2.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, null, 0, 0, out outActualDmg))
+                     .Do(args => { args[5] = 100m; });
             defender2.Hp.Returns(10m);
 
             battleManager.Attackers.Count.Returns(1);
@@ -145,18 +146,19 @@ namespace Testing.BattleTests
             ICombatObject outCombatObject;
             ICombatGroup outCombatGroup;
             BattleManager.BattleSide outFoundInGroup;
-            battleOrder.NextObject(0, null, null, BattleManager.BattleSide.Attack, out outCombatObject, out outCombatGroup, out outFoundInGroup)
+            battleOrder.NextObject(0, null, null, out outCombatObject, out outCombatGroup, out outFoundInGroup)
                        .ReturnsForAnyArgs(args =>
                            {
-                               args[4] = attacker1;
-                               args[5] = attackerGroup;
-                               args[6] = BattleManager.BattleSide.Attack;
+                               args[3] = attacker1;
+                               args[4] = attackerGroup;
+                               args[5] = BattleManager.BattleSide.Attack;
                                return true;
                            });
 
             battleManager.ExecuteTurn();
 
             defender3.DidNotReceiveWithAnyArgs().CalcActualDmgToBeTaken(null,
+                                                                        null,
                                                                         null,
                                                                         0,
                                                                         0,
@@ -179,14 +181,14 @@ namespace Testing.BattleTests
             attacker1.Stats.Atk.Returns(10);
 
             decimal outActualDmg;
-            defender1.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, 0, 0, out outActualDmg))
-                     .Do(args => { args[4] = 10m; });
+            defender1.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, null, 0, 0, out outActualDmg))
+                     .Do(args => { args[5] = 10m; });
             defender1.Hp.Returns(100);
 
             // Defender2 takes 130 dmg but only has 100 hp so 30 dmg should be carried over            
             battleFormulas.GetAttackerDmgToDefender(attacker1, defender2).Returns(1);
-            defender2.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, 0, 0, out outActualDmg))
-                     .Do(args => { args[4] = 130m; });
+            defender2.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, null, 0, 0, out outActualDmg))
+                     .Do(args => { args[5] = 130m; });
             defender2.Hp.Returns(100m);
 
             battleManager.Attackers.Count.Returns(1);
@@ -218,18 +220,19 @@ namespace Testing.BattleTests
             ICombatObject outCombatObject;
             ICombatGroup outCombatGroup;
             BattleManager.BattleSide outFoundInGroup;
-            battleOrder.NextObject(0, null, null, BattleManager.BattleSide.Attack, out outCombatObject, out outCombatGroup, out outFoundInGroup)
+            battleOrder.NextObject(0, null, null, out outCombatObject, out outCombatGroup, out outFoundInGroup)
                        .ReturnsForAnyArgs(args =>
                            {
-                               args[4] = attacker1;
-                               args[5] = attackerGroup;
-                               args[6] = BattleManager.BattleSide.Attack;
+                               args[3] = attacker1;
+                               args[4] = attackerGroup;
+                               args[5] = BattleManager.BattleSide.Attack;
                                return true;
                            });
 
             battleManager.ExecuteTurn();
 
             defender3.ReceivedWithAnyArgs(1).CalcActualDmgToBeTaken(null,
+                                                                    null,
                                                                     null,
                                                                     0,
                                                                     0,

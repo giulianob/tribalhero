@@ -103,6 +103,7 @@ namespace Game.Battle.CombatObjects
 
         public abstract void CalcActualDmgToBeTaken(ICombatList attackers,
                                                     ICombatList defenders,
+                                                    IBattleRandom random,
                                                     decimal baseDmg,
                                                     int attackIndex,
                                                     out decimal actualDmg);
@@ -120,11 +121,6 @@ namespace Game.Battle.CombatObjects
         #endregion
 
         #region IComparable<object> Members
-
-        public virtual int CompareTo(object other)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
 
         #endregion
 

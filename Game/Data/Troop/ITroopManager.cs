@@ -27,7 +27,7 @@ namespace Game.Data.Troop
 
         bool RemoveStationed(ushort id);
 
-        void Remove(ushort id);
+        bool Remove(ushort id);
 
         bool TryGetStub(ushort id, out ITroopStub stub);
 

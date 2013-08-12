@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Game.Data.Troop
 {
-    public interface ISimpleStub : IEnumerable<Formation>
+    public interface ISimpleStub : IEnumerable<IFormation>
     {
         byte FormationCount { get; }
 
@@ -10,12 +10,12 @@ namespace Game.Data.Troop
 
         void AddUnit(FormationType formationType, ushort type, ushort count);
 
-        /// <summary>
-        ///     Returns a list of units for specified formations.
-        ///     If formation is empty, will return all units.
-        /// </summary>
-        /// <param name="formations"></param>
-        /// <returns></returns>
         List<Unit> ToUnitList(params FormationType[] formations);
+
+        bool RemoveFromFormation(FormationType sourceFormationType, ISimpleStub unitsToRemove);
+
+        IFormation this[FormationType type] { get; }
+
+        bool HasFormation(FormationType formation);
     }
 }

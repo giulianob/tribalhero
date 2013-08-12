@@ -20,15 +20,29 @@ namespace Game.Logic.Actions
 
         private readonly uint cityId;
 
-        private readonly ushort stubId;
+        private readonly ITroopObjectInitializer troopObjectInitializer;
 
         private uint troopObjectId;
 
-        public RetreatChainAction(uint cityId, ushort stubId, IActionFactory actionFactory)
+        private readonly IWorld world;
+
+        private readonly Procedure procedure;
+
+        private readonly ILocker locker;
+
+        public RetreatChainAction(uint cityId,
+                                  ITroopObjectInitializer troopObjectInitializer,
+                                  IActionFactory actionFactory,
+                                  IWorld world,
+                                  Procedure procedure,
+                                  ILocker locker)
         {
             this.cityId = cityId;
-            this.stubId = stubId;
+            this.troopObjectInitializer = troopObjectInitializer;
             this.actionFactory = actionFactory;
+            this.world = world;
+            this.procedure = procedure;
+            this.locker = locker;
         }
 
         public RetreatChainAction(uint id,
@@ -37,10 +51,16 @@ namespace Game.Logic.Actions
                                   ActionState chainState,
                                   bool isVisible,
                                   Dictionary<string, string> properties,
-                                  IActionFactory actionFactory)
+                                  IActionFactory actionFactory,
+                                  IWorld world,
+                                  Procedure procedure,
+                                  ILocker locker)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
             this.actionFactory = actionFactory;
+            this.world = world;
+            this.procedure = procedure;
+            this.locker = locker;
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
         }
@@ -67,8 +87,8 @@ namespace Game.Logic.Actions
             {
                 return XmlSerializer.Serialize(new[]
                 {
-                        new XmlKvPair("city_id", cityId), 
-                        new XmlKvPair("troop_object_id", troopObjectId)
+                    new XmlKvPair("city_id", cityId),
+                    new XmlKvPair("troop_object_id", troopObjectId)
                 });
             }
         }
@@ -81,31 +101,26 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city;
-            ITroopStub stub;
-            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
+            if (!world.TryGetObjects(cityId, out city))
             {
                 throw new Exception();
             }
 
-            if (stub.State != TroopState.Stationed)
-            {
-                return Error.TroopInBattle;
-            }
-
             ITroopObject troopObject;
-            if (!Procedure.Current.TroopObjectCreateFromStation(stub, out troopObject))
+            var troopInitializeResult = troopObjectInitializer.GetTroopObject(out troopObject);
+            if (troopInitializeResult != Error.Ok)
             {
-                return Error.Unexpected;
+                return troopInitializeResult;
             }
 
             troopObjectId = troopObject.ObjectId;
 
-            var tma = actionFactory.CreateTroopMovePassiveAction(cityId, troopObject.ObjectId, stub.City.PrimaryPosition.X, stub.City.PrimaryPosition.Y, true, false);
+            var tma = actionFactory.CreateTroopMovePassiveAction(cityId, troopObject.ObjectId, troopObject.Stub.City.PrimaryPosition.X, troopObject.Stub.City.PrimaryPosition.Y, true, false);
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
 
-            stub.City.References.Add(troopObject, this);
-            stub.City.Notifications.Add(troopObject, this);
+            troopObject.Stub.City.References.Add(troopObject, this);
+            troopObject.Stub.City.Notifications.Add(troopObject, this);
 
             return Error.Ok;
         }
@@ -115,7 +130,7 @@ namespace Game.Logic.Actions
             if (state == ActionState.Completed)
             {
                 ICity city;
-                using (Concurrency.Current.Lock(cityId, out city))
+                using (locker.Lock(cityId, out city))
                 {
                     ITroopObject troopObject;
                     if (!city.TryGetTroop(troopObjectId, out troopObject))
@@ -128,7 +143,7 @@ namespace Game.Logic.Actions
                     if (city.Battle == null)
                     {
                         city.References.Remove(troopObject, this);
-                        Procedure.Current.TroopObjectDelete(troopObject, true);
+                        procedure.TroopObjectDelete(troopObject, true);
                         StateChange(ActionState.Completed);
                     }
                     else
@@ -141,7 +156,7 @@ namespace Game.Logic.Actions
             else if (state == ActionState.Failed)
             {
                 ICity city;
-                using (Concurrency.Current.Lock(cityId, out city))
+                using (locker.Lock(cityId, out city))
                 {
                     ITroopObject troopObject;
                     if (!city.TryGetTroop(troopObjectId, out troopObject))
@@ -149,7 +164,7 @@ namespace Game.Logic.Actions
                         throw new Exception();
                     }
 
-                    Procedure.Current.TroopObjectStation(troopObject, city);
+                    procedure.TroopObjectStation(troopObject, city);
                 }
             }
         }
@@ -159,7 +174,7 @@ namespace Game.Logic.Actions
             if (state == ActionState.Completed)
             {
                 ICity city;
-                using (Concurrency.Current.Lock(cityId, out city))
+                using (locker.Lock(cityId, out city))
                 {
                     ITroopObject troopObject;
                     if (!city.TryGetTroop(troopObjectId, out troopObject))
@@ -168,7 +183,7 @@ namespace Game.Logic.Actions
                     }
 
                     city.References.Remove(troopObject, this);
-                    Procedure.Current.TroopObjectDelete(troopObject, troopObject.Stub.TotalCount != 0);
+                    procedure.TroopObjectDelete(troopObject, troopObject.Stub.TotalCount != 0);
                     StateChange(ActionState.Completed);
                 }
             }

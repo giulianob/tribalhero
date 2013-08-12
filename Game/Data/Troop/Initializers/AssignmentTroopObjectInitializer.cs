@@ -1,32 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
+using Game.Setup;
 
 namespace Game.Data.Troop.Initializers
 {
     public class AssignmentTroopObjectInitializer : ITroopObjectInitializer
     {
-        private readonly ITroopObject troopObject;
+        private readonly ITroopObject existingTroopObject;
         private readonly TroopBattleGroup group;
         private readonly AttackMode mode;
         private readonly Formula formula;
 
-        public AssignmentTroopObjectInitializer(ITroopObject troopObject, TroopBattleGroup group, AttackMode mode, Formula formula)
+        private ITroopObject newTroopObject;
+
+        public AssignmentTroopObjectInitializer(ITroopObject existingTroopObject, TroopBattleGroup group, AttackMode mode, Formula formula)
         {
-            this.troopObject = troopObject;
+            this.existingTroopObject = existingTroopObject;
             this.group = group;
             this.mode = mode;
             this.formula = formula;
         }
 
-        public bool GetTroopObject(out ITroopObject troopObject)
+        public Error GetTroopObject(out ITroopObject troopObject)
         {
-            troopObject = this.troopObject;
-            //Load the units stats into the stub
+            if (newTroopObject != null)
+            {
+                troopObject = newTroopObject;
+                return Error.Ok;
+            }
 
+            troopObject = existingTroopObject;
+            newTroopObject = troopObject;
+
+            //Load the units stats into the stub
             troopObject.Stub.BeginUpdate();
             troopObject.Stub.Template.LoadStats(group);
             troopObject.Stub.InitialCount = troopObject.Stub.TotalCount;
@@ -34,11 +41,12 @@ namespace Game.Data.Troop.Initializers
             troopObject.Stub.AttackMode = mode;
             troopObject.Stub.EndUpdate();
 
-            return true;
+            return Error.Ok;
         }
 
-        public void DeleteTroopObject(ITroopObject troopObject)
+        public void DeleteTroopObject()
         {
+            throw new Exception("Should not be deleting previously created troop object");
         }
     }
 }

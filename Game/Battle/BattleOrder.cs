@@ -1,10 +1,11 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
-
+using Game.Util;
 #endregion
 
 namespace Game.Battle
@@ -16,23 +17,39 @@ namespace Game.Battle
     /// </summary>
     public class BattleOrder : IBattleOrder
     {
+        private readonly IBattleRandom random;
+
+        public BattleOrder(IBattleRandom random)
+        {
+            this.random = random;
+        }
+
         /// <summary>
         ///     Returns the next object from the primary group that should attack.
         ///     If primary group has no one able to attack, it will look into the secondary group instead.
         /// </summary>
         /// <returns>True if got an object from the current round. False if had to look into next round.</returns>
         public bool NextObject(uint round,
-                               IEnumerable<ICombatGroup> attacker,
-                               IEnumerable<ICombatGroup> defender,
-                               BattleManager.BattleSide sideAttacking,
+                               ICombatList attacker,
+                               ICombatList defender,
                                out ICombatObject outCombatObject,
                                out ICombatGroup outCombatGroup,
                                out BattleManager.BattleSide foundInGroup)
         {
-            var offensiveCombatList = sideAttacking == BattleManager.BattleSide.Attack ? attacker : defender;
-            var defensiveCombatList = sideAttacking == BattleManager.BattleSide.Attack ? defender : attacker;
-            var offensiveSide = sideAttacking;
-            var defensiveSide = sideAttacking == BattleManager.BattleSide.Attack
+            var attackerUpkeep = attacker.UpkeepNotParticipated(round);
+            var defenderUpkeep = defender.UpkeepNotParticipated(round);
+            if (attackerUpkeep == 0 && defenderUpkeep == 0)
+            {
+                attackerUpkeep = attacker.UpkeepNotParticipated(round + 1);
+                defenderUpkeep = defender.UpkeepNotParticipated(round + 1);
+            }
+            BattleManager.BattleSide sideAttack = random.Next(attackerUpkeep + defenderUpkeep) < attackerUpkeep
+                                                          ? BattleManager.BattleSide.Attack
+                                                          : BattleManager.BattleSide.Defense;
+            var offensiveCombatList = sideAttack == BattleManager.BattleSide.Attack ? attacker : defender;
+            var defensiveCombatList = sideAttack == BattleManager.BattleSide.Attack ? defender : attacker;
+            var offensiveSide = sideAttack;
+            var defensiveSide = sideAttack == BattleManager.BattleSide.Attack
                                         ? BattleManager.BattleSide.Defense
                                         : BattleManager.BattleSide.Attack;
 

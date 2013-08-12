@@ -20,10 +20,11 @@ namespace Game.Battle
                 IDbManager dbManager,
                 IBattleReport battleReport,
                 ICombatListFactory combatListFactory,
+                IGameObjectLocator gameObjectLocator,
                 IBattleOrder battleOrder,
-                IBattleFormulas battleFormulas,
-                IGameObjectLocator gameObjectLocator) :
-                        base(battleId, location, owner, rewardStrategy, dbManager, battleReport, combatListFactory, battleOrder, battleFormulas)
+                IBattleFormulas battleFormulas,                
+                IBattleRandom random) :
+                        base(battleId, location, owner, rewardStrategy, dbManager, battleReport, combatListFactory, battleFormulas, battleOrder, random)
         {
             this.gameObjectLocator = gameObjectLocator;
         }

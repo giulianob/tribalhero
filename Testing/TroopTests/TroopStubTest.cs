@@ -1,9 +1,9 @@
 ﻿using Common.Testing;
 using FluentAssertions;
-using Game.Data;
 using Game.Data.Troop;
-using NSubstitute;
+using Game.Data;
 using Xunit;
+using NSubstitute;
 using Xunit.Extensions;
 
 namespace Testing.TroopTests

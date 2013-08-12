@@ -27,13 +27,11 @@ namespace Game.Logic.Actions
 
         private readonly uint cityId;
 
-        private readonly Formula formula;
+        private readonly ITroopObjectInitializer troopObjectInitializer;
 
         private readonly IGameObjectLocator gameObjectLocator;
 
         private readonly ILocker locker;
-
-        private readonly AttackMode mode;
 
         private readonly bool tempForceAttack;
 
@@ -41,25 +39,22 @@ namespace Game.Logic.Actions
 
         private readonly uint targetStrongholdId;
 
-        private readonly uint troopObjectId;
+        private uint troopObjectId;
 
         public StrongholdAttackChainAction(uint cityId,
-                                           uint troopObjectId,
+                                           ITroopObjectInitializer troopObjectInitializer,
                                            uint targetStrongholdId,
-                                           AttackMode mode,
                                            bool forceAttack,
                                            IActionFactory actionFactory,
                                            Procedure procedure,
                                            ILocker locker,
                                            IGameObjectLocator gameObjectLocator,
                                            BattleProcedure battleProcedure,
-                                           StrongholdBattleProcedure strongholdBattleProcedure,
-                                           Formula formula)
+                                           StrongholdBattleProcedure strongholdBattleProcedure)
         {
             this.cityId = cityId;
-            this.targetStrongholdId = targetStrongholdId;
-            this.troopObjectId = troopObjectId;
-            this.mode = mode;
+            this.troopObjectInitializer = troopObjectInitializer;
+            this.targetStrongholdId = targetStrongholdId;            
             this.tempForceAttack = forceAttack;
             this.actionFactory = actionFactory;
             this.procedure = procedure;
@@ -67,7 +62,6 @@ namespace Game.Logic.Actions
             this.gameObjectLocator = gameObjectLocator;
             this.battleProcedure = battleProcedure;
             this.strongholdBattleProcedure = strongholdBattleProcedure;
-            this.formula = formula;
         }
 
         public StrongholdAttackChainAction(uint id,
@@ -81,8 +75,7 @@ namespace Game.Logic.Actions
                                            ILocker locker,
                                            IGameObjectLocator gameObjectLocator,
                                            BattleProcedure battleProcedure,
-                                           StrongholdBattleProcedure strongholdBattleProcedure,
-                                           Formula formula)
+                                           StrongholdBattleProcedure strongholdBattleProcedure)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
             this.actionFactory = actionFactory;
@@ -91,10 +84,8 @@ namespace Game.Logic.Actions
             this.gameObjectLocator = gameObjectLocator;
             this.battleProcedure = battleProcedure;
             this.strongholdBattleProcedure = strongholdBattleProcedure;
-            this.formula = formula;
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
-            mode = (AttackMode)uint.Parse(properties["mode"]);
             targetStrongholdId = uint.Parse(properties["target_stronghold_id"]);
         }
 
@@ -113,9 +104,9 @@ namespace Game.Logic.Actions
                 return
                         XmlSerializer.Serialize(new[]
                         {
-                                new XmlKvPair("city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId),
+                                new XmlKvPair("city_id", cityId), 
+                                new XmlKvPair("troop_object_id", troopObjectId),
                                 new XmlKvPair("target_stronghold_id", targetStrongholdId),
-                                new XmlKvPair("mode", (byte)mode)
                         });
             }
         }
@@ -131,18 +122,12 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city;
-            ITroopObject troopObject;
             IStronghold targetStronghold;
 
-            if (!gameObjectLocator.TryGetObjects(cityId, troopObjectId, out city, out troopObject) ||
+            if (!gameObjectLocator.TryGetObjects(cityId, out city) ||
                 !gameObjectLocator.TryGetObjects(targetStrongholdId, out targetStronghold))
             {
                 return Error.ObjectNotFound;
-            }
-
-            if (!troopObject.Stub.HasFormation(FormationType.Attack))
-            {
-                return Error.Unexpected;                
             }
 
             if (battleProcedure.HasTooManyAttacks(city))
@@ -156,13 +141,20 @@ namespace Game.Logic.Actions
                 return canStrongholdBeAttacked;
             }
 
-            //Load the units stats into the stub
-            troopObject.Stub.BeginUpdate();
-            troopObject.Stub.Template.LoadStats(TroopBattleGroup.Attack);
-            troopObject.Stub.InitialCount = troopObject.Stub.TotalCount;
-            troopObject.Stub.RetreatCount = (ushort)formula.GetAttackModeTolerance(troopObject.Stub.InitialCount, mode);
-            troopObject.Stub.AttackMode = mode;
-            troopObject.Stub.EndUpdate();
+            ITroopObject troopObject;
+            var troopInitializeResult = troopObjectInitializer.GetTroopObject(out troopObject);
+            if (troopInitializeResult != Error.Ok)
+            {
+                return troopInitializeResult;
+            }
+
+            troopObjectId = troopObject.ObjectId;
+
+            if (!troopObject.Stub.HasFormation(FormationType.Attack))
+            {
+                troopObjectInitializer.DeleteTroopObject();
+                return Error.Unexpected;                
+            }
 
             city.References.Add(troopObject, this);
 
@@ -277,7 +269,6 @@ namespace Game.Logic.Actions
                             }
                             else
                             {
-                                MoveFromAttackToDefenseFormation(troopObject);
                                 StationTroopInStronghold(troopObject, targetStronghold);
                             }
 
@@ -327,8 +318,7 @@ namespace Game.Logic.Actions
 
             var bea = actionFactory.CreateStrongholdEngageMainAttackPassiveAction(cityId,
                                                                                   troopObject.ObjectId,
-                                                                                  targetStrongholdId,
-                                                                                  mode);
+                                                                                  targetStrongholdId);
             ExecuteChainAndWait(bea, AfterMainBattle);
         }
 
@@ -398,13 +388,18 @@ namespace Game.Logic.Actions
 
         private void MoveFromAttackToDefenseFormation(ITroopObject troopObject)
         {
-            troopObject.Stub.BeginUpdate();
-            troopObject.Stub.ChangeFormation(FormationType.Attack, FormationType.Defense);
-            troopObject.Stub.EndUpdate();
+            if (!troopObject.Stub.HasFormation(FormationType.Defense))
+            {
+                troopObject.Stub.BeginUpdate();
+                troopObject.Stub.ChangeFormation(FormationType.Attack, FormationType.Defense);
+                troopObject.Stub.EndUpdate();
+            }
         }
 
         private void StationTroopInStronghold(ITroopObject troopObject, IStronghold stronghold, TroopState stubState = TroopState.Stationed)
         {
+            MoveFromAttackToDefenseFormation(troopObject);
+
             procedure.TroopObjectStation(troopObject, stronghold);
             if (troopObject.Stub.State != stubState)
             {

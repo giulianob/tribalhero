@@ -28,6 +28,7 @@ namespace Game.Battle.CombatObjects
 
         public override void CalcActualDmgToBeTaken(ICombatList attackers,
                                                     ICombatList defenders,
+                                                    IBattleRandom random,
                                                     decimal baseDmg,
                                                     int attackIndex,
                                                     out decimal actualDmg)

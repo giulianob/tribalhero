@@ -1,11 +1,9 @@
 package src.Map {
-    import flash.geom.Point;
-
     public class ScreenPosition {
-        public var x: Number;
-        public var y: Number;
+        public var x: int;
+        public var y: int;
 
-        public function ScreenPosition(x: Number = 0, y: Number = 0) {
+        public function ScreenPosition(x: int = 0, y: int = 0) {
             this.x = x;
             this.y = y;
         }

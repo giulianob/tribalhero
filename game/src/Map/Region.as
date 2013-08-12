@@ -265,8 +265,12 @@
             return tileObjects.remove(gameObj, pos);
         }
 
-        public function addObject(gameObj: SimpleGameObject) : void
+        public function addObject(gameObj: SimpleGameObject) : Boolean
         {
+            if (primaryObjects.getById(gameObj.groupId, gameObj.objectId)) {
+                return false;
+            }
+
             var objMapPos: Position = gameObj.primaryPosition.toPosition();
             clearPlaceholders(gameObj.primaryPosition);
 
@@ -275,8 +279,11 @@
             primaryObjects.add(gameObj, objMapPos);
 
             //select object if the map is waiting for it to be selected
-            if (map.selectViewable != null && map.selectViewable.groupId == gameObj.groupId && map.selectViewable.objectId == gameObj.objectId)
+            if (map.selectViewable != null && map.selectViewable.groupId == gameObj.groupId && map.selectViewable.objectId == gameObj.objectId) {
                 map.selectObject(gameObj as GameObject);
+            }
+
+            return true;
         }
 
         public function removeObject(obj: SimpleGameObject, dispose: Boolean = true): SimpleGameObject

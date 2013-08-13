@@ -50,7 +50,7 @@
                 lblWoodAmount.setValue(lblWoodAmount.getMaximum());
                 lblIronAmount.setValue(lblIronAmount.getMaximum());
                 lblCropAmount.setValue(lblCropAmount.getMaximum());
-                lblGoldAmount.setValue(lblGoldAmount.getMaximum())
+                lblGoldAmount.setValue(lblGoldAmount.getMaximum());
             });
 		}
 		

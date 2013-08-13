@@ -36,6 +36,7 @@ package src.UI.Dialog{
 			createUI();
 
 			sldCount.setMaximum(Formula.maxForestLaborPerUser(forest.level));
+            sldCount.setValue(sldCount.getMaximum());
 
 			if (sldCount.getMaximum() > 20) {
 				sldCount.setPaintTicks(false);

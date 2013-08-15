@@ -189,14 +189,17 @@
 
         private function clearAllPlaceholders() : void
         {
-            for each (var obj: SimpleObject in placeHolders)
+            for each (var obj: SimpleObject in placeHolders) {
                 map.objContainer.removeObject(obj);
+            }
 
             placeHolders.clear();
         }
 
         private function addPlaceholderObjects(tileId: int, position: Position) : void
         {
+            return;
+
             if (tileId == Constants.cityStartTile) {
                 var screenPosition: ScreenPosition = position.toScreenPosition();
 
@@ -275,28 +278,14 @@
             clearPlaceholders(gameObj.primaryPosition);
 
             //add to object container and to internal list
-            map.objContainer.addObject(gameObj);
             primaryObjects.add(gameObj, objMapPos);
-
-            //select object if the map is waiting for it to be selected
-            if (map.selectViewable != null && map.selectViewable.groupId == gameObj.groupId && map.selectViewable.objectId == gameObj.objectId) {
-                map.selectObject(gameObj as GameObject);
-            }
 
             return true;
         }
 
-        public function removeObject(obj: SimpleGameObject, dispose: Boolean = true): SimpleGameObject
+        public function removeObject(obj: SimpleGameObject): SimpleGameObject
         {
-            var removedObj: SimpleGameObject = primaryObjects.remove(obj, obj.primaryPosition.toPosition());
-
-            if (removedObj == null) {
-                return null;
-            }
-
-            map.objContainer.removeObject(removedObj, 0, dispose);
-
-            return removedObj;
+            return primaryObjects.remove(obj, obj.primaryPosition.toPosition());
         }
 
         public function getObject(groupId: int, objectId: int): SimpleGameObject

@@ -8,6 +8,7 @@
     import src.Global;
     import src.Objects.SimpleGameObject;
     import src.Objects.SimpleGameObject;
+    import src.Objects.SimpleGameObject;
     import src.Util.BinaryList.*;
     import src.Util.Util;
 
@@ -30,7 +31,7 @@
                 return false;
             }
 
-            primaryRegion.removeObject(obj, dispose);
+            var removedObj: SimpleGameObject = primaryRegion.removeObject(obj);
 
             for each (var position: Position in TileLocator.foreachMultitileObject(obj))
             {
@@ -43,6 +44,8 @@
 
                 region.removeObjectFromTile(obj, position);
             }
+
+            Global.map.objContainer.removeObject(removedObj, 0, dispose);
 
             return true;
         }
@@ -74,6 +77,13 @@
                 }
 
                 region.addObjectToTile(obj, position);
+            }
+
+            Global.map.objContainer.addObject(obj);
+
+            // Select object if the map is waiting for it to be selected
+            if (Global.map.selectViewable != null && Global.map.selectViewable.groupId == obj.groupId && Global.map.selectViewable.objectId == obj.objectId) {
+                Global.map.selectObject(obj);
             }
 
             if (fadeIn)
@@ -166,7 +176,7 @@
 			var region: Region = get(regionId);
 
 			if (region == null) {
-				return null;
+				return [];
             }
 
 			return region.getObjectsInTile(position, objClass);

@@ -247,15 +247,13 @@
 			selectObject(null);
 
 			selectViewable = null;
-			for each(var gameObject: SimpleObject in objContainer.objects) {
-				if (!(gameObject is SimpleGameObject)) 
-					continue;
-				
-				if (SimpleGameObject.compareGroupIdAndObjId(gameObject as SimpleGameObject, [groupId, objectId]) == 0) {
-					selectObject(gameObject, true, false);
-					return;
-				}
-			}
+            for each (var region: Region in regions) {
+                var obj: SimpleObject = region.getObject(groupId, objectId);
+                if (obj) {
+                    selectObject(obj, true, false);
+                    return;
+                }
+            }
 
 			selectViewable = { 'groupId' : groupId, 'objectId': objectId };
 		}

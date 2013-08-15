@@ -28,8 +28,7 @@ namespace Game.Logic.Procedures
 
         private readonly ITileLocator tileLocator;
 
-        [Obsolete("For testing only", true)]
-        public CityBattleProcedure()
+        protected CityBattleProcedure()
         {
         }
 
@@ -62,15 +61,12 @@ namespace Game.Logic.Procedures
                 AddLocalStructuresToBattle(targetCity.Battle, targetCity, attackerTroopObject);
                 combatGroup = battleProcedure.AddAttackerToBattle(targetCity.Battle, attackerTroopObject);
             }
-                    // Otherwise, the battle has to be created
+            // Otherwise, the battle has to be created
             else
             {
-                targetCity.Battle =
-                        battleManagerFactory.CreateBattleManager(
-                                                                 new BattleLocation(BattleLocationType.City,
-                                                                                    targetCity.Id),
-                                                                 new BattleOwner(BattleOwnerType.City, targetCity.Id),
-                                                                 targetCity);
+                targetCity.Battle = battleManagerFactory.CreateBattleManager(new BattleLocation(BattleLocationType.City, targetCity.Id),
+                                                                             new BattleOwner(BattleOwnerType.City, targetCity.Id),
+                                                                             targetCity);
 
                 var battlePassiveAction = actionFactory.CreateCityBattlePassiveAction(targetCity.Id);
 
@@ -89,12 +85,8 @@ namespace Game.Logic.Procedures
 
         private IEnumerable<IStructure> GetStructuresInRadius(IEnumerable<IStructure> structures, ITroopObject troopObject)
         {
-            return structures.Where(structure => tileLocator.IsOverlapping(troopObject.PrimaryPosition,
-                    troopObject.Size,
-                    troopObject.Stats.AttackRadius,
-                    new Position(structure.PrimaryPosition.X, structure.PrimaryPosition.Y),
-                    structure.Stats.Base.Radius,
-                    structure.Size));
+            return structures.Where(structure => tileLocator.IsOverlapping(troopObject.PrimaryPosition, troopObject.Size, troopObject.Stats.AttackRadius,
+                                                                           structure.PrimaryPosition, structure.Size, structure.Stats.Base.Radius));
         }
 
         public virtual Error CanCityBeAttacked(ICity attackerCity, ICity targetCity)
@@ -107,7 +99,7 @@ namespace Game.Logic.Procedures
             }
 
             // Can't attack if target is under newbie protection
-            if (BattleProcedure.IsNewbieProtected(targetCity.Owner))
+            if (battleProcedure.IsNewbieProtected(targetCity.Owner))
             {
                 return Error.PlayerNewbieProtection;
             }
@@ -155,9 +147,8 @@ namespace Game.Logic.Procedures
                                                           ITroopObject attackerTroopObject)
         {
             var localGroup = GetOrCreateLocalGroup(targetCity.Battle, targetCity);
-            foreach (IStructure structure in
-                    GetStructuresInRadius(targetCity, attackerTroopObject)
-                            .Where(structure => structure.State.Type == ObjectState.Normal && CanStructureBeAttacked(structure) == Error.Ok))
+            foreach (IStructure structure in GetStructuresInRadius(targetCity, attackerTroopObject)
+                    .Where(structure => structure.State.Type == ObjectState.Normal && CanStructureBeAttacked(structure) == Error.Ok))
             {
                 structure.BeginUpdate();
                 structure.State = GameObjectStateFactory.BattleState(battleManager.BattleId);

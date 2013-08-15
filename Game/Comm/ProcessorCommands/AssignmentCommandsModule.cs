@@ -177,7 +177,7 @@ namespace Game.Comm.ProcessorCommands
                 ICity targetCity = cities[targetCityId];
 
                 // Make sure they are not in newbie protection
-                if (BattleProcedure.IsNewbieProtected(targetCity.Owner))
+                if (battleProcedure.IsNewbieProtected(targetCity.Owner))
                 {
                     ReplyError(session, packet, Error.PlayerNewbieProtection);
                     return;
@@ -247,7 +247,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ITribe tribe = session.Player.Tribesman.Tribe;
-            using (Concurrency.Current.Lock(session.Player, tribe))
+            using (locker.Lock(session.Player, tribe))
             {
                 ICity city = session.Player.GetCity(cityId);
                 if (city == null)
@@ -266,8 +266,7 @@ namespace Game.Comm.ProcessorCommands
 
                 try
                 {
-                    stub = PacketHelper.ReadStub(packet,
-                                                 assignment.IsAttack ? FormationType.Attack : FormationType.Defense);
+                    stub = PacketHelper.ReadStub(packet, assignment.IsAttack ? FormationType.Attack : FormationType.Defense);
                 }
                 catch(Exception)
                 {

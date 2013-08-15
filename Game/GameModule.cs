@@ -157,7 +157,8 @@ namespace Game
                                                                                 c.Kernel.Get<ResourcesCommandLineModule>(),
                                                                                 c.Kernel.Get<TribeCommandLineModule>(),
                                                                                 c.Kernel.Get<StrongholdCommandLineModule>(),
-                                                                                c.Kernel.Get<RegionCommandsLineModule>()))
+                                                                                c.Kernel.Get<RegionCommandsLineModule>(),
+                                                                                c.Kernel.Get<BarbarianTribeCommandsLineModule>()))
                                         .InSingletonScope();
 
             Bind<Processor>().ToMethod(c => new Processor(c.Kernel.Get<AssignmentCommandsModule>(),

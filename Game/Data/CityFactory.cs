@@ -61,7 +61,7 @@ namespace Game.Data
                               ap);
         }
 
-        public ICity CreateCity(uint id, IPlayer owner, string name, Position position, LazyResource resource, byte radius, decimal ap)
+        public ICity CreateCity(uint id, IPlayer owner, string name, Position position, ILazyResource resource, byte radius, decimal ap)
         {
             var worker = actionWorkerFactory.CreateActionWorker(() => owner, new SimpleLocation(LocationType.City, id));
             var notifications = notificationManagerFactory.CreateCityNotificationManager(worker, id, "/PLAYER/" + owner.PlayerId);
@@ -87,7 +87,8 @@ namespace Game.Data
                                 troopStubFactory,
                                 kernel.Get<IDbManager>(),
                                 kernel.Get<IGameObjectFactory>(),
-                                kernel.Get<IActionFactory>());
+                                kernel.Get<IActionFactory>(),
+                                kernel.Get<BattleProcedure>());
 
             // TODO: We should figure a cleaner way so we dont need to have this circular dependency
             troops.BaseStation = city;

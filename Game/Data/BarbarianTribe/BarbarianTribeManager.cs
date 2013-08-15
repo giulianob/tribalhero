@@ -80,18 +80,26 @@ namespace Game.Data.BarbarianTribe
             }
         }
 
-        public void CreateBarbarianTribeNear(byte level, int campCount, uint x, uint y)
+        public void CreateBarbarianTribeNear(byte level, int campCount, uint x, uint y, byte radius)
         {
             Position barbarianCampPosition;
 
+            int tries = 0;
             do
             {
-                tileLocator.RandomPoint(new Position(x, y), 10, false, out barbarianCampPosition);
+                tileLocator.RandomPoint(new Position(x, y), radius, true, out barbarianCampPosition);
+                if (tries++ > 150)
+                {
+                    return;
+                }
             }
             while (!barbarianTribeConfigurator.IsLocationAvailable(barbarianCampPosition));
             
             IBarbarianTribe barbarianTribe = barbarianTribeFactory.CreateBarbarianTribe(idGenerator.GetNext(), level, barbarianCampPosition, campCount);
-            Add(barbarianTribe);
+            if (barbarianTribe != null)
+            {
+                Add(barbarianTribe);
+            }
         }
 
         private void Add(IBarbarianTribe barbarianTribe)

@@ -23,6 +23,11 @@ namespace Game.Data.BarbarianTribe
 
         public BarbarianTribe CreateBarbarianTribe(uint id, byte level, Position position, int count)
         {
+            if (level <= 0 || level > 10)
+            {
+                return null;
+            }
+
             var worker = actionWorkerFactory.CreateActionWorker(null, new SimpleLocation(LocationType.BarbarianTribe, id));
             var barbarianTribe = new BarbarianTribe(id, level, position.X, position.Y, count, formula.BarbarianTribeResources(level), kernel.Get<IDbManager>(), worker);
             worker.LockDelegate = () => barbarianTribe;

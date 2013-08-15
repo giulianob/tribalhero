@@ -258,12 +258,8 @@ namespace Game.Battle.CombatObjects
         {
             if (obj.ClassType == BattleClass.Unit)
             {
-                return tileLocator.IsOverlapping(obj.Location(),
-                                                 obj.AttackRadius(),
-                                                 obj.Size,
-                                                 Structure.PrimaryPosition,
-                                                 Structure.Stats.Base.Radius,
-                                                 Structure.Size);
+                return tileLocator.IsOverlapping(obj.Location(), obj.Size, obj.AttackRadius(),
+                                                 Structure.PrimaryPosition, Structure.Size, Structure.Stats.Base.Radius);
             }
 
             throw new Exception(string.Format("Why is a structure trying to kill a unit of type {0}?",

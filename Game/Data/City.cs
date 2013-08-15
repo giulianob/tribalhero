@@ -37,7 +37,7 @@ namespace Game.Data
 
         #region Events
 
-        public delegate void CityEventHandler<TEventArgs>(ICity city, TEventArgs e);
+        public delegate void CityEventHandler<in TEventArgs>(ICity city, TEventArgs e);
         
         public event CityEventHandler<PropertyChangedEventArgs> PropertyChanged = (sender, args) => { };
                      
@@ -126,6 +126,8 @@ namespace Game.Data
         private readonly IGameObjectFactory gameObjectFactory;
 
         private readonly IActionFactory actionFactory;
+
+        private readonly BattleProcedure battleProcedure;
 
         /// <summary>
         ///     Enumerates only through structures in this city
@@ -555,7 +557,24 @@ namespace Game.Data
 
         #endregion
 
-        public City(uint id, IPlayer owner, string name, Position position, LazyResource resource, byte radius, decimal ap, IActionWorker worker, CityNotificationManager notifications, IReferenceManager references, ITechnologyManager technologies, ITroopManager troops, IUnitTemplate template, ITroopStubFactory troopStubFactory, IDbManager dbManager, IGameObjectFactory gameObjectFactory, IActionFactory actionFactory)
+        public City(uint id,
+                    IPlayer owner,
+                    string name,
+                    Position position,
+                    ILazyResource resource,
+                    byte radius,
+                    decimal ap,
+                    IActionWorker worker,
+                    CityNotificationManager notifications,
+                    IReferenceManager references,
+                    ITechnologyManager technologies,
+                    ITroopManager troops,
+                    IUnitTemplate template,
+                    ITroopStubFactory troopStubFactory,
+                    IDbManager dbManager,
+                    IGameObjectFactory gameObjectFactory,
+                    IActionFactory actionFactory,
+                    BattleProcedure battleProcedure)
         {
             Id = id;
             Owner = owner;
@@ -565,6 +584,7 @@ namespace Game.Data
             this.dbManager = dbManager;
             this.gameObjectFactory = gameObjectFactory;
             this.actionFactory = actionFactory;
+            this.battleProcedure = battleProcedure;
 
             PrimaryPosition = position;
             AlignmentPoint = ap;
@@ -580,14 +600,14 @@ namespace Game.Data
             #region Event Proxies
 
             Template.UnitUpdated += evtTemplate =>
+            {
+                if (Global.Current.FireEvents && DbPersisted)
                 {
-                    if (Global.Current.FireEvents && DbPersisted)
-                    {
-                        dbManager.Save(evtTemplate);
-                    }
+                    dbManager.Save(evtTemplate);
+                }
 
-                    UnitTemplateUpdated(this, new EventArgs());
-                };
+                UnitTemplateUpdated(this, new EventArgs());
+            };
 
             Troops.TroopAdded += stub => TroopAdded(this, new TroopStubEventArgs {Stub = stub});
             Troops.TroopRemoved += stub => TroopRemoved(this, new TroopStubEventArgs {Stub = stub});
@@ -599,10 +619,10 @@ namespace Game.Data
             Worker.ActionRescheduled += (stub, state) => ActionRescheduled(this, new ActionWorkerEventArgs {State = state, Stub = stub});
 
             Resource.ResourcesUpdate += () =>
-                {
-                    CheckUpdateMode();
-                    ResourcesUpdated(this, new EventArgs());
-                };
+            {
+                CheckUpdateMode();
+                ResourcesUpdated(this, new EventArgs());
+            };
 
             Technologies.TechnologyCleared += OnTechnologyCleared;
             Technologies.TechnologyAdded += OnTechnologyAdded;
@@ -828,7 +848,7 @@ namespace Game.Data
                 bw.Write(value);
                 bw.Write((float)alignmentPoint);
                 bw.Write(Owner.Tribesman == null ? 0 : Owner.Tribesman.Tribe.Id);
-                bw.Write((byte)(BattleProcedure.IsNewbieProtected(Owner) ? 1 : 0));
+                bw.Write((byte)(battleProcedure.IsNewbieProtected(Owner) ? 1 : 0));
                 ms.Position = 0;
                 return ms.ToArray();
             }

@@ -6,6 +6,6 @@ namespace Game.Data
     {
         ICity CreateCity(uint id, IPlayer owner, string name, Position position, Resource resource, byte radius, decimal ap);
 
-        ICity CreateCity(uint id, IPlayer owner, string name, Position position, LazyResource resource, byte radius, decimal ap);
+        ICity CreateCity(uint id, IPlayer owner, string name, Position position, ILazyResource resource, byte radius, decimal ap);
     }
 }

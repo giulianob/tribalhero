@@ -23,15 +23,16 @@ package src.Objects {
 		private var onSelect: Function;
 		protected var selected: Boolean;						
 		
-		public var objectCount: DisplayObject;				
-		
+		private var objectCountDisplayObject: DisplayObject;
+        private var objectCount: int;
+
 		// This is the container where the objects sprite/image should go
 		public var spriteContainer: Sprite;
 
         public var primaryPosition: ScreenPosition = new ScreenPosition();
 
         public var size: int;
-					
+
 		public function SimpleObject(objX: int, objY: int, size: int) {
 			super();
 			
@@ -57,11 +58,17 @@ package src.Objects {
 			x = obj.x;
 			y = obj.y;
 		}
-		
+
+        public function getObjectCount(): int {
+            return objectCount;
+        }
+
 		public function setObjectCount(count: int) : void {
-			if (objectCount != null) {
-				removeChild(objectCount);			
-				objectCount = null;
+            objectCount = count;
+
+			if (objectCountDisplayObject != null) {
+				removeChild(objectCountDisplayObject);
+				objectCountDisplayObject = null;
 			}
 			
 			if (count <= 1) {
@@ -76,23 +83,24 @@ package src.Objects {
 			bubble.x = Constants.tileW / 2;
 			bubble.y = 0;
 			
-			objectCount = bubble;
+			objectCountDisplayObject = bubble;
 			
 			addChild(bubble);
 		}
 		
 		public function dispose(): void {
 			disposed = true;
-			if (objectCount != null) {
-				removeChild(objectCount);
-				objectCount = null;
-			}
+			if (objectCountDisplayObject != null) {
+				removeChild(objectCountDisplayObject);
+				objectCountDisplayObject = null;
+            }
 			dispatchEvent(new Event(DISPOSED));
 		}
 		
 		public function fadeIn():void
 		{
-			alpha = 0;
+            alpha = 0;
+            visible = true;
 			TweenMax.to(this, 1, {alpha:1});
 		}
 			

@@ -1,5 +1,6 @@
 package src.Objects 
 {
+    import src.Constants;
     import src.Objects.States.GameObjectState;
 
     public class BarbarianTribe extends SimpleGameObject
@@ -14,7 +15,9 @@ package src.Objects
 		public function BarbarianTribe(type: int, state: GameObjectState, objX: int, objY: int, size: int, groupId: int, objectId: int, level: int, count: int)
 		{
 			super(type, state, objX, objY, size, groupId, objectId);
-			
+
+            mapPriority = Constants.mapObjectPriority.barbarianTribe;
+
             this.id = objectId;
 			this.level = level;
 			this.count = count;

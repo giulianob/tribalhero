@@ -16,8 +16,10 @@ package src.Objects {
 		public function GameObject(type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int)
 		{
 			super(type, state, objX, objY, size, cityId, objectId);
-			
-			this.playerId = playerId;			
+
+            mapPriority = Constants.mapObjectPriority.simpleGameObject;
+
+            this.playerId = playerId;
 			
 			setHighlighted(false);
 		}

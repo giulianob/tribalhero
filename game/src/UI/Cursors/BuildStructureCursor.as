@@ -58,13 +58,14 @@ package src.UI.Cursors {
 				return;
 			}
 
+            cursor.mapPriority = 0;
+            cursor.alpha = 0.7;
+
             // Validate all tiles
             var size: int = city.radius - 1;
             for each (var position: Position in TileLocator.foreachTile(city.primaryPosition.x, city.primaryPosition.y, size)) {
                 validateTile(position);
             }
-
-			cursor.alpha = 0.7;
 
 			rangeCursor = new GroundCircle(structPrototype.radius, true, new ColorTransform(1.0, 1.0, 1.0, 1.0, 236, 88, 0));
 			rangeCursor.alpha = 0.6;
@@ -102,15 +103,27 @@ package src.UI.Cursors {
 
 			if (cursor != null)
 			{
-				if (cursor.stage != null) Global.map.objContainer.removeObject(cursor);
-				if (rangeCursor.stage != null) Global.map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
-				if (buildableArea.stage != null) Global.map.objContainer.removeObject(buildableArea, ObjectContainer.LOWER);
+				if (cursor.stage != null) {
+                    Global.map.objContainer.removeObject(cursor);
+                }
+
+				if (rangeCursor.stage != null) {
+                    Global.map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
+                }
+				if (buildableArea.stage != null) {
+                    Global.map.objContainer.removeObject(buildableArea, ObjectContainer.LOWER);
+                }
 			}
 		}
 
 		private function showCursors() : void {
-			if (cursor) cursor.visible = true;
-			if (rangeCursor) rangeCursor.visible = true;
+			if (cursor) {
+                cursor.visible = true;
+            }
+
+			if (rangeCursor) {
+                rangeCursor.visible = true;
+            }
 		}
 
 		private function hideCursors() : void {
@@ -160,8 +173,13 @@ package src.UI.Cursors {
 			{
 				objPosition = pos;
 			
-				if (rangeCursor.stage != null) Global.map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
-				if (cursor.stage != null) Global.map.objContainer.removeObject(cursor);
+				if (rangeCursor.stage != null) {
+                    Global.map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
+                }
+
+				if (cursor.stage != null) {
+                    Global.map.objContainer.removeObject(cursor);
+                }
 				
 				rangeCursor.objX = pos.x;
 				rangeCursor.objY = pos.y;

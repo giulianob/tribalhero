@@ -1,5 +1,6 @@
 ﻿package src.Objects {
 
+    import src.Constants;
     import src.Objects.Factories.StructureFactory;
     import src.Objects.Prototypes.StructurePrototype;
     import src.Objects.States.GameObjectState;
@@ -18,8 +19,10 @@
 			super(type, state, objX, objY, size, playerId, cityId, objectId);
 			
 			this.level = level;
-			
-			wallManager = new WallManager(this, wallRadius);
+
+            mapPriority = Constants.mapObjectPriority.structureObject;
+
+            wallManager = new WallManager(this, wallRadius);
 			radiusManager = new RadiusManager(this);
 		}
 		

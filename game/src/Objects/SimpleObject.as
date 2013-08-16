@@ -11,7 +11,6 @@ package src.Objects {
     import flash.geom.Point;
 
     import src.Constants;
-    import src.Map.Position;
     import src.Map.ScreenPosition;
 
     public class SimpleObject extends MovieClip {
@@ -33,9 +32,12 @@ package src.Objects {
 
         public var size: int;
 
+        public var mapPriority: int;
+
 		public function SimpleObject(objX: int, objY: int, size: int) {
 			super();
-			
+
+            mapPriority = Constants.mapObjectPriority.simpleObject;
 			spriteContainer = new Sprite();
 			addChild(spriteContainer);
 			

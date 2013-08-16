@@ -1,5 +1,6 @@
 package src.Objects.Stronghold 
 {
+    import src.Constants;
     import src.Objects.Effects.Formula;
     import src.Objects.SimpleGameObject;
     import src.Objects.SimpleObject;
@@ -28,7 +29,9 @@ package src.Objects.Stronghold
 			this.id = objectId;
 			this.level = level;
 			this.tribeId = tribeId;
-            
+
+            mapPriority = Constants.mapObjectPriority.stronghold;
+
             wallManager = new WallManager(this, 2);
 		}
 		

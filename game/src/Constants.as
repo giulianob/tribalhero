@@ -144,6 +144,18 @@ package src
 		
 		/* Buffer for game XML data */
 		public static var objData: XML = <Data></Data>;
+
+        // Object Priority on the map when there are multiple objects on the same tile
+        public static const mapObjectPriority: * = {
+            stronghold: 1,
+            structureObject: 2,
+            barbarianTribe: 3,
+            forest: 4,
+            troopObject: 5,
+            gameObject: 6,
+            simpleGameObject: 7,
+            simpleObject: 8
+        };
 	}
 }
 

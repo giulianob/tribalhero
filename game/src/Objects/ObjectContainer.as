@@ -106,12 +106,10 @@ package src.Objects {
 
 				if (multiObjects.length > 1)
 				{
-					var objectSelection: ObjectSelectDialog = new ObjectSelectDialog(multiObjects,
-					function(sender: ObjectSelectDialog):void {
+					var objectSelection: ObjectSelectDialog = new ObjectSelectDialog(multiObjects, function(sender: ObjectSelectDialog):void {
 						Global.map.selectObject((sender as ObjectSelectDialog).selectedObject);
 						sender.getFrame().dispose();
-					}
-					);
+					});
 
 					objectSelection.show();
 				}
@@ -463,22 +461,21 @@ package src.Objects {
 
                 var tileIndex: int = TileLocator.getTileIndex(simpleObj.primaryPosition.toPosition());
                 var objectsInTile: Array = objects[tileIndex];
-                if (!objectsInTile) {
-                    return;
-                }
+                if (objectsInTile) {
+                    objectsInTile.sort(sortByObjectPriority);
 
-                objectsInTile.sort(sortByObjectPriority);
+                    var highestPriorityObject: SimpleObject = objectsInTile[0];
 
-                var highestPriorityObject: SimpleObject = objectsInTile[0];
+                    // If the current highest obj was already visible then
+                    // the obj being removed was already hidden by someone else.
+                    // In this case, we can just decrement the highestObj count.
+                    if (highestPriorityObject.visible) {
+                        if (simpleObj.isSelectable()) {
+                            highestPriorityObject.setObjectCount(highestPriorityObject.getObjectCount() - 1);
+                        }
 
-                // If the current highest obj was already visible then
-                // the obj being removed was already hidden by someone else.
-                // In this case, we can just decrement the highestObj count.
-                if (highestPriorityObject.visible) {
-                    if (simpleObj.isSelectable()) {
-                        highestPriorityObject.setObjectCount(highestPriorityObject.getObjectCount() - 1);
+                        return;
                     }
-                    return;
                 }
 
                 // Otherwise, it means that we've removed an obj that was hiding other guys so we need to reset

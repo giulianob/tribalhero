@@ -20,8 +20,6 @@ package src.Objects {
 
     public class ObjectContainer extends Sprite {
 
-        private static const OBJECT_PRIORITY: Array = [Stronghold, StructureObject, BarbarianTribe, Forest, TroopObject, GameObject, SimpleGameObject, SimpleObject];
-
 		public static const LOWER: int = 1;
 		public static const UPPER: int = 3;
 
@@ -322,7 +320,7 @@ package src.Objects {
                 var objectsInTile: Array = objects[TileLocator.getTileIndex(simpleObj.primaryPosition.toPosition())];
 
                 // Sort the objects by priority
-                objectsInTile.sort(sortByObjectPriority);
+                objectsInTile.sortOn("mapPriority", Array.NUMERIC);
 
                 var highestPriorityObject: SimpleObject = objectsInTile[0];
 
@@ -411,34 +409,6 @@ package src.Objects {
             }
         }
 
-        private function getObjectPriority(obj: SimpleObject): int {
-            var priorityLength: int = OBJECT_PRIORITY.length;
-            for (var i: int = 0; i < priorityLength; i++) {
-                var type: Class = OBJECT_PRIORITY[i];
-                if (obj is type) {
-                    return i;
-                }
-            }
-
-            return priorityLength;
-        }
-
-        private function sortByObjectPriority(a: SimpleObject, b: SimpleObject): int {
-            var aPriority: int = getObjectPriority(a);
-            var bPriority: int = getObjectPriority(b);
-
-            if (aPriority < bPriority)
-            {
-                return -1;
-            }
-            else if (aPriority > bPriority)
-            {
-                return 1;
-            }
-
-            return 0;
-        }
-
 		public function removeObject(obj: DisplayObject, layer: int = 0, dispose: Boolean = true):void
 		{
 			if (obj == null) {
@@ -462,7 +432,7 @@ package src.Objects {
                 var tileIndex: int = TileLocator.getTileIndex(simpleObj.primaryPosition.toPosition());
                 var objectsInTile: Array = objects[tileIndex];
                 if (objectsInTile) {
-                    objectsInTile.sort(sortByObjectPriority);
+                    objectsInTile.sortOn("mapPriority", Array.NUMERIC);
 
                     var highestPriorityObject: SimpleObject = objectsInTile[0];
 
@@ -487,7 +457,7 @@ package src.Objects {
                         continue;
                     }
 
-                    eachObjectsInTile.sort(sortByObjectPriority);
+                    eachObjectsInTile.sortOn("mapPriority", Array.NUMERIC);
                     var eachHighestPriorityObject: SimpleObject = eachObjectsInTile[0];
                     eachHighestPriorityObject.setObjectCount(getSelectableObjectCount(eachObjectsInTile));
 

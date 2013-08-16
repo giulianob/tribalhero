@@ -5,6 +5,8 @@ package src.Objects {
     import flash.display.DisplayObject;
     import flash.events.Event;
 
+    import src.Constants;
+
     import src.Objects.States.GameObjectState;
 
     public class SimpleGameObject extends SimpleObject {
@@ -24,7 +26,9 @@ package src.Objects {
 		public function SimpleGameObject(type: int, state: GameObjectState, objX: int, objY: int, size: int, groupId: int, objectId: int)
 		{
 			super(objX, objY, size);
-			
+
+            mapPriority = Constants.mapObjectPriority.simpleGameObject;
+
 			this.type = type;
 			this.groupId = groupId;
 			this.objectId = objectId;

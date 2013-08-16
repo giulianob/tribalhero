@@ -1,5 +1,6 @@
 ﻿package src.Objects.Troop {
 
+    import src.Constants;
     import src.Objects.*;
     import src.Objects.States.GameObjectState;
 
@@ -18,8 +19,10 @@
 
 		public function TroopObject(type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int) {
 			super(type, state, objX, objY, size, playerId, cityId, objectId);
-			
-			radiusManager = new RadiusManager(this);			
+
+            mapPriority = Constants.mapObjectPriority.troopObject;
+
+            radiusManager = new RadiusManager(this);
 		}
 
         override public function dispose():void

@@ -1,5 +1,6 @@
 ﻿package src.Objects {
 
+    import src.Constants;
     import src.Objects.States.GameObjectState;
 
     public class Forest extends SimpleGameObject {
@@ -12,8 +13,10 @@
 		
 		public function Forest(type: int, state: GameObjectState, objX: int, objY: int, size: int,  groupId: int, objectId: int, level: int) {
 			super(type, state, objX, objY, size, groupId, objectId);
-			
-			this.level = level;
+
+            mapPriority = Constants.mapObjectPriority.forest;
+
+            this.level = level;
 		}
 	}
 

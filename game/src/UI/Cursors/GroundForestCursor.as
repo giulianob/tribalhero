@@ -129,8 +129,8 @@
 
 				objPosition = pos;
 
-				cursor.objX = pos.x;
-				cursor.objY = pos.y;
+				cursor.x = cursor.primaryPosition.x = pos.x;
+                cursor.y = cursor.primaryPosition.y = pos.y;
 
 				Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
 

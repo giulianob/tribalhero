@@ -48,10 +48,10 @@ package src.UI.Cursors {
 			destroyableArea = new GroundCallbackCircle(city.radius - 1, validateTileCallback);						
 			
 			destroyableArea.alpha = 0.3;
-			var point: ScreenPosition = city.MainBuilding.primaryPosition.toScreenPosition();
-			destroyableArea.objX = point.x; 
-			destroyableArea.objY = point.y;
-			
+			var pos: ScreenPosition = city.MainBuilding.primaryPosition.toScreenPosition();
+            destroyableArea.x = destroyableArea.primaryPosition.x = pos.x;
+            destroyableArea.y = destroyableArea.primaryPosition.y = pos.y;
+
 			Global.map.objContainer.addObject(destroyableArea, ObjectContainer.LOWER);
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
@@ -146,8 +146,8 @@ package src.UI.Cursors {
 					Global.map.objContainer.removeObject(cursor);
                 }
 
-				cursor.objX = pos.x;
-				cursor.objY = pos.y;
+                cursor.x = cursor.primaryPosition.x = pos.x;
+                cursor.y = cursor.primaryPosition.y = pos.y;
 				
 				Global.map.objContainer.addObject(cursor);
 				

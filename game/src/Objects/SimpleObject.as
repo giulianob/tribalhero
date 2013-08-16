@@ -41,8 +41,12 @@ package src.Objects {
 			spriteContainer = new Sprite();
 			addChild(spriteContainer);
 			
-			this.objX = objX;
-            this.objY = objY;
+			this.primaryPosition.x = objX;
+            this.primaryPosition.y = objY;
+
+            this.x = objX;
+            this.y = objY;
+
             this.size = size;
 		}
 		
@@ -54,9 +58,9 @@ package src.Objects {
 			for (i = obj.spriteContainer.numChildren - 1; i >= 0; i--) {
 				spriteContainer.addChildAt(obj.spriteContainer.removeChildAt(i), 0);				
 			}
-			
-			objX = obj.objX;
-			objY = obj.objY;
+
+            primaryPosition.x = obj.primaryPosition.x;
+            primaryPosition.y = obj.primaryPosition.y;
 			x = obj.x;
 			y = obj.y;
 		}
@@ -145,8 +149,8 @@ package src.Objects {
 
 			var objPos: Point = new Point();
 
-			objPos.x = objX;
-			objPos.y = objY;
+			objPos.x = primaryPosition.x;
+			objPos.y = primaryPosition.y;
 
 			if (objPos.y % 2 == 1 && y_1 % 2 == 0 && x_1 <= objPos.x) offset = 1;
 			if (objPos.y % 2 == 0 && y_1 % 2 == 1 && x_1 >= objPos.x) offset = 1;
@@ -155,11 +159,11 @@ package src.Objects {
 		}		
 		
 		public static function sortOnXandY(a: SimpleObject, b: SimpleObject):Number {
-			var aX:Number = a.objX;
-			var bX:Number = b.objX;
+			var aX:Number = a.primaryPosition.x;
+			var bX:Number = b.primaryPosition.x;
 
-			var aY:Number = a.objY;
-			var bY:Number = b.objY;
+			var aY:Number = a.primaryPosition.y;
+			var bY:Number = b.primaryPosition.y;
 			
 			if (aX > bX)
 				return 1;
@@ -175,8 +179,8 @@ package src.Objects {
 		
 		public static function compareXAndY(a: SimpleObject, value: Array):int
 		{
-			var xDelta: int = a.objX - value[0];
-			var yDelta: int = a.objY - value[1];
+			var xDelta: int = a.primaryPosition.x - value[0];
+			var yDelta: int = a.primaryPosition.y - value[1];
 			
 			if (xDelta != 0)
 				return xDelta;
@@ -185,28 +189,6 @@ package src.Objects {
 				return yDelta;
 			else
 				return 0;
-		}
-
-		public function get objX():int 
-		{
-			return primaryPosition.x;
-		}
-		
-		public function set objX(value:int):void 
-		{
-			primaryPosition.x = value;
-			x = value;
-		}
-		
-		public function get objY():int 
-		{
-			return primaryPosition.y;
-		}
-		
-		public function set objY(value:int):void 
-		{
-			primaryPosition.y = value;
-            y = value;
 		}
 	}
 	

@@ -19,7 +19,7 @@ package src.Objects.Process
 				Global.map.selectWhenViewable(troop.cityId, troop.objectId);
 			}
 
-			Global.gameContainer.camera.ScrollTo(new Position(troop.x, troop.y).toScreenPosition());
+			Global.gameContainer.camera.ScrollToCenter(new Position(troop.x, troop.y).toScreenPosition());
 			Global.gameContainer.closeAllFrames();
 		}
 		

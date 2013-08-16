@@ -188,7 +188,7 @@ package src.Objects {
 
 				if (obj.hitTestPoint(e.stageX, e.stageY, true))
 				{
-					if (!highestObj || obj.objY < highestObj.objY || (highestObj is SimpleObject && obj is SimpleGameObject))
+					if (!highestObj || obj.primaryPosition.y < highestObj.primaryPosition.y || (highestObj is SimpleObject && obj is SimpleGameObject))
 						highestObj = obj;
 
 					objects.push(obj);
@@ -225,9 +225,9 @@ package src.Objects {
 
 				if (!obj.visible || obj.alpha == 0) continue;
 
-				if (obj == highestObj || obj.objY <= highestObj.objY) continue;
+				if (obj == highestObj || obj.primaryPosition.y <= highestObj.primaryPosition.y) continue;
 				
-				if (Math.abs(highestObj.objX - obj.objX) < Constants.tileW)
+				if (Math.abs(highestObj.primaryPosition.x - obj.primaryPosition.x) < Constants.tileW)
 				{
 					objMapPos = obj.primaryPosition.toPosition();
 					if (TileLocator.distance(highestObjMapPos.x, highestObjMapPos.y, highestObj.size, objMapPos.x, objMapPos.y, obj.size) <= 1)
@@ -313,7 +313,7 @@ package src.Objects {
 			{
                 simpleObj.setObjectCount(1);
 
-				getLayer(layer).addChildAt(simpleObj, calculateDepth(simpleObj.objY, getLayer(layer)));
+				getLayer(layer).addChildAt(simpleObj, calculateDepth(simpleObj.primaryPosition.y, getLayer(layer)));
 
                 addObjectToDictionary(simpleObj);
 
@@ -506,7 +506,7 @@ package src.Objects {
 
 				var currentObj: DisplayObject = layer.getChildAt(mid) as DisplayObject;
 				var simpleObj: SimpleObject = currentObj as SimpleObject;
-				var objY: Number = simpleObj == null ? currentObj.y : simpleObj.objY;
+				var objY: Number = simpleObj == null ? currentObj.y : simpleObj.primaryPosition.y;
 
                 if (objY > y) {
 					high = mid - 1;

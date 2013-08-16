@@ -41,9 +41,9 @@ package src.UI.Cursors {
 
 			buildableArea = new GroundCallbackCircle(city.radius - 1, validateTileCallback);
 			buildableArea.alpha = 0.3;
-			var point: ScreenPosition = city.primaryPosition.toScreenPosition();
-			buildableArea.objX = point.x; 
-			buildableArea.objY = point.y;
+			var pos: ScreenPosition = city.primaryPosition.toScreenPosition();
+			buildableArea.primaryPosition.x = pos.x;
+			buildableArea.primaryPosition.y = pos.y;
 			
 			Global.map.objContainer.addObject(buildableArea, ObjectContainer.LOWER);
 
@@ -125,9 +125,9 @@ package src.UI.Cursors {
 				//Object cursor
 				if (cursor.stage != null) 
 					Global.map.objContainer.removeObject(cursor, ObjectContainer.LOWER);
-				
-				cursor.objX = pos.x;
-				cursor.objY = pos.y;
+
+                cursor.x = cursor.primaryPosition.x = pos.x;
+                cursor.y = cursor.primaryPosition.y = pos.y;
 				
 				Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
 				

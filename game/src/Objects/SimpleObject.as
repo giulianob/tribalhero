@@ -190,6 +190,22 @@ package src.Objects {
 			else
 				return 0;
 		}
+
+        override public function get x(): Number {
+            return super.x;
+        }
+
+        override public function set x(value: Number): void {
+            super.x = Math.round(value);
+        }
+
+        override public function get y(): Number {
+            return super.y;
+        }
+
+        override public function set y(value: Number): void {
+            super.y = Math.round(value);
+        }
 	}
 	
 }

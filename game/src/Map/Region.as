@@ -95,7 +95,6 @@
 
             clearAllPlaceholders();
 
-
             var bg:Bitmap = new Bitmap(new BitmapData(Constants.regionW + Constants.tileW / 2, Constants.regionH / 2 + Constants.tileH / 2, true, 0));
             bg.smoothing = false;
 

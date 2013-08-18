@@ -170,12 +170,12 @@
 
 		public function ScrollToCenter(screenPos: ScreenPosition): void
 		{
-			ScrollTo(new ScreenPosition(screenPos.x - (Constants.screenW * zoomFactorOverOne) / 2.0, screenPos.y - (Constants.screenH * zoomFactorOverOne) / 2.0));
+			ScrollTo(new ScreenPosition(screenPos.getXAsNumber() - (Number(Constants.screenW) / zoomFactor) / 2.0, screenPos.getYAsNumber() - (Constants.screenH / zoomFactor) / 2.0));
 		}
 		
 		public function GetCenter(): ScreenPosition
 		{
-			return new ScreenPosition(currentPosition.x + (Constants.screenW * zoomFactorOverOne) / 2.0, currentPosition.y + (Constants.screenH * zoomFactorOverOne) / 2.0);
+			return new ScreenPosition(currentPosition.getXAsNumber() + (Number(Constants.screenW) / zoomFactor) / 2.0, currentPosition.getYAsNumber() + (Constants.screenH / zoomFactor) / 2.0);
 		}
 
 		public function CameraRectangle() : Rectangle
@@ -188,9 +188,9 @@
 			if (currentPosition.x < 0) currentPosition.x = 0;
 			if (currentPosition.y < 0) currentPosition.y = 0;
 
-			currentPosition.x = Math.min(screenPos.x, Constants.mapW - (Constants.screenW * zoomFactorOverOne) - (Constants.tileW / 2));
+			currentPosition.setXAsNumber(Math.min(screenPos.getXAsNumber(), Constants.mapW - (Constants.screenW * zoomFactorOverOne) - (Constants.tileW / 2.0)));
 
-			currentPosition.y = Math.min(screenPos.y, Constants.mapTileH * int(Constants.tileH / 2) - (Constants.screenH * zoomFactorOverOne) - int(Constants.tileH / 2));
+			currentPosition.setYAsNumber(Math.min(screenPos.getYAsNumber(), Constants.mapTileH * int(Constants.tileH / 2.0) - (Constants.screenH * zoomFactorOverOne) - int(Constants.tileH / 2.0)));
 
 			fireOnMove();
 		}

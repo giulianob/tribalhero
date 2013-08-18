@@ -345,12 +345,13 @@
 		}
 		
 		public function onZoomIn(e: Event) : void {		
-			if (camera.getZoomFactor() >= 1 || minimapZoomed) return;
+			if (minimapZoomed) return;
 
-            var center: ScreenPosition = camera.GetCenter();
             TweenMax.to(camera, 0.2, {
+                overwrite: false,
                 zoomFactor: Math.min(1, camera.zoomFactor + 0.1),
-                onUpdate: function(): void {
+                onUpdateParams: [camera.GetCenter()],
+                onUpdate: function(center: ScreenPosition): void {
                     map.scrollRate = camera.getZoomFactorOverOne();
                     miniMap.redraw();
                     mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();
@@ -360,12 +361,13 @@
 		}		
 		
 		public function onZoomOut(e: Event) : void {
-			if (camera.getZoomFactor() <= 0.5 || minimapZoomed) return;
+			if (minimapZoomed) return;
 
-            var center: ScreenPosition = camera.GetCenter();
             TweenMax.to(camera, 0.2, {
+                overwrite: false,
                 zoomFactor: Math.max(0.5, camera.zoomFactor - 0.1),
-                onUpdate: function(): void {
+                onUpdateParams: [camera.GetCenter()],
+                onUpdate: function(center: ScreenPosition): void {
                     map.scrollRate = camera.getZoomFactorOverOne();
                     miniMap.redraw();
                     mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();

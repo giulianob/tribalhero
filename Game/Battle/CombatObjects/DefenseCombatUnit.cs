@@ -35,6 +35,8 @@ namespace Game.Battle.CombatObjects
 
         private decimal leftOverHp;
 
+        private byte eachUnitUpkeep;
+
         public DefenseCombatUnit(uint id,
                                  uint battleId,
                                  ITroopStub stub,
@@ -42,7 +44,8 @@ namespace Game.Battle.CombatObjects
                                  ushort type,
                                  byte lvl,
                                  ushort count,
-                                 IBattleFormulas battleFormulas)
+                                 IBattleFormulas battleFormulas,
+                                 UnitFactory unitFactory)
                 : base(id, battleId, battleFormulas)
         {
             troopStub = stub;
@@ -53,6 +56,8 @@ namespace Game.Battle.CombatObjects
 
             stats = stub.Template[type];
             leftOverHp = stats.MaxHp;
+
+            eachUnitUpkeep = unitFactory.GetUnitStats(type, lvl).Upkeep;
         }
 
         public DefenseCombatUnit(uint id,
@@ -63,8 +68,9 @@ namespace Game.Battle.CombatObjects
                                  byte lvl,
                                  ushort count,
                                  decimal leftOverHp,
-                                 IBattleFormulas battleFormulas)
-                : this(id, battleId, stub, formation, type, lvl, count, battleFormulas)
+                                 IBattleFormulas battleFormulas,
+                                 UnitFactory unitFactory)
+                : this(id, battleId, stub, formation, type, lvl, count, battleFormulas, unitFactory)
         {
             this.leftOverHp = leftOverHp;
         }
@@ -113,7 +119,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Upkeep * count;
+                return eachUnitUpkeep * count;
             }
         }
 

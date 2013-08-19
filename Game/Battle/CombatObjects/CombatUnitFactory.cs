@@ -115,7 +115,8 @@ namespace Game.Battle.CombatObjects
                                                                   type,
                                                                   template.Lvl,
                                                                   size,
-                                                                  battleFormulas);
+                                                                  battleFormulas,
+                                                                  unitFactory);
                 units[i++] = newUnit;
                 count -= size;
             }

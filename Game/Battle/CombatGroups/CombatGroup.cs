@@ -75,6 +75,7 @@ namespace Game.Battle.CombatGroups
         private void ObjectAdded(PersistableObjectList<ICombatObject> persistableObjectList, ICombatObject combatObject)
         {
             combatObject.GroupId = Id;
+            BackingList.Sort((combatObject1, combatObject2) => combatObject1.Id.CompareTo(combatObject2.Id));
             CombatObjectAdded(this, combatObject);
         }
     }

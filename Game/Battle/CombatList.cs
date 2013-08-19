@@ -39,6 +39,13 @@ namespace Game.Battle
         {
             this.radiusLocator = radiusLocator;
             this.battleFormulas = battleFormulas;
+
+            ItemAdded += ObjectAdded;
+        }
+
+        private void ObjectAdded(PersistableObjectList<ICombatGroup> list, ICombatGroup item)
+        {
+            BackingList.Sort((combatGroup1, combatGroup2) => combatGroup1.Id.CompareTo(combatGroup2.Id));
         }
 
         public int Upkeep

@@ -161,13 +161,33 @@ namespace Game.Battle
         }
     }
 
+    public class MaxHpModCalculator : ModCalculator<double>
+    {
+        private readonly double baseValue;
+
+        public MaxHpModCalculator(double baseValue)
+        {
+            this.baseValue = baseValue;
+        }
+
+        public override double GetResult()
+        {
+            return baseValue * Math.Min(parameters["PERCENT_BONUS"].Sum, 140) / 100;
+        }
+
+        protected override void SetParameters()
+        {
+            parameters.Add("PERCENT_BONUS", new ModParameter(0));
+        }
+    }
+
     public class BattleStatsModCalculator
     {
         private readonly IBaseBattleStats baseStats;
 
         public BattleStatsModCalculator(IBaseBattleStats baseStats)
         {
-            MaxHp = new DoubleStatsModCalculator((double)baseStats.MaxHp);
+            MaxHp = new MaxHpModCalculator((double)baseStats.MaxHp);
             Atk = new AtkDmgModCalculator((double)baseStats.Atk);
             Splash = new IntStatsModCalculator(baseStats.Splash);
             Rng = new IntStatsModCalculator(baseStats.Rng);
@@ -178,7 +198,7 @@ namespace Game.Battle
             this.baseStats = baseStats;
         }
 
-        public DoubleStatsModCalculator MaxHp { get; private set; }
+        public MaxHpModCalculator MaxHp { get; private set; }
 
         public AtkDmgModCalculator Atk { get; private set; }
 

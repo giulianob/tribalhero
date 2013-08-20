@@ -168,18 +168,18 @@ GREED_IS_GOOD_TECHNOLOGY_LVL_4,Reduce time to load up loot by 4 Rounds (Stacks a
 GREED_IS_GOOD_TECHNOLOGY_LVL_5,Reduce time to load up loot by 5 Rounds (Stacks additively up to 10 Rounds)
 ,
 COORDINATED_DEFENSE_TECHNOLOGY_NAME,Coordinated Defense
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_1,Defensive Reinforcement Troops gain 2% Max HP but travel speed is REDUCED by 3%. (Stacks additively)
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_2,Defensive Reinforcement Troops gains 4% Max HP but travel speed is REDUCED by 6%. (Stacks additively)
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_3,Defensive Reinforcement Troops gains 6% Max HP but travel speed is REDUCED by 9%. (Stacks additively)
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_4,Defensive Reinforcement Troops gains 8% Max HP but travel speed is REDUCED by 12%. (Stacks additively)
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_5,Defensive Reinforcement Troops gains 10% Max HP but travel speed is REDUCED by 15%. (Stacks additively)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_1,Defensive Reinforcement Troops gain 2% Max HP.  (Stacks additively up to 40%)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_2,Defensive Reinforcement Troops gains 4% Max HP. (Stacks additively up to 40%)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_3,Defensive Reinforcement Troops gains 6% Max HP. (Stacks additively up to 40%)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_4,Defensive Reinforcement Troops gains 8% Max HP. (Stacks additively up to 40%)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_5,Defensive Reinforcement Troops gains 10% Max HP. (Stacks additively up to 40%)
 ,
 COORDINATED_ATTACK_TECHNOLOGY_NAME,Coordinated Attack
-COORDINATED_ATTACK_TECHNOLOGY_LVL_1,Offensive Troops gains 2% Max HP but travel speed is REDUCED by 3%. (Stacks additively)
-COORDINATED_ATTACK_TECHNOLOGY_LVL_2,Offensive Troops gains 4% Max HP but travel speed is REDUCED by 6%. (Stacks additively)
-COORDINATED_ATTACK_TECHNOLOGY_LVL_3,Offensive Troops gains 6% Max HP but travel speed is REDUCED by 9%. (Stacks additively)
-COORDINATED_ATTACK_TECHNOLOGY_LVL_4,Offensive Troops gains 8% Max HP but travel speed is REDUCED by 12%. (Stacks additively)
-COORDINATED_ATTACK_TECHNOLOGY_LVL_5,Offensive Troops gains 10% Max HP but travel speed is REDUCED by 15%. (Stacks additively)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_1,Offensive Troops gains 2% Max HP. (Stacks additively up to 40%)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_2,Offensive Troops gains 4% Max HP. (Stacks additively up to 40%)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_3,Offensive Troops gains 6% Max HP. (Stacks additively up to 40%)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_4,Offensive Troops gains 8% Max HP. (Stacks additively up to 40%)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_5,Offensive Troops gains 10% Max HP. (Stacks additively up to 40%)
 ,
 REINVENT_WHEEL_TECHNOLOGY_NAME,Reinvent the Wheel
 REINVENT_WHEEL_TECHNOLOGY_LVL_1,Increase send/trade resource speed by 8% for this structure only.

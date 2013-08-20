@@ -8,7 +8,7 @@ namespace Game.Battle
         private uint turn;
         private readonly uint battleId;
 
-        private bool seedChanged;
+        private bool seedChanged = true;
         private Random random;
 
         public BattleRandom(uint battleId)
@@ -18,13 +18,20 @@ namespace Game.Battle
 
         private void CheckRandom()
         {
-            if (random != null && !seedChanged)
+            if (!seedChanged)
             {
                 return;
             }
 
             seedChanged = false;
-            random = new Random((int)((battleId + round) * turn));
+
+            int hash;
+            unchecked
+            {
+                hash = (int)(battleId + (turn * 397) ^ round);
+            }
+
+            random = new Random(hash);
         }
 
         public int Next(int max)
@@ -41,11 +48,6 @@ namespace Game.Battle
 
         public void UpdateSeed(uint round, uint turn)
         {
-            if (this.round == round && this.turn == turn)
-            {
-                return;
-            }
-
             this.round = round;
             this.turn = turn;
             this.seedChanged = true;

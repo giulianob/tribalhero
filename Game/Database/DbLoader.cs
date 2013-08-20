@@ -1384,7 +1384,7 @@ namespace Game.Database
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
                         combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
-                        combatObj.MinDmgDealt = (ushort)listReader["damage_max_received"];
+                        combatObj.MinDmgRecv = (ushort)listReader["damage_max_received"];
                         combatObj.HitDealt = (ushort)listReader["hits_dealt"];
                         combatObj.HitDealtByUnit = (uint)listReader["hits_dealt_by_unit"];
                         combatObj.HitRecv = (ushort)listReader["hits_received"];
@@ -1421,12 +1421,13 @@ namespace Game.Database
                                                                         (ushort)listReader["type"],
                                                                         (byte)listReader["level"],
                                                                         (ushort)listReader["count"],
-                                                                        (decimal)listReader["left_over_hp"],
-                                                                        Ioc.Kernel.Get<IBattleFormulas>());
+                                                                        (decimal)listReader["left_over_hp"],                                                                        
+                                                                        Ioc.Kernel.Get<IBattleFormulas>(),
+                                                                        Ioc.Kernel.Get<UnitFactory>());
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
                         combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
-                        combatObj.MinDmgDealt = (ushort)listReader["damage_max_received"];
+                        combatObj.MinDmgRecv = (ushort)listReader["damage_max_received"];
                         combatObj.HitDealt = (ushort)listReader["hits_dealt"];
                         combatObj.HitDealtByUnit = (uint)listReader["hits_dealt_by_unit"];
                         combatObj.HitRecv = (ushort)listReader["hits_received"];
@@ -1465,7 +1466,7 @@ namespace Game.Database
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
                         combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
-                        combatObj.MinDmgDealt = (ushort)listReader["damage_max_received"];
+                        combatObj.MinDmgRecv = (ushort)listReader["damage_max_received"];
                         combatObj.HitDealt = (ushort)listReader["hits_dealt"];
                         combatObj.HitDealtByUnit = (uint)listReader["hits_dealt_by_unit"];
                         combatObj.HitRecv = (ushort)listReader["hits_received"];
@@ -1507,7 +1508,7 @@ namespace Game.Database
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
                         combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
-                        combatObj.MinDmgDealt = (ushort)listReader["damage_max_received"];
+                        combatObj.MinDmgRecv = (ushort)listReader["damage_max_received"];
                         combatObj.HitDealt = (ushort)listReader["hits_dealt"];
                         combatObj.HitDealtByUnit = (uint)listReader["hits_dealt_by_unit"];
                         combatObj.HitRecv = (ushort)listReader["hits_received"];
@@ -1546,7 +1547,7 @@ namespace Game.Database
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
                         combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
-                        combatObj.MinDmgDealt = (ushort)listReader["damage_max_received"];
+                        combatObj.MinDmgRecv = (ushort)listReader["damage_max_received"];
                         combatObj.HitDealt = (ushort)listReader["hits_dealt"];
                         combatObj.HitDealtByUnit = (uint)listReader["hits_dealt_by_unit"];
                         combatObj.HitRecv = (ushort)listReader["hits_received"];

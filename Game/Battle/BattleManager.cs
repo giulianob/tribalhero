@@ -49,10 +49,6 @@ namespace Game.Battle
 
         private readonly IRewardStrategy rewardStrategy;
 
-        private uint round;
-
-        private uint turn;
-
         public BattleManager(uint battleId,
                              BattleLocation location,
                              BattleOwner owner,
@@ -92,31 +88,9 @@ namespace Game.Battle
 
         public bool BattleStarted { get; set; }
 
-        public uint Round
-        {
-            get
-            {
-                return round;
-            }
-            set
-            {
-                round = value;
-                battleRandom.UpdateSeed(Round, Turn);
-            }
-        }
+        public uint Round { get; set; }
 
-        public uint Turn
-        {
-            get
-            {
-                return turn;
-            }
-            set
-            {
-                turn = value;
-                battleRandom.UpdateSeed(Round, Turn);
-            }
-        }
+        public uint Turn { get; set; }
 
         public ICombatList Attackers { get; private set; }
 
@@ -406,6 +380,8 @@ namespace Game.Battle
         {
             lock (battleLock)
             {
+                battleRandom.UpdateSeed(Round, Turn);
+
                 ICombatList offensiveCombatList;
                 ICombatList defensiveCombatList;
                 BattleSide sideAttacking;

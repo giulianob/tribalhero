@@ -1,25 +1,25 @@
-package src.Map.CityRegionFilters 
+package src.Map.MiniMapFilters
 {
     import flash.display.*;
     import flash.geom.*;
 
     import src.Constants;
     import src.Global;
-    import src.Map.CityRegionLegend;
-    import src.Map.CityRegionObject;
+    import src.Map.MiniMap.MiniMapLegend;
+    import src.Map.MiniMap.MiniMapRegionObject;
     import src.Util.StringHelper;
 
     /**
 	 * ...
 	 * @author Anthony Lam
 	 */
-	public class CityRegionFilterTribe extends CityRegionFilter 
+	public class MiniMapRegionFilterTribe extends MiniMapRegionFilter
 	{
 		override public function getName(): String {
 			return "Tribe";
 		}
 
-		override public function applyCity(obj: CityRegionObject) : void {
+		override public function applyCity(obj: MiniMapRegionObject) : void {
 			// If it's our city, we just show a special flag
 			var img: DisplayObject;
 
@@ -38,7 +38,7 @@ package src.Map.CityRegionFilters
 			obj.addChild(img);
 		}
 		
-		override public function applyLegend(legend: CityRegionLegend) : void {
+		override public function applyLegend(legend: MiniMapLegend) : void {
 			var icon: DisplayObject = new DOT_SPRITE;
 			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_CITY"));
 			

@@ -14,6 +14,7 @@
     import org.aswing.geom.*;
 
     import src.Map.*;
+    import src.Map.MiniMap.MiniMap;
     import src.Map.ScreenPosition;
     import src.Objects.*;
     import src.UI.*;

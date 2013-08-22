@@ -1,5 +1,6 @@
-﻿package src.Map
+﻿package src.Map.MiniMap
 {
+    import src.Map.*;
     import System.Linq.Enumerable;
 
     import flash.display.Sprite;
@@ -13,24 +14,19 @@
 
     import src.Constants;
     import src.Global;
-    import src.Map.CityRegionFilters.*;
+    import src.Map.MiniMapFilters.*;
     import src.Objects.ObjectContainer;
     import src.UI.Components.MiniMapPointer;
     import src.Util.Util;
 
-    /**
-	 * ...
-	 * @author Giuliano Barberi
-	 *
-	 */
 	public class MiniMap extends Sprite
 	{
 		public static const NAVIGATE_TO_POINT: String = "NAVIGATE_TO_POINT";
 
 		private var regionSpace: Sprite;
-		private var regions: CityRegionList;
-		private var filter: CityRegionFilter = new CityRegionFilter();
-		private var legend: CityRegionLegend = new CityRegionLegend();
+		private var regions: MiniMapRegionList;
+		private var filter: MiniMapRegionFilter = new MiniMapRegionFilter();
+		private var legend: MiniMapLegend = new MiniMapLegend();
 		private var pendingRegions: Array = [];
 
 		public var objContainer: ObjectContainer;
@@ -52,7 +48,7 @@
 
 		public function MiniMap(width: int, height: int)
 		{
-			regions = new CityRegionList();
+			regions = new MiniMapRegionList();
 
 			regionSpace = new Sprite();
 
@@ -117,19 +113,19 @@
 		
 		public function setFilter(name:String) : Boolean {
 			if (name == "Default") {
-				filter = new CityRegionFilter();
+				filter = new MiniMapRegionFilter();
 			} else if (name == "Alignment") {
-				filter = new CityRegionFilterAlignment();
+				filter = new MiniMapFilterAlignment();
 			} else if (name == "Distance") {
-				filter = new CityRegionFilterDistance();
+				filter = new MiniMapRegionFilterDistance();
 			} else if (name == "Tribe") {
-				filter = new CityRegionFilterTribe();
+				filter = new MiniMapRegionFilterTribe();
 			} else if (name == "Newbie") {
-				filter = new CityRegionFilterNewbie();
+				filter = new MiniMapRegionFilterNewbie();
 			} else {
 				return false;
 			}
-			for each(var region:CityRegion in regions) {
+			for each(var region:MiniMapRegion in regions) {
 				region.setFilter(filter);
 			}
 			showLegend();
@@ -200,12 +196,12 @@
 			screenRect.visible = !hidden;
 		}
 
-		public function addCityRegion(id:int) : CityRegion
+		public function addMiniMapRegion(id:int) : MiniMapRegion
 		{
 			if (Constants.debug >= 2)
 			Util.log("Adding city region: " + id);
 
-			var newRegion: CityRegion = new CityRegion(id,filter);
+			var newRegion: MiniMapRegion = new MiniMapRegion(id,filter);
 
 			for (var i:int = pendingRegions.length - 1; i >= 0; i--)
 			{
@@ -234,7 +230,7 @@
 			
 			// Remove all regions if we are forcing
 			if (forceParse) {
-				for each (var region: CityRegion in regions) {
+				for each (var region: MiniMapRegion in regions) {
 					region.disposeData();
 					regionSpace.removeChild(region);					
 				}
@@ -248,12 +244,12 @@
 			var camX: int = Global.gameContainer.camera.miniMapX - mapHolder.x;
 			var camY: int = Global.gameContainer.camera.miniMapY - mapHolder.y;
 
-			var regionsW: int = Math.ceil(miniMapWidth / Constants.cityRegionW);
-			var regionsH: int = Math.ceil(miniMapHeight / (Constants.cityRegionH / 2));
+			var regionsW: int = Math.ceil(miniMapWidth / Constants.miniMapRegionW);
+			var regionsH: int = Math.ceil(miniMapHeight / (Constants.miniMapRegionH / 2));
 
 			for (var c: int = 0; c <= regionsW; c++) {
 				for (var r: int = 0; r <= regionsH; r++) {
-					var requiredId: int = TileLocator.getCityRegionId(camX + Constants.cityRegionW * c, camY + (Constants.cityRegionH / 2) * r);
+					var requiredId: int = TileLocator.getMiniMapRegionId(camX + Constants.miniMapRegionW * c, camY + (Constants.miniMapRegionH / 2) * r);
 					if (requiredId == -1 || requiredRegions.indexOf(requiredId) > -1) continue;
 					requiredRegions.push(requiredId);
 				}
@@ -330,7 +326,7 @@
 				    Util.log("Required city region:" + requiredRegions);
                 }
 
-				Global.mapComm.Region.getCityRegion(requiredRegions);
+				Global.mapComm.Region.getMiniMapRegion(requiredRegions);
 			}
 		}
 		

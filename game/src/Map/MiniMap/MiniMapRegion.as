@@ -1,42 +1,41 @@
-﻿package src.Map
+﻿package src.Map.MiniMap
 {
+    import src.Map.*;
     import flash.display.*;
     import flash.events.*;
     import flash.geom.*;
 
     import src.*;
-    import src.Map.CityRegionFilters.CityRegionFilter;
+    import src.Map.MiniMapFilters.MiniMapRegionFilter;
     import src.UI.Tooltips.*;
 
-    public class CityRegion extends Sprite
+    public class MiniMapRegion extends Sprite
 	{
-
-
 		public var id: int;
 		private var globalX: int;
 		private var globalY: int;
 		private var objects: Array = [];
-		private var filter: CityRegionFilter;
+		private var filter: MiniMapRegionFilter;
 
-		public function CityRegion(id: int, filter: CityRegionFilter)
+		public function MiniMapRegion(id: int, filter: MiniMapRegionFilter)
 		{
 			this.id = id;
 			this.filter = filter;
 
-			globalX = (id % Constants.miniMapRegionW) * Constants.cityRegionW;
-			globalY = int(id / Constants.miniMapRegionW) * (Constants.cityRegionH / 2);
+			globalX = (id % Constants.miniMapRegionRatioW) * Constants.miniMapRegionW;
+			globalY = int(id / Constants.miniMapRegionRatioW) * (Constants.miniMapRegionH / 2);
 			
 			if (Constants.debug >= 4)
 			{
 				/* adds an outline to this region */
 				graphics.beginFill(0x000000, 0);
 				graphics.lineStyle(1, 0xcccccc, 0.3);
-				graphics.drawRect(0, 0, Constants.cityRegionW * Constants.cityRegionTileW, Constants.cityRegionH * Constants.cityRegionTileH);
+				graphics.drawRect(0, 0, Constants.miniMapRegionW * Constants.miniMapRegionTileW, Constants.miniMapRegionH * Constants.miniMapRegionTileH);
 				graphics.endFill();
 			}
 		}
 		
-		public function setFilter(filter:CityRegionFilter): void
+		public function setFilter(filter:MiniMapRegionFilter): void
 		{
 			this.filter = filter;
 			for each(var obj: * in objects)
@@ -51,10 +50,10 @@
 			objects = [];
 		}
 		
-		public function addRegionObject(type: int, groupId: int, objectId: int, objX: int, objY: int, extraProps: *) : CityRegionObject {		
+		public function addRegionObject(type: int, groupId: int, objectId: int, objX: int, objY: int, extraProps: *) : MiniMapRegionObject {
 			var coord: Point = TileLocator.getMiniMapScreenCoord(objX, objY);
 
-			var regionObject: CityRegionObject = new CityRegionObject(type, groupId, objectId);
+			var regionObject: MiniMapRegionObject = new MiniMapRegionObject(type, groupId, objectId);
 			regionObject.x = objX;
 			regionObject.y = objY;
 			
@@ -69,7 +68,7 @@
 		}
 				
 		public function onObjectMouseOver(e: MouseEvent) : void {
-			new MinimapInfoTooltip(e.target is CityRegionObject ? e.target as CityRegionObject : e.target.parent);
+			new MinimapInfoTooltip(e.target is MiniMapRegionObject ? e.target as MiniMapRegionObject : e.target.parent);
 		}
 		
 		public function moveWithCamera(camera: Camera):void
@@ -77,7 +76,7 @@
 			x = globalX - camera.miniMapX - int(Constants.miniMapTileW / 2);
 			y = globalY - camera.miniMapY - int(Constants.miniMapTileH / 2);
 		}		
-		public static function sortOnId(a:CityRegion, b:CityRegion):Number
+		public static function sortOnId(a:MiniMapRegion, b:MiniMapRegion):Number
 		{
 			var aId:Number = a.id;
 			var bId:Number = b.id;
@@ -91,7 +90,7 @@
 			}
 		}
 
-		public static function compare(a: CityRegion, value: int):int
+		public static function compare(a: MiniMapRegion, value: int):int
 		{
 			return a.id - value;
 		}

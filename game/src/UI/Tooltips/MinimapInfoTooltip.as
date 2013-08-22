@@ -8,7 +8,7 @@
     import org.aswing.SoftBoxLayout;
 
     import src.Global;
-    import src.Map.CityRegionObject;
+    import src.Map.MiniMap.MiniMapRegionObject;
     import src.Map.Position;
     import src.Map.TileLocator;
     import src.Map.Username;
@@ -21,12 +21,12 @@
 	 */
 	public class MinimapInfoTooltip extends Tooltip
 	{
-		private var obj: CityRegionObject;
+		private var obj: MiniMapRegionObject;
 		private var tooltip: TextTooltip;
 
 		private var disposed: Boolean = false;
 
-		public function MinimapInfoTooltip(obj: CityRegionObject)
+		public function MinimapInfoTooltip(obj: MiniMapRegionObject)
 		{
 			this.obj = obj;
 

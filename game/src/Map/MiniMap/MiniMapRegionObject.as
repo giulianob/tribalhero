@@ -1,8 +1,8 @@
-﻿package src.Map
+﻿package src.Map.MiniMap
 {
     import flash.display.*;
 
-    public class CityRegionObject extends Sprite
+    public class MiniMapRegionObject extends Sprite
 	{
 		public var type: int;
 		public var groupId: int;
@@ -10,9 +10,9 @@
 			
 		public var sprite: DisplayObject;
 		
-		public var extraProps: Object = new Object();
+		public var extraProps: Object = {};
 		
-		public function CityRegionObject(type: int, groupId: int, objectId: int) {
+		public function MiniMapRegionObject(type: int, groupId: int, objectId: int) {
 			this.type = type;
 			this.groupId = groupId;
 			this.objectId = objectId;

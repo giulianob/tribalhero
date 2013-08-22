@@ -165,9 +165,10 @@
 					var objY: int = packet.readUShort() + int(id / Constants.miniMapRegionRatioW) * Constants.miniMapRegionTileH;
 					var objGroupId: int = packet.readUInt();
 					var objId: int = packet.readUInt();
+                    var objSize: int = packet.readUByte();
 					var extraProps : Object = {};
 					
-					var coord: Point = TileLocator.getMiniMapScreenCoord(objX, objY);
+					var position: ScreenPosition = TileLocator.getMiniMapScreenCoord(objX, objY);
 					
 					// City objects
 					if (objType == ObjectFactory.TYPE_CITY) {
@@ -196,7 +197,7 @@
 						extraProps.level = packet.readUByte();
 						extraProps.count = packet.readUByte();
 					}
-					newRegion.addRegionObject(objType, objGroupId, objId, coord.x, coord.y, extraProps);
+					newRegion.addRegionObject(objType, objGroupId, objId, objSize, position, extraProps);
 				}
 			}
 

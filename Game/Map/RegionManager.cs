@@ -17,7 +17,7 @@ namespace Game.Map
 
         public event EventHandler<ObjectEvent> ObjectAdded;
 
-        private readonly ICityRegionManagerFactory cityRegionManagerFactory;
+        private readonly IMiniMapRegionManagerFactory miniMapRegionManagerFactory;
 
         private readonly IRegionFactory regionFactory;
 
@@ -29,13 +29,13 @@ namespace Game.Map
 
         private List<IRegion> regions = new List<IRegion>();
 
-        public RegionManager(ICityRegionManagerFactory cityRegionManagerFactory,
+        public RegionManager(IMiniMapRegionManagerFactory miniMapRegionManagerFactory,
                              IRegionFactory regionFactory,
                              ITileLocator tileLocator,
                              IChannel channel,
                              IRegionLocator regionLocator)
         {
-            this.cityRegionManagerFactory = cityRegionManagerFactory;
+            this.miniMapRegionManagerFactory = miniMapRegionManagerFactory;
             this.regionFactory = regionFactory;
             this.tileLocator = tileLocator;
             this.channel = channel;
@@ -50,7 +50,7 @@ namespace Game.Map
 
         private byte[] MapData { get; set; }
 
-        public ICityRegionManager CityRegions { get; private set; }
+        public IMiniMapRegionManager MiniMapRegions { get; private set; }
 
         private uint WorldWidth { get; set; }
 
@@ -155,10 +155,10 @@ namespace Game.Map
             RegisterObjectEventListeners(obj);
 
             // Add appropriate objects to the minimap
-            ICityRegionObject cityRegionObject = obj as ICityRegionObject;
-            if (cityRegionObject != null)
+            IMiniMapRegionObject miniMapRegionObject = obj as IMiniMapRegionObject;
+            if (miniMapRegionObject != null)
             {
-                CityRegions.Add(cityRegionObject);
+                MiniMapRegions.Add(miniMapRegionObject);
             }
 
             // Post to channel
@@ -240,10 +240,10 @@ namespace Game.Map
 
                 DeregisterObjectEventListeners(obj);
 
-                ICityRegionObject cityRegionObject = obj as ICityRegionObject;
-                if (cityRegionObject != null)
+                IMiniMapRegionObject miniMapRegionObject = obj as IMiniMapRegionObject;
+                if (miniMapRegionObject != null)
                 {
-                    CityRegions.Remove(cityRegionObject);
+                    MiniMapRegions.Remove(miniMapRegionObject);
                 }
 
                 ushort regionId = regionLocator.GetRegionIndex(obj);
@@ -309,10 +309,10 @@ namespace Game.Map
                                                   origY));
             }
 
-            var cityRegionObject = sender as ICityRegionObject;
-            if (cityRegionObject != null)
+            var miniMapRegionObject = sender as IMiniMapRegionObject;
+            if (miniMapRegionObject != null)
             {
-                CityRegions.UpdateObjectRegion(cityRegionObject, origX, origY);
+                MiniMapRegions.UpdateObjectRegion(miniMapRegionObject, origX, origY);
             }
 
             // Lock regions from both old and new positions
@@ -361,8 +361,8 @@ namespace Game.Map
                          uint inWorldHeight,
                          uint regionWidth,
                          uint regionHeight,
-                         uint cityRegionWidth,
-                         uint cityRegionHeight)
+                         uint miniMapRegionWidth,
+                         uint miniMapRegionHeight)
         {
             logger.Info("Loading map...");
 
@@ -382,8 +382,8 @@ namespace Game.Map
                 throw new Exception("Invalid region size configured");
             }
 
-            if (cityRegionWidth == 0 || cityRegionHeight == 0 || inWorldWidth % cityRegionWidth != 0 ||
-                inWorldHeight % cityRegionHeight != 0)
+            if (miniMapRegionWidth == 0 || miniMapRegionHeight == 0 || inWorldWidth % miniMapRegionWidth != 0 ||
+                inWorldHeight % miniMapRegionHeight != 0)
             {
                 throw new Exception("Invalid city region size configured");
             }
@@ -435,11 +435,11 @@ namespace Game.Map
             logger.Info(String.Format("Loaded map file length[{0}] position[{1}] regions[{2}]", mapStream.Length, mapStream.Position, regions.Count));            
 
             // creating city regions;
-            column = (int)(inWorldWidth / cityRegionWidth);
-            row = (int)(inWorldHeight / cityRegionHeight);
-            int cityRegionsCount = column * row;
+            column = (int)(inWorldWidth / miniMapRegionWidth);
+            row = (int)(inWorldHeight / miniMapRegionHeight);
+            int miniMapRegionsCount = column * row;
 
-            CityRegions = cityRegionManagerFactory.CreateCityRegionManager(cityRegionsCount);
+            MiniMapRegions = miniMapRegionManagerFactory.CreateMiniMapRegionManager(miniMapRegionsCount);
         }
 
         public void Unload()

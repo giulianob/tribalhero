@@ -52,7 +52,7 @@ namespace Game
             Bind<IRegionLocator>().To<RegionLocator>().InSingletonScope();
             Bind<RegionObjectList>().ToSelf();
             Bind<ICityManager>().To<CityManager>().InSingletonScope();
-            Bind<ICityRegionManager>().To<CityRegionManager>().InSingletonScope();            
+            Bind<IMiniMapRegionManager>().To<MiniMapRegionManager>().InSingletonScope();            
             Bind<IForestManager>().To<ForestManager>().InSingletonScope();
             Bind<IForest>().To<Forest>();
             Bind<IRoadManager>().To<RoadManager>().InSingletonScope();

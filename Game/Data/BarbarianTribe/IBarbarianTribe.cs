@@ -5,7 +5,7 @@ using Persistance;
 
 namespace Game.Data.BarbarianTribe
 {
-    public interface IBarbarianTribe : ICityRegionObject, ISimpleGameObject, IPersistableObject, IHasLevel, ICanDo, ILocation
+    public interface IBarbarianTribe : IMiniMapRegionObject, ISimpleGameObject, IPersistableObject, IHasLevel, ICanDo, ILocation
     {
         IBattleManager Battle { get; set; }
 

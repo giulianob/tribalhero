@@ -210,7 +210,7 @@ namespace Game.Module.Remover
                     city.Troops.Remove(1);
 
                     // remove city from the region
-                    world.Regions.CityRegions.Remove(city);
+                    world.Regions.MiniMapRegions.Remove(city);
 
                     mainBuilding.BeginUpdate();
                     world.Regions.Remove(mainBuilding);

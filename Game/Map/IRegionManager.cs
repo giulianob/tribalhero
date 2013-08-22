@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using Game.Comm;
@@ -8,9 +7,7 @@ namespace Game.Map
 {
     public interface IRegionManager
     {
-        event EventHandler<ObjectEvent> ObjectAdded;
-
-        ICityRegionManager CityRegions { get; }
+        IMiniMapRegionManager MiniMapRegions { get; }
         
         bool IsValidXandY(uint x, uint y);
 
@@ -45,16 +42,14 @@ namespace Game.Map
                   uint inWorldHeight,
                   uint regionWidth,
                   uint regionHeight,
-                  uint cityRegionWidth,
-                  uint cityRegionHeight);
+                  uint miniMapRegionWidth,
+                  uint miniMapRegionHeight);
 
         void Unload();
 
         IEnumerable<ushort> LockRegions(uint x, uint y, byte size);
 
         void UnlockRegions(IEnumerable<ushort> regionIds);
-
-        void UnlockRegions(uint x, uint y, byte size);
 
         void LockRegion(uint x, uint y);
 

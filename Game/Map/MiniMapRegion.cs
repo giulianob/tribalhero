@@ -14,7 +14,7 @@ using Ninject.Extensions.Logging;
 
 namespace Game.Map
 {
-    public class CityRegion
+    public class MiniMapRegion
     {
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
@@ -43,7 +43,7 @@ namespace Game.Map
 
         #endregion
 
-        public CityRegion(DefaultMultiObjectLock.Factory lockerFactory, IGlobal global)
+        public MiniMapRegion(DefaultMultiObjectLock.Factory lockerFactory, IGlobal global)
         {
             this.lockerFactory = lockerFactory;
             this.global = global;
@@ -51,7 +51,7 @@ namespace Game.Map
 
         #region Members
 
-        private readonly List<ICityRegionObject> data = new List<ICityRegionObject>();
+        private readonly List<IMiniMapRegionObject> data = new List<IMiniMapRegionObject>();
 
         private readonly object objLock = new object();
 
@@ -63,7 +63,7 @@ namespace Game.Map
 
         #region Methods
 
-        public bool Add(ICityRegionObject obj)
+        public bool Add(IMiniMapRegionObject obj)
         {
             lock (objLock)
             {
@@ -79,7 +79,7 @@ namespace Game.Map
             return true;
         }
 
-        public void Remove(ICityRegionObject obj)
+        public void Remove(IMiniMapRegionObject obj)
         {
             lock (objLock)
             {
@@ -109,7 +109,7 @@ namespace Game.Map
             regionLastUpdated++;            
         }
 
-        public void Update(ICityRegionObject obj, uint origX, uint origY)
+        public void Update(IMiniMapRegionObject obj, uint origX, uint origY)
         {
             lock (objLock)
             {
@@ -169,13 +169,13 @@ namespace Game.Map
                                         throw new Exception("Object not being removed properly...");
                                     }
 
-                                bw.Write((byte)obj.CityRegionType);
-                                bw.Write((ushort)(obj.PrimaryPosition.X % Config.city_region_width));
-                                bw.Write((ushort)(obj.PrimaryPosition.Y % Config.city_region_height));
-                                bw.Write(obj.CityRegionGroupId);
-                                bw.Write(obj.CityRegionObjectId);
+                                bw.Write((byte)obj.MiniMapObjectType);
+                                bw.Write((ushort)(obj.PrimaryPosition.X % Config.minimap_region_width));
+                                bw.Write((ushort)(obj.PrimaryPosition.Y % Config.minimap_region_height));
+                                bw.Write(obj.MiniMapGroupId);
+                                bw.Write(obj.MiniMapObjectId);
 
-                                bw.Write(obj.GetCityRegionObjectBytes());
+                                bw.Write(obj.GetMiniMapObjectBytes());
                             }
 
                             isDirty = false;
@@ -198,7 +198,7 @@ namespace Game.Map
 
         public static ushort GetRegionIndex(uint x, uint y)
         {
-            return (ushort)(x / Config.city_region_width + (y / Config.city_region_height) * (int)(Config.map_width / Config.city_region_width));
+            return (ushort)(x / Config.minimap_region_width + (y / Config.minimap_region_height) * (int)(Config.map_width / Config.minimap_region_width));
         }
 
         #endregion

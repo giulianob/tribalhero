@@ -44,16 +44,16 @@ namespace Game.Comm.ProcessorCommands
 
         public override void RegisterCommands(Processor processor)
         {
-            processor.RegisterCommand(Command.RegionRoadBuild, CmdRoadCreate);
-            processor.RegisterCommand(Command.RegionRoadDestroy, CmdRoadDestroy);
-            processor.RegisterCommand(Command.NotificationLocate, CmdNotificationLocate);
-            processor.RegisterCommand(Command.CityLocate, CmdCityLocate);
-            processor.RegisterCommand(Command.CityLocateByName, CmdCityLocateByName);
-            processor.RegisterCommand(Command.RegionGet, CmdGetRegion);
-            processor.RegisterCommand(Command.CityRegionGet, CmdGetCityRegion);
+            processor.RegisterCommand(Command.RegionRoadBuild, RoadCreate);
+            processor.RegisterCommand(Command.RegionRoadDestroy, RoadDestroy);
+            processor.RegisterCommand(Command.NotificationLocate, NotificationLocate);
+            processor.RegisterCommand(Command.CityLocate, CityLocate);
+            processor.RegisterCommand(Command.CityLocateByName, CityLocateByName);
+            processor.RegisterCommand(Command.RegionGet, GetRegion);
+            processor.RegisterCommand(Command.MiniMapRegionGet, GetMiniMapRegion);
         }
 
-        private void CmdRoadCreate(Session session, Packet packet)
+        private void RoadCreate(Session session, Packet packet)
         {
             var reply = new Packet(packet);
 
@@ -156,7 +156,7 @@ namespace Game.Comm.ProcessorCommands
             }
         }
 
-        private void CmdRoadDestroy(Session session, Packet packet)
+        private void RoadDestroy(Session session, Packet packet)
         {
             var reply = new Packet(packet);
 
@@ -276,7 +276,7 @@ namespace Game.Comm.ProcessorCommands
             }
         }
 
-        private void CmdCityLocate(Session session, Packet packet)
+        private void CityLocate(Session session, Packet packet)
         {
             var reply = new Packet(packet);
 
@@ -308,7 +308,7 @@ namespace Game.Comm.ProcessorCommands
             }
         }
 
-        private void CmdCityLocateByName(Session session, Packet packet)
+        private void CityLocateByName(Session session, Packet packet)
         {
             var reply = new Packet(packet);
 
@@ -347,7 +347,7 @@ namespace Game.Comm.ProcessorCommands
             }
         }
 
-        private void CmdNotificationLocate(Session session, Packet packet)
+        private void NotificationLocate(Session session, Packet packet)
         {
             var reply = new Packet(packet);
 
@@ -403,7 +403,7 @@ namespace Game.Comm.ProcessorCommands
             }
         }
 
-        private void CmdGetRegion(Session session, Packet packet)
+        private void GetRegion(Session session, Packet packet)
         {
             var reply = new Packet(packet);
             reply.Option |= (ushort)Packet.Options.Compressed;
@@ -493,7 +493,7 @@ namespace Game.Comm.ProcessorCommands
             }
         }
 
-        private void CmdGetCityRegion(Session session, Packet packet)
+        private void GetMiniMapRegion(Session session, Packet packet)
         {
             var reply = new Packet(packet);
 
@@ -523,8 +523,8 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                CityRegion region;
-                if (!world.Regions.CityRegions.TryGetCityRegion(regionId, out region))
+                MiniMapRegion region;
+                if (!world.Regions.MiniMapRegions.TryGetMiniMapRegion(regionId, out region))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;

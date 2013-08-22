@@ -120,9 +120,7 @@ namespace Game.Data.Troop
 
         #endregion
 
-        #region Implementation of ICityRegionObject
-
-        public uint CityRegionGroupId
+        public uint MiniMapGroupId
         {
             get
             {
@@ -130,7 +128,7 @@ namespace Game.Data.Troop
             }
         }
 
-        public uint CityRegionObjectId
+        public uint MiniMapObjectId
         {
             get
             {
@@ -138,7 +136,7 @@ namespace Game.Data.Troop
             }
         }
 
-        public byte[] GetCityRegionObjectBytes()
+        public byte[] GetMiniMapObjectBytes()
         {
             using (var ms = new MemoryStream())
             {
@@ -150,15 +148,13 @@ namespace Game.Data.Troop
             }
         }
 
-        public CityRegion.ObjectType CityRegionType
+        public MiniMapRegion.ObjectType MiniMapObjectType
         {
             get
             {
-                return CityRegion.ObjectType.Troop;
+                return MiniMapRegion.ObjectType.Troop;
             }
         }
-
-        #endregion
 
         #region IPersistableObject Members
 

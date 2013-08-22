@@ -62,8 +62,8 @@ namespace Game.Map
                 procedure.SetResourceCap(iter.Current);
 
                 //Set up the city region (for minimap)
-                CityRegion region;
-                if (regionManager.CityRegions.TryGetCityRegion(iter.Current.PrimaryPosition.X, iter.Current.PrimaryPosition.Y, out region))
+                MiniMapRegion region;
+                if (regionManager.MiniMapRegions.TryGetMiniMapRegion(iter.Current.PrimaryPosition.X, iter.Current.PrimaryPosition.Y, out region))
                 {
                     region.Add(iter.Current);
                 }
@@ -105,8 +105,8 @@ namespace Game.Map
                     dbManager.Save(stub);
                 }
 
-                CityRegion region;
-                if (regionManager.CityRegions.TryGetCityRegion(city.PrimaryPosition.X, city.PrimaryPosition.Y, out region))
+                MiniMapRegion region;
+                if (regionManager.MiniMapRegions.TryGetMiniMapRegion(city.PrimaryPosition.X, city.PrimaryPosition.Y, out region))
                 {
                     region.Add(city);
                 }
@@ -164,10 +164,10 @@ namespace Game.Map
         {
             if (e.PropertyName == "Value" && Global.Current.FireEvents)
             {
-                CityRegion cityRegion;
-                if (regionManager.CityRegions.TryGetCityRegion(city.PrimaryPosition.X, city.PrimaryPosition.Y, out cityRegion))
+                MiniMapRegion miniMapRegion;
+                if (regionManager.MiniMapRegions.TryGetMiniMapRegion(city.PrimaryPosition.X, city.PrimaryPosition.Y, out miniMapRegion))
                 {
-                    cityRegion.MarkAsDirty();
+                    miniMapRegion.MarkAsDirty();
                 }
             }
         }

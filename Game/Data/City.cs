@@ -838,7 +838,7 @@ namespace Game.Data
 
         #endregion
 
-        public byte[] GetCityRegionObjectBytes()
+        public byte[] GetMiniMapObjectBytes()
         {
             using (var ms = new MemoryStream())
             {
@@ -854,15 +854,15 @@ namespace Game.Data
             }
         }
 
-        public CityRegion.ObjectType CityRegionType
+        public MiniMapRegion.ObjectType MiniMapObjectType
         {
             get
             {
-                return CityRegion.ObjectType.City;
+                return MiniMapRegion.ObjectType.City;
             }
         }
 
-        public uint CityRegionGroupId
+        public uint MiniMapGroupId
         {
             get
             {
@@ -870,7 +870,7 @@ namespace Game.Data
             }
         }
 
-        public uint CityRegionObjectId
+        public uint MiniMapObjectId
         {
             get
             {

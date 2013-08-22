@@ -137,7 +137,6 @@
     <Compile Include="BattleTests\StatsModCalculator.cs" />
     <Compile Include="BattleTests\StrongholdBattleManagerTests.cs" />
     <Compile Include="ChannelTests\ChannelTest.cs" />
-    <Compile Include="CityRegionTests\CityRegionTest.cs" />
     <Compile Include="CityTests\CityTest.cs" />
     <Compile Include="DatabaseTests\DbLoaderActionFactoryTest.cs" />
     <Compile Include="FixtureHelper.cs" />
@@ -162,6 +161,7 @@
     <Compile Include="MapTests\ObjectListTests.cs" />
     <Compile Include="MapTests\PositionTests.cs" />
     <Compile Include="MapTests\RegionManagerTests.cs" />
+    <Compile Include="MiniMapRegionTests\MiniMapRegionTest.cs" />
     <Compile Include="NinjectTests\FactoryMethodNameProviderTests.cs" />
     <Compile Include="PlayerTests\AchievementListTest.cs" />
     <Compile Include="TribeTests\TribeManagerTests.cs" />

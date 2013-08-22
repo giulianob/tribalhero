@@ -10,6 +10,8 @@ namespace Game.Data
         uint MiniMapGroupId { get; }
 
         uint MiniMapObjectId { get; }
+        
+        byte MiniMapSize { get; }
 
         byte[] GetMiniMapObjectBytes();
     }

@@ -174,6 +174,7 @@ namespace Game.Map
                                 bw.Write((ushort)(obj.PrimaryPosition.Y % Config.minimap_region_height));
                                 bw.Write(obj.MiniMapGroupId);
                                 bw.Write(obj.MiniMapObjectId);
+                                bw.Write(obj.MiniMapSize);
 
                                 bw.Write(obj.GetMiniMapObjectBytes());
                             }

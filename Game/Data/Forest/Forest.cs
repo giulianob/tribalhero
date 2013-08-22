@@ -41,7 +41,7 @@ namespace Game.Data.Forest
         /// </summary>
         private readonly List<IStructure> structures = new List<IStructure>();
 
-        private Formula formula;
+        private readonly Formula formula;
 
         public ForestDepleteAction DepleteAction { get; set; }
 
@@ -350,6 +350,14 @@ namespace Game.Data.Forest
         public bool DbPersisted { get; set; }
 
         #endregion
+
+        public byte MiniMapSize
+        {
+            get
+            {
+                return Size;
+            }
+        }
 
         public byte[] GetMiniMapObjectBytes()
         {

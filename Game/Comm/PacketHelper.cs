@@ -31,10 +31,6 @@ namespace Game.Comm
 
         public static IRegionLocator RegionLocator
         {
-            get
-            {
-                return regionLocator;
-            }
             set
             {
                 regionLocator = value;

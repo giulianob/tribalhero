@@ -6,8 +6,6 @@
 
 package src.Map {
 
-    import System.Linq.Enumerable;
-
     import flash.geom.Point;
     import flash.geom.Rectangle;
 
@@ -18,17 +16,17 @@ package src.Map {
 
     public class TileLocator {
 
-		public static function getCityRegionId(rX: int, rY: int): int // from screen coord to region id
+		public static function getMiniMapRegionId(rX: int, rY: int): int // from screen coord to region id
 		{
-			var xId: int = int(rX / Constants.cityRegionW);
-			var yId: int = int(rY / int(Constants.cityRegionH / 2));
+			var xId: int = int(rX / Constants.miniMapRegionW);
+			var yId: int = int(rY / int(Constants.miniMapRegionH / 2));
 
-			if (xId < 0 || xId >= Constants.miniMapRegionW)
+			if (xId < 0 || xId >= Constants.miniMapRegionRatioW)
 			return -1;
-			if (yId < 0 || yId >= Constants.miniMapRegionH)
+			if (yId < 0 || yId >= Constants.miniMapRegionRatioH)
 			return -1;
 
-			var id: int = int(xId + yId * Constants.miniMapRegionW);
+			var id: int = int(xId + yId * Constants.miniMapRegionRatioW);
 
 			if (Constants.debug >= 4)
 			Util.log(rX + "," + rY + "(" + xId + "," + yId + ") =" + id);

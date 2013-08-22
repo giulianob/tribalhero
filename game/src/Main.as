@@ -16,6 +16,7 @@
 
     import src.Comm.*;
     import src.Map.*;
+    import src.Map.MiniMap.MiniMap;
     import src.Objects.Factories.*;
     import src.UI.Dialog.*;
     import src.UI.LookAndFeel.*;

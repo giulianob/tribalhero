@@ -8,6 +8,7 @@
     import src.Constants;
     import src.Global;
     import src.Map.*;
+    import src.Map.MiniMap.MiniMapRegion;
     import src.Objects.Factories.ObjectFactory;
     import src.Objects.SimpleGameObject;
 
@@ -131,10 +132,10 @@
 			Global.map.objContainer.moveWithCamera(Global.gameContainer.camera.currentPosition.x, Global.gameContainer.camera.currentPosition.y);
 		}
 
-		public function getCityRegion(ids: Array):void
+		public function getMiniMapRegion(ids: Array):void
 		{
 			var packet:Packet = new Packet();
-			packet.cmd = Commands.CITY_REGION_GET;
+			packet.cmd = Commands.MINIMAP_REGION_GET;
 			packet.option = 0;
 
 			packet.writeUByte(ids.length);
@@ -143,25 +144,25 @@
 				packet.writeUShort(ids[i]);
 			}
 
-			session.write(packet, onReceiveCityRegion);
+			session.write(packet, onReceiveMiniMapRegion);
 		}
 
-		public function onReceiveCityRegion(packet:Packet, custom: *):void
+		public function onReceiveMiniMapRegion(packet:Packet, custom: *):void
 		{
 			var regionCnt: int = packet.readUByte();
 			for (var i:int = 0; i < regionCnt; i++)
 			{
 				var id: int = packet.readUShort();
 
-				var newRegion: CityRegion = Global.gameContainer.miniMap.addCityRegion(id);
+				var newRegion: MiniMapRegion = Global.gameContainer.miniMap.addMiniMapRegion(id);
 
 				var objCnt: int = packet.readUShort();
 
 				for (var j: int = 0; j < objCnt; j++)
 				{
 					var objType: int = packet.readUByte();
-					var objX: int = packet.readUShort() + (id % Constants.miniMapRegionW) * Constants.cityRegionTileW;
-					var objY: int = packet.readUShort() + int(id / Constants.miniMapRegionW) * Constants.cityRegionTileH;
+					var objX: int = packet.readUShort() + (id % Constants.miniMapRegionRatioW) * Constants.miniMapRegionTileW;
+					var objY: int = packet.readUShort() + int(id / Constants.miniMapRegionRatioW) * Constants.miniMapRegionTileH;
 					var objGroupId: int = packet.readUInt();
 					var objId: int = packet.readUInt();
 					var extraProps : Object = {};

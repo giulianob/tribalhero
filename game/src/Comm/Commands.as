@@ -47,7 +47,7 @@ package src.Comm {
 		public static const REGION_ROAD_BUILD: int = 103;
 		public static const REGION_SET_TILE: int = 104;
 		public static const REGION_GET: int = 105;
-		public static const CITY_REGION_GET: int = 106;
+		public static const MINIMAP_REGION_GET: int = 106;
 		
 		public static const OBJECT_ADD: int = 201;
 		public static const OBJECT_UPDATE: int = 202;

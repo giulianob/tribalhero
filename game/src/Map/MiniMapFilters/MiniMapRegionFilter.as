@@ -1,12 +1,12 @@
-package src.Map.CityRegionFilters 
+package src.Map.MiniMapFilters
 {
     import flash.display.*;
     import flash.geom.*;
 
     import src.Constants;
     import src.Global;
-    import src.Map.CityRegionLegend;
-    import src.Map.CityRegionObject;
+    import src.Map.MiniMap.MiniMapLegend;
+    import src.Map.MiniMap.MiniMapRegionObject;
     import src.Objects.Factories.ObjectFactory;
     import src.Util.StringHelper;
 
@@ -14,9 +14,9 @@ package src.Map.CityRegionFilters
 	 * ...
 	 * @author Anthony Lam
 	 */
-	public class CityRegionFilter
+	public class MiniMapRegionFilter
 	{
-		private var legend : CityRegionFilter;
+		private var legend : MiniMapRegionFilter;
 		
 		protected static const DEFAULT_COLORS: Array = [
 		{ r: 200, g: 200, b: 200 },
@@ -30,7 +30,7 @@ package src.Map.CityRegionFilters
 			return "Default";
 		}
 
-		public function apply(obj: CityRegionObject) : void {
+		public function apply(obj: MiniMapRegionObject) : void {
 			while (obj.numChildren > 0) obj.removeChildAt(0);
 			switch(obj.type) {
 				case ObjectFactory.TYPE_FOREST:
@@ -51,7 +51,7 @@ package src.Map.CityRegionFilters
 			}
 		}
         
-        protected function setupMinimapButton(obj: CityRegionObject, button: *, lowAlpha: Boolean = true) : void {            
+        protected function setupMinimapButton(obj: MiniMapRegionObject, button: *, lowAlpha: Boolean = true) : void {
             var hitArea: Sprite = new MINIMAP_HIT_AREA();                                    
             obj.addChild(hitArea);
             hitArea.visible = false;
@@ -63,7 +63,7 @@ package src.Map.CityRegionFilters
             }
         }
         
-		public function applyForest(obj: CityRegionObject) : void {
+		public function applyForest(obj: MiniMapRegionObject) : void {
 			var icon: MINIMAP_FOREST_ICON = ObjectFactory.getIcon("MINIMAP_FOREST_ICON") as MINIMAP_FOREST_ICON;
 			obj.sprite = icon;
 			obj.addChild(icon);            
@@ -71,7 +71,7 @@ package src.Map.CityRegionFilters
             setupMinimapButton(obj, icon);
 		}
 		
-		public function applyTroop(obj: CityRegionObject) : void {
+		public function applyTroop(obj: MiniMapRegionObject) : void {
 			var icon: MINIMAP_TROOP_ICON = ObjectFactory.getIcon("MINIMAP_TROOP_ICON") as MINIMAP_TROOP_ICON;
 			obj.sprite = icon;
             // Highlight friendly troops
@@ -82,7 +82,7 @@ package src.Map.CityRegionFilters
             setupMinimapButton(obj, icon, false);
 		}
 		
-		public function applyCity(obj: CityRegionObject) : void {
+		public function applyCity(obj: MiniMapRegionObject) : void {
 			var img: DisplayObject;
 			
 			if (Global.map.cities.get(obj.groupId)) {
@@ -107,7 +107,7 @@ package src.Map.CityRegionFilters
 				obj.addChild(img);
 			}
 		}
-		public function applyStronghold(obj: CityRegionObject) : void {
+		public function applyStronghold(obj: MiniMapRegionObject) : void {
 			var icon: MINIMAP_STRONGHOLD_ICON = ObjectFactory.getIcon("MINIMAP_STRONGHOLD_ICON") as MINIMAP_STRONGHOLD_ICON;
 			obj.sprite = icon;			
 			obj.addChild(icon);			
@@ -115,7 +115,7 @@ package src.Map.CityRegionFilters
             setupMinimapButton(obj, icon);
 		}
 		
-		public function applyBarbarianTribe(obj: CityRegionObject) : void {
+		public function applyBarbarianTribe(obj: MiniMapRegionObject) : void {
 			var icon: MINIMAP_BARBARIAN_TRIBE_ICON = ObjectFactory.getIcon("MINIMAP_BARBARIAN_TRIBE_ICON") as MINIMAP_BARBARIAN_TRIBE_ICON;
 			obj.sprite = icon;			
 			obj.addChild(icon);
@@ -123,7 +123,7 @@ package src.Map.CityRegionFilters
             setupMinimapButton(obj, icon);
 		}		
 		
-		public function applyLegend(legend: CityRegionLegend) : void {
+		public function applyLegend(legend: MiniMapLegend) : void {
 			var icon: DisplayObject = new DOT_SPRITE;
 			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_CITY"));
 			

@@ -1,11 +1,11 @@
-package src.Map.CityRegionFilters 
+package src.Map.MiniMapFilters
 {
     import flash.display.*;
     import flash.geom.*;
 
     import src.Global;
-    import src.Map.CityRegionLegend;
-    import src.Map.CityRegionObject;
+    import src.Map.MiniMap.MiniMapLegend;
+    import src.Map.MiniMap.MiniMapRegionObject;
     import src.Map.Position;
     import src.Map.TileLocator;
     import src.Util.StringHelper;
@@ -14,13 +14,13 @@ package src.Map.CityRegionFilters
 	 * ...
 	 * @author Anthony Lam
 	 */
-	public class CityRegionFilterDistance extends CityRegionFilter 
+	public class MiniMapRegionFilterDistance extends MiniMapRegionFilter
 	{		
 		override public function getName(): String {
 			return "Distance";
 		}
 
-		override public function applyCity(obj: CityRegionObject) : void {
+		override public function applyCity(obj: MiniMapRegionObject) : void {
 			// If it's our city, we just show a special flag
 			var img: DisplayObject;
 
@@ -48,7 +48,7 @@ package src.Map.CityRegionFilters
 			}
 		}
 		
-		override public function applyLegend(legend: CityRegionLegend) : void {
+		override public function applyLegend(legend: MiniMapLegend) : void {
 			var icon: DisplayObject = new DOT_SPRITE;
 			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_CITY"));
 			

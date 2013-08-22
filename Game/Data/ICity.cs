@@ -13,7 +13,7 @@ namespace Game.Data
     public interface ICity : IEnumerable<IStructure>,
                              ICanDo,
                              IPersistableObject,
-                             ICityRegionObject,
+                             IMiniMapRegionObject,
                              IStation,
                              INotificationOwner
     {

@@ -180,8 +180,8 @@ _________ _______ _________ ______   _______  _
                                            Config.map_height,
                                            Config.region_width,
                                            Config.region_height,
-                                           Config.city_region_width,
-                                           Config.city_region_height);
+                                           Config.minimap_region_width,
+                                           Config.minimap_region_height);
             }
 
 #if DEBUG

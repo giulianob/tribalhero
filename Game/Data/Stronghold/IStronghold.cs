@@ -19,7 +19,7 @@ namespace Game.Data.Stronghold
     }
 
     public interface IStronghold : IHasLevel,
-                                   ICityRegionObject,
+                                   IMiniMapRegionObject,
                                    ISimpleGameObject,
                                    IPersistableObject,
                                    ICanDo,

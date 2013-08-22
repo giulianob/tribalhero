@@ -445,13 +445,13 @@
     <Compile Include="Logic\ScheduledPassiveAction.cs" />
     <Compile Include="Logic\Scheduler.cs" />
     <Compile Include="Logic\ThreadedScheduler.cs" />
-    <Compile Include="Data\ICityRegionObject.cs" />
+    <Compile Include="Data\IMiniMapRegionObject.cs" />
     <Compile Include="Map\CityManager.cs" />
-    <Compile Include="Map\CityRegionManager.cs" />
+    <Compile Include="Map\MiniMapRegionManager.cs" />
     <Compile Include="Map\ICityManager.cs" />
-    <Compile Include="Map\ICityRegionFactory.cs" />
-    <Compile Include="Map\ICityRegionManager.cs" />
-    <Compile Include="Map\ICityRegionManagerFactory.cs" />
+    <Compile Include="Map\IMiniMapRegionFactory.cs" />
+    <Compile Include="Map\IMiniMapRegionManager.cs" />
+    <Compile Include="Map\IMiniMapRegionManagerFactory.cs" />
     <Compile Include="Map\IGameObjectLocator.cs" />
     <Compile Include="Map\IRegion.cs" />
     <Compile Include="Map\IRegionFactory.cs" />
@@ -590,7 +590,7 @@
     <Compile Include="Logic\ReferenceManager.cs" />
     <Compile Include="Logic\Requirements\LayoutRequirements\AwayFromLayout.cs" />
     <Compile Include="Logic\SystemVariablesUpdater.cs" />
-    <Compile Include="Map\CityRegion.cs" />
+    <Compile Include="Map\MiniMapRegion.cs" />
     <Compile Include="Map\RoadManager.cs" />
     <Compile Include="Setup\MapFactory.cs" />
     <Compile Include="Setup\ObjectTypeFactory.cs" />

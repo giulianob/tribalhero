@@ -351,9 +351,7 @@ namespace Game.Data.Forest
 
         #endregion
 
-        #region Implementation of ICityRegionObject
-
-        public byte[] GetCityRegionObjectBytes()
+        public byte[] GetMiniMapObjectBytes()
         {
             using (var ms = new MemoryStream())
             {
@@ -364,15 +362,15 @@ namespace Game.Data.Forest
             }
         }
 
-        public CityRegion.ObjectType CityRegionType
+        public MiniMapRegion.ObjectType MiniMapObjectType
         {
             get
             {
-                return CityRegion.ObjectType.Forest;
+                return MiniMapRegion.ObjectType.Forest;
             }
         }
 
-        public uint CityRegionGroupId
+        public uint MiniMapGroupId
         {
             get
             {
@@ -380,15 +378,13 @@ namespace Game.Data.Forest
             }
         }
 
-        public uint CityRegionObjectId
+        public uint MiniMapObjectId
         {
             get
             {
                 return ObjectId;
             }
         }
-
-        #endregion
 
         public byte Lvl
         {

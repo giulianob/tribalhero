@@ -164,17 +164,15 @@ namespace Game.Data.Stronghold
 
         #endregion
 
-        #region Implementation of ICityRegionObject
-
-        public CityRegion.ObjectType CityRegionType
+        public MiniMapRegion.ObjectType MiniMapObjectType
         {
             get
             {
-                return CityRegion.ObjectType.Stronghold;
+                return MiniMapRegion.ObjectType.Stronghold;
             }
         }
 
-        public uint CityRegionGroupId
+        public uint MiniMapGroupId
         {
             get
             {
@@ -182,7 +180,7 @@ namespace Game.Data.Stronghold
             }
         }
 
-        public uint CityRegionObjectId
+        public uint MiniMapObjectId
         {
             get
             {
@@ -190,7 +188,7 @@ namespace Game.Data.Stronghold
             }
         }
 
-        public byte[] GetCityRegionObjectBytes()
+        public byte[] GetMiniMapObjectBytes()
         {
             using (var ms = new MemoryStream())
             {
@@ -201,8 +199,6 @@ namespace Game.Data.Stronghold
                 return ms.ToArray();
             }
         }
-
-        #endregion
 
         #region Implementation of ILockable
 

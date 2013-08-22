@@ -149,6 +149,14 @@ namespace Game.Data.BarbarianTribe
             }
         }
 
+        public byte MiniMapSize
+        {
+            get
+            {
+                return Size;
+            }
+        }
+
         public byte[] GetMiniMapObjectBytes()
         {
             using (var ms = new MemoryStream())

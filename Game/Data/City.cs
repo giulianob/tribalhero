@@ -838,6 +838,14 @@ namespace Game.Data
 
         #endregion
 
+        public byte MiniMapSize
+        {
+            get
+            {
+                return MainBuilding.Size;
+            }
+        }
+
         public byte[] GetMiniMapObjectBytes()
         {
             using (var ms = new MemoryStream())

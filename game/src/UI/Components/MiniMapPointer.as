@@ -14,13 +14,14 @@ package src.UI.Components
     import org.aswing.SoftBoxLayout;
 
     import src.Constants;
+    import src.Map.ScreenPosition;
     import src.Map.TileLocator;
     import src.UI.LookAndFeel.GameLookAndFeel;
     import src.UI.Tooltips.Tooltip;
 
 	public class MiniMapPointer extends Sprite
 	{
-		private var cityMinimapPoint:Point;
+		private var cityMinimapPoint:ScreenPosition;
 		private var center:Point;
 		private var lastWidth:int;
 		private var lastHeight:int;

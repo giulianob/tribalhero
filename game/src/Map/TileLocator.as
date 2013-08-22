@@ -95,7 +95,7 @@ package src.Map {
 			return new ScreenPosition(xcoord, ycoord);
 		}
 
-		public static function getMiniMapScreenCoord(x: int, y: int) : Point // from map coord to where it belongs on screen
+		public static function getMiniMapScreenCoord(x: int, y: int) : ScreenPosition // from map coord to where it belongs on screen
 		{
 			var xadd:int = 0;
 
@@ -105,7 +105,7 @@ package src.Map {
 			var xcoord:int = Math.floor(x * Constants.miniMapTileW + xadd - int(Constants.miniMapTileW / 2));
 			var ycoord:int = Math.floor(y * (Constants.miniMapTileH / 2) - (Constants.miniMapTileH / 2));
 
-			return new Point(xcoord, ycoord);
+			return new ScreenPosition(xcoord, ycoord);
 		}
 
 		public static function getActualCoord(x: int, y: int) : ScreenPosition //takes in screen coord and returns where obj belongs on screen (basically just rounds input screen pos to real screen pos)

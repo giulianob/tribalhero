@@ -1,11 +1,10 @@
 ﻿package src.Map.MiniMap
 {
-    import src.Map.*;
     import flash.display.*;
     import flash.events.*;
-    import flash.geom.*;
 
     import src.*;
+    import src.Map.*;
     import src.Map.MiniMapFilters.MiniMapRegionFilter;
     import src.UI.Tooltips.*;
 
@@ -50,23 +49,17 @@
 			objects = [];
 		}
 		
-		public function addRegionObject(type: int, groupId: int, objectId: int, objX: int, objY: int, extraProps: *) : MiniMapRegionObject {
-			var coord: Point = TileLocator.getMiniMapScreenCoord(objX, objY);
-
-			var regionObject: MiniMapRegionObject = new MiniMapRegionObject(type, groupId, objectId);
-			regionObject.x = objX;
-			regionObject.y = objY;
-			
-			regionObject.extraProps = extraProps;
+		public function addRegionObject(type: int, groupId: int, objectId: int, size: int, position: ScreenPosition, extraProps: *) : MiniMapRegionObject {
+			var regionObject: MiniMapRegionObject = new MiniMapRegionObject(type, groupId, objectId, size, position, extraProps);
 
 			Global.gameContainer.miniMap.objContainer.addObject(regionObject);
-					
+
 			regionObject.addEventListener(MouseEvent.MOUSE_OVER, onObjectMouseOver);
 			filter.apply(regionObject);
 			objects.push(regionObject);
 			return regionObject;
 		}
-				
+
 		public function onObjectMouseOver(e: MouseEvent) : void {
 			new MinimapInfoTooltip(e.target is MiniMapRegionObject ? e.target as MiniMapRegionObject : e.target.parent);
 		}
@@ -76,7 +69,8 @@
 			x = globalX - camera.miniMapX - int(Constants.miniMapTileW / 2);
 			y = globalY - camera.miniMapY - int(Constants.miniMapTileH / 2);
 		}		
-		public static function sortOnId(a:MiniMapRegion, b:MiniMapRegion):Number
+
+        public static function sortOnId(a:MiniMapRegion, b:MiniMapRegion):Number
 		{
 			var aId:Number = a.id;
 			var bId:Number = b.id;

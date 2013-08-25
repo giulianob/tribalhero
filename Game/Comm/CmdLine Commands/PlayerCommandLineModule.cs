@@ -91,6 +91,27 @@ namespace Game.Comm
 
         public string CalculateExpensiveCities(Session session, string[] parms)
         {
+            bool help = false;
+            string serverTitle = string.Empty;
+            try
+            {
+                var p = new OptionSet
+                {
+                    {"?|help|h", v => help = true},
+                    {"servertitle=", v => serverTitle = v.TrimMatchingQuotes() }
+                };
+                p.Parse(parms);
+            }
+            catch(Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(serverTitle))
+            {
+                return "calculateexpensivecities --servertitle=servertitle";
+            }
+
             var values = new List<dynamic>();
 
             Func<Resource, decimal> calculateCost = resource => (resource.Crop + resource.Wood + resource.Gold * 2 + resource.Iron * 5 + resource.Labor * 100) / 100m;
@@ -119,10 +140,48 @@ namespace Game.Comm
             }
 
             var result = new StringBuilder();
+            result.AppendLine("Id,Player,Tribe,Rank,City Cost,Achievement,Tier,Title,Description");
+            int rank = 1;
             foreach (var value in values.OrderByDescending(v => v.Expenses).Take(50))
             {
-                result.AppendFormat("{0},{1},{2}", (string)value.City.Owner.Name, (string)value.City.Name, (decimal)value.Expenses * 100m);
+                IPlayer player = value.City.Owner;
+                var tribeName = player.IsInTribe ? player.Tribesman.Tribe.Name : string.Empty;
+                string achievement;
+                int tier;
+                switch(rank)
+                {
+                    case 1:
+                        achievement = "Gold";
+                        tier = 0;
+                        break;
+                    case 2:
+                        achievement = "Silver";
+                        tier = 1;
+                        break;
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                    case 10:
+                        achievement = "Bronze";
+                        tier = 2;
+                        break;
+                    default:
+                        achievement = "Honorary";
+                        tier = 3;
+                        break;
+                }
+
+                string title = string.Format("#{0} Most Expensive City", rank);
+                string description = string.Format("{0}: {1}", serverTitle, value.City.Name);
+
+                result.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8}", player.PlayerId, player.Name, tribeName, rank, (decimal)value.Expenses * 100m, achievement, tier, title, description);
                 result.AppendLine();
+
+                rank++;
             }
 
             return result.ToString();

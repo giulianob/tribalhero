@@ -13,9 +13,9 @@ namespace Game.Battle
 
         int GetUnitsPerStructure(byte level);
 
-        decimal GetAttackerDmgToDefender(ICombatObject attacker, ICombatObject target);
+        decimal GetAttackerDmgToDefender(ICombatObject attacker, ICombatObject target, uint round);
 
-        double GetDmgModifier(ICombatObject attacker, ICombatObject target);
+        double GetDmgModifier(ICombatObject attacker, ICombatObject target, uint round);
 
         int GetLootPerRoundForCity(ICity city);
 

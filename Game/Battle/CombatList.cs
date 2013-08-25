@@ -68,7 +68,7 @@ namespace Game.Battle
             return AllAliveCombatObjects().Any(obj => obj.InRange(attacker) && attacker.InRange(obj));
         }
 
-        public BestTargetResult GetBestTargets(uint battleId, ICombatObject attacker, out List<Target> result, int maxCount)
+        public BestTargetResult GetBestTargets(uint battleId, ICombatObject attacker, out List<Target> result, int maxCount, uint round)
         {
             result = new List<Target>();
 
@@ -100,7 +100,7 @@ namespace Game.Battle
                 int score = 0;
 
                 // Have to compare armor and weapon type here to give some sort of score
-                score += ((int)(battleFormulas.GetDmgModifier(attacker, target.CombatObject) * 10));
+                score += ((int)(battleFormulas.GetDmgModifier(attacker, target.CombatObject, round) * 10));
 
                 if (bestTarget == null || score > bestTargetScore)
                 {

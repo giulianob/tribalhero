@@ -16,7 +16,7 @@ namespace Game.Setup
     {
         private readonly Dictionary<int, IBaseUnitStats> dict = new Dictionary<int, IBaseUnitStats>();
 
-        public void Init(string filename)
+        public virtual void Init(string filename)
         {
             using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
             {

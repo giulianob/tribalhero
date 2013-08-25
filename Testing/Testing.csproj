@@ -125,6 +125,7 @@
     <Compile Include="Balancing\TestOutnumber.cs" />
     <Compile Include="Balancing\TestArcher.cs" />
     <Compile Include="Balancing\UnitType.cs" />
+    <Compile Include="BattleTests\BattleFormulaTest.cs" />
     <Compile Include="BattleTests\BattleManagerTest.cs" />
     <Compile Include="BattleTests\BattleManagerTest2.cs" />
     <Compile Include="BattleTests\BattleOrderTest.cs" />

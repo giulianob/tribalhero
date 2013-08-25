@@ -91,17 +91,17 @@ namespace Game.Battle
             return units[Math.Min(level, units.Length - 1)];
         }
 
-        public virtual decimal GetAttackerDmgToDefender(ICombatObject attacker, ICombatObject target)
+        public virtual decimal GetAttackerDmgToDefender(ICombatObject attacker, ICombatObject target, uint round)
         {
             decimal atk = attacker.Stats.Atk;
             decimal rawDmg = (atk * attacker.Count);
-            decimal modifier = (decimal)GetDmgModifier(attacker, target);
+            decimal modifier = (decimal)GetDmgModifier(attacker, target, round);
             rawDmg = modifier * rawDmg;
 
             return rawDmg > ushort.MaxValue ? ushort.MaxValue : rawDmg;
         }
 
-        public virtual double GetDmgModifier(ICombatObject attacker, ICombatObject target)
+        public virtual double GetDmgModifier(ICombatObject attacker, ICombatObject target, uint round)
         {
             switch(attacker.Stats.Base.Weapon)
             {
@@ -109,9 +109,9 @@ namespace Game.Battle
                     switch(target.Stats.Base.Armor)
                     {
                         case ArmorType.Building1:
-                            return unitModFactory.GetModifier(1, 1);
+                            return round < 5 ? unitModFactory.GetModifier(1, 1) * .2 : unitModFactory.GetModifier(1, 1);
                         case ArmorType.Building2:
-                            return unitModFactory.GetModifier(1, 2);
+                            return round < 5 ? unitModFactory.GetModifier(1, 2) * .2 : unitModFactory.GetModifier(1, 2);;
                         case ArmorType.Building3:
                             return unitModFactory.GetModifier(1, 3);
                         case ArmorType.Gate:
@@ -123,9 +123,9 @@ namespace Game.Battle
                     switch(target.Stats.Base.Armor)
                     {
                         case ArmorType.Building1:
-                            return unitModFactory.GetModifier(2, 1);
+                            return round < 5 ? unitModFactory.GetModifier(2, 1) * .2 : unitModFactory.GetModifier(2, 1);
                         case ArmorType.Building2:
-                            return unitModFactory.GetModifier(2, 2);
+                            return round < 5 ? unitModFactory.GetModifier(2, 2) * .2 : unitModFactory.GetModifier(2, 2); ;
                         case ArmorType.Building3:
                             return unitModFactory.GetModifier(2, 3);
                         case ArmorType.Gate:
@@ -137,9 +137,9 @@ namespace Game.Battle
                     switch(target.Stats.Base.Armor)
                     {
                         case ArmorType.Building1:
-                            return unitModFactory.GetModifier(3, 1);
+                            return round < 5 ? unitModFactory.GetModifier(3, 1) * .2 : unitModFactory.GetModifier(3, 1);
                         case ArmorType.Building2:
-                            return unitModFactory.GetModifier(3, 2);
+                            return round < 5 ? unitModFactory.GetModifier(3, 2) * .2 : unitModFactory.GetModifier(3, 2); ;
                         case ArmorType.Building3:
                             return unitModFactory.GetModifier(3, 3);
                         case ArmorType.Gate:
@@ -151,9 +151,9 @@ namespace Game.Battle
                     switch(target.Stats.Base.Armor)
                     {
                         case ArmorType.Building1:
-                            return unitModFactory.GetModifier(attacker.Type, 1);
+                            return round < 5 ? unitModFactory.GetModifier(attacker.Type, 1) * .2 : unitModFactory.GetModifier(attacker.Type, 1);
                         case ArmorType.Building2:
-                            return unitModFactory.GetModifier(attacker.Type, 2);
+                            return round < 5 ? unitModFactory.GetModifier(attacker.Type, 2) * .2 : unitModFactory.GetModifier(attacker.Type, 2); ;
                         case ArmorType.Building3:
                             return unitModFactory.GetModifier(attacker.Type, 3);
                         case ArmorType.Gate:

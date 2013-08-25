@@ -58,7 +58,7 @@ DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases troop's travel speed by 150% when distanc
 ARCHERY_RESEARCH_TECHNOLOGY_NAME,Archery Research
 ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow wielding units.
 ,
-BOW_RESEARCH_TECHNOLOGY_NAME,Bowshield  Research
+BOW_RESEARCH_TECHNOLOGY_NAME,Bowshield Research
 BOW_RESEARCH_TECHNOLOGY_LVL_1,"Increases Bowman, Archer and Helepolis's Max HP by 4%. (Does not stack)"
 BOW_RESEARCH_TECHNOLOGY_LVL_2,"Increases Bowman, Archer and Helepolis's Max HP by 8%. (Does not stack)"
 BOW_RESEARCH_TECHNOLOGY_LVL_3,"Increases Bowman, Archer and Helepolis's Max HP by 12%. (Does not stack)"
@@ -107,8 +107,8 @@ SWORD_WEAPON_RESEARCH_TECHNOLOGY_NAME,Sword Units Offensive Boost
 SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Fighter, Swordsman and Hoplite  by 1% on attack mission . (Stacks additively up to 150%)"
 SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Fighter, Swordsman and Hoplite  by 3% on attack mission . (Stacks additively up to 150%)"
 SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Fighter, Swordsman and Hoplite  by 6% on attack mission . (Stacks additively up to 150%)"
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Fighter, Swordsman and Hoplite  by 10% on attack mission . (Stacks additively up to 150%)"
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Fighter, Swordsman and Hoplite  by 15% on attack mission . (Stacks additively up to 150%)"
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Fighter, Swordsman and Hoplite by 10% on attack mission . (Stacks additively up to 150%)"
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Fighter, Swordsman and Hoplite by 15% on attack mission . (Stacks additively up to 150%)"
 ,
 PIKE_WEAPON_RESEARCH_TECHNOLOGY_NAME,Pike Units Offensive Boost
 PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Cavalry and Knight by 1% on attack mission . (Stacks additively up to 150%)

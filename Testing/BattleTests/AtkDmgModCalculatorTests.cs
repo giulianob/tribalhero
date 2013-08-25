@@ -1,10 +1,10 @@
 ﻿using FluentAssertions;
-using Game.Battle;
+using Game.Battle.StatsModCalculator;
 using Xunit;
 
 namespace Testing.BattleTests
 {
-    public class StatsModCalculator
+    public class AtkDmgModCalculatorTests
     {
         #region AtkDmgModCalculator
 

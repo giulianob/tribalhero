@@ -396,16 +396,12 @@ namespace Game.Database
                 Global.SystemVariables.Add("System.time", new SystemVariable("System.time", DateTime.UtcNow));
             }
 
-            if (!Global.SystemVariables.ContainsKey("Map.start_index"))
-            {
-                Global.SystemVariables.Add("Map.start_index", new SystemVariable("Map.start_index", 0));
-            }
-
             if (!Global.SystemVariables.ContainsKey("Server.date"))
             {
                 Global.SystemVariables.Add("Server.date", new SystemVariable("Server.date", DateTime.UtcNow));
                 DbManager.Save(Global.SystemVariables["Server.date"]);
             }
+
             #endregion
         }
 

@@ -131,8 +131,9 @@
     <Compile Include="BattleTests\CombatGroupTest.cs" />
     <Compile Include="BattleTests\CombatListTest.cs" />
     <Compile Include="BattleTests\CombatStructureTest.cs" />
+    <Compile Include="BattleTests\MaxHpModCalculatorTests.cs" />
     <Compile Include="BattleTests\StaminaMonitorTests.cs" />
-    <Compile Include="BattleTests\StatsModCalculator.cs" />
+    <Compile Include="BattleTests\AtkDmgModCalculatorTests.cs" />
     <Compile Include="BattleTests\StrongholdBattleManagerTests.cs" />
     <Compile Include="ChannelTests\ChannelTest.cs" />
     <Compile Include="CityRegionTests\CityRegionTest.cs" />

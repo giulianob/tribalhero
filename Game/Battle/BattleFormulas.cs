@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 using Game.Battle.CombatObjects;
+using Game.Battle.StatsModCalculator;
 using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Stats;

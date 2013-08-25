@@ -92,6 +92,8 @@ namespace Game.Comm
         public string CalculateExpensiveCities(Session session, string[] parms)
         {
             var values = new List<dynamic>();
+
+            Func<Resource, decimal> calculateCost = resource => (resource.Crop + resource.Wood + resource.Gold * 2 + resource.Iron * 5 + resource.Labor * 100) / 100m;
             
             foreach (var city in world.Cities.AllCities())
             {
@@ -101,14 +103,14 @@ namespace Game.Comm
                 {
                     for (var lvl = 0; lvl <= structure.Lvl; lvl++)
                     {
-                        expenses += structureFactory.GetCost(structure.Type, lvl).NormalizedCost;
+                        expenses += calculateCost(structureFactory.GetCost(structure.Type, lvl));
                     }
                     
                     foreach (var technology in structure.Technologies)
                     {
                         for (var lvl = 0; lvl <= technology.Level; lvl++)
                         {
-                            expenses += technologyFactory.GetTechnology(technology.Type, (byte)lvl).TechBase.Resources.NormalizedCost;
+                            expenses += calculateCost(technologyFactory.GetTechnology(technology.Type, (byte)lvl).TechBase.Resources);
                         }
                     }
                 }

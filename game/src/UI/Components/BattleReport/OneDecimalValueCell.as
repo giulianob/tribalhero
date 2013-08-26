@@ -1,11 +1,11 @@
 package src.UI.Components.BattleReport 
 {
-	import org.aswing.*;
-	import org.aswing.event.*;
-	import org.aswing.table.*;
+    import org.aswing.*;
+    import org.aswing.table.*;
 
-	import src.Util.Util;
-	/**
+    import src.Util.Util;
+
+    /**
 	 * ...
 	 * @author ...
 	 */

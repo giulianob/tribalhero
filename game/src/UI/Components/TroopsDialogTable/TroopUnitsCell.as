@@ -1,14 +1,16 @@
 package src.UI.Components.TroopsDialogTable 
 {
-	import flash.events.MouseEvent;
-	import org.aswing.*;
-	import org.aswing.event.*;
-	import src.UI.Components.TableCells.*;
-	import src.UI.Components.TroopCompositionGridList.*;
-	import src.UI.Tooltips.*;
-	import src.Util.*;
-	
-	public class TroopUnitsCell extends AbstractPanelTableCell 
+    import flash.events.MouseEvent;
+
+    import org.aswing.*;
+    import org.aswing.event.*;
+
+    import src.UI.Components.TableCells.*;
+    import src.UI.Components.TroopCompositionGridList.*;
+    import src.UI.Tooltips.*;
+    import src.Util.*;
+
+    public class TroopUnitsCell extends AbstractPanelTableCell
 	{
 		private var unitGrid: TroopCompositionGridList;
 		

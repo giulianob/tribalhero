@@ -5,15 +5,11 @@
  */
 
 package src.Objects.Actions {
-	import flash.display.SimpleButton;
-	import flash.utils.getDefinitionByName;
-	import src.Objects.Actions.IAction;
-	import src.Objects.GameObject;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.SimpleGameObject;
-	import src.UI.Sidebars.ObjectInfo.Buttons.ForestCampRemoveButton;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.Objects.SimpleGameObject;
+    import src.UI.Sidebars.ObjectInfo.Buttons.ForestCampRemoveButton;
 
-	public class ForestCampRemoveAction extends Action implements IAction
+    public class ForestCampRemoveAction extends Action implements IAction
 	{
 		public function ForestCampRemoveAction()
 		{

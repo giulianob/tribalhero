@@ -1,9 +1,11 @@
 package src.Objects 
 {
-	import flash.events.Event;
-	import src.Global;
-	import src.UI.Components.GroundCircle;
-	/**
+    import flash.events.Event;
+
+    import src.Global;
+    import src.UI.Components.GroundCircle;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */
@@ -56,8 +58,8 @@ package src.Objects
 			else
 				Global.map.objContainer.removeObject(circle, ObjectContainer.LOWER);
 
-			circle.objX = parentObj.objX;
-			circle.objY = parentObj.objY;
+            circle.x = circle.primaryPosition.x = parentObj.x;
+            circle.y = circle.primaryPosition.y = parentObj.y;
 
 			Global.map.objContainer.addObject(circle, ObjectContainer.LOWER);
 		}		

@@ -1,15 +1,16 @@
 ﻿package src.UI.Components.TableCells
 {
-	import flash.events.Event;
-	import org.aswing.CenterLayout;
-	import org.aswing.Component;
-	import org.aswing.JCheckBox;
-	import org.aswing.JPanel;
-	import org.aswing.JTable;
-	import org.aswing.JToggleButton;
-	import org.aswing.table.AbstractTableCell;
+    import flash.events.Event;
 
-	/**
+    import org.aswing.CenterLayout;
+    import org.aswing.Component;
+    import org.aswing.JCheckBox;
+    import org.aswing.JPanel;
+    import org.aswing.JTable;
+    import org.aswing.JToggleButton;
+    import org.aswing.table.AbstractTableCell;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */

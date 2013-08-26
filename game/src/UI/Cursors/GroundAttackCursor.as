@@ -1,30 +1,28 @@
 ﻿package src.UI.Cursors {
-	import fl.lang.*;
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import mx.utils.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Effects.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Stronghold.*;
-	import src.Objects.Troop.*;
-	import src.UI.Components.*;
-	import src.UI.Tooltips.*;
-	import src.Util.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
 
-	public class GroundAttackCursor extends MovieClip implements IDisposable
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Effects.*;
+    import src.Objects.Factories.*;
+    import src.Objects.Stronghold.*;
+    import src.Objects.Troop.*;
+    import src.UI.Components.*;
+    import src.UI.Tooltips.*;
+    import src.Util.*;
+
+    public class GroundAttackCursor extends MovieClip implements IDisposable
 	{
-		private var objX: int;
-		private var objY: int;
+		private var objPosition: ScreenPosition = new ScreenPosition();
 
 		private var originPoint: Point;
 
 		private var cursor: GroundCircle;
 
-		private var tiles: Array = new Array();
+		private var tiles: Array = [];
 
 		private var troop: TroopStub;
 		private var troopSpeed: Number;
@@ -106,7 +104,7 @@
 
 		public function onMouseDoubleClick(event: MouseEvent):void
 		{
-			if (Point.distance(MapUtil.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > 4) return;
+			if (Point.distance(TileLocator.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > 4) return;
 
 			event.stopImmediatePropagation();
 
@@ -119,30 +117,29 @@
 
 		public function onMouseDown(event: MouseEvent):void
 		{
-			originPoint = MapUtil.getPointWithZoomFactor(event.stageX, event.stageY);
+			originPoint = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
 		}
 
 		public function onMouseMove(event: MouseEvent):void
 		{
 			if (event.buttonDown) return;
 
-			var mousePos: Point = MapUtil.getPointWithZoomFactor(event.stageX, event.stageY);
+			var mousePos: Point = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
 			moveTo(mousePos.x, mousePos.y);
 		}
 
 		public function moveTo(x: int, y: int):void
 		{
-			var pos: Point = MapUtil.getActualCoord(Global.gameContainer.camera.x + Math.max(x, 0), Global.gameContainer.camera.y + Math.max(y, 0));
+			var pos: ScreenPosition = TileLocator.getActualCoord(Global.gameContainer.camera.currentPosition.x + Math.max(x, 0), Global.gameContainer.camera.currentPosition.y + Math.max(y, 0));
 
-			if (pos.x != objX || pos.y != objY)
+			if (!pos.equals(objPosition))
 			{
 				Global.map.objContainer.removeObject(cursor, ObjectContainer.LOWER);
 
-				objX = pos.x;
-				objY = pos.y;
+				objPosition = pos;
 
-				cursor.objX = objX;
-				cursor.objY = objY;
+                cursor.x = cursor.primaryPosition.x = pos.x;
+                cursor.y = cursor.primaryPosition.y = pos.y;
 
 				Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
 
@@ -163,7 +160,7 @@
 				tooltip = null;			
 			}			
 
-			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, [StructureObject, Stronghold, BarbarianTribe]);
+			var objects: Array = Global.map.regions.getObjectsInTile(objPosition.toPosition(), [StructureObject, Stronghold, BarbarianTribe]);
 
 			if (objects.length == 0) {
 				Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_CHOOSE_TARGET"));
@@ -215,8 +212,8 @@
 			gameObj.setHighlighted(true);
 			highlightedObj = gameObj;
 			
-			var targetMapDistance: Point = MapUtil.getMapCoord(gameObj.objX, gameObj.objY);
-			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
+			var targetMapDistance: Position = gameObj.primaryPosition.toPosition();
+			var distance: int = TileLocator.distance(city.primaryPosition.x, city.primaryPosition.y, 1, targetMapDistance.x, targetMapDistance.y, 1);
 			var timeAwayInSeconds: int = Formula.moveTimeTotal(city, troopSpeed, distance, true);
 			if (Constants.debug)
 				Global.gameContainer.message.showMessage("Speed [" +troopSpeed+"] Distance [" + distance + "] in " + timeAwayInSeconds + " sec("+DateUtil.formatTime(timeAwayInSeconds)+")");

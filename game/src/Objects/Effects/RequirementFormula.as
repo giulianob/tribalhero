@@ -1,16 +1,15 @@
 ﻿package src.Objects.Effects {
-	import src.Constants;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.Factories.*;
-	import src.Objects.GameObject;
-	import src.Objects.Prototypes.*
-	import src.Objects.TechnologyStats;
-	import src.Util.StringHelper;
-	import src.Util.Util;
+    import src.Global;
+    import src.Map.City;
+    import src.Map.CityObject;
+    import src.Objects.Factories.*;
+    import src.Objects.GameObject;
+    import src.Objects.Prototypes.*;
+    import src.Objects.TechnologyStats;
+    import src.Util.StringHelper;
+    import src.Util.Util;
 
-	public class RequirementFormula {
+    public class RequirementFormula {
 
 		private static var methodLookup: Array = new Array(
 		{name: "Message", method: custom, message: customMsg},
@@ -81,17 +80,7 @@
 			}
 		}
 
-		public static function getMessages(parentObj: GameObject, effectReqs: Array): Array
-		{
-			var ret: Array = new Array();
-
-			for each (var effectReq: EffectReqPrototype in effectReqs)
-			ret.push(getMessage(parentObj, effectReq));
-
-			return ret;
-		}
-
-		/*CUSTOM*/
+        /*CUSTOM*/
 		private static function custom(parentObj: GameObject, effects: Array, message: String, param2: String, param3: String, param4: String, param5: String): Boolean
 		{
 			return false;
@@ -408,7 +397,7 @@
 				if (obj.objectId == parentObj.objectId) continue;
 
 				for each (var tech: TechnologyStats in obj.techManager.technologies) {
-					if (tech.prototype.level > 0 && tech.prototype.techtype == type)
+					if (tech.techPrototype.level > 0 && tech.techPrototype.techtype == type)
 					return false;
 				}
 			}

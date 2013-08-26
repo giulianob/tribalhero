@@ -1,9 +1,8 @@
 package src.UI.Components.Tribe 
 {
-	import src.Util.StringHelper;
-	import org.aswing.table.PropertyTranslator;
-	
-	public class TribeRankTranslator implements PropertyTranslator
+    import org.aswing.table.PropertyTranslator;
+
+    public class TribeRankTranslator implements PropertyTranslator
 	{
 		private var ranks : * ;
 		public function TribeRankTranslator(ranks : *) 

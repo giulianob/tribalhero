@@ -5,15 +5,11 @@
  */
 
 package src.Objects.Actions {
-	import flash.display.SimpleButton;
-	import flash.utils.getDefinitionByName;
-	import src.Objects.Actions.IAction;
-	import src.Objects.GameObject;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.SimpleGameObject;
-	import src.UI.Sidebars.ObjectInfo.Buttons.BuildRoadButton;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.Objects.SimpleGameObject;
+    import src.UI.Sidebars.ObjectInfo.Buttons.BuildRoadButton;
 
-	public class BuildRoadAction extends Action implements IAction
+    public class BuildRoadAction extends Action implements IAction
 	{
 		public function BuildRoadAction()
 		{

@@ -16,6 +16,7 @@
 
     import src.Comm.*;
     import src.Map.*;
+    import src.Map.MiniMap.MiniMap;
     import src.Objects.Factories.*;
     import src.UI.Dialog.*;
     import src.UI.LookAndFeel.*;
@@ -28,9 +29,9 @@
         import com.sociodox.theminer.TheMiner;
     }
 
-	public class Main extends MovieClip
+    public class Main extends MovieClip
 	{
-		private var importObjects: ImportObjects;
+		private var importObjects: Assets;
 
 		private var gameContainer: GameContainer;
 
@@ -56,14 +57,14 @@
 			addEventListener(Event.ADDED_TO_STAGE, init);		                       
 		}        
 		
-		public function init(e: Event = null) : void {			            
+		public function init(e: Event = null) : void {
 			removeEventListener(Event.ADDED_TO_STAGE, init);							
             
-            stage.showDefaultContextMenu = false;                       
-			
+            stage.showDefaultContextMenu = false;
+
 			CONFIG::debug {
-				stage.addChild(new TheMiner());
-			}			
+			    stage.addChild(new TheMiner());
+            }
 			
 			//Init actionLinq
 			EnumerationExtender.Initialize();
@@ -278,16 +279,7 @@
 			}
 		}
 
-		public function onReceiveXML(e: Event):void
-		{
-			var str: String = e.target.data;
-
-			Constants.objData = XML(e.target.data);
-
-			doConnect();
-		}
-
-		private function completeLogin(packet: Packet, newPlayer: Boolean):void
+        private function completeLogin(packet: Packet, newPlayer: Boolean):void
 		{
 			Global.map = map = new Map();
 			miniMap = new MiniMap(Constants.miniMapScreenW, Constants.miniMapScreenH);
@@ -309,18 +301,5 @@
 			Global.mapComm.General.readLoginInfo(packet);
 			gameContainer.setMap(map, miniMap);
 		}
-
-		public function onReceive(packet: Packet):void
-		{
-			if (Constants.debug >= 2)
-			{
-				Util.log("Received packet to main processor");
-				Util.log(packet.toString());
-			}
-		}
-
-		private function resizeHandler(event:Event):void {
-			
-		}
-	}
+    }
 }

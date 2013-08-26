@@ -1,22 +1,20 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.*;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Factories.StructureFactory;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Util.Util;
-	import src.Objects.Prototypes.UnitPrototype;
-	import src.UI.Cursors.*;
-	import src.UI.Dialog.UnitTrainDialog;
-	import src.UI.Tooltips.TrainTooltip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class TrainButton extends ActionButton
+    import src.Global;
+    import src.Map.City;
+    import src.Map.CityObject;
+    import src.Objects.*;
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.Effects.Formula;
+    import src.Objects.Prototypes.UnitPrototype;
+    import src.UI.Dialog.UnitTrainDialog;
+    import src.UI.Tooltips.TrainTooltip;
+    import src.Util.Util;
+
+    public class TrainButton extends ActionButton
 	{
 		private var unitPrototype: UnitPrototype;
 

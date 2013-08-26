@@ -5,11 +5,11 @@
  */
 
 package src.Objects.Prototypes {
-	import src.Objects.Resources;
-	import src.Util.StringHelper;
-	import src.Util.BinaryList.*;
+    import src.Objects.Resources;
+    import src.Util.BinaryList.*;
+    import src.Util.StringHelper;
 
-	public class TechnologyPrototype {
+    public class TechnologyPrototype {
 
 		public var level: int;
 		public var resources: Resources;

@@ -1,16 +1,17 @@
 ﻿package src.UI.Components.Messaging
 {
-	import org.aswing.AsWingConstants;
-	import org.aswing.Component;
-	import org.aswing.FlowLayout;
-	import org.aswing.JPanel;
-	import org.aswing.JTable;
-	import org.aswing.JTextField;
-	import org.aswing.plaf.basic.background.TextComponentBackBround;
-	import org.aswing.table.AbstractTableCell;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import org.aswing.AsWingConstants;
+    import org.aswing.Component;
+    import org.aswing.FlowLayout;
+    import org.aswing.JPanel;
+    import org.aswing.JTable;
+    import org.aswing.JTextField;
+    import org.aswing.plaf.basic.background.TextComponentBackBround;
+    import org.aswing.table.AbstractTableCell;
 
-	/**
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */

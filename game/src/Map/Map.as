@@ -1,37 +1,33 @@
 ﻿package src.Map
 {
-	import flash.display.Sprite;
-	import flash.events.*;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.sampler.NewObjectSample;
-	import flash.utils.*;
-	import src.Objects.BarbarianTribe;
-	import src.Objects.NewCityPlaceholder;
-	import src.Objects.SimpleObject;
-	import src.Objects.Stronghold.Stronghold;
-	import src.UI.Sidebars.BarbarianTribeInfo.BarbarianTribeSidebar;
-	import src.UI.Sidebars.NewCityPlaceholder.NewCityPlaceholderSidebar;
-	import src.Util.Util;
-	import flash.ui.Keyboard;
-	import src.Global;
-	import src.Objects.Forest;
-	import src.Objects.GameObject;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.ObjectContainer;
-	import src.Objects.StructureObject;
-	import src.Objects.Troop.*;
-	import src.UI.GameJSidebar;
-	import src.UI.Sidebars.ForestInfo.ForestInfoSidebar;
-	import src.UI.Sidebars.ObjectInfo.ObjectInfoSidebar;
-	import src.UI.Sidebars.TroopInfo.TroopInfoSidebar;
-	import src.UI.Sidebars.StrongholdInfo.StrongholdInfoSidebar;
+    import flash.display.Sprite;
+    import flash.events.*;
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
 
-	import src.Constants;
+    import src.Constants;
+    import src.Global;
+    import src.Objects.BarbarianTribe;
+    import src.Objects.Forest;
+    import src.Objects.NewCityPlaceholder;
+    import src.Objects.ObjectContainer;
+    import src.Objects.SimpleGameObject;
+    import src.Objects.SimpleObject;
+    import src.Objects.Stronghold.Stronghold;
+    import src.Objects.StructureObject;
+    import src.Objects.Troop.*;
+    import src.UI.GameJSidebar;
+    import src.UI.Sidebars.BarbarianTribeInfo.BarbarianTribeSidebar;
+    import src.UI.Sidebars.ForestInfo.ForestInfoSidebar;
+    import src.UI.Sidebars.NewCityPlaceholder.NewCityPlaceholderSidebar;
+    import src.UI.Sidebars.ObjectInfo.ObjectInfoSidebar;
+    import src.UI.Sidebars.StrongholdInfo.StrongholdInfoSidebar;
+    import src.UI.Sidebars.TroopInfo.TroopInfoSidebar;
+    import src.Util.Util;
 
-	public class Map extends Sprite
+    public class Map extends Sprite
 	{
-		public var regions: RegionList;
+		public var regions: RegionManager;
 		private var mouseDown: Boolean;
 		private var mouseLoc: Point;
 		private var originPoint: Point = new Point();
@@ -39,9 +35,8 @@
 		private var disabledMapQueries: Boolean;
 
 		public var camera: Camera;
-		private var lastParseRegionLoc: Point = new Point();
-		private var lastQueryTime: int = 0;
-		public var pendingRegions: Array;
+
+        public var pendingRegions: Array;
 
 		public var selectViewable: Object;
 		public var selectedObject: SimpleObject;
@@ -49,7 +44,6 @@
 		private var listenersDefined: Boolean;
 
 		private var regionSpace: Sprite;
-		private var overlayerSpace: Sprite;
 		public var objContainer: ObjectContainer;
 
 		public var cities: CityList = new CityList();
@@ -60,31 +54,28 @@
 
 		public var scrollRate: Number = 1;
 		
-		public function Map()
-		{
-			camera = Global.gameContainer.camera;
-			camera.addEventListener(Camera.ON_MOVE, onMove);
-			
-			selectedObject = null;
+		public function Map() {
+            camera = Global.gameContainer.camera;
+            camera.addEventListener(Camera.ON_MOVE, onMove);
 
-			regionSpace = new Sprite();
-			overlayerSpace = new Sprite();
-			objContainer = new ObjectContainer();
+            selectedObject = null;
 
-			addChild(regionSpace);
-			addChild(objContainer);
-			addChild(overlayerSpace);
+            regionSpace = new Sprite();
+            objContainer = new ObjectContainer();
 
-			pendingRegions = new Array();
-			regions = new RegionList();
+            addChild(regionSpace);
+            addChild(objContainer);
 
-			usernames = new UsernameManager();
+            pendingRegions = [];
+            regions = new RegionManager();
 
-			addEventListener(Event.ADDED_TO_STAGE, eventAddedToStage);
-			addEventListener(Event.REMOVED_FROM_STAGE, eventRemovedFromStage);
+            usernames = new UsernameManager();
 
-			listenersDefined = false;
-		}
+            addEventListener(Event.ADDED_TO_STAGE, eventAddedToStage);
+            addEventListener(Event.REMOVED_FROM_STAGE, eventRemovedFromStage);
+
+            listenersDefined = false;
+        }
 
 		public function dispose():void
 		{
@@ -166,92 +157,88 @@
 			return newRegion;
 		}
 
-		public function parseRegions(force: Boolean = false):void
-		{
-			if (Constants.debug >= 3) Util.log("On move: " + camera.x + "," + camera.y);
+		public function parseRegions(force: Boolean = false):void {
+            if (Constants.debug >= 3) Util.log("On move: " + camera.currentPosition.x + "," + camera.currentPosition.y);
 
-			// Don't parse every single pixel we move
-			if (!force && !Math.abs(lastParseRegionLoc.x - camera.x) > 10 && !Math.abs(lastParseRegionLoc.y - camera.y) > 10) return;
+            // Don't parse every single pixel we move
+            var lastParseRegionLoc: Point = new Point();
+            if (!force && !Math.abs(lastParseRegionLoc.x - camera.currentPosition.x) > 10 && !Math.abs(lastParseRegionLoc.y - camera.currentPosition.y) > 10) return;
 
-			//calculate which regions we need to render
-			var requiredRegions: Array = new Array();
-			var outdatedRegions: Array = new Array();
+            //calculate which regions we need to render
+            var requiredRegions: Array = [];
+            var outdatedRegions: Array = [];
 
-			// Get list of required regions
-			const offset:int = 200;
+            // Get list of required regions
+            const offset: int = 200;
 
-			var screenRect: Rectangle = new Rectangle(camera.x - offset, camera.y - offset, Constants.screenW * camera.getZoomFactorOverOne() + offset * 2.0, Constants.screenH * camera.getZoomFactorOverOne() + offset * 2.0);
-			for (var reqX: int = -1; reqX <= Math.ceil((Constants.screenW * camera.getZoomFactorOverOne()) / Constants.regionW); reqX++) {
-				for (var reqY: int = -1; reqY <= Math.ceil((Constants.screenH * camera.getZoomFactorOverOne()) / (Constants.regionH / 2)); reqY++) {
-					var curX: int = camera.x + (Constants.regionW * reqX);
-					var curY: int = camera.y + (Constants.regionH / 2 * reqY);
-					var requiredId: int = MapUtil.getRegionId(curX, curY);
+            var screenRect: Rectangle = new Rectangle(
+                    camera.currentPosition.x - offset, camera.currentPosition.y - offset,
+                    Constants.screenW * camera.getZoomFactorOverOne() + offset * 2.0, Constants.screenH * camera.getZoomFactorOverOne() + offset * 2.0);
 
-					var regionRect: Rectangle = MapUtil.getRegionRect(requiredId);
-					if (!regionRect.containsRect(screenRect) && !screenRect.intersects(regionRect)) continue;
+            for (var reqX: int = -1; reqX <= Math.ceil((Constants.screenW * camera.getZoomFactorOverOne()) / Constants.regionW); reqX++) {
+                for (var reqY: int = -1; reqY <= Math.ceil((Constants.screenH * camera.getZoomFactorOverOne()) / (Constants.regionH / 2)); reqY++) {
+                    var screenPos: ScreenPosition = new ScreenPosition(camera.currentPosition.x + (Constants.regionW * reqX),
+                            camera.currentPosition.y + (Constants.regionH / 2 * reqY));
+                    var requiredId: int = TileLocator.getRegionId(screenPos);
 
-					if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1) requiredRegions.push(requiredId);
-				}
-			}
+                    var regionRect: Rectangle = TileLocator.getRegionRect(requiredId);
+                    if (!regionRect.containsRect(screenRect) && !screenRect.intersects(regionRect)) continue;
 
-			//remove any outdated regions from regions we have
-			for (var i: int = regions.size() - 1; i >= 0; i--)
-			{
-				var region: Region = regions.getByIndex(i);
+                    if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1) requiredRegions.push(requiredId);
+                }
+            }
 
-				var found: int = -1;
-				for (var a:int= 0; a < requiredRegions.length; a++)
-				{
-					if (region.id == requiredRegions[a])
-					{
-						found = a;
-						break;
-					}
-				}
+            //remove any outdated regions from regions we have
+            for (var i: int = regions.size() - 1; i >= 0; i--) {
+                var region: Region = regions.getByIndex(i);
 
-				if (found >= 0)
-				{
-					//adjust the position of this region
-					region.moveWithCamera(camera);
+                var found: int = -1;
+                for (var a: int = 0; a < requiredRegions.length; a++) {
+                    if (region.id == requiredRegions[a]) {
+                        found = a;
+                        break;
+                    }
+                }
 
-					if (Constants.debug >= 4)
-					Util.log("Moved: " + region.id + " " + region.x + "," + region.y);
+                if (found >= 0) {
+                    //adjust the position of this region
+                    region.moveWithCamera(camera);
 
-					//remove it from required regions since we already have it
-					requiredRegions.splice(found, 1);
-				}
-				else
-				{
-					//region is outdated, remove it from buffer
-					outdatedRegions.push(region.id);
+                    if (Constants.debug >= 4)
+                        Util.log("Moved: " + region.id + " " + region.x + "," + region.y);
 
-					region.disposeData();
-					regionSpace.removeChild(region);
-					regions.removeByIndex(i);
+                    //remove it from required regions since we already have it
+                    requiredRegions.splice(found, 1);
+                }
+                else {
+                    //region is outdated, remove it from buffer
+                    outdatedRegions.push(region.id);
 
-					if (Constants.debug >= 3)  Util.log("Discarded: " + i);
-				}
-			}
+                    region.disposeData();
+                    regionSpace.removeChild(region);
+                    regions.removeByIndex(i);
 
-			if (Constants.debug >= 3) Util.log("Required before pending removal:" + requiredRegions);
+                    if (Constants.debug >= 3)  Util.log("Discarded: " + i);
+                }
+            }
 
-			//remove any pending regions from the required regions list we need
-			//and add any regions we are going to be asking the server to the pending regions list
-			for (i = requiredRegions.length - 1; i >= 0; i--)
-			{
-				if (pendingRegions.indexOf(requiredRegions[i]) > -1) requiredRegions.splice(i, 1);
-				else pendingRegions.push(requiredRegions[i]);
-			}
+            if (Constants.debug >= 3) Util.log("Required before pending removal:" + requiredRegions);
 
-			//regions that we still need, query server
-			if (requiredRegions.length > 0 || outdatedRegions.length > 0)
-			{
-				if (Constants.debug >= 3) Util.log("Required:" + requiredRegions);
-				Global.mapComm.Region.getRegion(requiredRegions, outdatedRegions);
-			}
+            //remove any pending regions from the required regions list we need
+            //and add any regions we are going to be asking the server to the pending regions list
+            for (i = requiredRegions.length - 1; i >= 0; i--) {
+                if (pendingRegions.indexOf(requiredRegions[i]) > -1) requiredRegions.splice(i, 1);
+                else pendingRegions.push(requiredRegions[i]);
+            }
 
-			region = null;
-		}
+            //regions that we still need, query server
+            if (requiredRegions.length > 0 || outdatedRegions.length > 0) {
+                if (Constants.debug >= 3) Util.log("Required:" + requiredRegions);
+                Global.mapComm.Region.getRegion(requiredRegions, outdatedRegions);
+            }
+
+            region = null;
+        }
 
 		//###################################################################
 		//#################### Object Manipulation ##########################
@@ -260,15 +247,13 @@
 			selectObject(null);
 
 			selectViewable = null;
-			for each(var gameObject: SimpleObject in objContainer.objects) {
-				if (!(gameObject is SimpleGameObject)) 
-					continue;
-				
-				if (SimpleGameObject.compareGroupIdAndObjId(gameObject as SimpleGameObject, [groupId, objectId]) == 0) {
-					selectObject(gameObject, true, false);
-					return;
-				}
-			}
+            for each (var region: Region in regions) {
+                var obj: SimpleObject = region.getObject(groupId, objectId);
+                if (obj) {
+                    selectObject(obj, true, false);
+                    return;
+                }
+            }
 
 			selectViewable = { 'groupId' : groupId, 'objectId': objectId };
 		}
@@ -386,20 +371,6 @@
 		}
 
 		//###################################################################
-		//##################### Overlayer Commands ##########################
-		//###################################################################
-		public function addToOverlayer(sprite: Sprite):void
-		{
-			overlayerSpace.addChild(sprite);
-		}
-
-		public function removeFromOverlayer(sprite: Sprite):void
-		{
-			if (overlayerSpace.contains(sprite))
-			overlayerSpace.removeChild(sprite);
-		}
-
-		//###################################################################
 		//#################### Mouse/Keyboard Events ########################
 		//###################################################################
 
@@ -442,9 +413,9 @@
 			if (!mouseDown) {
                 
                 if (event.shiftKey) {
-                    var screenMouse: Point = MapUtil.getPointWithZoomFactor(event.stageX, event.stageY);
-                    var mapPixelPos: Point = MapUtil.getActualCoord(camera.x + screenMouse.x, camera.y + screenMouse.y);
-                    var mapPos: Point = MapUtil.getMapCoord(mapPixelPos.x, mapPixelPos.y);
+                    var screenMouse: Point = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
+                    var mapPixelPos: ScreenPosition = TileLocator.getActualCoord(camera.currentPosition.x + screenMouse.x, camera.currentPosition.y + screenMouse.y);
+                    var mapPos: Position = mapPixelPos.toPosition();
                     Global.gameContainer.setLabelCoords(mapPos);
                 }
                 
@@ -474,12 +445,15 @@
 		}
 
 		public function move(forceParse: Boolean = false) : void {
-			var pt: Point = MapUtil.getMapCoord(camera.x + (Constants.screenW * camera.getZoomFactorOverOne()) / 2, camera.y + (Constants.screenH * camera.getZoomFactorOverOne()) / 2);
+			var pt: Position = new ScreenPosition(
+                    camera.currentPosition.x + (Constants.screenW * camera.getZoomFactorOverOne()) / 2,
+                    camera.currentPosition.y + (Constants.screenH * camera.getZoomFactorOverOne()) / 2).toPosition();
+
 			Global.gameContainer.setLabelCoords(pt);
 
 			if (!disabledMapQueries) {
 				parseRegions(forceParse);
-				objContainer.moveWithCamera(camera.x, camera.y);
+				objContainer.moveWithCamera(camera.currentPosition.x, camera.currentPosition.y);
 			}
 
 			Global.gameContainer.miniMap.updatePointers(camera.miniMapCenter);

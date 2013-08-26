@@ -1,24 +1,19 @@
 
 package src.Objects {
 
-	import com.greensock.easing.Ease;
-	import com.greensock.easing.Elastic;
-	import com.greensock.TweenMax;
-	import flash.display.Bitmap;
-	import flash.display.DisplayObject;
-	import flash.display.MovieClip;
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.TimerEvent;
-	import flash.filters.GlowFilter;
-	import flash.geom.Point;
-	import flash.utils.Timer;
-	import src.Constants;
-	import src.Map.Camera;
-	import src.UI.SmartMovieClip;
-	
-	public class SimpleObject extends SmartMovieClip {
+    import com.greensock.TweenMax;
+
+    import flash.display.DisplayObject;
+    import flash.display.MovieClip;
+    import flash.display.Sprite;
+    import flash.events.Event;
+    import flash.filters.GlowFilter;
+    import flash.geom.Point;
+
+    import src.Constants;
+    import src.Map.ScreenPosition;
+
+    public class SimpleObject extends MovieClip {
 		
 		public static const DISPOSED: String = "DISPOSED";
 		
@@ -27,22 +22,32 @@ package src.Objects {
 		private var onSelect: Function;
 		protected var selected: Boolean;						
 		
-		public var objectCount: DisplayObject;				
-		
+		private var objectCountDisplayObject: DisplayObject;
+        private var objectCount: int;
+
 		// This is the container where the objects sprite/image should go
 		public var spriteContainer: Sprite;
-		
-		private var _objX: int;
-		private var _objY: int;
-					
-		public function SimpleObject(objX: int, objY: int) {
+
+        public var primaryPosition: ScreenPosition = new ScreenPosition();
+
+        public var size: int;
+
+        public var mapPriority: int;
+
+		public function SimpleObject(objX: int, objY: int, size: int) {
 			super();
-			
+
+            mapPriority = Constants.mapObjectPriority.simpleObject;
 			spriteContainer = new Sprite();
 			addChild(spriteContainer);
 			
-			this.objX = objX;
-			this.objY = objY;			
+			this.primaryPosition.x = objX;
+            this.primaryPosition.y = objY;
+
+            this.x = objX;
+            this.y = objY;
+
+            this.size = size;
 		}
 		
 		public function copy(obj: SimpleObject): void {
@@ -53,19 +58,23 @@ package src.Objects {
 			for (i = obj.spriteContainer.numChildren - 1; i >= 0; i--) {
 				spriteContainer.addChildAt(obj.spriteContainer.removeChildAt(i), 0);				
 			}
-			
-			objX = obj.objX;
-			objY = obj.objY;
+
+            primaryPosition.x = obj.primaryPosition.x;
+            primaryPosition.y = obj.primaryPosition.y;
 			x = obj.x;
 			y = obj.y;
 		}
-		
+
+        public function getObjectCount(): int {
+            return objectCount;
+        }
+
 		public function setObjectCount(count: int) : void {
-			var simpleObj: SimpleGameObject = this as SimpleGameObject;
-		
-			if (objectCount != null) {
-				removeChild(objectCount);			
-				objectCount = null;
+            objectCount = count;
+
+			if (objectCountDisplayObject != null) {
+				removeChild(objectCountDisplayObject);
+				objectCountDisplayObject = null;
 			}
 			
 			if (count <= 1) {
@@ -80,23 +89,24 @@ package src.Objects {
 			bubble.x = Constants.tileW / 2;
 			bubble.y = 0;
 			
-			objectCount = bubble;
+			objectCountDisplayObject = bubble;
 			
 			addChild(bubble);
 		}
 		
 		public function dispose(): void {
 			disposed = true;
-			if (objectCount != null) {
-				removeChild(objectCount);
-				objectCount = null;
-			}
+			if (objectCountDisplayObject != null) {
+				removeChild(objectCountDisplayObject);
+				objectCountDisplayObject = null;
+            }
 			dispatchEvent(new Event(DISPOSED));
 		}
 		
 		public function fadeIn():void
 		{
-			alpha = 0;
+            alpha = 0;
+            visible = true;
 			TweenMax.to(this, 1, {alpha:1});
 		}
 			
@@ -139,8 +149,8 @@ package src.Objects {
 
 			var objPos: Point = new Point();
 
-			objPos.x = objX;
-			objPos.y = objY;
+			objPos.x = primaryPosition.x;
+			objPos.y = primaryPosition.y;
 
 			if (objPos.y % 2 == 1 && y_1 % 2 == 0 && x_1 <= objPos.x) offset = 1;
 			if (objPos.y % 2 == 0 && y_1 % 2 == 1 && x_1 >= objPos.x) offset = 1;
@@ -149,11 +159,11 @@ package src.Objects {
 		}		
 		
 		public static function sortOnXandY(a: SimpleObject, b: SimpleObject):Number {
-			var aX:Number = a.objX;
-			var bX:Number = b.objX;
+			var aX:Number = a.primaryPosition.x;
+			var bX:Number = b.primaryPosition.x;
 
-			var aY:Number = a.objY;
-			var bY:Number = b.objY;
+			var aY:Number = a.primaryPosition.y;
+			var bY:Number = b.primaryPosition.y;
 			
 			if (aX > bX)
 				return 1;
@@ -169,8 +179,8 @@ package src.Objects {
 		
 		public static function compareXAndY(a: SimpleObject, value: Array):int
 		{
-			var xDelta: int = a.objX - value[0];
-			var yDelta: int = a.objY - value[1];
+			var xDelta: int = a.primaryPosition.x - value[0];
+			var yDelta: int = a.primaryPosition.y - value[1];
 			
 			if (xDelta != 0)
 				return xDelta;
@@ -179,29 +189,23 @@ package src.Objects {
 				return yDelta;
 			else
 				return 0;
-		}			
-		
-		public function get objX():int 
-		{
-			return _objX;
 		}
-		
-		public function set objX(value:int):void 
-		{
-			_objX = value;
-			x = value;
-		}
-		
-		public function get objY():int 
-		{
-			return _objY;
-		}
-		
-		public function set objY(value:int):void 
-		{
-			_objY = value;
-			y = value;
-		}
+
+        override public function get x(): Number {
+            return super.x;
+        }
+
+        override public function set x(value: Number): void {
+            super.x = Math.round(value);
+        }
+
+        override public function get y(): Number {
+            return super.y;
+        }
+
+        override public function set y(value: Number): void {
+            super.y = Math.round(value);
+        }
 	}
 	
 }

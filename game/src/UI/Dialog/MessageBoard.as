@@ -1,22 +1,24 @@
 package src.UI.Dialog 
 {
-	import flash.events.*;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.event.*;
-	import org.aswing.ext.*;
-	import org.aswing.table.*;
-	import src.*;
-	import src.Comm.*;
-	import src.Objects.Tribe;
-	import src.UI.*;
-	import src.UI.Components.*;
-	import src.UI.Components.TableCells.*;
-	import src.UI.LookAndFeel.*;
+    import flash.events.*;
+
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.event.*;
+    import org.aswing.ext.*;
+    import org.aswing.table.*;
+
+    import src.*;
+    import src.Comm.*;
+    import src.Objects.Tribe;
+    import src.UI.*;
+    import src.UI.Components.*;
+    import src.UI.Components.TableCells.*;
+    import src.UI.LookAndFeel.*;
     import src.Util.DateUtil;
     import src.Util.StringHelper;
 
-	public class MessageBoard extends GameJPanel
+    public class MessageBoard extends GameJPanel
 	{
 		private var modelThreads: VectorListModel;		
 		private var tableThreads: JTable;	

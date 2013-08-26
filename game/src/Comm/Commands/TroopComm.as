@@ -55,9 +55,8 @@
 			}
 
 			var formationCnt: int = packet.readUByte();
-			var unitType: int;
 
-			for (var formationsI: int = 0; formationsI < formationCnt; formationsI++)
+            for (var formationsI: int = 0; formationsI < formationCnt; formationsI++)
 			{
 				var formation: Formation = new Formation(packet.readUByte());
 

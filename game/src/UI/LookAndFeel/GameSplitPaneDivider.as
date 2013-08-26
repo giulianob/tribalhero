@@ -1,12 +1,12 @@
 package src.UI.LookAndFeel
 {
 
-import org.aswing.plaf.basic.splitpane.Divider;
-import org.aswing.*;
-import org.aswing.plaf.*;
-import org.aswing.skinbuilder.SkinButtonIcon;
+    import org.aswing.*;
+    import org.aswing.plaf.*;
+    import org.aswing.plaf.basic.splitpane.Divider;
+    import org.aswing.skinbuilder.SkinButtonIcon;
 
-public class GameSplitPaneDivider extends Divider implements Orientable{
+    public class GameSplitPaneDivider extends Divider implements Orientable{
 	
 	protected var leftIco:SkinButtonIcon;
 	protected var rightIco:SkinButtonIcon;

@@ -1,10 +1,8 @@
 package src.UI.Components.TimePicker 
 {
-	import org.aswing.JTextField;
-	import org.aswing.plaf.basic.BasicAdjusterUI;
-	import org.aswing.skinbuilder.SkinAdjusterUI;
-	
-	/**
+    import org.aswing.skinbuilder.SkinAdjusterUI;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */

@@ -1,16 +1,16 @@
 package src.UI.Components.BattleReport 
 {
-	import flash.events.Event;
-	import mx.utils.*;
-	import org.aswing.*;
-	import org.aswing.ext.*;
-	import src.Comm.GameURLLoader;
-	import src.Constants;
-	import src.Global;
-	import src.UI.Components.*;
-	import src.UI.LookAndFeel.*;
-	
-	public class BattleImportantRound extends JPanel 
+    import flash.events.Event;
+
+    import mx.utils.*;
+
+    import org.aswing.*;
+    import org.aswing.ext.*;
+
+    import src.UI.Components.*;
+    import src.UI.LookAndFeel.*;
+
+    public class BattleImportantRound extends JPanel
 	{
 		public static const EVENT_VIEW_SNAPSHOT: String = "EVENT_VIEW_SNAPSHOT";
 		

@@ -1,15 +1,8 @@
 package src.UI.Components.BattleReport 
 {
-	import src.UI.Components.DynamicTable;
-	import src.Util.StringHelper;
-	import org.aswing.event.TableCellEditEvent;
-	import org.aswing.JTable;
-	import org.aswing.table.GeneralTableCellFactory;
-	import org.aswing.table.PropertyTableModel;
-	import org.aswing.table.TableColumn;
-	import org.aswing.VectorListModel;
-	
-	public class BattleReportListTable extends DynamicTable 
+    import src.UI.Components.DynamicTable;
+
+    public class BattleReportListTable extends DynamicTable
 	{
 		public static const COLUMN_DATE: int = 0;
 		public static const COLUMN_DATE_UNREAD_BOLD: int = 1;

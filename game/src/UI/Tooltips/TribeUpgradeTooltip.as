@@ -1,28 +1,16 @@
 ﻿
 package src.UI.Tooltips {
 
-	import src.Util.StringHelper;
-	import mx.events.ResourceEvent;
-	import src.Global;
-	import src.Map.City;
-	import src.Objects.Effects.RequirementFormula;
-	import src.Objects.Prototypes.EffectReqPrototype;
-	import src.Objects.Prototypes.UnitPrototype;
-	import src.Objects.Resources;
-	import src.Objects.StructureObject;
-	import src.UI.Components.ResourcesPanel;
-	import src.UI.Components.UnitStatBox;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.Util.Util;
-	import src.Objects.Effects.Formula;
+    import org.aswing.*;
+    import org.aswing.ext.*;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
+    import src.Objects.Effects.Formula;
+    import src.Objects.Resources;
+    import src.UI.Components.ResourcesPanel;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+    import src.Util.StringHelper;
 
-	public class TribeUpgradeTooltip extends ActionButtonTooltip {
+    public class TribeUpgradeTooltip extends ActionButtonTooltip {
 		private var level: int;
 		private var hasNextLevel: Boolean;
 		
@@ -41,8 +29,8 @@ package src.UI.Tooltips {
 		{
 			this.level = level;
 			this.cost = cost;
-			var nextLvl: String = getDescription(level + 1);;
-			this.hasNextLevel = nextLvl && nextLvl != "";
+            var nextLvl: String = getDescription(level + 1);
+            this.hasNextLevel = nextLvl && nextLvl != "";
 		}
 		
 		private function getDescription(level: int): String {

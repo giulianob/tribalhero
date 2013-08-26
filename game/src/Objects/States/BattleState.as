@@ -1,10 +1,10 @@
 package src.Objects.States 
 {
-	import flash.display.DisplayObject;
-	import src.Objects.GameObject;
-	import src.Objects.SimpleGameObject;
+    import flash.display.DisplayObject;
 
-	public class BattleState extends GameObjectState
+    import src.Objects.SimpleGameObject;
+
+    public class BattleState extends GameObjectState
 	{
 		public var battleId: int;
 		

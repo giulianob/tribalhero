@@ -1,25 +1,21 @@
 ﻿package src.UI.Components.TableCells
 {
-	import flash.events.*;
-	import org.aswing.*;
-	import org.aswing.event.*;
-	import org.aswing.table.*;
-	import src.*;
-	import src.UI.Components.*;
-	import src.UI.Components.Messaging.MessagingIcon;
-	import src.UI.Components.Tribe.SetRankIcon;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import org.aswing.*;
+    import org.aswing.table.*;
+
+    import src.*;
+    import src.UI.LookAndFeel.GameLookAndFeel;
     import src.Util.DateUtil;
     import src.Util.StringHelper;
-	import src.Util.Util;
 
-	public class MessageBoardThreadListCell extends AbstractTableCell
+    public class MessageBoardThreadListCell extends AbstractTableCell
 	{
 		protected var wrapper: JPanel;
 		
 		private var lblSubject: JLabel;
         
-        private var lblLastPost: JLabel 
+        private var lblLastPost: JLabel;
+        ;
 		
 		public function MessageBoardThreadListCell()
 		{

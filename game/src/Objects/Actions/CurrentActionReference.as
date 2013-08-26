@@ -5,13 +5,10 @@
 */
 
 package src.Objects.Actions {
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.GameObject;
-	import src.Objects.SimpleGameObject;
+    import src.Global;
+    import src.Map.City;
 
-	public class CurrentActionReference {
+    public class CurrentActionReference {
 		
 		public var cityId: int;
 		public var id: int;

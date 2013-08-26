@@ -1,9 +1,10 @@
 package src.Objects.Process 
 {
-	import src.Global;
-	import src.Map.City;
-	import src.UI.Dialog.UnitMoveDialog;
-	public class ManageLocalTroopsProcess implements IProcess 
+    import src.Global;
+    import src.Map.City;
+    import src.UI.Dialog.UnitMoveDialog;
+
+    public class ManageLocalTroopsProcess implements IProcess
 	{
 		private var city:City;
 		

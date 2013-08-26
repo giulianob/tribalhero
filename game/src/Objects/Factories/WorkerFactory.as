@@ -1,14 +1,13 @@
 ﻿package src.Objects.Factories {
-	import src.Map.Map;
-	import src.Objects.Actions.*;
-	import src.Objects.Effects.EffectReqManager;
-	import src.Objects.Prototypes.EffectPrototype;
-	import src.Util.Util;
-	import src.UI.Cursors.StructureDowngradeCursor;
-	import src.Util.BinaryList.*;
-	import src.Objects.Prototypes.Worker;
+    import src.Map.Map;
+    import src.Objects.Actions.*;
+    import src.Objects.Effects.EffectReqManager;
+    import src.Objects.Prototypes.EffectPrototype;
+    import src.Objects.Prototypes.Worker;
+    import src.Util.BinaryList.*;
+    import src.Util.Util;
 
-	/**
+    /**
 	 * ...
 	 * @author Default
 	 */
@@ -61,7 +60,7 @@
 						}
 					}
 
-					switch(new String(actionNode.name()))
+					switch(String(actionNode.name()))
 					{
 						case "RoadBuild":
 							action = new BuildRoadAction();

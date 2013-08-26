@@ -1,28 +1,24 @@
 package src.UI.Tooltips {
-	import com.greensock.loading.core.DisplayObjectLoader;
-	import flash.display.DisplayObject;
-	import flash.display.InteractiveObject;
-	import flash.events.Event;
+    import flash.display.DisplayObject;
+    import flash.events.Event;
     import flash.events.EventDispatcher;
     import flash.events.IEventDispatcher;
-	import flash.events.MouseEvent;
-	import org.aswing.AsWingManager;
-	import org.aswing.border.EmptyBorder;
-	import org.aswing.Component;
-    import org.aswing.Container;
-	import org.aswing.event.AWEvent;
+    import flash.events.MouseEvent;
+
+    import org.aswing.AsWingManager;
+    import org.aswing.Insets;
+    import org.aswing.JPanel;
+    import org.aswing.border.EmptyBorder;
+    import org.aswing.event.AWEvent;
     import org.aswing.event.ContainerEvent;
     import org.aswing.event.PopupEvent;
-	import org.aswing.FocusManager;
-	import org.aswing.geom.IntPoint;
-	import org.aswing.Insets;
-    import org.aswing.JPanel;
-	import src.Global;
-	import src.Map.Camera;
-	import src.UI.GameJBox;
+    import org.aswing.geom.IntPoint;
+
+    import src.Global;
+    import src.Map.Camera;
     import src.UI.GameJBoxBackground;
 
-	public class Tooltip implements IEventDispatcher
+    public class Tooltip implements IEventDispatcher
 	{
         private var dispatcher: EventDispatcher;
         

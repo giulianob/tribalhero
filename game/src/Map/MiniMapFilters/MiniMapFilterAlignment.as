@@ -1,26 +1,24 @@
-package src.Map.CityRegionFilters 
+package src.Map.MiniMapFilters
 {
-	import src.Util.StringHelper;
-	import src.Map.CityRegionFilters.CityRegionFilter;
-	import src.Map.CityRegionLegend;
-	import src.Map.CityRegionObject;
-	import src.Objects.Factories.ObjectFactory;
-	import flash.geom.*;
-	import src.UI.Tooltips.MinimapInfoTooltip;
-	import flash.events.*;
-	import src.Global;
-	import flash.display.*;
-	/**
+    import flash.display.*;
+    import flash.geom.*;
+
+    import src.Global;
+    import src.Map.MiniMap.MiniMapLegend;
+    import src.Map.MiniMap.MiniMapRegionObject;
+    import src.Util.StringHelper;
+
+    /**
 	 * ...
 	 * @author Anthony Lam
 	 */
-	public class CityRegionFilterAlignment extends CityRegionFilter 
+	public class MiniMapFilterAlignment extends MiniMapRegionFilter
 	{	
 		override public function getName(): String {
 			return "Alignment";
 		}
 
-		override public function applyCity(obj: CityRegionObject) : void {
+		override public function applyCity(obj: MiniMapRegionObject) : void {
 			// If it's our city, we just show a special flag
 			var img: DisplayObject;
 
@@ -45,7 +43,7 @@ package src.Map.CityRegionFilters
 			}
 		}
 		
-		override public function applyLegend(legend: CityRegionLegend) : void {
+		override public function applyLegend(legend: MiniMapLegend) : void {
 			var icon: DisplayObject = new DOT_SPRITE;
 			legend.add(icon, StringHelper.localize("MINIMAP_LEGEND_CITY"));
 			

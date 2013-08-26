@@ -35,7 +35,7 @@ namespace Testing.BattleTests
             CombatList list = fixture.Create<CombatList>();
 
             List<CombatList.Target> result;
-            CombatList.BestTargetResult targetResult = list.GetBestTargets(1, combatObject, out result, 1);
+            CombatList.BestTargetResult targetResult = list.GetBestTargets(1, combatObject, out result, 1, 0);
 
             result.Should().BeEmpty();
             targetResult.Should().Be(CombatList.BestTargetResult.NoneInRange);
@@ -55,7 +55,7 @@ namespace Testing.BattleTests
 
             var battleFormulas = Substitute.For<IBattleFormulas>();                 
             fixture.Register(() => battleFormulas);                        
-            battleFormulas.GetDmgModifier(null, null).ReturnsForAnyArgs(1);
+            battleFormulas.GetDmgModifier(null, null, 0).ReturnsForAnyArgs(1);
 
             var attackerStats = Substitute.For<BattleStats>();
             var attacker = Substitute.For<ICombatObject>();
@@ -84,7 +84,7 @@ namespace Testing.BattleTests
             listSut.Add(combatGroup, false);
 
             List<CombatList.Target> result;
-            CombatList.BestTargetResult targetResult = listSut.GetBestTargets(1, attacker, out result, 1);
+            CombatList.BestTargetResult targetResult = listSut.GetBestTargets(1, attacker, out result, 1, 0);
 
             result.Should().HaveCount(1);
             result[0].CombatObject.Should().Be(defender);
@@ -143,13 +143,13 @@ namespace Testing.BattleTests
 
             var battleFormulas = Substitute.For<IBattleFormulas>();                 
             fixture.Register(() => battleFormulas);                        
-            battleFormulas.GetDmgModifier(null, null).ReturnsForAnyArgs(1, 3, 3);
+            battleFormulas.GetDmgModifier(null, null, 0).ReturnsForAnyArgs(1, 3, 3);
 
             var listSut = fixture.Create<CombatList>();
             listSut.Add(combatGroup, false);
 
             List<CombatList.Target> result;
-            CombatList.BestTargetResult targetResult = listSut.GetBestTargets(1, attacker, out result, 2);
+            CombatList.BestTargetResult targetResult = listSut.GetBestTargets(1, attacker, out result, 2, 0);
 
             result.Should().HaveCount(2);
             result.Select(x => x.CombatObject).Should().Contain(new[] { defender2, defender3 });
@@ -190,13 +190,13 @@ namespace Testing.BattleTests
 
             var battleFormulas = Substitute.For<IBattleFormulas>();                 
             fixture.Register(() => battleFormulas);                        
-            battleFormulas.GetDmgModifier(null, null).ReturnsForAnyArgs(3, 1, 2);
+            battleFormulas.GetDmgModifier(null, null, 0).ReturnsForAnyArgs(3, 1, 2);
 
             var listSut = fixture.Create<CombatList>();
             listSut.Add(combatGroup, false);
 
             List<CombatList.Target> result;
-            CombatList.BestTargetResult targetResult = listSut.GetBestTargets(1, attacker, out result, 2);
+            CombatList.BestTargetResult targetResult = listSut.GetBestTargets(1, attacker, out result, 2, 0);
 
             result.Should().HaveCount(2);
             result.Select(x => x.CombatObject).Should().Contain(new[] { defender1, defender3 });
@@ -237,13 +237,13 @@ namespace Testing.BattleTests
 
             var battleFormulas = Substitute.For<IBattleFormulas>();
             fixture.Register(() => battleFormulas);
-            battleFormulas.GetDmgModifier(null, null).ReturnsForAnyArgs(3, 1, 2);
+            battleFormulas.GetDmgModifier(null, null, 0).ReturnsForAnyArgs(3, 1, 2);
 
             var listSut = fixture.Create<CombatList>();
             listSut.Add(combatGroup, false);
 
             List<CombatList.Target> result;
-            CombatList.BestTargetResult targetResult = listSut.GetBestTargets(1, attacker, out result, 3);
+            CombatList.BestTargetResult targetResult = listSut.GetBestTargets(1, attacker, out result, 3, 0);
 
             result.Should().HaveCount(3);
             result.Select(x => x.CombatObject).Should().ContainInOrder(defender1, defender3, defender2);
@@ -285,13 +285,13 @@ namespace Testing.BattleTests
 
             var battleFormulas = Substitute.For<IBattleFormulas>();
             fixture.Register(() => battleFormulas);
-            battleFormulas.GetDmgModifier(null, null).ReturnsForAnyArgs(1, 1, 2);
+            battleFormulas.GetDmgModifier(null, null, 0).ReturnsForAnyArgs(1, 1, 2);
 
             var listSut = fixture.Create<CombatList>();
             listSut.Add(combatGroup, false);
 
             List<CombatList.Target> result;
-            CombatList.BestTargetResult targetResult = listSut.GetBestTargets(1, attacker, out result, 3);
+            CombatList.BestTargetResult targetResult = listSut.GetBestTargets(1, attacker, out result, 3, 0);
 
             result.Should().HaveCount(3);
             result.Select(x => x.CombatObject).Should().ContainInOrder(defender3, defender2, defender1);
@@ -332,7 +332,7 @@ namespace Testing.BattleTests
 
             var battleFormulas = Substitute.For<IBattleFormulas>();
             fixture.Register(() => battleFormulas);
-            battleFormulas.GetDmgModifier(null, null).ReturnsForAnyArgs(1, 1, 1);
+            battleFormulas.GetDmgModifier(null, null, 0).ReturnsForAnyArgs(1, 1, 1);
 
             // defender2 is closer than defender 1
             var radiusLocator = Substitute.For<ITileLocator>();
@@ -344,7 +344,7 @@ namespace Testing.BattleTests
             listSut.Add(combatGroup, false);
 
             List<CombatList.Target> result;
-            CombatList.BestTargetResult targetResult = listSut.GetBestTargets(1, attacker, out result, 3);
+            CombatList.BestTargetResult targetResult = listSut.GetBestTargets(1, attacker, out result, 3, 0);
 
             result.Should().HaveCount(3);
             result.Select(x => x.CombatObject).Should().ContainInOrder(defender3, defender2, defender1);
@@ -382,13 +382,13 @@ namespace Testing.BattleTests
 
             var battleFormulas = Substitute.For<IBattleFormulas>();
             fixture.Register(() => battleFormulas);
-            battleFormulas.GetDmgModifier(null, null).ReturnsForAnyArgs(1, 2, 3);
+            battleFormulas.GetDmgModifier(null, null, 0).ReturnsForAnyArgs(1, 2, 3);
 
             var listSut = fixture.Create<CombatList>();
             listSut.Add(combatGroup, false);
 
             List<CombatList.Target> result;
-            CombatList.BestTargetResult targetResult = listSut.GetBestTargets(1, attacker, out result, 4);
+            CombatList.BestTargetResult targetResult = listSut.GetBestTargets(1, attacker, out result, 4, Arg.Any<uint>());
 
             result.Should().HaveCount(3);
             result.Select(x => x.CombatObject).Should().ContainInOrder(defender3, defender2, defender1);

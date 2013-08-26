@@ -96,6 +96,7 @@ namespace Game.Battle.CombatObjects
                                                            ushort count)
         {
             var battleFormulas = kernel.Get<IBattleFormulas>();
+	    var formula = kernel.Get<Formula>();
 
             IBaseUnitStats template = stub.City.Template[type];
             BattleStats stats = stub.Template[type];
@@ -121,7 +122,8 @@ namespace Game.Battle.CombatObjects
                                                                   template.Lvl,
                                                                   size,
                                                                   battleFormulas,
-                                                                  kernel.Get<Formula>());
+                                                                  formula,
+                                                                  unitFactory);
                 units[i++] = newUnit;
                 count -= size;
             }

@@ -13,7 +13,7 @@ namespace Game.Battle
 
         bool HasInRange(ICombatObject attacker);
 
-        CombatList.BestTargetResult GetBestTargets(uint battleId, ICombatObject attacker, out List<CombatList.Target> result, int maxCount);
+        CombatList.BestTargetResult GetBestTargets(uint battleId, ICombatObject attacker, out List<CombatList.Target> result, int maxCount, uint round);
 
         IEnumerable<ICombatObject> AllCombatObjects();
 

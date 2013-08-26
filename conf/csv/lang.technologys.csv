@@ -58,7 +58,7 @@ DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases troop's travel speed by 150% when distanc
 ARCHERY_RESEARCH_TECHNOLOGY_NAME,Archery Research
 ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow wielding units.
 ,
-BOW_RESEARCH_TECHNOLOGY_NAME,Bowshield  Research
+BOW_RESEARCH_TECHNOLOGY_NAME,Bowshield Research
 BOW_RESEARCH_TECHNOLOGY_LVL_1,"Increases Bowman, Archer and Helepolis's Max HP by 4%. (Does not stack)"
 BOW_RESEARCH_TECHNOLOGY_LVL_2,"Increases Bowman, Archer and Helepolis's Max HP by 8%. (Does not stack)"
 BOW_RESEARCH_TECHNOLOGY_LVL_3,"Increases Bowman, Archer and Helepolis's Max HP by 12%. (Does not stack)"
@@ -69,66 +69,66 @@ HIPPOSANDAL_TECHNOLOGY_LVL_2,Equips mounts with horseshoes.  Increase base Carry
 HIPPOSANDAL_TECHNOLOGY_LVL_3,Equips mounts with horseshoes.  Increase base Carry for mount unit by 45. (Does not stack)
 ,
 SWORD_ARMOR_RESEARCH_TECHNOLOGY_NAME,Sword Units Defensive Boost
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Fighter, Swordsman, and Hoplite by 3% on defense mission . (Stacks additively up to 150%)"
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Fighter, Swordsman, and Hoplite by 6% on defense mission . (Stacks additively up to 150%)"
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Fighter, Swordsman, and Hoplite by 9% on defense mission . (Stacks additively up to 150%)"
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Fighter, Swordsman, and Hoplite by 12% on defense mission . (Stacks additively up to 150%)"
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Fighter, Swordsman, and Hoplite by 1% on defense mission . (Stacks additively up to 150%)"
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Fighter, Swordsman, and Hoplite by 3% on defense mission . (Stacks additively up to 150%)"
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Fighter, Swordsman, and Hoplite by 6% on defense mission . (Stacks additively up to 150%)"
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Fighter, Swordsman, and Hoplite by 10 on defense mission . (Stacks additively up to 150%)"
 SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Fighter, Swordsman, and Hoplite by 15% on defense mission . (Stacks additively up to 150%)"
 ,
 BOW_ARMOR_RESEARCH_TECHNOLOGY_NAME,Bow Units Defensive Boost
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Bowman, Archer and Helepolis by 3% on defense mission . (Stacks additively up to 150%)"
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Bowman, Archer and Helepolis by 6% on defense mission . (Stacks additively up to 150%)"
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Bowman, Archer and Helepolis by 9% on defense mission . (Stacks additively up to 150%)"
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Bowman, Archer and Helepolis by 12% on defense mission . (Stacks additively up to 150%)"
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Bowman, Archer and Helepolis by 1% on defense mission . (Stacks additively up to 150%)"
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Bowman, Archer and Helepolis by 3% on defense mission . (Stacks additively up to 150%)"
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Bowman, Archer and Helepolis by 6% on defense mission . (Stacks additively up to 150%)"
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Bowman, Archer and Helepolis by 10% on defense mission . (Stacks additively up to 150%)"
 BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Bowman, Archer and Helepolis by 15% on defense mission . (Stacks additively up to 150%)"
 ,
 PIKE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Pike Units Defensive Boost
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Cavalry and Knight by 3% on defense mission . (Stacks additively up to 150%)
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Cavalry and Knight by 6% on defense mission . (Stacks additively up to 150%)
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Cavalry and Knight by 9% on defense mission . (Stacks additively up to 150%)
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Cavalry and Knight by 12% on defense mission . (Stacks additively up to 150%)
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Cavalry and Knight by 1% on defense mission . (Stacks additively up to 150%)
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Cavalry and Knight by 3% on defense mission . (Stacks additively up to 150%)
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Cavalry and Knight by 6% on defense mission . (Stacks additively up to 150%)
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Cavalry and Knight by 10% on defense mission . (Stacks additively up to 150%)
 PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Cavalry and Knight by 15% on defense mission . (Stacks additively up to 150%)
 ,
 BALL_ARMOR_RESEARCH_TECHNOLOGY_NAME,Siege Units Defensive Boost
-BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Gladiator and Catapult by 3% on defense mission . (Stacks additively up to 150%)
-BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Gladiator and Catapult by 6% on defense mission . (Stacks additively up to 150%)
-BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Gladiator and Catapult by 9% on defense mission . (Stacks additively up to 150%)
-BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Gladiator and Catapult by 12% on defense mission . (Stacks additively up to 150%)
+BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Gladiator and Catapult by 1% on defense mission . (Stacks additively up to 150%)
+BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Gladiator and Catapult by 3% on defense mission . (Stacks additively up to 150%)
+BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Gladiator and Catapult by 6% on defense mission . (Stacks additively up to 150%)
+BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Gladiator and Catapult by 10% on defense mission . (Stacks additively up to 150%)
 BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Gladiator and Catapult by 15% on defense mission . (Stacks additively up to 150%)
 ,
 STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Structure Defensive Boost
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all structures by 3% on defense. (Stacks additively up to 150%)
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all structures by 6% on defense. (Stacks additively up to 150%)
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all structures by 9% on defense. (Stacks additively up to 150%)
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all structures by 12% on defense. (Stacks additively up to 150%)
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all structures by 1% on defense. (Stacks additively up to 150%)
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all structures by 3% on defense. (Stacks additively up to 150%)
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all structures by 6% on defense. (Stacks additively up to 150%)
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all structures by 10% on defense. (Stacks additively up to 150%)
 STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all structures by 15% on defense. (Stacks additively up to 150%)
 ,
 SWORD_WEAPON_RESEARCH_TECHNOLOGY_NAME,Sword Units Offensive Boost
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Fighter, Swordsman and Hoplite  by 3% on attack mission . (Stacks additively up to 150%)"
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Fighter, Swordsman and Hoplite  by 6% on attack mission . (Stacks additively up to 150%)"
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Fighter, Swordsman and Hoplite  by 9% on attack mission . (Stacks additively up to 150%)"
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Fighter, Swordsman and Hoplite  by 12% on attack mission . (Stacks additively up to 150%)"
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Fighter, Swordsman and Hoplite  by 15% on attack mission . (Stacks additively up to 150%)"
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Fighter, Swordsman and Hoplite  by 1% on attack mission . (Stacks additively up to 150%)"
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Fighter, Swordsman and Hoplite  by 3% on attack mission . (Stacks additively up to 150%)"
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Fighter, Swordsman and Hoplite  by 6% on attack mission . (Stacks additively up to 150%)"
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Fighter, Swordsman and Hoplite by 10% on attack mission . (Stacks additively up to 150%)"
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Fighter, Swordsman and Hoplite by 15% on attack mission . (Stacks additively up to 150%)"
 ,
 PIKE_WEAPON_RESEARCH_TECHNOLOGY_NAME,Pike Units Offensive Boost
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Cavalry and Knight by 3% on attack mission . (Stacks additively up to 150%)
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Cavalry and Knight by 6% on attack mission . (Stacks additively up to 150%)
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Cavalry and Knight by 9% on attack mission . (Stacks additively up to 150%)
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Cavalry and Knight by 12% on attack mission . (Stacks additively up to 150%)
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Cavalry and Knight by 1% on attack mission . (Stacks additively up to 150%)
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Cavalry and Knight by 3% on attack mission . (Stacks additively up to 150%)
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Cavalry and Knight by 6% on attack mission . (Stacks additively up to 150%)
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Cavalry and Knight by 10% on attack mission . (Stacks additively up to 150%)
 PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Cavalry and Knight by 15% on attack mission . (Stacks additively up to 150%)
 ,
 BOW_WEAPON_RESEARCH_TECHNOLOGY_NAME,Bow Units Offensive Boost
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Bowman, Archer and Helepolis by 3% on attack mission . (Stacks additively up to 150%)"
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Bowman, Archer and Helepolis by 6% on attack mission . (Stacks additively up to 150%)"
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Bowman, Archer and Helepolis by 9% on attack mission . (Stacks additively up to 150%)"
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Bowman, Archer and Helepolis by 12% on attack mission . (Stacks additively up to 150%)"
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Bowman, Archer and Helepolis by 1% on attack mission . (Stacks additively up to 150%)"
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Bowman, Archer and Helepolis by 3% on attack mission . (Stacks additively up to 150%)"
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Bowman, Archer and Helepolis by 6% on attack mission . (Stacks additively up to 150%)"
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Bowman, Archer and Helepolis by 10% on attack mission . (Stacks additively up to 150%)"
 BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Bowman, Archer and Helepolis by 15% on attack mission . (Stacks additively up to 150%)"
 ,
 BALL_WEAPON_RESEARCH_TECHNOLOGY_NAME,Siege Units Offensive Boost
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Gladiator and Catapult by 3% on attack mission . (Stacks additively up to 150%)
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Gladiator and Catapult by 6% on attack mission . (Stacks additively up to 150%)
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Gladiator and Catapult by 9% on attack mission . (Stacks additively up to 150%)
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Gladiator and Catapult by 12% on attack mission . (Stacks additively up to 150%)
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Gladiator and Catapult by 1% on attack mission . (Stacks additively up to 150%)
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Gladiator and Catapult by 3% on attack mission . (Stacks additively up to 150%)
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Gladiator and Catapult by 6% on attack mission . (Stacks additively up to 150%)
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Gladiator and Catapult by 10% on attack mission . (Stacks additively up to 150%)
 BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Gladiator and Catapult by 15% on attack mission . (Stacks additively up to 150%)
 ,
 ATTIC_STORAGE_TECHNOLOGY_NAME,Attic Storage
@@ -168,18 +168,18 @@ GREED_IS_GOOD_TECHNOLOGY_LVL_4,Reduce time to load up loot by 4 Rounds (Stacks a
 GREED_IS_GOOD_TECHNOLOGY_LVL_5,Reduce time to load up loot by 5 Rounds (Stacks additively up to 10 Rounds)
 ,
 COORDINATED_DEFENSE_TECHNOLOGY_NAME,Coordinated Defense
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_1,Defensive Reinforcement Troops gain 2% Max HP but travel speed is REDUCED by 3%. (Stacks additively)
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_2,Defensive Reinforcement Troops gains 4% Max HP but travel speed is REDUCED by 6%. (Stacks additively)
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_3,Defensive Reinforcement Troops gains 6% Max HP but travel speed is REDUCED by 9%. (Stacks additively)
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_4,Defensive Reinforcement Troops gains 8% Max HP but travel speed is REDUCED by 12%. (Stacks additively)
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_5,Defensive Reinforcement Troops gains 10% Max HP but travel speed is REDUCED by 15%. (Stacks additively)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_1,Defensive Reinforcement Troops gain 2% Max HP.  (Stacks additively up to 40%)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_2,Defensive Reinforcement Troops gains 4% Max HP. (Stacks additively up to 40%)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_3,Defensive Reinforcement Troops gains 6% Max HP. (Stacks additively up to 40%)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_4,Defensive Reinforcement Troops gains 8% Max HP. (Stacks additively up to 40%)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_5,Defensive Reinforcement Troops gains 10% Max HP. (Stacks additively up to 40%)
 ,
 COORDINATED_ATTACK_TECHNOLOGY_NAME,Coordinated Attack
-COORDINATED_ATTACK_TECHNOLOGY_LVL_1,Offensive Troops gains 2% Max HP but travel speed is REDUCED by 3%. (Stacks additively)
-COORDINATED_ATTACK_TECHNOLOGY_LVL_2,Offensive Troops gains 4% Max HP but travel speed is REDUCED by 6%. (Stacks additively)
-COORDINATED_ATTACK_TECHNOLOGY_LVL_3,Offensive Troops gains 6% Max HP but travel speed is REDUCED by 9%. (Stacks additively)
-COORDINATED_ATTACK_TECHNOLOGY_LVL_4,Offensive Troops gains 8% Max HP but travel speed is REDUCED by 12%. (Stacks additively)
-COORDINATED_ATTACK_TECHNOLOGY_LVL_5,Offensive Troops gains 10% Max HP but travel speed is REDUCED by 15%. (Stacks additively)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_1,Offensive Troops gains 2% Max HP. (Stacks additively up to 40%)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_2,Offensive Troops gains 4% Max HP. (Stacks additively up to 40%)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_3,Offensive Troops gains 6% Max HP. (Stacks additively up to 40%)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_4,Offensive Troops gains 8% Max HP. (Stacks additively up to 40%)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_5,Offensive Troops gains 10% Max HP. (Stacks additively up to 40%)
 ,
 REINVENT_WHEEL_TECHNOLOGY_NAME,Reinvent the Wheel
 REINVENT_WHEEL_TECHNOLOGY_LVL_1,Increase send/trade resource speed by 8% for this structure only.

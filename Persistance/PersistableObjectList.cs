@@ -35,7 +35,7 @@ namespace Persistance
             Add(item, true);
         }
 
-        public void Add(T item, bool save)
+        public virtual void Add(T item, bool save)
         {
             BackingList.Add(item);
             ItemAdded(this, item);

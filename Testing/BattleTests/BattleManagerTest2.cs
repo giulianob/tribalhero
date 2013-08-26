@@ -28,13 +28,13 @@ namespace Testing.BattleTests
             // Attacker has 300 raw damage
             // Defender takes 150 dmg but only has 100 hp so 50 dmg should be carried over
             // 16% should be carried over
-            battleFormulas.GetAttackerDmgToDefender(attacker1, defender1).Returns(300);
+            battleFormulas.GetAttackerDmgToDefender(attacker1, defender1, Arg.Any<uint>()).Returns(300);
             decimal outActualDmg;
             defender1.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, null, 0, 0, out outActualDmg))
                      .Do(args => { args[5] = 150m; });
             defender1.Hp.Returns(100m);
 
-            battleFormulas.GetAttackerDmgToDefender(attacker1, defender2).Returns(200);
+            battleFormulas.GetAttackerDmgToDefender(attacker1, defender2, Arg.Any<uint>()).Returns(200);
 
             battleManager.Attackers.Count.Returns(1);
             battleManager.Attackers.AllAliveCombatObjects().Returns(new[] {attacker1});
@@ -44,7 +44,7 @@ namespace Testing.BattleTests
             battleManager.Defenders.AllCombatObjects().Returns(new[] {defender1, defender2});
 
             List<CombatList.Target> outCarryOverDefender;
-            battleManager.Defenders.GetBestTargets(0, null, out outCarryOverDefender, 0)
+            battleManager.Defenders.GetBestTargets(0, null, out outCarryOverDefender, 0, 0)
                          .ReturnsForAnyArgs(args =>
                              {
                                  args[2] = new List<CombatList.Target>
@@ -98,7 +98,7 @@ namespace Testing.BattleTests
         {
             attacker1.Stats.Atk.Returns(10);
 
-            battleFormulas.GetAttackerDmgToDefender(null, null).ReturnsForAnyArgs(100m);
+            battleFormulas.GetAttackerDmgToDefender(null, null, 0).ReturnsForAnyArgs(100m);
             decimal outActualDmg;
             defender1.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, null, 0, 0, out outActualDmg))
                      .Do(args => { args[5] = 100m; });
@@ -116,7 +116,7 @@ namespace Testing.BattleTests
             battleManager.Defenders.AllCombatObjects().Returns(new[] {defender1, defender2, defender3});
 
             List<CombatList.Target> outCarryOverDefender;
-            battleManager.Defenders.GetBestTargets(0, null, out outCarryOverDefender, 0)
+            battleManager.Defenders.GetBestTargets(0, null, out outCarryOverDefender, 0, 0)
                          .ReturnsForAnyArgs(
                                             args =>
                                                 {
@@ -186,7 +186,7 @@ namespace Testing.BattleTests
             defender1.Hp.Returns(100);
 
             // Defender2 takes 130 dmg but only has 100 hp so 30 dmg should be carried over            
-            battleFormulas.GetAttackerDmgToDefender(attacker1, defender2).Returns(1);
+            battleFormulas.GetAttackerDmgToDefender(attacker1, defender2, Arg.Any<uint>()).Returns(1);
             defender2.WhenForAnyArgs(p => p.CalcActualDmgToBeTaken(null, null, null, 0, 0, out outActualDmg))
                      .Do(args => { args[5] = 130m; });
             defender2.Hp.Returns(100m);
@@ -199,7 +199,7 @@ namespace Testing.BattleTests
             battleManager.Defenders.AllCombatObjects().Returns(new[] {defender1, defender2, defender3});
 
             List<CombatList.Target> outCarryOverDefender;
-            battleManager.Defenders.GetBestTargets(0, null, out outCarryOverDefender, 0)
+            battleManager.Defenders.GetBestTargets(0, null, out outCarryOverDefender, 0, 0)
                          .ReturnsForAnyArgs(args =>
                              {
                                  args[2] = new List<CombatList.Target>

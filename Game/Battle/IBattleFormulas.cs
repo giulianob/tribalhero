@@ -45,7 +45,7 @@ namespace Game.Battle
 
         Resource GetBonusResources(ITroopObject troop, int originalCount, int remainingCount);
 
-        int GetNumberOfHits(ICombatObject currentAttacker);
+        int GetNumberOfHits(ICombatObject currentAttacker, ICombatList defenderCombatList);
 
         decimal SplashReduction(CityCombatObject defender, decimal dmg, int attackIndex);
     }

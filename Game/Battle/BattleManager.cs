@@ -462,7 +462,7 @@ namespace Game.Battle
                     var targetResult = defensiveCombatList.GetBestTargets(BattleId,
                                                                           attackerObject,
                                                                           out currentDefenders,
-                                                                          battleFormulas.GetNumberOfHits(attackerObject),
+                                                                          battleFormulas.GetNumberOfHits(attackerObject, defensiveCombatList),
                                                                           Round);
 
                     if (currentDefenders.Count == 0 || attackerObject.Stats.Atk == 0)

@@ -196,9 +196,10 @@ WEAPON_EXPORT_TECHNOLOGY_LVL_4,"Every 5 idle laborers produce 2 gold per hour fo
 WEAPON_EXPORT_TECHNOLOGY_LVL_5,"Every 2 idle laborers produce 1 gold per hour for up to 300 laborers.  Once gold reserves go over 10000, production is reduced to 1 gold per hour for every 10 idle laborers.  (Does not stack)"
 ,
 SPIKE_BARRICADE_TECHNOLOGY_NAME,Spike Barricade
-SPIKE_BARRICADE_TECHNOLOGY_LVL_1,Increases building's splash damage by 1.
-SPIKE_BARRICADE_TECHNOLOGY_LVL_2,Increases building's splash damage by 2.
-SPIKE_BARRICADE_TECHNOLOGY_LVL_3,Increases building's splash damage by 3.
+SPIKE_BARRICADE_TECHNOLOGY_LVL_1,Increases building's splash damage count by 1 (excludes Tower and Cannon Tower).
+SPIKE_BARRICADE_TECHNOLOGY_LVL_2,Increases building's splash damage count by 2 (excludes Tower and Cannon Tower).
+SPIKE_BARRICADE_TECHNOLOGY_LVL_3,Increases building's splash damage count by 3 (excludes Tower and Cannon Tower).
+SPIKE_BARRICADE_TECHNOLOGY_LVL_4,Increases Tower and Cannon Tower's splash damage count by 1.
 ,
 HANZO_SWORD_TECHNOLOGY_NAME,Hanzo Formation
 HANZO_SWORD_TECHNOLOGY_LVL_1,"Reduce splash damage received by 5% for Fighter, Swordsman and gladiator."

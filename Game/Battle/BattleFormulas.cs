@@ -23,12 +23,15 @@ namespace Game.Battle
 
         private readonly UnitFactory unitFactory;
 
+        private readonly ObjectTypeFactory objectTypeFactory;
+
         private readonly UnitModFactory unitModFactory;
 
-        public BattleFormulas(UnitModFactory unitModFactory, UnitFactory unitFactory)
+        public BattleFormulas(UnitModFactory unitModFactory, UnitFactory unitFactory, ObjectTypeFactory objectTypeFactory)
         {
             this.unitModFactory = unitModFactory;
             this.unitFactory = unitFactory;
+            this.objectTypeFactory = objectTypeFactory;
         }        
 
         public virtual decimal GetDmgWithMissChance(int attackersUpkeep, int defendersUpkeep, decimal dmg, IBattleRandom random)
@@ -389,9 +392,10 @@ namespace Game.Battle
             return new Resource(troop.Stats.Loot) * (troopsLostPercentage) * (1f + (Config.Random.Next(max) / 100f));
         }
 
-        public virtual int GetNumberOfHits(ICombatObject currentAttacker)
+        public virtual int GetNumberOfHits(ICombatObject currentAttacker, ICombatList defenderCombatList)
         {
-            return currentAttacker.Stats.Splash == 0 ? 1 : currentAttacker.Stats.Splash;
+            int splashEvery200 = objectTypeFactory.IsObjectType("SplashEvery200", currentAttacker.Type) ? (Math.Min(defenderCombatList.Upkeep, 4000) / 200) : 0;
+            return currentAttacker.Stats.Splash == 0 ? 1 : currentAttacker.Stats.Splash + splashEvery200;
         }
 
         public virtual decimal SplashReduction(CityCombatObject defender, decimal dmg, int attackIndex)

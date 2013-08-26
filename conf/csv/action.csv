@@ -216,6 +216,8 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 2301,9,9,1,,technology_Upgrade,Hanzo=23013,3,,,,,
 2301,10,10,1,,technology_Upgrade,Bow=23014,3,,,,,
 ,,,,,,,,,,,,
+2301,12,6,1,,technology_Upgrade,Spike=23012,4,,,,,
+,,,,,,,,,,,,
 //Armory,,,,,,,,,,,,
 2302,1,0,1,,,,,,,,,
 2302,1,1,1,,structure_Upgrade,10,,,,,,

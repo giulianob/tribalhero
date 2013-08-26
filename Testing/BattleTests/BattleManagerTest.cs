@@ -117,7 +117,7 @@ namespace Testing.BattleTests
                 return MockInRange.Contains(attacker);
             }
 
-            public CombatList.BestTargetResult GetBestTargets(uint battleId, ICombatObject attacker, out List<CombatList.Target> result, int maxCount)
+            public CombatList.BestTargetResult GetBestTargets(uint battleId, ICombatObject attacker, out List<CombatList.Target> result, int maxCount, uint round)
             {
                 var queueItem = MockGetBestTargets.Dequeue();
                 result = queueItem.Targets;
@@ -199,6 +199,7 @@ namespace Testing.BattleTests
                                                  BattleSide sideAttacking,
                                                  CombatList.Target target,
                                                  int attackIndex,
+                                                 uint round,
                                                  out decimal carryOverDmg)
             {
                 attackTargetCallback(offensiveCombatList, defensiveCombatList, attacker, target, attackIndex);

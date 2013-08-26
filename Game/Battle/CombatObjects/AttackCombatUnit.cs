@@ -86,7 +86,6 @@ namespace Game.Battle.CombatObjects
         {
             LeftOverHp = leftOverHp;
             this.loot = loot;
-            eachUnitUpkeep = unitFactory.GetUnitStats(type, lvl).Upkeep * count;
         }
 
         public decimal LeftOverHp { get; set; }

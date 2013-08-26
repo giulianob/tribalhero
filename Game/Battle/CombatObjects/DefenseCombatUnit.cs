@@ -37,6 +37,8 @@ namespace Game.Battle.CombatObjects
 
         private readonly Formula formula;
 
+        private byte eachUnitUpkeep;
+
         public DefenseCombatUnit(uint id,
                                  uint battleId,
                                  ITroopStub stub,
@@ -45,7 +47,8 @@ namespace Game.Battle.CombatObjects
                                  byte lvl,
                                  ushort count,
                                  IBattleFormulas battleFormulas,
-                                 Formula formula)
+                                 Formula formula,
+                                 UnitFactory unitFactory)
                 : base(id, battleId, battleFormulas)
         {
             troopStub = stub;
@@ -57,6 +60,8 @@ namespace Game.Battle.CombatObjects
 
             stats = stub.Template[type];
             leftOverHp = stats.MaxHp;
+
+            eachUnitUpkeep = unitFactory.GetUnitStats(type, lvl).Upkeep;
         }
 
         public DefenseCombatUnit(uint id,
@@ -68,8 +73,9 @@ namespace Game.Battle.CombatObjects
                                  ushort count,
                                  decimal leftOverHp,
                                  IBattleFormulas battleFormulas,
-                                 Formula formula)
-                : this(id, battleId, stub, formation, type, lvl, count, battleFormulas, formula)
+                                 Formula formula,
+				 UnitFactory unitFactory)
+                : this(id, battleId, stub, formation, type, lvl, count, battleFormulas, formula, unitFactory)
         {
             this.leftOverHp = leftOverHp;
         }
@@ -118,7 +124,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Upkeep * count;
+                return eachUnitUpkeep * count;
             }
         }
 
@@ -138,19 +144,19 @@ namespace Game.Battle.CombatObjects
             }
         }
 
-        public override ICity City
-        {
-            get
-            {
-                return TroopStub.City;
-            }
-        }
-
         public override byte Size
         {
             get
             {
                 return 1;
+            }
+        }
+
+        public override ICity City
+        {
+            get
+            {
+                return TroopStub.City;
             }
         }
 

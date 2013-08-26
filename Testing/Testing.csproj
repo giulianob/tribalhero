@@ -127,14 +127,16 @@
     <Compile Include="Balancing\TestOutnumber.cs" />
     <Compile Include="Balancing\TestArcher.cs" />
     <Compile Include="Balancing\UnitType.cs" />
+    <Compile Include="BattleTests\BattleFormulaTest.cs" />
     <Compile Include="BattleTests\BattleManagerTest.cs" />
     <Compile Include="BattleTests\BattleManagerTest2.cs" />
     <Compile Include="BattleTests\BattleOrderTest.cs" />
     <Compile Include="BattleTests\CombatGroupTest.cs" />
     <Compile Include="BattleTests\CombatListTest.cs" />
     <Compile Include="BattleTests\CombatStructureTest.cs" />
+    <Compile Include="BattleTests\MaxHpModCalculatorTests.cs" />
     <Compile Include="BattleTests\StaminaMonitorTests.cs" />
-    <Compile Include="BattleTests\StatsModCalculator.cs" />
+    <Compile Include="BattleTests\AtkDmgModCalculatorTests.cs" />
     <Compile Include="BattleTests\StrongholdBattleManagerTests.cs" />
     <Compile Include="ChannelTests\ChannelTest.cs" />
     <Compile Include="CityTests\CityTest.cs" />

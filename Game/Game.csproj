@@ -171,6 +171,9 @@
     <Compile Include="Battle\RewardStrategies\IRewardStrategy.cs" />
     <Compile Include="Battle\RewardStrategies\IRewardStrategyFactory.cs" />
     <Compile Include="Battle\StaminaMonitor.cs" />
+    <Compile Include="Battle\StatsModCalculator\AtkDmgModCalculator.cs" />
+    <Compile Include="Battle\StatsModCalculator\IntStatsModCalculator.cs" />
+    <Compile Include="Battle\StatsModCalculator\MaxHpModCalculator.cs" />
     <Compile Include="Battle\StrongholdMainBattleManager.cs" />
     <Compile Include="Comm\Channel\BattleChannel.cs" />
     <Compile Include="Battle\BattleFormulas.cs" />
@@ -541,7 +544,7 @@
     <Compile Include="Util\XMLSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Battle\StatsModCalculator.cs" />
+    <Compile Include="Battle\StatsModCalculator\BattleStatsModCalculator.cs" />
     <Compile Include="Comm\ProcessorCommands\MarketCommandsModule.cs" />
     <Compile Include="Data\GameObject.cs" />
     <Compile Include="Data\Forest\ForestManager.cs" />

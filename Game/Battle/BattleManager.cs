@@ -49,10 +49,6 @@ namespace Game.Battle
 
         private readonly IRewardStrategy rewardStrategy;
 
-        private uint round;
-
-        private uint turn;
-
         public BattleManager(uint battleId,
                              BattleLocation location,
                              BattleOwner owner,
@@ -92,31 +88,9 @@ namespace Game.Battle
 
         public bool BattleStarted { get; set; }
 
-        public uint Round
-        {
-            get
-            {
-                return round;
-            }
-            set
-            {
-                round = value;
-                battleRandom.UpdateSeed(Round, Turn);
-            }
-        }
+        public uint Round { get; set; }
 
-        public uint Turn
-        {
-            get
-            {
-                return turn;
-            }
-            set
-            {
-                turn = value;
-                battleRandom.UpdateSeed(Round, Turn);
-            }
-        }
+        public uint Turn { get; set; }
 
         public ICombatList Attackers { get; private set; }
 
@@ -406,6 +380,8 @@ namespace Game.Battle
         {
             lock (battleLock)
             {
+                battleRandom.UpdateSeed(Round, Turn);
+
                 ICombatList offensiveCombatList;
                 ICombatList defensiveCombatList;
                 BattleSide sideAttacking;
@@ -486,7 +462,8 @@ namespace Game.Battle
                     var targetResult = defensiveCombatList.GetBestTargets(BattleId,
                                                                           attackerObject,
                                                                           out currentDefenders,
-                                                                          battleFormulas.GetNumberOfHits(attackerObject));
+                                                                          battleFormulas.GetNumberOfHits(attackerObject),
+                                                                          Round);
 
                     if (currentDefenders.Count == 0 || attackerObject.Stats.Atk == 0)
                     {
@@ -532,6 +509,7 @@ namespace Game.Battle
                                  sideAttacking,
                                  defender,
                                  attackIndex,
+                                 Round,
                                  out carryOverDmg);
 
                     // Add another target if we have to carry over some dmg and our current hit isnt from a carry over already
@@ -541,7 +519,8 @@ namespace Game.Battle
                         defensiveCombatList.GetBestTargets(BattleId,
                                                            attackerObject,
                                                            out carryOverDefender,
-                                                           1);
+                                                           1,
+                                                           Round);
 
                         if (carryOverDefender.Count > 0)
                         {
@@ -645,6 +624,7 @@ namespace Game.Battle
                                             BattleSide sideAttacking,
                                             CombatList.Target target,
                                             int attackIndex,
+                                            uint round,
                                             out decimal carryOverDmg)
         {
             var attackerCount = attacker.Count;
@@ -652,7 +632,7 @@ namespace Game.Battle
 
             #region Damage            
 
-            decimal dmg = battleFormulas.GetAttackerDmgToDefender(attacker, target.CombatObject);
+            decimal dmg = battleFormulas.GetAttackerDmgToDefender(attacker, target.CombatObject,round);
             
             if (target.DamageCarryOverPercentage.HasValue)
             {

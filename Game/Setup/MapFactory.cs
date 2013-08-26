@@ -6,6 +6,7 @@ using System.IO;
 using Game.Data;
 using Game.Database;
 using Game.Map;
+using Persistance;
 
 #endregion
 
@@ -13,9 +14,16 @@ namespace Game.Setup
 {
     public class MapFactory
     {
-        private const int SKIP = 1;
+        private readonly IDbManager dbManager;
+
+        private const int INITIAL_INDEX = 200;
 
         private readonly List<Position> dict = new List<Position>();
+
+        public MapFactory(IDbManager dbManager)
+        {
+            this.dbManager = dbManager;
+        }
 
         public void Init(string filename)
         {
@@ -39,23 +47,25 @@ namespace Game.Setup
         }
 
         private SystemVariable index;
+
         public int Index
         {
             get
             {
-                if(index==null)
+                if (index == null)
                 {
                     if (!Global.SystemVariables.TryGetValue("Map.start_index", out index))
                     {
-                        return 0;
+                        index = new SystemVariable("Map.start_index", INITIAL_INDEX);
                     }
                 }
+
                 return (int)index.Value;
             }
             set
             {
                 index.Value = value;
-                DbPersistance.Current.Save(index);
+                dbManager.Save(index);
             }
         }
     }

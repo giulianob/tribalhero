@@ -171,7 +171,7 @@ package src.UI.Dialog
 			}
 			else
 			{
-                if (profanityFilter.quickValidate(message) == false)
+                if (type !== TYPE_TRIBE && profanityFilter.quickValidate(message) == false)
                 {
                     log(currentChatType, 'Looks like your chat message contains some offensive terms. Please keep it classy.', false);
                     return false;

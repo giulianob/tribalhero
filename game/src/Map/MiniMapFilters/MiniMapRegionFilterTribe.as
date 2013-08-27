@@ -9,10 +9,6 @@ package src.Map.MiniMapFilters
     import src.Map.MiniMap.MiniMapRegionObject;
     import src.Util.StringHelper;
 
-    /**
-	 * ...
-	 * @author Anthony Lam
-	 */
 	public class MiniMapRegionFilterTribe extends MiniMapRegionFilter
 	{
 		override public function getName(): String {
@@ -20,11 +16,7 @@ package src.Map.MiniMapFilters
 		}
 
 		override public function applyCity(obj: MiniMapRegionObject) : void {
-			// If it's our city, we just show a special flag
-			var img: DisplayObject;
-
-			img = new DOT_SPRITE;
-			obj.sprite = img;
+			obj.setIcon(new DOT_SPRITE);
 			
 			if (Global.map.cities.get(obj.groupId)) {
 				obj.transform.colorTransform = new ColorTransform();
@@ -35,7 +27,6 @@ package src.Map.MiniMapFilters
 			} else {
 				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[0].r, DEFAULT_COLORS[0].g, DEFAULT_COLORS[0].b);
 			}
-			obj.addChild(img);
 		}
 		
 		override public function applyLegend(legend: MiniMapLegend) : void {

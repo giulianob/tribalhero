@@ -1,21 +1,16 @@
 package src.UI.Components.TroopsDialogTable 
 {
-	import flash.events.Event;
-	import org.aswing.border.EmptyBorder;
-	import org.aswing.event.ResizedEvent;
-	import org.aswing.table.AbstractTableCell;
-	import org.aswing.*;
-	import src.Global;
-	import src.Map.City;
-	import src.Objects.Actions.Action;
-	import src.Objects.Actions.Notification;
-	import src.Objects.Actions.PassiveAction;
-	import src.Objects.Troop.TroopStub;
-	import src.UI.Components.CountDownLabel;
-	import src.UI.Components.TableCells.AbstractPanelTableCell;
-	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
-	
-	public class TroopStatusCell extends AbstractPanelTableCell
+    import org.aswing.*;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Objects.Actions.Action;
+    import src.Objects.Actions.Notification;
+    import src.Objects.Troop.TroopStub;
+    import src.UI.Components.CountDownLabel;
+    import src.UI.Components.TableCells.AbstractPanelTableCell;
+
+    public class TroopStatusCell extends AbstractPanelTableCell
 	{			
 		private var lblState:JLabel;
 		private var lblCountdown: CountDownLabel;

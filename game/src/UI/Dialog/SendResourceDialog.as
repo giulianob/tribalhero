@@ -122,8 +122,8 @@
 			
 			txtCityName = new AutoCompleteTextField(Global.mapComm.General.autoCompleteCity);
 			txtCityName.setColumns(16);
-			txtCityName.setMaxChars(32);			
-			
+			txtCityName.setMaxChars(32);
+
 			pnlCity.append(lblCityTitle);
 			pnlCity.append(txtCityName);
 		

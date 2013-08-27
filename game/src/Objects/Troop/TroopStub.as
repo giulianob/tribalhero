@@ -172,7 +172,7 @@
 			{
 				for each(var unit: Unit in formation)
 				{
-					if (!units.hasOwnProperty(unit.type)) {
+					if (!units.hasOwnProperty(unit.type.toString())) {
 						units[unit.type] = 0;
 					}
 					

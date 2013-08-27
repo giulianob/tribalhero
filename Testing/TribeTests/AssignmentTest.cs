@@ -330,7 +330,7 @@ namespace Testing.TribeTests
             var actionWorker = Substitute.For<IActionWorker>();
             var troopObject = Substitute.For<ITroopObject>();
             var locker = Substitute.For<ILocker>();
-            var initializer = Substitute.For<ITroopObjectInitializerFactory>();
+            var troopInitializerFactory = Substitute.For<ITroopObjectInitializerFactory>();
 
             troopObject.ObjectId.Returns((uint)99);
 
@@ -347,32 +347,39 @@ namespace Testing.TribeTests
             stubCity.Worker.Returns(actionWorker);
             stubCity.Id.Returns((uint)20);
 
-            SystemClock.SetClock(startTime);
+            var troopInitializer = Substitute.For<ITroopObjectInitializer>();
+            troopInitializerFactory.CreateAssignmentTroopObjectInitializer(troopObject, TroopBattleGroup.Defense, AttackMode.Strong).Returns(troopInitializer);
+
+            SystemClock.SetClock(startTime);            
 
             // troop should be dispatched a minute later
-            formula.MoveTimeTotal(stub, Arg.Any<int>(), true).Returns(300);
+            formula.MoveTimeTotal(stub, Arg.Any<int>(), false).Returns(300);
 
             ITroopObject outTroopObject;
             procedure.When(m => m.TroopObjectCreate(stubCity, stub, out outTroopObject)).Do(x =>
                 { x[2] = troopObject; });
 
-            Assignment assignment = new Assignment(tribe,
-                                                   TARGET_X,
-                                                   TARGET_Y,
-                                                   targetCity,
-                                                   AttackMode.Strong,
-                                                   targetTime,
-                                                   "Description",
-                                                   false,
-                                                   formula,
-                                                   dbManager,
-                                                   gameObjectLocator,
-                                                   scheduler,
-                                                   procedure,
-                                                   tileLocator,
-                                                   actionFactory,
-                                                   locker,
-                                                   initializer) { stub };
+            var assignment = new Assignment(tribe,
+                                            TARGET_X,
+                                            TARGET_Y,
+                                            targetCity,
+                                            AttackMode.Strong,
+                                            targetTime,
+                                            "Description",
+                                            false,
+                                            formula,
+                                            dbManager,
+                                            gameObjectLocator,
+                                            scheduler,
+                                            procedure,
+                                            tileLocator,
+                                            actionFactory,
+                                            locker,
+                                            troopInitializerFactory)
+            {
+                stub
+            };
+
             assignment.Reschedule();
             assignment.Time.Should().Be(targetTime.AddMinutes(-5));
 
@@ -380,7 +387,7 @@ namespace Testing.TribeTests
 
             // Dispatch first troop
             assignment.Callback(null);
-            actionFactory.Received().CreateCityDefenseChainAction(20, 99, 100, AttackMode.Strong);
+            actionFactory.Received().CreateCityDefenseChainAction(20, troopInitializer, 100);
         }
 
         private ITroopStub CreateStub(out ICity stubCity)

@@ -24,8 +24,6 @@ namespace Game.Logic.Actions
 
         private readonly IGameObjectLocator gameObjectLocator;
 
-        private readonly AttackMode mode;
-
         private readonly uint targetStrongholdId;
 
         private readonly uint troopObjectId;
@@ -37,14 +35,12 @@ namespace Game.Logic.Actions
         public StrongholdEngageMainAttackPassiveAction(uint cityId,
                                                        uint troopObjectId,
                                                        uint targetStrongholdId,
-                                                       AttackMode mode,
                                                        IGameObjectLocator gameObjectLocator,
                                                        StrongholdBattleProcedure strongholdBattleProcedure)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
             this.targetStrongholdId = targetStrongholdId;
-            this.mode = mode;
             this.gameObjectLocator = gameObjectLocator;
             this.strongholdBattleProcedure = strongholdBattleProcedure;
         }
@@ -62,7 +58,6 @@ namespace Game.Logic.Actions
             cityId = uint.Parse(properties["troop_city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             groupId = uint.Parse(properties["group_id"]);
-            mode = (AttackMode)uint.Parse(properties["mode"]);
             originalUnitCount = int.Parse(properties["original_count"]);
 
             targetStrongholdId = uint.Parse(properties["target_stronghold_id"]);
@@ -96,8 +91,9 @@ namespace Game.Logic.Actions
                         XmlSerializer.Serialize(new[]
                         {
                                 new XmlKvPair("target_stronghold_id", targetStrongholdId),
-                                new XmlKvPair("troop_city_id", cityId), new XmlKvPair("troop_object_id", troopObjectId),
-                                new XmlKvPair("group_id", groupId), new XmlKvPair("mode", (int)mode),
+                                new XmlKvPair("troop_city_id", cityId), 
+                                new XmlKvPair("troop_object_id", troopObjectId),
+                                new XmlKvPair("group_id", groupId),
                                 new XmlKvPair("original_count", originalUnitCount)
                         });
             }

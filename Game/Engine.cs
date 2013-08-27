@@ -249,7 +249,7 @@ _________ _______ _________ ______   _______  _
             RadiusLocator.Current = kernel.Get<RadiusLocator>();
             TileLocator.Current = kernel.Get<TileLocator>();
             ReverseTileLocator.Current = kernel.Get<ReverseTileLocator>();
-            BattleFormulas.Current = kernel.Get<BattleFormulas>();
+            BattleFormulas.Current = kernel.Get<IBattleFormulas>();
             Concurrency.Current = kernel.Get<ILocker>();
             Formula.Current = kernel.Get<Formula>();
             World.Current = kernel.Get<IWorld>();

@@ -19,7 +19,7 @@ namespace Game.Battle
     /// </summary>
     public class CombatList : PersistableObjectList<ICombatGroup>, ICombatList
     {
-        private readonly BattleFormulas battleFormulas;
+        private readonly IBattleFormulas battleFormulas;
 
         private readonly RadiusLocator radiusLocator;
 
@@ -34,11 +34,18 @@ namespace Game.Battle
 
         #endregion
 
-        public CombatList(IDbManager manager, RadiusLocator radiusLocator, BattleFormulas battleFormulas)
+        public CombatList(IDbManager manager, RadiusLocator radiusLocator, IBattleFormulas battleFormulas)
                 : base(manager)
         {
             this.radiusLocator = radiusLocator;
             this.battleFormulas = battleFormulas;
+
+            ItemAdded += ObjectAdded;
+        }
+
+        private void ObjectAdded(PersistableObjectList<ICombatGroup> list, ICombatGroup item)
+        {
+            BackingList.Sort((combatGroup1, combatGroup2) => combatGroup1.Id.CompareTo(combatGroup2.Id));
         }
 
         public int Upkeep
@@ -49,12 +56,19 @@ namespace Game.Battle
             }
         }
 
+        public int UpkeepNotParticipated(uint round)
+        {
+            return AllAliveCombatObjects()
+                    .Where(obj => obj.LastRound <= round)
+                    .Sum(x => x.Upkeep);
+        }
+
         public bool HasInRange(ICombatObject attacker)
         {
             return AllAliveCombatObjects().Any(obj => obj.InRange(attacker) && attacker.InRange(obj));
         }
 
-        public BestTargetResult GetBestTargets(uint battleId, ICombatObject attacker, out List<Target> result, int maxCount)
+        public BestTargetResult GetBestTargets(uint battleId, ICombatObject attacker, out List<Target> result, int maxCount, uint round)
         {
             result = new List<Target>();
 
@@ -86,7 +100,7 @@ namespace Game.Battle
                 int score = 0;
 
                 // Have to compare armor and weapon type here to give some sort of score
-                score += ((int)(battleFormulas.GetDmgModifier(attacker, target.CombatObject) * 10));
+                score += ((int)(battleFormulas.GetDmgModifier(attacker, target.CombatObject, round) * 10));
 
                 if (bestTarget == null || score > bestTargetScore)
                 {
@@ -192,6 +206,8 @@ namespace Game.Battle
             public ICombatObject CombatObject { get; set; }
 
             public ICombatGroup Group { get; set; }
+
+            public decimal? DamageCarryOverPercentage { get; set; } 
         }
 
         #endregion

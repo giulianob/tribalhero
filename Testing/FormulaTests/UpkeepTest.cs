@@ -181,7 +181,7 @@ namespace Testing.FormulaTests
             }
         }        
 
-        public static ITroopStub MockStub(IEnumerable<Formation> formations)
+        public static ITroopStub MockStub(IEnumerable<IFormation> formations)
         {
             var stub = Substitute.For<ITroopStub>();
 
@@ -200,7 +200,7 @@ namespace Testing.FormulaTests
             city.Troops.MyStubs().Returns(troops);
             city.Technologies.GetEffects(EffectCode.UpkeepReduce).Returns(effects);
 
-            var battleFormulas = BattleFormulas.Current = Substitute.For<BattleFormulas>();
+            var battleFormulas = Substitute.For<IBattleFormulas>();
 
             // Just making UnitStatModCheck return true/false depending on whether the effect arg matches the type of the unit
             battleFormulas.UnitStatModCheck(Arg.Any<BaseBattleStats>(), TroopBattleGroup.Any, Arg.Any<string>())
@@ -234,7 +234,7 @@ namespace Testing.FormulaTests
             city.Template[3].Returns(baseUnitStats3);        
 
             // Execute
-            procedure.UpkeepForCity(city).Should().Be(expected);            
+            procedure.UpkeepForCity(city, battleFormulas).Should().Be(expected);            
             city.Technologies.Received(1).GetEffects(EffectCode.UpkeepReduce);
         }
     }

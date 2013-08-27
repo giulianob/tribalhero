@@ -30,10 +30,7 @@ namespace Game.Comm.Channel
             battleManager.ExitTurn += BattleManagerOnExitTurn;
         }
 
-        private void BattleManagerOnExitTurn(IBattleManager battle,
-                                             ICombatList attackers,
-                                             ICombatList defenders,
-                                             int turn)
+        private void BattleManagerOnExitTurn(IBattleManager battle, ICombatList attackers, ICombatList defenders, uint turn)
         {
             var properties = battle.ListProperties();
             if (properties.Count == 0)
@@ -129,7 +126,9 @@ namespace Game.Comm.Channel
                                           ICombatObject source,
                                           ICombatGroup targetGroup,
                                           ICombatObject target,
-                                          decimal damage)
+                                          decimal damage,
+                                          int attackerCount,
+                                          int targetCount)
         {
             var packet = CreatePacket(battle, Command.BattleAttack);
             packet.AddByte((byte)attackingSide);
@@ -138,6 +137,8 @@ namespace Game.Comm.Channel
             packet.AddUInt32(targetGroup.Id);
             packet.AddUInt32(target.Id);
             packet.AddFloat((float)damage);
+            packet.AddInt32(attackerCount);
+            packet.AddInt32(targetCount);
             Global.Channel.Post(channelName, packet);
         }
 

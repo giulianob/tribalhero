@@ -1,6 +1,8 @@
-﻿using FluentAssertions;
+﻿using Common.Testing;
+using FluentAssertions;
 using Game.Data.Troop;
 using Xunit;
+using Xunit.Extensions;
 
 namespace Testing.TroopTests
 {

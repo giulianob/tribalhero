@@ -53,6 +53,8 @@ namespace Testing.StrongholdTests
         public void RetreatUnits_RetreatsStationedUnitsThatAreNotInATribe(
             IStronghold stronghold, 
             [Frozen] IActionFactory actionFactory,
+            [Frozen] ITroopObjectInitializerFactory troopInitializerFactory,
+            ITroopObjectInitializer troopInitializer,
             ITroopStub stub,
             RetreatChainAction retreatAction,
             StrongholdManager strongholdManager)
@@ -63,9 +65,10 @@ namespace Testing.StrongholdTests
             stub.State.Returns(TroopState.Stationed);
             stub.City.Owner.IsInTribe.Returns(false);
             stub.City.Id.Returns<uint>(1234);
-            stub.TroopId.Returns<ushort>(2);                        
+            stub.TroopId.Returns<ushort>(2);
 
-            actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId).Returns(retreatAction);
+            troopInitializerFactory.CreateStationedTroopObjectInitializer(stub).Returns(troopInitializer);
+            actionFactory.CreateRetreatChainAction(stub.City.Id, troopInitializer).Returns(retreatAction);
 
             strongholdManager.RetreatUnits(stronghold);
             
@@ -76,6 +79,8 @@ namespace Testing.StrongholdTests
         public void RetreatUnits_RetreatsStationedUnitsThatAreNotInTribeThatOwnsStronghold(
             IStronghold stronghold, 
             [Frozen] IActionFactory actionFactory,
+            [Frozen] ITroopObjectInitializerFactory troopInitializerFactory,
+            ITroopObjectInitializer troopInitializer,
             ITroopStub stub,
             ITribe tribe,
             ITribe shTribe,
@@ -92,7 +97,8 @@ namespace Testing.StrongholdTests
             stronghold.Tribe.Returns(shTribe);
             stronghold.Troops.StationedHere().Returns(new[] { stub });
 
-            actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId).Returns(retreatAction);
+            troopInitializerFactory.CreateStationedTroopObjectInitializer(stub).Returns(troopInitializer);
+            actionFactory.CreateRetreatChainAction(stub.City.Id, troopInitializer).Returns(retreatAction);
 
             strongholdManager.RetreatUnits(stronghold);
             

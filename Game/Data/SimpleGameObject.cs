@@ -271,5 +271,9 @@ namespace Game.Data
         }
 
         #endregion
+
+        public abstract int Hash { get; }
+
+        public abstract object Lock { get; }
     }
 }

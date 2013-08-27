@@ -19,11 +19,6 @@ namespace Game.Battle
 
     public class BattleOwner
     {
-        public BattleOwner(string type, uint id)
-                : this((BattleOwnerType)Enum.Parse(typeof(BattleOwnerType), type), id)
-        {
-        }
-
         public BattleOwner(BattleOwnerType type, uint id)
         {
             Type = type;

@@ -6,6 +6,7 @@ using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Map;
 using Game.Module;
+using Game.Module.Remover;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -209,6 +210,7 @@ namespace Game.Logic.Actions
                                    formula.GetInitialCityRadius(),
                                    structure,
                                    formula.GetInitialAp());
+
                 city.Owner.Add(newCity);
 
                 world.Regions.SetTileType(x, y, 0, true);

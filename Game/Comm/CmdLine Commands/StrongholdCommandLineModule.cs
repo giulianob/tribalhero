@@ -58,17 +58,10 @@ namespace Game.Comm
 
         private string CmdStrongholdFindNearbyCities(Session session, string[] parms)
         {
-            SystemVariable mapStartIndex;
-            int index = 0;
-            if (Global.SystemVariables.TryGetValue("Map.start_index", out mapStartIndex))
+            var list = new List<Position>(mapFactory.Locations().Take(mapFactory.Index));
+            foreach (var stronghold in strongholdManager.Where(s => s.StrongholdState == StrongholdState.Inactive))
             {
-                index = (int)mapStartIndex.Value;
-            }
-
-            var list = new List<Position>(mapFactory.Locations().Take(index));
-            foreach(var stronghold in strongholdManager.Where(s=>s.StrongholdState == StrongholdState.Inactive))
-            {
-                using(locker.Lock(stronghold))
+                using (locker.Lock(stronghold))
                 {
                     stronghold.BeginUpdate();
                     int count = list.Count(pt => stronghold.TileDistance(pt.X, pt.Y) <= Config.stronghold_radius_base + Config.stronghold_radius_per_level * stronghold.Lvl);
@@ -78,6 +71,7 @@ namespace Game.Comm
                     stronghold.EndUpdate();
                 }
             }
+
             return "OK";
         }
 

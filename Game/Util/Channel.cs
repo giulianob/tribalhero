@@ -49,6 +49,8 @@ namespace Game.Util
 
         public void Post(string channelId, Packet message)
         {
+            IChannel[] sessionsToPost;
+
             channelLock.EnterReadLock();
             try
             {
@@ -57,14 +59,16 @@ namespace Game.Util
                     return;
                 }
 
-                foreach (var sub in subscribersByChannel[channelId])
-                {
-                    sub.Session.OnPost(message);
-                }
+                sessionsToPost = subscribersByChannel[channelId].Select(s => s.Session).ToArray();
             }
             finally
             {
                 channelLock.ExitReadLock();
+            }
+
+            foreach (var session in sessionsToPost)
+            {
+                session.OnPost(message);
             }
         }
 

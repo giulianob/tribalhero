@@ -21,27 +21,37 @@ namespace Game.Logic.Actions
 
         private readonly IActionFactory actionFactory;
 
+        private readonly ITroopObjectInitializer troopObjectInitializer;
+
+        private readonly ILocker locker;
+
+        private readonly IWorld world;
+
+        private readonly Procedure procedure;
+
         private readonly uint cityId;
-
-        private readonly AttackMode mode;
-
+        
+        private uint troopObjectId;
+        
         private readonly uint targetCityId;
-
-        private readonly uint troopObjectId;
-
+        
         public CityDefenseChainAction(uint cityId,
-                                      uint troopObjectId,
+                                      ITroopObjectInitializer troopObjectInitializer,
                                       uint targetCityId,
-                                      AttackMode mode,
                                       BattleProcedure battleProcedure,
-                                      IActionFactory actionFactory)
+                                      IActionFactory actionFactory,
+                                      ILocker locker,
+                                      IWorld world,
+                                      Procedure procedure)
         {
             this.cityId = cityId;
-            this.troopObjectId = troopObjectId;
+            this.troopObjectInitializer = troopObjectInitializer;
             this.targetCityId = targetCityId;
-            this.mode = mode;
             this.battleProcedure = battleProcedure;
             this.actionFactory = actionFactory;
+            this.locker = locker;
+            this.world = world;
+            this.procedure = procedure;
         }
 
         public CityDefenseChainAction(uint id,
@@ -51,11 +61,17 @@ namespace Game.Logic.Actions
                                       bool isVisible,
                                       Dictionary<string, string> properties,
                                       BattleProcedure battleProcedure,
-                                      IActionFactory actionFactory)
+                                      IActionFactory actionFactory,
+                                      ILocker locker,
+                                      IWorld world,
+                                      Procedure procedure)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
             this.battleProcedure = battleProcedure;
             this.actionFactory = actionFactory;
+            this.locker = locker;
+            this.world = world;
+            this.procedure = procedure;
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             targetCityId = uint.Parse(properties["target_city_id"]);
@@ -76,8 +92,9 @@ namespace Game.Logic.Actions
                 return
                         XmlSerializer.Serialize(new[]
                         {
-                                new XmlKvPair("city_id", cityId), new XmlKvPair("target_city_id", targetCityId),
-                                new XmlKvPair("troop_object_id", troopObjectId)
+                            new XmlKvPair("city_id", cityId),
+                            new XmlKvPair("target_city_id", targetCityId),
+                            new XmlKvPair("troop_object_id", troopObjectId)
                         });
             }
         }
@@ -93,8 +110,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city;
-            ITroopObject troopObject;
-            if (!World.Current.TryGetObjects(cityId, troopObjectId, out city, out troopObject))
+            if (!world.TryGetObjects(cityId, out city))
             {
                 return Error.ObjectNotFound;
             }
@@ -105,7 +121,7 @@ namespace Game.Logic.Actions
             }
 
             ICity targetCity;
-            if (!World.Current.TryGetObjects(targetCityId, out targetCity))
+            if (!world.TryGetObjects(targetCityId, out targetCity))
             {
                 return Error.ObjectNotFound;
             }
@@ -122,13 +138,14 @@ namespace Game.Logic.Actions
                 return Error.CityInBattle;
             }
 
-            //Load the units stats into the stub
-            troopObject.Stub.BeginUpdate();
-            troopObject.Stub.Template.LoadStats(TroopBattleGroup.Defense);
-            troopObject.Stub.InitialCount = troopObject.Stub.TotalCount;
-            troopObject.Stub.RetreatCount = (ushort)Formula.Current.GetAttackModeTolerance(troopObject.Stub.InitialCount, mode);
-            troopObject.Stub.AttackMode = mode;
-            troopObject.Stub.EndUpdate();
+            ITroopObject troopObject;
+            var troopInitializeResult = troopObjectInitializer.GetTroopObject(out troopObject);
+            if (troopInitializeResult != Error.Ok)
+            {
+                return troopInitializeResult;
+            }
+
+            troopObjectId = troopObject.ObjectId;
 
             city.References.Add(troopObject, this);
             city.Notifications.Add(troopObject, this, targetCity);
@@ -146,7 +163,7 @@ namespace Game.Logic.Actions
             {
                 Dictionary<uint, ICity> cities;
 
-                using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
+                using (locker.Lock(out cities, cityId, targetCityId))
                 {
                     if (cities == null)
                     {
@@ -164,7 +181,7 @@ namespace Game.Logic.Actions
                     city.References.Remove(troopObject, this);
                     city.Notifications.Remove(this);
 
-                    Procedure.Current.TroopObjectStation(troopObject, targetCity);
+                    procedure.TroopObjectStation(troopObject, targetCity);
 
                     if (targetCity.Battle != null)
                     {

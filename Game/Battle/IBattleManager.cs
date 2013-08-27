@@ -31,8 +31,6 @@ namespace Game.Battle
 
         IEnumerable<ILockable> LockList { get; }
 
-        BattleManager.BattleSide NextToAttack { set; }
-
         ICombatObject GetCombatObject(uint id);
 
         ICombatGroup GetCombatGroup(uint id);

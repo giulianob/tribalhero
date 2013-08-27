@@ -3,41 +3,43 @@
 using System;
 using System.Linq;
 using Game.Battle.CombatObjects;
+using Game.Battle.StatsModCalculator;
 using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Stats;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
 using Game.Setup;
+using Game.Util;
+using Ninject.Extensions.Logging;
 
 #endregion
 
 namespace Game.Battle
 {
-    public class BattleFormulas
+    public class BattleFormulas : IBattleFormulas
     {
         [Obsolete("Inject BattleFormulas instead")]
-        public static BattleFormulas Current { get; set; }
+        public static IBattleFormulas Current { get; set; }
 
         private readonly UnitFactory unitFactory;
 
+        private readonly ObjectTypeFactory objectTypeFactory;
+
         private readonly UnitModFactory unitModFactory;
 
-        public BattleFormulas()
-        {
-        }
-
-        public BattleFormulas(UnitModFactory unitModFactory, UnitFactory unitFactory)
+        public BattleFormulas(UnitModFactory unitModFactory, UnitFactory unitFactory, ObjectTypeFactory objectTypeFactory)
         {
             this.unitModFactory = unitModFactory;
             this.unitFactory = unitFactory;
+            this.objectTypeFactory = objectTypeFactory;
         }        
 
-        public virtual decimal GetDmgWithMissChance(int attackersUpkeep, int defendersUpkeep, decimal dmg)
+        public virtual decimal GetDmgWithMissChance(int attackersUpkeep, int defendersUpkeep, decimal dmg, IBattleRandom random)
         {
             double delta = Math.Max(0, (double)attackersUpkeep / defendersUpkeep);
             double effectiveness = attackersUpkeep > 200 ? 1 : (double)attackersUpkeep / 200;
-
+            
             int missChance;
             if (delta < 1)
             {
@@ -76,13 +78,13 @@ namespace Game.Battle
                 missChance = (int)(60 * effectiveness);
             }
 
-            var rand = (int)(Config.Random.NextDouble() * 100);
+            var rand = (int)(random.NextDouble() * 100);
 
             if (missChance <= 0 || rand > missChance)
             {
                 return dmg;
             }
-
+            
             return dmg / 2m;
         }
 
@@ -93,17 +95,17 @@ namespace Game.Battle
             return units[Math.Min(level, units.Length - 1)];
         }
 
-        public virtual decimal GetAttackerDmgToDefender(ICombatObject attacker, ICombatObject target, bool useDefAsAtk)
+        public virtual decimal GetAttackerDmgToDefender(ICombatObject attacker, ICombatObject target, uint round)
         {
             decimal atk = attacker.Stats.Atk;
             decimal rawDmg = (atk * attacker.Count);
-            decimal modifier = (decimal)GetDmgModifier(attacker, target);
+            decimal modifier = (decimal)GetDmgModifier(attacker, target, round);
             rawDmg = modifier * rawDmg;
 
             return rawDmg > ushort.MaxValue ? ushort.MaxValue : rawDmg;
         }
 
-        public virtual double GetDmgModifier(ICombatObject attacker, ICombatObject target)
+        public virtual double GetDmgModifier(ICombatObject attacker, ICombatObject target, uint round)
         {
             switch(attacker.Stats.Base.Weapon)
             {
@@ -111,9 +113,9 @@ namespace Game.Battle
                     switch(target.Stats.Base.Armor)
                     {
                         case ArmorType.Building1:
-                            return unitModFactory.GetModifier(1, 1);
+                            return round < 5 ? unitModFactory.GetModifier(1, 1) * .2 : unitModFactory.GetModifier(1, 1);
                         case ArmorType.Building2:
-                            return unitModFactory.GetModifier(1, 2);
+                            return round < 5 ? unitModFactory.GetModifier(1, 2) * .2 : unitModFactory.GetModifier(1, 2);;
                         case ArmorType.Building3:
                             return unitModFactory.GetModifier(1, 3);
                         case ArmorType.Gate:
@@ -125,9 +127,9 @@ namespace Game.Battle
                     switch(target.Stats.Base.Armor)
                     {
                         case ArmorType.Building1:
-                            return unitModFactory.GetModifier(2, 1);
+                            return round < 5 ? unitModFactory.GetModifier(2, 1) * .2 : unitModFactory.GetModifier(2, 1);
                         case ArmorType.Building2:
-                            return unitModFactory.GetModifier(2, 2);
+                            return round < 5 ? unitModFactory.GetModifier(2, 2) * .2 : unitModFactory.GetModifier(2, 2); ;
                         case ArmorType.Building3:
                             return unitModFactory.GetModifier(2, 3);
                         case ArmorType.Gate:
@@ -139,9 +141,9 @@ namespace Game.Battle
                     switch(target.Stats.Base.Armor)
                     {
                         case ArmorType.Building1:
-                            return unitModFactory.GetModifier(3, 1);
+                            return round < 5 ? unitModFactory.GetModifier(3, 1) * .2 : unitModFactory.GetModifier(3, 1);
                         case ArmorType.Building2:
-                            return unitModFactory.GetModifier(3, 2);
+                            return round < 5 ? unitModFactory.GetModifier(3, 2) * .2 : unitModFactory.GetModifier(3, 2); ;
                         case ArmorType.Building3:
                             return unitModFactory.GetModifier(3, 3);
                         case ArmorType.Gate:
@@ -153,9 +155,9 @@ namespace Game.Battle
                     switch(target.Stats.Base.Armor)
                     {
                         case ArmorType.Building1:
-                            return unitModFactory.GetModifier(attacker.Type, 1);
+                            return round < 5 ? unitModFactory.GetModifier(attacker.Type, 1) * .2 : unitModFactory.GetModifier(attacker.Type, 1);
                         case ArmorType.Building2:
-                            return unitModFactory.GetModifier(attacker.Type, 2);
+                            return round < 5 ? unitModFactory.GetModifier(attacker.Type, 2) * .2 : unitModFactory.GetModifier(attacker.Type, 2); ;
                         case ArmorType.Building3:
                             return unitModFactory.GetModifier(attacker.Type, 3);
                         case ArmorType.Gate:
@@ -207,14 +209,14 @@ namespace Game.Battle
             return (short)Config.battle_stamina_initial;
         }
 
-        public short GetStamina(ITroopStub stub, IStronghold targetStronghold)
+        public virtual short GetStamina(ITroopStub stub, IStronghold targetStronghold)
         {
             return (short)(Config.battle_stamina_initial * Config.battle_stamina_gate_multiplier);
         }
 
-        public short GetStamina(ITroopStub stub, IBarbarianTribe barbarianTribe)
+        public virtual short GetStamina(ITroopStub stub, IBarbarianTribe barbarianTribe)
         {
-            return (short)Config.battle_stamina_initial;;
+            return (short)Config.battle_stamina_initial;
         }
 
         public virtual ushort GetStaminaReinforced(ICity city, ushort stamina, uint round)
@@ -249,11 +251,6 @@ namespace Game.Battle
             }
 
             return --stamina;
-        }
-
-        public virtual bool IsAttackMissed(byte stealth)
-        {
-            return 100 - stealth < Config.Random.Next(0, 100);
         }
 
         public virtual bool UnitStatModCheck(IBaseBattleStats stats, TroopBattleGroup group, string value)
@@ -396,15 +393,16 @@ namespace Game.Battle
             return new Resource(troop.Stats.Loot) * (troopsLostPercentage) * (1f + (Config.Random.Next(max) / 100f));
         }
 
-        public virtual int GetNumberOfHits(ICombatObject currentAttacker)
+        public virtual int GetNumberOfHits(ICombatObject currentAttacker, ICombatList defenderCombatList)
         {
-            return currentAttacker.Stats.Splash == 0 ? 1 : currentAttacker.Stats.Splash;
+            int splashEvery200 = objectTypeFactory.IsObjectType("SplashEvery200", currentAttacker.Type) ? (Math.Min(defenderCombatList.Upkeep, 4000) / 200) : 0;
+            return currentAttacker.Stats.Splash == 0 ? 1 : currentAttacker.Stats.Splash + splashEvery200;
         }
 
         public virtual decimal SplashReduction(CityCombatObject defender, decimal dmg, int attackIndex)
         {
             // Splash damage reduction doesnt apply to the first attack
-            if (attackIndex <= 0)
+            if (attackIndex == 0)
             {
                 return dmg;
             }

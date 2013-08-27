@@ -5,7 +5,7 @@ namespace Game.Battle.CombatObjects
 {
     public abstract class CityCombatObject : CombatObject
     {
-        protected CityCombatObject(uint id, uint battleId, BattleFormulas battleFormulas)
+        protected CityCombatObject(uint id, uint battleId, IBattleFormulas battleFormulas)
                 : base(id, battleId, battleFormulas)
         {
         }

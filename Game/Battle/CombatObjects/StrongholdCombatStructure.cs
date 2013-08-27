@@ -37,7 +37,7 @@ namespace Game.Battle.CombatObjects
                                          decimal hp,
                                          IStronghold stronghold,
                                          StructureFactory structureFactory,
-                                         BattleFormulas battleFormulas)
+                                         IBattleFormulas battleFormulas)
                 : base(id, battleId, battleFormulas)
         {
             Stronghold = stronghold;
@@ -225,12 +225,13 @@ namespace Game.Battle.CombatObjects
 
         public override void CalcActualDmgToBeTaken(ICombatList attackers,
                                                     ICombatList defenders,
+                                                    IBattleRandom random,
                                                     decimal baseDmg,
                                                     int attackIndex,
                                                     out decimal actualDmg)
         {
             // Miss chance
-            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg);
+            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg, random);
         }
 
         public override void TakeDamage(decimal dmg, out Resource returning, out int attackPoints)
@@ -243,16 +244,6 @@ namespace Game.Battle.CombatObjects
 
         public override void ReceiveReward(int attackPoint, Resource resource)
         {
-        }
-
-        public override int CompareTo(object other)
-        {
-            if (other is StrongholdCombatStructure)
-            {
-                return other == this ? 0 : 1;
-            }
-
-            return -1;
         }
     }
 }

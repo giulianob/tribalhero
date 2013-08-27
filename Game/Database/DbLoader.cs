@@ -23,6 +23,7 @@ using Game.Logic.Notifications;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
+using Game.Module.Remover;
 using Game.Setup;
 using Game.Util;
 using Newtonsoft.Json;
@@ -395,16 +396,12 @@ namespace Game.Database
                 Global.SystemVariables.Add("System.time", new SystemVariable("System.time", DateTime.UtcNow));
             }
 
-            if (!Global.SystemVariables.ContainsKey("Map.start_index"))
-            {
-                Global.SystemVariables.Add("Map.start_index", new SystemVariable("Map.start_index", 0));
-            }
-
             if (!Global.SystemVariables.ContainsKey("Server.date"))
             {
                 Global.SystemVariables.Add("Server.date", new SystemVariable("Server.date", DateTime.UtcNow));
                 DbManager.Save(Global.SystemVariables["Server.date"]);
             }
+
             #endregion
         }
 
@@ -1130,8 +1127,13 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     IBattleManager battleManager;
-                    var battleOwner = new BattleOwner((string)reader["owner_type"], (uint)reader["owner_id"]);
-                    var battleLocation = new BattleLocation((string)reader["location_type"], (uint)reader["location_id"]);
+                    var battleOwner = new BattleOwner(
+                            (BattleOwnerType)Enum.Parse(typeof(BattleOwnerType), (string)reader["owner_type"]),
+                            (uint)reader["owner_id"]);
+
+                    var battleLocation = new BattleLocation(
+                            (BattleLocationType)Enum.Parse(typeof(BattleLocationType), (string)reader["location_type"], true),
+                            (uint)reader["location_id"]);
 
                     switch(battleLocation.Type)
                     {
@@ -1191,8 +1193,7 @@ namespace Game.Database
                     battleManager.DbPersisted = true;
                     battleManager.BattleStarted = (bool)reader["battle_started"];
                     battleManager.Round = (uint)reader["round"];
-                    battleManager.Turn = (uint)reader["round"];
-                    battleManager.NextToAttack = (BattleManager.BattleSide)((byte)reader["next_to_attack"]);
+                    battleManager.Turn = (uint)reader["turn"];
 
                     battleManager.BattleReport.ReportStarted = (bool)reader["report_started"];
                     battleManager.BattleReport.ReportId = (uint)reader["report_id"];
@@ -1332,7 +1333,7 @@ namespace Game.Database
                                                                   (byte)listReader["level"],
                                                                   Ioc.Kernel.Get<Formula>(),
                                                                   Ioc.Kernel.Get<IActionFactory>(),
-                                                                  Ioc.Kernel.Get<BattleFormulas>())
+                                                                  Ioc.Kernel.Get<IBattleFormulas>())
                         {
                                 GroupId = (uint)listReader["group_id"],
                                 DmgDealt = (decimal)listReader["damage_dealt"],
@@ -1374,12 +1375,12 @@ namespace Game.Database
                                                                                     (int)listReader["loot_wood"],
                                                                                     (int)listReader["loot_labor"]),
                                                                        Ioc.Kernel.Get<UnitFactory>(),
-                                                                       Ioc.Kernel.Get<BattleFormulas>());
+                                                                       Ioc.Kernel.Get<IBattleFormulas>());
 
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
                         combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
-                        combatObj.MinDmgDealt = (ushort)listReader["damage_max_received"];
+                        combatObj.MinDmgRecv = (ushort)listReader["damage_max_received"];
                         combatObj.HitDealt = (ushort)listReader["hits_dealt"];
                         combatObj.HitDealtByUnit = (uint)listReader["hits_dealt_by_unit"];
                         combatObj.HitRecv = (ushort)listReader["hits_received"];
@@ -1416,12 +1417,13 @@ namespace Game.Database
                                                                         (ushort)listReader["type"],
                                                                         (byte)listReader["level"],
                                                                         (ushort)listReader["count"],
-                                                                        (decimal)listReader["left_over_hp"],
-                                                                        Ioc.Kernel.Get<BattleFormulas>());
+                                                                        (decimal)listReader["left_over_hp"],                                                                        
+                                                                        Ioc.Kernel.Get<IBattleFormulas>(),
+                                                                        Ioc.Kernel.Get<UnitFactory>());
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
                         combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
-                        combatObj.MinDmgDealt = (ushort)listReader["damage_max_received"];
+                        combatObj.MinDmgRecv = (ushort)listReader["damage_max_received"];
                         combatObj.HitDealt = (ushort)listReader["hits_dealt"];
                         combatObj.HitDealtByUnit = (uint)listReader["hits_dealt_by_unit"];
                         combatObj.HitRecv = (ushort)listReader["hits_received"];
@@ -1460,7 +1462,7 @@ namespace Game.Database
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
                         combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
-                        combatObj.MinDmgDealt = (ushort)listReader["damage_max_received"];
+                        combatObj.MinDmgRecv = (ushort)listReader["damage_max_received"];
                         combatObj.HitDealt = (ushort)listReader["hits_dealt"];
                         combatObj.HitDealtByUnit = (uint)listReader["hits_dealt_by_unit"];
                         combatObj.HitRecv = (ushort)listReader["hits_received"];
@@ -1496,13 +1498,13 @@ namespace Game.Database
                                                                            stronghold,
                                                                            (decimal)listReader["left_over_hp"],
                                                                            Ioc.Kernel.Get<UnitFactory>(),
-                                                                           Ioc.Kernel.Get<BattleFormulas>(),
+                                                                           Ioc.Kernel.Get<IBattleFormulas>(),
                                                                            Ioc.Kernel.Get<Formula>());
 
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
                         combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
-                        combatObj.MinDmgDealt = (ushort)listReader["damage_max_received"];
+                        combatObj.MinDmgRecv = (ushort)listReader["damage_max_received"];
                         combatObj.HitDealt = (ushort)listReader["hits_dealt"];
                         combatObj.HitDealtByUnit = (uint)listReader["hits_dealt_by_unit"];
                         combatObj.HitRecv = (ushort)listReader["hits_received"];
@@ -1536,12 +1538,12 @@ namespace Game.Database
                                                                            (decimal)listReader["hp"],
                                                                            stronghold,
                                                                            Ioc.Kernel.Get<StructureFactory>(),
-                                                                           Ioc.Kernel.Get<BattleFormulas>());
+                                                                           Ioc.Kernel.Get<IBattleFormulas>());
 
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
                         combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
-                        combatObj.MinDmgDealt = (ushort)listReader["damage_max_received"];
+                        combatObj.MinDmgRecv = (ushort)listReader["damage_max_received"];
                         combatObj.HitDealt = (ushort)listReader["hits_dealt"];
                         combatObj.HitDealtByUnit = (uint)listReader["hits_dealt_by_unit"];
                         combatObj.HitRecv = (ushort)listReader["hits_received"];

@@ -35,6 +35,8 @@ namespace Game.Battle.CombatObjects
 
         private decimal leftOverHp;
 
+        private byte eachUnitUpkeep;
+
         public DefenseCombatUnit(uint id,
                                  uint battleId,
                                  ITroopStub stub,
@@ -42,7 +44,8 @@ namespace Game.Battle.CombatObjects
                                  ushort type,
                                  byte lvl,
                                  ushort count,
-                                 BattleFormulas battleFormulas)
+                                 IBattleFormulas battleFormulas,
+                                 UnitFactory unitFactory)
                 : base(id, battleId, battleFormulas)
         {
             troopStub = stub;
@@ -53,6 +56,8 @@ namespace Game.Battle.CombatObjects
 
             stats = stub.Template[type];
             leftOverHp = stats.MaxHp;
+
+            eachUnitUpkeep = unitFactory.GetUnitStats(type, lvl).Upkeep;
         }
 
         public DefenseCombatUnit(uint id,
@@ -63,8 +68,9 @@ namespace Game.Battle.CombatObjects
                                  byte lvl,
                                  ushort count,
                                  decimal leftOverHp,
-                                 BattleFormulas battleFormulas)
-                : this(id, battleId, stub, formation, type, lvl, count, battleFormulas)
+                                 IBattleFormulas battleFormulas,
+                                 UnitFactory unitFactory)
+                : this(id, battleId, stub, formation, type, lvl, count, battleFormulas, unitFactory)
         {
             this.leftOverHp = leftOverHp;
         }
@@ -113,7 +119,7 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Upkeep * count;
+                return eachUnitUpkeep * count;
             }
         }
 
@@ -241,12 +247,13 @@ namespace Game.Battle.CombatObjects
 
         public override void CalcActualDmgToBeTaken(ICombatList attackers,
                                                     ICombatList defenders,
+                                                    IBattleRandom random,
                                                     decimal baseDmg,
                                                     int attackIndex,
                                                     out decimal actualDmg)
         {
             // Miss chance
-            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg);
+            actualDmg = BattleFormulas.GetDmgWithMissChance(attackers.Upkeep, defenders.Upkeep, baseDmg, random);
 
             // Splash dmg reduction
             actualDmg = BattleFormulas.SplashReduction(this, actualDmg, attackIndex);
@@ -258,7 +265,7 @@ namespace Game.Battle.CombatObjects
                         TroopStub.City.Technologies.GetEffects(EffectCode.LastStand)
                                  .Where(
                                         tech =>
-                                        BattleFormulas.Current.UnitStatModCheck(Stats.Base,
+                                        BattleFormulas.UnitStatModCheck(Stats.Base,
                                                                                 TroopBattleGroup.Attack,
                                                                                 (string)tech.Value[1]))
                                  .DefaultIfEmpty()
@@ -301,16 +308,6 @@ namespace Game.Battle.CombatObjects
             }
 
             returning = null;
-        }
-
-        public override int CompareTo(object other)
-        {
-            if (other is ITroopStub)
-            {
-                return other == TroopStub ? 0 : 1;
-            }
-
-            return -1;
         }
 
         #region ICombatUnit Members

@@ -6,7 +6,7 @@ namespace Game.Data.Troop
 {
     public class SimpleStub : ISimpleStub
     {
-        protected Dictionary<FormationType, Formation> data = new Dictionary<FormationType, Formation>();
+        protected readonly Dictionary<FormationType, IFormation> Data = new Dictionary<FormationType, IFormation>();
 
         #region Implementation of IEnumerable
 
@@ -17,21 +17,48 @@ namespace Game.Data.Troop
                 return;
             }
 
-            Formation formation;
-            if (!data.TryGetValue(formationType, out formation))
+            IFormation formation;
+            if (!Data.TryGetValue(formationType, out formation))
             {
                 formation = new Formation(formationType);
-                data.Add(formationType, formation);
+                Data.Add(formationType, formation);
             }
 
             formation.Add(type, count);
+        }
+
+        public virtual bool RemoveFromFormation(FormationType sourceFormationType, ISimpleStub unitsToRemove)
+        {
+            if (!HasFormation(sourceFormationType))
+            {
+                return false;
+            }
+
+            // Make sure there are enough units
+            var sourceFormation = Data[sourceFormationType];
+            var allUnitsToRemove = unitsToRemove.ToUnitList();
+            foreach (var unit in allUnitsToRemove)
+            {
+                ushort count;                
+                if (!sourceFormation.TryGetValue(unit.Type, out count) || count < unit.Count)
+                {
+                    return false;
+                }
+            }
+
+            foreach (var unit in unitsToRemove.SelectMany(formation => formation))
+            {
+                Data[sourceFormationType].Remove(unit.Key, unit.Value);
+            }
+
+            return true;
         }
 
         public byte FormationCount
         {
             get
             {
-                return (byte)data.Count;
+                return (byte)Data.Count;
             }
         }
 
@@ -39,10 +66,15 @@ namespace Game.Data.Troop
         {
             get
             {
-                return data.Values.Aggregate<Formation, ushort>(0,
+                return Data.Values.Aggregate<IFormation, ushort>(0,
                                                                 (current, formation) =>
                                                                 (ushort)(current + (ushort)formation.Sum(x => x.Value)));
             }
+        }
+
+        public bool HasFormation(FormationType formation)
+        {
+            return Data.ContainsKey(formation);
         }
 
         /// <summary>
@@ -53,7 +85,7 @@ namespace Game.Data.Troop
         /// <returns></returns>
         public List<Unit> ToUnitList(params FormationType[] formations)
         {
-            var allUnits = from formation in data.Values
+            var allUnits = from formation in Data.Values
                            from unit in formation
                            where (formations.Length == 0 || formations.Contains(formation.Type))
                            orderby unit.Key
@@ -63,14 +95,22 @@ namespace Game.Data.Troop
             return allUnits.ToList();
         }
 
-        public IEnumerator<Formation> GetEnumerator()
+        public IEnumerator<IFormation> GetEnumerator()
         {
-            return data.Values.GetEnumerator();
+            return Data.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public IFormation this[FormationType type]
+        {
+            get
+            {
+                return Data[type];
+            }
         }
 
         #endregion

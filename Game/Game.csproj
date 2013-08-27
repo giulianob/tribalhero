@@ -125,6 +125,7 @@
     <Compile Include="Battle\BattleLocation.cs" />
     <Compile Include="Battle\BattleManagerFactory.cs" />
     <Compile Include="Battle\BattleManagerGate.cs" />
+    <Compile Include="Battle\BattleRandom.cs" />
     <Compile Include="Battle\CombatGroups\CityOffensiveCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\CityDefensiveCombatGroup.cs" />
     <Compile Include="Battle\CombatGroups\CombatGroup.cs" />
@@ -148,9 +149,12 @@
     <Compile Include="Battle\CombatObjects\ICombatStructure.cs" />
     <Compile Include="Battle\CombatObjects\ICombatUnitFactory.cs" />
     <Compile Include="Battle\AttackModeMonitor.cs" />
+    <Compile Include="Battle\IBattleFormulas.cs" />
     <Compile Include="Battle\IBattleManager.cs" />
     <Compile Include="Battle\IBattleManagerFactory.cs" />
+    <Compile Include="Battle\IBattleOrder.cs" />
     <Compile Include="Battle\ICombatList.cs" />
+    <Compile Include="Battle\IBattleRandom.cs" />
     <Compile Include="Battle\IStaminaMonitorFactory.cs" />
     <Compile Include="Battle\PublicBattleManager.cs" />
     <Compile Include="Battle\Reporting\BattleReport.cs" />
@@ -166,6 +170,10 @@
     <Compile Include="Battle\RewardStrategies\IRewardStrategy.cs" />
     <Compile Include="Battle\RewardStrategies\IRewardStrategyFactory.cs" />
     <Compile Include="Battle\StaminaMonitor.cs" />
+    <Compile Include="Battle\StatsModCalculator\AtkDmgModCalculator.cs" />
+    <Compile Include="Battle\StatsModCalculator\IntStatsModCalculator.cs" />
+    <Compile Include="Battle\StatsModCalculator\MaxHpModCalculator.cs" />
+    <Compile Include="Battle\StrongholdMainBattleManager.cs" />
     <Compile Include="Comm\Channel\BattleChannel.cs" />
     <Compile Include="Battle\BattleFormulas.cs" />
     <Compile Include="Battle\BattleManager.cs" />
@@ -298,9 +306,12 @@
     <Compile Include="Data\Tribe\TribePermission.cs" />
     <Compile Include="Data\Tribe\TribeRank.cs" />
     <Compile Include="Data\Tribe\Tribesman.cs" />
+    <Compile Include="Data\Troop\IFormation.cs" />
     <Compile Include="Data\Troop\Initializers\AssignmentTroopObjectInitializer.cs" />
     <Compile Include="Data\Troop\Initializers\CityTroopObjectInitializer.cs" />
     <Compile Include="Data\Troop\CityTroopStubFactory.cs" />
+    <Compile Include="Data\Troop\Initializers\StationedPartialTroopObjectInitializer.cs" />
+    <Compile Include="Data\Troop\ISimpleStub.cs" />
     <Compile Include="Data\Troop\ITroopManager.cs" />
     <Compile Include="Data\Troop\ITroopObject.cs" />
     <Compile Include="Data\Troop\ITroopObjectInitializer.cs" />
@@ -496,7 +507,7 @@
     <Compile Include="Util\XMLSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Battle\StatsModCalculator.cs" />
+    <Compile Include="Battle\StatsModCalculator\BattleStatsModCalculator.cs" />
     <Compile Include="Comm\ProcessorCommands\MarketCommandsModule.cs" />
     <Compile Include="Data\GameObject.cs" />
     <Compile Include="Data\Forest\ForestManager.cs" />
@@ -541,7 +552,6 @@
     <Compile Include="Logic\Procedures\Procedure.Ranking.cs" />
     <Compile Include="Logic\Procedures\Procedure.OnActionCallback.cs" />
     <Compile Include="Logic\Procedures\Procedure.ResourceCap.cs" />
-    <Compile Include="Logic\Procedures\Procedure.TroopObjectCreateFromStation.cs" />
     <Compile Include="Logic\Procedures\Procedure.TroopObjectStation.cs" />
     <Compile Include="Logic\ReferenceManager.cs" />
     <Compile Include="Logic\Requirements\LayoutRequirements\AwayFromLayout.cs" />

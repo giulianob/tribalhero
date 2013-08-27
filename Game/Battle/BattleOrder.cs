@@ -1,10 +1,11 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
-
+using Game.Util;
 #endregion
 
 namespace Game.Battle
@@ -14,25 +15,42 @@ namespace Game.Battle
     ///     returns the next unit in the combat list that hasnt participated
     ///     in the round. It doesn't care if its the same group or not.
     /// </summary>
-    public class BattleOrder
+    public class BattleOrder : IBattleOrder
     {
+        private readonly IBattleRandom random;
+
+        public BattleOrder(IBattleRandom random)
+        {
+            this.random = random;
+        }
+
         /// <summary>
         ///     Returns the next object from the primary group that should attack.
         ///     If primary group has no one able to attack, it will look into the secondary group instead.
         /// </summary>
         /// <returns>True if got an object from the current round. False if had to look into next round.</returns>
         public bool NextObject(uint round,
-                               IEnumerable<ICombatGroup> attacker,
-                               IEnumerable<ICombatGroup> defender,
-                               BattleManager.BattleSide sideAttacking,
+                               ICombatList attacker,
+                               ICombatList defender,
                                out ICombatObject outCombatObject,
                                out ICombatGroup outCombatGroup,
                                out BattleManager.BattleSide foundInGroup)
         {
-            var offensiveCombatList = sideAttacking == BattleManager.BattleSide.Attack ? attacker : defender;
-            var defensiveCombatList = sideAttacking == BattleManager.BattleSide.Attack ? defender : attacker;
-            var offensiveSide = sideAttacking;
-            var defensiveSide = sideAttacking == BattleManager.BattleSide.Attack
+            var attackerUpkeep = attacker.UpkeepNotParticipated(round);
+            var defenderUpkeep = defender.UpkeepNotParticipated(round);
+            if (attackerUpkeep == 0 && defenderUpkeep == 0)
+            {
+                attackerUpkeep = attacker.UpkeepNotParticipated(round + 1);
+                defenderUpkeep = defender.UpkeepNotParticipated(round + 1);
+            }
+
+            BattleManager.BattleSide sideAttack = random.Next(attackerUpkeep + defenderUpkeep) < attackerUpkeep
+                                                          ? BattleManager.BattleSide.Attack
+                                                          : BattleManager.BattleSide.Defense;
+            var offensiveCombatList = sideAttack == BattleManager.BattleSide.Attack ? attacker : defender;
+            var defensiveCombatList = sideAttack == BattleManager.BattleSide.Attack ? defender : attacker;
+            var offensiveSide = sideAttack;
+            var defensiveSide = sideAttack == BattleManager.BattleSide.Attack
                                         ? BattleManager.BattleSide.Defense
                                         : BattleManager.BattleSide.Attack;
 
@@ -72,7 +90,7 @@ namespace Game.Battle
                 outCombatGroup = outCombatGroupDefender;
                 outCombatObject = outCombatObjectDefender;
             }
-                    // If this happens then it means there is no one in the battle or the battle is prolly over
+            // If this happens then it means there is no one in the battle or the battle is prolly over
             else
             {
                 outCombatGroup = null;
@@ -85,44 +103,60 @@ namespace Game.Battle
         }
 
         private bool NextObjectFromList(uint round,
-                                        IEnumerable<ICombatGroup> combatGroups,
+                                        IList<ICombatGroup> combatGroups,
                                         out ICombatObject outObj,
                                         out ICombatGroup outGroup)
         {
-            // Find any objects that are still in the current round
-            foreach (ICombatGroup combatGroup in combatGroups)
+            if (combatGroups.Count == 0)
             {
-                outObj = combatGroup.FirstOrDefault(obj => obj.LastRound <= round);
-
-                if (outObj == null)
-                {
-                    continue;
-                }
-
-                // We've found an object thats still in the current round
-                // so we're done
-                outGroup = combatGroup;
-                return true;
-            }
-
-            // No object in the current round, get the first one for the next round
-            foreach (ICombatGroup combatGroup in combatGroups)
-            {
-                outObj = combatGroup.FirstOrDefault(obj => obj.LastRound == round + 1);
-
-                if (outObj == null)
-                {
-                    continue;
-                }
-
-                // Found an object in the next round
-                outGroup = combatGroup;
+                outGroup = null;
+                outObj = null;
                 return false;
             }
 
-            // Couldnt find anything, battle is probably over
-            outObj = null;
+            int startGroupIdx = random.Next(combatGroups.Count);            
+
+            // Find any objects that are still in the current round
+            for (var combatGroupIdx = 0; combatGroupIdx < combatGroups.Count; combatGroupIdx++)
+            {
+                var combatGroup = combatGroups[(startGroupIdx + combatGroupIdx) % combatGroups.Count];
+
+                int startObjIdx = random.Next(combatGroup.Count);
+
+                for (var combatObjIdx = 0; combatObjIdx < combatGroup.Count; combatObjIdx++)
+                {
+                    outObj = combatGroup[(startObjIdx + combatObjIdx) % combatGroup.Count];
+
+                    if (outObj.LastRound > round)
+                    {
+                        continue;
+                    }
+
+                    // We've found an object thats still in the current round
+                    // so we're done
+                    outGroup = combatGroup;
+                    return true;
+                }
+            }            
+            
+            // No object in the current round, get a random object from the group we got above
+            // We loop incase the group is empty then it continues onto the next one
+            for (var combatGroupIdx = 0; combatGroupIdx < combatGroups.Count; combatGroupIdx++)
+            {
+                var combatGroup = combatGroups[(startGroupIdx + combatGroupIdx) % combatGroups.Count];
+
+                if (combatGroup.Count == 0)
+                {
+                    continue;
+                }
+
+                outGroup = combatGroup;
+                outObj = combatGroup[random.Next(combatGroup.Count)];
+                return false;
+            }
+
             outGroup = null;
+            outObj = null;
             return false;
         }
     }

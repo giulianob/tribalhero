@@ -12,8 +12,8 @@ namespace Game.Setup
     public class UnitModFactory
     {
         private readonly Dictionary<int, double> dict = new Dictionary<int, double>();
-
-        public void Init(string filename)
+        
+        public virtual void Init(string filename)
         {
             using (
                     var reader =
@@ -55,7 +55,7 @@ namespace Game.Setup
             }
         }
 
-        public double GetModifier(int type, int target)
+        public virtual double GetModifier(int type, int target)
         {
             return dict[type * 1000 + target];
         }

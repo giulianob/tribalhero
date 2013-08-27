@@ -62,7 +62,7 @@ namespace Testing.BattleTests
             battleManager.ExitTurn += Raise.Event<BattleManager.OnTurn>(battleManager,
                                                                            Substitute.For<ICombatList>(),
                                                                            Substitute.For<ICombatList>(),
-                                                                           1);                        
+                                                                           (uint)1);                        
             staminaMonitor.Stamina.Should().Be(1);
             battleManager.DidNotReceiveWithAnyArgs().Remove(null, BattleManager.BattleSide.Attack, ReportState.Entering);
             
@@ -71,7 +71,7 @@ namespace Testing.BattleTests
             battleManager.ExitTurn += Raise.Event<BattleManager.OnTurn>(battleManager,
                                                                            Substitute.For<ICombatList>(),
                                                                            Substitute.For<ICombatList>(),
-                                                                           2);                        
+                                                                           (uint)2);                        
             battleManager.Received(1).Remove(combatGroup, BattleManager.BattleSide.Attack, ReportState.OutOfStamina);           
         }
 
@@ -98,7 +98,7 @@ namespace Testing.BattleTests
             objectTypeFactory.IsObjectType("BattleNoStaminaReduction", 100).Returns(isNoReductionType);
             fixture.Register(() => objectTypeFactory);
 
-            var battleFormulas = Substitute.For<BattleFormulas>();
+            var battleFormulas = Substitute.For<IBattleFormulas>();
             battleFormulas.GetStaminaStructureDestroyed(10, target).Returns((short)7);
             fixture.Register(() => battleFormulas);
             
@@ -113,7 +113,9 @@ namespace Testing.BattleTests
                                                                            Substitute.For<ICombatObject>(),
                                                                            Substitute.For<ICombatGroup>(),
                                                                            target,
-                                                                           20m);
+                                                                           20m,
+                                                                           1,
+                                                                           1);
 
             staminaMonitor.Stamina.Should().Be((short)expectedStamina);
         }
@@ -135,7 +137,7 @@ namespace Testing.BattleTests
             objectTypeFactory.IsObjectType("BattleNoStaminaReductionEarlyLevels", 100).Returns(true);
             fixture.Register(() => objectTypeFactory);
 
-            var battleFormulas = Substitute.For<BattleFormulas>();
+            var battleFormulas = Substitute.For<IBattleFormulas>();
             battleFormulas.GetStaminaStructureDestroyed(10, target).Returns((short)7);
             fixture.Register(() => battleFormulas);
             
@@ -150,7 +152,9 @@ namespace Testing.BattleTests
                                                                            Substitute.For<ICombatObject>(),
                                                                            Substitute.For<ICombatGroup>(),
                                                                            target,
-                                                                           20m);
+                                                                           20m,
+                                                                           1,
+                                                                           1);
 
             staminaMonitor.Stamina.Should().Be((short)expectedStamina);
         }

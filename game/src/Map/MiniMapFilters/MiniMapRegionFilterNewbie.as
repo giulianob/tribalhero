@@ -20,11 +20,8 @@ package src.Map.MiniMapFilters
 
 		override public function applyCity(obj: MiniMapRegionObject) : void {
 			// If it's our city, we just show a special flag
-			var img: DisplayObject;
+            obj.setIcon(new DOT_SPRITE);
 
-			img = new DOT_SPRITE;
-			obj.sprite = img;
-			
 			if (Global.map.cities.get(obj.groupId)) {
 				obj.transform.colorTransform = new ColorTransform();
 			} else if(obj.extraProps.isNewbie) {
@@ -32,7 +29,6 @@ package src.Map.MiniMapFilters
 			} else {
 				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[0].r, DEFAULT_COLORS[0].g, DEFAULT_COLORS[0].b);
 			}
-			obj.addChild(img);
 		}
 		
 		override public function applyLegend(legend: MiniMapLegend) : void {

@@ -96,7 +96,6 @@ package src.Map.MiniMapFilters
 				else difficultyIdx = 4;
 
 				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[difficultyIdx].r, DEFAULT_COLORS[difficultyIdx].g, DEFAULT_COLORS[difficultyIdx].b);
-				obj.addChild(icon);
 			}
 		}
 		public function applyStronghold(obj: MiniMapRegionObject) : void {

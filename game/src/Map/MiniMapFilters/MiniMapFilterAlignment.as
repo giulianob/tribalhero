@@ -8,10 +8,6 @@ package src.Map.MiniMapFilters
     import src.Map.MiniMap.MiniMapRegionObject;
     import src.Util.StringHelper;
 
-    /**
-	 * ...
-	 * @author Anthony Lam
-	 */
 	public class MiniMapFilterAlignment extends MiniMapRegionFilter
 	{	
 		override public function getName(): String {
@@ -20,16 +16,12 @@ package src.Map.MiniMapFilters
 
 		override public function applyCity(obj: MiniMapRegionObject) : void {
 			// If it's our city, we just show a special flag
-			var img: DisplayObject;
-
-			img = new DOT_SPRITE;
-			obj.sprite = img;
+			obj.setIcon(new DOT_SPRITE);
 			
 			var alignment: Number = obj.extraProps.alignment;
 			var alignmentIdx: int;
 			if (Global.map.cities.get(obj.groupId)) {
 				obj.transform.colorTransform = new ColorTransform();
-				obj.addChild(img);				
 			}
 			else {
 				if (alignment <= 20) alignmentIdx = 0;			
@@ -39,7 +31,6 @@ package src.Map.MiniMapFilters
 				else alignmentIdx = 4;
 				
 				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[alignmentIdx].r, DEFAULT_COLORS[alignmentIdx].g, DEFAULT_COLORS[alignmentIdx].b);
-				obj.addChild(img);				
 			}
 		}
 		

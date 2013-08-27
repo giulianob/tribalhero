@@ -10,10 +10,6 @@ package src.Map.MiniMapFilters
     import src.Map.TileLocator;
     import src.Util.StringHelper;
 
-    /**
-	 * ...
-	 * @author Anthony Lam
-	 */
 	public class MiniMapRegionFilterDistance extends MiniMapRegionFilter
 	{		
 		override public function getName(): String {
@@ -21,18 +17,12 @@ package src.Map.MiniMapFilters
 		}
 
 		override public function applyCity(obj: MiniMapRegionObject) : void {
-			// If it's our city, we just show a special flag
-			var img: DisplayObject;
+            obj.setIcon(new DOT_SPRITE);
 
 			if (Global.map.cities.get(obj.groupId)) {
-				img = new DOT_SPRITE;
-				obj.sprite = img;
+
 				obj.transform.colorTransform = new ColorTransform();
-				obj.addChild(img);
 			} else {
-				img = new DOT_SPRITE;
-				obj.sprite = img;
-				
 				// Apply the difficulty transformation to the tile
 				var point: Position = TileLocator.getScreenMinimapToMapCoord(obj.x, obj.y);
 				var distance: int = TileLocator.distance(point.x, point.y, 1, Global.gameContainer.selectedCity.primaryPosition.x, Global.gameContainer.selectedCity.primaryPosition.y, 1);
@@ -44,7 +34,6 @@ package src.Map.MiniMapFilters
 				else distanceIdx = 0;
 
 				obj.transform.colorTransform = new ColorTransform(.5, .5, .5, 1, DEFAULT_COLORS[distanceIdx].r, DEFAULT_COLORS[distanceIdx].g, DEFAULT_COLORS[distanceIdx].b);
-				obj.addChild(img);
 			}
 		}
 		

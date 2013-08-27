@@ -1,26 +1,23 @@
 ﻿package src.Comm.Commands {
 
-	import flash.utils.Dictionary;
-    import mx.utils.StringUtil;
-	import src.Comm.*;
-	import src.GameContainer;
-	import src.Global;
-	import src.Map.MapComm;
-	import src.Objects.Battle.BattleLocation;
-	import src.Objects.Battle.BattleManager;
-	import src.Objects.Battle.BattleObjectEvent;
-	import src.Objects.Battle.BattleOwner;
-	import src.Objects.Battle.CombatGroup;
-	import src.Objects.Battle.CombatObject;
-	import src.Objects.Battle.CombatStructure;
-	import src.Objects.Battle.CombatUnit;
-	import src.Objects.GameError;
-	import src.UI.Dialog.BattleViewer;
-	import src.UI.Dialog.InfoDialog;
-    import src.Util.StringHelper;
-	import src.Util.Util;
+    import flash.utils.Dictionary;
 
-	public class BattleComm {
+    import src.Comm.*;
+    import src.Global;
+    import src.Map.MapComm;
+    import src.Objects.Battle.BattleLocation;
+    import src.Objects.Battle.BattleManager;
+    import src.Objects.Battle.BattleOwner;
+    import src.Objects.Battle.CombatGroup;
+    import src.Objects.Battle.CombatObject;
+    import src.Objects.Battle.CombatStructure;
+    import src.Objects.Battle.CombatUnit;
+    import src.Objects.GameError;
+    import src.UI.Dialog.BattleViewer;
+    import src.UI.Dialog.InfoDialog;
+    import src.Util.Util;
+
+    public class BattleComm {
 
 		private var battles: Array = new Array();
 		private var mapComm: MapComm;
@@ -294,8 +291,10 @@
 			var defenderGroupId: int = packet.readUInt();
 			var defenderObjId: int = packet.readUInt();
 			var dmg: Number = Util.roundNumber(packet.readFloat());
+            var attackerCount: int = packet.readInt();
+            var targetCount: int = packet.readInt();
 
-			battle.attack(side, attackerGroupId, attackerObjId, defenderGroupId, defenderObjId, dmg);
+			battle.attack(side, attackerGroupId, attackerObjId, defenderGroupId, defenderObjId, dmg, attackerCount, targetCount);
 		}
 
 		public function onReceiveNewRound(packet: Packet):void

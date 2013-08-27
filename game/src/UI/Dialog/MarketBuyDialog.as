@@ -1,19 +1,20 @@
 ﻿package src.UI.Dialog
 {
-	import flash.events.*;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.event.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Effects.*;
-	import src.UI.*;
-	
-	public class MarketBuyDialog extends GameJPanel
+    import flash.events.*;
+
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.event.*;
+    import org.aswing.geom.*;
+
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Effects.*;
+    import src.UI.*;
+    import src.Util.StringHelper;
+
+    public class MarketBuyDialog extends GameJPanel
 	{
 		private var lblTitle1:JLabel;
 		private var pnlResourcePrices:JPanel;
@@ -36,6 +37,7 @@
 		private var sldAmount:JSlider;
 		private var pnlBottom:JPanel;
 		private var btnOk:JButton;
+        private var lblMaxOut: JLabelButton;
 		
 		public var wood:int;
 		public var crop:int;
@@ -79,6 +81,10 @@
 			
 			lstResourceType.addEventListener(Event.CHANGE, onResourceChange);
 			sldAmount.addEventListener(InteractiveEvent.STATE_CHANGED, onAmountChange);
+
+            lblMaxOut.addActionListener(function(e: Event):void {
+                sldAmount.setValue(sldAmount.getMaximum());
+            });
 		}
 		
 		public function show(owner:* = null, modal:Boolean = true, onClose:Function = null):JFrame
@@ -204,57 +210,24 @@
 		public function createUI():void
 		{
 			//component creation
-			var border0:EmptyBorder = new EmptyBorder();
-			border0.setTop(5);
-			border0.setLeft(5);
-			border0.setBottom(5);
-			border0.setRight(5);
-			setBorder(border0);
-			var layout1:SoftBoxLayout = new SoftBoxLayout();
-			layout1.setAxis(AsWingConstants.VERTICAL);
-			layout1.setAlign(AsWingConstants.TOP);
-			layout1.setGap(0);
-			setLayout(layout1);
+			setBorder(new EmptyBorder(null, new Insets(5, 5, 5, 5)));
+			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 			
 			lblTitle1 = new JLabel();
-			lblTitle1.setLocation(new IntPoint(5, 5));
-			lblTitle1.setSize(new IntDimension(200, 17));
 			lblTitle1.setText("Current Resource Trading Prices");
 			lblTitle1.setHorizontalAlignment(AsWingConstants.LEFT);
 			
-			pnlResourcePrices = new JPanel();
+			pnlResourcePrices = new JPanel(new FlowWrapLayout(AsWingConstants.LEFT, 15, 15));
 			pnlResourcePrices.setPreferredSize(new IntDimension(250, 75));
-			var layout2:FlowWrapLayout = new FlowWrapLayout();
-			layout2.setAlignment(AsWingConstants.LEFT);
-			layout2.setHgap(15);
-			layout2.setVgap(15);
-			pnlResourcePrices.setLayout(layout2);
 			
-			pnlCrop = new JPanel();
-			pnlCrop.setLocation(new IntPoint(0, 27));
-			pnlCrop.setSize(new IntDimension(55, 17));
-			var layout3:FlowLayout = new FlowLayout();
-			layout3.setAlignment(AsWingConstants.LEFT);
-			layout3.setHgap(0);
-			layout3.setVgap(0);
-			pnlCrop.setLayout(layout3);
+			pnlCrop = new JPanel(new FlowLayout(AsWingConstants.LEFT, 0, 0));
 			
 			lblCropAmount = new JLabel();
-			lblCropAmount.setLocation(new IntPoint(5, 5));
-			lblCropAmount.setSize(new IntDimension(26, 17));
 			lblCropAmount.setText("100 = ");
 			
 			lblCropPrice = new JLabel();
-			lblCropPrice.setLocation(new IntPoint(73, 20));
-			lblCropPrice.setSize(new IntDimension(26, 17));
 			
-			pnlIron = new JPanel();
-			pnlIron.setLocation(new IntPoint(85, 18));
-			pnlIron.setSize(new IntDimension(56, 17));
-			var layout4:FlowLayout = new FlowLayout();
-			layout4.setHgap(0);
-			layout4.setVgap(0);
-			pnlIron.setLayout(layout4);
+			pnlIron = new JPanel(new FlowLayout(AsWingConstants.LEFT, 0, 0));
 			
 			lblIronAmount = new JLabel();
 			lblIronAmount.setLocation(new IntPoint(5, 5));
@@ -279,29 +252,20 @@
 			lblWoodAmount.setText("100 = ");
 			
 			lblWoodPrice = new JLabel();
-			lblWoodPrice.setLocation(new IntPoint(30, 0));
 			lblWoodPrice.setSize(new IntDimension(26, 17));
 			
 			separator = new JSeparator();
-			separator.setLocation(new IntPoint(0, 67));
-			separator.setSize(new IntDimension(200, 2));
 			
 			lblTitle2 = new JLabel();
-			lblTitle2.setLocation(new IntPoint(5, 99));
-			lblTitle2.setSize(new IntDimension(200, 17));
 			lblTitle2.setText("Choose resource and amount to buy");
 			lblTitle2.setHorizontalAlignment(AsWingConstants.LEFT);
 			
 			pnlTrade = new JPanel();
-			pnlTrade.setLocation(new IntPoint(0, 94));
-			pnlTrade.setSize(new IntDimension(200, 54));
 			var layout6:BoxLayout = new BoxLayout();
 			layout6.setAxis(AsWingConstants.VERTICAL);
 			pnlTrade.setLayout(layout6);
 			
 			pnlTrade2 = new JPanel();
-			pnlTrade2.setLocation(new IntPoint(5, 5));
-			pnlTrade2.setSize(new IntDimension(40, 27));
 			pnlTrade2.setConstraints("North");
 			var layout7:FlowLayout = new FlowLayout();
 			layout7.setAlignment(AsWingConstants.CENTER);
@@ -333,6 +297,7 @@
 			sldAmount.setPaintTicks(true);
 			sldAmount.setSnapToTicks(true);
 			
+            lblMaxOut = new JLabelButton(StringHelper.localize("TRADE_DIALOG_SET_MAX"), null, AsWingConstants.LEFT);
 			pnlBottom = new JPanel();
 			pnlBottom.setLocation(new IntPoint(0, 69));
 			pnlBottom.setSize(new IntDimension(200, 10));
@@ -373,6 +338,7 @@
 			pnlTrade2.append(lstResourceType);
 			pnlTrade2.append(new JLabel("="));
 			pnlTrade2.append(lblTradePrice);
+            pnlTrade2.append(lblMaxOut);
 			
 			pnlBottom.append(btnOk);
 		}

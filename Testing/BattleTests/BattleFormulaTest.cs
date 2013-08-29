@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using Common.Testing;
 using FluentAssertions;
 using Game.Battle;
 using Game.Data;
 using Game.Setup;
 using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.Xunit;
 using Xunit.Extensions;
 using Game.Battle.CombatObjects;
 using NSubstitute;
@@ -109,8 +111,10 @@ namespace Testing.BattleTests
         public void GetDmgModifier_WhenOver5Rounds(WeaponType weaponType, ArmorType armorType, double dmg)
         {
             var unitModFactory = Substitute.For<UnitModFactory>();
-            var unitFactory = Substitute.For<UnitFactory>();
-            var battleFormulas = new BattleFormulas(unitModFactory, unitFactory);
+
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => unitModFactory);
+            var battleFormulas = fixture.Create<BattleFormulas>();
 
             unitModFactory.GetModifier(0, 0).ReturnsForAnyArgs(1);
 
@@ -120,6 +124,65 @@ namespace Testing.BattleTests
             defender.Stats.Base.Armor.Returns(ArmorType.Building1);
 
             battleFormulas.GetDmgModifier(attacker, defender, 5).Should().Be(1);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void GetNumberOfHits_WhenObjectIsSplashEvery200(ICombatObject attacker,
+                                                               ICombatList defenderCombatList)
+        {
+            var objectTypeFactory = Substitute.For<ObjectTypeFactory>();
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => objectTypeFactory);
+            var battleFormulas = fixture.Create<BattleFormulas>();
+
+            objectTypeFactory.IsObjectType(string.Empty, 0).ReturnsForAnyArgs(true);
+            attacker.Stats.Splash.Returns((byte)2);
+            defenderCombatList.Upkeep.Returns(800);
+            battleFormulas.GetNumberOfHits(attacker, defenderCombatList).Should().Be(6);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void GetNumberOfHits_WhenObjectIsNotSplashEvery200(ICombatObject attacker, ICombatList defenderCombatList)
+        {
+            var objectTypeFactory = Substitute.For<ObjectTypeFactory>();
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => objectTypeFactory);
+            var battleFormulas = fixture.Create<BattleFormulas>();
+
+            objectTypeFactory.IsObjectType(string.Empty, 0).ReturnsForAnyArgs(false);
+            attacker.Stats.Splash.Returns((byte)2);
+            defenderCombatList.Upkeep.Returns(800);
+            battleFormulas.GetNumberOfHits(attacker, defenderCombatList).Should().Be(2);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void GetNumberOfHits_WhenDefenderUpkeepOver4000(ICombatObject attacker,
+                                                               ICombatList defenderCombatList)
+        {
+            var objectTypeFactory = Substitute.For<ObjectTypeFactory>();
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => objectTypeFactory);
+            var battleFormulas = fixture.Create<BattleFormulas>();
+
+            objectTypeFactory.IsObjectType(string.Empty, 0).ReturnsForAnyArgs(true);
+            attacker.Stats.Splash.Returns((byte)2);
+            defenderCombatList.Upkeep.Returns(8000);
+            battleFormulas.GetNumberOfHits(attacker, defenderCombatList).Should().Be(22);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void GetNumberOfHits_WhenDefenderUpkeepUnder200(ICombatObject attacker,
+                                                               ICombatList defenderCombatList)
+        {
+            var objectTypeFactory = Substitute.For<ObjectTypeFactory>();
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => objectTypeFactory);
+            var battleFormulas = fixture.Create<BattleFormulas>();
+
+            objectTypeFactory.IsObjectType(string.Empty,0).ReturnsForAnyArgs(true);
+            attacker.Stats.Splash.Returns((byte)2);
+            defenderCombatList.Upkeep.Returns(199);
+            battleFormulas.GetNumberOfHits(attacker, defenderCombatList).Should().Be(2);
         }
 
     }

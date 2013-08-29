@@ -57,6 +57,8 @@ namespace Game.Battle.CombatObjects
 
         byte Lvl { get; }
 
+        byte Size { get; }
+
         void ExitBattle();
 
         void TakeDamage(decimal dmg, out Resource returning, out int attackPoints);

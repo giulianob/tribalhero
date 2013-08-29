@@ -114,7 +114,6 @@ namespace Game.Battle
                                              kernel.Get<IDbManager>(),
                                              kernel.Get<IBattleReport>(),
                                              kernel.Get<ICombatListFactory>(),
-
                                              kernel.Get<IBattleFormulas>(),
                                              new BattleOrder(battleRandom),
                                              battleRandom);

@@ -14,12 +14,12 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly IActionFactory actionFactory;
 
-        private readonly StructureFactory structureFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
-        public MiscCommandsModule(IActionFactory actionFactory, StructureFactory structureFactory)
+        public MiscCommandsModule(IActionFactory actionFactory, IStructureCsvFactory structureCsvFactory)
         {
             this.actionFactory = actionFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -105,7 +105,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var gatherAction = actionFactory.CreateResourceGatherActiveAction(cityId, objectId);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(obj),
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(obj),
                                                  obj,
                                                  gatherAction,
                                                  obj.Technologies);

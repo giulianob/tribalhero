@@ -30,17 +30,17 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly ITroopObjectInitializerFactory troopObjectInitializerFactory;
 
-        private readonly StructureFactory structureFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         public TroopCommandsModule(IActionFactory actionFactory,
-                                   StructureFactory structureFactory,
+                                   IStructureCsvFactory structureCsvFactory,
                                    IGameObjectLocator gameObjectLocator,
                                    Formula formula,
                                    ILocker locker,
                                    ITroopObjectInitializerFactory troopObjectInitializerFactory)
         {
             this.actionFactory = actionFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             this.gameObjectLocator = gameObjectLocator;
             this.formula = formula;
             this.locker = locker;
@@ -266,7 +266,7 @@ namespace Game.Comm.ProcessorCommands
                     reply.AddUInt32(troop.TargetX);
                     reply.AddUInt32(troop.TargetY);
 
-                    var template = new UnitTemplate(city);
+                    var template = new Dictionary<ushort, IBaseUnitStats>();
 
                     reply.AddByte(troop.Stub.FormationCount);
                     foreach (var formation in troop.Stub)
@@ -281,7 +281,7 @@ namespace Game.Comm.ProcessorCommands
                         }
                     }
 
-                    reply.AddUInt16((ushort)template.Size);
+                    reply.AddUInt16((ushort)template.Count);
                     IEnumerator<KeyValuePair<ushort, IBaseUnitStats>> templateIter = template.GetEnumerator();
                     while (templateIter.MoveNext())
                     {
@@ -395,7 +395,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var upgradeAction = actionFactory.CreateUnitUpgradeActiveAction(cityId, objectId, type);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(barrack),
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(barrack),
                                                  barrack,
                                                  upgradeAction,
                                                  barrack.Technologies);
@@ -447,7 +447,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var trainAction = actionFactory.CreateUnitTrainActiveAction(cityId, objectId, type, count);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(barrack),
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(barrack),
                                                  barrack,
                                                  trainAction,
                                                  barrack.Technologies);
@@ -755,7 +755,7 @@ namespace Game.Comm.ProcessorCommands
             ICity city;
             IStation station;
 
-            //we need to find out the stationed city first then reacquire local + stationed city locks            
+            //we need to find out the stationed location first then reacquire local + stationed locks            
             using (locker.Lock(cityId, out city))
             {
                 if (city == null)
@@ -786,8 +786,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 //Make sure that the person sending the retreat is either the guy who owns the troop or the guy who owns the stationed city
-                if (city.Owner != session.Player && stub.Station != null &&
-                    session.Player.GetCityList().All(x => x != stub.Station))
+                if (city.Owner != session.Player && session.Player.GetCityList().All(x => x != stub.Station))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;

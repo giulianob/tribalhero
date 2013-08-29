@@ -14,6 +14,10 @@ namespace Game.Logic.Formulas
 
         private readonly Random rand;
 
+        protected SlotMachineCalculator()
+        {            
+        }
+
         public SlotMachineCalculator(int[] minValue, int[] maxValue, double[] chance, int[] missValue, Random rand)
         {
             this.minValue = minValue;

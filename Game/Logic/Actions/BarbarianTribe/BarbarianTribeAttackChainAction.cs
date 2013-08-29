@@ -144,8 +144,8 @@ namespace Game.Logic.Actions
 
             var moveAction = actionFactory.CreateTroopMovePassiveAction(cityId,
                                                                         troopObject.ObjectId,
-                                                                        barbarianTribe.X,
-                                                                        barbarianTribe.Y,
+                                                                        barbarianTribe.PrimaryPosition.X,
+                                                                        barbarianTribe.PrimaryPosition.Y,
                                                                         isReturningHome: false,
                                                                         isAttacking: true);
 
@@ -173,7 +173,7 @@ namespace Game.Logic.Actions
 
                 using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
                 {
-                    TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id, troopObject.ObjectId, city.X, city.Y, true, true);
+                    TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id, troopObject.ObjectId, city.PrimaryPosition.X, city.PrimaryPosition.Y, true, true);
                     ExecuteChainAndWait(tma, AfterTroopMovedHome);
                 }
             }
@@ -195,8 +195,8 @@ namespace Game.Logic.Actions
                     {
                         TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
                                                                                                 troopObject.ObjectId,
-                                                                                                city.X,
-                                                                                                city.Y,
+                                                                                                city.PrimaryPosition.X,
+                                                                                                city.PrimaryPosition.Y,
                                                                                                 true,
                                                                                                 true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
@@ -236,8 +236,8 @@ namespace Game.Logic.Actions
                         // Send troop back home
                         var tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
                                                                              troopObject.ObjectId,
-                                                                             city.X,
-                                                                             city.Y,
+                                                                             city.PrimaryPosition.X,
+                                                                             city.PrimaryPosition.Y,
                                                                              true,
                                                                              true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);

@@ -32,7 +32,7 @@ namespace Game.Logic.Actions
 
         private readonly ILocker locker;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private bool everyOther;
 
@@ -41,7 +41,7 @@ namespace Game.Logic.Actions
         private readonly IBattleFormulas battleFormulas;
 
         public CityPassiveAction(uint cityId,
-                                 ObjectTypeFactory objectTypeFactory,
+                                 IObjectTypeFactory objectTypeFactory,
                                  ILocker locker,
                                  Formula formula,
                                  IActionFactory actionFactory,
@@ -68,7 +68,7 @@ namespace Game.Logic.Actions
                                  bool isVisible,
                                  string nlsDescription,
                                  Dictionary<string, string> properties,
-                                 ObjectTypeFactory objectTypeFactory,
+                                 IObjectTypeFactory objectTypeFactory,
                                  ILocker locker,
                                  Formula formula,
                                  IActionFactory actionFactory,

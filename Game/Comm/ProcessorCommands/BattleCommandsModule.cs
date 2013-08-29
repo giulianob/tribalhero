@@ -90,7 +90,7 @@ namespace Game.Comm.ProcessorCommands
 
                 try
                 {
-                    Global.Channel.Subscribe(session, "/BATTLE/" + battleManager.BattleId);
+                    Global.Current.Channel.Subscribe(session, "/BATTLE/" + battleManager.BattleId);
                 }
                 catch(DuplicateSubscriptionException)
                 {
@@ -115,7 +115,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (locker.Lock(session.Player))
             {
-                Global.Channel.Unsubscribe(session, "/BATTLE/" + battleId);
+                Global.Current.Channel.Unsubscribe(session, "/BATTLE/" + battleId);
             }
 
             ReplySuccess(session, packet);

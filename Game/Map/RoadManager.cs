@@ -1,23 +1,46 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Comm;
 using Game.Data;
 using Game.Setup;
+using Game.Util;
 using Ninject;
 
 #endregion
 
 namespace Game.Map
 {
-    public class RoadManager
+    public class RoadManager : IRoadManager
     {
         private readonly IRegionManager regionManager;
 
-        public RoadManager(IRegionManager regionManager)
+        private readonly IObjectTypeFactory objectTypeFactory;
+
+        private readonly IChannel channel;
+
+        private readonly IRegionLocator regionLocator;
+
+        public RoadManager(IRegionManager regionManager, IObjectTypeFactory objectTypeFactory, IChannel channel, IRegionLocator regionLocator)
         {
             this.regionManager = regionManager;
+            this.objectTypeFactory = objectTypeFactory;
+            this.channel = channel;
+            this.regionLocator = regionLocator;
+
+            //regionManager.ObjectAdded += RegionManagerOnObjectAdded;
+        }
+
+        private void RegionManagerOnObjectAdded(object sender, ObjectEvent e)
+        {
+            if (objectTypeFactory.IsObjectType("NoRoadRequired", e.GameObject.Type))
+            {
+                return;
+            }
+
+            CreateRoad(e.GameObject.PrimaryPosition.X, e.GameObject.PrimaryPosition.Y);
         }
 
         private void SendUpdate(Dictionary<ushort, List<TileUpdate>> updates)
@@ -33,7 +56,7 @@ namespace Game.Map
                     packet.AddUInt16(update.TileType);
                 }
 
-                Global.Channel.Post("/WORLD/" + list.Key, packet);
+                channel.Post("/WORLD/" + list.Key, packet);
             }
         }
 
@@ -60,7 +83,7 @@ namespace Game.Map
 
             for (int i = 0; i < tiles.Count; i++)
             {
-                ushort regionId = Region.GetRegionIndex(tiles[i].X, tiles[i].Y);
+                ushort regionId = regionLocator.GetRegionIndex(tiles[i].X, tiles[i].Y);
                 var update = new TileUpdate(tiles[i].X, tiles[i].Y, CalculateRoad(tiles[i].X, tiles[i].Y, i == 0));
                 if (update.TileType == ushort.MaxValue)
                 {
@@ -104,7 +127,7 @@ namespace Game.Map
 
             for (int i = 0; i < tiles.Count; i++)
             {
-                ushort regionId = Region.GetRegionIndex(tiles[i].X, tiles[i].Y);
+                ushort regionId = regionLocator.GetRegionIndex(tiles[i].X, tiles[i].Y);
 
                 TileUpdate update;
                 if (i == 0)
@@ -121,6 +144,7 @@ namespace Game.Map
                 {
                     continue; // Not a road here
                 }
+
                 List<TileUpdate> list;
                 if (!updates.TryGetValue(regionId, out list))
                 {
@@ -238,13 +262,13 @@ namespace Game.Map
             // Grab the list of actual tiles based on the road type we need.
             uint[] types;
 
-            if (World.Current[x, y].Exists(s => s is IStructure))
+            if (regionManager.GetObjectsInTile(x, y).Any(s => s is IStructure))
             {
-                types = Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("RoadSetStructures");
+                types = objectTypeFactory.GetTypes("RoadSetStructures");
             }
             else
             {
-                types = Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("RoadSet1");
+                types = objectTypeFactory.GetTypes("RoadSet1");
             }
 
             // Set the new road tile
@@ -258,7 +282,7 @@ namespace Game.Map
             return IsRoad(regionManager.GetTileType(x, y));
         }
 
-        public static bool IsRoad(ushort tileId)
+        private bool IsRoad(ushort tileId)
         {
             return (tileId >= Config.road_start_tile_id && tileId <= Config.road_end_tile_id);
         }

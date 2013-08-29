@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Dynamic;
 using System.Linq;
 using Game.Battle;
@@ -16,7 +15,6 @@ using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Database;
 using Game.Logic;
-using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -29,6 +27,16 @@ namespace Game.Comm
 {
     public class PacketHelper
     {
+        private static IRegionLocator regionLocator;
+
+        public static IRegionLocator RegionLocator
+        {
+            set
+            {
+                regionLocator = value;
+            }
+        }
+
         public static void AddToPacket(IUnitTemplate template, Packet packet)
         {
             packet.AddUInt16((ushort)template.Size);
@@ -66,8 +74,10 @@ namespace Game.Comm
         public static void AddToPacket(ISimpleGameObject obj, Packet packet, bool forRegion = false)
         {
             packet.AddUInt16(obj.Type);
-            packet.AddUInt16((ushort)(obj.RelX));
-            packet.AddUInt16((ushort)(obj.RelY));
+
+            packet.AddUInt16((ushort)(obj.PrimaryPosition.X % Config.region_width));
+            packet.AddUInt16((ushort)(obj.PrimaryPosition.Y % Config.region_height));
+            packet.AddByte(obj.Size);
 
             packet.AddUInt32(obj.GroupId);
             packet.AddUInt32(obj.ObjectId);
@@ -293,8 +303,8 @@ namespace Game.Comm
                 case TroopState.Moving:
                 case TroopState.ReturningHome:
                     packet.AddUInt32(troopObject.ObjectId);
-                    packet.AddUInt32(troopObject.X);
-                    packet.AddUInt32(troopObject.Y);
+                    packet.AddUInt32(troopObject.PrimaryPosition.X);
+                    packet.AddUInt32(troopObject.PrimaryPosition.Y);
                     break;
                 case TroopState.Battle:
                     // If the stub is in battle, determine whether there is a troop object attached to it or not.
@@ -303,21 +313,21 @@ namespace Game.Comm
                     if (troopObject != null)
                     {
                         packet.AddUInt32(troopObject.ObjectId);
-                        packet.AddUInt32(troopObject.X);
-                        packet.AddUInt32(troopObject.Y);
+                        packet.AddUInt32(troopObject.PrimaryPosition.X);
+                        packet.AddUInt32(troopObject.PrimaryPosition.Y);
                     }
                     else
                     {
                         packet.AddUInt32(1); // Main building id
-                        packet.AddUInt32(stub.City.X);
-                        packet.AddUInt32(stub.City.Y);
+                        packet.AddUInt32(stub.City.PrimaryPosition.X);
+                        packet.AddUInt32(stub.City.PrimaryPosition.Y);
                     }
                     break;
                 case TroopState.Stationed:
                 case TroopState.BattleStationed:
                     packet.AddUInt32(1); // Main building id
-                    packet.AddUInt32(stub.Station.X);
-                    packet.AddUInt32(stub.Station.Y);
+                    packet.AddUInt32(stub.Station.PrimaryPosition.X);
+                    packet.AddUInt32(stub.Station.PrimaryPosition.Y);
                     break;
             }
 
@@ -386,7 +396,6 @@ namespace Game.Comm
             packet.AddByte((byte)session.Player.GetCityCount());
             foreach (var city in list)
             {
-                city.Subscribe(session);
                 AddToPacket(city, packet);
             }
         }
@@ -405,6 +414,8 @@ namespace Game.Comm
         {
             packet.AddUInt32(city.Id);
             packet.AddString(city.Name);
+            packet.AddUInt32(city.PrimaryPosition.X);
+            packet.AddUInt32(city.PrimaryPosition.Y);
             AddToPacket(city.Resource, packet);
             packet.AddByte(city.Radius);
             packet.AddInt32(city.AttackPoint);
@@ -438,7 +449,7 @@ namespace Game.Comm
             packet.AddUInt16((ushort)structs.Count);
             foreach (var structure in structs)
             {
-                packet.AddUInt16(Region.GetRegionIndex(structure));
+                packet.AddUInt16(regionLocator.GetRegionIndex(structure));
                 AddToPacket(structure, packet);
 
                 packet.AddUInt16((ushort)structure.Technologies.OwnedTechnologyCount);
@@ -458,7 +469,7 @@ namespace Game.Comm
             packet.AddUInt16((ushort)troops.Count);
             foreach (var troop in troops)
             {
-                packet.AddUInt16(Region.GetRegionIndex(troop));
+                packet.AddUInt16(regionLocator.GetRegionIndex(troop));
                 AddToPacket(troop, packet);
             }
 
@@ -508,7 +519,7 @@ namespace Game.Comm
             }
         }
 
-        public static void AddToPacket(ILocation location, Packet packet)
+        private static void AddToPacket(ILocation location, Packet packet)
         {
             if (location == null)
             {
@@ -536,7 +547,7 @@ namespace Game.Comm
                     if (targetStronghold != null ||
                         Ioc.Kernel.Get<IStrongholdManager>().TryGetStronghold(location.LocationId, out targetStronghold))
                     {
-                        packet.AddUInt32(targetStronghold.Id);
+                        packet.AddUInt32(targetStronghold.ObjectId);
                         packet.AddString(targetStronghold.Name);
                         packet.AddUInt32(targetStronghold.Tribe == null ? 0 : targetStronghold.Tribe.Id);
                         packet.AddString(targetStronghold.Tribe == null ? "" : targetStronghold.Tribe.Name);
@@ -555,7 +566,7 @@ namespace Game.Comm
         {
             var simpleStub = new SimpleStub();
 
-            foreach (FormationType t in formations)
+            for (int i = 0; i < formations.Length; i++)
             {
                 FormationType formationType = (FormationType)packet.GetByte();
                 if (!formations.Contains(formationType))
@@ -639,8 +650,8 @@ namespace Game.Comm
             {
                 reply.AddUInt32(city.Id);
                 reply.AddString(city.Name);
-                reply.AddUInt32(city.X);
-                reply.AddUInt32(city.Y);
+                reply.AddUInt32(city.PrimaryPosition.X);
+                reply.AddUInt32(city.PrimaryPosition.Y);
             }
         }
 
@@ -697,13 +708,13 @@ namespace Game.Comm
                 packet.AddInt16((short)strongholds.Count);
                 foreach (var stronghold in strongholds)
                 {
-                    packet.AddUInt32(stronghold.Id);
+                    packet.AddUInt32(stronghold.ObjectId);
                     packet.AddString(stronghold.Name);
                     packet.AddByte((byte)stronghold.StrongholdState);
                     packet.AddByte(stronghold.Lvl);
                     packet.AddFloat((float)stronghold.Gate);
-                    packet.AddUInt32(stronghold.X);
-                    packet.AddUInt32(stronghold.Y);
+                    packet.AddUInt32(stronghold.PrimaryPosition.X);
+                    packet.AddUInt32(stronghold.PrimaryPosition.Y);
                     packet.AddInt32(stronghold.Troops.StationedHere().Sum(x => x.Upkeep));
                     packet.AddFloat((float)stronghold.VictoryPointRate);
                     packet.AddUInt32(UnixDateTime.DateTimeToUnix(stronghold.DateOccupied.ToUniversalTime()));
@@ -730,14 +741,14 @@ namespace Game.Comm
                 packet.AddInt16((short)strongholds.Count);
                 foreach (var stronghold in strongholds)
                 {
-                    packet.AddUInt32(stronghold.Id);
+                    packet.AddUInt32(stronghold.ObjectId);
                     packet.AddString(stronghold.Name);
                     packet.AddUInt32(stronghold.Tribe == null ? 0 : stronghold.Tribe.Id);
                     packet.AddString(stronghold.Tribe == null ? string.Empty : stronghold.Tribe.Name);
                     packet.AddByte((byte)stronghold.StrongholdState);
                     packet.AddByte(stronghold.Lvl);
-                    packet.AddUInt32(stronghold.X);
-                    packet.AddUInt32(stronghold.Y);
+                    packet.AddUInt32(stronghold.PrimaryPosition.X);
+                    packet.AddUInt32(stronghold.PrimaryPosition.Y);
                     if (stronghold.GateBattle != null)
                     {
                         packet.AddByte(1);
@@ -782,11 +793,11 @@ namespace Game.Comm
                 packet.AddInt16((short)strongholds.Count);
                 foreach (var stronghold in strongholds)
                 {
-                    packet.AddUInt32(stronghold.Id);                    
+                    packet.AddUInt32(stronghold.ObjectId);                    
                     packet.AddString(stronghold.Name);
                     packet.AddByte(stronghold.Lvl);
-                    packet.AddUInt32(stronghold.X);
-                    packet.AddUInt32(stronghold.Y);
+                    packet.AddUInt32(stronghold.PrimaryPosition.X);
+                    packet.AddUInt32(stronghold.PrimaryPosition.Y);
                 }
             }
         }
@@ -797,20 +808,20 @@ namespace Game.Comm
                 session.Player.Tribesman.Tribe.Id != stronghold.Tribe.Id)
             {
                 packet.AddByte(0);
-                packet.AddUInt32(stronghold.X);
-                packet.AddUInt32(stronghold.Y);
+                packet.AddUInt32(stronghold.PrimaryPosition.X);
+                packet.AddUInt32(stronghold.PrimaryPosition.Y);
             }
             else
             {
                 packet.AddByte(1);
-                packet.AddUInt32(stronghold.Id);
+                packet.AddUInt32(stronghold.ObjectId);
                 packet.AddString(stronghold.Name);
                 packet.AddByte(stronghold.Lvl);
                 packet.AddFloat((float)stronghold.Gate);
                 packet.AddFloat((float)stronghold.VictoryPointRate);
                 packet.AddUInt32(UnixDateTime.DateTimeToUnix(stronghold.DateOccupied.ToUniversalTime()));
-                packet.AddUInt32(stronghold.X);
-                packet.AddUInt32(stronghold.Y);
+                packet.AddUInt32(stronghold.PrimaryPosition.X);
+                packet.AddUInt32(stronghold.PrimaryPosition.Y);
                 AddToPacket(stronghold.State, packet);
 
                 packet.AddUInt16(stronghold.Troops.Size);
@@ -835,9 +846,6 @@ namespace Game.Comm
                         }
                     }
                 }
-
-                // Incoming List
-                // Reports
             }
         }
     }

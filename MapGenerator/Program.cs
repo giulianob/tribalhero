@@ -18,7 +18,7 @@ namespace MapGenerator
 {
     static class Program
     {
-        public const ushort CITY_TILE = 209;
+        public const ushort CITY_TILE = 16;
 
         public const int WIDTH = 3400;
 

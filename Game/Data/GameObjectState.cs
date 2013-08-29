@@ -15,26 +15,8 @@ namespace Game.Data
         Moving = 2
     }
 
-    public class GameObjectState
+    public class GameObjectStateFactory
     {
-        private readonly List<object> parameters = new List<object>();
-
-        private GameObjectState(ObjectState type, params object[] parms)
-        {
-            Type = type;
-            parameters.AddRange(parms);
-        }
-
-        public ObjectState Type { get; set; }
-
-        public List<object> Parameters
-        {
-            get
-            {
-                return parameters;
-            }
-        }
-
         public static GameObjectState NormalState()
         {
             return new GameObjectState(ObjectState.Normal);
@@ -49,5 +31,22 @@ namespace Game.Data
         {
             return new GameObjectState(ObjectState.Moving);
         }
+    }
+
+    public class GameObjectState
+    {
+        protected GameObjectState()
+        {            
+        }
+
+        public GameObjectState(ObjectState type, params object[] parms)
+        {
+            Type = type;
+            Parameters = new List<object>(parms);
+        }
+
+        public virtual ObjectState Type { get; set; }
+
+        public virtual IEnumerable<object> Parameters { get; set; }
     }
 }

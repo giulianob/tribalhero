@@ -12,15 +12,21 @@ namespace Game.Comm.Thrift
     {
         private readonly IProtocolFactory protocolFactory;
 
-        public NotificationHandler(IProtocolFactory protocolFactory)
+        private readonly ILocker locker;
+
+        private IWorld world;
+
+        public NotificationHandler(IProtocolFactory protocolFactory, ILocker locker, IWorld world)
         {
             this.protocolFactory = protocolFactory;
+            this.locker = locker;
+            this.world = world;
         }
 
         public void NewMessage(PlayerUnreadCount playerUnreadCount)
         {
             IPlayer player;
-            using (Concurrency.Current.Lock((uint)playerUnreadCount.Id, out player))
+            using (locker.Lock((uint)playerUnreadCount.Id, out player))
             {
                 if (player.Session == null)
                 {
@@ -40,12 +46,12 @@ namespace Game.Comm.Thrift
         public void NewTribeForumPost(int tribeId, int playerId)
         {
             ITribe tribe;
-            if (!World.Current.TryGetObjects((uint)tribeId, out tribe))
+            if (!world.TryGetObjects((uint)tribeId, out tribe))
             {
                 return;
             }
 
-            using (Concurrency.Current.Lock(custom => tribe.Tribesmen.ToArray(), new object[] {}, tribe))
+            using (locker.Lock(custom => tribe.Tribesmen.ToArray<ILockable>(), new object[] {}, tribe))
             {
                 foreach (
                         var tribesman in
@@ -70,7 +76,7 @@ namespace Game.Comm.Thrift
             foreach (var playerUnreadCount in playerUnreadCounts)
             {
                 IPlayer player;
-                using (Concurrency.Current.Lock((uint)playerUnreadCount.Id, out player))
+                using (locker.Lock((uint)playerUnreadCount.Id, out player))
                 {
                     if (player == null || player.Session == null)
                     {

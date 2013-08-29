@@ -8,7 +8,7 @@ using Ninject.Extensions.Logging;
 
 namespace Game.Comm
 {
-    public abstract class Session : IChannel
+    public abstract class Session : IChannelListener
     {
         protected readonly ILogger Logger = LoggerFactory.Current.GetCurrentClassLogger();
 
@@ -20,12 +20,12 @@ namespace Game.Comm
 
         #endregion
 
-        protected Processor Processor;
+        private readonly Processor processor;
 
         protected Session(string name, Processor processor)
         {
             Name = name;
-            Processor = processor;
+            this.processor = processor;
             PacketMaker = new PacketMaker();
         }
 
@@ -33,7 +33,7 @@ namespace Game.Comm
 
         public string Name { get; private set; }
 
-        public bool IsLoggedIn
+        private bool IsLoggedIn
         {
             get
             {
@@ -43,7 +43,7 @@ namespace Game.Comm
 
         public IPlayer Player { get; set; }
 
-        #region IChannel Members
+        #region IChannelListener Members
 
         public void OnPost(Packet message)
         {
@@ -55,11 +55,6 @@ namespace Game.Comm
         public abstract bool Write(Packet packet);
 
         public void CloseSession()
-        {
-            Close();
-        }
-
-        protected void Close()
         {
             if (OnClose != null)
             {
@@ -89,22 +84,22 @@ namespace Game.Comm
                 }
             }
 
-            if (Processor != null)
+            if (processor != null)
             {
                 if (Logger.IsDebugEnabled)
                 {
                     Logger.Debug("Processing IP[{0}] {1}", Name, packet.ToString());
                 }
 
-                Processor.Execute(this, packet);
+                processor.Execute(this, packet);
             }
         }
 
         public void ProcessEvent(object obj)
         {
-            if (Processor != null)
+            if (processor != null)
             {
-                Processor.ExecuteEvent(this, (Packet)obj);
+                processor.ExecuteEvent(this, (Packet)obj);
             }
         }
     }

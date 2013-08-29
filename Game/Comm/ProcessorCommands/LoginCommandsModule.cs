@@ -44,9 +44,9 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly ILocationStrategyFactory locationStrategyFactory;
 
-        private readonly IBarbarianTribeManager barbarianTribeManager;
+        private readonly ICityFactory cityFactory;
 
-        private readonly IRegionManager regionManager;
+        private readonly IBarbarianTribeManager barbarianTribeManager;
 
         private readonly InitFactory initFactory;
 
@@ -56,9 +56,9 @@ namespace Game.Comm.ProcessorCommands
                                    ILocker locker,
                                    IWorld world,
                                    Procedure procedure,
+                                   ICityFactory cityFactory,
                                    ILocationStrategyFactory locationStrategyFactory,
                                    IBarbarianTribeManager barbarianTribeManager,
-                                   IRegionManager regionManager,
                                    InitFactory initFactory)
         {
             this.actionFactory = actionFactory;
@@ -67,9 +67,10 @@ namespace Game.Comm.ProcessorCommands
             this.locker = locker;
             this.world = world;
             this.procedure = procedure;
+            this.initFactory = initFactory;
+            this.cityFactory = cityFactory;
             this.locationStrategyFactory = locationStrategyFactory;
             this.barbarianTribeManager = barbarianTribeManager;
-            this.regionManager = regionManager;
             this.initFactory = initFactory;
         }
 
@@ -355,7 +356,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 // Verify city name is valid
-                if (!City.IsNameValid(cityName))
+                if (!CityManager.IsNameValid(cityName))
                 {
                     ReplyError(session, packet, Error.CityNameInvalid);
                     return;
@@ -366,15 +367,15 @@ namespace Game.Comm.ProcessorCommands
                 lock (world.Lock)
                 {
                     ILocationStrategy strategy;
-                    if(method==1)
+                    if (method == 1)
                     {
                         uint playerId;
-                        if(!world.FindPlayerId(playerName, out playerId))
+                        if (!world.FindPlayerId(playerName, out playerId))
                         {
                             ReplyError(session, packet, Error.PlayerNotFound);
                             return;
                         }
-                        
+
                         var player = world.Players[playerId];
                         if (String.Compare(player.PlayerHash, playerHash, StringComparison.OrdinalIgnoreCase) != 0)
                         {
@@ -395,19 +396,19 @@ namespace Game.Comm.ProcessorCommands
                         return;
                     }
 
-                    var error = procedure.CreateCity(session.Player, cityName, strategy, barbarianTribeManager, out city);
-                    if (error != Error.Ok)
+                    Position cityPosition;
+                    var locationStrategyResult = strategy.NextLocation(out cityPosition);
+
+                    if (locationStrategyResult != Error.Ok)
                     {
-                        ReplyError(session, packet, error);
+                        ReplyError(session, packet, locationStrategyResult);
                         return;
                     }
+
+                    procedure.CreateCity(cityFactory, session.Player, cityName, cityPosition, barbarianTribeManager, out city);
                 }
 
-                IStructure mainBuilding = (IStructure)city[1];
-
-                initFactory.InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
-
-                city.Worker.DoPassive(city, actionFactory.CreateCityPassiveAction(city.Id), false);
+                procedure.InitCity(city, initFactory, actionFactory);
 
                 var reply = new Packet(packet);
                 reply.Option |= (ushort)Packet.Options.Compressed;
@@ -420,16 +421,16 @@ namespace Game.Comm.ProcessorCommands
         private void SubscribeDefaultChannels(Session session, IPlayer player)
         {
             // Subscribe him to the player channel
-            Global.Channel.Subscribe(session, "/PLAYER/" + player.PlayerId);
+            Global.Current.Channel.Subscribe(session, "/PLAYER/" + player.PlayerId);
 
             // Subscribe him to the tribe channel if available
             if (player.Tribesman != null)
             {
-                Global.Channel.Subscribe(session, "/TRIBE/" + player.Tribesman.Tribe.Id);
+                Global.Current.Channel.Subscribe(session, "/TRIBE/" + player.Tribesman.Tribe.Id);
             }
 
             // Subscribe to global channel
-            Global.Channel.Subscribe(session, "/GLOBAL");
+            Global.Current.Channel.Subscribe(session, "/GLOBAL");
         }
     }
 }

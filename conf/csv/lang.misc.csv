@@ -1,0 +1,298 @@
+Key,EN
+GOLD_DESC,Gold\n\nThis rare resource is often used to train advanced military units and to fund research. Gold can be acquired by trading on the market or can be looted from other cities. It takes more time to loot gold than other resources during battle.
+WOOD_DESC,Wood\n\nA basic resource used for many purposes. Wood can be harvested from forests scattered throughout the world. 
+CROP_DESC,"Crop\n\nA staple resource required for just about everything, including keeping your units alive. Crop can be acquired by laborers through Farms."
+LABOR_DESC,"These are the working people in your city. Laborers can be trained into military or to gather most resources. Your city will automatically gain laborers as time passes. However, the more laborers in your city, the longer it will take to get more.  Laborers are very considerate and educated, always ensure the city will not be overpopulated. Currently receiving a laborer every {0}."
+IRON_DESC,Iron\n\nAn ore used for advanced tasks. Iron can be acquired through the Refinery.
+UPKEEP_DESC,Troop Upkeep\n\nAmount of crop consumed every hour by your military units.
+DEFENSE_POINTS_DESC,Defense Points\n\nDefense points are acquired when your units kill enemy units. These points are not only acquired when your city is attacked but also when your units fight while stationed in other player's cities.
+ATTACK_POINTS_DESC,Attack Points\n\nAttack points are acquired when you attack and kill enemy units.
+INFLUENCE_POINTS_DESC,Influence Points\n\nYour total influence points is the sum of all building levels in all of your cities.
+NEW_CITY_DESC,Build a new city here. Requires Ox Wagons and Influence Points. Your total influence points is the sum of all building levels in all of your cities.  All Ox Wagons will be consumed and must come from a single existing city.
+UNITS_DESC,Units\n\nStatus of your military units. You can get more information about your units in the 'Unit Movement' screen.
+AP_POINTS_DESC,Alignment Rating\n\nShows how aggressive or defensive the city has lately been. Alignment rating goes down when you defeat other enemies and goes up when your city is under significant attacks. Bonuses are given when this number reaches certain thresholds.
+,
+FARMING_LABEL,Farming
+TIME_LEFT_LABEL,Time Left
+STR_TROOPS,Troops
+STR_REPORTS,Reports
+STR_ONGOING_ATTACKS,Attacks
+STR_STRONGHOLDS,Strongholds
+STR_STRONGHOLDS_UNDER_COMMAND,Strongholds In Command
+STR_NAME,Name
+STR_LEVEL,Level
+STR_NOT_OCCUPIED,Not Occupied
+STR_TRIBE,Tribe
+STR_GATE,Gate
+STR_OCCUPIED,Occupied
+STR_VP_RATE,Victory Point Rate
+STR_VICTORY_POINT,Victory Point
+STR_PER_DAY_RATE,{0} per day
+STR_PER_HOUR_RATE,{0} per hour
+STR_TOTAL_TROOPS,Total Troops
+STR_NONE_DEFENDING,None defending
+STR_GO_TO,Go there
+STR_RETREAT,Retreat
+STR_VIEW_BATTLE,View Battle
+STR_ESTABLISHED,Established
+STR_LEVEL_VALUE,Level {0}
+STR_DAYS_OCCUPIED,Total Days Occupied
+STR_UNIT_SINGULAR_PLURAL,{0} unit(s)
+STR_UPKEEP_COUNT,{0} upkeep
+STR_BATTLE_IN_PROGRESS,Battle In Progress
+STR_VIEW_REPORT,View Report
+STR_NEUTRAL,Neutral
+STR_VIEW_PROFILE,View Profile
+STR_GOTO,Go to
+STR_ESTABLISHED_WITH_TIME,established {0} ago
+STR_OVERVIEW,Overview
+STR_TARGET,Target
+STR_LOCATE,Locate
+STR_MANAGE,Manage
+STR_ATTACKING,Attacking
+STR_DEFENDING,Defending
+STR_BARBARIAN_TRIBE,Barbarian Tribe
+STR_SAVE,Save
+STR_ERROR,Error
+STR_CONFIRM,Confirm
+,
+CITY_OVERVIEW_TITLE,City Overview
+CITY_OVERVIEW_INFLUENCE_POINTS_LABEL,{0} influence points.
+CITY_OVERVIEW_DEFENSE_POINTS_LABEL,{0} defense points.
+CITY_OVERVIEW_ATTACK_POINTS_LABEL,{0} attack points.
+CITY_OVERVIEW_LABORERS_LABEL,"{0} idle, {1} working."
+CITY_OVERVIEW_TROOPS_STARVING,Your troop upkeep currently exceeds your crop production rate. Your units will slowly starve to death.
+CITY_OVERVIEW_LABORERS_TAB,Laborers
+CITY_OVERVIEW_LOCAL_EVENTS_TAB,Local Events
+CITY_OVERVIEW_LABORERS_STRUCTURE_COLUMN,Structure
+CITY_OVERVIEW_LABORERS_WORKING_COLUMN,Working/Maximum Laborers
+CITY_OVERVIEW_UNITS_STATUS_LABEL,"{0} idle, {1} busy."
+CITY_OVERVIEW_AP_POINTS_LABEL,{0} alignment rating
+,
+TRIBE_RANK_UPDATED,Tribe rank is saved!
+,
+TRIBE_LVL_1,Allows 5 members to join the tribe
+TRIBE_LVL_2,Allows 10 members to join the tribe
+TRIBE_LVL_3,Allows 15 members to join the tribe
+TRIBE_LVL_4,Allows 20 members to join the tribe
+TRIBE_LVL_5,Allows 25 members to join the tribe
+TRIBE_LVL_6,Allows 30 members to join the tribe
+TRIBE_LVL_7,Allows 35 members to join the tribe
+TRIBE_LVL_8,Allows 40 members to join the tribe
+TRIBE_LVL_9,Allows 45 members to join the tribe
+TRIBE_LVL_10,Allows 50 members to join the tribe
+TRIBE_LVL_11,Allows 55 members to join the tribe
+TRIBE_LVL_12,Allows 60 members to join the tribe
+TRIBE_LVL_13,Allows 65 members to join the tribe
+TRIBE_LVL_14,Allows 70 members to join the tribe
+TRIBE_LVL_15,Allows 75 members to join the tribe
+TRIBE_LVL_16,Allows 80 members to join the tribe
+TRIBE_LVL_17,Allows 85 members to join the tribe
+TRIBE_LVL_18,Allows 90 members to join the tribe
+TRIBE_LVL_19,Allows 95 members to join the tribe
+TRIBE_LVL_20,Allows 100 members to join the tribe
+,
+CONCURRENT_UPGRADE_2,You can only build/upgrade two structures at a time
+CONCURRENT_UPGRADE_3,You can only build/upgrade three structures at a time
+,
+CHAT_CHANNEL_GLOBAL,Global
+CHAT_CHANNEL_OFFTOPIC,Off topic
+CHAT_CHANNEL_TRIBE,Tribe
+CHAT_CHANNEL_HELPDESK,Help desk
+,
+STR_MESSAGE,Message
+STR_PER_HOUR,{0} per hour
+,
+MSG_NEWBIE_PROTECTION,Under newbie protection: Expires in {0}
+MSG_UNDER_ATTACK,{0} is under attack
+MSG_TROOPS_STARVING,{0}: Troops may be starving to death
+MSG_INCOMING_ATTACK,{0}: {1} incoming attack(s)
+MSG_INCOMING_DEFENSE,{0}: {1} incoming reinforcement(s)
+MSG_TRIBE_ALERTS,"Tribe: {0} invasion alert(s), {1} pending assignment(s)"
+MSG_TRIBE_NO_ALERTS,Tribe: no more invasion alert or pending assignment
+,
+MSG_AP_RESOURCE_BONUS,{0} Alignment Rating Bonus: Only resources over 75% of your resource cap can be looted
+MSG_AP_STRUCTURE_DEFENSE_BONUS,{0} Alignment Rating Bonus: Damage to structures decreased by 90%
+,
+PLAYER_PROFILE_DIALOG_CITY_DISTANCE,{0} - About {1} away
+PLAYER_PROFILE_DIALOG_CITY_DISTANCE_FOOTER,*Based on an average speed troop on an attack mission
+PLAYER_PROFILE_INVITATION_TOOLTIP,This code can be given to your friends when they sign up if you would like them to start playing near your main city.
+PLAYER_PROFILE_INVITATION_TOOLTIP_LOCATION,Ask your friend for their invitation code if you want to start near them. Your friend can find this code in their profile.
+,
+SEND_ATTACK_AP_BONUS,The city you are attacking currently has alignment rating bonuses since they have been attacked a lot lately. You may receive less loot than usual and this city's defenses may be temporarily increased.\n\nAre you sure you want to still attack?
+,
+MINIMAP_LEGEND_CITY,Your city
+,
+MINIMAP_LEGEND_DIFFICULTY,Difficulty
+MINIMAP_LEGEND_DIFFICULTY_STRONGEST,Very strong
+MINIMAP_LEGEND_DIFFICULTY_STRONG,Strong
+MINIMAP_LEGEND_DIFFICULTY_NORMAL,Normal
+MINIMAP_LEGEND_DIFFICULTY_WEAK,Weak
+MINIMAP_LEGEND_DIFFICULTY_WEAKEST,Very weak
+,
+MINIMAP_LEGEND_DISTANCE,Distance
+MINIMAP_LEGEND_DISTANCE_LESS_THAN,Less than {0} tiles
+MINIMAP_LEGEND_DISTANCE_500,Over 400 tiles
+,
+MINIMAP_LEGEND_TRIBE,Tribe
+MINIMAP_LEGEND_TRIBE_SELF,Tribesmen
+MINIMAP_LEGEND_TRIBE_OTHER_IN_TRIBE,In another tribe
+MINIMAP_LEGEND_TRIBE_OTHER_NO_TRIBE,Not in tribe
+,
+MINIMAP_LEGEND_ALIGNMENT,Alignment
+MINIMAP_LEGEND_ALIGNMENT_90,Over 90 Alignment
+MINIMAP_LEGEND_ALIGNMENT_75,Over 75 Alignment
+MINIMAP_LEGEND_ALIGNMENT_50,Around 50 Alignment
+MINIMAP_LEGEND_ALIGNMENT_25,Under 25 Alignment
+MINIMAP_LEGEND_ALIGNMENT_10,Under 10 Alignment
+,
+MINIMAP_LEGEND_NEWBIE,Protection
+MINIMAP_LEGEND_NEWBIE_YES,Newbie protected
+MINIMAP_LEGEND_NEWBIE_NO,Not protected
+,
+STRONGHOLD_GATE_BROKEN,"The gates of <a href=""event:gotoStrongholdByName:{0}"">{0}</a> have been taken down by <a href=""event:viewTribeProfileByName:{1}"">{1}</a>."
+STRONGHOLD_ACTIVE,"<a href=""event:gotoStrongholdByName:{0}"">{0}</a> has been built and can now be captured."
+STRONGHOLD_TAKEN_OVER,"<a href=""event:gotoStrongholdByName:{0}"">{0}</a> has been taken over by <a href=""event:viewTribeProfileByName:{1}"">{1}</a> from the hands of <a href=""event:viewTribeProfileByName:{2}"">{2}</a>."
+STRONGHOLD_NEUTRAL_TAKEN_OVER,"<a href=""event:gotoStrongholdByName:{0}"">{0}</a> is now under the control of <a href=""event:viewTribeProfileByName:{1}"">{1}</a>."
+STRONGHOLD_NO_TROOPS,There are no troops protecting this stronghold.
+STRONGHOLD_GATE_REPAIRED,Gate is completely repaired.
+STRONGHOLD_STATE_GATE_ATTACK,gate is under attack
+STRONGHOLD_STATE_MAIN_ATTACK,"under attack by <a href=""event:viewTribeProfile:{0}"">{1}</a> (<a href=""event:viewBattle:{2}"">view battle</a>)"
+STRONGHOLD_REPAIR_GATE_ACTION,Click to repair the gate
+,
+SYSTEM_CHAT_LITERAL,{0}
+,
+ATTACK_STRUCTURE_UNATTACKABLE,This structure can't be attacked.
+ATTACK_STRUCTURE_BEING_BUILT,This structure can't be attacked while it's being built.
+ATTACK_STRUCTURE_UNDESTROYABLE,This structure can't be attacked while it's level 1.
+ATTACK_CHOOSE_TARGET,Choose target to attack.
+ATTACK_DISTANCE_MESSAGE,About {0} away. Double click to attack.
+ATTACK_OWN_STRONGHOLD,This stronghold can't be attacked since it belongs to your tribe. Send defense instead to protect it.
+ATTACK_STRONGHOLD_NO_TRIBESMAN,You must join or create a tribe in order to attack strongholds.
+ATTACK_SELF_ERROR,You can't attack your own city.
+,
+REINFORCE_CHOOSE_TARGET,Choose a town center to defend or stronghold to defend.
+REINFORCE_DISTANCE_MESSAGE,About {0} away. Double click to defend.
+,
+BATTLE_PROP_DEFENSE_STRONGHOLD_METER,Defenders Morale
+BATTLE_PROP_OFFENSE_STRONGHOLD_METER,Attackers Morale
+BATTLE_NEW_ROUND,Battle - {0} - Round {1}
+BATTLE_SIDE_LOCAL,Local
+BATTLE_CANT_REACH,couldn't reach anyone
+BATTLE_DAMAGE,{0} dmg
+BATTLE_DEFEATED,has been defeated
+BATTLE_TAB_DEFENDER,Defender
+BATTLE_TAB_ATTACKER,Attacker
+BATTLE_TAB_LOG,Battle Log
+BATTLE_ROUND,Round {0}
+BATTLE_ENDED,Battle has ended
+,
+REPORT_DATE_COLUMN,Date
+REPORT_SIDE_COLUMN,Side
+REPORT_LOCATION_COLUMN,Location
+REPORT_TROOP_COLUMN,Troop
+REPORT_ATTACKING_TRIBES_COLUMN,Attacker
+REPORT_DEFENDING_TRIBES_COLUMN,Defender
+,
+TROOP_CREATE_DRAG_HINT,Hint: Drag units to assign to the different troops. Hold SHIFT while dragging to move all units.
+,
+LOCATION_CITY_LABEL,<a href='event:viewProfile:{0}'>{1}</a> (<a href='event:goToCity:{2}'>{3}</a>)
+LOCATION_STRONGHOLD_LABEL,"<a href=""event:viewStronghold:{0}"">{1}</a>"
+,
+TRIBE_LEAVE_WARNING,Do you really want to leave the tribe? You will not be able to rejoin this tribe for 48 hours.
+TRIBE_KICK_WARNING,Are you sure you want to remove this player from the tribe? A new player will not be able to replace this tribesmate for 8 hours and the player being kicked will not be able to rejoin the tribe for 48 hours.
+TRIBE_NO_STRONGHOLDS_OWNED,Your tribe doesn't control any strongholds right now.
+TRIBE_NO_STRONGHOLDS_OPEN,Your tribe hasn't broken through the gate of any strongholds.
+TRIBE_INCOMING_ATK,{0} is being attacked by {1}
+ASSIGNMENT_ATK,Attack {0}
+ASSIGNMENT_DEF,Defend {0}
+,
+RICH_LABEL_LOCATION_BARBARIAN_TRIBE,Barbarian Tribe
+RICH_LABEL_LOCATION_CITY_ONLY,"<a href=""event:viewProfileByType:city:{0}"">{1}</a>"
+RICH_LABEL_LOCATION_CITY,"<a href=""event:viewProfileByType:city:{0}"">{1}</a> (<a href =""event:viewProfile:{2}"">{3}</a>)"
+RICH_LABEL_LOCATION_STRONGHOLD,"Stronghold <a href=""event:viewProfileByType:stronghold:{0}"">{1}</a> (<a href =""event:viewTribeProfile:{2}"">{3}</a>)"
+RICH_LABEL_LOCATION_STRONGHOLD_NEUTRAL,"Stronghold <a href=""event:viewProfileByType:stronghold:{0}"">{1}</a> (Neutral)"
+,
+TROOPS_DIALOG_SEND_ATTACK,Send Attack
+TROOPS_DIALOG_SEND_DEFENSE,Send Defense
+TROOPS_DIALOG_LOCAL_GROUP,Local
+TROOPS_DIALOG_ON_THE_MOVE_GROUP,On the move
+TROOPS_DIALOG_INCOMING_GROUP,Incoming
+TROOPS_DIALOG_STATIONED_GROUP,Stationed
+TROOPS_DIALOG_CITIES_UNDER_ATTACK,{0} cit(ies) under attack
+TROOPS_DIALOG_STATIONED_TROOPS,{0} stationed troop(s) ({1} in battle)
+TROOPS_DIALOG_INCOMING_DEFENSE,{0} incoming defense(s)
+TROOPS_DIALOG_INCOMING_ATTACK,{0} incoming attack(s)
+TROOPS_DIALOG_ON_THE_MOVE,{0} troop(s) on the move
+TROOPS_DIALOG_RETURNING_HOME,{0} troop(s) returning home
+TROOPS_DIALOG_CHOOSE_CITY,You must choose a city in the dropdown above first.
+,
+TROOP_NAME_COLUMN,Troop
+TROOP_LOCATION_COLUMN,Location
+TROOP_STATUS_COLUMN,Status
+TROOP_UNITS_COLUMN,Units
+TROOP_ACTIONS_COLUMN,Actions
+TROOP_LOCAL,Local
+TROOP_NOTIFICATION_NAME_COLUMN,Troop
+TROOP_NOTIFICATION_LOCATION_COLUMN,Location
+TROOP_NOTIFICATION_STATUS_COLUMN,Status
+TROOP_SPEED_VERY_SLOW,Very slow
+TROOP_SPEED_SLOW,Slow
+TROOP_SPEED_NORMAL,Normal
+TROOP_SPEED_FAST,Fast
+TROOP_SPEED_VERY_FAST,Very fast
+TROOP_SPEED_VERY_SLOW_FULL,Very slow ({0} seconds per tile)
+TROOP_SPEED_SLOW_FULL,Slow ({0} seconds per tile)
+TROOP_SPEED_NORMAL_FULL,Normal ({0} seconds per tile)
+TROOP_SPEED_FAST_FULL,Fast ({0} seconds per tile)
+TROOP_SPEED_VERY_FAST_FULL,Very fast ({0} seconds per tile)
+RICH_LABEL_TROOP,"<a href=""event:viewProfileByType:city:{0}"">{1}</a> ({2})"
+,
+TRADE_DIALOG_CHOOSE_RESOURCE_AMOUNT,Choose amount of resources
+TRADE_DIALOG_SET_MAX,Set to max
+,
+BARBARIAN_TRIBE_CAMP_COUNT,Camps Remain
+BARBARIAN_TRIBE_UPKEEP,Upkeep
+BARBARIAN_ASSIGNMENT_ERROR,Tribe Assignment does not support attacking or defending Barbarian Tribe.
+,
+UNIT_MANAGE_DIALOG_TITLE,Assign Units
+UNIT_MANAGE_DIALOG_TIP,Units in hiding will consume an extra 25% upkeep.
+UNIT_MANAGE_HIDE_NEW_UNITS,Hide newly trained units
+UNIT_MANAGE_HIDE_NEW_UNITS_TOOLTIP,"If selected, all newly trained units will go directly into hiding and will not defend your city if it is attacked. Units in hiding consume an extra 25% upkeep."
+,
+TRANSFER_TITLE,Troop transfer
+TRANSFER_NO_OTHER_STRONGHOLD,Your tribe has no other strongholds that this troop can be transferred to.
+TRANSFER_CHOOSE_STRONGHOLD,Choose a stronghold:
+TRANSFER_ARRIVE_IN,Arrives in {0}
+TRANSFER_SEND,Send
+TRANSFER_CANCEL,Cancel
+TRANSFER_WARNING,"If the stronghold is lost to another tribe before the troop arrives, the troop will be sent back to its home city."
+TRANSFER_REQUIRED_ERROR,You have to choose at least some to transfer. Drag the units from the troop to transfer them.
+,
+TRIBE_LOG_1,Tribe upgraded to level {0}.
+TRIBE_LOG_2,"{0} contributed {1} crop, {2} gold, {3} iron, and {4} wood."
+TRIBE_LOG_3,{0} has joined the tribe.
+TRIBE_LOG_4,{0} has been given the rank of {1}.
+TRIBE_LOG_5,{0} was kicked by {1}.
+TRIBE_LOG_6,{0} has left.
+TRIBE_LOG_7,Took over Stronghold {0} from the tribe {1}.
+TRIBE_LOG_8,Lost Stronghold {0} to tribe {1}.
+TRIBE_LOG_9,Occupied the neutral Stronghold {0}.
+,
+STR_NICE_SHORT_TODAY,"Today, {0}"
+STR_NICE_SHORT_YESTERDAY,"Yesterday, {0}"
+,
+RETREAT_PARTIAL_DIALOG_SELECT_ALL,Retreat entire troop
+RETREAT_PARTIAL_DIALOG_SELECT_PARTIAL,Let me choose which units to retreat
+RETREAT_PARTIAL_DIALOG_SOURCE_TAB,Stationed Troops
+RETREAT_PARTIAL_DIALOG_TARGET_TAB,Units to Retreat
+,
+RETREAT_TROOP_DIALOG_TITLE,Retreat
+RETREAT_TROOP_DIALOG_REQUIRED_ERROR,You have to choose at least some to retreat. Drag the units from the troop to retreat them.
+,
+TRANSFER_PARTIAL_DIALOG_SELECT_ALL,Transfer entire troop
+TRANSFER_PARTIAL_DIALOG_SELECT_PARTIAL,Let me choose which units to transfer
+TRANSFER_PARTIAL_DIALOG_SOURCE_TAB,Stationed Troops
+TRANSFER_PARTIAL_DIALOG_TARGET_TAB,Units to Transfer
+,
+RETREAT_TROOP_PROCESS_RETREAT_OTHER_UNITS,Do you really want to send these units back to their city?

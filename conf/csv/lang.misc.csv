@@ -54,6 +54,7 @@ STR_DEFENDING,Defending
 STR_BARBARIAN_TRIBE,Barbarian Tribe
 STR_SAVE,Save
 STR_ERROR,Error
+STR_CONFIRM,Confirm
 ,
 CITY_OVERVIEW_TITLE,City Overview
 CITY_OVERVIEW_INFLUENCE_POINTS_LABEL,{0} influence points.
@@ -293,3 +294,5 @@ TRANSFER_PARTIAL_DIALOG_SELECT_ALL,Transfer entire troop
 TRANSFER_PARTIAL_DIALOG_SELECT_PARTIAL,Let me choose which units to transfer
 TRANSFER_PARTIAL_DIALOG_SOURCE_TAB,Stationed Troops
 TRANSFER_PARTIAL_DIALOG_TARGET_TAB,Units to Transfer
+,
+RETREAT_TROOP_PROCESS_RETREAT_OTHER_UNITS,Do you really want to send these units back to their city?

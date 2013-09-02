@@ -786,8 +786,8 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 //Make sure that the person sending the retreat is either the guy who owns the troop or the guy who owns the stationed city
-                if (city.Owner != session.Player && stub.Station != null &&
-                    session.Player.GetCityList().All(x => x != stub.Station))
+                bool stationOwnerRetreating = stub.Station != null && session.Player.GetCityList().Any(x => x == stub.Station);
+                if (city.Owner != session.Player && !stationOwnerRetreating)
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
@@ -795,7 +795,7 @@ namespace Game.Comm.ProcessorCommands
 
                 ITroopObjectInitializer troopInitializer;
 
-                if (completeRetreat || unitsToRetreat.TotalCount == stub.TotalCount)
+                if (completeRetreat || stationOwnerRetreating || unitsToRetreat.TotalCount == stub.TotalCount)
                 {
                     troopInitializer = troopObjectInitializerFactory.CreateStationedTroopObjectInitializer(stub);
                 }

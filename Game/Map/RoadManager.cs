@@ -23,14 +23,17 @@ namespace Game.Map
 
         private readonly IRegionLocator regionLocator;
 
-        public RoadManager(IRegionManager regionManager, IObjectTypeFactory objectTypeFactory, IChannel channel, IRegionLocator regionLocator)
+        private readonly ITileLocator tileLocator;
+
+        public RoadManager(IRegionManager regionManager, IObjectTypeFactory objectTypeFactory, IChannel channel, IRegionLocator regionLocator, ITileLocator tileLocator)
         {
             this.regionManager = regionManager;
             this.objectTypeFactory = objectTypeFactory;
             this.channel = channel;
             this.regionLocator = regionLocator;
+            this.tileLocator = tileLocator;
 
-            //regionManager.ObjectAdded += RegionManagerOnObjectAdded;
+            regionManager.ObjectAdded += RegionManagerOnObjectAdded;
         }
 
         private void RegionManagerOnObjectAdded(object sender, ObjectEvent e)
@@ -40,7 +43,10 @@ namespace Game.Map
                 return;
             }
 
-            CreateRoad(e.GameObject.PrimaryPosition.X, e.GameObject.PrimaryPosition.Y);
+            foreach (var position in tileLocator.ForeachMultitile(e.GameObject))
+            {
+                CreateRoad(position.X, position.Y);
+            }
         }
 
         private void SendUpdate(Dictionary<ushort, List<TileUpdate>> updates)

@@ -194,6 +194,14 @@ namespace Game.Map
             return overlapping;
         }
 
+        public IEnumerable<Position> ForeachRadius(ISimpleGameObject obj, byte radius, bool includeObject = false)
+        {
+            buildingPositions
+                    .SelectMany(p => tileLocator.ForeachRadius(p.X, p.Y, 1, false))
+                    .Distinct()
+                    .Where(p => !buildingPositions.Contains(p));
+        }
+
         public int TileDistance(ISimpleGameObject obj1, ISimpleGameObject obj2)
         {
             return TileDistance(obj1.PrimaryPosition, obj1.Size, obj2.PrimaryPosition, obj2.Size);

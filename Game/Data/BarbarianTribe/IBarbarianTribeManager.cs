@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Game.Data.Troop;
-
 namespace Game.Data.BarbarianTribe
 {
     public interface IBarbarianTribeManager

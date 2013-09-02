@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Game.Data;
@@ -86,6 +87,7 @@ namespace Game.Comm
             processor.RegisterCommand("warn", Warn, PlayerRights.Moderator);
             processor.RegisterCommand("setchatlevel", SetChatLevel, PlayerRights.Admin);
             processor.RegisterCommand("giveachievement", GiveAchievement, PlayerRights.Admin);
+            processor.RegisterCommand("givesupporterachievement", GiveSupporterAchievement, PlayerRights.Admin);
             processor.RegisterCommand("calculateexpensivecities", CalculateExpensiveCities, PlayerRights.Bureaucrat);
         }
 
@@ -219,7 +221,7 @@ namespace Game.Comm
 
             return "OK";
         }
-
+        
         private string ToggleChatMod(Session session, string[] parms)
         {
             session.Player.ChatState.Distinguish = !session.Player.ChatState.Distinguish;
@@ -1019,6 +1021,60 @@ namespace Game.Comm
                     playerRemoverFactory.CreatePlayersRemover(playerSelectorFactory.CreateNewbieIdleSelector());
 
             return string.Format("OK! Deleting {0} players.", playersRemover.DeletePlayers());
+        }
+
+        public string GiveSupporterAchievement(Session session, string[] parms)
+        {
+            bool help = false;
+            string playerName = string.Empty;
+            AchievementTier? tier = null;
+
+            try
+            {
+                var p = new OptionSet
+                {
+                        {"?|help|h", v => help = true},
+                        {"p=|player=", v => playerName = v.TrimMatchingQuotes()},
+                        {"tier=", v => tier = EnumExtension.Parse<AchievementTier>(v.TrimMatchingQuotes()) },
+                };
+                p.Parse(parms);
+            }
+            catch(Exception)
+            {
+                help = true;
+            }
+
+            if (help || 
+                string.IsNullOrEmpty(playerName) || 
+                !tier.HasValue)
+            {
+                return String.Format("givesupporterachievement --player=player --tier={0}",
+                                     String.Join("|", Enum.GetNames(typeof(AchievementTier))));
+            }
+
+            var type = "SUPPORTER";
+            var icon = "coins";
+            var title = "Supporter";
+            var description = "Helped Improve Tribal Hero";
+
+            ApiResponse response = ApiCaller.GiveAchievement(playerName, tier.Value, type, icon, title, description);
+
+            if (response.Success)
+            {
+                uint playerId;
+                if (world.FindPlayerId(playerName, out playerId))
+                {
+                    IPlayer player;
+                    using (locker.Lock(playerId, out player))
+                    {
+                        chat.SendSystemChat("ACHIEVEMENT_NOTIFICATION", playerId.ToString(CultureInfo.InvariantCulture), player.Name, tier.ToString().ToLowerInvariant());                        
+
+                        player.SendSystemMessage(null, "Achievement", "Hello, I've given you an achievement for supporting us. Your money will help us improve and cover the operating costs of the game. Make sure to refresh the game to see your new achievement. Thanks for your help!");
+                    }
+                }
+            }
+
+            return response.Success ? "OK!" : response.ErrorMessage;
         }
 
         public string GiveAchievement(Session session, String[] parms)

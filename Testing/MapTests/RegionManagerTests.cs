@@ -347,7 +347,7 @@ namespace Testing.MapTests
                     new Position(2, 9)
             });
 
-            regionManager.ObjectUpdateEvent(simpleGameObject, 2, 3);
+            regionManager.UpdateObject(simpleGameObject, 2, 3);
 
             region0.Received(1).EnterWriteLock();
             region1.Received(1).EnterWriteLock();

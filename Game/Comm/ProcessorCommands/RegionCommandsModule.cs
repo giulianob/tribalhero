@@ -120,14 +120,8 @@ namespace Game.Comm.ProcessorCommands
 
                 foreach (var position in tileLocator.ForeachRadius(x, y, 1, false))
                 {
-                    if (tileLocator.RadiusDistance(new Position(x, y), 1, position, 1) != 1)
-                    {
-                        continue;
-                    }
-
-                    if ((city.PrimaryPosition.X == position.X && city.PrimaryPosition.Y == position.Y) ||
-                        (world.Roads.IsRoad(position.X, position.Y) && 
-                        !world.Regions.GetObjectsInTile(position.X, position.Y).Any(s => s is IStructure)))
+                    if ((world.Roads.IsRoad(position.X, position.Y) && 
+                        !world.Regions.GetObjectsInTile(position.X, position.Y).Any(s => s is IStructure && s != city.MainBuilding)))
                     {
                         hasRoad = true;
                         break;

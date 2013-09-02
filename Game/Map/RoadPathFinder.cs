@@ -24,124 +24,94 @@ namespace Game.Map
             this.objectTypeFactory = objectTypeFactory;
         }
 
-        public Error CanBuild(uint x, uint y, ICity city, bool requiresRoad)
+        public Error CanBuild(SimpleGameObject gameObject, ICity city, bool requiresRoad)
         {
-            return Error.Ok;
+            var buildingPositions = tileLocator.ForeachMultitile(gameObject).ToArray();
+            var buildingNeighbors = tileLocator.ForeachRadius(gameObject, 1).ToArray();
 
-            bool buildingOnRoad = world.Roads.IsRoad(x, y);
+            var mainBuildingPositions = tileLocator.ForeachMultitile(city.MainBuilding).ToArray();
 
-            if (requiresRoad)
-            {
-                if (buildingOnRoad)
-                {
-                    bool breaksRoad = false;
+            var roadsBeingBuiltOn = buildingPositions.Where(buildingPosition => world.Roads.IsRoad(buildingPosition.X, buildingPosition.Y)).ToArray();
 
-                    foreach (var str in city)
-                    {
-                        if (str.IsMainBuilding || objectTypeFactory.IsObjectType("NoRoadRequired", str.Type))
-                        {
-                            continue;
-                        }
-
-                        if (!HasPath(new Position(str.PrimaryPosition.X, str.PrimaryPosition.Y),
-                                                    new Position(city.PrimaryPosition.X, city.PrimaryPosition.Y),
-                                                    city,
-                                                    new Position(x, y)))
-                        {
-                            breaksRoad = true;
-                            break;
-                        }
-                    }
-
-                    if (breaksRoad)
-                    {
-                        world.Regions.UnlockRegion(x, y);
-                        return Error.RoadDestroyUniquePath;
-                    }
-
-                    // Make sure all neighboring roads have a diff path
-                    bool allNeighborsHaveOtherPaths = true;
-                    foreach (var position in tileLocator.ForeachRadius(x, y, 1, false))
-                    {
-
-                        if (tileLocator.RadiusDistance(new Position(x, y), 1, position, 1) != 1 ||
-                            (city.PrimaryPosition.X == position.X && city.PrimaryPosition.Y == position.Y) ||
-                            !world.Roads.IsRoad(position.X, position.Y))
-                        {
-                            continue;
-                        }
-
-                        if (!HasPath(new Position(position.X, position.Y),
-                                     new Position(city.PrimaryPosition.X, city.PrimaryPosition.Y),
-                                     city,
-                                     new Position(x, y)))
-                        {
-                            allNeighborsHaveOtherPaths = false;
-                            break;
-                        }
-                    }
-
-                    if (!allNeighborsHaveOtherPaths)
-                    {
-                        world.Regions.UnlockRegion(x, y);
-                        return Error.RoadDestroyUniquePath;
-                    }
-                }
-
-                bool hasRoad = false;
-
-                foreach (var position in tileLocator.ForeachRadius(x, y, 1, false))
-                {
-                    if (tileLocator.RadiusDistance(new Position(x, y), 1, position, 1) != 1)
-                    {
-                        continue;
-                    }
-
-                    var curStruct = (IStructure)world.Regions.GetObjectsInTile(position.X, position.Y).FirstOrDefault(obj => obj is IStructure);
-
-                    bool hasStructure = curStruct != null;
-
-                    // Make sure we have a road around this building
-                    if (hasRoad || hasStructure || !world.Roads.IsRoad(position.X, position.Y))
-                    {
-                        continue;
-                    }
-
-                    if (!buildingOnRoad || HasPath(new Position(position.X, position.Y),
-                                                   new Position(city.PrimaryPosition.X, city.PrimaryPosition.Y),
-                                                   city,
-                                                   new Position(x, y)))
-                    {
-                        hasRoad = true;
-                    }
-                }
-
-                if (!hasRoad)
-                {
-                    world.Regions.UnlockRegion(x, y);
-                    return Error.RoadNotAround;
-                }
-            }
-            else
+            if (!requiresRoad)
             {
                 // Cant build on road if this building doesnt require roads
-                if (buildingOnRoad)
+                if (roadsBeingBuiltOn.Any())
                 {
-                    world.Regions.UnlockRegion(x, y);
                     return Error.RoadDestroyUniquePath;
+                }
+
+                return Error.Ok;
+            }
+
+            if (roadsBeingBuiltOn.Any())
+            {
+                // Make sure all structures still have a valid path if we are building on top of a road
+                foreach (var str in city)
+                {
+                    if (str.IsMainBuilding || objectTypeFactory.IsObjectType("NoRoadRequired", str.Type))
+                    {
+                        continue;
+                    }
+
+                    if (!HasPath(start: new Position(str.PrimaryPosition.X, str.PrimaryPosition.Y),
+                                 end: new Position(city.PrimaryPosition.X, city.PrimaryPosition.Y),
+                                 excludedPoints: buildingPositions, city: city))
+                    {
+                        return Error.RoadDestroyUniquePath;
+                    }
+                }
+
+                // Make sure all neighboring roads have a path
+                foreach (var neighborPosition in buildingNeighbors)
+                {
+                    if (mainBuildingPositions.Contains(neighborPosition) || !world.Roads.IsRoad(neighborPosition.X, neighborPosition.Y))
+                    {
+                        continue;
+                    }
+
+                    if (!HasPath(start: new Position(neighborPosition.X, neighborPosition.Y),
+                                 end: new Position(city.PrimaryPosition.X, city.PrimaryPosition.Y),
+                                 excludedPoints: buildingPositions, 
+                                 city: city))
+                    {
+                        return Error.RoadDestroyUniquePath;
+                    }
                 }
             }
 
-            return Error.Ok;
+            // Make sure we have a road around this building
+            bool hasRoad = false;
+            foreach (var neighborPosition in buildingNeighbors)
+            {
+                bool hasStructure = world.Regions.GetObjectsInTile(neighborPosition.X, neighborPosition.Y)
+                                         .Any(obj => obj is IStructure);
+                
+                if (hasStructure || !world.Roads.IsRoad(neighborPosition.X, neighborPosition.Y))
+                {
+                    continue;
+                }
+
+                if (!roadsBeingBuiltOn.Any() || HasPath(start: new Position(neighborPosition.X, neighborPosition.Y),
+                                               end: new Position(city.PrimaryPosition.X, city.PrimaryPosition.Y),
+                                               excludedPoints: buildingPositions, 
+                                               city: city))
+                {
+                    hasRoad = true;
+                    break;
+                }
+            }
+
+            return !hasRoad ? Error.RoadNotAround : Error.Ok;
         }
 
-        public bool HasPath(Position start, Position end, ICity city, Position excludedPoint)
+        public bool HasPath(Position start, Position end, IEnumerable<Position> excludedPoints, ICity city)
         {
             bool fromStructure = world.Regions.GetObjectsInTile(start.X, start.Y).Any(s => s is IStructure);
 
             return BreadthFirst(new Position(end.X, end.Y),
                                 new List<Position> {new Position(start.X, start.Y)},
-                                excludedPoint,
+                                excludedPoints,
                                 node =>
                                     {
                                         var neighbors = new List<Position>(4);
@@ -197,7 +167,7 @@ namespace Game.Map
 
         private bool BreadthFirst(Position end,
                                   List<Position> visited,
-                                  Position excludedPoint,
+                                  IEnumerable<Position> excludedPoints,
                                   GetNeighbors getNeighbors)
         {
             List<Position> nodes = getNeighbors(visited.Last());
@@ -209,10 +179,11 @@ namespace Game.Map
             }
 
             // in breadth-first, recursion needs to come after visiting adjacent nodes
-            foreach (var node in nodes.Where(node => !node.Equals(end) && !node.Equals(excludedPoint) && !visited.Contains(node)))
+            foreach (var node in nodes.Where(node => !node.Equals(end) && !excludedPoints.Contains(node) && !visited.Contains(node)))
             {
                 visited.Add(node);
-                if (BreadthFirst(end, visited, excludedPoint, getNeighbors))
+
+                if (BreadthFirst(end, visited, excludedPoints, getNeighbors))
                 {
                     return true;
                 }

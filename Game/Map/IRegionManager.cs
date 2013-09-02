@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Game.Comm;
@@ -7,8 +8,10 @@ namespace Game.Map
 {
     public interface IRegionManager
     {
+        event EventHandler<ObjectEvent> ObjectAdded;
+
         IMiniMapRegionManager MiniMapRegions { get; }
-        
+
         bool IsValidXandY(uint x, uint y);
 
         IEnumerable<ISimpleGameObject> GetObjectsWithin(uint x, uint y, int radius);
@@ -27,7 +30,7 @@ namespace Game.Map
 
         IRegion GetRegion(ushort id);
 
-        void ObjectUpdateEvent(ISimpleGameObject sender, uint origX, uint origY);
+        void UpdateObject(ISimpleGameObject sender, uint origX, uint origY);
 
         ushort GetTileType(uint x, uint y);
 

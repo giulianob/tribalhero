@@ -214,7 +214,7 @@ namespace Game.Map
 
         private void SimpleGameObjectOnObjectUpdated(object sender, SimpleGameObjectArgs e)
         {
-            ObjectUpdateEvent(e.SimpleGameObject, e.OriginalX, e.OriginalY);
+            UpdateObject(e.SimpleGameObject, e.OriginalX, e.OriginalY);
         }
 
         public void DbLoaderAdd(ISimpleGameObject obj)
@@ -299,7 +299,7 @@ namespace Game.Map
             return id >= regions.Count ? null : regions[id];
         }
 
-        public void ObjectUpdateEvent(ISimpleGameObject sender, uint origX, uint origY)
+        public void UpdateObject(ISimpleGameObject sender, uint origX, uint origY)
         {
             if (!sender.InWorld)
             {

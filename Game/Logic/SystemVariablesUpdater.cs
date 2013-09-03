@@ -32,6 +32,8 @@ namespace Game.Logic
 
         private readonly IForestManager forestManager;
 
+        private readonly ISystemVariableManager systemVariableManager;
+
         private readonly ITribeManager tribeManager;
 
         private readonly IWorld world;
@@ -47,7 +49,8 @@ namespace Game.Logic
                                       IDbManager dbManager,
                                       IScheduler scheduler,
                                       IStrongholdManager strongholdManager,
-                                      IForestManager forestManager)
+                                      IForestManager forestManager,
+                                      ISystemVariableManager systemVariableManager)
         {
             this.world = world;
             this.tribeManager = tribeManager;
@@ -55,6 +58,7 @@ namespace Game.Logic
             this.scheduler = scheduler;
             this.strongholdManager = strongholdManager;
             this.forestManager = forestManager;
+            this.systemVariableManager = systemVariableManager;
         }
 
         [Obsolete("Inject SystemVariablesUpdater instead")]
@@ -92,8 +96,8 @@ namespace Game.Logic
                     }
 
                     //System time
-                    Global.SystemVariables["System.time"].Value = now;
-                    dbManager.Save(Global.SystemVariables["System.time"]);
+                    systemVariableManager["System.time"].Value = now;
+                    dbManager.Save(systemVariableManager["System.time"]);
 
                     #region 10 second updates
                     if (DateTime.UtcNow.Subtract(lastUpdateScheduler).TotalMilliseconds < 10000)
@@ -207,16 +211,16 @@ namespace Game.Logic
                     // Update vars
                     foreach (var variable in variables)
                     {
-                        if (!Global.SystemVariables.ContainsKey(variable.Key))
+                        if (!systemVariableManager.ContainsKey(variable.Key))
                         {
-                            Global.SystemVariables.Add(variable.Key, variable);
+                            systemVariableManager.Add(variable.Key, variable);
                         }
                         else
                         {
-                            Global.SystemVariables[variable.Key].Value = variable.Value;
+                            systemVariableManager[variable.Key].Value = variable.Value;
                         }
 
-                        dbManager.Save(Global.SystemVariables[variable.Key]);
+                        dbManager.Save(systemVariableManager[variable.Key]);
                     }
                     #endregion
                 }

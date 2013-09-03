@@ -4,6 +4,7 @@ using Game.Data;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Moq;
+using NSubstitute;
 using Xunit;
 using Xunit.Extensions;
 
@@ -77,7 +78,7 @@ namespace Testing.FormulaTests
             var objectTypeFactory = new Mock<ObjectTypeFactory>();
             objectTypeFactory.Setup(m => m.IsStructureType("Basement", It.IsAny<IStructure>())).Returns(false);
 
-            var formula = new Formula(objectTypeFactory.Object, unitFactory.Object, structureFactory.Object);
+            var formula = new Formula(objectTypeFactory.Object, unitFactory.Object, structureFactory.Object, Substitute.For<ISystemVariableManager>());
 
             formula.HiddenResource(city.Object).CompareTo(new Resource(0, 0, 0, 0, 0)).Should().Be(0);
             formula.HiddenResource(city.Object, true).CompareTo(new Resource(0, 0, 0, 0, 0)).Should().Be(0);
@@ -114,7 +115,7 @@ namespace Testing.FormulaTests
             var unitFactory = new Mock<UnitFactory>();
             var structureFactory = new Mock<StructureFactory>();
 
-            var formula = new Formula(objectTypeFactory.Object, unitFactory.Object, structureFactory.Object);
+            var formula = new Formula(objectTypeFactory.Object, unitFactory.Object, structureFactory.Object, Substitute.For<ISystemVariableManager>());
 
             var hiddenResources = formula.HiddenResource(city.Object, checkApBonus);
 

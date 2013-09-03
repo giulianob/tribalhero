@@ -162,7 +162,7 @@
 		private function createInfoPanel() : Container {
 			var form: Form = new Form();
 			addInfo(form, StringHelper.localize("STR_LEVEL"), profileData.strongholdLevel.toString());
-			addInfo(form, StringHelper.localize("STR_GATE"), Stronghold.gateToString(profileData.strongholdLevel, profileData.strongholdGate));
+			addInfo(form, StringHelper.localize("STR_GATE"), Stronghold.gateToString(profileData.strongholdGateMax, profileData.strongholdGate));
 			
 			var timediff :int = Global.map.getServerTime() - profileData.strongholdDateOccupied;
 			addInfo(form, StringHelper.localize("STR_OCCUPIED"), DateUtil.niceDays(timediff));

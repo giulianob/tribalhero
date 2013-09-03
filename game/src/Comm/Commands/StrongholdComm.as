@@ -59,6 +59,7 @@ package src.Comm.Commands
 			profileData.strongholdName = packet.readString();
 			profileData.strongholdLevel = packet.readByte();
 			profileData.strongholdGate = packet.readFloat();
+            profileData.strongholdGateMax = packet.readInt();
 			profileData.strongholdVictoryPointRate = packet.readFloat();
 			profileData.strongholdDateOccupied = packet.readUInt();
 			profileData.strongholdX = packet.readUInt();

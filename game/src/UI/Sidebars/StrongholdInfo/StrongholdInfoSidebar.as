@@ -63,6 +63,7 @@
 			}
 			
 			addStatRow(StringHelper.localize("STR_LEVEL"), stronghold.level.toString());
+            addStatRow(StringHelper.localize("STR_GATEMAX"), stronghold.gateMax.toString());
 
 			if (Constants.tribe.isInTribe(stronghold.tribeId)) {
 				pnlGroups.append(new ViewStrongholdButton(stronghold));
@@ -70,6 +71,7 @@
 			} else {
 				pnlGroups.append(new SendAttackButton(stronghold,new Location(Location.STRONGHOLD, stronghold.id)));
 			}
+
 
 			var buttons: Array = new Array();
 

@@ -35,10 +35,7 @@ namespace Game.Data
         static Global()
         {
             FireEvents = true;
-            SystemVariables = new Dictionary<string, SystemVariable>();
         }
-
-        public static Dictionary<string, SystemVariable> SystemVariables { get; private set; }
 
         public static bool FireEvents { get; set; }
 

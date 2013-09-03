@@ -138,13 +138,14 @@ namespace Game.Data.Stronghold
                 {
                     break;
                 }
-
+                var limit = formula.StrongholdGateLimit(level);
                 IStronghold stronghold = strongholdFactory.CreateStronghold(idGenerator.GetNext(),
-                                                                            name,
-                                                                            level,
-                                                                            x,
-                                                                            y,
-                                                                            formula.StrongholdGateLimit(level));
+                                                                            name, 
+                                                                            level, 
+                                                                            x, 
+                                                                            y, 
+                                                                            limit, 
+                                                                            Convert.ToInt32(limit));
                 using (dbManager.GetThreadTransaction())
                 {
                     Add(stronghold);
@@ -279,6 +280,27 @@ namespace Game.Data.Stronghold
             stronghold.BeginUpdate();
             stronghold.Gate = formula.StrongholdGateLimit(stronghold.Lvl);
             stronghold.EndUpdate();
+
+            return Error.Ok;
+        }
+
+        public Error UpdateGate(IStronghold stronghold)
+        {
+            if (stronghold.MainBattle != null || stronghold.GateBattle != null)
+            {
+                return Error.StrongholdNotUpdatableInBattle;
+            }
+            
+            var newMax = formula.StrongholdGateLimit(stronghold.Lvl);
+
+            if (newMax != stronghold.GateMax)
+            {
+                stronghold.BeginUpdate();
+                var percentHp = stronghold.Gate / stronghold.GateMax;
+                stronghold.GateMax = Convert.ToInt32(newMax);
+                stronghold.Gate = stronghold.GateMax * percentHp;
+                stronghold.EndUpdate();
+            }
 
             return Error.Ok;
         }

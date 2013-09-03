@@ -24,6 +24,7 @@ STR_LEVEL,Level
 STR_NOT_OCCUPIED,Not Occupied
 STR_TRIBE,Tribe
 STR_GATE,Gate
+STR_GATEMAX,Maximum Gate HP
 STR_OCCUPIED,Occupied
 STR_VP_RATE,Victory Point Rate
 STR_VICTORY_POINT,Victory Point

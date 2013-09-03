@@ -285,7 +285,7 @@
     <Compile Include="Data\Stronghold\StrongholdFactory.cs" />
     <Compile Include="Data\Stronghold\StrongholdManager.cs" />
     <Compile Include="Data\Stronghold\StrongholdManagerLogger.cs" />
-    <Compile Include="Data\Stronghold\VictoryPointChecker.cs" />
+    <Compile Include="Data\Stronghold\StrongholdChecker.cs" />
     <Compile Include="Data\Structure.cs" />
     <Compile Include="Data\Technology.cs" />
     <Compile Include="Data\TechnologyManager.cs" />
@@ -465,6 +465,8 @@
     <Compile Include="Map\World.cs" />
     <Compile Include="Setup\ActionRequirementFactory.cs" />
     <Compile Include="Setup\Ioc.cs" />
+    <Compile Include="Setup\ISystemVariableManager.cs" />
+    <Compile Include="Setup\SystemVariableManager.cs" />
     <Compile Include="Setup\UnitModFactory.cs" />
     <Compile Include="Setup\UnitFactory.cs" />
     <Compile Include="Setup\EffectRequirementFactory.cs" />

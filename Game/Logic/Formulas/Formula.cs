@@ -20,8 +20,9 @@ namespace Game.Logic.Formulas
         {
         }
 
-        public Formula(ObjectTypeFactory objectTypeFactory, UnitFactory unitFactory, StructureFactory structureFactory)
+        public Formula(ObjectTypeFactory objectTypeFactory, UnitFactory unitFactory, StructureFactory structureFactory, ISystemVariableManager systemVariableManager)
         {
+            SystemVariableManager = systemVariableManager;
             ObjectTypeFactory = objectTypeFactory;
             UnitFactory = unitFactory;
             StructureFactory = structureFactory;
@@ -34,6 +35,8 @@ namespace Game.Logic.Formulas
         public UnitFactory UnitFactory { get; set; }
 
         public StructureFactory StructureFactory { get; set; }
+
+        public ISystemVariableManager SystemVariableManager { get; set; }
 
         /// <summary>
         ///     Applies the specified effects to the specified radius. This is used by AwayFromLayout for building validation.

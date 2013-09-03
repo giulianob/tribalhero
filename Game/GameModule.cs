@@ -200,6 +200,7 @@ namespace Game
             Bind<CityBattleProcedure>().ToSelf().InSingletonScope();
             Bind<BarbarianTribeBattleProcedure>().ToSelf().InSingletonScope();
             Bind<Random>().ToSelf().InSingletonScope();
+            Bind<ISystemVariableManager>().To<SystemVariableManager>().InSingletonScope();
 
             #endregion
 
@@ -218,7 +219,7 @@ namespace Game
                 Bind<IStrongholdActivationCondition>().To<StrongholdActivationCondition>();
             }
             Bind<StrongholdActivationChecker>().ToSelf().InSingletonScope();
-            Bind<VictoryPointChecker>().ToSelf().InSingletonScope();
+            Bind<StrongholdChecker>().ToSelf().InSingletonScope();
 
             Bind<IStrongholdFactory>().To<StrongholdFactory>();
             Bind<IStrongholdManagerLogger>().To<StrongholdManagerLogger>();

@@ -210,13 +210,13 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                // Make sure there is a road next to this tile
+                // Make sure all structures have a diff path
                 bool breaksRoad = city
                         .Where(str => !str.IsMainBuilding && !objectTypeFactory.IsStructureType("NoRoadRequired", str))
-                        .Any(str => !roadPathFinder.HasPath(start: new Position(str.PrimaryPosition.X, str.PrimaryPosition.Y),
-                                                            end: new Position(city.PrimaryPosition.X, city.PrimaryPosition.Y),
+                        .Any(str => !roadPathFinder.HasPath(start: str.PrimaryPosition,
+                                                            startSize: str.Size,
                                                             city: city,
-                                                            excludedPoint: new Position(x, y)));
+                                                            excludedPoint: new[] {new Position(x, y)}));
 
                 if (breaksRoad)
                 {
@@ -229,25 +229,21 @@ namespace Game.Comm.ProcessorCommands
                 bool allNeighborsHaveOtherPaths = true;
                 foreach (var position in tileLocator.ForeachRadius(x, y, 1, false))
                 {
-                    if (tileLocator.RadiusDistance(new Position(x, y), 1, position, 1) != 1)
-                    {
-                        continue;
-                    }
-
-                    if (city.PrimaryPosition.X == position.X && city.PrimaryPosition.Y == position.Y)
-                    {
-                        continue;
-                    }
-
                     if (!world.Roads.IsRoad(position.X, position.Y))
                     {
                         continue;
                     }
 
-                    if (roadPathFinder.HasPath(new Position(position.X, position.Y),
-                                               new Position(city.PrimaryPosition.X, city.PrimaryPosition.Y),
-                                               city,
-                                               new Position(x, y)))
+                    // Tiles that have structures were already considered above so here we are only considering empty roads
+                    if (world.Regions.GetObjectsInTile(position.X, position.Y).OfType<IStructure>().Any())
+                    {
+                        continue;
+                    }
+
+                    if (roadPathFinder.HasPath(start: position,
+                                               startSize: 1,
+                                               city: city,
+                                               excludedPoint: new[] { new Position(x, y) }))
                     {
                         continue;
                     }

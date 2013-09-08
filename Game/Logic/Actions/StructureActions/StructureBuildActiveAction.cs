@@ -211,7 +211,7 @@ namespace Game.Logic.Actions
 
             // check for road requirements       
             var requiresRoad = !objectTypeFactory.IsObjectType("NoRoadRequired", type);
-            var canBuild = roadPathFinder.CanBuild(X, Y, city, requiresRoad);
+            var canBuild = roadPathFinder.CanBuild(new Position(X, Y), structureBaseStats.Size, city, requiresRoad);
             if (canBuild != Error.Ok)
             {
                 world.Regions.UnlockRegions(lockedRegions);

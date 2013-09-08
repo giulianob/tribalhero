@@ -21,7 +21,7 @@ namespace Game.Map
 
         IEnumerable<Position> ForeachRadius(uint ox, uint oy, byte radius, bool includeCenter = true);
 
-        IEnumerable<Position> ForeachRadius(ISimpleGameObject obj, byte radius, bool includeObject = false);
+        IEnumerable<Position> ForeachRadius(uint ox, uint oy, byte size, byte radius, bool includeCenter = false);
 
         int TileDistance(ISimpleGameObject obj1, ISimpleGameObject obj2);        
     }

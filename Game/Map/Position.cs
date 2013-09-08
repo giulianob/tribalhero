@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using Game.Util;
 
 namespace Game.Map
@@ -15,10 +16,12 @@ namespace Game.Map
 
         private uint y;
         
+        [DebuggerStepThrough]
         public Position()
         {            
         }
 
+        [DebuggerStepThrough]
         public Position(uint x, uint y)
         {
             this.x = x;

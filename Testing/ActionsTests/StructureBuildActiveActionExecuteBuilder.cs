@@ -61,7 +61,7 @@ namespace Testing.ActionsTests
             city.CreateStructure(Arg.Any<ushort>(), Arg.Any<byte>(), Arg.Any<uint>(), Arg.Any<uint>()).Returns(structure);           
 
             roadPathFinder = fixture.Freeze<IRoadPathFinder>();
-            roadPathFinder.CanBuild(Arg.Any<uint>(), Arg.Any<uint>(), city, Arg.Any<bool>()).Returns(Error.Ok);
+            roadPathFinder.CanBuild(Arg.Any<Position>(), Arg.Any<byte>(), city, Arg.Any<bool>()).Returns(Error.Ok);
            
             tileLocator = fixture.Freeze<ITileLocator>();
             tileLocator.TileDistance(new Position(99, 98), 1, Arg.Any<Position>(), 1).Returns(1);

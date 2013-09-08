@@ -68,7 +68,8 @@ namespace Game.Map
 
         public void CreateRoad(uint x, uint y)
         {
-            var tiles = new List<Position>(5) {new Position(x, y)};
+            var position = new Position(x, y);
+            var tiles = new List<Position>(5) {position};
 
             if (y % 2 == 0)
             {
@@ -178,25 +179,16 @@ namespace Game.Map
                 return ushort.MaxValue;
             }
 
-            // Create array of neighbor roads
-            byte[] neighbors;
+            var tilePosition = new Position(x, y);
+            var structureAtRoadPosition = regionManager.GetObjectsInTile(x, y).OfType<IStructure>().FirstOrDefault();
 
-            if (y % 2 == 0)
+            byte[] neighbors =
             {
-                neighbors = new[]
-                {
-                        IsRoad(x - 1, y - 1) ? (byte)1 : (byte)0, IsRoad(x - 1, y + 1) ? (byte)1 : (byte)0,
-                        IsRoad(x, y - 1) ? (byte)1 : (byte)0, IsRoad(x, y + 1) ? (byte)1 : (byte)0,
-                };
-            }
-            else
-            {
-                neighbors = new[]
-                {
-                        IsRoad(x, y - 1) ? (byte)1 : (byte)0, IsRoad(x, y + 1) ? (byte)1 : (byte)0,
-                        IsRoad(x + 1, y - 1) ? (byte)1 : (byte)0, IsRoad(x + 1, y + 1) ? (byte)1 : (byte)0,
-                };
-            }
+                ShouldConnectRoad(structureAtRoadPosition, tilePosition.TopLeft()) ? (byte)1 : (byte)0,
+                ShouldConnectRoad(structureAtRoadPosition, tilePosition.BottomLeft()) ? (byte)1 : (byte)0,
+                ShouldConnectRoad(structureAtRoadPosition, tilePosition.TopRight()) ? (byte)1 : (byte)0,
+                ShouldConnectRoad(structureAtRoadPosition, tilePosition.BottomRight()) ? (byte)1 : (byte)0
+            };
 
             // Select appropriate tile based on the neighbors around this tile
             uint roadType = 0;
@@ -268,7 +260,7 @@ namespace Game.Map
             // Grab the list of actual tiles based on the road type we need.
             uint[] types;
 
-            if (regionManager.GetObjectsInTile(x, y).Any(s => s is IStructure))
+            if (structureAtRoadPosition != null)
             {
                 types = objectTypeFactory.GetTypes("RoadSetStructures");
             }
@@ -286,6 +278,30 @@ namespace Game.Map
         public bool IsRoad(uint x, uint y)
         {
             return IsRoad(regionManager.GetTileType(x, y));
+        }
+
+        private bool ShouldConnectRoad(IStructure sourceStructure, Position position)
+        {
+            if (!IsRoad(position.X, position.Y))
+            {
+                return false;
+            }
+
+            if (sourceStructure == null)
+            {
+                return true;
+            }
+
+            var structureAtNeighborRoad = regionManager.GetObjectsInTile(position.X, position.Y)
+                                                       .OfType<IStructure>()
+                                                       .FirstOrDefault();
+
+            if (structureAtNeighborRoad == null)
+            {
+                return true;
+            }
+
+            return sourceStructure == structureAtNeighborRoad;
         }
 
         private bool IsRoad(ushort tileId)

@@ -15,6 +15,20 @@ namespace Game.Map
 {
     public class RoadManager : IRoadManager
     {
+        [Flags]
+        private enum RoadPositions
+        {
+            None = 0,
+
+            TopLeft = 1,
+
+            BottomLeft = 2,
+
+            TopRight = 4,
+
+            BottomRight = 8
+        }
+
         private readonly IRegionManager regionManager;
 
         private readonly IObjectTypeFactory objectTypeFactory;
@@ -68,23 +82,15 @@ namespace Game.Map
 
         public void CreateRoad(uint x, uint y)
         {
-            var position = new Position(x, y);
-            var tiles = new List<Position>(5) {position};
-
-            if (y % 2 == 0)
+            var tilePosition = new Position(x, y);
+            var tiles = new List<Position>(5)
             {
-                tiles.Add(new Position(x, y - 1));
-                tiles.Add(new Position(x, y + 1));
-                tiles.Add(new Position(x - 1, y - 1));
-                tiles.Add(new Position(x - 1, y + 1));
-            }
-            else
-            {
-                tiles.Add(new Position(x + 1, y - 1));
-                tiles.Add(new Position(x + 1, y + 1));
-                tiles.Add(new Position(x, y - 1));
-                tiles.Add(new Position(x, y + 1));
-            }
+                tilePosition,
+                tilePosition.TopLeft(),
+                tilePosition.TopRight(),
+                tilePosition.BottomLeft(),
+                tilePosition.BottomRight()
+            };
 
             var updates = new Dictionary<ushort, List<TileUpdate>>();
 
@@ -113,22 +119,15 @@ namespace Game.Map
 
         public void DestroyRoad(uint x, uint y)
         {
-            var tiles = new List<Position>(5) {new Position(x, y)};
-
-            if (y % 2 == 0)
+            var tilePosition = new Position(x, y);
+            var tiles = new List<Position>(5)
             {
-                tiles.Add(new Position(x, y - 1));
-                tiles.Add(new Position(x, y + 1));
-                tiles.Add(new Position(x - 1, y - 1));
-                tiles.Add(new Position(x - 1, y + 1));
-            }
-            else
-            {
-                tiles.Add(new Position(x + 1, y - 1));
-                tiles.Add(new Position(x + 1, y + 1));
-                tiles.Add(new Position(x, y - 1));
-                tiles.Add(new Position(x, y + 1));
-            }
+                tilePosition,
+                tilePosition.TopLeft(),
+                tilePosition.TopRight(),
+                tilePosition.BottomLeft(),
+                tilePosition.BottomRight()
+            };
 
             var updates = new Dictionary<ushort, List<TileUpdate>>();
 
@@ -182,77 +181,75 @@ namespace Game.Map
             var tilePosition = new Position(x, y);
             var structureAtRoadPosition = regionManager.GetObjectsInTile(x, y).OfType<IStructure>().FirstOrDefault();
 
-            byte[] neighbors =
-            {
-                ShouldConnectRoad(structureAtRoadPosition, tilePosition.TopLeft()) ? (byte)1 : (byte)0,
-                ShouldConnectRoad(structureAtRoadPosition, tilePosition.BottomLeft()) ? (byte)1 : (byte)0,
-                ShouldConnectRoad(structureAtRoadPosition, tilePosition.TopRight()) ? (byte)1 : (byte)0,
-                ShouldConnectRoad(structureAtRoadPosition, tilePosition.BottomRight()) ? (byte)1 : (byte)0
-            };
+            RoadPositions neighbors =
+                    (ShouldConnectRoad(structureAtRoadPosition, tilePosition.TopLeft()) ? RoadPositions.TopLeft : RoadPositions.None) |
+                    (ShouldConnectRoad(structureAtRoadPosition, tilePosition.BottomLeft()) ? RoadPositions.BottomLeft : RoadPositions.None) |
+                    (ShouldConnectRoad(structureAtRoadPosition, tilePosition.TopRight()) ? RoadPositions.TopRight : RoadPositions.None) |
+                    (ShouldConnectRoad(structureAtRoadPosition, tilePosition.BottomRight()) ? RoadPositions.BottomRight : RoadPositions.None);           
 
             // Select appropriate tile based on the neighbors around this tile
             uint roadType = 0;
-            if (neighbors.SequenceEqual(new byte[] {0, 0, 0, 0}))
+            if (neighbors == RoadPositions.None)
             {
                 roadType = 15;
             }
-            else if (neighbors.SequenceEqual(new byte[] {1, 0, 0, 0}))
+            else if (neighbors == RoadPositions.TopLeft)
             {
                 roadType = 11;
             }
-            else if (neighbors.SequenceEqual(new byte[] {0, 1, 0, 0}))
+            else if (neighbors == RoadPositions.BottomLeft)
             {
                 roadType = 14;
             }
-            else if (neighbors.SequenceEqual(new byte[] {0, 0, 1, 0}))
+            else if (neighbors == RoadPositions.TopRight)
             {
                 roadType = 13;
             }
-            else if (neighbors.SequenceEqual(new byte[] {0, 0, 0, 1}))
+            else if (neighbors == RoadPositions.BottomRight)
             {
                 roadType = 12;
             }
-            else if (neighbors.SequenceEqual(new byte[] {1, 1, 0, 0}))
+            else if (neighbors == (RoadPositions.TopLeft | RoadPositions.BottomLeft))
             {
                 roadType = 7;
             }
-            else if (neighbors.SequenceEqual(new byte[] {0, 0, 1, 1}))
+            else if (neighbors == (RoadPositions.TopRight | RoadPositions.BottomRight))
             {
                 roadType = 8;
             }
-            else if (neighbors.SequenceEqual(new byte[] {1, 0, 1, 0}))
+            else if (neighbors == (RoadPositions.TopLeft | RoadPositions.TopRight))            
             {
                 roadType = 9;
             }
-            else if (neighbors.SequenceEqual(new byte[] {1, 0, 0, 1}))
+            else if (neighbors == (RoadPositions.TopLeft | RoadPositions.BottomRight))            
             {
                 roadType = 0;
             }
-            else if (neighbors.SequenceEqual(new byte[] {0, 1, 1, 0}))
+            else if (neighbors == (RoadPositions.BottomLeft | RoadPositions.TopRight))            
             {
                 roadType = 1;
             }
-            else if (neighbors.SequenceEqual(new byte[] {0, 1, 0, 1}))
+            else if (neighbors == (RoadPositions.BottomLeft | RoadPositions.BottomRight))            
             {
                 roadType = 10;
             }
-            else if (neighbors.SequenceEqual(new byte[] {1, 1, 1, 0}))
+            else if (neighbors == (RoadPositions.TopLeft | RoadPositions.BottomLeft | RoadPositions.TopRight))            
             {
                 roadType = 2;
             }
-            else if (neighbors.SequenceEqual(new byte[] {1, 1, 0, 1}))
+            else if (neighbors == (RoadPositions.TopLeft | RoadPositions.BottomLeft | RoadPositions.BottomRight))            
             {
                 roadType = 5;
             }
-            else if (neighbors.SequenceEqual(new byte[] {1, 0, 1, 1}))
+            else if (neighbors == (RoadPositions.TopLeft | RoadPositions.TopRight | RoadPositions.BottomRight))            
             {
                 roadType = 3;
             }
-            else if (neighbors.SequenceEqual(new byte[] {0, 1, 1, 1}))
+            else if (neighbors == (RoadPositions.BottomLeft | RoadPositions.TopRight | RoadPositions.BottomRight))            
             {
                 roadType = 4;
             }
-            else if (neighbors.SequenceEqual(new byte[] {1, 1, 1, 1}))
+            else if (neighbors == (RoadPositions.TopLeft | RoadPositions.TopRight | RoadPositions.BottomLeft | RoadPositions.BottomRight))            
             {
                 roadType = 6;
             }

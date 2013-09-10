@@ -60,8 +60,8 @@
 		}
 		
 		public static function tryShowError(packet: Packet, callback: Function = null, showDirectlyToStage: Boolean = false, ignoreErrors: Array = null) : Boolean {
-			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED)
-			{
+			if (packet.hasError())
+            {
 				var err: int = packet.readUInt();
 				
 				if (ignoreErrors && ignoreErrors.indexOf(err) >= 0)

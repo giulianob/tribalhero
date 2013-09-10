@@ -1,16 +1,12 @@
 ﻿package src.UI.Dialog 
 {
-    import fl.lang.*;
     import flash.events.*;
     import flash.geom.*;
-    import flash.utils.*;
+
     import org.aswing.*;
     import org.aswing.border.*;
-    import org.aswing.colorchooser.*;
-    import org.aswing.event.*;
     import org.aswing.ext.*;
-    import org.aswing.geom.*;
-    import org.aswing.table.*;
+
     import src.*;
     import src.Map.*;
     import src.Objects.*;
@@ -21,19 +17,15 @@
     import src.UI.*;
     import src.UI.Components.*;
     import src.UI.Components.BattleReport.*;
-    import src.UI.Components.ComplexTroopGridList.*;
-    import src.UI.Components.TableCells.*;
-    import src.UI.Components.Tribe.*;
     import src.UI.Components.TroopCompositionGridList.*;
     import src.UI.LookAndFeel.*;
-    import src.UI.Tooltips.*;
     import src.Util.*;
-	
-	public class StrongholdProfileDialog extends GameJPanel
+
+    public class StrongholdProfileDialog extends GameJPanel
 	{
 		private var profileData: * ;
 		
-		private var pnlInfoContainer: Container;
+		private var pnlInfoContainer: Form;
 		private var pnlButtonContainer: Container;
 		private var pnlLeftContainer: Container;
 
@@ -55,7 +47,9 @@
 		{
 			this.profileData = profileData;
 			createUI();
-			
+
+            updateFromProfileData();
+
 			var self: StrongholdProfileDialog = this;
 			btnGoTo.addActionListener(function(e: Event):void {
 				Global.gameContainer.closeAllFrames(true);
@@ -86,21 +80,22 @@
 		
 		private function createUI():void {
 			setPreferredHeight(500);
-			
-			title = "Stronghold Profile - " + profileData.strongholdName;
+
+            title = "Stronghold Profile - " + profileData.strongholdName;
+
 			setLayout(new SoftBoxLayout(SoftBoxLayout.X_AXIS));
 			
 			nameLabel = new JLabel(profileData.strongholdName, null, AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(nameLabel, "darkSectionHeader");
 			
 			// stronghold properties panel
-			pnlInfoContainer = createInfoPanel();
+			pnlInfoContainer = new Form();
 			
 			// button panel
 			pnlButtonContainer = createButtonPanel();
 			
 			// Troop panel
-			pnlTroopPanel = createTroopPanel();
+			pnlTroopPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5, AsWingConstants.TOP));
 			
 			// Report panel
 			pnlReportPanel = createReportPanel();
@@ -153,46 +148,11 @@
 				
 				pnlHeaderButtons.appendAll(btnSendReinforcement, btnGoTo, btnViewBattle);
 			}
-			
-			btnViewBattle.setVisible(profileData.strongholdObjectState == SimpleGameObject.STATE_BATTLE);
-			
+
 			return pnlHeaderButtons;
 		}
-   
-		private function createInfoPanel() : Container {
-			var form: Form = new Form();
-			addInfo(form, StringHelper.localize("STR_LEVEL"), profileData.strongholdLevel.toString());
-			addInfo(form, StringHelper.localize("STR_GATE"), Stronghold.gateToString(profileData.strongholdLevel, profileData.strongholdGate));
-			
-			var timediff :int = Global.map.getServerTime() - profileData.strongholdDateOccupied;
-			addInfo(form, StringHelper.localize("STR_OCCUPIED"), DateUtil.niceDays(timediff));
-			addInfo(form, StringHelper.localize("STR_VP_RATE"), StringHelper.localize("STR_PER_DAY_RATE", Util.roundNumber(profileData.strongholdVictoryPointRate).toString()));
-		
-			var s:TroopStub = new TroopStub();
-			var f:Formation = new Formation(Formation.Defense);
-			for each (var troop: * in profileData.troops) {
-				for each(var formation: Formation in troop.stub)
-				{
-					if (formation.type!=Formation.Defense || formation.size() == 0) continue;
-					for (var z: int = 0; z < formation.size(); z++)
-					{
-						var u:Unit = formation.getByIndex(z);
-						var newUnit:Unit = new Unit(u.type, u.count);
-						f.add(newUnit);
-					}
-				}
-			}
-			s.add(f);
-			
-			if(f.size()>0)
-				addInfo(form, StringHelper.localize("STR_TOTAL_TROOPS"), new TroopCompositionGridList(s, 3, 0));
-			else 
-				addInfo(form, StringHelper.localize("STR_TOTAL_TROOPS"), StringHelper.localize("STR_NONE_DEFENDING"));
-				
-			return form;
-		}
-		
-		private function createTroopItem(troop: *) : JPanel {
+
+        private function createTroopItem(troop: *) : JPanel {
 			var pnl: JPanel = new JPanel(new BorderLayout(5));
 			
 			var label: PlayerCityLabel = new PlayerCityLabel(troop.playerId, troop.cityId, troop.playerName, troop.cityName);
@@ -212,7 +172,7 @@
 				var cityId: uint = troop.cityId;
 				var troopId: int = troop.stub.id;
 				retreatButton.addActionListener(function(e: Event):void {
-					new RetreatTroopProcess(troop.stub).execute();
+					new RetreatTroopProcess(troop.stub, refresh).execute();
 				},0, true);
 				
 				var pnlButtons: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 5, 0, false));
@@ -224,21 +184,60 @@
 			
 			return pnl;
 		}
-		
-		private function createTroopPanel() : JPanel {
-			var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5, AsWingConstants.TOP));
-			
-			for each (var troop: * in profileData.troops) {
-				pnl.append(createTroopItem(troop));
-			}
-			
-			if (profileData.troops.length == 0) {
-				pnl.append(new JLabel(StringHelper.localize("STRONGHOLD_NO_TROOPS"), null, AsWingConstants.LEFT));
-			}			
 
-			return pnl;
-		}
-		
+        private function refresh() : void {
+            var self: StrongholdProfileDialog = this;
+            Global.mapComm.Stronghold.viewStrongholdProfile(profileData.strongholdId, function (newProfileData: *) {
+                if (newProfileData) {
+                    self.profileData = newProfileData;
+                    updateFromProfileData();
+                }
+            });
+        }
+
+		private function updateFromProfileData() : void {
+            // Buttons
+            btnViewBattle.setVisible(profileData.strongholdObjectState == SimpleGameObject.STATE_BATTLE);
+
+            // Troops
+            pnlTroopPanel.removeAll();
+
+			for each (var troop: * in profileData.troops) {
+                pnlTroopPanel.append(createTroopItem(troop));
+			}
+
+			if (profileData.troops.length == 0) {
+                pnlTroopPanel.append(new JLabel(StringHelper.localize("STRONGHOLD_NO_TROOPS"), null, AsWingConstants.LEFT));
+			}
+
+            // Info
+            pnlInfoContainer.removeAll();
+            addInfo(pnlInfoContainer, StringHelper.localize("STR_LEVEL"), profileData.strongholdLevel.toString());
+            addInfo(pnlInfoContainer, StringHelper.localize("STR_GATE"), Stronghold.gateToString(profileData.strongholdLevel, profileData.strongholdGate));
+            var timediff: int = Global.map.getServerTime() - profileData.strongholdDateOccupied;
+            addInfo(pnlInfoContainer, StringHelper.localize("STR_OCCUPIED"), DateUtil.niceDays(timediff));
+            addInfo(pnlInfoContainer, StringHelper.localize("STR_VP_RATE"), StringHelper.localize("STR_PER_DAY_RATE", Util.roundNumber(profileData.strongholdVictoryPointRate).toString()));
+            var s: TroopStub = new TroopStub();
+            var f: Formation = new Formation(Formation.Defense);
+            for each (troop in profileData.troops) {
+                for each(var formation: Formation in troop.stub) {
+                    if (formation.type != Formation.Defense || formation.size() == 0) continue;
+                    for (var z: int = 0; z < formation.size(); z++) {
+                        var u: Unit = formation.getByIndex(z);
+                        var newUnit: Unit = new Unit(u.type, u.count);
+                        f.add(newUnit);
+                    }
+                }
+            }
+            s.add(f);
+            if (f.size() > 0) {
+                addInfo(pnlInfoContainer, StringHelper.localize("STR_TOTAL_TROOPS"), new TroopCompositionGridList(s, 3, 0));
+            }
+            else {
+                addInfo(pnlInfoContainer, StringHelper.localize("STR_TOTAL_TROOPS"), StringHelper.localize("STR_NONE_DEFENDING"));
+            }
+        }
+
 		private function createReportPanel() : Container {
 			reports = new LocalReportList(
 				BattleReportViewer.REPORT_TRIBE_LOCAL, 

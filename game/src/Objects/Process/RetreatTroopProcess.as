@@ -3,8 +3,11 @@ package src.Objects.Process
     import org.aswing.JButton;
     import org.aswing.JOptionPane;
 
+    import src.Comm.Packet;
+
     import src.Global;
     import src.Map.City;
+    import src.Map.MapComm;
     import src.Objects.Troop.TroopStub;
     import src.UI.Dialog.InfoDialog;
     import src.UI.Dialog.RetreatTroopDialog;
@@ -13,11 +16,13 @@ package src.Objects.Process
     public class RetreatTroopProcess implements IProcess
 	{
 		private var troop:TroopStub;
-		
-		public function RetreatTroopProcess(troop: TroopStub) 
+        private var onFinished: Function;
+
+		public function RetreatTroopProcess(troop: TroopStub, onFinished: Function = null)
 		{
 			this.troop = troop;
-		}
+            this.onFinished = onFinished;
+        }
 		
 		public function execute():void {
             var city: City = Global.map.cities.get(troop.cityId);
@@ -50,7 +55,17 @@ package src.Objects.Process
         public function onChoseUnits(sender: RetreatTroopDialog): void {
             sender.getFrame().dispose();
 
-            Global.mapComm.Troop.retreat(troop.cityId, troop.id, sender.shouldRetreatAll(), sender.getTroop());
+            Global.mapComm.Troop.retreat(troop.cityId, troop.id, sender.shouldRetreatAll(), sender.getTroop(), onRetreated);
+        }
+
+        private function onRetreated(packet: Packet, custom: *): void {
+            if (MapComm.tryShowError(packet)) {
+                return;
+            }
+
+            if (onFinished) {
+                onFinished();
+            }
         }
 		
 	}

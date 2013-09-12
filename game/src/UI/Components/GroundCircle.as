@@ -20,9 +20,10 @@
 		private var tiles: Array;
 		private var colorTransform: ColorTransform;
 		private var skipCenter: Boolean;
+        private var radius: int;
 
-		public function GroundCircle(size: int, skipCenter: Boolean = false, colorTransform: ColorTransform = null) {
-			super( -10, -10, size);
+		public function GroundCircle(radius: int, skipCenter: Boolean = false, colorTransform: ColorTransform = null) {
+			super( -10, -10, 1);
 			
 			if (colorTransform == null) {
 				colorTransform = new ColorTransform(1.0, 1.0, 1.0, 1.0, 0, 100, 0);
@@ -30,15 +31,16 @@
 
 			this.skipCenter = skipCenter;
 			this.colorTransform = colorTransform;
-			this.size = size;
-			drawCircle(this.size);
+            this.radius = radius;
+
+			drawCircle(radius);
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 
 		private function onAddedToStage(e: Event):void
 		{
-			drawCircle(size);
+			drawCircle(radius);
 		}
 
 		public function onRemovedFromStage(e: Event):void
@@ -46,9 +48,9 @@
 			dispose();
 		}
 
-		private function drawCircle(size: int):void
+		private function drawCircle(radius: int):void
 		{
-			this.size = size;
+			this.radius = radius;
 
 			if (circle != null)
 			dispose();
@@ -56,12 +58,12 @@
 			circle = new MovieClip();
 			tiles = [];
 
-			for each (var position: Position in TileLocator.foreachRadius(Math.ceil(size / 2.0), Math.ceil(size / 2.0) * 2 + 1, size)) {
+			for each (var position: Position in TileLocator.foreachRadius(Math.ceil(radius / 2.0), Math.ceil(radius / 2.0) * 2 + 1, radius)) {
                 var tiledata: DisplayObject = Assets.getInstance("MASK_TILE");
                 var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH, true, 0x000000));
                 tile.smoothing = true;
 
-                var tileRadius: int = Math.ceil(size / 2.0);
+                var tileRadius: int = Math.ceil(radius / 2.0);
                 var point: ScreenPosition = position.toScreenPosition();
                 tile.x = point.x - tileRadius * Constants.tileW;
                 tile.y = point.y - tileRadius * Constants.tileH;

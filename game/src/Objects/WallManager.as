@@ -395,6 +395,8 @@
 		}
 
 		private function pushWall(wallName: String, x: int, y: int) : void {
+            return;
+
 			var pos: ScreenPosition = TileLocator.getScreenCoord(new Position(x, y));
 			wallName = "WALL_" + wallName + (wallName.charAt(0) == 'O' ? "" : "_" + wallHash(x, y).toString());
 			var wall: SimpleObject = ObjectFactory.getSimpleObject(wallName, pos.x, pos.y, 1, false);

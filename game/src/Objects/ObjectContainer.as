@@ -94,7 +94,7 @@ package src.Objects {
 				var multiObjects: Array = [];
 
                 for each (var position: Position in TileLocator.foreachMultitileObject(highlightedObject)) {
-                    for each (var objectInTile: SimpleObject in objects[TileLocator.getTileIndex(position)]) {
+                    for each (var objectInTile: SimpleObject in objects[getGlobalTileIndex(position)]) {
 
                         if (objectInTile.isSelectable() && multiObjects.indexOf(objectInTile) === -1) {
                             multiObjects.push(objectInTile);
@@ -317,7 +317,7 @@ package src.Objects {
 
                 addObjectToDictionary(simpleObj);
 
-                var objectsInTile: Array = objects[TileLocator.getTileIndex(simpleObj.primaryPosition.toPosition())];
+                var objectsInTile: Array = objects[getGlobalTileIndex(simpleObj.primaryPosition.toPosition())];
 
                 // Sort the objects by priority
                 objectsInTile.sortOn("mapPriority", Array.NUMERIC);
@@ -329,7 +329,7 @@ package src.Objects {
                     objectsInTile = [];
                     var objCount: int = 1;
                     for each (var position: Position in TileLocator.foreachMultitileObject(simpleObj)) {
-                        for each (var objectToHide: SimpleObject in objects[TileLocator.getTileIndex(position)]) {
+                        for each (var objectToHide: SimpleObject in objects[getGlobalTileIndex(position)]) {
                             // Only consider the primary location of the obj so we dont count them multiple times
                             if (objectToHide === highestPriorityObject) {
                                 continue;
@@ -377,7 +377,7 @@ package src.Objects {
         private function addObjectToDictionary(simpleObj: SimpleObject): void
         {
             for each (var position: Position in TileLocator.foreachMultitileObject(simpleObj)) {
-                var tileIndex: int = TileLocator.getTileIndex(position);
+                var tileIndex: int = getGlobalTileIndex(position);
                 if (objects[tileIndex] == null) {
                     objects[tileIndex] = [simpleObj];
                 }
@@ -390,7 +390,7 @@ package src.Objects {
         private function removeObjectFromDictionary(simpleObj: SimpleObject): void
         {
             for each (var position: Position in TileLocator.foreachMultitileObject(simpleObj)) {
-                var tileIndex: int = TileLocator.getTileIndex(position);
+                var tileIndex: int = getGlobalTileIndex(position);
                 var objectsInTile: Array = objects[tileIndex];
                 if (!objectsInTile) {
                     continue;
@@ -429,7 +429,7 @@ package src.Objects {
 
                 removeObjectFromDictionary(simpleObj);
 
-                var tileIndex: int = TileLocator.getTileIndex(simpleObj.primaryPosition.toPosition());
+                var tileIndex: int = getGlobalTileIndex(simpleObj.primaryPosition.toPosition());
                 var objectsInTile: Array = objects[tileIndex];
                 if (objectsInTile) {
                     objectsInTile.sortOn("mapPriority", Array.NUMERIC);
@@ -452,7 +452,7 @@ package src.Objects {
                 // each of the objs in those tiles
                 var positionsToCheck: Array = TileLocator.foreachMultitileObject(simpleObj);
                 for each (var eachPosition: Position in positionsToCheck) {
-                    var eachObjectsInTile: Array = objects[TileLocator.getTileIndex(eachPosition)];
+                    var eachObjectsInTile: Array = objects[getGlobalTileIndex(eachPosition)];
                     if (!eachObjectsInTile) {
                         continue;
                     }
@@ -522,6 +522,10 @@ package src.Objects {
 			return low;
 		}
 
+        private function getGlobalTileIndex(position: Position): int
+        {
+            return (int)(position.x + position.y * Constants.mapTileW);
+        }
     }
 
 }

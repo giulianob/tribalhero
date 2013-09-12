@@ -47,16 +47,14 @@ package src
 		public static const headerSize: int = 8;
 
 		/* ROAD CONSTANTS */
-		public static const road_start_tile_id: int = 26;
-		public static const road_end_tile_id: int = 41;
+		public static const road_start_tile_id: int = 60;
+		public static const road_end_tile_id: int = 84;
 
 		/* MAP CONSTANTS */					
 		public static const tileW:int = 160;
 		public static const tileH:int = 80;
 
-		public static const tileSetW:int = 2080;
-
-		public static const tileSetTileW:int = tileSetW / tileW;
+		public static const tileSetTileW:int = 12;
 
 		public static const mapW:int = mapTileW * tileW;
 		public static const mapH:int = mapTileH * tileH;

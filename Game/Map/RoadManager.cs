@@ -73,7 +73,7 @@ namespace Game.Map
                 {
                     packet.AddUInt32(update.X);
                     packet.AddUInt32(update.Y);
-                    packet.AddUInt16(update.TileType);
+                    packet.AddUInt16(update.TileType.Value);
                 }
 
                 channel.Post("/WORLD/" + list.Key, packet);
@@ -98,10 +98,11 @@ namespace Game.Map
             {
                 ushort regionId = regionLocator.GetRegionIndex(tiles[i].X, tiles[i].Y);
                 var update = new TileUpdate(tiles[i].X, tiles[i].Y, CalculateRoad(tiles[i].X, tiles[i].Y, i == 0));
-                if (update.TileType == ushort.MaxValue)
+                if (!update.TileType.HasValue)
                 {
                     continue; // Not a road here
                 }
+
                 List<TileUpdate> list;
                 if (!updates.TryGetValue(regionId, out list))
                 {
@@ -146,9 +147,10 @@ namespace Game.Map
                 {
                     update = new TileUpdate(tiles[i].X, tiles[i].Y, CalculateRoad(tiles[i].X, tiles[i].Y, false));
                 }
-                if (update.TileType == ushort.MaxValue)
+
+                if (!update.TileType.HasValue)
                 {
-                    continue; // Not a road here
+                    continue;
                 }
 
                 List<TileUpdate> list;
@@ -166,16 +168,16 @@ namespace Game.Map
             SendUpdate(updates);
         }
 
-        private ushort CalculateRoad(uint x, uint y, bool createHere)
+        private ushort? CalculateRoad(uint x, uint y, bool createHere)
         {
             if (x <= 1 || y <= 1 || x >= Config.map_width || y >= Config.map_height)
             {
-                return ushort.MaxValue;
+                return null;
             }
 
             if (!createHere && !IsRoad(regionManager.GetTileType(x, y)))
             {
-                return ushort.MaxValue;
+                return null;
             }
 
             var tilePosition = new Position(x, y);
@@ -188,88 +190,124 @@ namespace Game.Map
                     (ShouldConnectRoad(structureAtRoadPosition, tilePosition.BottomRight()) ? RoadPositions.BottomRight : RoadPositions.None);           
 
             // Select appropriate tile based on the neighbors around this tile
-            uint roadType = 0;
+            ushort? roadType = null;
+
             if (neighbors == RoadPositions.None)
             {
                 roadType = 15;
             }
-            else if (neighbors == RoadPositions.TopLeft)
+            else if (structureAtRoadPosition == null)
             {
-                roadType = 11;
-            }
-            else if (neighbors == RoadPositions.BottomLeft)
-            {
-                roadType = 14;
-            }
-            else if (neighbors == RoadPositions.TopRight)
-            {
-                roadType = 13;
-            }
-            else if (neighbors == RoadPositions.BottomRight)
-            {
-                roadType = 12;
-            }
-            else if (neighbors == (RoadPositions.TopLeft | RoadPositions.BottomLeft))
-            {
-                roadType = 7;
-            }
-            else if (neighbors == (RoadPositions.TopRight | RoadPositions.BottomRight))
-            {
-                roadType = 8;
-            }
-            else if (neighbors == (RoadPositions.TopLeft | RoadPositions.TopRight))            
-            {
-                roadType = 9;
-            }
-            else if (neighbors == (RoadPositions.TopLeft | RoadPositions.BottomRight))            
-            {
-                roadType = 0;
-            }
-            else if (neighbors == (RoadPositions.BottomLeft | RoadPositions.TopRight))            
-            {
-                roadType = 1;
-            }
-            else if (neighbors == (RoadPositions.BottomLeft | RoadPositions.BottomRight))            
-            {
-                roadType = 10;
-            }
-            else if (neighbors == (RoadPositions.TopLeft | RoadPositions.BottomLeft | RoadPositions.TopRight))            
-            {
-                roadType = 2;
-            }
-            else if (neighbors == (RoadPositions.TopLeft | RoadPositions.BottomLeft | RoadPositions.BottomRight))            
-            {
-                roadType = 5;
-            }
-            else if (neighbors == (RoadPositions.TopLeft | RoadPositions.TopRight | RoadPositions.BottomRight))            
-            {
-                roadType = 3;
-            }
-            else if (neighbors == (RoadPositions.BottomLeft | RoadPositions.TopRight | RoadPositions.BottomRight))            
-            {
-                roadType = 4;
-            }
-            else if (neighbors == (RoadPositions.TopLeft | RoadPositions.TopRight | RoadPositions.BottomLeft | RoadPositions.BottomRight))            
-            {
-                roadType = 6;
-            }
-
-            // Grab the list of actual tiles based on the road type we need.
-            uint[] types;
-
-            if (structureAtRoadPosition != null)
-            {
-                types = objectTypeFactory.GetTypes("RoadSetStructures");
+                if (neighbors == RoadPositions.TopLeft)
+                {
+                    roadType = 11;
+                }
+                else if (neighbors == RoadPositions.BottomLeft)
+                {
+                    roadType = 14;
+                }
+                else if (neighbors == RoadPositions.TopRight)
+                {
+                    roadType = 13;
+                }
+                else if (neighbors == RoadPositions.BottomRight)
+                {
+                    roadType = 12;
+                }
+                else if (neighbors == (RoadPositions.TopLeft | RoadPositions.BottomLeft))
+                {
+                    roadType = 7;
+                }
+                else if (neighbors == (RoadPositions.TopRight | RoadPositions.BottomRight))
+                {
+                    roadType = 8;
+                }
+                else if (neighbors == (RoadPositions.TopLeft | RoadPositions.TopRight))
+                {
+                    roadType = 9;
+                }
+                else if (neighbors == (RoadPositions.TopLeft | RoadPositions.BottomRight))
+                {
+                    roadType = 0;
+                }
+                else if (neighbors == (RoadPositions.BottomLeft | RoadPositions.TopRight))
+                {
+                    roadType = 1;
+                }
+                else if (neighbors == (RoadPositions.BottomLeft | RoadPositions.BottomRight))
+                {
+                    roadType = 10;
+                }
+                else if (neighbors == (RoadPositions.TopLeft | RoadPositions.BottomLeft | RoadPositions.TopRight))
+                {
+                    roadType = 2;
+                }
+                else if (neighbors == (RoadPositions.TopLeft | RoadPositions.BottomLeft | RoadPositions.BottomRight))
+                {
+                    roadType = 5;
+                }
+                else if (neighbors == (RoadPositions.TopLeft | RoadPositions.TopRight | RoadPositions.BottomRight))
+                {
+                    roadType = 3;
+                }
+                else if (neighbors == (RoadPositions.BottomLeft | RoadPositions.TopRight | RoadPositions.BottomRight))
+                {
+                    roadType = 4;
+                }
+                else if (neighbors == (RoadPositions.TopLeft | RoadPositions.TopRight | RoadPositions.BottomLeft | RoadPositions.BottomRight))
+                {
+                    roadType = 6;
+                }
             }
             else
             {
-                types = objectTypeFactory.GetTypes("RoadSet1");
+                if (neighbors == RoadPositions.TopLeft)
+                {
+                    roadType = 16;
+                }
+                else if (neighbors == RoadPositions.TopRight)
+                {
+                    roadType = 17;
+                }                
+                else if (neighbors == RoadPositions.BottomLeft)
+                {
+                    roadType = 18;
+                }
+                else if (neighbors == RoadPositions.BottomRight)
+                {
+                    roadType = 19;
+                }
+                else if (neighbors == (RoadPositions.TopLeft | RoadPositions.BottomLeft))
+                {
+                    roadType = 20;
+                }
+                else if (neighbors == (RoadPositions.TopRight | RoadPositions.BottomRight))
+                {
+                    roadType = 21;
+                }
+                else if (neighbors == (RoadPositions.TopLeft | RoadPositions.TopRight))
+                {
+                    roadType = 22;
+                }
+                else if (neighbors == (RoadPositions.BottomLeft | RoadPositions.BottomRight))
+                {
+                    roadType = 23;
+                }
+                else if (neighbors == (RoadPositions.TopLeft | RoadPositions.TopRight | RoadPositions.BottomLeft | RoadPositions.BottomRight))
+                {
+                    roadType = 24;
+                }
             }
 
-            // Set the new road tile
-            regionManager.SetTileType(x, y, (ushort)types[roadType], false);
+            if (!roadType.HasValue)
+            {
+                return null;
+            }
 
-            return (ushort)types[roadType];
+            roadType += Config.road_start_tile_id;
+            regionManager.SetTileType(x, y, roadType.Value, false);
+
+            return roadType;
         }
 
         public bool IsRoad(uint x, uint y)
@@ -293,12 +331,7 @@ namespace Game.Map
                                                        .OfType<IStructure>()
                                                        .FirstOrDefault();
 
-            if (structureAtNeighborRoad == null)
-            {
-                return true;
-            }
-
-            return sourceStructure == structureAtNeighborRoad;
+            return structureAtNeighborRoad == null;
         }
 
         private bool IsRoad(ushort tileId)
@@ -313,7 +346,7 @@ namespace Game.Map
         /// </summary>
         private class TileUpdate
         {
-            public TileUpdate(uint x, uint y, ushort tileType)
+            public TileUpdate(uint x, uint y, ushort? tileType)
             {
                 X = x;
                 Y = y;
@@ -324,7 +357,7 @@ namespace Game.Map
 
             public uint Y { get; set; }
 
-            public ushort TileType { get; set; }
+            public ushort? TileType { get; set; }
         }
 
         #endregion

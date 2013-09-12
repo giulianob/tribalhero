@@ -97,7 +97,6 @@ package src.Map
 		}
 
 		public static function hasPath(start: Position, end: Position, city: City, excludedPoint: Position) : Boolean {
-
 			if (start.x == end.x && start.y == end.y) return true;
 
 			var visited: Array = [];

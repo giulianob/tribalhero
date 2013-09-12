@@ -74,7 +74,7 @@
                 var pos: Position = new Position(packet.readUInt(), packet.readUInt());
 				var tileType: int = packet.readUShort();
 
-				Global.map.regions.setTileType(pos, tileType, false);
+				Global.map.regions.setTileType(pos, tileType);
 
                 regionIds.push(TileLocator.getRegionIdFromMapCoord(pos));
 			}
@@ -113,6 +113,7 @@
 			for (var i:int = 0; i < regionCnt; i++)
 			{
 				var id: int = packet.readUShort();
+                trace("Region " + id);
 				var mapArray:Array = packet.read2dShortArray(Constants.regionTileW, Constants.regionTileH);
 
 				var newRegion: Region = Global.map.addRegion(id, mapArray);

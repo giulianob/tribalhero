@@ -48,7 +48,7 @@ package src.UI.Cursors {
 			destroyableArea = new GroundCallbackCircle(city.radius - 1, validateTileCallback);						
 			
 			destroyableArea.alpha = 0.3;
-			var pos: ScreenPosition = city.MainBuilding.primaryPosition.toScreenPosition();
+			var pos: ScreenPosition = city.primaryPosition.toScreenPosition();
             destroyableArea.x = destroyableArea.primaryPosition.x = pos.x;
             destroyableArea.y = destroyableArea.primaryPosition.y = pos.y;
 
@@ -156,6 +156,8 @@ package src.UI.Cursors {
 		}
 
 		private function validateTile(screenPos: ScreenPosition) : Boolean {
+            return true;
+
 			var mapPos: Position = screenPos.toPosition();
 			var tileType: int = Global.map.regions.getTileAt(mapPos);
 
@@ -211,7 +213,7 @@ package src.UI.Cursors {
 
         private function validateTileCallback(x: int, y: int): * {
             // Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
-			var screenPosition: ScreenPosition = TileLocator.getScreenPosition(city.MainBuilding.x, city.MainBuilding.y);
+			var screenPosition: ScreenPosition = TileLocator.getScreenPosition(city.primaryPosition.x, city.primaryPosition.y);
 
 			if (!validateTile(new ScreenPosition(screenPosition.x + x, screenPosition.y + y)))
 				return false;
@@ -227,7 +229,7 @@ package src.UI.Cursors {
 			var mapObjPos: Position = objPosition.toPosition();
 
 			// Check if cursor is inside city walls
-			if (city != null && TileLocator.distance(city.MainBuilding.x, city.MainBuilding.y, 1, mapObjPos.x, mapObjPos.y, 1) >= city.radius)
+			if (city != null && TileLocator.distance(city.primaryPosition.x, city.primaryPosition.y, 1, mapObjPos.x, mapObjPos.y, 1) >= city.radius)
             {
 				hideCursors();
             }

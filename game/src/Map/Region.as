@@ -16,7 +16,7 @@
         private var tiles: Array;
         private var globalX: int;
         private var globalY: int;
-        private var bitmapParts: Array;
+        private var bg: Bitmap;
         private var primaryObjects: RegionObjectList = new RegionObjectList();
         private var tileObjects: RegionObjectList = new RegionObjectList();
         private var placeHolders: BinaryList = new BinaryList(SimpleObject.sortOnXandY, SimpleObject.compareXAndY);
@@ -37,8 +37,6 @@
                     (id % Constants.mapRegionW) * Constants.regionTileW,
                     int(id / Constants.mapRegionW) * Constants.regionTileH);
 
-            bitmapParts = [];
-
             globalX = (id % Constants.mapRegionW) * Constants.regionW;
             globalY = int(id / Constants.mapRegionW) * (Constants.regionH / 2);
 
@@ -54,23 +52,12 @@
             }
         }
 
-        // Removes all of the tiles from this region
-        private function cleanTiles(): void {
-
-            for (var i: int = 0; i < bitmapParts.length; i++)
-            {
-                removeChild(bitmapParts[i]);
-                bitmapParts[i].bitmapData.dispose();
-                bitmapParts[i] = null;
-            }
-
-            bitmapParts = [];
-        }
-
         public function disposeData():void
         {
             clearAllPlaceholders();
-            cleanTiles();
+
+            bg.bitmapData.dispose();
+            bg = null;
 
             for each(var gameObj: SimpleGameObject in primaryObjects.allObjects()) {
                 map.objContainer.removeObject(gameObj);
@@ -88,19 +75,29 @@
             tiles = null;
         }
 
-        public function createRegion():void
+        private function createRegion():void
         {
             if (Constants.debug >= 2)
                 Util.log("Creating region id: " + id + " " + globalX + "," + globalY);
 
-            clearAllPlaceholders();
-
-            var bg:Bitmap = new Bitmap(new BitmapData(Constants.regionW + Constants.tileW / 2, Constants.regionH / 2 + Constants.tileH / 2, true, 0));
+            bg = new Bitmap(new BitmapData(Constants.regionW + Constants.tileW / 2, Constants.regionH / 2 + Constants.tileH / 2, true, 0));
             bg.smoothing = false;
 
+            drawRegion();
+
+            bg.x = (x / Constants.regionTileW) * Constants.regionW;
+            bg.y = (y / Constants.regionTileH) * (Constants.regionH / 2);
+
+            addChild(bg);
+        }
+
+        private function drawRegion(): void {
+            bg.bitmapData.fillRect(new Rectangle(0, 0, bg.bitmapData.width, bg.bitmapData.height), 0xadb957);
+
             var tileHDiv2: int = Constants.tileH / 2;
-            var tileHTimes2: int = Constants.tileH * 2;
             var tileWDiv2: int = Constants.tileW / 2;
+
+            clearAllPlaceholders();
 
             // tileX and tileY represent the tile relative to the region
             for (var tileY:int = 0; tileY < Constants.regionTileH; tileY++)
@@ -117,16 +114,15 @@
                     addPlaceholderObjects(tileid, mapTilePosition);
 
                     var tilesetsrcX:int = int(tileid % Constants.tileSetTileW) * Constants.tileW;
-                    var tilesetsrcY:int = int(tileid / Constants.tileSetTileW) * tileHTimes2;
+                    var tilesetsrcY:int = int(tileid / Constants.tileSetTileW) * Constants.tileH;
 
                     var drawTo:Point = new Point(
                             tileX * Constants.tileW + oddShift + tileWDiv2,
-                            /* We subtract tileH because the tile graphic in the tileset is twice as high */
-                            tileY * tileHDiv2 - Constants.tileH);
+                            tileY * tileHDiv2);
 
                     bg.bitmapData.copyPixels(
                             Constants.tileset.bitmapData,
-                            new Rectangle(tilesetsrcX, tilesetsrcY, Constants.tileW, tileHTimes2),
+                            new Rectangle(tilesetsrcX, tilesetsrcY, Constants.tileW, Constants.tileH),
                             drawTo,
                             null,
                             null,
@@ -140,8 +136,7 @@
                         coordsBitmap.draw(txtCoords);
                         bg.bitmapData.copyPixels(coordsBitmap,
                                 new Rectangle(0, 0, txtCoords.width, txtCoords.height),
-                                // The y draw position needs to account for the fact that the tile is actually twice as high as tileH in the drawTo
-                                new Point(drawTo.x + txtCoords.width/2, drawTo.y + Constants.tileH + txtCoords.textHeight),
+                                new Point(drawTo.x + txtCoords.width/2, drawTo.y + txtCoords.textHeight),
                                 null,
                                 null,
                                 true);
@@ -149,30 +144,17 @@
                     }
                 }
             }
-
-            bitmapParts.push(bg);
-
-            bg.x = (x / Constants.regionTileW) * Constants.regionW;
-            bg.y = (y / Constants.regionTileH) * (Constants.regionH / 2);
-
-            addChild(bg);
         }
 
-        public function setTile(position: Position, tileType: int, redraw: Boolean = true): void {
-            var pt: Position = getTilePos(x, y);
+        public function setTile(position: Position, tileType: int): void {
+            var relativeTilePosX: int = position.x - regionPosition.x;
+            var relativeTilePosY: int = position.y - regionPosition.y;
 
-            tiles[pt.y][pt.x] = tileType;
-
-            clearPlaceholders(position.toScreenPosition());
-            addPlaceholderObjects(tileType, position);
-
-            if (redraw)
-                this.redraw();
+            tiles[relativeTilePosY][relativeTilePosX] = tileType;
         }
 
         public function redraw() : void {
-            cleanTiles();
-            createRegion();
+            drawRegion();
         }
 
         private function clearPlaceholders(position: ScreenPosition) : void
@@ -250,13 +232,6 @@
             var y: int = position.y - regionPosition.y;
 
             return tiles[y][x];
-        }
-
-        private function getTilePos(x: int, y: int) : Position {
-            x -= regionPosition.x;
-            y -= regionPosition.y;
-
-            return new Position(x, y);
         }
 
         public function addObjectToTile(gameObj: SimpleGameObject, pos: Position): void {

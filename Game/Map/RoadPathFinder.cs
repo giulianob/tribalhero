@@ -31,15 +31,15 @@ namespace Game.Map
 
             var mainBuildingPositions = tileLocator.ForeachMultitile(city.MainBuilding).ToArray();
 
-            var roadsBeingBuiltOn = buildingPositions.Where(buildingPosition => world.Roads.IsRoad(buildingPosition.X, buildingPosition.Y)).ToArray();
+            var roadsBeingBuiltOn = buildingPositions.Any(buildingPosition => world.Roads.IsRoad(buildingPosition.X, buildingPosition.Y));
 
             if (!requiresRoad)
             {
                 // Cant build on road if this building doesnt require roads
-                return roadsBeingBuiltOn.Any() ? Error.RoadDestroyUniquePath : Error.Ok;
+                return roadsBeingBuiltOn ? Error.RoadDestroyUniquePath : Error.Ok;
             }
 
-            if (roadsBeingBuiltOn.Any())
+            if (roadsBeingBuiltOn)
             {
                 // All structures should still have a valid path if we are building on top of a road
                 foreach (var str in city)
@@ -87,7 +87,7 @@ namespace Game.Map
                     continue;
                 }
 
-                if (roadsBeingBuiltOn.Any() && !HasPath(start: neighborPosition,
+                if (roadsBeingBuiltOn && !HasPath(start: neighborPosition,
                                                         startSize: 1,
                                                         city: city,
                                                         excludedPoints: buildingPositions))

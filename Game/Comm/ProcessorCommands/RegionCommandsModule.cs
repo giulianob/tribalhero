@@ -185,7 +185,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                // Make sure user is building road within city walls
+                // Make sure user is within city walls
                 if (tileLocator.TileDistance(city.PrimaryPosition, 1, new Position(x, y), 1) >= city.Radius)
                 {
                     ReplyError(session, packet, Error.NotWithinWalls);
@@ -227,20 +227,20 @@ namespace Game.Comm.ProcessorCommands
 
                 // Make sure all neighboring roads have a diff path
                 bool allNeighborsHaveOtherPaths = true;
-                foreach (var position in tileLocator.ForeachRadius(x, y, 1, false))
+                foreach (var neighborPosition in tileLocator.ForeachRadius(x, y, 1, false))
                 {
-                    if (!world.Roads.IsRoad(position.X, position.Y))
+                    if (!world.Roads.IsRoad(neighborPosition.X, neighborPosition.Y))
                     {
                         continue;
                     }
 
                     // Tiles that have structures were already considered above so here we are only considering empty roads
-                    if (world.Regions.GetObjectsInTile(position.X, position.Y).OfType<IStructure>().Any())
+                    if (world.Regions.GetObjectsInTile(neighborPosition.X, neighborPosition.Y).OfType<IStructure>().Any())
                     {
                         continue;
                     }
 
-                    if (roadPathFinder.HasPath(start: position,
+                    if (roadPathFinder.HasPath(start: neighborPosition,
                                                startSize: 1,
                                                city: city,
                                                excludedPoint: new[] { new Position(x, y) }))

@@ -51,7 +51,8 @@ namespace Game.Map
 
                     if (!HasPath(start: str.PrimaryPosition,
                                  startSize: str.Size,
-                                 excludedPoints: buildingPositions, city: city))
+                                 city: city,
+                                 excludedPoints: buildingPositions))
                     {
                         return Error.RoadDestroyUniquePath;
                     }
@@ -65,10 +66,10 @@ namespace Game.Map
                         continue;
                     }
 
-                    if (!HasPath(start: new Position(neighborPosition.X, neighborPosition.Y),
+                    if (!HasPath(start: neighborPosition,
                                  startSize: 1,
-                                 excludedPoints: buildingPositions,
-                                 city: city))
+                                 city: city,
+                                 excludedPoints: buildingPositions))
                     {
                         return Error.RoadDestroyUniquePath;
                     }
@@ -76,7 +77,6 @@ namespace Game.Map
             }
 
             // There should be a road around this building
-            bool hasRoad = false;
             foreach (var neighborPosition in buildingNeighbors)
             {
                 bool hasStructure = world.Regions.GetObjectsInTile(neighborPosition.X, neighborPosition.Y)
@@ -87,19 +87,18 @@ namespace Game.Map
                     continue;
                 }
 
-                if (roadsBeingBuiltOn.Any() && !HasPath(start: new Position(neighborPosition.X, neighborPosition.Y),
+                if (roadsBeingBuiltOn.Any() && !HasPath(start: neighborPosition,
                                                         startSize: 1,
-                                                        excludedPoints: buildingPositions,
-                                                        city: city))
+                                                        city: city,
+                                                        excludedPoints: buildingPositions))
                 {
                     continue;
                 }
 
-                hasRoad = true;
-                break;
+                return Error.Ok;
             }
 
-            return !hasRoad ? Error.RoadNotAround : Error.Ok;
+            return Error.RoadNotAround;
         }
 
         public bool HasPath(Position start, byte startSize, ICity city, IEnumerable<Position> excludedPoints)
@@ -114,7 +113,7 @@ namespace Game.Map
                 return true;
             }
 
-            return BreadthFirst(end: tileLocator.ForeachMultitile(mainBuilding.PrimaryPosition.X, mainBuilding.PrimaryPosition.Y, mainBuilding.Size).ToList(),
+            return BreadthFirst(end: mainBuildingPositions,
                                 visited: new List<Position> {new Position(start.X, start.Y)},
                                 excludedPoints: excludedPoints,
                                 getNeighbors: node =>

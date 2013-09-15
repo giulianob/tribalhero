@@ -48,18 +48,35 @@ namespace Game.Map
             this.tileLocator = tileLocator;
 
             regionManager.ObjectAdded += RegionManagerOnObjectAdded;
+            regionManager.ObjectRemoved += RegionManagerOnObjectRemoved;
         }
 
         private void RegionManagerOnObjectAdded(object sender, ObjectEvent e)
         {
-            if (objectTypeFactory.IsObjectType("NoRoadRequired", e.GameObject.Type))
+            var structure = e.GameObject as IStructure;
+
+            if (structure == null || objectTypeFactory.IsObjectType("NoRoadRequired", structure.Type))
             {
                 return;
             }
 
-            foreach (var position in tileLocator.ForeachMultitile(e.GameObject))
+            foreach (var position in tileLocator.ForeachMultitile(structure))
             {
                 CreateRoad(position.X, position.Y);
+            }
+        }
+
+        private void RegionManagerOnObjectRemoved(object sender, ObjectEvent e)
+        {
+            var structure = e.GameObject as IStructure;
+            if (structure == null)
+            {
+                return;
+            }
+
+            foreach (var position in tileLocator.ForeachMultitile(structure))
+            {
+                DestroyRoad(position.X, position.Y);
             }
         }
 

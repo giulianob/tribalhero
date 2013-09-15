@@ -80,6 +80,7 @@ package src.Map {
 			dispatchEvent(new Event(RESOURCES_UPDATE));
 		}
 
+
 		public function nearObjectsByRadius(mindist: int, maxdist: int, position: Position, size: int, type: int): Array
 		{
 			var ret: Array = [];
@@ -113,23 +114,25 @@ package src.Map {
 			
 			return null;
 		}
+
+        public function structures(): Array {
+            var structures: Array = [];
+
+            for each(var obj: CityObject in objects)
+            {
+                if (ObjectFactory.getClassType(obj.type) != ObjectFactory.TYPE_STRUCTURE) {
+                    continue;
+                }
+
+                structures.push(obj);
+            }
+
+            return structures;
+        }
 		
 		public function hasStructureAt(mapPos: Position): Boolean
 		{
-			for each(var obj: CityObject in objects)
-			{
-				if (ObjectFactory.getClassType(obj.type) != ObjectFactory.TYPE_STRUCTURE) {
-				    continue;
-                }
-
-				if (obj.x != mapPos.x || obj.y != mapPos.y) {
-				    continue;
-                }
-
-				return true;
-			}
-
-			return false;
+			return getStructureAt(mapPos) != null;
 		}
 
 		public function getStructureAt(mapPos: Position): CityObject
@@ -140,11 +143,11 @@ package src.Map {
 				    continue;
                 }
 
-				if (obj.x != mapPos.x || obj.y != mapPos.y) {
-				    continue;
+                for each (var position: Position in TileLocator.foreachMultitile(obj.x, obj.y, obj.size)) {
+                    if (position.equals(mapPos)) {
+                        return obj;
+                    }
                 }
-
-				return obj;
 			}
 
 			return null;

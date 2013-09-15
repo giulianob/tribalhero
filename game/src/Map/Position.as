@@ -1,6 +1,4 @@
 package src.Map {
-    import flash.geom.Point;
-
     public class Position {
         public var x: int;
         public var y: int;

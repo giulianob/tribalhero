@@ -1,4 +1,8 @@
 package src.Map {
+    import mx.utils.StringUtil;
+
+    import src.Util.StringHelper;
+
     public class Position {
         public var x: int;
         public var y: int;
@@ -90,6 +94,10 @@ package src.Map {
 
         public function toScreenPosition(): ScreenPosition {
             return TileLocator.getScreenCoord(this);
+        }
+
+        public function toString(): String {
+            return StringUtil.substitute("({0},{1})", x, y);
         }
     }
 }

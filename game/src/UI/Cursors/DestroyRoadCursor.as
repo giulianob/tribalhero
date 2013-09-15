@@ -14,6 +14,7 @@ package src.UI.Cursors {
     import src.Objects.Factories.*;
     import src.UI.Components.*;
     import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
+    import src.Util.BinaryList.BinaryList;
 
     public class DestroyRoadCursor extends MovieClip implements IDisposable
 	{
@@ -23,10 +24,14 @@ package src.UI.Cursors {
 
 		private var originPoint: Point;
 
-		private var cursor: SimpleObject;
+        private var destroyableRoads: BinaryList = new BinaryList(Position.sort, Position.compare);
+
+        private var cursor: SimpleObject;
 		private var destroyableArea: GroundCallbackCircle;
 		private var parentObj: SimpleGameObject;
 
+        // Since the client gets 1 tile update at a time, when the tiles change we dont want to refresh a lot of times
+        // this timer is used to rate-limit the updating a bit
 		private var redrawLaterTimer: Timer = new Timer(250);
 
 		public function DestroyRoadCursor() { }
@@ -41,6 +46,8 @@ package src.UI.Cursors {
 
 			Global.gameContainer.setOverlaySprite(this);
 			Global.map.selectObject(null);
+
+            validateAllTiles();
 
 			cursor = new GroundCircle(0);
 			cursor.alpha = 0.7;
@@ -67,12 +74,22 @@ package src.UI.Cursors {
 
 			redrawLaterTimer.addEventListener(TimerEvent.TIMER, function(e: Event) : void {
 				redrawLaterTimer.stop();
+                validateAllTiles();
 				destroyableArea.redraw();
-				validateBuilding();
+                validateBuilding();
 			});
 
 			Global.gameContainer.message.showMessage("Double click on a highlighted road to destroy it. Roads that are not highlighted may not be destroyed.");
 		}
+
+        private function validateAllTiles(): void {
+            destroyableRoads.clear();
+
+            var size: int = city.radius - 1;
+            for each (var position: Position in TileLocator.foreachTile(city.primaryPosition.x, city.primaryPosition.y, size)) {
+                validateTile(position);
+            }
+        }
 
 		public function update(e: Event = null) : void {
 			redrawLaterTimer.stop();
@@ -155,71 +172,67 @@ package src.UI.Cursors {
 			}
 		}
 
-		private function validateTile(positionToValidate: ScreenPosition) : Boolean {
-			var mapPosToValidate: Position = positionToValidate.toPosition();
-
-			var tileType: int = Global.map.regions.getTileAt(mapPosToValidate);
+		private function validateTile(position: Position) : void {
+			var tileType: int = Global.map.regions.getTileAt(position);
 
             // Make sure this tile is indeed a road
 			if (!RoadPathFinder.isRoad(tileType)) {
-				return false;
+				return;
             }
 
             // Make sure there is no structure at this point
-			if (Global.map.regions.getObjectsInTile(mapPosToValidate, StructureObject).length > 0) {
-				return false;
+			if (city.hasStructureAt(position)) {
+				return;
             }
 
             // Make sure all structures have a diff path
-			for each(var cityObject: CityObject in city.objects) {
-				if (ObjectFactory.getClassType(cityObject.type) != ObjectFactory.TYPE_STRUCTURE) 
+			for each(var cityObject: CityObject in city.structures()) {
+				if (cityObject.isMainBuilding) {
 					continue;
-					
-				if (cityObject.isMainBuilding)
-					continue;
-					
-				if (ObjectFactory.isType("NoRoadRequired", cityObject.type)) 
-					continue;
+                }
 
-				if (!RoadPathFinder.hasPath(new Position(cityObject.x, cityObject.y), cityObject.size, city, [ mapPosToValidate ])) {
-					return false;
+				if (ObjectFactory.isType("NoRoadRequired", cityObject.type)) {
+					continue;
+                }
+
+				if (!RoadPathFinder.hasPath(cityObject.primaryPosition, cityObject.size, city, [ position ])) {
+					return;
 				}
 			}
 
 			// Make sure all neighbors have a different path
-			for each (var position: Position in TileLocator.foreachRadius(mapPosToValidate.x, mapPosToValidate.y, 1, false))
+			for each (var neighborPosition: Position in TileLocator.foreachRadius(position.x, position.y, 1, false))
 			{
-                if (!RoadPathFinder.isRoadByMapPosition(position)) {
+                if (!RoadPathFinder.isRoadByMapPosition(neighborPosition)) {
                     continue;
                 }
 
-				if (city.hasStructureAt(position))
+				if (city.hasStructureAt(neighborPosition))
                 {
                     continue;
                 }
 
-                if (!RoadPathFinder.hasPath(position, 1, city, [ mapPosToValidate ])) {
-                    return false;
+                if (!RoadPathFinder.hasPath(neighborPosition, 1, city, [ position ])) {
+                    return;
 				}
 			}
 
-			return true;
+            destroyableRoads.add(position);
 		}
 
         private function validateTileCallback(x: int, y: int): * {
             // Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
 			var screenPosition: ScreenPosition = TileLocator.getScreenPosition(city.primaryPosition.x, city.primaryPosition.y);
 
-			if (!validateTile(new ScreenPosition(screenPosition.x + x, screenPosition.y + y)))
+			if (!destroyableRoads.get(new ScreenPosition(screenPosition.x + x, screenPosition.y + y).toPosition())) {
 				return false;
+            }
 
 			return new ColorTransform(1.0, 1.0, 1.0, 1.0, 100);
 		}
 
 		public function validateBuilding():void
 		{
-			var msg: XML;
-
 			var city: City = Global.map.cities.get(parentObj.groupId);
 			var mapObjPos: Position = objPosition.toPosition();
 
@@ -229,7 +242,7 @@ package src.UI.Cursors {
 				hideCursors();
             }
 			// Perform other validations
-			else if (!validateTile(objPosition))
+			else if (!destroyableRoads.get(mapObjPos))
             {
 				hideCursors();
             }

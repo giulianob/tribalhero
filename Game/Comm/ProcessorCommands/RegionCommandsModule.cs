@@ -211,12 +211,12 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 // Make sure all structures have a diff path
-                bool breaksRoad = city
-                        .Where(str => !str.IsMainBuilding && !objectTypeFactory.IsStructureType("NoRoadRequired", str))
-                        .Any(str => !roadPathFinder.HasPath(start: str.PrimaryPosition,
-                                                            startSize: str.Size,
-                                                            city: city,
-                                                            excludedPoint: new[] {new Position(x, y)}));
+                bool breaksRoad = city.Any(str => !str.IsMainBuilding
+                                                  && !objectTypeFactory.IsStructureType("NoRoadRequired", str)
+                                                  && !roadPathFinder.HasPath(start: str.PrimaryPosition,
+                                                                             startSize: str.Size,
+                                                                             city: city,
+                                                                             excludedPoint: new[] {new Position(x, y)}));
 
                 if (breaksRoad)
                 {

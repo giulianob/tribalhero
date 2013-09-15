@@ -10,6 +10,8 @@ namespace Game.Map
     {
         event EventHandler<ObjectEvent> ObjectAdded;
 
+        event EventHandler<ObjectEvent> ObjectRemoved;
+
         IMiniMapRegionManager MiniMapRegions { get; }
 
         bool IsValidXandY(uint x, uint y);

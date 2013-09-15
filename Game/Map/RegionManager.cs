@@ -16,6 +16,8 @@ namespace Game.Map
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
 
         public event EventHandler<ObjectEvent> ObjectAdded;
+        
+        public event EventHandler<ObjectEvent> ObjectRemoved;
 
         private readonly IMiniMapRegionManagerFactory miniMapRegionManagerFactory;
 
@@ -258,6 +260,9 @@ namespace Game.Map
             }
             
             UnlockRegions(lockedRegions);
+
+            // Raise event
+            ObjectRemoved.Raise(this, new ObjectEvent(obj));
         }
 
         private bool RemoveFromPrimaryRegionAndAllTiles(ISimpleGameObject obj, uint x, uint y)

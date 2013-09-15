@@ -6,6 +6,8 @@
 
 package src.Map {
 
+    import System.Linq.Enumerable;
+
     import flash.geom.Point;
     import flash.geom.Rectangle;
 
@@ -131,6 +133,18 @@ package src.Map {
 			return int(regionId / Constants.mapRegionW) * Constants.regionTileH;
 		}
 
+        public static function containsIntersectingPoints(positions1: Array, positions2: Array): Boolean {
+            for each (var position1: Position in positions1) {
+                for each (var position2: Position in positions2) {
+                    if (position1.equals(position2)) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
 		public static function distance(x: int, y: int, size: int, x2: int, y2: int, size2: int): int
 		{
             var min: int = int.MAX_VALUE;
@@ -207,6 +221,17 @@ package src.Map {
             }
 
             return positions;
+        }
+
+        public static function foreachRadiusWithSize(ox: int, oy: int, size: int, radius: int): Array {
+            var tilePositions: Array = foreachMultitile(ox, oy, size);
+            var positionComparer: PositionComparer = new PositionComparer();
+
+            return Enumerable.from(tilePositions).selectMany(function (position: Position): Array {
+                return foreachRadius(position.x, position.y, radius, false);
+            }).where(function (position: Position): Boolean {
+                return !Enumerable.from(tilePositions).contains(position, positionComparer);
+            }).toArray();
         }
 
 		public static function foreachTile(ox: int, oy: int, radius: int, do_self: Boolean = true): Array {

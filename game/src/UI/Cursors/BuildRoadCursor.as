@@ -163,7 +163,9 @@ package src.UI.Cursors {
             // Get the screen position of the city center then we'll add the current tile x and y to get the point of this tile on the screen
 			var point: ScreenPosition = city.primaryPosition.toScreenPosition();
 
-			if (!validateTile(new ScreenPosition(point.x + x, point.y + y))) return false;
+			if (!validateTile(new ScreenPosition(point.x + x, point.y + y))) {
+                return false;
+            }
 
 			return new ColorTransform(1.0, 1.0, 1.0, 1.0, 0, 100);
 		}

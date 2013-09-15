@@ -1,5 +1,7 @@
 ﻿
 package src.UI.Cursors {
+    import System.Linq.Enumerable;
+
     import flash.display.*;
     import flash.events.*;
     import flash.geom.*;
@@ -31,6 +33,7 @@ package src.UI.Cursors {
 		private var level: int;
 		private var tilerequirement: String;
 
+        private var requiresRoad: Boolean;
 		private var hasRoadNearby: Boolean;
 
         private var buildableTiles: BinaryList = new BinaryList(Position.sort, Position.compare);
@@ -49,6 +52,7 @@ package src.UI.Cursors {
 			Global.gameContainer.setOverlaySprite(this);
 			Global.map.selectObject(null);
 
+            requiresRoad = !ObjectFactory.isType("NoRoadRequired", type);
 			structPrototype = StructureFactory.getPrototype(type, level);
 			cursor = StructureFactory.getSimpleObject(type, level, 0, 0, structPrototype.size);
 
@@ -88,7 +92,7 @@ package src.UI.Cursors {
 			addEventListener(MouseEvent.MOUSE_OVER, onMouseStop);
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 
-			if (!hasRoadNearby) {
+			if (requiresRoad && !hasRoadNearby) {
 				Global.gameContainer.message.showMessage("This building must be connected to a road and there are no roads available. Build roads first by using your Town Center then try again.");
 			} else if (buildableTiles.size() == 0) {
 				Global.gameContainer.message.showMessage("There are no spaces available to build on.");
@@ -220,30 +224,25 @@ package src.UI.Cursors {
                 }
             }
 
-			var requiredRoad: Boolean = !ObjectFactory.isType("NoRoadRequired", type);
-
-			// Set flag so that buildings that dont require roads dont screw up the on screen msg
-			if (!requiredRoad) {
-                this.hasRoadNearby = true;
-            }
-
 			// Validate any layouts
 			var builder: CityObject = city.objects.get(parentObj.objectId);
 			if (!structPrototype.validateLayout(builder, city, mapPosition)) {
 				return false;
 			}
 
-            var hasRoad: Boolean = RoadPathFinder.CanBuild(mapPosition, city, requiredRoad);
+            var canBuild: Boolean = RoadPathFinder.CanBuild(mapPosition, structPrototype.size, city, requiresRoad);
 
-            hasRoadNearby = !requiredRoad || hasRoad;
-
-            if (!hasRoad) {
+            if (!canBuild) {
                 return false;
             }
 
+            this.hasRoadNearby = true;
+
             // If this object can be built then we add all of its tiles as buildable
             for each (tilePosition in TileLocator.foreachMultitile(mapPosition.x, mapPosition.y, structPrototype.size)) {
-                buildableTiles.add(tilePosition);
+                if (!buildableTiles.get(tilePosition)) {
+                    buildableTiles.add(tilePosition);
+                }
             }
 
 			return true;
@@ -253,8 +252,9 @@ package src.UI.Cursors {
 
             // Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
 			var point: ScreenPosition = city.primaryPosition.toScreenPosition();
+            var mapPosition:Position = new ScreenPosition(point.x + x, point.y + y).toPosition();
 
-            if (buildableTiles.get(new ScreenPosition(point.x + x, point.y + y).toPosition()) == null) {
+            if (buildableTiles.get(mapPosition) == null) {
                 return new ColorTransform(1, 1, 1, 0.5, 255, 215);
             }
 
@@ -271,7 +271,11 @@ package src.UI.Cursors {
 				hideCursors();
 				return false;
 			}
-			else if (!validateTile(mapPosition)) {
+
+            var allTilesAreValid: Boolean = Enumerable.from(TileLocator.foreachMultitile(mapPosition.x, mapPosition.y, structPrototype.size))
+                    .all(buildableTiles.get);
+
+            if (!allTilesAreValid) {
 				hideCursors();
 				return false;
 			}

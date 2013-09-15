@@ -155,56 +155,51 @@ package src.UI.Cursors {
 			}
 		}
 
-		private function validateTile(screenPos: ScreenPosition) : Boolean {
-            return true;
+		private function validateTile(positionToValidate: ScreenPosition) : Boolean {
+			var mapPosToValidate: Position = positionToValidate.toPosition();
 
-			var mapPos: Position = screenPos.toPosition();
-			var tileType: int = Global.map.regions.getTileAt(mapPos);
+			var tileType: int = Global.map.regions.getTileAt(mapPosToValidate);
 
-			if (!RoadPathFinder.isRoad(tileType)) 
+            // Make sure this tile is indeed a road
+			if (!RoadPathFinder.isRoad(tileType)) {
 				return false;
+            }
 
-			if (Global.map.regions.getObjectsInTile(mapPos, StructureObject).length > 0)
+            // Make sure there is no structure at this point
+			if (Global.map.regions.getObjectsInTile(mapPosToValidate, StructureObject).length > 0) {
 				return false;
+            }
 
-			// Make sure that buildings have a path back to the city without this point				
-			var breaksPath: Boolean = false;
+            // Make sure all structures have a diff path
 			for each(var cityObject: CityObject in city.objects) {
 				if (ObjectFactory.getClassType(cityObject.type) != ObjectFactory.TYPE_STRUCTURE) 
 					continue;
 					
-				if (cityObject.x == city.MainBuilding.x && cityObject.y == city.MainBuilding.y) 
+				if (cityObject.isMainBuilding)
 					continue;
 					
 				if (ObjectFactory.isType("NoRoadRequired", cityObject.type)) 
 					continue;
 
-				if (!RoadPathFinder.hasPath(new Position(cityObject.x, cityObject.y), new Position(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
-					breaksPath = true;
-					break;
+				if (!RoadPathFinder.hasPath(new Position(cityObject.x, cityObject.y), cityObject.size, city, [ mapPosToValidate ])) {
+					return false;
 				}
 			}
 
-			if (breaksPath) 
-				return false;
-
 			// Make sure all neighbors have a different path
-			for each (var position: Position in TileLocator.foreachTile(mapPos.x, mapPos.y, 1, false))
+			for each (var position: Position in TileLocator.foreachRadius(mapPosToValidate.x, mapPosToValidate.y, 1, false))
 			{
-				if (TileLocator.radiusDistance(mapPos.x, mapPos.y, 1, position.x, position.y, 1) != 1)
+                if (!RoadPathFinder.isRoadByMapPosition(position)) {
+                    continue;
+                }
+
+				if (city.hasStructureAt(position))
                 {
                     continue;
                 }
 
-				if (city.MainBuilding.x == position.x && city.MainBuilding.y == position.y)
-                {
-                    continue;
-                }
-				
-				if (RoadPathFinder.isRoadByMapPosition(position)) {
-					if (!RoadPathFinder.hasPath(position, new Position(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
-						return false;
-					}
+                if (!RoadPathFinder.hasPath(position, 1, city, [ mapPosToValidate ])) {
+                    return false;
 				}
 			}
 

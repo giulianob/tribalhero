@@ -49,6 +49,11 @@
 			return StructureFactory.getPrototype(type, level);
 		}
 
+        public function get isMainBuilding():Boolean
+        {
+            return objectId == 1;
+        }
+
         public static function compareObjId(a: CityObject, value: int):int
 		{
 			return a.objectId - value;

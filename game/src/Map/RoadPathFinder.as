@@ -16,15 +16,15 @@ package src.Map
 
             var mainBuildingPositions: Array = TileLocator.foreachMultitile(city.MainBuilding.primaryPosition.x, city.MainBuilding.primaryPosition.y, city.MainBuilding.size);
 
-            var roadsBeingBuiltOn: Array = Enumerable.from(buildingPositions).where(function (buildingPosition: Position): Boolean {
+            var roadsBeingBuiltOn: Boolean = Enumerable.from(buildingPositions).any(function (buildingPosition: Position): Boolean {
                return isRoadByMapPosition(buildingPosition);
-            }).toArray();
+            });
 
             if (!requiresRoad) {
-                return roadsBeingBuiltOn.length == 0;
+                return !roadsBeingBuiltOn;
             }
 
-            if (roadsBeingBuiltOn.length > 0) {
+            if (roadsBeingBuiltOn) {
                 for each (var str: CityObject in city.structures()) {
                     if (str.isMainBuilding || ObjectFactory.isType("NoRoadsRequired", str.type)) {
                         continue;
@@ -53,7 +53,7 @@ package src.Map
                     continue;
                 }
 
-                if (roadsBeingBuiltOn.length > 0 && !hasPath(neighborPosition, 1, city, buildingPositions)) {
+                if (roadsBeingBuiltOn && !hasPath(neighborPosition, 1, city, buildingPositions)) {
                     continue;
                 }
 
@@ -96,13 +96,11 @@ package src.Map
                         ];
 
                         return Enumerable.from(possibleNeighbors).where(function (location: Position): Boolean {
-                            var inStartPosition: Boolean = Enumerable.from(startPositions).contains(location, positionComparer);
-
                             if (Enumerable.from(mainBuildingPositions).contains(location, positionComparer)) {
-                                return !fromStructure || !inStartPosition;
+                                return !fromStructure || !Enumerable.from(startPositions).contains(node, positionComparer);
                             }
 
-                            if (inStartPosition) {
+                            if (Enumerable.from(startPositions).contains(location, positionComparer)) {
                                 return true;
                             }
 

@@ -199,7 +199,6 @@ package src.UI.Cursors {
 		}
 
 		private function validateTile(mapPosition: Position) : Boolean {
-
             // Check if tile is taken
             for each (var tilePosition: Position in TileLocator.foreachMultitile(mapPosition.x, mapPosition.y, structPrototype.size)) {
                 if (Global.map.regions.getObjectsInTile(tilePosition, StructureObject).length > 0) {

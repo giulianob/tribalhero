@@ -10,6 +10,7 @@ package src.UI.Cursors {
     import src.Objects.Factories.*;
     import src.UI.Components.*;
     import src.UI.Sidebars.CursorCancel.*;
+    import src.Util.BinaryList.BinaryList;
 
     public class BuildRoadCursor extends MovieClip implements IDisposable
 	{
@@ -18,6 +19,8 @@ package src.UI.Cursors {
 		private var city: City;
 
 		private var originPoint: Point;
+
+        private var buildableTiles: BinaryList = new BinaryList(Position.sort, Position.compare);
 
 		private var cursor: SimpleObject;
 		private var buildableArea: GroundCallbackCircle;
@@ -36,14 +39,16 @@ package src.UI.Cursors {
 			Global.gameContainer.setOverlaySprite(this);
 			Global.map.selectObject(null);
 
+            validateAllTiles();
+
 			cursor = new GroundCircle(0);
 			cursor.alpha = 0.7;
 
 			buildableArea = new GroundCallbackCircle(city.radius - 1, validateTileCallback);
 			buildableArea.alpha = 0.3;
 			var pos: ScreenPosition = city.primaryPosition.toScreenPosition();
-			buildableArea.primaryPosition.x = pos.x;
-			buildableArea.primaryPosition.y = pos.y;
+            buildableArea.x = buildableArea.primaryPosition.x = pos.x;
+            buildableArea.y = buildableArea.primaryPosition.y = pos.y;
 			
 			Global.map.objContainer.addObject(buildableArea, ObjectContainer.LOWER);
 
@@ -61,7 +66,17 @@ package src.UI.Cursors {
 			Global.gameContainer.message.showMessage("Double click on the green squares to build roads.");
 		}
 
+        private function validateAllTiles(): void {
+            buildableTiles.clear();
+
+            var size: int = city.radius - 1;
+            for each (var position: Position in TileLocator.foreachTile(city.primaryPosition.x, city.primaryPosition.y, size)) {
+                validateTile(position);
+            }
+        }
+
 		public function update(e: Event = null) : void {
+            validateAllTiles();
 			buildableArea.redraw();
 			validateBuilding();
 		}
@@ -135,35 +150,32 @@ package src.UI.Cursors {
 			}
 		}
 
-		private function validateTile(screenPos: ScreenPosition) : Boolean {
-			var mapPosition: Position = screenPos.toPosition();
-			var tileType: int = Global.map.regions.getTileAt(mapPosition);
+		private function validateTile(position: Position) : void {
+			var tileType: int = Global.map.regions.getTileAt(position);
 
-			if (RoadPathFinder.isRoad(tileType)) return false;
+			if (RoadPathFinder.isRoad(tileType)) return;
 
-			if (!ObjectFactory.isType("TileBuildable", tileType)) return false;
+			if (!ObjectFactory.isType("TileBuildable", tileType)) return;
 
-			if (Global.map.regions.getObjectsInTile(mapPosition, StructureObject).length > 0) return false;
+			if (city.hasStructureAt(position)) return;
 
 			// Make sure there is a road next to this tile
-			for each (var position: Position in TileLocator.foreachRadius(mapPosition.x, mapPosition.y, 1, false))
+			for each (var neighborPosition: Position in TileLocator.foreachRadius(position.x, position.y, 1, false))
 			{
-				if (city.MainBuilding.x == position.x && city.MainBuilding.y == position.y ||
-                        (RoadPathFinder.isRoadByMapPosition(position) &&
-                         !city.hasStructureAt(position)))
+                var structure: CityObject = city.getStructureAt(neighborPosition);
+				if (RoadPathFinder.isRoadByMapPosition(neighborPosition) && (structure == null || structure.isMainBuilding))
 				{
-					return true;
+                    buildableTiles.add(position);
+					return;
                 }
             }
-
-			return false;
 		}
 
         private function validateTileCallback(x: int, y: int): * {
             // Get the screen position of the city center then we'll add the current tile x and y to get the point of this tile on the screen
 			var point: ScreenPosition = city.primaryPosition.toScreenPosition();
 
-			if (!validateTile(new ScreenPosition(point.x + x, point.y + y))) {
+			if (!buildableTiles.get(new ScreenPosition(point.x + x, point.y + y).toPosition())) {
                 return false;
             }
 
@@ -180,7 +192,7 @@ package src.UI.Cursors {
 				hideCursors();
 			}
 			// Perform other validations
-			else if (!validateTile(objPosition)) {
+			else if (!buildableTiles.get(mapObjPos)) {
 				hideCursors();
 			}
 			else {

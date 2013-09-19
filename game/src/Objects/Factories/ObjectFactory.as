@@ -115,8 +115,6 @@
 			else
 				sprite = UnitFactory.getSprite(type, level, forDarkBackground);
 
-            Util.centerSprite(sprite);
-
             return sprite;
 		}
 		
@@ -181,7 +179,7 @@
 		public static function getNewCityPlaceholderSprite() : DisplayObjectContainer
 		{
 			var obj: Sprite = new Sprite();
-			obj.addChild(Assets.getInstance("DEFAULT_BUILDING_1"));
+			obj.addChild(Assets.getInstance("FOUNDATION"));
 			return obj;
 		}
 		

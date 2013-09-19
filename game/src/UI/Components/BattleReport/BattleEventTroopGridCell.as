@@ -8,6 +8,7 @@
 
     import src.Objects.Factories.ObjectFactory;
     import src.UI.LookAndFeel.*;
+    import src.Util.Util;
 
     public class BattleEventTroopGridCell extends JPanel implements GridListCell{
 
@@ -24,14 +25,8 @@
 
 			// Get Icon
 			var icon:DisplayObject = ObjectFactory.getSpriteEx(data.type, 1, true);
-			var scale:Number = 40 / icon.height;
-			if (scale < 1)
-			{
-				scale = Math.min(0.5, Number(scale.toFixed(1)));
-				icon.scaleX = scale;
-				icon.scaleY = scale;
-			}
-			
+            Util.resizeSprite(icon, 55, 35);
+
 			// Lay it out
 			removeAll();
 			

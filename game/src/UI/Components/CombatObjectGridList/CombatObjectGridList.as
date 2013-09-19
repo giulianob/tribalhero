@@ -16,6 +16,7 @@
     import src.UI.Tooltips.StructureTooltip;
     import src.UI.Tooltips.Tooltip;
     import src.UI.Tooltips.UnitTooltip;
+    import src.Util.Util;
 
     /**
 	 * ...
@@ -71,11 +72,7 @@
 		public function addCombatObject(combatObj: CombatObject):void {
 			var prototype: * = ObjectFactory.getPrototype(combatObj.type, combatObj.level);
 			var icon: DisplayObject = ObjectFactory.getSpriteEx(combatObj.type, combatObj.level);
-			if (prototype is StructurePrototype)
-			{
-				icon.scaleX = 0.50;
-				icon.scaleY = 0.50;
-			}
+			Util.resizeSprite(icon, 55, 35);
 
 			(getModel() as VectorListModel).append( { "source": icon, "data": combatObj, "prototype": prototype} );
 		}

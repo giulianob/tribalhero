@@ -1,4 +1,5 @@
 ﻿package src.UI.Dialog {
+    import flash.display.DisplayObject;
     import flash.display.MovieClip;
     import flash.events.MouseEvent;
 
@@ -10,6 +11,7 @@
     import src.Objects.GameObject;
     import src.Objects.SimpleObject;
     import src.UI.GameJPanel;
+    import src.Util.Util;
 
     public class ObjectSelectDialog extends GameJPanel {
 
@@ -30,8 +32,11 @@
 			{
 				if (!obj.isSelectable()) continue;
 
+                var structureSprite: DisplayObject = ObjectFactory.getSprite(obj);
+                Util.resizeSprite(structureSprite, structureSprite.width, 100);
+
 				var icon: MovieClip = new MovieClip();
-                icon.addChild(ObjectFactory.getSprite(obj));
+                icon.addChild(structureSprite);
 				icon.useHandCursor = true;
 				icon.buttonMode = true;
 				icon.tag = obj;

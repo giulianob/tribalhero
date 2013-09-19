@@ -8,6 +8,7 @@
     import src.Objects.Factories.ObjectFactory;
     import src.UI.Components.SimpleTooltip;
     import src.UI.LookAndFeel.GameLookAndFeel;
+    import src.Util.Util;
 
     public class UnitIconCell extends AbstractTableCell
 	{
@@ -25,14 +26,8 @@
 			// Get Icon
 			var prototype:* = ObjectFactory.getPrototype(data.type, data.level);
 			var icon:DisplayObject = ObjectFactory.getSpriteEx(prototype.type, prototype.level);
+            Util.resizeSprite(icon, 55, 35);
 			new SimpleTooltip(icon, prototype.getName());
-			var scale:Number = 42 / icon.height;
-			if (scale < 1)
-			{
-				scale = Math.min(0.5, Number(scale.toFixed(1)));
-				icon.scaleX = scale;
-				icon.scaleY = scale;
-			}
 			
 			// Lay it out
 			panel.removeAll();

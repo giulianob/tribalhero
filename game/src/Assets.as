@@ -284,6 +284,10 @@
         [EmbedPosition(name = "map", x = 93, y = "-16")]
         public static const BARRACK_STRUCTURE: Class;
 
+        [Embed(source = "../../graphics/buildings/FOUNDATION.png")]
+        [EmbedPosition(name = "map", x = 42, y = "-24")]
+        public static const FOUNDATION: Class;
+
         [Embed(source = "../../graphics/buildings/CONSTRUCTION.png")]
         [EmbedPosition(name = "map", x = 17, y = "-14")]
         public static const DEFAULT_BUILDING_1: Class;

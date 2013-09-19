@@ -179,8 +179,6 @@
 
         private function addPlaceholderObjects(tileId: int, position: Position) : void
         {
-            return;
-
             if (tileId == Constants.cityStartTile) {
                 var screenPosition: ScreenPosition = position.toScreenPosition();
 

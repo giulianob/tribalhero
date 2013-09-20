@@ -268,6 +268,7 @@
 					state: packet.readByte(),
 					lvl: packet.readByte(),
 					gate: packet.readFloat(),
+                    gateMax: packet.readInt(),
 					x: packet.readUInt(),
 					y: packet.readUInt(),
 					upkeep: packet.readInt(),

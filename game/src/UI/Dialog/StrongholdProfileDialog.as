@@ -213,7 +213,7 @@
             // Info
             pnlInfoContainer.removeAll();
             addInfo(pnlInfoContainer, StringHelper.localize("STR_LEVEL"), profileData.strongholdLevel.toString());
-            addInfo(pnlInfoContainer, StringHelper.localize("STR_GATE"), Stronghold.gateToString(profileData.strongholdLevel, profileData.strongholdGate));
+  	    addInfo(pnlInfoContainer, StringHelper.localize("STR_GATE"), Stronghold.gateToString(profileData.strongholdGateMax, profileData.strongholdGate));
             var timediff: int = Global.map.getServerTime() - profileData.strongholdDateOccupied;
             addInfo(pnlInfoContainer, StringHelper.localize("STR_OCCUPIED"), DateUtil.niceDays(timediff));
             addInfo(pnlInfoContainer, StringHelper.localize("STR_VP_RATE"), StringHelper.localize("STR_PER_DAY_RATE", Util.roundNumber(profileData.strongholdVictoryPointRate).toString()));

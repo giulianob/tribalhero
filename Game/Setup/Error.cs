@@ -255,6 +255,8 @@ namespace Game.Setup
 
         StrongholdNotRepairableInBattle = 815,
 
+        StrongholdNotUpdatableInBattle = 816,
+
         #endregion
 
         #region Barbarian Tribes

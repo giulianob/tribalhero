@@ -31,15 +31,16 @@ namespace Game.Data.Stronghold
 
         Error RepairGate(IStronghold stronghold);
 
+        Error UpdateGate(IStronghold stronghold);
+
         IEnumerable<IStronghold> OpenStrongholdsForTribe(ITribe tribe);
 
         void Probe(out int neutralStrongholds, out int capturedStrongholds);
-
-        void RetreatUnits(IStronghold stronghold);
 
         event EventHandler<StrongholdGainedEventArgs> StrongholdGained;
 
         event EventHandler<StrongholdLostEventArgs> StrongholdLost;
 
+        void TribeFailedToTakeStronghold(IStronghold stronghold, ITribe attackingTribe);
     }
 }

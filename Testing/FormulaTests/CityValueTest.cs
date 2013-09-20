@@ -4,6 +4,7 @@ using Game.Data;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Moq;
+using NSubstitute;
 using Xunit.Extensions;
 
 namespace Testing.FormulaTests
@@ -47,7 +48,8 @@ namespace Testing.FormulaTests
 
             var formula = new Formula(objectTypeFactory.Object,
                                       new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<StructureFactory>(MockBehavior.Strict).Object);
+                                      new Mock<StructureFactory>(MockBehavior.Strict).Object,
+                                      Substitute.For<ISystemVariableManager>());
 
             var city = new Mock<ICity>();
             city.Setup(m => m.GetEnumerator()).Returns(structures.GetEnumerator());

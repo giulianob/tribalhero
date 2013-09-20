@@ -15,14 +15,16 @@ namespace Game.Setup
     public class MapFactory
     {
         private readonly IDbManager dbManager;
+        private readonly ISystemVariableManager systemVariableManager;
 
         private const int INITIAL_INDEX = 200;
 
         private readonly List<Position> dict = new List<Position>();
 
-        public MapFactory(IDbManager dbManager)
+        public MapFactory(IDbManager dbManager, ISystemVariableManager systemVariableManager)
         {
             this.dbManager = dbManager;
+            this.systemVariableManager = systemVariableManager;
         }
 
         public void Init(string filename)
@@ -54,7 +56,7 @@ namespace Game.Setup
             {
                 if (index == null)
                 {
-                    if (!Global.Current.SystemVariables.TryGetValue("Map.start_index", out index))
+                    if (!systemVariableManager.TryGetValue("Map.start_index", out index))
                     {
                         index = new SystemVariable("Map.start_index", INITIAL_INDEX);
                     }

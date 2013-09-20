@@ -44,7 +44,7 @@ namespace Game.Logic.Procedures
 
             if (player.GetCityCount() == 1)
             {
-                barbarianTribeManager.CreateBarbarianTribeNear(1, 1, city.PrimaryPosition.X, city.PrimaryPosition.Y, 10);
+                barbarianTribeManager.CreateBarbarianTribeNear(1, 10, city.PrimaryPosition.X, city.PrimaryPosition.Y, 10);
             }
         }
 

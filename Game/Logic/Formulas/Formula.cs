@@ -17,14 +17,15 @@ namespace Game.Logic.Formulas
     public partial class Formula
     {
         protected Formula()
+		{
+		}
+	
+        public Formula(IObjectTypeFactory objectTypeFactory, UnitFactory unitFactory, IStructureCsvFactory structureFactory, ISystemVariableManager systemVariableManager)
         {
-        }
-
-        public Formula(IObjectTypeFactory objectTypeFactory, UnitFactory unitFactory, IStructureCsvFactory structureCsvFactory)
-        {
+            SystemVariableManager = systemVariableManager;
             ObjectTypeFactory = objectTypeFactory;
             UnitFactory = unitFactory;
-            StructureCsvFactory = structureCsvFactory;
+	    	StructureCsvFactory = structureFactory;
         }
 
         public virtual IObjectTypeFactory ObjectTypeFactory { get; set; }
@@ -33,33 +34,7 @@ namespace Game.Logic.Formulas
 
         public virtual IStructureCsvFactory StructureCsvFactory { get; set; }
 
-        /// <summary>
-        ///     Applies the specified effects to the specified radius. This is used by AwayFromLayout for building validation.
-        /// </summary>
-        /// <param name="effects"></param>
-        /// <param name="radius"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public virtual int GetAwayFromRadius(IEnumerable<Effect> effects, byte radius, ushort type)
-        {
-            return radius +
-                   effects.DefaultIfEmpty()
-                          .Min(
-                               x =>
-                               (x != null && x.Id == EffectCode.AwayFromStructureMod && (int)x.Value[0] == type)
-                                       ? (int)x.Value[1]
-                                       : 0);
-        }
-
-        /// <summary>
-        ///     Returns maximum number of concurrent build/upgrades allowed for the given structure level
-        /// </summary>
-        /// <param name="mainstructureLevel"></param>
-        /// <returns></returns>
-        public virtual int ConcurrentBuildUpgrades(int mainstructureLevel)
-        {
-            return mainstructureLevel >= 11 ? 3 : 2;
-        }
+        public virtual ISystemVariableManager SystemVariableManager { get; set; }
 
         public virtual Error CityMaxConcurrentBuildActions(ushort structureType, uint currentActionId, ICity city, IObjectTypeFactory objectTypeFactory)
         {
@@ -91,6 +66,34 @@ namespace Game.Logic.Formulas
             }
 
             return Error.Ok;
+        }
+
+        /// <summary>
+        ///     Applies the specified effects to the specified radius. This is used by AwayFromLayout for building validation.
+        /// </summary>
+        /// <param name="effects"></param>
+        /// <param name="radius"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public virtual int GetAwayFromRadius(IEnumerable<Effect> effects, byte radius, ushort type)
+        {
+            return radius +
+                   effects.DefaultIfEmpty()
+                          .Min(
+                               x =>
+                               (x != null && x.Id == EffectCode.AwayFromStructureMod && (int)x.Value[0] == type)
+                                       ? (int)x.Value[1]
+                                       : 0);
+        }
+
+        /// <summary>
+        ///     Returns maximum number of concurrent build/upgrades allowed for the given structure level
+        /// </summary>
+        /// <param name="mainstructureLevel"></param>
+        /// <returns></returns>
+        public virtual int ConcurrentBuildUpgrades(int mainstructureLevel)
+        {
+            return mainstructureLevel >= 11 ? 3 : 2;
         }
 
         /// <summary>

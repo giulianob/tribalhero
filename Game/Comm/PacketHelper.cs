@@ -98,6 +98,7 @@ namespace Game.Comm
             if (stronghold != null)
             {
                 packet.AddUInt32(stronghold.StrongholdState == StrongholdState.Occupied ? stronghold.Tribe.Id : 0);
+                packet.AddInt32(stronghold.GateMax);
             }
 
             var structure = obj as IStructure;
@@ -713,6 +714,7 @@ namespace Game.Comm
                     packet.AddByte((byte)stronghold.StrongholdState);
                     packet.AddByte(stronghold.Lvl);
                     packet.AddFloat((float)stronghold.Gate);
+                    packet.AddInt32(stronghold.GateMax);
                     packet.AddUInt32(stronghold.PrimaryPosition.X);
                     packet.AddUInt32(stronghold.PrimaryPosition.Y);
                     packet.AddInt32(stronghold.Troops.StationedHere().Sum(x => x.Upkeep));
@@ -818,6 +820,7 @@ namespace Game.Comm
                 packet.AddString(stronghold.Name);
                 packet.AddByte(stronghold.Lvl);
                 packet.AddFloat((float)stronghold.Gate);
+                packet.AddInt32(stronghold.GateMax);
                 packet.AddFloat((float)stronghold.VictoryPointRate);
                 packet.AddUInt32(UnixDateTime.DateTimeToUnix(stronghold.DateOccupied.ToUniversalTime()));
                 packet.AddUInt32(stronghold.PrimaryPosition.X);

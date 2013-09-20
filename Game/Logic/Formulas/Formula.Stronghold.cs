@@ -8,15 +8,14 @@ namespace Game.Logic.Formulas
 {
     public partial class Formula
     {
-        public virtual int StrongholdGateLimit(byte level)
+        public virtual decimal StrongholdGateLimit(byte level)
         {
             if (Config.stronghold_gate_limit > 0)
             {
                 return Config.stronghold_gate_limit;
             }
-
             return StrongholdMainBattleMeter(level) * 10;
-        }
+         }
 
         public virtual int StrongholdGateHealHp(StrongholdState state, byte level)
         {
@@ -42,8 +41,8 @@ namespace Game.Logic.Formulas
             {
                 return Config.stronghold_battle_meter;
             }
-            
-            return meters[level];
+            int hoursSinceStarted = Convert.ToInt32(SystemClock.Now.Subtract((DateTime)SystemVariableManager["Server.date"].Value).TotalHours) - 30 * 24;
+            return (int)Math.Round(meters[level] * Math.Min(hoursSinceStarted > 0 ? (decimal)Math.Pow(1.002, hoursSinceStarted) : 1, 8));
         }
 
         public virtual void StrongholdUpkeep(byte level, out int upkeep, out byte unitLevel)
@@ -92,7 +91,7 @@ namespace Game.Logic.Formulas
                 return 0;
             }
 
-            var serverUptime = (decimal)SystemClock.Now.Subtract((DateTime)Global.Current.SystemVariables["Server.date"].Value).TotalDays;
+            var serverUptime = (decimal)SystemClock.Now.Subtract((DateTime)SystemVariableManager["Server.date"].Value).TotalDays;
             var daysOccupied = (decimal)SystemClock.Now.Subtract(stronghold.DateOccupied).TotalDays;
             return ((daysOccupied + stronghold.BonusDays) / 2m + serverUptime / 5 + 10) * (5 + stronghold.Lvl * 5m);
         }

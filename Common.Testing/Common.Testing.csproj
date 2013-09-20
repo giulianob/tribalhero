@@ -67,6 +67,8 @@
   <ItemGroup>
     <Compile Include="AutoNSubstituteDataAttribute.cs" />
     <Compile Include="CsvDataAttribute.cs" />
+    <Compile Include="FrozenMockAttribute.cs" />
+    <Compile Include="FrozenMockCustomization.cs" />
     <Compile Include="GameObjectLocatorStub.cs" />
     <Compile Include="InlineAutoNSubstituteDataAttribute.cs" />
     <Compile Include="LockerStub.cs" />

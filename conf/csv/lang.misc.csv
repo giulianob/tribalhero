@@ -24,6 +24,7 @@ STR_LEVEL,Level
 STR_NOT_OCCUPIED,Not Occupied
 STR_TRIBE,Tribe
 STR_GATE,Gate
+STR_GATEMAX,Max Gate HP
 STR_OCCUPIED,Occupied
 STR_VP_RATE,Victory Point Rate
 STR_VICTORY_POINT,Victory Point
@@ -54,6 +55,7 @@ STR_DEFENDING,Defending
 STR_BARBARIAN_TRIBE,Barbarian Tribe
 STR_SAVE,Save
 STR_ERROR,Error
+STR_CONFIRM,Confirm
 ,
 CITY_OVERVIEW_TITLE,City Overview
 CITY_OVERVIEW_INFLUENCE_POINTS_LABEL,{0} influence points.
@@ -149,6 +151,7 @@ MINIMAP_LEGEND_NEWBIE,Protection
 MINIMAP_LEGEND_NEWBIE_YES,Newbie protected
 MINIMAP_LEGEND_NEWBIE_NO,Not protected
 ,
+STRONGHOLD_GATE_MAX_HP_TOOLTIP,Gate HP when the gate is fully repaired. The actual gate HP can be lower if it is damaged.
 STRONGHOLD_GATE_BROKEN,"The gates of <a href=""event:gotoStrongholdByName:{0}"">{0}</a> have been taken down by <a href=""event:viewTribeProfileByName:{1}"">{1}</a>."
 STRONGHOLD_ACTIVE,"<a href=""event:gotoStrongholdByName:{0}"">{0}</a> has been built and can now be captured."
 STRONGHOLD_TAKEN_OVER,"<a href=""event:gotoStrongholdByName:{0}"">{0}</a> has been taken over by <a href=""event:viewTribeProfileByName:{1}"">{1}</a> from the hands of <a href=""event:viewTribeProfileByName:{2}"">{2}</a>."
@@ -158,6 +161,8 @@ STRONGHOLD_GATE_REPAIRED,Gate is completely repaired.
 STRONGHOLD_STATE_GATE_ATTACK,gate is under attack
 STRONGHOLD_STATE_MAIN_ATTACK,"under attack by <a href=""event:viewTribeProfile:{0}"">{1}</a> (<a href=""event:viewBattle:{2}"">view battle</a>)"
 STRONGHOLD_REPAIR_GATE_ACTION,Click to repair the gate
+STRONGHOLD_FAILED_NEUTRAL_TAKEOVER,"<a href=""event:viewTribeProfileByName:{1}"">{1}</a> failed to take <a href=""event:gotoStrongholdByName:{0}"">{0}</a> over from the barbarians."
+STRONGHOLD_FAILED_OCCUPIED_TAKEOVER,"<a href=""event:viewTribeProfileByName:{1}"">{1}</a> failed to take <a href=""event:gotoStrongholdByName:{0}"">{0}</a> from the hands of <a href=""event:viewTribeProfileByName:{2}"">{2}</a>."
 ,
 SYSTEM_CHAT_LITERAL,{0}
 ,
@@ -293,3 +298,7 @@ TRANSFER_PARTIAL_DIALOG_SELECT_ALL,Transfer entire troop
 TRANSFER_PARTIAL_DIALOG_SELECT_PARTIAL,Let me choose which units to transfer
 TRANSFER_PARTIAL_DIALOG_SOURCE_TAB,Stationed Troops
 TRANSFER_PARTIAL_DIALOG_TARGET_TAB,Units to Transfer
+,
+RETREAT_TROOP_PROCESS_RETREAT_OTHER_UNITS,Do you really want to send these units back to their city?
+,
+ACHIEVEMENT_NOTIFICATION,{1} has received a {2} achievement for <a href='http://tribalhero.com/pages/donate/' target='_blank'>supporting Tribal Hero</a>.

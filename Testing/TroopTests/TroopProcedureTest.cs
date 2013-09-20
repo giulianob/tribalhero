@@ -1,8 +1,10 @@
 ﻿#region
 
 using Common.Testing;
+using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Procedures;
+using NSubstitute;
 using Ploeh.AutoFixture;
 using Xunit;
 using Xunit.Extensions;
@@ -19,12 +21,14 @@ namespace Testing.TroopTests
         [Theory, AutoNSubstituteData]
         public void TestMoveFromBattleToNormal(TroopStub stub)
         {
+            Global.Current = Substitute.For<IGlobal>();
+            Global.Current.FireEvents.Returns(false);
             stub.AddFormation(FormationType.Normal);
             stub.AddFormation(FormationType.Garrison);
             stub.AddFormation(FormationType.InBattle);
             stub.AddUnit(FormationType.Normal, 101, 10);
 
-            var fixture = new Fixture();
+            var fixture = FixtureHelper.Create();
             var procedure = fixture.Create<CityBattleProcedure>();
 
             procedure.MoveUnitFormation(stub, FormationType.Normal, FormationType.InBattle);

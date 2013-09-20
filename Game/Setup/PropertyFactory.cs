@@ -37,8 +37,11 @@ namespace Game.Setup
 
     public class Property
     {
-        public Property(string name, DataType type, PropertyOrigin origin, Visibility visibility)
+        private readonly ISystemVariableManager systemVariableManager;
+
+        public Property(string name, DataType type, PropertyOrigin origin, Visibility visibility, ISystemVariableManager systemVariableManager)
         {
+            this.systemVariableManager = systemVariableManager;
             Name = name;
             Type = type;
             Origin = origin;
@@ -68,7 +71,7 @@ namespace Game.Setup
 
             if (Origin == PropertyOrigin.System)
             {
-                return Global.Current.SystemVariables[Name].Value;
+                return systemVariableManager[Name].Value;
             }
 
             return structure[Name];
@@ -107,7 +110,12 @@ namespace Game.Setup
 
     public class PropertyFactory
     {
+        private readonly ISystemVariableManager systemVariableManager;
         private readonly Dictionary<int, List<Property>> dict = new Dictionary<int, List<Property>>();
+        public PropertyFactory(ISystemVariableManager systemVariableManager)
+        {
+            this.systemVariableManager = systemVariableManager;
+        }
 
         public void Init(string filename)
         {
@@ -145,18 +153,20 @@ namespace Game.Setup
                         prop = new Property(toks[col["Name"]].Substring(toks[col["Name"]].LastIndexOf('.') + 1),
                                             type,
                                             PropertyOrigin.Formula,
-                                            visibility);
+                                            visibility,
+                                            systemVariableManager);
                     }
                     else if (toks[col["Name"]].Contains("System."))
                     {
                         prop = new Property(toks[col["Name"]].Substring(toks[col["Name"]].LastIndexOf('.') + 1),
                                             type,
                                             PropertyOrigin.System,
-                                            visibility);
+                                            visibility,
+                                            systemVariableManager);
                     }
                     else
                     {
-                        prop = new Property(toks[col["Name"]], type, PropertyOrigin.Structure, visibility);
+                        prop = new Property(toks[col["Name"]], type, PropertyOrigin.Structure, visibility, systemVariableManager);
                     }
 
                     properties.Add(prop);

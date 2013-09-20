@@ -157,6 +157,10 @@ namespace Game.Setup
             {
                 return 0;
             }
+            if (buildLvl == 0)
+            {
+                return 60;
+            }
             return Ioc.Kernel.Get<StructureFactory>().GetTime((ushort)buildType, (byte)buildLvl) * 2 / 3;
         }
 

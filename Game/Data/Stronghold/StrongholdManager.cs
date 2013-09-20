@@ -373,6 +373,19 @@ namespace Game.Data.Stronghold
             }
         }
 
+        public void TribeFailedToTakeStronghold(IStronghold stronghold, ITribe attackingTribe)
+        {
+            switch(stronghold.StrongholdState)
+            {
+                case StrongholdState.Neutral:
+                    chat.SendSystemChat("STRONGHOLD_FAILED_NEUTRAL_TAKEOVER", stronghold.Name, attackingTribe.Name);
+                    break;
+                case StrongholdState.Occupied:
+                    chat.SendSystemChat("STRONGHOLD_FAILED_OCCUPIED_TAKEOVER", stronghold.Name, attackingTribe.Name, stronghold.Tribe.Name);
+                    break;
+            }
+        }
+
         public void Probe(out int neutralStrongholds, out int capturedStrongholds)
         {
             neutralStrongholds = 0;

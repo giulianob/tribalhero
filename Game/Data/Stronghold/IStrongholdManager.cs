@@ -37,11 +37,10 @@ namespace Game.Data.Stronghold
 
         void Probe(out int neutralStrongholds, out int capturedStrongholds);
 
-        void RetreatUnits(IStronghold stronghold);
-
         event EventHandler<StrongholdGainedEventArgs> StrongholdGained;
 
         event EventHandler<StrongholdLostEventArgs> StrongholdLost;
 
+        void TribeFailedToTakeStronghold(IStronghold stronghold, ITribe attackingTribe);
     }
 }

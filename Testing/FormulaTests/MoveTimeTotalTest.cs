@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Common.Testing;
 using FluentAssertions;
 using Game.Data;
 using Game.Data.Troop;
@@ -8,29 +9,24 @@ using Game.Setup;
 using Moq;
 using NSubstitute;
 using Xunit;
+using Xunit.Extensions;
 
 namespace Testing.FormulaTests
 {
     public class MoveTimeTotalTest
     {
-        [Fact]
-        public void TestMoveTime()
+        [Theory, AutoNSubstituteData]
+        public void TestMoveTime(Formula formula)
         {
-            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
-                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
             formula.MoveTime(5).Should().Be(51.4m);
             formula.MoveTime(11).Should().Be(36);
             formula.MoveTime(23).Should().Be(22.5m);
             formula.MoveTime(23.3m).Should().Be(22.3m);
         }
 
-        [Fact]
-        public void TestTroopSpeed()
+        [Theory, AutoNSubstituteData]
+        public void TestTroopSpeed(Formula formula)
         {
-            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
-                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
             ITroopStub troopstub = Substitute.For<ITroopStub>();
             troopstub.TotalCount.Returns((ushort)1);
 
@@ -90,13 +86,9 @@ namespace Testing.FormulaTests
             formula.GetTroopSpeed(troopstub).Should().Be(5);
         }
 
-        [Fact]
-        public void TestEmptyEffect()
+        [Theory, AutoNSubstituteData]
+        public void TestEmptyEffect(Formula formula)
         {
-            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
-                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
-
             formula.MoveTimeTotal(CreateMockedStub(4, new List<Effect>()), 400, true)
                    .Should()
                    .Be(((int)(formula.MoveTime(4) * 400 * (decimal)Config.seconds_per_unit)));
@@ -108,13 +100,9 @@ namespace Testing.FormulaTests
                    .Be((int)(formula.MoveTime(50) * 1200 * (decimal)Config.seconds_per_unit));
         }
 
-        [Fact]
-        public void TestRushAttack()
+        [Theory, AutoNSubstituteData]
+        public void TestRushAttack(Formula formula)
         {
-            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
-                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
-
             Effect e = new Effect
             {
                     Id = EffectCode.TroopSpeedMod,
@@ -149,13 +137,9 @@ namespace Testing.FormulaTests
                    .Be((int)(formula.MoveTime(20) * 800 * (decimal)Config.seconds_per_unit * 100 / 124));
         }
 
-        [Fact]
-        public void TestRushDefense()
+        [Theory, AutoNSubstituteData]
+        public void TestRushDefense(Formula formula)
         {
-            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
-                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
-
             Effect e = new Effect
             {
                     Id = EffectCode.TroopSpeedMod,
@@ -192,13 +176,9 @@ namespace Testing.FormulaTests
                    .Be((int)(formula.MoveTime(20) * 800 * (decimal)Config.seconds_per_unit * 100 / 124));
         }
 
-        [Fact]
-        public void TestDoubleTime()
+        [Theory, AutoNSubstituteData]
+        public void TestDoubleTime(Formula formula)
         {
-            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
-                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
-
             var dummy = new Effect
             {
                     Id = EffectCode.TroopSpeedMod,
@@ -247,12 +227,9 @@ namespace Testing.FormulaTests
                    .Be((int)expected);
         }
 
-        [Fact]
-        public void TestDoubleTimeWithRush()
+        [Theory, AutoNSubstituteData]
+        public void TestDoubleTimeWithRush(Formula formula)
         {
-            var formula = new Formula(new Mock<IObjectTypeFactory>(MockBehavior.Strict).Object,
-                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<IStructureCsvFactory>(MockBehavior.Strict).Object);
 
             var dummy = new Effect
             {

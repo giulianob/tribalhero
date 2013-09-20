@@ -35,6 +35,8 @@ namespace Game.Data.Stronghold
 
         public decimal Gate { get; set; }
 
+        public int GateMax { get; set; }
+
         public decimal VictoryPointRate
         {
             get
@@ -132,6 +134,7 @@ namespace Game.Data.Stronghold
                           uint x,
                           uint y,
                           decimal gate,
+                          int gateMax,
                           IDbManager dbManager,
                           NotificationManager notificationManager,
                           ITroopManager troopManager,
@@ -148,6 +151,7 @@ namespace Game.Data.Stronghold
             Worker = actionWorker;
             Troops = troopManager;
             Gate = gate;
+            GateMax = gateMax;
 
             Notifications.NotificationAdded += NotificationsUpdate;
             Notifications.NotificationRemoved += NotificationsUpdate;
@@ -203,6 +207,7 @@ namespace Game.Data.Stronghold
                 var bw = new BinaryWriter(ms);
                 bw.Write(Lvl);
                 bw.Write(Tribe != null ? Tribe.Id : 0);
+                bw.Write(GateMax);
                 ms.Position = 0;
                 return ms.ToArray();
             }
@@ -351,6 +356,7 @@ namespace Game.Data.Stronghold
                         new DbColumn("victory_point_rate", VictoryPointRate, DbType.Decimal),
                         new DbColumn("nearby_cities", NearbyCitiesCount, DbType.UInt16),
                         new DbColumn("bonus_days", BonusDays, DbType.Decimal),
+                        new DbColumn("gate_max", GateMax, DbType.Int32),
                 };
             }
         }

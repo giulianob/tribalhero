@@ -303,7 +303,7 @@
     <Compile Include="Data\Stronghold\StrongholdFactory.cs" />
     <Compile Include="Data\Stronghold\StrongholdManager.cs" />
     <Compile Include="Data\Stronghold\StrongholdManagerLogger.cs" />
-    <Compile Include="Data\Stronghold\VictoryPointChecker.cs" />
+    <Compile Include="Data\Stronghold\StrongholdChecker.cs" />
     <Compile Include="Data\Structure.cs" />
     <Compile Include="Data\Technology.cs" />
     <Compile Include="Data\TechnologyManager.cs" />
@@ -351,7 +351,7 @@
     <Compile Include="Data\SimpleGameObject.cs" />
     <Compile Include="GameModule.cs" />
     <Compile Include="Logic\ActionRequirement.cs" />
-    <Compile Include="Logic\Actions\ActionFactory.cs" />
+    <Compile Include="Logic\Actions\IActionFactory.cs" />
     <Compile Include="Logic\Actions\AttackMode.cs" />
     <Compile Include="Logic\Actions\BarbarianTribe\BarbarianTribeAttackChainAction.cs" />
     <Compile Include="Logic\Actions\BarbarianTribe\BarbarianTribeEngageAttackPassiveAction.cs" />
@@ -500,6 +500,8 @@
     <Compile Include="Setup\Ioc.cs" />
     <Compile Include="Setup\IRequirementCsvFactory.cs" />
     <Compile Include="Setup\IStructureCsvFactory.cs" />
+    <Compile Include="Setup\ISystemVariableManager.cs" />
+    <Compile Include="Setup\SystemVariableManager.cs" />
     <Compile Include="Setup\UnitModFactory.cs" />
     <Compile Include="Setup\UnitFactory.cs" />
     <Compile Include="Setup\EffectRequirementFactory.cs" />

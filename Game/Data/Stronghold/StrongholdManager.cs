@@ -65,7 +65,7 @@ namespace Game.Data.Stronghold
                                  ICityManager cityManager,
                                  IActionFactory actionFactory, 
                                  ITileLocator tileLocator,
-            			 ITroopObjectInitializerFactory troopInitializerFactory)
+            			         ITroopObjectInitializerFactory troopInitializerFactory)
         {
             idGenerator = new LargeIdGenerator(Config.stronghold_id_max, Config.stronghold_id_min);
             strongholds = new ConcurrentDictionary<uint, IStronghold>();
@@ -150,13 +150,14 @@ namespace Game.Data.Stronghold
                 {
                     break;
                 }
-
+                var limit = formula.StrongholdGateLimit(level);
                 IStronghold stronghold = strongholdFactory.CreateStronghold(idGenerator.GetNext(),
-                                                                            name,
-                                                                            level,
-                                                                            x,
-                                                                            y,
-                                                                            formula.StrongholdGateLimit(level));
+                                                                            name, 
+                                                                            level, 
+                                                                            x, 
+                                                                            y, 
+                                                                            limit, 
+                                                                            Convert.ToInt32(limit));
                 using (dbManager.GetThreadTransaction())
                 {
                     Add(stronghold);
@@ -295,6 +296,27 @@ namespace Game.Data.Stronghold
             return Error.Ok;
         }
 
+        public Error UpdateGate(IStronghold stronghold)
+        {
+            if (stronghold.MainBattle != null || stronghold.GateBattle != null)
+            {
+                return Error.StrongholdNotUpdatableInBattle;
+            }
+            
+            var newMax = formula.StrongholdGateLimit(stronghold.Lvl);
+
+            if (newMax != stronghold.GateMax)
+            {
+                stronghold.BeginUpdate();
+                var percentHp = stronghold.Gate / stronghold.GateMax;
+                stronghold.GateMax = Convert.ToInt32(newMax);
+                stronghold.Gate = stronghold.GateMax * percentHp;
+                stronghold.EndUpdate();
+            }
+
+            return Error.Ok;
+        }
+
         #region Implementation of IEnumerable
 
         public IEnumerator<IStronghold> GetEnumerator()
@@ -360,6 +382,19 @@ namespace Game.Data.Stronghold
             if (stronghold.GateOpenTo != null)
             {
                 chat.SendSystemChat("STRONGHOLD_GATE_BROKEN", stronghold.Name, stronghold.GateOpenTo.Name);
+            }
+        }
+
+        public void TribeFailedToTakeStronghold(IStronghold stronghold, ITribe attackingTribe)
+        {
+            switch(stronghold.StrongholdState)
+            {
+                case StrongholdState.Neutral:
+                    chat.SendSystemChat("STRONGHOLD_FAILED_NEUTRAL_TAKEOVER", stronghold.Name, attackingTribe.Name);
+                    break;
+                case StrongholdState.Occupied:
+                    chat.SendSystemChat("STRONGHOLD_FAILED_OCCUPIED_TAKEOVER", stronghold.Name, attackingTribe.Name, stronghold.Tribe.Name);
+                    break;
             }
         }
 

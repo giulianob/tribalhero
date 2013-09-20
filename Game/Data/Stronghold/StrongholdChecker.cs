@@ -7,13 +7,13 @@ using Persistance;
 
 namespace Game.Data.Stronghold
 {
-    public class VictoryPointChecker : ISchedule
+    public class StrongholdChecker : ISchedule
     {
         private readonly IDbManager dbManager;
 
         private readonly IStrongholdManager strongholdManager;
 
-        public VictoryPointChecker(IStrongholdManager strongholdManager, IDbManager dbManager)
+        public StrongholdChecker(IStrongholdManager strongholdManager, IDbManager dbManager)
         {
             this.strongholdManager = strongholdManager;
             this.dbManager = dbManager;
@@ -23,7 +23,7 @@ namespace Game.Data.Stronghold
         {
             if (Config.actions_instant_time)
             {
-                Time = DateTime.UtcNow.AddSeconds(5);
+                Time = DateTime.UtcNow.AddSeconds(30);
             }
             else
             {
@@ -53,13 +53,22 @@ namespace Game.Data.Stronghold
         {
             foreach (
                     IStronghold stronghold in
-                            strongholdManager.Where(s => s.StrongholdState == StrongholdState.Occupied))
+                            strongholdManager)
             {
-                using (Concurrency.Current.Lock(stronghold, stronghold.Tribe))
+                IMultiObjectLock multiObjecLock;
+                if (stronghold.StrongholdState == StrongholdState.Occupied)
                 {
+                    multiObjecLock = Concurrency.Current.Lock(stronghold, stronghold.Tribe);
                     stronghold.Tribe.VictoryPoint += stronghold.VictoryPointRate;
-                    dbManager.Save(stronghold.Tribe, stronghold);
+                    dbManager.Save(stronghold.Tribe);
                 }
+                else
+                {
+                    multiObjecLock = Concurrency.Current.Lock(stronghold);
+                }
+                strongholdManager.UpdateGate(stronghold);
+                dbManager.Save(stronghold);
+                multiObjecLock.UnlockAll();
             }
 
             SetNextExecution();

@@ -90,6 +90,9 @@ namespace Game.Database
         [Inject]
         public IForestFactory ForestFactory { get; set; }
 
+        [Inject]
+        public ISystemVariableManager SystemVariableManager { get; set; }
+
         public void LoadFromDatabase()
         {
             SystemVariablesUpdater.Current.Pause();
@@ -109,7 +112,7 @@ namespace Game.Database
                     DbManager.Query("UPDATE `players` SET `online` = 0");
 
                     LoadSystemVariables();
-                    UpdateTimestampsFromDowntime((DateTime)Global.Current.SystemVariables["System.time"].Value);
+                    UpdateTimestampsFromDowntime((DateTime)SystemVariableManager["System.time"].Value);
 
                     LoadReportIds();
                     LoadMarket();
@@ -137,8 +140,8 @@ namespace Game.Database
                     World.AfterDbLoaded(Procedure, Kernel.Get<IForestManager>());
 
                     //Ok data all loaded. We can get the system going now.
-                    Global.Current.SystemVariables["System.time"].Value = DateTime.UtcNow;
-                    DbManager.Save(Global.Current.SystemVariables["System.time"]);
+                    SystemVariableManager["System.time"].Value = DateTime.UtcNow;
+                    DbManager.Save(SystemVariableManager["System.time"]);
                 }
                 catch(Exception)
                 {                    
@@ -389,21 +392,21 @@ namespace Game.Database
                     {
                             DbPersisted = true
                     };
-                    Global.Current.SystemVariables.Add(systemVariable.Key, systemVariable);
+                    SystemVariableManager.Add(systemVariable.Key, systemVariable);
                 }
             }
 
             // Set system variable defaults
-            if (!Global.Current.SystemVariables.ContainsKey("System.time"))
+            if (!SystemVariableManager.ContainsKey("System.time"))
             {
-                Global.Current.SystemVariables.Add("System.time", new SystemVariable("System.time", DateTime.UtcNow));
+                SystemVariableManager.Add("System.time", new SystemVariable("System.time", DateTime.UtcNow));
             }
 
 
-            if (!Global.Current.SystemVariables.ContainsKey("Server.date"))
+            if (!SystemVariableManager.ContainsKey("Server.date"))
             {
-                Global.Current.SystemVariables.Add("Server.date", new SystemVariable("Server.date", DateTime.UtcNow));
-                DbManager.Save(Global.Current.SystemVariables["Server.date"]);
+                SystemVariableManager.Add("Server.date", new SystemVariable("Server.date", DateTime.UtcNow));
+                DbManager.Save(SystemVariableManager["Server.date"]);
             }
 
             #endregion
@@ -604,7 +607,8 @@ namespace Game.Database
                                                                         (byte)reader["level"],
                                                                         (uint)reader["x"],
                                                                         (uint)reader["y"],
-                                                                        (decimal)reader["gate"]);
+                                                                        (decimal)reader["gate"],
+                                                                        (int)reader["gate_max"]);
                     stronghold.StrongholdState = (StrongholdState)((byte)reader["state"]);
                     stronghold.NearbyCitiesCount = (ushort)reader["nearby_cities"];
                     stronghold.DbPersisted = true;

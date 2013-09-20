@@ -34,6 +34,8 @@ namespace Game.Data.Stronghold
 
         decimal Gate { get; set; }
 
+        int GateMax { get; set; }
+
         decimal VictoryPointRate { get; }
 
         ushort NearbyCitiesCount { get; set; }

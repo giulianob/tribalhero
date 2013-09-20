@@ -25,10 +25,7 @@ namespace Game.Data
         {
             Channel = channel;
             FireEvents = true;
-            SystemVariables = new Dictionary<string, SystemVariable>();
         }
-
-        public Dictionary<string, SystemVariable> SystemVariables { get; private set; }
 
         public bool FireEvents { get; set; }
 

@@ -309,6 +309,10 @@ namespace Game.Logic.Actions
             {
                 strongholdManager.TransferTo(stronghold, stronghold.GateOpenTo);
             }
+            else
+            {
+                strongholdManager.TribeFailedToTakeStronghold(stronghold, stronghold.GateOpenTo);
+            }
         }
 
         private void MainBattleOnGroupKilled(IBattleManager battle, ICombatGroup group)

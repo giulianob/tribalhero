@@ -33,9 +33,9 @@
 			return sprite;
 		}
 
-		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, groupId: int, objectId: int, level: int, tribeId: int): Stronghold
+		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, groupId: int, objectId: int, level: int, tribeId: int, gateMax: int): Stronghold
 		{
-			var strongholdObj: Stronghold = new Stronghold(type, state, objX, objY, groupId, objectId, level, tribeId);
+			var strongholdObj: Stronghold = new Stronghold(type, state, objX, objY, groupId, objectId, level, tribeId, gateMax);
 
 			strongholdObj.spriteContainer.addChild(ObjectFactory.makeIntoShadow(getSprite()));
 			strongholdObj.spriteContainer.addChild(getSprite());

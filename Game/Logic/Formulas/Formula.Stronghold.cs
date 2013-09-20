@@ -14,9 +14,8 @@ namespace Game.Logic.Formulas
             {
                 return Config.stronghold_gate_limit;
             }
-            int hoursSinceStarted = Convert.ToInt32(SystemClock.Now.Subtract((DateTime)SystemVariableManager["Server.date"].Value).TotalHours) - 30 * 24;
-            return Math.Round(StrongholdMainBattleMeter(level) * 10 * Math.Min(hoursSinceStarted > 0 ? (decimal)Math.Pow(1.002, hoursSinceStarted) : 1, 8));
-        }
+            return StrongholdMainBattleMeter(level) * 10;
+         }
 
         public virtual int StrongholdGateHealHp(StrongholdState state, byte level)
         {
@@ -42,8 +41,8 @@ namespace Game.Logic.Formulas
             {
                 return Config.stronghold_battle_meter;
             }
-            
-            return meters[level];
+            int hoursSinceStarted = Convert.ToInt32(SystemClock.Now.Subtract((DateTime)SystemVariableManager["Server.date"].Value).TotalHours) - 30 * 24;
+            return (int)Math.Round(meters[level] * Math.Min(hoursSinceStarted > 0 ? (decimal)Math.Pow(1.002, hoursSinceStarted) : 1, 8));
         }
 
         public void StrongholdUpkeep(byte level, out int upkeep, out byte unitLevel)

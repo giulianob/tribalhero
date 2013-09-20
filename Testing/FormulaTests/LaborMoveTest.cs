@@ -68,7 +68,7 @@ namespace Testing.FormulaTests
         [PropertyData("WithDifferentOvertime")]
         public void TestLaborMoveWithOvertime(int labor, IEnumerable<Effect> effects, int expected)
         {
-            var formula = new Fixture().Create<Formula>();
+            var formula = FixtureHelper.Create().Create<Formula>();
             var structure = Substitute.For<IStructure>();
             structure.City.GetTotalLaborers().Returns(160);
             structure.City.Technologies.GetEffects(EffectCode.LaborMoveTimeMod).Returns(effects);

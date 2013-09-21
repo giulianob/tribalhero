@@ -19,17 +19,18 @@ package src.Objects.Stronghold
 		
 		public var level: int;
 		public var tribeId: int;
+        public var gateMax: int;
 		public var strongholdName: String;
 		public var id: int;
         
         public var wallManager: WallManager;
 		
-		public function Stronghold(type: int, state: GameObjectState, objX: int, objY: int, size: int, groupId: int, objectId: int, level: int, tribeId: int) {
+		public function Stronghold(type: int, state: GameObjectState, objX: int, objY: int, size: int, groupId: int, objectId: int, level: int, tribeId: int, gateMax: int) {
 			super(type, state, objX, objY, size, groupId, objectId);
 			this.id = objectId;
 			this.level = level;
 			this.tribeId = tribeId;
-
+            this.gateMax = gateMax;
             mapPriority = Constants.mapObjectPriority.stronghold;
 
             wallManager = new WallManager(this, 2);
@@ -44,8 +45,7 @@ package src.Objects.Stronghold
 			tribeId = strongholdObj.tribeId;
 		}
 		
-		public static function gateToString(level: int, value: int) : String {
-			var limit: int = Formula.getGateLimit(level);
+		public static function gateToString(limit: int, value: int) : String {
 			return value.toString() + "/" + limit.toString();
 		}		
 		

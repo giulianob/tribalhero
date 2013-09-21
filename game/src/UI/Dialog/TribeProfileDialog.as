@@ -214,8 +214,8 @@
             lblGate.setVerticalAlignment(AsWingConstants.TOP);
             pnlGate.append(lblGate);
 
-            if (stronghold.battleState == Stronghold.BATTLE_STATE_NONE && stronghold.gate < Formula.getGateLimit(stronghold.lvl) && Constants.tribe.hasRight(Tribe.REPAIR)) {
-                var btnGateRepair: JLabelButton = new JLabelButton(Stronghold.gateToString(stronghold.lvl, stronghold.gate), null, AsWingConstants.LEFT);
+            if (stronghold.battleState == Stronghold.BATTLE_STATE_NONE && stronghold.gate < stronghold.gateMax && Constants.tribe.hasRight(Tribe.REPAIR)) {
+                var btnGateRepair: JLabelButton = new JLabelButton(Stronghold.gateToString(stronghold.gateMax, stronghold.gate), null, AsWingConstants.LEFT);
                 btnGateRepair.useHandCursor = true;
                 btnGateRepair.addEventListener(MouseEvent.CLICK, function(e: Event): void {
                     Global.mapComm.Stronghold.repairStrongholdGate(stronghold.id, function(): void {
@@ -223,12 +223,12 @@
                     });
                 });
                 var tooltip: SimpleTooltip = new SimpleTooltip(btnGateRepair, StringHelper.localize("STRONGHOLD_REPAIR_GATE_ACTION"));
-                tooltip.append(new ResourcesPanel(Formula.getGateRepairCost(stronghold.lvl, stronghold.gate), profileData.resources, true, false));
+                tooltip.append(new ResourcesPanel(Formula.getGateRepairCost(stronghold.gateMax, stronghold.gate), profileData.resources, true, false));
                 btnGateRepair.setVerticalAlignment(AsWingConstants.TOP);
                 pnlGate.append(btnGateRepair);
             }
             else {
-                var lblGateHealth: JLabel = new JLabel(Stronghold.gateToString(stronghold.lvl, stronghold.gate), null, AsWingConstants.LEFT);
+                var lblGateHealth: JLabel = new JLabel(Stronghold.gateToString(stronghold.gateMax, stronghold.gate), null, AsWingConstants.LEFT);
                 lblGateHealth.setVerticalAlignment(AsWingConstants.TOP);
                 pnlGate.append(lblGateHealth);
             }

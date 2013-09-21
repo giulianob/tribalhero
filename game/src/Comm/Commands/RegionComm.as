@@ -193,6 +193,7 @@
 					else if (objType == ObjectFactory.TYPE_STRONGHOLD) {
 						extraProps.level = packet.readUByte();
 						extraProps.tribeId = packet.readUInt();
+                        extraProps.gateMax = packet.readInt();
 					}
 					else if (objType ==  ObjectFactory.TYPE_BARBARIAN_TRIBE) {
 						extraProps.level = packet.readUByte();

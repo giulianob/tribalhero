@@ -54,6 +54,7 @@
 			}
 			
 			addStatRow(StringHelper.localize("STR_LEVEL"), stronghold.level.toString());
+            addStatRow(StringHelper.localize("STR_GATEMAX"), stronghold.gateMax.toString(), null, StringHelper.localize("STRONGHOLD_GATE_MAX_HP_TOOLTIP"));
 
 			if (Constants.tribe.isInTribe(stronghold.tribeId)) {
 				pnlGroups.append(new ViewStrongholdButton(stronghold));
@@ -61,6 +62,7 @@
 			} else {
 				pnlGroups.append(new SendAttackButton(stronghold,new Location(Location.STRONGHOLD, stronghold.id)));
 			}
+
 
 			var buttons: Array = [];
 
@@ -73,7 +75,7 @@
 			}		
 		}
 
-		private function addStatRow(title: String, textOrComponent: *, icon: Icon = null) : * {
+		private function addStatRow(title: String, textOrComponent: *, icon: Icon = null, tooltip: String = null) : Component {
 			var rowTitle: JLabel = new JLabel(title);
 			rowTitle.setHorizontalAlignment(AsWingConstants.LEFT);
 			rowTitle.setName("title");
@@ -87,8 +89,13 @@
 				label.setIcon(icon);
 				rowValue = label;
 			} 
-			else			
-				rowValue = textOrComponent as Component;			
+			else {
+				rowValue = textOrComponent as Component;
+            }
+
+            if (tooltip) {
+                new SimpleTooltip(rowTitle, tooltip);
+            }
 
 			pnlStats.addRow(rowTitle, rowValue);
 

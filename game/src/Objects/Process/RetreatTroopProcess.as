@@ -13,7 +13,7 @@ package src.Objects.Process
     import src.UI.Dialog.RetreatTroopDialog;
     import src.Util.StringHelper;
 
-    public class RetreatTroopProcess implements IProcess
+    public class RetreatTroopProcess
 	{
 		private var troop:TroopStub;
         private var onFinished: Function;

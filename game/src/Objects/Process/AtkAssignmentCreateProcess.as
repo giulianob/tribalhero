@@ -21,7 +21,7 @@ package src.Objects.Process
     import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
     import src.Util.StringHelper;
 
-    public class AtkAssignmentCreateProcess implements IProcess
+    public class AtkAssignmentCreateProcess
 	{		
 		private var attackDialog: AttackTroopDialog;		
 		private var target: SimpleGameObject;

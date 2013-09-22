@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Common.Testing;
 using FluentAssertions;
-using Game.Data;
 using Game.Data.Stronghold;
 using Game.Logic.Formulas;
 using Game.Setup;
@@ -10,7 +9,6 @@ using Game.Util;
 using NSubstitute;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Kernel;
-using Ploeh.AutoFixture.Xunit;
 using Xunit;
 using Xunit.Extensions;
 

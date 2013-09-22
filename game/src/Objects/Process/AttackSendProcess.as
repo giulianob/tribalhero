@@ -17,7 +17,7 @@ package src.Objects.Process
 	import src.UI.Dialog.InfoDialog;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
 
-	public class AttackSendProcess implements IProcess
+	public class AttackSendProcess
 	{		
 		private var attackDialog: AttackTroopDialog;		
 		private var target: SimpleGameObject;

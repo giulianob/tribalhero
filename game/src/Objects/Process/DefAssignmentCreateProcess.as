@@ -17,7 +17,7 @@ package src.Objects.Process
 	import src.UI.Dialog.ReinforceTroopDialog;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
 
-	public class DefAssignmentCreateProcess implements IProcess
+	public class DefAssignmentCreateProcess
 	{		
 		private var troopDialog: ReinforceTroopDialog;
 		private var target: SimpleGameObject;

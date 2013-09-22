@@ -395,7 +395,7 @@
 
             btnJoin.addActionListener(function(e: Event): void {
                 var join: AssignmentJoinProcess = new AssignmentJoinProcess(Global.gameContainer.selectedCity, assignment);
-                join.execute();
+                join.execute().then(function(value: *): void { update(); });
             });
 
             return pnlContainer;

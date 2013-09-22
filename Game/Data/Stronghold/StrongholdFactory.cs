@@ -16,7 +16,7 @@ namespace Game.Data.Stronghold
             this.kernel = kernel;
         }
 
-        public IStronghold CreateStronghold(uint id, string name, byte level, uint x, uint y, decimal gate)
+        public IStronghold CreateStronghold(uint id, string name, byte level, uint x, uint y, decimal gate, int gateMax)
         {
             var actionWorker = new ActionWorker();
             var troopManager = new TroopManager();
@@ -28,6 +28,7 @@ namespace Game.Data.Stronghold
                                             x,
                                             y,
                                             gate,
+                                            gateMax,
                                             kernel.Get<IDbManager>(),
                                             notificationManager,
                                             troopManager,

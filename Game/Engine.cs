@@ -63,7 +63,7 @@ namespace Game
 
         private readonly StrongholdActivationChecker strongholdActivationChecker;
 
-        private readonly VictoryPointChecker victoryPointChecker;
+        private readonly StrongholdChecker strongholdChecker;
 
         private readonly BarbarianTribeChecker barbarianTribeChecker;
 
@@ -88,7 +88,7 @@ namespace Game
                       IScheduler scheduler,
                       IDbManager dbManager,
                       StrongholdActivationChecker strongholdActivationChecker,
-                      VictoryPointChecker victoryPointChecker,
+                      StrongholdChecker strongholdChecker,
                       BarbarianTribeChecker barbarianTribeChecker,
                       IStrongholdManagerLogger strongholdManagerLogger)
         {
@@ -105,7 +105,7 @@ namespace Game
             this.scheduler = scheduler;
             this.dbManager = dbManager;
             this.strongholdActivationChecker = strongholdActivationChecker;
-            this.victoryPointChecker = victoryPointChecker;
+            this.strongholdChecker = strongholdChecker;
             this.barbarianTribeChecker = barbarianTribeChecker;
             this.strongholdManagerLogger = strongholdManagerLogger;
         }
@@ -203,7 +203,7 @@ _________ _______ _________ ______   _______  _
                 strongholdManager.Generate(Config.stronghold_generate);
             }            
             strongholdActivationChecker.Start(TimeSpan.FromSeconds(Config.stronghold_activation_check_interval_in_sec));            
-            victoryPointChecker.Start();
+            strongholdChecker.Start();
             strongholdManagerLogger.Listen(strongholdManager);
 
             // Initialize barbarian tribes

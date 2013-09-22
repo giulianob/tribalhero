@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using Common.Testing;
 using FluentAssertions;
-using Game.Data;
 using Game.Data.Stronghold;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
 using NSubstitute;
 using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.Kernel;
 using Xunit;
 using Xunit.Extensions;
 
@@ -44,7 +44,14 @@ namespace Testing.FormulaTests
         [InlineData(20, 5000)]
         public void TestMeterValue(int level, int expectedValue)
         {
-            var formula = new Fixture().Create<Formula>();
+            var systemVariableManager = Substitute.For<ISystemVariableManager>();
+            systemVariableManager["Server.date"].Returns(new SystemVariable("Server.date", DateTime.MinValue));
+
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => systemVariableManager);
+
+            var formula = fixture.Create<Formula>();
+            SystemClock.SetClock(DateTime.MinValue);
             formula.StrongholdMainBattleMeter((byte)level).Should().Be(expectedValue);
         }
 
@@ -69,9 +76,16 @@ namespace Testing.FormulaTests
         [InlineData(18, 42000)]
         [InlineData(19, 46000)]
         [InlineData(20, 50000)]
-        public void TestGateValue(int level, int expectedValue)
+        public void TestGateBaseValue(int level, int expectedValue)
         {
-            var formula = new Fixture().Create<Formula>();
+            var systemVariableManager = Substitute.For<ISystemVariableManager>();
+            systemVariableManager["Server.date"].Returns(new SystemVariable("Server.date", DateTime.MinValue));
+
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => systemVariableManager);
+
+            var formula = fixture.Create<Formula>();
+            SystemClock.SetClock(DateTime.MinValue);
             formula.StrongholdGateLimit((byte)level).Should().Be(expectedValue);
         }
 
@@ -98,9 +112,18 @@ namespace Testing.FormulaTests
         [InlineData(20, 10, 4000)]
         public void TestUpkeepValue(int level, int expectedLevel, int expectedUpkeep)
         {
+            var systemVariableManager = Substitute.For<ISystemVariableManager>();
+            systemVariableManager["Server.date"].Returns(new SystemVariable("Server.date", DateTime.MinValue));
+
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => systemVariableManager);
+
+            var formula = fixture.Create<Formula>();
+            SystemClock.SetClock(DateTime.MinValue);
+
             byte unitLevel;
             int upkeep;
-            var formula = new Fixture().Create<Formula>();
+
             formula.StrongholdUpkeep((byte)level, out upkeep, out unitLevel);
             unitLevel.Should().Be((byte)expectedLevel);
             upkeep.Should().Be(expectedUpkeep);
@@ -130,10 +153,14 @@ namespace Testing.FormulaTests
         {
             var serverDate = SystemClock.Now.Subtract(TimeSpan.FromDays((double)serverDays));
 
-            Global.SystemVariables.Clear();
-            Global.SystemVariables.Add("Server.date", new SystemVariable("Server.date", serverDate));
+            var systemVariableManager = Substitute.For<ISystemVariableManager>();
+            systemVariableManager["Server.date"].Returns(new SystemVariable("Server.date", serverDate));
+
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => systemVariableManager);
+            fixture.Customize<Formula>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
             
-            var formula = new Fixture().Create<Formula>();
+            var formula = fixture.Create<Formula>();
 
             var stronghold = Substitute.For<IStronghold>();
             stronghold.StrongholdState.Returns(StrongholdState.Occupied);
@@ -148,7 +175,7 @@ namespace Testing.FormulaTests
         [Fact]
         public void TestNonOccupiedVictoryPoint()
         {
-            var formula = new Fixture().Create<Formula>();
+            var formula = FixtureHelper.Create().Create<Formula>();
 
             var stronghold = Substitute.For<IStronghold>();
             stronghold.StrongholdState.Returns(StrongholdState.Neutral);
@@ -159,6 +186,174 @@ namespace Testing.FormulaTests
             formula.StrongholdVictoryPoint(stronghold).Should().Be(0);
         }
 
+        [Theory, AutoNSubstituteData]
+        public void StrongholdGateLimit_WhenLessThanOrEqualTo30Days(ISystemVariableManager systemVariableManager)
+        {
+            systemVariableManager["Server.date"].Returns(new SystemVariable("Server.date", DateTime.MinValue));
+
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => systemVariableManager);
+            fixture.Customize<Formula>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
+
+            var formula = fixture.Create<Formula>();
+            SystemClock.SetClock(DateTime.MinValue.Add(new TimeSpan(30,  0, 0, 0)));
+            formula.StrongholdGateLimit(1).Should().Be(5000);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void StrongholdGateLimit_WhenAt30Days1Hour(ISystemVariableManager systemVariableManager)
+        {
+            systemVariableManager["Server.date"].Returns(new SystemVariable("Server.date", DateTime.MinValue));
+
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => systemVariableManager);
+            fixture.Customize<Formula>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
+
+            var formula = fixture.Create<Formula>();
+            SystemClock.SetClock(DateTime.MinValue.Add(new TimeSpan(30, 1, 0, 0)));
+            formula.StrongholdGateLimit(1).Should().Be(5010);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void StrongholdGateLimit_WhenLessThanOrEqualTo30Days1040Hours(ISystemVariableManager systemVariableManager)
+        {
+            systemVariableManager["Server.date"].Returns(new SystemVariable("Server.date", DateTime.MinValue));
+
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => systemVariableManager);
+            fixture.Customize<Formula>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
+
+            var formula = fixture.Create<Formula>();
+            SystemClock.SetClock(DateTime.MinValue.Add(new TimeSpan(30, 1040 , 0, 0))); 
+            formula.StrongholdGateLimit(1).Should().Be(39940);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void StrongholdGateLimit_WhenMoreThan30Days1041Hours(ISystemVariableManager systemVariableManager)
+        {
+            systemVariableManager["Server.date"].Returns(new SystemVariable("Server.date", DateTime.MinValue));
+
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => systemVariableManager);
+            fixture.Customize<Formula>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
+
+            var formula = fixture.Create<Formula>();
+            SystemClock.SetClock(DateTime.MinValue.Add(new TimeSpan(30, 1041, 0, 0)));
+            formula.StrongholdGateLimit(1).Should().Be(40000);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void StrongholdGateLimit_WhenNegativeTime(ISystemVariableManager systemVariableManager)
+        {
+            systemVariableManager["Server.date"].Returns(new SystemVariable("Server.date", DateTime.MaxValue));
+
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => systemVariableManager);
+            fixture.Customize<Formula>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
+
+            var formula = fixture.Create<Formula>();
+            SystemClock.SetClock(DateTime.MaxValue.Subtract(new TimeSpan(30, 0, 0, 0)));
+            formula.StrongholdGateLimit(1).Should().Be(5000);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void StrongholdGateLimit_WhenLessThanOrEqualTo30Days1040HoursAtLevel20(ISystemVariableManager systemVariableManager)
+        {
+            systemVariableManager["Server.date"].Returns(new SystemVariable("Server.date", DateTime.MinValue));
+
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => systemVariableManager);
+            fixture.Customize<Formula>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
+
+            var formula = fixture.Create<Formula>();
+            SystemClock.SetClock(DateTime.MinValue.Add(new TimeSpan(30, 1040, 0, 0)));
+            formula.StrongholdGateLimit(1).Should().Be(39940);
+            formula.StrongholdGateLimit(20).Should().Be(399390);
+        }
+        [Theory, AutoNSubstituteData]
+        public void StrongholdMainBattleMeter_WhenLessThanOrEqualTo30Days(ISystemVariableManager systemVariableManager)
+        {
+            systemVariableManager["Server.date"].Returns(new SystemVariable("Server.date", DateTime.MinValue));
+
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => systemVariableManager);
+            fixture.Customize<Formula>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
+
+            var formula = fixture.Create<Formula>();
+            SystemClock.SetClock(DateTime.MinValue.Add(new TimeSpan(30, 0, 0, 0)));
+            formula.StrongholdMainBattleMeter(1).Should().Be(500);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void StrongholdMainBattleMeter_WhenAt30Days1Hour(ISystemVariableManager systemVariableManager)
+        {
+            systemVariableManager["Server.date"].Returns(new SystemVariable("Server.date", DateTime.MinValue));
+
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => systemVariableManager);
+            fixture.Customize<Formula>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
+
+            var formula = fixture.Create<Formula>();
+            SystemClock.SetClock(DateTime.MinValue.Add(new TimeSpan(30, 1, 0, 0)));
+            formula.StrongholdMainBattleMeter(1).Should().Be(501);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void StrongholdMainBattleMeter_WhenLessThanOrEqualTo30Days1040Hours(ISystemVariableManager systemVariableManager)
+        {
+            systemVariableManager["Server.date"].Returns(new SystemVariable("Server.date", DateTime.MinValue));
+
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => systemVariableManager);
+            fixture.Customize<Formula>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
+
+            var formula = fixture.Create<Formula>();
+            SystemClock.SetClock(DateTime.MinValue.Add(new TimeSpan(30, 1040, 0, 0)));
+            formula.StrongholdMainBattleMeter(1).Should().Be(3994);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void StrongholdMainBattleMeter_WhenMoreThan30Days1041Hours(ISystemVariableManager systemVariableManager)
+        {
+            systemVariableManager["Server.date"].Returns(new SystemVariable("Server.date", DateTime.MinValue));
+
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => systemVariableManager);
+            fixture.Customize<Formula>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
+
+            var formula = fixture.Create<Formula>();
+            SystemClock.SetClock(DateTime.MinValue.Add(new TimeSpan(30, 1041, 0, 0)));
+            formula.StrongholdMainBattleMeter(1).Should().Be(4000);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void StrongholdMainBattleMeter_WhenNegativeTime(ISystemVariableManager systemVariableManager)
+        {
+            systemVariableManager["Server.date"].Returns(new SystemVariable("Server.date", DateTime.MaxValue));
+
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => systemVariableManager);
+            fixture.Customize<Formula>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
+
+            var formula = fixture.Create<Formula>();
+            SystemClock.SetClock(DateTime.MaxValue.Subtract(new TimeSpan(30, 0, 0, 0)));
+            formula.StrongholdMainBattleMeter(1).Should().Be(500);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void StrongholdMainBattleMeter_WhenLessThanOrEqualTo30Days1040HoursAtLevel20(ISystemVariableManager systemVariableManager)
+        {
+            systemVariableManager["Server.date"].Returns(new SystemVariable("Server.date", DateTime.MinValue));
+
+            var fixture = FixtureHelper.Create();
+            fixture.Register(() => systemVariableManager);
+            fixture.Customize<Formula>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
+
+            var formula = fixture.Create<Formula>();
+            SystemClock.SetClock(DateTime.MinValue.Add(new TimeSpan(30, 1040, 0, 0)));
+            formula.StrongholdMainBattleMeter(1).Should().Be(3994);
+            formula.StrongholdMainBattleMeter(20).Should().Be(39939);
+        }
         #region Implementation of IDisposable
 
         public void Dispose()

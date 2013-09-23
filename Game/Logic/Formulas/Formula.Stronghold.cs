@@ -36,19 +36,31 @@ namespace Game.Logic.Formulas
 
         public virtual int StrongholdMainBattleMeter(byte level)
         {
-            int[] meters = new[] { 0, 500, 600, 700, 800, 950, 1100, 1250, 1450, 1650, 1850, 2100, 2350, 2600, 2900, 3200, 3500, 3850, 4200, 4600, 5000 };
+            int[] meters = { 0, 500, 600, 700, 800, 950, 1100, 1250, 1450, 1650, 1850, 2100, 2350, 2600, 2900, 3200, 3500, 3850, 4200, 4600, 5000 };
 
             if (Config.stronghold_battle_meter > 0)
             {
                 return Config.stronghold_battle_meter;
             }
-            int hoursSinceStarted = Convert.ToInt32(SystemClock.Now.Subtract((DateTime)SystemVariableManager["Server.date"].Value).TotalHours) - 30 * 24;
-            return (int)Math.Round(meters[level] * Math.Min(hoursSinceStarted > 0 ? (decimal)Math.Pow(1.002, hoursSinceStarted) : 1, 8));
+
+            int hoursSinceScalingStarted = Convert.ToInt32(SystemClock.Now.Subtract((DateTime)SystemVariableManager["Server.date"].Value).TotalHours) - 30 * 24;
+
+            decimal scaling;            
+            if (hoursSinceScalingStarted > 0)
+            {
+                scaling = Math.Min((decimal)Math.Pow(1.002, hoursSinceScalingStarted), 8);
+            }
+            else
+            {
+                scaling = 1;
+            }
+
+            return (int)Math.Round(meters[level] * scaling);
         }
 
         public virtual void StrongholdUpkeep(byte level, out int upkeep, out byte unitLevel)
         {
-            int[] unitLevels = new[] {1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10};
+            int[] unitLevels = {1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10};
 
             upkeep = Config.stronghold_fixed_upkeep == 0 ? (int)(StrongholdMainBattleMeter(level) * .8) : Config.stronghold_fixed_upkeep;
             unitLevel = (byte)unitLevels[level-1];

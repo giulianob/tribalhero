@@ -4,7 +4,7 @@ package src.Objects.Process
     import src.Map.Position;
     import src.Objects.Troop.TroopStub;
 
-    public class LocateTroopProcess implements IProcess
+	public class LocateTroopProcess
 	{
 		private var troop:TroopStub;
 		

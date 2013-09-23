@@ -3,7 +3,7 @@ package src.Objects.Process
     import src.Global;
     import src.Objects.Actions.Notification;
 
-    public class LocateNotificationProcess implements IProcess
+	public class LocateNotificationProcess
 	{
         private var notification:Notification;
 		

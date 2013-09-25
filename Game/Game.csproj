@@ -496,7 +496,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Map\Region.cs" />
     <Compile Include="Map\World.cs" />
-    <Compile Include="Properties\AssemblyInfo.log4net.cs" />
     <Compile Include="Setup\ActionRequirementFactory.cs" />
     <Compile Include="Setup\IObjectTypeFactory.cs" />
     <Compile Include="Setup\Ioc.cs" />

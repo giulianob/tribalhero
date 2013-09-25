@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Common.Testing;
 using FluentAssertions;
+using Game.Data;
 using Game.Data.Stronghold;
 using Game.Logic.Formulas;
 using Game.Map;
@@ -22,10 +23,10 @@ namespace Testing.FormulaTests
         {
             SystemClock.SetClock(new DateTime(2013, 1, 1, 1, 1, 1, 1));            
         }
+
         public void Dispose()
         {
             SystemClock.ResyncClock();
-            Global.Current = null;
         }
 
         [Theory]

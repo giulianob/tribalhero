@@ -35,14 +35,14 @@ namespace Game.Logic.Actions
 
         private readonly uint targetCityId;
 
-        private readonly uint targetStructureId;
+        private readonly Position tmpTarget;
 
         private uint troopObjectId;
 
         public CityAttackChainAction(uint cityId,
                                      ITroopObjectInitializer troopObjectInitializer,
                                      uint targetCityId,
-                                     uint targetStructureId,
+                                     Position target,
                                      IActionFactory actionFactory,
                                      Procedure procedure,
                                      ILocker locker,
@@ -50,10 +50,10 @@ namespace Game.Logic.Actions
                                      CityBattleProcedure cityBattleProcedure,
                                      BattleProcedure battleProcedure)
         {
+            this.tmpTarget = target;
             this.cityId = cityId;
             this.troopObjectInitializer = troopObjectInitializer;
             this.targetCityId = targetCityId;
-            this.targetStructureId = targetStructureId;            
             this.actionFactory = actionFactory;
             this.procedure = procedure;
             this.locker = locker;
@@ -85,7 +85,6 @@ namespace Game.Logic.Actions
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             targetCityId = uint.Parse(properties["target_city_id"]);
-            targetStructureId = uint.Parse(properties["target_object_id"]);            
         }
 
         public override ActionType Type
@@ -105,8 +104,7 @@ namespace Game.Logic.Actions
                         {
                                 new XmlKvPair("city_id", cityId), 
                                 new XmlKvPair("troop_object_id", troopObjectId),
-                                new XmlKvPair("target_city_id", targetCityId), 
-                                new XmlKvPair("target_object_id", targetStructureId)
+                                new XmlKvPair("target_city_id", targetCityId)
                         });
             }
         }
@@ -123,12 +121,18 @@ namespace Game.Logic.Actions
         {
             ICity city;
             ICity targetCity;
-            IStructure targetStructure;
 
             if (!gameObjectLocator.TryGetObjects(cityId, out city) ||
-                !gameObjectLocator.TryGetObjects(targetCityId, targetStructureId, out targetCity, out targetStructure))
+                !gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
             {
-                return Error.ObjectNotFound;
+                return Error.CityNotFound;
+            }
+
+            var targetStructure = gameObjectLocator.Regions.GetObjectsInTile(tmpTarget.X, tmpTarget.Y).OfType<IStructure>().FirstOrDefault(s => s.City == targetCity);
+
+            if (targetStructure == null)
+            {
+                return Error.StructureNotFound;
             }
 
             if (city.Owner.PlayerId == targetCity.Owner.PlayerId)
@@ -167,8 +171,8 @@ namespace Game.Logic.Actions
 
             var tma = actionFactory.CreateTroopMovePassiveAction(cityId,
                                                                  troopObject.ObjectId,
-                                                                 targetStructure.PrimaryPosition.X,
-                                                                 targetStructure.PrimaryPosition.Y,
+                                                                 tmpTarget.X,
+                                                                 tmpTarget.Y,
                                                                  false,
                                                                  true);
 

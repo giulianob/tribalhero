@@ -131,7 +131,7 @@ namespace Game.Comm.ProcessorCommands
         {
             uint cityId;
             uint targetCityId;
-            uint targetObjectId;
+            Position targetPosition;
             AttackMode mode;
             DateTime time;
             ISimpleStub simpleStub;
@@ -142,7 +142,7 @@ namespace Game.Comm.ProcessorCommands
                 mode = (AttackMode)packet.GetByte();
                 cityId = packet.GetUInt32();
                 targetCityId = packet.GetUInt32();
-                targetObjectId = packet.GetUInt32();
+                targetPosition = new Position(packet.GetUInt32(), packet.GetUInt32());
                 time = DateTime.UtcNow.AddSeconds(packet.GetInt32());
                 isAttack = packet.GetByte() == 1;
                 simpleStub = PacketHelper.ReadStub(packet, isAttack ? FormationType.Attack : FormationType.Defense);
@@ -200,26 +200,17 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 // Make sure this player is ranked high enough
-                if (city.Owner.Tribesman == null ||
-                    !city.Owner.Tribesman.Tribe.HasRight(city.Owner.PlayerId, TribePermission.AssignmentCreate))
+                if (city.Owner.Tribesman == null || !city.Owner.Tribesman.Tribe.HasRight(city.Owner.PlayerId, TribePermission.AssignmentCreate))
                 {
                     ReplyError(session, packet, Error.TribesmanNotAuthorized);
                     return;
                 }
 
-                // Get target structure
-                IStructure targetStructure;
-                if (!targetCity.TryGetStructure(targetObjectId, out targetStructure))
-                {
-                    ReplyError(session, packet, Error.ObjectStructureNotFound);
-                    return;
-                }
-
                 int id;
-                Error ret = session.Player.Tribesman.Tribe.CreateAssignment(city,
+                var ret = session.Player.Tribesman.Tribe.CreateAssignment(city,
                                                                             simpleStub,
-                                                                            targetStructure.PrimaryPosition.X,
-                                                                            targetStructure.PrimaryPosition.Y,
+                                                                            targetPosition.X,
+                                                                            targetPosition.Y,
                                                                             targetCity,
                                                                             time,
                                                                             mode,

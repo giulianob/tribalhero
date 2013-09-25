@@ -566,7 +566,7 @@ namespace Game.Comm.ProcessorCommands
         {
             uint cityId;
             uint targetCityId;
-            uint targetObjectId;
+            Position target;
             ISimpleStub simpleStub;
             AttackMode mode;
 
@@ -575,7 +575,7 @@ namespace Game.Comm.ProcessorCommands
                 mode = (AttackMode)packet.GetByte();
                 cityId = packet.GetUInt32();
                 targetCityId = packet.GetUInt32();
-                targetObjectId = packet.GetUInt32();
+                target = new Position(packet.GetUInt32(), packet.GetUInt32());
                 simpleStub = PacketHelper.ReadStub(packet, FormationType.Attack);
             }
             catch(Exception)
@@ -603,16 +603,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 ICity city = cities[cityId];
-
-                ICity targetCity = cities[targetCityId];
-                IStructure targetStructure;
-
-                if (!targetCity.TryGetStructure(targetObjectId, out targetStructure))
-                {
-                    ReplyError(session, packet, Error.ObjectStructureNotFound);
-                    return;
-                }
-
+                
                 var troopInitializer = troopObjectInitializerFactory.CreateCityTroopObjectInitializer(cityId,
                                                                                                       simpleStub,
                                                                                                       TroopBattleGroup.Attack,
@@ -621,10 +612,10 @@ namespace Game.Comm.ProcessorCommands
                 var attackAction = actionFactory.CreateCityAttackChainAction(cityId,
                                                                              troopInitializer,
                                                                              targetCityId,
-                                                                             targetObjectId);
+                                                                             target);
 
                 var result = city.Worker.DoPassive(city, attackAction, true);
-
+                
                 ReplyWithResult(session, packet, result);
             }
         }

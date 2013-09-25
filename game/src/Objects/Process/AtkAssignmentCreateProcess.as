@@ -26,6 +26,7 @@ package src.Objects.Process
 		private var attackDialog: AttackTroopDialog;		
 		private var target: SimpleGameObject;
 		private var sourceCity:City;
+        private var targetPosition: Position;
 		
 		public function AtkAssignmentCreateProcess(sourceCity: City) 
 		{
@@ -62,6 +63,7 @@ package src.Objects.Process
 		public function onChoseTarget(sender: GroundAttackCursor): void 
 		{						
 			target = sender.getTargetObject();
+            targetPosition = sender.getAttackPosition();
 			if (target is BarbarianTribe)
 			{
 				InfoDialog.showMessageDialog("Error", StringHelper.localize("BARBARIAN_ASSIGNMENT_ERROR"),onBadTarget);
@@ -91,7 +93,7 @@ package src.Objects.Process
 		{
 			assignmentDialog.getFrame().dispose();
 			if (target is StructureObject) {
-				Global.mapComm.Troop.cityAssignmentCreate(sourceCity.id, target.groupId, target.objectId, assignmentDialog.getTime(), attackDialog.getMode(), attackDialog.getTroop(), assignmentDialog.getDescription(),true);
+				Global.mapComm.Troop.cityAssignmentCreate(sourceCity.id, target.groupId, targetPosition, assignmentDialog.getTime(), attackDialog.getMode(), attackDialog.getTroop(), assignmentDialog.getDescription(),true);
 			} else if (target is Stronghold) {
 				Global.mapComm.Troop.strongholdAssignmentCreate(sourceCity.id, target.objectId, assignmentDialog.getTime(), attackDialog.getMode(), attackDialog.getTroop(), assignmentDialog.getDescription(),true);
 			}

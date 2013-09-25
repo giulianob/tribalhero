@@ -254,14 +254,15 @@
 			session.write(packet, callback ? callback : mapComm.catchAllErrors);
 		}
 
-		public function troopAttackCity(cityId: int, targetCityId: int, targetObjectId: int, mode: int, troop: TroopStub, onAttackFail:Function):void
+		public function troopAttackCity(cityId: int, targetCityId: int, targetPosition: Position, mode: int, troop: TroopStub, onAttackFail:Function):void
 		{
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TROOP_ATTACK_CITY;
 			packet.writeUByte(mode);
 			packet.writeUInt(cityId);
 			packet.writeUInt(targetCityId);
-			packet.writeUInt(targetObjectId);
+			packet.writeUInt(targetPosition.x);
+			packet.writeUInt(targetPosition.y);
 			writeTroop(troop, packet);
 
 			session.write(packet, onReceiveTroopAttack, onAttackFail);
@@ -336,7 +337,7 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 		
-		public function cityAssignmentCreate(cityId: int, targetCityId: int, targetObjectId: int, time: int, mode: int, troop: TroopStub, description: String, isAttack: Boolean): void
+		public function cityAssignmentCreate(cityId: int, targetCityId: int, targetPosition: Position, time: int, mode: int, troop: TroopStub, description: String, isAttack: Boolean): void
 		{
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TRIBE_CITY_ASSIGNMENT_CREATE;
@@ -344,8 +345,9 @@
 			packet.writeUByte(mode);
 			packet.writeUInt(cityId);
 			packet.writeUInt(targetCityId);
-			packet.writeUInt(targetObjectId);
-			packet.writeInt(time);			
+			packet.writeUInt(targetPosition.x);
+			packet.writeUInt(targetPosition.y);
+			packet.writeInt(time);
 			packet.writeUByte(isAttack?1:0);
 			writeTroop(troop, packet);
 			packet.writeString(description);

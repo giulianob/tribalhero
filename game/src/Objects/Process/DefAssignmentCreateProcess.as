@@ -55,7 +55,7 @@ package src.Objects.Process
 		public function onChoseTarget(sender: GroundReinforceCursor): void 
 		{						
 			target = sender.getTargetObject();
-			
+
 			Global.gameContainer.setOverlaySprite(null);
 			Global.gameContainer.setSidebar(null);
 			
@@ -79,7 +79,7 @@ package src.Objects.Process
 		{
 			assignmentDialog.getFrame().dispose();
 			if (target is StructureObject) {
-				Global.mapComm.Troop.cityAssignmentCreate(sourceCity.id, target.groupId, target.objectId, assignmentDialog.getTime(), troopDialog.getMode(), troopDialog.getTroop(), assignmentDialog.getDescription(),false);
+				Global.mapComm.Troop.cityAssignmentCreate(sourceCity.id, target.groupId, target.primaryPosition.toPosition(), assignmentDialog.getTime(), troopDialog.getMode(), troopDialog.getTroop(), assignmentDialog.getDescription(),false);
 			} else if (target is Stronghold) {
 				Global.mapComm.Troop.strongholdAssignmentCreate(sourceCity.id, target.objectId, assignmentDialog.getTime(), troopDialog.getMode(), troopDialog.getTroop(), assignmentDialog.getDescription(), false);
 			}

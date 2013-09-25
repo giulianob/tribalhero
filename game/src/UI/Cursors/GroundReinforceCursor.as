@@ -28,7 +28,7 @@
 
 		private var highlightedObj: SimpleGameObject;
 
-		private var tooltip: StructureTooltip;
+		private var tooltip: Tooltip;
 		
 		private var onAccept: Function;
 
@@ -156,6 +156,8 @@
 				tooltip = null;			
 			}						
 
+            cursor.visible = true;
+
 			var objects: Array = Global.map.regions.getObjectsInTile(objPosition.toPosition(), [StructureObject, Stronghold]);
 		
 			if (objects.length == 0) {
@@ -164,10 +166,10 @@
 			}				
 
 			var gameObj: SimpleGameObject = objects[0];
-			
+
 			if (gameObj is StructureObject) {
 				var structObj: StructureObject = gameObj as StructureObject;		
-				if (structObj.cityId == city.id) {
+				if (structObj.cityId == city.id || !structObj.isMainBuilding) {
 					Global.gameContainer.message.showMessage(StringHelper.localize("REINFORCE_CHOOSE_TARGET"));
 					return;					
 				}
@@ -176,9 +178,12 @@
 				tooltip.show(structObj);				
 			}
 			else if (gameObj is Stronghold) {
-				//TODO: Show tooltip
+				tooltip = new StrongholdTooltip(gameObj as Stronghold);
+                tooltip.show(gameObj);
 			}
-			
+
+            cursor.visible = false;
+
 			gameObj.setHighlighted(true);
 			highlightedObj = gameObj;
 

@@ -25,6 +25,11 @@
             wallManager = new WallManager(this, wallRadius);
 			radiusManager = new RadiusManager(this);
 		}
+
+        public function get isMainBuilding():Boolean
+        {
+            return objectId == 1;
+        }
 		
 		override public function copy(obj:SimpleObject):void 
 		{

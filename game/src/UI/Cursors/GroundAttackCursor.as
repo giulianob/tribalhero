@@ -22,8 +22,6 @@
 
 		private var cursor: GroundCircle;
 
-		private var tiles: Array = [];
-
 		private var troop: TroopStub;
 		private var troopSpeed: Number;
 		private var city: City;
@@ -33,7 +31,7 @@
 
 		private var highlightedObj: SimpleGameObject;
 
-		private var tooltip: StructureTooltip;
+		private var tooltip: Tooltip;
 
 		public function GroundAttackCursor(city: City, onAccept: Function, troop: TroopStub = null):void
 		{
@@ -72,6 +70,11 @@
 		{
 			return highlightedObj;
 		}
+
+        public function getAttackPosition(): Position
+        {
+            return objPosition.toPosition();
+        }
 
 		public function onAddedToStage(e: Event):void
 		{
@@ -162,13 +165,16 @@
 
 			var objects: Array = Global.map.regions.getObjectsInTile(objPosition.toPosition(), [StructureObject, Stronghold, BarbarianTribe]);
 
+            cursor.visible = true;
+
 			if (objects.length == 0) {
 				Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_CHOOSE_TARGET"));
 				return;
 			}
 			
 			var gameObj: SimpleGameObject = objects[0];
-			
+            var targetMapDistance: Position = gameObj.primaryPosition.toPosition();
+
 			if (gameObj is StructureObject) {
 				var structObj: StructureObject = gameObj as StructureObject;		
 
@@ -193,7 +199,9 @@
 				}
 				
 				tooltip = new StructureTooltip(structObj, StructureFactory.getPrototype(structObj.type, structObj.level));
-				tooltip.show(structObj);				
+				tooltip.show(structObj);
+
+                targetMapDistance = objPosition.toPosition();
 			}
 			else if (gameObj is Stronghold) {
 				var strongholdObj: Stronghold = gameObj as Stronghold;
@@ -207,12 +215,19 @@
 					Global.gameContainer.message.showMessage(StringHelper.localize("ATTACK_OWN_STRONGHOLD"));
 					return;
 				}
+
+                tooltip = new StrongholdTooltip(gameObj as Stronghold);
+                tooltip.show(gameObj);
+
+                cursor.visible = false;
 			}
+            else {
+                cursor.visible = false;
+            }
 		
 			gameObj.setHighlighted(true);
 			highlightedObj = gameObj;
-			
-			var targetMapDistance: Position = gameObj.primaryPosition.toPosition();
+
 			var distance: int = TileLocator.distance(city.primaryPosition.x, city.primaryPosition.y, 1, targetMapDistance.x, targetMapDistance.y, 1);
 			var timeAwayInSeconds: int = Formula.moveTimeTotal(city, troopSpeed, distance, true);
 			if (Constants.debug)

@@ -183,7 +183,7 @@
 
         private function refresh() : void {
             var self: StrongholdProfileDialog = this;
-            Global.mapComm.Stronghold.viewStrongholdProfile(profileData.strongholdId, function (newProfileData: *) {
+            Global.mapComm.Stronghold.viewStrongholdProfile(profileData.strongholdId, function (newProfileData: *): void {
                 if (newProfileData) {
                     self.profileData = newProfileData;
                     updateFromProfileData();

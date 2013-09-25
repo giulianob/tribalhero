@@ -401,7 +401,7 @@ namespace Game.Data.Tribe
                     action = actionFactory.CreateCityAttackChainAction(stub.City.Id,
                                                                        troopObjectInitializer,
                                                                        structure.City.Id,
-                                                                       structure.ObjectId);
+                                                                       new Position(X, Y));
                 }
                 else
                 {

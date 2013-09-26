@@ -327,7 +327,7 @@
         public static const TRIBAL_FESTIVAL_STRUCTURE: Class;
 
         [Embed(source = "../../graphics/buildings/STRONGHOLD_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 87, y = "33")]
+        [EmbedPosition(name = "map", x = 26, y = "-46")]
         public static const STRONGHOLD_STRUCTURE: Class;
 
         [Embed(source = "../../graphics/buildings/TRIBAL_GATHERING_STRUCTURE.png")]

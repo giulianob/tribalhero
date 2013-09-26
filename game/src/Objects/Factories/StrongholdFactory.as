@@ -16,7 +16,7 @@
 
 		public static function getSprite(withPosition: String): DisplayObjectContainer
 		{
-			var image: Bitmap = Assets.getInstance("STRONGHOLD_STRUCTURE");
+			var image: Bitmap = Assets.getInstance("STRONGHOLD_STRUCTURE", withPosition);
 
             var sprite: Sprite = new Sprite();
             sprite.addChild(image);

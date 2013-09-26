@@ -186,7 +186,7 @@
 		public static function getNewCityPlaceholderInstance(x: int, y: int) : NewCityPlaceholder
 		{
 			var obj: NewCityPlaceholder = new NewCityPlaceholder(x, y);
-			obj.spriteContainer.addChild(getNewCityPlaceholderSprite());
+			obj.spriteContainer.addChild(Assets.getInstance("FOUNDATION", "map"));
 			return obj;
 		}
 

@@ -163,13 +163,9 @@
             return sprite;
 		}
 
-		public static function getSimpleObject(name: String, x: int, y: int, size: int, addShadow: Boolean = true): SimpleObject {
+		public static function getSimpleObject(name: String, x: int, y: int, size: int): SimpleObject {
 			var obj: SimpleObject = new SimpleObject(x, y, size);
 			var objRef: Class = getDefinitionByName(name) as Class;
-
-			if (addShadow) {
-				obj.spriteContainer.addChild(makeIntoShadow(new objRef() as DisplayObjectContainer));
-			}
 
 			obj.spriteContainer.addChild(new objRef() as DisplayObject);
 
@@ -188,15 +184,6 @@
 			var obj: NewCityPlaceholder = new NewCityPlaceholder(x, y);
 			obj.spriteContainer.addChild(Assets.getInstance("FOUNDATION", "map"));
 			return obj;
-		}
-
-		public static function makeIntoShadow(shadow: DisplayObject) : DisplayObject {
-			shadow.transform.colorTransform = new ColorTransform(0, 0, 0);
-			shadow.transform.matrix = new Matrix(1, 0, -0.7, 0.5, 20, 15);
-			shadow.alpha = 0.4;
-			shadow.filters = [new BlurFilter(5, 5)];
-
-			return shadow;
 		}
 	}
 

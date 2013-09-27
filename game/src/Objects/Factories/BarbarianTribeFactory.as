@@ -29,7 +29,6 @@
 		{
 			var obj: BarbarianTribe = new BarbarianTribe(type, state, objX, objY, size, groupId, objectId, level, count);
 
-			obj.spriteContainer.addChild(ObjectFactory.makeIntoShadow(getSprite("map")));
 			obj.spriteContainer.addChild(getSprite("map"));
 
 			obj.setOnSelect(Global.map.selectObject);

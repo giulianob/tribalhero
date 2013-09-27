@@ -103,6 +103,13 @@
 
         private static var embedPositionCache: Dictionary;
 
+        public static function doesSpriteExist(spriteName: String): Boolean {
+            spriteName = spriteName.replace('-', '_').toUpperCase();
+            var spriteClass: Class = Assets[spriteName] as Class;
+
+            return spriteClass != null;
+        }
+
 		public static function getInstance(spriteName: String, withPosition: String = ""): Bitmap
 		{
             if (embedPositionCache == null) {
@@ -273,7 +280,7 @@
         public static const BARBARIAN_TRIBE_STRUCTURE: Class;
 
         [Embed(source = "../../graphics/buildings/ARMORY_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = "72", y = "-28")]
+        [EmbedPosition(name = "map", x = "15", y = "-11")]
         public static const ARMORY_STRUCTURE: Class;
 
         [Embed(source = "../../graphics/buildings/FIELD_STRUCTURE.png")]
@@ -358,6 +365,10 @@
         [EmbedPosition(name = "map", x = 124, y = "-50")]
         public static const TOWNCENTER_STRUCTURE: Class;
 
+        [Embed(source = "../../graphics/buildings/shadows/TOWN_CENTER_STRUCTURE_SHADOW.png")]
+        [EmbedPosition(name = "map", x = "107", y = "5")]
+        public static const TOWNCENTER_STRUCTURE_SHADOW: Class;
+
         [Embed(source = "../../graphics/buildings/TRADING_POST_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = "66", y = "-23")]
         public static const TRADING_POST_STRUCTURE: Class;
@@ -371,7 +382,7 @@
         public static const LUMBERMILL_STRUCTURE: Class;
 
         [Embed(source = "../../graphics/buildings/WORKSHOP_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 57, y = "-72")]
+        [EmbedPosition(name = "map", x = 76, y = "-46")]
         public static const WORKSHOP_STRUCTURE: Class;
 
         [Embed(source = "../../graphics/buildings/TRAINING_GROUND_STRUCTURE.png")]
@@ -383,7 +394,7 @@
         public static const CANNON_TOWER_STRUCTURE: Class;
 
         [Embed(source = "../../graphics/buildings/BLACKSMITH_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 68, y = "-44")]
+        [EmbedPosition(name = "map", x = 14, y = "-19")]
         public static const BLACKSMITH_STRUCTURE: Class;
 
         [Embed(source = "../../graphics/buildings/BASEMENT_STRUCTURE.png")]

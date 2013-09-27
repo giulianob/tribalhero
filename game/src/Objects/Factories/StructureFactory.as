@@ -3,6 +3,7 @@
     import flash.display.*;
 
     import src.Assets;
+    import src.Constants;
     import src.Global;
     import src.Map.*;
     import src.Objects.*;
@@ -87,7 +88,7 @@
 			return structPrototype;
 		}
 
-		public static function getSprite(type: int, level: int, withPosition: String = ""): DisplayObjectContainer
+		public static function getSprite(type: int, level: int, withPosition: String = "", withShadow: Boolean = false): DisplayObjectContainer
 		{
 			var strPrototype: StructurePrototype = getPrototype(type, level);
 			var typeName: String;
@@ -112,6 +113,14 @@
 			}
 
 			var sprite: Sprite = new Sprite();
+
+            if (withShadow && Assets.doesSpriteExist(typeName + "_SHADOW")) {
+                var shadow: Bitmap = Assets.getInstance(typeName + "_SHADOW", withPosition);
+                shadow.alpha = Constants.shadowAlpha;
+                shadow.name = "shadow";
+                sprite.addChild(shadow);
+            }
+
             sprite.addChild(Assets.getInstance(typeName, withPosition));
 
 			return sprite;
@@ -132,9 +141,8 @@
 		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int): StructureObject
 		{
 			var structureObj: StructureObject = new StructureObject(type, state, objX, objY, size, playerId, cityId, objectId, level, wallRadius);
-		
-			//structureObj.spriteContainer.addChild(ObjectFactory.makeIntoShadow(getSprite(type, level)));
-			structureObj.spriteContainer.addChild(getSprite(type, level, "map"));
+
+			structureObj.spriteContainer.addChild(getSprite(type, level, "map", true));
 			
 			structureObj.setOnSelect(Global.map.selectObject);
 

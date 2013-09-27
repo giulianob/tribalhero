@@ -28,7 +28,6 @@
 		{
 			var forestObj: Forest = new Forest(type, state, objX, objY, size, groupId, objectId, level);
 
-			forestObj.spriteContainer.addChild(ObjectFactory.makeIntoShadow(getSprite(level, "map")));
 			forestObj.spriteContainer.addChild(getSprite(level, "map"));
 
 			forestObj.setOnSelect(Global.map.selectObject);

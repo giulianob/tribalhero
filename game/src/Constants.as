@@ -154,6 +154,8 @@ package src
             simpleGameObject: 7,
             simpleObject: 8
         };
+
+        public static const shadowAlpha: Number = 0.75;
 	}
 }
 

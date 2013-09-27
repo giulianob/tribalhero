@@ -1,38 +1,38 @@
 Name,Type,Lvl,Class,SpriteClass,Hp,Atk,Splash,Def,Radius,Stl,Rng,Spd,Gold,Crop,Wood,Iron,Labor,Time,Worker,Weapon,WpnClass,Armor,ArmrClass,MaxLabor,Size
 ,,,,,,,,,,,,,,,,,,,,,,,,,
 //,,Building Template,,,,,,,,,,,,,,,,,,,,,,,
-//,,Military,,Highdef,50,0.60,2,0.40,0,4,1,0,,,,,,,,,,,,
-//,,Production,,High Stealth,40,0.60,1,0.40,0,4,1,0,,,,,,,,,,,,
-//,,Commercial,,Mid,55,0.60,1,0.40,0,4,1,0,,,,,,,,,,,,
-//,,Main,,High HP,80,0.60,1,0.40,0,4,1,0,,,,,,,,,,,,
-//,,Tower,,,150,2.00,1,1.00,0,2,2,0,,,,,,,,,,,,
-//,,Basement,,,35,0.30,1,0.40,0,4,1,0,,,,,,,,,,,,
+//,,Military,,Highdef,50,0.6,2,0.4,0,4,1,0,,,,,,,,,,,,,
+//,,Production,,High Stealth,40,0.6,1,0.4,0,4,1,0,,,,,,,,,,,,,
+//,,Commercial,,Mid,55,0.6,1,0.4,0,4,1,0,,,,,,,,,,,,,
+//,,Main,,High HP,80,0.6,1,0.4,0,4,1,0,,,,,,,,,,,,,
+//,,Tower,,,150,2,1,1,0,2,2,0,,,,,,,,,,,,,
+//,,Basement,,,35,0.3,1,0.4,0,4,1,0,,,,,,,,,,,,,
 //,,,,,,,,,,,,,,,,,,,,,,,,,
 //,Building Strength,,,,,,,,,Calculator,,,,,,,,,,,,,,,
 //,Level,Equivalent,Bonus,,,,,,Lvls,Exp rate,Init Value,Final Value,,,,,,,,,,,,,
-//,0,0,0,,,,,,20,0.1,1000,21000,,,,,,,,,,,,
+//,0,0,0,,,,,,20,0.1,1000,21000,,,,,,,,,,,,,
 //,1,20,0,,,,,,,,,,,,,,,,,,,,,,
 //,2,23,3,,,,,,,Level,value,Rounded(0),Rounded(-1),Time in Min,Time in 5,,,,,,,,,,
-//,3,28,8,,,,,,,1,1000.00,1000,1000,16:40,1000,,,,,,,,,
-//,4,34,14,,,,,,,2,1346.07,1346,1350,22:30,1730,,,,,,,,,
-//,5,39,19,,,,,,,3,1728.53,1729,1730,28:50,2620,,,,,,,,,
-//,6,45,25,,,,,,,4,2151.21,2151,2150,35:50,3710,,,,,,,,,
-//,7,52,32,,,,,,,5,2618.35,2618,2620,43:40,5030,,,,,,,,,
-//,8,59,39,,,,,,,6,3134.62,3135,3130,52:10,,,,,,,,,,
-//,9,67,47,,,,,,,7,3705.19,3705,3710,1:01:50,,,,,,,,,,
-//,10,76,56,,,,,,,8,4335.76,4336,4340,1:12:20,,,,,,,,,,
-//,11,85,65,,,,,,,9,5032.65,5033,5030,1:23:50,,,,,,,,,,
-//,12,95,75,,,,,,,10,5802.84,5803,5800,1:36:40,,,,,,,,,,
-//,13,106,86,,,,,,,11,6654.02,6654,6650,1:50:50,,,,,,,,,,
-//,14,117,97,,,,,,,12,7594.73,7595,7590,2:06:30,,,,,,,,,,
-//,15,130,110,,,,,,,13,8634.37,8634,8630,2:23:50,,,,,,,,,,
-//,,,,,,,,,,14,9783.35,9783,9780,2:43:00,,,,,,,,,,
-//,,,,,,,,,,15,11053.16,11053,11050,3:04:10,,,,,,,,,,
-,,,,,,,,,,16,12456.53,12457,12460,3:27:40,,,,,,,,,,
-,,,,,,,,,,17,14007.49,14007,14010,3:53:30,,,,,,,,,,
-,,,,,,,,,,18,15721.57,15722,15720,4:22:00,,,,,,,,,,
-,,,,,,,,,,19,17615.91,17616,17620,4:53:40,,,,,,,,,,
-,,,,,,,,,,20,19709.49,19709,19710,5:28:30,,,,,,,,,,
+//,3,28,8,,,,,,,1,1000,1000,1000,16:40,1000,,,,,,,,,,
+//,4,34,14,,,,,,,2,1346.07,1346,1350,22:30,1730,,,,,,,,,,
+//,5,39,19,,,,,,,3,1728.53,1729,1730,28:50:00,2620,,,,,,,,,,
+//,6,45,25,,,,,,,4,2151.21,2151,2150,35:50:00,3710,,,,,,,,,,
+//,7,52,32,,,,,,,5,2618.35,2618,2620,43:40:00,5030,,,,,,,,,,
+//,8,59,39,,,,,,,6,3134.62,3135,3130,52:10:00,,,,,,,,,,,
+//,9,67,47,,,,,,,7,3705.19,3705,3710,1:01:50,,,,,,,,,,,
+//,10,76,56,,,,,,,8,4335.76,4336,4340,1:12:20,,,,,,,,,,,
+//,11,85,65,,,,,,,9,5032.65,5033,5030,1:23:50,,,,,,,,,,,
+//,12,95,75,,,,,,,10,5802.84,5803,5800,1:36:40,,,,,,,,,,,
+//,13,106,86,,,,,,,11,6654.02,6654,6650,1:50:50,,,,,,,,,,,
+//,14,117,97,,,,,,,12,7594.73,7595,7590,2:06:30,,,,,,,,,,,
+//,15,130,110,,,,,,,13,8634.37,8634,8630,2:23:50,,,,,,,,,,,
+//,,,,,,,,,,14,9783.35,9783,9780,2:43:00,,,,,,,,,,,
+//,,,,,,,,,,15,11053.16,11053,11050,3:04:10,,,,,,,,,,,
+,,,,,,,,,,16,12456.53,12457,12460,3:27:40,,,,,,,,,,,
+,,,,,,,,,,17,14007.49,14007,14010,3:53:30,,,,,,,,,,,
+,,,,,,,,,,18,15721.57,15722,15720,4:22:00,,,,,,,,,,,
+,,,,,,,,,,19,17615.91,17616,17620,4:53:40,,,,,,,,,,,
+,,,,,,,,,,20,19709.49,19709,19710,5:28:30,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,
 //Name,Type,Lvl,Class,SpriteClass,Hp,Atk,Matk,Def,Radius,Stl,Rng,Spd,Gold,Crop,Wood,Iron,Labor,Time,Worker,Weapon,WpnClass,Armor,ArmrClass,MaxLabor,
 ,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -187,7 +187,7 @@ BASEMENT,2111,10,STRUCTURE,BASEMENT_STRUCTURE,2765,24,1,32,0,4,1,0,1570,2570,326
 //,,,,,,,wood,,,0.23,120,15000,,,,,,,,,,,,,
 //,,,,,,,Iron,,,0.2,-10,3000,,,,,,,,,,,,,
 //,,,,,,,Labor,,,0,0,0,,,,,,,,,,,,,
-//,,,,,,,Time,,,0.26,2700,135000,45:00,37:30:00,,,,,,,,,,
+//,,,,,,,Time,,,0.26,2700,135000,45:00:00,37:30:00,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,
 TRAINING_GROUND,2201,0,STRUCTURE,DEFAULT_BUILDING_2,500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,Barricade,Basic,Building3,Stone,0,2
@@ -213,7 +213,7 @@ TRAINING_GROUND,2201,15,STRUCTURE,TRAINING_GROUND_STRUCTURE,6650,80,2,53,0,4,1,0
 //,,,,,,,wood,,,0.23,120,15000,,,,,,,,,,,,,
 //,,,,,,,Iron,,,0.2,-10,3000,,,,,,,,,,,,,
 //,,,,,,,Labor,,,0,0,0,,,,,,,,,,,,,
-//,,,,,,,Time,,,0.23,2700,135000,45:00,37:30:00,,,,,,,,,,
+//,,,,,,,Time,,,0.23,2700,135000,45:00:00,37:30:00,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,
 BARRACK,2204,0,STRUCTURE,DEFAULT_BUILDING_2,500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,Barricade,Basic,Building3,Stone,0,2
@@ -319,17 +319,17 @@ UNIVERSITY,2301,15,STRUCTURE,UNIVERSITY_STRUCTURE,11040,83,1,55,0,4,1,0,5510,166
 //,,,,,,,Labor,,,0,0,0,,,,,,,,,,,,,
 //,,,,,,,Time,,,0.2,12150,115270,3:22:30,32:01:10,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,
-ARMORY,2302,0,STRUCTURE,DEFAULT_BUILDING_2,500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,Barricade,Basic,Building3,Stone,0,2
-ARMORY,2302,1,STRUCTURE,ARMORY_STRUCTURE,2720,20,1,14,0,4,1,0,0,400,510,0,0,12150,0,Barricade,Basic,Building3,Stone,0,2
-ARMORY,2302,2,STRUCTURE,ARMORY_STRUCTURE,2960,22,1,15,0,4,1,0,0,700,820,0,0,16810,0,Barricade,Basic,Building3,Stone,0,2
-ARMORY,2302,3,STRUCTURE,ARMORY_STRUCTURE,3360,25,1,17,0,4,1,0,490,1060,1210,0,0,22510,0,Barricade,Basic,Building3,Stone,0,2
-ARMORY,2302,4,STRUCTURE,ARMORY_STRUCTURE,3840,29,1,19,0,4,1,0,1050,1480,1700,0,0,29470,0,Barricade,Basic,Building3,Stone,0,2
-ARMORY,2302,5,STRUCTURE,ARMORY_STRUCTURE,4240,32,1,21,0,4,1,0,1710,1970,2320,0,0,37960,0,Barricade,Basic,Building3,Stone,0,2
-ARMORY,2302,6,STRUCTURE,ARMORY_STRUCTURE,4720,35,1,24,0,4,1,0,2480,2550,3100,0,0,48340,0,Barricade,Basic,Building3,Stone,0,2
-ARMORY,2302,7,STRUCTURE,ARMORY_STRUCTURE,5280,40,1,26,0,4,1,0,3360,3230,4080,0,0,61020,0,Barricade,Basic,Building3,Stone,0,2
-ARMORY,2302,8,STRUCTURE,ARMORY_STRUCTURE,5840,44,1,29,0,4,1,0,4400,4020,5310,0,0,76500,0,Barricade,Basic,Building3,Stone,0,2
-ARMORY,2302,9,STRUCTURE,ARMORY_STRUCTURE,6480,49,1,32,0,4,1,0,5600,4950,6870,0,0,95410,0,Barricade,Basic,Building3,Stone,0,2
-ARMORY,2302,10,STRUCTURE,ARMORY_STRUCTURE,7200,54,1,36,0,4,1,0,6990,6050,8820,0,0,118510,0,Barricade,Basic,Building3,Stone,0,2
+ARMORY,2302,0,STRUCTURE,DEFAULT_BUILDING_2,500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,Barricade,Basic,Building3,Stone,0,1
+ARMORY,2302,1,STRUCTURE,ARMORY_STRUCTURE,2720,20,1,14,0,4,1,0,0,400,510,0,0,12150,0,Barricade,Basic,Building3,Stone,0,1
+ARMORY,2302,2,STRUCTURE,ARMORY_STRUCTURE,2960,22,1,15,0,4,1,0,0,700,820,0,0,16810,0,Barricade,Basic,Building3,Stone,0,1
+ARMORY,2302,3,STRUCTURE,ARMORY_STRUCTURE,3360,25,1,17,0,4,1,0,490,1060,1210,0,0,22510,0,Barricade,Basic,Building3,Stone,0,1
+ARMORY,2302,4,STRUCTURE,ARMORY_STRUCTURE,3840,29,1,19,0,4,1,0,1050,1480,1700,0,0,29470,0,Barricade,Basic,Building3,Stone,0,1
+ARMORY,2302,5,STRUCTURE,ARMORY_STRUCTURE,4240,32,1,21,0,4,1,0,1710,1970,2320,0,0,37960,0,Barricade,Basic,Building3,Stone,0,1
+ARMORY,2302,6,STRUCTURE,ARMORY_STRUCTURE,4720,35,1,24,0,4,1,0,2480,2550,3100,0,0,48340,0,Barricade,Basic,Building3,Stone,0,1
+ARMORY,2302,7,STRUCTURE,ARMORY_STRUCTURE,5280,40,1,26,0,4,1,0,3360,3230,4080,0,0,61020,0,Barricade,Basic,Building3,Stone,0,1
+ARMORY,2302,8,STRUCTURE,ARMORY_STRUCTURE,5840,44,1,29,0,4,1,0,4400,4020,5310,0,0,76500,0,Barricade,Basic,Building3,Stone,0,1
+ARMORY,2302,9,STRUCTURE,ARMORY_STRUCTURE,6480,49,1,32,0,4,1,0,5600,4950,6870,0,0,95410,0,Barricade,Basic,Building3,Stone,0,1
+ARMORY,2302,10,STRUCTURE,ARMORY_STRUCTURE,7200,54,1,36,0,4,1,0,6990,6050,8820,0,0,118510,0,Barricade,Basic,Building3,Stone,0,1
 ,,,,,,,,,,,,,,,,,,,,,,,,,
 //,Max Level,10,,,,,,,,Exp rate,Init Value,Final Value,Init Time,Final Time,,,,,,,,,,,
 //,Start Level,6,,,,,Gold,,,0,0,0,,,,,,,,,,,,,
@@ -339,17 +339,17 @@ ARMORY,2302,10,STRUCTURE,ARMORY_STRUCTURE,7200,54,1,36,0,4,1,0,6990,6050,8820,0,
 //,,,,,,,Labor,,,0,0,0,,,,,,,,,,,,,
 //,,,,,,,Time,,,0.07,48600,156590,13:30:00,43:29:50,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,
-BLACKSMITH,2303,0,STRUCTURE,DEFAULT_BUILDING_2,500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,Barricade,Basic,Building3,Stone,0,2
-BLACKSMITH,2303,1,STRUCTURE,BLACKSMITH_STRUCTURE,3600,27,1,18,0,4,1,0,0,750,1100,0,0,48600,0,Barricade,Basic,Building3,Stone,0,2
-BLACKSMITH,2303,2,STRUCTURE,BLACKSMITH_STRUCTURE,3840,29,1,19,0,4,1,0,0,1250,1730,0,0,56520,0,Barricade,Basic,Building3,Stone,0,2
-BLACKSMITH,2303,3,STRUCTURE,BLACKSMITH_STRUCTURE,4240,32,1,21,0,4,1,0,0,1830,2450,340,0,65020,0,Barricade,Basic,Building3,Stone,0,2
-BLACKSMITH,2303,4,STRUCTURE,BLACKSMITH_STRUCTURE,4720,35,1,24,0,4,1,0,0,2510,3290,700,0,74140,0,Barricade,Basic,Building3,Stone,0,2
-BLACKSMITH,2303,5,STRUCTURE,BLACKSMITH_STRUCTURE,5120,38,1,26,0,4,1,0,0,3290,4240,1080,0,83910,0,Barricade,Basic,Building3,Stone,0,2
-BLACKSMITH,2303,6,STRUCTURE,BLACKSMITH_STRUCTURE,5600,42,1,28,0,4,1,0,0,4200,5350,1480,0,94400,0,Barricade,Basic,Building3,Stone,0,2
-BLACKSMITH,2303,7,STRUCTURE,BLACKSMITH_STRUCTURE,6160,46,1,31,0,4,1,0,0,5260,6620,1900,0,105640,0,Barricade,Basic,Building3,Stone,0,2
-BLACKSMITH,2303,8,STRUCTURE,BLACKSMITH_STRUCTURE,6720,50,1,34,0,4,1,0,0,6490,8070,2350,0,117700,0,Barricade,Basic,Building3,Stone,0,2
-BLACKSMITH,2303,9,STRUCTURE,BLACKSMITH_STRUCTURE,7360,55,1,37,0,4,1,0,0,7920,9750,2810,0,130640,0,Barricade,Basic,Building3,Stone,0,2
-BLACKSMITH,2303,10,STRUCTURE,BLACKSMITH_STRUCTURE,8080,61,1,40,0,4,1,0,0,9580,11680,3300,0,144510,0,Barricade,Basic,Building3,Stone,0,2
+BLACKSMITH,2303,0,STRUCTURE,DEFAULT_BUILDING_2,500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,Barricade,Basic,Building3,Stone,0,1
+BLACKSMITH,2303,1,STRUCTURE,BLACKSMITH_STRUCTURE,3600,27,1,18,0,4,1,0,0,750,1100,0,0,48600,0,Barricade,Basic,Building3,Stone,0,1
+BLACKSMITH,2303,2,STRUCTURE,BLACKSMITH_STRUCTURE,3840,29,1,19,0,4,1,0,0,1250,1730,0,0,56520,0,Barricade,Basic,Building3,Stone,0,1
+BLACKSMITH,2303,3,STRUCTURE,BLACKSMITH_STRUCTURE,4240,32,1,21,0,4,1,0,0,1830,2450,340,0,65020,0,Barricade,Basic,Building3,Stone,0,1
+BLACKSMITH,2303,4,STRUCTURE,BLACKSMITH_STRUCTURE,4720,35,1,24,0,4,1,0,0,2510,3290,700,0,74140,0,Barricade,Basic,Building3,Stone,0,1
+BLACKSMITH,2303,5,STRUCTURE,BLACKSMITH_STRUCTURE,5120,38,1,26,0,4,1,0,0,3290,4240,1080,0,83910,0,Barricade,Basic,Building3,Stone,0,1
+BLACKSMITH,2303,6,STRUCTURE,BLACKSMITH_STRUCTURE,5600,42,1,28,0,4,1,0,0,4200,5350,1480,0,94400,0,Barricade,Basic,Building3,Stone,0,1
+BLACKSMITH,2303,7,STRUCTURE,BLACKSMITH_STRUCTURE,6160,46,1,31,0,4,1,0,0,5260,6620,1900,0,105640,0,Barricade,Basic,Building3,Stone,0,1
+BLACKSMITH,2303,8,STRUCTURE,BLACKSMITH_STRUCTURE,6720,50,1,34,0,4,1,0,0,6490,8070,2350,0,117700,0,Barricade,Basic,Building3,Stone,0,1
+BLACKSMITH,2303,9,STRUCTURE,BLACKSMITH_STRUCTURE,7360,55,1,37,0,4,1,0,0,7920,9750,2810,0,130640,0,Barricade,Basic,Building3,Stone,0,1
+BLACKSMITH,2303,10,STRUCTURE,BLACKSMITH_STRUCTURE,8080,61,1,40,0,4,1,0,0,9580,11680,3300,0,144510,0,Barricade,Basic,Building3,Stone,0,1
 ,,,,,,,,,,,,,,,,,,,,,,,,,
 //,Max Level,10,,,,,,,,Exp rate,Init Value,Final Value,Init Time,Final Time,,,,,,,,,,,
 //,Start Level,3,,,,,Gold,,,0.2,-3,500,,,,,,,,,,,,,
@@ -491,7 +491,7 @@ MATURE_GRAPE_FIELD,3012,13,STRUCTURE,GRAPE_FIELD_STRUCTURE,1000,22,2,0,0,3,1,0,0
 MATURE_GRAPE_FIELD,3012,14,STRUCTURE,GRAPE_FIELD_STRUCTURE,1000,23,2,0,0,3,1,0,0,0,0,0,0,0,0,Barricade,Basic,Building1,Wooden,0,1
 MATURE_GRAPE_FIELD,3012,15,STRUCTURE,GRAPE_FIELD_STRUCTURE,1000,24,2,0,0,3,1,0,0,0,0,0,0,0,0,Barricade,Basic,Building1,Wooden,0,1
 ,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,
 STRONGHOLD_GATE,9001,0,STRUCTURE,DEFAULT_BUILDING_1,500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,Barricade,Basic,Gate,Stone,0,1
 STRONGHOLD_GATE,9001,1,STRUCTURE,CANNON_TOWER_STRUCTURE,1000,0,1,0,0,1,1,0,0,0,0,0,0,0,0,Barricade,Basic,Gate,Stone,0,1
 STRONGHOLD_GATE,9001,2,STRUCTURE,CANNON_TOWER_STRUCTURE,2000,0,1,0,0,1,1,0,0,0,0,0,0,0,0,Barricade,Basic,Gate,Stone,0,1
@@ -513,5 +513,3 @@ STRONGHOLD_GATE,9001,17,STRUCTURE,CANNON_TOWER_STRUCTURE,17000,0,1,0,0,1,1,0,0,0
 STRONGHOLD_GATE,9001,18,STRUCTURE,CANNON_TOWER_STRUCTURE,18000,0,1,0,0,1,1,0,0,0,0,0,0,0,0,Barricade,Basic,Gate,Stone,0,1
 STRONGHOLD_GATE,9001,19,STRUCTURE,CANNON_TOWER_STRUCTURE,19000,0,1,0,0,1,1,0,0,0,0,0,0,0,0,Barricade,Basic,Gate,Stone,0,1
 STRONGHOLD_GATE,9001,20,STRUCTURE,CANNON_TOWER_STRUCTURE,20000,0,1,0,0,1,1,0,0,0,0,0,0,0,0,Barricade,Basic,Gate,Stone,0,1
-,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,

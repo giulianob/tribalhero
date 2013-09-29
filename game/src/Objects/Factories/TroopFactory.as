@@ -27,7 +27,7 @@
 		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int): TroopObject
 		{
 			var troopObject: TroopObject = new TroopObject(type, state, objX, objY, size, playerId, cityId, objectId);
-			
+
 			troopObject.spriteContainer.addChild(getSprite("map"));
 			
 			troopObject.setOnSelect(Global.map.selectObject);

@@ -3,7 +3,6 @@
 
     import flash.display.*;
     import flash.events.*;
-    import flash.geom.*;
     import flash.net.*;
     import flash.text.TextField;
     import flash.ui.*;
@@ -15,7 +14,6 @@
 
     import src.Map.*;
     import src.Map.MiniMap.MiniMap;
-    import src.Map.ScreenPosition;
     import src.Objects.*;
     import src.UI.*;
     import src.UI.Components.*;
@@ -352,12 +350,7 @@
                 overwrite: false,
                 zoomFactor: Math.min(1, camera.zoomFactor + 0.1),
                 onUpdateParams: [camera.GetCenter()],
-                onUpdate: function(center: ScreenPosition): void {
-                    map.scrollRate = camera.getZoomFactorOverOne();
-                    miniMap.redraw();
-                    mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();
-                    camera.ScrollToCenter(center);
-                }
+                onUpdate: onZoomUpdate
             });
 		}		
 		
@@ -368,14 +361,17 @@
                 overwrite: false,
                 zoomFactor: Math.max(0.5, camera.zoomFactor - 0.1),
                 onUpdateParams: [camera.GetCenter()],
-                onUpdate: function(center: ScreenPosition): void {
-                    map.scrollRate = camera.getZoomFactorOverOne();
-                    miniMap.redraw();
-                    mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();
-                    camera.ScrollToCenter(center);
-                }
+                onUpdate: onZoomUpdate
             });
 		}
+
+        private function onZoomUpdate(center: ScreenPosition): void {
+            map.scrollRate = camera.getZoomFactorOverOne();
+            miniMap.redraw();
+            mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();
+            camera.ScrollToCenter(center);
+
+        }
 
 		public function onZoomIntoMinimap(e: Event):void {
 			zoomIntoMinimap(!minimapZoomed);
@@ -510,6 +506,9 @@
 			// Add map			
 			mapHolder.addChild(map);
 			minimapHolder.addChild(miniMap);
+
+            // Set initial map zoom
+            mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();
 
 			// Create map overlay
 			this.mapOverlay = new MovieClip();

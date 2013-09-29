@@ -21,7 +21,7 @@
 		private var cuePosition: ScreenPosition;
 		
 		//Zooming factor
-		private var _zoomFactor: Number = 1;
+		private var _zoomFactor: Number = 0.75;
 		private var zoomFactorOverOne: Number = (1.0 / zoomFactor);
 
 		public function beginMove(): void {

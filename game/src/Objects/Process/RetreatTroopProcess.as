@@ -63,7 +63,7 @@ package src.Objects.Process
                 return;
             }
 
-            if (onFinished) {
+            if (onFinished != null) {
                 onFinished();
             }
         }

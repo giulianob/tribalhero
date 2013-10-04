@@ -11,12 +11,18 @@ namespace Game.Data.Stronghold
     {
         private readonly IDbManager dbManager;
 
+        private readonly IScheduler scheduler;
+
+        private readonly ILocker locker;
+
         private readonly IStrongholdManager strongholdManager;
 
-        public StrongholdChecker(IStrongholdManager strongholdManager, IDbManager dbManager)
+        public StrongholdChecker(IStrongholdManager strongholdManager, IDbManager dbManager, IScheduler scheduler, ILocker locker)
         {
             this.strongholdManager = strongholdManager;
             this.dbManager = dbManager;
+            this.scheduler = scheduler;
+            this.locker = locker;
         }
 
         private void SetNextExecution()
@@ -27,9 +33,9 @@ namespace Game.Data.Stronghold
             }
             else
             {
-                Time =
-                        DateTime.UtcNow.Subtract(new TimeSpan(0, 0, DateTime.UtcNow.Minute, DateTime.UtcNow.Second))
-                                .AddHours(1);
+                Time = DateTime.UtcNow
+                               .Subtract(new TimeSpan(0, 0, DateTime.UtcNow.Minute, DateTime.UtcNow.Second))
+                               .AddHours(1);
             }
         }
 
@@ -39,8 +45,9 @@ namespace Game.Data.Stronghold
             {
                 return;
             }
+
             SetNextExecution();
-            Scheduler.Current.Put(this);
+            scheduler.Put(this);
         }
 
         #region Implementation of ISchedule
@@ -51,20 +58,18 @@ namespace Game.Data.Stronghold
 
         public void Callback(object custom)
         {
-            foreach (
-                    IStronghold stronghold in
-                            strongholdManager)
+            foreach (IStronghold stronghold in strongholdManager)
             {
                 IMultiObjectLock multiObjecLock;
                 if (stronghold.StrongholdState == StrongholdState.Occupied)
                 {
-                    multiObjecLock = Concurrency.Current.Lock(stronghold, stronghold.Tribe);
+                    multiObjecLock = locker.Lock(stronghold, stronghold.Tribe);
                     stronghold.Tribe.VictoryPoint += stronghold.VictoryPointRate;
                     dbManager.Save(stronghold.Tribe);
                 }
                 else
                 {
-                    multiObjecLock = Concurrency.Current.Lock(stronghold);
+                    multiObjecLock = locker.Lock(stronghold);
                 }
                 strongholdManager.UpdateGate(stronghold);
                 dbManager.Save(stronghold);
@@ -72,7 +77,7 @@ namespace Game.Data.Stronghold
             }
 
             SetNextExecution();
-            Scheduler.Current.Put(this);
+            scheduler.Put(this);
         }
 
         #endregion

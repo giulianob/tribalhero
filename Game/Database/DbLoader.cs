@@ -462,6 +462,7 @@ namespace Game.Database
                                             PlayerRights.Basic)
                     {
                             DbPersisted = true,
+                            SoundMuted = (bool)reader["sound_muted"],
                             TutorialStep = (uint)reader["tutorial_step"],
                             TribeRequest = (uint)reader["invitation_tribe_id"],
                             Muted = DateTime.SpecifyKind((DateTime)reader["muted"], DateTimeKind.Utc),

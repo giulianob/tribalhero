@@ -36,6 +36,8 @@ namespace Game.Comm
 
         SaveTutorialStep = 23,
 
+        SaveMuteSound = 24,
+
         #endregion
 
         #region Action

@@ -260,7 +260,7 @@ namespace Game.Comm.ProcessorCommands
                 player.SessionId = sessionId;                
                 player.Rights = playerRights;
                 player.LastLogin = SystemClock.Now;
-                player.Banned = banned;
+                player.Banned = banned;                
                 player.Achievements.Clear();
                 achievements.ForEach(player.Achievements.Add);
 
@@ -283,7 +283,8 @@ namespace Game.Comm.ProcessorCommands
                 reply.AddUInt32(player.PlayerId);
                 reply.AddString(player.PlayerHash);
                 reply.AddUInt32(player.TutorialStep);
-                reply.AddByte((byte)(player.Rights >= PlayerRights.Admin ? 1 : 0));
+                reply.AddBoolean(player.SoundMuted);
+                reply.AddBoolean(player.Rights >= PlayerRights.Admin);
                 reply.AddString(sessionId);
                 reply.AddString(player.Name);
                 reply.AddInt32(Config.newbie_protection);

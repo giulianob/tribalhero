@@ -81,6 +81,8 @@ namespace Game.Data
 
         public PlayerRights Rights { get; set; }
 
+        public bool SoundMuted { get; set; }
+
         public bool IsIdle
         {
             get
@@ -287,7 +289,8 @@ namespace Game.Data
                     new DbColumn("online", Session != null, DbType.Boolean),
                     new DbColumn("invitation_tribe_id", TribeRequest, DbType.UInt32),
                     new DbColumn("tutorial_step", TutorialStep, DbType.UInt32),
-                    new DbColumn("last_deleted_tribe", LastDeletedTribe, DbType.DateTime)
+                    new DbColumn("last_deleted_tribe", LastDeletedTribe, DbType.DateTime),
+                    new DbColumn("sound_muted", SoundMuted, DbType.Boolean),
                 };
             }
         }

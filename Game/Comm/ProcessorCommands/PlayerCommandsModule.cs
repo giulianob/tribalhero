@@ -40,6 +40,29 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.PlayerNameFromCityName, GetCityOwnerName);
             processor.RegisterCommand(Command.CityResourceSend, SendResources);
             processor.RegisterCommand(Command.SaveTutorialStep, SaveTutorialStep);
+            processor.RegisterCommand(Command.SaveMuteSound, MuteSound);
+        }
+
+        private void MuteSound(Session session, Packet packet)
+        {
+            bool mute;
+            try
+            {
+                mute = packet.GetBoolean();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            using (locker.Lock(session.Player))
+            {
+                session.Player.SoundMuted = mute;
+                dbManager.Save(session.Player);
+
+                ReplySuccess(session, packet);
+            }
         }
 
         private void SaveTutorialStep(Session session, Packet packet)

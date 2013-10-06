@@ -1,18 +1,18 @@
 ﻿package src.Comm 
 {
-	import com.adobe.serialization.json.*;
-	import flash.events.Event;
-	import flash.events.IEventDispatcher;
-	import flash.net.*;
-	import org.aswing.JPanel;
-	import src.Constants;	
-	import src.UI.Dialog.InfoDialog;
-	import src.Util.Util;
-	
-	public class GameURLLoader implements IEventDispatcher
+    import com.adobe.serialization.json.*;
+
+    import flash.events.Event;
+    import flash.events.IEventDispatcher;
+    import flash.net.*;
+
+    import src.Constants;
+    import src.UI.Dialog.InfoDialog;
+    import src.Util.Util;
+
+    public class GameURLLoader implements IEventDispatcher
 	{
 		private var loader: URLLoader = new URLLoader();
-		public var lastURL: String;
 		private var pnlLoading: InfoDialog;
 		
 		public function GameURLLoader() 
@@ -41,33 +41,27 @@
 			
 			return null;
 		}
-		
-		private function addParameter(request: Object, key: String, value: *): Object {
-			if (value is Array) {
-				for (var i: int = 0; i < (value as Array).length; i++) {
-					request += escape(key) + "[]=" + escape(value[i]) + "&";
-				}
-			}
-			else {
-				request += escape(key) + "=" + escape(value) + "&";
-			}
-			
-			return request;
-		}
-		
+
 		public function load(path: String, params: Array, includeLoginInfo: Boolean = true, showLoadingMessage: Boolean = true) : void {			
 			var request: URLRequest = new URLRequest("http://" + Constants.hostname + path);			
 			var variables :URLVariables = new URLVariables();
 			
-			request.data = "";
-			
-			if (includeLoginInfo) {
-				request.data = addParameter(request.data, "sessionId", Constants.sessionId);
-				request.data = addParameter(request.data, "playerId", Constants.playerId);
-			}
+			request.data = variables;
 
-			for each (var obj: * in params) {
-				request.data = addParameter(request.data, obj.key, obj.value);
+            for each (var obj: * in params) {
+                if (obj.value is Array) {
+                    // URLVariables understands that an array value means it needs to repeat the parameter
+                    // but we need to add the [] for cake
+                    variables[obj.key + "[]"] = obj.value;
+                }
+                else {
+                    variables[obj.key] = obj.value;
+                }
+            }
+
+			if (includeLoginInfo) {
+                variables.sessionId = Constants.sessionId;
+                variables.playerId = Constants.playerId;
 			}
 			
 			request.method = URLRequestMethod.POST;
@@ -77,12 +71,6 @@
             }
 			
 			try {
-				lastURL = request.url + "?" + request.data;
-				
-				CONFIG::debug {
-					Util.log("Loading url: " + lastURL);
-				}
-				
 				loader.load(request);
 			}
 			catch (e: Error) {

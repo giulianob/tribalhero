@@ -40,16 +40,21 @@ namespace Game.Setup
                         continue;
                     }
 
+                    uint time;
+                    if (toks[col["Time"]].Length > 0)
+                    {
+                        time = uint.Parse(toks[col["Time"]]);
+                    }
+                    else
+                    {
+                        time = (uint)GetTime(byte.Parse(toks[col["Lvl"]]), int.Parse(toks[col["BuildType"]]), int.Parse(toks[col["BuildLvl"]]));
+                    }
                     var tech = new TechnologyBase
                     {
                             Techtype = uint.Parse(toks[col["TechType"]]),
                             Name = toks[col["Name"]],
                             Level = byte.Parse(toks[col["Lvl"]]),
-                            Time =
-                                    (uint)
-                                    (GetTime(byte.Parse(toks[col["Lvl"]]),
-                                             int.Parse(toks[col["BuildType"]]),
-                                             int.Parse(toks[col["BuildLvl"]]))),
+                            Time = time,
                             Resources =
                                     GetResource(byte.Parse(toks[col["Lvl"]]),
                                                 int.Parse(toks[col["BuildType"]]),

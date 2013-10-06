@@ -654,7 +654,7 @@ namespace Game.Battle
             carryOverDmg = 0;
             if (dmg > 0 && target.CombatObject.Hp - actualDmg < 0m)
             {
-                carryOverDmg = (actualDmg - target.CombatObject.Hp) / dmg;
+                carryOverDmg = (actualDmg - target.CombatObject.Hp) / actualDmg;
             }
 
             actualDmg = Math.Min(target.CombatObject.Hp, actualDmg);

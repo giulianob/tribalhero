@@ -169,7 +169,7 @@ namespace Game.Logic.Actions
 
             Current = chainable;
             Current.WorkerObject = WorkerObject;
-            Current.ActionId = (uint)ActionIdGenerator.GetNext();
+            Current.ActionId = ActionIdGenerator.GetNext();
             Current.ActionIdGenerator = ActionIdGenerator;
             Current.Location = Location;
 

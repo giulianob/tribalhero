@@ -16,7 +16,7 @@ namespace Game.Logic.Actions
     {
         private readonly ILocker locker;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly IWorld world;
 
@@ -26,7 +26,7 @@ namespace Game.Logic.Actions
 
         private readonly uint objectId;
 
-        public ResourceGatherActiveAction(uint cityId, uint objectId, ILocker locker, ObjectTypeFactory objectTypeFactory, IWorld world, IActionFactory actionFactory)
+        public ResourceGatherActiveAction(uint cityId, uint objectId, ILocker locker, IObjectTypeFactory objectTypeFactory, IWorld world, IActionFactory actionFactory)
         {
             this.cityId = cityId;
             this.objectId = objectId;
@@ -45,7 +45,7 @@ namespace Game.Logic.Actions
                                           ushort actionCount,
                                           Dictionary<string, string> properties,
                                           ILocker locker,
-                                          ObjectTypeFactory objectTypeFactory,
+                                          IObjectTypeFactory objectTypeFactory,
                                           IWorld world, 
                                           IActionFactory actionFactory)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)

@@ -1,106 +1,94 @@
 #region
 
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Game.Data;
+using Game.Map;
 
 #endregion
 
 namespace Game.Logic.Requirements.LayoutRequirements
 {
-    class SimpleLayout : LayoutRequirement
+    public class SimpleLayout : LayoutRequirement
     {
-        public override bool Validate(IStructure builder, ushort type, uint x, uint y)
+        private readonly ITileLocator tileLocator;
+
+        public SimpleLayout(ITileLocator tileLocator)
         {
-            foreach (var req in requirements)
+            this.tileLocator = tileLocator;
+        }
+
+        public override bool Validate(IStructure builder, ushort type, uint x, uint y, byte size)
+        {
+            foreach (var req in Requirements)
             {
-                switch(req.Cmp)
+                LayoutComparison comparison;
+                if (!Enum.TryParse(req.Cmp.ToString(CultureInfo.InvariantCulture), out comparison))
                 {
-                    case 1:
-                        if (!HaveBuilding(req, builder.City, x, y))
+                    throw new Exception(string.Format("Invalid comparison type specified for SimpleLayout: {0}", req.Cmp));
+                }
+
+                switch((LayoutComparison)req.Cmp)
+                {
+                    case LayoutComparison.Contains:
+                        if (!HaveBuilding(req, builder.City, x, y, size))
                         {
                             return false;
                         }
                         break;
-                    case 2:
-                        if (!HaveNoBuilding(req, builder.City, x, y))
+                    case LayoutComparison.NotContains:
+                        if (!HaveNoBuilding(req, builder.City, x, y, size))
                         {
                             return false;
                         }
                         break;
-                    default:
-                        return false;
                 }
             }
+
             return true;
         }
 
-        private bool HaveNoBuilding(Requirement req, IEnumerable<IStructure> objects, uint x, uint y)
+        private bool HaveNoBuilding(Requirement req, IEnumerable<IStructure> objects, uint x, uint y, byte size)
         {
             foreach (var obj in objects)
             {
-                if (req.Type != obj.Type)
+                if (req.Type != obj.Type || obj.Lvl > req.MaxLvl || obj.Lvl < req.MinLvl)
                 {
                     continue;
                 }
 
-                if (obj.Lvl > req.MaxLvl)
+                int dist = tileLocator.RadiusDistance(obj.PrimaryPosition, obj.Size, new Position(x, y), size);
+
+                if (dist > req.MaxDist || dist < req.MinDist)
                 {
                     continue;
                 }
 
-                if (obj.Lvl < req.MinLvl)
-                {
-                    continue;
-                }
-
-                int dist = obj.RadiusDistance(x, y);
-
-                if (dist > req.MaxDist)
-                {
-                    continue;
-                }
-
-                if (dist < req.MinDist)
-                {
-                    continue;
-                }
                 return false;
             }
             return true;
         }
 
-        private bool HaveBuilding(Requirement req, IEnumerable<IStructure> objects, uint x, uint y)
+        private bool HaveBuilding(Requirement req, IEnumerable<IStructure> objects, uint x, uint y, byte size)
         {
             foreach (var obj in objects)
             {
-                if (req.Type != obj.Type)
+                if (req.Type != obj.Type || obj.Lvl > req.MaxLvl || obj.Lvl < req.MinLvl)
                 {
                     continue;
                 }
 
-                if (obj.Lvl > req.MaxLvl)
+                int dist = tileLocator.RadiusDistance(obj.PrimaryPosition, obj.Size, new Position(x, y), size);
+
+                if (dist > req.MaxDist || dist < req.MinDist)
                 {
                     continue;
                 }
 
-                if (obj.Lvl < req.MinLvl)
-                {
-                    continue;
-                }
-
-                int dist = obj.RadiusDistance(x, y);
-
-                if (dist > req.MaxDist)
-                {
-                    continue;
-                }
-
-                if (dist < req.MinDist)
-                {
-                    continue;
-                }
                 return true;
             }
+
             return false;
         }
     }

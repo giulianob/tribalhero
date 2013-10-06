@@ -19,9 +19,11 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly IActionFactory actionFactory;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly PropertyFactory propertyFactory;
+
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         private readonly IForestManager forestManager;
 
@@ -29,18 +31,16 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly ILocker locker;
 
-        private readonly StructureFactory structureFactory;
-
         public StructureCommandsModule(IActionFactory actionFactory,
-                                       StructureFactory structureFactory,
-                                       ObjectTypeFactory objectTypeFactory,
+                                       IStructureCsvFactory structureCsvFactory,
+                                       IObjectTypeFactory objectTypeFactory,
                                        PropertyFactory propertyFactory,
                                        IForestManager forestManager,
                                        IWorld world,
                                        ILocker locker)
         {
             this.actionFactory = actionFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             this.objectTypeFactory = objectTypeFactory;
             this.propertyFactory = propertyFactory;
             this.forestManager = forestManager;
@@ -325,7 +325,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(obj), obj, lma, obj.Technologies);
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(obj), obj, lma, obj.Technologies);
 
                 if (ret != 0)
                 {
@@ -369,7 +369,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var upgradeAction = actionFactory.CreateTechnologyUpgradeActiveAction(cityId, objectId, techId);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(obj),
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(obj),
                                                  obj,
                                                  upgradeAction,
                                                  obj.Technologies);
@@ -465,7 +465,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var upgradeAction = actionFactory.CreateStructureUpgradeActiveAction(cityId, objectId);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(obj),
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(obj),
                                                  obj,
                                                  upgradeAction,
                                                  obj.Technologies);
@@ -516,7 +516,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var downgradeAction = actionFactory.CreateStructureDowngradeActiveAction(cityId, targetId);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(obj),
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(obj),
                                                  obj,
                                                  downgradeAction,
                                                  obj.Technologies);
@@ -579,7 +579,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var buildaction = actionFactory.CreateStructureBuildActiveAction(cityId, type, x, y, level);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(obj),
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(obj),
                                                  obj,
                                                  buildaction,
                                                  obj.Technologies);
@@ -635,7 +635,7 @@ namespace Game.Comm.ProcessorCommands
                                                                                    objectId,
                                                                                    structureType,
                                                                                    structureLvl);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(obj),
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(obj),
                                                  obj,
                                                  changeAction,
                                                  obj.Technologies);
@@ -684,7 +684,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var destroyAction = actionFactory.CreateStructureSelfDestroyActiveAction(cityId, objectId);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(obj),
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(obj),
                                                  obj,
                                                  destroyAction,
                                                  obj.Technologies);
@@ -745,7 +745,7 @@ namespace Game.Comm.ProcessorCommands
                                                                                   forestId,
                                                                                   type,
                                                                                   labor);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(lumbermill),
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(lumbermill),
                                                  lumbermill,
                                                  buildaction,
                                                  lumbermill.Technologies);

@@ -163,7 +163,7 @@ namespace Game.Logic
                             new SystemVariable("Players.count", world.Players.Count),
                             new SystemVariable("Players.logged_in", TcpWorker.GetSessionCount()),
                             new SystemVariable("Cities.count", world.Cities.Count),
-                            new SystemVariable("Channel.subscriptions", Global.Channel.SubscriptionCount()),
+                            new SystemVariable("Channel.subscriptions", Global.Current.Channel.SubscriptionCount()),
                             new SystemVariable("Tribes.count", tribeManager.TribeCount),
                             new SystemVariable("Strongholds.neutral", strongholdsNeutral),
                             new SystemVariable("Strongholds.occupied", strongholdsOccupied),

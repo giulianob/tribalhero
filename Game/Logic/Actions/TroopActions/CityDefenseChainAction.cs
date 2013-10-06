@@ -32,6 +32,8 @@ namespace Game.Logic.Actions
         private readonly uint cityId;
         
         private uint troopObjectId;
+
+        private readonly Formula formula;
         
         private readonly uint targetCityId;
         
@@ -42,6 +44,7 @@ namespace Game.Logic.Actions
                                       IActionFactory actionFactory,
                                       ILocker locker,
                                       IWorld world,
+                                      Formula formula,
                                       Procedure procedure)
         {
             this.cityId = cityId;
@@ -51,6 +54,7 @@ namespace Game.Logic.Actions
             this.actionFactory = actionFactory;
             this.locker = locker;
             this.world = world;
+            this.formula = formula;
             this.procedure = procedure;
         }
 
@@ -64,6 +68,7 @@ namespace Game.Logic.Actions
                                       IActionFactory actionFactory,
                                       ILocker locker,
                                       IWorld world,
+                                      Formula formula,
                                       Procedure procedure)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
@@ -71,6 +76,7 @@ namespace Game.Logic.Actions
             this.actionFactory = actionFactory;
             this.locker = locker;
             this.world = world;
+            this.formula = formula;
             this.procedure = procedure;
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
@@ -150,7 +156,7 @@ namespace Game.Logic.Actions
             city.References.Add(troopObject, this);
             city.Notifications.Add(troopObject, this, targetCity);
 
-            var tma = actionFactory.CreateTroopMovePassiveAction(cityId, troopObject.ObjectId, targetCity.X, targetCity.Y, false, false);
+            var tma = actionFactory.CreateTroopMovePassiveAction(cityId, troopObject.ObjectId, targetCity.PrimaryPosition.X, targetCity.PrimaryPosition.Y, false, false);
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
 

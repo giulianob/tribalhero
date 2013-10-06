@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using Game.Battle;
 using Game.Logic;
 using Game.Map;
@@ -16,8 +17,6 @@ namespace Game.Data.BarbarianTribe
         public event EventHandler<EventArgs> CampRemainsChanged = (sender, args) => { };
 
         public const string DB_TABLE = "barbarian_tribes";
-
-        public uint Id { get; private set; }
 
         public IActionWorker Worker { get; private set; }
 
@@ -44,17 +43,22 @@ namespace Game.Data.BarbarianTribe
 
         private readonly IDbManager dbManager;
 
-        public BarbarianTribe(uint id, byte level, uint x, uint y, int count, Resource resources, IDbManager dbManager, IActionWorker actionWorker)
+        public BarbarianTribe(uint id,
+                              byte level,
+                              uint x,
+                              uint y,
+                              int count,
+                              Resource resources,
+                              IDbManager dbManager,
+                              IActionWorker actionWorker) 
+            : base(id, x, y)
         {
             this.dbManager = dbManager;
-            this.x = x;
-            this.y = y;
 
-            Id = id;
             Lvl = level;
             Worker = actionWorker;
-            Resource = resources;            
-            CampRemains = (byte)count;            
+            Resource = resources;
+            CampRemains = (byte)count;
             Created = DateTime.UtcNow;
             LastAttacked = DateTime.MinValue;
 
@@ -70,6 +74,14 @@ namespace Game.Data.BarbarianTribe
         }
 
         public IBattleManager Battle { get; set; }
+
+        public override byte Size
+        {
+            get
+            {
+                return 2;
+            }
+        }
 
         public override ushort Type
         {
@@ -87,22 +99,14 @@ namespace Game.Data.BarbarianTribe
             }
         }
 
-        public override uint ObjectId
+        protected override void CheckUpdateMode()
         {
-            get
-            {
-                return Id;
-            }            
-        }
-
-        public override void CheckUpdateMode()
-        {
-            if (!DbPersisted || !Global.FireEvents)
+            if (!DbPersisted || !Global.Current.FireEvents)
             {
                 return;
             }
 
-            if (!updating)
+            if (!Updating)
             {
                 throw new Exception("Changed state outside of begin/end update block");
             }
@@ -110,51 +114,26 @@ namespace Game.Data.BarbarianTribe
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
         }
 
-        public override void EndUpdate()
+        protected override bool Update()
         {
-            if (!updating)
+            var updated = base.Update();
+
+            if (updated)
             {
-                throw new Exception("Called an endupdate without first calling a beginupdate");
+                dbManager.Save(this);
             }
 
-            updating = false;
-
-            Update();
+            return updated;
         }
 
-        protected override void Update()
-        {
-            base.Update();
-
-            if (!Global.FireEvents)
-            {
-                return;
-            }
-
-            if (updating)
-            {
-                return;
-            }
-
-            dbManager.Save(this);
-        }
-
-        public Position CityRegionLocation
-        {
+        public MiniMapRegion.ObjectType MiniMapObjectType {
             get
             {
-                return new Position(X, Y);
+                return MiniMapRegion.ObjectType.BarbarianTribe;
             }
         }
 
-        public CityRegion.ObjectType CityRegionType {
-            get
-            {
-                return CityRegion.ObjectType.BarbarianTribe;
-            }
-        }
-
-        public uint CityRegionGroupId
+        public uint MiniMapGroupId
         {
             get
             {
@@ -162,15 +141,23 @@ namespace Game.Data.BarbarianTribe
             }
         }
 
-        public uint CityRegionObjectId
+        public uint MiniMapObjectId
         {
             get
             {
-                return Id;
+                return ObjectId;
             }
         }
 
-        public byte[] GetCityRegionObjectBytes()
+        public byte MiniMapSize
+        {
+            get
+            {
+                return Size;
+            }
+        }
+
+        public byte[] GetMiniMapObjectBytes()
         {
             using (var ms = new MemoryStream())
             {
@@ -203,7 +190,7 @@ namespace Game.Data.BarbarianTribe
         {
             get
             {
-                return new[] {new DbColumn("id", Id, DbType.UInt32)};
+                return new[] {new DbColumn("id", ObjectId, DbType.UInt32)};
             }
         }
 
@@ -215,8 +202,8 @@ namespace Game.Data.BarbarianTribe
                 {
                         new DbColumn("level", Lvl, DbType.Byte), 
                         new DbColumn("camp_remains", CampRemains, DbType.Byte), 
-                        new DbColumn("x", x, DbType.UInt32), 
-                        new DbColumn("y", y, DbType.UInt32),
+                        new DbColumn("x", PrimaryPosition.X, DbType.UInt32), 
+                        new DbColumn("y", PrimaryPosition.Y, DbType.UInt32),
                         new DbColumn("state", (byte)State.Type, DbType.Boolean),
                         new DbColumn("state_parameters", XmlSerializer.SerializeList(State.Parameters.ToArray()), DbType.String),
                         new DbColumn("resource_crop", Resource.Crop, DbType.Int32),
@@ -236,7 +223,7 @@ namespace Game.Data.BarbarianTribe
         {
             get
             {
-                return Id;
+                return ObjectId;
             }
         }
 
@@ -246,7 +233,7 @@ namespace Game.Data.BarbarianTribe
         {
             get
             {
-                return Id;
+                return ObjectId;
             }
         }
 
@@ -264,7 +251,7 @@ namespace Game.Data.BarbarianTribe
         {
             get
             {
-                return (int)Id;
+                return (int)ObjectId;
             }
         }
 

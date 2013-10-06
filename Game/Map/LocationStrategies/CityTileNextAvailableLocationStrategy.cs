@@ -17,16 +17,22 @@ namespace Game.Map.LocationStrategies
 
         private readonly IForestManager forestManager;
 
-        public CityTileNextAvailableLocationStrategy(MapFactory mapFactory, Formula formula, IForestManager forestManager)
+        private readonly IGameObjectLocator gameObjectLocator;
+
+        public CityTileNextAvailableLocationStrategy(MapFactory mapFactory,
+                                                     Formula formula,
+                                                     IForestManager forestManager,
+                                                     IGameObjectLocator gameObjectLocator)
         {
             this.mapFactory = mapFactory;
             this.formula = formula;
             this.forestManager = forestManager;
+            this.gameObjectLocator = gameObjectLocator;
         }
 
         public Error NextLocation(out Position position)
         {
-            position = new Position(0, 0);
+            position = new Position();
             var locations = mapFactory.Locations().ToList();
             do
             {
@@ -40,14 +46,14 @@ namespace Game.Map.LocationStrategies
                 mapFactory.Index += SKIP;
 
                 // Check if objects already on that point
-                List<ISimpleGameObject> objects = World.Current.GetObjects(point.X, point.Y);
+                var objects = gameObjectLocator.Regions.GetObjectsInTile(point.X, point.Y);
 
                 if (objects == null)
                 {
                     continue;
                 }
 
-                if (objects.Count != 0)
+                if (objects.Any())
                 {
                     continue;
                 }

@@ -42,7 +42,7 @@ namespace Testing.TroopTests
         }
 
         [Theory, AutoNSubstituteData]
-        public void GetTroopObject_WhenAbleToRetreat_AddsNewTroopObjectToCity(
+        public void GetTroopObject_WhenAbleToRetreat_CreatesTroopObjectFromCity(
                 [Frozen] ITroopStub stub,
                 StationedTroopObjectInitializer troopInitializer)
         {
@@ -50,12 +50,13 @@ namespace Testing.TroopTests
             
             stub.Station.Troops.RemoveStationed(Arg.Any<ushort>()).Returns(true);
 
+            stub.Station.PrimaryPosition.X.Returns<uint>(10);
+            stub.Station.PrimaryPosition.Y.Returns<uint>(20);
+
             ITroopObject troopObject;
             troopInitializer.GetTroopObject(out troopObject).Should().Be(Error.Ok);
             troopObject.Should().NotBeNull();
-            ((object)troopObject.Stub).Should().BeSameAs(stub);
-            stub.City.Received(1).Add(troopObject);
-
+            stub.City.Received(1).CreateTroopObject(stub, 10, 21);
         }
 
         [Theory, AutoNSubstituteData]
@@ -67,14 +68,9 @@ namespace Testing.TroopTests
             stub.State.Returns(TroopState.Stationed);
             stub.Station.Troops.RemoveStationed(Arg.Any<ushort>()).Returns(true);
 
-            stub.Station.X.Returns<uint>(10);
-            stub.Station.Y.Returns<uint>(20);
-
             ITroopObject troopObject;
             troopInitializer.GetTroopObject(out troopObject).Should().Be(Error.Ok);
             world.Regions.Received(1).Add(troopObject);
-            troopObject.X.Should().Be(10);
-            troopObject.Y.Should().Be(21);
         }
 
         [Theory, AutoNSubstituteData]

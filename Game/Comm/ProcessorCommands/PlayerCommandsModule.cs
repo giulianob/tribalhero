@@ -22,11 +22,14 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IDbManager dbManager;
 
-        public PlayerCommandsModule(ILocker locker, IWorld world, IDbManager dbManager)
+        private readonly IActionFactory actionFactory;
+
+        public PlayerCommandsModule(ILocker locker, IWorld world, IDbManager dbManager, IActionFactory actionFactory)
         {
             this.locker = locker;
             this.world = world;
             this.dbManager = dbManager;
+            this.actionFactory = actionFactory;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -37,6 +40,29 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.PlayerNameFromCityName, GetCityOwnerName);
             processor.RegisterCommand(Command.CityResourceSend, SendResources);
             processor.RegisterCommand(Command.SaveTutorialStep, SaveTutorialStep);
+            processor.RegisterCommand(Command.SaveMuteSound, MuteSound);
+        }
+
+        private void MuteSound(Session session, Packet packet)
+        {
+            bool mute;
+            try
+            {
+                mute = packet.GetBoolean();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            using (locker.Lock(session.Player))
+            {
+                session.Player.SoundMuted = mute;
+                dbManager.Save(session.Player);
+
+                ReplySuccess(session, packet);
+            }
         }
 
         private void SaveTutorialStep(Session session, Packet packet)
@@ -214,7 +240,7 @@ namespace Game.Comm.ProcessorCommands
                 cityId = packet.GetUInt32();
                 objectId = packet.GetUInt32();
                 targetCityName = packet.GetString().Trim();
-                resource = new Resource(packet.GetInt32(), packet.GetInt32(), packet.GetInt32(), packet.GetInt32(), 0);
+                resource = new Resource(packet.GetInt32(), packet.GetInt32(), packet.GetInt32(), packet.GetInt32());
                 actuallySend = packet.GetByte() == 1;
             }
             catch(Exception)
@@ -262,12 +288,12 @@ namespace Game.Comm.ProcessorCommands
                     ReplyError(session, packet, Error.Unexpected);
                 }
 
-                var action = new ResourceSendActiveAction(cityId, objectId, targetCityId, resource);
+                var action = actionFactory.CreateResourceSendActiveAction(cityId, objectId, targetCityId, resource);
 
                 // If actually send then we perform the action, otherwise, we send the player information about the trade.
                 if (actuallySend)
                 {
-                    Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure),
+                    Error ret = city.Worker.DoActive(Ioc.Kernel.Get<IStructureCsvFactory>().GetActionWorkerType(structure),
                                                      structure,
                                                      action,
                                                      structure.Technologies);

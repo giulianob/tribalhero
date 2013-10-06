@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using Common.Testing;
 using FluentAssertions;
+using Game.Data;
 using Game.Data.Stronghold;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using NSubstitute;
 using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.AutoNSubstitute;
 using Ploeh.AutoFixture.Kernel;
 using Xunit;
 using Xunit.Extensions;
@@ -18,7 +21,12 @@ namespace Testing.FormulaTests
     {
         public StrongholdFormulaTest()
         {
-            SystemClock.SetClock(new DateTime(2013, 1, 1, 1, 1, 1, 1));
+            SystemClock.SetClock(new DateTime(2013, 1, 1, 1, 1, 1, 1));            
+        }
+
+        public void Dispose()
+        {
+            SystemClock.ResyncClock();
         }
 
         [Theory]
@@ -160,8 +168,6 @@ namespace Testing.FormulaTests
             fixture.Register(() => systemVariableManager);
             fixture.Customize<Formula>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
             
-            var formula = fixture.Create<Formula>();
-
             var stronghold = Substitute.For<IStronghold>();
             stronghold.StrongholdState.Returns(StrongholdState.Occupied);
             stronghold.Lvl.Returns(level);
@@ -169,6 +175,8 @@ namespace Testing.FormulaTests
             var occupiedDate = SystemClock.Now.Subtract(TimeSpan.FromDays((double)occupiedDays));
             stronghold.DateOccupied.Returns(occupiedDate);
 
+            var formula = fixture.Create<Formula>();
+            
             formula.StrongholdVictoryPoint(stronghold).Should().Be(expectedValue);
         }
 
@@ -354,13 +362,5 @@ namespace Testing.FormulaTests
             formula.StrongholdMainBattleMeter(1).Should().Be(3994);
             formula.StrongholdMainBattleMeter(20).Should().Be(39939);
         }
-        #region Implementation of IDisposable
-
-        public void Dispose()
-        {
-            SystemClock.ResyncClock();
-        }
-
-        #endregion
     }
 }

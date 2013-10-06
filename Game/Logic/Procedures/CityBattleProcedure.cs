@@ -24,24 +24,23 @@ namespace Game.Logic.Procedures
 
         private readonly IBattleManagerFactory battleManagerFactory;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
-        private readonly RadiusLocator radiusLocator;
+        private readonly ITileLocator tileLocator;
 
-        [Obsolete("For testing only", true)]
-        public CityBattleProcedure()
+        protected CityBattleProcedure()
         {
         }
 
-        public CityBattleProcedure(RadiusLocator radiusLocator,
+        public CityBattleProcedure(ITileLocator tileLocator,
                                    IBattleManagerFactory battleManagerFactory,
                                    IActionFactory actionFactory,
-                                   ObjectTypeFactory objectTypeFactory,
+                                   IObjectTypeFactory objectTypeFactory,
                                    BattleProcedure battleProcedure,
                                    ICombatGroupFactory combatGroupFactory,
                                    ICombatUnitFactory combatUnitFactory)
         {
-            this.radiusLocator = radiusLocator;
+            this.tileLocator = tileLocator;
             this.battleManagerFactory = battleManagerFactory;
             this.actionFactory = actionFactory;
             this.objectTypeFactory = objectTypeFactory;
@@ -62,15 +61,12 @@ namespace Game.Logic.Procedures
                 AddLocalStructuresToBattle(targetCity.Battle, targetCity, attackerTroopObject);
                 combatGroup = battleProcedure.AddAttackerToBattle(targetCity.Battle, attackerTroopObject);
             }
-                    // Otherwise, the battle has to be created
+            // Otherwise, the battle has to be created
             else
             {
-                targetCity.Battle =
-                        battleManagerFactory.CreateBattleManager(
-                                                                 new BattleLocation(BattleLocationType.City,
-                                                                                    targetCity.Id),
-                                                                 new BattleOwner(BattleOwnerType.City, targetCity.Id),
-                                                                 targetCity);
+                targetCity.Battle = battleManagerFactory.CreateBattleManager(new BattleLocation(BattleLocationType.City, targetCity.Id),
+                                                                             new BattleOwner(BattleOwnerType.City, targetCity.Id),
+                                                                             targetCity);
 
                 var battlePassiveAction = actionFactory.CreateCityBattlePassiveAction(targetCity.Id);
 
@@ -89,15 +85,8 @@ namespace Game.Logic.Procedures
 
         private IEnumerable<IStructure> GetStructuresInRadius(IEnumerable<IStructure> structures, ITroopObject troopObject)
         {
-            Position troopPosition = new Position(troopObject.X, troopObject.Y);
-
-            return
-                    structures.Where(
-                                     structure =>
-                                     radiusLocator.IsOverlapping(troopPosition,
-                                                                 troopObject.Stats.AttackRadius,
-                                                                 new Position(structure.X, structure.Y),
-                                                                 structure.Stats.Base.Radius));
+            return structures.Where(structure => tileLocator.IsOverlapping(troopObject.PrimaryPosition, troopObject.Size, troopObject.Stats.AttackRadius,
+                                                                           structure.PrimaryPosition, structure.Size, structure.Stats.Base.Radius));
         }
 
         public virtual Error CanCityBeAttacked(ICity attackerCity, ICity targetCity)
@@ -110,7 +99,7 @@ namespace Game.Logic.Procedures
             }
 
             // Can't attack if target is under newbie protection
-            if (BattleProcedure.IsNewbieProtected(targetCity.Owner))
+            if (battleProcedure.IsNewbieProtected(targetCity.Owner))
             {
                 return Error.PlayerNewbieProtection;
             }
@@ -158,12 +147,11 @@ namespace Game.Logic.Procedures
                                                           ITroopObject attackerTroopObject)
         {
             var localGroup = GetOrCreateLocalGroup(targetCity.Battle, targetCity);
-            foreach (IStructure structure in
-                    GetStructuresInRadius(targetCity, attackerTroopObject)
-                            .Where(structure => structure.State.Type == ObjectState.Normal && CanStructureBeAttacked(structure) == Error.Ok))
+            foreach (IStructure structure in GetStructuresInRadius(targetCity, attackerTroopObject)
+                    .Where(structure => structure.State.Type == ObjectState.Normal && CanStructureBeAttacked(structure) == Error.Ok))
             {
                 structure.BeginUpdate();
-                structure.State = GameObjectState.BattleState(battleManager.BattleId);
+                structure.State = GameObjectStateFactory.BattleState(battleManager.BattleId);
                 structure.EndUpdate();
 
                 localGroup.Add(combatUnitFactory.CreateStructureCombatUnit(battleManager, structure));

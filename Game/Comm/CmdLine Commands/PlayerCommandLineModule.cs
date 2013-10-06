@@ -30,7 +30,7 @@ namespace Game.Comm
 
         private readonly ILocker locker;
 
-        private readonly StructureFactory structureFactory;
+        private readonly IStructureCsvFactory structureFactory;
 
         private readonly TechnologyFactory technologyFactory;
 
@@ -50,7 +50,7 @@ namespace Game.Comm
                                        ITribeManager tribeManager,
                                        IWorld world,
                                        ILocker locker,
-                                       StructureFactory structureFactory,
+                                       IStructureCsvFactory structureFactory,
                                        TechnologyFactory technologyFactory)
         {
             this.playerRemoverFactory = playerRemoverFactory;
@@ -212,7 +212,7 @@ namespace Game.Comm
                 help = true;
             }
 
-            if (help || !rights.HasValue)
+            if (help || rights == null || !rights.HasValue)
             {
                 return String.Format("setchatlevel --rights={0}", String.Join("|", Enum.GetNames(typeof(PlayerRights))));
             }
@@ -689,7 +689,7 @@ namespace Game.Comm
             var packet = new Packet(Command.MessageBox);
             packet.AddString(message);
 
-            Global.Channel.Post("/GLOBAL", packet);
+            Global.Current.Channel.Post("/GLOBAL", packet);
             return "OK!";
         }
 
@@ -1112,6 +1112,7 @@ namespace Game.Comm
                 string.IsNullOrEmpty(title) || 
                 string.IsNullOrEmpty(description) || 
                 string.IsNullOrEmpty(type) ||
+                tier == null ||
                 !tier.HasValue)
             {
                 return String.Format("giveachievement --player=player --type=type --tier={0} --icon=icon --title=title --description=description",

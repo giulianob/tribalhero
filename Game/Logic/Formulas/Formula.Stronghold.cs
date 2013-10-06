@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Setup;
@@ -57,7 +58,7 @@ namespace Game.Logic.Formulas
             return (int)Math.Round(meters[level] * scaling);
         }
 
-        public void StrongholdUpkeep(byte level, out int upkeep, out byte unitLevel)
+        public virtual void StrongholdUpkeep(byte level, out int upkeep, out byte unitLevel)
         {
             int[] unitLevels = {1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10};
 
@@ -65,38 +66,39 @@ namespace Game.Logic.Formulas
             unitLevel = (byte)unitLevels[level-1];
         }
 
-        public double[,] StrongholdUnitRatio()
+        public virtual double[][] StrongholdUnitRatio()
         {
-            return new[,] {
-                    {1.00, .00, .00, .00, .00, .00, .00, .00,}, 
-                    {.90, .10, .00, .00, .00, .00, .00, .00,}, 
-                    {.50, .50, .00, .00, .00, .00, .00, .00,},
-                    {.50, .25, .25, .00, .00, .00, .00, .00,}, 
-                    {.50, .25, .25, .00, .00, .00, .00, .00,}, 
-                    {.40, .25, .25, .10, .00, .00, .00, .00,},
-                    {.40, .25, .25, .10, .00, .00, .00, .00,}, 
-                    {.35, .20, .25, .15, .05, .00, .00, .00,}, 
-                    {.25, .20, .25, .15, .15, .00, .00, .00,},
-                    {.25, .20, .25, .15, .15, .00, .00, .00,}, 
-                    {.20, .15, .20, .15, .15, .15, .00, .00,}, 
-                    {.20, .15, .20, .15, .15, .15, .00, .00,},
-                    {.15, .10, .15, .15, .25, .20, .00, .00,}, 
-                    {.10, .10, .10, .15, .25, .25, .05, .00,}, 
-                    {.10, .10, .10, .15, .25, .25, .05, .00,},
-                    {.10, .10, .10, .10, .20, .25, .10, .05,}, 
-                    {.10, .10, .10, .10, .20, .25, .10, .05,}, 
-                    {.10, .10, .10, .10, .15, .20, .15, .10,},
-                    {.10, .10, .10, .10, .15, .20, .15, .10,}, 
-                    {.10, .10, .10, .10, .15, .20, .15, .10,}
+            return new[]
+            {
+                new[] {1.00, .00, .00, .00, .00, .00, .00, .00,},
+                new[] {.90, .10, .00, .00, .00, .00, .00, .00,},
+                new[] {.50, .50, .00, .00, .00, .00, .00, .00,},
+                new[] {.50, .25, .25, .00, .00, .00, .00, .00,},
+                new[] {.50, .25, .25, .00, .00, .00, .00, .00,},
+                new[] {.40, .25, .25, .10, .00, .00, .00, .00,},
+                new[] {.40, .25, .25, .10, .00, .00, .00, .00,},
+                new[] {.35, .20, .25, .15, .05, .00, .00, .00,},
+                new[] {.25, .20, .25, .15, .15, .00, .00, .00,},
+                new[] {.25, .20, .25, .15, .15, .00, .00, .00,},
+                new[] {.20, .15, .20, .15, .15, .15, .00, .00,},
+                new[] {.20, .15, .20, .15, .15, .15, .00, .00,},
+                new[] {.15, .10, .15, .15, .25, .20, .00, .00,},
+                new[] {.10, .10, .10, .15, .25, .25, .05, .00,},
+                new[] {.10, .10, .10, .15, .25, .25, .05, .00,},
+                new[] {.10, .10, .10, .10, .20, .25, .10, .05,},
+                new[] {.10, .10, .10, .10, .20, .25, .10, .05,},
+                new[] {.10, .10, .10, .10, .15, .20, .15, .10,},
+                new[] {.10, .10, .10, .10, .15, .20, .15, .10,},
+                new[] {.10, .10, .10, .10, .15, .20, .15, .10,}
             };
         }
 
-        public ushort[] StrongholdUnitType()
+        public virtual ushort[] StrongholdUnitType()
         {
             return new ushort[] {101, 102, 105, 103, 104, 107, 106, 108};
         }
 
-        public decimal StrongholdVictoryPoint(IStronghold stronghold)
+        public virtual decimal StrongholdVictoryPoint(IStronghold stronghold)
         {
             if (stronghold.StrongholdState != StrongholdState.Occupied)
             {

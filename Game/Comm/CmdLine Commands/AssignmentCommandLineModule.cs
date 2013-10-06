@@ -150,7 +150,7 @@ namespace Game.Comm
             }
 
             ITribe tribe = city.Owner.Tribesman.Tribe;
-            IStructure targetStructure = world.GetObjects(x, y).OfType<IStructure>().FirstOrDefault();
+            IStructure targetStructure = world.Regions.GetObjectsInTile(x, y).OfType<IStructure>().FirstOrDefault();
             if (targetStructure == null)
             {
                 return "Could not find a structure for the given coordinates";
@@ -163,7 +163,7 @@ namespace Game.Comm
                     return "No troops in the city!";
                 }
 
-                targetStructure = world.GetObjects(x, y).OfType<IStructure>().First();
+                targetStructure = world.Regions.GetObjectsInTile(x, y).OfType<IStructure>().First();
 
                 if (targetStructure == null)
                 {
@@ -171,7 +171,7 @@ namespace Game.Comm
                 }
 
                 // TODO: Clean this up.. shouldnt really need to do this here
-                var stub = city.Troops.Create();
+                var stub = city.CreateTroopStub();
                 FormationType formation = isAttack.GetValueOrDefault() ? FormationType.Attack : FormationType.Defense;
                 stub.AddFormation(formation);
                 foreach (var unit in city.DefaultTroop[FormationType.Normal])
@@ -258,7 +258,7 @@ namespace Game.Comm
                 }
 
                 // TODO: Clean this up.. shouldnt really need to do this here
-                ITroopStub stub = city.Troops.Create();
+                ITroopStub stub = city.CreateTroopStub();
                 FormationType formation = assignment.IsAttack ? FormationType.Attack : FormationType.Defense;
                 stub.AddFormation(formation);
                 foreach (var unit in city.DefaultTroop[FormationType.Normal])

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Game.Setup
 {
     public class SystemVariableManager : ISystemVariableManager
     {
-        Dictionary<string, SystemVariable> systemVariables = new Dictionary<string, SystemVariable>();
+        readonly Dictionary<string, SystemVariable> systemVariables = new Dictionary<string, SystemVariable>();
 
         public SystemVariable this[string key]
         {

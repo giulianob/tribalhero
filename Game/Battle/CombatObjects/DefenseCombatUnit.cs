@@ -35,6 +35,8 @@ namespace Game.Battle.CombatObjects
 
         private decimal leftOverHp;
 
+        private readonly Formula formula;
+
         private byte eachUnitUpkeep;
 
         public DefenseCombatUnit(uint id,
@@ -45,6 +47,7 @@ namespace Game.Battle.CombatObjects
                                  byte lvl,
                                  ushort count,
                                  IBattleFormulas battleFormulas,
+                                 Formula formula,
                                  UnitFactory unitFactory)
                 : base(id, battleId, battleFormulas)
         {
@@ -52,6 +55,7 @@ namespace Game.Battle.CombatObjects
             this.formation = formation;
             this.type = type;
             this.count = count;
+            this.formula = formula;
             this.lvl = lvl;
 
             stats = stub.Template[type];
@@ -69,8 +73,9 @@ namespace Game.Battle.CombatObjects
                                  ushort count,
                                  decimal leftOverHp,
                                  IBattleFormulas battleFormulas,
-                                 UnitFactory unitFactory)
-                : this(id, battleId, stub, formation, type, lvl, count, battleFormulas, unitFactory)
+                                 Formula formula,
+				 UnitFactory unitFactory)
+                : this(id, battleId, stub, formation, type, lvl, count, battleFormulas, formula, unitFactory)
         {
             this.leftOverHp = leftOverHp;
         }
@@ -136,6 +141,14 @@ namespace Game.Battle.CombatObjects
             get
             {
                 return Stats.Rng;
+            }
+        }
+
+        public override byte Size
+        {
+            get
+            {
+                return 1;
             }
         }
 
@@ -229,10 +242,10 @@ namespace Game.Battle.CombatObjects
         {
             if (TroopStub.Station != null)
             {
-                return new Position(troopStub.Station.X, troopStub.Station.Y);
+                return troopStub.Station.PrimaryPosition;
             }
 
-            return new Position(City.X, City.Y);
+            return City.PrimaryPosition;
         }
 
         public override byte AttackRadius()
@@ -257,19 +270,16 @@ namespace Game.Battle.CombatObjects
 
             // Splash dmg reduction
             actualDmg = BattleFormulas.SplashReduction(this, actualDmg, attackIndex);
-
+            
             // if hp is less than 20% of the original total HP(entire group), lastStand kicks in.
             if (Hp < (Hp + DmgRecv) / 5)
             {
-                var percent =
-                        TroopStub.City.Technologies.GetEffects(EffectCode.LastStand)
-                                 .Where(
-                                        tech =>
-                                        BattleFormulas.UnitStatModCheck(Stats.Base,
-                                                                                TroopBattleGroup.Attack,
-                                                                                (string)tech.Value[1]))
-                                 .DefaultIfEmpty()
-                                 .Max(x => x == null ? 0 : (int)x.Value[0]);
+                var percent = TroopStub.City.Technologies
+                                       .GetEffects(EffectCode.LastStand).Where(tech => BattleFormulas.UnitStatModCheck(Stats.Base,
+                                                                                                                       TroopBattleGroup.Attack,
+                                                                                                                       (string)tech.Value[1]))
+                                       .DefaultIfEmpty()
+                                       .Max(x => x == null ? 0 : (int)x.Value[0]);
 
                 actualDmg = actualDmg * (100 - percent) / 100;
             }
@@ -299,7 +309,7 @@ namespace Game.Battle.CombatObjects
 
                 count -= dead;
 
-                attackPoints = Formula.Current.GetUnitKilledAttackPoint(type, lvl, dead);
+                attackPoints = formula.GetUnitKilledAttackPoint(type, lvl, dead);
 
                 // Remove dead units from troop stub
                 TroopStub.BeginUpdate();
@@ -325,14 +335,6 @@ namespace Game.Battle.CombatObjects
             get
             {
                 return formation;
-            }
-        }
-
-        public bool IsAttacker
-        {
-            get
-            {
-                return false;
             }
         }
 

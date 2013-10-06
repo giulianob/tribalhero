@@ -1,7 +1,8 @@
 Condition,CP1,CP2,CP3,CP4,CP5,Action,P1,P2,P3,P4,P5,NlsDesc,Comments
 ,,,,,,,,,,,,,
 // main building,,,,,,,,,,,,,
-structure_upgrade,Type=2000,Lvl=8,,,,city_radius_change,radius=5,,,,,,
+structure_upgrade,Type=2000,Lvl=5,,,,city_radius_change,radius=5,,,,,,
+structure_upgrade,Type=2000,Lvl=8,,,,city_radius_change,radius=6,,,,,,
 ,,,,,,,,,,,,,
 // tribal gathering,,,,,,,,,,,,,
 structure_init,Type=3002,Lvl=1,,,,structure_self_destroy,time=28800,,,,,,

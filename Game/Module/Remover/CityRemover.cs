@@ -24,11 +24,9 @@ namespace Game.Module.Remover
 
         private const double LONG_RETRY = 90;
 
-        private readonly IActionFactory actionFactory;
-
         private readonly uint cityId;
 
-        private readonly TileLocator tileLocator;
+        private readonly IActionFactory actionFactory;
 
         private readonly IWorld world;
 
@@ -36,13 +34,15 @@ namespace Game.Module.Remover
 
         private readonly ILocker locker;
 
+        private readonly ITileLocator tileLocator;
+
         private readonly IDbManager dbManager;
 
         private readonly ITroopObjectInitializerFactory troopObjectInitializerFactory;
 
         public CityRemover(uint cityId, 
             IActionFactory actionFactory, 
-            TileLocator tileLocator, 
+            ITileLocator tileLocator, 
             IWorld world, 
             IScheduler scheduler, 
             ILocker locker, 
@@ -51,10 +51,11 @@ namespace Game.Module.Remover
         {
             this.cityId = cityId;
             this.actionFactory = actionFactory;
-            this.tileLocator = tileLocator;
+
             this.world = world;
             this.scheduler = scheduler;
             this.locker = locker;
+            this.tileLocator = tileLocator;
             this.dbManager = dbManager;
             this.troopObjectInitializerFactory = troopObjectInitializerFactory;
         }
@@ -129,9 +130,8 @@ namespace Game.Module.Remover
                 }
 
                 // If city is being targetted by an assignment, try again later
-                var reader = dbManager.ReaderQuery(string.Format("SELECT id FROM `{0}` WHERE `location_type` = 'City' AND `location_id` = @locationId  LIMIT 1",
-                                                                             Assignment.DB_TABLE),
-                                                               new[] {new DbColumn("locationId", city.Id, DbType.UInt32)});
+                var reader = dbManager.ReaderQuery(string.Format("SELECT id FROM `{0}` WHERE `location_type` = 'City' AND `location_id` = @locationId  LIMIT 1", Assignment.DB_TABLE),
+                                                          new[] {new DbColumn("locationId", city.Id, DbType.UInt32)});
                 bool beingTargetted = reader.HasRows;
                 reader.Close();
                 if (beingTargetted)
@@ -179,15 +179,10 @@ namespace Game.Module.Remover
                     }
 
                     // remove all customized tiles
-                    tileLocator.ForeachObject(city.X,
-                                                      city.Y,
-                                                      city.Radius,
-                                                      true,
-                                                      delegate(uint origX, uint origY, uint x1, uint y1, object c)
-                                                      {
-                                                          world.Regions.RevertTileType(x1, y1, true);
-                                                          return true;
-                                                      });
+                    foreach (var position in tileLocator.ForeachTile(city.PrimaryPosition.X, city.PrimaryPosition.Y, city.Radius))
+                    {
+                        world.Regions.RevertTileType(position.X, position.Y, true);                        
+                    }
                 }
             }
 
@@ -215,7 +210,7 @@ namespace Game.Module.Remover
                     city.Troops.Remove(1);
 
                     // remove city from the region
-                    world.Regions.CityRegions.Remove(city);
+                    world.Regions.MiniMapRegions.Remove(city);
 
                     mainBuilding.BeginUpdate();
                     world.Regions.Remove(mainBuilding);

@@ -2,6 +2,11 @@
 {
     public class Requirement
     {
+        public Requirement()
+        {
+            
+        }
+
         public Requirement(ushort type, byte cmp, byte minLvl, byte maxLvl, byte minDist, byte maxDist)
         {
             Type = type;
@@ -12,16 +17,16 @@
             MaxDist = maxDist;
         }
 
-        public byte Cmp { get; set; }
+        public virtual byte Cmp { get; set; }
+        
+        public virtual byte MaxDist { get; set; }
+        
+        public virtual byte MaxLvl { get; set; }
+        
+        public virtual byte MinDist { get; set; }
+        
+        public virtual byte MinLvl { get; set; }
 
-        public byte MaxDist { get; set; }
-
-        public byte MaxLvl { get; set; }
-
-        public byte MinDist { get; set; }
-
-        public byte MinLvl { get; set; }
-
-        public ushort Type { get; set; }
+        public virtual ushort Type { get; set; }
     }
 }

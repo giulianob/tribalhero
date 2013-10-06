@@ -11,7 +11,7 @@ namespace Game.Data.BarbarianTribe
 
         private readonly MapFactory mapFactory;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         private readonly IRegionManager regionManager;
 
@@ -19,7 +19,7 @@ namespace Game.Data.BarbarianTribe
 
         private readonly Random random = new Random();
         
-        public BarbarianTribeConfigurator(MapFactory mapFactory, TileLocator tileLocator, IRegionManager regionManager)
+        public BarbarianTribeConfigurator(MapFactory mapFactory, ITileLocator tileLocator, IRegionManager regionManager)
         {
             this.mapFactory = mapFactory;            
             this.tileLocator = tileLocator;
@@ -28,26 +28,25 @@ namespace Game.Data.BarbarianTribe
 
         private bool TooCloseToCities(uint x, uint y, int minDistance)
         {
-            return mapFactory.Locations().Any(loc => tileLocator.TileDistance(x, y, loc.X, loc.Y) <= minDistance);
+            return mapFactory.Locations().Any(loc => tileLocator.TileDistance(new Position(x, y), 1, loc, 1) <= minDistance);
         }
 
-        public bool Next(int count, out byte level, out uint x, out uint y)
+        public bool Next(int count, out byte level, out Position position)
         {            
             var limit = 0;
             do
             {
-                x = (uint)Config.Random.Next(30, (int)Config.map_width - 30);
-                y = (uint)Config.Random.Next(30, (int)Config.map_height - 30);
+                position = new Position((uint)Config.Random.Next(30, (int)Config.map_width - 30),
+                                        (uint)Config.Random.Next(30, (int)Config.map_height - 30));
 
                 if (limit++ > 10000)
                 {
                     level = 0;
-                    x = 0;
-                    y = 0;
+                    position = new Position();
                     return false;
                 }
             }
-            while (!IsLocationAvailable(x, y));
+            while (!IsLocationAvailable(position));
             
             var ratio = count / 100m;
             var index = random.Next(count);
@@ -59,9 +58,9 @@ namespace Game.Data.BarbarianTribe
             return true;
         }
 
-        public bool IsLocationAvailable(uint x, uint y)
+        public bool IsLocationAvailable(Position position)
         {
-            return !TooCloseToCities(x, y, MIN_DISTANCE_AWAY_FROM_CITIES) && regionManager.GetObjectsWithin(x, y, 2).Count <= 0;
+            return !TooCloseToCities(position.X, position.Y, MIN_DISTANCE_AWAY_FROM_CITIES) && !regionManager.GetObjectsWithin(position.X, position.Y, 2).Any();
         }
     }
 }

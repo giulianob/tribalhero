@@ -77,15 +77,17 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\JsonFx.2.0.1209.2802\lib\net40\JsonFx.dll</HintPath>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=1.2.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\log4net.2.0.1\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NDesk.Options">
       <HintPath>..\Lib\ndesk.options\NDesk.Options.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -181,8 +183,11 @@
     <Compile Include="Battle\BattleViewer.cs" />
     <Compile Include="Battle\CombatList.cs" />
     <Compile Include="Comm\ApiCaller.cs" />
+    <Compile Include="Comm\Channel\CityChannel.cs" />
+    <Compile Include="Comm\Channel\ICityChannel.cs" />
     <Compile Include="Comm\CmdLine Commands\AssignmentCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\CityCommandLineModule.cs" />
+    <Compile Include="Comm\CmdLine Commands\BarbarianTribeCommandsLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\RegionCommandsLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\StrongholdCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\TribeCommandLineModule.cs" />
@@ -226,6 +231,7 @@
     <Compile Include="Comm\Thrift\PlayerUnreadCount.cs" />
     <Compile Include="Database\DbLoader.cs" />
     <Compile Include="Database\DbLoaderActionFactory.cs" />
+    <Compile Include="Database\DbManagerProvider.cs" />
     <Compile Include="Database\Persistance.cs" />
     <Compile Include="Data\Achievement.cs" />
     <Compile Include="Data\AchievementList.cs" />
@@ -238,6 +244,20 @@
     <Compile Include="Data\BarbarianTribe\BarbarianTribeChecker.cs" />
     <Compile Include="Data\BarbarianTribe\BarbarianTribeConfigurator.cs" />
     <Compile Include="Data\BarbarianTribe\BarbarianTribeManager.cs" />
+    <Compile Include="Data\CityFactory.cs" />
+    <Compile Include="Data\Events\ActionReferenceArgs.cs" />
+    <Compile Include="Data\Events\ActionWorkerEventArgs.cs" />
+    <Compile Include="Data\Events\GameObjectArgs.cs" />
+    <Compile Include="Data\Events\NewCityEventArgs.cs" />
+    <Compile Include="Data\Events\SimpleGameObjectArgs.cs" />
+    <Compile Include="Data\Events\TechnologyEventArgs.cs" />
+    <Compile Include="Data\Events\TroopStubEventArgs.cs" />
+    <Compile Include="Data\GameObjectFactory.cs" />
+    <Compile Include="Data\ICityFactory.cs" />
+    <Compile Include="Data\IGameObjectFactory.cs" />
+    <Compile Include="Data\IGlobal.cs" />
+    <Compile Include="Data\IPrimaryPosition.cs" />
+    <Compile Include="Data\ITechnologyManagerFactory.cs" />
     <Compile Include="Data\Forest\IForest.cs" />
     <Compile Include="Data\Forest\IForestFactory.cs" />
     <Compile Include="Data\Forest\IForestManager.cs" />
@@ -256,7 +276,6 @@
     <Compile Include="Data\IStation.cs" />
     <Compile Include="Data\IStructure.cs" />
     <Compile Include="Data\ITechnologyManager.cs" />
-    <Compile Include="Data\IXYPosition.cs" />
     <Compile Include="Data\LazyValue.cs" />
     <Compile Include="Data\PlayerRights.cs" />
     <Compile Include="Data\Stats\IBaseBattleStats.cs" />
@@ -313,12 +332,14 @@
     <Compile Include="Data\Troop\Initializers\StationedPartialTroopObjectInitializer.cs" />
     <Compile Include="Data\Troop\ISimpleStub.cs" />
     <Compile Include="Data\Troop\ITroopManager.cs" />
+    <Compile Include="Data\Troop\ITroopManagerFactory.cs" />
     <Compile Include="Data\Troop\ITroopObject.cs" />
     <Compile Include="Data\Troop\ITroopObjectInitializer.cs" />
     <Compile Include="Data\Troop\ITroopObjectInitializerFactory.cs" />
     <Compile Include="Data\Troop\ITroopStub.cs" />
     <Compile Include="Data\Troop\ITroopStubFactory.cs" />
     <Compile Include="Data\Troop\IUnitTemplate.cs" />
+    <Compile Include="Data\Troop\IUnitTemplateFactory.cs" />
     <Compile Include="Data\Troop\SimpleStub.cs" />
     <Compile Include="Data\Troop\Initializers\StationedTroopObjectInitializer.cs" />
     <Compile Include="Data\Troop\Unit.cs" />
@@ -364,6 +385,10 @@
     <Compile Include="Logic\Actions\TroopActions\UnitUpgradeActiveAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\StructureUpgradeActiveAction.cs" />
     <Compile Include="Logic\ActionWorker.cs" />
+    <Compile Include="Logic\IReferenceManager.cs" />
+    <Compile Include="Logic\Requirements\LayoutRequirements\ILayoutRequirement.cs" />
+    <Compile Include="Logic\Requirements\LayoutRequirements\ILayoutRequirementFactory.cs" />
+    <Compile Include="Logic\Requirements\LayoutRequirements\LayoutComparison.cs" />
     <Compile Include="Logic\Triggers\CityTriggerManager.cs" />
     <Compile Include="Logic\Triggers\Conditions\StructureInitCondition.cs" />
     <Compile Include="Logic\Triggers\Conditions\StructureDowngradeCondition.cs" />
@@ -392,9 +417,12 @@
     <Compile Include="Logic\ActiveAction.cs" />
     <Compile Include="Logic\IActionTime.cs" />
     <Compile Include="Logic\IActionWorker.cs" />
+    <Compile Include="Logic\IActionWorkerFactory.cs" />
     <Compile Include="Logic\IActionWorkerOwner.cs" />
+    <Compile Include="Logic\IReferenceManagerFactory.cs" />
     <Compile Include="Logic\IScheduler.cs" />
     <Compile Include="Logic\Notifications\CityNotificationManager.cs" />
+    <Compile Include="Logic\Notifications\INotificationManagerFactory.cs" />
     <Compile Include="Logic\Notifications\INotificationOwner.cs" />
     <Compile Include="Logic\Notifications\Notification.cs" />
     <Compile Include="Logic\Notifications\NotificationEventArgs.cs" />
@@ -421,32 +449,37 @@
     <Compile Include="Logic\ScheduledPassiveAction.cs" />
     <Compile Include="Logic\Scheduler.cs" />
     <Compile Include="Logic\ThreadedScheduler.cs" />
-    <Compile Include="Data\ICityRegionObject.cs" />
+    <Compile Include="Data\IMiniMapRegionObject.cs" />
     <Compile Include="Map\CityManager.cs" />
-    <Compile Include="Map\CityRegionManager.cs" />
+    <Compile Include="Map\MiniMapRegionManager.cs" />
     <Compile Include="Map\ICityManager.cs" />
-    <Compile Include="Map\ICityRegionFactory.cs" />
-    <Compile Include="Map\ICityRegionManager.cs" />
-    <Compile Include="Map\ICityRegionManagerFactory.cs" />
+    <Compile Include="Map\IMiniMapRegionFactory.cs" />
+    <Compile Include="Map\IMiniMapRegionManager.cs" />
+    <Compile Include="Map\IMiniMapRegionManagerFactory.cs" />
     <Compile Include="Map\IGameObjectLocator.cs" />
+    <Compile Include="Map\IRegion.cs" />
     <Compile Include="Map\IRegionFactory.cs" />
+    <Compile Include="Map\IRegionLocator.cs" />
     <Compile Include="Map\IRegionManager.cs" />
     <Compile Include="Data\Tribe\ITribeManager.cs" />
+    <Compile Include="Map\IRegionObjectListFactory.cs" />
+    <Compile Include="Map\IRoadManager.cs" />
+    <Compile Include="Map\IRoadPathFinder.cs" />
+    <Compile Include="Map\ITileLocator.cs" />
     <Compile Include="Map\IWorld.cs" />
     <Compile Include="Map\LocationStrategies\CityTileNextToFriendLocationStrategy.cs" />
     <Compile Include="Map\LocationStrategies\CityTileNextAvailableLocationStrategy.cs" />
     <Compile Include="Map\LocationStrategies\ILocationStrategyFactory.cs" />
     <Compile Include="Map\LocationStrategies\ILocationStrategy.cs" />
+    <Compile Include="Map\ObjectEvent.cs" />
     <Compile Include="Map\Position.cs" />
     <Compile Include="Map\MapMath.cs" />
-    <Compile Include="Map\ObjectLink.cs" />
     <Compile Include="Map\ObjectList.AllObjectEnum.cs" />
-    <Compile Include="Map\ObjectList.cs" />
-    <Compile Include="Map\RadiusLocator.cs" />
-    <Compile Include="Map\RegionManager.cs" />
-    <Compile Include="Map\ReverseTileLocator.cs" />
-    <Compile Include="Map\RoadPathFinder.cs" />
+    <Compile Include="Map\RegionObjectList.cs" />
+    <Compile Include="Map\RegionLocator.cs" />
     <Compile Include="Map\TileLocator.cs" />
+    <Compile Include="Map\RegionManager.cs" />
+    <Compile Include="Map\RoadPathFinder.cs" />
     <Compile Include="Logic\IGameTask.cs" />
     <Compile Include="Module\Chat.cs" />
     <Compile Include="Module\Remover\CityRemover.cs" />
@@ -464,7 +497,10 @@
     <Compile Include="Map\Region.cs" />
     <Compile Include="Map\World.cs" />
     <Compile Include="Setup\ActionRequirementFactory.cs" />
+    <Compile Include="Setup\IObjectTypeFactory.cs" />
     <Compile Include="Setup\Ioc.cs" />
+    <Compile Include="Setup\IRequirementCsvFactory.cs" />
+    <Compile Include="Setup\IStructureCsvFactory.cs" />
     <Compile Include="Setup\ISystemVariableManager.cs" />
     <Compile Include="Setup\SystemVariableManager.cs" />
     <Compile Include="Setup\UnitModFactory.cs" />
@@ -472,21 +508,23 @@
     <Compile Include="Setup\EffectRequirementFactory.cs" />
     <Compile Include="Setup\Error.cs" />
     <Compile Include="Setup\InitFactory.cs" />
-    <Compile Include="Setup\StructureFactory.cs" />
+    <Compile Include="Setup\StructureCsvFactory.cs" />
     <Compile Include="Setup\Config.cs" />
     <Compile Include="Setup\FactoriesInitializer.cs" />
     <Compile Include="Setup\PropertyFactory.cs" />
-    <Compile Include="Setup\RequirementFactory.cs" />
+    <Compile Include="Setup\RequirementCsvFactory.cs" />
     <Compile Include="Setup\TechnologyFactory.cs" />
     <Compile Include="Util\Channel.cs" />
     <Compile Include="Util\DuplicateSubscriptionException.cs" />
     <Compile Include="Util\EnumExtension.cs" />
     <Compile Include="Util\EventHandlerExtensions.cs" />
     <Compile Include="Util\FileExtension.cs" />
+    <Compile Include="Util\GetRandom.cs" />
+    <Compile Include="Util\IChannel.cs" />
     <Compile Include="Util\Inflector.cs" />
     <Compile Include="Util\CmdParserExtension.cs" />
     <Compile Include="Util\HexDump.cs" />
-    <Compile Include="Util\IChannel.cs" />
+    <Compile Include="Util\IChannelListener.cs" />
     <Compile Include="Util\IdGenerator.cs" />
     <Compile Include="Util\ListExtension.cs" />
     <Compile Include="Util\Locking\CallbackLock.cs" />
@@ -558,9 +596,8 @@
     <Compile Include="Logic\ReferenceManager.cs" />
     <Compile Include="Logic\Requirements\LayoutRequirements\AwayFromLayout.cs" />
     <Compile Include="Logic\SystemVariablesUpdater.cs" />
-    <Compile Include="Map\CityRegion.cs" />
+    <Compile Include="Map\MiniMapRegion.cs" />
     <Compile Include="Map\RoadManager.cs" />
-    <Compile Include="Logic\Randomizer.cs" />
     <Compile Include="Setup\MapFactory.cs" />
     <Compile Include="Setup\ObjectTypeFactory.cs" />
     <Compile Include="Setup\SystemVariable.cs" />
@@ -604,6 +641,7 @@
     <Compile Include="Data\Tribe\Assignment.AssignmentTroop.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

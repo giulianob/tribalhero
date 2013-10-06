@@ -36,6 +36,8 @@ namespace Game.Comm
 
         SaveTutorialStep = 23,
 
+        SaveMuteSound = 24,
+
         #endregion
 
         #region Action
@@ -88,7 +90,7 @@ namespace Game.Comm
 
         RegionGet = 105,
 
-        CityRegionGet = 106,
+        MiniMapRegionGet = 106,
 
         #endregion
 

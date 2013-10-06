@@ -18,7 +18,7 @@ namespace Game.Battle.CombatGroups
                 : base(battleId, id, dbManager)
         {
             this.barbarianTribe = barbarianTribe;
-            owner = new BattleOwner(BattleOwnerType.BarbarianTribe, barbarianTribe.Id);
+            owner = new BattleOwner(BattleOwnerType.BarbarianTribe, barbarianTribe.ObjectId);
         }
 
         #region Persistance
@@ -55,7 +55,7 @@ namespace Game.Battle.CombatGroups
         {
             get
             {
-                return new[] {new DbColumn("barbarian_tribe_id", barbarianTribe.Id, DbType.UInt32)};
+                return new[] {new DbColumn("barbarian_tribe_id", barbarianTribe.ObjectId, DbType.UInt32)};
             }
         }
 

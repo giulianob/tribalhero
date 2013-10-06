@@ -57,19 +57,13 @@ namespace Game.Data.Troop.Initializers
                 return Error.TroopChanged;
             }
 
-            var newTroopStub = stub.City.Troops.Create();
+            var newTroopStub = stub.City.CreateTroopStub();
 
             newTroopStub.BeginUpdate();
             newTroopStub.Add(unitsToRetreat);
             newTroopStub.EndUpdate();
 
-            newTroopObject = new TroopObject(newTroopStub)
-            {
-                X = stub.Station.X,
-                Y = stub.Station.Y + 1
-            };
-
-            stub.City.Add(newTroopObject);
+            newTroopObject = stub.City.CreateTroopObject(newTroopStub, stub.Station.PrimaryPosition.X, stub.Station.PrimaryPosition.Y + 1);
 
             newTroopObject.BeginUpdate();
             newTroopObject.Stats = new TroopStats(formula.GetTroopRadius(stub, null),

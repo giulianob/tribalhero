@@ -17,11 +17,14 @@ namespace Game.Data.Troop
 
         private readonly ITroopStub stub;
 
+        private readonly IBattleFormulas battleFormulas;
+
         private Dictionary<ushort, BattleStats> stats = new Dictionary<ushort, BattleStats>();
 
-        public TroopTemplate(ITroopStub stub)
+        public TroopTemplate(ITroopStub stub, IBattleFormulas battleFormulas)
         {
             this.stub = stub;
+            this.battleFormulas = battleFormulas;
         }
 
         public byte Count
@@ -157,10 +160,10 @@ namespace Game.Data.Troop
                         continue;
                     }
 
-                    BattleStats stat = BattleFormulas.Current.LoadStats(type,
-                                                                        stub.City.Template[type].Lvl,
-                                                                        stub.City,
-                                                                        group);
+                    BattleStats stat = battleFormulas.LoadStats(type,
+                                                                stub.City.Template[type].Lvl,
+                                                                stub.City,
+                                                                group);
                     stats.Add(type, stat);
                 }
             }

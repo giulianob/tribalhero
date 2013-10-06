@@ -65,6 +65,7 @@ namespace Game.Data
 
         void TribeUpdate();
 
-        AchievementList Achievements { get; } 
+        AchievementList Achievements { get; }
+        bool SoundMuted { get; set; }
     }
 }

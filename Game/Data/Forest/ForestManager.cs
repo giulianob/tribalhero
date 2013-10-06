@@ -28,7 +28,7 @@ namespace Game.Data.Forest
 
         private readonly IForestFactory forestFactory;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly IActionFactory actionFactory;
 
@@ -36,13 +36,16 @@ namespace Game.Data.Forest
 
         private readonly LargeIdGenerator objectIdGenerator = new LargeIdGenerator(Config.forest_id_max, Config.forest_id_min);
 
+        private readonly ITileLocator tileLocator;
+
         public ForestManager(IScheduler scheduler,
                              IWorld world,
                              IDbManager dbManager,
                              Formula formula,
                              IForestFactory forestFactory,
-                             ObjectTypeFactory objectTypeFactory,
-                             IActionFactory actionFactory)
+                             IObjectTypeFactory objectTypeFactory,
+                             IActionFactory actionFactory,
+                             ITileLocator tileLocator)
         {
             this.scheduler = scheduler;
             this.world = world;
@@ -51,6 +54,8 @@ namespace Game.Data.Forest
             this.forestFactory = forestFactory;
             this.objectTypeFactory = objectTypeFactory;
             this.actionFactory = actionFactory;
+            this.tileLocator = tileLocator;
+
             ForestCount = new int[Config.forest_count.Length];
             forests = new Dictionary<uint, IForest>();
         }
@@ -73,9 +78,9 @@ namespace Game.Data.Forest
         public bool HasForestNear(uint x, uint y, int radius)
         {
             return world.Regions.GetRegion(x, y)
-                        .GetObjects()
+                        .GetPrimaryObjects()
                         .OfType<IForest>()
-                        .Any(forest => forest.TileDistance(x, y) <= radius);
+                        .Any(forest => tileLocator.TileDistance(forest.PrimaryPosition, 1, new Position(x, y), 1) <= radius);
         }
 
         public void CreateForest(byte lvl, int capacity, double rate)
@@ -87,8 +92,6 @@ namespace Game.Data.Forest
         {
             lock (forests)
             {
-                var forest = forestFactory.CreateForest(lvl, capacity, rate);
-
                 if (x == 0 || y == 0)
                 {
                     while (true)
@@ -102,13 +105,13 @@ namespace Game.Data.Forest
                         }
 
                         // check if tile is safe
-                        List<ushort> tiles = world.Regions.GetTilesWithin(x, y, 9);
+                        var tiles = world.Regions.GetTilesWithin(x, y, 9);
                         if (objectTypeFactory.HasTileType("CityStartTile", tiles))
                         {
                             continue;
                         }
 
-                        List<ushort> buildtableTiles = world.Regions.GetTilesWithin(x, y, 2);
+                        var buildtableTiles = world.Regions.GetTilesWithin(x, y, 2);
                         if (!objectTypeFactory.IsAllTileType("TileBuildable", buildtableTiles))
                         {
                             continue;
@@ -117,7 +120,8 @@ namespace Game.Data.Forest
                         world.Regions.LockRegion(x, y);
 
                         // check if near any other objects
-                        if (world.GetObjects(x, y).Exists(obj => !(obj is ITroopObject)) || world.GetObjectsWithin(x, y, 1).Exists(obj => !(obj is ITroopObject)))
+                        if (world.Regions.GetObjectsInTile(x, y).Any(obj => !(obj is ITroopObject)) || 
+                            world.Regions.GetObjectsWithin(x, y, 1).Any(obj => !(obj is ITroopObject)))
                         {
                             world.Regions.UnlockRegion(x, y);
                             continue;
@@ -131,17 +135,12 @@ namespace Game.Data.Forest
                     world.Regions.LockRegion(x, y);
                 }
 
-                forest.X = x;
-                forest.Y = y;
-
-                forest.ObjectId = objectIdGenerator.GetNext();
-
-                world.Regions.Add(forest);
-                world.Regions.UnlockRegion(x, y);
-
-                forests.Add(forest.ObjectId, forest);
+                var forest = forestFactory.CreateForest(objectIdGenerator.GetNext(), lvl, capacity, rate, x, y);
 
                 forest.BeginUpdate();
+                world.Regions.Add(forest);
+                world.Regions.UnlockRegion(x, y);
+                forests.Add(forest.ObjectId, forest);                
                 forest.RecalculateForest();
                 forest.EndUpdate();
 

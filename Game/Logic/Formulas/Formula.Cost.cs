@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
+using Game.Data.Stats;
 using Game.Data.Tribe;
 using Game.Setup;
 
@@ -16,27 +17,19 @@ namespace Game.Logic.Formulas
         /// <summary>
         ///     Returns the cost for building the specified structure
         /// </summary>
-        /// <param name="city"></param>
-        /// <param name="type"></param>
-        /// <param name="lvl"></param>
-        /// <returns></returns>
-        public virtual Resource StructureCost(ICity city, uint type, byte lvl)
+        public virtual Resource StructureCost(ICity city, IStructureBaseStats stats)
         {
             if (city.Battle == null)
             {
-                return StructureFactory.GetCost((int)type, lvl);
+                return stats.Cost;
             }
 
-            return StructureFactory.GetCost((int)type, lvl) * Config.battle_cost_penalty;
+            return stats.Cost * Config.battle_cost_penalty;
         }
 
         /// <summary>
         ///     Returns the cost for training the specified unit
         /// </summary>
-        /// <param name="city"></param>
-        /// <param name="type"></param>
-        /// <param name="lvl"></param>
-        /// <returns></returns>
         public virtual Resource UnitTrainCost(ICity city, ushort type, byte lvl)
         {
             if (city.Battle == null)
@@ -50,10 +43,6 @@ namespace Game.Logic.Formulas
         /// <summary>
         ///     Returns the cost for upgrading the specified unit
         /// </summary>
-        /// <param name="city"></param>
-        /// <param name="type"></param>
-        /// <param name="lvl"></param>
-        /// <returns></returns>
         public virtual Resource UnitUpgradeCost(ICity city, ushort type, byte lvl)
         {
             if (city.Battle == null)
@@ -77,9 +66,6 @@ namespace Game.Logic.Formulas
         /// <summary>
         ///     Returns the cost for repairing the specified amount
         /// </summary>
-        /// <param name="city"></param>
-        /// <param name="repairPower"></param>
-        /// <returns></returns>
         public virtual Resource RepairCost(ICity city, ushort repairPower)
         {
             int lumber = city.Technologies.GetEffects(EffectCode.RepairSaving)
@@ -93,8 +79,6 @@ namespace Game.Logic.Formulas
         /// <summary>
         ///     Maximum amount of laborers that can be assigned at once
         /// </summary>
-        /// <param name="structure"></param>
-        /// <returns></returns>
         public virtual ushort LaborMoveMax(IStructure structure)
         {
             return (ushort)Math.Max(5, Math.Ceiling(structure.Stats.Base.MaxLabor / 2.0));
@@ -103,8 +87,6 @@ namespace Game.Logic.Formulas
         /// <summary>
         ///     Specifies which resources can be purchased in the market
         /// </summary>
-        /// <param name="structure"></param>
-        /// <returns></returns>
         public virtual IEnumerable<ResourceType> MarketResourceSellable(IStructure structure)
         {
             if (structure.Lvl >= 8)
@@ -117,8 +99,6 @@ namespace Game.Logic.Formulas
         /// <summary>
         ///     Specifies which resources can be sold in the market
         /// </summary>
-        /// <param name="structure"></param>
-        /// <returns></returns>
         public virtual IEnumerable<ResourceType> MarketResourceBuyable(IStructure structure)
         {
             if (structure.Lvl >= 8)

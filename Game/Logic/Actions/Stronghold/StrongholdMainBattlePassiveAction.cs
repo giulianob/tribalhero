@@ -423,7 +423,7 @@ namespace Game.Logic.Actions
                 stronghold.GateOpenTo = null;
                 stronghold.MainBattle = null;
                 stronghold.Gate = Math.Max(Math.Min(formula.StrongholdGateLimit(stronghold.Lvl), stronghold.Gate), formula.StrongholdGateHealHp(stronghold.StrongholdState, stronghold.Lvl));
-                stronghold.State = GameObjectState.NormalState();
+                stronghold.State = GameObjectStateFactory.NormalState();
                 stronghold.EndUpdate();
 
                 StateChange(ActionState.Completed);
@@ -468,7 +468,7 @@ namespace Game.Logic.Actions
             }
 
             stronghold.BeginUpdate();
-            stronghold.State = GameObjectState.BattleState(stronghold.MainBattle.BattleId);
+            stronghold.State = GameObjectStateFactory.BattleState(stronghold.MainBattle.BattleId);
             stronghold.EndUpdate();
 
             beginTime = SystemClock.Now;

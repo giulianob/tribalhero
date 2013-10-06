@@ -7,7 +7,7 @@ namespace Game.Data.BarbarianTribe
 {
     class BarbarianTribeConfigurator : IBarbarianTribeConfigurator
     {
-        private static readonly int[] LevelProbability = new[] {0, 8, 23, 37, 49, 60, 70, 78, 85, 93, 100};
+        private static readonly int[] LevelProbability = {0, 8, 23, 37, 49, 60, 70, 78, 85, 93, 100};
 
         private readonly MapFactory mapFactory;
 
@@ -15,7 +15,7 @@ namespace Game.Data.BarbarianTribe
 
         private readonly IRegionManager regionManager;
 
-        private const int MinDistanceAwayFromCities = 8;
+        private const int MIN_DISTANCE_AWAY_FROM_CITIES = 8;
 
         private readonly Random random = new Random();
         
@@ -61,7 +61,7 @@ namespace Game.Data.BarbarianTribe
 
         public bool IsLocationAvailable(uint x, uint y)
         {
-            return !TooCloseToCities(x, y, MinDistanceAwayFromCities) && regionManager.GetObjectsWithin(x, y, 2).Count <= 0;
+            return !TooCloseToCities(x, y, MIN_DISTANCE_AWAY_FROM_CITIES) && regionManager.GetObjectsWithin(x, y, 2).Count <= 0;
         }
     }
 }

@@ -100,7 +100,7 @@ namespace Game.Map
             TileLocator.Current.ForeachObject(x,
                                               y,
                                               radius,
-                                              false,
+                                              true,
                                               (ox, oy, x1, y1, custom) =>
                                                   {
                                                       if (x1 < WorldWidth && y1 < WorldHeight)
@@ -115,7 +115,7 @@ namespace Game.Map
         public List<ushort> GetTilesWithin(uint x, uint y, byte radius)
         {
             var list = new List<ushort>();
-            TileLocator.Current.ForeachObject(x, y, radius, false, GetTilesForeach, list);
+            TileLocator.Current.ForeachObject(x, y, radius, true, GetTilesForeach, list);
             return list;
         }
 

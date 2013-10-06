@@ -18,7 +18,7 @@ namespace Game.Data.BarbarianTribe
 
         private readonly DefaultMultiObjectLock.Factory multiObjectLockFactory;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         private readonly ConcurrentDictionary<uint, IBarbarianTribe> barbarianTribes = new ConcurrentDictionary<uint, IBarbarianTribe>();
         private readonly LargeIdGenerator idGenerator = new LargeIdGenerator(Config.barbariantribe_id_max, Config.barbariantribe_id_min);
@@ -28,7 +28,7 @@ namespace Game.Data.BarbarianTribe
                                      IBarbarianTribeConfigurator barbarianTribeConfigurator,
                                      IRegionManager regionManager,
                                      DefaultMultiObjectLock.Factory multiObjectLockFactory,
-                                     TileLocator tileLocator)
+                                     ITileLocator tileLocator)
         {
             this.dbManager = dbManager;            
             this.barbarianTribeFactory = barbarianTribeFactory;
@@ -48,9 +48,9 @@ namespace Game.Data.BarbarianTribe
 
         public void DbLoaderAdd(IBarbarianTribe barbarianTribe)
         {
-            idGenerator.Set(barbarianTribe.Id);
+            idGenerator.Set(barbarianTribe.ObjectId);
 
-            barbarianTribes.AddOrUpdate(barbarianTribe.Id, barbarianTribe, (id, old) => barbarianTribe);            
+            barbarianTribes.AddOrUpdate(barbarianTribe.ObjectId, barbarianTribe, (id, old) => barbarianTribe);            
             regionManager.DbLoaderAdd(barbarianTribe);
             barbarianTribe.CampRemainsChanged += BarbarianTribeOnCampRemainsChanged;
         }
@@ -65,14 +65,14 @@ namespace Game.Data.BarbarianTribe
             for (var i = 0; i < count; ++i)
             {
                 byte level;
-                uint x, y;
+                Position position;
 
-                if (!barbarianTribeConfigurator.Next(Config.barbariantribe_generate, out level, out x, out y))
+                if (!barbarianTribeConfigurator.Next(Config.barbariantribe_generate, out level, out position))
                 {
                     break;
                 }
 
-                IBarbarianTribe barbarianTribe = barbarianTribeFactory.CreateBarbarianTribe(idGenerator.GetNext(), level, x, y, Config.barbariantribe_camp_count);
+                IBarbarianTribe barbarianTribe = barbarianTribeFactory.CreateBarbarianTribe(idGenerator.GetNext(), level, position, Config.barbariantribe_camp_count);
                 using (multiObjectLockFactory().Lock(new ILockable[] {barbarianTribe}))
                 {
                     Add(barbarianTribe);
@@ -80,24 +80,31 @@ namespace Game.Data.BarbarianTribe
             }
         }
 
-        public void CreateBarbarianTribeNear(byte level, int campCount, uint x, uint y)
+        public void CreateBarbarianTribeNear(byte level, int campCount, uint x, uint y, byte radius)
         {
-            uint barbarianCampX;
-            uint barbarianCampY;
+            Position barbarianCampPosition;
 
+            int tries = 0;
             do
             {
-                tileLocator.RandomPoint(x, y, 10, false, out barbarianCampX, out barbarianCampY);
+                tileLocator.RandomPoint(new Position(x, y), radius, true, out barbarianCampPosition);
+                if (tries++ > 150)
+                {
+                    return;
+                }
             }
-            while (!barbarianTribeConfigurator.IsLocationAvailable(barbarianCampX, barbarianCampY));
+            while (!barbarianTribeConfigurator.IsLocationAvailable(barbarianCampPosition));
             
-            IBarbarianTribe barbarianTribe = barbarianTribeFactory.CreateBarbarianTribe(idGenerator.GetNext(), level, barbarianCampX, barbarianCampY, campCount);
-            Add(barbarianTribe);
+            IBarbarianTribe barbarianTribe = barbarianTribeFactory.CreateBarbarianTribe(idGenerator.GetNext(), level, barbarianCampPosition, campCount);
+            if (barbarianTribe != null)
+            {
+                Add(barbarianTribe);
+            }
         }
 
         private void Add(IBarbarianTribe barbarianTribe)
         {
-            barbarianTribes.AddOrUpdate(barbarianTribe.Id, barbarianTribe, (id, old) => barbarianTribe);
+            barbarianTribes.AddOrUpdate(barbarianTribe.ObjectId, barbarianTribe, (id, old) => barbarianTribe);
 
             barbarianTribe.BeginUpdate();
             regionManager.Add(barbarianTribe);
@@ -123,27 +130,27 @@ namespace Game.Data.BarbarianTribe
             }            
 
             IBarbarianTribe obj;
-            if (!barbarianTribes.TryRemove(barbarianTribe.Id, out obj))
+            if (!barbarianTribes.TryRemove(barbarianTribe.ObjectId, out obj))
             {
                 return;
             }
 
             barbarianTribe.CampRemainsChanged -= BarbarianTribeOnCampRemainsChanged;
 
-            barbarianTribe.BeginUpdate();
-            regionManager.Remove(barbarianTribe);
-            barbarianTribe.EndUpdate();
+            if (barbarianTribe.InWorld)
+            {
+                barbarianTribe.BeginUpdate();
+                regionManager.Remove(barbarianTribe);
+                barbarianTribe.EndUpdate();
+            }
 
             dbManager.Delete(barbarianTribe);
         }
 
         public void RelocateAsNeeded()
         {
-            var barbarianTribesToDelete =
-                    barbarianTribes.Values.Where(
-                                                 bt =>
-                                                 (bt.Created.Add(TimeSpan.FromSeconds(Config.barbariantribe_idle_duration_in_sec)) < DateTime.UtcNow &&
-                                                  bt.LastAttacked == DateTime.MinValue) || bt.CampRemains == 0);
+            var barbarianTribesToDelete = barbarianTribes.Values.Where(bt => (bt.Created.Add(TimeSpan.FromSeconds(Config.barbariantribe_idle_duration_in_sec)) < DateTime.UtcNow &&
+                                                                              bt.LastAttacked == DateTime.MinValue) || bt.CampRemains == 0).ToArray();
 
             foreach(var barbarianTribe in barbarianTribesToDelete)
             {

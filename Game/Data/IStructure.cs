@@ -9,7 +9,7 @@ namespace Game.Data
 
         ITechnologyManager Technologies { get; }
 
-        StructureProperties Properties { get; set; }
+        StructureProperties Properties { get; }
 
         bool IsMainBuilding { get; }
 

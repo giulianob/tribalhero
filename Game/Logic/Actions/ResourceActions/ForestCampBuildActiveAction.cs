@@ -29,13 +29,11 @@ namespace Game.Logic.Actions
 
         private readonly IWorld world;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
-        private readonly StructureFactory structureFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         private readonly InitFactory initFactory;
-
-        private readonly ReverseTileLocator reverseTileLocator;
 
         private readonly IForestManager forestManager;
 
@@ -45,6 +43,8 @@ namespace Game.Logic.Actions
 
         private uint campId;
 
+        private readonly ITileLocator tileLocator;
+
         public ForestCampBuildActiveAction(uint cityId,
                                            uint lumbermillId,
                                            uint forestId,
@@ -52,12 +52,12 @@ namespace Game.Logic.Actions
                                            byte labors,
                                            Formula formula,
                                            IWorld world,
-                                           ObjectTypeFactory objectTypeFactory,
-                                           StructureFactory structureFactory,
+                                           IObjectTypeFactory objectTypeFactory,
+                                           IStructureCsvFactory structureCsvFactory,
                                            InitFactory initFactory,
-                                           ReverseTileLocator reverseTileLocator,
                                            IForestManager forestManager,
-                                           ILocker locker)
+                                           ILocker locker, 
+                                           ITileLocator tileLocator)
         {
             this.cityId = cityId;
             this.lumbermillId = lumbermillId;
@@ -66,11 +66,11 @@ namespace Game.Logic.Actions
             this.formula = formula;
             this.world = world;
             this.objectTypeFactory = objectTypeFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             this.initFactory = initFactory;
-            this.reverseTileLocator = reverseTileLocator;
             this.forestManager = forestManager;
             this.locker = locker;
+            this.tileLocator = tileLocator;
             this.campType = campType;
         }
 
@@ -84,22 +84,22 @@ namespace Game.Logic.Actions
                                            Dictionary<string, string> properties,
                                            Formula formula,
                                            IWorld world,
-                                           ObjectTypeFactory objectTypeFactory,
-                                           StructureFactory structureFactory,
+                                           IObjectTypeFactory objectTypeFactory,
+                                           IStructureCsvFactory structureCsvFactory,
                                            InitFactory initFactory,
                                            IForestManager forestManager,
-                                           ReverseTileLocator reverseTileLocator,
-                                           ILocker locker)
+                                           ILocker locker, 
+                                           ITileLocator tileLocator)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             this.formula = formula;
             this.world = world;
             this.objectTypeFactory = objectTypeFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             this.initFactory = initFactory;
             this.forestManager = forestManager;
-            this.reverseTileLocator = reverseTileLocator;
             this.locker = locker;
+            this.tileLocator = tileLocator;
             cityId = uint.Parse(properties["city_id"]);
             lumbermillId = uint.Parse(properties["lumbermill_id"]);
             campId = uint.Parse(properties["camp_id"]);
@@ -161,7 +161,7 @@ namespace Game.Logic.Actions
             }
 
             // Cost requirement
-            Resource cost = formula.StructureCost(city, campType, 1);
+            Resource cost = formula.StructureCost(city, structureCsvFactory.GetBaseStats(campType, 1));
 
             // Add labor count to the total cost
             cost.Labor += labors;
@@ -180,29 +180,25 @@ namespace Game.Logic.Actions
             // find an open space around the forest
             uint emptyX = 0;
             uint emptyY = 0;
-            reverseTileLocator.ForeachObject(forest.X,
-                                             forest.Y,
-                                             1,
-                                             false,
-                                             (ox, oy, x, y, custom) =>
-                                                 {
-                                                     // Check tile type                
-                                                     if (!objectTypeFactory.IsTileType("TileBuildable", world.Regions.GetTileType(x, y)))
-                                                     {
-                                                         return true;
-                                                     }
+            foreach (var position in tileLocator.ForeachTile(forest.PrimaryPosition.X, forest.PrimaryPosition.Y, 1, false).Reverse())
+            {
+                // Check tile type                
+                if (!objectTypeFactory.IsTileType("TileBuildable", world.Regions.GetTileType(position.X, position.Y)))
+                {
+                    continue;
+                }
 
-                                                     // Make sure it's not taken
-                                                     if (world[x, y].Count > 0)
-                                                     {
-                                                         return true;
-                                                     }
+                // Make sure it's not taken
+                if (world.Regions.GetObjectsInTile(position.X, position.Y).Any())
+                {
+                    continue;
+                }
 
-                                                     emptyX = x;
-                                                     emptyY = y;
+                emptyX = position.X;
+                emptyY = position.Y;
 
-                                                     return false;
-                                                 });
+                break;
+            }
 
             if (emptyX == 0 || emptyY == 0)
             {
@@ -212,18 +208,15 @@ namespace Game.Logic.Actions
             world.Regions.LockRegion(emptyX, emptyY);
 
             // add structure to the map                    
-            IStructure structure = structureFactory.GetNewStructure(campType, 0);
-            structure["Rate"] = 0; // Set initial rate for camp
-            structure.X = emptyX;
-            structure.Y = emptyY;
+            IStructure structure = city.CreateStructure(campType, 0, emptyX, emptyY);
 
             structure.BeginUpdate();
+            structure["Rate"] = 0; // Set initial rate for camp
             structure.Stats.Labor = labors;
+
             city.BeginUpdate();
             city.Resource.Subtract(cost);
             city.EndUpdate();
-
-            city.Add(structure);
 
             if (!world.Regions.Add(structure))
             {
@@ -247,8 +240,8 @@ namespace Game.Logic.Actions
             forest.EndUpdate();
 
             // add to queue for completion
-            var campBuildTime = structureFactory.GetTime(campType, 1);
-            var actionEndTime = formula.GetLumbermillCampBuildTime(campBuildTime, lumbermill, forest);
+            var campBuildTime = structureCsvFactory.GetTime(campType, 1);
+            var actionEndTime = formula.GetLumbermillCampBuildTime(campBuildTime, lumbermill, forest, tileLocator);
 
             endTime = SystemClock.Now.AddSeconds(CalculateTime(actionEndTime));
             BeginTime = SystemClock.Now;
@@ -309,7 +302,7 @@ namespace Game.Logic.Actions
                 // Upgrade the camp
                 structure.BeginUpdate();
                 structure.Technologies.Parent = structure.City.Technologies;
-                structureFactory.GetUpgradedStructure(structure, structure.Type, 1);
+                structureCsvFactory.GetUpgradedStructure(structure, structure.Type, 1);
                 initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 
@@ -347,11 +340,6 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                // Give any cost associated with the camp back (laborers are not done here)
-                city.BeginUpdate();
-                city.Resource.Add(formula.GetActionCancelResource(BeginTime, formula.StructureCost(city, campType, 1)));
-                city.EndUpdate();
-
                 // Get camp
                 IStructure structure;
                 if (!city.TryGetStructure(campId, out structure))
@@ -359,6 +347,11 @@ namespace Game.Logic.Actions
                     StateChange(ActionState.Failed);
                     return;
                 }
+
+                // Give any cost associated with the camp back (laborers are not done here)
+                city.BeginUpdate();
+                city.Resource.Add(formula.GetActionCancelResource(BeginTime, formula.StructureCost(city, structure.Stats.Base)));
+                city.EndUpdate();
 
                 city.References.Remove(structure, this);
 

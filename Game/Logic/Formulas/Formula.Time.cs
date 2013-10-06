@@ -7,6 +7,7 @@ using Game.Data;
 using Game.Data.Forest;
 using Game.Data.Stats;
 using Game.Data.Troop;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 
@@ -191,9 +192,9 @@ namespace Game.Logic.Formulas
             return Config.server_production ? Math.Max(4, ret) : ret;
         }
 
-        public double GetLumbermillCampBuildTime(int campBuildTime, IStructure lumbermill, IForest forest)
+        public virtual double GetLumbermillCampBuildTime(int campBuildTime, IStructure lumbermill, IForest forest, ITileLocator tileLocator)
         {
-            var distance = lumbermill.TileDistance(forest);
+            var distance = tileLocator.TileDistance(lumbermill, forest);
             return BuildTime(campBuildTime, lumbermill.City, lumbermill.City.Technologies) + distance * 5;
         }
     }

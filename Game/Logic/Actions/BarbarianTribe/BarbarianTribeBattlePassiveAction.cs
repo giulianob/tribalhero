@@ -153,7 +153,7 @@ namespace Game.Logic.Actions
 
                 barbarianTribe.BeginUpdate();               
                 barbarianTribe.Battle = null;                
-                barbarianTribe.State = GameObjectState.NormalState();                
+                barbarianTribe.State = GameObjectStateFactory.NormalState();                
                 // Reset resources
                 barbarianTribe.Resource.Clear();
                 barbarianTribe.Resource.Add(formula.BarbarianTribeResources(barbarianTribe.Lvl));
@@ -187,7 +187,7 @@ namespace Game.Logic.Actions
             int upkeep;
             byte unitLevel;
             formula.BarbarianTribeUpkeep(barbarianTribe.Lvl, out upkeep, out unitLevel);
-            simpleStubGenerator.Generate(barbarianTribe.Lvl, upkeep, unitLevel, Config.barbarian_tribes_npc_randomness, (int)barbarianTribe.Id + barbarianTribe.CampRemains, out simpleStub);
+            simpleStubGenerator.Generate(barbarianTribe.Lvl, upkeep, unitLevel, Config.barbarian_tribes_npc_randomness, (int)barbarianTribe.ObjectId + barbarianTribe.CampRemains, out simpleStub);
 
             var combatGroup = barbarianTribeBattleProcedure.AddBarbarianTribeUnitsToBattle(barbarianTribe.Battle,
                                                                                            barbarianTribe,

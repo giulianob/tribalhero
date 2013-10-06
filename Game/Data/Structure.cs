@@ -3,8 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Game.Data.Stats;
-using Game.Database;
 using Game.Util;
 using Persistance;
 
@@ -22,12 +22,20 @@ namespace Game.Data
 
         private IStructureStats stats;
 
-        public Structure(IStructureStats stats)
+        private readonly IDbManager dbManager;
+
+        public Structure(uint structureId, 
+                         IStructureStats stats,
+                         uint x,
+                         uint y,
+                         ITechnologyManager technologyManager,
+                         StructureProperties structureProperties,
+                         IDbManager dbManager) : base(structureId, x, y)
         {
             this.stats = stats;
-
-            techmanager = new TechnologyManager(EffectLocation.Object, this, 0);            
-            properties = new StructureProperties(this);
+            this.dbManager = dbManager;
+            techmanager = technologyManager;
+            properties = structureProperties;
         }
 
         #region Indexers
@@ -69,21 +77,7 @@ namespace Game.Data
                 properties = value;
             }
         }
-
-        public override uint ObjectId
-        {
-            get
-            {
-                return base.ObjectId;
-            }
-            set
-            {
-                CheckUpdateMode();
-                techmanager.Id = value;
-                base.ObjectId = value;
-            }
-        }
-
+        
         #endregion
 
         public bool IsMainBuilding
@@ -113,6 +107,14 @@ namespace Game.Data
             }
         }
 
+        public override byte Size
+        {
+            get
+            {
+                return stats.Base.Size;
+            }
+        }
+
         public override ushort Type
         {
             get
@@ -127,17 +129,6 @@ namespace Game.Data
             {
                 return stats.Base.Lvl;
             }
-        }
-
-        public override void EndUpdate()
-        {
-            if (!updating)
-            {
-                throw new Exception("Called endupdate without first calling begin update");
-            }
-
-            updating = false;
-            Update();
         }
 
         #region IPersistableObject Members
@@ -156,8 +147,8 @@ namespace Game.Data
             {
                 return new[]
                 {
-                        new DbColumn("x", X, DbType.UInt32), 
-                        new DbColumn("y", Y, DbType.Int32),
+                        new DbColumn("x", PrimaryPosition.X, DbType.UInt32), 
+                        new DbColumn("y", PrimaryPosition.Y, DbType.Int32),
                         new DbColumn("hp", stats.Hp, DbType.Decimal), 
                         new DbColumn("type", Type, DbType.Int16),
                         new DbColumn("level", Lvl, DbType.Byte), 
@@ -176,9 +167,22 @@ namespace Game.Data
         {
             get
             {
-                return new[]
-                {new DbColumn("id", ObjectId, DbType.UInt32), new DbColumn("city_id", City.Id, DbType.UInt32)};
+                return new[] {new DbColumn("id", ObjectId, DbType.UInt32), new DbColumn("city_id", City.Id, DbType.UInt32)};
             }
+        }
+
+        #endregion
+
+        protected override bool Update()
+        {
+            var update = base.Update();
+
+            if (update)
+            {
+                dbManager.Save(this);
+            }
+
+            return update;
         }
 
         public IEnumerable<DbDependency> DbDependencies
@@ -190,25 +194,6 @@ namespace Game.Data
         }
 
         public bool DbPersisted { get; set; }
-
-        #endregion
-
-        protected new void Update()
-        {
-            base.Update();
-
-            if (!Global.FireEvents)
-            {
-                return;
-            }
-
-            if (updating)
-            {
-                return;
-            }
-
-            DbPersistance.Current.Save(this);
-        }
 
         public override int Hash
         {
@@ -225,5 +210,7 @@ namespace Game.Data
                 return City != null ? City.Lock : null;
             }
         }
+
+
     }
 }

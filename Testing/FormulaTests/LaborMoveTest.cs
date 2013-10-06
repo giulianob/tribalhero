@@ -4,6 +4,7 @@ using Game.Data;
 using Game.Logic.Formulas;
 using NSubstitute;
 using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.AutoNSubstitute;
 using Xunit.Extensions;
 using FluentAssertions;
 

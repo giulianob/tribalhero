@@ -6,7 +6,9 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
-using Moq;
+using NSubstitute;
+using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.AutoNSubstitute;
 using Xunit.Extensions;
 
 namespace Testing.BattleTests
@@ -37,26 +39,16 @@ namespace Testing.BattleTests
         [Theory, PropertyData("TakeDamageWhenNotDiedData")]
         public void TakeDamageWhenNotDied(decimal hp, decimal dmg, decimal expectedHp)
         {
-            Mock<StructureStats> structureStats = new Mock<StructureStats>();
-            Mock<IStructure> structure = new Mock<IStructure>();
-            Mock<BattleStats> battleStats = new Mock<BattleStats>();
-            Mock<Formula> formula = new Mock<Formula>();
-            Mock<IBattleFormulas> battleFormula = new Mock<IBattleFormulas>();
-            Mock<IActionFactory> actionFactory = new Mock<IActionFactory>();
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
+            
+            var structure = Substitute.For<IStructure>();
+            var formula = Substitute.For<Formula>();
 
-            structureStats.SetupAllProperties();
-            structure.SetupGet(p => p.Stats).Returns(structureStats.Object);
-
-            CombatStructure combatStructure = new CombatStructure(1,
-                                                                  1,
-                                                                  structure.Object,
-                                                                  battleStats.Object,
-                                                                  hp,
-                                                                  1,
-                                                                  1,
-                                                                  formula.Object,
-                                                                  actionFactory.Object,
-                                                                  battleFormula.Object);
+            structure.Stats.Hp.Returns(hp);
+            fixture.Register(() => structure);
+            
+            var combatStructure = fixture.Create<CombatStructure>();
+            
             Resource returning;
             int attackPoints;
             combatStructure.TakeDamage(dmg, out returning, out attackPoints);
@@ -65,36 +57,30 @@ namespace Testing.BattleTests
             attackPoints.Should().Be(0, "No attack points should have been received");
 
             combatStructure.Hp.Should().Be(expectedHp);
-            structureStats.Object.Hp.Should().Be(expectedHp);
-            formula.Verify(m => m.GetStructureKilledAttackPoint(It.IsAny<ushort>(), It.IsAny<byte>()), Times.Never());
-            structure.Verify(m => m.BeginUpdate(), Times.Once());
-            structure.Verify(m => m.EndUpdate(), Times.Once());
+            structure.Stats.Hp.Should().Be(expectedHp);
+            formula.DidNotReceiveWithAnyArgs().GetStructureKilledAttackPoint(0, 0);
+            structure.Received(1).BeginUpdate();
+            structure.Received(1).EndUpdate();
         }
-
+        
         [Theory, PropertyData("TakeDamageWhenDiedData")]
         public void TakeDamageWhenDied(decimal hp, decimal dmg, decimal expectedHp)
         {
-            Mock<StructureStats> structureStats = new Mock<StructureStats>();
-            Mock<IStructure> structure = new Mock<IStructure>();
-            Mock<BattleStats> battleStats = new Mock<BattleStats>();
-            Mock<Formula> formula = new Mock<Formula>();
-            Mock<IBattleFormulas> battleFormula = new Mock<IBattleFormulas>();
-            Mock<IActionFactory> actionFactory = new Mock<IActionFactory>();
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
+            
+            var structure = Substitute.For<IStructure>();
 
-            structureStats.SetupAllProperties();
-            structure.SetupGet(p => p.Stats).Returns(structureStats.Object);
-            formula.Setup(m => m.GetStructureKilledAttackPoint(100, 2)).Returns(10);
+            structure.Stats.Hp.Returns(hp);
+            structure.Type.Returns<ushort>(100);
+            structure.Lvl.Returns<byte>(2);
+            fixture.Register(() => structure);
 
-            CombatStructure combatStructure = new CombatStructure(1,
-                                                                  1,
-                                                                  structure.Object,
-                                                                  battleStats.Object,
-                                                                  hp,
-                                                                  100,
-                                                                  2,
-                                                                  formula.Object,
-                                                                  actionFactory.Object,
-                                                                  battleFormula.Object);
+            var formula = Substitute.For<Formula>();
+            fixture.Register(() => formula);
+            formula.GetStructureKilledAttackPoint(100, 2).Returns(10);
+
+            var combatStructure = fixture.Create<CombatStructure>();
+
             Resource returning;
             int attackPoints;
             combatStructure.TakeDamage(dmg, out returning, out attackPoints);
@@ -103,9 +89,9 @@ namespace Testing.BattleTests
             attackPoints.Should().Be(10);
 
             combatStructure.Hp.Should().Be(expectedHp);
-            structureStats.Object.Hp.Should().Be(expectedHp);
-            structure.Verify(m => m.BeginUpdate(), Times.Once());
-            structure.Verify(m => m.EndUpdate(), Times.Once());
-        }
+            structure.Stats.Hp.Should().Be(expectedHp);
+            structure.Received(1).BeginUpdate();
+            structure.Received(1).EndUpdate();
+        }         
     }
 }

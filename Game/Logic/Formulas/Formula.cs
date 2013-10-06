@@ -255,7 +255,7 @@ namespace Game.Logic.Formulas
 
         public virtual byte GetInitialCityRadius()
         {
-            return 4;
+            return 5;
         }
 
         public virtual decimal GetInitialAp()

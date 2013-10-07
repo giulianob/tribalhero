@@ -143,13 +143,14 @@ namespace Game.Logic.Actions
                 return Error.ActionTotalMaxReached;
             }
 
-            cost = formula.StructureCost(city, structureCsvFactory.GetBaseStats(structure.Type, (byte)(structure.Lvl + 1)));
-            type = structure.Type;
-
-            if (cost == null)
+            var stats = structureCsvFactory.GetBaseStats(structure.Type, (byte)(structure.Lvl + 1));
+            if (stats == null)
             {
-                return Error.ObjectStructureNotFound;
+                return Error.ObjectStructureNotFound;                
             }
+
+            cost = formula.StructureCost(city, stats);
+            type = structure.Type;
 
             // layout requirement
             if (!requirementCsvFactory

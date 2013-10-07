@@ -33,6 +33,7 @@
 			ICON_HAMMER;
             ICON_MINIMAP_ARROW_RED;
             ICON_MINIMAP_ARROW_BLUE;
+            ICON_TOGGLE_SOUND;
 			
 			//Minimap Icons
             MINIMAP_HIT_AREA;
@@ -52,29 +53,7 @@
 			DOT_SPRITE_BLACK;
 			DOT_SPRITE_WHITE;
 			TILE_MINI;
-			
-			//Walls
-			WALL_NE_0;
-			WALL_NW_0;
-			WALL_SE_0;
-			WALL_SW_0;
-			WALL_N_0;
-			WALL_S_0;
-			WALL_W_0;
-			WALL_E_0;
-			WALL_NE_1;
-			WALL_NW_1;
-			WALL_SE_1;
-			WALL_SW_1;
-			WALL_N_1;
-			WALL_S_1;
-			WALL_W_1;
-			WALL_E_1;		
-			WALL_O1;
-			WALL_O2;
-			WALL_O3;
-			WALL_O4;
-			
+
 			//UNITS
 			DEFAULT_UNIT;
 			ARCHER_DARK_UNIT;			

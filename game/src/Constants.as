@@ -32,7 +32,8 @@ package src
 		public static var newbieProtectionSeconds: int;
 		public static var tribeAssignment: int;
 		public static var tribeIncoming: int;
-		
+        public static var soundMuted: Boolean;
+
 		/* APP CONSTANTS */
 		public static var mainWebsite: String = "http://tribalhero.com/";
 		public static const debug:int = 0;

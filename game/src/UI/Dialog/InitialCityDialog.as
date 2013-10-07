@@ -5,6 +5,8 @@ package src.UI.Dialog{
     import org.aswing.ext.*;
     import org.aswing.geom.*;
 
+    import src.Constants;
+
     import src.Global;
     import src.UI.Components.AutoCompleteTextField;
     import src.UI.Components.SimpleTooltip;
@@ -13,18 +15,13 @@ package src.UI.Dialog{
     import src.Util.StringHelper;
     import src.Util.Util;
 
-    /**
-	 * ConnectionDialog
-	 */
 	public class InitialCityDialog extends GameJPanel {
 
-		//members define
-		private var form42:Form;
+		private var form:Form;
 		private var rowName:FormRow;
 		private var lblName:JLabel;
 		private var txtName:JTextField;
 		private var separator14:JSeparator;
-		private var panel16:JPanel;
 		private var btnOk:JButton;
 		private var lblWelcome: MultilineLabel;
 		
@@ -39,10 +36,8 @@ package src.UI.Dialog{
 		private var rowPlayerHash: FormRow;
 		private var lblPlayerHash: JLabel;
 		private var txtPlayerHash: JTextField;
+        private var chkPlayMusic: JCheckBox;
 
-		/**
-		 * InitialCityDialog Constructor
-		 */
 		public function InitialCityDialog(onAccept: Function) {
 			createUI();
 
@@ -55,15 +50,18 @@ package src.UI.Dialog{
 				
 				if (onAccept != null) onAccept(self);
 			});
+
+            chkPlayMusic.addSelectionListener(function(): void {
+                Global.musicPlayer.toggle(chkPlayMusic.isSelected());
+            });
 		}
 
-		//_________getters_________
 		public function getCityName():String{
 			return txtName.getText();
 		}
 		
 		public function getLocationParameter(): * {
-			var obj: Object = new Object();
+			var obj: Object = {};
 			obj.method = cbbLocation.getSelectedIndex();
 			obj.playerName = txtPlayer.getText();
 			obj.playerHash = txtPlayerHash.getText();
@@ -81,9 +79,8 @@ package src.UI.Dialog{
 
 		private function createUI():void {
 			title = "Create Your City";
-			//component creation
+
 			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
-			setSize(new IntDimension(228, 237));
 			setConstraints("Center");
 			var border0:EmptyBorder = new EmptyBorder();
 			border0.setTop(10);
@@ -92,27 +89,19 @@ package src.UI.Dialog{
 			border0.setRight(10);
 			setBorder(border0);
 
-			form42 = new Form();
-			form42.setLocation(new IntPoint(10, 10));
-			form42.setSize(new IntDimension(208, 117));
-			form42.setVGap(5);
+			form = new Form();
+			form.setVGap(5);
 
 			//  City name row
 			rowName = new FormRow();
-			rowName.setLocation(new IntPoint(0, 42));
-			rowName.setSize(new IntDimension(256, 25));
 			rowName.setColumnChildrenIndecis("-1,0,1,2");
 
 			lblName = new JLabel();
-			lblName.setLocation(new IntPoint(0, 2));
-			lblName.setSize(new IntDimension(52, 25));
 			lblName.setText("City Name");
 			lblName.setHorizontalAlignment(AsWingConstants.RIGHT);
 
 			txtName = new JTextField();
 			txtName.setMaxChars(16);
-			txtName.setLocation(new IntPoint(74, 20));
-			txtName.setSize(new IntDimension(150,25));
 			txtName.setPreferredSize(new IntDimension(150, 25));
 			
 			// Location row
@@ -148,34 +137,26 @@ package src.UI.Dialog{
 			new SimpleTooltip(txtPlayerHash, StringHelper.localize("PLAYER_PROFILE_INVITATION_TOOLTIP_LOCATION"));
 			
 			separator14 = new JSeparator();
-			separator14.setLocation(new IntPoint(10, 33));
-			separator14.setSize(new IntDimension(206, 2));
-
-			panel16 = new JPanel();
-			panel16.setLocation(new IntPoint(208, 0));
-			panel16.setSize(new IntDimension(10, 10));
-			var layout1:FlowLayout = new FlowLayout();
-			layout1.setAlignment(AsWingConstants.CENTER);
-			panel16.setLayout(layout1);
 
 			btnOk = new JButton();
-			btnOk.setLocation(new IntPoint(87, 5));
-			btnOk.setSize(new IntDimension(34, 22));
 			btnOk.setText("Create City");
 
 			lblWelcome = new MultilineLabel("Welcome! Since this is your first time on this server, you have to choose a name for your first city");
 
-			//component layoution
-			append(lblWelcome);
-			append(form42);
+            chkPlayMusic = new JCheckBox("Play sounds/music");
+            chkPlayMusic.setSelected(!Constants.soundMuted);
 
-			form42.append(rowName);
-			form42.append(rowLocation);
-			form42.append(rowPlayer);
-			form42.append(rowPlayerHash);
-			form42.append(separator14);
-			form42.append(panel16);
-			
+			append(lblWelcome);
+			append(form);
+
+			form.append(rowName);
+			form.append(rowLocation);
+			form.append(rowPlayer);
+			form.append(rowPlayerHash);
+			form.append(separator14);
+			form.append(AsWingUtils.createPaneToHold(btnOk, new FlowLayout(AsWingConstants.CENTER)));
+			form.append(AsWingUtils.createPaneToHold(chkPlayMusic, new FlowLayout(AsWingConstants.LEFT)));
+
 			rowLocation.append(lblLocation);
 			rowLocation.append(cbbLocation);
 			
@@ -189,8 +170,6 @@ package src.UI.Dialog{
 			rowPlayerHash.append(lblPlayerHash);
 			rowPlayerHash.append(txtPlayerHash);
 			rowPlayerHash.setVisible(false);
-			
-			panel16.append(btnOk);
 		}
 	}
 }

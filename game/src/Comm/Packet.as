@@ -56,6 +56,10 @@
 			length+=1;
 		}
 
+        public function writeBoolean(param: Boolean): void {
+            writeByte(param ? 1 : 0);
+        }
+
 		public function writeUByte(param:int):void {
 			parameters.push(new Parameter(param,Parameter.INT4,Parameter.UINT1));
 			length+=1;
@@ -139,7 +143,11 @@
 		public function readString():String {			
 			return bytes.readUTF();
 		}
-		
+
+        public function readBoolean(): Boolean {
+            return bytes.readByte() == 1;
+        }
+
 		public function hasData(): Boolean {
 			return bytes.bytesAvailable > 0;
 		}
@@ -218,5 +226,6 @@
 			
 			return str;
 		}
-	}
+
+    }
 }

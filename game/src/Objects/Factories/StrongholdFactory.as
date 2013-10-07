@@ -5,6 +5,7 @@
     import flash.display.Sprite;
 
     import src.Assets;
+    import src.Constants;
     import src.Global;
     import src.Objects.States.GameObjectState;
     import src.Objects.Stronghold.Stronghold;
@@ -14,11 +15,19 @@
 		public function StrongholdFactory() {
 		}
 
-		public static function getSprite(withPosition: String): DisplayObjectContainer
+		public static function getSprite(withPosition: String, withShadow: Boolean = false): DisplayObjectContainer
 		{
 			var image: Bitmap = Assets.getInstance("STRONGHOLD_STRUCTURE", withPosition);
 
             var sprite: Sprite = new Sprite();
+
+            if (withShadow) {
+                var shadow: Bitmap = Assets.getInstance("STRONGHOLD_STRUCTURE_SHADOW", withPosition);
+                shadow.alpha = Constants.shadowAlpha;
+                shadow.name = "shadow";
+                sprite.addChild(shadow);
+            }
+
             sprite.addChild(image);
 
 			return sprite;
@@ -28,7 +37,7 @@
 		{
 			var strongholdObj: Stronghold = new Stronghold(type, state, objX, objY, size, groupId, objectId, level, tribeId, gateMax);
 
-			strongholdObj.spriteContainer.addChild(getSprite("map"));
+			strongholdObj.spriteContainer.addChild(getSprite("map", true));
 
 			strongholdObj.setOnSelect(Global.map.selectObject);
 			

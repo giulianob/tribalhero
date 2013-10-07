@@ -1,10 +1,12 @@
 ﻿package src.Objects.Factories {
 
+    import flash.display.Bitmap;
     import flash.display.DisplayObject;
     import flash.display.DisplayObjectContainer;
     import flash.display.Sprite;
 
     import src.Assets;
+    import src.Constants;
     import src.Global;
     import src.Objects.Forest;
     import src.Objects.States.GameObjectState;
@@ -14,11 +16,21 @@
 		public function ForestFactory() {
 		}
 
-        public static function getSprite(lvl: int, withPosition: String = ""): DisplayObjectContainer
+        public static function getSprite(lvl: int, withPosition: String = "", withShadow: Boolean = false): DisplayObjectContainer
         {
-            var image: DisplayObject = Assets.getInstance("FOREST_LVL_" + lvl, withPosition);
+            var assetName: String = "FOREST_LVL_" + lvl;
+
+            var image: DisplayObject = Assets.getInstance(assetName, withPosition);
 
             var sprite: Sprite = new Sprite();
+
+            if (withShadow) {
+                var shadow: Bitmap = Assets.getInstance(assetName + "_SHADOW", withPosition);
+                shadow.alpha = Constants.shadowAlpha;
+                shadow.name = "shadow";
+                sprite.addChild(shadow);
+            }
+
             sprite.addChild(image);
 
             return sprite;

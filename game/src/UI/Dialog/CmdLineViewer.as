@@ -163,7 +163,12 @@ package src.UI.Dialog
                         return true;
                     }
                 }
-				
+
+                if (message.indexOf("/setvolume") == 0) {
+                    Global.musicPlayer.volume = Number(message.split(" ")[1]);
+                    return true;
+                }
+
 				Global.mapComm.General.sendCommand(message.substr(1), function(resp:String, type: int = 0):void
 					{
 						log(currentChatType, resp, false);

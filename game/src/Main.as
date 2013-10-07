@@ -31,8 +31,6 @@
 
     public class Main extends MovieClip
 	{
-		private var importObjects: Assets;
-
 		private var gameContainer: GameContainer;
 
 		private var map:Map;
@@ -61,6 +59,8 @@
 			removeEventListener(Event.ADDED_TO_STAGE, init);							
             
             stage.showDefaultContextMenu = false;
+
+            Global.musicPlayer = new MusicPlayer();
 
 			CONFIG::debug {
 			    stage.addChild(new TheMiner());
@@ -213,7 +213,9 @@
 		
 			gameContainer.dispose();			
 			if (Global.mapComm) Global.mapComm.dispose();
-			
+
+            if (Global.musicPlayer) Global.musicPlayer.stop();
+
 			Global.mapComm = null;
 			Global.map = null;
 			session = null;
@@ -266,8 +268,7 @@
 				completeLogin(packet, false);
 			}
 			else {
-				// Need to make the createInitialCity static and pass in the session
-				var createCityDialog: InitialCityDialog = new InitialCityDialog(function(sender: InitialCityDialog): void {
+                var createCityDialog: InitialCityDialog = new InitialCityDialog(function(sender: InitialCityDialog): void {
 					Global.mapComm.General.createInitialCity(sender.getCityName(),
 															 sender.getLocationParameter(),
 															 function(packet: Packet):void {						
@@ -277,6 +278,11 @@
 
 				createCityDialog.show();
 			}
+
+            Global.musicPlayer.setMuted(Constants.soundMuted, true);
+            if (!Constants.soundMuted) {
+                Global.musicPlayer.play(newPlayer);
+            }
 		}
 
         private function completeLogin(packet: Packet, newPlayer: Boolean):void

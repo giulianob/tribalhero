@@ -24,7 +24,8 @@ package src.Comm {
 		public static const PLAYER_DESCRIPTION_SET: int = 21;
 		public static const PROFILE_BY_TYPE: int = 22;
 		public static const SAVE_TUTORIAL_STEP: int = 23;
-		
+		public static const SAVE_MUTE_SOUND: int = 24;
+
 		public static const ACTION_CANCEL: int = 51;
 		public static const ACTION_COMPLETE: int = 52;
 		public static const ACTION_START: int = 53;

@@ -110,7 +110,8 @@
 			Constants.playerId = packet.readUInt();
 			Constants.playerHash = packet.readString();
 			Constants.tutorialStep = packet.readUInt();
-			Constants.admin = packet.readByte() == 1;
+			Constants.soundMuted = packet.readBoolean();
+			Constants.admin = packet.readBoolean();
 			Constants.sessionId = packet.readString();			
 			Constants.playerName = packet.readString();			
 			Constants.newbieProtectionSeconds = packet.readInt();
@@ -405,6 +406,14 @@
 			
 			session.write(packet, mapComm.catchAllErrors);
 		}
-	}
+
+        public function saveMuteSound(isMuted: Boolean): void {
+            var packet:Packet = new Packet();
+            packet.cmd = Commands.SAVE_MUTE_SOUND;
+            packet.writeBoolean(isMuted);
+
+            session.write(packet, mapComm.catchAllErrors);
+        }
+    }
 }
 

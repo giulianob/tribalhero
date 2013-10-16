@@ -87,6 +87,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CityResourceTileGenerator.cs" />
+    <Compile Include="MapGenerator.cs" />
+    <Compile Include="MapGeneratorModule.cs" />
+    <Compile Include="MapGenRegion.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpiralOutOrder.cs" />

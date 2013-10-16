@@ -119,20 +119,18 @@ namespace Testing.TroopTests
         public void GetTroopObject_WhenAbleToRetreat_LoadsStats(
                 [Frozen] ITroopStub stub,                
                 [Frozen] ISimpleStub unitsToRetreat,
-                IFixture fixture)
+                [FrozenMock] Formula formula,
+                ITroopObject newTroopObject,
+                StationedPartialTroopObjectInitializer troopInitializer)
         {
             unitsToRetreat.TotalCount.Returns<ushort>(1);
-
-            var formula = Substitute.For<Formula>();
+        
             formula.GetTroopRadius(stub, null).Returns<byte>(34);
             formula.GetTroopSpeed(stub).Returns(44);
-
-            fixture.Register(() => formula);
+        
             stub.State.Returns(TroopState.Stationed);
             stub.RemoveFromFormation(FormationType.Defense, Arg.Any<ISimpleStub>()).Returns(true);
             
-            var troopInitializer = fixture.Create<StationedPartialTroopObjectInitializer>();
-
             ITroopObject troopObject;
             troopInitializer.GetTroopObject(out troopObject).Should().Be(Error.Ok);
             troopObject.Stats.Speed.Should().Be(44);

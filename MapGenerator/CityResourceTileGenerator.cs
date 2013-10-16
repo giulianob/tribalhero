@@ -1,67 +1,56 @@
-﻿using Game.Logic.Formulas;
+﻿using System;
+using Game.Logic.Formulas;
 using Game.Map;
-using Game.Setup;
-using Ninject;
 
 namespace MapGenerator
 {
     public class CityResourceTileGenerator
     {
-        private const ushort FARM_TILE = 17;
+        private readonly TileLocator tileLocator;
 
-        private const ushort WOODLAND_TILE = 17;
+        private readonly Formula formula;
 
-        private static int numberOfTiles = 10;
+        private const ushort RESOURCE_TILE = 17;
 
-        private static int numberOfFarm = 2;
+        private const int NUMBER_OF_TILES = 10;
 
-        private static int numberOfWoodland = 2;
+        private const int NUMBER_OF_RESOURCE_TILES = 4;
 
-        private static readonly MapMath mapMath = new MapMath();
-        
-        public static void GenerateResource(Vector2D cityLocation, ushort[] map)
+        private readonly MapMath mapMath = new MapMath();
+
+        public CityResourceTileGenerator(TileLocator tileLocator, Formula formula)
         {
-            Position position;
+            this.tileLocator = tileLocator;
+            this.formula = formula;
+        }
 
-            foreach (var eachPosition in TileLocator.Current.ForeachTile(cityLocation.X, cityLocation.Y, Ioc.Kernel.Get<Formula>().GetInitialCityRadius()))
+        public void GenerateResource(Position cityLocation, ushort[,] map)
+        {
+            var random = new Random();
+
+            foreach (var eachPosition in tileLocator.ForeachTile(cityLocation.X, cityLocation.Y, formula.GetInitialCityRadius()))
             {
-                while (map[eachPosition.Y * Program.REGION_WIDTH + eachPosition.X] == FARM_TILE || map[eachPosition.Y * Program.REGION_WIDTH + eachPosition.X] == WOODLAND_TILE)
+                while (map[eachPosition.X, eachPosition.Y] == RESOURCE_TILE)
                 {
-                    map[eachPosition.Y * Program.REGION_WIDTH + eachPosition.X] = (ushort)Program.Random.Next(1, numberOfTiles);
+                    map[eachPosition.X, eachPosition.Y] = (ushort)random.Next(1, NUMBER_OF_TILES);
                 }
             }
-            
-            for (int i = 0; i < numberOfFarm; ++i)
+
+            for (int i = 0; i < NUMBER_OF_RESOURCE_TILES; ++i)
             {
+                Position position;
                 do
                 {
-                    TileLocator.Current.RandomPoint(new Position(cityLocation.X, cityLocation.Y),
-                                                    (byte)(Ioc.Kernel.Get<Formula>().GetInitialCityRadius() - 1),
-                                                    false,
-                                                    out position);
+                    tileLocator.RandomPoint(new Position(cityLocation.X, cityLocation.Y),
+                                            (byte)(formula.GetInitialCityRadius() - 1),
+                                            false,
+                                            out position);
                 }
-                while (map[position.Y * Program.REGION_WIDTH + position.X] == FARM_TILE ||
-                       map[position.Y * Program.REGION_WIDTH + position.X] == WOODLAND_TILE ||
-                       TileLocator.Current.TileDistance(position, 1, new Position(cityLocation.X, cityLocation.Y), 1) <= 1 ||
+                while (map[position.X, position.Y] == RESOURCE_TILE ||
+                       tileLocator.TileDistance(position, 1, new Position(cityLocation.X, cityLocation.Y), 1) <= 2 ||
                        !mapMath.IsPerpendicular(position.X, position.Y, cityLocation.X, cityLocation.Y));
 
-                map[position.Y * Program.REGION_WIDTH + position.X] = FARM_TILE;
-            }
-
-            for (int i = 0; i < numberOfWoodland; ++i)
-            {
-                do
-                {
-                    TileLocator.Current.RandomPoint(new Position(cityLocation.X, cityLocation.Y),
-                                                    (byte)(Ioc.Kernel.Get<Formula>().GetInitialCityRadius() - 1),
-                                                    false,
-                                                    out position);
-                }
-                while (TileLocator.Current.TileDistance(position, 1, new Position(cityLocation.X, cityLocation.Y), 1) <= 1 ||
-                       map[position.Y * Program.REGION_WIDTH + position.X] == FARM_TILE ||
-                       map[position.Y * Program.REGION_WIDTH + position.X] == WOODLAND_TILE ||
-                       !mapMath.IsPerpendicular(position.X, position.Y, cityLocation.X, cityLocation.Y));
-                map[position.Y * Program.REGION_WIDTH + position.X] = WOODLAND_TILE;
+                map[position.X, position.Y] = RESOURCE_TILE;
             }
         }
     }

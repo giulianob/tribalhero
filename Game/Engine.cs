@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using Game.Battle;
 using Game.Comm;
@@ -22,6 +23,7 @@ using Game.Util;
 using Game.Util.Locking;
 using Ninject;
 using Ninject.Extensions.Logging;
+using Ninject.Modules;
 using Persistance;
 using Thrift.Server;
 
@@ -247,9 +249,10 @@ _________ _______ _________ ______   _______  _
             State = EngineState.Started;
         }
 
-        public static IKernel CreateDefaultKernel()
+        public static IKernel CreateDefaultKernel(params INinjectModule[] extraModules)
         {
-            var kernel = new StandardKernel(new NinjectSettings {LoadExtensions = true}, new GameModule());
+            var ninjectModules = new[] {new GameModule()}.Concat(extraModules).ToArray();
+            var kernel = new StandardKernel(new NinjectSettings {LoadExtensions = true}, ninjectModules);
 
             // Instantiate singletons here for now until all classes are properly being injected
             Ioc.Kernel = kernel;

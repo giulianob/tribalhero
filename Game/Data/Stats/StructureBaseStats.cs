@@ -33,6 +33,21 @@ namespace Game.Data.Stats
             Size = size;
         }
 
+        public StructureBaseStats(StructureBaseStats copy) :
+                this(copy.Name,
+                     copy.SpriteClass,
+                     copy.Type,
+                     copy.Lvl,
+                     copy.Radius,
+                     new Resource(copy.Cost),
+                     new BaseBattleStats(copy.Battle),
+                     copy.MaxLabor,
+                     copy.BuildTime,
+                     copy.WorkerId,
+                     copy.Size)
+        {
+        }
+
         public virtual string Name { get; private set; }
 
         public virtual string SpriteClass { get; private set; }

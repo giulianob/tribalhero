@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Common;
 using Game.Data;
 using Game.Data.Stats;
@@ -144,12 +145,12 @@ namespace Game.Setup
         public virtual IStructureBaseStats GetBaseStats(ushort type, byte lvl)
         {
             StructureBaseStats tmp;
-            return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp : null;
+            return dict.TryGetValue(type * 100 + lvl, out tmp) ? new StructureBaseStats(tmp) : null;
         }
 
         public IEnumerable<IStructureBaseStats> AllStructures()
         {
-            return dict.Values;
+            return dict.Values.Select(structureBaseStats => new StructureBaseStats(structureBaseStats));
         }
     }
 }

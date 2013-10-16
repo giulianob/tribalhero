@@ -362,15 +362,15 @@ namespace DatabaseGenerator
                 currentLevel = currentLevel.Replace("#TRAIN_WOOD#", currentStats.Cost.Wood.ToString());
                 currentLevel = currentLevel.Replace("#HP#", currentStats.Battle.MaxHp.ToString());
                 currentLevel = currentLevel.Replace("#SPLASH#", currentStats.Battle.Splash.ToString());
-                currentLevel = currentLevel.Replace("#ATTACK#", currentStats.Battle.Atk.ToString());
-                currentLevel = currentLevel.Replace("#RANGE#", currentStats.Battle.Rng.ToString());
-                currentLevel = currentLevel.Replace("#STEALTH#", currentStats.Battle.Stl.ToString());
+                currentLevel = currentLevel.Replace("#ATTACK#", currentStats.Battle.Attack.ToString());
+                currentLevel = currentLevel.Replace("#RANGE#", currentStats.Battle.Range.ToString());
+                currentLevel = currentLevel.Replace("#STEALTH#", currentStats.Battle.Stealth.ToString());
                 currentLevel = currentLevel.Replace("#WEAPON#", currentStats.Battle.Weapon.ToString());
                 currentLevel = currentLevel.Replace("#CARRY#", currentStats.Battle.Carry.ToString());
                 currentLevel = currentLevel.Replace("#WEAPONCLASS#", currentStats.Battle.WeaponClass.ToString());
                 currentLevel = currentLevel.Replace("#ARMOR#", currentStats.Battle.Armor.ToString());
                 currentLevel = currentLevel.Replace("#UNITCLASS#", currentStats.Battle.ArmorClass.ToString());
-                currentLevel = currentLevel.Replace("#SPEED#", currentStats.Battle.Spd.ToString());
+                currentLevel = currentLevel.Replace("#SPEED#", currentStats.Battle.Speed.ToString());
                 currentLevel = currentLevel.Replace("#UPKEEP#", currentStats.Upkeep.ToString());
 
                 // Get requirements
@@ -556,9 +556,9 @@ namespace DatabaseGenerator
                 currentLevel = currentLevel.Replace("#LABOR#", currentStats.Cost.Labor.ToString());
                 currentLevel = currentLevel.Replace("#WOOD#", currentStats.Cost.Wood.ToString());
                 currentLevel = currentLevel.Replace("#HP#", currentStats.Battle.MaxHp.ToString());
-                currentLevel = currentLevel.Replace("#ATTACK#", currentStats.Battle.Atk.ToString());
-                currentLevel = currentLevel.Replace("#RANGE#", currentStats.Battle.Rng.ToString());
-                currentLevel = currentLevel.Replace("#STEALTH#", currentStats.Battle.Stl.ToString());
+                currentLevel = currentLevel.Replace("#ATTACK#", currentStats.Battle.Attack.ToString());
+                currentLevel = currentLevel.Replace("#RANGE#", currentStats.Battle.Range.ToString());
+                currentLevel = currentLevel.Replace("#STEALTH#", currentStats.Battle.Stealth.ToString());
                 currentLevel = currentLevel.Replace("#SPLASH#", currentStats.Battle.Splash.ToString());
                 currentLevel = currentLevel.Replace("#WEAPON#", currentStats.Battle.Weapon.ToString());
                 currentLevel = currentLevel.Replace("#MAXLABOR#", currentStats.MaxLabor.ToString());

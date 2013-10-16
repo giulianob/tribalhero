@@ -16,7 +16,7 @@ namespace MapGenerator
 
         public const ushort CITY_TILE = 16;
 
-        public const byte MIN_DIST_BETWEEN_CITIES = 11;
+        public const byte MIN_DIST_BETWEEN_CITIES = 18;
 
         public const int WIDTH = 3400;
 

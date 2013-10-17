@@ -1,4 +1,3 @@
-using System;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Map;

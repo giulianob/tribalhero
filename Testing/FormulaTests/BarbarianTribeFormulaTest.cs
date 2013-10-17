@@ -1,7 +1,6 @@
 ﻿using Common.Testing;
 using FluentAssertions;
 using Game.Logic.Formulas;
-using NSubstitute;
 using Xunit.Extensions;
 
 namespace Testing.FormulaTests

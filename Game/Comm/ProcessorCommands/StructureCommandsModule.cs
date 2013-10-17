@@ -2,7 +2,6 @@
 
 using System;
 using System.Linq;
-using System.Threading;
 using Game.Data;
 using Game.Data.Forest;
 using Game.Logic.Actions;

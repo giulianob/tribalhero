@@ -1,10 +1,8 @@
-using System.Linq;
 using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Map;
-using Game.Map.LocationStrategies;
 using Game.Setup;
 
 namespace Game.Logic.Procedures

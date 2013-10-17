@@ -1,5 +1,4 @@
-﻿using System;
-using Game.Battle.Reporting;
+﻿using Game.Battle.Reporting;
 using Game.Battle.RewardStrategies;
 using Game.Comm.Channel;
 using Game.Data;

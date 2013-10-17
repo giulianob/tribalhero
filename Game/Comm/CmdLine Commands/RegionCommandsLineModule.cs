@@ -3,14 +3,9 @@
 using System;
 using System.IO;
 using Game.Data;
-using Game.Data.Tribe;
 using Game.Map;
-using Game.Module;
-using Game.Module.Remover;
 using Game.Util;
-using Game.Util.Locking;
 using NDesk.Options;
-using Persistance;
 
 #endregion
 

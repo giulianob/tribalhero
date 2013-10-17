@@ -6,9 +6,7 @@ using Game;
 using Game.Setup;
 using NDesk.Options;
 using Ninject;
-using Ninject.Extensions.Logging.Log4net.Infrastructure;
 using log4net;
-using log4net.Config;
 
 #endregion
 

@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using Common.Testing;
 using FluentAssertions;
-using Game.Data;
 using Game.Data.Stronghold;
 using Game.Logic.Formulas;
-using Game.Map;
 using Game.Setup;
 using Game.Util;
 using NSubstitute;
 using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.AutoNSubstitute;
 using Ploeh.AutoFixture.Kernel;
 using Xunit;
 using Xunit.Extensions;

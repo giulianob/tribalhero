@@ -17,7 +17,6 @@ using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Actions;
-using Game.Logic.Actions.ResourceActions;
 using Game.Logic.Formulas;
 using Game.Logic.Notifications;
 using Game.Logic.Procedures;

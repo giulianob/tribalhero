@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Game.Battle;
-using Game.Database;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Util.Locking;

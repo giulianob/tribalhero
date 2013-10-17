@@ -1,5 +1,4 @@
 ﻿using Game.Data.Troop;
-using Game.Map;
 using Game.Util.Locking;
 
 namespace Game.Data

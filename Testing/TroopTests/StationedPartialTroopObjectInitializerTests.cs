@@ -6,7 +6,6 @@ using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using NSubstitute;
-using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Xunit;
 using Xunit.Extensions;
 

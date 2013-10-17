@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Battle;
 using Game.Battle.CombatGroups;
-using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Troop;

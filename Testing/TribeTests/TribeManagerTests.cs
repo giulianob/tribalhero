@@ -1,15 +1,12 @@
-﻿using System;
-using System.Data.Common;
+﻿using System.Data.Common;
 using Common.Testing;
 using FluentAssertions;
 using Game.Data;
 using Game.Data.Tribe;
-using Game.Map;
 using Game.Setup;
 using Game.Util;
 using NSubstitute;
 using Persistance;
-using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Xunit;
 using Xunit.Extensions;
 

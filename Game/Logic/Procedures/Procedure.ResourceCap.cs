@@ -5,7 +5,6 @@ using System.Linq;
 using Game.Battle;
 using Game.Data;
 using Game.Data.Troop;
-using Game.Logic.Formulas;
 using Game.Setup;
 
 #endregion

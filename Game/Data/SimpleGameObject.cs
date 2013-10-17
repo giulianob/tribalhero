@@ -1,11 +1,9 @@
 #region
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using Game.Data.Events;
 using Game.Map;
-using Game.Setup;
 using Game.Util;
 
 #endregion

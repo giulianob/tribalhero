@@ -2,7 +2,6 @@
 
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
-using Game.Data;
 using Game.Setup;
 using Game.Util;
 using Ninject;

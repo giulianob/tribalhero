@@ -11,24 +11,14 @@ namespace Game.Data.BarbarianTribe
 
         private readonly MapFactory mapFactory;
 
-        private readonly ITileLocator tileLocator;
-
         private readonly IRegionManager regionManager;
-
-        private const int MIN_DISTANCE_AWAY_FROM_CITIES = 8;
 
         private readonly Random random = new Random();
         
-        public BarbarianTribeConfigurator(MapFactory mapFactory, ITileLocator tileLocator, IRegionManager regionManager)
+        public BarbarianTribeConfigurator(MapFactory mapFactory, IRegionManager regionManager)
         {
-            this.mapFactory = mapFactory;            
-            this.tileLocator = tileLocator;
+            this.mapFactory = mapFactory;
             this.regionManager = regionManager;
-        }
-
-        private bool TooCloseToCities(uint x, uint y, int minDistance)
-        {
-            return mapFactory.Locations().Any(loc => tileLocator.TileDistance(new Position(x, y), 1, loc, 1) <= minDistance);
         }
 
         public bool Next(int count, out byte level, out Position position)
@@ -60,7 +50,7 @@ namespace Game.Data.BarbarianTribe
 
         public bool IsLocationAvailable(Position position)
         {
-            return !TooCloseToCities(position.X, position.Y, MIN_DISTANCE_AWAY_FROM_CITIES) && !regionManager.GetObjectsWithin(position.X, position.Y, 2).Any();
+            return !mapFactory.TooCloseToCities(position) && !regionManager.GetObjectsWithin(position.X, position.Y, 2).Any();
         }
     }
 }

@@ -1,10 +1,8 @@
 #region
 
 using System.IO;
-using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Util;
-using Ninject;
 using Ninject.Extensions.Logging;
 
 #endregion

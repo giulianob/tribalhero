@@ -7,7 +7,6 @@ using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Stats;
 using Game.Map;
-using Game.Setup;
 using Persistance;
 using Game.Logic.Formulas;
 

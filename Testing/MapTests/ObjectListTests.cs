@@ -2,7 +2,6 @@
 using FluentAssertions;
 using Game.Data;
 using Game.Map;
-using NSubstitute;
 using Xunit.Extensions;
 
 namespace Testing.MapTests

@@ -1,12 +1,6 @@
 ﻿#region
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Compression;
-using System.Xml;
-using System.Xml.XPath;
 using Game;
 using Game.Setup;
 using NDesk.Options;

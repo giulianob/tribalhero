@@ -38,6 +38,8 @@ namespace Game.Data.Forest
 
         private readonly ITileLocator tileLocator;
 
+        private readonly MapFactory mapFactory;
+
         public ForestManager(IScheduler scheduler,
                              IWorld world,
                              IDbManager dbManager,
@@ -45,7 +47,8 @@ namespace Game.Data.Forest
                              IForestFactory forestFactory,
                              IObjectTypeFactory objectTypeFactory,
                              IActionFactory actionFactory,
-                             ITileLocator tileLocator)
+                             ITileLocator tileLocator,
+                             MapFactory mapFactory)
         {
             this.scheduler = scheduler;
             this.world = world;
@@ -55,6 +58,7 @@ namespace Game.Data.Forest
             this.objectTypeFactory = objectTypeFactory;
             this.actionFactory = actionFactory;
             this.tileLocator = tileLocator;
+            this.mapFactory = mapFactory;
 
             ForestCount = new int[Config.forest_count.Length];
             forests = new Dictionary<uint, IForest>();
@@ -103,10 +107,8 @@ namespace Game.Data.Forest
                         {
                             continue;
                         }
-
-                        // check if tile is safe
-                        var tiles = world.Regions.GetTilesWithin(x, y, 9);
-                        if (objectTypeFactory.HasTileType("CityStartTile", tiles))
+                        
+                        if (mapFactory.TooCloseToCities(new Position(x, y)))
                         {
                             continue;
                         }

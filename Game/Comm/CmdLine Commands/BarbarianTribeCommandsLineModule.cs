@@ -1,20 +1,12 @@
 ﻿#region
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Game.Data;
 using Game.Data.BarbarianTribe;
-using Game.Data.Stronghold;
-using Game.Data.Tribe;
-using Game.Logic.Procedures;
 using Game.Map;
-using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using NDesk.Options;
-using Persistance;
 
 #endregion
 

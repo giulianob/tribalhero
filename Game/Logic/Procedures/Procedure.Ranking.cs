@@ -3,8 +3,6 @@
 using System.Threading;
 using Game.Data;
 using Game.Data.Tribe;
-using Game.Logic.Formulas;
-using Game.Util.Locking;
 
 #endregion
 

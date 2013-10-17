@@ -7,8 +7,6 @@ using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Procedures;
 using NSubstitute;
-using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.Xunit;
 using Xunit;
 using Xunit.Extensions;
 

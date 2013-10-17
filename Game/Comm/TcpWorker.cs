@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
-using Game.Data;
 using Game.Util;
 using Ninject.Extensions.Logging;
 

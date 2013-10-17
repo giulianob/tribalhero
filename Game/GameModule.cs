@@ -30,10 +30,8 @@ using Game.Util.Ninject;
 using Ninject;
 using Ninject.Extensions.Conventions;
 using Ninject.Extensions.Factory;
-using Ninject.Extensions.Logging.Log4net.Infrastructure;
 using Ninject.Modules;
 using Persistance;
-using Persistance.Managers;
 using Thrift.Server;
 using Thrift.Transport;
 

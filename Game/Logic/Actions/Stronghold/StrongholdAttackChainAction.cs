@@ -6,7 +6,6 @@ using System.Linq;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
-using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;

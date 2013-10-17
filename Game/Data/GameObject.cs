@@ -1,7 +1,6 @@
 ﻿#region
 
 using System;
-using Game.Data.Events;
 using Game.Util.Locking;
 
 #endregion

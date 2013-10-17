@@ -6,8 +6,6 @@ using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Logic.Formulas;
 using NSubstitute;
-using Ploeh.AutoFixture;
-using Xunit;
 using Xunit.Extensions;
 
 namespace Testing.FormulaTests

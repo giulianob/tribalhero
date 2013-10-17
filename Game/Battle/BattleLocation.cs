@@ -1,5 +1,4 @@
-﻿using System;
-using Game.Data;
+﻿using Game.Data;
 using Game.Data.Stronghold;
 using Game.Map;
 

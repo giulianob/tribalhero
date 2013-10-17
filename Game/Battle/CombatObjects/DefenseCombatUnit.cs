@@ -10,7 +10,6 @@ using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
-using Ninject;
 using Persistance;
 
 #endregion

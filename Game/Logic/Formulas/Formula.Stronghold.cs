@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Setup;

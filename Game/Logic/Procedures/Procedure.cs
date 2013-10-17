@@ -1,5 +1,3 @@
-using System;
-using Game.Data.Tribe;
 using Game.Logic.Formulas;
 using Game.Map;
 using Game.Util.Locking;

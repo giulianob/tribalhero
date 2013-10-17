@@ -4,10 +4,8 @@ using FluentAssertions;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Setup;
-using Moq;
 using NSubstitute;
 using Ploeh.AutoFixture;
-using Xunit;
 using Xunit.Extensions;
 
 namespace Testing.FormulaTests

@@ -1,11 +1,9 @@
 #region
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Game.Battle;
 using Game.Comm;
 using Game.Comm.Channel;
 using Game.Data;
@@ -13,8 +11,6 @@ using Game.Data.BarbarianTribe;
 using Game.Data.Stronghold;
 using Game.Database;
 using Game.Logic;
-using Game.Logic.Formulas;
-using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
 using Game.Module.Remover;

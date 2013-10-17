@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Game.Battle;
 using Game.Data;
 using Game.Data.BarbarianTribe;

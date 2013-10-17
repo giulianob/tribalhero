@@ -1,12 +1,10 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Common.Testing;
 using FluentAssertions;
 using Game.Data;
 using Game.Map;
 using NSubstitute;
-using Xunit;
 using Xunit.Extensions;
 
 #endregion

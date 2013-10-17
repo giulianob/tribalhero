@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Game.Map;
 using Game.Setup;
@@ -14,9 +13,7 @@ namespace Game.Data.Stronghold
 
         private static readonly int[] LevelProbability = {0, 8, 16, 23, 30, 37, 43, 49, 55, 60, 65, 70, 74, 78, 82, 85, 88, 91, 94, 97, 100};
 
-        private const int MinDistanceAwayFromCities = 10;
-
-        private const int MinDistanceAwayFromStrongholds = 200;
+        private const int MIN_DISTANCE_AWAY_FROM_STRONGHOLDS = 200;
 
         private static readonly int CitiesPerLevel = Config.stronghold_cities_per_level;
 
@@ -50,12 +47,7 @@ namespace Game.Data.Stronghold
 
             return mapFactory.Locations().Count(loc => tileLocator.TileDistance(new Position(x, y), 1, loc, 1) < radius) > count;
         }
-
-        private bool TooCloseToCities(uint x, uint y, int minDistance)
-        {
-            return mapFactory.Locations().Any(loc => tileLocator.TileDistance(new Position(x, y), 1, loc, 1) < minDistance);
-        }
-
+        
         private bool TooCloseToStrongholds(uint x, uint y, int minDistance)
         {
             return strongholds.Any(loc => tileLocator.TileDistance(new Position(x, y), 1, loc, 1) < minDistance);
@@ -95,8 +87,8 @@ namespace Game.Data.Stronghold
                     return false;
                 }
             }
-            while (!HasEnoughCities(x, y, level) || TooCloseToCities(x, y, MinDistanceAwayFromCities) ||
-                   TooCloseToStrongholds(x, y, MinDistanceAwayFromStrongholds) || regionManager.GetObjectsInTile(x, y).Any());
+            while (!HasEnoughCities(x, y, level) || mapFactory.TooCloseToCities(new Position(x, y)) ||
+                   TooCloseToStrongholds(x, y, MIN_DISTANCE_AWAY_FROM_STRONGHOLDS) || regionManager.GetObjectsInTile(x, y).Any());
 
             strongholds.Add(new Position(x, y));
             

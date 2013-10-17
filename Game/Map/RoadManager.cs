@@ -7,7 +7,6 @@ using Game.Comm;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
-using Ninject;
 
 #endregion
 

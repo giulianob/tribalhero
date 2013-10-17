@@ -33,8 +33,6 @@ namespace Game.Map
             this.getRandom = getRandom;
         }
 
-        #region RadiusCache Item
-
         public class RadiusCache : IEquatable<RadiusCache>
         {
             public RadiusCache(int relativeX, int relativeY, byte radius, byte originalRadius)
@@ -96,8 +94,6 @@ namespace Game.Map
                 }
             }
         }
-
-        #endregion
 
         public int RadiusDistance(ISimpleGameObject obj1, ISimpleGameObject obj2)
         {

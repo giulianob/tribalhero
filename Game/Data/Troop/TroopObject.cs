@@ -7,7 +7,6 @@ using System.Linq;
 using Game.Data.Stats;
 using Game.Map;
 using Game.Util;
-using Game.Util.Locking;
 using Persistance;
 
 #endregion

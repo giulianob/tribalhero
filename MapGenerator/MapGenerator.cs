@@ -12,6 +12,8 @@ namespace MapGenerator
 {
     class MapGenerator
     {
+        public const int INITIAL_CITIES_TO_SKIP = 200;
+
         public const int TOTAL_PLAYERS = 13000;
 
         public const ushort CITY_TILE = 16;
@@ -133,7 +135,7 @@ namespace MapGenerator
         {
             using (StreamWriter sw = new StreamWriter(File.Open("out/CityLocations.txt", FileMode.Create)))
             {
-                foreach (var cityLocation in new SpiralSorter().Sort(map))
+                foreach (var cityLocation in new SpiralSorter().Sort(map).Skip(INITIAL_CITIES_TO_SKIP))
                 {
                     sw.WriteLine("{0},{1}", cityLocation.X, cityLocation.Y);
                 }

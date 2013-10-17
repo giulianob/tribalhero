@@ -1,7 +1,6 @@
 ﻿#region
 
 using FluentAssertions;
-using Game.Data;
 using Game.Map;
 using Xunit.Extensions;
 

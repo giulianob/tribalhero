@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Game.Data;
+﻿using System.Linq;
 using Game.Data.Forest;
 using Game.Logic.Formulas;
 using Game.Setup;

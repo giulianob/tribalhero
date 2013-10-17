@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Game.Data.Forest
+﻿namespace Game.Data.Forest
 {
     public interface IForestFactory
     {

@@ -8,7 +8,6 @@ using Game.Logic.Formulas;
 using Game.Setup;
 using Moq;
 using NSubstitute;
-using Xunit;
 using Xunit.Extensions;
 
 namespace Testing.FormulaTests

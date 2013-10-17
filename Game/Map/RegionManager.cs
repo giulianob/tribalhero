@@ -226,7 +226,7 @@ namespace Game.Map
         public IEnumerable<ISimpleGameObject> GetObjectsWithin(uint x, uint y, int radius)
         {
             var list = new List<ISimpleGameObject>();
-            foreach (var position in tileLocator.ForeachTile(x, y, radius, true))
+            foreach (var position in tileLocator.ForeachTile(x, y, radius))
             {
                 if (position.X < WorldWidth && position.Y < WorldHeight)
                 {

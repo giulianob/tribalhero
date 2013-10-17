@@ -1,7 +1,6 @@
 #region
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Game.Battle;
 using Game.Battle.CombatGroups;

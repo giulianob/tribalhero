@@ -1,11 +1,9 @@
 #region
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
-using Game.Util;
+
 #endregion
 
 namespace Game.Battle

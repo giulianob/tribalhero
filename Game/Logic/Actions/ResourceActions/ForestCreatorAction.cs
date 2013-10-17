@@ -2,11 +2,7 @@
 
 using System;
 using Game.Data.Forest;
-using Game.Logic.Formulas;
-using Game.Map;
-using Game.Setup;
 using Game.Util;
-using Game.Util.Locking;
 using Persistance;
 
 #endregion

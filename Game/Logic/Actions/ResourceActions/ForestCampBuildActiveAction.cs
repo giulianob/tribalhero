@@ -137,9 +137,15 @@ namespace Game.Logic.Actions
 
             // Count number of camps and verify there's enough space left                
             int campCount = city.Count(s => objectTypeFactory.IsStructureType("ForestCamp", s));
-            if (campCount >= formula.GetMaxForestCount(lumbermill.Lvl))
+            if (campCount >= 5)
             {
                 return Error.ForestCampMaxReached;
+            }
+
+            // Make sure we have the specified number of laborers
+            if (lumbermill.Stats.Base.MaxLabor < labors + lumbermill.Stats.Labor)
+            {
+                return Error.LaborOverflow;
             }
 
             // Make sure some labors are being put in
@@ -154,12 +160,6 @@ namespace Game.Logic.Actions
                 return Error.AlreadyInForest;
             }
 
-            // Verify user has access to this forest
-            if (forest.Lvl > formula.GetMaxForestLevel(lumbermill.Lvl))
-            {
-                return Error.ForestInaccessible;
-            }
-
             // Cost requirement
             Resource cost = formula.StructureCost(city, campType, 1);
 
@@ -169,12 +169,6 @@ namespace Game.Logic.Actions
             if (!city.Resource.HasEnough(cost))
             {
                 return Error.ResourceNotEnough;
-            }
-
-            // Make sure we can fit this many laborers in the forest and that this user isn't trying to insert more into forest than he can
-            if (labors + forest.Labor > forest.MaxLabor || labors > formula.GetForestMaxLaborPerUser(forest))
-            {
-                return Error.ForestFull;
             }
 
             // find an open space around the forest
@@ -245,6 +239,10 @@ namespace Game.Logic.Actions
             forest.AddLumberjack(structure);
             forest.RecalculateForest();
             forest.EndUpdate();
+
+            lumbermill.BeginUpdate();
+            lumbermill.Stats.Labor += labors;
+            lumbermill.EndUpdate();
 
             // add to queue for completion
             var campBuildTime = structureFactory.GetTime(campType, 1);
@@ -335,6 +333,7 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll()
         {
             ICity city;
+
             if (!world.TryGetObjects(cityId, out city))
             {
                 throw new Exception("City is missing");

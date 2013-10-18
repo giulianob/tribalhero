@@ -10,29 +10,6 @@ namespace Game.Logic.Formulas
 {
     public partial class Formula
     {
-        /// <summary>
-        ///     Returns the maximum number of forests the lumbermill can be harvesting from at one time.
-        /// </summary>
-        /// <param name="level"></param>
-        public virtual int GetMaxForestCount(byte level)
-        {
-            if (level <= 3)
-            {
-                return 1;
-            }
-
-            if (level <= 8)
-            {
-                return 2;
-            }
-
-            if (level <= 14)
-            {
-                return 3;
-            }
-
-            return 4;
-        }
 
         /// <summary>
         ///     Returns the maximum labors allowed in the forest
@@ -42,11 +19,6 @@ namespace Game.Logic.Formulas
         public virtual ushort GetForestMaxLabor(byte level)
         {
             return (ushort)(level * 320);
-        }
-
-        public virtual ushort GetForestMaxLaborPerUser(IForest forest)
-        {
-            return (ushort)(GetForestMaxLabor(forest.Lvl) / 8);
         }
 
         /// <summary>
@@ -79,19 +51,14 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name="level"></param>
         /// <returns></returns>
-        public virtual int GetMaxForestCapacity(byte level)
+        public virtual int GetMaxForestCapacity()
         {
-            return (int)((24000 + Config.Random.Next(-3000, 3000)) * level * (1.0 / Config.seconds_per_unit));
+            return 400;
         }
 
-        /// <summary>
-        ///     Returns the forest rate
-        /// </summary>
-        /// <param name="level"></param>
-        /// <returns></returns>
-        public virtual double GetMaxForestRate(byte level)
+        public virtual int GetForestUpkeep(int count)
         {
-            return 0.75 + (level - 1) * 0.25;
+            return count > 0 ? 2 + count : 0;
         }
     }
 }

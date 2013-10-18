@@ -192,13 +192,17 @@ namespace Game.Logic.Formulas
         /// <summary>
         ///     Returns the rate that the specified structure should gather from the given forest.
         /// </summary>
-        /// <param name="forest"></param>
-        /// <param name="stats"></param>
+        /// <param name="forestCamp"></param>
         /// <param name="efficiency"></param>
         /// <returns></returns>
-        public virtual int GetWoodRateForForest(IForest forest, IStructureStats stats, double efficiency)
+        public virtual int GetWoodRateForForestCamp(IStructure forestCamp, float efficiency)
         {
-            return (int)(stats.Labor * forest.Rate * (1d + efficiency));
+            var lumbermill = forestCamp.City.FirstOrDefault(s => ObjectTypeFactory.IsStructureType("Lumbermill", s));
+            if (lumbermill == null)
+                return 0;
+
+            double[] rate = {0, .75, .75, 1, 1, 1, 1, 1.25, 1.25, 1.25, 1.25, 1.25, 1.5, 1.5, 1.5, 1.5};
+            return (int)(forestCamp.Stats.Labor * rate[lumbermill.Lvl] * (1f + efficiency));
         }
 
         /// <summary>

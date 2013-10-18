@@ -2,6 +2,7 @@
 
 using System;
 using Game.Data;
+using Game.Data.Forest;
 using Game.Data.Troop;
 using Game.Map;
 using Game.Setup;
@@ -9,6 +10,7 @@ using Game.Util;
 using Game.Util.Locking;
 using NDesk.Options;
 using Ninject;
+using Persistance;
 
 #endregion
 
@@ -16,10 +18,20 @@ namespace Game.Comm
 {
     public class ResourcesCommandLineModule : CommandLineModule
     {
+        private readonly IForestManager forestManager;
+        private readonly IDbManager dbManager;
+
+        public ResourcesCommandLineModule(IForestManager forestManager, IDbManager dbManager)
+        {
+            this.forestManager = forestManager;
+            this.dbManager = dbManager;
+        }
+
         public override void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("sendresources", SendResources, PlayerRights.Admin);
             processor.RegisterCommand("trainunits", TrainUnits, PlayerRights.Admin);
+            processor.RegisterCommand("reloadforest", ReloadForest, PlayerRights.Admin);
         }
 
         public string SendResources(Session session, string[] parms)
@@ -132,6 +144,33 @@ namespace Game.Comm
             }
 
             return "OK!";
+        }
+
+        public string ReloadForest(Session session, string[] parms)
+        {
+            bool help = false;
+            int capacity = 400;
+            try
+            {
+                var p = new OptionSet
+                {
+                        {"capacity=", v => capacity = int.Parse(v)},
+                        {"?|help|h", v => help = true},
+
+                };
+                p.Parse(parms);
+            }
+            catch (Exception)
+            {
+                help = true;
+            }
+            if (help)
+            {
+                return "reloadforest --capacity=count";
+            }
+
+            forestManager.ReloadForests(capacity);
+            return string.Format("OK!  All forests' capacities set to [{0}]", capacity);
         }
     }
 }

@@ -69,31 +69,10 @@ namespace Game.Data.Forest
         }
 
         /// <summary>
-        ///     Maximum laborers allowed in this forest
-        /// </summary>
-        public ushort MaxLabor
-        {
-            get
-            {
-                return Formula.Current.GetForestMaxLabor(lvl);
-            }
-        }
-
-        /// <summary>
-        ///     Current amount of laborers in this forest
-        /// </summary>
-        public int Labor { get; set; }
-
-        /// <summary>
         ///     The lumber availabel at this forest.
         ///     Notice: The rate is not used, only the upkeep. The rate of the forest is kept in a separate variable.
         /// </summary>
         public AggressiveLazyValue Wood { get; set; }
-
-        /// <summary>
-        ///     Base rate at which this forest gives out resources.
-        /// </summary>
-        public double Rate { get; private set; }
 
         /// <summary>
         ///     Time until forest is depleted
@@ -103,14 +82,11 @@ namespace Game.Data.Forest
 
         #region Constructors
 
-        public Forest(byte lvl, int capacity, double rate, IActionFactory actionFactory)
+        public Forest(int capacity, IActionFactory actionFactory)
         {
-            this.lvl = lvl;
             this.actionFactory = actionFactory;
 
             Wood = new AggressiveLazyValue(capacity) {Limit = capacity};
-
-            Rate = rate;
         }
 
         #endregion
@@ -146,15 +122,8 @@ namespace Game.Data.Forest
         {
             CheckUpdateMode();
 
-            // Get the number of labors assigned
-            int totalLabor = this.Aggregate(0, (current, obj) => current + obj.Stats.Labor);
+            float newEfficiency = ((structures.Count-1) * 0.09f);
 
-            // Calculate efficiency
-            double playerEfficiency = structures.Count / 8d;
-            double laborEfficiency = (double)totalLabor / MaxLabor;
-            double efficiency = (1 - Math.Abs(playerEfficiency - laborEfficiency)) * (structures.Count * 0.095);
-
-            float totalRate = 0;
             // Set the appropriate rates
             foreach (var obj in this)
             {
@@ -166,14 +135,15 @@ namespace Game.Data.Forest
 
                 // Get the current rate. This will be figure out how much we need to adjust the rate.
                 var oldRate = (int)obj["Rate"];
+                var newRate = Formula.Current.GetWoodRateForForestCamp(obj, newEfficiency);
 
-                var newRate = Formula.Current.GetWoodRateForForest(this, obj.Stats, efficiency);
-
-                if (newRate != oldRate)
+                object efficiency;   // if efficiency is not found(old forest camp), it should be set.
+                if (!obj.Properties.TryGet("efficiency", out efficiency) || newRate != oldRate)
                 {
                     // Save the rate in the obj. This is needed so later we can look up how much this object is actually giving.
                     obj.BeginUpdate();
                     obj["Rate"] = newRate;
+                    obj["efficiency"] = newEfficiency;
                     obj.EndUpdate();
 
                     // Update the cities rate
@@ -181,15 +151,10 @@ namespace Game.Data.Forest
                     obj.City.Resource.Wood.Rate += newRate - oldRate;
                     obj.City.EndUpdate();
                 }
-
-                totalRate += newRate;
             }
 
             // Set the forests upkeep
-            Wood.Upkeep = (int)totalRate;
-
-            // Set the forests total labor
-            Labor = totalLabor;
+            Wood.Upkeep = Formula.Current.GetForestUpkeep(structures.Count);
 
             SetDepleteAction();
 
@@ -223,7 +188,7 @@ namespace Game.Data.Forest
 
             double hours = 2 * 24 + Config.Random.NextDouble() * 24;
 
-            if (Wood.Upkeep != 0)
+            if (structures.Count != 0)
             {
                 hours = Wood.Value / (Wood.Upkeep / Config.seconds_per_unit);
             }
@@ -326,9 +291,9 @@ namespace Game.Data.Forest
 
                 return new[]
                 {
-                        new DbColumn("labor", Labor, DbType.UInt16), new DbColumn("x", X, DbType.UInt32),
-                        new DbColumn("y", Y, DbType.Int32), new DbColumn("level", Lvl, DbType.Byte),
-                        new DbColumn("rate", Rate, DbType.Single), new DbColumn("capacity", Wood.Limit, DbType.Int32),
+                        new DbColumn("x", X, DbType.UInt32),
+                        new DbColumn("y", Y, DbType.Int32),
+                        new DbColumn("capacity", Wood.Limit, DbType.Int32),
                         new DbColumn("last_realize_time", Wood.LastRealizeTime, DbType.DateTime),
                         new DbColumn("lumber", Wood.RawValue, DbType.Int32),
                         new DbColumn("upkeep", Wood.Upkeep, DbType.Int32),
@@ -378,7 +343,8 @@ namespace Game.Data.Forest
             using (var ms = new MemoryStream())
             {
                 var bw = new BinaryWriter(ms);
-                bw.Write(Lvl);
+                bw.Write(structures.Count);
+                bw.Write(UnixDateTime.DateTimeToUnix(DepleteTime.ToUniversalTime()));
                 ms.Position = 0;
                 return ms.ToArray();
             }
@@ -409,14 +375,6 @@ namespace Game.Data.Forest
         }
 
         #endregion
-
-        public byte Lvl
-        {
-            get
-            {
-                return lvl;
-            }
-        }
 
         public override int Hash
         {

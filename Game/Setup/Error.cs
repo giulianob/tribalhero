@@ -77,7 +77,7 @@ namespace Game.Setup
         ResourceExceedTradeLimit = 209,
 
         LumbermillBusy = 210,
-
+        
         #endregion
 
         #region Layout/Effect Requirement Errors

@@ -5,7 +5,7 @@ using Persistance;
 
 namespace Game.Data.Forest
 {
-    public interface IForest : ISimpleGameObject, IHasLevel, IPersistableObject, IEnumerable<IStructure>, ICityRegionObject
+    public interface IForest : ISimpleGameObject, IPersistableObject, IEnumerable<IStructure>, ICityRegionObject
     {
         /// <summary>
         ///     The action which will deplete this forest
@@ -13,25 +13,10 @@ namespace Game.Data.Forest
         ForestDepleteAction DepleteAction { get; set; }
 
         /// <summary>
-        ///     Maximum laborers allowed in this forest
-        /// </summary>
-        ushort MaxLabor { get; }
-
-        /// <summary>
-        ///     Current amount of laborers in this forest
-        /// </summary>
-        int Labor { get; set; }
-
-        /// <summary>
         ///     The lumber availabel at this forest.
         ///     Notice: The rate is not used, only the upkeep. The rate of the forest is kept in a separate variable.
         /// </summary>
         AggressiveLazyValue Wood { get; set; }
-
-        /// <summary>
-        ///     Base rate at which this forest gives out resources.
-        /// </summary>
-        double Rate { get; }
 
         /// <summary>
         /// Time until forest is depleted. Only the db loader should be setting this.

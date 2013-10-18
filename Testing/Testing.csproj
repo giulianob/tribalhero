@@ -132,6 +132,7 @@
     <Compile Include="BattleTests\CombatGroupTest.cs" />
     <Compile Include="BattleTests\CombatListTest.cs" />
     <Compile Include="BattleTests\CombatStructureTest.cs" />
+    <Compile Include="BattleTests\IntStatsModCalculatorTests.cs" />
     <Compile Include="BattleTests\MaxHpModCalculatorTests.cs" />
     <Compile Include="BattleTests\StaminaMonitorTests.cs" />
     <Compile Include="BattleTests\AtkDmgModCalculatorTests.cs" />

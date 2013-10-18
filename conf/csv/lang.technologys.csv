@@ -35,25 +35,25 @@ LAST_STAND_TECHNOLOGY_LVL_5,Hoplite receives 50% less damage when team is about 
 ,
 ,
 RUSH_ATTACK_TECHNOLOGY_NAME,Rush Attack
-RUSH_ATTACK_TECHNOLOGY_LVL_1,Increases travel speed of troops by 4% on an attack mission. (Stacks additively)
-RUSH_ATTACK_TECHNOLOGY_LVL_2,Increases travel speed of troops by 8% on an attack mission. (Stacks additively)
-RUSH_ATTACK_TECHNOLOGY_LVL_3,Increases travel speed of troops by 12% on an attack mission. (Stacks additively)
-RUSH_ATTACK_TECHNOLOGY_LVL_4,Increases travel speed of troops by 16% on an attack mission. (Stacks additively)
-RUSH_ATTACK_TECHNOLOGY_LVL_5,Increases travel speed of troops by 20% on an attack mission. (Stacks additively)
+RUSH_ATTACK_TECHNOLOGY_LVL_1,Increases travel speed of troops by 4% on an attack mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_ATTACK_TECHNOLOGY_LVL_2,Increases travel speed of troops by 8% on an attack mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_ATTACK_TECHNOLOGY_LVL_3,Increases travel speed of troops by 12% on an attack mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_ATTACK_TECHNOLOGY_LVL_4,Increases travel speed of troops by 16% on an attack mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_ATTACK_TECHNOLOGY_LVL_5,Increases travel speed of troops by 20% on an attack mission. (Stacks additively but the travel time decrease has diminishing returns.)
 ,
 RUSH_DEFENSE_TECHNOLOGY_NAME,Rush Defense
-RUSH_DEFENSE_TECHNOLOGY_LVL_1,Increases troop's travel speed by 4% on a defense mission. (Stacks additively)
-RUSH_DEFENSE_TECHNOLOGY_LVL_2,Increases troop's travel speed by 8% on a defense mission. (Stacks additively)
-RUSH_DEFENSE_TECHNOLOGY_LVL_3,Increases troops' travel speed by 12% on a defense mission. (Stacks additively)
-RUSH_DEFENSE_TECHNOLOGY_LVL_4,Increases troops' travel speed by 16% on a defense mission. (Stacks additively)
-RUSH_DEFENSE_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% on a defense mission. (Stacks additively)
+RUSH_DEFENSE_TECHNOLOGY_LVL_1,Increases troop's travel speed by 4% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_2,Increases troop's travel speed by 8% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_3,Increases troops' travel speed by 12% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_4,Increases troops' travel speed by 16% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
 ,
 DOUBLE_TIME_TECHNOLOGY_NAME,Double Time
-DOUBLE_TIME_TECHNOLOGY_LVL_1,Increases troop's travel speed by 30% when distance is greater than 500 tiles. (Stacks additively)
-DOUBLE_TIME_TECHNOLOGY_LVL_2,Increases troop's travel speed by 60% when distance is greater than 500 tiles. (Stacks additively)
-DOUBLE_TIME_TECHNOLOGY_LVL_3,Increases troop's travel speed by 90% when distance is greater than 500 tiles. (Stacks additively)
-DOUBLE_TIME_TECHNOLOGY_LVL_4,Increases troop's travel speed by 120% when distance is greater than 500 tiles. (Stacks additively)
-DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases troop's travel speed by 150% when distance is greater than 500 tiles. (Stacks additively)
+DOUBLE_TIME_TECHNOLOGY_LVL_1,Increases troop's travel speed by 30% when distance is greater than 500 tiles. (Stacks additively but the travel time decrease has diminishing returns.)
+DOUBLE_TIME_TECHNOLOGY_LVL_2,Increases troop's travel speed by 60% when distance is greater than 500 tiles. (Stacks additively but the travel time decrease has diminishing returns.)
+DOUBLE_TIME_TECHNOLOGY_LVL_3,Increases troop's travel speed by 90% when distance is greater than 500 tiles. (Stacks additively but the travel time decrease has diminishing returns.)
+DOUBLE_TIME_TECHNOLOGY_LVL_4,Increases troop's travel speed by 120% when distance is greater than 500 tiles. (Stacks additively but the travel time decrease has diminishing returns.)
+DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases troop's travel speed by 150% when distance is greater than 500 tiles. (Stacks additively but the travel time decrease has diminishing returns.)
 ,
 ARCHERY_RESEARCH_TECHNOLOGY_NAME,Archery Research
 ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow wielding units.

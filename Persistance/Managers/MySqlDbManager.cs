@@ -58,7 +58,7 @@ namespace Persistance.Managers
         {
             connectionString =
                     string.Format(
-                                  "Database={0};Host={1};User Id={2};Password={3};Connection Timeout={4};Default Command Timeout={4};Max Pool Size={5};MinimumPoolSize={5}",
+                                  "Database={0};Host={1};User Id={2};Password={3};Connection Timeout={4};Default Command Timeout={4};Max Pool Size={5};MinimumPoolSize={5};CharSet=utf8;",
                                   database,
                                   hostname,
                                   username,

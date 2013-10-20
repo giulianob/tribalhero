@@ -28,7 +28,7 @@ namespace Game.Battle
                                  IBattleFormulas battleFormulas,
                                  IBattleOrder battleOrder,
                                  IBattleRandom battleRandom)
-                : base(battleId, location, owner, rewardStrategy, dbManager, battleReport, combatListFactory, battleFormulas, battleOrder, battleRandom)
+                :base(battleId, location, owner, rewardStrategy, dbManager, battleReport, combatListFactory, battleFormulas, battleOrder, battleRandom)
         {
             this.stronghold = stronghold;
 
@@ -46,7 +46,7 @@ namespace Game.Battle
                     attackingUnits = (int)(Math.Round(attackingUnits * precision / 10) * 10);                    
                 }
 
-                errorParams = new[] {stronghold.Gate.ToString(CultureInfo.InvariantCulture), attackingUnits.ToString(CultureInfo.InvariantCulture)};
+                errorParams = new[] {stronghold.Gate.ToString("#.##"), attackingUnits.ToString(CultureInfo.InvariantCulture)};
                 return Error.BattleViewableGateAttackingUnits;
             }
 
@@ -58,7 +58,7 @@ namespace Game.Battle
             }
 
             // Since the gate battle isn't really viewable, we just return an error message that includes the gate HP
-            errorParams = new[] {stronghold.Gate.ToString(CultureInfo.InvariantCulture)};
+            errorParams = new[] {stronghold.Gate.ToString("#.##")};
             return Error.BattleViewableGateHp;
         }
     }

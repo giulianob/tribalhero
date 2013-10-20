@@ -13,14 +13,14 @@ namespace Game.Battle.StatsModCalculator
         public IntStatsModCalculator(int baseValue)
         {
             this.baseValue = baseValue;
-            
-            parameters.Add("RAW_BONUS", new List<double> { 0 });
-            parameters.Add("PERCENT_BONUS", new List<double> { 100 });
+
+            parameters.Add("RAW_BONUS", new List<double>());
+            parameters.Add("PERCENT_BONUS", new List<double>());
         }
 
         public int GetResult()
         {
-            return (int)((baseValue + parameters["RAW_BONUS"].Sum()) * parameters["PERCENT_BONUS"].Aggregate((total, each) => total * each) / Math.Pow(100, parameters["PERCENT_BONUS"].Count));
+            return (int)((baseValue + parameters["RAW_BONUS"].Sum()) * (100 + parameters["PERCENT_BONUS"].Sum()) / 100);
         }
 
         public void AddMod(string name, int value)

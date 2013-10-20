@@ -21,8 +21,8 @@ namespace Testing.BattleTests
             [Frozen] double baseValue,
             MaxHpModCalculator maxHpModCalculator)
         {
-            maxHpModCalculator.AddMod("PERCENT_BONUS", 50);
-            maxHpModCalculator.GetResult().Should().Be(baseValue * 0.5);
+            maxHpModCalculator.AddMod("PERCENT_BONUS", 20);
+            maxHpModCalculator.GetResult().Should().Be(baseValue * 1.2);
         }
         
         [Theory, AutoNSubstituteData]
@@ -30,9 +30,9 @@ namespace Testing.BattleTests
             [Frozen] double baseValue,
             MaxHpModCalculator maxHpModCalculator)
         {
-            maxHpModCalculator.AddMod("PERCENT_BONUS", 20);
-            maxHpModCalculator.AddMod("PERCENT_BONUS", 30);
-            maxHpModCalculator.GetResult().Should().Be(baseValue * 0.5);
+            maxHpModCalculator.AddMod("PERCENT_BONUS", 10);
+            maxHpModCalculator.AddMod("PERCENT_BONUS", 25);
+            maxHpModCalculator.GetResult().Should().Be(baseValue * 1.35);
         }
 
         [Theory, AutoNSubstituteData]
@@ -40,11 +40,48 @@ namespace Testing.BattleTests
             [Frozen] double baseValue,
             MaxHpModCalculator maxHpModCalculator)
         {
-            maxHpModCalculator.AddMod("PERCENT_BONUS", 141);
+            maxHpModCalculator.AddMod("PERCENT_BONUS", 41);
 
             maxHpModCalculator.GetResult().Should().Be(baseValue * 1.4);
         }
 
+        [Theory, AutoNSubstituteData]
+        public void GetResult_WhenThereIsABowShieldBonusMod_ShouldReturnBaseValueTimesBowShieldBonus(
+            [Frozen] double baseValue,
+            MaxHpModCalculator maxHpModCalculator)
+        {
+            maxHpModCalculator.AddMod("BOW_SHIELD_BONUS", 20);
+            maxHpModCalculator.GetResult().Should().Be(baseValue * 1.2);
+        }
 
+        [Theory, AutoNSubstituteData]
+        public void GetResult_WhenThereIsABowShieldBonusModAndPercentBonus_ShouldReturnBaseValueTimesBowShieldBonusPlusPercentBonus(
+            [Frozen] double baseValue,
+            MaxHpModCalculator maxHpModCalculator)
+        {
+            maxHpModCalculator.AddMod("PERCENT_BONUS", 15); 
+            maxHpModCalculator.AddMod("BOW_SHIELD_BONUS", 20);
+            maxHpModCalculator.GetResult().Should().Be(baseValue * 1.35);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void GetResult_WhenThereAreMultipleBowShieldBonusMod_ShouldReturnBaseValueTimesMaxBowShieldBonus(
+            [Frozen] double baseValue,
+            MaxHpModCalculator maxHpModCalculator)
+        {
+            maxHpModCalculator.AddMod("BOW_SHIELD_BONUS", 10);
+            maxHpModCalculator.AddMod("BOW_SHIELD_BONUS", 20);
+            maxHpModCalculator.GetResult().Should().Be(baseValue * 1.2);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void GetResult_WhenThereIsABowShieldBonusModAndOverLimitPercentBonus_ShouldReturnBaseValueTimesBowShieldBonusPlusMaxPercentBonus(
+            [Frozen] double baseValue,
+            MaxHpModCalculator maxHpModCalculator)
+        {
+            maxHpModCalculator.AddMod("PERCENT_BONUS", 41);
+            maxHpModCalculator.AddMod("BOW_SHIELD_BONUS", 20);
+            maxHpModCalculator.GetResult().Should().Be(baseValue * 1.6);
+        }
     }
 }

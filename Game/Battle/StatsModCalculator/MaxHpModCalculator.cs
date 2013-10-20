@@ -15,18 +15,12 @@ namespace Game.Battle.StatsModCalculator
             this.baseValue = baseValue;
 
             parameters.Add("PERCENT_BONUS", new List<double>());
+            parameters.Add("BOW_SHIELD_BONUS", new List<double> {0});
         }
 
         public double GetResult()
         {
-            var percentBonus = parameters["PERCENT_BONUS"];
-
-            if (percentBonus.Count == 0)
-            {
-                return baseValue;
-            }
-
-            return baseValue * (Math.Min(parameters["PERCENT_BONUS"].Sum(), 140) / 100);
+            return baseValue * ((100 + Math.Min(parameters["PERCENT_BONUS"].Sum(), 40) + parameters["BOW_SHIELD_BONUS"].Max()) / 100);
         }
 
         public void AddMod(string name, int value)

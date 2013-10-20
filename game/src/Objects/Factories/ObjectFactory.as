@@ -146,7 +146,7 @@
 			else if (obj is TroopObject)
 				sprite = TroopFactory.getSprite(centered);
 			else if (obj is Forest)
-				sprite = ForestFactory.getSprite((obj as Forest).level, centered);
+				sprite = ForestFactory.getSprite(centered);
 			else if (obj is NewCityPlaceholder)
 				sprite = getNewCityPlaceholderSprite();
 			else if (obj is Stronghold)

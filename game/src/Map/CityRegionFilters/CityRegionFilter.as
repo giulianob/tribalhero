@@ -67,8 +67,13 @@ package src.Map.CityRegionFilters
 		public function applyForest(obj: CityRegionObject) : void {
 			var icon: MINIMAP_FOREST_ICON = ObjectFactory.getIcon("MINIMAP_FOREST_ICON") as MINIMAP_FOREST_ICON;
 			obj.sprite = icon;
-			obj.addChild(icon);            
-			icon.lvlText.text = obj.extraProps.level.toString();			
+			obj.addChild(icon);
+            if(obj.extraProps.camps>0) {
+                icon.lvlText.text = obj.extraProps.camps.toString();
+                icon.lvlText.visible = true;
+            } else {
+			    icon.lvlText.visible = false;
+            }
             setupMinimapButton(obj, icon);
 		}
 		

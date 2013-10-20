@@ -22,9 +22,9 @@
 		public function ForestFactory() {
 		}
 
-		public static function getSprite(lvl: int, centered: Boolean = false): DisplayObjectContainer
+		public static function getSprite(centered: Boolean = false): DisplayObjectContainer
 		{
-			var objRef: Class = getDefinitionByName("FOREST_LVL_" + lvl) as Class;
+			var objRef: Class = getDefinitionByName("FOREST_LVL_1") as Class;
 
 			var sprite: DisplayObjectContainer = new objRef() as DisplayObjectContainer;
 
@@ -36,12 +36,12 @@
 			return sprite;
 		}
 
-		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, groupId: int, objectId: int, level: int): Forest
+		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, groupId: int, objectId: int): Forest
 		{
-			var forestObj: Forest = new Forest(type, state, objX, objY, groupId, objectId, level);
+			var forestObj: Forest = new Forest(type, state, objX, objY, groupId, objectId);
 
-			forestObj.spriteContainer.addChild(ObjectFactory.makeIntoShadow(getSprite(level)));
-			forestObj.spriteContainer.addChild(getSprite(level));
+			forestObj.spriteContainer.addChild(ObjectFactory.makeIntoShadow(getSprite()));
+			forestObj.spriteContainer.addChild(getSprite());
 
 			forestObj.setOnSelect(Global.map.selectObject);
 			

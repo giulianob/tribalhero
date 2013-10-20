@@ -79,7 +79,6 @@
 					}
 					break;
 				case ObjectFactory.TYPE_FOREST:
-					obj.lvl = packet.readUByte();						
 					break;
 				case ObjectFactory.TYPE_TROOP_OBJ:
 					obj.playerId = packet.readUInt();
@@ -109,7 +108,7 @@
 				case ObjectFactory.TYPE_STRUCTURE:
 					return StructureFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.playerId, obj.groupId, obj.id, obj.lvl, obj.wallRadius);
 				case ObjectFactory.TYPE_FOREST:
-					return ForestFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.groupId, obj.id, obj.lvl);
+					return ForestFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.groupId, obj.id);
 				case ObjectFactory.TYPE_TROOP_OBJ:
 					return TroopFactory.getInstance(obj.type, obj.state, coord.x, coord.y, obj.playerId, obj.groupId, obj.id);
 				case ObjectFactory.TYPE_STRONGHOLD:
@@ -351,8 +350,6 @@
 
 			var forest: Forest = custom as Forest;
 
-			forest.rate = packet.readFloat();
-			forest.labor = packet.readInt();
 			forest.depleteTime = packet.readUInt();
 			forest.wood = new AggressiveLazyValue(packet.readInt(), packet.readInt(), packet.readInt(), packet.readInt(), packet.readUInt());
 
@@ -447,7 +444,10 @@
 						case "INT":
 							obj.addProperty(packet.readInt());
 						break;
-						default:
+                        case "FLOAT":
+                            obj.addProperty(packet.readFloat());
+                        break;
+                        default:
 							Util.log("Unknown datatype " + prop.datatype + " in object type " + obj.type);
 						break;
 					}
@@ -477,6 +477,7 @@
 						break;
 						case "FLOAT":
 							obj.addProperty(packet.readFloat());
+                        break;
 						default:
 							Util.log("Unknown datatype " + prop.datatype + " in object type " + obj.type);
 						break;

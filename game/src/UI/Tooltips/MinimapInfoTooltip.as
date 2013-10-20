@@ -4,7 +4,8 @@
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import org.aswing.AsWingConstants;
-	import org.aswing.JLabel;
+import org.aswing.AssetIcon;
+import org.aswing.JLabel;
 	import org.aswing.SoftBoxLayout;
 	import src.Global;
 	import src.Map.CityRegionObject;
@@ -13,8 +14,9 @@
 	import src.Objects.Factories.ObjectFactory;
 	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.UI.Tooltips.TextTooltip;
+import src.Util.DateUtil;
 
-	/**
+/**
 	 * ...
 	 * @author
 	 */
@@ -58,9 +60,6 @@
 			var lblName: JLabel = new JLabel("Forest", null, AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblName, "header");
 
-			var lblLvl: JLabel = new JLabel("Level " + obj.extraProps.level, null, AsWingConstants.LEFT);
-			GameLookAndFeel.changeClass(lblLvl, "Tooltip.text");
-			
 			var mapPos: Point = MapUtil.getScreenMinimapToMapCoord(obj.x, obj.y);
 			var distance: int = MapUtil.distance(mapPos.x, mapPos.y, Global.gameContainer.selectedCity.MainBuilding.x, Global.gameContainer.selectedCity.MainBuilding.y);
 			
@@ -68,7 +67,14 @@
 			GameLookAndFeel.changeClass(lblDistance, "Tooltip.italicsText");			
 
 			ui.append(lblName);
-			ui.append(lblLvl);
+
+            if(obj.extraProps.depleteTime > 0 && obj.extraProps.camps > 0) {
+                var timeLeft: int = obj.extraProps.depleteTime - Global.map.getServerTime();
+                var lblTime: JLabel = new JLabel("Time left: "+ DateUtil.formatTime(timeLeft), new AssetIcon(new ICON_CLOCK()));
+                GameLookAndFeel.changeClass(lblTime, "Tooltip.text");
+                ui.append(lblTime);
+            }
+
 			ui.append(lblDistance);
 
 			show(obj);

@@ -1,6 +1,7 @@
 package src
 {
     import src.Graphics.Tileset;
+    import src.Graphics.WallTileset;
     import src.Map.MiniMap.MiniMapLegend;
     import src.Objects.Tribe;
 
@@ -38,7 +39,7 @@ package src
 		public static var mainWebsite: String = "http://tribalhero.com/";
 		public static const debug:int = 0;
         public static var debugStacktracer: Boolean = false;
-		public static var defLang:String = "en";
+		public static var defLang:String = "en";    
 		
 		public static var alwaysEnableButtons: Boolean = false;
 
@@ -79,7 +80,8 @@ package src
 		public static var screenH:int = origScreenH;
 		
 		public static const tileset: Tileset = new Tileset();
-		
+		public static const wallTileset: WallTileset = new WallTileset();
+
 		public static const cityStartTile: int = 16;
 
 		/* MINI MAP CONSTANTS */

@@ -28,8 +28,6 @@ namespace Game.Data.Forest
 
         private readonly IForestFactory forestFactory;
 
-        private readonly IObjectTypeFactory objectTypeFactory;
-
         private readonly IActionFactory actionFactory;
 
         private readonly Dictionary<uint, IForest> forests;
@@ -45,7 +43,6 @@ namespace Game.Data.Forest
                              IDbManager dbManager,
                              Formula formula,
                              IForestFactory forestFactory,
-                             IObjectTypeFactory objectTypeFactory,
                              IActionFactory actionFactory,
                              ITileLocator tileLocator,
                              MapFactory mapFactory)
@@ -55,7 +52,6 @@ namespace Game.Data.Forest
             this.dbManager = dbManager;
             this.formula = formula;
             this.forestFactory = forestFactory;
-            this.objectTypeFactory = objectTypeFactory;
             this.actionFactory = actionFactory;
             this.tileLocator = tileLocator;
             this.mapFactory = mapFactory;
@@ -102,23 +98,12 @@ namespace Game.Data.Forest
                     {
                         x = (uint)Config.Random.Next(5, (int)Config.map_width - 5);
                         y = (uint)Config.Random.Next(5, (int)Config.map_height - 5);
-
-                        if (!objectTypeFactory.IsTileType("TileBuildable", world.Regions.GetTileType(x, y)))
-                        {
-                            continue;
-                        }
                         
                         if (mapFactory.TooCloseToCities(new Position(x, y)))
                         {
                             continue;
                         }
-
-                        var buildtableTiles = world.Regions.GetTilesWithin(x, y, 2);
-                        if (!objectTypeFactory.IsAllTileType("TileBuildable", buildtableTiles))
-                        {
-                            continue;
-                        }
-
+                        
                         world.Regions.LockRegion(x, y);
 
                         // check if near any other objects

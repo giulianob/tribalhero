@@ -134,7 +134,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                if (!objectTypeFactory.IsTileType("TileBuildable", world.Regions.GetTileType(x, y)))
+                if (objectTypeFactory.IsTileType("TileResource", world.Regions.GetTileType(x, y)))
                 {
                     world.Regions.UnlockRegion(x, y);
                     ReplyError(session, packet, Error.TileMismatch);

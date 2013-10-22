@@ -182,12 +182,6 @@ namespace Game.Logic.Actions
             uint emptyY = 0;
             foreach (var position in tileLocator.ForeachTile(forest.PrimaryPosition.X, forest.PrimaryPosition.Y, 1, false).Reverse())
             {
-                // Check tile type                
-                if (!objectTypeFactory.IsTileType("TileBuildable", world.Regions.GetTileType(position.X, position.Y)))
-                {
-                    continue;
-                }
-
                 // Make sure it's not taken
                 if (world.Regions.GetObjectsInTile(position.X, position.Y).Any())
                 {

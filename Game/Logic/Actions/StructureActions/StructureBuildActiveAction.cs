@@ -51,6 +51,8 @@ namespace Game.Logic.Actions
 
         private uint structureId;
 
+        private string tileRequirement;
+
         public StructureBuildActiveAction(uint cityId,
                                           ushort type,
                                           uint x,
@@ -172,6 +174,21 @@ namespace Game.Logic.Actions
 
             foreach (var position in tileLocator.ForeachMultitile(X, Y, structureBaseStats.Size))
             {
+                var tileType = world.Regions.GetTileType(position.X, position.Y);
+                // tile requirement
+                if (!string.IsNullOrEmpty(tileRequirement) && !objectTypeFactory.IsTileType(tileRequirement, tileType))
+                {
+                    world.Regions.UnlockRegions(lockedRegions);
+                    return Error.TileMismatch;                    
+                }
+
+                // Only allow buildings that require resource tile to built on them
+                if (tileRequirement != "TileResource" && objectTypeFactory.IsTileType("TileResource", tileType))
+                {
+                    world.Regions.UnlockRegions(lockedRegions);
+                    return Error.TileMismatch;
+                }
+
                 // dont allow building on edge of world
                 if (!world.Regions.IsValidXandY(position.X, position.Y))
                 {
@@ -295,6 +312,13 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
+            // Type
+            if (ushort.Parse(parms[0]) != type)
+            {
+                return Error.ActionInvalid;
+            }
+
+            // Level
             if (parms[2] != string.Empty && byte.Parse(parms[2]) != level)
             {
                 return Error.ActionInvalid;
@@ -304,32 +328,11 @@ namespace Game.Logic.Actions
             {
                 return Error.ActionInvalid;
             }
+            
+            // Tile Requirement            
+            tileRequirement = parms[1];
 
-            if (ushort.Parse(parms[0]) == type)
-            {
-                if (parms[1].Length == 0)
-                {
-                    ushort tileType = world.Regions.GetTileType(X, Y);
-                    if (world.Roads.IsRoad(X, Y) || objectTypeFactory.IsTileType("TileBuildable", tileType))
-                    {
-                        return Error.Ok;
-                    }
-
-                    return Error.TileMismatch;
-                }
-                else
-                {
-                    string[] tokens = parms[1].Split('|');
-                    ushort tileType = world.Regions.GetTileType(X, Y);
-                    if (tokens.Any(str => objectTypeFactory.IsTileType(str, tileType)))
-                    {
-                        return Error.Ok;
-                    }
-
-                    return Error.TileMismatch;
-                }
-            }
-            return Error.ActionInvalid;
+            return Error.Ok;
         }
 
         private void InterruptCatchAll(bool wasKilled)

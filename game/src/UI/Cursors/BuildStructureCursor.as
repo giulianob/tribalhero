@@ -208,12 +208,12 @@ package src.UI.Cursors {
                 var tileType: int = Global.map.regions.getTileAt(tilePosition);
 
                 // Check for tile requirement
-                if (tilerequirement == "" && !RoadPathFinder.isRoad(tileType) && !ObjectFactory.isType("TileBuildable", tileType)) {
+                if (tilerequirement != "" && !ObjectFactory.isType(tilerequirement, tileType)) {
                     return false;
                 }
 
-                // Check for tile requirement
-                if (tilerequirement != "" && !ObjectFactory.isType(tilerequirement, tileType)) {
+                // Only allow buildings can require the resource tile to be built on resource tiles
+                if (tilerequirement != "TileResource" && ObjectFactory.isType("TileResource", tileType)) {
                     return false;
                 }
 

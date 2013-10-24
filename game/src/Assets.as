@@ -388,11 +388,11 @@
         [EmbedPosition(name = "map", x = 46, y = "-18")]
         public static const TOWER_STRUCTURE: Class;
 
-        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE.png")]
+        [Embed(source = "../../graphics/buildings/TOWNCENTER_STRUCTURE.png")]
         [EmbedPosition(name = "map", x = 124, y = "-50")]
         public static const TOWNCENTER_STRUCTURE: Class;
 
-        [Embed(source = "../../graphics/buildings/TOWN_CENTER_STRUCTURE_SHADOW.png")]
+        [Embed(source = "../../graphics/buildings/TOWNCENTER_STRUCTURE_SHADOW.png")]
         [EmbedPosition(name = "map", x = "107", y = "5")]
         public static const TOWNCENTER_STRUCTURE_SHADOW: Class;
 

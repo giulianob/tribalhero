@@ -155,7 +155,7 @@ package src.UI.Cursors {
 
 			if (RoadPathFinder.isRoad(tileType)) return;
 
-			if (!ObjectFactory.isType("TileBuildable", tileType)) return;
+			if (ObjectFactory.isType("TileResource", tileType)) return;
 
 			if (city.hasStructureAt(position)) return;
 

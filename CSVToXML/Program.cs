@@ -101,7 +101,7 @@ namespace CSVToXML
             return split[split.Length - 1].Trim();
         }
 
-        public static void Go(string dataOutputFolderIn, string csvDataFolderIn, string langDataFolderIn)
+        public static void  Go(string dataOutputFolderIn, string csvDataFolderIn, string langDataFolderIn)
         {
             dataOutputFolder = dataOutputFolderIn;
             csvDataFolder = csvDataFolderIn;
@@ -109,7 +109,7 @@ namespace CSVToXML
 
             #region Data XML
 
-            writer = new XmlTextWriter(new StreamWriter(FileExtension.OverwriteLockedFile(dataOutputFolderIn + "data.xml")))
+            writer = new XmlTextWriter(new StreamWriter(FileExtension.OverwriteLockedFile(Path.Combine(dataOutputFolderIn, "data.xml"))))
             {
                     Formatting = Formatting.None
             };
@@ -688,7 +688,7 @@ namespace CSVToXML
         private static void WriteLanguageFile()
         {
             // TODO Hardcoded to just do English for now but later we can do all the languages            
-            writer = new XmlTextWriter(new StreamWriter(FileExtension.OverwriteLockedFile(dataOutputFolder + "Game_en.xml")))
+            writer = new XmlTextWriter(new StreamWriter(FileExtension.OverwriteLockedFile(Path.Combine(dataOutputFolder, "Game_en.xml"))))
             {
                     Formatting = Formatting.Indented
             };

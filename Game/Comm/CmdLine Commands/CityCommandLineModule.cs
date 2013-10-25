@@ -197,7 +197,7 @@ namespace Game.Comm.CmdLine_Commands
 
             using (locker.Lock(structure.City))
             {
-                var removeAction = new StructureSelfDestroyPassiveAction(structure.City.Id, structure.ObjectId);
+                var removeAction = actionFactory.CreateStructureSelfDestroyPassiveAction(structure.City.Id, structure.ObjectId);
                 var result = structure.City.Worker.DoPassive(structure.City, removeAction, false);
 
                 if (result != Error.Ok)

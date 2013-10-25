@@ -13,9 +13,12 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly IDbManager dbManager;
 
-        public EventCommandsModule(IDbManager dbManager)
+        private readonly ILocker locker;
+
+        public EventCommandsModule(IDbManager dbManager, ILocker locker)
         {
             this.dbManager = dbManager;
+            this.locker = locker;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -35,7 +38,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 Global.Current.Channel.Unsubscribe(session);
 

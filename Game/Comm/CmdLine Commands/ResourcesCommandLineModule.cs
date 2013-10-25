@@ -16,6 +16,19 @@ namespace Game.Comm
 {
     public class ResourcesCommandLineModule : CommandLineModule
     {
+        private readonly ILocker locker;
+
+        private readonly IWorld world;
+
+        private readonly UnitFactory unitFactory;
+
+        public ResourcesCommandLineModule(ILocker locker, IWorld world, UnitFactory unitFactory)
+        {
+            this.locker = locker;
+            this.world = world;
+            this.unitFactory = unitFactory;
+        }
+
         public override void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("sendresources", SendResources, PlayerRights.Admin);
@@ -53,13 +66,13 @@ namespace Game.Comm
             }
 
             uint cityId;
-            if (!World.Current.Cities.FindCityId(cityName, out cityId))
+            if (!world.Cities.FindCityId(cityName, out cityId))
             {
                 return "City not found";
             }
 
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -103,20 +116,20 @@ namespace Game.Comm
             }
 
             uint cityId;
-            if (!World.Current.Cities.FindCityId(cityName, out cityId))
+            if (!world.Cities.FindCityId(cityName, out cityId))
             {
                 return "City not found";
             }
 
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (city == null)
                 {
                     return "City not found";
                 }
 
-                if (Ioc.Kernel.Get<UnitFactory>().GetName(type, 1) == null)
+                if (unitFactory.GetName(type, 1) == null)
                 {
                     return "Unit type does not exist";
                 }

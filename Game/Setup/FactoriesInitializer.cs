@@ -3,6 +3,7 @@
 using System.IO;
 using Game.Data;
 using Game.Util;
+using log4net.Repository.Hierarchy;
 using Ninject.Extensions.Logging;
 
 #endregion
@@ -10,7 +11,7 @@ using Ninject.Extensions.Logging;
 namespace Game.Setup
 {
     public class FactoriesInitializer
-    {
+    {        
         private readonly ActionRequirementFactory actionRequirementFactory;
 
         private readonly IStructureCsvFactory structureCsvFactory;
@@ -63,7 +64,7 @@ namespace Game.Setup
         private void BuildFiles(string outputFile, string dir, string pattern)
         {
             outputFile = Path.GetFullPath(outputFile);
-            logger.Info("Building CSV file " + outputFile);
+            logger.Info("Building CSV file {0}", outputFile);
 
             if (File.Exists(outputFile))
             {
@@ -73,6 +74,8 @@ namespace Game.Setup
             using (var sw = new StreamWriter(outputFile))
             {
                 bool headerWritten = false;
+                logger.Info("Searching {0} for {1}", dir, pattern);
+
                 foreach (var filename in Directory.GetFiles(dir, pattern, SearchOption.TopDirectoryOnly))
                 {
                     string fullFilename = filename;
@@ -81,6 +84,8 @@ namespace Game.Setup
                     {
                         fullFilename = Path.Combine(dir, filename);
                     }
+
+                    logger.Info("Appending {0}", fullFilename);
 
                     using (var sr = new StreamReader(new FileStream(fullFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                     {
@@ -94,6 +99,8 @@ namespace Game.Setup
                     }
                 }
             }
+
+            logger.Info("Finished building {0}", outputFile);
         }
 
         public void CompileAndInit()
@@ -112,17 +119,38 @@ namespace Game.Setup
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "unit_modifier.csv"), Config.csv_folder, "*unit_modifier.csv");
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "object_type.csv"), Config.csv_folder, "object_type.csv");
 
+            logger.Info("Action requirement factory init");
             actionRequirementFactory.Init(Path.Combine(Config.csv_compiled_folder, "action.csv"));
+            
+            logger.Info("Structure csv factory init");
             structureCsvFactory.Init(Path.Combine(Config.csv_compiled_folder, "structure.csv"));
+
+            logger.Info("Effect requirement factory init");
             effectRequirementFactory.Init(Path.Combine(Config.csv_compiled_folder, "effect_requirement.csv"));
+            
+            logger.Info("Init factory init");
             initFactory.Init(Path.Combine(Config.csv_compiled_folder, "init.csv"));
+
+            logger.Info("Property factory init");
             propertyFactory.Init(Path.Combine(Config.csv_compiled_folder, "property.csv"));
+
+            logger.Info("Requirement csv factory init");
             requirementCsvFactory.Init(Path.Combine(Config.csv_compiled_folder, "layout.csv"));
+
+            logger.Info("Technology factory init");
             technologyFactory.Init(Path.Combine(Config.csv_compiled_folder, "technology.csv"),
                                    Path.Combine(Config.csv_folder, "technology_effects.csv"));
+
+            logger.Info("Unit factory init");
             unitFactory.Init(Path.Combine(Config.csv_compiled_folder, "unit.csv"));
+
+            logger.Info("Object type factory init");
             objectTypeFactory.Init(Path.Combine(Config.csv_compiled_folder, "object_type.csv"));
+
+            logger.Info("Unit mod factory init");
             unitModFactory.Init(Path.Combine(Config.csv_compiled_folder, "unit_modifier.csv"));
+
+            logger.Info("Map factory init");
             mapFactory.Init(Path.Combine(Config.maps_folder, "CityLocations.txt"));
         }
     }

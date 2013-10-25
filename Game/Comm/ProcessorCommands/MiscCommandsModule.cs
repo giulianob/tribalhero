@@ -16,10 +16,13 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IStructureCsvFactory structureCsvFactory;
 
-        public MiscCommandsModule(IActionFactory actionFactory, IStructureCsvFactory structureCsvFactory)
+        private readonly ILocker locker;
+
+        public MiscCommandsModule(IActionFactory actionFactory, IStructureCsvFactory structureCsvFactory, ILocker locker)
         {
             this.actionFactory = actionFactory;
             this.structureCsvFactory = structureCsvFactory;
+            this.locker = locker;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -48,7 +51,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -87,7 +90,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            using (locker.Lock(session.Player))
             {
                 ICity city = session.Player.GetCity(cityId);
 

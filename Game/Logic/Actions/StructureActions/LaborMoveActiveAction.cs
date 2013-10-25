@@ -26,35 +26,28 @@ namespace Game.Logic.Actions
 
         private readonly uint structureId;
 
-        public LaborMoveActiveAction(uint cityId,
-                                     uint structureId,
-                                     bool cityToStructure,
-                                     ushort count,
-                                     Formula formula,
-                                     Procedure procedure)
+        private readonly ILocker locker;
+
+        private readonly IGameObjectLocator gameObjectLocator;
+
+        public LaborMoveActiveAction(uint cityId, uint structureId, bool cityToStructure, ushort count, Formula formula, Procedure procedure, ILocker locker, IGameObjectLocator gameObjectLocator)
         {
             this.cityId = cityId;
             this.structureId = structureId;
             this.cityToStructure = cityToStructure;
             this.formula = formula;
             this.procedure = procedure;
+            this.locker = locker;
+            this.gameObjectLocator = gameObjectLocator;
             ActionCount = count;
         }
 
-        public LaborMoveActiveAction(uint id,
-                                     DateTime beginTime,
-                                     DateTime nextTime,
-                                     DateTime endTime,
-                                     int workerType,
-                                     byte workerIndex,
-                                     ushort actionCount,
-                                     IDictionary<string, string> properties,
-                                     Formula formula,
-                                     Procedure procedure)
-                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+        public LaborMoveActiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType, byte workerIndex, ushort actionCount, IDictionary<string, string> properties, Formula formula, Procedure procedure, ILocker locker, IGameObjectLocator gameObjectLocator) : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             this.formula = formula;
             this.procedure = procedure;
+            this.locker = locker;
+            this.gameObjectLocator = gameObjectLocator;
             cityToStructure = bool.Parse(properties["city_to_structure"]);
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
@@ -80,7 +73,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
             IStructure structure;
-            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!gameObjectLocator.TryGetObjects(cityId, structureId, out city, out structure))
             {
                 return Error.ObjectNotFound;
             }
@@ -116,7 +109,7 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (!IsValid())
                 {
@@ -130,7 +123,7 @@ namespace Game.Logic.Actions
         public override void UserCancelled()
         {
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (!IsValid())
                 {
@@ -169,7 +162,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
             IStructure structure;
-            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!gameObjectLocator.TryGetObjects(cityId, structureId, out city, out structure))
             {
                 return Error.ObjectNotFound;
             }
@@ -186,7 +179,7 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            using (locker.Lock(cityId, out city))
             {
                 if (!IsValid())
                 {

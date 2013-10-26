@@ -138,7 +138,7 @@ namespace Game.Util.Locking
             return TryGetCityTroop(cityId, objectId, out city, out obj);
         }
 
-        public CallbackLock Lock(uint cityId, out ICity city, out ITribe tribe)
+        public IMultiObjectLock Lock(uint cityId, out ICity city, out ITribe tribe)
         {
             return TryGetCityTribe(cityId, out city, out tribe);
         }
@@ -150,7 +150,7 @@ namespace Game.Util.Locking
             return lck;
         }
 
-        public CallbackLock Lock(CallbackLock.CallbackLockHandler lockHandler,
+        public IMultiObjectLock Lock(CallbackLock.CallbackLockHandler lockHandler,
                                  object[] lockHandlerParams,
                                  params ILockable[] baseLocks)
         {
@@ -283,7 +283,7 @@ namespace Game.Util.Locking
             return lck;
         }
 
-        private CallbackLock TryGetCityTribe(uint cityId, out ICity city, out ITribe tribe)
+        private IMultiObjectLock TryGetCityTribe(uint cityId, out ICity city, out ITribe tribe)
         {
             city = null;
             tribe = null;

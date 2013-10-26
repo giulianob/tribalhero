@@ -532,7 +532,6 @@
     <Compile Include="Util\Locking\DefaultLocker.cs" />
     <Compile Include="Util\Locking\IMultiObjectLock.cs" />
     <Compile Include="Util\Locking\LockException.cs" />
-    <Compile Include="Util\Locking\TransactionalMultiObjectLock.cs" />
     <Compile Include="Util\LoggerFactory.cs" />
     <Compile Include="Util\MathParser.cs" />
     <Compile Include="Util\Locking\DefaultMultiObjectLock.cs" />

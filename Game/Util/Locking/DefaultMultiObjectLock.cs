@@ -6,10 +6,7 @@ using System.Linq;
 using System.Threading;
 using Game.Setup;
 using Ninject.Extensions.Logging;
-
-// ReSharper disable RedundantUsingDirective
-
-// ReSharper restore RedundantUsingDirective
+using Persistance;
 
 #endregion
 
@@ -17,28 +14,33 @@ namespace Game.Util.Locking
 {
     public class DefaultMultiObjectLock : IMultiObjectLock
     {
-        private static ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+        private static readonly ILogger Logger = LoggerFactory.Current.GetCurrentClassLogger();
 
         private readonly Action<object> lockEnter;
 
         private readonly Action<object> lockExit;
 
+        private readonly IDbManager dbManager;
+
         public delegate IMultiObjectLock Factory();
+
+        private bool hasHadException;
 
         [ThreadStatic]
         private static DefaultMultiObjectLock currentLock;
 
         private List<object> lockedObjects = new List<object>(0);
 
-        public DefaultMultiObjectLock()
-                : this(Monitor.Enter, Monitor.Exit)
+        public DefaultMultiObjectLock(IDbManager dbManager)
+                : this(Monitor.Enter, Monitor.Exit, dbManager)
         {
         }
 
-        public DefaultMultiObjectLock(Action<object> lockEnter, Action<object> lockExit)
+        public DefaultMultiObjectLock(Action<object> lockEnter, Action<object> lockExit, IDbManager dbManager)
         {
             this.lockEnter = lockEnter;
             this.lockExit = lockExit;
+            this.dbManager = dbManager;
         }
 
         public IMultiObjectLock Lock(ILockable[] list)
@@ -53,12 +55,14 @@ namespace Game.Util.Locking
             lockedObjects = new List<object>(list.Length);
 
             SortLocks(list);
+            
+            // ReSharper disable once ForCanBeConvertedToForeach
             for (int i = 0; i < list.Length; ++i)
             {
                 var lockObj = list[i].Lock;
                 if (lockObj == null)
                 {
-                    logger.Warn("Received a null Lock obj when trying to lock object type {0} with hash {1}", list[i].GetType().FullName, list[i].Hash);
+                    Logger.Warn("Received a null Lock obj when trying to lock object type {0} with hash {1}", list[i].GetType().FullName, list[i].Hash);
                     continue;
                 }
 
@@ -66,7 +70,47 @@ namespace Game.Util.Locking
                 lockedObjects.Add(lockObj);
             }
 
+            // Initialize transaction
+            dbManager.GetThreadTransaction();
+
             return this;
+        }
+
+        public T Do<T>(Func<T> protectedBlock)
+        {
+            T blockReturnValue;
+            try
+            {
+                blockReturnValue = protectedBlock();
+            }
+            catch(Exception)
+            {
+                hasHadException = true;
+                throw;
+            }
+            finally
+            {
+                UnlockAll();                
+            }
+            
+            return blockReturnValue;
+        }
+
+        public void Do(Action protectedBlock)
+        {
+            try
+            {
+                protectedBlock();
+            }
+            catch(Exception)
+            {
+                hasHadException = true;
+                throw;
+            }
+            finally
+            {
+                UnlockAll();                
+            }
         }
 
         public void SortLocks(ILockable[] list)
@@ -74,14 +118,25 @@ namespace Game.Util.Locking
             Array.Sort(list, CompareObject);
         }
 
-        public void Dispose()
-        {
-            UnlockAll();
-            GC.SuppressFinalize(this);
-        }
-
         public void UnlockAll()
-        {            
+        {
+            var transaction = dbManager.GetThreadTransaction(true);
+
+            if (hasHadException)
+            {
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                    transaction.Dispose();
+                }
+                return;
+            }
+
+            if (transaction != null)
+            {                
+                transaction.Dispose();
+            }
+
             for (int i = lockedObjects.Count - 1; i >= 0; --i)
             {
                 lockExit(lockedObjects[i]);
@@ -89,7 +144,7 @@ namespace Game.Util.Locking
 
             lockedObjects = new List<object>(0);
             
-            currentLock = null;
+            ClearCurrentLock();
         }
 
         public static bool IsLocked(ILockable obj)
@@ -109,6 +164,11 @@ namespace Game.Util.Locking
             var yType = y.GetType();
 
             return String.Compare(xType.AssemblyQualifiedName, yType.AssemblyQualifiedName, StringComparison.InvariantCulture);
+        }
+
+        public static void ClearCurrentLock()
+        {
+            currentLock = null;
         }
 
         public static void ThrowExceptionIfNotLocked(ILockable obj)

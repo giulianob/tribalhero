@@ -34,6 +34,8 @@ namespace Persistance
 
         protected bool verbose;
 
+        protected DbTransaction() {}
+
         internal DbTransaction(IDbManager manager, ILogger logger, bool verbose, object transaction)
         {
             Manager = manager;
@@ -87,7 +89,7 @@ namespace Persistance
 
         #region IDisposable Members
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             referenceCount--;
 

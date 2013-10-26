@@ -1,7 +1,10 @@
 ﻿#region
 
+using System;
 using FluentAssertions;
 using Game.Util.Locking;
+using NSubstitute;
+using Persistance;
 using Xunit;
 
 #endregion
@@ -13,7 +16,12 @@ namespace Testing.LockingTests
     /// </summary>
     public class CallbackLockTest
     {
-        private readonly DefaultMultiObjectLock.Factory multiObjectLockFactory = () => new DefaultMultiObjectLock();
+        private readonly DefaultMultiObjectLock.Factory multiObjectLockFactory = () => new DefaultMultiObjectLock(Substitute.For<IDbManager>());
+
+        public CallbackLockTest()
+        {
+            DefaultMultiObjectLock.ClearCurrentLock();
+        }
 
         [Fact]
         public void TestEmptyListFromCallback()
@@ -22,7 +30,7 @@ namespace Testing.LockingTests
             CallbackLock.CallbackLockHandler lockFunc = custom => new ILockable[] {};
             var lck = new CallbackLock(multiObjectLockFactory).Lock(lockFunc, null, obj);
             DefaultMultiObjectLock.IsLocked(obj).Should().BeTrue();
-            lck.Dispose();
+            lck.UnlockAll();
             DefaultMultiObjectLock.IsLocked(obj).Should().BeFalse();
         }
 
@@ -37,7 +45,7 @@ namespace Testing.LockingTests
             DefaultMultiObjectLock.IsLocked(obj).Should().BeTrue();
             DefaultMultiObjectLock.IsLocked(obj2).Should().BeTrue();
 
-            lck.Dispose();
+            lck.UnlockAll();
 
             DefaultMultiObjectLock.IsLocked(obj).Should().BeFalse();
             DefaultMultiObjectLock.IsLocked(obj2).Should().BeFalse();
@@ -56,7 +64,7 @@ namespace Testing.LockingTests
             DefaultMultiObjectLock.IsLocked(obj2).Should().BeTrue();
             DefaultMultiObjectLock.IsLocked(obj3).Should().BeTrue();
 
-            lck.Dispose();
+            lck.UnlockAll();
 
             DefaultMultiObjectLock.IsLocked(obj).Should().BeFalse();
             DefaultMultiObjectLock.IsLocked(obj2).Should().BeFalse();
@@ -74,7 +82,7 @@ namespace Testing.LockingTests
             DefaultMultiObjectLock.IsLocked(obj).Should().BeTrue();
             DefaultMultiObjectLock.IsLocked(obj2).Should().BeTrue();
 
-            lck.Dispose();
+            lck.UnlockAll();
 
             DefaultMultiObjectLock.IsLocked(obj).Should().BeFalse();
             DefaultMultiObjectLock.IsLocked(obj2).Should().BeFalse();
@@ -105,7 +113,7 @@ namespace Testing.LockingTests
             DefaultMultiObjectLock.IsLocked(obj2).Should().BeTrue();
             DefaultMultiObjectLock.IsLocked(obj3).Should().BeTrue();
 
-            lck.Dispose();
+            lck.UnlockAll();
 
             DefaultMultiObjectLock.IsLocked(obj).Should().BeFalse();
             DefaultMultiObjectLock.IsLocked(obj2).Should().BeFalse();
@@ -137,7 +145,7 @@ namespace Testing.LockingTests
             DefaultMultiObjectLock.IsLocked(obj2).Should().BeTrue();
             DefaultMultiObjectLock.IsLocked(obj3).Should().BeFalse();
 
-            lck.Dispose();
+            lck.UnlockAll();
 
             DefaultMultiObjectLock.IsLocked(obj).Should().BeFalse();
             DefaultMultiObjectLock.IsLocked(obj2).Should().BeFalse();

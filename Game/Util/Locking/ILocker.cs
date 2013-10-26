@@ -26,11 +26,11 @@ namespace Game.Util.Locking
 
         IMultiObjectLock Lock(uint cityId, uint objectId, out ICity city, out ITroopObject obj);
 
-        CallbackLock Lock(uint cityId, out ICity city, out ITribe tribe);
+        IMultiObjectLock Lock(uint cityId, out ICity city, out ITribe tribe);
 
         IMultiObjectLock Lock(params ILockable[] list);
 
-        CallbackLock Lock(CallbackLock.CallbackLockHandler lockHandler,
+        IMultiObjectLock Lock(CallbackLock.CallbackLockHandler lockHandler,
                           object[] lockHandlerParams,
                           params ILockable[] baseLocks);
     }

@@ -138,21 +138,21 @@ namespace Game.Map
                     currentUpdatedVersion = regionLastUpdated;
                 }
 
-                using (lockerFactory().Lock(playersInRegion))
+                var isDone = lockerFactory().Lock(playersInRegion).Do(() =>
                 {
                     lock (objLock)
                     {
                         // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                         // ReSharper disable HeuristicUnreachableCode
-                        if (!isDirty)                                                        
+                        if (!isDirty)
                         {
-                            break;
+                            return true;
                         }
                         // ReSharper restore HeuristicUnreachableCode
 
                         if (currentUpdatedVersion != regionLastUpdated)
                         {
-                            continue;
+                            return false;
                         }
 
                         using (var ms = new MemoryStream())
@@ -161,13 +161,13 @@ namespace Game.Map
                             bw.Write((ushort)data.Count);
                             foreach (var obj in data)
                             {
-                                    // TODO: Remove this at some point.. added this to check an existing issue
-                                    var simpleObj = obj as ISimpleGameObject;
-                                    if (simpleObj != null && !simpleObj.InWorld)
-                                    {
-                                        logger.Warn("Tried to get bytes from an obj that is not in world {0}", simpleObj.ToString());
-                                        throw new Exception("Object not being removed properly...");
-                                    }
+                                // TODO: Remove this at some point.. added this to check an existing issue
+                                var simpleObj = obj as ISimpleGameObject;
+                                if (simpleObj != null && !simpleObj.InWorld)
+                                {
+                                    logger.Warn("Tried to get bytes from an obj that is not in world {0}", simpleObj.ToString());
+                                    throw new Exception("Object not being removed properly...");
+                                }
 
                                 bw.Write((byte)obj.MiniMapObjectType);
                                 bw.Write((ushort)(obj.PrimaryPosition.X % Config.minimap_region_width));
@@ -186,6 +186,11 @@ namespace Game.Map
                         }
                     }
 
+                    return true;
+                });
+
+                if (isDone)
+                {
                     break;
                 }
             }

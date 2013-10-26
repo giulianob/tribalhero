@@ -29,7 +29,7 @@ namespace Game.Util.Locking
         {
             result = new Dictionary<uint, ICity>(cityIds.Length);
 
-            var cities = new ICity[cityIds.Length];
+            var cities = new ILockable[cityIds.Length];
 
             int i = 0;
             foreach (var cityId in cityIds)
@@ -285,7 +285,6 @@ namespace Game.Util.Locking
 
         private IMultiObjectLock TryGetCityTribe(uint cityId, out ICity city, out ITribe tribe)
         {
-            city = null;
             tribe = null;
 
             if (!locator.TryGetObjects(cityId, out city))
@@ -293,7 +292,7 @@ namespace Game.Util.Locking
                 return null;
             }
 
-            var lck = callbackLockFactory().Lock((custom) =>
+            var lck = callbackLockFactory().Lock(custom =>
                 {
                     ICity cityParam = (ICity)custom[0];
 

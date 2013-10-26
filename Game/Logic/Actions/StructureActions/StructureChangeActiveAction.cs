@@ -140,7 +140,7 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll(bool wasKilled)
         {
             ICity city;
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -155,7 +155,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
 
         public override void UserCancelled()
@@ -174,27 +174,34 @@ namespace Game.Logic.Actions
             IStructure structure;
 
             // Block structure
-            using (locker.Lock(cityId, structureId, out city, out structure))
+            var isOk = locker.Lock(cityId, structureId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
-                    return;
+                    return false;
                 }
 
                 if (structure.CheckBlocked(ActionId))
                 {
                     StateChange(ActionState.Failed);
-                    return;
+                    return false;
                 }
 
                 structure.BeginUpdate();
                 structure.IsBlocked = ActionId;
                 structure.EndUpdate();
+
+                return true;
+            });
+
+            if (!isOk)
+            {
+                return;
             }
 
             structure.City.Worker.Remove(structure, new GameAction[] {this});
 
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -215,7 +222,7 @@ namespace Game.Logic.Actions
                 city.EndUpdate();
 
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         #region IPersistable

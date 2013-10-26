@@ -63,7 +63,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -82,14 +82,12 @@ namespace Game.Comm.ProcessorCommands
 
                 if (obj != null)
                 {
-                    Error ret;
                     var rba = actionFactory.CreateResourceBuyActiveAction(cityId, objectId, price, quantity, type);
-                    if (
-                            (ret =
-                             city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(obj),
-                                                  obj,
-                                                  rba,
-                                                  obj.Technologies)) == 0)
+                    Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(obj),
+                                                     obj,
+                                                     rba,
+                                                     obj.Technologies);
+                    if (ret == 0)
                     {
                         ReplySuccess(session, packet);
                     }
@@ -99,8 +97,9 @@ namespace Game.Comm.ProcessorCommands
                     }
                     return;
                 }
+
                 ReplyError(session, packet, Error.Unexpected);
-            }
+            });
         }
 
         private void MarketSell(Session session, Packet packet)
@@ -124,7 +123,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -145,9 +144,9 @@ namespace Game.Comm.ProcessorCommands
                 {
                     var rsa = actionFactory.CreateResourceSellActiveAction(cityId, objectId, price, quantity, type);
                     var actionResult = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(obj),
-                                                   obj,
-                                                   rsa,
-                                                   obj.Technologies);
+                                                            obj,
+                                                            rsa,
+                                                            obj.Technologies);
                     if (actionResult == 0)
                     {
                         ReplySuccess(session, packet);
@@ -156,10 +155,12 @@ namespace Game.Comm.ProcessorCommands
                     {
                         ReplyError(session, packet, actionResult);
                     }
+
                     return;
                 }
+
                 ReplyError(session, packet, Error.Unexpected);
-            }
+            });
         }
     }
 }

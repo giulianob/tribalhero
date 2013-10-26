@@ -275,7 +275,7 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            using (concurrency.Lock(cityId, out city))
+            concurrency.Lock(cityId, out city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -300,7 +300,7 @@ namespace Game.Logic.Actions
                 procedure.OnStructureUpgradeDowngrade(structure);
                 city.EndUpdate();
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override Error Validate(string[] parms)
@@ -338,7 +338,7 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll(bool wasKilled)
         {
             ICity city;
-            using (concurrency.Lock(cityId, out city))
+            concurrency.Lock(cityId, out city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -367,7 +367,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
 
         public override void UserCancelled()

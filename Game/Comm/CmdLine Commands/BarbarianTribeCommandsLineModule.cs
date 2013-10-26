@@ -52,26 +52,32 @@ namespace Game.Comm
                         {"camps=", v => campCount = int.Parse(v.TrimMatchingQuotes())},
                         {"level=", v => level = byte.Parse(v.TrimMatchingQuotes())},
                 };
-                p.Parse(parms);
-                
+                p.Parse(parms);                
             }
             catch (Exception)
             {
                 help = true;
             }
-            
-            if (help || !x.HasValue || !y.HasValue || !campCount.HasValue || !level.HasValue)
+
+            if (help ||
+                x == null ||
+                y == null ||
+                level == null ||
+                campCount == null ||
+                !x.HasValue ||
+                !y.HasValue ||
+                !campCount.HasValue ||
+                !level.HasValue)
             {
                 return "BarbarianTribeCreate --x=x --y=y --level=level --camps=camps";
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 world.Regions.LockRegion(x.Value, y.Value);
                 barbarianTribeManager.CreateBarbarianTribeNear(level.Value, campCount.Value, x.Value, y.Value, 0);
                 world.Regions.UnlockRegion(x.Value, y.Value);
-            }
-
+            });
 
             return "OK";
         }       

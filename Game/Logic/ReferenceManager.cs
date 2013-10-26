@@ -242,10 +242,7 @@ namespace Game.Logic
 
         private void WorkerOnActionsRemovedFromWorker(IGameObject workerObject)
         {
-            using (locker.Lock(lockingObj))
-            {
-                Remove(workerObject);
-            }
+            locker.Lock(lockingObj).Do(() => Remove(workerObject));            
         }
     }
 }

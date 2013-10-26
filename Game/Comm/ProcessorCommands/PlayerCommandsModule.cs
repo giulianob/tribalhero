@@ -56,13 +56,13 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 session.Player.SoundMuted = mute;
                 dbManager.Save(session.Player);
 
                 ReplySuccess(session, packet);
-            }
+            });
         }
 
         private void SaveTutorialStep(Session session, Packet packet)
@@ -78,13 +78,13 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 session.Player.TutorialStep = stepIndex;
                 dbManager.Save(session.Player);
 
                 ReplySuccess(session, packet);
-            }
+            });
         }
 
         private void SetDescription(Session session, Packet packet)
@@ -100,7 +100,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 if (description.Length > Player.MAX_DESCRIPTION_LENGTH)
                 {
@@ -111,7 +111,7 @@ namespace Game.Comm.ProcessorCommands
                 session.Player.Description = description;
 
                 ReplySuccess(session, packet);
-            }
+            });
         }
 
         private void ViewProfile(Session session, Packet packet)
@@ -144,7 +144,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             IPlayer player;
-            using (locker.Lock(playerId, out player))
+            locker.Lock(playerId, out player).Do(() =>
             {
                 if (player == null)
                 {
@@ -155,7 +155,7 @@ namespace Game.Comm.ProcessorCommands
                 PacketHelper.AddPlayerProfileToPacket(player, reply);
 
                 session.Write(reply);
-            }
+            });
         }
 
         private void GetUsername(Session session, Packet packet)
@@ -219,10 +219,8 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ICity city;
-            using (locker.Lock(cityId, out city))
-            {
-                reply.AddString(city.Owner.Name);
-            }
+            locker.Lock(cityId, out city)
+                  .Do(() => reply.AddString(city.Owner.Name));
 
             session.Write(reply);
         }
@@ -262,17 +260,17 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            var hasCity = locker.Lock(session.Player)
+                                .Do(() => session.Player.GetCity(cityId) != null);
+
+            if (!hasCity)
             {
-                if (session.Player.GetCity(cityId) == null)
-                {
-                    ReplyError(session, packet, Error.Unexpected);
-                    return;
-                }
+                ReplyError(session, packet, Error.Unexpected);
+                return;
             }
 
             Dictionary<uint, ICity> cities;
-            using (locker.Lock(out cities, cityId, targetCityId))
+            locker.Lock(out cities, cityId, targetCityId).Do(() =>
             {
                 if (cities == null)
                 {
@@ -314,7 +312,7 @@ namespace Game.Comm.ProcessorCommands
 
                     session.Write(reply);
                 }
-            }
+            });
         }
     }
 }

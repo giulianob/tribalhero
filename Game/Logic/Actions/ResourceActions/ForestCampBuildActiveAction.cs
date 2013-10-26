@@ -255,58 +255,58 @@ namespace Game.Logic.Actions
                 return;
             }
 
-            using (
-                    locker.Lock(forestManager.CallbackLockHandler,
-                                             new object[] { forestId },
-                                             city))
-            {
-                if (!IsValid())
-                {
-                    return;
-                }
+            locker.Lock(forestManager.CallbackLockHandler,
+                        new object[] {forestId},
+                        city)
+                  .Do(() =>
+                  {
+                      if (!IsValid())
+                      {
+                          return;
+                      }
 
-                IStructure structure;
-                if (!city.TryGetStructure(campId, out structure))
-                {
-                    // Give back the labors to the city
-                    city.BeginUpdate();
-                    city.Resource.Labor.Add(labors);
-                    city.EndUpdate();
+                      IStructure structure;
+                      if (!city.TryGetStructure(campId, out structure))
+                      {
+                          // Give back the labors to the city
+                          city.BeginUpdate();
+                          city.Resource.Labor.Add(labors);
+                          city.EndUpdate();
 
-                    StateChange(ActionState.Failed);
-                    return;
-                }
+                          StateChange(ActionState.Failed);
+                          return;
+                      }
 
-                city.References.Remove(structure, this);
+                      city.References.Remove(structure, this);
 
-                // Get forest. If it doesn't exist, we need to delete the structure.
-                IForest forest;
-                if (!forestManager.TryGetValue(forestId, out forest))
-                {
-                    // Remove the camp
-                    structure.BeginUpdate();
-                    world.Regions.Remove(structure);
-                    city.ScheduleRemove(structure, false);
-                    structure.EndUpdate();
+                      // Get forest. If it doesn't exist, we need to delete the structure.
+                      IForest forest;
+                      if (!forestManager.TryGetValue(forestId, out forest))
+                      {
+                          // Remove the camp
+                          structure.BeginUpdate();
+                          world.Regions.Remove(structure);
+                          city.ScheduleRemove(structure, false);
+                          structure.EndUpdate();
 
-                    StateChange(ActionState.Failed);
-                    return;
-                }
+                          StateChange(ActionState.Failed);
+                          return;
+                      }
 
-                // Upgrade the camp
-                structure.BeginUpdate();
-                structure.Technologies.Parent = structure.City.Technologies;
-                structureCsvFactory.GetUpgradedStructure(structure, structure.Type, 1);
-                initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
-                structure.EndUpdate();
+                      // Upgrade the camp
+                      structure.BeginUpdate();
+                      structure.Technologies.Parent = structure.City.Technologies;
+                      structureCsvFactory.GetUpgradedStructure(structure, structure.Type, 1);
+                      initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
+                      structure.EndUpdate();
 
-                // Recalculate the forest
-                forest.BeginUpdate();
-                forest.RecalculateForest();
-                forest.EndUpdate();
+                      // Recalculate the forest
+                      forest.BeginUpdate();
+                      forest.RecalculateForest();
+                      forest.EndUpdate();
 
-                StateChange(ActionState.Completed);
-            }
+                      StateChange(ActionState.Completed);
+                  });
         }
 
         public override Error Validate(string[] parms)
@@ -327,46 +327,47 @@ namespace Game.Logic.Actions
                 throw new Exception("City is missing");
             }
 
-            using (locker.Lock(forestManager.CallbackLockHandler, new object[] { forestId }, city))
-            {
-                if (!IsValid())
-                {
-                    return;
-                }
+            locker.Lock(forestManager.CallbackLockHandler, new object[] {forestId}, city)
+                  .Do(() =>
+                  {
+                      if (!IsValid())
+                      {
+                          return;
+                      }
 
-                // Get camp
-                IStructure structure;
-                if (!city.TryGetStructure(campId, out structure))
-                {
-                    StateChange(ActionState.Failed);
-                    return;
-                }
+                      // Get camp
+                      IStructure structure;
+                      if (!city.TryGetStructure(campId, out structure))
+                      {
+                          StateChange(ActionState.Failed);
+                          return;
+                      }
 
-                // Give any cost associated with the camp back (laborers are not done here)
-                city.BeginUpdate();
-                city.Resource.Add(formula.GetActionCancelResource(BeginTime, formula.StructureCost(city, structure.Stats.Base)));
-                city.EndUpdate();
+                      // Give any cost associated with the camp back (laborers are not done here)
+                      city.BeginUpdate();
+                      city.Resource.Add(formula.GetActionCancelResource(BeginTime, formula.StructureCost(city, structure.Stats.Base)));
+                      city.EndUpdate();
 
-                city.References.Remove(structure, this);
+                      city.References.Remove(structure, this);
 
-                // Remove camp from forest and recalculate forest
-                IForest forest;
-                if (forestManager.TryGetValue(forestId, out forest))
-                {
-                    forest.BeginUpdate();
-                    forest.RemoveLumberjack(structure);
-                    forest.RecalculateForest();
-                    forest.EndUpdate();
-                }
+                      // Remove camp from forest and recalculate forest
+                      IForest forest;
+                      if (forestManager.TryGetValue(forestId, out forest))
+                      {
+                          forest.BeginUpdate();
+                          forest.RemoveLumberjack(structure);
+                          forest.RecalculateForest();
+                          forest.EndUpdate();
+                      }
 
-                // Remove the camp                        
-                structure.BeginUpdate();
-                world.Regions.Remove(structure);
-                city.ScheduleRemove(structure, false);
-                structure.EndUpdate();
+                      // Remove the camp                        
+                      structure.BeginUpdate();
+                      world.Regions.Remove(structure);
+                      city.ScheduleRemove(structure, false);
+                      structure.EndUpdate();
 
-                StateChange(ActionState.Failed);
-            }
+                      StateChange(ActionState.Failed);
+                  });
         }
 
         public override void UserCancelled()

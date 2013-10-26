@@ -78,8 +78,8 @@ namespace Game.Comm
 
             IPlayer player;
             ITribe tribe;
-            string result = string.Format("Now[{0}] Assignments:\n", DateTime.UtcNow);
-            using (locker.Lock(playerId, out player, out tribe))
+
+            return locker.Lock(playerId, out player, out tribe).Do(() =>
             {
                 if (player == null)
                 {
@@ -90,11 +90,10 @@ namespace Game.Comm
                     return "Player does not own a tribe";
                 }
 
-                result = tribe.Assignments.Aggregate(result,
-                                                     (current, assignment) => current + assignment.ToNiceString());
-            }
-
-            return result;
+                string result = string.Format("Now[{0}] Assignments:\n", DateTime.UtcNow);
+                return tribe.Assignments.Aggregate(result,
+                                                   (current, assignment) => current + assignment.ToNiceString());
+            });
         }
 
         private string AssignmentCreate(Session session, string[] parms)
@@ -156,7 +155,7 @@ namespace Game.Comm
                 return "Could not find a structure for the given coordinates";
             }
 
-            using (locker.Lock(city, tribe, targetStructure.City))
+            return locker.Lock(city, tribe, targetStructure.City).Do(() =>
             {
                 if (city.DefaultTroop.Upkeep == 0)
                 {
@@ -197,7 +196,7 @@ namespace Game.Comm
                 }
 
                 return string.Format("OK ID[{0}]", id);
-            }
+            });
         }
 
         private string AssignmentJoin(Session session, string[] parms)
@@ -243,7 +242,7 @@ namespace Game.Comm
             }
 
             ITribe tribe = city.Owner.Tribesman.Tribe;
-            using (locker.Lock(city, tribe))
+            return locker.Lock(city, tribe).Do(() =>
             {
                 if (city.DefaultTroop.Upkeep == 0)
                 {
@@ -273,7 +272,7 @@ namespace Game.Comm
                 }
 
                 return string.Format("OK");
-            }
+            });
         }
     }
 }

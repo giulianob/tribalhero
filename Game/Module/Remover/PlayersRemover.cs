@@ -40,10 +40,10 @@ namespace Game.Module
             foreach (var id in list)
             {
                 IPlayer player;
-                using (locker.Lock(id, out player))
+                locker.Lock(id, out player).Do(() =>
                 {
                     count += player.GetCityList().Count(city => cityRemoverFactory.CreateCityRemover(city.Id).Start());
-                }
+                });
             }
             return count;
         }

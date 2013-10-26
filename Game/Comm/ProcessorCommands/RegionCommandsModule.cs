@@ -89,7 +89,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ICity city;
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (city == null)
                 {
@@ -119,8 +119,8 @@ namespace Game.Comm.ProcessorCommands
 
                 foreach (var position in tileLocator.ForeachRadius(x, y, 1, false))
                 {
-                    if ((world.Roads.IsRoad(position.X, position.Y) && 
-                        !world.Regions.GetObjectsInTile(position.X, position.Y).Any(s => s is IStructure && s != city.MainBuilding)))
+                    if ((world.Roads.IsRoad(position.X, position.Y) &&
+                         !world.Regions.GetObjectsInTile(position.X, position.Y).Any(s => s is IStructure && s != city.MainBuilding)))
                     {
                         hasRoad = true;
                         break;
@@ -146,7 +146,7 @@ namespace Game.Comm.ProcessorCommands
                 world.Regions.UnlockRegion(x, y);
 
                 session.Write(reply);
-            }
+            });
         }
 
         private void RoadDestroy(Session session, Packet packet)
@@ -176,7 +176,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ICity city;
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (city == null)
                 {
@@ -242,7 +242,7 @@ namespace Game.Comm.ProcessorCommands
                     if (roadPathFinder.HasPath(start: neighborPosition,
                                                startSize: 1,
                                                city: city,
-                                               excludedPoint: new[] { new Position(x, y) }))
+                                               excludedPoint: new[] {new Position(x, y)}))
                     {
                         continue;
                     }
@@ -262,7 +262,7 @@ namespace Game.Comm.ProcessorCommands
 
                 world.Regions.UnlockRegion(x, y);
                 session.Write(reply);
-            }
+            });
         }
 
         private void CityLocate(Session session, Packet packet)
@@ -282,7 +282,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ICity city;
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (city == null)
                 {
@@ -294,7 +294,7 @@ namespace Game.Comm.ProcessorCommands
                 reply.AddUInt32(city.PrimaryPosition.Y);
 
                 session.Write(reply);
-            }
+            });
         }
 
         private void CityLocateByName(Session session, Packet packet)
@@ -321,7 +321,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ICity city;
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (city == null)
                 {
@@ -333,7 +333,7 @@ namespace Game.Comm.ProcessorCommands
                 reply.AddUInt32(city.PrimaryPosition.Y);
 
                 session.Write(reply);
-            }
+            });
         }
 
         private void NotificationLocate(Session session, Packet packet)
@@ -357,17 +357,16 @@ namespace Game.Comm.ProcessorCommands
             }
 
             //check to make sure that the city belongs to us
-            using (locker.Lock(session.Player))
+            var hasCity = locker.Lock(session.Player).Do(() => session.Player.GetCity(cityId) != null || session.Player.GetCity(srcCityId) != null);
+
+            if (!hasCity)
             {
-                if (session.Player.GetCity(cityId) == null && session.Player.GetCity(srcCityId) == null)
-                {
-                    ReplyError(session, packet, Error.Unexpected);
-                    return;
-                }
+                ReplyError(session, packet, Error.Unexpected);
+                return;
             }
 
             Dictionary<uint, ICity> cities;
-            using (locker.Lock(out cities, srcCityId, cityId))
+            locker.Lock(out cities, srcCityId, cityId).Do(() =>
             {
                 if (cities == null)
                 {
@@ -389,7 +388,7 @@ namespace Game.Comm.ProcessorCommands
                 reply.AddUInt32(notification.GameObject.PrimaryPosition.Y);
 
                 session.Write(reply);
-            }
+            });
         }
 
         private void GetRegion(Session session, Packet packet)

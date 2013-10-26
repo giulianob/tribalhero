@@ -294,7 +294,7 @@ namespace Game.Comm
             if (world.FindPlayerId(playerName, out playerId))
             {
                 IPlayer player;
-                using (locker.Lock(playerId, out player))
+                locker.Lock(playerId, out player).Do(() =>
                 {
                     if (player != null && player.Session != null)
                     {
@@ -306,7 +306,7 @@ namespace Game.Comm
                         {
                         }
                     }
-                }
+                });
             }
 
             ApiResponse response = ApiCaller.SetPlayerRights(playerName, rights.GetValueOrDefault());
@@ -438,28 +438,30 @@ namespace Game.Comm
             }
 
             uint playerId;
-            if (world.FindPlayerId(playerName, out playerId))
+            if (!world.FindPlayerId(playerName, out playerId))
             {
-                IPlayer player;
-                using (locker.Lock(playerId, out player))
-                {
-                    if (player != null)
-                    {
-                        player.Muted = SystemClock.Now.AddMinutes(minutes);
-                        dbManager.Save(player);
-
-                        player.SendSystemMessage(null,
-                                                 "You have been temporarily muted",
-                                                 string.Format("You have been temporarily muted for {0} minutes. Reason: {1}\n\n", minutes, reason) + 
-                                                 "Please make sure you are following all of the game rules ( http://tribalhero.com/pages/rules ). " +
-                                                 "If you have reason to believe this was an unfair judgement, you may contact the game admin directly by email at giuliano@tribalhero.com. Provide as much detail as possible and give us 24 hours to investigate and respond.");
-
-                        return string.Format("OK player notified and muted for {0} minutes (until {1})", minutes, player.Muted.ToString("R"));
-                    }                    
-                }
+                return "Player not found";
             }
 
-            return "Player not found";
+            IPlayer player;
+            return locker.Lock(playerId, out player).Do(() =>
+            {
+                if (player == null)
+                {
+                    return "Player not found";
+                }
+                    
+                player.Muted = SystemClock.Now.AddMinutes(minutes);
+                dbManager.Save(player);
+
+                player.SendSystemMessage(null,
+                                         "You have been temporarily muted",
+                                         string.Format("You have been temporarily muted for {0} minutes. Reason: {1}\n\n", minutes, reason) +
+                                         "Please make sure you are following all of the game rules ( http://tribalhero.com/pages/rules ). " +
+                                         "If you have reason to believe this was an unfair judgement, you may contact the game admin directly by email at giuliano@tribalhero.com. Provide as much detail as possible and give us 24 hours to investigate and respond.");
+
+                return string.Format("OK player notified and muted for {0} minutes (until {1})", minutes, player.Muted.ToString("R"));                    
+            });
         }
 
         public string Warn(Session session, String[] parms)
@@ -489,32 +491,34 @@ namespace Game.Comm
             }
 
             uint playerId;
-            if (world.FindPlayerId(playerName, out playerId))
+            if (!world.FindPlayerId(playerName, out playerId))
             {
-                IPlayer player;
-                using (locker.Lock(playerId, out player))
-                {
-                    if (player != null)
-                    {
-                        var warnMessage = string.Format("You have been warned for misconduct. Reason: {0}\n", reason) +
-                                          "Please make sure you are following all of the game rules ( http://tribalhero.com/pages/rules ). If your behavior continues, you may be muted or banned. " +
-                                          "If you have reason to believe this was an unfair judgement, you may contact the game admin directly by email at giuliano@tribalhero.com. Provide as much detail as possible and give us 24 hours to investigate and respond.";
-
-                        player.SendSystemMessage(null,
-                                                 "You have been warned for misconduct",
-                                                 warnMessage);
-
-                        if (player.Session != null)
-                        {
-                            chat.SendSystemChat(player.Session, "SYSTEM_CHAT_LITERAL", warnMessage);
-                        }
-
-                        return string.Format("OK player has been warned.");
-                    }                    
-                }
+                return "Player not found";
             }
 
-            return "Player not found";
+            IPlayer player;
+            return locker.Lock(playerId, out player).Do(() =>
+            {
+                if (player == null)
+                {
+                    return "Player not found";
+                }
+
+                var warnMessage = string.Format("You have been warned for misconduct. Reason: {0}\n", reason) +
+                                  "Please make sure you are following all of the game rules ( http://tribalhero.com/pages/rules ). If your behavior continues, you may be muted or banned. " +
+                                  "If you have reason to believe this was an unfair judgement, you may contact the game admin directly by email at giuliano@tribalhero.com. Provide as much detail as possible and give us 24 hours to investigate and respond.";
+
+                player.SendSystemMessage(null,
+                                         "You have been warned for misconduct",
+                                         warnMessage);
+
+                if (player.Session != null)
+                {
+                    chat.SendSystemChat(player.Session, "SYSTEM_CHAT_LITERAL", warnMessage);
+                }
+
+                return string.Format("OK player has been warned.");
+            });
         }
 
         public string Unmute(Session session, String[] parms)
@@ -543,24 +547,26 @@ namespace Game.Comm
 
             // Mute player in this world instantly
             uint playerId;
-            if (world.FindPlayerId(playerName, out playerId))
+            if (!world.FindPlayerId(playerName, out playerId))
             {
-                IPlayer player;
-                using (locker.Lock(playerId, out player))
-                {
-                    if (player != null)
-                    {
-                        player.Muted = DateTime.MinValue;                  
-                        dbManager.Save(player);
-
-                        player.SendSystemMessage(null, "You have been unmuted", "You have now been unmuted by a moderator and may talk again in the chat.");
-
-                        return "OK!";
-                    }
-                }
+                return "Player not found";
             }
 
-            return "Player not found";
+            IPlayer player;
+            return locker.Lock(playerId, out player).Do(() =>
+            {
+                if (player == null)
+                {
+                    return "Player not found";
+                }
+
+                player.Muted = DateTime.MinValue;
+                dbManager.Save(player);
+
+                player.SendSystemMessage(null, "You have been unmuted", "You have now been unmuted by a moderator and may talk again in the chat.");
+
+                return "OK!";
+            });
         }
 
         public string RenameTribe(Session session, String[] parms)
@@ -596,7 +602,7 @@ namespace Game.Comm
             }
 
             ITribe tribe;
-            using (locker.Lock(tribeId, out tribe))
+            return locker.Lock(tribeId, out tribe).Do(() =>
             {
                 if (tribe == null)
                 {
@@ -615,9 +621,9 @@ namespace Game.Comm
 
                 tribe.Name = newTribeName;
                 dbManager.Save(tribe);
-            }
 
-            return "OK!";
+                return "OK!";
+            });
         }
 
         public string SystemBroadcastMail(Session session, String[] parms)
@@ -646,19 +652,17 @@ namespace Game.Comm
                 return "broadcastmail --subject=\"SUBJECT\" --message=\"MESSAGE\"";
             }
 
-            using (
-                    var reader = dbManager.ReaderQuery(string.Format("SELECT * FROM `{0}`", Player.DB_TABLE),
-                                                       new DbColumn[] {}))
+            using (var reader = dbManager.ReaderQuery(string.Format("SELECT * FROM `{0}`", Player.DB_TABLE),
+                                                      new DbColumn[] {}))
             {
                 while (reader.Read())
                 {
                     IPlayer player;
-                    using (locker.Lock((uint)reader["id"], out player))
-                    {
-                        player.SendSystemMessage(null, subject, message);
-                    }
+                    locker.Lock((uint)reader["id"], out player)
+                          .Do(() => player.SendSystemMessage(null, subject, message));
                 }
             }
+
             return "OK!";
         }
 
@@ -724,7 +728,7 @@ namespace Game.Comm
             }
 
             IPlayer player;
-            using (locker.Lock(playerId, out player))
+            return locker.Lock(playerId, out player).Do(() =>
             {
                 if (player == null)
                 {
@@ -735,8 +739,9 @@ namespace Game.Comm
                 player.SendSystemMessage(null,
                                          "Description Clear",
                                          "An administrator has cleared your profile description. If your description was offensive then you may be banned in the future if an innapropriate description is found.");
-            }
-            return "OK!";
+
+                return "OK!";
+            });
         }
 
         public string RenamePlayer(Session session, string[] parms)
@@ -781,7 +786,7 @@ namespace Game.Comm
             }
 
             IPlayer player;
-            using (locker.Lock(playerId, out player))
+            return locker.Lock(playerId, out player).Do(() =>
             {
                 if (player == null)
                 {
@@ -801,9 +806,9 @@ namespace Game.Comm
 
                 player.Name = newPlayerName;
                 dbManager.Save(player);
-            }
 
-            return "OK!";
+                return "OK!";
+            });
         }
 
         public string SetPassword(Session session, string[] parms)
@@ -868,25 +873,25 @@ namespace Game.Comm
             }
 
             IPlayer player;
-            using (locker.Lock(playerId, out player))
+            locker.Lock(playerId, out player).Do(() =>
             {
                 if (player != null)
                 {
                     player.Banned = true;
                     dbManager.Save(player);
 
-                    if (player.Session != null)
+                    if (player.Session == null)
                     {
-                        try
-                        {
-                            player.Session.CloseSession();
-                        }
-                        catch(Exception)
-                        {
-                        }
+                        return;
                     }
+
+                    try
+                    {
+                        player.Session.CloseSession();
+                    }
+                    catch {}
                 }
-            }
+            });
 
             ApiResponse response = ApiCaller.Ban(playerName);
 
@@ -924,14 +929,14 @@ namespace Game.Comm
             }
 
             IPlayer player;
-            using (locker.Lock(playerId, out player))
+            locker.Lock(playerId, out player).Do(() =>
             {
                 if (player != null)
                 {
                     player.Banned = false;
                     dbManager.Save(player);
                 }
-            }
+            });
 
             ApiResponse response = ApiCaller.Unban(playerName);
 
@@ -969,7 +974,7 @@ namespace Game.Comm
             }
 
             IPlayer player;
-            using (locker.Lock(playerId, out player))
+            return locker.Lock(playerId, out player).Do(() =>
             {
                 if (player == null)
                 {
@@ -992,9 +997,9 @@ namespace Game.Comm
                     CityRemover cr = cityRemoverFactory.CreateCityRemover(city.Id);
                     cr.Start();
                 }
-            }
 
-            return "OK!";
+                return "OK!";
+            });
         }
 
         public string DeleteNewbies(Session session, string[] parms)
@@ -1065,12 +1070,12 @@ namespace Game.Comm
                 if (world.FindPlayerId(playerName, out playerId))
                 {
                     IPlayer player;
-                    using (locker.Lock(playerId, out player))
+                    locker.Lock(playerId, out player).Do(() =>
                     {
-                        chat.SendSystemChat("ACHIEVEMENT_NOTIFICATION", playerId.ToString(CultureInfo.InvariantCulture), player.Name, tier.ToString().ToLowerInvariant());                        
+                        chat.SendSystemChat("ACHIEVEMENT_NOTIFICATION", playerId.ToString(CultureInfo.InvariantCulture), player.Name, tier.ToString().ToLowerInvariant());
 
                         player.SendSystemMessage(null, "Achievement", "Hello, I've given you an achievement for supporting us. Your money will help us improve and cover the operating costs of the game. Make sure to refresh the game to see your new achievement. Thanks for your help!");
-                    }
+                    });
                 }
             }
 

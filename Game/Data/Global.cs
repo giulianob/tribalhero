@@ -9,6 +9,7 @@ namespace Game.Data
 {
     public class Global : IGlobal
     {
+        [Obsolete("Inject the property you need directly")]
         public static IGlobal Current { get; set; }
 
         public IChannel Channel { get; private set; }

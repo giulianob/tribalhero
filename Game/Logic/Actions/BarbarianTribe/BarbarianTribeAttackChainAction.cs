@@ -162,20 +162,26 @@ namespace Game.Logic.Actions
                 {
                     CancelCurrentChain();
                 }
+
+                return;
             }
-            else if (state == ActionState.Failed)
+            
+            if (state == ActionState.Failed)
             {
                 // If TroopMove failed it's because we cancelled it and the target is invalid. Walk back home
                 ICity city;
                 ITroopObject troopObject;
 
-                using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
+                locker.Lock(cityId, troopObjectId, out city, out troopObject).Do(() =>
                 {
                     TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id, troopObject.ObjectId, city.PrimaryPosition.X, city.PrimaryPosition.Y, true, true);
                     ExecuteChainAndWait(tma, AfterTroopMovedHome);
-                }
+                });
+
+                return;
             }
-            else if (state == ActionState.Completed)
+            
+            if (state == ActionState.Completed)
             {
                 ICity city;
                 IBarbarianTribe targetBarbarianTribe;
@@ -189,7 +195,7 @@ namespace Game.Logic.Actions
                 if (!gameObjectLocator.TryGetObjects(targetObjectId, out targetBarbarianTribe))
                 {
                     //If the target is missing, walk back
-                    using (locker.Lock(city))
+                    locker.Lock(city).Do(() =>
                     {
                         TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
                                                                                                 troopObject.ObjectId,
@@ -197,105 +203,112 @@ namespace Game.Logic.Actions
                                                                                                 city.PrimaryPosition.Y,
                                                                                                 true,
                                                                                                 true);
-                        ExecuteChainAndWait(tma, AfterTroopMovedHome);
-                        return;
-                    }
+                        ExecuteChainAndWait(tma, AfterTroopMovedHome);                        
+                    });
+
+                    return;
                 }
 
-                using (locker.Lock(city, targetBarbarianTribe))
+                locker.Lock(city, targetBarbarianTribe).Do(() =>
                 {
                     var bea = actionFactory.CreateBarbarianTribeEngageAttackPassiveAction(cityId, troopObject.ObjectId, targetObjectId);
                     ExecuteChainAndWait(bea, AfterBattle);
-                }
+                });
             }
         }
 
         private void AfterBattle(ActionState state)
         {
-            if (state == ActionState.Completed)
+            if (state != ActionState.Completed)
             {
-                ICity city;
-                using (locker.Lock(cityId, out city))
-                {
-                    ITroopObject troopObject;
-                    if (!city.TryGetTroop(troopObjectId, out troopObject))
-                    {
-                        throw new Exception("Troop object should still exist");
-                    }
-
-                    // Calculate how many attack points to give to the city
-                    city.BeginUpdate();
-                    procedure.GiveAttackPoints(city,troopObject.Stats.AttackPoint);
-                    city.EndUpdate();
-                    
-                    // Check if troop is still alive
-                    if (troopObject.Stub.TotalCount > 0)
-                    {
-                        // Send troop back home
-                        var tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
-                                                                             troopObject.ObjectId,
-                                                                             city.PrimaryPosition.X,
-                                                                             city.PrimaryPosition.Y,
-                                                                             true,
-                                                                             true);
-                        ExecuteChainAndWait(tma, AfterTroopMovedHome);
-                    }
-                    else
-                    {
-                        city.References.Remove(troopObject, this);
-
-                        // Remove troop since he's dead
-                        city.BeginUpdate();                        
-                        procedure.TroopObjectDelete(troopObject, false);
-                        city.EndUpdate();
-
-                        StateChange(ActionState.Completed);
-                    }
-                }
+                return;
             }
+
+            ICity city;
+            locker.Lock(cityId, out city).Do(() =>
+            {
+                ITroopObject troopObject;
+                if (!city.TryGetTroop(troopObjectId, out troopObject))
+                {
+                    throw new Exception("Troop object should still exist");
+                }
+
+                // Calculate how many attack points to give to the city
+                city.BeginUpdate();
+                procedure.GiveAttackPoints(city, troopObject.Stats.AttackPoint);
+                city.EndUpdate();
+
+                // Check if troop is still alive
+                if (troopObject.Stub.TotalCount > 0)
+                {
+                    // Send troop back home
+                    var tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
+                                                                         troopObject.ObjectId,
+                                                                         city.PrimaryPosition.X,
+                                                                         city.PrimaryPosition.Y,
+                                                                         true,
+                                                                         true);
+                    ExecuteChainAndWait(tma, AfterTroopMovedHome);
+                }
+                else
+                {
+                    city.References.Remove(troopObject, this);
+
+                    // Remove troop since he's dead
+                    city.BeginUpdate();
+                    procedure.TroopObjectDelete(troopObject, false);
+                    city.EndUpdate();
+
+                    StateChange(ActionState.Completed);
+                }
+            });
         }
 
         private void AfterTroopMovedHome(ActionState state)
         {
-            if (state == ActionState.Completed)
+            if (state != ActionState.Completed)
             {
-                ICity city;
-                ITroopObject troopObject;
-                using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
-                {
-                    // If city is not in battle then add back to city otherwise join local battle
-                    if (city.Battle == null)
-                    {
-                        city.References.Remove(troopObject, this);
-                        city.Notifications.Remove(this);
-                        procedure.TroopObjectDelete(troopObject, true);
-                        StateChange(ActionState.Completed);
-                    }
-                    else
-                    {
-                        var eda = actionFactory.CreateCityEngageDefensePassiveAction(cityId, troopObject.ObjectId, FormationType.Attack);
-                        ExecuteChainAndWait(eda, AfterEngageDefense);
-                    }
-                }
+                return;
             }
+
+            ICity city;
+            ITroopObject troopObject;
+            locker.Lock(cityId, troopObjectId, out city, out troopObject).Do(() =>
+            {
+                // If city is not in battle then add back to city otherwise join local battle
+                if (city.Battle == null)
+                {
+                    city.References.Remove(troopObject, this);
+                    city.Notifications.Remove(this);
+                    procedure.TroopObjectDelete(troopObject, true);
+                    StateChange(ActionState.Completed);
+                }
+                else
+                {
+                    var eda = actionFactory.CreateCityEngageDefensePassiveAction(cityId, troopObject.ObjectId, FormationType.Attack);
+                    ExecuteChainAndWait(eda, AfterEngageDefense);
+                }
+            });
         }
 
         private void AfterEngageDefense(ActionState state)
         {
-            if (state == ActionState.Completed)
+            if (state != ActionState.Completed)
             {
-                ICity city;
-                ITroopObject troopObject;
-                using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
-                {
-                    city.References.Remove(troopObject, this);
-                    city.Notifications.Remove(this);
-
-                    procedure.TroopObjectDelete(troopObject, troopObject.Stub.TotalCount != 0);
-
-                    StateChange(ActionState.Completed);
-                }
+                return;
             }
+
+            ICity city;
+            ITroopObject troopObject;
+            locker.Lock(cityId, troopObjectId, out city, out troopObject).Do(() =>
+            {
+                city.References.Remove(troopObject, this);
+                city.Notifications.Remove(this);
+
+                procedure.TroopObjectDelete(troopObject, troopObject.Stub.TotalCount != 0);
+
+                StateChange(ActionState.Completed);
+            });
         }
 
         public override Error Validate(string[] parms)

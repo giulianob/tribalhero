@@ -151,7 +151,7 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll(bool wasKilled)
         {
             ICity city;
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -168,7 +168,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
 
         public override void UserCancelled()
@@ -184,14 +184,14 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            IStructure structure;
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (!IsValid())
                 {
                     return;
                 }
 
+                IStructure structure;
                 if (!city.TryGetStructure(structureId, out structure))
                 {
                     StateChange(ActionState.Failed);
@@ -201,7 +201,7 @@ namespace Game.Logic.Actions
                 structure.City.Template[UnitType] = unitFactory.GetUnitStats(UnitType, (byte)(structure.City.Template[UnitType].Lvl + 1));
 
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         #region IPersistable

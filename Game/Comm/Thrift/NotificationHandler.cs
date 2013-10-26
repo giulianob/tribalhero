@@ -26,7 +26,7 @@ namespace Game.Comm.Thrift
         public void NewMessage(PlayerUnreadCount playerUnreadCount)
         {
             IPlayer player;
-            using (locker.Lock((uint)playerUnreadCount.Id, out player))
+            locker.Lock((uint)playerUnreadCount.Id, out player).Do(() =>
             {
                 if (player.Session == null)
                 {
@@ -37,10 +37,8 @@ namespace Game.Comm.Thrift
                 {
                     protocolFactory.CreateProtocol(player.Session).MessageSendUnreadCount(playerUnreadCount.UnreadCount);
                 }
-                catch
-                {
-                }
-            }
+                catch { }
+            });
         }
 
         public void NewTribeForumPost(int tribeId, int playerId)
@@ -51,24 +49,19 @@ namespace Game.Comm.Thrift
                 return;
             }
 
-            using (locker.Lock(custom => tribe.Tribesmen.ToArray<ILockable>(), new object[] {}, tribe))
+            locker.Lock(custom => tribe.Tribesmen.ToArray<ILockable>(), new object[] {}, tribe).Do(() =>
             {
-                foreach (
-                        var tribesman in
-                                tribe.Tribesmen.Where(
-                                                      tribesman =>
-                                                      tribesman.Player.Session != null &&
-                                                      tribesman.Player.PlayerId != playerId))
+                foreach (var tribesman in tribe.Tribesmen.Where(tribesman =>
+                                                                tribesman.Player.Session != null &&
+                                                                tribesman.Player.PlayerId != playerId))
                 {
                     try
                     {
                         protocolFactory.CreateProtocol(tribesman.Player.Session).MessageBoardSendUnread();
                     }
-                    catch
-                    {
-                    }
+                    catch { }
                 }
-            }
+            });
         }
 
         public void NewBattleReport(List<PlayerUnreadCount> playerUnreadCounts)
@@ -76,11 +69,11 @@ namespace Game.Comm.Thrift
             foreach (var playerUnreadCount in playerUnreadCounts)
             {
                 IPlayer player;
-                using (locker.Lock((uint)playerUnreadCount.Id, out player))
+                locker.Lock((uint)playerUnreadCount.Id, out player).Do(() =>
                 {
                     if (player == null || player.Session == null)
                     {
-                        continue;
+                        return;
                     }
 
                     try
@@ -88,10 +81,8 @@ namespace Game.Comm.Thrift
                         protocolFactory.CreateProtocol(player.Session)
                                        .BattleReportSendUnreadCount(playerUnreadCount.UnreadCount);
                     }
-                    catch
-                    {
-                    }
-                }
+                    catch { }
+                });
             }
         }
     }

@@ -155,7 +155,7 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -189,7 +189,7 @@ namespace Game.Logic.Actions
                 var template = structure.City.Template[type];
                 if (template == null)
                 {
-                    StateChange(ActionState.Completed);                    
+                    StateChange(ActionState.Completed);
                     return;
                 }
 
@@ -201,13 +201,13 @@ namespace Game.Logic.Actions
                 endTime = SystemClock.Now.AddSeconds(timeUntilComplete);
 
                 StateChange(ActionState.Rescheduled);
-            }
+            });
         }
 
         private void InterruptCatchAll(bool wasKilled)
         {
             ICity city;
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -236,7 +236,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
 
         public override void UserCancelled()

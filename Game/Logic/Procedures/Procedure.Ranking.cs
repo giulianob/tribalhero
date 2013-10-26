@@ -27,7 +27,7 @@ namespace Game.Logic.Procedures
             ThreadPool.QueueUserWorkItem(delegate
                 {
                     ITribe tribe;
-                    using (locker.Lock(id, out tribe))
+                    locker.Lock(id, out tribe).Do(() =>
                     {
                         if (tribe == null)
                         {
@@ -35,7 +35,7 @@ namespace Game.Logic.Procedures
                         }
 
                         tribe.AttackPoint += point;
-                    }
+                    });
                 });
         }
     }

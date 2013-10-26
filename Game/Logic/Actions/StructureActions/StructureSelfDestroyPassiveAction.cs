@@ -102,7 +102,7 @@ namespace Game.Logic.Actions
             ICity city;
             IStructure structure;
 
-            using (locker.Lock(cityId, objectId, out city, out structure))
+            locker.Lock(cityId, objectId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -132,7 +132,7 @@ namespace Game.Logic.Actions
                 city.EndUpdate();
 
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override Error Validate(string[] parms)
@@ -164,7 +164,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
             IStructure structure;
-            using (locker.Lock(cityId, objectId, out city, out structure))
+            locker.Lock(cityId, objectId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -172,7 +172,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
     }
 }

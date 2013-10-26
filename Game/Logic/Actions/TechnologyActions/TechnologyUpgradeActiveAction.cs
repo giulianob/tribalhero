@@ -196,7 +196,7 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll(bool wasKilled)
         {
             ICity city;
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -234,7 +234,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
 
         public override void UserCancelled()
@@ -250,7 +250,7 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -269,7 +269,7 @@ namespace Game.Logic.Actions
                 if (structure.Technologies.TryGetTechnology(techId, out tech))
                 {
                     techBase = technologyFactory
-                                                 .GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
+                            .GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
 
                     if (techBase == null)
                     {
@@ -310,7 +310,7 @@ namespace Game.Logic.Actions
 
                 procedure.OnTechnologyUpgrade(structure, techBase, cityTriggerManager, cityEventFactory);
                 StateChange(ActionState.Completed);
-            }
+            });
         }
     }
 }

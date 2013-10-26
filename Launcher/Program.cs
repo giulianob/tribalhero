@@ -3,10 +3,14 @@
 using System;
 using CSVToXML;
 using Game;
+using Game.Data;
 using Game.Setup;
+using Mono.Unix;
+using Mono.Unix.Native;
 using NDesk.Options;
 using Ninject;
 using log4net;
+using Mono.Posix;
 
 #endregion
 
@@ -63,22 +67,37 @@ namespace Launcher
 
             // Start game engine
             var engine = kernel.Get<Engine>();
-
             engine.Start();
 
-            // Quit if press alt+q
+            // Loop and exit app if needed
+            var global = kernel.Get<IGlobal>();
             while (true)
             {
-                ConsoleKeyInfo key = Console.ReadKey();
-
-                if (key.Key != ConsoleKey.Q || key.Modifiers != ConsoleModifiers.Alt)
+                if (global.IsRunningOnMono())
                 {
-                    continue;
+                    var unixExitSignals = new[]
+                    {
+                        new UnixSignal(Signum.SIGINT),
+                        new UnixSignal(Signum.SIGTERM),
+                    };
+                    int id = UnixSignal.WaitAny(unixExitSignals);
+                    if (id >= 0 && id < unixExitSignals.Length && unixExitSignals[id].IsSet)
+                    {
+                        break;
+                    }
                 }
-
-                engine.Stop();
-                return;
+                else
+                {
+                    var key = Console.ReadKey();
+                    // Quit if press alt+q
+                    if (key.Key == ConsoleKey.Q && key.Modifiers == ConsoleModifiers.Alt)
+                    {
+                        break;
+                    }
+                }
             }
+
+            engine.Stop();
         }
     }
 }

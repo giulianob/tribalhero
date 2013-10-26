@@ -184,7 +184,7 @@ namespace Game.Util.Locking
             }
 #else
             if (!IsLocked(obj)) {
-                logger.Error(string.Format("Object not locked id[{0}] {1}", obj.Hash, Environment.StackTrace));
+                Logger.Error(string.Format("Object not locked id[{0}] {1}", obj.Hash, Environment.StackTrace));
             }
 #endif
         }

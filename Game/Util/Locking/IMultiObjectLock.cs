@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 
 namespace Game.Util.Locking
 {
@@ -10,8 +11,8 @@ namespace Game.Util.Locking
 
         void SortLocks(ILockable[] list);
 
-        T Do<T>(Func<T> protectedBlock);
+        T Do<T>([InstantHandle] Func<T> protectedBlock);
         
-        void Do(Action protectedBlock);
+        void Do([InstantHandle] Action protectedBlock);
     }
 }

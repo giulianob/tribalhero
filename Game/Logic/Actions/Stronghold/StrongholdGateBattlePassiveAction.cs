@@ -210,7 +210,7 @@ namespace Game.Logic.Actions
 
             CallbackLock.CallbackLockHandler lockHandler = delegate { return stronghold.LockList.ToArray(); };
 
-            using (locker.Lock(lockHandler, null, stronghold))
+            locker.Lock(lockHandler, null, stronghold).Do(() =>
             {
                 if (stronghold.GateBattle.ExecuteTurn())
                 {
@@ -239,7 +239,7 @@ namespace Game.Logic.Actions
                 stronghold.EndUpdate();
 
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override Error Validate(string[] parms)

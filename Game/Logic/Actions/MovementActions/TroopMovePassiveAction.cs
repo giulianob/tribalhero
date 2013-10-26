@@ -212,10 +212,7 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
             ICity city;
-            using (locker.Lock(cityId, out city))
-            {
-                StateChange(ActionState.Failed);
-            }
+            locker.Lock(cityId, out city).Do(() => StateChange(ActionState.Failed));
         }
 
         public override void Callback(object custom)
@@ -223,7 +220,7 @@ namespace Game.Logic.Actions
             ICity city;
             ITroopObject troopObj;
 
-            using (locker.Lock(cityId, troopObjectId, out city, out troopObj))
+            locker.Lock(cityId, troopObjectId, out city, out troopObj).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -257,7 +254,7 @@ namespace Game.Logic.Actions
 
                 nextTime = DateTime.UtcNow.AddSeconds(moveTime);
                 StateChange(ActionState.Fired);
-            }
+            });
         }
 
         private bool IsDiagonal(uint y, uint x1, uint y1)

@@ -160,7 +160,7 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll(bool wasKilled)
         {
             ICity city;
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -182,13 +182,13 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
 
         public override void Callback(object custom)
         {
             Dictionary<uint, ICity> cities;
-            using (locker.Lock(out cities, cityId, targetCityId))
+            locker.Lock(out cities, cityId, targetCityId).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -213,7 +213,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override Error Validate(string[] parms)

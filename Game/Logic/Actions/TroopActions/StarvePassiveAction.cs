@@ -87,7 +87,7 @@ namespace Game.Logic.Actions
                 throw new Exception("City not found");
             }
 
-            using (locker.Lock(GetTroopLockList, new object[] {city}, city))
+            locker.Lock(GetTroopLockList, new object[] {city}, city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -97,7 +97,7 @@ namespace Game.Logic.Actions
                 city.Troops.Starve();
 
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override void UserCancelled()

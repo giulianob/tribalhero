@@ -61,7 +61,7 @@ namespace Game.Comm.ProcessorCommands
                     return toBeLocked.ToArray();
                 };
 
-            using (locker.Lock(lockHandler, null, session.Player))
+            locker.Lock(lockHandler, null, session.Player).Do(() =>
             {
                 IEnumerable<string> errorParams;
                 var canWatchBattle = battleManager.CanWatchBattle(session.Player, out errorParams);
@@ -97,7 +97,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 session.Write(reply);
-            }
+            });
         }
 
         private void Unsubscribe(Session session, Packet packet)
@@ -113,10 +113,10 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 Global.Current.Channel.Unsubscribe(session, "/BATTLE/" + battleId);
-            }
+            });
 
             ReplySuccess(session, packet);
         }

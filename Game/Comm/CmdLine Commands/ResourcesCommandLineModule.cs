@@ -72,7 +72,7 @@ namespace Game.Comm
             }
 
             ICity city;
-            using (locker.Lock(cityId, out city))
+            return locker.Lock(cityId, out city).Do(() =>
             {
                 if (city == null)
                 {
@@ -82,9 +82,9 @@ namespace Game.Comm
                 city.BeginUpdate();
                 city.Resource.Add(resource);
                 city.EndUpdate();
-            }
-
-            return "OK!";
+                
+                return "OK!";
+            });            
         }
 
         public string TrainUnits(Session session, string[] parms)
@@ -122,7 +122,7 @@ namespace Game.Comm
             }
 
             ICity city;
-            using (locker.Lock(cityId, out city))
+            return locker.Lock(cityId, out city).Do(() =>
             {
                 if (city == null)
                 {
@@ -142,9 +142,9 @@ namespace Game.Comm
                 city.DefaultTroop.BeginUpdate();
                 city.DefaultTroop.AddUnit(FormationType.Normal, type, count);
                 city.DefaultTroop.EndUpdate();
-            }
 
-            return "OK!";
+                return "OK!";
+            });
         }
     }
 }

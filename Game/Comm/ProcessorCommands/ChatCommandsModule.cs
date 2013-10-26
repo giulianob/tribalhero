@@ -67,13 +67,12 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            string channel;
             var chatState = session.Player.ChatState;
 
-            IDictionary<AchievementTier, byte> achievements;
+            locker.Lock(session.Player).Do(() =>
+            {
+                string channel;
 
-            using (locker.Lock(session.Player))
-            {                
                 switch(type)
                 {
                     case Module.Chat.ChatType.Tribe:
@@ -129,12 +128,12 @@ namespace Game.Comm.ProcessorCommands
                         break;
                 }
 
-                achievements = session.Player.Achievements.GetAchievementCountByTier();
+                IDictionary<AchievementTier, byte> achievements = session.Player.Achievements.GetAchievementCountByTier();
 
                 ReplySuccess(session, packet);
-            }
 
-            chat.SendChat(channel, type, session.Player.PlayerId, session.Player.Name, achievements, chatState.Distinguish, message);
+                chat.SendChat(channel, type, session.Player.PlayerId, session.Player.Name, achievements, chatState.Distinguish, message);
+            });
         }
     }
 }

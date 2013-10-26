@@ -462,40 +462,38 @@ namespace Game.Data.Tribe
         public void Callback(object custom)
         {
             var now = SystemClock.Now;
-            using (
-                    locker.Lock(c => assignmentTroops.Select(troop => troop.Stub).ToArray<ILockable>(),
-                                             new object[] {},
-                                             Tribe))
-            {
-                lock (assignmentLock)
-                {
-                    var troopToDispatch = assignmentTroops.FirstOrDefault(x => !x.Dispatched && x.DepartureTime <= now);
+            locker.Lock(c => assignmentTroops.Select(troop => troop.Stub).ToArray<ILockable>(), new object[] {}, Tribe)
+                  .Do(() =>
+                  {
+                      lock (assignmentLock)
+                      {
+                          var troopToDispatch = assignmentTroops.FirstOrDefault(x => !x.Dispatched && x.DepartureTime <= now);
 
-                    if (troopToDispatch != null)
-                    {
-                        // Make sure troop time is still valid. If not we need to put it back on the scheduler.
-                        // The time may change if the user has finished upgrading a tech/unit that improves speed since adding
-                        // it to the assignment.
-                        var departureTime = DepartureTime(troopToDispatch.Stub);
-                        if (departureTime > now)
-                        {
-                            troopToDispatch.DepartureTime = departureTime;
-                        }
-                        // If a troop dispatches, then we set the troop to dispatched.
-                        else if (Dispatch(troopToDispatch.Stub))
-                        {
-                            troopToDispatch.Dispatched = true;
-                        }
-                        // Otherwise, if dispatch fails, then we remove it.
-                        else
-                        {
-                            RemoveStub(troopToDispatch.Stub);
-                        }
-                    }
+                          if (troopToDispatch != null)
+                          {
+                              // Make sure troop time is still valid. If not we need to put it back on the scheduler.
+                              // The time may change if the user has finished upgrading a tech/unit that improves speed since adding
+                              // it to the assignment.
+                              var departureTime = DepartureTime(troopToDispatch.Stub);
+                              if (departureTime > now)
+                              {
+                                  troopToDispatch.DepartureTime = departureTime;
+                              }
+                                      // If a troop dispatches, then we set the troop to dispatched.
+                              else if (Dispatch(troopToDispatch.Stub))
+                              {
+                                  troopToDispatch.Dispatched = true;
+                              }
+                                      // Otherwise, if dispatch fails, then we remove it.
+                              else
+                              {
+                                  RemoveStub(troopToDispatch.Stub);
+                              }
+                          }
 
-                    Reschedule();
-                }
-            }
+                          Reschedule();
+                      }
+                  });
         }
 
         /// <summary>

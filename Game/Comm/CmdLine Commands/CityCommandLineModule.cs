@@ -80,23 +80,25 @@ namespace Game.Comm.CmdLine_Commands
             }
 
             IPlayer player;
-            using (locker.Lock(playerId, out player))
+            return locker.Lock(playerId, out player).Do(() =>
             {
-                if (player == null)
                 {
-                    return "Player not found";
+                    if (player == null)
+                    {
+                        return "Player not found";
+                    }
+
+                    ICity city = player.GetCityList().First();
+                    var cityCreateAction = actionFactory.CreateCityCreatePassiveAction(city.Id, x, y, cityName);
+                    Error ret = city.Worker.DoPassive(city[1], cityCreateAction, true);
+                    if (ret != Error.Ok)
+                    {
+                        return string.Format("Error: {0}", ret);
+                    }
                 }
 
-                ICity city = player.GetCityList().First();
-                var cityCreateAction = actionFactory.CreateCityCreatePassiveAction(city.Id, x, y, cityName);
-                Error ret = city.Worker.DoPassive(city[1], cityCreateAction, true);
-                if (ret != Error.Ok)
-                {
-                    return string.Format("Error: {0}", ret);
-                }
-            }
-
-            return "OK!";
+                return "OK!";
+            });
         }
 
         public string DeleteStuckTroop(Session session, String[] parms)
@@ -132,7 +134,7 @@ namespace Game.Comm.CmdLine_Commands
             }
 
             ICity city;
-            using (locker.Lock(cityId, out city))
+            return locker.Lock(cityId, out city).Do(() =>
             {
                 if (city == null)
                 {
@@ -151,9 +153,9 @@ namespace Game.Comm.CmdLine_Commands
                 }
 
                 procedure.TroopStubDelete(city, stub);
-            }
 
-            return "OK!";
+                return "OK!";
+            });
         }
 
         public string RemoveStructure(Session session, String[] parms)
@@ -195,7 +197,7 @@ namespace Game.Comm.CmdLine_Commands
                 return "No structures found at specified coordinates";
             }
 
-            using (locker.Lock(structure.City))
+            return locker.Lock(structure.City).Do(() =>
             {
                 var removeAction = actionFactory.CreateStructureSelfDestroyPassiveAction(structure.City.Id, structure.ObjectId);
                 var result = structure.City.Worker.DoPassive(structure.City, removeAction, false);
@@ -204,9 +206,9 @@ namespace Game.Comm.CmdLine_Commands
                 {
                     return string.Format("Error: {0}", result);
                 }
-            }
 
-            return "OK!";
+                return "OK!";
+            });
         }
 
         public string RenameCity(Session session, String[] parms)
@@ -242,7 +244,7 @@ namespace Game.Comm.CmdLine_Commands
             }
 
             ICity city;
-            using (locker.Lock(cityId, out city))
+            return locker.Lock(cityId, out city).Do(() =>
             {
                 if (city == null)
                 {
@@ -267,9 +269,9 @@ namespace Game.Comm.CmdLine_Commands
                     city.Name = newCityName;
                     city.EndUpdate();
                 }
-            }
 
-            return "OK!";
+                return "OK!";
+            });
         }
 
         public string DumpCity(Session session, String[] parms)
@@ -300,7 +302,7 @@ namespace Game.Comm.CmdLine_Commands
 
             StringWriter outString = new StringWriter();
             ICity city;
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 foreach (var obj in city)
                 {
@@ -313,7 +315,7 @@ namespace Game.Comm.CmdLine_Commands
                                         obj.PrimaryPosition.X,
                                         obj.PrimaryPosition.Y);
                 }
-            }
+            });
 
             return outString.ToString();
         }

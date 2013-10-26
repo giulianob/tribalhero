@@ -129,7 +129,7 @@ namespace Game.Logic.Actions
                     return toBeLocked.ToArray();
                 };
 
-            using (locker.Lock(lockHandler, null, barbarianTribe))
+            locker.Lock(lockHandler, null, barbarianTribe).Do(() =>
             {
                 if (barbarianTribe.Battle.ExecuteTurn())
                 {
@@ -145,9 +145,9 @@ namespace Game.Logic.Actions
                 world.Remove(barbarianTribe.Battle);
                 dbManager.Delete(barbarianTribe.Battle);
 
-                barbarianTribe.BeginUpdate();               
-                barbarianTribe.Battle = null;                
-                barbarianTribe.State = GameObjectStateFactory.NormalState();                
+                barbarianTribe.BeginUpdate();
+                barbarianTribe.Battle = null;
+                barbarianTribe.State = GameObjectStateFactory.NormalState();
                 // Reset resources
                 barbarianTribe.Resource.Clear();
                 barbarianTribe.Resource.Add(formula.BarbarianTribeResources(barbarianTribe.Lvl));
@@ -157,7 +157,7 @@ namespace Game.Logic.Actions
                 barbarianTribe.EndUpdate();
 
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override Error Validate(string[] parms)

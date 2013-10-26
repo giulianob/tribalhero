@@ -151,10 +151,7 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
             ICity city;
-            using (locker.Lock(cityId, out city))
-            {
-                StateChange(ActionState.Failed);
-            }
+            locker.Lock(cityId, out city).Do(() => StateChange(ActionState.Failed));
         }
 
         private void CreateSubscriptions()
@@ -169,7 +166,7 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -232,7 +229,7 @@ namespace Game.Logic.Actions
                     endTime = SystemClock.Now.AddSeconds(CalculateTime(INTERVAL_IN_SECONDS));
                     StateChange(ActionState.Fired);
                 }
-            }
+            });
         }
 
         private void Labor()

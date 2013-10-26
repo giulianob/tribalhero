@@ -80,7 +80,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (city == null)
                 {
@@ -92,7 +92,7 @@ namespace Game.Comm.ProcessorCommands
                 reply.AddByte((byte)(city.AlignmentPoint >= 75m ? 1 : 0));
 
                 session.Write(reply);
-            }
+            });
         }
 
         private void StructureInfo(Session session, Packet packet)
@@ -114,7 +114,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(cityId, objectId, out city, out structure))
+            locker.Lock(cityId, objectId, out city, out structure).Do(() =>
             {
                 if (city == null || structure == null)
                 {
@@ -184,7 +184,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 session.Write(reply);
-            }
+            });
         }
 
         private void ForestInfo(Session session, Packet packet)
@@ -210,13 +210,13 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(forest))
-            {                
+            locker.Lock(forest).Do(() =>
+            {
                 reply.AddFloat((float)(forest.Rate / Config.seconds_per_unit));
                 reply.AddInt32(forest.Labor);
                 reply.AddUInt32(UnixDateTime.DateTimeToUnix(forest.DepleteTime.ToUniversalTime()));
                 PacketHelper.AddToPacket(forest.Wood, reply);
-            }
+            });
 
             session.Write(reply);
         }
@@ -279,7 +279,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() => 
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -334,7 +334,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     ReplySuccess(session, packet);
                 }
-            }
+            });
         }
 
         private void TechnologyUpgrade(Session session, Packet packet)
@@ -355,7 +355,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -380,7 +380,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     ReplySuccess(session, packet);
                 }
-            }
+            });
         }
 
         private void CancelAction(Session session, Packet packet)
@@ -401,7 +401,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -427,7 +427,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     ReplySuccess(session, packet);
                 }
-            }
+            });
         }
 
         private void UpgradeStructure(Session session, Packet packet)
@@ -446,7 +446,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -476,7 +476,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     ReplySuccess(session, packet);
                 }
-            }
+            });
         }
 
         private void DowngradeStructure(Session session, Packet packet)
@@ -497,7 +497,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -527,7 +527,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     ReplySuccess(session, packet);
                 }
-            }
+            });
         }
 
         private void CreateStructure(Session session, Packet packet)
@@ -560,7 +560,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -590,7 +590,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     ReplySuccess(session, packet);
                 }
-            }
+            });
         }
 
         private void ChangeStructure(Session session, Packet packet)
@@ -613,7 +613,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -646,7 +646,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     ReplySuccess(session, packet);
                 }
-            }
+            });
         }
 
         private void SelfDestroyStructure(Session session, Packet packet)
@@ -665,7 +665,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -695,7 +695,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     ReplySuccess(session, packet);
                 }
-            }
+            });
         }
 
         private void CreateForestCamp(Session session, Packet packet)
@@ -725,38 +725,38 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(forestManager.CallbackLockHandler,
-                                             new object[] {forestId},
-                                             city))
-            {
-                // Get the lumbermill
-                IStructure lumbermill =
-                        city.FirstOrDefault(structure => objectTypeFactory.IsStructureType("Wood", structure));
+            locker.Lock(forestManager.CallbackLockHandler,
+                        new object[] {forestId},
+                        city).Do(() =>
+                        {
+                            // Get the lumbermill
+                            IStructure lumbermill =
+                                    city.FirstOrDefault(structure => objectTypeFactory.IsStructureType("Wood", structure));
 
-                if (lumbermill == null || lumbermill.Lvl == 0)
-                {
-                    ReplyError(session, packet, Error.LumbermillUnavailable);
-                    return;
-                }
+                            if (lumbermill == null || lumbermill.Lvl == 0)
+                            {
+                                ReplyError(session, packet, Error.LumbermillUnavailable);
+                                return;
+                            }
 
-                var buildaction = actionFactory.CreateForestCampBuildActiveAction(cityId,
-                                                                                  lumbermill.ObjectId,
-                                                                                  forestId,
-                                                                                  type,
-                                                                                  labor);
-                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(lumbermill),
-                                                 lumbermill,
-                                                 buildaction,
-                                                 lumbermill.Technologies);
-                if (ret == Error.ActionTotalMaxReached)
-                {
-                    ReplyError(session, packet, Error.LumbermillBusy);
-                }
-                else
-                {
-                    ReplyWithResult(session, packet, ret);
-                }
-            }
+                            var buildaction = actionFactory.CreateForestCampBuildActiveAction(cityId,
+                                                                                              lumbermill.ObjectId,
+                                                                                              forestId,
+                                                                                              type,
+                                                                                              labor);
+                            Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(lumbermill),
+                                                             lumbermill,
+                                                             buildaction,
+                                                             lumbermill.Technologies);
+                            if (ret == Error.ActionTotalMaxReached)
+                            {
+                                ReplyError(session, packet, Error.LumbermillBusy);
+                            }
+                            else
+                            {
+                                ReplyWithResult(session, packet, ret);
+                            }
+                        });
         }
     }
 }

@@ -89,7 +89,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             // First need to find all the objects that should be locked
-            using (locker.Lock(city, stronghold))
+            locker.Lock(city, stronghold).Do(() =>
             {
                 if (city == null || stronghold == null)
                 {
@@ -124,7 +124,7 @@ namespace Game.Comm.ProcessorCommands
                                                                             isAttack,
                                                                             out id);
                 ReplyWithResult(session, packet, ret);
-            }
+            });
         }
 
         private void CreateCityAssignment(Session session, Packet packet)
@@ -155,9 +155,9 @@ namespace Game.Comm.ProcessorCommands
             }
 
             // First need to find all the objects that should be locked
-            uint[] playerIds;
+            uint[] playerIds = null;
             Dictionary<uint, ICity> cities;
-            using (locker.Lock(out cities, cityId, targetCityId))
+            locker.Lock(out cities, cityId, targetCityId).Do(() =>
             {
                 if (cities == null)
                 {
@@ -183,12 +183,16 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                playerIds = new[]
-                {city.Owner.PlayerId, city.Owner.Tribesman.Tribe.Owner.PlayerId, targetCity.Owner.PlayerId};
+                playerIds = new[] {city.Owner.PlayerId, city.Owner.Tribesman.Tribe.Owner.PlayerId, targetCity.Owner.PlayerId};                
+            });
+
+            if (playerIds == null)
+            {
+                return;
             }
 
             Dictionary<uint, IPlayer> players;
-            using (locker.Lock(out players, playerIds))
+            locker.Lock(out players, playerIds).Do(() =>
             {
                 ICity city;
                 ICity targetCity;
@@ -208,17 +212,17 @@ namespace Game.Comm.ProcessorCommands
 
                 int id;
                 var ret = session.Player.Tribesman.Tribe.CreateAssignment(city,
-                                                                            simpleStub,
-                                                                            targetPosition.X,
-                                                                            targetPosition.Y,
-                                                                            targetCity,
-                                                                            time,
-                                                                            mode,
-                                                                            description,
-                                                                            isAttack,
-                                                                            out id);
+                                                                          simpleStub,
+                                                                          targetPosition.X,
+                                                                          targetPosition.Y,
+                                                                          targetCity,
+                                                                          time,
+                                                                          mode,
+                                                                          description,
+                                                                          isAttack,
+                                                                          out id);
                 ReplyWithResult(session, packet, ret);
-            }
+            });
         }
 
         private void Join(Session session, Packet packet)
@@ -238,7 +242,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ITribe tribe = session.Player.Tribesman.Tribe;
-            using (locker.Lock(session.Player, tribe))
+            locker.Lock(session.Player, tribe).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
                 if (city == null)
@@ -268,7 +272,7 @@ namespace Game.Comm.ProcessorCommands
                 Error result = tribe.JoinAssignment(assignmentId, city, stub);
 
                 ReplyWithResult(session, packet, result);
-            }
+            });
         }
     }
 }

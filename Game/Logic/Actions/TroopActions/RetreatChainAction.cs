@@ -130,7 +130,7 @@ namespace Game.Logic.Actions
             if (state == ActionState.Completed)
             {
                 ICity city;
-                using (locker.Lock(cityId, out city))
+                locker.Lock(cityId, out city).Do(() =>
                 {
                     ITroopObject troopObject;
                     if (!city.TryGetTroop(troopObjectId, out troopObject))
@@ -151,12 +151,15 @@ namespace Game.Logic.Actions
                         var eda = actionFactory.CreateCityEngageDefensePassiveAction(cityId, troopObjectId, FormationType.Defense);
                         ExecuteChainAndWait(eda, AfterEngageDefense);
                     }
-                }
+                });
+
+                return;
             }
-            else if (state == ActionState.Failed)
+                        
+            if (state == ActionState.Failed)
             {
                 ICity city;
-                using (locker.Lock(cityId, out city))
+                locker.Lock(cityId, out city).Do(() =>
                 {
                     ITroopObject troopObject;
                     if (!city.TryGetTroop(troopObjectId, out troopObject))
@@ -165,28 +168,30 @@ namespace Game.Logic.Actions
                     }
 
                     procedure.TroopObjectStation(troopObject, city);
-                }
+                });
             }
         }
 
         private void AfterEngageDefense(ActionState state)
         {
-            if (state == ActionState.Completed)
+            if (state != ActionState.Completed)
             {
-                ICity city;
-                using (locker.Lock(cityId, out city))
-                {
-                    ITroopObject troopObject;
-                    if (!city.TryGetTroop(troopObjectId, out troopObject))
-                    {
-                        throw new Exception();
-                    }
-
-                    city.References.Remove(troopObject, this);
-                    procedure.TroopObjectDelete(troopObject, troopObject.Stub.TotalCount != 0);
-                    StateChange(ActionState.Completed);
-                }
+                return;
             }
+
+            ICity city;
+            locker.Lock(cityId, out city).Do(() =>
+            {
+                ITroopObject troopObject;
+                if (!city.TryGetTroop(troopObjectId, out troopObject))
+                {
+                    throw new Exception();
+                }
+
+                city.References.Remove(troopObject, this);
+                procedure.TroopObjectDelete(troopObject, troopObject.Stub.TotalCount != 0);
+                StateChange(ActionState.Completed);
+            });
         }
     }
 }

@@ -238,7 +238,7 @@ namespace Game.Comm.ProcessorCommands
                 }
             }
 
-            using (locker.Lock(player))
+            locker.Lock(player).Do(() =>
             {
                 // If someone is already connected as this player, kick them off potentially
                 if (player.Session != null)
@@ -256,11 +256,11 @@ namespace Game.Comm.ProcessorCommands
 
                 // Setup session references
                 session.Player = player;
-                player.Session = session;                
-                player.SessionId = sessionId;                
+                player.Session = session;
+                player.SessionId = sessionId;
                 player.Rights = playerRights;
                 player.LastLogin = SystemClock.Now;
-                player.Banned = banned;                
+                player.Banned = banned;
                 player.Achievements.Clear();
                 achievements.ForEach(player.Achievements.Add);
 
@@ -316,22 +316,17 @@ namespace Game.Comm.ProcessorCommands
                 session.Write(reply);
 
                 // Restart any city actions that may have been stopped due to inactivity
-                foreach (
-                        var city in
-                                player.GetCityList()
-                                      .Where(
-                                             city =>
-                                             city.Worker.PassiveActions.Values.All(x => x.Type != ActionType.CityPassive))
-                        )
+                foreach (var city in player.GetCityList()
+                                           .Where(city => city.Worker.PassiveActions.Values.All(x => x.Type != ActionType.CityPassive)))
                 {
                     city.Worker.DoPassive(city, actionFactory.CreateCityPassiveAction(city.Id), false);
                 }
-            }
+            });
         }
 
         private void CreateInitialCity(Session session, Packet packet)
         {
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() => 
             {
                 string cityName, playerName = null, playerHash = null;
                 byte method;
@@ -416,7 +411,7 @@ namespace Game.Comm.ProcessorCommands
                 PacketHelper.AddLoginToPacket(session, reply);
                 SubscribeDefaultChannels(session, session.Player);
                 session.Write(reply);
-            }
+            });
         }
 
         private void SubscribeDefaultChannels(Session session, IPlayer player)

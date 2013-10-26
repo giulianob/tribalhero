@@ -38,7 +38,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 Global.Current.Channel.Unsubscribe(session);
 
@@ -52,7 +52,7 @@ namespace Game.Comm.ProcessorCommands
                 session.Player.SessionId = string.Empty;
                 session.Player.LastLogin = SystemClock.Now;
                 dbManager.Save(session.Player);
-            }
+            });
         }
     }
 }

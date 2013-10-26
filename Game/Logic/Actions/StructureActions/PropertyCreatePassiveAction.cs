@@ -97,7 +97,7 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            using (locker.Lock(structure.City))
+            locker.Lock(structure.City).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -105,7 +105,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
 
         public override void UserCancelled()

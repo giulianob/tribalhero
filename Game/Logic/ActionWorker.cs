@@ -72,12 +72,12 @@ namespace Game.Logic
             var ignoreActionList = new List<GameAction>(ignoreActions);
 
             // Cancel Active actions
-            IList<ActiveAction> activeList;
-            using (locker.Lock(LockDelegate()))
+            IList<ActiveAction> activeList = null;
+            locker.Lock(LockDelegate()).Do(() =>
             {
                 // Very important to keep the ToList() here since we will be modifying the collection in the loop below and an IEnumerable will crash!
                 activeList = active.Values.Where(actionStub => actionStub.WorkerObject == workerObject).ToList();
-            }
+            });
 
             foreach (var stub in activeList)
             {
@@ -90,12 +90,12 @@ namespace Game.Logic
             }
 
             // Cancel Passive actions
-            IList<PassiveAction> passiveList;
-            using (locker.Lock(LockDelegate()))
+            IList<PassiveAction> passiveList = null;
+            locker.Lock(LockDelegate()).Do(() =>
             {
                 // Very important to keep the ToList() here since we will be modifying the collection in the loop below and an IEnumerable will crash!
                 passiveList = passive.Values.Where(action => action.WorkerObject == workerObject).ToList();
-            }
+            });
 
             foreach (var stub in passiveList)
             {
@@ -304,10 +304,10 @@ namespace Game.Logic
 
             passive.Add(action.ActionId, action);
 
-            using (locker.Lock(LockDelegate()))
+            locker.Lock(LockDelegate()).Do(() =>
             {
                 action.Execute();
-            }
+            });
         }
 
         private bool CanDoActiveAction(ActiveAction action, ActionRequirement actionReq, IGameObject worker)

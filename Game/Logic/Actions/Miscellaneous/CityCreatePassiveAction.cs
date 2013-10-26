@@ -258,13 +258,13 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
             ICity city;
-            using (locker.Lock(newCityId, out city))
+            locker.Lock(newCityId, out city).Do(() =>
             {
                 CityRemover remover = cityRemoverFactory.CreateCityRemover(newCityId);
                 remover.Start();
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
 
         #endregion
@@ -276,7 +276,7 @@ namespace Game.Logic.Actions
             ICity newCity;
             IStructure structure;
 
-            using (locker.Lock(newCityId, newStructureId, out newCity, out structure))
+            locker.Lock(newCityId, newStructureId, out newCity, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -297,7 +297,7 @@ namespace Game.Logic.Actions
 
                 newCity.Worker.DoPassive(newCity, actionFactory.CreateCityPassiveAction(newCity.Id), false);
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         #endregion

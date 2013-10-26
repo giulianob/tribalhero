@@ -124,7 +124,7 @@ namespace Game
         {
             var ex = (Exception)e.ExceptionObject;
             Logger.ErrorException("Unhandled exception", ex);
-            Environment.FailFast("Unhandled exception");
+            Environment.Exit(1);
         }
 
         public void Start()

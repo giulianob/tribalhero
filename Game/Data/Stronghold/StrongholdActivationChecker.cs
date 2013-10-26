@@ -40,10 +40,8 @@ namespace Game.Data.Stronghold
                                             s.StrongholdState == StrongholdState.Inactive &&
                                             strongholdActivationCondition.ShouldActivate(s)))
             {
-                using (locker.Lock(stronghold))
-                {
-                    strongholdManager.Activate(stronghold);
-                }
+                locker.Lock(stronghold)
+                      .Do(() => strongholdManager.Activate(stronghold));
             }
 
             Time = DateTime.UtcNow.Add(TimeSpan);

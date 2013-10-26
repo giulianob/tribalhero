@@ -39,7 +39,7 @@ namespace Game.Comm.ProcessorCommands
 
         private void ListAll(Session session, Packet packet)
         {
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 if (!session.Player.IsInTribe)
                 {
@@ -60,7 +60,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 session.Write(reply);
-            }
+            });
         }
 
         private void Locate(Session session, Packet packet)
@@ -94,7 +94,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             IStronghold stronghold;
-            using (locker.Lock(strongholdId, out stronghold))
+            locker.Lock(strongholdId, out stronghold).Do(() =>
             {
                 if (stronghold == null || stronghold.StrongholdState == StrongholdState.Inactive)
                 {
@@ -106,7 +106,7 @@ namespace Game.Comm.ProcessorCommands
                 reply.AddUInt32(stronghold.PrimaryPosition.Y);
 
                 session.Write(reply);
-            }
+            });
         }
 
         private void GetInfo(Session session, Packet packet)
@@ -137,12 +137,12 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(stronghold))
+            locker.Lock(stronghold).Do(() =>
             {
                 PacketHelper.AddStrongholdProfileToPacket(session, stronghold, reply);
 
                 session.Write(reply);
-            }
+            });
         }
 
         private void GetInfoByName(Session session, Packet packet)
@@ -166,7 +166,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(stronghold))
+            locker.Lock(stronghold).Do(() =>
             {
                 if (stronghold == null)
                 {
@@ -177,7 +177,7 @@ namespace Game.Comm.ProcessorCommands
                 PacketHelper.AddStrongholdProfileToPacket(session, stronghold, reply);
 
                 session.Write(reply);
-            }
+            });
         }
 
         private void GetName(Session session, Packet packet)
@@ -248,7 +248,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(tribe, stronghold))
+            locker.Lock(tribe, stronghold).Do(() =>
             {
                 if (stronghold.StrongholdState != StrongholdState.Occupied || tribe != stronghold.Tribe)
                 {
@@ -264,7 +264,7 @@ namespace Game.Comm.ProcessorCommands
 
                 var result = strongholdManager.RepairGate(stronghold);
                 ReplyWithResult(session, packet, result);
-            }
+            });
         }
     }
 }

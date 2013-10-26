@@ -140,17 +140,17 @@ namespace Game.Logic.Actions
             IStructure structure;
 
             // Block structure
-            using (locker.Lock(cityId, structureId, out city, out structure))
+            var isOk = locker.Lock(cityId, structureId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
-                    return;
+                    return false;
                 }
 
                 if (structure == null)
                 {
                     StateChange(ActionState.Completed);
-                    return;
+                    return false;
                 }
 
                 if (WorkerObject.WorkerId != structureId)
@@ -161,23 +161,30 @@ namespace Game.Logic.Actions
                 if (structure.CheckBlocked(ActionId))
                 {
                     StateChange(ActionState.Failed);
-                    return;
+                    return false;
                 }
 
                 if (structure.State.Type == ObjectState.Battle)
                 {
                     StateChange(ActionState.Failed);
-                    return;
+                    return false;
                 }
 
                 structure.BeginUpdate();
                 structure.IsBlocked = ActionId;
                 structure.EndUpdate();
+
+                return true;
+            });
+
+            if (!isOk)
+            {
+                return;
             }
 
             structure.City.Worker.Remove(structure, new GameAction[] {this});
 
-            using (locker.Lock(cityId, structureId, out city, out structure))
+            locker.Lock(cityId, structureId, out city, out structure).Do(() =>
             {
                 city.BeginUpdate();
                 structure.BeginUpdate();
@@ -197,7 +204,7 @@ namespace Game.Logic.Actions
                 city.EndUpdate();
 
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override Error Validate(string[] parms)
@@ -208,7 +215,7 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll()
         {
             ICity city;
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -222,7 +229,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
 
         public override void UserCancelled()

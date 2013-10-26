@@ -154,12 +154,12 @@ namespace Game.Map
                 var currentLastUpdated = regionLastUpdated;
                 primaryLock.ExitReadLock();
 
-                using (lockerFactory().Lock(playersInRegion))
+                var isDone = lockerFactory().Lock(playersInRegion).Do(() =>
                 {
                     // Enter write lock but give up all locks if we cant in 1 second just to be safe
                     if (!primaryLock.TryEnterWriteLock(1000))
                     {
-                        continue;
+                        return false;
                     }
 
                     // ReSharper disable ConditionIsAlwaysTrueOrFalse
@@ -167,7 +167,7 @@ namespace Game.Map
                     if (!isDirty)
                     {
                         primaryLock.ExitWriteLock();
-                        break;
+                        return true;
                     }
                     // ReSharper restore HeuristicUnreachableCode
                     // ReSharper restore ConditionIsAlwaysTrueOrFalse
@@ -175,7 +175,7 @@ namespace Game.Map
                     if (currentLastUpdated != regionLastUpdated)
                     {
                         primaryLock.ExitWriteLock();
-                        continue;
+                        return false;
                     }
 
                     using (var ms = new MemoryStream(map.Length))
@@ -202,6 +202,12 @@ namespace Game.Map
                     }
 
                     primaryLock.ExitWriteLock();
+
+                    return true;
+                });
+
+                if (isDone)
+                {
                     break;
                 }
             }

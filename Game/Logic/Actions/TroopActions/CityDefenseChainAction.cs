@@ -165,42 +165,43 @@ namespace Game.Logic.Actions
 
         private void AfterTroopMoved(ActionState state)
         {
-            if (state == ActionState.Completed)
+            if (state != ActionState.Completed)
             {
-                Dictionary<uint, ICity> cities;
-
-                using (locker.Lock(out cities, cityId, targetCityId))
-                {
-                    if (cities == null)
-                    {
-                        throw new Exception("Cities missing");
-                    }
-                    ICity city = cities[cityId];
-                    ICity targetCity = cities[targetCityId];
-
-                    ITroopObject troopObject;
-                    if (!city.TryGetTroop(troopObjectId, out troopObject))
-                    {
-                        throw new Exception();
-                    }
-
-                    city.References.Remove(troopObject, this);
-                    city.Notifications.Remove(this);
-
-                    procedure.TroopObjectStation(troopObject, targetCity);
-
-                    if (targetCity.Battle != null)
-                    {
-                        troopObject.Stub.BeginUpdate();
-                        troopObject.Stub.State = TroopState.BattleStationed;
-                        troopObject.Stub.EndUpdate();
-
-                        battleProcedure.AddReinforcementToBattle(targetCity.Battle, troopObject.Stub, FormationType.Defense);
-                    }
-
-                    StateChange(ActionState.Completed);
-                }
+                return;
             }
+            Dictionary<uint, ICity> cities;
+
+            locker.Lock(out cities, cityId, targetCityId).Do(() =>
+            {
+                if (cities == null)
+                {
+                    throw new Exception("Cities missing");
+                }
+                ICity city = cities[cityId];
+                ICity targetCity = cities[targetCityId];
+
+                ITroopObject troopObject;
+                if (!city.TryGetTroop(troopObjectId, out troopObject))
+                {
+                    throw new Exception();
+                }
+
+                city.References.Remove(troopObject, this);
+                city.Notifications.Remove(this);
+
+                procedure.TroopObjectStation(troopObject, targetCity);
+
+                if (targetCity.Battle != null)
+                {
+                    troopObject.Stub.BeginUpdate();
+                    troopObject.Stub.State = TroopState.BattleStationed;
+                    troopObject.Stub.EndUpdate();
+
+                    battleProcedure.AddReinforcementToBattle(targetCity.Battle, troopObject.Stub, FormationType.Defense);
+                }
+
+                StateChange(ActionState.Completed);
+            });
         }
 
         public override Error Validate(string[] parms)

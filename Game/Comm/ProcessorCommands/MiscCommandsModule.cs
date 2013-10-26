@@ -51,7 +51,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -71,7 +71,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     ReplySuccess(session, packet);
                 }
-            }
+            });
         }
 
         private void GatherResource(Session session, Packet packet)
@@ -90,7 +90,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -120,7 +120,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     ReplySuccess(session, packet);
                 }
-            }
+            });
         }
     }
 }

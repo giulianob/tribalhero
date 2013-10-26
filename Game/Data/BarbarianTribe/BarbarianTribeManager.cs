@@ -73,10 +73,8 @@ namespace Game.Data.BarbarianTribe
                 }
 
                 IBarbarianTribe barbarianTribe = barbarianTribeFactory.CreateBarbarianTribe(idGenerator.GetNext(), level, position, Config.barbariantribe_camp_count);
-                using (multiObjectLockFactory().Lock(new ILockable[] {barbarianTribe}))
-                {
-                    Add(barbarianTribe);
-                }
+                multiObjectLockFactory().Lock(new ILockable[] {barbarianTribe})
+                                        .Do(() => Add(barbarianTribe));
             }
         }
 
@@ -154,10 +152,8 @@ namespace Game.Data.BarbarianTribe
 
             foreach(var barbarianTribe in barbarianTribesToDelete)
             {
-                using (multiObjectLockFactory().Lock(new ILockable[] {barbarianTribe}))
-                {
-                    Remove(barbarianTribe);
-                }
+                multiObjectLockFactory().Lock(new ILockable[] {barbarianTribe})
+                                        .Do(() => Remove(barbarianTribe));
             }
 
             Generate(barbarianTribesToDelete.Count());

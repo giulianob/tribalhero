@@ -12,12 +12,12 @@ namespace Game.Data
         BarbarianTribe = 3
     }
 
-    public interface IStation : ILocation
+    public interface IStation : ILocation, IPrimaryPosition, ILockable
     {
         ITroopManager Troops { get; }
     }
 
-    public interface ILocation : ILockable, IXYPosition
+    public interface ILocation
     {
         uint LocationId { get; }
 
@@ -32,28 +32,8 @@ namespace Game.Data
             LocationId = locationId;
         }
 
-        #region Implementation of ILockable
-
-        public int Hash { get; private set; }
-
-        public object Lock { get; private set; }
-
-        #endregion
-
-        #region Implementation of IXYPosition
-
-        public uint X { get; set; }
-
-        public uint Y { get; set; }
-
-        #endregion
-
-        #region Implementation of ILocation
-
         public uint LocationId { get; private set; }
 
         public LocationType LocationType { get; private set; }
-
-        #endregion
     }
 }

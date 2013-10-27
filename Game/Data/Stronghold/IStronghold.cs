@@ -19,15 +19,13 @@ namespace Game.Data.Stronghold
     }
 
     public interface IStronghold : IHasLevel,
-                                   ICityRegionObject,
+                                   IMiniMapRegionObject,
                                    ISimpleGameObject,
                                    IPersistableObject,
                                    ICanDo,
                                    IStation,
                                    INotificationOwner
     {
-        uint Id { get; }
-
         string Name { get; }
 
         new byte Lvl { get; set; }

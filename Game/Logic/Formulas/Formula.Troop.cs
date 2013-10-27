@@ -37,12 +37,12 @@ namespace Game.Logic.Formulas
                     // Use the slowest machine speed if available.
                     if (stats.Battle.Armor == ArmorType.Machine)
                     {
-                        machineSpeed = Math.Min(stats.Battle.Spd, machineSpeed);
+                        machineSpeed = Math.Min(stats.Battle.Speed, machineSpeed);
                     }
                     else
                     {
                         count += (kvp.Value * stats.Upkeep);
-                        totalSpeed += (kvp.Value * stats.Upkeep * stats.Battle.Spd);
+                        totalSpeed += (kvp.Value * stats.Upkeep * stats.Battle.Speed);
                     }
                 }
             }

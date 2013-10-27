@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -59,6 +59,8 @@ namespace Game.Data.Tribe
 
         private string publicDescription = string.Empty;
 
+        private readonly ITileLocator tileLocator;
+
         public Tribe(IPlayer owner,
                      string name,
                      Procedure procedure,
@@ -66,7 +68,8 @@ namespace Game.Data.Tribe
                      Formula formula,
                      IAssignmentFactory assignmentFactory,
                      ICityManager cityManager,
-                     IStrongholdManager strongholdManager)
+                     IStrongholdManager strongholdManager,
+                     ITileLocator tileLocator)
                 : this(
                         owner: owner,
                         name: name,
@@ -82,7 +85,8 @@ namespace Game.Data.Tribe
                         formula: formula,
                         assignmentFactory: assignmentFactory,
                         cityManager: cityManager,
-                        strongholdManager: strongholdManager)
+                        strongholdManager: strongholdManager,
+                        tileLocator: tileLocator)
         {
         }
 
@@ -100,7 +104,8 @@ namespace Game.Data.Tribe
                      Formula formula,
                      IAssignmentFactory assignmentFactory,
                      ICityManager cityManager,
-                     IStrongholdManager strongholdManager)
+                     IStrongholdManager strongholdManager, 
+                     ITileLocator tileLocator)
         {
             LeavingTribesmates = new List<LeavingTribesmate>();
 
@@ -110,6 +115,7 @@ namespace Game.Data.Tribe
             this.assignmentFactory = assignmentFactory;
             this.cityManager = cityManager;
             this.strongholdManager = strongholdManager;
+            this.tileLocator = tileLocator;
             Owner = owner;
             Level = level;
             Resource = resource;
@@ -331,7 +337,7 @@ namespace Game.Data.Tribe
 
             if (tribesman.Player.Session != null)
             {
-                Global.Channel.Subscribe(tribesman.Player.Session, "/TRIBE/" + Id);
+                Global.Current.Channel.Subscribe(tribesman.Player.Session, "/TRIBE/" + Id);
             }
 
             TribesmanJoined.Raise(this, new TribesmanEventArgs {Tribe = this, Player = tribesman.Player});
@@ -394,7 +400,7 @@ namespace Game.Data.Tribe
             // TODO: Move event out
             if (player.Session != null)
             {
-                Global.Channel.Unsubscribe(player.Session, "/TRIBE/" + Id);
+                Global.Current.Channel.Unsubscribe(player.Session, "/TRIBE/" + Id);
 
                 if (wasKicked)
                 {
@@ -564,6 +570,12 @@ namespace Game.Data.Tribe
                 return Error.AssignmentBadTime;
             }
             
+            if (assignments.Count > 30)
+            {
+                procedure.TroopStubDelete(city, stub);
+                return Error.AssignmentTooManyInProgress;
+            }
+
             if (stub.Upkeep < ASSIGNMENT_MIN_UPKEEP)
             {
                 procedure.TroopStubDelete(city, stub);
@@ -629,7 +641,7 @@ namespace Game.Data.Tribe
             }
 
             // Player creating the assignment cannot be late (Give a few minutes lead)
-            int distance = SimpleGameObject.TileDistance(stub.City.X, stub.City.Y, x, y);
+            int distance = tileLocator.TileDistance(stub.City.PrimaryPosition, 1, new Position(x, y), 1);
             DateTime reachTime = DateTime.UtcNow.AddSeconds(formula.MoveTimeTotal(stub, distance, true));
 
             if (reachTime.Subtract(new TimeSpan(0, 1, 0)) > time)

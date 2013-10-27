@@ -1,4 +1,5 @@
-﻿using Game.Map;
+﻿using System;
+using Game.Map;
 using Game.Util.Locking;
 
 namespace Common.Testing
@@ -13,10 +14,6 @@ namespace Common.Testing
 
         private class MultiObjectLockStub : IMultiObjectLock
         {
-            public void Dispose()
-            {
-            }
-
             public IMultiObjectLock Lock(ILockable[] list)
             {
                 return this;
@@ -27,6 +24,15 @@ namespace Common.Testing
             }
 
             public void SortLocks(ILockable[] list)
+            {                
+            }
+
+            public T Do<T>(Func<T> protectedBlock)
+            {
+                return protectedBlock();
+            }
+
+            public void Do(Action protectedBlock)
             {                
             }
         }

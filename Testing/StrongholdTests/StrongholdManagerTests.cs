@@ -1,7 +1,5 @@
-﻿using System;
-using Common.Testing;
+﻿using Common.Testing;
 using Game.Battle;
-using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
 using Game.Data.Troop;
@@ -9,8 +7,6 @@ using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Setup;
 using NSubstitute;
-using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.Kernel;
 using Ploeh.AutoFixture.Xunit;
 using Xunit.Extensions;
 using FluentAssertions;

@@ -14,12 +14,15 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly IActionFactory actionFactory;
 
-        private readonly StructureFactory structureFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
-        public MiscCommandsModule(IActionFactory actionFactory, StructureFactory structureFactory)
+        private readonly ILocker locker;
+
+        public MiscCommandsModule(IActionFactory actionFactory, IStructureCsvFactory structureCsvFactory, ILocker locker)
         {
             this.actionFactory = actionFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
+            this.locker = locker;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -48,7 +51,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -68,7 +71,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     ReplySuccess(session, packet);
                 }
-            }
+            });
         }
 
         private void GatherResource(Session session, Packet packet)
@@ -87,7 +90,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -105,7 +108,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var gatherAction = actionFactory.CreateResourceGatherActiveAction(cityId, objectId);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(obj),
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(obj),
                                                  obj,
                                                  gatherAction,
                                                  obj.Technologies);
@@ -117,7 +120,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     ReplySuccess(session, packet);
                 }
-            }
+            });
         }
     }
 }

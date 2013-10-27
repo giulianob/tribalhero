@@ -3,7 +3,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Xml;
@@ -13,35 +12,18 @@ namespace WallGenerator
 {
     class Program
     {
-        private static int wall_width = 11;
+        private static int wall_width = 15;
 
-        private static int wall_height = 24;
-
-        private static readonly Dictionary<ushort, string> walls = new Dictionary<ushort, string>
-        {
-                {256, "O1"},
-                {257, "O2"},
-                {258, "E"},
-                {259, "N"},
-                {260, "NE"},
-                {261, "SW"},
-                {262, "NW"},
-                {263, "SE"},
-                {264, "NW"},
-                {265, "S"},
-                {266, "W"},
-                {267, "O3"},
-                {268, "O4"},
-        };
-
+        private static int wall_height = 29;
+        
         private static void Main(string[] args)
         {
             StreamWriter output = new StreamWriter(File.Create("output.txt"));
 
             output.WriteLine("[");
 
-            foreach (string file in Directory.GetFiles("map", "wall*", SearchOption.TopDirectoryOnly))
-            {
+            foreach (string file in Directory.GetFiles("map", "*.tmx", SearchOption.TopDirectoryOnly))
+            {                
                 XmlReaderSettings settings = new XmlReaderSettings
                 {
                         DtdProcessing = DtdProcessing.Ignore,
@@ -53,30 +35,37 @@ namespace WallGenerator
                     XPathDocument reader = new XPathDocument(str);
                     XPathNavigator nav = reader.CreateNavigator();
 
-                    XPathNodeIterator nodeIter = nav.Select("/map/layer/data");
+                    // Fetch the first tile id of the walls tileset                    
+                    XPathNavigator tileIdIter = nav.SelectSingleNode("/map//tileset[2]");                    
+                    var firstGid = ushort.Parse(tileIdIter.GetAttribute("firstgid", string.Empty));                    
+
+                    // Fetch the 2nd layer which is the "Walls" layer
+                    XPathNavigator nodeIter = nav.SelectSingleNode("/map/layer[2]/data");
 
                     ushort[] tiles = new ushort[wall_height * wall_width];
 
                     //load tile info
-                    while (nodeIter.MoveNext())
+                    byte[] zippedMap = Convert.FromBase64String(nodeIter.Value);
+                    using (GZipStream gzip = new GZipStream(new MemoryStream(zippedMap), CompressionMode.Decompress))
                     {
-                        byte[] zippedMap = Convert.FromBase64String(nodeIter.Current.Value);
-                        using (GZipStream gzip = new GZipStream(new MemoryStream(zippedMap), CompressionMode.Decompress)
-                                )
-                        {
-                            byte[] tmpMap = new byte[wall_width * wall_height * sizeof(int)];
-                            gzip.Read(tmpMap, 0, wall_width * wall_height * sizeof(int));
+                        byte[] tmpMap = new byte[wall_width * wall_height * sizeof(int)];
+                        gzip.Read(tmpMap, 0, wall_width * wall_height * sizeof(int));
 
-                            int cnt = 0;
-                            for (int i = 0; i < tmpMap.Length; i += sizeof(int))
+                        int cnt = 0;
+                        for (int i = 0; i < tmpMap.Length; i += sizeof(int))
+                        {
+                            ushort tileId = (ushort)(BitConverter.ToInt32(tmpMap, i) - 1);
+                            if (tileId == ushort.MaxValue)
                             {
-                                ushort tileId = (ushort)(BitConverter.ToInt32(tmpMap, i) - 1);
-                                tiles[cnt++] = tileId;
+                                tiles[cnt++] = ushort.MaxValue;
+                            }
+                            else
+                            {
+                                tiles[cnt++] = (ushort)(tileId - firstGid + 1);
                             }
                         }
-
-                        break; //not supporting multi layer
                     }
+
 
                     output.WriteLine("\t[");
                     //scan and generate tile list
@@ -86,15 +75,14 @@ namespace WallGenerator
                         for (uint x = 0; x < wall_width; ++x)
                         {
                             ushort tileId = tiles[y * wall_width + x];
-
-                            string wallName;
-                            if (walls.TryGetValue(tileId, out wallName))
+                            // Skip empty tiles
+                            if (tileId == ushort.MaxValue)
                             {
-                                output.Write("\"" + walls[tileId] + "\", ");
+                                output.Write("\"\", \t");
                             }
                             else
                             {
-                                output.Write("\"\",   ");
+                                output.Write("\"" + tileId + "\", \t");
                             }
                         }
                         output.WriteLine("],");

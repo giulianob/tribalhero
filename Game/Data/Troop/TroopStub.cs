@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using Game.Database;
+using Game.Battle;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Util.Locking;
@@ -89,7 +89,10 @@ namespace Game.Data.Troop
 
         private ushort troopId;
 
-        //private ITroopObject troopObject;
+        private readonly Formula formula;
+
+        private readonly IDbManager dbManager;
+
         public TroopTemplate Template { get; private set; }
 
         public TroopState State
@@ -201,7 +204,7 @@ namespace Game.Data.Troop
         {
             get
             {
-                return Formula.Current.GetTroopSpeed(this);
+                return formula.GetTroopSpeed(this);
             }
         }
 
@@ -309,11 +312,13 @@ namespace Game.Data.Troop
 
         #endregion
 
-        public TroopStub(ushort troopId, ICity city)
+        public TroopStub(ushort troopId, ICity city, Formula formula, IDbManager dbManager, IBattleFormulas battleFormulas)
         {
             City = city;
+            this.formula = formula;
+            this.dbManager = dbManager;
             this.troopId = troopId;
-            Template = new TroopTemplate(this);
+            Template = new TroopTemplate(this, battleFormulas);
         }
 
         #region IEnumerable<Formation> Members
@@ -432,7 +437,7 @@ namespace Game.Data.Troop
 
         public void FireUnitUpdated()
         {
-            if (!Global.FireEvents)
+            if (!Global.Current.FireEvents)
             {
                 return;
             }
@@ -444,7 +449,7 @@ namespace Game.Data.Troop
 
         public void FireUpdated()
         {
-            if (!Global.FireEvents)
+            if (!Global.Current.FireEvents)
             {
                 return;
             }
@@ -470,7 +475,7 @@ namespace Game.Data.Troop
         {
             isUpdating = false;
 
-            DbPersistance.Current.Save(this);
+            dbManager.Save(this);
 
             if (isDirty || isUnitDirty)
             {
@@ -633,7 +638,7 @@ namespace Game.Data.Troop
 
         private void CheckUpdateMode(bool checkStationedCity = true)
         {
-            if (!Global.FireEvents || City == null)
+            if (!Global.Current.FireEvents || City == null)
             {
                 return;
             }

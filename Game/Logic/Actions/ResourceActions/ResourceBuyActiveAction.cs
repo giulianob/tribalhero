@@ -29,17 +29,29 @@ namespace Game.Logic.Actions
 
         private readonly uint structureId;
 
+        private readonly ILocker locker;
+
+        private readonly IWorld world;
+
+        private readonly Formula formula;
+
         public ResourceBuyActiveAction(uint cityId,
                                        uint structureId,
                                        ushort price,
                                        ushort quantity,
-                                       ResourceType resourceType)
+                                       ResourceType resourceType,
+                                       ILocker locker,
+                                       IWorld world,
+                                       Formula formula)
         {
             this.cityId = cityId;
             this.structureId = structureId;
             this.price = price;
             this.quantity = quantity;
             this.resourceType = resourceType;
+            this.locker = locker;
+            this.world = world;
+            this.formula = formula;
         }
 
         public ResourceBuyActiveAction(uint id,
@@ -49,9 +61,15 @@ namespace Game.Logic.Actions
                                        int workerType,
                                        byte workerIndex,
                                        ushort actionCount,
-                                       Dictionary<string, string> properties)
+                                       Dictionary<string, string> properties,
+                                       ILocker locker,
+                                       IWorld world,
+                                       Formula formula)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
+            this.locker = locker;
+            this.world = world;
+            this.formula = formula;
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
             quantity = ushort.Parse(properties["quantity"]);
@@ -85,17 +103,17 @@ namespace Game.Logic.Actions
             ICity city;
             IStructure structure;
 
-            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!world.TryGetObjects(cityId, structureId, out city, out structure))
             {
                 return Error.ObjectNotFound;
             }
 
-            if (!Formula.Current.MarketResourceBuyable(structure).Contains(resourceType))
+            if (!formula.MarketResourceBuyable(structure).Contains(resourceType))
             {
                 return Error.ResourceNotTradable;
             }
 
-            if (quantity <= 0 || quantity % TRADE_SIZE != 0 || quantity > Formula.Current.MarketTradeQuantity(structure))
+            if (quantity <= 0 || quantity % TRADE_SIZE != 0 || quantity > formula.MarketTradeQuantity(structure))
             {
                 return Error.MarketInvalidQuantity;
             }
@@ -133,7 +151,7 @@ namespace Game.Logic.Actions
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.Current.TradeTime(structure, quantity)));
+            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(formula.TradeTime(structure, quantity)));
             BeginTime = DateTime.UtcNow;
 
             return Error.Ok;
@@ -152,7 +170,7 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll(bool wasKilled)
         {
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -182,18 +200,18 @@ namespace Game.Logic.Actions
                             break;
                     }
                     var cost = GetCost();
-                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, cost));
+                    city.Resource.Add(formula.GetActionCancelResource(BeginTime, cost));
                     city.EndUpdate();
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
 
         public override void Callback(object custom)
         {
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -223,7 +241,7 @@ namespace Game.Logic.Actions
                 structure.City.EndUpdate();
 
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override Error Validate(string[] parms)

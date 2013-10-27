@@ -7,7 +7,6 @@ using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Stats;
 using Game.Map;
-using Game.Setup;
 using Persistance;
 using Game.Logic.Formulas;
 
@@ -79,6 +78,14 @@ namespace Game.Battle.CombatObjects
             get
             {
                 return count;
+            }
+        }
+
+        public override byte Size
+        {
+            get
+            {
+                return BarbarianTribe.Size;
             }
         }
 
@@ -158,7 +165,11 @@ namespace Game.Battle.CombatObjects
         {
             get
             {
-                return new[] {new DbColumn("battle_id", BattleId, DbType.UInt32), new DbColumn("id", Id, DbType.UInt32)};
+                return new[]
+                {
+                        new DbColumn("battle_id", BattleId, DbType.UInt32), 
+                        new DbColumn("id", Id, DbType.UInt32)
+                };
             }
         }
 
@@ -176,7 +187,7 @@ namespace Game.Battle.CombatObjects
             {
                 return new[]
                 {
-                        new DbColumn("barbarian_tribe_id", BarbarianTribe.Id, DbType.UInt32),
+                        new DbColumn("barbarian_tribe_id", BarbarianTribe.ObjectId, DbType.UInt32),
                         new DbColumn("group_id", GroupId, DbType.UInt32), 
                         new DbColumn("level", lvl, DbType.Byte),
                         new DbColumn("count", count, DbType.UInt16), 
@@ -205,14 +216,6 @@ namespace Game.Battle.CombatObjects
             }
         }
 
-        public bool IsAttacker
-        {
-            get
-            {
-                return false;
-            }
-        }
-
         public override int LootPerRound()
         {
             return 0;
@@ -225,7 +228,7 @@ namespace Game.Battle.CombatObjects
 
         public override Position Location()
         {
-            return new Position(BarbarianTribe.X, BarbarianTribe.Y);
+            return BarbarianTribe.PrimaryPosition;
         }
 
         public override byte AttackRadius()

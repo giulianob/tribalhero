@@ -1,18 +1,16 @@
 #region
 
 using System;
-using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
-using Game.Battle;
 using Game.Comm;
+using Game.Comm.Channel;
 using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Stronghold;
 using Game.Database;
 using Game.Logic;
-using Game.Logic.Formulas;
-using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
 using Game.Module.Remover;
@@ -21,6 +19,7 @@ using Game.Util;
 using Game.Util.Locking;
 using Ninject;
 using Ninject.Extensions.Logging;
+using Ninject.Modules;
 using Persistance;
 using Thrift.Server;
 
@@ -67,6 +66,8 @@ namespace Game
 
         private readonly BarbarianTribeChecker barbarianTribeChecker;
 
+        private readonly ICityChannel cityChannel;
+
         private readonly IStrongholdManagerLogger strongholdManagerLogger;
 
         private readonly IPolicyServer policyServer;
@@ -90,6 +91,7 @@ namespace Game
                       StrongholdActivationChecker strongholdActivationChecker,
                       StrongholdChecker strongholdChecker,
                       BarbarianTribeChecker barbarianTribeChecker,
+                      ICityChannel cityChannel,
                       IStrongholdManagerLogger strongholdManagerLogger)
         {
             this.server = server;
@@ -107,6 +109,7 @@ namespace Game
             this.strongholdActivationChecker = strongholdActivationChecker;
             this.strongholdChecker = strongholdChecker;
             this.barbarianTribeChecker = barbarianTribeChecker;
+            this.cityChannel = cityChannel;
             this.strongholdManagerLogger = strongholdManagerLogger;
         }
 
@@ -121,7 +124,7 @@ namespace Game
         {
             var ex = (Exception)e.ExceptionObject;
             Logger.ErrorException("Unhandled exception", ex);
-            Environment.FailFast("Unhandled exception");
+            Environment.Exit(1);
         }
 
         public void Start()
@@ -175,8 +178,8 @@ _________ _______ _________ ______   _______  _
                                            Config.map_height,
                                            Config.region_width,
                                            Config.region_height,
-                                           Config.city_region_width,
-                                           Config.city_region_height);
+                                           Config.minimap_region_width,
+                                           Config.minimap_region_height);
             }
 
 #if DEBUG
@@ -193,6 +196,9 @@ _________ _______ _________ ______   _______  _
                 dbManager.EmptyDatabase();
             }
 #endif
+
+            // Initiate city channel
+            cityChannel.Register(world.Cities);
 
             // Load database
             dbLoader.LoadFromDatabase();
@@ -239,21 +245,19 @@ _________ _______ _________ ______   _______  _
             State = EngineState.Started;
         }
 
-        public static IKernel CreateDefaultKernel()
+        public static IKernel CreateDefaultKernel(params INinjectModule[] extraModules)
         {
-            var kernel = new StandardKernel(new NinjectSettings {LoadExtensions = true}, new GameModule());
+            var ninjectModules = new[] {new GameModule()}.Concat(extraModules).ToArray();
+            var kernel = new StandardKernel(new NinjectSettings {LoadExtensions = true}, ninjectModules);
 
             // Instantiate singletons here for now until all classes are properly being injected
             Ioc.Kernel = kernel;
+
+            PacketHelper.RegionLocator = kernel.Get<IRegionLocator>();
+            Global.Current = kernel.Get<Global>();
             SystemVariablesUpdater.Current = kernel.Get<SystemVariablesUpdater>();
-            RadiusLocator.Current = kernel.Get<RadiusLocator>();
             TileLocator.Current = kernel.Get<TileLocator>();
-            ReverseTileLocator.Current = kernel.Get<ReverseTileLocator>();
-            BattleFormulas.Current = kernel.Get<IBattleFormulas>();
-            Concurrency.Current = kernel.Get<ILocker>();
-            Formula.Current = kernel.Get<Formula>();
             World.Current = kernel.Get<IWorld>();
-            Procedure.Current = kernel.Get<Procedure>();
             Scheduler.Current = kernel.Get<IScheduler>();
             DbPersistance.Current = kernel.Get<IDbManager>();
 

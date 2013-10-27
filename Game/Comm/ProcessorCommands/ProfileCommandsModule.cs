@@ -40,7 +40,7 @@ namespace Game.Comm.ProcessorCommands
             if (type == "city")
             {
                 ICity city;
-                using (locker.Lock(id, out city))
+                locker.Lock(id, out city).Do(() =>
                 {
                     if (city == null)
                     {
@@ -51,12 +51,15 @@ namespace Game.Comm.ProcessorCommands
                     PacketHelper.AddPlayerProfileToPacket(city.Owner, reply);
 
                     session.Write(reply);
-                }
+                });
+
+                return;
             }
-            else if (type == "stronghold")
+            
+            if (type == "stronghold")
             {
                 IStronghold stronghold;
-                using (locker.Lock(id, out stronghold))
+                locker.Lock(id, out stronghold).Do(() =>
                 {
                     if (stronghold == null || stronghold.StrongholdState == StrongholdState.Inactive)
                     {
@@ -67,12 +70,12 @@ namespace Game.Comm.ProcessorCommands
                     PacketHelper.AddStrongholdProfileToPacket(session, stronghold, reply);
 
                     session.Write(reply);
-                }
+                });
+
+                return;
             }
-            else
-            {
-                ReplyError(session, packet, Error.Unexpected);
-            }
+            
+            ReplyError(session, packet, Error.Unexpected);
         }
     }
 }

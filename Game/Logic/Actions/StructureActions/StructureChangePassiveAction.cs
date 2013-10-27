@@ -145,27 +145,34 @@ namespace Game.Logic.Actions
             IStructure structure;
 
             // Block structure
-            using (locker.Lock(cityId, objectId, out city, out structure))
+            var isOk = locker.Lock(cityId, objectId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
-                    return;
+                    return false;
                 }
 
                 if (structure.CheckBlocked(ActionId))
                 {
                     StateChange(ActionState.Failed);
-                    return;
+                    return false;
                 }
 
                 structure.BeginUpdate();
                 structure.IsBlocked = ActionId;
                 structure.EndUpdate();
+
+                return true;
+            });
+
+            if (!isOk)
+            {
+                return;
             }
 
             structure.City.Worker.Remove(structure, new GameAction[] {this});
 
-            using (locker.Lock(cityId, objectId, out city, out structure))
+            locker.Lock(cityId, objectId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -187,7 +194,7 @@ namespace Game.Logic.Actions
                 structure.City.EndUpdate();
 
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override Error Validate(string[] parms)
@@ -219,7 +226,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
             IStructure structure;
-            using (locker.Lock(cityId, objectId, out city, out structure))
+            locker.Lock(cityId, objectId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -227,7 +234,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
     }
 }

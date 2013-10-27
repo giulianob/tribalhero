@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Game.Data;
+﻿using Game.Data;
 using Game.Logic.Conditons;
 
 namespace Game.Logic.Triggers.Events

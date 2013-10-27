@@ -1,28 +1,26 @@
 package src.UI.Dialog{
 
-	import flash.events.Event;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.event.InteractiveEvent;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import org.aswing.plaf.basic.background.PanelBackground;
-	import src.Global;
-	import src.Map.City;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.Factories.StructureFactory;
-	import src.Objects.LazyResources;
-	import src.Objects.LazyValue;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.Resources;
-	import src.Objects.StructureObject;
-	import src.UI.GameJPanel;
-    import src.Util.DateUtil;
-    import src.Util.Util;
+    import flash.events.Event;
 
-	public class LaborMoveDialog extends GameJPanel{
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.event.InteractiveEvent;
+    import org.aswing.geom.*;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Objects.Effects.Formula;
+    import src.Objects.Factories.ObjectFactory;
+    import src.Objects.Factories.StructureFactory;
+    import src.Objects.LazyResources;
+    import src.Objects.LazyValue;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.Objects.Resources;
+    import src.Objects.StructureObject;
+    import src.UI.GameJPanel;
+    import src.Util.DateUtil;
+
+    public class LaborMoveDialog extends GameJPanel{
 
 		//members define
 		private var label81:JLabel;

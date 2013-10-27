@@ -1,17 +1,11 @@
 package src.UI.Components 
 {
-	import mx.utils.StringUtil;
-	import org.aswing.AsWingConstants;
-	import org.aswing.border.EmptyBorder;
-	import org.aswing.Container;
-	import org.aswing.FlowLayout;
-	import org.aswing.Insets;
-	import org.aswing.JLabel;
-	import src.Constants;
-	import src.Global;
-	import src.Map.Username;
-	
-	public class PlayerCityLabel extends RichLabel
+    import mx.utils.StringUtil;
+
+    import src.Global;
+    import src.Map.Username;
+
+    public class PlayerCityLabel extends RichLabel
 	{		
 		private var playerId:int;
 		private var cityId:int;

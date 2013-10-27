@@ -9,13 +9,13 @@ package src.Util {
     import flash.display.DisplayObjectContainer;
     import flash.display.Stage;
     import flash.external.ExternalInterface;
+    import flash.geom.Point;
     import flash.geom.Rectangle;
     import flash.utils.getQualifiedClassName;
 
     import mx.utils.StringUtil;
 
     import org.aswing.AsWingConstants;
-    import org.aswing.AsWingManager;
     import org.aswing.AsWingUtils;
     import org.aswing.Component;
     import org.aswing.Container;
@@ -25,13 +25,50 @@ package src.Util {
     import org.aswing.JScrollPane;
     import org.aswing.JTextComponent;
     import org.aswing.JViewport;
+    import org.aswing.geom.IntDimension;
     import org.aswing.geom.IntPoint;
 
     import src.Constants;
     import src.UI.GameJImagePanelBackground;
 
     public class Util {
-               
+
+        public static function calculateSize(width: Number, height: Number, targetW: Number, targetH: Number): IntDimension
+        {
+            if (targetW > width || targetH > height) {
+                return new IntDimension(width, height);
+            }
+
+            var ratio:Number = width / height;
+            var rW:Number = targetW;
+            var rH:Number = targetH;
+            if (ratio >= 1) {
+                rH = targetW / ratio;
+                if (rH > targetH) {
+                    rH = targetH;
+                    rW = rH * ratio;
+                }
+            }else {
+                rW = targetH * ratio;
+                if (rW > targetW) {
+                    rW = targetW;
+                    rH = rW / ratio;
+                }
+            }
+
+            return new IntDimension(rW, rH);
+        }
+
+        public static function resizeSprite(sprite: DisplayObject, targetW: Number, targetH: Number): void {
+            sprite.scaleX = 1;
+            sprite.scaleY = 1;
+
+            var size: IntDimension = Util.calculateSize(sprite.width, sprite.height, targetW, targetH);
+
+            sprite.scaleX = size.width / sprite.width;
+            sprite.scaleY = size.height / sprite.height;
+        }
+
 		public static function createTopAlignedScrollPane(pnl: JPanel): JScrollPane {
 			var scrollPane: JScrollPane = new JScrollPane(new JViewport(pnl, true), JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);
 			(scrollPane.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
@@ -136,7 +173,7 @@ package src.Util {
 		{
 			var idx: int = binarySearchAlg(array, compare, value, 0, array.length - 1);
 
-			var ret: Array = new Array();
+			var ret: Array = [];
 
 			if (idx <= -1) return ret;
 
@@ -165,7 +202,7 @@ package src.Util {
 		}
 
 		public static function implode(glue: String, arr: Array) : String {
-			var s: String = new String();
+			var s: String = '';
 			for (var i: int = 0; i < arr.length; i++) {
 				s += arr[i];
 				if ( i != arr.length - 1 ) s += glue;
@@ -202,7 +239,7 @@ package src.Util {
             catch (e: Error) {                
             }
         }
-	}
+    }
 
 }
 

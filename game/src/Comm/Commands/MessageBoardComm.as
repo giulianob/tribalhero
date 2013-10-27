@@ -1,10 +1,9 @@
 ﻿package src.Comm.Commands 
 {
-	import src.Comm.*;
-	import src.Map.Map;
-	import src.Map.MapComm;
-	
-	public class MessageBoardComm
+    import src.Comm.*;
+    import src.Map.MapComm;
+
+    public class MessageBoardComm
 	{
 		private var mapComm: MapComm;		
 		private var session: Session;

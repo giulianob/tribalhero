@@ -5,9 +5,10 @@
  * UPDATES AND DOCS AT: http://www.TweenMax.com
  **/
 package src.UI.TweenPlugins {
-	import com.greensock.*;
+    import com.greensock.*;
     import com.greensock.plugins.TweenPlugin;
-/**
+
+    /**
  * To tween any rotation property of the target object in the shortest direction, use "shortRotation" 
  * For example, if <code>myObject.rotation</code> is currently 170 degrees and you want to tween it to -170 degrees, 
  * a normal rotation tween would travel a total of 340 degrees in the counter-clockwise direction, 

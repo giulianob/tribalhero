@@ -1,9 +1,9 @@
 ﻿package src.Objects
 {
-	import src.Constants;
-	import src.Global;
+    import src.Constants;
+    import src.Global;
 
-	public class LazyValue
+    public class LazyValue
 	{
 		private var value: int;
 		private var rate: int;

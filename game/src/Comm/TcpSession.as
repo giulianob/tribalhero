@@ -1,20 +1,15 @@
 ﻿package src.Comm 
 {
-	import flash.net.XMLSocket;
-	import flash.utils.ByteArray;
-	import src.Util.Util;
-	import flash.events.*;
-	import flash.net.Socket;
-	import flash.utils.Timer;
-	import flash.utils.Endian;
-	import flash.system.Security;
-	import src.Global;
-	import src.Main;
-	import src.Util.Util;
-	import src.Constants;
-	import src.Comm.Packet;
-	
-	public class TcpSession implements Session, IEventDispatcher
+    import flash.events.*;
+    import flash.net.Socket;
+    import flash.utils.ByteArray;
+    import flash.utils.Endian;
+
+    import src.Constants;
+    import src.Global;
+    import src.Util.Util;
+
+    public class TcpSession implements Session, IEventDispatcher
 	{		
 		//Members
 		private var dispatcher: EventDispatcher;
@@ -45,7 +40,7 @@
 			streamingPacket = null;
 			headerPacket = null;
 			
-			pending = new Array();
+			pending = [];
 			
 			socket.addEventListener(Event.CLOSE,closeHandler);
 			socket.addEventListener(Event.CONNECT, connectHandler);			
@@ -110,7 +105,7 @@
 		
 		public function connect(hostname: String):void
 		{			
-			socket.connect(hostname,48888);			
+			socket.connect(hostname,48888);
 		}
 		
 		public function logout():void 

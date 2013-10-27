@@ -1,30 +1,19 @@
 package src.UI.Sidebars.BarbarianTribeInfo 
 {
-	import src.Util.StringHelper;
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import flash.text.*;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Actions.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.Objects.Troop.*;
-	import src.UI.*;
-	import src.UI.Components.*;
-	import src.UI.Dialog.*;
-	import src.UI.Sidebars.ObjectInfo.Buttons.*;
-	import src.Util.*;
-	import src.Objects.BarbarianTribe;
+    import flash.events.*;
 
-	/**
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
+
+    import src.Map.Position;
+    import src.Objects.*;
+    import src.UI.*;
+    import src.UI.Sidebars.ObjectInfo.Buttons.*;
+    import src.Util.StringHelper;
+
+    /**
 	 * ...
 	 * @author Anthony Lam
 	 */
@@ -82,7 +71,7 @@ package src.UI.Sidebars.BarbarianTribeInfo
 			
 			pnlGroups.append(new SendAttackButton(tribe,new Location(Location.BARBARIAN_TRIBE, tribe.objectId)));
 
-			var buttons: Array = new Array();
+			var buttons: Array = [];
 
 			//Special Case Buttons
 			switch(tribe.state.getStateType())
@@ -124,7 +113,7 @@ package src.UI.Sidebars.BarbarianTribeInfo
 		{
 			super.showSelf(owner, onClose, dispose);
 
-			var pt: Point = MapUtil.getMapCoord(tribe.objX, tribe.objY);
+			var pt: Position = tribe.primaryPosition.toPosition();
 			frame.getTitleBar().setText("Barbarian Tribe (" + pt.x + "," + pt.y + ")");
 
 			frame.show();

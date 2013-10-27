@@ -1,341 +1,294 @@
 ﻿package src.Map
 {
-	import flash.display.*;
-	import flash.geom.*;
-	import flash.text.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Factories.*;
-	import src.Util.*;
-	import src.Util.BinaryList.*;
+    import flash.display.*;
+    import flash.geom.*;
+    import flash.text.*;
 
-	public class Region extends Sprite
-	{
-		public var id: int;
-		private var tiles: Array;
-		private var globalX: int;
-		private var globalY: int;
-		private var bitmapParts: Array;
-		private var objects: BinaryList = new BinaryList(SimpleGameObject.sortOnGroupIdAndObjId, SimpleGameObject.compareGroupIdAndObjId);
-		private var placeHolders: BinaryList = new BinaryList(SimpleObject.sortOnXandY, SimpleObject.compareXAndY);
-		private var map: Map;
-		
-		public function Region(id: int, data: Array, map: Map)
-		{
-			mouseEnabled = false;
-			mouseChildren = false;
+    import src.*;
+    import src.Objects.*;
+    import src.Objects.Factories.*;
+    import src.Util.*;
+    import src.Util.BinaryList.*;
 
-			this.id = id;
-			this.map = map;			
-			this.tiles = data;
-			
-			bitmapParts = new Array();			
+    public class Region extends Sprite
+    {
+        public var id: int;
+        private var tiles: Array;
+        private var globalX: int;
+        private var globalY: int;
+        private var bg: Bitmap;
+        private var primaryObjects: RegionObjectList = new RegionObjectList();
+        private var tileObjects: RegionObjectList = new RegionObjectList();
+        private var placeHolders: BinaryList = new BinaryList(SimpleObject.sortOnXandY, SimpleObject.compareXAndY);
+        private var map: Map;
 
-			globalX = (id % Constants.mapRegionW) * Constants.regionW;
-			globalY = int(id / Constants.mapRegionW) * (Constants.regionH / 2);
-			
-			createRegion();
+        private var regionPosition: Position;
+
+        public function Region(id: int, data: Array, map: Map)
+        {
+            mouseEnabled = false;
+            mouseChildren = false;
+
+            this.id = id;
+            this.map = map;
+            this.tiles = data;
+
+            regionPosition = new Position(
+                    (id % Constants.mapRegionW) * Constants.regionTileW,
+                    int(id / Constants.mapRegionW) * Constants.regionTileH);
+
+            globalX = (id % Constants.mapRegionW) * Constants.regionW;
+            globalY = int(id / Constants.mapRegionW) * (Constants.regionH / 2);
+
+            createRegion();
 
 			if (Constants.debug >= 4)
-			{
-				/* adds an outline to this region */
-				graphics.beginFill(0x000000, 0);
-				graphics.lineStyle(2, 0x000000);
-				graphics.drawRect(0, 0, width, height);
-				graphics.endFill();
-			}
-		}
+            {
+                /* adds an outline to this region */
+                graphics.beginFill(0x000000, 0);
+                graphics.lineStyle(3, 0x000000);
+                graphics.drawRect(0, 0, width, height);
+                graphics.endFill();
+            }
+        }
 
-		// Removes all of the tiles from this region
-		private function cleanTiles(): void {
+        public function disposeData():void
+        {
+            clearAllPlaceholders();
 
-			for (var i: int = 0; i < bitmapParts.length; i++)
-			{
-				removeChild(bitmapParts[i]);
-				bitmapParts[i].bitmapData.dispose();
-				bitmapParts[i] = null;
-			}
+            bg.bitmapData.dispose();
+            bg = null;
 
-			bitmapParts = new Array();
-		}
+            for each(var gameObj: SimpleGameObject in primaryObjects.allObjects()) {
+                map.objContainer.removeObject(gameObj);
+            }
 
-		public function disposeData():void
-		{
-			clearAllPlaceholders();
-			cleanTiles();
+            primaryObjects.clear();
+            tileObjects.clear();
 
-			for each(var gameObj: SimpleGameObject in objects)		
-				map.objContainer.removeObject(gameObj);			
+            if (numChildren > 0) {
+                removeChildren(0, numChildren - 1);
+            }
 
-			objects.clear();
+            primaryObjects = null;
+            map = null;
+            tiles = null;
+        }
 
-			for (var i: int = numChildren - 1; i >= 0; i--)
-				removeChildAt(i);			
-				
-			objects = null;
-			map = null;
-			tiles = null;
-		}
+        private function createRegion():void
+        {
+            if (Constants.debug >= 2)
+                Util.log("Creating region id: " + id + " " + globalX + "," + globalY);
 
-		public function createRegion():void
-		{			
-			if (Constants.debug >= 2)
-				Util.log("Creating region id: " + id + " " + globalX + "," + globalY);
-						
-			clearAllPlaceholders();
-			
-			for (var a:int = 0; a < Math.ceil(Constants.regionW / Constants.regionBitmapW); a++)
-			{
-				for (var b:int = 0; b < Math.ceil(Constants.regionH / Constants.regionBitmapH); b++)
-				{
-					if (Constants.debug>=3)
-						Util.log("Creating region part: " + (a * Constants.regionBitmapTileW) + "," + (b * Constants.regionBitmapTileH));
+            bg = new Bitmap(new BitmapData(Constants.regionW + Constants.tileW / 2, Constants.regionH / 2 + Constants.tileH / 2, true, 0));
+            bg.smoothing = false;
 
-					createRegionPart(Constants.tileset, a * Constants.regionBitmapTileW, b * Constants.regionBitmapTileH);
-					break;
-				}
-				break;
-			}
-		}
+            drawRegion();
 
-		public function sortObjects():void
-		{
-			objects.sort();
-		}
+            bg.x = (x / Constants.regionTileW) * Constants.regionW;
+            bg.y = (y / Constants.regionTileH) * (Constants.regionH / 2);
 
-		public function setTile(x: int, y: int, tileType: int, redraw: Boolean = true): void {
-			var pt: Point = getTilePos(x, y);
-			
-			tiles[pt.y][pt.x] = tileType;
-			
-			clearPlaceholders(x, y);
-			addPlaceholderObjects(tileType, x, y);
-			
-			if (redraw) 
-				this.redraw();
-		}
+            addChild(bg);
+        }
 
-		public function redraw() : void {
-			cleanTiles();
-			createRegion();
-		}
+        private function drawRegion(): void {
+            bg.bitmapData.fillRect(new Rectangle(0, 0, bg.bitmapData.width, bg.bitmapData.height), 0xadb957);
 
-		public function createRegionPart(tileset:TileSet, x: int, y:int):void
-		{
-			var bg:Bitmap = new Bitmap(new BitmapData(Constants.regionBitmapW + Constants.tileW / 2, Constants.regionBitmapH / 2 + Constants.tileH / 2, true, 0));
-			bg.smoothing = false;
-			
-			var tileHDiv2: int = Constants.tileH / 2;
-			var tileHTimes2: int = Constants.tileH * 2;
-			var tileWDiv2: int = Constants.tileW / 2;
-			var tileWTimes2: int = Constants.tileW * 2;
-			var oddShift: int = int(Constants.tileW / 2) * -1;
-			var regionStartingX: int = (id % Constants.mapRegionW) * Constants.regionTileW;
-			var regionStartingY: int = int(id / Constants.mapRegionW) * Constants.regionTileH;
-			
-			for (var bY:int = 1; bY <= Constants.regionBitmapTileH; bY++)
-			{
-				for (var aX:int = 1; aX <= Constants.regionBitmapTileW; aX++)
-				{
-					var tileX: int = aX - 1 + x;
-					var tileY: int = bY - 1 + y;
-					var tileid:int = tiles[tileY][tileX];
-					
-					addPlaceholderObjects(tileid, tileX + regionStartingX, tileY + regionStartingY);
+            var tileHDiv2: int = Constants.tileH / 2;
+            var tileWDiv2: int = Constants.tileW / 2;
 
-					var tilesetsrcX:int = int(tileid % Constants.tileSetTileW) * Constants.tileW;
-					var tilesetsrcY:int = int(tileid / Constants.tileSetTileW) * tileHTimes2;
+            clearAllPlaceholders();
 
-					var xadd:int = 0;
-					var yadd:int = 0;
+            // tileX and tileY represent the tile relative to the region
+            for (var tileY:int = 0; tileY < Constants.regionTileH; tileY++)
+            {
+                var oddShift: int = (tileY % 2) == 0 ? Constants.tileW / -2 : 0;
 
-					if ((bY % 2) == 1) //odd tile
-						xadd = oddShift;
+                for (var tileX:int = 0; tileX < Constants.regionTileW; tileX++)
+                {
+                    var tileid:int = tiles[tileY][tileX];
 
-					var xcoord:int = int((aX - 1) * Constants.tileW + xadd);
-					var ycoord:int = int((bY - 2) * tileHDiv2);
+                    // The position of this tile for the entire world
+                    var mapTilePosition: Position = new Position(tileX + regionPosition.x, tileY + regionPosition.y);
 
-					var drawTo:Point = new Point(xcoord + tileWDiv2, (ycoord + tileHDiv2) - (Constants.tileH));
-					var srcRect:Rectangle = new Rectangle(tilesetsrcX, tilesetsrcY, Constants.tileW, tileHTimes2);
+                    addPlaceholderObjects(tileid, mapTilePosition);
 
-					bg.bitmapData.copyPixels(tileset, srcRect, drawTo, null, null, true);
-					
-					if (Constants.debug >= 4)
-					{
-						var txtCoords: TextField = new TextField();
-						txtCoords.text = (tileX + regionStartingX) + "," + (tileY + regionStartingY);
-						var coordsBitmap:BitmapData = new BitmapData(txtCoords.width, txtCoords.height, true, 0);
-						coordsBitmap.draw(txtCoords);
-						bg.bitmapData.copyPixels(coordsBitmap, new Rectangle(0, 0, txtCoords.width, txtCoords.height), new Point(drawTo.x, drawTo.y + Constants.tileH), null, null, true);
-						coordsBitmap.dispose();
-					}
-				}
-			}
+                    var tilesetsrcX:int = int(tileid % Constants.tileSetTileW) * Constants.tileW;
+                    var tilesetsrcY:int = int(tileid / Constants.tileSetTileW) * Constants.tileH;
 
-			bitmapParts.push(bg);
+                    var drawTo:Point = new Point(
+                            tileX * Constants.tileW + oddShift + tileWDiv2,
+                            tileY * tileHDiv2);
 
-			bg.x = (x / Constants.regionBitmapTileW) * Constants.regionBitmapW;
-			bg.y = (y / Constants.regionBitmapTileH) * (Constants.regionBitmapH / 2);
+                    bg.bitmapData.copyPixels(
+                            Constants.tileset.bitmapData,
+                            new Rectangle(tilesetsrcX, tilesetsrcY, Constants.tileW, Constants.tileH),
+                            drawTo,
+                            null,
+                            null,
+                            true);
 
-			addChild(bg);
+                    if (Constants.debug >= 4)
+                    {
+                        var txtCoords: TextField = new TextField();
+                        txtCoords.text = mapTilePosition.x + "," + mapTilePosition.y;
+                        var coordsBitmap:BitmapData = new BitmapData(txtCoords.width, txtCoords.height, true, 0);
+                        coordsBitmap.draw(txtCoords);
+                        bg.bitmapData.copyPixels(coordsBitmap,
+                                new Rectangle(0, 0, txtCoords.width, txtCoords.height),
+                                new Point(drawTo.x + txtCoords.width/2, drawTo.y + txtCoords.textHeight),
+                                null,
+                                null,
+                                true);
+                        coordsBitmap.dispose();
+                    }
+                }
+            }
+        }
 
-			if (Constants.debug == 3)
-			{
-				/* adds an outline to each region part	*/
-				graphics.beginFill(0, 0);
-				graphics.lineStyle(2, 0x0000FF);
-				graphics.drawRect(bg.x, bg.y, bg.bitmapData.width, bg.bitmapData.height);
-				graphics.endFill();
-			}
-		}
-		
-		private function clearPlaceholders(x: int, y: int) : void
-		{
-			var coord: Point = MapUtil.getScreenCoord(x, y);
-			var objs: Array = placeHolders.getRange([coord.x, coord.y]);
-			
-			for each (var obj: SimpleObject in objs) {
-				map.objContainer.removeObject(obj);							
-			}
-			
-			placeHolders.removeRange([coord.x, coord.y]);
-		}
-		
-		private function clearAllPlaceholders() : void
-		{
-			for each (var obj: SimpleObject in placeHolders)
-				map.objContainer.removeObject(obj);
-				
-			placeHolders.clear();
-		}		
-		
-		private function addPlaceholderObjects(tileId: int, x: int, y: int) : void 
-		{	
-			if (tileId == Constants.cityStartTile) {
-				var coord: Point = MapUtil.getScreenCoord(x, y);
-				
-				if (getObjectsAt(coord.x, coord.y).length > 0) {
-					return;
-				}
-				
-				var obj: NewCityPlaceholder = ObjectFactory.getNewCityPlaceholderInstance(coord.x, coord.y);
-				obj.setOnSelect(Global.map.selectObject);
-				map.objContainer.addObject(obj);		
-				placeHolders.add(obj);
-			}
-		}
+        public function setTile(position: Position, tileType: int): void {
+            var relativeTilePosX: int = position.x - regionPosition.x;
+            var relativeTilePosY: int = position.y - regionPosition.y;
 
-		public function getObjectsAt(x: int, y: int, objClass: * = null): Array
-		{
-			var objs: Array = new Array();
-			for each(var gameObj: SimpleGameObject in objects)
-			{
-				if (objClass != null) {
-					if (objClass is Array) {
-						var typeOk: Boolean = false;
-						for each (var type: Class in objClass) {
-							if (gameObj is type) {
-								typeOk = true;
-								break;
-							}
-						}
-						if (!typeOk) {
-							continue;
-						}
-					}
-					else if (!(gameObj is objClass)) {
-						continue;
-					}
-				}
+            tiles[relativeTilePosY][relativeTilePosX] = tileType;
+        }
 
-				if (gameObj.objX == x && gameObj.objY == y && gameObj.visible) {
-					objs.push(gameObj);
-				}
-			}
+        public function redraw() : void {
+            drawRegion();
+        }
 
-			return objs;
-		}
+        private function clearPlaceholders(position: ScreenPosition) : void
+        {
+            var objs: Array = placeHolders.getRange([position.x, position.y]);
 
-		public function getTileAt(x: int, y: int) : int {
-			var pt: Point = getTilePos(x, y);
+            for each (var obj: SimpleObject in objs) {
+                map.objContainer.removeObject(obj);
+            }
 
-			return tiles[pt.y][pt.x];
-		}
+            placeHolders.removeRange([position.x, position.y]);
+        }
 
-		private function getTilePos(x: int, y: int) : Point {
-			var regionStartingX: int = (id % Constants.mapRegionW);
-			var regionStartingY: int = int(id / Constants.mapRegionW);
+        private function clearAllPlaceholders() : void
+        {
+            for each (var obj: SimpleObject in placeHolders) {
+                map.objContainer.removeObject(obj);
+            }
 
-			x -= (regionStartingX * Constants.regionTileW);
-			y -= (regionStartingY * Constants.regionTileH);
+            placeHolders.clear();
+        }
 
-			return new Point(x, y);
-		}
+        private function addPlaceholderObjects(tileId: int, position: Position) : void
+        {
+            if (tileId == Constants.cityStartTile) {
+                var screenPosition: ScreenPosition = position.toScreenPosition();
 
-		public function addObject(gameObj: SimpleGameObject, sorted: Boolean = true) : SimpleGameObject
-		{
-			if (sorted) {
-				var existingObj: SimpleObject = objects.get([gameObj.groupId, gameObj.objectId]);
+                if (getObjectsInTile(position).length > 0) {
+                    return;
+                }
 
-				if (existingObj != null)
-				{
-					return null;
-				}
-			}
-			
-			//add to object container and to internal list
-			map.objContainer.addObject(gameObj);
-			objects.add(gameObj, sorted);
-			
-			//select object if the map is waiting for it to be selected
-			if (map.selectViewable != null && map.selectViewable.groupId == gameObj.groupId && map.selectViewable.objectId == gameObj.objectId)			
-				map.selectObject(gameObj as GameObject);			
-		
-			return gameObj;
-		}
+                var obj: NewCityPlaceholder = ObjectFactory.getNewCityPlaceholderInstance(screenPosition.x, screenPosition.y);
+                obj.setOnSelect(Global.map.selectObject);
+                map.objContainer.addObject(obj);
+                placeHolders.add(obj);
+            }
+        }
 
-		public function removeObject(groupId: int, objectId: int, dispose: Boolean = true): SimpleGameObject
-		{
-			var gameObj: SimpleGameObject = objects.remove([groupId, objectId]);
+        public function getObjectsInTile(position: Position, objClass: * = null): Array
+        {
+            var objs: Array = [];
 
-			if (gameObj == null)
-				return null;	
+            for each(var gameObj: SimpleGameObject in tileObjects.get(position))
+            {
+                if (objClass != null) {
+                    if (objClass is Array) {
+                        var typeOk: Boolean = false;
+                        for each (var type: Class in objClass) {
+                            if (gameObj is type) {
+                                typeOk = true;
+                                break;
+                            }
+                        }
+                        if (!typeOk) {
+                            continue;
+                        }
+                    }
+                    else if (!(gameObj is objClass)) {
+                        continue;
+                    }
+                }
 
-			map.objContainer.removeObject(gameObj, 0, dispose);
+                if (gameObj.visible) {
+                    objs.push(gameObj);
+                }
+            }
 
-			return gameObj;
-		}
+            return objs;
+        }
 
-		public function getObject(groupId: int, objectId: int): SimpleGameObject
-		{
-			return objects.get([groupId, objectId]);
-		}
+        public function getTileAt(position: Position) : int {
+            var x: int = position.x - regionPosition.x;
+            var y: int = position.y - regionPosition.y;
 
-		public function moveWithCamera(camera: Camera):void
-		{
-			x = globalX - camera.x - int(Constants.tileW / 2);
-			y = globalY - camera.y - int(Constants.tileH / 2);
-		}
+            return tiles[y][x];
+        }
 
-		public static function sortOnId(a:Region, b:Region):Number
-		{
-			var aId:Number = a.id;
-			var bId:Number = b.id;
+        public function addObjectToTile(gameObj: SimpleGameObject, pos: Position): void {
+            tileObjects.add(gameObj, pos);
+        }
 
-			if(aId > bId) {
-				return 1;
-			} else if(aId < bId) {
-				return -1;
-			} else  {
-				return 0;
-			}
-		}
+        public function removeObjectFromTile(gameObj: SimpleGameObject, pos: Position): SimpleGameObject {
+            return tileObjects.remove(gameObj, pos);
+        }
 
-		public static function compare(a: Region, value: int):int
-		{
-			return a.id - value;
-		}
-	}
+        public function addObject(gameObj: SimpleGameObject) : Boolean
+        {
+            if (primaryObjects.getById(gameObj.groupId, gameObj.objectId)) {
+                return false;
+            }
+
+            var objMapPos: Position = gameObj.primaryPosition.toPosition();
+            clearPlaceholders(gameObj.primaryPosition);
+
+            //add to object container and to internal list
+            primaryObjects.add(gameObj, objMapPos);
+
+            return true;
+        }
+
+        public function removeObject(obj: SimpleGameObject): SimpleGameObject
+        {
+            return primaryObjects.remove(obj, obj.primaryPosition.toPosition());
+        }
+
+        public function getObject(groupId: int, objectId: int): SimpleGameObject
+        {
+            return primaryObjects.getById(groupId, objectId);
+        }
+
+        public function moveWithCamera(camera: Camera):void
+        {
+            x = globalX - camera.currentPosition.x - int(Constants.tileW / 2);
+            y = globalY - camera.currentPosition.y - int(Constants.tileH / 2);
+        }
+
+        public static function sortOnId(a:Region, b:Region):Number
+        {
+            var aId:Number = a.id;
+            var bId:Number = b.id;
+
+            if(aId > bId) {
+                return 1;
+            } else if(aId < bId) {
+                return -1;
+            } else  {
+                return 0;
+            }
+        }
+
+        public static function compare(a: Region, value: int):int
+        {
+            return a.id - value;
+        }
+    }
 }
 

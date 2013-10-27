@@ -5,16 +5,11 @@
  */
 
 package src.Objects.Actions {
-	import flash.display.SimpleButton;
-	import flash.utils.getDefinitionByName;
-	import src.Objects.Actions.IAction;
-	import src.Objects.Forest;
-	import src.Objects.GameObject;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.SimpleGameObject;
-	import src.UI.Sidebars.ForestInfo.Buttons.ForestCampBuildButton;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.Objects.SimpleGameObject;
+    import src.UI.Sidebars.ForestInfo.Buttons.ForestCampBuildButton;
 
-	public class ForestCampBuildAction extends Action implements IAction
+    public class ForestCampBuildAction extends Action implements IAction
 	{
 		public var campType: int;
 		

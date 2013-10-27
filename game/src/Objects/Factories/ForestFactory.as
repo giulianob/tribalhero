@@ -1,47 +1,46 @@
 ﻿package src.Objects.Factories {
 
-	import flash.display.DisplayObject;
-	import flash.display.DisplayObjectContainer;
-	import flash.filters.BlurFilter;
-	import flash.geom.ColorTransform;
-	import flash.geom.Matrix;
-	import flash.geom.Rectangle;
-	import flash.utils.getDefinitionByName;
-	import src.Global;
-	import src.Objects.AggressiveLazyValue;
-	import src.Objects.Forest;
-	import src.Objects.States.GameObjectState;
-    import src.Util.Util;
+    import flash.display.Bitmap;
+    import flash.display.DisplayObject;
+    import flash.display.DisplayObjectContainer;
+    import flash.display.Sprite;
 
-	/**
-	 * ...
-	 * @author Default
-	 */
-	public class ForestFactory {
+    import src.Assets;
+    import src.Constants;
+    import src.Global;
+    import src.Objects.Forest;
+    import src.Objects.States.GameObjectState;
+
+    public class ForestFactory {
 
 		public function ForestFactory() {
 		}
 
-		public static function getSprite(lvl: int, centered: Boolean = false): DisplayObjectContainer
+        public static function getSprite(lvl: int, withPosition: String = "", withShadow: Boolean = false): DisplayObjectContainer
+        {
+            var assetName: String = "FOREST_LVL_" + lvl;
+
+            var image: DisplayObject = Assets.getInstance(assetName, withPosition);
+
+            var sprite: Sprite = new Sprite();
+
+            if (withShadow) {
+                var shadow: Bitmap = Assets.getInstance(assetName + "_SHADOW", withPosition);
+                shadow.alpha = Constants.shadowAlpha;
+                shadow.name = "shadow";
+                sprite.addChild(shadow);
+            }
+
+            sprite.addChild(image);
+
+            return sprite;
+        }
+
+		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, size: int, groupId: int, objectId: int, level: int): Forest
 		{
-			var objRef: Class = getDefinitionByName("FOREST_LVL_" + lvl) as Class;
+			var forestObj: Forest = new Forest(type, state, objX, objY, size, groupId, objectId, level);
 
-			var sprite: DisplayObjectContainer = new objRef() as DisplayObjectContainer;
-
-			if (centered)
-			{
-				Util.centerSprite(sprite);
-			}
-
-			return sprite;
-		}
-
-		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, groupId: int, objectId: int, level: int): Forest
-		{
-			var forestObj: Forest = new Forest(type, state, objX, objY, groupId, objectId, level);
-
-			forestObj.spriteContainer.addChild(ObjectFactory.makeIntoShadow(getSprite(level)));
-			forestObj.spriteContainer.addChild(getSprite(level));
+			forestObj.spriteContainer.addChild(getSprite(level, "map"));
 
 			forestObj.setOnSelect(Global.map.selectObject);
 			

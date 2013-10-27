@@ -1,10 +1,10 @@
 ﻿package src.Util
 {
-	import flash.text.*;
-	import flash.utils.Timer;
-	import flash.events.*;
-	
-	public class GeneralCounter extends TextField
+    import flash.events.*;
+    import flash.text.*;
+    import flash.utils.Timer;
+
+    public class GeneralCounter extends TextField
 	{
 		private static const secs: int = 1;		
 		private var i: int = 0;

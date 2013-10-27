@@ -1,11 +1,12 @@
 package src.UI.Components 
 {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.event.InteractiveEvent;
-	import org.aswing.JScrollPane;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class StickyScroll 
+    import org.aswing.JScrollPane;
+    import org.aswing.event.InteractiveEvent;
+
+    public class StickyScroll
 	{		
 		public function StickyScroll(scrollview: JScrollPane) 
 		{           

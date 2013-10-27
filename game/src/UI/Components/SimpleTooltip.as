@@ -1,14 +1,14 @@
 ﻿package src.UI.Components 
 {
-	import flash.display.DisplayObject;
-	import flash.display.SimpleButton;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.AssetPane;
-	import org.aswing.Component;
-	import src.UI.Tooltips.TextTooltip;
-	
-	public class SimpleTooltip
+    import flash.display.DisplayObject;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
+
+    import org.aswing.Component;
+
+    import src.UI.Tooltips.TextTooltip;
+
+    public class SimpleTooltip
 	{
 		private var ui: DisplayObject;
 		private var tooltip: TextTooltip;

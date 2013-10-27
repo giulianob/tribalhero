@@ -1,9 +1,9 @@
 package src.UI.LookAndFeel
 {
 
-	import org.aswing.skinbuilder.SinglePicBackground;
+    import org.aswing.skinbuilder.SinglePicBackground;
 
-	public class GamePopupMenuBackground extends SinglePicBackground{
+    public class GamePopupMenuBackground extends SinglePicBackground{
 
 		public function GamePopupMenuBackground(){
 			super();

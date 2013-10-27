@@ -1,30 +1,26 @@
 ﻿package src {
-    import com.greensock.TweenMax;
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import flash.net.*;
-	import flash.text.TextField;
-	import flash.ui.*;
-	import flash.utils.*;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.event.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Effects.*;
-	import src.UI.*;
-	import src.UI.Components.*;
-	import src.UI.Components.ScreenMessages.*;
-	import src.UI.Dialog.*;
-	import src.UI.Tutorial.GameTutorial;
-	import src.Util.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.net.*;
+    import flash.text.TextField;
+    import flash.ui.*;
+    import flash.utils.*;
 
+    import org.aswing.*;
+    import org.aswing.event.*;
+    import org.aswing.geom.*;
 
-	public class GameContainer extends GameContainer_base {
+    import src.Map.*;
+    import src.Map.MiniMap.MiniMap;
+    import src.Objects.*;
+    import src.UI.*;
+    import src.UI.Components.*;
+    import src.UI.Components.ScreenMessages.*;
+    import src.UI.Dialog.*;
+    import src.UI.Tutorial.GameTutorial;
+    import src.Util.*;
+
+    public class GameContainer extends GameContainer_base {
 
 		//Popup menu
 		private var menu: JPopupMenu;
@@ -58,7 +54,7 @@
 		public var message: MessageContainer = new MessageContainer();
 
 		//Holds all currently open aswing frames
-		public var frames: Array = new Array();
+		public var frames: Array = [];
 
 		public var selectedCity: City;
 		public var camera: Camera = new Camera(0, 0);
@@ -71,9 +67,7 @@
         public var screenMessageHolder: Sprite;
 
 		//Holds the tools above the minimap
-		public var minimapTools: MinimapToolsContainer = new MinimapToolsContainer();
-		public var minimapZoomed: Boolean = false;
-		private var minimapZoomTooltip: SimpleTooltip;
+		public var minimapTools: MinimapToolsContainer;
 
 		//Handles fancy auto resizing
 		public var resizeManager: ResizeManager;
@@ -92,9 +86,12 @@
 		
 		// Game tutorial handler
 		private var tutorial: GameTutorial;
+        private var lblCoords: JLabel;
 
 		public function GameContainer()
-		{							
+		{
+            minimapTools = new MinimapToolsContainer(Global.musicPlayer, this);
+
 			// Here we create a dummy ASWing component and stick it over the menu button because the popup requires it
 			menuDummyOverlay = new Component();
 			menuDummyOverlay.setLocationXY(btnMenu.x, btnMenu.y);			
@@ -126,25 +123,14 @@
 			// Hide the connecting chains for the sidebar (this is just a graphic)
 			chains.visible = false;
 
-			// Disable mouse for coordinates
-			minimapTools.txtCoords.mouseEnabled = false;
+			// Manually add coords.
+            // TODO: Change minimap tools into a regular JPanel
+            lblCoords = new JLabel("", null, AsWingConstants.LEFT);
+            lblCoords.mouseEnabled = false;
+            lblCoords.setLocationXY(80, -20);
+            minimapTools.addChild(lblCoords);
 
 			// Set up tooltips
-			minimapZoomTooltip = new SimpleTooltip(minimapTools.btnMinimapZoom);
-			minimapTools.btnMinimapZoom.addEventListener(MouseEvent.CLICK, onZoomIntoMinimap);
-
-			new SimpleTooltip(minimapTools.btnGoToCoords, "Find...");
-			minimapTools.btnGoToCoords.addEventListener(MouseEvent.CLICK, onGoToCoords);
-			
-			new SimpleTooltip(minimapTools.btnFeedback, "Send Feedback");
-			minimapTools.btnFeedback.addEventListener(MouseEvent.CLICK, onSendFeedback);
-			
-			new SimpleTooltip(minimapTools.btnZoomIn, "Zoom In");
-			minimapTools.btnZoomIn.addEventListener(MouseEvent.CLICK, onZoomIn);
-			
-			new SimpleTooltip(minimapTools.btnZoomOut, "Zoom Out");
-			minimapTools.btnZoomOut.addEventListener(MouseEvent.CLICK, onZoomOut);
-
 			new SimpleTooltip(btnGoToCity, "Go to city");
 			btnGoToCity.addEventListener(MouseEvent.CLICK, onGoToCity);
 
@@ -327,96 +313,11 @@
 		public function onGoToCity(e: Event) : void {
 			if (selectedCity == null) return;
 
-			var pt: Point = MapUtil.getScreenCoord(selectedCity.MainBuilding.x, selectedCity.MainBuilding.y);
-			Global.gameContainer.map.camera.ScrollToCenter(pt.x, pt.y);
+			var pt: ScreenPosition = TileLocator.getScreenCoord(selectedCity.primaryPosition);
+			Global.gameContainer.map.camera.ScrollToCenter(pt);
 		}
 
-		public function onGoToCoords(e: Event) : void {
-			var goToDialog: GoToDialog = new GoToDialog();
-			goToDialog.show();
-		}
-		
-		public function onSendFeedback(e: Event) : void {
-			navigateToURL(new URLRequest(Constants.mainWebsite + "feedback"), "_blank");
-		}
-		
-		public function onZoomIn(e: Event) : void {		
-			if (camera.getZoomFactor() >= 0.99 || minimapZoomed) return;
-			var center: Point = camera.GetCenter();
-			camera.setZoomFactor(Math.min(1, camera.getZoomFactor() + 0.1));
-			map.scrollRate = 1 * camera.getZoomFactorOverOne();
-			mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();
-			miniMap.redraw();
-			camera.ScrollToCenter(center.x, center.y);
-		}		
-		
-		public function onZoomOut(e: Event) : void {
-			if (camera.getZoomFactor() <= 0.61 || minimapZoomed) return;
-			var center: Point = camera.GetCenter();
-			camera.setZoomFactor(Math.max(0.6, camera.getZoomFactor() - 0.1));
-			map.scrollRate = 1 * camera.getZoomFactorOverOne();
-			mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();			
-			miniMap.redraw();
-			camera.ScrollToCenter(center.x, center.y);
-		}			
-
-		public function onZoomIntoMinimap(e: Event):void {
-			zoomIntoMinimap(!minimapZoomed);
-		}
-
-		public function zoomIntoMinimap(zoom: Boolean, query: Boolean = true) : void {
-			if (minimapZoomed == false) {
-				Global.map.camera.cue();
-			}
-			else {
-				Global.map.camera.goToCue();
-			}			
-			
-			clearAllSelections();
-			
-			if (zoom) {
-				screenMessage.setVisible(false);
-				// We leave a bit of border incase the screen is smaller than the map size
-				var width: int = Math.min(Constants.screenW - 60, Constants.miniMapLargeScreenW);
-				var height: int = Math.min(Constants.screenH - 75, Constants.miniMapLargeScreenH);
-				miniMap.resize(width, height);
-				miniMap.x = Constants.miniMapLargeScreenX(width);
-				miniMap.y = Constants.miniMapLargeScreenY(height);
-				minimapZoomTooltip.setText("Minimize map");
-				miniMap.setScreenRectHidden(true);
-				map.disableMapQueries(true);
-				map.scrollRate = 25;
-				minimapTools.btnZoomIn.visible = false;
-				minimapTools.btnZoomOut.visible = false;
-				message.showMessage("Double click to go anywhere\nPress Escape to close this map");
-				miniMap.showLegend();
-				miniMap.showPointers();
-			}
-			else {
-				screenMessage.setVisible(true);
-				miniMap.resize(Constants.miniMapScreenW, Constants.miniMapScreenH);
-				miniMap.x = Constants.miniMapScreenX(Constants.miniMapScreenW);
-				miniMap.y = Constants.miniMapScreenY(Constants.miniMapScreenH);
-				minimapZoomTooltip.setText("World view");
-				miniMap.setScreenRectHidden(false);
-				map.disableMapQueries(false);
-				map.scrollRate = 1 * camera.getZoomFactorOverOne();
-				minimapTools.btnZoomIn.visible = true;
-				minimapTools.btnZoomOut.visible = true;
-				message.hide();
-				miniMap.hideLegend();
-				miniMap.hidePointers();
-			}
-
-			minimapZoomed = zoom;
-			if (query) {
-				map.move(true);
-			}
-
-			alignMinimapTools();
-		}
-
-		public function eventKeyUp(event: KeyboardEvent):void
+				public function eventKeyUp(event: KeyboardEvent):void
 		{
 			// clear key press
 			pressedKeys[event.keyCode] = false;
@@ -426,18 +327,18 @@
 		{
 			return pressedKeys[keyCode];
 		}
-		
-		public function eventScroll(e: MouseEvent): void {		
+
+		public function eventScroll(e: MouseEvent): void {
 			if (e.target is Component || e.target is TextField || frames.length > 0) return;
-			
+
 			if (e.delta < 0) {
-				onZoomOut(e);
+				minimapTools.onZoomOut(e);
 			}
 			else if (e.delta > 0) {
-				onZoomIn(e);				
+                minimapTools.onZoomIn(e);
 			}
 		}
-		
+
 		public function eventKeyDown(e: KeyboardEvent):void
 		{
 			// Key down handler
@@ -452,7 +353,9 @@
 			if (e.charCode == Keyboard.ESCAPE)
 			{						
 				// Unzoom map
-				if (miniMap != null) zoomIntoMinimap(false);
+				if (miniMap != null) {
+                    minimapTools.zoomIntoMinimap(false);
+                }
 				
 				// Deselect objects
 				clearAllSelections();
@@ -463,7 +366,7 @@
 				
 				// Moving around with arrow keys
 				map.camera.beginMove();
-				var keyScrollRate: int = minimapZoomed ? 1150 : 500 * map.camera.getZoomFactorOverOne();
+				var keyScrollRate: int = minimapTools.minimapZoomed ? 1150 : 500 * map.camera.getZoomFactorOverOne();
 				if (e.keyCode == Keyboard.LEFT) map.camera.MoveLeft(keyScrollRate);
 				if (e.keyCode == Keyboard.RIGHT) map.camera.MoveRight(keyScrollRate);
 				if (e.keyCode == Keyboard.UP) map.camera.MoveUp(keyScrollRate);
@@ -471,16 +374,11 @@
 				map.camera.endMove();
 				
 				// Zoom into minimap with +/- keys
-				if (!minimapZoomed && !Util.textfieldHasFocus(stage)) {
-					if (e.keyCode == 187 || e.keyCode == Keyboard.NUMPAD_ADD) onZoomIn(e);							
-					if (e.keyCode == 189 || e.keyCode == Keyboard.NUMPAD_SUBTRACT) onZoomOut(e);
+				if (!minimapTools.minimapZoomed && !Util.textfieldHasFocus(stage)) {
+					if (e.keyCode == 187 || e.keyCode == Keyboard.NUMPAD_ADD) minimapTools.onZoomIn(e);
+					if (e.keyCode == 189 || e.keyCode == Keyboard.NUMPAD_SUBTRACT) minimapTools.onZoomOut(e);
 				}
 			}
-		}
-		
-		public function getSelectedCityIndex(): int
-		{
-			return lstCities.getSelectedIndex();
 		}
 
 		public function setMap(map: Map, miniMap: MiniMap):void
@@ -498,6 +396,9 @@
 			// Add map			
 			mapHolder.addChild(map);
 			minimapHolder.addChild(miniMap);
+
+            // Set initial map zoom
+            mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();
 
 			// Create map overlay
 			this.mapOverlay = new MovieClip();
@@ -549,14 +450,14 @@
 
 			// Scroll to city center
 			if (selectedCity) {
-				var pt: Point = MapUtil.getScreenCoord(selectedCity.MainBuilding.x, selectedCity.MainBuilding.y);
-				src.Global.gameContainer.camera.ScrollToCenter(pt.x, pt.y);
+				var pt: ScreenPosition = TileLocator.getScreenCoord(selectedCity.primaryPosition);
+				Global.gameContainer.camera.ScrollToCenter(pt);
 				miniMap.setCityPointer(selectedCity.name);
 			}
 
 			//Set minimap position and initial state
-			miniMap.addEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);			
-			zoomIntoMinimap(false, false);
+			miniMap.addEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
+            minimapTools.zoomIntoMinimap(false, false);
 			
 			// Refresh unread messages
 			Global.mapComm.Messaging.refreshUnreadCounts();		
@@ -677,15 +578,10 @@
 		
 		public function addCityToUI(city: City): void {
 			(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String { return this.city.name; } } );
-			miniMap.addPointer(new MiniMapPointer(city.MainBuilding.x, city.MainBuilding.y, city.name));
+			miniMap.addPointer(new MiniMapPointer(city.primaryPosition.x, city.primaryPosition.y, city.name));
 		}
 
-		private function alignMinimapTools() : void {
-			minimapTools.x = miniMap.x;
-			minimapTools.y = miniMap.y - 3;
-		}
-
-		public function clearAllSelections() : void 
+		public function clearAllSelections() : void
 		{
 			if (map)
 				map.selectObject(null);
@@ -714,17 +610,6 @@
 			stage.focus = map;
 		}
 		
-		public function closeTopmostFrame(onlyIfClosable: Boolean = true) : void {
-			if (frames.length == 0)
-				return;
-			
-			var frame: JFrame = frames[frames.length-1] as JFrame;
-			if (onlyIfClosable && !frame.isClosable())
-				return;
-			
-			frame.dispose();
-		}
-
 		public function closeAllFrames(onlyClosableFrames: Boolean = false) : void {
 			var framesCopy: Array = frames.concat();
 
@@ -864,11 +749,11 @@
 		}
 
 		private function onMinimapNavigateToPoint(e: MouseEvent) : void {
-			if (minimapZoomed) {
-				zoomIntoMinimap(false);
+			if (minimapTools.minimapZoomed) {
+                minimapTools.zoomIntoMinimap(false);
 			}
 
-			Global.map.camera.ScrollToCenter(e.localX, e.localY);
+			Global.map.camera.ScrollToCenter(new ScreenPosition(e.localX, e.localY));
 		}
 		
 		public function setUnreadMessageCount(unreadMessages: int): void
@@ -900,8 +785,9 @@
             }
 		}
         
-        public function setLabelCoords(pt: Point): void {
-            minimapTools.txtCoords.text = "(" + (pt.x) + "," + (pt.y) + ")";
+        public function setLabelCoords(pt: Position): void {
+            lblCoords.setText("(" + (pt.x) + "," + (pt.y) + ")");
+            lblCoords.pack();
         }
 	}
 

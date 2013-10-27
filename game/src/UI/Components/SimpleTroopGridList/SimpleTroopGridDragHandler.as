@@ -1,24 +1,25 @@
 ﻿package src.UI.Components.SimpleTroopGridList
 {
-	import flash.events.Event;
-	import flash.ui.Keyboard;
-	import flash.ui.KeyLocation;
-	import org.aswing.Component;
-	import org.aswing.dnd.DragListener;
-	import org.aswing.dnd.DragManager;
-	import org.aswing.dnd.RejectedMotion;
-	import org.aswing.event.DragAndDropEvent;
-	import org.aswing.VectorListModel;
-	import src.Global;
-	import src.UI.Dialog.NumberInputDialog;
+    import flash.events.Event;
+    import flash.ui.Keyboard;
 
-	/**
+    import org.aswing.Component;
+    import org.aswing.VectorListModel;
+    import org.aswing.dnd.DragListener;
+    import org.aswing.dnd.DragManager;
+    import org.aswing.dnd.RejectedMotion;
+    import org.aswing.event.DragAndDropEvent;
+
+    import src.Global;
+    import src.UI.Dialog.NumberInputDialog;
+
+    /**
 	 * ...
 	 * @author Giuliano
 	 */
 	public class SimpleTroopGridDragHandler implements DragListener
 	{
-		private var tilelists: Array = new Array();
+		private var tilelists: Array = [];
 
 		public function SimpleTroopGridDragHandler(tilelists: Array) {
 			for each (var tilelist: SimpleTroopGridList in tilelists)

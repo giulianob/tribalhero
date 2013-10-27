@@ -1,100 +1,130 @@
 package src.Map
 {
-	import flash.geom.Point;
-	import src.Constants;
-	import src.Global;
+    import System.Linq.Enumerable;
 
-	public class RoadPathFinder
+    import src.Constants;
+    import src.Global;
+    import src.Objects.Factories.ObjectFactory;
+
+    public class RoadPathFinder
 	{
-		private static function hasPoint(arr: Array, point: Point) : Boolean {
+        private static var positionComparer: PositionComparer = new PositionComparer();
 
-			var cnt: int = arr.length;
+        public static function CanBuild(position: Position, size: int, city: City, requiresRoad: Boolean): Boolean {
+            var buildingPositions: Array = TileLocator.foreachMultitile(position.x, position.y, size);
+            var buildingNeighbors: Array = TileLocator.foreachRadiusWithSize(position.x, position.y, size, 1);
 
-			for (var i: int = 0; i < cnt; i++) {
-				var item: Point = arr[i];
-				if (item.x == point.x && item.y == point.y) return true;
-			}
+            var mainBuildingPositions: Array = TileLocator.foreachMultitile(city.MainBuilding.primaryPosition.x, city.MainBuilding.primaryPosition.y, city.MainBuilding.size);
 
-			return false;
-		}
+            var roadsBeingBuiltOn: Boolean = Enumerable.from(buildingPositions).any(function (buildingPosition: Position): Boolean {
+               return isRoadByMapPosition(buildingPosition);
+            });
 
-		public static function isRoadByMapPosition(x: int, y: int) : Boolean {
-			return isRoad(Global.map.regions.getTileAt(x, y));
+            if (!requiresRoad) {
+                return !roadsBeingBuiltOn;
+            }
+
+            if (roadsBeingBuiltOn) {
+                for each (var str: CityObject in city.structures()) {
+                    if (str.isMainBuilding || ObjectFactory.isType("NoRoadsRequired", str.type)) {
+                        continue;
+                    }
+
+                    if (!hasPath(str.primaryPosition, str.size, city, buildingPositions)) {
+                        return false;
+                    }
+                }
+
+                for each (var neighborPosition: Position in buildingNeighbors) {
+                    if (Enumerable.from(mainBuildingPositions).contains(neighborPosition, positionComparer) || !isRoadByMapPosition(neighborPosition)) {
+                        continue;
+                    }
+
+                    if (!hasPath(neighborPosition, 1, city, buildingPositions)) {
+                        return false;
+                    }
+                }
+            }
+
+            for each (neighborPosition in buildingNeighbors) {
+                var hasStructure: Boolean = city.getStructureAt(neighborPosition) != null;
+
+                if (hasStructure || !isRoadByMapPosition(neighborPosition)) {
+                    continue;
+                }
+
+                if (roadsBeingBuiltOn && !hasPath(neighborPosition, 1, city, buildingPositions)) {
+                    continue;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+		public static function isRoadByMapPosition(position: Position) : Boolean {
+			return isRoad(Global.map.regions.getTileAt(position));
 		}
 
 		public static function isRoad(tileId: int) : Boolean {
 			return tileId >= Constants.road_start_tile_id && tileId <= Constants.road_end_tile_id;
 		}
 
-		public static function hasPath(start: Point, end: Point, city: City, excludedPoint: Point) : Boolean {
+        public static function hasPath(start: Position, size: int, city: City, excludedPoints: Array) : Boolean {
+            var fromStructure: Boolean = city.hasStructureAt(start);
+            var startPositions: Array = TileLocator.foreachMultitile(start.x, start.y, size);
+            var mainBuilding: CityObject = city.MainBuilding;
+            var mainBuildingPositions: Array = TileLocator.foreachMultitile(mainBuilding.primaryPosition.x, mainBuilding.primaryPosition.y, mainBuilding.size);
 
-			if (start.x == end.x && start.y == end.y) return true;
+            if (TileLocator.containsIntersectingPoints(startPositions, mainBuildingPositions)) {
+                return true;
+            }
 
-			var visited: Array = new Array();
+            return breadthFirst(
+                    mainBuildingPositions,
+                    [ start ],
+                    excludedPoints,
+                    function(node : Position) : Array
+                    {
+                        //new code
+                        var possibleNeighbors: Array = [
+                            node.topLeft(),
+                            node.topRight(),
+                            node.bottomLeft(),
+                            node.bottomRight()
+                        ];
 
-			visited.push(start);
+                        return Enumerable.from(possibleNeighbors).where(function (location: Position): Boolean {
+                            if (Enumerable.from(mainBuildingPositions).contains(location, positionComparer)) {
+                                return !fromStructure || !Enumerable.from(startPositions).contains(node, positionComparer);
+                            }
 
-			var fromStructure: Boolean = city.hasStructureAt(start);
+                            if (Enumerable.from(startPositions).contains(location, positionComparer)) {
+                                return true;
+                            }
 
-			var ret: * = breadthFirst(new Point(end.x, end.y), visited, function(node : Point) : Array
-			{
-				var neighbors: Array = new Array();
-				var possibleNeighbors: Array;
-				if (node.y % 2 == 0)
-				{
-					possibleNeighbors = new Array(
-					new Point(node.x, node.y - 1),
-					new Point(node.x, node.y + 1),
-					new Point(node.x - 1, node.y - 1),
-					new Point(node.x - 1, node.y + 1)
-					);
-				}
-				else
-				{
-					possibleNeighbors = new Array(
-					new Point(node.x + 1, node.y - 1),
-					new Point(node.x + 1, node.y + 1),
-					new Point(node.x, node.y - 1),
-					new Point(node.x, node.y + 1)
-					);
-				}
+                            if (city.hasStructureAt(location)) {
+                                return false;
+                            }
 
-				for each (var location: Point in possibleNeighbors) {
-					if ((location.x != end.x || location.y != end.y)) {
-						if (hasPoint(visited, location)) continue;
-						if (!isRoadByMapPosition(location.x, location.y)) continue;
-						if (city.hasStructureAt(location)) continue;
-						if (MapUtil.distance(location.x, location.y, city.MainBuilding.x, city.MainBuilding.y) > city.radius) continue;
-					} else if (fromStructure && node.x == start.x && node.y == start.y) {
-						continue;
-					}
+                            return isRoadByMapPosition(location);
+                        }).toArray();
+                    });
+        }
 
-					neighbors.push(location);
-				}
-
-				return neighbors;
-			}, excludedPoint);
-			
-			return ret;
-		}
-
-		private static function breadthFirst(end: Point, visited: Array, getNeighbors: Function, excludedPoint: Point, i: int = 0) : Boolean
+		private static function breadthFirst(end: Array, visited: Array, excludedPoints: Array, getNeighbors: Function) : Boolean
 		{
-			//Util.log("Checking " + visited[visited.length - 1].toString());
-
 			var nodes: Array = getNeighbors(visited[visited.length - 1]);
 
-			// Examine adjacent nodes for end goal
-			for each (var node: Point in nodes) {
-				if ((node.x == end.x && node.y == end.y)) {
-					return true;
-				}
-			}
+            if (TileLocator.containsIntersectingPoints(nodes, end)) {
+                return true;
+            }
 
-			// Sort neighbors by distance. Helps out a bit.
-			nodes.sort(function (a:Point, b:Point):Number {
-				var aDist: Number = MapUtil.distance(a.x, a.y, end.x, end.y);
-				var bDist: Number = MapUtil.distance(b.x, b.y, end.x, end.y);
+			// Sort neighbors by distance. Helps out performance a bit.
+			nodes.sort(function (a:Position, b:Position):Number {
+				var aDist: Number = TileLocator.distance(a.x, a.y, 1, end.x, end.y, 1);
+				var bDist: Number = TileLocator.distance(b.x, b.y, 1, end.x, end.y, 1);
 
 				if(aDist > bDist) return 1;
 				if (aDist < bDist) return -1;
@@ -103,11 +133,16 @@ package src.Map
 			});
 
 			// Search nodes for goal
-			for each (node in nodes) {
-				if (!(node.x == excludedPoint.x && node.y == excludedPoint.y)) {
-					visited.push(node);
-					if (breadthFirst(end, visited, getNeighbors, excludedPoint, i)) return true;
-				}
+			for each (var node: Position in nodes) {
+                if (Enumerable.from(excludedPoints).contains(node, positionComparer) || Enumerable.from(visited).contains(node, positionComparer))
+                {
+                    continue;
+                }
+
+                visited.push(node);
+                if (breadthFirst(end, visited, excludedPoints, getNeighbors)) {
+                    return true;
+                }
 			}
 
 			return false;

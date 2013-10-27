@@ -1,20 +1,19 @@
 ﻿package src.UI.Dialog {
-	import flash.events.MouseEvent;
-	import src.Global;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.GameObject;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.SimpleObject;
-	import src.UI.GameJPanel;
-	import src.UI.SmartMovieClip;
+    import flash.display.DisplayObject;
+    import flash.display.MovieClip;
+    import flash.events.MouseEvent;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
+    import org.aswing.*;
+    import org.aswing.geom.*;
 
-	public class ObjectSelectDialog extends GameJPanel {
+    import src.Global;
+    import src.Objects.Factories.ObjectFactory;
+    import src.Objects.GameObject;
+    import src.Objects.SimpleObject;
+    import src.UI.GameJPanel;
+    import src.Util.Util;
+
+    public class ObjectSelectDialog extends GameJPanel {
 
 		public var selectedObject: SimpleObject;
 
@@ -33,7 +32,11 @@
 			{
 				if (!obj.isSelectable()) continue;
 
-				var icon: SmartMovieClip = ObjectFactory.getSprite(obj, true, true) as SmartMovieClip;
+                var structureSprite: DisplayObject = ObjectFactory.getSprite(obj);
+                Util.resizeSprite(structureSprite, structureSprite.width, 100);
+
+				var icon: MovieClip = new MovieClip();
+                icon.addChild(structureSprite);
 				icon.useHandCursor = true;
 				icon.buttonMode = true;
 				icon.tag = obj;

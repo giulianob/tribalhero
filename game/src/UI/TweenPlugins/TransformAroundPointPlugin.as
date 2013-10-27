@@ -8,13 +8,14 @@ package src.UI.TweenPlugins {
     import com.greensock.*;
     import com.greensock.core.*;
     import com.greensock.plugins.TweenPlugin;
-     
+
     import flash.display.*;
     import flash.geom.Matrix;
     import flash.geom.Point;
     import flash.geom.Rectangle;
     import flash.utils.getDefinitionByName;
-/**
+
+    /**
  * Normally, all transformations (scale, rotation, and position) are based on the DisplayObject's registration
  * point (most often its upper left corner), but TransformAroundPoint allows you to define ANY point around which
  * 2D transformations will occur during the tween. For example, you may have a dynamically-loaded image that you 

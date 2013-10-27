@@ -1,15 +1,15 @@
 package 
 {
-	import flash.display.LoaderInfo;
-	import flash.display.Stage;
-	import flash.external.ExternalInterface;
-	import flash.net.*;
-	import flash.system.Capabilities;
-	import src.Util.Util;
-	import flash.events.*;
-	import src.*;
-	
-	/**
+    import flash.display.LoaderInfo;
+    import flash.events.*;
+    import flash.external.ExternalInterface;
+    import flash.net.*;
+    import flash.system.Capabilities;
+
+    import src.*;
+    import src.Util.Util;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */
@@ -22,14 +22,16 @@ package
 			}
 		}
 		
-		private static var stack: Array = new Array();
+		private static var stack: Array = [];
 		
 		private static var lastSubmission: Number = 0;
-		
-		public static function enterFunction(functionId: int) : void {
+
+        //noinspection JSUnusedGlobalSymbols
+        public static function enterFunction(functionId: int) : void {
 			stack.push(functionId);
 		}
-		
+
+        //noinspection JSUnusedGlobalSymbols
 		public static function exitFunction(functionId: int) : void {
 			stack.pop();
 		}
@@ -59,7 +61,7 @@ package
 			requestVars.gameVersion = Constants.version.toString() + "." + Constants.revision.toString();
 			
 			// Clear stacktrace since unhandled exceptions kill current execution
-			stack = new Array();
+			stack = [];
 			
 			try {
 				requestVars.browserVersion = ExternalInterface.call("function(){return navigator.appVersion+'-'+navigator.appName;}");
@@ -77,8 +79,13 @@ package
 				Util.log(ev.target.data);
 			});
 
-			for (var prop:String in requestVars)
+			for (var prop:String in requestVars) {
+                if (!requestVars.hasOwnProperty(prop)) {
+                    continue;
+                }
+
 				Util.log(prop + " = " + requestVars[prop]);
+            }
 			
 			var now: Number = new Date().time;
 			

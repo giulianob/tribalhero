@@ -5,13 +5,11 @@
  */
 
 package src.Objects.Actions {
-	import src.Objects.Actions.IAction;
-	import src.Objects.GameObject;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.SimpleGameObject;
-	import src.UI.Sidebars.ObjectInfo.Buttons.LaborMoveButton;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.Objects.SimpleGameObject;
+    import src.UI.Sidebars.ObjectInfo.Buttons.LaborMoveButton;
 
-	public class LaborMoveAction extends Action implements IAction
+    public class LaborMoveAction extends Action implements IAction
 	{
 		public function LaborMoveAction()
 		{

@@ -1,16 +1,9 @@
 ﻿package src.UI
 {
-    import flash.events.Event;
-	import org.aswing.*;
-	import org.aswing.border.*;
-    import org.aswing.event.AWEvent;
-    import org.aswing.event.FrameEvent;
+    import org.aswing.*;
     import org.aswing.event.PopupEvent;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
 
-	public class GameJBox extends JPanel
+    public class GameJBox extends JPanel
 	{
 		protected var frame: GameJFrame = null;
 

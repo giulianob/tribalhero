@@ -1,30 +1,29 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import src.Util.StringHelper;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.AssetIcon;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.Actions.Action;
-	import src.Objects.Actions.BuildAction;
-	import src.Objects.Actions.CurrentActiveAction;
-	import src.Objects.Actions.StructureUpgradeAction;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.SimpleGameObject;
-	import src.Util.Util;
-	import src.Objects.Factories.StructureFactory;
-	import src.Objects.GameObject;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.Prototypes.EffectReqPrototype;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.StructureObject;
-	import src.UI.Cursors.*;
-	import src.UI.Tooltips.StructureUpgradeTooltip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class StructureUpgradeButton extends ActionButton
+    import org.aswing.AssetIcon;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Map.CityObject;
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.Actions.BuildAction;
+    import src.Objects.Actions.CurrentActiveAction;
+    import src.Objects.Actions.StructureUpgradeAction;
+    import src.Objects.Effects.Formula;
+    import src.Objects.Factories.ObjectFactory;
+    import src.Objects.Factories.StructureFactory;
+    import src.Objects.Prototypes.EffectReqPrototype;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.Objects.SimpleGameObject;
+    import src.Objects.StructureObject;
+    import src.UI.Tooltips.StructureUpgradeTooltip;
+    import src.Util.StringHelper;
+    import src.Util.Util;
+
+    public class StructureUpgradeButton extends ActionButton
 	{
 		private var nextStructPrototype: StructurePrototype;
 

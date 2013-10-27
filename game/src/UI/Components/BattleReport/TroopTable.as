@@ -1,19 +1,11 @@
 ﻿package src.UI.Components.BattleReport
 {
-	import flash.display.DisplayObject;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.event.TableCellEditEvent;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import org.aswing.table.GeneralTableCellFactory;
-	import org.aswing.table.PropertyTableModel;
-	import src.Objects.Factories.ObjectFactory;
-	import src.UI.Components.PlayerLabel;
-	import src.UI.Components.SimpleTooltip;
-	
-	public class TroopTable extends JPanel
+    import org.aswing.*;
+    import org.aswing.event.TableCellEditEvent;
+    import org.aswing.table.GeneralTableCellFactory;
+    import org.aswing.table.PropertyTableModel;
+
+    public class TroopTable extends JPanel
 	{
 		private var unitList:VectorListModel;
 		private var tableModel:PropertyTableModel;

@@ -1,24 +1,17 @@
 ﻿package src.UI.Components.CombatObjectGridList
 {
-import flash.events.Event;
-import flash.filters.DropShadowFilter;
-import flash.text.TextField;
-import flash.text.TextFieldAutoSize;
-import flash.text.TextFormat;
-import flash.text.TextFormatAlign;
-import org.aswing.*;
-import org.aswing.border.*;
-import org.aswing.dnd.DragManager;
-import org.aswing.dnd.SourceData;
-import org.aswing.event.DragAndDropEvent;
-import org.aswing.geom.*;
-import org.aswing.colorchooser.*;
-import org.aswing.ext.*;
-import src.Objects.Prototypes.StructurePrototype;
-import src.Objects.Prototypes.UnitPrototype;
-import src.Util.Util;
+    import flash.text.TextField;
+    import flash.text.TextFieldAutoSize;
 
-public class CombatObjectGridCell extends JLabel implements GridListCell{
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
+
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.Objects.Prototypes.UnitPrototype;
+
+    public class CombatObjectGridCell extends JLabel implements GridListCell{
 		
 	protected var value: * ;
 	

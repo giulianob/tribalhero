@@ -1,21 +1,20 @@
 package src.UI.Dialog{
 
-	import flash.events.*;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.event.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import org.aswing.table.*;
-	import src.*;
-	import src.Comm.*;
-	import src.UI.*;
-	import src.UI.Components.*;
-	import src.UI.Components.Stronghold.DaysOccupiedRankTranslator;
-	import src.UI.Components.TableCells.*;
+    import flash.events.*;
 
-	public class RankingDialog extends GameJPanel {
+    import org.aswing.*;
+    import org.aswing.event.*;
+    import org.aswing.geom.*;
+    import org.aswing.table.*;
+
+    import src.*;
+    import src.Comm.*;
+    import src.UI.*;
+    import src.UI.Components.*;
+    import src.UI.Components.Stronghold.DaysOccupiedRankTranslator;
+    import src.UI.Components.TableCells.*;
+
+    public class RankingDialog extends GameJPanel {
 
 		private var rankings: Array = [
 		{name: "Attack Points", baseOn: "city"},

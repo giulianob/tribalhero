@@ -16,6 +16,7 @@
 
     import src.Comm.*;
     import src.Map.*;
+    import src.Map.MiniMap.MiniMap;
     import src.Objects.Factories.*;
     import src.UI.Dialog.*;
     import src.UI.LookAndFeel.*;
@@ -28,10 +29,8 @@
         import com.sociodox.theminer.TheMiner;
     }
 
-	public class Main extends MovieClip
+    public class Main extends MovieClip
 	{
-		private var importObjects: ImportObjects;
-
 		private var gameContainer: GameContainer;
 
 		private var map:Map;
@@ -56,14 +55,16 @@
 			addEventListener(Event.ADDED_TO_STAGE, init);		                       
 		}        
 		
-		public function init(e: Event = null) : void {			            
+		public function init(e: Event = null) : void {
 			removeEventListener(Event.ADDED_TO_STAGE, init);							
             
-            stage.showDefaultContextMenu = false;                       
-			
+            stage.showDefaultContextMenu = false;
+
+            Global.musicPlayer = new MusicPlayer();
+
 			CONFIG::debug {
-				stage.addChild(new TheMiner());
-			}			
+			    stage.addChild(new TheMiner());
+            }
 			
 			//Init actionLinq
 			EnumerationExtender.Initialize();
@@ -212,7 +213,9 @@
 		
 			gameContainer.dispose();			
 			if (Global.mapComm) Global.mapComm.dispose();
-			
+
+            if (Global.musicPlayer) Global.musicPlayer.stop();
+
 			Global.mapComm = null;
 			Global.map = null;
 			session = null;
@@ -265,8 +268,7 @@
 				completeLogin(packet, false);
 			}
 			else {
-				// Need to make the createInitialCity static and pass in the session
-				var createCityDialog: InitialCityDialog = new InitialCityDialog(function(sender: InitialCityDialog): void {
+                var createCityDialog: InitialCityDialog = new InitialCityDialog(function(sender: InitialCityDialog): void {
 					Global.mapComm.General.createInitialCity(sender.getCityName(),
 															 sender.getLocationParameter(),
 															 function(packet: Packet):void {						
@@ -276,18 +278,14 @@
 
 				createCityDialog.show();
 			}
+
+            Global.musicPlayer.setMuted(Constants.soundMuted, true);
+            if (!Constants.soundMuted) {
+                Global.musicPlayer.play(newPlayer);
+            }
 		}
 
-		public function onReceiveXML(e: Event):void
-		{
-			var str: String = e.target.data;
-
-			Constants.objData = XML(e.target.data);
-
-			doConnect();
-		}
-
-		private function completeLogin(packet: Packet, newPlayer: Boolean):void
+        private function completeLogin(packet: Packet, newPlayer: Boolean):void
 		{
 			Global.map = map = new Map();
 			miniMap = new MiniMap(Constants.miniMapScreenW, Constants.miniMapScreenH);
@@ -309,18 +307,5 @@
 			Global.mapComm.General.readLoginInfo(packet);
 			gameContainer.setMap(map, miniMap);
 		}
-
-		public function onReceive(packet: Packet):void
-		{
-			if (Constants.debug >= 2)
-			{
-				Util.log("Received packet to main processor");
-				Util.log(packet.toString());
-			}
-		}
-
-		private function resizeHandler(event:Event):void {
-			
-		}
-	}
+    }
 }

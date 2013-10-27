@@ -1,29 +1,28 @@
 package src.Util {
-    import fl.lang.Locale;
     import System.Linq.Enumerable;
-	import flash.text.*;
-	import flash.xml.*;
-	import mx.utils.StringUtil;
-	import org.aswing.ASFont;
-	import src.UI.LookAndFeel.GameLookAndFeel;
 
-	public class StringHelper {
+    import fl.lang.Locale;
+
+    import flash.text.*;
+    import flash.xml.*;
+
+    import mx.utils.StringUtil;
+
+    import org.aswing.ASFont;
+
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    public class StringHelper {
 		
 		private static var TEXT_FIELD:TextField = new TextField();
 		private static var TEXT_FONT:ASFont = null;
 		{
 			TEXT_FIELD.autoSize = TextFieldAutoSize.LEFT;
 			TEXT_FIELD.type = TextFieldType.DYNAMIC;
-		}				
-	
-		public static function htmlUnescape(str:String):String
-		{
-			str = new XML(str).firstChild.nodeValue;
-            str = str.replace("\"", "&quot;");
-            return str;
 		}
 
-		public static function htmlEscape(str:String):String
+
+        public static function htmlEscape(str:String):String
 		{
 			str = XML(new XMLNode(XMLNodeType.TEXT_NODE, str)).toXMLString();
             str = str.replace("\"", "&quot;");

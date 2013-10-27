@@ -1,8 +1,8 @@
 package src.UI.Components 
-{	
-	import org.aswing.*;
-	
-	public class PagingBar extends JPanel
+{
+    import org.aswing.*;
+
+    public class PagingBar extends JPanel
 	{
 		public var page: int = 1;
 		public var totalPages: int = 0;

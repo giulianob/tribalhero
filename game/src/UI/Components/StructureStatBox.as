@@ -1,18 +1,14 @@
 ﻿package src.UI.Components
 {
-	import org.aswing.JPanel;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.Constants;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Factories.StructureFactory;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import org.aswing.*;
+    import org.aswing.border.*;
 
-	public class StructureStatBox extends JPanel
+    import src.Constants;
+    import src.Objects.Factories.StructureFactory;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    public class StructureStatBox extends JPanel
 	{
 		private var type: int;
 		private var level: int;

@@ -42,7 +42,7 @@
 		}
 		
 		public function toNiceString() : String {
-            var parts: Array = new Array();
+            var parts: Array = [];
             if (wood > 0) parts.push(wood + " wood");
             if (crop > 0) parts.push(crop + " crop");
             if (iron > 0) parts.push(iron + " iron");

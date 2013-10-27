@@ -1,8 +1,8 @@
 package src.UI.Components.TroopsDialogTable 
 {
-	import src.UI.Components.DynamicTable;
-		
-	public class TroopTable extends DynamicTable 
+    import src.UI.Components.DynamicTable;
+
+    public class TroopTable extends DynamicTable
 	{		
 		public static const COLUMN_NAME: int = 0;
 		public static const COLUMN_LOCATION: int = 1;

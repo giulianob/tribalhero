@@ -1,15 +1,14 @@
 package src.UI.Dialog{
 
-	import src.Constants;
-	import src.Global;
-	import src.UI.GameJPanel;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
+    import org.aswing.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
 
-	/**
+    import src.Constants;
+    import src.Global;
+    import src.UI.GameJPanel;
+
+    /**
 	 * ConnectionDialog
 	 */
 	public class LoginDialog extends GameJPanel {
@@ -54,11 +53,7 @@ package src.UI.Dialog{
 			return txtPassword;
 		}
 
-		public function getBtnLogin():JButton{
-			return btnLogin;
-		}
-
-		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null) :JFrame
+        public function show(owner:* = null, modal:Boolean = true, onClose: Function = null) :JFrame
 		{
 			super.showSelf(owner, modal, onClose);
 			frame.setClosable(false);

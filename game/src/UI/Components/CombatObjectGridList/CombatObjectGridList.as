@@ -1,22 +1,24 @@
 ﻿package src.UI.Components.CombatObjectGridList
 {
-	import flash.display.DisplayObject;
-	import org.aswing.border.EmptyBorder;
-	import org.aswing.ext.GeneralGridListCellFactory;
-	import org.aswing.ext.GridList;
-	import org.aswing.ext.GridListItemEvent;
-	import org.aswing.Insets;
-	import org.aswing.VectorListModel;
-	import src.Objects.Battle.CombatObject;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.Prototypes.UnitPrototype;
-	import src.UI.Tooltips.StructureTooltip;
-	import src.UI.Tooltips.Tooltip;
-	import src.UI.Tooltips.UnitTooltip;
-	import src.Objects.Troop.*;
+    import flash.display.DisplayObject;
 
-	/**
+    import org.aswing.Insets;
+    import org.aswing.VectorListModel;
+    import org.aswing.border.EmptyBorder;
+    import org.aswing.ext.GeneralGridListCellFactory;
+    import org.aswing.ext.GridList;
+    import org.aswing.ext.GridListItemEvent;
+
+    import src.Objects.Battle.CombatObject;
+    import src.Objects.Factories.ObjectFactory;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.Objects.Prototypes.UnitPrototype;
+    import src.UI.Tooltips.StructureTooltip;
+    import src.UI.Tooltips.Tooltip;
+    import src.UI.Tooltips.UnitTooltip;
+    import src.Util.Util;
+
+    /**
 	 * ...
 	 * @author Giuliano
 	 */
@@ -69,12 +71,8 @@
 
 		public function addCombatObject(combatObj: CombatObject):void {
 			var prototype: * = ObjectFactory.getPrototype(combatObj.type, combatObj.level);
-			var icon: DisplayObject = ObjectFactory.getSpriteEx(combatObj.type, combatObj.level, true);
-			if (prototype is StructurePrototype)
-			{
-				icon.scaleX = 0.50;
-				icon.scaleY = 0.50;
-			}
+			var icon: DisplayObject = ObjectFactory.getSpriteEx(combatObj.type, combatObj.level);
+			Util.resizeSprite(icon, 55, 35);
 
 			(getModel() as VectorListModel).append( { "source": icon, "data": combatObj, "prototype": prototype} );
 		}

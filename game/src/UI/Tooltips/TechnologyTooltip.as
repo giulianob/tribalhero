@@ -1,23 +1,19 @@
 ﻿
 package src.UI.Tooltips {
-	import src.Global;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Effects.RequirementFormula;
-	import src.Objects.Prototypes.EffectReqPrototype;
-	import src.Objects.Prototypes.TechnologyPrototype;
-	import src.Objects.StructureObject;
-	import src.UI.Components.ResourcesPanel;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import org.aswing.*;
+    import org.aswing.ext.*;
+
+    import src.Global;
+    import src.Objects.Effects.Formula;
+    import src.Objects.Effects.RequirementFormula;
+    import src.Objects.Prototypes.EffectReqPrototype;
+    import src.Objects.Prototypes.TechnologyPrototype;
+    import src.Objects.StructureObject;
+    import src.UI.Components.ResourcesPanel;
+    import src.UI.LookAndFeel.GameLookAndFeel;
     import src.Util.DateUtil;
-    import src.Util.Util;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-
-	public class TechnologyTooltip extends ActionButtonTooltip {
+    public class TechnologyTooltip extends ActionButtonTooltip {
 
 		private var parentObj: StructureObject;
 

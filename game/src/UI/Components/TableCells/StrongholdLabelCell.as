@@ -1,15 +1,11 @@
 ﻿package src.UI.Components.TableCells
 {
-	import flash.events.*;
-	import org.aswing.*;
-	import org.aswing.event.*;
-	import org.aswing.table.*;
-	import src.*;
-	import src.UI.Components.*;
-	import src.UI.Components.Messaging.MessagingIcon;
-	import src.UI.Components.Tribe.SetRankIcon;
+    import org.aswing.*;
+    import org.aswing.table.*;
 
-	public class StrongholdLabelCell extends AbstractTableCell
+    import src.UI.Components.*;
+
+    public class StrongholdLabelCell extends AbstractTableCell
 	{
 		protected var label: StrongholdLabel;
 		protected var wrapper: JPanel;

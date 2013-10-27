@@ -1,17 +1,17 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import src.Global;
-	import src.Objects.Factories.*;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.Location;
-	import src.Objects.Process.AttackSendProcess;
-	import src.Objects.SimpleGameObject;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Tooltips.TextTooltip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class SendAttackButton extends ActionButton
+    import src.Global;
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.Location;
+    import src.Objects.Process.AttackSendProcess;
+    import src.Objects.SimpleGameObject;
+    import src.UI.Components.SimpleTooltip;
+    import src.UI.Tooltips.TextTooltip;
+
+    public class SendAttackButton extends ActionButton
 	{
 		private var tooltip: TextTooltip;
 		private var location: Location;

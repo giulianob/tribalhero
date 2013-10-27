@@ -1,17 +1,14 @@
 ﻿package src.UI.Components
 {
-	import flash.events.Event;
-	import src.Map.City;
-	import src.Objects.*;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import flash.events.Event;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
+    import org.aswing.*;
 
-	public class ResourcesPanel extends JPanel
+    import src.Map.City;
+    import src.Objects.*;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    public class ResourcesPanel extends JPanel
 	{
 		private var cityOrResource: * = null;
 		private var resources: Resources = null;
@@ -57,7 +54,7 @@
 			var affordable: Resources = new Resources( -1, -1, -1, -1, -1);
 
 			if (cityOrResource is City) {
-				affordable = cityOrResource.resources.toResources();
+				affordable = (cityOrResource as City).resources.toResources();
 			}
 			else if (cityOrResource is Resources) {
 				affordable = cityOrResource;

@@ -1,27 +1,24 @@
 ﻿package src.UI.Tooltips {
 
-	import src.Global;
-	import src.Map.City;
-	import src.Objects.Effects.RequirementFormula;
-	import src.Objects.Prototypes.EffectReqPrototype;
-	import src.Objects.Prototypes.ILayout;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.StructureObject;
-	import src.UI.Components.ResourcesPanel;
-	import src.UI.Components.StructureStatBox;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import org.aswing.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Objects.Effects.Formula;
+    import src.Objects.Effects.RequirementFormula;
+    import src.Objects.Prototypes.EffectReqPrototype;
+    import src.Objects.Prototypes.ILayout;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.Objects.StructureObject;
+    import src.UI.Components.ResourcesPanel;
+    import src.UI.Components.StructureStatBox;
+    import src.UI.LookAndFeel.GameLookAndFeel;
     import src.Util.DateUtil;
     import src.Util.StringHelper;
-	import src.Util.Util;
-	import src.Objects.Effects.Formula;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-
-	public class StructureBuildTooltip extends ActionButtonTooltip {
+    public class StructureBuildTooltip extends ActionButtonTooltip {
 
 		private var structPrototype: StructurePrototype;
 		private var parentObj: StructureObject;

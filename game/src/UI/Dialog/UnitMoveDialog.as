@@ -1,21 +1,17 @@
 ﻿package src.UI.Dialog {
-	import src.Global;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Components.SimpleTroopGridList.SimpleTroopGridDragHandler;
-	import src.UI.Components.SimpleTroopGridList.SimpleTroopGridList;
-	import src.UI.GameJPanel;
-	import src.Objects.Troop.*;
+    import org.aswing.*;
+    import org.aswing.geom.*;
+
+    import src.Global;
+    import src.Map.*;
+    import src.Objects.Troop.*;
+    import src.UI.Components.SimpleTooltip;
+    import src.UI.Components.SimpleTroopGridList.SimpleTroopGridDragHandler;
+    import src.UI.Components.SimpleTroopGridList.SimpleTroopGridList;
+    import src.UI.GameJPanel;
     import src.Util.StringHelper;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-
-	public class UnitMoveDialog extends GameJPanel {
+    public class UnitMoveDialog extends GameJPanel {
 
 		private var pnlFormations:JPanel;
 		private var pnlBottom:JPanel;
@@ -24,7 +20,7 @@
 		private var chkHideNewUnits:JCheckBox;
 
 		private var city: City;
-		private var tilelists: Array = new Array();
+		private var tilelists: Array = [];
 
 		public function UnitMoveDialog(city: City, onAccept: Function)
 		{
@@ -38,7 +34,7 @@
 
 			chkHideNewUnits.setSelected(city.hideNewUnits);
 
-			tilelists = new Array();
+			tilelists = [];
 
 			var troop: TroopStub = city.troops.getDefaultTroop();
 

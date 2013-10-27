@@ -1,50 +1,40 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo {
 
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.Point;
-	import flash.text.*;
-	import flash.utils.Timer;
-	import src.Constants;
-	import src.Global;
-	import src.Map.*;
-	import src.Objects.Actions.*;
-	import src.Objects.Factories.*;
-	import src.Objects.*;
-	import src.Objects.Process.AttackSendProcess;
-	import src.Objects.Prototypes.*;
-	import src.UI.*;
-	import src.UI.Components.CityLabel;
-	import src.UI.Components.GoToCityIcon;
-	import src.UI.Components.Messaging.MessagingIcon;
-	import src.UI.Components.PlayerLabel;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Components.StarRating;
-	import src.UI.Sidebars.ObjectInfo.Buttons.*;
-	import src.Util.BinaryList.*;
+    import flash.events.*;
+    import flash.utils.Timer;
+
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.ext.*;
+
+    import src.Constants;
+    import src.Global;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Actions.*;
+    import src.Objects.Factories.*;
+    import src.Objects.Prototypes.*;
+    import src.UI.*;
+    import src.UI.Components.CityLabel;
+    import src.UI.Components.PlayerLabel;
+    import src.UI.Components.SimpleTooltip;
+    import src.UI.Sidebars.ObjectInfo.Buttons.*;
+    import src.Util.BinaryList.*;
     import src.Util.DateUtil;
     import src.Util.Util;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-
-	public class ObjectInfoSidebar extends GameJSidebar
+    public class ObjectInfoSidebar extends GameJSidebar
 	{
 		//UI
-		private var lblName:JLabel;
 		private var pnlStats:Form;
-		private var pnlUpgrades:JPanel;
-		private var pnlGroups:JPanel;
+
+        private var pnlGroups:JPanel;
 		private var pnlActions:JPanel;
-		private var scrollGroups: JScrollPane;
 
 		public var gameObject: StructureObject;
 
-		public var buttons: Array = new Array();
+		public var buttons: Array = [];
 		private var t:Timer = new Timer(1000);
 
 		public function ObjectInfoSidebar(obj: StructureObject)
@@ -80,7 +70,7 @@ package src.UI.Sidebars.ObjectInfo {
 
 			clear();
 
-			buttons = new Array();
+			buttons = [];
 
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(gameObject.type, gameObject.level);
 
@@ -88,9 +78,9 @@ package src.UI.Sidebars.ObjectInfo {
 
 			var structureObject: StructureObject = gameObject as StructureObject;
 
-			var usernameLabel: PlayerLabel = addStatRow("Player", new PlayerLabel(gameObject.playerId));
+			addStatRow("Player", new PlayerLabel(gameObject.playerId));
 			
-			var cityLabel: CityLabel = addStatRow("City", new CityLabel(gameObject.cityId));
+			addStatRow("City", new CityLabel(gameObject.cityId));
 
 			addStatRow("Level", gameObject.level.toString());
 
@@ -152,9 +142,9 @@ package src.UI.Sidebars.ObjectInfo {
 
 			var buttonsCache: Array = buttons.concat();
 			for each(var group: Object in Action.groups) {
-				var groupedButtons: Array = new Array();
+				var groupedButtons: Array = [];
 				for each (var type: * in group.actions) {
-					var tmp: Array = new Array();
+					var tmp: Array = [];
 					for (i = buttonsCache.length - 1; i >= 0; i--) {
 						var button: ActionButton = buttonsCache[i];
 						if (!(button is type)) continue;
@@ -212,17 +202,7 @@ package src.UI.Sidebars.ObjectInfo {
 			}							
 		}
 
-		private function addStatStarRow(title: String, value: int, min: int, max: int) : void {
-			var rowTitle: JLabel = new JLabel(title);
-			rowTitle.setHorizontalAlignment(AsWingConstants.LEFT);
-			rowTitle.setName("title");
-
-			var rowValue: StarRating = new StarRating(min, max, value, 5);
-
-			pnlStats.addRow(rowTitle, rowValue);
-		}
-
-		private function addStatRow(title: String, textOrComponent: *, icon: Icon = null) : * {
+        private function addStatRow(title: String, textOrComponent: *, icon: Icon = null) : * {
 			var rowTitle: JLabel = new JLabel(title);
 			rowTitle.setHorizontalAlignment(AsWingConstants.LEFT);
 			rowTitle.setName("title");
@@ -270,12 +250,18 @@ package src.UI.Sidebars.ObjectInfo {
 
 			for (var i: int = 0; i < actions.length; i++)
 			{
-				var currentAction: * = actions[i];				
+				var currentAction: CurrentAction;
 
-				if (currentAction is CurrentActionReference) {
-					currentAction = currentAction.getAction();
-					if (!currentAction) continue;
+                actionReference = actions[i] as CurrentActionReference;
+				if (actionReference) {
+					currentAction = actionReference.getAction();
+					if (!currentAction) {
+                        continue;
+                    }
 				}
+                else {
+                    currentAction = actions[i];
+                }
 				
 				var actionDescription: String = currentAction.toString();
 
@@ -349,13 +335,6 @@ package src.UI.Sidebars.ObjectInfo {
 
 		public function validateButtons():void
 		{
-			var structPrototype: StructurePrototype = StructureFactory.getPrototype(gameObject.type, gameObject.level);
-			var workerPrototype: Worker = null;
-
-			if (structPrototype) {
-				workerPrototype = WorkerFactory.getPrototype(structPrototype.workerid);
-			}
-
 			var city: City = Global.map.cities.get(gameObject.cityId);
 
 			for each(var button: ActionButton in buttons)
@@ -371,37 +350,36 @@ package src.UI.Sidebars.ObjectInfo {
 			}
 		}
 
-		private function createUI() : void
-		{
-			//component creation
-			setLayout(new BorderLayout(0, 5));
+		private function createUI() : void {
+            //component creation
+            setLayout(new BorderLayout(0, 5));
 
-			lblName = new JLabel();
-			lblName.setFont(new ASFont("Tahoma", 11, true, false, false, false));
-			lblName.setText("Name (x,y)");
-			lblName.setHorizontalAlignment(AsWingConstants.LEFT);
+            var lblName: JLabel = new JLabel();
+            lblName.setFont(new ASFont("Tahoma", 11, true, false, false, false));
+            lblName.setText("Name (x,y)");
+            lblName.setHorizontalAlignment(AsWingConstants.LEFT);
 
-			pnlStats = new Form();
-			pnlStats.setConstraints("North");
+            pnlStats = new Form();
+            pnlStats.setConstraints("North");
 
-			pnlGroups = new JPanel();
-			pnlGroups.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
-			pnlGroups.setBorder(new EmptyBorder(null, new Insets(0, 0, 20, 0)));		
+            pnlGroups = new JPanel();
+            pnlGroups.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+            pnlGroups.setBorder(new EmptyBorder(null, new Insets(0, 0, 20, 0)));
 
-			pnlActions = new JPanel();
-			pnlActions.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
-			pnlActions.setConstraints("South");
+            pnlActions = new JPanel();
+            pnlActions.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
+            pnlActions.setConstraints("South");
 
-			var viewPort: JViewport = new JViewport(pnlGroups, true, false);
-			viewPort.setVerticalAlignment(AsWingConstants.TOP);
-			scrollGroups = new JScrollPane(viewPort, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_NEVER);
-			scrollGroups.setConstraints("Center");
-			
-			//component layoution
-			append(pnlStats);
-			append(scrollGroups);
-			append(pnlActions);
-		}
+            var viewPort: JViewport = new JViewport(pnlGroups, true, false);
+            viewPort.setVerticalAlignment(AsWingConstants.TOP);
+            var scrollGroups: JScrollPane = new JScrollPane(viewPort, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_NEVER);
+            scrollGroups.setConstraints("Center");
+
+            //component layoution
+            append(pnlStats);
+            append(scrollGroups);
+            append(pnlActions);
+        }
 
 		override public function show(owner:* = null, onClose:Function = null):JFrame
 		{
@@ -409,7 +387,7 @@ package src.UI.Sidebars.ObjectInfo {
 
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(gameObject.type, gameObject.level);
 			if (structPrototype) {
-				var pt: Point = MapUtil.getMapCoord(gameObject.objX, gameObject.objY);
+				var pt: Position = gameObject.primaryPosition.toPosition();
 				frame.getTitleBar().setText(structPrototype.getName() + " (" + pt.x + "," + pt.y + ")");
 			}
 

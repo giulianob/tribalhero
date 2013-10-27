@@ -1,14 +1,16 @@
 package src.Objects.Process 
 {
-	import flash.events.*;
-	import org.aswing.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Stronghold.*;
-	import src.UI.Cursors.*;
-	import src.UI.Dialog.*;
-	import src.UI.Sidebars.CursorCancel.*;
+    import flash.events.*;
+
+    import org.aswing.*;
+
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Stronghold.*;
+    import src.UI.Cursors.*;
+    import src.UI.Dialog.*;
+    import src.UI.Sidebars.CursorCancel.*;
 
 	public class ReinforcementSendProcess
 	{		

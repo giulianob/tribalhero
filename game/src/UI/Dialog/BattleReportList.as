@@ -1,23 +1,21 @@
 ﻿package src.UI.Dialog
 {
-	import adobe.utils.CustomActions;
-	import flash.events.Event;
-	import src.Comm.GameURLLoader;
-	import src.Constants;
-	import src.Global;
-	import src.UI.Components.BattleReport.BattleReportListTable;
-	import src.UI.Components.BattleReport.LocalReportList;
-	import src.UI.Components.BattleReport.RemoteReportList;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.GameJPanel;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import flash.net.*;
+    import flash.events.Event;
 
-	public class BattleReportList extends GameJPanel
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.geom.*;
+
+    import src.Comm.GameURLLoader;
+    import src.Constants;
+    import src.Global;
+    import src.UI.Components.BattleReport.BattleReportListTable;
+    import src.UI.Components.BattleReport.LocalReportList;
+    import src.UI.Components.BattleReport.RemoteReportList;
+    import src.UI.Components.SimpleTooltip;
+    import src.UI.GameJPanel;
+
+    public class BattleReportList extends GameJPanel
 	{
 		private var btnMarkAsRead: JButton;
 		

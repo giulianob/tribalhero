@@ -1,14 +1,14 @@
 ﻿package src.Objects.Factories {
-	import flash.display.DisplayObjectContainer;
-	import src.Map.Map;
-	import src.Objects.Prototypes.UnitPrototype;
-	import src.Util.BinaryList.*;
-	import src.Util.Util;
-	import src.Objects.Resources;
+    import flash.display.DisplayObjectContainer;
+    import flash.utils.getDefinitionByName;
 
-	import flash.utils.getDefinitionByName;
+    import src.Map.Map;
+    import src.Objects.Prototypes.UnitPrototype;
+    import src.Objects.Resources;
+    import src.Util.BinaryList.*;
+    import src.Util.Util;
 
-	public class UnitFactory {
+    public class UnitFactory {
 
 		private static var map: Map;
 		private static var unitPrototypes: BinaryList;

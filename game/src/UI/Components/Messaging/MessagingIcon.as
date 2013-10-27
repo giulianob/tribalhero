@@ -1,13 +1,14 @@
 ﻿package src.UI.Components.Messaging
 {
-	import flash.display.MovieClip;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.AssetIcon;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Dialog.MessageCreateDialog;
+    import flash.display.MovieClip;
+    import flash.events.MouseEvent;
 
-	/**
+    import org.aswing.AssetIcon;
+
+    import src.UI.Components.SimpleTooltip;
+    import src.UI.Dialog.MessageCreateDialog;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */

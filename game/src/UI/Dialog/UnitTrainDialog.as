@@ -1,23 +1,22 @@
 package src.UI.Dialog {
 
-	import flash.events.*;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Effects.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.UI.*;
-	import src.UI.Components.*;
-	import src.Util.*;
+    import flash.events.*;
 
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
 
-	public class UnitTrainDialog extends GameJPanel {
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Effects.*;
+    import src.Objects.Prototypes.*;
+    import src.UI.*;
+    import src.UI.Components.*;
+    import src.Util.*;
+
+    public class UnitTrainDialog extends GameJPanel {
 
 		private var structure:StructureObject;
 		private var city: City;

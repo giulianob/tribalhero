@@ -1,15 +1,15 @@
 package src.UI.Dialog{
 
-	import src.Global;
-	import src.UI.GameJPanel;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.Util.ProfanityFilter;
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
 
-	public class CreateCityDialog extends GameJPanel {
+    import src.Global;
+    import src.UI.GameJPanel;
+    import src.Util.ProfanityFilter;
+
+    public class CreateCityDialog extends GameJPanel {
 
 		//members define
 		private var form42:Form;

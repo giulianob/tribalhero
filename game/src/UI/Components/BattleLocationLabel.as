@@ -1,9 +1,11 @@
 package src.UI.Components 
 {
-	import mx.utils.StringUtil;
-	import src.Objects.Battle.BattleLocation;
+    import mx.utils.StringUtil;
+
+    import src.Objects.Battle.BattleLocation;
     import src.Util.StringHelper;
-	public class BattleLocationLabel extends RichLabel 
+
+    public class BattleLocationLabel extends RichLabel
 	{
 		private var battleLocation:BattleLocation;
 		

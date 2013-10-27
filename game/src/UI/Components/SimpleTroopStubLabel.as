@@ -1,11 +1,13 @@
 package src.UI.Components 
 {
-	import flash.events.*;
-	import org.aswing.*;
-	import src.Objects.Troop.*;
-	import src.UI.Tooltips.*;
-	
-	public class SimpleTroopStubLabel extends JLabelButton 
+    import flash.events.*;
+
+    import org.aswing.*;
+
+    import src.Objects.Troop.*;
+    import src.UI.Tooltips.*;
+
+    public class SimpleTroopStubLabel extends JLabelButton
 	{
 		private var tooltip: SimpleTroopStubTooltip;
 		

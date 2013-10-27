@@ -6,13 +6,9 @@
 
 package src.Map {
 
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
-	import src.Util.BinaryList.*;
-	import src.Util.Util;
-	
-	public class CityList extends BinaryList {
+    import src.Util.BinaryList.*;
+
+    public class CityList extends BinaryList {
 		public static const CITY_UPDATE: String = "CITY_UPDATE";
 		
 		public function CityList() {			

@@ -1,18 +1,19 @@
 package src.UI.Components 
 {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.AsWingConstants;
-	import org.aswing.border.EmptyBorder;
-	import org.aswing.Insets;
-	import org.aswing.JLabelButton;
-	import org.aswing.JPanel;
-	import src.Global;
-	import src.Map.Username;
-	import src.UI.Dialog.InfoDialog;
-	import src.UI.Dialog.PlayerProfileDialog;
-	
-	/**
+    import flash.events.Event;
+    import flash.events.MouseEvent;
+
+    import org.aswing.AsWingConstants;
+    import org.aswing.Insets;
+    import org.aswing.JLabelButton;
+    import org.aswing.border.EmptyBorder;
+
+    import src.Global;
+    import src.Map.Username;
+    import src.UI.Dialog.InfoDialog;
+    import src.UI.Dialog.PlayerProfileDialog;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */

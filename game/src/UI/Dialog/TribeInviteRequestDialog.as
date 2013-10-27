@@ -1,17 +1,17 @@
 package src.UI.Dialog{
 
-	import src.Constants;
-	import src.Global;
-	import src.UI.Components.TribeLabel;
-	import src.UI.GameJPanel;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
 
-	public class TribeInviteRequestDialog extends GameJPanel {
+    import src.Constants;
+    import src.Global;
+    import src.UI.Components.TribeLabel;
+    import src.UI.GameJPanel;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    public class TribeInviteRequestDialog extends GameJPanel {
 
 		private var lblName:TribeLabel;
 		private var lblNameTitle:JLabel;		

@@ -1,31 +1,37 @@
 ﻿
 package src.UI.Cursors {
-	import flash.events.Event;
-	import flash.events.TimerEvent;
-	import flash.geom.ColorTransform;
-	import flash.geom.Point;
-	import flash.utils.Timer;
-	import src.Global;
-	import flash.display.MovieClip;
-	import flash.events.MouseEvent;
-	import src.Map.*;
-	import src.Objects.Factories.*;
-	import src.Objects.*;
-	import src.UI.Components.*;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
+    import flash.display.MovieClip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
+    import flash.events.TimerEvent;
+    import flash.geom.ColorTransform;
+    import flash.geom.Point;
+    import flash.utils.Timer;
 
-	public class DestroyRoadCursor extends MovieClip implements IDisposable
+    import src.Global;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Factories.*;
+    import src.UI.Components.*;
+    import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
+    import src.Util.BinaryList.BinaryList;
+
+    public class DestroyRoadCursor extends MovieClip implements IDisposable
 	{
-		private var objX: int;
-		private var objY: int;
+		private var objPosition: ScreenPosition = new ScreenPosition();
+
 		private var city: City;
 
 		private var originPoint: Point;
 
-		private var cursor: SimpleObject;
+        private var destroyableRoads: BinaryList = new BinaryList(Position.sort, Position.compare);
+
+        private var cursor: SimpleObject;
 		private var destroyableArea: GroundCallbackCircle;
 		private var parentObj: SimpleGameObject;
 
+        // Since the client gets 1 tile update at a time, when the tiles change we dont want to refresh a lot of times
+        // this timer is used to rate-limit the updating a bit
 		private var redrawLaterTimer: Timer = new Timer(250);
 
 		public function DestroyRoadCursor() { }
@@ -41,20 +47,22 @@ package src.UI.Cursors {
 			Global.gameContainer.setOverlaySprite(this);
 			Global.map.selectObject(null);
 
+            validateAllTiles();
+
 			cursor = new GroundCircle(0);
 			cursor.alpha = 0.7;
 
 			destroyableArea = new GroundCallbackCircle(city.radius - 1, validateTileCallback);						
 			
 			destroyableArea.alpha = 0.3;
-			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
-			destroyableArea.objX = point.x; 
-			destroyableArea.objY = point.y;
-			
+			var pos: ScreenPosition = city.primaryPosition.toScreenPosition();
+            destroyableArea.x = destroyableArea.primaryPosition.x = pos.x;
+            destroyableArea.y = destroyableArea.primaryPosition.y = pos.y;
+
 			Global.map.objContainer.addObject(destroyableArea, ObjectContainer.LOWER);
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
-			src.Global.gameContainer.setSidebar(sidebar);
+			Global.gameContainer.setSidebar(sidebar);
 
 			addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);
 			addEventListener(MouseEvent.CLICK, onMouseStop, true);
@@ -62,16 +70,26 @@ package src.UI.Cursors {
 			addEventListener(MouseEvent.MOUSE_OVER, onMouseStop);
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 
-			Global.map.regions.addEventListener(RegionList.REGION_UPDATED, update);
+			Global.map.regions.addEventListener(RegionManager.REGION_UPDATED, update);
 
 			redrawLaterTimer.addEventListener(TimerEvent.TIMER, function(e: Event) : void {
 				redrawLaterTimer.stop();
+                validateAllTiles();
 				destroyableArea.redraw();
-				validateBuilding();
+                validateBuilding();
 			});
 
-			src.Global.gameContainer.message.showMessage("Double click on a highlighted road to destroy it. Roads that are not highlighted may not be destroyed.");
+			Global.gameContainer.message.showMessage("Double click on a highlighted road to destroy it. Roads that are not highlighted may not be destroyed.");
 		}
+
+        private function validateAllTiles(): void {
+            destroyableRoads.clear();
+
+            var size: int = city.radius - 1;
+            for each (var position: Position in TileLocator.foreachTile(city.primaryPosition.x, city.primaryPosition.y, size)) {
+                validateTile(position);
+            }
+        }
 
 		public function update(e: Event = null) : void {
 			redrawLaterTimer.stop();
@@ -80,9 +98,9 @@ package src.UI.Cursors {
 
 		public function dispose():void
 		{
-			Global.map.regions.removeEventListener(RegionList.REGION_UPDATED, update);
+			Global.map.regions.removeEventListener(RegionManager.REGION_UPDATED, update);
 
-			src.Global.gameContainer.message.hide();
+			Global.gameContainer.message.hide();
 
 			if (cursor != null)
 			{
@@ -112,18 +130,18 @@ package src.UI.Cursors {
 			if (!cursor.visible)
 				return;
 				
-			if (Point.distance(MapUtil.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > city.radius) 
+			if (Point.distance(TileLocator.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > city.radius)
 				return;
 
 			event.stopImmediatePropagation();
 
-			var pos: Point = MapUtil.getMapCoord(objX, objY);
-			Global.mapComm.Region.destroyRoad(parentObj.groupId, pos.x, pos.y);
+			var mapPos: Position = objPosition.toPosition();
+			Global.mapComm.Region.destroyRoad(parentObj.groupId, mapPos.x, mapPos.y);
 		}
 
 		public function onMouseDown(event: MouseEvent):void
 		{
-			originPoint = MapUtil.getPointWithZoomFactor(event.stageX, event.stageY);
+			originPoint = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
 		}
 
 		public function onMouseMove(event: MouseEvent) : void
@@ -131,20 +149,22 @@ package src.UI.Cursors {
 			if (event.buttonDown) 
 				return;
 
-			var mousePos: Point = MapUtil.getPointWithZoomFactor(Math.max(0, event.stageX), Math.max(0, event.stageY));
-			var pos: Point = MapUtil.getActualCoord(src.Global.gameContainer.camera.x + mousePos.x, src.Global.gameContainer.camera.y + mousePos.y);
+			var mousePos: Point = TileLocator.getPointWithZoomFactor(Math.max(0, event.stageX), Math.max(0, event.stageY));
+			var pos: ScreenPosition = TileLocator.getActualCoord(
+                    Global.gameContainer.camera.currentPosition.x + mousePos.x,
+                    Global.gameContainer.camera.currentPosition.y + mousePos.y);
 
-			if (pos.x != objX || pos.y != objY)
+			if (!pos.equals(objPosition))
 			{
-				objX = pos.x;
-				objY = pos.y;
+				objPosition = pos;
 
 				//Object cursor
-				if (cursor.stage != null) 
+				if (cursor.stage != null) {
 					Global.map.objContainer.removeObject(cursor);
-					
-				cursor.objX = objX;
-				cursor.objY = objY;
+                }
+
+                cursor.x = cursor.primaryPosition.x = pos.x;
+                cursor.y = cursor.primaryPosition.y = pos.y;
 				
 				Global.map.objContainer.addObject(cursor);
 				
@@ -152,90 +172,83 @@ package src.UI.Cursors {
 			}
 		}
 
-		private function validateTile(screenPos: Point) : Boolean {
-			var mapPos: Point = MapUtil.getMapCoord(screenPos.x, screenPos.y);
-			var tileType: int = Global.map.regions.getTileAt(mapPos.x, mapPos.y);
+		private function validateTile(position: Position) : void {
+			var tileType: int = Global.map.regions.getTileAt(position);
 
-			if (!RoadPathFinder.isRoad(tileType)) 
-				return false;
+            // Make sure this tile is indeed a road
+			if (!RoadPathFinder.isRoad(tileType)) {
+				return;
+            }
 
-			if (Global.map.regions.getObjectsAt(screenPos.x, screenPos.y, StructureObject).length > 0) 
-				return false;
+            // Make sure there is no structure at this point
+			if (city.hasStructureAt(position)) {
+				return;
+            }
 
-			// Make sure that buildings have a path back to the city without this point				
-			var breaksPath: Boolean = false;
-			for each(var cityObject: CityObject in city.objects) {
-				if (ObjectFactory.getClassType(cityObject.type) != ObjectFactory.TYPE_STRUCTURE) 
+            // Make sure all structures have a diff path
+			for each(var cityObject: CityObject in city.structures()) {
+				if (cityObject.isMainBuilding) {
 					continue;
-					
-				if (cityObject.x == city.MainBuilding.x && cityObject.y == city.MainBuilding.y) 
-					continue;
-					
-				if (ObjectFactory.isType("NoRoadRequired", cityObject.type)) 
-					continue;
+                }
 
-				if (!RoadPathFinder.hasPath(new Point(cityObject.x, cityObject.y), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
-					breaksPath = true;
-					break;
+				if (ObjectFactory.isType("NoRoadRequired", cityObject.type)) {
+					continue;
+                }
+
+				if (!RoadPathFinder.hasPath(cityObject.primaryPosition, cityObject.size, city, [ position ])) {
+					return;
 				}
 			}
 
-			if (breaksPath) 
-				return false;
-
 			// Make sure all neighbors have a different path
-			var allNeighborsHaveOtherPaths: Boolean = true;
-			MapUtil.foreach_object(mapPos.x, mapPos.y, 1, function(x1: int, y1: int, custom: *) : Boolean
+			for each (var neighborPosition: Position in TileLocator.foreachRadius(position.x, position.y, 1, false))
 			{
-				if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) != 1) 
-					return true;
+                if (!RoadPathFinder.isRoadByMapPosition(neighborPosition)) {
+                    continue;
+                }
 
-				if (city.MainBuilding.x == x1 && city.MainBuilding.y == y1) 
-					return true;
-				
-				if (RoadPathFinder.isRoadByMapPosition(x1, y1)) {					
-					if (!RoadPathFinder.hasPath(new Point(x1, y1), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
-						allNeighborsHaveOtherPaths = false;
-						return false;
-					}
+				if (city.hasStructureAt(neighborPosition))
+                {
+                    continue;
+                }
+
+                if (!RoadPathFinder.hasPath(neighborPosition, 1, city, [ position ])) {
+                    return;
 				}
+			}
 
-				return true;
-			}, false, null);
-
-			if (!allNeighborsHaveOtherPaths) 
-				return false;
-			
-			return true;
+            destroyableRoads.add(position);
 		}
 
-		private function validateTileCallback(x: int, y: int, isCenter: Boolean) : * {
+        private function validateTileCallback(x: int, y: int): * {
+            // Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
+			var screenPosition: ScreenPosition = TileLocator.getScreenPosition(city.primaryPosition.x, city.primaryPosition.y);
 
-			// Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
-			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
-
-			if (!validateTile(new Point(point.x + x, point.y + y))) 
+			if (!destroyableRoads.get(new ScreenPosition(screenPosition.x + x, screenPosition.y + y).toPosition())) {
 				return false;
+            }
 
 			return new ColorTransform(1.0, 1.0, 1.0, 1.0, 100);
 		}
 
 		public function validateBuilding():void
 		{
-			var msg: XML;
-
 			var city: City = Global.map.cities.get(parentObj.groupId);
-			var mapObjPos: Point = MapUtil.getMapCoord(objX, objY);
+			var mapObjPos: Position = objPosition.toPosition();
 
 			// Check if cursor is inside city walls
-			if (city != null && MapUtil.distance(city.MainBuilding.x, city.MainBuilding.y, mapObjPos.x, mapObjPos.y) >= city.radius)
+			if (city != null && TileLocator.distance(city.primaryPosition.x, city.primaryPosition.y, 1, mapObjPos.x, mapObjPos.y, 1) >= city.radius)
+            {
 				hideCursors();
-			
+            }
 			// Perform other validations
-			else if (!validateTile(new Point(objX, objY)))
+			else if (!destroyableRoads.get(mapObjPos))
+            {
 				hideCursors();
-			else
-				showCursors();			
+            }
+			else {
+				showCursors();
+            }
 		}
 	}
 }

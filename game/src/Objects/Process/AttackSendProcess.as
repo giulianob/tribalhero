@@ -1,27 +1,29 @@
 package src.Objects.Process 
 {
-	import src.Map.City;
-	import src.Objects.BarbarianTribe;
-	import src.Util.StringHelper;
-	import flash.events.Event;
-	import org.aswing.JButton;
-	import org.aswing.JOptionPane;
-	import src.Global;
-	import src.Objects.GameObject;
-	import src.Objects.Location;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.Stronghold.Stronghold;
-	import src.Objects.StructureObject;
-	import src.UI.Cursors.GroundAttackCursor;
-	import src.UI.Dialog.AttackTroopDialog;
-	import src.UI.Dialog.InfoDialog;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
+    import flash.events.Event;
+
+    import org.aswing.JButton;
+    import org.aswing.JOptionPane;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Map.Position;
+    import src.Objects.BarbarianTribe;
+    import src.Objects.SimpleGameObject;
+    import src.Objects.Stronghold.Stronghold;
+    import src.Objects.StructureObject;
+    import src.UI.Cursors.GroundAttackCursor;
+    import src.UI.Dialog.AttackTroopDialog;
+    import src.UI.Dialog.InfoDialog;
+    import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
+    import src.Util.StringHelper;
 
 	public class AttackSendProcess
 	{		
 		private var attackDialog: AttackTroopDialog;		
 		private var target: SimpleGameObject;
 		private var sourceCity:City;
+        private var attackPosition: Position;
 		
 		public function AttackSendProcess(sourceCity: City) 
 		{
@@ -41,7 +43,7 @@ package src.Objects.Process
 			
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
 			
-			var cursor: GroundAttackCursor = new GroundAttackCursor(sourceCity,onChoseTarget, attackDialog.getTroop());
+			new GroundAttackCursor(sourceCity,onChoseTarget, attackDialog.getTroop());
 			
 			var changeTroop: JButton = new JButton("Change Troop");
 			changeTroop.addActionListener(onChangeTroop);
@@ -52,6 +54,7 @@ package src.Objects.Process
 		
 		public function onChoseTarget(sender: GroundAttackCursor): void {			
 			this.target = sender.getTargetObject();
+            this.attackPosition = sender.getAttackPosition();
 			
 			if (target is StructureObject) {
 				Global.mapComm.City.isCityUnderAPBonus(target.groupId, onGotAPStatus);
@@ -79,7 +82,7 @@ package src.Objects.Process
 		
 		public function onAttackAccepted(): void {
 			if (target is StructureObject) {
-				Global.mapComm.Troop.troopAttackCity(sourceCity.id, target.groupId, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);
+				Global.mapComm.Troop.troopAttackCity(sourceCity.id, target.groupId, attackPosition, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);
 			}
 			else if (target is Stronghold) {
 				Global.mapComm.Troop.troopAttackStronghold(sourceCity.id, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);				

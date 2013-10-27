@@ -1,21 +1,23 @@
 ﻿package src.UI.Components.CityActionGridList
 {
-	import flash.display.DisplayObjectContainer;
-	import flash.events.Event;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	import org.aswing.ext.GeneralGridListCellFactory;
-	import org.aswing.ext.GridList;
-	import org.aswing.VectorListModel;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.Actions.CurrentAction;
-	import src.Objects.Actions.CurrentActionReference;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Util.BinaryList.*;
+    import flash.display.DisplayObjectContainer;
+    import flash.events.Event;
+    import flash.events.TimerEvent;
+    import flash.utils.Timer;
 
-	/**
+    import org.aswing.VectorListModel;
+    import org.aswing.ext.GeneralGridListCellFactory;
+    import org.aswing.ext.GridList;
+
+    import src.Map.City;
+    import src.Map.CityObject;
+    import src.Objects.Actions.CurrentAction;
+    import src.Objects.Actions.CurrentActionReference;
+    import src.Objects.Factories.ObjectFactory;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.Util.BinaryList.*;
+
+    /**
 	 * ...
 	 * @author Giuliano
 	 */
@@ -90,10 +92,10 @@
 				var cityObj: CityObject = city.objects.get(currentAction.workerId);
 
 				var prototype: * = ObjectFactory.getPrototype(cityObj.type, cityObj.level);
-				var icon: DisplayObjectContainer = ObjectFactory.getSpriteEx(cityObj.type, cityObj.level, true);
+				var icon: DisplayObjectContainer = ObjectFactory.getSpriteEx(cityObj.type, cityObj.level);
 				if (prototype is StructurePrototype) icon = ObjectFactory.makeSpriteSmall(icon);
 
-				(getModel() as VectorListModel).append( { 'cityObj': cityObj, 'source': icon, 'cityId': city.id , 'prototype': prototype, 'currentAction': currentAction } );
+				(getModel() as VectorListModel).append( { 'cityObj': cityObj, 'source': icon, 'cityId': city.id , 'objPrototype': prototype, 'currentAction': currentAction } );
 			}
 		}
 	}

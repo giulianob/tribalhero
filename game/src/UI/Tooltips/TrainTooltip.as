@@ -1,22 +1,19 @@
 ﻿package src.UI.Tooltips {
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Effects.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.UI.Components.*;
-	import src.UI.LookAndFeel.*;
-	import src.Util.*;
+    import org.aswing.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
 
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Effects.*;
+    import src.Objects.Prototypes.*;
+    import src.UI.Components.*;
+    import src.UI.LookAndFeel.*;
+    import src.Util.*;
 
-	public class TrainTooltip extends ActionButtonTooltip {
+    public class TrainTooltip extends ActionButtonTooltip {
 		private var parentObj: StructureObject;
 		private var unitPrototype: UnitPrototype;
 		public var missingRequirements: Array;

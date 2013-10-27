@@ -1,25 +1,20 @@
 ﻿package src.Objects.Factories {
-	import flash.display.*
-	import flash.filters.BlurFilter;
-	import flash.geom.ColorTransform;
-	import flash.geom.Matrix;
-	import src.Global;
-	import src.Objects.States.GameObjectState;
-	import src.Util.Util;
-	import flash.geom.Rectangle;
-	import src.Map.*;
-	import src.Objects.Actions.TechUpgradeAction;
-	import src.Objects.Prototypes.*
-	import src.Objects.SimpleObject;
-	import src.Objects.StructureObject;
-	import src.UI.Sidebars.ObjectInfo.Buttons.TechnologyButton;
-	import src.Util.BinaryList.*;	
-	import src.Objects.Prototypes.Worker;
-	import src.Objects.*;
 
-	import flash.utils.getDefinitionByName;
+    import flash.display.*;
 
-	public class StructureFactory {
+    import src.Assets;
+    import src.Constants;
+    import src.Global;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Actions.TechUpgradeAction;
+    import src.Objects.Prototypes.*;
+    import src.Objects.States.GameObjectState;
+    import src.UI.Sidebars.ObjectInfo.Buttons.TechnologyButton;
+    import src.Util.BinaryList.*;
+    import src.Util.Util;
+
+    public class StructureFactory {
 
 		private static var map: Map;
 		private static var structurePrototypes: BinaryList;
@@ -51,6 +46,7 @@
 				strctObj.buildTime = structNode.@time;
 				strctObj.weapon = structNode.@weapon;
 				strctObj.workerid = structNode.@workerid;
+                strctObj.size = structNode.@size;
 
 				for each (var layoutNode: XML in structNode.Layout.*)
 				{
@@ -92,15 +88,15 @@
 			return structPrototype;
 		}
 
-		public static function getSprite(type: int, level: int, centered: Boolean = false): DisplayObjectContainer
+		public static function getSprite(type: int, level: int, withPosition: String = "", withShadow: Boolean = false): DisplayObjectContainer
 		{
 			var strPrototype: StructurePrototype = getPrototype(type, level);
-			var objRef: Class;
+			var typeName: String;
 
 			if (strPrototype == null)
 			{
 				Util.log("Missing obj prototype. type: " + type.toString() + " lvl: " + level.toString() + " Loading generic simple object");
-				objRef = getDefinitionByName("DEFAULT_STRUCTURE_SIMPLE") as Class;
+				typeName = "DEFAULT_STRUCTURE_SIMPLE";
 			}
 			else
 			{
@@ -108,37 +104,32 @@
 
 				if (worker == null)
 				{
-					Util.log("Missing obj worker. type: " + type.toString() + " lvl: " + level.toString() + " Loading generic simple object");
-					objRef = getDefinitionByName("DEFAULT_STRUCTURE_SIMPLE") as Class;
+					typeName = "DEFAULT_STRUCTURE_SIMPLE";
 				}
 				else
 				{
-					try
-					{
-						objRef = getDefinitionByName(strPrototype.spriteClass) as Class;
-					}
-					catch (error: Error)
-					{
-						Util.log("Missing sprite " + strPrototype.spriteClass + ". Loading generic complex object");
-						objRef = getDefinitionByName("DEFAULT_STRUCTURE_COMPLEX") as Class;
-					}
+					typeName = strPrototype.spriteClass;
 				}
 			}
 
-			var sprite: DisplayObjectContainer = new objRef();		
+			var sprite: Sprite = new Sprite();
 
-			if (centered)
-			{
-				Util.centerSprite(sprite);
-			}
+            if (withShadow && Assets.doesSpriteExist(typeName + "_SHADOW")) {
+                var shadow: Bitmap = Assets.getInstance(typeName + "_SHADOW", withPosition);
+                shadow.alpha = Constants.shadowAlpha;
+                shadow.name = "shadow";
+                sprite.addChild(shadow);
+            }
+
+            sprite.addChild(Assets.getInstance(typeName, withPosition));
 
 			return sprite;
 		}
 
-		public static function getSimpleObject(type: int, level:int, x: int, y: int): SimpleObject
+		public static function getSimpleObject(type: int, level:int, x: int, y: int, size: int): SimpleObject
 		{
-			var sprite: DisplayObjectContainer = getSprite(type, level) as DisplayObjectContainer;
-			var simpleObject: SimpleObject = new SimpleObject(x, y);
+			var sprite: DisplayObjectContainer = getSprite(type, level, "map") as DisplayObjectContainer;
+			var simpleObject: SimpleObject = new SimpleObject(x, y, size);
 			
 			if (sprite != null) {
 				simpleObject.spriteContainer.addChild(sprite);
@@ -147,12 +138,11 @@
 			return simpleObject;
 		}
 
-		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int): StructureObject
+		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int): StructureObject
 		{
-			var structureObj: StructureObject = new StructureObject(type, state, objX, objY, playerId, cityId, objectId, level, wallRadius);
-		
-			structureObj.spriteContainer.addChild(ObjectFactory.makeIntoShadow(getSprite(type, level)));
-			structureObj.spriteContainer.addChild(getSprite(type, level));
+			var structureObj: StructureObject = new StructureObject(type, state, objX, objY, size, playerId, cityId, objectId, level, wallRadius);
+
+			structureObj.spriteContainer.addChild(getSprite(type, level, "map", true));
 			
 			structureObj.setOnSelect(Global.map.selectObject);
 
@@ -175,63 +165,41 @@
 			else return worker.getButtons(parentObj, structPrototype);
 		}
 
-		private static function getTechButtonInstance(techPrototype: TechnologyPrototype) : SimpleButton {
-			var objRef: Class;
-
-			if (techPrototype != null)
-			{
-				try
-				{
-					objRef = getDefinitionByName(techPrototype.spriteClass + "_TECHNOLOGY_BUTTON") as Class;
-				}
-				catch (error: Error)
-				{
-					Util.log("Missing technology button sprite class: " + techPrototype.spriteClass + "_TECHNOLOGY_BUTTON. Loading default");
-					objRef = getDefinitionByName("DEFAULT_TECHNOLOGY_BUTTON") as Class;
-				}
-			}
-			else
-			{
-				Util.log("Missing technology prototype for object type tech type " + techPrototype.techtype + " tech level " + techPrototype.level);
-				objRef = getDefinitionByName("DEFAULT_TECHNOLOGY_BUTTON") as Class;
-			}
-
-			return new objRef();
-		}
-
-		public static function getTechButtons(gameObj: StructureObject): Array
+        public static function getTechButtons(gameObj: StructureObject): Array
 		{
 			var structPrototype: StructurePrototype = getPrototype(gameObj.type, gameObj.level);
 
 			if (structPrototype == null)
-			return new Array();
+			return [];
 
 			var city: City = map.cities.get(gameObj.cityId);
 			if (city == null) {
 				Util.log("StructureFactory.getTechButtons: Unknown city");
-				return new Array();
+				return [];
 			}
 
 			var cityObj: CityObject = city.objects.get(gameObj.objectId);
 			if (cityObj == null) {
 				Util.log("StructureFactory.getTechButtons: Unknown city object");
-				return new Array();
+				return [];
 			}
 
 			var worker: Worker = WorkerFactory.getPrototype(structPrototype.workerid);
 
 			var upgradeActions: Array = worker.getTechUpgradeActions();
 
-			var buttons: Array = new Array();
+			var buttons: Array = [];
 
 			// Add all of the tech buttons that have technologies attached to them
-			for each (var techStats: TechnologyStats in cityObj.techManager.technologies)
+            var technologyStats: TechnologyStats;
+			for each (technologyStats in cityObj.techManager.technologies)
 			{
-				var techBtn: TechnologyButton = new TechnologyButton(gameObj, structPrototype, techStats.prototype);
+                var techBtn: TechnologyButton = new TechnologyButton(gameObj, technologyStats.techPrototype);
 
 				for (var i: int = 0; i < upgradeActions.length; ++i) {
-					if (upgradeActions[i].techtype != techStats.prototype.techtype)
-					continue;
+					if (upgradeActions[i].techtype != technologyStats.techPrototype.techtype) {
+					    continue;
+                    }
 
 					techBtn.parentAction = upgradeActions[i];
 					upgradeActions.splice(i, 1);
@@ -244,7 +212,7 @@
 			// Add all of the upgrade technology actions that don't currently have technologies attached to them
 			for each (var upgradeAction: TechUpgradeAction in upgradeActions) {
 				var techPrototype: TechnologyPrototype = TechnologyFactory.getPrototype(upgradeAction.techtype, 0);
-				techBtn = new TechnologyButton(gameObj, structPrototype, techPrototype);
+				techBtn = new TechnologyButton(gameObj, techPrototype);
 				techBtn.parentAction = upgradeAction;
 				buttons.push(techBtn);
 			}
@@ -252,35 +220,7 @@
 			return buttons;
 		}
 
-		public static function getCursorInstance(action: String, type: int, level: int): Object
-		{
-			var strPrototype: StructurePrototype = getPrototype(type, level);
-
-			var obj: Object = null;
-			var objRef:Class = null;
-
-			if (strPrototype != null)
-			{
-				try
-				{
-					objRef = getDefinitionByName(strPrototype.spriteClass + "_" + action + "_CURSOR") as Class;
-					obj = new objRef();
-				}
-				catch (error: Error)
-				{
-					Util.log("Missing cursor '" + strPrototype.spriteClass + "_" + action + "_CURSOR' falling back to standard cursor");
-					objRef = getDefinitionByName("STANDARD_STRUCTURE_" + action + "_CURSOR") as Class;
-				}
-			}
-			else
-			{
-				objRef = getDefinitionByName("STANDARD_STRUCTURE_" + action + "_CURSOR") as Class;
-			}
-
-			obj = new objRef();
-			return obj;
-		}
-	}
+}
 
 }
 

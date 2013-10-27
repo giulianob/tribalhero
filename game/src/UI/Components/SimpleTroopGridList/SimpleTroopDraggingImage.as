@@ -1,19 +1,18 @@
 ﻿package src.UI.Components.SimpleTroopGridList 
 {
-	import flash.display.Sprite;
-	import org.aswing.ASColor;
-	import org.aswing.AssetIcon;
-	import org.aswing.graphics.Graphics2D;
-	import org.aswing.graphics.Pen;
-	import org.aswing.JLabel;
-	import org.aswing.dnd.DraggingImage;
-	import flash.display.Shape;
-	import org.aswing.Component;
-	import flash.display.DisplayObject;
-	import src.Objects.Factories.UnitFactory;
-	import src.Objects.Troop.*;
-	
-/**
+    import flash.display.DisplayObject;
+    import flash.display.Shape;
+    import flash.display.Sprite;
+
+    import org.aswing.ASColor;
+    import org.aswing.Component;
+    import org.aswing.dnd.DraggingImage;
+    import org.aswing.graphics.Graphics2D;
+    import org.aswing.graphics.Pen;
+
+    import src.Objects.Factories.UnitFactory;
+
+    /**
  * ...
  * @author Giuliano
  */

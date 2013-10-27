@@ -5,11 +5,12 @@
  */
 
 package src.Objects.Prototypes {
-	import flash.display.DisplayObject;
-	import org.aswing.AssetIcon;
-	import flash.utils.getDefinitionByName;
+    import flash.display.DisplayObject;
+    import flash.utils.getDefinitionByName;
 
-	public class PropertyPrototype {
+    import org.aswing.AssetIcon;
+
+    public class PropertyPrototype {
 
 		public static const VISIBILITY_PRIVATE: int = 0;
 		public static const VISIBILITY_PUBLIC: int = 1;

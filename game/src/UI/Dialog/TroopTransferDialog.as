@@ -11,6 +11,7 @@ package src.UI.Dialog
     import src.*;
     import src.Map.*;
     import src.Objects.Effects.*;
+    import src.Objects.Stronghold.Stronghold;
     import src.Objects.Troop.*;
     import src.UI.*;
     import src.UI.Components.TroopPartialRetreatPanel;
@@ -84,7 +85,7 @@ package src.UI.Dialog
                 return;
             }
 
-            var distance: int = MapUtil.distance(strongholds[pickList.getSelectedIndex()].x, strongholds[pickList.getSelectedIndex()].y, originalStub.x, originalStub.y);
+            var distance: int = TileLocator.distance(strongholds[pickList.getSelectedIndex()].x, strongholds[pickList.getSelectedIndex()].y, Stronghold.SIZE, originalStub.x, originalStub.y, 1);
             var timeAwayInSeconds: int = Formula.moveTimeTotal(city, stub.getSpeed(city), distance, false);
             lblTime.setText(StringHelper.localize("TRANSFER_ARRIVE_IN", DateUtil.niceTime(timeAwayInSeconds)));
         }

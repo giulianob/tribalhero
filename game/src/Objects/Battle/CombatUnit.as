@@ -1,10 +1,8 @@
 ﻿package src.Objects.Battle {
-	import src.Map.City;
-	import src.Objects.Factories.UnitFactory;
-	import src.Objects.Prototypes.UnitPrototype;
-	
+    import src.Objects.Factories.UnitFactory;
+    import src.Objects.Prototypes.UnitPrototype;
 
-	public class CombatUnit extends CombatObject
+    public class CombatUnit extends CombatObject
 	{		
 		private var prototype: UnitPrototype;
 		

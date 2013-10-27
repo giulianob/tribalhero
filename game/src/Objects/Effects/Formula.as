@@ -1,16 +1,17 @@
 ﻿package src.Objects.Effects {
 
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.Objects.Troop.*;
-	import src.Util.StringHelper;
-	import src.Util.Util;
-	import System.Linq.Enumerable;
-	
-	public class Formula {
+    import System.Linq.Enumerable;
+
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Factories.*;
+    import src.Objects.Prototypes.*;
+    import src.Objects.Troop.*;
+    import src.Util.StringHelper;
+    import src.Util.Util;
+
+    public class Formula {
 		
 		public static const RESOURCE_CHUNK: int = 100;		
 		public static const TRIBE_MEMBER_PER_LEVEL: int = 5;
@@ -228,11 +229,6 @@
 			return Formula.maxForestLabor(level) / 8;
 		}
 
-		public static function movementIconTroopSize(troopStub: TroopStub) : int {
-			var upkeep: int = troopStub.getUpkeep();
-			return Math.min(4, upkeep / 60);
-		}
-        
         public static function getUpkeepWithReductions(baseUpkeep: int, unitType: int, city: City): Number {
             var reduceUpkeep: int = 0;
 			for each (var tech: EffectPrototype in city.techManager.getEffects(EffectPrototype.EFFECT_REDUCE_UPKEEP, EffectPrototype.INHERIT_ALL)) {

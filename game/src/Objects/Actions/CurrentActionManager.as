@@ -1,8 +1,8 @@
 ﻿package src.Objects.Actions {
-	import src.Global;
-	import src.Util.BinaryList.*;
+    import src.Global;
+    import src.Util.BinaryList.*;
 
-	public class CurrentActionManager extends BinaryList
+    public class CurrentActionManager extends BinaryList
 	{
 
 		public function CurrentActionManager() {
@@ -21,7 +21,7 @@
 		}
 		
 		public function getActions(type: int = 0): Array {
-			var ret: Array = new Array();
+			var ret: Array = [];
 			
 			for each(var currentAction: CurrentAction in this) {
 				if (currentAction is CurrentActionReference) continue;		
@@ -33,7 +33,7 @@
 		}
 
 		public function getObjectActions(objId: int, activeOnly: Boolean = false) : Array {
-			var ret: Array = new Array();
+			var ret: Array = [];
 			for each(var currentAction: CurrentAction in this)
 			{
 				if (activeOnly && !(currentAction is CurrentActiveAction)) continue;

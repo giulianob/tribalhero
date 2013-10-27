@@ -1,18 +1,19 @@
 ﻿package src.Comm.Commands {
-	import flash.events.*;
-	import src.*;
-	import src.Comm.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Actions.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.Objects.Troop.*;
-	import src.UI.Components.ScreenMessages.*;
-	import src.UI.Dialog.*;
-	import src.Util.*;
-	
-	public class GeneralComm {
+    import flash.events.*;
+
+    import src.*;
+    import src.Comm.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Actions.*;
+    import src.Objects.Factories.*;
+    import src.Objects.Prototypes.*;
+    import src.Objects.Troop.*;
+    import src.UI.Components.ScreenMessages.*;
+    import src.UI.Dialog.*;
+    import src.Util.*;
+
+    public class GeneralComm {
 
 		private var mapComm: MapComm;
 		private var session: Session;		
@@ -70,22 +71,15 @@
 		{
 			var messageId: String = packet.readString();
 			var paramsCount: int = packet.readUByte();
-			var params: Array = new Array();
+			var params: Array = [];
 			for (var i: int = 0; i < paramsCount; i++) {
 				params.push(packet.readString());
 			}
 			
 			Global.gameContainer.cmdLine.logSystem(messageId, params);
 		}
-		
-		public function queryXML(callback: Function, custom: * ):void
-		{
-			var packet: Packet = new Packet();
-			packet.cmd = Commands.QUERY_XML;
-			session.write(packet, callback, custom);
-		}
 
-		public function createInitialCity(name: String, locationParms: *, onCityCreated: Function) : void {
+        public function createInitialCity(name: String, locationParms: *, onCityCreated: Function) : void {
 			var pnlLoading: InfoDialog = InfoDialog.showMessageDialog("Creating city", "We're creating your city...", null, null, true, false, 0);
 
 			var packet: Packet = new Packet();
@@ -116,7 +110,8 @@
 			Constants.playerId = packet.readUInt();
 			Constants.playerHash = packet.readString();
 			Constants.tutorialStep = packet.readUInt();
-			Constants.admin = packet.readByte() == 1;
+			Constants.soundMuted = packet.readBoolean();
+			Constants.admin = packet.readBoolean();
 			Constants.sessionId = packet.readString();			
 			Constants.playerName = packet.readString();			
 			Constants.newbieProtectionSeconds = packet.readInt();
@@ -162,6 +157,7 @@
 		public function readCity(packet: Packet) : City {
 			var id: int = packet.readUInt();
 			var name: String = packet.readString();
+            var position: Position = new Position(packet.readUInt(), packet.readUInt());
 			var resources: LazyResources = new LazyResources(
 			new LazyValue(packet.readInt(), packet.readInt(), packet.readInt(), packet.readInt(), packet.readUInt()),
 			new LazyValue(packet.readInt(), packet.readInt(), 0, packet.readInt(), packet.readUInt()),
@@ -183,7 +179,7 @@
 			
 			var hideNewUnits: Boolean = packet.readByte() == 1;
 
-			var city: City = new City(id, name, radius, resources, attackPoint, defensePoint, cityValue, inBattle, hideNewUnits, ap);
+			var city: City = new City(id, name, position, radius, resources, attackPoint, defensePoint, cityValue, inBattle, hideNewUnits, ap);
 
 			// Add the name of this city to the list of city names
 			Global.map.usernames.cities.add(new Username(id, name));
@@ -410,6 +406,14 @@
 			
 			session.write(packet, mapComm.catchAllErrors);
 		}
-	}
+
+        public function saveMuteSound(isMuted: Boolean): void {
+            var packet:Packet = new Packet();
+            packet.cmd = Commands.SAVE_MUTE_SOUND;
+            packet.writeBoolean(isMuted);
+
+            session.write(packet, mapComm.catchAllErrors);
+        }
+    }
 }
 

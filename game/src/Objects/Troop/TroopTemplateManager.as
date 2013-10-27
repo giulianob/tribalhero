@@ -1,8 +1,8 @@
 ﻿package src.Objects.Troop {
 
-	import src.Util.BinaryList.*;
+    import src.Util.BinaryList.*;
 
-	/**
+    /**
 	 * ...
 	 * @author Default
 	 */

@@ -1,29 +1,27 @@
 ﻿package src.Map
 {
-	import com.greensock.motionPaths.RectanglePath2D;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import src.Constants;
+    import flash.events.Event;
+    import flash.events.EventDispatcher;
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
 
-	public class Camera extends EventDispatcher
+    import src.Constants;
+
+    public class Camera extends EventDispatcher
 	{
 		public static const ON_MOVE: String = "ON_MOVE";
 
-		public var x:int;
-		public var y:int;
+		public var currentPosition: ScreenPosition = new ScreenPosition();
 
 		// Saves the x,y to see if we need to
 		private var isDirty: Boolean = false;
 		private var updating: Boolean = false;
 
 		//Allows us to cue a position and return to it later
-		private var cueX: int;
-		private var cueY: int;
+		private var cuePosition: ScreenPosition;
 		
 		//Zooming factor
-		private var zoomFactor: Number = 1;
+		private var _zoomFactor: Number = 0.75;
 		private var zoomFactorOverOne: Number = (1.0 / zoomFactor);
 
 		public function beginMove(): void {
@@ -52,40 +50,37 @@
 
 		public function reset(): void
 		{
-			x = 0;
-			y = 0;
+			currentPosition = new ScreenPosition();
 		}
 
 		public function cue(): void {
-			cueX = x;
-			cueY = y;
+			cuePosition = currentPosition.copy();
 		}
 
 		public function goToCue(): void {
-			x = cueX;
-			y = cueY;
+			currentPosition = cuePosition.copy();
 		}
 
 		public function get miniMapX(): int
 		{
-			return (x / Constants.tileW) * Constants.miniMapTileW;
+			return (currentPosition.x / Constants.tileW) * Constants.miniMapTileW;
 		}
 
 		public function get miniMapY(): int
 		{
-			return (y / Constants.tileH) * Constants.miniMapTileH;
+			return (currentPosition.y / Constants.tileH) * Constants.miniMapTileH;
 		}
 		
 		public function get miniMapCenter(): Point
 		{			
-			var point: Point = GetCenter();
+			var point: ScreenPosition = GetCenter();
 			return new Point((point.x / Constants.tileW) * Constants.miniMapTileW, (point.y / Constants.tileH) * Constants.miniMapTileH);
 		}
 
 		public function Camera(x: int, y: int)
 		{
-			this.x = x;
-			this.y = y;
+			currentPosition.x = x;
+            currentPosition.y = y;
 		}
 
 		public function MoveLeft(step :int): void
@@ -95,11 +90,12 @@
 
 		private function MoveLeftEx(step: int): void
 		{
-			x -= step;
+            currentPosition.x -= step;
 
-			if (x < 0)
-			x = 0;
-			
+			if (currentPosition.x < 0) {
+                currentPosition.x = 0;
+            }
+
 			fireOnMove();
 		}
 
@@ -110,10 +106,11 @@
 
 		private  function MoveRightEx(step: int): void
 		{
-			x += step;
+            currentPosition.x += step;
 
-			if (x > Constants.mapW - Constants.screenW - (Constants.tileW / 2))
-			x = Constants.mapW - Constants.screenW - (Constants.tileW / 2);
+			if (currentPosition.x > Constants.mapW - Constants.screenW - (Constants.tileW / 2)) {
+                currentPosition.x = Constants.mapW - Constants.screenW - (Constants.tileW / 2);
+            }
 			
 			fireOnMove();
 		}
@@ -125,10 +122,11 @@
 
 		private function MoveDownEx(step: int): void
 		{
-			y += step;
+            currentPosition.y += step;
 
-			if (y > Constants.mapTileH * int(Constants.tileH / 2) - Constants.screenH - int(Constants.tileH / 2) )
-			y = Constants.mapTileH * int(Constants.tileH / 2) - Constants.screenH - int(Constants.tileH / 2);
+			if (currentPosition.y > Constants.mapTileH * int(Constants.tileH / 2) - Constants.screenH - int(Constants.tileH / 2)) {
+                currentPosition.y = Constants.mapTileH * int(Constants.tileH / 2) - Constants.screenH - int(Constants.tileH / 2);
+            }
 			
 			fireOnMove();
 		}
@@ -140,9 +138,11 @@
 
 		private function MoveUpEx(step: int): void
 		{
-			y -= step;
+            currentPosition.y -= step;
 
-			if (y < 0) y = 0;
+			if (currentPosition.y < 0)  {
+                currentPosition.y = 0;
+            }
 			
 			fireOnMove();
 		}
@@ -151,52 +151,60 @@
 		{
 			beginMove();
 
-			if (dx > 0)
-			MoveRightEx(dx);
-			else
-			MoveLeftEx(-dx);
+			if (dx > 0) {
+			    MoveRightEx(dx);
+            }
+			else {
+			    MoveLeftEx(-dx);
+            }
 
-			if (dy > 0)
-			MoveDownEx(dy);
-			else
-			MoveUpEx(-dy);
+			if (dy > 0) {
+			    MoveDownEx(dy);
+            }
+			else {
+			    MoveUpEx(-dy);
+            }
 
 			endMove();
 		}
 
-		public function ScrollToCenter(x: int, y: int): void
+		public function ScrollToCenter(screenPos: ScreenPosition): void
 		{
-			ScrollTo(x - (Constants.screenW * zoomFactorOverOne) / 2.0, y - (Constants.screenH * zoomFactorOverOne) / 2.0);
+			ScrollTo(new ScreenPosition(screenPos.getXAsNumber() - (Number(Constants.screenW) / zoomFactor) / 2.0, screenPos.getYAsNumber() - (Constants.screenH / zoomFactor) / 2.0));
 		}
 		
-		public function GetCenter(): Point
+		public function GetCenter(): ScreenPosition
 		{
-			return new Point(x + (Constants.screenW * zoomFactorOverOne) / 2.0, y + (Constants.screenH * zoomFactorOverOne) / 2.0);
+			return new ScreenPosition(currentPosition.getXAsNumber() + (Number(Constants.screenW) / zoomFactor) / 2.0, currentPosition.getYAsNumber() + (Constants.screenH / zoomFactor) / 2.0);
 		}
 
 		public function CameraRectangle() : Rectangle
 		{
-			return new Rectangle(x, y, Constants.screenW * zoomFactorOverOne, Constants.screenH * zoomFactorOverOne);
+			return new Rectangle(currentPosition.x, currentPosition.y, Constants.screenW * zoomFactorOverOne, Constants.screenH * zoomFactorOverOne);
 		}
 				
-		public function ScrollTo(x: int, y: int): void
+		public function ScrollTo(screenPos: ScreenPosition): void
 		{
-			if (x < 0) x = 0;
-			if (y < 0) y = 0;
+			if (currentPosition.x < 0) currentPosition.x = 0;
+			if (currentPosition.y < 0) currentPosition.y = 0;
 
-			this.x = Math.min(x, Constants.mapW - (Constants.screenW * zoomFactorOverOne) - (Constants.tileW / 2));
+			currentPosition.setXAsNumber(Math.min(screenPos.getXAsNumber(), Constants.mapW - (Constants.screenW * zoomFactorOverOne) - (Constants.tileW / 2.0)));
 
-			this.y = Math.min(y, Constants.mapTileH * int(Constants.tileH / 2) - (Constants.screenH * zoomFactorOverOne) - int(Constants.tileH / 2));
+			currentPosition.setYAsNumber(Math.min(screenPos.getYAsNumber(), Constants.mapTileH * int(Constants.tileH / 2.0) - (Constants.screenH * zoomFactorOverOne) - int(Constants.tileH / 2.0)));
 
 			fireOnMove();
 		}
 		
-		public function setZoomFactor(factor: Number): void {
-			zoomFactor = factor;
-			zoomFactorOverOne = (1.0 / factor);
-			ScrollTo(x, y);
-		}
-		
+        public function set zoomFactor(factor: Number): void {
+            _zoomFactor = factor;
+            zoomFactorOverOne = (1.0 / factor);
+            ScrollTo(currentPosition);
+        }
+
+        public function get zoomFactor(): Number {
+            return _zoomFactor;
+        }
+
 		public function getZoomFactorOverOne(): Number {
 			return zoomFactorOverOne;
 		}

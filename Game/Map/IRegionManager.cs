@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Game.Comm;
@@ -7,21 +8,17 @@ namespace Game.Map
 {
     public interface IRegionManager
     {
-        ICityRegionManager CityRegions { get; }
+        event EventHandler<ObjectEvent> ObjectAdded;
 
-        uint WorldWidth { get; }
+        event EventHandler<ObjectEvent> ObjectRemoved;
 
-        uint WorldHeight { get; }
-
-        List<ISimpleGameObject> this[uint x, uint y] { get; }
+        IMiniMapRegionManager MiniMapRegions { get; }
 
         bool IsValidXandY(uint x, uint y);
 
-        IEnumerable<ISimpleGameObject> GetObjectsFromSurroundingRegions(uint x, uint y, int radius);
+        IEnumerable<ISimpleGameObject> GetObjectsWithin(uint x, uint y, int radius);
 
-        List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, int radius);
-
-        List<ushort> GetTilesWithin(uint x, uint y, byte radius);
+        IEnumerable<ushort> GetTilesWithin(uint x, uint y, byte radius);
 
         bool Add(ISimpleGameObject obj);
 
@@ -29,13 +26,13 @@ namespace Game.Map
 
         void Remove(ISimpleGameObject obj);
 
-        List<ISimpleGameObject> GetObjects(uint x, uint y);
+        IEnumerable<ISimpleGameObject> GetObjectsInTile(uint x, uint y);
 
-        Region GetRegion(uint x, uint y);
+        IRegion GetRegion(uint x, uint y);
 
-        Region GetRegion(ushort id);
+        IRegion GetRegion(ushort id);
 
-        void ObjectUpdateEvent(ISimpleGameObject sender, uint origX, uint origY);
+        void UpdateObject(ISimpleGameObject sender, uint origX, uint origY);
 
         ushort GetTileType(uint x, uint y);
 
@@ -50,10 +47,14 @@ namespace Game.Map
                   uint inWorldHeight,
                   uint regionWidth,
                   uint regionHeight,
-                  uint cityRegionWidth,
-                  uint cityRegionHeight);
+                  uint miniMapRegionWidth,
+                  uint miniMapRegionHeight);
 
         void Unload();
+
+        IEnumerable<ushort> LockRegions(uint x, uint y, byte size);
+
+        void UnlockRegions(IEnumerable<ushort> regionIds);
 
         void LockRegion(uint x, uint y);
 

@@ -50,15 +50,10 @@ namespace Game.Data.Troop.Initializers
                 return Error.TroopNotStationed;
             }
 
-            troopObject = new TroopObject(stub)
-            {
-                X = originalStation.X,
-                Y = originalStation.Y + 1
-            };
+            troopObject = stub.City.CreateTroopObject(stub, originalStation.PrimaryPosition.X, originalStation.PrimaryPosition.Y + 1);
+          
             newTroopObject = troopObject;
             
-            stub.City.Add(troopObject);
-
             troopObject.BeginUpdate();
             troopObject.Stats = new TroopStats(formula.GetTroopRadius(stub, null), formula.GetTroopSpeed(stub));
             world.Regions.Add(troopObject);

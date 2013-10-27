@@ -8,7 +8,6 @@ using Game.Logic.Formulas;
 using Game.Setup;
 using Moq;
 using NSubstitute;
-using Xunit;
 using Xunit.Extensions;
 
 namespace Testing.FormulaTests
@@ -30,13 +29,13 @@ namespace Testing.FormulaTests
             ITroopStub troopstub = Substitute.For<ITroopStub>();
             troopstub.TotalCount.Returns((ushort)1);
 
-            troopstub.City.Template[0].Battle.Spd.Returns((byte)12);  // fighter
+            troopstub.City.Template[0].Battle.Speed.Returns((byte)12);  // fighter
             troopstub.City.Template[0].Upkeep.Returns((byte)1);
-            troopstub.City.Template[1].Battle.Spd.Returns((byte)16); // Archer
+            troopstub.City.Template[1].Battle.Speed.Returns((byte)16); // Archer
             troopstub.City.Template[1].Upkeep.Returns((byte)1);
-            troopstub.City.Template[2].Battle.Spd.Returns((byte)24); // Cavalry
+            troopstub.City.Template[2].Battle.Speed.Returns((byte)24); // Cavalry
             troopstub.City.Template[2].Upkeep.Returns((byte)2);
-            troopstub.City.Template[3].Battle.Spd.Returns((byte)5); // Catapult
+            troopstub.City.Template[3].Battle.Speed.Returns((byte)5); // Catapult
             troopstub.City.Template[3].Upkeep.Returns((byte)5);
             troopstub.City.Template[3].Battle.Armor.Returns(ArmorType.Machine);
             // 10 fighters

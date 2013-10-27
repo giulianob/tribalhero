@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace Game.Data.Forest
+﻿namespace Game.Data.Forest
 {
     public interface IForestFactory
     {
-        IForest CreateForest(byte lvl, int capacity, double rate);
+        IForest CreateForest(uint id, byte lvl, int capacity, double rate, uint x, uint y);
     }
 }

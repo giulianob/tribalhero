@@ -10,31 +10,29 @@ namespace Game.Module
     {
         private readonly ICityRemoverFactory cityRemoverFactory;
 
+        private readonly IScheduler scheduler;
+
+        private readonly ILocker locker;
+
         private readonly IPlayerSelector playerSelector;
 
         private double intervalInHours;
 
-        private bool started;
-
-        public PlayersRemover(IPlayerSelector playerSelector, ICityRemoverFactory cityRemoverFactory)
+        public PlayersRemover(IPlayerSelector playerSelector, ICityRemoverFactory cityRemoverFactory, IScheduler scheduler, ILocker locker)
         {
             this.cityRemoverFactory = cityRemoverFactory;
+            this.scheduler = scheduler;
+            this.locker = locker;
             this.playerSelector = playerSelector;
         }
 
         public void Start(double intervalInHours = 24)
         {
             this.intervalInHours = intervalInHours;
-            started = true;            
             Time = DateTime.UtcNow.AddHours(intervalInHours);
-            Scheduler.Current.Put(this);
+            scheduler.Put(this);
         }
-
-        public void Stop()
-        {
-            started = false;
-        }
-
+        
         public int DeletePlayers()
         {
             var list = playerSelector.GetPlayerIds();
@@ -42,15 +40,13 @@ namespace Game.Module
             foreach (var id in list)
             {
                 IPlayer player;
-                using (Concurrency.Current.Lock(id, out player))
+                locker.Lock(id, out player).Do(() =>
                 {
                     count += player.GetCityList().Count(city => cityRemoverFactory.CreateCityRemover(city.Id).Start());
-                }
+                });
             }
             return count;
         }
-
-        #region ISchedule Members
 
         public DateTime Time { get; private set; }
 
@@ -58,15 +54,9 @@ namespace Game.Module
 
         public void Callback(object custom)
         {
-            if (!started)
-            {
-                return;
-            }
             DeletePlayers();
             Time = DateTime.UtcNow.AddHours(intervalInHours);
-            Scheduler.Current.Put(this);
+            scheduler.Put(this);
         }
-
-        #endregion
     }
 }

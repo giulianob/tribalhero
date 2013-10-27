@@ -32,6 +32,8 @@ namespace Game.Logic.Actions
         private readonly uint cityId;
         
         private uint troopObjectId;
+
+        private readonly Formula formula;
         
         private readonly uint targetCityId;
         
@@ -42,6 +44,7 @@ namespace Game.Logic.Actions
                                       IActionFactory actionFactory,
                                       ILocker locker,
                                       IWorld world,
+                                      Formula formula,
                                       Procedure procedure)
         {
             this.cityId = cityId;
@@ -51,6 +54,7 @@ namespace Game.Logic.Actions
             this.actionFactory = actionFactory;
             this.locker = locker;
             this.world = world;
+            this.formula = formula;
             this.procedure = procedure;
         }
 
@@ -64,6 +68,7 @@ namespace Game.Logic.Actions
                                       IActionFactory actionFactory,
                                       ILocker locker,
                                       IWorld world,
+                                      Formula formula,
                                       Procedure procedure)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
@@ -71,6 +76,7 @@ namespace Game.Logic.Actions
             this.actionFactory = actionFactory;
             this.locker = locker;
             this.world = world;
+            this.formula = formula;
             this.procedure = procedure;
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
@@ -150,7 +156,7 @@ namespace Game.Logic.Actions
             city.References.Add(troopObject, this);
             city.Notifications.Add(troopObject, this, targetCity);
 
-            var tma = actionFactory.CreateTroopMovePassiveAction(cityId, troopObject.ObjectId, targetCity.X, targetCity.Y, false, false);
+            var tma = actionFactory.CreateTroopMovePassiveAction(cityId, troopObject.ObjectId, targetCity.PrimaryPosition.X, targetCity.PrimaryPosition.Y, false, false);
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
 
@@ -159,42 +165,43 @@ namespace Game.Logic.Actions
 
         private void AfterTroopMoved(ActionState state)
         {
-            if (state == ActionState.Completed)
+            if (state != ActionState.Completed)
             {
-                Dictionary<uint, ICity> cities;
-
-                using (locker.Lock(out cities, cityId, targetCityId))
-                {
-                    if (cities == null)
-                    {
-                        throw new Exception("Cities missing");
-                    }
-                    ICity city = cities[cityId];
-                    ICity targetCity = cities[targetCityId];
-
-                    ITroopObject troopObject;
-                    if (!city.TryGetTroop(troopObjectId, out troopObject))
-                    {
-                        throw new Exception();
-                    }
-
-                    city.References.Remove(troopObject, this);
-                    city.Notifications.Remove(this);
-
-                    procedure.TroopObjectStation(troopObject, targetCity);
-
-                    if (targetCity.Battle != null)
-                    {
-                        troopObject.Stub.BeginUpdate();
-                        troopObject.Stub.State = TroopState.BattleStationed;
-                        troopObject.Stub.EndUpdate();
-
-                        battleProcedure.AddReinforcementToBattle(targetCity.Battle, troopObject.Stub, FormationType.Defense);
-                    }
-
-                    StateChange(ActionState.Completed);
-                }
+                return;
             }
+            Dictionary<uint, ICity> cities;
+
+            locker.Lock(out cities, cityId, targetCityId).Do(() =>
+            {
+                if (cities == null)
+                {
+                    throw new Exception("Cities missing");
+                }
+                ICity city = cities[cityId];
+                ICity targetCity = cities[targetCityId];
+
+                ITroopObject troopObject;
+                if (!city.TryGetTroop(troopObjectId, out troopObject))
+                {
+                    throw new Exception();
+                }
+
+                city.References.Remove(troopObject, this);
+                city.Notifications.Remove(this);
+
+                procedure.TroopObjectStation(troopObject, targetCity);
+
+                if (targetCity.Battle != null)
+                {
+                    troopObject.Stub.BeginUpdate();
+                    troopObject.Stub.State = TroopState.BattleStationed;
+                    troopObject.Stub.EndUpdate();
+
+                    battleProcedure.AddReinforcementToBattle(targetCity.Battle, troopObject.Stub, FormationType.Defense);
+                }
+
+                StateChange(ActionState.Completed);
+            });
         }
 
         public override Error Validate(string[] parms)

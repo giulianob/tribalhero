@@ -146,7 +146,7 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll(bool wasKilled)
         {
             ICity city;
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -166,7 +166,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
 
         public override void Callback(object custom)
@@ -174,7 +174,7 @@ namespace Game.Logic.Actions
             ICity city;
             ITribe tribe;
 
-            using (locker.Lock(cityId, out city, out tribe))
+            locker.Lock(cityId, out city, out tribe).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -201,7 +201,7 @@ namespace Game.Logic.Actions
                     return;
                 }
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override Error Validate(string[] parms)

@@ -48,7 +48,7 @@ namespace Testing.ActionsTests
             city.SetupGet(p => p.Owner).Returns(player.Object);
             structure.SetupGet(p => p.City).Returns(city.Object);
             locator.Setup(m => m.TryGetObjects(1, out cityObj, out tribeObj)).Returns(true);
-            locker.Setup(m => m.Lock(1, out cityObj, out tribeObj)).Returns((CallbackLock)null);
+            locker.Setup(m => m.Lock(1, out cityObj, out tribeObj)).Returns((IMultiObjectLock)null);
             player.SetupGet(p => p.IsInTribe).Returns(true);
             player.SetupGet(p => p.PlayerId).Returns(123);
             tribe.Setup(m => m.Contribute(123, It.IsAny<Resource>())).Returns((uint inPlayerId, Resource inResource) =>
@@ -197,7 +197,7 @@ namespace Testing.ActionsTests
             city.Setup(m => m.TryGetStructure(100, out structureObj)).Returns(true);
             structure.SetupGet(p => p.City).Returns(city.Object);
             locator.Setup(m => m.TryGetObjects(1, out cityObj, out tribeObj)).Returns(true);
-            locker.Setup(m => m.Lock(1, out cityObj, out tribeObj)).Returns((CallbackLock)null);
+            locker.Setup(m => m.Lock(1, out cityObj, out tribeObj)).Returns((IMultiObjectLock)null);
             locker.Setup(m => m.Lock(1, out cityObj)).Returns((IMultiObjectLock)null);
             player.SetupGet(p => p.IsInTribe).Returns(true);
             player.SetupGet(p => p.PlayerId).Returns(123);
@@ -259,7 +259,7 @@ namespace Testing.ActionsTests
             city.Setup(m => m.TryGetStructure(100, out structureObj)).Returns(true);
             structure.SetupGet(p => p.City).Returns(city.Object);
             locator.Setup(m => m.TryGetObjects(1, out cityObj, out tribeObj)).Returns(true);
-            locker.Setup(m => m.Lock(1, out cityObj, out tribeObj)).Returns((CallbackLock)null);
+            locker.Setup(m => m.Lock(1, out cityObj, out tribeObj)).Returns((IMultiObjectLock)null);
             locker.Setup(m => m.Lock(1, out cityObj)).Returns((IMultiObjectLock)null);
             player.SetupGet(p => p.IsInTribe).Returns(true);
             player.SetupGet(p => p.PlayerId).Returns(123);

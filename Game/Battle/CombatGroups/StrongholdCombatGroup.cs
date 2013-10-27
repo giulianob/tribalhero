@@ -17,7 +17,7 @@ namespace Game.Battle.CombatGroups
                 : base(battleId, id, dbManager)
         {
             this.stronghold = stronghold;
-            owner = new BattleOwner(BattleOwnerType.Stronghold, stronghold.Id);
+            owner = new BattleOwner(BattleOwnerType.Stronghold, stronghold.ObjectId);
         }
 
         #region Persistance
@@ -54,7 +54,7 @@ namespace Game.Battle.CombatGroups
         {
             get
             {
-                return new[] {new DbColumn("stronghold_id", stronghold.Id, DbType.UInt32)};
+                return new[] {new DbColumn("stronghold_id", stronghold.ObjectId, DbType.UInt32)};
             }
         }
 

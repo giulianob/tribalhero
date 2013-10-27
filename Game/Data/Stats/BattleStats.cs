@@ -34,11 +34,11 @@ namespace Game.Data.Stats
         {
             Base = baseStats;
             MaxHp = baseStats.MaxHp;
-            Atk = baseStats.Atk;
+            Atk = baseStats.Attack;
             Splash = baseStats.Splash;
-            Rng = baseStats.Rng;
-            Stl = baseStats.Stl;
-            Spd = baseStats.Spd;
+            Rng = baseStats.Range;
+            Stl = baseStats.Stealth;
+            Spd = baseStats.Speed;
             Carry = baseStats.Carry;
             NormalizedCost = baseStats.NormalizedCost;
         }

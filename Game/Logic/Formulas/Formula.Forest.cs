@@ -1,6 +1,5 @@
 #region
 
-using Game.Data;
 using Game.Data.Forest;
 using Game.Setup;
 

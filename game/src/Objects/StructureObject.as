@@ -3,6 +3,7 @@
     import src.Constants;
     import src.Objects.Factories.StructureFactory;
     import src.Objects.Prototypes.StructurePrototype;
+    import src.Objects.States.BattleState;
     import src.Objects.States.GameObjectState;
 
     public class StructureObject extends GameObject {

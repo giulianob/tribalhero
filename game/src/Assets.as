@@ -89,8 +89,7 @@
             return spriteClass != null;
         }
 
-		public static function getInstance(spriteName: String, withPosition: String = ""): Bitmap
-		{
+        private static function initializeEmbedPositionCache() : void {
             if (embedPositionCache == null) {
                 embedPositionCache = new Dictionary(false);
 
@@ -106,14 +105,22 @@
                     for (var embedPositionIdx: int = 0; embedPositionIdx < embedPositionLength; embedPositionIdx++) {
                         var positionName: String = embedPosition[embedPositionIdx].arg.(@key == "name").@value;
                         embedPositionCache[constants[i].@name.toString() + ":" + positionName] = new Point(
-                            Number(embedPosition[embedPositionIdx].arg.(@key == "x").@value) || 0,
-                            Number(embedPosition[embedPositionIdx].arg.(@key == "y").@value) || 0
+                                Number(embedPosition[embedPositionIdx].arg.(@key == "x").@value) || 0,
+                                Number(embedPosition[embedPositionIdx].arg.(@key == "y").@value) || 0
                         );
                     }
                 }
 
             }
+        }
 
+        public static function getPosition(spriteName: String, withPosition: String): Point {
+            initializeEmbedPositionCache();
+            return embedPositionCache[spriteName + ":" + withPosition];
+        }
+
+		public static function getInstance(spriteName: String, withPosition: String = ""): Bitmap
+		{
 			try {
 				spriteName = spriteName.replace('-', '_').toUpperCase();				
 				var spriteClass: Class = Assets[spriteName] as Class;
@@ -122,7 +129,7 @@
 				sprite.scaleY = 1.001;
 
                 if (withPosition) {
-                    var point: Point = embedPositionCache[spriteName + ":" + withPosition];
+                    var point: Point = getPosition(spriteName, withPosition);
                     if (point) {
                         sprite.x = point.x;
                         sprite.y = point.y;

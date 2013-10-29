@@ -4,6 +4,7 @@ package src.Objects {
 
     import flash.display.DisplayObject;
     import flash.events.Event;
+    import flash.geom.Point;
 
     import src.Constants;
 
@@ -65,12 +66,26 @@ package src.Objects {
 			}
 
 			this.icon = icon;
+            alignIcon();
 
 			if (icon) {
 				addChild(icon);
 				TweenMax.from(icon, 1, { transformMatrix: { rotation: -180 }, alpha:0 });
 			}
 		}
+
+        private function alignIcon(): void {
+            if (icon && spritePosition) {
+                icon.x = spritePosition.x - icon.width;
+                icon.y = -icon.height;
+            }
+        }
+
+        public override function setSprite(sprite: DisplayObject, spritePosition: Point): void {
+            super.setSprite(sprite, spritePosition);
+
+            alignIcon();
+        }
 
 		public static function sortOnId(a:SimpleGameObject, b:SimpleGameObject):Number
 		{
@@ -103,19 +118,6 @@ package src.Objects {
 				return false;
 			
 			return type == gameObj.type;
-		}		
-
-		public static function compareGroupIdAndObjId(a: SimpleGameObject, value: Array):int
-		{
-			var groupDelta: int = a.groupId - value[0];
-			var idDelta: int = a.objectId - value[1];
-
-			if (groupDelta != 0)
-				return groupDelta;
-			else if (idDelta != 0)
-				return idDelta;
-			else
-				return 0;
 		}
 	}
 

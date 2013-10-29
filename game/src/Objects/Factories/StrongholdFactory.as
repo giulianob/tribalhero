@@ -15,14 +15,18 @@
 		public function StrongholdFactory() {
 		}
 
+        private static function getSpriteName(): String {
+            return "STRONGHOLD_STRUCTURE";
+        }
+
 		public static function getSprite(withPosition: String, withShadow: Boolean = false): DisplayObjectContainer
 		{
-			var image: Bitmap = Assets.getInstance("STRONGHOLD_STRUCTURE", withPosition);
+			var image: Bitmap = Assets.getInstance(getSpriteName(), withPosition);
 
             var sprite: Sprite = new Sprite();
 
             if (withShadow) {
-                var shadow: Bitmap = Assets.getInstance("STRONGHOLD_STRUCTURE_SHADOW", withPosition);
+                var shadow: Bitmap = Assets.getInstance(getSpriteName() + "_SHADOW", withPosition);
                 shadow.alpha = Constants.shadowAlpha;
                 shadow.name = "shadow";
                 sprite.addChild(shadow);
@@ -37,7 +41,7 @@
 		{
 			var strongholdObj: Stronghold = new Stronghold(type, state, objX, objY, size, groupId, objectId, level, tribeId, gateMax);
 
-			strongholdObj.spriteContainer.addChild(getSprite("map", true));
+			strongholdObj.setSprite(getSprite("map", true), Assets.getPosition(getSpriteName(), "map"));
 
 			strongholdObj.setOnSelect(Global.map.selectObject);
 			

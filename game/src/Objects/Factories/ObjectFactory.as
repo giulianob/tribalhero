@@ -163,15 +163,6 @@
             return sprite;
 		}
 
-		public static function getSimpleObject(name: String, x: int, y: int, size: int): SimpleObject {
-			var obj: SimpleObject = new SimpleObject(x, y, size);
-			var objRef: Class = getDefinitionByName(name) as Class;
-
-			obj.spriteContainer.addChild(new objRef() as DisplayObject);
-
-			return obj;
-		}
-		
 		public static function getNewCityPlaceholderSprite() : DisplayObjectContainer
 		{
 			var obj: Sprite = new Sprite();
@@ -182,7 +173,7 @@
 		public static function getNewCityPlaceholderInstance(x: int, y: int) : NewCityPlaceholder
 		{
 			var obj: NewCityPlaceholder = new NewCityPlaceholder(x, y);
-			obj.spriteContainer.addChild(Assets.getInstance("FOUNDATION", "map"));
+			obj.setSprite(Assets.getInstance("FOUNDATION", "map"), Assets.getPosition("FOUNDATION", "map"));
 			return obj;
 		}
 	}

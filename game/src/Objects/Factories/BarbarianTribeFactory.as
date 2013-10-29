@@ -17,14 +17,18 @@
 		public function BarbarianTribeFactory() {
 		}
 
-		public static function getSprite(withPosition: String = "", withShadow: Boolean = false): DisplayObjectContainer
+        private static function getSpriteName(): String {
+            return "BARBARIAN_TRIBE_STRUCTURE";
+        }
+
+        public static function getSprite(withPosition: String = "", withShadow: Boolean = false): DisplayObjectContainer
 		{
-			var image: DisplayObject = Assets.getInstance("BARBARIAN_TRIBE_STRUCTURE", withPosition);
+			var image: DisplayObject = Assets.getInstance(getSpriteName(), withPosition);
 
             var sprite: Sprite = new Sprite();
 
             if (withShadow) {
-                var shadow: Bitmap = Assets.getInstance("BARBARIAN_TRIBE_STRUCTURE_SHADOW", withPosition);
+                var shadow: Bitmap = Assets.getInstance(getSpriteName() + "_SHADOW", withPosition);
                 shadow.alpha = Constants.shadowAlpha;
                 shadow.name = "shadow";
                 sprite.addChild(shadow);
@@ -39,7 +43,7 @@
 		{
 			var obj: BarbarianTribe = new BarbarianTribe(type, state, objX, objY, size, groupId, objectId, level, count);
 
-			obj.spriteContainer.addChild(getSprite("map", true));
+            obj.setSprite(getSprite("map", true), Assets.getPosition(getSpriteName(), "map"));
 
 			obj.setOnSelect(Global.map.selectObject);
 			

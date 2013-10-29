@@ -16,9 +16,13 @@
 		public function ForestFactory() {
 		}
 
+        private static function getSpriteName(lvl: int): String {
+            return "FOREST_LVL_" + lvl;
+        }
+
         public static function getSprite(lvl: int, withPosition: String = "", withShadow: Boolean = false): DisplayObjectContainer
         {
-            var assetName: String = "FOREST_LVL_" + lvl;
+            var assetName: String = getSpriteName(lvl);
 
             var image: DisplayObject = Assets.getInstance(assetName, withPosition);
 
@@ -40,7 +44,7 @@
 		{
 			var forestObj: Forest = new Forest(type, state, objX, objY, size, groupId, objectId, level);
 
-			forestObj.spriteContainer.addChild(getSprite(level, "map"));
+            forestObj.setSprite(getSprite(level, "map"), Assets.getPosition(getSpriteName(level), "map"));
 
 			forestObj.setOnSelect(Global.map.selectObject);
 			

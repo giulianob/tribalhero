@@ -113,14 +113,20 @@
 			}
 
             Constants.mainWebsite = parms.mainWebsite || Constants.mainWebsite;
-            
+
+            if (parms.playerName) {
+                Constants.playerName = parms.playerName;
+            }
+
+            if (parms.hostname) {
+                Constants.hostname = parms.hostname;
+            }
+
 			//Define login type and perform login action
-			if (parms.hostname)
+			if (parms.lsessid)
 			{
-				siteVersion = parms.siteVersion;                
-				Constants.playerName = parms.playerName;
+				siteVersion = parms.siteVersion;
 				Constants.loginKey = parms.lsessid;
-				Constants.hostname = parms.hostname;
 				loadData();
 			}
 			else

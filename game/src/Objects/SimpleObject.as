@@ -25,8 +25,8 @@ package src.Objects {
 		private var objectCountDisplayObject: DisplayObject;
         private var objectCount: int;
 
-		// This is the container where the objects sprite/image should go
-		public var spriteContainer: Sprite;
+		private var spriteContainer: Sprite;
+        protected var spritePosition: Point;
 
         public var primaryPosition: ScreenPosition = new ScreenPosition();
 
@@ -86,8 +86,8 @@ package src.Objects {
 			bubble.txtUnreadCount.mouseEnabled = false;
 			bubble.txtUnreadCount.tabEnabled = false;
 			bubble.txtUnreadCount.text = count.toString();
-			bubble.x = Constants.tileW / 2;
-			bubble.y = 0;
+			bubble.x = spritePosition.x - bubble.width;
+			bubble.y = 20;
 			
 			objectCountDisplayObject = bubble;
 			
@@ -190,6 +190,12 @@ package src.Objects {
 			else
 				return 0;
 		}
+
+        public function setSprite(sprite: DisplayObject, spritePosition: Point): void {
+            this.spritePosition = spritePosition;
+
+            spriteContainer.addChild(sprite);
+        }
 
         override public function get x(): Number {
             return super.x;

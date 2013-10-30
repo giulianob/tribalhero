@@ -142,16 +142,23 @@ namespace Game.Logic.Actions
                 return Error.ForestCampMaxReached;
             }
 
-            // Make sure we have the specified number of laborers
-            if (lumbermill.Stats.Base.MaxLabor < labors + lumbermill.Stats.Labor)
-            {
-                return Error.LaborOverflow;
-            }
-
             // Make sure some labors are being put in
             if (labors <= 0)
             {
                 return Error.LaborNotEnough;
+            }
+            
+            // Make sure we have the specified number of laborers
+            int currentInUsedLabor = lumbermill.City.Where(s => objectTypeFactory.IsStructureType("ForestCamp", s)).Sum(x => x.Stats.Labor);
+            if (formula.GetLumbermillMaxLabor(lumbermill) < labors + currentInUsedLabor)
+            {
+                return Error.LaborOverflow;
+            }
+
+            // Make sure it's within the limit of a forest camp
+            if (labors > formula.GetForestCampMaxLabor(lumbermill))
+            {
+                return Error.ForestCampMaxLaborReached;
             }
 
             // Make sure this user is not already milking this forest.
@@ -241,7 +248,7 @@ namespace Game.Logic.Actions
             forest.EndUpdate();
 
             lumbermill.BeginUpdate();
-            lumbermill.Stats.Labor += labors;
+            lumbermill["Labor"] = formula.GetForestCampLaborerString(lumbermill);
             lumbermill.EndUpdate();
 
             // add to queue for completion

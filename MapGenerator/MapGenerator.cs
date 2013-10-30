@@ -7,6 +7,7 @@ using System.Linq;
 using System.Xml;
 using System.Xml.XPath;
 using Game.Map;
+using Game.Setup;
 
 namespace MapGenerator
 {
@@ -34,21 +35,24 @@ namespace MapGenerator
 
         private readonly ITileLocator tileLocator;
 
+        private readonly IObjectTypeFactory objectTypeFactory;
+
         private readonly ushort[,] map = new ushort[WIDTH, HEIGHT];
 
         private readonly Random random = new Random();
 
         private readonly List<MapGenRegion> regions = new List<MapGenRegion>();
 
-        public MapGenerator(CityResourceTileGenerator cityResourceTileGenerator, ITileLocator tileLocator)
+        public MapGenerator(CityResourceTileGenerator cityResourceTileGenerator, ITileLocator tileLocator, IObjectTypeFactory objectTypeFactory)
         {
             this.cityResourceTileGenerator = cityResourceTileGenerator;
             this.tileLocator = tileLocator;
+            this.objectTypeFactory = objectTypeFactory;
         }
 
-        private void LoadRegions()
+        private void LoadRegions(string tmxFiles)
         {
-            foreach (var mapFilePath in Directory.GetFiles("map", "*.tmx", SearchOption.AllDirectories))
+            foreach (var mapFilePath in Directory.GetFiles(tmxFiles, "*.tmx", SearchOption.AllDirectories))
             {
                 using (var xmlReader = XmlReader.Create(File.OpenRead(mapFilePath), new XmlReaderSettings {DtdProcessing = DtdProcessing.Parse, XmlResolver = null}))
                 {
@@ -74,6 +78,12 @@ namespace MapGenerator
                             for (int i = 0; i < tmpMap.Length; i += sizeof(int))
                             {
                                 var tileId = (ushort)(BitConverter.ToInt32(tmpMap, i) - 1);
+
+                                if (objectTypeFactory.IsTileType("CityStartTile", tileId))
+                                {
+                                    tileId = 0;
+                                }
+
                                 region.Map[cnt++] = tileId;
                             }
                         }
@@ -92,9 +102,9 @@ namespace MapGenerator
             }
         }
 
-        public void GenerateMap() {
+        public void GenerateMap(string tmxFiles) {
 
-            LoadRegions();
+            LoadRegions(tmxFiles);
 
             GenerateMapArray();
 
@@ -147,8 +157,9 @@ namespace MapGenerator
                 Directory.CreateDirectory("out");
             }
 
-            using (var bw = new BinaryWriter(File.Open("out/map.dat", FileMode.Create, FileAccess.Write)))
-            {
+            using (var bw = new BinaryWriter(new GZipStream(File.Open("out/map.dat", FileMode.Create, FileAccess.Write), CompressionMode.Compress)))            
+            {                
+                        
                 for (int row = 0; row < TMX_REGION_ROWS; ++row)
                 {
                     for (int col = 0; col < TMX_REGION_COLUMNS; ++col)

@@ -65,7 +65,7 @@ namespace Game.Logic.Actions
             if (lumbermill == null) return Error.LumbermillUnavailable;
             
             lumbermill.BeginUpdate();
-            lumbermill.Stats.Labor = (ushort)obj.City.Where(s => objectTypeFactory.IsStructureType("ForestCamp", s)).Sum(x => x.Stats.Labor);
+            lumbermill["Labor"] = formula.GetForestCampLaborerString(lumbermill);
             lumbermill.EndUpdate();
             return Error.Ok;
         }

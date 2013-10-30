@@ -4,6 +4,7 @@ using System;
 using Game.Data;
 using Game.Data.Forest;
 using Game.Data.Troop;
+using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -11,6 +12,7 @@ using Game.Util.Locking;
 using NDesk.Options;
 using Ninject;
 using Persistance;
+using System.Linq;
 
 #endregion
 
@@ -20,11 +22,19 @@ namespace Game.Comm
     {
         private readonly IForestManager forestManager;
         private readonly IDbManager dbManager;
+        private readonly ICityManager cityManager;
+        private readonly ILocker locker;
+        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly Formula formula;
 
-        public ResourcesCommandLineModule(IForestManager forestManager, IDbManager dbManager)
+        public ResourcesCommandLineModule(IForestManager forestManager, IDbManager dbManager, ICityManager cityManager,ILocker locker, ObjectTypeFactory objectTypeFactory, Formula formula)
         {
             this.forestManager = forestManager;
             this.dbManager = dbManager;
+            this.cityManager = cityManager;
+            this.locker = locker;
+            this.objectTypeFactory = objectTypeFactory;
+            this.formula = formula;
         }
 
         public override void RegisterCommands(CommandLineProcessor processor)
@@ -170,6 +180,18 @@ namespace Game.Comm
             }
 
             forestManager.ReloadForests(capacity);
+
+            foreach (ICity city in cityManager.AllCities())
+            {
+                using (locker.Lock(city))
+                {
+                    var lumbermill = city.FirstOrDefault(structure => objectTypeFactory.IsStructureType("Lumbermill", structure));
+                    if (lumbermill == null) continue;
+                    lumbermill.BeginUpdate();
+                    lumbermill["Labor"] = formula.GetForestCampLaborerString(lumbermill);
+                    lumbermill.EndUpdate();
+                }
+            }
             return string.Format("OK!  All forests' capacities set to [{0}]", capacity);
         }
     }

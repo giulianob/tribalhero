@@ -77,6 +77,8 @@ namespace Game.Setup
         ResourceExceedTradeLimit = 209,
 
         LumbermillBusy = 210,
+
+        ForestCampMaxLaborReached = 211,
         
         #endregion
 

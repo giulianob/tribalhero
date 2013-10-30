@@ -220,13 +220,16 @@
 			return prototype.upgradeResources;
 		}
 
-		public static function maxForestLabor(level: int) : int {
-			return level * 320;
+		public static function maxLumbermillLabor(level: int) : int {
+            var maxLabor : Array = [ 0, 40, 40, 80, 160, 160, 160, 240, 240, 360, 360, 360, 480, 480, 480, 640 ];
+            return maxLabor[level];
+
 		}
 
-		public static function maxForestLaborPerUser(level: int) : int {
-			return Formula.maxForestLabor(level) / 8;
-		}
+        public static function maxLaborPerForestCamp(level: int) : int {
+            var maxLabor : Array = [ 0, 40, 40, 40, 80, 80, 80, 80, 80, 120, 120, 120, 120, 120, 240, 320 ];
+            return maxLabor[level];
+        }
 
 		public static function movementIconTroopSize(troopStub: TroopStub) : int {
 			var upkeep: int = troopStub.getUpkeep();

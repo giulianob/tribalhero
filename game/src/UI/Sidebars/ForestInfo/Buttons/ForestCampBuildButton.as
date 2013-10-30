@@ -2,8 +2,12 @@
 package src.UI.Sidebars.ForestInfo.Buttons {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import src.Global;
-	import src.Objects.Actions.ForestCampBuildAction;
+
+    import src.Global;
+    import src.Map.CityObject;
+    import src.Objects.Actions.ForestCampBuildAction;
+import src.Objects.Effects.Formula;
+import src.UI.Dialog.InfoDialog;
 	import src.Objects.Factories.*;
 	import src.Objects.Forest;
 	import src.Objects.GameObject;
@@ -14,6 +18,8 @@ package src.UI.Sidebars.ForestInfo.Buttons {
 	import src.UI.Dialog.ForestLaborDialog;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
 	import src.UI.Tooltips.TextTooltip;
+    import System.Linq.Enumerable;
+    import src.Objects.StructureObject;
 
 	public class ForestCampBuildButton extends ActionButton
 	{
@@ -45,16 +51,31 @@ package src.UI.Sidebars.ForestInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				// Check to see if this is being called from the forest or from the lumbermill. If this is from the forest, then the parent action will be null
+                var lumbermill: CityObject = Enumerable.from(Global.gameContainer.selectedCity.objects).firstOrNone(function(obj: CityObject): Boolean {
+                    return ObjectFactory.isType("Lumbermill", obj.type);
+                }).value;
+
+                if(lumbermill==null) {
+                    InfoDialog.showMessageDialog("Error","You need to have a lumbermill before you can harvest!");
+                    return;
+                }
+
+                var limit: int = Formula.maxLumbermillLabor(lumbermill.level)-Enumerable.from(Global.gameContainer.selectedCity.objects).where(function(obj: CityObject): Boolean {
+                    return ObjectFactory.isType("ForestCamp", obj.type);
+                }).sum(function(obj: CityObject): int {
+                    return obj.labor;
+                });
+
+                // Check to see if this is being called from the forest or from the lumbermill. If this is from the forest, then the parent action will be null
 				var forestCampBuildAction: ForestCampBuildAction = parentAction as ForestCampBuildAction;
 
 				var campTypes: Array = ObjectFactory.getList("ForestCamp");
 				if (forestCampBuildAction == null) {
-					var laborDialog: ForestLaborDialog = new ForestLaborDialog(Global.gameContainer.selectedCity.id, parentObj as Forest, onSetLabor);
+					var laborDialog: ForestLaborDialog = new ForestLaborDialog(Global.gameContainer.selectedCity.id, parentObj as Forest, lumbermill.level, limit, onSetLabor);
 					laborDialog.show();
 				} else {									
 					var cursor: GroundForestCursor = new GroundForestCursor(parentObj.groupId, function(forest: Forest) : void {
-						var laborDialog: ForestLaborDialog = new ForestLaborDialog(parentObj.groupId, forest, onSetLabor);
+						var laborDialog: ForestLaborDialog = new ForestLaborDialog(parentObj.groupId, forest, lumbermill.level, limit, onSetLabor);
 						laborDialog.show();
 					});
 

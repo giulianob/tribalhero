@@ -85,7 +85,7 @@ package src.Objects {
 			bubble.mouseChildren = false;
 			bubble.txtUnreadCount.mouseEnabled = false;
 			bubble.txtUnreadCount.tabEnabled = false;
-			bubble.txtUnreadCount.text = count.toString();
+			bubble.txtUnreadCount.text = count > 9 ? "!" : count.toString();
 			bubble.x = spritePosition.x - bubble.width;
 			bubble.y = 20;
 			

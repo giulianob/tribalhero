@@ -111,12 +111,12 @@ namespace Game.Logic.Procedures
 
         public virtual bool HasTooManyAttacks(ICity city)
         {
-            return city.Worker.PassiveActions.Values.Count(action => action.Category == ActionCategory.Attack) > 20;
+            return city.Worker.PassiveActions.Values.Count(action => action.Category == ActionCategory.Attack) > 40;
         }
 
         public virtual bool HasTooManyDefenses(ICity city)
         {
-            return city.Worker.PassiveActions.Values.Count(action => action.Category == ActionCategory.Defense) > 20;
+            return city.Worker.PassiveActions.Values.Count(action => action.Category == ActionCategory.Defense) > 40;
         }
     }
 }

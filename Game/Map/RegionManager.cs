@@ -437,7 +437,7 @@ namespace Game.Map
                 AddRegion(regionFactory.CreateRegion(data));
             }
 
-            logger.Info(String.Format("Loaded map file length[{0}] position[{1}] regions[{2}]", mapStream.Length, mapStream.Position, regions.Count));            
+            logger.Info(String.Format("Loaded map file regions[{0}]", regions.Count));            
 
             // creating city regions;
             column = (int)(inWorldWidth / miniMapRegionWidth);

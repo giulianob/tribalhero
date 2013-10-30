@@ -19,9 +19,15 @@ namespace MapGenerator
             bool help = false;
             string settingsFile = string.Empty;
 
+            string tmxFiles = "map";
             try
             {
-                var p = new OptionSet {{"?|help|h", v => help = true}, {"settings=", v => settingsFile = v},};
+                var p = new OptionSet
+                {
+                    {"?|help|h", v => help = true}, 
+                    {"settings=", v => settingsFile = v},
+                    {"tmxfiles=", v => tmxFiles = v},
+                };
                 p.Parse(Environment.GetCommandLineArgs());
             }
             catch(Exception e)
@@ -32,7 +38,7 @@ namespace MapGenerator
 
             if (help)
             {
-                Console.Out.WriteLine("Usage: mapgenerator [--settings=settings.ini]");
+                Console.Out.WriteLine("Usage: mapgenerator [--settings=settings.ini] [--tmxfiles=folderwithtmxmaps]");
                 Environment.Exit(0);
             }
 
@@ -40,7 +46,7 @@ namespace MapGenerator
             kernel = Engine.CreateDefaultKernel(new MapGeneratorModule());
 
             kernel.Get<FactoriesInitializer>().CompileAndInit();
-            kernel.Get<MapGenerator>().GenerateMap();
+            kernel.Get<MapGenerator>().GenerateMap(tmxFiles);
         }
     }
 }

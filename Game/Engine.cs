@@ -1,7 +1,9 @@
 #region
 
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using Game.Comm;
@@ -124,7 +126,10 @@ namespace Game
         {
             var ex = (Exception)e.ExceptionObject;
             Logger.ErrorException("Unhandled exception", ex);
-            Environment.Exit(1);
+            if (!Debugger.IsAttached)
+            {
+                Environment.Exit(1);
+            }
         }
 
         public void Start()
@@ -156,7 +161,8 @@ _________ _______ _________ ______   _______  _
             State = EngineState.Starting;
 
             // Load map
-            using (var map = new FileStream(Config.maps_folder + "map.dat", FileMode.Open))
+            using (var mapFile = new FileStream(Config.maps_folder + "map.dat", FileMode.Open))
+            using (var map = new GZipStream(mapFile, CompressionMode.Decompress))
             {
                 // Create region changes file or open it depending on config settings
                 string regionChangesPath = Config.regions_folder + "region_changes.dat";

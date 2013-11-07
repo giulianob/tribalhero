@@ -16,8 +16,8 @@
 		}		
 		
 		protected override function getCalculatedRate(): Number {
-			return (3600000.0 / (getRate() - getUpkeep())) * Constants.secondsPerUnit;
-		}		
+			return (3600.0 / (getRate() - getUpkeep())) * Constants.secondsPerUnit;
+		}
 		
 	}
 

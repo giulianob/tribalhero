@@ -1,27 +1,25 @@
 ﻿
 package src.UI.Sidebars.ForestInfo.Buttons {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
+import System.Linq.Enumerable;
 
-    import src.Global;
-    import src.Map.CityObject;
-    import src.Objects.Actions.ForestCampBuildAction;
+import flash.events.Event;
+import flash.events.MouseEvent;
+
+import src.Global;
+import src.Map.CityObject;
+import src.Objects.Actions.ActionButton;
+import src.Objects.Actions.ForestCampBuildAction;
 import src.Objects.Effects.Formula;
+import src.Objects.Factories.*;
+import src.Objects.Forest;
+import src.Objects.SimpleGameObject;
+import src.UI.Cursors.*;
+import src.UI.Dialog.ForestLaborDialog;
 import src.UI.Dialog.InfoDialog;
-	import src.Objects.Factories.*;
-	import src.Objects.Forest;
-	import src.Objects.GameObject;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.Troop.*;
-	import src.UI.Cursors.*;
-	import src.UI.Dialog.ForestLaborDialog;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
-	import src.UI.Tooltips.TextTooltip;
-    import System.Linq.Enumerable;
-    import src.Objects.StructureObject;
+import src.UI.Tooltips.TextTooltip;
+import src.Util.StringHelper;
 
-	public class ForestCampBuildButton extends ActionButton
+public class ForestCampBuildButton extends ActionButton
 	{
 		private var tooltip: TextTooltip;
 
@@ -59,13 +57,17 @@ import src.UI.Dialog.InfoDialog;
                     InfoDialog.showMessageDialog("Error","You need to have a lumbermill before you can harvest!");
                     return;
                 }
-
-                var limit: int = Formula.maxLumbermillLabor(lumbermill.level)-Enumerable.from(Global.gameContainer.selectedCity.objects).where(function(obj: CityObject): Boolean {
+                var max: int = Formula.maxLumbermillLabor(lumbermill.level);
+                var limit: int = max-Enumerable.from(Global.gameContainer.selectedCity.objects).where(function(obj: CityObject): Boolean {
                     return ObjectFactory.isType("ForestCamp", obj.type);
                 }).sum(function(obj: CityObject): int {
                     return obj.labor;
                 });
 
+                if(limit<=0) {
+                    InfoDialog.showMessageDialog("Error","All "+max+" lumbermill laborers are already at work!");
+                    return;
+                }
                 // Check to see if this is being called from the forest or from the lumbermill. If this is from the forest, then the parent action will be null
 				var forestCampBuildAction: ForestCampBuildAction = parentAction as ForestCampBuildAction;
 

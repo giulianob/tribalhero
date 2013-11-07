@@ -81,6 +81,18 @@ namespace Game.Logic.Actions
                 camp.City.Resource.Wood.Rate += newRate - oldRate;
                 camp.City.EndUpdate();
             }
+
+            if (obj.IsUpdating)
+            {
+                obj["Labor"] = formula.GetForestCampLaborerString(obj);
+            }
+            else
+            {
+                obj.BeginUpdate();
+                obj["Labor"] = formula.GetForestCampLaborerString(obj);
+                obj.EndUpdate();               
+            }
+
             return Error.Ok;
         }
 

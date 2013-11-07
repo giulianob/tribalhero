@@ -188,6 +188,14 @@ namespace Game.Data
 
         public abstract void EndUpdate();
 
+        public virtual bool IsUpdating
+        {
+            get
+            {
+                return updating;
+            }
+        }
+
         protected virtual void Update()
         {
             if (!Global.FireEvents)

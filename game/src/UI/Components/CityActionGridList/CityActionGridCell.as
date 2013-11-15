@@ -1,5 +1,6 @@
 ﻿package src.UI.Components.CityActionGridList
 {
+    import flash.display.DisplayObject;
     import flash.events.MouseEvent;
 
     import org.aswing.*;
@@ -8,8 +9,6 @@
 
     import src.Global;
     import src.Map.CityObject;
-    import src.Map.ScreenPosition;
-    import src.Map.TileLocator;
     import src.Objects.Actions.CurrentAction;
     import src.Objects.Actions.CurrentActiveAction;
     import src.Objects.Actions.CurrentPassiveAction;
@@ -20,10 +19,10 @@
     import src.Util.Util;
 
     public class CityActionGridCell extends JPanel implements GridListCell{
+        private const iconSize: Number = 50;
 
 		private var value: * ;
 
-		private var panel2:JPanel;
 		private var icon:JPanel;
 		private var lblAction:JLabel;
 		private var lblTime:JLabel;
@@ -48,7 +47,7 @@
 		public function setCellValue(value:*):void {
 			
 			if (value.message) {
-				panel2.remove(icon);
+				remove(icon);
 				lblAction.setText(value.message);
 				return;
 			}
@@ -71,7 +70,9 @@
 			else
 			actionDescription = "Unexpected action";
 
-			icon.append(new AssetPane(value.source));
+            var iconSprite: DisplayObject = value.source;
+            Util.resizeSprite(iconSprite, iconSize, iconSize);
+			icon.append(new AssetPane(iconSprite));
 
 			lblAction.setText(actionDescription);
 
@@ -104,17 +105,11 @@
 		}
 
 		private function createUI() : void {
-            var layout0: GridLayout = new GridLayout();
-            layout0.setRows(1);
-            layout0.setColumns(2);
-            setLayout(layout0);
+            var layout1: FlowLayout = new FlowLayout(AsWingConstants.LEFT, 5, 0, false);
+            setLayout(layout1);
 
-            panel2 = new JPanel();
-            var layout1: FlowLayout = new FlowLayout();
-            panel2.setLayout(layout1);
-
-            icon = new JPanel();
-            icon.setPreferredWidth(50);
+            icon = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 0, 0, false));
+            icon.setPreferredSize(new IntDimension(iconSize, iconSize));
 
             tooltip = new SimpleTooltip(this, "Click to go to event");
             tooltip.setEnabled(false);
@@ -132,14 +127,11 @@
             lblTime = new JLabel();
             lblTime.setHorizontalAlignment(AsWingConstants.LEFT);
 
-            //component layout
-            panel2.append(icon);
-            panel2.append(panel6);
-
             panel6.append(lblAction);
             panel6.append(lblTime);
 
-            append(panel2);
+            append(icon);
+            append(panel6);
         }
 	}
 

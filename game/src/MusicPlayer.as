@@ -13,7 +13,8 @@ package src {
                 "http://cdn.tribalhero.com/music/TribalHero1.mp3",
                 "http://cdn.tribalhero.com/music/TribalHero2.mp3",
                 "http://cdn.tribalhero.com/music/TribalHero3.mp3",
-                "http://cdn.tribalhero.com/music/TribalHero4.mp3"
+                "http://cdn.tribalhero.com/music/TribalHero4.mp3",
+                "http://cdn.tribalhero.com/music/TribalHero5.mp3"
         ];
 
         public var events: EventDispatcher = new EventDispatcher();

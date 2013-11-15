@@ -259,7 +259,7 @@
 			
 			// Local Events Tab
 			{
-				gridLocalActions = new CityActionGridList(city, 530);
+				gridLocalActions = new CityActionGridList(city);
 				pnlTabs.appendTab(new JScrollPane(gridLocalActions), StringHelper.localize("CITY_OVERVIEW_LOCAL_EVENTS_TAB"));				
 			}
 			

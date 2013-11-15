@@ -16,6 +16,7 @@
     import src.Objects.Factories.ObjectFactory;
     import src.Objects.Prototypes.StructurePrototype;
     import src.Util.BinaryList.*;
+    import src.Util.Util;
 
     /**
 	 * ...
@@ -26,13 +27,13 @@
 		private var city: City;
 		private var timer: Timer;
 
-		public function CityActionGridList(city: City, tileWidth: int)
+		public function CityActionGridList(city: City)
 		{
 			super(new VectorListModel(), new GeneralGridListCellFactory(CityActionGridCell), 2, 0);
 
 			this.city = city;
 
-			setTileWidth(tileWidth/2 - 30);
+			setTileWidth(235);
 			setTileHeight(60);
 			setColsRows(2, 0);
 			setTracksWidth(true);
@@ -93,6 +94,7 @@
 
 				var prototype: * = ObjectFactory.getPrototype(cityObj.type, cityObj.level);
 				var icon: DisplayObjectContainer = ObjectFactory.getSpriteEx(cityObj.type, cityObj.level);
+
 				if (prototype is StructurePrototype) icon = ObjectFactory.makeSpriteSmall(icon);
 
 				(getModel() as VectorListModel).append( { 'cityObj': cityObj, 'source': icon, 'cityId': city.id , 'objPrototype': prototype, 'currentAction': currentAction } );

@@ -13,7 +13,7 @@
  </layer>
  <layer name="Walls" width="15" height="29">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3SSQ6AIAwFUO6/EyKKXFaa2A3pxHdn/EnDhheGNqU/nAq6PuoCbX7WNmoDHNsG2hU/O7aH46pi2WvphvNsdqzmS8BZZ0f7IO2LWu2/vT5QpLcV0HG8e7/poRfNozbiJG/NuGbJ0IyfC46zg+7LuQEaBMLZzAYAAA==
+   H4sIAAAAAAAAC+2UQQ6AIAwE+f8NUdHoY6UJTUxDaReOOskeJwUWCOGH2WsQYslVcpdk0F1qiDToESfgJuEivvRmXfbjgEesxvyey7Q683haX94eW3M9Z9lbm3X/NNdas3UeMx1orqcDzfd2IF16+8gbfvv0BxygS/O8+5Rs4Lwv8ADaILkmzAYAAA==
   </data>
  </layer>
 </map>

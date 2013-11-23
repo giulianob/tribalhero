@@ -1,4 +1,7 @@
-﻿namespace MapGenerator
+﻿using System.Collections.Generic;
+using Game.Map;
+
+namespace MapGenerator
 {
     enum Direction
     {
@@ -23,17 +26,8 @@
 
         private int resultIndex;
 
-        private int startX;
-
-        private int startY;
-
         private int width;
-
-        private int Index(int x, int y)
-        {
-            return y * width + x;
-        }
-
+        
         private void Walk(Direction direction, int steps, ref int x, ref int y)
         {
             while (steps-- > 0)
@@ -69,9 +63,6 @@
             resultIndex = 0;
             result = new int[count];
 
-            startX = x;
-            startY = y;
-
             result[resultIndex++] = y * width + x;
 
             Direction direction = Direction.East;
@@ -103,13 +94,24 @@
             }
         }
 
-        public void Foreach(int width, int height, int x, int y, DoWork work, object custom)
+        public IEnumerable<SpiralForeach> Foreach(int width, int height, int x, int y)
         {
             BuildOrder(width, height, x, y);
             for (int i = 0; i < resultIndex; ++i)
             {
-                work(i, result[i] % width, result[i] / width, custom);
+                yield return new SpiralForeach
+                {
+                    Index = i,
+                    Position = new Position((uint)(result[i] % width), (uint)(result[i] / width))
+                };
             }
+        }
+
+        public class SpiralForeach
+        {
+            public int Index { get; set; }
+
+            public Position Position { get; set; }
         }
     }
 }

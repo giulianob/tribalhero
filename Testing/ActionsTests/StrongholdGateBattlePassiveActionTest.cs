@@ -63,7 +63,7 @@ namespace Testing.ActionsTests
             battle.SetupGet(m => m.Attackers).Returns(attackers.Object);
 
             var stronghold = new Mock<IStronghold>();
-            stronghold.SetupGet(p => p.Id).Returns(300);
+            stronghold.SetupGet(p => p.ObjectId).Returns(300);
             stronghold.SetupGet(p => p.GateBattle).Returns(battle.Object);
             stronghold.SetupProperty(p => p.GateOpenTo);
 
@@ -184,7 +184,7 @@ namespace Testing.ActionsTests
             battle.SetupGet(m => m.Attackers).Returns(attackers.Object);
 
             var stronghold = new Mock<IStronghold>();
-            stronghold.SetupGet(p => p.Id).Returns(300);
+            stronghold.SetupGet(p => p.ObjectId).Returns(300);
             stronghold.SetupGet(p => p.GateBattle).Returns(battle.Object);
             stronghold.SetupProperty(p => p.GateOpenTo);
 

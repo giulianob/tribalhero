@@ -53,7 +53,7 @@ namespace Game.Data.Tribe
 
         private readonly IScheduler scheduler;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         private readonly ILocker locker;
 
@@ -76,7 +76,7 @@ namespace Game.Data.Tribe
                           IGameObjectLocator gameObjectLocator,
                           IScheduler scheduler,
                           Procedure procedure,
-                          TileLocator tileLocator,
+                          ITileLocator tileLocator,
                           IActionFactory actionFactory,
                           ILocker locker,
                           ITroopObjectInitializerFactory troopObjectInitializerFactory)
@@ -122,7 +122,7 @@ namespace Game.Data.Tribe
                           IGameObjectLocator gameObjectLocator,
                           IScheduler scheduler,
                           Procedure procedure,
-                          TileLocator tileLocator,
+                          ITileLocator tileLocator,
                           IActionFactory actionFactory,
                           ILocker locker,
                           ITroopObjectInitializerFactory troopObjectInitializerFactory)
@@ -364,7 +364,7 @@ namespace Game.Data.Tribe
         /// <returns></returns>
         private DateTime DepartureTime(ITroopStub stub)
         {
-            int distance = tileLocator.TileDistance(stub.City.X, stub.City.Y, X, Y);
+            int distance = tileLocator.TileDistance(stub.City.PrimaryPosition, 1, new Position(X, Y), 1);
             return TargetTime.Subtract(TimeSpan.FromSeconds(formula.MoveTimeTotal(stub, distance, IsAttack)));
         }
 
@@ -382,7 +382,7 @@ namespace Game.Data.Tribe
             PassiveAction action;
             if (Target.LocationType == LocationType.City)
             {
-                IStructure structure = (IStructure)gameObjectLocator.GetObjects(X, Y).Find(z => z is IStructure);
+                IStructure structure = (IStructure)gameObjectLocator.Regions.GetObjectsInTile(X, Y).FirstOrDefault(z => z is IStructure);
                 if (structure == null)
                 {
                     procedure.TroopObjectDelete(troopObject, true);
@@ -401,7 +401,7 @@ namespace Game.Data.Tribe
                     action = actionFactory.CreateCityAttackChainAction(stub.City.Id,
                                                                        troopObjectInitializer,
                                                                        structure.City.Id,
-                                                                       structure.ObjectId);
+                                                                       new Position(X, Y));
                 }
                 else
                 {
@@ -462,40 +462,38 @@ namespace Game.Data.Tribe
         public void Callback(object custom)
         {
             var now = SystemClock.Now;
-            using (
-                    locker.Lock(c => assignmentTroops.Select(troop => troop.Stub).ToArray<ILockable>(),
-                                             new object[] {},
-                                             Tribe))
-            {
-                lock (assignmentLock)
-                {
-                    var troopToDispatch = assignmentTroops.FirstOrDefault(x => !x.Dispatched && x.DepartureTime <= now);
+            locker.Lock(c => assignmentTroops.Select(troop => troop.Stub).ToArray<ILockable>(), new object[] {}, Tribe)
+                  .Do(() =>
+                  {
+                      lock (assignmentLock)
+                      {
+                          var troopToDispatch = assignmentTroops.FirstOrDefault(x => !x.Dispatched && x.DepartureTime <= now);
 
-                    if (troopToDispatch != null)
-                    {
-                        // Make sure troop time is still valid. If not we need to put it back on the scheduler.
-                        // The time may change if the user has finished upgrading a tech/unit that improves speed since adding
-                        // it to the assignment.
-                        var departureTime = DepartureTime(troopToDispatch.Stub);
-                        if (departureTime > now)
-                        {
-                            troopToDispatch.DepartureTime = departureTime;
-                        }
-                        // If a troop dispatches, then we set the troop to dispatched.
-                        else if (Dispatch(troopToDispatch.Stub))
-                        {
-                            troopToDispatch.Dispatched = true;
-                        }
-                        // Otherwise, if dispatch fails, then we remove it.
-                        else
-                        {
-                            RemoveStub(troopToDispatch.Stub);
-                        }
-                    }
+                          if (troopToDispatch != null)
+                          {
+                              // Make sure troop time is still valid. If not we need to put it back on the scheduler.
+                              // The time may change if the user has finished upgrading a tech/unit that improves speed since adding
+                              // it to the assignment.
+                              var departureTime = DepartureTime(troopToDispatch.Stub);
+                              if (departureTime > now)
+                              {
+                                  troopToDispatch.DepartureTime = departureTime;
+                              }
+                                      // If a troop dispatches, then we set the troop to dispatched.
+                              else if (Dispatch(troopToDispatch.Stub))
+                              {
+                                  troopToDispatch.Dispatched = true;
+                              }
+                                      // Otherwise, if dispatch fails, then we remove it.
+                              else
+                              {
+                                  RemoveStub(troopToDispatch.Stub);
+                              }
+                          }
 
-                    Reschedule();
-                }
-            }
+                          Reschedule();
+                      }
+                  });
         }
 
         /// <summary>

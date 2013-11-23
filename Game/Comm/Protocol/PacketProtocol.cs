@@ -16,7 +16,7 @@ namespace Game.Comm.Protocol
             var packet = new Packet(Command.MessageUnread);
             packet.AddInt32(unreadCount);
 
-            Global.Channel.Post("/PLAYER/" + session.Player.PlayerId, packet);
+            Global.Current.Channel.Post("/PLAYER/" + session.Player.PlayerId, packet);
         }
 
         public void BattleReportSendUnreadCount(int unreadCount)
@@ -24,13 +24,13 @@ namespace Game.Comm.Protocol
             var packet = new Packet(Command.BattleReportUnread);
             packet.AddInt32(unreadCount);
 
-            Global.Channel.Post("/PLAYER/" + session.Player.PlayerId, packet);
+            Global.Current.Channel.Post("/PLAYER/" + session.Player.PlayerId, packet);
         }
 
         public void MessageBoardSendUnread()
         {
             var packet = new Packet(Command.ForumUnread);
-            Global.Channel.Post("/PLAYER/" + session.Player.PlayerId, packet);
+            Global.Current.Channel.Post("/PLAYER/" + session.Player.PlayerId, packet);
         }
     }
 }

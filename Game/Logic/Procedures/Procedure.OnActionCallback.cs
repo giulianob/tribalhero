@@ -1,9 +1,7 @@
 ﻿#region
 
 using Game.Data;
-using Game.Logic.Formulas;
 using Game.Logic.Triggers;
-using Game.Logic.Triggers.Events;
 
 #endregion
 

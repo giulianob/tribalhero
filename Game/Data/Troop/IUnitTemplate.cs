@@ -8,8 +8,6 @@ namespace Game.Data.Troop
     {
         event UnitTemplate.UpdateCallback UnitUpdated;
 
-        ICity City { get; }
-
         int Size { get; }
 
         IBaseUnitStats this[ushort type] { get; set; }

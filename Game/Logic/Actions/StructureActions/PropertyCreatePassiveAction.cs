@@ -6,6 +6,7 @@ using Game.Database;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
+using Persistance;
 
 #endregion
 
@@ -18,6 +19,16 @@ namespace Game.Logic.Actions
         private IStructure structure;
 
         private object value;
+
+        private readonly IDbManager dbManager;
+
+        private readonly ILocker locker;
+
+        public PropertyCreatePassiveAction(IDbManager dbManager, ILocker locker)
+        {
+            this.dbManager = dbManager;
+            this.locker = locker;
+        }
 
         public override ActionType Type
         {
@@ -34,8 +45,6 @@ namespace Game.Logic.Actions
                 return XmlSerializer.Serialize(new[] {new XmlKvPair("value", (uint)value),});
             }
         }
-
-        #region IScriptable Members
 
         public void ScriptInit(IGameObject obj, string[] parms)
         {
@@ -72,8 +81,6 @@ namespace Game.Logic.Actions
             Execute();
         }
 
-        #endregion
-
         public override Error Validate(string[] parms)
         {
             return Error.Ok;
@@ -82,7 +89,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             structure[name] = value;
-            DbPersistance.Current.Save(structure);
+            dbManager.Save(structure);
             StateChange(ActionState.Completed);
 
             return Error.Ok;
@@ -90,7 +97,7 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            using (Concurrency.Current.Lock(structure.City))
+            locker.Lock(structure.City).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -98,12 +105,11 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
 
         public override void UserCancelled()
         {
-            return;
         }
     }
 }

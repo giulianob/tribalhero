@@ -18,29 +18,21 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly ILocker locker;
 
-        private readonly Procedure procedure;
-
         private readonly IStrongholdManager strongholdManager;
-
-        private readonly ITribeFactory tribeFactory;
 
         private readonly ITribeManager tribeManager;
 
         private readonly IWorld world;
 
-        public TribeCommandsModule(ITribeFactory tribeFactory,
-                                   IStrongholdManager strongholdManager,
+        public TribeCommandsModule(IStrongholdManager strongholdManager,
                                    IWorld world,
                                    ITribeManager tribeManager,
-                                   ILocker locker,
-                                   Procedure procedure)
+                                   ILocker locker)
         {
-            this.tribeFactory = tribeFactory;
             this.strongholdManager = strongholdManager;
             this.world = world;
             this.tribeManager = tribeManager;
             this.locker = locker;
-            this.procedure = procedure;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -80,7 +72,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player,tribe))
+            locker.Lock(session.Player, tribe).Do(() =>
             {
                 if (!session.Player.Tribesman.Tribe.HasRight(session.Player.PlayerId, TribePermission.All))
                 {
@@ -88,7 +80,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
                 ReplyWithResult(session, packet, tribe.UpdateRank(id, name, (TribePermission)permission));
-            }
+            });
         }
 
         private void SetDescription(Session session, Packet packet)
@@ -106,7 +98,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 if (session.Player.Tribesman == null)
                 {
@@ -130,7 +122,7 @@ namespace Game.Comm.ProcessorCommands
                 session.Player.Tribesman.Tribe.PublicDescription = publicDescription;
 
                 ReplySuccess(session, packet);
-            }
+            });
         }
 
         private void GetName(Session session, Packet packet)
@@ -189,7 +181,7 @@ namespace Game.Comm.ProcessorCommands
 
             ITribe tribe;
 
-            using (locker.Lock(id, out tribe))
+            locker.Lock(id, out tribe).Do(() =>
             {
                 if (tribe == null)
                 {
@@ -200,7 +192,7 @@ namespace Game.Comm.ProcessorCommands
                 PacketHelper.AddTribeInfo(strongholdManager, tribeManager, session, tribe, reply);
 
                 session.Write(reply);
-            }
+            });
         }
 
         private void GetInfoByName(Session session, Packet packet)
@@ -225,7 +217,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ITribe tribe;
-            using (locker.Lock(id, out tribe))
+            locker.Lock(id, out tribe).Do(() =>
             {
                 if (tribe == null)
                 {
@@ -236,7 +228,7 @@ namespace Game.Comm.ProcessorCommands
                 PacketHelper.AddTribeInfo(strongholdManager, tribeManager, session, tribe, reply);
 
                 session.Write(reply);
-            }
+            });
         }
 
         private void Create(Session session, Packet packet)
@@ -252,7 +244,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 if (!session.Player.GetCityList().Any(city => city.Lvl >= 5))
                 {
@@ -267,12 +259,12 @@ namespace Game.Comm.ProcessorCommands
                     var reply = new Packet(packet);
                     PacketHelper.AddTribeRanksToPacket(tribe, reply);
                     session.Write(reply);
-                } 
+                }
                 else
                 {
                     ReplyError(session, packet, error);
                 }
-            }
+            });
         }
 
         private void Delete(Session session, Packet packet)
@@ -297,7 +289,7 @@ namespace Game.Comm.ProcessorCommands
                     return locks.ToArray();
                 };
 
-            using (locker.Lock(lockHandler, new object[] {}, tribe))
+            locker.Lock(lockHandler, new object[] {}, tribe).Do(() =>
             {
                 if (!session.Player.Tribesman.Tribe.IsOwner(session.Player))
                 {
@@ -307,7 +299,7 @@ namespace Game.Comm.ProcessorCommands
 
                 var result = tribeManager.Remove(tribe);
                 ReplyWithResult(session, packet, result);
-            }
+            });
         }
 
         private void Upgrade(Session session, Packet packet)
@@ -319,11 +311,11 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ITribe tribe = session.Player.Tribesman.Tribe;
-            using (locker.Lock(tribe))
+            locker.Lock(tribe).Do(() =>
             {
                 var result = tribe.Upgrade();
                 ReplyWithResult(session, packet, result);
-            }
+            });
         }
     }
 }

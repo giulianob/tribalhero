@@ -174,6 +174,11 @@ namespace Game.Comm
             readOffset = HEADER_SIZE;
         }
 
+        public bool GetBoolean()
+        {
+            return GetByte() == 1;
+        }
+
         public byte GetByte()
         {
             byte tmp = readBuffer[readOffset];
@@ -288,6 +293,11 @@ namespace Game.Comm
         {
             byte[] bytes = Parameter.ToBytes(value);
             sendBuffer.Write(bytes, 0, bytes.Length);
+        }
+
+        public void AddBoolean(bool value)
+        {
+            AddByte((byte)(value ? 1 : 0));
         }
 
         #endregion

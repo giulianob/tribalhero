@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Data.Forest;
@@ -16,7 +15,7 @@ namespace Game.Map.LocationStrategies
         
         private readonly MapFactory mapFactory;
         
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
         
         private readonly Random random;
 
@@ -29,7 +28,7 @@ namespace Game.Map.LocationStrategies
         public CityTileNextToFriendLocationStrategy(int distance,
                                                     IPlayer player,
                                                     MapFactory mapFactory,
-                                                    TileLocator tileLocator,
+                                                    ITileLocator tileLocator,
                                                     Random random,
                                                     Formula formula,
                                                     IForestManager forestManager,
@@ -55,7 +54,18 @@ namespace Game.Map.LocationStrategies
                 return Error.CityNotFound;
             }
 
-            var positions = mapFactory.Locations().Where(loc =>Predicate(loc,city)).ToList();
+            var positions = mapFactory.Locations().Where(loc =>
+                                                         {
+                                                             if (tileLocator.TileDistance(city.PrimaryPosition, 1, loc, 1) > distance)
+                                                             {
+                                                                 return false;
+                                                             }
+
+                                                             // Check if objects already on that point
+                                                             var objects = world.Regions.GetObjectsInTile(loc.X, loc.Y);
+
+                                                             return !objects.Any() && !forestManager.HasForestNear(loc.X, loc.Y, formula.GetInitialCityRadius());
+                                                         }).ToList();
 
             if (positions.Count == 0)
             {
@@ -65,20 +75,6 @@ namespace Game.Map.LocationStrategies
 
             position = positions[random.Next(positions.Count)];
             return Error.Ok;
-        }
-
-        private bool Predicate(Position position, ICity city)
-        {
-
-            if (tileLocator.TileDistance(city.X, city.Y, position.X, position.Y) > distance)
-            {
-                return false;
-            }
-
-            // Check if objects already on that point
-            List<ISimpleGameObject> objects = world.GetObjects(position.X, position.Y);
-
-            return objects.Count == 0 && !forestManager.HasForestNear(position.X, position.Y, formula.GetInitialCityRadius());
         }
     }
 }

@@ -63,5 +63,7 @@ namespace Game.Data.Troop
         int UpkeepForFormation(FormationType inBattle);
 
         void AddAllToFormation(FormationType formation, ISimpleStub unitsToAdd);
+
+        bool IsDefault();
     }
 }

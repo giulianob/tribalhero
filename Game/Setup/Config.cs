@@ -49,10 +49,10 @@ namespace Game.Setup
         public static uint map_height = 6200;
         public static uint region_width = 34;
         public static uint region_height = 62;
-        public static int road_start_tile_id = 224;
-        public static int road_end_tile_id = 255;
-        public static uint city_region_width = 100;
-        public static uint city_region_height = 100;
+        public static ushort road_start_tile_id = 60;
+        public static ushort road_end_tile_id = 90;
+        public static uint minimap_region_width = 100;
+        public static uint minimap_region_height = 100;
         public static int friend_invite_radius = 250;
         
         #endregion
@@ -125,7 +125,7 @@ namespace Game.Setup
 
         #region Stronghold Settings
 
-        public static int stronghold_generate = 250;
+        public static int stronghold_generate = 150;
         public static int stronghold_activation_check_interval_in_sec = 3600;
         public static int stronghold_cities_per_level = 5;
         public static int stronghold_radius_per_level = 10;

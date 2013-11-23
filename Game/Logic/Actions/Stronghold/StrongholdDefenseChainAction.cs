@@ -155,8 +155,8 @@ namespace Game.Logic.Actions
 
             var tma = actionFactory.CreateTroopMovePassiveAction(cityId,
                                                                  troopObject.ObjectId,
-                                                                 targetStronghold.X,
-                                                                 targetStronghold.Y,
+                                                                 targetStronghold.PrimaryPosition.X,
+                                                                 targetStronghold.PrimaryPosition.Y,
                                                                  false,
                                                                  false);
 
@@ -191,11 +191,11 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                bool invalidTarget;
-                using (locker.Lock(city, targetStronghold))
+                bool invalidTarget = false;
+                locker.Lock(city, targetStronghold).Do(() =>
                 {
                     invalidTarget = strongholdBattleProcedure.CanStrongholdBeDefended(city, targetStronghold) != Error.Ok;
-                }
+                });
 
                 // If the stronghold is not there or we are unable to attack/defense it, then cancel the current TroopMoveAction
                 if (invalidTarget)
@@ -209,16 +209,16 @@ namespace Game.Logic.Actions
                 ICity city;
                 ITroopObject troopObject;
 
-                using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
+                locker.Lock(cityId, troopObjectId, out city, out troopObject).Do(() =>
                 {
                     TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
                                                                                             troopObject.ObjectId,
-                                                                                            city.X,
-                                                                                            city.Y,
+                                                                                            city.PrimaryPosition.X,
+                                                                                            city.PrimaryPosition.Y,
                                                                                             true,
                                                                                             false);
                     ExecuteChainAndWait(tma, AfterTroopMovedHome);
-                }
+                });
             }
             else if (state == ActionState.Completed)
             {
@@ -238,7 +238,7 @@ namespace Game.Logic.Actions
 
                 CallbackLock.CallbackLockHandler lockAll = delegate { return targetStronghold.LockList.ToArray(); };
 
-                using (locker.Lock(lockAll, null, city, targetStronghold))
+                locker.Lock(lockAll, null, city, targetStronghold).Do(() =>
                 {
                     if (targetStronghold.Tribe == city.Owner.Tribesman.Tribe)
                     {
@@ -258,12 +258,12 @@ namespace Game.Logic.Actions
                     // Walk back to city if we dont own it anymore
                     TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
                                                                                             troopObject.ObjectId,
-                                                                                            city.X,
-                                                                                            city.Y,
+                                                                                            city.PrimaryPosition.X,
+                                                                                            city.PrimaryPosition.Y,
                                                                                             true,
                                                                                             false);
                     ExecuteChainAndWait(tma, AfterTroopMovedHome);
-                }
+                });
             }
         }
 
@@ -286,7 +286,7 @@ namespace Game.Logic.Actions
             {
                 ICity city;
                 ITroopObject troopObject;
-                using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
+                locker.Lock(cityId, troopObjectId, out city, out troopObject).Do(() =>
                 {
                     // If city is not in battle then add back to city otherwise join local battle
                     if (city.Battle == null)
@@ -299,7 +299,7 @@ namespace Game.Logic.Actions
                         var eda = actionFactory.CreateCityEngageDefensePassiveAction(cityId, troopObject.ObjectId, FormationType.Defense);
                         ExecuteChainAndWait(eda, AfterCityEngageDefense);
                     }
-                }
+                });
             }
         }
 
@@ -309,11 +309,11 @@ namespace Game.Logic.Actions
             {
                 ICity city;
                 ITroopObject troopObject;
-                using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
+                locker.Lock(cityId, troopObjectId, out city, out troopObject).Do(() =>
                 {
                     procedure.TroopObjectDelete(troopObject, troopObject.Stub.TotalCount != 0);
                     StateChange(ActionState.Completed);
-                }
+                });
             }
         }
 

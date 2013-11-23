@@ -27,11 +27,7 @@ namespace Game.Data.Stronghold
 
         private ITribe tribe;
 
-        public ushort Radius { get; private set; }
-
         public event EventHandler<EventArgs> GateStatusChanged = (sender, args) => { };
-
-        public uint Id { get; private set; }
 
         public string Name { get; private set; }
 
@@ -98,7 +94,7 @@ namespace Game.Data.Stronghold
         {
             get
             {
-                return Id;
+                return ObjectId;
             }
         }
 
@@ -144,15 +140,14 @@ namespace Game.Data.Stronghold
                           ITroopManager troopManager,
                           IActionWorker actionWorker,
                           Formula formula)
+                : base(id, x, y)
         {
             Notifications = notificationManager;
             this.dbManager = dbManager;
             this.formula = formula;
-            Id = id;
+            
             Name = name;
             Lvl = level;
-            this.x = x;
-            this.y = y;
             Worker = actionWorker;
             Troops = troopManager;
             Gate = gate;
@@ -173,25 +168,15 @@ namespace Game.Data.Stronghold
 
         #endregion
 
-        #region Implementation of ICityRegionObject
-
-        public Position CityRegionLocation
+        public MiniMapRegion.ObjectType MiniMapObjectType
         {
             get
             {
-                return new Position(X, Y);
+                return MiniMapRegion.ObjectType.Stronghold;
             }
         }
 
-        public CityRegion.ObjectType CityRegionType
-        {
-            get
-            {
-                return CityRegion.ObjectType.Stronghold;
-            }
-        }
-
-        public uint CityRegionGroupId
+        public uint MiniMapGroupId
         {
             get
             {
@@ -199,15 +184,23 @@ namespace Game.Data.Stronghold
             }
         }
 
-        public uint CityRegionObjectId
+        public uint MiniMapObjectId
         {
             get
             {
-                return Id;
+                return ObjectId;
             }
         }
 
-        public byte[] GetCityRegionObjectBytes()
+        public byte MiniMapSize
+        {
+            get
+            {
+                return Size;
+            }
+        }
+
+        public byte[] GetMiniMapObjectBytes()
         {
             using (var ms = new MemoryStream())
             {
@@ -220,15 +213,13 @@ namespace Game.Data.Stronghold
             }
         }
 
-        #endregion
-
         #region Implementation of ILockable
 
         public override int Hash
         {
             get
             {
-                return (int)Id;
+                return (int)ObjectId;
             }
         }
 
@@ -243,6 +234,14 @@ namespace Game.Data.Stronghold
         #endregion
 
         #region Overrides of SimpleGameObject
+
+        public override byte Size
+        {
+            get
+            {
+                return 2;
+            }
+        }
 
         public override ushort Type
         {
@@ -260,22 +259,14 @@ namespace Game.Data.Stronghold
             }
         }
 
-        public override uint ObjectId
+        protected override void CheckUpdateMode()
         {
-            get
-            {
-                return Id;
-            }
-        }
-
-        public override void CheckUpdateMode()
-        {
-            if (!Global.FireEvents)
+            if (!Global.Current.FireEvents)
             {
                 return;
             }
 
-            if (!updating)
+            if (!Updating)
             {
                 throw new Exception("Changed state outside of begin/end update block");
             }
@@ -283,33 +274,16 @@ namespace Game.Data.Stronghold
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
         }
 
-        public override void EndUpdate()
+        protected override bool Update()
         {
-            if (!updating)
+            var updated = base.Update();
+
+            if (updated)
             {
-                throw new Exception("Called an endupdate without first calling a beginupdate");
+                dbManager.Save(this);
             }
 
-            updating = false;
-
-            Update();
-        }
-
-        protected override void Update()
-        {
-            base.Update();
-
-            if (!Global.FireEvents)
-            {
-                return;
-            }
-
-            if (updating)
-            {
-                return;
-            }
-
-            dbManager.Save(this);
+            return updated;
         }
 
         #endregion
@@ -320,7 +294,7 @@ namespace Game.Data.Stronghold
         {
             get
             {
-                return Id;
+                return ObjectId;
             }
         }
 
@@ -348,7 +322,7 @@ namespace Game.Data.Stronghold
         {
             get
             {
-                return new[] {new DbColumn("id", Id, DbType.UInt32)};
+                return new[] {new DbColumn("id", ObjectId, DbType.UInt32)};
             }
         }
 
@@ -367,18 +341,18 @@ namespace Game.Data.Stronghold
                 return new[]
                 {
                         new DbColumn("tribe_id", tribe == null ? 0 : tribe.Id, DbType.UInt32),
-                        new DbColumn("name", Name, DbType.String, 20), new DbColumn("level", Lvl, DbType.Byte),
+                        new DbColumn("name", Name, DbType.String, 20), 
+                        new DbColumn("level", Lvl, DbType.Byte),
                         new DbColumn("state", (byte)StrongholdState, DbType.Byte),
-                        new DbColumn("gate", Gate, DbType.Decimal), new DbColumn("x", x, DbType.UInt32),
-                        new DbColumn("y", y, DbType.UInt32),
+                        new DbColumn("gate", Gate, DbType.Decimal), 
+                        new DbColumn("x", PrimaryPosition.X, DbType.UInt32),
+                        new DbColumn("y", PrimaryPosition.Y, DbType.UInt32),
                         new DbColumn("gate_open_to", GateOpenTo == null ? 0 : GateOpenTo.Id, DbType.UInt32),
                         new DbColumn("date_occupied", DateOccupied, DbType.DateTime),
                         new DbColumn("gate_battle_id", GateBattle != null ? GateBattle.BattleId : 0, DbType.UInt32),
                         new DbColumn("main_battle_id", MainBattle != null ? MainBattle.BattleId : 0, DbType.UInt32),
                         new DbColumn("object_state", (byte)State.Type, DbType.Boolean),
-                        new DbColumn("state_parameters",
-                                     XmlSerializer.SerializeList(State.Parameters.ToArray()),
-                                     DbType.String),
+                        new DbColumn("state_parameters", XmlSerializer.SerializeList(State.Parameters.ToArray()), DbType.String),
                         new DbColumn("victory_point_rate", VictoryPointRate, DbType.Decimal),
                         new DbColumn("nearby_cities", NearbyCitiesCount, DbType.UInt16),
                         new DbColumn("bonus_days", BonusDays, DbType.Decimal),

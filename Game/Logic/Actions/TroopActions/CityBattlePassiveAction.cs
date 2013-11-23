@@ -196,7 +196,7 @@ namespace Game.Logic.Actions
                 return toBeLocked.ToArray();
             };
 
-            using (locker.Lock(lockHandler, null, city))
+            locker.Lock(lockHandler, null, city).Do(() =>
             {
                 if (city.Battle.ExecuteTurn())
                 {
@@ -251,7 +251,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override Error Validate(string[] parms)

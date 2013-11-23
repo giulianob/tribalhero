@@ -49,12 +49,13 @@ public class ForestCampBuildButton extends ActionButton
 		{
 			if (isEnabled())
 			{
-                var lumbermill: CityObject = Enumerable.from(Global.gameContainer.selectedCity.objects).firstOrNone(function(obj: CityObject): Boolean {
+                var obj: * = Enumerable.from(Global.gameContainer.selectedCity.objects).firstOrNone(function(obj: CityObject): Boolean {
                     return ObjectFactory.isType("Lumbermill", obj.type);
-                }).value;
+                });
 
+                var lumbermill: CityObject = obj.isNone?null:obj.value;
                 if(lumbermill==null) {
-                    InfoDialog.showMessageDialog("Error","You need to have a lumbermill before you can harvest!");
+                    InfoDialog.showMessageDialog("Error",StringHelper.localize("FOREST_REQUIRE_LUMBERMILL"));
                     return;
                 }
                 var max: int = Formula.maxLumbermillLabor(lumbermill.level);
@@ -65,7 +66,7 @@ public class ForestCampBuildButton extends ActionButton
                 });
 
                 if(limit<=0) {
-                    InfoDialog.showMessageDialog("Error","All "+max+" lumbermill laborers are already at work!");
+                    InfoDialog.showMessageDialog("Error",StringHelper.localize("FOREST_LABOR_LIMIT",max));
                     return;
                 }
                 // Check to see if this is being called from the forest or from the lumbermill. If this is from the forest, then the parent action will be null
@@ -80,7 +81,7 @@ public class ForestCampBuildButton extends ActionButton
 						var laborDialog: ForestLaborDialog = new ForestLaborDialog(parentObj.groupId, forest, lumbermill.level, limit, onSetLabor);
 						laborDialog.show();
 					});
-
+    
 				}
 			}
 

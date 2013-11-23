@@ -50,7 +50,7 @@ package src
 
 		/* ROAD CONSTANTS */
 		public static const road_start_tile_id: int = 60;
-		public static const road_end_tile_id: int = 84;
+		public static const road_end_tile_id: int = 90;
 
 		/* MAP CONSTANTS */					
 		public static const tileW:int = 160;

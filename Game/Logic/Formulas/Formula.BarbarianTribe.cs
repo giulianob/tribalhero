@@ -14,7 +14,7 @@ namespace Game.Logic.Formulas
         private SlotMachineCalculator barbarianTribeIronCalculator;
         private SlotMachineCalculator barbarianTribeGoldCalculator;
 
-        public Resource BarbarianTribeResources(byte level)
+        public virtual Resource BarbarianTribeResources(byte level)
         {
             barbarianTribeCropCalculator = barbarianTribeCropCalculator ??
                                            new SlotMachineCalculator(new[] {92, 208, 461, 864, 1423, 2142, 3027, 4081, 5308, 6709},
@@ -50,7 +50,7 @@ namespace Game.Logic.Formulas
                                 barbarianTribeWoodCalculator.Roll(level));
         }
 
-        public void BarbarianTribeUpkeep(byte level, out int upkeep, out byte unitLevel)
+        public virtual void BarbarianTribeUpkeep(byte level, out int upkeep, out byte unitLevel)
         {
             int[] btUnitLevel = new[] {1, 1, 1, 2, 2, 3, 3, 4, 5, 6};
             int[] btUnitUpkeep = new[] {10, 20, 41, 73, 117, 171, 237, 313, 401, 500};
@@ -59,28 +59,29 @@ namespace Game.Logic.Formulas
             upkeep = btUnitUpkeep[level-1];
         }
 
-        public double[,] BarbarianTribeUnitRatios()
+        public virtual double[][] BarbarianTribeUnitRatios()
         {
-            return new[,] {
-                {1, 0, 0, 0, 0, 0 },
-                {0.9, 0.1, 0, 0, 0, 0 },
-                {0.5, 0.5, 0, 0, 0, 0 },
-                {0.5, 0.25, 0.25, 0, 0, 0 },
-                {0.5, 0.25, 0.25, 0, 0, 0 },
-                {0.4, 0.25, 0.25, 0.1, 0, 0 },
-                {0.4, 0.25, 0.25, 0.1, 0, 0 },
-                {0.35, 0.2, 0.25, 0.15, 0.5, 0 },
-                {0.2, 0.2, 0.25, 0.15, 0.15, 0.05 },
-                {0.25, 0.2, 0.25, 0.15, 0.15, 0.1 },
+            return new[]
+            {
+                new[] {1.0, 0, 0, 0, 0, 0 },
+                new[] {0.9, 0.1, 0, 0, 0, 0 },
+                new[] {0.5, 0.5, 0, 0, 0, 0 },
+                new[] {0.5, 0.25, 0.25, 0, 0, 0 },
+                new[] {0.5, 0.25, 0.25, 0, 0, 0 },
+                new[] {0.4, 0.25, 0.25, 0.1, 0, 0 },
+                new[] {0.4, 0.25, 0.25, 0.1, 0, 0 },
+                new[] {0.35, 0.2, 0.25, 0.15, 0.5, 0 },
+                new[] {0.2, 0.2, 0.25, 0.15, 0.15, 0.05 },
+                new[] {0.25, 0.2, 0.25, 0.15, 0.15, 0.1 },
             };
         }
 
-        public ushort[] BarbarianTribeUnitTypes()
+        public virtual ushort[] BarbarianTribeUnitTypes()
         {
             return new ushort[] {101, 102, 105, 103, 104, 106};
         }
 
-        public Resource BarbarianTribeBonus(byte level, IBattleManager battle, ICombatGroup combatGroup, IBarbarianTribe barbarianTribe)
+        public virtual Resource BarbarianTribeBonus(byte level, IBattleManager battle, ICombatGroup combatGroup, IBarbarianTribe barbarianTribe)
         {
             var bonusAmt = new[] {15, 34, 75, 141, 232, 349, 493, 665, 865, 1094};
 

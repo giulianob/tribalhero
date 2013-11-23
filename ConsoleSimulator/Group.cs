@@ -103,13 +103,16 @@ namespace ConsoleSimulator
 
             var main = new Structure(structurestats);
 
-            city = new City(id: cityId,
-                            owner: player,
-                            name: "city " + cityId,
-                            resource: Formula.Current.GetInitialCityResources(),
-                            radius: Formula.Current.GetInitialCityRadius(),
-                            mainBuilding: main,
-                            ap: 0);
+            city = Ioc.Kernel.Get<ICityFactory>()
+                      .CreateCity(id: cityId,
+                                  owner: player,
+                                  name: "city " + cityId,
+                                  resource: Formula.Current.GetInitialCityResources(),
+                                  radius: Formula.Current.GetInitialCityRadius(),                                  
+                                  ap: 0);
+
+            main.ObjectId = 1;
+            city.Add(main.ObjectId, main, false);
             player.Add(city);
             cityId++;
 
@@ -188,7 +191,7 @@ namespace ConsoleSimulator
 
         public void AddStructure(ushort type, byte lvl)
         {
-            IStructure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(type, lvl);
+            IStructure structure = Ioc.Kernel.Get<StructureCsvFactory>().GetNewStructure(type, lvl);
             city.Add(structure);
             structures.Add(structure);
         }

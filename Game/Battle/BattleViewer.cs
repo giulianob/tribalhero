@@ -2,7 +2,6 @@
 
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
-using Game.Data;
 using Game.Setup;
 using Game.Util;
 using Ninject;
@@ -59,7 +58,7 @@ namespace Game.Battle
             {
                 var cs = co as CombatStructure;
                 Append("Team[Def] Structure[" + co.Id + "] Type[" +
-                       Ioc.Kernel.Get<StructureFactory>().GetName(cs.Structure.Type, cs.Structure.Lvl) + "] HP[" + cs.Hp +
+                       Ioc.Kernel.Get<IStructureCsvFactory>().GetName(cs.Structure.Type, cs.Structure.Lvl) + "] HP[" + cs.Hp +
                        "]");
             }
             else if (co is BarbarianTribeCombatUnit)

@@ -5,7 +5,6 @@ using Game.Battle;
 using Game.Data;
 using Game.Setup;
 using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.Xunit;
 using Xunit.Extensions;
 using Game.Battle.CombatObjects;
 using NSubstitute;

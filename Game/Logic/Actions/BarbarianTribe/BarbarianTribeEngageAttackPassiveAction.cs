@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Battle;
 using Game.Battle.CombatGroups;
-using Game.Battle.CombatObjects;
 using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Troop;
@@ -186,7 +185,7 @@ namespace Game.Logic.Actions
 
             // Set the attacking troop object to the correct state and stamina
             troopObject.BeginUpdate();
-            troopObject.State = GameObjectState.BattleState(battleId);
+            troopObject.State = GameObjectStateFactory.BattleState(battleId);
             troopObject.EndUpdate();
 
             // Set the troop stub to the correct state
@@ -218,7 +217,7 @@ namespace Game.Logic.Actions
             troopObject.BeginUpdate();
             SetLootedResources(barbarianTribe, barbarianTribe.Battle, troopObject, group);
             troopObject.Stub.BeginUpdate();
-            troopObject.State = GameObjectState.NormalState();
+            troopObject.State = GameObjectStateFactory.NormalState();
             troopObject.Stub.State = TroopState.Idle;
             troopObject.Stub.EndUpdate();
             troopObject.EndUpdate();
@@ -249,7 +248,7 @@ namespace Game.Logic.Actions
             DeregisterBattleListeners(barbarianTribe);
 
             troopObject.BeginUpdate();
-            troopObject.State = GameObjectState.NormalState();
+            troopObject.State = GameObjectStateFactory.NormalState();
             troopObject.EndUpdate();
 
             StateChange(ActionState.Completed);

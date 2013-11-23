@@ -17,7 +17,6 @@ using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Actions;
-using Game.Logic.Actions.ResourceActions;
 using Game.Logic.Formulas;
 using Game.Logic.Notifications;
 using Game.Logic.Procedures;
@@ -41,6 +40,9 @@ namespace Game.Database
     public class DbLoader
     {
         private readonly ILogger logger = LoggerFactory.Current.GetCurrentClassLogger();
+
+        [Inject]
+        public IKernel Kernel { get; set; }
 
         [Inject]
         public IWorld World { get; set; }
@@ -94,7 +96,7 @@ namespace Game.Database
         {
             SystemVariablesUpdater.Current.Pause();
             Scheduler.Current.Pause();
-            Global.FireEvents = false;
+            Global.Current.FireEvents = false;
 
             logger.Info("Loading database...");
 
@@ -134,7 +136,7 @@ namespace Game.Database
                     LoadActionNotifications();
                     LoadAssignments();
 
-                    World.AfterDbLoaded(Procedure, Ioc.Kernel.Get<IForestManager>());
+                    World.AfterDbLoaded(Procedure, Kernel.Get<IForestManager>());
 
                     //Ok data all loaded. We can get the system going now.
                     SystemVariableManager["System.time"].Value = DateTime.UtcNow;
@@ -149,9 +151,9 @@ namespace Game.Database
 
             logger.Info("Database loading finished");
 
-            SystemVariablesUpdater.Current.Resume();
-            Global.FireEvents = true;
-            Scheduler.Current.Resume();            
+            Kernel.Get<SystemVariablesUpdater>().Resume();
+            Global.Current.FireEvents = true;
+            Kernel.Get<IScheduler>().Resume();            
         }
 
         private void CheckSchemaVersion()
@@ -304,7 +306,7 @@ namespace Game.Database
         {
             #region Assignments
 
-            IAssignmentFactory assignmentFactory = Ioc.Kernel.Get<IAssignmentFactory>();
+            IAssignmentFactory assignmentFactory = Kernel.Get<IAssignmentFactory>();
 
             logger.Info("Loading assignments...");
 
@@ -399,6 +401,7 @@ namespace Game.Database
                 SystemVariableManager.Add("System.time", new SystemVariable("System.time", DateTime.UtcNow));
             }
 
+
             if (!SystemVariableManager.ContainsKey("Server.date"))
             {
                 SystemVariableManager.Add("Server.date", new SystemVariable("Server.date", DateTime.UtcNow));
@@ -458,6 +461,7 @@ namespace Game.Database
                                             PlayerRights.Basic)
                     {
                             DbPersisted = true,
+                            SoundMuted = (bool)reader["sound_muted"],
                             TutorialStep = (uint)reader["tutorial_step"],
                             TribeRequest = (uint)reader["invitation_tribe_id"],
                             Muted = DateTime.SpecifyKind((DateTime)reader["muted"], DateTimeKind.Utc),
@@ -521,6 +525,9 @@ namespace Game.Database
         {
             #region Cities
 
+            var cityFactory = Kernel.Get<ICityFactory>();
+            var cityRemoverFactory = Kernel.Get<ICityRemoverFactory>();
+
             logger.Info("Loading cities...");
             using (var reader = DbManager.Select(City.DB_TABLE))
             {
@@ -548,22 +555,22 @@ namespace Game.Database
                                                     (int)reader["labor"],
                                                     laborRealizeTime,
                                                     (int)reader["labor_production_rate"]);
-                    var city = new City((uint)reader["id"],
-                                        World.Players[(uint)reader["player_id"]],
-                                        (string)reader["name"],
-                                        resource,
-                                        (byte)reader["radius"],
-                                        null,
-                                        (decimal)reader["alignment_point"])
-                    {
-                            DbPersisted = true,
-                            LootStolen = (uint)reader["loot_stolen"],
-                            AttackPoint = (int)reader["attack_point"],
-                            DefensePoint = (int)reader["defense_point"],
-                            HideNewUnits = (bool)reader["hide_new_units"],
-                            Value = (ushort)reader["value"],
-                            Deleted = (City.DeletedState)reader["deleted"]
-                    };
+
+                    ICity city = cityFactory.CreateCity((uint)reader["id"],
+                                                        World.Players[(uint)reader["player_id"]],
+                                                        (string)reader["name"], 
+                                                        new Position((uint)reader["x"], (uint) reader["y"]),
+                                                        resource,
+                                                        (byte)reader["radius"],
+                                                        (decimal)reader["alignment_point"]);
+
+                    city.DbPersisted = true;
+                    city.LootStolen = (uint)reader["loot_stolen"];
+                    city.AttackPoint = (int)reader["attack_point"];
+                    city.DefensePoint = (int)reader["defense_point"];
+                    city.HideNewUnits = (bool)reader["hide_new_units"];
+                    city.Value = (ushort)reader["value"];
+                    city.Deleted = (City.DeletedState)reader["deleted"];
 
                     // Add to world
                     World.Cities.DbLoaderAdd(city);
@@ -573,7 +580,7 @@ namespace Game.Database
                     {
                         case City.DeletedState.Deleting:
                             city.Owner.Add(city);
-                            CityRemover cr = Ioc.Kernel.Get<ICityRemoverFactory>().CreateCityRemover(city.Id);
+                            CityRemover cr = cityRemoverFactory.CreateCityRemover(city.Id);
                             cr.Start(true);
                             break;
                         case City.DeletedState.NotDeleted:
@@ -606,10 +613,7 @@ namespace Game.Database
                     stronghold.NearbyCitiesCount = (ushort)reader["nearby_cities"];
                     stronghold.DbPersisted = true;
                     stronghold.State.Type = (ObjectState)((byte)reader["object_state"]);
-                    foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
-                    {
-                        stronghold.State.Parameters.Add(variable);
-                    }
+                    stronghold.State.Parameters = XmlSerializer.DeserializeList((string)reader["state_parameters"]);                    
 
                     // Load owner tribe
                     var tribeId = (uint)reader["tribe_id"];
@@ -646,11 +650,10 @@ namespace Game.Database
             {
                 while (reader.Read())
                 {
-                    var barbarianTribe = BarbarianTribeFactory.CreateBarbarianTribe((uint)reader["id"],                                                                        
-                                                                        (byte)reader["level"],
-                                                                        (uint)reader["x"],
-                                                                        (uint)reader["y"],
-                                                                        (byte)reader["camp_remains"]);
+                    var barbarianTribe = BarbarianTribeFactory.CreateBarbarianTribe((uint)reader["id"],
+                                                                                    (byte)reader["level"],
+                                                                                    new Position((uint)reader["x"], (uint)reader["y"]),
+                                                                                    (byte)reader["camp_remains"]);
 
                     barbarianTribe.Resource.Clear();
                     barbarianTribe.Resource.Add(new Resource((int)reader["resource_crop"],
@@ -662,10 +665,7 @@ namespace Game.Database
                     barbarianTribe.Created = DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc);
                     barbarianTribe.InWorld = (bool)reader["in_world"];
                     barbarianTribe.State.Type = (ObjectState)((byte)reader["state"]);
-                    foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
-                    {
-                        barbarianTribe.State.Parameters.Add(variable);
-                    }                    
+                    barbarianTribe.State.Parameters = XmlSerializer.DeserializeList((string)reader["state_parameters"]);
 
                     // Add stronghold to main manager
                     BarbarianTribeManager.DbLoaderAdd(barbarianTribe);
@@ -679,7 +679,7 @@ namespace Game.Database
         {
             #region Unit Template
 
-            var unitFactory = Ioc.Kernel.Get<UnitFactory>();
+            var unitFactory = Kernel.Get<UnitFactory>();
 
             logger.Info("Loading unit template...");
 
@@ -720,19 +720,22 @@ namespace Game.Database
 
         private void LoadForests()
         {
-            var forestManager = Ioc.Kernel.Get<IForestManager>();
+            var scheduler = Kernel.Get<IScheduler>();
+            var forestManager = Kernel.Get<IForestManager>();
             logger.Info("Loading forests...");
             using (var reader = DbManager.Select(Forest.DB_TABLE))
             {
                 while (reader.Read())
                 {
-                    var forest = ForestFactory.CreateForest((byte)reader["level"], (int)reader["capacity"], (float)reader["rate"]);
+                    var forest = ForestFactory.CreateForest((uint)reader["id"],
+                                                            (byte)reader["level"],
+                                                            (int)reader["capacity"],
+                                                            (float)reader["rate"],
+                                                            (uint)reader["x"],
+                                                            (uint)reader["y"]);
 
                     forest.DbPersisted = true;
-                    forest.X = (uint)reader["x"];
-                    forest.Y = (uint)reader["y"];
                     forest.Labor = (ushort)reader["labor"];
-                    forest.ObjectId = (uint)reader["id"];
                     forest.State.Type = (ObjectState)((byte)reader["state"]);
                     forest.Wood = new AggressiveLazyValue((int)reader["lumber"],
                                                           DateTime.SpecifyKind((DateTime)reader["last_realize_time"], DateTimeKind.Utc),
@@ -741,10 +744,7 @@ namespace Game.Database
                     forest.DepleteTime = DateTime.SpecifyKind((DateTime)reader["deplete_time"], DateTimeKind.Utc);
                     forest.InWorld = (bool)reader["in_world"];
 
-                    foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
-                    {
-                        forest.State.Parameters.Add(variable);
-                    }
+                    forest.State.Parameters = XmlSerializer.DeserializeList((string)reader["state_parameters"]);
 
                     // Add lumberjacks
                     foreach (var vars in XmlSerializer.DeserializeComplexList((string)reader["structures"]))
@@ -768,7 +768,7 @@ namespace Game.Database
                     {
                         // Create deplete time
                         forest.DepleteAction = ActionFactory.CreateForestDepleteAction(forest, forest.DepleteTime);
-                        Scheduler.Current.Put(forest.DepleteAction);
+                        scheduler.Put(forest.DepleteAction);
                         World.Regions.DbLoaderAdd(forest);
                         forestManager.DbLoaderAdd(forest);
                     }
@@ -780,7 +780,7 @@ namespace Game.Database
         {
             #region Structures
 
-            var structureFactory = Ioc.Kernel.Get<StructureFactory>();
+            var gameObjectFactory = Kernel.Get<IGameObjectFactory>();
 
             logger.Info("Loading structures...");
             ICity city = null;
@@ -794,22 +794,21 @@ namespace Game.Database
                     }
                 }
 
-                IStructure structure = structureFactory.GetNewStructure((ushort)reader["type"], (byte)reader["level"]);
+                IStructure structure = gameObjectFactory.CreateStructure((uint)reader["city_id"], 
+                    (uint)reader["id"], 
+                    (ushort)reader["type"],
+                    (byte)reader["level"],
+                    (uint)reader["x"],
+                    (uint)reader["y"]);
                 structure.InWorld = (bool)reader["in_world"];
                 structure.Technologies.Parent = city.Technologies;
-                structure.X = (uint)reader["x"];
-                structure.Y = (uint)reader["y"];
                 structure.Stats.Hp = (decimal)reader["hp"];
-                structure.ObjectId = (uint)reader["id"];
                 structure.Stats.Labor = (ushort)reader["labor"];
                 structure.DbPersisted = true;
                 structure.State.Type = (ObjectState)((byte)reader["state"]);
                 structure.IsBlocked = (uint)reader["is_blocked"];
 
-                foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
-                {
-                    structure.State.Parameters.Add(variable);
-                }
+                structure.State.Parameters = XmlSerializer.DeserializeList((string)reader["state_parameters"]);
 
                 city.Add(structure.ObjectId, structure, false);
 
@@ -853,7 +852,7 @@ namespace Game.Database
         {
             #region Technologies
 
-            var technologyFactory = Ioc.Kernel.Get<TechnologyFactory>();
+            var technologyFactory = Kernel.Get<TechnologyFactory>();
             
             logger.Info("Loading technologies...");
 
@@ -917,6 +916,8 @@ namespace Game.Database
             #region Troop Stubs
             ILookup<Tuple<uint, ushort>, dynamic> troopStubUnits;
 
+            var troopStubFactory = Kernel.Get<CityTroopStubFactory>();
+
             using (var listReader = DbManager.SelectList(TroopStub.DB_TABLE))
             {
                 troopStubUnits = ReaderToLookUp(listReader,
@@ -946,15 +947,15 @@ namespace Game.Database
                     {
                         throw new Exception("City not found");
                     }
+
                     
-                    var stub = new TroopStub(id, city)
-                    {
-                            State = (TroopState)Enum.Parse(typeof(TroopState), reader["state"].ToString(), true),
-                            DbPersisted = true,
-                            InitialCount = (ushort)reader["initial_count"],
-                            RetreatCount = (ushort)reader["retreat_count"],
-                            AttackMode = (AttackMode)((byte)reader["attack_mode"]),
-                    };
+                    troopStubFactory.City = city;
+                    var stub = troopStubFactory.CreateTroopStub(id);
+                    stub.State = (TroopState)Enum.Parse(typeof(TroopState), reader["state"].ToString(), true);
+                    stub.DbPersisted = true;
+                    stub.InitialCount = (ushort)reader["initial_count"];
+                    stub.RetreatCount = (ushort)reader["retreat_count"];
+                    stub.AttackMode = (AttackMode)((byte)reader["attack_mode"]);
 
                     var formationMask = (ushort)reader["formations"];
                     var formations = (FormationType[])Enum.GetValues(typeof(FormationType));
@@ -968,10 +969,10 @@ namespace Game.Database
 
                     foreach (var unit in troopStubUnits[new Tuple<uint, ushort>(cityId, id)])
                     {
-                        stub.AddUnit(unit.formationType, unit.type, unit.count);
+                        stub.AddUnit((FormationType)unit.formationType, (ushort)unit.type, (ushort)unit.count);
                     }
 
-                    city.Troops.DbLoaderAdd(id, stub);
+                    city.Troops.Add(stub);
 
                     var stationType = (byte)reader["station_type"];
                     if (stationType != 0)
@@ -998,7 +999,7 @@ namespace Game.Database
         {
             #region Troop Stub's Templates
 
-            var unitFactory = Ioc.Kernel.Get<UnitFactory>();
+            var unitFactory = Kernel.Get<UnitFactory>();
 
             logger.Info("Loading troop stub templates...");
 
@@ -1066,6 +1067,8 @@ namespace Game.Database
         {
             #region Troops
 
+            var gameObjectFactory = Kernel.Get<IGameObjectFactory>();
+
             logger.Info("Loading troops...");
             using (var reader = DbManager.Select(TroopObject.DB_TABLE))
             {
@@ -1082,35 +1085,29 @@ namespace Game.Database
                                               ? city.Troops[troopStubid]
                                               : null;
 
+                    var troopObject = gameObjectFactory.CreateTroopObject((uint)reader["id"],
+                                                                          stub,
+                                                                          (uint)reader["x"],
+                                                                          (uint)reader["y"]);
+                    troopObject.TargetX = (uint)reader["target_x"];
+                    troopObject.TargetY = (uint)reader["target_y"];
+                    troopObject.DbPersisted = true;
+                    troopObject.State.Type = (ObjectState)((byte)reader["state"]);
+                    troopObject.Stats =
+                            new TroopStats((int)reader["attack_point"],
+                                           (byte)reader["attack_radius"],
+                                           (decimal)reader["speed"],
+                                           new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"]));
+                    troopObject.IsBlocked = (uint)reader["is_blocked"];
+                    troopObject.InWorld = (bool)reader["in_world"];
 
-                    var obj = new TroopObject(stub)
+                    troopObject.State.Parameters = XmlSerializer.DeserializeList((string)reader["state_parameters"]);
+
+                    city.Add(troopObject.ObjectId, troopObject, false);
+
+                    if (troopObject.InWorld)
                     {
-                            X = (uint)reader["x"],
-                            Y = (uint)reader["y"],
-                            TargetX = (uint)reader["target_x"],
-                            TargetY = (uint)reader["target_y"],
-                            ObjectId = (uint)reader["id"],
-                            DbPersisted = true,
-                            State = {Type = (ObjectState)((byte)reader["state"])},
-                            Stats =
-                                    new TroopStats((int)reader["attack_point"],
-                                                   (byte)reader["attack_radius"],
-                                                   (decimal)reader["speed"],
-                                                   new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"])),
-                            IsBlocked = (uint)reader["is_blocked"],
-                            InWorld = (bool)reader["in_world"],
-                    };
-
-                    foreach (var variable in XmlSerializer.DeserializeList((string)reader["state_parameters"]))
-                    {
-                        obj.State.Parameters.Add(variable);
-                    }
-
-                    city.Add(obj.ObjectId, obj, false);
-
-                    if (obj.InWorld)
-                    {
-                        World.Regions.DbLoaderAdd(obj);
+                        World.Regions.DbLoaderAdd(troopObject);
                     }
                 }
             }
@@ -1335,16 +1332,18 @@ namespace Game.Database
                                                                   (decimal)listReader["hp"],
                                                                   (ushort)listReader["type"],
                                                                   (byte)listReader["level"],
-                                                                  Ioc.Kernel.Get<Formula>(),
-                                                                  Ioc.Kernel.Get<IActionFactory>(),
-                                                                  Ioc.Kernel.Get<IBattleFormulas>())
+                                                                  Kernel.Get<Formula>(),
+                                                                  Kernel.Get<IActionFactory>(),
+                                                                  Kernel.Get<IBattleFormulas>(),
+                                                                  Kernel.Get<ITileLocator>(),
+                                                                  Kernel.Get<IRegionManager>())
                         {
-                                GroupId = (uint)listReader["group_id"],
-                                DmgDealt = (decimal)listReader["damage_dealt"],
-                                DmgRecv = (decimal)listReader["damage_received"],
-                                LastRound = (uint)listReader["last_round"],
-                                RoundsParticipated = (int)listReader["rounds_participated"],
-                                DbPersisted = true
+                            GroupId = (uint)listReader["group_id"],
+                            DmgDealt = (decimal)listReader["damage_dealt"],
+                            DmgRecv = (decimal)listReader["damage_received"],
+                            LastRound = (uint)listReader["last_round"],
+                            RoundsParticipated = (int)listReader["rounds_participated"],
+                            DbPersisted = true
                         };
 
                         battleManager.GetCombatGroup((uint)listReader["group_id"]).Add(combatStructure, false);
@@ -1378,8 +1377,10 @@ namespace Game.Database
                                                                                     (int)listReader["loot_iron"],
                                                                                     (int)listReader["loot_wood"],
                                                                                     (int)listReader["loot_labor"]),
-                                                                       Ioc.Kernel.Get<UnitFactory>(),
-                                                                       Ioc.Kernel.Get<IBattleFormulas>());
+                                                                       Kernel.Get<UnitFactory>(),
+                                                                       Kernel.Get<IBattleFormulas>(),
+                                                                       Kernel.Get<Formula>(),
+                                                                       Kernel.Get<ITileLocator>());
 
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
@@ -1422,8 +1423,9 @@ namespace Game.Database
                                                                         (byte)listReader["level"],
                                                                         (ushort)listReader["count"],
                                                                         (decimal)listReader["left_over_hp"],                                                                        
-                                                                        Ioc.Kernel.Get<IBattleFormulas>(),
-                                                                        Ioc.Kernel.Get<UnitFactory>());
+                                                                        Kernel.Get<IBattleFormulas>(),
+                                                                        Kernel.Get<Formula>(),
+                                                                        Kernel.Get<UnitFactory>());
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
                         combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
@@ -1501,9 +1503,9 @@ namespace Game.Database
                                                                            (ushort)listReader["count"],
                                                                            stronghold,
                                                                            (decimal)listReader["left_over_hp"],
-                                                                           Ioc.Kernel.Get<UnitFactory>(),
-                                                                           Ioc.Kernel.Get<IBattleFormulas>(),
-                                                                           Ioc.Kernel.Get<Formula>());
+                                                                               Kernel.Get<UnitFactory>(),
+                                                                               Kernel.Get<IBattleFormulas>(),
+                                                                               Kernel.Get<Formula>());
 
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
@@ -1541,8 +1543,8 @@ namespace Game.Database
                                                                            (byte)listReader["level"],
                                                                            (decimal)listReader["hp"],
                                                                            stronghold,
-                                                                           Ioc.Kernel.Get<StructureFactory>(),
-                                                                           Ioc.Kernel.Get<IBattleFormulas>());
+                                                                               Kernel.Get<IStructureCsvFactory>(),
+                                                                               Kernel.Get<IBattleFormulas>());
 
                         combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
                         combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
@@ -1841,7 +1843,7 @@ namespace Game.Database
                         obj = city[(uint)reader["object_id"]];
                     }
 
-                    var referenceStub = new ReferenceStub((ushort)reader["id"], obj, action, city) {DbPersisted = true};
+                    var referenceStub = new ReferenceStub((ushort)reader["id"], obj, action, city.Id) {DbPersisted = true};
 
                     city.References.DbLoaderAdd(referenceStub);
                 }

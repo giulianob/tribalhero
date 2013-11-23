@@ -72,15 +72,15 @@ namespace Game.Data
 
         public virtual decimal MaxHp { get; private set; }
 
-        public virtual decimal Atk { get; private set; }
+        public virtual decimal Attack { get; private set; }
 
         public virtual byte Splash { get; private set; }
 
-        public virtual byte Rng { get; private set; }
+        public virtual byte Range { get; private set; }
 
-        public virtual byte Stl { get; private set; }
+        public virtual byte Stealth { get; private set; }
 
-        public virtual byte Spd { get; private set; }
+        public virtual byte Speed { get; private set; }
 
         public virtual ushort Carry { get; private set; }
 
@@ -97,11 +97,11 @@ namespace Game.Data
         public BaseBattleStats(ushort type,
                                byte lvl,
                                WeaponType weapon,
-                               WeaponClass wpnClass,
+                               WeaponClass weaponClass,
                                ArmorType armor,
-                               ArmorClass armrClass,
+                               ArmorClass armorClass,
                                decimal maxHp,
-                               decimal atk,
+                               decimal attack,
                                byte splash,
                                byte range,
                                byte stealth,
@@ -113,18 +113,37 @@ namespace Game.Data
             Type = type;
             Lvl = lvl;
             Weapon = weapon;
-            WeaponClass = wpnClass;
+            WeaponClass = weaponClass;
             Armor = armor;
-            ArmorClass = armrClass;
+            ArmorClass = armorClass;
             MaxHp = maxHp;
-            Atk = atk;
+            Attack = attack;
             Splash = splash;
-            Rng = range;
-            Stl = stealth;
-            Spd = speed;
+            Range = range;
+            Stealth = stealth;
+            Speed = speed;
             GroupSize = groupSize;
             Carry = carry;
             NormalizedCost = normalizedCost;
+        }
+
+        public BaseBattleStats(IBaseBattleStats copy)
+                : this(copy.Type,
+                       copy.Lvl,
+                       copy.Weapon,
+                       copy.WeaponClass,
+                       copy.Armor,
+                       copy.ArmorClass,
+                       copy.MaxHp,
+                       copy.Attack,
+                       copy.Splash,
+                       copy.Range,
+                       copy.Stealth,
+                       copy.Speed,
+                       copy.GroupSize,
+                       copy.Carry,
+                       copy.NormalizedCost)
+        {
         }
 
         #endregion

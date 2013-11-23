@@ -136,9 +136,9 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            IGameObject obj;
+            IGameObject obj = null;
 
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (city == null)
                 {
@@ -149,34 +149,33 @@ namespace Game.Logic.Actions
                 {
                     throw new Exception("Obj is missing");
                 }
-            }
+            });
 
             // Cancel all active actions
             int loopCount = 0;
             while (true)
             {
-                GameAction action;
+                GameAction action = null;
 
-                using (locker.Lock(cityId, out city))
+                locker.Lock(cityId, out city).Do(() =>
                 {
                     if (city == null)
                     {
                         throw new Exception("City is missing");
                     }
 
-                    IGameObject obj1 = obj;
-                    action = city.Worker.ActiveActions.Values.FirstOrDefault(x => x.WorkerObject == obj1);
-
-                    if (action == null)
-                    {
-                        break;
-                    }
+                    action = city.Worker.ActiveActions.Values.FirstOrDefault(x => x.WorkerObject == obj);
 
                     loopCount++;
                     if (loopCount == 1000)
                     {
                         throw new Exception(string.Format("Unable to cancel all active actions. Stuck cancelling {0}", action.Type));
                     }
+                });
+
+                if (action == null)
+                {
+                    break;
                 }
 
                 action.WorkerRemoved(wasKilled);
@@ -186,9 +185,9 @@ namespace Game.Logic.Actions
             loopCount = 0;
             while (true)
             {
-                GameAction action;
+                GameAction action = null;
 
-                using (locker.Lock(cityId, out city))
+                locker.Lock(cityId, out city).Do(() =>
                 {
                     if (city == null)
                     {
@@ -198,16 +197,16 @@ namespace Game.Logic.Actions
                     IGameObject obj1 = obj;
                     action = city.Worker.PassiveActions.Values.FirstOrDefault(x => x.WorkerObject == obj1);
 
-                    if (action == null)
-                    {
-                        break;
-                    }
-
                     loopCount++;
                     if (loopCount == 1000)
                     {
-                        throw new Exception(string.Format("Unable to cancel all passive actions. Stuck cancelling {0}", action.Type)); 
+                        throw new Exception(string.Format("Unable to cancel all passive actions. Stuck cancelling {0}", action.Type));
                     }
+                });
+                
+                if (action == null)
+                {
+                    break;
                 }
 
                 action.WorkerRemoved(wasKilled);
@@ -216,8 +215,8 @@ namespace Game.Logic.Actions
             // Cancel all references
             foreach (var actionId in cancelActions)
             {
-                GameAction action;
-                using (locker.Lock(cityId, out city))
+                GameAction action = null;
+                locker.Lock(cityId, out city).Do(() =>
                 {
                     if (city == null)
                     {
@@ -226,16 +225,18 @@ namespace Game.Logic.Actions
 
                     uint actionId1 = actionId;
                     action = city.Worker.ActiveActions.Values.FirstOrDefault(x => x.ActionId == actionId1);
-                    if (action == null)
-                    {
-                        continue;
-                    }
+
+                });
+                
+                if (action == null)
+                {
+                    continue;
                 }
 
                 action.WorkerRemoved(wasKilled);
             }
 
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (city == null)
                 {
@@ -284,7 +285,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override void UserCancelled()

@@ -1,4 +1,3 @@
-using System;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Map;
@@ -56,6 +55,8 @@ namespace Game.Battle.CombatObjects
         uint Visibility { get; }
 
         byte Lvl { get; }
+
+        byte Size { get; }
 
         void ExitBattle();
 

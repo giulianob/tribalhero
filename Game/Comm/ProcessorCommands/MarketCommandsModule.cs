@@ -6,7 +6,6 @@ using Game.Logic.Actions;
 using Game.Module;
 using Game.Setup;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -14,6 +13,19 @@ namespace Game.Comm.ProcessorCommands
 {
     class MarketCommandsModule : CommandModule
     {
+        private readonly IActionFactory actionFactory;
+
+        private readonly ILocker locker;
+
+        private readonly IStructureCsvFactory structureCsvFactory;
+
+        public MarketCommandsModule(IActionFactory actionFactory, ILocker locker, IStructureCsvFactory structureCsvFactory)
+        {
+            this.actionFactory = actionFactory;
+            this.locker = locker;
+            this.structureCsvFactory = structureCsvFactory;
+        }
+
         public override void RegisterCommands(Processor processor)
         {
             processor.RegisterCommand(Command.MarketBuy, MarketBuy);
@@ -51,7 +63,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -70,14 +82,12 @@ namespace Game.Comm.ProcessorCommands
 
                 if (obj != null)
                 {
-                    Error ret;
-                    var rba = new ResourceBuyActiveAction(cityId, objectId, price, quantity, type);
-                    if (
-                            (ret =
-                             city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(obj),
-                                                  obj,
-                                                  rba,
-                                                  obj.Technologies)) == 0)
+                    var rba = actionFactory.CreateResourceBuyActiveAction(cityId, objectId, price, quantity, type);
+                    Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(obj),
+                                                     obj,
+                                                     rba,
+                                                     obj.Technologies);
+                    if (ret == 0)
                     {
                         ReplySuccess(session, packet);
                     }
@@ -87,8 +97,9 @@ namespace Game.Comm.ProcessorCommands
                     }
                     return;
                 }
+
                 ReplyError(session, packet, Error.Unexpected);
-            }
+            });
         }
 
         private void MarketSell(Session session, Packet packet)
@@ -112,7 +123,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -131,25 +142,25 @@ namespace Game.Comm.ProcessorCommands
 
                 if (obj != null)
                 {
-                    Error ret;
-                    var rsa = new ResourceSellActiveAction(cityId, objectId, price, quantity, type);
-                    if (
-                            (ret =
-                             city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(obj),
-                                                  obj,
-                                                  rsa,
-                                                  obj.Technologies)) == 0)
+                    var rsa = actionFactory.CreateResourceSellActiveAction(cityId, objectId, price, quantity, type);
+                    var actionResult = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(obj),
+                                                            obj,
+                                                            rsa,
+                                                            obj.Technologies);
+                    if (actionResult == 0)
                     {
                         ReplySuccess(session, packet);
                     }
                     else
                     {
-                        ReplyError(session, packet, ret);
+                        ReplyError(session, packet, actionResult);
                     }
+
                     return;
                 }
+
                 ReplyError(session, packet, Error.Unexpected);
-            }
+            });
         }
     }
 }

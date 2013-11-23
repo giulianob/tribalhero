@@ -1,9 +1,13 @@
+using System;
+using Game.Data.Events;
 using Game.Util.Locking;
 
 namespace Game.Data
 {
-    public interface ISimpleGameObject : ILockable, IXYPosition
+    public interface ISimpleGameObject : ILockable, IPrimaryPosition
     {
+        event EventHandler<SimpleGameObjectArgs> ObjectUpdated;
+
         bool InWorld { get; set; }
 
         GameObjectState State { get; set; }
@@ -12,26 +16,14 @@ namespace Game.Data
 
         uint GroupId { get; }
 
-        uint ObjectId { get; set; }
+        uint ObjectId { get; }
 
-        uint RelX { get; }
-
-        uint RelY { get; }
+        byte Size { get; }
 
         void BeginUpdate();
-
-        void CheckUpdateMode();
 
         void EndUpdate();
 
         string ToString();
-
-        int TileDistance(uint x1, uint y1);
-
-        int TileDistance(ISimpleGameObject obj);
-
-        int RadiusDistance(uint x1, uint y1);
-
-        int RadiusDistance(ISimpleGameObject obj);
     }
 }

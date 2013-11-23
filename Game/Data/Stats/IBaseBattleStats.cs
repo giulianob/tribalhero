@@ -18,15 +18,15 @@ namespace Game.Data
 
         decimal MaxHp { get; }
 
-        decimal Atk { get; }
+        decimal Attack { get; }
 
         byte Splash { get; }
 
-        byte Rng { get; }
+        byte Range { get; }
 
-        byte Stl { get; }
+        byte Stealth { get; }
 
-        byte Spd { get; }
+        byte Speed { get; }
 
         ushort Carry { get; }
 

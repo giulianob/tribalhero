@@ -21,6 +21,7 @@ namespace Game.Setup
         /// <summary>
         ///     Gets or sets the kernel that is used in the application.
         /// </summary>
+        [Obsolete("Inject the dependency instead.")]
         public static IKernel Kernel
         {
             get

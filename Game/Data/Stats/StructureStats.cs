@@ -12,7 +12,7 @@ namespace Game.Data.Stats
         {
         }
 
-        public StructureStats(StructureBaseStats baseStats)
+        public StructureStats(IStructureBaseStats baseStats)
         {
             Base = baseStats;
 

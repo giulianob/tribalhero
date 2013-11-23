@@ -1,12 +1,11 @@
 #region
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Data.Forest;
 using Game.Data.Stats;
-using Game.Data.Stronghold;
+using Game.Logic.Actions;
 using Game.Setup;
 
 #endregion
@@ -15,28 +14,57 @@ namespace Game.Logic.Formulas
 {
     public partial class Formula
     {
-        [Obsolete("Used for testing only", true)]
-        public Formula()
-        {
-        }
-
-        public Formula(ObjectTypeFactory objectTypeFactory, UnitFactory unitFactory, StructureFactory structureFactory, ISystemVariableManager systemVariableManager)
+        protected Formula()
+		{
+		}
+	
+        public Formula(IObjectTypeFactory objectTypeFactory, UnitFactory unitFactory, IStructureCsvFactory structureFactory, ISystemVariableManager systemVariableManager)
         {
             SystemVariableManager = systemVariableManager;
             ObjectTypeFactory = objectTypeFactory;
             UnitFactory = unitFactory;
-            StructureFactory = structureFactory;
+	    	StructureCsvFactory = structureFactory;
         }
 
-        public static Formula Current { get; set; }
+        public virtual IObjectTypeFactory ObjectTypeFactory { get; set; }
 
-        public ObjectTypeFactory ObjectTypeFactory { get; set; }
+        public virtual UnitFactory UnitFactory { get; set; }
 
-        public UnitFactory UnitFactory { get; set; }
+        public virtual IStructureCsvFactory StructureCsvFactory { get; set; }
 
-        public StructureFactory StructureFactory { get; set; }
+        public virtual ISystemVariableManager SystemVariableManager { get; set; }
 
-        public ISystemVariableManager SystemVariableManager { get; set; }
+        public virtual Error CityMaxConcurrentBuildActions(ushort structureType, uint currentActionId, ICity city, IObjectTypeFactory objectTypeFactory)
+        {
+            int maxConcurrentUpgrades = ConcurrentBuildUpgrades(city.MainBuilding.Lvl);
+
+            if (!objectTypeFactory.IsObjectType("UnlimitedBuilding", structureType) &&
+                city.Worker.ActiveActions.Values.Count(action =>
+                    {
+                        if (action.ActionId == currentActionId)
+                        {
+                            return false;
+                        }
+
+                        if (action is StructureUpgradeActiveAction)
+                        {
+                            return true;
+                        }
+
+                        var buildAction = action as StructureBuildActiveAction;
+                        if (buildAction == null)
+                        {
+                            return false;
+                        }
+
+                        return !objectTypeFactory.IsObjectType("UnlimitedBuilding", buildAction.BuildType);
+                    }) >= maxConcurrentUpgrades)
+            {
+                return Error.ActionTotalMaxReached;
+            }
+
+            return Error.Ok;
+        }
 
         /// <summary>
         ///     Applies the specified effects to the specified radius. This is used by AwayFromLayout for building validation.
@@ -225,7 +253,7 @@ namespace Game.Logic.Formulas
 
         public virtual byte GetInitialCityRadius()
         {
-            return 4;
+            return 5;
         }
 
         public virtual decimal GetInitialAp()

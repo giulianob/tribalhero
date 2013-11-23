@@ -1,7 +1,6 @@
 #region
 
 using System.Collections.Generic;
-using Game.Data;
 using Game.Util;
 using Ninject.Extensions.Logging;
 

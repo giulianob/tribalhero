@@ -1,17 +1,30 @@
 ﻿using Common.Testing;
 using FluentAssertions;
 using Game.Data.Troop;
+using Game.Data;
 using Xunit;
+using NSubstitute;
 using Xunit.Extensions;
 
 namespace Testing.TroopTests
 {
     public class TroopStubTest
     {
-        [Fact]
-        public void TestUnitListsNoUnitsInStub()
+
+        public TroopStubTest()
         {
-            ITroopStub stub = new TroopStub(0, null);
+            Global.Current = Substitute.For<IGlobal>();
+            Global.Current.FireEvents.Returns(false);
+        }
+
+        public void Dispose()
+        {
+            Global.Current = null;
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void TestUnitListsNoUnitsInStub(TroopStub stub)
+        {
             stub.AddFormation(FormationType.Normal);
             stub.AddFormation(FormationType.Attack);
 
@@ -20,10 +33,9 @@ namespace Testing.TroopTests
             units.Count.Should().Be(0);
         }
 
-        [Fact]
-        public void TestUnitListNoConflictingTypes()
+        [Theory, AutoNSubstituteData]
+        public void TestUnitListNoConflictingTypes(TroopStub stub)
         {
-            ITroopStub stub = new TroopStub(0, null);
             stub.AddFormation(FormationType.Normal);
             stub.AddFormation(FormationType.Attack);
 
@@ -39,10 +51,9 @@ namespace Testing.TroopTests
             Assert.True(units[1].Count == 5);
         }
 
-        [Fact]
-        public void TestUnitListConflictingTypes()
-        {
-            ITroopStub stub = new TroopStub(0, null);
+        [Theory, AutoNSubstituteData]
+        public void TestUnitListConflictingTypes(TroopStub stub)
+        {            
             stub.AddFormation(FormationType.Normal);
             stub.AddFormation(FormationType.Attack);
 
@@ -56,10 +67,9 @@ namespace Testing.TroopTests
             Assert.True(units[0].Count == 9);
         }
 
-        [Fact]
-        public void TestUnitListConflictingAndNonConflictingTypes()
+        [Theory, AutoNSubstituteData]
+        public void TestUnitListConflictingAndNonConflictingTypes(TroopStub stub)
         {
-            ITroopStub stub = new TroopStub(0, null);
             stub.AddFormation(FormationType.Normal);
             stub.AddFormation(FormationType.Attack);
 
@@ -76,10 +86,9 @@ namespace Testing.TroopTests
             Assert.True(units[1].Count == 10);
         }
 
-        [Fact]
-        public void TestUnitListSpecificFormations()
+        [Theory, AutoNSubstituteData]
+        public void TestUnitListSpecificFormations(TroopStub stub)
         {
-            ITroopStub stub = new TroopStub(0, null);
             stub.AddFormation(FormationType.Normal);
             stub.AddFormation(FormationType.Attack);
 

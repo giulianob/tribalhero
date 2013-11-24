@@ -79,7 +79,7 @@
 			
 			onResourceChange(null);
 			
-			lstResourceType.addEventListener(Event.CHANGE, onResourceChange);
+			lstResourceType.addActionListener(onResourceChange);
 			sldAmount.addEventListener(InteractiveEvent.STATE_CHANGED, onAmountChange);
 
             lblMaxOut.addActionListener(function(e: Event):void {

@@ -54,7 +54,7 @@ package src.Comm.Commands
 		}
 		
 		private function readStrongholdPrivateProfile(packet: Packet, custom: * ): void {
-			var profileData: * = new Object();			
+			var profileData: * = {};
 			profileData.strongholdId = packet.readUInt();
 			profileData.strongholdName = packet.readString();
 			profileData.strongholdLevel = packet.readByte();

@@ -57,14 +57,14 @@ package src.UI.Tutorial
 			this.messageId = wizardId;			
 		}
 		
-		protected function showMessageAtPosition(position: IntPoint, messageId: String): void {
+		protected function showMessageAtPosition(position: IntPoint, messageId: String, ... messageParams): void {
 			if (messageId == this.messageId) {
 				return;
 			}
 			
 			hideAllMessages();			
 			
-			var text: String = StringHelper.localize(messageId);
+			var text: String = StringHelper.localize.apply(StringHelper.localize, [messageId].concat(messageParams));
 			this.messageTooltip = new TextTooltip(text == null ? "[" + messageId + "]" : text, "Tutorial");
 			this.messageTooltip.showFixed(position);	
 			this.messageId = messageId;

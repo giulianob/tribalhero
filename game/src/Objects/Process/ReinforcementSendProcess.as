@@ -10,7 +10,7 @@ package src.Objects.Process
 	import src.UI.Dialog.*;
 	import src.UI.Sidebars.CursorCancel.*;
 
-	public class ReinforcementSendProcess implements IProcess
+	public class ReinforcementSendProcess
 	{		
 		private var reinforceDialog: ReinforceTroopDialog;
 		private var location : Location;

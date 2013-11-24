@@ -241,7 +241,7 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 
-		public function retreat(city: int, troopId: int, retreatAll: Boolean, unitsToRetreat: TroopStub):void
+		public function retreat(city: int, troopId: int, retreatAll: Boolean, unitsToRetreat: TroopStub, callback: * = null):void
 		{
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TROOP_RETREAT;
@@ -252,7 +252,7 @@
                 writeTroop(unitsToRetreat, packet);
             }
 
-			session.write(packet, mapComm.catchAllErrors);
+			session.write(packet, callback ? callback : mapComm.catchAllErrors);
 		}
 
 		public function troopAttackCity(cityId: int, targetCityId: int, targetObjectId: int, mode: int, troop: TroopStub, onAttackFail:Function):void

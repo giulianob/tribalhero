@@ -43,8 +43,9 @@ package src.UI.Tutorial.Steps
 			var fighterCount: int = city.troops.getIndividualUnitCount(FIGHTER_TYPE);
 			var hasTrainingAction: Boolean = city.currentActions.getActions(Action.UNIT_TRAIN).length > 0;
 			var hasAttackTroops: Boolean = city.currentActions.getActions(Action.BARBARIAN_TRIBE_ATTACK_CHAIN).length > 0;
-			
-			if (fighterCount >= 15 || hasAttackTroops)
+			var fightersNeeded: int = Math.max(0, 15 - fighterCount);
+
+			if (fightersNeeded == 0 || hasAttackTroops)
 			{
 				this.complete();
 				return;
@@ -60,6 +61,9 @@ package src.UI.Tutorial.Steps
 			if (hasTrainingAction) {
 				showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_WAIT_FOR_FIGHTERS");
 			}
+            else if (fighterCount > 0) {
+                showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_TRAIN_MORE_FIGHTER", fightersNeeded);
+            }
 			else {
 				showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_TRAIN_FIGHTER");
 			}			

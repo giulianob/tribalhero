@@ -29,7 +29,7 @@ ERROR_207,"This forest is too high level for your lumbermill.  Check your lumber
 ERROR_208,You can only gather wood from a maximum of 5 forests at the same time.,
 ERROR_209,You are not allowed to send this many resources,
 ERROR_210,"Lumbermill is busy. Check your lumbermill, it could be upgrading or building another outpost at the moment.",
-ERROR_211,You need to upgrade your lumbermill to increase the maximum laborersthat  you can put into a forest camp.,
+ERROR_211,You need to upgrade your lumbermill to increase the maximum laborers that  you can put into a forest camp.,
 ERROR_250,The requirements for this action have not been met,
 ERROR_251,The requirements for this action have not been met,
 ERROR_300,The market prices has changed since you opened the market dialog. Close the dialog and try again.,

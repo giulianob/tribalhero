@@ -32,6 +32,8 @@ namespace Game.Data.Forest
 
         private readonly IActionFactory actionFactory;
 
+        private readonly ILocker locker;
+
         private readonly Dictionary<uint, IForest> forests;
 
         private readonly LargeIdGenerator objectIdGenerator = new LargeIdGenerator(Config.forest_id_max, Config.forest_id_min);
@@ -42,7 +44,8 @@ namespace Game.Data.Forest
                              Formula formula,
                              IForestFactory forestFactory,
                              ObjectTypeFactory objectTypeFactory,
-                             IActionFactory actionFactory)
+                             IActionFactory actionFactory,
+                             ILocker locker)
         {
             this.scheduler = scheduler;
             this.world = world;
@@ -51,12 +54,18 @@ namespace Game.Data.Forest
             this.forestFactory = forestFactory;
             this.objectTypeFactory = objectTypeFactory;
             this.actionFactory = actionFactory;
-            ForestCount = new int[Config.forest_count.Length];
+            this.locker = locker;
             forests = new Dictionary<uint, IForest>();
         }
 
-        public int[] ForestCount { get; private set; }
-        
+        public int ForestCount
+        {
+            get
+            {
+                return forests.Count;
+            }
+        }
+
         public void StartForestCreator()
         {
             scheduler.Put(actionFactory.CreateForestCreatorAction());
@@ -66,7 +75,6 @@ namespace Game.Data.Forest
         {
             objectIdGenerator.Set(forest.ObjectId);
 
-            ForestCount[forest.Lvl - 1]++;
             forests.Add(forest.ObjectId, forest);
         }
 
@@ -78,16 +86,16 @@ namespace Game.Data.Forest
                         .Any(forest => forest.TileDistance(x, y) <= radius);
         }
 
-        public void CreateForest(byte lvl, int capacity, double rate)
+        public void CreateForest(int capacity)
         {
-            CreateForestAt(lvl, capacity, rate);
+            CreateForestAt(capacity);
         }
 
-        public void CreateForestAt(byte lvl, int capacity, double rate, uint x = 0, uint y = 0)
+        public void CreateForestAt(int capacity, uint x = 0, uint y = 0)
         {
             lock (forests)
             {
-                var forest = forestFactory.CreateForest(lvl, capacity, rate);
+                var forest = forestFactory.CreateForest(capacity);
 
                 if (x == 0 || y == 0)
                 {
@@ -145,7 +153,6 @@ namespace Game.Data.Forest
                 forest.RecalculateForest();
                 forest.EndUpdate();
 
-                ForestCount[lvl - 1]++;
             }
         }
 
@@ -153,8 +160,6 @@ namespace Game.Data.Forest
         {
             lock (forests)
             {
-                ForestCount[forest.Lvl - 1]--;
-
                 forests.Remove(forest.ObjectId);
 
                 forest.BeginUpdate();
@@ -198,16 +203,30 @@ namespace Game.Data.Forest
 
         public void RegenerateForests()
         {
-            for (byte i = 0; i < Config.forest_count.Length; i++)
-            {
-                var lvl = (byte)(i + 1);
-                int delta = Config.forest_count[i] - ForestCount[i];
+            int delta = Config.forest_count - forests.Count;
 
-                for (int j = 0; j < delta; j++)
+            for (int j = 0; j < delta; j++)
+            {
+                CreateForest(formula.GetMaxForestCapacity());
+            }
+        }
+
+        public void ReloadForests(int capacity)
+        {
+            lock (forests)
+            {
+                foreach (var kpv in forests)
                 {
-                    CreateForest(lvl, formula.GetMaxForestCapacity(lvl), formula.GetMaxForestRate(lvl));
+                    using (locker.Lock(CallbackLockHandler, new object[] {kpv.Key}))
+                    {
+                        kpv.Value.BeginUpdate();
+                        kpv.Value.Wood = new AggressiveLazyValue(capacity);
+                        kpv.Value.RecalculateForest();
+                        kpv.Value.EndUpdate();
+                    }
                 }
             }
+            
         }
     }
 }

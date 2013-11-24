@@ -7,7 +7,6 @@ using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Procedures;
-using Game.Logic.Triggers;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -27,9 +26,7 @@ namespace Game.Logic.Actions
 
         private readonly Procedure procedure;
 
-        private readonly ICityTriggerManager cityTriggerManager;
-
-        private readonly ICityEventFactory cityEventFactory;
+        private readonly CallbackProcedure callbackProcedure;
 
         private readonly uint cityId;
 
@@ -44,8 +41,7 @@ namespace Game.Logic.Actions
                                          IGameObjectLocator gameObjectLocator,
                                          ILocker locker,
                                          Procedure procedure,
-                                         ICityTriggerManager cityTriggerManager,
-                                         ICityEventFactory cityEventFactory)
+                                         CallbackProcedure callbackProcedure)
         {
             this.cityId = cityId;
             this.objectId = objectId;
@@ -54,8 +50,7 @@ namespace Game.Logic.Actions
             this.gameObjectLocator = gameObjectLocator;
             this.locker = locker;
             this.procedure = procedure;
-            this.cityTriggerManager = cityTriggerManager;
-            this.cityEventFactory = cityEventFactory;
+            this.callbackProcedure = callbackProcedure;
         }
 
         public ObjectRemovePassiveAction(uint id,
@@ -68,15 +63,13 @@ namespace Game.Logic.Actions
                                          IGameObjectLocator gameObjectLocator,
                                          ILocker locker,
                                          Procedure procedure,
-                                         ICityTriggerManager cityTriggerManager,
-                                         ICityEventFactory cityEventFactory)
+                                         CallbackProcedure callbackProcedure)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.gameObjectLocator = gameObjectLocator;
             this.locker = locker;
             this.procedure = procedure;
-            this.cityTriggerManager = cityTriggerManager;
-            this.cityEventFactory = cityEventFactory;
+            this.callbackProcedure = callbackProcedure;
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
             wasKilled = bool.Parse(properties["was_killed"]);
@@ -277,9 +270,11 @@ namespace Game.Logic.Actions
                     procedure.OnStructureUpgradeDowngrade(structure);
                     city.EndUpdate();
 
+                    callbackProcedure.OnStructureDowngrade(structure);
+
                     foreach (var tech in techs)
                     {
-                        procedure.OnTechnologyDelete(structure, tech.TechBase, cityTriggerManager, cityEventFactory);
+                        callbackProcedure.OnTechnologyDelete(structure, tech.TechBase);
                     }
                 }
 

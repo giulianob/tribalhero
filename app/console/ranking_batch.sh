@@ -1,1 +1,3 @@
-../../cake/console/cake -app ../ ranking
+cd $(dirname $(readlink -f $0))
+cd ..
+../cake/console/cake ranking

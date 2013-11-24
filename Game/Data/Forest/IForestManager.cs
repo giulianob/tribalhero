@@ -4,7 +4,7 @@ namespace Game.Data.Forest
 {
     public interface IForestManager
     {
-        int[] ForestCount { get; }
+        int ForestCount { get; }
 
         void StartForestCreator();
 
@@ -12,9 +12,9 @@ namespace Game.Data.Forest
 
         bool HasForestNear(uint x, uint y, int radius);
 
-        void CreateForest(byte lvl, int capacity, double rate);
+        void CreateForest(int capacity);
 
-        void CreateForestAt(byte lvl, int capacity, double rate, uint x = 0, uint y = 0);
+        void CreateForestAt(int capacity, uint x = 0, uint y = 0);
 
         void RemoveForest(IForest forest);
 
@@ -29,5 +29,7 @@ namespace Game.Data.Forest
         bool TryGetValue(uint id, out IForest forest);
 
         void RegenerateForests();
+
+        void ReloadForests(int capacity);
     }
 }

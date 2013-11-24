@@ -17,7 +17,7 @@ namespace Game.Logic.Actions
 
         private readonly ICityEventFactory cityEventFactory;
 
-        private readonly Procedure procedure;
+        private readonly CallbackProcedure callbackProcedure;
 
         private byte lvl;
 
@@ -41,11 +41,11 @@ namespace Game.Logic.Actions
             }
         }
 
-        public TechnologyCreatePassiveAction(ICityTriggerManager cityTriggerManager, ICityEventFactory cityEventFactory, Procedure procedure)
+        public TechnologyCreatePassiveAction(ICityTriggerManager cityTriggerManager, ICityEventFactory cityEventFactory, CallbackProcedure callbackProcedure)
         {
             this.cityTriggerManager = cityTriggerManager;
             this.cityEventFactory = cityEventFactory;
-            this.procedure = procedure;
+            this.callbackProcedure = callbackProcedure;
         }
 
         #region IScriptable Members
@@ -90,7 +90,7 @@ namespace Game.Logic.Actions
                 obj.Technologies.BeginUpdate();
                 obj.Technologies.Add(tech);
                 obj.Technologies.EndUpdate();
-                procedure.OnTechnologyUpgrade(obj, tech.TechBase, cityTriggerManager, cityEventFactory);
+                callbackProcedure.OnTechnologyUpgrade(obj, tech.TechBase);
             }
 
             StateChange(ActionState.Completed);

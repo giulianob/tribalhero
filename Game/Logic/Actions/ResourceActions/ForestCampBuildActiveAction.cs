@@ -137,7 +137,7 @@ namespace Game.Logic.Actions
 
             // Count number of camps and verify there's enough space left                
             int campCount = city.Count(s => objectTypeFactory.IsStructureType("ForestCamp", s));
-            if (campCount >= formula.GetMaxForestCount(lumbermill.Lvl))
+            if (campCount >= 5)
             {
                 return Error.ForestCampMaxReached;
             }
@@ -147,17 +147,24 @@ namespace Game.Logic.Actions
             {
                 return Error.LaborNotEnough;
             }
+            
+            // Make sure we have the specified number of laborers
+            int currentInUsedLabor = lumbermill.City.Where(s => objectTypeFactory.IsStructureType("ForestCamp", s)).Sum(x => x.Stats.Labor);
+            if (formula.GetLumbermillMaxLabor(lumbermill) < labors + currentInUsedLabor)
+            {
+                return Error.LaborOverflow;
+            }
+
+            // Make sure it's within the limit of a forest camp
+            if (labors > formula.GetForestCampMaxLabor(lumbermill))
+            {
+                return Error.ForestCampMaxLaborReached;
+            }
 
             // Make sure this user is not already milking this forest.
             if (forest.Count(obj => obj.City == city) > 0)
             {
                 return Error.AlreadyInForest;
-            }
-
-            // Verify user has access to this forest
-            if (forest.Lvl > formula.GetMaxForestLevel(lumbermill.Lvl))
-            {
-                return Error.ForestInaccessible;
             }
 
             // Cost requirement
@@ -169,12 +176,6 @@ namespace Game.Logic.Actions
             if (!city.Resource.HasEnough(cost))
             {
                 return Error.ResourceNotEnough;
-            }
-
-            // Make sure we can fit this many laborers in the forest and that this user isn't trying to insert more into forest than he can
-            if (labors + forest.Labor > forest.MaxLabor || labors > formula.GetForestMaxLaborPerUser(forest))
-            {
-                return Error.ForestFull;
             }
 
             // find an open space around the forest
@@ -245,6 +246,10 @@ namespace Game.Logic.Actions
             forest.AddLumberjack(structure);
             forest.RecalculateForest();
             forest.EndUpdate();
+
+            lumbermill.BeginUpdate();
+            lumbermill["Labor"] = formula.GetForestCampLaborerString(lumbermill);
+            lumbermill.EndUpdate();
 
             // add to queue for completion
             var campBuildTime = structureFactory.GetTime(campType, 1);
@@ -335,6 +340,7 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll()
         {
             ICity city;
+
             if (!world.TryGetObjects(cityId, out city))
             {
                 throw new Exception("City is missing");

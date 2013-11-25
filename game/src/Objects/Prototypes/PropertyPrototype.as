@@ -84,6 +84,9 @@ package src.Objects.Prototypes {
             if (value == undefined) {
                 return "";
             }
+            if (datatype=="STRING") {
+                return value;
+            }
             
 			return (perHour && value > 0 ? "+" : "") + (int(value) != value ? value.toFixed(2) : value.toString()) + (perHour ? "/hour" : "");
 		}

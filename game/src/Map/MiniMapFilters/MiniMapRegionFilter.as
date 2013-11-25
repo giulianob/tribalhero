@@ -61,7 +61,12 @@ package src.Map.MiniMapFilters
 		public function applyForest(obj: MiniMapRegionObject) : void {
 			var icon: MINIMAP_FOREST_ICON = ObjectFactory.getIcon("MINIMAP_FOREST_ICON") as MINIMAP_FOREST_ICON;
 			obj.setIcon(icon);
-			icon.lvlText.text = obj.extraProps.level.toString();			
+            if(obj.extraProps.camps>0) {
+                icon.lvlText.text = obj.extraProps.camps.toString();
+                icon.lvlText.visible = true;
+            } else {
+			    icon.lvlText.visible = false;
+            }
             setupMinimapButton(obj, icon);
 		}
 		

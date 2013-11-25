@@ -182,7 +182,8 @@
 					}
 					// Forest objects
 					else if (objType == ObjectFactory.TYPE_FOREST) {
-						extraProps.level = packet.readUByte();
+						extraProps.camps = packet.readInt();
+                        extraProps.depleteTime = packet.readUInt();
 					}
 					// Troop objects
 					else if (objType == ObjectFactory.TYPE_TROOP_OBJ) {

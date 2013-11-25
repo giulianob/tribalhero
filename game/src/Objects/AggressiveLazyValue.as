@@ -2,10 +2,6 @@
 {
     import src.Constants;
 
-    /**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
 	public class AggressiveLazyValue extends LazyValue
 	{
 		
@@ -15,8 +11,12 @@
 		}		
 		
 		protected override function getCalculatedRate(): Number {
-			return (3600000.0 / (getRate() - getUpkeep())) * Constants.secondsPerUnit;
-		}		
+            if ((rate - upkeep) == 0) {
+                return 0;
+            }
+
+			return (3600.0 / (getRate() - getUpkeep())) * Constants.secondsPerUnit;
+		}
 		
 	}
 

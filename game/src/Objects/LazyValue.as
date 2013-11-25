@@ -6,8 +6,8 @@
     public class LazyValue
 	{
 		private var value: int;
-		private var rate: int;
-		private var upkeep: int;
+		protected var rate: int;
+		protected var upkeep: int;
 		private var limit: int;
 		private var lastRealizeTime: int;
 
@@ -58,7 +58,10 @@
 		}
 
 		protected function getCalculatedRate(): Number {
-			if ((rate - upkeep) == 0) return 0;
+			if ((rate - upkeep) <= 0) {
+                return 0;
+            }
+
 			return Math.max(0, (3600.0 / (rate - upkeep)) * Constants.secondsPerUnit);
 		}
 

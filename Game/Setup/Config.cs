@@ -16,7 +16,7 @@ namespace Game.Setup
         #region Game Settings
 
         public static double seconds_per_unit = 1.0;
-        public static int[] forest_count = new[] {550, 750, 1200, 1000};
+        public static int forest_count = 2500;
 
         #endregion        
 

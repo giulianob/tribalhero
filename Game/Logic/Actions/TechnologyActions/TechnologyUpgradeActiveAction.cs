@@ -31,7 +31,7 @@ namespace Game.Logic.Actions
 
         private readonly TechnologyFactory technologyFactory;
 
-        private readonly Procedure procedure;
+        private readonly CallbackProcedure callbackProcedure;
 
         private readonly ICityTriggerManager cityTriggerManager;
 
@@ -44,7 +44,7 @@ namespace Game.Logic.Actions
                                              Formula formula,
                                              ILocker locker,
                                              TechnologyFactory technologyFactory,
-                                             Procedure procedure,
+                                             CallbackProcedure callbackProcedure,
                                              ICityTriggerManager cityTriggerManager,
                                              ICityEventFactory cityEventFactory)
         {
@@ -55,7 +55,7 @@ namespace Game.Logic.Actions
             this.formula = formula;
             this.locker = locker;
             this.technologyFactory = technologyFactory;
-            this.procedure = procedure;
+            this.callbackProcedure = callbackProcedure;
             this.cityTriggerManager = cityTriggerManager;
             this.cityEventFactory = cityEventFactory;
         }
@@ -72,7 +72,7 @@ namespace Game.Logic.Actions
                                              Formula formula,
                                              ILocker locker,
                                              TechnologyFactory technologyFactory,
-                                             Procedure procedure,
+                                             CallbackProcedure callbackProcedure,
                                              ICityTriggerManager cityTriggerManager,
                                              ICityEventFactory cityEventFactory)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
@@ -81,7 +81,7 @@ namespace Game.Logic.Actions
             this.formula = formula;
             this.locker = locker;
             this.technologyFactory = technologyFactory;
-            this.procedure = procedure;
+            this.callbackProcedure = callbackProcedure;
             this.cityTriggerManager = cityTriggerManager;
             this.cityEventFactory = cityEventFactory;
             cityId = uint.Parse(properties["city_id"]);
@@ -308,7 +308,7 @@ namespace Game.Logic.Actions
                     structure.Technologies.EndUpdate();
                 }
 
-                procedure.OnTechnologyUpgrade(structure, techBase, cityTriggerManager, cityEventFactory);
+                callbackProcedure.OnTechnologyUpgrade(structure, techBase);
                 StateChange(ActionState.Completed);
             });
         }

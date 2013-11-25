@@ -58,6 +58,7 @@ namespace Game.Logic.Actions
                 obj.City.Radius = radius;
                 obj.City.EndUpdate();
             }
+
             return Error.Ok;
         }
 

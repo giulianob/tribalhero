@@ -78,6 +78,8 @@ namespace Game.Setup
 
         LumbermillBusy = 210,
 
+        ForestCampMaxLaborReached = 211,
+        
         #endregion
 
         #region Layout/Effect Requirement Errors

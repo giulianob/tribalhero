@@ -56,7 +56,7 @@ namespace Game.Logic.Actions
                                               Dictionary<string, string> properties,
                                               IObjectTypeFactory objectTypeFactory,
                                               IStructureCsvFactory structureCsvFactory,
-                                              World world,
+                                              IWorld world,
                                               ILocker locker,
                                               Formula formula)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)

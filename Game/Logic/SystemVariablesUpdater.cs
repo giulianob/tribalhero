@@ -205,8 +205,7 @@ namespace Game.Logic
                     }
 
                     // Forest cnt
-                    variables.AddRange(forestManager.ForestCount.Select((t, i) =>
-                                                                        new SystemVariable("Forests.lvl" + (i + 1) + "_count", t)));
+                    variables.Add(new SystemVariable("Forests.count", forestManager.ForestCount));
 
                     // Update vars
                     foreach (var variable in variables)

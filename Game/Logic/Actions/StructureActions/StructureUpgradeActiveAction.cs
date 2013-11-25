@@ -39,7 +39,7 @@ namespace Game.Logic.Actions
 
         private readonly IObjectTypeFactory objectTypeFactory;
 
-        private readonly InitFactory initFactory;
+        private readonly CallbackProcedure callbackProcedure;
 
         public StructureUpgradeActiveAction(uint cityId,
                                             uint structureId,
@@ -50,7 +50,7 @@ namespace Game.Logic.Actions
                                             ILocker locker,
                                             IRequirementCsvFactory requirementCsvFactory,
                                             IObjectTypeFactory objectTypeFactory,
-                                            InitFactory initFactory)
+                                            CallbackProcedure callbackProcedure)
         {
             this.cityId = cityId;
             this.structureId = structureId;
@@ -61,7 +61,7 @@ namespace Game.Logic.Actions
             this.locker = locker;
             this.requirementCsvFactory = requirementCsvFactory;
             this.objectTypeFactory = objectTypeFactory;
-            this.initFactory = initFactory;
+            this.callbackProcedure = callbackProcedure;
         }
 
         public StructureUpgradeActiveAction(uint id,
@@ -79,7 +79,7 @@ namespace Game.Logic.Actions
                                             ILocker locker,
                                             IRequirementCsvFactory requirementCsvFactory,
                                             IObjectTypeFactory objectTypeFactory,
-                                            InitFactory initFactory)
+                                            CallbackProcedure callbackProcedure)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             this.structureCsvFactory = structureCsvFactory;
@@ -89,7 +89,8 @@ namespace Game.Logic.Actions
             this.locker = locker;
             this.requirementCsvFactory = requirementCsvFactory;
             this.objectTypeFactory = objectTypeFactory;
-            this.initFactory = initFactory;
+            this.callbackProcedure = callbackProcedure;
+
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
             cost = new Resource(int.Parse(properties["crop"]),
@@ -192,14 +193,16 @@ namespace Game.Logic.Actions
                     return;
                 }
 
+                structure.City.BeginUpdate();
                 structure.BeginUpdate();
                 structureCsvFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
-                initFactory.InitGameObject(InitCondition.OnUpgrade, structure, structure.Type, structure.Lvl);
-                structure.EndUpdate();
-
-                structure.City.BeginUpdate();
+                
                 procedure.OnStructureUpgradeDowngrade(structure);
+
+                structure.EndUpdate();                               
                 structure.City.EndUpdate();
+                
+                callbackProcedure.OnStructureUpgrade(structure);
 
                 StateChange(ActionState.Completed);
             });

@@ -30,6 +30,12 @@ namespace Testing.MiniMapRegionTests
             locker.When(p => p.SortLocks(Arg.Is<ILockable[]>(a => a.SequenceEqual(new[] {obj2, obj1}))))
                 .Do(args => Array.Sort((ILockable[])args[0], DefaultMultiObjectLock.CompareObject));
 
+            locker.Do(Arg.Any<Func<bool>>()).Returns(callInfo =>
+            {                
+                var action = callInfo.Arg<Func<bool>>();
+                return action();
+            });
+
             miniMapRegion.Add(obj2);
             miniMapRegion.Add(obj1);
 

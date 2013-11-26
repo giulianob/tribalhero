@@ -10,8 +10,7 @@ package src.Graphics {
 
     [Embed(source = "../../../graphics/WallTilemap.png")]
     public class WallTileset extends Bitmap {
-        public function WallTileset() {
-        }
+        public function WallTileset() { }
 
         public function getTile(tileId: int): Bitmap {
             var tilesetsrcX:int = int(tileId % Constants.tileSetTileW) * Constants.tileW;

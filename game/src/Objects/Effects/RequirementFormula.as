@@ -1,11 +1,19 @@
 ﻿package src.Objects.Effects {
-    import src.Global;
+import System.Linq.Enumerable;
+import System.Linq.Enumerable;
+import System.Linq.Option.Option;
+import System.Linq.Option.Option;
+
+import src.Global;
     import src.Map.City;
     import src.Map.CityObject;
     import src.Objects.Factories.*;
     import src.Objects.GameObject;
     import src.Objects.Prototypes.*;
-    import src.Objects.TechnologyStats;
+import src.Objects.Prototypes.EffectPrototype;
+import src.Objects.StructureObject;
+import src.Objects.TechnologyStats;
+import src.Objects.TechnologyStats;
     import src.Util.StringHelper;
     import src.Util.Util;
 
@@ -23,8 +31,9 @@
 		{name: "AttackPoint", method: attackPoint, message: attackPointMsg },
 		{name: "PlayerAttackPoint", method: playerAttackPoint, message: playerAttackPointMsg },
 		{name: "HaveUnit", method: haveUnit, message: haveUnitMsg },
-		{name: "UniqueTechnology", method: uniqueTechnology, message: uniqueTechnologyMsg }
-		);			
+		{name: "UniqueTechnology", method: uniqueTechnology, message: uniqueTechnologyMsg },
+        {name: "DistributedPointSystem", method: pointSystemTechnology, message: pointSystemTechnologyMsg }
+		);
 
 		private static var methodsSorted: Boolean = false;
 
@@ -420,7 +429,52 @@
 			
 			return false;
 		}
-		
+
+        private static function pointSystemRequire(parentObj: GameObject, type: int) : int {
+            var city: City = Global.map.cities.get(parentObj.groupId);
+
+            if (city == null)
+            {
+                return 0;
+            }
+
+            var parentCityObj: CityObject = city.objects.get(parentObj.objectId);
+            if (parentCityObj == null) {
+                Util.log("pointSystemTechnology.pointSystemRequire: Unknown city object");
+                return 0;
+            }
+
+            var result: Option = Enumerable.from(parentCityObj.techManager.technologies).firstOrNone(function(tech: TechnologyStats) :Boolean{
+                return tech.techPrototype.techtype==type;
+            });
+            if(result.isNone) {
+                return 1;
+            }
+
+            var tech: TechnologyStats = result.value;
+            return tech.techPrototype.level+1;
+        }
+
+        private static function pointSystemTechnology(parentObj: GameObject, effects: Array, type: int, param2: int, param3: int, param4: int, param5:int): Boolean
+        {
+            var structure : StructureObject = parentObj as StructureObject;
+
+            if(structure==null) return false;
+
+            var total : int = (1 + structure.level) * structure.level / 2;
+
+            var used: int = Enumerable.from(effects).sum(function(effect: EffectPrototype):int {
+                return effect.effectCode==EffectPrototype.EFFECT_POINT_SYSTEM_VALUE?effect.param1:0;
+            });
+
+            return total - used>=pointSystemRequire(parentObj,type);
+        }
+
+        private static function pointSystemTechnologyMsg(parentObj: GameObject, type: int, param2: int, param3: int, param4: int, param5:int): String
+        {
+             return "You need to have " + pointSystemRequire(parentObj,type) + " point(s) to upgrade this technology.";
+        }
+
 	}
 }
 

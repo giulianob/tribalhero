@@ -20,6 +20,7 @@
 		public static const EFFECT_LABOR_TRAIN_TIME_MOD: int = 22;
 		public static const EFFECT_REDUCE_UPKEEP: int = 103;
 		public static const EFFECT_UNIT_TRAIN_FIRST_15_REDUCTION:int = 104;
+        public static const EFFECT_POINT_SYSTEM_VALUE: int= 105;
 		
 		public static const LOCATION_OBJECT: int = 0;
 		public static const LOCATION_CITY: int = 1;

@@ -293,9 +293,9 @@ namespace Game.Logic.Actions
                 structure.BeginUpdate();
                 structure.Technologies.Parent = structure.City.Technologies;
                 structureCsvFactory.GetUpgradedStructure(structure, structure.Type, level);
-                initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
 
                 structure.EndUpdate();
+                initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
                 city.BeginUpdate();
                 procedure.OnStructureUpgradeDowngrade(structure);
                 city.EndUpdate();

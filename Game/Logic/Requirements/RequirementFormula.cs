@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
+using Game.Logic.Requirements;
 using Game.Setup;
 
 #endregion
@@ -194,5 +195,10 @@ namespace Game.Logic
             return count < maxCount ? Error.Ok : Error.EffectRequirementNotMet;
         }
 
+        public static Error DistributedPointSystem(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
+        {
+            DistributedPointSystemRequirement requirement = new DistributedPointSystemRequirement();
+            return requirement.Validate(obj as Structure, uint.Parse(parms[0]));
+        }
     }
 }

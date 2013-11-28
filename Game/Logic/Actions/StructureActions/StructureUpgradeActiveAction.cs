@@ -194,8 +194,9 @@ namespace Game.Logic.Actions
 
                 structure.BeginUpdate();
                 structureCsvFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
-                initFactory.InitGameObject(InitCondition.OnUpgrade, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
+
+                initFactory.InitGameObject(InitCondition.OnUpgrade, structure, structure.Type, structure.Lvl);
 
                 structure.City.BeginUpdate();
                 procedure.OnStructureUpgradeDowngrade(structure);

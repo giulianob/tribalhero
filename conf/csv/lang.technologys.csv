@@ -68,68 +68,197 @@ HIPPOSANDAL_TECHNOLOGY_LVL_1,Equips mounts with horseshoes.  Increase base Carry
 HIPPOSANDAL_TECHNOLOGY_LVL_2,Equips mounts with horseshoes.  Increase base Carry for mount unit by 30. (Does not stack)
 HIPPOSANDAL_TECHNOLOGY_LVL_3,Equips mounts with horseshoes.  Increase base Carry for mount unit by 45. (Does not stack)
 ,
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_NAME,Sword Units Defensive Boost
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Fighter, Swordsman, and Hoplite by 1% on defense mission . (Stacks additively up to 150%)"
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Fighter, Swordsman, and Hoplite by 3% on defense mission . (Stacks additively up to 150%)"
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Fighter, Swordsman, and Hoplite by 6% on defense mission . (Stacks additively up to 150%)"
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Fighter, Swordsman, and Hoplite by 10 on defense mission . (Stacks additively up to 150%)"
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Fighter, Swordsman, and Hoplite by 15% on defense mission . (Stacks additively up to 150%)"
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_NAME,Swordsman Defensive Boost
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Reduces damage from Fighter and Swordsman by 1%. (Stacks up to 50%).
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Reduces damage from Fighter and Swordsman by 2%. (Stacks up to 50%).
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Reduces damage from Fighter and Swordsman by 3%. (Stacks up to 50%).
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Reduces damage from Fighter and Swordsman by 4%. (Stacks up to 50%).
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Reduces damage from Fighter and Swordsman by 5%. (Stacks up to 50%).
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Reduces damage from Fighter and Swordsman by 6%. (Stacks up to 50%).
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Reduces damage from Fighter and Swordsman by 7%. (Stacks up to 50%).
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Reduces damage from Fighter and Swordsman by 8%. (Stacks up to 50%).
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Reduces damage from Fighter and Swordsman by 9%. (Stacks up to 50%).
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Reduces damage from Fighter and Swordsman by 10%. (Stacks up to 50%).
 ,
-BOW_ARMOR_RESEARCH_TECHNOLOGY_NAME,Bow Units Defensive Boost
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Bowman, Archer and Helepolis by 1% on defense mission . (Stacks additively up to 150%)"
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Bowman, Archer and Helepolis by 3% on defense mission . (Stacks additively up to 150%)"
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Bowman, Archer and Helepolis by 6% on defense mission . (Stacks additively up to 150%)"
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Bowman, Archer and Helepolis by 10% on defense mission . (Stacks additively up to 150%)"
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Bowman, Archer and Helepolis by 15% on defense mission . (Stacks additively up to 150%)"
+BOW_ARMOR_RESEARCH_TECHNOLOGY_NAME,Archer Defensive Boost
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Reduces damage from Bowman and Archer by 1%. (Stacks up to 50%).
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Reduces damage from Bowman and Archer by 2%. (Stacks up to 50%).
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Reduces damage from Bowman and Archer by 3%. (Stacks up to 50%).
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Reduces damage from Bowman and Archer by 4%. (Stacks up to 50%).
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Reduces damage from Bowman and Archer by 5%. (Stacks up to 50%).
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Reduces damage from Bowman and Archer by 6%. (Stacks up to 50%).
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Reduces damage from Bowman and Archer by 7%. (Stacks up to 50%).
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Reduces damage from Bowman and Archer by 8%. (Stacks up to 50%).
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Reduces damage from Bowman and Archer by 9%. (Stacks up to 50%).
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Reduces damage from Bowman and Archer by 10%. (Stacks up to 50%).
 ,
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Pike Units Defensive Boost
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Cavalry and Knight by 1% on defense mission . (Stacks additively up to 150%)
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Cavalry and Knight by 3% on defense mission . (Stacks additively up to 150%)
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Cavalry and Knight by 6% on defense mission . (Stacks additively up to 150%)
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Cavalry and Knight by 10% on defense mission . (Stacks additively up to 150%)
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Cavalry and Knight by 15% on defense mission . (Stacks additively up to 150%)
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Hoplite Defensive Boost
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Reduces damage from Hoplite by 1%. (Stacks up to 50%).
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Reduces damage from Hoplite by 2%. (Stacks up to 50%).
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Reduces damage from Hoplite by 3%. (Stacks up to 50%).
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Reduces damage from Hoplite by 4%. (Stacks up to 50%).
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Reduces damage from Hoplite by 5%. (Stacks up to 50%).
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Reduces damage from Hoplite by 6%. (Stacks up to 50%).
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Reduces damage from Hoplite by 7%. (Stacks up to 50%).
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Reduces damage from Hoplite by 8%. (Stacks up to 50%).
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Reduces damage from Hoplite by 9%. (Stacks up to 50%).
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Reduces damage from Hoplite by 10%. (Stacks up to 50%).
 ,
-BALL_ARMOR_RESEARCH_TECHNOLOGY_NAME,Siege Units Defensive Boost
-BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Gladiator and Catapult by 1% on defense mission . (Stacks additively up to 150%)
-BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Gladiator and Catapult by 3% on defense mission . (Stacks additively up to 150%)
-BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Gladiator and Catapult by 6% on defense mission . (Stacks additively up to 150%)
-BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Gladiator and Catapult by 10% on defense mission . (Stacks additively up to 150%)
-BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Gladiator and Catapult by 15% on defense mission . (Stacks additively up to 150%)
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_NAME,Gladiator Defensive Boost
+GLADIATOR_RESEARCH_TECHNOLOGY_LVL_1,Reduces damage from Gladiator by 1%. (Stacks up to 50%).
+GLADIATOR_RESEARCH_TECHNOLOGY_LVL_2,Reduces damage from Gladiator by 2%. (Stacks up to 50%).
+GLADIATOR_RESEARCH_TECHNOLOGY_LVL_3,Reduces damage from Gladiator by 3%. (Stacks up to 50%).
+GLADIATOR_RESEARCH_TECHNOLOGY_LVL_4,Reduces damage from Gladiator by 4%. (Stacks up to 50%).
+GLADIATOR_RESEARCH_TECHNOLOGY_LVL_5,Reduces damage from Gladiator by 5%. (Stacks up to 50%).
+GLADIATOR_RESEARCH_TECHNOLOGY_LVL_6,Reduces damage from Gladiator by 6%. (Stacks up to 50%).
+GLADIATOR_RESEARCH_TECHNOLOGY_LVL_7,Reduces damage from Gladiator by 7%. (Stacks up to 50%).
+GLADIATOR_RESEARCH_TECHNOLOGY_LVL_8,Reduces damage from Gladiator by 8%. (Stacks up to 50%).
+GLADIATOR_RESEARCH_TECHNOLOGY_LVL_9,Reduces damage from Gladiator by 9%. (Stacks up to 50%).
+GLADIATOR_RESEARCH_TECHNOLOGY_LVL_10,Reduces damage from Gladiator by 10%. (Stacks up to 50%).
 ,
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Structure Defensive Boost
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all structures by 1% on defense. (Stacks additively up to 150%)
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all structures by 3% on defense. (Stacks additively up to 150%)
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all structures by 6% on defense. (Stacks additively up to 150%)
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all structures by 10% on defense. (Stacks additively up to 150%)
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all structures by 15% on defense. (Stacks additively up to 150%)
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_NAME,Cavalry Defensive Boost
+CAVALRY_RESEARCH_TECHNOLOGY_LVL_1,Reduces damage from Cavalry by 1%. (Stacks up to 50%).
+CAVALRY_RESEARCH_TECHNOLOGY_LVL_2,Reduces damage from Cavalry by 2%. (Stacks up to 50%).
+CAVALRY_RESEARCH_TECHNOLOGY_LVL_3,Reduces damage from Cavalry by 3%. (Stacks up to 50%).
+CAVALRY_RESEARCH_TECHNOLOGY_LVL_4,Reduces damage from Cavalry by 4%. (Stacks up to 50%).
+CAVALRY_RESEARCH_TECHNOLOGY_LVL_5,Reduces damage from Cavalry by 5%. (Stacks up to 50%).
+CAVALRY_RESEARCH_TECHNOLOGY_LVL_6,Reduces damage from Cavalry by 6%. (Stacks up to 50%).
+CAVALRY_RESEARCH_TECHNOLOGY_LVL_7,Reduces damage from Cavalry by 7%. (Stacks up to 50%).
+CAVALRY_RESEARCH_TECHNOLOGY_LVL_8,Reduces damage from Cavalry by 8%. (Stacks up to 50%).
+CAVALRY_RESEARCH_TECHNOLOGY_LVL_9,Reduces damage from Cavalry by 9%. (Stacks up to 50%).
+CAVALRY_RESEARCH_TECHNOLOGY_LVL_10,Reduces damage from Cavalry by 10%. (Stacks up to 50%).
 ,
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_NAME,Sword Units Offensive Boost
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Fighter, Swordsman and Hoplite  by 1% on attack mission . (Stacks additively up to 150%)"
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Fighter, Swordsman and Hoplite  by 3% on attack mission . (Stacks additively up to 150%)"
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Fighter, Swordsman and Hoplite  by 6% on attack mission . (Stacks additively up to 150%)"
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Fighter, Swordsman and Hoplite by 10% on attack mission . (Stacks additively up to 150%)"
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Fighter, Swordsman and Hoplite by 15% on attack mission . (Stacks additively up to 150%)"
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_NAME,Knight Defensive Boost
+KNIGHT_RESEARCH_TECHNOLOGY_LVL_1,Reduces damage from Knight by 1%. (Stacks up to 50%).
+KNIGHT_RESEARCH_TECHNOLOGY_LVL_2,Reduces damage from Knight by 2%. (Stacks up to 50%).
+KNIGHT_RESEARCH_TECHNOLOGY_LVL_3,Reduces damage from Knight by 3%. (Stacks up to 50%).
+KNIGHT_RESEARCH_TECHNOLOGY_LVL_4,Reduces damage from Knight by 4%. (Stacks up to 50%).
+KNIGHT_RESEARCH_TECHNOLOGY_LVL_5,Reduces damage from Knight by 5%. (Stacks up to 50%).
+KNIGHT_RESEARCH_TECHNOLOGY_LVL_6,Reduces damage from Knight by 6%. (Stacks up to 50%).
+KNIGHT_RESEARCH_TECHNOLOGY_LVL_7,Reduces damage from Knight by 7%. (Stacks up to 50%).
+KNIGHT_RESEARCH_TECHNOLOGY_LVL_8,Reduces damage from Knight by 8%. (Stacks up to 50%).
+KNIGHT_RESEARCH_TECHNOLOGY_LVL_9,Reduces damage from Knight by 9%. (Stacks up to 50%).
+KNIGHT_RESEARCH_TECHNOLOGY_LVL_10,Reduces damage from Knight by 10%. (Stacks up to 50%).
 ,
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_NAME,Pike Units Offensive Boost
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Cavalry and Knight by 1% on attack mission . (Stacks additively up to 150%)
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Cavalry and Knight by 3% on attack mission . (Stacks additively up to 150%)
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Cavalry and Knight by 6% on attack mission . (Stacks additively up to 150%)
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Cavalry and Knight by 10% on attack mission . (Stacks additively up to 150%)
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Cavalry and Knight by 15% on attack mission . (Stacks additively up to 150%)
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_NAME,Helepolis Defensive Boost
+HELEPOLIS_RESEARCH_TECHNOLOGY_LVL_1,Reduces damage from Helepolis by 1%. (Stacks up to 50%).
+HELEPOLIS_RESEARCH_TECHNOLOGY_LVL_2,Reduces damage from Helepolis by 2%. (Stacks up to 50%).
+HELEPOLIS_RESEARCH_TECHNOLOGY_LVL_3,Reduces damage from Helepolis by 3%. (Stacks up to 50%).
+HELEPOLIS_RESEARCH_TECHNOLOGY_LVL_4,Reduces damage from Helepolis by 4%. (Stacks up to 50%).
+HELEPOLIS_RESEARCH_TECHNOLOGY_LVL_5,Reduces damage from Helepolis by 5%. (Stacks up to 50%).
+HELEPOLIS_RESEARCH_TECHNOLOGY_LVL_6,Reduces damage from Helepolis by 6%. (Stacks up to 50%).
+HELEPOLIS_RESEARCH_TECHNOLOGY_LVL_7,Reduces damage from Helepolis by 7%. (Stacks up to 50%).
+HELEPOLIS_RESEARCH_TECHNOLOGY_LVL_8,Reduces damage from Helepolis by 8%. (Stacks up to 50%).
+HELEPOLIS_RESEARCH_TECHNOLOGY_LVL_9,Reduces damage from Helepolis by 9%. (Stacks up to 50%).
+HELEPOLIS_RESEARCH_TECHNOLOGY_LVL_10,Reduces damage from Helepolis by 10%. (Stacks up to 50%).
 ,
-BOW_WEAPON_RESEARCH_TECHNOLOGY_NAME,Bow Units Offensive Boost
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Bowman, Archer and Helepolis by 1% on attack mission . (Stacks additively up to 150%)"
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Bowman, Archer and Helepolis by 3% on attack mission . (Stacks additively up to 150%)"
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Bowman, Archer and Helepolis by 6% on attack mission . (Stacks additively up to 150%)"
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Bowman, Archer and Helepolis by 10% on attack mission . (Stacks additively up to 150%)"
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Bowman, Archer and Helepolis by 15% on attack mission . (Stacks additively up to 150%)"
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_NAME,Catapult Defensive Boost
+CATAPULT_RESEARCH_TECHNOLOGY_LVL_1,Reduces damage from Catapult by 1%. (Stacks up to 50%).
+CATAPULT_RESEARCH_TECHNOLOGY_LVL_2,Reduces damage from Catapult by 2%. (Stacks up to 50%).
+CATAPULT_RESEARCH_TECHNOLOGY_LVL_3,Reduces damage from Catapult by 3%. (Stacks up to 50%).
+CATAPULT_RESEARCH_TECHNOLOGY_LVL_4,Reduces damage from Catapult by 4%. (Stacks up to 50%).
+CATAPULT_RESEARCH_TECHNOLOGY_LVL_5,Reduces damage from Catapult by 5%. (Stacks up to 50%).
+CATAPULT_RESEARCH_TECHNOLOGY_LVL_6,Reduces damage from Catapult by 6%. (Stacks up to 50%).
+CATAPULT_RESEARCH_TECHNOLOGY_LVL_7,Reduces damage from Catapult by 7%. (Stacks up to 50%).
+CATAPULT_RESEARCH_TECHNOLOGY_LVL_8,Reduces damage from Catapult by 8%. (Stacks up to 50%).
+CATAPULT_RESEARCH_TECHNOLOGY_LVL_9,Reduces damage from Catapult by 9%. (Stacks up to 50%).
+CATAPULT_RESEARCH_TECHNOLOGY_LVL_10,Reduces damage from Catapult by 10%. (Stacks up to 50%).
 ,
-BALL_WEAPON_RESEARCH_TECHNOLOGY_NAME,Siege Units Offensive Boost
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Gladiator and Catapult by 1% on attack mission . (Stacks additively up to 150%)
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Gladiator and Catapult by 3% on attack mission . (Stacks additively up to 150%)
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Gladiator and Catapult by 6% on attack mission . (Stacks additively up to 150%)
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Gladiator and Catapult by 10% on attack mission . (Stacks additively up to 150%)
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Gladiator and Catapult by 15% on attack mission . (Stacks additively up to 150%)
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_NAME,Swordsman Offensive Boost
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Fighter and Swordsman by 2%. (Stacks up to 100%).
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Fighter and Swordsman by 4%. (Stacks up to 100%).
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Fighter and Swordsman by 6%. (Stacks up to 100%).
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Fighter and Swordsman by 8%. (Stacks up to 100%).
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Fighter and Swordsman by 10%. (Stacks up to 100%).
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Fighter and Swordsman by 12%. (Stacks up to 100%).
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Fighter and Swordsman by 14%. (Stacks up to 100%).
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Fighter and Swordsman by 16%. (Stacks up to 100%).
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Fighter and Swordsman by 18%. (Stacks up to 100%).
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Fighter and Swordsman by 20%. (Stacks up to 100%).
+,
+BOW_WEAPON_RESEARCH_TECHNOLOGY_NAME,Archer Offensive Boost
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Bowman and Archer by 1%. (Stacks up to 50%).
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Bowman and Archer by 2%. (Stacks up to 50%).
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Bowman and Archer by 3%. (Stacks up to 50%).
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Bowman and Archer by 4%. (Stacks up to 50%).
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Bowman and Archer by 5%. (Stacks up to 50%).
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Bowman and Archer by 6%. (Stacks up to 50%).
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Bowman and Archer by 7%. (Stacks up to 50%).
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Bowman and Archer by 8%. (Stacks up to 50%).
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Bowman and Archer by 9%. (Stacks up to 50%).
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Bowman and Archer by 10%. (Stacks up to 50%).
+,
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_NAME,Hoplite Offensive Boost
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Hoplite by 1%. (Stacks up to 50%).
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Hoplite by 2%. (Stacks up to 50%).
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Hoplite by 3%. (Stacks up to 50%).
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Hoplite by 4%. (Stacks up to 50%).
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Hoplite by 5%. (Stacks up to 50%).
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Hoplite by 6%. (Stacks up to 50%).
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Hoplite by 7%. (Stacks up to 50%).
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Hoplite by 8%. (Stacks up to 50%).
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Hoplite by 9%. (Stacks up to 50%).
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Hoplite by 10%. (Stacks up to 50%).
+,
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_NAME,Gladiator Offensive Boost
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Gladiator by 1%. (Stacks up to 50%).
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Gladiator by 2%. (Stacks up to 50%).
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Gladiator by 3%. (Stacks up to 50%).
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Gladiator by 4%. (Stacks up to 50%).
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Gladiator by 5%. (Stacks up to 50%).
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Gladiator by 6%. (Stacks up to 50%).
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Gladiator by 7%. (Stacks up to 50%).
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Gladiator by 8%. (Stacks up to 50%).
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Gladiator by 9%. (Stacks up to 50%).
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Gladiator by 10%. (Stacks up to 50%).
+,
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_NAME,Cavalry Offensive Boost
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Cavalry by 1%. (Stacks up to 50%).
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Cavalry by 2%. (Stacks up to 50%).
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Cavalry by 3%. (Stacks up to 50%).
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Cavalry by 4%. (Stacks up to 50%).
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Cavalry by 5%. (Stacks up to 50%).
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Cavalry by 6%. (Stacks up to 50%).
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Cavalry by 7%. (Stacks up to 50%).
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Cavalry by 8%. (Stacks up to 50%).
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Cavalry by 9%. (Stacks up to 50%).
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Cavalry by 10%. (Stacks up to 50%).
+,
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_NAME,Knight Offensive Boost
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Knight by 1%. (Stacks up to 50%).
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Knight by 2%. (Stacks up to 50%).
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Knight by 3%. (Stacks up to 50%).
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Knight by 4%. (Stacks up to 50%).
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Knight by 5%. (Stacks up to 50%).
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Knight by 6%. (Stacks up to 50%).
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Knight by 7%. (Stacks up to 50%).
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Knight by 8%. (Stacks up to 50%).
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Knight by 9%. (Stacks up to 50%).
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Knight by 10%. (Stacks up to 50%).
+,
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_NAME,Helepolis Offensive Boost
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Helepolis by 1%. (Stacks up to 50%).
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Helepolis by 2%. (Stacks up to 50%).
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Helepolis by 3%. (Stacks up to 50%).
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Helepolis by 4%. (Stacks up to 50%).
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Helepolis by 5%. (Stacks up to 50%).
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Helepolis by 6%. (Stacks up to 50%).
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Helepolis by 7%. (Stacks up to 50%).
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Helepolis by 8%. (Stacks up to 50%).
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Helepolis by 9%. (Stacks up to 50%).
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Helepolis by 10%. (Stacks up to 50%).
+,
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_NAME,Catapult Offensive Boost
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Catapult by 1%. (Stacks up to 50%).
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Catapult by 2%. (Stacks up to 50%).
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Catapult by 3%. (Stacks up to 50%).
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Catapult by 4%. (Stacks up to 50%).
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Catapult by 5%. (Stacks up to 50%).
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Catapult by 6%. (Stacks up to 50%).
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Catapult by 7%. (Stacks up to 50%).
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Catapult by 8%. (Stacks up to 50%).
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Catapult by 9%. (Stacks up to 50%).
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Catapult by 10%. (Stacks up to 50%).
 ,
 ATTIC_STORAGE_TECHNOLOGY_NAME,Attic Storage
 ATTIC_STORAGE_TECHNOLOGY_LVL_1,Increase capacity of the city resources by 50% of basements' capacity.

@@ -94,8 +94,10 @@ namespace Game.Battle
         {
             decimal atk = attacker.Stats.Atk;
             decimal rawDmg = (atk * attacker.Count);
+            decimal attackBonus = attacker.AttackBonus(target);
+            decimal defenseBonus = target.DefenseBonus(attacker);
             decimal modifier = (decimal)GetDmgModifier(attacker, target, round);
-            rawDmg = modifier * rawDmg;
+            rawDmg = modifier * rawDmg * (1 + attackBonus) / (1 + defenseBonus);
 
             return rawDmg > ushort.MaxValue ? ushort.MaxValue : rawDmg;
         }

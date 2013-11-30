@@ -60,6 +60,10 @@ namespace Game.Battle.CombatObjects
 
         void ExitBattle();
 
+        decimal AttackBonus(ICombatObject target);
+
+        decimal DefenseBonus(ICombatObject target);
+
         void TakeDamage(decimal dmg, out Resource returning, out int attackPoints);
 
         void CalcActualDmgToBeTaken(ICombatList attackers,

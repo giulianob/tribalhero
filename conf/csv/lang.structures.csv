@@ -83,7 +83,7 @@ LUMBERMILL_STRUCTURE_LVL_1,Allows 40 laborers to gather wood from forests. Each 
 LUMBERMILL_STRUCTURE_LVL_2,Allows 40 laborers to gather wood from forests. Each laborer produces 0.75 wood per hour. Ability to build Basements to protect resources.,
 LUMBERMILL_STRUCTURE_LVL_3,Allows 80 laborers to gather wood from forests. Each laborer produces 1 wood per hour. Maximum of 40 laborers per forest.,
 LUMBERMILL_STRUCTURE_LVL_4,Allows 160 laborers to gather wood from forests. Each laborer produces 1 wood per hour. Maximum of 80 laborers per forest.,
-LUMBERMILL_STRUCTURE_LVL_5,Allows 160 laborers to gather wood from forests. Enables researching Attic Storage to enhance Basements.,
+LUMBERMILL_STRUCTURE_LVL_5,Allows 160 laborers to gather wood from forests. Each laborer produces 1 wood per hour. Maximum of 80 laborers per forest. Enables researching Attic Storage to enhance Basements.,
 LUMBERMILL_STRUCTURE_LVL_6,Allows 160 laborers to gather wood from forests. Each laborer produces 1 wood per hour. Maximum of 80 laborers per forest.,
 LUMBERMILL_STRUCTURE_LVL_7,Allows 240 laborers to gather wood from forests. Each laborer produces 1.25 wood per hour. Maximum of 80 laborers per forest.,
 LUMBERMILL_STRUCTURE_LVL_8,Allows 240 laborers to gather wood from forests. Each laborer produces 1.25 wood per hour. Maximum of 80 laborers per forest.,

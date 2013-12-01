@@ -153,7 +153,12 @@ namespace Game.Comm
             {
                 if (s.Connected)
                 {
-                    s.Shutdown(SocketShutdown.Both);
+                    try
+                    {
+                        s.Shutdown(SocketShutdown.Both);
+                    }
+                    catch(SocketException) {}
+
                     s.Close();
                 }
 

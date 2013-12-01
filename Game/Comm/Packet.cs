@@ -364,20 +364,21 @@ namespace Game.Comm
         {
             string str = string.Empty;
             
+            byte[] dump = GetBytes();
             if (sendBuffer.Length <= maxLength)
-            {
-                byte[] dump = GetBytes();
+            {                
                 str = HexDump.GetString(dump, 8, 16);
             }
 
-            return string.Format("Cmd[{0}] Seq[{1}] Reply[{2}] ReadBufferLen[{3}] SendBufferLen[{4}]:{5}{6}", 
+            return string.Format("Cmd[{0}] Seq[{1}] Reply[{2}] Length[{7}] ReadBufferLen[{3}] SendBufferLen[{4}]:{5}{6}", 
                 cmd, 
                 seq, 
                 (option & (int)Options.Reply) == (int)Options.Reply, 
                 readBuffer != null ? readBuffer.Length.ToString(CultureInfo.InvariantCulture) : "N/A",
                 sendBuffer.Length,                 
                 string.IsNullOrEmpty(str) ? string.Empty : Environment.NewLine,
-                str);
+                str,
+                dump.Length);
         }
 
         #endregion

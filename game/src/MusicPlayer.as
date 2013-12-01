@@ -91,6 +91,7 @@ package src {
                 play(false);
             } else if (this._isMuted && player) {
                 player.soundPaused = true;
+                waitBetweenSongsTimer.stop();
             }
         }
 

@@ -23,11 +23,13 @@
 		private var lblStealth: JLabel;
 		private var lblRange: JLabel;
 		private var lblRadius: JLabel;
+		private var lblSize: JLabel;
 
 		private var lblArmorTitle: JLabel;
 		private var lblWeaponTitle: JLabel;
 		private var lblHpTitle: JLabel;
 		private var lblMaxLaborTitle: JLabel;
+		private var lblSizeTitle: JLabel;
 		private var lblAttackTitle: JLabel;
 		private var lblStealthTitle: JLabel;
 		private var lblRangeTitle: JLabel;
@@ -44,6 +46,7 @@
 			createUI();
 
 			lblMaxLabor.setText(structurePrototype.maxlabor.toString());
+			lblSize.setText(structurePrototype.size.toString() + "x" + structurePrototype.size.toString());
 			lblAttack.setText(structurePrototype.attack.toString());
 			lblRange.setText(Constants.stealthRangeNames[structurePrototype.range]);
 			lblStealth.setText(Constants.stealthRangeNames[structurePrototype.stealth]);
@@ -56,12 +59,13 @@
 		{
 			setPreferredWidth(375);
 			setBorder(new EmptyBorder(null, new Insets(5)));
-			setLayout(new GridLayout(2, 4, 2, 2));
+			setLayout(new GridLayout(0, 4, 2, 2));
 
 			lblArmorTitle = titleLabelMaker("Armor");
 			lblWeaponTitle = titleLabelMaker("Weapon");
 			lblHpTitle = titleLabelMaker("HP");
 			lblMaxLaborTitle = titleLabelMaker("Max Laborer");
+			lblSizeTitle = titleLabelMaker("Size");
 			lblAttackTitle = titleLabelMaker("Attack");
 			lblStealthTitle = titleLabelMaker("Position");
 			lblRangeTitle = titleLabelMaker("Range");
@@ -75,17 +79,18 @@
 			lblStealth = valueLabelMaker();
 			lblRange = valueLabelMaker();
 			lblRadius = valueLabelMaker();
+			lblSize = valueLabelMaker();
 
 			appendAll(lblHpTitle, lblHp, lblAttackTitle, lblAttack);
 			appendAll(lblRangeTitle, lblRange, lblStealthTitle, lblStealth);
+            appendAll(lblSizeTitle, lblSize);
+
 			if (structurePrototype.maxlabor > 0) {
-				(getLayout() as GridLayout).setRows((getLayout() as GridLayout).getRows() + 1);
-				appendAll(lblMaxLaborTitle, lblMaxLabor, new JLabel(), new JLabel());
+				appendAll(lblMaxLaborTitle, lblMaxLabor);
 			}
-			
+
 			if (structurePrototype.radius > 0) {
-				(getLayout() as GridLayout).setRows((getLayout() as GridLayout).getRows() + 1);
-				appendAll(lblRadiusTitle, lblRadius, new JLabel(), new JLabel());
+				appendAll(lblRadiusTitle, lblRadius);
 			}
 		}
 

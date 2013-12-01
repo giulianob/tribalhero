@@ -126,23 +126,13 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
-            int maxConcurrentUpgrades = formula.ConcurrentBuildUpgrades(city.MainBuilding.Lvl);
+            var maxConcurrentUpgradesResult = formula.CityMaxConcurrentBuildActions(type, ActionId, city, objectTypeFactory);
 
-            if (!objectTypeFactory.IsObjectType("UnlimitedBuilding", type) &&
-                city.Worker.ActiveActions.Values.Count(
-                                                       action =>
-                                                       action.ActionId != ActionId &&
-                                                       (action.Type == ActionType.StructureUpgradeActive ||
-                                                        (action.Type == ActionType.StructureBuildActive &&
-                                                         objectTypeFactory
-                                                                 .IsObjectType("UnlimitedBuilding",
-                                                                               ((StructureBuildActiveAction)action)
-                                                                                       .BuildType)))) >=
-                maxConcurrentUpgrades)
+            if (maxConcurrentUpgradesResult != Error.Ok)
             {
-                return Error.ActionTotalMaxReached;
+                return maxConcurrentUpgradesResult;
             }
-
+            
             var stats = structureCsvFactory.GetBaseStats(structure.Type, (byte)(structure.Lvl + 1));
             if (stats == null)
             {

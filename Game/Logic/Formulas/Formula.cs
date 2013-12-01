@@ -46,18 +46,17 @@ namespace Game.Logic.Formulas
                             return false;
                         }
 
-                        if (action is StructureUpgradeActiveAction)
+                        if (action.Type == ActionType.StructureUpgradeActive)
                         {
                             return true;
                         }
 
-                        var buildAction = action as StructureBuildActiveAction;
-                        if (buildAction == null)
+                        if (action.Type != ActionType.StructureBuildActive)
                         {
                             return false;
                         }
 
-                        return !objectTypeFactory.IsObjectType("UnlimitedBuilding", buildAction.BuildType);
+                        return !objectTypeFactory.IsObjectType("UnlimitedBuilding", ((StructureBuildActiveAction)action).BuildType);
                     }) >= maxConcurrentUpgrades)
             {
                 return Error.ActionTotalMaxReached;

@@ -80,38 +80,12 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 			var effects: Array = parentCityObj.techManager.getAllEffects(parentAction.effectReqInherit);
 			var missingReqs: Array = parentAction.getMissingRequirements(parentObj, effects);
-			
-			// Enforce only two building/upgrade at a time for structures that arent marked as UnlimitedBuilding			
-			if (!ObjectFactory.isType("UnlimitedBuilding", structPrototype.type)) {
-				var currentBuildActions: Array = city.currentActions.getActions();
-				var currentCount: int = 0;
-				for each (var currentAction: * in currentBuildActions) {
-                    if (!(currentAction is CurrentActiveAction)) {
-                        continue;
-                    }
 
-					if (currentAction.getAction() is BuildAction) {
-						var buildAction: BuildAction = currentAction.getAction();
-						if (!ObjectFactory.isType("UnlimitedBuilding", buildAction.type)) {
-							currentCount++;
-                        }
+            if (!Formula.cityMaxConcurrentBuildActions(structPrototype.type, city)) {
+                missingReqs.push(EffectReqPrototype.asMessage(StringHelper.localize("CONCURRENT_UPGRADE_" + Formula.concurrentBuildUpgrades(city.MainBuilding.level))));
+            }
 
-                        continue;
-					}
-					
-                    if (currentAction.getAction() is StructureUpgradeAction) {
-						currentCount++;
-                        continue;
-                    }
-				}
-				
-				var concurrentUpgrades: int = Formula.concurrentBuildUpgrades(city.MainBuilding.level);				
-				if (currentCount >= concurrentUpgrades) {
-					missingReqs.push(EffectReqPrototype.asMessage(StringHelper.localize("CONCURRENT_UPGRADE_" + concurrentUpgrades)));
-                }
-			}
-
-			buildToolTip.missingRequirements = missingReqs;
+            buildToolTip.missingRequirements = missingReqs;
 			buildToolTip.draw();
 
 			if (missingReqs != null && missingReqs.length > 0)

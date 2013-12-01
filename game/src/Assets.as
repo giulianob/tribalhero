@@ -293,8 +293,8 @@
         [EmbedPosition(name = "map", x = 42, y = "-24")]
         public static const FOUNDATION: Class;
 
-        [Embed(source = "../../graphics/buildings/CONSTRUCTION.png")]
-        [EmbedPosition(name = "map", x = 17, y = "-14")]
+        [Embed(source = "../../graphics/buildings/CONSTRUCTION_SMALL.png")]
+        [EmbedPosition(name = "map", x = 32, y = "1")]
         public static const DEFAULT_BUILDING_1: Class;
 
         [Embed(source = "../../graphics/buildings/CONSTRUCTION.png")]
@@ -460,7 +460,7 @@
         public static const BASEMENT_STRUCTURE: Class;
 
         [Embed(source = "../../graphics/buildings/FOREST_CAMP_STRUCTURE.png")]
-        [EmbedPosition(name = "map", x = 23, y = "-4")]
+        [EmbedPosition(name = "map", x = 36, y = "4")]
         public static const FOREST_CAMP_STRUCTURE: Class;
 
         [Embed(source = "../../graphics/buildings/FOREST_CAMP_STRUCTURE_SHADOW.png")]

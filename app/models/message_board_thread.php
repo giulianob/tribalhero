@@ -11,7 +11,10 @@ class MessageBoardThread extends AppModel {
         'MessageBoardPost' => array('dependentBatchDelete' => true)
     );
     var $hasAndBelongsToMany = array(
-        'Player' => array('with' => 'MessageBoardRead'),
+        'PlayerLastRead' => array(
+            'with' => 'MessageBoardRead',
+            'className' => 'Player'
+        )
     );
     var $validate = array(
         'message' => array(

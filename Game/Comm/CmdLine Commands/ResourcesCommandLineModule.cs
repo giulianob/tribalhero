@@ -26,13 +26,21 @@ namespace Game.Comm
         private readonly IObjectTypeFactory objectTypeFactory;
         private readonly Formula formula;
 
-        public ResourcesCommandLineModule(IWorld world, IForestManager forestManager, ICityManager cityManager, ILocker locker, IObjectTypeFactory objectTypeFactory, Formula formula)
+        public ResourcesCommandLineModule(
+            IWorld world, 
+            IForestManager forestManager, 
+            ICityManager cityManager, 
+            ILocker locker, 
+            IObjectTypeFactory objectTypeFactory, 
+            Formula formula, 
+            UnitFactory unitFactory)
         {
             this.forestManager = forestManager;
             this.cityManager = cityManager;
             this.locker = locker;
             this.objectTypeFactory = objectTypeFactory;
             this.formula = formula;
+            this.unitFactory = unitFactory;
             this.world = world;
         }
 

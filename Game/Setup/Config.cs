@@ -16,7 +16,7 @@ namespace Game.Setup
         #region Game Settings
 
         public static double seconds_per_unit = 1.0;
-        public static int[] forest_count = new[] {550, 750, 1200, 1000};
+        public static int forest_count = 2500;
 
         #endregion        
 
@@ -50,7 +50,7 @@ namespace Game.Setup
         public static uint region_width = 34;
         public static uint region_height = 62;
         public static ushort road_start_tile_id = 60;
-        public static ushort road_end_tile_id = 84;
+        public static ushort road_end_tile_id = 90;
         public static uint minimap_region_width = 100;
         public static uint minimap_region_height = 100;
         public static int friend_invite_radius = 250;

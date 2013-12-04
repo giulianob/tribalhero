@@ -37,6 +37,8 @@ namespace Game.Logic.Actions
 
         private readonly IStructureCsvFactory structureCsvFactory;
 
+        private readonly CallbackProcedure callbackProcedure;
+
         private readonly ushort type;
 
         private readonly IWorld world;
@@ -67,7 +69,8 @@ namespace Game.Logic.Actions
                                           ILocker concurrency,
                                           Procedure procedure,
                                           IRoadPathFinder roadPathFinder,
-                                          ITileLocator tileLocator)
+                                          ITileLocator tileLocator, 
+                                          CallbackProcedure callbackProcedure)  
         {
             this.cityId = cityId;
             this.type = type;
@@ -84,6 +87,7 @@ namespace Game.Logic.Actions
             this.procedure = procedure;
             this.roadPathFinder = roadPathFinder;
             this.tileLocator = tileLocator;
+            this.callbackProcedure = callbackProcedure;
         }
 
         public StructureBuildActiveAction(uint id,
@@ -102,7 +106,8 @@ namespace Game.Logic.Actions
                                           InitFactory initFactory,
                                           ILocker concurrency,
                                           Procedure procedure,
-                                          ITileLocator tileLocator)
+                                          ITileLocator tileLocator, 
+                                          CallbackProcedure callbackProcedure)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             this.objectTypeFactory = objectTypeFactory;
@@ -114,6 +119,7 @@ namespace Game.Logic.Actions
             this.concurrency = concurrency;
             this.procedure = procedure;
             this.tileLocator = tileLocator;
+            this.callbackProcedure = callbackProcedure;
 
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
@@ -290,15 +296,21 @@ namespace Game.Logic.Actions
                 }
 
                 city.References.Remove(structure, this);
-                structure.BeginUpdate();
-                structure.Technologies.Parent = structure.City.Technologies;
-                structureCsvFactory.GetUpgradedStructure(structure, structure.Type, level);
 
-                structure.EndUpdate();
-                initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
                 city.BeginUpdate();
+                structure.BeginUpdate();
+
+                structure.Technologies.Parent = structure.City.Technologies;
+                structureCsvFactory.GetUpgradedStructure(structure, structure.Type, level);                
+
+                initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
                 procedure.OnStructureUpgradeDowngrade(structure);
+                
+                structure.EndUpdate();
                 city.EndUpdate();
+                
+                callbackProcedure.OnStructureInit(structure);                
+
                 StateChange(ActionState.Completed);
             });
         }

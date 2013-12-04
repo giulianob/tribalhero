@@ -88,6 +88,7 @@ namespace Game.Setup
             }
         }
         
+        [Obsolete("Use CallbackProcedure directly")]
         public void InitGameObject(InitCondition condition, IStructure structure, ushort type, byte lvl)
         {
             switch (condition)

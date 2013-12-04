@@ -18,26 +18,26 @@ namespace Game.Logic.Actions
 
         private readonly uint structureId;
 
-        private readonly ILocker locker;
-
         private readonly IStructureCsvFactory structureCsvFactory;
 
-        private readonly InitFactory initFactory;
-
         private readonly Procedure procedure;
+
+        private readonly CallbackProcedure callbackProcedure;
+
+        private readonly ILocker locker;
 
         public StructureDowngradePassiveAction(uint cityId,
                                                uint structureId,
                                                ILocker locker,
                                                IStructureCsvFactory structureCsvFactory,
-                                               InitFactory initFactory,
-                                               Procedure procedure)
+                                               Procedure procedure,
+											   CallbackProcedure callbackProcedure)
         {
             this.cityId = cityId;
             this.structureId = structureId;
+            this.callbackProcedure = callbackProcedure;
             this.locker = locker;
             this.structureCsvFactory = structureCsvFactory;
-            this.initFactory = initFactory;
             this.procedure = procedure;
         }
 
@@ -48,15 +48,15 @@ namespace Game.Logic.Actions
                                                bool isVisible,
                                                string nlsDescription,
                                                IDictionary<string, string> properties,
+                                               CallbackProcedure callbackProcedure,
                                                ILocker locker,
                                                IStructureCsvFactory structureCsvFactory,
-                                               InitFactory initFactory,
                                                Procedure procedure)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
+            this.callbackProcedure = callbackProcedure;
             this.locker = locker;
             this.structureCsvFactory = structureCsvFactory;
-            this.initFactory = initFactory;
             this.procedure = procedure;
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
@@ -149,12 +149,12 @@ namespace Game.Logic.Actions
                 structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
                 structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);
 
-                initFactory.InitGameObject(InitCondition.OnDowngrade, structure, structure.Type, structure.Lvl);
-
                 procedure.OnStructureUpgradeDowngrade(structure);
 
                 structure.EndUpdate();
                 city.EndUpdate();
+
+                callbackProcedure.OnStructureDowngrade(structure);
 
                 StateChange(ActionState.Completed);
             });

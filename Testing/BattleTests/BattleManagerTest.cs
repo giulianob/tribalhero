@@ -639,7 +639,6 @@ namespace Testing.BattleTests
             var firstOrderAttackObject = defender.Object;
             var firstOrderAttackGroup = defenderGroup;
             // ReSharper restore RedundantAssignment
-            int battleOrderCalledTimes = 0;
             sut.MockBattleOrder
                .Setup(
                       m =>

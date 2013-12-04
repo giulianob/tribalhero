@@ -356,6 +356,8 @@
     <Compile Include="Logic\Actions\BarbarianTribe\BarbarianTribeEngageAttackPassiveAction.cs" />
     <Compile Include="Logic\Actions\BarbarianTribe\BarbarianTribeBattlePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\CityResourceCapUpdatePassiveAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ForestCampLaborUpdatePassiveAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ForestCampRateUpdatePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ResourceRateUpdatePassiveAction.cs" />
     <Compile Include="Logic\Actions\Stronghold\StrongholdDefenseChainAction.cs" />
     <Compile Include="Logic\Actions\Stronghold\StrongholdEngageMainAttackPassiveAction.cs" />
@@ -389,6 +391,7 @@
     <Compile Include="Logic\Requirements\LayoutRequirements\ILayoutRequirement.cs" />
     <Compile Include="Logic\Requirements\LayoutRequirements\ILayoutRequirementFactory.cs" />
     <Compile Include="Logic\Requirements\LayoutRequirements\LayoutComparison.cs" />
+    <Compile Include="Logic\Procedures\CallbackProcedure.cs" />
     <Compile Include="Logic\Triggers\CityTriggerManager.cs" />
     <Compile Include="Logic\Triggers\Conditions\StructureInitCondition.cs" />
     <Compile Include="Logic\Triggers\Conditions\StructureDowngradeCondition.cs" />

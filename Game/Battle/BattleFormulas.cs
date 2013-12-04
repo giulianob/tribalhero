@@ -19,11 +19,11 @@ namespace Game.Battle
     {
         private readonly UnitFactory unitFactory;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly UnitModFactory unitModFactory;
 
-        public BattleFormulas(UnitModFactory unitModFactory, UnitFactory unitFactory, ObjectTypeFactory objectTypeFactory)
+        public BattleFormulas(UnitModFactory unitModFactory, UnitFactory unitFactory, IObjectTypeFactory objectTypeFactory)
         {
             this.unitModFactory = unitModFactory;
             this.unitFactory = unitFactory;
@@ -260,6 +260,12 @@ namespace Game.Battle
                 {
                     case "ArmorEqual":
                         if (stats.Armor == (ArmorType)Enum.Parse(typeof(ArmorType), conditions[i * 2 + 1], true))
+                        {
+                            ++success;
+                        }
+                        break;
+                    case "ArmorNotEqual":
+                        if (stats.Armor != (ArmorType)Enum.Parse(typeof(ArmorType), conditions[i * 2 + 1], true))
                         {
                             ++success;
                         }

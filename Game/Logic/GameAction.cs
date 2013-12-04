@@ -85,6 +85,10 @@ namespace Game.Logic
 
         ResourceRateUpdatePassive = 312,
 
+        ForestCampRateUpdatePassive = 313,
+
+        ForestCampLaborUpdatePassive = 314,
+
         TechnologyCreatePassive = 400,
 
         TechnologyDeletePassive = 401,

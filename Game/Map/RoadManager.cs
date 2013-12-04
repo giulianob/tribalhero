@@ -309,9 +309,33 @@ namespace Game.Map
                 {
                     roadType = 23;
                 }
-                else if (neighbors == (RoadPositions.TopLeft | RoadPositions.TopRight | RoadPositions.BottomLeft | RoadPositions.BottomRight))
+                else if (neighbors == (RoadPositions.TopLeft | RoadPositions.BottomRight))
                 {
                     roadType = 24;
+                }                
+                else if (neighbors == (RoadPositions.TopRight | RoadPositions.BottomLeft))
+                {
+                    roadType = 25;
+                }                
+                else if (neighbors == (RoadPositions.TopRight | RoadPositions.TopLeft | RoadPositions.BottomLeft))
+                {
+                    roadType = 26;
+                }
+                else if (neighbors == (RoadPositions.TopRight | RoadPositions.TopLeft | RoadPositions.BottomRight))
+                {
+                    roadType = 27;
+                }
+                else if (neighbors == (RoadPositions.TopRight | RoadPositions.BottomLeft | RoadPositions.BottomRight))
+                {
+                    roadType = 28;
+                }
+                else if (neighbors == (RoadPositions.TopLeft | RoadPositions.BottomLeft | RoadPositions.BottomRight))
+                {
+                    roadType = 29;
+                }
+                else if (neighbors == (RoadPositions.TopLeft | RoadPositions.TopRight | RoadPositions.BottomLeft | RoadPositions.BottomRight))
+                {
+                    roadType = 30;
                 }
             }
 

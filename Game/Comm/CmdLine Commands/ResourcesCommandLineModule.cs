@@ -2,13 +2,15 @@
 
 using System;
 using Game.Data;
+using Game.Data.Forest;
 using Game.Data.Troop;
+using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using NDesk.Options;
-using Ninject;
+using System.Linq;
 
 #endregion
 
@@ -16,23 +18,37 @@ namespace Game.Comm
 {
     public class ResourcesCommandLineModule : CommandLineModule
     {
-        private readonly ILocker locker;
-
         private readonly IWorld world;
-
         private readonly UnitFactory unitFactory;
+        private readonly IForestManager forestManager;
+        private readonly ICityManager cityManager;
+        private readonly ILocker locker;
+        private readonly IObjectTypeFactory objectTypeFactory;
+        private readonly Formula formula;
 
-        public ResourcesCommandLineModule(ILocker locker, IWorld world, UnitFactory unitFactory)
+        public ResourcesCommandLineModule(
+            IWorld world, 
+            IForestManager forestManager, 
+            ICityManager cityManager, 
+            ILocker locker, 
+            IObjectTypeFactory objectTypeFactory, 
+            Formula formula, 
+            UnitFactory unitFactory)
         {
+            this.forestManager = forestManager;
+            this.cityManager = cityManager;
             this.locker = locker;
-            this.world = world;
+            this.objectTypeFactory = objectTypeFactory;
+            this.formula = formula;
             this.unitFactory = unitFactory;
+            this.world = world;
         }
 
         public override void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("sendresources", SendResources, PlayerRights.Admin);
             processor.RegisterCommand("trainunits", TrainUnits, PlayerRights.Admin);
+            processor.RegisterCommand("reloadforest", ReloadForest, PlayerRights.Admin);
         }
 
         public string SendResources(Session session, string[] parms)
@@ -145,6 +161,49 @@ namespace Game.Comm
 
                 return "OK!";
             });
+        }
+
+        public string ReloadForest(Session session, string[] parms)
+        {
+            bool help = false;
+            int capacity = 400;
+            try
+            {
+                var p = new OptionSet
+                {
+                        {"capacity=", v => capacity = int.Parse(v)},
+                        {"?|help|h", v => help = true},
+
+                };
+                p.Parse(parms);
+            }
+            catch (Exception)
+            {
+                help = true;
+            }
+            if (help)
+            {
+                return "reloadforest --capacity=count";
+            }
+
+            forestManager.ReloadForests(capacity);
+
+            foreach (ICity city in cityManager.AllCities())
+            {
+                locker.Lock(city).Do(() =>
+                {
+                    var lumbermill = city.FirstOrDefault(structure => objectTypeFactory.IsStructureType("Lumbermill", structure));
+                    if (lumbermill == null)
+                    {
+                        return;
+                    }
+
+                    lumbermill.BeginUpdate();
+                    lumbermill["Labor"] = formula.GetForestCampLaborerString(lumbermill);
+                    lumbermill.EndUpdate();
+                });
+            }
+            return string.Format("OK!  All forests' capacities set to [{0}]", capacity);
         }
     }
 }

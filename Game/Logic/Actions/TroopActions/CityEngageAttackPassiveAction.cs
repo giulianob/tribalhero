@@ -332,23 +332,28 @@ namespace Game.Logic.Actions
                 object value;
                 if (structure.Properties.TryGet("Crop", out value))
                 {
-                    bonus.Crop += (int)value;
+                    if (value is int)
+                        bonus.Crop += (int)value;
                 }
                 if (structure.Properties.TryGet("Gold", out value))
                 {
-                    bonus.Gold += (int)value;
+                    if (value is int)
+                        bonus.Gold += (int)value;
                 }
                 if (structure.Properties.TryGet("Iron", out value))
                 {
-                    bonus.Iron += (int)value;
+                    if (value is int)
+                        bonus.Iron += (int)value;
                 }
                 if (structure.Properties.TryGet("Wood", out value))
                 {
-                    bonus.Wood += (int)value;
+                    if (value is int) 
+                        bonus.Wood += (int)value;
                 }
                 if (structure.Properties.TryGet("Labor", out value))
                 {
-                    bonus.Labor += (int)value;
+                    if (value is int)
+                        bonus.Labor += (int)value;
                 }
 
                 dbManager.Save(this);

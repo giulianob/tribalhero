@@ -728,14 +728,11 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     var forest = ForestFactory.CreateForest((uint)reader["id"],
-                                                            (byte)reader["level"],
                                                             (int)reader["capacity"],
-                                                            (float)reader["rate"],
                                                             (uint)reader["x"],
                                                             (uint)reader["y"]);
 
                     forest.DbPersisted = true;
-                    forest.Labor = (ushort)reader["labor"];
                     forest.State.Type = (ObjectState)((byte)reader["state"]);
                     forest.Wood = new AggressiveLazyValue((int)reader["lumber"],
                                                           DateTime.SpecifyKind((DateTime)reader["last_realize_time"], DateTimeKind.Utc),

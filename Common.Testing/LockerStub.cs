@@ -7,8 +7,7 @@ namespace Common.Testing
     public class LockerStub : DefaultLocker
     {
         public LockerStub(IGameObjectLocator locator)
-                : base(() => new MultiObjectLockStub(), () => new CallbackLock(() => new MultiObjectLockStub()), locator
-                        )
+                : base(() => new MultiObjectLockStub(), () => new CallbackLock(() => new MultiObjectLockStub()), locator)
         {
         }
 
@@ -33,7 +32,8 @@ namespace Common.Testing
             }
 
             public void Do(Action protectedBlock)
-            {                
+            {
+                protectedBlock();
             }
         }
     }

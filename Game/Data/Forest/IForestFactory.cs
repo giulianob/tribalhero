@@ -2,6 +2,6 @@
 {
     public interface IForestFactory
     {
-        IForest CreateForest(uint id, byte lvl, int capacity, double rate, uint x, uint y);
+        IForest CreateForest(uint id, int capacity, uint x, uint y);
     }
 }

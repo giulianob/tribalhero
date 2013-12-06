@@ -703,8 +703,6 @@ namespace Game.Data
 
                 structures.Remove(structure.ObjectId);
 
-                dbManager.Delete(structure);
-
                 structure.ObjectUpdated -= OnObjectUpdated;
                 structure.Technologies.TechnologyCleared -= OnTechnologyCleared;
                 structure.Technologies.TechnologyAdded -= OnTechnologyAdded;

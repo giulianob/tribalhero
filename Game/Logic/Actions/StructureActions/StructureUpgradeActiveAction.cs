@@ -41,6 +41,8 @@ namespace Game.Logic.Actions
 
         private readonly CallbackProcedure callbackProcedure;
 
+        private readonly InitFactory initFactory;
+
         public StructureUpgradeActiveAction(uint cityId,
                                             uint structureId,
                                             IStructureCsvFactory structureCsvFactory,
@@ -50,6 +52,7 @@ namespace Game.Logic.Actions
                                             ILocker locker,
                                             IRequirementCsvFactory requirementCsvFactory,
                                             IObjectTypeFactory objectTypeFactory,
+                                            InitFactory initFactory,
                                             CallbackProcedure callbackProcedure)
         {
             this.cityId = cityId;
@@ -61,6 +64,7 @@ namespace Game.Logic.Actions
             this.locker = locker;
             this.requirementCsvFactory = requirementCsvFactory;
             this.objectTypeFactory = objectTypeFactory;
+            this.initFactory = initFactory;
             this.callbackProcedure = callbackProcedure;
         }
 
@@ -79,6 +83,7 @@ namespace Game.Logic.Actions
                                             ILocker locker,
                                             IRequirementCsvFactory requirementCsvFactory,
                                             IObjectTypeFactory objectTypeFactory,
+                                            InitFactory initFactory,
                                             CallbackProcedure callbackProcedure)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
@@ -89,6 +94,7 @@ namespace Game.Logic.Actions
             this.locker = locker;
             this.requirementCsvFactory = requirementCsvFactory;
             this.objectTypeFactory = objectTypeFactory;
+            this.initFactory = initFactory;
             this.callbackProcedure = callbackProcedure;
 
             cityId = uint.Parse(properties["city_id"]);

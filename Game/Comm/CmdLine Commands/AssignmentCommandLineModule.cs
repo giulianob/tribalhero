@@ -79,20 +79,21 @@ namespace Game.Comm
             IPlayer player;
             ITribe tribe;
 
-            return locker.Lock(playerId, out player, out tribe).Do(() =>
+            return locker.Lock(playerId, out player).Do(() =>
             {
                 if (player == null)
                 {
                     return "Player not found";
                 }
-                if (tribe == null)
+                
+                if (!player.IsInTribe)
                 {
-                    return "Player does not own a tribe";
+                    return "Player does not have a tribe";
                 }
 
                 string result = string.Format("Now[{0}] Assignments:\n", DateTime.UtcNow);
-                return tribe.Assignments.Aggregate(result,
-                                                   (current, assignment) => current + assignment.ToNiceString());
+                return player.Tribesman.Tribe.Assignments.Aggregate(result,
+                                                                    (current, assignment) => current + assignment.ToNiceString());
             });
         }
 

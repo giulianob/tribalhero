@@ -17,15 +17,11 @@ namespace Game.Map
 
         bool TryGetObjects(uint tribeId, out ITribe tribe);
 
-        bool TryGetObjects(uint cityId, ushort troopStubId, out ICity city, out ITroopStub troopStub);
-
         bool TryGetObjects(uint battleId, out IBattleManager battleManager);
 
         bool TryGetObjects(uint cityId, uint structureId, out ICity city, out IStructure structure);
 
         bool TryGetObjects(uint cityId, uint troopObjectId, out ICity city, out ITroopObject troopObject);
-
-        bool TryGetObjects(uint cityId, out ICity city, out ITribe tribe);
 
         bool TryGetObjects(uint strongholdId, out IStronghold stronghold);
 

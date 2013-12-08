@@ -16,8 +16,6 @@ namespace Game.Util.Locking
 
         IMultiObjectLock Lock(uint playerId, out IPlayer player);
 
-        IMultiObjectLock Lock(uint playerId, out IPlayer player, out ITribe tribe);
-
         IMultiObjectLock Lock(uint cityId, out ICity city);
 
         IMultiObjectLock Lock(uint strongholdId, out IStronghold stronghold);

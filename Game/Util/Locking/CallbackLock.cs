@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace Game.Util.Locking
 {
-    public class CallbackLock
+    public class CallbackLock : ICallbackLock
     {
         private readonly DefaultMultiObjectLock.Factory multiObjectLockFactory;
 
@@ -14,7 +14,7 @@ namespace Game.Util.Locking
 
         public delegate ILockable[] CallbackLockHandler(object[] custom);
 
-        public delegate CallbackLock Factory();
+        public delegate ICallbackLock Factory();
 
         #endregion
 

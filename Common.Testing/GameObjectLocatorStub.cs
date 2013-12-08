@@ -97,12 +97,6 @@ namespace Common.Testing
             return tribes.TryGetValue(tribeId, out tribe);
         }
 
-        public bool TryGetObjects(uint cityId, ushort troopStubId, out ICity city, out ITroopStub troopStub)
-        {
-            troopStub = null;
-            return cities.TryGetValue(cityId, out city) && city.Troops.TryGetStub(troopStubId, out troopStub);
-        }
-
         public bool TryGetObjects(uint battleId, out IBattleManager battleManager)
         {
             return battles.TryGetValue(battleId, out battleManager);
@@ -120,18 +114,6 @@ namespace Common.Testing
             return cities.TryGetValue(cityId, out city) && (city.TryGetTroop(troopObjectId, out troopObject)|| GetGameObject(cityId, troopObjectId, out troopObject));
         }
 
-        public bool TryGetObjects(uint cityId, out ICity city, out ITribe tribe)
-        {
-            tribe = null;
-            if (!cities.TryGetValue(cityId, out city) || !city.Owner.IsInTribe)
-            {
-                return false;
-            }
-
-            tribe = city.Owner.Tribesman.Tribe;
-            return true;
-        }
-        
         public bool TryGetObjects(uint strongholdId, out IStronghold stronghold)
         {
             return strongholds.TryGetValue(strongholdId, out stronghold);

@@ -157,6 +157,7 @@
     <Compile Include="FormulaTests\MoveTimeTotalTest.cs" />
     <Compile Include="GameObjectTests\SimpleGameObjectTests.cs" />
     <Compile Include="LockingTests\CallbackLockTest.cs" />
+    <Compile Include="LockingTests\DefaultLockerTests.cs" />
     <Compile Include="LockingTests\DefaultMultiObjectLockTests.cs" />
     <Compile Include="MapMathTests\MapMathTests.cs" />
     <Compile Include="MapMathTests\TileLocatorTests.cs" />

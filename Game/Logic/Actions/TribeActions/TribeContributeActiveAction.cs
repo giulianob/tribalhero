@@ -181,25 +181,20 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                if (city == null)
-                {
-                    StateChange(ActionState.Failed);
-                    return;
-                }
-
-                // what if tribe is not there anymore?
-                if (tribe == null)
+                if (city == null || tribe == null)
                 {
                     RefundResource(city);
                     StateChange(ActionState.Failed);
                     return;
                 }
+
                 if (tribe.Contribute(city.Owner.PlayerId, resource) != Error.Ok)
                 {
                     RefundResource(city);
                     StateChange(ActionState.Failed);
                     return;
                 }
+
                 StateChange(ActionState.Completed);
             });
         }

@@ -68,7 +68,7 @@ namespace Game.Comm
 
                         if (e.SocketErrorCode == SocketError.TimedOut)
                         {
-                            Logger.Info(e, "Socket send timed out packetLength[{0}] ", packetBytes.Length);
+                            Logger.Debug(e, "Socket send timed out packetLength[{0}] ", packetBytes.Length);
                         }
                         else
                         {

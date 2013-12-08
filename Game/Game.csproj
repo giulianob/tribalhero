@@ -529,6 +529,7 @@
     <Compile Include="Util\IdGenerator.cs" />
     <Compile Include="Util\ListExtension.cs" />
     <Compile Include="Util\Locking\CallbackLock.cs" />
+    <Compile Include="Util\Locking\ICallbackLock.cs" />
     <Compile Include="Util\Locking\ILockable.cs" />
     <Compile Include="Util\Locking\LockableComparer.cs" />
     <Compile Include="Util\Locking\ILocker.cs" />

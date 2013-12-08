@@ -88,13 +88,6 @@ namespace Game.Map
             return Battles.TryGetValue(battleId, out battleManager);
         }
 
-        public bool TryGetObjects(uint cityId, ushort troopStubId, out ICity city, out ITroopStub troopStub)
-        {
-            troopStub = null;
-
-            return Cities.TryGetCity(cityId, out city) && city.Troops.TryGetStub(troopStubId, out troopStub);
-        }
-
         public bool TryGetObjects(uint cityId, uint structureId, out ICity city, out IStructure structure)
         {
             structure = null;
@@ -107,20 +100,6 @@ namespace Game.Map
             troopObject = null;
 
             return Cities.TryGetCity(cityId, out city) && city.TryGetTroop(troopObjectId, out troopObject);
-        }
-
-        public bool TryGetObjects(uint cityId, out ICity city, out ITribe tribe)
-        {
-            tribe = null;
-            if (Cities.TryGetCity(cityId, out city))
-            {
-                if (city.Owner.IsInTribe)
-                {
-                    tribe = city.Owner.Tribesman.Tribe;
-                    return true;
-                }
-            }
-            return false;
         }
 
         #endregion        

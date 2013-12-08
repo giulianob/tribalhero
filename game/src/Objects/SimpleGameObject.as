@@ -119,7 +119,17 @@ package src.Objects {
 			
 			return type == gameObj.type;
 		}
-	}
+
+        public function moveFrom(prevPosition: Point): void {
+            TweenMax.from(this, 0.75, {
+                x: prevPosition.x,
+                y: prevPosition.y,
+                onUpdate: function() {
+                    dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
+                }
+            });
+        }
+    }
 
 }
 

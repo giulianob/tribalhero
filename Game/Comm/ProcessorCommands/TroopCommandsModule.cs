@@ -805,7 +805,7 @@ namespace Game.Comm.ProcessorCommands
 
                 ITroopObjectInitializer troopInitializer;
 
-                if (completeRetreat || stationOwnerRetreating || unitsToRetreat.TotalCount == stub.TotalCount)
+                if (completeRetreat || unitsToRetreat.TotalCount == stub.TotalCount)
                 {
                     troopInitializer = troopObjectInitializerFactory.CreateStationedTroopObjectInitializer(stub);
                 }

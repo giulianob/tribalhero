@@ -1,7 +1,5 @@
 ﻿package src.Map
 {
-    import com.greensock.TweenMax;
-
     import flash.events.Event;
     import flash.geom.Point;
 
@@ -116,8 +114,8 @@
 			obj.copy(newObj);
 			
 			addObject(obj, objChanged);
-			
-			TweenMax.from(obj, 0.75, { x: prevPosition.x, y: prevPosition.y });
+
+            obj.moveFrom(prevPosition);
 			
 			Global.map.requeryIfSelected(obj);
 			
@@ -168,7 +166,7 @@
             currentObj.copy(newObj);
 			addObject(currentObj, objChanged);
 			
-			TweenMax.from(currentObj, 0.75, { x: prevPosition.x, y: prevPosition.y });
+			currentObj.moveFrom(prevPosition);
 				
 			Global.map.requeryIfSelected(currentObj);
 

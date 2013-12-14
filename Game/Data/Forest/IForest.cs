@@ -5,7 +5,7 @@ using Persistance;
 
 namespace Game.Data.Forest
 {
-    public interface IForest : ISimpleGameObject, IPersistableObject, IEnumerable<IStructure>, ICityRegionObject
+    public interface IForest : ISimpleGameObject, IPersistableObject, IEnumerable<IStructure>, IMiniMapRegionObject
     {
         /// <summary>
         ///     The action which will deplete this forest

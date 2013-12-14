@@ -3,8 +3,8 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 ,,,,,,,,,,,,
 //Town Center,,,,,,,,,,,,
 2000,1,0,1,,,,,,,,,
-2000,1,1,1,,structure_Build,2106,TileCrop,,,,210601,SELF
-2000,1,2,1,,structure_Build,2107,TileTree,,,,210701,SELF
+2000,1,1,1,,structure_Build,2106,TileResource,,,,210601,SELF
+2000,1,2,1,,structure_Build,2107,TileResource,,,,210701,SELF
 2000,1,3,1,,structure_Upgrade,15,,,,,20001,SELF
 2000,1,4,1,,road_Build,,,,,,,
 2000,1,5,1,,road_Destroy,,,,,,,
@@ -15,7 +15,7 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 2000,3,3,1,,structure_Upgrade,15,,,,,,
 2000,3,7,1,,structure_Build,2301,,,,,20002,SELF
 ,,,,,,,,,,,,
-2000,4,1,1,,structure_Build,2106,TileCrop,,,,210602,SELF
+2000,4,1,1,,structure_Build,2106,TileResource,,,,210602,SELF
 2000,4,10,1,,structure_downgrade,,,,,,,
 ,,,,,,,,,,,,
 2000,5,8,1,,structure_Build,2501,,,,,,

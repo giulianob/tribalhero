@@ -78,23 +78,23 @@ namespace Game.Comm
 
             IPlayer player;
             ITribe tribe;
-            string result = string.Format("Now[{0}] Assignments:\n", DateTime.UtcNow);
-            using (locker.Lock(playerId, out player, out tribe))
+
+            return locker.Lock(playerId, out player).Do(() =>
             {
                 if (player == null)
                 {
                     return "Player not found";
                 }
-                if (tribe == null)
+                
+                if (!player.IsInTribe)
                 {
-                    return "Player does not own a tribe";
+                    return "Player does not have a tribe";
                 }
 
-                result = tribe.Assignments.Aggregate(result,
-                                                     (current, assignment) => current + assignment.ToNiceString());
-            }
-
-            return result;
+                string result = string.Format("Now[{0}] Assignments:\n", DateTime.UtcNow);
+                return player.Tribesman.Tribe.Assignments.Aggregate(result,
+                                                                    (current, assignment) => current + assignment.ToNiceString());
+            });
         }
 
         private string AssignmentCreate(Session session, string[] parms)
@@ -150,20 +150,20 @@ namespace Game.Comm
             }
 
             ITribe tribe = city.Owner.Tribesman.Tribe;
-            IStructure targetStructure = world.GetObjects(x, y).OfType<IStructure>().FirstOrDefault();
+            IStructure targetStructure = world.Regions.GetObjectsInTile(x, y).OfType<IStructure>().FirstOrDefault();
             if (targetStructure == null)
             {
                 return "Could not find a structure for the given coordinates";
             }
 
-            using (locker.Lock(city, tribe, targetStructure.City))
+            return locker.Lock(city, tribe, targetStructure.City).Do(() =>
             {
                 if (city.DefaultTroop.Upkeep == 0)
                 {
                     return "No troops in the city!";
                 }
 
-                targetStructure = world.GetObjects(x, y).OfType<IStructure>().First();
+                targetStructure = world.Regions.GetObjectsInTile(x, y).OfType<IStructure>().First();
 
                 if (targetStructure == null)
                 {
@@ -171,7 +171,7 @@ namespace Game.Comm
                 }
 
                 // TODO: Clean this up.. shouldnt really need to do this here
-                var stub = city.Troops.Create();
+                var stub = city.CreateTroopStub();
                 FormationType formation = isAttack.GetValueOrDefault() ? FormationType.Attack : FormationType.Defense;
                 stub.AddFormation(formation);
                 foreach (var unit in city.DefaultTroop[FormationType.Normal])
@@ -197,7 +197,7 @@ namespace Game.Comm
                 }
 
                 return string.Format("OK ID[{0}]", id);
-            }
+            });
         }
 
         private string AssignmentJoin(Session session, string[] parms)
@@ -243,7 +243,7 @@ namespace Game.Comm
             }
 
             ITribe tribe = city.Owner.Tribesman.Tribe;
-            using (locker.Lock(city, tribe))
+            return locker.Lock(city, tribe).Do(() =>
             {
                 if (city.DefaultTroop.Upkeep == 0)
                 {
@@ -258,7 +258,7 @@ namespace Game.Comm
                 }
 
                 // TODO: Clean this up.. shouldnt really need to do this here
-                ITroopStub stub = city.Troops.Create();
+                ITroopStub stub = city.CreateTroopStub();
                 FormationType formation = assignment.IsAttack ? FormationType.Attack : FormationType.Defense;
                 stub.AddFormation(formation);
                 foreach (var unit in city.DefaultTroop[FormationType.Normal])
@@ -273,7 +273,7 @@ namespace Game.Comm
                 }
 
                 return string.Format("OK");
-            }
+            });
         }
     }
 }

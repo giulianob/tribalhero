@@ -1,19 +1,14 @@
 #region
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Common;
 using Game.Data;
-using Game.Logic;
 using Game.Logic.Conditons;
 using Game.Logic.Triggers;
-using Game.Logic.Triggers.Events;
 using Game.Util;
 using Ninject;
-using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -93,6 +88,7 @@ namespace Game.Setup
             }
         }
         
+        [Obsolete("Use CallbackProcedure directly")]
         public void InitGameObject(InitCondition condition, IStructure structure, ushort type, byte lvl)
         {
             switch (condition)

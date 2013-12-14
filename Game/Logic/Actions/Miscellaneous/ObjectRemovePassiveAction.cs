@@ -11,6 +11,7 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
+using Persistance;
 
 #endregion
 
@@ -21,6 +22,8 @@ namespace Game.Logic.Actions
         private readonly List<uint> cancelActions;
 
         private readonly IGameObjectLocator gameObjectLocator;
+
+        private readonly IDbManager dbmanager;
 
         private readonly ILocker locker;
 
@@ -41,7 +44,8 @@ namespace Game.Logic.Actions
                                          IGameObjectLocator gameObjectLocator,
                                          ILocker locker,
                                          Procedure procedure,
-                                         CallbackProcedure callbackProcedure)
+                                         CallbackProcedure callbackProcedure, 
+                                         IDbManager dbmanager)
         {
             this.cityId = cityId;
             this.objectId = objectId;
@@ -51,6 +55,7 @@ namespace Game.Logic.Actions
             this.locker = locker;
             this.procedure = procedure;
             this.callbackProcedure = callbackProcedure;
+            this.dbmanager = dbmanager;
         }
 
         public ObjectRemovePassiveAction(uint id,
@@ -63,13 +68,15 @@ namespace Game.Logic.Actions
                                          IGameObjectLocator gameObjectLocator,
                                          ILocker locker,
                                          Procedure procedure,
-                                         CallbackProcedure callbackProcedure)
+                                         CallbackProcedure callbackProcedure, 
+                                         IDbManager dbmanager)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.gameObjectLocator = gameObjectLocator;
             this.locker = locker;
             this.procedure = procedure;
             this.callbackProcedure = callbackProcedure;
+            this.dbmanager = dbmanager;
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
             wasKilled = bool.Parse(properties["was_killed"]);
@@ -129,9 +136,9 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            IGameObject obj;
+            IGameObject obj = null;
 
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (city == null)
                 {
@@ -142,34 +149,33 @@ namespace Game.Logic.Actions
                 {
                     throw new Exception("Obj is missing");
                 }
-            }
+            });
 
             // Cancel all active actions
             int loopCount = 0;
             while (true)
             {
-                GameAction action;
+                GameAction action = null;
 
-                using (locker.Lock(cityId, out city))
+                locker.Lock(cityId, out city).Do(() =>
                 {
                     if (city == null)
                     {
                         throw new Exception("City is missing");
                     }
 
-                    IGameObject obj1 = obj;
-                    action = city.Worker.ActiveActions.Values.FirstOrDefault(x => x.WorkerObject == obj1);
-
-                    if (action == null)
-                    {
-                        break;
-                    }
+                    action = city.Worker.ActiveActions.Values.FirstOrDefault(x => x.WorkerObject == obj);
 
                     loopCount++;
                     if (loopCount == 1000)
                     {
                         throw new Exception(string.Format("Unable to cancel all active actions. Stuck cancelling {0}", action.Type));
                     }
+                });
+
+                if (action == null)
+                {
+                    break;
                 }
 
                 action.WorkerRemoved(wasKilled);
@@ -179,9 +185,9 @@ namespace Game.Logic.Actions
             loopCount = 0;
             while (true)
             {
-                GameAction action;
+                GameAction action = null;
 
-                using (locker.Lock(cityId, out city))
+                locker.Lock(cityId, out city).Do(() =>
                 {
                     if (city == null)
                     {
@@ -191,16 +197,16 @@ namespace Game.Logic.Actions
                     IGameObject obj1 = obj;
                     action = city.Worker.PassiveActions.Values.FirstOrDefault(x => x.WorkerObject == obj1);
 
-                    if (action == null)
-                    {
-                        break;
-                    }
-
                     loopCount++;
                     if (loopCount == 1000)
                     {
-                        throw new Exception(string.Format("Unable to cancel all passive actions. Stuck cancelling {0}", action.Type)); 
+                        throw new Exception(string.Format("Unable to cancel all passive actions. Stuck cancelling {0}", action.Type));
                     }
+                });
+                
+                if (action == null)
+                {
+                    break;
                 }
 
                 action.WorkerRemoved(wasKilled);
@@ -209,8 +215,8 @@ namespace Game.Logic.Actions
             // Cancel all references
             foreach (var actionId in cancelActions)
             {
-                GameAction action;
-                using (locker.Lock(cityId, out city))
+                GameAction action = null;
+                locker.Lock(cityId, out city).Do(() =>
                 {
                     if (city == null)
                     {
@@ -219,16 +225,18 @@ namespace Game.Logic.Actions
 
                     uint actionId1 = actionId;
                     action = city.Worker.ActiveActions.Values.FirstOrDefault(x => x.ActionId == actionId1);
-                    if (action == null)
-                    {
-                        continue;
-                    }
+
+                });
+                
+                if (action == null)
+                {
+                    continue;
                 }
 
                 action.WorkerRemoved(wasKilled);
             }
 
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (city == null)
                 {
@@ -248,7 +256,10 @@ namespace Game.Logic.Actions
                 // Finish cleaning object
                 if (obj is ITroopObject)
                 {
-                    city.DoRemove((TroopObject)obj);
+                    var troopObject = (TroopObject)obj;
+                    city.DoRemove(troopObject);
+
+                    dbmanager.Delete(troopObject);
                 }
                 else if (obj is IStructure)
                 {
@@ -275,11 +286,13 @@ namespace Game.Logic.Actions
                     foreach (var tech in techs)
                     {
                         callbackProcedure.OnTechnologyDelete(structure, tech.TechBase);
-                    }
-                }
+                    }                    
+
+                    dbmanager.Delete(structure);
+                }                
 
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override void UserCancelled()

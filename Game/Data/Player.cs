@@ -81,6 +81,8 @@ namespace Game.Data
 
         public PlayerRights Rights { get; set; }
 
+        public bool SoundMuted { get; set; }
+
         public bool IsIdle
         {
             get
@@ -222,13 +224,13 @@ namespace Game.Data
             if (Session != null)
             {
                 var packet = new Packet(Command.RefreshUnread);
-                Global.Channel.Post("/PLAYER/" + PlayerId, packet);
+                Global.Current.Channel.Post("/PLAYER/" + PlayerId, packet);
             }
         }
 
         public void TribeUpdate()
         {
-            if (!Global.FireEvents)
+            if (!Global.Current.FireEvents)
             {
                 return;
             }
@@ -238,7 +240,7 @@ namespace Game.Data
             packet.AddUInt32(TribeRequest);
             packet.AddByte((byte)(Tribesman == null ? 0 : tribesman.Rank.Id));
 
-            Global.Channel.Post("/PLAYER/" + PlayerId, packet);
+            Global.Current.Channel.Post("/PLAYER/" + PlayerId, packet);
         }
 
         #region ILockable Members
@@ -287,7 +289,8 @@ namespace Game.Data
                     new DbColumn("online", Session != null, DbType.Boolean),
                     new DbColumn("invitation_tribe_id", TribeRequest, DbType.UInt32),
                     new DbColumn("tutorial_step", TutorialStep, DbType.UInt32),
-                    new DbColumn("last_deleted_tribe", LastDeletedTribe, DbType.DateTime)
+                    new DbColumn("last_deleted_tribe", LastDeletedTribe, DbType.DateTime),
+                    new DbColumn("sound_muted", SoundMuted, DbType.Boolean),
                 };
             }
         }

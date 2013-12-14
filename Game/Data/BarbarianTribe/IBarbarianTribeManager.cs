@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Game.Data.Troop;
-
 namespace Game.Data.BarbarianTribe
 {
     public interface IBarbarianTribeManager
@@ -10,7 +6,7 @@ namespace Game.Data.BarbarianTribe
 
         void DbLoaderAdd(IBarbarianTribe barbarianTribe);
 
-        void CreateBarbarianTribeNear(byte level, int campCount, uint x, uint y);
+        void CreateBarbarianTribeNear(byte level, int campCount, uint x, uint y, byte radius);
 
         bool TryGetBarbarianTribe(uint id, out IBarbarianTribe barbarianTribe);
 

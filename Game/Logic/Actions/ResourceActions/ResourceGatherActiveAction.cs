@@ -16,7 +16,7 @@ namespace Game.Logic.Actions
     {
         private readonly ILocker locker;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly IWorld world;
 
@@ -26,7 +26,7 @@ namespace Game.Logic.Actions
 
         private readonly uint objectId;
 
-        public ResourceGatherActiveAction(uint cityId, uint objectId, ILocker locker, ObjectTypeFactory objectTypeFactory, IWorld world, IActionFactory actionFactory)
+        public ResourceGatherActiveAction(uint cityId, uint objectId, ILocker locker, IObjectTypeFactory objectTypeFactory, IWorld world, IActionFactory actionFactory)
         {
             this.cityId = cityId;
             this.objectId = objectId;
@@ -45,7 +45,7 @@ namespace Game.Logic.Actions
                                           ushort actionCount,
                                           Dictionary<string, string> properties,
                                           ILocker locker,
-                                          ObjectTypeFactory objectTypeFactory,
+                                          IObjectTypeFactory objectTypeFactory,
                                           IWorld world, 
                                           IActionFactory actionFactory)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
@@ -89,7 +89,7 @@ namespace Game.Logic.Actions
             ICity city;
             IStructure structure;
 
-            using (locker.Lock(cityId, objectId, out city, out structure))
+            locker.Lock(cityId, objectId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -97,7 +97,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override Error Execute()
@@ -178,7 +178,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
             IStructure structure;
-            using (locker.Lock(cityId, objectId, out city, out structure))
+            locker.Lock(cityId, objectId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -186,7 +186,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
     }
 }

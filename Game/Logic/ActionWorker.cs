@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Game.Data;
-using Game.Database;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using Ninject;
+using Persistance;
 
 #endregion
 
@@ -17,14 +17,23 @@ namespace Game.Logic
 {
     public class ActionWorker : IActionWorker
     {
+        private readonly ILocker locker;
+
+        private readonly IScheduler scheduler;
+
+        private readonly IDbManager dbManager;
+
         private readonly LargeIdGenerator actionIdGen = new LargeIdGenerator(int.MaxValue);
 
         private readonly IDictionary<uint, ActiveAction> active = new Dictionary<uint, ActiveAction>();
 
         private readonly IDictionary<uint, PassiveAction> passive = new Dictionary<uint, PassiveAction>();
 
-        public ActionWorker(Func<ILockable> lockDelegate = null, ILocation location = null)
+        public ActionWorker(Func<ILockable> lockDelegate, ILocation location, ILocker locker, IScheduler scheduler, IDbManager dbManager)
         {
+            this.locker = locker;
+            this.scheduler = scheduler;
+            this.dbManager = dbManager;
             Location = location;
             LockDelegate = lockDelegate;
         }
@@ -63,12 +72,12 @@ namespace Game.Logic
             var ignoreActionList = new List<GameAction>(ignoreActions);
 
             // Cancel Active actions
-            IList<ActiveAction> activeList;
-            using (Concurrency.Current.Lock(LockDelegate()))
+            IList<ActiveAction> activeList = null;
+            locker.Lock(LockDelegate()).Do(() =>
             {
                 // Very important to keep the ToList() here since we will be modifying the collection in the loop below and an IEnumerable will crash!
                 activeList = active.Values.Where(actionStub => actionStub.WorkerObject == workerObject).ToList();
-            }
+            });
 
             foreach (var stub in activeList)
             {
@@ -81,12 +90,12 @@ namespace Game.Logic
             }
 
             // Cancel Passive actions
-            IList<PassiveAction> passiveList;
-            using (Concurrency.Current.Lock(LockDelegate()))
+            IList<PassiveAction> passiveList = null;
+            locker.Lock(LockDelegate()).Do(() =>
             {
                 // Very important to keep the ToList() here since we will be modifying the collection in the loop below and an IEnumerable will crash!
                 passiveList = passive.Values.Where(action => action.WorkerObject == workerObject).ToList();
-            }
+            });
 
             foreach (var stub in passiveList)
             {
@@ -235,7 +244,7 @@ namespace Game.Logic
                 {
                     action.StateChange(ActionState.Failed);
                     active.Remove(action.ActionId);
-                    ReleaseId(action.ActionId);
+                    actionIdGen.Release(action.ActionId);
                 }
                 else
                 {
@@ -269,7 +278,7 @@ namespace Game.Logic
             {
                 action.StateChange(ActionState.Failed);
                 passive.Remove(action.ActionId);
-                ReleaseId(action.ActionId);
+                actionIdGen.Release(action.ActionId);
             }
             else
             {
@@ -295,10 +304,10 @@ namespace Game.Logic
 
             passive.Add(action.ActionId, action);
 
-            using (Concurrency.Current.Lock(LockDelegate()))
+            locker.Lock(LockDelegate()).Do(() =>
             {
                 action.Execute();
-            }
+            });
         }
 
         private bool CanDoActiveAction(ActiveAction action, ActionRequirement actionReq, IGameObject worker)
@@ -404,19 +413,14 @@ namespace Game.Logic
             return actionIdGen.GetNext();
         }
 
-        public void ReleaseId(uint actionId)
+        private void Schedule(ScheduledActiveAction action)
         {
-            actionIdGen.Release(actionId);
+            scheduler.Put(action);
         }
 
-        private static void Schedule(ScheduledActiveAction action)
+        private void Schedule(ScheduledPassiveAction action)
         {
-            Scheduler.Current.Put(action);
-        }
-
-        private static void Schedule(ScheduledPassiveAction action)
-        {
-            Scheduler.Current.Put(action);
+            scheduler.Put(action);
         }
 
         #endregion
@@ -461,7 +465,7 @@ namespace Game.Logic
 
                     if (action is PassiveAction)
                     {
-                        DbPersistance.Current.Save(actionStub);
+                        dbManager.Save(actionStub);
                     }
 
                     if (action is ScheduledPassiveAction)
@@ -477,7 +481,7 @@ namespace Game.Logic
 
                     if (action is PassiveAction)
                     {
-                        DbPersistance.Current.Save(actionStub);
+                        dbManager.Save(actionStub);
                     }
 
                     if (action is ScheduledPassiveAction)
@@ -496,18 +500,18 @@ namespace Game.Logic
 
                     if (action is ScheduledPassiveAction)
                     {
-                        Scheduler.Current.Remove(action as ScheduledPassiveAction);
+                        scheduler.Remove(action as ScheduledPassiveAction);
                     }
 
                     if (action is PassiveAction)
                     {
-                        DbPersistance.Current.Delete(actionStub);
+                        dbManager.Delete(actionStub);
                     }
                     break;
                 case ActionState.Fired:
                     if (action is PassiveAction)
                     {
-                        DbPersistance.Current.Save(actionStub);
+                        dbManager.Save(actionStub);
                     }
 
                     if (action is ScheduledPassiveAction)
@@ -526,12 +530,12 @@ namespace Game.Logic
 
                     if (action is ScheduledPassiveAction)
                     {
-                        Scheduler.Current.Remove(action as ScheduledPassiveAction);
+                        scheduler.Remove(action as ScheduledPassiveAction);
                     }
 
                     if (action is PassiveAction)
                     {
-                        DbPersistance.Current.Delete(actionStub);
+                        dbManager.Delete(actionStub);
                     }
                     break;
             }
@@ -557,7 +561,7 @@ namespace Game.Logic
 
                     if (actionStub is ScheduledActiveAction)
                     {
-                        DbPersistance.Current.Save(actionStub);
+                        dbManager.Save(actionStub);
                         Schedule(action as ScheduledActiveAction);
                     }
                     break;
@@ -569,7 +573,7 @@ namespace Game.Logic
 
                     if (action is ScheduledActiveAction)
                     {
-                        DbPersistance.Current.Save(actionStub);
+                        dbManager.Save(actionStub);
                         Schedule(action as ScheduledActiveAction);
                     }
                     break;
@@ -584,14 +588,14 @@ namespace Game.Logic
 
                     if (action is ScheduledActiveAction)
                     {
-                        DbPersistance.Current.Delete(actionStub);
-                        Scheduler.Current.Remove(action as ISchedule);
+                        dbManager.Delete(actionStub);
+                        scheduler.Remove(action as ISchedule);
                     }
                     break;
                 case ActionState.Fired:
                     if (action is ScheduledActiveAction)
                     {
-                        DbPersistance.Current.Save(actionStub);
+                        dbManager.Save(actionStub);
                         Schedule(action as ScheduledActiveAction);
                     }
                     break;
@@ -606,8 +610,8 @@ namespace Game.Logic
 
                     if (action is ScheduledActiveAction)
                     {
-                        DbPersistance.Current.Delete(actionStub);
-                        Scheduler.Current.Remove(action as ISchedule);
+                        dbManager.Delete(actionStub);
+                        scheduler.Remove(action as ISchedule);
                     }
                     break;
             }

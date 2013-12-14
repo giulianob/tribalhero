@@ -151,7 +151,8 @@ namespace Game.Setup
             {
                 return new Resource();
             }
-            Resource ret = Ioc.Kernel.Get<StructureFactory>().GetCost(buildType, buildLvl) * 1 / 3;
+
+            Resource ret = Ioc.Kernel.Get<IStructureCsvFactory>().GetCost((ushort)buildType, buildLvl) * 1 / 3;
             ret /= 10;
             return ret * 10;
         }
@@ -166,7 +167,8 @@ namespace Game.Setup
             {
                 return 60;
             }
-            return Ioc.Kernel.Get<StructureFactory>().GetTime((ushort)buildType, (byte)buildLvl) * 2 / 3;
+	    
+            return Ioc.Kernel.Get<IStructureCsvFactory>().GetTime((ushort)buildType, (byte)buildLvl) * 2 / 3;
         }
 
         public IEnumerable<TechnologyBase> AllTechnologies()

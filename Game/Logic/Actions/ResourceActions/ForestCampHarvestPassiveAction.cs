@@ -117,7 +117,7 @@ namespace Game.Logic.Actions
                 throw new Exception("City is missing");
             }
 
-            using (locker.Lock(forestManager.CallbackLockHandler, new object[] {forestId}, city))
+            locker.Lock(forestManager.CallbackLockHandler, new object[] {forestId}, city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -126,7 +126,7 @@ namespace Game.Logic.Actions
 
                 endTime = DateTime.UtcNow.AddSeconds(30);
                 StateChange(ActionState.Rescheduled);
-            }
+            });
         }
 
         public override Error Validate(string[] parms)
@@ -142,38 +142,39 @@ namespace Game.Logic.Actions
                 throw new Exception("City is missing");
             }
 
-            using (locker.Lock(forestManager.CallbackLockHandler, new object[] {forestId}, city))
-            {
-                if (!IsValid())
-                {
-                    return;
-                }
+            locker.Lock(forestManager.CallbackLockHandler, new object[] {forestId}, city)
+                  .Do(() =>
+                  {
+                      if (!IsValid())
+                      {
+                          return;
+                      }
 
-                var structure = (IStructure)WorkerObject;
+                      var structure = (IStructure)WorkerObject;
 
-                IForest forest;
-                if (forestManager.TryGetValue(forestId, out forest))
-                {
-                    // Recalculate the forest
-                    forest.BeginUpdate();
-                    forest.RemoveLumberjack(structure);
-                    forest.RecalculateForest();
-                    forest.EndUpdate();
-                }
+                      IForest forest;
+                      if (forestManager.TryGetValue(forestId, out forest))
+                      {
+                          // Recalculate the forest
+                          forest.BeginUpdate();
+                          forest.RemoveLumberjack(structure);
+                          forest.RecalculateForest();
+                          forest.EndUpdate();
+                      }
 
-                // Reset the rate
-                city.BeginUpdate();
-                city.Resource.Wood.Rate -= (int)structure["Rate"];
-                city.EndUpdate();
+                      // Reset the rate
+                      city.BeginUpdate();
+                      city.Resource.Wood.Rate -= (int)structure["Rate"];
+                      city.EndUpdate();
 
-                // Remove ourselves
-                structure.BeginUpdate();
-                world.Regions.Remove(structure);
-                city.ScheduleRemove(structure, false);
-                structure.EndUpdate();
+                      // Remove ourselves
+                      structure.BeginUpdate();
+                      world.Regions.Remove(structure);
+                      city.ScheduleRemove(structure, false);
+                      structure.EndUpdate();
 
-                StateChange(ActionState.Failed);
-            }
+                      StateChange(ActionState.Failed);
+                  });
         }
 
         public override void WorkerRemoved(bool wasKilled)
@@ -184,37 +185,38 @@ namespace Game.Logic.Actions
                 throw new Exception("City is missing");
             }
 
-            using (locker.Lock(forestManager.CallbackLockHandler, new object[] {forestId}, city))
-            {
-                if (!IsValid())
-                {
-                    return;
-                }
+            locker.Lock(forestManager.CallbackLockHandler, new object[] {forestId}, city)
+                  .Do(() =>
+                  {
+                      if (!IsValid())
+                      {
+                          return;
+                      }
 
-                var structure = (IStructure)WorkerObject;
+                      var structure = (IStructure)WorkerObject;
 
-                IForest forest;
-                if (forestManager.TryGetValue(forestId, out forest))
-                {
-                    // Recalculate the forest
-                    forest.BeginUpdate();
-                    forest.RemoveLumberjack(structure);
-                    forest.RecalculateForest();
-                    forest.EndUpdate();
-                }
+                      IForest forest;
+                      if (forestManager.TryGetValue(forestId, out forest))
+                      {
+                          // Recalculate the forest
+                          forest.BeginUpdate();
+                          forest.RemoveLumberjack(structure);
+                          forest.RecalculateForest();
+                          forest.EndUpdate();
+                      }
 
-                // Reset the rate
-                city.BeginUpdate();
-                var newRate = city.Resource.Wood.Rate - (int)structure["Rate"];
-                if (newRate < 0)
-                {
-                    logger.Warn("Forest rate going below 0 for forest id[{0}]", forestId);
-                }
-                city.Resource.Wood.Rate = Math.Max(0, newRate);
-                city.EndUpdate();
+                      // Reset the rate
+                      city.BeginUpdate();
+                      var newRate = city.Resource.Wood.Rate - (int)structure["Rate"];
+                      if (newRate < 0)
+                      {
+                          logger.Warn("Forest rate going below 0 for forest id[{0}]", forestId);
+                      }
+                      city.Resource.Wood.Rate = Math.Max(0, newRate);
+                      city.EndUpdate();
 
-                StateChange(ActionState.Failed);
-            }
+                      StateChange(ActionState.Failed);
+                  });
         }
 
         #region IPersistable

@@ -32,6 +32,8 @@ namespace Game.Comm
 
         private readonly StructureFactory structureFactory;
 
+        private readonly UnitFactory unitFactory;
+
         private readonly TechnologyFactory technologyFactory;
 
         private readonly IPlayersRemoverFactory playerRemoverFactory;
@@ -51,6 +53,7 @@ namespace Game.Comm
                                        IWorld world,
                                        ILocker locker,
                                        StructureFactory structureFactory,
+                                       UnitFactory unitFactory,
                                        TechnologyFactory technologyFactory)
         {
             this.playerRemoverFactory = playerRemoverFactory;
@@ -62,6 +65,7 @@ namespace Game.Comm
             this.world = world;
             this.locker = locker;
             this.structureFactory = structureFactory;
+            this.unitFactory = unitFactory;
             this.technologyFactory = technologyFactory;
         }
 
@@ -138,11 +142,20 @@ namespace Game.Comm
                     }
                 }
 
+                foreach (var unit in city.Template)
+                {
+                    for (var lvl = 1; lvl <= unit.Value.Lvl; lvl++)
+                    {                        
+                        expenses += calculateCost(unitFactory.GetUpgradeCost(unit.Value.Type, lvl));
+                    }                    
+
+                }
+
                 values.Add(new {City = city, Expenses = expenses});
             }
 
             var result = new StringBuilder();
-            result.AppendLine("Id,Player,Tribe,Rank,City Cost,Achievement,Tier,Title,Description");
+            result.AppendLine("Id,Player,Tribe,Rank,City Cost,Type,Icon,Achievement,Tier,Title,Description");
             int rank = 1;
             foreach (var value in values.OrderByDescending(v => v.Expenses).Take(50))
             {
@@ -180,7 +193,7 @@ namespace Game.Comm
                 string title = string.Format("#{0} Most Expensive City", rank);
                 string description = string.Format("{0}: {1}", serverTitle, value.City.Name);
 
-                result.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8}", player.PlayerId, player.Name, tribeName, rank, (decimal)value.Expenses * 100m, achievement, tier, title, description);
+                result.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", player.PlayerId, player.Name, tribeName, rank, (decimal)value.Expenses * 100m, "MOST_EXPENSIVE_CITY", "chalice", achievement, tier, title, description);
                 result.AppendLine();
 
                 rank++;

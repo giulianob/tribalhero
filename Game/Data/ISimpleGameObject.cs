@@ -24,6 +24,8 @@ namespace Game.Data
 
         void EndUpdate();
 
+        bool IsUpdating { get; }
+
         string ToString();
 
         int TileDistance(uint x1, uint y1);

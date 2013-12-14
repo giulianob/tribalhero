@@ -199,6 +199,7 @@ namespace Game
             Bind<StrongholdBattleProcedure>().ToSelf().InSingletonScope();
             Bind<CityBattleProcedure>().ToSelf().InSingletonScope();
             Bind<BarbarianTribeBattleProcedure>().ToSelf().InSingletonScope();
+            Bind<CallbackProcedure>().ToSelf().InSingletonScope();
             Bind<Random>().ToSelf().InSingletonScope();
             Bind<ISystemVariableManager>().To<SystemVariableManager>().InSingletonScope();
 

@@ -197,7 +197,7 @@ namespace Game.Logic.Formulas
             return
                     (ushort)
                     city.Where(structure => !ObjectTypeFactory.IsStructureType("NoInfluencePoint", structure))
-                        .Sum(x => x.Lvl);
+                        .Sum(x => x.Lvl * x.Size * x.Size);
         }
 
         public virtual bool IsWeaponExportOverLimit(int weaponExport, int currentGold)

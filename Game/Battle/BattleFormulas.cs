@@ -267,6 +267,12 @@ namespace Game.Battle
                             ++success;
                         }
                         break;
+                    case "ArmorNotEqual":
+                        if (stats.Armor != (ArmorType)Enum.Parse(typeof(ArmorType), conditions[i * 2 + 1], true))
+                        {
+                            ++success;
+                        }
+                        break;
                     case "ArmorClassEqual":
                         if (stats.ArmorClass == (ArmorClass)Enum.Parse(typeof(ArmorClass), conditions[i * 2 + 1], true))
                         {

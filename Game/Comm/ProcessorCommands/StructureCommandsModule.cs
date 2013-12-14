@@ -213,8 +213,6 @@ namespace Game.Comm.ProcessorCommands
 
             using (locker.Lock(forest))
             {                
-                reply.AddFloat((float)(forest.Rate / Config.seconds_per_unit));
-                reply.AddInt32(forest.Labor);
                 reply.AddUInt32(UnixDateTime.DateTimeToUnix(forest.DepleteTime.ToUniversalTime()));
                 PacketHelper.AddToPacket(forest.Wood, reply);
             }

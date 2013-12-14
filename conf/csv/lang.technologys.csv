@@ -72,7 +72,7 @@ SWORD_ARMOR_RESEARCH_TECHNOLOGY_NAME,Sword Units Defensive Boost
 SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Fighter, Swordsman, and Hoplite by 1% on defense mission . (Stacks additively up to 150%)"
 SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Fighter, Swordsman, and Hoplite by 3% on defense mission . (Stacks additively up to 150%)"
 SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Fighter, Swordsman, and Hoplite by 6% on defense mission . (Stacks additively up to 150%)"
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Fighter, Swordsman, and Hoplite by 10 on defense mission . (Stacks additively up to 150%)"
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Fighter, Swordsman, and Hoplite by 10% on defense mission . (Stacks additively up to 150%)"
 SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Fighter, Swordsman, and Hoplite by 15% on defense mission . (Stacks additively up to 150%)"
 ,
 BOW_ARMOR_RESEARCH_TECHNOLOGY_NAME,Bow Units Defensive Boost

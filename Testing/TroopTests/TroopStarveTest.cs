@@ -1,7 +1,12 @@
 ﻿#region
 
+using System;
+using Common.Testing;
+using Game.Data;
 using Game.Data.Troop;
+using NSubstitute;
 using Xunit;
+using Xunit.Extensions;
 
 #endregion
 
@@ -10,29 +15,33 @@ namespace Testing.TroopTests
     /// <summary>
     ///     Summary description for TroopProcedureTest
     /// </summary>
-    public class TroopStarveTest
+    public class TroopStarveTest : IDisposable
     {
-        public ITroopStub CreateSimpleStub()
+        public TroopStarveTest()
         {
-            var stub = new TroopStub(0, null);
-            stub.AddFormation(FormationType.Normal);
-            return stub;
+            Global.Current = Substitute.For<IGlobal>();
+            Global.Current.FireEvents.Returns(false);
         }
 
-        [Fact]
-        public void TestStarveSingleUnit()
+        public void Dispose()
         {
-            ITroopStub stub = CreateSimpleStub();
+            Global.Current = null;
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void TestStarveSingleUnit(TroopStub stub)
+        {
+            stub.AddFormation(FormationType.Normal);
             stub.AddUnit(FormationType.Normal, 0, 10);
 
             stub.Starve();
             Assert.Equal(stub[FormationType.Normal][0], 9);
         }
 
-        [Fact]
-        public void TestStarveMultiUnit()
+        [Theory, AutoNSubstituteData]
+        public void TestStarveMultiUnit(TroopStub stub)
         {
-            ITroopStub stub = CreateSimpleStub();
+            stub.AddFormation(FormationType.Normal);
             stub.AddUnit(FormationType.Normal, 0, 10);
             stub.AddUnit(FormationType.Normal, 1, 100);
 
@@ -41,10 +50,10 @@ namespace Testing.TroopTests
             Assert.Equal(stub[FormationType.Normal][1], 95);
         }
 
-        [Fact]
-        public void TestStarveMultiFormation()
+        [Theory, AutoNSubstituteData]
+        public void TestStarveMultiFormation(TroopStub stub)
         {
-            ITroopStub stub = CreateSimpleStub();
+            stub.AddFormation(FormationType.Normal);
             stub.AddFormation(FormationType.Attack);
             stub.AddUnit(FormationType.Normal, 0, 10);
             stub.AddUnit(FormationType.Attack, 0, 100);
@@ -54,20 +63,20 @@ namespace Testing.TroopTests
             Assert.Equal(stub[FormationType.Attack][0], 95);
         }
 
-        [Fact]
-        public void TestStarveToZero()
+        [Theory, AutoNSubstituteData]
+        public void TestStarveToZero(TroopStub stub)
         {
-            ITroopStub stub = CreateSimpleStub();
+            stub.AddFormation(FormationType.Normal);
             stub.AddUnit(FormationType.Normal, 0, 1);
 
             stub.Starve();
             Assert.Equal(stub[FormationType.Normal][0], 1);
         }
 
-        [Fact]
-        public void TestStarveToZeroBypassProtection()
+        [Theory, AutoNSubstituteData]
+        public void TestStarveToZeroBypassProtection(TroopStub stub)
         {
-            ITroopStub stub = CreateSimpleStub();
+            stub.AddFormation(FormationType.Normal);
             stub.AddUnit(FormationType.Normal, 0, 1);
 
             stub.Starve(5, true);

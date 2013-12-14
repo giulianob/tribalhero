@@ -16,9 +16,15 @@ namespace Game.Logic.Actions
     {
         private readonly uint cityId;
 
-        public StarvePassiveAction(uint cityId)
+        private readonly IGameObjectLocator gameObjectLocator;
+
+        private readonly ILocker locker;
+
+        public StarvePassiveAction(uint cityId, IGameObjectLocator gameObjectLocator, ILocker locker)
         {
             this.cityId = cityId;
+            this.gameObjectLocator = gameObjectLocator;
+            this.locker = locker;
         }
 
         public StarvePassiveAction(uint id,
@@ -27,9 +33,13 @@ namespace Game.Logic.Actions
                                    DateTime endTime,
                                    bool isVisible,
                                    string nlsDescription,
-                                   Dictionary<string, string> properties)
+                                   Dictionary<string, string> properties, 
+                                   IGameObjectLocator gameObjectLocator, 
+                                   ILocker locker)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
+            this.gameObjectLocator = gameObjectLocator;
+            this.locker = locker;
             cityId = uint.Parse(properties["city_id"]);
         }
 
@@ -72,12 +82,12 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            if (!World.Current.TryGetObjects(cityId, out city))
+            if (!gameObjectLocator.TryGetObjects(cityId, out city))
             {
                 throw new Exception("City not found");
             }
 
-            using (Concurrency.Current.Lock(GetTroopLockList, new[] {city}, city))
+            locker.Lock(GetTroopLockList, new object[] {city}, city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -87,7 +97,7 @@ namespace Game.Logic.Actions
                 city.Troops.Starve();
 
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override void UserCancelled()

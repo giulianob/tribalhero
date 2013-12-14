@@ -18,7 +18,7 @@ TUTORIAL_CLICK_TOWNCENTER_TO_BUILD_LUMBERMILL,A Lumbermill needs to be built in 
 TUTORIAL_CLICK_BUILD_LUMBERMILL,Click on Build Lumbermill.
 ,
 TUTORIAL_WAITING_FOR_LUMBERMILL,Your lumbermill is currently being built.
-TUTORIAL_FIND_FOREST,Lumbermills gather wood from the Forests scattered throughout the world. Click on the World View icon above the minimap and find a level 1 forest. Forests are represented by small green circles on the minimap.
+TUTORIAL_FIND_FOREST,Lumbermills gather wood from the Forests scattered throughout the world. Click on the World View icon above the minimap and find a forest. Forests are represented by small green circles on the minimap.
 TUTORIAL_CLICK_GATHER_WOOD,Click on Gather Lumber to assign laborers to this forest.
 ,
 TUTORIAL_BACK_TO_CITY_AFTER_FOREST,Your city is now producing crop and will soon be producing wood. Let's go back to your city and start training troops. Click the globe on the top-left of the screen to return home.

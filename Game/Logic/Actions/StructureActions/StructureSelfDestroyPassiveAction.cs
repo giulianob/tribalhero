@@ -20,14 +20,22 @@ namespace Game.Logic.Actions
 
         private TimeSpan ts;
 
-        public StructureSelfDestroyPassiveAction()
+        private readonly IWorld world;
+
+        private readonly ILocker locker;
+
+        public StructureSelfDestroyPassiveAction(IWorld world, ILocker locker)
         {
+            this.world = world;
+            this.locker = locker;
         }
 
-        public StructureSelfDestroyPassiveAction(uint cityId, uint objectId)
+        public StructureSelfDestroyPassiveAction(uint cityId, uint objectId, IWorld world, ILocker locker)
         {
             this.cityId = cityId;
             this.objectId = objectId;
+            this.world = world;
+            this.locker = locker;
         }
 
         public StructureSelfDestroyPassiveAction(uint id,
@@ -36,9 +44,11 @@ namespace Game.Logic.Actions
                                                  DateTime endTime,
                                                  bool isVisible,
                                                  string nlsDescription,
-                                                 Dictionary<string, string> properties)
+                                                 Dictionary<string, string> properties, IWorld world, ILocker locker)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
+            this.world = world;
+            this.locker = locker;
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
         }
@@ -77,7 +87,7 @@ namespace Game.Logic.Actions
             ts = TimeSpan.FromSeconds(int.Parse(parms[0]));
             NlsDescription = parms[1];
 
-            if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
+            if (!world.TryGetObjects(cityId, objectId, out city, out structure))
             {
                 return;
             }
@@ -92,7 +102,7 @@ namespace Game.Logic.Actions
             ICity city;
             IStructure structure;
 
-            using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
+            locker.Lock(cityId, objectId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -115,14 +125,14 @@ namespace Game.Logic.Actions
                 city.BeginUpdate();
                 structure.BeginUpdate();
 
-                World.Current.Regions.Remove(structure);
+                world.Regions.Remove(structure);
                 city.ScheduleRemove(structure, false);
 
                 structure.EndUpdate();
                 city.EndUpdate();
 
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override Error Validate(string[] parms)
@@ -138,7 +148,7 @@ namespace Game.Logic.Actions
             endTime = SystemClock.Now.AddSeconds(ts.TotalSeconds);
             BeginTime = SystemClock.Now;
 
-            if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
+            if (!world.TryGetObjects(cityId, objectId, out city, out structure))
             {
                 return Error.ObjectNotFound;
             }
@@ -154,7 +164,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
             IStructure structure;
-            using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
+            locker.Lock(cityId, objectId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -162,7 +172,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
     }
 }

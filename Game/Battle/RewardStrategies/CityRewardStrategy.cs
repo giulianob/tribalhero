@@ -85,10 +85,10 @@ namespace Game.Battle.RewardStrategies
                     {
                         foreach (var tribe in tribes)
                         {
-                            using (locker.Lock(tribe))
+                            locker.Lock(tribe).Do(() =>
                             {
                                 tribe.DefensePoint += attackPoints;
-                            }
+                            });
                         }
                     });
             }

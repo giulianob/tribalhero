@@ -2,12 +2,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Game.Data;
-using Game.Database;
 using Game.Setup;
 using Game.Util;
 using Ninject.Extensions.Logging;

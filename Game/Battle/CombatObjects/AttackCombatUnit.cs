@@ -36,6 +36,10 @@ namespace Game.Battle.CombatObjects
 
         private readonly int eachUnitUpkeep;
 
+        private Formula formula;
+
+        private readonly ITileLocator tileLocator;
+
         public AttackCombatUnit(uint id,
                                 uint battleId,
                                 ITroopObject troopObject,
@@ -44,13 +48,17 @@ namespace Game.Battle.CombatObjects
                                 byte lvl,
                                 ushort count,
                                 UnitFactory unitFactory,
-                                IBattleFormulas battleFormulas)
+                                IBattleFormulas battleFormulas,
+                                Formula formula,
+                                ITileLocator tileLocator)
                 : base(id, battleId, battleFormulas)
         {
             this.troopObject = troopObject;
             this.formation = formation;
             this.type = type;
             this.count = count;
+            this.formula = formula;
+            this.tileLocator = tileLocator;
             this.lvl = lvl;
 
             stats = troopObject.Stub.Template[type];
@@ -71,8 +79,10 @@ namespace Game.Battle.CombatObjects
                                 decimal leftOverHp,
                                 Resource loot,
                                 UnitFactory unitFactory,
-                                IBattleFormulas battleFormulas)
-                : this(id, battleId, troopObject, formation, type, lvl, count, unitFactory, battleFormulas)
+                                IBattleFormulas battleFormulas,
+                                Formula formula,
+                                ITileLocator tileLocator)
+                : this(id, battleId, troopObject, formation, type, lvl, count, unitFactory, battleFormulas, formula, tileLocator)
         {
             LeftOverHp = leftOverHp;
             this.loot = loot;
@@ -101,6 +111,14 @@ namespace Game.Battle.CombatObjects
             get
             {
                 return count;
+            }
+        }
+
+        public override byte Size
+        {
+            get
+            {
+                return 1;
             }
         }
 
@@ -229,20 +247,16 @@ namespace Game.Battle.CombatObjects
                 case BattleClass.Unit:
                     return true;
                 case BattleClass.Structure:
-                    return RadiusLocator.Current.IsOverlapping(Location(),
-                                                               AttackRadius(),
-                                                               obj.Location(),
-                                                               obj.AttackRadius());
+                    return tileLocator.IsOverlapping(Location(), Size, AttackRadius(),
+                                                     obj.Location(), obj.Size, obj.AttackRadius());
                 default:
-                    throw new Exception(string.Format(
-                                                      "Why is an attack combat unit trying to kill a unit of type {0}?",
-                                                      obj.GetType().FullName));
+                    throw new Exception(string.Format("Why is an attack combat unit trying to kill a unit of type {0}?", obj.GetType().FullName));
             }
         }
 
         public override Position Location()
         {
-            return new Position(troopObject.X, troopObject.Y);
+            return troopObject.PrimaryPosition;
         }
 
         public override byte AttackRadius()
@@ -304,7 +318,7 @@ namespace Game.Battle.CombatObjects
                 }
 
                 // Find out how many points the defender should get
-                attackPoints = Formula.Current.GetUnitKilledAttackPoint(type, lvl, dead);
+                attackPoints = formula.GetUnitKilledAttackPoint(type, lvl, dead);
 
                 // Remove troops that died from the count
                 count -= dead;
@@ -377,14 +391,6 @@ namespace Game.Battle.CombatObjects
             get
             {
                 return formation;
-            }
-        }
-
-        public bool IsAttacker
-        {
-            get
-            {
-                return true;
             }
         }
 

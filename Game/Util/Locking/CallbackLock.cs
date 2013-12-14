@@ -1,12 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Game.Data;
 
 namespace Game.Util.Locking
 {
-    public class CallbackLock : IDisposable
+    public class CallbackLock : ICallbackLock
     {
         private readonly DefaultMultiObjectLock.Factory multiObjectLockFactory;
 
@@ -16,7 +14,7 @@ namespace Game.Util.Locking
 
         public delegate ILockable[] CallbackLockHandler(object[] custom);
 
-        public delegate CallbackLock Factory();
+        public delegate ICallbackLock Factory();
 
         #endregion
 
@@ -25,7 +23,7 @@ namespace Game.Util.Locking
             this.multiObjectLockFactory = multiObjectLockFactory;
         }
 
-        public CallbackLock Lock(CallbackLockHandler lockHandler,
+        public IMultiObjectLock Lock(CallbackLockHandler lockHandler,
                                  object[] lockHandlerParams,
                                  params ILockable[] baseLocks)
         {
@@ -46,12 +44,8 @@ namespace Game.Util.Locking
                 var toBeLocked = new List<ILockable>(baseLocks);
 
                 // Lock the base objects
-                using (var baseLock = multiObjectLockFactory())
-                {
-                    baseLock.Lock(baseLocks);
-                    // Grab the list of objects we need to lock from the callback                    
-                    toBeLocked.AddRange(lockHandler(lockHandlerParams));
-                }
+                multiObjectLockFactory().Lock(baseLocks)
+                                        .Do(() => toBeLocked.AddRange(lockHandler(lockHandlerParams)));
 
                 // Lock all of the objects we believe should be locked
                 currentLock = multiObjectLockFactory();
@@ -64,7 +58,7 @@ namespace Game.Util.Locking
                 // Make sure they are still all the same
                 if (newToBeLocked.Count != toBeLocked.Count)
                 {
-                    currentLock.Dispose();
+                    currentLock.UnlockAll();
                     currentLock = null;
                     Thread.Sleep(0);
                     continue;
@@ -75,21 +69,12 @@ namespace Game.Util.Locking
                     continue;
                 }
 
-                currentLock.Dispose();
+                currentLock.UnlockAll();
                 currentLock = null;
                 Thread.Sleep(0);
             }
 
-            return this;
+            return currentLock;
         }
-
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            currentLock.Dispose();
-        }
-
-        #endregion
     }
 }

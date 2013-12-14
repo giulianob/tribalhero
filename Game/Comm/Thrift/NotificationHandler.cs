@@ -12,15 +12,21 @@ namespace Game.Comm.Thrift
     {
         private readonly IProtocolFactory protocolFactory;
 
-        public NotificationHandler(IProtocolFactory protocolFactory)
+        private readonly ILocker locker;
+
+        private IWorld world;
+
+        public NotificationHandler(IProtocolFactory protocolFactory, ILocker locker, IWorld world)
         {
             this.protocolFactory = protocolFactory;
+            this.locker = locker;
+            this.world = world;
         }
 
         public void NewMessage(PlayerUnreadCount playerUnreadCount)
         {
             IPlayer player;
-            using (Concurrency.Current.Lock((uint)playerUnreadCount.Id, out player))
+            locker.Lock((uint)playerUnreadCount.Id, out player).Do(() =>
             {
                 if (player.Session == null)
                 {
@@ -31,38 +37,31 @@ namespace Game.Comm.Thrift
                 {
                     protocolFactory.CreateProtocol(player.Session).MessageSendUnreadCount(playerUnreadCount.UnreadCount);
                 }
-                catch
-                {
-                }
-            }
+                catch { }
+            });
         }
 
         public void NewTribeForumPost(int tribeId, int playerId)
         {
             ITribe tribe;
-            if (!World.Current.TryGetObjects((uint)tribeId, out tribe))
+            if (!world.TryGetObjects((uint)tribeId, out tribe))
             {
                 return;
             }
 
-            using (Concurrency.Current.Lock(custom => tribe.Tribesmen.ToArray(), new object[] {}, tribe))
+            locker.Lock(custom => tribe.Tribesmen.ToArray<ILockable>(), new object[] {}, tribe).Do(() =>
             {
-                foreach (
-                        var tribesman in
-                                tribe.Tribesmen.Where(
-                                                      tribesman =>
-                                                      tribesman.Player.Session != null &&
-                                                      tribesman.Player.PlayerId != playerId))
+                foreach (var tribesman in tribe.Tribesmen.Where(tribesman =>
+                                                                tribesman.Player.Session != null &&
+                                                                tribesman.Player.PlayerId != playerId))
                 {
                     try
                     {
                         protocolFactory.CreateProtocol(tribesman.Player.Session).MessageBoardSendUnread();
                     }
-                    catch
-                    {
-                    }
+                    catch { }
                 }
-            }
+            });
         }
 
         public void NewBattleReport(List<PlayerUnreadCount> playerUnreadCounts)
@@ -70,11 +69,11 @@ namespace Game.Comm.Thrift
             foreach (var playerUnreadCount in playerUnreadCounts)
             {
                 IPlayer player;
-                using (Concurrency.Current.Lock((uint)playerUnreadCount.Id, out player))
+                locker.Lock((uint)playerUnreadCount.Id, out player).Do(() =>
                 {
                     if (player == null || player.Session == null)
                     {
-                        continue;
+                        return;
                     }
 
                     try
@@ -82,10 +81,8 @@ namespace Game.Comm.Thrift
                         protocolFactory.CreateProtocol(player.Session)
                                        .BattleReportSendUnreadCount(playerUnreadCount.UnreadCount);
                     }
-                    catch
-                    {
-                    }
-                }
+                    catch { }
+                });
             }
         }
     }

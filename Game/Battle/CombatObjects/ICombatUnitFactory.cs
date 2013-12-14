@@ -1,6 +1,5 @@
 using Game.Data;
 using Game.Data.BarbarianTribe;
-using Game.Data.Stats;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
 

@@ -1,10 +1,9 @@
-﻿#region
+#region
 
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Game.Data;
-using Game.Database;
+using System.Linq;
 using Game.Map;
 using Persistance;
 
@@ -14,17 +13,23 @@ namespace Game.Setup
 {
     public class MapFactory
     {
+        private const int MIN_DISTANCE_AWAY_FROM_CITIES = 9;
+
         private readonly IDbManager dbManager;
+
         private readonly ISystemVariableManager systemVariableManager;
+
+        private readonly ITileLocator tileLocator;
 
         private const int INITIAL_INDEX = 200;
 
-        private readonly List<Position> dict = new List<Position>();
+        private readonly List<Position> cityLocations = new List<Position>();
 
-        public MapFactory(IDbManager dbManager, ISystemVariableManager systemVariableManager)
-        {
+        public MapFactory(IDbManager dbManager, ISystemVariableManager systemVariableManager, ITileLocator tileLocator)
+        {            
             this.dbManager = dbManager;
             this.systemVariableManager = systemVariableManager;
+            this.tileLocator = tileLocator;
         }
 
         public void Init(string filename)
@@ -38,14 +43,14 @@ namespace Game.Setup
                     uint x = uint.Parse(strs[0]);
                     uint y = uint.Parse(strs[1]);
 
-                    dict.Add(new Position(x, y));
+                    cityLocations.Add(new Position(x, y));
                 }
             }
         }
 
         public IEnumerable<Position> Locations()
         {
-            return dict;
+            return cityLocations.AsReadOnly();
         }
 
         private SystemVariable index;
@@ -69,6 +74,11 @@ namespace Game.Setup
                 index.Value = value;
                 dbManager.Save(index);
             }
+        }
+        
+        public bool TooCloseToCities(Position position)
+        {
+            return Locations().Any(loc => tileLocator.TileDistance(position, 1, loc, 1) <= MIN_DISTANCE_AWAY_FROM_CITIES);
         }
     }
 }

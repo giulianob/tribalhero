@@ -14,11 +14,11 @@ namespace Game.Battle.StatsModCalculator
         public BattleStatsModCalculator(IBaseBattleStats baseStats)
         {
             MaxHp = new MaxHpModCalculator((double)baseStats.MaxHp);
-            Atk = new AtkDmgModCalculator((double)baseStats.Atk);
+            Atk = new AtkDmgModCalculator((double)baseStats.Attack);
             Splash = new IntStatsModCalculator(baseStats.Splash);
-            Rng = new IntStatsModCalculator(baseStats.Rng);
-            Stl = new IntStatsModCalculator(baseStats.Stl);
-            Spd = new IntStatsModCalculator(baseStats.Spd);
+            Rng = new IntStatsModCalculator(baseStats.Range);
+            Stl = new IntStatsModCalculator(baseStats.Stealth);
+            Spd = new IntStatsModCalculator(baseStats.Speed);
             Carry = new IntStatsModCalculator(baseStats.Carry);
             
             this.baseStats = baseStats;

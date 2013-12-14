@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Data;
 using Game.Data.Stats;
 using Game.Setup;
-using Ninject;
 using Persistance;
 
 #endregion
@@ -15,6 +14,10 @@ namespace Game.Data.Troop
 {
     public class UnitTemplate : IUnitTemplate
     {
+        private readonly UnitFactory unitFactory;
+
+        private readonly uint cityId;
+
         #region Event
 
         #region Delegates
@@ -29,23 +32,14 @@ namespace Game.Data.Troop
 
         public const string DB_TABLE = "unit_templates";
 
-        private readonly ICity city;
-
         private readonly Dictionary<ushort, IBaseUnitStats> dict = new Dictionary<ushort, IBaseUnitStats>();
 
         private bool isUpdating;
 
-        public UnitTemplate(ICity city)
+        public UnitTemplate(UnitFactory unitFactory, uint cityId)
         {
-            this.city = city;
-        }
-
-        public ICity City
-        {
-            get
-            {
-                return city;
-            }
+            this.unitFactory = unitFactory;
+            this.cityId = cityId;
         }
 
         public IBaseUnitStats this[ushort type]
@@ -53,11 +47,13 @@ namespace Game.Data.Troop
             get
             {
                 IBaseUnitStats ret;
+                
                 if (dict.TryGetValue(type, out ret))
                 {
                     return ret;
                 }
-                return Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, 1);
+
+                return unitFactory.GetUnitStats(type, 1);
             }
             set
             {
@@ -106,7 +102,7 @@ namespace Game.Data.Troop
         {
             get
             {
-                return new[] {new DbColumn("city_id", City.Id, DbType.UInt32)};
+                return new[] {new DbColumn("city_id", cityId, DbType.UInt32)};
             }
         }
 

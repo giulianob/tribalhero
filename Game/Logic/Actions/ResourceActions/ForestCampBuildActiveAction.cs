@@ -23,7 +23,7 @@ namespace Game.Logic.Actions
 
         private readonly uint forestId;
 
-        private readonly byte labors;
+        private readonly ushort labors;
 
         private readonly Formula formula;
 
@@ -49,7 +49,7 @@ namespace Game.Logic.Actions
                                            uint lumbermillId,
                                            uint forestId,
                                            ushort campType,
-                                           byte labors,
+                                           ushort labors,
                                            Formula formula,
                                            IWorld world,
                                            IObjectTypeFactory objectTypeFactory,
@@ -103,7 +103,7 @@ namespace Game.Logic.Actions
             cityId = uint.Parse(properties["city_id"]);
             lumbermillId = uint.Parse(properties["lumbermill_id"]);
             campId = uint.Parse(properties["camp_id"]);
-            labors = byte.Parse(properties["labors"]);
+            labors = ushort.Parse(properties["labors"]);
             campType = ushort.Parse(properties["camp_type"]);
             forestId = uint.Parse(properties["forest_id"]);
         }

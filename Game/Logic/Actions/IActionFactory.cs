@@ -67,7 +67,7 @@ namespace Game.Logic.Actions
                                                                       uint lumbermillId,
                                                                       uint forestId,
                                                                       ushort campType,
-                                                                      byte labors);
+                                                                      ushort labors);
 
         StructureUpgradeActiveAction CreateStructureUpgradeActiveAction(uint cityId, uint structureId);
 

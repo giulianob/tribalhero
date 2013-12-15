@@ -701,14 +701,14 @@ namespace Game.Comm.ProcessorCommands
             uint cityId;
             uint forestId;
             ushort type;
-            byte labor;
+            ushort labor;
 
             try
             {
                 cityId = packet.GetUInt32();
                 forestId = packet.GetUInt32();
                 type = packet.GetUInt16();
-                labor = packet.GetByte();
+                labor = packet.GetUInt16();
             }
             catch(Exception)
             {

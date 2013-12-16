@@ -1,10 +1,16 @@
-<project name="gameserver" default="compile" basedir="." xmlns="antlib:org.apache.tools.ant"  xmlns:antcontrib="antlib:net.sf.antcontrib">
+<project name="gameserver" default="compile" basedir="." xmlns:dn="antlib:org.apache.ant.dotnet" xmlns="antlib:org.apache.tools.ant"  xmlns:antcontrib="antlib:net.sf.antcontrib">
 		
     <taskdef resource="net/sf/antcontrib/antlib.xml" uri="antlib:net.sf.antcontrib">
       <classpath>
         <pathelement location="${basedir}/lib/ant/ant-contrib.jar"/>
       </classpath>
     </taskdef>
+    
+    <taskdef resource="org/apache/ant/dotnet/antlib.xml" uri="antlib:org.apache.ant.dotnet">
+      <classpath>
+        <pathelement location="${basedir}/lib/ant/ant-dotnet-1.1.jar"/>
+      </classpath>
+    </taskdef>    
     
 	<description>Game client build</description>
 	
@@ -31,9 +37,13 @@
         <echo message="Adding stacktracer" />
     
 		<echo message="Building ${basedir}/stacktracer/stacktracer.sln" />
-		<exec executable="${msbuild}">
-			<arg line="${basedir}/stacktracer/stacktracer.sln /t:stacktracer:Rebuild /p:Configuration=Release /p:Platform=&quot;any cpu&quot; /p:BuildProjectReferences=false" />
-		</exec>
+		<dn:msbuild buildfile="${basedir}/stacktracer/stacktracer.sln">
+			<target name="stacktracer:Rebuild" />
+			
+			<property name="Configuration" value="Release" />
+			<property name="Platform" value="any cpu" />
+			<property name="BuildProjectReferences" value="false" />
+		</dn:msbuild>
 		
 		<exec executable="${basedir}/stacktracer/bin/release/stacktracer.exe">
 			<arg line="--path=${basedir}/game/ --mappings-output-path=${basedir}/bin/stacktracer.map --output-only=false --ignored-files=&quot;Constants.as,ProfanityFilter.as&quot;" />

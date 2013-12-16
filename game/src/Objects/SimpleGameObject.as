@@ -124,7 +124,7 @@ package src.Objects {
             TweenMax.from(this, 0.75, {
                 x: prevPosition.x,
                 y: prevPosition.y,
-                onUpdate: function() {
+                onUpdate: function(): void {
                     dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
                 }
             });

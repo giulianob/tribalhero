@@ -388,7 +388,7 @@ package src.UI.LookAndFeel
 		//___________________________ Sidebar BG ____________________________
 		//==============================================================
 		//Backgorund scale-9 (Include title bar background all in one picture)
-		[Embed(source="../../../../graphics/ui/Sidebar_frame_activeBG.png", scaleGridTop="45", scaleGridBottom="374",
+		[Embed(source="../../../../graphics/ui/Sidebar_Frame_activeBG.png", scaleGridTop="45", scaleGridBottom="374",
 		scaleGridLeft="29", scaleGridRight="146")]
 		private var Sidebar_frame_activeBG:Class;
 

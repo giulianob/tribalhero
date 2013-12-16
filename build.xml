@@ -39,7 +39,8 @@
 		</exec>
 	
 		<echo message="Running stacktracer" />	
-		<exec executable="${dotnetvm} ${basedir}/stacktracer/bin/Release/stacktracer.exe" failonerror="true">
+		<exec executable="mono" failonerror="true">
+			<arg value="${basedir}/stacktracer/bin/Release/stacktracer.exe" />
 			<arg value="--path=${basedir}/game/" />
 			<arg value="--mappings-output-path=${basedir}/bin/stacktracer.map" />
 			<arg value="--output-only=false" />

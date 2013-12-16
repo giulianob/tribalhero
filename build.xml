@@ -39,7 +39,10 @@
 		</exec>
 		
 		<exec executable="${basedir}/stacktracer/bin/Release/stacktracer.exe" failonerror="true">
-			<arg line="--path=${basedir}/game/ --mappings-output-path=${basedir}/bin/stacktracer.map --output-only=false --ignored-files=&quot;Constants.as,ProfanityFilter.as&quot;" />
+			<arg value="--path=${basedir}/game/" />
+			<arg value="--mappings-output-path=${basedir}/bin/stacktracer.map" />
+			<arg value="--output-only=false" />
+			<arg value="--ignored-files=&quot;Constants.as,ProfanityFilter.as&quot;" />
 		</exec>
 	</target>
 		

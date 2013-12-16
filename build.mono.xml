@@ -25,17 +25,7 @@
 	
 		<exec executable="xbuild" failonerror="true" dir="${basedir}">
 			<arg value="Game.sln" />
-			<arg value="/t:Common:Rebuild" />
-			<arg value="/t:Persistance:Rebuild" />
-			<arg value="/t:Game:Rebuild" />
-			<arg value="/t:CSVToXML:Rebuild" />
-			<arg value="/t:Tools/ConsoleSimulator:Rebuild" />
-			<arg value="/t:Tests/Common_Testing:Rebuild" />
-			<arg value="/t:Tests/Testing:Rebuild" />
-			<arg value="/t:Tools/DatabaseGenerator:Rebuild" />
-			<arg value="/t:Tools/GraphGenerator:Rebuild" />
-			<arg value="/t:Launcher:Rebuild" />
-			<arg value="/t:LauncherService:Rebuild" />			
+			<arg value="/t:Common:Rebuild,Persistance:Rebuild,Game:Rebuild,CSVToXML:Rebuild,Tools/ConsoleSimulator:Rebuild,Tests/Common_Testing:Rebuild,Tests/Testing:Rebuild,Tools/DatabaseGenerator:Rebuild,Tools/GraphGenerator:Rebuild,Launcher:Rebuild,LauncherService:Rebuild" />			
 
 			<arg value="/p:Configuration=Release" />
 			<arg value="/p:BuildProjectReferences=false" />

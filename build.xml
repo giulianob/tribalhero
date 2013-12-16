@@ -37,8 +37,9 @@
 			<arg value="/p:Configuration=Release" />
 			<arg value="/p:BuildProjectReferences=false" />
 		</exec>
-		
-		<exec executable="${basedir}/stacktracer/bin/Release/stacktracer.exe" failonerror="true">
+	
+		<echo message="Running stacktracer" />	
+		<exec executable="${dotnetvm} ${basedir}/stacktracer/bin/Release/stacktracer.exe" failonerror="true">
 			<arg value="--path=${basedir}/game/" />
 			<arg value="--mappings-output-path=${basedir}/bin/stacktracer.map" />
 			<arg value="--output-only=false" />

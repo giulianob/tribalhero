@@ -35,7 +35,6 @@
 			<arg value="stacktracer.sln" />
 			<arg value="/t:stacktracer:Rebuild" />
 			<arg value="/p:Configuration=Release" />
-			<arg value="/p:Platform=&quot;any cpu&quot;" />
 			<arg value="/p:BuildProjectReferences=false" />
 		</exec>
 		

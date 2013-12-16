@@ -74,8 +74,8 @@
 		<taskdef name="secureswf" classpath="${secureswf}/secureSWF.jar" classname="secureSWF.ant.ProtectTask" />
 		
 		<!-- Adjust Game.sspj file for obfuscation -->
-		<replaceregexp file="${basedir}/Game.sspj" match="c:\\source\\gameclient" replace="${basedir.escaped}" flags="gi" />
-		<replaceregexp file="${basedir}/Game.sspj" match="c:/source/gameclient" replace="${basedir.escaped}" flags="gi" />
+		<replaceregexp file="${basedir}/Game.sspj" match="c:(\\|/)source(\\|/)gameclient(\\|/)" replace="" flags="gi" />
+		<replaceregexp file="${basedir}/Game.sspj" match="bin\\" replace="bin/" flags="gi" />		
 		
 		<secureswf outputpath="${basedir}/bin/protected" projectfile="Game.sspj" codeWrapping="0" logfile="bin/obfuscate.log" aggressiveRenaming="false" keyFilePath="${secureswf}/key.data" />
 	</target>	

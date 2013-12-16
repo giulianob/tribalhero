@@ -31,7 +31,7 @@
         <echo message="Adding stacktracer" />
     
 		<echo message="Building ${basedir}/stacktracer/stacktracer.sln" />
-		<exec executable="${msbuild}" failonerror="true" dir="${basedir}/stacktracer/">
+		<exec executable="xbuild" failonerror="true" dir="${basedir}/stacktracer/">
 			<arg value="stacktracer.sln" />
 			<arg value="/t:stacktracer:Rebuild" />
 			<arg value="/p:Configuration=Release" />

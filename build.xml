@@ -77,6 +77,6 @@
 		<replaceregexp file="${basedir}/Game.sspj" match="c:\\source\\gameclient" replace="${basedir.escaped}" flags="gi" />
 		<replaceregexp file="${basedir}/Game.sspj" match="c:/source/gameclient" replace="${basedir.escaped}" flags="gi" />
 		
-		<secureswf outputpath="${basedir}/bin/protected" projectfile="Game.sspj" codeWrapping="0" logfile="bin/obfuscate.log" aggressiveRenaming="false" keyFilePath="${basedir}/key.data" />
+		<secureswf outputpath="${basedir}/bin/protected" projectfile="Game.sspj" codeWrapping="0" logfile="bin/obfuscate.log" aggressiveRenaming="false" />
 	</target>	
 </project>

@@ -32,7 +32,11 @@
     
 		<echo message="Building ${basedir}/stacktracer/stacktracer.csproj" />
 		<exec executable="${msbuild}" failonerror="true" dir="${basedir}/stacktracer/">
-			<arg value="stacktracer.csproj /t:Rebuild /p:Configuration=Release /p:Platform=&quot;any cpu&quot; /p:BuildProjectReferences=false" />
+			<arg value="stacktracer.csproj" />
+			<arg value="/t:Rebuild" />
+			<arg value="/p:Configuration=Release" />
+			<arg value="/p:Platform=&quot;any cpu&quot;" />
+			<arg value="/p:BuildProjectReferences=false" />
 		</exec>
 		
 		<exec executable="${basedir}/stacktracer/bin/release/stacktracer.exe" failonerror="true">

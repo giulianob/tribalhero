@@ -303,6 +303,7 @@ namespace Game.Logic.Actions
                 structure.Technologies.Parent = structure.City.Technologies;
                 structureCsvFactory.GetUpgradedStructure(structure, structure.Type, level);                
 
+                initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
                 procedure.OnStructureUpgradeDowngrade(structure);
                 
                 structure.EndUpdate();

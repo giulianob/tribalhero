@@ -95,6 +95,8 @@ namespace Game.Logic
 
         TechnologyUpgradeActive = 402,
 
+        DistributedPointsUpdatePassive = 403,
+
         CityPassive = 502,
 
         CityRadiusChangePassive = 503,

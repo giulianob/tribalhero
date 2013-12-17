@@ -362,6 +362,7 @@
     <Compile Include="Logic\Actions\Stronghold\StrongholdDefenseChainAction.cs" />
     <Compile Include="Logic\Actions\Stronghold\StrongholdEngageMainAttackPassiveAction.cs" />
     <Compile Include="Logic\Actions\Stronghold\StrongholdMainBattlePassiveAction.cs" />
+    <Compile Include="Logic\Actions\TechnologyActions\DistributedPointsUpdatePassiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\CityAttackChainAction.cs" />
     <Compile Include="Logic\Actions\ChainAction.cs" />
     <Compile Include="Logic\Actions\Stronghold\StrongholdAttackChainAction.cs" />
@@ -386,6 +387,7 @@
     <Compile Include="Logic\Actions\StructureActions\StructureUpgradeActiveAction.cs" />
     <Compile Include="Logic\ActionWorker.cs" />
     <Compile Include="Logic\IReferenceManager.cs" />
+    <Compile Include="Logic\Requirements\DistributedPointSystemRequirement.cs" />
     <Compile Include="Logic\Requirements\LayoutRequirements\ILayoutRequirement.cs" />
     <Compile Include="Logic\Requirements\LayoutRequirements\ILayoutRequirementFactory.cs" />
     <Compile Include="Logic\Requirements\LayoutRequirements\LayoutComparison.cs" />

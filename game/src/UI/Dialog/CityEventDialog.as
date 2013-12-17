@@ -1,7 +1,10 @@
 ﻿package src.UI.Dialog
 {
 
-    import flash.events.*;
+import System.Collection.Generic.IGrouping;
+import System.Linq.Enumerable;
+
+import flash.events.*;
 
     import org.aswing.*;
     import org.aswing.border.*;
@@ -15,7 +18,10 @@
     import src.Objects.Effects.*;
     import src.Objects.Factories.*;
     import src.Objects.Prototypes.*;
-    import src.UI.*;
+import src.Objects.Technologies.ITechnologySummarizer;
+import src.Objects.Technologies.TechnologySummarizer;
+import src.Objects.Technologies.TechnologySummarizerFactory;
+import src.UI.*;
     import src.UI.Components.*;
     import src.UI.Components.CityActionGridList.*;
     import src.UI.Components.TableCells.*;
@@ -29,7 +35,7 @@
 		private var gridLocalActions:CityActionGridList;
 		private var laborersTable:JTable;
 		private var laborersListModel: VectorListModel;
-		
+
 		private var lblGold:JLabel;
 		private var lblWood:JLabel;
 		private var lblCrop:JLabel;
@@ -213,9 +219,9 @@
 					
 					laborersListModel.append(cityObj);
 				}
-			}			
-			
-			repaintAndRevalidate();
+			}
+
+            repaintAndRevalidate();
 		}
 		
 		public function maxLaborerTranslator(info:CityObject, key:String):String
@@ -279,8 +285,37 @@
 				laborersTable.setRowHeight(40);
 				pnlTabs.appendTab(new JScrollPane(laborersTable), StringHelper.localize("CITY_OVERVIEW_LABORERS_TAB"));
 			}
-			
-			//component layoution			
+
+            // Technologies Tab
+            {
+                var technologiesListModel: VectorListModel = new VectorListModel();
+                var technologiesTable: JTable= new JTable(new PropertyTableModel(technologiesListModel, [StringHelper.localize("CITY_OVERVIEW_TECHNOLOGIES_NAME_COLUMN"), StringHelper.localize("CITY_OVERVIEW_TECHNOLOGIES_SUMMARY_COLUMN")], ["name", "summary"], [null, null]));
+                technologiesTable.getColumnAt(0).setPreferredWidth(160);
+                technologiesTable.getColumnAt(1).setPreferredWidth(370);
+                technologiesTable.setCellSelectionEnabled(false);
+                technologiesTable.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
+                    technologiesTable.getCellEditor().cancelCellEditing();
+                });
+
+                technologiesTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+                technologiesTable.setRowHeight(20);
+                pnlTabs.appendTab(new JScrollPane(technologiesTable), StringHelper.localize("CITY_OVERVIEW_TECHNOLOGIES_TAB"));
+
+                laborersListModel = new VectorListModel();
+                var summarierFactory : TechnologySummarizerFactory = new TechnologySummarizerFactory();
+                for each(var grouping: IGrouping in Enumerable.from(city.structures()).selectMany(function(obj: CityObject): Array{
+                    return obj.techManager.technologies;
+                }).groupBy(function(tech: TechnologyStats): String{
+                    return tech.techPrototype.spriteClass;
+                }).orderBy(function(group: IGrouping): String {
+                    return group.key;
+                })) {
+                    var summarizer:ITechnologySummarizer = summarierFactory.CreateSummarizer(grouping.key, grouping.toArray());
+                    technologiesListModel.append({name:summarizer.getName(),summary:summarizer.getSummary()});
+                }
+            }
+
+            //component layoution
 			append(pnlNorth);
 			append(lblUpkeepMsg);
 			append(pnlTabs);

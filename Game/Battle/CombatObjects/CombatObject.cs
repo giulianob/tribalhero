@@ -99,6 +99,16 @@ namespace Game.Battle.CombatObjects
 
         #region Abstract Methods        
 
+        public virtual decimal AttackBonus(ICombatObject target)
+        {
+            return 0;
+        }
+
+        public virtual decimal DefenseBonus(ICombatObject attacker)
+        {
+            return 0;
+        }
+
         public abstract void TakeDamage(decimal dmg, out Resource returning, out int attackPoints);
 
         public abstract void CalcActualDmgToBeTaken(ICombatList attackers,

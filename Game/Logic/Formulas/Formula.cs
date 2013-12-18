@@ -158,8 +158,6 @@ namespace Game.Logic.Formulas
         /// <summary>
         ///     Returns the amount of wood the user should get for the specified city.
         ///     Notice: This function looks at all the Forest Camps Rate property and adds them up.
-        ///     It doesn't actually go into the Forest to recalculate the values. See <see cref="GetWoodRateForForest" /> for
-        ///     a calculation that factors the Forest.
         /// </summary>
         /// <param name="city">City to recalculate resources for</param>
         /// <returns></returns>

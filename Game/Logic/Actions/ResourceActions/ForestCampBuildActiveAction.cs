@@ -6,6 +6,7 @@ using System.Linq;
 using Game.Data;
 using Game.Data.Forest;
 using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -33,8 +34,6 @@ namespace Game.Logic.Actions
 
         private readonly IStructureCsvFactory structureCsvFactory;
 
-        private readonly InitFactory initFactory;
-
         private readonly IForestManager forestManager;
 
         private readonly ILocker locker;
@@ -45,6 +44,8 @@ namespace Game.Logic.Actions
 
         private readonly ITileLocator tileLocator;
 
+        private readonly CallbackProcedure callbackProcedure;
+
         public ForestCampBuildActiveAction(uint cityId,
                                            uint lumbermillId,
                                            uint forestId,
@@ -54,10 +55,10 @@ namespace Game.Logic.Actions
                                            IWorld world,
                                            IObjectTypeFactory objectTypeFactory,
                                            IStructureCsvFactory structureCsvFactory,
-                                           InitFactory initFactory,
                                            IForestManager forestManager,
                                            ILocker locker, 
-                                           ITileLocator tileLocator)
+                                           ITileLocator tileLocator, 
+                                           CallbackProcedure callbackProcedure)
         {
             this.cityId = cityId;
             this.lumbermillId = lumbermillId;
@@ -67,10 +68,10 @@ namespace Game.Logic.Actions
             this.world = world;
             this.objectTypeFactory = objectTypeFactory;
             this.structureCsvFactory = structureCsvFactory;
-            this.initFactory = initFactory;
             this.forestManager = forestManager;
             this.locker = locker;
             this.tileLocator = tileLocator;
+            this.callbackProcedure = callbackProcedure;
             this.campType = campType;
         }
 
@@ -86,20 +87,20 @@ namespace Game.Logic.Actions
                                            IWorld world,
                                            IObjectTypeFactory objectTypeFactory,
                                            IStructureCsvFactory structureCsvFactory,
-                                           InitFactory initFactory,
                                            IForestManager forestManager,
                                            ILocker locker, 
-                                           ITileLocator tileLocator)
+                                           ITileLocator tileLocator, 
+                                           CallbackProcedure callbackProcedure)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             this.formula = formula;
             this.world = world;
             this.objectTypeFactory = objectTypeFactory;
             this.structureCsvFactory = structureCsvFactory;
-            this.initFactory = initFactory;
             this.forestManager = forestManager;
             this.locker = locker;
             this.tileLocator = tileLocator;
+            this.callbackProcedure = callbackProcedure;
             cityId = uint.Parse(properties["city_id"]);
             lumbermillId = uint.Parse(properties["lumbermill_id"]);
             campId = uint.Parse(properties["camp_id"]);
@@ -301,9 +302,10 @@ namespace Game.Logic.Actions
                       // Upgrade the camp
                       structure.BeginUpdate();
                       structure.Technologies.Parent = structure.City.Technologies;
-                      structureCsvFactory.GetUpgradedStructure(structure, structure.Type, 1);
-                      initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
+                      structureCsvFactory.GetUpgradedStructure(structure, structure.Type, 1);                      
                       structure.EndUpdate();
+
+                      callbackProcedure.OnStructureUpgrade(structure);
 
                       // Recalculate the forest
                       forest.BeginUpdate();

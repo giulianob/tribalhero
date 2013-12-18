@@ -23,8 +23,6 @@ namespace Game.Logic.Actions
 
         private readonly Formula formula;
 
-        private readonly InitFactory initFactory;
-
         private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly Procedure procedure;
@@ -65,7 +63,6 @@ namespace Game.Logic.Actions
                                           Formula formula,
                                           IRequirementCsvFactory requirementCsvFactory,
                                           IStructureCsvFactory structureCsvFactory,
-                                          InitFactory initFactory,
                                           ILocker concurrency,
                                           Procedure procedure,
                                           IRoadPathFinder roadPathFinder,
@@ -82,7 +79,6 @@ namespace Game.Logic.Actions
             this.formula = formula;
             this.requirementCsvFactory = requirementCsvFactory;
             this.structureCsvFactory = structureCsvFactory;
-            this.initFactory = initFactory;
             this.concurrency = concurrency;
             this.procedure = procedure;
             this.roadPathFinder = roadPathFinder;
@@ -103,7 +99,6 @@ namespace Game.Logic.Actions
                                           Formula formula,
                                           IRequirementCsvFactory requirementCsvFactory,
                                           IStructureCsvFactory structureCsvFactory,
-                                          InitFactory initFactory,
                                           ILocker concurrency,
                                           Procedure procedure,
                                           ITileLocator tileLocator, 
@@ -115,7 +110,6 @@ namespace Game.Logic.Actions
             this.formula = formula;
             this.requirementCsvFactory = requirementCsvFactory;
             this.structureCsvFactory = structureCsvFactory;
-            this.initFactory = initFactory;
             this.concurrency = concurrency;
             this.procedure = procedure;
             this.tileLocator = tileLocator;
@@ -261,9 +255,10 @@ namespace Game.Logic.Actions
                 world.Regions.UnlockRegions(lockedRegions);
                 return Error.MapFull;
             }
-
-            initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
+            
             structure.EndUpdate();
+
+            callbackProcedure.OnStructureUpgrade(structure);
 
             structureId = structure.ObjectId;
 
@@ -302,14 +297,13 @@ namespace Game.Logic.Actions
 
                 structure.Technologies.Parent = structure.City.Technologies;
                 structureCsvFactory.GetUpgradedStructure(structure, structure.Type, level);                
-
-                initFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
+                
                 procedure.OnStructureUpgradeDowngrade(structure);
                 
                 structure.EndUpdate();
                 city.EndUpdate();
                 
-                callbackProcedure.OnStructureInit(structure);                
+                callbackProcedure.OnStructureUpgrade(structure);
 
                 StateChange(ActionState.Completed);
             });

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Game.Data;
 using Game.Setup;
 
@@ -39,12 +37,15 @@ namespace Game.Logic.Actions
 
             object current;
             if (structure.Properties.TryGet("Points available", out current) && (int)current == total - used)
+            {
                 return Error.Ok;
+            }
 
             structure.BeginUpdate();
             structure["Points used"] = used;
             structure["Points available"] = total - used;
             structure.EndUpdate();
+
             return Error.Ok;
         }
 
@@ -62,6 +63,7 @@ namespace Game.Logic.Actions
             {
                 throw new Exception();
             }
+
             Execute();
         }
     }

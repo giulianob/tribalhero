@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using Game.Data;
 using Game.Setup;
 
@@ -17,14 +14,10 @@ namespace Game.Logic.Requirements
             if (technology == null)
             {
                 // if technology does not currently exists, it requires at least 1 point
-                if (total - used <= 0)
-                    return Error.Unexpected;
-                return Error.Ok;
+                return total - used <= 0 ? Error.Unexpected : Error.Ok;
             }
 
-            if (total - used < technology.Level + 1)
-                return Error.Unexpected;
-            return Error.Ok;
+            return total - used < technology.Level + 1 ? Error.Unexpected : Error.Ok;
         }
     }
 }

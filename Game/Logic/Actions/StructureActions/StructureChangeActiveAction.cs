@@ -36,7 +36,18 @@ namespace Game.Logic.Actions
 
         private readonly ILocker locker;
 
-        public StructureChangeActiveAction(uint cityId, uint structureId, uint type, byte lvl, IStructureCsvFactory structureCsvFactory, Formula formula, IWorld world, Procedure procedure, ILocker locker)
+        private readonly CallbackProcedure callbackProcedure;
+
+        public StructureChangeActiveAction(uint cityId,
+                                           uint structureId,
+                                           uint type,
+                                           byte lvl,
+                                           IStructureCsvFactory structureCsvFactory,
+                                           Formula formula,
+                                           IWorld world,
+                                           Procedure procedure,
+                                           ILocker locker,
+                                           CallbackProcedure callbackProcedure)
         {
             this.cityId = cityId;
             this.structureId = structureId;
@@ -47,6 +58,7 @@ namespace Game.Logic.Actions
             this.world = world;
             this.procedure = procedure;
             this.locker = locker;
+            this.callbackProcedure = callbackProcedure;
         }
 
         public StructureChangeActiveAction(uint id,
@@ -61,7 +73,8 @@ namespace Game.Logic.Actions
                                            Formula formula,
                                            IWorld world,
                                            Procedure procedure,
-                                           ILocker locker)
+                                           ILocker locker,
+                                           CallbackProcedure callbackProcedure)
                 : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             this.structureCsvFactory = structureCsvFactory;
@@ -69,6 +82,7 @@ namespace Game.Logic.Actions
             this.world = world;
             this.procedure = procedure;
             this.locker = locker;
+            this.callbackProcedure = callbackProcedure;
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
             lvl = byte.Parse(properties["lvl"]);
@@ -213,12 +227,8 @@ namespace Game.Logic.Actions
                     StateChange(ActionState.Failed);
                     return;
                 }
-
-                city.BeginUpdate();
-                structure.BeginUpdate();
-                structure.IsBlocked = 0;
-                procedure.StructureChange(structure, (ushort)type, lvl);
-                structure.EndUpdate();
+                
+                procedure.StructureChange(structure, (ushort)type, lvl, callbackProcedure, structureCsvFactory);
                 city.EndUpdate();
 
                 StateChange(ActionState.Completed);

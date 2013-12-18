@@ -10,6 +10,7 @@ namespace Game.Logic.Triggers
         class Trigger
         {
             public IDynamicCondition DynamicCondition { get; set; }
+
             public IDynamicAction Action { get; set; }
         }
 
@@ -25,6 +26,7 @@ namespace Game.Logic.Triggers
                     list = new List<Trigger>();
                     triggers.Add(type, list);
                 }
+
                 list.Add(new Trigger {Action = action, DynamicCondition = dynamicCondition});
             }
         }
@@ -32,12 +34,15 @@ namespace Game.Logic.Triggers
         public void Process(ICityEvent cityEvent)
         {
             List<Trigger> list;
-            if(triggers.TryGetValue(cityEvent.GetType(), out list))
+            
+            if (!triggers.TryGetValue(cityEvent.GetType(), out list))
             {
-                foreach (var trigger in list.Where(t=> t.DynamicCondition.IsFulfilled(cityEvent)))
-                {
-                    trigger.Action.Execute(cityEvent.GameObject);
-                }
+                return;
+            }
+
+            foreach (var trigger in list.Where(t => t.DynamicCondition.IsFulfilled(cityEvent)))
+            {
+                trigger.Action.Execute(cityEvent.GameObject);
             }
         }
     }

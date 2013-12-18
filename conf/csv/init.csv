@@ -8,32 +8,6 @@ structure_downgrade,type=2108,lvl=0,,,,forest_camp_labor_update,,,,,,,
 structure_downgrade,type=2108,lvl=1,,,,forest_camp_labor_update,,,,,,,
 ,,,,,,,,,,,,,
 // lumbermill,,,,,,,,,,,,,
-structure_init,Type=2107,Lvl=1,,,,forest_camp_rate_update,,,,,,,
-structure_upgrade,Type=2107,Lvl=2,,,,forest_camp_rate_update,,,,,,,
-structure_upgrade,Type=2107,Lvl=3,,,,forest_camp_rate_update,,,,,,,
-structure_upgrade,Type=2107,Lvl=4,,,,forest_camp_rate_update,,,,,,,
-structure_upgrade,Type=2107,Lvl=5,,,,forest_camp_rate_update,,,,,,,
-structure_upgrade,Type=2107,Lvl=6,,,,forest_camp_rate_update,,,,,,,
-structure_upgrade,Type=2107,Lvl=7,,,,forest_camp_rate_update,,,,,,,
-structure_upgrade,Type=2107,Lvl=8,,,,forest_camp_rate_update,,,,,,,
-structure_upgrade,Type=2107,Lvl=9,,,,forest_camp_rate_update,,,,,,,
-structure_upgrade,Type=2107,Lvl=10,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=1,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=2,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=3,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=4,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=5,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=6,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=7,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=8,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=9,,,,forest_camp_rate_update,,,,,,,
-structure_downgrade,Type=2107,Lvl=10,,,,forest_camp_rate_update,,,,,,,
-,,,,,,,,,,,,,
-// forest camp,,,,,,,,,,,,,
-structure_downgrade,type=2108,lvl=0,,,,forest_camp_labor_update,,,,,,,
-structure_downgrade,type=2108,lvl=1,,,,forest_camp_labor_update,,,,,,,
-,,,,,,,,,,,,,
-// lumbermill,,,,,,,,,,,,,
 structure_upgrade,Type=2107,Lvl=1,,,,forest_camp_rate_update,,,,,,,
 structure_upgrade,Type=2107,Lvl=2,,,,forest_camp_rate_update,,,,,,,
 structure_upgrade,Type=2107,Lvl=3,,,,forest_camp_rate_update,,,,,,,
@@ -44,6 +18,11 @@ structure_upgrade,Type=2107,Lvl=7,,,,forest_camp_rate_update,,,,,,,
 structure_upgrade,Type=2107,Lvl=8,,,,forest_camp_rate_update,,,,,,,
 structure_upgrade,Type=2107,Lvl=9,,,,forest_camp_rate_update,,,,,,,
 structure_upgrade,Type=2107,Lvl=10,,,,forest_camp_rate_update,,,,,,,
+structure_upgrade,Type=2107,Lvl=11,,,,forest_camp_rate_update,,,,,,,
+structure_upgrade,Type=2107,Lvl=12,,,,forest_camp_rate_update,,,,,,,
+structure_upgrade,Type=2107,Lvl=13,,,,forest_camp_rate_update,,,,,,,
+structure_upgrade,Type=2107,Lvl=14,,,,forest_camp_rate_update,,,,,,,
+structure_upgrade,Type=2107,Lvl=15,,,,forest_camp_rate_update,,,,,,,
 structure_downgrade,Type=2107,Lvl=1,,,,forest_camp_rate_update,,,,,,,
 structure_downgrade,Type=2107,Lvl=2,,,,forest_camp_rate_update,,,,,,,
 structure_downgrade,Type=2107,Lvl=3,,,,forest_camp_rate_update,,,,,,,
@@ -54,33 +33,38 @@ structure_downgrade,Type=2107,Lvl=7,,,,forest_camp_rate_update,,,,,,,
 structure_downgrade,Type=2107,Lvl=8,,,,forest_camp_rate_update,,,,,,,
 structure_downgrade,Type=2107,Lvl=9,,,,forest_camp_rate_update,,,,,,,
 structure_downgrade,Type=2107,Lvl=10,,,,forest_camp_rate_update,,,,,,,
+structure_downgrade,Type=2107,Lvl=11,,,,forest_camp_rate_update,,,,,,,
+structure_downgrade,Type=2107,Lvl=12,,,,forest_camp_rate_update,,,,,,,
+structure_downgrade,Type=2107,Lvl=13,,,,forest_camp_rate_update,,,,,,,
+structure_downgrade,Type=2107,Lvl=14,,,,forest_camp_rate_update,,,,,,,
+structure_downgrade,Type=2107,Lvl=15,,,,forest_camp_rate_update,,,,,,,
 ,,,,,,,,,,,,,
 // tribal gathering,,,,,,,,,,,,,
-structure_init,Type=3002,Lvl=1,,,,structure_self_destroy,time=28800,,,,,,
-structure_init,Type=3002,Lvl=1,,,,technology_create,techid=30021,techlvl=1,time=0,,,,
-structure_init,Type=3003,Lvl=1,,,,structure_self_destroy,time=86400,,,,,,
-structure_init,Type=3003,Lvl=1,,,,technology_create,techid=30021,techlvl=1,time=0,,,,
-structure_init,Type=3004,Lvl=1,,,,structure_self_destroy,time=259200,,,,,,
-structure_init,Type=3004,Lvl=1,,,,technology_create,techid=30021,techlvl=1,time=0,,,,
-structure_init,Type=3005,Lvl=1,,,,structure_self_destroy,time=604800,,,,,,
-structure_init,Type=3005,Lvl=1,,,,technology_create,techid=30021,techlvl=1,time=0,,,,
+structure_upgrade,Type=3002,Lvl=1,,,,structure_self_destroy,time=28800,,,,,,
+structure_upgrade,Type=3002,Lvl=1,,,,technology_create,techid=30021,techlvl=1,time=0,,,,
+structure_upgrade,Type=3003,Lvl=1,,,,structure_self_destroy,time=86400,,,,,,
+structure_upgrade,Type=3003,Lvl=1,,,,technology_create,techid=30021,techlvl=1,time=0,,,,
+structure_upgrade,Type=3004,Lvl=1,,,,structure_self_destroy,time=259200,,,,,,
+structure_upgrade,Type=3004,Lvl=1,,,,technology_create,techid=30021,techlvl=1,time=0,,,,
+structure_upgrade,Type=3005,Lvl=1,,,,structure_self_destroy,time=604800,,,,,,
+structure_upgrade,Type=3005,Lvl=1,,,,technology_create,techid=30021,techlvl=1,time=0,,,,
 ,,,,,,,,,,,,,
 // vineyard,,,,,,,,,,,,,
-structure_init,Type=3011,Lvl=1,,,,structure_change,time=!14400,type=3012,lvl=1,,,FARMING_LABEL,//changing to mature
-structure_init,Type=3011,Lvl=2,,,,structure_change,time=!14400,type=3012,lvl=2,,,FARMING_LABEL,//changing to mature
-structure_init,Type=3011,Lvl=3,,,,structure_change,time=!14400,type=3012,lvl=3,,,FARMING_LABEL,//changing to mature
-structure_init,Type=3011,Lvl=4,,,,structure_change,time=!14400,type=3012,lvl=4,,,FARMING_LABEL,//changing to mature
-structure_init,Type=3011,Lvl=5,,,,structure_change,time=!14400,type=3012,lvl=5,,,FARMING_LABEL,//changing to mature
-structure_init,Type=3011,Lvl=6,,,,structure_change,time=!14400,type=3012,lvl=6,,,FARMING_LABEL,//changing to mature
-structure_init,Type=3011,Lvl=7,,,,structure_change,time=!14400,type=3012,lvl=7,,,FARMING_LABEL,//changing to mature
-structure_init,Type=3011,Lvl=8,,,,structure_change,time=!14400,type=3012,lvl=8,,,FARMING_LABEL,//changing to mature
-structure_init,Type=3011,Lvl=9,,,,structure_change,time=!14400,type=3012,lvl=9,,,FARMING_LABEL,//changing to mature
-structure_init,Type=3011,Lvl=10,,,,structure_change,time=!14400,type=3012,lvl=10,,,FARMING_LABEL,//changing to mature
-structure_init,Type=3011,Lvl=11,,,,structure_change,time=!14400,type=3012,lvl=11,,,FARMING_LABEL,//changing to mature
-structure_init,Type=3011,Lvl=12,,,,structure_change,time=!14400,type=3012,lvl=12,,,FARMING_LABEL,//changing to mature
-structure_init,Type=3011,Lvl=13,,,,structure_change,time=!14400,type=3012,lvl=13,,,FARMING_LABEL,//changing to mature
-structure_init,Type=3011,Lvl=14,,,,structure_change,time=!14400,type=3012,lvl=14,,,FARMING_LABEL,//changing to mature
-structure_init,Type=3011,Lvl=15,,,,structure_change,time=!14400,type=3012,lvl=15,,,FARMING_LABEL,//changing to mature
+structure_upgrade,Type=3011,Lvl=1,,,,structure_change,time=!14400,type=3012,lvl=1,,,FARMING_LABEL,//changing to mature
+structure_upgrade,Type=3011,Lvl=2,,,,structure_change,time=!14400,type=3012,lvl=2,,,FARMING_LABEL,//changing to mature
+structure_upgrade,Type=3011,Lvl=3,,,,structure_change,time=!14400,type=3012,lvl=3,,,FARMING_LABEL,//changing to mature
+structure_upgrade,Type=3011,Lvl=4,,,,structure_change,time=!14400,type=3012,lvl=4,,,FARMING_LABEL,//changing to mature
+structure_upgrade,Type=3011,Lvl=5,,,,structure_change,time=!14400,type=3012,lvl=5,,,FARMING_LABEL,//changing to mature
+structure_upgrade,Type=3011,Lvl=6,,,,structure_change,time=!14400,type=3012,lvl=6,,,FARMING_LABEL,//changing to mature
+structure_upgrade,Type=3011,Lvl=7,,,,structure_change,time=!14400,type=3012,lvl=7,,,FARMING_LABEL,//changing to mature
+structure_upgrade,Type=3011,Lvl=8,,,,structure_change,time=!14400,type=3012,lvl=8,,,FARMING_LABEL,//changing to mature
+structure_upgrade,Type=3011,Lvl=9,,,,structure_change,time=!14400,type=3012,lvl=9,,,FARMING_LABEL,//changing to mature
+structure_upgrade,Type=3011,Lvl=10,,,,structure_change,time=!14400,type=3012,lvl=10,,,FARMING_LABEL,//changing to mature
+structure_upgrade,Type=3011,Lvl=11,,,,structure_change,time=!14400,type=3012,lvl=11,,,FARMING_LABEL,//changing to mature
+structure_upgrade,Type=3011,Lvl=12,,,,structure_change,time=!14400,type=3012,lvl=12,,,FARMING_LABEL,//changing to mature
+structure_upgrade,Type=3011,Lvl=13,,,,structure_change,time=!14400,type=3012,lvl=13,,,FARMING_LABEL,//changing to mature
+structure_upgrade,Type=3011,Lvl=14,,,,structure_change,time=!14400,type=3012,lvl=14,,,FARMING_LABEL,//changing to mature
+structure_upgrade,Type=3011,Lvl=15,,,,structure_change,time=!14400,type=3012,lvl=15,,,FARMING_LABEL,//changing to mature
 structure_downgrade,Type=3011,Lvl=1,,,,structure_change,time=0,3008,1,,,,//trashed
 structure_downgrade,Type=3011,Lvl=2,,,,structure_change,time=0,3008,1,,,,//trashed
 structure_downgrade,Type=3011,Lvl=3,,,,structure_change,time=0,3008,1,,,,//trashed
@@ -149,7 +133,7 @@ technology_change,Type=22031,,,,,resource_rate_update,,,,,,,
 technology_change,Type=21071,,,,,city_resource_cap_update,,,,,,,
 ,,,,,,,,,,,,,
 //armory,,,,,,,,,,,,,
-structure_init,Type=2302,Lvl=1,,,,distributed_points_update,,,,,,,
+structure_upgrade,Type=2302,Lvl=1,,,,distributed_points_update,,,,,,,
 structure_upgrade,Type=2302,Lvl=2,,,,distributed_points_update,,,,,,,
 structure_upgrade,Type=2302,Lvl=3,,,,distributed_points_update,,,,,,,
 structure_upgrade,Type=2302,Lvl=4,,,,distributed_points_update,,,,,,,
@@ -179,7 +163,7 @@ technology_change,Type=23027,,,,,distributed_points_update,,,,,,,
 technology_change,Type=23028,,,,,distributed_points_update,,,,,,,
 ,,,,,,,,,,,,,
 // blacksmith,,,,,,,,,,,,,
-structure_init,Type=2303,Lvl=1,,,,distributed_points_update,,,,,,,
+structure_upgrade,Type=2303,Lvl=1,,,,distributed_points_update,,,,,,,
 structure_upgrade,Type=2303,Lvl=2,,,,distributed_points_update,,,,,,,
 structure_upgrade,Type=2303,Lvl=3,,,,distributed_points_update,,,,,,,
 structure_upgrade,Type=2303,Lvl=4,,,,distributed_points_update,,,,,,,

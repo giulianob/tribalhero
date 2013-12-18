@@ -12,7 +12,7 @@ namespace Game.Logic.Procedures
         /// <summary>
         ///     Creates a city under the specified player with initial troop and main building
         /// </summary>
-        public virtual void CreateCity(ICityFactory cityFactory, IPlayer player, string cityName, Position cityPosition, IBarbarianTribeManager barbarianTribeManager, out ICity city)
+        public virtual void CreateCity(ICityFactory cityFactory, IPlayer player, string cityName, byte level, Position cityPosition, IBarbarianTribeManager barbarianTribeManager, out ICity city)
         {
             city = cityFactory.CreateCity(world.Cities.GetNextCityId(),
                             player,
@@ -23,7 +23,7 @@ namespace Game.Logic.Procedures
                             formula.GetInitialAp());
 
             var mainBuildingPosition = cityPosition.Left();
-            IStructure mainBuilding = city.CreateStructure(2000, 1, mainBuildingPosition.X, mainBuildingPosition.Y);
+            IStructure mainBuilding = city.CreateStructure(2000, level, mainBuildingPosition.X, mainBuildingPosition.Y);
 
             player.Add(city);
 
@@ -46,10 +46,10 @@ namespace Game.Logic.Procedures
             }
         }
 
-        public virtual void InitCity(ICity city, InitFactory initFactory, IActionFactory actionFactory)
+        public virtual void InitCity(ICity city, CallbackProcedure callbackProcedure, IActionFactory actionFactory)
         {
             var mainBuilding = city.MainBuilding;
-            initFactory.InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
+            callbackProcedure.OnStructureConvert(mainBuilding);       
             city.Worker.DoPassive(city, actionFactory.CreateCityPassiveAction(city.Id), false);
         }
     }

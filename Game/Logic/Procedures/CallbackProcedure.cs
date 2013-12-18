@@ -28,9 +28,9 @@ namespace Game.Logic.Procedures
             cityTriggerManager.Process(cityEventFactory.CreateStructureUpgradeEvent(structure, structure.Type, structure.Lvl));
         }
 
-        public virtual void OnStructureInit(IStructure structure)
+        public virtual void OnStructureConvert(IStructure structure)
         {
-            cityTriggerManager.Process(cityEventFactory.CreateStructureInitEvent(structure, structure.Type, structure.Lvl));
+            cityTriggerManager.Process(cityEventFactory.CreateStructureConvertEvent(structure, structure.Type, structure.Lvl));
         }
 
         public virtual void OnTechnologyUpgrade(IStructure structure, TechnologyBase technologyBase)

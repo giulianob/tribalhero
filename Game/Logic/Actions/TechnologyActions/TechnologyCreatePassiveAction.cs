@@ -13,9 +13,7 @@ namespace Game.Logic.Actions
 {
     public class TechnologyCreatePassiveAction : PassiveAction, IScriptable
     {
-        private readonly ICityTriggerManager cityTriggerManager;
-
-        private readonly ICityEventFactory cityEventFactory;
+        private readonly TechnologyFactory technologyFactory;
 
         private readonly CallbackProcedure callbackProcedure;
 
@@ -41,10 +39,9 @@ namespace Game.Logic.Actions
             }
         }
 
-        public TechnologyCreatePassiveAction(ICityTriggerManager cityTriggerManager, ICityEventFactory cityEventFactory, CallbackProcedure callbackProcedure)
+        public TechnologyCreatePassiveAction(TechnologyFactory technologyFactory, CallbackProcedure callbackProcedure)
         {
-            this.cityTriggerManager = cityTriggerManager;
-            this.cityEventFactory = cityEventFactory;
+            this.technologyFactory = technologyFactory;
             this.callbackProcedure = callbackProcedure;
         }
 
@@ -77,7 +74,7 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
-            TechnologyBase techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(techId, lvl);
+            TechnologyBase techBase = technologyFactory.GetTechnologyBase(techId, lvl);
             if (techBase == null)
             {
                 return Error.ObjectNotFound;

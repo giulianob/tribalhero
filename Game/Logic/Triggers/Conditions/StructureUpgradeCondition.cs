@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Game.Logic.Conditons;
 using Game.Logic.Triggers.Events;
 
@@ -18,7 +19,7 @@ namespace Game.Logic.Triggers.Conditions
             level = byte.Parse(parms[1]);
         }
 
-        public Type[] EventType
+        public IEnumerable<Type> EventType
         {
             get
             {

@@ -87,8 +87,10 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
+            structure.BeginUpdate();
             structure[name] = value;
-            dbManager.Save(structure);
+            structure.EndUpdate();
+            
             StateChange(ActionState.Completed);
 
             return Error.Ok;

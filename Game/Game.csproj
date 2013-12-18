@@ -393,7 +393,6 @@
     <Compile Include="Logic\Requirements\LayoutRequirements\LayoutComparison.cs" />
     <Compile Include="Logic\Procedures\CallbackProcedure.cs" />
     <Compile Include="Logic\Triggers\CityTriggerManager.cs" />
-    <Compile Include="Logic\Triggers\Conditions\StructureInitCondition.cs" />
     <Compile Include="Logic\Triggers\Conditions\StructureDowngradeCondition.cs" />
     <Compile Include="Logic\Triggers\Conditions\StructureConvertCondition.cs" />
     <Compile Include="Logic\Triggers\Conditions\StructureUpgradeCondition.cs" />
@@ -401,7 +400,6 @@
     <Compile Include="Logic\Triggers\DynamicAction.cs" />
     <Compile Include="Logic\Triggers\Events\StructureDowngradeEvent.cs" />
     <Compile Include="Logic\Triggers\Events\StructureConvertEvent.cs" />
-    <Compile Include="Logic\Triggers\Events\StructureInitEvent.cs" />
     <Compile Include="Logic\Triggers\Events\StructureUpgradeEvent.cs" />
     <Compile Include="Logic\Triggers\Events\TechnologyDeleteEvent.cs" />
     <Compile Include="Logic\Triggers\Events\TechnologyUpgradeEvent.cs" />

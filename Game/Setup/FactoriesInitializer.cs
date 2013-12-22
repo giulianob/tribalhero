@@ -3,7 +3,6 @@
 using System.IO;
 using Game.Data;
 using Game.Util;
-using log4net.Repository.Hierarchy;
 using Ninject.Extensions.Logging;
 
 #endregion

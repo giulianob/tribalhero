@@ -7,7 +7,6 @@ using System.Text;
 using Game.Data;
 using Game.Data.Stronghold;
 using Game.Data.Tribe;
-using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util;

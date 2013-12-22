@@ -97,10 +97,8 @@ namespace Game.Battle
                     continue;
                 }
 
-                int score = 0;
-
-                // Have to compare armor and weapon type here to give some sort of score
-                score += ((int)(battleFormulas.GetDmgModifier(attacker, target.CombatObject, round) * 10));
+                // Calculate dmg against each target as base score
+                int score = ((int)(battleFormulas.GetAttackerDmgToDefender(attacker, target.CombatObject, round) * 10));
 
                 if (bestTarget == null || score > bestTargetScore)
                 {

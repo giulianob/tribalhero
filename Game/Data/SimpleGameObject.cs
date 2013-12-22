@@ -130,7 +130,6 @@ namespace Game.Data
             Updating = false;
             Update();
         }
-		
         protected virtual bool Update()
         {
             if (!Global.Current.FireEvents)

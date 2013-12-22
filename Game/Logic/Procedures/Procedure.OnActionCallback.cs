@@ -2,7 +2,6 @@
 
 using System;
 using Game.Data;
-using Game.Logic.Triggers;
 
 #endregion
 

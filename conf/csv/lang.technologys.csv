@@ -358,6 +358,12 @@ HANZO_SWORD_TECHNOLOGY_LVL_1,"Reduce splash damage received by 5% for Fighter, S
 HANZO_SWORD_TECHNOLOGY_LVL_2,"Reduce splash damage received by 10% for Fighter, Swordsman and gladiator."
 HANZO_SWORD_TECHNOLOGY_LVL_3,"Reduce splash damage received by 15% for Fighter, Swordsman and gladiator."
 ,
+UPKEEP_REDUCE_FIGHTER_TECHNOLOGY_NAME,Fighter Diet
+UPKEEP_REDUCE_FIGHTER_TECHNOLOGY_SUMMARY,Reduce upkeep by {0}% for Fighter. (Stacks additively up to 30%)
+UPKEEP_REDUCE_FIGHTER_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Fighter. (Stacks additively up to 30%)
+UPKEEP_REDUCE_BOWMAN_TECHNOLOGY_NAME,Bowman Diet
+UPKEEP_REDUCE_BOWMAN_TECHNOLOGY_SUMMARY,Reduce upkeep by {0}% for Bowman. (Stacks additively up to 30%)
+UPKEEP_REDUCE_BOWMAN_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Bowman. (Stacks additively up to 30%)
 UPKEEP_REDUCE_SWORDSMAN_TECHNOLOGY_NAME,Swordy Diet
 UPKEEP_REDUCE_SWORDSMAN_TECHNOLOGY_SUMMARY,Reduce upkeep by {0}% for Swordsman. (Stacks additively up to 30%)
 UPKEEP_REDUCE_SWORDSMAN_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Swordsman. (Stacks additively up to 30%)

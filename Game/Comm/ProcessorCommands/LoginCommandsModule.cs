@@ -48,7 +48,9 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly IBarbarianTribeManager barbarianTribeManager;
 
-        private readonly InitFactory initFactory;
+        private readonly CallbackProcedure callbackProcedure;
+
+        private readonly IChannel channel;
 
         public LoginCommandsModule(IActionFactory actionFactory,
                                    ITribeManager tribeManager,
@@ -59,7 +61,8 @@ namespace Game.Comm.ProcessorCommands
                                    ICityFactory cityFactory,
                                    ILocationStrategyFactory locationStrategyFactory,
                                    IBarbarianTribeManager barbarianTribeManager,
-                                   InitFactory initFactory)
+                                   CallbackProcedure callbackProcedure,
+                                   IChannel channel)
         {
             this.actionFactory = actionFactory;
             this.tribeManager = tribeManager;
@@ -67,11 +70,11 @@ namespace Game.Comm.ProcessorCommands
             this.locker = locker;
             this.world = world;
             this.procedure = procedure;
-            this.initFactory = initFactory;
+            this.callbackProcedure = callbackProcedure;
+            this.channel = channel;
             this.cityFactory = cityFactory;
             this.locationStrategyFactory = locationStrategyFactory;
             this.barbarianTribeManager = barbarianTribeManager;
-            this.initFactory = initFactory;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -401,10 +404,10 @@ namespace Game.Comm.ProcessorCommands
                         return;
                     }
 
-                    procedure.CreateCity(cityFactory, session.Player, cityName, cityPosition, barbarianTribeManager, out city);
+                    procedure.CreateCity(cityFactory, session.Player, cityName, 1, cityPosition, barbarianTribeManager, out city);
                 }
 
-                procedure.InitCity(city, initFactory, actionFactory);
+                procedure.InitCity(city, callbackProcedure, actionFactory);
 
                 var reply = new Packet(packet);
                 reply.Option |= (ushort)Packet.Options.Compressed;
@@ -417,16 +420,16 @@ namespace Game.Comm.ProcessorCommands
         private void SubscribeDefaultChannels(Session session, IPlayer player)
         {
             // Subscribe him to the player channel
-            Global.Current.Channel.Subscribe(session, "/PLAYER/" + player.PlayerId);
+            channel.Subscribe(session, "/PLAYER/" + player.PlayerId);
 
             // Subscribe him to the tribe channel if available
             if (player.Tribesman != null)
             {
-                Global.Current.Channel.Subscribe(session, "/TRIBE/" + player.Tribesman.Tribe.Id);
+                channel.Subscribe(session, "/TRIBE/" + player.Tribesman.Tribe.Id);
             }
 
             // Subscribe to global channel
-            Global.Current.Channel.Subscribe(session, "/GLOBAL");
+            channel.Subscribe(session, "/GLOBAL");
         }
     }
 }

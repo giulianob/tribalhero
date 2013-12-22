@@ -154,6 +154,7 @@ namespace Game.Logic.Actions
                 structure.EndUpdate();
                 city.EndUpdate();
 
+
                 callbackProcedure.OnStructureDowngrade(structure);
 
                 StateChange(ActionState.Completed);

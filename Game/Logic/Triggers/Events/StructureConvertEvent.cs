@@ -16,8 +16,6 @@ namespace Game.Logic.Triggers.Events
             this.level = level;
         }
 
-        #region Implementation of ICityEvent
-
         public IGameObject GameObject
         {
             get
@@ -33,7 +31,5 @@ namespace Game.Logic.Triggers.Events
                 return new {type, level};
             }
         }
-
-        #endregion
     }
 }

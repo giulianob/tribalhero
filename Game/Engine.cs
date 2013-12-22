@@ -18,7 +18,6 @@ using Game.Module;
 using Game.Module.Remover;
 using Game.Setup;
 using Game.Util;
-using Game.Util.Locking;
 using Ninject;
 using Ninject.Extensions.Logging;
 using Ninject.Modules;

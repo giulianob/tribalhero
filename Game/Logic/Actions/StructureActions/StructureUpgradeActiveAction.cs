@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -186,7 +185,7 @@ namespace Game.Logic.Actions
                 structure.City.BeginUpdate();
                 structure.BeginUpdate();
                 structureCsvFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
-                
+
                 procedure.OnStructureUpgradeDowngrade(structure);
 
                 structure.EndUpdate();                               

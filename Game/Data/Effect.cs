@@ -106,6 +106,12 @@ namespace Game.Data
 
         UpkeepReduce = 103,
 
-        UnitTrainTimeFirst15Reduction = 104
+        UnitTrainTimeFirst15Reduction = 104,
+
+        PointSystemValue = 105,
+
+        DefenseBonus = 106,
+
+        AttackBonus = 107
     }
 }

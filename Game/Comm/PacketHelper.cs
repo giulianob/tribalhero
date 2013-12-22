@@ -594,7 +594,14 @@ namespace Game.Comm
             foreach (var property in properties)
             {
                 reply.AddString(property.Key);
-                reply.AddString(property.Value.ToString());
+                if (property.Value is decimal)
+                {
+                    reply.AddString(((decimal)property.Value).ToString("#.##"));
+                }
+                else
+                {
+                    reply.AddString(property.Value.ToString());
+                }
             }
         }
 

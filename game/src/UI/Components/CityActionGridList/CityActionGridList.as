@@ -95,8 +95,6 @@
 				var prototype: * = ObjectFactory.getPrototype(cityObj.type, cityObj.level);
 				var icon: DisplayObjectContainer = ObjectFactory.getSpriteEx(cityObj.type, cityObj.level);
 
-				if (prototype is StructurePrototype) icon = ObjectFactory.makeSpriteSmall(icon);
-
 				(getModel() as VectorListModel).append( { 'cityObj': cityObj, 'source': icon, 'cityId': city.id , 'objPrototype': prototype, 'currentAction': currentAction } );
 			}
 		}

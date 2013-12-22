@@ -35,7 +35,7 @@ package src.Util {
 
         public static function calculateSize(width: Number, height: Number, targetW: Number, targetH: Number): IntDimension
         {
-            if (targetW > width || targetH > height) {
+            if (targetW > width && targetH > height) {
                 return new IntDimension(width, height);
             }
 

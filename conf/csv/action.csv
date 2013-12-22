@@ -102,6 +102,8 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 2201,12,10,1,,technology_Upgrade,22013,1,,,,22012,INVISIBLE
 ,,,,,,,,,,,,
 2201,15,11,1,,technology_Upgrade,22014,1,,,,22013,INVISIBLE
+2201,15,13,1,,technology_Upgrade,22016,1,,,,22041,INVISIBLE
+2201,15,14,1,,technology_Upgrade,22017,1,,,,22041,INVISIBLE
 ,,,,,,,,,,,,
 //Barrack,,,,,,,,,,,,
 2204,1,0,1,,,,,,,,,

@@ -289,7 +289,7 @@
 			var numberOfCities:Number = Global.map.cities.size();
 			var wagonRequired:Number = 50 * numberOfCities;
 			var wagonCurrent:Number = Global.gameContainer.selectedCity.troops.getDefaultTroop().getIndividualUnitCount(ObjectFactory.getFirstType("Wagon"));
-			var influenceRequired:Number = (60 + 40 * numberOfCities) * numberOfCities;
+			var influenceRequired:Number = (80 + 50 * numberOfCities) * numberOfCities;
 			var influenceCurrent:Number = 0;
 			for each(var city: City in Global.map.cities)
 			{

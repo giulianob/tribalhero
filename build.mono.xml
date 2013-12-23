@@ -25,7 +25,7 @@
 	
 		<exec executable="xbuild" failonerror="true" dir="${basedir}">
 			<arg value="Game.sln" />
-			<arg value="/t:Common:Rebuild;Persistance:Rebuild;Game:Rebuild;CSVToXML:Rebuild;Tests/Common_Testing:Rebuild;Tests/Testing:Rebuild;Tools/DatabaseGenerator:Rebuild;Tools/GraphGenerator:Rebuild;Launcher:Rebuild;LauncherService:Rebuild" />			
+			<arg value="/t:Common:Rebuild;Persistance:Rebuild;Game:Rebuild;CSVToXML:Rebuild;Common_Testing:Rebuild;Testing:Rebuild;DatabaseGenerator:Rebuild;GraphGenerator:Rebuild;Launcher:Rebuild;LauncherService:Rebuild" />			
 
 			<arg value="/p:Configuration=Release" />
 			<arg value="/p:BuildProjectReferences=false" />
@@ -41,6 +41,7 @@
 			<arg value="--img=${basedir}/graphics/buildings" />
 			<arg value="--img=${basedir}/graphics/units" />
 			<arg value="--img=${basedir}/graphics/icons/props" />
+			<arg value="--gv-path=/usr/bin/dot" />
 		</exec>
 		
 		<exec dir="${basedir}" executable="mono" failonerror="true">

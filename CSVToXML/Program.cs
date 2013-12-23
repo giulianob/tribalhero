@@ -712,10 +712,10 @@ namespace CSVToXML
             {
                 String fullFilename = file;
 
-                if (Global.Current.IsRunningOnMono())
-                {
-                    fullFilename = Path.Combine(langDataFolder, file);
-                }
+                //if (Global.Current.IsRunningOnMono())
+                //{
+                //    fullFilename = Path.Combine(langDataFolder, file);
+                //}
 
                 using (
                         CsvReader langReader =

@@ -35,8 +35,6 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 ,,,,,,,,,
 ,,,,,,,,,
 //stable,,,,,,,,,
-22021,HaveStructure,id=2501,minlvl=3,maxlvl=15,,,,Requires Trading Post (Level 3).,Require Trading Post level 3.
-22022,HaveStructure,id=2501,minlvl=7,maxlvl=15,,,,Requires Trading Post (Level 7).,Require Trading Post level 7.
 22023,HaveStructure,id=2302,minlvl=3,maxlvl=15,,,,Requires Armory (Level 3).,Require Armory level 3.
 ,,,,,,,,,
 //foundry,,,,,,,,,

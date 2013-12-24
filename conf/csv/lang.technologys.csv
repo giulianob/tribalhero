@@ -74,211 +74,211 @@ HIPPOSANDAL_TECHNOLOGY_LVL_3,Equips mounts with horseshoes.  Increase base Carry
 ,
 SWORD_ARMOR_RESEARCH_TECHNOLOGY_NAME,Swordsman Defensive Boost
 SWORD_ARMOR_RESEARCH_TECHNOLOGY_SUMMARY,Increases armor against Fighter and Swordsman by {0}%. (Stacks up to 100%).
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Fighter and Swordsman by 2%. (Stacks up to 100%).
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Fighter and Swordsman by 4%. (Stacks up to 100%).
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Fighter and Swordsman by 6%. (Stacks up to 100%).
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Fighter and Swordsman by 8%. (Stacks up to 100%).
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Fighter and Swordsman by 10%. (Stacks up to 100%).
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Fighter and Swordsman by 12%. (Stacks up to 100%).
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Fighter and Swordsman by 14%. (Stacks up to 100%).
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Fighter and Swordsman by 16%. (Stacks up to 100%).
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Fighter and Swordsman by 18%. (Stacks up to 100%).
-SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Fighter and Swordsman by 20%. (Stacks up to 100%).
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Fighter and Swordsman by 2%. (Stacks up to 100%).  \nRequires 1 point.
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Fighter and Swordsman by 4%. (Stacks up to 100%).  \nRequires 2 points.
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Fighter and Swordsman by 6%. (Stacks up to 100%).  \nRequires 3 points.
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Fighter and Swordsman by 8%. (Stacks up to 100%).  \nRequires 4 points.
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Fighter and Swordsman by 10%. (Stacks up to 100%).  \nRequires 5 points.
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Fighter and Swordsman by 12%. (Stacks up to 100%).  \nRequires 6 points.
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Fighter and Swordsman by 14%. (Stacks up to 100%).  \nRequires 7 points.
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Fighter and Swordsman by 16%. (Stacks up to 100%).  \nRequires 8 points.
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Fighter and Swordsman by 18%. (Stacks up to 100%).  \nRequires 9 points.
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Fighter and Swordsman by 20%. (Stacks up to 100%).  \nRequires 10 points.
 ,
 BOW_ARMOR_RESEARCH_TECHNOLOGY_NAME,Archer Defensive Boost
 BOW_ARMOR_RESEARCH_TECHNOLOGY_SUMMARY,Increases armor against Bowman and Archer by {0}%. (Stacks up to 100%).
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Bowman and Archer by 2%. (Stacks up to 100%).
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Bowman and Archer by 4%. (Stacks up to 100%).
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Bowman and Archer by 6%. (Stacks up to 100%).
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Bowman and Archer by 8%. (Stacks up to 100%).
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Bowman and Archer by 10%. (Stacks up to 100%).
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Bowman and Archer by 12%. (Stacks up to 100%).
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Bowman and Archer by 14%. (Stacks up to 100%).
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Bowman and Archer by 16%. (Stacks up to 100%).
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Bowman and Archer by 18%. (Stacks up to 100%).
-BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Bowman and Archer by 20%. (Stacks up to 100%).
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Bowman and Archer by 2%. (Stacks up to 100%).  \nRequires 1 point.
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Bowman and Archer by 4%. (Stacks up to 100%).  \nRequires 2 points.
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Bowman and Archer by 6%. (Stacks up to 100%).  \nRequires 3 points.
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Bowman and Archer by 8%. (Stacks up to 100%).  \nRequires 4 points.
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Bowman and Archer by 10%. (Stacks up to 100%).  \nRequires 5 points.
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Bowman and Archer by 12%. (Stacks up to 100%).  \nRequires 6 points.
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Bowman and Archer by 14%. (Stacks up to 100%).  \nRequires 7 points.
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Bowman and Archer by 16%. (Stacks up to 100%).  \nRequires 8 points.
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Bowman and Archer by 18%. (Stacks up to 100%).  \nRequires 9 points.
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Bowman and Archer by 20%. (Stacks up to 100%).  \nRequires 10 points.
 ,
 PIKE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Hoplite Defensive Boost
 PIKE_ARMOR_RESEARCH_TECHNOLOGY_SUMMARY,Increases armor against Hoplite by {0}%. (Stacks up to 100%).
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Hoplite by 2%. (Stacks up to 100%).
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Hoplite by 4%. (Stacks up to 100%).
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Hoplite by 6%. (Stacks up to 100%).
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Hoplite by 8%. (Stacks up to 100%).
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Hoplite by 10%. (Stacks up to 100%).
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Hoplite by 12%. (Stacks up to 100%).
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Hoplite by 14%. (Stacks up to 100%).
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Hoplite by 16%. (Stacks up to 100%).
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Hoplite by 18%. (Stacks up to 100%).
-PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Hoplite by 20%. (Stacks up to 100%).
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Hoplite by 2%. (Stacks up to 100%).  \nRequires 1 point.
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Hoplite by 4%. (Stacks up to 100%).  \nRequires 2 points.
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Hoplite by 6%. (Stacks up to 100%).  \nRequires 3 points.
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Hoplite by 8%. (Stacks up to 100%).  \nRequires 4 points.
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Hoplite by 10%. (Stacks up to 100%).  \nRequires 5 points.
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Hoplite by 12%. (Stacks up to 100%).  \nRequires 6 points.
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Hoplite by 14%. (Stacks up to 100%).  \nRequires 7 points.
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Hoplite by 16%. (Stacks up to 100%).  \nRequires 8 points.
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Hoplite by 18%. (Stacks up to 100%).  \nRequires 9 points.
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Hoplite by 20%. (Stacks up to 100%).  \nRequires 10 points.
 ,
 GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_NAME,Gladiator Defensive Boost
 GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_SUMMARY,Increases armor against Gladiator by {0}%. (Stacks up to 100%).
-GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Gladiator by 2%. (Stacks up to 100%).
-GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Gladiator by 4%. (Stacks up to 100%).
-GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Gladiator by 6%. (Stacks up to 100%).
-GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Gladiator by 8%. (Stacks up to 100%).
-GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Gladiator by 10%. (Stacks up to 100%).
-GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Gladiator by 12%. (Stacks up to 100%).
-GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Gladiator by 14%. (Stacks up to 100%).
-GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Gladiator by 16%. (Stacks up to 100%).
-GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Gladiator by 18%. (Stacks up to 100%).
-GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Gladiator by 20%. (Stacks up to 100%).
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Gladiator by 2%. (Stacks up to 100%).  \nRequires 1 point.
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Gladiator by 4%. (Stacks up to 100%).  \nRequires 2 points.
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Gladiator by 6%. (Stacks up to 100%).  \nRequires 3 points.
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Gladiator by 8%. (Stacks up to 100%).  \nRequires 4 points.
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Gladiator by 10%. (Stacks up to 100%).  \nRequires 5 points.
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Gladiator by 12%. (Stacks up to 100%).  \nRequires 6 points.
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Gladiator by 14%. (Stacks up to 100%).  \nRequires 7 points.
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Gladiator by 16%. (Stacks up to 100%).  \nRequires 8 points.
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Gladiator by 18%. (Stacks up to 100%).  \nRequires 9 points.
+GLADIATOR_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Gladiator by 20%. (Stacks up to 100%).  \nRequires 10 points.
 ,
 CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_NAME,Cavalry Defensive Boost
 CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_SUMMARY,Increases armor against Cavalry by {0}%. (Stacks up to 100%).
-CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Cavalry by 2%. (Stacks up to 100%).
-CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Cavalry by 4%. (Stacks up to 100%).
-CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Cavalry by 6%. (Stacks up to 100%).
-CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Cavalry by 8%. (Stacks up to 100%).
-CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Cavalry by 10%. (Stacks up to 100%).
-CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Cavalry by 12%. (Stacks up to 100%).
-CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Cavalry by 14%. (Stacks up to 100%).
-CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Cavalry by 16%. (Stacks up to 100%).
-CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Cavalry by 18%. (Stacks up to 100%).
-CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Cavalry by 20%. (Stacks up to 100%).
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Cavalry by 2%. (Stacks up to 100%).  \nRequires 1 point.
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Cavalry by 4%. (Stacks up to 100%).  \nRequires 2 points.
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Cavalry by 6%. (Stacks up to 100%).  \nRequires 3 points.
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Cavalry by 8%. (Stacks up to 100%).  \nRequires 4 points.
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Cavalry by 10%. (Stacks up to 100%).  \nRequires 5 points.
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Cavalry by 12%. (Stacks up to 100%).  \nRequires 6 points.
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Cavalry by 14%. (Stacks up to 100%).  \nRequires 7 points.
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Cavalry by 16%. (Stacks up to 100%).  \nRequires 8 points.
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Cavalry by 18%. (Stacks up to 100%).  \nRequires 9 points.
+CAVALRY_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Cavalry by 20%. (Stacks up to 100%).  \nRequires 10 points.
 ,
 KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_NAME,Knight Defensive Boost
 KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_SUMMARY,Increases armor against Knight by {0}%. (Stacks up to 100%).
-KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Knight by 2%. (Stacks up to 100%).
-KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Knight by 4%. (Stacks up to 100%).
-KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Knight by 6%. (Stacks up to 100%).
-KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Knight by 8%. (Stacks up to 100%).
-KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Knight by 10%. (Stacks up to 100%).
-KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Knight by 12%. (Stacks up to 100%).
-KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Knight by 14%. (Stacks up to 100%).
-KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Knight by 16%. (Stacks up to 100%).
-KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Knight by 18%. (Stacks up to 100%).
-KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Knight by 20%. (Stacks up to 100%).
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Knight by 2%. (Stacks up to 100%).  \nRequires 1 point.
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Knight by 4%. (Stacks up to 100%).  \nRequires 2 points.
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Knight by 6%. (Stacks up to 100%).  \nRequires 3 points.
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Knight by 8%. (Stacks up to 100%).  \nRequires 4 points.
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Knight by 10%. (Stacks up to 100%).  \nRequires 5 points.
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Knight by 12%. (Stacks up to 100%).  \nRequires 6 points.
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Knight by 14%. (Stacks up to 100%).  \nRequires 7 points.
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Knight by 16%. (Stacks up to 100%).  \nRequires 8 points.
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Knight by 18%. (Stacks up to 100%).  \nRequires 9 points.
+KNIGHT_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Knight by 20%. (Stacks up to 100%).  \nRequires 10 points.
 ,
 HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_NAME,Helepolis Defensive Boost
 HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_SUMMARY,Increases armor against Helepolis by {0}%. (Stacks up to 100%).
-HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Helepolis by 2%. (Stacks up to 100%).
-HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Helepolis by 4%. (Stacks up to 100%).
-HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Helepolis by 6%. (Stacks up to 100%).
-HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Helepolis by 8%. (Stacks up to 100%).
-HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Helepolis by 10%. (Stacks up to 100%).
-HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Helepolis by 12%. (Stacks up to 100%).
-HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Helepolis by 14%. (Stacks up to 100%).
-HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Helepolis by 16%. (Stacks up to 100%).
-HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Helepolis by 18%. (Stacks up to 100%).
-HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Helepolis by 20%. (Stacks up to 100%).
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Helepolis by 2%. (Stacks up to 100%).  \nRequires 1 point.
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Helepolis by 4%. (Stacks up to 100%).  \nRequires 2 points.
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Helepolis by 6%. (Stacks up to 100%).  \nRequires 3 points.
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Helepolis by 8%. (Stacks up to 100%).  \nRequires 4 points.
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Helepolis by 10%. (Stacks up to 100%).  \nRequires 5 points.
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Helepolis by 12%. (Stacks up to 100%).  \nRequires 6 points.
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Helepolis by 14%. (Stacks up to 100%).  \nRequires 7 points.
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Helepolis by 16%. (Stacks up to 100%).  \nRequires 8 points.
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Helepolis by 18%. (Stacks up to 100%).  \nRequires 9 points.
+HELEPOLIS_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Helepolis by 20%. (Stacks up to 100%).  \nRequires 10 points.
 ,
 CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_NAME,Catapult Defensive Boost
 CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_SUMMARY,Increases armor against Catapult by {0}%. (Stacks up to 100%).
-CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Catapult by 2%. (Stacks up to 100%).
-CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Catapult by 4%. (Stacks up to 100%).
-CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Catapult by 6%. (Stacks up to 100%).
-CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Catapult by 8%. (Stacks up to 100%).
-CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Catapult by 10%. (Stacks up to 100%).
-CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Catapult by 12%. (Stacks up to 100%).
-CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Catapult by 14%. (Stacks up to 100%).
-CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Catapult by 16%. (Stacks up to 100%).
-CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Catapult by 18%. (Stacks up to 100%).
-CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Catapult by 20%. (Stacks up to 100%).
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases armor against Catapult by 2%. (Stacks up to 100%).  \nRequires 1 point.
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases armor against Catapult by 4%. (Stacks up to 100%).  \nRequires 2 points.
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases armor against Catapult by 6%. (Stacks up to 100%).  \nRequires 3 points.
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases armor against Catapult by 8%. (Stacks up to 100%).  \nRequires 4 points.
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases armor against Catapult by 10%. (Stacks up to 100%).  \nRequires 5 points.
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_6,Increases armor against Catapult by 12%. (Stacks up to 100%).  \nRequires 6 points.
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_7,Increases armor against Catapult by 14%. (Stacks up to 100%).  \nRequires 7 points.
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_8,Increases armor against Catapult by 16%. (Stacks up to 100%).  \nRequires 8 points.
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_9,Increases armor against Catapult by 18%. (Stacks up to 100%).  \nRequires 9 points.
+CATAPULT_ARMOR_RESEARCH_TECHNOLOGY_LVL_10,Increases armor against Catapult by 20%. (Stacks up to 100%).  \nRequires 10 points.
 ,
 SWORD_WEAPON_RESEARCH_TECHNOLOGY_NAME,Swordsman Offensive Boost
 SWORD_WEAPON_RESEARCH_TECHNOLOGY_SUMMARY,Increases damage against Fighter and Swordsman by {0}%. (Stacks up to 100%).
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Fighter and Swordsman by 2%. (Stacks up to 100%).
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Fighter and Swordsman by 4%. (Stacks up to 100%).
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Fighter and Swordsman by 6%. (Stacks up to 100%).
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Fighter and Swordsman by 8%. (Stacks up to 100%).
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Fighter and Swordsman by 10%. (Stacks up to 100%).
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Fighter and Swordsman by 12%. (Stacks up to 100%).
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Fighter and Swordsman by 14%. (Stacks up to 100%).
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Fighter and Swordsman by 16%. (Stacks up to 100%).
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Fighter and Swordsman by 18%. (Stacks up to 100%).
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Fighter and Swordsman by 20%. (Stacks up to 100%).
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Fighter and Swordsman by 2%. (Stacks up to 100%).  \nRequires 1 point.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Fighter and Swordsman by 4%. (Stacks up to 100%).  \nRequires 2 points.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Fighter and Swordsman by 6%. (Stacks up to 100%).  \nRequires 3 points.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Fighter and Swordsman by 8%. (Stacks up to 100%).  \nRequires 4 points.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Fighter and Swordsman by 10%. (Stacks up to 100%).  \nRequires 5 points.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Fighter and Swordsman by 12%. (Stacks up to 100%).  \nRequires 6 points.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Fighter and Swordsman by 14%. (Stacks up to 100%).  \nRequires 7 points.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Fighter and Swordsman by 16%. (Stacks up to 100%).  \nRequires 8 points.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Fighter and Swordsman by 18%. (Stacks up to 100%).  \nRequires 9 points.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Fighter and Swordsman by 20%. (Stacks up to 100%).  \nRequires 10 points.
 ,
 BOW_WEAPON_RESEARCH_TECHNOLOGY_NAME,Archer Offensive Boost
 BOW_WEAPON_RESEARCH_TECHNOLOGY_SUMMARY,Increases damage against Bowman and Archer by {0}%. (Stacks up to 100%).
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Bowman and Archer by 2%. (Stacks up to 100%).
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Bowman and Archer by 4%. (Stacks up to 100%).
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Bowman and Archer by 6%. (Stacks up to 100%).
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Bowman and Archer by 8%. (Stacks up to 100%).
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Bowman and Archer by 10%. (Stacks up to 100%).
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Bowman and Archer by 12%. (Stacks up to 100%).
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Bowman and Archer by 14%. (Stacks up to 100%).
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Bowman and Archer by 16%. (Stacks up to 100%).
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Bowman and Archer by 18%. (Stacks up to 100%).
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Bowman and Archer by 20%. (Stacks up to 100%).
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Bowman and Archer by 2%. (Stacks up to 100%).  \nRequires 1 point.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Bowman and Archer by 4%. (Stacks up to 100%).  \nRequires 2 points.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Bowman and Archer by 6%. (Stacks up to 100%).  \nRequires 3 points.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Bowman and Archer by 8%. (Stacks up to 100%).  \nRequires 4 points.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Bowman and Archer by 10%. (Stacks up to 100%).  \nRequires 5 points.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Bowman and Archer by 12%. (Stacks up to 100%).  \nRequires 6 points.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Bowman and Archer by 14%. (Stacks up to 100%).  \nRequires 7 points.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Bowman and Archer by 16%. (Stacks up to 100%).  \nRequires 8 points.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Bowman and Archer by 18%. (Stacks up to 100%).  \nRequires 9 points.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Bowman and Archer by 20%. (Stacks up to 100%).  \nRequires 10 points.
 ,
 PIKE_WEAPON_RESEARCH_TECHNOLOGY_NAME,Hoplite Offensive Boost
 PIKE_WEAPON_RESEARCH_TECHNOLOGY_SUMMARY,Increases damage against Hoplite by {0}%. (Stacks up to 100%).
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Hoplite by 2%. (Stacks up to 100%).
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Hoplite by 4%. (Stacks up to 100%).
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Hoplite by 6%. (Stacks up to 100%).
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Hoplite by 8%. (Stacks up to 100%).
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Hoplite by 10%. (Stacks up to 100%).
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Hoplite by 12%. (Stacks up to 100%).
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Hoplite by 14%. (Stacks up to 100%).
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Hoplite by 16%. (Stacks up to 100%).
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Hoplite by 18%. (Stacks up to 100%).
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Hoplite by 20%. (Stacks up to 100%).
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Hoplite by 2%. (Stacks up to 100%).  \nRequires 1 point.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Hoplite by 4%. (Stacks up to 100%).  \nRequires 2 points.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Hoplite by 6%. (Stacks up to 100%).  \nRequires 3 points.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Hoplite by 8%. (Stacks up to 100%).  \nRequires 4 points.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Hoplite by 10%. (Stacks up to 100%).  \nRequires 5 points.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Hoplite by 12%. (Stacks up to 100%).  \nRequires 6 points.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Hoplite by 14%. (Stacks up to 100%).  \nRequires 7 points.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Hoplite by 16%. (Stacks up to 100%).  \nRequires 8 points.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Hoplite by 18%. (Stacks up to 100%).  \nRequires 9 points.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Hoplite by 20%. (Stacks up to 100%).  \nRequires 10 points.
 ,
 GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_NAME,Gladiator Offensive Boost
 GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_SUMMARY,Increases damage against Gladiator by {0}%. (Stacks up to 100%).
-GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Gladiator by 2%. (Stacks up to 100%).
-GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Gladiator by 4%. (Stacks up to 100%).
-GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Gladiator by 6%. (Stacks up to 100%).
-GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Gladiator by 8%. (Stacks up to 100%).
-GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Gladiator by 10%. (Stacks up to 100%).
-GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Gladiator by 12%. (Stacks up to 100%).
-GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Gladiator by 14%. (Stacks up to 100%).
-GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Gladiator by 16%. (Stacks up to 100%).
-GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Gladiator by 18%. (Stacks up to 100%).
-GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Gladiator by 20%. (Stacks up to 100%).
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Gladiator by 2%. (Stacks up to 100%).  \nRequires 1 point.
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Gladiator by 4%. (Stacks up to 100%).  \nRequires 2 points.
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Gladiator by 6%. (Stacks up to 100%).  \nRequires 3 points.
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Gladiator by 8%. (Stacks up to 100%).  \nRequires 4 points.
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Gladiator by 10%. (Stacks up to 100%).  \nRequires 5 points.
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Gladiator by 12%. (Stacks up to 100%).  \nRequires 6 points.
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Gladiator by 14%. (Stacks up to 100%).  \nRequires 7 points.
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Gladiator by 16%. (Stacks up to 100%).  \nRequires 8 points.
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Gladiator by 18%. (Stacks up to 100%).  \nRequires 9 points.
+GLADIATOR_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Gladiator by 20%. (Stacks up to 100%).  \nRequires 10 points.
 ,
 CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_NAME,Cavalry Offensive Boost
 CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_SUMMARY,Increases damage against Cavalry by {0}%. (Stacks up to 100%).
-CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Cavalry by 2%. (Stacks up to 100%).
-CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Cavalry by 4%. (Stacks up to 100%).
-CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Cavalry by 6%. (Stacks up to 100%).
-CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Cavalry by 8%. (Stacks up to 100%).
-CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Cavalry by 10%. (Stacks up to 100%).
-CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Cavalry by 12%. (Stacks up to 100%).
-CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Cavalry by 14%. (Stacks up to 100%).
-CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Cavalry by 16%. (Stacks up to 100%).
-CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Cavalry by 18%. (Stacks up to 100%).
-CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Cavalry by 20%. (Stacks up to 100%).
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Cavalry by 2%. (Stacks up to 100%).  \nRequires 1 point.
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Cavalry by 4%. (Stacks up to 100%).  \nRequires 2 points.
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Cavalry by 6%. (Stacks up to 100%).  \nRequires 3 points.
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Cavalry by 8%. (Stacks up to 100%).  \nRequires 4 points.
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Cavalry by 10%. (Stacks up to 100%).  \nRequires 5 points.
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Cavalry by 12%. (Stacks up to 100%).  \nRequires 6 points.
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Cavalry by 14%. (Stacks up to 100%).  \nRequires 7 points.
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Cavalry by 16%. (Stacks up to 100%).  \nRequires 8 points.
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Cavalry by 18%. (Stacks up to 100%).  \nRequires 9 points.
+CAVALRY_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Cavalry by 20%. (Stacks up to 100%).  \nRequires 10 points.
 ,
 KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_NAME,Knight Offensive Boost
 KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_SUMMARY,Increases damage against Knight by {0}%. (Stacks up to 100%).
-KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Knight by 2%. (Stacks up to 100%).
-KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Knight by 4%. (Stacks up to 100%).
-KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Knight by 6%. (Stacks up to 100%).
-KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Knight by 8%. (Stacks up to 100%).
-KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Knight by 10%. (Stacks up to 100%).
-KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Knight by 12%. (Stacks up to 100%).
-KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Knight by 14%. (Stacks up to 100%).
-KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Knight by 16%. (Stacks up to 100%).
-KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Knight by 18%. (Stacks up to 100%).
-KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Knight by 20%. (Stacks up to 100%).
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Knight by 2%. (Stacks up to 100%).  \nRequires 1 point.
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Knight by 4%. (Stacks up to 100%).  \nRequires 2 points.
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Knight by 6%. (Stacks up to 100%).  \nRequires 3 points.
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Knight by 8%. (Stacks up to 100%).  \nRequires 4 points.
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Knight by 10%. (Stacks up to 100%).  \nRequires 5 points.
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Knight by 12%. (Stacks up to 100%).  \nRequires 6 points.
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Knight by 14%. (Stacks up to 100%).  \nRequires 7 points.
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Knight by 16%. (Stacks up to 100%).  \nRequires 8 points.
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Knight by 18%. (Stacks up to 100%).  \nRequires 9 points.
+KNIGHT_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Knight by 20%. (Stacks up to 100%).  \nRequires 10 points.
 ,
 HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_NAME,Helepolis Offensive Boost
 HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_SUMMARY,Increases damage against Helepolis by {0}%. (Stacks up to 100%).
-HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Helepolis by 2%. (Stacks up to 100%).
-HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Helepolis by 4%. (Stacks up to 100%).
-HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Helepolis by 6%. (Stacks up to 100%).
-HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Helepolis by 8%. (Stacks up to 100%).
-HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Helepolis by 10%. (Stacks up to 100%).
-HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Helepolis by 12%. (Stacks up to 100%).
-HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Helepolis by 14%. (Stacks up to 100%).
-HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Helepolis by 16%. (Stacks up to 100%).
-HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Helepolis by 18%. (Stacks up to 100%).
-HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Helepolis by 20%. (Stacks up to 100%).
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Helepolis by 2%. (Stacks up to 100%).  \nRequires 1 point.
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Helepolis by 4%. (Stacks up to 100%).  \nRequires 2 points.
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Helepolis by 6%. (Stacks up to 100%).  \nRequires 3 points.
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Helepolis by 8%. (Stacks up to 100%).  \nRequires 4 points.
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Helepolis by 10%. (Stacks up to 100%).  \nRequires 5 points.
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Helepolis by 12%. (Stacks up to 100%).  \nRequires 6 points.
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Helepolis by 14%. (Stacks up to 100%).  \nRequires 7 points.
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Helepolis by 16%. (Stacks up to 100%).  \nRequires 8 points.
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Helepolis by 18%. (Stacks up to 100%).  \nRequires 9 points.
+HELEPOLIS_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Helepolis by 20%. (Stacks up to 100%).  \nRequires 10 points.
 ,
 CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_NAME,Catapult Offensive Boost
 CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_SUMMARY,Increases damage against Catapult by {0}%. (Stacks up to 100%).
-CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Catapult by 2%. (Stacks up to 100%).
-CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Catapult by 4%. (Stacks up to 100%).
-CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Catapult by 6%. (Stacks up to 100%).
-CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Catapult by 8%. (Stacks up to 100%).
-CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Catapult by 10%. (Stacks up to 100%).
-CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Catapult by 12%. (Stacks up to 100%).
-CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Catapult by 14%. (Stacks up to 100%).
-CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Catapult by 16%. (Stacks up to 100%).
-CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Catapult by 18%. (Stacks up to 100%).
-CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Catapult by 20%. (Stacks up to 100%).
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage against Catapult by 2%. (Stacks up to 100%).  \nRequires 1 point.
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage against Catapult by 4%. (Stacks up to 100%).  \nRequires 2 points.
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage against Catapult by 6%. (Stacks up to 100%).  \nRequires 3 points.
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage against Catapult by 8%. (Stacks up to 100%).  \nRequires 4 points.
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage against Catapult by 10%. (Stacks up to 100%).  \nRequires 5 points.
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_6,Increases damage against Catapult by 12%. (Stacks up to 100%).  \nRequires 6 points.
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_7,Increases damage against Catapult by 14%. (Stacks up to 100%).  \nRequires 7 points.
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_8,Increases damage against Catapult by 16%. (Stacks up to 100%).  \nRequires 8 points.
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_9,Increases damage against Catapult by 18%. (Stacks up to 100%).  \nRequires 9 points.
+CATAPULT_WEAPON_RESEARCH_TECHNOLOGY_LVL_10,Increases damage against Catapult by 20%. (Stacks up to 100%).  \nRequires 10 points.
 ,
 ATTIC_STORAGE_TECHNOLOGY_NAME,Attic Storage
 ATTIC_STORAGE_TECHNOLOGY_LVL_1,Increase capacity of the city resources by 50% of basements' capacity.
@@ -358,6 +358,12 @@ HANZO_SWORD_TECHNOLOGY_LVL_1,"Reduce splash damage received by 5% for Fighter, S
 HANZO_SWORD_TECHNOLOGY_LVL_2,"Reduce splash damage received by 10% for Fighter, Swordsman and gladiator."
 HANZO_SWORD_TECHNOLOGY_LVL_3,"Reduce splash damage received by 15% for Fighter, Swordsman and gladiator."
 ,
+UPKEEP_REDUCE_FIGHTER_TECHNOLOGY_NAME,Fighter Diet
+UPKEEP_REDUCE_FIGHTER_TECHNOLOGY_SUMMARY,Reduce upkeep by {0}% for Fighter. (Stacks additively up to 30%)
+UPKEEP_REDUCE_FIGHTER_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Fighter. (Stacks additively up to 30%)
+UPKEEP_REDUCE_BOWMAN_TECHNOLOGY_NAME,Bowman Diet
+UPKEEP_REDUCE_BOWMAN_TECHNOLOGY_SUMMARY,Reduce upkeep by {0}% for Bowman. (Stacks additively up to 30%)
+UPKEEP_REDUCE_BOWMAN_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Bowman. (Stacks additively up to 30%)
 UPKEEP_REDUCE_SWORDSMAN_TECHNOLOGY_NAME,Swordy Diet
 UPKEEP_REDUCE_SWORDSMAN_TECHNOLOGY_SUMMARY,Reduce upkeep by {0}% for Swordsman. (Stacks additively up to 30%)
 UPKEEP_REDUCE_SWORDSMAN_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Swordsman. (Stacks additively up to 30%)

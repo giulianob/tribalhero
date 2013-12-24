@@ -45,11 +45,11 @@ RUSH_ATTACK_TECHNOLOGY_LVL_5,Increases travel speed of troops by 20% on an attac
 ,
 RUSH_DEFENSE_TECHNOLOGY_NAME,Rush Defense
 RUSH_DEFENSE_TECHNOLOGY_SUMMARY,Increases troop's travel speed by {0}% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
-RUSH_DEFENSE_TECHNOLOGY_LVL_1,Increases troop's travel speed by 4% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
-RUSH_DEFENSE_TECHNOLOGY_LVL_2,Increases troop's travel speed by 8% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
-RUSH_DEFENSE_TECHNOLOGY_LVL_3,Increases troops' travel speed by 12% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
-RUSH_DEFENSE_TECHNOLOGY_LVL_4,Increases troops' travel speed by 16% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
-RUSH_DEFENSE_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_1,Increases troop's travel speed by 8% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_2,Increases troop's travel speed by 16% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_3,Increases troops' travel speed by 24% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_4,Increases troops' travel speed by 32% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_5,Increases troop's travel speed by 40% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
 ,
 DOUBLE_TIME_TECHNOLOGY_NAME,Double Time
 DOUBLE_TIME_TECHNOLOGY_SUMMARY,Increases troop's travel speed by {0}% when distance is greater than 500 tiles. (Stacks additively but the travel time decrease has diminishing returns.)

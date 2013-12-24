@@ -12,6 +12,7 @@
 				<exclude name="**/.hg*" />
 				<exclude name="build.xml" />
 				<exclude name=".project" />
+				<exclude name=".idea" />
 			</zipfileset>			
 		</zip>
 	</target>

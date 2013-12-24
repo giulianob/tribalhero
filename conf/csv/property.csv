@@ -1,0 +1,10 @@
+Type,Index,Name,DataType,Visibility,PerHour?,Icon,Tooltip
+2108,1,Rate,INT,PUBLIC,TRUE,WOOD,Amount of wood your laborers are gathering. This includes a bonus which depends on the number of players in this forest.
+3001,1,Crop,INT,PRIVATE,FALSE,CROP,Produced crop.
+3001,2,Labor,INT,PRIVATE,FALSE,LABOR,Idle laborers.
+3012,1,Crop,INT,PUBLIC,FALSE,CROP,Crop you will receive when you gather after farming is completed
+2107,1,Labor,STRING,PRIVATE,FALSE,LABOR,Laborers at forest camp(s).
+2302,1,Points used,INT,PUBLIC,FALSE,,
+2302,2,Points available,INT,PUBLIC,FALSE,,
+2303,1,Points used,INT,PUBLIC,FALSE,,
+2303,2,Points available,INT,PUBLIC,FALSE,,

@@ -16,4 +16,15 @@
 			</zipfileset>			
 		</zip>
 	</target>
+
+	<target name="deploy" if="deploydir">
+		<tar destfile="${deploydir}/gamesiteserver.tar.gz" compression="gzip">
+			<zipfileset dir="${basedir}">
+				<exclude name="**/.hg*" />
+				<exclude name="build.xml" />
+				<exclude name=".project" />
+				<exclude name=".idea" />
+			</zipfileset>			
+		</tar>
+	</target>	
 </project>

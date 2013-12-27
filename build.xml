@@ -15,9 +15,7 @@
 				<exclude name=".idea" />
 			</zipfileset>			
 		</zip>
-	</target>
 
-	<target name="deploy" if="deploydir">
 		<tar destfile="${deploydir}/gamesiteserver.tar.gz" compression="gzip">
 			<zipfileset dir="${basedir}">
 				<exclude name="**/.hg*" />

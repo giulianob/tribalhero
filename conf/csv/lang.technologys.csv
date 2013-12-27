@@ -45,11 +45,11 @@ RUSH_ATTACK_TECHNOLOGY_LVL_5,Increases travel speed of troops by 20% on an attac
 ,
 RUSH_DEFENSE_TECHNOLOGY_NAME,Rush Defense
 RUSH_DEFENSE_TECHNOLOGY_SUMMARY,Increases troop's travel speed by {0}% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
-RUSH_DEFENSE_TECHNOLOGY_LVL_1,Increases troop's travel speed by 4% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
-RUSH_DEFENSE_TECHNOLOGY_LVL_2,Increases troop's travel speed by 8% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
-RUSH_DEFENSE_TECHNOLOGY_LVL_3,Increases troops' travel speed by 12% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
-RUSH_DEFENSE_TECHNOLOGY_LVL_4,Increases troops' travel speed by 16% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
-RUSH_DEFENSE_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_1,Increases troop's travel speed by 8% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_2,Increases troop's travel speed by 16% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_3,Increases troops' travel speed by 24% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_4,Increases troops' travel speed by 32% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_5,Increases troop's travel speed by 40% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
 ,
 DOUBLE_TIME_TECHNOLOGY_NAME,Double Time
 DOUBLE_TIME_TECHNOLOGY_SUMMARY,Increases troop's travel speed by {0}% when distance is greater than 500 tiles. (Stacks additively but the travel time decrease has diminishing returns.)
@@ -390,4 +390,4 @@ UPKEEP_REDUCE_CATAPULT_TECHNOLOGY_SUMMARY,Reduce upkeep by {0}% for Catapult. (S
 UPKEEP_REDUCE_CATAPULT_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Catapult. (Stacks additively up to 30%)
 ,
 BASIC_TRAINING_TECHNOLOGY_NAME,Basic Training
-BASIC_TRAINING_TECHNOLOGY_LVL_1,Allows training Fighters. Also makes it so the first 15 units in the city are trained extremely quickly.
+BASIC_TRAINING_TECHNOLOGY_LVL_1,Allows training Fighters.

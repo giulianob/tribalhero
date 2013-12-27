@@ -176,7 +176,7 @@ namespace GraphGenerator
             foreach (var file in files)
             {
                 string fullFilename = file;
-                using (var langReader = new CsvReader(new StreamReader(File.Open(fullFilename, FileMode.Open))))
+                using (var langReader = new CsvReader(new StreamReader(File.Open(fullFilename, FileMode.Open, FileAccess.Read))))
                 {
                     while (true)
                     {

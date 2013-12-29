@@ -30,7 +30,7 @@
             }
 
             sprite.addChild(image);
-            
+
             return sprite;
 		}
 

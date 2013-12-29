@@ -47,8 +47,8 @@ RUSH_DEFENSE_TECHNOLOGY_NAME,Rush Defense
 RUSH_DEFENSE_TECHNOLOGY_SUMMARY,Increases troop's travel speed by {0}% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
 RUSH_DEFENSE_TECHNOLOGY_LVL_1,Increases troop's travel speed by 8% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
 RUSH_DEFENSE_TECHNOLOGY_LVL_2,Increases troop's travel speed by 16% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
-RUSH_DEFENSE_TECHNOLOGY_LVL_3,Increases troops' travel speed by 24% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
-RUSH_DEFENSE_TECHNOLOGY_LVL_4,Increases troops' travel speed by 32% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_3,Increases troop's travel speed by 24% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
+RUSH_DEFENSE_TECHNOLOGY_LVL_4,Increases troop's travel speed by 32% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
 RUSH_DEFENSE_TECHNOLOGY_LVL_5,Increases troop's travel speed by 40% on a defense mission. (Stacks additively but the travel time decrease has diminishing returns.)
 ,
 DOUBLE_TIME_TECHNOLOGY_NAME,Double Time
@@ -63,9 +63,9 @@ ARCHERY_RESEARCH_TECHNOLOGY_NAME,Archery Research
 ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow wielding units.
 ,
 BOW_RESEARCH_TECHNOLOGY_NAME,Bowshield Research
-BOW_RESEARCH_TECHNOLOGY_LVL_1,"Increases Bowman, Archer and Helepolis's Max HP by 4%. (Does not stack)"
-BOW_RESEARCH_TECHNOLOGY_LVL_2,"Increases Bowman, Archer and Helepolis's Max HP by 8%. (Does not stack)"
-BOW_RESEARCH_TECHNOLOGY_LVL_3,"Increases Bowman, Archer and Helepolis's Max HP by 12%. (Does not stack)"
+BOW_RESEARCH_TECHNOLOGY_LVL_1,"Increases Bowman, Archer and Helepolis' Max HP by 4%. (Does not stack)"
+BOW_RESEARCH_TECHNOLOGY_LVL_2,"Increases Bowman, Archer and Helepolis' Max HP by 8%. (Does not stack)"
+BOW_RESEARCH_TECHNOLOGY_LVL_3,"Increases Bowman, Archer and Helepolis' Max HP by 12%. (Does not stack)"
 ,
 HIPPOSANDAL_TECHNOLOGY_NAME,Hipposandal
 HIPPOSANDAL_TECHNOLOGY_LVL_1,Equips mounts with horseshoes.  Increase base Carry for mount unit by 15. (Does not stack)

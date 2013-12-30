@@ -74,5 +74,12 @@
 			
 			return total;
 		}
+
+        public function getMyStubs():Array {
+            return Enumerable.from(this)
+                    .where(function(p: TroopStub): Boolean {
+                        return p.cityId == city.id;
+                    }).toArray();
+        }
 	}
 }

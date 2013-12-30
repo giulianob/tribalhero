@@ -44,7 +44,7 @@
 			
 			var structure: StructureObject = parentObj as StructureObject;
 			var city: City = Global.map.cities.get(structure.cityId);
-			var trainTime: int = Formula.trainTime(structure.level, 1, unitPrototype, city, city.techManager, true);
+			var trainTime: int = Formula.trainTime(structure.level, 1, unitPrototype);
 						
 			lblTime.setText(DateUtil.formatTime(trainTime));
 			

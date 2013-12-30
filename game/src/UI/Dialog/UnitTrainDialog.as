@@ -1,32 +1,29 @@
 package src.UI.Dialog {
 
 import System.Collection.Generic.IEnumerable;
-import System.Collection.Generic.IGrouping;
 import System.Linq.Enumerable;
-import System.Linq.EnumerationExtender;
 
 import flash.events.*;
 
-    import org.aswing.*;
-    import org.aswing.border.*;
-    import org.aswing.ext.*;
-    import org.aswing.geom.*;
+import org.aswing.*;
+import org.aswing.border.*;
+import org.aswing.ext.*;
+import org.aswing.geom.*;
 
-    import src.*;
-    import src.Map.*;
-    import src.Objects.*;
-    import src.Objects.Effects.*;
+import src.*;
+import src.Map.*;
+import src.Objects.*;
+import src.Objects.Effects.*;
 import src.Objects.Factories.ObjectFactory;
 import src.Objects.Prototypes.*;
-import src.Objects.Prototypes.EffectPrototype;
 import src.Objects.Troop.Formation;
 import src.Objects.Troop.TroopStub;
 import src.Objects.Troop.Unit;
 import src.UI.*;
-    import src.UI.Components.*;
-    import src.Util.*;
+import src.UI.Components.*;
+import src.Util.*;
 
-    public class UnitTrainDialog extends GameJPanel {
+public class UnitTrainDialog extends GameJPanel {
 
 		private var structure:StructureObject;
 		private var city: City;

@@ -17,7 +17,7 @@ to be relative and use forward slashes.
     </define>
     <define append="true">
       <name>CONFIG::release</name>
-      <value>false</value>
+      <value>true</value>
     </define>
     <define append="true">
       <name>CONFIG::air</name>

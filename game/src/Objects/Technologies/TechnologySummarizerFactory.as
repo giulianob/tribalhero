@@ -33,6 +33,18 @@ public class TechnologySummarizerFactory {
                 summarizer=new HappyHourSummarizer();
             } else if(key.indexOf("UPKEEP_REDUCE")!=-1) {
                 summarizer=new DietSummarizer();
+            } else if(key.indexOf("INSTANT")!=-1) {
+                if(key.indexOf("TRAINING_GROUND")!=-1) {
+                    summarizer = new InstantTrainSummarizer(5,150);
+                } else if(key.indexOf("BARRACK")!=-1) {
+                    summarizer = new InstantTrainSummarizer(5,150);
+                } else if(key.indexOf("STABLE")!=-1) {
+                    summarizer = new InstantTrainSummarizer(2,150);
+                } else if(key.indexOf("WORKSHOP")!=-1) {
+                    summarizer = new InstantTrainSummarizer(1,150);
+                } else {
+                    summarizer=new TechnologySummarizer();
+                }
             } else {
                 summarizer=new TechnologySummarizer();
             }

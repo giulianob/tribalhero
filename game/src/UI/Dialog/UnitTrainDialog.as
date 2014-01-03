@@ -83,9 +83,9 @@ public class UnitTrainDialog extends GameJPanel {
                 return ObjectFactory.isType(effectForStructureType[0].param2, unit.type) ? unit.count : 0;
             });
 
-            var threshold: int = effectForStructureType.sum(function(effect:EffectPrototype) :int {
+            var threshold: int = Math.min(effectForStructureType.sum(function(effect:EffectPrototype) :int {
                 return effect.param3;
-            });
+            }),effectForStructureType[0].param4);
 
             if (current >= threshold)
                 return 0;

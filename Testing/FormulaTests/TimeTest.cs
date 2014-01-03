@@ -40,7 +40,7 @@ namespace Testing.FormulaTests
             techManager.GetEffects(0).ReturnsForAnyArgs(new List<Effect>());
             baseUnitStats.BuildTime.Returns(baseTime);
 
-            formula.TrainTime(structureLevel, 2, baseUnitStats, city, techManager).Should().Be(expected*2);
+            formula.TrainTime(structureLevel, 2, baseUnitStats).Should().Be(expected*2);
         }
 
         [Theory, AutoNSubstituteData]
@@ -54,13 +54,13 @@ namespace Testing.FormulaTests
             city.Troops.Upkeep.Returns(12);
             baseUnitStats.BuildTime.Returns(100);
             
-            techManager.GetEffects(EffectCode.UnitTrainTimeFirst15Reduction).Returns(new List<Effect>
+            techManager.GetEffects(EffectCode.UnitTrainInstantTime).Returns(new List<Effect>
             {
                     new Effect {Value = new[] {(object)90}}
             });
 
             // Act
-            formula.TrainTime(1, 2, baseUnitStats, city, techManager).Should().Be(20);
+            formula.TrainTime(1, 2, baseUnitStats).Should().Be(20);
         }
 
         [Theory, AutoNSubstituteData]
@@ -74,13 +74,13 @@ namespace Testing.FormulaTests
             city.Troops.Upkeep.Returns(15);
             baseUnitStats.BuildTime.Returns(100);
             
-            techManager.GetEffects(EffectCode.UnitTrainTimeFirst15Reduction).Returns(new List<Effect>
+            techManager.GetEffects(EffectCode.UnitTrainInstantTime).Returns(new List<Effect>
             {
                     new Effect {Value = new[] {"90"}}
             });
 
             // Act
-            formula.TrainTime(1, 1, baseUnitStats, city, techManager).Should().Be(100);
+            formula.TrainTime(1, 1, baseUnitStats).Should().Be(100);
         }
 
         [Theory, AutoNSubstituteData]
@@ -94,13 +94,13 @@ namespace Testing.FormulaTests
             city.Troops.Upkeep.Returns(10);
             baseUnitStats.BuildTime.Returns(100);
             
-            techManager.GetEffects(EffectCode.UnitTrainTimeFirst15Reduction).Returns(new List<Effect>
+            techManager.GetEffects(EffectCode.UnitTrainInstantTime).Returns(new List<Effect>
             {
                     new Effect {Value = new[] {(object)90}}
             });
 
             // Act
-            formula.TrainTime(1, 6, baseUnitStats, city, techManager).Should().Be(150);
+            formula.TrainTime(1, 6, baseUnitStats).Should().Be(150);
         }
     }
 }

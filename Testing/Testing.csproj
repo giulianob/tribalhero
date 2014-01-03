@@ -148,6 +148,7 @@
     <Compile Include="FormulaTests\BarbarianTribeFormulaTest.cs" />
     <Compile Include="FormulaTests\CityValueTest.cs" />
     <Compile Include="FormulaTests\BattleFormulaTest.cs" />
+    <Compile Include="FormulaTests\InstantTrainTest.cs" />
     <Compile Include="FormulaTests\LaborMoveTest.cs" />
     <Compile Include="FormulaTests\PureVirtualTests.cs" />
     <Compile Include="FormulaTests\StrongholdFormulaTest.cs" />

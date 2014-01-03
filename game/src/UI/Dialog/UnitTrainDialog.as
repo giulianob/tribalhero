@@ -1,22 +1,29 @@
 package src.UI.Dialog {
 
-    import flash.events.*;
+import System.Collection.Generic.IEnumerable;
+import System.Linq.Enumerable;
 
-    import org.aswing.*;
-    import org.aswing.border.*;
-    import org.aswing.ext.*;
-    import org.aswing.geom.*;
+import flash.events.*;
 
-    import src.*;
-    import src.Map.*;
-    import src.Objects.*;
-    import src.Objects.Effects.*;
-    import src.Objects.Prototypes.*;
-    import src.UI.*;
-    import src.UI.Components.*;
-    import src.Util.*;
+import org.aswing.*;
+import org.aswing.border.*;
+import org.aswing.ext.*;
+import org.aswing.geom.*;
 
-    public class UnitTrainDialog extends GameJPanel {
+import src.*;
+import src.Map.*;
+import src.Objects.*;
+import src.Objects.Effects.*;
+import src.Objects.Factories.ObjectFactory;
+import src.Objects.Prototypes.*;
+import src.Objects.Troop.Formation;
+import src.Objects.Troop.TroopStub;
+import src.Objects.Troop.Unit;
+import src.UI.*;
+import src.UI.Components.*;
+import src.Util.*;
+
+public class UnitTrainDialog extends GameJPanel {
 
 		private var structure:StructureObject;
 		private var city: City;
@@ -30,7 +37,8 @@ package src.UI.Dialog {
 		private var lblUpkeep: JLabel;
 		private var btnOk:JButton;
 		private var unitPrototype: UnitPrototype;
-		private var lblUpkeepMsg: MultilineLabel;
+        private var lblUpkeepMsg: MultilineLabel;
+        private var pnlTime: JPanel;
 
 		public function UnitTrainDialog(structure: StructureObject, unitPrototype: UnitPrototype, onAccept: Function):void {
 			this.unitPrototype = unitPrototype;
@@ -56,10 +64,59 @@ package src.UI.Dialog {
 			updateTime();
 		}
 
-		private function updateTime(e: Event = null) : void {			
-			var trainTime: int = Formula.trainTime(structure.level, sldAmount.getValue(), unitPrototype, city, structure.getCorrespondingCityObj().techManager, false);
+        private function getInstantTimeCount() : int {
+            var effectForStructureType:Array =
+                    Enumerable.from(city.techManager.getEffects(EffectPrototype.EFFECT_UNIT_TRAIN_INSTANT_TIME, EffectPrototype.INHERIT_ALL)).where(function(effect:EffectPrototype): Boolean{
+                        return (int)(effect.param1) == structure.type;
+                    }).toArray();
 
-			lblTime.setText(DateUtil.formatTime(trainTime));
+            if (effectForStructureType.length==0)
+                return 0;
+
+            var units:IEnumerable = Enumerable.from(city.troops.getMyStubs()).selectMany(function(stub: TroopStub):Array {
+                return Enumerable.from(stub).selectMany(function(formation:Formation):Array{
+                    return formation.toArray();
+                }).toArray();
+            })
+
+            var current:int = units.sum(function(unit: Unit):int {
+                return ObjectFactory.isType(effectForStructureType[0].param2, unit.type) ? unit.count : 0;
+            });
+
+            var threshold: int = Math.min(effectForStructureType.sum(function(effect:EffectPrototype) :int {
+                return effect.param3;
+            }),effectForStructureType[0].param4);
+
+            if (current >= threshold)
+                return 0;
+
+            return Math.max(threshold - current, 0);
+        }
+
+		private function updateTime(e: Event = null) : void {
+            var instantTimeCount: int = getInstantTimeCount();
+            var count: int = sldAmount.getValue();
+			var trainTime: int = Formula.trainTime(structure.level, count-instantTimeCount, unitPrototype);
+            pnlTime.removeAll();
+            if(instantTimeCount==0){ // no instant trained
+                lblTime.setText(DateUtil.formatTime(trainTime));
+                pnlTime.append(lblTime);
+            } else if(instantTimeCount>=count) {  // all instant trained
+                var instantMessageAll: JLabel = new JLabel("All "+ Math.min(instantTimeCount,count) + " unit(s) will be trained immediately.");
+                instantMessageAll.setHorizontalAlignment(AsWingConstants.LEFT);
+                pnlTime.append(instantMessageAll);
+            } else { // mix
+                var instantMessage: JLabel = new JLabel("First "+ Math.min(instantTimeCount,count) + " unit(s) will be trained immediately.");
+                instantMessage.setHorizontalAlignment(AsWingConstants.LEFT);
+                pnlTime.append(instantMessage);
+
+                var instantMessage2: JLabel = new JLabel("Next " + Math.max(count-instantTimeCount,0) + " unit(s) will be trained in:");
+                instantMessage2.setHorizontalAlignment(AsWingConstants.LEFT);
+                pnlTime.append(instantMessage2);
+
+                lblTime.setText(DateUtil.formatTime(trainTime));
+                pnlTime.append(lblTime);
+            }
 		}
 
 		private function updateResources(e: Event = null) : void {			
@@ -125,9 +182,12 @@ package src.UI.Dialog {
 			pnlResources = new JPanel();
 			pnlResources.setConstraints("North");
 
-			lblTime = new JLabel("", new AssetIcon(new ICON_CLOCK()));
+ 			lblTime = new JLabel("", new AssetIcon(new ICON_CLOCK()));
 			lblTime.setConstraints("West");
 			new SimpleTooltip(lblTime, "Time to train units");
+            lblTime.setHorizontalAlignment(AsWingConstants.LEFT);
+
+            pnlTime = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 
 			lblUpkeep = new JLabel("", new AssetIcon(new ICON_CROP()));
 			lblUpkeep.setConstraints("East");
@@ -147,7 +207,7 @@ package src.UI.Dialog {
 			panel8.append(btnOk);
 
 			pnlCost.append(pnlResources);
-			pnlCost.append(lblTime);
+			pnlCost.append(pnlTime);
 			pnlCost.append(lblUpkeep);
 
 			append(txtTitle);

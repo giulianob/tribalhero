@@ -87,26 +87,14 @@
 			
 			return moveTime;
 		}
-		
-		public static function trainTime(structureLvl: int, unitCount: int, unitPrototype: UnitPrototype, city: City, techManager: TechnologyManager, ignoreUnitCountDiscounts: Boolean): int
-		{			
+
+		public static function trainTime(structureLvl: int, unitCount: int, unitPrototype: UnitPrototype): int
+		{
 			var structureDiscountByLevel: Array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 15, 15, 20, 30, 40];
 			
-            var currentCityUpkeep: Number = city.troops.getUpkeep();
             var structureLevelDiscount: Number = (100.0 - structureDiscountByLevel[Math.min(structureLvl, structureDiscountByLevel.length - 1)]) / 100.0;
             var trainTimePerUnit: Number = unitPrototype.trainTime * structureLevelDiscount;
 
-            if (currentCityUpkeep < 15)
-            {						
-				var trainFirst15Discount: Number = (100.0 - Enumerable.from(techManager.getEffects(EffectPrototype.EFFECT_UNIT_TRAIN_FIRST_15_REDUCTION, EffectPrototype.INHERIT_ALL))
-															  .sum(function(p: EffectPrototype): int {
-																	return int(p.param1);
-															  })) / 100.0;
-
-                var discountedUnits: int = Math.min(15 - currentCityUpkeep, unitCount);
-                return (int)(((trainTimePerUnit * trainFirst15Discount * discountedUnits) + (trainTimePerUnit * (unitCount - discountedUnits))) * Constants.secondsPerUnit);
-            }
-            
             return (int)(trainTimePerUnit * unitCount) * Constants.secondsPerUnit;
 		}
 		
@@ -289,7 +277,7 @@
 			var numberOfCities:Number = Global.map.cities.size();
 			var wagonRequired:Number = 50 * numberOfCities;
 			var wagonCurrent:Number = Global.gameContainer.selectedCity.troops.getDefaultTroop().getIndividualUnitCount(ObjectFactory.getFirstType("Wagon"));
-			var influenceRequired:Number = (60 + 40 * numberOfCities) * numberOfCities;
+			var influenceRequired:Number = (80 + 50 * numberOfCities) * numberOfCities;
 			var influenceCurrent:Number = 0;
 			for each(var city: City in Global.map.cities)
 			{

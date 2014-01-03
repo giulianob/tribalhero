@@ -391,3 +391,55 @@ UPKEEP_REDUCE_CATAPULT_TECHNOLOGY_LVL_1,Reduce upkeep by 10% for Catapult. (Stac
 ,
 BASIC_TRAINING_TECHNOLOGY_NAME,Basic Training
 BASIC_TRAINING_TECHNOLOGY_LVL_1,Allows training Fighters.
+,
+INSTANT_TRAINING_GROUND_TECHNOLOGY_NAME,Training Ground Kickstart
+INSTANT_TRAINING_GROUND_TECHNOLOGY_SUMMARY,First {0} of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_1,First 5 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_2,First 10 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_3,First 15 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_4,First 20 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_5,First 25 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_6,First 30 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_7,First 35 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_8,First 40 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_9,First 45 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+INSTANT_TRAINING_GROUND_TECHNOLOGY_LVL_10,First 50 of Fighter and Bowman of the city will be trained immediately.  (Stacks additively up to 150)
+,
+INSTANT_BARRACK_TECHNOLOGY_NAME,Barrack Kickstart
+INSTANT_BARRACK_TECHNOLOGY_SUMMARY,"First {0} of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_1,"First 5 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_2,"First 10 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_3,"First 15 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_4,"First 20 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_5,"First 25 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_6,"First 30 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_7,"First 35 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_8,"First 40 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_9,"First 45 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+INSTANT_BARRACK_TECHNOLOGY_LVL_10,"First 50 of Swordsman, Archer, Hoplite and Gladiator of the city will be trained immediately.  (Stacks additively up to 150)"
+,
+INSTANT_STABLE_TECHNOLOGY_NAME,Stable Kickstart
+INSTANT_STABLE_TECHNOLOGY_SUMMARY,First {0} of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_1,First 2 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_2,First 4 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_3,First 6 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_4,First 8 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_5,First 10 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_6,First 12 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_7,First 14 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_8,First 16 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_9,First 18 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+INSTANT_STABLE_TECHNOLOGY_LVL_10,First 20 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 60)
+,
+INSTANT_WORKSHOP_TECHNOLOGY_NAME,Workshop Kickstart
+INSTANT_WORKSHOP_TECHNOLOGY_SUMMARY,First {0} of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_1,First 1 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_2,First 2 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_3,First 3 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_4,First 4 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_5,First 5 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_6,First 6 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_7,First 7 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_8,First 8 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_9,First 9 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 30)
+INSTANT_WORKSHOP_TECHNOLOGY_LVL_10,First 10 of Cavalry and Knight of the city will be trained immediately.  (Stacks additively up to 30)

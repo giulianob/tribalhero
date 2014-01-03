@@ -229,7 +229,6 @@ namespace Game.Logic.Actions
                 }
                 
                 procedure.StructureChange(structure, (ushort)type, lvl, callbackProcedure, structureCsvFactory);
-                city.EndUpdate();
 
                 StateChange(ActionState.Completed);
             });

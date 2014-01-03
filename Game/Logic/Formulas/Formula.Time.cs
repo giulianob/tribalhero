@@ -73,25 +73,35 @@ namespace Game.Logic.Formulas
             return moveTime;
         }
 
-        public virtual int TrainTime(int structureLvl, int unitCount, IBaseUnitStats stats, ICity city, ITechnologyManager techManager)
+        public int GetInstantTrainCount(IStructure structure)
         {
-            int[] structureDiscountByLevel = new[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 15, 15, 20, 30, 40};
+            var effectForStructureType =
+                    structure.City.Technologies.GetEffects(EffectCode.UnitTrainInstantTime).Where(x => (int)x.Value[0] == structure.Type).ToList();
 
-            var currentCityUpkeep = city.Troops.Upkeep;
+            if (!effectForStructureType.Any())
+                return 0;
+
+            var units = structure.City.Troops.MyStubs().SelectMany(
+                                                                   stub =>
+                                                                   stub.ToUnitList(FormationType.Normal,
+                                                                                   FormationType.Attack,
+                                                                                   FormationType.Defense,
+                                                                                   FormationType.Garrison,
+                                                                                   FormationType.InBattle));
+
+            var current = units.Sum(x => ObjectTypeFactory.IsObjectType((string)effectForStructureType[0].Value[1], x.Type) ? x.Count : 0);
+
+            var threshold = Math.Min(effectForStructureType.Sum(x => (int)x.Value[2]), (int)effectForStructureType[0].Value[3]);
+
+            return Math.Max(threshold - current, 0);
+        }
+
+        public virtual int TrainTime(int structureLvl, int unitCount, IBaseUnitStats stats)
+        {
+            int[] structureDiscountByLevel = {0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 15, 15, 20, 30, 40};
+
             var structureLevelDiscount = structureDiscountByLevel[Math.Min(structureLvl, structureDiscountByLevel.Length - 1)].FromPercentageDiscount();
             var trainTimePerUnit = stats.BuildTime * structureLevelDiscount;
-
-            if (currentCityUpkeep < 15)
-            {
-                var trainFirst15Discount =
-                        techManager.GetEffects(EffectCode.UnitTrainTimeFirst15Reduction)
-                                   .DefaultIfEmpty()
-                                   .Max(e => e == null ? 0 : (int)e.Value[0])
-                                   .FromPercentageDiscount();
-
-                var discountedUnits = Math.Min(15 - currentCityUpkeep, unitCount);
-                return (int)((trainTimePerUnit * trainFirst15Discount * discountedUnits) + (trainTimePerUnit * (unitCount - discountedUnits)));
-            }
 
             return (int)(trainTimePerUnit * unitCount);
         }

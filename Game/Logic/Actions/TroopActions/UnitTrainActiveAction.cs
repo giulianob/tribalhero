@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
@@ -130,9 +131,22 @@ namespace Game.Logic.Actions
             structure.City.Resource.Subtract(totalCost);
             structure.City.EndUpdate();
 
+            ushort instantTrainCount = (ushort)Math.Min(formula.GetInstantTrainCount(structure),count);
+            ActionCount -= instantTrainCount;
+
+            structure.City.DefaultTroop.BeginUpdate();
+            structure.City.DefaultTroop.AddUnit(structure.City.HideNewUnits ? FormationType.Garrison : FormationType.Normal, type, instantTrainCount);
+            structure.City.DefaultTroop.EndUpdate();
+
+            if (ActionCount == 0) // check if all units are instant trained
+            {
+                StateChange(ActionState.Completed);
+                return Error.Ok;
+            }
+
             var unitStats = unitFactory.GetUnitStats(type, unitLvl);
-            var timePerUnit = CalculateTime(formula.TrainTime(structure.Lvl, 1, unitStats, structure.City, structure.Technologies));
-            var timeUntilComplete = CalculateTime(formula.TrainTime(structure.Lvl, ActionCount, unitStats, structure.City, structure.Technologies));
+            var timePerUnit = CalculateTime(formula.TrainTime(structure.Lvl, 1, unitStats));
+            var timeUntilComplete = CalculateTime(formula.TrainTime(structure.Lvl, ActionCount, unitStats));
 
             // add to queue for completion
             beginTime = SystemClock.Now;
@@ -194,8 +208,8 @@ namespace Game.Logic.Actions
                 }
 
                 var unitStats = unitFactory.GetUnitStats(type, template.Lvl);
-                var timePerUnit = CalculateTime(formula.TrainTime(structure.Lvl, 1, unitStats, structure.City, structure.Technologies));
-                var timeUntilComplete = CalculateTime(formula.TrainTime(structure.Lvl, ActionCount, unitStats, structure.City, structure.Technologies));
+                var timePerUnit = CalculateTime(formula.TrainTime(structure.Lvl, 1, unitStats));
+                var timeUntilComplete = CalculateTime(formula.TrainTime(structure.Lvl, ActionCount, unitStats));
 
                 nextTime = SystemClock.Now.AddSeconds(timePerUnit);
                 endTime = SystemClock.Now.AddSeconds(timeUntilComplete);

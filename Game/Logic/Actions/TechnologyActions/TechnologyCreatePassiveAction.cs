@@ -89,6 +89,13 @@ namespace Game.Logic.Actions
                 obj.Technologies.EndUpdate();
                 callbackProcedure.OnTechnologyUpgrade(obj, tech.TechBase);
             }
+            else if (tech.Level != techBase.Level)
+            {
+                obj.Technologies.BeginUpdate();
+                obj.Technologies.Upgrade(new Technology(techBase));
+                obj.Technologies.EndUpdate();
+                callbackProcedure.OnTechnologyUpgrade(obj, tech.TechBase);
+            }
 
             StateChange(ActionState.Completed);
 

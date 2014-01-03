@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Game.Setup;
@@ -76,6 +77,7 @@ namespace Game.Util.Locking
             return this;
         }
 
+        [DebuggerStepThrough]
         public T Do<T>(Func<T> protectedBlock)
         {
             T blockReturnValue;
@@ -96,6 +98,7 @@ namespace Game.Util.Locking
             return blockReturnValue;
         }
 
+        [DebuggerStepThrough]
         public void Do(Action protectedBlock)
         {
             try

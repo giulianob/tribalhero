@@ -52,21 +52,21 @@
 			<arg value="--img=${basedir}/graphics/icons/props" />
 		</exec>					
 			
-		<zip destfile="${deploydir}/Launcher.zip">
+		<tar destfile="${deploydir}/Launcher.tar.gz" compression="gzip">
 			<zipfileset dir="${basedir}/Launcher/bin/Release" prefix="bin" />
 			<zipfileset dir="${basedir}/conf" prefix="conf" />			
-		</zip>
+		</tar>
 		
-		<zip destfile="${deploydir}/LauncherService.zip">
+		<tar destfile="${deploydir}/LauncherService.tar.gz" compression="gzip">
 			<zipfileset dir="${basedir}/LauncherService/bin/Release" prefix="bin" />
 			<zipfileset dir="${basedir}/conf" prefix="conf" />			
-		</zip>		
+		</tar>		
 		
-		<zip destfile="${deploydir}/Database.zip">
+		<tar destfile="${deploydir}/Database.tar.gz" compression="gzip">
 			<zipfileset dir="${deploydir}/databaseoutput/"/>
-		</zip>
-		<zip destfile="${deploydir}/Graph.zip">
+		</tar>
+		<tar destfile="${deploydir}/Graph.tar.gz" compression="gzip">
 			<zipfileset dir="${deploydir}/graphoutput/" includes="*.png" />			
-		</zip>
+		</tar>
 	</target>	
 </project>

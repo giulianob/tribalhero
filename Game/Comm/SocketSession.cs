@@ -34,7 +34,7 @@ namespace Game.Comm
                 while (totalBytesSent < packetBytes.Length)
                 {
                     try
-                    {                       
+                    {
                         int bytesSent = Socket.Send(packetBytes, totalBytesSent, packetBytes.Length - totalBytesSent, SocketFlags.None);
 
                         // bytesSent 0 means there was an error sending the packet
@@ -75,6 +75,11 @@ namespace Game.Comm
                             Logger.Warn(e, "Socket exception with unhandled error {0} {1}", e.SocketErrorCode, e.Message);
                         }
 
+                        return false;
+                    }
+                    catch(ObjectDisposedException)
+                    {
+                        // This exception happens if the client disconnects and we shut down the socket but then still try to send data
                         return false;
                     }
                     catch(Exception e)

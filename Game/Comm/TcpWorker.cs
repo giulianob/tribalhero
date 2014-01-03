@@ -170,6 +170,12 @@ namespace Game.Comm
                     return;
                 }
 
+                if (logger.IsDebugEnabled)
+                {
+                    var player = dcSession.Player;
+                    logger.Debug("Socket disconnect IP[{0}] player[{1}]", dcSession.Name, player != null ? player.Name : "N/A");
+                }
+
                 sessions.Remove(s);
                 sockList.Remove(s);
 

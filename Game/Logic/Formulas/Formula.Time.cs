@@ -73,7 +73,7 @@ namespace Game.Logic.Formulas
             return moveTime;
         }
 
-        public int GetInstantTrainCount(IStructure structure)
+        public virtual int GetInstantTrainCount(IStructure structure)
         {
             var effectForStructureType =
                     structure.City.Technologies.GetEffects(EffectCode.UnitTrainInstantTime).Where(x => (int)x.Value[0] == structure.Type).ToList();
@@ -81,13 +81,7 @@ namespace Game.Logic.Formulas
             if (!effectForStructureType.Any())
                 return 0;
 
-            var units = structure.City.Troops.MyStubs().SelectMany(
-                                                                   stub =>
-                                                                   stub.ToUnitList(FormationType.Normal,
-                                                                                   FormationType.Attack,
-                                                                                   FormationType.Defense,
-                                                                                   FormationType.Garrison,
-                                                                                   FormationType.InBattle));
+            var units = structure.City.Troops.MyStubs().SelectMany(stub => stub.ToUnitList());
 
             var current = units.Sum(x => ObjectTypeFactory.IsObjectType((string)effectForStructureType[0].Value[1], x.Type) ? x.Count : 0);
 

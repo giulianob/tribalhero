@@ -5,6 +5,7 @@ import System.Collection.Generic.IGrouping;
 import System.Linq.Enumerable;
 
 import flash.events.*;
+    import flash.geom.Point;
 
     import org.aswing.*;
     import org.aswing.border.*;
@@ -25,10 +26,13 @@ import src.UI.*;
     import src.UI.Components.*;
     import src.UI.Components.CityActionGridList.*;
     import src.UI.Components.TableCells.*;
+    import src.UI.Tooltips.TextTooltip;
     import src.Util.*;
 
     public class CityEventDialog extends GameJPanel
 	{
+        private var technologySummaryTooltip: TextTooltip = new TextTooltip();
+
 		private var pnlResources:JPanel;
 		private var pnlTabs:JTabbedPane;
 		
@@ -289,12 +293,30 @@ import src.UI.*;
             // Technologies Tab
             {
                 var technologiesListModel: VectorListModel = new VectorListModel();
-                var technologiesTable: JTable= new JTable(new PropertyTableModel(technologiesListModel, [StringHelper.localize("CITY_OVERVIEW_TECHNOLOGIES_NAME_COLUMN"), StringHelper.localize("CITY_OVERVIEW_TECHNOLOGIES_SUMMARY_COLUMN")], ["name", "summary"], [null, null]));
+                var technologiesTable: JTable = new JTable(new PropertyTableModel(technologiesListModel, [StringHelper.localize("CITY_OVERVIEW_TECHNOLOGIES_NAME_COLUMN"), StringHelper.localize("CITY_OVERVIEW_TECHNOLOGIES_SUMMARY_COLUMN")], ["name", "summary"], [null, null]));
                 technologiesTable.getColumnAt(0).setPreferredWidth(160);
-                technologiesTable.getColumnAt(1).setPreferredWidth(370);
+                technologiesTable.getColumnAt(1).setPreferredWidth(600);
                 technologiesTable.setCellSelectionEnabled(false);
                 technologiesTable.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
                     technologiesTable.getCellEditor().cancelCellEditing();
+                });
+
+                // Mouseover to show tooltip
+                technologiesTable.addEventListener(MouseEvent.MOUSE_MOVE, function(e: MouseEvent): void {
+                    var mousePos: Point = technologiesTable.globalToLocal(new Point(e.stageX, e.stageY));
+                    var row: int = technologiesTable.rowAtPoint(new IntPoint(mousePos.x, mousePos.y - technologiesTable.getHeaderHeight()));
+                    if (row == -1) {
+                        return;
+                    }
+
+                    var technologySummary: * = technologiesListModel.get(row);
+
+                    technologySummaryTooltip.setText(technologySummary.summary, technologySummary.name);
+                    technologySummaryTooltip.showFixed(new IntPoint(e.stageX, e.stageY));
+                });
+
+                technologiesTable.addEventListener(MouseEvent.MOUSE_OUT, function (e: MouseEvent): void {
+                    technologySummaryTooltip.hide();
                 });
 
                 technologiesTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);

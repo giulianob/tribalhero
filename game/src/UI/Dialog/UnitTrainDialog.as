@@ -58,7 +58,20 @@ public class UnitTrainDialog extends GameJPanel {
 			sldAmount.addStateListener(updateTime);
 
 			var self: UnitTrainDialog = this;
-			btnOk.addActionListener(function():void { if (onAccept != null) onAccept(self); } );
+			btnOk.addActionListener(function():void { if (onAccept != null) {
+                if (getInstantTimeCount() == 0) {
+                    onAccept(self);
+                    return;
+                }
+
+                InfoDialog.showMessageDialog("Confirm", "Are you sure? You are about to immediatelly train units which is an irreversible action.", function(result: int): void {
+                    if (result == JOptionPane.YES) {
+                        onAccept(self);
+                    }
+
+                }, null, true, true, JOptionPane.YES | JOptionPane.NO);
+            } }
+            );
 
 			updateResources();
 			updateTime();
@@ -117,6 +130,10 @@ public class UnitTrainDialog extends GameJPanel {
                 lblTime.setText(DateUtil.formatTime(trainTime));
                 pnlTime.append(lblTime);
             }
+
+            if (getFrame()) {
+                getFrame().pack();
+            }
 		}
 
 		private function updateResources(e: Event = null) : void {			
@@ -151,7 +168,7 @@ public class UnitTrainDialog extends GameJPanel {
 
 		private function createUI(): void
 		{
-			setPreferredWidth(350);
+            setPreferredWidth(350);
 			//component creation
 			var layout0:SoftBoxLayout = new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5);
 			setLayout(layout0);
@@ -194,7 +211,7 @@ public class UnitTrainDialog extends GameJPanel {
 			new SimpleTooltip(lblUpkeep, "Upkeep");
 
 			pnlUpkeepMsg = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 3));
-			pnlUpkeepMsg.setBorder(new LineBorder(null, new ASColor(0xff0000), 1, 10));
+			pnlUpkeepMsg.setBorder(new LineBorder(null, new ASColor(0xff0000), 1, 1));
 			lblUpkeepMsg = new MultilineLabel("The upkeep required to train this many units may exceed your city's crop production rate. Your units will starve and die out if there is not enough crop.", 0, 28);
 			pnlUpkeepMsg.setVisible(false);
 

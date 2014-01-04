@@ -14,7 +14,7 @@
 		private var headerLabel:JLabel;
 		private var header: String;
 		
-		public function TextTooltip(text: String, header: String = "") {										
+		public function TextTooltip(text: String = "", header: String = "") {
 			ui.setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 5));			
 			
 			createUI(text, header);			

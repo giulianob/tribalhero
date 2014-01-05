@@ -1,8 +1,8 @@
 package src.UI.Tooltips 
 {
-	import flash.display.DisplayObject;
+    import flash.display.DisplayObject;
 
-	public class ActionButtonTooltip extends Tooltip
+    public class ActionButtonTooltip extends Tooltip
 	{
 		protected var drawTooltip: Boolean = false;
 		

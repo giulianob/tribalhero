@@ -1,18 +1,15 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import src.Global;
-	import src.Objects.Factories.*;
-	import src.Objects.GameObject;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.States.BattleState;
-	import src.UI.Cursors.*;
-	import src.UI.Dialog.BattleViewer;
-	import src.UI.Tooltips.TextTooltip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class ViewBattleButton extends ActionButton
+    import src.Global;
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.SimpleGameObject;
+    import src.Objects.States.BattleState;
+    import src.UI.Tooltips.TextTooltip;
+
+    public class ViewBattleButton extends ActionButton
 	{
 		private var tooltip: TextTooltip;
 

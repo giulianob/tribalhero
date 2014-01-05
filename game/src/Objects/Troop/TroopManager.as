@@ -1,9 +1,10 @@
 ﻿package src.Objects.Troop {
-	import src.Map.City;
-	import src.Util.BinaryList.*;
-	import System.Linq.Enumerable;
+    import System.Linq.Enumerable;
 
-	/**
+    import src.Map.City;
+    import src.Util.BinaryList.*;
+
+    /**
 	 * ...
 	 * @author Default
 	 */
@@ -73,5 +74,12 @@
 			
 			return total;
 		}
+
+        public function getMyStubs():Array {
+            return Enumerable.from(this)
+                    .where(function(p: TroopStub): Boolean {
+                        return p.cityId == city.id;
+                    }).toArray();
+        }
 	}
 }

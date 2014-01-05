@@ -5,10 +5,10 @@
  */
 
 package src.Objects.Prototypes {
-	import src.Map.*;
-	import src.Objects.Factories.StructureFactory;
+    import src.Map.*;
+    import src.Objects.Factories.StructureFactory;
 
-	public class SimpleLayout implements ILayout {
+    public class SimpleLayout implements ILayout {
 
 		public var type: int;
 		public var minlevel: int;
@@ -22,13 +22,14 @@ package src.Objects.Prototypes {
 		public function SimpleLayout() {
 		}
 
-		public function validate(builder: CityObject, city: City, x: int, y: int): Boolean
+		public function validate(builder: CityObject, city: City, position: Position, size: int): Boolean
 		{
 			var objects: Array;
-			if (mindist == -1)
-			objects = city.objects.toArray();
-			else
-			objects = city.nearObjectsByRadius(mindist, maxdist, x, y, type);
+			if (mindist == -1) {
+			    objects = city.objects.toArray();
+            } else {
+			    objects = city.nearObjectsByRadius(mindist, maxdist, position, size, type);
+            }
 
 			for each (var obj: CityObject in objects)
 			{

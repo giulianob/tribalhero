@@ -1,17 +1,16 @@
 ﻿package src.Comm.Commands {
 
-	import src.*;
-	import src.Comm.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Actions.*;
-	import src.Objects.Stronghold.Stronghold;
-	import src.Objects.Troop.*;
-	import src.UI.Components.ScreenMessages.*;
-	import src.UI.Dialog.*;
-	import src.Util.*;
+    import src.*;
+    import src.Comm.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Stronghold.Stronghold;
+    import src.Objects.Troop.*;
+    import src.UI.Components.ScreenMessages.*;
+    import src.UI.Dialog.*;
+    import src.Util.*;
 
-	public class TribeComm {
+    public class TribeComm {
 
 		private var mapComm: MapComm;
 		private var session: Session;
@@ -72,7 +71,7 @@
 			var rankCount: int = packet.readByte();
 			for (var i :int = 0; i < rankCount; i++)
 			{
-				var rankData: * = new Object();
+				var rankData: * = {};
 				rankData.name = packet.readString();
 				rankData.rights = packet.readInt();
 				ranks.push(rankData);
@@ -159,7 +158,7 @@
 				return;
 			}
 			
-			var profileData: * = new Object();
+			var profileData: * = {};
 			profileData.tribeId = packet.readUInt();
 			profileData.chiefId = packet.readUInt();
 			profileData.tribeLevel = packet.readUByte();
@@ -174,7 +173,7 @@
 			profileData.members = [];
 			var memberCount: int = packet.readShort();
 			for (var i:int = 0; i < memberCount; i++) {
-				var memberData: * = new Object();
+				var memberData: * = {};
 				
 				memberData.playerId = packet.readUInt();
 				memberData.playerName = packet.readString();
@@ -341,7 +340,7 @@
 			
             var i: int;
             
-			var profileData: * = new Object();
+			var profileData: * = {};
 			profileData.tribeId = packet.readUInt();
 			profileData.tribeName = packet.readString();
             profileData.publicDescription = packet.readString();
@@ -352,7 +351,7 @@
 			var rankCount: int = packet.readByte();
 			for (i = 0; i < rankCount; i++)
 			{
-				var rankData: * = new Object();
+				var rankData: * = {};
 				rankData.name = packet.readString();
 				profileData.ranks.push(rankData);
 			}
@@ -459,7 +458,7 @@
 				return;			
 			
 			if (!custom)
-				custom = new Object();
+				custom = {};
 				
 			var tribeProfileDialog: TribeProfileDialog = Global.gameContainer.findDialog(TribeProfileDialog); 
 			if (tribeProfileDialog) {

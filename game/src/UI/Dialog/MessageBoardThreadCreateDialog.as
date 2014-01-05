@@ -1,20 +1,15 @@
 ﻿package src.UI.Dialog {
-	import flash.events.Event;
-	import src.Comm.GameURLLoader;
-	import src.Global;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.UI.GameJPanel;
-	import src.Objects.Troop.*;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import flash.events.Event;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
+    import org.aswing.*;
+    import org.aswing.geom.*;
 
-	public class MessageBoardThreadCreateDialog extends GameJPanel {
+    import src.Comm.GameURLLoader;
+    import src.Global;
+    import src.UI.GameJPanel;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    public class MessageBoardThreadCreateDialog extends GameJPanel {
 		
 		private var pnlSubject:JPanel;
 		private var lblSubject:JLabel;

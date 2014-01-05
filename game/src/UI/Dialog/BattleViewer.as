@@ -30,7 +30,7 @@
 		private var battle: BattleManager;
 		private var battleId: int;
 
-		private var combat: Array = new Array();
+		private var combat: Array = [];
 		
 		private var tabsByGroup: Dictionary = new Dictionary();
 
@@ -288,8 +288,12 @@
             }
 
             var icon: DisplayObjectContainer = combatObj.getIcon();
-            var assetIcon: AssetIcon = (icon != null ? new AssetIcon(icon) : null);
-            pnl.append(new JLabel(text, assetIcon));
+            if (icon) {
+                Util.resizeSprite(icon, 60, 40);
+                pnl.append(new AssetPane(icon));
+            }
+
+            pnl.append(new JLabel(text));
 
             return pnl;
 		}

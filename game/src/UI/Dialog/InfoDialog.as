@@ -1,19 +1,15 @@
 ﻿package src.UI.Dialog 
 {
 
-import src.Constants;
-import src.Global;
-import src.UI.GameJFrame;
-import src.UI.GameJPanel;
-import org.aswing.ext.MultilineLabel;
-import org.aswing.*;
-import org.aswing.geom.IntDimension;
+    import org.aswing.*;
+    import org.aswing.event.*;
+    import org.aswing.ext.MultilineLabel;
 
-import org.aswing.border.EmptyBorder;
-import org.aswing.event.*;
-import org.aswing.geom.IntPoint;
+    import src.Global;
+    import src.UI.GameJFrame;
+    import src.UI.GameJPanel;
 
-public class InfoDialog extends GameJPanel {
+    public class InfoDialog extends GameJPanel {
 	private var okButton:JButton;
 	private var cancelButton:JButton;
 	private var yesButton:JButton;
@@ -49,12 +45,8 @@ public class InfoDialog extends GameJPanel {
 	public function getInputText():JTextField{
 		return inputText;
 	}
-	
-	public function getMsgLabel():MultilineLabel{
-		return msgLabel;
-	}
-	
-	public function getOkButton():JButton{
+
+        public function getOkButton():JButton{
 		if(okButton == null){
 			okButton = new JButton(JOptionPane.OK_STR);
 		}
@@ -168,7 +160,6 @@ public class InfoDialog extends GameJPanel {
 	}
 	
 	public static function showInputDialog(title:String, msg:String, finishHandler:Function=null, defaultValue:String="", parentComponent:Component=null, modal:Boolean=true):InfoDialog{
-		var frame:GameJFrame = new GameJFrame(AsWingUtils.getOwnerAncestor(parentComponent), title, modal);
 		var pane:InfoDialog = new InfoDialog(msg);
 		pane.title = title;
 		
@@ -196,7 +187,7 @@ public class InfoDialog extends GameJPanel {
 		
 		pane.getCancelButton().addActionListener(cancelHandler);
 		
-		frame = pane.getFrame();
+		var frame: JFrame = pane.getFrame();
 		frame.addEventListener(FrameEvent.FRAME_CLOSING, cancelHandler);
 			
 		pane.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

@@ -1,26 +1,28 @@
 ﻿package src.UI.Components.SimpleTroopGridList
 {
-	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import org.aswing.AsWingConstants;
-	import org.aswing.border.EmptyBorder;
-	import org.aswing.ext.GeneralGridListCellFactory;
-	import org.aswing.ext.GridList;
-	import org.aswing.ext.GridListItemEvent;
-	import org.aswing.geom.IntDimension;
-	import org.aswing.Insets;
-	import org.aswing.JPanel;
-	import org.aswing.JScrollPane;
-	import org.aswing.JTabbedPane;
-	import org.aswing.SoftBoxLayout;
-	import org.aswing.VectorListModel;
-	import src.Objects.Factories.UnitFactory;
-	import src.Objects.Prototypes.UnitPrototype;
-	import src.Objects.Troop.*;
-	import src.UI.Tooltips.Tooltip;
-	import src.UI.Tooltips.UnitTooltip;
+    import flash.display.DisplayObject;
+    import flash.events.Event;
 
-	/**
+    import org.aswing.AsWingConstants;
+    import org.aswing.Insets;
+    import org.aswing.JPanel;
+    import org.aswing.JScrollPane;
+    import org.aswing.JTabbedPane;
+    import org.aswing.SoftBoxLayout;
+    import org.aswing.VectorListModel;
+    import org.aswing.border.EmptyBorder;
+    import org.aswing.ext.GeneralGridListCellFactory;
+    import org.aswing.ext.GridList;
+    import org.aswing.ext.GridListItemEvent;
+    import org.aswing.geom.IntDimension;
+
+    import src.Objects.Factories.UnitFactory;
+    import src.Objects.Prototypes.UnitPrototype;
+    import src.Objects.Troop.*;
+    import src.UI.Tooltips.Tooltip;
+    import src.UI.Tooltips.UnitTooltip;
+
+    /**
 	 *
 	 * The SimpleTroopGridList is used when the grid list only needs to look at the unit template from the city for the levels.
 	 * This is usually used for the drag and drop unit lists and the other basic uses.
@@ -138,7 +140,7 @@
 				troop.add(newFormation);
 			}
 
-			var tilelists: Array = new Array();
+			var tilelists: Array = [];
 
 			for each(formation in troop)
 			{
@@ -182,20 +184,7 @@
 			return tilelists;
 		}
 
-		public static function tabGridLists(tilelists: Array) : JPanel {
-			var panel: JPanel = new JPanel();
-
-			var tabbedPane: JTabbedPane = new JTabbedPane();
-
-			for each(var ts: SimpleTroopGridList in tilelists)
-			tabbedPane.appendTab(ts, Formation.TypeStrings[ts.getFormation().type]);
-
-			panel.append(tabbedPane);
-
-			return panel;
-		}
-
-		public static function stackGridLists(tilelists: Array, includeFormationName: Boolean = true) : JPanel {
+        public static function stackGridLists(tilelists: Array, includeFormationName: Boolean = true) : JPanel {
 			var panel: JPanel = new JPanel();
 
 			var layout0: SoftBoxLayout = new SoftBoxLayout();

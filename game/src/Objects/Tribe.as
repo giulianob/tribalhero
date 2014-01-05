@@ -1,7 +1,6 @@
 package src.Objects 
 {
-	import src.Constants;
-	/**
+    /**
 	 * ...
 	 * @author Anthony Lam
 	 */
@@ -16,9 +15,8 @@ package src.Objects
 		public static var UPGRADE: int = 32;	
 		public static var ASSIGNMENT: int = 64;
 		public static var DELETE_POST: int = 128;
-		public static var ANNOUNCEMENT: int = 256;;
-		
-		public var id: int = 0;
+        public static var ANNOUNCEMENT: int = 256;
+        public var id: int = 0;
 		public var rank: int = 0;
 		public var ranks: * = null;
 

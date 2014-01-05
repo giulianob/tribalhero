@@ -2,8 +2,8 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="TribalHero">
     <configurations>
-      <configuration name="TribalHero" pure-as="true" main-class="src.Preloader" output-file="TribalHero.swf" output-folder="$MODULE_DIR$/bin">
-        <dependencies target-player="11.1">
+      <configuration name="TribalHero" pure-as="true" main-class="src.Preloader" output-file="Game.swf" output-folder="$MODULE_DIR$/bin">
+        <dependencies target-player="11.9">
           <entries>
             <entry library-name="TheMiner_en" library-level="project">
               <dependency linkage="Merged" />
@@ -31,7 +31,7 @@
             <entry key="compiler.debug.swf" value="true" />
             <entry key="compiler.define" value="CONFIG::debug&#9;true" />
           </map>
-          <option name="additionalOptions" value="-frame=start,src.Main" />
+          <option name="additionalOptions" value="-frame=start,src.Main -keep-as3-metadata+=EmbedPosition" />
         </compiler-options>
         <packaging-air-desktop />
         <packaging-android />

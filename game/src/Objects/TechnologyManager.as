@@ -5,11 +5,11 @@
 	 * @author Default
 	 */
 
-	import src.Objects.Prototypes.EffectPrototype;
+    import src.Objects.Prototypes.EffectPrototype;
 
-	public class TechnologyManager {
+    public class TechnologyManager {
 
-		public var technologies: Array = new Array();
+		public var technologies: Array = [];
 		public var location: int;
 		public var parent: TechnologyManager;
 
@@ -22,17 +22,16 @@
 		{
 			if (tech.ownerLocation != location)
 			{
-				var effects: Array = tech.getAllEffects(EffectPrototype.INHERIT_SELF, location);
-
-				if (effects.length == 0)
-				return; //do not add effects that do not affect this location
+                if (tech.getAllEffects(EffectPrototype.INHERIT_SELF, location).length == 0) {
+				    return; //do not add effects that do not affect this location
+                }
 			}
 
 			//check for duplicates
 			var dupe: Boolean = false;
 			for each(var currTech: TechnologyStats in technologies)
 			{
-				if (currTech.ownerId == tech.ownerId && currTech.ownerLocation == tech.ownerLocation && currTech.prototype.techtype == tech.prototype.techtype)
+				if (currTech.ownerId == tech.ownerId && currTech.ownerLocation == tech.ownerLocation && currTech.techPrototype.techtype == tech.techPrototype.techtype)
 				{
 					dupe = true;
 					break;
@@ -53,7 +52,7 @@
 				if (currTech.ownerLocation != EffectPrototype.LOCATION_OBJECT)
 				continue;
 
-				if (currTech.prototype.techtype == techtype)
+				if (currTech.techPrototype.techtype == techtype)
 				return currTech;
 			}
 
@@ -65,7 +64,7 @@
 			for (var i: int = 0; i < technologies.length; i++)
 			{
 				var currentTechStats: TechnologyStats = technologies[i];
-				if (currentTechStats.prototype.techtype == tech.prototype.techtype && currentTechStats.ownerId == tech.ownerId && currentTechStats.ownerLocation == tech.ownerLocation)
+				if (currentTechStats.techPrototype.techtype == tech.techPrototype.techtype && currentTechStats.ownerId == tech.ownerId && currentTechStats.ownerLocation == tech.ownerLocation)
 				{
 					technologies.splice(i, 1);
 					break;
@@ -81,7 +80,7 @@
 			for each (var tech: TechnologyStats in technologies)
 				parent.remove(tech);
 			
-			technologies = new Array();
+			technologies = [];
 		}
 
 		public function update(technologyStats: TechnologyStats):void
@@ -95,7 +94,7 @@
 
 		public function getAllEffects(inheritance: int): Array
 		{
-			var ret: Array = new Array();
+			var ret: Array = [];
 
 			var i: int;
 			var f: Array;
@@ -124,7 +123,7 @@
 
 		public function getEffects(effectCode: int, inheritance: int): Array
 		{
-			var ret: Array = new Array();
+			var ret: Array = [];
 
 			var i: int;
 			var f: Array;
@@ -150,15 +149,6 @@
 			return ret;
 		}
 
-		public function sum(effectCode: int, inherit: int) : int {
-			var ret: int = 0;
-			for each (var e: EffectPrototype in getEffects(effectCode, inherit)) {
-				//ret += e....
-			}
-			
-			return ret;
-		}
-
-	}
+    }
 
 }

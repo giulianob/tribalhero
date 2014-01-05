@@ -1,16 +1,18 @@
 ﻿package src.Comm.Commands {
 
-	import flash.geom.Point;
-	import src.Comm.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Constants;
-	import src.Global;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.States.BattleState;
-	import src.Objects.States.GameObjectState;
+    import System.Linq.Enumerable;
 
-	public class RegionComm {
+    import flash.geom.Point;
+
+    import src.Comm.*;
+    import src.Constants;
+    import src.Global;
+    import src.Map.*;
+    import src.Map.MiniMap.MiniMapRegion;
+    import src.Objects.Factories.ObjectFactory;
+    import src.Objects.SimpleGameObject;
+
+    public class RegionComm {
 
 		private var mapComm: MapComm;
 		private var session: Session;
@@ -66,19 +68,20 @@
 
 		public function onRegionSetTile(packet: Packet):void {
 			var cnt: int = packet.readUShort();
-			var regionId: int;
 
+            var regionIds: Array = [];
 			for (var i: int = 0; i < cnt; i++) {
-				var x: int = packet.readUInt();
-				var y: int = packet.readUInt();
+                var pos: Position = new Position(packet.readUInt(), packet.readUInt());
 				var tileType: int = packet.readUShort();
 
-				Global.map.regions.setTileType(x, y, tileType, false);
+				Global.map.regions.setTileType(pos, tileType);
 
-				regionId = MapUtil.getRegionIdFromMapCoord(x, y);
+                regionIds.push(TileLocator.getRegionIdFromMapCoord(pos));
 			}
 
-			Global.map.regions.redrawRegion(regionId);
+            for each (var regionId: int in Enumerable.from(regionIds).distinct().toArray()) {
+			    Global.map.regions.redrawRegion(regionId);
+            }
 		}
 
 		public function getRegion(ids: Array, outdatedIds: Array):void
@@ -104,10 +107,13 @@
 
 		public function onReceiveRegion(packet:Packet, custom: *):void
 		{
+            var objectsToAdd: Array = [];
+
 			var regionCnt: int = packet.readUByte();
 			for (var i:int = 0; i < regionCnt; i++)
 			{
 				var id: int = packet.readUShort();
+                trace("Region " + id);
 				var mapArray:Array = packet.read2dShortArray(Constants.regionTileW, Constants.regionTileH);
 
 				var newRegion: Region = Global.map.addRegion(id, mapArray);
@@ -116,20 +122,21 @@
 
 				for (var j: int = 0; j < objCnt; j++)
 				{
-					var obj: SimpleGameObject = mapComm.Objects.readObjectInstance(packet, newRegion.id, true);
-					newRegion.addObject(obj, false);					
+                    objectsToAdd.push(mapComm.Objects.readObjectInstance(packet, newRegion.id, true));
 				}
-				
-				newRegion.sortObjects();
 			}
 
-			Global.map.objContainer.moveWithCamera(Global.gameContainer.camera.x, Global.gameContainer.camera.y);
+            for each (var obj: SimpleGameObject in objectsToAdd) {
+                Global.map.regions.addObject(obj);
+            }
+
+			Global.map.objContainer.moveWithCamera(Global.gameContainer.camera.currentPosition.x, Global.gameContainer.camera.currentPosition.y);
 		}
 
-		public function getCityRegion(ids: Array):void
+		public function getMiniMapRegion(ids: Array):void
 		{
 			var packet:Packet = new Packet();
-			packet.cmd = Commands.CITY_REGION_GET;
+			packet.cmd = Commands.MINIMAP_REGION_GET;
 			packet.option = 0;
 
 			packet.writeUByte(ids.length);
@@ -138,30 +145,31 @@
 				packet.writeUShort(ids[i]);
 			}
 
-			session.write(packet, onReceiveCityRegion);
+			session.write(packet, onReceiveMiniMapRegion);
 		}
 
-		public function onReceiveCityRegion(packet:Packet, custom: *):void
+		public function onReceiveMiniMapRegion(packet:Packet, custom: *):void
 		{
 			var regionCnt: int = packet.readUByte();
 			for (var i:int = 0; i < regionCnt; i++)
 			{
 				var id: int = packet.readUShort();
 
-				var newRegion: CityRegion = Global.gameContainer.miniMap.addCityRegion(id);
+				var newRegion: MiniMapRegion = Global.gameContainer.miniMap.addMiniMapRegion(id);
 
 				var objCnt: int = packet.readUShort();
 
 				for (var j: int = 0; j < objCnt; j++)
 				{
 					var objType: int = packet.readUByte();
-					var objX: int = packet.readUShort() + (id % Constants.miniMapRegionW) * Constants.cityRegionTileW;
-					var objY: int = packet.readUShort() + int(id / Constants.miniMapRegionW) * Constants.cityRegionTileH;
+					var objX: int = packet.readUShort() + (id % Constants.miniMapRegionRatioW) * Constants.miniMapRegionTileW;
+					var objY: int = packet.readUShort() + int(id / Constants.miniMapRegionRatioW) * Constants.miniMapRegionTileH;
 					var objGroupId: int = packet.readUInt();
 					var objId: int = packet.readUInt();
+                    var objSize: int = packet.readUByte();
 					var extraProps : Object = {};
 					
-					var coord: Point = MapUtil.getMiniMapScreenCoord(objX, objY);
+					var position: ScreenPosition = TileLocator.getMiniMapScreenCoord(objX, objY);
 					
 					// City objects
 					if (objType == ObjectFactory.TYPE_CITY) {
@@ -192,7 +200,7 @@
 						extraProps.level = packet.readUByte();
 						extraProps.count = packet.readUByte();
 					}
-					newRegion.addRegionObject(objType, objGroupId, objId, coord.x, coord.y, extraProps);
+					newRegion.addRegionObject(objType, objGroupId, objId, objSize, position, extraProps);
 				}
 			}
 

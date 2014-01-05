@@ -1,10 +1,8 @@
 package src.Objects.States 
 {
-	import flash.display.DisplayObject;
-	import src.Objects.GameObject;
-	import src.Objects.SimpleGameObject;
+    import src.Objects.SimpleGameObject;
 
-	public class MovingState extends GameObjectState
+    public class MovingState extends GameObjectState
 	{	
 		public function MovingState() 
 		{

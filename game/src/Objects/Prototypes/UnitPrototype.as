@@ -5,10 +5,10 @@
  */
 
 package src.Objects.Prototypes {
-	import src.Objects.Resources;
-	import src.Util.StringHelper;
+    import src.Objects.Resources;
+    import src.Util.StringHelper;
 
-	public class UnitPrototype {
+    public class UnitPrototype {
 
 		public var nlsname: String;
 		public var type: int;

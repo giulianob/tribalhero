@@ -1,21 +1,14 @@
 ﻿
 package src.UI.Sidebars.CursorCancel {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.Global;
-	import src.Objects.GameObject;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.SimpleObject;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.GameJSidebar;
+    import flash.events.Event;
 
+    import org.aswing.*;
 
-	public class CursorCancelSidebar extends GameJSidebar {
+    import src.Global;
+    import src.Objects.SimpleObject;
+    import src.UI.GameJSidebar;
+
+    public class CursorCancelSidebar extends GameJSidebar {
 
 		private var parentObj: SimpleObject;
 

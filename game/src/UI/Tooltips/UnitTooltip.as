@@ -1,14 +1,10 @@
 ﻿package src.UI.Tooltips {
-	import src.Objects.Prototypes.UnitPrototype;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import org.aswing.*;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;		
-	
-	public class UnitTooltip extends Tooltip{
+    import src.Objects.Prototypes.UnitPrototype;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    public class UnitTooltip extends Tooltip{
 		
 		private var pnlHeader: JPanel;
 		private var lblName: JLabel;

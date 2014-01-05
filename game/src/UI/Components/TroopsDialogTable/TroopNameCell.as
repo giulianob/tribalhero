@@ -1,13 +1,14 @@
 package src.UI.Components.TroopsDialogTable 
 {
-	import org.aswing.*;
-	import src.*;
-	import src.Map.*;
-	import src.UI.Components.*;
-	import src.UI.Components.TableCells.*;
-	import src.Util.*;
-	
-	public class TroopNameCell extends AbstractPanelTableCell 
+    import org.aswing.*;
+
+    import src.*;
+    import src.Map.*;
+    import src.UI.Components.*;
+    import src.UI.Components.TableCells.*;
+    import src.Util.*;
+
+    public class TroopNameCell extends AbstractPanelTableCell
 	{				
 		private var lbl: RichLabel = new RichLabel();
 		

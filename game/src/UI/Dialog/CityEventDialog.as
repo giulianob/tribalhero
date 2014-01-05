@@ -1,37 +1,45 @@
 ﻿package src.UI.Dialog
 {
-	
-	import fl.lang.*;
-	import flash.events.*;
-	import mx.utils.StringUtil;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.event.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import org.aswing.table.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Effects.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.UI.*;
-	import src.UI.Components.*;
-	import src.UI.Components.CityActionGridList.*;
-	import src.UI.Components.TableCells.*;
-	import src.Util.*;
-	
-	public class CityEventDialog extends GameJPanel
+
+import System.Collection.Generic.IGrouping;
+import System.Linq.Enumerable;
+
+import flash.events.*;
+    import flash.geom.Point;
+
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.event.*;
+    import org.aswing.geom.*;
+    import org.aswing.table.*;
+
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Effects.*;
+    import src.Objects.Factories.*;
+    import src.Objects.Prototypes.*;
+import src.Objects.Technologies.ITechnologySummarizer;
+import src.Objects.Technologies.TechnologySummarizer;
+import src.Objects.Technologies.TechnologySummarizerFactory;
+import src.UI.*;
+    import src.UI.Components.*;
+    import src.UI.Components.CityActionGridList.*;
+    import src.UI.Components.TableCells.*;
+    import src.UI.Tooltips.TextTooltip;
+    import src.Util.*;
+
+    public class CityEventDialog extends GameJPanel
 	{
+        private var technologySummaryTooltip: TextTooltip = new TextTooltip();
+
 		private var pnlResources:JPanel;
 		private var pnlTabs:JTabbedPane;
 		
 		private var gridLocalActions:CityActionGridList;
 		private var laborersTable:JTable;
 		private var laborersListModel: VectorListModel;
-		
+
 		private var lblGold:JLabel;
 		private var lblWood:JLabel;
 		private var lblCrop:JLabel;
@@ -154,7 +162,7 @@
 		{
 			var value:int = resource.getValue();
 			
-			return value + (includeLimit ? "/" + resource.getLimit() : "") + (includeRate ? " (" + StringHelper.localize("STR_PER_HOUR", "+" + resource.getHourlyRate()) + ")" : "");
+			return value.toString() + (includeLimit ? "/" + resource.getLimit() : "") + (includeRate ? " (" + StringHelper.localize("STR_PER_HOUR", "+" + resource.getHourlyRate()) + ")" : "");
 		}
 		
 		private function recreateResourcesPanel():void {
@@ -215,9 +223,9 @@
 					
 					laborersListModel.append(cityObj);
 				}
-			}			
-			
-			repaintAndRevalidate();
+			}
+
+            repaintAndRevalidate();
 		}
 		
 		public function maxLaborerTranslator(info:CityObject, key:String):String
@@ -261,7 +269,7 @@
 			
 			// Local Events Tab
 			{
-				gridLocalActions = new CityActionGridList(city, 530);
+				gridLocalActions = new CityActionGridList(city);
 				pnlTabs.appendTab(new JScrollPane(gridLocalActions), StringHelper.localize("CITY_OVERVIEW_LOCAL_EVENTS_TAB"));				
 			}
 			
@@ -281,8 +289,55 @@
 				laborersTable.setRowHeight(40);
 				pnlTabs.appendTab(new JScrollPane(laborersTable), StringHelper.localize("CITY_OVERVIEW_LABORERS_TAB"));
 			}
-			
-			//component layoution			
+
+            // Technologies Tab
+            {
+                var technologiesListModel: VectorListModel = new VectorListModel();
+                var technologiesTable: JTable = new JTable(new PropertyTableModel(technologiesListModel, [StringHelper.localize("CITY_OVERVIEW_TECHNOLOGIES_NAME_COLUMN"), StringHelper.localize("CITY_OVERVIEW_TECHNOLOGIES_SUMMARY_COLUMN")], ["name", "summary"], [null, null]));
+                technologiesTable.getColumnAt(0).setPreferredWidth(160);
+                technologiesTable.getColumnAt(1).setPreferredWidth(600);
+                technologiesTable.setCellSelectionEnabled(false);
+                technologiesTable.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
+                    technologiesTable.getCellEditor().cancelCellEditing();
+                });
+
+                // Mouseover to show tooltip
+                technologiesTable.addEventListener(MouseEvent.MOUSE_MOVE, function(e: MouseEvent): void {
+                    var mousePos: Point = technologiesTable.globalToLocal(new Point(e.stageX, e.stageY));
+                    var row: int = technologiesTable.rowAtPoint(new IntPoint(mousePos.x, mousePos.y - technologiesTable.getHeaderHeight()));
+                    if (row == -1) {
+                        return;
+                    }
+
+                    var technologySummary: * = technologiesListModel.get(row);
+
+                    technologySummaryTooltip.setText(technologySummary.summary, technologySummary.name);
+                    technologySummaryTooltip.showFixed(new IntPoint(e.stageX, e.stageY));
+                });
+
+                technologiesTable.addEventListener(MouseEvent.MOUSE_OUT, function (e: MouseEvent): void {
+                    technologySummaryTooltip.hide();
+                });
+
+                technologiesTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+                technologiesTable.setRowHeight(20);
+                pnlTabs.appendTab(new JScrollPane(technologiesTable), StringHelper.localize("CITY_OVERVIEW_TECHNOLOGIES_TAB"));
+
+                laborersListModel = new VectorListModel();
+                var summarierFactory : TechnologySummarizerFactory = new TechnologySummarizerFactory();
+                for each(var grouping: IGrouping in Enumerable.from(city.structures()).selectMany(function(obj: CityObject): Array{
+                    return obj.techManager.technologies;
+                }).groupBy(function(tech: TechnologyStats): String{
+                    return tech.techPrototype.spriteClass;
+                }).orderBy(function(group: IGrouping): String {
+                    return group.key;
+                })) {
+                    var summarizer:ITechnologySummarizer = summarierFactory.CreateSummarizer(grouping.key, grouping.toArray());
+                    technologiesListModel.append({name:summarizer.getName(),summary:summarizer.getSummary()});
+                }
+            }
+
+            //component layoution
 			append(pnlNorth);
 			append(lblUpkeepMsg);
 			append(pnlTabs);

@@ -1,16 +1,21 @@
 ﻿package src.Objects.Effects {
 
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.Objects.Troop.*;
-	import src.Util.StringHelper;
-	import src.Util.Util;
-	import System.Linq.Enumerable;
-	
-	public class Formula {
+    import System.Linq.Enumerable;
+
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Actions.BuildAction;
+    import src.Objects.Actions.CurrentAction;
+    import src.Objects.Actions.CurrentActiveAction;
+    import src.Objects.Actions.StructureUpgradeAction;
+    import src.Objects.Factories.*;
+    import src.Objects.Prototypes.*;
+    import src.Objects.Troop.*;
+    import src.Util.StringHelper;
+    import src.Util.Util;
+
+    public class Formula {
 		
 		public static const RESOURCE_CHUNK: int = 100;		
 		public static const TRIBE_MEMBER_PER_LEVEL: int = 5;
@@ -82,26 +87,14 @@
 			
 			return moveTime;
 		}
-		
-		public static function trainTime(structureLvl: int, unitCount: int, unitPrototype: UnitPrototype, city: City, techManager: TechnologyManager, ignoreUnitCountDiscounts: Boolean): int
-		{			
+
+		public static function trainTime(structureLvl: int, unitCount: int, unitPrototype: UnitPrototype): int
+		{
 			var structureDiscountByLevel: Array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 15, 15, 20, 30, 40];
 			
-            var currentCityUpkeep: Number = city.troops.getUpkeep();
             var structureLevelDiscount: Number = (100.0 - structureDiscountByLevel[Math.min(structureLvl, structureDiscountByLevel.length - 1)]) / 100.0;
             var trainTimePerUnit: Number = unitPrototype.trainTime * structureLevelDiscount;
 
-            if (currentCityUpkeep < 15)
-            {						
-				var trainFirst15Discount: Number = (100.0 - Enumerable.from(techManager.getEffects(EffectPrototype.EFFECT_UNIT_TRAIN_FIRST_15_REDUCTION, EffectPrototype.INHERIT_ALL))
-															  .sum(function(p: EffectPrototype): int {
-																	return int(p.param1);
-															  })) / 100.0;
-
-                var discountedUnits: int = Math.min(15 - currentCityUpkeep, unitCount);
-                return (int)(((trainTimePerUnit * trainFirst15Discount * discountedUnits) + (trainTimePerUnit * (unitCount - discountedUnits))) * Constants.secondsPerUnit);
-            }
-            
             return (int)(trainTimePerUnit * unitCount) * Constants.secondsPerUnit;
 		}
 		
@@ -231,11 +224,6 @@
             return maxLabor[level];
         }
 
-		public static function movementIconTroopSize(troopStub: TroopStub) : int {
-			var upkeep: int = troopStub.getUpkeep();
-			return Math.min(4, upkeep / 60);
-		}
-        
         public static function getUpkeepWithReductions(baseUpkeep: int, unitType: int, city: City): Number {
             var reduceUpkeep: int = 0;
 			for each (var tech: EffectPrototype in city.techManager.getEffects(EffectPrototype.EFFECT_REDUCE_UPKEEP, EffectPrototype.INHERIT_ALL)) {
@@ -289,7 +277,7 @@
 			var numberOfCities:Number = Global.map.cities.size();
 			var wagonRequired:Number = 50 * numberOfCities;
 			var wagonCurrent:Number = Global.gameContainer.selectedCity.troops.getDefaultTroop().getIndividualUnitCount(ObjectFactory.getFirstType("Wagon"));
-			var influenceRequired:Number = (60 + 40 * numberOfCities) * numberOfCities;
+			var influenceRequired:Number = (80 + 50 * numberOfCities) * numberOfCities;
 			var influenceCurrent:Number = 0;
 			for each(var city: City in Global.map.cities)
 			{
@@ -298,17 +286,35 @@
 			return { wagonRequired:wagonRequired, wagonCurrent:wagonCurrent, influenceRequired:influenceRequired, influenceCurrent:influenceCurrent };
 		}
 
-		public static function getGateLimit(level: int) : int
-        {
-            var limit:Array = [0, 500, 600, 700, 800, 950, 1100, 1250, 1450, 1650, 1850, 2100, 2350, 2600, 2900, 3200, 3500, 3850, 4200, 4600, 5000];
-            return limit[level] * 10;
-        }
-
         public static function getGateRepairCost(gateMax: int, currentHp: Number) : Resources
         {
 			var hp: int = gateMax - currentHp;
             return new Resources(0, hp / 8, hp / 16, hp / 4, 0);
         }
-	}
+
+        public static function cityMaxConcurrentBuildActions(structureType: int, city: City): Boolean
+        {
+            if (ObjectFactory.isType("UnlimitedBuilding", structureType)) {
+                return true;
+            }
+
+            var maxConcurrentUpgrades: int = concurrentBuildUpgrades(city.MainBuilding.level);
+
+            var currentBuildActions: int = Enumerable.from(city.currentActions.getActions())
+                    .ofType(CurrentActiveAction)
+                    .count(function (currentActiveAction: CurrentActiveAction): Boolean {
+                        if (currentActiveAction.getAction() is BuildAction) {
+                            var buildAction: BuildAction = currentActiveAction.getAction();
+                            if (!ObjectFactory.isType("UnlimitedBuilding", buildAction.type)) {
+                                return true;
+                            }
+                        }
+
+                        return currentActiveAction.getAction() is StructureUpgradeAction;
+                    });
+
+            return currentBuildActions < maxConcurrentUpgrades;
+        }
+    }
 }
 

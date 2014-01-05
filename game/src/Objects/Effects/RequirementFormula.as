@@ -1,16 +1,23 @@
 ﻿package src.Objects.Effects {
-	import src.Constants;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.Factories.*;
-	import src.Objects.GameObject;
-	import src.Objects.Prototypes.*
-	import src.Objects.TechnologyStats;
-	import src.Util.StringHelper;
-	import src.Util.Util;
+import System.Linq.Enumerable;
+import System.Linq.Enumerable;
+import System.Linq.Option.Option;
+import System.Linq.Option.Option;
 
-	public class RequirementFormula {
+import src.Global;
+    import src.Map.City;
+    import src.Map.CityObject;
+    import src.Objects.Factories.*;
+    import src.Objects.GameObject;
+    import src.Objects.Prototypes.*;
+import src.Objects.Prototypes.EffectPrototype;
+import src.Objects.StructureObject;
+import src.Objects.TechnologyStats;
+import src.Objects.TechnologyStats;
+    import src.Util.StringHelper;
+    import src.Util.Util;
+
+    public class RequirementFormula {
 
 		private static var methodLookup: Array = new Array(
 		{name: "Message", method: custom, message: customMsg},
@@ -24,8 +31,9 @@
 		{name: "AttackPoint", method: attackPoint, message: attackPointMsg },
 		{name: "PlayerAttackPoint", method: playerAttackPoint, message: playerAttackPointMsg },
 		{name: "HaveUnit", method: haveUnit, message: haveUnitMsg },
-		{name: "UniqueTechnology", method: uniqueTechnology, message: uniqueTechnologyMsg }
-		);			
+		{name: "UniqueTechnology", method: uniqueTechnology, message: uniqueTechnologyMsg },
+        {name: "DistributedPointSystem", method: pointSystemTechnology, message: pointSystemTechnologyMsg }
+		);
 
 		private static var methodsSorted: Boolean = false;
 
@@ -81,17 +89,7 @@
 			}
 		}
 
-		public static function getMessages(parentObj: GameObject, effectReqs: Array): Array
-		{
-			var ret: Array = new Array();
-
-			for each (var effectReq: EffectReqPrototype in effectReqs)
-			ret.push(getMessage(parentObj, effectReq));
-
-			return ret;
-		}
-
-		/*CUSTOM*/
+        /*CUSTOM*/
 		private static function custom(parentObj: GameObject, effects: Array, message: String, param2: String, param3: String, param4: String, param5: String): Boolean
 		{
 			return false;
@@ -408,7 +406,7 @@
 				if (obj.objectId == parentObj.objectId) continue;
 
 				for each (var tech: TechnologyStats in obj.techManager.technologies) {
-					if (tech.prototype.level > 0 && tech.prototype.techtype == type)
+					if (tech.techPrototype.level > 0 && tech.techPrototype.techtype == type)
 					return false;
 				}
 			}
@@ -431,7 +429,52 @@
 			
 			return false;
 		}
-		
+
+        private static function pointSystemRequire(parentObj: GameObject, type: int) : int {
+            var city: City = Global.map.cities.get(parentObj.groupId);
+
+            if (city == null)
+            {
+                return 0;
+            }
+
+            var parentCityObj: CityObject = city.objects.get(parentObj.objectId);
+            if (parentCityObj == null) {
+                Util.log("pointSystemTechnology.pointSystemRequire: Unknown city object");
+                return 0;
+            }
+
+            var result: Option = Enumerable.from(parentCityObj.techManager.technologies).firstOrNone(function(tech: TechnologyStats) :Boolean{
+                return tech.techPrototype.techtype==type;
+            });
+            if(result.isNone) {
+                return 1;
+            }
+
+            var tech: TechnologyStats = result.value;
+            return tech.techPrototype.level+1;
+        }
+
+        private static function pointSystemTechnology(parentObj: GameObject, effects: Array, type: int, param2: int, param3: int, param4: int, param5:int): Boolean
+        {
+            var structure : StructureObject = parentObj as StructureObject;
+
+            if(structure==null) return false;
+
+            var total : int = (1 + structure.level) * structure.level / 2;
+
+            var used: int = Enumerable.from(effects).sum(function(effect: EffectPrototype):int {
+                return effect.effectCode==EffectPrototype.EFFECT_POINT_SYSTEM_VALUE?effect.param1:0;
+            });
+
+            return total - used>=pointSystemRequire(parentObj,type);
+        }
+
+        private static function pointSystemTechnologyMsg(parentObj: GameObject, type: int, param2: int, param3: int, param4: int, param5:int): String
+        {
+             return "You need to have " + pointSystemRequire(parentObj,type) + " point(s) to upgrade this technology.";
+        }
+
 	}
 }
 

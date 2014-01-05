@@ -1,14 +1,14 @@
 ﻿package src.UI
 {
-	import org.aswing.Border;
-	import org.aswing.border.EmptyBorder;
-	import org.aswing.event.FrameEvent;
-	import org.aswing.Insets;
-	import org.aswing.JFrame;
-	import org.aswing.JPanel;
-	import src.Util.Util;
+    import org.aswing.Border;
+    import org.aswing.Insets;
+    import org.aswing.JFrame;
+    import org.aswing.JPanel;
+    import org.aswing.border.EmptyBorder;
 
-	public class GameJPanel extends JPanel
+    import src.Util.Util;
+
+    public class GameJPanel extends JPanel
 	{
 		protected var frame: GameJFrame = null;
 		protected var title: String = "";

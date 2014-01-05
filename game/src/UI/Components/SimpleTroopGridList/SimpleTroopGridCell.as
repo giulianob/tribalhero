@@ -1,16 +1,16 @@
 ﻿package src.UI.Components.SimpleTroopGridList
 {
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.dnd.DragManager;
-	import org.aswing.dnd.SourceData;
-	import org.aswing.event.DragAndDropEvent;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.Objects.Troop.Unit;
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.dnd.DragManager;
+    import org.aswing.dnd.SourceData;
+    import org.aswing.event.DragAndDropEvent;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
 
-	public class SimpleTroopGridCell extends JLabel implements GridListCell{
+    import src.Objects.Troop.Unit;
+
+    public class SimpleTroopGridCell extends JLabel implements GridListCell{
 
 		protected var value: *;
 

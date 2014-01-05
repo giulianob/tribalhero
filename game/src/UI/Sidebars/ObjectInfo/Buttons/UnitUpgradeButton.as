@@ -1,21 +1,21 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Util.Util;
-	import src.Objects.Actions.UnitUpgradeAction;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Factories.UnitFactory;
-	import src.Objects.*;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.Prototypes.UnitPrototype;
-	import src.UI.Cursors.*;
-	import src.UI.Tooltips.UnitUpgradeTooltip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class UnitUpgradeButton extends ActionButton
+    import src.Global;
+    import src.Map.City;
+    import src.Map.CityObject;
+    import src.Objects.*;
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.Actions.UnitUpgradeAction;
+    import src.Objects.Effects.Formula;
+    import src.Objects.Factories.UnitFactory;
+    import src.Objects.Prototypes.UnitPrototype;
+    import src.UI.Tooltips.UnitUpgradeTooltip;
+    import src.Util.Util;
+
+    public class UnitUpgradeButton extends ActionButton
 	{
 		private var type: int;
 		private var level: int;

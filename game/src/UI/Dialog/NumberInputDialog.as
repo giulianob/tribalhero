@@ -5,28 +5,22 @@
 */
 
 package src.UI.Dialog {
-	
-import flash.display.MovieClip;
-import flash.events.Event;
-import flash.events.KeyboardEvent;
-import flash.events.MouseEvent;
-import flash.display.SimpleButton;
-import flash.text.TextField;
-import flash.ui.Keyboard;
-import src.Global;
-import src.Objects.Resources;
-import src.UI.Components.SimpleResourcesPanel;
-import src.UI.GameJPanel;
+
+    import flash.events.Event;
+    import flash.events.KeyboardEvent;
+    import flash.ui.Keyboard;
+
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.geom.*;
+
+    import src.Global;
+    import src.Objects.Resources;
+    import src.UI.Components.SimpleResourcesPanel;
+    import src.UI.GameJPanel;
     import src.Util.DateUtil;
-    import src.Util.Util;
 
-import org.aswing.*;
-import org.aswing.border.*;
-import org.aswing.geom.*;
-import org.aswing.colorchooser.*;
-import org.aswing.ext.*;
-
-public class NumberInputDialog extends GameJPanel {
+    public class NumberInputDialog extends GameJPanel {
 
 	private var txtTitle:JLabel;
 	private var panel4:JPanel;

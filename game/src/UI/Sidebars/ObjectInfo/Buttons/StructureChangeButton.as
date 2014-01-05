@@ -1,20 +1,19 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import flash.display.SimpleButton;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.*;
-	import src.Util.Util;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.UI.Cursors.*;
-	import src.UI.Tooltips.StructureChangeTooltip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class StructureChangeButton extends ActionButton
+    import src.Global;
+    import src.Map.City;
+    import src.Map.CityObject;
+    import src.Objects.*;
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.Effects.Formula;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.UI.Tooltips.StructureChangeTooltip;
+    import src.Util.Util;
+
+    public class StructureChangeButton extends ActionButton
 	{
 		private var type: int;
 		private var level: int;

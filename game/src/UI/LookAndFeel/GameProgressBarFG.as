@@ -1,17 +1,16 @@
 package src.UI.LookAndFeel
 {
 
-	import flash.display.*;
-	import flash.utils.*;
-	import flash.geom.*;
+    import flash.display.*;
+    import flash.geom.*;
 
-	import org.aswing.*;
-	import org.aswing.geom.*;
-	import org.aswing.graphics.*;
-	import org.aswing.plaf.ComponentUI;
-	import org.aswing.skinbuilder.SkinProgressBarForeground;
+    import org.aswing.*;
+    import org.aswing.geom.*;
+    import org.aswing.graphics.*;
+    import org.aswing.plaf.ComponentUI;
+    import org.aswing.skinbuilder.SkinProgressBarForeground;
 
-	public class GameProgressBarFG extends SkinProgressBarForeground{
+    public class GameProgressBarFG extends SkinProgressBarForeground{
 
 		protected var verticalBM:BitmapData;
 		protected var horizotalBM:BitmapData;
@@ -60,7 +59,6 @@ package src.UI.LookAndFeel
 			var percent:Number;
 			var paintLength:int;
 			if(bar.isIndeterminate()){
-				percent = indeterminatePercent;
 				if(bar.getOrientation() == AsWingConstants.HORIZONTAL){
 					if(indeterminatePercent == bounds.width){
 						indeterminatePercent = 0;
@@ -88,7 +86,7 @@ package src.UI.LookAndFeel
 					paintLength = Math.min(pw, Math.round(pw/image.width)*image.width);
 				}else{
 					var ph:Number = bounds.height * percent;
-					paintLength = Math.min(ph, Math.round(pw/image.height)*image.height);
+					paintLength = Math.min(ph, Math.round(ph/image.height)*image.height);
 				}
 			}
 			imageContainer.x = bounds.x;

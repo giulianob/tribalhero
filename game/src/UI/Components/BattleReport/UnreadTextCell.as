@@ -1,18 +1,18 @@
 ﻿package src.UI.Components.BattleReport
 {
-	import org.aswing.AsWingConstants;
-	import org.aswing.Component;
-	import org.aswing.FlowLayout;
-	import org.aswing.JLabelButton;
-	import org.aswing.JPanel;
-	import org.aswing.JTable;
-	import org.aswing.table.AbstractTableCell;
-	import org.aswing.table.DefaultTextCell;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.Util.StringHelper;
+    import org.aswing.AsWingConstants;
+    import org.aswing.Component;
+    import org.aswing.FlowLayout;
+    import org.aswing.JLabelButton;
+    import org.aswing.JPanel;
+    import org.aswing.JTable;
+    import org.aswing.table.AbstractTableCell;
 
-	public class UnreadTextCell extends AbstractTableCell
+    import src.UI.Components.SimpleTooltip;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+    import src.Util.StringHelper;
+
+    public class UnreadTextCell extends AbstractTableCell
 	{			
 		protected var lbl: JLabelButton = new JLabelButton("", null, AsWingConstants.LEFT);
 		private var pnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));

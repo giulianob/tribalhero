@@ -1,19 +1,20 @@
 ﻿package src.UI.Tooltips {
-	import org.aswing.AsWingConstants;
-	import org.aswing.Component;
-	import org.aswing.ext.MultilineLabel;
-	import org.aswing.JLabel;
-	import org.aswing.SoftBoxLayout;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import org.aswing.AsWingConstants;
+    import org.aswing.Component;
+    import org.aswing.JLabel;
+    import org.aswing.SoftBoxLayout;
+    import org.aswing.ext.MultilineLabel;
 
-	public class TextTooltip extends Tooltip {
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    public class TextTooltip extends Tooltip {
 
 		private var text: String = "";
 		private var label: Component;
 		private var headerLabel:JLabel;
 		private var header: String;
 		
-		public function TextTooltip(text: String, header: String = "") {										
+		public function TextTooltip(text: String = "", header: String = "") {
 			ui.setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 5));			
 			
 			createUI(text, header);			

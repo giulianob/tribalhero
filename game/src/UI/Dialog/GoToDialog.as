@@ -1,19 +1,18 @@
 ﻿package src.UI.Dialog 
 {
-	import flash.events.Event;
-	import flash.geom.Point;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.Constants;
-	import src.Global;
-	import src.Map.MapUtil;
-	import src.UI.Components.AutoCompleteTextField;
-	import src.UI.GameJPanel;
-	
-	public class GoToDialog extends GameJPanel
+    import flash.events.Event;
+
+    import org.aswing.*;
+    import org.aswing.geom.*;
+
+    import src.Global;
+    import src.Map.Position;
+    import src.Map.ScreenPosition;
+    import src.Map.TileLocator;
+    import src.UI.Components.AutoCompleteTextField;
+    import src.UI.GameJPanel;
+
+    public class GoToDialog extends GameJPanel
 	{
 		//members define
 		private var txtX:JTextField;
@@ -75,8 +74,8 @@
 				return;
 			}
 			
-			var pt: Point = MapUtil.getScreenCoord(getCoordX(), getCoordY());
-			Global.gameContainer.map.camera.ScrollToCenter(pt.x, pt.y);
+			var pt: ScreenPosition = TileLocator.getScreenCoord(new Position(getCoordX(), getCoordY()));
+			Global.gameContainer.map.camera.ScrollToCenter(pt);
 			
 			getFrame().dispose();
 		}

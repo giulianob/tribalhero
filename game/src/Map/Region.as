@@ -117,8 +117,8 @@
                     var tilesetsrcY:int = int(tileid / Constants.tileSetTileW) * Constants.tileH;
 
                     var drawTo:Point = new Point(
-                            tileX * Constants.tileW + oddShift + tileWDiv2,
-                            tileY * tileHDiv2);
+                            int(tileX * Constants.tileW + oddShift + tileWDiv2),
+                            int(tileY * tileHDiv2));
 
                     bg.bitmapData.copyPixels(
                             Constants.tileset.bitmapData,

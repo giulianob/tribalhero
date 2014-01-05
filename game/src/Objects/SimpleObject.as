@@ -202,7 +202,7 @@ package src.Objects {
         }
 
         override public function set x(value: Number): void {
-            super.x = Math.round(value);
+            super.x = int(value);
         }
 
         override public function get y(): Number {
@@ -210,7 +210,7 @@ package src.Objects {
         }
 
         override public function set y(value: Number): void {
-            super.y = Math.round(value);
+            super.y = int(value);
         }
 	}
 	

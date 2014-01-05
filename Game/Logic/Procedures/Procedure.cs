@@ -1,9 +1,6 @@
-using System;
-using Game.Data.Tribe;
 using Game.Logic.Formulas;
 using Game.Map;
 using Game.Util.Locking;
-using Persistance;
 
 namespace Game.Logic.Procedures
 {
@@ -15,8 +12,6 @@ namespace Game.Logic.Procedures
 
         private readonly IWorld world;
 
-        private readonly IDbManager dbPersistance;
-
         private readonly ILocker locker;
         
         public Procedure()
@@ -26,16 +21,12 @@ namespace Game.Logic.Procedures
         // Do not add more parameters to this class. If it needs anything pass it in with the method that needs the dependency.
         // We should try to move some of the logic outside of this class since it's getting big and becoming a bag for random methods.
         // Maybe split it up into more specific types.
-        public Procedure(IRegionManager regions, Formula formula, IWorld world, IDbManager dbPersistance, ILocker locker)
+        public Procedure(IRegionManager regions, Formula formula, IWorld world, ILocker locker)
         {
             this.regions = regions;
             this.formula = formula;
             this.world = world;
-            this.dbPersistance = dbPersistance;
             this.locker = locker;
         }
-
-        [Obsolete("Inject Procedure instead")]
-        public static Procedure Current { get; set; }
     }
 }

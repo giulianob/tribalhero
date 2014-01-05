@@ -6,7 +6,6 @@ using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using NSubstitute;
-using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Xunit;
 using Xunit.Extensions;
 
@@ -67,13 +66,15 @@ namespace Testing.TroopTests
             stub.State.Returns(TroopState.Stationed);
             stub.RemoveFromFormation(FormationType.Defense, Arg.Any<ISimpleStub>()).Returns(true);
 
+            stub.Station.PrimaryPosition.X.Returns<uint>(10);
+            stub.Station.PrimaryPosition.Y.Returns<uint>(20);
+
             var newStub = Substitute.For<ITroopStub>();
-            stub.City.Troops.Create().Returns(newStub);
+            stub.City.CreateTroopStub().Returns(newStub);
 
             ITroopObject troopObject;
             troopInitializer.GetTroopObject(out troopObject).Should().Be(Error.Ok);            
-            stub.City.Received(1).Add(troopObject);
-            ((object)troopObject.Stub).Should().BeSameAs(newStub);
+            stub.City.Received(1).CreateTroopObject(newStub, 10, 21);
         }
 
         [Theory, AutoNSubstituteData]
@@ -87,7 +88,7 @@ namespace Testing.TroopTests
             stub.RemoveFromFormation(FormationType.Defense, unitsToRetreat).Returns(true);
 
             var newStub = Substitute.For<ITroopStub>();
-            stub.City.Troops.Create().Returns(newStub);
+            stub.City.CreateTroopStub().Returns(newStub);
 
             ITroopObject troopObject;
             troopInitializer.GetTroopObject(out troopObject).Should().Be(Error.Ok);
@@ -108,34 +109,27 @@ namespace Testing.TroopTests
             stub.State.Returns(TroopState.Stationed);
             stub.RemoveFromFormation(FormationType.Defense, Arg.Any<ISimpleStub>()).Returns(true);
 
-            stub.Station.X.Returns<uint>(10);
-            stub.Station.Y.Returns<uint>(20);
-
             ITroopObject troopObject;
             troopInitializer.GetTroopObject(out troopObject).Should().Be(Error.Ok);
-            world.Regions.Received(1).Add(troopObject);
-            troopObject.X.Should().Be(10);
-            troopObject.Y.Should().Be(21);
+            world.Regions.Received(1).Add(troopObject);            
         }
         
         [Theory, AutoNSubstituteData]
         public void GetTroopObject_WhenAbleToRetreat_LoadsStats(
                 [Frozen] ITroopStub stub,                
                 [Frozen] ISimpleStub unitsToRetreat,
-                IFixture fixture)
+                [FrozenMock] Formula formula,
+                ITroopObject newTroopObject,
+                StationedPartialTroopObjectInitializer troopInitializer)
         {
             unitsToRetreat.TotalCount.Returns<ushort>(1);
-
-            var formula = Substitute.For<Formula>();
+        
             formula.GetTroopRadius(stub, null).Returns<byte>(34);
             formula.GetTroopSpeed(stub).Returns(44);
-
-            fixture.Register(() => formula);
+        
             stub.State.Returns(TroopState.Stationed);
             stub.RemoveFromFormation(FormationType.Defense, Arg.Any<ISimpleStub>()).Returns(true);
             
-            var troopInitializer = fixture.Create<StationedPartialTroopObjectInitializer>();
-
             ITroopObject troopObject;
             troopInitializer.GetTroopObject(out troopObject).Should().Be(Error.Ok);
             troopObject.Stats.Speed.Should().Be(44);
@@ -164,7 +158,7 @@ namespace Testing.TroopTests
         [Theory, AutoNSubstituteData]
         public void DeleteTroopObject_WhenTroopObjectCreated_AddsUnitsBackToOriginalTroop(
                 [Frozen] ITroopStub stub,                
-                [Frozen] ISimpleStub unitsToRetreat,
+                [Frozen] ISimpleStub unitsToRetreat,                
                 StationedPartialTroopObjectInitializer troopInitializer)
         {
             unitsToRetreat.TotalCount.Returns<ushort>(1);
@@ -173,9 +167,12 @@ namespace Testing.TroopTests
             stub.City.Troops.Remove(Arg.Any<ushort>()).Returns(true);
 
             var newStub = Substitute.For<ITroopStub>();
-            stub.City.Troops.Create().Returns(newStub);
+            stub.City.CreateTroopStub().Returns(newStub);          
 
-            ITroopObject troopObject;
+            ITroopObject troopObject = Substitute.For<ITroopObject>();
+            troopObject.Stub.Returns(newStub);
+            stub.City.CreateTroopObject(newStub, Arg.Any<uint>(), Arg.Any<uint>()).Returns(troopObject);
+
             troopInitializer.GetTroopObject(out troopObject);
 
             troopInitializer.DeleteTroopObject();
@@ -236,7 +233,7 @@ namespace Testing.TroopTests
 
             var newStub = Substitute.For<ITroopStub>();
             newStub.TroopId.Returns<ushort>(5);
-            stub.City.Troops.Create().Returns(newStub);
+            stub.City.CreateTroopStub().Returns(newStub);
 
             stub.City.Troops.Remove(newStub.TroopId).Returns(false);
 
@@ -245,7 +242,7 @@ namespace Testing.TroopTests
 
             troopInitializer.DeleteTroopObject();
 
-            stub.DidNotReceive().AddAllToFormation(FormationType.Defense, newStub);
+            stub.DidNotReceiveWithAnyArgs().AddAllToFormation(FormationType.Defense, null);
         }        
 
 

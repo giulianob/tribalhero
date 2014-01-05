@@ -2,12 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using Game.Battle;
-using Game.Battle.CombatGroups;
-using Game.Battle.CombatObjects;
-using Game.Battle.Reporting;
 using Game.Data;
 using Game.Data.BarbarianTribe;
 using Game.Data.Troop;
@@ -135,7 +129,7 @@ namespace Game.Logic.Actions
                     return toBeLocked.ToArray();
                 };
 
-            using (locker.Lock(lockHandler, null, barbarianTribe))
+            locker.Lock(lockHandler, null, barbarianTribe).Do(() =>
             {
                 if (barbarianTribe.Battle.ExecuteTurn())
                 {
@@ -151,9 +145,9 @@ namespace Game.Logic.Actions
                 world.Remove(barbarianTribe.Battle);
                 dbManager.Delete(barbarianTribe.Battle);
 
-                barbarianTribe.BeginUpdate();               
-                barbarianTribe.Battle = null;                
-                barbarianTribe.State = GameObjectState.NormalState();                
+                barbarianTribe.BeginUpdate();
+                barbarianTribe.Battle = null;
+                barbarianTribe.State = GameObjectStateFactory.NormalState();
                 // Reset resources
                 barbarianTribe.Resource.Clear();
                 barbarianTribe.Resource.Add(formula.BarbarianTribeResources(barbarianTribe.Lvl));
@@ -163,7 +157,7 @@ namespace Game.Logic.Actions
                 barbarianTribe.EndUpdate();
 
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override Error Validate(string[] parms)
@@ -187,7 +181,7 @@ namespace Game.Logic.Actions
             int upkeep;
             byte unitLevel;
             formula.BarbarianTribeUpkeep(barbarianTribe.Lvl, out upkeep, out unitLevel);
-            simpleStubGenerator.Generate(barbarianTribe.Lvl, upkeep, unitLevel, Config.barbarian_tribes_npc_randomness, (int)barbarianTribe.Id + barbarianTribe.CampRemains, out simpleStub);
+            simpleStubGenerator.Generate(barbarianTribe.Lvl, upkeep, unitLevel, Config.barbarian_tribes_npc_randomness, (int)barbarianTribe.ObjectId + barbarianTribe.CampRemains, out simpleStub);
 
             var combatGroup = barbarianTribeBattleProcedure.AddBarbarianTribeUnitsToBattle(barbarianTribe.Battle,
                                                                                            barbarianTribe,

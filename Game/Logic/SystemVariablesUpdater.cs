@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using Game.Comm;
 using Game.Data;
@@ -163,7 +162,7 @@ namespace Game.Logic
                             new SystemVariable("Players.count", world.Players.Count),
                             new SystemVariable("Players.logged_in", TcpWorker.GetSessionCount()),
                             new SystemVariable("Cities.count", world.Cities.Count),
-                            new SystemVariable("Channel.subscriptions", Global.Channel.SubscriptionCount()),
+                            new SystemVariable("Channel.subscriptions", Global.Current.Channel.SubscriptionCount()),
                             new SystemVariable("Tribes.count", tribeManager.TribeCount),
                             new SystemVariable("Strongholds.neutral", strongholdsNeutral),
                             new SystemVariable("Strongholds.occupied", strongholdsOccupied),
@@ -205,8 +204,7 @@ namespace Game.Logic
                     }
 
                     // Forest cnt
-                    variables.AddRange(forestManager.ForestCount.Select((t, i) =>
-                                                                        new SystemVariable("Forests.lvl" + (i + 1) + "_count", t)));
+                    variables.Add(new SystemVariable("Forests.count", forestManager.ForestCount));
 
                     // Update vars
                     foreach (var variable in variables)

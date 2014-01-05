@@ -3,13 +3,13 @@ using Game.Data;
 
 namespace Game.Map
 {
-    partial class ObjectList
+    partial class RegionObjectList
     {
         private class AllObjectEnum : IEnumerator<ISimpleGameObject>
         {
             #region Members
 
-            private readonly ObjectList objectList;
+            private readonly RegionObjectList objectList;
 
             private bool isNew = true;
 
@@ -21,7 +21,7 @@ namespace Game.Map
 
             #region Constructors
 
-            public AllObjectEnum(ObjectList objectList)
+            public AllObjectEnum(RegionObjectList objectList)
             {
                 this.objectList = objectList;
                 itr = this.objectList.objects.GetEnumerator();

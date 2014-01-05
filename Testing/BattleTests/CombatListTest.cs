@@ -55,7 +55,7 @@ namespace Testing.BattleTests
 
             var battleFormulas = Substitute.For<IBattleFormulas>();                 
             fixture.Register(() => battleFormulas);                        
-            battleFormulas.GetDmgModifier(null, null, 0).ReturnsForAnyArgs(1);
+            battleFormulas.GetAttackerDmgToDefender(null, null, 0).ReturnsForAnyArgs(1);
 
             var attackerStats = Substitute.For<BattleStats>();
             var attacker = Substitute.For<ICombatObject>();
@@ -143,7 +143,7 @@ namespace Testing.BattleTests
 
             var battleFormulas = Substitute.For<IBattleFormulas>();                 
             fixture.Register(() => battleFormulas);                        
-            battleFormulas.GetDmgModifier(null, null, 0).ReturnsForAnyArgs(1, 3, 3);
+            battleFormulas.GetAttackerDmgToDefender(null, null, 0).ReturnsForAnyArgs(1, 3, 3);
 
             var listSut = fixture.Create<CombatList>();
             listSut.Add(combatGroup, false);
@@ -190,7 +190,7 @@ namespace Testing.BattleTests
 
             var battleFormulas = Substitute.For<IBattleFormulas>();                 
             fixture.Register(() => battleFormulas);                        
-            battleFormulas.GetDmgModifier(null, null, 0).ReturnsForAnyArgs(3, 1, 2);
+            battleFormulas.GetAttackerDmgToDefender(null, null, 0).ReturnsForAnyArgs(3, 1, 2);
 
             var listSut = fixture.Create<CombatList>();
             listSut.Add(combatGroup, false);
@@ -237,7 +237,7 @@ namespace Testing.BattleTests
 
             var battleFormulas = Substitute.For<IBattleFormulas>();
             fixture.Register(() => battleFormulas);
-            battleFormulas.GetDmgModifier(null, null, 0).ReturnsForAnyArgs(3, 1, 2);
+            battleFormulas.GetAttackerDmgToDefender(null, null, 0).ReturnsForAnyArgs(3, 1, 2);
 
             var listSut = fixture.Create<CombatList>();
             listSut.Add(combatGroup, false);
@@ -285,7 +285,7 @@ namespace Testing.BattleTests
 
             var battleFormulas = Substitute.For<IBattleFormulas>();
             fixture.Register(() => battleFormulas);
-            battleFormulas.GetDmgModifier(null, null, 0).ReturnsForAnyArgs(1, 1, 2);
+            battleFormulas.GetAttackerDmgToDefender(null, null, 0).ReturnsForAnyArgs(1, 1, 2);
 
             var listSut = fixture.Create<CombatList>();
             listSut.Add(combatGroup, false);
@@ -332,13 +332,13 @@ namespace Testing.BattleTests
 
             var battleFormulas = Substitute.For<IBattleFormulas>();
             fixture.Register(() => battleFormulas);
-            battleFormulas.GetDmgModifier(null, null, 0).ReturnsForAnyArgs(1, 1, 1);
+            battleFormulas.GetAttackerDmgToDefender(null, null, 0).ReturnsForAnyArgs(1, 1, 1);
 
             // defender2 is closer than defender 1
-            var radiusLocator = Substitute.For<RadiusLocator>();
+            var radiusLocator = Substitute.For<ITileLocator>();
             fixture.Register(() => radiusLocator);
-            radiusLocator.RadiusDistance(0, 0, 1, 1).Returns(1);
-            radiusLocator.RadiusDistance(0, 0, 2, 2).Returns(0);
+            radiusLocator.RadiusDistance(new Position(0, 0), Arg.Any<byte>(), new Position(1, 1), Arg.Any<byte>()).Returns(1);
+            radiusLocator.RadiusDistance(new Position(0, 0), Arg.Any<byte>(), new Position(2, 2), Arg.Any<byte>()).Returns(0);
 
             var listSut = fixture.Create<CombatList>();
             listSut.Add(combatGroup, false);
@@ -382,7 +382,7 @@ namespace Testing.BattleTests
 
             var battleFormulas = Substitute.For<IBattleFormulas>();
             fixture.Register(() => battleFormulas);
-            battleFormulas.GetDmgModifier(null, null, 0).ReturnsForAnyArgs(1, 2, 3);
+            battleFormulas.GetAttackerDmgToDefender(null, null, 0).ReturnsForAnyArgs(1, 2, 3);
 
             var listSut = fixture.Create<CombatList>();
             listSut.Add(combatGroup, false);

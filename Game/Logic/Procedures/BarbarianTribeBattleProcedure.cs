@@ -55,16 +55,16 @@ namespace Game.Logic.Procedures
             // Otherwise, the battle has to be created
             else
             {
-                var battleOwner = new BattleOwner(BattleOwnerType.BarbarianTribe, barbarianTribe.Id);
+                var battleOwner = new BattleOwner(BattleOwnerType.BarbarianTribe, barbarianTribe.ObjectId);
 
                 barbarianTribe.Battle =
-                        battleManagerFactory.CreateBarbarianBattleManager(new BattleLocation(BattleLocationType.BarbarianTribe, barbarianTribe.Id),
+                        battleManagerFactory.CreateBarbarianBattleManager(new BattleLocation(BattleLocationType.BarbarianTribe, barbarianTribe.ObjectId),
                                                                           battleOwner,
                                                                           barbarianTribe);
 
                 combatGroup = battleProcedure.AddAttackerToBattle(barbarianTribe.Battle, attackerTroopObject);
 
-                var battlePassiveAction = actionFactory.CreateBarbarianTribeBattlePassiveAction(barbarianTribe.Id);
+                var battlePassiveAction = actionFactory.CreateBarbarianTribeBattlePassiveAction(barbarianTribe.ObjectId);
                 Error result = barbarianTribe.Worker.DoPassive(barbarianTribe, battlePassiveAction, false);
                 if (result != Error.Ok)
                 {
@@ -73,7 +73,7 @@ namespace Game.Logic.Procedures
 
                 barbarianTribe.BeginUpdate();
                 barbarianTribe.LastAttacked = DateTime.UtcNow;
-                barbarianTribe.State = GameObjectState.BattleState(barbarianTribe.Battle.BattleId);
+                barbarianTribe.State = GameObjectStateFactory.BattleState(barbarianTribe.Battle.BattleId);
                 barbarianTribe.EndUpdate();
             }
 

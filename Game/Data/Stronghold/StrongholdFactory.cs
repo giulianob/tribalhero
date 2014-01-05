@@ -11,32 +11,46 @@ namespace Game.Data.Stronghold
     {
         private readonly IKernel kernel;
 
-        public StrongholdFactory(IKernel kernel)
+        private readonly IActionWorkerFactory actionWorkerFactory;
+
+        private readonly ITroopManagerFactory troopManagerFactory;
+
+        private readonly INotificationManagerFactory notificationManagerFactory;
+
+        public StrongholdFactory(IKernel kernel,
+                                 IActionWorkerFactory actionWorkerFactory,
+                                 ITroopManagerFactory troopManagerFactory,
+                                 INotificationManagerFactory notificationManagerFactory)
         {
             this.kernel = kernel;
+            this.actionWorkerFactory = actionWorkerFactory;
+            this.troopManagerFactory = troopManagerFactory;
+            this.notificationManagerFactory = notificationManagerFactory;
         }
 
         public IStronghold CreateStronghold(uint id, string name, byte level, uint x, uint y, decimal gate, int gateMax)
         {
-            var actionWorker = new ActionWorker();
-            var troopManager = new TroopManager();
-            var notificationManager = new NotificationManager(actionWorker, kernel.Get<IDbManager>());
+            IStronghold stronghold;
 
-            var stronghold = new Stronghold(id,
-                                            name,
-                                            level,
-                                            x,
-                                            y,
-                                            gate,
+            var actionWorker = actionWorkerFactory.CreateActionWorker(null, new SimpleLocation(LocationType.Stronghold, id));
+            var troopManager = troopManagerFactory.CreateTroopManager();
+            var notificationManager = notificationManagerFactory.CreateNotificationManager(actionWorker);
+
+            stronghold = new Stronghold(id,
+                                        name,
+                                        level,
+                                        x,
+                                        y,
+                                        gate,
                                             gateMax,
-                                            kernel.Get<IDbManager>(),
-                                            notificationManager,
-                                            troopManager,
-                                            actionWorker,
-                                            kernel.Get<Formula>());
+                                        kernel.Get<IDbManager>(),
+                                        notificationManager,
+                                        troopManager,
+                                        actionWorker,
+                                        kernel.Get<Formula>());
 
-            actionWorker.LockDelegate = () => stronghold;
-            actionWorker.Location = stronghold;
+            // TODO: Remove circular dependency
+            actionWorker.LockDelegate = () => stronghold;            
 
             troopManager.BaseStation = stronghold;
 

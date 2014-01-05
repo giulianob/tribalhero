@@ -11,9 +11,7 @@ namespace Game.Map
     {
         ICityManager Cities { get; }
 
-        IRegionManager Regions { get; }
-
-        RoadManager Roads { get; }
+        IRoadManager Roads { get; }
 
         object Lock { get; }
 

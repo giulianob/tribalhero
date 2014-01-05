@@ -10,8 +10,6 @@ using Game.Data.Stats;
 using Game.Data.Stronghold;
 using Game.Data.Troop;
 using Game.Setup;
-using Game.Util;
-using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -19,16 +17,13 @@ namespace Game.Battle
 {
     public class BattleFormulas : IBattleFormulas
     {
-        [Obsolete("Inject BattleFormulas instead")]
-        public static IBattleFormulas Current { get; set; }
-
         private readonly UnitFactory unitFactory;
 
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private readonly UnitModFactory unitModFactory;
 
-        public BattleFormulas(UnitModFactory unitModFactory, UnitFactory unitFactory, ObjectTypeFactory objectTypeFactory)
+        public BattleFormulas(UnitModFactory unitModFactory, UnitFactory unitFactory, IObjectTypeFactory objectTypeFactory)
         {
             this.unitModFactory = unitModFactory;
             this.unitFactory = unitFactory;
@@ -99,8 +94,10 @@ namespace Game.Battle
         {
             decimal atk = attacker.Stats.Atk;
             decimal rawDmg = (atk * attacker.Count);
+            decimal attackBonus = attacker.AttackBonus(target);
+            decimal defenseBonus = target.DefenseBonus(attacker);
             decimal modifier = (decimal)GetDmgModifier(attacker, target, round);
-            rawDmg = modifier * rawDmg;
+            rawDmg = modifier * rawDmg * (1 + attackBonus) / (1 + defenseBonus);
 
             return rawDmg > ushort.MaxValue ? ushort.MaxValue : rawDmg;
         }
@@ -263,6 +260,12 @@ namespace Game.Battle
                 {
                     case "ArmorEqual":
                         if (stats.Armor == (ArmorType)Enum.Parse(typeof(ArmorType), conditions[i * 2 + 1], true))
+                        {
+                            ++success;
+                        }
+                        break;
+                    case "ArmorNotEqual":
+                        if (stats.Armor != (ArmorType)Enum.Parse(typeof(ArmorType), conditions[i * 2 + 1], true))
                         {
                             ++success;
                         }

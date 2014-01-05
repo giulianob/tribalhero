@@ -34,7 +34,7 @@ namespace Game.Logic.Actions
 
         private readonly CityBattleProcedure cityBattleProcedure;
 
-        private readonly StructureFactory structureFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         private readonly uint targetCityId;
 
@@ -50,7 +50,7 @@ namespace Game.Logic.Actions
                                              IBattleFormulas battleFormula,
                                              IGameObjectLocator gameObjectLocator,
                                              CityBattleProcedure cityBattleProcedure,
-                                             StructureFactory structureFactory,
+                                             IStructureCsvFactory structureCsvFactory,
                                              IDbManager dbManager,
                                              IStaminaMonitorFactory staminaMonitorFactory)
         {
@@ -60,7 +60,7 @@ namespace Game.Logic.Actions
             this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
             this.cityBattleProcedure = cityBattleProcedure;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             this.dbManager = dbManager;
             this.staminaMonitorFactory = staminaMonitorFactory;
 
@@ -73,7 +73,7 @@ namespace Game.Logic.Actions
                                              IBattleFormulas battleFormula,
                                              IGameObjectLocator gameObjectLocator,
                                              CityBattleProcedure cityBattleProcedure,
-                                             StructureFactory structureFactory,
+                                             IStructureCsvFactory structureCsvFactory,
                                              IDbManager dbManager,
                                              IStaminaMonitorFactory staminaMonitorFactory)
                 : base(id, isVisible)
@@ -81,7 +81,7 @@ namespace Game.Logic.Actions
             this.battleFormula = battleFormula;
             this.gameObjectLocator = gameObjectLocator;
             this.cityBattleProcedure = cityBattleProcedure;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             this.dbManager = dbManager;
             this.staminaMonitorFactory = staminaMonitorFactory;
 
@@ -203,7 +203,7 @@ namespace Game.Logic.Actions
 
             // Set the attacking troop object to the correct state and stamina
             troopObject.BeginUpdate();
-            troopObject.State = GameObjectState.BattleState(battleId);
+            troopObject.State = GameObjectStateFactory.BattleState(battleId);
             troopObject.EndUpdate();
 
             // Set the troop stub to the correct state
@@ -235,7 +235,7 @@ namespace Game.Logic.Actions
             troopObject.BeginUpdate();
             SetLootedResources(targetCity.Battle, troopObject, group);
             troopObject.Stub.BeginUpdate();
-            troopObject.State = GameObjectState.NormalState();
+            troopObject.State = GameObjectStateFactory.NormalState();
             troopObject.Stub.State = TroopState.Idle;
             troopObject.Stub.EndUpdate();
             troopObject.EndUpdate();
@@ -266,7 +266,7 @@ namespace Game.Logic.Actions
             DeregisterBattleListeners(targetCity);
 
             troopObject.BeginUpdate();
-            troopObject.State = GameObjectState.NormalState();
+            troopObject.State = GameObjectStateFactory.NormalState();
             troopObject.EndUpdate();
 
             StateChange(ActionState.Completed);
@@ -326,29 +326,34 @@ namespace Game.Logic.Actions
                 target.IsDead)
             {
                 // if our troop knocked down a building, we get the bonus.
-                bonus.Add(structureFactory.GetCost(target.Type, target.Lvl) / 2);
+                bonus.Add(structureCsvFactory.GetCost(target.Type, target.Lvl) / 2);
 
                 IStructure structure = ((ICombatStructure)target).Structure;
                 object value;
                 if (structure.Properties.TryGet("Crop", out value))
                 {
-                    bonus.Crop += (int)value;
+                    if (value is int)
+                        bonus.Crop += (int)value;
                 }
                 if (structure.Properties.TryGet("Gold", out value))
                 {
-                    bonus.Gold += (int)value;
+                    if (value is int)
+                        bonus.Gold += (int)value;
                 }
                 if (structure.Properties.TryGet("Iron", out value))
                 {
-                    bonus.Iron += (int)value;
+                    if (value is int)
+                        bonus.Iron += (int)value;
                 }
                 if (structure.Properties.TryGet("Wood", out value))
                 {
-                    bonus.Wood += (int)value;
+                    if (value is int) 
+                        bonus.Wood += (int)value;
                 }
                 if (structure.Properties.TryGet("Labor", out value))
                 {
-                    bonus.Labor += (int)value;
+                    if (value is int)
+                        bonus.Labor += (int)value;
                 }
 
                 dbManager.Save(this);

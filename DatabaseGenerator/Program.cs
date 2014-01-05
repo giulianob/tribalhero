@@ -56,7 +56,7 @@ namespace DatabaseGenerator
             LoadLanguages();
 
             // Get types
-            structureTypes = from structure in kernel.Get<StructureFactory>().AllStructures()
+            structureTypes = from structure in kernel.Get<IStructureCsvFactory>().AllStructures()
                              group structure by structure.Type
                              into types orderby types.Key select types.Key;
 
@@ -78,22 +78,22 @@ namespace DatabaseGenerator
 
                 foreach (var type in structureTypes)
                 {
-                    if (kernel.Get<ObjectTypeFactory>().IsObjectType("DatabaseIgnoreStructures", type))
+                    if (kernel.Get<IObjectTypeFactory>().IsObjectType("DatabaseIgnoreStructures", type))
                     {
                         continue;
                     }
 
                     ProcessStructure(type);
 
-                    StructureBaseStats stats = kernel.Get<StructureFactory>().GetBaseStats(type, 1);
+                    IStructureBaseStats stats = kernel.Get<IStructureCsvFactory>().GetBaseStats(type, 1);
 
                     var sprite = stats.SpriteClass;
 
                     // Sorry this is a bit of a hack, it's a CropField then we append the Mature status to it :)
-                    if (kernel.Get<ObjectTypeFactory>().IsObjectType("CropField", type))
+                    if (kernel.Get<IObjectTypeFactory>().IsObjectType("CropField", type))
                     {
                         sprite =
-                                kernel.Get<StructureFactory>()
+                                kernel.Get<IStructureCsvFactory>()
                                    .AllStructures()
                                    .First(structure => structure.Lvl == 1 && structure.Name == "MATURE_" + stats.Name)
                                    .SpriteClass;
@@ -136,7 +136,7 @@ namespace DatabaseGenerator
                 ");
                 foreach (var type in technologyTypes)
                 {
-                    if (kernel.Get<ObjectTypeFactory>().IsObjectType("DatabaseIgnoreTech", (ushort)type))
+                    if (kernel.Get<IObjectTypeFactory>().IsObjectType("DatabaseIgnoreTech", (ushort)type))
                     {
                         continue;
                     }
@@ -183,7 +183,7 @@ namespace DatabaseGenerator
             generalTemplate = generalTemplate.Replace("#TECH_NAME#", lang[tech.Name + "_TECHNOLOGY_NAME"]);
 
             // Builder info
-            StructureBaseStats trainer;
+            IStructureBaseStats trainer;
             FindTechnologyTrainer(type, 1, out trainer);
             generalTemplate = generalTemplate.Replace("#TRAINED_BY_NAME#",
                                                       trainer != null ? lang[trainer.Name + "_STRUCTURE_NAME"] : "");
@@ -238,14 +238,14 @@ namespace DatabaseGenerator
             }
         }
 
-        private static void FindTechnologyTrainer(uint type, byte level, out StructureBaseStats trainer)
+        private static void FindTechnologyTrainer(uint type, byte level, out IStructureBaseStats trainer)
         {
             foreach (var builderType in structureTypes)
             {
                 byte structureLevel = 1;
-                StructureBaseStats stats;
+                IStructureBaseStats stats;
 
-                while ((stats = kernel.Get<StructureFactory>().GetBaseStats(builderType, structureLevel)) != null)
+                while ((stats = kernel.Get<IStructureCsvFactory>().GetBaseStats(builderType, structureLevel)) != null)
                 {
                     structureLevel++;
 
@@ -273,7 +273,7 @@ namespace DatabaseGenerator
             trainer = null;
         }
 
-        private static IEnumerable<string> GetTechnologyRequirements(uint type, byte level, StructureBaseStats trainer)
+        private static IEnumerable<string> GetTechnologyRequirements(uint type, byte level, IStructureBaseStats trainer)
         {
             ActionRequirementFactory.ActionRecord record =
                     kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(trainer.WorkerId);
@@ -334,7 +334,7 @@ namespace DatabaseGenerator
                                                       lang[stats.Name + "_UNIT_DESC"].Replace("'", "\\'"));
 
             // Builder info
-            StructureBaseStats trainer;
+            IStructureBaseStats trainer;
             FindUnitTrainer(type, 1, out trainer);
             generalTemplate = generalTemplate.Replace("#TRAINED_BY_NAME#",
                                                       trainer != null ? lang[trainer.Name + "_STRUCTURE_NAME"] : "");
@@ -362,15 +362,15 @@ namespace DatabaseGenerator
                 currentLevel = currentLevel.Replace("#TRAIN_WOOD#", currentStats.Cost.Wood.ToString());
                 currentLevel = currentLevel.Replace("#HP#", currentStats.Battle.MaxHp.ToString());
                 currentLevel = currentLevel.Replace("#SPLASH#", currentStats.Battle.Splash.ToString());
-                currentLevel = currentLevel.Replace("#ATTACK#", currentStats.Battle.Atk.ToString());
-                currentLevel = currentLevel.Replace("#RANGE#", currentStats.Battle.Rng.ToString());
-                currentLevel = currentLevel.Replace("#STEALTH#", currentStats.Battle.Stl.ToString());
+                currentLevel = currentLevel.Replace("#ATTACK#", currentStats.Battle.Attack.ToString());
+                currentLevel = currentLevel.Replace("#RANGE#", currentStats.Battle.Range.ToString());
+                currentLevel = currentLevel.Replace("#STEALTH#", currentStats.Battle.Stealth.ToString());
                 currentLevel = currentLevel.Replace("#WEAPON#", currentStats.Battle.Weapon.ToString());
                 currentLevel = currentLevel.Replace("#CARRY#", currentStats.Battle.Carry.ToString());
                 currentLevel = currentLevel.Replace("#WEAPONCLASS#", currentStats.Battle.WeaponClass.ToString());
                 currentLevel = currentLevel.Replace("#ARMOR#", currentStats.Battle.Armor.ToString());
                 currentLevel = currentLevel.Replace("#UNITCLASS#", currentStats.Battle.ArmorClass.ToString());
-                currentLevel = currentLevel.Replace("#SPEED#", currentStats.Battle.Spd.ToString());
+                currentLevel = currentLevel.Replace("#SPEED#", currentStats.Battle.Speed.ToString());
                 currentLevel = currentLevel.Replace("#UPKEEP#", currentStats.Upkeep.ToString());
 
                 // Get requirements
@@ -404,14 +404,14 @@ namespace DatabaseGenerator
             }
         }
 
-        private static void FindUnitTrainer(ushort type, byte level, out StructureBaseStats trainer)
+        private static void FindUnitTrainer(ushort type, byte level, out IStructureBaseStats trainer)
         {
             foreach (var builderType in structureTypes)
             {
                 byte structureLevel = 1;
-                StructureBaseStats stats;
+                IStructureBaseStats stats;
 
-                while ((stats = kernel.Get<StructureFactory>().GetBaseStats(builderType, structureLevel)) != null)
+                while ((stats = kernel.Get<IStructureCsvFactory>().GetBaseStats(builderType, structureLevel)) != null)
                 {
                     structureLevel++;
 
@@ -454,7 +454,7 @@ namespace DatabaseGenerator
             trainer = null;
         }
 
-        private static IEnumerable<string> GetUnitRequirements(ushort type, byte level, StructureBaseStats trainer)
+        private static IEnumerable<string> GetUnitRequirements(ushort type, byte level, IStructureBaseStats trainer)
         {
             ActionRequirementFactory.ActionRecord record =
                     kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(trainer.WorkerId);
@@ -521,7 +521,7 @@ namespace DatabaseGenerator
             string requirementTemplate = @"'#REQUIREMENT#',";
 
             // Get basic information
-            StructureBaseStats stats = kernel.Get<StructureFactory>().GetBaseStats(type, 1);
+            IStructureBaseStats stats = kernel.Get<IStructureCsvFactory>().GetBaseStats(type, 1);
 
             generalTemplate = generalTemplate.Replace("#DATE#", DateTime.Now.ToString());
             generalTemplate = generalTemplate.Replace("#STRUCTURE#", stats.Name + "_STRUCTURE");
@@ -530,7 +530,7 @@ namespace DatabaseGenerator
                                                       lang[stats.Name + "_STRUCTURE_DESCRIPTION"].Replace("'", "\\'"));
 
             // Builder info
-            StructureBaseStats builder;
+            IStructureBaseStats builder;
             bool converted;
             FindStructureBuilder(type, 1, out builder, out converted);
             generalTemplate = generalTemplate.Replace("#CONVERTED#", converted ? "1" : "0");
@@ -542,7 +542,7 @@ namespace DatabaseGenerator
             // Level info
             byte level = 1;
             var levelsWriter = new StringWriter(new StringBuilder());
-            StructureBaseStats currentStats = stats;
+            IStructureBaseStats currentStats = stats;
             do
             {
                 string currentLevel = levelTemplate.Replace("#DESCRIPTION#",
@@ -556,9 +556,9 @@ namespace DatabaseGenerator
                 currentLevel = currentLevel.Replace("#LABOR#", currentStats.Cost.Labor.ToString());
                 currentLevel = currentLevel.Replace("#WOOD#", currentStats.Cost.Wood.ToString());
                 currentLevel = currentLevel.Replace("#HP#", currentStats.Battle.MaxHp.ToString());
-                currentLevel = currentLevel.Replace("#ATTACK#", currentStats.Battle.Atk.ToString());
-                currentLevel = currentLevel.Replace("#RANGE#", currentStats.Battle.Rng.ToString());
-                currentLevel = currentLevel.Replace("#STEALTH#", currentStats.Battle.Stl.ToString());
+                currentLevel = currentLevel.Replace("#ATTACK#", currentStats.Battle.Attack.ToString());
+                currentLevel = currentLevel.Replace("#RANGE#", currentStats.Battle.Range.ToString());
+                currentLevel = currentLevel.Replace("#STEALTH#", currentStats.Battle.Stealth.ToString());
                 currentLevel = currentLevel.Replace("#SPLASH#", currentStats.Battle.Splash.ToString());
                 currentLevel = currentLevel.Replace("#WEAPON#", currentStats.Battle.Weapon.ToString());
                 currentLevel = currentLevel.Replace("#MAXLABOR#", currentStats.MaxLabor.ToString());
@@ -581,7 +581,7 @@ namespace DatabaseGenerator
                 level++;
                 FindStructureBuilder(type, level, out builder, out converted);
             }
-            while ((currentStats = kernel.Get<StructureFactory>().GetBaseStats(type, level)) != null);
+            while ((currentStats = kernel.Get<IStructureCsvFactory>().GetBaseStats(type, level)) != null);
 
             generalTemplate = generalTemplate.Replace("#LEVELS#", levelsWriter.ToString());
 
@@ -594,7 +594,7 @@ namespace DatabaseGenerator
             }
         }
 
-        private static IEnumerable<string> GetStructureRequirements(ushort type, byte level, StructureBaseStats builder)
+        private static IEnumerable<string> GetStructureRequirements(ushort type, byte level, IStructureBaseStats builder)
         {
             ActionRequirementFactory.ActionRecord record =
                     kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(builder.WorkerId);
@@ -640,12 +640,12 @@ namespace DatabaseGenerator
 
         private static void FindStructureBuilder(ushort type,
                                                  byte level,
-                                                 out StructureBaseStats builder,
+                                                 out IStructureBaseStats builder,
                                                  out bool convert)
         {
             if (level > 1)
             {
-                builder = kernel.Get<StructureFactory>().GetBaseStats(type, (byte)(level - 1));
+                builder = kernel.Get<IStructureCsvFactory>().GetBaseStats(type, (byte)(level - 1));
                 convert = false;
                 return;
             }
@@ -658,9 +658,9 @@ namespace DatabaseGenerator
                 }
 
                 byte structureLevel = 1;
-                StructureBaseStats stats;
+                IStructureBaseStats stats;
 
-                while ((stats = kernel.Get<StructureFactory>().GetBaseStats(builderType, structureLevel)) != null)
+                while ((stats = kernel.Get<IStructureCsvFactory>().GetBaseStats(builderType, structureLevel)) != null)
                 {
                     structureLevel++;
 

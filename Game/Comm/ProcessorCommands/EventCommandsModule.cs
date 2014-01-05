@@ -13,9 +13,12 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly IDbManager dbManager;
 
-        public EventCommandsModule(IDbManager dbManager)
+        private readonly ILocker locker;
+
+        public EventCommandsModule(IDbManager dbManager, ILocker locker)
         {
             this.dbManager = dbManager;
+            this.locker = locker;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -35,9 +38,9 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
-                Global.Channel.Unsubscribe(session);
+                Global.Current.Channel.Unsubscribe(session);
 
                 // If player is logged in under new session already, then don't bother changing their session info
                 if (session.Player.Session != session)
@@ -49,7 +52,7 @@ namespace Game.Comm.ProcessorCommands
                 session.Player.SessionId = string.Empty;
                 session.Player.LastLogin = SystemClock.Now;
                 dbManager.Save(session.Player);
-            }
+            });
         }
     }
 }

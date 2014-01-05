@@ -1,9 +1,7 @@
 ﻿#region
 
+using System;
 using Game.Data;
-using Game.Logic.Formulas;
-using Game.Logic.Triggers;
-using Game.Logic.Triggers.Events;
 
 #endregion
 
@@ -11,6 +9,7 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
+        [Obsolete("Use resource_rate_update in init.csv instead")]
         public virtual void RecalculateCityResourceRates(ICity city)
         {
             city.Resource.Crop.Rate = formula.GetCropRate(city);
@@ -18,21 +17,12 @@ namespace Game.Logic.Procedures
             city.Resource.Wood.Rate = formula.GetWoodRate(city);
             city.Resource.Gold.Rate = formula.GetGoldRate(city);
         }
-
+        
+        [Obsolete("Use resource_rate_update and city_resource_cap_update in init.csv instead")]
         public virtual void OnStructureUpgradeDowngrade(IStructure structure)
         {
             SetResourceCap(structure.City);
             RecalculateCityResourceRates(structure.City);
-        }
-
-        public virtual void OnTechnologyUpgrade(IStructure structure, TechnologyBase technologyBase, ICityTriggerManager cityTriggerManager, ICityEventFactory cityEventFactory)
-        {
-            cityTriggerManager.Process(cityEventFactory.CreateTechnologyUpgradeEvent(structure, technologyBase.Techtype, technologyBase.Level));
-        }
-
-        public virtual void OnTechnologyDelete(IStructure structure, TechnologyBase technologyBase, ICityTriggerManager cityTriggerManager, ICityEventFactory cityEventFactory)
-        {
-            cityTriggerManager.Process(cityEventFactory.CreateTechnologyDeleteEvent(structure, technologyBase.Techtype, technologyBase.Level));
         }
     }
 }

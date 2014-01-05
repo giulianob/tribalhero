@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
+using Common.Testing;
 using FluentAssertions;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Setup;
-using Moq;
 using NSubstitute;
-using Xunit;
+using Ploeh.AutoFixture;
 using Xunit.Extensions;
 
 namespace Testing.FormulaTests
@@ -66,22 +66,17 @@ namespace Testing.FormulaTests
             }
         }
 
-        [Fact]
-        public void HiddenResourceNoBasementsShouldNotProtectAnyResource()
+        [Theory, AutoNSubstituteData]
+        public void HiddenResourceNoBasementsShouldNotProtectAnyResource(IObjectTypeFactory objectTypeFactory, Formula formula)
         {
-            var city = new Mock<ICity>();
-            city.Setup(m => m.GetEnumerator())
-                .Returns(() => new List<IStructure> {new Mock<IStructure>().Object}.GetEnumerator());
-            var unitFactory = new Mock<UnitFactory>();
-            var structureFactory = new Mock<StructureFactory>();
+            var city = Substitute.For<ICity>();
+            city.GetEnumerator()
+                .Returns(args => new List<IStructure> { Substitute.For<IStructure>() }.GetEnumerator());
 
-            var objectTypeFactory = new Mock<ObjectTypeFactory>();
-            objectTypeFactory.Setup(m => m.IsStructureType("Basement", It.IsAny<IStructure>())).Returns(false);
+            objectTypeFactory.IsStructureType("Basement", Arg.Any<IStructure>()).Returns(false);
 
-            var formula = new Formula(objectTypeFactory.Object, unitFactory.Object, structureFactory.Object, Substitute.For<ISystemVariableManager>());
-
-            formula.HiddenResource(city.Object).CompareTo(new Resource(0, 0, 0, 0, 0)).Should().Be(0);
-            formula.HiddenResource(city.Object, true).CompareTo(new Resource(0, 0, 0, 0, 0)).Should().Be(0);
+            formula.HiddenResource(city).CompareTo(new Resource(0, 0, 0, 0, 0)).Should().Be(0);
+            formula.HiddenResource(city, true).CompareTo(new Resource(0, 0, 0, 0, 0)).Should().Be(0);
         }
 
         [Theory, PropertyData("HiddenResourceWithBasementsShouldProtectResourcesData")]
@@ -91,33 +86,32 @@ namespace Testing.FormulaTests
                                                                       Resource cityResourceLimit,
                                                                       Resource expectedOutput)
         {
-            var city = new Mock<ICity>();
+            var fixture = FixtureHelper.Create();
+
+            var city = Substitute.For<ICity>();
 
             var basements = new List<IStructure>();
             foreach (byte basementLevel in basementLevels)
             {
-                var basement = new Mock<IStructure>();
-                basement.SetupGet(p => p.Lvl).Returns(basementLevel);
-                basements.Add(basement.Object);
+                var basement = Substitute.For<IStructure>();
+                basement.Lvl.Returns(basementLevel);
+                basements.Add(basement);
             }
 
-            city.Setup(m => m.GetEnumerator()).Returns(() => basements.GetEnumerator());
-            city.SetupGet(p => p.Resource.Crop.Limit).Returns(cityResourceLimit.Crop);
-            city.SetupGet(p => p.Resource.Gold.Limit).Returns(cityResourceLimit.Gold);
-            city.SetupGet(p => p.Resource.Wood.Limit).Returns(cityResourceLimit.Wood);
-            city.SetupGet(p => p.Resource.Iron.Limit).Returns(cityResourceLimit.Iron);
-            city.SetupGet(p => p.Resource.Labor.Limit).Returns(cityResourceLimit.Labor);
-            city.SetupGet(p => p.AlignmentPoint).Returns(ap);
+            city.GetEnumerator().Returns(args => basements.GetEnumerator());
+            city.Resource.Crop.Limit.Returns(cityResourceLimit.Crop);
+            city.Resource.Gold.Limit.Returns(cityResourceLimit.Gold);
+            city.Resource.Wood.Limit.Returns(cityResourceLimit.Wood);
+            city.Resource.Iron.Limit.Returns(cityResourceLimit.Iron);
+            city.Resource.Labor.Limit.Returns(cityResourceLimit.Labor);
+            city.AlignmentPoint.Returns(ap);
 
-            var objectTypeFactory = new Mock<ObjectTypeFactory>();
-            objectTypeFactory.Setup(m => m.IsStructureType("Basement", It.IsAny<IStructure>())).Returns(true);
+            var objectTypeFactory = fixture.Freeze<IObjectTypeFactory>();
+            objectTypeFactory.IsStructureType("Basement", Arg.Any<IStructure>()).Returns(true);
 
-            var unitFactory = new Mock<UnitFactory>();
-            var structureFactory = new Mock<StructureFactory>();
+            var formula = fixture.Create<Formula>();
 
-            var formula = new Formula(objectTypeFactory.Object, unitFactory.Object, structureFactory.Object, Substitute.For<ISystemVariableManager>());
-
-            var hiddenResources = formula.HiddenResource(city.Object, checkApBonus);
+            var hiddenResources = formula.HiddenResource(city, checkApBonus);
 
             hiddenResources.CompareTo(expectedOutput)
                            .Should()

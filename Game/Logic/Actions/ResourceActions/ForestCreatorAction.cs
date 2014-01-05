@@ -2,11 +2,7 @@
 
 using System;
 using Game.Data.Forest;
-using Game.Logic.Formulas;
-using Game.Map;
-using Game.Setup;
 using Game.Util;
-using Game.Util.Locking;
 using Persistance;
 
 #endregion
@@ -19,10 +15,13 @@ namespace Game.Logic.Actions.ResourceActions
 
         private readonly IForestManager forestManager;
 
-        public ForestCreatorAction(IDbManager dbManager, IForestManager forestManager)
+        private readonly IScheduler scheduler;
+
+        public ForestCreatorAction(IDbManager dbManager, IForestManager forestManager, IScheduler scheduler)
         {
             this.dbManager = dbManager;
             this.forestManager = forestManager;
+            this.scheduler = scheduler;
             Time = SystemClock.Now;
         }
 
@@ -41,7 +40,7 @@ namespace Game.Logic.Actions.ResourceActions
 
             // Reschedule ourselves
             Time = SystemClock.Now.AddMinutes(5);
-            Scheduler.Current.Put(this);           
+            scheduler.Put(this);           
         }
 
         #endregion

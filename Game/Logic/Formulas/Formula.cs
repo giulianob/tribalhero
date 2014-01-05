@@ -1,12 +1,9 @@
 #region
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
-using Game.Data.Forest;
-using Game.Data.Stats;
-using Game.Data.Stronghold;
+using Game.Logic.Actions;
 using Game.Setup;
 
 #endregion
@@ -15,28 +12,56 @@ namespace Game.Logic.Formulas
 {
     public partial class Formula
     {
-        [Obsolete("Used for testing only", true)]
-        public Formula()
-        {
-        }
-
-        public Formula(ObjectTypeFactory objectTypeFactory, UnitFactory unitFactory, StructureFactory structureFactory, ISystemVariableManager systemVariableManager)
+        protected Formula()
+		{
+		}
+	
+        public Formula(IObjectTypeFactory objectTypeFactory, UnitFactory unitFactory, IStructureCsvFactory structureFactory, ISystemVariableManager systemVariableManager)
         {
             SystemVariableManager = systemVariableManager;
             ObjectTypeFactory = objectTypeFactory;
             UnitFactory = unitFactory;
-            StructureFactory = structureFactory;
+	    	StructureCsvFactory = structureFactory;
         }
 
-        public static Formula Current { get; set; }
+        public virtual IObjectTypeFactory ObjectTypeFactory { get; set; }
 
-        public ObjectTypeFactory ObjectTypeFactory { get; set; }
+        public virtual UnitFactory UnitFactory { get; set; }
 
-        public UnitFactory UnitFactory { get; set; }
+        public virtual IStructureCsvFactory StructureCsvFactory { get; set; }
 
-        public StructureFactory StructureFactory { get; set; }
+        public virtual ISystemVariableManager SystemVariableManager { get; set; }
 
-        public ISystemVariableManager SystemVariableManager { get; set; }
+        public virtual Error CityMaxConcurrentBuildActions(ushort structureType, uint currentActionId, ICity city, IObjectTypeFactory objectTypeFactory)
+        {
+            int maxConcurrentUpgrades = ConcurrentBuildUpgrades(city.MainBuilding.Lvl);
+
+            if (!objectTypeFactory.IsObjectType("UnlimitedBuilding", structureType) &&
+                city.Worker.ActiveActions.Values.Count(action =>
+                    {
+                        if (action.ActionId == currentActionId)
+                        {
+                            return false;
+                        }
+
+                        if (action.Type == ActionType.StructureUpgradeActive)
+                        {
+                            return true;
+                        }
+
+                        if (action.Type != ActionType.StructureBuildActive)
+                        {
+                            return false;
+                        }
+
+                        return !objectTypeFactory.IsObjectType("UnlimitedBuilding", ((StructureBuildActiveAction)action).BuildType);
+                    }) >= maxConcurrentUpgrades)
+            {
+                return Error.ActionTotalMaxReached;
+            }
+
+            return Error.Ok;
+        }
 
         /// <summary>
         ///     Applies the specified effects to the specified radius. This is used by AwayFromLayout for building validation.
@@ -133,8 +158,6 @@ namespace Game.Logic.Formulas
         /// <summary>
         ///     Returns the amount of wood the user should get for the specified city.
         ///     Notice: This function looks at all the Forest Camps Rate property and adds them up.
-        ///     It doesn't actually go into the Forest to recalculate the values. See <see cref="GetWoodRateForForest" /> for
-        ///     a calculation that factors the Forest.
         /// </summary>
         /// <param name="city">City to recalculate resources for</param>
         /// <returns></returns>
@@ -192,13 +215,17 @@ namespace Game.Logic.Formulas
         /// <summary>
         ///     Returns the rate that the specified structure should gather from the given forest.
         /// </summary>
-        /// <param name="forest"></param>
-        /// <param name="stats"></param>
+        /// <param name="forestCamp"></param>
         /// <param name="efficiency"></param>
         /// <returns></returns>
-        public virtual int GetWoodRateForForest(IForest forest, IStructureStats stats, double efficiency)
+        public virtual int GetWoodRateForForestCamp(IStructure forestCamp, float efficiency)
         {
-            return (int)(stats.Labor * forest.Rate * (1d + efficiency));
+            var lumbermill = forestCamp.City.FirstOrDefault(s => ObjectTypeFactory.IsStructureType("Lumbermill", s));
+            if (lumbermill == null)
+                return 0;
+
+            double[] rate = {0, .75, .75, 1, 1, 1, 1, 1.25, 1.25, 1.25, 1.25, 1.25, 1.5, 1.5, 1.5, 1.5};
+            return (int)(forestCamp.Stats.Labor * rate[lumbermill.Lvl] * (1f + efficiency));
         }
 
         /// <summary>
@@ -225,7 +252,7 @@ namespace Game.Logic.Formulas
 
         public virtual byte GetInitialCityRadius()
         {
-            return 4;
+            return 5;
         }
 
         public virtual decimal GetInitialAp()

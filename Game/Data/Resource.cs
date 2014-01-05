@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using Game.Data.Stats;
-using Game.Setup;
 
 #endregion
 
@@ -32,13 +31,8 @@ namespace Game.Data
 
         private int wood;
 
-        public Resource(Resource copy)
-        {
-            crop = copy.Crop;
-            gold = copy.Gold;
-            wood = copy.Wood;
-            labor = copy.Labor;
-            Iron = copy.Iron;
+        public Resource()
+        {            
         }
 
         public Resource(int crop = 0, int gold = 0, int iron = 0, int wood = 0, int labor = 0)
@@ -48,6 +42,15 @@ namespace Game.Data
             this.iron = Math.Max(0, iron);
             this.wood = Math.Max(0, wood);
             this.labor = Math.Max(0, labor);
+        }
+
+        public Resource(Resource copy)
+        {
+            crop = copy.Crop;
+            gold = copy.Gold;
+            wood = copy.Wood;
+            labor = copy.Labor;
+            Iron = copy.Iron;
         }
 
         public Resource(int value)
@@ -358,24 +361,6 @@ namespace Game.Data
             wood = 0;
             labor = 0;
             FireStatsUpdate();
-        }
-
-        public static Resource GetMinValuesBetween(Resource a, Resource b)
-        {
-            return new Resource(Math.Min(a.crop, b.crop),
-                                Math.Min(a.gold, b.gold),
-                                Math.Min(a.iron, b.iron),
-                                Math.Min(a.wood, b.wood),
-                                Math.Min(a.labor, b.labor));
-        }
-
-        public static Resource GetMaxValuesBetween(Resource a, Resource b)
-        {
-            return new Resource(Math.Max(a.crop, b.crop),
-                                Math.Max(a.gold, b.gold),
-                                Math.Max(a.iron, b.iron),
-                                Math.Max(a.wood, b.wood),
-                                Math.Max(a.labor, b.labor));
         }
 
         public string ToNiceString()

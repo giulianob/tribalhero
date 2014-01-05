@@ -32,9 +32,9 @@ package src.Objects.Technologies {
                 } else if (key.indexOf("BARRACK") != -1) {
                     summarizer = new InstantTrainSummarizer(5, 150);
                 } else if (key.indexOf("STABLE") != -1) {
-                    summarizer = new InstantTrainSummarizer(2, 150);
+                    summarizer = new InstantTrainSummarizer(2, 60);
                 } else if (key.indexOf("WORKSHOP") != -1) {
-                    summarizer = new InstantTrainSummarizer(1, 150);
+                    summarizer = new InstantTrainSummarizer(1, 30);
                 } else {
                     summarizer = new TechnologySummarizer();
                 }

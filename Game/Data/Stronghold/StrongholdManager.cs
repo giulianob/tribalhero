@@ -204,6 +204,7 @@ namespace Game.Data.Stronghold
                 chat.SendSystemChat("STRONGHOLD_TAKEN_OVER", stronghold.Name, tribe.Name, oldTribe.Name);
                 StrongholdGained.Raise(this, new StrongholdGainedEventArgs {Tribe = tribe, OwnBy = oldTribe, Stronghold = stronghold});
                 StrongholdLost.Raise(this, new StrongholdLostEventArgs { Tribe = oldTribe, AttackedBy = tribe, Stronghold = stronghold });
+                oldTribe.SendUpdate();
             }
             else
             {

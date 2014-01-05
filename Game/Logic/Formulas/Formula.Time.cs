@@ -201,7 +201,9 @@ namespace Game.Logic.Formulas
 
         public virtual double GetGateBattleInterval(IStronghold stronghold)
         {
-            double[] interval = new[] {0, 30.6, 27.1, 24.0, 21.2, 18.8, 16.6, 14.7, 13.0, 11.5, 10.2, 9.0, 8.1, 7.1, 6.2, 5.5, 4.9, 4.3, 3.8, 3.4, 3.0};
+            if (Config.battle_gate_turn_interval > 0)
+                return Config.battle_gate_turn_interval;
+            double[] interval = {0, 30.6, 27.1, 24.0, 21.2, 18.8, 16.6, 14.7, 13.0, 11.5, 10.2, 9.0, 8.1, 7.1, 6.2, 5.5, 4.9, 4.3, 3.8, 3.4, 3.0};
             return interval[stronghold.Lvl];
         }
 

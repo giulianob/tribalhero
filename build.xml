@@ -34,7 +34,6 @@
 			<target name="Persistance:Rebuild" />
 			<target name="Game:Rebuild" />
 			<target name="CSVToXML:Rebuild" />
-			<target name="Tools\ConsoleSimulator:Rebuild" />
 			<target name="Tests\Common_Testing:Rebuild" />
 			<target name="Tests\Testing:Rebuild" />
 			<target name="Tools\DatabaseGenerator:Rebuild" />

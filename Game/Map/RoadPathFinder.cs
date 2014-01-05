@@ -3,97 +3,177 @@
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
+using Game.Setup;
 
 #endregion
 
 namespace Game.Map
 {
-    public class RoadPathFinder
+    public class RoadPathFinder : IRoadPathFinder
     {
-        public static bool HasPath(Position start, Position end, ICity city, Position excludedPoint)
+        private readonly IWorld world;
+
+        private readonly ITileLocator tileLocator;
+
+        private readonly IObjectTypeFactory objectTypeFactory;
+
+        public RoadPathFinder(IWorld world, ITileLocator tileLocator, IObjectTypeFactory objectTypeFactory)
         {
-            bool fromStructure = World.Current[start.X, start.Y].Exists(s => s is IStructure);
-
-            return BreadthFirst(new Position(end.X, end.Y),
-                                new List<Position> {new Position(start.X, start.Y)},
-                                excludedPoint,
-                                delegate(Position node)
-                                    {
-                                        var neighbors = new List<Position>(4);
-                                        Position[] possibleNeighbors;
-                                        if (node.Y % 2 == 0)
-                                        {
-                                            possibleNeighbors = new[]
-                                            {
-                                                    new Position(node.X, node.Y - 1), new Position(node.X, node.Y + 1),
-                                                    new Position(node.X - 1, node.Y - 1),
-                                                    new Position(node.X - 1, node.Y + 1)
-                                            };
-                                        }
-                                        else
-                                        {
-                                            possibleNeighbors = new[]
-                                            {
-                                                    new Position(node.X + 1, node.Y - 1), new Position(node.X + 1, node.Y + 1),
-                                                    new Position(node.X, node.Y - 1), new Position(node.X, node.Y + 1)
-                                            };
-                                        }
-
-                                        neighbors.AddRange(possibleNeighbors.Where(delegate(Position location)
-                                            {
-                                                if (!location.Equals(end))
-                                                {
-                                                    if (
-                                                            World.Current[location.X, location.Y].Exists(
-                                                                                                         s =>
-                                                                                                         s is IStructure))
-                                                    {
-                                                        return false;
-                                                    }
-                                                    if (!World.Current.Roads.IsRoad(location.X, location.Y))
-                                                    {
-                                                        return false;
-                                                    }
-                                                    if (
-                                                            SimpleGameObject.TileDistance(location.X,
-                                                                                          location.Y,
-                                                                                          city.X,
-                                                                                          city.Y) > city.Radius)
-                                                    {
-                                                        return false;
-                                                    }
-                                                }
-                                                else if (fromStructure && node.Equals(start))
-                                                {
-                                                    return false;
-                                                }
-
-                                                return true;
-                                            }));
-
-                                        return neighbors;
-                                    });
+            this.world = world;
+            this.tileLocator = tileLocator;
+            this.objectTypeFactory = objectTypeFactory;
         }
 
-        private static bool BreadthFirst(Position end,
-                                         List<Position> visited,
-                                         Position excludedPoint,
-                                         GetNeighbors getNeighbors)
+        public Error CanBuild(Position position, byte size, ICity city, bool requiresRoad)
+        {
+            var buildingPositions = tileLocator.ForeachMultitile(position.X, position.Y, size).ToArray();
+            var buildingNeighbors = tileLocator.ForeachRadius(position.X, position.Y, size, 1).ToArray();
+
+            var mainBuildingPositions = tileLocator.ForeachMultitile(city.MainBuilding).ToArray();
+
+            var roadsBeingBuiltOn = buildingPositions.Any(buildingPosition => world.Roads.IsRoad(buildingPosition.X, buildingPosition.Y));
+
+            if (!requiresRoad)
+            {
+                // Cant build on road if this building doesnt require roads
+                return roadsBeingBuiltOn ? Error.RoadDestroyUniquePath : Error.Ok;
+            }
+
+            if (roadsBeingBuiltOn)
+            {
+                // All structures should still have a valid path if we are building on top of a road
+                foreach (var str in city)
+                {
+                    if (str.IsMainBuilding || objectTypeFactory.IsObjectType("NoRoadRequired", str.Type))
+                    {
+                        continue;
+                    }
+
+                    if (!HasPath(start: str.PrimaryPosition,
+                                 startSize: str.Size,
+                                 city: city,
+                                 excludedPoints: buildingPositions))
+                    {
+                        return Error.RoadDestroyUniquePath;
+                    }
+                }
+
+                // All neighboring roads should have a different path
+                foreach (var neighborPosition in buildingNeighbors)
+                {
+                    if (mainBuildingPositions.Contains(neighborPosition) || !world.Roads.IsRoad(neighborPosition.X, neighborPosition.Y))
+                    {
+                        continue;
+                    }
+
+                    if (!HasPath(start: neighborPosition,
+                                 startSize: 1,
+                                 city: city,
+                                 excludedPoints: buildingPositions))
+                    {
+                        return Error.RoadDestroyUniquePath;
+                    }
+                }
+            }
+
+            // There should be a road around this building
+            foreach (var neighborPosition in buildingNeighbors)
+            {
+                bool hasStructure = world.Regions.GetObjectsInTile(neighborPosition.X, neighborPosition.Y)
+                                         .Any(obj => obj is IStructure);
+                
+                if (hasStructure || !world.Roads.IsRoad(neighborPosition.X, neighborPosition.Y))
+                {
+                    continue;
+                }
+
+                if (roadsBeingBuiltOn && !HasPath(start: neighborPosition,
+                                                        startSize: 1,
+                                                        city: city,
+                                                        excludedPoints: buildingPositions))
+                {
+                    continue;
+                }
+
+                return Error.Ok;
+            }
+
+            return Error.RoadNotAround;
+        }
+
+        public bool HasPath(Position start, byte startSize, ICity city, IEnumerable<Position> excludedPoints)
+        {
+            var fromStructure = world.Regions.GetObjectsInTile(start.X, start.Y).OfType<IStructure>().Any();
+            var startPositions = tileLocator.ForeachMultitile(start.X, start.Y, startSize).ToList();
+            var mainBuilding = city.MainBuilding;
+            var mainBuildingPositions = tileLocator.ForeachMultitile(mainBuilding).ToList();
+
+            if (startPositions.Intersect(mainBuildingPositions).Any())
+            {
+                return true;
+            }
+
+            return BreadthFirst(end: mainBuildingPositions,
+                                visited: new List<Position> {new Position(start.X, start.Y)},
+                                excludedPoints: excludedPoints,
+                                getNeighbors: node =>
+                                {
+                                    var possibleNeighbors = new[]
+                                    {
+                                        node.TopLeft(),
+                                        node.TopRight(),
+                                        node.BottomLeft(),
+                                        node.BottomRight()
+                                    };
+
+                                    return possibleNeighbors.Where(location =>
+                                    {
+                                        // If the neighbor we are checking is where the mainbuilding is then we've found the goal
+                                        if (mainBuildingPositions.Contains(location))
+                                        {
+                                            // We have only found the target if the structure we're checking is not directly next to the main building
+                                            return !fromStructure || !startPositions.Contains(node);
+                                        }
+
+                                        if (startPositions.Contains(location))
+                                        {
+                                            return true;
+                                        }
+
+                                        if (tileLocator.TileDistance(location, 1, city.PrimaryPosition, 1) > city.Radius)
+                                        {
+                                            return false;
+                                        }
+
+                                        var structureOnTile = world.Regions.GetObjectsInTile(location.X, location.Y).OfType<IStructure>().FirstOrDefault();
+                                        if (structureOnTile != null)
+                                        {
+                                            return false;
+                                        }
+
+                                        return world.Roads.IsRoad(location.X, location.Y);
+                                    }).ToList();
+                                });
+        }
+
+        private bool BreadthFirst(List<Position> end,
+                                  List<Position> visited,
+                                  IEnumerable<Position> excludedPoints,
+                                  GetNeighbors getNeighbors)
         {
             List<Position> nodes = getNeighbors(visited.Last());
-
             // Examine adjacent nodes for end goal
-            if (nodes.Contains(end))
+            if (nodes.Intersect(end).Any())
             {
                 return true;
             }
 
             // in breadth-first, recursion needs to come after visiting adjacent nodes
-            foreach (var node in
-                    nodes.Where(node => !node.Equals(end) && !node.Equals(excludedPoint) && !visited.Contains(node)))
+            foreach (var node in nodes.Where(node => !excludedPoints.Contains(node) && !visited.Contains(node)))
             {
                 visited.Add(node);
-                if (BreadthFirst(end, visited, excludedPoint, getNeighbors))
+
+                if (BreadthFirst(end, visited, excludedPoints, getNeighbors))
                 {
                     return true;
                 }

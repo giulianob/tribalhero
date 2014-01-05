@@ -65,6 +65,9 @@ CITY_OVERVIEW_LABORERS_LABEL,"{0} idle, {1} working."
 CITY_OVERVIEW_TROOPS_STARVING,Your troop upkeep currently exceeds your crop production rate. Your units will slowly starve to death.
 CITY_OVERVIEW_LABORERS_TAB,Laborers
 CITY_OVERVIEW_LOCAL_EVENTS_TAB,Local Events
+CITY_OVERVIEW_TECHNOLOGIES_TAB,Technologies
+CITY_OVERVIEW_TECHNOLOGIES_NAME_COLUMN,Name
+CITY_OVERVIEW_TECHNOLOGIES_SUMMARY_COLUMN,Summary
 CITY_OVERVIEW_LABORERS_STRUCTURE_COLUMN,Structure
 CITY_OVERVIEW_LABORERS_WORKING_COLUMN,Working/Maximum Laborers
 CITY_OVERVIEW_UNITS_STATUS_LABEL,"{0} idle, {1} busy."
@@ -175,7 +178,7 @@ ATTACK_OWN_STRONGHOLD,This stronghold can't be attacked since it belongs to your
 ATTACK_STRONGHOLD_NO_TRIBESMAN,You must join or create a tribe in order to attack strongholds.
 ATTACK_SELF_ERROR,You can't attack your own city.
 ,
-REINFORCE_CHOOSE_TARGET,Choose a town center to defend or stronghold to defend.
+REINFORCE_CHOOSE_TARGET,Choose a city's Town Center or a Stronghold to defend.
 REINFORCE_DISTANCE_MESSAGE,About {0} away. Double click to defend.
 ,
 BATTLE_PROP_DEFENSE_STRONGHOLD_METER,Defenders Morale

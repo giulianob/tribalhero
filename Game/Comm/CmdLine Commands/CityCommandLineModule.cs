@@ -19,10 +19,19 @@ namespace Game.Comm.CmdLine_Commands
 
         private readonly Procedure procedure;
 
-        public CityCommandLineModule(Procedure procedure, IActionFactory actionFactory)
+        private IWorld world;
+
+        private ILocker locker;
+
+        public CityCommandLineModule(Procedure procedure,
+                                     IActionFactory actionFactory,
+                                     ILocker locker,
+                                     IWorld world)
         {
             this.procedure = procedure;
             this.actionFactory = actionFactory;
+            this.locker = locker;
+            this.world = world;
         }
 
         public override void RegisterCommands(CommandLineProcessor processor)
@@ -65,29 +74,31 @@ namespace Game.Comm.CmdLine_Commands
             }
 
             uint playerId;
-            if (!World.Current.FindPlayerId(playerName, out playerId))
+            if (!world.FindPlayerId(playerName, out playerId))
             {
                 return "Player not found";
             }
 
             IPlayer player;
-            using (Concurrency.Current.Lock(playerId, out player))
+            return locker.Lock(playerId, out player).Do(() =>
             {
-                if (player == null)
                 {
-                    return "Player not found";
+                    if (player == null)
+                    {
+                        return "Player not found";
+                    }
+
+                    ICity city = player.GetCityList().First();
+                    var cityCreateAction = actionFactory.CreateCityCreatePassiveAction(city.Id, x, y, cityName);
+                    Error ret = city.Worker.DoPassive(city[1], cityCreateAction, true);
+                    if (ret != Error.Ok)
+                    {
+                        return string.Format("Error: {0}", ret);
+                    }
                 }
 
-                ICity city = player.GetCityList().First();
-                var cityCreateAction = actionFactory.CreateCityCreatePassiveAction(city.Id, x, y, cityName);
-                Error ret = city.Worker.DoPassive(city[1], cityCreateAction, true);
-                if (ret != Error.Ok)
-                {
-                    return string.Format("Error: {0}", ret);
-                }
-            }
-
-            return "OK!";
+                return "OK!";
+            });
         }
 
         public string DeleteStuckTroop(Session session, String[] parms)
@@ -117,13 +128,13 @@ namespace Game.Comm.CmdLine_Commands
             }
 
             uint cityId;
-            if (!World.Current.Cities.FindCityId(cityName, out cityId))
+            if (!world.Cities.FindCityId(cityName, out cityId))
             {
                 return "City not found";
             }
 
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            return locker.Lock(cityId, out city).Do(() =>
             {
                 if (city == null)
                 {
@@ -142,9 +153,9 @@ namespace Game.Comm.CmdLine_Commands
                 }
 
                 procedure.TroopStubDelete(city, stub);
-            }
 
-            return "OK!";
+                return "OK!";
+            });
         }
 
         public string RemoveStructure(Session session, String[] parms)
@@ -173,31 +184,31 @@ namespace Game.Comm.CmdLine_Commands
                 return "removestructure --x=### --y=###";
             }
 
-            Region region = World.Current.Regions.GetRegion(x, y);
+            IRegion region = world.Regions.GetRegion(x, y);
             if (region == null)
             {
                 return "Invalid coordinates";
             }
 
-            var structure = region.GetObjects(x, y).OfType<IStructure>().FirstOrDefault();
+            var structure = region.GetObjectsInTile(x, y).OfType<IStructure>().FirstOrDefault();
 
             if (structure == null)
             {
                 return "No structures found at specified coordinates";
             }
 
-            using (Concurrency.Current.Lock(structure.City))
+            return locker.Lock(structure.City).Do(() =>
             {
-                var removeAction = new StructureSelfDestroyPassiveAction(structure.City.Id, structure.ObjectId);
+                var removeAction = actionFactory.CreateStructureSelfDestroyPassiveAction(structure.City.Id, structure.ObjectId);
                 var result = structure.City.Worker.DoPassive(structure.City, removeAction, false);
 
                 if (result != Error.Ok)
                 {
                     return string.Format("Error: {0}", result);
                 }
-            }
 
-            return "OK!";
+                return "OK!";
+            });
         }
 
         public string RenameCity(Session session, String[] parms)
@@ -227,13 +238,13 @@ namespace Game.Comm.CmdLine_Commands
             }
 
             uint cityId;
-            if (!World.Current.Cities.FindCityId(cityName, out cityId))
+            if (!world.Cities.FindCityId(cityName, out cityId))
             {
                 return "City not found";
             }
 
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            return locker.Lock(cityId, out city).Do(() =>
             {
                 if (city == null)
                 {
@@ -241,15 +252,15 @@ namespace Game.Comm.CmdLine_Commands
                 }
 
                 // Verify city name is valid
-                if (!City.IsNameValid(newCityName))
+                if (!CityManager.IsNameValid(newCityName))
                 {
                     return "City name is invalid";
                 }
 
-                lock (World.Current.Lock)
+                lock (world.Lock)
                 {
                     // Verify city name is unique
-                    if (World.Current.CityNameTaken(newCityName))
+                    if (world.CityNameTaken(newCityName))
                     {
                         return "City name is already taken";
                     }
@@ -258,9 +269,9 @@ namespace Game.Comm.CmdLine_Commands
                     city.Name = newCityName;
                     city.EndUpdate();
                 }
-            }
 
-            return "OK!";
+                return "OK!";
+            });
         }
 
         public string DumpCity(Session session, String[] parms)
@@ -284,14 +295,14 @@ namespace Game.Comm.CmdLine_Commands
             }
 
             uint cityId;
-            if (!World.Current.Cities.FindCityId(cityName, out cityId))
+            if (!world.Cities.FindCityId(cityName, out cityId))
             {
                 return "City not found";
             }
 
             StringWriter outString = new StringWriter();
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 foreach (var obj in city)
                 {
@@ -301,10 +312,10 @@ namespace Game.Comm.CmdLine_Commands
                                         obj.Lvl,
                                         obj.InWorld,
                                         obj.IsBlocked,
-                                        obj.X,
-                                        obj.Y);
+                                        obj.PrimaryPosition.X,
+                                        obj.PrimaryPosition.Y);
                 }
-            }
+            });
 
             return outString.ToString();
         }

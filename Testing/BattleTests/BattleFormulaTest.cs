@@ -5,7 +5,6 @@ using Game.Battle;
 using Game.Data;
 using Game.Setup;
 using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.Xunit;
 using Xunit.Extensions;
 using Game.Battle.CombatObjects;
 using NSubstitute;
@@ -130,7 +129,7 @@ namespace Testing.BattleTests
         public void GetNumberOfHits_WhenObjectIsSplashEvery200(ICombatObject attacker,
                                                                ICombatList defenderCombatList)
         {
-            var objectTypeFactory = Substitute.For<ObjectTypeFactory>();
+            var objectTypeFactory = Substitute.For<IObjectTypeFactory>();
             var fixture = FixtureHelper.Create();
             fixture.Register(() => objectTypeFactory);
             var battleFormulas = fixture.Create<BattleFormulas>();
@@ -144,7 +143,7 @@ namespace Testing.BattleTests
         [Theory, AutoNSubstituteData]
         public void GetNumberOfHits_WhenObjectIsNotSplashEvery200(ICombatObject attacker, ICombatList defenderCombatList)
         {
-            var objectTypeFactory = Substitute.For<ObjectTypeFactory>();
+            var objectTypeFactory = Substitute.For<IObjectTypeFactory>();
             var fixture = FixtureHelper.Create();
             fixture.Register(() => objectTypeFactory);
             var battleFormulas = fixture.Create<BattleFormulas>();
@@ -159,7 +158,7 @@ namespace Testing.BattleTests
         public void GetNumberOfHits_WhenDefenderUpkeepOver4000(ICombatObject attacker,
                                                                ICombatList defenderCombatList)
         {
-            var objectTypeFactory = Substitute.For<ObjectTypeFactory>();
+            var objectTypeFactory = Substitute.For<IObjectTypeFactory>();
             var fixture = FixtureHelper.Create();
             fixture.Register(() => objectTypeFactory);
             var battleFormulas = fixture.Create<BattleFormulas>();
@@ -174,7 +173,7 @@ namespace Testing.BattleTests
         public void GetNumberOfHits_WhenDefenderUpkeepUnder200(ICombatObject attacker,
                                                                ICombatList defenderCombatList)
         {
-            var objectTypeFactory = Substitute.For<ObjectTypeFactory>();
+            var objectTypeFactory = Substitute.For<IObjectTypeFactory>();
             var fixture = FixtureHelper.Create();
             fixture.Register(() => objectTypeFactory);
             var battleFormulas = fixture.Create<BattleFormulas>();

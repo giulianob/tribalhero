@@ -1,9 +1,7 @@
 ﻿#region
 
 using Game.Data;
-using Game.Logic.Formulas;
 using Game.Logic.Triggers;
-using Game.Logic.Triggers.Events;
 
 #endregion
 
@@ -23,6 +21,16 @@ namespace Game.Logic.Procedures
         public virtual void OnStructureDowngrade(IStructure structure)
         {
             cityTriggerManager.Process(cityEventFactory.CreateStructureDowngradeEvent(structure, structure.Type, structure.Lvl));
+        }
+
+        public virtual void OnStructureUpgrade(IStructure structure)
+        {
+            cityTriggerManager.Process(cityEventFactory.CreateStructureUpgradeEvent(structure, structure.Type, structure.Lvl));
+        }
+
+        public virtual void OnStructureConvert(IStructure structure)
+        {
+            cityTriggerManager.Process(cityEventFactory.CreateStructureConvertEvent(structure, structure.Type, structure.Lvl));
         }
 
         public virtual void OnTechnologyUpgrade(IStructure structure, TechnologyBase technologyBase)

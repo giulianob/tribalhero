@@ -40,7 +40,7 @@ namespace Game.Comm.Channel
 
             var packet = CreatePacket(battle, Command.BattlePropertyUpdate);
             PacketHelper.AddBattleProperties(battle.ListProperties(), packet);
-            Global.Channel.Post(channelName, packet);
+            Global.Current.Channel.Post(channelName, packet);
         }
 
         private Packet CreatePacket(IBattleManager battle, Command command)
@@ -59,7 +59,7 @@ namespace Game.Comm.Channel
             var packet = CreatePacket(battle, Command.BattleGroupUnitAdded);
             packet.AddUInt32(combatGroup.Id);
             PacketHelper.AddToPacket(combatObject, packet);
-            Global.Channel.Post(channelName, packet);
+            Global.Current.Channel.Post(channelName, packet);
         }
 
         private void BattleManagerOnGroupUnitRemoved(IBattleManager battle,
@@ -70,37 +70,37 @@ namespace Game.Comm.Channel
             var packet = CreatePacket(battle, Command.BattleGroupUnitRemoved);
             packet.AddUInt32(combatGroup.Id);
             packet.AddUInt32(combatObject.Id);
-            Global.Channel.Post(channelName, packet);
+            Global.Current.Channel.Post(channelName, packet);
         }
 
         private void BattleEnterRound(IBattleManager battle, ICombatList atk, ICombatList def, uint round)
         {
             var packet = CreatePacket(battle, Command.BattleNewRound);
             packet.AddUInt32(round);
-            Global.Channel.Post(channelName, packet);
+            Global.Current.Channel.Post(channelName, packet);
         }
 
         private void BattleExitBattle(IBattleManager battle, ICombatList atk, ICombatList def)
         {
             var packet = CreatePacket(battle, Command.BattleEnded);
-            Global.Channel.Post(channelName, packet);
+            Global.Current.Channel.Post(channelName, packet);
 
             // Unsubscribe everyone from this channel
-            Global.Channel.Unsubscribe(channelName);
+            Global.Current.Channel.Unsubscribe(channelName);
         }
 
         private void BattleReinforceDefender(IBattleManager battle, ICombatGroup combatGroup)
         {
             var packet = CreatePacket(battle, Command.BattleReinforceDefender);
             PacketHelper.AddToPacket(combatGroup, packet);
-            Global.Channel.Post(channelName, packet);
+            Global.Current.Channel.Post(channelName, packet);
         }
 
         private void BattleReinforceAttacker(IBattleManager battle, ICombatGroup combatGroup)
         {
             var packet = CreatePacket(battle, Command.BattleReinforceAttacker);
             PacketHelper.AddToPacket(combatGroup, packet);
-            Global.Channel.Post(channelName, packet);
+            Global.Current.Channel.Post(channelName, packet);
         }
 
         private void BattleSkippedAttacker(IBattleManager battle,
@@ -117,7 +117,7 @@ namespace Game.Comm.Channel
             var packet = CreatePacket(battle, Command.BattleSkipped);
             packet.AddUInt32(combatGroup.Id);
             packet.AddUInt32(source.Id);
-            Global.Channel.Post(channelName, packet);
+            Global.Current.Channel.Post(channelName, packet);
         }
 
         private void BattleActionAttacked(IBattleManager battle,
@@ -139,21 +139,21 @@ namespace Game.Comm.Channel
             packet.AddFloat((float)damage);
             packet.AddInt32(attackerCount);
             packet.AddInt32(targetCount);
-            Global.Channel.Post(channelName, packet);
+            Global.Current.Channel.Post(channelName, packet);
         }
 
         private void BattleWithdrawDefender(IBattleManager battle, ICombatGroup group)
         {
             var packet = CreatePacket(battle, Command.BattleWithdrawDefender);
             packet.AddUInt32(group.Id);
-            Global.Channel.Post(channelName, packet);
+            Global.Current.Channel.Post(channelName, packet);
         }
 
         private void BattleWithdrawAttacker(IBattleManager battle, ICombatGroup group)
         {
             var packet = CreatePacket(battle, Command.BattleWithdrawAttacker);
             packet.AddUInt32(group.Id);
-            Global.Channel.Post(channelName, packet);
+            Global.Current.Channel.Post(channelName, packet);
         }
     }
 }

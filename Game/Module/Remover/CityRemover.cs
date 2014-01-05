@@ -24,11 +24,9 @@ namespace Game.Module.Remover
 
         private const double LONG_RETRY = 90;
 
-        private readonly IActionFactory actionFactory;
-
         private readonly uint cityId;
 
-        private readonly TileLocator tileLocator;
+        private readonly IActionFactory actionFactory;
 
         private readonly IWorld world;
 
@@ -36,13 +34,15 @@ namespace Game.Module.Remover
 
         private readonly ILocker locker;
 
+        private readonly ITileLocator tileLocator;
+
         private readonly IDbManager dbManager;
 
         private readonly ITroopObjectInitializerFactory troopObjectInitializerFactory;
 
         public CityRemover(uint cityId, 
             IActionFactory actionFactory, 
-            TileLocator tileLocator, 
+            ITileLocator tileLocator, 
             IWorld world, 
             IScheduler scheduler, 
             ILocker locker, 
@@ -51,10 +51,11 @@ namespace Game.Module.Remover
         {
             this.cityId = cityId;
             this.actionFactory = actionFactory;
-            this.tileLocator = tileLocator;
+
             this.world = world;
             this.scheduler = scheduler;
             this.locker = locker;
+            this.tileLocator = tileLocator;
             this.dbManager = dbManager;
             this.troopObjectInitializerFactory = troopObjectInitializerFactory;
         }
@@ -100,95 +101,105 @@ namespace Game.Module.Remover
                 throw new Exception("City not found");
             }
 
-            using (locker.Lock(GetForeignTroopLockList, new object[] {city}, city))
+            bool shouldReturn = locker.Lock(GetForeignTroopLockList, new object[] {city}, city)
+                                      .Do(() =>
+                                      {
+                                          if (city == null)
+                                          {
+                                              return true;
+                                          }
+
+                                          // if local city is in battle, try again later
+                                          if (city.Battle != null)
+                                          {
+                                              Reschedule(SHORT_RETRY);
+                                              return true;
+                                          }
+
+                                          // send all stationed from other players back
+                                          if (city.Troops.StationedHere().Any())
+                                          {
+                                              IEnumerable<ITroopStub> stationedTroops = new List<ITroopStub>(city.Troops.StationedHere());
+
+                                              foreach (var stub in stationedTroops)
+                                              {
+                                                  if (RemoveForeignTroop(stub) != Error.Ok)
+                                                  {
+                                                      logger.Error(String.Format("removeForeignTroop failed! cityid[{0}] stubid[{1}]", city.Id, stub.StationTroopId));
+                                                  }
+                                              }
+                                          }
+
+                                          // If city is being targetted by an assignment, try again later
+                                          var reader = dbManager.ReaderQuery(string.Format("SELECT id FROM `{0}` WHERE `location_type` = 'City' AND `location_id` = @locationId  LIMIT 1", Assignment.DB_TABLE),
+                                                                             new[] {new DbColumn("locationId", city.Id, DbType.UInt32)});
+                                          bool beingTargetted = reader.HasRows;
+                                          reader.Close();
+                                          if (beingTargetted)
+                                          {
+                                              Reschedule(LONG_RETRY);
+                                              return true;
+                                          }
+
+                                          return false;
+                                      });
+
+            if (shouldReturn)
             {
-                if (city == null)
-                {
-                    return;
-                }
-
-                // if local city is in battle, try again later
-                if (city.Battle != null)
-                {
-                    Reschedule(SHORT_RETRY);
-                    return;
-                }
-
-                // send all stationed from other players back
-                if (city.Troops.StationedHere().Any())
-                {
-                    IEnumerable<ITroopStub> stationedTroops = new List<ITroopStub>(city.Troops.StationedHere());
-
-                    foreach (var stub in stationedTroops)
-                    {
-                        if (RemoveForeignTroop(stub) != Error.Ok)
-                        {
-                            logger.Error(String.Format("removeForeignTroop failed! cityid[{0}] stubid[{1}]", city.Id, stub.StationTroopId));
-                        }
-                    }
-                }
-
-                // If city is being targetted by an assignment, try again later
-                var reader = dbManager.ReaderQuery(string.Format("SELECT id FROM `{0}` WHERE `location_type` = 'City' AND `location_id` = @locationId  LIMIT 1",
-                                                                             Assignment.DB_TABLE),
-                                                               new[] {new DbColumn("locationId", city.Id, DbType.UInt32)});
-                bool beingTargetted = reader.HasRows;
-                reader.Close();
-                if (beingTargetted)
-                {
-                    Reschedule(LONG_RETRY);
-                    return;
-                }
+                return;
             }
 
-            using (locker.Lock(GetLocalTroopLockList, new object[] {city}, city))
+            shouldReturn = locker.Lock(GetLocalTroopLockList, new object[] {city}, city)
+                                 .Do(() =>
+                                 {
+                                     if (city.TryGetStructure(1, out mainBuilding))
+                                     {
+                                         // don't continue unless all troops are either idle or stationed
+                                         if (city.TroopObjects.Any() || city.Troops.Any(s => s.State != TroopState.Idle && s.State != TroopState.Stationed))
+                                         {
+                                             Reschedule(LONG_RETRY);
+                                             return true;
+                                         }
+
+                                         // starve all troops)
+                                         city.Troops.Starve(100, true);
+
+                                         if (city.Troops.Upkeep > 0)
+                                         {
+                                             Reschedule(LONG_RETRY);
+                                             return true;
+                                         }
+
+                                         // remove all buildings except mainbuilding
+                                         if (city.Any(structure => !structure.IsMainBuilding))
+                                         {
+                                             city.BeginUpdate();
+                                             foreach (IStructure structure in
+                                                     new List<IStructure>(city).Where(structure => structure.IsBlocked == 0 && !structure.IsMainBuilding))
+                                             {
+                                                 structure.BeginUpdate();
+                                                 world.Regions.Remove(structure);
+                                                 city.ScheduleRemove(structure, false);
+                                                 structure.EndUpdate();
+                                             }
+                                             city.EndUpdate();
+                                             Reschedule(SHORT_RETRY);
+                                             return true;
+                                         }
+
+                                         // remove all customized tiles
+                                         foreach (var position in tileLocator.ForeachTile(city.PrimaryPosition.X, city.PrimaryPosition.Y, city.Radius))
+                                         {
+                                             world.Regions.RevertTileType(position.X, position.Y, true);
+                                         }
+                                     }
+
+                                     return false;
+                                 });
+
+            if (shouldReturn)
             {
-                if (city.TryGetStructure(1, out mainBuilding))
-                {
-                    // don't continue unless all troops are either idle or stationed
-                    if (city.TroopObjects.Any() || city.Troops.Any(s => s.State != TroopState.Idle && s.State != TroopState.Stationed))
-                    {
-                        Reschedule(LONG_RETRY);
-                        return;
-                    }
-
-                    // starve all troops)
-                    city.Troops.Starve(100, true);
-
-                    if (city.Troops.Upkeep > 0)
-                    {
-                        Reschedule(LONG_RETRY);
-                        return;
-                    }
-
-                    // remove all buildings except mainbuilding
-                    if (city.Any(structure => !structure.IsMainBuilding))
-                    {
-                        city.BeginUpdate();
-                        foreach (IStructure structure in
-                                new List<IStructure>(city).Where(structure => structure.IsBlocked == 0 && !structure.IsMainBuilding))
-                        {
-                            structure.BeginUpdate();
-                            world.Regions.Remove(structure);
-                            city.ScheduleRemove(structure, false);
-                            structure.EndUpdate();
-                        }
-                        city.EndUpdate();
-                        Reschedule(SHORT_RETRY);
-                        return;
-                    }
-
-                    // remove all customized tiles
-                    tileLocator.ForeachObject(city.X,
-                                                      city.Y,
-                                                      city.Radius,
-                                                      true,
-                                                      delegate(uint origX, uint origY, uint x1, uint y1, object c)
-                                                      {
-                                                          world.Regions.RevertTileType(x1, y1, true);
-                                                          return true;
-                                                      });
-                }
+                return;
             }
 
             // remove all remaining passive action
@@ -200,7 +211,7 @@ namespace Game.Module.Remover
                 }
             }
 
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (city.Notifications.Count > 0)
                 {
@@ -215,7 +226,7 @@ namespace Game.Module.Remover
                     city.Troops.Remove(1);
 
                     // remove city from the region
-                    world.Regions.CityRegions.Remove(city);
+                    world.Regions.MiniMapRegions.Remove(city);
 
                     mainBuilding.BeginUpdate();
                     world.Regions.Remove(mainBuilding);
@@ -234,13 +245,13 @@ namespace Game.Module.Remover
                 }
 
                 logger.Info(string.Format("Player {0}:{1} City {2}:{3} Lvl {4} is deleted.",
-                                                 city.Owner.Name,
-                                                 city.Owner.PlayerId,
-                                                 city.Name,
-                                                 city.Id,
-                                                 city.Lvl));
+                                          city.Owner.Name,
+                                          city.Owner.PlayerId,
+                                          city.Name,
+                                          city.Id,
+                                          city.Lvl));
                 world.Cities.Remove(city);
-            }
+            });
         }
 
         private void Reschedule(double interval)

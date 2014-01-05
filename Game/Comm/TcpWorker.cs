@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
-using Game.Data;
 using Game.Util;
 using Ninject.Extensions.Logging;
 
@@ -154,7 +153,12 @@ namespace Game.Comm
             {
                 if (s.Connected)
                 {
-                    s.Shutdown(SocketShutdown.Both);
+                    try
+                    {
+                        s.Shutdown(SocketShutdown.Both);
+                    }
+                    catch(SocketException) {}
+
                     s.Close();
                 }
 
@@ -164,6 +168,12 @@ namespace Game.Comm
                 {
                     // Socket already gone, probably happening because the socket handler saw it wasn't connected 
                     return;
+                }
+
+                if (logger.IsDebugEnabled)
+                {
+                    var player = dcSession.Player;
+                    logger.Debug("Socket disconnect IP[{0}] player[{1}]", dcSession.Name, player != null ? player.Name : "N/A");
                 }
 
                 sessions.Remove(s);

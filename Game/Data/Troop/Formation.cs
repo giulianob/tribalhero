@@ -14,19 +14,9 @@ namespace Game.Data.Troop
 
         Defense = 3,
 
-        Scout = 4,
-
         Garrison = 5,
 
-        Structure = 6,
-
-        InBattle = 7,
-
-        Captured = 11,
-
-        Wounded = 12,
-
-        Killed = 13
+        InBattle = 7
     }
 
     public class Formation : Dictionary<ushort, ushort>, IFormation

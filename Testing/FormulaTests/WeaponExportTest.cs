@@ -1,9 +1,6 @@
 ﻿using Common.Testing;
 using FluentAssertions;
 using Game.Logic.Formulas;
-using Game.Setup;
-using Moq;
-using Xunit;
 using Xunit.Extensions;
 
 namespace Testing.FormulaTests

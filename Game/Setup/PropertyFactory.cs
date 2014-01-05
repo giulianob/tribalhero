@@ -90,7 +90,7 @@ namespace Game.Setup
                 case DataType.String:
                     return "N/A";
                 case DataType.Int:
-                    return Int16.MaxValue;
+                    return Int32.MaxValue;
                 case DataType.Float:
                     return float.MaxValue;
             }

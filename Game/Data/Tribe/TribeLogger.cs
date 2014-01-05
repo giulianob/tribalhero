@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using Game.Data.Tribe.EventArguments;
 using Newtonsoft.Json;
 using Persistance;

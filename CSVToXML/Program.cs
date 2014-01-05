@@ -101,7 +101,7 @@ namespace CSVToXML
             return split[split.Length - 1].Trim();
         }
 
-        public static void Go(string dataOutputFolderIn, string csvDataFolderIn, string langDataFolderIn)
+        public static void  Go(string dataOutputFolderIn, string csvDataFolderIn, string langDataFolderIn)
         {
             dataOutputFolder = dataOutputFolderIn;
             csvDataFolder = csvDataFolderIn;
@@ -109,7 +109,7 @@ namespace CSVToXML
 
             #region Data XML
 
-            writer = new XmlTextWriter(new StreamWriter(FileExtension.OverwriteLockedFile(dataOutputFolderIn + "data.xml")))
+            writer = new XmlTextWriter(new StreamWriter(FileExtension.OverwriteLockedFile(Path.Combine(dataOutputFolderIn, "data.xml"))))
             {
                     Formatting = Formatting.None
             };
@@ -216,6 +216,7 @@ namespace CSVToXML
                         writer.WriteAttributeString("iron", obj[16]);
                         writer.WriteAttributeString("labor", obj[17]);
                         writer.WriteAttributeString("time", obj[18]);
+                        
                         if (int.Parse(obj[19]) != 0)
                         {
                             writer.WriteAttributeString("workerid", obj[19]);
@@ -238,6 +239,7 @@ namespace CSVToXML
                         writer.WriteAttributeString("unitclass", obj[22]);
                         writer.WriteAttributeString("armor", obj[23]);
                         writer.WriteAttributeString("maxlabor", obj[24]);
+                        writer.WriteAttributeString("size", obj[25]);
 
                         writer.WriteStartElement("Layout");
 
@@ -686,7 +688,7 @@ namespace CSVToXML
         private static void WriteLanguageFile()
         {
             // TODO Hardcoded to just do English for now but later we can do all the languages            
-            writer = new XmlTextWriter(new StreamWriter(FileExtension.OverwriteLockedFile(dataOutputFolder + "Game_en.xml")))
+            writer = new XmlTextWriter(new StreamWriter(FileExtension.OverwriteLockedFile(Path.Combine(dataOutputFolder, "Game_en.xml"))))
             {
                     Formatting = Formatting.Indented
             };
@@ -710,10 +712,10 @@ namespace CSVToXML
             {
                 String fullFilename = file;
 
-                if (Global.IsRunningOnMono())
-                {
-                    fullFilename = Path.Combine(langDataFolder, file);
-                }
+                //if (Global.Current.IsRunningOnMono())
+                //{
+                //    fullFilename = Path.Combine(langDataFolder, file);
+                //}
 
                 using (
                         CsvReader langReader =

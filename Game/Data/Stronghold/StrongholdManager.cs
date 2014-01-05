@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Data.Events;
 using Game.Data.Tribe;
 using Game.Data.Tribe.EventArguments;
 using Game.Data.Troop;
@@ -50,6 +51,8 @@ namespace Game.Data.Stronghold
 
         private Dictionary<string, IStronghold> nameIndex;
 
+        private readonly ITileLocator tileLocator;
+
         private ILookup<ITribe, IStronghold> tribeIndex;
         
         public StrongholdManager(IStrongholdConfigurator strongholdConfigurator,
@@ -61,7 +64,8 @@ namespace Game.Data.Stronghold
                                  Formula formula,
                                  ICityManager cityManager,
                                  IActionFactory actionFactory, 
-            ITroopObjectInitializerFactory troopInitializerFactory)
+                                 ITileLocator tileLocator,
+            			         ITroopObjectInitializerFactory troopInitializerFactory)
         {
             idGenerator = new LargeIdGenerator(Config.stronghold_id_max, Config.stronghold_id_min);
             strongholds = new ConcurrentDictionary<uint, IStronghold>();
@@ -73,20 +77,28 @@ namespace Game.Data.Stronghold
             this.dbManager = dbManager;            
             this.formula = formula;
             this.actionFactory = actionFactory;
+            this.tileLocator = tileLocator;
             this.troopInitializerFactory = troopInitializerFactory;
 
             cityManager.CityAdded += CityManagerCityAdded;
             simpleStubGenerator = simpleStubGeneratorFactory.CreateSimpleStubGenerator(formula.StrongholdUnitRatio(), formula.StrongholdUnitType());
         }
 
-        void CityManagerCityAdded(object sender, EventArgs e)
+        void CityManagerCityAdded(object sender, NewCityEventArgs e)
         {
-            ICity city = sender as ICity;
-            foreach (var stronghold in strongholds.Where(x => x.Value.StrongholdState == StrongholdState.Inactive && x.Value.TileDistance(city.X, city.Y) < Config.stronghold_radius_base + Config.stronghold_radius_per_level * x.Value.Lvl))
+            if (!e.IsNew)
             {
-                stronghold.Value.BeginUpdate();
-                ++stronghold.Value.NearbyCitiesCount;
-                stronghold.Value.EndUpdate();
+                return;
+            }
+
+            var city = (ICity)sender;
+
+            foreach (var stronghold in strongholds.Values.Where(s => s.StrongholdState == StrongholdState.Inactive 
+                && tileLocator.TileDistance(s.PrimaryPosition, s.Size, city.PrimaryPosition, 1) < Config.stronghold_radius_base + Config.stronghold_radius_per_level * s.Lvl))
+            {
+                stronghold.BeginUpdate();
+                ++stronghold.NearbyCitiesCount;
+                stronghold.EndUpdate();
             }
         }
 
@@ -100,7 +112,7 @@ namespace Game.Data.Stronghold
 
         public void DbLoaderAdd(IStronghold stronghold)
         {
-            strongholds.AddOrUpdate(stronghold.Id, stronghold, (id, old) => stronghold);
+            strongholds.AddOrUpdate(stronghold.ObjectId, stronghold, (id, old) => stronghold);
             RegisterEvents(stronghold);
             MarkIndexDirty();
 
@@ -210,7 +222,7 @@ namespace Game.Data.Stronghold
                                          upkeep,
                                          unitLevel,
                                          Config.stronghold_npc_randomness,
-                                         (int)stronghold.Id,
+                                         (int)stronghold.ObjectId,
                                          out simpleStub);
             return simpleStub.ToUnitList(FormationType.Normal);
         }
@@ -348,9 +360,9 @@ namespace Game.Data.Stronghold
             }
         }
 
-        public void Add(IStronghold stronghold)
+        private void Add(IStronghold stronghold)
         {
-            strongholds.AddOrUpdate(stronghold.Id, stronghold, (id, old) => stronghold);
+            strongholds.AddOrUpdate(stronghold.ObjectId, stronghold, (id, old) => stronghold);
             RegisterEvents(stronghold);
             dbManager.Save(stronghold);
             MarkIndexDirty();

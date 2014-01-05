@@ -44,11 +44,13 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly ILocationStrategyFactory locationStrategyFactory;
 
+        private readonly ICityFactory cityFactory;
+
         private readonly IBarbarianTribeManager barbarianTribeManager;
 
-        private readonly IRegionManager regionManager;
+        private readonly CallbackProcedure callbackProcedure;
 
-        private readonly InitFactory initFactory;
+        private readonly IChannel channel;
 
         public LoginCommandsModule(IActionFactory actionFactory,
                                    ITribeManager tribeManager,
@@ -56,10 +58,11 @@ namespace Game.Comm.ProcessorCommands
                                    ILocker locker,
                                    IWorld world,
                                    Procedure procedure,
+                                   ICityFactory cityFactory,
                                    ILocationStrategyFactory locationStrategyFactory,
                                    IBarbarianTribeManager barbarianTribeManager,
-                                   IRegionManager regionManager,
-                                   InitFactory initFactory)
+                                   CallbackProcedure callbackProcedure,
+                                   IChannel channel)
         {
             this.actionFactory = actionFactory;
             this.tribeManager = tribeManager;
@@ -67,10 +70,11 @@ namespace Game.Comm.ProcessorCommands
             this.locker = locker;
             this.world = world;
             this.procedure = procedure;
+            this.callbackProcedure = callbackProcedure;
+            this.channel = channel;
+            this.cityFactory = cityFactory;
             this.locationStrategyFactory = locationStrategyFactory;
             this.barbarianTribeManager = barbarianTribeManager;
-            this.regionManager = regionManager;
-            this.initFactory = initFactory;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -237,7 +241,7 @@ namespace Game.Comm.ProcessorCommands
                 }
             }
 
-            using (locker.Lock(player))
+            locker.Lock(player).Do(() =>
             {
                 // If someone is already connected as this player, kick them off potentially
                 if (player.Session != null)
@@ -255,8 +259,8 @@ namespace Game.Comm.ProcessorCommands
 
                 // Setup session references
                 session.Player = player;
-                player.Session = session;                
-                player.SessionId = sessionId;                
+                player.Session = session;
+                player.SessionId = sessionId;
                 player.Rights = playerRights;
                 player.LastLogin = SystemClock.Now;
                 player.Banned = banned;
@@ -282,7 +286,8 @@ namespace Game.Comm.ProcessorCommands
                 reply.AddUInt32(player.PlayerId);
                 reply.AddString(player.PlayerHash);
                 reply.AddUInt32(player.TutorialStep);
-                reply.AddByte((byte)(player.Rights >= PlayerRights.Admin ? 1 : 0));
+                reply.AddBoolean(player.SoundMuted);
+                reply.AddBoolean(player.Rights >= PlayerRights.Admin);
                 reply.AddString(sessionId);
                 reply.AddString(player.Name);
                 reply.AddInt32(Config.newbie_protection);
@@ -314,22 +319,17 @@ namespace Game.Comm.ProcessorCommands
                 session.Write(reply);
 
                 // Restart any city actions that may have been stopped due to inactivity
-                foreach (
-                        var city in
-                                player.GetCityList()
-                                      .Where(
-                                             city =>
-                                             city.Worker.PassiveActions.Values.All(x => x.Type != ActionType.CityPassive))
-                        )
+                foreach (var city in player.GetCityList()
+                                           .Where(city => city.Worker.PassiveActions.Values.All(x => x.Type != ActionType.CityPassive)))
                 {
                     city.Worker.DoPassive(city, actionFactory.CreateCityPassiveAction(city.Id), false);
                 }
-            }
+            });
         }
 
         private void CreateInitialCity(Session session, Packet packet)
         {
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() => 
             {
                 string cityName, playerName = null, playerHash = null;
                 byte method;
@@ -355,7 +355,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 // Verify city name is valid
-                if (!City.IsNameValid(cityName))
+                if (!CityManager.IsNameValid(cityName))
                 {
                     ReplyError(session, packet, Error.CityNameInvalid);
                     return;
@@ -366,15 +366,15 @@ namespace Game.Comm.ProcessorCommands
                 lock (world.Lock)
                 {
                     ILocationStrategy strategy;
-                    if(method==1)
+                    if (method == 1)
                     {
                         uint playerId;
-                        if(!world.FindPlayerId(playerName, out playerId))
+                        if (!world.FindPlayerId(playerName, out playerId))
                         {
                             ReplyError(session, packet, Error.PlayerNotFound);
                             return;
                         }
-                        
+
                         var player = world.Players[playerId];
                         if (String.Compare(player.PlayerHash, playerHash, StringComparison.OrdinalIgnoreCase) != 0)
                         {
@@ -395,41 +395,41 @@ namespace Game.Comm.ProcessorCommands
                         return;
                     }
 
-                    var error = procedure.CreateCity(session.Player, cityName, strategy, barbarianTribeManager, out city);
-                    if (error != Error.Ok)
+                    Position cityPosition;
+                    var locationStrategyResult = strategy.NextLocation(out cityPosition);
+
+                    if (locationStrategyResult != Error.Ok)
                     {
-                        ReplyError(session, packet, error);
+                        ReplyError(session, packet, locationStrategyResult);
                         return;
                     }
+
+                    procedure.CreateCity(cityFactory, session.Player, cityName, 1, cityPosition, barbarianTribeManager, out city);
                 }
 
-                IStructure mainBuilding = (IStructure)city[1];
-
-                initFactory.InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
-
-                city.Worker.DoPassive(city, actionFactory.CreateCityPassiveAction(city.Id), false);
+                procedure.InitCity(city, callbackProcedure, actionFactory);
 
                 var reply = new Packet(packet);
                 reply.Option |= (ushort)Packet.Options.Compressed;
                 PacketHelper.AddLoginToPacket(session, reply);
                 SubscribeDefaultChannels(session, session.Player);
                 session.Write(reply);
-            }
+            });
         }
 
         private void SubscribeDefaultChannels(Session session, IPlayer player)
         {
             // Subscribe him to the player channel
-            Global.Channel.Subscribe(session, "/PLAYER/" + player.PlayerId);
+            channel.Subscribe(session, "/PLAYER/" + player.PlayerId);
 
             // Subscribe him to the tribe channel if available
             if (player.Tribesman != null)
             {
-                Global.Channel.Subscribe(session, "/TRIBE/" + player.Tribesman.Tribe.Id);
+                channel.Subscribe(session, "/TRIBE/" + player.Tribesman.Tribe.Id);
             }
 
             // Subscribe to global channel
-            Global.Channel.Subscribe(session, "/GLOBAL");
+            channel.Subscribe(session, "/GLOBAL");
         }
     }
 }

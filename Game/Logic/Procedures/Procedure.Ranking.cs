@@ -3,8 +3,6 @@
 using System.Threading;
 using Game.Data;
 using Game.Data.Tribe;
-using Game.Logic.Formulas;
-using Game.Util.Locking;
 
 #endregion
 
@@ -29,7 +27,7 @@ namespace Game.Logic.Procedures
             ThreadPool.QueueUserWorkItem(delegate
                 {
                     ITribe tribe;
-                    using (locker.Lock(id, out tribe))
+                    locker.Lock(id, out tribe).Do(() =>
                     {
                         if (tribe == null)
                         {
@@ -37,7 +35,7 @@ namespace Game.Logic.Procedures
                         }
 
                         tribe.AttackPoint += point;
-                    }
+                    });
                 });
         }
     }

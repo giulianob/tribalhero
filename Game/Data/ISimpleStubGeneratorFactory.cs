@@ -1,9 +1,7 @@
-﻿using Game.Setup;
-
-namespace Game.Data
+﻿namespace Game.Data
 {
     public interface ISimpleStubGeneratorFactory
     {
-        SimpleStubGenerator CreateSimpleStubGenerator(double[,] ratio, ushort[] type);
+        SimpleStubGenerator CreateSimpleStubGenerator(double[][] ratio, ushort[] type);
     }
 }

@@ -191,13 +191,12 @@ namespace Game.Logic.Formulas
             return GetSendCapacity(structure) * 2;
         }
 
-
         public virtual ushort CalculateCityValue(ICity city)
         {
             return
                     (ushort)
                     city.Where(structure => !ObjectTypeFactory.IsStructureType("NoInfluencePoint", structure))
-                        .Sum(x => x.Lvl * x.Size * x.Size);
+                        .Sum(x => x.Lvl * x.Size);
         }
 
         public virtual bool IsWeaponExportOverLimit(int weaponExport, int currentGold)

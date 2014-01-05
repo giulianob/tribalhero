@@ -1,8 +1,4 @@
-﻿using FluentAssertions;
-using Game.Setup;
-using Ninject;
-
-namespace Testing.Balancing
+﻿namespace Testing.Balancing
 {
     public class TestUtility
     {

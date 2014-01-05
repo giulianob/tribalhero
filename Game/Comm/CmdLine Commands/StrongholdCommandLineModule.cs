@@ -32,12 +32,15 @@ namespace Game.Comm
 
         private readonly IWorld world;
 
+        private readonly ITileLocator tileLocator;
+
         public StrongholdCommandLineModule(ITribeManager tribeManager,
                                            IWorld world,
                                            ILocker locker,
                                            IStrongholdManager strongholdManager,
                                            MapFactory mapFactory,
-                                           Formula formula)
+                                           Formula formula,
+                                           ITileLocator tileLocator)
         {
             this.tribeManager = tribeManager;
             this.world = world;
@@ -45,6 +48,7 @@ namespace Game.Comm
             this.strongholdManager = strongholdManager;
             this.mapFactory = mapFactory;
             this.formula = formula;
+            this.tileLocator = tileLocator;
         }
 
         public override void RegisterCommands(CommandLineProcessor processor)
@@ -61,15 +65,14 @@ namespace Game.Comm
             var list = new List<Position>(mapFactory.Locations().Take(mapFactory.Index));
             foreach (var stronghold in strongholdManager.Where(s => s.StrongholdState == StrongholdState.Inactive))
             {
-                using (locker.Lock(stronghold))
+                locker.Lock(stronghold).Do(() =>
                 {
                     stronghold.BeginUpdate();
-                    int count = list.Count(pt => stronghold.TileDistance(pt.X, pt.Y) <= Config.stronghold_radius_base + Config.stronghold_radius_per_level * stronghold.Lvl);
-                    stronghold.NearbyCitiesCount =
-                            (ushort)
-                            count;
+                    int count = list.Count(pt => 
+                        tileLocator.TileDistance(stronghold.PrimaryPosition, 3, pt, 1) <= Config.stronghold_radius_base + Config.stronghold_radius_per_level * stronghold.Lvl);
+                    stronghold.NearbyCitiesCount = (ushort)count;
                     stronghold.EndUpdate();
-                }
+                });
             }
 
             return "OK";
@@ -119,14 +122,14 @@ namespace Game.Comm
                 return "Stronghold not found";
             }
 
-            using (locker.Lock(city, stronghold))
+            return locker.Lock(city, stronghold).Do(() =>
             {
                 if (city.DefaultTroop.Upkeep == 0)
                 {
                     return "No troops in the city!";
                 }
 
-                ITroopStub stub = city.Troops.Create();
+                ITroopStub stub = city.CreateTroopStub();
                 stub.BeginUpdate();
                 stub.AddFormation(FormationType.Defense);
                 foreach (var unit in city.DefaultTroop[FormationType.Normal])
@@ -140,11 +143,12 @@ namespace Game.Comm
                 {
                     return "Error Adding to Station";
                 }
-            }
-            return "OK!";
+
+                return "OK!";
+            });
         }
 
-          private string CmdStrongholdActivate(Session session, string[] parms)
+        private string CmdStrongholdActivate(Session session, string[] parms)
         {
             bool help = false;
             string strongholdName = string.Empty;
@@ -153,8 +157,8 @@ namespace Game.Comm
             {
                 var p = new OptionSet
                 {
-                        {"?|help|h", v => help = true},
-                        {"stronghold=", v => strongholdName = v.TrimMatchingQuotes()},                        
+                    {"?|help|h", v => help = true},
+                    {"stronghold=", v => strongholdName = v.TrimMatchingQuotes()},
                 };
                 p.Parse(parms);
             }
@@ -174,7 +178,7 @@ namespace Game.Comm
                 return "Stronghold not found";
             }
 
-            using (locker.Lock(stronghold))
+            return locker.Lock(stronghold).Do(() =>
             {
                 if (stronghold.StrongholdState != StrongholdState.Inactive)
                 {
@@ -182,9 +186,9 @@ namespace Game.Comm
                 }
 
                 strongholdManager.Activate(stronghold);
-            }
 
-            return "OK!";
+                return "OK!";
+            });
         }
 
         private string CmdStrongholdChangeLevel(Session session, string[] parms)
@@ -219,7 +223,7 @@ namespace Game.Comm
                 return "Stronghold not found";
             }
 
-            using (locker.Lock(stronghold))
+            return locker.Lock(stronghold).Do(() =>
             {
                 if (stronghold.StrongholdState == StrongholdState.Occupied)
                 {
@@ -230,9 +234,9 @@ namespace Game.Comm
                 stronghold.Lvl = level;
                 stronghold.Gate = formula.StrongholdGateLimit(level);
                 stronghold.EndUpdate();
-            }
 
-            return "OK!";
+                return "OK!";
+            });
         }
 
         private string CmdStrongholdTransfer(Session session, string[] parms)
@@ -279,10 +283,8 @@ namespace Game.Comm
                 return "Stronghold not found";
             }
 
-            using (locker.Lock(custom => stronghold.LockList.ToArray(), null, tribe, stronghold))
-            {
-                strongholdManager.TransferTo(stronghold, tribe);
-            }
+            locker.Lock(custom => stronghold.LockList.ToArray(), null, tribe, stronghold)
+                  .Do(() => strongholdManager.TransferTo(stronghold, tribe));
 
             return "OK!";
         }

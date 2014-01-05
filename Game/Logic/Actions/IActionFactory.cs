@@ -4,6 +4,7 @@ using Game.Data;
 using Game.Data.Forest;
 using Game.Data.Troop;
 using Game.Logic.Actions.ResourceActions;
+using Game.Map;
 
 namespace Game.Logic.Actions
 {
@@ -13,7 +14,7 @@ namespace Game.Logic.Actions
 
         ForestDepleteAction CreateForestDepleteAction(IForest forest, DateTime time);
 
-        CityAttackChainAction CreateCityAttackChainAction(uint cityId, ITroopObjectInitializer troopObjectInitializer, uint targetCityId, uint targetStructureId);
+        CityAttackChainAction CreateCityAttackChainAction(uint cityId, ITroopObjectInitializer troopObjectInitializer, uint targetCityId, Position target);
 
         StructureBuildActiveAction CreateStructureBuildActiveAction(uint cityId, ushort type, uint x, uint y, byte level);
 
@@ -66,7 +67,7 @@ namespace Game.Logic.Actions
                                                                       uint lumbermillId,
                                                                       uint forestId,
                                                                       ushort campType,
-                                                                      byte labors);
+                                                                      ushort labors);
 
         StructureUpgradeActiveAction CreateStructureUpgradeActiveAction(uint cityId, uint structureId);
 

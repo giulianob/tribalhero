@@ -12,6 +12,8 @@
 
         Resource Cost { get; }
 
+        byte Size { get; }
+
         int BuildTime { get; }
 
         int WorkerId { get; }

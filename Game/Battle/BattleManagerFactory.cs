@@ -1,5 +1,4 @@
-﻿using System;
-using Game.Battle.Reporting;
+﻿using Game.Battle.Reporting;
 using Game.Battle.RewardStrategies;
 using Game.Comm.Channel;
 using Game.Data;
@@ -114,7 +113,6 @@ namespace Game.Battle
                                              kernel.Get<IDbManager>(),
                                              kernel.Get<IBattleReport>(),
                                              kernel.Get<ICombatListFactory>(),
-
                                              kernel.Get<IBattleFormulas>(),
                                              new BattleOrder(battleRandom),
                                              battleRandom);

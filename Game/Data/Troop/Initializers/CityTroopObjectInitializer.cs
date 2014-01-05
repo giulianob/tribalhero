@@ -55,7 +55,7 @@ namespace Game.Data.Troop.Initializers
                 return Error.ObjectNotFound;
             }
 
-            if (!TroopObjectCreateFromCity(city, simpleStub, city.X, city.Y, out troopObject))
+            if (!TroopObjectCreateFromCity(city, simpleStub, city.PrimaryPosition.X, city.PrimaryPosition.Y, out troopObject))
             {
                 troopObject = null;
                 return Error.TroopChanged;
@@ -91,13 +91,12 @@ namespace Game.Data.Troop.Initializers
                 return false;
             }
 
-            var troopStub = city.Troops.Create();
+            var troopStub = city.CreateTroopStub();
             troopStub.BeginUpdate();
             troopStub.Add(stub);
             troopStub.EndUpdate();
 
-            troopObject = new TroopObject(troopStub) {X = x, Y = y + 1};
-            city.Add(troopObject);
+            troopObject = city.CreateTroopObject(troopStub, x, y + 1);
 
             troopObject.BeginUpdate();
             troopObject.Stats = new TroopStats(formula.GetTroopRadius(troopStub, null),

@@ -13,11 +13,9 @@ namespace Game.Logic.Actions
 {
     public class TechnologyCreatePassiveAction : PassiveAction, IScriptable
     {
-        private readonly ICityTriggerManager cityTriggerManager;
+        private readonly TechnologyFactory technologyFactory;
 
-        private readonly ICityEventFactory cityEventFactory;
-
-        private readonly Procedure procedure;
+        private readonly CallbackProcedure callbackProcedure;
 
         private byte lvl;
 
@@ -41,11 +39,10 @@ namespace Game.Logic.Actions
             }
         }
 
-        public TechnologyCreatePassiveAction(ICityTriggerManager cityTriggerManager, ICityEventFactory cityEventFactory, Procedure procedure)
+        public TechnologyCreatePassiveAction(TechnologyFactory technologyFactory, CallbackProcedure callbackProcedure)
         {
-            this.cityTriggerManager = cityTriggerManager;
-            this.cityEventFactory = cityEventFactory;
-            this.procedure = procedure;
+            this.technologyFactory = technologyFactory;
+            this.callbackProcedure = callbackProcedure;
         }
 
         #region IScriptable Members
@@ -77,7 +74,7 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
-            TechnologyBase techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(techId, lvl);
+            TechnologyBase techBase = technologyFactory.GetTechnologyBase(techId, lvl);
             if (techBase == null)
             {
                 return Error.ObjectNotFound;
@@ -90,7 +87,14 @@ namespace Game.Logic.Actions
                 obj.Technologies.BeginUpdate();
                 obj.Technologies.Add(tech);
                 obj.Technologies.EndUpdate();
-                procedure.OnTechnologyUpgrade(obj, tech.TechBase, cityTriggerManager, cityEventFactory);
+                callbackProcedure.OnTechnologyUpgrade(obj, tech.TechBase);
+            }
+            else if (tech.Level != techBase.Level)
+            {
+                obj.Technologies.BeginUpdate();
+                obj.Technologies.Upgrade(new Technology(techBase));
+                obj.Technologies.EndUpdate();
+                callbackProcedure.OnTechnologyUpgrade(obj, tech.TechBase);
             }
 
             StateChange(ActionState.Completed);

@@ -3,8 +3,9 @@ using FluentAssertions;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Setup;
-using Moq;
 using NSubstitute;
+using Ploeh.AutoFixture;
+using Ploeh.AutoFixture;
 using Xunit.Extensions;
 
 namespace Testing.FormulaTests
@@ -16,24 +17,25 @@ namespace Testing.FormulaTests
             get
             {
                 // Single structure
-                yield return new object[] {new[] {CreateMockStructure(1, 1)}, 1};
+                yield return new object[] {new[] {CreateMockStructure(1, 1, 1)}, 1};
 
-                // Multiple structures w/ same id
-                yield return new object[] {new[] {CreateMockStructure(1, 1), CreateMockStructure(1, 10)}, 11};
+                // Multiple structures w/ same type
+                yield return new object[] {new[] {CreateMockStructure(1, 1, 1), CreateMockStructure(1, 10, 1)}, 11};
 
                 // Structure that shouldnt count towards city value
-                yield return new object[] {new[] {CreateMockStructure(100, 1)}, 0};
+                yield return new object[] {new[] {CreateMockStructure(100, 1, 1)}, 0};
 
-                // Multiple structures
+                // Multiple structures w/ diff sizes
                 yield return
                         new object[]
                         {
                                 new[]
                                 {
-                                        CreateMockStructure(1, 1), CreateMockStructure(1, 10), CreateMockStructure(3, 5),
-                                        CreateMockStructure(101, 10)
-                                },
-                                16
+                                        CreateMockStructure(1, 1, 1), 
+                                        CreateMockStructure(1, 10, 3), 
+                                        CreateMockStructure(3, 5, 3),
+                                        CreateMockStructure(101, 10, 2)
+                                }, 136
                         };
             }
         }
@@ -41,29 +43,29 @@ namespace Testing.FormulaTests
         [Theory, PropertyData("WithDifferentCities")]
         public void CityValueShouldReturnProperValue(IEnumerable<IStructure> structures, int expected)
         {
-            Mock<ObjectTypeFactory> objectTypeFactory = new Mock<ObjectTypeFactory>(MockBehavior.Strict);
+            var fixture = FixtureHelper.Create();
+
+            var objectTypeFactory = fixture.Freeze<IObjectTypeFactory>();
             // Structures with id less than 100 count towards Influence, others dont
-            objectTypeFactory.Setup(m => m.IsStructureType("NoInfluencePoint", It.IsAny<IStructure>()))
-                             .Returns((string type, IStructure s) => s.Type >= 100);
+            objectTypeFactory.IsStructureType("NoInfluencePoint", Arg.Any<IStructure>())
+                             .Returns(args => ((IStructure)args[1]).Type >= 100);
 
-            var formula = new Formula(objectTypeFactory.Object,
-                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
-                                      new Mock<StructureFactory>(MockBehavior.Strict).Object,
-                                      Substitute.For<ISystemVariableManager>());
+            var formula = fixture.Create<Formula>();
 
-            var city = new Mock<ICity>();
-            city.Setup(m => m.GetEnumerator()).Returns(structures.GetEnumerator());
+            var city = Substitute.For<ICity>();
+            city.GetEnumerator().Returns(structures.GetEnumerator());
 
-            formula.CalculateCityValue(city.Object).Should().Be((ushort)expected);
+            formula.CalculateCityValue(city).Should().Be((ushort)expected);
         }
 
-        private static IStructure CreateMockStructure(ushort type, byte level)
+        private static IStructure CreateMockStructure(ushort type, byte level, byte size)
         {
-            var structure = new Mock<IStructure>();
-            structure.SetupGet(p => p.Type).Returns(type);
-            structure.SetupGet(p => p.Lvl).Returns(level);
+            var structure = Substitute.For<IStructure>();
+            structure.Type.Returns(type);
+            structure.Lvl.Returns(level);
+            structure.Size.Returns(size);
 
-            return structure.Object;
+            return structure;
         }
     }
 }

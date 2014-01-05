@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Common.Testing;
 using FluentAssertions;
 using Game.Battle;
 using Game.Data;
@@ -44,9 +45,6 @@ namespace Testing.ActionsTests
             Config.actions_skip_city_actions = false;
             Config.troop_starve = false;
 
-            // Player
-            var player = Substitute.For<IPlayer>();
-
             // TechManager
             var technologies = Substitute.For<ITechnologyManager>();
             technologies.GetEffects(Arg.Any<EffectCode>()).ReturnsForAnyArgs(x => new List<Effect>());
@@ -56,22 +54,15 @@ namespace Testing.ActionsTests
             city.AlignmentPoint = initialValue;
             // Not necessarily related to this test
             city.Id.Returns((uint)1);
-            city.Owner.Returns(player);
             city.Resource.Returns(new LazyResource(1, 1, 1, 1, 1));
             city.GetEnumerator().Returns(x => new List<IStructure>().GetEnumerator());
             city.Technologies.Returns(technologies);
 
-            ICity cityObj;
             // Locker
-            var locker = Substitute.For<ILocker>();
-            locker.Lock(1, out cityObj).Returns(x =>
-                {
-                    x[1] = city;
-                    return Substitute.For<IMultiObjectLock>();
-                });
+            var locker = new LockerStub(new GameObjectLocatorStub(city));
 
             CityPassiveAction action = new CityPassiveAction(1,
-                                                             Substitute.For<ObjectTypeFactory>(),
+                                                             Substitute.For<IObjectTypeFactory>(),
                                                              locker,
                                                              Substitute.For<Formula>(),
                                                              Substitute.For<IActionFactory>(),

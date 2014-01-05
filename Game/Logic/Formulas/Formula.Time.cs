@@ -6,7 +6,9 @@ using Game.Battle;
 using Game.Data;
 using Game.Data.Forest;
 using Game.Data.Stats;
+using Game.Data.Stronghold;
 using Game.Data.Troop;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 
@@ -18,11 +20,13 @@ namespace Game.Logic.Formulas
     {
         public virtual int SendTime(IStructure structure, int distance)
         {
-            return (int)(MoveTime(11) * distance * 100 /
-                         (100 +
-                          structure.Technologies.GetEffects(EffectCode.TradeSpeedMod, EffectInheritance.Self)
-                                  .DefaultIfEmpty()
-                                  .Max(x => x == null ? 0 : (int)x.Value[0])));
+            return
+                    (int)
+                    (MoveTime(11) * distance * 100 /
+                     (100 +
+                      structure.Technologies.GetEffects(EffectCode.TradeSpeedMod, EffectInheritance.Self)
+                               .DefaultIfEmpty()
+                               .Max(x => x == null ? 0 : (int)x.Value[0])));
         }
 
         public virtual int TradeTime(IStructure structure, Resource resource)
@@ -69,25 +73,30 @@ namespace Game.Logic.Formulas
             return moveTime;
         }
 
-        public virtual int TrainTime(int structureLvl, int unitCount, IBaseUnitStats stats, ICity city, ITechnologyManager techManager)
+        public virtual int GetInstantTrainCount(IStructure structure)
         {
-            int[] structureDiscountByLevel = new[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 15, 15, 20, 30, 40};
-            
-            var currentCityUpkeep = city.Troops.Upkeep;
+            var effectForStructureType =
+                    structure.City.Technologies.GetEffects(EffectCode.UnitTrainInstantTime).Where(x => (int)x.Value[0] == structure.Type).ToList();
+
+            if (!effectForStructureType.Any())
+                return 0;
+
+            var units = structure.City.Troops.MyStubs().SelectMany(stub => stub.ToUnitList());
+
+            var current = units.Sum(x => ObjectTypeFactory.IsObjectType((string)effectForStructureType[0].Value[1], x.Type) ? x.Count : 0);
+
+            var threshold = Math.Min(effectForStructureType.Sum(x => (int)x.Value[2]), (int)effectForStructureType[0].Value[3]);
+
+            return Math.Max(threshold - current, 0);
+        }
+
+        public virtual int TrainTime(int structureLvl, int unitCount, IBaseUnitStats stats)
+        {
+            int[] structureDiscountByLevel = {0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 15, 15, 20, 30, 40};
+
             var structureLevelDiscount = structureDiscountByLevel[Math.Min(structureLvl, structureDiscountByLevel.Length - 1)].FromPercentageDiscount();
             var trainTimePerUnit = stats.BuildTime * structureLevelDiscount;
 
-            if (currentCityUpkeep < 15)
-            {
-                var trainFirst15Discount = techManager.GetEffects(EffectCode.UnitTrainTimeFirst15Reduction)
-                                                      .DefaultIfEmpty()
-                                                      .Max(e => e == null ? 0 : (int)e.Value[0])
-                                                      .FromPercentageDiscount();
-
-                var discountedUnits = Math.Min(15 - currentCityUpkeep, unitCount);
-                return (int)((trainTimePerUnit * trainFirst15Discount * discountedUnits) + (trainTimePerUnit * (unitCount - discountedUnits)));
-            }
-            
             return (int)(trainTimePerUnit * unitCount);
         }
 
@@ -120,12 +129,11 @@ namespace Game.Logic.Formulas
             foreach (var effect in stub.City.Technologies.GetEffects(EffectCode.TroopSpeedMod))
             {
                 // Getting rush attack/defense bonus;
-                if ((((string)effect.Value[1]).ToUpper() == "ATTACK" && isAttacking) ||
-                    (((string)effect.Value[1]).ToUpper() == "DEFENSE" && !isAttacking))
+                if ((((string)effect.Value[1]).ToUpper() == "ATTACK" && isAttacking) || (((string)effect.Value[1]).ToUpper() == "DEFENSE" && !isAttacking))
                 {
                     rushBonus += (int)effect.Value[0];
                 }
-                // Getting double time bonus
+                        // Getting double time bonus
                 else if (((string)effect.Value[1]).ToUpper() == "DISTANCE")
                 {
                     doubleTimeBonus += (int)effect.Value[0];
@@ -133,7 +141,7 @@ namespace Game.Logic.Formulas
             }
 
             var rushBonusPercentage = rushBonus / 100;
-            var doubleTimeBonusPercentage =  doubleTimeBonus / 100;
+            var doubleTimeBonusPercentage = doubleTimeBonus / 100;
 
             if (distance <= doubleTimeDistance)
             {
@@ -191,9 +199,15 @@ namespace Game.Logic.Formulas
             return Config.server_production ? Math.Max(4, ret) : ret;
         }
 
-        public double GetLumbermillCampBuildTime(int campBuildTime, IStructure lumbermill, IForest forest)
+        public virtual double GetGateBattleInterval(IStronghold stronghold)
         {
-            var distance = lumbermill.TileDistance(forest);
+            double[] interval = new[] {0, 30.6, 27.1, 24.0, 21.2, 18.8, 16.6, 14.7, 13.0, 11.5, 10.2, 9.0, 8.1, 7.1, 6.2, 5.5, 4.9, 4.3, 3.8, 3.4, 3.0};
+            return interval[stronghold.Lvl];
+        }
+
+        public virtual double GetLumbermillCampBuildTime(int campBuildTime, IStructure lumbermill, IForest forest, ITileLocator tileLocator)
+        {
+            var distance = tileLocator.TileDistance(lumbermill, forest);
             return BuildTime(campBuildTime, lumbermill.City, lumbermill.City.Technologies) + distance * 5;
         }
     }

@@ -3,7 +3,6 @@ using Common.Testing;
 using Game.Battle;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
-using Game.Data;
 using NSubstitute;
 using Ploeh.AutoFixture.Xunit;
 using Xunit.Extensions;

@@ -37,12 +37,23 @@ namespace Game.Logic.Actions
 
         private ushort type;
 
-        public StructureChangePassiveAction(Formula formula, IWorld world, ILocker locker, Procedure procedure)
+        private readonly CallbackProcedure callbackProcedure;
+        
+        private readonly IStructureCsvFactory structureCsvFactory;
+
+        public StructureChangePassiveAction(Formula formula,
+                                            IWorld world,
+                                            ILocker locker,
+                                            Procedure procedure,
+                                            CallbackProcedure callbackProcedure,
+                                            IStructureCsvFactory structureCsvFactory)
         {
             this.formula = formula;
             this.world = world;
             this.locker = locker;
             this.procedure = procedure;
+            this.callbackProcedure = callbackProcedure;
+            this.structureCsvFactory = structureCsvFactory;
         }
 
         public StructureChangePassiveAction(uint cityId,
@@ -53,7 +64,9 @@ namespace Game.Logic.Actions
                                             Formula formula,
                                             IWorld world,
                                             ILocker locker,
-                                            Procedure procedure)
+                                            Procedure procedure,
+                                            CallbackProcedure callbackProcedure,
+                                            IStructureCsvFactory structureCsvFactory)
         {
             this.cityId = cityId;
             this.objectId = objectId;
@@ -64,6 +77,8 @@ namespace Game.Logic.Actions
             this.world = world;
             this.locker = locker;
             this.procedure = procedure;
+            this.callbackProcedure = callbackProcedure;
+            this.structureCsvFactory = structureCsvFactory;
         }
 
         public StructureChangePassiveAction(uint id,
@@ -76,13 +91,17 @@ namespace Game.Logic.Actions
                                             Formula formula,
                                             IWorld world,
                                             ILocker locker,
-                                            Procedure procedure)
+                                            Procedure procedure,
+                                            CallbackProcedure callbackProcedure,
+                                            IStructureCsvFactory structureCsvFactory)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             this.formula = formula;
             this.world = world;
             this.locker = locker;
             this.procedure = procedure;
+            this.callbackProcedure = callbackProcedure;
+            this.structureCsvFactory = structureCsvFactory;
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
             type = ushort.Parse(properties["type"]);
@@ -110,8 +129,6 @@ namespace Game.Logic.Actions
             }
         }
 
-        #region IScriptable Members
-
         public void ScriptInit(IGameObject obj, string[] parms)
         {
             ICity city;
@@ -137,35 +154,40 @@ namespace Game.Logic.Actions
             city.Worker.DoPassive(structure, this, true);
         }
 
-        #endregion
-
         public override void Callback(object custom)
         {
             ICity city;
             IStructure structure;
 
             // Block structure
-            using (locker.Lock(cityId, objectId, out city, out structure))
+            var isOk = locker.Lock(cityId, objectId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
-                    return;
+                    return false;
                 }
 
                 if (structure.CheckBlocked(ActionId))
                 {
                     StateChange(ActionState.Failed);
-                    return;
+                    return false;
                 }
 
                 structure.BeginUpdate();
                 structure.IsBlocked = ActionId;
                 structure.EndUpdate();
+
+                return true;
+            });
+
+            if (!isOk)
+            {
+                return;
             }
 
             structure.City.Worker.Remove(structure, new GameAction[] {this});
 
-            using (locker.Lock(cityId, objectId, out city, out structure))
+            locker.Lock(cityId, objectId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -179,15 +201,10 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                structure.City.BeginUpdate();
-                structure.BeginUpdate();
-                structure.IsBlocked = 0;
-                procedure.StructureChange(structure, type, lvl);
-                structure.EndUpdate();
-                structure.City.EndUpdate();
-
+                procedure.StructureChange(structure, type, lvl, callbackProcedure, structureCsvFactory);
+                
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override Error Validate(string[] parms)
@@ -219,7 +236,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
             IStructure structure;
-            using (locker.Lock(cityId, objectId, out city, out structure))
+            locker.Lock(cityId, objectId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -227,7 +244,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
     }
 }

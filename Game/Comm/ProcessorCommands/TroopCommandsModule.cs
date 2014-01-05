@@ -30,17 +30,17 @@ namespace Game.Comm.ProcessorCommands
 
         private readonly ITroopObjectInitializerFactory troopObjectInitializerFactory;
 
-        private readonly StructureFactory structureFactory;
+        private readonly IStructureCsvFactory structureCsvFactory;
 
         public TroopCommandsModule(IActionFactory actionFactory,
-                                   StructureFactory structureFactory,
+                                   IStructureCsvFactory structureCsvFactory,
                                    IGameObjectLocator gameObjectLocator,
                                    Formula formula,
                                    ILocker locker,
                                    ITroopObjectInitializerFactory troopObjectInitializerFactory)
         {
             this.actionFactory = actionFactory;
-            this.structureFactory = structureFactory;
+            this.structureCsvFactory = structureCsvFactory;
             this.gameObjectLocator = gameObjectLocator;
             this.formula = formula;
             this.locker = locker;
@@ -90,10 +90,10 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ICity city;
-            IStation station;
+            IStation station = null;
 
             //we need to find out the stationed city first then reacquire local + stationed stronghold locks            
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (city == null)
                 {
@@ -110,9 +110,14 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 station = stub.Station;
+            });
+
+            if (station == null)
+            {
+                return;
             }
 
-            using (locker.Lock(city, station))
+            locker.Lock(city, station).Do(() =>
             {
                 ITroopStub stub;
 
@@ -143,7 +148,7 @@ namespace Game.Comm.ProcessorCommands
                 }
                 else
                 {
-                    troopInitializer = troopObjectInitializerFactory.CreateStationedPartialTroopObjectInitializer(stub, unitsToRetreat);                    
+                    troopInitializer = troopObjectInitializerFactory.CreateStationedPartialTroopObjectInitializer(stub, unitsToRetreat);
                 }
 
                 var ra = actionFactory.CreateStrongholdDefenseChainAction(cityId,
@@ -153,9 +158,7 @@ namespace Game.Comm.ProcessorCommands
                 Error ret = city.Worker.DoPassive(city, ra, true);
 
                 ReplyWithResult(session, packet, ret);
-            }
-
-
+            });
         }
 
         private void ModeSwitch(Session session, Packet packet)
@@ -176,10 +179,10 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ICity city;
-            IStation station;
+            IStation station = null;
 
             //we need to find out the stationed city first then reacquire local + stationed city locks            
-            using (locker.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (city == null)
                 {
@@ -196,9 +199,14 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 station = stub.Station;
+            });
+
+            if (station == null)
+            {
+                return;
             }
 
-            using (locker.Lock(city, station))
+            locker.Lock(city, station).Do(() =>
             {
                 ITroopStub stub;
 
@@ -226,7 +234,7 @@ namespace Game.Comm.ProcessorCommands
                 stub.EndUpdate();
 
                 ReplySuccess(session, packet);
-            }
+            });
         }
 
         private void GetTroopInfo(Session session, Packet packet)
@@ -248,7 +256,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(cityId, objectId, out city, out troop))
+            locker.Lock(cityId, objectId, out city, out troop).Do(() =>
             {
                 if (city == null || troop == null || troop.Stub == null)
                 {
@@ -266,7 +274,7 @@ namespace Game.Comm.ProcessorCommands
                     reply.AddUInt32(troop.TargetX);
                     reply.AddUInt32(troop.TargetY);
 
-                    var template = new UnitTemplate(city);
+                    var template = new Dictionary<ushort, IBaseUnitStats>();
 
                     reply.AddByte(troop.Stub.FormationCount);
                     foreach (var formation in troop.Stub)
@@ -281,7 +289,7 @@ namespace Game.Comm.ProcessorCommands
                         }
                     }
 
-                    reply.AddUInt16((ushort)template.Size);
+                    reply.AddUInt16((ushort)template.Count);
                     IEnumerator<KeyValuePair<ushort, IBaseUnitStats>> templateIter = template.GetEnumerator();
                     while (templateIter.MoveNext())
                     {
@@ -292,7 +300,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 session.Write(reply);
-            }
+            });
         }
 
         private void LocalTroopSet(Session session, Packet packet)
@@ -312,7 +320,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -357,7 +365,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 ReplySuccess(session, packet);
-            }
+            });
         }
 
         private void UnitUpgrade(Session session, Packet packet)
@@ -378,7 +386,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -395,7 +403,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var upgradeAction = actionFactory.CreateUnitUpgradeActiveAction(cityId, objectId, type);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(barrack),
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(barrack),
                                                  barrack,
                                                  upgradeAction,
                                                  barrack.Technologies);
@@ -407,7 +415,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     ReplySuccess(session, packet);
                 }
-            }
+            });
         }
 
         private void TrainUnit(Session session, Packet packet)
@@ -430,7 +438,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 ICity city = session.Player.GetCity(cityId);
 
@@ -447,7 +455,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var trainAction = actionFactory.CreateUnitTrainActiveAction(cityId, objectId, type, count);
-                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(barrack),
+                Error ret = city.Worker.DoActive(structureCsvFactory.GetActionWorkerType(barrack),
                                                  barrack,
                                                  trainAction,
                                                  barrack.Technologies);
@@ -459,7 +467,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     ReplySuccess(session, packet);
                 }
-            }
+            });
         }
 
         private void AttackStronghold(Session session, Packet packet)
@@ -482,10 +490,10 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            IStronghold stronghold;
-            ICity city;
+            IStronghold stronghold = null;
+            ICity city = null;
 
-            using (locker.Lock(session.Player))
+            locker.Lock(session.Player).Do(() =>
             {
                 city = session.Player.GetCity(cityId);
                 if (city == null)
@@ -497,22 +505,26 @@ namespace Game.Comm.ProcessorCommands
                 if (!gameObjectLocator.TryGetObjects(targetStrongholdId, out stronghold))
                 {
                     ReplyError(session, packet, Error.Unexpected);
-                    return;
                 }
+            });
+
+            if (city == null || stronghold == null)
+            {
+                return;
             }
 
-            using (locker.Lock(city, stronghold))
+            locker.Lock(city, stronghold).Do(() =>
             {
                 var troopInitializer = troopObjectInitializerFactory.CreateCityTroopObjectInitializer(cityId, simpleStub, TroopBattleGroup.Attack, mode);
 
                 var attackAction = actionFactory.CreateStrongholdAttackChainAction(cityId,
                                                                                    troopInitializer,
-                                                                                   targetStrongholdId, 
+                                                                                   targetStrongholdId,
                                                                                    forceAttack: false);
                 var result = city.Worker.DoPassive(city, attackAction, true);
 
                 ReplyWithResult(session, packet, result);
-            }
+            });
         }
 
         private void AttackBarbarianTribe(Session session, Packet packet)
@@ -543,7 +555,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player, barbarianTribe))
+            locker.Lock(session.Player, barbarianTribe).Do(() =>
             {
                 var city = session.Player.GetCity(cityId);
                 if (city == null)
@@ -555,18 +567,18 @@ namespace Game.Comm.ProcessorCommands
                 var troopObjectInitializer = troopObjectInitializerFactory.CreateCityTroopObjectInitializer(cityId, simpleStub, TroopBattleGroup.Attack, mode);
 
                 var attackAction = actionFactory.CreateBarbarianTribeAttackChainAction(cityId, targetBarbarianTribeId, troopObjectInitializer);
-                
+
                 var result = city.Worker.DoPassive(city, attackAction, true);
 
-                ReplyWithResult(session, packet, result);                
-            }
+                ReplyWithResult(session, packet, result);
+            });
         }
 
         private void AttackCity(Session session, Packet packet)
         {
             uint cityId;
             uint targetCityId;
-            uint targetObjectId;
+            Position target;
             ISimpleStub simpleStub;
             AttackMode mode;
 
@@ -575,7 +587,7 @@ namespace Game.Comm.ProcessorCommands
                 mode = (AttackMode)packet.GetByte();
                 cityId = packet.GetUInt32();
                 targetCityId = packet.GetUInt32();
-                targetObjectId = packet.GetUInt32();
+                target = new Position(packet.GetUInt32(), packet.GetUInt32());
                 simpleStub = PacketHelper.ReadStub(packet, FormationType.Attack);
             }
             catch(Exception)
@@ -584,17 +596,16 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            var cityNotFound = locker.Lock(session.Player).Do(() => session.Player.GetCity(cityId) == null);
+
+            if (cityNotFound)
             {
-                if (session.Player.GetCity(cityId) == null)
-                {
-                    ReplyError(session, packet, Error.Unexpected);
-                    return;
-                }
+                ReplyError(session, packet, Error.Unexpected);
+                return;
             }
 
             Dictionary<uint, ICity> cities;
-            using (locker.Lock(out cities, cityId, targetCityId))
+            locker.Lock(out cities, cityId, targetCityId).Do(() =>
             {
                 if (cities == null)
                 {
@@ -604,15 +615,6 @@ namespace Game.Comm.ProcessorCommands
 
                 ICity city = cities[cityId];
 
-                ICity targetCity = cities[targetCityId];
-                IStructure targetStructure;
-
-                if (!targetCity.TryGetStructure(targetObjectId, out targetStructure))
-                {
-                    ReplyError(session, packet, Error.ObjectStructureNotFound);
-                    return;
-                }
-
                 var troopInitializer = troopObjectInitializerFactory.CreateCityTroopObjectInitializer(cityId,
                                                                                                       simpleStub,
                                                                                                       TroopBattleGroup.Attack,
@@ -621,12 +623,12 @@ namespace Game.Comm.ProcessorCommands
                 var attackAction = actionFactory.CreateCityAttackChainAction(cityId,
                                                                              troopInitializer,
                                                                              targetCityId,
-                                                                             targetObjectId);
+                                                                             target);
 
                 var result = city.Worker.DoPassive(city, attackAction, true);
 
                 ReplyWithResult(session, packet, result);
-            }
+            });
         }
 
         private void DefendCity(Session session, Packet packet)
@@ -655,17 +657,16 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            using (locker.Lock(session.Player))
+            var cityNotFound = locker.Lock(session.Player).Do(() => session.Player.GetCity(cityId) == null);
+
+            if (cityNotFound)
             {
-                if (session.Player.GetCity(cityId) == null)
-                {
-                    ReplyError(session, packet, Error.Unexpected);
-                    return;
-                }
+                ReplyError(session, packet, Error.Unexpected);
+                return;
             }
 
             Dictionary<uint, ICity> cities;
-            using (locker.Lock(out cities, cityId, targetCityId))
+            locker.Lock(out cities, cityId, targetCityId).Do(() =>
             {
                 ICity city = cities[cityId];
 
@@ -677,7 +678,7 @@ namespace Game.Comm.ProcessorCommands
                 var da = actionFactory.CreateCityDefenseChainAction(cityId, troopInitializer, targetCityId);
                 var result = city.Worker.DoPassive(city, da, true);
                 ReplyWithResult(session, packet, result);
-            }
+            });
         }
 
         private void DefendStronghold(Session session, Packet packet)
@@ -700,9 +701,9 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            IStronghold stronghold;
-            ICity city;
-            using (locker.Lock(session.Player))
+            IStronghold stronghold = null;
+            ICity city = null;
+            locker.Lock(session.Player).Do(() =>
             {
                 city = session.Player.GetCity(cityId);
                 if (city == null)
@@ -714,18 +715,22 @@ namespace Game.Comm.ProcessorCommands
                 if (!gameObjectLocator.TryGetObjects(targetStrongholdId, out stronghold))
                 {
                     ReplyError(session, packet, Error.Unexpected);
-                    return;
                 }
+            });
+
+            if (stronghold == null || city == null)
+            {
+                return;
             }
 
-            using (locker.Lock(city, stronghold))
+            locker.Lock(city, stronghold).Do(() =>
             {
                 var initializer = troopObjectInitializerFactory.CreateCityTroopObjectInitializer(cityId, simpleStub, TroopBattleGroup.Defense, mode);
                 var da = actionFactory.CreateStrongholdDefenseChainAction(cityId, initializer, targetStrongholdId);
                 Error ret = city.Worker.DoPassive(city, da, true);
 
                 ReplyWithResult(session, packet, ret);
-            }
+            });
         }
 
         private void Retreat(Session session, Packet packet)
@@ -753,10 +758,10 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ICity city;
-            IStation station;
+            IStation station = null;
 
-            //we need to find out the stationed city first then reacquire local + stationed city locks            
-            using (locker.Lock(cityId, out city))
+            //we need to find out the stationed location first then reacquire local + stationed locks            
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (city == null)
                 {
@@ -773,9 +778,14 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 station = stub.Station;
+            });
+
+            if (station == null)
+            {
+                return;
             }
 
-            using (locker.Lock(city, station))
+            locker.Lock(city, station).Do(() =>
             {
                 ITroopStub stub;
 
@@ -786,7 +796,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 //Make sure that the person sending the retreat is either the guy who owns the troop or the guy who owns the stationed city
-                bool stationOwnerRetreating = stub.Station != null && session.Player.GetCityList().Any(x => x == stub.Station);
+                bool stationOwnerRetreating = session.Player.GetCityList().Any(x => x == stub.Station);
                 if (city.Owner != session.Player && !stationOwnerRetreating)
                 {
                     ReplyError(session, packet, Error.Unexpected);
@@ -795,20 +805,20 @@ namespace Game.Comm.ProcessorCommands
 
                 ITroopObjectInitializer troopInitializer;
 
-                if (completeRetreat || stationOwnerRetreating || unitsToRetreat.TotalCount == stub.TotalCount)
+                if (completeRetreat || unitsToRetreat.TotalCount == stub.TotalCount)
                 {
                     troopInitializer = troopObjectInitializerFactory.CreateStationedTroopObjectInitializer(stub);
                 }
                 else
                 {
-                    troopInitializer = troopObjectInitializerFactory.CreateStationedPartialTroopObjectInitializer(stub, unitsToRetreat);                    
+                    troopInitializer = troopObjectInitializerFactory.CreateStationedPartialTroopObjectInitializer(stub, unitsToRetreat);
                 }
 
                 var ra = actionFactory.CreateRetreatChainAction(cityId, troopInitializer);
 
                 Error ret = city.Worker.DoPassive(city, ra, true);
                 ReplyWithResult(session, packet, ret);
-            }
+            });
         }
     }
 }

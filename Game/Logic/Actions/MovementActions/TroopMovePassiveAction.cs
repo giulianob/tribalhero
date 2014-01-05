@@ -22,7 +22,7 @@ namespace Game.Logic.Actions
 
         private readonly Formula formula;
 
-        private readonly TileLocator tileLocator;
+        private readonly ITileLocator tileLocator;
 
         private readonly IGameObjectLocator world;
 
@@ -51,7 +51,7 @@ namespace Game.Logic.Actions
                                       bool isReturningHome,
                                       bool isAttacking,
                                       Formula formula,
-                                      TileLocator tileLocator,
+                                      ITileLocator tileLocator,
                                       IGameObjectLocator world,
                                       ILocker locker)
         {
@@ -75,7 +75,7 @@ namespace Game.Logic.Actions
                                       string nlsDescription,
                                       Dictionary<string, string> properties,
                                       Formula formula,
-                                      TileLocator tileLocator,
+                                      ITileLocator tileLocator,
                                       IGameObjectLocator world,
                                       ILocker locker)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
@@ -123,28 +123,6 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        private bool Work(uint ox, uint oy, uint x, uint y, object custom)
-        {
-            var recordForeach = (RecordForeach)custom;
-            int distance = SimpleGameObject.TileDistance(x, y, this.x, this.y);
-
-            if (distance < recordForeach.ShortestDistance)
-            {
-                recordForeach.ShortestDistance = distance;
-                recordForeach.X = x;
-                recordForeach.Y = y;
-                recordForeach.IsShortestDistanceDiagonal = SimpleGameObject.IsDiagonal(x, y, ox, oy);
-            }
-            else if (distance == recordForeach.ShortestDistance && !recordForeach.IsShortestDistanceDiagonal)
-            {
-                recordForeach.ShortestDistance = distance;
-                recordForeach.X = x;
-                recordForeach.Y = y;
-                recordForeach.IsShortestDistanceDiagonal = SimpleGameObject.IsDiagonal(x, y, ox, oy);
-            }
-            return true;
-        }
-
         private bool CalculateNextPosition(ITroopObject obj)
         {
             if (distanceRemaining <= 0)
@@ -153,7 +131,26 @@ namespace Game.Logic.Actions
             }
 
             var recordForeach = new RecordForeach {ShortestDistance = int.MaxValue, IsShortestDistanceDiagonal = false};
-            tileLocator.ForeachObject(obj.X, obj.Y, 1, false, Work, recordForeach);
+            foreach (var position in tileLocator.ForeachTile(obj.PrimaryPosition.X, obj.PrimaryPosition.Y, 1, false))
+            {
+                int distance = tileLocator.TileDistance(position, 1, new Position(x, y), 1);
+
+                if (distance < recordForeach.ShortestDistance)
+                {
+                    recordForeach.ShortestDistance = distance;
+                    recordForeach.X = position.X;
+                    recordForeach.Y = position.Y;
+                    recordForeach.IsShortestDistanceDiagonal = IsDiagonal(position.Y, obj.PrimaryPosition.X, obj.PrimaryPosition.Y);
+                }
+                else if (distance == recordForeach.ShortestDistance && !recordForeach.IsShortestDistanceDiagonal)
+                {
+                    recordForeach.ShortestDistance = distance;
+                    recordForeach.X = position.X;
+                    recordForeach.Y = position.Y;
+                    recordForeach.IsShortestDistanceDiagonal = IsDiagonal(position.Y, obj.PrimaryPosition.X, obj.PrimaryPosition.Y);
+                }
+            }
+
             nextX = recordForeach.X;
             nextY = recordForeach.Y;
             return true;
@@ -169,13 +166,14 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             }
 
-            distanceRemaining = Math.Max(1, troopObj.TileDistance(x, y));
+            distanceRemaining = Math.Max(1, tileLocator.TileDistance(troopObj.PrimaryPosition, troopObj.Size, new Position(x, y), 1));
 
             double moveTimeTotal = formula.MoveTimeTotal(troopObj.Stub, distanceRemaining, isAttacking);
 
-            if (ActionConfigTime() != null)
+            var actionConfigTime = ActionConfigTime();
+            if (actionConfigTime != null)
             {
-                moveTime = ActionConfigTime().Value;
+                moveTime = actionConfigTime.Value;
             }
             else
             {
@@ -201,7 +199,7 @@ namespace Game.Logic.Actions
             troopObj.BeginUpdate();
             troopObj.TargetX = x;
             troopObj.TargetY = y;
-            troopObj.State = GameObjectState.MovingState();
+            troopObj.State = GameObjectStateFactory.MovingState();
             troopObj.EndUpdate();
 
             return Error.Ok;
@@ -214,10 +212,7 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
             ICity city;
-            using (locker.Lock(cityId, out city))
-            {
-                StateChange(ActionState.Failed);
-            }
+            locker.Lock(cityId, out city).Do(() => StateChange(ActionState.Failed));
         }
 
         public override void Callback(object custom)
@@ -225,7 +220,7 @@ namespace Game.Logic.Actions
             ICity city;
             ITroopObject troopObj;
 
-            using (locker.Lock(cityId, troopObjectId, out city, out troopObj))
+            locker.Lock(cityId, troopObjectId, out city, out troopObj).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -235,8 +230,8 @@ namespace Game.Logic.Actions
                 --distanceRemaining;
 
                 troopObj.BeginUpdate();
-                troopObj.X = nextX;
-                troopObj.Y = nextY;
+                troopObj.PrimaryPosition.X = nextX;
+                troopObj.PrimaryPosition.Y = nextY;
                 troopObj.EndUpdate();
 
                 // Fire updated to force sending new position
@@ -251,7 +246,7 @@ namespace Game.Logic.Actions
                     troopObj.Stub.EndUpdate();
 
                     troopObj.BeginUpdate();
-                    troopObj.State = GameObjectState.NormalState();
+                    troopObj.State = GameObjectStateFactory.NormalState();
                     troopObj.EndUpdate();
                     StateChange(ActionState.Completed);
                     return;
@@ -259,7 +254,12 @@ namespace Game.Logic.Actions
 
                 nextTime = DateTime.UtcNow.AddSeconds(moveTime);
                 StateChange(ActionState.Fired);
-            }
+            });
+        }
+
+        private bool IsDiagonal(uint y, uint x1, uint y1)
+        {
+            return y % 2 != y1 % 2;
         }
 
         #region Nested type: RecordForeach

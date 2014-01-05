@@ -20,22 +20,22 @@ namespace Game.Logic.Actions
 
         private TimeSpan ts;
 
-        public StructureSelfDestroyActiveAction(uint cityId, uint objectId)
+        private readonly ILocker locker;
+
+        private readonly IWorld world;
+
+        public StructureSelfDestroyActiveAction(uint cityId, uint objectId, ILocker locker, IWorld world)
         {
             this.cityId = cityId;
             this.objectId = objectId;
+            this.locker = locker;
+            this.world = world;
         }
 
-        public StructureSelfDestroyActiveAction(uint id,
-                                                DateTime beginTime,
-                                                DateTime nextTime,
-                                                DateTime endTime,
-                                                int workerType,
-                                                byte workerIndex,
-                                                ushort actionCount,
-                                                Dictionary<string, string> properties)
-                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+        public StructureSelfDestroyActiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType, byte workerIndex, ushort actionCount, Dictionary<string, string> properties, ILocker locker, IWorld world) : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
+            this.locker = locker;
+            this.world = world;
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
         }
@@ -71,7 +71,7 @@ namespace Game.Logic.Actions
             ICity city;
             IStructure structure;
 
-            using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
+            locker.Lock(cityId, objectId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -94,14 +94,14 @@ namespace Game.Logic.Actions
                 city.BeginUpdate();
                 structure.BeginUpdate();
 
-                World.Current.Regions.Remove(structure);
+                world.Regions.Remove(structure);
                 city.ScheduleRemove(structure, false);
 
                 structure.EndUpdate();
                 city.EndUpdate();
 
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         public override Error Execute()
@@ -112,7 +112,7 @@ namespace Game.Logic.Actions
             endTime = SystemClock.Now.AddSeconds(CalculateTime(ts.TotalSeconds));
             BeginTime = SystemClock.Now;
 
-            if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
+            if (!world.TryGetObjects(cityId, objectId, out city, out structure))
             {
                 return Error.ObjectNotFound;
             }
@@ -124,7 +124,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
 
-            if (!World.Current.TryGetObjects(cityId, out city))
+            if (!world.TryGetObjects(cityId, out city))
             {
                 return Error.ObjectNotFound;
             }
@@ -138,7 +138,7 @@ namespace Game.Logic.Actions
         {
             ICity city;
             IStructure structure;
-            using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
+            locker.Lock(cityId, objectId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -146,14 +146,14 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
 
         public override void WorkerRemoved(bool wasKilled)
         {
             ICity city;
             IStructure structure;
-            using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
+            locker.Lock(cityId, objectId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -161,7 +161,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
     }
 }

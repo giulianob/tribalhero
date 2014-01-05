@@ -35,14 +35,14 @@ namespace Game.Logic.Actions
 
         private readonly uint targetCityId;
 
-        private readonly uint targetStructureId;
+        private readonly Position tmpTarget;
 
         private uint troopObjectId;
 
         public CityAttackChainAction(uint cityId,
                                      ITroopObjectInitializer troopObjectInitializer,
                                      uint targetCityId,
-                                     uint targetStructureId,
+                                     Position target,
                                      IActionFactory actionFactory,
                                      Procedure procedure,
                                      ILocker locker,
@@ -50,10 +50,10 @@ namespace Game.Logic.Actions
                                      CityBattleProcedure cityBattleProcedure,
                                      BattleProcedure battleProcedure)
         {
+            this.tmpTarget = target;
             this.cityId = cityId;
             this.troopObjectInitializer = troopObjectInitializer;
             this.targetCityId = targetCityId;
-            this.targetStructureId = targetStructureId;            
             this.actionFactory = actionFactory;
             this.procedure = procedure;
             this.locker = locker;
@@ -85,7 +85,6 @@ namespace Game.Logic.Actions
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_object_id"]);
             targetCityId = uint.Parse(properties["target_city_id"]);
-            targetStructureId = uint.Parse(properties["target_object_id"]);            
         }
 
         public override ActionType Type
@@ -105,8 +104,7 @@ namespace Game.Logic.Actions
                         {
                                 new XmlKvPair("city_id", cityId), 
                                 new XmlKvPair("troop_object_id", troopObjectId),
-                                new XmlKvPair("target_city_id", targetCityId), 
-                                new XmlKvPair("target_object_id", targetStructureId)
+                                new XmlKvPair("target_city_id", targetCityId)
                         });
             }
         }
@@ -123,12 +121,18 @@ namespace Game.Logic.Actions
         {
             ICity city;
             ICity targetCity;
-            IStructure targetStructure;
 
             if (!gameObjectLocator.TryGetObjects(cityId, out city) ||
-                !gameObjectLocator.TryGetObjects(targetCityId, targetStructureId, out targetCity, out targetStructure))
+                !gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
             {
-                return Error.ObjectNotFound;
+                return Error.CityNotFound;
+            }
+
+            var targetStructure = gameObjectLocator.Regions.GetObjectsInTile(tmpTarget.X, tmpTarget.Y).OfType<IStructure>().FirstOrDefault(s => s.City == targetCity);
+
+            if (targetStructure == null)
+            {
+                return Error.StructureNotFound;
             }
 
             if (city.Owner.PlayerId == targetCity.Owner.PlayerId)
@@ -167,8 +171,8 @@ namespace Game.Logic.Actions
 
             var tma = actionFactory.CreateTroopMovePassiveAction(cityId,
                                                                  troopObject.ObjectId,
-                                                                 targetStructure.X,
-                                                                 targetStructure.Y,
+                                                                 tmpTarget.X,
+                                                                 tmpTarget.Y,
                                                                  false,
                                                                  true);
 
@@ -197,156 +201,159 @@ namespace Game.Logic.Actions
                 if (!gameObjectLocator.TryGetObjects(targetCityId, out targetCity))
                 {
                     //If the target is missing, walk back
-                    using (locker.Lock(city))
+                    locker.Lock(city).Do(() =>
                     {
                         TroopMovePassiveAction tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
                                                                                                 troopObject.ObjectId,
-                                                                                                city.X,
-                                                                                                city.Y,
+                                                                                                city.PrimaryPosition.X,
+                                                                                                city.PrimaryPosition.Y,
                                                                                                 true,
                                                                                                 true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
-                        return;
-                    }
+                    });
+                    return;
                 }
 
                 // Get all of the stationed city id's from the target city since they will be used by the engage attack action
-                CallbackLock.CallbackLockHandler lockAllStationed =
-                        delegate
-                            {
-                                return
-                                        targetCity.Troops.StationedHere()
-                                                  .Select(stationedStub => stationedStub.City)
-                                                  .Cast<ILockable>()
-                                                  .ToArray();
-                            };
+                CallbackLock.CallbackLockHandler lockAllStationed = delegate
+                {
+                    return targetCity.Troops.StationedHere()
+                                     .Select(stationedStub => stationedStub.City)
+                                     .Cast<ILockable>()
+                                     .ToArray();
+                };
 
-                using (locker.Lock(lockAllStationed, null, city, targetCity))
+                locker.Lock(lockAllStationed, null, city, targetCity).Do(() =>
                 {
                     var bea = actionFactory.CreateCityEngageAttackPassiveAction(cityId,
                                                                                 troopObject.ObjectId,
                                                                                 targetCityId);
                     ExecuteChainAndWait(bea, AfterBattle);
-                }
+                });
             }
         }
 
         private void AfterBattle(ActionState state)
         {
-            if (state == ActionState.Completed)
+            if (state != ActionState.Completed)
             {
-                Dictionary<uint, ICity> cities;
-                using (locker.Lock(out cities, cityId, targetCityId))
-                {
-                    if (cities == null)
-                    {
-                        throw new Exception("City not found");
-                    }
-
-                    ICity city = cities[cityId];
-                    ICity targetCity = cities[targetCityId];
-
-                    //Remove notification to target city once battle is over
-                    city.Notifications.Remove(this);
-
-                    //Remove Incoming Icon from the target's tribe
-                    if (targetCity.Owner.Tribesman != null)
-                    {
-                        targetCity.Owner.Tribesman.Tribe.SendUpdate();
-                    }
-
-                    ITroopObject troopObject;
-                    if (!city.TryGetTroop(troopObjectId, out troopObject))
-                    {
-                        throw new Exception("Troop object should still exist");
-                    }
-
-                    // Calculate how many attack points to give to the city
-                    city.BeginUpdate();
-                    procedure.GiveAttackPoints(city,troopObject.Stats.AttackPoint);
-                    city.EndUpdate();
-                    
-                    // Check if troop is still alive
-                    if (troopObject.Stub.TotalCount > 0)
-                    {
-
-
-                        // Add notification for walking back
-                        city.Notifications.Add(troopObject, this);
-
-                        // Send troop back home
-                        var tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
-                                                                             troopObject.ObjectId,
-                                                                             city.X,
-                                                                             city.Y,
-                                                                             true,
-                                                                             true);
-                        ExecuteChainAndWait(tma, AfterTroopMovedHome);
-                    }
-                    else
-                    {
-                        //Remove notification to target city once battle is over
-                        city.References.Remove(troopObject, this);
-
-                        targetCity.BeginUpdate();
-                        city.BeginUpdate();
-
-                        // Give back the loot to the target city
-                        targetCity.Resource.Add(troopObject.Stats.Loot);
-
-                        // Remove troop since he's dead
-                        procedure.TroopObjectDelete(troopObject, false);
-
-                        targetCity.EndUpdate();
-                        city.EndUpdate();
-
-                        StateChange(ActionState.Completed);
-                    }
-                }
+                return;
             }
+
+            Dictionary<uint, ICity> cities;
+            locker.Lock(out cities, cityId, targetCityId).Do(() =>
+            {
+                if (cities == null)
+                {
+                    throw new Exception("City not found");
+                }
+
+                ICity city = cities[cityId];
+                ICity targetCity = cities[targetCityId];
+
+                //Remove notification to target city once battle is over
+                city.Notifications.Remove(this);
+
+                //Remove Incoming Icon from the target's tribe
+                if (targetCity.Owner.Tribesman != null)
+                {
+                    targetCity.Owner.Tribesman.Tribe.SendUpdate();
+                }
+
+                ITroopObject troopObject;
+                if (!city.TryGetTroop(troopObjectId, out troopObject))
+                {
+                    throw new Exception("Troop object should still exist");
+                }
+
+                // Calculate how many attack points to give to the city
+                city.BeginUpdate();
+                procedure.GiveAttackPoints(city, troopObject.Stats.AttackPoint);
+                city.EndUpdate();
+
+                // Check if troop is still alive
+                if (troopObject.Stub.TotalCount > 0)
+                {
+
+
+                    // Add notification for walking back
+                    city.Notifications.Add(troopObject, this);
+
+                    // Send troop back home
+                    var tma = actionFactory.CreateTroopMovePassiveAction(city.Id,
+                                                                         troopObject.ObjectId,
+                                                                         city.PrimaryPosition.X,
+                                                                         city.PrimaryPosition.Y,
+                                                                         true,
+                                                                         true);
+                    ExecuteChainAndWait(tma, AfterTroopMovedHome);
+                }
+                else
+                {
+                    //Remove notification to target city once battle is over
+                    city.References.Remove(troopObject, this);
+
+                    targetCity.BeginUpdate();
+                    city.BeginUpdate();
+
+                    // Give back the loot to the target city
+                    targetCity.Resource.Add(troopObject.Stats.Loot);
+
+                    // Remove troop since he's dead
+                    procedure.TroopObjectDelete(troopObject, false);
+
+                    targetCity.EndUpdate();
+                    city.EndUpdate();
+
+                    StateChange(ActionState.Completed);
+                }
+            });
         }
 
         private void AfterTroopMovedHome(ActionState state)
         {
-            if (state == ActionState.Completed)
+            if (state != ActionState.Completed)
             {
-                ICity city;
-                ITroopObject troopObject;
-                using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
-                {
-                    // If city is not in battle then add back to city otherwise join local battle
-                    if (city.Battle == null)
-                    {
-                        city.References.Remove(troopObject, this);
-                        city.Notifications.Remove(this);
-                        procedure.TroopObjectDelete(troopObject, true);
-                        StateChange(ActionState.Completed);
-                    }
-                    else
-                    {
-                        var eda = actionFactory.CreateCityEngageDefensePassiveAction(cityId, troopObject.ObjectId, FormationType.Attack);
-                        ExecuteChainAndWait(eda, AfterEngageDefense);
-                    }
-                }
+                return;
             }
+            ICity city;
+            ITroopObject troopObject;
+            locker.Lock(cityId, troopObjectId, out city, out troopObject).Do(() =>
+            {
+                // If city is not in battle then add back to city otherwise join local battle
+                if (city.Battle == null)
+                {
+                    city.References.Remove(troopObject, this);
+                    city.Notifications.Remove(this);
+                    procedure.TroopObjectDelete(troopObject, true);
+                    StateChange(ActionState.Completed);
+                }
+                else
+                {
+                    var eda = actionFactory.CreateCityEngageDefensePassiveAction(cityId, troopObject.ObjectId, FormationType.Attack);
+                    ExecuteChainAndWait(eda, AfterEngageDefense);
+                }
+            });
         }
 
         private void AfterEngageDefense(ActionState state)
         {
-            if (state == ActionState.Completed)
+            if (state != ActionState.Completed)
             {
-                ICity city;
-                ITroopObject troopObject;
-                using (locker.Lock(cityId, troopObjectId, out city, out troopObject))
-                {
-                    city.References.Remove(troopObject, this);
-                    city.Notifications.Remove(this);
-
-                    procedure.TroopObjectDelete(troopObject, troopObject.Stub.TotalCount != 0);
-
-                    StateChange(ActionState.Completed);
-                }
+                return;
             }
+            
+            ICity city;
+            ITroopObject troopObject;
+            locker.Lock(cityId, troopObjectId, out city, out troopObject).Do(() =>
+            {
+                city.References.Remove(troopObject, this);
+                city.Notifications.Remove(this);
+
+                procedure.TroopObjectDelete(troopObject, troopObject.Stub.TotalCount != 0);
+
+                StateChange(ActionState.Completed);
+            });
         }
 
         public override Error Validate(string[] parms)

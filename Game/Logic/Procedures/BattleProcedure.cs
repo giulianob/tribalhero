@@ -1,7 +1,6 @@
 #region
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Game.Battle;
 using Game.Battle.CombatGroups;
@@ -33,8 +32,7 @@ namespace Game.Logic.Procedures
             this.combatGroupFactory = combatGroupFactory;            
         }
         
-        // TODO: Change to instance method.. need to make sure City is being created by ninject first though
-        public static bool IsNewbieProtected(IPlayer player)
+        public virtual bool IsNewbieProtected(IPlayer player)
         {
             return SystemClock.Now.Subtract(player.Created).TotalSeconds < Config.newbie_protection;
         }
@@ -44,16 +42,13 @@ namespace Game.Logic.Procedures
             var offensiveGroup = combatGroupFactory.CreateCityOffensiveCombatGroup(battleManager.BattleId,
                                                                                    battleManager.GetNextGroupId(),
                                                                                    troopObject);
-            foreach (
-                    var attackCombatUnits in
-                            troopObject.Stub.SelectMany(formation => formation)
-                                       .Select(
-                                               kvp =>
-                                               combatUnitFactory.CreateAttackCombatUnit(battleManager,
-                                                                                        troopObject,
-                                                                                        FormationType.Attack,
-                                                                                        kvp.Key,
-                                                                                        kvp.Value)))
+            foreach (var attackCombatUnits in troopObject.Stub
+                                                         .SelectMany(formation => formation)
+                                                         .Select(kvp => combatUnitFactory.CreateAttackCombatUnit(battleManager,
+                                                                                                                 troopObject,
+                                                                                                                 FormationType.Attack,
+                                                                                                                 kvp.Key,
+                                                                                                                 kvp.Value)))
             {
                 attackCombatUnits.ToList().ForEach(offensiveGroup.Add);
             }

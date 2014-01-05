@@ -1,4 +1,3 @@
-using System;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Map;
@@ -57,7 +56,13 @@ namespace Game.Battle.CombatObjects
 
         byte Lvl { get; }
 
+        byte Size { get; }
+
         void ExitBattle();
+
+        decimal AttackBonus(ICombatObject target);
+
+        decimal DefenseBonus(ICombatObject target);
 
         void TakeDamage(decimal dmg, out Resource returning, out int attackPoints);
 

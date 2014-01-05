@@ -7,7 +7,6 @@ using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -19,10 +18,27 @@ namespace Game.Logic.Actions
 
         private readonly uint structureId;
 
-        public StructureDowngradePassiveAction(uint cityId, uint structureId)
+        private readonly IStructureCsvFactory structureCsvFactory;
+
+        private readonly Procedure procedure;
+
+        private readonly CallbackProcedure callbackProcedure;
+
+        private readonly ILocker locker;
+
+        public StructureDowngradePassiveAction(uint cityId,
+                                               uint structureId,
+                                               ILocker locker,
+                                               IStructureCsvFactory structureCsvFactory,
+                                               Procedure procedure,
+											   CallbackProcedure callbackProcedure)
         {
             this.cityId = cityId;
             this.structureId = structureId;
+            this.callbackProcedure = callbackProcedure;
+            this.locker = locker;
+            this.structureCsvFactory = structureCsvFactory;
+            this.procedure = procedure;
         }
 
         public StructureDowngradePassiveAction(uint id,
@@ -31,9 +47,17 @@ namespace Game.Logic.Actions
                                                DateTime endTime,
                                                bool isVisible,
                                                string nlsDescription,
-                                               IDictionary<string, string> properties)
+                                               IDictionary<string, string> properties,
+                                               CallbackProcedure callbackProcedure,
+                                               ILocker locker,
+                                               IStructureCsvFactory structureCsvFactory,
+                                               Procedure procedure)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
+            this.callbackProcedure = callbackProcedure;
+            this.locker = locker;
+            this.structureCsvFactory = structureCsvFactory;
+            this.procedure = procedure;
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
         }
@@ -66,7 +90,7 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
             ICity city;
-            using (Concurrency.Current.Lock(cityId, out city))
+            locker.Lock(cityId, out city).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -74,7 +98,7 @@ namespace Game.Logic.Actions
                 }
 
                 StateChange(ActionState.Failed);
-            }
+            });
         }
 
         public override void Callback(object custom)
@@ -83,27 +107,34 @@ namespace Game.Logic.Actions
             IStructure structure;
 
             // Block structure
-            using (Concurrency.Current.Lock(cityId, structureId, out city, out structure))
+            var isOk = locker.Lock(cityId, structureId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
-                    return;
+                    return false;
                 }
 
                 if (structure.CheckBlocked(ActionId))
                 {
                     StateChange(ActionState.Failed);
-                    return;
+                    return false;
                 }
 
                 structure.BeginUpdate();
                 structure.IsBlocked = ActionId;
                 structure.EndUpdate();
+
+                return true;
+            });
+
+            if (!isOk)
+            {
+                return;
             }
 
-            structure.City.Worker.Remove(structure, new[] {this});
+            structure.City.Worker.Remove(structure, new GameAction[] {this});
 
-            using (Concurrency.Current.Lock(cityId, structureId, out city, out structure))
+            locker.Lock(cityId, structureId, out city, out structure).Do(() =>
             {
                 if (!IsValid())
                 {
@@ -114,19 +145,20 @@ namespace Game.Logic.Actions
                 structure.BeginUpdate();
                 structure.IsBlocked = 0;
                 ushort oldLabor = structure.Stats.Labor;
-                Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
+                structureCsvFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
                 structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
                 structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);
 
-                Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnDowngrade, structure, structure.Type, structure.Lvl);
-
-                Procedure.Current.OnStructureUpgradeDowngrade(structure);
+                procedure.OnStructureUpgradeDowngrade(structure);
 
                 structure.EndUpdate();
                 city.EndUpdate();
 
+
+                callbackProcedure.OnStructureDowngrade(structure);
+
                 StateChange(ActionState.Completed);
-            }
+            });
         }
 
         #region IPersistable

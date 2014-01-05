@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Game.Battle;
 using Game.Data;
 using Game.Data.BarbarianTribe;
@@ -10,7 +9,7 @@ namespace Game.Map
 {
     public interface IGameObjectLocator
     {
-        List<ISimpleGameObject> this[uint x, uint y] { get; }
+        IRegionManager Regions { get; }
 
         bool TryGetObjects(uint cityId, out ICity city);
 
@@ -18,19 +17,11 @@ namespace Game.Map
 
         bool TryGetObjects(uint tribeId, out ITribe tribe);
 
-        bool TryGetObjects(uint cityId, ushort troopStubId, out ICity city, out ITroopStub troopStub);
-
         bool TryGetObjects(uint battleId, out IBattleManager battleManager);
 
         bool TryGetObjects(uint cityId, uint structureId, out ICity city, out IStructure structure);
 
         bool TryGetObjects(uint cityId, uint troopObjectId, out ICity city, out ITroopObject troopObject);
-
-        bool TryGetObjects(uint cityId, out ICity city, out ITribe tribe);
-
-        List<ISimpleGameObject> GetObjects(uint x, uint y);
-
-        List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, int radius);
 
         bool TryGetObjects(uint strongholdId, out IStronghold stronghold);
 

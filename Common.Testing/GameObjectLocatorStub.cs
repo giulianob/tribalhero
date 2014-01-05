@@ -23,8 +23,15 @@ namespace Common.Testing
         private readonly Dictionary<uint, ITribe> tribes = new Dictionary<uint, ITribe>();
 
         private readonly Dictionary<uint, IBarbarianTribe> barbarianTribes = new Dictionary<uint, IBarbarianTribe>();
+        
+        private readonly Dictionary<Tuple<uint, uint>, IGameObject> gameObjects = new Dictionary<Tuple<uint, uint>, IGameObject>();
 
         public GameObjectLocatorStub(params object[] objects)
+        {
+            Add(objects);
+        }
+
+        public void Add(params object[] objects)
         {
             foreach (var o in objects)
             {
@@ -55,16 +62,25 @@ namespace Common.Testing
                 IStronghold stronghold = o as IStronghold;
                 if (stronghold != null)
                 {
-                    strongholds.Add(stronghold.Id, stronghold);
+                    strongholds.Add(stronghold.ObjectId, stronghold);
                 }
 
                 IBarbarianTribe barbarianTribe = o as IBarbarianTribe;
                 if (barbarianTribe != null)
                 {
-                    barbarianTribes.Add(barbarianTribe.Id, barbarianTribe);
+                    barbarianTribes.Add(barbarianTribe.ObjectId, barbarianTribe);
+                }
+
+                IGameObject gameObject = o as IGameObject;
+                if (gameObject != null)
+                {
+
+                    gameObjects.Add(new Tuple<uint, uint>(gameObject.GroupId, gameObject.ObjectId), gameObject);
                 }
             }
         }
+
+        public IRegionManager Regions { get; set; }
 
         public bool TryGetObjects(uint cityId, out ICity city)
         {
@@ -81,12 +97,6 @@ namespace Common.Testing
             return tribes.TryGetValue(tribeId, out tribe);
         }
 
-        public bool TryGetObjects(uint cityId, ushort troopStubId, out ICity city, out ITroopStub troopStub)
-        {
-            troopStub = null;
-            return cities.TryGetValue(cityId, out city) && city.Troops.TryGetStub(troopStubId, out troopStub);
-        }
-
         public bool TryGetObjects(uint battleId, out IBattleManager battleManager)
         {
             return battles.TryGetValue(battleId, out battleManager);
@@ -95,43 +105,13 @@ namespace Common.Testing
         public bool TryGetObjects(uint cityId, uint structureId, out ICity city, out IStructure structure)
         {
             structure = null;
-            return cities.TryGetValue(cityId, out city) && city.TryGetStructure(structureId, out structure);
+            return cities.TryGetValue(cityId, out city) && (city.TryGetStructure(structureId, out structure) || GetGameObject(cityId, structureId, out structure));
         }
 
         public bool TryGetObjects(uint cityId, uint troopObjectId, out ICity city, out ITroopObject troopObject)
         {
             troopObject = null;
-            return cities.TryGetValue(cityId, out city) && city.TryGetTroop(troopObjectId, out troopObject);
-        }
-
-        public bool TryGetObjects(uint cityId, out ICity city, out ITribe tribe)
-        {
-            tribe = null;
-            if (!cities.TryGetValue(cityId, out city) || !city.Owner.IsInTribe)
-            {
-                return false;
-            }
-
-            tribe = city.Owner.Tribesman.Tribe;
-            return true;
-        }
-
-        public List<ISimpleGameObject> this[uint x, uint y]
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public List<ISimpleGameObject> GetObjects(uint x, uint y)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, int radius)
-        {
-            throw new NotImplementedException();
+            return cities.TryGetValue(cityId, out city) && (city.TryGetTroop(troopObjectId, out troopObject)|| GetGameObject(cityId, troopObjectId, out troopObject));
         }
 
         public bool TryGetObjects(uint strongholdId, out IStronghold stronghold)
@@ -142,6 +122,20 @@ namespace Common.Testing
         public bool TryGetObjects(uint barbarianTribeId, out IBarbarianTribe barbarianTribe)
         {
             return barbarianTribes.TryGetValue(barbarianTribeId, out barbarianTribe);
+        }
+
+        private bool GetGameObject<T>(uint cityId, uint objectId, out T obj) where T : IGameObject
+        {
+            obj = default(T);
+
+            IGameObject gameObject;
+            if (!gameObjects.TryGetValue(new Tuple<uint, uint>(cityId, objectId), out gameObject))
+            {
+                return false;
+            }
+
+            obj = (T)gameObject;
+            return true;
         }
     }
 }

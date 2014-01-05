@@ -323,7 +323,6 @@ import src.UI.*;
                 technologiesTable.setRowHeight(20);
                 pnlTabs.appendTab(new JScrollPane(technologiesTable), StringHelper.localize("CITY_OVERVIEW_TECHNOLOGIES_TAB"));
 
-                laborersListModel = new VectorListModel();
                 var summarierFactory : TechnologySummarizerFactory = new TechnologySummarizerFactory();
                 for each(var grouping: IGrouping in Enumerable.from(city.structures()).selectMany(function(obj: CityObject): Array{
                     return obj.techManager.technologies;

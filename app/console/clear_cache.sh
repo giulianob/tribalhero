@@ -1,3 +1,3 @@
 cd $(dirname $(readlink -f $0))
 cd ..
-../cake/console/cake ranking
+../cake/console/cake clear_cache

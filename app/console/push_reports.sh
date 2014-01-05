@@ -1,1 +1,3 @@
-../../cake/console/cake -app ../ unread_reports
+cd $(dirname $(readlink -f $0))
+cd ..
+../cake/console/cake unread_reports

@@ -44,7 +44,7 @@
     <option linkReport="" />
     <option loadExterns="" />
     <option staticLinkRSL="True" />
-    <option additional="-frame start src.Main" />
+    <option additional="-frame start src.Main&#xA;-keep-as3-metadata+=EmbedPosition" />
     <option compilerConstants="" />
     <option minorVersion="" />
   </build>

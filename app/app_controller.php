@@ -36,7 +36,7 @@ class AppController extends Controller {
         
         if (isset($this->allowedFromGame) && in_array($this->action, $this->allowedFromGame)) {            
             if (!array_key_exists('debug', $this->params['form'])) {
-                Configure::write('debug', 0);
+            Configure::write('debug', 0);
             }
 
             $this->layout = 'ajax';

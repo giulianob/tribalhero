@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using Game.Map;
-using Game.Setup;
+﻿using Game.Setup;
 
 namespace Game.Data.Stronghold
 {

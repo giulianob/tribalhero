@@ -40,67 +40,23 @@ namespace Testing.FormulaTests
             techManager.GetEffects(0).ReturnsForAnyArgs(new List<Effect>());
             baseUnitStats.BuildTime.Returns(baseTime);
 
-            formula.TrainTime(structureLevel, 2, baseUnitStats, city, techManager).Should().Be(expected*2);
+            formula.TrainTime(structureLevel, 2, baseUnitStats).Should().Be(expected*2);
         }
 
         [Theory, AutoNSubstituteData]
-        public void TrainTime_WhenHasUnitTrainTimeReductionAndHas15UnitsOrLess_ShouldApplyDiscount(int baseTime,
-                                                                                int expected,
-                                                                                ITechnologyManager techManager,
-                                                                                IBaseUnitStats baseUnitStats,
-                                                                                ICity city,
-                                                                                Formula formula)
-        {
-            city.Troops.Upkeep.Returns(12);
-            baseUnitStats.BuildTime.Returns(100);
-            
-            techManager.GetEffects(EffectCode.UnitTrainTimeFirst15Reduction).Returns(new List<Effect>
-            {
-                    new Effect {Value = new[] {(object)90}}
-            });
-
-            // Act
-            formula.TrainTime(1, 2, baseUnitStats, city, techManager).Should().Be(20);
-        }
-
-        [Theory, AutoNSubstituteData]
-        public void TrainTime_WhenHasUnitTrainTimeReductionAndHas16Units_ShouldApplyDiscount(int baseTime,
-                                                                                int expected,
-                                                                                ITechnologyManager techManager,
-                                                                                IBaseUnitStats baseUnitStats,
-                                                                                ICity city,
-                                                                                Formula formula)
+        public void TrainTime_WhenNoDiscount_ShouldNotLowerTime(int baseTime,
+                                                                int expected,
+                                                                ITechnologyManager techManager,
+                                                                IBaseUnitStats baseUnitStats,
+                                                                ICity city,
+                                                                Formula formula)
         {
             city.Troops.Upkeep.Returns(15);
             baseUnitStats.BuildTime.Returns(100);
-            
-            techManager.GetEffects(EffectCode.UnitTrainTimeFirst15Reduction).Returns(new List<Effect>
-            {
-                    new Effect {Value = new[] {"90"}}
-            });
 
             // Act
-            formula.TrainTime(1, 1, baseUnitStats, city, techManager).Should().Be(100);
+            formula.TrainTime(1, 1, baseUnitStats).Should().Be(100);
         }
 
-        [Theory, AutoNSubstituteData]
-        public void TrainTime_WhenCityHasLessThan15UnitsAndUnitTrainCountWillGoOver15_ShouldApplyDiscountToFirst15Only(int baseTime,
-                                                                                int expected,
-                                                                                ITechnologyManager techManager,
-                                                                                IBaseUnitStats baseUnitStats,
-                                                                                ICity city,
-                                                                                Formula formula)
-        {
-            city.Troops.Upkeep.Returns(10);
-            baseUnitStats.BuildTime.Returns(100);
-            
-            techManager.GetEffects(EffectCode.UnitTrainTimeFirst15Reduction).Returns(new List<Effect>
-            {
-                    new Effect {Value = new[] {(object)90}}
-            });
-
-            // Act
-            formula.TrainTime(1, 6, baseUnitStats, city, techManager).Should().Be(150);
-        }
     }
 }

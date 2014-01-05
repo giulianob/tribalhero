@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Game.Logic.Conditons;
 
-namespace Game.Logic.Conditons
+namespace Game.Logic.Triggers
 {
     public interface IDynamicCondition
     {
         void SetParameters(string [] parms);
-        Type[] EventType { get; }
+        
+        IEnumerable<Type> EventType { get; }
+        
         bool IsFulfilled(ICityEvent cityEvent);
     }
 }

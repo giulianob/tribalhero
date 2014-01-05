@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Game.Setup;
+﻿using Game.Setup;
 
 namespace Game.Map.LocationStrategies
 {

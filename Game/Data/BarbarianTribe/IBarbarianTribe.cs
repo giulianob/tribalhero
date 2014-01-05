@@ -5,10 +5,8 @@ using Persistance;
 
 namespace Game.Data.BarbarianTribe
 {
-    public interface IBarbarianTribe : ICityRegionObject, ISimpleGameObject, IPersistableObject, IHasLevel, ICanDo, ILocation
+    public interface IBarbarianTribe : IMiniMapRegionObject, ISimpleGameObject, IPersistableObject, IHasLevel, ICanDo, ILocation
     {
-        uint Id { get; }
-
         IBattleManager Battle { get; set; }
 
         IActionWorker Worker { get; }

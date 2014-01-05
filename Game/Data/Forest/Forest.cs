@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Actions.ResourceActions;
@@ -32,23 +31,24 @@ namespace Game.Data.Forest
 
         private readonly IActionFactory actionFactory;
 
+        private readonly IScheduler scheduler;
+
+        private readonly IDbManager dbManager;
+
         /// <summary>
         ///     The structures currently getting wood from this forest
         /// </summary>
         private readonly List<IStructure> structures = new List<IStructure>();
 
+        private readonly Formula formula;
+
         public ForestDepleteAction DepleteAction { get; set; }
 
-        public override uint ObjectId
+        public override byte Size
         {
             get
             {
-                return objectId;
-            }
-            set
-            {
-                CheckUpdateMode();
-                objectId = value;
+                return 1;
             }
         }
 
@@ -82,9 +82,13 @@ namespace Game.Data.Forest
 
         #region Constructors
 
-        public Forest(int capacity, IActionFactory actionFactory)
+        public Forest(uint id, int capacity, uint x, uint y, IActionFactory actionFactory, IScheduler scheduler, IDbManager dbManager, Formula formula) 
+            : base(id, x, y)
         {
             this.actionFactory = actionFactory;
+            this.scheduler = scheduler;
+            this.dbManager = dbManager;
+            this.formula = formula;
 
             Wood = new AggressiveLazyValue(capacity) {Limit = capacity};
         }
@@ -135,7 +139,7 @@ namespace Game.Data.Forest
 
                 // Get the current rate. This will be figure out how much we need to adjust the rate.
                 var oldRate = (int)obj["Rate"];
-                var newRate = Formula.Current.GetWoodRateForForestCamp(obj, newEfficiency);
+                var newRate = formula.GetWoodRateForForestCamp(obj, newEfficiency);
 
                 object efficiency;   // if efficiency is not found(old forest camp), it should be set.
                 if (!obj.Properties.TryGet("efficiency", out efficiency) || newRate != oldRate)
@@ -154,7 +158,7 @@ namespace Game.Data.Forest
             }
 
             // Set the forests upkeep
-            Wood.Upkeep = Formula.Current.GetForestUpkeep(structures.Count);
+            Wood.Upkeep = formula.GetForestUpkeep(structures.Count);
 
             SetDepleteAction();
 
@@ -183,7 +187,7 @@ namespace Game.Data.Forest
         {
             if (DepleteAction != null)
             {
-                Scheduler.Current.Remove(DepleteAction);
+                scheduler.Remove(DepleteAction);
             }
 
             double hours = 2 * 24 + Config.Random.NextDouble() * 24;
@@ -202,21 +206,21 @@ namespace Game.Data.Forest
 
             DepleteAction = actionFactory.CreateForestDepleteAction(this, DepleteTime);
 
-            Scheduler.Current.Put(DepleteAction);
+            scheduler.Put(DepleteAction);
         }
 
         #endregion
 
         #region Updates
 
-        public override void CheckUpdateMode()
+        protected override void CheckUpdateMode()
         {
-            if (!Global.FireEvents || !DbPersisted)
+            if (!Global.Current.FireEvents || !DbPersisted)
             {
                 return;
             }
 
-            if (!updating)
+            if (!Updating)
             {
                 throw new Exception("Changed state outside of begin/end update block");
             }
@@ -224,36 +228,16 @@ namespace Game.Data.Forest
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
         }
 
-        public override void EndUpdate()
+        protected override bool Update()
         {
-            if (!updating)
+            var update = base.Update();
+
+            if (update && ObjectId > 0)
             {
-                throw new Exception("Called an endupdate without first calling a beginupdate");
+                dbManager.Save(this);
             }
 
-            updating = false;
-
-            Update();
-        }
-
-        protected new void Update()
-        {
-            base.Update();
-
-            if (!Global.FireEvents)
-            {
-                return;
-            }
-
-            if (updating)
-            {
-                return;
-            }
-
-            if (objectId > 0)
-            {
-                DbPersistance.Current.Save(this);
-            }
+            return update;
         }
 
         #endregion
@@ -291,8 +275,9 @@ namespace Game.Data.Forest
 
                 return new[]
                 {
-                        new DbColumn("x", X, DbType.UInt32),
-                        new DbColumn("y", Y, DbType.Int32),
+                        new DbColumn("x", PrimaryPosition.X, DbType.UInt32),
+                        new DbColumn("y", PrimaryPosition.Y, DbType.Int32), 
+
                         new DbColumn("capacity", Wood.Limit, DbType.Int32),
                         new DbColumn("last_realize_time", Wood.LastRealizeTime, DbType.DateTime),
                         new DbColumn("lumber", Wood.RawValue, DbType.Int32),
@@ -328,17 +313,15 @@ namespace Game.Data.Forest
 
         #endregion
 
-        #region Implementation of ICityRegionObject
-
-        public Position CityRegionLocation
+        public byte MiniMapSize
         {
             get
             {
-                return new Position(X, Y);
+                return Size;
             }
         }
 
-        public byte[] GetCityRegionObjectBytes()
+        public byte[] GetMiniMapObjectBytes()
         {
             using (var ms = new MemoryStream())
             {
@@ -350,15 +333,15 @@ namespace Game.Data.Forest
             }
         }
 
-        public CityRegion.ObjectType CityRegionType
+        public MiniMapRegion.ObjectType MiniMapObjectType
         {
             get
             {
-                return CityRegion.ObjectType.Forest;
+                return MiniMapRegion.ObjectType.Forest;
             }
         }
 
-        public uint CityRegionGroupId
+        public uint MiniMapGroupId
         {
             get
             {
@@ -366,15 +349,13 @@ namespace Game.Data.Forest
             }
         }
 
-        public uint CityRegionObjectId
+        public uint MiniMapObjectId
         {
             get
             {
                 return ObjectId;
             }
         }
-
-        #endregion
 
         public override int Hash
         {

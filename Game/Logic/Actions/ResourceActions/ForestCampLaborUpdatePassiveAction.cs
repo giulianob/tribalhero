@@ -2,9 +2,7 @@
 
 using System;
 using Game.Data;
-using Game.Data.Forest;
 using Game.Logic.Formulas;
-using Game.Logic.Procedures;
 using Game.Setup;
 using System.Linq;
 #endregion
@@ -14,11 +12,11 @@ namespace Game.Logic.Actions
     public class ForestCampLaborUpdatePassiveAction : PassiveAction, IScriptable
     {
         private readonly Formula formula;
-        private readonly ObjectTypeFactory objectTypeFactory;
+        private readonly IObjectTypeFactory objectTypeFactory;
 
         private IStructure obj;
 
-        public ForestCampLaborUpdatePassiveAction(Formula formula, ObjectTypeFactory objectTypeFactory)
+        public ForestCampLaborUpdatePassiveAction(Formula formula, IObjectTypeFactory objectTypeFactory)
         {
             this.formula = formula;
             this.objectTypeFactory = objectTypeFactory;
@@ -40,8 +38,6 @@ namespace Game.Logic.Actions
             }
         }
 
-        #region IScriptable Members
-
         public void ScriptInit(IGameObject gameObject, string[] parms)
         {
             if ((obj = gameObject as IStructure) == null)
@@ -50,8 +46,6 @@ namespace Game.Logic.Actions
             }
             Execute();
         }
-
-        #endregion
 
         public override Error Validate(string[] parms)
         {
@@ -62,7 +56,10 @@ namespace Game.Logic.Actions
         {
             //Forest doesnt need to know the rate changed
             var lumbermill = obj.City.FirstOrDefault(s => objectTypeFactory.IsStructureType("Lumbermill", s));
-            if (lumbermill == null) return Error.LumbermillUnavailable;
+            if (lumbermill == null)
+            {
+                return Error.LumbermillUnavailable;
+            }
             
             lumbermill.BeginUpdate();
             lumbermill["Labor"] = formula.GetForestCampLaborerString(lumbermill);

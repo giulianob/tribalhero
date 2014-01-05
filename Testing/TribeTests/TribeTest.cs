@@ -71,7 +71,7 @@ namespace Testing.TribeTests
         {
             var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
 
-            var tribe = fixture.Build<Tribe>().OmitAutoProperties().CreateAnonymous();
+            var tribe = fixture.Build<Tribe>().OmitAutoProperties().Create();
 
             tribe.Level = (byte)level;
 
@@ -94,7 +94,7 @@ namespace Testing.TribeTests
 
             var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
 
-            var tribe = fixture.Build<Tribe>().OmitAutoProperties().CreateAnonymous();
+            var tribe = fixture.Build<Tribe>().OmitAutoProperties().Create();
 
             tribe.Level = 1;
 
@@ -121,7 +121,7 @@ namespace Testing.TribeTests
 
             var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
 
-            var tribe = fixture.Build<Tribe>().OmitAutoProperties().CreateAnonymous();
+            var tribe = fixture.Build<Tribe>().OmitAutoProperties().Create();
 
             tribe.Level = 1;
 

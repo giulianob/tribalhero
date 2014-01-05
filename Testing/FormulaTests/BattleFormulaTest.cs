@@ -1,23 +1,20 @@
 ﻿using System.Collections.Generic;
+using Common.Testing;
 using FluentAssertions;
 using Game.Battle;
 using Game.Battle.CombatGroups;
 using Game.Battle.CombatObjects;
 using Game.Logic.Formulas;
 using NSubstitute;
-using Ploeh.AutoFixture;
-using Xunit;
 using Xunit.Extensions;
 
 namespace Testing.FormulaTests
 {
     public class BattleFormulaTest
     {
-        [Fact]
-        public void TestFewAttackersSingleDefender()
+        [Theory, AutoNSubstituteData]
+        public void TestFewAttackersSingleDefender(Formula formula)
         {
-            var formula = FixtureHelper.Create().Create<Formula>();
-
             var defender1 = Substitute.For<ICombatGroup>();
             defender1.GetEnumerator().Returns(new List<ICombatObject> {Substitute.For<ICombatObject>()}.GetEnumerator());
 
@@ -37,13 +34,11 @@ namespace Testing.FormulaTests
         }
 
         [Theory]
-        [InlineData(100, 300)]
-        [InlineData(0, 400)]
-        [InlineData(200, 300)]
-        public void TestAtMaxOrOverMax(int defenderCnt, int attackerCnt)
+        [InlineAutoNSubstituteData(100, 300)]
+        [InlineAutoNSubstituteData(0, 400)]
+        [InlineAutoNSubstituteData(200, 300)]
+        public void TestAtMaxOrOverMax(int defenderCnt, int attackerCnt, Formula formula)
         {
-            var formula = FixtureHelper.Create().Create<Formula>();
-
             var defendersCombatObjects = new List<ICombatObject>();            
             for (var i = 0; i < defenderCnt; i++)
             {

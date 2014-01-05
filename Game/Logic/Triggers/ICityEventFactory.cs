@@ -5,7 +5,6 @@ namespace Game.Logic.Triggers
 {
     public interface ICityEventFactory
     {
-        StructureInitEvent CreateStructureInitEvent(IStructure structure, int type, byte level);
         StructureUpgradeEvent CreateStructureUpgradeEvent(IStructure structure, int type, byte level);
         StructureDowngradeEvent CreateStructureDowngradeEvent(IStructure structure, int type, byte level);
         StructureConvertEvent CreateStructureConvertEvent(IStructure structure, int type, byte level);

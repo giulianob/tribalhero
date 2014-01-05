@@ -1,37 +1,19 @@
 #region
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Common;
 using Game.Data;
-using Game.Logic;
 using Game.Logic.Conditons;
 using Game.Logic.Triggers;
-using Game.Logic.Triggers.Events;
 using Game.Util;
 using Ninject;
-using Ninject.Extensions.Logging;
 
 #endregion
 
 namespace Game.Setup
 {
-    public enum InitCondition : byte
-    {
-        OnInit = 1,
-
-        OnDowngrade = 2,
-
-        OnUpgrade = 3,
-
-        OnDestroy = 4,
-
-        OnConvert = 5,
-    }
-
     public class InitFactory
     {
         private readonly ICityTriggerManager cityTriggerManager;
@@ -40,14 +22,11 @@ namespace Game.Setup
 
         private readonly IKernel kernel;
 
-        private readonly ICityEventFactory cityEventFactory;
-
-        public InitFactory(ICityTriggerManager cityTriggerManager, IDynamicActionFactory dynamicActionFactory, IKernel kernel, ICityEventFactory cityEventFactory)
+        public InitFactory(ICityTriggerManager cityTriggerManager, IDynamicActionFactory dynamicActionFactory, IKernel kernel)
         {
             this.cityTriggerManager = cityTriggerManager;
             this.dynamicActionFactory = dynamicActionFactory;
             this.kernel = kernel;
-            this.cityEventFactory = cityEventFactory;
         }
 
         public void Init(string filename)
@@ -91,25 +70,6 @@ namespace Game.Setup
                     cityTriggerManager.AddTrigger(condition, action);
                 }
             }
-        }
-        
-        public void InitGameObject(InitCondition condition, IStructure structure, ushort type, byte lvl)
-        {
-            switch (condition)
-            {
-                case InitCondition.OnInit:
-                    cityTriggerManager.Process(cityEventFactory.CreateStructureInitEvent(structure, type, lvl));
-                    break;
-                case InitCondition.OnUpgrade:
-                    cityTriggerManager.Process(cityEventFactory.CreateStructureUpgradeEvent(structure, type, lvl));
-                    break;
-                case InitCondition.OnDowngrade:
-                    cityTriggerManager.Process(cityEventFactory.CreateStructureDowngradeEvent(structure, type, lvl));
-                    break;
-                case InitCondition.OnConvert:
-                    cityTriggerManager.Process(cityEventFactory.CreateStructureConvertEvent(structure, type, lvl));
-                    break;
-            }
-        }
+        }        
     }
 }

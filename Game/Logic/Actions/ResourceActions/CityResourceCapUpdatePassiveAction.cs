@@ -11,7 +11,20 @@ namespace Game.Logic.Actions
 {
     public class CityResourceCapUpdatePassiveAction : PassiveAction, IScriptable
     {
+        private readonly Procedure procedure;
+
         private IStructure obj;
+
+        public CityResourceCapUpdatePassiveAction(Procedure procedure)
+        {
+            this.procedure = procedure;
+        }
+
+        public CityResourceCapUpdatePassiveAction(uint id, bool isVisible, Procedure procedure)
+                : base(id, isVisible)
+        {
+            this.procedure = procedure;
+        }
 
         public override ActionType Type
         {
@@ -50,7 +63,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             obj.City.BeginUpdate();
-            Procedure.Current.SetResourceCap(obj.City);
+            procedure.SetResourceCap(obj.City);
             obj.City.EndUpdate();
             return Error.Ok;
         }

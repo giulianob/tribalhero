@@ -1,8 +1,8 @@
 package src.Objects.Battle 
 {
-	import flash.events.Event;
-	
-	public class BattleGroupEvent extends Event 
+    import flash.events.Event;
+
+    public class BattleGroupEvent extends Event
 	{
 		public var combatGroup:CombatGroup;
 		

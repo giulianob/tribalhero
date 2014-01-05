@@ -1,19 +1,15 @@
 package src.UI.Components.TableCells
 {
-	import flash.display.*;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import org.aswing.table.AbstractTableCell;
-	import org.aswing.table.TableCell;
-	import src.Map.CityObject;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.Troop.*;
-	import src.UI.LookAndFeel.*;
+    import flash.display.*;
 
-	public class StructureCell extends AbstractTableCell {
+    import org.aswing.*;
+    import org.aswing.geom.*;
+    import org.aswing.table.AbstractTableCell;
+
+    import src.Objects.Factories.ObjectFactory;
+    import src.Util.Util;
+
+    public class StructureCell extends AbstractTableCell {
 
 		private var panel: JPanel;
 		
@@ -28,15 +24,9 @@ package src.UI.Components.TableCells
 			this.value = data;
 
 			// Get Icon
-			var icon:DisplayObject = ObjectFactory.getSpriteEx(data.type, 1, true, true);
-			var scale:Number = 40 / icon.height;
-			if (scale < 1)
-			{
-				scale = Math.min(0.5, Number(scale.toFixed(1)));
-				icon.scaleX = scale;
-				icon.scaleY = scale;
-			}
-			
+			var icon:DisplayObjectContainer = ObjectFactory.getSpriteEx(data.type, 1);
+            Util.resizeSprite(icon, 50, 50);
+
 			// Lay it out
 			panel.removeAll();
 			
@@ -51,7 +41,6 @@ package src.UI.Components.TableCells
 			pnlTextHolder.append(lblName);
 			
 			var iconAssetPane: AssetPane = new AssetPane(icon);
-			iconAssetPane.setPreferredSize(new IntDimension(40, panel.getPreferredHeight()));
 			iconAssetPane.setVerticalAlignment();
 			
 			panel.append(iconAssetPane);

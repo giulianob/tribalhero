@@ -1,7 +1,9 @@
-﻿package src.Objects.Battle {	
-	import flash.display.DisplayObjectContainer;
-	import src.Objects.Factories.ObjectFactory;
-	public class CombatObject {
+﻿package src.Objects.Battle {
+    import flash.display.DisplayObjectContainer;
+
+    import src.Objects.Factories.ObjectFactory;
+
+    public class CombatObject {
 		public var combatObjectId: int;
 		public var type: int;
 		public var level: int;
@@ -22,7 +24,7 @@
 		}
 		
 		public function getIcon(): DisplayObjectContainer {
-			return ObjectFactory.getSpriteEx(type, level, true);					
+			return ObjectFactory.getSpriteEx(type, level);
 		}		
 		
 		public static function sortOnId(a:CombatObject, b:CombatObject):Number 

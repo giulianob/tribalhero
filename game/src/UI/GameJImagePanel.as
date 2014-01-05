@@ -1,15 +1,13 @@
 ﻿package src.UI
 {
-	import flash.display.DisplayObject;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.event.FrameEvent;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.Util.Util;
+    import flash.display.DisplayObject;
 
-	public class GameJImagePanel extends JPanel
+    import org.aswing.*;
+    import org.aswing.event.FrameEvent;
+
+    import src.Util.Util;
+
+    public class GameJImagePanel extends JPanel
 	{
 		protected var frame: GameJFrame = null;
 		protected var imageBackground: DisplayObject;

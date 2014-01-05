@@ -5,6 +5,7 @@
     import flash.events.Event;
     import flash.events.IEventDispatcher;
     import flash.net.*;
+	import org.aswing.JPanel;
 
     import src.Constants;
     import src.UI.Dialog.InfoDialog;
@@ -19,16 +20,8 @@
 		{
 			addEventListener(Event.COMPLETE, onComplete);
 		}
-		
-		public function getData() : String {
-			return loader.data;
-		}
-		
-		public function getDataAsXML() : XML {			
-			return XML(loader.data);
-		}
-		
-		public function getDataAsObject() : Object {
+
+        public function getDataAsObject() : Object {
 			try {
 				return new JSONDecoder(loader.data).getValue();
 			}

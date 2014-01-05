@@ -1,26 +1,25 @@
 ﻿package src.UI.Cursors {
-	import flash.display.MovieClip;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import org.aswing.JOptionPane;
-	import src.Global;
-	import src.Map.City;
-	import src.Objects.GameObject;
-	import src.Objects.ObjectContainer;
-	import src.Objects.SimpleGameObject;
-	import src.Map.MapUtil;
-	import src.Objects.IDisposable;
-	import src.Objects.StructureObject;
-	import src.UI.Components.GroundCircle;
-	import src.UI.Dialog.InfoDialog;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
-	import src.Objects.Troop.*;
+    import flash.display.MovieClip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
+    import flash.geom.Point;
 
-	public class StructureDowngradeCursor extends MovieClip implements IDisposable
+    import org.aswing.JOptionPane;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Map.ScreenPosition;
+    import src.Map.TileLocator;
+    import src.Objects.IDisposable;
+    import src.Objects.ObjectContainer;
+    import src.Objects.StructureObject;
+    import src.UI.Components.GroundCircle;
+    import src.UI.Dialog.InfoDialog;
+    import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
+
+    public class StructureDowngradeCursor extends MovieClip implements IDisposable
 	{
-		private var objX: int;
-		private var objY: int;
+		private var objPosition: ScreenPosition = new ScreenPosition();
 
 		private var originPoint: Point;
 
@@ -32,11 +31,7 @@
 
 		private var parentObj: StructureObject;
 
-		public function StructureDowngradeCursor() {
-
-		}
-
-		public function init(parentObj: StructureObject):void
+		public function StructureDowngradeCursor(parentObj: StructureObject)
 		{
 			doubleClickEnabled = true;
 
@@ -53,7 +48,7 @@
 			Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
-			src.Global.gameContainer.setSidebar(sidebar);
+			Global.gameContainer.setSidebar(sidebar);
 
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);
@@ -94,11 +89,11 @@
 
 		public function onMouseDoubleClick(event: MouseEvent):void
 		{
-			if (Point.distance(MapUtil.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > 4) return;
+			if (Point.distance(TileLocator.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > 4) return;
 
 			event.stopImmediatePropagation();
 
-			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, StructureObject);
+			var objects: Array = Global.map.regions.getObjectsInTile(objPosition.toPosition(), StructureObject);
 
 			if (objects.length == 0) return;
 
@@ -119,7 +114,7 @@
 
 		public function onMouseDown(event: MouseEvent):void
 		{
-			originPoint = MapUtil.getPointWithZoomFactor(event.stageX, event.stageY);
+			originPoint = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
 		}
 
 		public function onMouseMove(event: MouseEvent):void
@@ -128,52 +123,46 @@
 				return;
 			}
 
-			var mousePos: Point = MapUtil.getPointWithZoomFactor(event.stageX, event.stageY);
+			var mousePos: Point = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
 			moveTo(mousePos.x, mousePos.y);
 		}
 
 		public function moveTo(x: int, y: int):void
 		{
-			var pos: Point = MapUtil.getActualCoord(Global.gameContainer.camera.x + Math.max(x, 0), Global.gameContainer.camera.y + Math.max(y, 0));
+			var pos: ScreenPosition = TileLocator.getActualCoord(Global.gameContainer.camera.currentPosition.x + Math.max(x, 0), Global.gameContainer.camera.currentPosition.y + Math.max(y, 0));
 
-			if (pos.x != objX || pos.y != objY)
-			{
-				Global.map.objContainer.removeObject(cursor, ObjectContainer.LOWER);
+            // Don't do anything if position hasn't changed since last time the mouse moved
+            if (pos.equals(objPosition)) {
+                return;
+            }
 
-				objX = pos.x;
-				objY = pos.y;
+            Global.map.objContainer.removeObject(cursor, ObjectContainer.LOWER);
 
-				cursor.objX = objX;
-				cursor.objY = objY;
+            objPosition = pos;
 
-				Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
+            cursor.x = cursor.primaryPosition.x = pos.x;
+            cursor.y = cursor.primaryPosition.y = pos.y;
+            Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
 
-				validate();
-			}
+            if (highlightedObj) {
+                highlightedObj.setHighlighted(false);
+                highlightedObj = null;
+            }
+
+            var objects: Array = Global.map.regions.getObjectsInTile(objPosition.toPosition(), StructureObject);
+            if (objects.length == 0 || objects[0].cityId != parentObj.cityId) {
+                Global.gameContainer.message.showMessage("Choose a structure to remove");
+                return;
+            }
+
+            var gameObj: StructureObject = objects[0];
+            gameObj.setHighlighted(true);
+            highlightedObj = gameObj;
+
+            Global.gameContainer.message.showMessage("Double click to remove this structure.");
 		}
 
-		public function validate():void
-		{
-			if (highlightedObj)
-			{
-				highlightedObj.setHighlighted(false);
-				highlightedObj = null;
-			}
-
-			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, StructureObject);
-
-			if (objects.length == 0 || objects[0].cityId != parentObj.cityId) {
-				Global.gameContainer.message.showMessage("Choose a structure to remove");
-				return;
-			}
-
-			var gameObj: StructureObject = objects[0];
-			gameObj.setHighlighted(true);
-			highlightedObj = gameObj;
-
-			Global.gameContainer.message.showMessage("Double click to remove this structure.");
-		}
-	}
+    }
 
 }
 

@@ -24,7 +24,8 @@ package src.Comm {
 		public static const PLAYER_DESCRIPTION_SET: int = 21;
 		public static const PROFILE_BY_TYPE: int = 22;
 		public static const SAVE_TUTORIAL_STEP: int = 23;
-		
+		public static const SAVE_MUTE_SOUND: int = 24;
+
 		public static const ACTION_CANCEL: int = 51;
 		public static const ACTION_COMPLETE: int = 52;
 		public static const ACTION_START: int = 53;
@@ -47,7 +48,7 @@ package src.Comm {
 		public static const REGION_ROAD_BUILD: int = 103;
 		public static const REGION_SET_TILE: int = 104;
 		public static const REGION_GET: int = 105;
-		public static const CITY_REGION_GET: int = 106;
+		public static const MINIMAP_REGION_GET: int = 106;
 		
 		public static const OBJECT_ADD: int = 201;
 		public static const OBJECT_UPDATE: int = 202;
@@ -158,7 +159,5 @@ package src.Comm {
 		public static const STRONGHOLD_GATE_REPAIR: int = 1104;
 		public static const STRONGHOLD_LOCATE_BY_NAME: int = 1105;
 		public static const STRONGHOLD_LIST: int = 1106;
-		
 	}
-	
 }

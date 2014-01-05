@@ -1,20 +1,16 @@
 package src.Objects.Stronghold 
 {
-	import org.aswing.AsWingConstants;
-	import org.aswing.Component;
-	import org.aswing.JLabel;
-    import src.Objects.Effects.Formula;
-	import src.Objects.Factories.StrongholdFactory;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.SimpleObject;
-	import src.Objects.States.GameObjectState;
-    import src.Objects.WallManager;
-	import src.UI.Components.RichLabel;
-	import src.Util.StringHelper;
-	import src.Util.Util;
+    import src.Constants;
+    import src.Objects.SimpleGameObject;
+    import src.Objects.SimpleObject;
+    import src.Objects.States.GameObjectState;
+    import src.UI.Components.RichLabel;
+    import src.Util.StringHelper;
 
-	public class Stronghold extends SimpleGameObject
+    public class Stronghold extends SimpleGameObject
 	{
+        public static const SIZE: int = 2;
+
 		public static const BATTLE_STATE_NONE: int = 0;
 		public static const BATTLE_STATE_GATE: int = 1;
 		public static const BATTLE_STATE_MAIN: int = 2;
@@ -25,23 +21,16 @@ package src.Objects.Stronghold
 		public var strongholdName: String;
 		public var id: int;
         
-        public var wallManager: WallManager;
-		
-		public function Stronghold(type: int, state: GameObjectState, objX: int, objY: int, groupId: int, objectId: int, level: int, tribeId: int, gateMax: int) {
-			super(type, state, objX, objY, groupId, objectId);
+		public function Stronghold(type: int, state: GameObjectState, objX: int, objY: int, size: int, groupId: int, objectId: int, level: int, tribeId: int, gateMax: int) {
+			super(type, state, objX, objY, size, groupId, objectId);
 			this.id = objectId;
 			this.level = level;
 			this.tribeId = tribeId;
             this.gateMax = gateMax;
-            wallManager = new WallManager(this, 2);
+            mapPriority = Constants.mapObjectPriority.stronghold;
 		}
 		
-		public function ToSprite(): Object
-		{
-			return StrongholdFactory.getSprite();
-		}
-		
-		override public function copy(obj:SimpleObject):void 
+		override public function copy(obj:SimpleObject):void
 		{
 			super.copy(obj);
 			var strongholdObj: Stronghold = obj as Stronghold;
@@ -65,12 +54,5 @@ package src.Objects.Stronghold
 			
 			return new RichLabel("", rows, cols);
 		}
-        
-		override public function dispose():void
-		{
-			super.dispose();
-			
-			wallManager.clear();
-		}        
 	}
 }

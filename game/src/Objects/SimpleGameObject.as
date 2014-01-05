@@ -1,24 +1,16 @@
 ﻿
 package src.Objects {
-	import com.greensock.easing.Circ;
-	import com.greensock.easing.Elastic;
-	import com.greensock.TweenLite;
-	import com.greensock.TweenMax;
-	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.geom.Point;
-	import flash.text.TextField;
-	import src.Constants;
-	import src.Global;
-	import src.Map.Camera;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Map.Map;
-	import src.Objects.States.GameObjectState;
-	import src.UI.Components.GroundCircle;
-	import src.Util.BinaryList.*;
+    import com.greensock.TweenMax;
 
-	public class SimpleGameObject extends SimpleObject {
+    import flash.display.DisplayObject;
+    import flash.events.Event;
+    import flash.geom.Point;
+
+    import src.Constants;
+
+    import src.Objects.States.GameObjectState;
+
+    public class SimpleGameObject extends SimpleObject {
 		
 		public static var OBJECT_UPDATE: String = "OBJECT_UPDATE";
 		
@@ -32,10 +24,12 @@ package src.Objects {
 		
 		private var icon: DisplayObject;		
 				
-		public function SimpleGameObject(type: int, state: GameObjectState, objX: int, objY: int, groupId: int, objectId: int)
+		public function SimpleGameObject(type: int, state: GameObjectState, objX: int, objY: int, size: int, groupId: int, objectId: int)
 		{
-			super(objX, objY);
-			
+			super(objX, objY, size);
+
+            mapPriority = Constants.mapObjectPriority.simpleGameObject;
+
 			this.type = type;
 			this.groupId = groupId;
 			this.objectId = objectId;
@@ -72,12 +66,26 @@ package src.Objects {
 			}
 
 			this.icon = icon;
+            alignIcon();
 
 			if (icon) {
 				addChild(icon);
 				TweenMax.from(icon, 1, { transformMatrix: { rotation: -180 }, alpha:0 });
 			}
 		}
+
+        private function alignIcon(): void {
+            if (icon && spritePosition) {
+                icon.x = spritePosition.x - icon.width;
+                icon.y = -icon.height;
+            }
+        }
+
+        public override function setSprite(sprite: DisplayObject, spritePosition: Point): void {
+            super.setSprite(sprite, spritePosition);
+
+            alignIcon();
+        }
 
 		public static function sortOnId(a:SimpleGameObject, b:SimpleGameObject):Number
 		{
@@ -92,36 +100,7 @@ package src.Objects {
 				return 0;
 		}
 
-		public static function sortOnGroupIdAndObjId(a:SimpleGameObject, b:SimpleGameObject):Number {
-			var aGroupId:Number = a.groupId;
-			var bGroupId:Number = b.groupId;
-
-			var aObjId:Number = a.objectId;
-			var bObjId:Number = b.objectId;
-
-			if (aGroupId > bGroupId)
-				return 1;
-			else if (aGroupId < bGroupId)
-				return -1;
-			else if (aObjId > bObjId)
-				return 1;
-			else if (aObjId < bObjId)
-				return -1;
-			else
-				return 0;
-		}
-		
-		public function equalById(obj: SimpleObject) : Boolean
-		{
-			var gameObj: SimpleGameObject = obj as SimpleGameObject;
-			
-			if (gameObj == null)
-				return false;
-				
-			return groupId == gameObj.groupId && objectId == gameObj.objectId;
-		}
-
-		override public function copy(obj:SimpleObject):void 
+        override public function copy(obj:SimpleObject):void
 		{
 			super.copy(obj);
 
@@ -139,26 +118,18 @@ package src.Objects {
 				return false;
 			
 			return type == gameObj.type;
-		}		
-
-		public static function compareGroupIdAndObjId(a: SimpleGameObject, value: Array):int
-		{
-			var groupDelta: int = a.groupId - value[0];
-			var idDelta: int = a.objectId - value[1];
-
-			if (groupDelta != 0)
-				return groupDelta;
-			else if (idDelta != 0)
-				return idDelta;
-			else
-				return 0;
 		}
 
-		public static function compareObjId(a: SimpleGameObject, value: int):int
-		{
-			return a.objectId - value;
-		}
-	}
+        public function moveFrom(prevPosition: Point): void {
+            TweenMax.from(this, 0.75, {
+                x: prevPosition.x,
+                y: prevPosition.y,
+                onUpdate: function(): void {
+                    dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
+                }
+            });
+        }
+    }
 
 }
 

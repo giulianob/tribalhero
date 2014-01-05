@@ -5,22 +5,16 @@
 */
 
 package src.Objects.Actions {
-	import flash.display.SimpleButton;
-	import flash.utils.getDefinitionByName;
-	import src.Constants;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.Map;
-	import src.Objects.Actions.IAction;
-	import src.Objects.Factories.UnitFactory;
-	import src.Objects.GameObject;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.Prototypes.UnitPrototype;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.Troop.*;
-	import src.UI.Sidebars.ObjectInfo.Buttons.UnitUpgradeButton;
-	
-	public class UnitUpgradeAction extends Action implements IAction
+    import src.Global;
+    import src.Map.City;
+    import src.Objects.Factories.UnitFactory;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.Objects.Prototypes.UnitPrototype;
+    import src.Objects.SimpleGameObject;
+    import src.Objects.Troop.*;
+    import src.UI.Sidebars.ObjectInfo.Buttons.UnitUpgradeButton;
+
+    public class UnitUpgradeAction extends Action implements IAction
 	{
 		public var type: int;
 		public var maxlevel: int;

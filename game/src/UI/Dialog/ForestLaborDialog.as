@@ -1,19 +1,23 @@
 package src.UI.Dialog{
 
+import System.Linq.Enumerable;
+
 	import flash.events.Event;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.event.InteractiveEvent;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.Global;
-	import src.Map.City;
+
+    import org.aswing.*;
+    import org.aswing.event.InteractiveEvent;
+    import org.aswing.geom.*;
+
+    import src.Global;
+    import src.Map.City;
+import src.Map.CityObject;
 	import src.Objects.Effects.Formula;
+import src.Objects.Factories.ObjectFactory;
 	import src.Objects.Forest;
+import src.Objects.StructureObject;
 	import src.UI.GameJPanel;
 
-	public class ForestLaborDialog extends GameJPanel{
+    public class ForestLaborDialog extends GameJPanel{
 
 		//members define
 		private var label81:JLabel;
@@ -26,8 +30,9 @@ package src.UI.Dialog{
 
 		private var forest: Forest;
 		public var city: City;
+        private var limit: int;
 
-		public function ForestLaborDialog(cityId: int, forest: Forest, onAccept: Function) {
+		public function ForestLaborDialog(cityId: int, forest: Forest, lumbermillLevel: int, limit: int, onAccept: Function) {
 			this.forest = forest;
 
 			this.city = Global.gameContainer.map.cities.get(cityId);
@@ -36,7 +41,7 @@ package src.UI.Dialog{
 
 			createUI();
 
-			sldCount.setMaximum(Formula.maxForestLaborPerUser(forest.level));
+			sldCount.setMaximum(Math.min(Formula.maxLaborPerForestCamp(lumbermillLevel),limit));
             sldCount.setValue(sldCount.getMaximum());
 
 			if (sldCount.getMaximum() > 20) {

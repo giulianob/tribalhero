@@ -1,27 +1,28 @@
 ﻿package src.UI.Dialog 
 {
-	import com.greensock.loading.core.DisplayObjectLoader;
-	import fl.lang.*;
-	import flash.events.*;
-	import mx.utils.StringUtil;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.*;
-	import src.Map.City;
-	import src.Objects.Achievement;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Tribe;
-	import src.UI.*;
-	import src.UI.Components.*;
-	import src.UI.LookAndFeel.*;
+    import flash.events.*;
+
+    import mx.utils.StringUtil;
+
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
+
+    import src.*;
+    import src.Map.City;
+    import src.Map.TileLocator;
+    import src.Objects.Achievement;
+    import src.Objects.Effects.Formula;
+    import src.Objects.Tribe;
+    import src.UI.*;
+    import src.UI.Components.*;
+    import src.UI.LookAndFeel.*;
     import src.Util.DateUtil;
     import src.Util.StringHelper;
-	import src.Util.Util;
-	
-	public class PlayerProfileDialog extends GameJPanel
+    import src.Util.Util;
+
+    public class PlayerProfileDialog extends GameJPanel
 	{
 		private var profileData: * ;
 		
@@ -139,7 +140,7 @@
 				var distanceMsg: String = "";
 				
 				for each (var myCity: City in Global.map.cities) {
-					var distance: int = myCity.MainBuilding.distance(city.x, city.y);
+					var distance: int = TileLocator.distance(myCity.primaryPosition.x, myCity.primaryPosition.y, 1, city.x, city.y, 1);
 					var timeAwayInSeconds: int = Formula.moveTimeTotal(myCity, 12, distance, true);
 		
 					distanceMsg += StringHelper.localize("PLAYER_PROFILE_DIALOG_CITY_DISTANCE", myCity.name, DateUtil.niceTime(timeAwayInSeconds)) + "\n";

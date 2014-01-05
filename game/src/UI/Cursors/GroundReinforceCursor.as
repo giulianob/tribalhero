@@ -1,71 +1,64 @@
 ﻿package src.UI.Cursors {
-	import src.Util.StringHelper;
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import mx.utils.StringUtil;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Effects.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Stronghold.Stronghold;
-	import src.Objects.Troop.*;
-	import src.UI.Components.*;
-	import src.UI.Tooltips.*;
-	import src.Util.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
 
-	public class GroundReinforceCursor extends MovieClip implements IDisposable
+    import src.*;
+    import src.Map.*;
+    import src.Objects.*;
+    import src.Objects.Effects.*;
+    import src.Objects.Factories.*;
+    import src.Objects.Stronghold.Stronghold;
+    import src.Objects.Troop.*;
+    import src.UI.Components.*;
+    import src.UI.Tooltips.*;
+    import src.Util.*;
+
+    public class GroundReinforceCursor extends MovieClip implements IDisposable
 	{
-		private var objX: int;
-		private var objY: int;
+		private var objPosition: ScreenPosition = new ScreenPosition();
 
 		private var originPoint: Point;
 
 		private var cursor: GroundCircle;
 
-		private var tiles: Array = new Array();
-
-		private var troop: TroopStub;
 		private var city: City;
 
 		private var troopSpeed: Number;
 
 		private var highlightedObj: SimpleGameObject;
 
-		private var tooltip: StructureTooltip;
+		private var tooltip: Tooltip;
 		
 		private var onAccept: Function;
 
-		public function GroundReinforceCursor(city: City, onAccept: Function, troop: TroopStub):void
-		{
-			doubleClickEnabled = true;
+		public function GroundReinforceCursor(city: City, onAccept: Function, troop: TroopStub):void {
+            doubleClickEnabled = true;
 
-			this.troop = troop;
-			this.city = city;
-			this.onAccept = onAccept;
+            this.city = city;
+            this.onAccept = onAccept;
 
-			Global.map.selectObject(null);
-			Global.map.objContainer.resetObjects();
+            Global.map.selectObject(null);
+            Global.map.objContainer.resetObjects();
 
-			troopSpeed = troop.getSpeed(city);
+            troopSpeed = troop.getSpeed(city);
 
-			var size: int = 0;
+            var size: int = 0;
 
-			cursor = new GroundCircle(size);
-			cursor.alpha = 0.6;
+            cursor = new GroundCircle(size);
+            cursor.alpha = 0.6;
 
-			Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
+            Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
 
-			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-			addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);
-			addEventListener(MouseEvent.CLICK, onMouseStop, true);
-			addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-			addEventListener(MouseEvent.MOUSE_OVER, onMouseStop);
-			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+            addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+            addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);
+            addEventListener(MouseEvent.CLICK, onMouseStop, true);
+            addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+            addEventListener(MouseEvent.MOUSE_OVER, onMouseStop);
+            addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 
-			Global.gameContainer.setOverlaySprite(this);
-		}
+            Global.gameContainer.setOverlaySprite(this);
+        }
 		
 		public function getTargetObject(): SimpleGameObject
 		{
@@ -103,7 +96,7 @@
 
 		public function onMouseDoubleClick(event: MouseEvent):void
 		{
-			if (Point.distance(MapUtil.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > 4) return;
+			if (Point.distance(TileLocator.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > 4) return;
 
 			event.stopImmediatePropagation();
 
@@ -116,7 +109,7 @@
 
 		public function onMouseDown(event: MouseEvent):void
 		{
-			originPoint = MapUtil.getPointWithZoomFactor(event.stageX, event.stageY);
+			originPoint = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
 		}
 
 		public function onMouseMove(event: MouseEvent):void
@@ -125,23 +118,24 @@
 				return;
 			}
 
-			var mousePos: Point = MapUtil.getPointWithZoomFactor(event.stageX, event.stageY);
+			var mousePos: Point = TileLocator.getPointWithZoomFactor(event.stageX, event.stageY);
 			moveTo(mousePos.x, mousePos.y);
 		}
 
 		public function moveTo(x: int, y: int):void
 		{
-			var pos: Point = MapUtil.getActualCoord(Global.gameContainer.camera.x + Math.max(x, 0), Global.gameContainer.camera.y + Math.max(y, 0));
+			var pos: ScreenPosition = TileLocator.getActualCoord(
+                    Global.gameContainer.camera.currentPosition.x + Math.max(x, 0),
+                    Global.gameContainer.camera.currentPosition.y + Math.max(y, 0));
 
-			if (pos.x != objX || pos.y != objY)
+			if (!pos.equals(objPosition))
 			{
 				Global.map.objContainer.removeObject(cursor, ObjectContainer.LOWER);
 
-				objX = pos.x;
-				objY = pos.y;
+				objPosition = pos;
 
-				cursor.objX = objX;
-				cursor.objY = objY;
+                cursor.x = cursor.primaryPosition.x = pos.x;
+                cursor.y = cursor.primaryPosition.y = pos.y;
 
 				Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
 
@@ -162,7 +156,9 @@
 				tooltip = null;			
 			}						
 
-			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, [StructureObject, Stronghold]);
+            cursor.visible = true;
+
+			var objects: Array = Global.map.regions.getObjectsInTile(objPosition.toPosition(), [StructureObject, Stronghold]);
 		
 			if (objects.length == 0) {
 				Global.gameContainer.message.showMessage(StringHelper.localize("REINFORCE_CHOOSE_TARGET"));
@@ -170,10 +166,10 @@
 			}				
 
 			var gameObj: SimpleGameObject = objects[0];
-			
+
 			if (gameObj is StructureObject) {
 				var structObj: StructureObject = gameObj as StructureObject;		
-				if (structObj.cityId == city.id) {
+				if (structObj.cityId == city.id || !structObj.isMainBuilding) {
 					Global.gameContainer.message.showMessage(StringHelper.localize("REINFORCE_CHOOSE_TARGET"));
 					return;					
 				}
@@ -182,14 +178,17 @@
 				tooltip.show(structObj);				
 			}
 			else if (gameObj is Stronghold) {
-				//TODO: Show tooltip
+				tooltip = new StrongholdTooltip(gameObj as Stronghold);
+                tooltip.show(gameObj);
 			}
-			
+
+            cursor.visible = false;
+
 			gameObj.setHighlighted(true);
 			highlightedObj = gameObj;
 
-			var targetMapDistance: Point = MapUtil.getMapCoord(gameObj.objX, gameObj.objY);
-			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
+			var targetMapDistance: Position = gameObj.primaryPosition.toPosition();
+			var distance: int = TileLocator.distance(city.primaryPosition.x, city.primaryPosition.y, 1, targetMapDistance.x, targetMapDistance.y, 1);
 			var timeAwayInSeconds: int = Formula.moveTimeTotal(city, troopSpeed, distance, false);			
 
 			if (Constants.debug)

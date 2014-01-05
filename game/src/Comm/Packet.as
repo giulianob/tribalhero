@@ -1,10 +1,10 @@
 ﻿package src.Comm {
-	import flash.utils.*;
-	import src.Util.Util;
-	
-	import src.Constants;
+    import flash.utils.*;
 
-	public class Packet {
+    import src.Constants;
+    import src.Util.Util;
+
+    public class Packet {
 		public var seq:int=0;
 		public var option:int=0;
 		public var cmd:int=0;
@@ -18,7 +18,7 @@
 		
 		public function Packet(incomingBytes: ByteArray = null)
 		{
-			parameters = new Array();
+			parameters = [];
 			bytes = new ByteArray();			
 			bytes.endian = Endian.LITTLE_ENDIAN;
 			
@@ -55,6 +55,10 @@
 			parameters.push(new Parameter(param,Parameter.INT4,Parameter.INT1));
 			length+=1;
 		}
+
+        public function writeBoolean(param: Boolean): void {
+            writeByte(param ? 1 : 0);
+        }
 
 		public function writeUByte(param:int):void {
 			parameters.push(new Parameter(param,Parameter.INT4,Parameter.UINT1));
@@ -100,10 +104,10 @@
 		
 		public function read2dShortArray(w: int, h: int): Array
 		{
-			var rows:Array = new Array();
+			var rows:Array = [];
 			for (var a:int = 0; a < h; a++)
 			{
-				var cols: Array = new Array();
+				var cols: Array = [];
 				for (var b:int = 0; b < w; b++)
 					cols.push(bytes.readUnsignedShort());
 				rows.push(cols);
@@ -139,7 +143,11 @@
 		public function readString():String {			
 			return bytes.readUTF();
 		}
-		
+
+        public function readBoolean(): Boolean {
+            return bytes.readByte() == 1;
+        }
+
 		public function hasData(): Boolean {
 			return bytes.bytesAvailable > 0;
 		}
@@ -218,5 +226,6 @@
 			
 			return str;
 		}
-	}
+
+    }
 }

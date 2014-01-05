@@ -1,13 +1,13 @@
 package src.UI.Dialog 
 {
-	import org.aswing.JLabel;
-	import src.UI.GameJPanel;
-	import src.Global;
-	import src.Objects.Troop.TroopStub;
-	import org.aswing.*;
-	import org.aswing.geom.*;
-	import src.UI.Components.SimpleTooltip;
-	/**
+    import org.aswing.*;
+
+    import src.Global;
+    import src.Objects.Troop.TroopStub;
+    import src.UI.Components.SimpleTooltip;
+    import src.UI.GameJPanel;
+
+    /**
 	 * ...
 	 * @author Anthony Lam
 	 */

@@ -1,21 +1,18 @@
 package src.UI.Tutorial.Steps 
 {
-	import flash.events.Event;
-	import flash.events.TimerEvent;
-	import flash.filters.GlowFilter;
-	import flash.utils.Timer;
-	import org.aswing.event.FrameEvent;
-	import org.aswing.geom.IntPoint;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.UI.Dialog.CityEventDialog;
-	import src.UI.GameJSidebar;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
-	import src.UI.Sidebars.ObjectInfo.ObjectInfoSidebar;
-	import src.UI.Tutorial.TutorialStep;
-	
-	/**
+    import flash.events.Event;
+    import flash.events.TimerEvent;
+    import flash.filters.GlowFilter;
+    import flash.utils.Timer;
+
+    import org.aswing.geom.IntPoint;
+
+    import src.Global;
+    import src.Map.CityObject;
+    import src.UI.Dialog.CityEventDialog;
+    import src.UI.Tutorial.TutorialStep;
+
+    /**
 	 * This step does the following:
 	 * - Show message telling user to click on the City Overview Button
 	 * - Show message wizard telling user about the city overview

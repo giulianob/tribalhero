@@ -1,14 +1,13 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import flash.events.*;
-	import src.*;
-	import src.Objects.*;
-	import src.Objects.Actions.*;
-	import src.Objects.Factories.*;
-	import src.UI.Cursors.*;
-	import src.UI.Tooltips.*;
+    import flash.events.*;
 
-	public class StructureSelfDestroyButton extends ActionButton
+    import src.*;
+    import src.Objects.*;
+    import src.Objects.Actions.*;
+    import src.UI.Tooltips.*;
+
+    public class StructureSelfDestroyButton extends ActionButton
 	{
 		private var tooltip: TextTooltip;
 

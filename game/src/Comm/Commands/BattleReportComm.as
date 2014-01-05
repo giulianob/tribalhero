@@ -1,10 +1,10 @@
 ﻿package src.Comm.Commands 
 {
-	import src.Comm.*;
-	import src.Map.MapComm;
-	import src.Objects.Battle.BattleLocation;
-	
-	public class BattleReportComm
+    import src.Comm.*;
+    import src.Map.MapComm;
+    import src.Objects.Battle.BattleLocation;
+
+    public class BattleReportComm
 	{
 		private var mapComm: MapComm;		
 		private var session: Session;

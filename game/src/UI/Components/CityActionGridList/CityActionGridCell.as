@@ -1,32 +1,29 @@
 ﻿package src.UI.Components.CityActionGridList
 {
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.Global;
-	import src.Map.CityObject;
-	import src.Map.MapUtil;
-	import src.Objects.Actions.CurrentAction;
-	import src.Objects.Actions.CurrentActiveAction;
-	import src.Objects.Actions.CurrentPassiveAction;
-	import src.Objects.Actions.PassiveAction;
-	import src.Objects.Factories.WorkerFactory;
-	import src.Objects.Prototypes.Worker;
-	import src.UI.Components.SimpleTooltip;
+    import flash.display.DisplayObject;
+    import flash.events.MouseEvent;
+
+    import org.aswing.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
+
+    import src.Global;
+    import src.Map.CityObject;
+    import src.Objects.Actions.CurrentAction;
+    import src.Objects.Actions.CurrentActiveAction;
+    import src.Objects.Actions.CurrentPassiveAction;
+    import src.Objects.Factories.WorkerFactory;
+    import src.Objects.Prototypes.Worker;
+    import src.UI.Components.SimpleTooltip;
     import src.Util.DateUtil;
     import src.Util.Util;
 
-	public class CityActionGridCell extends JPanel implements GridListCell{
+    public class CityActionGridCell extends JPanel implements GridListCell{
+        private const iconSize: Number = 50;
 
 		private var value: * ;
 
-		private var panel2:JPanel;
 		private var icon:JPanel;
-		private var panel6:JPanel;
 		private var lblAction:JLabel;
 		private var lblTime:JLabel;
 		private var tooltip: SimpleTooltip;
@@ -40,9 +37,8 @@
 				if (value != null)
 				{
 					var cityObj: CityObject = value.cityObj;
-					var pt: Point = MapUtil.getScreenCoord(cityObj.x, cityObj.y);
 					Global.map.selectWhenViewable(cityObj.city.id, cityObj.objectId);
-					Global.map.camera.ScrollToCenter(pt.x, pt.y);					
+					Global.map.camera.ScrollToCenter(cityObj.primaryPosition.toScreenPosition());
 					Util.getFrame(getParent()).dispose();
 				}
 			});
@@ -51,7 +47,7 @@
 		public function setCellValue(value:*):void {
 			
 			if (value.message) {
-				panel2.remove(icon);
+				remove(icon);
 				lblAction.setText(value.message);
 				return;
 			}
@@ -65,7 +61,7 @@
 			var actionDescription: String = "N/A";
 			if (currentAction is CurrentActiveAction)
 			{
-				var actionWorkerPrototype: Worker = WorkerFactory.getPrototype(value.prototype.workerid);
+				var actionWorkerPrototype: Worker = WorkerFactory.getPrototype(value.objPrototype.workerid);
 				if (actionWorkerPrototype != null)
 				actionDescription = actionWorkerPrototype.getAction((currentAction as CurrentActiveAction).index).toString();
 			}
@@ -74,7 +70,9 @@
 			else
 			actionDescription = "Unexpected action";
 
-			icon.append(new AssetPane(value.source));
+            var iconSprite: DisplayObject = value.source;
+            Util.resizeSprite(iconSprite, iconSize, iconSize);
+			icon.append(new AssetPane(iconSprite));
 
 			lblAction.setText(actionDescription);
 
@@ -106,45 +104,35 @@
 		public function setGridListCellStatus(gridList:GridList, selected:Boolean, index:int):void {
 		}
 
-		private function createUI() : void
-		{
-			var layout0:GridLayout= new GridLayout();
-			layout0.setRows(1);
-			layout0.setColumns(2);
-			setLayout(layout0);
+		private function createUI() : void {
+            var layout1: FlowLayout = new FlowLayout(AsWingConstants.LEFT, 5, 0, false);
+            setLayout(layout1);
 
-			panel2 = new JPanel();
-			var layout1:FlowLayout = new FlowLayout();
-			panel2.setLayout(layout1);
+            icon = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 0, 0, false));
+            icon.setPreferredSize(new IntDimension(iconSize, iconSize));
 
-			icon = new JPanel();
-			icon.setPreferredWidth(50);
-			
-			tooltip = new SimpleTooltip(this, "Click to go to event");
-			tooltip.setEnabled(false);
-			
-			panel6 = new JPanel();
-			panel6.setPreferredSize(new IntDimension(175, 50));
-			var layout2:SoftBoxLayout = new SoftBoxLayout();
-			layout2.setAxis(AsWingConstants.VERTICAL);
-			layout2.setAlign(AsWingConstants.LEFT);
-			panel6.setLayout(layout2);
+            tooltip = new SimpleTooltip(this, "Click to go to event");
+            tooltip.setEnabled(false);
 
-			lblAction = new JLabel();
-			lblAction.setHorizontalAlignment(AsWingConstants.LEFT);
+            var panel6: JPanel = new JPanel();
+            panel6.setPreferredSize(new IntDimension(175, 50));
+            var layout2: SoftBoxLayout = new SoftBoxLayout();
+            layout2.setAxis(AsWingConstants.VERTICAL);
+            layout2.setAlign(AsWingConstants.LEFT);
+            panel6.setLayout(layout2);
 
-			lblTime = new JLabel();
-			lblTime.setHorizontalAlignment(AsWingConstants.LEFT);
+            lblAction = new JLabel();
+            lblAction.setHorizontalAlignment(AsWingConstants.LEFT);
 
-			//component layout
-			panel2.append(icon);
-			panel2.append(panel6);
+            lblTime = new JLabel();
+            lblTime.setHorizontalAlignment(AsWingConstants.LEFT);
 
-			panel6.append(lblAction);
-			panel6.append(lblTime);
+            panel6.append(lblAction);
+            panel6.append(lblTime);
 
-			append(panel2);
-		}
+            append(icon);
+            append(panel6);
+        }
 	}
 
 }

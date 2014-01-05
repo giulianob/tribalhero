@@ -1,24 +1,18 @@
 ﻿package src.UI.Components.BattleReport
 {
-	import flash.events.Event;
-	import org.aswing.event.SelectionEvent;
-	import org.aswing.event.TableCellEditEvent;
-	import org.aswing.table.GeneralTableCellFactory;
-	import org.aswing.table.PropertyTableModel;
-	import src.Comm.GameURLLoader;
-	import src.Constants;
-	import src.Global;
-	import src.Objects.Battle.BattleLocation;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.GameJPanel;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import flash.net.*;
-	import src.UI.Dialog.*;
-	/**
+    import flash.events.Event;
+
+    import org.aswing.*;
+    import org.aswing.event.SelectionEvent;
+    import org.aswing.table.PropertyTableModel;
+
+    import src.Comm.GameURLLoader;
+    import src.Global;
+    import src.Objects.Battle.BattleLocation;
+    import src.UI.Dialog.*;
+    import src.UI.GameJPanel;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */

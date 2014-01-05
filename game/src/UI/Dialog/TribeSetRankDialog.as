@@ -1,16 +1,15 @@
 package src.UI.Dialog{
 
-	import src.Constants;
-	import src.Global;
-	import src.UI.GameJPanel;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.ext.*;
 
-	public class TribeSetRankDialog extends GameJPanel {
+    import src.Constants;
+    import src.Global;
+    import src.UI.GameJPanel;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    public class TribeSetRankDialog extends GameJPanel {
 
 		private var lblName:JLabel;
 		private var lblNameTitle:JLabel;		

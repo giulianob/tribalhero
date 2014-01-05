@@ -1,21 +1,19 @@
 ﻿package src.UI.Components
 {
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.Effects.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.Objects.Troop.*;
-	import src.UI.LookAndFeel.*;
-	import src.Util.BinaryList.*;
-	import src.Util.StringHelper;
+    import org.aswing.*;
+    import org.aswing.border.*;
 
-	public class UnitStatBox extends JPanel
+    import src.*;
+    import src.Map.*;
+    import src.Objects.Effects.*;
+    import src.Objects.Factories.*;
+    import src.Objects.Prototypes.*;
+    import src.Objects.Troop.*;
+    import src.UI.LookAndFeel.*;
+    import src.Util.BinaryList.*;
+    import src.Util.StringHelper;
+
+    public class UnitStatBox extends JPanel
 	{
 		private var type: int;
 		//The template can be either a trooptemplate or unittemplate depending on who

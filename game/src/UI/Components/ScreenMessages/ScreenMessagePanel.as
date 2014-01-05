@@ -1,20 +1,20 @@
 package src.UI.Components.ScreenMessages
 {
-	import flash.display.DisplayObjectContainer;
-	import flash.events.Event;
+    import flash.display.DisplayObjectContainer;
+    import flash.events.Event;
     import flash.events.KeyboardEvent;
     import flash.events.MouseEvent;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	import org.aswing.border.EmptyBorder;
-	import org.aswing.geom.IntDimension;
-	import org.aswing.Insets;
-	import org.aswing.JFrame;
-	import org.aswing.JPanel;
-	import fl.transitions.easing.*;
-	import org.aswing.SoftBoxLayout;
+    import flash.events.TimerEvent;
+    import flash.utils.Timer;
 
-	/**
+    import org.aswing.Insets;
+    import org.aswing.JFrame;
+    import org.aswing.JPanel;
+    import org.aswing.SoftBoxLayout;
+    import org.aswing.border.EmptyBorder;
+    import org.aswing.geom.IntDimension;
+
+    /**
 	 * ...
 	 * @author Giuliano Barberi
 	 */
@@ -22,7 +22,7 @@ package src.UI.Components.ScreenMessages
 	{
         private const IDLE_TIME: int = 90000;
         
-		private var tempItems: Array = new Array();
+		private var tempItems: Array = [];
 		private var timer: Timer = new Timer(100, 0);
 		private var frame: JFrame;
         private var lastInteraction: int;

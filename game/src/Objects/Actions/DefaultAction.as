@@ -5,15 +5,11 @@
  */
 
 package src.Objects.Actions {
-	import flash.display.SimpleButton;
-	import flash.utils.getDefinitionByName;
-	import src.Objects.Actions.IAction;
-	import src.Objects.GameObject;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.SimpleGameObject;
-	import src.UI.Sidebars.ObjectInfo.Buttons.DefaultActionButton;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.Objects.SimpleGameObject;
+    import src.UI.Sidebars.ObjectInfo.Buttons.DefaultActionButton;
 
-	public class DefaultAction extends Action implements IAction
+    public class DefaultAction extends Action implements IAction
 	{
 		private var command:int;
 		

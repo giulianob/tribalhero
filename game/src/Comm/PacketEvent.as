@@ -1,7 +1,7 @@
 ﻿package src.Comm {
-	import flash.events.Event;
-	
-	public class PacketEvent extends Event {
+    import flash.events.Event;
+
+    public class PacketEvent extends Event {
 		
 		public var packet: Packet;
 		

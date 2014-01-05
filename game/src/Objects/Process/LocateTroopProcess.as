@@ -1,8 +1,9 @@
 package src.Objects.Process 
 {
-	import src.Constants;
-	import src.Global;
-	import src.Objects.Troop.TroopStub;
+    import src.Global;
+    import src.Map.Position;
+    import src.Objects.Troop.TroopStub;
+
 	public class LocateTroopProcess
 	{
 		private var troop:TroopStub;
@@ -18,7 +19,7 @@ package src.Objects.Process
 				Global.map.selectWhenViewable(troop.cityId, troop.objectId);
 			}
 
-			Global.gameContainer.camera.ScrollTo(troop.x * Constants.tileW - Constants.screenW / 2, troop.y * Constants.tileH / 2 - Constants.screenH / 2);
+			Global.gameContainer.camera.ScrollToCenter(new Position(troop.x, troop.y).toScreenPosition());
 			Global.gameContainer.closeAllFrames();
 		}
 		

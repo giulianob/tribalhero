@@ -1,8 +1,8 @@
 ﻿package src.Objects.Actions
 {
-	import src.Util.BinaryList.*;
+    import src.Util.BinaryList.*;
 
-	/**
+    /**
 	 * ...
 	 * @author Giuliano
 	 */
@@ -15,7 +15,7 @@
 		}
 
 		public function getByObject(objectId: int) : Array {
-			var ret: Array = new Array();
+			var ret: Array = [];
 
 			for each (var reference: CurrentActionReference in this) {
 				if (reference.objectId == objectId)

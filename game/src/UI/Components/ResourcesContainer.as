@@ -1,26 +1,27 @@
 ﻿package src.UI.Components
 {
-	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.AssetIcon;
-	import org.aswing.AsWingConstants;
-	import org.aswing.border.EmptyBorder;
-	import org.aswing.FlowLayout;
-	import org.aswing.geom.IntDimension;
-	import org.aswing.Icon;
-	import org.aswing.Insets;
-	import org.aswing.JFrame;
-	import org.aswing.JLabel;
-	import org.aswing.JPanel;
-	import src.Constants;
-	import src.Global;
-	import src.Map.City;
-	import src.UI.Dialog.CityEventDialog;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.UI.Tooltips.ResourcesTooltip;
+    import flash.display.DisplayObject;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class ResourcesContainer extends JPanel
+    import org.aswing.AsWingConstants;
+    import org.aswing.AssetIcon;
+    import org.aswing.FlowLayout;
+    import org.aswing.Insets;
+    import org.aswing.JFrame;
+    import org.aswing.JLabel;
+    import org.aswing.JPanel;
+    import org.aswing.border.EmptyBorder;
+    import org.aswing.geom.IntDimension;
+
+    import src.Constants;
+    import src.Global;
+    import src.Map.City;
+    import src.UI.Dialog.CityEventDialog;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+    import src.UI.Tooltips.ResourcesTooltip;
+
+    public class ResourcesContainer extends JPanel
 	{
 		private var tooltip: ResourcesTooltip;
 		private var frame: JFrame;

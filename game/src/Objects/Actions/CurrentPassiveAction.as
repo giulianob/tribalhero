@@ -1,9 +1,8 @@
 ﻿package src.Objects.Actions
 {
-	import src.Util.StringHelper;
-	import src.Objects.GameObject;
+    import src.Util.StringHelper;
 
-	public class CurrentPassiveAction extends CurrentAction
+    public class CurrentPassiveAction extends CurrentAction
 	{
 		public var type: int;
 		public var nlsDescription: String;

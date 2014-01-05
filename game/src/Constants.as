@@ -1,8 +1,11 @@
 package src
 {
-	import src.Map.CityRegionLegend;
-	import src.Objects.Tribe;
-	public class Constants
+    import src.Graphics.Tileset;
+    import src.Graphics.WallTileset;
+    import src.Map.MiniMap.MiniMapLegend;
+    import src.Objects.Tribe;
+
+    public class Constants
 	{
 		public static var version: int;
 		public static var revision: int;
@@ -24,18 +27,19 @@ package src
 		public static var playerId: int;
 		public static var playerHash: String;
 		public static var tutorialStep: int;
-		public static var tribeInviteId: int = 3;
+		public static var tribeInviteId: int;
 		public static var tribe: Tribe = new Tribe();
 		public static var signupTime: Date;
 		public static var newbieProtectionSeconds: int;
 		public static var tribeAssignment: int;
 		public static var tribeIncoming: int;
-		
+        public static var soundMuted: Boolean;
+
 		/* APP CONSTANTS */
 		public static var mainWebsite: String = "http://tribalhero.com/";
 		public static const debug:int = 0;
         public static var debugStacktracer: Boolean = false;
-		public static var defLang:String = "en";
+		public static var defLang:String = "en";    
 		
 		public static var alwaysEnableButtons: Boolean = false;
 
@@ -45,36 +49,26 @@ package src
 		public static const headerSize: int = 8;
 
 		/* ROAD CONSTANTS */
-		public static const road_start_tile_id: int = 224;
-		public static const road_end_tile_id: int = 255;
+		public static const road_start_tile_id: int = 60;
+		public static const road_end_tile_id: int = 90;
 
 		/* MAP CONSTANTS */					
-		public static const tileW:int = 108;
-		public static const tileH:int = 54;
+		public static const tileW:int = 160;
+		public static const tileH:int = 80;
 
-		public static const tileSetW:int = 1728;
-		public static const tileSetH:int = 1944;
+		public static const tileSetTileW:int = 12;
 
-		public static const tileSetTileW:int = tileSetW / tileW;
-		public static const tileSetTileH:int = tileSetH / tileH;
+		public static const mapW:int = mapTileW * tileW;
+		public static const mapH:int = mapTileH * tileH;
 
-		public static const mapW:int = 3400 * tileW;
-		public static const mapH:int = 6200 * tileH;
+		public static const mapTileW:int = 3400;
+		public static const mapTileH:int = 6200;
 
-		public static const mapTileW:int = mapW / tileW;
-		public static const mapTileH:int = mapH / tileH;
+		public static const regionW:int = regionTileW * tileW;
+		public static const regionH:int = regionTileH * tileH;
 
-		public static const regionW:int = 34 * tileW;
-		public static const regionH:int = 62 * tileH;
-
-		public static const regionTileW:int = regionW / tileW;
-		public static const regionTileH:int = regionH / tileH;
-
-		public static const regionBitmapW: int = regionW;
-		public static const regionBitmapH: int = regionH;
-
-		public static const regionBitmapTileW: int = regionBitmapW / tileW;
-		public static const regionBitmapTileH: int = regionBitmapH / tileH;
+		public static const regionTileW:int = 34;
+		public static const regionTileH:int = 62;
 
 		public static const mapRegionW: int = mapW / regionW;
 		public static const mapRegionH: int = mapH / regionH;
@@ -85,28 +79,23 @@ package src
 		public static var screenW:int = origScreenW;
 		public static var screenH:int = origScreenH;
 		
-		public static const tileset:TileSet = new TileSet(Constants.tileSetW, Constants.tileSetH);
-		
-		public static const cityStartTile: int = 209;
+		public static const tileset: Tileset = new Tileset();
+		public static const wallTileset: WallTileset = new WallTileset();
+
+		public static const cityStartTile: int = 16;
 
 		/* MINI MAP CONSTANTS */
 		public static const miniMapTileW: int = 4;
 		public static const miniMapTileH: int = 2;
 
-		public static const cityRegionW: int = 100 * miniMapTileW;
-		public static const cityRegionH: int = 100 * miniMapTileH;
+		public static const miniMapRegionW: int = miniMapRegionTileW * miniMapTileW;
+		public static const miniMapRegionH: int = miniMapRegionTileW * miniMapTileH;
 
-		public static const cityRegionTileW: int = cityRegionW / miniMapTileW;
-		public static const cityRegionTileH: int = cityRegionH / miniMapTileH;
+		public static const miniMapRegionTileW: int = 100;
+		public static const miniMapRegionTileH: int = 100;
 
-		public static const miniMapRegionW: int = int(mapTileW / cityRegionTileW);
-		public static const miniMapRegionH: int = int(mapTileH / cityRegionTileH);
-
-		public static const cityRegionBitmapW: int = cityRegionW;
-		public static const cityRegionBitmapH: int = cityRegionH;
-
-		public static const cityRegionBitmapTileW: int = cityRegionBitmapW / miniMapTileW;
-		public static const cityRegionBitmapTileH: int = cityRegionBitmapH / miniMapTileH;
+		public static const miniMapRegionRatioW: int = int(mapTileW / miniMapRegionTileW);
+		public static const miniMapRegionRatioH: int = int(mapTileH / miniMapRegionTileH);
 
 		// Compact mini map constants
 		public static const miniMapScreenW: int = 288;
@@ -114,10 +103,11 @@ package src
 
 		public static const miniMapScreenX: Function = function(width: int) : int {
 			return screenW - width - 6;
-		}
+		};
+
 		public static const miniMapScreenY: Function = function(height: int) : int {
 			return screenH - height - 5;
-		}
+		};
 
 		// Expanded mini map constants
 		public static const miniMapLargeScreenW: int = 800;
@@ -125,33 +115,20 @@ package src
 
 		public static const miniMapLargeScreenX: Function = function(width: int) : int {        
 			var x : int = ((screenW - 0) / 2) - ((width +0) / 2);
-			if (x < CityRegionLegend.LEGEND_WIDTH) {
-				var delta : int = CityRegionLegend.LEGEND_WIDTH - x;
+			if (x < MiniMapLegend.LEGEND_WIDTH) {
+				var delta : int = MiniMapLegend.LEGEND_WIDTH - x;
 				return x - delta;
 			}
 			return x;
-		}
+		};
+
 		public static const miniMapLargeScreenY: Function = function(height: int) : int {
 			return (screenH / 2) - (height / 2) + 30;
-		}
+		};
 
 		/* GAME DATA */
 		public static const queryData: Boolean = true;
 
-		/* TROOP */
-		public static const troopWorkerId: int = 100;
-
-		/* STAT RANGES */
-		public static const unitStatRanges: * = {
-			"attack": { min: 5, max: 100 },
-			"speed": { min: 2, max: 22 },
-			"carry": { min: 0, max: 352 }
-		};
-
-		public static const structureStatRanges: * = {
-			"attack": { min: 0, max: 800 }
-		};
-		
 		public static const stealthRangeNames: Array = ["", "1st row", "2nd row", "3rd row", "4th row"];
 
 		/* Ranking Types */
@@ -168,6 +145,20 @@ package src
 		
 		/* Buffer for game XML data */
 		public static var objData: XML = <Data></Data>;
+
+        // Object Priority on the map when there are multiple objects on the same tile
+        public static const mapObjectPriority: * = {
+            stronghold: 1,
+            structureObject: 2,
+            barbarianTribe: 3,
+            forest: 4,
+            troopObject: 5,
+            gameObject: 6,
+            simpleGameObject: 7,
+            simpleObject: 8
+        };
+
+        public static const shadowAlpha: Number = 0.75;
 	}
 }
 

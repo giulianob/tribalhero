@@ -1,17 +1,12 @@
 ﻿package src.UI.Components.TableCells
 {
-	import flash.events.*;
-	import org.aswing.*;
-	import org.aswing.event.*;
-	import org.aswing.table.*;
-	import src.*;
-	import src.UI.Components.*;
-	import src.UI.Components.Messaging.MessagingIcon;
-	import src.UI.Components.Tribe.SetRankIcon;
-    import src.Util.StringHelper;
-    import src.Util.Util;
+    import org.aswing.*;
+    import org.aswing.table.*;
 
-	public class TribeLabelCell extends AbstractTableCell
+    import src.UI.Components.*;
+    import src.Util.StringHelper;
+
+    public class TribeLabelCell extends AbstractTableCell
 	{
 		protected var label: TribeLabel;
 		protected var wrapper: JPanel;

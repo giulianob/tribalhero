@@ -1,12 +1,10 @@
 ﻿package src.Objects.Factories {
-	import src.Map.Map;
-	import src.Objects.Effects.EffectReqManager;
-	import src.Objects.Prototypes.EffectReqPrototype;
-	import src.Objects.Effects.RequirementFormula;
-	import src.Util.BinaryList.*;
-	import src.Util.Util;
-	
-	/**
+    import src.Map.Map;
+    import src.Objects.Effects.EffectReqManager;
+    import src.Objects.Prototypes.EffectReqPrototype;
+    import src.Util.BinaryList.*;
+
+    /**
 	* ...
 	* @author Default
 	*/

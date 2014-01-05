@@ -1,23 +1,25 @@
 package src.Objects {
 
-	import flash.filters.GlowFilter;
-	import flash.geom.Point;
-	import src.Constants;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.States.GameObjectState;
+    import flash.filters.GlowFilter;
 
-	public class GameObject extends SimpleGameObject
+    import src.Constants;
+    import src.Global;
+    import src.Map.City;
+    import src.Map.CityObject;
+    import src.Objects.Factories.ObjectFactory;
+    import src.Objects.States.GameObjectState;
+
+    public class GameObject extends SimpleGameObject
 	{
 		public var playerId: int;				
 
-		public function GameObject(type: int, state: GameObjectState, objX: int, objY: int, playerId: int, cityId: int, objectId: int)
+		public function GameObject(type: int, state: GameObjectState, objX: int, objY: int, size: int, playerId: int, cityId: int, objectId: int)
 		{
-			super(type, state, objX, objY, cityId, objectId);			
-			
-			this.playerId = playerId;			
+			super(type, state, objX, objY, size, cityId, objectId);
+
+            mapPriority = Constants.mapObjectPriority.simpleGameObject;
+
+            this.playerId = playerId;
 			
 			setHighlighted(false);
 		}

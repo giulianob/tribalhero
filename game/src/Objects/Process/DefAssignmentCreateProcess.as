@@ -1,21 +1,22 @@
 package src.Objects.Process 
 {
-	import flash.events.Event;
-	import flash.geom.Point;
-	import org.aswing.JButton;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.MapUtil;
-	import src.Objects.Effects.Formula;
-	import src.Objects.GameObject;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.Stronghold.Stronghold;
-	import src.Objects.StructureObject;
-	import src.Objects.Troop.TroopStub;
-	import src.UI.Cursors.GroundReinforceCursor;
-	import src.UI.Dialog.AssignmentCreateDialog;
-	import src.UI.Dialog.ReinforceTroopDialog;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
+    import flash.events.Event;
+
+    import org.aswing.JButton;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Map.Position;
+    import src.Map.TileLocator;
+    import src.Objects.Effects.Formula;
+    import src.Objects.SimpleGameObject;
+    import src.Objects.Stronghold.Stronghold;
+    import src.Objects.StructureObject;
+    import src.Objects.Troop.TroopStub;
+    import src.UI.Cursors.GroundReinforceCursor;
+    import src.UI.Dialog.AssignmentCreateDialog;
+    import src.UI.Dialog.ReinforceTroopDialog;
+    import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
 
 	public class DefAssignmentCreateProcess
 	{		
@@ -42,7 +43,7 @@ package src.Objects.Process
 			
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
 			
-			var cursor: GroundReinforceCursor = new GroundReinforceCursor(sourceCity, onChoseTarget, troopDialog.getTroop());
+			new GroundReinforceCursor(sourceCity, onChoseTarget, troopDialog.getTroop());
 			
 			var changeTroop: JButton = new JButton("Change Troop");
 			changeTroop.addActionListener(onChangeTroop);
@@ -54,13 +55,13 @@ package src.Objects.Process
 		public function onChoseTarget(sender: GroundReinforceCursor): void 
 		{						
 			target = sender.getTargetObject();
-			
+
 			Global.gameContainer.setOverlaySprite(null);
 			Global.gameContainer.setSidebar(null);
 			
 			var troop: TroopStub = troopDialog.getTroop();
-			var targetMapDistance: Point = MapUtil.getMapCoord(target.objX, target.objY);
-			var distance: int = sourceCity.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
+			var targetMapDistance: Position = target.primaryPosition.toPosition();
+			var distance: int = TileLocator.distance(sourceCity.primaryPosition.x, sourceCity.primaryPosition.y, 1, targetMapDistance.x, targetMapDistance.y, 1);
 			
 			var assignmentDialog: AssignmentCreateDialog = new AssignmentCreateDialog(Formula.moveTimeTotal(sourceCity, troop.getSpeed(sourceCity), distance, true), onChoseTime);
 			assignmentDialog.show();
@@ -78,7 +79,7 @@ package src.Objects.Process
 		{
 			assignmentDialog.getFrame().dispose();
 			if (target is StructureObject) {
-				Global.mapComm.Troop.cityAssignmentCreate(sourceCity.id, target.groupId, target.objectId, assignmentDialog.getTime(), troopDialog.getMode(), troopDialog.getTroop(), assignmentDialog.getDescription(),false);
+				Global.mapComm.Troop.cityAssignmentCreate(sourceCity.id, target.groupId, target.primaryPosition.toPosition(), assignmentDialog.getTime(), troopDialog.getMode(), troopDialog.getTroop(), assignmentDialog.getDescription(),false);
 			} else if (target is Stronghold) {
 				Global.mapComm.Troop.strongholdAssignmentCreate(sourceCity.id, target.objectId, assignmentDialog.getTime(), troopDialog.getMode(), troopDialog.getTroop(), assignmentDialog.getDescription(), false);
 			}

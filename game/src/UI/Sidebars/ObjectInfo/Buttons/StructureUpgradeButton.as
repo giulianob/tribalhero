@@ -1,30 +1,29 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import src.Util.StringHelper;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.AssetIcon;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.Actions.Action;
-	import src.Objects.Actions.BuildAction;
-	import src.Objects.Actions.CurrentActiveAction;
-	import src.Objects.Actions.StructureUpgradeAction;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.SimpleGameObject;
-	import src.Util.Util;
-	import src.Objects.Factories.StructureFactory;
-	import src.Objects.GameObject;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.Prototypes.EffectReqPrototype;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.StructureObject;
-	import src.UI.Cursors.*;
-	import src.UI.Tooltips.StructureUpgradeTooltip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class StructureUpgradeButton extends ActionButton
+    import org.aswing.AssetIcon;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Map.CityObject;
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.Actions.BuildAction;
+    import src.Objects.Actions.CurrentActiveAction;
+    import src.Objects.Actions.StructureUpgradeAction;
+    import src.Objects.Effects.Formula;
+    import src.Objects.Factories.ObjectFactory;
+    import src.Objects.Factories.StructureFactory;
+    import src.Objects.Prototypes.EffectReqPrototype;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.Objects.SimpleGameObject;
+    import src.Objects.StructureObject;
+    import src.UI.Tooltips.StructureUpgradeTooltip;
+    import src.Util.StringHelper;
+    import src.Util.Util;
+
+    public class StructureUpgradeButton extends ActionButton
 	{
 		private var nextStructPrototype: StructurePrototype;
 
@@ -89,25 +88,8 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				return false;
 			}
 
-			// Enforce only 2 build/upgrades at a time
-			if (!ObjectFactory.isType("UnlimitedBuilding", nextStructPrototype.type)) {
-				var currentBuildActions: Array = city.currentActions.getActions();
-				var currentCount: int = 0;
-				for each (var currentAction: * in currentBuildActions) {			
-					if (!(currentAction is CurrentActiveAction))
-						continue;
-					else if (currentAction.getAction() is BuildAction) {
-						var buildAction: BuildAction = currentAction.getAction();
-						if (!ObjectFactory.isType("UnlimitedBuilding", buildAction.type))
-							currentCount++;
-					}
-					else if (currentAction.getAction() is StructureUpgradeAction)
-						currentCount++;
-				}
-				
-				var concurrentUpgrades: int = Formula.concurrentBuildUpgrades(city.MainBuilding.level);				
-				if (currentCount >= concurrentUpgrades)
-					missingReqs.push(EffectReqPrototype.asMessage(StringHelper.localize("CONCURRENT_UPGRADE_" + concurrentUpgrades)));
+            if (!Formula.cityMaxConcurrentBuildActions(nextStructPrototype.type, city)) {
+                missingReqs.push(EffectReqPrototype.asMessage(StringHelper.localize("CONCURRENT_UPGRADE_" + Formula.concurrentBuildUpgrades(city.MainBuilding.level))));
 			}			
 			
 			upgradeToolTip.missingRequirements = missingReqs;

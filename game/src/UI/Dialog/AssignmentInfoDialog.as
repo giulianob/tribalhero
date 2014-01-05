@@ -1,19 +1,18 @@
 package src.UI.Dialog {
-	import fl.lang.Locale;
-	import flash.display.*;
-	import flash.events.*;
-	import mx.utils.StringUtil;
-	import org.aswing.*;
-	import org.aswing.geom.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Troop.*;
-	import src.UI.*;
-	import src.UI.Components.*;
+    import fl.lang.Locale;
+
+    import mx.utils.StringUtil;
+
+    import org.aswing.*;
+    import org.aswing.geom.*;
+
+    import src.*;
+    import src.Objects.Troop.*;
+    import src.UI.*;
+    import src.UI.Components.*;
     import src.UI.Components.TroopCompositionGridList.TroopCompositionGridList;
     import src.UI.LookAndFeel.*;
-	import src.UI.Tooltips.*;
+    import src.UI.Tooltips.*;
     import src.Util.StringHelper;
 
     public class AssignmentInfoDialog extends GameJPanel {

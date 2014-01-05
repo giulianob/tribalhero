@@ -1,6 +1,7 @@
 ﻿package src.Comm {
-	import flash.events.Event;
-	public interface Session {	
+    import flash.events.Event;
+
+    public interface Session {
 		function login(useLoginKey: Boolean, username:String, passwdOrLoginKey:String): void;
 		
 		function connect(hostname: String): void;

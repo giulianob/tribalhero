@@ -1,22 +1,19 @@
 ﻿package src.UI.Dialog {
-	import flash.events.Event;
-	import src.Comm.GameURLLoader;
-	import src.Global;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.UI.Components.AutoCompleteTextField;
-	import src.UI.GameJPanel;
-	import src.Objects.Troop.*;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.UI.LookAndFeel.GamePanelBackgroundDecorator;
+    import flash.events.Event;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
 
-	public class MessageCreateDialog extends GameJPanel {
+    import src.Comm.GameURLLoader;
+    import src.Global;
+    import src.UI.Components.AutoCompleteTextField;
+    import src.UI.GameJPanel;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+    import src.UI.LookAndFeel.GamePanelBackgroundDecorator;
+
+    public class MessageCreateDialog extends GameJPanel {
 
 		private var pnlTo:JPanel;
 		private var lblTo:JLabel;

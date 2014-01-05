@@ -1,21 +1,24 @@
 ﻿package src.UI.Components.CityActionGridList
 {
-	import flash.display.DisplayObjectContainer;
-	import flash.events.Event;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	import org.aswing.ext.GeneralGridListCellFactory;
-	import org.aswing.ext.GridList;
-	import org.aswing.VectorListModel;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.Actions.CurrentAction;
-	import src.Objects.Actions.CurrentActionReference;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Util.BinaryList.*;
+    import flash.display.DisplayObjectContainer;
+    import flash.events.Event;
+    import flash.events.TimerEvent;
+    import flash.utils.Timer;
 
-	/**
+    import org.aswing.VectorListModel;
+    import org.aswing.ext.GeneralGridListCellFactory;
+    import org.aswing.ext.GridList;
+
+    import src.Map.City;
+    import src.Map.CityObject;
+    import src.Objects.Actions.CurrentAction;
+    import src.Objects.Actions.CurrentActionReference;
+    import src.Objects.Factories.ObjectFactory;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.Util.BinaryList.*;
+    import src.Util.Util;
+
+    /**
 	 * ...
 	 * @author Giuliano
 	 */
@@ -24,13 +27,13 @@
 		private var city: City;
 		private var timer: Timer;
 
-		public function CityActionGridList(city: City, tileWidth: int)
+		public function CityActionGridList(city: City)
 		{
 			super(new VectorListModel(), new GeneralGridListCellFactory(CityActionGridCell), 2, 0);
 
 			this.city = city;
 
-			setTileWidth(tileWidth/2 - 30);
+			setTileWidth(235);
 			setTileHeight(60);
 			setColsRows(2, 0);
 			setTracksWidth(true);
@@ -90,10 +93,9 @@
 				var cityObj: CityObject = city.objects.get(currentAction.workerId);
 
 				var prototype: * = ObjectFactory.getPrototype(cityObj.type, cityObj.level);
-				var icon: DisplayObjectContainer = ObjectFactory.getSpriteEx(cityObj.type, cityObj.level, true);
-				if (prototype is StructurePrototype) icon = ObjectFactory.makeSpriteSmall(icon);
+				var icon: DisplayObjectContainer = ObjectFactory.getSpriteEx(cityObj.type, cityObj.level);
 
-				(getModel() as VectorListModel).append( { 'cityObj': cityObj, 'source': icon, 'cityId': city.id , 'prototype': prototype, 'currentAction': currentAction } );
+				(getModel() as VectorListModel).append( { 'cityObj': cityObj, 'source': icon, 'cityId': city.id , 'objPrototype': prototype, 'currentAction': currentAction } );
 			}
 		}
 	}

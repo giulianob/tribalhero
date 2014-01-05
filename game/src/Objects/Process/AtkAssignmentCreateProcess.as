@@ -1,13 +1,13 @@
 package src.Objects.Process 
 {
     import flash.events.Event;
-    import flash.geom.Point;
 
     import org.aswing.JButton;
 
     import src.Global;
     import src.Map.City;
-    import src.Map.MapUtil;
+    import src.Map.Position;
+    import src.Map.TileLocator;
     import src.Objects.BarbarianTribe;
     import src.Objects.Effects.Formula;
     import src.Objects.SimpleGameObject;
@@ -26,11 +26,11 @@ package src.Objects.Process
 		private var attackDialog: AttackTroopDialog;		
 		private var target: SimpleGameObject;
 		private var sourceCity:City;
+        private var targetPosition: Position;
 		
 		public function AtkAssignmentCreateProcess(sourceCity: City) 
 		{
 			this.sourceCity = sourceCity;
-			
 		}
 		
 		public function execute(): void
@@ -45,9 +45,9 @@ package src.Objects.Process
 			Global.gameContainer.closeAllFrames(true);
 			
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
-			
-			var cursor: GroundAttackCursor = new GroundAttackCursor(sourceCity, onChoseTarget, attackDialog.getTroop());
-			
+
+			new GroundAttackCursor(sourceCity, onChoseTarget, attackDialog.getTroop());
+
 			var changeTroop: JButton = new JButton("Change Troop");
 			changeTroop.addActionListener(onChangeTroop);
 			sidebar.append(changeTroop);
@@ -63,6 +63,7 @@ package src.Objects.Process
 		public function onChoseTarget(sender: GroundAttackCursor): void 
 		{						
 			target = sender.getTargetObject();
+            targetPosition = sender.getAttackPosition();
 			if (target is BarbarianTribe)
 			{
 				InfoDialog.showMessageDialog("Error", StringHelper.localize("BARBARIAN_ASSIGNMENT_ERROR"),onBadTarget);
@@ -73,8 +74,8 @@ package src.Objects.Process
 			Global.gameContainer.setSidebar(null);
 			
 			var troop: TroopStub = attackDialog.getTroop();			
-			var targetMapDistance: Point = MapUtil.getMapCoord(target.objX, target.objY);
-			var distance: int = sourceCity.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
+			var targetMapDistance: Position = target.primaryPosition.toPosition();
+			var distance: int = TileLocator.distance(sourceCity.primaryPosition.x, sourceCity.primaryPosition.y, 1, targetMapDistance.x, targetMapDistance.y, 1);
 			
 			var assignmentDialog: AssignmentCreateDialog = new AssignmentCreateDialog(Formula.moveTimeTotal(sourceCity, troop.getSpeed(sourceCity), distance, true), onChoseTime);
 			assignmentDialog.show();
@@ -92,7 +93,7 @@ package src.Objects.Process
 		{
 			assignmentDialog.getFrame().dispose();
 			if (target is StructureObject) {
-				Global.mapComm.Troop.cityAssignmentCreate(sourceCity.id, target.groupId, target.objectId, assignmentDialog.getTime(), attackDialog.getMode(), attackDialog.getTroop(), assignmentDialog.getDescription(),true);
+				Global.mapComm.Troop.cityAssignmentCreate(sourceCity.id, target.groupId, targetPosition, assignmentDialog.getTime(), attackDialog.getMode(), attackDialog.getTroop(), assignmentDialog.getDescription(),true);
 			} else if (target is Stronghold) {
 				Global.mapComm.Troop.strongholdAssignmentCreate(sourceCity.id, target.objectId, assignmentDialog.getTime(), attackDialog.getMode(), attackDialog.getTroop(), assignmentDialog.getDescription(),true);
 			}

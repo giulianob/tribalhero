@@ -1,15 +1,15 @@
 ﻿package src.UI.Components.Tribe
 {
-	import flash.display.MovieClip;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.AssetIcon;
-	import src.Global;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Dialog.MessageCreateDialog;
-	import src.UI.Dialog.TribeSetRankDialog;
+    import flash.display.MovieClip;
+    import flash.events.MouseEvent;
 
-	public class SetRankIcon extends AssetIcon
+    import org.aswing.AssetIcon;
+
+    import src.Global;
+    import src.UI.Components.SimpleTooltip;
+    import src.UI.Dialog.TribeSetRankDialog;
+
+    public class SetRankIcon extends AssetIcon
 	{
 		private var icon: MovieClip = new ICON_SINGLE_SWORD();
 

@@ -1,31 +1,22 @@
 ﻿package src.UI.Sidebars.StrongholdInfo {
-	import src.Util.StringHelper;
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import flash.text.*;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import org.aswing.geom.*;
-	import src.*;
-	import src.Map.*;
-	import src.Objects.*;
-	import src.Objects.Actions.*;
-	import src.Objects.Factories.*;
-	import src.Objects.Prototypes.*;
-	import src.Objects.Stronghold.*;
-	import src.Objects.Troop.*;
-	import src.UI.*;
-	import src.UI.Components.*;
-	import src.UI.Dialog.*;
-	import src.UI.Sidebars.ObjectInfo.Buttons.*;
-	import src.UI.Sidebars.StrongholdInfo.Buttons.*;
-	import src.Util.*;
+    import flash.events.*;
 
+    import org.aswing.*;
+    import org.aswing.border.*;
+    import org.aswing.ext.*;
+    import org.aswing.geom.*;
 
-	public class StrongholdInfoSidebar extends GameJSidebar
+    import src.*;
+    import src.Map.Position;
+    import src.Objects.*;
+    import src.Objects.Stronghold.*;
+    import src.UI.*;
+    import src.UI.Components.*;
+    import src.UI.Sidebars.ObjectInfo.Buttons.*;
+    import src.UI.Sidebars.StrongholdInfo.Buttons.*;
+    import src.Util.StringHelper;
+
+    public class StrongholdInfoSidebar extends GameJSidebar
 	{
 		//UI
 		private var lblName:JLabel;
@@ -73,7 +64,7 @@
 			}
 
 
-			var buttons: Array = new Array();
+			var buttons: Array = [];
 
 			//Special Case Buttons
 			switch(stronghold.state.getStateType())
@@ -144,7 +135,7 @@
 		{
 			super.showSelf(owner, onClose, dispose);
 
-			var pt: Point = MapUtil.getMapCoord(stronghold.objX, stronghold.objY);
+			var pt: Position = stronghold.primaryPosition.toPosition();
 			frame.getTitleBar().setText("Stronghold (" + pt.x + "," + pt.y + ")");
 
 			frame.show();

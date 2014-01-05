@@ -1,23 +1,20 @@
 package src.UI.Dialog{
 
-	import com.adobe.serialization.json.JSONParseError;
-	import flash.events.Event;
-	import org.aswing.event.AWEvent;
-	import org.aswing.event.TableCellEditEvent;
-	import org.aswing.table.GeneralTableCellFactory;
-	import org.aswing.table.PropertyTableModel;
-	import src.Comm.GameURLLoader;
-	import src.Global;
-	import src.UI.Components.Messaging.PreviewTextCell;
-	import src.UI.Components.PagingBar;
-	import src.UI.Components.TableCells.CheckboxTextCell;
-	import src.UI.GameJPanel;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
+    import flash.events.Event;
 
+    import org.aswing.*;
+    import org.aswing.event.AWEvent;
+    import org.aswing.event.TableCellEditEvent;
+    import org.aswing.geom.*;
+    import org.aswing.table.GeneralTableCellFactory;
+    import org.aswing.table.PropertyTableModel;
+
+    import src.Comm.GameURLLoader;
+    import src.Global;
+    import src.UI.Components.Messaging.PreviewTextCell;
+    import src.UI.Components.PagingBar;
+    import src.UI.Components.TableCells.CheckboxTextCell;
+    import src.UI.GameJPanel;
     import src.Util.DateUtil;
 
     public class MessagingDialog extends GameJPanel {
@@ -107,7 +104,7 @@ package src.UI.Dialog{
 		}
 
 		private function deleteMessage(id: int) : void {
-			var ids: Array = new Array();
+			var ids: Array = [];
 			ids.push(id);
 			Global.mapComm.Messaging.del(actionLoader, ids);
 		}
@@ -175,7 +172,7 @@ package src.UI.Dialog{
 		}
 
 		private function getCheckedMessagesIds() : Array {
-			var ids: Array = new Array();
+			var ids: Array = [];
 
 			for (var i: int = 0; i < messageTable.getRowCount(); i++) {
 				if (messageTable.getValueAt(i, 0).checked) {

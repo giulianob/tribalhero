@@ -1,20 +1,19 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.*;
-	import src.Global;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.*;
-	import src.Objects.Effects.Formula;
-	import src.UI.Cursors.*;
-	import src.UI.Dialog.InfoDialog;
-	import src.UI.Dialog.MarketBuyDialog;
-	import src.UI.Dialog.MarketSellDialog;
-	import src.UI.GameJPanel;
-	import src.UI.Tooltips.TextTooltip;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class MarketButton extends ActionButton
+    import src.Global;
+    import src.Objects.*;
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.Effects.Formula;
+    import src.UI.Dialog.InfoDialog;
+    import src.UI.Dialog.MarketBuyDialog;
+    import src.UI.Dialog.MarketSellDialog;
+    import src.UI.GameJPanel;
+    import src.UI.Tooltips.TextTooltip;
+
+    public class MarketButton extends ActionButton
 	{
 		private var toolTip: TextTooltip;
 		private var mode: String;

@@ -1,34 +1,20 @@
 ﻿
 package src.UI.Sidebars.NewCityPlaceholder.Buttons {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import src.Comm.Commands;
-	import src.Constants;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.MapUtil;
-	import src.Objects.Actions.ForestCampBuildAction;
-	import src.Objects.Factories.*;
-	import src.Objects.Forest;
-	import src.Objects.GameObject;
-	import src.Objects.Actions.ActionButton;
-	import src.Objects.NewCityPlaceholder;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.SimpleObject;
-	import src.Objects.Troop.*;
-	import src.Objects.Effects.Formula;
-	import src.UI.Cursors.*;
-	import src.UI.Dialog.CreateCityDialog;
-	import src.UI.Dialog.ForestLaborDialog;
-	import src.UI.GameJPanel;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
-	import src.UI.Sidebars.NewCityPlaceholder.NewCityPlaceholderSidebar;
-	import src.UI.Tooltips.NewCityTooltip;
-	import src.UI.Tooltips.TextTooltip;
-	import src.Util.Util;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
 
-	public class NewCityButton extends ActionButton
+    import src.Constants;
+    import src.Global;
+    import src.Map.Position;
+    import src.Objects.Actions.ActionButton;
+    import src.Objects.Effects.Formula;
+    import src.Objects.Factories.*;
+    import src.Objects.NewCityPlaceholder;
+    import src.Objects.Prototypes.StructurePrototype;
+    import src.UI.Dialog.CreateCityDialog;
+    import src.UI.Tooltips.NewCityTooltip;
+
+    public class NewCityButton extends ActionButton
 	{
 		private var tooltip: NewCityTooltip;
 		private var mainBuildingPrototype: StructurePrototype;
@@ -54,11 +40,10 @@ package src.UI.Sidebars.NewCityPlaceholder.Buttons {
 		override public function validateButton():Boolean 
 		{
 			var data:* = Formula.getResourceNewCity();
-			if (Constants.alwaysEnableButtons) return true;
-			if (data.influenceRequired > data.influenceCurrent || data.wagonRequired > data.wagonCurrent)
-				return false;
 
-			return true;
+            if (Constants.alwaysEnableButtons) return true;
+
+			return !(data.influenceRequired > data.influenceCurrent || data.wagonRequired > data.wagonCurrent);
 		}
 
 		public function onMouseOver(event: MouseEvent):void
@@ -76,7 +61,7 @@ package src.UI.Sidebars.NewCityPlaceholder.Buttons {
 			if (isEnabled())
 			{
 				var dlg: CreateCityDialog = new CreateCityDialog(function(sender: CreateCityDialog) : void {				
-					var mapPos: Point = MapUtil.getMapCoord(newCityPlaceholder.objX, newCityPlaceholder.objY);
+					var mapPos: Position = newCityPlaceholder.primaryPosition.toPosition();
 					Global.mapComm.Region.createCity(Global.gameContainer.selectedCity.id, mapPos.x, mapPos.y, sender.getCityName());
 					sender.getFrame().dispose();
 				});						

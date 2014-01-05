@@ -1,18 +1,13 @@
 ﻿package src.UI.Components
 {
-	import flash.events.Event;
-	import src.Map.City;
-	import src.Objects.*;
-	import src.Objects.Effects.Formula;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+    import flash.events.Event;
 
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
+    import org.aswing.*;
 
-	public class NewCityResourcesPanel extends JPanel
+    import src.Objects.Effects.Formula;
+    import src.UI.LookAndFeel.GameLookAndFeel;
+
+    public class NewCityResourcesPanel extends JPanel
 	{
 		/*
 		* Set a city to show affordability based on city resources

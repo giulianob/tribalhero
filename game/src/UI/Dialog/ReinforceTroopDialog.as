@@ -1,22 +1,20 @@
 ﻿package src.UI.Dialog {
 
-	import flash.events.Event;
-	import org.aswing.*;
-	import org.aswing.border.*;
-	import org.aswing.geom.*;
-	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;
-	import src.Global;
-	import src.Map.City;
-	import src.Objects.Effects.Formula;
-	import src.UI.Components.SimpleTroopGridList.*;
-	import src.UI.GameJPanel;
-	import src.UI.Components.SimpleTooltip;
-	import src.Objects.Troop.*;
-	import src.Util.StringHelper;
-	import src.Util.Util;
+    import flash.events.Event;
 
-	public class ReinforceTroopDialog extends GameJPanel {
+    import org.aswing.*;
+    import org.aswing.geom.*;
+
+    import src.Global;
+    import src.Map.City;
+    import src.Objects.Effects.Formula;
+    import src.Objects.Troop.*;
+    import src.UI.Components.SimpleTooltip;
+    import src.UI.Components.SimpleTroopGridList.*;
+    import src.UI.GameJPanel;
+    import src.Util.StringHelper;
+
+    public class ReinforceTroopDialog extends GameJPanel {
 
 		//members define
 		protected var pnlAttackStrength:JPanel;
@@ -35,8 +33,8 @@
 
 		protected var hasAttackStrength: Boolean;
 		
-		private var tilelists: Array = new Array();
-		private var attackTilelists: Array = new Array();
+		private var tilelists: Array = [];
+		private var attackTilelists: Array = [];
 
 		public function ReinforceTroopDialog(city: City, onAccept: Function, hasAttackStrength: Boolean = true):void
 		{

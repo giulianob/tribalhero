@@ -398,7 +398,7 @@
 			minimapHolder.addChild(miniMap);
 
             // Set initial map zoom
-            mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();
+            mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactorPercentage();
 
 			// Create map overlay
 			this.mapOverlay = new MovieClip();

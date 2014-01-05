@@ -1,5 +1,8 @@
 package src {
     import com.greensock.TweenMax;
+    import com.greensock.easing.Elastic;
+    import com.greensock.easing.Linear;
+    import com.greensock.easing.Quad;
 
     import fl.motion.AdjustColor;
 
@@ -79,33 +82,43 @@ package src {
         }
 
         public function onZoomIn(e: Event) : void {
-            if (minimapZoomed) return;
+            if (minimapZoomed || gameContainer.camera.zoomFactor == 100) {
+                return;
+            }
 
-            TweenMax.to(gameContainer.camera, 0.2, {
-                overwrite: false,
-                zoomFactor: Math.min(1, gameContainer.camera.zoomFactor + 0.1),
+            var step: int = 10;
+            var newValue: int = gameContainer.camera.zoomFactor + step >= 100 ? 100 : gameContainer.camera.zoomFactor + step;
+            var duration: Number = 0.2 * ((newValue - gameContainer.camera.zoomFactor) / step);
+
+            TweenMax.to(gameContainer.camera, duration, {
+                zoomFactor: newValue,
                 onUpdateParams: [gameContainer.camera.GetCenter()],
                 onUpdate: onZoomUpdate
             });
         }
 
         public function onZoomOut(e: Event) : void {
-            if (minimapZoomed) return;
+            if (minimapZoomed || gameContainer.camera.zoomFactor == 50) {
+                return;
+            }
 
-            TweenMax.to(gameContainer.camera, 0.2, {
-                overwrite: false,
-                zoomFactor: Math.max(0.5, gameContainer.camera.zoomFactor - 0.1),
+            var step: int = 10;
+            var newValue: int = gameContainer.camera.zoomFactor - step <= 50 ? 50 : gameContainer.camera.zoomFactor - step;
+            var duration: Number = 0.2 * ((gameContainer.camera.zoomFactor - newValue) / step);
+
+            TweenMax.to(gameContainer.camera, duration, {
+                zoomFactor: newValue,
                 onUpdateParams: [gameContainer.camera.GetCenter()],
                 onUpdate: onZoomUpdate
             });
         }
 
         private function onZoomUpdate(center: ScreenPosition): void {
+            trace(gameContainer.camera.zoomFactor);
             gameContainer.map.scrollRate = gameContainer.camera.getZoomFactorOverOne();
             gameContainer.miniMap.redraw();
-            gameContainer.mapHolder.scaleX = gameContainer.mapHolder.scaleY = gameContainer.camera.getZoomFactor();
+            gameContainer.mapHolder.scaleX = gameContainer.mapHolder.scaleY = gameContainer.camera.getZoomFactorPercentage();
             gameContainer.camera.ScrollToCenter(center);
-
         }
 
         public function onZoomIntoMinimap(e: Event):void {

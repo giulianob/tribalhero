@@ -2,6 +2,8 @@
 {
     import System.Linq.EnumerationExtender;
 
+    import com.greensock.OverwriteManager;
+
     import com.greensock.plugins.TransformMatrixPlugin;
     import com.greensock.plugins.TweenPlugin;
 
@@ -75,6 +77,7 @@
 			
 			//Init TweenLite
 			TweenPlugin.activate([DynamicPropsPlugin, TransformMatrixPlugin, TransformAroundCenterPlugin, TransformAroundPointPlugin]);
+            OverwriteManager.init(OverwriteManager.AUTO);
 
 			//Init stage options
 			stage.stageFocusRect = false;

@@ -21,8 +21,8 @@
 		private var cuePosition: ScreenPosition;
 		
 		//Zooming factor
-		private var _zoomFactor: Number = 0.75;
-		private var zoomFactorOverOne: Number = (1.0 / zoomFactor);
+		private var _zoomFactor: int = 75;
+		private var zoomFactorOverOne: Number = (1.0 / (75 / 100.0));
 
 		public function beginMove(): void {
 			if (updating) return;
@@ -170,38 +170,47 @@
 
 		public function ScrollToCenter(screenPos: ScreenPosition): void
 		{
-			ScrollTo(new ScreenPosition(screenPos.getXAsNumber() - (Number(Constants.screenW) / zoomFactor) / 2.0, screenPos.getYAsNumber() - (Constants.screenH / zoomFactor) / 2.0));
+            var zoomFactorPercentage: Number = getZoomFactorPercentage();
+			ScrollTo(new ScreenPosition(
+                    screenPos.getXAsNumber() - (Number(Constants.screenW) / zoomFactorPercentage) / 2.0,
+                    screenPos.getYAsNumber() - (Constants.screenH / zoomFactorPercentage) / 2.0));
 		}
 		
 		public function GetCenter(): ScreenPosition
 		{
-			return new ScreenPosition(currentPosition.getXAsNumber() + (Number(Constants.screenW) / zoomFactor) / 2.0, currentPosition.getYAsNumber() + (Constants.screenH / zoomFactor) / 2.0);
+            var zoomFactorPercentage: Number = getZoomFactorPercentage();
+            return new ScreenPosition(
+                    currentPosition.getXAsNumber() + (Number(Constants.screenW) / zoomFactorPercentage) / 2.0,
+                    currentPosition.getYAsNumber() + (Constants.screenH / zoomFactorPercentage) / 2.0);
 		}
 
 		public function CameraRectangle() : Rectangle
 		{
-			return new Rectangle(currentPosition.x, currentPosition.y, Constants.screenW * zoomFactorOverOne, Constants.screenH * zoomFactorOverOne);
+			return new Rectangle(
+                    currentPosition.x,
+                    currentPosition.y,
+                    Constants.screenW * zoomFactorOverOne,
+                    Constants.screenH * zoomFactorOverOne);
 		}
-				
+
 		public function ScrollTo(screenPos: ScreenPosition): void
 		{
 			if (currentPosition.x < 0) currentPosition.x = 0;
 			if (currentPosition.y < 0) currentPosition.y = 0;
 
-			currentPosition.setXAsNumber(Math.min(screenPos.getXAsNumber(), Constants.mapW - (Constants.screenW * zoomFactorOverOne) - (Constants.tileW / 2.0)));
-
-			currentPosition.setYAsNumber(Math.min(screenPos.getYAsNumber(), Constants.mapTileH * int(Constants.tileH / 2.0) - (Constants.screenH * zoomFactorOverOne) - int(Constants.tileH / 2.0)));
+			currentPosition.setXAsNumber(Math.min(screenPos.getXAsNumber(), int(Constants.mapW - (Constants.screenW * zoomFactorOverOne) - (Constants.tileW / 2.0))));
+			currentPosition.setYAsNumber(Math.min(screenPos.getYAsNumber(), int(Constants.mapTileH * int(Constants.tileH / 2.0) - (Constants.screenH * zoomFactorOverOne) - int(Constants.tileH / 2.0))));
 
 			fireOnMove();
 		}
 		
-        public function set zoomFactor(factor: Number): void {
+        public function set zoomFactor(factor: int): void {
             _zoomFactor = factor;
-            zoomFactorOverOne = (1.0 / factor);
+            zoomFactorOverOne = (1.0 / getZoomFactorPercentage());
             ScrollTo(currentPosition);
         }
 
-        public function get zoomFactor(): Number {
+        public function get zoomFactor(): int {
             return _zoomFactor;
         }
 
@@ -209,8 +218,8 @@
 			return zoomFactorOverOne;
 		}
 		
-		public function getZoomFactor(): Number {
-			return zoomFactor;
+		public function getZoomFactorPercentage(): Number {
+			return zoomFactor / 100.0;
 		}
 		
 	}

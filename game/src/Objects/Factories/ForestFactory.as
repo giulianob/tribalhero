@@ -44,7 +44,7 @@
 		{
 			var forestObj: Forest = new Forest(type, state, objX, objY, size, groupId, objectId);
 
-            forestObj.setSprite(getSprite("map"), Assets.getPosition(getSpriteName(), "map"));
+            forestObj.setSprite(getSprite("map", true), Assets.getPosition(getSpriteName(), "map"));
 
 			forestObj.setOnSelect(Global.map.selectObject);
 			

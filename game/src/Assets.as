@@ -464,7 +464,7 @@
         public static const FOREST_CAMP_STRUCTURE: Class;
 
         [Embed(source = "../../graphics/buildings/FOREST_CAMP_STRUCTURE_SHADOW.png")]
-        [EmbedPosition(name = "map", x = 22, y = "27")]
+        [EmbedPosition(name = "map", x = 34, y = "27")]
         public static const FOREST_CAMP_STRUCTURE_SHADOW: Class;
 
         [Embed(source = "../../graphics/buildings/DEAD_FIELD_STRUCTURE.png")]

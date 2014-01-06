@@ -114,7 +114,6 @@ package src {
         }
 
         private function onZoomUpdate(center: ScreenPosition): void {
-            trace(gameContainer.camera.zoomFactor);
             gameContainer.map.scrollRate = gameContainer.camera.getZoomFactorOverOne();
             gameContainer.miniMap.redraw();
             gameContainer.mapHolder.scaleX = gameContainer.mapHolder.scaleY = gameContainer.camera.getZoomFactorPercentage();

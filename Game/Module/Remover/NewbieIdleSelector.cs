@@ -16,8 +16,8 @@ namespace Game.Module.Remover
                                                                                 INNER JOIN cities ON cities.player_id = players.id 
                                                                                 WHERE  
                                                                                     (
-                                                                                        (cities.VALUE <= 5 AND players.last_login < DATE_SUB(Utc_timestamp(), INTERVAL 3 DAY))
-                                                                                     OR (cities.VALUE <= 10 AND players.last_login < DATE_SUB(Utc_timestamp(), INTERVAL 7 DAY))
+                                                                                        (cities.VALUE <= 9 AND players.last_login < DATE_SUB(Utc_timestamp(), INTERVAL 3 DAY))
+                                                                                     OR (cities.VALUE <= 15 AND players.last_login < DATE_SUB(Utc_timestamp(), INTERVAL 7 DAY))
                                                                                     )
                                                                                     AND players.online = 0                                                                             
                                                                                     AND (SELECT COUNT(*) 

@@ -351,10 +351,11 @@ namespace GraphGenerator
         {
             nodeDefintions[GetKey(stats)] =
                     string.Format(
-                                  "[label=\"{0} (Level {1})\", labelloc=\"b\", height=1, shape=none, image=\"{2}.png\"]",
+                                  "[label=\"{0} (Level {1})\", labelloc=\"b\", height={3}, shape=none, image=\"{2}.png\"]",
                                   lang[stats.Name + "_STRUCTURE_NAME"],
                                   stats.Lvl,
-                                  stats.SpriteClass);
+                                  stats.SpriteClass,
+                                  stats.Size == 1 ? 1 : 2);
         }
 
         private static void CreateDefinition(IBaseUnitStats stats)

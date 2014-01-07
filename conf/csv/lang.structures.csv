@@ -16,7 +16,7 @@ TOWNCENTER_STRUCTURE_LVL_11,"Produces 95 Crop and 95 Wood. Increases the maximum
 TOWNCENTER_STRUCTURE_LVL_12,"Produces 100 Crop and 100 Wood. Increases the maximum resources to 12500 crop, 12500 wood, and 2090 iron.",
 TOWNCENTER_STRUCTURE_LVL_13,"Produces 105 Crop and 105 Wood. Increases the maximum resources to 16500 crop, 16500 wood, and 2620 iron.",
 TOWNCENTER_STRUCTURE_LVL_14,"Produces 110 Crop and 110 Wood. Increases the maximum resources to 21800 crop, 21800 wood, and 3260 iron.",
-TOWNCENTER_STRUCTURE_LVL_15,"Increases the size of your city. Produces 115 Crop and 115 Wood. Increases the maximum resources to 25000 crop, 25000 wood, and 4000 iron.",
+TOWNCENTER_STRUCTURE_LVL_15,"Produces 115 Crop and 115 Wood. Increases the maximum resources to 25000 crop, 25000 wood, and 4000 iron.",
 ,,
 BARRACK_STRUCTURE_NAME,Barrack,
 BARRACK_STRUCTURE_NAME_PLURAL,Barracks,

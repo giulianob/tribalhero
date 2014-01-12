@@ -29,6 +29,8 @@ namespace Game.Logic.Procedures
 
             world.Cities.Add(city);
 
+            city.BeginUpdate();
+
             mainBuilding.BeginUpdate();
             world.Regions.Add(mainBuilding);
             mainBuilding.EndUpdate();
@@ -39,6 +41,11 @@ namespace Game.Logic.Procedures
             defaultTroop.AddFormation(FormationType.Garrison);
             defaultTroop.AddFormation(FormationType.InBattle);
             defaultTroop.EndUpdate();
+            
+            RecalculateCityResourceRates(city);
+            SetResourceCap(city);
+
+            city.EndUpdate();
 
             if (player.GetCityCount() == 1)
             {

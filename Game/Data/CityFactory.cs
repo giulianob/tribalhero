@@ -13,8 +13,6 @@ namespace Game.Data
     {
         private readonly IKernel kernel;
 
-        private readonly Procedure procedure;
-
         private readonly IActionWorkerFactory actionWorkerFactory;
 
         private readonly INotificationManagerFactory notificationManagerFactory;
@@ -28,7 +26,6 @@ namespace Game.Data
         private readonly IUnitTemplateFactory unitTemplateFactory;
 
         public CityFactory(IKernel kernel,
-                           Procedure procedure,
                            IActionWorkerFactory actionWorkerFactory,
                            INotificationManagerFactory notificationManagerFactory,
                            IReferenceManagerFactory referenceManagerFactory,
@@ -37,7 +34,6 @@ namespace Game.Data
                            IUnitTemplateFactory unitTemplateFactory)
         {
             this.kernel = kernel;
-            this.procedure = procedure;
             this.actionWorkerFactory = actionWorkerFactory;
             this.notificationManagerFactory = notificationManagerFactory;
             this.referenceManagerFactory = referenceManagerFactory;
@@ -93,9 +89,6 @@ namespace Game.Data
             // TODO: We should figure a cleaner way so we dont need to have this circular dependency
             troops.BaseStation = city;
             troopStubFactory.City = city;
-
-            procedure.RecalculateCityResourceRates(city);
-            procedure.SetResourceCap(city);
 
             return city;
         }
